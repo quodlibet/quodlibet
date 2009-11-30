@@ -360,12 +360,12 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         hb2 = gtk.HBox(spacing=0)
         label = gtk.Label(_("_Search:"))
         label.connect('mnemonic-activate', self.__mnemonic_activate)
-        search = ValidatingEntry(Query.is_valid_color)
+        #somehow, entry gets lost during "changed" otherwise...
+        self.pygtkbug = search = ValidatingEntry(Query.is_valid_color)
         label.set_mnemonic_widget(search)
         label.set_use_underline(True)
-        clear = qltk.ClearButton(search)
         hb2.pack_start(search)
-        hb2.pack_start(clear, expand=False)
+        search.pack_clear_button(hb2)
         hb.pack_start(label, expand=False)
         hb.pack_start(hb2)
 

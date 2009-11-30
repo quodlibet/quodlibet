@@ -17,6 +17,7 @@ from quodlibet import util
 
 from quodlibet.plugins import Manager
 from quodlibet.qltk.views import HintedTreeView
+from quodlibet.qltk.entry import ClearEntry
 
 TAG, ALL, NO, DIS, EN, SEP = range(6)
 
@@ -41,7 +42,7 @@ class PluginWindow(qltk.UniqueWindow):
         tv.set_model(filter)
         tv.set_rules_hint(True)
 
-        filter_entry = gtk.Entry()
+        filter_entry = ClearEntry()
         filter_entry.connect("changed", lambda s: filter.refilter())
 
         combo_store = gtk.ListStore(str, int)
@@ -59,7 +60,7 @@ class PluginWindow(qltk.UniqueWindow):
 
         input = gtk.HBox()
         input.pack_start(filter_entry)
-        input.pack_start(qltk.ClearButton(filter_entry), expand=False)
+        filter_entry.pack_clear_button(input)
         fb.pack_start(input)
 
         render = gtk.CellRendererToggle()

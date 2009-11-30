@@ -528,7 +528,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         e = self.FilterEntry(model_filter)
         hb2 = gtk.HBox()
         hb2.pack_start(e)
-        hb2.pack_start(qltk.ClearButton(e), expand=False)
+        e.pack_clear_button(hb2)
 
         if player: view.connect('row-activated', self.__play_selection, player)
         self.__sig = view.get_selection().connect('changed',

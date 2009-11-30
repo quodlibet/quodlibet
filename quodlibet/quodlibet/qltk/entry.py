@@ -8,9 +8,27 @@
 
 import gtk
 
-from quodlibet import config
+IconEntry = gtk.Entry
+if not getattr(gtk.Entry, "set_icon_from_stock", None):
+    try: from sexy import IconEntry
+    except: pass
 
-class ValidatingEntry(gtk.Entry):
+from quodlibet import config
+from quodlibet.qltk import ClearButton
+
+class ClearEntry(IconEntry):
+    def pack_clear_button(self, container=None):
+        if getattr(self, "set_icon_from_stock", None):
+            self.set_icon_from_stock(
+                gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
+            clear = lambda *x: x[0].set_text("")
+            self.connect("icon-release", clear)
+        elif getattr(self, "add_clear_button", None):
+            self.add_clear_button()
+        else:
+            container.pack_start(ClearButton(self), False)
+
+class ValidatingEntry(ClearEntry):
     """An entry with visual feedback as to whether it is valid or not.
     The given validator function gets a string and returns True (green),
     False (red), or a color string, or None (black).

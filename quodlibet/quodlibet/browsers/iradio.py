@@ -285,17 +285,13 @@ class InternetRadio(gtk.HBox, Browser):
 
         hb = gtk.HBox(spacing=3)
         lab = gtk.Label(_("_Search:"))
-        search = ValidatingEntry(Query.is_valid_color)
+        self.pygtkbug = search = ValidatingEntry(Query.is_valid_color)
         lab.set_use_underline(True)
         lab.set_mnemonic_widget(search)
-        clear = gtk.Button()
-        clear.add(
-            gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU))
         search.connect('changed', self.__filter_changed)
-        clear.connect_object('clicked', search.set_text, "")
         hb.pack_start(lab, expand=False)
         hb.pack_start(search)
-        hb.pack_start(clear, expand=False)
+        search.pack_clear_button(hb)
         self.pack_start(hb)
 
         self.show_all()

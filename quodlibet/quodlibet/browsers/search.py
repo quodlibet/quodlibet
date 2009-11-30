@@ -153,7 +153,6 @@ class SearchBar(EmptyBar):
         combo.child.set_completion(LibraryTagCompletion(library.librarian))
         l.set_mnemonic_widget(combo.child)
         l.set_use_underline(True)
-        clear = qltk.ClearButton(self)
 
         search = gtk.Button()
         hb = gtk.HBox(spacing=3)
@@ -170,7 +169,7 @@ class SearchBar(EmptyBar):
         hb2.pack_start(l, expand=False)
         hb3 = gtk.HBox()
         hb3.pack_start(combo)
-        hb3.pack_start(clear, expand=False)
+        combo.pack_clear_button(hb3)
         hb3.pack_start(search, expand=False)
         hb2.pack_start(hb3)
         self.pack_start(hb2)
