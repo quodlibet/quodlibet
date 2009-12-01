@@ -32,26 +32,31 @@ def add_border(pixbuf, val, round=False):
     pixbuf.copy_area(0, 0, w, h, newpb, 1, 1)
 
     if round:
-        m = ((0xFF - val) / 5) + val
-        m = (m << 24) | (m << 16) | (m << 8) | 0xFF
+        m = (c & 0xFFFFFF00) | 0xDD
+        p = (c & 0xFFFFFF00) | 0xBB
         o = (c & 0xFFFFFF00) | 0x70
         n = (c & 0xFFFFFF00) | 0x40
+        l = -1
+        e = -2
 
         mask = (
-            (0, 0, n, m),
-            (0, o, m, 2),
-            (n, m, 2, 2),
-            (m, 2, 2, 2)
+            (0, 0, n, p),
+            (0, o, m, l),
+            (n, m, e, e),
+            (p, l, e, e)
             )
+
+        overlay = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, 1, 1)
+        overlay.fill(m)
 
         for y, row in enumerate(mask):
             for x, pix in enumerate(row):
-                if pix != 2:
-                    newpb.subpixbuf(x, y, 1, 1).fill(pix)
-                    newpb.subpixbuf(w + 1 - x, y, 1, 1).fill(pix)
-                    newpb.subpixbuf(w + 1 - x, h + 1 - y, 1, 1).fill(pix)
-                    newpb.subpixbuf(x, h + 1 - y, 1, 1).fill(pix)
-
+                for xn, yn in [(x, y), (w+1-x, y), (w+1-x, h+1-y), (x, h+1-y)]:
+                    if pix == l:
+                        overlay.composite(newpb, xn, yn, 1, 1, 0, 0, 1, 1,
+                            gtk.gdk.INTERP_NEAREST, 70)
+                    elif pix != e:
+                        newpb.subpixbuf(xn, yn, 1, 1).fill(pix)
     return newpb
 
 def calc_scale_size(boundary, size, scale_up=True):
