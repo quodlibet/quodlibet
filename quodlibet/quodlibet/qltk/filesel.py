@@ -198,10 +198,23 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
     def __refresh(self, button):
         model, rows = self.get_selection().get_selected_rows()
+        expanded = set()
+        self.map_expanded_rows(lambda s, iter: expanded.add(model[iter][0]))
+        needs_expanding = []
         for row in rows:
             if self.row_expanded(row):
                 self.emit('test-expand-row', model.get_iter(row), row)
                 self.expand_row(row, False)
+                needs_expanding.append(row)
+        while len(needs_expanding) > 0:
+            child = model.iter_children(model.get_iter(needs_expanding.pop()))
+            while child is not None:
+                if model[child][0] in expanded:
+                    path = model.get_path(child)
+                    self.emit('test-expand-row', child, path)
+                    self.expand_row(path, False)
+                    needs_expanding.append(path)
+                child = model.iter_next(child)
 
     def __expanded(self, iter, path, model):
         window = self.window
