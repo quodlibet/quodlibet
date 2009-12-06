@@ -179,6 +179,28 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.set_border_width(12)
             self.title = _("Player")
 
+            if config.get('player', 'backend') == "gstbe":
+                e = gtk.Entry()
+                e.set_tooltip_text("The GStreamer output pipeline used for "
+                        "playback, such as 'alsasink device=default'. "
+                        "Leave blank for default pipeline.")
+                e.set_text(config.get('player', 'gst_pipeline'))
+                def changed(entry):
+                    print entry.get_text()
+                    config.set('player', 'gst_pipeline', entry.get_text())
+                e.connect('changed', changed)
+                l = gtk.Label('_GStreamer pipeline:')
+                l.set_use_underline(True)
+                l.set_mnemonic_widget(e)
+                b = gtk.Button(stock=gtk.STOCK_APPLY)
+                b.connect('clicked', lambda w: player.device.go_to(None))
+
+                hb = gtk.HBox(spacing=6)
+                hb.pack_start(l, expand=False)
+                hb.pack_start(e)
+                hb.pack_start(b, expand=False)
+                self.pack_start(hb, expand=False)
+
             c = ConfigCheckButton(
                 _("_Jump to playing song automatically"), 'settings', 'jump')
             c.set_tooltip_text(_("When the playing song changes, "

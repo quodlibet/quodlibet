@@ -49,12 +49,12 @@ class GStreamerPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
 
-    def __init__(self, sinkname, librarian=None):
+    def __init__(self, librarian=None):
         super(GStreamerPlayer, self).__init__()
         self.version_info = "GStreamer: %s / PyGSt: %s" % (
             fver(gst.version()), fver(gst.pygst_version))
         self.librarian = librarian
-        self.name = sinkname
+        self.name = ''
         self.bin = None
         self.connect('destroy', lambda s: self.__destroy_pipeline())
         self._in_gapless_transition = False
@@ -62,7 +62,9 @@ class GStreamerPlayer(BasePlayer):
 
     def __init_pipeline(self):
         if self.bin: return
-        pipeline, self.name = GStreamerSink(self.name)
+        pipeline = (config.get("player", "gst_pipeline") or
+                    "gconfaudiosink profile=music")
+        pipeline, self.name = GStreamerSink(pipeline)
         if gst.version() >= (0, 10, 24):
             self.bin = gst.element_factory_make('playbin2')
             id = self.bin.connect('about-to-finish', self.__about_to_finish)
@@ -304,13 +306,11 @@ def can_play_uri(uri):
     return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
 
 def init(librarian):
-    pipeline = (config.get("player", "gst_pipeline") or
-                "gconfaudiosink profile=music")
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
     if gst.element_make_from_uri(
         gst.URI_SRC,
         "file:///fake/path/for/gst", ""):
-        return GStreamerPlayer(pipeline, librarian)
+        return GStreamerPlayer(librarian)
     else:
         raise PlayerError(
             _("Unable to open input files"),
