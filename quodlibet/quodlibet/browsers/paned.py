@@ -164,6 +164,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
         def __init__(self, mytag, next, library):
             super(PanedBrowser.Pane, self).__init__()
+            self.set_fixed_height_mode(True)
 
             if '<' in mytag:
                 p = Pattern(mytag)
