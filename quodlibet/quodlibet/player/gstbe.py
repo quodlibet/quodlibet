@@ -189,6 +189,7 @@ class GStreamerPlayer(BasePlayer):
                 self.emit((paused and 'paused') or 'unpaused')
                 if not self.bin:
                     self.__init_pipeline()
+                    self.bin.set_property('uri', self.song("~uri"))
                 if self._paused:
                     self.bin.set_state(gst.STATE_PAUSED)
                 else: self.bin.set_state(gst.STATE_PLAYING)
@@ -196,6 +197,8 @@ class GStreamerPlayer(BasePlayer):
                 # Something wants us to pause between songs, or when
                 # we've got no song playing (probably StopAfterMenu).
                 self.emit('paused')
+                self.__destroy_pipeline()
+
     def _get_paused(self): return self._paused
     paused = property(_get_paused, _set_paused)
 
