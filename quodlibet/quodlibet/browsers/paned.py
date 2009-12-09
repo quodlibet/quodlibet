@@ -221,7 +221,10 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                 for song in songs:
                     if song in data: data.remove(song)
                 if not model[row.iter][1]: to_remove.append(row.iter)
-            if remove_if_empty: map(model.remove, to_remove)
+            if remove_if_empty:
+                map(model.remove, to_remove)
+                if len(model) == 1 and model[0][1] is None:
+                    model.clear()
             self.uninhibit()
 
         def _matches(self, song):
