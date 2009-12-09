@@ -546,6 +546,6 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
     def fill(self, songs):
         if self.__save: self.save()
-        self.emit('songs-selected', list(songs), None)
+        gobject.idle_add(self.emit, 'songs-selected', list(songs), None)
 
 browsers = [PanedBrowser]
