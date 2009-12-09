@@ -147,7 +147,9 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
     priority = 3
 
     def set_all_panes(klass):
-        for browser in klass.instances(): browser.refresh_panes()
+        for browser in klass.instances():
+            browser.refresh_panes()
+            browser.fill_panes()
     set_all_panes = classmethod(set_all_panes)
 
     class Pane(AllTreeView):
@@ -156,6 +158,12 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
         __render_count = gtk.CellRendererText()
         __render_count.set_property('xalign', 1.0)
+
+        __restore_values = None
+
+        @classmethod
+        def set_restore(klass, selected):
+            klass.__restore_values = selected
 
         def __count_cdf(column, cell, model, iter):
             try: cell.set_property('text', "(%d)" % (len(model[iter][1])))
@@ -292,7 +300,8 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         def uninhibit(self): self.get_selection().handler_unblock(self.__sig)
 
         def fill(self, songs):
-            selected = self.get_selected()
+            restore = self.__restore_values
+            selected = (restore and restore.pop(0)) or self.get_selected()
             model = self.get_model()
             self.inhibit()
             model.clear()
@@ -398,7 +407,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                   ]:
             self.connect_object('destroy', library.disconnect, s)
         self.connect_object('destroy', type(self).__destroy, self)
-        self.refresh_panes(restore=False)
+        self.refresh_panes()
         self.show_all()
 
     def __destroy(self):
@@ -455,7 +464,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         for pane in self.__panes:
             pane.scroll(song)
 
-    def refresh_panes(self, restore=True):
+    def refresh_panes(self):
         try: hbox = self.get_children()[1]
         except IndexError: pass # first call
         else: hbox.destroy()
@@ -480,14 +489,15 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             hbox.pack_start(sw)
 
         self.pack_start(hbox)
-        self.__panes[-1].inhibit()
-        self.activate()
-        self.__panes[-1].uninhibit()
-        if restore: self.restore()
         self.show_all()
 
         self.__star = {}
         for p in self.__panes: self.__star.update(dict.fromkeys(p.tags))
+
+    def fill_panes(self):
+        self.__panes[-1].inhibit()
+        self.activate()
+        self.__panes[-1].uninhibit()
 
     def __start(self, view, indices, col):
         self.__save.reset()
@@ -528,12 +538,11 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
 
     def restore(self):
         selected = config.get("browsers", "pane_selection").split("\n")
-        if len(selected) == len(self.__panes):
-            self.__panes[-1].inhibit()
-            for values, pane in zip(selected, self.__panes[:-1]):
-                pane.set_selected(values.split("\t"), True)
-            self.__panes[-1].uninhibit()
-            self.__panes[-1].set_selected(selected[-1].split("\t"), True)
+        PanedBrowser.Pane.set_restore([sel.split("\t") for sel in selected])
+
+    def finalize(self, restored):
+        if not restored:
+            self.fill_panes()
 
     def fill(self, songs):
         if self.__save: self.save()

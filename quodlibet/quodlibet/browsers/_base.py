@@ -87,6 +87,10 @@ class Browser(object):
     def save(self): raise NotImplementedError
     def restore(self): raise NotImplementedError
 
+    # Called after restore/activate or after the browser is loaded.
+    # restored is True if restore was called.
+    def finalize(self, restored): pass
+
     # Decides whether "filter on foo" menu entries are available.
     def can_filter(self, key): return False
 

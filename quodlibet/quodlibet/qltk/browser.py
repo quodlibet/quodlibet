@@ -58,6 +58,7 @@ class LibraryBrowser(Window):
         self.child.pack_end(self.__statusbar, expand=False)
 
         browser.connect('songs-selected', self.__browser_cb)
+        browser.finalize(False)
         view.connect('popup-menu', self.__menu, library)
         view.connect('drag-data-received', self.__drag_data_recv)
         view.connect('row-activated', self.__enqueue)
