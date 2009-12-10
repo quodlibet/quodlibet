@@ -263,7 +263,7 @@ class FileSelector(gtk.VPaned):
         super(FileSelector, self).__init__()
         self.__filter = filter
 
-        if os.path.isfile(initial):
+        if initial and os.path.isfile(initial):
             initial = os.path.dirname(initial)
         dirlist = DirectoryTree(initial, folders=folders)
         filelist = AllTreeView(gtk.ListStore(str))

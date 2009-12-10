@@ -55,7 +55,7 @@ class TThumb(TestCase):
         meta_mtime = thumb_pb.get_option("tEXt::Thumb::MTime")
         meta_uri = thumb_pb.get_option("tEXt::Thumb::URI")
 
-        s.failUnlessEqual(int(meta_mtime), mtime(s.filename))
+        s.failUnlessEqual(int(meta_mtime), int(mtime(s.filename)))
         s.failUnlessEqual(meta_uri, uri)
 
         #check rights
