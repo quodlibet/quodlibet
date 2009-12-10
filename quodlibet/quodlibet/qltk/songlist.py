@@ -302,9 +302,16 @@ class SongList(AllTreeView, util.InstanceTracker):
                     song.comma(tag).decode(code, 'replace')))
             except AttributeError: pass
 
-    class LengthColumn(TextColumn):
+    class NumericColumn(TextColumn):
+        # Any '~#' keys except dates.
         _render = gtk.CellRendererText()
         _render.set_property('xalign', 1.0)
+
+        def __init__(self, tag):
+            super(SongList.NumericColumn, self).__init__(tag)
+            self.set_alignment(1.0)
+
+    class LengthColumn(NumericColumn):
         def _cdf(self, column, cell, model, iter, tag):
             try:
                 song = model.get_value(iter, 0)
@@ -313,15 +320,8 @@ class SongList(AllTreeView, util.InstanceTracker):
                 self._update_layout(text, cell)
             except AttributeError: pass
 
-        def __init__(self, tag="~#length"):
-            super(SongList.LengthColumn, self).__init__(tag)
-            self.set_alignment(1.0)
-
-    class NumericColumn(TextColumn):
-        # Any '~#' keys except dates.
-        _render = gtk.CellRendererText()
-        _render.set_property('xpad', 12)
-        _render.set_property('xalign', 1.0)
+        def __init__(self):
+            super(SongList.LengthColumn, self).__init__("~#length")
 
     class PatternColumn(WideTextColumn):
         def _cdf(self, column, cell, model, iter, tag):
