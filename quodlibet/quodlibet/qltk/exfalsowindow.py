@@ -185,7 +185,11 @@ class ExFalsoWindow(gtk.Window):
             filename = util.fsnative(model[row][0])
             if not os.path.exists(filename): pass
             elif filename in self.__library:
-                files.append(self.__library[filename])
+                file = self.__library[filename]
+                if file("~#mtime") + 1. < util.mtime(filename):
+                    try: file.reload()
+                    except StandardError: pass
+                files.append(file)
             else: files.append(formats.MusicFile(filename))
         files = filter(None, files)
         if len(files) == 0: self.set_title("Ex Falso")
