@@ -116,13 +116,14 @@ class ID3File(AudioFile):
                 self["musicbrainz_trackid"] = frame.data
                 continue
             elif frame.FrameID == "POPM":
-                count = frame.count
                 rating = frame.rating / 255.0
                 if frame.email == const.EMAIL:
-                    self.setdefault("~#playcount", count)
+                    try: self.setdefault("~#playcount", frame.count)
+                    except AttributeError: pass
                     self.setdefault("~#rating", rating)
                 elif frame.email == config.get("editing", "save_email"):
-                    self["~#playcount"] = count
+                    try: self["~#playcount"] = frame.count
+                    except AttributeError: pass
                     self["~#rating"] = rating
                 continue
             elif frame.FrameID == "COMM" and frame.desc == "":
