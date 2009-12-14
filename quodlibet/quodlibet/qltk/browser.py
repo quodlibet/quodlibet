@@ -14,6 +14,7 @@ from quodlibet import util
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import Window
+from quodlibet.qltk.x import RPaned
 
 class LibraryBrowser(Window):
     def __init__(self, Kind, library):
@@ -49,7 +50,8 @@ class LibraryBrowser(Window):
         if browser.accelerators:
             self.add_accel_group(browser.accelerators)
 
-        self.child.pack_start(browser.pack(sw))
+        self.__container = browser.pack(sw)
+        self.child.pack_start(self.__container)
 
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
@@ -71,6 +73,16 @@ class LibraryBrowser(Window):
             c.show()
         self.child.show()
         self.show()
+        self.__set_pane_size()
+
+    def __set_pane_size(self):
+        if isinstance(self.__container, RPaned):
+            try:
+                key = "%s_pos" % self.browser.__class__.__name__
+                val = config.getfloat("browsers", key)
+            except:
+                val = 0.4
+            self.__container.set_relative(val)
 
     def __browser_cb(self, browser, songs, sorted):
         self.__set_time(songs=songs)
