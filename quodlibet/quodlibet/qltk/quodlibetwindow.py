@@ -35,7 +35,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.logging import LoggingWindow
-from quodlibet.qltk.mmkeys import MmKeys
+from quodlibet.qltk.mmkeys_ import MmKeys
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.playorder import PlayOrder
 from quodlibet.qltk.pluginwin import PluginWindow
