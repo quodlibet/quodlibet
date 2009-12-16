@@ -23,7 +23,6 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import stock
 from quodlibet import util
-
 from quodlibet.parse import Pattern
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.browser import LibraryBrowser
@@ -270,23 +269,24 @@ class TrayIcon(EventPlugin):
         if self.__size <= 0:
             return
 
+        pixbuf_size = int(self.__size * 0.75)
         filename = os.path.join(const.IMAGEDIR, "quodlibet.")
 
         if not self.__pixbuf:
             try:
                 self.__pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                    filename + "svg", self.__size * 2, self.__size * 2)
+                    filename + "svg", pixbuf_size * 2, pixbuf_size * 2)
             except:
                 self.__pixbuf = gtk.gdk.pixbuf_new_from_file(filename + "png")
             self.__pixbuf = self.__pixbuf.scale_simple(
-                self.__size, self.__size, gtk.gdk.INTERP_BILINEAR)
+                pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
 
         if player.paused:
             if not self.__pixbuf_paused:
                 base = self.__pixbuf.copy()
                 overlay = self.__icon_theme.load_icon(
                     gtk.STOCK_MEDIA_PAUSE,
-                    self.__size, gtk.ICON_LOOKUP_FORCE_SVG)
+                    pixbuf_size, gtk.ICON_LOOKUP_FORCE_SVG)
 
                 w, h = base.get_width(), base.get_height()
                 wo, ho = overlay.get_width(), overlay.get_height()
@@ -301,23 +301,32 @@ class TrayIcon(EventPlugin):
                     gtk.gdk.INTERP_BILINEAR, 255)
                 self.__pixbuf_paused = base
 
-            self.__icon.set_from_pixbuf(self.__pixbuf_paused)
+            new_pixbuf = self.__pixbuf_paused
         else:
-            self.__icon.set_from_pixbuf(self.__pixbuf)
+            new_pixbuf = self.__pixbuf
+
+        #we need to fill the whole height that is given to us, or
+        #the KDE panel will emit size-changed until we reach 0
+        w, h = new_pixbuf.get_width(), new_pixbuf.get_height()
+        background = gtk.gdk.Pixbuf(
+            gtk.gdk.COLORSPACE_RGB, True, 8, w, self.__size)
+        background.fill(0)
+        new_pixbuf.copy_area(0, 0, w, h, background, 0, (self.__size-h)/2)
+
+        self.__icon.set_from_pixbuf(background)
 
     def __theme_changed(self, theme, *args):
         self.__pixbuf_paused = None
         self.__update_icon()
 
     def __size_changed(self, icon, size, *args):
-        new_size = int(size * 0.75)
-
-        if new_size != self.__size:
+        if size != self.__size:
             self.__pixbuf = None
             self.__pixbuf_paused = None
 
-            self.__size = new_size
+            self.__size = size
             self.__update_icon()
+        return True
 
     def __prefs_destroy(self, *args):
         if self.__icon:
