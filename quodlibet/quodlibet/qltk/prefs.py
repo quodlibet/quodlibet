@@ -186,7 +186,6 @@ class PreferencesWindow(qltk.UniqueWindow):
                         "Leave blank for default pipeline."))
                 e.set_text(config.get('player', 'gst_pipeline'))
                 def changed(entry):
-                    print entry.get_text()
                     config.set('player', 'gst_pipeline', entry.get_text())
                 e.connect('changed', changed)
                 l = gtk.Label(_('_Output pipeline:'))

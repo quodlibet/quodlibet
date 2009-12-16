@@ -1,10 +1,8 @@
-# Copyright 2004 Joe Wreschnig, Michael Urman
+# Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-#
-# $Id$
 
 import gobject
 
@@ -21,6 +19,7 @@ from quodlibet import const
 from quodlibet.util import fver
 from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
+from quodlibet.qltk.msg import ErrorMessage
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
@@ -33,6 +32,7 @@ def GStreamerSink(pipeline):
     if pipeline == "gconf": pipeline = "gconfaudiosink profile=music"
     try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
     except gobject.GError, err:
+        print_w(_("Invalid GStreamer output pipeline, trying default."))
         if pipeline != "autoaudiosink":
             try: pipe = [gst.parse_launch("autoaudiosink")]
             except gobject.GError: pipe = None
@@ -61,14 +61,11 @@ class GStreamerPlayer(BasePlayer):
         self.paused = True
 
     def __init_pipeline(self):
-        if self.bin: return
+        if self.bin: return True
         pipeline = (config.get("player", "gst_pipeline") or
                     "gconfaudiosink profile=music")
         pipeline, self.name = GStreamerSink(pipeline)
         if gst.version() >= (0, 10, 24):
-            self.bin = gst.element_factory_make('playbin2')
-            id = self.bin.connect('about-to-finish', self.__about_to_finish)
-            self.__atf_id = id
             # The output buffer is necessary to run the song-ended and
             # song-started events through QL's signal handlers before the
             # playbin2 hits EOF inside a gapless transition.
@@ -81,8 +78,16 @@ class GStreamerPlayer(BasePlayer):
                 bufbin.add(elem)
                 if idx > 0:
                     pipeline[idx-1].link(elem)
+            # Test to ensure output pipeline can preroll
+            bufbin.set_state(gst.STATE_READY)
+            result, state, oldstate = bufbin.get_state()
+            bufbin.set_state(gst.STATE_NULL)
+            if result == gst.STATE_CHANGE_FAILURE: return False
             gpad = gst.GhostPad('sink', queue.get_pad('sink'))
             bufbin.add_pad(gpad)
+            self.bin = gst.element_factory_make('playbin2')
+            id = self.bin.connect('about-to-finish', self.__about_to_finish)
+            self.__atf_id = id
             self.bin.set_property('audio-sink', bufbin)
         else:
             self.bin = gst.element_factory_make('playbin')
@@ -98,6 +103,7 @@ class GStreamerPlayer(BasePlayer):
         if gst.pygst_version >= (0, 10, 10):
             self.__elem_id = bus.connect('message::element',
                                          self.__message_elem)
+        return True
 
     def __destroy_pipeline(self):
         if self.bin is None: return
@@ -186,13 +192,19 @@ class GStreamerPlayer(BasePlayer):
         if paused != self._paused:
             self._paused = paused
             if self.song:
-                self.emit((paused and 'paused') or 'unpaused')
-                if not self.bin:
-                    self.__init_pipeline()
+                if self.__init_pipeline():
                     self.bin.set_property('uri', self.song("~uri"))
-                if self._paused:
-                    self.bin.set_state(gst.STATE_PAUSED)
-                else: self.bin.set_state(gst.STATE_PLAYING)
+                else:
+                    # Backend error; show message and halt playback
+                    ErrorMessage(None, _("Fatal Error"), _("Output pipeline "
+                                 "could not be initialized. ")).run()
+                    self._paused = paused = True
+                self.emit((paused and 'paused') or 'unpaused')
+                if self.bin:
+                    if self._paused:
+                        self.bin.set_state(gst.STATE_PAUSED)
+                    else:
+                        self.bin.set_state(gst.STATE_PLAYING)
             elif paused is True:
                 # Something wants us to pause between songs, or when
                 # we've got no song playing (probably StopAfterMenu).
@@ -243,8 +255,9 @@ class GStreamerPlayer(BasePlayer):
                 # entire pipeline and recreate it each time we're not in
                 # a gapless transition.
                 self.__destroy_pipeline()
-                self.__init_pipeline()
-                self.bin.set_property('uri', self.song("~uri"))
+                if self.__init_pipeline():
+                    self.bin.set_property('uri', self.song("~uri"))
+                else: self.paused = True
             if self.bin:
                 if self._paused:
                     self.bin.set_state(gst.STATE_PAUSED)
