@@ -125,7 +125,8 @@ class AudioFile(dict):
             key = key[1:]
             if "~" in key:
                 return connector.join(
-                    filter(None, map(self.__call__, util.tagsplit("~" + key))))
+                    map(str, filter(None,
+                    map(self.__call__, util.tagsplit("~" + key)))))
             elif key == "#track":
                 try: return int(self["tracknumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError): return default

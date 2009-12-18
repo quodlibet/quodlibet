@@ -88,6 +88,7 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(song("~~people"), song("~people"))
             self.failUnlessEqual(song("~title~people"), song("title"))
             self.failUnlessEqual(song("~title~~people"), song("~title~artist"))
+            self.failUnlessEqual(song("~title~~#tracks"), song("~title~~#tracks"))
 
     def test_list(self):
         for key in bar_1_1.realkeys():
