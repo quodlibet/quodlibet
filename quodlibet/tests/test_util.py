@@ -331,6 +331,8 @@ class Tpattern(TestCase):
         self.failUnlessEqual(util.pattern("<title>", False), "title")
     def test_internal(self):
         self.failUnlessEqual(util.pattern("<~plays>"), "Plays")
+    def test_tied(self):
+        self.failUnlessEqual(util.pattern("<~title~album>"), "Title - Album")
     def test_unknown(self):
         self.failUnlessEqual(util.pattern("<foobarbaz>"), "Foobarbaz")
     def test_condition(self):

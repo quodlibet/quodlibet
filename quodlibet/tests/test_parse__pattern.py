@@ -165,6 +165,15 @@ class TXMLFromPattern(_TPattern):
         pat = XMLFromPattern(r'<title|\<b\><title> woo\</b\>>')
         s.assertEquals(pat.format(s.a), '<b>Title5 woo</b>')
 
+class TRealTags(TestCase):
+    def test_empty(self):
+        self.failUnlessEqual(Pattern("").real_tags(), [])
+    def test_both(self):
+        pat = "<foo|<~bar~fuu> - <fa>|<bar>>"
+        self.failUnlessEqual(Pattern(pat).real_tags(), ["foo", "bar", "fuu", "fa"])
+        self.failUnlessEqual(Pattern(pat).real_tags(False), ["bar", "fuu", "fa"])
+
 add(TPattern)
 add(TFileFromPattern)
 add(TXMLFromPattern)
+add(TRealTags)

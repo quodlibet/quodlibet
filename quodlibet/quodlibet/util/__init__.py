@@ -443,16 +443,18 @@ def tagsplit(tag):
 def pattern(pat, cap=True):
     """Return a 'natural' version of the pattern string for human-readable
     bits. Assumes all tags in the pattern are present."""
-    from quodlibet.util import tags
     from quodlibet.parse import Pattern
     class Fakesong(dict):
         def comma(self, key):
+            if key.startswith('~') and '~' in key[1:]:
+                tags = [self.get(k, '') for k in tagsplit(key)]
+                return " - ".join(tags)
             return self.get(key, '')
     fakesong = Fakesong({'filename': tag('filename', cap)})
-    for part in re.findall('[<][^<>|]*[>]', pat):
-        for t in tagsplit(part.strip('<>')):
-            fakesong.setdefault(t, tag(t, cap))
-    return Pattern(pat).format(fakesong)
+    p = Pattern(pat)
+    for t in p.real_tags():
+        fakesong.setdefault(t, tag(t, cap))
+    return p.format(fakesong)
 
 def spawn(argv, stdout=False):
     """Asynchronously run a program. argv[0] is the executable name, which

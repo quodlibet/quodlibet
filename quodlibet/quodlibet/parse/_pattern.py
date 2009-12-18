@@ -161,6 +161,17 @@ class _Pattern(PatternParser):
         p = PatternParser(self.__tokens)
         return self._post(p.Pattern(self.Song(song, self._formatters)), song)
 
+    def real_tags(self, cond=True):
+        tags = []
+        tokens = self.__tokens
+        for i, tok in enumerate(tokens):
+            if tok.type == TEXT and \
+                tokens[max(0, i-1)].type == OPEN and \
+                tokens[i+1].type != EOF and \
+                (tokens[i+1].type != COND or cond):
+                tags.extend(util.tagsplit(tok.lexeme))
+        return [t for i, t in enumerate(tags) if i == tags.index(t)]
+
     def _post(self, value, song): return value
 
     __mod__ = format
