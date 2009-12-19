@@ -247,9 +247,9 @@ class TrayIcon(EventPlugin):
 
     def disabled(self):
         global gtk_216
-        if window.handler_is_connected(self.__w_sig_map):
+        if self.__w_sig_map and window.handler_is_connected(self.__w_sig_map):
             window.disconnect(self.__w_sig_map)
-        if window.handler_is_connected(self.__w_sig_del):
+        if self.__w_sig_del and window.handler_is_connected(self.__w_sig_del):
             window.disconnect(self.__w_sig_del)
         if self.__icon:
             self.__icon.set_visible(False)
