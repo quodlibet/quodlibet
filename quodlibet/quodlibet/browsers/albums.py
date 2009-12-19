@@ -667,7 +667,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         if None in albums: return None
         else: return albums
 
-    def __get_selected_songs(self, selection):
+    def __get_selected_songs(self, selection, sort=True):
         if not selection:
             return []
         model, rows = selection.get_selected_rows()
@@ -678,8 +678,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         # Sort first by how the albums appear in the model itself,
         # then within the album using the default order.
         songs = []
-        for album in albums:
-            songs.extend(sorted(album.songs))
+        if sort:
+            for album in albums:
+                songs.extend(sorted(album.songs))
+        else:
+            for album in albums:
+                songs.extend(album.songs)
         return songs
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
@@ -780,7 +784,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
     def __update_songs(self, view, sort):
         selection = view.get_selection()
-        songs = self.__get_selected_songs(selection)
+        songs = self.__get_selected_songs(selection, False)
         albums = self.__get_selected_albums(selection)
         if not songs: return
         self.emit('songs-selected', songs, None)
