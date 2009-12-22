@@ -122,7 +122,7 @@ class XinePlaylistPlayer(BasePlayer):
                 scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
                 v = max(0.0, v * scale)
             v = min(100, int(v * 100))
-            xine_set_param(self._stream, XINE_PARAM_AUDIO_VOLUME, v)
+            xine_set_param(self._stream, XINE_PARAM_AUDIO_AMP_LEVEL, v)
         else:
             raise AttributeError
 
