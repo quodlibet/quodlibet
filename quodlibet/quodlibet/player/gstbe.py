@@ -192,12 +192,13 @@ class GStreamerPlayer(BasePlayer):
         if paused != self._paused:
             self._paused = paused
             if self.song:
-                if self.__init_pipeline():
-                    self.bin.set_property('uri', self.song("~uri"))
-                else:
-                    # Backend error; show message and halt playback
-                    ErrorMessage(None, _("Fatal Error"), _("Output pipeline "
-                                 "could not be initialized. ")).run()
+                if not self.bin:
+                    if self.__init_pipeline():
+                        self.bin.set_property('uri', self.song("~uri"))
+                    else:
+                        # Backend error; show message and halt playback
+                        ErrorMessage(None, _("Output Error"), _("Output "
+                            "pipeline could not be initialized.")).run()
                     self._paused = paused = True
                 self.emit((paused and 'paused') or 'unpaused')
                 if self.bin:
@@ -264,8 +265,8 @@ class GStreamerPlayer(BasePlayer):
                 else:
                     self.bin.set_state(gst.STATE_PLAYING)
         else:
-            self.paused = True
             self.__destroy_pipeline()
+            self.paused = True
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
