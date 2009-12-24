@@ -1,10 +1,8 @@
-# Copyright 2005 Joe Wreschnig
+# Copyright 2005, 2009 Joe Wreschnig, Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-#
-# $Id$
 
 import os
 import urllib
@@ -23,8 +21,8 @@ class DownloadWindow(qltk.UniqueWindow):
 
     def download(klass, source, target, parent=None):
         if klass.downloads is None:
-            # source fileobj, target fileobj, I/O watch callback ID
-            klass.downloads = gtk.ListStore(object, object, int)
+            # source fileobj, target fileobj, I/O watch callback ID, source uri
+            klass.downloads = gtk.ListStore(object, object, int, object)
         win = DownloadWindow(parent)
         win._download(source, target)
     download = classmethod(download)
@@ -53,12 +51,13 @@ class DownloadWindow(qltk.UniqueWindow):
             cell.set_property('text', model[iter][1].name)
         column.set_cell_data_func(render, cell_data_name)
         view.append_column(column)
-        
+
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Size"), render)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
         def cell_data_size(column, cell, model, iter):
-            size = util.format_size(model[iter][1].tell())
+            if model[iter][2] == 0: size = _("Queued")
+            else: size = util.format_size(model[iter][1].tell())
             cell.set_property('text', size)
         column.set_cell_data_func(render, cell_data_size)
         view.append_column(column)
@@ -90,13 +89,33 @@ class DownloadWindow(qltk.UniqueWindow):
             menu.show_all()
             return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
+    def __start_next(self):
+        started = len(filter(lambda row: row[2] != 0, self.downloads))
+        iter = self.downloads.get_iter_root()
+        while iter is not None:
+            if started >= 2: break
+            if self.downloads[iter][2] == 0:
+                url = urllib.urlopen(self.downloads[iter][3])
+                sock = url.fp._sock
+                sock.setblocking(0)
+                self.downloads[iter][0] = sock
+                sig_id = gobject.io_add_watch(
+                    sock, gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP,
+                    self.__got_data, self.downloads[iter][1], iter)
+                self.downloads[iter][2] = sig_id
+                started += 1
+            iter = self.downloads.iter_next(iter)
+
     def __stop_download(self, iters):
         for iter in iters:
-            gobject.source_remove(self.downloads[iter][2])
-            self.downloads[iter][0].close()
+            if self.downloads[iter][2] != 0:
+                gobject.source_remove(self.downloads[iter][2])
+            if self.downloads[iter][0]:
+                self.downloads[iter][0].close()
             self.downloads[iter][1].close()
             os.unlink(self.downloads[iter][1].name)
             self.downloads.remove(iter)
+            self.__start_next()
 
     def present(self):
         super(DownloadWindow, self).present()
@@ -112,20 +131,15 @@ class DownloadWindow(qltk.UniqueWindow):
 
     def _download(self, source, target):
         fileobj = file(target, "wb")
-        url = urllib.urlopen(source)
-        sock = url.fp._sock
-        sock.setblocking(0)
-        iter = self.downloads.append(row=[sock, fileobj, 0])
-        sig_id = gobject.io_add_watch(
-            sock, gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP,
-            self.__got_data, fileobj, iter)
-        self.downloads[iter][2] = sig_id
+        self.downloads.append(row=[None, fileobj, 0, source])
+        self.__start_next()
 
     def __got_data(self, src, condition, fileobj, iter):
         if condition in [gobject.IO_ERR, gobject.IO_HUP]:
             fileobj.close()
             src.close()
             self.downloads.remove(iter)
+            self.__start_next()
             return False
         else:
             buf = src.recv(1024*1024)
@@ -134,4 +148,5 @@ class DownloadWindow(qltk.UniqueWindow):
                 fileobj.close()
                 src.close()
                 self.downloads.remove(iter)
+                self.__start_next()
             return bool(buf)
