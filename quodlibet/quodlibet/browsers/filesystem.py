@@ -64,7 +64,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         if "/" not in folders:
             folders.append("/")
 
-        dt = DirectoryTree(initial=const.HOME, folders=folders)
+        dt = DirectoryTree(folders=folders)
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
         dt.drag_source_set(gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
