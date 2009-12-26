@@ -68,7 +68,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         else:
             folders.append(None)
             for line in f.readlines():
-                folders.append(urlparse.urlsplit(line.rstrip())[2])
+                folder_url = line.split()[0]
+                folders.append(urlparse.urlsplit(folder_url)[2])
 
         def is_folder(filename):
             return filename is None or os.path.isdir(filename)
