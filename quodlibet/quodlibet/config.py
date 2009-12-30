@@ -63,6 +63,7 @@ def init(*rc_files):
           "exfalso_size": "700 500", # ex falso window size
           "browser_size": "500 300", # library browser window size
           "song": "", # filename of last song
+          "seek": "0", # last song position, in milliseconds
           "volume": "1.0", # internal volume, [0.0, 1.0]
           "browser": "SearchBar", # browser name
           "songlist": "true", # on or off

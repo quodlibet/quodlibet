@@ -258,7 +258,9 @@ class QuodLibetWindow(gtk.Window):
 
         def delayed_song_set():
             song = library.get(config.get("memory", "song"))
-            player.setup(self.playlist, song)
+            seek_pos = config.getint("memory", "seek")
+            config.set("memory", "seek", 0)
+            player.setup(self.playlist, song, seek_pos)
         gobject.idle_add(delayed_song_set)
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))

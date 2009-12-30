@@ -64,10 +64,12 @@ class BasePlayer(gtk.Object):
         self.props.volume = min(1.0, max(0.0, v))
     volume = property(lambda s: s._volume, _set_volume)
 
-    def setup(self, source, song):
+    def setup(self, source, song, seek_pos):
         """Connect to a PlaylistModel, and load a song."""
         self._source = source
         self.go_to(song)
+        if seek_pos:
+            self.seek(seek_pos)
 
     def remove(self, song):
         if self.song is song:

@@ -24,6 +24,7 @@ class SongTracker(object):
         player.connect_object('song-started', self.__start, librarian)
         player.connect('error', self.__error, librarian)
         self.__errors_in_a_row = 0
+        gtk.quit_add(1, self.__quit, librarian, player)
 
     def __error(self, player, song, error, lock, librarian):
         newstr = u"%s: %s\n\n" % (
@@ -67,3 +68,8 @@ class SongTracker(object):
         if not ended and song and "~errors" in song:
             del(song["~errors"])
             self.__errors_in_a_row = 0
+
+    def __quit(self, librarian, player):
+        config.set("memory", "seek", player.get_position())
+        player.emit('song-ended', player.song, True)
+        return 0

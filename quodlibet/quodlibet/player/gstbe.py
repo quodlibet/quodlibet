@@ -224,6 +224,8 @@ class GStreamerPlayer(BasePlayer):
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
         if self.song is not None:
+            # ensure any pending state changes have completed
+            self.bin.get_state()
             pos = max(0, int(pos))
             if pos >= self._length:
                 self.paused = True

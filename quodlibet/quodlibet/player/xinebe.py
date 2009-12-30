@@ -205,6 +205,12 @@ class XinePlaylistPlayer(BasePlayer):
             self.paused = True
             xine_stop(self._stream)
 
+    def setup(self, playlist, song, seek_pos):
+        super(XinePlaylistPlayer, self).setup(playlist, song, seek_pos)
+        # xine's declining to seek so soon after startup; try again in 100ms
+        if seek_pos:
+            gobject.timeout_add(100, self.seek, seek_pos)
+
 _xine = None
 _plugins = None
 
