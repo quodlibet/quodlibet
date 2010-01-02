@@ -260,6 +260,7 @@ class GStreamerPlayer(BasePlayer):
                 self.__destroy_pipeline()
                 if self.__init_pipeline():
                     self.bin.set_property('uri', self.song("~uri"))
+                    self.volume = self.volume
                 else: self.paused = True
             if self.bin:
                 if self._paused:
