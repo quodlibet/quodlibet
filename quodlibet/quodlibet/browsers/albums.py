@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Iñigo Serna,
+#                     Christoph Reiter, Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,23 +19,24 @@ from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.browsers._base import Browser
+from quodlibet.browsers.search import BoxSearchBar
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT
 from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.completion import EntryWordCompletion
-from quodlibet.qltk.entry import ValidatingEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import copool
 from quodlibet.util import thumbnails
 
-ELPOEP = list(PEOPLE); ELPOEP.reverse()
+ELPOEP = list(reversed(PEOPLE))
 PEOPLE_SCORE = [100**w for w in xrange(len(PEOPLE))]
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><title|\<i\><title>\</i\>|%s>\</b\><date| (<date>)>
 \<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>
 <people>""" % EMPTY
+ALBUM_QUERIES = os.path.join(const.USERDIR, "lists", "album_queries")
 
 class AlbumTagCompletion(EntryWordCompletion):
     def __init__(self):
@@ -328,11 +330,13 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 for w, key in enumerate(ELPOEP):
                     persons = song.list(key)
                     for person in persons:
-                        people[person] = people.get(person, 0) - PEOPLE_SCORE[w]
+                        people[person] = (people.get(person, 0) -
+                                          PEOPLE_SCORE[w])
                     if key in TAG_TO_SORT:
                         persons = song.list(TAG_TO_SORT[key]) or persons
                     for person in persons:
-                        peoplesort[person] = peoplesort.get(person, 0) - PEOPLE_SCORE[w]
+                        peoplesort[person] = (peoplesort.get(person, 0) -
+                                              PEOPLE_SCORE[w])
 
                 self.discs = max(self.discs, song("~#disc", 0))
                 self.length += song.get("~#length", 0)
@@ -355,44 +359,21 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 return True
             else: return False
 
-    # An auto-searching entry; it wraps is a TreeModelFilter whose parent
-    # is the album list.
-    class FilterEntry(ValidatingEntry):
-        def __init__(self, model):
-            ValidatingEntry.__init__(self, Query.is_valid_color)
-            self.connect_object('changed', self.__filter_changed, model)
-            self.set_completion(AlbumTagCompletion())
-            self.__refill_id = None
-            self.__filter = None
-            self.inhibit = False
-            model.set_visible_func(self.__parse)
+    class FilterBar(BoxSearchBar):
+        """The search filter entry HBox, modifiedto toggle between the search
+        bar and album list on mnemonic activation."""
+        def __init__(self, albumlist, *args, **kwargs):
+            super(AlbumList.FilterBar, self).__init__(*args, **kwargs)
+            self.albumlist = albumlist
 
-        def __parse(self, model, iter):
-            if self.__filter is None: return True
-            elif model[iter][0] is None: return True
-            else: return self.__filter(model[iter][0])
+        def _mnemonic_activate(self, label, group_cycling):
+            widget = label.get_mnemonic_widget()
+            if widget.is_focus():
+                self.albumlist._get_view().grab_focus()
+                return True
 
-        def __filter_changed(self, model):
-            if self.__refill_id is not None:
-                gobject.source_remove(self.__refill_id)
-                self.__refill_id = None
-            text = self.get_text().decode('utf-8')
-            if Query.is_parsable(text):
-                if not text: self.__filter = None
-                else:
-                    self.__filter = Query(
-                        text, star=["people", "album"]).search
-                self.__refill_id = gobject.timeout_add(
-                    500, self.__refilter, model)
-
-        def __refilter(self, model):
-            self.inhibit = True
-            model.refilter()
-            self.inhibit = False
-
-    # Sorting, either by people or album title. It wraps a TreeModelSort
-    # whose parent is the album list.
     class SortCombo(gtk.ComboBox):
+        """ComboBox which sets the sort function on a TreeModelSort."""
         def __init__(self, model):
             # Contains string to display, function to do sorting
             cbmodel = gtk.ListStore(str)
@@ -404,9 +385,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             model.set_sort_func(101, self.__compare_artist)
             model.set_sort_func(102, self.__compare_date)
 
-            for text in [
-                _("Sort by title"), _("Sort by artist"), _("Sort by date")
-                ]: cbmodel.append(row=[text])
+            for text in [_("Title"), _("Artist"), _("Date")]:
+                cbmodel.append(row=[text])
 
             self.connect_object('changed', self.__set_cmp_func, model)
             try: active = config.getint('browsers', 'album_sort')
@@ -479,6 +459,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         model_sort = gtk.TreeModelSort(self.__model)
         model_filter = model_sort.filter_new()
 
+        self.__filter = None
+        model_filter.set_visible_func(self.__parse_query)
+
         self.__pending_covers = []
         self.__scan_timeout = None
         view.connect_object('expose-event', self.__update_visibility, view)
@@ -523,14 +506,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view.set_model(model_filter)
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
-        e = self.FilterEntry(model_filter)
-        hb2 = gtk.HBox()
-        hb2.pack_start(e)
-        e.pack_clear_button(hb2)
 
         if player: view.connect('row-activated', self.__play_selection, player)
         self.__sig = view.get_selection().connect('changed',
-            self.__selection_changed, e)
+            self.__selection_changed)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
@@ -539,17 +518,30 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view.connect("drag-data-get", self.__drag_data_get)
         view.connect_object('popup-menu', self.__popup, view, library)
 
-        hb = gtk.HBox(spacing=6)
-        hb.pack_start(self.SortCombo(model_sort), expand=False)
-        hb.pack_start(hb2)
+        search = AlbumList.FilterBar(
+                self, library, button=False, completion=AlbumTagCompletion())
+        search.callback = self.__update_filter
         prefs = gtk.Button()
-        prefs.add(
-            gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
+        prefs.add(gtk.image_new_from_stock(
+            gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
         prefs.connect('clicked', Preferences)
-        hb.pack_start(prefs, expand=False)
-        self.pack_start(hb, expand=False)
+        search.pack_start(prefs, expand=False)
+        self.pack_start(search, expand=False)
         self.pack_start(sw, expand=True)
+
+        hb = gtk.HBox(spacing=6)
+        l = gtk.Label(_("Sort _by:"))
+        l.set_use_underline(True)
+        sc = self.SortCombo(model_sort)
+        l.set_mnemonic_widget(sc)
+        hb.pack_start(l, expand=False)
+        hb.pack_start(sc)
+        self.pack_start(hb, expand=False)
+
         self.show_all()
+
+    def _get_view(self):
+        return self.get_children()[1].child
 
     def __update_visible_covers(self, view):
         vrange = view.get_visible_range()
@@ -611,6 +603,23 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         self.__scan_timeout = gobject.timeout_add(
             50, self.__update_visible_covers, view)
+
+    def __update_filter(self, text):
+        view = self._get_view()
+        model = view.get_model()
+        if Query.is_parsable(text):
+            if not text:
+                self.__filter = None
+            else:
+                self.__filter = Query(text, star=["people", "album"]).search
+        self.__inhibit()
+        model.refilter()
+        self.__uninhibit()
+
+    def __parse_query(self, model, iter):
+        if self.__filter is None: return True
+        elif model[iter][0] is None: return True
+        else: return self.__filter(model[iter][0])
 
     def __search_func(self, model, column, key, iter):
         if config.getboolean("browsers", "album_substrings"):
@@ -697,7 +706,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def filter(self, key, values):
         assert(key == "album")
         if not values: values = [""]
-        view = self.get_children()[1].child
+        view = self._get_view()
         selection = view.get_selection()
         selection.unselect_all()
         model = view.get_model()
@@ -712,13 +721,13 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             view.scroll_to_cell(first, use_align=True, row_align=0.5)
 
     def unfilter(self):
-        view = self.get_children()[1].child
+        view = self._get_view()
         selection = view.get_selection()
         selection.unselect_all()
         selection.select_path((0,))
 
     def activate(self):
-        view = self.get_children()[1].child
+        view = self._get_view()
         view.get_selection().emit('changed')
 
     def can_filter(self, key):
@@ -726,21 +735,21 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
     def list(self, key):
         assert (key == "album")
-        view = self.get_children()[1].child
+        view = self._get_view()
         model = view.get_model()
         return [row[0].title for row in model if row[0]]
 
     def __inhibit(self):
-        view = self.get_children()[1].child
+        view = self._get_view()
         view.get_selection().handler_block(self.__sig)
 
     def __uninhibit(self):
-        view = self.get_children()[1].child
+        view = self._get_view()
         view.get_selection().handler_unblock(self.__sig)
 
     def restore(self):
         albums = config.get("browsers", "albums").split("\n")
-        view = self.get_children()[1].child
+        view = self._get_view()
         selection = view.get_selection()
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
@@ -761,9 +770,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.__uninhibit()
 
     def scroll(self, song):
-        view = self.get_children()[1].child
+        view = self._get_view()
         model = view.get_model()
-        values = song.list("album")
         album_key = song.album_key
         for row in model:
             if row[0] is not None and row[0].key == album_key:
@@ -773,21 +781,22 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 sel.select_path(row.path[0])
                 break
 
-    def __selection_changed(self, selection, sort):
-        if sort.inhibit: return
+    def __selection_changed(self, selection):
         # Without this delay, GTK+ seems to sometimes call this function
         # before model elements are totally filled in, leading to errors
         # like "TypeError: unknown type (null)".
-        gobject.idle_add(self.__update_songs, selection.get_tree_view(), sort)
+        gobject.idle_add(self.__update_songs, selection.get_tree_view())
 
-    def __update_songs(self, view, sort):
+    def __update_songs(self, view):
         selection = view.get_selection()
         songs = self.__get_selected_songs(selection, False)
         albums = self.__get_selected_albums(selection)
-        if not songs: return
+        if not songs:
+            return
         self.emit('songs-selected', songs, None)
         if self.__save:
-            if albums is None: config.set("browsers", "albums", "")
+            if albums is None:
+                config.set("browsers", "albums", "")
             else:
                 confval = "\n".join([a.title for a in albums])
                 # Since ConfigParser strips a trailing \n...

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Iñigo Serna,
+#                     Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -126,11 +127,6 @@ class PreferencesWindow(qltk.UniqueWindow):
             super(PreferencesWindow.Browsers, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Browsers")
-            c = ConfigCheckButton(
-                _("Color _search terms"), 'browsers', 'color')
-            c.set_active(config.getboolean("browsers", "color"))
-            c.set_tooltip_text(_("Display simple searches in blue, "
-                     "advanced ones in green, and invalid ones in red"))
             hb = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Global filter:"))
             l.set_use_underline(True)
@@ -142,7 +138,20 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(e)
             self.pack_start(hb, expand=False)
 
-            f = qltk.Frame(_("Search Library"), child=c)
+            vb = gtk.VBox(spacing=6)
+            c = ConfigCheckButton(
+                _("Search after _typing"), 'settings', 'eager_search')
+            c.set_active(config.getboolean('settings', 'eager_search'))
+            c.set_tooltip_text(_("Show search results after the user "
+                "stops typing."))
+            vb.pack_start(c)
+            c = ConfigCheckButton(
+                _("Color _search terms"), 'browsers', 'color')
+            c.set_active(config.getboolean("browsers", "color"))
+            c.set_tooltip_text(_("Display simple searches in blue, "
+                     "advanced ones in green, and invalid ones in red"))
+            vb.pack_start(c)
+            f = qltk.Frame(_("Search Library"), child=vb)
             self.pack_start(f, expand=False)
 
             c1 = ConfigCheckButton(

@@ -1,4 +1,4 @@
-# Copyright 2005 Joe Wreschnig, Michael Urman
+# Copyright 2005-2010 Joe Wreschnig, Michael Urman, Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -199,7 +199,13 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
                 Kind = ICONS[model[iter][2]]
                 Kind(self)
                 self.set_active(-1)
+            else:
+                self.__focus_entry()
         model[self.__special_iter][0] = self.child.get_text()
+
+    def __focus_entry(self):
+        self.child.grab_focus()
+        self.child.emit('move-cursor', gtk.MOVEMENT_BUFFER_ENDS, 0, False)
 
     def __fill(self, filename, initial):
         model = self.get_model()

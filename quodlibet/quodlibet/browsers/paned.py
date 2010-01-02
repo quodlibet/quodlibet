@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
+#                     Christoph Reiter, Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,7 +14,7 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers.search import SearchBar
 from quodlibet.formats import PEOPLE
 from quodlibet.parse import Query, Pattern
 from quodlibet.qltk.entry import ValidatingEntry
@@ -146,8 +147,7 @@ class Preferences(qltk.UniqueWindow):
                 model.append(row=[h])
         align.set_sensitive(button.get_label() == _("_Custom"))
 
-class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
-    __gsignals__ = Browser.__gsignals__
+class PanedBrowser(SearchBar, util.InstanceTracker):
     expand = qltk.RVPaned
 
     name = _("Paned Browser")
@@ -371,60 +371,33 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
                     s.update(model[row][1])
             return s
 
-    @classmethod
-    def init(klass, library):
-        klass.__library = library
-
     def __init__(self, library, player):
-        super(PanedBrowser, self).__init__(spacing=6)
-        eager_search = config.get("settings", "eager_search")
+        super(PanedBrowser, self).__init__(library, player, limit=False)
 
         self._register_instance()
         self.__save = player
-        hb = gtk.HBox(spacing=6)
-
-        hb2 = gtk.HBox(spacing=0)
-        label = gtk.Label(_("_Search:"))
-        label.connect('mnemonic-activate', self.__mnemonic_activate)
-        #somehow, entry gets lost during "changed" otherwise...
-        self.pygtkbug = search = ValidatingEntry(Query.is_valid_color)
-        label.set_mnemonic_widget(search)
-        label.set_use_underline(True)
-        hb2.pack_start(search)
-        search.pack_clear_button(hb2)
-        hb.pack_start(label, expand=False)
-        hb.pack_start(hb2)
 
         self.accelerators = gtk.AccelGroup()
         keyval, mod = gtk.accelerator_parse("<control>Home")
         self.accelerators.connect_group(keyval, mod, 0, self.__all)
         select = gtk.Button(_("Select _All"))
-        hb.pack_start(select, expand=False)
+        self._search_bar.pack_start(select, expand=False)
 
         prefs = gtk.Button()
-        prefs.add(
-            gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
+        prefs.add(gtk.image_new_from_stock(
+            gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
         prefs.connect('clicked', Preferences)
         select.connect('clicked', self.__all)
-        hb.pack_start(prefs, expand=False)
-        self.pack_start(hb, expand=False)
-        self.__refill_id = None
-        self.__filter = None
-        if eager_search:
-            search.connect('changed', self.__filter_changed)
-        else:
-            search.connect('activate', self.__filter_changed)
+        self._search_bar.pack_start(prefs, expand=False)
+
         for s in [library.connect('changed', self.__changed),
                   library.connect('added', self.__added),
                   library.connect('removed', self.__removed)
                   ]:
             self.connect_object('destroy', library.disconnect, s)
-        self.connect_object('destroy', type(self).__destroy, self)
+
         self.refresh_panes()
         self.show_all()
-
-    def __destroy(self):
-        self.__save = None
 
     def __all(self, *args):
         self.__panes[-1].inhibit()
@@ -441,26 +414,14 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
             qltk.get_top_parent(widget).songlist.grab_focus()
             return True
 
-    def __filter_changed(self, entry):
-        if self.__refill_id is not None:
-            gobject.source_remove(self.__refill_id)
-            self.__refill_id = None
-        text = entry.get_text().decode('utf-8')
-        if Query.is_parsable(text):
-            star = dict.fromkeys(SongList.star)
-            star.update(self.__star)
-            if text: self.__filter = Query(text, star.keys()).search
-            else: self.__filter = None
-            self.__refill_id = gobject.timeout_add(500, self.activate)
-
     def __added(self, library, songs):
-        songs = filter(self.__filter, songs)
+        songs = filter(self._filter, songs)
         for pane in self.__panes:
             pane._add(songs)
             songs = filter(pane._matches, songs)
 
     def __removed(self, library, songs, remove_if_empty=True):
-        songs = filter(self.__filter, songs)
+        songs = filter(self._filter, songs)
         for pane in self.__panes:
             pane._remove(songs, remove_if_empty)
 
@@ -469,8 +430,16 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         self.__added(library, songs)
         self.__removed(library, [])
 
+    def _text_parse(self, text):
+        if Query.is_parsable(text):
+            self._text = text.decode('utf-8')
+            star = dict.fromkeys(SongList.star)
+            star.update(self.__star)
+            self._filter = Query(self._text, star.keys()).search
+            self.activate()
+
     def activate(self):
-        songs = filter(self.__filter, self.__library)
+        songs = filter(self._filter, self._library)
         self.__panes[0].fill(songs)
 
     def scroll(self, song):
@@ -491,7 +460,7 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         panes.reverse()
         for pane in panes:
             self.__panes.insert(
-                0, self.Pane(pane, self.__panes[0], self.__library))
+                0, self.Pane(pane, self.__panes[0], self._library))
         self.__panes.pop() # remove self
 
         for pane in self.__panes:
@@ -545,16 +514,19 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         else: return []
 
     def save(self):
+        super(PanedBrowser, self).save()
         selected = []
         for pane in self.__panes:
             selected.append("\t".join(pane.get_selected()))
         config.set("browsers", "pane_selection", "\n".join(selected))
 
     def restore(self):
+        super(PanedBrowser, self).restore()
         selected = config.get("browsers", "pane_selection").split("\n")
         PanedBrowser.Pane.set_restore([sel.split("\t") for sel in selected])
 
     def finalize(self, restored):
+        super(PanedBrowser, self).finalize(restored)
         if not restored:
             self.fill_panes()
 
