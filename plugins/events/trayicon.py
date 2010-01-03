@@ -209,6 +209,7 @@ class TrayIcon(EventPlugin):
     __w_sig_map = None
     __w_sig_del = None
     __stop_after = None
+    __first_map = True
     __pattern = Pattern(
         "<album|<album~discnumber~part~tracknumber~title~version>|"
         "<artist~title~version>>")
@@ -342,10 +343,14 @@ class TrayIcon(EventPlugin):
         except config.error:
             return
 
-        if not visible:
+        config.set("plugins", "icon_window_visible", "true")
+
+        #only restore window state on start
+        if not visible and self.__first_map:
             self.__hide_window()
 
     def __hide_window(self):
+        self.__first_map = False
         self.__position = window.get_position()
         window.hide()
         config.set("plugins", "icon_window_visible", "false")
@@ -354,9 +359,8 @@ class TrayIcon(EventPlugin):
         if self.__position:
             window.move(*self.__position)
 
+        window.show()
         window.present()
-        window.deiconify()
-        config.set("plugins", "icon_window_visible", "true")
 
     def __button_left(self, icon):
         if window.get_property('visible'):

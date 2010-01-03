@@ -108,7 +108,9 @@ class FIFOControl(object):
             player.reset()
         else: player.paused ^= True
 
-    def _focus(self, library, window, player): window.present()
+    def _focus(self, library, window, player):
+        window.show()
+        window.present()
 
     def _volume(self, value, library, window, player):
         if value[0] in ('+', '-'):
