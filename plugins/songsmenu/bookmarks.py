@@ -3,8 +3,6 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-#
-# $Id$
 
 # An example of a bookmark manager. Making the window look nicer,
 # being able to edit bookmarks from it directly, or coping with errors

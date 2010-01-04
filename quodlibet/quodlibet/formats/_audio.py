@@ -3,8 +3,6 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-#
-# $Id$
 
 # Much of this code is highly optimized, because many of the functions
 # are called in tight loops. Don't change things just to make them

@@ -3,8 +3,6 @@
 #
 # This code can be redistributed under CNRI's Python 1.6 license.  For
 # any other use, please contact Secret Labs AB (info@pythonware.com).
-#
-# $Id$
 
 # Based on re.Scanner, copied because that one likes moving around.
 

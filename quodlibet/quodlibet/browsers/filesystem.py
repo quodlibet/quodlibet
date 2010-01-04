@@ -4,8 +4,6 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-#
-# $Id$
 
 # Some sort of crazy directory-based browser. QL is full of minor hacks
 # to support this by automatically adding songs to the library when it
