@@ -35,9 +35,11 @@ class StorageDevice(Device):
     __library = None
     __pattern = None
 
-    def __init__(self, udi):
-        super(StorageDevice, self).__init__(udi)
-        self.__library_path = os.path.join(CACHE, os.path.basename(udi))
+    def __init__(self, backend_id, device_id):
+        super(StorageDevice, self).__init__(backend_id, device_id)
+        filename = util.escape_filename(device_id)
+        self.__library_path = os.path.join(CACHE, filename)
+        self.__library_name = device_id
 
     def __set_pattern(self, widget=None):
         self.__pattern = FileFromPattern(
@@ -147,7 +149,7 @@ class StorageDevice(Device):
 
     def __load_library(self):
         if self.__library is None:
-            self.__library = SongFileLibrary(self.udi)
+            self.__library = SongFileLibrary(self.__library_name)
             if os.path.isfile(self.__library_path):
                 self.__library.load(self.__library_path)
 

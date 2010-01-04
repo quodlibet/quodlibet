@@ -11,6 +11,7 @@ import re
 import sys
 import traceback
 import urlparse
+import urllib
 
 # title function was moved to a separate module
 from quodlibet.util.titlecase import title
@@ -198,6 +199,18 @@ def escape(str):
 def unescape(str):
     """Unescape a string in a manner suitable for XML/Pango."""
     return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+
+def escape_filename(s):
+    """Escape a string in a manner suitable for a filename."""
+    if os.name == "nt":
+        return urllib.unquote(s.encode("utf-8")).decode("utf-8")
+    return urllib.quote(s, safe="")
+
+def unescape_filename(s):
+    """Unescape a string in a manner suitable for a filename."""
+    if os.name == "nt":
+        return urllib.quote(s.encode("utf-8"), safe="")
+    return urllib.unquote(s)
 
 def parse_time(timestr, err=(ValueError, re.error)):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
@@ -519,3 +532,10 @@ class DeferredSignal(object):
         self.func(*args)
         self.dirty = False
 
+def xdg_get_system_data_dirs():
+    """http://standards.freedesktop.org/basedir-spec/latest/"""
+    data_dirs = os.getenv("XDG_DATA_DIRS")
+    if data_dirs:
+        return data_dirs.split(":")
+    else:
+        return ("/usr/local/share/", "/usr/share/")

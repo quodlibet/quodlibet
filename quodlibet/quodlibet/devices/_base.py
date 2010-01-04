@@ -7,7 +7,7 @@
 #
 # $Id$
 
-import os, subprocess
+import os
 
 import quodlibet.devices
 
@@ -24,16 +24,17 @@ class Device(dict):
     # The UDI of this device
     udi = None
 
+    #Backend device id
+    bid = None
+
     # Set this to a hash with default values for user-configurable
     # properties.
     defaults = None
 
-    def __init__(self, udi):
-        device = quodlibet.devices.get_interface(udi)
-
-        self.udi = udi
-        self.dev = device.GetProperty('block.device')
-        self.mountpoint = ''
+    def __init__(self, backend_id, device_id):
+        device_manager = quodlibet.devices.device_manager
+        self.udi = udi = device_id
+        self.bid = bid = backend_id
 
         # Load default properties.
         if self.defaults: self.update(self.defaults)
@@ -57,13 +58,7 @@ class Device(dict):
 
         # Set a sensible name if none is set.
         if not self.has_key('name'):
-            # These can raise a D-Bus exception, except I'd rather
-            # not have this module depend directly on D-Bus...
-            try: vendor = device.GetProperty('info.vendor') + " "
-            except Exception: vendor = ""
-            try: name = device.GetProperty('info.product')
-            except Exception: name = _("Unknown Device")
-            dict.__setitem__(self, 'name', vendor + name)
+            self['name'] = device_manager.get_name(bid) or _("Unknown Device")
 
     # Store all changed properties in the ConfigParser.
     def __setitem__(self, key, value):
@@ -74,27 +69,13 @@ class Device(dict):
 
     # Should return True if the device is connected.
     def is_connected(self):
-        if not self.mountpoint:
-            for vol_udi in quodlibet.devices._hal.FindDeviceStringMatch(
-                'info.parent', self.udi):
-                volume = quodlibet.devices.get_interface(vol_udi)
-                if volume.GetProperty('volume.is_mounted'):
-                    self.mountpoint = str(volume.GetProperty(
-                        'volume.mount_point'))
-                    break
         return os.path.ismount(self.mountpoint)
 
     # Eject the device, should return True on success. If the eject
     # failed, it should return False or a string describing the error.
     # If the device is not ejectable, set it to None.
     def eject(self):
-        if util.iscommand("eject"):
-            pipe = subprocess.Popen(['eject', self.dev],
-                    stderr=subprocess.PIPE, close_fds=True)
-            if pipe.wait() == 0: return True
-            else: return pipe.stderr.read()
-        else:
-            return _("No eject command found.")
+        return quodlibet.devices.device_manager.eject(self.bid)
 
     # Returns a tuple with the size of this device and the free space.
     def get_space(self):
@@ -102,6 +83,14 @@ class Device(dict):
         space = info.f_bsize * info.f_blocks
         free = info.f_bsize * info.f_bavail
         return (space, free)
+
+    def get_mountpoint(self):
+        return quodlibet.devices.device_manager.get_mountpoint(self.bid)
+    mountpoint = property(get_mountpoint)
+
+    def get_block_device(self):
+        return quodlibet.devices.device_manager.get_block_device(self.bid)
+    dev = property(get_block_device)
 
     # Returns a list of AudioFile instances representing the songs
     # on this device. The WaitLoadBar can be used to display messages.

@@ -90,13 +90,8 @@ def __ParsePlaylist(name, plfilename, files, library):
     return playlist
 
 class Playlist(list):
-    quote = staticmethod(lambda text: urllib.quote(text, safe=""))
-    unquote = staticmethod(urllib.unquote)
-    if os.name == "nt":
-        def quote(t): return urllib.quote(t.encode("utf-8"), safe="")
-        quote = staticmethod(quote)
-        def unquote(t): return urllib.unquote(t.encode("utf-8")).decode("utf-8")
-        unquote = staticmethod(unquote)
+    quote = staticmethod(util.escape_filename)
+    unquote = staticmethod(util.unescape_filename)
 
     def new(klass, base=_("New Playlist"), library={}):
         p = Playlist("", library=library)

@@ -141,33 +141,24 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     @classmethod
     def init(klass, library):
-        devices._hal.connect_to_signal(
-            'DeviceAdded', klass.__hal_device_added)
-        devices._hal.connect_to_signal(
-            'DeviceRemoved', klass.__hal_device_removed)
-        for udi in devices.discover():
-            klass.__hal_device_added(udi)
+        devices.device_manager.connect('added', klass.__device_added)
+        devices.device_manager.connect('removed', klass.__device_removed)
+        devices.device_manager.discover()
 
     @classmethod
     def devices(klass):
         return [row[0] for row in klass.__devices]
 
     @classmethod
-    def __hal_device_added(klass, udi):
-        device = devices.get_by_udi(udi)
-        if device != None:
-            klass.__add_device(device)
+    def __device_added(klass, manager, device):
+        klass.__devices.append(row=[device, device.icon])
 
     @classmethod
-    def __hal_device_removed(klass, udi):
+    def __device_removed(klass, manager, bid):
         for row in klass.__devices:
-            if row[0].udi == udi:
+            if row[0].bid == bid:
                 klass.__devices.remove(row.iter)
                 break
-
-    @classmethod
-    def __add_device(klass, device):
-        klass.__devices.append(row=[device, device.icon])
 
     def __init__(self, library, player):
         super(MediaDevices, self).__init__(spacing=6)
@@ -304,7 +295,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         else: return
 
         # Force a full refresh
-        try: del self.__cache[device.udi]
+        try: del self.__cache[device.bid]
         except KeyError: pass
 
         selection = self.__view.get_selection()
@@ -428,11 +419,11 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             self.__progress.show()
 
     def __list_songs(self, device, rescan=False):
-        if rescan or not device.udi in self.__cache:
+        if rescan or not device.bid in self.__cache:
             self.__busy = True
-            self.__cache[device.udi] = device.list(self.__statusbar)
+            self.__cache[device.bid] = device.list(self.__statusbar)
             self.__busy = False
-        return self.__cache[device.udi]
+        return self.__cache[device.bid]
 
     def __check_device(self, device, message):
         if not device.is_connected():
@@ -480,7 +471,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             status = device.copy(songlist, song)
             if isinstance(status, AudioFile):
                 model.append([status])
-                try: self.__cache[device.udi].append(song)
+                try: self.__cache[device.bid].append(song)
                 except KeyError: pass
                 self.__refresh_space(device)
             else:
@@ -527,7 +518,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             status = device.delete(songlist, song)
             if status == True:
                 model.remove(model.find(song))
-                try: self.__cache[device.udi].remove(song)
+                try: self.__cache[device.bid].remove(song)
                 except (KeyError, ValueError): pass
                 self.__refresh_space(device)
             else:
@@ -560,5 +551,4 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 if devices.init():
     browsers = [MediaDevices]
 else:
-    print_w("Couldn't connect to HAL, disabling Media Devices browser.")
     browsers = []
