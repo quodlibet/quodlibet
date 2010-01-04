@@ -409,10 +409,10 @@ def init():
 
     #DKD maintainers will change the naming of dbus, app stuff
     #in january 2010 or so (already changed in trunk), so try both
-    """if device_manager is None:
+    if device_manager is None:
         print_d(try_text % "DeviceKit Disks")
-        try:device_manager = DKD(("DeviceKit", "Disks"))
-        except (LookupError, dbus.DBusException): pass"""
+        try: device_manager = DKD(("DeviceKit", "Disks"))
+        except (LookupError, dbus.DBusException): pass
 
     if device_manager is None:
         print_d(try_text % "UDisks")
