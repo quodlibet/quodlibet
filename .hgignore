@@ -2,3 +2,6 @@ syntax: glob
 *.pyc
 *.pyo
 *.so
+*.swp
+*.rej
+*.orig

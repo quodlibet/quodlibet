@@ -1,5 +1,38 @@
-Quod Libet requires Python 2.4, PyGTK 2.10, and Mutagen 1.11,
-but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.14 or later.
+Quod Libet requires Python 2.4, PyGTK 2.12, and Mutagen 1.11,
+but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.18 or later.
+
+2.1.98 (2009-01-04) - How are you going to convince people to use it?
+ * Christoph Reiter is now a maintainer.
+ * The GStreamer backend is now gapless [49].
+ * Win32 is once again supported [248].
+ * ID3 tags are removed from FLAC files upon saving [124].
+ * File extensions are converted to lowercase upon renaming [66].
+ * Thumbnails are now generated for artwork [140].
+ * Inline searches in the album list can now match people [239].
+ * Embedded album art is now supported in FLAC files [255].
+ * Bitrates are now reported in kbps. Library reload required [79].
+ * Additional ReplayGain settings (Nick Boultbee) [132].
+ * Tag splitting setting is now order-sensitive [74].
+ * Paned browser now supports patterns for panes [45].
+ * Numeric columns have been given a few tweaks (Johan Hovold) [81].
+ * New ratings column options (Johan Hovold, Bastien Gorissen) [82, 83].
+ * Renaming when symlinks present no longer raises error (Philipp Weis) [353].
+ * Xine backend uses software volume control (Markus Koller) [370].
+ * Song positions are now saved and restored when quitting [218].
+ * DeviceKit-Disks (UDisks) supported for device discovery [252].
+ * Plugin changes:
+   * New playlist export plugin [30].
+   * New queue only playorder plugin [43].
+   * New Python console plugin. [229]
+   * Updated trayicon plugin [158].
+   * Updated album art plugin (Eduardo Gonzalez) [139].
+   * Updated qlscrobbler plugin (Nicholas J. Michalek) [376].
+   * Updated lastfmsubmit plugin [292].
+ * Translations:
+   * Russian (Anton Shestakov) [274].
+   * Turkish (Türerkan İnce).
+   * German (Rüdiger Arp).
+ * Many bug fixes and performance improvements.
 
 2.1 - My God, Utahraptor, that's THE PERFECT SOLUTION.
  * Bug fixes:

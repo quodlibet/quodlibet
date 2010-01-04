@@ -4,7 +4,7 @@
 import os
 import locale
 
-VERSION_TUPLE = (2, 1)
+VERSION_TUPLE = (2, 1, 98)
 VERSION = ".".join(map(str, VERSION_TUPLE))
 
 HOME    = os.path.expanduser("~")
@@ -56,6 +56,13 @@ Jan Arne Petersen
 Josh Lee
 Steven Robertson
 Christoph Reiter
+Anton Shestakov
+Nicholas J. Michalek
+David Schneider
+Türerkan İnce
+Philipp Weis
+Johan Hovold
+Bastien Gorissen
 """.strip().split("\n"))
 
 ARTISTS = sorted("""\
