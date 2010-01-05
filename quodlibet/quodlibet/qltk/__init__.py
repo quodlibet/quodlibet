@@ -10,7 +10,11 @@ def get_top_parent(widget):
     """Return the ultimate parent of a widget; the assumption that code
     using this makes is that it will be a gtk.Window, i.e. the widget
     is fully packed when this is called."""
-    return widget and widget.get_ancestor(gtk.Window)
+    parent = widget and widget.get_toplevel()
+    if parent and (parent.flags() & gtk.TOPLEVEL):
+        return parent
+    else:
+        return None
 
 def popup_menu_under_widget(menu, widget, button, time):
     def pos_func(menu, widget=widget):

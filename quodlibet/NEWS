@@ -1,7 +1,7 @@
 Quod Libet requires Python 2.4, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.18 or later.
 
-2.1.98 (2009-01-04) - How are you going to convince people to use it?
+2.1.98 (2010-01-04) - How are you going to convince people to use it?
  * Christoph Reiter is now a maintainer.
  * The GStreamer backend is now gapless [49].
  * Win32 is once again supported [248].
