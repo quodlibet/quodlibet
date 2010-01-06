@@ -41,6 +41,7 @@ def _gtk_init(icon=None):
 
     gobject.set_application_name(_("Quod Libet").encode('utf-8'))
     os.environ["PULSE_PROP_media.role"] = "music"
+    os.environ["PULSE_PROP_application.icon_name"] = quodlibet.stock.QL_ICON
 
     if icon:
         icon = os.path.join(quodlibet.const.IMAGEDIR, icon)
