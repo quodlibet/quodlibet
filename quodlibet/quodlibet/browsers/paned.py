@@ -39,15 +39,16 @@ class Preferences(qltk.UniqueWindow):
         gpa.headers = ["genre", "~people", "album"]
         pa = gtk.RadioButton(gpa, "_" + tag("~~people~album"))
         pa.headers = ["~people", "album"]
+        headers = self.get_headers()
         custom = gtk.RadioButton(gpa, _("_Custom"))
-        custom.headers = config.get("browsers", "panes").split("\t")
+        custom.headers = headers
 
         align = gtk.Alignment()
         align.set_padding(0, 0, 12, 0)
         align.add(gtk.HBox(spacing=6))
 
         model = gtk.ListStore(str)
-        for t in config.get("browsers", "panes").split("\t"):
+        for t in headers:
             model.append(row=[t])
 
         view = gtk.TreeView(model)
@@ -64,9 +65,8 @@ class Preferences(qltk.UniqueWindow):
             button.connect('toggled', self.__toggled, align, model)
 
         align.set_sensitive(False)
-        current = config.get("browsers", "panes").split("\t")
-        if current == gpa.headers: gpa.set_active(True)
-        elif current == pa.headers: pa.set_active(True)
+        if headers == gpa.headers: gpa.set_active(True)
+        elif headers == pa.headers: pa.set_active(True)
         else: custom.set_active(True)
 
         vb_1 = gtk.VBox(spacing=6)
@@ -107,6 +107,16 @@ class Preferences(qltk.UniqueWindow):
         self.child.pack_start(box, expand=False)
 
         self.show_all()
+
+    @staticmethod
+    def get_headers():
+        #<=2.1 saved the headers tab seperated, but had a space seperated
+        #default value, so check for that.
+        headers = config.get("browsers", "panes")
+        if headers == "~people album":
+            return headers.split()
+        else:
+            return headers.split("\t")
 
     def __add(self, button, model, cb):
         model.append(row=[cb.tag])
@@ -477,7 +487,8 @@ class PanedBrowser(gtk.VBox, Browser, util.InstanceTracker):
         hbox.set_size_request(100, 100)
         # fill in the pane list. the last pane reports back to us.
         self.__panes = [self]
-        panes = config.get("browsers", "panes").split("\t"); panes.reverse()
+        panes = Preferences.get_headers()
+        panes.reverse()
         for pane in panes:
             self.__panes.insert(
                 0, self.Pane(pane, self.__panes[0], self.__library))
