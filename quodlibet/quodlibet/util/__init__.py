@@ -200,15 +200,15 @@ def unescape(str):
 
 def escape_filename(s):
     """Escape a string in a manner suitable for a filename."""
-    if os.name == "nt":
-        return urllib.unquote(s.encode("utf-8")).decode("utf-8")
-    return urllib.quote(s, safe="")
+    if isinstance(s, unicode):
+        s = s.encode("utf-8")
+    return urllib.quote(s, safe="").decode("utf-8")
 
 def unescape_filename(s):
     """Unescape a string in a manner suitable for a filename."""
-    if os.name == "nt":
-        return urllib.quote(s.encode("utf-8"), safe="")
-    return urllib.unquote(s)
+    if isinstance(s, unicode):
+        s = s.encode("utf-8")
+    return urllib.unquote(s).decode("utf-8")
 
 def parse_time(timestr, err=(ValueError, re.error)):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""

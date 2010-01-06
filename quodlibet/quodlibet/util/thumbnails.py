@@ -123,6 +123,8 @@ def get_thumbnail(path, boundary):
         os.mkdir(cache_dir)
         os.chmod(cache_dir, 0700)
 
+    if isinstance(path, unicode):
+        path = path.encode("utf-8")
     uri = "file://" + urllib.pathname2url(path)
     thumb_name = hash.md5(uri).hexdigest() + ".png"
 
