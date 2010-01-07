@@ -6,11 +6,15 @@
 # published by the Free Software Foundation
 
 import os
-import ctypes
 import subprocess
 import ConfigParser
 from os.path import dirname, basename, join
 from glob import glob
+
+try:
+    import ctypes
+except ImportError:
+    ctypes = None
 
 import gobject
 try:
@@ -277,6 +281,18 @@ class DKD(DeviceManager):
         self.__path = "/".join(dkd_name)
         super(DKD, self).__init__("org.freedesktop.%s" % self.__bus)
 
+        error = False
+        if ctypes is None:
+            print_w(_("%s: Could not import ctypes.") % self.__bus)
+            error = True
+
+        if self.__get_mpi_dir() is None:
+            print_w(_("%s: Could not find media-player-info.") % self.__bus)
+            error = True
+
+        if error:
+            raise LookupError
+
         interface = "org.freedesktop.%s" % self.__bus
         path = "/org/freedesktop/%s" % self.__path
         obj = self._system_bus.get_object(interface, path)
@@ -386,13 +402,6 @@ class DKD(DeviceManager):
             self.__get_dev_property(prop_if, 'device-is-media-available'):
             return
 
-        #check if the media-player-info directory is there
-        mpi_dir = self.__get_mpi_dir()
-        if mpi_dir is None:
-            print_w(_("Could not find media-player-info, which is needed "
-                "for identifying portable media players."))
-            return
-
         #ask libudev if the device is a media player
         devpath = self.get_block_device(path)
         mplayer_id = self.__get_media_player_id(devpath)
@@ -400,6 +409,7 @@ class DKD(DeviceManager):
 
         #look up the supported protocols in the mpi files
         protocols = []
+        mpi_dir = self.__get_mpi_dir()
         config = self.__get_mpi_file(mpi_dir, mplayer_id)
         if config is not None:
             try:
