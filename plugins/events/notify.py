@@ -27,7 +27,7 @@ class Notify(EventPlugin):
     class conf(object):
         timeout = 4000
         show_icon = True
-        single_notification = False
+        single_notification = True
         string = r'''<album|\<b\><album>\</b\><discnumber| - Disc <discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
 >\<span weight='bold' size='large'\><title>\</span\> - <~length><version|
 \<small\>\<i\><version>\</i\>\</small\>><~people|
