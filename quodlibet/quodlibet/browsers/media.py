@@ -549,4 +549,5 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 if devices.init():
     browsers = [MediaDevices]
 else:
+    print_w(_("No device backend, Media Devices browser disabled."))
     browsers = []

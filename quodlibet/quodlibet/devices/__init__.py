@@ -17,6 +17,8 @@ try:
     import dbus
     import dbus.glib
 except ImportError:
+    print_w(_("Could not import dbus-python, which is needed for "
+        "device support."))
     dbus = None
 
 from quodlibet import const
@@ -359,17 +361,21 @@ class DKD(DeviceManager):
         try: return dev["ID_MEDIA_PLAYER"]
         except KeyError: return None
 
-    def __get_mpi_file(self, mplayer_id):
+    def __get_mpi_dir(self):
+        for dir in util.xdg_get_system_data_dirs():
+            path = os.path.join(dir, "media-player-info")
+            if os.path.isdir(path):
+                return path
+
+    def __get_mpi_file(self, dir, mplayer_id):
         """Returns a SafeConfigParser instance of the mpi file or None.
         MPI files are INI like files usually located in
         /usr/local/media-player-info/*.mpi"""
-        for dir in util.xdg_get_system_data_dirs():
-            f = os.path.join(dir, "media-player-info", mplayer_id + ".mpi")
-            if os.path.isfile(f):
-                parser = ConfigParser.SafeConfigParser()
-                read = parser.read(f)
-                if read: return parser
-        return None
+        f = os.path.join(dir, mplayer_id + ".mpi")
+        if os.path.isfile(f):
+            parser = ConfigParser.SafeConfigParser()
+            read = parser.read(f)
+            if read: return parser
 
     def __build_dev(self, path):
         """Return the right device instance by determining the
@@ -380,6 +386,13 @@ class DKD(DeviceManager):
             self.__get_dev_property(prop_if, 'device-is-media-available'):
             return
 
+        #check if the media-player-info directory is there
+        mpi_dir = self.__get_mpi_dir()
+        if mpi_dir is None:
+            print_w(_("Could not find media-player-info, which is needed "
+                "for identifying portable media players."))
+            return
+
         #ask libudev if the device is a media player
         devpath = self.get_block_device(path)
         mplayer_id = self.__get_media_player_id(devpath)
@@ -387,7 +400,7 @@ class DKD(DeviceManager):
 
         #look up the supported protocols in the mpi files
         protocols = []
-        config = self.__get_mpi_file(mplayer_id)
+        config = self.__get_mpi_file(mpi_dir, mplayer_id)
         if config is not None:
             try:
                 prots = config.get("Device", "AccessProtocol")
@@ -425,8 +438,7 @@ def init():
         except (LookupError, dbus.DBusException): pass
 
     if device_manager is None:
-        print_w(_("Couldn't connect to a device backend, "
-            "disabling Media Devices browser."))
+        print_w(_("Couldn't connect to a device backend."))
     else:
         print_d(_("Device backend initialized."))
 

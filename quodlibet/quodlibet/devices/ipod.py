@@ -391,6 +391,7 @@ class IPodDevice(Device):
 
 try: import gpod
 except ImportError:
+    print_w(_("Could not import python-gpod, iPod support disabled."))
     devices = []
 else:
     devices = [IPodDevice]
