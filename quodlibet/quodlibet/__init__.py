@@ -95,13 +95,13 @@ def print_w(string):
     """Print warnings."""
     # Translators: "W" as in "Warning". It is prepended to
     # terminal output. APT uses a similar output format.
-    print_(string, prefix=_("W: "), log="Warnings", output=sys.stderr)
+    print_(string, prefix=_("W: "), log=_("Warnings"), output=sys.stderr)
 
 def print_e(string):
     """Print errors."""
     # Translators: "E" as in "Error". It is prepended to
     # terminal output. APT uses a similar output format.
-    print_(string, prefix=_("E: "), log="Errors", output=sys.stderr)
+    print_(string, prefix=_("E: "), log=_("Errors"), output=sys.stderr)
 
 def _python_init():
     # The default regex escaping function doesn't work for non-ASCII.

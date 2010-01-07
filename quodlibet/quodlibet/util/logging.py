@@ -5,12 +5,13 @@ from quodlibet.const import ENCODING, LOGDIR
 
 LOGS = {}
 MAX_LOG_SIZE = 1000
+GENERAL = _("General")
 
 def log(string, log=None):
     if isinstance(string, unicode):
         string = string.encode("utf-8", "replace")
 
-    log = log or "General"
+    log = log or GENERAL
 
     LOGS.setdefault(log, []).append(string)
 
@@ -18,7 +19,11 @@ def log(string, log=None):
         LOGS[log].pop(0)
 
 def names():
-    return sorted(LOGS.keys())
+    names = sorted(LOGS.keys())
+    if GENERAL in names:
+        names.remove(GENERAL)
+        names.insert(0, GENERAL)
+    return names
 
 def contents(name):
     return LOGS.get(name, ["No log available."])
