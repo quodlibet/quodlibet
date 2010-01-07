@@ -114,7 +114,7 @@ class QLSubmitQueue:
                 store["a"] = performer
 
         # Spec requires title and artist at minimum
-        if not (store["a"] and store["t"]):
+        if not (store.get("a") and store.get("t")):
             return None
         return store
 
@@ -126,7 +126,6 @@ class QLSubmitQueue:
         self.broken = False
 
         self.username, self.password, self.base_url = ('', '', '')
-        self.check_config()
 
         try:
             disk_queue_file = open(self.DUMP, 'r')
@@ -148,25 +147,25 @@ class QLSubmitQueue:
                 pass
         return 0
 
-    def check_config(self):
+    def _check_config(self):
         user = config_get('username')
         passw = md5(config_get('password')).hexdigest()
         url = config_get_url()
         if not user or not passw or not url:
-            self.quick_dialog("Please visit the Preferences window to set "
+            if self.queue and not self.broken:
+                self.quick_dialog("Please visit the Plugins window to set "
                               "QLScrobbler up. Until then, songs will not be "
                               "submitted.", gtk.MESSAGE_INFO)
-            self.broken = True
+                self.broken = True
         elif (self.username, self.password, self.base_url)!=(user, passw, url):
-            print "kk"
             self.username, self.password, self.base_url = (user, passw, url)
             self.broken = False
             self.handshake_sent = False
         self.offline = (config_get('offline') == "true")
-        self.changed()
 
     def changed(self):
         """Signal that settings or queue contents were changed."""
+        self._check_config()
         if not self.broken and not self.offline and (self.queue or
                 (self.nowplaying_song and not self.nowplaying_sent)):
             self.changed_event.set()
@@ -410,7 +409,7 @@ class QLScrobbler(EventPlugin):
             urlent.set_text(config_get_url())
 
         def destroyed(*args):
-            self.queue.check_config()
+            self.queue.changed()
 
         table = gtk.Table(6, 3)
         table.set_col_spacings(3)
