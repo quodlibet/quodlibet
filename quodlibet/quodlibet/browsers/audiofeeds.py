@@ -423,12 +423,16 @@ class AudioFeeds(Browser, gtk.VBox):
                 selection.unselect_all()
                 map(selection.select_path, paths)
 
+browsers = []
 try:
     import feedparser
-    from quodlibet import player
-    if not player.can_play_uri("http://"):
-        raise ImportError
 except ImportError:
-    browsers = []
+    print_w(_("Could not import python-feedparser, "
+        "Audio Feeds browser disabled."))
 else:
-    browsers = [AudioFeeds]
+    from quodlibet import player
+    if player.can_play_uri("http://"):
+        browsers = [AudioFeeds]
+    else:
+        print_w(_("The current audio backend does not support URLs, "
+            "Audio Feeds browser disabled."))
