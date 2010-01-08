@@ -264,7 +264,8 @@ class CoverParadiseParser(BasicHTMLParser):
             thumb_tag = [i[1] for i in album if i[0] == 'img'][0]
             cover['thumbnail'] = thumb_tag['src']
 
-            cover['cover'] = cover['thumbnail'].replace('/thumbs/', '/')
+            id = cover['thumbnail'].split("/")[-1].split(".")[0]
+            cover['cover'] = self.root_url + "/res/exe/GetElement.php?ID=" + id
 
             cover['source'] = self.root_url
 
@@ -883,28 +884,32 @@ class CoverArea(gtk.VBox):
             pbloader.connect('area-updated', self.__update)
 
             data_store = StringIO()
-            url_sock = urllib2.urlopen(url)
 
-            while not self.stop_loading:
-                tmp = url_sock.read(1024 * 10)
-                if not tmp:
-                        break
-                pbloader.write(tmp)
-                data_store.write(tmp)
+            try:
+                url_sock = urllib2.urlopen(url)
+            except urllib2.HTTPError:
+                print_w(_("[albumart] HTTP Error: %s") % url)
+            else:
+                while not self.stop_loading:
+                    tmp = url_sock.read(1024 * 10)
+                    if not tmp:
+                            break
+                    pbloader.write(tmp)
+                    data_store.write(tmp)
 
-            url_sock.close()
+                url_sock.close()
 
-            if not self.stop_loading:
-                raw_data = data_store.getvalue()
+                if not self.stop_loading:
+                    raw_data = data_store.getvalue()
 
-                self.data_cache.insert(0, (url, raw_data))
+                    self.data_cache.insert(0, (url, raw_data))
 
-                while 1:
-                    cache_sizes = [len(data[1]) for data in self.data_cache]
-                    if sum(cache_sizes) > self.max_cache_size:
-                        del self.data_cache[-1]
-                    else:
-                        break
+                    while 1:
+                        cache_sizes = [len(data[1]) for data in self.data_cache]
+                        if sum(cache_sizes) > self.max_cache_size:
+                            del self.data_cache[-1]
+                        else:
+                            break
 
             data_store.close()
         else:
