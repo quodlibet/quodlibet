@@ -28,8 +28,8 @@ class RandomAlbum(EventPlugin):
                 ("playcount", _("Played more often")),
                 ("skipcount", _("Skipped more often")),
                 ("lastplayed", _("Played more recently")),
-                ("laststarted", _("Last started playing")),
-                ("added", _("First added to library")),
+                ("laststarted", _("Started more recently")),
+                ("added", _("Added more recently")),
             ]
 
     def __init__(self):
@@ -89,57 +89,42 @@ class RandomAlbum(EventPlugin):
 
         return vbox
 
-    def _eval_keys(self, songs):
-        # Returns a dict containing the key values for a set of songs
-        album = {}
-        for (key, text) in self.keys:
-            if key == 'laststarted':
-                # The only key evaluated as a max, rather than a mean
-                v = [max(s['~#laststarted'], s['~#added']) for s in songs]
-                album[key] = max(v)
-            else:
-                if key == 'lastplayed':
-                    # This gets special handling for songs with lastplayed=0
-                    v = [max(s['~#lastplayed'], s['~#added']) for s in songs]
-                else:
-                    v = [s['~#%s' % key] for s in songs]
-                album[key] = sum(v)/float(len(v))
-        return album
-
     def _score(self, album_names):
-        # Score each album. It works out to be this:
-        #     score = sum([normalized_value[key] * weight[key]])
-        # and most of this code just finds the normalized values.
+        """Score each album. Returns a list of (score, name) tuples."""
         from library import library
         album_songs = {}
+        all_songs = []
         for song in library:
             if song('album') in album_names:
-                album_songs.setdefault(song('album'), []).append(song)
+                vsong = {}
+                for (key, text) in self.keys:
+                    vsong[key] = song("~#%s" % key)
+                album_songs.setdefault(song('album'), []).append(vsong)
+                all_songs.append(vsong)
 
-        albums = {}
-        for name, songs in album_songs.items():
-            albums[name] = self._eval_keys(songs)
+        # We replace 0 values in these keys with the minimum non-zero value
+        date_keys = ['laststarted', 'lastplayed']
 
-        ranges = {}
-        for (key, text) in self.keys:
-            scores = [album[key] for album in albums.values()]
-            ranges[key] = (min(scores), max(scores))
+        scores = {}
+        for key, text in self.keys:
+            vals = map(lambda s: s.get(key), all_songs)
+            if key in date_keys:
+                vals = filter(None, vals) or [0]
+            minn, maxx = min(vals), max(vals)
+            if minn == maxx:
+                continue
 
-        scored = []
-        for name, album in albums.items():
-            score = 0
-            for key, val in album.items():
-                (minn, maxx) = ranges[key]
-                if maxx > minn:
-                    normalized = (val - minn) / (maxx - minn)
-                    score += normalized * self.weights[key]
-            # If someone enables weights and has a very small preference set,
-            # that preference will have a disproportionate effect on the
-            # selection process, so we offset that here.
-            score += random.random() / 16
-            scored.append((score, name))
-            print_d('randomalbum.py: Album "%s", score %f' % (name, score))
-        return scored
+            for name, songs in album_songs.items():
+                v = map(lambda s: max(s.get(key, 0), minn), songs)
+                # laststarted is a max(), the rest are averages
+                if key == 'laststarted':
+                    val = max(v)
+                else:
+                    val = sum(v)/float(len(v))
+                score = (val - minn) / (maxx - minn) * self.weights[key]
+                scores[name] = scores.get(name, 0) + score
+
+        return [(score, name) for name, score in scores.items()]
 
     def plugin_on_song_started(self, song):
         if (song is None and config.get("memory", "order") != "onesong" and
@@ -147,6 +132,7 @@ class RandomAlbum(EventPlugin):
             browser = widgets.main.browser
             if not browser.can_filter('album'): return
 
+            # Unfortunately, browsers can't (yet) filter on the album key
             try: values = browser.list('album')
             except AttributeError:
                 from library import library
@@ -157,7 +143,10 @@ class RandomAlbum(EventPlugin):
                 # Select 3% of albums, or at least 3 albums
                 nr_albums = int(min(len(values), max(0.03 * len(values), 3)))
                 album_names = random.sample(values, nr_albums)
-                album = max(self._score(album_names))[1]
+                albums = sorted(self._score(album_names))
+                for score, name in albums:
+                    print_d("randomalbum.py: %0.4f %s" % (score, name))
+                album = max(albums)[1]
             else:
                 album = random.choice(values)
             if album is not None:
