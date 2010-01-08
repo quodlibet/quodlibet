@@ -308,7 +308,7 @@ if __name__ == "__main__":
                         glob.glob(join('quodlibet', 'images', '*.png')) +
                         glob.glob(join('quodlibet', 'images', '*.svg')))]
         for type in ["playorder", "songsmenu", "editing", "events"]:
-            data_files.append((join('plugins', type),
+            data_files.append((join('quodlibet', 'plugins', type),
                 glob.glob(join('..', 'plugins', type, '*.py'))))
 
         includes = (

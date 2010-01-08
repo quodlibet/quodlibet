@@ -8,6 +8,7 @@ import gobject
 import os
 
 if os.name == 'nt' and 'library.zip' in __file__:
+    # Set up GStreamer path when running under py2exe
     if 'GST_PLUGIN_PATH' not in os.environ:
         os.environ['GST_PLUGIN_PATH'] = os.path.join(os.getcwd(), 'lib',
                                                      'gstreamer-0.10')
@@ -33,10 +34,6 @@ def GStreamerSink(pipeline):
     * If that fails, complain loudly.
 
     Returns the pipeline's description and a list of disconnected elements."""
-
-    AUTOSINK="autoaudiosink"
-    if os == 'nt':
-        AUTOSINK="directsoundsink"
 
     if pipeline == "gconf": pipeline = "gconfaudiosink profile=music"
     try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
@@ -206,8 +203,11 @@ class GStreamerPlayer(BasePlayer):
                         self.bin.set_property('uri', self.song("~uri"))
                     else:
                         # Backend error; show message and halt playback
-                        ErrorMessage(None, _("Output Error"), _("Output "
-                            "pipeline could not be initialized.")).run()
+                        ErrorMessage(None, _("Output Error"),
+                            _("GStreamer output pipeline could not be "
+                              "initialized. The pipeline might be invalid, "
+                              "or the device may be in use. Check the "
+                              "player preferences.")).run()
                     self._paused = paused = True
                 self.emit((paused and 'paused') or 'unpaused')
                 if self.bin:
@@ -232,7 +232,7 @@ class GStreamerPlayer(BasePlayer):
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
-        if self.song is not None:
+        if self.bin is not None and self.song is not None:
             # ensure any pending state changes have completed
             self.bin.get_state()
             pos = max(0, int(pos))

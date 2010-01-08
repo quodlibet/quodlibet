@@ -132,6 +132,10 @@ def init(*rc_files):
           },
         }
 
+    if os.name == "nt":
+        # special case, to avoid wonderful bursts of static on playback
+        initial["player"]["gst_pipeline"] = "directsoundsink"
+
     for section, values in initial.iteritems():
         _config.add_section(section)
         for key, value in values.iteritems():
