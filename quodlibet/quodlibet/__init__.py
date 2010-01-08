@@ -63,6 +63,9 @@ def print_(string, frm="utf-8", prefix="", output=sys.stdout, log=None):
 
     quodlibet.util.logging.log(string, log)
 
+    if os.name == 'nt':
+        return
+
     if output:
         if isinstance(string, unicode):
             string = string.encode(ENCODING, "replace")
@@ -121,8 +124,10 @@ def _python_init():
             tb = traceback.extract_stack()
             for (filename, linenum, func, text) in tb:
                 if "plugins" in filename:
-                    warnings.warn(
-                        "enabling legacy plugin API", DeprecationWarning)
+                    # warn() causes errors when running from py2exe
+                    if not (os.name == 'nt' and 'library.zip' in __file__):
+                        warnings.warn(
+                            "enabling legacy plugin API", DeprecationWarning)
                     old_import("quodlibet." + module, *args, **kwargs)
                     return sys.modules["quodlibet." + module]
             else:
@@ -203,7 +208,9 @@ def main(window):
     # This has been known to cause segmentation faults in some Python,
     # GTK+, and GStreamer versions.
     gtk.gdk.threads_init()
+    gtk.gdk.threads_enter()
     gtk.main()
+    gtk.gdk.threads_leave()
 
 def error_and_quit(error):
     from quodlibet.qltk.msg import ErrorMessage

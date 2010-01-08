@@ -261,33 +261,81 @@ if __name__ == "__main__":
                    "coverage": coverage_cmd, "release": release,
                    "build_scripts": build_scripts,
                    "build_gobject_ext": build_gobject_ext}
-    setup(
-        distclass=GDistribution,
-        cmdclass=cmd_classes,
-        name="quodlibet",
-        version=const.VERSION,
-        url="http://code.google.com/p/quodlibet/",
-        description="a music library, tagger, and player",
-        author="Joe Wreschnig, Michael Urman, & others",
-        author_email="quod-libet-development@googlegroups.com",
-        license="GNU GPL v2",
-        packages=["quodlibet"] + map("quodlibet.".__add__, PACKAGES),
-        package_data={"quodlibet": ["images/*.png", "images/*.svg"]},
-        scripts=["quodlibet.py", "exfalso.py"],
-        po_directory="po",
-        po_package="quodlibet",
-        shortcuts=["quodlibet.desktop", "exfalso.desktop"],
-        man_pages=["man/quodlibet.1", "man/exfalso.1"],
-        gobject_modules=[
-        GObjectExtension("quodlibet._mmkeys", "mmkeys/mmkeys.defs",
-                         "mmkeys/mmkeys.override",
-                         ["mmkeys/mmkeys.c", "mmkeys/mmkeysmodule.c"],
-                         include_dirs=["mmkeys"]),
-        GObjectExtension("quodlibet._trayicon", "trayicon/trayicon.defs",
-                         "trayicon/trayicon.override",
-                         ["trayicon/eggtrayicon.c",
-                          "trayicon/trayiconmodule.c"],
-                         include_dirs=["trayicon"])
+    setup_kwargs = {
+        'distclass': GDistribution,
+        'cmdclass': cmd_classes,
+        'name': "quodlibet",
+        'version': const.VERSION,
+        'url': "http://code.google.com/p/quodlibet/",
+        'description': "a music library, tagger, and player",
+        'author': "Joe Wreschnig, Michael Urman, & others",
+        'author_email': "quod-libet-development@googlegroups.com",
+        'maintainer': "Steven Robertson and Christoph Reiter",
+        'license': "GNU GPL v2",
+        'packages': ["quodlibet"] + map("quodlibet.".__add__, PACKAGES),
+        'package_data': {"quodlibet": ["images/*.png", "images/*.svg"]},
+        'scripts': ["quodlibet.py", "exfalso.py"],
+        'po_directory': "po",
+        'po_package': "quodlibet",
+        'shortcuts': ["quodlibet.desktop", "exfalso.desktop"],
+        'man_pages': ["man/quodlibet.1", "man/exfalso.1"],
+        'gobject_modules': [
+                    GObjectExtension("quodlibet._mmkeys",
+                            "mmkeys/mmkeys.defs",
+                            "mmkeys/mmkeys.override",
+                            ["mmkeys/mmkeys.c", "mmkeys/mmkeysmodule.c"],
+                            include_dirs=["mmkeys"]),
+                    GObjectExtension("quodlibet._trayicon",
+                            "trayicon/trayicon.defs",
+                            "trayicon/trayicon.override",
+                            ["trayicon/eggtrayicon.c",
+                             "trayicon/trayiconmodule.c"],
+                            include_dirs=["trayicon"])
+                    ],
+        }
+    if os.name == 'nt':
+        import pygst
+        pygst.require('0.10')
+        from os.path import join
 
-        ],
-          )
+        # suckily, we include 'browsers' and 'formats' twice.
+        data_files = [('', ['COPYING']),
+                      (join('quodlibet', 'browsers'),
+                        glob.glob(join('quodlibet', 'browsers', '*.py'))),
+                      (join('quodlibet', 'formats'),
+                        glob.glob(join('quodlibet', 'formats', '*.py'))),
+                      (join('quodlibet', 'images'),
+                        glob.glob(join('quodlibet', 'images', '*.png')) +
+                        glob.glob(join('quodlibet', 'images', '*.svg')))]
+        for type in ["playorder", "songsmenu", "editing", "events"]:
+            data_files.append((join('plugins', type),
+                glob.glob(join('..', 'plugins', type, '*.py'))))
+
+        includes = (
+                    'feedparser').split()
+
+        setup_kwargs.update({
+                    'data_files': data_files,
+                    'windows': [
+                        {
+                            "script": "quodlibet.py",
+                            "icon_resources": [(0,
+                               join('quodlibet', 'images', 'quodlibet.ico'))]
+                        },
+                        {
+                            "script": "exfalso.py",
+                            "icon_resources": [(0,
+                                join('quodlibet', 'images', 'exfalso.ico'))]
+                        }
+                    ],
+                    'options': {
+                        'py2exe': {
+                            'packages': 'encodings, feedparser, quodlibet',
+                            'includes': ('cairo, pango, pangocairo, atk, '
+                                         'gobject, pygst, gst, '
+                                         'quodlibet.player.gstbe')
+                        }
+                    }
+                })
+    setup(**setup_kwargs)
+

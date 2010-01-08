@@ -12,8 +12,11 @@ implements build and install commands for operations related to
 Python GTK+ and GObject support. This includes installation
 of man pages and gettext/intltool support.
 """
+try:
+    from py2exe import Distribution
+except ImportError:
+    from distutils.core import Distribution
 
-from distutils.core import Distribution
 from distutils.command.build import build as distutils_build
 from distutils.command.install import install as distutils_install
 
@@ -21,6 +24,8 @@ from gdist.gobject import build_gobject_ext, GObjectExtension
 from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
 from gdist.po import build_mo, install_mo
+
+import os
 
 class build(distutils_build):
     """Override the default build with new subcommands."""
@@ -83,15 +88,15 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("install", install)
 
     def has_po(self):
-        return bool(self.po_directory)
+        return os.name != 'nt' and bool(self.po_directory)
 
     def has_shortcuts(self):
-        return bool(self.shortcuts)
+        return os.name != 'nt' and bool(self.shortcuts)
 
     def has_gobject_ext(self):
-        return bool(self.gobject_modules)
+        return os.name != 'nt' and bool(self.gobject_modules)
 
     def has_man_pages(self):
-        return bool(self.man_pages)
+        return os.name != 'nt' and bool(self.man_pages)
 
 __all__ = ["GDistribution", "GObjectExtension"]

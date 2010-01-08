@@ -5,7 +5,12 @@
 # published by the Free Software Foundation
 
 import gobject
+import os
 
+if os.name == 'nt' and 'library.zip' in __file__:
+    if 'GST_PLUGIN_PATH' not in os.environ:
+        os.environ['GST_PLUGIN_PATH'] = os.path.join(os.getcwd(), 'lib',
+                                                     'gstreamer-0.10')
 import pygst
 pygst.require("0.10")
 
@@ -29,14 +34,18 @@ def GStreamerSink(pipeline):
 
     Returns the pipeline's description and a list of disconnected elements."""
 
+    AUTOSINK="autoaudiosink"
+    if os == 'nt':
+        AUTOSINK="directsoundsink"
+
     if pipeline == "gconf": pipeline = "gconfaudiosink profile=music"
     try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
     except gobject.GError, err:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
-        if pipeline != "autoaudiosink":
-            try: pipe = [gst.parse_launch("autoaudiosink")]
+        if pipeline != AUTOSINK:
+            try: pipe = [gst.parse_launch(AUTOSINK)]
             except gobject.GError: pipe = None
-            else: pipeline = "autoaudiosink"
+            else: pipeline = AUTOSINK
         else: pipe = None
     if pipe: return pipe, pipeline
     else:

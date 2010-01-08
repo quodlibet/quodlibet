@@ -19,6 +19,9 @@ from quodlibet.browsers._base import Browser
 BROWSERS = os.path.join(const.USERDIR, "browsers")
 
 base = dirname(__file__)
+if os.name == 'nt' and 'library.zip' in base:
+    # running a py2exe version, use the alternate browser location
+    base = os.path.join(const.BASEDIR, 'browsers')
 self = basename(base)
 parent = basename(dirname(base))
 modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]

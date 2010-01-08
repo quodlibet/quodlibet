@@ -4,13 +4,17 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import sys
 
 from glob import glob
 from os.path import dirname, basename, join
-from quodlibet import util
+from quodlibet import util, const
 
 base = dirname(__file__)
+if os.name == 'nt' and 'library.zip' in base:
+    # running a py2exe version, use the alternate formats location
+    base = os.path.join(const.BASEDIR, 'formats')
 self = basename(base)
 parent = basename(dirname(base))
 modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
