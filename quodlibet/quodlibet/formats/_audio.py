@@ -434,11 +434,10 @@ class AudioFile(dict):
         except EnvironmentError:
             pass
         else:
-            dirs = os.listdir('.')
             for subdir in self.__cover_subdirs:
                 for ext in self.__cover_exts:
-                    fns.extend(glob.glob(os.path.join(subdir, "*." + ext)))
-                    fns.extend(glob.glob(os.path.join(subdir, ".*." + ext)))
+                    fns.extend(glob.glob(os.path.join(subdir, u"*." + ext)))
+                    fns.extend(glob.glob(os.path.join(subdir, u".*." + ext)))
             os.chdir(olddir)
         images = []
         for fn in sorted(fns):
