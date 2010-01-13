@@ -39,10 +39,10 @@ def GStreamerSink(pipeline):
     try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
     except gobject.GError, err:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
-        if pipeline != AUTOSINK:
-            try: pipe = [gst.parse_launch(AUTOSINK)]
+        if pipeline != "autoaudiosink":
+            try: pipe = [gst.parse_launch("autoaudiosink")]
             except gobject.GError: pipe = None
-            else: pipeline = AUTOSINK
+            else: pipeline = "autoaudiosink"
         else: pipe = None
     if pipe: return pipe, pipeline
     else:
