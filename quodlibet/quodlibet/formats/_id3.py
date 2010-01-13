@@ -1,4 +1,5 @@
-# Copyright 2004-2006 Joe Wreschnig, Michael Urman, Niklas Janlert 
+# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Niklas Janlert,
+#                     Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -168,6 +169,13 @@ class ID3File(AudioFile):
             else: self[name] = text
             self[name] = self[name].strip()
 
+        # foobar2000 writes long dates in a TXXX DATE tag, leaving the TDRC
+        # tag out. Read the TXXX DATE, but only if the TDRC tag doesn't exist
+        # to avoid reverting or duplicating tags in existing libraries.
+        if "date" not in self:
+            for frame in tag.getall('TXXX:DATE'):
+                self["date"] = "\n".join(map(unicode, frame.text))
+
         self.setdefault("~#length", int(audio.info.length))
         try: self.setdefault("~#bitrate", int(audio.info.bitrate / 1000))
         except AttributeError: pass
@@ -228,7 +236,7 @@ class ID3File(AudioFile):
             f = mutagen.id3.UFID(owner="http://musicbrainz.org",
                   data=self["musicbrainz_trackid"])
             tag.add(f)
-            
+
         mcl = mutagen.id3.TMCL(encoding=3, people=[])
 
         for key in filter(lambda x: x not in self.SDI and x not in dontwrite,

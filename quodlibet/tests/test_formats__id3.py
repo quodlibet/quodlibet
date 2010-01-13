@@ -26,6 +26,18 @@ class TID3File(TestCase):
         else:
             MP3File(self.filename)
 
+    def test_TXXX_DATE(self):
+        # http://code.google.com/p/quodlibet/issues/detail?id=220
+        f = mutagen.File(self.filename)
+        f.tags.add(mutagen.id3.TXXX(encoding=3, desc=u'DATE',
+                                    text=u'2010-01-13'))
+        f.tags.add(mutagen.id3.TDRC(encoding=3, text=u'2010-01-14'))
+        f.save()
+        self.assertEquals(MP3File(self.filename)['date'], '2010-01-14')
+        f.tags.delall('TDRC')
+        f.save()
+        self.assertEquals(MP3File(self.filename)['date'], '2010-01-13')
+
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
