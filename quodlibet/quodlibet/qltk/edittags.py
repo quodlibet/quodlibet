@@ -54,7 +54,7 @@ class AudioFileGroup(dict):
         def safenicestr(self):
             if self.shared and self.complete: return str(self)
             elif self.shared:
-                return "\n".join(['%s <i>(%s)</i>' % (s, self.paren())
+                return "\n".join(['%s<i> (%s)</i>' % (s, self.paren())
                                   for s in str(self).split("\n")])
             else: return '<i>(%s)</i>' % self.paren()
 
@@ -659,7 +659,9 @@ class EditTags(gtk.VBox):
                     "value": new_value, "error": fmt.error}).run()
                 return
             else: new_value = new_validated
-        if row[VALUE].replace('<i>','').replace('</i>','') != new_value:
+        tag = self.__songinfo.get(row[TAG], None)
+        if row[VALUE].split('<')[0] != new_value or (
+                tag and tag.shared and not tag.complete):
             row[VALUE] = util.escape(new_value)
             row[EDITED] = True
             row[DELETED] = False
@@ -785,6 +787,8 @@ class EditTags(gtk.VBox):
                 editable.set_completion(completion)
         except AttributeError:
             pass
+        if isinstance(editable, gtk.Entry):
+            editable.set_text(util.unescape(model[path][VALUE].split('<')[0]))
 
     def __tag_editing_started(self, render, editable, path, model, library):
         try:
