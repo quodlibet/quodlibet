@@ -104,7 +104,6 @@ def init(*rc_files):
           "disable_hints": "false",
 
           # search as soon as text is typed into search box
-          # for now this only affects the paned browser
           "eager_search": "true",
           },
 

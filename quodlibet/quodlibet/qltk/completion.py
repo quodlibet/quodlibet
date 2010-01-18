@@ -6,7 +6,7 @@
 
 import gtk
 
-from quodlibet import formats
+from quodlibet import formats, config
 
 from quodlibet.util import copool
 
@@ -121,7 +121,9 @@ class LibraryValueCompletion(gtk.EntryCompletion):
         self.set_tag(tag, library)
 
     def set_tag(self, tag, library):
-        if tag is None:
+        if not config.getboolean("settings", "eager_search"):
+            return
+        elif tag is None:
             return
         elif tag in ("bpm date discnumber isrc originaldate recordingdate "
                      "tracknumber title").split() + formats.MACHINE_TAGS:
