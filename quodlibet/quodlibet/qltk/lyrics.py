@@ -22,6 +22,8 @@ from quodlibet import util
 
 class LyricsPane(gtk.VBox):
     def __init__(self, song):
+        # Commented code in this method is due to Lyric Wiki's disappearance.
+        # See issue 273.
         super(LyricsPane, self).__init__(spacing=12)
         self.set_border_width(12)
         view = gtk.TextView()
@@ -45,24 +47,27 @@ class LyricsPane(gtk.VBox):
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.pack_start(sw, expand=True)
 
-        self.pack_start(gtk.Label(_("Lyrics provided by %s.") %(
-            "http://lyricwiki.org")), expand=False)
+        #self.pack_start(gtk.Label(_("Lyrics provided by %s.") %(
+        #    "http://lyricwiki.org")), expand=False)
 
         bbox = gtk.HButtonBox()
         bbox.pack_start(save)
         bbox.pack_start(delete)
-        bbox.pack_start(refresh)
+        #bbox.pack_start(refresh)
         bbox.pack_start(add)
         self.pack_start(bbox, expand=False)
 
         save.set_sensitive(False)
         add.set_sensitive(True)
         
-        if os.path.exists(lyricname): buffer.set_text(file(lyricname).read())
-        else: buffer.set_text(_("No lyrics found.\n\nYou can click the " 
-                                "Download button to have Quod Libet search "
-                                "for lyrics online.  You can also enter them "
-                                "yourself and click save."))
+        if os.path.exists(lyricname):
+            buffer.set_text(file(lyricname).read())
+        else: 
+            #buffer.set_text(_("No lyrics found.\n\nYou can click the " 
+            #                  "Download button to have Quod Libet search "
+            #                  "for lyrics online.  You can also enter them "
+            #                  "yourself and click save."))
+            buffer.set_text(_("No lyrics found for this song."))
         buffer.connect_object('changed', save.set_sensitive, True)
 
     def __add(self, add, song):
