@@ -403,7 +403,7 @@ def unexpand(filename, HOME=os.path.expanduser("~")):
 
 def website(site):
     site = site.replace("\\", "\\\\").replace("\"", "\\\"")
-    for prog in (["sensible-browser", "gnome-open"] +
+    for prog in (["xdg-open", "gnome-open", "sensible-browser"] +
               os.environ.get("BROWSER","").split(":")):
         if iscommand(prog):
             args = prog.split()
