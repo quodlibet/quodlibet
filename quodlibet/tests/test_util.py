@@ -161,6 +161,30 @@ class Tsplit_value(TestCase):
         self.failUnlessEqual(util.split_value(val), val.split("&"))
 add(Tsplit_value)
 
+class Thuman_sort(TestCase):
+    def smaller(self, x, y):
+        return util.human_sort_key(x) < util.human_sort_key(y)
+
+    def test_human(self):
+        self.failUnlessEqual(self.smaller(u"2", u"15"), True)
+        self.failUnlessEqual(self.smaller(u" 2", u"15 "), True)
+        self.failUnlessEqual(self.smaller(u"a2 g", u"a 2z"), True)
+        self.failUnlessEqual(self.smaller(u"a2zz", u"a2.1z"), True)
+
+        self.failUnlessEqual(self.smaller(u"42o", u"42\xf6"), True)
+        self.failUnlessEqual(self.smaller(u"42\xf6", u"42p"), True)
+
+        self.failUnlessEqual(self.smaller(u"bbb", u"zzz3"), True)
+
+    def test_white(self):
+        self.failUnlessEqual(
+            util.human_sort_key(u"  3foo    bar6 42.8"),
+            util.human_sort_key(u"3 foobar6  42.8  "))
+        self.failUnlessEqual(64.0 in util.human_sort_key(u"64. 8"), True)
+
+
+add(Thuman_sort)
+
 class Tformat_time(TestCase):
     def test_seconds(self):
         self.failUnlessEqual(util.format_time(0), "0:00")

@@ -9,6 +9,7 @@ import re
 import sys
 import traceback
 import urlparse
+import unicodedata
 import urllib
 
 # title function was moved to a separate module
@@ -380,6 +381,23 @@ def split_album(s):
             try: return (name, parts[1])
             except: return (s, None)
         else: return (s, None)
+
+def split_numeric(s, reg=re.compile(r"([0-9]+\.?[0-9]*)")):
+    """Seperate numeric values from the string and convert to float, so
+    it can be used for human sorting. Also removes all whitespace."""
+    if not s: return None
+    result = reg.search(s)
+    if not result: return (u"".join(s.split()),)
+    else:
+        first = u"".join(s[:result.start()].split())
+        last = s[result.end():].strip()
+        return (first, float(result.group(0)), split_numeric(last))
+
+def human_sort_key(s):
+    if not isinstance(title, unicode):
+        s = s.decode("utf-8")
+    s = unicodedata.normalize('NFD', s.lower())
+    return split_numeric(s)
 
 def find_subtitle(title):
     if isinstance(title, str): title = title.decode('utf-8', 'replace')

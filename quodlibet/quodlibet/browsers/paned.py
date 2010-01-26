@@ -198,6 +198,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
             self.__next = next
             model = gtk.ListStore(str, object)
+            self.__sort_cache = {}
 
             column = gtk.TreeViewColumn(title, self.__render, markup=0)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
@@ -214,6 +215,13 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.__sig = selection.connect('changed', self.__changed)
             self.connect_object('destroy', self.__destroy, model)
             self.connect('popup-menu', self.__popup_menu, library)
+
+        def __human_sort_key(self, text):
+            try:
+                return self.__sort_cache[text]
+            except KeyError:
+                self.__sort_cache[text] = util.human_sort_key(text)
+                return self.__sort_cache[text]
 
         def __popup_menu(self, view, library):
             menu = SongsMenu(library, sorted(self.__get_songs()), parent=self)
@@ -243,7 +251,10 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                     if song in data: data.remove(song)
                 if not model[row.iter][1]: to_remove.append(row.iter)
             if remove_if_empty:
-                map(model.remove, to_remove)
+                for iter in to_remove:
+                    try: del(self.__sort_cache[model[iter][0]])
+                    except KeyError: pass
+                    model.remove(iter)
                 if len(model) == 1 and model[0][1] is None:
                     model.clear()
             self.uninhibit()
@@ -286,7 +297,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                         new[val].add(song)
 
             if new:
-                keys = sorted(new.keys())
+                human = self.__human_sort_key
+                keys = sorted(new.keys(), key=human)
                 if keys[0] == "":
                     unknown = new[""]
                     keys.pop(0)
@@ -295,7 +307,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                     if row[0][0] == "<": continue
                     elif not keys: break
 
-                    if util.unescape(row[0]) > keys[0]:
+                    value = util.unescape(row[0]).decode('utf-8')
+                    if human(value) > human(keys[0]):
                         key = keys.pop(0)
                         model.insert_before(
                             row.iter, row=[util.escape(key), new[key]])

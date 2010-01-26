@@ -248,6 +248,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             # but the same label ID are the same (since MB uses separate
             # MBIDs for each disc).
             self.key = (sort, labelid or mbid)
+            self.human = util.human_sort_key(sort)
 
         def get(self, key, default="", connector=u" - "):
             if "~" in key[1:]:
@@ -335,6 +336,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                     if key in TAG_TO_SORT:
                         persons = song.list(TAG_TO_SORT[key]) or persons
                     for person in persons:
+                        person = util.human_sort_key(person)
                         peoplesort[person] = (peoplesort.get(person, 0) -
                                               PEOPLE_SCORE[w])
 
@@ -403,7 +405,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             if (a1 and a2) is None: return cmp(a1, a2)
             elif not a1.sort: return 1
             elif not a2.sort: return -1
-            else: return cmp(a1.key, a2.key)
+            else: return cmp((a1.human, a1.key), (a2.human, a2.key))
 
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
@@ -415,7 +417,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             else: return (cmp(a1.peoplesort and a1.peoplesort[0],
                               a2.peoplesort and a2.peoplesort[0]) or
                           cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
-                          cmp(a1.key, a2.key))
+                          cmp((a1.human, a1.key), (a2.human, a2.key)))
 
         def __compare_date(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
@@ -424,7 +426,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             elif not a2.sort: return -1
             elif not a1.date and a2.date: return 1
             elif not a2.date and a1.date: return -1
-            else: return (cmp(a1.date, a2.date) or cmp(a1.key, a2.key))
+            else: return (cmp(a1.date, a2.date) or
+                cmp((a1.human, a1.key), (a2.human, a2.key)))
 
     class _AlbumStore(gtk.ListStore):
         __gsignals__ = { "row-changed": "override" }
