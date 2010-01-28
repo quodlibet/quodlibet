@@ -153,6 +153,7 @@ class BoxSearchBar(gtk.HBox):
         combo.child.connect('activate', self.__save_search)
         combo.child.connect('focus-out-event', self.__save_search)
         combo.child.connect('changed', self.__test_filter)
+        combo.child.connect('backspace', self.__test_filter)
         combo.child.connect('realize', lambda w: w.grab_focus())
 
         label = gtk.Label(_("_Search:"))
