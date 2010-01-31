@@ -1,14 +1,14 @@
 # Ex Falso / Quod Libet's galician (RAG) translation.
-# Copyright (C) 2005 - 2008
+# Copyright (C) 2005 - 2010
 # This file is distributed under the same license as the Ex Falso / Quod Libet package.
-# Johám-Luís MIguéns Vila <galiza.ceive@gmail.com>, 2008.
+# Johám-Luís MIguéns Vila <galiza.ceive@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Ex Falso / Quod Libet SVN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-04 12:19-0500\n"
-"PO-Revision-Date: 2008-08-08 14:59+0200\n"
+"POT-Creation-Date: 2010-01-09 15:31+0100\n"
+"PO-Revision-Date: 2010-01-09 16:37+0100\n"
 "Last-Translator: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
 "Language-Team: Galician\n"
 "MIME-Version: 1.0\n"
@@ -250,7 +250,7 @@ msgstr "Amosar as _portadas dos álbuns"
 
 #: ../quodlibet/browsers/albums.py:75
 msgid "Inline _search includes people"
-msgstr ""
+msgstr "A procura inclúi \"xente\""
 
 #: ../quodlibet/browsers/albums.py:91
 msgid "Album Display"
@@ -360,6 +360,16 @@ msgstr ""
 "Non foi posíbel engadir <b>%s</b>. Pode ser que o servidor estea caído ou\n"
 "que o enderezo introducido non sexa o dunha fonte de audio (feed)."
 
+#: ../quodlibet/browsers/audiofeeds.py:430
+msgid "Could not import python-feedparser, Audio Feeds browser disabled."
+msgstr "Non se puido importar o python-feedparser. O navegador de fontes (feeds) foi desactivado."
+
+#: ../quodlibet/browsers/audiofeeds.py:437
+msgid ""
+"The current audio backend does not support URLs, Audio Feeds browser "
+"disabled."
+msgstr "A infraestrutura de audio activada non soporta URLs. O navegador de fontes (feeds) foi desactivado."
+
 #: ../quodlibet/browsers/filesystem.py:33
 msgid "File System"
 msgstr "Sistema de ficheiros"
@@ -403,7 +413,7 @@ msgid "Choose New Stations"
 msgstr "Escolle novas emisoras"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:285
-#: ../quodlibet/browsers/paned.py:377 ../quodlibet/browsers/search.py:148
+#: ../quodlibet/browsers/paned.py:387 ../quodlibet/browsers/search.py:148
 msgid "_Search:"
 msgstr "Procurar"
 
@@ -412,14 +422,12 @@ msgid "Add"
 msgstr "Engadir"
 
 #: ../quodlibet/browsers/iradio.py:194
-#, fuzzy
 msgid "Bitrate"
-msgstr "bitrate"
+msgstr "Taxa de bits"
 
 #: ../quodlibet/browsers/iradio.py:201
-#, fuzzy
 msgid "Genre"
-msgstr "estilo"
+msgstr "Estilo"
 
 #: ../quodlibet/browsers/iradio.py:207
 msgid "Title"
@@ -557,27 +565,31 @@ msgstr "Erro ao expulsar <b>%s</b>."
 msgid "Unable to eject device"
 msgstr "Non foi posíbel expulsar o dispositivo"
 
+#: ../quodlibet/browsers/media.py:552
+msgid "No device backend, Media Devices browser disabled."
+msgstr "Sen infraestrutura de dispositivos. O navegador de dispositivos foi desactivado."
+
 #: ../quodlibet/browsers/paned.py:36
 msgid "Paned Browser Preferences"
 msgstr "Preferencias da vista dividida"
 
-#: ../quodlibet/browsers/paned.py:42 ../quodlibet/browsers/paned.py:137
+#: ../quodlibet/browsers/paned.py:43 ../quodlibet/browsers/paned.py:147
 msgid "_Custom"
 msgstr "_Personalizada"
 
-#: ../quodlibet/browsers/paned.py:143
+#: ../quodlibet/browsers/paned.py:153
 msgid "Paned Browser"
 msgstr "Vista dividida"
 
-#: ../quodlibet/browsers/paned.py:144
+#: ../quodlibet/browsers/paned.py:154
 msgid "_Paned Browser"
 msgstr "_Vista dividida"
 
-#: ../quodlibet/browsers/paned.py:299 ../quodlibet/qltk/pluginwin.py:258
+#: ../quodlibet/browsers/paned.py:309 ../quodlibet/qltk/pluginwin.py:258
 msgid "All"
 msgstr "Todo"
 
-#: ../quodlibet/browsers/paned.py:391
+#: ../quodlibet/browsers/paned.py:401
 msgid "Select _All"
 msgstr "Seleccionar _todo"
 
@@ -744,6 +756,10 @@ msgstr "iPod sen configurar"
 #: ../quodlibet/devices/ipod.py:271
 msgid "Do you want to create an empty database on this iPod?"
 msgstr "Ques crear unha base de datos baleira no iPod?"
+
+#: ../quodlibet/devices/ipod.py:394
+msgid "Could not import python-gpod, iPod support disabled."
+msgstr "Non se puido importar o python-gpod. Soporte para o iPod deshabilitado."
 
 #: ../quodlibet/devices/storage.py:52
 msgid "_Filename Pattern:"
@@ -922,9 +938,8 @@ msgid "Size"
 msgstr "Tamaño"
 
 #: ../quodlibet/qltk/downloader.py:59
-#, fuzzy
 msgid "Queued"
-msgstr "_Fileira"
+msgstr "Na fileira"
 
 #: ../quodlibet/qltk/edittags.py:38 ../quodlibet/qltk/edittags.py:49
 #, python-format
@@ -1150,7 +1165,7 @@ msgstr "Información"
 msgid "Lyrics"
 msgstr "Letras"
 
-#: ../quodlibet/qltk/information.py:99
+#: ../quodlibet/qltk/information.py:99 ../quodlibet/__init__.py:107
 msgid "Errors"
 msgstr "Erros"
 
@@ -1384,16 +1399,15 @@ msgstr "Preferencias"
 
 #: ../quodlibet/qltk/pluginwin.py:260
 msgid "Enabled"
-msgstr ""
+msgstr "Activado"
 
 #: ../quodlibet/qltk/pluginwin.py:261
-#, fuzzy
 msgid "Disabled"
-msgstr "Desactivar o navegador"
+msgstr "Desactivado"
 
 #: ../quodlibet/qltk/pluginwin.py:267
 msgid "No category"
-msgstr ""
+msgstr "Sen categoría"
 
 #: ../quodlibet/qltk/pluginwin.py:271
 msgid "No plugins found."
@@ -1477,25 +1491,24 @@ msgstr "Filtro _global:"
 
 #: ../quodlibet/qltk/prefs.py:149
 msgid "Confirm _multiple ratings"
-msgstr ""
+msgstr "Confirmar a cualificación _múltipla"
 
 #: ../quodlibet/qltk/prefs.py:153
 msgid ""
 "Ask for confirmation before changin the rating of multiple songs at once"
-msgstr ""
+msgstr "Obter confirmación antes de mudar as cualificacións de varias cancións á vez"
 
 #: ../quodlibet/qltk/prefs.py:157
 msgid "Enable _one-click ratings"
-msgstr ""
+msgstr "Activar as cualificacións c_un click"
 
 #: ../quodlibet/qltk/prefs.py:161
 msgid "Enable rating by clicking on the rating  column in the song list"
-msgstr ""
+msgstr "Posibilitar mudar as calificacións ao facer click na coluna de calificacións"
 
 #: ../quodlibet/qltk/prefs.py:168
-#, fuzzy
 msgid "Ratings"
-msgstr "_Cualificación"
+msgstr "Cualificacións"
 
 #: ../quodlibet/qltk/prefs.py:178
 msgid "Player"
@@ -1506,10 +1519,12 @@ msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
+"A saída do GStreamer utilizada para a reproducción, e.g. 'alsasink device=default'.\n"
+"Deixa-o en branco para utilizar a predeterminada."
 
 #: ../quodlibet/qltk/prefs.py:189
 msgid "_Output pipeline:"
-msgstr ""
+msgstr "Infraestrutura de _saída:"
 
 #: ../quodlibet/qltk/prefs.py:203
 msgid "_Jump to playing song automatically"
@@ -1521,43 +1536,40 @@ msgstr "Cando cambie a canción reproducida, rolar cara ela na lista"
 
 #: ../quodlibet/qltk/prefs.py:210
 msgid "_Use rounded corners on thumbnails"
-msgstr ""
+msgstr "_Empregar cantos redondeados nas miniaturas"
 
 #: ../quodlibet/qltk/prefs.py:211
 msgid ""
 "Round the corners of album artwork thumbnail images. May require restart to "
 "take effect."
-msgstr ""
+msgstr "Redondear os cantos das miniaturas das portadas. Pode requirir reiniciar a aplicación."
 
 #: ../quodlibet/qltk/prefs.py:217
-#, fuzzy
 msgid "_Enable Replay Gain volume adjustment"
-msgstr "Axuste do _Replay Gain"
+msgstr "_Activar o axuste do Replay Gain"
 
 #: ../quodlibet/qltk/prefs.py:230
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
-msgstr ""
+msgstr "De non existir información sobre o axuste Replay Gain para a canción, escalar o volume por este valor"
 
 #: ../quodlibet/qltk/prefs.py:232
 msgid "Fall-back gain (dB):"
-msgstr ""
+msgstr "Ganancia por defecto (dB):"
 
 #: ../quodlibet/qltk/prefs.py:249
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
-msgstr ""
+msgstr "Escalar o volume de todas as cancións por este valor, sempre que non se produzan cortes"
 
 #: ../quodlibet/qltk/prefs.py:251
-#, fuzzy
 msgid "Pre-amp gain (dB):"
 msgstr "Ganancia de _volume (dB)"
 
 #: ../quodlibet/qltk/prefs.py:258
-#, fuzzy
 msgid "Replay Gain Volume Adjustment"
-msgstr "Axuste do _Replay Gain"
+msgstr "Axuste do Replay Gain"
 
 #: ../quodlibet/qltk/prefs.py:275
 msgid "_Select"
@@ -1572,9 +1584,8 @@ msgstr ""
 "túa colección"
 
 #: ../quodlibet/qltk/prefs.py:292
-#, fuzzy
 msgid "_Refresh library on start"
-msgstr "Actualizar a colección"
+msgstr "Actualizar a colección ao iniciar"
 
 #: ../quodlibet/qltk/prefs.py:297
 msgid "Scan _Directories"
@@ -1585,9 +1596,8 @@ msgid "Separators for splitting tags"
 msgstr "Separadores para dividir as etiquetas"
 
 #: ../quodlibet/qltk/prefs.py:316
-#, fuzzy
 msgid "Save ratings and play _counts"
-msgstr "Gardar as calificacións e o contador"
+msgstr "Gardar as calificacións e o _contador"
 
 #: ../quodlibet/qltk/prefs.py:320
 msgid "_Email:"
@@ -1847,9 +1857,8 @@ msgid "New Name"
 msgstr "Novo nome"
 
 #: ../quodlibet/qltk/renamefiles.py:103
-#, fuzzy
 msgid "Ignore _All Errors"
-msgstr "Mostrar _erros"
+msgstr "Ignorar todos os _erros"
 
 #: ../quodlibet/qltk/renamefiles.py:105
 msgid "_Continue"
@@ -1897,9 +1906,8 @@ msgid "_Filter on %s"
 msgstr "_Filtrar en %s"
 
 #: ../quodlibet/qltk/songlist.py:587
-#, fuzzy
 msgid "Confirm rating"
-msgstr "Información"
+msgstr "Confirmar calificación"
 
 #: ../quodlibet/qltk/songlist.py:588
 #, python-format
@@ -1907,6 +1915,8 @@ msgid ""
 "You are about to change the rating of %d songs.\n"
 "Do you wish to continue?"
 msgstr ""
+"Estás a piques de mudar a calificación a %d cancións.\n"
+"Desexas continuar?"
 
 #: ../quodlibet/qltk/songlist.py:813
 msgid "_Track Headers"
@@ -2139,7 +2149,7 @@ msgid "[options]"
 msgstr "[opcións]"
 
 #: ../quodlibet/util/__init__.py:129
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%s %s - <quod-libet-development@googlegroups.com>\n"
 "Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others\n"
@@ -2147,8 +2157,8 @@ msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 msgstr ""
-"%s %s - <quodlibet@lists.sacredchao.net>\n"
-"Copyright 2004-2008 Joe Wreschnig, Michael Urman e outr@s\n"
+"%s %s - <quod-libet-development@googlegroups.com>\n"
+"Copyright 2004-2010 Joe Wreschnig, Michael Urman e outr@s\n"
 "\n"
 "Este aplicativo é software libre, mira no código fonte para saberes\n"
 "as condicións de copia. NON HÁ garantía, nen sequera da súa\n"
@@ -2232,37 +2242,40 @@ msgid "directory"
 msgstr "cartafol"
 
 #: ../quodlibet/__init__.py:42
-#, fuzzy
 msgid "Quod Libet"
-msgstr "Saír do Quod Libet"
+msgstr "Quod Libet"
 
 #. Translators: "W" as in "Warning". It is prepended to
 #. terminal output. APT uses a similar output format.
-#: ../quodlibet/__init__.py:97
+#: ../quodlibet/__init__.py:101
 msgid "W: "
 msgstr "A:"
 
+#: ../quodlibet/__init__.py:101
+msgid "Warnings"
+msgstr "Advertencias"
+
 #. Translators: "E" as in "Error". It is prepended to
 #. terminal output. APT uses a similar output format.
-#: ../quodlibet/__init__.py:103
+#: ../quodlibet/__init__.py:107
 msgid "E: "
 msgstr "E:"
 
-#: ../quodlibet/__init__.py:153
+#: ../quodlibet/__init__.py:159
 #, python-format
 msgid "Initializing audio backend (%s)"
 msgstr "A iniciar a infraestrutura de son (%s)"
 
-#: ../quodlibet/__init__.py:156
+#: ../quodlibet/__init__.py:162
 #, python-format
 msgid "Initializing main library (%s)"
 msgstr "A iniciar a colección principal (%s)"
 
-#: ../quodlibet/__init__.py:186
+#: ../quodlibet/__init__.py:192
 msgid "Unable to save library"
 msgstr "Non se puido gardar a colección"
 
-#: ../quodlibet/browsers/__init__.py:52
+#: ../quodlibet/browsers/__init__.py:55
 #, python-format
 msgid "%r doesn't contain any browsers."
 msgstr "%r non contén ningún navegador"
@@ -2272,7 +2285,7 @@ msgid "Error Occurred"
 msgstr "Producíuse un erro"
 
 #: ../quodlibet/debug/debugwindow.py:95
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "An exception has occured in Quod Libet. A dump file has been saved to <b>%s</"
 "b> that will help us debug the crash. Please file a new issue at http://code."
@@ -2284,49 +2297,59 @@ msgid ""
 "Quod Libet may now be unstable. Closing it and restarting is recommended. "
 "Your library will be saved."
 msgstr ""
-"Ocorreu un erro no Quod Libet. Gardóuse un ficheiro de depuración en <b>%s</"
-"b> que nos axudará a analizar o problema. Por favor enviao a quodlibet."
-"crash@gmail.com. Ese ficheiro pode conter información do teu sistema como a "
-"lista das cancións reproducidas recentemente. Se non o aceptas, envía no seu "
-"lugar <b>%s</b> coa descrición do que estabas a facer.\n"
+"Ocorreu un erro no Quod Libet. Gardóuse un ficheiro de depuración en <b>%s</b> que nos axudará a analizar o problema. \n"
+"Por favor crea un novo asunto en http://code.google.com/p/quodlibet/issues/list e inclue dito ficheiro ou o seu contido. \n"
+"Ese ficheiro pode conter información do teu sistema, como a lista das cancións reproducidas recentemente. \n"
+"Se non o aceptas, envía no seu lugar <b>%s</b> coa descrición do que estabas a facer.\n"
 "\n"
-"Pode que o Quod Libet se torne inestábel agora. Recomendamos fechalo e "
-"abrilo de novo.Gardaráse a túa colección."
+"Pode que o Quod Libet se torne inestábel a partires deste momento. Recomendamos fechalo e abrilo de novo.Gardaráse a túa colección."
 
-#: ../quodlibet/devices/__init__.py:40
+#: ../quodlibet/devices/__init__.py:24
+msgid "Could not import dbus-python, which is needed for device support."
+msgstr "Non se puido importar o dbus-python, necesario para o soporte de dispositivos."
+
+#: ../quodlibet/devices/__init__.py:46
 #, python-format
 msgid "%r doesn't contain any devices."
 msgstr "%r non contén ningún dispositvo"
 
-#: ../quodlibet/devices/__init__.py:120
+#: ../quodlibet/devices/__init__.py:126
 #, python-format
 msgid "%r is not a supported device."
 msgstr "%r non é un dispositivo soportado."
 
-#: ../quodlibet/devices/__init__.py:148
+#: ../quodlibet/devices/__init__.py:154
 msgid "No eject command found."
 msgstr "Non se atopou o comando eject."
 
-#: ../quodlibet/devices/__init__.py:407
-#, fuzzy
-msgid "Initializing device backend."
-msgstr "A iniciar a infraestrutura de son (%s)"
-
-#: ../quodlibet/devices/__init__.py:408
+#: ../quodlibet/devices/__init__.py:286
 #, python-format
-msgid "Trying '%s'"
-msgstr ""
+msgid "%s: Could not import ctypes."
+msgstr "%s: Non se puido importar ctypes."
 
-#: ../quodlibet/devices/__init__.py:428
-msgid "Couldn't connect to a device backend, disabling Media Devices browser."
-msgstr ""
+#: ../quodlibet/devices/__init__.py:290
+#, python-format
+msgid "%s: Could not find media-player-info."
+msgstr "%s: Non se puido atopar o media-player-info."
+
+#: ../quodlibet/devices/__init__.py:430
+msgid "Initializing device backend."
+msgstr "A iniciar a infraestrutura de dispositivos."
 
 #: ../quodlibet/devices/__init__.py:431
-#, fuzzy
-msgid "Device backend initialized."
-msgstr "A infraestrutura de son %r non está instalada"
+#, python-format
+msgid "Trying '%s'"
+msgstr "A tentar '%s'"
 
-#: ../quodlibet/formats/__init__.py:55
+#: ../quodlibet/devices/__init__.py:451
+msgid "Couldn't connect to a device backend."
+msgstr "Non se puido conectar a unha infraestrutura de dispositivos."
+
+#: ../quodlibet/devices/__init__.py:453
+msgid "Device backend initialized."
+msgstr "Infraestrutura de dispositivos iniciada."
+
+#: ../quodlibet/formats/__init__.py:59
 #, python-format
 msgid "Error loading %r"
 msgstr "Erro ao cargar %r"
@@ -2340,15 +2363,15 @@ msgstr "A infraestrutura de son non é válida"
 msgid "The audio backend %r is not installed."
 msgstr "A infraestrutura de son %r non está instalada"
 
-#: ../quodlibet/player/gstbe.py:35
+#: ../quodlibet/player/gstbe.py:41
 msgid "Invalid GStreamer output pipeline, trying default."
-msgstr ""
+msgstr "Saída do GStreamer inválida, tentaráse a predeterminada."
 
-#: ../quodlibet/player/gstbe.py:44 ../quodlibet/player/xinebe.py:37
+#: ../quodlibet/player/gstbe.py:50 ../quodlibet/player/xinebe.py:37
 msgid "Unable to create audio output"
 msgstr "Non se puido crear a saída de audio"
 
-#: ../quodlibet/player/gstbe.py:45
+#: ../quodlibet/player/gstbe.py:51
 #, python-format
 msgid ""
 "The audio output pipeline %r could not be created. Check your GStreamer "
@@ -2358,20 +2381,23 @@ msgstr ""
 "configuracións do GStreamer en ~/.quodlibet/config."
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:200
-#, fuzzy
+#: ../quodlibet/player/gstbe.py:206
 msgid "Output Error"
-msgstr "Saída do log"
+msgstr "Erro da saída"
 
-#: ../quodlibet/player/gstbe.py:200
-msgid "Output pipeline could not be initialized."
+#: ../quodlibet/player/gstbe.py:207
+msgid ""
+"GStreamer output pipeline could not be initialized. The pipeline might be "
+"invalid, or the device may be in use. Check the player preferences."
 msgstr ""
+"A saída do GStreamre non se puido iniciar. Pode ser que non sexa válida ou\n"
+"que o dispositivo estea a ser utilizado. Verifica a configuración do reproductor."
 
-#: ../quodlibet/player/gstbe.py:336
+#: ../quodlibet/player/gstbe.py:345
 msgid "Unable to open input files"
 msgstr "Non se puideron abrir os ficheiros indicados"
 
-#: ../quodlibet/player/gstbe.py:337
+#: ../quodlibet/player/gstbe.py:346
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
