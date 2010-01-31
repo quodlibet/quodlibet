@@ -417,7 +417,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         for pane in self.__panes:
             pane.set_selected(None, True)
         self.__panes[-1].uninhibit()
-        self.activate()
+        self.__panes[-1].get_selection().emit('changed')
 
     def __mnemonic_activate(self, label, group_cycling):
         # If our mnemonic widget already has the focus, switch to
