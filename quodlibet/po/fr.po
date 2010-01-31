@@ -813,7 +813,7 @@ msgstr ""
 "Joshua Kwan <joshk@triplehelix.org>\n"
 "kwikwi <kwiskas@gmail.com>\n"
 "fab <fab@gnux.info>"
-"Bastien Gorissen <kadomony@gmail.com>
+"Bastien Gorissen <kadomony@gmail.com>"
 
 #. Translators: Refers to the beginning of the playing song.
 #: ../quodlibet/qltk/bookmarks.py:23
