@@ -291,6 +291,14 @@ if sys.platform == "win32":
 else:
     fsnative = fsencode # Encode it on other platforms
 
+def split_scan_dirs(s):
+    """Split the value of the "scan" setting, accounting for drive letters on
+    win32."""
+    if sys.platform == "win32":
+        return filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", s))
+    else:
+        return filter(None, s.split(":"))
+
 def decode(s, charset="utf-8"):
     """Decode a string; if an error occurs, replace characters and append
     a note to the string."""

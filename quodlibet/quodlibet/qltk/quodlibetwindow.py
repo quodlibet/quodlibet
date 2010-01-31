@@ -721,7 +721,7 @@ class QuodLibetWindow(gtk.Window):
             self.__make_query("#(playcount < %d)" % (songs[-40] + 1))
 
     def __rebuild(self, activator, force):
-        paths = config.get("settings", "scan").split(":")
+        paths = util.split_scan_dirs(config.get("settings", "scan"))
         exclude = config.get("library", "exclude").split(":")
         copool.add(self.__library.rebuild,
                    paths, self.statusbar.progress, force,
@@ -767,7 +767,7 @@ class QuodLibetWindow(gtk.Window):
             chooser = FileChooser(
                 self, _("Add Music"), formats.filter, self.last_dir)
             cb = None
-        
+
         fns = chooser.run()
         chooser.destroy()
         if fns:
@@ -778,7 +778,7 @@ class QuodLibetWindow(gtk.Window):
             else:
                 added = []
                 self.last_dir = os.path.basename(fns[0])
-                for filename in map(os.path.realpath, fns):
+                for filename in map(os.path.realpath, map(util.fsnative, fns)):
                     if filename in self.__library: continue
                     song = self.__library.add_filename(filename)
                     if song: added.append(song)
@@ -798,7 +798,7 @@ class QuodLibetWindow(gtk.Window):
                     self.browser.activate()
 
         if cb and cb.get_active():
-            dirs = config.get("settings", "scan").split(":")
+            dirs = util.split_scan_dirs(config.get("settings", "scan"))
             for fn in fns:
                 if fn not in dirs: dirs.append(fn)
             dirs = ":".join(dirs)

@@ -9,7 +9,7 @@
 * pyGst WinBuilds
 * Python:
     * mutagen
-    * feedburner
+    * feedparser
     * py2exe
 * NSIS
 
@@ -21,17 +21,25 @@ In the usual manner. Use the distutils command 'py2exe'.
 
 All of these things should go in 'quodlibet/dist':
 
-* From the GTK+-bundle: 'etc', 'lib', and everything in 'share' except the docs
+* From the GTK+-bundle: 'etc', 'lib', 'share/locale', 'share/themes'
 
 * From your GStreamer WinBuilds install dir: dump the contents of 'bin'
   straight into 'quodlibet/dist', but do not overwrite any files when asked.
-  Copy 'lib', 'share', and 'etc' over as well.
+  Copy 'lib', 'share', and 'etc' over as whole directories.
 
 * From a computer running a real operating system: do a 'build_mo' then copy
-  the contents of 'build/share' to 'quodlibet/dist'. I have no idea if this
-  will actually result in localization for Windows users but it's worth a try.
+  the contents of 'build/share' to 'quodlibet/dist/share'.
 
 == Pack ==
 
-Check the version string in the installer MSI, then run it.
+Remove any GTK locale which doesn't have a corresponding QL one:
+    $ for i in share/locale/*; do if test \! -e "../build/$i"; then \
+        rm -r "$i"; fi; done
 
+Remove any non-DLL from dist/lib:
+    $ find lib -type f \! -iname '*dll' -delete
+
+Set the theme:
+    $ cp share/themes/MS-Windows/gtk-2.0/gtkrc etc/gtk-2.0/
+
+Run the installer NSI script to write the installer.

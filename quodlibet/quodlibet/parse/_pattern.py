@@ -194,6 +194,14 @@ class _FileFromPattern(_Pattern):
                    (lambda k, s: (len(s) > 100 and s[:100] + "...") or s),
                    ]
 
+    def __init__(self, string):
+        # On Windows, users may use backslashes in patterns as path separators.
+        # Since Windows filenames can't use '<>|' anyway, preserving backslash
+        # escapes is unnecessary, so we just replace them blindly.
+        if os.name == 'nt':
+            string = string.replace("\\", "/")
+        super(_FileFromPattern, self).__init__(string)
+
     def _post(self, value, song):
         if value:
             fn = song.get("~filename", ".")
@@ -201,7 +209,7 @@ class _FileFromPattern(_Pattern):
             val_ext = value[-len(ext):].lower()
             if not ext == val_ext: value += ext.lower()
             value = os.path.expanduser(value)
-            if "/" in value and not value.startswith("/"):
+            if "/" in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")
         return value
 

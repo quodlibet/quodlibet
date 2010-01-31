@@ -150,6 +150,11 @@ class TFileFromPattern(_TPattern):
         p3 = FileFromPattern('<title>')
         s.assertEquals(p3.format(x), 'Xx.flac')
 
+    def test_backslash_conversion_win32(s):
+        if os.name == 'nt':
+            pat = FileFromPattern(r'Z:\<artist>\<title>')
+            s.assertEquals(pat.format(s.a), 'Z:/Artist/Title5.mp3')
+
 class TXMLFromPattern(_TPattern):
     def test_markup_passthrough(s):
         pat = XMLFromPattern(r'\<b\>&lt;<title>&gt;\</b\>')

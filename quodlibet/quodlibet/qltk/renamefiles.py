@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import unicodedata
 
 import gtk
@@ -30,6 +31,13 @@ class StripWindowsIncompat(FilterCheckButton):
     _key = "windows"
     BAD = '\:*?;"<>|'
     _order = 1.1
+    def __init__(self):
+        super(StripWindowsIncompat, self).__init__()
+        # If on Windows, force this to be active (and hidden)
+        if os.name == 'nt':
+            self.set_active(True)
+            self.set_sensitive(False)
+            self.set_no_show_all(True)
     def filter(self, original, filename):
         return util.strip_win32_incompat(filename)
 

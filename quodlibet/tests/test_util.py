@@ -1,5 +1,6 @@
 from tests import TestCase, add
 
+import sys
 import os
 import re
 
@@ -102,6 +103,16 @@ class Tre_esc(TestCase):
         self.failUnlessEqual(
             re.escape("*quux#argh?woo"), r"\*quux\#argh\?woo")
 add(Tre_esc)
+
+class Tsplit_scan_dirs(TestCase):
+    def test_basic(self):
+        if sys.platform == "win32":
+            res = util.split_scan_dirs(r":Z:\foo:C:/windows:")
+            self.assertEquals(res, [r"Z:\foo", "C:/windows"])
+        else:
+            res = util.split_scan_dirs(":/home/user/Music:/opt/party:")
+            self.assertEquals(res, ["/home/user/Music", "/opt/party"])
+add(Tsplit_scan_dirs)
 
 class Tdecode(TestCase):
     def test_empty(self):

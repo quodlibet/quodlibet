@@ -78,57 +78,13 @@ class build_scripts(distutils_build_scripts):
             if newer(script, newpath) or self.force:
                 self.copy_file(script, newpath)
 
-class release(Command):
-    description = "release a new version of Quod Libet"
-    user_options = [
-        ("all-the-way", None, "svn commit and copy release tarball to kai")
-        ]
-
-    def initialize_options(self):
-        self.all_the_way = False
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        from quodlibet.const import VERSION
-        self.run_command("test")
-        if os.path.exists("../../releases/quodlibet-%s" % VERSION):
-            raise 
-        target = "../../releases/quodlibet-%s" % VERSION
-        if os.path.isdir(target):
-            raise SystemExit("Quod Libet %s was already released." % VERSION)
-
-        # This is so fucking weird, SVN refuses to branch
-        # trunk/quodlibet with some error about the files already
-        # existing. Releasing is more important than proper branch
-        # history.
-        self.spawn(["svn", "export", os.getcwd(), target])
-        self.spawn(["svn", "add", target])
-
-        if self.all_the_way:
-            if os.environ.get("USER") != "piman":
-                print "You're not Joe, so this might not work."
-            self.spawn(
-                ["svn", "commit", "-m", "Quod Libet %s." % VERSION, target])
-            os.chdir(target)
-            if os.environ.get("USER") != "piman":
-                print "You're not Joe, so this definitely won't work."
-            print "Copying tarball to kai."
-            self.run_command("sdist")
-            self.spawn(["gpg", "-b", "dist/quodlibet-%s.tar.gz" % VERSION])
-            self.spawn(["scp", "dist/quodlibet-%s.tar.gz" % VERSION,
-                        "dist/quodlibet-%s.tar.gz.sig" % VERSION,
-                        "sacredchao.net:~piman/public_html/software"])
-            self.run_command("register")
-
 class coverage_cmd(Command):
     description = "generate test coverage data"
     user_options = []
 
     def initialize_options(self):
         pass
-    
+
     def finalize_options(self):
         pass
 
@@ -258,8 +214,7 @@ if __name__ == "__main__":
 
     from quodlibet import const
     cmd_classes = {"check": check, 'clean': clean, "test": test_cmd,
-                   "coverage": coverage_cmd, "release": release,
-                   "build_scripts": build_scripts,
+                   "coverage": coverage_cmd, "build_scripts": build_scripts,
                    "build_gobject_ext": build_gobject_ext}
     setup_kwargs = {
         'distclass': GDistribution,
@@ -294,11 +249,14 @@ if __name__ == "__main__":
                     ],
         }
     if os.name == 'nt':
+        # (probably) necessary to get the right DLLs pulled in by py2exe
         import pygst
         pygst.require('0.10')
         from os.path import join
 
-        # suckily, we include 'browsers' and 'formats' twice.
+        # suckily, we include 'browsers' and 'formats' twice; the alternative
+        # is to parse the zipped library file for filenames, which we may do
+        # later on
         data_files = [('', ['COPYING']),
                       (join('quodlibet', 'browsers'),
                         glob.glob(join('quodlibet', 'browsers', '*.py'))),
@@ -315,27 +273,27 @@ if __name__ == "__main__":
                     'feedparser').split()
 
         setup_kwargs.update({
-                    'data_files': data_files,
-                    'windows': [
-                        {
-                            "script": "quodlibet.py",
-                            "icon_resources": [(0,
-                               join('quodlibet', 'images', 'quodlibet.ico'))]
-                        },
-                        {
-                            "script": "exfalso.py",
-                            "icon_resources": [(0,
-                                join('quodlibet', 'images', 'exfalso.ico'))]
-                        }
-                    ],
-                    'options': {
-                        'py2exe': {
-                            'packages': 'encodings, feedparser, quodlibet',
-                            'includes': ('cairo, pango, pangocairo, atk, '
-                                         'gobject, pygst, gst, '
-                                         'quodlibet.player.gstbe')
-                        }
-                    }
-                })
+            'data_files': data_files,
+            'windows': [
+                {
+                    "script": "quodlibet.py",
+                    "icon_resources": [(0,
+                       join('quodlibet', 'images', 'quodlibet.ico'))]
+                },
+                {
+                    "script": "exfalso.py",
+                    "icon_resources": [(0,
+                        join('quodlibet', 'images', 'exfalso.ico'))]
+                }
+            ],
+            'options': {
+                'py2exe': {
+                    'packages': ('encodings, feedparser, quodlibet, '
+                                 'HTMLParser, gtk, glib, gobject'),
+                    'includes': ('cairo, pango, pangocairo, atk, gio, '
+                                 'pygst, gst, quodlibet.player.gstbe')
+                }
+            }
+        })
     setup(**setup_kwargs)
 

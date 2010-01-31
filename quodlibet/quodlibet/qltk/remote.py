@@ -297,6 +297,6 @@ class FIFOControl(object):
             f.close()
 
     def _refresh(self, library, window, player):
-        paths = config.get("settings", "scan").split(":")
+        paths = util.split_scan_dirs(config.get("settings", "scan"))
         progress = window.statusbar.progress
         copool.add(library.rebuild, paths, progress, False, funcid="library")

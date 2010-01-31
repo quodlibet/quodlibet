@@ -288,7 +288,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             e.set_tooltip_text(_("Songs placed in these folders (separated "
                      "by ':') will be added to your library"))
             hb.pack_start(b, expand=False)
-            scandirs = config.get("settings", "scan").split(":")
+            scandirs = util.split_scan_dirs(config.get("settings", "scan"))
             if scandirs and os.path.isdir(scandirs[-1]):
                 # start with last added directory
                 initial = scandirs[-1]
