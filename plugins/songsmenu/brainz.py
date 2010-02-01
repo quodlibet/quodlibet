@@ -275,7 +275,13 @@ class SearchWindow(gtk.Dialog):
             if config_get('split_feat', False):
                 feats = re.findall(r' \(feat\. (.*?)\)', track.title)
                 if feats:
-                    song['performers'] = '\n'.join(feats)
+                    feat = []
+                    for value in feats:
+                        values = value.split(', ')
+                        if len(values) > 1:
+                            values += values.pop().split(' & ')
+                        feat += values
+                    song['performer'] = '\n'.join(feat)
                     song['title'] = re.sub(r' \(feat\. .*?\)', '', track.title)
 
         self.destroy()
