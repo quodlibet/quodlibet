@@ -1,334 +1,448 @@
-# (C) 2005 Joshua Kwan <joshk@triplehelix.org>
-# redistributable under the terms of the GNU GPL, version 2 or later
+# brainz.py - Quod Libet plugin to tag files from MusicBrainz automatically
+# Copyright 2005-2010   Joshua Kwan <joshk@triplehelix.org>,
+#                       Michael Ball <michael.ball@gmail.com>,
+#                       Steven Robertson <steven@strobe.cc>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
-import musicbrainz, os, gtk, re
+import os
+import re
+import threading
+import time
 
-# New musicbrainz python bindings don't have this layout. Grr!
-try: from musicbrainz.queries import *
-except:
-    MBE_AlbumGetAlbumArtistId = musicbrainz.MBE_AlbumGetAlbumArtistId
-    MBE_AlbumGetArtistId = musicbrainz.MBE_AlbumGetAlbumArtistId
-    MBE_AlbumGetAlbumId = musicbrainz.MBE_AlbumGetAlbumId
-    MBE_AlbumGetAlbumName = musicbrainz.MBE_AlbumGetAlbumName
-    MBE_AlbumGetArtistName = musicbrainz.MBE_AlbumGetArtistName
-    MBE_AlbumGetNumTracks = musicbrainz.MBE_AlbumGetNumTracks
-    MBE_AlbumGetTrackId = musicbrainz.MBE_AlbumGetTrackId
-    MBE_AlbumGetTrackName = musicbrainz.MBE_AlbumGetTrackName
-    MBE_GetNumAlbums = musicbrainz.MBE_GetNumAlbums
-    MBE_GetNumTrmids = musicbrainz.MBE_GetNumTrmids
-    MBQ_FindAlbumByName = musicbrainz.MBQ_FindAlbumByName
-    MBS_Back = musicbrainz.MBS_Back
-    MBS_Rewind = musicbrainz.MBS_Rewind
-    MBS_SelectAlbum = musicbrainz.MBS_SelectAlbum
-    MBS_SelectTrack = musicbrainz.MBS_SelectTrack
-    MBS_SelectTrmid = musicbrainz.MBS_SelectTrmid
+import gtk
+import gobject
+import pango
 
-from qltk import ErrorMessage, ConfirmAction, Message
-from qltk.getstring import GetStringDialog
-from util import tag, escape
+from quodlibet import config, util
+from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
 
-from plugins.songsmenu import SongsMenuPlugin
+from musicbrainz2 import webservice as ws
+from musicbrainz2.utils import extractUuid
+VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
 
-class AlbumCandidate(object):
-    various = False
-    tracklist = []
-    trmlist = []
-    id = ""
+def get_artist(album):
+    """Returns a single artist likely to be the MB AlbumArtist, or None."""
+    for tag in ["albumartist", "artist", "performer"]:
+        names = set()
+        for song in album:
+            map(names.add, filter(lambda n: n, song.get(tag, "").split("\n")))
+            if len(names) == 1:
+                return names.pop()
+            elif len(names) > 1:
+                return None
+    return None
 
-    def __init__(self):
-        self.various = False
-        self.tracklist = []
-        self.trmlist = []
-        self.id = ""
+def get_trackcount(album):
+    """Returns the track count, hammered into submission."""
+    return max(max(map(lambda t: max(map(int,
+        t.get('tracknumber', '0').split('/'))), album)), len(album)) # (;))
 
-# Shamelessly stolen from cddb.py
-class AskAction(ConfirmAction):
-    """A message dialog that asks a yes/no question."""
-    def __init__(self, *args, **kwargs):
-        kwargs["buttons"] = gtk.BUTTONS_YES_NO
-        Message.__init__(self, gtk.MESSAGE_QUESTION, *args, **kwargs)
-        self.cb = gtk.CheckButton(_("Overwrite existing tags."))
-        self.cb.set_active(True)
-        self.vbox.pack_start(self.cb, expand=False)
-        self.cb.show()
+def config_get(key, default=''):
+    try:
+        return config.getboolean('plugins', 'brainz_' + key)
+    except config.error:
+        return default
 
-class AlbumChooser(gtk.Dialog):
-    active_candidate = None
-    candidates = {}
-    first = True
+class ResultTreeView(HintedTreeView, MultiDragTreeView):
+    """The result treeview. The model only stores local tracks; info about
+    remote results is pulled from self.remote_album."""
 
-    def __title_match(self, a, b):
-        c = filter(lambda x: x.isalnum(), a.lower())
-        d = filter(lambda x: x.isalnum(), b.lower())
-
-        return (c == d or c.startswith(d) or c.endswith(d) or d.startswith(c) or d.endswith(c))
-    
-    def __cursor_changed(self, view):
-        selection = view.get_selection()
-        selection.set_mode(gtk.SELECTION_SINGLE)
-        model, iter = view.get_selection().get_selected()
-
-        # This MAY be the parent node or not.
-        while iter and model.iter_parent(iter) != None:
-            iter = model.iter_parent(iter)
-        if iter is None: return
-
-        selection.unselect_all()
-        view.collapse_all()
-        view.expand_row(model.get_path(iter), False)
-        selection.set_mode(gtk.SELECTION_MULTIPLE)
-        selection.select_iter(iter)
-        for i in range(0, model.iter_n_children(iter)):
-            view.get_selection().select_iter(model.iter_nth_child(iter, i))
-        self.active_candidate = model[iter][2]
-        
-        return
-
-    def run(self):
-        self.show_all()
-        resp = gtk.Dialog.run(self)
-        if resp == gtk.RESPONSE_OK:
-            value = self.active_candidate
-        else: value = None
-        self.destroy()
-        return value
-
-    def __init__(self, brainz, album, candidates):
-        gtk.Dialog.__init__(self, "Album selection")
-
-        self.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK,
-            gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-
-        self.candidates = candidates
-        
-        label = gtk.Label(_("Multiple albums found, please select one. (Bold entries denote a track title match with the tags this album already has.)"))
-        label.set_line_wrap(True)
-
-        # Initialize the TreeStore and seed it with data from candidates
-        treestore = gtk.TreeStore(str, str, str)
-        
-        for candidate in candidates.values():
-            iter = treestore.append(None,
-                ["<i>%s</i>" % escape(candidate.tracklist[0]['album']),
-                "", candidate.id])
-            i = 1
-            for track in candidate.tracklist:
-                if 'title' in album[i - 1] and self.__title_match(album[i - 1]['title'], track['title']):
-                    treestore.append(iter,
-                        [escape(track['artist']), "%d. <b>%s</b>" %
-                          (i, escape(track['title'])), ""])
-                else:
-                    treestore.append(iter,
-                        [escape(track['artist']), "%d. %s" %
-                          (i, escape(track['title'])), ""])
-                i = i + 1
-        
-        view = gtk.TreeView(treestore)
-        
-        i = 0
-
-        def pango_format(column, cell, model, iter, arg):
-            cell.set_property('markup', model[iter][arg])
-
-        for column in ["Album / Artist", "Title"]:
-            renderer = gtk.CellRendererText()
-            tvcolumn = gtk.TreeViewColumn(column, renderer, text=i)
-            if column is "Title":
-                tvcolumn.set_cell_data_func(renderer, pango_format, 1)
-            else:
-                tvcolumn.set_cell_data_func(renderer, pango_format, 0)
-            
-            tvcolumn.set_clickable(False)
-            tvcolumn.set_resizable(True)
-            view.append_column(tvcolumn)
-            i = i + 1
-        
-        self.set_size_request(400, 300)
-        
-        swin = gtk.ScrolledWindow()
-        swin.add(view)
-
-        swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-
-        self.vbox.pack_start(label, expand=False, fill=True)
-        self.vbox.pack_start(swin)
-
-        view.connect('cursor-changed', self.__cursor_changed)
-
-class QLBrainz(object):
-    # MusicBrainz constant, for now.
-    VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
-
-    mb = None
-    
-    def __init__(self):
-        # Prepare the MusicBrainz client class
-        self.mb = musicbrainz.mb()
-        self.mb.SetDepth(4)
-
-    """ A function that assumes you just 'select'ed an album. Returns an
-        AlbumCandidate with cached track list and list of TRMs for each
-        track. """
-    def __cache_this_album(self, tracks):
-        tracklist = []
-            
-        this_numtracks = self.mb.GetResultInt(MBE_AlbumGetNumTracks)
-        this_title = self.mb.GetResultData(MBE_AlbumGetAlbumName)
-        this_artistid = self.mb.GetIDFromURL(self.mb.GetResultData(MBE_AlbumGetAlbumArtistId))
-
-        if this_numtracks == tracks:
-            new_candidate = AlbumCandidate()
-            
-            new_candidate.id = self.mb.GetIDFromURL(self.mb.GetResultData(MBE_AlbumGetAlbumId))
-        
-            if this_artistid == self.VARIOUS_ARTISTS_ARTISTID:
-                new_candidate.various = True
-
-            # Now cache EVERYTHING for all tracks
-            # If this tracklist is used, its dict will be merged into the
-            # target song's dict, so use the proper keys.
-            for j in range(1, tracks + 1):
-                track_data = {}
-                    
-                track_data['musicbrainz_trackid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetTrackId, j))
-                track_data['musicbrainz_albumid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetAlbumId, j))
-                track_data['musicbrainz_albumartistid'] = self.mb.GetIDFromURL(self.mb.GetResultData1(MBE_AlbumGetArtistId, j))
-
-                # VA album is possible, just obliquely cover all cases
-                track_data['artist'] = self.mb.GetResultData1(MBE_AlbumGetArtistName, j)
-                track_data['title'] = self.mb.GetResultData1(MBE_AlbumGetTrackName, j)
-                track_data['album'] = this_title
-                track_data['tracknumber'] = u"%d/%d" % (j, tracks)
-
-                new_candidate.tracklist.append(track_data)
-
-            return new_candidate
-        return None
-
-    def __lookup_by_album_name(self, album, tracks):
-        candidates = {}
-
-        # If the <album> string is an MB ID, try to get this album, else
-        # search for the name.
-        if re.match(r'^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$', album):
-            print "ID Query: %s" % album
-            self.mb.QueryWithArgs(musicbrainz.MBQ_GetAlbumById, [album])
+    def __name_datafunc(self, col, cell, model, itr):
+        song = model[itr][0]
+        if song:
+            cell.set_property('text', os.path.basename(song.get("~filename")))
         else:
-            print "Name Query: %s" % album
-            self.mb.QueryWithArgs(MBQ_FindAlbumByName, [album])
-        
-        n_albums = self.mb.GetResultInt(MBE_GetNumAlbums)
+            cell.set_property('text', '')
 
-        print "Found %d albums" % n_albums
+    def __track_datafunc(self, col, cell, model, itr):
+        idx = model.get_path(itr)[0]
+        if idx >= len(self.remote_album):
+            cell.set_property('text', '')
+        else:
+            cell.set_property('text', idx + 1)
 
-        for i in range(1, n_albums + 1):
-            self.mb.Select(MBS_Rewind)
-            self.mb.Select1(MBS_SelectAlbum, i)
+    def __title_datafunc(self, col, cell, model, itr):
+        idx = model.get_path(itr)[0]
+        if idx >= len(self.remote_album):
+            cell.set_property('text', '')
+        else:
+            cell.set_property('text', self.remote_album[idx].title)
 
-            candidate = self.__cache_this_album(tracks)
+    def __artist_datafunc(self, col, cell, model, itr):
+        idx = model.get_path(itr)[0]
+        if idx >= len(self.remote_album) or not self.remote_album[idx].artist:
+            cell.set_property('text', '')
+        else:
+            cell.set_property('text', self.remote_album[idx].artist.name)
 
-            if candidate != None:
-                candidates[candidate.id] = candidate
+    def __init__(self, album):
+        self.album = album
+        self.remote_album = []
+        self.model = gtk.ListStore(object)
+        map(self.model.append, zip(album))
 
-        return candidates
+        super(ResultTreeView, self).__init__(self.model)
+        self.set_headers_clickable(True)
+        self.set_rules_hint(True)
+        self.set_reorderable(True)
+        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
 
-    def do_tag(self, album, candidate):
-        i = 0
+        cols = [
+                ('Filename', self.__name_datafunc, True),
+                ('Track', self.__track_datafunc, False),
+                ('Title', self.__title_datafunc, True),
+                ('Artist', self.__artist_datafunc, True),
+            ]
 
-        album_artist = ""
+        for title, func, resize in cols:
+            render = gtk.CellRendererText()
+            render.set_property('ellipsize', pango.ELLIPSIZE_END)
+            col = gtk.TreeViewColumn(title, render)
+            col.set_cell_data_func(render, func)
+            col.set_resizable(resize)
+            col.set_expand(resize)
+            self.append_column(col)
 
-        if candidate.various: album_artist = "Various Artists"
-        else: album_artist = candidate.tracklist[0]['artist']
+    def update_remote_album(self, remote_album):
+        """Updates the TreeView, handling results with a different number of
+        tracks than the album being tagged."""
+        for i in range(len(self.model), len(remote_album)):
+            self.model.append((None, ))
+        for i in range(len(self.model), len(remote_album), -1):
+            if self.model[-1][0] is not None:
+                break
+            self.model.remove(len(self.model) - 1)
+        self.remote_album = remote_album
+        has_artists = bool(filter(lambda t: t.artist, remote_album))
+        self.get_column(3).set_visible(has_artists)
+        self.columns_autosize()
+        self.queue_draw()
 
-        message = [
-            "<b>%s:</b> %s" % (tag("artist"), escape(album_artist)),
-            "<b>%s:</b> %s" % (tag("album"), escape(candidate.tracklist[0]['album'])),
-            "\n<u>%s</u>" % _("Track List")
-        ]
-            
-        for i in range(0, len(album)):
-            if candidate.various:
-                message.append("<b>%d.</b> %s - %s" % (i + 1,
-                    escape(candidate.tracklist[i]['artist']),
-                    escape(candidate.tracklist[i]['title'])))
+class ResultComboBox(gtk.ComboBox):
+    """Formatted picker for different Result entries."""
+
+    def __init__(self, model):
+        super(ResultComboBox, self).__init__(model)
+        render = gtk.CellRendererText()
+        render.set_fixed_height_from_font(2)
+        def celldata(layout, cell, model, iter):
+            release = model[iter][0]
+            if not release:
+                return
+            date = release.getEarliestReleaseDate()
+            if date:
+                date = '%s, ' % date
             else:
-                message.append("<b>%d.</b> %s" % (i + 1,
-                    escape(candidate.tracklist[i]['title'])))
+                date = ''
+            markup = "<b>%s</b>\n%s - %s%s tracks" % (
+                    util.escape(release.title),
+                    util.escape(release.artist.name),
+                    date, release.tracksCount)
+            cell.set_property('markup', markup)
+        self.pack_start(render)
+        self.set_cell_data_func(render, celldata)
 
-        action = AskAction(None, _("Save the following information?"),
-                           "\n".join(message))
-        if action.run():
-            overwrite = action.cb.get_active()
-            for i, track_data in enumerate(candidate.tracklist):
-                for key, val in track_data.items():
-                    if not overwrite and album[i].get(key):
-                        continue
-                    if val != album[i].get(key):
-                        album[i][key] = val
+class ReleaseEventComboBox(gtk.ComboBox):
+    """A ComboBox for picking a release event."""
 
-    def __get_album_trm(self, album):
-        trm_this_album = []
-        for track in album:
-            i, o = None, None
-            try: i, o = os.popen2(['trm', track('~filename')])
-            except: raise TRMError #lame
+    def __init__(self):
+        self.model = gtk.ListStore(object, str)
+        super(ReleaseEventComboBox, self).__init__(self.model)
+        render = gtk.CellRendererText()
+        self.pack_start(render)
+        self.set_attributes(render, markup=1)
+        self.set_sensitive(False)
 
-            try: trm_this_album.append(o.readlines()[0].rstrip())
-            except: raise TRMError
+    def update(self, release):
+        self.model.clear()
+        events = release.getReleaseEvents()
+        # The catalog number is the most important of these fields, as it's
+        # the source for the 'labelid' tag, which we'll use until MB NGS is
+        # up and running to deal with multi-disc albums properly. We sort to
+        # find the earliest release with a catalog number.
+        events.sort(key=lambda e: (bool(not e.getCatalogNumber()), 
+                                   e.getDate() or '9999-12-31'))
+        for rel_event in events:
+            text = '%s %s: <b>%s</b> <i>(%s)</i>' % (
+                    rel_event.getDate() or '', rel_event.getLabel() or '',
+                    rel_event.getCatalogNumber(),rel_event.getCountry())
+            self.model.append( (rel_event, text) )
+        if len(events) > 0:
+            self.set_active(0)
+        self.set_sensitive((len(events) > 0))
 
-        return trm_this_album
+    def get_release_event(self):
+        itr = self.get_active_iter()
+        if itr:
+            return self.model[itr][0]
+        else:
+            return None
 
-    def __choose_album(self, album, candidates):
-        ret = AlbumChooser(self, album, candidates).run()
-        if ret is None: return
-        else: self.do_tag(album, candidates[ret])
+class QueryThread:
+    """Daemon thread which does HTTP retries and avoids flooding."""
+    def __init__(self):
+        self.running = True
+        self.queue = []
+        thread = threading.Thread(target=self.__run)
+        thread.daemon = True
+        thread.start()
 
-    def plugin_album(self, album, override=None):
-        # If there is already an album name. When plugin_album is called,
-        # all of the 'album' entries are guaranteed to be the same.
-        mb_album = None
-        
-        # Test for user error.
-        if 'tracknumber' in album[0] and int(album[0]('tracknumber').split("/")[0]) != 1:
-            ErrorMessage(None, "",
-            _("Please select the entire album (starting from track 1!)")).run()
-        elif override is not None or 'album' in album[0]:
-            album_name = ""
-            if override is not None: album_name = override
-            else: album_name = album[0]('album')
-            
-            candidates = self.__lookup_by_album_name(album_name, len(album))
+    def add(self, callback, func, *args, **kwargs):
+        """Add a func to be evaluated in a background thread.
+        Callback will be called with the result from the main thread."""
+        self.queue.append((callback, func, args, kwargs))
 
-            if len(candidates) > 1:
-                self.__choose_album(album, candidates)
+    def stop(self):
+        """Stop the background thread."""
+        self.running = False
 
-            elif len(candidates) == 0:
-                name = GetStringDialog(
-                    None, _("Couldn't locate album by name"),
-                    _("Couldn't find an album with the name \"%s\" (and a "
-                      "matching number of tracks.) You might not have selected "
-                      "the entire album. To retry with another possible album "
-                      "name, enter it here. You can also try to look up the album"
-                      "ID yourself and enter this instead.") %
-                      album_name, [], gtk.STOCK_OK).run()
-                # recursion. well...
-                if name: self.plugin_album(album, name)
-                    
+    def __run(self):
+        while self.running:
+            if self.queue:
+                callback, func, args, kwargs = self.queue.pop(0)
+                try:
+                    res = func(*args, **kwargs)
+                except:
+                    time.sleep(2)
+                    try:
+                        res = func(*args, **kwargs)
+                    except:
+                        res = None
+                gobject.idle_add(callback, res)
+            time.sleep(1)
+
+
+class SearchWindow(gtk.Dialog):
+    def __save(self, widget=None, response=None):
+        """Writes values to Song objects."""
+        self._qthread.stop()
+        if response != gtk.RESPONSE_ACCEPT:
+            self.destroy()
+            return
+
+        album = self.current_release
+        shared = {}
+        shared['album'] = album.title
+        shared['date'] = album.getEarliestReleaseDate() or ''
+
+        if shared['date'] and config_get('year_only', False):
+            shared['date'] = shared['date'].split('-')[0]
+
+        if config_get('split_disc', True):
+            m = re.match(r'(.*) \(disc (.*?)\)$', album.title)
+            if m:
+                shared['album'] = m.group(1)
+                disc = m.group(2).split(': ', 1)
+                shared['discnumber'] = disc[0]
+                if len(disc) > 1:
+                    shared['discsubtitle'] = disc[1]
+
+        if config_get('labelid', True):
+            relevt = self.release_combo.get_release_event()
+            if relevt and relevt.getCatalogNumber():
+                shared['labelid'] = relevt.getCatalogNumber()
+
+        if not album.isSingleArtistRelease():
+            if (config_get('albumartist', True)
+                and extractUuid(album.artist.id) != VARIOUS_ARTISTS_ARTISTID):
+                shared['albumartist'] = album.artist.name
+
+        if config_get('standard', True):
+            shared['musicbrainz_albumartistid'] = extractUuid(album.artist.id)
+            shared['musicbrainz_albumid'] = extractUuid(album.id)
+
+        for idx, (song, ) in enumerate(self.result_treeview.model):
+            if song is None: continue
+            song.update(shared)
+            if idx > len(album.tracks): continue
+            track = album.tracks[idx]
+            song['title'] = track.title
+            song['tracknumber'] = '%d/%d' % (idx+1,
+                    max(len(album.tracks), len(self.result_treeview.model)))
+            if config_get('standard', True):
+                song['musicbrainz_trackid'] = extractUuid(track.id)
+            if album.isSingleArtistRelease() or not track.artist:
+                song['artist'] = album.artist.name
             else:
-                self.do_tag(album, candidates[candidates.keys()[0]])
-        elif 'album' not in album[0]: # and override is None
-            name = GetStringDialog(
-                None, _("Not enough information to locate album"),
-                _("Please enter an album name to match this one to."), [],
-                gtk.STOCK_OK).run()
-            if name: self.plugin_album(album, name)
+                song['artist'] = track.artist.name
+                if config_get('standard', True):
+                    song['musicbrainz_artistid'] = extractUuid(track.artist.id)
+            if config_get('split_feat', False):
+                feats = re.findall(r' \(feat\. (.*?)\)', track.title)
+                if feats:
+                    song['performers'] = '\n'.join(feats)
+                    song['title'] = re.sub(r' \(feat\. .*?\)', '', track.title)
 
-class QLBrainzPlugin(SongsMenuPlugin):
-    PLUGIN_ID = 'MusicBrainz lookup'
-    PLUGIN_NAME = _('MusicBrainz Lookup')
-    PLUGIN_ICON = 'gtk-cdrom'
+        self.destroy()
+
+    def __do_query(self, *args):
+        """Search for album using the query text."""
+        query = self.search_query.get_text()
+        if not query:
+            self.result_label.set_markup("<b>Please enter a query.</b>")
+            self.search_button.set_sensitive(True)
+            return
+        self.result_label.set_markup("<i>Searching...</i>")
+        filt = ws.ReleaseFilter(query=query)
+        self._qthread.add(self.__process_results,
+                         self._query.getReleases, filt)
+
+    def __process_results(self, results):
+        """Callback for search query completion."""
+        if results is None:
+            self.result_label.set_text("Error encountered. Please retry.")
+            self.search_button.set_sensitive(True)
+        self._resultlist.clear()
+        for release in map(lambda r: r.release, results):
+            self._resultlist.append((release, ))
+        self.result_label.set_markup("<i>Loading result...</i>")
+        self.search_button.set_sensitive(True)
+        if len(results) > 0 and self.result_combo.get_active() == -1:
+            self.result_combo.set_active(0)
+
+    def __result_changed(self, combo):
+        """Called when a release is chosen from the result combo."""
+        idx = combo.get_active()
+        if idx == -1: return
+        rel_id = self._resultlist[idx][0].id
+        if rel_id in self._releasecache:
+            self.__update_results(self._releasecache[rel_id])
+        else:
+            self.result_label.set_markup("<i>Loading result...</i>")
+            inc = ws.ReleaseIncludes(
+                    artist=True, releaseEvents=True, tracks=True)
+            self._qthread.add(self.__update_result,
+                    self._query.getReleaseById, rel_id, inc)
+
+    def __update_result(self, release):
+        """Callback for release detail download from result combo."""
+        num_results = len(self._resultlist)
+        text = ngettext("Found %d result.", "Found %d results.", num_results)
+        self.result_label.set_text(text % num_results)
+        self._releasecache.setdefault(extractUuid(release.id), release)
+        self.result_treeview.update_remote_album(release.tracks)
+        self.current_release = release
+        self.release_combo.update(release)
+        self.get_action_area().get_children()[1].set_sensitive(True)
+
+    def __init__(self, album, cache):
+        self.album = album
+
+        self._query = ws.Query()
+        self._resultlist = gtk.ListStore(gobject.TYPE_PYOBJECT)
+        self._releasecache = cache
+        self._qthread = QueryThread()
+        self.current_release = None
+
+        super(SearchWindow, self).__init__("MusicBrainz lookup", buttons=(
+                    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
+                    gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
+        self.set_default_size(650, 500)
+        self.set_border_width(5)
+
+        vb = gtk.VBox()
+        vb.set_spacing(8)
+
+        hb = gtk.HBox()
+        hb.set_spacing(8)
+        sq = self.search_query = gtk.Entry()
+        sq.connect('activate', self.__do_query)
+
+        alb = album[0].comma("album").replace('"', '')
+        art = get_artist(album).replace('"', '')
+        sq.set_text('"%s" AND artist:"%s" AND tracks:%d' %
+                (alb, art, get_trackcount(album)) )
+
+        lbl = gtk.Label("_Query:")
+        lbl.set_use_underline(True)
+        lbl.set_mnemonic_widget(sq)
+        stb = self.search_button = gtk.Button('_Search')
+        stb.connect('clicked', self.__do_query)
+        hb.pack_start(lbl, expand=False)
+        hb.pack_start(sq)
+        hb.pack_start(stb, expand=False)
+        vb.pack_start(hb, expand=False)
+
+        self.result_combo = ResultComboBox(self._resultlist)
+        self.result_combo.connect('changed', self.__result_changed)
+        vb.pack_start(self.result_combo, expand=False)
+
+        rhb = gtk.HBox()
+        rl = gtk.Label()
+        rl.set_markup("Results <i>(drag to reorder)</i>")
+        rl.set_alignment(0, 0.5)
+        rhb.pack_start(rl, expand=False)
+        rl = self.result_label = gtk.Label("")
+        rhb.pack_end(rl, expand=False)
+        vb.pack_start(rhb, expand=False)
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        rtv = self.result_treeview = ResultTreeView(self.album)
+        rtv.set_border_width(8)
+        sw.add(rtv)
+        vb.pack_start(sw)
+
+        hb = gtk.HBox()
+        hb.set_spacing(8)
+        self.release_combo = ReleaseEventComboBox()
+        self.release_combo.set_sensitive(False)
+        lbl = gtk.Label("_Release:")
+        lbl.set_use_underline(True)
+        lbl.set_mnemonic_widget(self.release_combo)
+        hb.pack_start(lbl, expand=False)
+        hb.pack_start(self.release_combo)
+        vb.pack_start(hb, expand=False)
+
+        self.get_content_area().pack_start(vb)
+        self.connect('response', self.__save)
+
+        stb.emit('clicked')
+        self.show_all()
+
+
+class MyBrainz(SongsMenuPlugin):
+    PLUGIN_ID = "MusicBrainz lookup"
+    PLUGIN_NAME = "MusicBrainz Lookup"
+    PLUGIN_ICON = gtk.STOCK_CDROM
     PLUGIN_DESC = 'Retag an album based on a MusicBrainz search.'
-    PLUGIN_VERSION = '0.4'
+    PLUGIN_VERSION = '0.5'
 
-    def plugin_album(self, album):
-        QLBrainz().plugin_album(album)
+    cache = {}
+
+    def plugin_albums(self, albums):
+        for album in albums:
+            discs = {}
+            for song in album:
+                discnum = int(song.get('discnumber', '1').split('/')[0])
+                discs.setdefault(discnum, []).append(song)
+            for disc in discs.values():
+                s = SearchWindow(disc, self.cache).run()
+
+    @classmethod
+    def PluginPreferences(self, win):
+        items = [
+            ('split_disc', 'Split _disc from album', True),
+            ('split_feat', 'Split _featured performers from track', False),
+            ('year_only', 'Only use year for "date" tag', False),
+            ('albumartist', 'Write "_albumartist" when needed', True),
+            ('standard', 'Write _standard MusicBrainz tags', True),
+            ('labelid', 'Write _labelid tag (fixes multi-disc albums)', True),
+        ]
+
+        vb = gtk.VBox()
+        vb.set_spacing(8)
+
+        for key, label, default in items:
+            ccb = ConfigCheckButton(label, 'plugins', 'brainz_' + key)
+            ccb.set_active(config_get(key, default))
+            vb.pack_start(ccb)
+
+        return vb
+
+
