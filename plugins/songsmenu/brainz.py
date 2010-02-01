@@ -294,16 +294,19 @@ class SearchWindow(gtk.Dialog):
 
     def __process_results(self, results):
         """Callback for search query completion."""
+        self._resultlist.clear()
+        self.search_button.set_sensitive(True)
         if results is None:
             self.result_label.set_text("Error encountered. Please retry.")
             self.search_button.set_sensitive(True)
-        self._resultlist.clear()
+            return
         for release in map(lambda r: r.release, results):
             self._resultlist.append((release, ))
-        self.result_label.set_markup("<i>Loading result...</i>")
-        self.search_button.set_sensitive(True)
         if len(results) > 0 and self.result_combo.get_active() == -1:
+            self.result_label.set_markup("<i>Loading result...</i>")
             self.result_combo.set_active(0)
+        else:
+            self.result_label.set_markup("No results found.")
 
     def __result_changed(self, combo):
         """Called when a release is chosen from the result combo."""
@@ -361,7 +364,7 @@ class SearchWindow(gtk.Dialog):
         lbl = gtk.Label("_Query:")
         lbl.set_use_underline(True)
         lbl.set_mnemonic_widget(sq)
-        stb = self.search_button = gtk.Button('_Search')
+        stb = self.search_button = gtk.Button('S_earch')
         stb.connect('clicked', self.__do_query)
         hb.pack_start(lbl, expand=False)
         hb.pack_start(sq)
