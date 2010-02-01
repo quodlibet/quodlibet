@@ -1,6 +1,6 @@
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
-# version 0.10.0
-# (C) 2005-2009 by Joshua Kwan <joshk@triplehelix.org>,
+# version 0.10.1
+# (C) 2005-2010 by Joshua Kwan <joshk@triplehelix.org>,
 #                  Joe Wreschnig <piman@sacredchao.net>,
 #                  Franz Pletyz <fpletz@franz-pletz.org>,
 #                  Nicholas J. Michalek <djphazer@gmail.com>,
@@ -24,20 +24,26 @@ import gobject, gtk
 from quodlibet import player, config, const, widgets, parse
 from quodlibet.qltk.msg import Message, WarningMessage
 from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
 
 SERVICES = {
             'Last.fm':  'http://post.audioscrobbler.com/',
             'Libre.fm': 'http://turtle.libre.fm/'
            }
+
 DEFAULT_SERVICE = 'Last.fm'
+DEFAULT_TITLEPAT = '<artist|<artist>|<composer|<composer>|<performer>>>'
+DEFAULT_ARTISTPAT = '<title><version| (<version>)>'
 
 def log(msg):
     print_d("[qlscrobbler] %s" % msg)
 
-def config_get(key, default = ''):
+def config_get(key, default=''):
+    """Returns value for 'key' from config. If key is missing *or empty*, 
+    return default."""
     try:
-        return config.get("plugins", "scrobbler_%s" % key)
+        return (config.get("plugins", "scrobbler_%s" % key) or default)
     except config.error:
         return default
 
@@ -58,8 +64,8 @@ class QLSubmitQueue:
     PROTOCOL_VERSION = "1.2"
     DUMP = os.path.join(const.USERDIR, "scrobbler_cache")
 
-    # These objects are shared across instances, to allow other plugins to queue
-    # scrobbles in future versions of QL
+    # These objects are shared across instances, to allow other plugins to
+    # queue scrobbles in future versions of QL
     queue = []
     changed_event = threading.Event()
 
@@ -73,7 +79,8 @@ class QLSubmitQueue:
         self.changed()
 
     def submit(self, song, timestamp=0):
-        """Submit a song. If 'timestamp' is 0, the current time will be used."""
+        """Submit a song. If 'timestamp' is 0, the current time will
+        be used."""
         formatted = self._format_song(song)
         if timestamp > 0:
             formatted['i'] = str(timestamp)
@@ -92,26 +99,10 @@ class QLSubmitQueue:
             "l": str(song("~#length")),
             "n": str(song("~#track")),
             "b": song.comma("album"),
-            "m": song("musicbrainz_trackid")
+            "m": song("musicbrainz_trackid"),
+            "t": self.titlepat.format(song),
+            "a": self.artpat.format(song),
         }
-
-        # When the version is present, append it in parentheses to the title
-        if "version" in song:
-            store["t"] = "%s (%s)" % (song.comma("title"),
-                                      song.comma("version"))
-        else:
-            store["t"] = song.comma("title")
-
-        if "artist" in song:
-            store["a"] = song.comma("artist")
-        elif "composer" in song:
-            store["a"] = song.comma("composer")
-        elif "performer" in song:
-            performer = song.comma('performer')
-            if performer[-1] == ")" and "(" in performer:
-                store["a"] = performer[:performer.rindex("(")].strip()
-            else:
-                store["a"] = performer
 
         # Spec requires title and artist at minimum
         if not (store.get("a") and store.get("t")):
@@ -126,6 +117,10 @@ class QLSubmitQueue:
         self.broken = False
 
         self.username, self.password, self.base_url = ('', '', '')
+
+        # These need to be set early for _format_song to work
+        self.titlepat = parse.Pattern(config_get('titlepat', DEFAULT_TITLEPAT))
+        self.artpat = parse.Pattern(config_get('artistpat', DEFAULT_ARTISTPAT))
 
         try:
             disk_queue_file = open(self.DUMP, 'r')
@@ -162,6 +157,8 @@ class QLSubmitQueue:
             self.broken = False
             self.handshake_sent = False
         self.offline = (config_get('offline') == "true")
+        self.titlepat = parse.Pattern(config_get('titlepat', DEFAULT_TITLEPAT))
+        self.artpat = parse.Pattern(config_get('artistpat', DEFAULT_ARTISTPAT))
 
     def changed(self):
         """Signal that settings or queue contents were changed."""
@@ -303,22 +300,18 @@ class QLSubmitQueue:
 
     def quick_dialog_helper(self, dialog_type, msg):
         dialog = Message(dialog_type, widgets.main, "QLScrobbler", msg)
-        dialog.connect('response', self.__destroy_cb)
+        dialog.connect('response', lambda dia, resp: dia.destroy())
         dialog.show()
 
     def quick_dialog(self, msg, dialog_type):
         gobject.idle_add(self.quick_dialog_helper, dialog_type, msg)
-
-    def __destroy_cb(self, dialog, response_id):
-        dialog.destroy()
-
 
 class QLScrobbler(EventPlugin):
     PLUGIN_ID = "QLScrobbler"
     PLUGIN_NAME = _("AudioScrobbler Submission")
     PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.10.0"
+    PLUGIN_VERSION = "0.10.1"
 
     def __init__(self):
         self.__enabled = False
@@ -351,7 +344,8 @@ class QLScrobbler(EventPlugin):
         if self.elapsed < 240 and self.elapsed <= .5 * song["~#length"]:
             return
         if self.exclude != "" and parse.Query(self.exclude).search(song):
-            log("Not submitting: %s - %s" % (song["artist"], song["title"]))
+            log("Not submitting: %s - %s" % (song.get("artist"), 
+                                             song.get("title")))
             return
         self.queue.submit(song, self.start_time)
 
@@ -389,16 +383,7 @@ class QLScrobbler(EventPlugin):
         log("Plugin disabled - not accepting any new songs.")
 
     def PluginPreferences(self, parent):
-        def toggled(widget):
-            if widget.get_active():
-                config.set("plugins", "scrobbler_offline", "true")
-                self.offline = True
-            else:
-                config.set("plugins", "scrobbler_offline", "false")
-                self.offline = False
-
         def changed(entry, key):
-            # having a function for each entry is unnecessary..
             if entry.get_property('sensitive'):
                 config.set("plugins", "scrobbler_" + key, entry.get_text())
 
@@ -411,61 +396,55 @@ class QLScrobbler(EventPlugin):
         def destroyed(*args):
             self.queue.changed()
 
-        table = gtk.Table(6, 3)
+        table = gtk.Table(8, 2)
         table.set_col_spacings(3)
         table.set_border_width(6)
-        ls = gtk.Label(_("Service:"))
-        lsu = gtk.Label(_("URL:"))
-        lu = gtk.Label(_("Username:"))
-        lp = gtk.Label(_("Password:"))
-        lv = gtk.Label(_("Exclude filter:"))
-        for l in [ls, lsu, lu, lp, lv]:
-            l.set_line_wrap(True)
-            l.set_alignment(0.0, 0.5)
-        table.attach(ls,  0, 1, 0, 1, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(lsu, 0, 1, 1, 2, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(lu,  0, 1, 2, 3, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(lp,  0, 1, 3, 4, xoptions=gtk.FILL | gtk.SHRINK)
-        table.attach(lv,  0, 1, 4, 5, xoptions=gtk.FILL | gtk.SHRINK)
 
-        serv = gtk.combo_box_new_text()
-        off = gtk.CheckButton(_("Offline mode (don't submit anything)"))
-        urlent = gtk.Entry()
-        userent = gtk.Entry()
-        pwent = gtk.Entry()
-        pwent.set_visibility(False)
-        pwent.set_invisible_char('*')
-        ve = ValidatingEntry(parse.Query.is_valid_color)
-        ve.set_tooltip_text(
+        label_names = [_("Service:"), _("URL:"), _("Username:"),
+                       _("Password:"), _("Artist pattern:"),
+                       _("Title pattern:"), _("Exclude filter:")]
+        for idx, label in enumerate(map(gtk.Label, label_names)):
+            label.set_alignment(0.0, 0.5)
+            table.attach(label, 0, 1, idx, idx+1,
+                         xoptions=gtk.FILL | gtk.SHRINK)
+
+        service_combo = gtk.combo_box_new_text()
+        table.attach(service_combo, 1, 2, 0, 1)
+        cur_service = config_get('service')
+        for idx, serv in enumerate(sorted(SERVICES.keys()) + ["Other..."]):
+            service_combo.append_text(serv)
+            if cur_service == serv:
+                service_combo.set_active(idx)
+        if service_combo.get_active() == -1:
+            service_combo.set_active(0)
+
+        entry_names = ['url', 'username', 'password', 'titlepat', 'artistpat']
+        entries = {}
+        for idx, name in enumerate(entry_names):
+            entry = gtk.Entry()
+            entry.set_text(config_get(name))
+            entry.connect('changed', changed, name)
+            table.attach(entry, 1, 2, idx+1, idx+2)
+            entries[name] = entry
+
+        service_combo.connect('changed', combo_changed, entries['url'])
+        service_combo.emit('changed')
+        entries['password'].set_visibility(False)
+        entries['password'].set_invisible_char('*')
+        entries['titlepat'].set_tooltip_text(_("The pattern used to format "
+            "the title for submission. Leave blank for default."))
+        entries['artistpat'].set_tooltip_text(_("The pattern used to format "
+            "the artist name for submission. Leave blank for default."))
+
+        exclude_entry = ValidatingEntry(parse.Query.is_valid_color)
+        exclude_entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))
+        exclude_entry.connect('changed', changed, 'exclude')
+        table.attach(exclude_entry, 1, 2, 6, 7)
 
-        table.attach(serv,      2, 3, 0, 1)
-        table.attach(urlent,    2, 3, 1, 2)
-        table.attach(userent,   2, 3, 2, 3)
-        table.attach(pwent,     2, 3, 3, 4)
-        table.attach(ve,        2, 3, 4, 5)
-        table.attach(off,       0, 3, 5, 6)
-
-        cur_service = config_get('service', DEFAULT_SERVICE)
-        for i, s in enumerate(sorted(SERVICES.keys()) + ["Other..."]):
-            serv.append_text(s)
-            if cur_service == s:
-                serv.set_active(i)
-        if serv.get_active() == -1:
-            serv.set_active(0)
-        urlent.set_sensitive( (cur_service not in SERVICES) )
-        urlent.set_text(config_get_url())
-        userent.set_text(config_get("username"))
-        pwent.set_text(config_get("password"))
-        off.set_active(config_get("offline") == "true")
-        ve.set_text(config_get("exclude"))
-
-        serv.connect('changed', combo_changed, urlent)
-        urlent.connect('changed', changed, 'url')
-        pwent.connect('changed', changed, 'password')
-        userent.connect('changed', changed, 'username')
-        ve.connect('changed', changed, 'exclude')
-        table.connect('destroy', destroyed)
-        off.connect('toggled', toggled)
+        offline = ConfigCheckButton(_("Offline mode (don't submit anything)"),
+                                'plugins', 'scrobbler_offline')
+        offline.set_active(config_get('offline') == "true")
+        table.attach(offline, 0, 2, 7, 8)
 
         return table
