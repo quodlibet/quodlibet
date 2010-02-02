@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-04 12:19-0500\n"
+"POT-Creation-Date: 2010-02-02 01:56-0500\n"
 "PO-Revision-Date: 2009-09-15 17:25+0300\n"
 "Last-Translator: Turerkan <turerkan@gmail.com>\n"
 "Language-Team: Turerkan <turerkan@gmail.com>\n"
@@ -214,7 +214,7 @@ msgstr "bir dosya veya sorguyu çalma kuyruğundan çıkar"
 msgid "Invalid argument for '%s'."
 msgstr "'%s' için geçersiz parametre."
 
-#: ../quodlibet.py:255 ../quodlibet/util/__init__.py:154
+#: ../quodlibet.py:255 ../quodlibet/util/__init__.py:155
 #, python-format
 msgid "Try %s --help."
 msgstr "Yardım için %s --help komutunu deneyin."
@@ -236,80 +236,87 @@ msgid_plural "%(count)d songs (%(time)s)"
 msgstr[0] "%(count)d şarkı (%(time)s)"
 msgstr[1] "%(count)d şarkı (%(time)s)"
 
-#: ../quodlibet/browsers/albums.py:34
+#: ../quodlibet/browsers/albums.py:35
 msgid "Songs not in an album"
 msgstr "Bir albümde olmayan şarkılar"
 
-#: ../quodlibet/browsers/albums.py:63
+#: ../quodlibet/browsers/albums.py:65
 msgid "Album List Preferences"
 msgstr "Albüm listesi ayarları"
 
-#: ../quodlibet/browsers/albums.py:69
+#: ../quodlibet/browsers/albums.py:71
 msgid "Show album _covers"
 msgstr "Albüm _kapaklarını göster"
 
-#: ../quodlibet/browsers/albums.py:75
+#: ../quodlibet/browsers/albums.py:77
 msgid "Inline _search includes people"
 msgstr "_Arama kişileri de içerir"
 
-#: ../quodlibet/browsers/albums.py:91
+#: ../quodlibet/browsers/albums.py:93
 msgid "Album Display"
 msgstr "Albüm Görünümü"
 
-#: ../quodlibet/browsers/albums.py:112 ../quodlibet/browsers/albums.py:116
+#: ../quodlibet/browsers/albums.py:114 ../quodlibet/browsers/albums.py:118
 #: ../quodlibet/qltk/tagsfrompath.py:134 ../quodlibet/qltk/textedit.py:68
 msgid "Invalid pattern"
 msgstr "Geçersiz süzgeç"
 
-#: ../quodlibet/browsers/albums.py:126
+#: ../quodlibet/browsers/albums.py:128
 msgid "Album List"
 msgstr "Albüm Listesi"
 
-#: ../quodlibet/browsers/albums.py:127
+#: ../quodlibet/browsers/albums.py:129
 msgid "_Album List"
 msgstr "_Albüm Listesi"
 
-#: ../quodlibet/browsers/albums.py:271 ../quodlibet/qltk/information.py:339
+#: ../quodlibet/browsers/albums.py:274 ../quodlibet/qltk/information.py:339
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d şarkı"
 msgstr[1] "%d şarkı"
 
-#: ../quodlibet/browsers/albums.py:275 ../quodlibet/qltk/information.py:337
+#: ../quodlibet/browsers/albums.py:278 ../quodlibet/qltk/information.py:337
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%d disk"
 msgstr[1] "%d disk"
 
-#: ../quodlibet/browsers/albums.py:408
-msgid "Sort by title"
-msgstr "İsime göre sırala"
+#: ../quodlibet/browsers/albums.py:390 ../quodlibet/browsers/iradio.py:207
+msgid "Title"
+msgstr "Ad"
 
-#: ../quodlibet/browsers/albums.py:408
-msgid "Sort by artist"
-msgstr "Sanatçıya göre sırala"
+#: ../quodlibet/browsers/albums.py:390
+#, fuzzy
+msgid "Artist"
+msgstr "_Sanatçı"
 
-#: ../quodlibet/browsers/albums.py:408
-msgid "Sort by date"
-msgstr "Tarihe göre sırala"
+#: ../quodlibet/browsers/albums.py:390
+#, fuzzy
+msgid "Date"
+msgstr "_Tarih"
 
-#: ../quodlibet/browsers/albums.py:510
+#: ../quodlibet/browsers/albums.py:496
 msgid "All Albums"
 msgstr "Tüm albümler"
 
-#: ../quodlibet/browsers/albums.py:511
+#: ../quodlibet/browsers/albums.py:497
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albüm"
 msgstr[1] "%d albüm"
 
+#: ../quodlibet/browsers/albums.py:536
+#, fuzzy
+msgid "Sort _by:"
+msgstr "Tarihe göre sırala"
+
 #: ../quodlibet/browsers/audiofeeds.py:39
 #: ../quodlibet/browsers/audiofeeds.py:49
 #: ../quodlibet/browsers/audiofeeds.py:50
-#: ../quodlibet/browsers/audiofeeds.py:113 ../quodlibet/browsers/paned.py:26
+#: ../quodlibet/browsers/audiofeeds.py:113 ../quodlibet/browsers/paned.py:27
 #: ../quodlibet/formats/_audio.py:225 ../quodlibet/qltk/information.py:224
 #: ../quodlibet/qltk/information.py:232 ../quodlibet/qltk/information.py:258
 #: ../quodlibet/qltk/playorder.py:15 ../quodlibet/qltk/wlw.py:65
@@ -360,6 +367,16 @@ msgstr ""
 "<b>%s</b> eklenemedi. Sunucu çalışmıyor olabilir, veya adreste bir ses "
 "bildirimi olmayabilir."
 
+#: ../quodlibet/browsers/audiofeeds.py:430
+msgid "Could not import python-feedparser, Audio Feeds browser disabled."
+msgstr ""
+
+#: ../quodlibet/browsers/audiofeeds.py:437
+msgid ""
+"The current audio backend does not support URLs, Audio Feeds browser "
+"disabled."
+msgstr ""
+
 #: ../quodlibet/browsers/filesystem.py:33
 msgid "File System"
 msgstr "Dosya Sistemi"
@@ -402,7 +419,7 @@ msgid "Choose New Stations"
 msgstr "Yeni Kanal Seç"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:285
-#: ../quodlibet/browsers/paned.py:377 ../quodlibet/browsers/search.py:148
+#: ../quodlibet/browsers/search.py:159
 msgid "_Search:"
 msgstr "_Ara:"
 
@@ -417,10 +434,6 @@ msgstr "Bit oranı"
 #: ../quodlibet/browsers/iradio.py:201
 msgid "Genre"
 msgstr "Tür"
-
-#: ../quodlibet/browsers/iradio.py:207
-msgid "Title"
-msgstr "Ad"
 
 #: ../quodlibet/browsers/iradio.py:238
 msgid "New Station"
@@ -554,27 +567,31 @@ msgstr "<b>%s</b> çıkartılamadı."
 msgid "Unable to eject device"
 msgstr "Aygıt çıkartılamadı"
 
-#: ../quodlibet/browsers/paned.py:36
+#: ../quodlibet/browsers/media.py:552
+msgid "No device backend, Media Devices browser disabled."
+msgstr ""
+
+#: ../quodlibet/browsers/paned.py:37
 msgid "Paned Browser Preferences"
 msgstr "Panelli Gezici Ayarları"
 
-#: ../quodlibet/browsers/paned.py:42 ../quodlibet/browsers/paned.py:137
+#: ../quodlibet/browsers/paned.py:44 ../quodlibet/browsers/paned.py:148
 msgid "_Custom"
 msgstr "_Özel"
 
-#: ../quodlibet/browsers/paned.py:143
+#: ../quodlibet/browsers/paned.py:153
 msgid "Paned Browser"
 msgstr "Panelli Gezici"
 
-#: ../quodlibet/browsers/paned.py:144
+#: ../quodlibet/browsers/paned.py:154
 msgid "_Paned Browser"
 msgstr "_Panelli Gezici"
 
-#: ../quodlibet/browsers/paned.py:299 ../quodlibet/qltk/pluginwin.py:258
+#: ../quodlibet/browsers/paned.py:322 ../quodlibet/qltk/pluginwin.py:258
 msgid "All"
 msgstr "Hepsi"
 
-#: ../quodlibet/browsers/paned.py:391
+#: ../quodlibet/browsers/paned.py:396
 msgid "Select _All"
 msgstr "Hepsini _Seç"
 
@@ -655,41 +672,41 @@ msgstr "Çalma Listesinin adı değiştirilemedi"
 msgid "Import Playlist"
 msgstr "Çalma Listesi İçe Aktar"
 
-#: ../quodlibet/browsers/search.py:30
+#: ../quodlibet/browsers/search.py:32
 msgid "Disable Browser"
 msgstr "Geziciyi Gizle"
 
-#: ../quodlibet/browsers/search.py:31
+#: ../quodlibet/browsers/search.py:33
 msgid "_Disable Browser"
 msgstr "Geziciyi _Gizle"
 
-#: ../quodlibet/browsers/search.py:101
+#: ../quodlibet/browsers/search.py:107
 msgid "_Limit:"
 msgstr "_Sınır:"
 
-#: ../quodlibet/browsers/search.py:112
+#: ../quodlibet/browsers/search.py:118
 msgid "_Weight"
 msgstr "_Ağırlık"
 
-#: ../quodlibet/browsers/search.py:133 ../quodlibet/qltk/prefs.py:145
-msgid "Search Library"
-msgstr "Arşivde Ara"
-
-#: ../quodlibet/browsers/search.py:134
-msgid "_Search Library"
-msgstr "Arşivde _Ara"
-
-#: ../quodlibet/browsers/search.py:159
+#: ../quodlibet/browsers/search.py:170
 msgid "Search"
 msgstr "Ara"
 
-#: ../quodlibet/browsers/search.py:161
+#: ../quodlibet/browsers/search.py:172
 msgid "Search your library"
 msgstr "Arşivinizde arama yapın"
 
-#: ../quodlibet/browsers/search.py:189
+#: ../quodlibet/browsers/search.py:206
 msgid "_Limit Results"
 msgstr "Sonuçları _Sınırla"
+
+#: ../quodlibet/browsers/search.py:257 ../quodlibet/qltk/prefs.py:154
+msgid "Search Library"
+msgstr "Arşivde Ara"
+
+#: ../quodlibet/browsers/search.py:258
+msgid "_Search Library"
+msgstr "Arşivde _Ara"
 
 #: ../quodlibet/devices/_base.py:59
 msgid "Unknown Device"
@@ -707,11 +724,11 @@ msgstr "Albüm kapaklarını kopyala"
 msgid "Combine tags with _multiple values"
 msgstr "Birden _çok değeri olan etiketleri birleştir"
 
-#: ../quodlibet/devices/ipod.py:94 ../quodlibet/qltk/prefs.py:56
+#: ../quodlibet/devices/ipod.py:94 ../quodlibet/qltk/prefs.py:57
 msgid "Title includes _version"
 msgstr "İsim _versiyonları içersin"
 
-#: ../quodlibet/devices/ipod.py:95 ../quodlibet/qltk/prefs.py:61
+#: ../quodlibet/devices/ipod.py:95 ../quodlibet/qltk/prefs.py:62
 msgid "Album includes _disc subtitle"
 msgstr "Albüm _disk altyazısını içersin"
 
@@ -742,6 +759,10 @@ msgstr "iPod'la bağlantı kurulmamış"
 #: ../quodlibet/devices/ipod.py:271
 msgid "Do you want to create an empty database on this iPod?"
 msgstr "Bu iPod'da boş bir veritabanı yaratmak istiyor musunuz?"
+
+#: ../quodlibet/devices/ipod.py:394
+msgid "Could not import python-gpod, iPod support disabled."
+msgstr ""
 
 #: ../quodlibet/devices/storage.py:52
 msgid "_Filename Pattern:"
@@ -782,7 +803,7 @@ msgstr "%s taranıyor"
 msgid "Unable to edit song"
 msgstr "Şarkı değiştirilemedi"
 
-#: ../quodlibet/plugins/__init__.py:244 ../quodlibet/qltk/edittags.py:634
+#: ../quodlibet/plugins/__init__.py:244 ../quodlibet/qltk/edittags.py:636
 #: ../quodlibet/qltk/tagsfrompath.py:239 ../quodlibet/qltk/tracknumbers.py:131
 #, python-format
 msgid ""
@@ -833,7 +854,7 @@ msgid "Bookmarks"
 msgstr "Yer imleri"
 
 #: ../quodlibet/qltk/browser.py:55 ../quodlibet/qltk/quodlibetwindow.py:105
-#: ../quodlibet/util/__init__.py:259
+#: ../quodlibet/util/__init__.py:260
 msgid "No time information"
 msgstr "Süre bilgisi yok"
 
@@ -845,7 +866,7 @@ msgstr "Kayıtlı Değerler"
 msgid "_Value:"
 msgstr "_Değer:"
 
-#: ../quodlibet/qltk/cbes.py:207
+#: ../quodlibet/qltk/cbes.py:213
 msgid "Edit saved values..."
 msgstr "Kayıtlı değerleri değiştir..."
 
@@ -1002,14 +1023,14 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../quodlibet/qltk/edittags.py:529 ../quodlibet/qltk/edittags.py:674
-#: ../quodlibet/qltk/edittags.py:681 ../quodlibet/qltk/tagsfrompath.py:152
-#: ../quodlibet/util/__init__.py:424 ../quodlibet/util/tags.py:116
+#: ../quodlibet/qltk/edittags.py:529 ../quodlibet/qltk/edittags.py:678
+#: ../quodlibet/qltk/edittags.py:685 ../quodlibet/qltk/tagsfrompath.py:152
+#: ../quodlibet/util/__init__.py:450 ../quodlibet/util/tags.py:116
 msgid "Invalid tag"
 msgstr "Geçersiz etiket"
 
-#: ../quodlibet/qltk/edittags.py:530 ../quodlibet/qltk/edittags.py:675
-#: ../quodlibet/qltk/edittags.py:682 ../quodlibet/qltk/tagsfrompath.py:153
+#: ../quodlibet/qltk/edittags.py:530 ../quodlibet/qltk/edittags.py:679
+#: ../quodlibet/qltk/edittags.py:686 ../quodlibet/qltk/tagsfrompath.py:153
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1020,12 +1041,12 @@ msgstr ""
 "\n"
 "Seçili dosyalar bu etiketi değiştirmeyi desteklemiyor."
 
-#: ../quodlibet/qltk/edittags.py:579 ../quodlibet/qltk/tagsfrompath.py:213
+#: ../quodlibet/qltk/edittags.py:580 ../quodlibet/qltk/tagsfrompath.py:213
 #: ../quodlibet/qltk/tracknumbers.py:118
 msgid "Tag may not be accurate"
 msgstr "Etiket doğru olmayabilir"
 
-#: ../quodlibet/qltk/edittags.py:580 ../quodlibet/qltk/tagsfrompath.py:214
+#: ../quodlibet/qltk/edittags.py:581 ../quodlibet/qltk/tagsfrompath.py:214
 #: ../quodlibet/qltk/tracknumbers.py:119
 #, python-format
 msgid ""
@@ -1039,15 +1060,15 @@ msgstr ""
 "\n"
 "Yine de kaydedilsin mi?"
 
-#: ../quodlibet/qltk/edittags.py:633 ../quodlibet/qltk/tracknumbers.py:130
+#: ../quodlibet/qltk/edittags.py:635 ../quodlibet/qltk/tracknumbers.py:130
 msgid "Unable to save song"
 msgstr "Şarkı kaydedilemedi"
 
-#: ../quodlibet/qltk/edittags.py:657 ../quodlibet/qltk/edittags.py:692
+#: ../quodlibet/qltk/edittags.py:659 ../quodlibet/qltk/edittags.py:696
 msgid "Invalid value"
 msgstr "Geçersiz değer"
 
-#: ../quodlibet/qltk/edittags.py:658 ../quodlibet/qltk/edittags.py:693
+#: ../quodlibet/qltk/edittags.py:660 ../quodlibet/qltk/edittags.py:697
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -1062,15 +1083,15 @@ msgstr ""
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso Ayarları"
 
-#: ../quodlibet/qltk/exfalsowindow.py:220 ../quodlibet/qltk/prefs.py:307
+#: ../quodlibet/qltk/exfalsowindow.py:220 ../quodlibet/qltk/prefs.py:316
 msgid "Split _on:"
 msgstr "Buna göre _ayır:"
 
-#: ../quodlibet/qltk/exfalsowindow.py:226 ../quodlibet/qltk/prefs.py:334
+#: ../quodlibet/qltk/exfalsowindow.py:226 ../quodlibet/qltk/prefs.py:343
 msgid "Show _programmatic tags"
 msgstr "_Programatik etiketleri göster"
 
-#: ../quodlibet/qltk/exfalsowindow.py:230 ../quodlibet/qltk/prefs.py:337
+#: ../quodlibet/qltk/exfalsowindow.py:230 ../quodlibet/qltk/prefs.py:346
 msgid "Tag Editing"
 msgstr "Etiket değiştirme"
 
@@ -1148,7 +1169,7 @@ msgstr "Bilgi"
 msgid "Lyrics"
 msgstr "Sözler"
 
-#: ../quodlibet/qltk/information.py:99
+#: ../quodlibet/qltk/information.py:99 ../quodlibet/__init__.py:107
 msgid "Errors"
 msgstr "Hatalar"
 
@@ -1199,7 +1220,7 @@ msgstr "defa geçildi"
 msgid "rating"
 msgstr "puan"
 
-#: ../quodlibet/qltk/information.py:253 ../quodlibet/qltk/prefs.py:273
+#: ../quodlibet/qltk/information.py:253 ../quodlibet/qltk/prefs.py:282
 msgid "Library"
 msgstr "Arşiv"
 
@@ -1225,7 +1246,7 @@ msgid "bitrate"
 msgstr "bit oranı"
 
 #: ../quodlibet/qltk/information.py:289 ../quodlibet/qltk/properties.py:55
-#: ../quodlibet/qltk/renamefiles.py:64 ../quodlibet/qltk/tagsfrompath.py:169
+#: ../quodlibet/qltk/renamefiles.py:72 ../quodlibet/qltk/tagsfrompath.py:169
 #: ../quodlibet/qltk/tracknumbers.py:57
 msgid "File"
 msgstr "Dosya"
@@ -1288,38 +1309,25 @@ msgstr "Toplam boyut:"
 msgid "Files"
 msgstr "Dosyalar"
 
-#: ../quodlibet/qltk/lyrics.py:30
+#: ../quodlibet/qltk/lyrics.py:32
 msgid "_Download"
 msgstr "_İndir"
 
-#: ../quodlibet/qltk/lyrics.py:48
-#, python-format
-msgid "Lyrics provided by %s."
-msgstr "Şarkı sözleri %s tarafından sağlanmıştır."
+#. buffer.set_text(_("No lyrics found.\n\nYou can click the "
+#. "Download button to have Quod Libet search "
+#. "for lyrics online.  You can also enter them "
+#. "yourself and click save."))
+#: ../quodlibet/qltk/lyrics.py:70 ../quodlibet/qltk/lyrics.py:109
+msgid "No lyrics found for this song."
+msgstr "Bu şarkının sözleri bulunamadı."
 
-#: ../quodlibet/qltk/lyrics.py:62
-msgid ""
-"No lyrics found.\n"
-"\n"
-"You can click the Download button to have Quod Libet search for lyrics "
-"online.  You can also enter them yourself and click save."
-msgstr ""
-"Şarkı sözleri bulunamadı.\n"
-"\n"
-"İndir'e basarak arama yaptırabilirsiniz veya kendinizi yazıp Kaydet'e "
-"basabilirsiniz."
-
-#: ../quodlibet/qltk/lyrics.py:76
+#: ../quodlibet/qltk/lyrics.py:81
 msgid "Searching for lyrics..."
 msgstr "Şarkı sözleri aranıyor..."
 
-#: ../quodlibet/qltk/lyrics.py:96
+#: ../quodlibet/qltk/lyrics.py:101
 msgid "Unable to download lyrics."
 msgstr "Şarkı sözleri indirilemedi."
-
-#: ../quodlibet/qltk/lyrics.py:104
-msgid "No lyrics found for this song."
-msgstr "Bu şarkının sözleri bulunamadı."
 
 #: ../quodlibet/qltk/msg.py:46
 msgid "Discard tag changes?"
@@ -1402,127 +1410,136 @@ msgstr "Eklenti bulunamadı."
 msgid "Plugin Errors"
 msgstr "Eklenti Hataları"
 
-#: ../quodlibet/qltk/prefs.py:28
+#: ../quodlibet/qltk/prefs.py:29
 msgid "Song List"
 msgstr "Şarkı Listesi"
 
-#: ../quodlibet/qltk/prefs.py:36
+#: ../quodlibet/qltk/prefs.py:37
 msgid "_Disc"
 msgstr "_Disk"
 
-#: ../quodlibet/qltk/prefs.py:37
+#: ../quodlibet/qltk/prefs.py:38
 #, fuzzy
 msgid "Al_bum"
 msgstr "_Albüm"
 
-#: ../quodlibet/qltk/prefs.py:38
+#: ../quodlibet/qltk/prefs.py:39
 msgid "_Filename"
 msgstr "_Dosya Adı"
 
-#: ../quodlibet/qltk/prefs.py:39
+#: ../quodlibet/qltk/prefs.py:40
 msgid "_Track"
 msgstr "Şarkı _No"
 
-#: ../quodlibet/qltk/prefs.py:40
+#: ../quodlibet/qltk/prefs.py:41
 msgid "_Artist"
 msgstr "_Sanatçı"
 
-#: ../quodlibet/qltk/prefs.py:41 ../quodlibet/qltk/songlist.py:361
+#: ../quodlibet/qltk/prefs.py:42 ../quodlibet/qltk/songlist.py:361
 msgid "_Rating"
 msgstr "_Puan"
 
-#: ../quodlibet/qltk/prefs.py:43
+#: ../quodlibet/qltk/prefs.py:44
 msgid "_Date"
 msgstr "_Tarih"
 
-#: ../quodlibet/qltk/prefs.py:44
+#: ../quodlibet/qltk/prefs.py:45
 msgid "_Length"
 msgstr "_Uzunluk"
 
-#: ../quodlibet/qltk/prefs.py:66
+#: ../quodlibet/qltk/prefs.py:67
 msgid "Filename includes _folder"
 msgstr "Dosya adı _dizinleri içersin"
 
-#: ../quodlibet/qltk/prefs.py:80
+#: ../quodlibet/qltk/prefs.py:81
 msgid "_Others:"
 msgstr "_Diğerleri:"
 
-#: ../quodlibet/qltk/prefs.py:86
+#: ../quodlibet/qltk/prefs.py:87
 msgid "Other columns to display, separated by spaces"
 msgstr "Diğer gösterilecek sütunlar, boşluklarla ayrılmış olarak"
 
-#: ../quodlibet/qltk/prefs.py:100
+#: ../quodlibet/qltk/prefs.py:101
 msgid "Visible Columns"
 msgstr "Görünen Sütunlar"
 
-#: ../quodlibet/qltk/prefs.py:128
+#: ../quodlibet/qltk/prefs.py:129
 msgid "Browsers"
 msgstr "Geziciler"
 
-#: ../quodlibet/qltk/prefs.py:130
+#: ../quodlibet/qltk/prefs.py:131
+msgid "_Global filter:"
+msgstr "_Evrensel süzgeç:"
+
+#: ../quodlibet/qltk/prefs.py:143
+#, fuzzy
+msgid "Search after _typing"
+msgstr "Bu şarkıdan sonra dur"
+
+#: ../quodlibet/qltk/prefs.py:145
+msgid "Show search results after the user stops typing."
+msgstr ""
+
+#: ../quodlibet/qltk/prefs.py:149
 msgid "Color _search terms"
 msgstr "Arama kriterlerini _renklendir"
 
-#: ../quodlibet/qltk/prefs.py:132
+#: ../quodlibet/qltk/prefs.py:151
 msgid ""
 "Display simple searches in blue, advanced ones in green, and invalid ones in "
 "red"
 msgstr ""
 "basit aramalar mavi, gelişmiş aramalar yeşil, geçersiz aramalar kırmızı"
 
-#: ../quodlibet/qltk/prefs.py:135
-msgid "_Global filter:"
-msgstr "_Evrensel süzgeç:"
-
-#: ../quodlibet/qltk/prefs.py:149
+#: ../quodlibet/qltk/prefs.py:158
 msgid "Confirm _multiple ratings"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:153
+#: ../quodlibet/qltk/prefs.py:162
 msgid ""
 "Ask for confirmation before changin the rating of multiple songs at once"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:157
+#: ../quodlibet/qltk/prefs.py:166
 msgid "Enable _one-click ratings"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:161
+#: ../quodlibet/qltk/prefs.py:170
 msgid "Enable rating by clicking on the rating  column in the song list"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:168
+#: ../quodlibet/qltk/prefs.py:177
 #, fuzzy
 msgid "Ratings"
 msgstr "_Puan"
 
-#: ../quodlibet/qltk/prefs.py:178
+#: ../quodlibet/qltk/prefs.py:187
 msgid "Player"
 msgstr "Çalıcı"
 
-#: ../quodlibet/qltk/prefs.py:182
+#: ../quodlibet/qltk/prefs.py:191
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:189
+#: ../quodlibet/qltk/prefs.py:198
 msgid "_Output pipeline:"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:203
+#: ../quodlibet/qltk/prefs.py:212
 msgid "_Jump to playing song automatically"
 msgstr "Çalan şarkıya otomatik olarak _atla"
 
-#: ../quodlibet/qltk/prefs.py:204
+#: ../quodlibet/qltk/prefs.py:213
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Çalan şarkı değişince listede yeni şarkıya git"
 
-#: ../quodlibet/qltk/prefs.py:210
+#: ../quodlibet/qltk/prefs.py:219
 msgid "_Use rounded corners on thumbnails"
 msgstr "Önizlemelerde _yuvarlatılmış köşeler kullan"
 
-#: ../quodlibet/qltk/prefs.py:211
+#: ../quodlibet/qltk/prefs.py:220
 msgid ""
 "Round the corners of album artwork thumbnail images. May require restart to "
 "take effect."
@@ -1530,73 +1547,73 @@ msgstr ""
 "albüm kapat resimlerinin kenarlarını yuvarlat. Tekrar başlatmayı "
 "gerektirebilir."
 
-#: ../quodlibet/qltk/prefs.py:217
+#: ../quodlibet/qltk/prefs.py:226
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "Ses Düzeyi Düzeltmesini etkinleştir (Replay Gain)"
 
-#: ../quodlibet/qltk/prefs.py:230
+#: ../quodlibet/qltk/prefs.py:239
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr "Ses Düzeyi Düzeltmesi bilgisi yoksa, sesi buna ayarla"
 
-#: ../quodlibet/qltk/prefs.py:232
+#: ../quodlibet/qltk/prefs.py:241
 msgid "Fall-back gain (dB):"
 msgstr "Öntanımlı ses (dB):"
 
-#: ../quodlibet/qltk/prefs.py:249
+#: ../quodlibet/qltk/prefs.py:258
 #, fuzzy
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr "Kesilme olmadığı sürece bütün şarkıların ses düzeyini buna ayarla"
 
-#: ../quodlibet/qltk/prefs.py:251
+#: ../quodlibet/qltk/prefs.py:260
 msgid "Pre-amp gain (dB):"
 msgstr "Pre-amp düzeyi (dB):"
 
-#: ../quodlibet/qltk/prefs.py:258
+#: ../quodlibet/qltk/prefs.py:267
 msgid "Replay Gain Volume Adjustment"
 msgstr "Ses Düzeyi Düzeltmesi"
 
-#: ../quodlibet/qltk/prefs.py:275
+#: ../quodlibet/qltk/prefs.py:284
 msgid "_Select"
 msgstr "_Seç"
 
-#: ../quodlibet/qltk/prefs.py:279
+#: ../quodlibet/qltk/prefs.py:288
 msgid ""
 "Songs placed in these folders (separated by ':') will be added to your "
 "library"
 msgstr "Bu (':' ile ayrılmış) dizinlerdeki şarkılar arşivinize eklenecek"
 
-#: ../quodlibet/qltk/prefs.py:292
+#: ../quodlibet/qltk/prefs.py:301
 msgid "_Refresh library on start"
 msgstr "Başlangıçta arşivi _yenile"
 
-#: ../quodlibet/qltk/prefs.py:297
+#: ../quodlibet/qltk/prefs.py:306
 msgid "Scan _Directories"
 msgstr "_Dizinleri tara"
 
-#: ../quodlibet/qltk/prefs.py:306
+#: ../quodlibet/qltk/prefs.py:315
 msgid "Separators for splitting tags"
 msgstr "etiketler ayırıcıları"
 
-#: ../quodlibet/qltk/prefs.py:316
+#: ../quodlibet/qltk/prefs.py:325
 msgid "Save ratings and play _counts"
 msgstr "_Puan ve çalma seferlerini kaydet"
 
-#: ../quodlibet/qltk/prefs.py:320
+#: ../quodlibet/qltk/prefs.py:329
 msgid "_Email:"
 msgstr "_E-posta:"
 
-#: ../quodlibet/qltk/prefs.py:322
+#: ../quodlibet/qltk/prefs.py:331
 msgid "Ratings and play counts will be set for this email address"
 msgstr "Puan ve çalma seferleri bu posta adresi için kaydedilecek"
 
-#: ../quodlibet/qltk/prefs.py:342
+#: ../quodlibet/qltk/prefs.py:351
 msgid "Select Directories"
 msgstr "Dizin Seç"
 
-#: ../quodlibet/qltk/prefs.py:353
+#: ../quodlibet/qltk/prefs.py:362
 msgid "Quod Libet Preferences"
 msgstr "Quod Libet Ayarları"
 
@@ -1810,44 +1827,44 @@ msgstr ""
 msgid "Unable to add song"
 msgstr "Şarkı eklenemedi"
 
-#: ../quodlibet/qltk/renamefiles.py:21
+#: ../quodlibet/qltk/renamefiles.py:22
 msgid "Replace spaces with _underscores"
 msgstr "Boşlukları _altçizgi ile değiştir"
 
-#: ../quodlibet/qltk/renamefiles.py:28
+#: ../quodlibet/qltk/renamefiles.py:29
 msgid "Strip _Windows-incompatible characters"
 msgstr "_Windows'la uyumsuz karakterleri çıkart"
 
-#: ../quodlibet/qltk/renamefiles.py:37
+#: ../quodlibet/qltk/renamefiles.py:45
 msgid "Strip _diacritical marks"
 msgstr "_Düzeltme işaretlerini çıkart"
 
-#: ../quodlibet/qltk/renamefiles.py:46
+#: ../quodlibet/qltk/renamefiles.py:54
 msgid "Strip non-_ASCII characters"
 msgstr "_ASCII olmayan karakterleri çıkart"
 
-#: ../quodlibet/qltk/renamefiles.py:54
+#: ../quodlibet/qltk/renamefiles.py:62
 msgid "Rename Files"
 msgstr "Yeniden Adlandır"
 
-#: ../quodlibet/qltk/renamefiles.py:70
+#: ../quodlibet/qltk/renamefiles.py:78
 msgid "New Name"
 msgstr "Yeni İsim"
 
-#: ../quodlibet/qltk/renamefiles.py:103
+#: ../quodlibet/qltk/renamefiles.py:111
 #, fuzzy
 msgid "Ignore _All Errors"
 msgstr "_Hataları Göster"
 
-#: ../quodlibet/qltk/renamefiles.py:105
+#: ../quodlibet/qltk/renamefiles.py:113
 msgid "_Continue"
 msgstr "_Devam"
 
-#: ../quodlibet/qltk/renamefiles.py:107
+#: ../quodlibet/qltk/renamefiles.py:115
 msgid "Unable to rename file"
 msgstr "Dosya yeniden adlandırılamadı"
 
-#: ../quodlibet/qltk/renamefiles.py:108
+#: ../quodlibet/qltk/renamefiles.py:116
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1858,11 +1875,11 @@ msgstr ""
 "dosya olabilir, yeni bir dosya yaratmak veya eskisini silmek için izniniz "
 "olmayabilir."
 
-#: ../quodlibet/qltk/renamefiles.py:142
+#: ../quodlibet/qltk/renamefiles.py:150
 msgid "Path is not absolute"
 msgstr "Yol mutlak değil"
 
-#: ../quodlibet/qltk/renamefiles.py:143
+#: ../quodlibet/qltk/renamefiles.py:151
 #, python-format
 msgid ""
 "The pattern\n"
@@ -2110,24 +2127,24 @@ msgstr ""
 msgid "gtk-media-pause"
 msgstr ""
 
-#: ../quodlibet/util/__init__.py:70
+#: ../quodlibet/util/__init__.py:71
 msgid "Display brief usage information"
 msgstr "Özet kullanım bilgisi göster"
 
-#: ../quodlibet/util/__init__.py:72
+#: ../quodlibet/util/__init__.py:73
 msgid "Display version and copyright"
 msgstr "Versiyon ve telif haklarını göster"
 
-#: ../quodlibet/util/__init__.py:108 ../quodlibet/util/__init__.py:109
+#: ../quodlibet/util/__init__.py:109 ../quodlibet/util/__init__.py:110
 #, python-format
 msgid "Usage: %s %s"
 msgstr "Kullanım: %s %s"
 
-#: ../quodlibet/util/__init__.py:109
+#: ../quodlibet/util/__init__.py:110
 msgid "[options]"
 msgstr "[ayarlar]"
 
-#: ../quodlibet/util/__init__.py:129
+#: ../quodlibet/util/__init__.py:130
 #, python-format
 msgid ""
 "%s %s - <quod-libet-development@googlegroups.com>\n"
@@ -2144,22 +2161,22 @@ msgstr ""
 "Yazılımın hiçbir şekilde GARANTİSİ YOKTUR. Buna herhangi bir amaç için "
 "kullanılabilirlik bile dahildir.\n"
 
-#: ../quodlibet/util/__init__.py:146
+#: ../quodlibet/util/__init__.py:147
 #, python-format
 msgid "Option %r not recognized."
 msgstr "%r parametresi anlaşılmadı."
 
-#: ../quodlibet/util/__init__.py:149
+#: ../quodlibet/util/__init__.py:150
 #, python-format
 msgid "Option %r requires an argument."
 msgstr "%r için bir parametre vermelisiniz."
 
-#: ../quodlibet/util/__init__.py:152
+#: ../quodlibet/util/__init__.py:153
 #, python-format
 msgid "%r is not a unique prefix."
 msgstr "%r eşsiz bir önek değil."
 
-#: ../quodlibet/util/__init__.py:298 ../quodlibet/util/__init__.py:305
+#: ../quodlibet/util/__init__.py:307 ../quodlibet/util/__init__.py:314
 msgid "[Invalid Encoding]"
 msgstr "[kodlama Hatası]"
 
@@ -2167,7 +2184,7 @@ msgstr "[kodlama Hatası]"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../quodlibet/util/__init__.py:433
+#: ../quodlibet/util/__init__.py:459
 msgid "check|titlecase?"
 msgstr ""
 
@@ -2230,31 +2247,36 @@ msgstr "Quod Libet'ten çık"
 
 #. Translators: "W" as in "Warning". It is prepended to
 #. terminal output. APT uses a similar output format.
-#: ../quodlibet/__init__.py:97
+#: ../quodlibet/__init__.py:101
 msgid "W: "
 msgstr "U:"
 
+#: ../quodlibet/__init__.py:101
+#, fuzzy
+msgid "Warnings"
+msgstr "_Puan"
+
 #. Translators: "E" as in "Error". It is prepended to
 #. terminal output. APT uses a similar output format.
-#: ../quodlibet/__init__.py:103
+#: ../quodlibet/__init__.py:107
 msgid "E: "
 msgstr "H:"
 
-#: ../quodlibet/__init__.py:153
+#: ../quodlibet/__init__.py:159
 #, python-format
 msgid "Initializing audio backend (%s)"
 msgstr "Ses altsistemi yükleniyor (%s)"
 
-#: ../quodlibet/__init__.py:156
+#: ../quodlibet/__init__.py:162
 #, python-format
 msgid "Initializing main library (%s)"
 msgstr "Ana kitaplık yükleniyor (%s)"
 
-#: ../quodlibet/__init__.py:186
+#: ../quodlibet/__init__.py:192
 msgid "Unable to save library"
 msgstr "Arşiv kaydedilemedi"
 
-#: ../quodlibet/browsers/__init__.py:52
+#: ../quodlibet/browsers/__init__.py:55
 #, python-format
 msgid "%r doesn't contain any browsers."
 msgstr "%r hiçbir gezici içermiyor."
@@ -2286,40 +2308,54 @@ msgstr ""
 "Quod Libet şimdi kararlı durumda olmayabilir. Kapatıp tekrar başlatmanız "
 "Tavsiye edilir. Arşiviniz kaydedilecektir."
 
-#: ../quodlibet/devices/__init__.py:40
+#: ../quodlibet/devices/__init__.py:24
+msgid "Could not import dbus-python, which is needed for device support."
+msgstr ""
+
+#: ../quodlibet/devices/__init__.py:46
 #, python-format
 msgid "%r doesn't contain any devices."
 msgstr "%r hiçbir aygıt içermiyor."
 
-#: ../quodlibet/devices/__init__.py:120
+#: ../quodlibet/devices/__init__.py:126
 #, python-format
 msgid "%r is not a supported device."
 msgstr "%r desteklenen bir aygıt değil."
 
-#: ../quodlibet/devices/__init__.py:148
+#: ../quodlibet/devices/__init__.py:154
 msgid "No eject command found."
 msgstr "Çıkartma komutu bulunamadı."
 
-#: ../quodlibet/devices/__init__.py:407
+#: ../quodlibet/devices/__init__.py:286
+#, python-format
+msgid "%s: Could not import ctypes."
+msgstr ""
+
+#: ../quodlibet/devices/__init__.py:290
+#, python-format
+msgid "%s: Could not find media-player-info."
+msgstr ""
+
+#: ../quodlibet/devices/__init__.py:430
 #, fuzzy
 msgid "Initializing device backend."
 msgstr "Ses altsistemi yükleniyor (%s)"
 
-#: ../quodlibet/devices/__init__.py:408
+#: ../quodlibet/devices/__init__.py:431
 #, python-format
 msgid "Trying '%s'"
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:428
-msgid "Couldn't connect to a device backend, disabling Media Devices browser."
+#: ../quodlibet/devices/__init__.py:451
+msgid "Couldn't connect to a device backend."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:431
+#: ../quodlibet/devices/__init__.py:453
 #, fuzzy
 msgid "Device backend initialized."
 msgstr "%r ses altsistemi kurulu değil."
 
-#: ../quodlibet/formats/__init__.py:55
+#: ../quodlibet/formats/__init__.py:59
 #, python-format
 msgid "Error loading %r"
 msgstr "%r yüklenemedi."
@@ -2333,15 +2369,15 @@ msgstr "Geçersiz ses altsistemi"
 msgid "The audio backend %r is not installed."
 msgstr "%r ses altsistemi kurulu değil."
 
-#: ../quodlibet/player/gstbe.py:35
+#: ../quodlibet/player/gstbe.py:41
 msgid "Invalid GStreamer output pipeline, trying default."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:44 ../quodlibet/player/xinebe.py:37
+#: ../quodlibet/player/gstbe.py:50 ../quodlibet/player/xinebe.py:37
 msgid "Unable to create audio output"
 msgstr "Ses çıkışı yaratılamadı."
 
-#: ../quodlibet/player/gstbe.py:45
+#: ../quodlibet/player/gstbe.py:51
 #, python-format
 msgid ""
 "The audio output pipeline %r could not be created. Check your GStreamer "
@@ -2351,20 +2387,22 @@ msgstr ""
 "ayarlarınızı kontrol ediniz."
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:200
+#: ../quodlibet/player/gstbe.py:206
 #, fuzzy
 msgid "Output Error"
 msgstr "Çıktı Kaydı"
 
-#: ../quodlibet/player/gstbe.py:200
-msgid "Output pipeline could not be initialized."
+#: ../quodlibet/player/gstbe.py:207
+msgid ""
+"GStreamer output pipeline could not be initialized. The pipeline might be "
+"invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:336
+#: ../quodlibet/player/gstbe.py:345
 msgid "Unable to open input files"
 msgstr "Giriş dosyaları açılamadı"
 
-#: ../quodlibet/player/gstbe.py:337
+#: ../quodlibet/player/gstbe.py:346
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -2692,3 +2730,23 @@ msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d yıl"
 msgstr[1] "%d yıl"
+
+#~ msgid "Sort by title"
+#~ msgstr "İsime göre sırala"
+
+#~ msgid "Sort by artist"
+#~ msgstr "Sanatçıya göre sırala"
+
+#~ msgid "Lyrics provided by %s."
+#~ msgstr "Şarkı sözleri %s tarafından sağlanmıştır."
+
+#~ msgid ""
+#~ "No lyrics found.\n"
+#~ "\n"
+#~ "You can click the Download button to have Quod Libet search for lyrics "
+#~ "online.  You can also enter them yourself and click save."
+#~ msgstr ""
+#~ "Şarkı sözleri bulunamadı.\n"
+#~ "\n"
+#~ "İndir'e basarak arama yaptırabilirsiniz veya kendinizi yazıp Kaydet'e "
+#~ "basabilirsiniz."

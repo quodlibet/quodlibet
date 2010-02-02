@@ -1,0 +1,18 @@
+Plugins for Quod Libet and Ex Falso
+===================================
+
+This is the set of plugins maintained by the Quod Libet project, designed for
+use with Quod Libet and Ex Falso.
+
+It is recommended that users install both the applications and the plugins from
+their distribution's package manager if possible. Those running the latest
+version from the project's Mercurial repository should use the plugins from the
+same revision. If you are installing Quod Libet and Ex Falso from source, you
+may use these plugins by copying the contents of this folder to
+~/.quodlibet/plugins/ with the directory structure intact.
+
+Some plugins require additional dependencies to work properly. These missing
+dependencies are reported from within the application's plugin screen.
+
+See http://code.google.com/p/quodlibet/ for more information.
+

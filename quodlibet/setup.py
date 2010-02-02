@@ -269,9 +269,6 @@ if __name__ == "__main__":
             data_files.append((join('quodlibet', 'plugins', type),
                 glob.glob(join('..', 'plugins', type, '*.py'))))
 
-        includes = (
-                    'feedparser').split()
-
         setup_kwargs.update({
             'data_files': data_files,
             'windows': [
@@ -289,7 +286,8 @@ if __name__ == "__main__":
             'options': {
                 'py2exe': {
                     'packages': ('encodings, feedparser, quodlibet, '
-                                 'HTMLParser, gtk, glib, gobject'),
+                                 'HTMLParser, gtk, glib, gobject, '
+                                 'musicbrainz2, shelve, json'),
                     'includes': ('cairo, pango, pangocairo, atk, gio, '
                                  'pygst, gst, quodlibet.player.gstbe')
                 }

@@ -1,6 +1,26 @@
 Quod Libet requires Python 2.4, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.18 or later.
 
+2.2 (2010-02-02) - I know you are enjoying that song but a woman DIED
+ * Saved searches extended to Album and Paned browsers [41].
+ * Human sorting is now used in Album and Paned browsers [190].
+ * Windows is now supported (for real this time).
+ * foobar2000's broken TXXX:DATE now supported [220].
+ * Warnings are now printed for many missing dependencies.
+ * Fixes for device backends.
+ * Lyric downloading disabled until it can be fixed [273].
+ * Editing both key and value with multiple keys fixed (extruded) [393].
+ * Plugin changes:
+   * AnimOSD: major update (Andreas Bombe, Christine Spang) [387].
+   * MusicBrainz: major update.
+   * Random Album: Changed algorithm to increase fairness.
+   * QLScrobbler: Custom patterns for title and artist.
+   * Last.fm Sync: new plugin to sync stats from Last.fm.
+   * Notify OSD, Album Art: Minor fixes.
+ * Translations:
+   * Galician, Spanish (Johám-Luís Miguéns Vila).
+   * French (Bastien Gorissen).
+
 2.1.98 (2010-01-04) - How are you going to convince people to use it?
  * Christoph Reiter is now a maintainer.
  * The GStreamer backend is now gapless [49].

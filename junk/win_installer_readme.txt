@@ -7,10 +7,11 @@
 * pyGTK
 * GStreamer WinBuilds
 * pyGst WinBuilds
-* Python:
+* Python: (note, if using easy_install you must install with '-Z')
     * mutagen
     * feedparser
     * py2exe
+    * python-musicbrainz2
 * NSIS
 
 == Build ==
