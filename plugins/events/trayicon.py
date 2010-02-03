@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 
 import gtk
 import pango
@@ -226,12 +227,15 @@ class TrayIcon(EventPlugin):
             self.__icon = gtk.StatusIcon()
         else:
             self.__icon =  EggTrayIconWrapper()
-        self.__update_icon()
 
         self.__icon_theme = gtk.icon_theme_get_default()
         self.__icon_theme.connect('changed', self.__theme_changed)
 
         self.__icon.connect('size-changed', self.__size_changed)
+        #no size-changed under win32
+        if sys.platform == "win32":
+            self.__size = 16
+
         self.__icon.connect('popup-menu', self.__button_right)
         self.__icon.connect('activate', self.__button_left)
 
@@ -271,6 +275,10 @@ class TrayIcon(EventPlugin):
             return
 
         pixbuf_size = int(self.__size * 0.75)
+        #windows panel has enough padding
+        if sys.platform == "win32":
+            pixbuf_size = self.__size
+
         filename = os.path.join(const.IMAGEDIR, "quodlibet.")
 
         if not self.__pixbuf:
