@@ -33,8 +33,8 @@ SERVICES = {
            }
 
 DEFAULT_SERVICE = 'Last.fm'
-DEFAULT_TITLEPAT = '<artist|<artist>|<composer|<composer>|<performer>>>'
-DEFAULT_ARTISTPAT = '<title><version| (<version>)>'
+DEFAULT_TITLEPAT = '<title><version| (<version>)>'
+DEFAULT_ARTISTPAT = '<artist|<artist>|<composer|<composer>|<performer>>>'
 
 def log(msg):
     print_d("[qlscrobbler] %s" % msg)
