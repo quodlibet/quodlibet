@@ -181,7 +181,7 @@ class ChooseNewStations(gtk.Dialog):
         hbox_search.pack_start(query)
         self.vbox.pack_start(hbox_search, expand=False)
 
-        tv = HintedTreeView()
+        self.tv = tv = HintedTreeView()
         tv.set_model(model)
         render = gtk.CellRendererToggle()
         render.connect('toggled', self.__toggled)
@@ -230,7 +230,13 @@ class ChooseNewStations(gtk.Dialog):
         self.listmodel[listmodel_path][3] ^= True
 
     def get_irfs(self):
-        return [row[0] for row in self.model if row[2] and row[3]]
+        stations = [row[0] for row in self.model if row[2] and row[3]]
+        if not stations:
+            # If none are checked, try going with what's selected instead
+            model, iter = self.tv.get_selection().get_selected()
+            if iter:
+                stations = [model[iter][0]]
+        return stations
 
 class AddNewStation(GetStringDialog):
     def __init__(self, parent):
