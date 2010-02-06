@@ -116,7 +116,8 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         for i in range(len(self.model), len(remote_album), -1):
             if self.model[-1][0] is not None:
                 break
-            self.model.remove(len(self.model) - 1)
+            itr = self.model.get_iter_from_string(str(len(self.model) - 1))
+            self.model.remove(itr)
         self.remote_album = remote_album
         has_artists = bool(filter(lambda t: t.artist, remote_album))
         self.get_column(3).set_visible(has_artists)
