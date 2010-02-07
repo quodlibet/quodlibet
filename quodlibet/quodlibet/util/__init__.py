@@ -395,9 +395,9 @@ def split_numeric(s, reg=re.compile(r"([0-9]+\.?[0-9]*)")):
     it can be used for human sorting. Also removes all whitespace."""
     if not s: return None
     result = reg.search(s)
-    if not result: return (u"".join(s.split()),)
+    if not result: return (u" ".join(s.split()),)
     else:
-        first = u"".join(s[:result.start()].split())
+        first = u" ".join(s[:result.start()].split())
         last = s[result.end():].strip()
         return (first, float(result.group(0)), split_numeric(last))
 

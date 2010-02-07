@@ -190,7 +190,7 @@ class Thuman_sort(TestCase):
     def test_white(self):
         self.failUnlessEqual(
             util.human_sort_key(u"  3foo    bar6 42.8"),
-            util.human_sort_key(u"3 foobar6  42.8  "))
+            util.human_sort_key(u"3 foo bar6  42.8  "))
         self.failUnlessEqual(64.0 in util.human_sort_key(u"64. 8"), True)
 
 
