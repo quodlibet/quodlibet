@@ -173,7 +173,7 @@ class HAL(DeviceManager):
 
     def get_block_device(self, udi):
         device = self.__get_interface(udi)
-        return device.GetProperty('block.device')
+        return str(device.GetProperty('block.device'))
 
     def __device_added(self, udi):
         device = self.__get_by_udi(udi)
@@ -369,14 +369,15 @@ class DKD(DeviceManager):
     def get_mountpoint(self, path):
         """/media/myplayer"""
         prop_if = self.__get_dev_prop_interface(path)
-        if self.__get_dev_property(prop_if, 'device-is-mounted'):
-            return self.__get_dev_property(prop_if, 'device-mount-paths')[0]
+        prop_get = self.__get_dev_property
+        if prop_get(prop_if, 'device-is-mounted'):
+            return str(prop_get(prop_if, 'device-mount-paths')[0])
         return ''
 
     def get_block_device(self, path):
         """/dev/sda for example"""
         prop_if = self.__get_dev_prop_interface(path)
-        return self.__get_dev_property(prop_if, 'device-file')
+        return str(self.__get_dev_property(prop_if, 'device-file'))
 
     def __get_media_player_id(self, devpath):
         """DKD is for highlevel device stuff. The info if the device is
