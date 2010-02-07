@@ -318,11 +318,10 @@ class DKD(DeviceManager):
     def __get_device_id(self, path):
         """A unique device id"""
         prop_if = self.__get_dev_prop_interface(path)
-        vendor = self.__get_dev_property(prop_if, 'drive-vendor')
-        model = self.__get_dev_property(prop_if, 'drive-model')
-        serial = self.__get_dev_property(prop_if, 'drive-serial')
+        dev_id = self.__get_dev_property(prop_if, 'device-file-by-id')[0]
+        dev_id = basename(dev_id)
 
-        return "_".join([vendor, model, serial]).replace(" ", "_")
+        return dev_id.replace("-", "_").replace(":", "_")
 
     def __device_added(self, path):
         dev = self.__build_dev(path)
@@ -399,7 +398,8 @@ class DKD(DeviceManager):
         prop_if = self.__get_dev_prop_interface(path)
         #filter out useless devices
         if not self.__get_dev_property(prop_if, 'device-is-drive') or not \
-            self.__get_dev_property(prop_if, 'device-is-media-available'):
+            self.__get_dev_property(prop_if, 'device-is-media-available')\
+            or self.__get_dev_property(prop_if, 'id-usage') != "filesystem":
             return
 
         #ask libudev if the device is a media player
