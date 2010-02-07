@@ -114,6 +114,10 @@ class DeviceManager(gobject.GObject):
         """/dev/sdX"""
         raise NotImplementedError
 
+    def get_mountpoint(self, path):
+        """/media/myplayer"""
+        raise NotImplementedError
+
     def create_device(self, backend_id, device_id, protocols):
         """backend_id is the string that gets passed to the backend so it can
         identify the device. device_id should be a something including
@@ -350,9 +354,17 @@ class DKD(DeviceManager):
 
     def get_name(self, path):
         prop_if = self.__get_dev_prop_interface(path)
-        vendor = self.__get_dev_property(prop_if, 'drive-vendor')
-        name = self.__get_dev_property(prop_if, 'drive-model')
-        return " ".join([vendor, name])
+        prop_get = self.__get_dev_property
+
+        num = ""
+        if prop_get(prop_if, 'device-is-partition'):
+            num = str(prop_get(prop_if, 'partition-number'))
+            parent_path = prop_get(prop_if, 'partition-slave')
+            prop_if = self.__get_dev_prop_interface(parent_path)
+
+        vendor = prop_get(prop_if, 'drive-vendor')
+        name = prop_get(prop_if, 'drive-model')
+        return " ".join([vendor, name, num]).strip()
 
     def get_mountpoint(self, path):
         """/media/myplayer"""
@@ -396,10 +408,14 @@ class DKD(DeviceManager):
         """Return the right device instance by determining the
         supported AccessProtocol"""
         prop_if = self.__get_dev_prop_interface(path)
+        prop_get = self.__get_dev_property
+
         #filter out useless devices
-        if not self.__get_dev_property(prop_if, 'device-is-drive') or not \
-            self.__get_dev_property(prop_if, 'device-is-media-available')\
-            or self.__get_dev_property(prop_if, 'id-usage') != "filesystem":
+        if not (prop_get(prop_if, 'device-is-drive')
+            or prop_get(prop_if, 'device-is-partition')) \
+            or prop_get(prop_if, 'device-is-system-internal') \
+            or prop_get(prop_if, 'device-is-partition-table') \
+            or not prop_get(prop_if, 'device-is-media-available'):
             return
 
         #ask libudev if the device is a media player
