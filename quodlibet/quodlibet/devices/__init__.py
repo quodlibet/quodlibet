@@ -419,6 +419,13 @@ class DKD(DeviceManager):
             or not prop_get(prop_if, 'device-is-media-available'):
             return
 
+        #filter out empty partitions (issue 422)
+        #http://www.win.tue.nl/~aeb/partitions/partition_types-1.html
+        if prop_get(prop_if, 'device-is-partition') and \
+            prop_get(prop_if, 'partition-scheme') == "mbr" and \
+            int(prop_get(prop_if, 'partition-type')) == 0:
+            return
+
         #ask libudev if the device is a media player
         devpath = self.get_block_device(path)
         mplayer_id = self.__get_media_player_id(devpath)
