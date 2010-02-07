@@ -313,8 +313,14 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                         model.insert_before(
                             row.iter, row=[util.escape(key), new[key]])
                 else:
-                    for key in keys:
-                        model.append(row=[util.escape(key), new[key]])
+                    if "" in values:
+                        for key in keys:
+                            model.insert(
+                                len(model)-1, row=[util.escape(key), new[key]])
+                    else:
+                        for key in keys:
+                            model.append(row=[util.escape(key), new[key]])
+
                 if unknown:
                     model.append(row=[UNKNOWN, new[""]])
 
