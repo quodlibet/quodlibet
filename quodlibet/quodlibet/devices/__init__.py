@@ -423,7 +423,7 @@ class DKD(DeviceManager):
         #http://www.win.tue.nl/~aeb/partitions/partition_types-1.html
         if prop_get(prop_if, 'device-is-partition') and \
             prop_get(prop_if, 'partition-scheme') == "mbr" and \
-            int(prop_get(prop_if, 'partition-type')) == 0:
+            int(prop_get(prop_if, 'partition-type'), 16) == 0:
             return
 
         #ask libudev if the device is a media player
