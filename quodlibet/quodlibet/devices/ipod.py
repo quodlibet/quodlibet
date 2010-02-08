@@ -221,7 +221,8 @@ class IPodDevice(Device):
                 # is saved, so we have to keep a reference around in
                 # case the cover is a temporary file.
                 self.__covers.append(cover)
-                gpod.itdb_track_set_thumbnails(track, cover.name)
+                gpod.itdb_track_set_thumbnails(
+                    track, util.fsencode(cover.name))
 
         # Add the track to the master playlist
         gpod.itdb_track_add(self.__itdb, track, -1)
