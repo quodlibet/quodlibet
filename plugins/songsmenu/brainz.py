@@ -148,16 +148,22 @@ class ResultComboBox(gtk.ComboBox):
         self.pack_start(render)
         self.set_cell_data_func(render, celldata)
 
-class ReleaseEventComboBox(gtk.ComboBox):
+class ReleaseEventComboBox(gtk.HBox):
     """A ComboBox for picking a release event."""
 
     def __init__(self):
+        super(ReleaseEventComboBox, self).__init__()
         self.model = gtk.ListStore(object, str)
-        super(ReleaseEventComboBox, self).__init__(self.model)
+        self.combo = gtk.ComboBox(self.model)
         render = gtk.CellRendererText()
-        self.pack_start(render)
-        self.set_attributes(render, markup=1)
-        self.set_sensitive(False)
+        self.combo.pack_start(render)
+        self.combo.set_attributes(render, markup=1)
+        self.combo.set_sensitive(False)
+        self.label = gtk.Label("_Release:")
+        self.label.set_use_underline(True)
+        self.label.set_mnemonic_widget(self.combo)
+        self.pack_start(self.label, expand=False)
+        self.pack_start(self.combo)
 
     def update(self, release):
         self.model.clear()
@@ -174,11 +180,14 @@ class ReleaseEventComboBox(gtk.ComboBox):
                     rel_event.getCatalogNumber(),rel_event.getCountry())
             self.model.append( (rel_event, text) )
         if len(events) > 0:
-            self.set_active(0)
-        self.set_sensitive((len(events) > 0))
+            self.combo.set_active(0)
+        self.combo.set_sensitive((len(events) > 0))
+        text = ngettext("%d _release:", "%d _releases:", len(events))
+        self.label.set_text(text % len(events))
+        self.label.set_use_underline(True)
 
     def get_release_event(self):
-        itr = self.get_active_iter()
+        itr = self.combo.get_active_iter()
         if itr:
             return self.model[itr][0]
         else:
@@ -228,12 +237,8 @@ class SearchWindow(gtk.Dialog):
 
         album = self.current_release
         shared = {}
+
         shared['album'] = album.title
-        shared['date'] = album.getEarliestReleaseDate() or ''
-
-        if shared['date'] and config_get('year_only', False):
-            shared['date'] = shared['date'].split('-')[0]
-
         if config_get('split_disc', True):
             m = re.match(r'(.*) \(disc (.*?)\)$', album.title)
             if m:
@@ -243,8 +248,12 @@ class SearchWindow(gtk.Dialog):
                 if len(disc) > 1:
                     shared['discsubtitle'] = disc[1]
 
+        relevt = self.release_combo.get_release_event()
+        shared['date'] = relevt and relevt.getDate() or ''
+        if shared['date'] and config_get('year_only', False):
+            shared['date'] = shared['date'].split('-')[0]
+
         if config_get('labelid', True):
-            relevt = self.release_combo.get_release_event()
             if relevt and relevt.getCatalogNumber():
                 shared['labelid'] = relevt.getCatalogNumber()
 
@@ -260,7 +269,7 @@ class SearchWindow(gtk.Dialog):
         for idx, (song, ) in enumerate(self.result_treeview.model):
             if song is None: continue
             song.update(shared)
-            if idx > len(album.tracks): continue
+            if idx >= len(album.tracks): continue
             track = album.tracks[idx]
             song['title'] = track.title
             song['tracknumber'] = '%d/%d' % (idx+1,
@@ -401,13 +410,7 @@ class SearchWindow(gtk.Dialog):
         hb = gtk.HBox()
         hb.set_spacing(8)
         self.release_combo = ReleaseEventComboBox()
-        self.release_combo.set_sensitive(False)
-        lbl = gtk.Label("_Release:")
-        lbl.set_use_underline(True)
-        lbl.set_mnemonic_widget(self.release_combo)
-        hb.pack_start(lbl, expand=False)
-        hb.pack_start(self.release_combo)
-        vb.pack_start(hb, expand=False)
+        vb.pack_start(self.release_combo, expand=False)
 
         self.get_content_area().pack_start(vb)
         self.connect('response', self.__save)
