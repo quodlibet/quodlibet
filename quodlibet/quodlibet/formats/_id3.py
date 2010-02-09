@@ -172,7 +172,7 @@ class ID3File(AudioFile):
         # foobar2000 writes long dates in a TXXX DATE tag, leaving the TDRC
         # tag out. Read the TXXX DATE, but only if the TDRC tag doesn't exist
         # to avoid reverting or duplicating tags in existing libraries.
-        if "date" not in self:
+        if audio.tags and "date" not in self:
             for frame in tag.getall('TXXX:DATE'):
                 self["date"] = "\n".join(map(unicode, frame.text))
 

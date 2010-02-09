@@ -37,6 +37,8 @@ class TID3File(TestCase):
         f.tags.delall('TDRC')
         f.save()
         self.assertEquals(MP3File(self.filename)['date'], '2010-01-13')
+        f.delete()
+        MP3File(self.filename)
 
     def tearDown(self):
         os.unlink(self.filename)
