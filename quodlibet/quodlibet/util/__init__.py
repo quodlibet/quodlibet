@@ -402,7 +402,7 @@ def split_numeric(s, reg=re.compile(r"([0-9]+\.?[0-9]*)")):
         return (first, float(result.group(0)), split_numeric(last))
 
 def human_sort_key(s):
-    if not isinstance(title, unicode):
+    if not isinstance(s, unicode):
         s = s.decode("utf-8")
     s = unicodedata.normalize('NFD', s.lower())
     return split_numeric(s)
