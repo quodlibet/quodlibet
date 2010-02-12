@@ -831,6 +831,8 @@ class CoverArea(gtk.VBox):
                     args=(pixbuf, scale_w, scale_h))
                 thr.setDaemon(True)
                 thr.start()
+            else:
+                self.image.set_from_pixbuf(pixbuf)
         else:
             self.image.set_from_pixbuf(pixbuf)
 
