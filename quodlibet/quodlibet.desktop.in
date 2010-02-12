@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=Quod Libet
 _GenericName=Music Player
 _Comment=Listen to, browse, or edit your audio collection
@@ -7,4 +6,4 @@ Exec=quodlibet
 Terminal=false
 Type=Application
 Icon=quodlibet.png
-Categories=Application;AudioVideo;AudioPlayer;GTK
+Categories=AudioVideo;Audio;Player;GTK
