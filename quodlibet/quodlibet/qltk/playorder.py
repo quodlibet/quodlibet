@@ -142,11 +142,11 @@ class OrderWeighted(OrderRemembered):
     def next(self, playlist, iter):
         super(OrderWeighted, self).next(playlist, iter)
         songs = playlist.get()
-        max_score = sum([song.get('~#rating', 2) for song in songs])
+        max_score = sum([song.get('~#rating', 0.5) for song in songs])
         choice = random.random() * max_score
         current = 0.0
         for i, song in enumerate(songs):
-            current += song.get("~#rating", 2)
+            current += song.get("~#rating", 0.5)
             if current >= choice:
                 return playlist.get_iter((i,))
         else:
