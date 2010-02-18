@@ -127,7 +127,7 @@ class DeviceManager(gobject.GObject):
             device = klass(backend_id, device_id)
             return device
         else:
-            print_w(_("%r is not a supported device.") % path)
+            print_w(_("%r is not a supported device.") % device_id)
 
 class HAL(DeviceManager):
     __interface = None
