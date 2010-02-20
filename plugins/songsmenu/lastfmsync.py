@@ -176,7 +176,7 @@ class LastFMSyncCache(object):
                 continue
             stats = stats[0]
 
-            song['~#playcount'] = song['~#playcount'] + stats['playcount']
+            song['~#playcount'] = max(song['~#playcount'], stats['playcount'])
             song['~#lastplayed'] = max(song['~#lastplayed'],
                                         stats['lastplayed'])
             song['~#added'] = min(song['~#added'], stats['added'])
