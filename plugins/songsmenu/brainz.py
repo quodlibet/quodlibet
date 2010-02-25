@@ -31,10 +31,10 @@ def get_artist(album):
         names = set()
         for song in album:
             map(names.add, filter(lambda n: n, song.get(tag, "").split("\n")))
-            if len(names) == 1:
-                return names.pop()
-            elif len(names) > 1:
-                return None
+        if len(names) == 1:
+            return names.pop()
+        elif len(names) > 1:
+            return None
     return None
 
 def get_trackcount(album):
@@ -372,10 +372,12 @@ class SearchWindow(gtk.Dialog):
         sq = self.search_query = gtk.Entry()
         sq.connect('activate', self.__do_query)
 
-        alb = album[0].comma("album").replace('"', '')
-        art = get_artist(album).replace('"', '')
-        sq.set_text('"%s" AND artist:"%s" AND tracks:%d' %
-                (alb, art, get_trackcount(album)) )
+        alb = '"%s"' % album[0].comma("album").replace('"', '')
+        art = get_artist(album)
+        if art:
+            alb = '%s AND artist:"%s"' % (alb, art.replace('"', ''))
+        sq.set_text('%s AND tracks:%d' %
+                (alb, get_trackcount(album)) )
 
         lbl = gtk.Label("_Query:")
         lbl.set_use_underline(True)
