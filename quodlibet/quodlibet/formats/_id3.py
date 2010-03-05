@@ -97,7 +97,7 @@ class ID3File(AudioFile):
 
     def __init__(self, filename):
         audio = self.Kind(filename, ID3=ID3hack)
-        tag = audio.tags or {}
+        tag = audio.tags or mutagen.id3.ID3()
 
         for frame in tag.values():
             if frame.FrameID == "APIC" and len(frame.data):
