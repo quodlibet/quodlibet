@@ -1,14 +1,13 @@
 # Ex Falso / Quod Libet's galician (RAG) translation.
-# Copyright (C) 2005 - 2010
+# Copyright (C) 2005 - 2010, Johám-Luís MIguéns Vila <galiza.ceive@gmail.com>, 2010.
 # This file is distributed under the same license as the Ex Falso / Quod Libet package.
-# Johám-Luís MIguéns Vila <galiza.ceive@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Ex Falso / Quod Libet SVN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-02 01:56-0500\n"
-"PO-Revision-Date: 2010-01-09 16:37+0100\n"
+"POT-Creation-Date: 2010-02-15 19:25+0100\n"
+"PO-Revision-Date: 2010-02-15 18:33+0100\n"
 "Last-Translator: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
 "Language-Team: Galician\n"
 "MIME-Version: 1.0\n"
@@ -18,15 +17,15 @@ msgstr ""
 
 #: ../exfalso.desktop.in.h:1
 msgid "Audio tag editor"
-msgstr "Un editor de etiquetas de audio"
+msgstr "Editor de etiquetas de música"
 
 #: ../exfalso.desktop.in.h:2
 msgid "Edit tags in your audio files"
-msgstr "Edita as etiquetas dos teus ficheiros de música"
+msgstr "Edita as etiquetas dos teus arquivos de música"
 
 #: ../quodlibet.desktop.in.h:1
 msgid "Listen to, browse, or edit your audio collection"
-msgstr "Escoita, explora ou edita a túa colección de música"
+msgstr "Escoita, examina ou edita a túa colección de música"
 
 #: ../quodlibet.desktop.in.h:2
 msgid "Music Player"
@@ -34,11 +33,11 @@ msgstr "Reproductor de música"
 
 #: ../quodlibet.py:117
 msgid "No song is currently playing."
-msgstr "Ningunha canción en reproducción"
+msgstr "Non se está a reproducir ningunha canción"
 
 #: ../quodlibet.py:125
 msgid "Quod Libet is not running."
-msgstr "O Quod Libet non está a ser executado."
+msgstr "O Quod Libet non se está a executar."
 
 #: ../quodlibet.py:136
 #, python-format
@@ -79,7 +78,7 @@ msgstr "Parar a reproducción"
 
 #: ../quodlibet.py:183
 msgid "Toggle play/pause mode"
-msgstr "Alternar tocar/parar"
+msgstr "Alternar entre tocar e parar"
 
 #: ../quodlibet.py:184
 msgid "Turn up volume"
@@ -107,7 +106,7 @@ msgstr "Alternar entre mostrar ou non a fiestra principal"
 
 #: ../quodlibet.py:190
 msgid "Focus the running player"
-msgstr "Centrarse no reproductor utilizado"
+msgstr "Centrarse no reproductor activo"
 
 #: ../quodlibet.py:191
 msgid "Remove active browser filters"
@@ -115,15 +114,15 @@ msgstr "Eliminar os filtros de navegación activos"
 
 #: ../quodlibet.py:192
 msgid "Refresh and rescan library"
-msgstr "Actualizar e analisar de novo a colección"
+msgstr "Reler e actualizar a colección"
 
 #: ../quodlibet.py:193
 msgid "Print the current playlist"
-msgstr "Amosar a lista de reproducción actual"
+msgstr "Amosar a lista de reproducción activa"
 
 #: ../quodlibet.py:194
 msgid "Print the contents of the queue"
-msgstr "Amosar o contido da fileira de reproducción"
+msgstr "Amosar o contido da fileira "
 
 #: ../quodlibet.py:195
 msgid "Exit Quod Libet"
@@ -131,7 +130,7 @@ msgstr "Saír do Quod Libet"
 
 #: ../quodlibet.py:199
 msgid "Seek within the playing song"
-msgstr "Avanzar na canción que se está a tocar"
+msgstr "Avanzar na canción activa"
 
 #: ../quodlibet.py:199
 msgid "[+|-][HH:]MM:SS"
@@ -151,7 +150,7 @@ msgstr "Axustar o volume"
 
 #: ../quodlibet.py:204
 msgid "Search your audio library"
-msgstr "Pesquisar na colección de música"
+msgstr "Procurar na colección de música"
 
 #: ../quodlibet.py:204 ../quodlibet.py:214 ../quodlibet.py:216
 msgid "query"
@@ -159,19 +158,19 @@ msgstr "procura"
 
 #: ../quodlibet.py:205
 msgid "Play a file"
-msgstr "Reproducir un ficheiro"
+msgstr "Reproducir un arquivo"
 
 #: ../quodlibet.py:205 ../quodlibet.py:214 ../quodlibet.py:216
 msgid "command|filename"
-msgstr "ficheiro"
+msgstr "arquivo"
 
 #: ../quodlibet.py:206
 msgid "Rate the playing song"
-msgstr "Cualificar a canción actual"
+msgstr "Puntuar a canción actual"
 
 #: ../quodlibet.py:207
 msgid "Set the current browser"
-msgstr "Axustar o navegador actual"
+msgstr "Configurar o navegador activo"
 
 #: ../quodlibet.py:208
 msgid "Open a new browser"
@@ -203,7 +202,7 @@ msgstr "etiqueta=valor"
 
 #: ../quodlibet.py:213
 msgid "Enqueue a file or query"
-msgstr "Pór un ficheiro ou unha procura na fileira"
+msgstr "Pór un arquivo ou unha procura na fileira"
 
 #: ../quodlibet.py:215
 msgid "Unqueue a file or query"
@@ -221,7 +220,7 @@ msgstr "Proba %s --help"
 
 #: ../quodlibet.py:286
 msgid "Quod Libet is already running."
-msgstr "O Quod Libet xa está a ser executado"
+msgstr "O Quod Libet xa se está a executar"
 
 #. The browser's name, without an accelerator.
 #. The name, with an accelerator.
@@ -250,7 +249,7 @@ msgstr "Amosar as _portadas dos álbuns"
 
 #: ../quodlibet/browsers/albums.py:77
 msgid "Inline _search includes people"
-msgstr "A procura inclúi \"xente\""
+msgstr "A procura _inclúi os componentes"
 
 #: ../quodlibet/browsers/albums.py:93
 msgid "Album Display"
@@ -288,14 +287,12 @@ msgid "Title"
 msgstr "Título"
 
 #: ../quodlibet/browsers/albums.py:390
-#, fuzzy
 msgid "Artist"
-msgstr "_Artista"
+msgstr "Artista"
 
 #: ../quodlibet/browsers/albums.py:390
-#, fuzzy
 msgid "Date"
-msgstr "_Data"
+msgstr "Data"
 
 #: ../quodlibet/browsers/albums.py:496
 msgid "All Albums"
@@ -309,9 +306,8 @@ msgstr[0] "%d álbum"
 msgstr[1] "%d álbuns"
 
 #: ../quodlibet/browsers/albums.py:536
-#, fuzzy
 msgid "Sort _by:"
-msgstr "Ordenar pola data"
+msgstr "Ordenar _por:"
 
 #: ../quodlibet/browsers/audiofeeds.py:39
 #: ../quodlibet/browsers/audiofeeds.py:49
@@ -346,11 +342,11 @@ msgstr "_Baixar..."
 
 #: ../quodlibet/browsers/audiofeeds.py:253
 msgid "Download Files"
-msgstr "Baixar os ficheiros"
+msgstr "Baixar os arquivos"
 
 #: ../quodlibet/browsers/audiofeeds.py:274
 msgid "Download File"
-msgstr "Baixar o ficheiro"
+msgstr "Baixar o arquivo"
 
 #: ../quodlibet/browsers/audiofeeds.py:355
 #: ../quodlibet/browsers/audiofeeds.py:410
@@ -370,24 +366,24 @@ msgstr ""
 #: ../quodlibet/browsers/audiofeeds.py:430
 msgid "Could not import python-feedparser, Audio Feeds browser disabled."
 msgstr ""
-"Non se puido importar o python-feedparser. O navegador de fontes (feeds) foi "
-"desactivado."
+"Non se puido importar o python-feedparser. Desactivóuse o navegador de "
+"fontes (feeds)."
 
 #: ../quodlibet/browsers/audiofeeds.py:437
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
 msgstr ""
-"A infraestrutura de audio activada non soporta URLs. O navegador de fontes "
-"(feeds) foi desactivado."
+"A infraestrutura de audio activada non soporta URLs. Desactivóuse o "
+"navegador de fontes (feeds)."
 
 #: ../quodlibet/browsers/filesystem.py:33
 msgid "File System"
-msgstr "Sistema de ficheiros"
+msgstr "Sistema de arquivos"
 
 #: ../quodlibet/browsers/filesystem.py:34
 msgid "_File System"
-msgstr "_Sistema de ficheiros"
+msgstr "_Sistema de arquivos"
 
 #: ../quodlibet/browsers/filesystem.py:86 ../quodlibet/browsers/media.py:440
 #: ../quodlibet/qltk/songlist.py:467
@@ -397,7 +393,7 @@ msgstr "Non se puideron copiar as cancións"
 #: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/qltk/songlist.py:468
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
-"Os ficheiros seleccionados non se puideron copiar a outra lista ou á fileira."
+"Os arquivos seleccionados non se puideron copiar a outra lista ou á fileira."
 
 #: ../quodlibet/browsers/filesystem.py:148
 msgid "_Add to Library"
@@ -405,7 +401,7 @@ msgstr "_Engadir á colección"
 
 #: ../quodlibet/browsers/iradio.py:81
 msgid "Unsupported file type"
-msgstr "Tipo de ficheiro non soportado"
+msgstr "Tipo de arquivo non admitido"
 
 #: ../quodlibet/browsers/iradio.py:82
 #, python-format
@@ -414,19 +410,19 @@ msgid ""
 "lists or playlists. The following locations cannot be loaded:\n"
 "%s"
 msgstr ""
-"As listas de emisoras só poden conter enderezos de emisoras, nen outras "
-"listas de emisoras\n"
-"nen listas de reproducción. Os seguintes enderezos non se puideron cargar:\n"
+"As listas de emisoras só poden conter enderezos de emisoras, non outras "
+"listas de emisoras nen listas de reproducción. Os seguintes enderezos non se "
+"puideron cargar:\n"
 "%s"
 
 #: ../quodlibet/browsers/iradio.py:148
 msgid "Choose New Stations"
 msgstr "Escolle novas emisoras"
 
-#: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:285
+#: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
 #: ../quodlibet/browsers/search.py:159
 msgid "_Search:"
-msgstr "Procurar"
+msgstr "_Procurar:"
 
 #: ../quodlibet/browsers/iradio.py:188
 msgid "Add"
@@ -440,49 +436,49 @@ msgstr "Taxa de bits"
 msgid "Genre"
 msgstr "Estilo"
 
-#: ../quodlibet/browsers/iradio.py:238
+#: ../quodlibet/browsers/iradio.py:244
 msgid "New Station"
 msgstr "Nova emisora"
 
-#: ../quodlibet/browsers/iradio.py:239
+#: ../quodlibet/browsers/iradio.py:245
 msgid "Enter the location of an Internet radio station:"
 msgstr "Insire o enderezo dunha emisora de radio por Internet:"
 
-#: ../quodlibet/browsers/iradio.py:241
+#: ../quodlibet/browsers/iradio.py:247
 msgid "_Stations..."
 msgstr "_Emisoras..."
 
-#: ../quodlibet/browsers/iradio.py:257
+#: ../quodlibet/browsers/iradio.py:263
 msgid "Internet Radio"
 msgstr "Radio por Internet"
 
-#: ../quodlibet/browsers/iradio.py:258
+#: ../quodlibet/browsers/iradio.py:264
 msgid "_Internet Radio"
 msgstr "_Radio por Internet"
 
-#: ../quodlibet/browsers/iradio.py:269
+#: ../quodlibet/browsers/iradio.py:275
 msgid "_New Station"
 msgstr "_Nova emisora"
 
-#: ../quodlibet/browsers/iradio.py:347 ../quodlibet/browsers/iradio.py:361
-#: ../quodlibet/browsers/iradio.py:374
+#: ../quodlibet/browsers/iradio.py:353 ../quodlibet/browsers/iradio.py:367
+#: ../quodlibet/browsers/iradio.py:380
 msgid "Unable to add station"
 msgstr "Non se puido engadir a emisora"
 
-#: ../quodlibet/browsers/iradio.py:366
+#: ../quodlibet/browsers/iradio.py:372
 msgid "No stations found"
 msgstr "Non se atoparon emisoras"
 
-#: ../quodlibet/browsers/iradio.py:367
+#: ../quodlibet/browsers/iradio.py:373
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Non se atoparon emisoras de radio por Internet en %s."
 
-#: ../quodlibet/browsers/iradio.py:375
+#: ../quodlibet/browsers/iradio.py:381
 msgid "All stations listed are already in your library."
-msgstr "Todas as emisoras mostradas xa están na túa colección."
+msgstr "Todas as emisoras relacionadas xa están na túa colección."
 
-#: ../quodlibet/browsers/iradio.py:394
+#: ../quodlibet/browsers/iradio.py:400
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -580,7 +576,7 @@ msgstr ""
 
 #: ../quodlibet/browsers/paned.py:37
 msgid "Paned Browser Preferences"
-msgstr "Preferencias da vista dividida"
+msgstr "Preferencias da vista por paneis"
 
 #: ../quodlibet/browsers/paned.py:44 ../quodlibet/browsers/paned.py:148
 msgid "_Custom"
@@ -588,17 +584,17 @@ msgstr "_Personalizada"
 
 #: ../quodlibet/browsers/paned.py:153
 msgid "Paned Browser"
-msgstr "Vista dividida"
+msgstr "Vista por paneis"
 
 #: ../quodlibet/browsers/paned.py:154
 msgid "_Paned Browser"
-msgstr "_Vista dividida"
+msgstr "_Vista por paneis"
 
-#: ../quodlibet/browsers/paned.py:322 ../quodlibet/qltk/pluginwin.py:258
+#: ../quodlibet/browsers/paned.py:328 ../quodlibet/qltk/pluginwin.py:258
 msgid "All"
 msgstr "Todo"
 
-#: ../quodlibet/browsers/paned.py:396
+#: ../quodlibet/browsers/paned.py:402
 msgid "Select _All"
 msgstr "Seleccionar _todo"
 
@@ -700,7 +696,7 @@ msgstr "Procurar"
 
 #: ../quodlibet/browsers/search.py:172
 msgid "Search your library"
-msgstr "Procurar na colección de música"
+msgstr "Procurar na colección"
 
 #: ../quodlibet/browsers/search.py:206
 msgid "_Limit Results"
@@ -754,26 +750,27 @@ msgstr "Firmware:"
 msgid "Removing orphaned iPod track"
 msgstr "A eliminar ficheiros orfos do iPod"
 
-#: ../quodlibet/devices/ipod.py:258
+#: ../quodlibet/devices/ipod.py:259
 msgid "Unable to save iPod database"
 msgstr "Non se puido gardar a base de datos do iPod"
 
-#: ../quodlibet/devices/ipod.py:270
+#: ../quodlibet/devices/ipod.py:271
 msgid "Uninitialized iPod"
 msgstr "iPod sen configurar"
 
-#: ../quodlibet/devices/ipod.py:271
+#: ../quodlibet/devices/ipod.py:272
 msgid "Do you want to create an empty database on this iPod?"
 msgstr "Ques crear unha base de datos baleira no iPod?"
 
-#: ../quodlibet/devices/ipod.py:394
+#: ../quodlibet/devices/ipod.py:395
 msgid "Could not import python-gpod, iPod support disabled."
 msgstr ""
-"Non se puido importar o python-gpod. Soporte para o iPod deshabilitado."
+"Non se puido importar a biblioteca python-gpod. Desactivóuse a interacción "
+"co iPod."
 
 #: ../quodlibet/devices/storage.py:52
 msgid "_Filename Pattern:"
-msgstr "_Padrón do nome do ficheiro"
+msgstr "_Padrón do nome do arquivo:"
 
 #: ../quodlibet/devices/storage.py:60
 msgid "_Remove unused covers and directories"
@@ -781,17 +778,17 @@ msgstr "_Eliminar portadas e cartafoles non utilizados"
 
 #: ../quodlibet/devices/storage.py:92
 msgid "File exists"
-msgstr "O ficheiro existe"
+msgstr "O arquivo existe"
 
 #: ../quodlibet/devices/storage.py:93
 #, python-format
 msgid "Overwrite <b>%s</b>?"
-msgstr "Escreber por riba de <b>%s</b>?"
+msgstr "Sobreescreber  <b>%s</b>?"
 
 #: ../quodlibet/library/__init__.py:29 ../quodlibet/qltk/about.py:25
 #, python-format
 msgid "Supported formats: %s"
-msgstr "Formatos soportados: %s"
+msgstr "Formatos admitidos: %s"
 
 #: ../quodlibet/library/songs.py:206
 msgid "Checking mount points"
@@ -817,7 +814,7 @@ msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
 "have permission to edit it."
 msgstr ""
-"Erro ao gardar <b>%s</b>. Pode ser que o ficheiro sexa de só lectura, estea "
+"Erro ao gardar <b>%s</b>. Pode ser que o arquivo sexa de só lectura, estea "
 "corrompido ou que non teñas permisos para editalo."
 
 #: ../quodlibet/qltk/_editpane.py:66
@@ -833,7 +830,7 @@ msgstr "Dispositivo de son: %s"
 #. in the "About" dialog.
 #: ../quodlibet/qltk/about.py:34
 msgid "translator-credits"
-msgstr "Johám-Luís Miguéns Vila, a.k.a. ashtophet"
+msgstr "ashtophet"
 
 #. Translators: Refers to the beginning of the playing song.
 #: ../quodlibet/qltk/bookmarks.py:23
@@ -846,7 +843,7 @@ msgstr "N/D"
 
 #: ../quodlibet/qltk/bookmarks.py:68
 msgid "Time"
-msgstr "Momento"
+msgstr "Intre"
 
 #: ../quodlibet/qltk/bookmarks.py:74 ../quodlibet/qltk/bookmarks.py:107
 msgid "Bookmark Name"
@@ -871,7 +868,7 @@ msgstr "Valores gardados"
 
 #: ../quodlibet/qltk/cbes.py:41 ../quodlibet/qltk/edittags.py:230
 msgid "_Value:"
-msgstr "_Valor"
+msgstr "_Valor:"
 
 #: ../quodlibet/qltk/cbes.py:213
 msgid "Edit saved values..."
@@ -879,7 +876,7 @@ msgstr "Editar os valores gardados..."
 
 #: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:269
 msgid "Songs"
-msgstr "Songs"
+msgstr "Cancións"
 
 #: ../quodlibet/qltk/controls.py:44
 msgid "Display remaining time"
@@ -895,7 +892,7 @@ msgstr "Parar despois desta canción"
 
 #: ../quodlibet/qltk/delete.py:28
 msgid "Delete Files"
-msgstr "Eliminar os ficheiros"
+msgstr "Eliminar os arquivos"
 
 #: ../quodlibet/qltk/delete.py:38
 msgid "_Move to Trash"
@@ -903,11 +900,11 @@ msgstr "_Mover para o lixo"
 
 #: ../quodlibet/qltk/delete.py:56
 msgid "Permanently delete this file?"
-msgstr "Eliminar para sempre este ficheiro?"
+msgstr "Eliminar este arquivo?"
 
 #: ../quodlibet/qltk/delete.py:57
 msgid "Permanently delete these files?"
-msgstr "Eliminar para sempre estes ficheiros?"
+msgstr "Eliminar estes arquivos?"
 
 #: ../quodlibet/qltk/delete.py:61
 #, python-format
@@ -928,7 +925,7 @@ msgstr "A eliminar %(current)d/%(total)d."
 
 #: ../quodlibet/qltk/delete.py:115
 msgid "Unable to delete file"
-msgstr "Non se puido eliminar o ficheiro"
+msgstr "Non se puido eliminar o arquivo"
 
 #: ../quodlibet/qltk/delete.py:116
 #, python-format
@@ -967,23 +964,23 @@ msgstr[1] "diferente en %d cancións"
 
 #: ../quodlibet/qltk/edittags.py:124
 msgid "Split into _Multiple Values"
-msgstr "Dividir en valores múltiplos"
+msgstr "Extraer valores múltiplos"
 
 #: ../quodlibet/qltk/edittags.py:142
 msgid "Split Disc out of _Album"
-msgstr "Tirar o disco do _álbum"
+msgstr "Extraer o disco do _álbum"
 
 #: ../quodlibet/qltk/edittags.py:157
 msgid "Split _Version out of Title"
-msgstr "Tirar a _versión do título"
+msgstr "Extraer a _versión do título"
 
 #: ../quodlibet/qltk/edittags.py:190
 msgid "Split Arranger out of Ar_tist"
-msgstr "Tirrar o arranxista do a_rtista"
+msgstr "Extraer o arranxista do a_rtista"
 
 #: ../quodlibet/qltk/edittags.py:194
 msgid "Split _Performer out of Artist"
-msgstr "Tirar o intér_prete do artista"
+msgstr "Extraer o intér_prete do artista"
 
 #: ../quodlibet/qltk/edittags.py:203
 msgid "Add a Tag"
@@ -1022,7 +1019,7 @@ msgid ""
 msgstr ""
 "Non se puido engadir <b>%s</b>\n"
 "\n"
-"Os ficheiros seleccionados non soportan valores múltiples."
+"Os arquivos seleccionados non admiten valores múltiples."
 
 #. Can't remove the old tag.
 #. Can't add the new tag.
@@ -1045,7 +1042,7 @@ msgid ""
 msgstr ""
 "Etiqueta inválida: <b>%s</b>\n"
 "\n"
-"Os ficheiros seleccionados non soportan a edición desa etiqueta."
+"Os ficheiros seleccionados non permiten a edición desa etiqueta."
 
 #: ../quodlibet/qltk/edittags.py:580 ../quodlibet/qltk/tagsfrompath.py:213
 #: ../quodlibet/qltk/tracknumbers.py:118
@@ -1091,7 +1088,7 @@ msgstr "Preferencias do Ex Falso"
 
 #: ../quodlibet/qltk/exfalsowindow.py:220 ../quodlibet/qltk/prefs.py:316
 msgid "Split _on:"
-msgstr "Di_visión activada:"
+msgstr "E_xtraer por::"
 
 #: ../quodlibet/qltk/exfalsowindow.py:226 ../quodlibet/qltk/prefs.py:343
 msgid "Show _programmatic tags"
@@ -1111,7 +1108,7 @@ msgstr "_Novo cartafol..."
 
 #: ../quodlibet/qltk/filesel.py:99
 msgid "_Select All Subfolders"
-msgstr "_Seleccionar todos os cartafoles fillos"
+msgstr "_Seleccionar todos os cartafoles subordinados"
 
 #: ../quodlibet/qltk/filesel.py:151
 msgid "New Folder"
@@ -1152,7 +1149,7 @@ msgstr "_Editar vista..."
 
 #: ../quodlibet/qltk/info.py:102
 msgid "Not playing"
-msgstr "A tocar"
+msgstr "Sen reproducción"
 
 #: ../quodlibet/qltk/information.py:58
 msgid "_Clear Errors"
@@ -1160,7 +1157,7 @@ msgstr "_Limpar os erros"
 
 #: ../quodlibet/qltk/information.py:71
 msgid "No songs are selected."
-msgstr "Ningunha canción seleccionada"
+msgstr "Non foi seleccionada ningunha canción."
 
 #: ../quodlibet/qltk/information.py:72
 msgid "No Songs"
@@ -1173,7 +1170,7 @@ msgstr "Información"
 
 #: ../quodlibet/qltk/information.py:89
 msgid "Lyrics"
-msgstr "Letras"
+msgstr "Letra"
 
 #: ../quodlibet/qltk/information.py:99 ../quodlibet/__init__.py:107
 msgid "Errors"
@@ -1224,7 +1221,7 @@ msgstr "saltada"
 
 #: ../quodlibet/qltk/information.py:244 ../quodlibet/util/tags.py:103
 msgid "rating"
-msgstr "cualificación"
+msgstr "puntuación"
 
 #: ../quodlibet/qltk/information.py:253 ../quodlibet/qltk/prefs.py:282
 msgid "Library"
@@ -1255,7 +1252,7 @@ msgstr "bitrate"
 #: ../quodlibet/qltk/renamefiles.py:72 ../quodlibet/qltk/tagsfrompath.py:169
 #: ../quodlibet/qltk/tracknumbers.py:57
 msgid "File"
-msgstr "Ficheiro"
+msgstr "Arquivo"
 
 #: ../quodlibet/qltk/information.py:341
 #, python-format
@@ -1313,7 +1310,7 @@ msgstr "Tamaño total:"
 
 #: ../quodlibet/qltk/information.py:553
 msgid "Files"
-msgstr "Ficheiros"
+msgstr "Arquivos"
 
 #: ../quodlibet/qltk/lyrics.py:32
 msgid "_Download"
@@ -1325,15 +1322,15 @@ msgstr "_Baixar"
 #. "yourself and click save."))
 #: ../quodlibet/qltk/lyrics.py:70 ../quodlibet/qltk/lyrics.py:109
 msgid "No lyrics found for this song."
-msgstr "Non se atoparon letras para esta canción."
+msgstr "Non se atopou a letra desta canción."
 
 #: ../quodlibet/qltk/lyrics.py:81
 msgid "Searching for lyrics..."
-msgstr "A procurar as letras da canción..."
+msgstr "A procurar a letra da canción..."
 
 #: ../quodlibet/qltk/lyrics.py:101
 msgid "Unable to download lyrics."
-msgstr "Non se puideron baixar as letras."
+msgstr "Non se puido baixar a letra."
 
 #: ../quodlibet/qltk/msg.py:46
 msgid "Discard tag changes?"
@@ -1344,7 +1341,7 @@ msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
 msgstr ""
-"As etiquetas mudaron pero non se gardaron. Gardar os ficheiros ou descartar "
+"As etiquetas mudaron pero non se gardaron. Gardar os arquivos ou descartar "
 "as mudanzas?"
 
 #: ../quodlibet/qltk/playorder.py:16
@@ -1389,7 +1386,7 @@ msgstr "Extensións do Quod Libet"
 
 #: ../quodlibet/qltk/pluginwin.py:97
 msgid "Show _Errors"
-msgstr "Mostrar _erros"
+msgstr "Mostrar os _erros"
 
 #: ../quodlibet/qltk/pluginwin.py:120
 msgid "Preferences"
@@ -1413,7 +1410,7 @@ msgstr "Non se atoparon extensións."
 
 #: ../quodlibet/qltk/pluginwin.py:278
 msgid "Plugin Errors"
-msgstr "Erros das extensións"
+msgstr "Erros nas extensións"
 
 #: ../quodlibet/qltk/prefs.py:29
 msgid "Song List"
@@ -1441,7 +1438,7 @@ msgstr "_Artista"
 
 #: ../quodlibet/qltk/prefs.py:42 ../quodlibet/qltk/songlist.py:361
 msgid "_Rating"
-msgstr "_Cualificación"
+msgstr "_Puntuación"
 
 #: ../quodlibet/qltk/prefs.py:44
 msgid "_Date"
@@ -1453,15 +1450,15 @@ msgstr "_Duración"
 
 #: ../quodlibet/qltk/prefs.py:67
 msgid "Filename includes _folder"
-msgstr "O nome inclúe carta_fol"
+msgstr "O nome inclúe o carta_fol"
 
 #: ../quodlibet/qltk/prefs.py:81
 msgid "_Others:"
-msgstr "Outras:"
+msgstr "_Outras:"
 
 #: ../quodlibet/qltk/prefs.py:87
 msgid "Other columns to display, separated by spaces"
-msgstr "Mostrar outras colunas, separadas por espazos"
+msgstr "Outras colunas para seren mostradas, separadas por espazos"
 
 #: ../quodlibet/qltk/prefs.py:101
 msgid "Visible Columns"
@@ -1476,13 +1473,12 @@ msgid "_Global filter:"
 msgstr "Filtro _global:"
 
 #: ../quodlibet/qltk/prefs.py:143
-#, fuzzy
 msgid "Search after _typing"
-msgstr "Parar despois desta canción"
+msgstr "_Procurar despois de escreber"
 
 #: ../quodlibet/qltk/prefs.py:145
 msgid "Show search results after the user stops typing."
-msgstr ""
+msgstr "Mostrar os resultados despois de rematar de escreber"
 
 #: ../quodlibet/qltk/prefs.py:149
 msgid "Color _search terms"
@@ -1498,26 +1494,26 @@ msgstr ""
 
 #: ../quodlibet/qltk/prefs.py:158
 msgid "Confirm _multiple ratings"
-msgstr "Confirmar a cualificación _múltipla"
+msgstr "Confirmar a puntuación _múltipla"
 
 #: ../quodlibet/qltk/prefs.py:162
 msgid ""
 "Ask for confirmation before changin the rating of multiple songs at once"
 msgstr ""
-"Obter confirmación antes de mudar as cualificacións de varias cancións á vez"
+"Obter confirmación antes de mudar as puntuacións de varias cancións á vez"
 
 #: ../quodlibet/qltk/prefs.py:166
 msgid "Enable _one-click ratings"
-msgstr "Activar as cualificacións c_un click"
+msgstr "Activar as puntuacións c_un click"
 
 #: ../quodlibet/qltk/prefs.py:170
 msgid "Enable rating by clicking on the rating  column in the song list"
 msgstr ""
-"Posibilitar mudar as calificacións ao facer click na coluna de calificacións"
+"Posibilitar a mudanza das puntuacións ao facer click na coluna de puntuacións"
 
 #: ../quodlibet/qltk/prefs.py:177
 msgid "Ratings"
-msgstr "Cualificacións"
+msgstr "Puntuacións"
 
 #: ../quodlibet/qltk/prefs.py:187
 msgid "Player"
@@ -1542,7 +1538,7 @@ msgstr "_Ir á canción reproducida automaticamente"
 
 #: ../quodlibet/qltk/prefs.py:213
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr "Cando cambie a canción reproducida, rolar cara ela na lista"
+msgstr "Ao mudar a canción reproducida, rolar cara ela na lista"
 
 #: ../quodlibet/qltk/prefs.py:219
 msgid "_Use rounded corners on thumbnails"
@@ -1566,7 +1562,7 @@ msgid ""
 "this value"
 msgstr ""
 "De non existir información sobre o axuste Replay Gain para a canción, "
-"escalar o volume por este valor"
+"multiplicar o volume por este valor"
 
 #: ../quodlibet/qltk/prefs.py:241
 msgid "Fall-back gain (dB):"
@@ -1576,7 +1572,7 @@ msgstr "Ganancia por defecto (dB):"
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
-"Escalar o volume de todas as cancións por este valor, sempre que non se "
+"Multiplicar o volume de todas as cancións por este valor, sempre que non se "
 "produzan cortes"
 
 #: ../quodlibet/qltk/prefs.py:260
@@ -1597,11 +1593,11 @@ msgid ""
 "library"
 msgstr ""
 "As cancións que se atopen neses cartafoles (separados por ':') engadiránse á "
-"túa colección"
+"colección"
 
 #: ../quodlibet/qltk/prefs.py:301
 msgid "_Refresh library on start"
-msgstr "Actualizar a colección ao iniciar"
+msgstr "_Actualizar a colección ao iniciar"
 
 #: ../quodlibet/qltk/prefs.py:306
 msgid "Scan _Directories"
@@ -1613,7 +1609,7 @@ msgstr "Separadores para dividir as etiquetas"
 
 #: ../quodlibet/qltk/prefs.py:325
 msgid "Save ratings and play _counts"
-msgstr "Gardar as calificacións e o _contador"
+msgstr "Gardar as puntuacións e o _contador"
 
 #: ../quodlibet/qltk/prefs.py:329
 msgid "_Email:"
@@ -1658,7 +1654,7 @@ msgstr "_Repetición"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:219
 msgid "Restart the playlist when finished"
-msgstr "Comezar de novo a lista de reproducción cando remate"
+msgstr "Comezar de novo a lista de reproducción ao rematar"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:341
 msgid "Unable to add songs"
@@ -1668,7 +1664,7 @@ msgstr "Non se puideron engadir as cancións"
 #: ../quodlibet/qltk/quodlibetwindow.py:750
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
-msgstr "<b>%s</b> utiliza un protocolo non soportado."
+msgstr "<b>%s</b> utiliza un protocolo non admitido."
 
 #: ../quodlibet/qltk/quodlibetwindow.py:393
 msgid "_Music"
@@ -1680,7 +1676,7 @@ msgstr "_Engadir un cartafol..."
 
 #: ../quodlibet/qltk/quodlibetwindow.py:396
 msgid "_Add a File..."
-msgstr "_Engadir un ficheiro..."
+msgstr "_Engadir un arquivo..."
 
 #: ../quodlibet/qltk/quodlibetwindow.py:398
 msgid "_Add a Location..."
@@ -1736,7 +1732,7 @@ msgstr "_Axuda"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:430
 msgid "_Output Log"
-msgstr "_Saída do log"
+msgstr "_Registro de saída"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:437
 msgid "_Edit and Continue"
@@ -1752,7 +1748,7 @@ msgstr "Actualizar a colección"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:462
 msgid "Re_load Library"
-msgstr "Cargar de novo a colección"
+msgstr "Reler a colección"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:467
 msgid "Filter on _Genre"
@@ -1764,7 +1760,7 @@ msgstr "Filtro no _artista"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:469
 msgid "Filter on Al_bum"
-msgstr "Filtro no Ál_bum"
+msgstr "Filtro no ál_bum"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:476
 msgid "Random _Genre"
@@ -1789,8 +1785,8 @@ msgstr "Escrutar por modificacións na colección de música"
 #: ../quodlibet/qltk/quodlibetwindow.py:526
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr ""
-"Cargar de novo todas as cancións da colección de música (pode levar moito "
-"tempo, hora de prepararse un cafe?)"
+"Cargar de novo todas as cancións da colección (pode levar moito tempo, hora "
+"de prepararse un cafe?)"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:530
 msgid ""
@@ -1814,17 +1810,17 @@ msgstr "Engadir un enderezo"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:739
 msgid "Enter the location of an audio file:"
-msgstr "Insire o enderezo dun ficheiro de música:"
+msgstr "Insire o enderezo dun arquivo de música:"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:744
 #: ../quodlibet/qltk/quodlibetwindow.py:749
 msgid "Unable to add location"
-msgstr "Non se pudio engadir o enderezo"
+msgstr "Non se puido engadir o enderezo"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:745
 #, python-format
 msgid "<b>%s</b> is not a valid location."
-msgstr "<b>%s</b> non é un enderezo válido"
+msgstr "<b>%s</b> non é un enderezo válido."
 
 #: ../quodlibet/qltk/quodlibetwindow.py:761
 #: ../quodlibet/qltk/quodlibetwindow.py:768
@@ -1841,7 +1837,7 @@ msgid ""
 "%s could not be added to your library.\n"
 "\n"
 msgstr ""
-"%s non se puido engadir á túa colección.\n"
+"%s non se puido engadir á colección.\n"
 "\n"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:793
@@ -1866,7 +1862,7 @@ msgstr "Eliminar os caracteres non-_ASCII"
 
 #: ../quodlibet/qltk/renamefiles.py:62
 msgid "Rename Files"
-msgstr "Mudar o nome dos ficheiros"
+msgstr "Mudar o nome dos arquivos"
 
 #: ../quodlibet/qltk/renamefiles.py:78
 msgid "New Name"
@@ -1882,7 +1878,7 @@ msgstr "_Continuar"
 
 #: ../quodlibet/qltk/renamefiles.py:115
 msgid "Unable to rename file"
-msgstr "Non se puido mudar o nome do ficheiro"
+msgstr "Non se puido mudar o nome do arquivo"
 
 #: ../quodlibet/qltk/renamefiles.py:116
 #, python-format
@@ -1891,9 +1887,9 @@ msgid ""
 "exists, or you do not have permission to make the new file or remove the old "
 "one."
 msgstr ""
-"Erro ao mudar o nome de <b>%s</b> a <b>%s</b>. Pode ser que o ficheiro de "
-"destino xa exista ou que non teñas permisos para crear o novo ficheiro ou "
-"eliminar o antigo."
+"Erro ao mudar o nome de <b>%s</b> a <b>%s</b>. Pode ser que o arquivo de "
+"destino xa exista\n"
+"ou que non teñas permisos para crear o novo ou eliminar o antigo."
 
 #: ../quodlibet/qltk/renamefiles.py:150
 msgid "Path is not absolute"
@@ -1909,7 +1905,7 @@ msgid ""
 msgstr ""
 "O patrón\n"
 "\t<b>%s</b>\n"
-"contén / pero non comeza en root (/). Para evitar cartafoles mal indicados, "
+"contén / pero non comeza na raíz (/). Para evitar cartafoles mal indicados, "
 "comeza o teu padrón por / ou ~/"
 
 #: ../quodlibet/qltk/songlist.py:332
@@ -1919,11 +1915,11 @@ msgstr "patrón"
 #: ../quodlibet/qltk/songlist.py:347
 #, python-format
 msgid "_Filter on %s"
-msgstr "_Filtrar en %s"
+msgstr "_Filtrar por %s"
 
 #: ../quodlibet/qltk/songlist.py:587
 msgid "Confirm rating"
-msgstr "Confirmar calificación"
+msgstr "Confirmar puntuación"
 
 #: ../quodlibet/qltk/songlist.py:588
 #, python-format
@@ -1931,7 +1927,7 @@ msgid ""
 "You are about to change the rating of %d songs.\n"
 "Do you wish to continue?"
 msgstr ""
-"Estás a piques de mudar a calificación a %d cancións.\n"
+"Estás a piques de mudar a puntuación de %d cancións.\n"
 "Desexas continuar?"
 
 #: ../quodlibet/qltk/songlist.py:813
@@ -1940,23 +1936,23 @@ msgstr "_Cabeceiras da pista"
 
 #: ../quodlibet/qltk/songlist.py:814
 msgid "_Album Headers"
-msgstr "Cabeceiras do Á_lbum"
+msgstr "Cabeceiras do á_lbum"
 
 #: ../quodlibet/qltk/songlist.py:815
 msgid "_People Headers"
-msgstr "Cabeceiras das _persoas"
+msgstr "Cabeceiras dos _componentes"
 
 #: ../quodlibet/qltk/songlist.py:816
 msgid "_Date Headers"
-msgstr "Cabeceiras de _data"
+msgstr "Cabeceiras da _data"
 
 #: ../quodlibet/qltk/songlist.py:817
 msgid "_File Headers"
-msgstr "Cabeceiras do _ficheiro"
+msgstr "Cabeceiras do _arquivo"
 
 #: ../quodlibet/qltk/songlist.py:818
 msgid "_Production Headers"
-msgstr "Cabeceiras de p_roducción"
+msgstr "Cabeceiras de p_rodución"
 
 #: ../quodlibet/qltk/songlist.py:831
 msgid "_Customize Headers..."
@@ -1972,11 +1968,11 @@ msgstr "_Maiúsculas nas etiquetas (title-case)"
 
 #: ../quodlibet/qltk/tagsfrompath.py:89
 msgid "Split into multiple _values"
-msgstr "Dividir en valores _múltiples"
+msgstr "Extraer valores _múltiplos"
 
 #: ../quodlibet/qltk/tagsfrompath.py:99
 msgid "Tags From Path"
-msgstr "Etiquetas a partires da rota"
+msgstr "Etiquetas a partires do enderezo"
 
 #: ../quodlibet/qltk/tagsfrompath.py:109
 msgid "Tags replace existing ones"
@@ -2012,7 +2008,7 @@ msgid ""
 msgstr ""
 "Etiquetas inválidas <b>%s</b>\n"
 "\n"
-"Os ficheiros seleccionados non permiten a edición das etiquetas."
+"Os arquivos seleccionados non permiten a edición das etiquetas."
 
 #: ../quodlibet/qltk/textedit.py:69
 #, python-format
@@ -2029,11 +2025,11 @@ msgstr ""
 
 #: ../quodlibet/qltk/textedit.py:83
 msgid "Edit Display"
-msgstr "Editar vista"
+msgstr "Editar a vista"
 
 #: ../quodlibet/qltk/tracknumbers.py:20
 msgid "Track Numbers"
-msgstr "Números de Pista"
+msgstr "Números de pista"
 
 #: ../quodlibet/qltk/tracknumbers.py:26
 msgid "Start fro_m:"
@@ -2054,7 +2050,7 @@ msgstr "e %d máis..."
 
 #: ../quodlibet/qltk/wlw.py:170
 msgid "Saving the songs you changed."
-msgstr "A gardar as cancións que modificaches."
+msgstr "A gardar as cancións modificadas."
 
 #: ../quodlibet/qltk/wlw.py:171
 #, python-format
@@ -2076,7 +2072,7 @@ msgstr "Limpar a procura"
 
 #: ../quodlibet/stock.py:48
 msgid "Edit _Tags"
-msgstr "Editar e_tiquetas"
+msgstr "Editar as e_tiquetas"
 
 #: ../quodlibet/stock.py:49
 msgid "_Plugins"
@@ -2174,11 +2170,11 @@ msgid ""
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 msgstr ""
 "%s %s - <quod-libet-development@googlegroups.com>\n"
-"Copyright 2004-2010 Joe Wreschnig, Michael Urman e outr@s\n"
+"Copyright 2004-2010 Joe Wreschnig, Michael Urman et alii\n"
 "\n"
-"Este aplicativo é software libre, mira no código fonte para saberes\n"
+"Este aplicativo é software libre, accede ao código fonte para verificares\n"
 "as condicións de copia. NON HÁ garantía, nen sequera da súa\n"
-"APTITUDE PARA O COMERCIO ou DE SER AXEITADO PARA UN USO PARTICULAR.\n"
+"APTITUDE PARA O COMERCIO nun DE SER AXEITADO PARA UN USO DETERMINADO.\n"
 "\n"
 
 #: ../quodlibet/util/__init__.py:147
@@ -2206,7 +2202,7 @@ msgstr "[Codificación inválida]"
 #. something other than "check|titlecase?".
 #: ../quodlibet/util/__init__.py:459
 msgid "check|titlecase?"
-msgstr "Sen title-case"
+msgstr "Sen title-case en galego"
 
 #: ../quodlibet/util/massagers.py:22
 msgid ""
@@ -2222,7 +2218,7 @@ msgstr "As ganancias do Replay Gain han ser inseridas no formato 'x.yy dB'."
 
 #: ../quodlibet/util/massagers.py:46
 msgid "Replay Gain peaks must be entered in 'x.yy' format."
-msgstr "Os límites do Replay Gain han ser inseridos no formato 'x.yy'."
+msgstr "Os limites do Replay Gain han ser inseridos no formato 'x.yy'."
 
 #: ../quodlibet/util/massagers.py:59
 msgid "MusicBrainz IDs must be in UUID format."
@@ -2239,19 +2235,20 @@ msgstr ""
 
 #: ../quodlibet/widgets.py:41
 msgid "Unable to start web browser"
-msgstr "Non se puido iniciar un navegador de internet"
+msgstr "Non se puido iniciar un navegador de Internet"
 
 #: ../quodlibet/widgets.py:42
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
 msgstr ""
-"Non se atopou un navegador de internet. Por favor, configura a variábel "
-"$BROWSER ou asegúrate de que existe /usr/bin/navegador."
+"Non se atopou un navegador de Internet. Por favor, configura a variábel "
+"$BROWSER\n"
+" ou asegúrate de que existe /usr/bin/navegador."
 
 #: ../exfalso.py:19
 msgid "an audio tag editor"
-msgstr "un editor de etiquetas de audio"
+msgstr "un editor de etiquetas de música"
 
 #: ../exfalso.py:19 ../quodlibet/util/tags.py:93
 msgid "directory"
@@ -2280,12 +2277,12 @@ msgstr "E:"
 #: ../quodlibet/__init__.py:159
 #, python-format
 msgid "Initializing audio backend (%s)"
-msgstr "A iniciar a infraestrutura de son (%s)"
+msgstr "A activar a infraestrutura de son (%s)"
 
 #: ../quodlibet/__init__.py:162
 #, python-format
 msgid "Initializing main library (%s)"
-msgstr "A iniciar a colección principal (%s)"
+msgstr "A cargar a colección principal (%s)"
 
 #: ../quodlibet/__init__.py:192
 msgid "Unable to save library"
@@ -2313,14 +2310,14 @@ msgid ""
 "Quod Libet may now be unstable. Closing it and restarting is recommended. "
 "Your library will be saved."
 msgstr ""
-"Ocorreu un erro no Quod Libet. Gardóuse un ficheiro de depuración en <b>%s</"
+"Ocorreu un erro no Quod Libet. Gardóuse un arquivo de depuración en <b>%s</"
 "b> que nos axudará a analizar o problema. \n"
 "Por favor crea un novo asunto en http://code.google.com/p/quodlibet/issues/"
-"list e inclue dito ficheiro ou o seu contido. \n"
+"list e inclue dito arquivo ou o seu contido. \n"
 "Ese ficheiro pode conter información do teu sistema, como a lista das "
 "cancións reproducidas recentemente. \n"
-"Se non o aceptas, envía no seu lugar <b>%s</b> coa descrición do que estabas "
-"a facer.\n"
+"Se non o consideras aceptábel, envía no seu lugar <b>%s</b> coa descrición "
+"do que estabas a facer.\n"
 "\n"
 "Pode que o Quod Libet se torne inestábel a partires deste momento. "
 "Recomendamos fechalo e abrilo de novo.Gardaráse a túa colección."
@@ -2336,41 +2333,41 @@ msgstr ""
 msgid "%r doesn't contain any devices."
 msgstr "%r non contén ningún dispositvo"
 
-#: ../quodlibet/devices/__init__.py:126
+#: ../quodlibet/devices/__init__.py:130
 #, python-format
 msgid "%r is not a supported device."
-msgstr "%r non é un dispositivo soportado."
+msgstr "%r non é un dispositivo admitido."
 
-#: ../quodlibet/devices/__init__.py:154
+#: ../quodlibet/devices/__init__.py:158
 msgid "No eject command found."
 msgstr "Non se atopou o comando eject."
 
-#: ../quodlibet/devices/__init__.py:286
+#: ../quodlibet/devices/__init__.py:290
 #, python-format
 msgid "%s: Could not import ctypes."
 msgstr "%s: Non se puido importar ctypes."
 
-#: ../quodlibet/devices/__init__.py:290
+#: ../quodlibet/devices/__init__.py:294
 #, python-format
 msgid "%s: Could not find media-player-info."
 msgstr "%s: Non se puido atopar o media-player-info."
 
-#: ../quodlibet/devices/__init__.py:430
+#: ../quodlibet/devices/__init__.py:454
 msgid "Initializing device backend."
-msgstr "A iniciar a infraestrutura de dispositivos."
+msgstr "A activar a infraestrutura de dispositivos."
 
-#: ../quodlibet/devices/__init__.py:431
+#: ../quodlibet/devices/__init__.py:455
 #, python-format
 msgid "Trying '%s'"
 msgstr "A tentar '%s'"
 
-#: ../quodlibet/devices/__init__.py:451
+#: ../quodlibet/devices/__init__.py:475
 msgid "Couldn't connect to a device backend."
 msgstr "Non se puido conectar a unha infraestrutura de dispositivos."
 
-#: ../quodlibet/devices/__init__.py:453
+#: ../quodlibet/devices/__init__.py:477
 msgid "Device backend initialized."
-msgstr "Infraestrutura de dispositivos iniciada."
+msgstr "Infraestrutura de dispositivos activa."
 
 #: ../quodlibet/formats/__init__.py:59
 #, python-format
@@ -2406,28 +2403,28 @@ msgstr ""
 #. Backend error; show message and halt playback
 #: ../quodlibet/player/gstbe.py:206
 msgid "Output Error"
-msgstr "Erro da saída"
+msgstr "Saída do erro"
 
 #: ../quodlibet/player/gstbe.py:207
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
-"A saída do GStreamre non se puido iniciar. Pode ser que non sexa válida ou\n"
+"A saída do GStreamer non se puido activar. Pode ser que non sexa válida ou\n"
 "que o dispositivo estea a ser utilizado. Verifica a configuración do "
 "reproductor."
 
 #: ../quodlibet/player/gstbe.py:345
 msgid "Unable to open input files"
-msgstr "Non se puideron abrir os ficheiros indicados"
+msgstr "Non se puideron abrir os arquivos seleccionados"
 
 #: ../quodlibet/player/gstbe.py:346
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
 msgstr ""
-"O GStreamer non ten ningún elemento para ler os ficheiros. Verifica as "
-"opcións de instalación do GStreamer."
+"O GStreamer non dispón de ningún elemento para ler arquivos. \n"
+"Verifica as opcións de instalación do GStreamer."
 
 #: ../quodlibet/player/xinebe.py:38
 #, python-format
@@ -2440,7 +2437,7 @@ msgstr ""
 
 #: ../quodlibet/qltk/logging.py:11
 msgid "Output Log"
-msgstr "Saída do log"
+msgstr "Rexistro da saída"
 
 #: ../quodlibet/qltk/remote.py:94 ../quodlibet/qltk/remote.py:96
 #, python-format
@@ -2467,19 +2464,19 @@ msgstr "álbum"
 
 #: ../quodlibet/util/tags.py:24
 msgid "arranger"
-msgstr "arranxos"
+msgstr "arranxista"
 
 #: ../quodlibet/util/tags.py:26
 msgid "author"
-msgstr "autor2"
+msgstr "autor/a"
 
 #: ../quodlibet/util/tags.py:27
 msgid "composer"
-msgstr "compositor@"
+msgstr "compositor/a"
 
 #: ../quodlibet/util/tags.py:28
 msgid "conductor"
-msgstr "director@"
+msgstr "director/a"
 
 #: ../quodlibet/util/tags.py:29
 msgid "contact"
@@ -2519,12 +2516,12 @@ msgstr "localización"
 
 #: ../quodlibet/util/tags.py:38
 msgid "lyricist"
-msgstr "letras"
+msgstr "letrista"
 
 #. Translators: Also e.g. "record label", "publisher"
 #: ../quodlibet/util/tags.py:40
 msgid "organization"
-msgstr "discográfica"
+msgstr "compañía"
 
 #: ../quodlibet/util/tags.py:42
 msgid "title"
@@ -2536,7 +2533,7 @@ msgstr "versión"
 
 #: ../quodlibet/util/tags.py:44
 msgid "website"
-msgstr "sitio web"
+msgstr "página de Internet"
 
 #: ../quodlibet/util/tags.py:46
 msgid "album artist"
@@ -2549,7 +2546,7 @@ msgstr "BPM"
 #. Translators: This used to be called "part".
 #: ../quodlibet/util/tags.py:50 ../quodlibet/util/tags.py:51
 msgid "disc subtitle"
-msgstr "subítulo"
+msgstr "subítulo / parte"
 
 #: ../quodlibet/util/tags.py:52 ../quodlibet/util/tags.py:86
 msgid "disc"
@@ -2565,7 +2562,7 @@ msgstr "número ID"
 
 #: ../quodlibet/util/tags.py:55
 msgid "original release date"
-msgstr "data de lanzamento"
+msgstr "data da publicación orixinal"
 
 #: ../quodlibet/util/tags.py:56
 msgid "original album"
@@ -2581,7 +2578,7 @@ msgstr "data de gravación"
 
 #: ../quodlibet/util/tags.py:59
 msgid "release country"
-msgstr "país de lanzamento"
+msgstr "país de publicación"
 
 #: ../quodlibet/util/tags.py:60
 msgid "album artist (sort)"
@@ -2610,7 +2607,7 @@ msgstr "ID do MusicBrainz da pista"
 
 #: ../quodlibet/util/tags.py:69
 msgid "MusicBrainz release ID"
-msgstr "ID do MusicBrainz do lanzamento"
+msgstr "ID do MusicBrainz da publicación"
 
 #: ../quodlibet/util/tags.py:70
 msgid "Musicbrainz artist ID"
@@ -2639,7 +2636,7 @@ msgstr "Tipo de álbum no MusicBrainz"
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: ../quodlibet/util/tags.py:78
 msgid "track gain"
-msgstr "ganancia de pista"
+msgstr "ganancia de volume da pista"
 
 #: ../quodlibet/util/tags.py:79
 msgid "track peak"
@@ -2648,11 +2645,11 @@ msgstr "pico de ganancia da pista"
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: ../quodlibet/util/tags.py:81
 msgid "album gain"
-msgstr "ganancia de álbum"
+msgstr "ganancia de volume do álbum"
 
 #: ../quodlibet/util/tags.py:82
 msgid "album peak"
-msgstr "pico de ganancia de álbum"
+msgstr "pico de ganancia do álbum"
 
 #: ../quodlibet/util/tags.py:87
 msgid "discs"
@@ -2684,7 +2681,7 @@ msgstr "erros"
 
 #: ../quodlibet/util/tags.py:101
 msgid "people"
-msgstr "persoas"
+msgstr "componentes"
 
 #: ../quodlibet/util/tags.py:104
 msgid "year"
@@ -2697,23 +2694,23 @@ msgstr "marcador"
 #. Other things put here as a canonical translated copy.
 #: ../quodlibet/util/tags.py:125
 msgid "lyricists"
-msgstr "letras"
+msgstr "letristas"
 
 #: ../quodlibet/util/tags.py:126
 msgid "arrangers"
-msgstr "arranxos"
+msgstr "arranxistas"
 
 #: ../quodlibet/util/tags.py:127
 msgid "composers"
-msgstr "compositor@s"
+msgstr "compositoras/es"
 
 #: ../quodlibet/util/tags.py:128
 msgid "conductors"
-msgstr "director@s"
+msgstr "directoras/es"
 
 #: ../quodlibet/util/tags.py:129
 msgid "authors"
-msgstr "autor@s"
+msgstr "autoras/es"
 
 #: ../quodlibet/util/tags.py:133
 #, python-format
