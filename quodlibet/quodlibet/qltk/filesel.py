@@ -219,7 +219,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         window = self.window
         if window:
             window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-            gtk.main_iteration()
+            gtk.main_iteration(block=False)
         try:
             try:
                 if model is None:
