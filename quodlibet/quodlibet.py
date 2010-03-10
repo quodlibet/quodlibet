@@ -109,6 +109,7 @@ def print_playing(fstring="<artist~album~tracknumber~title>"):
                 except ValueError: data[key] = 0
             else:
                 if key != "~filename": val = util.decode(val)
+                else: val = util.decode(util.fsencode(val))
                 if key in data: data[key] += "\n" + val
                 else: data[key] = val
         print_(Pattern(fstring).format(AudioFile(data)))
