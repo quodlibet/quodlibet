@@ -92,37 +92,32 @@ class RandomAlbum(EventPlugin):
     def _score(self, album_names):
         """Score each album. Returns a list of (score, name) tuples."""
         from library import library
-        album_songs = {}
-        all_songs = []
+
+        # Find the songs for each album name, and extract keys being measured
+        albums = {}
         for song in library:
             if song('album') in album_names:
                 vsong = {}
                 for (key, text) in self.keys:
                     vsong[key] = song("~#%s" % key)
-                album_songs.setdefault(song('album'), []).append(vsong)
-                all_songs.append(vsong)
+                albums.setdefault(song('album'), []).append(vsong)
 
-        # We replace 0 values in these keys with the minimum non-zero value
-        date_keys = ['laststarted', 'lastplayed']
+        # Find the mean value for each key across all songs in an album
+        for name, songs in albums.items():
+            mean = {}
+            for key, text in self.keys:
+                mean[key] = sum(map(lambda s: s.get(key, 0), songs))/len(songs)
+            albums[name] = mean
 
+        # Score the album based on its weighted rank ordering for each key
+        # Rank ordering is more resistant to clustering than weighting
+        # based on normalized means, and also normalizes the scale of each
+        # weight slider in the prefs pane.
         scores = {}
         for key, text in self.keys:
-            vals = map(lambda s: s.get(key), all_songs)
-            if key in date_keys:
-                vals = filter(None, vals) or [0]
-            minn, maxx = min(vals), max(vals)
-            if minn == maxx:
-                continue
-
-            for name, songs in album_songs.items():
-                v = map(lambda s: max(s.get(key, 0), minn), songs)
-                # laststarted is a max(), the rest are averages
-                if key == 'laststarted':
-                    val = max(v)
-                else:
-                    val = sum(v)/float(len(v))
-                score = (val - minn) / (maxx - minn) * self.weights[key]
-                scores[name] = scores.get(name, 0) + score
+            names = sorted(albums.keys(), key = lambda n: albums[n].get(key))
+            for i, name in enumerate(names):
+                scores[name] = scores.get(name, 0) + i * self.weights[key]
 
         return [(score, name) for name, score in scores.items()]
 
