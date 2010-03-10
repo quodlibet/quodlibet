@@ -452,7 +452,7 @@ class AudioFile(dict):
         # Highest score wins.
         if images:
             try:
-                return file(max(images)[1], "rb")
+                return file(util.fsencode(max(images)[1]), "rb")
             except IOError:
                 return None
         elif "~picture" in self:
