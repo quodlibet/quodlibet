@@ -205,7 +205,7 @@ class AudioFeeds(Browser, gtk.VBox):
         try: sys.modules["browsers.audiofeeds"] = sys.modules["quodlibet.browsers.audiofeeds"]
         except KeyError: pass
         try: feeds = pickle.load(file(FEEDS, "rb"))
-        except (EnvironmentError, EOFError): pass
+        except (pickle.PickleError, EnvironmentError, EOFError): pass
         else:
             for feed in feeds:
                 klass.__feeds.append(row=[feed])
