@@ -330,6 +330,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         def __init__(self, pattern):
             super(SongList.PatternColumn, self).__init__(_("pattern"))
+            self.header_name = pattern
             self._pattern = Pattern(pattern)
 
     def Menu(self, header, browser, library):
