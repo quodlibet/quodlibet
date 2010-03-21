@@ -569,7 +569,8 @@ class EditTags(gtk.VBox):
             if row[EDITED] and row[RENAMED] and not row[DELETED]:
                 renamed.setdefault(row[TAG], [])
                 renamed[row[TAG]].append((util.decode(row[ORIGTAG]),
-                                         util.decode(row[VALUE])))
+                                          util.decode(row[VALUE]),
+                                          util.decode(row[ORIGVALUE])))
                 
         was_changed = []
         songs = self.__songinfo.songs
@@ -607,18 +608,19 @@ class EditTags(gtk.VBox):
                         changed = True
             save_rename = []
             for new_tag, values in renamed.iteritems():
-                for old_tag, value in values:
+                for old_tag, new_value, old_value in values:
                     old_tag = util.unescape(old_tag)
-                    value = util.unescape(value)
+                    old_value = util.unescape(old_value)
+                    new_value = util.unescape(new_value)
                     if (song.can_change(new_tag) and
                         song.can_change(old_tag) and old_tag in song):
-                        if not is_special(value):
-                            song.remove(old_tag, value)
-                            save_rename.append((new_tag, value))
-                        elif is_missing(value):
-                            value = strip_missing(value)
-                            song.remove(old_tag, value)
-                            save_rename.append((new_tag, value))
+                        if not is_special(new_value):
+                            song.remove(old_tag, old_value)
+                            save_rename.append((new_tag, new_value))
+                        elif is_missing(new_value):
+                            value = strip_missing(old_value)
+                            song.remove(old_tag, old_value)
+                            save_rename.append((new_tag, new_value))
                         else:
                             save_rename.append((new_tag, song[old_tag]))
                             song.remove(old_tag, None)
