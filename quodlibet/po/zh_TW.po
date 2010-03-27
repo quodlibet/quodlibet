@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-02 01:56-0500\n"
+"POT-Creation-Date: 2010-03-27 18:02+0100\n"
 "PO-Revision-Date: 2006-10-23 12:55+0800\n"
 "Last-Translator: Hsin-lin Cheng <lancetw@gmail.com>\n"
 "Language-Team: Hsin-lin Cheng <lancetw@gmail.com>\n"
@@ -32,196 +32,196 @@ msgstr "收聽、瀏覽，或編輯您的音訊收藏"
 msgid "Music Player"
 msgstr "音樂播放器"
 
-#: ../quodlibet.py:117
+#: ../quodlibet.py:118
 msgid "No song is currently playing."
 msgstr "當前沒有播放中的曲目。"
 
-#: ../quodlibet.py:125
+#: ../quodlibet.py:126
 msgid "Quod Libet is not running."
 msgstr "Quod Libet 並未執行。"
 
-#: ../quodlibet.py:136
+#: ../quodlibet.py:137
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "無法寫入 %s。正在移除。"
 
-#: ../quodlibet.py:172
+#: ../quodlibet.py:173
 msgid "a music library and player"
 msgstr "一個音樂資料庫與播放器"
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:174
 msgid "[ --print-playing | control ]"
 msgstr "[ --print-playing | control ]"
 
-#: ../quodlibet.py:175
+#: ../quodlibet.py:176
 msgid "Print the playing song and exit"
 msgstr "顯示播放中的曲目並離開"
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:177
 msgid "Begin playing immediately"
 msgstr "立即開始播放"
 
-#: ../quodlibet.py:179
+#: ../quodlibet.py:180
 msgid "Jump to next song"
 msgstr "跳到下一個曲目"
 
-#: ../quodlibet.py:180
+#: ../quodlibet.py:181
 msgid "Jump to previous song"
 msgstr "跳到上一個曲目"
 
-#: ../quodlibet.py:181
+#: ../quodlibet.py:182
 msgid "Start playback"
 msgstr "開始播放"
 
-#: ../quodlibet.py:182
+#: ../quodlibet.py:183
 msgid "Pause playback"
 msgstr "暫停播放"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "Toggle play/pause mode"
 msgstr "切換 播放／暫停 模式"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:185
 msgid "Turn up volume"
 msgstr "調高音量"
 
-#: ../quodlibet.py:185
+#: ../quodlibet.py:186
 msgid "Turn down volume"
 msgstr "調低音量"
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:187
 msgid "Print player status"
 msgstr "顯示播放器狀態"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:188
 msgid "Hide main window"
 msgstr "隱藏主視窗"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:189
 msgid "Show main window"
 msgstr "顯示主視窗"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:190
 msgid "Toggle main window visibility"
 msgstr "切換主視窗可見性"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:191
 msgid "Focus the running player"
 msgstr "焦點移到執行中的播放器"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:192
 msgid "Remove active browser filters"
 msgstr ""
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:193
 #, fuzzy
 msgid "Refresh and rescan library"
 msgstr "重新整理資料庫 (_F)"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:194
 msgid "Print the current playlist"
 msgstr "顯示當前的播放清單"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:195
 msgid "Print the contents of the queue"
 msgstr "顯示佇列的內容"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "Exit Quod Libet"
 msgstr "離開 Quod Libet"
 
-#: ../quodlibet.py:199
+#: ../quodlibet.py:200
 msgid "Seek within the playing song"
 msgstr "在其中找尋播放中的曲目"
 
-#: ../quodlibet.py:199
+#: ../quodlibet.py:200
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: ../quodlibet.py:200
+#: ../quodlibet.py:201
 msgid "Set or toggle the playback order"
 msgstr "設定或切換播放順序"
 
-#: ../quodlibet.py:202
+#: ../quodlibet.py:203
 msgid "Turn repeat off, on, or toggle it"
 msgstr "關掉、打開或切換重新播放"
 
-#: ../quodlibet.py:203
+#: ../quodlibet.py:204
 msgid "Set the volume"
 msgstr "設定音量"
 
-#: ../quodlibet.py:204
+#: ../quodlibet.py:205
 msgid "Search your audio library"
 msgstr "搜尋您的音訊資料庫"
 
-#: ../quodlibet.py:204 ../quodlibet.py:214 ../quodlibet.py:216
+#: ../quodlibet.py:205 ../quodlibet.py:215 ../quodlibet.py:217
 msgid "query"
 msgstr "查詢"
 
-#: ../quodlibet.py:205
+#: ../quodlibet.py:206
 msgid "Play a file"
 msgstr "播放檔案"
 
-#: ../quodlibet.py:205 ../quodlibet.py:214 ../quodlibet.py:216
+#: ../quodlibet.py:206 ../quodlibet.py:215 ../quodlibet.py:217
 msgid "command|filename"
 msgstr "command|filename"
 
-#: ../quodlibet.py:206
+#: ../quodlibet.py:207
 msgid "Rate the playing song"
 msgstr "評等播放中的曲目"
 
-#: ../quodlibet.py:207
+#: ../quodlibet.py:208
 msgid "Set the current browser"
 msgstr "設定當前的瀏覽器"
 
-#: ../quodlibet.py:208
+#: ../quodlibet.py:209
 msgid "Open a new browser"
 msgstr "開啟新的瀏覽器"
 
-#: ../quodlibet.py:209
+#: ../quodlibet.py:210
 msgid "Show or hide the queue"
 msgstr "顯示或隱藏佇列"
 
-#: ../quodlibet.py:210
+#: ../quodlibet.py:211
 msgid "Show or hide the main song list"
 msgstr "顯示或隱藏主要曲目清單"
 
-#: ../quodlibet.py:211
+#: ../quodlibet.py:212
 msgid "Filter on a random value"
 msgstr "以亂數篩選"
 
-#: ../quodlibet.py:211
+#: ../quodlibet.py:212
 msgid "command|tag"
 msgstr "command|tag"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:213
 msgid "Filter on a tag value"
 msgstr "以標籤值篩選"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:213
 msgid "tag=value"
 msgstr "tag=value"
 
-#: ../quodlibet.py:213
+#: ../quodlibet.py:214
 msgid "Enqueue a file or query"
 msgstr "佇列檔案或查詢"
 
-#: ../quodlibet.py:215
+#: ../quodlibet.py:216
 #, fuzzy
 msgid "Unqueue a file or query"
 msgstr "佇列檔案或查詢"
 
-#: ../quodlibet.py:254
+#: ../quodlibet.py:255
 #, fuzzy, python-format
 msgid "Invalid argument for '%s'."
 msgstr "錯誤：無效的參數：「%s」。"
 
-#: ../quodlibet.py:255 ../quodlibet/util/__init__.py:155
+#: ../quodlibet.py:256 ../quodlibet/util/__init__.py:155
 #, fuzzy, python-format
 msgid "Try %s --help."
 msgstr "錯誤：試試 %s --help。"
 
-#: ../quodlibet.py:286
+#: ../quodlibet.py:287
 msgid "Quod Libet is already running."
 msgstr "Quod Libet 已經在執行了。"
 
@@ -315,7 +315,7 @@ msgstr "依日期排序"
 #: ../quodlibet/browsers/audiofeeds.py:49
 #: ../quodlibet/browsers/audiofeeds.py:50
 #: ../quodlibet/browsers/audiofeeds.py:113 ../quodlibet/browsers/paned.py:27
-#: ../quodlibet/formats/_audio.py:225 ../quodlibet/qltk/information.py:224
+#: ../quodlibet/formats/_audio.py:226 ../quodlibet/qltk/information.py:224
 #: ../quodlibet/qltk/information.py:232 ../quodlibet/qltk/information.py:258
 #: ../quodlibet/qltk/playorder.py:15 ../quodlibet/qltk/wlw.py:65
 msgid "Unknown"
@@ -382,11 +382,11 @@ msgid "_File System"
 msgstr "檔案系統 (_F)"
 
 #: ../quodlibet/browsers/filesystem.py:86 ../quodlibet/browsers/media.py:440
-#: ../quodlibet/qltk/songlist.py:467
+#: ../quodlibet/qltk/songlist.py:468
 msgid "Unable to copy songs"
 msgstr "無法複製曲目"
 
-#: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/qltk/songlist.py:468
+#: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/qltk/songlist.py:469
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "選取的檔案不能被複製到其他曲目清單或佇列。"
 
@@ -413,7 +413,7 @@ msgstr ""
 msgid "Choose New Stations"
 msgstr "選擇新站台"
 
-#: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:285
+#: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
 #: ../quodlibet/browsers/search.py:159
 msgid "_Search:"
 msgstr "搜尋：(_S)"
@@ -432,49 +432,49 @@ msgstr "位元率"
 msgid "Genre"
 msgstr "風格"
 
-#: ../quodlibet/browsers/iradio.py:238
+#: ../quodlibet/browsers/iradio.py:244
 msgid "New Station"
 msgstr "新站台"
 
-#: ../quodlibet/browsers/iradio.py:239
+#: ../quodlibet/browsers/iradio.py:245
 msgid "Enter the location of an Internet radio station:"
 msgstr "輸入網路電台位置："
 
-#: ../quodlibet/browsers/iradio.py:241
+#: ../quodlibet/browsers/iradio.py:247
 msgid "_Stations..."
 msgstr "站台... (_S)"
 
-#: ../quodlibet/browsers/iradio.py:257
+#: ../quodlibet/browsers/iradio.py:263
 msgid "Internet Radio"
 msgstr "網路電台"
 
-#: ../quodlibet/browsers/iradio.py:258
+#: ../quodlibet/browsers/iradio.py:264
 msgid "_Internet Radio"
 msgstr "網路電台 (_I)"
 
-#: ../quodlibet/browsers/iradio.py:269
+#: ../quodlibet/browsers/iradio.py:275
 msgid "_New Station"
 msgstr "新的站台 (_N)"
 
-#: ../quodlibet/browsers/iradio.py:347 ../quodlibet/browsers/iradio.py:361
-#: ../quodlibet/browsers/iradio.py:374
+#: ../quodlibet/browsers/iradio.py:353 ../quodlibet/browsers/iradio.py:367
+#: ../quodlibet/browsers/iradio.py:380
 msgid "Unable to add station"
 msgstr "無法加入站台"
 
-#: ../quodlibet/browsers/iradio.py:366
+#: ../quodlibet/browsers/iradio.py:372
 msgid "No stations found"
 msgstr "未發現站台"
 
-#: ../quodlibet/browsers/iradio.py:367
+#: ../quodlibet/browsers/iradio.py:373
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "%s 沒有網路電台被發現。"
 
-#: ../quodlibet/browsers/iradio.py:375
+#: ../quodlibet/browsers/iradio.py:381
 msgid "All stations listed are already in your library."
 msgstr "所有列出的站台已經在您的資料庫當中了。"
 
-#: ../quodlibet/browsers/iradio.py:394
+#: ../quodlibet/browsers/iradio.py:400
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -583,11 +583,11 @@ msgstr "窗格瀏覽器"
 msgid "_Paned Browser"
 msgstr "窗格瀏覽器 (_P)"
 
-#: ../quodlibet/browsers/paned.py:322 ../quodlibet/qltk/pluginwin.py:258
+#: ../quodlibet/browsers/paned.py:328 ../quodlibet/qltk/pluginwin.py:258
 msgid "All"
 msgstr "全部"
 
-#: ../quodlibet/browsers/paned.py:396
+#: ../quodlibet/browsers/paned.py:402
 msgid "Select _All"
 msgstr "全選 (_A)"
 
@@ -743,19 +743,19 @@ msgstr "韌體"
 msgid "Removing orphaned iPod track"
 msgstr "警告：正在移除孤立的 iPod 音軌"
 
-#: ../quodlibet/devices/ipod.py:258
+#: ../quodlibet/devices/ipod.py:259
 msgid "Unable to save iPod database"
 msgstr "無法儲存 iPod 資料庫"
 
-#: ../quodlibet/devices/ipod.py:270
+#: ../quodlibet/devices/ipod.py:271
 msgid "Uninitialized iPod"
 msgstr "iPod 尚未初始化"
 
-#: ../quodlibet/devices/ipod.py:271
+#: ../quodlibet/devices/ipod.py:272
 msgid "Do you want to create an empty database on this iPod?"
 msgstr "您是否要在這 iPod 上建立一個空的資料庫？"
 
-#: ../quodlibet/devices/ipod.py:394
+#: ../quodlibet/devices/ipod.py:395
 msgid "Could not import python-gpod, iPod support disabled."
 msgstr ""
 
@@ -1425,7 +1425,7 @@ msgstr "音軌 (_T)"
 msgid "_Artist"
 msgstr "演出者 (_A)"
 
-#: ../quodlibet/qltk/prefs.py:42 ../quodlibet/qltk/songlist.py:361
+#: ../quodlibet/qltk/prefs.py:42 ../quodlibet/qltk/songlist.py:362
 msgid "_Rating"
 msgstr "評等 (_R)"
 
@@ -1888,48 +1888,48 @@ msgstr ""
 msgid "pattern"
 msgstr "模式"
 
-#: ../quodlibet/qltk/songlist.py:347
+#: ../quodlibet/qltk/songlist.py:348
 #, python-format
 msgid "_Filter on %s"
 msgstr "以 %s 篩選 (_F)"
 
-#: ../quodlibet/qltk/songlist.py:587
+#: ../quodlibet/qltk/songlist.py:588
 #, fuzzy
 msgid "Confirm rating"
 msgstr "資訊"
 
-#: ../quodlibet/qltk/songlist.py:588
+#: ../quodlibet/qltk/songlist.py:589
 #, python-format
 msgid ""
 "You are about to change the rating of %d songs.\n"
 "Do you wish to continue?"
 msgstr ""
 
-#: ../quodlibet/qltk/songlist.py:813
+#: ../quodlibet/qltk/songlist.py:814
 msgid "_Track Headers"
 msgstr "音軌檔頭 (_T)"
 
-#: ../quodlibet/qltk/songlist.py:814
+#: ../quodlibet/qltk/songlist.py:815
 msgid "_Album Headers"
 msgstr "專輯檔頭 (_A)"
 
-#: ../quodlibet/qltk/songlist.py:815
+#: ../quodlibet/qltk/songlist.py:816
 msgid "_People Headers"
 msgstr "個人或團體檔頭 (_P)"
 
-#: ../quodlibet/qltk/songlist.py:816
+#: ../quodlibet/qltk/songlist.py:817
 msgid "_Date Headers"
 msgstr "日期檔頭 (_D)"
 
-#: ../quodlibet/qltk/songlist.py:817
+#: ../quodlibet/qltk/songlist.py:818
 msgid "_File Headers"
 msgstr "檔案檔頭 (_F)"
 
-#: ../quodlibet/qltk/songlist.py:818
+#: ../quodlibet/qltk/songlist.py:819
 msgid "_Production Headers"
 msgstr "出版檔頭 (_P)"
 
-#: ../quodlibet/qltk/songlist.py:831
+#: ../quodlibet/qltk/songlist.py:832
 msgid "_Customize Headers..."
 msgstr "設置檔頭... (_C)"
 
@@ -2289,40 +2289,40 @@ msgstr ""
 msgid "%r doesn't contain any devices."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:126
+#: ../quodlibet/devices/__init__.py:130
 #, fuzzy, python-format
 msgid "%r is not a supported device."
 msgstr "錯誤：「%s」不是一個獨特的前綴 (prefix)。"
 
-#: ../quodlibet/devices/__init__.py:154
+#: ../quodlibet/devices/__init__.py:158
 msgid "No eject command found."
 msgstr "未發現退出（裝置）指令。"
 
-#: ../quodlibet/devices/__init__.py:286
+#: ../quodlibet/devices/__init__.py:290
 #, python-format
 msgid "%s: Could not import ctypes."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:290
+#: ../quodlibet/devices/__init__.py:294
 #, python-format
 msgid "%s: Could not find media-player-info."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:430
+#: ../quodlibet/devices/__init__.py:454
 #, fuzzy
 msgid "Initializing device backend."
 msgstr "無效的設定值"
 
-#: ../quodlibet/devices/__init__.py:431
+#: ../quodlibet/devices/__init__.py:455
 #, python-format
 msgid "Trying '%s'"
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:451
+#: ../quodlibet/devices/__init__.py:475
 msgid "Couldn't connect to a device backend."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:453
+#: ../quodlibet/devices/__init__.py:477
 msgid "Device backend initialized."
 msgstr ""
 

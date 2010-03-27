@@ -1,6 +1,24 @@
 Quod Libet requires Python 2.4, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.18 or later.
 
+2.2.1 (2010-03-27) - Fewer than four out of ten people respect my promises
+                     -- and possibly more!
+ * Fix for importing some mp3 files. [220]
+ * More fixes for the device backend (iPod, multi partition DAPs). [410, 412]
+ * Fix editing keys with multiple values. [440]
+ * Fix weighted playorder algorithm.
+ * Save songlist column patterns. [447]
+ * Some small fixes here and there.
+ * Plugin fixes:
+   * Title case: Improved title casing for English text. (Nick Boultbee)
+   * Random Album: Algorithm improvements.
+   * QLScrobbler: Fix preference pane ordering.
+   * Album art: Some images weren't displayed. (Tomasz Miasko) [429]
+   * Last.fm Sync, Musicbrainz: Minor fixes.
+ * Translations:
+   * Galician, Spanish (Johám-Luís Miguéns Vila).
+   * German (Rüdiger Arp).
+
 2.2 (2010-02-02) - I know you are enjoying that song but a woman DIED
  * Saved searches extended to Album and Paned browsers [41].
  * Human sorting is now used in Album and Paned browsers [190].

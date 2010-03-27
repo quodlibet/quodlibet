@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-02 01:56-0500\n"
+"POT-Creation-Date: 2010-03-27 18:02+0100\n"
 "PO-Revision-Date: 2007-04-28 09:11+0100\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: hu\n"
@@ -28,195 +28,195 @@ msgstr "Hallgasd, böngészd vagy szerkeszd zenéidet"
 msgid "Music Player"
 msgstr "Zenelejátszó"
 
-#: ../quodlibet.py:117
+#: ../quodlibet.py:118
 msgid "No song is currently playing."
 msgstr "Nem fut dal."
 
-#: ../quodlibet.py:125
+#: ../quodlibet.py:126
 msgid "Quod Libet is not running."
 msgstr "A Quod Libet nem fut."
 
-#: ../quodlibet.py:136
+#: ../quodlibet.py:137
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "%s írása sikertelen. Eltávolítom."
 
-#: ../quodlibet.py:172
+#: ../quodlibet.py:173
 msgid "a music library and player"
 msgstr "egy zenekönyvtár és lejátszó"
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:174
 msgid "[ --print-playing | control ]"
 msgstr "[ --print-playing | vezérlő ]"
 
-#: ../quodlibet.py:175
+#: ../quodlibet.py:176
 msgid "Print the playing song and exit"
 msgstr "Kiírja a most forgó dalt és kilép"
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:177
 msgid "Begin playing immediately"
 msgstr "Lejátszás kezdése azonnal"
 
-#: ../quodlibet.py:179
+#: ../quodlibet.py:180
 msgid "Jump to next song"
 msgstr "Ugrás a következő dalra"
 
-#: ../quodlibet.py:180
+#: ../quodlibet.py:181
 msgid "Jump to previous song"
 msgstr "Ugrás az előző dalra"
 
-#: ../quodlibet.py:181
+#: ../quodlibet.py:182
 msgid "Start playback"
 msgstr "Lejátszás indítása"
 
-#: ../quodlibet.py:182
+#: ../quodlibet.py:183
 msgid "Pause playback"
 msgstr "Lejátszás szünete"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:184
 msgid "Toggle play/pause mode"
 msgstr "Lejátszás/szünet váltása"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:185
 msgid "Turn up volume"
 msgstr "Hang be"
 
-#: ../quodlibet.py:185
+#: ../quodlibet.py:186
 msgid "Turn down volume"
 msgstr "Hang ki"
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:187
 msgid "Print player status"
 msgstr "Lejátszó állapot kiírása"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:188
 msgid "Hide main window"
 msgstr "Főablak rejtése"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:189
 msgid "Show main window"
 msgstr "Főablak mutatása"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:190
 msgid "Toggle main window visibility"
 msgstr "Főablak mutatásának váltása"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:191
 msgid "Focus the running player"
 msgstr "Fókusz a futó lejátszóra"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:192
 msgid "Remove active browser filters"
 msgstr "Aktív böngésző szűrők törlése"
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:193
 #, fuzzy
 msgid "Refresh and rescan library"
 msgstr "Daltár _frissítése"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:194
 msgid "Print the current playlist"
 msgstr "Mostani lista kiírása"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:195
 msgid "Print the contents of the queue"
 msgstr "Sor tartalmának kiírása"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:196
 msgid "Exit Quod Libet"
 msgstr "Quod Libet bezárása"
 
-#: ../quodlibet.py:199
+#: ../quodlibet.py:200
 msgid "Seek within the playing song"
 msgstr "Ugrás a forgó dalban"
 
-#: ../quodlibet.py:199
+#: ../quodlibet.py:200
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ÓÓ:]PP:MM"
 
-#: ../quodlibet.py:200
+#: ../quodlibet.py:201
 msgid "Set or toggle the playback order"
 msgstr "Sorrend beállítása/váltása"
 
-#: ../quodlibet.py:202
+#: ../quodlibet.py:203
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Ismétlés be/ki/váltás"
 
-#: ../quodlibet.py:203
+#: ../quodlibet.py:204
 msgid "Set the volume"
 msgstr "Hangerő beállítása"
 
-#: ../quodlibet.py:204
+#: ../quodlibet.py:205
 msgid "Search your audio library"
 msgstr "Daltár keresése"
 
-#: ../quodlibet.py:204 ../quodlibet.py:214 ../quodlibet.py:216
+#: ../quodlibet.py:205 ../quodlibet.py:215 ../quodlibet.py:217
 msgid "query"
 msgstr "lekérés"
 
-#: ../quodlibet.py:205
+#: ../quodlibet.py:206
 msgid "Play a file"
 msgstr "Fájl lejátszása"
 
-#: ../quodlibet.py:205 ../quodlibet.py:214 ../quodlibet.py:216
+#: ../quodlibet.py:206 ../quodlibet.py:215 ../quodlibet.py:217
 msgid "command|filename"
 msgstr "fájlnév"
 
-#: ../quodlibet.py:206
+#: ../quodlibet.py:207
 msgid "Rate the playing song"
 msgstr "E dal értéke"
 
-#: ../quodlibet.py:207
+#: ../quodlibet.py:208
 msgid "Set the current browser"
 msgstr "E böngésző beállítása"
 
-#: ../quodlibet.py:208
+#: ../quodlibet.py:209
 msgid "Open a new browser"
 msgstr "Új böngésző megnyitása"
 
-#: ../quodlibet.py:209
+#: ../quodlibet.py:210
 msgid "Show or hide the queue"
 msgstr "Sor mutatása/rejtése"
 
-#: ../quodlibet.py:210
+#: ../quodlibet.py:211
 msgid "Show or hide the main song list"
 msgstr "Fő dal lista mutatása/rejtése"
 
-#: ../quodlibet.py:211
+#: ../quodlibet.py:212
 msgid "Filter on a random value"
 msgstr "Szűrő egy véletlen értéken"
 
-#: ../quodlibet.py:211
+#: ../quodlibet.py:212
 msgid "command|tag"
 msgstr "tag"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:213
 msgid "Filter on a tag value"
 msgstr "Szűrő egy tag értéken"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:213
 msgid "tag=value"
 msgstr "tag=érték"
 
-#: ../quodlibet.py:213
+#: ../quodlibet.py:214
 msgid "Enqueue a file or query"
 msgstr "Fájl vagy lekérés a lejátszósorba"
 
-#: ../quodlibet.py:215
+#: ../quodlibet.py:216
 msgid "Unqueue a file or query"
 msgstr "Fájl vagy lekérés törlése a sorból"
 
-#: ../quodlibet.py:254
+#: ../quodlibet.py:255
 #, fuzzy, python-format
 msgid "Invalid argument for '%s'."
 msgstr "E: Rossz argumentum ehhez: '%s'."
 
-#: ../quodlibet.py:255 ../quodlibet/util/__init__.py:155
+#: ../quodlibet.py:256 ../quodlibet/util/__init__.py:155
 #, fuzzy, python-format
 msgid "Try %s --help."
 msgstr "E: Próbáld ezt: %s --help."
 
-#: ../quodlibet.py:286
+#: ../quodlibet.py:287
 msgid "Quod Libet is already running."
 msgstr "A Quod Libet már fut."
 
@@ -310,7 +310,7 @@ msgstr "Rendezés dátum szerint"
 #: ../quodlibet/browsers/audiofeeds.py:49
 #: ../quodlibet/browsers/audiofeeds.py:50
 #: ../quodlibet/browsers/audiofeeds.py:113 ../quodlibet/browsers/paned.py:27
-#: ../quodlibet/formats/_audio.py:225 ../quodlibet/qltk/information.py:224
+#: ../quodlibet/formats/_audio.py:226 ../quodlibet/qltk/information.py:224
 #: ../quodlibet/qltk/information.py:232 ../quodlibet/qltk/information.py:258
 #: ../quodlibet/qltk/playorder.py:15 ../quodlibet/qltk/wlw.py:65
 msgid "Unknown"
@@ -379,11 +379,11 @@ msgid "_File System"
 msgstr "_Fájlrendszer"
 
 #: ../quodlibet/browsers/filesystem.py:86 ../quodlibet/browsers/media.py:440
-#: ../quodlibet/qltk/songlist.py:467
+#: ../quodlibet/qltk/songlist.py:468
 msgid "Unable to copy songs"
 msgstr "Dalok másolása sikertelen"
 
-#: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/qltk/songlist.py:468
+#: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/qltk/songlist.py:469
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "A kijelölt fájlok nem másolhatók más dal listába vagy sorba."
 
@@ -410,7 +410,7 @@ msgstr ""
 msgid "Choose New Stations"
 msgstr "Válassz új állomásokat"
 
-#: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:285
+#: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
 #: ../quodlibet/browsers/search.py:159
 msgid "_Search:"
 msgstr "Kere_s:"
@@ -429,49 +429,49 @@ msgstr "bitarány"
 msgid "Genre"
 msgstr "műfaj"
 
-#: ../quodlibet/browsers/iradio.py:238
+#: ../quodlibet/browsers/iradio.py:244
 msgid "New Station"
 msgstr "Új állomás"
 
-#: ../quodlibet/browsers/iradio.py:239
+#: ../quodlibet/browsers/iradio.py:245
 msgid "Enter the location of an Internet radio station:"
 msgstr "Add meg egy Internet rádió állomás helyét:"
 
-#: ../quodlibet/browsers/iradio.py:241
+#: ../quodlibet/browsers/iradio.py:247
 msgid "_Stations..."
 msgstr "Állomá_sok..."
 
-#: ../quodlibet/browsers/iradio.py:257
+#: ../quodlibet/browsers/iradio.py:263
 msgid "Internet Radio"
 msgstr "Internet Rádió"
 
-#: ../quodlibet/browsers/iradio.py:258
+#: ../quodlibet/browsers/iradio.py:264
 msgid "_Internet Radio"
 msgstr "_Internet Rádió"
 
-#: ../quodlibet/browsers/iradio.py:269
+#: ../quodlibet/browsers/iradio.py:275
 msgid "_New Station"
 msgstr "Új állomás"
 
-#: ../quodlibet/browsers/iradio.py:347 ../quodlibet/browsers/iradio.py:361
-#: ../quodlibet/browsers/iradio.py:374
+#: ../quodlibet/browsers/iradio.py:353 ../quodlibet/browsers/iradio.py:367
+#: ../quodlibet/browsers/iradio.py:380
 msgid "Unable to add station"
 msgstr "Állomás hozzáadása sikertelen"
 
-#: ../quodlibet/browsers/iradio.py:366
+#: ../quodlibet/browsers/iradio.py:372
 msgid "No stations found"
 msgstr "Nem leltem állomást"
 
-#: ../quodlibet/browsers/iradio.py:367
+#: ../quodlibet/browsers/iradio.py:373
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Nem leltem Internet rádió állomást itt: %s."
 
-#: ../quodlibet/browsers/iradio.py:375
+#: ../quodlibet/browsers/iradio.py:381
 msgid "All stations listed are already in your library."
 msgstr "Már minden kiírt állomás a daltárban van."
 
-#: ../quodlibet/browsers/iradio.py:394
+#: ../quodlibet/browsers/iradio.py:400
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -580,11 +580,11 @@ msgstr "Paneles böngésző"
 msgid "_Paned Browser"
 msgstr "_Paneles böngésző"
 
-#: ../quodlibet/browsers/paned.py:322 ../quodlibet/qltk/pluginwin.py:258
+#: ../quodlibet/browsers/paned.py:328 ../quodlibet/qltk/pluginwin.py:258
 msgid "All"
 msgstr "Minden"
 
-#: ../quodlibet/browsers/paned.py:396
+#: ../quodlibet/browsers/paned.py:402
 msgid "Select _All"
 msgstr "Mindent kijelöl"
 
@@ -739,19 +739,19 @@ msgstr "Firmware:"
 msgid "Removing orphaned iPod track"
 msgstr "F: elavult iPod sáv eltávolítása"
 
-#: ../quodlibet/devices/ipod.py:258
+#: ../quodlibet/devices/ipod.py:259
 msgid "Unable to save iPod database"
 msgstr "iPod adatbázis mentése sikertelen"
 
-#: ../quodlibet/devices/ipod.py:270
+#: ../quodlibet/devices/ipod.py:271
 msgid "Uninitialized iPod"
 msgstr "Iniciálatlan iPod"
 
-#: ../quodlibet/devices/ipod.py:271
+#: ../quodlibet/devices/ipod.py:272
 msgid "Do you want to create an empty database on this iPod?"
 msgstr "Készítesz egy üres adatbázist ezen az iPod-on?"
 
-#: ../quodlibet/devices/ipod.py:394
+#: ../quodlibet/devices/ipod.py:395
 msgid "Could not import python-gpod, iPod support disabled."
 msgstr ""
 
@@ -1419,7 +1419,7 @@ msgstr "_Szám"
 msgid "_Artist"
 msgstr "_Művész"
 
-#: ../quodlibet/qltk/prefs.py:42 ../quodlibet/qltk/songlist.py:361
+#: ../quodlibet/qltk/prefs.py:42 ../quodlibet/qltk/songlist.py:362
 msgid "_Rating"
 msgstr "É_rték"
 
@@ -1879,48 +1879,48 @@ msgstr ""
 msgid "pattern"
 msgstr "minta"
 
-#: ../quodlibet/qltk/songlist.py:347
+#: ../quodlibet/qltk/songlist.py:348
 #, python-format
 msgid "_Filter on %s"
 msgstr "Szűrő itt: %s"
 
-#: ../quodlibet/qltk/songlist.py:587
+#: ../quodlibet/qltk/songlist.py:588
 #, fuzzy
 msgid "Confirm rating"
 msgstr "Információ"
 
-#: ../quodlibet/qltk/songlist.py:588
+#: ../quodlibet/qltk/songlist.py:589
 #, python-format
 msgid ""
 "You are about to change the rating of %d songs.\n"
 "Do you wish to continue?"
 msgstr ""
 
-#: ../quodlibet/qltk/songlist.py:813
+#: ../quodlibet/qltk/songlist.py:814
 msgid "_Track Headers"
 msgstr "_Sáv fejlécek"
 
-#: ../quodlibet/qltk/songlist.py:814
+#: ../quodlibet/qltk/songlist.py:815
 msgid "_Album Headers"
 msgstr "_Album fejlécek"
 
-#: ../quodlibet/qltk/songlist.py:815
+#: ../quodlibet/qltk/songlist.py:816
 msgid "_People Headers"
 msgstr "Személ_y fejlécek"
 
-#: ../quodlibet/qltk/songlist.py:816
+#: ../quodlibet/qltk/songlist.py:817
 msgid "_Date Headers"
 msgstr "_Dátum fejlécek"
 
-#: ../quodlibet/qltk/songlist.py:817
+#: ../quodlibet/qltk/songlist.py:818
 msgid "_File Headers"
 msgstr "_Fájl fejlécek"
 
-#: ../quodlibet/qltk/songlist.py:818
+#: ../quodlibet/qltk/songlist.py:819
 msgid "_Production Headers"
 msgstr "_Termék fejlécek"
 
-#: ../quodlibet/qltk/songlist.py:831
+#: ../quodlibet/qltk/songlist.py:832
 msgid "_Customize Headers..."
 msgstr "_Egyéni fejlécek..."
 
@@ -2282,40 +2282,40 @@ msgstr ""
 msgid "%r doesn't contain any devices."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:126
+#: ../quodlibet/devices/__init__.py:130
 #, fuzzy, python-format
 msgid "%r is not a supported device."
 msgstr "E: '%s' nem egyedi előtag."
 
-#: ../quodlibet/devices/__init__.py:154
+#: ../quodlibet/devices/__init__.py:158
 msgid "No eject command found."
 msgstr "Nem találtam 'eject' parancsot"
 
-#: ../quodlibet/devices/__init__.py:286
+#: ../quodlibet/devices/__init__.py:290
 #, python-format
 msgid "%s: Could not import ctypes."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:290
+#: ../quodlibet/devices/__init__.py:294
 #, python-format
 msgid "%s: Could not find media-player-info."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:430
+#: ../quodlibet/devices/__init__.py:454
 #, fuzzy
 msgid "Initializing device backend."
 msgstr "Rossz érték"
 
-#: ../quodlibet/devices/__init__.py:431
+#: ../quodlibet/devices/__init__.py:455
 #, python-format
 msgid "Trying '%s'"
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:451
+#: ../quodlibet/devices/__init__.py:475
 msgid "Couldn't connect to a device backend."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:453
+#: ../quodlibet/devices/__init__.py:477
 msgid "Device backend initialized."
 msgstr ""
 
