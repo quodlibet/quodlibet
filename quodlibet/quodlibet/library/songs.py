@@ -12,9 +12,13 @@ close enough.
 
 import os
 
+import gtk
+import gobject
+
 from quodlibet import util
 
 from quodlibet.formats import MusicFile
+from quodlibet.formats._album import Album
 from quodlibet.library._library import Library, Librarian
 from quodlibet.parse import Query
 
@@ -74,12 +78,131 @@ class SongLibrarian(Librarian):
                 library._contents[item.key] = item
                 library.emit('changed', [item])
 
+class AlbumLibrary(gtk.Object):
+    """A AlbumLibrary listens to a SongLibrary and sorts it's songs into
+    albums. The library behaves like a dictionary: The keys are album_keys of
+    AudioFiles, the values are Album objects.
+    """
+
+    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+    __gsignals__ = {
+        'changed': SIG_PYOBJECT,
+        'removed': SIG_PYOBJECT,
+        'added': SIG_PYOBJECT,
+        }
+
+    def __init__(self, library):
+        super(AlbumLibrary, self).__init__()
+        self.__albums = {}
+        for key in ['get', 'keys', 'values', 'items', 'iterkeys',
+                    'itervalues', 'iteritems', 'has_key']:
+            setattr(self, key, getattr(self.__albums, key))
+
+        self.library = library
+        self.__loaded = False
+
+    def refresh(self, items):
+        """Refresh albums after a manual change."""
+        self.emit('changed', set(items))
+
+    def load(self):
+        """Loading takes some time, and not every view needs it,
+        so this must be called at least one time before using the library"""
+        if not self.__loaded:
+            self.__loaded = True
+            self.library.connect('added', self.__added)
+            self.library.connect('removed', self.__removed)
+            self.library.connect('changed', self.__changed)
+            self.__added(self.library, self.library.values(), signal=False)
+
+    def __add(self, items):
+        changed = set()
+        new = set()
+        for song in items:
+            key = song.album_key
+            if key in self.__albums:
+                changed.add(self.__albums[key])
+            else:
+                album = Album(song)
+                self.__albums[key] = album
+                new.add(album)
+            self.__albums[key].songs.add(song)
+
+        changed -= new
+
+        return changed, new
+
+    def __added(self, library, items, signal=True):
+        changed, new = self.__add(items)
+
+        for album in changed:
+            album.finalize()
+
+        if signal:
+            if new: self.emit('added', new)
+            if changed: self.emit('changed', changed)
+
+    def __removed(self, library, items):
+        changed = set()
+        removed = set()
+        for song in items:
+            key = song.album_key
+            album = self.__albums[key]
+            album.songs.remove(song)
+            changed.add(album)
+            if not album.songs:
+                removed.add(album)
+                del self.__albums[key]
+
+        changed -= removed
+
+        for album in changed:
+            album.finalize()
+
+        if removed: self.emit('removed', removed)
+        if changed: self.emit('changed', changed)
+
+    def __changed(self, library, items):
+        """Album keys could change between already existing ones.. so we
+        have to do it the hard way and search by id."""
+        changed = set()
+        removed = set()
+        to_add = []
+        for song in items:
+            song_key = song.album_key
+            for key, album in self.__albums.iteritems():
+                if song in album.songs:
+                    changed.add(album)
+                    if song_key != album.key:
+                        #it changed, remove it
+                        album.songs.remove(song)
+                        if not album.songs:
+                            del self.__albums[key]
+                            removed.add(album)
+                        to_add.append(song)
+                    break
+
+        add_changed, new = self.__add(to_add)
+        changed |= add_changed
+        changed -= removed
+
+        for album in changed:
+            album.finalize()
+
+        if changed: self.emit("changed", changed)
+        if removed: self.emit("removed", removed)
+        if new: self.emit("added", new)
+
 class SongLibrary(Library):
     """A library for songs.
 
     Items in this kind of library must support (roughly) the AudioFile
     interface.
     """
+
+    def __init__(self, *args, **kwargs):
+        super(SongLibrary, self).__init__(*args, **kwargs)
+        self.albums = AlbumLibrary(self)
 
     def tag_values(self, tag):
         """Return a list of all values for the given tag."""
