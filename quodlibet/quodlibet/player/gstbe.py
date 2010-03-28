@@ -65,6 +65,7 @@ class GStreamerPlayer(BasePlayer):
         self.connect('destroy', lambda s: self.__destroy_pipeline())
         self._in_gapless_transition = False
         self.paused = True
+        self._inhibit_play = False
 
     def __init_pipeline(self):
         if self.bin: return True
@@ -112,6 +113,7 @@ class GStreamerPlayer(BasePlayer):
         return True
 
     def __destroy_pipeline(self):
+        self._inhibit_play = False
         if self.bin is None: return
         self.bin.set_state(gst.STATE_NULL)
         bus = self.bin.get_bus()
@@ -137,6 +139,9 @@ class GStreamerPlayer(BasePlayer):
             err, debug = message.parse_error()
             err = str(err).decode(const.ENCODING, 'replace')
             self.error(err, True)
+        elif message.type == gst.MESSAGE_BUFFERING:
+            percent = message.parse_buffering()
+            self._set_inhibit_play(percent < 100)
         return True
 
     def __message_elem(self, bus, message):
@@ -194,6 +199,20 @@ class GStreamerPlayer(BasePlayer):
         else:
             return 0
 
+    def _set_inhibit_play(self, inhibit):
+        """Set the inhibit play flag.  If set, this will pause the pipeline
+        without giving the appearance of being paused to the outside.  This
+        is for internal uses of pausing, such as for waiting while the buffer
+        is being filled for network streams."""
+        if inhibit == self._inhibit_play:
+            return
+
+        self._inhibit_play = inhibit
+        if inhibit:
+            self.bin.set_state(gst.STATE_PAUSED)
+        elif not self.paused:
+            self.bin.set_state(gst.STATE_PLAYING)
+
     def _set_paused(self, paused):
         if paused != self._paused:
             self._paused = paused
@@ -212,7 +231,8 @@ class GStreamerPlayer(BasePlayer):
                 self.emit((paused and 'paused') or 'unpaused')
                 if self.bin:
                     if not self._paused:
-                        self.bin.set_state(gst.STATE_PLAYING)
+                        if not self._inhibit_play:
+                            self.bin.set_state(gst.STATE_PLAYING)
                     elif self.song.is_file:
                         self.bin.set_state(gst.STATE_PAUSED)
                     else:
