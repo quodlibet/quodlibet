@@ -18,6 +18,7 @@ from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.sliderbutton import HSlider, VSlider
 
 SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
+SUBSIZE = gtk.ICON_SIZE_MENU
 
 class SeekBar(HSlider):
     __lock = False
@@ -138,7 +139,9 @@ class SeekBar(HSlider):
 class Volume(VSlider):
     def __init__(self, device):
         i = gtk.Image()
-        super(type(self), self).__init__(i)
+        pad = gtk.VBox()
+        pad.pack_start(i, padding=1)
+        super(type(self), self).__init__(pad)
         self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self.scale.set_inverted(True)
         self.get_value = self.scale.get_value
@@ -166,9 +169,9 @@ class Volume(VSlider):
         else: img = stock.VOLUME_MAX
 
         if gtk.icon_theme_get_default().has_icon(img):
-            image.set_from_icon_name(img, SIZE)
+            image.set_from_icon_name(img, SUBSIZE)
         else:
-            image.set_from_stock(img, SIZE)
+            image.set_from_stock(img, SUBSIZE)
 
         device.volume = val
         config.set("memory", "volume", str(slider.get_value()))
@@ -209,32 +212,40 @@ class StopAfterMenu(gtk.Menu):
         return self.__item.set_active(active)
     active = property(__get_active, __set_active)
 
-class PlayControls(gtk.Table):
+class PlayControls(gtk.VBox):
     def __init__(self, player, library):
-        gtk.Table.__init__(self, rows=2, columns=2, homogeneous=True)
+        super(PlayControls, self).__init__(spacing=3)
 
-        self.set_row_spacings(3)
-        self.set_col_spacings(3)
+        upper = gtk.Table(rows=1, columns=3, homogeneous=True)
+        upper.set_row_spacings(3)
+        upper.set_col_spacings(3)
 
         prev = gtk.Button()
         prev.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PREVIOUS, SIZE))
-        self.attach(prev, 0, 1, 0, 1, yoptions=gtk.FILL)
+        upper.attach(prev, 0, 1, 0, 1)
 
         play = gtk.ToggleButton()
         play.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY, SIZE))
-        self.attach(play, 1, 2, 0, 1, yoptions=gtk.FILL)
+        upper.attach(play, 1, 2, 0, 1)
 
         safter = StopAfterMenu(player)
 
         next = gtk.Button()
         next.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_NEXT, SIZE))
-        self.attach(next, 2, 3, 0, 1, yoptions=gtk.FILL)
+        upper.attach(next, 2, 3, 0, 1)
+
+        lower = gtk.Table(rows=1, columns=3, homogeneous=True)
+        lower.set_row_spacings(3)
+        lower.set_col_spacings(3)
 
         self.volume = Volume(player)
-        self.attach(self.volume, 0, 1, 1, 2, yoptions=gtk.FILL)
+        lower.attach(self.volume, 0, 1, 0, 1)
 
         seekbar = SeekBar(player, library)
-        self.attach(seekbar, 1, 3, 1, 2, yoptions=gtk.FILL)
+        lower.attach(seekbar, 1, 3, 0, 1)
+
+        self.pack_start(upper, expand=False)
+        self.pack_start(lower, expand=False)
 
         prev.connect_object('clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, player)
