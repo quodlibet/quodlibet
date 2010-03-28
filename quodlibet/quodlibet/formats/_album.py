@@ -126,9 +126,10 @@ class Album(object):
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
+                if not isinstance(default, basestring): return default
                 return connector.join(map(unicode, filter(None,
                             map(self.get, util.tagsplit("~" + key))
-                    )))
+                    ))) or default
             elif key[:1] == "#": pass
             elif key in ("people", "peoplesort"):
                 people = {}
