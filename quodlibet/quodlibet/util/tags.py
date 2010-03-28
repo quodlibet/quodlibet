@@ -80,6 +80,7 @@ TAGS = dict([
     # Translators: "gain" means a volume adjustment, not "to acquire".
     MT("replaygain_album_gain", _("album gain")),
     MT("replaygain_album_peak", _("album peak")),
+    MT("replaygain_reference_loudness", _("reference loudness")),
 
     IT("added", _("added")),
     IT("lastplayed", _("last played")),
