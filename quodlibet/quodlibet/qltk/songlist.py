@@ -707,7 +707,9 @@ class SongList(AllTreeView, util.InstanceTracker):
         map(gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
 
     def get_selected_songs(self):
-        model, rows = self.get_selection().get_selected_rows()
+        selection = self.get_selection()
+        if selection is None: return []
+        model, rows = selection.get_selected_rows()
         return [model[row][0] for row in rows]
 
     def __song_updated(self, librarian, songs):
