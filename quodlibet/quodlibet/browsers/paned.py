@@ -222,6 +222,19 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.connect_object('destroy', self.__destroy, model)
             self.connect('popup-menu', self.__popup_menu, library)
 
+            targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+                   ("text/uri-list", 0, 2)]
+            self.drag_source_set(
+                gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+            self.connect("drag-data-get", self.__drag_data_get)
+
+        def __drag_data_get(self, view, ctx, sel, tid, etime):
+            songs = sorted(self.__get_songs())
+            if tid == 1:
+                filenames = [song("~filename") for song in songs]
+                sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            else: sel.set_uris([song("~uri") for song in songs])
+
         def __human_sort_key(self, text):
             try:
                 return self.__sort_cache[text]
