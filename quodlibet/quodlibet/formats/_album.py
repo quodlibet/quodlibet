@@ -98,7 +98,7 @@ class Album(object):
         if self.scanned or not self.songs: return
         self.scanned = True
 
-        song = next(iter(self.songs))
+        song = iter(self.songs).next()
         cover = song.find_cover()
 
         if cover is not None:
