@@ -195,7 +195,7 @@ class QuodLibetWindow(gtk.Window):
         hbox.pack_start(text)
 
         # cover image
-        self.image = CoverImage()
+        self.image = CoverImage(resize=True)
         player.connect('song-started', self.image.set_song)
         hbox.pack_start(self.image, expand=False)
 

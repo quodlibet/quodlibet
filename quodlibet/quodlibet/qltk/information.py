@@ -156,7 +156,7 @@ class OneSong(qltk.Notebook):
         w.set_ellipsize(pango.ELLIPSIZE_END)
         hb = gtk.HBox(spacing=12)
 
-        cover = CoverImage([70, 70], song)
+        cover = CoverImage(song=song)
         if cover: hb.pack_start(cover, expand=False)
         else: cover.destroy()
                             
@@ -359,7 +359,7 @@ class OneAlbum(qltk.Notebook):
         w.set_markup("\n".join(text))
         hb = gtk.HBox(spacing=12)
 
-        cover = CoverImage([70, 70], song)
+        cover = CoverImage(song=song)
         if cover: hb.pack_start(cover, expand=False)
         else: cover.destroy()
 
@@ -472,7 +472,7 @@ class OneArtist(qltk.Notebook):
         added = set()
         for i, (album, cover, song) in enumerate(covers):
             if cover.name in added: continue
-            cov = CoverImage([70, 70], song)
+            cov = CoverImage(song=song)
             cov.child.set_tooltip_text(album)
             c = i % 4
             r = i // 4

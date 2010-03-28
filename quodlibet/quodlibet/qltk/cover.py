@@ -45,52 +45,94 @@ class BigCenteredImage(qltk.Window):
     def __destroy(self, *args):
         self.destroy()
 
+class ResizeImage(gtk.Image):
+    """Automatically resizes to the maximum height given by it's
+    parent container. If resize is True, size and max will be ignored"""
+    def __init__(self, resize, size=0, max=128):
+        super(ResizeImage, self).__init__()
+        self.__path = None
+        self.__ignore = False
+        self.__resize = resize
+        self.__size = size
+        self.__max_size = max
+        self.__no_cover = None
+        if self.__resize:
+            self.set_size_request(-1, 0)
+            self.connect("size-allocate", self.__allocate)
+
+    def set_path(self, path):
+        if path != self.__path:
+            self.__path = path
+            if self.__resize:
+                self.queue_resize()
+            else:
+                self.__update_image()
+
+    def __allocate(self, img, alloc):
+        self.__size = alloc.height - 2
+        if not self.__ignore:
+            self.__update_image()
+
+    def __get_no_cover(self, width, height):
+        if self.__no_cover is None or self.__no_cover.get_width() != width \
+            or self.__no_cover.get_height() != height:
+            try:
+                self.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                    stock.NO_ALBUM, width, height)
+            except gobject.GError:
+                self.__no_cover = None
+        return self.__no_cover
+
+    def __update_image(self):
+        height = self.__size
+        if not height: return
+
+        if self.__resize:
+            height = min(self.__max_size, height)
+            width = self.__max_size
+        else:
+            width = height
+
+        if self.__path is None:
+            pixbuf = self.__get_no_cover(width, height)
+        else:
+            try:
+                round_thumbs = config.getboolean("settings", "round")
+                pixbuf = thumbnails.get_thumbnail(self.__path, (width, height))
+                pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
+            except gobject.GError:
+                pixbuf = self.__get_no_cover(width, height)
+
+        self.set_from_pixbuf(pixbuf)
+        if self.__resize:
+            self.__ignore = True
+            self.__sig = self.connect_after("size-allocate",
+                self.__stop_ignore)
+
+    def __stop_ignore(self, *args):
+        self.__ignore = False
+        self.disconnect(self.__sig)
+
 class CoverImage(gtk.EventBox):
     __albumfn = None
     __current_bci = None
-    __no_album = None
 
-    def __init__(self, size=None, song=None):
+    def __init__(self, resize=False, size=70, song=None):
         super(CoverImage, self).__init__()
-        self.add(gtk.Image())
-        self.__size = size or [100, 71]
+        self.add(ResizeImage(resize, size))
         self.connect('button-press-event', self.__show_cover)
+        self.set_song(self, song)
         self.show_all()
 
-        if self.__no_album is None:
-            try:
-                CoverImage.__no_album = gtk.gdk.pixbuf_new_from_file_at_size(
-                    stock.NO_ALBUM, *self.__size)
-            except RuntimeError:
-                pass
-
-        self.set_song(self, song)
-
     def set_song(self, activator, song):
-        self.__song = song
-        if song is None:
-            # Sometimes called during shutdown when the child have
-            # already been destroyed.
-            if self.child:
-                self.child.set_from_pixbuf(None)
-            self.__albumfn = None
-            self.hide()
-        else:
+        if not self.child: return
+        if song:
             cover = song.find_cover()
-            if cover is None:
-                self.__albumfn = None
-                self.child.set_from_pixbuf(self.__no_album)
-            elif cover.name != self.__albumfn:
-                try:
-                    round_thumbs = config.getboolean("settings", "round")
-                    pixbuf = thumbnails.get_thumbnail(cover.name, self.__size)
-                    pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
-                except gobject.GError:
-                    self.child.set_from_pixbuf(self.__no_album)
-                else:
-                    self.child.set_from_pixbuf(pixbuf)
-                    self.__albumfn = cover.name
-            self.show()
+            self.__albumfn = cover and cover.name
+            self.child.set_path(self.__albumfn)
+        else:
+            self.child.set_path(None)
+        self.__song = song
 
     def __nonzero__(self):
         return bool(self.__albumfn)
@@ -101,15 +143,13 @@ class CoverImage(gtk.EventBox):
     def __show_cover(self, box, event):
         """Show the cover as a detached BigCenteredImage.
         If one is already showing, destroy it instead"""
-        if (self.__song and event.button == 1 and
+        if (self.__song and event.button == 1 and self.__albumfn and
             event.type == gtk.gdk.BUTTON_PRESS):
             if self.__current_bci is None:
                 # We're not displaying it yet; display it.
-                cover = self.__song.find_cover()
-                if cover:
-                    self.__current_bci = BigCenteredImage(
-                        self.__song.comma("album"), cover.name, self)
-                    self.__current_bci.connect('destroy', self.__reset_bci)
+                self.__current_bci = BigCenteredImage(
+                    self.__song.comma("album"), self.__albumfn, self)
+                self.__current_bci.connect('destroy', self.__reset_bci)
             else:
                 # We're displaying it; destroy it.
                 self.__current_bci.destroy()
