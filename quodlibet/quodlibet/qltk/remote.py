@@ -263,6 +263,11 @@ class FIFOControl(object):
             strings.append("%0.3f" % window.volume.get_value())
             strings.append(window.order.get_active_name())
             strings.append((window.repeat.get_active() and "on") or "off")
+            progress = 0
+            if player.info:
+                length = player.info.get("~#length", 0)
+                if length: progress = player.get_position() / (length * 1000.0)
+            strings.append("%0.3f" % progress)
             f.write(" ".join(strings) + "\n")
             try: f.write(window.browser.status + "\n")
             except AttributeError: pass
