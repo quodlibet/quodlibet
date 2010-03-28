@@ -136,18 +136,18 @@ class check(Command):
         pass
 
     def run(self):
-        print "Checking Python version:",
+        print "Checking Python version >= 2.4:",
         print ".".join(map(str, sys.version_info[:2]))
         if sys.version_info < (2, 4):
             raise SystemExit("%s requires at least Python 2.4. "
                              "(http://www.python.org)" % self.NAME)
 
-        print "Checking for PyGTK >= 2.10:",
+        print "Checking for PyGTK >= 2.12:",
         try:
             import pygtk
             pygtk.require('2.0')
             import gtk
-            if gtk.pygtk_version < (2, 10) or gtk.gtk_version < (2, 10):
+            if gtk.pygtk_version < (2, 12) or gtk.gtk_version < (2, 12):
                 raise ImportError
         except ImportError:
             raise SystemExit("not found\n%s requires PyGTK 2.10. "
@@ -186,14 +186,14 @@ class check(Command):
                              " or xine-lib 1.1 "
                              "(http://www.xinehq.de/)." % self.NAME)
 
-        print "Checking for Mutagen >= 1.10:",
+        print "Checking for Mutagen >= 1.11:",
         try:
             import mutagen
-            if mutagen.version < (1, 10):
+            if mutagen.version < (1, 11):
                 raise ImportError
         except ImportError:
-            raise SystemExit("not found\n%s requires Mutagen 1.10.\n"
-                "(http://code.google.com/p/quodlibet/downloads/list)" %
+            raise SystemExit("not found\n%s requires Mutagen 1.11.\n"
+                "(http://code.google.com/p/mutagen/downloads/list)" %
                 self.NAME)
         else: print "found"
 

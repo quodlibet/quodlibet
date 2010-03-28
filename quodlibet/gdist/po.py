@@ -16,6 +16,7 @@ import glob
 
 from distutils.dep_util import newer
 from distutils.util import change_root
+from distutils.spawn import find_executable
 from gdist.core import GCommand
 
 class build_mo(GCommand):
@@ -42,6 +43,10 @@ class build_mo(GCommand):
             self.po_directory, self.po_package + ".pot")
 
     def run(self):
+        if find_executable("intltool-update") is None:
+            raise SystemExit("Error: 'intltool' not found.")
+        if find_executable("msgfmt") is None:
+            raise SystemExit("Error: 'gettext' not found.")
         basepath = os.path.join(self.build_base, 'share', 'locale')
         infilename = os.path.join(self.po_directory, "POTFILES.in")
         infiles = file(infilename).read().splitlines()
