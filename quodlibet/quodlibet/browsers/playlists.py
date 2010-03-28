@@ -26,6 +26,7 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.wlw import WaitLoadWindow
+from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util.uri import URI
 
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
@@ -202,11 +203,19 @@ class Playlist(list):
         try: return cmp(self.name, other.name)
         except AttributeError: return -1
 
+class GetPlaylistName(GetStringDialog):
+    def __init__(self, parent):
+        super(GetPlaylistName, self).__init__(
+            parent, _("New Playlist"),
+            _("Enter a name for the new playlist:"),
+            okbutton=gtk.STOCK_ADD)
+
 class Menu(gtk.Menu):
-    def __init__(self, songs):
+    def __init__(self, songs, parent=None):
         super(Menu, self).__init__()
         i = gtk.MenuItem(_("_New Playlist"))
-        i.connect_object('activate', self.__add_to_playlist, None, songs)
+        i.connect_object('activate',
+            self.__add_to_playlist, None, songs, parent)
         self.append(i)
         self.append(gtk.SeparatorMenuItem())
         self.set_size_request(int(i.size_request()[0] * 2), -1)
@@ -219,10 +228,10 @@ class Menu(gtk.Menu):
             i.set_inconsistent(some and not all)
             i.child.set_ellipsize(pango.ELLIPSIZE_END)
             i.connect_object(
-                'activate', self.__add_to_playlist, playlist, songs)
+                'activate', self.__add_to_playlist, playlist, songs, parent)
             self.append(i)
 
-    def __add_to_playlist(playlist, songs):
+    def __add_to_playlist(playlist, songs, parent):
         if playlist is None:
             if len(songs) == 1:
                 title = songs[0].comma("title")
@@ -232,6 +241,8 @@ class Menu(gtk.Menu):
                     "%(title)s and %(count)d more",
                     len(songs) - 1) % (
                     {'title': songs[0].comma("title"), 'count': len(songs) - 1})
+            title = GetPlaylistName(qltk.get_top_parent(parent)).run(title)
+            if title is None: return
             playlist = Playlist.new(title)
         playlist.extend(songs)
         Playlists.changed(playlist)

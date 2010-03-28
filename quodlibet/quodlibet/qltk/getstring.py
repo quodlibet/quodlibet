@@ -36,9 +36,9 @@ class GetStringDialog(gtk.Dialog):
         self.vbox.pack_start(box)
         self.child.show_all()
 
-    def run(self):
+    def run(self, text=""):
         self.show()
-        self._val.set_text("")
+        self._val.set_text(text)
         self._val.set_activates_default(True)
         self._val.grab_focus()
         resp = super(GetStringDialog, self).run()

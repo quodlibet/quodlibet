@@ -50,7 +50,7 @@ class SongsMenu(gtk.Menu):
             # FIXME: Two things are now importing browsers, so we need
             # some kind of inversion of control here.
             from quodlibet import browsers
-            try: submenu = browsers.playlists.Menu(songs)
+            try: submenu = browsers.playlists.Menu(songs, parent)
             except AttributeError: pass
             else:
                 b = gtk.ImageMenuItem(stock.PLAYLISTS)
