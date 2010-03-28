@@ -62,18 +62,19 @@ class QueueExpander(gtk.Expander):
         self.add(sw)
         self.connect_object('notify::expanded', self.__expand, cb, b)
 
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1)]
-        self.drag_dest_set(
-            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+                   ("text/uri-list", 0, 2)]
+        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
         self.connect('drag-motion', self.__motion)
-        self.connect_object(
-            'drag-data-received', self.__drag_data_received, library)
+        self.connect('drag-data-received', self.__drag_data_received)
 
         self.model = self.queue.model
         self.show_all()
 
-        self.queue.model.connect_after('row-changed', self.__check_expand, l2)
-        self.queue.model.connect_after('row-deleted', self.__update_count, l2)
+        self.queue.model.connect_after('row-changed',
+            util.DeferredSignal(self.__check_expand), l2)
+        self.queue.model.connect_after('row-deleted',
+            util.DeferredSignal(self.__update_count), l2)
         cb.hide()
 
         self.connect_object('notify::visible', self.__visible, cb, menu, b)
@@ -117,13 +118,8 @@ class QueueExpander(gtk.Expander):
         self.__update_count(model, path, lab)
         self.show()
 
-    def __drag_data_received(self, library, ctx, x, y, sel, info, etime):
-        filenames = sel.data.split("\x00")
-        if library.librarian:
-            library = library.librarian
-        songs = filter(None, map(library.get, filenames))
-        for song in songs: self.model.append(row=[song])
-        ctx.finish(bool(songs), False, etime)
+    def __drag_data_received(self, expander, *args):
+        self.queue.emit('drag-data-received', *args)
 
     def __queue_shuffle(self, button, model):
         if not button.get_active():
