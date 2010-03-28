@@ -56,8 +56,11 @@ class Preferences(qltk.UniqueWindow):
         view.set_reorderable(True)
         view.set_headers_visible(False)
         view.set_size_request(-1, 100)
+
         render = gtk.CellRendererText()
         render.set_property("editable", True)
+        render.connect("edited", self.__edited, model)
+
         col = gtk.TreeViewColumn("Tags", render, text=0)
         view.append_column(col)
 
@@ -128,6 +131,9 @@ class Preferences(qltk.UniqueWindow):
 
     def __changed(self, selection, remove):
         remove.set_sensitive(bool(selection.get_selected()[1]))
+
+    def __edited(self, render, path, text, model):
+        model[path][0] = text
 
     def __row_deleted(self, model, path, button):
         button.set_sensitive(len(model) > 0)
