@@ -208,7 +208,7 @@ class GStreamerPlayer(BasePlayer):
                               "initialized. The pipeline might be invalid, "
                               "or the device may be in use. Check the "
                               "player preferences.")).run()
-                    self._paused = paused = True
+                        self._paused = paused = True
                 self.emit((paused and 'paused') or 'unpaused')
                 if self.bin:
                     if self._paused:
