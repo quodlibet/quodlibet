@@ -472,25 +472,18 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         else: return self.__filter(model[iter][0])
 
     def __search_func(self, model, column, key, iter):
+        album = model[iter][0]
+        if album is None: return True
+        key = key.decode('utf-8').lower()
+        title = album.title.lower()
+        if key in title:
+            return False
         if config.getboolean("browsers", "album_substrings"):
-            key = key.lower()
-            vals = []
-            try: vals.append(model[iter][0].title.lower())
-            except AttributeError: pass
-            try:
-                for person in model[iter][0].people:
-                    vals.append(person.lower())
-            except AttributeError: pass
-            for val in vals:
-                if key in val: return False
-            return True
-        else:
-            try: value = model[iter][0].title
-            except AttributeError: return True
-            else:
-                key = key.decode('utf-8')
-                return not (value.startswith(key) or
-                            value.lower().startswith(key))
+            people = (p.lower() for p in album.list("~people"))
+            for person in people:
+                if key in person:
+                    return False
+        return True
 
     def __popup(self, view, library):
         songs = self.__get_selected_songs(view.get_selection())
