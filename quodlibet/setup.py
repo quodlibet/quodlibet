@@ -209,6 +209,17 @@ class build_gobject_ext(gdist_build_gobject_ext):
             path = ext.name.replace(".", "/") + ".so"
             self.copy_file(os.path.join(self.build_lib, path), path)
 
+def recursive_include(dir, pre, ext):
+    all = []
+    old_dir = os.getcwd()
+    os.chdir(dir)
+    for path, dirs, files in os.walk(pre):
+        for file in files:
+            if file.split('.')[-1] in ext:
+                all.append(os.path.join(path, file))
+    os.chdir(old_dir)
+    return all
+
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -228,7 +239,8 @@ if __name__ == "__main__":
         'maintainer': "Steven Robertson and Christoph Reiter",
         'license': "GNU GPL v2",
         'packages': ["quodlibet"] + map("quodlibet.".__add__, PACKAGES),
-        'package_data': {"quodlibet": ["images/*.png", "images/*.svg"]},
+        'package_data': {"quodlibet": recursive_include("quodlibet", "images",
+            ("svg", "png", "cache", "theme"))},
         'scripts': ["quodlibet.py", "exfalso.py"],
         'po_directory': "po",
         'po_package': "quodlibet",

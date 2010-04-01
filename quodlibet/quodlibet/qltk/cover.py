@@ -5,11 +5,15 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+
 import gobject
 import gtk
 
 from quodlibet import qltk
-from quodlibet import stock, config
+from quodlibet import stock
+from quodlibet import config
+from quodlibet import const
 from quodlibet.util import thumbnails
 
 class BigCenteredImage(qltk.Window):
@@ -76,11 +80,13 @@ class ResizeImage(gtk.Image):
     def __get_no_cover(self, width, height):
         if self.__no_cover is None or self.__no_cover.get_width() != width \
             or self.__no_cover.get_height() != height:
+            icon = os.path.join(const.IMAGEDIR, stock.NO_COVER)
             try:
                 self.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                    stock.NO_ALBUM, width, height)
+                    icon + ".svg", width, height)
             except gobject.GError:
-                self.__no_cover = None
+                self.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                    icon + ".png", width, height)
         return self.__no_cover
 
     def __update_image(self):

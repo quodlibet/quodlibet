@@ -13,7 +13,6 @@ import gobject
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet import stock
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT
 from quodlibet.util import thumbnails
 
@@ -42,11 +41,7 @@ class Album(object):
     """Simliar to an AudioFile, except it doesn't look like a dict because
     there is no easy way to access tags."""
 
-    try:
-        cover = gtk.gdk.pixbuf_new_from_file_at_size(stock.NO_ALBUM, 48, 48)
-    except RuntimeError:
-        cover = None
-
+    cover = None
     scanned = False
 
     peoplesort = property(lambda self: self.__get_sort("~peoplesort"))

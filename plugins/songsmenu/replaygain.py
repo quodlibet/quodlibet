@@ -15,13 +15,12 @@ import gst
 
 __all__ = ['ReplayGain']
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet import stock
 
 class ReplayGain(SongsMenuPlugin):
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = 'Replay Gain'
     PLUGIN_DESC = 'Analyzes ReplayGain with gstreamer, grouped by album'
-    PLUGIN_ICON = stock.VOLUME_MED
+    PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
     PLUGIN_VERSION = "2.2"
 
     def plugin_albums(self, albums):

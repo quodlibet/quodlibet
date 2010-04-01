@@ -62,7 +62,7 @@ class IPodSong(AudioFile):
         return []
 
 class IPodDevice(Device):
-    icon = stock.IPOD
+    icon = 'multimedia-player-ipod'
     protocol = 'ipod'
 
     ordered = True

@@ -16,6 +16,7 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import stock
 
 from quodlibet.browsers._base import Browser
 from quodlibet.browsers.search import BoxSearchBar
@@ -154,6 +155,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             klass._pattern_text = text
         except EnvironmentError:
             klass._pattern_text = PATTERN
+
+        no_cover = os.path.join(const.IMAGEDIR, stock.NO_COVER)
+        try:
+            klass.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                no_cover + ".svg", 48, 48)
+        except gobject.GError:
+            klass.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
+                no_cover + ".png", 48, 48)
 
         klass._pattern = XMLFromPattern(klass._pattern_text)
 
@@ -315,12 +324,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         column.set_fixed_width(60)
         render.set_property('height', 56)
 
-        def cell_data_pb(column, cell, model, iter):
+        def cell_data_pb(column, cell, model, iter, no_cover):
             album = model[iter][0]
             if album is None: cell.set_property('pixbuf', None)
             elif album.cover: cell.set_property('pixbuf', album.cover)
-            else: cell.set_property('pixbuf', None)
-        column.set_cell_data_func(render, cell_data_pb)
+            else: cell.set_property('pixbuf', no_cover)
+        column.set_cell_data_func(render, cell_data_pb, self.__no_cover)
         view.append_column(column)
 
         render = gtk.CellRendererText()

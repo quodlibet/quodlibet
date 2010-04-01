@@ -20,12 +20,18 @@ except ImportError:
 from distutils.command.build import build as distutils_build
 from distutils.command.install import install as distutils_install
 
+from gdist.core import GCommand
 from gdist.gobject import build_gobject_ext, GObjectExtension
 from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
 from gdist.po import build_mo, install_mo
 
 import os
+
+class build_icon_cache(GCommand):
+    """Update the icon theme cache"""
+    def run(self):
+        self.spawn(['gtk-update-icon-cache', '-f', 'quodlibet/images/hicolor'])
 
 class build(distutils_build):
     """Override the default build with new subcommands."""
@@ -36,6 +42,8 @@ class build(distutils_build):
          lambda self: self.distribution.has_shortcuts()),
         ("build_gobject_ext",
          lambda self: self.distribution.has_gobject_ext()),
+        ("build_icon_cache",
+         lambda self: self.distribution.need_icon_cache()),
         ]
 
 class install(distutils_install):
@@ -81,6 +89,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build_gobject_ext", build_gobject_ext)
         self.cmdclass.setdefault("build_mo", build_mo)
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
+        self.cmdclass.setdefault("build_icon_cache", build_icon_cache)
         self.cmdclass.setdefault("install_shortcuts", install_shortcuts)
         self.cmdclass.setdefault("install_man", install_man)
         self.cmdclass.setdefault("install_mo", install_mo)
@@ -98,5 +107,8 @@ class GDistribution(Distribution):
 
     def has_man_pages(self):
         return os.name != 'nt' and bool(self.man_pages)
+
+    def need_icon_cache(self):
+        return os.name != 'nt'
 
 __all__ = ["GDistribution", "GObjectExtension"]

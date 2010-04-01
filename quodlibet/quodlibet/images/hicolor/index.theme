@@ -1,0 +1,20 @@
+[Icon Theme]
+Name=ql
+Comment=qltheme
+Directories=16x16/devices,24x24/actions,24x24/status,48x48/devices
+
+[48x48/devices]
+Size=48
+Type=Fixed
+
+[24x24/status]
+Size=24
+Type=Fixed
+
+[24x24/actions]
+Size=24
+Type=Fixed
+
+[16x16/devices]
+Size=16
+Type=Fixed

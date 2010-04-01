@@ -13,7 +13,7 @@ from quodlibet import util
 
 class Device(dict):
     # The default icon for this device.
-    icon = 'device-generic'
+    icon = 'multimedia-player'
 
     # The used HAL access method protocol for this device, as defined in
     # 'portable_audio_player.access_method.protocols'

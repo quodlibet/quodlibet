@@ -8,6 +8,7 @@ include po/POTFILES.skip
 include man/*.1
 include quodlibet/images/*.png
 include quodlibet/images/*.svg
+recursive-include quodlibet/images/hicolor/ *.cache *.theme *.svg *.png
 include tests/data/*
 include tests/*.py
 include gdist/*.py

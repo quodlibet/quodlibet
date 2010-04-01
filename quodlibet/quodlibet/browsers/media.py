@@ -100,7 +100,9 @@ class Menu(gtk.Menu):
     def __init__(self, songs, library):
         super(Menu, self).__init__()
         for device in MediaDevices.devices():
-            i = qltk.MenuItem(device['name'], device.icon)
+            i = gtk.ImageMenuItem(device['name'])
+            i.set_image(
+                gtk.image_new_from_icon_name(device.icon, gtk.ICON_SIZE_MENU))
             i.set_sensitive(device.is_connected())
             i.connect_object(
                 'activate', self.__copy_to_device, device, songs, library)
@@ -185,7 +187,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         render = gtk.CellRendererPixbuf()
         col.pack_start(render, expand=False)
-        col.add_attribute(render, 'stock-id', 1)
+        col.add_attribute(render, 'icon-name', 1)
 
         self.__render = render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
@@ -202,7 +204,9 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         refresh.set_sensitive(False)
         hbox.pack_start(refresh)
 
-        self.__eject_button = eject = gtk.Button(stock=stock.EJECT)
+        self.__eject_button = eject = gtk.Button(_("_Eject"))
+        eject.set_image(
+            gtk.image_new_from_icon_name("media-eject", gtk.ICON_SIZE_BUTTON))
         eject.connect('clicked', self.__eject)
         eject.set_sensitive(False)
         hbox.pack_start(eject)
@@ -333,7 +337,9 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         menu.preseparate()
 
-        eject = gtk.ImageMenuItem(stock.EJECT)
+        eject = gtk.ImageMenuItem(_("_Eject"))
+        eject.set_image(
+            gtk.image_new_from_icon_name("media-eject", gtk.ICON_SIZE_MENU))
         eject.set_sensitive(
             not self.__busy and device.eject and device.is_connected())
         eject.connect_object('activate', self.__eject, None)
@@ -379,7 +385,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             self.__last = path
 
             device = model[iter][0]
-            self.__device_icon.set_from_stock(device.icon, gtk.ICON_SIZE_DIALOG)
+            self.__device_icon.set_from_icon_name(device.icon, gtk.ICON_SIZE_DIALOG)
             self.__set_name(device)
 
             songs = []

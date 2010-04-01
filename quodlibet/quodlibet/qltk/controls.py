@@ -163,15 +163,12 @@ class Volume(VSlider):
 
     def __volume_changed(self, slider, device, image):
         val = slider.get_value()
-        if val == 0: img = stock.VOLUME_OFF
-        elif val < 0.33: img = stock.VOLUME_MIN
-        elif val < 0.66: img = stock.VOLUME_MED
-        else: img = stock.VOLUME_MAX
+        if val == 0: img = 'audio-volume-muted'
+        elif val < 0.33: img = 'audio-volume-low'
+        elif val < 0.66: img = 'audio-volume-medium'
+        else: img = 'audio-volume-high'
 
-        if gtk.icon_theme_get_default().has_icon(img):
-            image.set_from_icon_name(img, SUBSIZE)
-        else:
-            image.set_from_stock(img, SUBSIZE)
+        image.set_from_icon_name(img, SUBSIZE)
 
         device.volume = val
         config.set("memory", "volume", str(slider.get_value()))

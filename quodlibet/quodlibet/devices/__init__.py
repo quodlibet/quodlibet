@@ -444,7 +444,11 @@ class DKD(DeviceManager):
                 protocols = prots.split(";")
 
         device_id = self.__get_device_id(path)
-        return self.create_device(path, device_id, protocols)
+
+        dev = self.create_device(path, device_id, protocols)
+        icon = prop_get(prop_if, 'device-presentation-icon-name')
+        if icon: dev.icon = icon
+        return dev
 
 def init():
     global device_manager
