@@ -139,6 +139,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
     __model = None
+    __no_cover = None
 
     name = _("Album List")
     accelerated_name = _("_Album List")
