@@ -354,6 +354,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             restore = self.__restore_values
             selected = (restore and restore.pop(0)) or self.get_selected()
             model = self.get_model()
+            if len(model) == len(selected): selected = None
             self.inhibit()
             model.clear()
             self._add(songs)
