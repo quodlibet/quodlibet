@@ -1,3 +1,16 @@
+The Windows installer can now be built mostly automatically. There are a ton
+of quirks, but the script will prompt you through most of them, and since they
+are expected to change as new versions of Wine come out it's not worth
+documenting them here.
+
+In short, run
+
+    python win_installer_build.py quodlibet-2.2.1
+
+on a Linux computer with Wine, and follow the prompts.
+
+The original instructions follow because the script is a bit inscrutable.
+
 == Gather Dependencies ==
 
 * Python 2
