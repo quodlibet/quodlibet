@@ -27,6 +27,8 @@ quux = AudioFile({
     "album": "Quuxly"
     })
 
+num_call = AudioFile({"custom": "0.3"})
+
 class TAudioFile(TestCase):
     def setUp(self):
         file(quux["~filename"], "w")
@@ -89,6 +91,10 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(song("~title~people"), song("title"))
             self.failUnlessEqual(song("~title~~people"), song("~title~artist"))
             self.failUnlessEqual(song("~title~~#tracks"), song("~title~~#tracks"))
+
+    def test_call_numeric(self):
+        self.failUnlessAlmostEqual(num_call("~#custom"), 0.3)
+        self.failUnlessEqual(num_call("~#blah~foo", 0), 0)
 
     def test_list(self):
         for key in bar_1_1.realkeys():

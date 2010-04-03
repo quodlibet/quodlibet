@@ -215,8 +215,12 @@ class AudioFile(dict):
                 except EnvironmentError: return default
                 else: return fileobj.read().decode("utf-8", "replace")
             elif key[:1] == "#" and "~" + key not in self:
-                try: return int(self[key[1:]])
-                except (ValueError, TypeError, KeyError): return default
+                try: val = self[key[1:]]
+                except KeyError: return default
+                try: return int(val)
+                except ValueError:
+                    try: return float(val)
+                    except ValueError: return default
             else: return dict.get(self, "~" + key, default)
 
         elif key == "title":
