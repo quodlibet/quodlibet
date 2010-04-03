@@ -276,6 +276,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                     model.remove(iter)
                 if len(model) == 1 and model[0][1] is None:
                     model.clear()
+                elif to_remove and len(model) == 2:
+                    model.remove(model.get_iter(0))
             self.uninhibit()
 
         def _matches(self, song):
