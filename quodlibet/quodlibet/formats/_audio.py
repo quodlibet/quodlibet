@@ -370,6 +370,7 @@ class AudioFile(dict):
         """A string of 'key=value' lines, similar to vorbiscomment output."""
         s = []
         for k in self.keys():
+            k = str(k)
             if isinstance(self[k], int) or isinstance(self[k], long):
                 s.append("%s=%d" % (k, self[k]))
             elif isinstance(self[k], float):
