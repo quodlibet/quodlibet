@@ -34,9 +34,9 @@ CACHEDIR=os.path.expanduser(r'~\.ql_winbuild_cache')
 
 # The temporary directory we'll use for virutalenv
 TDIR=''
-
-HG_PATH=r"C:\Program Files\Mercurial\hg.exe"
-NSIS_PATH=r"C:\Program Files\NSIS\makensis.exe"
+PROG_DIR = os.environ['PROGRAMFILES']
+HG_PATH = os.path.join(PROG_DIR, "Mercurial", "hg.exe")
+NSIS_PATH = os.path.join(PROG_DIR, "NSIS", "makensis.exe")
 
 def ccall(cmd, *args, **kwargs):
     """subprocess.check_call wrapper to work around broken PATH."""
@@ -397,7 +397,7 @@ def do_setup(rev):
 
     # Copy over QL locales
     for locale in os.listdir(built_locales):
-        dest = join(dist_path, r'share\locales', locale, 'LC_MESSAGES')
+        dest = join(dist_path, r'share\locale', locale, 'LC_MESSAGES')
         if not os.path.isdir(dest):
             os.makedirs(dest)
         shutil.copy(join(built_locales, locale, r'LC_MESSAGES\quodlibet.mo'),
