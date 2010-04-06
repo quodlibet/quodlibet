@@ -345,8 +345,10 @@ def do_setup(rev):
     (EasyInstallDep('mutagen'), EasyInstallInst()),
     (EasyInstallDep('feedparser'), EasyInstallInst()),
     (EasyInstallDep('python-musicbrainz2'), EasyInstallInst()),
-    (GnomeDep('gtk+', '2.20', '[^"]*-bundle_.*_win32.zip'),
-        ZipInst('gtk')),
+    (GnomeDep('gtk+', '2.16', '[^"]*-bundle_.*_win32.zip'),
+        ZipInst('gtk')), # >2.16 has windows theming disabled.
+    (GnomeDep('glib', '2.24', 'glib_[^"]*_win32.zip'),
+        ZipInst('gtk')), # current svg deps need a newer glib
     #OnePageStep('NSIS', None, re='[^"]*nsis-[1234567890.]*-setup.exe[^"]*',
     #   page='http://nsis.sourceforge.net/Download', args=['/S']),
     ]
