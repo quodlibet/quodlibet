@@ -73,6 +73,27 @@ def urlfetch(url):
             print ''
             return
 
+def copytree2(src, dst):
+    """Like shutil.copytree but allows target to exist"""
+    names = os.listdir(src)
+    if not os.path.isdir(dst):
+        os.makedirs(dst)
+    errors = []
+    for name in names:
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        try:
+            if os.path.isdir(srcname):
+                copytree2(srcname, dstname)
+            else:
+                shutil.copy2(srcname, dstname)
+        except (IOError, os.error), why:
+            errors.append((srcname, dstname, str(why)))
+        except shutil.Error, err:
+            errors.extend(err.args[0])
+    if errors:
+        raise Error(errors)
+
 class Page(object):
     """A page cache for doing version lookups and the like."""
     cache = None
@@ -193,8 +214,11 @@ class OnePageDep(Dep):
 
     def _get_release(self, version):
         # Note: does not catch end quote by design (for pypi compat)
-        return vsorted(re.findall('href="(%s)' % self.url_re,
+        url = vsorted(re.findall('href="(%s)' % self.url_re,
                                  Page(self.page_url).text))[-1]
+        if "://" not in url:
+            url = "/".join([self.page_url, url])
+        return url
 
 class EasyInstallDep(Dep):
     """Does no work, just here for the sake of appearance"""
@@ -287,7 +311,19 @@ def do_setup(rev):
     (SFDep('innounp', None, 'innounp[1234567890.]*.rar'),
         UnrarInst('Python')),
     (GnomeDep('libglade', '2.6', '[^"]*libglade_[^"]*win32.zip'),
-        ZipInst('Python')),
+        ZipInst('gtk')),
+    (OnePageDep('libbzip2', None,
+                'http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/',
+                '[^"]*libbzip2_[^"]*.zip[^"#]*'),
+        ZipInst('gtk')),
+    (GnomeDep('libcroco', '0.6', '[^"]*libcroco_[^"]*win32.zip'),
+        ZipInst('gtk')),
+    (GnomeDep('libgsf', '1.14', '[^"]*libgsf_[^"]*win32.zip'),
+        ZipInst('gtk')),
+    (GnomeDep('librsvg', '2.26', '[^"]*librsvg_[^"]*win32.zip'),
+        ZipInst('gtk')),
+    (GnomeDep('librsvg', '2.26', '[^"]*svg-gdk-pixbuf-loader_[^"]*win32.zip'),
+        ZipInst('gtk')),
     (GnomeDep('pycairo', '1.8', '[^"]*win32-py%s.exe' % PYVER),
         EasyInstallExeInst()),
     (GnomeDep('pygobject', '2.20', '[^"]*win32-py%s.exe' % PYVER),
@@ -310,7 +346,7 @@ def do_setup(rev):
     (EasyInstallDep('feedparser'), EasyInstallInst()),
     (EasyInstallDep('python-musicbrainz2'), EasyInstallInst()),
     (GnomeDep('gtk+', '2.20', '[^"]*-bundle_.*_win32.zip'),
-        ZipInst('Python')),
+        ZipInst('gtk')),
     #OnePageStep('NSIS', None, re='[^"]*nsis-[1234567890.]*-setup.exe[^"]*',
     #   page='http://nsis.sourceforge.net/Download', args=['/S']),
     ]
@@ -337,6 +373,7 @@ def do_setup(rev):
 
     new_paths = [join(TDIR, 'Python' + d) for d in ['', r'\bin', r'\scripts']]
     new_paths += [join(TDIR, 'gstreamer'), join(TDIR, r'gstreamer\bin')]
+    new_paths += [join(TDIR, 'gtk'), join(TDIR, r'gtk\bin')]
     print os.environ['PATH']
     #subprocess.check_call(['path', ';'.join(new_paths + ['%PATH%'])])
     os.environ['PATH'] = ';'.join(new_paths + [os.environ['PATH']])
@@ -372,22 +409,28 @@ def do_setup(rev):
             shutil.copy(join(gst_path, 'bin', file), dist_path)
 
     for dir in ['lib', 'share', 'etc']:
-        shutil.copytree(join(gst_path, dir), join(dist_path, dir))
+        copytree2(join(gst_path, dir), join(dist_path, dir))
 
-    # Unpack necessities from GTK+ bundle
-    bundle = filter(lambda (d, i): d.name == 'gtk+', deps)[0][0]
-    zf = zipfile.ZipFile(join(CACHEDIR, bundle.filename))
-    for item in zf.filelist:
-        if (item.filename.startswith('lib') and
-            item.filename.endswith('.dll')) or filter(
-                item.filename.startswith,
-                ['etc', 'share/locale', 'share/themes']):
-            zf.extract(item, path=dist_path)
-        elif item.filename.startswith('bin') and item.filename.endswith('dll'):
-            dest = join(dist_path, os.path.basename(item.filename))
-            # This may not be necessary in Windows
-            #with open(dest, 'w') as fp:
-            #    fp.write(zf.read(item))
+    # Copy required files from GTK+
+    gtk_path = join(TDIR, 'gtk')
+
+    # Generate pixbuf loaders file
+    target = os.path.join(gtk_path, 'etc', 'gtk-2.0', 'gdk-pixbuf.loaders')
+    process = subprocess.Popen(['gdk-pixbuf-query-loaders.exe'],
+        shell=False, stdout=subprocess.PIPE)
+    text = process.communicate()[0]
+    text = re.compile('".*\/(.*?)\.dll"').sub('\"lib/gtk-2.0/2.10.0/loaders/\\1.dll\"', text)
+    f = open(target, 'wb')
+    f.write(text)
+    f.close()
+
+    for file in filter(lambda f: f.endswith('.dll'),
+                       os.listdir(join(gtk_path, 'bin'))):
+        if not os.path.isfile(join(dist_path, file)):
+            shutil.copy(join(gtk_path, 'bin', file), dist_path)
+
+    for dir in ['lib/gtk-2.0', 'share/locale', 'share/themes', 'etc']:
+        copytree2(join(gtk_path, dir), join(dist_path, dir))
 
     built_locales = join(os.getcwd(), r'..\quodlibet\build\share\locale')
     # Prune GTK locales without a corresponding QL one:
