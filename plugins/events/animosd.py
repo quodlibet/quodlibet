@@ -373,8 +373,9 @@ by <~people>>'''
             ('string', config.get, None, str),
             ]
         for key, cget, getconv, setconv in config_map:
+            try: value = cget('plugins', 'animosd_' + key)
+            except: continue
             try:
-                value = cget('plugins', 'animosd_' + key)
                 if getconv is not None:
                     value = getconv(value)
             except:
