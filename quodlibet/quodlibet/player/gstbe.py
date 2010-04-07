@@ -233,7 +233,7 @@ class GStreamerPlayer(BasePlayer):
                     if not self._paused:
                         if not self._inhibit_play:
                             self.bin.set_state(gst.STATE_PLAYING)
-                    elif self.song.is_file:
+                    elif self.song.is_file or self.info.get('~#length'):
                         self.bin.set_state(gst.STATE_PAUSED)
                     else:
                         self.__destroy_pipeline()

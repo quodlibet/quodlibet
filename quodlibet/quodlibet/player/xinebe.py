@@ -150,7 +150,8 @@ class XinePlaylistPlayer(BasePlayer):
                 self.emit((paused and 'paused') or 'unpaused')
                 if self._paused:
                     if not self.song.is_file:
-                        self._stop()
+                        xine_close(self._stream)
+                        xine_open(self._stream, self.song("~uri"))
                     else:
                         self._pause()
                 else:
