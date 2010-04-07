@@ -206,6 +206,7 @@ class TrayIcon(EventPlugin):
     __pixbuf_paused = None
     __icon_theme = None
     __position = None
+    __menu = None
     __size = -1
     __w_sig_map = None
     __w_sig_del = None
@@ -244,6 +245,7 @@ class TrayIcon(EventPlugin):
 
         self.__w_sig_map = window.connect('map-event', self.__window_map)
         self.__w_sig_del = window.connect('delete-event', self.__window_delete)
+        window.connect('destroy', lambda *x: self.disabled())
 
         self.__stop_after = StopAfterMenu(player)
 
@@ -263,7 +265,6 @@ class TrayIcon(EventPlugin):
             except AttributeError:
                 pass
             self.__icon = None
-        self.__show_window()
 
     def PluginPreferences(self, parent):
         p = Preferences(self)
@@ -421,7 +422,12 @@ class TrayIcon(EventPlugin):
 
     def __button_right(self, icon, button, time):
         global gtk_216
-        menu = gtk.Menu()
+
+        if sys.platform == "win32":
+            if self.__menu: self.__menu.destroy()
+            self.__menu = None
+
+        self.__menu = menu = gtk.Menu()
 
         pp_icon = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
         playpause = gtk.ImageMenuItem(pp_icon)
@@ -518,7 +524,9 @@ class TrayIcon(EventPlugin):
 
         menu.show_all()
 
-        if gtk_216:
+        if sys.platform == "win32":
+            menu.popup(None, None, None, button, time, self.__icon)
+        elif gtk_216:
             menu.popup(None, None, gtk.status_icon_position_menu,
                 button, time, self.__icon)
         else:
@@ -537,3 +545,4 @@ class TrayIcon(EventPlugin):
 
     def destroy(self):
         self.disabled()
+        self.__show_window()
