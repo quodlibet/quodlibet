@@ -38,6 +38,11 @@ PROG_DIR = os.environ['PROGRAMFILES']
 HG_PATH = os.path.join(PROG_DIR, "Mercurial", "hg.exe")
 NSIS_PATH = os.path.join(PROG_DIR, "NSIS", "makensis.exe")
 
+# Backport some changesets for specific tags
+BACKPORTS = {
+    "quodlibet-2.2.1": [4438, 4437, 4436, 4435, 4420, 4412, 4411, 4410]
+}
+
 def ccall(cmd, *args, **kwargs):
     """subprocess.check_call wrapper to work around broken PATH."""
     if not cmd[0].endswith('.exe'):
@@ -394,6 +399,19 @@ def do_setup(rev):
         print 'Updating to revision %s' % rev
         ccall([HG_PATH, 'pull'])
         ccall([HG_PATH, 'up', rev])
+        print 'Applying backports:'
+        if rev in BACKPORTS:
+            for bp in sorted(BACKPORTS[rev]):
+                patch = '%s.patch' % bp
+                process = subprocess.Popen(
+                    [HG_PATH, 'diff', '-r%d:%d' % (bp-1, bp)],
+                    shell=False, stdout=subprocess.PIPE)
+                text = process.communicate()[0]
+                f = open(patch, 'wb')
+                f.write(text)
+                f.close()
+                ccall([HG_PATH, 'import', '--no-commit', '-f', patch])
+                os.remove(patch)
         print 'Assembling Windows binary'
         ccall(['python', 'setup.py', 'py2exe'])
 
@@ -433,6 +451,9 @@ def do_setup(rev):
 
     for dir in ['lib/gtk-2.0', 'share/locale', 'share/themes', 'etc']:
         copytree2(join(gtk_path, dir), join(dist_path, dir))
+
+    # Copy stock icon replacements
+    copytree2('icons', join(dist_path, 'share', 'icons'))
 
     built_locales = join(os.getcwd(), r'..\quodlibet\build\share\locale')
     # Prune GTK locales without a corresponding QL one:
