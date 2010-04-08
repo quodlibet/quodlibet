@@ -14,7 +14,7 @@ class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
     columns, and in the future, tooltips."""
 
-    __empty_mask = gtk.gdk.Pixmap(None, 1, 1, 1)
+    __empty_region = gtk.gdk.Region()
 
     def __init__(self):
         super(TreeViewHints, self).__init__(gtk.WINDOW_POPUP)
@@ -32,27 +32,40 @@ class TreeViewHints(gtk.Window):
         self.__current_path = self.__current_col = None
         self.__current_renderer = None
 
+        self.__leave_event = None
+        self.__view = None
+
     def connect_view(self, view):
+        self.__view = view
         self.__handlers[view] = [
             view.connect('motion-notify-event', self.__motion),
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
-            view.connect('leave-notify-event', self.__undisplay),
         ]
 
     def disconnect_view(self, view):
+        self.__disconnect_leave()
+        self.__view = None
         try:
             for handler in self.__handlers[view]: view.disconnect(handler)
             del self.__handlers[view]
         except KeyError: pass
+
+    def __disconnect_leave(self):
+        if self.__leave_event and self.__view and \
+            self.__view.handler_is_connected(self.__leave_event):
+            self.__view.disconnect(self.__leave_event)
+        self.__leave_event = None
 
     def __expose(self, widget, event):
         w, h = self.get_size_request()
         self.style.paint_flat_box(self.window,
                 gtk.STATE_NORMAL, gtk.SHADOW_OUT,
                 None, self, "tooltip", 0, 0, w, h)
-        self.input_shape_combine_mask(self.__empty_mask, 0, 0)
+        self.window.input_shape_combine_region(self.__empty_region, 0, 0)
+        self.__leave_event = widget.connect('leave-notify-event',
+            self.__undisplay)
 
     def __motion(self, view, event):
         # trigger over row area, not column headers
@@ -114,13 +127,13 @@ class TreeViewHints(gtk.Window):
         self.__edit_id = renderer.connect('editing-started', self.__undisplay)
         self.__current_path = path
         self.__current_col = col
-        self.__time = event.time
         self.set_size_request(w, h)
         self.resize(w, h)
         self.move(x, y)
         self.show_all()
 
     def __undisplay(self, *args):
+        self.__disconnect_leave()
         if self.__current_renderer and self.__edit_id:
             self.__current_renderer.disconnect(self.__edit_id)
         self.__current_renderer = self.__edit_id = None
