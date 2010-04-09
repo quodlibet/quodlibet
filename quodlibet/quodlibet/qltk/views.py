@@ -54,6 +54,7 @@ class TreeViewHints(gtk.Window):
             view.connect('motion-notify-event', self.__motion),
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
+            view.connect('focus-out-event', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
         ]
 
@@ -66,6 +67,7 @@ class TreeViewHints(gtk.Window):
         except KeyError: pass
 
     def __connect_leave(self):
+        self.__disconnect_leave()
         self.__leave_event = self.__view.connect('leave-notify-event',
             self.__undisplay)
 
@@ -140,7 +142,8 @@ class TreeViewHints(gtk.Window):
         if not((x<=int(event.x_root) < x+w) and (y <= int(event.y_root) < y+h)):
             return # reject if cursor isn't above hint
 
-        self.__disconnect_leave()
+        if self.__view is not view:
+            self.__disconnect_leave()
         self.__view = view
         self.__current_renderer = renderer
         self.__edit_id = renderer.connect('editing-started', self.__undisplay)
