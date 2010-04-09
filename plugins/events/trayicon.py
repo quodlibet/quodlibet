@@ -373,6 +373,7 @@ class TrayIcon(EventPlugin):
         window.present()
 
     def __button_left(self, icon):
+        if self.__destroy_win32_menu(): return
         if window.get_property('visible'):
             self.__hide_window()
         else:
@@ -380,6 +381,7 @@ class TrayIcon(EventPlugin):
 
     def __button_middle(self, widget, event):
         if event.type == gtk.gdk.BUTTON_PRESS and event.button == 2:
+            if self.__destroy_win32_menu(): return
             self.__play_pause()
 
     def __play_pause(self, *args):
@@ -421,13 +423,17 @@ class TrayIcon(EventPlugin):
 
         self.__icon.set_tooltip(tooltip)
 
+    def __destroy_win32_menu(self):
+        """Returns True if current action should only hide the menu"""
+        if sys.platform == "win32" and self.__menu:
+            self.__menu.destroy()
+            self.__menu = None
+            return True
+
     def __button_right(self, icon, button, time):
         global gtk_216
 
-        if sys.platform == "win32":
-            if self.__menu: self.__menu.destroy()
-            self.__menu = None
-
+        if self.__destroy_win32_menu(): return
         self.__menu = menu = gtk.Menu()
 
         pp_icon = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
