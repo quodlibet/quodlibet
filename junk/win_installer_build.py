@@ -40,7 +40,8 @@ NSIS_PATH = os.path.join(PROG_DIR, "NSIS", "makensis.exe")
 
 # Backport some changesets for specific tags
 BACKPORTS = {
-    "quodlibet-2.2.1": [4438, 4437, 4436, 4435, 4420, 4412, 4411, 4410]
+    "quodlibet-2.2.1": [4444, 4445, 4438, 4437, 4436, 4435, 4420, 4412, 4411,
+                        4410]
 }
 
 def ccall(cmd, *args, **kwargs):
