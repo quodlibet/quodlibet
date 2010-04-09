@@ -14,13 +14,26 @@ class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
     columns, and in the future, tooltips."""
 
-    __empty_region = gtk.gdk.Region()
+    # input_shape_combine_region does not work under Windows, we have
+    # to pass all events to the treeview. In case it does work, this handlers
+    # will never be called.
+    __gsignals__ = dict.fromkeys(
+        ['button-press-event', 'button-release-event',
+        'motion-notify-event', 'leave-notify-event', 'scroll-event'],
+        'override')
 
     def __init__(self):
         super(TreeViewHints, self).__init__(gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
         label.set_alignment(0.5, 0.5)
         self.add(label)
+
+        self.add_events(gtk.gdk.BUTTON_MOTION_MASK |
+            gtk.gdk.BUTTON_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
+            gtk.gdk.KEY_PRESS_MASK | gtk.gdk.KEY_RELEASE_MASK |
+            gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
+            gtk.gdk.SCROLL_MASK | gtk.gdk.POINTER_MOTION_MASK |
+            gtk.gdk.POINTER_MOTION_HINT_MASK)
 
         self.set_app_paintable(True)
         self.set_resizable(False)
@@ -52,6 +65,10 @@ class TreeViewHints(gtk.Window):
             del self.__handlers[view]
         except KeyError: pass
 
+    def __connect_leave(self):
+        self.__leave_event = self.__view.connect('leave-notify-event',
+            self.__undisplay)
+
     def __disconnect_leave(self):
         if self.__leave_event and self.__view and \
             self.__view.handler_is_connected(self.__leave_event):
@@ -63,9 +80,9 @@ class TreeViewHints(gtk.Window):
         self.style.paint_flat_box(self.window,
                 gtk.STATE_NORMAL, gtk.SHADOW_OUT,
                 None, self, "tooltip", 0, 0, w, h)
-        self.window.input_shape_combine_region(self.__empty_region, 0, 0)
-        self.__leave_event = widget.connect('leave-notify-event',
-            self.__undisplay)
+        # Ignore the next treeview leave event
+        gobject.idle_add(self.__connect_leave,
+            priority=gobject.PRIORITY_DEFAULT)
 
     def __motion(self, view, event):
         # trigger over row area, not column headers
@@ -76,7 +93,8 @@ class TreeViewHints(gtk.Window):
 
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return # no hints where no rows exist
+        # no hints where no rows exist
+        except TypeError: return self.__undisplay()
 
         if self.__current_path == path and self.__current_col == col: return
         else: self.__undisplay()
@@ -122,7 +140,8 @@ class TreeViewHints(gtk.Window):
         if not((x<=int(event.x_root) < x+w) and (y <= int(event.y_root) < y+h)):
             return # reject if cursor isn't above hint
 
-        self.__target = view
+        self.__disconnect_leave()
+        self.__view = view
         self.__current_renderer = renderer
         self.__edit_id = renderer.connect('editing-started', self.__undisplay)
         self.__current_path = path
@@ -139,6 +158,25 @@ class TreeViewHints(gtk.Window):
         self.__current_renderer = self.__edit_id = None
         self.__current_path = self.__current_col = None
         self.hide()
+
+    def __event(self, event):
+        if event.type != gtk.gdk.SCROLL:
+            event.x += self.__dx
+            event.y += self.__dy
+
+        # modifying event.window is a necessary evil, made okay because
+        # nobody else should tie to any TreeViewHints events ever.
+        event.window = self.__view.get_bin_window()
+
+        gtk.main_do_event(event)
+
+        return True
+
+    def do_button_press_event(self, event): return self.__event(event)
+    def do_button_release_event(self, event): return self.__event(event)
+    def do_motion_notify_event(self, event): return self.__event(event)
+    def do_leave_notify_event(self, event): return self.__event(event)
+    def do_scroll_event(self, event): return self.__event(event)
 
 class MultiDragTreeView(gtk.TreeView):
     """TreeView with multirow drag support:
