@@ -40,8 +40,8 @@ NSIS_PATH = os.path.join(PROG_DIR, "NSIS", "makensis.exe")
 
 # Backport some changesets for specific tags
 BACKPORTS = {
-    "quodlibet-2.2.1": [4444, 4445, 4438, 4437, 4436, 4435, 4420, 4412, 4411,
-                        4410]
+    "quodlibet-2.2.1": [4410, 4411, 4412, 4420, 4435, 4436, 4437, 4438, 4444,
+                        4445, 4447, 4448]
 }
 
 def ccall(cmd, *args, **kwargs):
@@ -390,6 +390,15 @@ def do_setup(rev):
     for (dep, inst) in deps:
         print 'Installing %s' % dep.name
         inst.install(dep)
+
+    #Overwrite pyexe code which shows the stderr alert box.
+    pyexe_dir = os.path.join(TDIR, r'Python\Lib\site-packages')
+    site_dir = filter(lambda x: 'py2exe' in x, os.listdir(pyexe_dir))[0]
+    pyexe_boot = os.path.join(pyexe_dir, site_dir, r'py2exe\boot_common.py ')
+    with open(pyexe_boot, "rb") as f:
+        new_text = f.read().replace("gister(alert", "gister(lambda *x: None")
+    with open(pyexe_boot, "wb") as f:
+        f.write(new_text)
 
     old_path = os.getcwd()
     repo_path = join(TDIR, 'ql')
