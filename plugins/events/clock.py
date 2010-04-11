@@ -24,7 +24,8 @@ class Alarm(EventPlugin):
     _enabled = False
 
     def __init__(self):
-        try: self._times = config.get("plugins", self._pref_name).split()[:7]
+        try:
+            self._times = config.get("plugins", self._pref_name).split(' ')[:7]
         except: pass
         else: self._times = (self._times + ["HH:MM"] * 7)[:7]
         gobject.timeout_add(30000, self._check)
