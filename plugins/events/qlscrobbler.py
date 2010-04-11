@@ -82,6 +82,7 @@ class QLSubmitQueue:
         """Submit a song. If 'timestamp' is 0, the current time will
         be used."""
         formatted = self._format_song(song)
+        if formatted is None: return
         if timestamp > 0:
             formatted['i'] = str(timestamp)
         elif timestamp == 0:
