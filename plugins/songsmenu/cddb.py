@@ -28,7 +28,7 @@ class AskAction(ConfirmAction):
 def sumdigits(n): return sum(map(long, str(n)))
 
 def calculate_discid(album):
-    lengths = [song['~#length'] for song in album]
+    lengths = [song.get('~#length', 0) for song in album]
     total_time = 0
     offsets = []
     for length in lengths:

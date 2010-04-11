@@ -14,7 +14,7 @@ class ResetLibrary(SongsMenuPlugin):
     PLUGIN_ICON = 'gtk-refresh'
 
     def plugin_song(self, song):
-        song["~#rating"] = 0.5
         for key in ["~#playcount", "~#skipcount", "~#lastplayed",
-                    "~#laststarted"]:
-            song[key] = 0
+                    "~#laststarted", "~#rating"]:
+            if key in song:
+                del song[key]

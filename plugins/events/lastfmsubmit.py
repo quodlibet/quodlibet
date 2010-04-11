@@ -53,7 +53,7 @@ class QLLastfm(EventPlugin):
 
         # Protocol stipulations:
         #  * submit 240 seconds in or at 50%, whichever comes first
-        delay = int(min(self.__song["~#length"] / 2, 240))
+        delay = int(min(self.__song.get("~#length", 0) / 2, 240))
 
         progress = int(player.playlist.get_position() // 1000)
         delay -= progress
@@ -89,7 +89,7 @@ class QLLastfm(EventPlugin):
         # Protocol stipulation:
         #  * don't submit when length < 00:30
         #  * don't submit if artist and title are not available
-        if song["~#length"] < 30: return
+        if song.get("~#length", 0) < 30: return
         elif 'title' not in song: return
         elif not song("~artist~composer~performer"): return
 
@@ -122,7 +122,7 @@ class QLLastfm(EventPlugin):
     def submit_song(self):
         data = {
             "title": self.__song("title"),
-            "length": self.__song["~#length"],
+            "length": self.__song.get("~#length", 0),
             "mbid": self.__song.get("musicbrainz_trackid"),
             "time": time.gmtime(),
             "album": self.__song.get("album"),

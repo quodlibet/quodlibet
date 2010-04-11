@@ -9,7 +9,7 @@ class TModFile(TestCase):
         self.song = ModFile(os.path.join('tests', 'data', 'empty.xm'))
 
     def test_length(self):
-        self.failUnlessEqual(0, self.song["~#length"])
+        self.failUnlessEqual(0, self.song("~#length", 0))
 
     def test_title(self):
         self.failUnlessEqual("test song", self.song["title"])

@@ -176,9 +176,12 @@ class LastFMSyncCache(object):
                 continue
             stats = stats[0]
 
-            song['~#playcount'] = max(song['~#playcount'], stats['playcount'])
-            song['~#lastplayed'] = max(song['~#lastplayed'],
-                                        stats['lastplayed'])
+            playcount = max(song.get('~#playcount', 0), stats['playcount'])
+            if playcount != 0:
+                song['~#playcount'] = playcount
+            lastplayed = max(song.get('~#lastplayed', 0), stats['lastplayed'])
+            if lastplayed != 0:
+                song['~#lastplayed'] = lastplayed
             song['~#added'] = min(song['~#added'], stats['added'])
 
 class LastFMSyncWindow(gtk.Dialog):

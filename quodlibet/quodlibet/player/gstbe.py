@@ -283,7 +283,7 @@ class GStreamerPlayer(BasePlayer):
         self.emit('song-started', self.song)
 
         if self.song is not None:
-            self._length = self.info["~#length"] * 1000
+            self._length = self.info.get("~#length", 0) * 1000
             if not gapless:
                 # Due to extensive problems with playbin2, we destroy the
                 # entire pipeline and recreate it each time we're not in

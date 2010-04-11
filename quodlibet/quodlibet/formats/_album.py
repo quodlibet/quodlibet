@@ -150,9 +150,13 @@ class Album(object):
                     peoplesort.keys(), key=peoplesort.__getitem__)[:100])
                 return self.__cache[cache_key("~" + key)]
             elif key == "length":
-                return util.format_time(self.get("~#length"))
+                length = self.get("~#length")
+                if length == default: return default
+                return util.format_time(length)
             elif key == "long-length":
-                return util.format_time_long(self.get("~#length"))
+                length = self.get("~#length")
+                if length == default: return default
+                return util.format_time_long(length)
             elif key == "tracks":
                 tracks = self.get("~#tracks")
                 return ngettext("%d track", "%d tracks", tracks) % tracks
@@ -162,7 +166,7 @@ class Album(object):
                     return ngettext("%d disc", "%d discs", discs) % discs
                 else: return default
             elif key == "rating":
-                return util.format_rating(self.get("~#rating", 0))
+                return util.format_rating(self.get("~#rating"))
             elif key == "cover":
                 return ((self.cover != type(self).cover) and "y") or default
             key = "~" + key

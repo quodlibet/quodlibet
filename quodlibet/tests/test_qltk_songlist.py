@@ -4,6 +4,7 @@ import gtk
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
+from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.songlist import PlaylistModel, PlaylistMux, SongList
 from quodlibet.qltk.playorder import ORDERS
 import quodlibet.config
@@ -103,10 +104,10 @@ class TPlaylistModel(TestCase):
 
     def test_weighted(self):
         self.pl.order = ORDERS[2](self.pl)
-        r0 = {'~#rating': 0}
-        r1 = {'~#rating': 1}
-        r2 = {'~#rating': 2}
-        r3 = {'~#rating': 3}
+        r0 = AudioFile({'~#rating': 0})
+        r1 = AudioFile({'~#rating': 1})
+        r2 = AudioFile({'~#rating': 2})
+        r3 = AudioFile({'~#rating': 3})
         self.pl.set([r0, r1, r2, r3])
         gtk.main_iteration(False)
         songs = [self.pl.current for i in range(1000)

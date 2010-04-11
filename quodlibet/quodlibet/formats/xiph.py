@@ -74,10 +74,12 @@ class MutagenVCFile(AudioFile):
 
         if config.getboolean("editing", "save_to_songs"):
             email = email or const.EMAIL
-            if self["~#rating"] != 0.5:
-                comments["rating:" + email] = str(self["~#rating"])
-            if self["~#playcount"] != 0:
-                comments["playcount:" + email] = str(int(self["~#playcount"]))
+            rating = self("~#rating")
+            if rating != const.DEFAULT_RATING:
+                comments["rating:" + email] = str(rating)
+            playcount = self.get("~#playcount", 0)
+            if playcount != 0:
+                comments["playcount:" + email] = str(playcount)
 
     def write(self):
         audio = self.MutagenType(self["~filename"])

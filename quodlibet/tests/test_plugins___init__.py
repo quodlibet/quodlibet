@@ -71,11 +71,11 @@ class TSongWrapper(TestCase):
                 self.pwrap.can_change(key), self.psong.can_change(key))
 
     def test_comma(self):
-        for key in ["title", "artist", "album", "notexist", "~#length"]:
+        for key in ["title", "artist", "album", "notexist", "~length"]:
             self.failUnlessEqual(self.pwrap.comma(key), self.psong.comma(key))
 
     def test_list(self):
-        for key in ["title", "artist", "album", "notexist", "~#length"]:
+        for key in ["title", "artist", "album", "notexist", "~length"]:
             self.failUnlessEqual(self.pwrap.list(key), self.psong.list(key))
 
     def test_dicty(self):

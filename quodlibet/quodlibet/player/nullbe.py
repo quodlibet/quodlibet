@@ -65,7 +65,7 @@ class NullPlayer(BasePlayer):
         self.emit('song-started', self.song)
 
         if self.song is not None:
-            self._length = self.song["~#length"] * 1000
+            self._length = self.song.get("~#length", 0) * 1000
         else:
             self.paused = True
 

@@ -40,6 +40,6 @@ class JEP118(EventPlugin):
                     util.escape(song.comma("artist")),
                     util.escape(song.comma("title")),
                     util.escape(song.comma("album")),
-                    song("~#track", 0), song("~#length")))
+                    song("~#track", 0), song.get("~#length", 0)))
             except EnvironmentError: pass
             else: f.close()

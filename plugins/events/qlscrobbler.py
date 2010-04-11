@@ -96,7 +96,7 @@ class QLSubmitQueue:
     def _format_song(self, song):
         """Returns a dict with the keys formatted as required by spec."""
         store = {
-            "l": str(song("~#length")),
+            "l": str(song.get("~#length", 0)),
             "n": str(song("~#track")),
             "b": song.comma("album"),
             "m": song("musicbrainz_trackid"),
@@ -341,7 +341,7 @@ class QLScrobbler(EventPlugin):
         # we check 'elapsed' rather than 'length' to work around wrong ~#length
         if self.elapsed < 30:
             return
-        if self.elapsed < 240 and self.elapsed <= .5 * song["~#length"]:
+        if self.elapsed < 240 and self.elapsed <= .5 * song.get("~#length", 0):
             return
         if self.exclude != "" and parse.Query(self.exclude).search(song):
             log("Not submitting: %s - %s" % (song.get("artist"), 

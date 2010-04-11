@@ -120,7 +120,7 @@ class LibraryBrowser(Window):
             songs = self.songlist.get_songs()
 
         i = len(songs)
-        length = sum([song["~#length"] for song in songs])
+        length = sum([song.get("~#length", 0) for song in songs])
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         statusbar.set_text(t)

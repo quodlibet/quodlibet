@@ -16,7 +16,7 @@ class AutoRating(EventPlugin):
 
     def plugin_on_song_ended(self, song, skipped):
         if song is not None:
-            rating = song["~#rating"]
+            rating = song("~#rating")
             invrating = 1.0 - rating
             delta = min(rating, invrating) / 2.0
             if skipped: rating -= delta

@@ -301,12 +301,13 @@ class ID3File(AudioFile):
                 tag.add(f)
 
         if (config.getboolean("editing", "save_to_songs") and
-            (self["~#rating"] != 0.5 or self["~#playcount"] != 0)):
+            (self("~#rating") != const.DEFAULT_RATING or
+            self.get("~#playcount", 0) != 0)):
             email = config.get("editing", "save_email").strip()
             email = email or const.EMAIL
             t = mutagen.id3.POPM(email=email,
-                                 rating=int(255*self["~#rating"]),
-                                 count=self["~#playcount"])
+                                 rating=int(255*self("~#rating")),
+                                 count=self.get("~#playcount", 0))
             tag.add(t)
 
         tag.save(self["~filename"])

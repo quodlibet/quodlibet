@@ -703,7 +703,7 @@ class QuodLibetWindow(gtk.Window):
         self.__make_query("#(playcount = 0)")
 
     def __top40(self, menuitem):
-        songs = [song["~#playcount"] for song in self.__library]
+        songs = [song.get("~#playcount", 0) for song in self.__library]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
@@ -712,7 +712,7 @@ class QuodLibetWindow(gtk.Window):
             self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
 
     def __bottom40(self, menuitem):
-        songs = [song["~#playcount"] for song in self.__library]
+        songs = [song.get("~#playcount", 0) for song in self.__library]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
@@ -894,7 +894,7 @@ class QuodLibetWindow(gtk.Window):
         if "songs" not in kwargs and len(songs) <= 1:
             songs = self.songlist.get_songs()
         i = len(songs)
-        length = sum([song["~#length"] for song in songs])
+        length = sum([song("~#length", 0) for song in songs])
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         self.statusbar.count.set_text(t)

@@ -261,11 +261,12 @@ class OneSong(qltk.Notebook):
                 return timestr.decode(const.ENCODING)
 
         fn = util.fsdecode(util.unexpand(song["~filename"]))
-        length = util.format_time_long(song["~#length"])
+        length = util.format_time_long(song.get("~#length", 0))
         size = util.format_size(util.size(song["~filename"]))
         mtime = ftime(util.mtime(song["~filename"]))
-        if "~#bitrate" in song and song["~#bitrate"] != 0:
-            bitrate = _("%d kbps") % int(song["~#bitrate"])
+        bitrate = song.get("~#bitrate", 0)
+        if bitrate != 0:
+            bitrate = _("%d kbps") % int(bitrate)
         else: bitrate = False
 
         t = gtk.Table(4, 2)
@@ -327,7 +328,7 @@ class OneAlbum(qltk.Notebook):
                     song("~#track", discs.get(song("~#disc"), 0))])
         tracks = sum(discs.values())
         discs = len(discs)
-        length = sum([song["~#length"] for song in songs])
+        length = sum([song.get("~#length", 0) for song in songs])
 
         if tracks == 0 or tracks < len(songs): tracks = len(songs)
 
@@ -538,7 +539,7 @@ class ManySongs(qltk.Notebook):
         time = 0
         size = 0
         for song in songs:
-            time += song["~#length"]
+            time += song.get("~#length", 0)
             try: size += util.size(song["~filename"])
             except EnvironmentError: pass
         table = gtk.Table(2, 2)

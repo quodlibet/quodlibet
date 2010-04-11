@@ -122,8 +122,7 @@ class SeekBar(HSlider):
 
     def __song_changed(self, player, song, label, menu):
         if song and song.get("~#length", 0) > 0:
-            length = song["~#length"]
-            self.scale.set_range(0, length)
+            self.scale.set_range(0, song["~#length"])
             self.scale.set_value(0)
             self.__seekable = True
         else:

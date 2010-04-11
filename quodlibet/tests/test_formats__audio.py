@@ -5,6 +5,7 @@ import os
 from quodlibet import config
 
 from quodlibet.formats._audio import AudioFile
+from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
 bar_1_1 = AudioFile({
     "title": "A song",
@@ -208,15 +209,19 @@ class TAudioFile(TestCase):
 
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
-        self.failUnlessEqual(dump.count("\n"), len(bar_1_1) + 1)
+        num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
+        self.failUnlessEqual(dump.count("\n"), num + 2)
         for key, value in bar_1_1.items():
             self.failUnless(key in dump)
             self.failUnless(value in dump)
+        for key in INTERN_NUM_DEFAULT:
+            self.failUnless(key in dump)
 
     def test_to_dump_long(self):
         b = AudioFile(bar_1_1); b["~#length"] = 200000000000L
         dump = b.to_dump()
-        self.failUnlessEqual(dump.count("\n"), len(b) + 1)
+        num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
+        self.failUnlessEqual(dump.count("\n"), num + 2)
 
     def test_add(self):
         song = AudioFile()

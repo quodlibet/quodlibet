@@ -22,8 +22,9 @@ from quodlibet.util.tags import STANDARD_TAGS as USEFUL_TAGS
 from quodlibet.util.tags import MACHINE_TAGS
 from quodlibet.util.titlecase import title
 
-MIGRATE = ("~#playcount ~#laststarted ~#lastplayed ~#added "
-           "~#skipcount ~#rating ~bookmark").split()
+MIGRATE = frozenset(("~#playcount ~#laststarted ~#lastplayed ~#added "
+           "~#skipcount ~#rating ~bookmark").split())
+
 PEOPLE = ("albumartist artist author composer ~performers originalartist "
           "lyricist arranger conductor").split()
 
@@ -34,6 +35,9 @@ TAG_TO_SORT = {
     "performersort": "performersort",
     "~performerssort": "~performerssort"
     }
+
+INTERN_NUM_DEFAULT = frozenset("~#lastplayed ~#laststarted ~#playcount "
+    "~#skipcount ~#length ~#bitrate".split())
 
 SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])
 
@@ -134,10 +138,13 @@ class AudioFile(dict):
                 try: return int(self["discnumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError): return default
             elif key == "length":
-                if self.get("~#length", 0) == 0: return default
-                else: return util.format_time(self.get("~#length", 0))
+                length = self.get("~#length")
+                if length is None: return default
+                else: return util.format_time(length)
+            elif key == "#rating":
+                return dict.get(self, "~" + key, const.DEFAULT_RATING)
             elif key == "rating":
-                return util.format_rating(self.get("~#rating", 0))
+                return util.format_rating(self("~#rating"))
             elif key == "people":
                 join = "\n".join
                 people = filter(None, map(self.__call__, PEOPLE))
@@ -214,13 +221,17 @@ class AudioFile(dict):
                 try: fileobj = file(self.lyric_filename, "rU")
                 except EnvironmentError: return default
                 else: return fileobj.read().decode("utf-8", "replace")
-            elif key[:1] == "#" and "~" + key not in self:
-                try: val = self[key[1:]]
-                except KeyError: return default
-                try: return int(val)
-                except ValueError:
-                    try: return float(val)
-                    except ValueError: return default
+            elif key[:1] == "#":
+                key = "~" + key
+                if key in INTERN_NUM_DEFAULT:
+                    return dict.get(self, key, 0)
+                else:
+                    try: val = self[key[2:]]
+                    except KeyError: return default
+                    try: return int(val)
+                    except ValueError:
+                        try: return float(val)
+                        except ValueError: return default
             else: return dict.get(self, "~" + key, default)
 
         elif key == "title":
@@ -343,6 +354,11 @@ class AudioFile(dict):
         for key, val in self.items():
             if isinstance(val, basestring) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
+            # Remove unnecessary defaults
+            if key in INTERN_NUM_DEFAULT and val == 0:
+                del self[key]
+            elif key == "~#rating" and val == const.DEFAULT_RATING:
+                del self[key]
 
         if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
@@ -359,15 +375,7 @@ class AudioFile(dict):
         else: self["~mountpoint"] = "/"
 
         # Fill in necessary values.
-        self.setdefault("~#lastplayed", 0)
-        self.setdefault("~#laststarted", 0)
-        self.setdefault("~#playcount", 0)
-        self.setdefault("~#skipcount", 0)
-        self.setdefault("~#length", 0)
-        self.setdefault("~#bitrate", 0)
-        self.setdefault("~#rating", const.DEFAULT_RATING)
         self.setdefault("~#added", int(time.time()))
-
         self["~#mtime"] = util.mtime(self['~filename'])
 
     def to_dump(self):
@@ -385,6 +393,10 @@ class AudioFile(dict):
                         s.append("%s=%s" % (k, v2))
                     else:
                         s.append("%s=%s" % (k, util.encode(v2)))
+        for k in (INTERN_NUM_DEFAULT - set(self.keys())):
+            s.append("%s=%d" % (k, self.get(k, 0)))
+        if "~#rating" not in self:
+            s.append("~#rating=%f" % self("~#rating"))
         s.append("~format=%s" % self.format)
         s.append("")
         return "\n".join(s)
