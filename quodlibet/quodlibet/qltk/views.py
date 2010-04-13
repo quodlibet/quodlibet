@@ -83,8 +83,7 @@ class TreeViewHints(gtk.Window):
                 gtk.STATE_NORMAL, gtk.SHADOW_OUT,
                 None, self, "tooltip", 0, 0, w, h)
         # Ignore the next treeview leave event
-        gobject.idle_add(self.__connect_leave,
-            priority=gobject.PRIORITY_DEFAULT)
+        gobject.idle_add(self.__connect_leave)
 
     def __motion(self, view, event):
         # trigger over row area, not column headers
@@ -98,14 +97,31 @@ class TreeViewHints(gtk.Window):
         # no hints where no rows exist
         except TypeError: return self.__undisplay()
 
-        if self.__current_path == path and self.__current_col == col: return
-        else: self.__undisplay()
+        #We are only interested in the x offset, which is the first value
+        area = view.get_cell_area(path, col)
+        rends = [(r.get_size(view, area), r) for r in col.get_cell_renderers()]
+        rends.sort(reverse=True)
 
-        # need to handle more renderers later...
-        try: renderer, = col.get_cell_renderers()
-        except ValueError: return
+        cell_offset = 0
+        if not rends: return
+        elif len(rends) == 1:
+            renderer = rends[0][1]
+        else:
+            renderer = None
+            for size, render in rends:
+                if cellx >= size[0]:
+                    if render != self.__current_renderer:
+                        self.__undisplay()
+                    renderer = render
+                    cell_offset = size[0]
+                    break
+
         if not isinstance(renderer, gtk.CellRendererText): return
         if renderer.get_property('ellipsize') == pango.ELLIPSIZE_NONE: return
+
+        if self.__current_path == path and self.__current_col == col \
+            and self.__current_renderer == renderer : return
+        else: self.__undisplay()
 
         model = view.get_model()
         col.cell_set_cell_data(model, model.get_iter(path), False, False)
@@ -124,7 +140,8 @@ class TreeViewHints(gtk.Window):
 
         if w + 5 < cellw: return # don't display if it doesn't need expansion
 
-        x, y, cw, h = list(view.get_cell_area(path, col))
+        x, y, cw, h = area
+        x += cell_offset
         self.__dx = x
         self.__dy = y
         y += view.get_bin_window().get_position()[1]
