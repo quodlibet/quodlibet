@@ -40,13 +40,13 @@ class TreeViewHints(gtk.Window):
         self.set_name("gtk-tooltips")
         self.set_border_width(1)
         self.connect('expose-event', self.__expose)
+        self.connect('leave-notify-event', self.__leave)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
         self.__current_renderer = None
 
-        self.__leave_event = None
-        self.__view = None
+        self.__leave_to = None
 
     def connect_view(self, view):
         self.__view = view
@@ -59,31 +59,21 @@ class TreeViewHints(gtk.Window):
         ]
 
     def disconnect_view(self, view):
-        self.__disconnect_leave()
-        self.__view = None
         try:
             for handler in self.__handlers[view]: view.disconnect(handler)
             del self.__handlers[view]
         except KeyError: pass
 
-    def __connect_leave(self):
-        self.__disconnect_leave()
-        self.__leave_event = self.__view.connect('leave-notify-event',
-            self.__undisplay)
-
-    def __disconnect_leave(self):
-        if self.__leave_event and self.__view and \
-            self.__view.handler_is_connected(self.__leave_event):
-            self.__view.disconnect(self.__leave_event)
-        self.__leave_event = None
+    def __leave(self, *args):
+        if self.__leave_to:
+            gobject.source_remove(self.__leave_to)
+        self.__leave_to = gobject.timeout_add(100, self.__undisplay)
 
     def __expose(self, widget, event):
         w, h = self.get_size_request()
         self.style.paint_flat_box(self.window,
                 gtk.STATE_NORMAL, gtk.SHADOW_OUT,
                 None, self, "tooltip", 0, 0, w, h)
-        # Ignore the next treeview leave event
-        gobject.idle_add(self.__connect_leave)
 
     def __motion(self, view, event):
         # trigger over row area, not column headers
@@ -96,6 +86,9 @@ class TreeViewHints(gtk.Window):
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         # no hints where no rows exist
         except TypeError: return self.__undisplay()
+
+        if self.__current_path != path or self.__current_col != col:
+            self.__undisplay()
 
         #We are only interested in the x offset, which is the first value
         area = view.get_cell_area(path, col)
@@ -119,8 +112,7 @@ class TreeViewHints(gtk.Window):
         if not isinstance(renderer, gtk.CellRendererText): return
         if renderer.get_property('ellipsize') == pango.ELLIPSIZE_NONE: return
 
-        if self.__current_path == path and self.__current_col == col \
-            and self.__current_renderer == renderer : return
+        if self.__current_renderer == renderer : return
         else: self.__undisplay()
 
         model = view.get_model()
@@ -159,8 +151,6 @@ class TreeViewHints(gtk.Window):
         if not((x<=int(event.x_root) < x+w) and (y <= int(event.y_root) < y+h)):
             return # reject if cursor isn't above hint
 
-        if self.__view is not view:
-            self.__disconnect_leave()
         self.__view = view
         self.__current_renderer = renderer
         self.__edit_id = renderer.connect('editing-started', self.__undisplay)
@@ -172,7 +162,9 @@ class TreeViewHints(gtk.Window):
         self.show_all()
 
     def __undisplay(self, *args):
-        self.__disconnect_leave()
+        if self.__leave_to:
+            gobject.source_remove(self.__leave_to)
+            self.__leave_to = None
         if self.__current_renderer and self.__edit_id:
             self.__current_renderer.disconnect(self.__edit_id)
         self.__current_renderer = self.__edit_id = None
