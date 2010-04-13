@@ -223,7 +223,8 @@ class AudioFile(dict):
                 else: return fileobj.read().decode("utf-8", "replace")
             elif key[:1] == "#":
                 key = "~" + key
-                if key in INTERN_NUM_DEFAULT:
+                if key in self: self[key]
+                elif key in INTERN_NUM_DEFAULT:
                     return dict.get(self, key, 0)
                 else:
                     try: val = self[key[2:]]
