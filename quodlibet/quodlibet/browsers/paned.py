@@ -184,6 +184,11 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             except TypeError: cell.set_property('text', '')
         __count_cdf = staticmethod(__count_cdf)
 
+        def __text_cdf(column, cell, model, iter):
+            cell.markup = model[iter][0]
+            cell.set_property('markup', cell.markup)
+        __text_cdf = staticmethod(__text_cdf)
+
         def __init__(self, mytag, next, library):
             super(PanedBrowser.Pane, self).__init__()
             self.set_fixed_height_mode(True)
@@ -206,10 +211,12 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             model = gtk.ListStore(str, object)
             self.__sort_cache = {}
 
-            column = gtk.TreeViewColumn(title, self.__render, markup=0)
+            column = gtk.TreeViewColumn(title)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
 
+            column.pack_start(self.__render)
+            column.set_cell_data_func(self.__render, self.__text_cdf)
             column.pack_start(self.__render_count, expand=False)
             column.set_cell_data_func(self.__render_count, self.__count_cdf)
 
