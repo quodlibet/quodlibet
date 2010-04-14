@@ -9,6 +9,7 @@
 # more readable, unless they're also faster.
 
 import os
+import stat
 import glob
 import shutil
 import time
@@ -433,10 +434,8 @@ class AudioFile(dict):
                 if key in self: del(self[key])
 
     # These should remain outside the loop below for performance reasons
-    __cover_subdirs = map(util.make_case_insensitive,
-                          ["", "scan", "scans", "images", "covers"])
-    __cover_exts = map(util.make_case_insensitive,
-                       ["jpg", "jpeg", "png", "gif"])
+    __cover_subdirs = frozenset(["scan", "scans", "images", "covers"])
+    __cover_exts = frozenset(["jpg", "jpeg", "png", "gif"])
 
     def find_cover(self):
         """Return a file-like containing cover image data, or None if
@@ -444,21 +443,37 @@ class AudioFile(dict):
 
         base = self('~dirname')
         fns = []
-        # We can't pass 'base' alone to glob.glob because it probably
-        # contains confusing metacharacters, and Python's glob doesn't
-        # support any kind of escaping, so chdir and use relative
-        # paths with known safe strings.
-        try:
-            olddir = os.getcwd()
-            os.chdir(base)
-        except EnvironmentError:
-            pass
+        get_ext = lambda s: os.path.splitext(s)[1].lstrip('.').lower()
+        if os.name == "posix" and os.stat(base).st_nlink == 2:
+            for entry in os.listdir(base):
+                if get_ext(entry) in self.__cover_exts:
+                    fns.append(entry)
         else:
-            for subdir in self.__cover_subdirs:
-                for ext in self.__cover_exts:
-                    fns.extend(glob.glob(os.path.join(subdir, u"*." + ext)))
-                    fns.extend(glob.glob(os.path.join(subdir, u".*." + ext)))
-            os.chdir(olddir)
+            subs = []
+            for entry in os.listdir(base):
+                lentry = entry.lower()
+                ext = get_ext(lentry)
+                if lentry in self.__cover_subdirs or ext in self.__cover_exts:
+                    path = os.path.join(base, entry)
+                    st = os.stat(base)
+                    if stat.S_ISDIR(st.st_mode):
+                        if lentry in self.__cover_subdirs:
+                            subs.append((st, path, entry))
+                    else:
+                        if ext in self.__cover_exts:
+                            fns.append(entry)
+            for st, path, dir in subs:
+                if os.name == "posix" and st.st_nlink == 2:
+                    for entry in os.listdir(path):
+                        if get_ext(entry) in self.__cover_exts:
+                            fns.append(os.path.join(dir, entry))
+                else:
+                    for entry in os.listdir(path):
+                        subpath = os.path.join(path, entry)
+                        if (os.path.isfile(subpath) and
+                            get_ext(entry) in self.__cover_exts):
+                            fns.append(os.path.join(dir, entry))
+
         images = []
         for fn in sorted(fns):
             lfn = fn.lower()
@@ -472,7 +487,7 @@ class AudioFile(dict):
         # Highest score wins.
         if images:
             try:
-                return file(util.fsencode(max(images)[1]), "rb")
+                return file(max(images)[1], "rb")
             except IOError:
                 return None
         elif "~picture" in self:

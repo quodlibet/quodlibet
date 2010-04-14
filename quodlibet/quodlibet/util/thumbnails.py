@@ -17,7 +17,7 @@ except ImportError:
 import gobject
 import gtk
 
-from quodlibet.util import mtime, fsnative
+from quodlibet.util import mtime, fsnative, fsdecode
 
 def add_border(pixbuf, val, round=False):
     """Add a 1px border to the pixbuf and round of the edges if needed.
@@ -123,7 +123,8 @@ def get_thumbnail(path, boundary):
         os.mkdir(cache_dir)
         os.chmod(cache_dir, 0700)
 
-    bytes = (isinstance(path, unicode) and path.encode("utf-8")) or path
+    if isinstance(path, str): bytes = fsdecode(path).encode("utf-8")
+    else: bytes = path.encode("utf-8")
     uri = "file://" + urllib.pathname2url(bytes)
     thumb_name = hash.md5(uri).hexdigest() + ".png"
 
