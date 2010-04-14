@@ -40,16 +40,13 @@ class TreeViewHints(gtk.Window):
         self.set_name("gtk-tooltips")
         self.set_border_width(1)
         self.connect('expose-event', self.__expose)
-        self.connect('leave-notify-event', self.__leave)
+        self.connect('leave-notify-event', self.__undisplay)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
         self.__current_renderer = None
 
-        self.__leave_to = None
-
     def connect_view(self, view):
-        self.__view = view
         self.__handlers[view] = [
             view.connect('motion-notify-event', self.__motion),
             view.connect('scroll-event', self.__undisplay),
@@ -63,11 +60,6 @@ class TreeViewHints(gtk.Window):
             for handler in self.__handlers[view]: view.disconnect(handler)
             del self.__handlers[view]
         except KeyError: pass
-
-    def __leave(self, *args):
-        if self.__leave_to:
-            gobject.source_remove(self.__leave_to)
-        self.__leave_to = gobject.timeout_add(100, self.__undisplay)
 
     def __expose(self, widget, event):
         w, h = self.get_size_request()
@@ -90,30 +82,27 @@ class TreeViewHints(gtk.Window):
         if self.__current_path != path or self.__current_col != col:
             self.__undisplay()
 
-        #We are only interested in the x offset, which is the first value
-        area = view.get_cell_area(path, col)
-        rends = [(r.get_size(view, area), r) for r in col.get_cell_renderers()]
-        rends.sort(reverse=True)
-
         cell_offset = 0
-        if not rends: return
-        elif len(rends) == 1:
-            renderer = rends[0][1]
+        area = view.get_cell_area(path, col)
+        renderers = col.get_cell_renderers()
+        renderer = None
+        if not renderers: return
+        if len(renderers) == 1:
+            renderer = renderers[0]
         else:
-            renderer = None
+            rends = [(r.get_size(view, area), r) for r in renderers]
+            rends.sort(reverse=True)
             for size, render in rends:
                 if cellx >= size[0]:
-                    if render != self.__current_renderer:
-                        self.__undisplay()
                     renderer = render
                     cell_offset = size[0]
                     break
 
-        if not isinstance(renderer, gtk.CellRendererText): return
-        if renderer.get_property('ellipsize') == pango.ELLIPSIZE_NONE: return
-
         if self.__current_renderer == renderer : return
         else: self.__undisplay()
+
+        if not isinstance(renderer, gtk.CellRendererText): return
+        if renderer.get_property('ellipsize') == pango.ELLIPSIZE_NONE: return
 
         model = view.get_model()
         col.cell_set_cell_data(model, model.get_iter(path), False, False)
@@ -162,9 +151,6 @@ class TreeViewHints(gtk.Window):
         self.show_all()
 
     def __undisplay(self, *args):
-        if self.__leave_to:
-            gobject.source_remove(self.__leave_to)
-            self.__leave_to = None
         if self.__current_renderer and self.__edit_id:
             self.__current_renderer.disconnect(self.__edit_id)
         self.__current_renderer = self.__edit_id = None
