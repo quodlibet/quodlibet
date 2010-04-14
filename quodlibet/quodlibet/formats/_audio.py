@@ -455,7 +455,7 @@ class AudioFile(dict):
                 ext = get_ext(lentry)
                 if lentry in self.__cover_subdirs or ext in self.__cover_exts:
                     path = os.path.join(base, entry)
-                    st = os.stat(base)
+                    st = os.stat(path)
                     if stat.S_ISDIR(st.st_mode):
                         if lentry in self.__cover_subdirs:
                             subs.append((st, path, entry))
