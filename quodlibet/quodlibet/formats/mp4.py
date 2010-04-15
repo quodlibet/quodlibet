@@ -62,7 +62,6 @@ class MP4File(AudioFile):
     __rtupletranslate = dict([(v, k) for k, v in __tupletranslate.iteritems()])
 
     def __init__(self, filename):
-        self.__covers = []
         audio = MP4(filename)
         self["~#length"] = int(audio.info.length)
         self["~#bitrate"] = int(audio.info.bitrate / 1000)

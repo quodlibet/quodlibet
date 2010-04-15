@@ -686,11 +686,14 @@ class SongList(AllTreeView, util.InstanceTracker):
 
             tag = TAG_TO_SORT.get(tag, tag)
 
-            if callable(tag):
+            if tag == "albumsort":
+                # albumsort is the first item in sort_key and the common case
+                sort_func = lambda song: song.sort_key
+            elif callable(tag):
                 # A pattern is currently selected.
-                sort_func = lambda song: (util.tag(song), song.sort_key, song)
+                sort_func = lambda song: (util.tag(song), song.sort_key)
             else:
-                sort_func = lambda song: (song(tag), song.sort_key, song)
+                sort_func = lambda song: (song(tag), song.sort_key)
             songs.sort(key=sort_func, reverse=reverse)
         else:
             self.set_sort_by(None, refresh=False)

@@ -60,15 +60,33 @@ class AudioFile(dict):
 
     format = "Unknown Audio File"
 
-    def __sort_key(self):
-        return (self("albumsort", ""),
-                self.get("labelid") or self.get("musicbrainz_albumid"),
+    __sort_key = None
+    def __get_sort_key(self):
+        if self.__sort_key is None:
+            self.__sort_key = (self.album_key,
                 self("~#disc", self.get("discnumber")),
                 self("~#track", self.get("tracknumber")),
                 self("artistsort"), self.get("musicbrainz_artistid"),
                 self.get("title"),
                 self.get("~filename"))
-    sort_key = property(__sort_key)
+        return self.__sort_key
+    sort_key = property(__get_sort_key)
+
+    def __getstate__(self):
+        """Don't pickle anything from __dict__"""
+        pass
+
+    def __setstate__(self, state):
+        """Needed because we have defined getstate"""
+        pass
+
+    def __setitem__(self, key, value):
+        dict.__setitem__(self, key, value)
+        self.__sort_key = None
+
+    def __delitem__(self, key):
+        dict.__delitem__(self, key)
+        self.__sort_key = None
 
     key = property(lambda self: self["~filename"])
     mountpoint = property(lambda self: self["~mountpoint"])
