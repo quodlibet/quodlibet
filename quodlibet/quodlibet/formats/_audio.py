@@ -459,10 +459,13 @@ class AudioFile(dict):
         """Return a file-like containing cover image data, or None if
         no cover is available."""
 
+        if not self.is_file: return
         base = self('~dirname')
         fns = []
         get_ext = lambda s: os.path.splitext(s)[1].lstrip('.').lower()
-        if os.name == "posix" and os.stat(base).st_nlink == 2:
+        try: st = os.stat(base)
+        except EnvironmentError: return
+        if os.name == "posix" and st.st_nlink == 2:
             for entry in os.listdir(base):
                 if get_ext(entry) in self.__cover_exts:
                     fns.append(entry)
