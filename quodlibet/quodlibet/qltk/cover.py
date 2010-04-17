@@ -120,7 +120,7 @@ class ResizeImage(gtk.Image):
         self.disconnect(self.__sig)
 
 class CoverImage(gtk.EventBox):
-    __albumfn = None
+    __file = None
     __current_bci = None
 
     def __init__(self, resize=False, size=70, song=None):
@@ -133,15 +133,14 @@ class CoverImage(gtk.EventBox):
     def set_song(self, activator, song):
         if not self.child: return
         if song:
-            cover = song.find_cover()
-            self.__albumfn = cover and cover.name
-            self.child.set_path(self.__albumfn)
+            self.__file = song.find_cover()
+            self.child.set_path(self.__file and self.__file.name)
         else:
             self.child.set_path(None)
         self.__song = song
 
     def __nonzero__(self):
-        return bool(self.__albumfn)
+        return bool(self.__file)
 
     def __reset_bci(self, bci):
         self.__current_bci = None
@@ -149,12 +148,12 @@ class CoverImage(gtk.EventBox):
     def __show_cover(self, box, event):
         """Show the cover as a detached BigCenteredImage.
         If one is already showing, destroy it instead"""
-        if (self.__song and event.button == 1 and self.__albumfn and
+        if (self.__song and event.button == 1 and self.__file and
             event.type == gtk.gdk.BUTTON_PRESS):
             if self.__current_bci is None:
                 # We're not displaying it yet; display it.
                 self.__current_bci = BigCenteredImage(
-                    self.__song.comma("album"), self.__albumfn, self)
+                    self.__song.comma("album"), self.__file.name, self)
                 self.__current_bci.connect('destroy', self.__reset_bci)
             else:
                 # We're displaying it; destroy it.
