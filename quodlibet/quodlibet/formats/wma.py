@@ -4,6 +4,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import tempfile
+import struct
+
 from quodlibet.formats._audio import AudioFile
 
 extensions = [".wma"]
@@ -62,6 +65,8 @@ class WMAFile(AudioFile):
         self["~#length"] = int(audio.info.length)
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         for name, values in audio.tags.items():
+            if name == "WM/Picture":
+                self["~picture"] = "y"
             try: name = self.__translate[name]
             except KeyError: continue
             self[name] = "\n".join(map(unicode, values))
@@ -84,5 +89,48 @@ class WMAFile(AudioFile):
         OK = self.__rtranslate.keys()
         if key is None: return super(WMAFile, self).can_change(key)
         else: return super(WMAFile, self).can_change(key) and (key in OK)
+
+    def get_format_cover(self):
+        try:
+            tag = mutagen.asf.ASF(self["~filename"])
+        except (OSError, IOError):
+            return None
+        else:
+            for image in tag.get("WM/Picture", []):
+                (mime, data, type) = unpack_image(image.value)
+                if type == 3: # Only cover images
+                    fn = tempfile.NamedTemporaryFile()
+                    fn.write(data)
+                    fn.flush()
+                    fn.seek(0, 0)
+                    return fn
+            else:
+                return None
+
+def unpack_image(data):
+    """
+    Helper function to unpack image data from a WM/Picture tag.
+    
+    The data has the following format:
+    1 byte: Picture type (0-20), see ID3 APIC frame specification at http://www.id3.org/id3v2.4.0-frames
+    4 bytes: Picture data length in LE format
+    MIME type, null terminated UTF-16-LE string
+    Description, null terminated UTF-16-LE string
+    The image data in the given length
+    """
+    (type, size) = struct.unpack_from("<bi", data)
+    pos = 5
+    mime = ""
+    while data[pos:pos+2] != "\x00\x00":
+        mime += data[pos:pos+2]
+        pos += 2
+    pos += 2
+    description = ""
+    while data[pos:pos+2] != "\x00\x00":
+        description += data[pos:pos+2]
+        pos += 2
+    pos += 2
+    image_data = data[pos:pos+size]
+    return (mime.decode("utf-16-le"), image_data, type)
 
 info = WMAFile
