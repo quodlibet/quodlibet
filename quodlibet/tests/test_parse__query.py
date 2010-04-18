@@ -145,8 +145,8 @@ class TQuery(TestCase):
             self.failIf(Query('%s = !"%s"' % (k, v)).search(self.s2))
 
     def test_numcmp(self):
-        self.failUnless(Query("#(track = 0)").search(self.s1))
-        self.failUnless(Query("#(notatag = 0)").search(self.s1))
+        self.failIf(Query("#(track = 0)").search(self.s1))
+        self.failIf(Query("#(notatag = 0)").search(self.s1))
         self.failUnless(Query("#(track = 12)").search(self.s2))
 
     def test_trinary(self):
