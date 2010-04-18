@@ -5,6 +5,7 @@
 # published by the Free Software Foundation
 
 import tempfile
+import base64
 
 import mutagen
 
@@ -55,12 +56,43 @@ class MutagenVCFile(AudioFile):
                 self["discnumber"] += "/" + self["disctotal"]
             del(self["disctotal"])
 
+        if "metadata_block_picture" in self:
+            self["~picture"] = "y"
+            del(self["metadata_block_picture"])
+
+    def get_format_cover(self):
+        try: from mutagen.flac import Picture
+        except ImportError: return
+
+        try: audio = self.MutagenType(self["~filename"])
+        except EnvironmentError: return None
+
+        pictures = []
+        for data in audio.tags.get("metadata_block_picture", []):
+            try: pictures.append(Picture(base64.b64decode(data)))
+            except TypeError: pass
+        if not pictures: return
+
+        cover = None
+        for pic in pictures:
+            if pic.type == 3:
+                cover = pic
+                break
+        else: cover = pictures[0]
+
+        fn = tempfile.NamedTemporaryFile()
+        fn.write(cover.data)
+        fn.flush()
+        fn.seek(0, 0)
+        return fn
+
     def can_change(self, k=None):
         if k is None:
             return super(MutagenVCFile, self).can_change(None)
         else: return (super(MutagenVCFile, self).can_change(k) and
                       k not in ["totaltracks", "tracktotal", "disctotal",
-                                "rating", "playcount"] and
+                                "rating", "playcount",
+                                "metadata_block_picture"] and
                       not k.startswith("rating:") and
                       not k.startswith("playcount:"))
 
@@ -152,7 +184,7 @@ class FLACFile(MutagenVCFile):
         else:
             covers = tag.pictures
             if not covers:
-                return None
+                return super(FLACFile, self).get_format_cover()
 
             for cover in covers:
                 if cover.type == 3:
