@@ -551,4 +551,4 @@ class TrayIcon(EventPlugin):
             Information(watcher, [player.song])
 
     def destroy(self):
-        self.disable()
+        self.disabled()
