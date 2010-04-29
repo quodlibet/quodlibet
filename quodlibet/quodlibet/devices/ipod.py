@@ -11,7 +11,6 @@ import gtk
 
 from quodlibet import const
 from quodlibet import qltk
-from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.devices._base import Device
@@ -25,12 +24,19 @@ class IPodSong(AudioFile):
         super(IPodSong, self).__init__()
         self.sanitize(gpod.itdb_filename_on_ipod(track))
 
-        for key in ['artist', 'album', 'title', 'genre', 'grouping']:
-            value = getattr(track, key)
+        # String keys
+        for key in ['artist', 'album', 'title', 'genre', 'grouping',
+            'composer', 'albumartist']:
+            # albumartist since libgpod-0.4.2
+            value = getattr(track, key, None)
             if value:
-                try: self[key] = unicode(value)
-                except UnicodeDecodeError:
-                    self[key] = unicode(value, errors='replace')
+                self[key] = util.decode(value)
+        # Sort keys (since libgpod-0.5.0)
+        for key in ['artist', 'album', 'albumartist']:
+            value = getattr(track, 'sort_' + key, None)
+            if value:
+                self[key + 'sort'] = util.decode(value)
+        # Numeric keys
         for key in ['bitrate', 'playcount']:
             value = getattr(track, key)
             if value:
@@ -164,32 +170,31 @@ class IPodDevice(Device):
         self.__load_db()
         track = gpod.itdb_track_new()
 
+        # All values should be utf-8 encoded strings
+        # Filepaths should be encoded with the fs encoding
+
         # Either combine tags with comma, or only take the first value
         if self['all_tags']: tag = song.comma
-        else: tag = lambda key: song.list(key)[0]
+        else: tag = lambda key: (song.list(key) or ('',))[0]
 
-        try:
-            title = tag('title')
-        except IndexError:
-            pass
-        else:
-            if self['title_version'] and song('version'):
-                title = " - ".join([title, song('version')])
-            track.title = str(title)
+        title = tag('title')
+        if self['title_version'] and song('version'):
+            title = " - ".join([title, song('version')])
+        track.title = util.encode(title)
 
-        try:
-            album = tag('album')
-        except IndexError:
-            pass
-        else:
-            if self['album_part'] and song('discsubtitle'):
-                album = " - ".join([album, song('discsubtitle')])
-            track.album = str(album)
+        album = tag('album')
+        if self['album_part'] and song('discsubtitle'):
+            album = " - ".join([album, song('discsubtitle')])
+        track.album = util.encode(album)
 
         # String keys
-        for key in ['artist', 'genre', 'grouping']:
-            try: setattr(track, key, str(tag(key)))
-            except IndexError: continue
+        for key in ['artist', 'genre', 'grouping', 'composer', 'albumartist']:
+            if hasattr(track, key): # albumartist since libgpod-0.4.2
+                setattr(track, key, util.encode(tag(key)))
+        # Sort keys (since libgpod-0.5.0)
+        for key in ['artist', 'album', 'albumartist']:
+            if hasattr(track, 'sort_' + key):
+                setattr(track, 'sort_' + key, util.encode(tag(key + 'sort')))
         # Numeric keys
         for key in ['bitrate', 'playcount', 'year']:
             try: setattr(track, key, int(song('~#'+key)))
@@ -211,7 +216,7 @@ class IPodDevice(Device):
             except ValueError: continue
 
         track.filetype = song('~format')
-        track.comment = song('~filename')
+        track.comment = util.encode(util.fsdecode(song('~filename')))
 
         # Associate a cover with the track
         if self['covers']:
