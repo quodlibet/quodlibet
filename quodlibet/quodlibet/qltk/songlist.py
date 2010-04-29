@@ -329,7 +329,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             except AttributeError: pass
 
         def __init__(self, pattern):
-            super(SongList.PatternColumn, self).__init__(_("pattern"))
+            super(SongList.PatternColumn, self).__init__(util.pattern(pattern))
             self.header_name = pattern
             self._pattern = Pattern(pattern)
 
@@ -636,8 +636,7 @@ class SongList(AllTreeView, util.InstanceTracker):
     def get_sort_by(self):
         for header in self.get_columns():
             if header.get_sort_indicator():
-                try: tag = header._pattern.format
-                except AttributeError: tag = header.header_name
+                tag = header.header_name
                 sort = header.get_sort_order()
                 return (tag, sort == gtk.SORT_DESCENDING)
         else: return "album", False
@@ -679,19 +678,33 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         if not sorted:
             tag, reverse = self.get_sort_by()
-            if tag == "~#track": tag = "album"
-            elif tag == "~#disc": tag = "album"
-            elif tag == "~length": tag = "~#length"
-            elif tag == "~album~discsubtitle": tag = "album"
+            replace_order = {
+                "~#track": "album",
+                "~#disc": "album",
+                "~length": "~#length"
+            }
 
-            tag = TAG_TO_SORT.get(tag, tag)
+            if tag.startswith("<"):
+                for key, value in replace_order.iteritems():
+                    tag = tag.replace("<%s>" % key, "<%s>" % value)
+                tag = Pattern(tag).format
+            else:
+                tags = util.tagsplit(tag)
+                sort_tags = []
+                for tag in tags:
+                    tag = replace_order.get(tag, tag)
+                    tag = TAG_TO_SORT.get(tag, tag)
+                    if tag not in sort_tags:
+                        sort_tags.append(tag)
+                if len(sort_tags) > 1:
+                    tag = "~" + "~".join(sort_tags)
 
-            if tag == "albumsort":
+            if callable(tag):
+                # A pattern is currently selected.
+                sort_func = lambda song: (tag(song), song.sort_key)
+            elif tag == "albumsort":
                 # albumsort is the first item in sort_key and the common case
                 sort_func = lambda song: song.sort_key
-            elif callable(tag):
-                # A pattern is currently selected.
-                sort_func = lambda song: (util.tag(song), song.sort_key)
             else:
                 sort_func = lambda song: (song(tag), song.sort_key)
             songs.sort(key=sort_func, reverse=reverse)
@@ -784,7 +797,11 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         current = SongList.headers[:]
         current_set = set(current)
-        current = zip(map(util.tag, current), current)
+        def tag_title(tag):
+            if tag.startswith("<"):
+                return util.pattern(tag)
+            return util.tag(tag)
+        current = zip(map(tag_title, current), current)
 
         def add_header_toggle(menu, (header, tag), active, column=column):
             item = gtk.CheckMenuItem(header)
