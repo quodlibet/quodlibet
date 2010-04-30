@@ -18,7 +18,7 @@ from quodlibet import const
 from quodlibet import util
 
 from quodlibet.util.uri import URI
-
+from quodlibet.util import human_sort_key as human
 from quodlibet.util.tags import STANDARD_TAGS as USEFUL_TAGS
 from quodlibet.util.tags import MACHINE_TAGS
 from quodlibet.util.titlecase import title
@@ -64,13 +64,38 @@ class AudioFile(dict):
     def __get_sort_key(self):
         if self.__sort_key is None:
             self.__sort_key = (self.album_key,
-                self("~#disc", self.get("discnumber")),
-                self("~#track", self.get("tracknumber")),
-                self("artistsort"), self.get("musicbrainz_artistid"),
-                self.get("title"),
+                self("~#disc"), self("~#track"),
+                human(self("artistsort")),
+                self.get("musicbrainz_artistid", ""),
+                human(self.get("title", "")),
                 self.get("~filename"))
         return self.__sort_key
     sort_key = property(__get_sort_key)
+
+    @staticmethod
+    def sort_by_func(tag):
+        """Returns a fast sort function for a specific tag (or pattern).
+        Some keys are already in the sort cache, so we can use them."""
+        def title_sort(song):
+            l = list(song.sort_key)
+            l.insert(0, l[5])
+            return tuple(l)
+        def artist_sort(song):
+            l = list(song.sort_key)
+            l.insert(0, l[3])
+            return tuple(l)
+
+        if callable(tag):
+            return lambda song: (human(tag(song)), song.sort_key)
+        elif tag == "albumsort":
+            return lambda song: song.sort_key
+        elif tag == "title":
+            return title_sort
+        elif tag == "artistsort":
+            return artist_sort
+        elif tag.startswith("~#") and "~" not in tag[2:]:
+            return lambda song: (song(tag), song.sort_key)
+        return lambda song: (human(song(tag)), song.sort_key)
 
     def __getstate__(self):
         """Don't pickle anything from __dict__"""
@@ -92,7 +117,7 @@ class AudioFile(dict):
     mountpoint = property(lambda self: self["~mountpoint"])
 
     def __album_key(self):
-        return (self("albumsort", ""),
+        return (human(self("albumsort")),
                 self.get("album_grouping_key") or self.get("labelid") or
                 self.get("musicbrainz_albumid") or "")
     album_key = property(__album_key)

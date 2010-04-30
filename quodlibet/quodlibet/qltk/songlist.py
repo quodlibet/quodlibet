@@ -23,7 +23,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.util.uri import URI
 from quodlibet.qltk.playorder import ORDERS
-from quodlibet.formats._audio import TAG_TO_SORT
+from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 
 class PlaylistMux(object):
 
@@ -684,6 +684,11 @@ class SongList(AllTreeView, util.InstanceTracker):
                 "~length": "~#length"
             }
 
+            if tag == "~title~version":
+                tag = "title"
+            elif tag == "~album~discsubtitle":
+                tag = "album"
+
             if tag.startswith("<"):
                 for key, value in replace_order.iteritems():
                     tag = tag.replace("<%s>" % key, "<%s>" % value)
@@ -699,14 +704,7 @@ class SongList(AllTreeView, util.InstanceTracker):
                 if len(sort_tags) > 1:
                     tag = "~" + "~".join(sort_tags)
 
-            if callable(tag):
-                # A pattern is currently selected.
-                sort_func = lambda song: (tag(song), song.sort_key)
-            elif tag == "albumsort":
-                # albumsort is the first item in sort_key and the common case
-                sort_func = lambda song: song.sort_key
-            else:
-                sort_func = lambda song: (song(tag), song.sort_key)
+            sort_func = AudioFile.sort_by_func(tag)
             songs.sort(key=sort_func, reverse=reverse)
         else:
             self.set_sort_by(None, refresh=False)
