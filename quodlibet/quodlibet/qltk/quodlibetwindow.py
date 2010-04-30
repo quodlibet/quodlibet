@@ -50,7 +50,7 @@ class MainSongList(SongList):
 
     class CurrentColumn(gtk.TreeViewColumn):
         # Displays the current song indicator, either a play or pause icon.
-    
+
         _render = gtk.CellRendererPixbuf()
         _render.set_property('xalign', 0.5)
         header_name = "~current"
@@ -571,6 +571,8 @@ class QuodLibetWindow(gtk.Window):
             try:
                 key = "%s_pos" % self.browser.__class__.__name__
                 val = config.getfloat("browsers", key)
+                # Use a minimum restore size
+                val = max(val, 0.1)
             except: val = 0.4
             container.connect(
                 'notify::position', self.__browser_configure, self.browser)
