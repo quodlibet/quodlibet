@@ -236,7 +236,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.connect("drag-data-get", self.__drag_data_get)
 
         def __drag_data_get(self, view, ctx, sel, tid, etime):
-            songs = sorted(self.__get_songs())
+            songs = sorted(self.__get_songs(), key=lambda s: s.sort_key)
             if tid == 1:
                 filenames = [song("~filename") for song in songs]
                 sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
@@ -250,7 +250,9 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                 return self.__sort_cache[text]
 
         def __popup_menu(self, view, library):
-            menu = SongsMenu(library, sorted(self.__get_songs()), parent=self)
+            menu = SongsMenu(library,
+                sorted(self.__get_songs(), key=lambda s: s.sort_key),
+                parent=self)
             menu.show_all()
             return view.popup_menu(menu, 0, gtk.get_current_event_time())
 

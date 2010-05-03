@@ -523,14 +523,16 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         model, rows = selection.get_selected_rows()
         if not model or not rows: return []
         albums = [model[row][0] for row in rows]
+
         if None in albums:
             albums = [row[0] for row in model if row[0]]
+
         # Sort first by how the albums appear in the model itself,
         # then within the album using the default order.
         songs = []
         if sort:
             for album in albums:
-                songs.extend(sorted(album.songs))
+                songs.extend(sorted(album.songs, key=lambda s: s.sort_key))
         else:
             for album in albums:
                 songs.extend(album.songs)
