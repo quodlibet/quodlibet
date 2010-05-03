@@ -77,13 +77,11 @@ class AudioFile(dict):
         """Returns a fast sort function for a specific tag (or pattern).
         Some keys are already in the sort cache, so we can use them."""
         def title_sort(song):
-            l = list(song.sort_key)
-            l.insert(0, l[5])
-            return tuple(l)
+            key = song.sort_key
+            return (key[5], key)
         def artist_sort(song):
-            l = list(song.sort_key)
-            l.insert(0, l[3])
-            return tuple(l)
+            key = song.sort_key
+            return (key[3], key)
 
         if callable(tag):
             return lambda song: (human(tag(song)), song.sort_key)
