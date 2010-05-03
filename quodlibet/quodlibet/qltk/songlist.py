@@ -648,6 +648,7 @@ class SongList(AllTreeView, util.InstanceTracker):
     def set_sort_by(self, header, tag=None, order=None, refresh=True):
         if header and tag is None: tag = header.header_name
 
+        rev = False
         for h in self.get_columns():
             if h.header_name == tag:
                 if order is None:
@@ -659,10 +660,11 @@ class SongList(AllTreeView, util.InstanceTracker):
                 else:
                     if order: s = gtk.SORT_DESCENDING
                     else: s = gtk.SORT_ASCENDING
+                rev = h.get_sort_indicator()
                 h.set_sort_indicator(True)
                 h.set_sort_order(s)
             else: h.set_sort_indicator(False)
-        if refresh: self.set_songs(self.get_songs())
+        if refresh: self.set_songs(self.get_songs(), reverse=rev)
 
     def set_model(self, model):
         super(SongList, self).set_model(model)
@@ -673,10 +675,12 @@ class SongList(AllTreeView, util.InstanceTracker):
         try: return self.get_model().get()
         except AttributeError: return [] # model is None
 
-    def set_songs(self, songs, sorted=False):
+    def set_songs(self, songs, sorted=False, reverse=False):
         model = self.get_model()
 
-        if not sorted:
+        if reverse:
+            songs.reverse()
+        elif not sorted:
             tag, reverse = self.get_sort_by()
             replace_order = {
                 "~#track": "album",
