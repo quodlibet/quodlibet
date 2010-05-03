@@ -110,9 +110,10 @@ class PlaylistModel(gtk.ListStore):
         print_d("Clearing model.", context=self)
         self.clear()
         print_d("Setting %d songs." % len(songs), context=self)
-        for song in songs:
-            iter = self.append(row=[song])
-            if song == oldsong:
+        insert = self.insert
+        for song in reversed(songs):
+            iter = insert(0, (song,))
+            if song is oldsong:
                 self.__iter = iter
         if self.__iter is not None:
             self.__old_value = None
