@@ -219,6 +219,8 @@ class SongList(AllTreeView, util.InstanceTracker):
                     new_width += cell.get_property('xpad')
                 if width < new_width:
                     self.set_fixed_width(new_width)
+                    self.set_visible(False)
+                    self.set_visible(True)
 
         def __init__(self, t):
             super(SongList.TextColumn, self).__init__(util.tag(t), self._render)
