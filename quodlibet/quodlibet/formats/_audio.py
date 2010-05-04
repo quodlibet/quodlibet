@@ -554,7 +554,7 @@ class AudioFile(dict):
             try:
                 db = float(self["replaygain_%s_gain" % profile].split()[0])
                 peak = float(self.get("replaygain_%s_peak" % profile, 1))
-            except (KeyError, ValueError):
+            except (KeyError, ValueError, IndexError):
                 continue
             else:
                 db += pre_amp_gain
