@@ -645,7 +645,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         else: return "album", False
 
     def is_sorted(self):
-        return max([col.get_sort_indicator() for col in self.get_columns()])
+        return max([c.get_sort_indicator() for c in self.get_columns()] or [0])
 
     # Resort based on the header clicked.
     def set_sort_by(self, header, tag=None, order=None, refresh=True):
@@ -770,6 +770,8 @@ class SongList(AllTreeView, util.InstanceTracker):
     # new values.
     def set_column_headers(self, headers):
         if len(headers) == 0: return
+
+        old_sort = self.is_sorted() and self.get_sort_by()
         map(self.remove_column, self.get_columns())
 
         if self.CurrentColumn is not None:
@@ -795,6 +797,10 @@ class SongList(AllTreeView, util.InstanceTracker):
             column.connect('popup-menu', self.__showmenu)
             column.set_reorderable(True)
             self.append_column(column)
+
+        if old_sort:
+            header, order = old_sort
+            self.set_sort_by(None, header, order, False)
 
     def __getmenu(self, column):
         menu = gtk.Menu()
