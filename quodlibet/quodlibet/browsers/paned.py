@@ -392,7 +392,12 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         def set_selected(self, values, jump=False):
             model = self.get_model()
             selection = self.get_selection()
-            if values == self.get_selected(): return
+            if values == self.get_selected():
+                model, rows = selection.get_selected_rows()
+                for row in rows:
+                    self.scroll_to_cell(row)
+                    break
+                return
             elif values is None and selection.path_is_selected((0,)): return
 
             self.inhibit()
@@ -408,6 +413,17 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             if jump and len(model): self.scroll_to_cell(first)
             self.uninhibit()
             self.get_selection().emit('changed')
+
+        def set_selected_by_tag(self, tag, values, jump=False):
+            model = self.get_model()
+            pattern_values = []
+            values = set(values)
+            for row in model:
+                if row[1]:
+                    song = iter(row[1]).next()
+                    if set(song.list(tag)) & values:
+                        pattern_values.append(row[0])
+            self.set_selected(pattern_values, jump)
 
         def __get_songs(self):
             model, rows = self.get_selection().get_selected_rows()
@@ -547,7 +563,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         for pane in self.__panes:
             if (key in pane.tags or
                 (key in PEOPLE and "~people" in pane.tags)):
-                pane.set_selected(map(util.escape, values), True)
+                pane.set_selected_by_tag(key, values, True)
             else: pane.set_selected(None, True)
         self.__panes[-1].uninhibit()
         self.__panes[-1].get_selection().emit('changed')
