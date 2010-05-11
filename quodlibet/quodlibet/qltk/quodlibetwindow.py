@@ -661,26 +661,46 @@ class QuodLibetWindow(gtk.Window):
         else: player.playlist.paused ^= True
 
     def __jump_to_current(self, explicit):
-        if player.playlist.song is None: return
+        """Select/scroll to the current playing song in the playlist.
+        If it can't be found tell the browser to properly fill the playlist
+        with an appropriate selection containing the song.
 
-        if player.playlist.song != self.songlist.model.current and explicit:
-            self.browser.scroll(player.playlist.song)
+        explicit means that the jump request comes from the user and not
+        from an event like song-started.
+        """
 
-        #we need to wait until the browser has finished scrolling/filling
-        #and the songlist is ready
-        gobject.idle_add(self.__jump_to_current_in_list, explicit)
+        def jump_to(song, explicit):
+            model =  self.songlist.model
+            if song == model.current:
+                path = model.current_path
+            else:
+                iter = model.find(song)
+                if iter is None: return
+                path = model[iter].path
 
-    def __jump_to_current_in_list(self, explicit):
-        if player.playlist.song == self.songlist.model.current:
-            path = self.songlist.model.current_path
-            if path is None: return
-            self.songlist.scroll_to_cell(
-                path[0], use_align=True, row_align=0.5)
+            self.songlist.scroll_to_cell(path, use_align=True, row_align=0.5)
             if explicit:
-                iter = self.songlist.model.current_iter
                 selection = self.songlist.get_selection()
                 selection.unselect_all()
                 selection.select_path(path)
+
+        song = player.playlist.song
+        model =  self.songlist.model
+
+        # We are not playing a song
+        if song is None: return
+
+        # model.find because the source could be the queue
+        if song != model.current and not model.find(song):
+            if explicit:
+                self.browser.scroll(player.playlist.song)
+                # We need to wait until the browser has finished
+                # scrolling/filling and the songlist is ready.
+                # Not perfect, but works for now.
+                gobject.idle_add(jump_to, song, explicit,
+                    priority=gobject.PRIORITY_LOW)
+        else:
+            jump_to(song, explicit)
 
     def __next_song(self, *args): player.playlist.next()
     def __previous_song(self, *args): player.playlist.previous()
