@@ -319,7 +319,7 @@ class GStreamerPlayer(BasePlayer):
             value = str(tags[k]).strip()
             if not value: continue
             if k == "bitrate":
-                try: bitrate = int(value)
+                try: bitrate = int(value) / 1000
                 except (ValueError, TypeError): pass
                 else:
                     if bitrate != self.song.get("~#bitrate"):
