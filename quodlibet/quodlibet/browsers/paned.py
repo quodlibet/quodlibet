@@ -193,19 +193,18 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             super(PanedBrowser.Pane, self).__init__()
             self.set_fixed_height_mode(True)
 
-            if '<' not in mytag and \
-                ('~' in mytag[1:] or mytag.startswith("~#")):
-                mytag = "<%s>" % mytag
-
             if '<' in mytag:
                 p = Pattern(mytag)
-                self.__format = lambda song: [p.format(song)]
+                self.__format = lambda song: p.format_list(song)
                 self.tags = p.real_tags(cond=False)
                 title = pattern(mytag)
             else:
-                self.__format = lambda song: song.list(mytag)
                 title = tag(mytag)
                 self.tags = util.tagsplit(mytag)
+                if mytag[:2] == "~#" and "~" not in mytag[2:]:
+                    self.__format = lambda song: [unicode(song(mytag))]
+                else:
+                    self.__format = lambda song: song.list_separate(mytag)
 
             self.__next = next
             model = gtk.ListStore(str, object)

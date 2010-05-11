@@ -15,9 +15,11 @@ class _TPattern(TestCase):
                'unislash': u"foo\uff0fbar" }
         s3 = { 'title': 'test/subdir', 'genre':'/\n/',
                '~filename':'/one/more/a.flac', 'version': 'Instrumental'}
+        s4 = { 'performer': 'a\nb', 'artist': 'foo\nbar'}
         self.a = self.AudioFile(s1)
         self.b = self.AudioFile(s2)
         self.c = self.AudioFile(s3)
+        self.d = self.AudioFile(s4)
 
 class TPattern(_TPattern):
     from quodlibet.formats._audio import AudioFile
@@ -178,7 +180,36 @@ class TRealTags(TestCase):
         self.failUnlessEqual(Pattern(pat).real_tags(), ["foo", "bar", "fuu", "fa"])
         self.failUnlessEqual(Pattern(pat).real_tags(False), ["bar", "fuu", "fa"])
 
+class TPatternFormatList(_TPattern):
+    def test_same(s):
+        pat = Pattern('<~basename> <title>')
+        s.failUnlessEqual(pat.format_list(s.a), [pat.format(s.a)])
+        pat = Pattern('/a<genre|/<genre>>/<title>')
+        s.failUnlessEqual(pat.format_list(s.a), [pat.format(s.a)])
+
+    def test_same2(s):
+        fpat = FileFromPattern('<~filename>')
+        pat = Pattern('<~filename>')
+        s.assertEquals(fpat.format_list(s.a), [fpat.format(s.a)])
+        s.assertEquals(pat.format_list(s.a), [pat.format(s.a)])
+
+    def test_tied(s):
+        pat = Pattern('<genre>')
+        s.failUnlessEqual(pat.format_list(s.c), ['/', '/'])
+        pat = Pattern('<performer>')
+        s.failUnlessEqual(pat.format_list(s.d), ['a', 'b'])
+        pat = Pattern('<performer><performer>')
+        s.failUnlessEqual(pat.format_list(s.d), ['aa', 'ab', 'ba', 'bb'])
+        pat = Pattern('<~performer~artist>')
+        s.failUnlessEqual(pat.format_list(s.d),
+            ['a - foo', 'b - foo', 'a - bar', 'b - bar'])
+        pat = Pattern('<artist|<artist>.|<performer>>')
+        s.failUnlessEqual(pat.format_list(s.d), ['foo.', 'bar.'])
+        pat = Pattern('<artist|<artist|<artist>.|<performer>>>')
+        s.failUnlessEqual(pat.format_list(s.d), ['foo.', 'bar.'])
+
 add(TPattern)
 add(TFileFromPattern)
 add(TXMLFromPattern)
 add(TRealTags)
+add(TPatternFormatList)

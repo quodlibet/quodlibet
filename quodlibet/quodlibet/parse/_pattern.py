@@ -20,6 +20,7 @@ from quodlibet.parse._scanner import Scanner
 
 class _Dummy(dict):
     def comma(self, *args): return u"_"
+    def list_separate(self, *args): return [u""]
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -62,9 +63,10 @@ class PatternLexer(Scanner):
         else: return iter(s[0] + [PatternLexeme(EOF, "")])
 
 class PatternParser(object):
-    def __init__(self, tokens):
+    def __init__(self, tokens, func=lambda s, t: s.comma(t)):
         self.tokens = iter(tokens)
         self.lookahead = self.tokens.next()
+        self.func = func
 
     def Pattern(self, song):
         text = []
@@ -72,11 +74,12 @@ class PatternParser(object):
             la = self.lookahead
             self.match(TEXT, OPEN)
             if la.type == TEXT: text.append(la.lexeme)
-            elif la.type == OPEN: text.append(self.Tags(song))
-        return u"".join(text)
+            elif la.type == OPEN: text.extend(self.Tags(song))
+        return text
 
     def Tags(self, song):
         text = []
+        all = []
         tag = self.lookahead.lexeme
         if not tag.startswith("~") and "~" in tag: tag = "~" + tag
         try: self.match(TEXT)
@@ -84,7 +87,8 @@ class PatternParser(object):
             while self.lookahead.type not in [CLOSE, EOF]:
                 text.append(self.lookahead.lexeme)
                 self.match(self.lookahead.type)
-            return u"".join(text)
+            all.append(u"".join(text))
+            return all
         if self.lookahead.type == COND:
             self.match(COND)
             ifcase = self.Pattern(song)
@@ -93,28 +97,38 @@ class PatternParser(object):
                 elsecase = self.Pattern(song)
             else: elsecase = u""
 
-            if song.comma(tag): text.append(ifcase)
-            else: text.append(elsecase)
+            if self.func(song, tag): all.extend(ifcase)
+            else: all.extend(elsecase)
 
             try: self.match(CLOSE)
             except ParseError:
-                text.pop(-1)
+                all.pop(-1)
                 text.append("<")
-                text.append("|".join(filter(None, [tag, ifcase, elsecase])))
+                parts = filter(None, [tag, ifcase, elsecase])
+                for part in parts:
+                    text.extend(part)
+                    text.append("|")
+                if parts: text.pop(-1)
                 while self.lookahead.type not in [EOF, OPEN]:
                     text.append(self.lookahead.lexeme)
                     self.match(self.lookahead.type)
         else:
-            text.append(song.comma(tag))
+            if text:
+                all.append(u"".join(text))
+                text = []
+            all.append(self.func(song, tag))
             try: self.match(CLOSE)
             except ParseError:
-                text.pop(-1)
+                all.pop(-1)
                 text.append("<")
                 text.append(tag)
                 while self.lookahead.type not in [EOF, OPEN]:
                     text.append(self.lookahead.lexeme)
                     self.match(self.lookahead.type)
-        return u"".join(text)
+        if text:
+            all.append(u"".join(text))
+            text = []
+        return all
 
     def match(self, *tokens):
         if tokens != [EOF] and self.lookahead.type == EOF:
@@ -155,9 +169,37 @@ class _Pattern(PatternParser):
                 value = f(args[0], value)
             return value
 
+        def list_separate(self, key):
+            if key.startswith("~#") and "~" not in key[2:]:
+                values = [unicode(self.__song(key))]
+            else: values = self.__song.list_separate(key)
+            for f in self.__formatters:
+                values = map(lambda v: f(key, v), values)
+            return values
+
     def format(self, song):
         p = PatternParser(self.__tokens)
-        return self._post(p.Pattern(self.Song(song, self._formatters)), song)
+        vals = p.Pattern(self.Song(song, self._formatters))
+        return self._post(u"".join(vals), song)
+
+    def format_list(self, song):
+        """Returns a list of formated patterns with all tag combinations:
+        <performer>-bla returns [performer1-bla, performer2-bla]"""
+        def expand(values):
+            results = []
+            for val in values:
+                if type(val) == list:
+                    new_results = []
+                    for r in (results or [u""]):
+                        for part in val:
+                            new_results.append(r + part)
+                    results = new_results
+                else:
+                    results = [r + val for r in (results or [u""])]
+            return results
+        p = PatternParser(self.__tokens, lambda s, t: s.list_separate(t))
+        vals = expand(p.Pattern(self.Song(song, self._formatters)))
+        return [self._post(v, song) for v in vals]
 
     def real_tags(self, cond=True):
         tags = []

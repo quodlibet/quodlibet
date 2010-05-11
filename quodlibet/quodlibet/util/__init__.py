@@ -487,6 +487,14 @@ def pattern(pat, cap=True):
                 tags = [self.get(k, '') for k in tagsplit(key)]
                 return " - ".join(tags)
             return self.get(key, '')
+        def list(self, key):
+            if key.startswith('~') and '~' in key[1:]:
+                tags = [self.get(k, '') for k in tagsplit(key)]
+                return tags
+            return [self.get(key, '')]
+        list_seperate = list
+        __call__ = comma
+
     fakesong = Fakesong({'filename': tag('filename', cap)})
     p = Pattern(pat)
     for t in p.real_tags():

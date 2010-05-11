@@ -320,6 +320,19 @@ class AudioFile(dict):
         elif key in self: return self[key].split("\n")
         else: return []
 
+    def list_separate(self, key, connector=" - "):
+        """Similar to list, but will return a list of all combinations
+        for tied tags instead of one comma separated string"""
+        if key[:1] == "~" and "~" in key[1:]:
+            vals = filter(None, (self(tag) for tag in util.tagsplit(key)))
+            vals = (val.split("\n") for val in vals)
+            r = [[]]
+            for x in vals:
+                r = [ i + [y] for y in x for i in r ]
+            return map(connector.join, r)
+        else:
+            return self.list(key)
+
     def exists(self):
         """Return true if the file still exists (or we can't tell)."""
 

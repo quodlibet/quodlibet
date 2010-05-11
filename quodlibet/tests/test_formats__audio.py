@@ -109,6 +109,13 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_2_1.list("artist"),
                              bar_2_1["artist"].split("\n"))
 
+    def test_list_separate(self):
+        for key in bar_1_1.realkeys():
+            self.failUnlessEqual(bar_1_1.list_separate(key), [bar_1_1(key)])
+
+        self.failUnlessEqual(bar_2_1.list_separate("~artist~album"),
+             ['Foo - Bar', 'I have two artists - Bar'])
+
     def test_comma(self):
         for key in bar_1_1.realkeys():
             self.failUnlessEqual(bar_1_1.comma(key), bar_1_1(key))
