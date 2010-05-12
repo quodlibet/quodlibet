@@ -267,8 +267,6 @@ class QuodLibetWindow(gtk.Window):
         repeat.set_active(config.getboolean('settings', 'repeat'))
 
         self.connect('configure-event', QuodLibetWindow.__save_size)
-        self.connect('window-state-event', self.__window_state_changed)
-        self.__hidden_state = 0
 
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
@@ -350,27 +348,16 @@ class QuodLibetWindow(gtk.Window):
         if callable(self.browser.reordered): self.browser.reordered(view)
         self.songlist.set_sort_by(None, refresh=False)
 
-    def __window_state_changed(self, window, event):
-        assert window is self
-        self.__window_state = event.new_window_state
-
     def hide(self):
-        self.__hidden_state = self.__window_state
-        if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            self.unmaximize()
         super(QuodLibetWindow, self).hide()
         map(gtk.Window.hide, qltk.Window.childs)
 
     def present(self):
         super(QuodLibetWindow, self).present()
-        if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            self.maximize()
         map(gtk.Window.present, qltk.Window.childs)
 
     def show(self):
         super(QuodLibetWindow, self).show()
-        if self.__hidden_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            self.maximize()
         map(gtk.Window.show, qltk.Window.childs)
 
     def destroy(self, *args):
