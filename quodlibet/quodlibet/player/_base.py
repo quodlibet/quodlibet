@@ -73,7 +73,11 @@ class BasePlayer(gtk.Object):
 
     def remove(self, song):
         if self.song is song:
-            self._end(False)
+            if not self.paused:
+                self.next()
+            else:
+                self._source.reset()
+                self._end(True)
 
     def stop(self):
         self.paused = True
