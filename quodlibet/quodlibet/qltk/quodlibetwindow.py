@@ -669,7 +669,7 @@ class QuodLibetWindow(gtk.Window):
         from an event like song-started.
         """
 
-        def jump_to(song, explicit):
+        def jump_to(song, select=True):
             model =  self.songlist.model
             if song == model.current:
                 path = model.current_path
@@ -679,7 +679,7 @@ class QuodLibetWindow(gtk.Window):
                 path = model[iter].path
 
             self.songlist.scroll_to_cell(path, use_align=True, row_align=0.5)
-            if explicit:
+            if select:
                 selection = self.songlist.get_selection()
                 selection.unselect_all()
                 selection.select_path(path)
@@ -691,16 +691,14 @@ class QuodLibetWindow(gtk.Window):
         if song is None: return
 
         # model.find because the source could be the queue
-        if song != model.current and not model.find(song):
-            if explicit:
-                self.browser.scroll(player.playlist.song)
-                # We need to wait until the browser has finished
-                # scrolling/filling and the songlist is ready.
-                # Not perfect, but works for now.
-                gobject.idle_add(jump_to, song, explicit,
-                    priority=gobject.PRIORITY_LOW)
-        else:
-            jump_to(song, explicit)
+        if song == model.current or (model.find(song) and explicit):
+            jump_to(song, select=explicit)
+        elif explicit:
+            self.browser.scroll(player.playlist.song)
+            # We need to wait until the browser has finished
+            # scrolling/filling and the songlist is ready.
+            # Not perfect, but works for now.
+            gobject.idle_add(jump_to, song, priority=gobject.PRIORITY_LOW)
 
     def __next_song(self, *args): player.playlist.next()
     def __previous_song(self, *args): player.playlist.previous()
