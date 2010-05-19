@@ -26,9 +26,8 @@ NUM_DEFAULT_FUNCS = {
     "lastplayed": "max",
     "laststarted": "max",
     "mtime": "max",
-    "bitrate": "avg",
     "rating": "avg",
-    "skipcount": "avg",
+    "skipcount": "sum",
     "year": "min",
 }
 
@@ -184,6 +183,11 @@ class Album(object):
                 return len(self.songs)
             elif key == "discs":
                 return len(set([song("~#disc", 1) for song in self.songs]))
+            elif key == "bitrate":
+                length = self.get("~#length", 0)
+                if length == 0: return 0
+                w = lambda s: s("~#bitrate", 0) * s("~#length", 0)
+                return sum(w(song) for song in self.songs) / length
             elif key in NUM_DEFAULT_FUNCS:
                 func = NUM_DEFAULT_FUNCS[key]
             else:

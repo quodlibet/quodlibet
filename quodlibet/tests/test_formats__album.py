@@ -102,9 +102,9 @@ class TAlbum(TestCase):
             Fakesong({"~#length": 4, "~#added": 5, "~#lastplayed": 1,
             "~#bitrate": 200, "~#year": 100, "~#rating": 0.1}),
             Fakesong({"~#length": 7, "~#added": 7, "~#lastplayed": 88,
-            "~#bitrate": 100, "~#year": 99, "~#rating": 0.3}),
+            "~#bitrate": 220, "~#year": 99, "~#rating": 0.3}),
             Fakesong({"~#length": 1, "~#added": 3, "~#lastplayed": 43,
-            "~#bitrate": 150, "~#year": 33, "~#rating": 0.5})
+            "~#bitrate": 60, "~#year": 33, "~#rating": 0.5})
         ]
 
         album = Album(songs[0])
@@ -119,7 +119,7 @@ class TAlbum(TestCase):
 
         s.failUnlessEqual(album.get("~#added"), 7)
         s.failUnlessEqual(album.get("~#lastplayed"), 88)
-        s.failUnlessEqual(album.get("~#bitrate"), 150)
+        s.failUnlessEqual(album.get("~#bitrate"), 200)
         s.failUnlessEqual(album.get("~#year"), 33)
         s.failUnlessEqual(album.get("~#rating"), 0.3)
 
