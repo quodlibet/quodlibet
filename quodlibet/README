@@ -41,9 +41,9 @@ Quod Libet depends on the Python runtime and associated libraries.
 	http://code.google.com/p/quodlibet/wiki/Mutagen
 
 Particular audio formats depend on various GStreamer decoding elements, 
-as well as other Python modules. GStreamer splits their downlads into 
-good, bad, ugly, and ffmpeg packages, each of which contains elements; 
-you probably want them all.
+as well as other Python modules. GStreamer splits their downloads into 
+good, bad, ugly, and ffmpeg packages; you probably want them all in
+order to play as many formats as you can.
 
 Format		Decoder
 ------------------------------------------------------------------------
