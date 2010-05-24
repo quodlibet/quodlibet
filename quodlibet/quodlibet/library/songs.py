@@ -269,7 +269,7 @@ class FileLibrary(Library):
             if item.exists():
                 try:
                     item.reload()
-                except StandardError:
+                except (StandardError, EnvironmentError):
                     print_d("Error reloading %r." % item.key, self)
                     util.print_exc()
                     return False, True

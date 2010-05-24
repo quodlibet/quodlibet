@@ -92,9 +92,9 @@ class TSongFileLibrary(TSongLibrary):
 
     def test__load_error_during_reload(self):
         try:
-            import traceback
-            print_exc = traceback.print_exc
-            traceback.print_exc = lambda *args: None
+            from quodlibet import util
+            print_exc = util.print_exc
+            util.print_exc = lambda *args, **kwargs: None
             new = self.Fake(100)
             def error(): raise IOError
             new.reload = error
@@ -105,7 +105,7 @@ class TSongFileLibrary(TSongLibrary):
             self.failIf(new._valid)
             self.failIf(new in self.library)
         finally:
-            traceback.print_exc = print_exc
+            util.print_exc = print_exc
 
     def test__load_not_mounted(self):
         new = self.Fake(100)
