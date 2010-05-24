@@ -324,7 +324,8 @@ class AudioFile(dict):
         """Similar to list, but will return a list of all combinations
         for tied tags instead of one comma separated string"""
         if key[:1] == "~" and "~" in key[1:]:
-            vals = filter(None, (self(tag) for tag in util.tagsplit(key)))
+            vals = filter(None, map(unicode,
+                (self(tag) for tag in util.tagsplit(key))))
             vals = (val.split("\n") for val in vals)
             r = [[]]
             for x in vals:
