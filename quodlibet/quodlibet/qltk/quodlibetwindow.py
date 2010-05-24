@@ -77,16 +77,12 @@ class MainSongList(SongList):
             self.set_cell_data_func(self._render, self._cdf)
             self.header_name = "~current"
 
-    def __init__(self, library, player, visible):
+    def __init__(self, library, player):
         super(MainSongList, self).__init__(library, player)
         self.set_rules_hint(True)
         s = library.librarian.connect_object('removed', map, player.remove)
         self.connect_object('destroy', library.librarian.disconnect, s)
         self.connect_object('row-activated', self.__select_song, player)
-        self.connect_object('notify::visible', self.__visibility, visible)
-
-    def __visibility(self, visible, event):
-        visible.set_active(self.get_property('visible'))
 
     def __select_song(self, player, indices, col):
         iter = self.model.get_iter(indices)
@@ -97,6 +93,18 @@ class MainSongList(SongList):
         super(MainSongList, self).set_sort_by(*args, **kwargs)
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
+
+class SongListScroller(gtk.ScrolledWindow):
+    def __init__(self, menu):
+        super(SongListScroller, self).__init__()
+        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        self.set_shadow_type(gtk.SHADOW_IN)
+        self.connect_object('notify::visible', self.__visibility, menu)
+
+    def __visibility(self, menu, event):
+        value = self.get_property('visible')
+        menu.set_active(value)
+        config.set("memory", "songlist", str(value))
 
 class StatusBar(gtk.HBox):
     def __init__(self):
@@ -172,11 +180,14 @@ class QuodLibetWindow(gtk.Window):
         self.child.pack_start(realvbox)
 
         # get the playlist up before other stuff
-        self.songlist = MainSongList(
-            library, player, self.ui.get_widget("/Menu/View/SongList"))
+        self.songlist = MainSongList(library, player)
+        self.songlist.show_all()
         self.add_accel_group(self.songlist.accelerators)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
+        self.song_scroller = SongListScroller(
+            self.ui.get_widget("/Menu/View/SongList"))
+        self.song_scroller.add(self.songlist)
         self.qexpander = QueueExpander(
             self.ui.get_widget("/Menu/View/Queue"), library, player)
         self.playlist = PlaylistMux(
@@ -222,30 +233,20 @@ class QuodLibetWindow(gtk.Window):
         align.add(hbox)
         self.child.pack_end(align, expand=False)
 
-        # song list
-        self.song_scroller = sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.add(self.songlist)
-
         self.songpane = gtk.VBox(spacing=6)
         self.songpane.pack_start(self.song_scroller)
         self.songpane.pack_start(self.qexpander, expand=False, fill=True)
-        self.songpane.show_all()
         self.song_scroller.connect('notify::visible', self.__show_or)
         self.qexpander.connect('notify::visible', self.__show_or)
 
         sort = config.get('memory', 'sortby')
         self.songlist.set_sort_by(None, sort[1:], order=int(sort[0]))
 
-        self.inter = gtk.VBox()
-
         self.browser = None
 
         self.__keys = MmKeys(player)
 
         self.child.show_all()
-        sw.show_all()
 
         self.statusbar = StatusBar()
         hbox.pack_start(self.statusbar)
@@ -635,7 +636,6 @@ class QuodLibetWindow(gtk.Window):
 
     def showhide_playlist(self, toggle):
         self.song_scroller.set_property('visible', toggle.get_active())
-        config.set("memory", "songlist", str(toggle.get_active()))
         self.__refresh_size()
 
     def showhide_playqueue(self, toggle):
