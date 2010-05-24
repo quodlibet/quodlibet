@@ -271,8 +271,9 @@ class SongList(AllTreeView, util.InstanceTracker):
         def _cdf(self, column, cell, model, iter, tag):
             try:
                 song = model.get_value(iter, 0)
-                cell.set_property(
-                    'text', util.format_rating(song.get("~#rating", 0.5)))
+                cell.set_property('text',
+                    util.format_rating(
+                    song.get("~#rating", const.DEFAULT_RATING)))
                 # No need to update layout, we know this width at
                 # at startup.
             except AttributeError: pass

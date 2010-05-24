@@ -127,7 +127,7 @@ class Limit(gtk.HBox):
                     if r1 or r2: return cmp(random.random(), r1/(r1+r2))
                     else: return random.randint(-1, 1)
                 def rating(song):
-                    return song.get("~#rating", 0.5)
+                    return song("~#rating")
                 songs.sort(cmp=choose, key=rating)
             else: random.shuffle(songs)
             return songs[:limit]
