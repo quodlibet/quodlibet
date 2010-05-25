@@ -231,7 +231,7 @@ class BoxSearchBar(gtk.HBox):
             # Called from 'focus-out-event' signal
             return
         if text and Query.is_parsable(text):
-            self.__combo.prepend_text(text)
+            self.__combo.prepend_text(text.strip())
             self.__combo.write(QUERIES)
 
     def __test_filter(self, textbox):
