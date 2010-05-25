@@ -5,7 +5,7 @@ from quodlibet import widgets
 
 from quodlibet.browsers.paned import PanedBrowser
 from quodlibet.formats._audio import AudioFile
-from quodlibet.library import SongLibrary
+from quodlibet.library import SongLibrary, SongLibrarian
 
 SONGS = [
     AudioFile({"title": "one", "artist": "piman", "~filename": "/dev/null"}),
@@ -21,6 +21,7 @@ class TPanedBrowser(TestCase):
         config.init()
         config.set("browsers", "panes", "artist")
         library = SongLibrary()
+        library.librarian = SongLibrarian()
         PanedBrowser.init(library)
         for af in SONGS:
             af.sanitize()
