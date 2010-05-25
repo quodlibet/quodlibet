@@ -1,65 +1,72 @@
-# Copyright 2006 Joe Wreschnig
+# Copyright 2006 Joe Wreschnig, 2010 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-# An example of a bookmark manager. Making the window look nicer,
-# being able to edit bookmarks from it directly, or coping with errors
-# is left as an exercise for the reader.
+import gtk
+import gobject
 
-import gobject, gtk
-import qltk
-from qltk.views import HintedTreeView
+from quodlibet import qltk
 from plugins.songsmenu import SongsMenuPlugin
-
-class GoToDialog(qltk.Window):
-    def __init__(self, songs):
-        super(GoToDialog, self).__init__()
-        self.set_default_size(350, 250)
-        self.set_title(_("Bookmarks"))
-        self.set_border_width(12)
-        model = gtk.TreeStore(str, object)
-        for song in songs:
-            iter = model.append(None, row=[song("title"), song])
-            for time, name in song.bookmarks:
-                model.append(iter, row=[name, time])
-        view = gtk.TreeView(model)
-        view.set_rules_hint(True)
-        view.connect('row-activated', self.__row_activated, model)
-        view.expand_all()
-
-        render = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("Bookmarks"), render, text=0)
-        view.append_column(col)
-
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.add(view)
-
-        self.add(sw)
-        self.show_all()
-
-    def __row_activated(self, view, path, column, model):
-        if len(path) == 1:
-            time = 0
-            song = model[path][1]
-        else:
-            time = model[path][1]
-            song = model[path[:1]][1]
-
-        from player import playlist as player
-        player.go_to(song._song)
-        # Ugly hack to avoid trying to seek before GSt is ready.
-        gobject.timeout_add(200, player.seek, time * 1000)
-        self.destroy()
 
 class Bookmarks(SongsMenuPlugin):
     PLUGIN_ID = "Go to Bookmark..."
     PLUGIN_NAME = _("Go to Bookmark...")
     PLUGIN_DESC = "List all bookmarks in the selected files."
     PLUGIN_ICON = gtk.STOCK_JUMP_TO
-    PLUGIN_VERSION = "0.3"
+    PLUGIN_VERSION = "0.4"
 
-    plugin_songs = GoToDialog
+    def __init__(self, songs):
+        super(Bookmarks, self).__init__(songs)
+        self.__menu = gtk.Menu()
+        self.__menu.connect('map', self.__map, songs)
+        self.__menu.connect('unmap', self.__unmap)
+        self.set_submenu(self.__menu)
+
+    class FakePlayer(object):
+        def __init__(self, song):
+            self.song = song
+
+        def seek(self, time):
+            from player import playlist as player
+            player.go_to(self.song._song)
+            # Ugly hack to avoid trying to seek before GSt is ready.
+            gobject.timeout_add(200, player.seek, time*1000)
+
+        get_position = lambda *x: 0
+
+    def __map(self, menu, songs):
+        from quodlibet.library import library
+
+        for song in songs:
+            marks = song.bookmarks
+            if marks:
+                fake_player = self.FakePlayer(song)
+
+                song_item = gtk.MenuItem(song.comma("title"))
+                song_menu = gtk.Menu()
+                song_item.set_submenu(song_menu)
+                menu.append(song_item)
+
+                items = qltk.bookmarks.MenuItems(marks, fake_player, True)
+                map(song_menu.append, items)
+
+                song_menu.append(gtk.SeparatorMenuItem())
+                i = qltk.MenuItem(_("_Edit Bookmarks..."), gtk.STOCK_EDIT)
+                s = i.connect_object('activate',
+                    qltk.bookmarks.EditBookmarks, None, library, fake_player)
+                i.connect_object('destroy', lambda i, s: i.disconnect(s), i, s)
+                song_menu.append(i)
+
+        if menu.get_active() is None:
+            no_marks = gtk.MenuItem(_("No Bookmarks"))
+            no_marks.set_sensitive(False)
+            menu.append(no_marks)
+
+        menu.show_all()
+
+    def __unmap(self, menu):
+        map(gtk.Widget.destroy, self.__menu.get_children())
+
+    def plugin_songs(self, songs): pass
