@@ -32,7 +32,7 @@ class Bookmarks(SongsMenuPlugin):
             from player import playlist as player
             player.go_to(self.song._song)
             # Ugly hack to avoid trying to seek before GSt is ready.
-            gobject.timeout_add(200, player.seek, time*1000)
+            gobject.timeout_add(200, player.seek, time)
 
         get_position = lambda *x: 0
 
@@ -54,9 +54,8 @@ class Bookmarks(SongsMenuPlugin):
 
                 song_menu.append(gtk.SeparatorMenuItem())
                 i = qltk.MenuItem(_("_Edit Bookmarks..."), gtk.STOCK_EDIT)
-                s = i.connect_object('activate',
+                i.connect_object('activate',
                     qltk.bookmarks.EditBookmarks, None, library, fake_player)
-                i.connect_object('destroy', lambda i, s: i.disconnect(s), i, s)
                 song_menu.append(i)
 
         if menu.get_active() is None:
@@ -67,6 +66,6 @@ class Bookmarks(SongsMenuPlugin):
         menu.show_all()
 
     def __unmap(self, menu):
-        map(gtk.Widget.destroy, self.__menu.get_children())
+        map(self.__menu.remove, self.__menu.get_children())
 
     def plugin_songs(self, songs): pass
