@@ -1221,11 +1221,11 @@ msgstr "Niciodată"
 
 #: ../quodlibet/qltk/information.py:221
 #, python-format
-msgid "%d time"
-msgid_plural "%d times"
+msgid "%(n)d time"
+msgid_plural "%(n)d times"
 msgstr[0] "O dată"
-msgstr[1] "De %d ori"
-msgstr[2] "De %d de ori"
+msgstr[1] "De %(n)d ori"
+msgstr[2] "De %(n)d de ori"
 
 #: ../quodlibet/qltk/information.py:240 ../quodlibet/util/tags.py:84
 msgid "added"

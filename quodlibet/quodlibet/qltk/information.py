@@ -218,7 +218,7 @@ class OneSong(qltk.Notebook):
     def _library(self, song, box):
         def counter(i):
             if i == 0: return _("Never")
-            else: return ngettext("%d time", "%d times", i) % i
+            else: return ngettext("%(n)d time", "%(n)d times", i) % {"n": i}
         def ftime(t):
             if t == 0:
                 return _("Unknown")
