@@ -142,7 +142,7 @@ class BoxSearchBar(gtk.HBox):
 
         if limit: self.__limit = Limit()
 
-        combo = ComboBoxEntrySave(QUERIES, model="searchbar", count=8)
+        combo = ComboBoxEntrySave(QUERIES, count=8)
         if not completion:
             completion = LibraryTagCompletion(library.librarian)
         combo.child.set_completion(completion)
@@ -232,7 +232,7 @@ class BoxSearchBar(gtk.HBox):
             return
         if text and Query.is_parsable(text):
             self.__combo.prepend_text(text.strip())
-            self.__combo.write(QUERIES)
+            self.__combo.write()
 
     def __test_filter(self, textbox):
         text = textbox.get_text().decode('utf-8')

@@ -155,15 +155,17 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
     and can save itself to (and load itself from) a filename or file-like."""
 
-    models = {}
+    __models = {}
+    __last = ""
 
-    def __init__(self, filename=None, initial=[], count=5, model=None):
+    def __init__(self, filename=None, initial=[], count=5, id=None):
         self.count = count
         self.filename = filename
-        try: model = self.models[model]
+        id = filename or id
+
+        try: model = self.__models[id]
         except KeyError:
-            model = self.models[model] = gtk.ListStore(str, str, str)
-        else: model = gtk.ListStore(str, str, str)
+            model = type(self).__models[id] = gtk.ListStore(str, str, str)
 
         super(ComboBoxEntrySave, self).__init__(model, 0)
         self.clear()
@@ -178,7 +180,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
 
         self.set_row_separator_func(self.__separator_func)
 
-        if len(model) == 0:
+        if not len(model):
             self.__fill(filename, initial)
         self.connect_object('destroy', self.set_model, None)
         self.connect_object('changed', self.__changed, model)
@@ -196,12 +198,13 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         iter = self.get_active_iter()
         if iter:
             if model[iter][2] in ICONS:
+                self.child.set_text(self.__last)
                 Kind = ICONS[model[iter][2]]
                 Kind(self)
                 self.set_active(-1)
             else:
                 self.__focus_entry()
-        model[self.__special_iter][0] = self.child.get_text()
+        self.__last = self.child.get_text()
 
     def __focus_entry(self):
         self.child.grab_focus()
@@ -209,8 +212,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
 
     def __fill(self, filename, initial):
         model = self.get_model()
-        self.__special_iter = model.append(
-            row=["", _("Edit saved values..."), gtk.STOCK_EDIT])
+        model.append(row=["", _("Edit saved values..."), gtk.STOCK_EDIT])
         model.append(row=[None, None, None])
 
         if filename is None: return

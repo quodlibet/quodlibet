@@ -20,12 +20,16 @@ class TComboBoxEntrySave(TestCase):
         f = file(self.fname + ".saved", "w")
         f.write(self.saved)
         f.close()
-        self.cbes = ComboBoxEntrySave(self.fname, count=2, model=self.fname)
-        self.cbes2 = ComboBoxEntrySave(self.fname, count=2, model=self.fname)
+        self.cbes = ComboBoxEntrySave(self.fname, count=2)
+        self.cbes2 = ComboBoxEntrySave(self.fname, count=2)
 
     def test_equivalence(self):
-        rows1 = list(self.cbes.get_model())
-        rows2 = list(self.cbes2.get_model())
+        model1 = self.cbes.get_model()
+        model2 = self.cbes2.get_model()
+        self.failUnlessEqual(model1, model2)
+
+        rows1 = list(model1)
+        rows2 = list(model2)
 
         for row1, row2 in zip(rows1, rows2):
             self.failUnlessEqual(row1[0], row2[0])
@@ -49,12 +53,6 @@ class TComboBoxEntrySave(TestCase):
         self.cbes.write()
         self.failUnlessEqual(self.memory, file(self.fname).read())
         self.failUnlessEqual(self.saved, file(self.fname + ".saved").read())
-
-    def test_set_text_iter_magic(self):
-        self.cbes.child.set_text("foobar")
-        for row in self.cbes.get_model():
-            if row[2] != None:
-                self.failUnlessEqual("foobar", row[0])
 
     def test_set_text_then_prepend(self):
         self.cbes.child.set_text("foobar")
