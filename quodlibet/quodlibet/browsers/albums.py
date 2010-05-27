@@ -223,7 +223,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         """Trigger a row redraw for each album that changed"""
         changed_albums = changed.copy()
         for row in model:
-            if row[0] and row[0] in changed:
+            if row[0] and row[0] in changed_albums:
                 changed_albums.remove(row[0])
                 model.row_changed(row.path, row.iter)
                 if not changed_albums: break

@@ -735,8 +735,14 @@ class SongList(AllTreeView, util.InstanceTracker):
         return [model[row][0] for row in rows]
 
     def __song_updated(self, librarian, songs):
+        """Only update rows that are currently displayed.
+        Warning: This makes the row-changed signal useless."""
+        vrange = self.get_visible_range()
+        if vrange is None: return
+        (start,), (end,) = vrange
         model = self.get_model()
-        for row in model:
+        for path in xrange(start, end+1):
+            row = model[path]
             if row[0] in songs:
                 model.row_changed(row.path, row.iter)
 

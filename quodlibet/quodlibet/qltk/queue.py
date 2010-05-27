@@ -71,7 +71,7 @@ class QueueExpander(gtk.Expander):
         self.model = self.queue.model
         self.show_all()
 
-        self.queue.model.connect_after('row-changed',
+        self.queue.model.connect_after('row-inserted',
             util.DeferredSignal(self.__check_expand), l2)
         self.queue.model.connect_after('row-deleted',
             util.DeferredSignal(self.__update_count), l2)
