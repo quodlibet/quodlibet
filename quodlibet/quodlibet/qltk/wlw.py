@@ -158,7 +158,8 @@ class WaitLoadWindow(WaitLoadBase, gtk.Window):
         self.move(x + dx // 2 - dx2 // 2, y + dy // 2 - dy2 // 2)
 
     def __disconnect(self, sig, parent):
-        parent.window.set_cursor(None)
+        if parent.window:
+            parent.window.set_cursor(None)
         parent.disconnect(sig)
 
 class WritingWindow(WaitLoadWindow):
