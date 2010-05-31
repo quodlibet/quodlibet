@@ -80,5 +80,4 @@ class SongTracker(object):
         # This is easier, if lamer, QLScrobbler's time() shenanigans
         if not player.paused:
             self.elapsed += 1
-        print self.elapsed
         return True

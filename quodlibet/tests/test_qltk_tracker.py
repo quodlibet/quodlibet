@@ -13,10 +13,10 @@ class TSongTracker(TestCase):
         self.w = SongLibrary()
         self.s1 = AudioFile(
             {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,
-             "~filename": "foo"})
+             "~filename": "foo", "~#length": 1.5})
         self.s2 = AudioFile(
             {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,
-             "~filename": "foo"})
+             "~filename": "foo", "~#length": 1.5})
         self.cm = SongTracker(self.w, self.p, self)
         self.current = None
 
@@ -24,9 +24,14 @@ class TSongTracker(TestCase):
         while gtk.events_pending(): gtk.main_iteration()
 
     def test_play(self):
+        import time
+        # Allow at least 1 second to elapse to simulate playing
+        self.p.paused = False
+        time.sleep(1.1)
+        self.do()
         self.p.emit('song-ended', self.s1, False)
         self.do()
-        import time; t = time.time()
+        t = time.time()
         self.assertEquals(self.s1["~#playcount"], 1)
         self.assertEquals(self.s1["~#skipcount"], 0)
         self.failUnless(t - self.s1["~#lastplayed"] <= 1)
