@@ -77,6 +77,8 @@ class MainSongList(SongList):
             self.set_cell_data_func(self._render, self._cdf)
             self.header_name = "~current"
 
+    _activated = False
+
     def __init__(self, library, player):
         super(MainSongList, self).__init__(library, player)
         self.set_rules_hint(True)
@@ -84,7 +86,15 @@ class MainSongList(SongList):
         self.connect_object('destroy', library.librarian.disconnect, s)
         self.connect_object('row-activated', self.__select_song, player)
 
+        # ugly.. so the main window knows if the next song-started
+        # comes from an row-activated or anything else.
+        def reset_activated(*args):
+            self._activated = False
+        s = player.connect_after('song-started', reset_activated)
+        self.connect_object('destroy', player.disconnect, s)
+
     def __select_song(self, player, indices, col):
+        self._activated = True
         iter = self.model.get_iter(indices)
         player.go_to(iter)
         if player.song: player.paused = False
@@ -617,7 +627,9 @@ class QuodLibetWindow(gtk.Window):
                 self.ui.get_widget(
                     "/Menu/Filters/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
-        if song and config.getboolean("settings", "jump"):
+
+        if song and not self.songlist._activated and \
+            config.getboolean("settings", "jump"):
             self.__jump_to_current(False)
 
     def __save_size(self, event):
