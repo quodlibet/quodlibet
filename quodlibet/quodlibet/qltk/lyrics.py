@@ -59,11 +59,11 @@ class LyricsPane(gtk.VBox):
 
         save.set_sensitive(False)
         add.set_sensitive(True)
-        
+
         if os.path.exists(lyricname):
             buffer.set_text(file(lyricname).read())
-        else: 
-            #buffer.set_text(_("No lyrics found.\n\nYou can click the " 
+        else:
+            #buffer.set_text(_("No lyrics found.\n\nYou can click the "
             #                  "Download button to have Quod Libet search "
             #                  "for lyrics online.  You can also enter them "
             #                  "yourself and click save."))
@@ -84,17 +84,17 @@ class LyricsPane(gtk.VBox):
             target=self.__search, args=(song, buffer, refresh, add))
         thread.setDaemon(True)
         thread.start()
-        
+
     def __search(self, song, buffer, refresh, add):
         artist = song.comma("artist")
         title = song.comma("title")
-        
+
         try:
             sock = urllib.urlopen(
                 "http://lyricwiki.org/api.php?"
                 "client=QuodLibet&func=getSong&artist=%s&song=%s&fmt=text"%(
                 urllib.quote(artist.encode('utf-8')),
-                urllib.quote(title.encode('utf-8'))))        
+                urllib.quote(title.encode('utf-8'))))
             text = sock.read()
         except Exception, err:
             try: err = err.strerror.decode(const.ENCODING, 'replace')

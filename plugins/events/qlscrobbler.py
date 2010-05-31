@@ -40,7 +40,7 @@ def log(msg):
     print_d("[qlscrobbler] %s" % msg)
 
 def config_get(key, default=''):
-    """Returns value for 'key' from config. If key is missing *or empty*, 
+    """Returns value for 'key' from config. If key is missing *or empty*,
     return default."""
     try:
         return (config.get("plugins", "scrobbler_%s" % key) or default)
@@ -345,7 +345,7 @@ class QLScrobbler(EventPlugin):
         if self.elapsed < 240 and self.elapsed <= .5 * song.get("~#length", 0):
             return
         if self.exclude != "" and parse.Query(self.exclude).search(song):
-            log("Not submitting: %s - %s" % (song.get("artist"), 
+            log("Not submitting: %s - %s" % (song.get("artist"),
                                              song.get("title")))
             return
         self.queue.submit(song, self.start_time)

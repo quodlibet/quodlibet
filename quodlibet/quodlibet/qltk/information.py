@@ -159,7 +159,7 @@ class OneSong(qltk.Notebook):
         cover = CoverImage(song=song)
         if cover: hb.pack_start(cover, expand=False)
         else: cover.destroy()
-                            
+
         hb.pack_start(w)
         box.pack_start(Frame(tag("album"), hb), expand=False, fill=False)
 

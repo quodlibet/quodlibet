@@ -50,7 +50,7 @@ class install(distutils_install):
     """Override the default install with new subcommands."""
 
     sub_commands = distutils_install.sub_commands + [
-        ("install_shortcuts", lambda self: self.distribution.has_shortcuts()), 
+        ("install_shortcuts", lambda self: self.distribution.has_shortcuts()),
         ("install_man", lambda self: self.distribution.has_man_pages()),
         ("install_mo", lambda self: self.distribution.has_po()),
        ]
@@ -74,7 +74,7 @@ class GDistribution(Distribution):
     Example:
       from distutils.core import setup
       from gdist import GDistribution
-      
+
       setup(distclass=GDistribution, ...)
       """
 

@@ -181,7 +181,7 @@ class MultiDragTreeView(gtk.TreeView):
     * Selections don't change until button-release-event...
     * Unless they're a Shift/Ctrl modification, then they happen immediately
     * Drag icons include 3 rows/2 plus a "and more" count"""
-    
+
     def __init__(self, *args):
         super(MultiDragTreeView, self).__init__(*args)
         self.connect_object(
@@ -333,7 +333,7 @@ class RCMTreeView(gtk.TreeView):
         menu_y = rect.y + rect.height + dy
         if menu_y + ma.height > screen_height and rect.y + dy - ma.height > 0:
             menu_y = rect.y + dy - ma.height
-        if gtk.widget_get_default_direction() == gtk.TEXT_DIR_LTR: 
+        if gtk.widget_get_default_direction() == gtk.TEXT_DIR_LTR:
             menu_x = min(rect.x + dx, screen_width - ma.width)
         else:
             menu_x = max(0, rect.x + dx - ma.width + rect.width)

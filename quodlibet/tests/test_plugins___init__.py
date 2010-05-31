@@ -132,4 +132,4 @@ class TListWrapper(TestCase):
         self.failUnlessEqual(wrapped, [None, None])
 add(TListWrapper)
 
-        
+

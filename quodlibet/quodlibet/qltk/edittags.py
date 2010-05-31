@@ -441,7 +441,7 @@ class EditTags(gtk.VBox):
         if not replaced: row[EDITED] = row[DELETED] = True
 
     def __popup_menu(self, view, parent):
-        menu = gtk.Menu()        
+        menu = gtk.Menu()
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
 
@@ -571,7 +571,7 @@ class EditTags(gtk.VBox):
                 renamed[row[TAG]].append((util.decode(row[ORIGTAG]),
                                           util.decode(row[VALUE]),
                                           util.decode(row[ORIGVALUE])))
-                
+
         was_changed = []
         songs = self.__songinfo.songs
         win = WritingWindow(self, len(songs))
@@ -679,7 +679,7 @@ class EditTags(gtk.VBox):
             msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
                     " selected do not support editing this tag."
                     ) % util.escape(row[TAG])
-            qltk.ErrorMessage(self, title, msg).run()            
+            qltk.ErrorMessage(self, title, msg).run()
         elif not self.__songinfo.can_change(new_tag):
             # Can't add the new tag.
             title = _("Invalid tag")

@@ -452,7 +452,7 @@ class TrayIcon(EventPlugin):
         repeat.connect('toggled',
             lambda s: window.repeat.set_active(s.get_active()))
 
-        
+
         def set_safter(widget, stop_after):
             stop_after.active = widget.get_active()
 

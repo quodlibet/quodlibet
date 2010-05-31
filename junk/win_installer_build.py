@@ -427,7 +427,7 @@ def do_setup(rev):
 
     dist_path = join(TDIR, r'ql\quodlibet\dist')
 
-    # You must have a license to restribute the resulting installer 
+    # You must have a license to restribute the resulting installer
     #for file in ['Microsoft.VC90.CRT.manifest', 'msvcr90.dll']:
     #    shutil.copy(join(TDIR, 'Python', file), dist_path)
 

@@ -120,7 +120,7 @@ def make_info_label((disc, track), album, discid):
             escape(track[key].encode('utf-8'))))
 
     return '\n'.join(message)
-    
+
 class CDDBLookup(SongsMenuPlugin):
     PLUGIN_ID = 'CDDB lookup'
     PLUGIN_NAME = _('CDDB Lookup')

@@ -94,7 +94,7 @@ class Notebook(gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no
     label is given, the page's 'title' attribute (either a string or
     a widget) is used."""
-    
+
     def append_page(self, page, label=None):
         if label is None:
             try: label = page.title

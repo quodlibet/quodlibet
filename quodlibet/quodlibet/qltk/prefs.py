@@ -155,7 +155,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.pack_start(f, expand=False)
 
             c1 = ConfigCheckButton(
-                _("Confirm _multiple ratings"), 
+                _("Confirm _multiple ratings"),
                 'browsers', 'rating_confirm_multiple')
             c1.set_active(
                 config.getboolean("browsers", "rating_confirm_multiple"))
@@ -175,7 +175,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             vbox.pack_start(c2, expand=False)
 
             f1 = qltk.Frame(_("Ratings"), child=vbox)
-            self.pack_start(f1, expand=False)          
+            self.pack_start(f1, expand=False)
 
         def _entry(self, entry, name, section="settings"):
             config.set(section, name, entry.get_text())

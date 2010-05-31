@@ -22,7 +22,7 @@ import gtk
 try:
     import fcntl
 except ImportError:
-    fcntl = None 
+    fcntl = None
 
 from quodlibet import util
 
@@ -145,7 +145,7 @@ class Library(gtk.Object):
             if os.path.exists(filename):
                 fileobj = file(filename, "rb")
                 try: items = pickle.load(fileobj)
-                except (pickle.PickleError, EnvironmentError, 
+                except (pickle.PickleError, EnvironmentError,
                         ImportError, EOFError):
                     util.print_exc()
                     try: shutil.copy(filename, filename + ".not-valid")
@@ -305,4 +305,4 @@ class Librarian(gtk.Object):
         finally:
             from_.handler_unblock(self.__signals[from_][1])
             to.handler_unblock(self.__signals[to][0])
-            
+

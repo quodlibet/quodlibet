@@ -41,7 +41,7 @@ class TAudioFile(TestCase):
         self.assertEqual(quux, quux)
         self.assertEqual(bar_1_1, bar_1_1)
         self.assertNotEqual(bar_2_1, bar_1_2)
-        
+
     def test_realkeys(self):
         self.failIf("artist" in quux.realkeys())
         self.failIf("~filename" in quux.realkeys())
@@ -67,7 +67,7 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(quux("~basename"), "asong.ogg")
         self.failUnlessEqual(quux("~dirname"), "tests/data")
         self.failUnlessEqual(quux("title"), "asong.ogg [Unknown]")
-        
+
         self.failUnlessEqual(bar_1_1("~#disc"), 1)
         self.failUnlessEqual(bar_1_2("~#disc"), 1)
         self.failUnlessEqual(bar_2_1("~#disc"), 2)
@@ -258,7 +258,7 @@ class TAudioFile(TestCase):
         song.add("foo", "one more")
         song.remove("foo", "not in list")
         self.failIf("foo" in song)
-        
+
     def test_change(self):
         song = AudioFile()
         song.add("foo", "bar")
@@ -421,7 +421,7 @@ class Tfind_cover(TestCase):
             file(f, "w").close()
             self.files.append(f)
             self.failUnlessEqual(os.path.abspath(quux.find_cover().name), f)
-        self.test_labelid() # labelid must work with other files present        
+        self.test_labelid() # labelid must work with other files present
 
     def tearDown(self):
         map(os.unlink, self.files)

@@ -110,7 +110,7 @@ class WMAFile(AudioFile):
 def unpack_image(data):
     """
     Helper function to unpack image data from a WM/Picture tag.
-    
+
     The data has the following format:
     1 byte: Picture type (0-20), see ID3 APIC frame specification at http://www.id3.org/id3v2.4.0-frames
     4 bytes: Picture data length in LE format

@@ -15,7 +15,7 @@ from quodlibet import util
 
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.songsmenu import SongsMenu        
+from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 
 QUEUE = os.path.join(const.USERDIR, "queue")

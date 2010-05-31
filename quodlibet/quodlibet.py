@@ -169,7 +169,7 @@ def process_arguments():
                     "song-list", "queue"]
 
     options = util.OptionParser(
-        "Quod Libet", const.VERSION, 
+        "Quod Libet", const.VERSION,
         _("a music library and player"),
         _("[ --print-playing | control ]"))
 

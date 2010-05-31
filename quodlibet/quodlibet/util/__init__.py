@@ -98,7 +98,7 @@ class OptionParser(object):
             if self.__args[opt]:
                 opt = "%s=%s" % (opt, self.__args[opt])
             return "  --%s %s\n" % (opt.ljust(space), help)
-                
+
         else: return ""
 
     def help(self):

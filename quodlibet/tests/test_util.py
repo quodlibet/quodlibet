@@ -127,7 +127,7 @@ add(Tdecode)
 class Tencode(TestCase):
     def test_empty(self):
         self.failUnlessEqual(util.encode(""), "")
-    def test_unicode(self):        
+    def test_unicode(self):
         self.failUnlessEqual(util.encode(u"abcde"), "abcde")
 add(Tencode)
 
@@ -274,7 +274,7 @@ class Tsplit_album(TestCase):
         self.failUnlessEqual(
             util.split_album("disk 2"), ("disk 2", None))
 
-    def test_basic_disc(self):        
+    def test_basic_disc(self):
         self.failUnlessEqual(
             util.split_album("foo disc 1/2"), ("foo", "1/2"))
 

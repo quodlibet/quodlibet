@@ -220,7 +220,7 @@ class AudioFile(dict):
                         i = 0
                         for role in performers[performer]:
                             if i > 0:
-                                roles += ', '                            
+                                roles += ', '
                             roles += role
                             i += 1
                         values.append("%s (%s)" % (performer, roles))

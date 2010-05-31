@@ -34,7 +34,7 @@ class ID3File(AudioFile):
             "TIT2": "title",
             "TIT3": "version",
             "TPE1": "artist",
-            "TPE2": "performer", 
+            "TPE2": "performer",
             "TPE3": "conductor",
             "TPE4": "arranger",
             "TEXT": "lyricist",
@@ -183,7 +183,7 @@ class ID3File(AudioFile):
         self.sanitize(filename)
 
     def __process_rg(self, frame):
-        if frame.channel == 1:            
+        if frame.channel == 1:
             if frame.desc == "album": k = "album"
             elif frame.desc == "track": k = "track"
             elif "replaygain_track_gain" not in self: k = "track" # fallback

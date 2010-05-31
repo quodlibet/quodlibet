@@ -218,7 +218,7 @@ class ChooseNewStations(gtk.Dialog):
 
         for id, song in enumerate(irfs):
             listmodel.append([song, id, True, False, song("~artist~title"),
-                              ', '.join(song("genre").split()), 
+                              ', '.join(song("genre").split()),
                               song("~#bitrate", 0)])
         self.listmodel = listmodel
         self.model = model
@@ -393,7 +393,7 @@ class InternetRadio(gtk.HBox, Browser):
     def activate(self, *args):
         self.emit('songs-selected',
                   filter(self.__filter, self.__stations), None)
-        
+
     def save(self): pass
 
     def statusbar(self, i):

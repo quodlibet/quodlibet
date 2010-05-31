@@ -18,7 +18,7 @@ format = """\
  <track>%d</track>
  <length>%d</length>
 </tune>"""
-    
+
 class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
     PLUGIN_NAME = "JEP-118"

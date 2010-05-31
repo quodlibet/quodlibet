@@ -23,7 +23,7 @@ class NullPlayer(BasePlayer):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
         return 0
-        
+
     def _set_paused(self, paused):
         if paused != self._paused:
             self._paused = paused

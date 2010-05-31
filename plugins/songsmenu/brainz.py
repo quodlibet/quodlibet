@@ -172,7 +172,7 @@ class ReleaseEventComboBox(gtk.HBox):
         # the source for the 'labelid' tag, which we'll use until MB NGS is
         # up and running to deal with multi-disc albums properly. We sort to
         # find the earliest release with a catalog number.
-        events.sort(key=lambda e: (bool(not e.getCatalogNumber()), 
+        events.sort(key=lambda e: (bool(not e.getCatalogNumber()),
                                    e.getDate() or '9999-12-31'))
         for rel_event in events:
             text = '%s %s: <b>%s</b> <i>(%s)</i>' % (

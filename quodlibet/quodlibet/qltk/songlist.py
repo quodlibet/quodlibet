@@ -894,7 +894,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         from quodlibet.qltk.prefs import PreferencesWindow
         win = PreferencesWindow(self)
         win.child.set_current_page(0)
-        
+
     def __showmenu(self, column, event=None):
         time = gtk.get_current_event_time()
         if event is not None and event.button != 3:

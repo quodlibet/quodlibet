@@ -26,6 +26,7 @@ class BasePlayer(gtk.Object):
     replaygain_profiles = [None, None, ["none"]]
     _length = 1
     _volume = 1.0
+    _eq_values = []
 
     _gsignals_ = {
         'song-started':
@@ -44,6 +45,8 @@ class BasePlayer(gtk.Object):
         'volume': (float, 'player volume', 'the volume of the player',
                    0.0, 1.0, 1.0, gobject.PARAM_READWRITE)
         }
+
+
 
     def __init__(self, *args, **kwargs):
         super(BasePlayer, self).__init__()
@@ -111,3 +114,24 @@ class BasePlayer(gtk.Object):
         print_d("Going to %r" % song, context=self)
         self._source.go_to(song)
         self._end(True)
+
+    @property
+    def eq_bands(self):
+        """
+        A read-only list of equalizer bands (in Hz) supported by this backend.
+        """
+        # For backwards compatibility, do a hasattr() before calling this.
+        return []
+
+    @property
+    def eq_values(self):
+        """
+        The list of equalizer values, in the range (-24dB, 12dB).
+        """
+        return self._eq_values
+
+    @eq_values.setter
+    def eq_values(self, value):
+        self._eq_values[:] = value
+        if hasattr(self, 'update_eq_values'):
+            self.update_eq_values()

@@ -81,6 +81,11 @@ class GStreamerPlayer(BasePlayer):
             queue.set_property('max-size-time', 500 * gst.MSECOND)
             self._vol_element = vol = gst.element_factory_make('volume')
             pipeline = [queue, vol] + pipeline
+            if gst.element_factory_find('equalizer-10bands'):
+                eq = gst.element_factory_make('equalizer-10bands')
+                self._eq_element = eq
+                self.update_eq_values()
+                pipeline.insert(1, eq)
             for idx, elem in enumerate(pipeline):
                 bufbin.add(elem)
                 if idx > 0:
@@ -352,6 +357,18 @@ class GStreamerPlayer(BasePlayer):
             self.emit('song-started', self.info)
         elif changed and librarian is not None:
             librarian.changed([self.song])
+
+    @property
+    def eq_bands(self):
+        if gst.element_factory_find('equalizer-10bands'):
+            return [29, 59, 119, 237, 474, 947, 1889, 3770, 7523, 15011]
+        else:
+            return []
+
+    def update_eq_values(self):
+        if hasattr(self, '_eq_element'):
+            for band, val in enumerate(self._eq_values):
+                self._eq_element.set_property('band%d' % band, val)
 
 def can_play_uri(uri):
     return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None

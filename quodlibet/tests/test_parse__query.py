@@ -67,7 +67,7 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid('a = &(/a/, /b/)'))
         self.failUnless(Query.is_valid('a = &(/b/)'))
         self.failUnless(Query.is_valid('&(a = /b/, c = /d/)'))
-        
+
     def test_numcmp(self):
         self.failUnless(Query.is_valid("#(t < 3)"))
         self.failUnless(Query.is_valid("#(t <= 3)"))
