@@ -8,6 +8,7 @@
 import time
 
 import gtk.gdk
+import gobject
 
 from quodlibet import const
 from quodlibet import config
@@ -21,7 +22,9 @@ class SongTracker(object):
         player.connect_object('song-ended', self.__end, librarian, pl)
         player.connect_object('song-started', self.__start, librarian)
         player.connect('error', self.__error, librarian)
+        gobject.timeout_add(1000, self.__timer, librarian, player)
         self.__errors_in_a_row = 0
+        self.elapsed = 0
         gtk.quit_add(1, self.__quit, librarian, player)
 
     def __error(self, player, song, error, lock, librarian):
@@ -42,6 +45,7 @@ class SongTracker(object):
         song["~errors"] = newstr + song.get("~errors", "")
 
     def __start(self, librarian, song):
+        self.elapsed = 0
         if song is not None:
             if song.multisong:
                 song["~#lastplayed"] = int(time.time())
@@ -54,7 +58,7 @@ class SongTracker(object):
     def __end(self, librarian, song, ended, pl):
         if song is None or song.multisong:
             return
-        elif not ended:
+        elif self.elapsed > 0.5 * song.get("~#length", 1):
             song["~#lastplayed"] = int(time.time())
             song["~#playcount"] = song.get("~#playcount", 0) + 1
             librarian.changed([song])
@@ -71,3 +75,10 @@ class SongTracker(object):
         config.set("memory", "seek", player.get_position())
         player.emit('song-ended', player.song, True)
         return 0
+
+    def __timer(self, librarian, player):
+        # This is easier, if lamer, QLScrobbler's time() shenanigans
+        if not player.paused:
+            self.elapsed += 1
+        print self.elapsed
+        return True
