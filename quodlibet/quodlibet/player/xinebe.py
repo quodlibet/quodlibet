@@ -40,6 +40,7 @@ class XinePlaylistPlayer(BasePlayer):
         self._stream = xine_stream_new(_xine, self._audio_port, None)
         xine_set_param(self._stream, XINE_PARAM_IGNORE_VIDEO, 1)
         xine_set_param(self._stream, XINE_PARAM_IGNORE_SPU, 1)
+        self.update_eq_values()
         if self._supports_gapless:
             xine_set_param(self._stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1)
         if self._event_queue:
@@ -209,6 +210,18 @@ class XinePlaylistPlayer(BasePlayer):
         # xine's declining to seek so soon after startup; try again in 100ms
         if seek_pos:
             gobject.timeout_add(100, self.seek, seek_pos)
+
+    @property
+    def eq_bands(self):
+        # These are taken straight from Xine's API
+        return [30, 60, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+
+    def update_eq_values(self):
+        from quodlibet.player import _xine as _xine_module
+        bands = self.eq_bands
+        for band, val in enumerate(self._eq_values):
+            param = getattr(_xine_module, 'XINE_PARAM_EQ_%dHZ' % bands[band])
+            xine_set_param(self._stream, param, int(val*100/24.))
 
 _xine = None
 _plugins = None
