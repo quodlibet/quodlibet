@@ -122,12 +122,20 @@ class DeviceManager(gobject.GObject):
         """backend_id is the string that gets passed to the backend so it can
         identify the device. device_id should be a something including
         the device serial (so it's unique) and maybe the model name."""
-        klass = get_by_protocols(protocols)
-        if klass:
-            device = klass(backend_id, device_id)
-            return device
-        else:
+        device = None
+
+        protocols = ['ipod']
+        for prots in (protocols, ['storage']):
+            klass = get_by_protocols(prots)
+            if klass is None: break
+            try: device = klass(backend_id, device_id)
+            except TypeError: pass #rockboxed iPod
+            else: break
+
+        if device is None:
             print_w(_("%r is not a supported device.") % device_id)
+
+        return device
 
 class HAL(DeviceManager):
     __interface = None
@@ -447,7 +455,7 @@ class DKD(DeviceManager):
 
         dev = self.create_device(path, device_id, protocols)
         icon = prop_get(prop_if, 'device-presentation-icon-name')
-        if icon: dev.icon = icon
+        if dev and icon: dev.icon = icon
         return dev
 
 def init():

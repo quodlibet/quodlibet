@@ -84,6 +84,17 @@ class IPodDevice(Device):
     __itdb = None
     __covers = []
 
+    def __init__(self, backend_id, device_id):
+        super(IPodDevice, self).__init__(backend_id, device_id)
+
+        #In case we can't initialize the iPod and there is a rockbox directory,
+        #the device is probably a rockboxed iPod.
+        #FIXME: what if the device isn't connected?
+        self.__itdb = gpod.itdb_parse(self.mountpoint, None)
+        rockbox_dir = os.path.join(self.mountpoint, ".rockbox")
+        if self.__itdb is None and os.path.isdir(rockbox_dir):
+            raise TypeError
+
     def Properties(self):
         props = []
 
@@ -150,7 +161,7 @@ class IPodDevice(Device):
         return d
 
     def list(self, wlb):
-        self.__load_db()
+        if self.__load_db() is None: return []
         songs = []
         orphaned = False
         for track in gpod.sw_get_tracks(self.__itdb):
@@ -167,7 +178,7 @@ class IPodDevice(Device):
         return songs
 
     def copy(self, songlist, song):
-        self.__load_db()
+        if self.__load_db() is None: return False
         track = gpod.itdb_track_new()
 
         # All values should be utf-8 encoded strings
@@ -241,7 +252,7 @@ class IPodDevice(Device):
             return False
 
     def delete(self, songlist, song):
-        self.__load_db()
+        if self.__load_db() is None: return False
         try:
             for track in gpod.sw_get_tracks(self.__itdb):
                 if gpod.itdb_filename_on_ipod(track) == song['~filename']:
@@ -281,6 +292,7 @@ class IPodDevice(Device):
         return self.__itdb
 
     def __save_db(self):
+        if self.__itdb is None: return True
         if gpod.itdb_write(self.__itdb, None) == 1 and \
            gpod.itdb_shuffle_write(self.__itdb, None) == 1:
             return True
@@ -298,7 +310,7 @@ class IPodDevice(Device):
         return db
 
     def __close_db(self):
-        if self.__itdb: gpod.itdb_free(self.__itdb)
+        if self.__itdb is not None: gpod.itdb_free(self.__itdb)
         self.__itdb = None
 
     def __remove_track(self, track):
