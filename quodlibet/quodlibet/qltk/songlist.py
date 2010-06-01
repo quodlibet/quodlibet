@@ -679,6 +679,35 @@ class SongList(AllTreeView, util.InstanceTracker):
         try: return self.get_model().get()
         except AttributeError: return [] # model is None
 
+    def __get_sort_tag(self, tag):
+        replace_order = {
+            "~#track": "album",
+            "~#disc": "album",
+            "~length": "~#length"
+        }
+
+        if tag == "~title~version":
+            tag = "title"
+        elif tag == "~album~discsubtitle":
+            tag = "album"
+
+        if tag.startswith("<"):
+            for key, value in replace_order.iteritems():
+                tag = tag.replace("<%s>" % key, "<%s>" % value)
+            tag = Pattern(tag).format
+        else:
+            tags = util.tagsplit(tag)
+            sort_tags = []
+            for tag in tags:
+                tag = replace_order.get(tag, tag)
+                tag = TAG_TO_SORT.get(tag, tag)
+                if tag not in sort_tags:
+                    sort_tags.append(tag)
+            if len(sort_tags) > 1:
+                tag = "~" + "~".join(sort_tags)
+
+        return tag
+
     def set_songs(self, songs, sorted=False, reverse=False):
         model = self.get_model()
 
@@ -686,31 +715,16 @@ class SongList(AllTreeView, util.InstanceTracker):
             songs.reverse()
         elif not sorted:
             tag, reverse = self.get_sort_by()
-            replace_order = {
-                "~#track": "album",
-                "~#disc": "album",
-                "~length": "~#length"
-            }
+            tag = self.__get_sort_tag(tag)
 
-            if tag == "~title~version":
-                tag = "title"
-            elif tag == "~album~discsubtitle":
-                tag = "album"
-
-            if tag.startswith("<"):
-                for key, value in replace_order.iteritems():
-                    tag = tag.replace("<%s>" % key, "<%s>" % value)
-                tag = Pattern(tag).format
-            else:
-                tags = util.tagsplit(tag)
-                sort_tags = []
-                for tag in tags:
-                    tag = replace_order.get(tag, tag)
-                    tag = TAG_TO_SORT.get(tag, tag)
-                    if tag not in sort_tags:
-                        sort_tags.append(tag)
-                if len(sort_tags) > 1:
-                    tag = "~" + "~".join(sort_tags)
+            #try to set a sort indicator that matches the default order
+            if not self.is_sorted():
+                for h in self.get_columns():
+                    name = h.header_name
+                    if self.__get_sort_tag(name) == tag:
+                        h.set_sort_indicator(True)
+                        h.set_sort_order(gtk.SORT_ASCENDING)
+                        break
 
             sort_func = AudioFile.sort_by_func(tag)
             songs.sort(key=sort_func, reverse=reverse)
