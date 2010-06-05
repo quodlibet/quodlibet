@@ -123,15 +123,15 @@ class BasePlayer(gtk.Object):
         # For backwards compatibility, do a hasattr() before calling this.
         return []
 
-    @property
-    def eq_values(self):
+    def _get_eq_values(self):
         """
         The list of equalizer values, in the range (-24dB, 12dB).
         """
         return self._eq_values
 
-    @eq_values.setter
-    def eq_values(self, value):
+    def _set_eq_values(self, value):
         self._eq_values[:] = value
         if hasattr(self, 'update_eq_values'):
             self.update_eq_values()
+
+    eq_values = property(_get_eq_values,_set_eq_values)
