@@ -7,6 +7,10 @@
 import gtk
 import gobject
 
+# We use sexy.IconEntry with older GTK+, but ComboboxEntry only allows
+# gtk.Entry (it kind of works, but alignment is wrong and there are lots of
+# warnings), so also provide all entries without libsexy.
+
 IconEntry = gtk.Entry
 if not getattr(gtk.Entry, "set_icon_from_stock", None):
     try: from sexy import IconEntry
@@ -139,7 +143,13 @@ class UndoEntry(IconEntry, EditableUndo):
         super(UndoEntry, self).__init__(*args, **kwargs)
         self.set_undo(True)
 
-class ClearEntry(UndoEntry):
+class UndoNoSexyEntry(gtk.Entry, EditableUndo):
+    __gsignals__ = EditableUndo.__gsignals__
+    def __init__(self, *args, **kwargs):
+        super(UndoNoSexyEntry, self).__init__(*args, **kwargs)
+        self.set_undo(True)
+
+class ClearEntryMixin(object):
     def pack_clear_button(self, container=None):
         if getattr(self, "set_icon_from_stock", None):
             self.set_icon_from_stock(
@@ -151,7 +161,10 @@ class ClearEntry(UndoEntry):
         else:
             container.pack_start(ClearButton(self), False)
 
-class ValidatingEntry(ClearEntry):
+class ClearEntry(UndoEntry, ClearEntryMixin): pass
+class ClearNoSexyEntry(UndoNoSexyEntry, ClearEntryMixin): pass
+
+class ValidatingEntryMixin(object):
     """An entry with visual feedback as to whether it is valid or not.
     The given validator function gets a string and returns True (green),
     False (red), or a color string, or None (black).
@@ -161,8 +174,7 @@ class ValidatingEntry(ClearEntry):
     If the "Color search terms" option is off, the entry will not
     change color."""
 
-    def __init__(self, validator=None, *args):
-        super(ValidatingEntry, self).__init__(*args)
+    def set_validate(self, validator=None):
         if validator: self.connect_object('changed', self.__color, validator)
 
     def __color(self, validator):
@@ -177,3 +189,13 @@ class ValidatingEntry(ClearEntry):
                 self.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse(color))
         else:
             self.modify_text(gtk.STATE_NORMAL, None)
+
+class ValidatingEntry(ClearEntry, ValidatingEntryMixin):
+   def __init__(self, validator=None, *args):
+       super(ValidatingEntry,self).__init__(*args)
+       self.set_validate(validator)
+
+class ValidatingNoSexyEntry(ClearNoSexyEntry, ValidatingEntryMixin):
+   def __init__(self, validator=None, *args):
+       super(ValidatingNoSexyEntry,self).__init__(*args)
+       self.set_validate(validator)

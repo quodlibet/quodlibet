@@ -12,7 +12,7 @@ import pango
 from quodlibet import qltk
 
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.qltk.entry import ValidatingNoSexyEntry
 
 class CBESEditor(qltk.Window):
     def __init__(self, cbes):
@@ -183,11 +183,12 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
 
         if not len(model):
             self.__fill(filename, initial)
-        self.connect_object('destroy', self.set_model, None)
-        self.connect_object('changed', self.__changed, model)
 
         self.remove(self.child)
-        self.add(ValidatingEntry(validator))
+        self.add(ValidatingNoSexyEntry(validator))
+
+        self.connect_object('destroy', self.set_model, None)
+        self.connect_object('changed', self.__changed, model)
 
     def pack_clear_button(self, *args):
         self.child.pack_clear_button(*args)
