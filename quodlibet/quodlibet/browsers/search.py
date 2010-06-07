@@ -142,7 +142,8 @@ class BoxSearchBar(gtk.HBox):
 
         if limit: self.__limit = Limit()
 
-        combo = ComboBoxEntrySave(QUERIES, count=8)
+        combo = ComboBoxEntrySave(QUERIES, count=8,
+            validator=Query.is_valid_color)
         if not completion:
             completion = LibraryTagCompletion(library.librarian)
         combo.child.set_completion(completion)
@@ -243,12 +244,6 @@ class BoxSearchBar(gtk.HBox):
             if Query.is_parsable(text):
                 self.__refill_id = gobject.timeout_add(
                         500, self.__text_parse, textbox)
-        if not config.getboolean('browsers', 'color'):
-            textbox.modify_text(gtk.STATE_NORMAL, None)
-            return
-        color = Query.is_valid_color(text)
-        if color and textbox.get_property('sensitive'):
-            textbox.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse(color))
 
 # Like EmptyBar, but the user can also enter a query manually. This
 # is QL's default browser. EmptyBar handles all the GObject stuff.
