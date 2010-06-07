@@ -12,7 +12,7 @@ import pango
 from quodlibet import qltk
 
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.qltk import ClearButton
+from quodlibet.qltk.entry import ValidatingEntry
 
 class CBESEditor(qltk.Window):
     def __init__(self, cbes):
@@ -158,7 +158,8 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
     __models = {}
     __last = ""
 
-    def __init__(self, filename=None, initial=[], count=5, id=None):
+    def __init__(self, filename=None, initial=[], count=5, id=None,
+        validator=None):
         self.count = count
         self.filename = filename
         id = filename or id
@@ -185,14 +186,11 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         self.connect_object('destroy', self.set_model, None)
         self.connect_object('changed', self.__changed, model)
 
-    def pack_clear_button(self, container=None):
-        if getattr(self.child, "set_icon_from_stock", None):
-            self.child.set_icon_from_stock(
-                gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
-            clear = lambda *x: x[0].set_text("")
-            self.child.connect("icon-release", clear)
-        else:
-            container.pack_start(ClearButton(self.child), False)
+        self.remove(self.child)
+        self.add(ValidatingEntry(validator))
+
+    def pack_clear_button(self, *args):
+        self.child.pack_clear_button(*args)
 
     def __changed(self, model):
         iter = self.get_active_iter()
