@@ -33,19 +33,25 @@ class EditableUndo(object):
         if val: self.__enable_undo()
         else: self.__disable_undo()
 
-    def __enable_undo(self):
-        self.__buffer = ""
-        self.__history = [self.__all()]
+    def reset_undo(self):
+        self.__history = []
         self.__re_history = []
+        self.__in_pos = -1
+        self.__del_pos = -1
         self.__last = ""
-        self.__in_pos = 0
-        self.__del_pos = 0
+
+    def undo(self):
+        self.__do(self.__history, self.__re_history)
+
+    def redo(self):
+        self.__do(self.__re_history, self.__history)
+
+    def __enable_undo(self):
+        self.reset_undo()
 
         self.__handlers = [
-            self.connect_after("insert-text", self.__insert_after),
             self.connect("insert-text", self.__insert_before),
-            self.connect("delete-text", self.__delete_before),
-            self.connect_after("delete-text", self.__delete_after)]
+            self.connect("delete-text", self.__delete_before)]
 
         self.__accels = gtk.AccelGroup()
         self.add_accelerator('undo', self.__accels, ord('z'),
@@ -56,15 +62,14 @@ class EditableUndo(object):
         self.__rlz = self.connect('realize', self.__realize)
 
         self.__handlers.extend([
-            self.connect('undo', self.__do, self.__history, self.__re_history),
-            self.connect('redo', self.__do, self.__re_history, self.__history)
+            self.connect('undo', lambda *x: self.undo()),
+            self.connect('redo', lambda *x: self.redo())
             ])
 
     def __disable_undo(self):
         for handler in self.__handlers:
             self.disconnect(handler)
 
-        del self.__buffer
         del self.__history
         del self.__re_history
         del self.__last
@@ -78,42 +83,33 @@ class EditableUndo(object):
         parent.add_accel_group(self.__accels)
 
     def __all(self):
-        return [self.get_chars(0, -1), self.get_position()]
+        text = self.get_chars(0, -1).decode("utf-8")
+        pos = self.get_position()
+        return [text, pos]
 
     def __add(self):
-        all, pos = self.__all()
-        if self.__history and self.__history[-1][0] == all:
-            self.__history[-1][1] = pos
-        else:
-            self.__history.append([all, pos])
+        self.__history.append(self.__all())
         self.__re_history = []
 
-    def __insert_after(self, entry, text, length, position):
-        if (length > 1 and self.get_position() > 0) or text == "\n":
-            self.__add()
-        self.__last = text
-
     def __insert_before(self, entry, text, length, position):
-        self.__del_pos = 0
+        self.__del_pos = -1
         pos = self.get_position()
         if pos != self.__in_pos or (self.__last == " " and text != " ") \
-            or text == "\n":
-            self.__add()
-        self.__in_pos = pos +  length
-
-    def __delete_after(self, entry, start, end):
-        text = self.get_chars(start, end)
-        all = self.get_chars(0, -1)
-        if not all or (self.__last == " " and text != " ") or text == "\n":
+            or length > 1:
             self.__add()
         self.__last = text
+        self.__in_pos = pos + 1
 
     def __delete_before(self, entry, start, end):
-        self.__in_pos = 0
+        self.__in_pos = -1
+        text = self.get_chars(start, end)
+        length = end - start
         pos = self.get_position()
-        if pos != self.__del_pos:
+        if pos != self.__del_pos or (self.__last == " " and text != " ") \
+            or length > 1:
             self.__add()
-        self.__del_pos = pos - (end - start)
+        self.__last = text
+        self.__del_pos = end - 1
 
     def __inhibit(self):
         for handler in self.__handlers:
@@ -123,7 +119,7 @@ class EditableUndo(object):
         for handler in self.__handlers:
             self.handler_unblock(handler)
 
-    def __do(self, entry, source, target):
+    def __do(self, source, target):
         if not source: return
         self.__del_pos = self.__in_pos = -1
         self.__inhibit()
@@ -143,11 +139,19 @@ class UndoEntry(IconEntry, EditableUndo):
         super(UndoEntry, self).__init__(*args, **kwargs)
         self.set_undo(True)
 
+    def set_text(self, *args, **kwargs):
+        super(UndoEntry, self).set_text(*args, **kwargs)
+        self.reset_undo()
+
 class UndoNoSexyEntry(gtk.Entry, EditableUndo):
     __gsignals__ = EditableUndo.__gsignals__
-    def __init__(self, *args, **kwargs):
-        super(UndoNoSexyEntry, self).__init__(*args, **kwargs)
+    def __init__(self, *args):
+        super(UndoNoSexyEntry, self).__init__(*args)
         self.set_undo(True)
+
+    def set_text(self, *args):
+        super(UndoNoSexyEntry, self).set_text(*args)
+        self.reset_undo()
 
 class ClearEntryMixin(object):
     def pack_clear_button(self, container=None):
