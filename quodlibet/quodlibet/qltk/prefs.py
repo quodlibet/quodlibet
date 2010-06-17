@@ -18,7 +18,7 @@ from quodlibet import util
 from quodlibet.parse import Query
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.chooser import FolderChooser
-from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.songlist import SongList
 
 class PreferencesWindow(qltk.UniqueWindow):
@@ -80,7 +80,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             hbox = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Others:"))
             hbox.pack_start(l, expand=False)
-            others = gtk.Entry()
+            others = UndoEntry()
             if "~current" in checks: checks.remove("~current")
             others.set_text(" ".join(checks))
             others.set_tooltip_text(
@@ -187,7 +187,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.title = _("Player")
 
             if config.get('player', 'backend') == "gstbe":
-                e = gtk.Entry()
+                e = UndoEntry()
                 e.set_tooltip_text(_("The GStreamer output pipeline used for "
                         "playback, such as 'alsasink device=default'. "
                         "Leave blank for default pipeline."))
@@ -282,7 +282,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.title = _("Library")
             hb = gtk.HBox(spacing=6)
             b = qltk.Button(_("_Select"), gtk.STOCK_OPEN)
-            e = gtk.Entry()
+            e = UndoEntry()
             e.set_text(util.fsdecode(config.get("settings", "scan")))
             hb.pack_start(e)
             e.set_tooltip_text(_("Songs placed in these folders (separated "
@@ -309,7 +309,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             vbox = gtk.VBox(spacing=6)
             hb = gtk.HBox(spacing=6)
-            e = gtk.Entry()
+            e = UndoEntry()
             e.set_text(config.get("editing", "split_on"))
             e.connect('changed', self.__changed, 'editing', 'split_on')
             e.set_tooltip_text(_('Separators for splitting tags'))
@@ -327,7 +327,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             vb2.pack_start(cb)
             hb = gtk.HBox(spacing=3)
             lab = gtk.Label(_("_Email:"))
-            entry = gtk.Entry()
+            entry = UndoEntry()
             entry.set_tooltip_text(_("Ratings and play counts will be set "
                                      "for this email address"))
             entry.set_text(config.get("editing", "save_email"))

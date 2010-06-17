@@ -15,6 +15,24 @@ from quodlibet import util
 from quodlibet.formats._audio import AudioFile
 from quodlibet.parse import XMLFromPattern
 
+try:
+    import gtksourceview2
+except ImportError:
+    from gtk import TextView
+    from gtk import TextBuffer
+else:
+    TextView = gtksourceview2.View
+    class TextBuffer(gtksourceview2.Buffer):
+        def __init__(self, *args):
+            super(TextBuffer, self).__init__(*args)
+            self.set_highlight_matching_brackets(False)
+            self.set_highlight_syntax(False)
+
+        def set_text(self, *args):
+            self.begin_not_undoable_action()
+            super(TextBuffer, self).set_text(*args)
+            self.end_not_undoable_action()
+
 class TextEditBox(gtk.VBox):
     """A simple text editing area with a default value, a revert button,
     and an apply button. The 'buffer' attribute is the text buffer, the
@@ -29,7 +47,7 @@ class TextEditBox(gtk.VBox):
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.add(gtk.TextView())
+        sw.add(TextView(TextBuffer()))
         self.pack_start(sw)
         self.buffer = sw.child.get_buffer()
 

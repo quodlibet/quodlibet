@@ -14,7 +14,7 @@ import gobject
 IconEntry = gtk.Entry
 if not getattr(gtk.Entry, "set_icon_from_stock", None):
     try: from sexy import IconEntry
-    except: pass
+    except ImportError: pass
 
 from quodlibet import config
 from quodlibet.qltk import ClearButton, get_top_parent
@@ -38,13 +38,19 @@ class EditableUndo(object):
         self.__re_history = []
         self.__in_pos = -1
         self.__del_pos = -1
-        self.__last = ""
+        self.__last_space = False
 
     def undo(self):
         self.__do(self.__history, self.__re_history)
 
     def redo(self):
         self.__do(self.__re_history, self.__history)
+
+    def can_undo(self):
+        return self.__can_do(self.__history)
+
+    def can_redo(self):
+        return self.__can_do(self.__re_history)
 
     def __enable_undo(self):
         self.reset_undo()
@@ -63,7 +69,8 @@ class EditableUndo(object):
 
         self.__handlers.extend([
             self.connect('undo', lambda *x: self.undo()),
-            self.connect('redo', lambda *x: self.redo())
+            self.connect('redo', lambda *x: self.redo()),
+            self.connect('populate-popup', self.__popup)
             ])
 
     def __disable_undo(self):
@@ -72,7 +79,7 @@ class EditableUndo(object):
 
         del self.__history
         del self.__re_history
-        del self.__last
+        del self.__last_space
         del self.__in_pos
         del self.__del_pos
 
@@ -81,6 +88,21 @@ class EditableUndo(object):
         del self.__rlz
         parent = get_top_parent(self)
         parent.add_accel_group(self.__accels)
+
+    def __popup(self, entry, menu):
+        undo =  gtk.ImageMenuItem(gtk.STOCK_UNDO)
+        redo =  gtk.ImageMenuItem(gtk.STOCK_REDO)
+        sep = gtk.SeparatorMenuItem()
+
+        map(gtk.Widget.show, (sep, redo, undo))
+
+        undo.connect('activate', lambda *x: self.undo())
+        redo.connect('activate', lambda *x: self.redo())
+
+        undo.set_sensitive(self.can_undo())
+        redo.set_sensitive(self.can_redo())
+
+        map(menu.prepend, (sep, redo, undo))
 
     def __all(self):
         text = self.get_chars(0, -1).decode("utf-8")
@@ -94,10 +116,10 @@ class EditableUndo(object):
     def __insert_before(self, entry, text, length, position):
         self.__del_pos = -1
         pos = self.get_position()
-        if pos != self.__in_pos or (self.__last == " " and text != " ") \
+        if pos != self.__in_pos or (self.__last_space and text != " ") \
             or length > 1:
             self.__add()
-        self.__last = text
+        self.__last_space = (text == " ")
         self.__in_pos = pos + 1
 
     def __delete_before(self, entry, start, end):
@@ -105,10 +127,10 @@ class EditableUndo(object):
         text = self.get_chars(start, end)
         length = end - start
         pos = self.get_position()
-        if pos != self.__del_pos or (self.__last == " " and text != " ") \
+        if pos != self.__del_pos or (self.__last_space and text != " ") \
             or length > 1:
             self.__add()
-        self.__last = text
+        self.__last_space = (text == " ")
         self.__del_pos = end - 1
 
     def __inhibit(self):
@@ -119,8 +141,11 @@ class EditableUndo(object):
         for handler in self.__handlers:
             self.handler_unblock(handler)
 
+    def __can_do(self, source):
+        return bool(source)
+
     def __do(self, source, target):
-        if not source: return
+        if not self.__can_do(source): return
         self.__del_pos = self.__in_pos = -1
         self.__inhibit()
         now = self.__all()
@@ -158,7 +183,7 @@ class ClearEntryMixin(object):
         if getattr(self, "set_icon_from_stock", None):
             self.set_icon_from_stock(
                 gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
-            clear = lambda *x: x[0].set_text("")
+            clear = lambda *x: x[0].delete_text(0, -1)
             self.connect("icon-release", clear)
         elif getattr(self, "add_clear_button", None):
             self.add_clear_button()
@@ -195,11 +220,11 @@ class ValidatingEntryMixin(object):
             self.modify_text(gtk.STATE_NORMAL, None)
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):
-   def __init__(self, validator=None, *args):
-       super(ValidatingEntry,self).__init__(*args)
-       self.set_validate(validator)
+    def __init__(self, validator=None, *args):
+        super(ValidatingEntry, self).__init__(*args)
+        self.set_validate(validator)
 
 class ValidatingNoSexyEntry(ClearNoSexyEntry, ValidatingEntryMixin):
-   def __init__(self, validator=None, *args):
-       super(ValidatingNoSexyEntry,self).__init__(*args)
-       self.set_validate(validator)
+    def __init__(self, validator=None, *args):
+        super(ValidatingNoSexyEntry, self).__init__(*args)
+        self.set_validate(validator)
