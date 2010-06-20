@@ -124,7 +124,6 @@ class DeviceManager(gobject.GObject):
         the device serial (so it's unique) and maybe the model name."""
         device = None
 
-        protocols = ['ipod']
         for prots in (protocols, ['storage']):
             klass = get_by_protocols(prots)
             if klass is None: break
