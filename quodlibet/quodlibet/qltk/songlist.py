@@ -100,6 +100,13 @@ class PlaylistModel(gtk.ListStore):
         super(PlaylistModel, self).__init__(object)
         self.order = ORDERS[0](self)
 
+        # The playorder plugins use paths atm to remember songs so
+        # we need to reset them if the paths change somehow.
+        self.__sigs = []
+        for sig in ['row-deleted', 'row-inserted', 'rows-reordered']:
+            s = self.connect(sig, lambda pl, *x: self.order.reset(pl))
+            self.__sigs.append(s)
+
     def set(self, songs):
         oldsong = self.current
         if oldsong is None: oldsong = self.__old_value
@@ -107,6 +114,8 @@ class PlaylistModel(gtk.ListStore):
         self.order.reset(self)
         self.__iter = None
 
+        # We just reset the order manually so block the signals
+        map(self.handler_block, self.__sigs)
         print_d("Clearing model.", context=self)
         self.clear()
         print_d("Setting %d songs." % len(songs), context=self)
@@ -118,11 +127,12 @@ class PlaylistModel(gtk.ListStore):
         if self.__iter is not None:
             self.__old_value = None
         print_d("Done filling model.", context=self)
+        map(self.handler_unblock, self.__sigs)
         self.emit('songs-set')
 
     def remove(self, iter):
         if self.__iter and self[iter].path == self[self.__iter].path:
-            self.__iter = self.iter_next(iter)
+            self.__iter = None
         super(PlaylistModel, self).remove(iter)
 
     def get(self):
@@ -387,8 +397,14 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.set_fixed_height_mode(True)
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
-        sigs = [librarian.connect('changed', self.__song_updated),
-                librarian.connect('removed', self.__song_removed)]
+        sigs = []
+        # The player needs to be called first so it can ge the next song
+        # in case the current one gets deleted and the order gets reset.
+        if player:
+            s = librarian.connect_object('removed', map, player.remove)
+            sigs.append(s)
+        sigs.extend([librarian.connect('changed', self.__song_updated),
+                librarian.connect('removed', self.__song_removed)])
         for sig in sigs:
             self.connect_object('destroy', librarian.disconnect, sig)
         if player:

@@ -81,9 +81,7 @@ class MainSongList(SongList):
 
     def __init__(self, library, player):
         super(MainSongList, self).__init__(library, player)
-        self.set_rules_hint(True)
-        s = library.librarian.connect_object('removed', map, player.remove)
-        self.connect_object('destroy', library.librarian.disconnect, s)
+
         self.connect_object('row-activated', self.__select_song, player)
 
         # ugly.. so the main window knows if the next song-started
