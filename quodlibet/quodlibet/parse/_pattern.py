@@ -158,15 +158,19 @@ class _Pattern(PatternParser):
         def __init__(self, realsong, formatters):
             self.__song = realsong
             self.__formatters = formatters
+            self.__cache = {}
 
-        def comma(self, *args):
-            value = self.__song.comma(*args)
+        def comma(self, key):
+            if key in self.__cache:
+                return self.__cache[key]
+            value = self.__song.comma(key)
             if isinstance(value, str):
                 value = util.fsdecode(value)
             elif not isinstance(value, unicode):
                 value = unicode(value)
             for f in self.__formatters:
-                value = f(args[0], value)
+                value = f(key, value)
+            self.__cache[key] = value
             return value
 
         def list_separate(self, key):
