@@ -35,6 +35,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.logging import LoggingWindow
 from quodlibet.qltk.mmkeys_ import MmKeys
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.playorder import PlayOrder
 from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.properties import SongProperties
@@ -113,49 +114,6 @@ class SongListScroller(gtk.ScrolledWindow):
         value = self.get_property('visible')
         menu.set_active(value)
         config.set("memory", "songlist", str(value))
-
-class StatusBar(gtk.HBox):
-    def __init__(self):
-        super(StatusBar, self).__init__()
-        self.progress = gtk.ProgressBar()
-        self.count = gtk.Label(_("No time information"))
-        self.count.set_alignment(1.0, 0.5)
-        self.count.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(self.count)
-        progress_label = gtk.Label()
-        progress_label.set_alignment(1.0, 0.5)
-        progress_label.set_ellipsize(pango.ELLIPSIZE_END)
-        # GtkProgressBar can't show text when pulsing. Proxy its set_text
-        # method to a label that can.
-        self.progress.set_text = progress_label.set_text
-        hb = gtk.HBox(spacing=12)
-        hb.pack_start(progress_label)
-        hb.pack_start(self.progress, expand=False)
-        pause = gtk.ToggleButton()
-        pause.add(gtk.image_new_from_stock(
-            gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU))
-        pause.connect('toggled', self.__pause)
-        hb.pack_start(pause, expand=False)
-        self.pack_start(hb)
-        self.progress.connect('notify::visible', self.__toggle, pause, hb)
-        self.progress.connect_object(
-            'notify::fraction', lambda *args: args[0].set_active(False), pause)
-        self.count.show()
-
-    def __pause(self, pause):
-        if pause.get_active():
-            copool.pause("library")
-        else:
-            copool.resume("library")
-
-    def __toggle(self, bar, property, pause, hb):
-        if self.progress.props.visible:
-            self.count.hide()
-            pause.set_active(False)
-            hb.show_all()
-        else:
-            self.count.show()
-            hb.hide()
 
 class QuodLibetWindow(gtk.Window):
     def __init__(self, library, player):
@@ -256,7 +214,7 @@ class QuodLibetWindow(gtk.Window):
 
         self.child.show_all()
 
-        self.statusbar = StatusBar()
+        self.statusbar = StatusBar(TaskController.default_instance)
         hbox.pack_start(self.statusbar)
         self.statusbar.show()
 
@@ -743,8 +701,7 @@ class QuodLibetWindow(gtk.Window):
         paths = util.split_scan_dirs(config.get("settings", "scan"))
         exclude = config.get("library", "exclude").split(":")
         copool.add(self.__library.rebuild,
-                   paths, self.statusbar.progress, force,
-                   exclude, funcid="library")
+                   paths, force, exclude, funcid="library")
 
     # Set up the preferences window.
     def __preferences(self, activator):
@@ -792,8 +749,7 @@ class QuodLibetWindow(gtk.Window):
         if fns:
             if action.get_name() == "AddFolders":
                 self.last_dir = fns[0]
-                copool.add(self.__library.scan, fns, self.statusbar.progress,
-                           funcid="library")
+                copool.add(self.__library.scan, fns, funcid="library")
             else:
                 added = []
                 self.last_dir = os.path.basename(fns[0])
@@ -916,4 +872,4 @@ class QuodLibetWindow(gtk.Window):
         length = sum([song("~#length", 0) for song in songs])
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
-        self.statusbar.count.set_text(t)
+        self.statusbar.set_default_text(t)

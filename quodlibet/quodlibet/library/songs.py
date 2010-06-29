@@ -10,6 +10,8 @@ These libraries require their items to be AudioFiles, or something
 close enough.
 """
 
+from __future__ import with_statement
+
 import os
 
 import gtk
@@ -21,6 +23,7 @@ from quodlibet.formats import MusicFile
 from quodlibet.formats._album import Album
 from quodlibet.library._library import Library, Librarian
 from quodlibet.parse import Query
+from quodlibet.qltk.notif import Task
 
 class SongLibrarian(Librarian):
     """A librarian for SongLibraries."""
@@ -310,7 +313,7 @@ class FileLibrary(Library):
             elif was_removed:
                 self.emit('removed', [item])
 
-    def rebuild(self, paths, progress=None, force=False, exclude=[]):
+    def rebuild(self, paths, force=False, exclude=[]):
         """Reload or remove songs if they have changed or been deleted.
 
         This generator rebuilds the library over the course of iteration.
@@ -324,26 +327,17 @@ class FileLibrary(Library):
 
         print_d("Rebuilding, force is %s." % force, self)
 
-        if progress:
-            progress.show()
-            progress.set_text(_("Checking mount points"))
-            progress.set_fraction(0)
-        frac = 1.0 / (len(self._masked) or 1)
-        for i, (point, items) in enumerate(self._masked.items()):
+        task = Task(_("Library"), _("Checking mount points"))
+        for i, (point, items) in task.list(enumerate(self._masked.items())):
             if os.path.ismount(point):
                 self._contents.update(items)
                 del(self._masked[point])
                 self.emit('added', items.values())
-                if progress:
-                    progress.set_fraction(i * frac)
                 yield True
 
-        if progress:
-            progress.set_fraction(0)
-            progress.set_text(_("Scanning library"))
+        task = Task(_("Library"), _("Scanning library"))
         changed, removed = [], []
-        frac = 1.0 / (len(self) or 1)
-        for i, (key, item) in enumerate(sorted(self.items())):
+        for i, (key, item) in task.list(enumerate(sorted(self.items()))):
             if key in self._contents and force or not item.valid():
                 self.reload(item, changed, removed)
             # These numbers are pretty empirical. We should yield more
@@ -356,8 +350,6 @@ class FileLibrary(Library):
                 self.emit('removed', removed)
                 removed = []
             if len(changed) > 5 or i % 100 == 0:
-                if progress:
-                    progress.set_fraction(i * frac)
                 yield True
         print_d("Removing %d, changing %d." % (len(removed), len(changed)),
                 self)
@@ -366,10 +358,8 @@ class FileLibrary(Library):
         if changed:
             self.emit('changed', changed)
 
-        for value in self.scan(paths, progress, exclude):
+        for value in self.scan(paths, exclude):
             yield value
-        if progress:
-            progress.hide()
 
     def add_filename(self, filename, signal=True):
         """Add a file based on its filename.
@@ -378,45 +368,37 @@ class FileLibrary(Library):
         """
         raise NotImplementedError
 
-    def scan(self, paths, progress=None, exclude=[]):
-        if progress:
-            progress.show()
+    def scan(self, paths, exclude=[]):
         added = []
         exclude = [os.path.expanduser(path) for path in exclude if path]
         for fullpath in paths:
             print_d("Scanning %r." % fullpath, self)
-            if progress:
-                progress.set_text(_("Scanning %s") % (
-                    util.unexpand(util.fsdecode(fullpath))))
-            fullpath = os.path.expanduser(fullpath)
-            if filter(fullpath.startswith, exclude):
-                continue
-            for path, dnames, fnames in os.walk(util.fsnative(fullpath)):
-                for filename in fnames:
-                    fullfilename = os.path.join(path, filename)
-                    if filter(fullfilename.startswith, exclude):
-                        continue
-                    if fullfilename not in self._contents:
-                        fullfilename = os.path.realpath(fullfilename)
+            desc = _("Scanning %s") % (util.unexpand(util.fsdecode(fullpath)))
+            with Task(_("Library"), desc) as task:
+                fullpath = os.path.expanduser(fullpath)
+                if filter(fullpath.startswith, exclude):
+                    continue
+                for path, dnames, fnames in os.walk(util.fsnative(fullpath)):
+                    for filename in fnames:
+                        fullfilename = os.path.join(path, filename)
                         if filter(fullfilename.startswith, exclude):
                             continue
                         if fullfilename not in self._contents:
-                            item = self.add_filename(fullfilename, False)
-                            if item is not None:
-                                added.append(item)
-                                if len(added) > 5:
-                                    self.emit('added', added)
-                                    added = []
-                                    if progress:
-                                        progress.pulse()
-                                    yield True
-                if progress:
-                    progress.pulse()
+                            fullfilename = os.path.realpath(fullfilename)
+                            if filter(fullfilename.startswith, exclude):
+                                continue
+                            if fullfilename not in self._contents:
+                                item = self.add_filename(fullfilename, False)
+                                if item is not None:
+                                    added.append(item)
+                                    if len(added) > 5:
+                                        self.emit('added', added)
+                                        added = []
+                                        task.pulse()
+                                        yield True
                 yield True
         if added:
             self.emit('added', added)
-        if progress:
-            progress.hide()
 
     def masked(self, item):
         """Return true if the item is in the library but masked."""
