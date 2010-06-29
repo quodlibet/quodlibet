@@ -82,10 +82,21 @@ class GStreamerPlayer(BasePlayer):
             self._vol_element = vol = gst.element_factory_make('volume')
             pipeline = [queue, vol] + pipeline
             if gst.element_factory_find('equalizer-10bands'):
+                # The equalizer only operates on 16-bit ints or floats, and
+                # will only pass these types through even when inactive.
+                # We push floats through to this point, then let the second
+                # audioconvert handle pushing to whatever the rest of the
+                # pipeline supports. As a bonus, this seems to automatically
+                # select the highest-precision format supported by the
+                # rest of the chain.
+                filt = gst.element_factory_make('capsfilter')
+                filt.set_property('caps',
+                                  gst.caps_from_string('audio/x-raw-float'))
                 eq = gst.element_factory_make('equalizer-10bands')
                 self._eq_element = eq
                 self.update_eq_values()
-                pipeline.insert(1, eq)
+                conv = gst.element_factory_make('audioconvert')
+                pipeline[:2] += [filt, eq, conv]
             for idx, elem in enumerate(pipeline):
                 bufbin.add(elem)
                 if idx > 0:
