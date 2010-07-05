@@ -17,7 +17,6 @@ Of course, right now it does none of these things.
 
 # This module is still experimental and may change or be removed.
 
-# TODO: Add pause and cancel buttons to tasks
 # TODO: Make copooling things with notifications easier (optional)
 # TODO: Make Ex Falso use this
 # TODO: Port WaitLoadWindow to use this (and not block)
@@ -28,6 +27,7 @@ Of course, right now it does none of these things.
 # TODO: Add notification button/callback support (prereq for global undo)
 # TODO: Optimize performance (deferred signals, etc)
 
+import gobject
 import gtk
 import pango
 import traceback
@@ -313,5 +313,4 @@ class StatusBar(gtk.HBox):
         if not self.__dirty:
             self.__dirty = True
             gobject.idle_add(self.__update)
-
 
