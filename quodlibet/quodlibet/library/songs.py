@@ -313,7 +313,7 @@ class FileLibrary(Library):
             elif was_removed:
                 self.emit('removed', [item])
 
-    def rebuild(self, paths, force=False, exclude=[]):
+    def rebuild(self, paths, force=False, exclude=[], cofuncid=None):
         """Reload or remove songs if they have changed or been deleted.
 
         This generator rebuilds the library over the course of iteration.
@@ -323,11 +323,15 @@ class FileLibrary(Library):
 
         Only items present in the library when the rebuild is started
         will be checked.
+
+        If this function is copooled, set "cofuncid" to enable pause/stop
+        buttons in the UI.
         """
 
         print_d("Rebuilding, force is %s." % force, self)
 
         task = Task(_("Library"), _("Checking mount points"))
+        if cofuncid: task.copool(cofuncid)
         for i, (point, items) in task.list(enumerate(self._masked.items())):
             if os.path.ismount(point):
                 self._contents.update(items)
@@ -336,6 +340,7 @@ class FileLibrary(Library):
                 yield True
 
         task = Task(_("Library"), _("Scanning library"))
+        if cofuncid: task.copool(cofuncid)
         changed, removed = [], []
         for i, (key, item) in task.list(enumerate(sorted(self.items()))):
             if key in self._contents and force or not item.valid():
@@ -358,7 +363,7 @@ class FileLibrary(Library):
         if changed:
             self.emit('changed', changed)
 
-        for value in self.scan(paths, exclude):
+        for value in self.scan(paths, exclude, cofuncid):
             yield value
 
     def add_filename(self, filename, signal=True):
@@ -368,13 +373,14 @@ class FileLibrary(Library):
         """
         raise NotImplementedError
 
-    def scan(self, paths, exclude=[]):
+    def scan(self, paths, exclude=[], cofuncid=None):
         added = []
         exclude = [os.path.expanduser(path) for path in exclude if path]
         for fullpath in paths:
             print_d("Scanning %r." % fullpath, self)
             desc = _("Scanning %s") % (util.unexpand(util.fsdecode(fullpath)))
             with Task(_("Library"), desc) as task:
+                if cofuncid: task.copool(cofuncid)
                 fullpath = os.path.expanduser(fullpath)
                 if filter(fullpath.startswith, exclude):
                     continue
@@ -391,14 +397,16 @@ class FileLibrary(Library):
                                 item = self.add_filename(fullfilename, False)
                                 if item is not None:
                                     added.append(item)
-                                    if len(added) > 5:
+                                    if len(added) > 20:
                                         self.emit('added', added)
                                         added = []
                                         task.pulse()
                                         yield True
-                yield True
-        if added:
-            self.emit('added', added)
+                    if added:
+                        self.emit('added', added)
+                        added = []
+                        task.pulse()
+                        yield True
 
     def masked(self, item):
         """Return true if the item is in the library but masked."""

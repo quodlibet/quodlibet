@@ -309,7 +309,7 @@ class QuodLibetWindow(gtk.Window):
             if dirs:
                 copool.add(
                     self.__library.scan, dirs, self.__status.bar.progress,
-                    funcid="library")
+                    cofuncid="library", funcid="library")
 
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
@@ -701,7 +701,7 @@ class QuodLibetWindow(gtk.Window):
         paths = util.split_scan_dirs(config.get("settings", "scan"))
         exclude = config.get("library", "exclude").split(":")
         copool.add(self.__library.rebuild,
-                   paths, force, exclude, funcid="library")
+                   paths, force, exclude, cofuncid="library", funcid="library")
 
     # Set up the preferences window.
     def __preferences(self, activator):
