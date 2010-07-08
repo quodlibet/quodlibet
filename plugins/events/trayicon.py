@@ -411,6 +411,8 @@ class TrayIcon(EventPlugin):
                 player.volume -= 0.05
 
     def plugin_on_song_started(self, song):
+        if not self.__icon: return
+
         if song:
             try:
                 pattern = Pattern(config.get("plugins", "icon_tooltip"))
