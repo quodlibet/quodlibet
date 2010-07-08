@@ -35,7 +35,6 @@ class BigCenteredImage(qltk.Window):
         self.set_decorated(False)
         self.set_position(gtk.WIN_POS_CENTER)
         self.set_modal(False)
-        self.set_icon(pixbuf)
         self.add(gtk.Frame())
         self.child.set_shadow_type(gtk.SHADOW_OUT)
         self.child.add(gtk.EventBox())
