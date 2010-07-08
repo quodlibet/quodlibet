@@ -477,10 +477,10 @@ def tagsplit(tag):
         return tags
     else: return [tag]
 
-def pattern(pat, cap=True):
+def pattern(pat, cap=True, esc=False):
     """Return a 'natural' version of the pattern string for human-readable
     bits. Assumes all tags in the pattern are present."""
-    from quodlibet.parse import Pattern
+    from quodlibet.parse import Pattern, XMLFromPattern
     class Fakesong(dict):
         def comma(self, key):
             if key.startswith('~') and '~' in key[1:]:
@@ -496,7 +496,7 @@ def pattern(pat, cap=True):
         __call__ = comma
 
     fakesong = Fakesong({'filename': tag('filename', cap)})
-    p = Pattern(pat)
+    p = (esc and XMLFromPattern(pat)) or Pattern(pat)
     for t in p.real_tags():
         fakesong.setdefault(t, tag(t, cap))
     return p.format(fakesong)

@@ -373,6 +373,9 @@ class Tpattern(TestCase):
     def test_condition(self):
         self.failUnlessEqual(util.pattern("<~year|<~year> - <album>|<album>>"),
                              "Year - Album")
+    def test_escape(self):
+        self.failUnlessEqual(util.pattern("\<i\><&>\</i\>", esc=True),
+                            "<i>&amp;</i>")
     def test_invalid(self):
         self.failUnlessEqual(util.pattern("<date"), "<date")
 add(Tpattern)
