@@ -6,6 +6,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import re
+import operator
+
 import gobject
 import gtk
 import pango
@@ -16,15 +19,13 @@ from quodlibet import util
 
 from quodlibet.browsers.search import SearchBar
 from quodlibet.formats import PEOPLE
-from quodlibet.parse import Query, Pattern
-from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.formats._album import Collection
+from quodlibet.parse import Query, Pattern, XMLFromPattern
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import tag, pattern
-
-UNKNOWN = "<b>%s</b>" % _("Unknown")
 
 class Preferences(qltk.UniqueWindow):
     def __init__(self, parent=None):
@@ -153,6 +154,29 @@ class Preferences(qltk.UniqueWindow):
                 model.append(row=[h])
         align.set_sensitive(button.get_label() == _("_Custom"))
 
+ALL, SONGS, UNKNOWN = range(3)
+UNKNOWN_MARKUP = "<b>%s</b>" % _("Unknown")
+ALL_MARKUP = "<b>%s</b>" % _("All")
+
+class SongSelection(Collection):
+    def __init__(self, key):
+        super(SongSelection, self).__init__()
+        self.songs = set()
+        self.key = key
+
+    def all_have(self, key, value):
+        """Check if all songs have the give tag and it contains the value.
+        Used for filtering.."""
+        if key[:2] == "~#" and "~" not in key[2:]:
+            for song in self.songs:
+                if song(key) != value:
+                    return False
+        else:
+            for song in self.songs:
+                if value not in song.list(key):
+                    return False
+        return True
+
 class PanedBrowser(SearchBar, util.InstanceTracker):
     expand = qltk.RVPaned
 
@@ -179,54 +203,68 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         def set_restore(klass, selected):
             klass.__restore_values = selected
 
-        def __count_cdf(column, cell, model, iter):
-            try: cell.set_property('text', "(%d)" % (len(model[iter][1])))
-            except TypeError: cell.set_property('text', '')
-        __count_cdf = staticmethod(__count_cdf)
-
-        def __text_cdf(column, cell, model, iter):
-            cell.markup = model[iter][0]
+        @staticmethod
+        def __count_cdf(column, cell, model, iter, display_pattern):
+            type, songs = model[iter]
+            if type != ALL:
+                cell.markup = display_pattern(songs)
+            else:
+                cell.markup = ""
             cell.set_property('markup', cell.markup)
-        __text_cdf = staticmethod(__text_cdf)
 
-        def __init__(self, mytag, next, library):
+        @staticmethod
+        def __text_cdf(column, cell, model, iter, markup):
+            type, songs = model[iter]
+            if type == SONGS:
+                if markup:
+                    cell.markup = songs.key
+                    cell.set_property('markup', cell.markup)
+                else:
+                    cell.markup = None
+                    cell.set_property('text', songs.key)
+            else:
+                if type == ALL:
+                    cell.markup = ALL_MARKUP
+                else:
+                    cell.markup = UNKNOWN_MARKUP
+                cell.set_property('markup', cell.markup)
+
+        def __init__(self, prefs, next, library):
             super(PanedBrowser.Pane, self).__init__()
             self.set_fixed_height_mode(True)
 
-            if '<' in mytag:
-                p = Pattern(mytag)
-                self.__format = lambda song: p.format_list(song)
-                self.tags = p.real_tags(cond=False)
-                title = pattern(mytag)
-            else:
-                title = tag(mytag)
-                self.tags = util.tagsplit(mytag)
-                if mytag[:2] == "~#" and "~" not in mytag[2:]:
-                    self.__format = lambda song: [unicode(song(mytag))]
-                else:
-                    self.__format = lambda song: song.list_separate(mytag)
+            title, self.tags, self.__format, \
+                self.__markup, disp_format = self.__parse_prefs(prefs)
 
             self.__next = next
-            model = gtk.ListStore(str, object)
-            self.__sort_cache = {}
+            self.__model = model = gtk.ListStore(int, object)
 
-            column = gtk.TreeViewColumn(title)
+            self.__sort_cache = {}
+            self.__key_cache = {}
+
+            column = gtk.TreeViewColumn()
+            label = gtk.Label(title)
+            label.set_use_markup(True)
+            column.set_widget(label)
+            label.show()
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
 
             column.pack_start(self.__render)
-            column.set_cell_data_func(self.__render, self.__text_cdf)
+            column.set_cell_data_func(self.__render,
+                self.__text_cdf, self.__markup)
             column.pack_start(self.__render_count, expand=False)
-            column.set_cell_data_func(self.__render_count, self.__count_cdf)
+            column.set_cell_data_func(self.__render_count,
+                self.__count_cdf, disp_format)
 
             self.append_column(column)
             self.set_model(model)
 
             selection = self.get_selection()
             selection.set_mode(gtk.SELECTION_MULTIPLE)
-            self.__sig = selection.connect('changed', self.__changed)
-            self.connect_object('destroy', self.__destroy, model)
-            self.connect('popup-menu', self.__popup_menu, library)
+            self.__sig = selection.connect('changed', self.__selection_changed)
+            s = self.connect('popup-menu', self.__popup_menu, library)
+            self.connect_object('destroy', self.disconnect, s)
 
             targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
@@ -235,147 +273,244 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.connect("drag-data-get", self.__drag_data_get)
 
         def __drag_data_get(self, view, ctx, sel, tid, etime):
-            songs = sorted(self.__get_songs(), key=lambda s: s.sort_key)
+            songs = self.__get_selected_songs(sort=True)
             if tid == 1:
                 filenames = [song("~filename") for song in songs]
                 sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
             else: sel.set_uris([song("~uri") for song in songs])
 
-        def __human_sort_key(self, text):
-            try:
-                return self.__sort_cache[text]
+        @staticmethod
+        def __parse_prefs(row_pattern):
+            """
+            Row pattern format: 'categorize_pattern:display_pattern'
+
+            * display_pattern is optional (fallback: ~#tracks)
+            * patterns, tied and normal tags.
+            * display patterns can have function prefixes for numerical tags.
+            * ':' has to be escaped ('\:')
+
+            TODO: sort pattern, filter query
+            """
+
+            parts = re.split(r"(?<!\\):", row_pattern)
+            parts = map(lambda p: p.replace("\:", ":"), parts)
+
+            is_numeric = lambda s: s[:2] == "~#" and "~" not in s[2:]
+            is_pattern = lambda s: '<' in s
+            f_round = lambda s: (isinstance(s, float) and "%.2f" % s) or s
+
+            disp = (len(parts) >= 2 and parts[1]) or "\<i\>(<~#tracks>)\</i\>"
+            cat = parts[0]
+
+            if is_pattern(cat):
+                title = pattern(cat, esc=True)
+                try: pc = XMLFromPattern(cat)
+                except ValueError: pc = XMLFromPattern("")
+                tags = pc.real_tags(cond=False)
+                format = pc.format_list
+                format_markup = True
+            else:
+                title = tag(cat)
+                tags = util.tagsplit(cat)
+                format_markup = False
+                if is_numeric(cat):
+                    format = lambda song: [unicode(f_round(song(cat)))]
+                else:
+                    format = lambda song: song.list_separate(cat)
+
+            if is_pattern(disp):
+                try: pd = XMLFromPattern(disp)
+                except ValueError: pd = XMLFromPattern("")
+                format_display = pd.format
+            else:
+                if is_numeric(disp):
+                    format_display = lambda coll: unicode(f_round(coll(disp)))
+                else:
+                    format_display = lambda coll: util.escape(coll.comma(disp))
+
+            return title, tags, format, format_markup, format_display
+
+        def __get_format_keys(self, song):
+            try: return self.__key_cache[song]
             except KeyError:
+                # We filter out empty values, so Unknown can be ""
+                self.__key_cache[song] = filter(None, self.__format(song))
+                return self.__key_cache[song]
+
+        def __human_sort_key(self, text, reg=re.compile('<.*?>')):
+            try: return self.__sort_cache[text]
+            except KeyError:
+                # remove the markup so it doesn't affect the sort order
+                if self.__markup: text = reg.sub("", text)
                 self.__sort_cache[text] = util.human_sort_key(text)
                 return self.__sort_cache[text]
 
         def __popup_menu(self, view, library):
-            menu = SongsMenu(library,
-                sorted(self.__get_songs(), key=lambda s: s.sort_key),
-                parent=self)
+            songs = self.__get_selected_songs(sort=True)
+            menu = SongsMenu(library, songs, parent=self)
             menu.show_all()
             return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
-        def __destroy(self, model):
-            self.set_model(None)
-            model.clear()
-
-        def __changed(self, selection, jump=False):
-            model, rows = selection.get_selected_rows()
-            if jump and rows:
-                self.scroll_to_cell(rows[0][0], use_align=True, row_align=0.5)
-            songs = self.__get_songs()
-            if not songs: return
-            self.__next.fill(songs)
+        def __selection_changed(self, selection):
+            self.__next.fill(self.__get_selected_songs())
 
         def _remove(self, songs, remove_if_empty=True):
             self.inhibit()
-            model = self.get_model()
+            model = self.__model
+            songs = set(songs)
             to_remove = []
+            map(self.__key_cache.pop, songs)
             for row in model:
-                data = row[1]
-                if data is None: continue
-                for song in songs:
-                    if song in data: data.remove(song)
-                if not model[row.iter][1]: to_remove.append(row.iter)
+                type, data = row
+                if type == ALL: continue
+                data.songs -= songs
+                data.finalize()
+                model.row_changed(row.path, row.iter)
+                if not data.songs:
+                    to_remove.append(row.iter)
             if remove_if_empty:
                 for iter in to_remove:
-                    try: del(self.__sort_cache[model[iter][0]])
+                    try: del(self.__sort_cache[model[iter][1].key])
                     except KeyError: pass
                     model.remove(iter)
-                if len(model) == 1 and model[0][1] is None:
+                if len(model) == 1 and model[0][0] == ALL:
                     model.clear()
                 elif to_remove and len(model) == 2:
                     model.remove(model.get_iter(0))
             self.uninhibit()
 
         def _matches(self, song):
-            try: model, rows = self.get_selection().get_selected_rows()
-            except (AttributeError, TypeError): return False
-            else:
-                if not rows or model[rows[0]][1] is None: return True
-                else:
-                    for row in rows:
-                        if model[row][0][:1] == "<":
-                            if not bool(self.__format(song)):
-                                return True
-                        else:
-                            value = util.unescape(model[row][0])
-                            if value in self.__format(song):
-                                return True
-                    else: return False
+            model, rows = self.get_selection().get_selected_rows()
+            if not rows or model[rows[0]][0] == ALL: return True
+            keys = self.__get_format_keys(song)
+            if not keys and model[rows[-1]][0] == UNKNOWN:
+                return True
+            for row in rows:
+                if model[row][1].key in keys:
+                    return True
+            return False
 
         def _add(self, songs):
-            self.inhibit()
-            model = self.get_model()
-            values = {}
-            new = {}
-            for row in model:
-                value = row[0]
-                data = row[1]
-                if value[:1] != "<":
-                    value = util.unescape(value).decode('utf-8')
-                    values[value] = data
-                elif data is not None:
-                    values[""] = data
-
+            collection = {}
+            unknown = SongSelection("")
+            human_sort = self.__human_sort_key
             for song in songs:
-                for val in (self.__format(song) or [""]):
-                    if val in values: values[val].add(song)
-                    else:
-                        if val not in new: new[val] = set()
-                        new[val].add(song)
+                keys = self.__get_format_keys(song)
+                if not keys:
+                    unknown.songs.add(song)
+                for key in keys:
+                    try:
+                        collection[key][0].songs.add(song)
+                    except KeyError:
+                        collection[key] = (SongSelection(key), human_sort(key))
+                        collection[key][0].songs.add(song)
 
-            if new:
-                human = self.__human_sort_key
-                keys = sorted(new.keys(), key=human)
-                if keys[0] == "":
-                    unknown = new[""]
-                    keys.pop(0)
-                else: unknown = set()
-                for row in model:
-                    if row[0][0] == "<": continue
-                    elif not keys: break
+            items = sorted(collection.iteritems(),
+                key=lambda s: s[1][1], reverse=True)
 
-                    value = util.unescape(row[0]).decode('utf-8')
-                    if human(value) > human(keys[0]):
-                        key = keys.pop(0)
-                        model.insert_before(
-                            row.iter, row=[util.escape(key), new[key]])
+            # faster...
+            model = self.__model
+            if not len(model):
+                insert = model.insert
+                if unknown.songs:
+                    insert(0, [UNKNOWN, unknown])
+                for key, (val, sort_key) in items:
+                    insert(0, [SONGS, val])
+                if len(model) > 1:
+                    insert(0, [ALL, None])
+                return
+
+            # insert all new songs
+            key = None
+            val = None
+            sort_key = None
+            for row in self.__model:
+                type, data = row
+                if type != SONGS: continue
+
+                if key is None:
+                    if not items: break
+                    key, (val, sort_key) = items.pop(-1)
+
+                if key == data.key:
+                    data.songs |= val.songs
+                    data.finalize()
+                    model.row_changed(row.path, row.iter)
+                    key = None
+                elif sort_key < human_sort(data.key):
+                    model.insert_before(row.iter, row=[SONGS, val])
+                    key = None
+
+            # the last one failed, add it again
+            if key: items.append((key, (val, sort_key)))
+
+            # insert the left over songs
+            if items:
+                if model[-1][0] == UNKNOWN:
+                    for key, (val, srt) in reversed(items):
+                        model.insert(len(model) - 1, row=[SONGS, val])
                 else:
-                    if "" in values:
-                        for key in keys:
-                            model.insert(
-                                len(model)-1, row=[util.escape(key), new[key]])
-                    else:
-                        for key in keys:
-                            model.append(row=[util.escape(key), new[key]])
+                    for key, (val, srt) in items:
+                        model.append(row=[SONGS, val])
 
-                if unknown:
-                    model.append(row=[UNKNOWN, new[""]])
+            # check if All needs to be inserted
+            if len(model) > 1 and model[0][0] != ALL:
+                model.insert(0, [ALL, None])
 
-                if (len(values) + len(new)) > 1 and model[(0,)][1] is not None:
-                    model.insert(0, row=["<b>%s</b>" % _("All"), None])
-            self.uninhibit()
+            # check if Unknown needs to be inserted or updated
+            if unknown.songs:
+                last_row = model[-1]
+                type, data = last_row
+                if type == UNKNOWN:
+                    data.songs |= unknown.songs
+                    data.finalize()
+                    model.row_changed(last_row.path, last_row.iter)
+                else:
+                    model.append(row=[UNKNOWN, unknown])
 
         def inhibit(self): self.get_selection().handler_block(self.__sig)
         def uninhibit(self): self.get_selection().handler_unblock(self.__sig)
 
+        def list(self, key):
+            #We get all tag values and check if all songs have it.
+            model = self.__model
+            # If the key is the only tag, return everything
+            if len(self.tags) == 1 and key in self.tags:
+                return [r[1].key for r in model if r[0] != ALL]
+            # For patterns/tied tags we have to make sure that
+            # filtering for that key will return only songs that all have
+            # the specified value
+            all = set()
+            sels = (row[1] for row in model if row[0] == SONGS)
+            for sel in sels:
+                values = sel.list(key)
+                for value in values:
+                    if value not in all and sel.all_have(key, value):
+                        all.add(value)
+            # Also add unknown
+            if len(model) > 0 and model[-1][0] == UNKNOWN:
+                all.add("")
+            return list(all)
+
         def fill(self, songs):
+            # restore the selection
             restore = self.__restore_values
             selected = (restore and restore.pop(0)) or self.get_selected()
-            model = self.get_model()
+            model = self.__model
+            # if previously all entries were selected: select All
             if len(model) == len(selected): selected = None
             self.inhibit()
+            self.set_model(None)
             model.clear()
             self._add(songs)
+            self.set_model(model)
             self.uninhibit()
-            if selected: self.set_selected(selected, jump=True)
-            else: self.set_selected(None, jump=True)
+            self.set_selected(selected, jump=True)
 
         def scroll(self, song):
-            values = map(util.escape, self.__format(song))
-            for row in self.get_model():
-                if row[0] in values:
+            values = self.__get_format_keys(song)
+            for row in self.__model:
+                if row[0] != ALL and row[1].key in values:
                     self.scroll_to_cell(
                         row.path[0], use_align=True, row_align=0.5)
                     sel = self.get_selection()
@@ -384,56 +519,88 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                     break
 
         def get_selected(self):
-            try: model, rows = self.get_selection().get_selected_rows()
+            try: model, paths = self.get_selection().get_selected_rows()
             except AttributeError: return []
-            else: return [model[row][0] for row in rows]
+            else:
+                if not paths: return []
+                if model[paths[0]][0] == ALL:
+                    return [model[p][1].key for p in paths[1:]] + [None]
+                else:
+                    return [model[p][1].key for p in paths]
 
         def set_selected(self, values, jump=False):
-            model = self.get_model()
+            model = self.__model
+            if not len(model): return
+
+            # If the selection is the same, change nothing
             selection = self.get_selection()
-            if values == self.get_selected():
-                model, rows = selection.get_selected_rows()
-                for row in rows:
-                    self.scroll_to_cell(row)
+            # There can only be one entry or 1+ and All on top
+            if values is None and selection.path_is_selected((0,)):
+                self.scroll_to_cell((0,))
+                return
+            elif values == self.get_selected():
+                model, paths = selection.get_selected_rows()
+                for path in paths:
+                    self.scroll_to_cell(path)
                     break
                 return
-            elif values is None and selection.path_is_selected((0,)): return
 
+            # None means All
+            if values is None:
+                selection.select_path((0,))
+                if jump: self.scroll_to_cell((0,))
+                return
+
+            # Change the selection
             self.inhibit()
             selection.unselect_all()
-            first = 0
-            if values is None: selection.select_path((0,))
-            else:
-                for row in model:
-                    if row[0] in values:
-                        selection.select_path(row.path)
-                        first = first or row.path[0]
-            if first == 0: selection.select_path((0,))
-            if jump and len(model): self.scroll_to_cell(first)
+
+            # Remember the first hit for scrolling
+            first = None
+            if None in values:
+                selection.select_path((0,))
+                first = ((0,))
+            for row in model:
+                if row[0] != ALL and row[1].key in values:
+                    selection.select_path(row.path)
+                    first = first or row.path
+            if jump and first: self.scroll_to_cell(first)
+
             self.uninhibit()
             self.get_selection().emit('changed')
 
         def set_selected_by_tag(self, tag, values, jump=False):
-            model = self.get_model()
+            """Select the entries which songs all have one of the values."""
+            # Like with self.list we can select all matching keys if the tag
+            # is our only tag
+            if len(self.tags) == 1 and tag in self.tags:
+                self.set_selected(values, jump)
+                return
             pattern_values = []
-            values = set(values)
-            for row in model:
-                if row[1]:
-                    song = iter(row[1]).next()
-                    if set(song.list(tag)) & values:
-                        pattern_values.append(row[0])
+            for type, data in self.__model:
+                if type == SONGS:
+                    for value in values:
+                        if data.all_have(tag, value):
+                            pattern_values.append(data.key)
+                            break
+            # select unknown
+            if "" in values:
+                pattern_values.append("")
             self.set_selected(pattern_values, jump)
 
-        def __get_songs(self):
+        def __get_selected_songs(self, sort=False):
             model, rows = self.get_selection().get_selected_rows()
             s = set()
-            if rows and rows[0] == (0,):
+            if not rows: return s
+            if model[rows[0]][0] == ALL:
                 for row in model:
-                    if row[1]:
-                        s.update(row[1])
+                    if row[0] != ALL:
+                        s |= row[1].songs
             else:
                 for row in rows:
-                    s.update(model[row][1])
+                    s |= model[row][1].songs
+            if sort:
+                return sorted(s, key=operator.attrgetter("sort_key"))
             return s
 
     def __init__(self, library, player):
@@ -451,8 +618,10 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         prefs = gtk.Button()
         prefs.add(gtk.image_new_from_stock(
             gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
-        prefs.connect('clicked', Preferences)
-        select.connect('clicked', self.__all)
+        s = prefs.connect('clicked', Preferences)
+        self.connect_object('destroy', prefs.disconnect, s)
+        s = select.connect('clicked', self.__all)
+        self.connect_object('destroy', select.disconnect, s)
         self._search_bar.pack_start(prefs, expand=False)
 
         for s in [library.connect('changed', self.__changed),
@@ -550,45 +719,66 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
     def __start(self, view, indices, col):
         self.__save.reset()
 
-    def can_filter(self, key):
+    def __get_filter_pane(self, key):
+        """Get the best pane for filtering etc."""
+        canditates = []
         for pane in self.__panes:
             if (key in pane.tags or
                 (key in PEOPLE and "~people" in pane.tags)):
-                return True
-        else: return False
+                canditates.append((len(pane.tags), pane))
+        canditates.sort()
+        return (canditates and canditates[0][1]) or None
+
+    def can_filter(self, key):
+        return (self.__get_filter_pane(key) is not None)
 
     def filter(self, key, values):
-        self.__panes[-1].inhibit()
+        filter_pane = self.__get_filter_pane(key)
+
         for pane in self.__panes:
-            if (key in pane.tags or
-                (key in PEOPLE and "~people" in pane.tags)):
-                pane.set_selected_by_tag(key, values, True)
-            else: pane.set_selected(None, True)
-        self.__panes[-1].uninhibit()
-        self.__panes[-1].get_selection().emit('changed')
+            if pane is filter_pane:
+                filter_pane.set_selected_by_tag(key, values, True)
+                return
+            pane.set_selected(None, True)
 
     def unfilter(self):
         self.filter("", "")
 
     def list(self, key):
+        filter_pane = self.__get_filter_pane(key)
+
         for pane in self.__panes:
-            if (key in pane.tags or
-                (key in PEOPLE and "~people" in pane.tags)):
-                return [util.unescape(row[0]) for row in pane.get_model()
-                        if row[0] and not row[0].startswith("<")]
-        else: return []
+            if pane is filter_pane:
+                return filter_pane.list(key)
+            pane.set_selected(None, True)
+        return []
 
     def save(self):
         super(PanedBrowser, self).save()
         selected = []
         for pane in self.__panes:
-            selected.append("\t".join(pane.get_selected()))
+            values = pane.get_selected()
+
+            # The first value tells us if All was selected
+            all = None in values
+            if all: values.remove(None)
+            all = str(int(bool(all)))
+            values.insert(0, all)
+
+            selected.append("\t".join(values))
         config.set("browsers", "pane_selection", "\n".join(selected))
 
     def restore(self):
         super(PanedBrowser, self).restore()
         selected = config.get("browsers", "pane_selection").split("\n")
-        PanedBrowser.Pane.set_restore([sel.split("\t") for sel in selected])
+        pane_values = [sel.split("\t") for sel in selected]
+        for pane in pane_values:
+            try:
+                if int(pane[0]):
+                    pane[0] = None
+                else: del pane[0]
+            except (ValueError, IndexError): pass
+        PanedBrowser.Pane.set_restore(pane_values)
 
     def finalize(self, restored):
         super(PanedBrowser, self).finalize(restored)
