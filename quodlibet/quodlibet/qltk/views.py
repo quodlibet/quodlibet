@@ -26,6 +26,7 @@ class TreeViewHints(gtk.Window):
         super(TreeViewHints, self).__init__(gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
         label.set_alignment(0.5, 0.5)
+        label.set_ellipsize(pango.ELLIPSIZE_NONE)
         self.add(label)
 
         self.add_events(gtk.gdk.BUTTON_MOTION_MASK |
@@ -108,12 +109,14 @@ class TreeViewHints(gtk.Window):
         col.cell_set_cell_data(model, model.get_iter(path), False, False)
         cellw = col.cell_get_position(renderer)[1]
 
-        label = self.__label
-        label.set_ellipsize(pango.ELLIPSIZE_NONE)
-        label.set_text(renderer.get_property('text'))
-        w, h0 = label.get_layout().get_pixel_size()
         try: markup = renderer.markup
-        except AttributeError: pass
+        except AttributeError:
+            markup = None
+
+        label = self.__label
+        if markup is None:
+            label.set_text(renderer.get_property('text'))
+            w, h0 = label.get_layout().get_pixel_size()
         else:
             if isinstance(markup, int): markup = model[path][markup]
             label.set_markup(markup)
