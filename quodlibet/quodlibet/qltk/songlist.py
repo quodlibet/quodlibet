@@ -622,7 +622,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             count = int(float(cellx - 5) / width) + 1
             rating = max(0.0, min(1.0, count * util.RATING_PRECISION))
             if (rating <= util.RATING_PRECISION and
-                song["~#rating"] == util.RATING_PRECISION): rating = 0
+                song("~#rating") == util.RATING_PRECISION): rating = 0
             self.__set_rating(rating, [song], librarian)
 
     def __set_rating(self, value, songs, librarian):
