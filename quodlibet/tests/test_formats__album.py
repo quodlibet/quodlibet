@@ -74,7 +74,7 @@ class TAlbum(TestCase):
 
         s.failUnlessEqual(album.comma("~foo~~s~~~"), "")
         s.failUnlessEqual(album.comma("~#length~dummy"), "12 - e, d")
-        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.5 - e, d")
+        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.50 - e, d")
         s.failUnlessEqual(album.comma("~#length:sum~dummy"), "12 - e, d")
         s.failUnlessEqual(album.comma("~#dummy2"), 5)
         s.failUnlessEqual(album.comma("~#dummy3"), "")

@@ -170,9 +170,10 @@ class AudioFile(dict):
             if "~" in key:
                 if not isinstance(default, basestring): return default
                 return connector.join(
-                    map(lambda x: isinstance(x, basestring) and x or str(x),
                     filter(None,
-                    map(self.__call__, util.tagsplit("~" + key))))) or default
+                    map(lambda x: isinstance(x, basestring) and x or str(x),
+                    map(lambda x: (isinstance(x, float) and "%.2f" % x) or x,
+                    map(self.__call__, util.tagsplit("~" + key)))))) or default
             elif key == "#track":
                 try: return int(self["tracknumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError): return default
@@ -324,8 +325,11 @@ class AudioFile(dict):
         """Similar to list, but will return a list of all combinations
         for tied tags instead of one comma separated string"""
         if key[:1] == "~" and "~" in key[1:]:
-            vals = filter(None, map(unicode,
-                (self(tag) for tag in util.tagsplit(key))))
+            vals = \
+                filter(None,
+                map(lambda x: isinstance(x, basestring) and x or str(x),
+                map(lambda x: (isinstance(x, float) and "%.2f" % x) or x,
+                (self(tag) for tag in util.tagsplit(key)))))
             vals = (val.split("\n") for val in vals)
             r = [[]]
             for x in vals:

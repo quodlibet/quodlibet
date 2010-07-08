@@ -6,9 +6,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
-import gtk
 import gobject
 
 from quodlibet import util
@@ -36,39 +33,31 @@ NUM_FUNCS = {
     "avg": lambda s: float(sum(s)) / len(s)
 }
 
-class Album(object):
-    """Simliar to an AudioFile, except it doesn't look like a dict because
-    there is no easy way to access tags."""
+class Collection(object):
+    """A collection of songs which implements some methods similar to the
+    AudioFile class.
 
-    cover = None
-    scanned = False
+    The content of the collection can be changed by changing the content of
+    the songs attribute.
+    """
 
-    peoplesort = property(lambda self: self.__get_sort("~peoplesort"))
-    date = property(lambda self: self.get("date"))
-    title = property(lambda self: self.get("album"))
+    _to_cache = frozenset(("~peoplesort", "~people"))
+    songs = ()
 
-    def __init__(self, song):
-        self.songs = set()
-        #albumsort is part of the album_key, so every song has the same
-        self.sort = util.human_sort_key(song("albumsort"))
-        self.key = song.album_key
-        self.__cache = {}
-        self.__sortcache = {}
+    def __init__(self):
+        self._cache = {}
 
     def finalize(self):
         """Call this after songs got added or removed"""
-        self.__cache.clear()
-        self.__sortcache.clear()
+        self._cache.clear()
 
-    def get(self, key, default=u"", connector=u" - ",
-        to_cache=frozenset(("~peoplesort", "album", "~people", "date"))):
-
-        if key in to_cache:
+    def get(self, key, default=u"", connector=u" - "):
+        if key in self._to_cache:
             cache_key = (key, default, connector)
-            val = self.__cache.get(cache_key)
+            val = self._cache.get(cache_key)
             if val is None:
                 val = self.__get(key, default, connector)
-                self.__cache[cache_key] = val
+                self._cache[cache_key] = val
             return val
         else:
             return self.__get(key, default, connector)
@@ -88,42 +77,20 @@ class Album(object):
         else: return v.split("\n")
         return []
 
-    def scan_cover(self):
-        if self.scanned or not self.songs: return
-        self.scanned = True
-
-        song = iter(self.songs).next()
-        cover = song.find_cover()
-
-        if cover is not None:
-            try:
-                round = config.getboolean("settings", "round")
-                self.cover = thumbnails.get_thumbnail(cover.name, (48, 48))
-                self.cover = thumbnails.add_border(self.cover, 30, round)
-            except gobject.GError:
-                return
-
-    def __get_sort(self, key):
-        """Cache the sort keys extra, because of human sorting"""
-        val = self.__sortcache.get(key)
-        if val is None:
-            val = self.get(key).split("\n")
-            val = map(util.human_sort_key, val)
-            self.__sortcache[key] = val
-        return val
-
     def __get(self, key, default, connector):
         """This is similar to __call__ in the AudioFile class.
-        All internal tags are changed to represent an album instead of a song.
+        All internal tags are changed to represent a collection of songs.
         """
 
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
                 if not isinstance(default, basestring): return default
-                return connector.join(map(unicode, filter(None,
-                            map(self.get, util.tagsplit("~" + key))
-                    ))) or default
+                return connector.join(
+                    filter(None,
+                    map(lambda x: isinstance(x, basestring) and x or str(x),
+                    map(lambda x: (isinstance(x, float) and "%.2f" % x) or x,
+                    map(self.get, util.tagsplit("~" + key)))))) or default
             elif key[:1] == "#": pass
             elif key in ("people", "peoplesort"):
                 people = {}
@@ -143,11 +110,11 @@ class Album(object):
                                                   PEOPLE_SCORE[w])
                 #It's cheaper to get people and peoplesort in one go
                 cache_key = lambda k: (k, default, connector)
-                self.__cache[cache_key("~people")] = "\n".join(
+                self._cache[cache_key("~people")] = "\n".join(
                     sorted(people.keys(), key=people.__getitem__)[:100])
-                self.__cache[cache_key("~peoplesort")] = "\n".join(sorted(
+                self._cache[cache_key("~peoplesort")] = "\n".join(sorted(
                     peoplesort.keys(), key=peoplesort.__getitem__)[:100])
-                return self.__cache[cache_key("~" + key)]
+                return self._cache[cache_key("~" + key)]
             elif key == "length":
                 length = self.get("~#length")
                 if length == default: return default
@@ -217,3 +184,53 @@ class Album(object):
         return "\n".join(map(lambda x: x[0],
             sorted(result.items(), key=lambda x: x[1])
         )) or default
+
+class Album(Collection):
+    """Like a collection but adds cover scanning, some atributes for sorting,
+    a separate sortcache and uses a set for the songs."""
+
+    cover = None
+    scanned = False
+
+    peoplesort = property(lambda self: self.__get_sort("~peoplesort"))
+    date = property(lambda self: self.get("date"))
+    title = property(lambda self: self.get("album"))
+
+    _to_cache = Collection._to_cache | frozenset(("album", "date"))
+
+    def __init__(self, song):
+        super(Album, self).__init__()
+        self.songs = set()
+        #albumsort is part of the album_key, so every song has the same
+        self.sort = util.human_sort_key(song("albumsort"))
+        self.key = song.album_key
+        self._sortcache = {}
+
+    def finalize(self):
+        """Call this after songs got added or removed"""
+        super(Album, self).finalize()
+        self._sortcache.clear()
+
+    def scan_cover(self):
+        if self.scanned or not self.songs: return
+        self.scanned = True
+
+        song = iter(self.songs).next()
+        cover = song.find_cover()
+
+        if cover is not None:
+            try:
+                round = config.getboolean("settings", "round")
+                self.cover = thumbnails.get_thumbnail(cover.name, (48, 48))
+                self.cover = thumbnails.add_border(self.cover, 30, round)
+            except gobject.GError:
+                return
+
+    def __get_sort(self, key):
+        """Cache the sort keys extra, because of human sorting"""
+        val = self._sortcache.get(key)
+        if val is None:
+            val = self.get(key).split("\n")
+            val = map(util.human_sort_key, val)
+            self._sortcache[key] = val
+        return val

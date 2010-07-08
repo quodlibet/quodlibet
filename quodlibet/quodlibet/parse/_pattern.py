@@ -167,6 +167,8 @@ class _Pattern(PatternParser):
             if isinstance(value, str):
                 value = util.fsdecode(value)
             elif not isinstance(value, unicode):
+                if isinstance(value, float):
+                    value = "%.2f" % value
                 value = unicode(value)
             for f in self.__formatters:
                 value = f(key, value)
@@ -175,7 +177,10 @@ class _Pattern(PatternParser):
 
         def list_separate(self, key):
             if key.startswith("~#") and "~" not in key[2:]:
-                values = [unicode(self.__song(key))]
+                value = self.__song(key)
+                if isinstance(value, float):
+                    value = "%.2f" % value
+                values = [unicode(value)]
             else: values = self.__song.list_separate(key)
             for f in self.__formatters:
                 values = map(lambda v: f(key, v), values)
