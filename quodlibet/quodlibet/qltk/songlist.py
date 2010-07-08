@@ -130,6 +130,13 @@ class PlaylistModel(gtk.ListStore):
         map(self.handler_unblock, self.__sigs)
         self.emit('songs-set')
 
+    def reverse(self):
+        if not len(self): return
+        self.order.reset(self)
+        map(self.handler_block, self.__sigs)
+        self.reorder(range(len(self)-1, -1, -1))
+        map(self.handler_unblock, self.__sigs)
+
     def remove(self, iter):
         if self.__iter and self[iter].path == self[self.__iter].path:
             self.__iter = None
@@ -684,7 +691,9 @@ class SongList(AllTreeView, util.InstanceTracker):
                 h.set_sort_indicator(True)
                 h.set_sort_order(s)
             else: h.set_sort_indicator(False)
-        if refresh: self.set_songs(self.get_songs(), reverse=rev)
+        if refresh:
+            if rev: self.reverse()
+            else: self.set_songs(self.get_songs())
 
     def set_model(self, model):
         super(SongList, self).set_model(model)
@@ -724,12 +733,10 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         return tag
 
-    def set_songs(self, songs, sorted=False, reverse=False):
+    def set_songs(self, songs, sorted=False):
         model = self.get_model()
 
-        if reverse:
-            songs.reverse()
-        elif not sorted:
+        if not sorted:
             tag, reverse = self.get_sort_by()
             tag = self.__get_sort_tag(tag)
 
@@ -756,6 +763,14 @@ class SongList(AllTreeView, util.InstanceTracker):
         print_d("Attaching model.", context=self)
         self.set_model(model)
         print_d("Model attached.", context=self)
+        map(gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
+
+    def reverse(self):
+        model = self.get_model()
+        sorts = map(gtk.TreeViewColumn.get_sort_indicator, self.get_columns())
+        self.set_model(None)
+        model.reverse()
+        self.set_model(model)
         map(gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
 
     def get_selected_songs(self):
