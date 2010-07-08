@@ -228,27 +228,45 @@ class SongList(AllTreeView, util.InstanceTracker):
                 self._update_layout(text, cell)
             except AttributeError: pass
 
-        def _update_layout(self, text, cell=None, pad=12):
-            if not self.get_resizable():
+        def _delayed_update(self):
+            max_width = -1
+            width = self.get_fixed_width()
+            for text, pad, cell_pad in self._text:
                 self._label.set_text(text)
-                width = self.get_fixed_width()
-                new_width = self._label.get_pixel_size()[0] + pad
-                if cell:
-                    new_width += cell.get_property('xpad')
-                if width < new_width:
-                    self.set_fixed_width(new_width)
-                    self.set_visible(False)
-                    self.set_visible(True)
+                new_width = self._label.get_pixel_size()[0] + pad +  cell_pad
+                if new_width > max_width:
+                    max_width = new_width
+            if width < max_width:
+                self.set_fixed_width(max_width)
+                tv = self.get_tree_view()
+                if tv: tv.columns_autosize()
+            self._text.clear()
+            self._timeout = None
+            return False
+
+        def _update_layout(self, text, cell=None, pad=12, force=False):
+            if not self.get_resizable():
+                cell_pad = (cell and cell.get_property('xpad')) or 0
+                self._text.add((text, pad, cell_pad))
+                if force: self._delayed_update()
+                if self._timeout is not None:
+                    gobject.source_remove(self._timeout)
+                    self._timeout = None
+                self._timeout = gobject.idle_add(self._delayed_update,
+                    priority=gobject.PRIORITY_LOW)
 
         def __init__(self, t):
-            super(SongList.TextColumn, self).__init__(util.tag(t), self._render)
+            title = util.tag(t)
+            super(SongList.TextColumn, self).__init__(title, self._render)
             self.header_name = t
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_visible(True)
             self.set_clickable(True)
             self.set_sort_indicator(False)
             self.set_cell_data_func(self._render, self._cdf, t)
-            self._update_layout(util.tag(t))
+            self._text = set()
+            self._timeout = None
+            self._update_layout(title, force=True)
 
     class DateColumn(TextColumn):
         # The '~#' keys that are dates.
