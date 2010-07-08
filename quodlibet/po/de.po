@@ -427,7 +427,7 @@ msgstr "Neue Sender auswählen"
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
 #: ../quodlibet/browsers/search.py:159
 msgid "_Search:"
-msgstr "_Suche:"
+msgstr "S_uche:"
 
 #: ../quodlibet/browsers/iradio.py:188
 msgid "Add"
