@@ -506,6 +506,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.set_model(model)
             self.uninhibit()
             self.set_selected(selected, jump=True)
+            if not songs: self.__next.fill([])
 
         def scroll(self, song):
             values = self.__get_format_keys(song)
@@ -532,41 +533,33 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             model = self.__model
             if not len(model): return
 
+            if not values: values = [None]
+
             # If the selection is the same, change nothing
             selection = self.get_selection()
-            # There can only be one entry or 1+ and All on top
-            if values is None and selection.path_is_selected((0,)):
-                self.scroll_to_cell((0,))
-                return
-            elif values == self.get_selected():
+            if values != self.get_selected():
+                self.inhibit()
+                selection.unselect_all()
+
+                for row in model:
+                    if row[0] == ALL:
+                        if None in values:
+                            selection.select_path(row.path)
+                    else:
+                        if row[1].key in values:
+                            selection.select_path(row.path)
+
+                # We didn't find something to select, so select All
+                model, paths = selection.get_selected_rows()
+                if not paths: selection.select_path((0,))
+                self.uninhibit()
+
+            if jump:
                 model, paths = selection.get_selected_rows()
                 for path in paths:
                     self.scroll_to_cell(path)
                     break
-                return
 
-            # None means All
-            if values is None:
-                selection.select_path((0,))
-                if jump: self.scroll_to_cell((0,))
-                return
-
-            # Change the selection
-            self.inhibit()
-            selection.unselect_all()
-
-            # Remember the first hit for scrolling
-            first = None
-            if None in values:
-                selection.select_path((0,))
-                first = ((0,))
-            for row in model:
-                if row[0] != ALL and row[1].key in values:
-                    selection.select_path(row.path)
-                    first = first or row.path
-            if jump and first: self.scroll_to_cell(first)
-
-            self.uninhibit()
             self.get_selection().emit('changed')
 
         def set_selected_by_tag(self, tag, values, jump=False):
@@ -639,14 +632,6 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             pane.set_selected(None, True)
         self.__panes[-1].uninhibit()
         self.__panes[-1].get_selection().emit('changed')
-
-    def __mnemonic_activate(self, label, group_cycling):
-        # If our mnemonic widget already has the focus, switch to
-        # the song list instead. (#254)
-        widget = label.get_mnemonic_widget()
-        if widget.is_focus():
-            qltk.get_top_parent(widget).songlist.grab_focus()
-            return True
 
     def __added(self, library, songs):
         songs = filter(self._filter, songs)
@@ -765,13 +750,15 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             all = str(int(bool(all)))
             values.insert(0, all)
 
-            selected.append("\t".join(values))
+            # the config lib strips all whitespace, so add a bogus . at the end
+            selected.append("\t".join(values)+ "\t.")
         config.set("browsers", "pane_selection", "\n".join(selected))
 
     def restore(self):
         super(PanedBrowser, self).restore()
-        selected = config.get("browsers", "pane_selection").split("\n")
-        pane_values = [sel.split("\t") for sel in selected]
+        selected = config.get("browsers", "pane_selection")
+        if not selected: return
+        pane_values = [sel.split("\t") for sel in selected.split("\n")]
         for pane in pane_values:
             try:
                 if int(pane[0]):
