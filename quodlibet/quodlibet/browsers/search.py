@@ -43,7 +43,6 @@ class EmptyBar(gtk.VBox, Browser):
         self._filter = None
         self._library = library
         self.__main = bool(player)
-        self.commands = {"query": self.__query}
 
     def dynamic(self, song):
         if self._filter is not None:
@@ -260,8 +259,12 @@ class SearchBar(EmptyBar):
         self.__save = bool(player)
         self._search_bar = BoxSearchBar(library, limit)
         self._search_bar.callback = self._text_parse
+        self.connect('destroy', self.__destroy)
         self.pack_start(self._search_bar, expand=False)
         self.show()
+
+    def __destroy(self, *args):
+        self._search_bar = None
 
     def activate(self):
         if self._text is not None:

@@ -272,6 +272,12 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                 gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
             self.connect("drag-data-get", self.__drag_data_get)
 
+            self.connect("destroy", self.__destroy)
+
+        def __destroy(self, *args):
+            # needed for gc
+            self.__next = None
+
         def __drag_data_get(self, view, ctx, sel, tid, etime):
             songs = self.__get_selected_songs(sort=True)
             if tid == 1:
@@ -352,6 +358,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
         def __selection_changed(self, selection):
+            if not self.__next: return
             self.__next.fill(self.__get_selected_songs())
 
         def _remove(self, songs, remove_if_empty=True):
@@ -604,7 +611,9 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
         self.accelerators = gtk.AccelGroup()
         keyval, mod = gtk.accelerator_parse("<control>Home")
-        self.accelerators.connect_group(keyval, mod, 0, self.__all)
+        s = self.accelerators.connect_group(keyval, mod, 0, self.__all)
+        self.connect_object('destroy',
+            self.accelerators.disconnect_key, keyval, mod)
         select = gtk.Button(_("Select _All"))
         self._search_bar.pack_start(select, expand=False)
 
