@@ -207,6 +207,18 @@ class SFDep(Dep):
         page = Page('http://sourceforge.net/projects/%s/files/' % self.name)
         return vsorted(re.findall(ur, page.text))[-1]
 
+class DirectDep(Dep):
+    """Just returns the given URL"""
+    def __init__(self, name, prefix, down_url):
+        self.down_url = down_url
+        super(DirectDep, self).__init__(name, prefix)
+
+    def _get_versions(self):
+        return ["Unknown"]
+
+    def _get_release(self, version):
+        return self.down_url
+
 class OnePageDep(Dep):
     """Fetcher for projects which have direct download URLs on one page."""
 
@@ -336,14 +348,12 @@ def do_setup(rev):
         EasyInstallExeInst()),
     (GnomeDep('pygtk', '2.16', '[^"]*glade.win32-py%s.exe' % PYVER),
         EasyInstallExeInst()),
-    (OnePageDep('GStreamer', None,
-            'http://www.gstreamer-winbuild.ylatuya.es/doku.php?id=download',
-            '[^"]*GStreamerWinBuild-[1234567890.]*.exe'),
-        InnoInst('gstreamer')),
-    (OnePageDep('pygst', None,
-            'http://www.gstreamer-winbuild.ylatuya.es/doku.php?id=download',
-            '[^"]*Pygst-[^"]*-Python%s[^"]*' % PYVER.replace('.', '')),
-        InnoInst('Python')),
+    (DirectDep('GStreamer', None,
+        'http://ossbuild.googlecode.com/files/GStreamer-WinBuilds-GPL-x86.msi'),
+        MSIInst('gstreamer')),
+    (DirectDep('pygst', None,
+        'http://ossbuild.googlecode.com/files/GStreamer-WinBuilds-SDK-GPL-x86.msi'),
+        MSIInst('pygst')),
     (SFDep('py2exe', None, 'py2exe-[1234567890.]*.win32-py%s.exe' % PYVER),
         EasyInstallExeInst()),
     (SFDep('pywin32', None, 'pywin32-[1234567890.]*.win32-py%s.exe' % PYVER),
@@ -380,7 +390,8 @@ def do_setup(rev):
     print '\nStarting installation...'
 
     new_paths = [join(TDIR, 'Python' + d) for d in ['', r'\bin', r'\scripts']]
-    new_paths += [join(TDIR, 'gstreamer'), join(TDIR, r'gstreamer\bin')]
+    new_paths += [join(TDIR, r'gstreamer\PFiles'),
+        join(TDIR, r'gstreamer\PFiles\bin')]
     new_paths += [join(TDIR, 'gtk'), join(TDIR, r'gtk\bin')]
     print os.environ['PATH']
     #subprocess.check_call(['path', ';'.join(new_paths + ['%PATH%'])])
@@ -390,6 +401,11 @@ def do_setup(rev):
     for (dep, inst) in deps:
         print 'Installing %s' % dep.name
         inst.install(dep)
+
+    # pygst -> python
+    pygst_path = join(TDIR, r'pygst\PFiles\bindings\python\v2.6')
+    pygst_dist = join(TDIR, 'Python')
+    copytree2(pygst_path, pygst_dist)
 
     #Overwrite pyexe code which shows the stderr alert box.
     pyexe_dir = os.path.join(TDIR, r'Python\Lib\site-packages')
@@ -427,12 +443,16 @@ def do_setup(rev):
 
     dist_path = join(TDIR, r'ql\quodlibet\dist')
 
+    # for pygst: one of the libs is looking for _gst.pyd
+    shutil.copyfile(os.path.join(dist_path, 'gst._gst.pyd'),
+        os.path.join(dist_path, '_gst.pyd'))
+
     # You must have a license to restribute the resulting installer
     #for file in ['Microsoft.VC90.CRT.manifest', 'msvcr90.dll']:
     #    shutil.copy(join(TDIR, 'Python', file), dist_path)
 
     # Copy required files from GStreamer distribution
-    gst_path = join(TDIR, 'gstreamer')
+    gst_path = join(TDIR, r'gstreamer\PFiles')
     for file in filter(lambda f: f.endswith('.dll'),
                        os.listdir(join(gst_path, 'bin'))):
         if not os.path.isfile(join(dist_path, file)):
