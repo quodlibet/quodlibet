@@ -45,6 +45,7 @@ from quodlibet.qltk.songlist import SongList, PlaylistMux
 from quodlibet.qltk.x import RPaned
 from quodlibet.util import copool
 from quodlibet.util.uri import URI
+from quodlibet.util.library import background_filter
 
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
@@ -680,7 +681,9 @@ class QuodLibetWindow(gtk.Window):
         self.__make_query("#(playcount = 0)")
 
     def __top40(self, menuitem):
-        songs = [song.get("~#playcount", 0) for song in self.__library]
+        bg = background_filter()
+        songs = (bg and filter(bg, self.__library)) or self.__library
+        songs = [song.get("~#playcount", 0) for song in songs]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
@@ -689,11 +692,13 @@ class QuodLibetWindow(gtk.Window):
             self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
 
     def __bottom40(self, menuitem):
-        songs = [song.get("~#playcount", 0) for song in self.__library]
+        bg = background_filter()
+        songs = (bg and filter(bg, self.__library)) or self.__library
+        songs = [song.get("~#playcount", 0) for song in songs]
         if len(songs) == 0: return
         songs.sort()
         if len(songs) < 40:
-            self.__make_query("#(playcount < %d)" % (songs[0] + 1))
+            self.__make_query("#(playcount < %d)" % (songs[-1] + 1))
         else:
             self.__make_query("#(playcount < %d)" % (songs[-40] + 1))
 
@@ -815,13 +820,8 @@ class QuodLibetWindow(gtk.Window):
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:
-            try: bg = config.get("browsers", "background").decode('utf-8')
-            except UnicodeError: bg = ""
-            if bg:
-                try: search = Query(bg, SongList.star).search
-                except Query.error: pass
-                else: songs = filter(search, songs)
-
+            bg = background_filter()
+            if bg: songs = filter(bg, songs)
         self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
 

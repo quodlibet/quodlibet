@@ -27,6 +27,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import copool
+from quodlibet.util.library import background_filter
 
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| (<date>)>
@@ -310,6 +311,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         model_sort = gtk.TreeModelSort(self.__model)
         model_filter = model_sort.filter_new()
 
+        self.__bg_filter = background_filter()
         self.__filter = None
         model_filter.set_visible_func(self.__parse_query)
 
@@ -463,14 +465,18 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 self.__filter = None
             else:
                 self.__filter = Query(text, star=["people", "album"]).search
+        self.__bg_filter = background_filter()
         self.__inhibit()
         model.refilter()
         self.__uninhibit()
 
     def __parse_query(self, model, iter):
-        if self.__filter is None: return True
+        f, b = self.__filter, self.__bg_filter
+        if f is None and b is None: return True
         elif model[iter][0] is None: return True
-        else: return self.__filter(model[iter][0])
+        elif b is None: return f(model[iter][0])
+        elif f is None: return b(model[iter][0])
+        else: return b(model[iter][0]) and f(model[iter][0])
 
     def __search_func(self, model, column, key, iter):
         album = model[iter][0]

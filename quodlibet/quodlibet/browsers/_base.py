@@ -11,6 +11,7 @@ import gtk
 import quodlibet.library
 
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.util.library import background_filter
 
 # Browers are how the audio library is presented to the user; they
 # create the list of songs that MainSongList is filled with, and pass
@@ -132,7 +133,15 @@ class Browser(object):
     # Return a list of values for the given tag. This needs to be
     # here since not all browsers pull from the default library.
     def list(self, tag):
-        return quodlibet.library.library.tag_values(tag)
+        library = quodlibet.library.library
+        bg = background_filter()
+        if bg:
+            songs = filter(bg, library.itervalues())
+            tags = set()
+            for song in songs:
+                tags.update(song.list(tag))
+            return list(tags)
+        return library.tag_values(tag)
 
     # Reset all filters and display the whole library.
     def unfilter(self):

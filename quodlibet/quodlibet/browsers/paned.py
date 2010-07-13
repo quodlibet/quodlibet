@@ -26,6 +26,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import tag, pattern
+from quodlibet.util.library import background_filter
 
 class Preferences(qltk.UniqueWindow):
     def __init__(self, parent=None):
@@ -668,6 +669,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
     def activate(self):
         songs = filter(self._filter, self._library)
+        bg = background_filter()
+        if bg: songs = filter(bg, songs)
         self.__panes[0].fill(songs)
 
     def scroll(self, song):
@@ -724,6 +727,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         return (canditates and canditates[0][1]) or None
 
     def can_filter(self, key):
+        if key is None: return True
         return (self.__get_filter_pane(key) is not None)
 
     def filter(self, key, values):
