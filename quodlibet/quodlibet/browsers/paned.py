@@ -261,6 +261,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.append_column(column)
             self.set_model(model)
 
+            self.set_search_equal_func(self.__search_func)
+
             selection = self.get_selection()
             selection.set_mode(gtk.SELECTION_MULTIPLE)
             self.__sig = selection.connect('changed', self.__selection_changed)
@@ -278,6 +280,13 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         def __destroy(self, *args):
             # needed for gc
             self.__next = None
+
+        def __search_func(self, model, column, key, iter):
+            type, data = model[iter]
+            key = key.decode('utf-8').lower()
+            if type == SONGS and key in data.key.lower():
+                return False
+            return True
 
         def __drag_data_get(self, view, ctx, sel, tid, etime):
             songs = self.__get_selected_songs(sort=True)
@@ -367,7 +376,9 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             model = self.__model
             songs = set(songs)
             to_remove = []
-            map(self.__key_cache.pop, songs)
+            for song in songs:
+                if song in self.__key_cache:
+                    del self.__key_cache[song]
             for row in model:
                 type, data = row
                 if type == ALL: continue
