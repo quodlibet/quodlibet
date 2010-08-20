@@ -115,9 +115,9 @@ class AudioFile(dict):
     mountpoint = property(lambda self: self["~mountpoint"])
 
     def __album_key(self):
-        return (human(self("albumsort")),
+        return (human(self("albumsort", "")),
                 self.get("album_grouping_key") or self.get("labelid") or
-                self.get("musicbrainz_albumid") or "")
+                self.get("musicbrainz_albumid") or self("~dirname"))
     album_key = property(__album_key)
 
     def __cmp__(self, other):

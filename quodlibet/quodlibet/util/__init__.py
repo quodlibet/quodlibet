@@ -392,8 +392,8 @@ def split_album(s):
 
 def split_numeric(s, reg=re.compile(r"([0-9]+\.?[0-9]*)")):
     """Seperate numeric values from the string and convert to float, so
-    it can be used for human sorting. Also removes all whitespace."""
-    if not s: return None
+    it can be used for human sorting. Also removes all extra whitespace."""
+    if not s: return ('',)
     result = reg.search(s)
     if not result: return (u" ".join(s.split()),)
     else:

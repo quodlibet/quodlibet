@@ -8,10 +8,12 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
 bar_1_1 = AudioFile({
+    "~filename": "/fakepath/1",
     "title": "A song",
     "discnumber": "1/2", "tracknumber": "1/3",
     "artist": "Foo", "album": "Bar" })
 bar_1_2 = AudioFile({
+    "~filename": "/fakepath/2",
     "title": "Perhaps another",
     "discnumber": "1", "tracknumber": "2/3",
     "artist": "Lali-ho!", "album": "Bar",
@@ -200,6 +202,7 @@ class TAudioFile(TestCase):
         q = AudioFile(quux)
         b = AudioFile(bar_1_1)
         q.sanitize()
+        b.pop('~filename')
         self.failUnlessRaises(ValueError, b.sanitize)
         n = AudioFile({"artist": u"foo\0bar", "title": u"baz\0",
                         "~filename": "whatever"})
@@ -309,23 +312,21 @@ class TAudioFile(TestCase):
         self.failUnlessRaises(
             ValueError, setattr, AudioFile(), 'bookmarks', [(-1, "!")])
 
-    """def test_album_key(self):
-        self.failUnlessEqual(AudioFile().album_key, ("", ""))
+    def test_album_key(self):
+        album_key_tests = [
+            ({}, (('',), '/dir')),
+            ({'album': 'foo'}, (('foo',), '/dir')),
+            ({'labelid': 'foo'}, (('',), 'foo')),
+            ({'musicbrainz_albumid': 'foo'}, (('',), 'foo')),
+            ({'album': 'foo', 'labelid': 'bar'}, (('foo',), 'bar')),
+            ({'album': 'foo', 'labelid': 'bar', 'musicbrainz_albumid': 'quux'},
+                (('foo',), 'bar'))
+            ]
 
-        album = AudioFile(album="foo")
-        self.failUnlessEqual(album.album_key, ("foo", ""))
-
-        labelid = AudioFile(labelid="foo")
-        self.failUnlessEqual(labelid.album_key, ("", "foo"))
-
-        mbid = AudioFile(musicbrainz_albumid="foo")
-        self.failUnlessEqual(mbid.album_key, ("", "foo"))
-
-        title_id = AudioFile(album="foo", labelid="bar")
-        self.failUnlessEqual(title_id.album_key, ("foo", "bar"))
-
-        all = AudioFile(album="foo", labelid="bar", musicbrainz_albumid="quux")
-        self.failUnlessEqual(all.album_key, ("foo", "bar"))"""
+        for tags, expected in album_key_tests:
+            afile = AudioFile(**tags)
+            afile.sanitize('/dir/fn')
+            self.failUnlessEqual(afile.album_key, expected)
 
     def tearDown(self):
         os.unlink(quux["~filename"])
