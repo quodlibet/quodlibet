@@ -190,6 +190,8 @@ class Library(gtk.Object):
         # reload/rescan the files.
         items.sort(key=lambda item: item.key)
         pickle.dump(items, fileobj, pickle.HIGHEST_PROTOCOL)
+        fileobj.flush()
+        os.fsync(fileobj.fileno())
         fileobj.close()
         if os.name == "nt":
             try: os.remove(filename)
