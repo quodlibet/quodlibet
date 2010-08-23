@@ -10,6 +10,7 @@
 # needs them to be there.
 
 import os
+import sys
 
 import gtk
 
@@ -23,7 +24,7 @@ from quodlibet.browsers._base import Browser
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import DirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.util import copool
+from quodlibet.util import copool, split_scan_dirs
 
 class FileSystem(Browser, gtk.ScrolledWindow):
     __gsignals__ = Browser.__gsignals__
@@ -54,12 +55,27 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
 
-        folders = filter(None, config.get("settings", "scan").split(":"))
+        def get_win32_drives():
+            import string
+            from ctypes import windll
+            drives = []
+            bitmask = windll.kernel32.GetLogicalDrives()
+            for letter in string.uppercase:
+                if bitmask & 1:
+                    drives.append(letter + ":\\")
+                bitmask >>= 1
+            return drives
+
+        folders = filter(None, split_scan_dirs(config.get("settings", "scan")))
         if folders:
             folders.append(None)
         if const.HOME not in folders:
             folders.append(const.HOME)
-        if "/" not in folders:
+        if sys.platform == "win32":
+            for folder in get_win32_drives():
+                if folder not in folders:
+                    folders.append(folder)
+        elif "/" not in folders:
             folders.append("/")
 
         dt = DirectoryTree(folders=folders)

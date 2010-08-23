@@ -229,6 +229,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 folder = model[iter][0]
                 for path in util.listdir(folder):
                     try:
+                        if not os.path.isdir(path): continue
                         for filename in util.listdir(path):
                             if os.path.isdir(filename):
                                 niter = model.append(iter, [path])
