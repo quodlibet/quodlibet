@@ -768,7 +768,7 @@ class CoverArea(gtk.VBox):
             return
 
         try:
-            f = open(file_path, 'w')
+            f = open(file_path, 'wb')
             f.write(self.current_data)
             f.close()
         except IOError:
