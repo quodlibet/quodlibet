@@ -121,16 +121,28 @@ class ExFalsoWindow(gtk.Window):
         key, mod = gtk.accelerator_parse("<control>Q")
         self.__ag.connect_group(key, mod, 0, gtk.main_quit)
         self.add_accel_group(self.__ag)
+
         self.connect('configure-event', ExFalsoWindow.__save_size)
-        x, y = map(int, config.get("memory", "exfalso_size").split())
-        screen = self.get_screen()
-        x = min(x, screen.get_width())
-        y = min(y, screen.get_height())
-        self.resize(x, y)
+        self.connect('window-state-event', self.__window_state_changed)
+        self.__state = 0
+
+        if config.getint("memory", "exfalso_maximized"):
+            self.maximize()
+        self.resize(*map(int, config.get("memory", "exfalso_size").split()))
+
+    def __window_state_changed(self, window, event):
+        self.__state = event.new_window_state
+        if self.__state & gtk.gdk.WINDOW_STATE_WITHDRAWN: return
+        print int(self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED)
+        if self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            config.set("memory", "exfalso_maximized", "1")
+        else:
+            config.set("memory", "exfalso_maximized", "0")
 
     def __save_size(self, event):
-        config.set("memory", "exfalso_size",
-                   "%d %d" % (event.width, event.height))
+        if not self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            config.set("memory", "exfalso_size",
+                "%d %d" % (event.width, event.height))
 
     def set_pending(self, button, *excess):
         self.__save = button

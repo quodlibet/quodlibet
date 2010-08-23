@@ -58,7 +58,9 @@ def init(*rc_files):
         # State about the player, to restore on startup
         "memory":
         { "size": "400 350", # player window size
+          "maximized": "0", # main window maximized
           "exfalso_size": "700 500", # ex falso window size
+          "exfalso_maximized": "0", # ex falso window maximized
           "browser_size": "500 300", # library browser window size
           "song": "", # filename of last song
           "seek": "0", # last song position, in milliseconds

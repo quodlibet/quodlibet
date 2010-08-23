@@ -235,6 +235,8 @@ class QuodLibetWindow(gtk.Window):
         repeat.set_active(config.getboolean('settings', 'repeat'))
 
         self.connect('configure-event', QuodLibetWindow.__save_size)
+        self.connect('window-state-event', self.__window_state_changed)
+        self.__state = 0
 
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
@@ -258,6 +260,8 @@ class QuodLibetWindow(gtk.Window):
         self.connect_object(
             'drag-data-received', QuodLibetWindow.__drag_data_received, self)
 
+        if config.getint("memory", "maximized"):
+            self.maximize()
         self.resize(*map(int, config.get("memory", "size").split()))
 
         if config.getboolean('library', 'refresh_on_start'):
@@ -589,8 +593,17 @@ class QuodLibetWindow(gtk.Window):
             config.getboolean("settings", "jump"):
             self.__jump_to_current(False)
 
+    def __window_state_changed(self, window, event):
+        self.__state = event.new_window_state
+        if self.__state & gtk.gdk.WINDOW_STATE_WITHDRAWN: return
+        if self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            config.set("memory", "maximized", "1")
+        else:
+            config.set("memory", "maximized", "0")
+
     def __save_size(self, event):
-        config.set("memory", "size", "%d %d" % (event.width, event.height))
+        if not self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            config.set("memory", "size", "%d %d" % (event.width, event.height))
 
     def __refresh_size(self):
         self.__vbox.set_spacing(6)
