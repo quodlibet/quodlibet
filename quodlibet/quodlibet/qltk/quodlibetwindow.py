@@ -200,11 +200,16 @@ class QuodLibetWindow(gtk.Window):
         align.add(hbox)
         self.child.pack_end(align, expand=False)
 
-        self.songpane = gtk.VBox(spacing=6)
-        self.songpane.pack_start(self.song_scroller)
-        self.songpane.pack_start(self.qexpander, expand=False, fill=True)
+        self.songpane = gtk.VPaned()
+        self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
+        self.songpane.pack2(self.qexpander, resize=True, shrink=False)
+        self.__handle_position =  self.songpane.get_property("position")
+
         self.song_scroller.connect('notify::visible', self.__show_or)
         self.qexpander.connect('notify::visible', self.__show_or)
+        self.qexpander.connect('notify::expanded', self.__expand_or)
+        self.qexpander.connect('size-allocate', self.__qex_size_allocate)
+        self.songpane.connect('notify', self.__moved_pane_handle)
 
         sort = config.get('memory', 'sortby')
         self.songlist.set_sort_by(None, sort[1:], order=int(sort[0]))
@@ -339,11 +344,24 @@ class QuodLibetWindow(gtk.Window):
         ssv = self.song_scroller.get_property('visible')
         qxv = self.qexpander.get_property('visible')
         self.songpane.set_property('visible', ssv or qxv)
-        self.songpane.set_child_packing(
-            self.qexpander, expand=not ssv, fill=True, padding=0,
-            pack_type=gtk.PACK_START)
         if not ssv:
             self.qexpander.set_expanded(True)
+        self.__expand_or(widget, prop)
+
+    def __expand_or(self, widget, prop):
+        if self.qexpander.get_property('expanded'):
+            self.songpane.set_property("position", self.__handle_position)
+
+    def __moved_pane_handle(self, widget, prop):
+        if self.qexpander.get_property('expanded'):
+            self.__handle_position = self.songpane.get_property("position")
+
+    def __qex_size_allocate(self, event, param=None):
+        if not self.qexpander.get_property('expanded'):
+            p_max = self.songpane.get_property("max-position")
+            p_cur = self.songpane.get_property("position")
+            if p_max != p_cur:
+                self.songpane.set_property("position", p_max)
 
     def __create_menu(self, player, library):
         ag = gtk.ActionGroup('QuodLibetWindowActions')
