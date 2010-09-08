@@ -30,7 +30,8 @@ class GCommand(Command):
         p = subprocess.Popen(args, stdout=subprocess.PIPE)
         ret = p.wait()
         if ret != 0:
-            raise SystemExit("External program %s exited with error %d." % (args[0], ret))
+            raise SystemExit("External program '%s' exited with error %d."
+                             % (' '.join(args), ret))
         return p.stdout.read()
 
     def check_po(self):
