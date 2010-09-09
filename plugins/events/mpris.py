@@ -17,28 +17,279 @@ from quodlibet.library import librarian
 from plugins.events import EventPlugin
 
 # TODO: OpenUri, UriSchemes, Mimetypes, CanXYZ
+# Date parsing (util?)
 
 class MPRIS(EventPlugin):
     PLUGIN_ID = "mpris"
     PLUGIN_NAME = _("MPRIS D-Bus support")
     PLUGIN_DESC = _("Lets you control Quod Libet using the "
-        "MPRIS 2.0 D-Bus Interface Specification.")
+        "MPRIS 1.0/2.0 D-Bus Interface Specification.")
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.1"
+    PLUGIN_VERSION = "0.2"
 
     def enabled(self):
-        self.m2 = MPRIS2Object()
+        self.objects = [MPRIS1RootObject(), MPRIS1DummyTracklistObject(),
+            MPRIS1PlayerObject(), MPRIS2Object()]
 
     def disabled(self):
-        if self.m2:
-            self.m2.remove_from_connection()
-            self.m2 = None
+        for obj in self.objects:
+            obj.remove_from_connection()
+        self.objects = []
 
     def destroy(self):
         self.disabled()
 
+    def plugin_on_paused(self):
+        for obj in self.objects:
+            obj.paused()
+
+    def plugin_on_unpaused(self):
+        for obj in self.objects:
+            obj.unpaused()
+
+    def plugin_on_song_started(self, song):
+        for obj in self.objects:
+            obj.song_started(song)
+
+    def plugin_on_song_ended(self, song, skipped):
+        for obj in self.objects:
+            obj.song_ended(song, skipped)
+
+class MPRISObject(dbus.service.Object):
+    def paused(self): pass
+    def unpaused(self): pass
+    def song_started(self, song): pass
+    def song_ended(self, song, skipped): pass
+
+# http://xmms2.org/wiki/MPRIS
+class MPRIS1RootObject(MPRISObject):
+    __path = "/"
+
+    __bus_name = "org.mpris.quodlibet"
+    __interface = "org.freedesktop.MediaPlayer"
+
+    def __init__(self):
+        bus = dbus.SessionBus()
+        name = dbus.service.BusName(self.__bus_name, bus)
+        super(MPRIS1RootObject, self).__init__(name, self.__path)
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="s")
+    def Identity(self):
+        return "Quod Libet"
+
+    @dbus.service.method(dbus_interface=__interface)
+    def Quit(self):
+        window.destroy()
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="(qq)")
+    def MprisVersion(self):
+        return (1, 0)
+
+class MPRIS1DummyTracklistObject(MPRISObject):
+    __path = "/TrackList"
+
+    __bus_name = "org.mpris.quodlibet"
+    __interface = "org.freedesktop.MediaPlayer"
+
+    def __init__(self):
+        bus = dbus.SessionBus()
+        name = dbus.service.BusName(self.__bus_name, bus)
+        super(MPRIS1DummyTracklistObject, self).__init__(name, self.__path)
+
+    @dbus.service.method(dbus_interface=__interface, in_signature="i",
+        out_signature="a{sv}")
+    def GetMetadata(self, position):
+        song = player.info
+        if position != 0:
+            song = None
+        return MPRIS1PlayerObject._get_metadata(song)
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="i")
+    def GetCurrentTrack(self):
+        return 0
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="i")
+    def GetLength(self):
+        return 0
+
+    @dbus.service.method(dbus_interface=__interface, in_signature="sb",
+        out_signature="i")
+    def AddTrack(self, uri, play):
+        return -1
+
+    @dbus.service.method(dbus_interface=__interface, in_signature="b")
+    def SetLoop(self, loop):
+        window.repeat.set_active(loop)
+
+    @dbus.service.method(dbus_interface=__interface, in_signature="b")
+    def SetRandom(self, shuffle):
+        shuffle_on = window.order.get_active_name() == "shuffle"
+        if shuffle_on and not shuffle:
+            window.order.set_active("inorder")
+        elif not shuffle_on and shuffle:
+            window.order.set_active("shuffle")
+
+class MPRIS1PlayerObject(MPRISObject):
+    __path = "/Player"
+
+    __bus_name = "org.mpris.quodlibet"
+    __interface = "org.freedesktop.MediaPlayer"
+
+    def __init__(self):
+        bus = dbus.SessionBus()
+        name = dbus.service.BusName(self.__bus_name, bus)
+        super(MPRIS1PlayerObject, self).__init__(name, self.__path)
+
+        self.__rsig = window.repeat.connect("toggled", self.__update_status)
+        self.__ssig = window.order.connect("changed", self.__update_status)
+        self.__lsig = librarian.connect("changed", self.__update_track_changed)
+
+    def remove_from_connection(self, *arg, **kwargs):
+        super(MPRIS1PlayerObject, self).remove_from_connection(*arg, **kwargs)
+
+        window.repeat.disconnect(self.__rsig)
+        window.order.disconnect(self.__ssig)
+        librarian.disconnect(self.__lsig)
+
+    def paused(self):
+        self.StatusChange(self.__get_status())
+    unpaused = paused
+
+    def song_started(self, song):
+        self.TrackChanged(self._get_metadata(song))
+
+    def __update_track_changed(self, library, songs):
+        if player.info in songs:
+             self.TrackChanged(self._get_metadata(player.info))
+
+    def __update_status(self, *args):
+        self.StatusChange(self.__get_status())
+
+    @staticmethod
+    def _get_metadata(song):
+        #http://xmms2.org/wiki/MPRIS_Metadata#MPRIS_v1.0_Metadata_guidelines
+        metadata = dbus.Dictionary(signature="sv")
+        if not song: return metadata
+
+        # Missing: "audio-samplerate", "video-bitrate"
+
+        strings = {"location": "~uri", "title": "title", "artist": "artist",
+            "album": "album", "tracknumber": "tracknumber", "genre": "genre",
+            "comment": "comment", "asin": "asin",
+            "puid fingerprint": "musicip_puid",
+            "mb track id": "musicbrainz_trackid",
+            "mb artist id": "musicbrainz_artistid",
+            "mb artist sort name": "artistsort",
+            "mb album id": "musicbrainz_albumid", "mb release date": "date",
+            "mb album artist": "albumartist",
+            "mb album artist id": "musicbrainz_albumartistid",
+            "mb album artist sort name": "albumartistsort",
+            }
+
+        for key, tag in strings.iteritems():
+            val = song.comma(tag)
+            if val:
+                metadata[key] = val
+
+        metadata["audio-bitrate"] = song("~#bitrate", 0) * 1024 * 8
+        metadata["rating"] = int(round(song("~#rating") * 5))
+        metadata["year"] = song("~#year", 0)
+        metadata["time"] = song("~#length", 0)
+        metadata["mtime"] = song("~#length", 0) * 1000
+
+        year = song("~year")
+        if year:
+            try: tuple_time = time.strptime(year, "%Y")
+            except ValueError: pass
+            else: metadata["date"] = int(time.mktime(tuple_time))
+
+        return metadata
+
+    def __get_status(self):
+        play = (not player.info and 2) or int(player.paused)
+        shuffle = (window.order.get_active_name() != "inorder")
+        repeat_one = (window.order.get_active_name() == "onesong" and \
+            window.repeat.get_active())
+        repeat_all = int(window.repeat.get_active())
+
+        return (play, shuffle, repeat_one, repeat_all)
+
+    @dbus.service.method(dbus_interface=__interface)
+    def Next(self):
+        player.next()
+
+    @dbus.service.method(dbus_interface=__interface)
+    def Prev(self):
+        player.previous()
+
+    @dbus.service.method(dbus_interface=__interface)
+    def Pause(self):
+        if player.song is None:
+            player.reset()
+        else:
+            player.paused ^= True
+
+    @dbus.service.method(dbus_interface=__interface)
+    def Stop(self):
+        player.stop()
+
+    @dbus.service.method(dbus_interface=__interface)
+    def Play(self):
+        if player.song is None:
+            player.reset()
+        else:
+            if player.paused:
+                player.paused = False
+            else:
+                player.seek(0)
+
+    @dbus.service.method(dbus_interface=__interface)
+    def Repeat(self):
+        pass
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="(iiii)")
+    def GetStatus(self):
+        return self.__get_status()
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="a{sv}")
+    def GetMetadata(self):
+        return self._get_metadata(player.info)
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="i")
+    def GetCaps(self):
+        # everything except Tracklist
+        return (1 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5)
+
+    @dbus.service.method(dbus_interface=__interface, in_signature="i")
+    def VolumeSet(self, volume):
+        player.volume = volume / 100.0
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="i")
+    def VolumeGet(self):
+        return int(round(player.volume * 100))
+
+    @dbus.service.method(dbus_interface=__interface, in_signature="i")
+    def PositionSet(self, position):
+        player.seek(position)
+
+    @dbus.service.method(dbus_interface=__interface, out_signature="i")
+    def PositionGet(self):
+        return int(player.get_position())
+
+    @dbus.service.signal(__interface, signature="a{sv}")
+    def TrackChanged(self, metadata):
+        pass
+
+    @dbus.service.signal(__interface, signature="(iiii)")
+    def StatusChange(self, status):
+        pass
+
+    @dbus.service.signal(__interface, signature="i")
+    def CapsChange(self, status):
+        pass
+
 # http://www.mpris.org/2.0/spec/
-class MPRIS2Object(dbus.service.Object):
+class MPRIS2Object(MPRISObject):
 
     __path = "/org/mpris/MediaPlayer2"
     __bus_name = "org.mpris.MediaPlayer2.quodlibet"
@@ -174,49 +425,32 @@ class MPRIS2Object(dbus.service.Object):
         name = dbus.service.BusName(self.__bus_name, bus)
         super(MPRIS2Object, self).__init__(name, self.__path)
 
-        self.__psigs = [
-            player.connect("seek", self.__seeked),
-            player.connect_object("paused", self.__update_property,
-                self.__player_interface, "PlaybackStatus"),
-            player.connect_object("unpaused", self.__update_property,
-                self.__player_interface, "PlaybackStatus"),
-            player.connect_object("song-ended", self.__update_song_ended,
-                self.__player_interface, "Metadata"),
-            player.connect_object("song-started", self.__update_song_started,
-                self.__player_interface, "Metadata"),
-            ]
+        self.__rsig = window.repeat.connect_object(
+            "toggled", self.__update_property,
+            self.__player_interface, "LoopStatus")
 
-        self.__rsigs = [
-            window.repeat.connect_object("toggled", self.__update_property,
-                self.__player_interface, "LoopStatus"),
-            ]
+        self.__ssig = window.order.connect_object(
+            "changed", self.__update_property,
+            self.__player_interface, "Shuffle")
 
-        self.__ssigs = [
-            window.order.connect_object("changed", self.__update_property,
-                self.__player_interface, "Shuffle"),
-            ]
+        self.__lsig = librarian.connect_object(
+            "changed", self.__update_metadata_changed,
+            self.__player_interface, "Metadata")
 
-        self.__lsigs = [
-            librarian.connect_object("changed", self.__update_metadata_changed,
-                self.__player_interface, "Metadata"),
-            ]
+    def paused(self):
+        self.__update_property(self.__player_interface, "PlaybackStatus")
+    unpaused = paused
+
+    def song_started(self, song):
+        self.__update_property(
+            self.__player_interface, "Metadata", invalid=True)
 
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS2Object, self).remove_from_connection(*arg, **kwargs)
-        for sig in self.__psigs:
-            player.disconnect(sig)
-        for sig in self.__rsigs:
-            window.repeat.disconnect(sig)
-        for sig in self.__ssigs:
-            window.order.disconnect(sig)
-        for sig in self.__lsigs:
-            librarian.disconnect(sig)
 
-    def __update_song_started(self, interface, song, prop):
-        self.__update_property(interface, prop, invalid=True)
-
-    def __update_song_ended(self, interface, song, stopped, prop):
-        self.__update_property(interface, prop, invalid=True)
+        window.repeat.disconnect(self.__rsig)
+        window.order.disconnect(self.__ssig)
+        librarian.disconnect(self.__lsig)
 
     def __update_metadata_changed(self, interface, song, prop):
         if song is player.info:
@@ -236,13 +470,11 @@ class MPRIS2Object(dbus.service.Object):
 
     @dbus.service.method(__root_interface)
     def Raise(self):
-        from quodlibet.widgets import main as window
         window.show()
         window.present()
 
     @dbus.service.method(__root_interface)
     def Quit(self):
-        from quodlibet.widgets import main as window
         window.destroy()
 
     @dbus.service.method(__player_interface)
