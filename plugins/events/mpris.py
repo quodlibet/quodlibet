@@ -10,6 +10,7 @@ import gtk
 import dbus
 import dbus.glib
 
+from quodlibet import util
 from quodlibet.util.uri import URI
 from quodlibet.player import playlist as player
 from quodlibet.widgets import main as window
@@ -191,7 +192,7 @@ class MPRIS1PlayerObject(MPRISObject):
             if val:
                 metadata[key] = val
 
-        metadata["audio-bitrate"] = song("~#bitrate", 0) * 1024 * 8
+        metadata["audio-bitrate"] = song("~#bitrate", 0) * 1024
         metadata["rating"] = int(round(song("~#rating") * 5))
         metadata["year"] = song("~#year", 0)
         metadata["time"] = song("~#length", 0)
@@ -328,9 +329,12 @@ class MPRIS2Object(MPRISObject):
         metadata["mpris:length"] = long(player.info.get("~#length", 0) * 1000)
         cover = song.find_cover()
         if cover:
+            name = cover.name
+            if isinstance(name, str):
+                name = util.fsdecode(name)
             # This doesn't work for embedded images.. the file gets unlinked
             # after loosing the file handle
-            metadata["mpris:artUrl"] = str(URI.frompath(cover.name))
+            metadata["mpris:artUrl"] = str(URI.frompath(name))
 
         # All list values
         list_val = {"artist": "artist", "albumArtist": "albumartist",

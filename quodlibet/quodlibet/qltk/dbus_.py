@@ -11,6 +11,7 @@ import dbus.glib
 from dbus import DBusException
 
 from quodlibet import player
+from quodlibet import util
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
 
@@ -38,6 +39,10 @@ class DBusHandler(dbus.service.Object):
                     dict[key] = value.encode('utf-8')
             elif not isinstance(value, str):
                 dict[key] = str(value)
+            else:
+                dict[key] = util.fsdecode(value)
+        if song:
+            dict["~uri"] = song("~uri")
         return dict
 
     def __song_started(self, player, song):
