@@ -455,7 +455,7 @@ class MPRIS2Object(MPRISObject):
                 metadata["xesam:" + xesam] = vals
 
         # All single values
-        sing_val = {"album": "album"}
+        sing_val = {"album": "album", "title": "title", "asText": "~lyrics"}
         for xesam, tag in sing_val.iteritems():
             vals = song.comma(tag)
             if vals:
