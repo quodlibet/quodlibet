@@ -20,6 +20,115 @@ from plugins.events import EventPlugin
 # TODO: OpenUri, UriSchemes, Mimetypes, CanXYZ
 # Date parsing (util?)
 
+# python dbus bindings don't include annotations and properties
+MPRIS2_INTROSPECTION = \
+"""<node name="/org/mpris/MediaPlayer2">
+  <interface name="org.freedesktop.DBus.Introspectable">
+    <method name="Introspect">
+      <arg direction="out" name="xml_data" type="s"/>
+    </method>
+  </interface>
+  <interface name="org.freedesktop.DBus.Properties">
+    <method name="Get">
+      <arg direction="in" name="interface_name" type="s"/>
+      <arg direction="in" name="property_name" type="s"/>
+      <arg direction="out" name="value" type="v"/>
+    </method>
+    <method name="GetAll">
+      <arg direction="in" name="interface_name" type="s"/>
+      <arg direction="out" name="properties" type="a{sv}"/>
+    </method>
+    <method name="Set">
+      <arg direction="in" name="interface_name" type="s"/>
+      <arg direction="in" name="property_name" type="s"/>
+      <arg direction="in" name="value" type="v"/>
+    </method>
+    <signal name="PropertiesChanged">
+      <arg name="interface_name" type="s"/>
+      <arg name="changed_properties" type="a{sv}"/>
+      <arg name="invalidated_properties" type="as"/>
+    </signal>
+  </interface>
+  <interface name="org.mpris.MediaPlayer2">
+    <method name="Raise"/>
+    <method name="Quit"/>
+    <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+    <property name="CanQuit" type="b" access="read"/>
+    <property name="CanRaise" type="b" access="read"/>
+    <property name="HasTrackList" type="b" access="read"/>
+    <property name="Identity" type="s" access="read"/>
+    <property name="DesktopEntry" type="s" access="read"/>
+    <property name="SupportedUriSchemes" type="as" access="read"/>
+    <property name="SupportedMimeTypes" type="as" access="read"/>
+  </interface>
+  <interface name="org.mpris.MediaPlayer2.Player">
+    <method name="Next"/>
+    <method name="Previous"/>
+    <method name="Pause"/>
+    <method name="PlayPause"/>
+    <method name="Stop"/>
+    <method name="Play"/>
+    <method name="Seek">
+      <arg direction="in" name="Offset" type="x"/>
+    </method>
+    <method name="SetPosition">
+      <arg direction="in" name="TrackId" type="o"/>
+      <arg direction="in" name="Position" type="x"/>
+    </method>
+    <method name="OpenUri">
+      <arg direction="in" name="Uri" type="s"/>
+    </method>
+    <signal name="Seeked">
+      <arg name="Position" type="x"/>
+    </signal>
+    <property name="PlaybackStatus" type="s" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="LoopStatus" type="s" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="Rate" type="d" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="Shuffle" type="b" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="Metadata" type="a{sv}" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="Volume" type="d" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+    </property>
+    <property name="Position" type="x" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+    </property>
+    <property name="MinimumRate" type="d" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="MaximumRate" type="d" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="CanGoNext" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="CanGoPrevious" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="CanPlay" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="CanPause" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="CanSeek" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+    </property>
+    <property name="CanControl" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+    </property>
+  </interface>
+</node>"""
+
 class MPRIS(EventPlugin):
     PLUGIN_ID = "mpris"
     PLUGIN_NAME = _("MPRIS D-Bus support")
@@ -296,6 +405,7 @@ class MPRIS2Object(MPRISObject):
     __bus_name = "org.mpris.MediaPlayer2.quodlibet"
 
     __prop_interface = "org.freedesktop.DBus.Properties"
+    __introspect_interface = "org.freedesktop.DBus.Introspectable"
 
     def __get_playback_status():
         return ("Playing", "Paused")[int(player.paused)]
@@ -321,11 +431,10 @@ class MPRIS2Object(MPRISObject):
         song = player.info
 
         metadata = dbus.Dictionary(signature="sv")
+        metadata["mpris:trackid"] = MPRIS2Object.__path + "/"
         if not song: return metadata
 
-        track_id = MPRIS2Object.__path + "/" + str(id(song))
-
-        metadata["mpris:trackid"] = track_id
+        metadata["mpris:trackid"] += str(id(song))
         metadata["mpris:length"] = long(player.info.get("~#length", 0) * 1000)
         cover = song.find_cover()
         if cover:
@@ -447,7 +556,7 @@ class MPRIS2Object(MPRISObject):
 
     def song_started(self, song):
         self.__update_property(
-            self.__player_interface, "Metadata", invalid=True)
+            self.__player_interface, "Metadata")
 
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS2Object, self).remove_from_connection(*arg, **kwargs)
@@ -458,19 +567,20 @@ class MPRIS2Object(MPRISObject):
 
     def __update_metadata_changed(self, interface, song, prop):
         if song is player.info:
-            self.__update_property(interface, prop, invalid=True)
+            self.__update_property(interface, prop)
 
-    def __update_property(self, interface, prop, invalid=False):
-        if invalid:
-            self.PropertiesChanged(interface, {}, [prop])
-        else:
-            getter, setter = self.__prop_mapping[interface][prop]
-            if callable(getter): val = getter()
-            else: val = getter
-            self.PropertiesChanged(interface, {prop: val}, [])
+    def __update_property(self, interface, prop):
+        getter, setter = self.__prop_mapping[interface][prop]
+        if callable(getter): val = getter()
+        else: val = getter
+        self.PropertiesChanged(interface, {prop: val}, [])
 
     def __seeked(self, player, song, ms):
         self.Seeked(long(ms * 1000))
+
+    @dbus.service.method(__introspect_interface)
+    def Introspect(self):
+        return MPRIS2_INTROSPECTION
 
     @dbus.service.method(__root_interface)
     def Raise(self):
