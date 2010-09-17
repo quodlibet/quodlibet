@@ -146,9 +146,6 @@ class MPRIS(EventPlugin):
             obj.remove_from_connection()
         self.objects = []
 
-    def destroy(self):
-        self.disabled()
-
     def plugin_on_paused(self):
         for obj in self.objects:
             obj.paused()

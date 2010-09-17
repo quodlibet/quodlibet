@@ -245,26 +245,19 @@ class TrayIcon(EventPlugin):
 
         self.__w_sig_map = window.connect('map-event', self.__window_map)
         self.__w_sig_del = window.connect('delete-event', self.__window_delete)
-        window.connect('destroy', lambda *x: self.__cleanup())
 
         self.__stop_after = StopAfterMenu(player)
 
         self.plugin_on_paused()
         self.plugin_on_song_started(player.song)
 
-    def __cleanup(self):
-        if self.__w_sig_map and window.handler_is_connected(self.__w_sig_map):
-            window.disconnect(self.__w_sig_map)
-        if self.__w_sig_del and window.handler_is_connected(self.__w_sig_del):
-            window.disconnect(self.__w_sig_del)
-        if self.__icon:
-            self.__icon.set_visible(False)
-            try: self.__icon.destroy()
-            except AttributeError: pass
-            self.__icon = None
-
     def disabled(self):
-        self.__cleanup()
+        window.disconnect(self.__w_sig_map)
+        window.disconnect(self.__w_sig_del)
+        self.__icon.set_visible(False)
+        try: self.__icon.destroy()
+        except AttributeError: pass
+        self.__icon = None
         self.__show_window()
 
     def PluginPreferences(self, parent):
@@ -551,6 +544,3 @@ class TrayIcon(EventPlugin):
     def __information(self, *args):
         if player.song:
             Information(watcher, [player.song])
-
-    def destroy(self):
-        self.disabled()

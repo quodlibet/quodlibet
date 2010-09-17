@@ -37,7 +37,7 @@ class EventPlugin(object):
 
     def destroy(self):
         """Called when the plugin should release any private resources,
-        usually because it's being upgraded."""
+        usually because it's being upgraded or on program exit"""
         pass
 
 class EventPlugins(Manager):
@@ -100,7 +100,9 @@ class EventPlugins(Manager):
                 util.print_exc()
             else:
                 if obj.PLUGIN_ID in self._plugins:
-                    self._plugins[obj.PLUGIN_ID].destroy()
+                    old_obj = self._plugins[obj.PLUGIN_ID]
+                    self.enable(old_obj, False)
+                    old_obj.destroy()
                 self._plugins[obj.PLUGIN_ID] = obj
 
     def list(self):
@@ -114,6 +116,11 @@ class EventPlugins(Manager):
                 else: plugin.disabled()
             except:
                 util.print_exc()
+
+    def destroy(self, *args):
+        for obj in self._plugins.itervalues():
+            self.enable(obj, False)
+            obj.destroy()
 
     def __invoke(self, librarian, event, *args):
         try:

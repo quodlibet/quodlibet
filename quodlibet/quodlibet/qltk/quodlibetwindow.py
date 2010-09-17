@@ -338,6 +338,10 @@ class QuodLibetWindow(gtk.Window):
         map(gtk.Window.show, qltk.Window.childs)
 
     def destroy(self, *args):
+        # The tray icon plugin tries to unhide QL because it gets disabled
+        # on Ql exit. The window should be hidden after destroy gets called.
+        self.show = lambda: None
+        self.present = self.show
         super(QuodLibetWindow, self).destroy()
 
     def __show_or(self, widget, prop):

@@ -93,6 +93,9 @@ def init(player, library):
         os.path.join(const.USERDIR, "plugins", "events")], "events")
     events.rescan()
 
+    for p in [playorder, SongsMenu.plugins, SongProperties.plugins, events]:
+        main.connect('destroy', p.destroy)
+
     gtk.about_dialog_set_url_hook(website_wrap)
 
     # These stay alive in the library/player/other callbacks.

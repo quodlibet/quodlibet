@@ -166,6 +166,9 @@ class Manager(object):
                 info[1] = modified
         self.restore()
 
+    def destroy(self, *args):
+        pass
+
     def restore(self):
         key = "active_" + str(type(self).__name__)
         try: possible = config.get("plugins", key).splitlines()
