@@ -7,9 +7,7 @@
 import gtk
 
 from quodlibet import qltk
-
-from util import print_exc
-
+from quodlibet.util import print_exc
 from quodlibet.plugins import ListWrapper, Manager
 
 class SongsMenuPlugin(gtk.ImageMenuItem):
