@@ -488,8 +488,10 @@ def do_setup(rev):
     built_locales = join(os.getcwd(), r'..\quodlibet\build\share\locale')
     # Prune GTK locales without a corresponding QL one:
     for locale in os.listdir(join(dist_path, r'share\locale')):
-        if not os.path.isdir(join(built_locales, locale)):
-            shutil.rmtree(join(dist_path, r'share\locale', locale))
+        target = join(dist_path, r'share\locale', locale)
+        if not os.path.isdir(join(built_locales, locale)) and \
+            os.path.isdir(target):
+            shutil.rmtree(target)
 
     # Copy over QL locales
     for locale in os.listdir(built_locales):
