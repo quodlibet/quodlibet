@@ -5,5 +5,5 @@ _Comment=Listen to, browse, or edit your audio collection
 Exec=quodlibet
 Terminal=false
 Type=Application
-Icon=quodlibet.png
-Categories=AudioVideo;Audio;Player;GTK
+Icon=quodlibet
+Categories=AudioVideo;Audio;Player;GTK;
