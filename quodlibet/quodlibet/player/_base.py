@@ -78,7 +78,6 @@ class BasePlayer(gtk.Object):
         if self.song is song:
             self._source.next()
             self._end(True)
-            self.paused = True
 
     def stop(self):
         self.paused = True
