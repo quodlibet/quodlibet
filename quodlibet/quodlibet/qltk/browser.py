@@ -13,6 +13,7 @@ from quodlibet import util
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import Window
 from quodlibet.qltk.x import RPaned
+from quodlibet.util.library import background_filter
 
 class LibraryBrowser(Window):
     def __init__(self, Kind, library):
@@ -83,6 +84,9 @@ class LibraryBrowser(Window):
             self.__container.set_relative(val)
 
     def __browser_cb(self, browser, songs, sorted):
+        if browser.background:
+            bg = background_filter()
+            if bg: songs = filter(bg, songs)
         self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
 
