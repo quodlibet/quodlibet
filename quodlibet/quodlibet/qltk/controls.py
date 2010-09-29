@@ -246,12 +246,19 @@ class PlayControls(gtk.VBox):
         prev.connect_object('clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, player)
         play.connect('button-press-event', self.__play_button_press, safter)
+        play.connect_object('scroll-event', self.__scroll, player)
         play.connect_object('popup-menu', self.__popup, safter, play.child)
         next.connect_object('clicked', self.__next, player)
         player.connect('song-started', self.__song_started, next, play)
         player.connect_object('paused', play.set_active, False)
         player.connect_object('unpaused', play.set_active, True)
         self.show_all()
+
+    def __scroll(self, player, event):
+        if event.direction in [gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_LEFT]:
+            player.previous()
+        elif event.direction in [gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_RIGHT]:
+            player.next()
 
     def __play_button_press(self, activator, event, safter):
         if event.button == 3:
