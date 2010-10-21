@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2005-2009 By:
-# Eduardo Gonzalez, Niklas Janlert, Christoph Reiter, Antonio Riva
+# Copyright 2005-2010 By:
+# Eduardo Gonzalez, Niklas Janlert, Christoph Reiter, Antonio Riva,
+# Aymeric Mansoux
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -368,7 +369,13 @@ class DiscogsParser(object):
         request.add_header('Accept-Encoding', 'gzip')
 
         url_sock = urllib2.urlopen(request)
-        xml_data = gzip.GzipFile(fileobj = StringIO(url_sock.read())).read()
+
+        # check if response is gzipped or not
+        if url_sock.headers.get('content-encoding') == 'gzip':
+            xml_data = gzip.GzipFile(fileobj = StringIO(url_sock.read())).read()
+        else:
+            xml_data = url_sock.read()
+
         url_sock.close()
 
         dom = minidom.parseString(xml_data)
