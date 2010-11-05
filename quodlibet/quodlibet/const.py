@@ -8,7 +8,10 @@ VERSION_TUPLE = (2, 2, 1)
 VERSION = ".".join(map(str, VERSION_TUPLE))
 
 HOME    = os.path.expanduser("~")
-USERDIR = os.path.join(HOME, ".quodlibet")
+if 'QUODLIBET_USERDIR' in os.environ:
+    USERDIR = os.environ['QUODLIBET_USERDIR']
+else:
+    USERDIR = os.path.join(HOME, ".quodlibet")
 CONTROL = os.path.join(USERDIR, "control")
 CONFIG  = os.path.join(USERDIR, "config")
 CURRENT = os.path.join(USERDIR, "current")
