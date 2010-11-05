@@ -65,7 +65,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         except EnvironmentError: pass
         else:
             folders.append(None)
-            for line in f.readlines():
+            for line in (l for l in f.readlines() if l.strip()):
                 folder_url = line.split()[0]
                 folders.append(urlparse.urlsplit(folder_url)[2])
 
