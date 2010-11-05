@@ -326,6 +326,8 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.set_sort_by(None, refresh=False)
 
     def hide(self):
+        pos = self.get_position()
+        config.set('memory', 'position', '%s %s' % pos)
         super(QuodLibetWindow, self).hide()
         map(gtk.Window.hide, qltk.Window.childs)
 
@@ -334,10 +336,13 @@ class QuodLibetWindow(gtk.Window):
         map(gtk.Window.present, qltk.Window.childs)
 
     def show(self):
+        self.move(*map(int, config.get('memory', 'position').split()))
         super(QuodLibetWindow, self).show()
         map(gtk.Window.show, qltk.Window.childs)
 
     def destroy(self, *args):
+        # For saving the window position
+        self.hide()
         # The tray icon plugin tries to unhide QL because it gets disabled
         # on Ql exit. The window should be hidden after destroy gets called.
         self.show = lambda: None

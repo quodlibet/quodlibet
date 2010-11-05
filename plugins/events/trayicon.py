@@ -205,7 +205,6 @@ class TrayIcon(EventPlugin):
     __pixbuf = None
     __pixbuf_paused = None
     __icon_theme = None
-    __position = None
     __menu = None
     __size = -1
     __w_sig_map = None
@@ -354,14 +353,10 @@ class TrayIcon(EventPlugin):
 
     def __hide_window(self):
         self.__first_map = False
-        self.__position = window.get_position()
         window.hide()
         config.set("plugins", "icon_window_visible", "false")
 
     def __show_window(self):
-        if self.__position:
-            window.move(*self.__position)
-
         window.show()
         window.present()
 

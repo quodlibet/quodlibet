@@ -58,6 +58,7 @@ def init(*rc_files):
         # State about the player, to restore on startup
         "memory":
         { "size": "400 350", # player window size
+          "position": "0 0", # player window position
           "maximized": "0", # main window maximized
           "exfalso_size": "700 500", # ex falso window size
           "exfalso_maximized": "0", # ex falso window maximized
