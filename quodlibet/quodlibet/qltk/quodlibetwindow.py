@@ -480,7 +480,7 @@ class QuodLibetWindow(gtk.Window):
         current = browsers.index(config.get("memory", "browser"))
         ag.add_radio_actions(
             view_actions, current, self.select_browser,
-            (library, player, False))
+            (library, player))
 
         for Kind in browsers.browsers:
             if not Kind.in_menu: continue
@@ -520,7 +520,7 @@ class QuodLibetWindow(gtk.Window):
             key = "%s_pos" % browser.__class__.__name__
             config.set("browsers", key, str(paned.get_relative()))
 
-    def select_browser(self, activator, current, library, player, restore):
+    def select_browser(self, activator, current, library, player, restore=False):
         if isinstance(current, gtk.RadioAction):
             current = current.get_current_value()
         Browser = browsers.get(current)
