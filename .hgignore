@@ -5,3 +5,12 @@ syntax: glob
 *.swp
 *.rej
 *.orig
+*.cache
+
+# Ignore build files
+build/*
+
+# Ignore Eclipse files
+.buildpath
+.project
+.settings/*
