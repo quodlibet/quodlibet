@@ -117,7 +117,7 @@ class AudioFile(dict):
     def __album_key(self):
         return (human(self("albumsort", "")),
                 self.get("album_grouping_key") or self.get("labelid") or
-                self.get("musicbrainz_albumid") or self("~dirname"))
+                self.get("musicbrainz_albumid") or "")
     album_key = property(__album_key)
 
     def __cmp__(self, other):
