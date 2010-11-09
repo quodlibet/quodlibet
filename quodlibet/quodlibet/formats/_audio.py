@@ -418,8 +418,6 @@ class AudioFile(dict):
             # Remove unnecessary defaults
             if key in INTERN_NUM_DEFAULT and val == 0:
                 del self[key]
-            elif key == "~#rating" and val == const.DEFAULT_RATING:
-                del self[key]
 
         if filename: self["~filename"] = filename
         elif "~filename" not in self: raise ValueError("Unknown filename!")
