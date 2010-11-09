@@ -39,6 +39,10 @@ class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
         self.__last_path = selected_path
         return selected_iter
 
+    def previous(self, *args):
+        return super(FollowOrder, self).previous(*args)
+        self.__last_path = None
+
     def set(self, playlist, iter):
         if iter:
             self.__last_path = playlist.get_path(iter)
