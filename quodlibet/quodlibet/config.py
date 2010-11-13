@@ -128,6 +128,7 @@ def init(*rc_files):
         "editing":
         { "split_on": "/ & ,", # words to split on
           "id3encoding": "", # ID3 encodings to try
+          "human_title_case": "true",
           "save_to_songs": "true",
           "save_email": const.EMAIL,
           "alltags": "true", # show all tags, or just "human-readable" ones

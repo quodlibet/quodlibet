@@ -5,21 +5,30 @@
 # published by the Free Software Foundation
 
 import unicodedata
+from quodlibet import config
+
+TITLECASE_CONFIG_SECTION = 'editing'
+TITLECASE_CONFIG_HUMAN_ENABLED = 'human_title_case'
 
 # Cheat list for human title-casing in English. See Issue 424.
 ENGLISH_INCORRECTLY_CAPITALISED_WORDS = \
     [u"The", u"An", u"A", u"'N'", u"Tha", u"De", u"Da", u"'N", u"N'",
      u"In", u"To", u"For", u"Up", u"With", u"As", u"At", u"From",
      u"Into", u"On", u"Out", u"Over",
-# I have never encountered these.
-#     u"Who", u"Whom",
      u"Of", u"By", u"'Til", u"Til",
      u"And", u"Or", u"Nor",
 # It is not so common anymore to lowercase these.  See for example the CMS.
 #    u"Is", u"Are", u"Am"
     ]
 # Allow basic sentence-like concepts eg "Artist: The Greatest Hits"
-ENGLISH_SENTENCE_ENDS = [".", ":"]
+ENGLISH_SENTENCE_ENDS = [".", ":", "-"]
+
+
+def titlecase_config_get(key, default=''):
+    try:
+        return config.getboolean(TITLECASE_CONFIG_SECTION, key)
+    except config.error:
+        return default
 
 def iswbound(char):
     """Returns whether the given character is a word boundary."""
@@ -36,6 +45,7 @@ def utitle(string):
         prev = string[i-1]
         # Special case apostrophe in the middle of a word.
         # Also, extra case to deal with Irish-style names (eg O'Conner)
+        #print string[i-3:i], s.isspace()
         if u"'" == s \
             and string[i-1].isalpha() \
             and not (i>1 and string[i-2].isspace() and prev.lower()==u"o"):
@@ -46,14 +56,20 @@ def utitle(string):
             s = s.capitalize()
         else: cap = False
         new_string += s
-    # Deal with human title-casing
-    words = new_string.split(" ")   # Yes: to preserve double spacing (!)
-    for i in xrange(1, len(words)-1):
-        word = words[i]
-        if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS\
-            and not words[i-1][-1] in ENGLISH_SENTENCE_ENDS:
-            words[i] = word.lower()
-    return u" ".join(words)
+
+    if titlecase_config_get(TITLECASE_CONFIG_HUMAN_ENABLED, True):
+        # print_d("Using Human title casing for '%s'..." % new_string)
+        words = new_string.split(" ")   # Yes: to preserve double spacing (!)
+        for i in xrange(1, len(words)-1):
+            word = words[i]
+            if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS\
+                and (not words[i-1][-1] in ENGLISH_SENTENCE_ENDS\
+                # Add an exception for would-be ellipses...
+                or words[i-1][-3:]=='...'):
+                    words[i] = word.lower()
+        return u" ".join(words)
+    else:
+        return new_string
 
 def title(string, locale="utf-8"):
     """Title-case a string using a less destructive method than str.title."""
