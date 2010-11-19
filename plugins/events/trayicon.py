@@ -10,6 +10,7 @@ import sys
 
 import gtk
 import pango
+import gobject
 
 gtk_216 = gtk.gtk_version >= (2, 16)
 if not gtk_216:
@@ -286,22 +287,33 @@ class TrayIcon(EventPlugin):
 
         if player.paused:
             if not self.__pixbuf_paused:
-                base = self.__pixbuf.copy()
-                overlay = self.__icon_theme.load_icon(
-                    gtk.STOCK_MEDIA_PAUSE,
-                    pixbuf_size, gtk.ICON_LOOKUP_FORCE_SVG)
+                overlay = None
+                # basic Kubuntu 10.10 has got no gtk.STOCK_MEDIA_PAUSE
+                icon_names = (gtk.STOCK_MEDIA_PAUSE, 'media-playback-pause')
+                for name in icon_names:
+                    icon_info = self.__icon_theme.lookup_icon(
+                        name, pixbuf_size, 0)
+                    if icon_info is not None:
+                        try: overlay = icon_info.load_icon()
+                        except gobject.GError: pass
+                        else: break
 
-                w, h = base.get_width(), base.get_height()
-                wo, ho = overlay.get_width(), overlay.get_height()
-                r = 2
-                b = 8
-                l = b - r
+                if overlay is not None:
+                    base = self.__pixbuf.copy()
+                    w, h = base.get_width(), base.get_height()
+                    wo, ho = overlay.get_width(), overlay.get_height()
+                    r = 2
+                    b = 8
+                    l = b - r
 
-                overlay.composite(base, w * r // b, h * r // b,
-                    l * w // b, l * h // b,
-                    w * r // b, h * r // b + 1,
-                    float(l * w) / b / wo, float(l * h) / b / ho,
-                    gtk.gdk.INTERP_BILINEAR, 255)
+                    overlay.composite(base, w * r // b, h * r // b,
+                        l * w // b, l * h // b,
+                        w * r // b, h * r // b + 1,
+                        float(l * w) / b / wo, float(l * h) / b / ho,
+                        gtk.gdk.INTERP_BILINEAR, 255)
+                else:
+                    base = self.__pixbuf
+
                 self.__pixbuf_paused = base
 
             new_pixbuf = self.__pixbuf_paused
