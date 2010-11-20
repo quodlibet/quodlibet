@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2010 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#                     Steven Robertson
+#                     Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -319,6 +319,12 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
             vbox.pack_start(hb, expand=False)
+
+            cb = ConfigCheckButton(
+                _("Enable _human title case"), 'editing', 'human_title_case')
+            cb.set_active(config.getboolean("editing", 'human_title_case'))
+            cb.set_tooltip_text(_("Uses common English rules for title casing, as in \"Dark Night of the Soul\""))
+            vbox.pack_start(cb, expand=False)
 
             vb2 = gtk.VBox(spacing=0)
             cb = ConfigCheckButton(
