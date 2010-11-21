@@ -82,8 +82,8 @@ class SongLibrarian(Librarian):
                 library.emit('changed', [item])
 
 class AlbumLibrary(gtk.Object):
-    """A AlbumLibrary listens to a SongLibrary and sorts it's songs into
-    albums. The library behaves like a dictionary: The keys are album_keys of
+    """An AlbumLibrary listens to a SongLibrary and sorts its songs into
+    albums. The library behaves like a dictionary: the keys are album_keys of
     AudioFiles, the values are Album objects.
     """
 
