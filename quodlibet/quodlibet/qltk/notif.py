@@ -99,6 +99,7 @@ class Task(object):
     def stop(self):
         if self._stop:
             self._stop()
+        self.finish()
 
     def gen(self, gen):
         """
@@ -130,7 +131,6 @@ class Task(object):
         """
         if pause:
             def pause_func(state):
-                print "pause called"
                 if state != self._paused:
                     if state:
                         copool.pause(funcid)
@@ -245,12 +245,10 @@ class TaskWidget(gtk.HBox):
         self.pack_start(self.stop, expand=False)
 
     def __pause_toggled(self, btn):
-        print 'toggled'
         if self.task.pausable:
             self.task.paused = btn.props.active
 
     def __stop_clicked(self, btn):
-        print 'clicked'
         if self.task.stoppable:
             self.task.stop()
 
