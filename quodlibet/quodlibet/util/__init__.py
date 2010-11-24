@@ -405,7 +405,7 @@ def human_sort_key(s):
     if not isinstance(s, unicode):
         s = s.decode("utf-8")
     s = unicodedata.normalize('NFD', s.lower())
-    return split_numeric(s)
+    return split_numeric(s[:1024])
 
 def find_subtitle(title):
     if isinstance(title, str): title = title.decode('utf-8', 'replace')
