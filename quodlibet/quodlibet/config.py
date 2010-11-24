@@ -22,7 +22,7 @@ getfloat = _config.getfloat
 options = _config.options
 
 def write(filename):
-    if isinstance(filename, str):
+    if isinstance(filename, basestring):
         if not os.path.isdir(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
         f = file(filename, "w")
