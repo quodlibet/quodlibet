@@ -21,11 +21,9 @@ class QueueOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
     def next(self, playlist, iter):
         return None
 
-    def set(self, playlist, iter):
-        print iter
+    def set_explicit(self, playlist, iter):
         if iter is None: return
         song = playlist[iter][0]
-        print song
         if song is None: return
         widgets.main.playlist.enqueue([playlist[iter][0]])
 

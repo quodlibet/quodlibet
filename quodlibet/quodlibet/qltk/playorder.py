@@ -31,9 +31,8 @@ class Order(object):
     def previous(self, playlist, iter):
         raise NotImplementedError
 
-    # Not called directly, but the default implementation of
-    # set_explicit calls this. Right now there is no such thing as
-    # set_implicit.
+    # Not called directly, but the default implementations of
+    # set_explicit and set_implicit call this.
     def set(self, playlist, iter):
         return iter
 
@@ -51,8 +50,13 @@ class Order(object):
 
     # Called when the user manually selects a song (at iter).
     # If desired the play order can override that, or just
-    # log it and return the iter again.
+    # log it and return the iter again. If the play order returns
+    # None, no action will be taken by the player.
     def set_explicit(self, playlist, iter):
+        return self.set(playlist, iter)
+
+    # Called when the song is set by a means other than the UI.
+    def set_implicit(self, playlist, iter):
         return self.set(playlist, iter)
 
     def reset(self, playlist):

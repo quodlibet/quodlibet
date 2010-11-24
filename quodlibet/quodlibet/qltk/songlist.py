@@ -67,10 +67,10 @@ class PlaylistMux(object):
     def previous(self):
         self.pl.previous()
 
-    def go_to(self, song):
+    def go_to(self, song, explicit=False):
         print_d("Told to go to %r" % song, context=self)
-        self.pl.go_to(song)
         self.q.go_to(None)
+        return self.pl.go_to(song, explicit)
 
     def reset(self):
         self.pl.reset()
@@ -173,7 +173,7 @@ class PlaylistModel(gtk.ListStore):
     def previous(self):
         self.__iter = self.order.previous_explicit(self, self.__iter)
 
-    def go_to(self, song):
+    def go_to(self, song, explicit=False):
         print_d("Told to go to %r" % song, context=self)
         self.__iter = None
         if isinstance(song, gtk.TreeIter):
@@ -188,7 +188,11 @@ class PlaylistModel(gtk.ListStore):
                     break
             else:
                 print_d("Failed to find song", context=self)
-        self.__iter = self.order.set_explicit(self, self.__iter)
+        if explicit:
+            self.__iter = self.order.set_explicit(self, self.__iter)
+        else:
+            self.__iter = self.order.set_implicit(self, self.__iter)
+        return self.__iter
 
     def find(self, song):
         for row in self:

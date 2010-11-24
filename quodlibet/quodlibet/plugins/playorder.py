@@ -38,7 +38,8 @@ class PlayOrderPlugin(quodlibet.qltk.playorder.Order):
         def set(self, playlist, iter): ...
     for when the user manually selects a song from the list. In this
     case, iter is the song they selected, and playlist.current_iter is
-    the current iter, if any.
+    the current iter, if any. If iter is provided and this function
+    returns None, the currently-playing song will not be ended.
 
     If explicit "next song" button presses should be handled
     differently than reaching the end of a song, use:

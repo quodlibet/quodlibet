@@ -96,8 +96,8 @@ class MainSongList(SongList):
     def __select_song(self, player, indices, col):
         self._activated = True
         iter = self.model.get_iter(indices)
-        player.go_to(iter)
-        if player.song: player.paused = False
+        if player.go_to(iter, True):
+            player.paused = False
 
     def set_sort_by(self, *args, **kwargs):
         super(MainSongList, self).set_sort_by(*args, **kwargs)

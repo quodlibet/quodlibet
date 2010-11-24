@@ -107,10 +107,13 @@ class BasePlayer(gtk.Object):
         if self.song:
             self.paused = False
 
-    def go_to(self, song):
+    def go_to(self, song, explicit=False):
         print_d("Going to %r" % song, context=self)
-        self._source.go_to(song)
+        res = self._source.go_to(song, explicit)
+        if explicit and not res:
+            return False
         self._end(True)
+        return self.song is not None
 
     @property
     def eq_bands(self):
