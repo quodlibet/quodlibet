@@ -7,7 +7,7 @@ import locale
 VERSION_TUPLE = (2, 2, 1, -1)
 VERSION = ".".join(map(str, VERSION_TUPLE))
 
-HOME    = os.path.expanduser("~")
+HOME    = os.path.expanduser(u"~")
 if 'QUODLIBET_USERDIR' in os.environ:
     USERDIR = os.environ['QUODLIBET_USERDIR']
 else:
