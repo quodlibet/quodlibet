@@ -9,7 +9,11 @@ import gobject
 import random
 import math
 
-from quodlibet import config, player, widgets
+from quodlibet import config, player, widgets, util
+try:
+    from quodlibet.qltk import notif
+except:
+    notif = None
 from quodlibet.plugins.events import EventPlugin
 
 class RandomAlbum(EventPlugin):
@@ -18,7 +22,7 @@ class RandomAlbum(EventPlugin):
     PLUGIN_DESC = ("When your playlist reaches its end a new album will "
                    "be chosen randomly and started. It requires that your "
                    "active browser supports filtering by album.")
-    PLUGIN_VERSION = '2.2'
+    PLUGIN_VERSION = '2.3'
 
     weights = {}
     use_weights = False
@@ -35,18 +39,25 @@ class RandomAlbum(EventPlugin):
     def __init__(self):
         for (key, text) in self.keys:
             try: val = config.getfloat("plugins", "randomalbum_%s" % key)
-            except: val = 0
+            except config.error: val = 0
             self.weights[key] = val
 
         try: use = config.getint("plugins", "randomalbum_use_weights")
-        except: use = 0
+        except config.error: use = 0
         self.use_weights = use
+        try: delay = config.getint("plugins", "randomalbum_delay")
+        except config.error: delay = 0
+        self.delay = delay
 
     def PluginPreferences(self, song):
         def changed_cb(hscale, key):
             val = hscale.get_value()
             self.weights[key] = val
             config.set("plugins", "randomalbum_%s" % key, val)
+
+        def delay_changed_cb(spin):
+            self.delay = int(spin.get_value())
+            config.set("plugins", "randomalbum_delay", str(self.delay))
 
         def toggled_cb(check, table):
             self.use_weights = check.get_active()
@@ -56,6 +67,14 @@ class RandomAlbum(EventPlugin):
 
         vbox = gtk.VBox()
         table = gtk.Table(len(self.keys) + 1, 3)
+
+        hbox = gtk.HBox(spacing=6)
+        spin = gtk.SpinButton(gtk.Adjustment(self.delay, 0, 3600, 1, 10))
+        spin.connect("value-changed", delay_changed_cb)
+        hbox.pack_start(spin, expand=False)
+        lbl = gtk.Label(_("Wait before starting next album"))
+        hbox.pack_start(lbl, expand=False)
+        vbox.pack_start(hbox)
 
         check = gtk.CheckButton(_("Play some albums more than others"))
         vbox.pack_start(check, expand=False)
@@ -145,8 +164,31 @@ class RandomAlbum(EventPlugin):
             else:
                 album = random.choice(values)
             if album is not None:
-                browser.filter('album', [album])
-                gobject.idle_add(self.unpause)
+                self.schedule_change(album)
+
+    def schedule_change(self, album):
+        if self.delay:
+            srcid = gobject.timeout_add(1000 * self.delay,
+                                        self.change_album, album)
+            if notif is None: return
+            task = notif.Task(_("Random Album"),
+                              _("Waiting to start <i>%s</i>") % album,
+                              stop=lambda: gobject.source_remove(srcid))
+            def countdown():
+                for i in range(10 * self.delay):
+                    task.update(i / (10. * self.delay))
+                    yield True
+                task.finish()
+                yield False
+            gobject.timeout_add(100, countdown().next)
+        else:
+            self.change_album(album)
+
+    def change_album(self, album):
+        browser = widgets.main.browser
+        if not browser.can_filter('album'): return
+        browser.filter('album', [album])
+        gobject.idle_add(self.unpause)
 
     def unpause(self):
         # Wait for the next GTK loop to make sure everything's tidied up
