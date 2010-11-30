@@ -15,6 +15,11 @@ class Ttitle(TestCase):
         s.assertEquals(u"The A-Sides", title(u"the a-sides"))
         s.assertEquals(u"Hello Goodbye", title(u"hello goodbye"))
         s.assertEquals(u"HELLO GOODBYE", title(u"HELLO GOODBYE"))
+        s.assertEquals(u"", title(u""))
+
+    def test_extra_spaces(s):
+        s.assertEquals(u"  Space", title(u"  space"))
+        s.assertEquals(u" Dodgy  Spaces ", title(u" dodgy  spaces "))
 
     def test_quirks(s):
         # This character is not an apostrophe, it's a single quote!
@@ -46,6 +51,11 @@ class Ttitle(TestCase):
                  title(u"hello goodbye »a song«"))
         s.assertEquals(u"Hello Goodbye «A Song»",
                  title(u"hello goodbye «a song»"))
+        s.assertEquals(u"\"24\" Theme",
+                 title(u"\"24\" theme"))
+        s.assertEquals(u"\"Mad-Dog\" Mike",
+                 title(u"\"mad-dog\" mike"))
+
 
     def test_unicode(s):
         s.assertEquals(u"Fooäbar",
@@ -76,6 +86,12 @@ class Ttitle(TestCase):
                  title(u"dig in"))
         s.assertEquals(u"In da Club",
                  title(u"in da club"))
+        # See Issue 616
+        s.assertEquals(u" Dodgy Are  the Spaces ",
+                 title(u" dodgy are  the spaces "))
+        s.assertEquals(u"Space:  The Final Frontier",
+                 title(u"Space:  the final frontier"))
+
 
     def test_english_human_titlecase_sentences(s):
         """Checks trickier human title casing, also assuming it's enabled"""

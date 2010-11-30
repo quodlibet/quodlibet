@@ -36,16 +36,23 @@ def iswbound(char):
     # If it's a space separator or punctuation
     return 'Zs' == category or 'Sk' == category or 'P' == category[0]
 
+def previous_real_word(words, i):
+    """Returns the first word from words before position i that is non-null"""
+    while (i>0):
+        i -= 1
+        if words[i]!="": break
+    return words[i]
+
 def utitle(string):
     """Title-case a string using a less destructive method than str.title."""
     new_string = string[0].capitalize()
-    cap = False
+    # It's possible we need to capitalise the second character...
+    cap = iswbound(string[0])
     for i in xrange(1, len(string)):
         s = string[i]
         prev = string[i-1]
         # Special case apostrophe in the middle of a word.
         # Also, extra case to deal with Irish-style names (eg O'Conner)
-        #print string[i-3:i], s.isspace()
         if u"'" == s \
             and string[i-1].isalpha() \
             and not (i>1 and string[i-2].isspace() and prev.lower()==u"o"):
@@ -62,10 +69,11 @@ def utitle(string):
         words = new_string.split(" ")   # Yes: to preserve double spacing (!)
         for i in xrange(1, len(words)-1):
             word = words[i]
-            if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS\
-                and (not words[i-1][-1] in ENGLISH_SENTENCE_ENDS\
+            if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS:
+                prev = previous_real_word(words, i)
+                if (not prev[-1] in ENGLISH_SENTENCE_ENDS
                 # Add an exception for would-be ellipses...
-                or words[i-1][-3:]=='...'):
+                or prev[-3:]=='...'):
                     words[i] = word.lower()
         return u" ".join(words)
     else:
