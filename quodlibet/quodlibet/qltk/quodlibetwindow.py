@@ -239,6 +239,8 @@ class QuodLibetWindow(gtk.Window):
         repeat.connect('toggled', self.__repeat, self.songlist.model)
         repeat.set_active(config.getboolean('settings', 'repeat'))
 
+        # track window position/size
+        self.connect("show", self.__restore_window_position)
         self.connect('configure-event', QuodLibetWindow.__save_size)
         self.connect('window-state-event', self.__window_state_changed)
         self.__state = 0
@@ -326,8 +328,6 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.set_sort_by(None, refresh=False)
 
     def hide(self):
-        pos = self.get_position()
-        config.set('memory', 'position', '%s %s' % pos)
         super(QuodLibetWindow, self).hide()
         map(gtk.Window.hide, qltk.Window.childs)
 
@@ -341,8 +341,6 @@ class QuodLibetWindow(gtk.Window):
         map(gtk.Window.show, qltk.Window.childs)
 
     def destroy(self, *args):
-        # For saving the window position
-        self.hide()
         # The tray icon plugin tries to unhide QL because it gets disabled
         # on Ql exit. The window should be hidden after destroy gets called.
         self.show = lambda: None
@@ -631,6 +629,12 @@ class QuodLibetWindow(gtk.Window):
     def __save_size(self, event):
         if not self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
             config.set("memory", "size", "%d %d" % (event.width, event.height))
+            if self.get_property("visible"):
+                config.set('memory', 'position', '%s %s' % self.get_position())
+
+    def __restore_window_position(self, window):
+        pos = map(int, config.get('memory', 'position').split())
+        self.move(*pos)
 
     def __refresh_size(self):
         self.__vbox.set_spacing(6)
