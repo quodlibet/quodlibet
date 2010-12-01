@@ -77,6 +77,11 @@ def _escape(val):
     return val.replace(
         u"\\", ur"\\").replace(u";", ur"\;").replace(u":", ur"\:")
 
+def _escape_inval(val):
+    if val.startswith(";"):
+        return u"\\" + val
+    return val
+
 class FmpsValue(object):
     _data = None
     def __repr__(self):
@@ -93,7 +98,7 @@ class FmpsValue(object):
 
 class FmpsFloat(FmpsValue):
     def __init__(self, data):
-        if isinstance(data, (int, float)):
+        if not isinstance(data, basestring):
             self._validate(data)
             self._data = unicode(round(float(data), 6))
         else:
@@ -110,7 +115,7 @@ class FmpsFloat(FmpsValue):
 class FmpsPositiveFloat(FmpsFloat):
     def _validate(self, data):
         num = super(FmpsPositiveFloat, self)._validate(data)
-        if num < 0  or (isinstance(data, (float, int))
+        if num < 0  or (not isinstance(data, basestring)
             and num > 4294967294.999999):
             raise ValueError("Value not in range.")
         return num
@@ -139,7 +144,8 @@ class FmpsText(FmpsValue):
 class FmpsInvalidValue(FmpsText): pass
 
 class FmpsDict(object):
-    kind = None
+    _kind = None
+
     def __init__(self, data=None):
         self.__dict = {}
         self.__invalid = []
@@ -147,14 +153,18 @@ class FmpsDict(object):
             self.__load(data)
 
     def __load(self, data):
-        data = unicode(data)
-        inval, vals = _split(data, LIST_SEPERATOR)
-        self.__invalid.extend(inval)
-        l = []
+        if not isinstance(data, (list, tuple)):
+            data = [data]
+        data = map(unicode, data)
+        vals = []
+        for seg in data:
+            i, v = _split(seg, LIST_SEPERATOR)
+            vals.extend(v)
+            self.__invalid.extend(map(_escape_inval, i))
         for val in vals:
             inval, fields = _split(val, ENTRY_SEPERATOR)
             if len(fields) != 2 or inval:
-                self.__invalid.append(val)
+                self.__invalid.append(_escape_inval(val))
                 continue
             key, value = map(_unescape, fields)
             try:
@@ -194,7 +204,10 @@ class FmpsDict(object):
             value = [value]
         value = map(self._kind, value)
         self.remove_all(key)
-        map(lambda v: self.append(key, v), value)
+        if key in self.__dict:
+            self.__dict[key].extend(value)
+        else:
+            self.__dict[key] = value
 
     def append(self, key, value):
         self.extend(key, [value])
@@ -214,40 +227,39 @@ class FmpsDict(object):
             key = _escape(key)
             for val in values:
                 fields.append(ENTRY_SEPERATOR.join([key, val]))
-
-        # For the case where an invalid entry starts with an unescaped
-        # list seperator we put it in front so it doesn't
-        # invalidate a valid entry.
-        for inval in filter(None, self.__invalid):
-            if inval.startswith(";"):
-                fields.insert(0, inval)
-            else:
-                fields.append(inval)
-
-        return LIST_SEPERATOR.join(fields)
+        return LIST_SEPERATOR.join(fields + filter(None, self.__invalid))
 
     def __repr__(self):
         return "%s(%s, invalid=%s)" % (
             self.__class__.__name__, repr(self.__dict), repr(self.__invalid))
 
 class FmpsNamespaceDict(object):
-    kind = None
+    _kind = None
 
     def __init__(self, data=None):
         self.__dict = {}
         self.__invalid = []
+
+        # Merging two lists needs a dummy element inbetween
+        # in case one is invalid.
+        if isinstance(data, (list, tuple)):
+            data = (LIST_SEPERATOR*2).join(data)
         if data:
             self.__load(data)
 
     def __load(self, data):
-        data = unicode(data)
-        inval, vals = _split(data, LIST_SEPERATOR)
-        self.__invalid.extend(inval)
-        l = []
+        if not isinstance(data, (list, tuple)):
+            data = [data]
+        data = map(unicode, data)
+        vals = []
+        for seg in data:
+            i, v = _split(seg, LIST_SEPERATOR)
+            vals.extend(v)
+            self.__invalid.extend(map(_escape_inval, i))
         for val in vals:
             inval, fields = _split(val, ENTRY_SEPERATOR)
             if len(fields) != 3 or inval:
-                self.__invalid.append(val)
+                self.__invalid.append(_escape_inval(val))
                 continue
             namespace, key, value = fields
             if not namespace or not key:
@@ -368,21 +380,22 @@ class FmpsNamespaceDict(object):
                 values = map(_escape, map(unicode, values))
                 for val in values:
                     fields.append(ENTRY_SEPERATOR.join([namespace, key, val]))
-
-        # For the case where an invalid entry starts with an unescaped
-        # list seperator we put it in front so it doesn't
-        # invalidate a valid entry.
-        for inval in filter(None, self.__invalid):
-            if inval.startswith(";"):
-                fields.insert(0, inval)
-            else:
-                fields.append(inval)
-
-        return LIST_SEPERATOR.join(fields)
+        return LIST_SEPERATOR.join(fields + filter(None, self.__invalid))
 
     def __repr__(self):
         return "%s(%s, invalid=%s)" % (
             self.__class__.__name__, repr(self.__dict), repr(self.__invalid))
+
+class FmpsNoEmptyKeyDict(FmpsDict):
+    def set_all(self, key, values):
+        if not key:
+            raise ValueError("No empty key allowed.")
+        super(FmpsNoEmptyKeyDict, self).set_all(key, values)
+
+    def extend(self, key, values):
+        if not key:
+            raise ValueError("No empty key allowed.")
+        super(FmpsNoEmptyKeyDict, self).extend(key, values)
 
 #All simple Formats
 class Rating(FmpsRatingFloat): pass
@@ -390,9 +403,9 @@ class Playcount(FmpsPositiveIntegerFloat): pass
 class Lyrics(FmpsText): pass
 
 #All Dicts
-class RatingUser(FmpsDict):
+class RatingUser(FmpsNoEmptyKeyDict):
     _kind = FmpsRatingFloat
-class PlaycountUser(FmpsDict):
+class PlaycountUser(FmpsNoEmptyKeyDict):
     _kind = FmpsPositiveIntegerFloat
 class Performers(FmpsDict):
     _kind = FmpsText

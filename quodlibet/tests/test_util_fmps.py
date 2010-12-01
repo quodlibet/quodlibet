@@ -122,6 +122,14 @@ class TFmps(TestCase):
         self.failUnlessEqual(a.get_all("a"), [135])
         self.failUnlessEqual(a.get_all("b"), [123])
 
+    def test_key(self):
+        a = PlaycountUser()
+        self.failUnlessRaises(ValueError, lambda: a.set_all("", 1.0))
+        self.failUnlessRaises(ValueError, lambda: a.append("", 1.0))
+        a = RatingUser()
+        self.failUnlessRaises(ValueError, lambda: a.set_all("", 1.0))
+        self.failUnlessRaises(ValueError, lambda: a.append("", 1.0))
+
     def test_escaping(self):
         a = RatingUser()
         a.extend("foo::;;", [0, 0])
@@ -193,6 +201,20 @@ class TFmps(TestCase):
 
         a = RatingUser(r"foo::ba:\:\;;;foo::\:")
         self.failUnlessEqual(a.to_data(), r"foo::ba\:\:\;;;foo::\:")
+
+    def test_merge(self):
+        a = Performers(["ab::cd", "ef::gh"])
+        self.failUnlessEqual(a.get_all("ab"), ["cd"])
+        self.failUnlessEqual(a.get_all("ef"), ["gh"])
+        self.failUnlessEqual(a.to_data(), "ab::cd;;ef::gh")
+
+        a = Performers(["ab::cd", ";ef::gh;;ab::x", ";a;;;c"])
+        self.failUnlessEqual(a.get_all("ab"), ["cd", "x"])
+        self.failUnlessEqual(a.get_all(";ef"), ["gh"])
+        self.failUnlessEqual(a.to_data(), "\\;ef::gh;;ab::cd;;ab::x;;\\;a;;;c")
+        a = Performers(a.to_data())
+        self.failUnlessEqual(a.get_all("ab"), ["cd", "x"])
+        self.failUnlessEqual(a.get_all(";ef"), ["gh"])
 
     def test_rating_algo(self):
         a = RatingAlgorithm("")
