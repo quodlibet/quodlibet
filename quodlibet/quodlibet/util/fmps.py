@@ -239,11 +239,6 @@ class FmpsNamespaceDict(object):
     def __init__(self, data=None):
         self.__dict = {}
         self.__invalid = []
-
-        # Merging two lists needs a dummy element inbetween
-        # in case one is invalid.
-        if isinstance(data, (list, tuple)):
-            data = (LIST_SEPERATOR*2).join(data)
         if data:
             self.__load(data)
 
