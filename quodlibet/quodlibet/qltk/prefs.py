@@ -244,7 +244,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             hb = gtk.HBox(spacing=6)
             hb.pack_start(l, expand=False)
-            hb.pack_start(s)
+            hb.pack_start(s, expand=False)
             vbox.pack_start(hb, expand=False)
             try:
                 pre_amp_gain = config.getfloat("player", "pre_amp_gain")
@@ -262,7 +262,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             l.set_mnemonic_widget(s)
             hb = gtk.HBox(spacing=6)
             hb.pack_start(l, expand=False)
-            hb.pack_start(s)
+            hb.pack_start(s, expand=False)
             vbox.pack_start(hb, expand=False)
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vbox)
             self.pack_start(f)
