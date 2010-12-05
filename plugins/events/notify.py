@@ -29,8 +29,8 @@ class Notify(EventPlugin):
         show_icon = True
         single_notification = True
         string = r'''<album|\<b\><album>\</b\><discnumber| - Disc <discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
->\<span weight='bold' size='large'\><title>\</span\> - <~length><version|
-\<small\>\<i\><version>\</i\>\</small\>><~people|
+>\<b\><title>\</b\> - <~length><version|
+\<i\><version>\</i\>><~people|
 by <~people>>'''
 
     # for rapid debugging
