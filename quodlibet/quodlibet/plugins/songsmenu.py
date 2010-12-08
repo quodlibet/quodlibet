@@ -83,21 +83,18 @@ class SongsMenuPlugins(Manager):
         songs = ListWrapper(songs)
         parent = qltk.get_top_parent(parent)
 
-        albums = {}
-        for song in songs:
-            key = song.album_key
-            if key not in albums:
-                albums[key] = []
-            albums[key].append(song)
-
-        albums = albums.values()
-        map(list.sort, albums)
-
         attrs = ['plugin_song', 'plugin_songs',
                  'plugin_album', 'plugin_albums']
 
         if len(songs) == 1: attrs.append('plugin_single_song')
-        if len(albums) == 1: attrs.append('plugin_single_album')
+
+        last = (songs and songs[-1]) or None
+        for song in songs:
+            if song.album_key != last.album_key:
+                break
+            last = song
+        else:
+            attrs.append('plugin_single_album')
 
         items = []
         kinds = self.find_subclasses(SongsMenuPlugin)
@@ -114,7 +111,7 @@ class SongsMenuPlugins(Manager):
             for item in items:
                 try:
                     menu.append(item)
-                    args = (library, parent, songs, albums)
+                    args = (library, parent, songs)
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
                             subitem.connect_object(
@@ -128,7 +125,19 @@ class SongsMenuPlugins(Manager):
         else: menu = None
         return menu
 
-    def __handle(self, plugin, library, parent, songs, albums):
+    def __get_albums(self, songs):
+        albums = {}
+        for song in songs:
+            key = song.album_key
+            if key not in albums:
+                albums[key] = []
+            albums[key].append(song)
+
+        albums = albums.values()
+        map(list.sort, albums)
+        return albums
+
+    def __handle(self, plugin, library, parent, songs):
         if len(songs) == 0: return
 
         plugin.plugin_window = parent
@@ -149,7 +158,11 @@ class SongsMenuPlugins(Manager):
                 else:
                     if ret: return
 
-            if len(albums) == 1 and callable(plugin.plugin_single_album):
+            if max(map(callable,(plugin.plugin_single_album,
+                plugin.plugin_album, plugin.plugin_albums))):
+                albums = self.__get_albums(songs)
+
+            if callable(plugin.plugin_single_album) and len(albums) == 1:
                 try: ret = plugin.plugin_single_album(albums[0])
                 except Exception: print_exc()
                 else:
