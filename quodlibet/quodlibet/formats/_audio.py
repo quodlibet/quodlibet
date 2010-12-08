@@ -38,7 +38,7 @@ TAG_TO_SORT = {
     }
 
 INTERN_NUM_DEFAULT = frozenset("~#lastplayed ~#laststarted ~#playcount "
-    "~#skipcount ~#length ~#bitrate".split())
+    "~#skipcount ~#length ~#bitrate ~#filesize".split())
 
 SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])
 
@@ -407,7 +407,7 @@ class AudioFile(dict):
             return text
 
     def sanitize(self, filename=None):
-        """Fill in metadata defaults. Find ~mountpoint, ~#mtime,
+        """Fill in metadata defaults. Find ~mountpoint, ~#mtime, ~#filesize
         and ~#added. Check for null bytes in tags."""
 
         # Replace nulls with newlines, trimming zero-length segments
@@ -434,7 +434,14 @@ class AudioFile(dict):
 
         # Fill in necessary values.
         self.setdefault("~#added", int(time.time()))
-        self["~#mtime"] = util.mtime(self['~filename'])
+
+        # For efficiency, do a single stat here. See Issue 504
+        try:
+            stat = os.stat(self['~filename'])
+            self["~#mtime"] = stat.st_mtime
+            self["~#filesize"] = stat.st_size
+        except OSError:
+            self["~#mtime"] = 0
 
     def to_dump(self):
         """A string of 'key=value' lines, similar to vorbiscomment output."""

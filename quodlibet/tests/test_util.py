@@ -247,7 +247,12 @@ class Tformat_size(TestCase):
 
     def test_mbytes(self):
         self.t_dict({ 1024*1024: "1.00MB", 1024*1536: "1.50MB",
-                      1024*10240: "10.0MB", 1024*15360: "15.0MB"})
+                      1024*10240: "10.0MB", 1024*15360: "15.0MB",
+                      123456*1024: "121MB", 765432*1024: "747MB"})
+
+    def test_gbytes(self):
+        self.t_dict({ 1024*1024*1024: "1.0GB", 1024*1024*1536: "1.5GB",
+                      1024*1024*10240: "10.0GB", 1024*1024*15360: "15.0GB"})
 add(Tformat_size)
 
 class Tsplit_title(TestCase):

@@ -262,7 +262,8 @@ class OneSong(qltk.Notebook):
 
         fn = util.fsdecode(util.unexpand(song["~filename"]))
         length = util.format_time_long(song.get("~#length", 0))
-        size = util.format_size(util.size(song["~filename"]))
+        size = util.format_size(
+            song.get("~#filesize") or util.size(song["~filename"]))
         mtime = ftime(util.mtime(song["~filename"]))
         bitrate = song.get("~#bitrate", 0)
         if bitrate != 0:

@@ -192,12 +192,35 @@ class Playlist(list):
             except TypeError: f.write(song + "\n")
         f.close()
 
+    def file_size(self):
+        """Returns the total file size of tracks in this playlist"""
+        try:
+            # TODO: better way of dealing with missing filesize entries
+            return sum([song.get("~#filesize") or 0
+                        for song in self if isinstance(song, AudioFile)])
+        except EnvironmentError:
+            return _("Total size unknown")
+
+    def length(self):
+        """Returns the total length of tracks in this playlist"""
+        return sum([t.get("~#length")
+                    for t in self if isinstance(t, AudioFile)])
+
     def format(self):
-        return "<b>%s</b>\n<small>%s (%s)</small>" % (
-            util.escape(self.name),
-            ngettext("%d song", "%d songs", len(self)) % len(self),
-            util.format_time(sum([t("~#length") for t in self
-                                  if isinstance(t, AudioFile)])))
+        total_size = self.file_size()
+        songs_text = ngettext("%d song", "%d songs", len(self)) % len(self)
+        if (total_size > 0):
+            # see Issue 504
+            return "<b>%s</b>\n<small>%s (%s / %s)</small>" % (
+                util.escape(self.name),
+                songs_text,
+                util.format_time(self.length()),
+                util.format_size(total_size))
+        else:
+            return "<b>%s</b>\n<small>%s (%s)</small>" % (
+                util.escape(self.name),
+                songs_text,
+                util.format_time(self.length()))
 
     def __cmp__(self, other):
         try: return cmp(self.name, other.name)

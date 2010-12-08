@@ -69,6 +69,7 @@ Türerkan İnce
 Philipp Weis
 Johan Hovold
 Bastien Gorissen
+Nick Boultbee
 """.strip().split("\n"))
 
 ARTISTS = sorted("""\

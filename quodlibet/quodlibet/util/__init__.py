@@ -230,7 +230,12 @@ def format_rating(value):
 
 def format_size(size):
     """Turn an integer size value into something human-readable."""
-    if size >= 1024*1024 * 10:
+    # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
+    if size >= 1024*1024*1024:
+        return "%.1fGB" % (float(size) / (1024*1024*1024))
+    elif size >= 1024*1024 * 100:
+        return "%.0fMB" % (float(size) / (1024*1024))
+    elif size >= 1024*1024 * 10:
         return "%.1fMB" % (float(size) / (1024*1024))
     elif size >= 1024*1024:
         return "%.2fMB" % (float(size) / (1024*1024))
