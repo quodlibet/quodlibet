@@ -457,7 +457,9 @@ class EditTags(gtk.VBox):
         if len(rows) == 1:
             row = model[rows[0]]
 
-            text = util.unescape(row[VALUE].decode('utf-8'))
+            value = row[VALUE].decode('utf-8')
+            text = util.unescape(value)
+            multi = (value.split("<")[0] != value)
 
             for Item in items:
                 if Item.tags and row[TAG] not in Item.tags: continue
@@ -468,7 +470,8 @@ class EditTags(gtk.VBox):
                 else:
                     b.connect('activate', self.__menu_activate, view)
 
-                    if not min(map(self.__songinfo.can_change, b.needs)+[1]):
+                    if not min(map(self.__songinfo.can_change, b.needs)+[1]) \
+                        or multi:
                         b.set_sensitive(False)
 
                     menu.append(b)
