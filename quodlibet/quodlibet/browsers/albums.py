@@ -26,6 +26,7 @@ from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.x import MenuItem
 from quodlibet.util import copool
 from quodlibet.util.library import background_filter
 
@@ -271,6 +272,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def __compare_title(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
+            elif not a1.title: return 1
+            elif not a2.title: return -1
             elif not a1.sort: return 1
             elif not a2.sort: return -1
             else: return cmp((a1.sort, a1.key), (a2.sort, a2.key))
@@ -278,6 +281,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def __compare_artist(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
+            elif not a1.title: return 1
+            elif not a2.title: return -1
             elif not a1.sort: return 1
             elif not a2.sort: return -1
             elif not a1.peoplesort and a2.peoplesort: return 1
@@ -290,6 +295,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         def __compare_date(self, model, i1, i2):
             a1, a2 = model[i1][0], model[i2][0]
             if (a1 and a2) is None: return cmp(a1, a2)
+            elif not a1.title: return 1
+            elif not a2.title: return -1
             elif not a1.sort: return 1
             elif not a2.sort: return -1
             elif not a1.date and a2.date: return 1
@@ -493,22 +500,26 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         return True
 
     def __popup(self, view, library):
-        songs = self.__get_selected_songs(view.get_selection())
+        selection = view.get_selection()
+        albums = self.__get_selected_albums(selection)
+        songs = self.__get_songs_from_albums(albums)
         menu = SongsMenu(library, songs, parent=self)
 
-        button = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
-        button.connect('activate', self.__refresh_album, view)
-        menu.prepend(gtk.SeparatorMenuItem())
-        menu.prepend(button)
+        if self.__cover_column.get_visible():
+            num = len(albums)
+            button = MenuItem(
+                ngettext("Reload album cover", "Reload album covers", num),
+                gtk.STOCK_REFRESH)
+            button.connect('activate', self.__refresh_album, view)
+            menu.prepend(gtk.SeparatorMenuItem())
+            menu.prepend(button)
+
         menu.show_all()
         return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def __refresh_album(self, menuitem, view):
         selection = view.get_selection()
-        model, paths = selection.get_selected_rows()
-        albums = [model[path][0] for path in paths]
-        if None in albums:
-            albums = [row[0] for row in model if row[0]]
+        albums = self.__get_selected_albums(selection)
         for album in albums:
             album.scanned = False
             album.scan_cover()
@@ -518,21 +529,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         if not selection:
             return []
         model, rows = selection.get_selected_rows()
-        if not model or not rows: return set([])
-        albums = [model[row][0] for row in rows]
-        if None in albums: return None
-        else: return albums
-
-    def __get_selected_songs(self, selection, sort=True):
-        if not selection:
-            return []
-        model, rows = selection.get_selected_rows()
         if not model or not rows: return []
-        albums = [model[row][0] for row in rows]
+        if rows and model[rows[0]][0] is None:
+            return [row[0] for row in model if row[0]]
+        return [model[row][0] for row in rows]
 
-        if None in albums:
-            albums = [row[0] for row in model if row[0]]
-
+    def __get_songs_from_albums(self, albums, sort=True):
         # Sort first by how the albums appear in the model itself,
         # then within the album using the default order.
         songs = []
@@ -543,6 +545,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             for album in albums:
                 songs.extend(album.songs)
         return songs
+
+    def __get_selected_songs(self, selection, sort=True):
+        albums = self.__get_selected_albums(selection)
+        return self.__get_songs_from_albums(albums, sort)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(view.get_selection())
@@ -633,21 +639,29 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         # like "TypeError: unknown type (null)".
         gobject.idle_add(self.__update_songs, selection.get_tree_view())
 
+    def __get_config_string(self, selection):
+        if not selection: return ""
+        model, rows = selection.get_selected_rows()
+        if not model or not rows: return ""
+
+        # All is selected
+        if rows and model[rows[0]][0] is None: return ""
+
+        # All selected albums
+        albums = (model[row][0] for row in rows)
+        # FIXME: title is far from perfect here
+        confval = "\n".join((a.title for a in albums))
+        # ConfigParser strips a trailing \n so we move it to the front
+        if confval and confval[-1] == "\n":
+            confval = "\n" + confval[:-1]
+        return confval
+
     def __update_songs(self, view):
         selection = view.get_selection()
         songs = self.__get_selected_songs(selection, False)
-        albums = self.__get_selected_albums(selection)
-        if not songs:
-            return
         self.emit('songs-selected', songs, None)
         if self.__save:
-            if albums is None:
-                config.set("browsers", "albums", "")
-            else:
-                confval = "\n".join([a.title for a in albums])
-                # Since ConfigParser strips a trailing \n...
-                if confval and confval[-1] == "\n":
-                    confval = "\n" + confval[:-1]
-                config.set("browsers", "albums", confval)
+            conf = self.__get_config_string(selection)
+            config.set("browsers", "albums", conf)
 
 browsers = [AlbumList]
