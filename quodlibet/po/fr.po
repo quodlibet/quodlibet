@@ -48,7 +48,7 @@ msgstr "un lecteur et une bibliothèque de musique"
 
 #: ../quodlibet.py:174
 msgid "[ --print-playing | control ]"
-msgstr "[ --print-playint | contrôle ]"
+msgstr "[ --print-playing | contrôle ]"
 
 #: ../quodlibet.py:176
 msgid "Print the playing song and exit"
