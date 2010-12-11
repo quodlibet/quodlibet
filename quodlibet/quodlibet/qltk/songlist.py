@@ -468,6 +468,10 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.__scroll_length = 0
         self.__scroll_last = None
 
+        # If the a song changes, we can't simply reverse the model
+        # (same tag, changed song order)
+        self.__sort_dirty = False
+
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
             value = model.get_value(iter, 0)(column.header_name)
@@ -821,7 +825,14 @@ class SongList(AllTreeView, util.InstanceTracker):
                 h.set_sort_order(s)
             else: h.set_sort_indicator(False)
         if refresh:
-            if rev: self.reverse()
+            if rev:
+                if self.__sort_dirty:
+                    # python sort is faster if it's presorted.
+                    songs = self.get_songs()
+                    songs.reverse()
+                    self.set_songs(songs)
+                else:
+                    self.reverse()
             else: self.set_songs(self.get_songs())
 
     def set_model(self, model):
@@ -864,6 +875,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     def set_songs(self, songs, sorted=False):
         model = self.get_model()
+        self.__sort_dirty = False
 
         if not sorted:
             tag, reverse = self.get_sort_by()
@@ -911,6 +923,7 @@ class SongList(AllTreeView, util.InstanceTracker):
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.
         Warning: This makes the row-changed signal useless."""
+        self.__sort_dirty = True
         #pygtk 2.12: prevent invalid ranges or GTK asserts
         if not self.flags() & gtk.REALIZED or \
             self.get_path_at_pos(0,0) is None: return
