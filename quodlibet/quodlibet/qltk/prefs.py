@@ -159,7 +159,7 @@ class PreferencesWindow(qltk.UniqueWindow):
                 'browsers', 'rating_confirm_multiple')
             c1.set_active(
                 config.getboolean("browsers", "rating_confirm_multiple"))
-            c1.set_tooltip_text(_("Ask for confirmation before changin the "
+            c1.set_tooltip_text(_("Ask for confirmation before changing the "
                      "rating of multiple songs at once"))
 
             c2 = ConfigCheckButton(
@@ -167,7 +167,7 @@ class PreferencesWindow(qltk.UniqueWindow):
                'browsers', 'rating_click')
             c2.set_active(
                 config.getboolean("browsers", "rating_click"))
-            c2.set_tooltip_text(_("Enable rating by clicking on the rating  "
+            c2.set_tooltip_text(_("Enable rating by clicking on the rating "
                      "column in the song list"))
 
             vbox = gtk.VBox(spacing=6)

@@ -93,7 +93,7 @@ def print_d(string, context=""):
 
     timestr = "%0.2f" % time.time()
     string = "%s: %s%s" % (timestr[-6:], context, string)
-    print_(string, prefix="D: ", log="Debug", output=output)
+    print_(string, prefix=_("D: "), log=_("Debug"), output=output)
 
 def print_w(string):
     """Print warnings."""

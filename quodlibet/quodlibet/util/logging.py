@@ -1,7 +1,7 @@
 import os
 
 import quodlibet.util
-from quodlibet.const import ENCODING, LOGDIR
+from quodlibet.const import LOGDIR
 
 LOGS = {}
 MAX_LOG_SIZE = 1000
@@ -26,7 +26,7 @@ def names():
     return names
 
 def contents(name):
-    return LOGS.get(name, ["No log available."])
+    return LOGS.get(name, [_("No log available.")])
 
 def dump(path=LOGDIR):
     try:
@@ -38,5 +38,5 @@ def dump(path=LOGDIR):
             fileobj.close()
             
     except (IOError, OSError):
-        print "Unable to dump logs, you're boned."
+        print _("Unable to dump logs, you're boned.")
     
