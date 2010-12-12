@@ -208,14 +208,14 @@ msgid "Unqueue a file or query"
 msgstr "Enlever un fichier ou le résultat d'une recherche de la file"
 
 #: ../quodlibet.py:255
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid argument for '%s'."
-msgstr "E: Argument non valide pour '%s'."
+msgstr "Argument non valide pour '%s'."
 
 #: ../quodlibet.py:256 ../quodlibet/util/__init__.py:155
-#, fuzzy, python-format
+#, python-format
 msgid "Try %s --help."
-msgstr "E: Essayez %s --help."
+msgstr "Essayez %s --help."
 
 #: ../quodlibet.py:287
 msgid "Quod Libet is already running."
@@ -286,14 +286,12 @@ msgid "Title"
 msgstr "Titre"
 
 #: ../quodlibet/browsers/albums.py:390
-#, fuzzy
 msgid "Artist"
-msgstr "_Artiste"
+msgstr "Artiste"
 
 #: ../quodlibet/browsers/albums.py:390
-#, fuzzy
 msgid "Date"
-msgstr "_Date"
+msgstr "Date"
 
 #: ../quodlibet/browsers/albums.py:496
 msgid "All Albums"
@@ -307,9 +305,8 @@ msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
 #: ../quodlibet/browsers/albums.py:536
-#, fuzzy
 msgid "Sort _by:"
-msgstr "Tri par date"
+msgstr "_Trier par:"
 
 #: ../quodlibet/browsers/audiofeeds.py:39
 #: ../quodlibet/browsers/audiofeeds.py:49
@@ -362,7 +359,7 @@ msgid ""
 "<b>%s</b> could not be added. The server may be down, or the location may "
 "not be an audio feed."
 msgstr ""
-"<b>%s</b> n'a pu être ajouté. Le serveur est peut-être en dérangement ou la "
+"<b>%s</b> n'a pas pu être ajouté. Le serveur est peut-être en dérangement ou la "
 "ressource n'est pas un flux audio."
 
 #: ../quodlibet/browsers/audiofeeds.py:430
@@ -433,7 +430,6 @@ msgid "Bitrate"
 msgstr "Débit des données"
 
 #: ../quodlibet/browsers/iradio.py:201
-#, fuzzy
 msgid "Genre"
 msgstr "Genre"
 
@@ -525,9 +521,9 @@ msgid "<b>%s</b> is not connected."
 msgstr "<b>%s</b> n'est pas connecté."
 
 #: ../quodlibet/browsers/media.py:446
-#, fuzzy, python-format
+#, python-format
 msgid "Copying <b>%(song)s</b>"
-msgstr "Copie de <b>%s</b>"
+msgstr "Copie de <b>%(song)s</b>"
 
 #: ../quodlibet/browsers/media.py:464 ../quodlibet/browsers/media.py:479
 msgid "Unable to copy song"
@@ -547,9 +543,9 @@ msgid "Unable to delete songs"
 msgstr "Impossible de supprimer les chansons"
 
 #: ../quodlibet/browsers/media.py:506
-#, fuzzy, python-format
+#, python-format
 msgid "Deleting <b>%(song)s</b>"
-msgstr "Suppression de <b>%s</b>"
+msgstr "Suppression de <b>%(song)s</b>"
 
 #: ../quodlibet/browsers/media.py:523
 #, python-format
@@ -609,17 +605,17 @@ msgid ""
 msgstr ""
 "Importation des listes de lecture.\n"
 "\n"
-"%d/%d chansons ajoutées."
+"%(current)d/%(total)d chansons ajoutées."
 
 #: ../quodlibet/browsers/playlists.py:94
 #: ../quodlibet/browsers/playlists.py:449
 msgid "New Playlist"
-msgstr "Créer une liste de lecture..."
+msgstr "Créer une liste de lecture"
 
 #: ../quodlibet/browsers/playlists.py:111
 #: ../quodlibet/browsers/playlists.py:231
 #: ../quodlibet/qltk/exfalsowindow.py:199 ../quodlibet/qltk/properties.py:119
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
 msgstr[0] "%(title)s et %(count)d de plus"
@@ -920,14 +916,14 @@ msgstr[0] "%(title)s et %(count)d de plus..."
 msgstr[1] "%(title)s et %(count)d de plus..."
 
 #: ../quodlibet/qltk/delete.py:89
-#, fuzzy, python-format
+#, python-format
 msgid "Moving %(current)d/%(total)d."
-msgstr "Déplacement de %d/%d."
+msgstr "Déplacement de %(current)d/%(total)d."
 
 #: ../quodlibet/qltk/delete.py:90
-#, fuzzy, python-format
+#, python-format
 msgid "Deleting %(current)d/%(total)d."
-msgstr "Suppression de %d/%d"
+msgstr "Suppression de %d(current)/%(total)d"
 
 #: ../quodlibet/qltk/delete.py:115
 msgid "Unable to delete file"
@@ -1408,7 +1404,6 @@ msgid "Enabled"
 msgstr "Activé"
 
 #: ../quodlibet/qltk/pluginwin.py:261
-#, fuzzy
 msgid "Disabled"
 msgstr "Désactivé"
 
@@ -1572,17 +1567,16 @@ msgstr ""
 "pour prendre effet."
 
 #: ../quodlibet/qltk/prefs.py:226
-#, fuzzy
 msgid "_Enable Replay Gain volume adjustment"
-msgstr "Ajustement du gain lors de la _relecture"
+msgstr "_Activer l'ajustement de volume par les valeurs Replay Gain"
 
 #: ../quodlibet/qltk/prefs.py:239
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
-"Si aucune information de gain n'est disponible pour une chanson, multiplier "
-"le volume par cette valeur."
+"Si aucune information de Replay Gain n'est disponible pour une chanson, "
+"multiplier le volume par cette valeur"
 
 #: ../quodlibet/qltk/prefs.py:241
 msgid "Fall-back gain (dB):"
@@ -1593,17 +1587,15 @@ msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 "Multiplier le volume pour toutes les chansons par cette valeur, tant que le "
-"résultat ne sature pas."
+"résultat ne sature pas"
 
 #: ../quodlibet/qltk/prefs.py:260
-#, fuzzy
 msgid "Pre-amp gain (dB):"
-msgstr "Gain du _volume (dB) :"
+msgstr "Gain global (dB):"
 
 #: ../quodlibet/qltk/prefs.py:267
-#, fuzzy
 msgid "Replay Gain Volume Adjustment"
-msgstr "Ajustement du gain lors de la _relecture"
+msgstr "Ajustement du volume par Replay Gain"
 
 #: ../quodlibet/qltk/prefs.py:284
 msgid "_Select"
@@ -1631,9 +1623,8 @@ msgid "Separators for splitting tags"
 msgstr "Séparateurs pour la séparation des étiquettes (\"tags\")"
 
 #: ../quodlibet/qltk/prefs.py:325
-#, fuzzy
 msgid "Save ratings and play _counts"
-msgstr "Enregistrer la notation et le nombre d'écoutes"
+msgstr "Enregistrer la notation et le _nombre d'écoutes"
 
 #: ../quodlibet/qltk/prefs.py:329
 msgid "_Email:"
@@ -1947,9 +1938,8 @@ msgid "_Filter on %s"
 msgstr "_Filtrer sur %s"
 
 #: ../quodlibet/qltk/songlist.py:588
-#, fuzzy
 msgid "Confirm rating"
-msgstr "Information"
+msgstr "Verifier notation"
 
 #: ../quodlibet/qltk/songlist.py:589
 #, python-format
@@ -2207,19 +2197,19 @@ msgstr ""
 "COMMERCIALISATION ou L'APTITUDE À UN OBJET PARTICULIER.\n"
 
 #: ../quodlibet/util/__init__.py:147
-#, fuzzy, python-format
+#, python-format
 msgid "Option %r not recognized."
-msgstr "E: L'option '%s' n'est pas reconnue."
+msgstr "L'option %r n'est pas reconnue."
 
 #: ../quodlibet/util/__init__.py:150
-#, fuzzy, python-format
+#, python-format
 msgid "Option %r requires an argument."
-msgstr "E: L'option '%s' nécessite un argument"
+msgstr "L'option %r nécessite un argument"
 
 #: ../quodlibet/util/__init__.py:153
-#, fuzzy, python-format
+#, python-format
 msgid "%r is not a unique prefix."
-msgstr "E: '%s' n'est pas un préfixe unique."
+msgstr "%r n'est pas un préfixe unique."
 
 #: ../quodlibet/util/__init__.py:307 ../quodlibet/util/__init__.py:314
 msgid "[Invalid Encoding]"
@@ -2284,26 +2274,24 @@ msgid "directory"
 msgstr "répertoire"
 
 #: ../quodlibet/__init__.py:42
-#, fuzzy
 msgid "Quod Libet"
-msgstr "Quitter Quod Libet"
+msgstr "Quod Libet"
 
 #. Translators: "W" as in "Warning". It is prepended to
 #. terminal output. APT uses a similar output format.
 #: ../quodlibet/__init__.py:101
 msgid "W: "
-msgstr ""
+msgstr "A:"
 
 #: ../quodlibet/__init__.py:101
-#, fuzzy
 msgid "Warnings"
-msgstr "_Notation"
+msgstr "Avertissements"
 
 #. Translators: "E" as in "Error". It is prepended to
 #. terminal output. APT uses a similar output format.
 #: ../quodlibet/__init__.py:107
 msgid "E: "
-msgstr ""
+msgstr "E: "
 
 #: ../quodlibet/__init__.py:159
 #, python-format
@@ -2649,7 +2637,6 @@ msgid "MusicBrainz release ID"
 msgstr "Identifiant MusicBrainz - piste "
 
 #: ../quodlibet/util/tags.py:70
-#, fuzzy
 msgid "Musicbrainz artist ID"
 msgstr "Identifiant MusicBrainz - artiste"
 
@@ -2728,9 +2715,8 @@ msgid "year"
 msgstr "année"
 
 #: ../quodlibet/util/tags.py:105
-#, fuzzy
 msgid "bookmark"
-msgstr "Signets"
+msgstr "signet"
 
 #. Other things put here as a canonical translated copy.
 #: ../quodlibet/util/tags.py:125
