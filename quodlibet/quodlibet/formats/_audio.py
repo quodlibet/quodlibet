@@ -60,17 +60,14 @@ class AudioFile(dict):
 
     format = "Unknown Audio File"
 
-    __sort_key = None
-    def __get_sort_key(self):
-        if self.__sort_key is None:
-            self.__sort_key = (self.album_key,
-                self("~#disc"), self("~#track"),
-                human(self("artistsort")),
-                self.get("musicbrainz_artistid", ""),
-                human(self.get("title", "")),
-                self.get("~filename"))
-        return self.__sort_key
-    sort_key = property(__get_sort_key)
+    @util.cached_property
+    def sort_key(self):
+        return (self.album_key,
+            self("~#disc"), self("~#track"),
+            human(self("artistsort")),
+            self.get("musicbrainz_artistid", ""),
+            human(self.get("title", "")),
+            self.get("~filename"))
 
     @staticmethod
     def sort_by_func(tag):
@@ -105,11 +102,11 @@ class AudioFile(dict):
 
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, value)
-        self.__sort_key = None
+        self.__dict__.pop("sort_key", None)
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
-        self.__sort_key = None
+        self.__dict__.pop("sort_key", None)
 
     key = property(lambda self: self["~filename"])
     mountpoint = property(lambda self: self["~mountpoint"])
@@ -191,6 +188,7 @@ class AudioFile(dict):
             elif key == "people":
                 join = "\n".join
                 people = filter(None, map(self.__call__, PEOPLE))
+                if not people: return default
                 people = join(people).split("\n")
                 index = people.index
                 return join([person for (i, person) in enumerate(people)
@@ -226,6 +224,7 @@ class AudioFile(dict):
                             i += 1
                         values.append("%s (%s)" % (performer, roles))
                 values.extend(self.list("performer"))
+                if not values: return default
                 return "\n".join(values)
             elif key == "performerssort" or key == "performersort":
                 values = []

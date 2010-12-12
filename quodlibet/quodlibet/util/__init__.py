@@ -564,6 +564,19 @@ class DeferredSignal(object):
         self.func(*args)
         self.dirty = False
 
+class cached_property(object):
+    """A read-only @property that is only evaluated once."""
+    def __init__(self, fget, doc=None):
+        self.fget = fget
+        self.__doc__ = doc or fget.__doc__
+        self.__name__ = fget.__name__
+
+    def __get__(self, obj, cls):
+        if obj is None:
+            return self
+        obj.__dict__[self.__name__] = result = self.fget(obj)
+        return result
+
 def xdg_get_system_data_dirs():
     """http://standards.freedesktop.org/basedir-spec/latest/"""
     data_dirs = os.getenv("XDG_DATA_DIRS")

@@ -10,7 +10,7 @@ import gobject
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT
+from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
 
 ELPOEP = list(reversed(PEOPLE))
@@ -52,15 +52,24 @@ class Collection(object):
         self._cache.clear()
 
     def get(self, key, default=u"", connector=u" - "):
-        if key in self._to_cache:
-            cache_key = (key, default, connector)
-            val = self._cache.get(cache_key)
-            if val is None:
-                val = self.__get(key, default, connector)
-                self._cache[cache_key] = val
-            return val
+        if not self.songs:
+            raise KeyError("No songs in %s" % type(self).__name__)
+        if key[:1] == "~" and "~" in key[1:]:
+            if not isinstance(default, basestring): return default
+            keys = util.tagsplit(key)
+            v = map(self.__get_cached_value, keys)
+            def default_funct(x):
+                if x is None: return default
+                return x
+            v = map(default_funct , v)
+            v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
+            v = map(lambda x: isinstance(x, basestring) and x or str(x), v)
+            return  connector.join(filter(None, v)) or default
         else:
-            return self.__get(key, default, connector)
+            value = self.__get_cached_value(key)
+            if value is None:
+                return default
+            return value
 
     __call__ = get
 
@@ -77,65 +86,21 @@ class Collection(object):
         else: return v.split("\n")
         return []
 
-    def __get(self, key, default, connector):
+    def __get_cached_value(self, key):
+        if key in self._to_cache:
+            if key in self._cache:
+                return self._cache[key]
+            else:
+                val = self.__get_value(key)
+                self._cache[key] = val
+            return val
+        else:
+            return self.__get_value(key)
+
+    def __get_value(self, key):
         """This is similar to __call__ in the AudioFile class.
         All internal tags are changed to represent a collection of songs.
         """
-
-        if key[:1] == "~":
-            key = key[1:]
-            if "~" in key:
-                if not isinstance(default, basestring): return default
-                return connector.join(
-                    filter(None,
-                    map(lambda x: isinstance(x, basestring) and x or str(x),
-                    map(lambda x: (isinstance(x, float) and "%.2f" % x) or x,
-                    map(self.get, util.tagsplit("~" + key)))))) or default
-            elif key[:1] == "#": pass
-            elif key in ("people", "peoplesort"):
-                people = {}
-                peoplesort = {}
-                for song in self.songs:
-                    # Rank people by "relevance" -- artists before composers
-                    # before performers, then by number of appearances.
-                    for w, k in enumerate(ELPOEP):
-                        persons = song.list(k)
-                        for person in persons:
-                            people[person] = (people.get(person, 0) -
-                                              PEOPLE_SCORE[w])
-                        if k in TAG_TO_SORT:
-                            persons = song.list(TAG_TO_SORT[k]) or persons
-                        for person in persons:
-                            peoplesort[person] = (peoplesort.get(person, 0) -
-                                                  PEOPLE_SCORE[w])
-                #It's cheaper to get people and peoplesort in one go
-                cache_key = lambda k: (k, default, connector)
-                self._cache[cache_key("~people")] = "\n".join(
-                    sorted(people.keys(), key=people.__getitem__)[:100])
-                self._cache[cache_key("~peoplesort")] = "\n".join(sorted(
-                    peoplesort.keys(), key=peoplesort.__getitem__)[:100])
-                return self._cache[cache_key("~" + key)]
-            elif key == "length":
-                length = self.get("~#length")
-                if length == default: return default
-                return util.format_time(length)
-            elif key == "long-length":
-                length = self.get("~#length")
-                if length == default: return default
-                return util.format_time_long(length)
-            elif key == "tracks":
-                tracks = self.get("~#tracks")
-                return ngettext("%d track", "%d tracks", tracks) % tracks
-            elif key == "discs":
-                discs = self.get("~#discs")
-                if discs > 1:
-                    return ngettext("%d disc", "%d discs", discs) % discs
-                else: return default
-            elif key == "rating":
-                return util.format_rating(self.get("~#rating"))
-            elif key == "cover":
-                return ((self.cover != type(self).cover) and "y") or default
-            key = "~" + key
 
         # Using key:<func> runs the resulting list of values
         # through the function before returning it.
@@ -151,8 +116,8 @@ class Collection(object):
             elif key == "discs":
                 return len(set([song("~#disc", 1) for song in self.songs]))
             elif key == "bitrate":
-                length = self.get("~#length", 0)
-                if length == 0: return 0
+                length = self.__get_value("~#length")
+                if not length: return 0
                 w = lambda s: s("~#bitrate", 0) * s("~#length", 0)
                 return sum(w(song) for song in self.songs) / length
             elif key in NUM_DEFAULT_FUNCS:
@@ -171,8 +136,67 @@ class Collection(object):
                 values = (song(key) for song in self.songs)
                 values = [v for v in values if v != ""]
                 if values: return func(values)
-                else: return default
-            return default
+                else: return None
+            elif key in INTERN_NUM_DEFAULT:
+                return 0
+            return None
+        elif key[:1] == "~":
+            key = key[1:]
+            if key in ("people", "peoplesort"):
+                people = {}
+                peoplesort = {}
+                for song in self.songs:
+                    # Rank people by "relevance" -- artists before composers
+                    # before performers, then by number of appearances.
+                    for w, k in enumerate(ELPOEP):
+                        persons = song.list(k)
+                        for person in persons:
+                            people[person] = (people.get(person, 0) -
+                                              PEOPLE_SCORE[w])
+                        if k in TAG_TO_SORT:
+                            persons = song.list(TAG_TO_SORT[k]) or persons
+                        for person in persons:
+                            peoplesort[person] = (peoplesort.get(person, 0) -
+                                                  PEOPLE_SCORE[w])
+                #It's cheaper to get people and peoplesort in one go
+                people = sorted(people.keys(), key=people.__getitem__)[:100]
+                if not people:
+                    self._cache["~people"] = None
+                else:
+                    self._cache["~people"] = "\n".join(people)
+
+                peoplesort = sorted(peoplesort.keys(),
+                    key=peoplesort.__getitem__)[:100]
+                if not peoplesort:
+                    self._cache["~peoplesort"] = None
+                else:
+                    self._cache["~peoplesort"] = "\n".join(peoplesort)
+
+                return self._cache["~" + key]
+            elif key == "length":
+                length = self.__get_value("~#length")
+                if length is None: return None
+                return util.format_time(length)
+            elif key == "long-length":
+                length = self.__get_value("~#length")
+                if length is None: return None
+                return util.format_time_long(length)
+            elif key == "tracks":
+                tracks = self.__get_value("~#tracks")
+                if tracks is None: return None
+                return ngettext("%d track", "%d tracks", tracks) % tracks
+            elif key == "discs":
+                discs = self.__get_value("~#discs")
+                if discs > 1:
+                    return ngettext("%d disc", "%d discs", discs) % discs
+                else: return None
+            elif key == "rating":
+                rating = self.__get_value("~#rating")
+                if rating is None: return None
+                return util.format_rating(rating)
+            elif key == "cover":
+                return ((self.cover != type(self).cover) and "y") or None
+            key = "~" + key
 
         #Nothing special was found, so just take all values of the songs
         #and sort them by their number of appearance
@@ -181,18 +205,23 @@ class Collection(object):
             for value in song.list(key):
                 result[value] = result.get(value, 0) - 1
 
-        return "\n".join(map(lambda x: x[0],
-            sorted(result.items(), key=lambda x: x[1])
-        )) or default
+        values = map(lambda x: x[0],
+            sorted(result.items(), key=lambda x: x[1]))
+        if not values: return None
+        return "\n".join(values)
 
 class Album(Collection):
-    """Like a collection but adds cover scanning, some atributes for sorting,
-    a separate sortcache and uses a set for the songs."""
+    """Like a collection but adds cover scanning, some atributes for sorting
+    and uses a set for the songs."""
 
     cover = None
     scanned = False
 
-    peoplesort = property(lambda self: self.__get_sort("~peoplesort"))
+    @util.cached_property
+    def peoplesort(self):
+        val = self.get("~peoplesort").split("\n")
+        return map(util.human_sort_key, val)
+
     date = property(lambda self: self.get("date"))
     title = property(lambda self: self.get("album"))
 
@@ -204,12 +233,11 @@ class Album(Collection):
         #albumsort is part of the album_key, so every song has the same
         self.sort = util.human_sort_key(song("albumsort"))
         self.key = song.album_key
-        self._sortcache = {}
 
     def finalize(self):
         """Call this after songs got added or removed"""
         super(Album, self).finalize()
-        self._sortcache.clear()
+        self.__dict__.pop("peoplesort", None)
 
     def scan_cover(self):
         if self.scanned or not self.songs: return
@@ -225,12 +253,3 @@ class Album(Collection):
                 self.cover = thumbnails.add_border(self.cover, 30, round)
             except gobject.GError:
                 return
-
-    def __get_sort(self, key):
-        """Cache the sort keys extra, because of human sorting"""
-        val = self._sortcache.get(key)
-        if val is None:
-            val = self.get(key).split("\n")
-            val = map(util.human_sort_key, val)
-            self._sortcache[key] = val
-        return val

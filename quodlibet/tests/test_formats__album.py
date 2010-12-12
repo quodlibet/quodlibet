@@ -1,32 +1,8 @@
-import os
-import sys
-import unittest
-
+from quodlibet.formats._audio import AudioFile as Fakesong
+from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.formats._album import Album
 
 from tests import TestCase, add
-
-class Fakesong(dict):
-    album_key = "Some Songs"
-    def comma(self, key):
-        val = self(key)
-        if isinstance(val, (int, float)):
-            return val
-        return self.list(key).replace("\n", ", ")
-
-    def __call__(self, key, default=""):
-        if key not in self and key[:2] == "~#" and key[2:] in self:
-            return int(self[key[2:]])
-        return self.get(key, default)
-
-    def __hash__(self):
-        return hash(id(self))
-
-    def __eq__(self, other):
-        return self is other
-
-    def list(self, key):
-        return (self(key) and self(key).split("\n")) or []
 
 class TAlbum(TestCase):
     def test_people_sort(s):
@@ -81,8 +57,8 @@ class TAlbum(TestCase):
 
     def test_internal_tags(s):
         songs = [
-            Fakesong({"~#length": 5, "~#disc": 1, "date": "2038"}),
-            Fakesong({"~#length": 7, "dummy": "d\ne", "~#disc": 2})
+            Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
+            Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
         ]
 
         album = Album(songs[0])
@@ -100,11 +76,11 @@ class TAlbum(TestCase):
     def test_numeric_ops(s):
         songs = [
             Fakesong({"~#length": 4, "~#added": 5, "~#lastplayed": 1,
-            "~#bitrate": 200, "~#year": 100, "~#rating": 0.1}),
+            "~#bitrate": 200, "date": "100", "~#rating": 0.1}),
             Fakesong({"~#length": 7, "~#added": 7, "~#lastplayed": 88,
-            "~#bitrate": 220, "~#year": 99, "~#rating": 0.3}),
+            "~#bitrate": 220, "date": "99", "~#rating": 0.3}),
             Fakesong({"~#length": 1, "~#added": 3, "~#lastplayed": 43,
-            "~#bitrate": 60, "~#year": 33, "~#rating": 0.5})
+            "~#bitrate": 60, "date": "33", "~#rating": 0.5})
         ]
 
         album = Album(songs[0])
@@ -115,13 +91,46 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.get("~#length:max"), 7)
         s.failUnlessEqual(album.get("~#length:min"), 1)
         s.failUnlessEqual(album.get("~#length:avg"), 4)
-        s.failUnlessEqual(album.get("~#length:foo"), "")
+        s.failUnlessEqual(album.get("~#length:foo"), 0)
 
         s.failUnlessEqual(album.get("~#added"), 7)
         s.failUnlessEqual(album.get("~#lastplayed"), 88)
         s.failUnlessEqual(album.get("~#bitrate"), 200)
         s.failUnlessEqual(album.get("~#year"), 33)
         s.failUnlessEqual(album.get("~#rating"), 0.3)
+
+    def test_defaults(s):
+        song = Fakesong({})
+        album = Album(song)
+        s.failUnlessRaises(KeyError, album, "foo")
+        album.songs.add(song)
+
+        failUnlessEq = s.failUnlessEqual
+
+        failUnlessEq(album("~#length", "x"), song("~#length", "x"))
+        failUnlessEq(album("~#bitrate", "x"), song("~#bitrate", "x"))
+        failUnlessEq(album("~#rating", "x"), song("~#rating", "x"))
+        failUnlessEq(album("~#playcount", "x"), song("~#playcount", "x"))
+        failUnlessEq(album("~#mtime", "x"), song("~#mtime", "x"))
+        failUnlessEq(album("~#year", "x"), song("~#year", "x"))
+
+        failUnlessEq(album("~#foo", "x"), song("~#foo", "x"))
+        failUnlessEq(album("foo", "x"), song("foo", "x"))
+        failUnlessEq(album("~foo", "x"), song("~foo", "x"))
+
+        failUnlessEq(album("~people", "x"), song("~people", "x"))
+        failUnlessEq(album("~peoplesort", "x"), song("~peoplesort", "x"))
+        failUnlessEq(album("~performer", "x"), song("~performer", "x"))
+        failUnlessEq(album("~performersort", "x"), song("~performersort", "x"))
+
+        failUnlessEq(album("~cover", "x"), song("~cover", "x"))
+        failUnlessEq(album("~rating", "x"), song("~rating", "x"))
+
+        for p in PEOPLE:
+            failUnlessEq(album(p, "x"), song(p, "x"))
+
+        for p in INTERN_NUM_DEFAULT:
+            failUnlessEq(album(p, "x"), song(p, "x"))
 
     def test_methods(s):
         songs = [
