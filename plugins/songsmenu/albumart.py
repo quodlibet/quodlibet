@@ -38,7 +38,6 @@
 # - Updated for new Amazon API by Jeremy Cantrell <jmcantrell@gmail.com>
 
 import os
-import sys
 import time
 import threading
 import gzip
@@ -62,10 +61,55 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 #switch off, so that broken search engines wont crash the whole plugin
 debug = False
 
+USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
+    "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
+
+def get_encoding_from_socket(socket):
+    content_type = socket.headers.get("Content-Type", "")
+    p = map(str.strip, map(str.lower, content_type.split(";")))
+    enc = [t.split("=")[-1].strip() for t in p if t.startswith("charset")]
+    return (enc and enc[0]) or "utf-8"
+
+def get_url(url, post={}, get={}):
+    post_params = urllib.urlencode(post)
+    get_params = urllib.urlencode(get)
+    if get: get_params = '?' + get_params
+
+    # add post, get data and headers
+    url = '%s%s' % (url, get_params)
+    if post_params:
+        request = urllib2.Request(url, post_params)
+    else:
+        request = urllib2.Request(url)
+
+    # for discogs
+    request.add_header('Accept-Encoding', 'gzip')
+    request.add_header('User-Agent', USER_AGENT)
+
+    url_sock = urllib2.urlopen(request)
+    enc = get_encoding_from_socket(url_sock)
+
+    # unzip the response if needed
+    data = url_sock.read()
+    if url_sock.headers.get("content-encoding", "") == "gzip":
+        data = gzip.GzipFile(fileobj = StringIO(data)).read()
+    url_sock.close()
+
+    return data, enc
+
+def get_encoding(url):
+    request = urllib2.Request(url)
+    request.add_header('Accept-Encoding', 'gzip')
+    request.add_header('User-Agent', USER_AGENT)
+    url_sock = urllib2.urlopen(request)
+    return get_encoding_from_socket(url_sock)
+
 class BasicHTMLParser(HTMLParser, object):
     """Basic Parser, stores all tags in a 3 tuple with tagname, attrs and data
     between the starttags. Ignores nesting but gives a consistent structure.
     All in all an ugly hack."""
+
+    encoding = "utf-8"
 
     def __init__(self):
         super(BasicHTMLParser, self).__init__()
@@ -75,25 +119,20 @@ class BasicHTMLParser(HTMLParser, object):
         #to make the crappy HTMLParser ignore more stuff
         self.CDATA_CONTENT_ELEMENTS = ()
 
-    def parse_url(self, url, post = {}, get = {}, enc = 'utf-8'):
+    def parse_url(self, url, post = {}, get = {}):
         """Will read the data and parse it into the data variable.
         A tag will be ['tagname', {all attributes}, 'data until the next tag']
         Only starttags are handled/used."""
 
         self.data = []
-        post_params = urllib.urlencode(post)
-        get_params = urllib.urlencode(get)
 
-        if get: get_params = '?' + get_params
+        text, self.encoding = get_url(url, post, get)
+        text = text.decode(self.encoding, 'replace')
 
-        req = urllib2.urlopen('%s%s' % (url, get_params), post_params)
-
-        text = req.read().decode(enc, 'replace')
         #strip script tags/content. HTMLParser doesn't handle them well
         text = "".join([p.split("script>")[-1] for p in text.split("<script")])
 
         self.feed(text)
-        req.close()
         self.close()
 
     def handle_starttag(self, tag, attrs):
@@ -129,7 +168,8 @@ class CoverParadiseParser(BasicHTMLParser):
 
         self.cover_count = 0
         self.page_step = 0
-        self.query = query
+        enc = get_encoding(self.root_url)
+        self.query = query.decode("utf-8").encode(enc)
         self.covers = []
 
         #site only takes 3+ chars
@@ -218,7 +258,7 @@ class CoverParadiseParser(BasicHTMLParser):
         #Sektion 2 is for audio, Page is a search result offset
         post_dic = {'SearchString' : self.query, 'Page': offset, 'Sektion' : 2}
 
-        self.parse_url(search_url, post = post_dic)
+        self.parse_url(search_url, post=post_dic)
 
     def __extract_from_list(self):
         """Extracts all the needed information from the already parsed
@@ -318,22 +358,8 @@ class DiscogsParser(object):
         search_paras['api_key'] = self.api_key
         search_paras['page'] = page
 
-        real_url = '%s?%s' % (search_url, urllib.urlencode(search_paras))
-
-        request = urllib2.Request(real_url)
-        request.add_header('Accept-Encoding', 'gzip')
-
-        url_sock = urllib2.urlopen(request)
-        data = url_sock.read()
-
-        if url_sock.headers.get('content-encoding') == 'gzip':
-            xml_data = gzip.GzipFile(fileobj = StringIO(data)).read()
-        else:
-            xml_data = data
-
-        url_sock.close()
-
-        dom = minidom.parseString(xml_data)
+        data, enc = get_url(search_url, get=search_paras)
+        dom = minidom.parseString(data)
 
         return dom
 
@@ -358,27 +384,13 @@ class DiscogsParser(object):
         if len(self.cover_list) >= self.limit:
             return
 
-        rel_url = self.url + '/release/'
+        rel_url = self.url + '/release/' + id
         rel_paras = {}
         rel_paras['api_key'] = self.api_key
         rel_paras['f'] = 'xml'
 
-        real_url = '%s%s?%s' % (rel_url, id ,urllib.urlencode(rel_paras))
-
-        request = urllib2.Request(real_url)
-        request.add_header('Accept-Encoding', 'gzip')
-
-        url_sock = urllib2.urlopen(request)
-
-        # check if response is gzipped or not
-        if url_sock.headers.get('content-encoding') == 'gzip':
-            xml_data = gzip.GzipFile(fileobj = StringIO(url_sock.read())).read()
-        else:
-            xml_data = url_sock.read()
-
-        url_sock.close()
-
-        dom = minidom.parseString(xml_data)
+        data, enc = get_url(rel_url, get=rel_paras)
+        dom = minidom.parseString(data)
 
         imgs = dom.getElementsByTagName('image')
 
@@ -481,11 +493,8 @@ class AmazonParser(object):
         parameters['Keywords'] = query
         parameters['ItemPage'] = page
 
-        real_url = '%s?%s' % (url, urllib.urlencode(parameters))
-
-        url_sock = urllib.urlopen(real_url)
-        dom = minidom.parseString(url_sock.read())
-        url_sock.close()
+        data, enc = get_url(url, get=parameters)
+        dom = minidom.parseString(data)
 
         pages = dom.getElementsByTagName('TotalPages')
         if pages:
@@ -583,7 +592,9 @@ class DarktownParser(BasicHTMLParser):
         self.page_count = 0
         self.limit = limit
         #site only takes and returns latin-1
-        query = query.decode('utf-8').encode('latin-1')
+
+        enc = get_encoding(self.root_url)
+        query = query.decode('utf-8').encode(enc)
         self.covers = []
         self.main_links = []
 
@@ -613,7 +624,7 @@ class DarktownParser(BasicHTMLParser):
         """Reads all URLs and adds the covers to the list"""
 
         for link in self.main_links:
-            self.parse_url(self.root_url + link, enc = 'latin-1')
+            self.parse_url(self.root_url + link)
 
             cover = {}
             cover['source'] = self.root_url
@@ -636,8 +647,7 @@ class DarktownParser(BasicHTMLParser):
 
         params = {'action': 'search', 'what': query, \
             'category': 'audio', 'page': page}
-        self.parse_url(self.root_url + '/search.php',
-            get = params, enc = 'latin-1')
+        self.parse_url(self.root_url + '/search.php', get=params)
 
     def __parse_page_count(self):
         """Tries to figure out how many result pages we got."""
@@ -895,7 +905,9 @@ class CoverArea(gtk.VBox):
             data_store = StringIO()
 
             try:
-                url_sock = urllib2.urlopen(url)
+                request = urllib2.Request(url)
+                request.add_header('User-Agent', USER_AGENT)
+                url_sock = urllib2.urlopen(request)
             except urllib2.HTTPError:
                 print_w(_("[albumart] HTTP Error: %s") % url)
             else:
@@ -1251,7 +1263,10 @@ def cfg_set(key, value):
 
 #------------------------------------------------------------------------------
 def get_size_of_url(url):
-    url_sock = urllib2.urlopen(url)
+    request = urllib2.Request(url)
+    request.add_header('Accept-Encoding', 'gzip')
+    request.add_header('User-Agent', USER_AGENT)
+    url_sock = urllib2.urlopen(request)
     size =  url_sock.headers.get('content-length')
     url_sock.close()
 
