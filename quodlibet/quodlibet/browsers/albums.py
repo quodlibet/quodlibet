@@ -142,6 +142,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
     __model = None
     __no_cover = None
+    __pattern_cache = {}
 
     name = _("Album List")
     accelerated_name = _("_Album List")
@@ -178,6 +179,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
     @classmethod
     def refresh_pattern(klass, pattern_text):
+        klass.__pattern_cache.clear()
         if pattern_text == klass._pattern_text: return
         klass._pattern_text = pattern_text
         klass._pattern = XMLFromPattern(pattern_text)
@@ -214,6 +216,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     @classmethod
     def _remove_albums(klass, library, removed, model):
         removed_albums = removed.copy()
+        for album in removed_albums:
+            klass.__pattern_cache.pop(album, None)
         for row in model:
             if row[0] and row[0] in removed_albums:
                 removed_albums.remove(row[0])
@@ -224,6 +228,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def _change_albums(klass, library, changed, model):
         """Trigger a row redraw for each album that changed"""
         changed_albums = changed.copy()
+        for album in changed_albums:
+            klass.__pattern_cache.pop(album, None)
         for row in model:
             if row[0] and row[0] in changed_albums:
                 changed_albums.remove(row[0])
@@ -352,7 +358,15 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 text += "\n" + ngettext("%d album", "%d albums",
                         len(model) - 1) % (len(model) - 1)
                 cell.markup = text
-            else: cell.markup = AlbumList._pattern % model[iter][0]
+            else:
+                # Because the album treeview has no fixed row height
+                # the height for each cell gets recalculated all the time
+                # (filtering, scrolling), and this gets called.
+                markup = self.__pattern_cache.get(album, None)
+                if markup is None:
+                    markup = AlbumList._pattern % album
+                    self.__pattern_cache[album] = markup
+                cell.markup = markup
             cell.set_property('markup', cell.markup)
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
@@ -508,7 +522,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         if self.__cover_column.get_visible():
             num = len(albums)
             button = MenuItem(
-                ngettext("Reload album cover", "Reload album covers", num),
+                ngettext("Reload album _cover", "Reload album _covers", num),
                 gtk.STOCK_REFRESH)
             button.connect('activate', self.__refresh_album, view)
             menu.prepend(gtk.SeparatorMenuItem())
