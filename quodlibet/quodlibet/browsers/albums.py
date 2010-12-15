@@ -27,7 +27,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem
-from quodlibet.util import copool
+from quodlibet.util import copool, gobject_weak
 from quodlibet.util.library import background_filter
 
 EMPTY = _("Songs not in an album")
@@ -88,7 +88,7 @@ class Preferences(qltk.UniqueWindow):
         cb = ConfigCheckButton(
             _("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
-        cb.connect('toggled', lambda s: AlbumList.toggle_covers())
+        gobject_weak(cb.connect, 'toggled', lambda s: AlbumList.toggle_covers())
         self.child.pack_start(cb, expand=False)
 
         cb = ConfigCheckButton(
@@ -102,9 +102,10 @@ class Preferences(qltk.UniqueWindow):
         label.set_alignment(0.0, 0.5)
         edit = PatternEditBox(PATTERN)
         edit.text = AlbumList._pattern_text
-        edit.apply.connect('clicked', self.__set_pattern, edit)
-        edit.buffer.connect_object(
-            'changed', self.__preview_pattern, edit, label)
+        gobject_weak(edit.apply.connect, 'clicked', self.__set_pattern, edit)
+        gobject_weak(edit.buffer.connect_object, 'changed',
+            self.__preview_pattern, edit, label, parent=edit)
+
         vbox.pack_start(label, expand=False)
         vbox.pack_start(edit)
         self.__preview_pattern(edit, label)
@@ -171,6 +172,16 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         klass._pattern = XMLFromPattern(klass._pattern_text)
 
     @classmethod
+    def _destroy_model(klass):
+        library = klass.__library
+        for sig in klass.__sigs:
+            library.albums.disconnect(sig)
+        klass.__library = None
+        klass.__model.clear()
+        klass.__model = None
+        klass.__pattern_cache.clear()
+
+    @classmethod
     def toggle_covers(klass):
         on = config.getboolean("browsers", "album_covers")
         for albumlist in klass.instances():
@@ -195,9 +206,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         klass.__model = model = gtk.ListStore(object)
         klass.__library = library
         library.albums.load()
-        library.albums.connect("added", klass._add_albums, model)
-        library.albums.connect("removed", klass._remove_albums, model)
-        library.albums.connect("changed", klass._change_albums, model)
+        klass.__sigs = [
+            library.albums.connect("added", klass._add_albums, model),
+            library.albums.connect("removed", klass._remove_albums, model),
+            library.albums.connect("changed", klass._change_albums, model)]
         model.append(row=[None])
         for album in library.albums.itervalues():
             model.append(row=[album])
@@ -206,7 +218,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def _refresh_albums(klass, albums):
         """We signal all other open album views that we changed something
         (Only needed for the cover atm) so they redraw as well."""
-        klass.__library.albums.refresh(albums)
+        if klass.__library:
+            klass.__library.albums.refresh(albums)
 
     @classmethod
     def _add_albums(klass, library, added, model):
@@ -265,7 +278,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             for text in [_("Title"), _("Artist"), _("Date")]:
                 cbmodel.append(row=[text])
 
-            self.connect_object('changed', self.__set_cmp_func, model)
+            gobject_weak(self.connect_object, 'changed',
+                self.__set_cmp_func, model)
+
             try: active = config.getint('browsers', 'album_sort')
             except: active = 0
             self.set_active(active)
@@ -330,8 +345,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         self.__pending_covers = []
         self.__scan_timeout = None
-        view.connect_object('expose-event', self.__update_visibility, view)
-        sw.get_vadjustment().connect("value-changed", self.__stop_cover_update)
+        gobject_weak(view.connect_object, 'expose-event',
+            self.__update_visibility, view)
+
+        gobject_weak(sw.get_vadjustment().connect, "value-changed",
+            self.__stop_cover_update)
 
         render = gtk.CellRendererPixbuf()
         self.__cover_column = column = gtk.TreeViewColumn("covers", render)
@@ -349,7 +367,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view.append_column(column)
 
         render = gtk.CellRendererText()
-        self.__column = column = gtk.TreeViewColumn("albums", render)
+        column = gtk.TreeViewColumn("albums", render)
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         def cell_data(column, cell, model, iter):
             album = model[iter][0]
@@ -379,16 +397,20 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
 
-        if player: view.connect('row-activated', self.__play_selection, player)
-        self.__sig = view.get_selection().connect('changed',
-            self.__selection_changed)
+        if player:
+            gobject_weak(view.connect, 'row-activated',
+                self.__play_selection, player)
+
+        self.__sig = gobject_weak(view.get_selection().connect, 'changed',
+            self.__selection_changed, parent=view)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
         view.drag_source_set(
             gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
-        view.connect("drag-data-get", self.__drag_data_get)
-        view.connect_object('popup-menu', self.__popup, view, library)
+        gobject_weak(view.connect, "drag-data-get", self.__drag_data_get)
+        gobject_weak(view.connect_object, 'popup-menu',
+            self.__popup, view, library)
 
         search = AlbumList.FilterBar(
                 self, library, button=False, completion=AlbumTagCompletion())
@@ -396,7 +418,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         prefs = gtk.Button()
         prefs.add(gtk.image_new_from_stock(
             gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
-        prefs.connect('clicked', Preferences)
+        gobject_weak(prefs.connect, 'clicked', Preferences)
         search.pack_start(prefs, expand=False)
         self.pack_start(search, expand=False)
         self.pack_start(sw, expand=True)
@@ -410,7 +432,27 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         hb.pack_start(sc)
         self.pack_start(hb, expand=False)
 
+        self.connect("destroy", self.__destroy)
+
         self.show_all()
+
+    def __destroy(self, browser):
+        copool.remove(self.__scan_covers)
+
+        # https://bugzilla.gnome.org/show_bug.cgi?id=624112
+        # filter model keeps its filter function reference.
+        # at least try to get rid of as much data as possible.
+        self.__inhibit()
+        model = self.view.get_model()
+        self.view.set_model(None)
+        model.clear_cache()
+        model = model.get_model()
+        model.clear_cache()
+        self.__dict__.clear()
+
+        klass = type(browser)
+        if not klass.instances():
+            klass._destroy_model()
 
     def __update_visible_covers(self, view):
         vrange = view.get_visible_range()
@@ -529,7 +571,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             button = MenuItem(
                 ngettext("Reload album _cover", "Reload album _covers", num),
                 gtk.STOCK_REFRESH)
-            button.connect('activate', self.__refresh_album, view)
+            gobject_weak(button.connect, 'activate',
+                self.__refresh_album, view)
             menu.prepend(gtk.SeparatorMenuItem())
             menu.prepend(button)
 
@@ -676,6 +719,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         return confval
 
     def __update_songs(self, view):
+        if not self.__dict__: return
         selection = view.get_selection()
         songs = self.__get_selected_songs(selection, False)
         self.emit('songs-selected', songs, None)

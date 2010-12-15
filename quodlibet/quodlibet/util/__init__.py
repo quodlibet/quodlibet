@@ -564,6 +564,22 @@ class DeferredSignal(object):
         self.func(*args)
         self.dirty = False
 
+def gobject_weak(fun, *args, **kwargs):
+    """Connect to a signal and disconnect if destroy gets emitted.
+    If parent is given, it connects to its destroy signal
+    Example:
+        gobject_weak(gobject_1.connect, 'changed', self.__changed)
+        gobject_weak(gobject_1.connect, 'changed', self.__changed,
+            parent=gobject_2)
+    """
+    parent = kwargs.pop("parent", None)
+    obj = fun.__self__
+    sig = fun(*args)
+    disconnect = lambda obj, handle: obj.disconnect(handle)
+    if parent: parent.connect_object('destroy', disconnect, obj, sig)
+    else: obj.connect('destroy', disconnect, sig)
+    return sig
+
 class cached_property(object):
     """A read-only @property that is only evaluated once."""
     def __init__(self, fget, doc=None):
