@@ -488,6 +488,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 self.__filter = Query(text, star=["people", "album"]).search
         self.__bg_filter = background_filter()
         self.__inhibit()
+        # We could be smart and try to scroll to a selected album
+        # but that introduces lots of wild scrolling. Feel free to change it.
+        # Without scrolling the TV trys to stay at the same position (40% down)
+        # which makes no sence so always go to the top.
+        self.view.scroll_to_point(0, 0)
         model.refilter()
         self.__uninhibit()
 
