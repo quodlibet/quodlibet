@@ -196,7 +196,7 @@ class Playlist(list):
         return "<b>%s</b>\n<small>%s (%s)</small>" % (
             util.escape(self.name),
             ngettext("%d song", "%d songs", len(self)) % len(self),
-            util.format_time(sum([t.get("~#length") for t in self
+            util.format_time(sum([t("~#length") for t in self
                                   if isinstance(t, AudioFile)])))
 
     def __cmp__(self, other):
