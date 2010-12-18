@@ -37,7 +37,7 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(s.c), '00. test/subdir')
 
     def test_conditional_other_other(s):
-        # FIXME: was <tracknumber|a|b|c>.. but we can't but <>| in the format
+        # FIXME: was <tracknumber|a|b|c>.. but we can't put <>| in the format
         # string since it would break the XML pattern formater.
         s.assertEqual(Pattern('<tracknumber|a|b|c>').format(s.a), "")
 
