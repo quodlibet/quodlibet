@@ -37,8 +37,9 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(s.c), '00. test/subdir')
 
     def test_conditional_other_other(s):
-        s.assertEqual(Pattern('<tracknumber|a|b|c>').format(s.a),
-                      "<tracknumber|a|b|c>")
+        # FIXME: was <tracknumber|a|b|c>.. but we can't but <>| in the format
+        # string since it would break the XML pattern formater.
+        s.assertEqual(Pattern('<tracknumber|a|b|c>').format(s.a), "")
 
     def test_conditional_genre(s):
         pat = Pattern('<genre|<genre>|music>')
@@ -174,11 +175,10 @@ class TXMLFromPattern(_TPattern):
 
 class TRealTags(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(Pattern("").real_tags(), [])
+        self.failUnlessEqual(Pattern("").tags, set([]))
     def test_both(self):
         pat = "<foo|<~bar~fuu> - <fa>|<bar>>"
-        self.failUnlessEqual(Pattern(pat).real_tags(), ["foo", "bar", "fuu", "fa"])
-        self.failUnlessEqual(Pattern(pat).real_tags(False), ["bar", "fuu", "fa"])
+        self.failUnlessEqual(Pattern(pat).tags, set(["bar", "fuu", "fa"]))
 
 class TPatternFormatList(_TPattern):
     def test_same(s):

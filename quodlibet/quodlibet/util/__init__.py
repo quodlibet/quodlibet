@@ -482,23 +482,17 @@ def pattern(pat, cap=True, esc=False):
     bits. Assumes all tags in the pattern are present."""
     from quodlibet.parse import Pattern, XMLFromPattern
     class Fakesong(dict):
+        cap = False
         def comma(self, key):
-            if key.startswith('~') and '~' in key[1:]:
-                tags = [self.get(k, '') for k in tagsplit(key)]
-                return " - ".join(tags)
-            return self.get(key, '')
+            return " - ".join(self.list(key))
         def list(self, key):
-            if key.startswith('~') and '~' in key[1:]:
-                tags = [self.get(k, '') for k in tagsplit(key)]
-                return tags
-            return [self.get(key, '')]
+            return [tag(k, self.cap) for k in tagsplit(key)]
         list_seperate = list
         __call__ = comma
 
     fakesong = Fakesong({'filename': tag('filename', cap)})
+    fakesong.cap = cap
     p = (esc and XMLFromPattern(pat)) or Pattern(pat)
-    for t in p.real_tags():
-        fakesong.setdefault(t, tag(t, cap))
     return p.format(fakesong)
 
 def spawn(argv, stdout=False):

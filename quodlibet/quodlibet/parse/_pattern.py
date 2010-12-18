@@ -1,4 +1,4 @@
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman
+# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,10 +7,6 @@
 # Pattern := (<String> | <Tags>)*
 # String := ([^<>|\\]|\\.)+, a string
 # Tags := "<" String [ "|" Pattern [ "|" Pattern ] ] ">"
-
-# FIXME: We eventually want to be able to call these formatters in a
-# tight loop, which isn't good if we're re-parsing the format string
-# every time. The Song proxy might also get in the way.
 
 import os
 import re
@@ -62,73 +58,84 @@ class PatternLexer(Scanner):
         if s[1] != "": raise LexerError("characters left over in string")
         else: return iter(s[0] + [PatternLexeme(EOF, "")])
 
+class PatternNode(object):
+    def __init__(self):
+        self.children = []
+
+    def __repr__(self):
+        return "Pattern(%s)" % (", ".join(map(repr, self.children)))
+
+class TextNode(object):
+    def __init__(self, text):
+        self.text = text
+
+    def __repr__(self):
+        return "Text(%s)" % self.text
+
+class ConditionNode(object):
+    def __init__(self, tag, ifcase, elsecase):
+        self.tag = tag
+        self.ifcase = ifcase
+        self.elsecase = elsecase
+
+    def __repr__(self):
+        t, i, e = self.tag, repr(self.ifcase), repr(self.elsecase)
+        return "Condition(tag:%s, if: %s, else: %s)" % (t, i, e)
+
+class TagNode(object):
+    def __init__(self, tag):
+        self.tag = tag
+
+    def __repr__(self):
+        return "Tag(%s)" % self.tag
+
 class PatternParser(object):
-    def __init__(self, tokens, func=lambda s, t: s.comma(t)):
+    def __init__(self, tokens):
         self.tokens = iter(tokens)
         self.lookahead = self.tokens.next()
-        self.func = func
+        self.node = self.Pattern()
 
-    def Pattern(self, song):
-        text = []
+    def Pattern(self):
+        node = PatternNode()
         while self.lookahead.type in [OPEN, TEXT]:
             la = self.lookahead
             self.match(TEXT, OPEN)
-            if la.type == TEXT: text.append(la.lexeme)
-            elif la.type == OPEN: text.extend(self.Tags(song))
-        return text
+            if la.type == TEXT:
+                node.children.append(TextNode(la.lexeme))
+            elif la.type == OPEN:
+                node.children.extend(self.Tags())
+        return node
 
-    def Tags(self, song):
-        text = []
-        all = []
+    def Tags(self):
+        nodes = []
         tag = self.lookahead.lexeme
-        if not tag.startswith("~") and "~" in tag: tag = "~" + tag
         try: self.match(TEXT)
         except ParseError:
             while self.lookahead.type not in [CLOSE, EOF]:
-                text.append(self.lookahead.lexeme)
                 self.match(self.lookahead.type)
-            all.append(u"".join(text))
-            return all
+            return nodes
         if self.lookahead.type == COND:
             self.match(COND)
-            ifcase = self.Pattern(song)
+            ifcase = self.Pattern()
             if self.lookahead.type == COND:
                 self.match(COND)
-                elsecase = self.Pattern(song)
-            else: elsecase = u""
-
-            if self.func(song, tag): all.extend(ifcase)
-            else: all.extend(elsecase)
+                elsecase = self.Pattern()
+            else: elsecase = None
+            nodes.append(ConditionNode(tag, ifcase, elsecase))
 
             try: self.match(CLOSE)
             except ParseError:
-                all.pop(-1)
-                text.append("<")
-                parts = filter(None, [tag, ifcase, elsecase])
-                for part in parts:
-                    text.extend(part)
-                    text.append("|")
-                if parts: text.pop(-1)
+                nodes.pop(-1)
                 while self.lookahead.type not in [EOF, OPEN]:
-                    text.append(self.lookahead.lexeme)
                     self.match(self.lookahead.type)
         else:
-            if text:
-                all.append(u"".join(text))
-                text = []
-            all.append(self.func(song, tag))
+            nodes.append(TagNode(tag))
             try: self.match(CLOSE)
             except ParseError:
-                all.pop(-1)
-                text.append("<")
-                text.append(tag)
+                nodes.pop(-1)
                 while self.lookahead.type not in [EOF, OPEN]:
-                    text.append(self.lookahead.lexeme)
                     self.match(self.lookahead.type)
-        if text:
-            all.append(u"".join(text))
-            text = []
-        return all
+        return nodes
 
     def match(self, *tokens):
         if tokens != [EOF] and self.lookahead.type == EOF:
@@ -143,26 +150,23 @@ class PatternParser(object):
         except StopIteration:
             self.lookahead = PatternLexeme(EOF, "")
 
-class _Pattern(PatternParser):
+class PatternCompiler(object):
     _formatters = []
 
-    def __init__(self, string):
-        self.__string = string
-        self.__tokens = list(PatternLexer(self.__string))
+    def __init__(self, root_node):
+        self.__count = 0
+        self.tags = set()
+        self.__root = root_node
+        self.__func = self.__compile("comma")
+        self.__list_func = self.__compile("list_separate")
         self.format(_Dummy()) # Validate string
-
-    def __repr__(self):
-        return "%s(%r)" % (self.__class__.__name__, self.__string)
 
     class Song(object):
         def __init__(self, realsong, formatters):
             self.__song = realsong
             self.__formatters = formatters
-            self.__cache = {}
 
         def comma(self, key):
-            if key in self.__cache:
-                return self.__cache[key]
             value = self.__song.comma(key)
             if isinstance(value, str):
                 value = util.fsdecode(value)
@@ -172,7 +176,6 @@ class _Pattern(PatternParser):
                 value = unicode(value)
             for f in self.__formatters:
                 value = f(key, value)
-            self.__cache[key] = value
             return value
 
         def list_separate(self, key):
@@ -186,10 +189,12 @@ class _Pattern(PatternParser):
                 values = map(lambda v: f(key, v), values)
             return values
 
+    def _post(self, value, song):
+        return value
+
     def format(self, song):
-        p = PatternParser(self.__tokens)
-        vals = p.Pattern(self.Song(song, self._formatters))
-        return self._post(u"".join(vals), song)
+        proxy = self.Song(song, self._formatters)
+        return self._post(u"".join(self.__func(proxy)), song)
 
     def format_list(self, song):
         """Returns a list of formated patterns with all tag combinations:
@@ -206,24 +211,79 @@ class _Pattern(PatternParser):
                 else:
                     results = [r + val for r in (results or [u""])]
             return results
-        p = PatternParser(self.__tokens, lambda s, t: s.list_separate(t))
-        vals = expand(p.Pattern(self.Song(song, self._formatters)))
+        proxy = self.Song(song, self._formatters)
+        vals = expand(self.__list_func(proxy))
         return [self._post(v, song) for v in vals]
 
-    def real_tags(self, cond=True):
-        tags = []
-        tokens = self.__tokens
-        for i, tok in enumerate(tokens):
-            if tok.type == TEXT and \
-                tokens[max(0, i-1)].type == OPEN and \
-                tokens[i+1].type != EOF and \
-                (tokens[i+1].type != COND or cond):
-                tags.extend(util.tagsplit(tok.lexeme))
-        return [t for i, t in enumerate(tags) if i == tags.index(t)]
-
-    def _post(self, value, song): return value
-
     __mod__ = format
+
+    def __compile(self, song_func):
+        self.__count = 0
+        self.tags.clear()
+        content = [
+            "def f(s):",
+            "  r = []",
+            "  x = s." + song_func,
+            "  a = r.append"]
+        content.extend(self.__pattern(self.__root, {}))
+        content.append("  return r")
+        code = "\n".join(content)
+        exec compile(code, "<string>", "exec")
+        return f
+
+    def __escape(self, text):
+        return text.replace("\"", "\\\"").replace("\n", r"\n")
+
+    def __put_tag(self, text, scope, tag):
+        tag = self.__escape(tag)
+        if tag not in scope:
+            text.append('t%d = x("%s")' % (self.__count, tag))
+            scope[tag] = 't%d' % self.__count
+            self.__count += 1
+        return tag
+
+    def __tag(self, node, scope):
+        scope = dict(scope)
+        text = []
+        if isinstance(node, TextNode):
+            text.append('a("%s")' % self.__escape(node.text))
+        elif isinstance(node, ConditionNode):
+            tag = self.__put_tag(text, scope, node.tag)
+            ic = self.__pattern(node.ifcase, scope)
+            ec = self.__pattern(node.elsecase, scope)
+            if not ic and not ec:
+                text.pop(-1)
+            elif ic:
+                text.append('if %s:' % scope[tag])
+                text.extend(ic)
+                if ec:
+                    text.append('else:')
+                    text.extend(ec)
+            else:
+                text.append('if not %s:' % scope[tag])
+                text.extend(ec)
+        elif isinstance(node, TagNode):
+            self.tags.update(util.tagsplit(node.tag))
+            tag = self.__put_tag(text, scope, node.tag)
+            text.append('a(%s)' % scope[tag])
+        return text
+
+    def __pattern(self, node, scope):
+        scope = dict(scope)
+        text = []
+        if isinstance(node, PatternNode):
+            for child in node.children:
+                text.extend(self.__tag(child, scope))
+        return map(lambda x: "  " + x, text)
+
+def Pattern(string, Kind=PatternCompiler, MAX_CACHE_SIZE=100, cache={}):
+    if (Kind, string) not in cache:
+        if len(cache) > MAX_CACHE_SIZE:
+            cache.clear()
+        tokens = PatternLexer(string)
+        tree = PatternParser(tokens)
+        cache[(Kind, string)] = Kind(tree.node)
+    return cache[(Kind, string)]
 
 def _number(key, value):
     if key == "tracknumber":
@@ -236,7 +296,7 @@ def _number(key, value):
         except (TypeError, ValueError): return value
     else: return value
 
-class _FileFromPattern(_Pattern):
+class _FileFromPattern(PatternCompiler):
     _formatters = [_number,
                    (lambda k, s: s.lstrip(".")),
                    (lambda k, s: s.replace("/", "_")),
@@ -244,14 +304,6 @@ class _FileFromPattern(_Pattern):
                    (lambda k, s: s.strip()),
                    (lambda k, s: (len(s) > 100 and s[:100] + "...") or s),
                    ]
-
-    def __init__(self, string):
-        # On Windows, users may use backslashes in patterns as path separators.
-        # Since Windows filenames can't use '<>|' anyway, preserving backslash
-        # escapes is unnecessary, so we just replace them blindly.
-        if os.name == 'nt':
-            string = string.replace("\\", "/")
-        super(_FileFromPattern, self).__init__(string)
 
     def _post(self, value, song):
         if value:
@@ -264,17 +316,16 @@ class _FileFromPattern(_Pattern):
                 raise ValueError("Pattern is not rooted")
         return value
 
-class _XMLFromPattern(_Pattern):
+class _XMLFromPattern(PatternCompiler):
     _formatters = [lambda k, s: util.escape(s)]
 
-def Pattern(string, Kind=_Pattern, MAX_CACHE_SIZE=100, cache={}):
-    if (Kind, string) not in cache:
-        if len(cache) > MAX_CACHE_SIZE:
-            cache.clear()
-        cache[(Kind, string)] = Kind(string)
-    return cache[(Kind, string)]
 
 def FileFromPattern(string):
+    # On Windows, users may use backslashes in patterns as path separators.
+    # Since Windows filenames can't use '<>|' anyway, preserving backslash
+    # escapes is unnecessary, so we just replace them blindly.
+    if os.name == 'nt':
+        string = string.replace("\\", "/")
     return Pattern(string, _FileFromPattern)
 
 def XMLFromPattern(string):

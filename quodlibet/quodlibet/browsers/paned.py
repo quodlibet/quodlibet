@@ -322,7 +322,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                 title = pattern(cat, esc=True)
                 try: pc = XMLFromPattern(cat)
                 except ValueError: pc = XMLFromPattern("")
-                tags = pc.real_tags(cond=False)
+                tags = pc.tags
                 format = pc.format_list
                 format_markup = True
             else:
