@@ -203,6 +203,9 @@ class TPatternFormatList(_TPattern):
         pat = Pattern('<~performer~artist>')
         s.failUnlessEqual(pat.format_list(s.d),
             ['a - foo', 'b - foo', 'a - bar', 'b - bar'])
+        pat = Pattern('<performer~artist>')
+        s.failUnlessEqual(pat.format_list(s.d),
+            ['a - foo', 'b - foo', 'a - bar', 'b - bar'])
         pat = Pattern('<artist|<artist>.|<performer>>')
         s.failUnlessEqual(pat.format_list(s.d), ['foo.', 'bar.'])
         pat = Pattern('<artist|<artist|<artist>.|<performer>>>')

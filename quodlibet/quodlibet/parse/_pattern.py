@@ -109,6 +109,9 @@ class PatternParser(object):
     def Tags(self):
         nodes = []
         tag = self.lookahead.lexeme
+        # fix bad tied tags
+        if tag[:1] != "~" and "~" in tag:
+                tag = "~" + tag
         try: self.match(TEXT)
         except ParseError:
             while self.lookahead.type not in [CLOSE, EOF]:
