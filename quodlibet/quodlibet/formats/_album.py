@@ -41,15 +41,21 @@ class Collection(object):
     the songs attribute.
     """
 
-    _to_cache = frozenset(("~peoplesort", "~people"))
+    _cache_size = 6
     songs = ()
 
     def __init__(self):
-        self._cache = {}
+        """Cache in _cache, LRU key order in _used, keys that return default
+        are in _default"""
+        self.__cache = {}
+        self.__default = set()
+        self.__used = []
 
     def finalize(self):
         """Call this after songs got added or removed"""
-        self._cache.clear()
+        self.__cache.clear()
+        self.__default.clear()
+        self.__used = []
 
     def get(self, key, default=u"", connector=u" - "):
         if not self.songs:
@@ -87,15 +93,23 @@ class Collection(object):
         return []
 
     def __get_cached_value(self, key):
-        if key in self._to_cache:
-            if key in self._cache:
-                return self._cache[key]
-            else:
-                val = self.__get_value(key)
-                self._cache[key] = val
-            return val
+        if key in self.__cache:
+            self.__used.remove(key)
+            self.__used.insert(0, key)
+            return self.__cache[key]
+        elif key in self.__default:
+            return None
         else:
-            return self.__get_value(key)
+            val = self.__get_value(key)
+            if val is None:
+                self.__default.add(key)
+            else:
+                self.__used.insert(0, key)
+                self.__cache[key] = val
+            # remove the oldest if the cache is full
+            if len(self.__used) > self._cache_size:
+                self.__cache.pop(self.__used.pop(-1))
+        return val
 
     def __get_value(self, key):
         """This is similar to __call__ in the AudioFile class.
@@ -142,9 +156,10 @@ class Collection(object):
             return None
         elif key[:1] == "~":
             key = key[1:]
-            if key in ("people", "peoplesort"):
-                people = {}
-                peoplesort = {}
+            keys = {"people": {}, "peoplesort": {}}
+            if key in keys:
+                people = keys["people"]
+                peoplesort = keys["peoplesort"]
                 for song in self.songs:
                     # Rank people by "relevance" -- artists before composers
                     # before performers, then by number of appearances.
@@ -159,20 +174,25 @@ class Collection(object):
                             peoplesort[person] = (peoplesort.get(person, 0) -
                                                   PEOPLE_SCORE[w])
                 #It's cheaper to get people and peoplesort in one go
-                people = sorted(people.keys(), key=people.__getitem__)[:100]
-                if not people:
-                    self._cache["~people"] = None
-                else:
-                    self._cache["~people"] = "\n".join(people)
-
-                peoplesort = sorted(peoplesort.keys(),
+                keys["people"] = sorted(people.keys(),
+                    key=people.__getitem__)[:100]
+                keys["peoplesort"] = sorted(peoplesort.keys(),
                     key=peoplesort.__getitem__)[:100]
-                if not peoplesort:
-                    self._cache["~peoplesort"] = None
-                else:
-                    self._cache["~peoplesort"] = "\n".join(peoplesort)
 
-                return self._cache["~" + key]
+                ret = keys.pop(key)
+                ret = (ret and "\n".join(ret)) or None
+
+                other, values = keys.popitem()
+                other = "~" + other
+                if not values:
+                    self.__default.add(other)
+                else:
+                    if other in self.__used:
+                        self.__used.remove(other)
+                    self.__used.append(other)
+                    self.__cache[other] = "\n".join(values)
+
+                return ret
             elif key == "length":
                 length = self.__get_value("~#length")
                 if length is None: return None
@@ -224,8 +244,6 @@ class Album(Collection):
 
     date = property(lambda self: self.get("date"))
     title = property(lambda self: self.get("album"))
-
-    _to_cache = Collection._to_cache | frozenset(("album", "date"))
 
     def __init__(self, song):
         super(Album, self).__init__()

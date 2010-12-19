@@ -143,7 +143,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
     __model = None
     __no_cover = None
-    __pattern_cache = {}
 
     name = _("Album List")
     accelerated_name = _("_Album List")
@@ -179,18 +178,16 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         klass.__library = None
         klass.__model.clear()
         klass.__model = None
-        klass.__pattern_cache.clear()
 
     @classmethod
     def toggle_covers(klass):
         on = config.getboolean("browsers", "album_covers")
         for albumlist in klass.instances():
             albumlist.__cover_column.set_visible(on)
-            albumlist.__column.queue_resize()
+            map(lambda x: x.queue_resize(), albumlist.view.get_columns())
 
     @classmethod
     def refresh_pattern(klass, pattern_text):
-        klass.__pattern_cache.clear()
         if pattern_text == klass._pattern_text: return
         klass._pattern_text = pattern_text
         klass._pattern = XMLFromPattern(pattern_text)
@@ -229,8 +226,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     @classmethod
     def _remove_albums(klass, library, removed, model):
         removed_albums = removed.copy()
-        for album in removed_albums:
-            klass.__pattern_cache.pop(album, None)
         for row in model:
             if row[0] and row[0] in removed_albums:
                 removed_albums.remove(row[0])
@@ -241,8 +236,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def _change_albums(klass, library, changed, model):
         """Trigger a row redraw for each album that changed"""
         changed_albums = changed.copy()
-        for album in changed_albums:
-            klass.__pattern_cache.pop(album, None)
         for row in model:
             if row[0] and row[0] in changed_albums:
                 changed_albums.remove(row[0])
@@ -377,14 +370,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                         len(model) - 1) % (len(model) - 1)
                 cell.markup = text
             else:
-                # Because the album treeview has no fixed row height
-                # the height for each cell gets recalculated all the time
-                # (filtering, scrolling), and this gets called.
-                markup = self.__pattern_cache.get(album, None)
-                if markup is None:
-                    markup = AlbumList._pattern % album
-                    self.__pattern_cache[album] = markup
-                cell.markup = markup
+                cell.markup = AlbumList._pattern % album
             cell.set_property('markup', cell.markup)
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
@@ -527,7 +513,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             if not text:
                 self.__filter = None
             else:
-                self.__filter = Query(text, star=["people", "album"]).search
+                self.__filter = Query(text, star=["~people", "album"]).search
         self.__bg_filter = background_filter()
         self.__inhibit()
         # We could be smart and try to scroll to a selected album
