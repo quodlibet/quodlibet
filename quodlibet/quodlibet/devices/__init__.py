@@ -230,9 +230,12 @@ class HAL(DeviceManager):
         return dbus.Interface(obj, interface)
 
 class UdevWrapper(object):
+    __udev = None
+    __context = None
+
     def __init__(self):
         self.__udev = ctypes.cdll.LoadLibrary("libudev.so.0")
-        self.__struct = self.__udev.udev_new()
+        self.__context = self.__udev.udev_new()
 
     def __get_attributes(self, device):
         """Pack all device attributes in a dict"""
@@ -244,7 +247,7 @@ class UdevWrapper(object):
 
         entry = device_get_properties_list_entry(device)
         device = {}
-        while entry != 0:
+        while entry:
             name = ctypes.c_char_p(get_name(entry)).value
             value = ctypes.c_char_p(get_value(entry)).value
             device[name] = value.decode("string-escape")
@@ -264,28 +267,41 @@ class UdevWrapper(object):
         enumerate_unref = udev.udev_enumerate_unref
         enumerate_add_match_property = udev.udev_enumerate_add_match_property
 
-        enum = enumerate_new(self.__struct)
-        enumerate_add_match_property(enum, "DEVNAME", path)
-        enumerate_scan_devices(enum)
+        enum = enumerate_new(self.__context)
+        if not enum: return {}
+
+        # only match the device we want
+        if enumerate_add_match_property(enum, "DEVNAME", path) != 0:
+            enumerate_unref(enum)
+            return {}
+
+        # search for it
+        if enumerate_scan_devices(enum) != 0:
+            enumerate_unref(enum)
+            return {}
+
+        # take the first entry
         entry = enumerate_get_list_entry(enum)
-        if entry != 0:
-            dev = device_new_from_syspath(self.__struct,
-                list_entry_get_name(entry))
-            device = self.__get_attributes(dev)
-            device_unref(dev)
-        else:
-            device = {}
+        if not entry:
+            enumerate_unref(enum)
+            return {}
+
+        dev = device_new_from_syspath(self.__context,
+            list_entry_get_name(entry))
+
+        if not dev:
+            enumerate_unref(enum)
+            return {}
+
+        device = self.__get_attributes(dev)
+        device_unref(dev)
         enumerate_unref(enum)
 
         return device
 
-    def __del__(self):
-        if self.__udev is not None:
-            self.__udev.udev_unref(self.__struct)
-            self.__udev = None
-
 class DKD(DeviceManager):
     __interface = None
+    __udev = None
 
     def __init__(self, dkd_name):
         self.__bus = ".".join(dkd_name)
@@ -295,6 +311,12 @@ class DKD(DeviceManager):
         error = False
         if ctypes is None:
             print_w(_("%s: Could not import ctypes.") % self.__bus)
+            error = True
+
+        try:
+            self.__udev = UdevWrapper()
+        except OSError:
+            print_w(_("%s: Could not find libudev.") % self.__bus)
             error = True
 
         if self.__get_mpi_dir() is None:
@@ -390,9 +412,7 @@ class DKD(DeviceManager):
         """DKD is for highlevel device stuff. The info if the device is
         a media player and what protocol/formats it supports can only
         be retrieved through libudev"""
-        try: udev = UdevWrapper()
-        except: return None
-        dev = udev.get_device_from_path(devpath)
+        dev = self.__udev.get_device_from_path(devpath)
         try: return dev["ID_MEDIA_PLAYER"]
         except KeyError: return None
 
