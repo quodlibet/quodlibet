@@ -11,12 +11,20 @@ from quodlibet.formats._audio import AudioFile
 extensions = [
     '.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med', '.mod', '.mt2',
     '.mtm', '.okt', '.s3m', '.stm', '.ult', '.gdm', '.xm']
+
 try:
     import ctypes
-    _modplug = ctypes.cdll.LoadLibrary("libmodplug.so.0")
-    _modplug.ModPlug_GetName.restype = ctypes.c_char_p
-except (ImportError, OSError):
+except ImportError:
     extensions = []
+else:
+    for so_version in ("libmodplug.so.1", "libmodplug.so.0"):
+        try:
+            _modplug = ctypes.cdll.LoadLibrary(so_version)
+            _modplug.ModPlug_GetName.restype = ctypes.c_char_p
+        except OSError: continue
+        else: break
+    else:
+        extensions = []
 
 class ModFile(AudioFile):
 
