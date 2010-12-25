@@ -280,9 +280,7 @@ class RCMTreeView(gtk.TreeView):
         if not selection.path_is_selected(path):
             self.set_cursor(path, col, 0)
         else:
-            cell = col.get_cell_renderers()
-            cell = cell and cell[0] or None
-            self.set_cursor_on_cell(path, col, cell)
+            col.focus_cell(col.get_cell_renderers()[0])
         self.__position_at_mouse = True
         self.emit('popup-menu')
         return True
