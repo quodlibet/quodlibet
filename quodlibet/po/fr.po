@@ -946,7 +946,7 @@ msgstr "Déplacement de %(current)d/%(total)d."
 #: ../quodlibet/qltk/delete.py:90
 #, python-format
 msgid "Deleting %(current)d/%(total)d."
-msgstr "Suppression de %d(current)/%(total)d"
+msgstr "Suppression de %(current)d/%(total)d"
 
 #: ../quodlibet/qltk/delete.py:115
 msgid "Unable to delete file"
