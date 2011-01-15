@@ -978,15 +978,15 @@ msgstr "_File de chansons"
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
-msgstr[0] "(manquant dans %d chanson)"
-msgstr[1] "(manquant dans %d chansons)"
+msgstr[0] "manquant dans %d chanson"
+msgstr[1] "manquant dans %d chansons"
 
 #: ../quodlibet/qltk/edittags.py:42 ../quodlibet/qltk/edittags.py:46
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
-msgstr[0] "(différent parmi %d chanson)"
-msgstr[1] "(différent dans les %d chansons)"
+msgstr[0] "différent parmi %d chanson"
+msgstr[1] "différent dans les %d chansons"
 
 #: ../quodlibet/qltk/edittags.py:124
 msgid "Split into _Multiple Values"
@@ -1107,7 +1107,7 @@ msgid ""
 "\n"
 "%(error)s"
 msgstr ""
-"Valeur invalide : <b>%(value)s</b>\n"
+"Valeur invalide: <b>%(value)s</b>\n"
 "\n"
 "%(error)s"
 
@@ -1622,7 +1622,7 @@ msgid ""
 "Songs placed in these folders (separated by ':') will be added to your "
 "library"
 msgstr ""
-"Les chansons placées dans ces répertoires (séparées par \":\") seront\n"
+"Les chansons placées dans ces répertoires (séparées par ':') seront\n"
 "ajoutées à votre bibliothèque"
 
 #: ../quodlibet/qltk/prefs.py:301
