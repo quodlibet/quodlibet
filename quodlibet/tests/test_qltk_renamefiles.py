@@ -2,6 +2,7 @@ from tests import TestCase, add
 
 from quodlibet.qltk.renamefiles import SpacesToUnderscores, StripWindowsIncompat
 from quodlibet.qltk.renamefiles import StripDiacriticals, StripNonASCII
+from quodlibet.qltk.renamefiles import Lowercase
 
 class TFilter(TestCase):
     def setUp(self): self.c = self.Kind()
@@ -41,3 +42,12 @@ class TStripNonASCII(TFilter):
         self.failUnlessEqual(
             self.c.filter("", u"foo \u00c1 \u1234"), "foo _ _")
 add(TStripNonASCII)
+
+class TLowercase(TFilter):
+    Kind = Lowercase
+    def test_conv(self):
+        self.failUnlessEqual(
+            self.c.filter("", u"foobar baz"), "foobar baz")
+        self.failUnlessEqual(
+            self.c.filter("", u"Foobar.BAZ"), "foobar.baz")
+add(TLowercase)

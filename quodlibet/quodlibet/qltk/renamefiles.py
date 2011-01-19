@@ -58,10 +58,18 @@ class StripNonASCII(FilterCheckButton):
     def filter(self, original, filename):
         return u"".join(map(lambda s: (s <= "~" and s) or u"_", filename))
 
+class Lowercase(FilterCheckButton):
+    _label = _("Use only _lowercase characters")
+    _section = "rename"
+    _key = "lowercase"
+    _order = 1.4
+    def filter(self, original, filename):
+        return filename.lower()
+
 class RenameFiles(EditPane):
     title = _("Rename Files")
     FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
-               StripNonASCII]
+               StripNonASCII, Lowercase]
 
     def __init__(self, parent, library):
         plugins = parent.plugins.RenamePlugins()
