@@ -261,6 +261,8 @@ class SearchWindow(gtk.Dialog):
             if (config_get('albumartist', True)
                 and extractUuid(album.artist.id) != VARIOUS_ARTISTS_ARTISTID):
                 shared['albumartist'] = album.artist.name
+                if config_get('artist_sort', True):
+                    shared['albumartistsort'] = album.artist.sortName
 
         if config_get('standard', True):
             shared['musicbrainz_albumartistid'] = extractUuid(album.artist.id)
@@ -278,8 +280,12 @@ class SearchWindow(gtk.Dialog):
                 song['musicbrainz_trackid'] = extractUuid(track.id)
             if album.isSingleArtistRelease() or not track.artist:
                 song['artist'] = album.artist.name
+                if config_get('artist_sort', True):
+                    song['artistsort'] = album.artist.sortName
             else:
                 song['artist'] = track.artist.name
+                if config_get('artist_sort', True):
+                    song['artistsort'] = track.artist.sortName
                 if config_get('standard', True):
                     song['musicbrainz_artistid'] = extractUuid(track.artist.id)
             if config_get('split_feat', False):
@@ -446,6 +452,7 @@ class MyBrainz(SongsMenuPlugin):
             ('split_feat', 'Split _featured performers from track', False),
             ('year_only', 'Only use year for "date" tag', False),
             ('albumartist', 'Write "_albumartist" when needed', True),
+            ('artist_sort', 'Write sort tags for artist names', True),
             ('standard', 'Write _standard MusicBrainz tags', True),
             ('labelid', 'Write _labelid tag (fixes multi-disc albums)', True),
         ]
