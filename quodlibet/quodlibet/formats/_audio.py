@@ -493,66 +493,62 @@ class AudioFile(dict):
     __cover_subdirs = frozenset(["scan", "scans", "images", "covers"])
     __cover_exts = frozenset(["jpg", "jpeg", "png", "gif"])
 
+    __cover_score = ("front", "cover", "jacket", "folder", "albumart")
+
     def find_cover(self):
         """Return a file-like containing cover image data, or None if
         no cover is available."""
 
         if not self.is_file: return
+
         base = self('~dirname')
+        get_ext = lambda s: os.path.splitext(s)[1].lstrip('.')
+
+        entries = []
+        try: entries = os.listdir(base)
+        except EnvironmentError: pass
+
         fns = []
-        get_ext = lambda s: os.path.splitext(s)[1].lstrip('.').lower()
-        try: st = os.stat(base)
-        except EnvironmentError: return
-        if os.name == "posix" and st.st_nlink == 2:
-            for entry in os.listdir(base):
-                if get_ext(entry) in self.__cover_exts:
-                    fns.append(entry)
-        else:
-            subs = []
-            for entry in os.listdir(base):
-                lentry = entry.lower()
-                ext = get_ext(lentry)
-                if lentry in self.__cover_subdirs or ext in self.__cover_exts:
-                    path = os.path.join(base, entry)
-                    st = os.stat(path)
-                    if stat.S_ISDIR(st.st_mode):
-                        if lentry in self.__cover_subdirs:
-                            subs.append((st, path, entry))
-                    else:
-                        if ext in self.__cover_exts:
-                            fns.append(entry)
-            for st, path, dir in subs:
-                if os.name == "posix" and st.st_nlink == 2:
-                    for entry in os.listdir(path):
-                        if get_ext(entry) in self.__cover_exts:
-                            fns.append(os.path.join(dir, entry))
-                else:
-                    for entry in os.listdir(path):
-                        subpath = os.path.join(path, entry)
-                        if (os.path.isfile(subpath) and
-                            get_ext(entry) in self.__cover_exts):
-                            fns.append(os.path.join(dir, entry))
+        for entry in entries:
+            lentry = entry.lower()
+            if get_ext(lentry) in self.__cover_exts:
+                fns.append((None, entry))
+            if lentry in self.__cover_subdirs:
+                subdir = os.path.join(base, entry)
+                sub_entries = []
+                try: sub_entries = os.listdir(subdir)
+                except EnvironmentError: pass
+                for sub_entry in sub_entries:
+                    lsub_entry = sub_entry.lower()
+                    if get_ext(lsub_entry) in self.__cover_exts:
+                        fns.append((entry, sub_entry))
 
         images = []
-        for fn in sorted(fns):
-            lfn = fn.lower()
+        for sub, fn in fns:
             score = 0
+            lfn = fn.lower()
             # check for the album label number
-            if self.get("labelid", fn + ".").lower() in lfn: score += 100
-            score += sum(map(lfn.__contains__,
-                    ["front", "cover", "jacket", "folder", "albumart"]))
+            if "labelid" in self and self["labelid"].lower() in lfn:
+                score += 100
+            score += sum(map(lfn.__contains__, self.__cover_score))
             if score:
+                if sub is not None:
+                    fn = os.path.join(sub, fn)
                 images.append((score, os.path.join(base, fn)))
-        # Highest score wins.
-        if images:
-            try:
-                return file(max(images)[1], "rb")
-            except IOError:
-                return None
-        elif "~picture" in self:
+        images.sort(reverse=True)
+
+        for score, path in images:
+            # could be a directory
+            if not os.path.isfile(path):
+                continue
+            try: return file(path, "rb")
+            except IOError: pass
+
+        if "~picture" in self:
             # Otherwise, we might have a picture stored in the metadata...
             return self.get_format_cover()
-        else: return None
+
+        return None
 
     def replay_gain(self, profiles, pre_amp_gain=0, fallback_gain=0):
         """Return the computed Replay Gain scale factor.
