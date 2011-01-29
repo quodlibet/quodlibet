@@ -490,10 +490,12 @@ class AudioFile(dict):
                 if key in self: del(self[key])
 
     # These should remain outside the loop below for performance reasons
-    __cover_subdirs = frozenset(["scan", "scans", "images", "covers"])
+    __cover_subdirs = frozenset(
+        ["scan", "scans", "images", "covers", "artwork"])
     __cover_exts = frozenset(["jpg", "jpeg", "png", "gif"])
 
-    __cover_score = ("front", "cover", "jacket", "folder", "albumart")
+    __cover_score = ("front", "cover", "jacket",
+        "folder", "albumart", "edited")
 
     def find_cover(self):
         """Return a file-like containing cover image data, or None if
