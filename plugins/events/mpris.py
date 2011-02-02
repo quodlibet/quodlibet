@@ -15,7 +15,7 @@ from quodlibet.util.uri import URI
 from quodlibet.player import playlist as player
 from quodlibet.widgets import main as window
 from quodlibet.library import librarian
-from plugins.events import EventPlugin
+from quodlibet.plugins.events import EventPlugin
 
 # TODO: OpenUri, UriSchemes, Mimetypes, CanXYZ
 # Date parsing (util?)

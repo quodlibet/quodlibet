@@ -1,7 +1,7 @@
 import gtk
-import util
 
-from plugins.editing import EditTagsPlugin
+from quodlibet import util
+from quodlibet.plugins.editing import EditTagsPlugin
 
 class TitleCase(EditTagsPlugin):
     PLUGIN_ID = "Title Case"

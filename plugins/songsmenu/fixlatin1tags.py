@@ -11,9 +11,8 @@
 #   /path_to/Artist/date - album/trackno - title.ext
 
 import os
-import os.path
-from qltk import ConfirmAction
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import ConfirmAction
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 # convert to unicode
 def convert2unicode(buf):

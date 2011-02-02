@@ -13,8 +13,9 @@ import gobject
 import pango
 import gst
 
-__all__ = ['ReplayGain']
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+
+__all__ = ['ReplayGain']
 
 class ReplayGain(SongsMenuPlugin):
     PLUGIN_ID = 'ReplayGain'

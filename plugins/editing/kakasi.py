@@ -1,6 +1,9 @@
-import os, gtk, gobject
-import util
-from plugins.editing import RenameFilesPlugin
+import os
+import gtk
+import gobject
+
+from quodlibet import util
+from quodlibet.plugins.editing import RenameFilesPlugin
 
 class Kakasi(RenameFilesPlugin, gtk.CheckButton):
     PLUGIN_ID = "Kana/Kanji Simple Inverter"

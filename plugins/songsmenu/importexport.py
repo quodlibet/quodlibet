@@ -5,13 +5,14 @@
 # published by the Free Software Foundation
 
 import gtk
-from qltk import ErrorMessage
 from os.path import splitext, extsep, dirname
-from const import HOME as lastfolder
-from library import library
-__all__ = ['Export', 'Import']
 
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import ErrorMessage
+from quodlibet.const import HOME as lastfolder
+from quodlibet.library import library
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+
+__all__ = ['Export', 'Import']
 
 def filechooser(save, title):
     chooser = gtk.FileChooserDialog(

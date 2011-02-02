@@ -14,13 +14,13 @@
 import sys
 import re
 import traceback
+
 import gobject
 import pango
 import gtk
 
-import qltk
-import const
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet import qltk, const
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'

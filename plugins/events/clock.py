@@ -5,12 +5,13 @@
 # published by the Free Software Foundation
 
 import time
-import gobject, gtk
-from qltk.entry import ValidatingEntry
-import config
-import player
 
-from plugins.events import EventPlugin
+import gobject
+import gtk
+
+from quodlibet import config, player
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk.entry import ValidatingEntry
 
 class Alarm(EventPlugin):
     PLUGIN_ID = "Alarm Clock"

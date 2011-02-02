@@ -8,15 +8,12 @@ import sys
 
 import gobject
 import gtk
+import lastfm.client
+import lastfm.marshaller
 
-import lastfm.client, lastfm.marshaller
-
-import config
-import player
-import parse
-
-from plugins.events import EventPlugin
-from qltk.entry import ValidatingEntry
+from quodlibet import config, player, parse
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk.entry import ValidatingEntry
 
 class QLLastfm(EventPlugin):
     PLUGIN_ID = "Last.fm Submission"

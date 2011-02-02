@@ -1,9 +1,9 @@
 import gtk
-from qltk import ErrorMessage
-from plugins.songsmenu import SongsMenuPlugin
-from qltk.entry import ValidatingEntry
-import util
-import config
+
+from quodlibet import util, config
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.qltk.msg import ErrorMessage
 
 class BrowseFolders(SongsMenuPlugin):
     PLUGIN_ID = 'Browse Folders'

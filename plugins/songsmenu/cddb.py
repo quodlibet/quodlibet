@@ -4,18 +4,19 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import CDDB
-CDDB.proto = 6 # utf8 instead of latin1
 import os
 from os import path
-import gtk
-from qltk import ErrorMessage, ConfirmAction, Message
-from const import VERSION
-from util import tag, escape
+
 from gettext import ngettext
+import CDDB
+import gtk
 
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import ErrorMessage, ConfirmAction, Message
+from quodlibet.const import VERSION
+from quodlibet.util import tag, escape
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+CDDB.proto = 6 # utf8 instead of latin1
 CLIENTINFO = {'client_name': "quodlibet", 'client_version': VERSION }
 
 class AskAction(ConfirmAction):

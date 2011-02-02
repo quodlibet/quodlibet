@@ -8,7 +8,7 @@ import gtk
 import dbus
 import indicate
 
-from plugins.events import EventPlugin
+from quodlibet.plugins.events import EventPlugin
 
 class SoundMenu(EventPlugin):
     PLUGIN_ID = "soundmenu"

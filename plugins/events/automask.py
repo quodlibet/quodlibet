@@ -5,12 +5,12 @@
 # published by the Free Software Foundation
 
 import os
+
 import gnomevfs
 
-import library
-
-from plugins.events import EventPlugin
-from util.uri import URI
+from quodlibet import library
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.util.uri import URI
 
 class AutoMasking(EventPlugin):
     PLUGIN_ID = "automask"

@@ -15,14 +15,14 @@ import time
 import gtk
 import gobject
 import pango
+from musicbrainz2 import webservice as ws
+from musicbrainz2.utils import extractUuid
 
 from quodlibet import config, util
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
 
-from musicbrainz2 import webservice as ws
-from musicbrainz2.utils import extractUuid
 VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
 
 def get_artist(album):

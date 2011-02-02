@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class ForceWrite(SongsMenuPlugin):
     PLUGIN_ID = "Force Write"

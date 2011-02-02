@@ -4,17 +4,16 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
-import gobject
 import random
 import math
 
+import gtk
+import gobject
+
 from quodlibet import config, player, widgets, util
-try:
-    from quodlibet.qltk import notif
-except:
-    notif = None
 from quodlibet.plugins.events import EventPlugin
+try: from quodlibet.qltk import notif
+except: notif = None
 
 class RandomAlbum(EventPlugin):
     PLUGIN_ID = 'Random Album Playback'

@@ -6,11 +6,12 @@
 
 import os
 import re
-import gtk
-import config
 
-from util import tag, escape
-from plugins.songsmenu import SongsMenuPlugin
+import gtk
+
+from quodlibet import config
+from quodlibet.util import tag, escape
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 HTML = '''<?xml version="1.0" encoding="UTF-8"?>
 <html>

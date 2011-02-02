@@ -4,8 +4,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os, gtk, util, qltk
-from plugins.songsmenu import SongsMenuPlugin
+import os
+
+import gtk
+
+from quodlibet import util, qltk
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class IFPUpload(SongsMenuPlugin):
     PLUGIN_ID = "Send to iFP"

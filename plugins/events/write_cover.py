@@ -5,11 +5,12 @@
 # published by the Free Software Foundation
 
 import os
-import config
 import shutil
+
 import gtk
 
-from plugins.events import EventPlugin
+from quodlibet import config
+from quodlibet.plugins.events import EventPlugin
 
 try: config.get("plugins", __name__)
 except:

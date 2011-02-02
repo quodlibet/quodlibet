@@ -8,10 +8,10 @@
 # http://forums.winamp.com/showthread.php?threadid=65772
 
 import os
+
 import gtk
 
-from quodlibet import util
-from quodlibet import qltk
+from quodlibet import util, qltk
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.const import HOME as lastfolder
 

@@ -1,4 +1,5 @@
 import os
+
 import gtk
 
 from quodlibet import util

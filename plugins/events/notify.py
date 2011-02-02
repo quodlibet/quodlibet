@@ -1,10 +1,11 @@
-from parse import XMLFromPattern
-import dbus
-import gtk.gdk
-import const
-import os.path
+import os
 
-from plugins.events import EventPlugin
+import gtk
+import dbus
+
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.parse import XMLFromPattern
+from quodlibet import const
 
 # print "[notify] loading"
 

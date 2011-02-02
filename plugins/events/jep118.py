@@ -5,9 +5,9 @@
 # published by the Free Software Foundation
 
 import os
-import util
 
-from plugins.events import EventPlugin
+from quodlibet import util
+from quodlibet.plugins.events import EventPlugin
 
 outfile = os.path.expanduser("~/.quodlibet/jabber")
 format = """\

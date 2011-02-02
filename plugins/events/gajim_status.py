@@ -6,13 +6,14 @@
 # published by the Free Software Foundation.
 
 from string import join
+
 import gtk
 import dbus
 
-from plugins.events import EventPlugin
-from parse import Pattern
-from qltk import Frame
-import config
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.parse import Pattern
+from quodlibet.qltk import Frame
+from quodlibet import config
 
 class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'

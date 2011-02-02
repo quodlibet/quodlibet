@@ -16,7 +16,12 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-import gtk, gobject, os, sys
+import os
+import sys
+
+import gtk
+import gobject
+
 __all__ = []
 
 class Subprocess(gobject.GObject):

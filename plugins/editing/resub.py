@@ -1,5 +1,7 @@
 import re
-import gtk, gobject
+import gtk
+import gobject
+
 from quodlibet.plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
 
 class RegExpSub(gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):

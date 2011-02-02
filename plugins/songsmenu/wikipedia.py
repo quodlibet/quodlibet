@@ -4,15 +4,17 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-WIKI_URL = "http://%s.wikipedia.org/wiki/"
-from util import website
 from urllib import quote
-import gtk, config
 
+import gtk
+
+from quodlibet import config
+from quodlibet.util import website
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+
+WIKI_URL = "http://%s.wikipedia.org/wiki/"
 try: config.get("plugins", __name__)
 except: config.set("plugins", __name__, "en")
-
-from plugins.songsmenu import SongsMenuPlugin
 
 class WikiSearch(object):
     PLUGIN_ICON = gtk.STOCK_OPEN

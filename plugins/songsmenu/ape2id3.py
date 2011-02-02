@@ -5,10 +5,10 @@
 # published by the Free Software Foundation
 
 import mutagen.apev2
-from formats._apev2 import APEv2File
-from formats.mp3 import MP3File
 
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet.formats._apev2 import APEv2File
+from quodlibet.formats.mp3 import MP3File
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class APEv2toID3v2(SongsMenuPlugin):
     PLUGIN_ID = "APEv2 to ID3v2"

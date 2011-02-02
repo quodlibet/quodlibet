@@ -8,7 +8,7 @@ import gtk
 import gobject
 
 from quodlibet import qltk
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class Bookmarks(SongsMenuPlugin):
     PLUGIN_ID = "Go to Bookmark..."

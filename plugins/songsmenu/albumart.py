@@ -52,9 +52,7 @@ import gtk
 import gobject
 import pango
 
-from quodlibet import util
-from quodlibet import qltk
-from quodlibet import config
+from quodlibet import util, qltk, config
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 

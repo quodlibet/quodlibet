@@ -6,10 +6,7 @@
 
 import gtk
 
-from quodlibet import util
-from quodlibet import const
-from quodlibet import config
-
+from quodlibet import util, const, config
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class ResetLibrary(SongsMenuPlugin):

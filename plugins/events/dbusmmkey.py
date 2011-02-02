@@ -17,8 +17,9 @@
 # published by the Free Software Foundation
 
 import dbus
-from plugins.events import EventPlugin
-from player import playlist as player
+
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.player import playlist as player
 
 class DBusMMKey(EventPlugin):
     PLUGIN_ID = "DBusMMKey"

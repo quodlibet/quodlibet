@@ -5,8 +5,9 @@
 # published by the Free Software Foundation
 
 import bonobo
-from qltk import ConfirmAction
-from plugins.songsmenu import SongsMenuPlugin
+
+from quodlibet.qltk import ConfirmAction
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class ViewNautilus(SongsMenuPlugin):
     PLUGIN_ID = 'View in Nautilus'

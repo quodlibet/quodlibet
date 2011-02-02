@@ -4,8 +4,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import util
-from plugins.songsmenu import SongsMenuPlugin
+from quodlibet import util
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class SplitTags(SongsMenuPlugin):
     PLUGIN_ID = "Split Tags"

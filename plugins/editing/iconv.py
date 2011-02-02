@@ -6,10 +6,11 @@
 
 # Encoding magic. Show off the submenu stuff.
 
-import gtk
-import util
 import locale
-from plugins.editing import EditTagsPlugin
+import gtk
+
+from quodlibet import util
+from quodlibet.plugins.editing import EditTagsPlugin
 
 ENCODINGS = """\
 big5 cp1250 cp1251 cp1252 cp1253 cp1254 cp1255 cp1256 cp1257 cp1258

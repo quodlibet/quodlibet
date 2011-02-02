@@ -8,11 +8,16 @@
 # published by the Free Software Foundation.
 #
 
-import gtk, gobject, pango, cairo, pangocairo
-import config
-import qltk
-from qltk.textedit import PatternEdit
-from parse import XMLFromPattern
+import gtk
+import gobject
+import pango
+import cairo
+import pangocairo
+
+from quodlibet import config, qltk
+from quodlibet.qltk.textedit import PatternEdit
+from quodlibet.parse import XMLFromPattern
+from quodlibet.plugins.events import EventPlugin
 
 def Label(text):
     l = gtk.Label(text)
@@ -226,8 +231,6 @@ class OSDWindow(gtk.Window):
             self.emit('fade-finished', self.fading_in)
             return False
         return True
-
-from plugins.events import EventPlugin
 
 class AnimOsd(EventPlugin):
     PLUGIN_ID = "Animated On-Screen Display"

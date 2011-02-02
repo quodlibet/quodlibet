@@ -8,8 +8,7 @@
 import os
 import gtk
 
-from quodlibet import util
-from quodlibet import config
+from quodlibet import util, config
 from quodlibet.qltk import ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 

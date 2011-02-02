@@ -19,25 +19,19 @@ if not gtk_216:
     except ImportError:
         import _trayicon as trayicon
 
-from quodlibet import browsers
-from quodlibet import config
-from quodlibet import const
-from quodlibet import qltk
-from quodlibet import stock
-from quodlibet import util
+from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
+
+from quodlibet import browsers, config, const, qltk, stock, util
+from quodlibet.library import library
 from quodlibet.parse import Pattern
+from quodlibet.player import playlist as player
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.browser import LibraryBrowser
-from quodlibet.qltk.information import Information
-from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.controls import StopAfterMenu
-
-from quodlibet.player import playlist as player
-from quodlibet.widgets import main as window, watcher
+from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
-from quodlibet.library import library
-
-from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
+from quodlibet.qltk.properties import SongProperties
+from quodlibet.widgets import main as window, watcher
 
 class Preferences(gtk.VBox):
     """A small window to configure the tray icon's tooltip."""
