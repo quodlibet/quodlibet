@@ -64,7 +64,7 @@ def chdir(path):
 
 def vsorted(lst):
     return sorted(lst, key=lambda k:
-            map(lambda s: not s.isdigit() and s or int(s), k.split('.')))
+            map(lambda s: not s.isdigit() and s or int(s), k.split('%20')[-1].split('.')))
 
 def urlfetch(url):
     """Generator function for fetching a URL in 32k chunks w/ feedback."""
@@ -137,7 +137,7 @@ class Dep(object):
 
         self.url = self._get_release(best_vers[0])
         # The 'split' removes suffixes like '?download'
-        self.filename = os.path.basename(self.url).split('?')[0]
+        self.filename = os.path.basename(self.url.rstrip('/download')).split('?')[0]
         print "Selected %s" % self.filename
 
     def _get_versions(self):
@@ -189,22 +189,25 @@ class GnomeDep(Dep):
 
 class SFDep(Dep):
     """Fetcher for files from SourceForge."""
-    def __init__(self, name, prefix, file_re):
+    def __init__(self, project, name, prefix, file_re):
         """
         'name' must be identical to the project name. 'file_re' should match
         the binary's name exactly. SF projects can be a little more scattered,
         so double-check the results of this one.
         """
         self.file_re = file_re
+        self.project = project
         super(SFDep, self).__init__(name, prefix)
 
     def _get_versions(self):
-        return ['automatic']
+        page = Page('http://sourceforge.net/projects/%s/files/%s' % (self.project, self.name))
+        vers = re.findall('/projects/%s/files/%s/([^/]*)/"' % (self.project, self.name), page.text)
+        return vers
 
     def _get_release(self, version):
-        ur="url: '(http://downloads.sourceforge.net/project/%s/[^']*%s[^']*)'"
-        ur = ur % (self.name, self.file_re)
-        page = Page('http://sourceforge.net/projects/%s/files/' % self.name)
+        ur="(http://sourceforge.net/projects/%s/files/%s/%s/[^/]*%s[^/]*/download)"
+        ur = ur % (self.project, self.name, version, self.file_re)
+        page = Page('http://sourceforge.net/projects/%s/files/%s/%s/' % (self.project, self.name, version))
         return vsorted(re.findall(ur, page.text))[-1]
 
 class DirectDep(Dep):
@@ -324,9 +327,9 @@ def do_setup(rev):
     (OnePageDep('setuptools', None, 'http://pypi.python.org/pypi/setuptools',
                 '[^"]*setuptools[^"]*tar.gz[^"#]*'),
         SetuptoolsInst()),
-    (SFDep('gnuwin32', None, 'unrar-[1234567890.]*-bin.zip'),
+    (SFDep('gnuwin32', 'unrar', None, 'unrar-[1234567890.]*-bin.zip'),
         ZipInst('Python')),
-    (SFDep('innounp', None, 'innounp[1234567890.]*.rar'),
+    (SFDep('innounp', 'innounp', None, 'innounp[1234567890.]*.rar'),
         UnrarInst('Python')),
     (GnomeDep('libglade', '2.6', '[^"]*libglade_[^"]*win32.zip'),
         ZipInst('gtk')),
@@ -354,9 +357,9 @@ def do_setup(rev):
     (DirectDep('pygst', None,
         'http://ossbuild.googlecode.com/files/GStreamer-WinBuilds-SDK-GPL-x86.msi'),
         MSIInst('pygst')),
-    (SFDep('py2exe', None, 'py2exe-[1234567890.]*.win32-py%s.exe' % PYVER),
+    (SFDep('py2exe', 'py2exe', None, 'py2exe-[1234567890.]*.win32-py%s.exe' % PYVER),
         EasyInstallExeInst()),
-    (SFDep('pywin32', None, 'pywin32-[1234567890.]*.win32-py%s.exe' % PYVER),
+    (SFDep('pywin32', 'pywin32', None, 'pywin32-[1234567890.]*.win32-py%s.exe' % PYVER),
         EasyInstallExeInst()),
     (EasyInstallDep('mutagen'), EasyInstallInst()),
     (EasyInstallDep('feedparser'), EasyInstallInst()),
