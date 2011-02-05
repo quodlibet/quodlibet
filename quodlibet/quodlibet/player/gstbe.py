@@ -7,11 +7,6 @@
 import gobject
 import os
 
-if os.name == 'nt' and 'library.zip' in __file__:
-    # Set up GStreamer path when running under py2exe
-    if 'GST_PLUGIN_PATH' not in os.environ:
-        os.environ['GST_PLUGIN_PATH'] = os.path.join(os.getcwd(), 'lib',
-                                                     'gstreamer-0.10')
 import pygst
 pygst.require("0.10")
 
@@ -29,13 +24,18 @@ from quodlibet.qltk.msg import ErrorMessage
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
-    * Try making the pipeline (defaulting to gconfaudiosink).
+    * Try making the pipeline (defaulting to gconfaudiosink or
+      autoaudiosink on Windows).
     * If it fails, fall back to autoaudiosink.
     * If that fails, complain loudly.
 
     Returns the pipeline's description and a list of disconnected elements."""
 
-    if pipeline == "gconf": pipeline = "gconfaudiosink profile=music"
+    if not pipeline and os.name == "nt":
+        pipeline = "autoaudiosink"
+    elif not pipeline or pipeline == "gconf":
+        pipeline = "gconfaudiosink profile=music"
+
     try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
     except gobject.GError, err:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
@@ -69,8 +69,7 @@ class GStreamerPlayer(BasePlayer):
 
     def __init_pipeline(self):
         if self.bin: return True
-        pipeline = (config.get("player", "gst_pipeline") or
-                    "gconfaudiosink profile=music")
+        pipeline = config.get("player", "gst_pipeline")
         pipeline, self.name = GStreamerSink(pipeline)
         if gst.version() >= (0, 10, 24):
             # The output buffer is necessary to run the song-ended and
