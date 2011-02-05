@@ -24,6 +24,7 @@ import optparse
 import tempfile
 import traceback
 import subprocess
+import glob
 
 
 from os.path import join
@@ -364,6 +365,7 @@ def do_setup(rev):
     (EasyInstallDep('mutagen'), EasyInstallInst()),
     (EasyInstallDep('feedparser'), EasyInstallInst()),
     (EasyInstallDep('python-musicbrainz2'), EasyInstallInst()),
+    (SFDep('cddb-py', 'cddb-py', None, 'CDDB-[1234567890.]*.tar.gz'), TarInst('cddb')),
     (GnomeDep('gtk+', '2.16', '[^"]*-bundle_.*_win32.zip'),
         ZipInst('gtk')), # >2.16 has windows theming disabled.
     (GnomeDep('glib', '2.24', 'glib_[^"]*_win32.zip'),
@@ -409,6 +411,18 @@ def do_setup(rev):
     pygst_path = join(TDIR, r'pygst\PFiles\bindings\python\v2.6')
     pygst_dist = join(TDIR, 'Python')
     copytree2(pygst_path, pygst_dist)
+
+    # cddb -> python
+    cddb_path = glob.glob(join(TDIR, 'cddb', '*', 'CDDB.py'))[0]
+
+    #some patching to make it work under win
+    text = open(cddb_path, "rb").read()
+    text = text.replace(
+        "default_user = os.geteuid() or os.environ['USER'] or 'user'",
+        "default_user = os.environ.get('USER', 'user')")
+    open(cddb_path, "wb").write(text)
+
+    shutil.copy(cddb_path, join(TDIR, 'Python', 'Lib', 'site-packages'))
 
     #Overwrite pyexe code which shows the stderr alert box.
     pyexe_dir = os.path.join(TDIR, r'Python\Lib\site-packages')
