@@ -154,6 +154,16 @@ def init(gtk=True, backend=None, library=None, icon=None):
     # We already imported this, but Python is dumb and thinks we're rebinding
     # a local when we import it later.
     import quodlibet.util
+
+    # <=2.2.1 QL created the user folder in the profile folder
+    # but it should be in the appdata folder, so move it.
+    if os.name == "nt":
+        old_dir = os.path.join(os.path.expanduser("~"), ".quodlibet")
+        new_dir = quodlibet.const.USERDIR
+        if not os.path.isdir(new_dir) and os.path.isdir(old_dir):
+            import shutil
+            shutil.move(old_dir, new_dir)
+
     quodlibet.util.mkdir(quodlibet.const.USERDIR)
 
     if backend:

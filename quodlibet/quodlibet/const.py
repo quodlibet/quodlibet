@@ -7,11 +7,22 @@ import locale
 VERSION_TUPLE = (2, 2, 1, -1)
 VERSION = ".".join(map(str, VERSION_TUPLE))
 
-HOME    = os.path.expanduser(u"~")
+# expanduser doesn't work with unicode on win...
+if os.name == "nt":
+    from win32com.shell import shellcon, shell
+    # the last 0 means SHGFP_TYPE_CURRENT
+    HOME = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
+else:
+    HOME = os.path.expanduser("~")
+
 if 'QUODLIBET_USERDIR' in os.environ:
     USERDIR = os.environ['QUODLIBET_USERDIR']
 else:
-    USERDIR = os.path.join(HOME, ".quodlibet")
+    if os.name == "nt":
+        USERDIR = os.path.join(HOME, "Quod Libet")
+    else:
+        USERDIR = os.path.join(HOME, ".quodlibet")
+
 CONTROL = os.path.join(USERDIR, "control")
 CONFIG  = os.path.join(USERDIR, "config")
 CURRENT = os.path.join(USERDIR, "current")
