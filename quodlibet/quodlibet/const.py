@@ -34,9 +34,6 @@ DEFAULT_RATING = 0.5
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 
 BASEDIR = os.path.dirname(os.path.realpath(__file__))
-if 'library.zip' in BASEDIR:
-    # Running from a py2exe distribution
-    BASEDIR = os.path.join(os.getcwd(), 'quodlibet')
 IMAGEDIR = os.path.join(BASEDIR, "images")
 
 AUTHORS = sorted("""\

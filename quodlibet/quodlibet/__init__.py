@@ -126,10 +126,8 @@ def _python_init():
             tb = traceback.extract_stack()
             for (filename, linenum, func, text) in tb:
                 if "plugins" in filename:
-                    # warn() causes errors when running from py2exe
-                    if not (os.name == 'nt' and 'library.zip' in __file__):
-                        warnings.warn(
-                            "enabling legacy plugin API", DeprecationWarning)
+                    warnings.warn(
+                        "enabling legacy plugin API", DeprecationWarning)
                     old_import("quodlibet." + module, *args, **kwargs)
                     return sys.modules["quodlibet." + module]
             else:

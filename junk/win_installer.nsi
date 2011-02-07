@@ -147,21 +147,21 @@ Section "Dummy Section" SecDummy
   ;Multi user uninstaller stuff
   WriteRegStr SHCTX "${UNINST_KEY}" \
     "DisplayName" "Quod Libet - audio library tagger, manager, and player"
-  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$\"$INSTDIR\quodlibet.exe$\""
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$\"$INSTDIR\bin\quodlibet.exe$\""
   WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
-    "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
+    "$\"$INSTDIR\bin\uninstall.exe$\" /$MultiUser.InstallMode"
   WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" \
-    "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
+    "$\"$INSTDIR\bin\uninstall.exe$\" /$MultiUser.InstallMode /S"
 
   ;Create uninstaller
-  WriteUninstaller "$INSTDIR\Uninstall.exe"
+  WriteUninstaller "$INSTDIR\bin\uninstall.exe"
   
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     
     ;Create shortcuts
     CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Quod Libet.lnk" "$INSTDIR\quodlibet.exe"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Ex Falso.lnk" "$INSTDIR\exfalso.exe"
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Quod Libet.lnk" "$INSTDIR\bin\quodlibet.exe"
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Ex Falso.lnk" "$INSTDIR\bin\exfalso.exe"
   
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -181,9 +181,9 @@ FunctionEnd
 
 Section "Uninstall"
 
-  Delete "$INSTDIR\Uninstall.exe"
-
   RMDir /r "$INSTDIR"
+
+  Delete "$INSTDIR\bin\uninstall.exe"
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
 

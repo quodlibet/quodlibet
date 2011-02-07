@@ -8,17 +8,14 @@ import os
 import sys
 
 from glob import glob
-from os.path import dirname, basename, join
+from os.path import dirname, basename, join, splitext
 from quodlibet import util, const
 
 base = dirname(__file__)
-if os.name == 'nt' and 'library.zip' in base:
-    # running a py2exe version, use the alternate formats location
-    base = os.path.join(const.BASEDIR, 'formats')
 self = basename(base)
 parent = basename(dirname(base))
-modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
-modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in modules]
+modules = [splitext(f)[0] for f in glob(join(base, "[!_]*.py*"))]
+modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in set(modules)]
 
 _infos = {}
 for i, name in enumerate(modules):
@@ -34,6 +31,9 @@ for i, name in enumerate(modules):
     if name and name.startswith("quodlibet."):
         sys.modules[name.split(".", 1)[1]] = sys.modules[name]
     modules[i] = (format.extensions and name.split(".")[-1])
+
+if not _infos:
+    raise SystemExit("No formats found!")
 
 try: sys.modules["formats.flac"] = sys.modules["formats.xiph"]
 except KeyError: pass

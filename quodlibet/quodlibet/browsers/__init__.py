@@ -11,7 +11,7 @@ import sys
 from quodlibet import const
 from quodlibet import util
 
-from os.path import dirname, basename, isdir, join
+from os.path import dirname, basename, isdir, join, splitext
 from glob import glob
 
 from quodlibet.browsers._base import Browser
@@ -19,18 +19,15 @@ from quodlibet.browsers._base import Browser
 BROWSERS = os.path.join(const.USERDIR, "browsers")
 
 base = dirname(__file__)
-if os.name == 'nt' and 'library.zip' in base:
-    # running a py2exe version, use the alternate browser location
-    base = os.path.join(const.BASEDIR, 'browsers')
 self = basename(base)
 parent = basename(dirname(base))
-modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
+modules = [splitext(f)[0] for f in glob(join(base, "[!_]*.py*"))]
 modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in modules]
 
 if isdir(BROWSERS):
     sys.path.insert(0, BROWSERS)
-    modules.extend([basename(f)[:-3] for f in
-                    glob(join(BROWSERS, "[!_]*.py"))])
+    modules.extend([splitext(basename(f))[0] for f in
+                    glob(join(BROWSERS, "[!_]*.py*"))])
 
 # Browsers are declared and stored as a magic 4-tuple. The first element is
 # the sort order (built-in browsers are numbered with integers). The second
@@ -44,7 +41,7 @@ if isdir(BROWSERS):
 # FIXME: Replace that crap with something sane.
 
 browsers = []
-for name in modules:
+for name in set(modules):
     try: browser = __import__(name, {}, {}, self)
     except Exception, err:
         util.print_exc()

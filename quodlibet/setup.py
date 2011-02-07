@@ -290,14 +290,7 @@ if __name__ == "__main__":
             # no build path setup, no worries.
             pass
 
-        # suckily, we include 'browsers' and 'formats' twice; the alternative
-        # is to parse the zipped library file for filenames, which we may do
-        # later on
         data_files = [('', ['COPYING']),
-                      (join('quodlibet', 'browsers'),
-                        glob.glob(join('quodlibet', 'browsers', '*.py'))),
-                      (join('quodlibet', 'formats'),
-                        glob.glob(join('quodlibet', 'formats', '*.py'))),
                       (join('quodlibet', 'images'),
                         glob.glob(join('quodlibet', 'images', '*.png')) +
                         glob.glob(join('quodlibet', 'images', '*.svg')))]
@@ -329,6 +322,8 @@ if __name__ == "__main__":
                                  'CDDB'),
                     'excludes': ('ssl_', 'doctest', 'pdb', 'unittest',
                                  'difflib', 'inspect'),
+                    'skip_archive': True,
+                    'dist_dir': 'dist\\bin'
                 }
             }
         })

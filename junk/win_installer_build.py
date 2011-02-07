@@ -461,8 +461,8 @@ def do_setup(rev):
     dist_path = join(TDIR, r'ql\quodlibet\dist')
 
     # for pygst: one of the libs is looking for _gst.pyd
-    shutil.copyfile(os.path.join(dist_path, 'gst._gst.pyd'),
-        os.path.join(dist_path, '_gst.pyd'))
+    shutil.copyfile(os.path.join(dist_path, 'bin', 'gst._gst.pyd'),
+        os.path.join(dist_path, 'bin', '_gst.pyd'))
 
     # You must have a license to restribute the resulting installer
     #for file in ['Microsoft.VC90.CRT.manifest', 'msvcr90.dll']:
@@ -472,8 +472,8 @@ def do_setup(rev):
     gst_path = join(TDIR, r'gstreamer\PFiles')
     for file in filter(lambda f: f.endswith('.dll'),
                        os.listdir(join(gst_path, 'bin'))):
-        if not os.path.isfile(join(dist_path, file)):
-            shutil.copy(join(gst_path, 'bin', file), dist_path)
+        if not os.path.isfile(join(dist_path, 'bin', file)):
+            shutil.copy(join(gst_path, 'bin', file), join(dist_path, 'bin'))
 
     for dir in ['lib', 'share', 'etc']:
         copytree2(join(gst_path, dir), join(dist_path, dir))
@@ -493,8 +493,8 @@ def do_setup(rev):
 
     for file in filter(lambda f: f.endswith('.dll'),
                        os.listdir(join(gtk_path, 'bin'))):
-        if not os.path.isfile(join(dist_path, file)):
-            shutil.copy(join(gtk_path, 'bin', file), dist_path)
+        if not os.path.isfile(join(dist_path, 'bin', file)):
+            shutil.copy(join(gtk_path, 'bin', file), join(dist_path, 'bin'))
 
     for dir in ['lib/gtk-2.0', 'share/locale', 'share/themes', 'etc']:
         copytree2(join(gtk_path, dir), join(dist_path, dir))
