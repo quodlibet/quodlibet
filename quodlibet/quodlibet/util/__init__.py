@@ -454,9 +454,10 @@ def expanduser(filename):
 def unexpand(filename, HOME=expanduser("~")):
     """Replace the user's home directory with ~/, if it appears at the
     start of the path name."""
-    if filename == HOME: return "~"
+    sub = (os.name == "nt" and "%USERPROFILE%") or "~"
+    if filename == HOME: return sub
     elif filename.startswith(HOME + os.path.sep):
-        filename = filename.replace(HOME, "~", 1)
+        filename = filename.replace(HOME, sub, 1)
     return filename
 
 def website(site):
