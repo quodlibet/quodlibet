@@ -104,7 +104,10 @@ def get_thumbnail(path, boundary):
         width > 256 or height > 256 or mtime(path) == 0:
         return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
 
-    thumb_folder = os.path.expanduser('~/.thumbnails')
+    if os.name == "nt":
+        thumb_folder = os.path.join(USERDIR, "thumbnails")
+    else:
+        thumb_folder = os.path.expanduser('~/.thumbnails')
 
     if not os.path.exists(thumb_folder):
         os.mkdir(thumb_folder)

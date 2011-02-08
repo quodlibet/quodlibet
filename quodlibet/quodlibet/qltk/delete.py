@@ -21,7 +21,7 @@ class DeleteDialog(gtk.Dialog):
     # This is the GNOME trash can for at least some versions. The
     # FreeDesktop spec is complicated and I'm not sure it's actually
     # used by anything.
-    __TRASH = os.path.expanduser("~/.Trash")
+    __TRASH = util.expanduser("~/.Trash")
 
     def __init__(self, parent, files, trash=True, askonly=False):
         super(DeleteDialog, self).__init__(

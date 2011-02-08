@@ -119,7 +119,7 @@ class SongListScroller(gtk.ScrolledWindow):
 class QuodLibetWindow(gtk.Window):
     def __init__(self, library, player):
         super(QuodLibetWindow, self).__init__()
-        self.last_dir = os.path.expanduser("~")
+        self.last_dir = const.HOME
 
         self.set_title("Quod Libet")
 

@@ -271,7 +271,7 @@ def process_arguments():
             try:
                 filename = URI(arg).filename
             except ValueError:
-                filename = os.path.abspath(os.path.expanduser(arg))
+                filename = os.path.abspath(util.expanduser(arg))
             if os.path.isdir(filename): control("add-directory " + filename)
             else: control("add-file " + filename)
         elif command == "print-playing":

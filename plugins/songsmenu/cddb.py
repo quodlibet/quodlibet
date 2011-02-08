@@ -13,7 +13,7 @@ import gtk
 
 from quodlibet.qltk import ErrorMessage, ConfirmAction, Message
 from quodlibet.const import VERSION
-from quodlibet.util import tag, escape
+from quodlibet.util import tag, escape, expanduser
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 CDDB.proto = 6 # utf8 instead of latin1
@@ -42,7 +42,7 @@ def calculate_discid(album):
 def query(category, discid, xcode='utf8:utf8'):
     discinfo = {}
     tracktitles = {}
-    dump = path.join(path.expanduser("~"), '.cddb', category, discid)
+    dump = path.join(expanduser("~"), '.cddb', category, discid)
     try:
         for line in file(dump):
             if line.startswith("TTITLE"):
@@ -67,7 +67,7 @@ def query(category, discid, xcode='utf8:utf8'):
     read, info = CDDB.read(category, discid, **CLIENTINFO)
     if read != 210: return None
 
-    try: os.makedirs(path.join(path.expanduser("~"), '.cddb'))
+    try: os.makedirs(path.join(expanduser("~"), '.cddb'))
     except EnvironmentError: pass
     try:
         save = file(dump, 'w')

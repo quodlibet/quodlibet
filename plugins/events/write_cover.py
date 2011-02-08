@@ -10,11 +10,12 @@ import shutil
 import gtk
 
 from quodlibet import config
+from quodlibet.const import USERDIR
 from quodlibet.plugins.events import EventPlugin
 
 try: config.get("plugins", __name__)
 except:
-    out = os.path.expanduser("~/.quodlibet/current.cover")
+    out = os.path.join(USERDIR, "current.cover")
     config.set("plugins", __name__, out)
 
 class PictureSaver(EventPlugin):

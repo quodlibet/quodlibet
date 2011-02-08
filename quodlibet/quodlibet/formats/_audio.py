@@ -291,7 +291,7 @@ class AudioFile(dict):
         return dict.get(self, key, default)
 
     lyric_filename = property(lambda self: util.fsencode(
-        os.path.join(os.path.expanduser("~/.lyrics"),
+        os.path.join(util.expanduser("~/.lyrics"),
                      self.comma("artist").replace('/', '')[:128],
                      self.comma("title").replace('/', '')[:128] + '.lyric')))
 

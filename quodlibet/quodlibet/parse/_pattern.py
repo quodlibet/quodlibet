@@ -314,7 +314,8 @@ class _FileFromPattern(PatternCompiler):
             ext = fn[fn.rfind("."):].lower()
             val_ext = value[-len(ext):].lower()
             if not ext == val_ext: value += ext.lower()
-            value = os.path.expanduser(value)
+            value = util.expanduser(value)
+            #FIXME: windows
             if "/" in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")
         return value

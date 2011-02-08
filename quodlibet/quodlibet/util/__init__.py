@@ -17,6 +17,9 @@ from quodlibet.util.titlecase import title
 
 from quodlibet.const import FSCODING as fscoding, ENCODING
 
+if os.name == "nt":
+    from win32com.shell import shellcon, shell
+
 def strip_win32_incompat(string, BAD = '\:*?;"<>|'):
     """Strip Win32-incompatible characters.
 
@@ -291,6 +294,20 @@ def fsencode(s):
     if isinstance(s, str): return s
     else: return s.encode(fscoding, 'replace')
 
+"""
+Path related functions like open, os.listdir have different behavior on win32
+
+- Passing a string calls the old non unicode win API.
+  In case of listdir this leads to "?" for >1byte chars and to
+  1 byte chars encoded using the fs encoding. -> DO NOT USE!
+
+- Passing a unicode object internally calls the windows unicode functions.
+  This will mostly lead to proper unicode paths (except expanduser).
+
+  And that's why QL is using unicode paths on win and encoded paths
+  everywhere else.
+"""
+
 if sys.platform == "win32":
     fsnative = fsdecode # Decode a filename on windows
 else:
@@ -424,11 +441,21 @@ def find_subtitle(title):
                 return title.rstrip(), subtitle
     else: return title, None
 
-def unexpand(filename, HOME=os.path.expanduser("~")):
+def expanduser(filename):
+    """needed because expanduser does not return wide character paths
+    on windows even if a unicode path gets passed."""
+    if os.name == "nt":
+        profile = shell.SHGetFolderPath(0, shellcon.CSIDL_PROFILE, 0, 0)
+        if filename == "~": return profile
+        if filename.startswith(u"~" + os.path.sep):
+            return os.path.join(profile, filename[2:])
+    return os.path.expanduser(filename)
+
+def unexpand(filename, HOME=expanduser("~")):
     """Replace the user's home directory with ~/, if it appears at the
     start of the path name."""
     if filename == HOME: return "~"
-    elif filename.startswith(HOME + "/"):
+    elif filename.startswith(HOME + os.path.sep):
         filename = filename.replace(HOME, "~", 1)
     return filename
 
