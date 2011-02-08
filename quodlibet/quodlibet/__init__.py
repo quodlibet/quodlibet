@@ -52,6 +52,8 @@ def _gettext_init():
     try: l = locale.setlocale(locale.LC_ALL, '')
     except locale.Error: pass
     else: os.environ.setdefault('LANG', locale.normalize(l))
+    if os.name == "nt":
+        gettext.bindtextdomain("quodlibet", "share/locale")
     try:
         t = gettext.translation("quodlibet", class_=GlibTranslations)
     except IOError:
