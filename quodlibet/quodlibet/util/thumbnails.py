@@ -18,6 +18,7 @@ import gobject
 import gtk
 
 from quodlibet.util import mtime, fsnative, fsdecode
+from quodlibet.const import USERDIR
 
 def add_border(pixbuf, val, round=False):
     """Add a 1px border to the pixbuf and round of the edges if needed.
