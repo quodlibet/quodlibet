@@ -172,28 +172,36 @@ class AlbumLibrary(gtk.Object):
         removed = set()
         to_add = []
         for song in items:
-            song_key = song.album_key
-            for key, album in self.__albums.iteritems():
-                if song in album.songs:
-                    changed.add(album)
-                    if song_key != album.key:
-                        #it changed, remove it
+            # in case the key hasn't changed
+            key = song.album_key
+            if key in self.__albums and song in self.__albums[key].songs:
+                changed.add(self.__albums[key])
+            else: # key changed.. look for it in each album
+                to_add.append(song)
+                for key, album in self.__albums.iteritems():
+                    if song in album.songs:
                         album.songs.remove(song)
                         if not album.songs:
-                            del self.__albums[key]
                             removed.add(album)
-                        to_add.append(song)
-                    break
+                        else:
+                            changed.add(album)
+                        break
 
+        # get new albums and changed ones because keys could have changed
         add_changed, new = self.__add(to_add)
         changed |= add_changed
-        changed -= removed
+
+        # check if albums that were empty at some point are still empty
+        for album in removed:
+            if not album.songs:
+                del self.__albums[album.key]
+                changed.discard(album)
 
         for album in changed:
             album.finalize()
 
-        if changed: self.emit("changed", changed)
         if removed: self.emit("removed", removed)
+        if changed: self.emit("changed", changed)
         if new: self.emit("added", new)
 
 class SongLibrary(Library):

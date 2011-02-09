@@ -59,7 +59,7 @@ class Collection(object):
 
     def get(self, key, default=u"", connector=u" - "):
         if not self.songs:
-            raise KeyError("No songs in %s" % type(self).__name__)
+            return default
         if key[:1] == "~" and "~" in key[1:]:
             if not isinstance(default, basestring): return default
             keys = util.tagsplit(key)
@@ -271,3 +271,6 @@ class Album(Collection):
                 self.cover = thumbnails.add_border(self.cover, 30, round)
             except gobject.GError:
                 return
+
+    def __repr__(self):
+        return "Album(%s)" % repr(self.key)
