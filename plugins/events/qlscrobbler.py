@@ -419,7 +419,8 @@ class QLScrobbler(EventPlugin):
         if service_combo.get_active() == -1:
             service_combo.set_active(0)
 
-        entry_names = ['url', 'username', 'password', 'artistpat', 'titlepat']
+        entry_names = ['url', 'username', 'password', 'artistpat', 'titlepat',
+            'exclude']
         entries = {}
         for idx, name in enumerate(entry_names):
             entry = gtk.Entry()
