@@ -16,10 +16,13 @@ class _TPattern(TestCase):
         s3 = { 'title': 'test/subdir', 'genre':'/\n/',
                '~filename':'/one/more/a.flac', 'version': 'Instrumental'}
         s4 = { 'performer': 'a\nb', 'artist': 'foo\nbar'}
+        s5 = { 'tracknumber': '7/1234','artist':'Artist', 'title':'Title7',
+               '~filename':'/path/to/e.mp3'}
         self.a = self.AudioFile(s1)
         self.b = self.AudioFile(s2)
         self.c = self.AudioFile(s3)
         self.d = self.AudioFile(s4)
+        self.e = self.AudioFile(s5)
 
 class TPattern(_TPattern):
     from quodlibet.formats._audio import AudioFile
@@ -126,6 +129,11 @@ class TFileFromPattern(_TPattern):
         s.assertEquals(pat.format(s.a), '05. Title5..mp3')
         s.assertEquals(pat.format(s.b), '06. Title6..ogg')
         s.assertEquals(pat.format(s.c), '. test_subdir..flac')
+
+    def test_tracknumber_decimals(s):
+        pat = FileFromPattern('<tracknumber>. <title>')
+        s.assertEquals(pat.format(s.a), '05. Title5.mp3')
+        s.assertEquals(pat.format(s.e), '0007. Title7.mp3')
 
     def test_raw_slash_preservation(s):
         pat = FileFromPattern('/a/b/<genre>')

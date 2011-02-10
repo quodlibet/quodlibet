@@ -291,7 +291,9 @@ def Pattern(string, Kind=PatternCompiler, MAX_CACHE_SIZE=100, cache={}):
 def _number(key, value):
     if key == "tracknumber":
         parts = value.split("/")
-        try: return "%02d" % int(parts[0])
+        try: decimals = len(str(int(parts[1])))
+        except (IndexError, ValueError): decimals = 2
+        try: return "%0*d" % (max(2, decimals), int(parts[0]))
         except (TypeError, ValueError): return value
     elif key == "discnumber":
         parts = value.split("/")
