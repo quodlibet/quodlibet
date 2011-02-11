@@ -143,6 +143,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
     __model = None
     __no_cover = None
+    __last_render = None
+    __last_render_pb = None
 
     name = _("Album List")
     accelerated_name = _("_Album List")
@@ -353,25 +355,35 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         def cell_data_pb(column, cell, model, iter, no_cover):
             album = model[iter][0]
-            if album is None: cell.set_property('pixbuf', None)
-            elif album.cover: cell.set_property('pixbuf', album.cover)
-            else: cell.set_property('pixbuf', no_cover)
+            if album is None: pixbuf = None
+            elif album.cover: pixbuf = album.cover
+            else: pixbuf = no_cover
+            if self.__last_render_pb == pixbuf: return
+            self.__last_render_pb = pixbuf
+            cell.set_property('pixbuf', pixbuf)
+
         column.set_cell_data_func(render, cell_data_pb, self.__no_cover)
         view.append_column(column)
 
         render = gtk.CellRendererText()
         column = gtk.TreeViewColumn("albums", render)
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
+
         def cell_data(column, cell, model, iter):
             album = model[iter][0]
             if album is None:
                 text = "<b>%s</b>" % _("All Albums")
                 text += "\n" + ngettext("%d album", "%d albums",
                         len(model) - 1) % (len(model) - 1)
-                cell.markup = text
+                markup = text
             else:
-                cell.markup = AlbumList._pattern % album
-            cell.set_property('markup', cell.markup)
+                markup = AlbumList._pattern % album
+
+            if self.__last_render == markup: return
+            self.__last_render = markup
+            cell.markup = markup
+            cell.set_property('markup', markup)
+
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
 

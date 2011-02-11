@@ -206,7 +206,7 @@ class PlaylistModel(gtk.ListStore):
         return bool(self.find(song))
 
     def is_empty(self):
-        return not bool(len(self))
+        return not len(self)
 
     def reset(self):
         self.go_to(None)
@@ -222,15 +222,20 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     class TextColumn(qltk.views.TreeViewColumnButton):
         # Base class for other kinds of columns.
-        _render = gtk.CellRendererText()
         _label = gtk.Label().create_pango_layout("")
+        __last_rendered = None
+
+        def _needs_update(self, value):
+            if self.__last_rendered == value:
+                return False
+            self.__last_rendered = value
+            return True
+
         def _cdf(self, column, cell, model, iter, tag):
-            try:
-                song = model.get_value(iter, 0)
-                text = unicode(song.comma(tag))
-                cell.set_property('text', text)
-                self._update_layout(text, cell)
-            except AttributeError: pass
+            text = model[iter][0].comma(tag)
+            if not self._needs_update(text): return
+            cell.set_property('text', text)
+            self._update_layout(text, cell)
 
         def _delayed_update(self):
             max_width = -1
@@ -260,6 +265,7 @@ class SongList(AllTreeView, util.InstanceTracker):
                     priority=gobject.PRIORITY_LOW)
 
         def __init__(self, t):
+            self._render = gtk.CellRendererText()
             title = util.tag(t)
             super(SongList.TextColumn, self).__init__(title, self._render)
             self.header_name = t
@@ -275,31 +281,28 @@ class SongList(AllTreeView, util.InstanceTracker):
     class DateColumn(TextColumn):
         # The '~#' keys that are dates.
         def _cdf(self, column, cell, model, iter, tag):
-            try:
-                stamp = model.get_value(iter, 0)(tag)
-                if not stamp:
-                    cell.set_property('text', _("Never"))
-                else:
-                    date = datetime.datetime.fromtimestamp(stamp).date()
-                    today = datetime.datetime.now().date()
-                    days = (today - date).days
-                    if days == 0: format = "%X"
-                    elif days < 7: format = "%A"
-                    else: format = "%x"
-                    stamp = time.localtime(stamp)
-                    text = time.strftime(format, stamp).decode(const.ENCODING)
-                    cell.set_property('text', text)
-                self._update_layout(cell.get_property('text'), cell)
-            except AttributeError: pass
+            stamp = model[iter][0](tag)
+            if not self._needs_update(stamp): return
+            if not stamp:
+                cell.set_property('text', _("Never"))
+            else:
+                date = datetime.datetime.fromtimestamp(stamp).date()
+                today = datetime.datetime.now().date()
+                days = (today - date).days
+                if days == 0: format = "%X"
+                elif days < 7: format = "%A"
+                else: format = "%x"
+                stamp = time.localtime(stamp)
+                text = time.strftime(format, stamp).decode(const.ENCODING)
+                cell.set_property('text', text)
+            self._update_layout(cell.get_property('text'), cell)
 
     class WideTextColumn(TextColumn):
         # Resizable and ellipsized at the end. Used for any key with
         # a '~' in it, and 'title'.
-        _render = gtk.CellRendererText()
-        _render.set_property('ellipsize', pango.ELLIPSIZE_END)
-
         def __init__(self, tag):
             super(SongList.WideTextColumn, self).__init__(tag)
+            self._render.set_property('ellipsize', pango.ELLIPSIZE_END)
             self.set_expand(True)
             self.set_resizable(True)
             self.set_fixed_width(1)
@@ -308,14 +311,11 @@ class SongList(AllTreeView, util.InstanceTracker):
         # Render ~#rating directly (simplifies filtering, saves
         # a function call).
         def _cdf(self, column, cell, model, iter, tag):
-            try:
-                song = model.get_value(iter, 0)
-                cell.set_property('text',
-                    util.format_rating(
-                    song.get("~#rating", const.DEFAULT_RATING)))
+                value = model[iter][0].get("~#rating", const.DEFAULT_RATING)
+                if not self._needs_update(value): return
+                cell.set_property('text', util.format_rating(value))
                 # No need to update layout, we know this width at
                 # at startup.
-            except AttributeError: pass
 
         def __init__(self):
             super(SongList.RatingColumn, self).__init__("~#rating")
@@ -327,49 +327,49 @@ class SongList(AllTreeView, util.InstanceTracker):
         # Optimize for non-synthesized keys by grabbing them directly.
         # Used for any tag without a '~' except 'title'.
         def _cdf(self, column, cell, model, iter, tag):
-            try:
-                song = model.get_value(iter, 0)
-                cell.set_property(
-                    'text', song.get(tag, "").replace("\n", ", "))
-            except AttributeError: pass
+            value = model[iter][0].get(tag, "")
+            if not self._needs_update(value): return
+            cell.set_property('text', value.replace("\n", ", "))
 
     class FSColumn(WideTextColumn):
         # Contains text in the filesystem encoding, so needs to be
         # decoded safely (and also more slowly).
         def _cdf(self, column, cell, model, iter, tag, code=const.FSCODING):
-            try:
-                song = model.get_value(iter, 0)
-                cell.set_property('text', util.unexpand(
-                    song.comma(tag).decode(code, 'replace')))
-            except AttributeError: pass
+            value = model[iter][0].comma(tag)
+            if not self._needs_update(value): return
+            cell.set_property('text', util.unexpand(
+                value.decode(code, 'replace')))
 
     class NumericColumn(TextColumn):
         # Any '~#' keys except dates.
-        _render = gtk.CellRendererText()
-        _render.set_property('xalign', 1.0)
+        def _cdf(self, column, cell, model, iter, tag):
+            value = model[iter][0].comma(tag)
+            if not self._needs_update(value): return
+            text = unicode(value)
+            cell.set_property('text', text)
+            self._update_layout(text, cell)
 
         def __init__(self, tag):
             super(SongList.NumericColumn, self).__init__(tag)
+            self._render.set_property('xalign', 1.0)
             self.set_alignment(1.0)
 
     class LengthColumn(NumericColumn):
         def _cdf(self, column, cell, model, iter, tag):
-            try:
-                song = model.get_value(iter, 0)
-                text = util.format_time(song.get("~#length", 0))
-                cell.set_property('text', text)
-                self._update_layout(text, cell)
-            except AttributeError: pass
-
+            value = model[iter][0].get("~#length", 0)
+            if not self._needs_update(value): return
+            text = util.format_time(value)
+            cell.set_property('text', text)
+            self._update_layout(text, cell)
         def __init__(self):
             super(SongList.LengthColumn, self).__init__("~#length")
 
     class PatternColumn(WideTextColumn):
         def _cdf(self, column, cell, model, iter, tag):
-            try:
-                song = model.get_value(iter, 0)
-                cell.set_property('text', self._pattern % song)
-            except AttributeError: pass
+            song = model.get_value(iter, 0)
+            value = self._pattern % song
+            if not self._needs_update(value): return
+            cell.set_property('text', value)
 
         def __init__(self, pattern):
             super(SongList.PatternColumn, self).__init__(util.pattern(pattern))

@@ -52,27 +52,28 @@ class MainSongList(SongList):
 
     class CurrentColumn(gtk.TreeViewColumn):
         # Displays the current song indicator, either a play or pause icon.
-
-        _render = gtk.CellRendererPixbuf()
-        _render.set_property('xalign', 0.5)
         header_name = "~current"
+        __last_stock = None
 
         def _cdf(self, column, cell, model, iter,
                  pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
-            try:
-                if model.get_path(iter) == model.current_path:
-                    if model.sourced:
-                        stock = pixbuf[player.playlist.paused]
-                    else:
-                        stock = gtk.STOCK_MEDIA_STOP
-                elif model[iter][0].get("~errors"):
-                    stock = gtk.STOCK_DIALOG_ERROR
-                elif model.get_path(iter) != model.current_path:
-                    stock = ''
-                cell.set_property('stock-id', stock)
-            except AttributeError: pass
+            row = model[iter]
+            if row.path == model.current_path:
+                if model.sourced:
+                    stock = pixbuf[player.playlist.paused]
+                else:
+                    stock = gtk.STOCK_MEDIA_STOP
+            elif row[0].get("~errors"):
+                stock = gtk.STOCK_DIALOG_ERROR
+            else:
+                stock = ''
+            if self.__last_stock == stock: return
+            self.__last_stock = stock
+            cell.set_property('stock-id', stock)
 
         def __init__(self):
+            self._render = gtk.CellRendererPixbuf()
+            self._render.set_property('xalign', 0.5)
             super(MainSongList.CurrentColumn, self).__init__("", self._render)
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             self.set_fixed_width(24)
