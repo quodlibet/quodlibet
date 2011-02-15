@@ -100,12 +100,13 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.get("~#rating"), 0.3)
 
     def test_defaults(s):
+        failUnlessEq = s.failUnlessEqual
         song = Fakesong({})
         album = Album(song)
-        s.failUnlessRaises(KeyError, album, "foo")
-        album.songs.add(song)
 
-        failUnlessEq = s.failUnlessEqual
+        failUnlessEq(album("foo", "x"), "x")
+
+        album.songs.add(song)
 
         failUnlessEq(album("~#length", "x"), song("~#length", "x"))
         failUnlessEq(album("~#bitrate", "x"), song("~#bitrate", "x"))
