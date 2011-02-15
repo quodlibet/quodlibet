@@ -462,7 +462,7 @@ def unexpand(filename, HOME=expanduser("~")):
 
 def website(site):
     site = site.replace("\\", "\\\\").replace("\"", "\\\"")
-    for prog in (["xdg-open", "gnome-open", "sensible-browser"] +
+    for prog in (["gnome-open", "xdg-open", "sensible-browser"] +
               os.environ.get("BROWSER","").split(":")):
         if iscommand(prog):
             args = prog.split()
