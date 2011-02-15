@@ -135,6 +135,15 @@ def init(*rc_files):
           },
         }
 
+    # <=2.2.1 QL created the user folder in the profile folder
+    # but it should be in the appdata folder, so move it.
+    if os.name == "nt":
+        old_dir = os.path.join(os.path.expanduser("~"), ".quodlibet")
+        new_dir = const.USERDIR
+        if not os.path.isdir(new_dir) and os.path.isdir(old_dir):
+            import shutil
+            shutil.move(old_dir, new_dir)
+
     for section, values in initial.iteritems():
         _config.add_section(section)
         for key, value in values.iteritems():
