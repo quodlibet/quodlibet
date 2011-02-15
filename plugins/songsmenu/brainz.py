@@ -452,7 +452,7 @@ class MyBrainz(SongsMenuPlugin):
             ('split_feat', 'Split _featured performers from track', False),
             ('year_only', 'Only use year for "date" tag', False),
             ('albumartist', 'Write "_albumartist" when needed', True),
-            ('artist_sort', 'Write sort tags for artist names', True),
+            ('artist_sort', 'Write sort tags for artist names', False),
             ('standard', 'Write _standard MusicBrainz tags', True),
             ('labelid', 'Write _labelid tag (fixes multi-disc albums)', True),
         ]
