@@ -274,10 +274,17 @@ class TrayIcon(EventPlugin):
             try:
                 self.__pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
                     filename + "svg", pixbuf_size * 2, pixbuf_size * 2)
-            except:
+            except gobject.GError:
                 self.__pixbuf = gtk.gdk.pixbuf_new_from_file(filename + "png")
-            self.__pixbuf = self.__pixbuf.scale_simple(
-                pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
+
+            if not self.__pixbuf:
+                print_w(u"trayicon: Did not find %s(png|svg)" %
+                    util.fsdecode(filename))
+                self.__pixbuf = self.__icon_theme.load_icon(
+                    gtk.STOCK_DIALOG_WARNING, pixbuf_size, 0)
+            else:
+                self.__pixbuf = self.__pixbuf.scale_simple(
+                    pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
 
         if player.paused:
             if not self.__pixbuf_paused:
