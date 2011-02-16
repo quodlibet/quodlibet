@@ -108,6 +108,7 @@ class TQuery(TestCase):
 
         self.s3 = self.AF({"artist": "piman\nmu"})
         self.s4 = self.AF({"title": u"Ångström"})
+        self.s5 = self.AF({"title": "oh&blahhh", "artist": "oh!no"})
 
     def test_2007_07_27_synth_search(self):
         song = self.AF({"~filename": "foo/64K/bar.ogg"})
@@ -202,6 +203,18 @@ class TQuery(TestCase):
         self.failUnless(Query("Ate man").search(self.s1))
         self.failIf(Query("woo man").search(self.s1))
         self.failIf(Query("not crazy").search(self.s1))
+
+    def test_dumb_search_union_inter_neg(self):
+        self.failUnless(Query("|(ate, foobar)").search(self.s1))
+        self.failUnless(Query("!!|(ate, foobar)").search(self.s1))
+        self.failUnless(Query("&(ate, te)").search(self.s1))
+        self.failIf(Query("|(foo, bar)").search(self.s1))
+        self.failIf(Query("&(ate, foobar)").search(self.s1))
+        self.failIf(Query("!!&(ate, foobar)").search(self.s1))
+        self.failIf(Query("&blah").search(self.s1))
+        self.failUnless(Query("&blah oh").search(self.s5))
+        self.failUnless(Query("!no oh").search(self.s5))
+        self.failIf(Query("|blah").search(self.s1))
 
     def test_unslashed_search(self):
         self.failUnless(Query("artist=piman").search(self.s1))

@@ -227,9 +227,19 @@ def Query(string, star=STAR):
     if not isinstance(string, unicode): string = string.decode('utf-8')
     if string == "": return match.Inter([])
     elif not set("#=").intersection(string):
-        parts = ["%s = /%s/" % (", ".join(star), re.escape(p))
-                 for p in string.split()]
-        string = "&(" + ",".join(parts) + ")"
+        try:
+            # check for something like \!*(\||\&).*
+            for token in iter(QueryLexer(string)):
+                if token.type == NEGATION: continue
+                if token.type not in (UNION, INTERSECT): raise ParseError
+                break
+            # fails for things like !&blah -> fall back to /\!\&bla/
+            test = "%s = %s" % (", ".join(star), string)
+            return QueryParser(QueryLexer(test)).StartQuery()
+        except ParseError:
+            parts = ("%s = /%s/" % (", ".join(star), re.escape(p))
+                     for p in string.split())
+            string = "&(" + ",".join(parts) + ")"
     return QueryParser(QueryLexer(string)).StartQuery()
 Query.STAR = STAR
 
