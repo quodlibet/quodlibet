@@ -108,7 +108,7 @@ class TQuery(TestCase):
 
         self.s3 = self.AF({"artist": "piman\nmu"})
         self.s4 = self.AF({"title": u"Ångström"})
-        self.s5 = self.AF({"title": "oh&blahhh", "artist": "oh!no"})
+        self.s5 = self.AF({"title": "oh&blahhh", "artist": "!ohno"})
 
     def test_2007_07_27_synth_search(self):
         song = self.AF({"~filename": "foo/64K/bar.ogg"})
@@ -204,17 +204,30 @@ class TQuery(TestCase):
         self.failIf(Query("woo man").search(self.s1))
         self.failIf(Query("not crazy").search(self.s1))
 
-    def test_dumb_search_union_inter_neg(self):
+    def test_dumb_search_value(self):
         self.failUnless(Query("|(ate, foobar)").search(self.s1))
         self.failUnless(Query("!!|(ate, foobar)").search(self.s1))
         self.failUnless(Query("&(ate, te)").search(self.s1))
         self.failIf(Query("|(foo, bar)").search(self.s1))
         self.failIf(Query("&(ate, foobar)").search(self.s1))
-        self.failIf(Query("!!&(ate, foobar)").search(self.s1))
+        self.failIf(Query("! !&(ate, foobar)").search(self.s1))
         self.failIf(Query("&blah").search(self.s1))
         self.failUnless(Query("&blah oh").search(self.s5))
-        self.failUnless(Query("!no oh").search(self.s5))
+        self.failUnless(Query("!oh no").search(self.s5))
         self.failIf(Query("|blah").search(self.s1))
+
+    def test_dumb_search_value_negate(self):
+        self.failUnless(Query("!xyz").search(self.s1))
+        self.failUnless(Query("!!!xyz").search(self.s1))
+        self.failUnless(Query(" !!!&(xyz, zyx)").search(self.s1))
+        self.failIf(Query("!man").search(self.s1))
+
+    def test_dumb_search_regexp(self):
+        self.failUnless(Query("/(x|H)ate/").search(self.s1))
+        self.failUnless(Query("'PiMan'").search(self.s1))
+        self.failIf(Query("'PiMan'c").search(self.s1))
+        self.failUnless(Query("!'PiMan'c").search(self.s1))
+        self.failIf(Query("!/(x|H)ate/").search(self.s1))
 
     def test_unslashed_search(self):
         self.failUnless(Query("artist=piman").search(self.s1))
@@ -244,6 +257,6 @@ class TQuery_is_valid_color(TestCase):
             self.failUnlessEqual("blue", Query.is_valid_color(p))
 
     def test_green(self):
-        for p in ["a = /b/", "&(a = b, c = d)"]:
+        for p in ["a = /b/", "&(a = b, c = d)", "/abc/", "!x", "!&(abc, def)"]:
             self.failUnlessEqual("dark green", Query.is_valid_color(p))
 add(TQuery_is_valid_color)

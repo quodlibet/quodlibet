@@ -162,16 +162,15 @@ class QueryParser(object):
         res = self.RegexpSet()
         return match.Tag(names, res)
 
-    def RegexpSet(self):
+    def RegexpSet(self, no_tag=False):
         if self.lookahead.type == UNION: return self.RegexpUnion()
         elif self.lookahead.type == INTERSECT: return self.RegexpInter()
         elif self.lookahead.type == NEGATION: return self.RegexpNeg()
-        elif self.lookahead.type == TAG: return self.MatchTag()
+        elif self.lookahead.type == TAG and not no_tag: return self.MatchTag()
         elif self.lookahead.type == RE: return self.Regexp()
         else:
             raise ParseError("The expected symbol should be |, &, !, or "
                              "a tag name, but was %s" % self.lookahead.lexeme)
-
 
     def RegexpNeg(self):
         self.match(NEGATION)
@@ -221,46 +220,65 @@ class QueryParser(object):
         except StopIteration:
             self.lookahead = QueryLexeme(EOF, "")
 
+NORMAL, VALUE, STRING = range(3)
+def _get_query_type(string):
+    try:
+        q = QueryParser(QueryLexer(string))
+        q.RegexpSet(no_tag=True)
+        q.match(EOF)
+    except error:
+        if not set("#=").intersection(string):
+            return STRING
+    else:
+        return VALUE
+    return NORMAL
+
+def _expand_query(string, tags):
+    string = string.strip()
+    if string == "": return ""
+    query_type = _get_query_type(string)
+    if query_type == STRING:
+        parts = ("%s = /%s/" % (", ".join(tags), re.escape(p))
+                 for p in string.split())
+        string = "&(" + ",".join(parts) + ")"
+    elif query_type == VALUE:
+        # instead of negating the value negate the whole query
+        stripped = string.lstrip(" !")
+        neg = string[:len(string) - len(stripped)]
+        string = "%s = %s" % (", ".join(tags), stripped)
+        if neg.count("!") % 2:
+            string = "!" + string
+    return string
+
 STAR = ["artist", "album", "title"]
 def Query(string, star=STAR):
     string = string.strip()
     if not isinstance(string, unicode): string = string.decode('utf-8')
     if string == "": return match.Inter([])
-    elif not set("#=").intersection(string):
-        try:
-            # check for something like \!*(\||\&).*
-            for token in iter(QueryLexer(string)):
-                if token.type == NEGATION: continue
-                if token.type not in (UNION, INTERSECT): raise ParseError
-                break
-            # fails for things like !&blah -> fall back to /\!\&bla/
-            test = "%s = %s" % (", ".join(star), string)
-            return QueryParser(QueryLexer(test)).StartQuery()
-        except ParseError:
-            parts = ("%s = /%s/" % (", ".join(star), re.escape(p))
-                     for p in string.split())
-            string = "&(" + ",".join(parts) + ")"
+    string = _expand_query(string, star)
     return QueryParser(QueryLexer(string)).StartQuery()
 Query.STAR = STAR
 
 def is_valid(string):
     if string.strip() == "": return True
-    tokens = QueryLexer(string)
-    try: QueryParser(tokens).StartQuery()
+    try: QueryParser(QueryLexer(string)).StartQuery()
     except error: return False
     else: return True
 Query.is_valid = is_valid
 
+
 def is_parsable(string):
-    if not set("#=").intersection(string): return True
-    else: return is_valid(string)
+    string = _expand_query(string, ["foo"])
+    return is_valid(string)
 Query.is_parsable = is_parsable
 
 def is_valid_color(string):
-    if is_valid(string): return "dark green"
-    elif not (string and set("#=").intersection(string)):
-        return "blue"
-    else: return "red"
+    if is_parsable(string):
+        if _get_query_type(string) == STRING:
+            return "blue"
+        else:
+            return "dark green"
+    return "red"
 Query.is_valid_color = is_valid_color
 
 Query.error = error
