@@ -658,7 +658,8 @@ class MPRIS2Object(MPRISObject):
         read_props = {}
         props = self.__prop_mapping[interface]
         for key, (getter, setter) in props.iteritems():
-            read_props[key] = (callable(getter) and getter()) or getter
+            if callable(getter): getter = getter()
+            read_props[key] = getter
         return read_props
 
     @dbus.service.signal(__player_interface, signature="x")
