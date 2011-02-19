@@ -149,12 +149,12 @@ Section "Dummy Section" SecDummy
     "DisplayName" "Quod Libet - audio library tagger, manager, and player"
   WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$\"$INSTDIR\bin\quodlibet.exe$\""
   WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
-    "$\"$INSTDIR\bin\uninstall.exe$\" /$MultiUser.InstallMode"
+    "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode"
   WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" \
-    "$\"$INSTDIR\bin\uninstall.exe$\" /$MultiUser.InstallMode /S"
+    "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
 
   ;Create uninstaller
-  WriteUninstaller "$INSTDIR\bin\uninstall.exe"
+  WriteUninstaller "$INSTDIR\uninstall.exe"
   
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     
@@ -183,7 +183,7 @@ Section "Uninstall"
 
   RMDir /r "$INSTDIR"
 
-  Delete "$INSTDIR\bin\uninstall.exe"
+  Delete "$INSTDIR\uninstall.exe"
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
 
