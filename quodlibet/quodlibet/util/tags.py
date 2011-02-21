@@ -104,6 +104,8 @@ TAGS = dict([
     IT("rating", _("rating")),
     IT("year", _("year")),
     IT("bookmark", _("bookmark")),
+    IT("bitrate", _("bitrate")),
+    IT("format", _("file format")),
     ])
 
 def add(tag, translation):

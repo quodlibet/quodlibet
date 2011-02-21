@@ -64,3 +64,5 @@ quodlibet/qltk/logging.py
 quodlibet/qltk/remote.py
 quodlibet/qltk/tracker.py
 quodlibet/util/tags.py
+quodlibet/util/logging.py
+quodlibet/qltk/notif.py
