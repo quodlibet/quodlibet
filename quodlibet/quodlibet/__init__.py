@@ -49,11 +49,17 @@ def _gtk_init(icon=None):
         except: gtk.window_set_default_icon_from_file(icon + ".png")
 
 def _gettext_init():
-    try: l = locale.setlocale(locale.LC_ALL, '')
+    try: locale.setlocale(locale.LC_ALL, '')
     except locale.Error: pass
-    else: os.environ.setdefault('LANG', locale.normalize(l))
+
     if os.name == "nt":
+        import ctypes
+        k32 = ctypes.windll.kernel32
+        langs = filter(None, map(locale.windows_locale.get,
+            [k32.GetUserDefaultLCID(), k32.GetSystemDefaultLCID()]))
+        os.environ.setdefault('LANG', ":".join(langs))
         gettext.bindtextdomain("quodlibet", "share/locale")
+
     try:
         t = gettext.translation("quodlibet", class_=GlibTranslations)
     except IOError:
