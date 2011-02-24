@@ -302,8 +302,7 @@ class AudioFile(dict):
 
         if "~" in key or key == "title": v = self(key, u"")
         else: v = self.get(key, u"")
-        if isinstance(v, int): return v
-        elif isinstance(v, float): return v
+        if isinstance(v, (int, long, float)): return v
         else: return v.replace("\n", ", ")
 
     def list(self, key):
