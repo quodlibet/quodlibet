@@ -52,16 +52,18 @@ def _gettext_init():
     try: locale.setlocale(locale.LC_ALL, '')
     except locale.Error: pass
 
+    localedir = gettext.bindtextdomain("quodlibet")
     if os.name == "nt":
         import ctypes
         k32 = ctypes.windll.kernel32
         langs = filter(None, map(locale.windows_locale.get,
             [k32.GetUserDefaultLCID(), k32.GetSystemDefaultLCID()]))
         os.environ.setdefault('LANG', ":".join(langs))
-        gettext.bindtextdomain("quodlibet", "share/locale")
+        localedir = "share\\locale"
 
     try:
-        t = gettext.translation("quodlibet", class_=GlibTranslations)
+        t = gettext.translation("quodlibet", localedir,
+            class_=GlibTranslations)
     except IOError:
         t = GlibTranslations()
     t.install(unicode=True)
