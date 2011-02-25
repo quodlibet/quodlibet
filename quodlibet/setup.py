@@ -306,6 +306,14 @@ if __name__ == "__main__":
                     "icon_resources": [(0,
                        join('quodlibet', 'images', 'quodlibet.ico'))]
                 },
+                # workaround icon not working under Vista/7
+                # exe resource identifiers get incremented and start at 0.
+                # and 0 doesn't seem to be valid.
+                {
+                    "script": "quodlibet.py",
+                    "icon_resources": [(0,
+                       join('quodlibet', 'images', 'quodlibet.ico'))]
+                },
                 {
                     "script": "exfalso.py",
                     "icon_resources": [(0,
