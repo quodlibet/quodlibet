@@ -17,7 +17,7 @@ except ImportError:
 import gobject
 import gtk
 
-from quodlibet.util import mtime, fsnative, fsdecode
+from quodlibet.util import mtime, fsnative, fsdecode, pathname2url
 from quodlibet.const import USERDIR
 
 def add_border(pixbuf, val, round=False):
@@ -129,7 +129,7 @@ def get_thumbnail(path, boundary):
 
     if isinstance(path, str): bytes = fsdecode(path).encode("utf-8")
     else: bytes = path.encode("utf-8")
-    uri = "file://" + urllib.pathname2url(bytes)
+    uri = "file://" + pathname2url(bytes)
     thumb_name = hash.md5(uri).hexdigest() + ".png"
 
     thumb_path = os.path.join(cache_dir, thumb_name)

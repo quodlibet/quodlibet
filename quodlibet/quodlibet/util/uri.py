@@ -11,8 +11,10 @@
 
 import re
 
-from urllib import pathname2url, url2pathname, quote_plus, unquote_plus
+from urllib import url2pathname, quote_plus, unquote_plus
 from urlparse import urlparse, urlunparse
+
+from quodlibet.util import pathname2url
 
 class URI(str):
     """A full URI string. This object provides several convenience
