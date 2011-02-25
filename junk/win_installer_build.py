@@ -203,6 +203,7 @@ class SFDep(Dep):
     def _get_versions(self):
         page = Page('http://sourceforge.net/projects/%s/files/%s' % (self.project, self.name))
         vers = re.findall('/projects/%s/files/%s/([^/]*)/"' % (self.project, self.name), page.text)
+        vers = filter(lambda x: "readme" not in x.lower(), vers)
         return vers
 
     def _get_release(self, version):
@@ -523,7 +524,7 @@ def do_setup(rev):
                 join(dist_path, r'etc\gtk-2.0'))
 
     print "\n\nIf you have a license for redistributing the MSVC runtime,"
-    print "you should drop it in %s now." % join(TDIR, r'ql\quodlibet\dist')
+    print "you should drop it in %s now." % join(TDIR, r'ql\quodlibet\dist\bin')
     print "Otherwise just hit enter."
     raw_input()
 
