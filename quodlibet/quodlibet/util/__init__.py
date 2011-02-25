@@ -624,6 +624,18 @@ def xdg_get_system_data_dirs():
     """http://standards.freedesktop.org/basedir-spec/latest/"""
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
-        return data_dirs.split(":")
+        return map(os.path.abspath, data_dirs.split(":"))
     else:
         return ("/usr/local/share/", "/usr/share/")
+
+def xdg_get_data_home():
+    data_home = os.getenv("XDG_DATA_HOME")
+    if data_home:
+        return os.path.abspath(data_home)
+    else:
+        return os.path.join(os.path.expanduser("~"), ".local", "share")
+
+def find_mount_point(path):
+    while not os.path.ismount(path):
+        path = os.path.dirname(path)
+    return path

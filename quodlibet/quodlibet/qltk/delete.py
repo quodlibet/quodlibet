@@ -5,25 +5,20 @@
 # published by the Free Software Foundation
 
 import os
-import shutil
 
 import gtk
 
 from quodlibet import const
 from quodlibet import util
 
+from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.x import Button
 
 class DeleteDialog(gtk.Dialog):
-    # This is the GNOME trash can for at least some versions. The
-    # FreeDesktop spec is complicated and I'm not sure it's actually
-    # used by anything.
-    __TRASH = util.expanduser("~/.Trash")
-
-    def __init__(self, parent, files, trash=True, askonly=False):
+    def __init__(self, parent, files, asktrash=True, askonly=False):
         super(DeleteDialog, self).__init__(
             _("Delete Files"), get_top_parent(parent))
         self.set_border_width(6)
@@ -34,7 +29,7 @@ class DeleteDialog(gtk.Dialog):
 
         self.__files = files
 
-        if trash and os.path.isdir(self.__TRASH):
+        if asktrash and trash.can_trash():
             b = Button(_("_Move to Trash"), gtk.STOCK_DELETE)
             self.add_action_widget(b, 0)
 
@@ -92,30 +87,35 @@ class DeleteDialog(gtk.Dialog):
         files = self.__files
         w = WaitLoadWindow(self, len(files), s)
         removed = []
-        for filename in files:
-            try:
-                if resp == 0:
-                    basename = os.path.basename(filename)
-                    path = os.path.join(self.__TRASH, basename)
-                    duped = 1
-                    while os.path.exists(path):
-                        new_base = basename + ".%d" % duped
-                        path = os.path.join(self.__TRASH, new_base)
-                        duped += 1
-                    shutil.move(filename, path)
-                else:
-                    os.unlink(filename)
-                removed.append(filename)
 
-            except EnvironmentError, s:
-                try: s = unicode(s.strerror, const.ENCODING, 'replace')
-                except TypeError:
-                    s = unicode(s.strerror[1], const.ENCODING, 'replace')
-                ErrorMessage(
-                    self, _("Unable to delete file"),
-                    (_("Deleting <b>%s</b> failed.") % util.fsdecode(filename)
-                     + ("\n\n" + s))).run()
-                break
-            else: w.step()
+        if resp == 0:
+            for filename in files:
+                try:
+                    trash.trash(filename)
+                except trash.TrashError:
+                    fn = util.escape(util.fsdecode(util.unexpand(filename)))
+                    ErrorMessage(self, _("Unable to move to trash"),
+                        (_("Moving <b>%s</b> to the trash failed.") %
+                        fn)).run()
+                    break
+                removed.append(filename)
+                w.step()
+        else:
+            for filename in files:
+                try:
+                    os.unlink(filename)
+                except EnvironmentError, s:
+                    try: s = unicode(s.strerror, const.ENCODING, 'replace')
+                    except TypeError:
+                        s = unicode(s.strerror[1], const.ENCODING, 'replace')
+                    s = "\n\n" + s
+                    fn = util.escape(util.fsdecode(util.unexpand(filename)))
+                    ErrorMessage(
+                        self, _("Unable to delete file"),
+                        (_("Deleting <b>%s</b> failed.") % fn) + s).run()
+                    break
+                removed.append(filename)
+                w.step()
+
         w.destroy()
         return removed
