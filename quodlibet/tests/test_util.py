@@ -435,3 +435,33 @@ class Tspawn(TestCase):
         fileobj = util.spawn(["echo", "'$1'", '"$2"', ">3"], stdout=True)
         self.failUnlessEqual(fileobj.read().split(), ["'$1'", '"$2"', ">3"])
 add(Tspawn)
+
+class Txdg_dirs(TestCase):
+    def test_system_data_dirs(self):
+        os.environ["XDG_DATA_DIRS"] = "/xyz"
+        self.failUnlessEqual(util.xdg_get_system_data_dirs()[0], "/xyz")
+        del os.environ["XDG_DATA_DIRS"]
+        dirs = util.xdg_get_system_data_dirs()
+        self.failUnlessEqual(dirs[0], "/usr/local/share/")
+        self.failUnlessEqual(dirs[1], "/usr/share/")
+
+    def test_data_home(self):
+        os.environ["XDG_DATA_HOME"] = "/xyz"
+        self.failUnlessEqual(util.xdg_get_data_home(), "/xyz")
+        del os.environ["XDG_DATA_HOME"]
+        should = os.path.join(os.path.expanduser("~"), ".local", "share")
+        self.failUnlessEqual(util.xdg_get_data_home(), should)
+add(Txdg_dirs)
+
+class Tpathname2url(TestCase):
+    def test_win(self):
+        cases = {
+            r"c:\abc\def" : "/c:/abc/def",
+            r"C:\a b\c.txt": "/C:/a%20b/c.txt",
+            r"\\xy\z.txt": "xy/z.txt",
+            r"C:\a:b\c:d": "/C:/a%3Ab/c%3Ad"
+            }
+        p2u = util.pathname2url_win32
+        for inp, should in cases.iteritems():
+            self.failUnlessEqual(p2u(inp), should)
+add(Tpathname2url)

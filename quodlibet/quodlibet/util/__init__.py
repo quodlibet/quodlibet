@@ -640,15 +640,19 @@ def find_mount_point(path):
         path = os.path.dirname(path)
     return path
 
-def pathname2url(path):
-    """stdlib version raises IOError for more than one ':' which can appear
-    using a virtual box shared folder and it inserts /// at the beginning
-    but it should be /."""
-    if os.name == "nt":
-        quote = urllib.quote
-        if path[1:2] != ":":
-            return quote("/".join(path.split("\\")))
-        drive, remain = path.split(":", 1)
-        return "/%s:%s" % (quote(drive), quote("/".join(remain.split("\\"))))
-    else:
-        return urllib.pathname2url(path)
+def pathname2url_win32(path):
+    # stdlib version raises IOError for more than one ':' which can appear
+    # using a virtual box shared folder and it inserts /// at the beginning
+    # but it should be /.
+    quote = urllib.quote
+    if path[1:2] != ":" or path[:1] == "\\":
+        if path[:2] == "\\\\":
+            path = path[2:]
+        return quote("/".join(path.split("\\")))
+    drive, remain = path.split(":", 1)
+    return "/%s:%s" % (quote(drive), quote("/".join(remain.split("\\"))))
+
+if os.name == "nt":
+    pathname2url = pathname2url_win32
+else:
+    pathname2url = urllib.pathname2url
