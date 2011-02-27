@@ -26,14 +26,7 @@ class TrackRepeatOrder(PlayOrderPlugin, PlayOrderShuffleMixin):
                     "but repeat every track a set number of times.")
 
     play_count = 0
-    play_each = 2
-
-    def __init__(self, playlist):
-        super(TrackRepeatOrder, self).__init__(playlist)
-        try:
-            self.play_each = int(self.get_config("play_each"))
-        except:
-            config.set("plugins", "play_each", self.play_each)
+    play_each_default = 2
 
     @classmethod
     def get_config(klass, name):
@@ -46,6 +39,13 @@ class TrackRepeatOrder(PlayOrderPlugin, PlayOrderShuffleMixin):
         config.set("plugins", key, value)
 
     @classmethod
+    def get_play_each(klass):
+        try:
+            return int(klass.get_config("play_each"))
+        except (config.error, ValueError):
+            return klass.play_each_default
+
+    @classmethod
     def PluginPreferences(klass, window):
         def plays_changed(spin):
             print_d("setting to %d" % int(spin.get_value()))
@@ -54,7 +54,7 @@ class TrackRepeatOrder(PlayOrderPlugin, PlayOrderShuffleMixin):
         vb = gtk.VBox(spacing=10)
         vb.set_border_width(10)
         hbox = gtk.HBox(spacing=6)
-        val = klass.get_config("play_each")
+        val = klass.get_play_each()
         spin = gtk.SpinButton(gtk.Adjustment(float(val), 2, 20, 1, 10))
         spin.connect("value-changed", plays_changed)
         hbox.pack_start(spin, expand=False)
@@ -70,9 +70,10 @@ class TrackRepeatOrder(PlayOrderPlugin, PlayOrderShuffleMixin):
 
     def next(self, playlist, iter):
         self.play_count += 1
-        print_d("Play count now at %d/%d" % (self.play_count, self.play_each),
+        play_each = self.get_play_each()
+        print_d("Play count now at %d/%d" % (self.play_count, play_each),
                 context=self)
-        if (self.play_count < self.play_each and iter is not None):
+        if (self.play_count < play_each and iter is not None):
             return iter
         else:
             self.restart_counting()
@@ -91,4 +92,4 @@ class TrackRepeatOrder(PlayOrderPlugin, PlayOrderShuffleMixin):
 
     def reset(self, playlist):
         super(TrackRepeatOrder, self).reset(playlist)
-        self.__play_count = 0
+        self.play_count = 0
