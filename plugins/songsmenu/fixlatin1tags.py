@@ -38,7 +38,7 @@ class FixSongTags(SongsMenuPlugin):
     PLUGIN_ICON = 'gtk-edit'
     PLUGIN_VERSION = '0.1'
 
-    def plugin_songs(songs):
+    def plugin_songs(self, songs):
         if not songs:
             return
         ss = []
