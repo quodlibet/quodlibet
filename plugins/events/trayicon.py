@@ -263,7 +263,7 @@ class TrayIcon(EventPlugin):
         if self.__size <= 0:
             return
 
-        pixbuf_size = int(self.__size * 0.75)
+        pixbuf_size = max(int(self.__size * 0.75), 1)
         #windows panel has enough padding
         if sys.platform == "win32":
             pixbuf_size = self.__size
@@ -276,15 +276,8 @@ class TrayIcon(EventPlugin):
                     filename + "svg", pixbuf_size * 2, pixbuf_size * 2)
             except gobject.GError:
                 self.__pixbuf = gtk.gdk.pixbuf_new_from_file(filename + "png")
-
-            if not self.__pixbuf:
-                print_w(u"trayicon: Did not find %s(png|svg)" %
-                    util.fsdecode(filename))
-                self.__pixbuf = self.__icon_theme.load_icon(
-                    gtk.STOCK_DIALOG_WARNING, pixbuf_size, 0)
-            else:
-                self.__pixbuf = self.__pixbuf.scale_simple(
-                    pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
+            self.__pixbuf = self.__pixbuf.scale_simple(
+                pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
 
         if player.paused:
             if not self.__pixbuf_paused:
