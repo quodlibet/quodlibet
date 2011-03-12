@@ -29,6 +29,10 @@ class SoundMenu(EventPlugin):
             return False
         return True
 
+    def __window_delete(self, win, event):
+        win.hide()
+        return True
+
     def PluginPreferences(self, parent):
         box = gtk.HBox()
         if not self.__check_mpris():
@@ -41,15 +45,15 @@ class SoundMenu(EventPlugin):
         return box
 
     def enabled(self):
+        from quodlibet.widgets import main as window
+        self.__sig = window.connect('delete-event', self.__window_delete)
         self.server = server = indicate.indicate_server_ref_default()
         server.set_type("music.quodlibet")
         server.set_desktop_file("/usr/share/applications/quodlibet.desktop")
         server.show()
 
     def disabled(self):
-        if self.server:
-            self.server.hide()
-            self.server = None
-
-    def destroy(self):
-        self.disabled()
+        from quodlibet.widgets import main as window
+        window.disconnect(self.__sig)
+        self.server.hide()
+        self.server = None
