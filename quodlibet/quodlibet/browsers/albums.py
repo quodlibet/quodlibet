@@ -537,6 +537,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.__uninhibit()
 
     def __parse_query(self, model, iter):
+        # leaked filter models try to refilter on model changes
+        if not self.__dict__: return
+
         f, b = self.__filter, self.__bg_filter
         if f is None and b is None: return True
         elif model[iter][0] is None: return True
