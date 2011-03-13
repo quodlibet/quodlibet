@@ -120,7 +120,10 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
             self.model.remove(itr)
         self.remote_album = remote_album
         has_artists = bool(filter(lambda t: t.artist, remote_album))
-        self.get_column(3).set_visible(has_artists)
+        col = self.get_column(3)
+        # sometimes gets called after the treeview is already gone
+        if not col: return
+        col.set_visible(has_artists)
         self.columns_autosize()
         self.queue_draw()
 
