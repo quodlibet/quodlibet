@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-24 00:58+0800\n"
+"POT-Creation-Date: 2011-03-13 18:50+0100\n"
 "PO-Revision-Date: 2011-02-24 00:57+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
@@ -320,7 +320,7 @@ msgstr[2] "%d альбомов"
 msgid "Sort _by:"
 msgstr "Сортировать _по:"
 
-#: ../quodlibet/browsers/albums.py:570
+#: ../quodlibet/browsers/albums.py:573
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Обновить _обложку альбома"
@@ -933,23 +933,23 @@ msgstr "_Изменить закладки..."
 msgid "Stop after this song"
 msgstr "Остановиться после этой композиции"
 
-#: ../quodlibet/qltk/delete.py:28
+#: ../quodlibet/qltk/delete.py:23
 msgid "Delete Files"
 msgstr "Удаление файлов"
 
-#: ../quodlibet/qltk/delete.py:38
+#: ../quodlibet/qltk/delete.py:33
 msgid "_Move to Trash"
 msgstr "_Переместить в корзину"
 
-#: ../quodlibet/qltk/delete.py:56
+#: ../quodlibet/qltk/delete.py:51
 msgid "Permanently delete this file?"
 msgstr "Навсегда удалить этот файл?"
 
-#: ../quodlibet/qltk/delete.py:57
+#: ../quodlibet/qltk/delete.py:52
 msgid "Permanently delete these files?"
 msgstr "Навсегда удалить эти файлы?"
 
-#: ../quodlibet/qltk/delete.py:61
+#: ../quodlibet/qltk/delete.py:56
 #, python-format
 msgid "%(title)s and %(count)d more..."
 msgid_plural "%(title)s and %(count)d more..."
@@ -957,21 +957,31 @@ msgstr[0] "%(title)s и ещё %(count)d композиция..."
 msgstr[1] "%(title)s и ещё %(count)d композиции..."
 msgstr[2] "%(title)s и ещё %(count)d композиций..."
 
-#: ../quodlibet/qltk/delete.py:89
+#: ../quodlibet/qltk/delete.py:84
 #, python-format
 msgid "Moving %(current)d/%(total)d."
 msgstr "Перемещение %(current)d/%(total)d."
 
-#: ../quodlibet/qltk/delete.py:90
+#: ../quodlibet/qltk/delete.py:85
 #, python-format
 msgid "Deleting %(current)d/%(total)d."
 msgstr "Удаление %(current)d/%(total)d."
 
-#: ../quodlibet/qltk/delete.py:115
+#: ../quodlibet/qltk/delete.py:97
+#, fuzzy
+msgid "Unable to move to trash"
+msgstr "Не удалось сохранить базу данных iPod"
+
+#: ../quodlibet/qltk/delete.py:98
+#, fuzzy, python-format
+msgid "Moving <b>%s</b> to the trash failed."
+msgstr "Не удалось извлечь <b>%s</b>."
+
+#: ../quodlibet/qltk/delete.py:114
 msgid "Unable to delete file"
 msgstr "Не удалось удалить файл"
 
-#: ../quodlibet/qltk/delete.py:116
+#: ../quodlibet/qltk/delete.py:115
 #, python-format
 msgid "Deleting <b>%s</b> failed."
 msgstr "Не удалось удалить <b>%s</b>."
@@ -1218,7 +1228,7 @@ msgstr "Информация"
 msgid "Lyrics"
 msgstr "Текст песни"
 
-#: ../quodlibet/qltk/information.py:99 ../quodlibet/__init__.py:117
+#: ../quodlibet/qltk/information.py:99 ../quodlibet/__init__.py:119
 msgid "Errors"
 msgstr "Ошибки"
 
@@ -2309,37 +2319,37 @@ msgid "Quod Libet"
 msgstr "Quod Libet"
 
 #. Translators: Name of the debug Output Log window
-#: ../quodlibet/__init__.py:105
+#: ../quodlibet/__init__.py:107
 msgid "Debug"
 msgstr "Отладка"
 
 #. Translators: "W" as in "Warning". It is prepended to
 #. terminal output. APT uses a similar output format.
-#: ../quodlibet/__init__.py:111
+#: ../quodlibet/__init__.py:113
 msgid "W: "
 msgstr "W: "
 
-#: ../quodlibet/__init__.py:111
+#: ../quodlibet/__init__.py:113
 msgid "Warnings"
 msgstr "Предупреждения"
 
 #. Translators: "E" as in "Error". It is prepended to
 #. terminal output. APT uses a similar output format.
-#: ../quodlibet/__init__.py:117
+#: ../quodlibet/__init__.py:119
 msgid "E: "
 msgstr "E: "
 
-#: ../quodlibet/__init__.py:168
+#: ../quodlibet/__init__.py:170
 #, python-format
 msgid "Initializing audio backend (%s)"
 msgstr "Инициализация системы аудиовывода (%s)"
 
-#: ../quodlibet/__init__.py:171
+#: ../quodlibet/__init__.py:173
 #, python-format
 msgid "Initializing main library (%s)"
 msgstr "Инициализация фонотеки (%s)"
 
-#: ../quodlibet/__init__.py:201
+#: ../quodlibet/__init__.py:203
 msgid "Unable to save library"
 msgstr "Не удалось сохранить фонотеку"
 

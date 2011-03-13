@@ -1,5 +1,87 @@
-Quod Libet requires Python 2.4, PyGTK 2.12, and Mutagen 1.11,
-but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.18 or later.
+Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
+but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
+
+2.2.99 (2011-03-13) - I can imagine that one day there could be a person
+                      who would read that
+    * Quod Libet now needs Python >=2.5
+    * Drag and drop in paned browser
+    * Speed up adding many songs to the queue
+    * Smaller volume, seek controls
+    * Ask for playlist name on creation
+    * Output playing progess when using --status
+    * Use current icon theme icons everywhere (for DAPs etc.)
+    * Floating point custom tags
+    * Audio streaming fixes (buffering etc.) (Andreas Bombe)
+    * Treeview hints in paned browser
+    * Cover art now only uses the available space
+    * Support embedded covers art in WMA/Vorbis files
+    * Set composer, albumartist, sort tags when copying to an iPod
+    * Natural sorting in the song list
+    * Many song list speedups (sorting, filling, scrolling)
+    * Split up pattern results in paned browser with multi-value tags
+    * Only consider a song played after half has elapsed
+    * Undo/Redo support for all text entries
+    * New framework for showing running tasks, notifications in the status bar
+    * Text markup in the paned browser
+    * Restore maximized state
+    * Restore window position (Felix Krull)
+    * Make size of the queue adjustable (Florian Demmer)
+    * Mouse scrolling over the play button now changes songs
+    * Support alternate home directory using $QUODLIBET_USERDIR (jkohen)
+    * Make the default rating changeable (library reload needed)
+    * Drag and scroll in the song list
+    * Faster context menu opening
+    * Display playlist size (library reload needed)
+    * Support queries without specifying a tag name
+    * All queries in the album browser use a standard operation (avg, sum etc.)
+    * Support ~rating, ~#bitrate in the album pattern
+    * Support separate song collection patterns in the paned browser
+    * Don't jump to a playing song if it was selected from the songlist
+    * Faster local cover search
+    * Support FreeDesktop trash spec
+    * Various bug fixes, speed improvements (Jacob Lee, Johannes Rohrer,
+      Tshepang Lekhonkhobe)
+    * Bug fixes:
+        * Treeview hints now work with GTK+ >= 2.20
+        * Search history now gets properly shared between browsers
+        * Fix udev crashes
+        * Paned browser leaks
+        * Respect global filter in all browsers/filters
+        * Don't loose tag values with different cased tag names (APEv2)
+        * Fix --set-browser (Carlo Teubner)
+        * Properly handle the case where a playing song gets deleted
+        * Fix redraw errors using compiz
+        * FSync on library save
+        * Fix crash when ~/.gtk-bookmarks contains empty lines (Felix Krull)
+        * Correctly identify rockboxed iPods
+    * Windows (Uninstall any previously installed version!):
+        * Fix translation under Win 7
+        * Fix cover art plugin saving
+        * Add all partitions to the file selector
+        * Fix various crashes with wide char user names
+        * Fix icon under Win 7
+        * Support multi-user installations
+        * Fix freezes after opening certain folders
+    * New plugins:
+        * Follow cursor play order plugin
+        * Equalizer plugin
+        * MPRIS 1.0/2.0 plugin
+        * Ubuntu sound menu plugin
+        * Rating reset plugin
+        * Track repeat plugin
+    * Plugins:
+        * Go to bookmark plugin now menu based
+        * Fix some album art plugin backends (Aymeric Mansoux, ..)
+        * Improved "human" title casing
+        * Fix queue only plugin stopping the current song.
+        * Only use allowed HTML in the notify plugin.
+        * musicbrainz: allow writing sort tags (Michaël Ball)
+    * Translations:
+        * new Latvian translation (Einars Sprugis)
+        * new Basque translation (Piarres Beobide)
+        * Frensh translation updates (Nick Boultbee)
+        * Brazilian/Portuguese translation updates (Djavan Fagundes)
+        * Russian translation updates (Anton Shestakov)
 
 2.2.1 (2010-03-27) - Fewer than four out of ten people respect my promises
                      -- and possibly more!
