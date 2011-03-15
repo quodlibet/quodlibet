@@ -43,6 +43,11 @@ class EmptyBar(gtk.VBox, Browser):
         self._filter = None
         self._library = library
         self.__main = bool(player)
+        self.commands = {"query": self.__query}
+        self.connect('destroy', self.__destroy)
+
+    def __destroy(self, *args):
+        del self.commands
 
     def dynamic(self, song):
         if self._filter is not None:
