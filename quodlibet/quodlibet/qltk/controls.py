@@ -103,12 +103,14 @@ class SeekBar(HSlider):
         # so we mangle the event.  clicking with other buttons moves
         # the slider in step increments, clicking with the middle
         # button moves the slider to the location of the click.
-        event.button = 2
+        if hasattr(event, "button"):
+            event.button = 2
         self.__lock = True
 
     def __seek_unlock(self, scale, event, player):
         # HACK: see __seek_lock
-        event.button = 2
+        if hasattr(event, "button"):
+            event.button = 2
         self.__lock = False
         if self.__seekable: player.seek(self.scale.get_value() * 1000)
 
