@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 18:50+0100\n"
-"PO-Revision-Date: 2011-02-24 00:57+0800\n"
+"POT-Creation-Date: 2011-03-18 15:19+0800\n"
+"PO-Revision-Date: 2011-03-18 15:20+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
 "Language: \n"
@@ -438,7 +438,7 @@ msgid "Choose New Stations"
 msgstr "Выберите новые станции"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
-#: ../quodlibet/browsers/search.py:159
+#: ../quodlibet/browsers/search.py:164
 msgid "_Search:"
 msgstr "_Найти:"
 
@@ -717,31 +717,31 @@ msgstr "Без просмотра"
 msgid "_Disable Browser"
 msgstr "_Без просмотра"
 
-#: ../quodlibet/browsers/search.py:106
+#: ../quodlibet/browsers/search.py:111
 msgid "_Limit:"
 msgstr "_Ограничение:"
 
-#: ../quodlibet/browsers/search.py:117
+#: ../quodlibet/browsers/search.py:122
 msgid "_Weight"
 msgstr "По _оценкам"
 
-#: ../quodlibet/browsers/search.py:170
+#: ../quodlibet/browsers/search.py:175
 msgid "Search"
 msgstr "Найти"
 
-#: ../quodlibet/browsers/search.py:172
+#: ../quodlibet/browsers/search.py:177
 msgid "Search your library"
 msgstr "Найти в фонотеке"
 
-#: ../quodlibet/browsers/search.py:206
+#: ../quodlibet/browsers/search.py:211
 msgid "_Limit Results"
 msgstr "_Ограничить результаты"
 
-#: ../quodlibet/browsers/search.py:251 ../quodlibet/qltk/prefs.py:154
+#: ../quodlibet/browsers/search.py:256 ../quodlibet/qltk/prefs.py:154
 msgid "Search Library"
 msgstr "Поиск по фонотеке"
 
-#: ../quodlibet/browsers/search.py:252
+#: ../quodlibet/browsers/search.py:257
 msgid "_Search Library"
 msgstr "_Поиск по фонотеке"
 
@@ -929,7 +929,7 @@ msgstr "Отображать оставшееся время"
 msgid "_Edit Bookmarks..."
 msgstr "_Изменить закладки..."
 
-#: ../quodlibet/qltk/controls.py:199
+#: ../quodlibet/qltk/controls.py:201
 msgid "Stop after this song"
 msgstr "Остановиться после этой композиции"
 
@@ -968,14 +968,13 @@ msgid "Deleting %(current)d/%(total)d."
 msgstr "Удаление %(current)d/%(total)d."
 
 #: ../quodlibet/qltk/delete.py:97
-#, fuzzy
 msgid "Unable to move to trash"
-msgstr "Не удалось сохранить базу данных iPod"
+msgstr "Не удалось переместить файл в корзину"
 
 #: ../quodlibet/qltk/delete.py:98
-#, fuzzy, python-format
+#, python-format
 msgid "Moving <b>%s</b> to the trash failed."
-msgstr "Не удалось извлечь <b>%s</b>."
+msgstr "Не удалось переместить <b>%s</b> в корзину."
 
 #: ../quodlibet/qltk/delete.py:114
 msgid "Unable to delete file"
