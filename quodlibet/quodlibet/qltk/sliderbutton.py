@@ -30,7 +30,7 @@ class _PopupSlider(gtk.EventBox):
         hscale = self.Scale(self.__adj)
         hscale.set_size_request(*(req or self._req))
         window.connect('button-press-event', self.__button)
-        hscale.connect('key-press-event', self.__key)
+        window.connect('key-press-event', self.__key)
         hscale.set_draw_value(False)
         hscale.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self.scale = hscale
