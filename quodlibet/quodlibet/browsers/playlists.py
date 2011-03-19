@@ -203,7 +203,7 @@ class Playlist(list):
 
     def length(self):
         """Returns the total length of tracks in this playlist"""
-        return sum([t.get("~#length")
+        return sum([t.get("~#length") or 0
                     for t in self if isinstance(t, AudioFile)])
 
     def format(self):
