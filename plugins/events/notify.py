@@ -23,7 +23,6 @@ class Notify(EventPlugin):
             "/org/freedesktop/Notifications")
         self.ni = dbus.Interface(obj, "org.freedesktop.Notifications")
         self.last_id = None
-        self.__last_stopped = False
 
     # david's default settings - this needs to be configurable
     class conf(object):
@@ -38,13 +37,7 @@ by <~people>>'''
     # for rapid debugging
     def plugin_single_song(self, song): self.plugin_on_song_started(song)
 
-    def plugin_on_song_ended(self, song, stopped):
-        self.__last_stopped = stopped
-
     def plugin_on_song_started(self, song):
-        from quodlibet.player import playlist
-        print "user: ", (playlist.paused or self.__last_stopped)
-        
         if not song:
             return
 
