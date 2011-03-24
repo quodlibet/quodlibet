@@ -204,6 +204,7 @@ class TrayIcon(EventPlugin):
     __size = -1
     __w_sig_map = None
     __w_sig_del = None
+    __theme_sig = None
     __stop_after = None
     __first_map = True
     __pattern = Pattern(
@@ -224,7 +225,8 @@ class TrayIcon(EventPlugin):
             self.__icon =  EggTrayIconWrapper()
 
         self.__icon_theme = gtk.icon_theme_get_default()
-        self.__icon_theme.connect('changed', self.__theme_changed)
+        self.__theme_sig = self.__icon_theme.connect('changed',
+            self.__theme_changed)
 
         self.__icon.connect('size-changed', self.__size_changed)
         #no size-changed under win32
@@ -246,6 +248,9 @@ class TrayIcon(EventPlugin):
         self.plugin_on_song_started(player.song)
 
     def disabled(self):
+        self.__icon_theme.disconnect(self.__theme_sig)
+        self.__icon_theme = None
+        self.__stop_after = None
         window.disconnect(self.__w_sig_map)
         window.disconnect(self.__w_sig_del)
         self.__icon.set_visible(False)
