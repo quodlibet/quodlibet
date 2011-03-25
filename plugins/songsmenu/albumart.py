@@ -577,7 +577,7 @@ class DarktownParser(BasicHTMLParser):
     def __init__(self):
         super(DarktownParser, self).__init__()
 
-        self.root_url = 'http://www.darktown.to'
+        self.root_url = 'http://www.darktown.ws'
         self.page_count = 0
         self.limit = 0
         self.covers = []
@@ -1283,7 +1283,7 @@ engines = []
 #-------
 eng = {}
 eng['class'] = DarktownParser
-eng['url'] = 'http://www.darktown.to/'
+eng['url'] = 'http://www.darktown.ws/'
 eng['replace'] = ' '
 eng['config_id'] = 'darktown'
 
