@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-03-13 18:50+0100\n"
-"PO-Revision-Date: 2010-02-21 11:16+0100\n"
+"PO-Revision-Date: 2011-03-29 11:04+0200\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
 "Language: \n"
@@ -316,11 +316,10 @@ msgid "Sort _by:"
 msgstr "Sortieren _nach:"
 
 #: ../quodlibet/browsers/albums.py:573
-#, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
-msgstr[0] "Album-_Cover anzeigen"
-msgstr[1] "Album-_Cover anzeigen"
+msgstr[0] "Album-_Cover neu laden"
+msgstr[1] "Album-_Cover neu laden"
 
 #: ../quodlibet/browsers/audiofeeds.py:39
 #: ../quodlibet/browsers/audiofeeds.py:49
@@ -646,9 +645,8 @@ msgid "A playlist named %s already exists."
 msgstr "Die Wiedergabeliste %s existiert bereits."
 
 #: ../quodlibet/browsers/playlists.py:202
-#, fuzzy
 msgid "Total size unknown"
-msgstr "Gesamtgröße:"
+msgstr "Gesamtgröße unbekannt"
 
 #: ../quodlibet/browsers/playlists.py:211
 #: ../quodlibet/qltk/exfalsowindow.py:192 ../quodlibet/qltk/information.py:502
@@ -659,9 +657,8 @@ msgstr[0] "%d Titel"
 msgstr[1] "%d Titel"
 
 #: ../quodlibet/browsers/playlists.py:233
-#, fuzzy
 msgid "Enter a name for the new playlist:"
-msgstr "Geben Sie einen Namen für den neuen Ordner ein:"
+msgstr "Geben Sie einen Namen für die neue Wiedergabeliste ein:"
 
 #: ../quodlibet/browsers/playlists.py:239
 msgid "_New Playlist"
@@ -961,14 +958,13 @@ msgid "Deleting %(current)d/%(total)d."
 msgstr "Lösche %(current)d/%(total)d."
 
 #: ../quodlibet/qltk/delete.py:97
-#, fuzzy
 msgid "Unable to move to trash"
-msgstr "Die iPod-Datenbank konnte nicht gespeichert werden"
+msgstr "Konnte nicht in den Müll verschieben"
 
 #: ../quodlibet/qltk/delete.py:98
-#, fuzzy, python-format
+#, python-format
 msgid "Moving <b>%s</b> to the trash failed."
-msgstr "Auswerfen von <b>%s</b> fehlgeschlagen."
+msgstr "Verschieben von <b>%s</b> in den Müll ist fehlgeschlagen."
 
 #: ../quodlibet/qltk/delete.py:114
 msgid "Unable to delete file"
@@ -1245,11 +1241,11 @@ msgid "Never"
 msgstr "Nie"
 
 #: ../quodlibet/qltk/information.py:221
-#, fuzzy, python-format
+#, python-format
 msgid "%(n)d time"
 msgid_plural "%(n)d times"
-msgstr[0] "%d-mal"
-msgstr[1] "%d-mal"
+msgstr[0] "%(n)d-mal"
+msgstr[1] "%(n)d-mal"
 
 #: ../quodlibet/qltk/information.py:240 ../quodlibet/util/tags.py:85
 msgid "added"
@@ -1542,19 +1538,17 @@ msgid "Confirm _multiple ratings"
 msgstr "Gleichzeitiges Bewerten _mehrerer Titel bestätigen"
 
 #: ../quodlibet/qltk/prefs.py:162
-#, fuzzy
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
 "Um die Bewertungen mehrerer Titel gleichzeitig zu ändern, wird eine "
-"Bestätigung angefordert."
+"Bestätigung angefordert"
 
 #: ../quodlibet/qltk/prefs.py:166
 msgid "Enable _one-click ratings"
 msgstr "Bewertungen mit _einfachem Klick zulassen"
 
 #: ../quodlibet/qltk/prefs.py:170
-#, fuzzy
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr ""
 "Das Ändern von Bewertungen durch Klicken in der Spalte \"Bewertung\" zulassen"
@@ -1656,12 +1650,14 @@ msgstr "Begrenzungszeichen zum Trennen von Tags"
 
 #: ../quodlibet/qltk/prefs.py:324
 msgid "Enable _human title case"
-msgstr ""
+msgstr "Aktiviere _menschliche Titel-Groß-/Kleinschreibung"
 
 #: ../quodlibet/qltk/prefs.py:326
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
 msgstr ""
+"Benutze gebräuchliche englische Regeln für Titel-Groß-/Kleinschreibung wie "
+"\"Dark Night of the Soul\""
 
 #: ../quodlibet/qltk/prefs.py:331
 msgid "Save ratings and play _counts"
@@ -1916,7 +1912,7 @@ msgstr "Nicht-_ASCII-Zeichen entfernen"
 
 #: ../quodlibet/qltk/renamefiles.py:62
 msgid "Use only _lowercase characters"
-msgstr ""
+msgstr "Nur _kleingeschriebene Zeichen verwenden"
 
 #: ../quodlibet/qltk/renamefiles.py:70
 msgid "Rename Files"
@@ -2306,12 +2302,12 @@ msgstr "Ordner"
 
 #: ../quodlibet/__init__.py:42
 msgid "Quod Libet"
-msgstr "Quod Libet beenden"
+msgstr "Quod Libet"
 
 #. Translators: Name of the debug Output Log window
 #: ../quodlibet/__init__.py:107
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #. Translators: "W" as in "Warning". It is prepended to
 #. terminal output. APT uses a similar output format.
@@ -2402,9 +2398,9 @@ msgid "%s: Could not import ctypes."
 msgstr "%s: ctypes konnte nicht importiert werden."
 
 #: ../quodlibet/devices/__init__.py:319
-#, fuzzy, python-format
+#, python-format
 msgid "%s: Could not find libudev."
-msgstr "%s: media-player-info wurde nicht gefunden."
+msgstr "%s: libudev wurde nicht gefunden."
 
 #: ../quodlibet/devices/__init__.py:323
 #, python-format
@@ -2413,20 +2409,20 @@ msgstr "%s: media-player-info wurde nicht gefunden."
 
 #: ../quodlibet/devices/__init__.py:485
 msgid "Initializing device backend."
-msgstr ""
+msgstr "Initialisiere Geräte-Backend."
 
 #: ../quodlibet/devices/__init__.py:486
 #, python-format
 msgid "Trying '%s'"
-msgstr ""
+msgstr "Versuche '%s'"
 
 #: ../quodlibet/devices/__init__.py:506
 msgid "Couldn't connect to a device backend."
-msgstr ""
+msgstr "Konnte nicht mit einem Geräte-Backend verbinden."
 
 #: ../quodlibet/devices/__init__.py:508
 msgid "Device backend initialized."
-msgstr ""
+msgstr "Geräte-Backend initialisiert."
 
 #: ../quodlibet/formats/__init__.py:59
 #, python-format
@@ -2444,7 +2440,7 @@ msgstr "Das Audio-Backend %r ist nicht installiert."
 
 #: ../quodlibet/player/gstbe.py:41
 msgid "Invalid GStreamer output pipeline, trying default."
-msgstr ""
+msgstr "Ungültige GStreamer Ausgabe-Pipeline, versuche die Standard-Pipeline."
 
 #: ../quodlibet/player/gstbe.py:50 ../quodlibet/player/xinebe.py:37
 msgid "Unable to create audio output"
@@ -2462,13 +2458,16 @@ msgstr ""
 #. Backend error; show message and halt playback
 #: ../quodlibet/player/gstbe.py:240
 msgid "Output Error"
-msgstr ""
+msgstr "Ausgabefehler"
 
 #: ../quodlibet/player/gstbe.py:241
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
+"Die GStreamer Ausgabe-Pipeline konnte nicht initialisiert werden. Die "
+"Pipeline könnte ungültig, oder das Gerät gerade aktiv sein. Überprüfen Sie "
+"die Player Einstellungen."
 
 #: ../quodlibet/player/gstbe.py:394
 msgid "Unable to open input files"
@@ -2708,9 +2707,8 @@ msgid "album peak"
 msgstr "Album-Spitzenpegel"
 
 #: ../quodlibet/util/tags.py:83
-#, fuzzy
 msgid "reference loudness"
-msgstr "Einstellungen"
+msgstr "Referenzlautstärke"
 
 #: ../quodlibet/util/tags.py:88
 msgid "discs"
@@ -2753,9 +2751,8 @@ msgid "bookmark"
 msgstr "Lesezeichen"
 
 #: ../quodlibet/util/tags.py:108
-#, fuzzy
 msgid "file format"
-msgstr "Keine Informationen zur Abspieldauer"
+msgstr "Dateiformat"
 
 #. Other things put here as a canonical translated copy.
 #: ../quodlibet/util/tags.py:128
@@ -2815,24 +2812,24 @@ msgstr[1] "%d Jahre"
 
 #: ../quodlibet/util/logging.py:8
 msgid "General"
-msgstr ""
+msgstr "Allgemein"
 
 #: ../quodlibet/util/logging.py:29
 msgid "No log available."
-msgstr ""
+msgstr "Kein Protokoll verfügbar."
 
 #: ../quodlibet/util/logging.py:41
 msgid "Unable to dump logs, you're boned."
-msgstr ""
+msgstr "Protokolle konnten nicht geschrieben werden."
 
 #: ../quodlibet/qltk/notif.py:176
 msgid "Active tasks"
-msgstr ""
+msgstr "Aktive Prozesse"
 
 #: ../quodlibet/qltk/notif.py:182
 #, python-format
 msgid "%d tasks running"
-msgstr ""
+msgstr "%d aktive Prozesse"
 
 #~ msgid "pattern"
 #~ msgstr "Muster"
