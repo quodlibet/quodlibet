@@ -1,6 +1,11 @@
 Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
 
+2.3 (2011-04-01) - I THOUGHT THAT WAS PRETTY CLEAR
+    * Various minor bug fixes
+    * Some small translation updates (Anton Shestakov)
+    * Update of the 2.2.99 news entry
+
 2.2.99 (2011-03-13) - I can imagine that one day there could be a person
                       who would read that
     * Quod Libet now needs Python >=2.5
@@ -31,7 +36,7 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
     * Make the default rating changeable (library reload needed)
     * Drag and scroll in the song list
     * Faster context menu opening
-    * Display playlist size (library reload needed)
+    * Display playlist size (library reload needed) (Nick Boultbee)
     * Support queries without specifying a tag name
     * All queries in the album browser use a standard operation (avg, sum etc.)
     * Support ~rating, ~#bitrate in the album pattern
@@ -39,6 +44,7 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
     * Don't jump to a playing song if it was selected from the songlist
     * Faster local cover search
     * Support FreeDesktop trash spec
+    * Lower case option for file renaming (Nick Boultbee)
     * Various bug fixes, speed improvements (Jacob Lee, Johannes Rohrer,
       Tshepang Lekhonkhobe)
     * Bug fixes:
@@ -47,7 +53,7 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
         * Fix udev crashes
         * Paned browser leaks
         * Respect global filter in all browsers/filters
-        * Don't loose tag values with different cased tag names (APEv2)
+        * Don't lose tag values with differently cased tag names (APEv2)
         * Fix --set-browser (Carlo Teubner)
         * Properly handle the case where a playing song gets deleted
         * Fix redraw errors using compiz
@@ -68,18 +74,18 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
         * MPRIS 1.0/2.0 plugin
         * Ubuntu sound menu plugin
         * Rating reset plugin
-        * Track repeat plugin
+        * Track repeat plugin (Nick Boultbee)
     * Plugins:
         * Go to bookmark plugin now menu based
         * Fix some album art plugin backends (Aymeric Mansoux, ..)
-        * Improved "human" title casing
+        * Improved "human" title casing (Nick Boultbee)
         * Fix queue only plugin stopping the current song.
         * Only use allowed HTML in the notify plugin.
         * musicbrainz: allow writing sort tags (Michaël Ball)
     * Translations:
         * new Latvian translation (Einars Sprugis)
         * new Basque translation (Piarres Beobide)
-        * Frensh translation updates (Nick Boultbee)
+        * French translation updates (Nick Boultbee)
         * Brazilian/Portuguese translation updates (Djavan Fagundes)
         * Russian translation updates (Anton Shestakov)
 

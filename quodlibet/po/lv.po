@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 18:50+0100\n"
+"POT-Creation-Date: 2011-03-31 23:57+0200\n"
 "PO-Revision-Date: 2010-03-30 10:12+0300\n"
 "Last-Translator: Einars Sprugis <einars8@gmail.com>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
@@ -433,7 +433,7 @@ msgid "Choose New Stations"
 msgstr "Izvēlieties jaunas stacijas"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
-#: ../quodlibet/browsers/search.py:159
+#: ../quodlibet/browsers/search.py:164
 msgid "_Search:"
 msgstr "_Meklēt:"
 
@@ -711,31 +711,31 @@ msgstr "Atslēgt pārlūku"
 msgid "_Disable Browser"
 msgstr "A_tslēgt pārlūku"
 
-#: ../quodlibet/browsers/search.py:106
+#: ../quodlibet/browsers/search.py:111
 msgid "_Limit:"
 msgstr "_Limits:"
 
-#: ../quodlibet/browsers/search.py:117
+#: ../quodlibet/browsers/search.py:122
 msgid "_Weight"
 msgstr "S_vars"
 
-#: ../quodlibet/browsers/search.py:170
+#: ../quodlibet/browsers/search.py:175
 msgid "Search"
 msgstr "Meklēt"
 
-#: ../quodlibet/browsers/search.py:172
+#: ../quodlibet/browsers/search.py:177
 msgid "Search your library"
 msgstr "Meklēt jūsu bibliotēkā"
 
-#: ../quodlibet/browsers/search.py:206
+#: ../quodlibet/browsers/search.py:211
 msgid "_Limit Results"
 msgstr "_Limitēt rezultātus"
 
-#: ../quodlibet/browsers/search.py:251 ../quodlibet/qltk/prefs.py:154
+#: ../quodlibet/browsers/search.py:256 ../quodlibet/qltk/prefs.py:154
 msgid "Search Library"
 msgstr "Meklēt bibliotēkā"
 
-#: ../quodlibet/browsers/search.py:252
+#: ../quodlibet/browsers/search.py:257
 msgid "_Search Library"
 msgstr "_Meklēt bibliotēkā"
 
@@ -919,7 +919,7 @@ msgstr "Rādīt atlikušo laiku"
 msgid "_Edit Bookmarks..."
 msgstr "R_ediģēt grāmatzīmes..."
 
-#: ../quodlibet/qltk/controls.py:199
+#: ../quodlibet/qltk/controls.py:201
 msgid "Stop after this song"
 msgstr "Apstāties pēc šīs dziesmas"
 

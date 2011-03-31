@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 18:50+0100\n"
+"POT-Creation-Date: 2011-03-31 23:57+0200\n"
 "PO-Revision-Date: 2007-04-29 20:38+0900\n"
 "Last-Translator: Yasushi Iwata <yasusii@lowlife.jp>\n"
 "Language-Team: Japanese\n"
@@ -424,7 +424,7 @@ msgid "Choose New Stations"
 msgstr "新しいラジオ局を選択してください"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
-#: ../quodlibet/browsers/search.py:159
+#: ../quodlibet/browsers/search.py:164
 msgid "_Search:"
 msgstr "検索"
 
@@ -707,31 +707,31 @@ msgstr "ブラウザの無効化"
 msgid "_Disable Browser"
 msgstr "ブラウザの無効化(_D)"
 
-#: ../quodlibet/browsers/search.py:106
+#: ../quodlibet/browsers/search.py:111
 msgid "_Limit:"
 msgstr "検索結果の上限(_L)"
 
-#: ../quodlibet/browsers/search.py:117
+#: ../quodlibet/browsers/search.py:122
 msgid "_Weight"
 msgstr "ウェイト(_W)"
 
-#: ../quodlibet/browsers/search.py:170
+#: ../quodlibet/browsers/search.py:175
 msgid "Search"
 msgstr "検索"
 
-#: ../quodlibet/browsers/search.py:172
+#: ../quodlibet/browsers/search.py:177
 msgid "Search your library"
 msgstr "ライブラリを検索します"
 
-#: ../quodlibet/browsers/search.py:206
+#: ../quodlibet/browsers/search.py:211
 msgid "_Limit Results"
 msgstr "検索結果の上限を設定(_L)"
 
-#: ../quodlibet/browsers/search.py:251 ../quodlibet/qltk/prefs.py:154
+#: ../quodlibet/browsers/search.py:256 ../quodlibet/qltk/prefs.py:154
 msgid "Search Library"
 msgstr "ライブラリの検索"
 
-#: ../quodlibet/browsers/search.py:252
+#: ../quodlibet/browsers/search.py:257
 msgid "_Search Library"
 msgstr "ライブラリの検索(_S)"
 
@@ -926,7 +926,7 @@ msgstr "残り時間を表示"
 msgid "_Edit Bookmarks..."
 msgstr "ブックマークの編集(_E)"
 
-#: ../quodlibet/qltk/controls.py:199
+#: ../quodlibet/qltk/controls.py:201
 msgid "Stop after this song"
 msgstr "この曲の後で停止"
 

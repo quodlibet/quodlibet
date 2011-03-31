@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 18:50+0100\n"
+"POT-Creation-Date: 2011-03-31 23:57+0200\n"
 "PO-Revision-Date: 2006-07-05 15:56-0500\n"
 "Last-Translator: Rostislav \"zbrox\" Raykov <zbrox@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -436,7 +436,7 @@ msgid "Choose New Stations"
 msgstr "Избор на нови станции"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
-#: ../quodlibet/browsers/search.py:159
+#: ../quodlibet/browsers/search.py:164
 msgid "_Search:"
 msgstr "_Търсене:"
 
@@ -725,31 +725,31 @@ msgstr "_Изключване на разглеждането"
 msgid "_Disable Browser"
 msgstr "_Изключване на разглеждането"
 
-#: ../quodlibet/browsers/search.py:106
+#: ../quodlibet/browsers/search.py:111
 msgid "_Limit:"
 msgstr "_Ограничаване:"
 
-#: ../quodlibet/browsers/search.py:117
+#: ../quodlibet/browsers/search.py:122
 msgid "_Weight"
 msgstr "_Тежест"
 
-#: ../quodlibet/browsers/search.py:170
+#: ../quodlibet/browsers/search.py:175
 msgid "Search"
 msgstr "Търсене"
 
-#: ../quodlibet/browsers/search.py:172
+#: ../quodlibet/browsers/search.py:177
 msgid "Search your library"
 msgstr "Търсене из фонотеката"
 
-#: ../quodlibet/browsers/search.py:206
+#: ../quodlibet/browsers/search.py:211
 msgid "_Limit Results"
 msgstr "_Ограничаване на резултатите"
 
-#: ../quodlibet/browsers/search.py:251 ../quodlibet/qltk/prefs.py:154
+#: ../quodlibet/browsers/search.py:256 ../quodlibet/qltk/prefs.py:154
 msgid "Search Library"
 msgstr "Търсене във фонотеката"
 
-#: ../quodlibet/browsers/search.py:252
+#: ../quodlibet/browsers/search.py:257
 msgid "_Search Library"
 msgstr "Т_ърсене във фонотеката"
 
@@ -945,7 +945,7 @@ msgstr "Показване на оставащото време"
 msgid "_Edit Bookmarks..."
 msgstr "_Редактиране на отметки..."
 
-#: ../quodlibet/qltk/controls.py:199
+#: ../quodlibet/qltk/controls.py:201
 msgid "Stop after this song"
 msgstr "Спиране след тази песен"
 

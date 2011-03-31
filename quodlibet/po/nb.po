@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nb\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 18:50+0100\n"
+"POT-Creation-Date: 2011-03-31 23:57+0200\n"
 "PO-Revision-Date: 2007-08-18 18:25+0200\n"
 "Last-Translator: Eirik Haatveit <haatveit@gmail.com>\n"
 "Language-Team: Norwegian Bokmål\n"
@@ -428,7 +428,7 @@ msgid "Choose New Stations"
 msgstr "Velg nye stasjoner"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
-#: ../quodlibet/browsers/search.py:159
+#: ../quodlibet/browsers/search.py:164
 msgid "_Search:"
 msgstr "_Søk:"
 
@@ -705,31 +705,31 @@ msgstr "Deaktiver visning"
 msgid "_Disable Browser"
 msgstr "_Deaktiver utforsker"
 
-#: ../quodlibet/browsers/search.py:106
+#: ../quodlibet/browsers/search.py:111
 msgid "_Limit:"
 msgstr "_Grense:"
 
-#: ../quodlibet/browsers/search.py:117
+#: ../quodlibet/browsers/search.py:122
 msgid "_Weight"
 msgstr "_Innflytelse"
 
-#: ../quodlibet/browsers/search.py:170
+#: ../quodlibet/browsers/search.py:175
 msgid "Search"
 msgstr "Søk"
 
-#: ../quodlibet/browsers/search.py:172
+#: ../quodlibet/browsers/search.py:177
 msgid "Search your library"
 msgstr "Søk i biblioteket ditt"
 
-#: ../quodlibet/browsers/search.py:206
+#: ../quodlibet/browsers/search.py:211
 msgid "_Limit Results"
 msgstr "_Begrens resultater"
 
-#: ../quodlibet/browsers/search.py:251 ../quodlibet/qltk/prefs.py:154
+#: ../quodlibet/browsers/search.py:256 ../quodlibet/qltk/prefs.py:154
 msgid "Search Library"
 msgstr "Søk i bibliotek"
 
-#: ../quodlibet/browsers/search.py:252
+#: ../quodlibet/browsers/search.py:257
 msgid "_Search Library"
 msgstr "_Søk i bibliotek"
 
@@ -914,7 +914,7 @@ msgstr "Vis gjenværende tid"
 msgid "_Edit Bookmarks..."
 msgstr "_Rediger bokmerker..."
 
-#: ../quodlibet/qltk/controls.py:199
+#: ../quodlibet/qltk/controls.py:201
 msgid "Stop after this song"
 msgstr "Stopp etter denne sangen"
 

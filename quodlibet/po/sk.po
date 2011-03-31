@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 18:50+0100\n"
+"POT-Creation-Date: 2011-03-31 23:57+0200\n"
 "PO-Revision-Date: 2006-11-08 19:59+0100\n"
 "Last-Translator: Lukáš Lalinský <lalinsky@gmail.com>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -428,7 +428,7 @@ msgid "Choose New Stations"
 msgstr "Zvoľte nové stanice"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
-#: ../quodlibet/browsers/search.py:159
+#: ../quodlibet/browsers/search.py:164
 msgid "_Search:"
 msgstr "_Vyhľadať:"
 
@@ -708,31 +708,31 @@ msgstr "Vypnúť prehliadač"
 msgid "_Disable Browser"
 msgstr "_Vypnúť prehliadač"
 
-#: ../quodlibet/browsers/search.py:106
+#: ../quodlibet/browsers/search.py:111
 msgid "_Limit:"
 msgstr "_Limit:"
 
-#: ../quodlibet/browsers/search.py:117
+#: ../quodlibet/browsers/search.py:122
 msgid "_Weight"
 msgstr "_Váha"
 
-#: ../quodlibet/browsers/search.py:170
+#: ../quodlibet/browsers/search.py:175
 msgid "Search"
 msgstr "Vyhľadávať"
 
-#: ../quodlibet/browsers/search.py:172
+#: ../quodlibet/browsers/search.py:177
 msgid "Search your library"
 msgstr "Vyhľadávať v knižnici"
 
-#: ../quodlibet/browsers/search.py:206
+#: ../quodlibet/browsers/search.py:211
 msgid "_Limit Results"
 msgstr "_Obmedziť výsledky"
 
-#: ../quodlibet/browsers/search.py:251 ../quodlibet/qltk/prefs.py:154
+#: ../quodlibet/browsers/search.py:256 ../quodlibet/qltk/prefs.py:154
 msgid "Search Library"
 msgstr "Vyhľadávať v knižnici"
 
-#: ../quodlibet/browsers/search.py:252
+#: ../quodlibet/browsers/search.py:257
 msgid "_Search Library"
 msgstr "_Vyhľadávať v knižnici"
 
@@ -918,7 +918,7 @@ msgstr "Zobraziť zostávajúci čas"
 msgid "_Edit Bookmarks..."
 msgstr "_Upraviť záložky..."
 
-#: ../quodlibet/qltk/controls.py:199
+#: ../quodlibet/qltk/controls.py:201
 msgid "Stop after this song"
 msgstr "Skončiť po tejto skladbe"
 

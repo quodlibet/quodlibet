@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 18:50+0100\n"
+"POT-Creation-Date: 2011-03-31 23:57+0200\n"
 "PO-Revision-Date: 2011-03-29 11:04+0200\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -432,7 +432,7 @@ msgid "Choose New Stations"
 msgstr "Neue Sender auswählen"
 
 #: ../quodlibet/browsers/iradio.py:163 ../quodlibet/browsers/iradio.py:291
-#: ../quodlibet/browsers/search.py:159
+#: ../quodlibet/browsers/search.py:164
 msgid "_Search:"
 msgstr "S_uche:"
 
@@ -707,31 +707,31 @@ msgstr "Browser deaktivieren"
 msgid "_Disable Browser"
 msgstr "Browser _deaktivieren"
 
-#: ../quodlibet/browsers/search.py:106
+#: ../quodlibet/browsers/search.py:111
 msgid "_Limit:"
 msgstr "_Limit:"
 
-#: ../quodlibet/browsers/search.py:117
+#: ../quodlibet/browsers/search.py:122
 msgid "_Weight"
 msgstr "_Bewertung"
 
-#: ../quodlibet/browsers/search.py:170
+#: ../quodlibet/browsers/search.py:175
 msgid "Search"
 msgstr "Suchen"
 
-#: ../quodlibet/browsers/search.py:172
+#: ../quodlibet/browsers/search.py:177
 msgid "Search your library"
 msgstr "Bibliothek durchsuchen"
 
-#: ../quodlibet/browsers/search.py:206
+#: ../quodlibet/browsers/search.py:211
 msgid "_Limit Results"
 msgstr "Er_gebnis weiter einschränken"
 
-#: ../quodlibet/browsers/search.py:251 ../quodlibet/qltk/prefs.py:154
+#: ../quodlibet/browsers/search.py:256 ../quodlibet/qltk/prefs.py:154
 msgid "Search Library"
 msgstr "Bibliothek durchsuchen"
 
-#: ../quodlibet/browsers/search.py:252
+#: ../quodlibet/browsers/search.py:257
 msgid "_Search Library"
 msgstr "Bibliothek d_urchsuchen"
 
@@ -920,7 +920,7 @@ msgstr "Verbleibende Abspieldauer anzeigen"
 msgid "_Edit Bookmarks..."
 msgstr "_Lesezeichen bearbeiten..."
 
-#: ../quodlibet/qltk/controls.py:199
+#: ../quodlibet/qltk/controls.py:201
 msgid "Stop after this song"
 msgstr "Nach diesem Titel stoppen"
 
