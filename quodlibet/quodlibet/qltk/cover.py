@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -149,11 +150,17 @@ class CoverImage(gtk.EventBox):
         If one is already showing, destroy it instead"""
         if (self.__song and event.button == 1 and self.__file and
             event.type == gtk.gdk.BUTTON_PRESS):
-            if self.__current_bci is None:
-                # We're not displaying it yet; display it.
-                self.__current_bci = BigCenteredImage(
-                    self.__song.comma("album"), self.__file.name, self)
-                self.__current_bci.connect('destroy', self.__reset_bci)
-            else:
+            if self.__current_bci is not None:
                 # We're displaying it; destroy it.
                 self.__current_bci.destroy()
+                return
+            # We're not displaying it yet; display it.
+            while self.__file:
+                try:
+                    self.__current_bci = BigCenteredImage(
+                        self.__song.comma("album"), self.__file.name, self)
+                except gobject.GError: # reload in case the image file is gone
+                    self.set_song(self, self.__song)
+                else:
+                    self.__current_bci.connect('destroy', self.__reset_bci)
+                    break
