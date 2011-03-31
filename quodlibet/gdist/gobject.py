@@ -47,12 +47,13 @@ class build_gobject_ext(distutils_build_ext, GCommand):
         distutils_build_ext.finalize_options(self)
         GCommand.finalize_options(self)
         self.extensions = self.distribution.gobject_modules
+        pkg_config = ["pkg-config", "--print-errors"]
         self._defsdir = self.capture(
-            ["pkg-config", "--variable", "defsdir", "pygtk-2.0"]).strip()
+            pkg_config + ["--variable", "defsdir", "pygtk-2.0"]).strip()
         self._cargs = self.capture(
-            ["pkg-config", "--cflags", "gtk+-2.0", "pygtk-2.0"]).split()
+            pkg_config + ["--cflags", "gtk+-2.0", "pygtk-2.0"]).split()
         self._ldargs = self.capture(
-            ["pkg-config", "--libs", "gtk+-2.0", "pygtk-2.0"]).split()
+            pkg_config + ["--libs", "gtk+-2.0", "pygtk-2.0"]).split()
     
     def build_extension(self, ext):
         ext.extra_compile_args.extend(self._cargs)
