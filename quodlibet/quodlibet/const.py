@@ -7,7 +7,7 @@ import locale
 if os.name == "nt":
     from win32com.shell import shellcon, shell
 
-VERSION_TUPLE = (2, 3)
+VERSION_TUPLE = (2, 3, -1)
 VERSION = ".".join(map(str, VERSION_TUPLE))
 
 # expanduser doesn't work with unicode on win...
