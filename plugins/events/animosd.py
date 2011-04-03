@@ -301,8 +301,9 @@ class AnimOsd(EventPlugin):
 
         hb = gtk.HBox(spacing=3)
         timeout = gtk.SpinButton(
-            gtk.Adjustment(
-            self.conf.delay/1000.0, 0, 60, 0.1, 1.0, 1.0), 0.1, 1)
+            gtk.Adjustment(self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
+            0.1,
+            1)
         timeout.set_numeric(True)
         timeout.connect('value-changed', change_delay)
 
@@ -377,7 +378,7 @@ by <~people>>'''
             ]
         for key, cget, getconv, setconv in config_map:
             try: value = cget('plugins', 'animosd_' + key)
-            except: continue
+            except: value = None
             try:
                 if getconv is not None:
                     value = getconv(value)
@@ -442,7 +443,7 @@ by <~people>>'''
             window.hide()
             if self.__current_window is window:
                 self.__current_window = None
-            # Delay destroy, apparantly the hide does not quite register if
+            # Delay destroy - apparently the hide does not quite register if
             # the destroy is done immediately.  The compiz animation plugin
             # then sometimes triggers and causes undesirable effects while the
             # popup should already be invisible.
