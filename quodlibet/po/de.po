@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Quod Libet 2.2\n"
+"Project-Id-Version: Quod Libet 2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-31 23:57+0200\n"
-"PO-Revision-Date: 2011-03-29 11:04+0200\n"
+"POT-Creation-Date: 2011-04-12 00:20+0200\n"
+"PO-Revision-Date: 2011-04-09 15:59+0100\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
 "Language: \n"
@@ -1650,14 +1650,14 @@ msgstr "Begrenzungszeichen zum Trennen von Tags"
 
 #: ../quodlibet/qltk/prefs.py:324
 msgid "Enable _human title case"
-msgstr "Aktiviere _menschliche Titel-Groß-/Kleinschreibung"
+msgstr "Übliche Groß-/Kleinschreibung in Titeln verwenden"
 
 #: ../quodlibet/qltk/prefs.py:326
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
 msgstr ""
-"Benutze gebräuchliche englische Regeln für Titel-Groß-/Kleinschreibung wie "
-"\"Dark Night of the Soul\""
+"Gebräuchliche englische Regeln für Groß-/Kleinschreibung von Titeln "
+"verwenden. Beispiel: \"Dark Night of the Soul\""
 
 #: ../quodlibet/qltk/prefs.py:331
 msgid "Save ratings and play _counts"
@@ -1912,7 +1912,7 @@ msgstr "Nicht-_ASCII-Zeichen entfernen"
 
 #: ../quodlibet/qltk/renamefiles.py:62
 msgid "Use only _lowercase characters"
-msgstr "Nur _kleingeschriebene Zeichen verwenden"
+msgstr "Nur _Kleinschreibung verwenden"
 
 #: ../quodlibet/qltk/renamefiles.py:70
 msgid "Rename Files"
@@ -2466,8 +2466,8 @@ msgid ""
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 "Die GStreamer Ausgabe-Pipeline konnte nicht initialisiert werden. Die "
-"Pipeline könnte ungültig, oder das Gerät gerade aktiv sein. Überprüfen Sie "
-"die Player Einstellungen."
+"Pipeline könnte ungültig oder das Gerät gerade aktiv sein. Überprüfen Sie "
+"die Player-Einstellungen."
 
 #: ../quodlibet/player/gstbe.py:394
 msgid "Unable to open input files"
