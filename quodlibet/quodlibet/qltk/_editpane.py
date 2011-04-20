@@ -36,11 +36,13 @@ class FilterCheckButton(ConfigCheckButton):
                 cmp(type(self).__name__, type(other).__name__))
 
 class EditPane(gtk.VBox):
-    def __init__(self, cbes, cbes_defaults, plugins):
+    def __init__(self, cbes_filename, cbes_defaults, plugins):
         super(EditPane, self).__init__(spacing=6)
         self.set_border_width(12)
         hbox = gtk.HBox(spacing=12)
-        self.combo = ComboBoxEntrySave(cbes, cbes_defaults)
+        self.combo = ComboBoxEntrySave(cbes_filename, cbes_defaults,
+            title=_("Path Patterns"),
+            edit_title=_("Edit saved patterns..."))
         hbox.pack_start(self.combo)
         self.preview = gtk.Button(stock=stock.PREVIEW)
         hbox.pack_start(self.preview, expand=False)

@@ -147,7 +147,8 @@ class BoxSearchBar(gtk.HBox):
         if limit: self.__limit = Limit()
 
         combo = ComboBoxEntrySave(QUERIES, count=8,
-            validator=Query.is_valid_color)
+            validator=Query.is_valid_color, title=_("Saved Searches"),
+            edit_title=_("Edit saved searches..."))
         if not completion:
             completion = LibraryTagCompletion(library.librarian)
         combo.child.set_completion(completion)

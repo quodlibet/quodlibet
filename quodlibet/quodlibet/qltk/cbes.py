@@ -12,13 +12,13 @@ import pango
 from quodlibet import qltk
 
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.qltk.entry import ValidatingNoSexyEntry
+from quodlibet.qltk import entry
 
 class CBESEditor(qltk.Window):
-    def __init__(self, cbes):
+    def __init__(self, cbes, title, validator=None):
         super(CBESEditor, self).__init__()
         self.set_border_width(12)
-        self.set_title(_("Saved Values"))
+        self.set_title(title)
         self.set_transient_for(qltk.get_top_parent(cbes))
         self.set_default_size(400, 300)
 
@@ -31,7 +31,7 @@ class CBESEditor(qltk.Window):
         t.set_col_spacing(1, 12)
 
         l = gtk.Label(_("_Name:"))
-        name = gtk.Entry()
+        name = entry.UndoEntry()
         l.set_mnemonic_widget(name)
         l.set_use_underline(True)
         l.set_alignment(0.0, 0.5)
@@ -39,7 +39,7 @@ class CBESEditor(qltk.Window):
         t.attach(name, 1, 2, 0, 1)
 
         l = gtk.Label(_("_Value:"))
-        value = gtk.Entry()
+        value = entry.ValidatingEntry(validator)
         l.set_mnemonic_widget(value)
         l.set_use_underline(True)
         l.set_alignment(0.0, 0.5)
@@ -159,7 +159,8 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
     __last = ""
 
     def __init__(self, filename=None, initial=[], count=5, id=None,
-        validator=None):
+        validator=None, title=_("Saved Values"),
+        edit_title=_("Edit saved values...")):
         self.count = count
         self.filename = filename
         id = filename or id
@@ -182,24 +183,25 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         self.set_row_separator_func(self.__separator_func)
 
         if not len(model):
-            self.__fill(filename, initial)
+            self.__fill(filename, initial, edit_title)
 
         self.remove(self.child)
-        self.add(ValidatingNoSexyEntry(validator))
+        self.add(entry.ValidatingNoSexyEntry(validator))
 
         self.connect_object('destroy', self.set_model, None)
-        self.connect_object('changed', self.__changed, model)
+        self.connect_object('changed', self.__changed, model,
+            validator, title)
 
     def pack_clear_button(self, *args):
         self.child.pack_clear_button(*args)
 
-    def __changed(self, model):
+    def __changed(self, model, validator, title):
         iter = self.get_active_iter()
         if iter:
             if model[iter][2] in ICONS:
                 self.child.set_text(self.__last)
                 Kind = ICONS[model[iter][2]]
-                Kind(self)
+                Kind(self, title, validator)
                 self.set_active(-1)
             else:
                 self.__focus_entry()
@@ -209,9 +211,9 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         self.child.grab_focus()
         self.child.emit('move-cursor', gtk.MOVEMENT_BUFFER_ENDS, 0, False)
 
-    def __fill(self, filename, initial):
+    def __fill(self, filename, initial, edit_title):
         model = self.get_model()
-        model.append(row=["", _("Edit saved values..."), gtk.STOCK_EDIT])
+        model.append(row=["", edit_title, gtk.STOCK_EDIT])
         model.append(row=[None, None, None])
 
         if filename is None: return
