@@ -235,7 +235,9 @@ class PatternCompiler(object):
         return f
 
     def __escape(self, text):
-        return text.replace("\"", "\\\"").replace("\n", r"\n")
+        text = text.replace("\\", r"\\")
+        text = text.replace("\"", "\\\"")
+        return text.replace("\n", r"\n")
 
     def __put_tag(self, text, scope, tag):
         tag = self.__escape(tag)
@@ -304,7 +306,7 @@ def _number(key, value):
 class _FileFromPattern(PatternCompiler):
     _formatters = [_number,
                    (lambda k, s: s.lstrip(".")),
-                   (lambda k, s: s.replace("/", "_")),
+                   (lambda k, s: s.replace(os.sep, "_")),
                    (lambda k, s: s.replace(u"\uff0f", "_")),
                    (lambda k, s: s.strip()),
                    (lambda k, s: (len(s) > 100 and s[:100] + "...") or s),
@@ -316,9 +318,10 @@ class _FileFromPattern(PatternCompiler):
             ext = fn[fn.rfind("."):].lower()
             val_ext = value[-len(ext):].lower()
             if not ext == val_ext: value += ext.lower()
+            if os.name == "nt":
+                value = util.strip_win32_incompat_from_path(value)
             value = util.expanduser(value)
-            #FIXME: windows
-            if "/" in value and not os.path.isabs(value):
+            if os.sep in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")
         return value
 
@@ -331,7 +334,7 @@ def FileFromPattern(string):
     # Since Windows filenames can't use '<>|' anyway, preserving backslash
     # escapes is unnecessary, so we just replace them blindly.
     if os.name == 'nt':
-        string = string.replace("\\", "/")
+        string = string.replace("\\", r"\\")
     return Pattern(string, _FileFromPattern)
 
 def XMLFromPattern(string):

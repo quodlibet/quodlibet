@@ -31,6 +31,13 @@ def strip_win32_incompat(string, BAD = '\:*?;"<>|'):
         return re.sub(r'[\. ]$', "_", string)
     return unicode(os.sep).join(map(fix_end, parts))
 
+def strip_win32_incompat_from_path(string):
+    """Strip Win32-incompatible chars from a path, ignoring os.sep
+    and the drive part"""
+    drive, tail = os.path.splitdrive(string)
+    tail = os.sep.join(map(strip_win32_incompat, tail.split(os.sep)))
+    return drive + tail
+
 def listdir(path, hidden=False):
     """List files in a directory, sorted, fully-qualified.
 

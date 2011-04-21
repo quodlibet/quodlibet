@@ -27,8 +27,9 @@ def main(argv):
     backend, library, player = quodlibet.init(icon="exfalso", backend="nullbe")
 
     from quodlibet.qltk.exfalsowindow import ExFalsoWindow
-    w = ExFalsoWindow(library, args[0])
-    quodlibet.main(w)
+    from quodlibet import widgets
+    widgets.main = ExFalsoWindow(library, args[0])
+    quodlibet.main(widgets.main)
     quodlibet.quit((backend, library, player))
     config.write(const.CONFIG)
 

@@ -372,7 +372,7 @@ class AudioFile(dict):
         """Rename a file. Errors are not handled. This shouldn't be used
         directly; use library.rename instead."""
 
-        if newname[0] == os.sep: util.mkdir(os.path.dirname(newname))
+        if os.path.isabs(newname): util.mkdir(os.path.dirname(newname))
         else: newname = os.path.join(self('~dirname'), newname)
         if not os.path.exists(newname):
             shutil.move(self['~filename'], newname)
