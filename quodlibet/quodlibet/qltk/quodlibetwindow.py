@@ -254,7 +254,7 @@ class QuodLibetWindow(gtk.Window):
 
         library.librarian.connect('removed', self.__set_time)
         library.librarian.connect('added', self.__set_time)
-        library.librarian.connect_object('changed', self.__update_title, player)
+        library.librarian.connect_object('changed', self.__song_changed, player)
         player.connect('song-ended', self.__song_ended)
         player.connect('song-started', self.__song_started)
         player.connect('paused', self.__update_paused, True)
@@ -587,8 +587,12 @@ class QuodLibetWindow(gtk.Window):
         menu.child.set_text(text)
         menu.child.set_use_underline(True)
 
-    def __song_ended(self, player, song, stopped):
+    def __check_remove_song(self, player, song):
         if song is None: return
+        # This would lead to an infinite recursion in case the filter
+        # is something like #(laststarted > 1 day)
+        if self.songlist.model.get_current() is song:
+            return
         if not self.browser.dynamic(song):
             player.remove(song)
             iter = self.songlist.model.find(song)
@@ -596,14 +600,22 @@ class QuodLibetWindow(gtk.Window):
                 self.songlist.model.remove(iter)
                 self.__set_time()
 
-    def __update_title(self, player, songs):
+    def __song_ended(self, player, song, stopped):
+        self.__check_remove_song(player, song)
+
+    def __song_changed(self, player, songs):
+        self.__update_title(player)
+        for song in songs:
+            self.__check_remove_song(player, song)
+
+    def __update_title(self, player):
         song = player.info
         if song:
             self.set_title("Quod Libet - " + song.comma("~title~version"))
         else: self.set_title("Quod Libet")
 
     def __song_started(self, player, song):
-        self.__update_title(player, [song])
+        self.__update_title(player)
 
         for wid in ["Jump", "Next", "EditTags", "Information"]:
             self.ui.get_widget('/Menu/Control/'+wid).set_sensitive(bool(song))
