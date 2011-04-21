@@ -29,13 +29,12 @@ class StripWindowsIncompat(FilterCheckButton):
     _label = _("Strip _Windows-incompatible characters")
     _section = "rename"
     _key = "windows"
-    BAD = '\:*?;"<>|'
     _order = 1.1
     def __init__(self):
         super(StripWindowsIncompat, self).__init__()
-        # If on Windows, force this to be active (and hidden)
+        # If on Windows, force this to be inactive (and hidden)
         if os.name == 'nt':
-            self.set_active(True)
+            self.set_active(False)
             self.set_sensitive(False)
             self.set_no_show_all(True)
     def filter(self, original, filename):

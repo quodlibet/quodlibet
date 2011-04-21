@@ -111,8 +111,10 @@ class TFileFromPattern(_TPattern):
     def test_escape_slash(s):
         fpat = FileFromPattern('<~filename>')
         pat = Pattern('<~filename>')
+        wpat = FileFromPattern(r'\\<artist>\\ "<title>')
         s.assertEquals(fpat.format(s.a), "_path_to_a.mp3")
         s.assertEquals(pat.format(s.a), "/path/to/a.mp3")
+        s.assertEquals(wpat.format(s.a), "\\Artist\\ \"Title5.mp3")
 
     def test_specialcase_anti_ext(s):
         p1 = FileFromPattern('<~filename>')
