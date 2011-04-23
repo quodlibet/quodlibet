@@ -22,8 +22,8 @@ class BasePlayer(gtk.Object):
     song = None
     info = None
     # Replay Gain profiles are a list of values to be tried in order;
-    # Three things can set them: play order, browser, and a default.
-    replaygain_profiles = [None, None, ["none"]]
+    # Four things can set them: rg menu, browser, play order, and a default.
+    replaygain_profiles = [None, None, None, ["none"]]
     _length = 1
     _volume = 1.0
     _eq_values = []

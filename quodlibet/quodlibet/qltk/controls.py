@@ -161,6 +161,23 @@ class Volume(VSlider):
         self.__volume_changed(self.scale, device, i)
         self.show_all()
 
+        replaygain_menu = ReplayGainMenu(device)
+        # mouse click
+        self.child.connect_object('button-press-event',
+            self.__volume_button_press, replaygain_menu)
+        # keyboard
+        self.child.connect('popup-menu', self.__popup, replaygain_menu)
+
+    def __popup(self, widget, menu):
+        time = gtk.get_current_event_time()
+        button = 3
+        return qltk.popup_menu_under_widget(menu, widget, button, time)
+
+    def __volume_button_press(self, menu, event):
+        if event.button == 3:
+            menu.popup(None, None, None, event.button, event.time)
+            return True
+
     def set_value(self, v):
         self.scale.set_value(max(0.0, min(1.0, v)))
 
@@ -185,6 +202,36 @@ class Volume(VSlider):
 
     def __volume_notify(self, device, property):
         self.scale.set_value(device.props.volume)
+
+class ReplayGainMenu(gtk.Menu):
+    __modes = (
+        ("auto", _("Auto_matic"), None),
+        ("track", _("_Track Mode"), ["track"]),
+        ("album", _("_Album Mode"), ["album", "track"])
+    )
+
+    def __init__(self, player):
+        super(ReplayGainMenu, self).__init__()
+
+        item = None
+        for mode, title, profile in self.__modes:
+            item = gtk.RadioMenuItem(item, title, True)
+            self.append(item)
+            item.connect("toggled", self.__changed, player, profile)
+            if player.replaygain_profiles[0] == profile:
+                item.set_active(True)
+        self.show_all()
+
+    def __changed(self, item, player, profile):
+        if item.get_active():
+            player.replaygain_profiles[0] = profile
+            player.volume = player.volume
+
+    def popup(self, *args):
+        gain = config.getboolean("player", "replaygain")
+        for child in self.get_children():
+            child.set_sensitive(gain)
+        return super(ReplayGainMenu, self).popup(*args)
 
 class StopAfterMenu(gtk.Menu):
     __menu = None

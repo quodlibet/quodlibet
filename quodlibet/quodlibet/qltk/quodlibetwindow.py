@@ -569,7 +569,7 @@ class QuodLibetWindow(gtk.Window):
             sig = container.connect('size-allocate', set_size, val)
             container._size_sig = sig
 
-        player.replaygain_profiles[0] = self.browser.replaygain_profiles
+        player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.volume = player.volume
         self.__vbox.pack_end(container)
         container.show()

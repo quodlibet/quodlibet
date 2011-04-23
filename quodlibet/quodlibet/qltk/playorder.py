@@ -217,5 +217,5 @@ class PlayOrder(gtk.ComboBox):
         Order = ORDERS[self.get_active()]
         model.order = Order(model)
         config.set("memory", "order", Order.name)
-        player.replaygain_profiles[1] = Order.replaygain_profiles
+        player.replaygain_profiles[2] = Order.replaygain_profiles
         player.volume = player.volume
