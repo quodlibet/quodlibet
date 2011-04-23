@@ -589,12 +589,7 @@ class QuodLibetWindow(gtk.Window):
 
     def __check_remove_song(self, player, song):
         if song is None: return
-        # This would lead to an infinite recursion in case the filter
-        # is something like #(laststarted > 1 day)
-        if self.songlist.model.get_current() is song:
-            return
         if not self.browser.dynamic(song):
-            player.remove(song)
             iter = self.songlist.model.find(song)
             if iter:
                 self.songlist.model.remove(iter)
