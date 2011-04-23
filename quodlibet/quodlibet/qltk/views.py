@@ -46,6 +46,7 @@ class TreeViewHints(gtk.Window):
         self.__handlers = {}
         self.__current_path = self.__current_col = None
         self.__current_renderer = None
+        self.__view = None
 
     def connect_view(self, view):
         self.__handlers[view] = [
@@ -61,6 +62,9 @@ class TreeViewHints(gtk.Window):
             for handler in self.__handlers[view]: view.disconnect(handler)
             del self.__handlers[view]
         except KeyError: pass
+        # Hide if the active treeview is going away
+        if view is self.__view:
+            self.__undisplay()
 
     def __expose(self, widget, event):
         w, h = self.get_size_request()
@@ -158,9 +162,13 @@ class TreeViewHints(gtk.Window):
             self.__current_renderer.disconnect(self.__edit_id)
         self.__current_renderer = self.__edit_id = None
         self.__current_path = self.__current_col = None
+        self.__view = None
         self.hide()
 
     def __event(self, event):
+        if not self.__view:
+            return True
+
         if event.type != gtk.gdk.SCROLL:
             event.x += self.__dx
             event.y += self.__dy
