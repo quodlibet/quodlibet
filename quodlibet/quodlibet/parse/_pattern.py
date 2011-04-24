@@ -305,7 +305,6 @@ def _number(key, value):
 
 class _FileFromPattern(PatternCompiler):
     _formatters = [_number,
-                   (lambda k, s: s.lstrip(".")),
                    (lambda k, s: s.replace(os.sep, "_")),
                    (lambda k, s: s.replace(u"\uff0f", "_")),
                    (lambda k, s: s.strip()),
