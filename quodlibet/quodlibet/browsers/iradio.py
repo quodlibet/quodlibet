@@ -20,6 +20,7 @@ from quodlibet import util
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats.remote import RemoteFile
+from quodlibet.formats._audio import TAG_TO_SORT
 from quodlibet.library import SongLibrary
 from quodlibet.parse import Query
 from quodlibet.qltk.entry import ValidatingEntry
@@ -37,6 +38,19 @@ class IRFile(RemoteFile):
     format = "Radio Station"
 
     __CAN_CHANGE = "title artist grouping".split()
+
+    def __call__(self, key, *args, **kwargs):
+        base_call = super(IRFile, self).__call__
+        if key == "title" and "title" not in self and "organization" in self:
+            return base_call("organization", *args, **kwargs)
+        return base_call(key, *args, **kwargs)
+
+    def get(self, key, *args):
+        base_call = super(IRFile, self).get
+        if key in ("artist", TAG_TO_SORT["artist"]) and \
+            not base_call(key, *args) and "website" in self:
+            return base_call("website", *args)
+        return base_call(key, *args)
 
     def write(self): pass
     def can_change(self, k=None):
