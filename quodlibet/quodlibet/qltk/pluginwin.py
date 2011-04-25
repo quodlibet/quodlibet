@@ -109,16 +109,13 @@ class PluginWindow(qltk.UniqueWindow):
         selection = tv.get_selection()
         desc = gtk.Label()
         desc.set_alignment(0, 0)
-        desc.set_padding(6, 6)
+        desc.set_selectable(True)
         desc.set_line_wrap(True)
         desc.set_size_request(self.get_default_size()[0] - 300, -1)
         selection.connect('changed', self.__description, desc)
 
         prefs = gtk.Frame()
         prefs.set_shadow_type(gtk.SHADOW_NONE)
-        lab = gtk.Label()
-        lab.set_markup("<b>%s</b>" % _("Preferences"))
-        prefs.set_label_widget(lab)
 
         vb2 = gtk.VBox(spacing=12)
         vb2.pack_start(desc, expand=False)
@@ -172,17 +169,17 @@ class PluginWindow(qltk.UniqueWindow):
     def __destroy(self, *args):
         config.write(const.CONFIG)
 
-    def __description(self, selection, frame):
+    def __description(self, selection, label):
         model, iter = selection.get_selected()
         if not iter: return
-        text = "<big>%s</big>\n" % util.escape(model[iter][0].PLUGIN_NAME)
-        try: text += "<small>%s</small>\n" %(
+        text = "<big><b>%s</b></big>\n" % util.escape(model[iter][0].PLUGIN_NAME)
+        try: text += "<small>%s %s</small>\n" %(_("Version:"),
             util.escape(model[iter][0].PLUGIN_VERSION))
         except (TypeError, AttributeError): pass
         try: text += "\n" + util.escape(model[iter][0].PLUGIN_DESC)
         except (TypeError, AttributeError): pass
 
-        frame.set_markup(text)
+        label.set_markup(text)
 
     def __preferences(self, selection, frame):
         model, iter = selection.get_selected()

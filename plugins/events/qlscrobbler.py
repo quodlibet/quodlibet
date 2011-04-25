@@ -21,9 +21,9 @@ except ImportError:
 
 import gobject, gtk
 
-from quodlibet import player, config, const, widgets, parse
-from quodlibet.qltk.msg import Message, WarningMessage
-from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet import player, config, const, widgets, parse, util
+from quodlibet.qltk.msg import Message
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
 
@@ -210,7 +210,7 @@ class QLSubmitQueue:
                 # Nothing left to do; wait until something changes
                 self.changed_event.clear()
 
-    def send_handshake(self):
+    def send_handshake(self, show_dialog=False):
         # construct url
         stamp = int(time.time())
         auth = md5(self.password + str(stamp)).hexdigest()
@@ -222,7 +222,17 @@ class QLSubmitQueue:
         try:
             resp = urllib2.urlopen(url)
         except IOError:
-            log("Could not contact service. Queueing submissions.")
+            if show_dialog:
+                self.quick_dialog(
+                    "Could not contact service '%s'." %
+                    util.escape(self.base_url), gtk.MESSAGE_ERROR)
+            else:
+                log("Could not contact service. Queueing submissions.")
+            return False
+        except ValueError:
+            self.quick_dialog("Authentication failed: invalid URL.",
+                gtk.MESSAGE_ERROR)
+            self.broken = True
             return False
 
         # check response
@@ -237,8 +247,9 @@ class QLSubmitQueue:
                 self.session_id, self.nowplaying_url, self.submit_url))
             return True
         elif status == "BADAUTH":
-            self.quick_dialog("Authentication failed: invalid username %s or "
-                            "bad password." % self.username, gtk.MESSAGE_ERROR)
+            self.quick_dialog("Authentication failed: Invalid username '%s' "
+                            "or bad password." % util.escape(self.username),
+                            gtk.MESSAGE_ERROR)
             self.broken = True
         elif status == "BANNED":
             self.quick_dialog("Client is banned. Contact the author.",
@@ -310,7 +321,8 @@ class QLSubmitQueue:
 class QLScrobbler(EventPlugin):
     PLUGIN_ID = "QLScrobbler"
     PLUGIN_NAME = _("AudioScrobbler Submission")
-    PLUGIN_DESC = "Audioscrobbler client for Quod Libet"
+    PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
+        "Audioscrobbler services.")
     PLUGIN_ICON = gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.10.1"
 
@@ -394,23 +406,42 @@ class QLScrobbler(EventPlugin):
             urlent.set_sensitive( (service not in SERVICES) )
             urlent.set_text(config_get_url())
 
-        def destroyed(*args):
-            self.queue.changed()
+        def check_login(*args):
+            queue = QLSubmitQueue()
+            queue.changed()
+            status = queue.send_handshake(show_dialog=True)
+            if status:
+                queue.quick_dialog("Authentication successful.",
+                    gtk.MESSAGE_INFO)
 
-        table = gtk.Table(8, 2)
-        table.set_col_spacings(3)
-        table.set_border_width(6)
+        box = gtk.VBox()
 
-        label_names = [_("Service:"), _("URL:"), _("Username:"),
-                       _("Password:"), _("Artist pattern:"),
-                       _("Title pattern:"), _("Exclude filter:")]
+        # first frame
+        acc = gtk.Frame(_("<b>Account</b>"))
+        acc.set_shadow_type(gtk.SHADOW_NONE)
+        acc.get_label_widget().set_use_markup(True)
+
+        acc_align = gtk.Alignment(0, 0, 1, 1)
+        acc_align.set_padding(6, 6, 12, 12)
+        acc.add(acc_align)
+
+        table = gtk.Table(5, 2)
+        table.set_col_spacings(6)
+        table.set_row_spacings(6)
+
+        labels = []
+        label_names = [_("_Service:"), _("_URL:"), _("User_name:"),
+            _("_Password:")]
         for idx, label in enumerate(map(gtk.Label, label_names)):
             label.set_alignment(0.0, 0.5)
+            label.set_use_underline(True)
             table.attach(label, 0, 1, idx, idx+1,
                          xoptions=gtk.FILL | gtk.SHRINK)
+            labels.append(label)
 
+        row = 0
         service_combo = gtk.combo_box_new_text()
-        table.attach(service_combo, 1, 2, 0, 1)
+        table.attach(service_combo, 1, 2, row, row + 1)
         cur_service = config_get('service')
         for idx, serv in enumerate(sorted(SERVICES.keys()) + ["Other..."]):
             service_combo.append_text(serv)
@@ -418,35 +449,106 @@ class QLScrobbler(EventPlugin):
                 service_combo.set_active(idx)
         if service_combo.get_active() == -1:
             service_combo.set_active(0)
+        labels[row].set_mnemonic_widget(service_combo)
+        row += 1
 
-        entry_names = ['url', 'username', 'password', 'artistpat', 'titlepat',
-            'exclude']
-        entries = {}
-        for idx, name in enumerate(entry_names):
-            entry = gtk.Entry()
-            entry.set_text(config_get(name))
-            entry.connect('changed', changed, name)
-            table.attach(entry, 1, 2, idx+1, idx+2)
-            entries[name] = entry
-
-        service_combo.connect('changed', combo_changed, entries['url'])
+        # url
+        entry = UndoEntry()
+        entry.set_text(config_get('url'))
+        entry.connect('changed', changed, 'url')
+        service_combo.connect('changed', combo_changed, entry)
         service_combo.emit('changed')
-        entries['password'].set_visibility(False)
-        entries['password'].set_invisible_char('*')
-        entries['titlepat'].set_tooltip_text(_("The pattern used to format "
-            "the title for submission. Leave blank for default."))
-        entries['artistpat'].set_tooltip_text(_("The pattern used to format "
+        table.attach(entry, 1, 2, row, row + 1)
+        labels[row].set_mnemonic_widget(entry)
+        row += 1
+
+        # username
+        entry = UndoEntry()
+        entry.set_text(config_get('username'))
+        entry.connect('changed', changed, 'username')
+        table.attach(entry, 1, 2, row, row + 1)
+        labels[row].set_mnemonic_widget(entry)
+        row += 1
+
+        # password
+        entry = UndoEntry()
+        entry.set_text(config_get('password'))
+        entry.set_visibility(False)
+        entry.connect('changed', changed, 'password')
+        table.attach(entry, 1, 2, row, row + 1)
+        labels[row].set_mnemonic_widget(entry)
+        row += 1
+
+        # verify data
+        button = gtk.Button(_("_Verify account data"))
+        button.connect('clicked', check_login)
+        table.attach(button, 0, 2, 4, 5)
+
+        acc_align.add(table)
+        box.pack_start(acc)
+
+        # second frame
+        subm = gtk.Frame(_("<b>Submission</b>"))
+        subm.set_shadow_type(gtk.SHADOW_NONE)
+        subm.get_label_widget().set_use_markup(True)
+
+        subm_align = gtk.Alignment(0, 0, 1, 1)
+        subm_align.set_padding(6, 6, 12, 12)
+        subm.add(subm_align)
+
+        table = gtk.Table(4, 2)
+        table.set_col_spacings(6)
+        table.set_row_spacings(6)
+
+        label_names = [_("_Artist pattern:"), _("_Title pattern:"),
+            _("Exclude _filter:")]
+
+        labels = []
+        for idx, label in enumerate(map(gtk.Label, label_names)):
+            label.set_alignment(0.0, 0.5)
+            label.set_use_underline(True)
+            table.attach(label, 0, 1, idx, idx+1,
+                         xoptions=gtk.FILL | gtk.SHRINK)
+            labels.append(label)
+
+        row = 0
+        # artist pattern
+        entry = UndoEntry()
+        entry.set_text(config_get('artistpat'))
+        entry.connect('changed', changed, 'artistpat')
+        table.attach(entry, 1, 2, row, row + 1)
+        entry.set_tooltip_text(_("The pattern used to format "
             "the artist name for submission. Leave blank for default."))
+        labels[row].set_mnemonic_widget(entry)
+        row += 1
 
-        exclude_entry = ValidatingEntry(parse.Query.is_valid_color)
-        exclude_entry.set_tooltip_text(
+        # title pattern
+        entry = UndoEntry()
+        entry.set_text(config_get('titlepat'))
+        entry.connect('changed', changed, 'titlepat')
+        table.attach(entry, 1, 2, row, row + 1)
+        entry.set_tooltip_text(_("The pattern used to format "
+            "the title for submission. Leave blank for default."))
+        labels[row].set_mnemonic_widget(entry)
+        row += 1
+
+        # exclude filter
+        entry = ValidatingEntry(parse.Query.is_valid_color)
+        entry.set_text(config_get('exclude'))
+        entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))
-        exclude_entry.connect('changed', changed, 'exclude')
-        table.attach(exclude_entry, 1, 2, 6, 7)
+        entry.connect('changed', changed, 'exclude')
+        table.attach(entry, 1, 2, row, row + 1)
+        labels[row].set_mnemonic_widget(entry)
+        row += 1
 
-        offline = ConfigCheckButton(_("Offline mode (don't submit anything)"),
+        # offline mode
+        offline = ConfigCheckButton(_("_Offline mode (don't submit anything)"),
                                 'plugins', 'scrobbler_offline')
         offline.set_active(config_get('offline') == "true")
-        table.attach(offline, 0, 2, 7, 8)
+        table.attach(offline, 0, 2, row, row + 1)
 
-        return table
+        subm_align.add(table)
+        box.pack_start(subm)
+
+        return box
