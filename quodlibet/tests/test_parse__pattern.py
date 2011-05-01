@@ -193,33 +193,34 @@ class TRealTags(TestCase):
 class TPatternFormatList(_TPattern):
     def test_same(s):
         pat = Pattern('<~basename> <title>')
-        s.failUnlessEqual(pat.format_list(s.a), [pat.format(s.a)])
+        s.failUnlessEqual(pat.format_list(s.a), set([pat.format(s.a)]))
         pat = Pattern('/a<genre|/<genre>>/<title>')
-        s.failUnlessEqual(pat.format_list(s.a), [pat.format(s.a)])
+        s.failUnlessEqual(pat.format_list(s.a), set([pat.format(s.a)]))
 
     def test_same2(s):
         fpat = FileFromPattern('<~filename>')
         pat = Pattern('<~filename>')
-        s.assertEquals(fpat.format_list(s.a), [fpat.format(s.a)])
-        s.assertEquals(pat.format_list(s.a), [pat.format(s.a)])
+        s.assertEquals(fpat.format_list(s.a), set([fpat.format(s.a)]))
+        s.assertEquals(pat.format_list(s.a), set([pat.format(s.a)]))
 
     def test_tied(s):
         pat = Pattern('<genre>')
-        s.failUnlessEqual(pat.format_list(s.c), ['/', '/'])
+        s.failUnlessEqual(pat.format_list(s.c), set(['/', '/']))
         pat = Pattern('<performer>')
-        s.failUnlessEqual(pat.format_list(s.d), ['a', 'b'])
+        s.failUnlessEqual(pat.format_list(s.d), set(['a', 'b']))
         pat = Pattern('<performer><performer>')
-        s.failUnlessEqual(pat.format_list(s.d), ['aa', 'ab', 'ba', 'bb'])
+        s.failUnlessEqual(set(pat.format_list(s.d)),
+            set(['aa', 'ab', 'ba', 'bb']))
         pat = Pattern('<~performer~artist>')
         s.failUnlessEqual(pat.format_list(s.d),
-            ['a - foo', 'b - foo', 'a - bar', 'b - bar'])
+            set(['a - foo', 'b - foo', 'a - bar', 'b - bar']))
         pat = Pattern('<performer~artist>')
         s.failUnlessEqual(pat.format_list(s.d),
-            ['a - foo', 'b - foo', 'a - bar', 'b - bar'])
+            set(['a - foo', 'b - foo', 'a - bar', 'b - bar']))
         pat = Pattern('<artist|<artist>.|<performer>>')
-        s.failUnlessEqual(pat.format_list(s.d), ['foo.', 'bar.'])
+        s.failUnlessEqual(pat.format_list(s.d), set(['foo.', 'bar.']))
         pat = Pattern('<artist|<artist|<artist>.|<performer>>>')
-        s.failUnlessEqual(pat.format_list(s.d), ['foo.', 'bar.'])
+        s.failUnlessEqual(pat.format_list(s.d), set(['foo.', 'bar.']))
 
 add(TPattern)
 add(TFileFromPattern)
