@@ -82,13 +82,18 @@ def calc_scale_size(boundary, size, scale_up=True):
 
     return scale_w, scale_h
 
-def scale(pixbuf, boundary, scale_up=True):
+def scale(pixbuf, boundary, scale_up=True, force_copy=False):
     """Scale a pixbuf so it fits into the boundary.
     (preserves image aspect ratio)"""
 
     size = pixbuf.get_width(), pixbuf.get_height()
 
     scale_w, scale_h = calc_scale_size(boundary, size, scale_up)
+
+    if (scale_w, scale_h) == size:
+        if force_copy:
+            return pixbuf.copy()
+        return pixbuf
 
     return pixbuf.scale_simple(scale_w, scale_h, gtk.gdk.INTERP_BILINEAR)
 

@@ -273,16 +273,32 @@ class TrayIcon(EventPlugin):
         if sys.platform == "win32":
             pixbuf_size = self.__size
 
-        filename = os.path.join(const.IMAGEDIR, "quodlibet.")
-
         if not self.__pixbuf:
+            try:
+                self.__pixbuf = self.__icon_theme.load_icon(
+                    "quodlibet", pixbuf_size, 0)
+            except gobject.GError: pass
+            else:
+                if self.__pixbuf.props.width != self.__pixbuf.props.height != \
+                    pixbuf_size:
+                    self.__pixbuf = self.__pixbuf.scale_simple(
+                        pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
+
+        # images got moved into the theme dir after 2.3
+        if not self.__pixbuf:
+            filename = os.path.join(const.IMAGEDIR, "quodlibet.")
             try:
                 self.__pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
                     filename + "svg", pixbuf_size * 2, pixbuf_size * 2)
             except gobject.GError:
-                self.__pixbuf = gtk.gdk.pixbuf_new_from_file(filename + "png")
-            self.__pixbuf = self.__pixbuf.scale_simple(
-                pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
+                try:
+                    self.__pixbuf = gtk.gdk.pixbuf_new_from_file(
+                        filename + "png")
+                except gobject.GError:
+                    pass
+            if self.__pixbuf:
+                self.__pixbuf = self.__pixbuf.scale_simple(
+                    pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
 
         if player.paused:
             if not self.__pixbuf_paused:

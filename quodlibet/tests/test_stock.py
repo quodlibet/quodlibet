@@ -5,9 +5,13 @@ import quodlibet.stock
 quodlibet.stock.init()
 
 class TStock(TestCase):
-    def test_pixbufs(self):
-        lookup = gtk.icon_factory_lookup_default
-        for i in quodlibet.stock._ICONS: self.failUnless(lookup(i))
+    def test_icon_theme(self):
+        theme = gtk.icon_theme_get_default()
+        for i in ["audio-volume-high", "audio-volume-high",
+            "audio-volume-medium", "audio-volume-muted",
+            "multimedia-player", "multimedia-player-apple-ipod",
+            "quodlibet", "exfalso", "quodlibet-missing-cover"]:
+            self.failUnless(theme.has_icon(i))
 
     def test_labels(self):
         lookup = gtk.stock_lookup

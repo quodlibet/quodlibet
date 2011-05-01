@@ -41,12 +41,15 @@ def _gtk_init(icon=None):
 
     gobject.set_application_name(_("Quod Libet").encode('utf-8'))
     os.environ["PULSE_PROP_media.role"] = "music"
-    os.environ["PULSE_PROP_application.icon_name"] = quodlibet.stock.QL_ICON
+    os.environ["PULSE_PROP_application.icon_name"] = "quodlibet"
 
     if icon:
-        icon = os.path.join(quodlibet.const.IMAGEDIR, icon)
-        try: gtk.window_set_default_icon_from_file(icon + ".svg")
-        except: gtk.window_set_default_icon_from_file(icon + ".png")
+        theme = gtk.icon_theme_get_default()
+        pixbufs = []
+        for size in [64, 48, 32, 16]:
+            try: pixbufs.append(theme.load_icon(icon, size, 0))
+            except gobject.GError: pass
+        gtk.window_set_default_icon_list(*pixbufs)
 
 def _gettext_init():
     try: locale.setlocale(locale.LC_ALL, '')

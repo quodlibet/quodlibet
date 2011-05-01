@@ -10,9 +10,6 @@ import gtk
 
 import const
 
-QL_ICON = 'quodlibet'
-EF_ICON = 'exfalso'
-
 EDIT_TAGS = 'ql-edit-tags'
 PLUGINS = 'ql-plugins'
 PREVIEW = 'ql-preview'
@@ -22,19 +19,11 @@ PLAYLISTS = 'ql-add-to-playlist'
 DEVICES = 'ql-copy-to-device'
 RENAME = 'ql-rename'
 
-NO_COVER = 'missing-cover'
-
-_ICONS = [QL_ICON, EF_ICON]
-
 def init():
     theme = gtk.icon_theme_get_default()
     theme.append_search_path(const.IMAGEDIR)
 
     factory = gtk.IconFactory()
-    for fn in _ICONS:
-        icon_filename = os.path.join(const.IMAGEDIR, fn + ".png")
-        pb = gtk.gdk.pixbuf_new_from_file(icon_filename)
-        factory.add(fn, gtk.IconSet(pb))
 
     gtk.stock_add([
         (EDIT_TAGS, _("Edit _Tags"), 0, 0, ""),
