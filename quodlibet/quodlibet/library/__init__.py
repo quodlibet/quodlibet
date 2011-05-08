@@ -18,7 +18,7 @@ from quodlibet.library.songs import SongFileLibrary, SongLibrary, SongLibrarian
 
 librarian = library = None
 
-def init(cache_fn=None):
+def init(cache_fn=None, verbose=True):
     """Set up the library and return the main one.
 
     Create the 'global' main library, and also a librarian for
@@ -26,7 +26,7 @@ def init(cache_fn=None):
     """
     global library, librarian
     s = ", ".join(formats.modules)
-    print_(_("Supported formats: %s") % s)
+    if verbose: print_(string=_("Supported formats: %s") % s)
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
     library = SongFileLibrary("main")
     librarian = library.librarian

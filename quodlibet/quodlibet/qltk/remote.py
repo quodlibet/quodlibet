@@ -8,6 +8,7 @@
 import os
 import random
 import re
+import sys
 
 import gobject
 import gtk
@@ -16,6 +17,7 @@ from quodlibet import browsers
 from quodlibet import config
 from quodlibet import const
 from quodlibet import util
+from quodlibet.util.uri import URI
 
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
@@ -83,7 +85,9 @@ class FIFOControl(object):
                 try:
                     try: cmd, arg = command.split(' ', 1)
                     except ValueError: self[command](*args)
-                    else: self[cmd](arg, *args)
+                    else:
+                        print_d("Running %r with params %r " % (cmd, arg))
+                        self[cmd](arg, *args)
                 except KeyError:
                     commands = args[1].browser.commands
                     try:
@@ -93,7 +97,8 @@ class FIFOControl(object):
                     except:
                         print_w(_("Invalid command %r received.") % command)
                 except:
-                    print_w(_("Invalid command %r received.") % command)
+                    e = sys.exc_info()[1]
+                    print_e(_("Error running command %r, caused by: %r).") % (command, e))
             return True
 
     def _previous(self, library, window, player): player.previous()
@@ -243,6 +248,22 @@ class FIFOControl(object):
         else: songs = library.query(value)
         songs.sort()
         playlist.enqueue(songs)
+
+    def _enqueue_files(self, value, library, window, player):
+        '''Enqueues comma-separated filenames or song names
+
+            See Issue 716
+        '''
+        songs = []
+        for param in value.split(","):
+            try:
+                song_path = URI(param).filename
+            except ValueError:
+                song_path = param
+            if song_path in library: songs.append(library[song_path])
+            elif os.path.isfile(song_path):
+                songs.append(library.add_filename(os.path.realpath(value)))
+        if songs: window.playlist.enqueue(songs)
 
     def _unqueue(self, value, library, window, player):
         playlist = window.playlist
