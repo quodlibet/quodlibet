@@ -33,7 +33,7 @@ def main():
     try:
         backend, library, player = quodlibet.init(
             backend=config.get("player", "backend"),
-            library=const.LIBRARY,
+            library=const.LIBRARY, icon="quodlibet",
             )
     except quodlibet.player.error, error:
         import gobject

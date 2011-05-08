@@ -14,10 +14,6 @@ import re
 from quodlibet import util
 from quodlibet.parse._scanner import Scanner
 
-class _Dummy(dict):
-    def comma(self, *args): return u"_"
-    def list_separate(self, *args): return [u""]
-
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
 
@@ -70,7 +66,7 @@ class TextNode(object):
         self.text = text
 
     def __repr__(self):
-        return "Text(%s)" % self.text
+        return "Text(\"%s\")" % self.text
 
 class ConditionNode(object):
     def __init__(self, tag, ifcase, elsecase):
@@ -80,14 +76,14 @@ class ConditionNode(object):
 
     def __repr__(self):
         t, i, e = self.tag, repr(self.ifcase), repr(self.elsecase)
-        return "Condition(tag:%s, if: %s, else: %s)" % (t, i, e)
+        return "Condition(tag: \"%s\", if: %s, else: %s)" % (t, i, e)
 
 class TagNode(object):
     def __init__(self, tag):
         self.tag = tag
 
     def __repr__(self):
-        return "Tag(%s)" % self.tag
+        return "Tag(\"%s\")" % self.tag
 
 class PatternParser(object):
     def __init__(self, tokens):
@@ -153,18 +149,21 @@ class PatternParser(object):
         except StopIteration:
             self.lookahead = PatternLexeme(EOF, "")
 
-class PatternCompiler(object):
+class PatternFormatter(object):
     _formatters = []
+    _post = None
 
-    def __init__(self, root_node):
-        self.__count = 0
-        self.tags = set()
-        self.__root = root_node
-        self.__func = self.__compile("comma")
-        self.__list_func = self.__compile("list_separate")
-        self.format(_Dummy()) # Validate string
+    def __init__(self, func, list_func, tags):
+        self.__func = func
+        self.__list_func = list_func
+        self.tags = set(tags)
+        self.format(self.Dummy()) # Validate string
 
-    class Song(object):
+    class Dummy(dict):
+        def comma(self, *args): return u"_"
+        def list_separate(self, *args): return [u""]
+
+    class SongProxy(object):
         def __init__(self, realsong, formatters):
             self.__song = realsong
             self.__formatters = formatters
@@ -189,50 +188,46 @@ class PatternCompiler(object):
                 values = [unicode(value)]
             else: values = self.__song.list_separate(key)
             for f in self.__formatters:
-                values = map(lambda v: f(key, v), values)
+                values = [f(key, v) for v in values]
             return values
 
-    def _post(self, value, song):
+    def format(self, song):
+        value = "".join(self.__func(self.SongProxy(song, self._formatters)))
+        if self._post:
+            return self._post(value, song)
         return value
 
-    def format(self, song):
-        proxy = self.Song(song, self._formatters)
-        return self._post(u"".join(self.__func(proxy)), song)
-
     def format_list(self, song):
-        """Returns a list of formated patterns with all tag combinations:
+        """Returns a set of formatted patterns with all tag combinations:
         <performer>-bla returns [performer1-bla, performer2-bla]"""
-        def expand(values):
-            results = []
-            for val in values:
-                if type(val) == list:
-                    new_results = []
-                    for r in (results or [u""]):
-                        for part in val:
-                            new_results.append(r + part)
-                    results = new_results
-                else:
-                    results = [r + val for r in (results or [u""])]
-            return results
-        proxy = self.Song(song, self._formatters)
-        vals = expand(self.__list_func(proxy))
-        return [self._post(v, song) for v in vals]
+        vals = [""]
+        for val in self.__list_func(self.SongProxy(song, self._formatters)):
+            if type(val) == list:
+                vals = [r + part for part in val for r in vals]
+            else:
+                vals = [r + val for r in vals]
+        if self._post:
+            return set([self._post(v, song) for v in vals])
+        return set(vals)
 
     __mod__ = format
 
-    def __compile(self, song_func):
-        self.__count = 0
-        self.tags.clear()
+class PatternCompiler(object):
+    def __init__(self, root):
+        self.__root = root.node
+
+    def compile(self, song_func):
+        tags = set()
         content = [
             "def f(s):",
-            "  r = []",
             "  x = s." + song_func,
+            "  r = []",
             "  a = r.append"]
-        content.extend(self.__pattern(self.__root, {}))
+        content.extend(self.__pattern(self.__root, {}, tags))
         content.append("  return r")
         code = "\n".join(content)
         exec compile(code, "<string>", "exec")
-        return f
+        return f, tags
 
     def __escape(self, text):
         text = text.replace("\\", r"\\")
@@ -242,20 +237,18 @@ class PatternCompiler(object):
     def __put_tag(self, text, scope, tag):
         tag = self.__escape(tag)
         if tag not in scope:
-            text.append('t%d = x("%s")' % (self.__count, tag))
-            scope[tag] = 't%d' % self.__count
-            self.__count += 1
+            scope[tag] = 't%d' % len(scope)
+            text.append('%s = x("%s")' % (scope[tag], tag))
         return tag
 
-    def __tag(self, node, scope):
-        scope = dict(scope)
+    def __tag(self, node, scope, tags):
         text = []
         if isinstance(node, TextNode):
             text.append('a("%s")' % self.__escape(node.text))
         elif isinstance(node, ConditionNode):
             tag = self.__put_tag(text, scope, node.tag)
-            ic = self.__pattern(node.ifcase, scope)
-            ec = self.__pattern(node.elsecase, scope)
+            ic = self.__pattern(node.ifcase, dict(scope), tags)
+            ec = self.__pattern(node.elsecase, dict(scope), tags)
             if not ic and not ec:
                 text.pop(-1)
             elif ic:
@@ -268,26 +261,26 @@ class PatternCompiler(object):
                 text.append('if not %s:' % scope[tag])
                 text.extend(ec)
         elif isinstance(node, TagNode):
-            self.tags.update(util.tagsplit(node.tag))
+            tags.update(util.tagsplit(node.tag))
             tag = self.__put_tag(text, scope, node.tag)
             text.append('a(%s)' % scope[tag])
         return text
 
-    def __pattern(self, node, scope):
-        scope = dict(scope)
+    def __pattern(self, node, scope, tags):
         text = []
         if isinstance(node, PatternNode):
             for child in node.children:
-                text.extend(self.__tag(child, scope))
-        return map(lambda x: "  " + x, text)
+                text.extend(self.__tag(child, scope, tags))
+        return map("  ".__add__, text)
 
-def Pattern(string, Kind=PatternCompiler, MAX_CACHE_SIZE=100, cache={}):
+def Pattern(string, Kind=PatternFormatter, MAX_CACHE_SIZE=100, cache={}):
     if (Kind, string) not in cache:
         if len(cache) > MAX_CACHE_SIZE:
             cache.clear()
-        tokens = PatternLexer(string)
-        tree = PatternParser(tokens)
-        cache[(Kind, string)] = Kind(tree.node)
+        comp = PatternCompiler(PatternParser(PatternLexer(string)))
+        func, tags = comp.compile("comma")
+        list_func, tags = comp.compile("list_separate")
+        cache[(Kind, string)] = Kind(func, list_func, tags)
     return cache[(Kind, string)]
 
 def _number(key, value):
@@ -303,7 +296,7 @@ def _number(key, value):
         except (TypeError, ValueError): return value
     else: return value
 
-class _FileFromPattern(PatternCompiler):
+class _FileFromPattern(PatternFormatter):
     _formatters = [_number,
                    (lambda k, s: s.replace(os.sep, "_")),
                    (lambda k, s: s.replace(u"\uff0f", "_")),
@@ -324,7 +317,7 @@ class _FileFromPattern(PatternCompiler):
                 raise ValueError("Pattern is not rooted")
         return value
 
-class _XMLFromPattern(PatternCompiler):
+class _XMLFromPattern(PatternFormatter):
     _formatters = [lambda k, s: util.escape(s)]
 
 

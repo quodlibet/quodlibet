@@ -50,12 +50,6 @@ def init(player, library):
 
     session.init()
 
-    icon = os.path.join(const.IMAGEDIR, "quodlibet.")
-    try:
-        pb = gtk.gdk.pixbuf_new_from_file_at_size(icon + "svg", 64, 64)
-        gtk.window_set_default_icon(pb)
-    except: gtk.window_set_default_icon_from_file(icon + "png")
-
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")
     headers = config.get("settings", "headers").split()

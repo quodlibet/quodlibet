@@ -27,7 +27,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem
-from quodlibet.util import copool, gobject_weak
+from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 
 EMPTY = _("Songs not in an album")
@@ -162,13 +162,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         except EnvironmentError:
             klass._pattern_text = PATTERN
 
-        no_cover = os.path.join(const.IMAGEDIR, stock.NO_COVER)
+        theme = gtk.icon_theme_get_default()
         try:
-            klass.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                no_cover + ".svg", 48, 48)
-        except gobject.GError:
-            klass.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                no_cover + ".png", 48, 48)
+            klass.__no_cover = theme.load_icon(
+                "quodlibet-missing-cover", 48, 0)
+        except gobject.GError: pass
+        else:
+            klass.__no_cover = thumbnails.scale(
+                klass.__no_cover, (48, 48))
 
         klass._pattern = XMLFromPattern(klass._pattern_text)
 

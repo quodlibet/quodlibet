@@ -78,15 +78,17 @@ class ResizeImage(gtk.Image):
             self.__update_image()
 
     def __get_no_cover(self, width, height):
-        if self.__no_cover is None or self.__no_cover.get_width() != width \
-            or self.__no_cover.get_height() != height:
-            icon = os.path.join(const.IMAGEDIR, stock.NO_COVER)
+        size = min(width, height)
+        if self.__no_cover is None or min(self.__no_cover.get_width(),
+            self.__no_cover.get_height()) != size:
+            theme = gtk.icon_theme_get_default()
             try:
-                self.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                    icon + ".svg", width, height)
-            except gobject.GError:
-                self.__no_cover = gtk.gdk.pixbuf_new_from_file_at_size(
-                    icon + ".png", width, height)
+                self.__no_cover = theme.load_icon(
+                    "quodlibet-missing-cover", size, 0)
+            except gobject.GError: pass
+            else:
+                self.__no_cover = thumbnails.scale(
+                    self.__no_cover, (size, size))
         return self.__no_cover
 
     def __update_image(self):
