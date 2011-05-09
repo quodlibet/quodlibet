@@ -242,19 +242,19 @@ def format_size(size):
     """Turn an integer size value into something human-readable."""
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
     if size >= 1024*1024*1024:
-        return "%.1fGB" % (float(size) / (1024*1024*1024))
+        return "%.1f GB" % (float(size) / (1024*1024*1024))
     elif size >= 1024*1024 * 100:
-        return "%.0fMB" % (float(size) / (1024*1024))
+        return "%.0f MB" % (float(size) / (1024*1024))
     elif size >= 1024*1024 * 10:
-        return "%.1fMB" % (float(size) / (1024*1024))
+        return "%.1f MB" % (float(size) / (1024*1024))
     elif size >= 1024*1024:
-        return "%.2fMB" % (float(size) / (1024*1024))
+        return "%.2f MB" % (float(size) / (1024*1024))
     elif size >= 1024 * 10:
-        return "%dKB" % int(size / 1024)
+        return "%d KB" % int(size / 1024)
     elif size >= 1024:
-        return "%.2fKB" % (float(size) / 1024)
+        return "%.2f KB" % (float(size) / 1024)
     else:
-        return "%dB" % size
+        return "%d B" % size
 
 def format_time(time):
     """Turn a time value in seconds into hh:mm:ss or mm:ss."""

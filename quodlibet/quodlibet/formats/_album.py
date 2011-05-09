@@ -26,6 +26,7 @@ NUM_DEFAULT_FUNCS = {
     "rating": "avg",
     "skipcount": "sum",
     "year": "min",
+    "filesize": "sum"
 }
 
 NUM_FUNCS = {

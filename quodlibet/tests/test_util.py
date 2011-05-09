@@ -239,20 +239,20 @@ class Tformat_size(TestCase):
         map(self.failUnlessEqual, map(util.format_size, d.keys()), d.values())
 
     def test_bytes(self):
-        self.t_dict({ 0: "0B", 1: "1B", 1023: "1023B" })
+        self.t_dict({ 0: "0 B", 1: "1 B", 1023: "1023 B" })
 
     def test_kbytes(self):
-        self.t_dict({ 1024: "1.00KB", 1536: "1.50KB",
-                      10240: "10KB", 15360: "15KB" })
+        self.t_dict({ 1024: "1.00 KB", 1536: "1.50 KB",
+                      10240: "10 KB", 15360: "15 KB" })
 
     def test_mbytes(self):
-        self.t_dict({ 1024*1024: "1.00MB", 1024*1536: "1.50MB",
-                      1024*10240: "10.0MB", 1024*15360: "15.0MB",
-                      123456*1024: "121MB", 765432*1024: "747MB"})
+        self.t_dict({ 1024*1024: "1.00 MB", 1024*1536: "1.50 MB",
+                      1024*10240: "10.0 MB", 1024*15360: "15.0 MB",
+                      123456*1024: "121 MB", 765432*1024: "747 MB"})
 
     def test_gbytes(self):
-        self.t_dict({ 1024*1024*1024: "1.0GB", 1024*1024*1536: "1.5GB",
-                      1024*1024*10240: "10.0GB", 1024*1024*15360: "15.0GB"})
+        self.t_dict({ 1024*1024*1024: "1.0 GB", 1024*1024*1536: "1.5 GB",
+                      1024*1024*10240: "10.0 GB", 1024*1024*15360: "15.0 GB"})
 add(Tformat_size)
 
 class Tsplit_title(TestCase):

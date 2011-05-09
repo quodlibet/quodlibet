@@ -364,6 +364,16 @@ class SongList(AllTreeView, util.InstanceTracker):
         def __init__(self):
             super(SongList.LengthColumn, self).__init__("~#length")
 
+    class FilesizeColumn(NumericColumn):
+        def _cdf(self, column, cell, model, iter, tag):
+            value = model[iter][0].get("~#filesize", 0)
+            if not self._needs_update(value): return
+            text = util.format_size(value)
+            cell.set_property('text', text)
+            self._update_layout(text, cell)
+        def __init__(self):
+            super(SongList.FilesizeColumn, self).__init__("~#filesize")
+
     class PatternColumn(WideTextColumn):
         def _cdf(self, column, cell, model, iter, tag):
             song = model.get_value(iter, 0)
@@ -980,6 +990,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             elif t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
                 column = self.DateColumn(t)
             elif t in ["~length", "~#length"]: column = self.LengthColumn()
+            elif t == "~#filesize": column = self.FilesizeColumn()
             elif t in ["~rating", "~#rating"]: column = self.RatingColumn()
             elif t.startswith("~#"): column = self.NumericColumn(t)
             elif t in ["~filename", "~basename", "~dirname"]:
@@ -1035,7 +1046,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             ~#tracks albumartist""".split()
         dateinfo = """date originaldate recordingdate ~#laststarted
             ~#lastplayed ~#added ~#mtime""".split()
-        fileinfo = """~format ~#bitrate ~filename ~basename ~dirname
+        fileinfo = """~format ~#bitrate ~#filesize ~filename ~basename ~dirname
             ~uri""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
