@@ -7,6 +7,7 @@
 import time
 
 TIME_KEYS = ["added", "mtime", "lastplayed", "laststarted"]
+SIZE_KEYS = ["filesize"]
 
 # True if the object matches any of its REs.
 class Union(object):
@@ -52,7 +53,7 @@ class Numcmp(object):
         else: self.__tag = tag
         self.__ftag = "~#" + self.__tag
         self.__op = op
-        value = value.strip()
+        value = value.strip().lower()
 
         if tag in TIME_KEYS:
             if self.__op == ">": self.__op = "<"
@@ -81,9 +82,13 @@ class Numcmp(object):
                 elif unit == "day": value *= 24 * 60 * 60
                 elif unit == "week": value *= 7 * 24 * 60 * 60
                 elif unit == "year": value *= 365 * 24 * 60 * 60
+                elif unit == "gb": value *= 1024**3
+                elif unit == "mb": value *= 1024**2
+                elif unit == "kb": value *= 1024
 
                 if tag in TIME_KEYS:
                     value = int(time.time() - value)
+
         self.__value = value
 
     def search(self, data):
