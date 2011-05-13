@@ -192,6 +192,7 @@ class XinePlaylistPlayer(BasePlayer):
         self.emit('song-started', self.song)
 
         if self.song is not None:
+            self.volume = self.volume
             if gapless and self._supports_gapless:
                 xine_set_param(self._stream, XINE_PARAM_GAPLESS_SWITCH, 1)
             xine_open(self._stream, self.song("~uri"))

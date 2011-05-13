@@ -1,4 +1,5 @@
-# Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
+# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
+#                     Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,8 +12,10 @@ import pygst
 pygst.require("0.10")
 
 import gst
-if gst.pygst_version >= (0, 10, 10):
-    import gst.pbutils
+try:
+    from gst import pbutils
+except ImportError:
+    pbutils = None
 
 from quodlibet import config
 from quodlibet import const
@@ -21,6 +24,7 @@ from quodlibet.util import fver
 from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk.notif import Task
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
@@ -55,92 +59,145 @@ class GStreamerPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
 
+    _paused = True
+    _in_gapless_transition = False
+    _inhibit_play = False
+    _finish_position = -1
+    _last_position = 0
+
+    _task = None
+
+    bin = None
+    _vol_element = None
+    _eq_element = None
+
+    __atf_id = None
+    __bus_id = None
+
     def __init__(self, librarian=None):
         super(GStreamerPlayer, self).__init__()
         self.version_info = "GStreamer: %s / PyGSt: %s" % (
             fver(gst.version()), fver(gst.pygst_version))
-        self.librarian = librarian
-        self.name = ''
-        self.bin = None
+        self._librarian = librarian
         self.connect('destroy', lambda s: self.__destroy_pipeline())
-        self._in_gapless_transition = False
-        self.paused = True
-        self._inhibit_play = False
 
     def __init_pipeline(self):
+        """Creates a gstreamer pipeline with the following elements
+
+        For newer gstreamer versions:
+            playbin2 -> bin [ <- ghostpad -> queue -> volume -> capsfilter
+                -> equalizer -> audioconvert -> user defined elements
+                -> gconf/autoaudiosink ]
+
+        For older versions:
+            playbin -> bin [ <- ghostpad -> capsfilter -> equalizer
+                -> audioconvert -> user defined elements
+                -> gconf/autoaudiosink ]
+        """
         if self.bin: return True
+
+        # TODO: use the volume property of the sink if available (pulsesink)
+
         pipeline = config.get("player", "gst_pipeline")
         pipeline, self.name = GStreamerSink(pipeline)
-        if gst.version() >= (0, 10, 24):
+
+        if gst.element_factory_find('equalizer-10bands'):
+            # The equalizer only operates on 16-bit ints or floats, and
+            # will only pass these types through even when inactive.
+            # We push floats through to this point, then let the second
+            # audioconvert handle pushing to whatever the rest of the
+            # pipeline supports. As a bonus, this seems to automatically
+            # select the highest-precision format supported by the
+            # rest of the chain.
+            filt = gst.element_factory_make('capsfilter')
+            filt.set_property('caps',
+                              gst.caps_from_string('audio/x-raw-float'))
+            eq = gst.element_factory_make('equalizer-10bands')
+            self._eq_element = eq
+            self.update_eq_values()
+            conv = gst.element_factory_make('audioconvert')
+            pipeline = [filt, eq, conv] + pipeline
+
+        use_playbin2 = gst.version() >= (0, 10, 24)
+
+        if use_playbin2:
             # The output buffer is necessary to run the song-ended and
             # song-started events through QL's signal handlers before the
             # playbin2 hits EOF inside a gapless transition.
-            bufbin = gst.Bin()
             queue = gst.element_factory_make('queue')
             queue.set_property('max-size-time', 500 * gst.MSECOND)
-            self._vol_element = vol = gst.element_factory_make('volume')
-            pipeline = [queue, vol] + pipeline
-            if gst.element_factory_find('equalizer-10bands'):
-                # The equalizer only operates on 16-bit ints or floats, and
-                # will only pass these types through even when inactive.
-                # We push floats through to this point, then let the second
-                # audioconvert handle pushing to whatever the rest of the
-                # pipeline supports. As a bonus, this seems to automatically
-                # select the highest-precision format supported by the
-                # rest of the chain.
-                filt = gst.element_factory_make('capsfilter')
-                filt.set_property('caps',
-                                  gst.caps_from_string('audio/x-raw-float'))
-                eq = gst.element_factory_make('equalizer-10bands')
-                self._eq_element = eq
-                self.update_eq_values()
-                conv = gst.element_factory_make('audioconvert')
-                pipeline[:2] += [filt, eq, conv]
-            for idx, elem in enumerate(pipeline):
-                bufbin.add(elem)
-                if idx > 0:
-                    pipeline[idx-1].link(elem)
-            # Test to ensure output pipeline can preroll
-            bufbin.set_state(gst.STATE_READY)
-            result, state, oldstate = bufbin.get_state()
-            bufbin.set_state(gst.STATE_NULL)
-            if result == gst.STATE_CHANGE_FAILURE: return False
-            gpad = gst.GhostPad('sink', queue.get_pad('sink'))
-            bufbin.add_pad(gpad)
+
+            # The volume element is needed to remove the volume change delay.
+            self._vol_element = gst.element_factory_make('volume')
+            pipeline = [queue,  self._vol_element] + pipeline
+
+        bufbin = gst.Bin()
+        for idx, elem in enumerate(pipeline):
+            bufbin.add(elem)
+            if idx > 0:
+                pipeline[idx-1].link(elem)
+
+        # Test to ensure output pipeline can preroll
+        bufbin.set_state(gst.STATE_READY)
+        result, state, pending = bufbin.get_state()
+        bufbin.set_state(gst.STATE_NULL)
+        if result == gst.STATE_CHANGE_FAILURE:
+            self.__destroy_pipeline()
+            return False
+
+        # Make the sink of the first element the sink of the bin
+        gpad = gst.GhostPad('sink', pipeline[0].get_pad('sink'))
+        bufbin.add_pad(gpad)
+
+        if use_playbin2:
             self.bin = gst.element_factory_make('playbin2')
-            id = self.bin.connect('about-to-finish', self.__about_to_finish)
-            self.__atf_id = id
-            self.bin.set_property('audio-sink', bufbin)
+            self.__atf_id = self.bin.connect('about-to-finish',
+                self.__about_to_finish)
         else:
             self.bin = gst.element_factory_make('playbin')
-            self.bin.set_property('audio-sink', pipeline[-1])
             self._vol_element = self.bin
-            self.__atf_id = None
-        self.bin.set_property('video-sink', None)
+
+        self.bin.set_property('audio-sink', bufbin)
+
+        # by default playbin will render video -> suppress using fakesink
+        fakesink = gst.element_factory_make('fakesink')
+        self.bin.set_property('video-sink', fakesink)
+
         # ReplayGain information gets lost when destroying
         self.volume = self.volume
+
         bus = self.bin.get_bus()
         bus.add_signal_watch()
-        self.__bus_id = bus.connect('message', self.__message, self.librarian)
-        if gst.pygst_version >= (0, 10, 10):
-            self.__elem_id = bus.connect('message::element',
-                                         self.__message_elem)
+        self.__bus_id = bus.connect('message', self.__message, self._librarian)
+
         return True
 
     def __destroy_pipeline(self):
+        if self._task:
+            self._task.finish()
+            self._task = None
+
+        self._in_gapless_transition = False
         self._inhibit_play = False
+        self._finish_position = -1
+        self._last_position = 0
+
+        self._vol_element = None
+        self._eq_element = None
+
         if self.bin is None: return
         self.bin.set_state(gst.STATE_NULL)
+
         bus = self.bin.get_bus()
-        bus.disconnect(self.__bus_id)
-        if gst.pygst_version >= (0, 10, 10):
-            bus.disconnect(self.__elem_id)
-        bus.remove_signal_watch()
-        if self.__atf_id is not None:
+        if self.__bus_id:
+            bus.disconnect(self.__bus_id)
+            bus.remove_signal_watch()
+
+        if self.__atf_id:
             self.bin.disconnect(self.__atf_id)
-        del self.bin
-        del self._vol_element
+
         self.bin = None
+
         return True
 
     def __message(self, bus, message, librarian):
@@ -156,48 +213,56 @@ class GStreamerPlayer(BasePlayer):
             self.error(err, True)
         elif message.type == gst.MESSAGE_BUFFERING:
             percent = message.parse_buffering()
-            self._set_inhibit_play(percent < 100)
-        return True
+            self.__buffering(percent)
+        elif message.type == gst.MESSAGE_ELEMENT:
+            name = ""
+            if hasattr(message.structure, "get_name"):
+                name = message.structure.get_name()
 
-    def __message_elem(self, bus, message):
-        if not message.structure.get_name().startswith('missing-'):
-            return True
-        d = gst.pbutils.missing_plugin_message_get_installer_detail(message)
-        ctx = gst.pbutils.InstallPluginsContext()
-        gobject.idle_add(self.stop)
-        gst.pbutils.install_plugins_async([d], ctx, self.__message_elem_cb)
-        return True
+            # This gets sent on song change. Because it is not in the docs
+            # we can not rely on it. Additionally we check in get_position
+            # which should trigger shortly after this.
+            if self._in_gapless_transition and \
+                name == "playbin2-stream-changed":
+                    self._end(False)
 
-    def __message_elem_cb(self, result):
-        gst.update_registry()
+            if pbutils and name.startswith('missing-'):
+                self.stop()
+                detail = pbutils.missing_plugin_message_get_installer_detail(
+                    message)
+                context = pbutils.InstallPluginsContext()
+                pbutils.install_plugins_async([detail], context,
+                    lambda *args: gst.update_registry())
+
+        return True
 
     def __about_to_finish(self, pipeline):
         self._in_gapless_transition = True
+
+        def check_position(*args):
+            # Query the current position until gapless is over
+            self.get_position()
+            return self._in_gapless_transition
+        self._finish_position = self.get_position()
+        # song change is about to happen, check frequently
+        gobject.timeout_add(100, check_position)
+
         self._source.next_ended()
-        if self._source.current:
+        if self._source.current and self.bin:
             self.bin.set_property('uri', self._source.current("~uri"))
-            gobject.timeout_add(0, self._end, False, True,
-                             priority = gobject.PRIORITY_HIGH)
 
     def stop(self):
-        # On GStreamer, we can release the device when stopped.
-        if not self.paused:
-            self._paused = True
-            if self.song:
-                self.emit('paused')
-        self.__destroy_pipeline()
+        self._end(True, stop=True)
 
     def do_set_property(self, property, v):
         if property.name == 'volume':
-            if self._in_gapless_transition:
-                return
             self._volume = v
             if self.song and config.getboolean("player", "replaygain"):
                 profiles = filter(None, self.replaygain_profiles)[0]
                 fb_gain = config.getfloat("player", "fallback_gain")
                 pa_gain = config.getfloat("player", "pre_amp_gain")
                 scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
-                v = max(0.0, v * scale)
+                v = min(10.0, max(0.0, v * scale)) # volume supports 0..10
             if self.bin:
                 self._vol_element.set_property('volume', v)
         else:
@@ -206,13 +271,35 @@ class GStreamerPlayer(BasePlayer):
     def get_position(self):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
+        p = self._last_position
         if self.song and self.bin:
             try: p = self.bin.query_position(gst.FORMAT_TIME)[0]
-            except gst.QueryError: p = 0
-            p //= gst.MSECOND
-            return p
-        else:
-            return 0
+            except gst.QueryError: pass
+            else:
+                p //= gst.MSECOND
+                # During stream seeking querying the position fails.
+                # Better return the last valid one instead of 0.
+                self._last_position = p
+                # In case the current position is less than at the about to
+                # finish signal, we can assume that we are playing a new song.
+                # Sometimes the time decreases a bit.. therefore divide by 2
+                if self._in_gapless_transition and p < self._finish_position/2:
+                    self._end(False)
+        return p
+
+    def __buffering(self, percent):
+        def stop_buf(*args): self.paused = True
+
+        if percent < 100:
+            if self._task:
+                self._task.update(percent/100.0)
+            else:
+                self._task = Task(_("Stream"), _("Buffering"), stop=stop_buf)
+        elif self._task:
+            self._task.finish()
+            self._task = None
+
+        self._set_inhibit_play(percent < 100)
 
     def _set_inhibit_play(self, inhibit):
         """Set the inhibit play flag.  If set, this will pause the pipeline
@@ -232,7 +319,7 @@ class GStreamerPlayer(BasePlayer):
         if paused != self._paused:
             self._paused = paused
             if self.song:
-                if not self.bin:
+                if not self.bin and not paused:
                     if self.__init_pipeline():
                         self.bin.set_property('uri', self.song("~uri"))
                     else:
@@ -248,10 +335,16 @@ class GStreamerPlayer(BasePlayer):
                     if not self._paused:
                         if not self._inhibit_play:
                             self.bin.set_state(gst.STATE_PLAYING)
-                    elif self.song.is_file or self.info.get('~#length'):
+                    elif self.song.is_file:
                         self.bin.set_state(gst.STATE_PAUSED)
                     else:
-                        self.__destroy_pipeline()
+                        # seekable streams have a duration >= 0
+                        try: d = self.bin.query_duration(gst.FORMAT_TIME)[0]
+                        except gst.QueryError: d = -1
+                        if d >= 0:
+                            self.bin.set_state(gst.STATE_PAUSED)
+                        else:
+                            self.__destroy_pipeline()
             elif paused is True:
                 # Something wants us to pause between songs, or when
                 # we've got no song playing (probably StopAfterMenu).
@@ -269,22 +362,20 @@ class GStreamerPlayer(BasePlayer):
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
-        if self.bin is not None and self.song is not None:
+        # Don't allow seeking during gapless. We can't go back to the old song.
+        if self.bin and self.song and not self._in_gapless_transition:
             # ensure any pending state changes have completed
             self.bin.get_state()
             pos = max(0, int(pos))
-            if pos >= self._length:
-                self.paused = True
-                pos = self._length
-
             gst_time = pos * gst.MSECOND
             event = gst.event_new_seek(
                 1.0, gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH,
                 gst.SEEK_TYPE_SET, gst_time, gst.SEEK_TYPE_NONE, 0)
             if self.bin.send_event(event):
+                self._last_position = pos
                 self.emit('seek', self.song, pos)
 
-    def _end(self, stopped, gapless = False):
+    def _end(self, stopped, stop=False):
         # We need to set self.song to None before calling our signal
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
@@ -293,29 +384,30 @@ class GStreamerPlayer(BasePlayer):
         self.emit('song-ended', song, stopped)
 
         # Then, set up the next song.
-        self._in_gapless_transition = False
-        self.song = self.info = self._source.current
-        self.emit('song-started', self.song)
+        if not stop:
+            self.song = self.info = self._source.current
+            self.emit('song-started', self.song)
 
         if self.song is not None:
-            self._length = self.info.get("~#length", 0) * 1000
-            if not gapless:
+            self.volume = self.volume
+            if not self._in_gapless_transition:
                 # Due to extensive problems with playbin2, we destroy the
                 # entire pipeline and recreate it each time we're not in
                 # a gapless transition.
                 self.__destroy_pipeline()
                 if self.__init_pipeline():
                     self.bin.set_property('uri', self.song("~uri"))
-                    self.volume = self.volume
                 else: self.paused = True
             if self.bin:
-                if self._paused:
+                if self.paused:
                     self.bin.set_state(gst.STATE_PAUSED)
                 else:
                     self.bin.set_state(gst.STATE_PLAYING)
         else:
             self.__destroy_pipeline()
             self.paused = True
+
+        self._in_gapless_transition = False
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
@@ -370,13 +462,13 @@ class GStreamerPlayer(BasePlayer):
 
     @property
     def eq_bands(self):
-        if gst.element_factory_find('equalizer-10bands'):
+        if self._eq_element:
             return [29, 59, 119, 237, 474, 947, 1889, 3770, 7523, 15011]
         else:
             return []
 
     def update_eq_values(self):
-        if hasattr(self, '_eq_element'):
+        if self._eq_element:
             for band, val in enumerate(self._eq_values):
                 self._eq_element.set_property('band%d' % band, val)
 

@@ -64,9 +64,7 @@ class NullPlayer(BasePlayer):
         self.song = self.info = self._source.current
         self.emit('song-started', self.song)
 
-        if self.song is not None:
-            self._length = self.song.get("~#length", 0) * 1000
-        else:
+        if self.song is None:
             self.paused = True
 
 def can_play_uri(uri):

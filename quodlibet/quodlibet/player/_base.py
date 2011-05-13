@@ -17,15 +17,19 @@ class BasePlayer(gtk.Object):
     change things, use .song.
     """
 
-    _paused = False
-    paused = False
+    name = ""
+    version_info = ""
+
+    paused = None
     song = None
     info = None
+    volume = None
+
     # Replay Gain profiles are a list of values to be tried in order;
     # Four things can set them: rg menu, browser, play order, and a default.
     replaygain_profiles = [None, None, None, ["none"]]
-    _length = 1
     _volume = 1.0
+    _paused = True
     _eq_values = []
 
     _gsignals_ = {
@@ -46,17 +50,8 @@ class BasePlayer(gtk.Object):
                    0.0, 1.0, 1.0, gobject.PARAM_READWRITE)
         }
 
-
-
     def __init__(self, *args, **kwargs):
         super(BasePlayer, self).__init__()
-
-    def do_song_started(self, song):
-        # Reset Replay Gain levels based on the new song.
-        self.volume = self.volume
-
-    def do_song_ended(self, song, stopped):
-        self.volume = self.volume
 
     def do_get_property(self, property):
         if property.name == 'volume':

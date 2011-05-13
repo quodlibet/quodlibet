@@ -179,7 +179,7 @@ class TaskController(object):
     def desc(self):
         if len(self.active_tasks) == 1:
             return self.active_tasks[0].desc
-        self.desc = _("%d tasks running") % len(self.active_tasks)
+        return _("%d tasks running") % len(self.active_tasks)
 
     @property
     def frac(self):
