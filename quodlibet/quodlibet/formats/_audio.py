@@ -465,6 +465,23 @@ class AudioFile(dict):
         s.append("")
         return "\n".join(s)
 
+    def from_dump(self, text):
+        """Parses the text created with to_dump and adds the found tags."""
+        for line in text.split("\n"):
+            if not line: continue
+            parts = line.split("=")
+            key = parts[0]
+            val = "=".join(parts[1:])
+            if key == "~format":
+                pass
+            elif key.startswith("~#"):
+                try: self.add(key, int(val))
+                except ValueError:
+                    try: self.add(key, float(val))
+                    except ValueError: pass
+            else:
+                self.add(key, val)
+
     def change(self, key, old_value, new_value):
         """Change 'old_value' to 'new_value' for the given metadata key.
         If the old value is not found, set the key to the new value."""

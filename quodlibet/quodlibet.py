@@ -97,24 +97,10 @@ def print_playing(fstring="<artist~album~tracknumber~title>"):
     from quodlibet.parse import Pattern
 
     try:
-        fn = file(const.CURRENT)
-        data = {}
-        for line in fn:
-            line = line.strip()
-            parts = line.split("=")
-            key = parts[0]
-            val = "=".join(parts[1:])
-            if key.startswith("~#"):
-                try: data[key] = int(val)
-                except ValueError:
-                    try: data[key] = float(val)
-                    except ValueError: data[key] = 0
-            else:
-                if key != "~filename": val = util.decode(val)
-                else: val = util.decode(util.fsencode(val))
-                if key in data: data[key] += "\n" + val
-                else: data[key] = val
-        print_(Pattern(fstring).format(AudioFile(data)))
+        text = open(const.CURRENT, "rb").read()
+        song = AudioFile()
+        song.from_dump(text)
+        print_(Pattern(fstring).format(song))
         raise SystemExit
     except (OSError, IOError):
         print_(_("No song is currently playing."))

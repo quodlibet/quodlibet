@@ -230,11 +230,19 @@ class TAudioFile(TestCase):
         for key in INTERN_NUM_DEFAULT:
             self.failUnless(key in dump)
 
+        n = AudioFile()
+        n.from_dump(dump)
+        self.failUnless(set(dump.split("\n")) == set(n.to_dump().split("\n")))
+
     def test_to_dump_long(self):
         b = AudioFile(bar_1_1); b["~#length"] = 200000000000L
         dump = b.to_dump()
         num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
         self.failUnlessEqual(dump.count("\n"), num + 2)
+
+        n = AudioFile()
+        n.from_dump(dump)
+        self.failUnless(set(dump.split("\n")) == set(n.to_dump().split("\n")))
 
     def test_add(self):
         song = AudioFile()
