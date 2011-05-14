@@ -106,7 +106,9 @@ def print_playing(fstring="<artist~album~tracknumber~title>"):
             val = "=".join(parts[1:])
             if key.startswith("~#"):
                 try: data[key] = int(val)
-                except ValueError: data[key] = 0
+                except ValueError:
+                    try: data[key] = float(val)
+                    except ValueError: data[key] = 0
             else:
                 if key != "~filename": val = util.decode(val)
                 else: val = util.decode(util.fsencode(val))
