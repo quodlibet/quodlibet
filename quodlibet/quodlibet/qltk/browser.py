@@ -17,7 +17,7 @@ from quodlibet.util.library import background_filter
 
 class LibraryBrowser(Window):
     def __init__(self, Kind, library):
-        super(LibraryBrowser, self).__init__()
+        super(LibraryBrowser, self).__init__(dialog=False)
         self.set_border_width(6)
         self.set_title("Quod Libet - " + Kind.name)
         self.add(gtk.VBox(spacing=6))
