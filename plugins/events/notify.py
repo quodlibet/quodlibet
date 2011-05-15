@@ -201,23 +201,7 @@ class Notify(EventPlugin):
     NO_PROPER_MARKUP_DAEMONS = ["notify-osd", "Notification Daemon"]
 
     def enabled(self):
-        bus = dbus.SessionBus()
-        obj = bus.get_object(
-            "org.freedesktop.Notifications",
-            "/org/freedesktop/Notifications")
-        self.ni = dbus.Interface(obj, "org.freedesktop.Notifications")
-
-        # check capabilities
-        name = self.ni.GetServerInformation()[0]
-        print_d("[notify] talking to %s ..." % name)
-
-        if name in self.NO_PROPER_MARKUP_DAEMONS:
-            self.should_escape_contents = False
-        else:
-            self.should_escape_contents = (
-                "body-markup" in self.ni.GetCapabilities())
-
-        self.should_scale_icon = name in self.NONSCALING_DAEMONS
+        self.bus = dbus.SessionBus()
 
         self.last_id = 0
 
@@ -228,14 +212,31 @@ class Notify(EventPlugin):
         #    on_song_started event in any case.
         self.was_stopped_by_user = True
 
-
     def PluginPreferences(self, parent):
         return PreferencesWidget(parent, self)
 
+    def refresh_dbus_interface(self):
+        obj = self.bus.get_object(
+            "org.freedesktop.Notifications",
+            "/org/freedesktop/Notifications")
+        self.ni = dbus.Interface(obj, "org.freedesktop.Notifications")
+
+        # check capabilities
+        name = self.ni.GetServerInformation()[0]
+
+        if name in self.NO_PROPER_MARKUP_DAEMONS:
+            self.should_escape_contents = False
+        else:
+            self.should_escape_contents = (
+                "body-markup" in self.ni.GetCapabilities())
+
+        self.should_scale_icon = name in self.NONSCALING_DAEMONS
 
     def show_notification(self, song):
         if not song:
             return
+
+        self.refresh_dbus_interface()
 
         # XMLFromPattern's output is escaped so we unescape it if required,
         # instead of the other way around
