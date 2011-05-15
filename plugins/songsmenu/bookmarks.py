@@ -30,9 +30,8 @@ class Bookmarks(SongsMenuPlugin):
 
         def seek(self, time):
             from player import playlist as player
-            player.go_to(self.song._song)
-            # Ugly hack to avoid trying to seek before GSt is ready.
-            gobject.timeout_add(200, player.seek, time)
+            if player.go_to(self.song._song, explicit=True):
+                player.seek(time)
 
         get_position = lambda *x: 0
 
