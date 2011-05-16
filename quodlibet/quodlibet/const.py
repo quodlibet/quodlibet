@@ -9,6 +9,8 @@ if os.name == "nt":
 
 VERSION_TUPLE = (2, 3, -1)
 VERSION = ".".join(map(str, VERSION_TUPLE))
+PROCESS_TITLE_QL = "quodlibet"
+PROCESS_TITLE_EF = "exfalso"
 
 # expanduser doesn't work with unicode on win...
 if os.name == "nt":

@@ -121,6 +121,26 @@ def print_e(string):
     # terminal output. APT uses a similar output format.
     print_(string, prefix=_("E: "), log=_("Errors"), output=sys.stderr)
 
+def set_process_title(title):
+    """Sets process name as visible in ps or top. Requires python-prctl ideally
+    and is almost certainly *nix-only. See issue 736"""
+    try:
+        import prctl
+        prctl.set_proctitle(title)
+    except ImportError:
+        try:
+            # This runs OK, but doesn't seem to work (on Ubuntu 10.04 x64)
+            import ctypes
+            libc = ctypes.CDLL('libc.so.6')
+            # 15 = PR_SET_NAME, apparently
+            libc.prctl(15, title, 0, 0, 0)
+            print_d(_("Couldn't find module %s, using %s as fall-back...") %
+                ("python-prctl", "ctypes libc"))
+        except:
+            print_w(_("Couldn't find module %s or %s."
+                % ("python-prctl", "ctypes libc 6"))
+                + " " +  _("Not setting process title."))
+
 def _python_init():
     # The default regex escaping function doesn't work for non-ASCII.
     # Use a blacklist of regex-specific characters instead.

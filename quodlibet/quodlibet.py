@@ -21,6 +21,8 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import util
 from quodlibet.util.uri import URI
+# Stops IDEs moaning
+from quodlibet import print_d, print_w, print_e, print_, set_process_title
 
 from threading import Thread
 
@@ -291,6 +293,7 @@ def process_arguments():
 
 if __name__ == "__main__":
     process_arguments()
+    if os.name != "nt": set_process_title(const.PROCESS_TITLE_QL)
     if isrunning() and not os.environ.get("QUODLIBET_DEBUG"):
         print_(_("Quod Libet is already running."))
         control('focus')

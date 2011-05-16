@@ -133,7 +133,6 @@ class ExFalsoWindow(gtk.Window):
     def __window_state_changed(self, window, event):
         self.__state = event.new_window_state
         if self.__state & gtk.gdk.WINDOW_STATE_WITHDRAWN: return
-        print int(self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED)
         if self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
             config.set("memory", "exfalso_maximized", "1")
         else:
