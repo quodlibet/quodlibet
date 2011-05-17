@@ -24,6 +24,7 @@ from quodlibet.util.uri import URI
 # Stops IDEs moaning
 from quodlibet import print_d, print_w, print_e, print_, set_process_title
 
+import gobject
 from threading import Thread
 
 global play
@@ -293,7 +294,9 @@ def process_arguments():
 
 if __name__ == "__main__":
     process_arguments()
-    if os.name != "nt": set_process_title(const.PROCESS_TITLE_QL)
+    # Issue 736 - only run when idle, or gtk resets title
+    if os.name != "nt":
+        gobject.idle_add(set_process_title, const.PROCESS_TITLE_QL)
     if isrunning() and not os.environ.get("QUODLIBET_DEBUG"):
         print_(_("Quod Libet is already running."))
         control('focus')

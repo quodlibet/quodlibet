@@ -14,6 +14,7 @@ def main(argv):
     from quodlibet import util
     from quodlibet import const
     from quodlibet import set_process_title
+    import gobject
 
     opts = util.OptionParser(
         "Ex Falso", const.VERSION,
@@ -27,8 +28,9 @@ def main(argv):
     config.init(const.CONFIG)
     backend, library, player = quodlibet.init(icon="exfalso", backend="nullbe")
 
-    # Issue 736
-    if os.name != "nt": set_process_title(const.PROCESS_TITLE_EF)
+    # See Issue 736.
+    if os.name != "nt":
+        gobject.idle_add(set_process_title, const.PROCESS_TITLE_EF)
 
     from quodlibet.qltk.exfalsowindow import ExFalsoWindow
     from quodlibet import widgets
