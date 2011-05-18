@@ -133,6 +133,9 @@ class AudioFile(dict):
         # And to preserve Python hash rules, we need a strict __eq__.
         return self is other
 
+    def __ne__(self, other):
+        return self is not other
+
     def reload(self):
         """Reload an audio file from disk. The caller is responsible for
         handling any errors."""

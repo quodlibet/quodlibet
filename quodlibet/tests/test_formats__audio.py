@@ -336,6 +336,10 @@ class TAudioFile(TestCase):
             afile.sanitize('/dir/fn')
             self.failUnlessEqual(afile.album_key, expected)
 
+    def test_eq_ne(self):
+        self.failIf(AudioFile({"a": "b"}) == AudioFile({"a": "b"}))
+        self.failUnless(AudioFile({"a": "b"}) != AudioFile({"a": "b"}))
+
     def tearDown(self):
         os.unlink(quux["~filename"])
 add(TAudioFile)
