@@ -19,6 +19,7 @@ except ImportError:
 
 from quodlibet import config
 from quodlibet import const
+from quodlibet import util
 
 from quodlibet.util import fver
 from quodlibet.player import error as PlayerError
@@ -393,14 +394,16 @@ class GStreamerPlayer(BasePlayer):
         # We need to set self.song to None before calling our signal
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
-        song = self.song
+        song, info = self.song, self.info
         self.song = self.info = None
         self.emit('song-ended', song, stopped)
+        if song is not info:
+            self.emit('song-ended', info, stopped)
 
         # Then, set up the next song.
         if not stop:
             self.song = self.info = self._source.current
-            self.emit('song-started', self.song)
+        self.emit('song-started', self.song)
 
         if self.song is not None:
             self.volume = self.volume
@@ -430,12 +433,17 @@ class GStreamerPlayer(BasePlayer):
             pass
 
     def _fill_stream(self, tags, librarian):
-        changed = False
-        started = False
-        if self.info is self.song:
-            self.info = type(self.song)(self.song["~filename"])
-            self.info.multisong = False
+        # get a new remote file
+        new_info = type(self.song)(self.song["~filename"])
+        new_info.multisong = False
 
+        # copy from the old songs
+        # we should probably listen to the library for self.song changes
+        new_info.update(self.song)
+        new_info.update(self.info)
+
+        changed = False
+        info_changed = False
         for k in tags.keys():
             value = str(tags[k]).strip()
             if not value: continue
@@ -444,34 +452,45 @@ class GStreamerPlayer(BasePlayer):
                 except (ValueError, TypeError): pass
                 else:
                     if bitrate != self.song.get("~#bitrate"):
-                        changed = True
+                        changed = info_changed = True
                         self.song["~#bitrate"] = bitrate
-                        self.info["~#bitrate"] = bitrate
+                        new_info["~#bitrate"] = bitrate
             elif k == "duration":
                 try: length = int(long(value) / gst.SECOND)
                 except (ValueError, TypeError): pass
                 else:
-                    if length != self.song.get("~#length"):
-                        changed = True
-                        self.info["~#length"] = length
-            elif k in ["emphasis", "mode", "layer"]:
+                    if length != self.info.get("~#length"):
+                        info_changed = True
+                        new_info["~#length"] = length
+            elif k in ["emphasis", "mode", "layer", "maximum-bitrate",
+                "minimum-bitrate", "has-crc"]:
                 continue
-            elif isinstance(value, basestring):
-                value = unicode(value, errors='replace')
+            else:
+                value = util.decode(value)
                 k = {"track-number": "tracknumber",
                      "location": "website"}.get(k, k)
-                if self.info.get(k) == value:
-                    continue
-                elif k == "title":
-                    self.info[k] = value
-                    started = True
-                else:
-                    self.song[k] = self.info[k] = value
-                changed = True
+                if self.info.get(k) != value:
+                    new_info[k] = value
+                    info_changed = True
+                if k != "title" and self.song.get(k) != value:
+                    self.song[k] = value
+                    changed = True
 
-        if started:
-            self.emit('song-started', self.info)
-        elif changed and librarian is not None:
+        if info_changed:
+            # in case the title changed, make self.info a new instance
+            # and emit ended/started for the the old/new one
+            if self.info.get("title") != new_info.get("title"):
+                if self.info is not self.song:
+                    self.emit('song-ended', self.info, False)
+                self.info = new_info
+                self.emit('song-started', self.info)
+            else:
+                # in case title didn't changed, update the values of the
+                # old instance and tell the library.
+                self.info.update(new_info)
+                librarian.changed([self.info])
+
+        if changed:
             librarian.changed([self.song])
 
     @property
