@@ -36,7 +36,7 @@ def GStreamerSink(pipeline):
 
     Returns the pipeline's description and a list of disconnected elements."""
 
-    if not pipeline and os.name == "nt":
+    if not pipeline and not gst.element_factory_find('gconfaudiosink'):
         pipeline = "autoaudiosink"
     elif not pipeline or pipeline == "gconf":
         pipeline = "gconfaudiosink profile=music"

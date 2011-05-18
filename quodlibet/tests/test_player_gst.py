@@ -4,7 +4,9 @@ from quodlibet.player.gstbe import GStreamerSink as Sink
 
 class TGStreamerSink(TestCase):
     def test_simple(self):
-        for n in ["gconfaudiosink", "alsasink"]:
+        import gst
+        sinks = ["gconfaudiosink", "alsasink"]
+        for n in filter(gst.element_factory_find, sinks):
             obj, name = Sink(n)
             self.failUnless(obj)
             self.failUnlessEqual(name, n)
@@ -13,5 +15,10 @@ class TGStreamerSink(TestCase):
             obj, name = Sink("notarealsink")
             self.failUnless(obj)
             self.failUnlessEqual(name, "autoaudiosink")
+
+    def test_append_sink(self):
+        obj, name = Sink("volume")
+        self.failUnless(obj)
+        self.failUnlessEqual(name.split("!")[-1].strip(), Sink("")[1])
 
 add(TGStreamerSink)
