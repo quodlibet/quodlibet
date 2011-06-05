@@ -22,6 +22,17 @@ class Union(object):
     def __repr__(self):
         return "<Union %r>" % self.__res
 
+    def __or__(self, other):
+        if isinstance(other, Union):
+            return Union(self.__res + other.__res)
+        else: return Union(self.__res + [other])
+    __ror__ = __or__
+
+    def __and__(self, other):
+        if not isinstance(other, Inter):
+            return Inter([self, other])
+        return NotImplemented
+
 # True if the object matches all of its REs.
 class Inter(object):
     def __init__(self, res):
@@ -35,6 +46,17 @@ class Inter(object):
     def __repr__(self):
         return "<Inter %r>" % self.__res
 
+    def __and__(self, other):
+        if isinstance(other, Inter):
+            return Inter(self.__res + other.__res)
+        else: return Inter(self.__res + [other])
+    __rand__ = __and__
+
+    def __or__(self, other):
+        if not isinstance(other, Union):
+            return Union([self, other])
+        return NotImplemented
+
 # True if the object doesn't match its RE.
 class Neg(object):
     def __init__(self, re):
@@ -45,6 +67,16 @@ class Neg(object):
 
     def __repr__(self):
         return "<Neg %r>" % self.__re
+
+    def __and__(self, other):
+        if not isinstance(other, Inter):
+            return Inter([self, other])
+        return NotImplemented
+
+    def __or__(self, other):
+        if not isinstance(other, Union):
+            return Union([self, other])
+        return NotImplemented
 
 # Numeric comparisons
 class Numcmp(object):
@@ -107,6 +139,16 @@ class Numcmp(object):
         return "<Numcmp tag=%r, op=%r, value=%d>"%(
             self.__tag, self.__op, self.__value)
 
+    def __and__(self, other):
+        if not isinstance(other, Inter):
+            return Inter([self, other])
+        return NotImplemented
+
+    def __or__(self, other):
+        if not isinstance(other, Union):
+            return Union([self, other])
+        return NotImplemented
+
 # See if a property of the object matches its RE.
 class Tag(object):
 
@@ -144,3 +186,13 @@ class Tag(object):
 
     def __repr__(self):
         return ("<Tag names=%r, res=%r>" % (self.__names, self.__res))
+
+    def __and__(self, other):
+        if not isinstance(other, Inter):
+            return Inter([self, other])
+        return NotImplemented
+
+    def __or__(self, other):
+        if not isinstance(other, Union):
+            return Union([self, other])
+        return NotImplemented

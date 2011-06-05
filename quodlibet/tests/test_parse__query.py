@@ -245,6 +245,24 @@ class TQuery(TestCase):
         a, b = self.AF({"~#rating": 0.771}), self.AF({"~#rating": 0.769})
         self.failUnless(Query("#(rating = 0.77)").search(a))
         self.failUnless(Query("#(rating = 0.77)").search(b))
+
+    def test_and_or_operator(self):
+        union = Query("|(foo=bar)")
+        inter = Query("&(foo=bar)")
+        neg = Query("foo=!bar")
+        numcmp = Query("#(bar = 0)")
+        tag = Query("foo=bar")
+
+        tests = [inter | tag, tag | tag, neg | neg, tag | inter, neg | union,
+            union | union, inter | inter, numcmp | numcmp, numcmp | union]
+
+        self.failIf(filter(lambda x: not isinstance(x, type(union)), tests))
+
+        tests = [inter & tag, tag & tag, neg & neg, tag & inter, neg & union,
+            union & union, inter & inter, numcmp & numcmp, numcmp & inter]
+
+        self.failIf(filter(lambda x: not isinstance(x, type(inter)), tests))
+
 add(TQuery)
 
 class TQuery_is_valid_color(TestCase):
