@@ -17,7 +17,7 @@ if not getattr(gtk.Entry, "set_icon_from_stock", None):
     except ImportError: pass
 
 from quodlibet import config
-from quodlibet.qltk import ClearButton, get_top_parent
+from quodlibet.qltk.x import ClearButton, get_top_parent
 
 class EditableUndo(object):
     """A simple undo/redo implementation for gtk widgets that

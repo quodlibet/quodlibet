@@ -6,6 +6,8 @@
 
 import gtk
 
+from quodlibet.qltk.entry import UndoEntry
+
 class GetStringDialog(gtk.Dialog):
     def __init__(
         self, parent, title, text, options=[], okbutton=gtk.STOCK_OPEN):
@@ -31,13 +33,31 @@ class GetStringDialog(gtk.Dialog):
             self._val = self._entry.child
             box.pack_start(self._entry)
         else:
-            self._val = gtk.Entry()
+            self._val = UndoEntry()
             box.pack_start(self._val)
+
         self.vbox.pack_start(box)
         self.child.show_all()
 
-    def run(self, text=""):
+    def _verify_clipboard(self, text):
+        """Return an altered text or None if the content was invalid."""
+        return
+
+    def run(self, text="", clipboard=False):
+        """Shows the dialog and returns the entered value.
+
+        If clipboard is set, the initial value will be pulled from the
+        clipboard and can be verified/altered by _verify_clipboard. In case the
+        verification fails text will be used as fallback"""
+
         self.show()
+        if clipboard:
+            clipboard = gtk.clipboard_get()
+            clip = clipboard.wait_for_text()
+            if clip is not None:
+                clip = self._verify_clipboard(clip)
+            if clip is not None:
+                text = clip
         self._val.set_text(text)
         self._val.set_activates_default(True)
         self._val.grab_focus()
