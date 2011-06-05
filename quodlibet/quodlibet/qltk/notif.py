@@ -253,7 +253,8 @@ class TaskWidget(gtk.HBox):
             self.task.stop()
 
     def update(self):
-        formatted_label = "<b>%s</b>\n%s" % (self.task.source, self.task.desc)
+        formatted_label = "<small><b>%s</b>\n%s</small>" % (self.task.source,
+            self.task.desc)
         self.label.set_markup(formatted_label)
         if self.task.frac is not None:
             self.progress.set_fraction(self.task.frac)
