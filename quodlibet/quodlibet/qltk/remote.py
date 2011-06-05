@@ -98,7 +98,8 @@ class FIFOControl(object):
                         print_w(_("Invalid command %r received.") % command)
                 except:
                     e = sys.exc_info()[1]
-                    print_e(_("Error running command %r, caused by: %r).") % (command, e))
+                    print_e(_("Error running command %r, caused by: %r.") %
+                        (command, e))
             return True
 
     def _previous(self, library, window, player): player.previous()
