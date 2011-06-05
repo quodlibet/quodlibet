@@ -252,13 +252,15 @@ class GStreamerPlayer(BasePlayer):
         return True
 
     def __about_to_finish(self, pipeline):
-        self._in_gapless_transition = True
-
         def check_position(*args):
             # Query the current position until gapless is over
             self.get_position()
             return self._in_gapless_transition
+
+        self._in_gapless_transition = False
         self._finish_position = self.get_position()
+        self._in_gapless_transition = True
+
         # song change is about to happen, check frequently
         gobject.timeout_add(100, check_position)
 
