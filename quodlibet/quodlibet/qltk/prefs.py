@@ -27,6 +27,14 @@ class PreferencesWindow(qltk.UniqueWindow):
             super(PreferencesWindow.SongList, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Song List")
+
+            c = ConfigCheckButton(
+                _("_Jump to playing song automatically"), 'settings', 'jump')
+            c.set_tooltip_text(_("When the playing song changes, "
+                                 "scroll to it in the song list"))
+            c.set_active(config.getboolean("settings", "jump"))
+            self.pack_start(c, expand=False)
+
             vbox = gtk.VBox(spacing=12)
 
             buttons = {}
@@ -138,6 +146,13 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(e)
             self.pack_start(hb, expand=False)
 
+            c = ConfigCheckButton(
+                _("_Use rounded corners on thumbnails"), 'settings', 'round')
+            c.set_tooltip_text(_("Round the corners of album artwork "
+                "thumbnail images. May require restart to take effect."))
+            c.set_active(config.getboolean("settings", "round"))
+            self.pack_start(c, expand=False)
+
             vb = gtk.VBox(spacing=6)
             c = ConfigCheckButton(
                 _("Search after _typing"), 'settings', 'eager_search')
@@ -184,43 +199,11 @@ class PreferencesWindow(qltk.UniqueWindow):
         def __init__(self):
             super(PreferencesWindow.Player, self).__init__(spacing=12)
             self.set_border_width(12)
-            self.title = _("Player")
+            self.title = _("Playback")
 
-            if config.get('player', 'backend') == "gstbe":
-                e = UndoEntry()
-                e.set_tooltip_text(_("The GStreamer output pipeline used for "
-                        "playback, such as 'alsasink device=default'. "
-                        "Leave blank for default pipeline."))
-                e.set_text(config.get('player', 'gst_pipeline'))
-                def changed(entry):
-                    config.set('player', 'gst_pipeline', entry.get_text())
-                e.connect('changed', changed)
-                l = gtk.Label(_('_Output pipeline:'))
-                l.set_use_underline(True)
-                l.set_mnemonic_widget(e)
-                b = gtk.Button(stock=gtk.STOCK_APPLY)
-                b.connect('clicked',
-                        lambda w: player.device.go_to(player.device.song))
-
-                hb = gtk.HBox(spacing=6)
-                hb.pack_start(l, expand=False)
-                hb.pack_start(e)
-                hb.pack_start(b, expand=False)
-                self.pack_start(hb, expand=False)
-
-            c = ConfigCheckButton(
-                _("_Jump to playing song automatically"), 'settings', 'jump')
-            c.set_tooltip_text(_("When the playing song changes, "
-                                 "scroll to it in the song list"))
-            c.set_active(config.getboolean("settings", "jump"))
-            self.pack_start(c, expand=False)
-
-            c = ConfigCheckButton(
-                _("_Use rounded corners on thumbnails"), 'settings', 'round')
-            c.set_tooltip_text(_("Round the corners of album artwork "
-                "thumbnail images. May require restart to take effect."))
-            c.set_active(config.getboolean("settings", "round"))
-            self.pack_start(c, expand=False)
+            if hasattr(player.device, 'PlayerPreferences'):
+                player_prefs = player.device.PlayerPreferences()
+                self.pack_start(player_prefs, expand=False)
 
             vbox = gtk.VBox(spacing=6)
             c = ConfigCheckButton(_("_Enable Replay Gain volume adjustment"),

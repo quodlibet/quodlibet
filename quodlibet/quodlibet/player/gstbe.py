@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import gtk
 import gobject
 import os
 
@@ -26,6 +27,9 @@ from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.notif import Task
+from quodlibet.qltk.entry import UndoEntry
+
+USE_PLAYBIN2 = gst.version() >= (0, 10, 24)
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
@@ -84,6 +88,69 @@ class GStreamerPlayer(BasePlayer):
     __atf_id = None
     __bus_id = None
 
+    def PlayerPreferences(self):
+        e = UndoEntry()
+        e.set_tooltip_text(_("The GStreamer output pipeline used for "
+                "playback, such as 'alsasink device=default'. "
+                "Leave blank for default pipeline."))
+        e.set_text(config.get('player', 'gst_pipeline'))
+        def changed(entry):
+            config.set('player', 'gst_pipeline', entry.get_text())
+        e.connect('changed', changed)
+
+        l = gtk.Label(_('_Output pipeline:'))
+        l.set_use_underline(True)
+        l.set_mnemonic_widget(e)
+
+        def apply_pipeline(*args):
+            paused = self.paused
+            pos = self.get_position()
+            self.__destroy_pipeline()
+            self.paused = True
+            self.go_to(self.song)
+            self.paused = paused
+            self.seek(pos)
+
+        b = gtk.Button(stock=gtk.STOCK_APPLY)
+        b.connect('clicked', apply_pipeline)
+
+        hb = gtk.HBox(spacing=6)
+        hb.pack_start(l, expand=False)
+        hb.pack_start(e)
+        hb.pack_start(b, expand=False)
+
+        def format_buffer(scale, value):
+            # seconds
+            return _("%.1f s") % value
+
+        def scale_changed(scale):
+            config.set("player", "gst_buffer", scale.get_value())
+            if self.bin:
+                duration = int(scale.get_value() * 1000) * gst.MSECOND
+                self.bin.set_property('buffer-duration', duration)
+
+        duration = config.getfloat("player", "gst_buffer")
+        scale = gtk.HScale(gtk.Adjustment(duration, 0.2, 10))
+        scale.set_value_pos(gtk.POS_RIGHT)
+        scale.set_show_fill_level(True)
+        scale.connect('format-value', format_buffer)
+        scale.connect('value-changed', scale_changed)
+
+        l = gtk.Label(_('_Buffer duration:'))
+        l.set_use_underline(True)
+        l.set_mnemonic_widget(scale)
+
+        hb2 = gtk.HBox(spacing=6)
+        hb2.pack_start(l, expand=False)
+        hb2.pack_start(scale)
+
+        vbox = gtk.VBox(spacing=6)
+        vbox.pack_start(hb)
+        if USE_PLAYBIN2:
+            vbox.pack_start(hb2)
+
+        return vbox
+
     def __init__(self, librarian=None):
         super(GStreamerPlayer, self).__init__()
         self.version_info = "GStreamer: %s / PyGSt: %s" % (
@@ -130,9 +197,7 @@ class GStreamerPlayer(BasePlayer):
             conv = gst.element_factory_make('audioconvert')
             pipeline = [filt, eq, conv] + pipeline
 
-        use_playbin2 = gst.version() >= (0, 10, 24)
-
-        if use_playbin2:
+        if USE_PLAYBIN2:
             # The output buffer is necessary to run the song-ended and
             # song-started events through QL's signal handlers before the
             # playbin2 hits EOF inside a gapless transition.
@@ -164,10 +229,13 @@ class GStreamerPlayer(BasePlayer):
         gpad = gst.GhostPad('sink', pipeline[0].get_pad('sink'))
         bufbin.add_pad(gpad)
 
-        if use_playbin2:
+        if USE_PLAYBIN2:
             self.bin = gst.element_factory_make('playbin2')
             self.__atf_id = self.bin.connect('about-to-finish',
                 self.__about_to_finish)
+            duration = config.getfloat("player", "gst_buffer")
+            duration = int(duration * 1000) * gst.MSECOND
+            self.bin.set_property('buffer-duration', duration)
         else:
             self.bin = gst.element_factory_make('playbin')
             self._vol_element = self.bin
