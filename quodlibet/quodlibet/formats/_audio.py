@@ -442,6 +442,15 @@ class AudioFile(dict):
             stat = os.stat(self['~filename'])
             self["~#mtime"] = stat.st_mtime
             self["~#filesize"] = stat.st_size
+
+            # Issue 342. This is a horrible approximation (due to headers)
+            # ...but on FLACs, the most common case, this should be close enough
+            if "~#bitrate" not in self:
+                try:
+                    # kbps = bytes * 8 / seconds / 1000
+                    self["~#bitrate"] = int(stat.st_size /
+                        (self["~#length"] * (1000/8)))
+                except (KeyError, ZeroDivisionError): pass
         except OSError:
             self["~#mtime"] = 0
 
