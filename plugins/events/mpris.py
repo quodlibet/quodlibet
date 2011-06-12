@@ -308,7 +308,9 @@ class MPRIS1PlayerObject(MPRISObject):
         if year:
             try: tuple_time = time.strptime(year, "%Y")
             except ValueError: pass
-            else: metadata["date"] = int(time.mktime(tuple_time))
+            else:
+                try: metadata["date"] = int(time.mktime(tuple_time))
+                except ValueError: pass
 
         return metadata
 
@@ -482,8 +484,10 @@ class MPRIS2Object(MPRISObject):
             try: tuple_time = time.strptime(year, "%Y")
             except ValueError: pass
             else:
-                iso_time = time.strftime(ISO_8601_format, tuple_time)
-                metadata["xesam:contentCreated"] = iso_time
+                try: iso_time = time.strftime(ISO_8601_format, tuple_time)
+                except ValueError: pass
+                else:
+                    metadata["xesam:contentCreated"] = iso_time
 
         return metadata
 
