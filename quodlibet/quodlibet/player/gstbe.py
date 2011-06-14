@@ -219,9 +219,9 @@ class GStreamerPlayer(BasePlayer):
 
         # Test to ensure output pipeline can preroll
         bufbin.set_state(gst.STATE_READY)
-        result, state, pending = bufbin.get_state()
-        bufbin.set_state(gst.STATE_NULL)
+        result, state, pending = bufbin.get_state(timeout=gst.SECOND/2)
         if result == gst.STATE_CHANGE_FAILURE:
+            bufbin.set_state(gst.STATE_NULL)
             self.__destroy_pipeline()
             return False
 
@@ -450,7 +450,7 @@ class GStreamerPlayer(BasePlayer):
         # Don't allow seeking during gapless. We can't go back to the old song.
         if self.bin and self.song and not self._in_gapless_transition:
             # ensure any pending state changes have completed
-            self.bin.get_state()
+            self.bin.get_state(timeout=gst.SECOND/2)
             pos = max(0, int(pos))
             gst_time = pos * gst.MSECOND
             event = gst.event_new_seek(
