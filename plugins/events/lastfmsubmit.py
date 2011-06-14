@@ -8,8 +8,14 @@ import sys
 
 import gobject
 import gtk
-import lastfm.client
-import lastfm.marshaller
+
+try:
+    import lastfm.client
+    import lastfm.marshaller
+except ImportError:
+    from quodlibet import plugins
+    if not hasattr(plugins, "PluginImportException"): raise
+    raise plugins.PluginImportException("Couldn't find lastfmsubmitd.")
 
 from quodlibet import config, player, parse
 from quodlibet.plugins.events import EventPlugin

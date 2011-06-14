@@ -19,6 +19,56 @@ from quodlibet.qltk.entry import ClearEntry
 
 TAG, ALL, NO, DIS, EN, SEP = range(6)
 
+class PluginErrorWindow(qltk.UniqueWindow):
+    def __init__(self, parent):
+        if self.is_not_unique(): return
+        super(PluginErrorWindow, self).__init__()
+
+        self.set_title(_("Plugin Errors") + " - Quod Libet")
+        self.set_border_width(12)
+        self.set_transient_for(parent)
+        self.set_default_size(420, 250)
+
+        scrolledwin = gtk.ScrolledWindow()
+        vbox = gtk.VBox(spacing=6)
+        vbox.set_border_width(6)
+        scrolledwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolledwin.add_with_viewport(vbox)
+
+        failures = {}
+        for pm in Manager.instances.values():
+            failures.update(pm.list_failures())
+        keys = failures.keys()
+        show_expanded = len(keys) <= 3
+        for key in sorted(keys):
+            expander = gtk.Expander("<b>%s</b>" % util.escape(key))
+            expander.set_use_markup(True)
+            if show_expanded: expander.set_expanded(True)
+
+            # second line is always the __rescan line; don't show it
+            message = failures[key][0:1] + failures[key][2:]
+            failure = gtk.Label(''.join(message).strip())
+            failure.set_alignment(0, 0)
+            failure.set_padding(12, 6)
+            failure.set_selectable(True)
+
+            vbox.pack_start(expander, expand=False)
+            expander.add(failure)
+
+        vbox2 = gtk.VBox(spacing=12)
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close.connect('clicked', lambda *x: self.destroy())
+        b = gtk.HButtonBox()
+        b.set_layout(gtk.BUTTONBOX_END)
+        b.pack_start(close)
+
+        vbox2.pack_start(scrolledwin)
+        vbox2.pack_start(b, expand=False)
+        self.add(vbox2)
+
+        self.show_all()
+        close.grab_focus()
+
 class PluginWindow(qltk.UniqueWindow):
     def __init__(self, parent):
         if self.is_not_unique(): return
@@ -269,42 +319,4 @@ class PluginWindow(qltk.UniqueWindow):
         errors.set_sensitive(failures)
 
     def __show_errors(self, activator):
-        try: self.__win.present()
-        except AttributeError:
-            self.__win = qltk.Window()
-            self.__win.set_title(_("Plugin Errors") + " - Quod Libet")
-            self.__win.set_border_width(12)
-            self.__win.set_transient_for(qltk.get_top_parent(self))
-            self.__win.set_default_size(400, 250)
-
-            scrolledwin = gtk.ScrolledWindow()
-            self.__win.add(scrolledwin)
-            vbox = gtk.VBox(spacing=6)
-            scrolledwin.add_with_viewport(vbox)
-            scrolledwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            scrolledwin.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse('#fff'))
-
-            failures = {}
-            for pm in Manager.instances.values():
-                failures.update(pm.list_failures())
-            keys = failures.keys()
-            show_expanded = len(keys) <= 3
-            for key in sorted(keys):
-                expander = gtk.Expander("<b>%s</b>" % util.escape(key))
-                expander.set_use_markup(True)
-                if show_expanded: expander.set_expanded(True)
-
-                # second line is always the __rescan line; don't show it
-                message = failures[key][0:1] + failures[key][2:]
-                failure = gtk.Label(''.join(message).strip())
-                failure.set_alignment(0, 0)
-                failure.set_padding(3, 3)
-                failure.set_selectable(True)
-
-                vbox.pack_start(expander, expand=False)
-                expander.add(failure)
-
-            scrolledwin.show_all()
-            def delwin(*args): del self.__win
-            self.__win.connect("destroy", delwin)
-            self.__win.present()
+        PluginErrorWindow(self)

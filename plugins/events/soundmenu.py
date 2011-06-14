@@ -6,7 +6,13 @@
 
 import gtk
 import dbus
-import indicate
+try:
+    import indicate
+except ImportError:
+    from quodlibet import plugins
+    if not hasattr(plugins, "PluginImportException"): raise
+    raise plugins.PluginImportException(
+        "Couldn't find python bindings for libindicate (python-indicate).")
 
 from quodlibet.plugins.events import EventPlugin
 

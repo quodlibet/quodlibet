@@ -102,6 +102,18 @@ def ListWrapper(songs):
         else: return SongWrapper(song)
     return map(wrap, songs)
 
+class PluginImportException(Exception):
+    desc = ""
+    def __init__(self, desc):
+        super(PluginImportException, self).__init__()
+        self.desc = desc
+
+def format_plugin_exception(ex):
+    if isinstance(ex, PluginImportException):
+        return [ex.desc]
+    else:
+        return format_exception(*sys.exc_info())
+
 class Manager(object):
     """A generalized plugin manager. It scans directories for importable
     modules/packages and extracts all objects from them.
@@ -147,7 +159,7 @@ class Manager(object):
                                 mod = imp.load_module(name, *modinfo)
                             except Exception, err:
                                 self.__failures[name] = \
-                                    format_exception(*sys.exc_info())
+                                    format_plugin_exception(err)
                                 try: del sys.modules[name]
                                 except KeyError: pass
                             else:
@@ -157,7 +169,7 @@ class Manager(object):
                             try: mod = reload(info[0])
                             except Exception, err:
                                 self.__failures[name] = \
-                                    format_exception(*sys.exc_info())
+                                    format_plugin_exception(err)
                             else:
                                 info[0] = mod
                                 self._load(name, mod)
