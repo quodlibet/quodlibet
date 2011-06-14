@@ -18,6 +18,7 @@ from quodlibet import const
 from quodlibet import util
 
 from quodlibet.util.uri import URI
+from quodlibet.util import HashableDict
 from quodlibet.util import human_sort_key as human
 from quodlibet.util.tags import STANDARD_TAGS as USEFUL_TAGS
 from quodlibet.util.tags import MACHINE_TAGS
@@ -43,6 +44,9 @@ INTERN_NUM_DEFAULT = frozenset("~#lastplayed ~#laststarted ~#playcount "
 SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
+
+# tags that should alone identify an album, ordered by descending preference
+UNIQUE_ALBUM_IDENTIFIERS = ["musicbrainz_albumid", "labelid"]
 
 class AudioFile(dict):
     """An audio file. It looks like a dict, but implements synthetic
@@ -116,6 +120,33 @@ class AudioFile(dict):
                 self.get("album_grouping_key") or self.get("labelid") or
                 self.get("musicbrainz_albumid") or "")
     album_key = property(__album_key)
+
+    def _album_id_values(self, use_artist=False):
+        """Returns a "best attempt" conjunction (=AND) of album identifiers
+
+        Tries the (probably) most specific keys first, then gets less accurate
+        but more verbose (eg artist="foo" AND album="bar").
+        
+        if use_artist is True, the track artist will also be used as a key if
+        necessary. This breaks compilations, but does well for overloaded
+        album names (eg "Greatest Hits")
+        """
+        ret = HashableDict()
+        for key in UNIQUE_ALBUM_IDENTIFIERS:
+            val = self.get(key)
+            if val: 
+                ret[key] = val
+                break
+        if not ret and "album" in self:
+            # Add helpful identifiers where they exist
+            for key in ["album", "albumartist", "album_grouping_key"]:
+                val = self.get(key)
+                if val: ret[key] = val
+            if use_artist and "albumartist" not in ret and "artist" in self: 
+                ret["artist"] = self.get("artist")
+        return ret
+
+    album_id_values = property(_album_id_values)
 
     def __cmp__(self, other):
         if not other: return -1

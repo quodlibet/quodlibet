@@ -24,6 +24,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.util.uri import URI
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
+from quodlibet.formats._audio import UNIQUE_ALBUM_IDENTIFIERS
 
 class PlaylistMux(object):
 
@@ -726,9 +727,21 @@ class SongList(AllTreeView, util.InstanceTracker):
         values = set()
         if header.startswith("~#"):
             values.update([song(header, 0) for song in songs])
+        elif header == "album":
+            # Special case for albums - see Issue 659
+            for song in songs:
+                album_tags = UNIQUE_ALBUM_IDENTIFIERS + ["album"]
+                for tagname in album_tags:
+                    if tagname in song:
+                        # Assume only one album per song, which seems right.
+                        values.add((tagname, song(tagname)))
+                        break
+                header = None
         else:
             for song in songs: values.update(song.list(header))
         browser.filter(header, list(values))
+
+    filter_on = __filter_on
 
     def __button_press(self, view, event, librarian):
         if event.button != 1: return

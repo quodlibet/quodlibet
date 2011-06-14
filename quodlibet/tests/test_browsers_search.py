@@ -10,14 +10,31 @@ from quodlibet.browsers.search import EmptyBar, SearchBar
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 
-SONGS = [AudioFile(
-    {"title": "one", "artist": "piman", "~filename": "/dev/null"}),
-         AudioFile(
-    {"title": "two", "artist": "mu", "~filename": "/dev/zero"}),
-         AudioFile(
-    {"title": "three", "artist": "boris", "~filename": "/bin/ls"})
-         ]
-SONGS.sort()
+# Don't sort yet, album_key makes it complicated...
+SONGS = [AudioFile({
+                "title": "one",
+                "artist": "piman",
+                "~filename": "/dev/null"}),
+         AudioFile({
+                "title": "two",
+                "artist": "mu",
+                "~filename": "/dev/zero"}),
+         AudioFile({
+                "title": "three",
+                "artist": "boris",
+                "~filename": "/bin/ls"}),
+         AudioFile({
+                "title": "four",
+                "artist": "random",
+                "album": "don't stop",
+                "labelid": "65432-1",
+                "~filename": "/dev/random"}),
+         AudioFile({
+                "title": "five",
+                "artist": "shell",
+                "album": "don't stop",
+                "labelid": "12345-6",
+                "~filename": "/dev/sh"})]
 
 class TEmptyBar(TestCase):
     Bar = EmptyBar
@@ -51,7 +68,7 @@ class TEmptyBar(TestCase):
 
     def test_empty_is_all(self):
         self.bar.set_text("")
-        self.expected = list(SONGS)
+        self.expected = list(sorted(SONGS))
         self._do()
 
     def test_dynamic(self):
@@ -65,16 +82,28 @@ class TEmptyBar(TestCase):
         self.expected = [SONGS[1]]
         self.bar.filter("title", ["two"])
 
+    def test_filter_again(self):
+        self.expected = sorted(SONGS[3:5])
+        self.bar.filter("album", ["don't stop"])
+
     def test_filter_notvalue(self):
-        self.expected = SONGS[1:3]
+        self.expected = sorted(SONGS[0:2])
         self.bar.filter("artist", ["notvalue", "mu", "piman"])
 
     def test_filter_none(self):
         self.expected = []
         self.bar.filter("title", ["not a value"])
 
+    def test_filter_album(self):
+        self.expected = sorted(SONGS[3:5])
+        self.bar.filter(None, [("album", "don't stop")])
+
+    def test_filter_album_by_labelid(self):
+        self.expected = [SONGS[3]]
+        self.bar.filter(None, [("labelid", "65432-1")])
+
     def test_filter_numeric(self):
-        self.expected = list(SONGS)
+        self.expected = list(sorted(SONGS))
         self.bar.filter("~#length", [0])
 
     def test_saverestore(self):
@@ -83,7 +112,7 @@ class TEmptyBar(TestCase):
         self._do()
         self.bar.save()
         self.bar.set_text("")
-        self.expected = list(SONGS)
+        self.expected = list(sorted(SONGS))
         self._do()
         self.bar.restore()
         self.expected = [SONGS[0]]

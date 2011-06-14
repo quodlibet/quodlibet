@@ -3,7 +3,7 @@ from tests import TestCase, add
 import os
 
 from quodlibet import config
-
+from quodlibet.util import HashableDict
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
@@ -330,11 +330,49 @@ class TAudioFile(TestCase):
             ({'album': 'foo', 'labelid': 'bar', 'musicbrainz_albumid': 'quux'},
                 (('foo',), 'bar'))
             ]
-
         for tags, expected in album_key_tests:
             afile = AudioFile(**tags)
             afile.sanitize('/dir/fn')
             self.failUnlessEqual(afile.album_key, expected)
+
+    def test_album_id_values(self):
+        album_key_tests = [
+            ({}, {}),
+            ({'album': 'foo'}, None),
+            ({'labelid': 'foo'}, None),
+            ({'musicbrainz_albumid': 'foo'}, None),
+            ({'album': 'foo', 'labelid': 'bar'}, {'labelid': 'bar'}),
+            # Musicbrainz is our current "favourite" tag
+            ({'album': 'foo', 'labelid': 'bar', 'musicbrainz_albumid': 'quux'},
+                    {'musicbrainz_albumid': 'quux'}),
+            # albumartist > album in this case
+            ({'album': 'foo', 'albumartist': 'bar', 'artist': 'baz'},
+                    {'album': 'foo', 'albumartist': 'bar'}),
+            # Fail as there's nothing to specify the album
+            ({'albumartist': 'bar', 'artist': 'baz', 'title': 'foo'}, {})
+            ]
+        for tags, expected in album_key_tests:
+            if expected is None: expected = tags
+            afile = AudioFile(**tags)
+            afile.sanitize('/dir/fn')
+            self.failUnlessEqual(afile.album_id_values, HashableDict(expected))
+
+    def test_album_id_values_with_artist(self):
+        album_key_tests = [
+            # The artist should now appear
+            ({'album': 'foo', 'artist': 'bar', 'title': 'baz'},
+                    {'album': 'foo', 'artist': 'bar'}),
+            # But albumartist > album still
+            ({'album': 'foo', 'albumartist': 'bar', 'artist': 'baz'},
+                    {'album': 'foo', 'albumartist': 'bar'}),
+            ]
+        for tags, expected in album_key_tests:
+            if expected is None: expected = tags
+            afile = AudioFile(**tags)
+            afile.sanitize('/dir/fn')
+            # Use alternate version, that includes artist in dict
+            self.failUnlessEqual(afile._album_id_values(True),
+                                 HashableDict(expected))
 
     def test_eq_ne(self):
         self.failIf(AudioFile({"a": "b"}) == AudioFile({"a": "b"}))

@@ -130,7 +130,7 @@ class Browser(object):
         return ngettext(
             "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", i)
 
-    # Return a list of values for the given tag. This needs to be
+    # Return a list of unique values for the given tag. This needs to be
     # here since not all browsers pull from the default library.
     def list(self, tag):
         library = quodlibet.library.library

@@ -42,6 +42,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, PlaylistMux
+from quodlibet.library.songs import AlbumLibrary
 from quodlibet.qltk.x import RPaned
 from quodlibet.util import copool
 from quodlibet.util.uri import URI
@@ -449,19 +450,19 @@ class QuodLibetWindow(gtk.Window):
         ag.add_action_with_accel(act, None)
 
         for tag_, lab in [
-            ("genre", _("Filter on _Genre")),
-            ("artist", _("Filter on _Artist")),
-            ("album", _("Filter on Al_bum"))]:
+                ("genre", _("Filter on _Genre")),
+                ("artist", _("Filter on _Artist")),
+                ("album", _("Filter on Al_bum"))]:
             act = gtk.Action(
                 "Filter%s" % util.capitalize(tag_), lab, None, gtk.STOCK_INDEX)
             act.connect_object('activate', self.__filter_on, tag_, None, player)
             ag.add_action_with_accel(act, None)
 
-        for (tag_, accel, label) in [
-            ("genre", "G", _("Random _Genre")),
-            ("artist", "T", _("Random _Artist")),
-            ("album", "M", _("Random Al_bum"))]:
-            act = gtk.Action("Random%s" % util.capitalize(tag_), label,
+        for (tag_, name_, accel, label) in [
+                ("genre", "Genre", "G", _("Random Ge_nre")),
+                ("artist", "Artist", "T", _("Random Ar_tist")),
+                ("album", "Album", "M", _("Random Albu_m"))]:
+            act = gtk.Action("Random%s" % name_, label,
                              None, gtk.STOCK_DIALOG_QUESTION)
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<control>" + accel)
@@ -717,11 +718,28 @@ class QuodLibetWindow(gtk.Window):
         model.repeat = button.get_active()
 
     def __random(self, item, key):
+        def escape(s): return s.replace("\\", "\\\\").replace('"', '\"')
         if self.browser.can_filter(key):
-            values = self.browser.list(key)
-            if values:
-                value = random.choice(values)
-                self.browser.filter(key, [value])
+            if key=="album":
+                values = set()
+                for song in self.__library:
+                    values.add(song.album_id_values)
+                values = list(values)
+                if not values: return
+                album_id = random.choice(values)
+                #print_d("Choosing random album: %r" % (album_id,))
+                querify = lambda item: ("%s=\"%s\"" % (item[0],escape(item[1])))
+                if len(album_id) > 1: 
+                    query = "&(%s)" % ", ".join(map(querify, album_id.items()))
+                elif len(album_id) == 1:
+                    query = querify(album_id.items().pop())
+                else: return
+                self.__make_query(query)
+            else: 
+                values = self.browser.list(key)
+                if values:
+                    value = random.choice(values)
+                    self.browser.filter(key, [value])
 
     def lastplayed_day(self, menuitem):
         self.__make_query("#(lastplayed > today)")
@@ -878,18 +896,7 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.set_songs(songs, sorted)
 
     def __filter_on(self, header, songs, player):
-        if not self.browser or not self.browser.can_filter(header):
-            return
-        if songs is None:
-            if player.song: songs = [player.song]
-            else: return
-
-        values = set()
-        if header.startswith("~#"):
-            values.update([song(header, 0) for song in songs])
-        else:
-            for song in songs: values.update(song.list(header))
-        self.browser.filter(header, list(values))
+        return self.songlist.filter_on(header, songs, self.browser)
 
     def __hide_headers(self, activator=None):
         for column in self.songlist.get_columns():

@@ -663,3 +663,9 @@ if os.name == "nt":
     pathname2url = pathname2url_win32
 else:
     pathname2url = urllib.pathname2url
+
+
+class HashableDict(dict):
+    """Standard dict, made hashable. Useful for making sets of dicts etc"""
+    def __hash__(self):
+        return hash(tuple(sorted(self.items())))
