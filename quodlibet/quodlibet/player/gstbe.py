@@ -69,6 +69,118 @@ def GStreamerSink(pipeline):
 
     return pipe, pipeline
 
+def sanitize_tags(tags, stream=False):
+    """Returns a new sanitized tag dict. stream defines if the
+    tags of a main/base song should be changed or of a stream song.
+    e.g. title will be removed for the base song but not for the stream one.
+    """
+
+    san = {}
+    for key, value in tags.iteritems():
+        key = key.lower()
+        key = {"location": "website"}.get(key, key)
+
+        if isinstance(value, unicode):
+            lower = value.lower().strip()
+
+            if key == "channel-mode":
+                if "stereo" in lower or "dual" in lower:
+                    value = "stereo"
+            elif key == "audio-codec":
+                if "mp3" in lower: value = "MP3"
+                elif "aac" in lower or "advanced" in lower:
+                    value = "MPEG-4 AAC"
+                elif "vorbis" in lower:
+                    value = "Ogg Vorbis"
+
+            if lower in ("http://www.shoutcast.com", "http://localhost/",
+                "default genre", "none", "http://", "unnamed server",
+                "unspecified", "n/a"):
+                continue
+
+        if key.startswith("~#"): continue
+
+        if key == "duration":
+            if not stream: continue
+            try: value = int(long(value) / 1000)
+            except ValueError: continue
+            else: key = "~#length"
+        elif key == "bitrate":
+            if not stream: continue
+            try: value = int(value) / 1000
+            except ValueError: continue
+            else: key = "~#bitrate"
+        elif key == "nominal-bitrate":
+            if stream: continue
+            try: value = int(value) / 1000
+            except ValueError: continue
+            else: key = "~#bitrate"
+
+        if key in ("emphasis", "mode", "layer", "maximum-bitrate",
+            "minimum-bitrate", "has-crc", "homepage"):
+            continue
+
+        if not stream and key in ("title", "album", "artist", "date"):
+            continue
+
+        if key.startswith("~#"):
+            if isinstance(value, (int, long, float)):
+                san[key] = value
+        else:
+            if not isinstance(value, unicode):
+                try: value = unicode(value)
+                except UnicodeDecodeError: continue
+
+            value = value.strip()
+            if key in san:
+                if value not in san[key].split("\n"):
+                    san[key] += "\n" + value
+            else:
+                san[key] = value
+
+    return san
+
+def parse_gstreamer_taglist(tags):
+    """Takes a GStreamer taglist and returns a dict containing only
+    numeric and unicode values and str keys."""
+
+    merged = {}
+    for key in tags.keys():
+        value = tags[key]
+        # extended-comment sometimes containes a single vorbiscomment or
+        # a list of them ["key=value", "key=value"]
+        if key == "extended-comment":
+            if not isinstance(value, list):
+                value = [value]
+            for val in value:
+                if not isinstance(val, unicode): continue
+                split = val.split("=", 1)
+                sub_key = util.decode(split[0])
+                val = split[-1]
+                if sub_key in merged:
+                    if val not in merged[sub_key].split("\n"):
+                        merged[sub_key] += "\n" + val
+                else:
+                    merged[sub_key] = val
+        elif isinstance(value, gst.Date):
+                try: value = u"%d-%d-%d" % (value.year, value.month, value.day)
+                except (ValueError, TypeError): continue
+                merged[key] = value
+        elif isinstance(value, list):
+            # there are some lists for id3 containing gst.Buffer (binary data)
+            continue
+        else:
+            if isinstance(value, str):
+                value = util.decode(value)
+
+            if not isinstance(value, unicode) and \
+                not isinstance(value, (int, long, float)):
+                value = unicode(value)
+
+            merged[key] = value
+
+    return merged
+
 class GStreamerPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
@@ -87,6 +199,8 @@ class GStreamerPlayer(BasePlayer):
 
     __atf_id = None
     __bus_id = None
+
+    __info_buffer = None
 
     def PlayerPreferences(self):
         e = UndoEntry()
@@ -465,10 +579,10 @@ class GStreamerPlayer(BasePlayer):
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
         song, info = self.song, self.info
-        self.song = self.info = None
-        self.emit('song-ended', song, stopped)
+        self.__info_buffer = self.song = self.info = None
         if song is not info:
             self.emit('song-ended', info, stopped)
+        self.emit('song-ended', song, stopped)
 
         # Then, set up the next song.
         if not stop:
@@ -504,47 +618,30 @@ class GStreamerPlayer(BasePlayer):
 
     def _fill_stream(self, tags, librarian):
         # get a new remote file
-        new_info = type(self.song)(self.song["~filename"])
-        new_info.multisong = False
+        new_info = self.__info_buffer
+        if not new_info:
+            new_info = type(self.song)(self.song["~filename"])
+            new_info.multisong = False
 
-        # copy from the old songs
-        # we should probably listen to the library for self.song changes
-        new_info.update(self.song)
-        new_info.update(self.info)
+            # copy from the old songs
+            # we should probably listen to the library for self.song changes
+            new_info.update(self.song)
+            new_info.update(self.info)
 
         changed = False
         info_changed = False
-        for k in tags.keys():
-            value = str(tags[k]).strip()
-            if not value: continue
-            if k == "bitrate":
-                try: bitrate = int(value) / 1000
-                except (ValueError, TypeError): pass
-                else:
-                    if bitrate != self.song.get("~#bitrate"):
-                        changed = info_changed = True
-                        self.song["~#bitrate"] = bitrate
-                        new_info["~#bitrate"] = bitrate
-            elif k == "duration":
-                try: length = int(long(value) / gst.SECOND)
-                except (ValueError, TypeError): pass
-                else:
-                    if length != self.info.get("~#length"):
-                        info_changed = True
-                        new_info["~#length"] = length
-            elif k in ["emphasis", "mode", "layer", "maximum-bitrate",
-                "minimum-bitrate", "has-crc"]:
-                continue
-            else:
-                value = util.decode(value)
-                k = {"track-number": "tracknumber",
-                     "location": "website"}.get(k, k)
-                if self.info.get(k) != value:
-                    new_info[k] = value
-                    info_changed = True
-                if k != "title" and self.song.get(k) != value:
-                    self.song[k] = value
-                    changed = True
+
+        tags = parse_gstreamer_taglist(tags)
+
+        for key, value in sanitize_tags(tags, stream=False).iteritems():
+            if self.song.get(key) != value:
+                changed = True
+                self.song[key] = value
+
+        for key, value in sanitize_tags(tags, stream=True).iteritems():
+            if new_info.get(key) != value:
+                info_changed = True
+                new_info[key] = value
 
         if info_changed:
             # in case the title changed, make self.info a new instance
@@ -553,12 +650,18 @@ class GStreamerPlayer(BasePlayer):
                 if self.info is not self.song:
                     self.emit('song-ended', self.info, False)
                 self.info = new_info
+                self.__info_buffer = None
                 self.emit('song-started', self.info)
             else:
                 # in case title didn't changed, update the values of the
-                # old instance and tell the library.
-                self.info.update(new_info)
-                librarian.changed([self.info])
+                # old instance if there is one and tell the library.
+                if self.info is not self.song:
+                    self.info.update(new_info)
+                    librarian.changed([self.info])
+                else:
+                    # So we don't loose all tags before the first title
+                    # save it for later
+                    self.__info_buffer = new_info
 
         if changed:
             librarian.changed([self.song])
