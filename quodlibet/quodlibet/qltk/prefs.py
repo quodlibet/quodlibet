@@ -201,7 +201,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.set_border_width(12)
             self.title = _("Playback")
 
-            if hasattr(player.device, 'PlayerPreferences'):
+            if player.backend and hasattr(player.device, 'PlayerPreferences'):
                 player_prefs = player.device.PlayerPreferences()
                 self.pack_start(player_prefs, expand=False)
 
