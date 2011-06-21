@@ -787,7 +787,11 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         star = list(Query.STAR)
         for header in headers:
-            for tag in util.tagsplit(header):
+            if "<" in header:
+                tags = Pattern(header).tags
+            else:
+                tags = util.tagsplit(header)
+            for tag in tags:
                 if not tag.startswith("~#") and tag not in star:
                     star.append(tag)
         SongList.star = star
