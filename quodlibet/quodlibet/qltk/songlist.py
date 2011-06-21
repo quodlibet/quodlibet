@@ -810,8 +810,9 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         star = list(Query.STAR)
         for header in headers:
-            if not header.startswith("~#") and header not in star:
-                star.append(header)
+            for tag in util.tagsplit(header):
+                if not tag.startswith("~#") and tag not in star:
+                    star.append(tag)
         SongList.star = star
 
     set_all_column_headers = classmethod(set_all_column_headers)
