@@ -247,8 +247,8 @@ class TQuery(TestCase):
         self.failUnless(Query("#(rating = 0.77)").search(b))
 
     def test_and_or_operator(self):
-        union = Query("|(foo=bar)")
-        inter = Query("&(foo=bar)")
+        union = Query("|(foo=bar,bar=foo)")
+        inter = Query("&(foo=bar,bar=foo)")
         neg = Query("foo=!bar")
         numcmp = Query("#(bar = 0)")
         tag = Query("foo=bar")

@@ -86,7 +86,10 @@ class QueryParser(object):
     def _match_parened(self, expect, ReturnType, InternalType):
         self.match(expect)
         self.match(OPENP)
-        m = ReturnType(InternalType())
+        m = InternalType()
+        if len(m) > 1:
+            m = ReturnType(m)
+        else: m = m[0]
         self.match(CLOSEP)
         return m
 
@@ -158,6 +161,8 @@ class QueryParser(object):
 
     def QueryPart(self):
         names = [s.lower() for s in self._match_list(self._match_string)]
+        if filter(lambda k: k.encode("ascii", "replace") != k, names):
+            raise ParseError("Expected ascii key")
         self.match(EQUALS)
         res = self.RegexpSet()
         return match.Tag(names, res)

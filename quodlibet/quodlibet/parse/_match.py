@@ -161,31 +161,22 @@ class Tag(object):
               "d": "date",
               }
     def __init__(self, names, res):
-        self.__names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
+        names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
+        self.__names = [n for n in names if not n.startswith("~")]
+        self.__intern = [n for n in names if n.startswith("~")]
         self.__res = res
-        if not isinstance(self.__res, list): self.__res = [self.__res]
-        if len([name for name in self.__names if name.startswith('~')]):
-            self.search = self.__search_synth
-
-    def __search_synth(self, data):
-        for name in self.__names:
-            for re in self.__res:
-                if name.startswith('~'):
-                    if re.search(data(name, "")):
-                        return True
-                elif re.search(data.get(name, data.get("~"+name, ""))):
-                    return True
-        return False
 
     def search(self, data):
         for name in self.__names:
-            for re in self.__res:
-                if re.search(data.get(name, data.get("~"+name, ""))):
-                    return True
+            val = data.get(name) or data.get("~"+name, "")
+            if self.__res.search(val): return True
+        for name in self.__intern:
+            if self.__res.search(data(name)): return True
         return False
 
     def __repr__(self):
-        return ("<Tag names=%r, res=%r>" % (self.__names, self.__res))
+        names = self.__names + self.__intern
+        return ("<Tag names=%r, res=%r>" % (names, self.__res))
 
     def __and__(self, other):
         if not isinstance(other, Inter):
