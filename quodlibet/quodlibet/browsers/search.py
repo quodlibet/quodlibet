@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#                     Christoph Reiter, Steven Robertson, Nick Boultbee
+# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Iñigo Serna,
+#                     Christoph Reiter, Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -88,16 +88,7 @@ class EmptyBar(gtk.VBox, Browser):
 
     def filter(self, key, values):
         if not values: return
-        # Allow logical ORs of tuple key-value pairs (Issue 659)
-        if key is None and values is not None:
-            queries = []
-            for tag, value in values:
-                queries.append("%s=\"%s\"" %(tag,value))
-            if (len(queries)>1):
-                text = "|(%s)" % ", ".join(queries)
-            else: text = queries.pop()
-            self.set_text(text)
-        elif key.startswith("~#"):
+        if key.startswith("~#"):
             nheader = key[2:]
             queries = ["#(%s = %s)" % (nheader, i) for i in values]
             if len(queries) > 1: self.set_text(u"|(%s)" % ", ".join(queries))

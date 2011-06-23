@@ -665,7 +665,12 @@ else:
     pathname2url = urllib.pathname2url
 
 
+# See http://stackoverflow.com/questions/1151658/python-hashable-dicts
 class HashableDict(dict):
     """Standard dict, made hashable. Useful for making sets of dicts etc"""
+    def __key(self):
+        return tuple((k,self[k]) for k in sorted(self))
     def __hash__(self):
-        return hash(tuple(sorted(self.items())))
+        return hash(self.__key())
+    def __eq__(self, other):
+        return self.__key() == other.__key()

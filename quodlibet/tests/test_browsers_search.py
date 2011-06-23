@@ -94,13 +94,9 @@ class TEmptyBar(TestCase):
         self.expected = []
         self.bar.filter("title", ["not a value"])
 
-    def test_filter_album(self):
-        self.expected = sorted(SONGS[3:5])
-        self.bar.filter(None, [("album", "don't stop")])
-
     def test_filter_album_by_labelid(self):
         self.expected = [SONGS[3]]
-        self.bar.filter(None, [("labelid", "65432-1")])
+        self.bar.filter("labelid", [("65432-1")])
 
     def test_filter_numeric(self):
         self.expected = list(sorted(SONGS))
