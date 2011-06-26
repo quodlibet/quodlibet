@@ -670,19 +670,15 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.__added(library, songs)
         self.__removed(library, [])
 
-    def _text_parse(self, text):
-        if Query.is_parsable(text):
-            self._text = text.decode('utf-8')
+    def activate(self):
+        if self._text is not None and Query.is_parsable(self._text):
             star = dict.fromkeys(SongList.star)
             star.update(self.__star)
             self._filter = Query(self._text, star.keys()).search
-            self.activate()
-
-    def activate(self):
-        songs = filter(self._filter, self._library)
-        bg = background_filter()
-        if bg: songs = filter(bg, songs)
-        self.__panes[0].fill(songs)
+            songs = filter(self._filter, self._library)
+            bg = background_filter()
+            if bg: songs = filter(bg, songs)
+            self.__panes[0].fill(songs)
 
     def scroll(self, song):
         for pane in self.__panes:
@@ -794,6 +790,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
     def finalize(self, restored):
         super(PanedBrowser, self).finalize(restored)
         if not restored:
+            self._text = ""
             self.fill_panes()
 
     def fill(self, songs):

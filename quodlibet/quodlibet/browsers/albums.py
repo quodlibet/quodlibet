@@ -19,7 +19,6 @@ from quodlibet import util
 from quodlibet import stock
 
 from quodlibet.browsers._base import Browser
-from quodlibet.browsers.search import BoxSearchBar
 from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.completion import EntryWordCompletion
@@ -27,6 +26,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem
+from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 
@@ -245,19 +245,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 model.row_changed(row.path, row.iter)
                 if not changed_albums: break
 
-    class FilterBar(BoxSearchBar):
-        """The search filter entry HBox, modifiedto toggle between the search
-        bar and album list on mnemonic activation."""
-        def __init__(self, albumlist, *args, **kwargs):
-            super(AlbumList.FilterBar, self).__init__(*args, **kwargs)
-            self.albumlist = albumlist
-
-        def _mnemonic_activate(self, label, group_cycling):
-            widget = label.get_mnemonic_widget()
-            if widget.is_focus():
-                self.albumlist.view.grab_focus()
-                return True
-
     class SortCombo(gtk.ComboBox):
         """ComboBox which sets the sort function on a TreeModelSort."""
         def __init__(self, model):
@@ -411,9 +398,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         gobject_weak(view.connect_object, 'popup-menu',
             self.__popup, view, library)
 
-        search = AlbumList.FilterBar(
-                self, library, button=False, completion=AlbumTagCompletion())
-        search.callback = self.__update_filter
+        search = SearchBarBox(button=False, completion=AlbumTagCompletion())
+        search.connect('query-changed', self.__update_filter)
+        search.connect_object('focus-out', lambda w: w.grab_focus(), view)
+
         prefs = gtk.Button()
         prefs.add(gtk.image_new_from_stock(
             gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
@@ -518,15 +506,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.__scan_timeout = gobject.timeout_add(
             50, self.__update_visible_covers, view)
 
-    def __update_filter(self, text):
+    def __update_filter(self, entry, text):
         #This could be called after the browsers is already closed
         if not self.view.get_selection(): return
         model = self.view.get_model()
-        if Query.is_parsable(text):
-            if not text:
-                self.__filter = None
-            else:
-                self.__filter = Query(text, star=["~people", "album"]).search
+        if not text:
+            self.__filter = None
+        else:
+            self.__filter = Query(text, star=["~people", "album"]).search
         self.__bg_filter = background_filter()
         self.__inhibit()
         # We could be smart and try to scroll to a selected album
