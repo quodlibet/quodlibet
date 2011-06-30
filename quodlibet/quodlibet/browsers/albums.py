@@ -388,7 +388,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 self.__play_selection, player)
 
         self.__sig = gobject_weak(view.get_selection().connect, 'changed',
-            self.__selection_changed, parent=view)
+            util.DeferredSignal(self.__update_songs), parent=view)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
@@ -615,18 +615,20 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         assert(key == "album")
         if not values: values = [""]
         view = self.view
+        self.__inhibit()
         selection = view.get_selection()
         selection.unselect_all()
         model = view.get_model()
-        first = None
+        first = True
         for row in model:
             if row[0] is not None and row[0].title in values:
                 selection.select_path(row.path)
-                if first is None:
-                    view.set_cursor(row.path)
-                    first = row.path[0]
-        if first:
-            view.scroll_to_cell(first, use_align=True, row_align=0.5)
+                if first:
+                    view.scroll_to_cell(row.path[0],
+                        use_align=True, row_align=0.5)
+                    first = False
+        self.__uninhibit()
+        selection.emit('changed')
 
     def unfilter(self):
         selection = self.view.get_selection()
@@ -684,12 +686,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 sel.select_path(row.path[0])
                 break
 
-    def __selection_changed(self, selection):
-        # Without this delay, GTK+ seems to sometimes call this function
-        # before model elements are totally filled in, leading to errors
-        # like "TypeError: unknown type (null)".
-        gobject.idle_add(self.__update_songs, selection.get_tree_view())
-
     def __get_config_string(self, selection):
         if not selection: return ""
         model, rows = selection.get_selected_rows()
@@ -707,9 +703,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             confval = "\n" + confval[:-1]
         return confval
 
-    def __update_songs(self, view):
+    def __update_songs(self, selection):
         if not self.__dict__: return
-        selection = view.get_selection()
         songs = self.__get_selected_songs(selection, False)
         self.emit('songs-selected', songs, None)
         if self.__save:
