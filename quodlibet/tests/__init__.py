@@ -63,7 +63,7 @@ def unit(run=[], filter_func=None):
     runner = Runner()
     failures = False
     use_suites = filter(filter_func, suites)
-    for test in use_suites:
+    for test in sorted(use_suites, key=repr):
         if (not run
             or test.__name__ in run
             or test.__module__[11:] in run):
