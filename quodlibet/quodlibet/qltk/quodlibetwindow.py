@@ -645,9 +645,12 @@ class QuodLibetWindow(gtk.Window):
         self.move(*pos)
 
     def __refresh_size(self):
+        ssv = self.song_scroller.get_property('visible')
+        qex = self.qexpander.get_property('visible')
+        brv = self.browser.expand
+
         self.__vbox.set_spacing(6)
-        if (not self.browser.expand and
-            not self.song_scroller.get_property('visible')):
+        if (not brv and not (ssv or qex)):
             if self.browser.size_request()[1] == 0:
                 self.__vbox.set_spacing(0)
             width, height = self.get_size()
