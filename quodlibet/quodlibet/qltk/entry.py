@@ -1,4 +1,4 @@
-# Copyright 2005 Joe Wreschnig, Michael Urman
+# Copyright 2005-2011 Joe Wreschnig, Michael Urman, Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -179,19 +179,37 @@ class UndoNoSexyEntry(gtk.Entry, EditableUndo):
         self.reset_undo()
 
 class ClearEntryMixin(object):
+    """A clear icon mixin supporting newer gtk.Entry or sexy.IconEntry /
+    a separate clear button as a fallback.
+    """
+
+    __gsignals__ = {'clear': (
+        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
+
     def pack_clear_button(self, container=None):
+        """Enables the clear icon in the entry. For older gtk+
+        versions and without libsexy, a clear button will be packed in
+        container.
+        """
         if getattr(self, "set_icon_from_stock", None):
             self.set_icon_from_stock(
                 gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
-            clear = lambda *x: x[0].delete_text(0, -1)
-            self.connect("icon-release", clear)
-        elif getattr(self, "add_clear_button", None):
-            self.add_clear_button()
-        else:
-            container.pack_start(ClearButton(self), False)
+            self.connect("icon-release", self.__clear)
+        elif container:
+            button = ClearButton(self)
+            container.pack_start(button, False)
+            button.connect('clicked', self.__clear)
 
-class ClearEntry(UndoEntry, ClearEntryMixin): pass
-class ClearNoSexyEntry(UndoNoSexyEntry, ClearEntryMixin): pass
+    def __clear(self, button, *args):
+        # TODO: don't change the order.. we connect to clear and remove all
+        # timeouts added for text change in the searchbar
+        self.delete_text(0, -1)
+        self.emit('clear')
+
+class ClearEntry(UndoEntry, ClearEntryMixin):
+    __gsignals__ = ClearEntryMixin.__gsignals__
+class ClearNoSexyEntry(UndoNoSexyEntry, ClearEntryMixin):
+    __gsignals__ = ClearEntryMixin.__gsignals__
 
 class ValidatingEntryMixin(object):
     """An entry with visual feedback as to whether it is valid or not.
