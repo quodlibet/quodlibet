@@ -31,6 +31,9 @@ from quodlibet.qltk.entry import UndoEntry
 
 USE_PLAYBIN2 = gst.version() >= (0, 10, 24)
 
+if 'QUODLIBET_PLAYBIN1' in os.environ:
+    USE_PLAYBIN2 = False
+
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
     * Try making the pipeline (defaulting to gconfaudiosink or
