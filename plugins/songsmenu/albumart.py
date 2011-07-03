@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2005-2010 By:
+# Copyright 2005-2011 By:
 # Eduardo Gonzalez, Niklas Janlert, Christoph Reiter, Antonio Riva,
-# Aymeric Mansoux
+# Aymeric Mansoux, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -55,6 +55,7 @@ import pango
 from quodlibet import util, qltk, config
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.parse import Pattern
 
 #switch off, so that broken search engines wont crash the whole plugin
 debug = False
@@ -675,12 +676,12 @@ class DarktownParser(BasicHTMLParser):
 class CoverArea(gtk.VBox):
     """The image display and saving part."""
 
-    def __init__(self, parent, dirname):
+    def __init__(self, parent, song):
         super(CoverArea, self).__init__()
-
+        self.song = song
         self.connect('destroy', self.__save_config)
 
-        self.dirname = dirname
+        self.dirname = song("~dirname")
         self.main_win = parent
 
         self.data_cache = []
@@ -718,6 +719,24 @@ class CoverArea(gtk.VBox):
 
         #create the filename combo box
         fn_list = ['cover.jpg', 'folder.jpg', '.folder.jpg']
+
+        # Issue 374 - add dynamic file names
+        artist = song("artist")
+        alartist = song("albumartist")
+        album = song("album")
+        labelid = song("labelid")
+        if album:
+            fn_list.append("<album>.jpg")
+            if alartist:
+                fn_list.append("<albumartist> - <album>")
+            else:
+                fn_list.append("<artist> - <album>.jpg")
+        else:
+            title = song("title")
+            if title and artist:
+                fn_list.append("<artist> - <title>.jpg" % (artist, title))
+        if (labelid):
+            fn_list.append("<labelid>.jpg")
 
         set_fn = cfg_get('fn', fn_list[0])
 
@@ -775,6 +794,9 @@ class CoverArea(gtk.VBox):
         """save the cover, spawn the program to edit it if selected"""
 
         filename = self.name_combo.get_active_text()
+        # Allow support for filename patterns
+        pattern = Pattern(filename)
+        filename = util.fsencode(pattern.format(self.song))
         file_path = os.path.join(self.dirname, filename)
 
         if os.path.exists(file_path) and not qltk.ConfirmAction(None,
@@ -963,7 +985,7 @@ class AlbumArtWindow(qltk.Window):
         self.set_icon_name(gtk.STOCK_FIND)
         self.set_default_size(800, 550)
 
-        image = CoverArea(self, songs[0]('~dirname'))
+        image = CoverArea(self, songs[0])
 
         self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, object)
         self.treeview = treeview = AllTreeView(self.liststore)

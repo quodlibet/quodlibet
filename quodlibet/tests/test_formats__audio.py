@@ -446,11 +446,15 @@ add(Treplay_gain)
 # various files.
 class Tfind_cover(TestCase):
     def setUp(self):
+        config.init()
         self.dir = os.path.realpath(quux("~dirname"))
-        self.files = [os.path.join(self.dir, "12345.jpg"),
-                      os.path.join(self.dir, "nothing.jpg")
+        self.files = [self.full_path("12345.jpg"),
+                      self.full_path("nothing.jpg")
                       ]
         for f in self.files: file(f, "w").close()
+
+    def full_path(self, path):
+        return os.path.join(self.dir, path)
 
     def test_dir_not_exist(self):
         self.failIf(bar_2_1.find_cover())
@@ -461,7 +465,7 @@ class Tfind_cover(TestCase):
     def test_labelid(self):
         quux["labelid"] = "12345"
         self.failUnlessEqual(os.path.abspath(quux.find_cover().name),
-                             os.path.join(self.dir, "12345.jpg"))
+                             self.full_path("12345.jpg"))
         del(quux["labelid"])
 
     def test_regular(self):
@@ -474,6 +478,25 @@ class Tfind_cover(TestCase):
             self.failUnlessEqual(os.path.abspath(quux.find_cover().name), f)
         self.test_labelid() # labelid must work with other files present
 
+    def test_intelligent(self):
+        song = quux
+        song["artist"] = "Q-Man"
+        song["title"] = "First Q falls hardest"
+        files = [self.full_path(f) for f in
+                 ["Quuxly - back.jpg", "Quuxly.jpg", "q-man - quxxly.jpg",
+                  "folder.jpeg", "Q-man - Quuxly (FRONT).jpg"]]
+        for f in files:
+            file(f, "w").close()
+            self.files.append(f)
+            cover = song.find_cover()
+            if cover:
+                actual = os.path.abspath(cover.name)
+                self.failUnlessEqual(actual, f)
+            else:
+                # Here, no cover is better than the back...
+                self.failUnlessEqual(f, self.full_path("Quuxly - back.jpg"))
+
     def tearDown(self):
         map(os.unlink, self.files)
+        config.quit()
 add(Tfind_cover)

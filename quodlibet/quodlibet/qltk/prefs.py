@@ -146,13 +146,6 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(e)
             self.pack_start(hb, expand=False)
 
-            c = ConfigCheckButton(
-                _("_Use rounded corners on thumbnails"), 'settings', 'round')
-            c.set_tooltip_text(_("Round the corners of album artwork "
-                "thumbnail images. May require restart to take effect."))
-            c.set_active(config.getboolean("settings", "round"))
-            self.pack_start(c, expand=False)
-
             vb = gtk.VBox(spacing=6)
             c = ConfigCheckButton(
                 _("Search after _typing"), 'settings', 'eager_search')
@@ -345,6 +338,59 @@ class PreferencesWindow(qltk.UniqueWindow):
         def __changed(self, entry, section, name):
             config.set(section, name, entry.get_text())
 
+
+    class AlbumArt(gtk.VBox):
+        def __init__(self):
+            super(PreferencesWindow.AlbumArt, self).__init__(spacing=12)
+            self.set_border_width(12)
+            self.title = _("Album Art")
+
+            vb = gtk.VBox(spacing=6)
+            display_frame = qltk.Frame(_("Display"), child=vb)
+            c = ConfigCheckButton(
+                _("_Use rounded corners on thumbnails"), 'albumart', 'round')
+            c.set_tooltip_text(_("Round the corners of album artwork "
+                    "thumbnail images. May require restart to take effect."))
+            c.set_active(config.getboolean('albumart', 'round'))
+            vb.pack_start(c, expand=False)
+
+            # Filename choice algorithm config
+            vb = gtk.VBox(spacing=6)
+            file_frame = qltk.Frame(_("Art sources"), child=vb)
+            cb = ConfigCheckButton(
+                    _("Prefer _embedded art"), 'albumart', 'prefer_embedded')
+            cb.set_tooltip_text(_("Choose to use artwork embedded in the audio "
+                    "(where available) over other sources"))
+            cb.set_active(config.getboolean('albumart', 'prefer_embedded'))
+            vb.pack_start(cb, expand=False)
+
+            hb = gtk.HBox(spacing=3)
+            cb = ConfigCheckButton(
+                    _("_Force image filename:"), 'albumart', 'force_filename')
+            cb.set_active(config.getboolean('albumart', 'force_filename'))
+            hb.pack_start(cb, expand=False)
+
+            entry = UndoEntry()
+            entry.set_tooltip_text(
+                    _("The album art image file to use when forced"))
+            entry.set_text(config.get("albumart", "filename"))
+            entry.connect('changed', self.__changed_text, 'filename')
+            # Disable entry when not forcing
+            entry.set_sensitive(cb.get_active())
+            cb.connect('toggled', self.__toggled_force_filename, entry)
+            hb.pack_start(entry)
+            vb.pack_start(hb, expand=False)
+
+            self.pack_start(display_frame, expand=False)
+            self.pack_start(file_frame, expand=False)
+
+        def __changed_text(self, entry, name):
+            config.set('albumart', name, entry.get_text())
+
+        def __toggled_force_filename(self, cb, fn_entry):
+            fn_entry.set_sensitive(cb.get_active())
+
+
     def __init__(self, parent):
         if self.is_not_unique(): return
         super(PreferencesWindow, self).__init__()
@@ -354,8 +400,8 @@ class PreferencesWindow(qltk.UniqueWindow):
         self.set_transient_for(qltk.get_top_parent(parent))
 
         self.add(qltk.Notebook())
-        for Page in [self.SongList, self.Browsers, self.Player, self.Library]:
-            self.child.append_page(Page())
+        for Page in [self.SongList, self.Browsers, self.AlbumArt, self.Player,
+            self.Library]: self.child.append_page(Page())
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)
         self.show_all()

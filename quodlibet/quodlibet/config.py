@@ -92,8 +92,7 @@ def init(*rc_files):
         # Kind of a dumping ground right now, should probably be
         # cleaned out later.
         "settings":
-        { "scan": "", # scan directories, :-separatd
-          "round": "true", # use rounded corners for artwork thumbnails
+        { "scan": "", # scan directories, :-separated
           "jump": "true", # scroll song list on current song change
           "default_rating": "0.5", # initial rating of new song
           "ratings": "4", # maximum rating value
@@ -134,6 +133,13 @@ def init(*rc_files):
           "save_email": const.EMAIL,
           "alltags": "true", # show all tags, or just "human-readable" ones
           },
+
+        "albumart":
+        { "round": "true", # use rounded corners for artwork thumbnails
+          "prefer_embedded": "false",
+          "force_filename": "false",
+          "filename": "folder.jpg",
+          }
         }
 
     # <=2.2.1 QL created the user folder in the profile folder
