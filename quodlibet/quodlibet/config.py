@@ -1,4 +1,4 @@
-# Copyright 2004 Joe Wreschnig
+# Copyright 2004-2011 Joe Wreschnig, Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -14,12 +14,43 @@ import const
 from ConfigParser import RawConfigParser as ConfigParser, Error as error
 
 _config = ConfigParser()
-get = _config.get
-set = _config.set
-getboolean = _config.getboolean
-getint = _config.getint
-getfloat = _config.getfloat
 options = _config.options
+
+def get(*args):
+    if len(args) == 3:
+        try: return _config.get(*args[:2])
+        except error: return args[-1]
+    return _config.get(*args)
+
+def getboolean(*args):
+    if len(args) == 3:
+        if not isinstance(args[-1], bool): raise ValueError
+        try: return _config.getboolean(*args[:2])
+        # ValueError if the value found in the config file
+        # does not match any string representation -> so catch it too
+        except (ValueError, error): return args[-1]
+    return _config.getboolean(*args)
+
+def getint(*args):
+    if len(args) == 3:
+        if not isinstance(args[-1], int): raise ValueError
+        try: return _config.getint(*args[:2])
+        except error: return args[-1]
+    return _config.getint(*args)
+
+def getfloat(*args):
+    if len(args) == 3:
+        if not isinstance(args[-1], float): raise ValueError
+        try: return _config.getfloat(*args[:2])
+        except error: return args[-1]
+    return _config.getfloat(*args)
+
+# RawConfigParser only allows string values but doesn't scream if they are not
+# (and it only fails before the first config save..)
+def set(section, option, value):
+    if not isinstance(value, str):
+        value = str(value)
+    _config.set(section, option, value)
 
 def write(filename):
     if isinstance(filename, basestring):
