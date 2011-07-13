@@ -34,8 +34,8 @@ class AboutQuodLibet(gtk.AboutDialog):
         self.set_translator_credits(_('translator-credits'))
         self.set_website("http://code.google.com/p/quodlibet")
         self.set_copyright(
-            "Copyright © 2004-2009 Joe Wreschnig, Michael Urman, & others\n"
-            "<quodlibet@lists.sacredchao.net>")
+            "Copyright © 2004-2011 Joe Wreschnig, Michael Urman, & others\n"
+            "<quod-libet-development@googlegroups.com>")
         self.child.show_all()
 
 def show(window, player):
