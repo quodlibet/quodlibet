@@ -27,11 +27,11 @@ def GStreamerSink(pipeline):
     * Try making the pipeline (defaulting to gconfaudiosink or
       autoaudiosink on Windows).
     * If it fails, fall back to autoaudiosink.
-    * If that fails, complain loudly.
+    * If that fails, return None
 
     Returns the pipeline's description and a list of disconnected elements."""
 
-    if not pipeline and os.name == "nt":
+    if not pipeline and not gst.element_factory_find('gconfaudiosink'):
         pipeline = "autoaudiosink"
     elif not pipeline or pipeline == "gconf":
         pipeline = "gconfaudiosink profile=music"
@@ -39,17 +39,26 @@ def GStreamerSink(pipeline):
     try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
     except gobject.GError, err:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
-        if pipeline != "autoaudiosink":
-            try: pipe = [gst.parse_launch("autoaudiosink")]
-            except gobject.GError: pipe = None
-            else: pipeline = "autoaudiosink"
-        else: pipe = None
-    if pipe: return pipe, pipeline
+        try: pipe = [gst.parse_launch("autoaudiosink")]
+        except gobject.GError: pipe = None
+        else: pipeline = "autoaudiosink"
+
+    if pipe:
+        # In case the last element is linkable with a fakesink
+        # it is not an audiosink, so we append the default pipeline
+        fake = gst.element_factory_make('fakesink')
+        try:
+            gst.element_link_many(pipe[-1], fake)
+        except gst.LinkError: pass
+        else:
+            gst.element_unlink_many(pipe[-1], fake)
+            default, default_text = GStreamerSink("")
+            if default:
+                return pipe + default, pipeline + " ! "  + default_text
     else:
-        raise PlayerError(
-            _("Unable to create audio output"),
-            _("The audio output pipeline %r could not be created. Check "
-              "your GStreamer settings in ~/.quodlibet/config.") % pipeline)
+        print_w(_("Could not create default GStreamer pipeline."))
+
+    return pipe, pipeline
 
 class GStreamerPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
