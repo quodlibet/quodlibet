@@ -1,6 +1,21 @@
 Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
 
+2.3.1 (2011-07-16) - YES It works in BOTH temporal directions
+    * Absolute path renaming on Windows [506]
+    * Fix dynamic song removal of songs not matching the query [713]
+    * Fix "--print-playing <~#rating>" [730]
+    * Fix search not working with an active pattern column
+    * Fix hang with newer GStreamer versions and sinkless pipelines
+    * Some minor fixes [682, 724, 704]
+    * Plugins:
+        * Fix MPRIS not handling invalid dates (Nick Boultbee)
+        * Some OSD fixes (Nick Boultbee)
+    * Translations:
+        German (Rüdiger Arp)
+        Italian (Luca Baraldi)
+        Lithuanian (Naglis Jonaitis)
+
 2.3 (2011-04-01) - I THOUGHT THAT WAS PRETTY CLEAR
     * Various minor bug fixes
     * Some small translation updates (Anton Shestakov)

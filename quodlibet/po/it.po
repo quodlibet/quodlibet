@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-22 20:59+0200\n"
+"POT-Creation-Date: 2011-07-16 21:14+0200\n"
 "PO-Revision-Date: 2011-05-22 20:59+0200\n"
 "Last-Translator: Luca Baraldi <luca.baraldi+quodlibet@gmail.com>\n"
 "Language-Team: Italian\n"
@@ -1960,31 +1960,31 @@ msgstr ""
 "Stai per modificare il voto di %d tracce.\n"
 "Desideri proseguire?"
 
-#: ../quodlibet/qltk/songlist.py:1044
+#: ../quodlibet/qltk/songlist.py:1049
 msgid "_Track Headers"
 msgstr "Headers delle _Tracce"
 
-#: ../quodlibet/qltk/songlist.py:1045
+#: ../quodlibet/qltk/songlist.py:1050
 msgid "_Album Headers"
 msgstr "Headers degli _Album"
 
-#: ../quodlibet/qltk/songlist.py:1046
+#: ../quodlibet/qltk/songlist.py:1051
 msgid "_People Headers"
 msgstr "Headers della _Gente"
 
-#: ../quodlibet/qltk/songlist.py:1047
+#: ../quodlibet/qltk/songlist.py:1052
 msgid "_Date Headers"
 msgstr "Headers della _Data"
 
-#: ../quodlibet/qltk/songlist.py:1048
+#: ../quodlibet/qltk/songlist.py:1053
 msgid "_File Headers"
 msgstr "Headers dei _File"
 
-#: ../quodlibet/qltk/songlist.py:1049
+#: ../quodlibet/qltk/songlist.py:1054
 msgid "_Production Headers"
 msgstr "Headers della _Produzione "
 
-#: ../quodlibet/qltk/songlist.py:1062
+#: ../quodlibet/qltk/songlist.py:1067
 msgid "_Customize Headers..."
 msgstr "_Personalizza gli Headers..."
 
@@ -2415,25 +2415,16 @@ msgstr "L'audio backend %r non è installato."
 msgid "Invalid GStreamer output pipeline, trying default."
 msgstr "GStreamer output pipeline invalido, provo con il default."
 
-#: ../quodlibet/player/gstbe.py:50 ../quodlibet/player/xinebe.py:37
-msgid "Unable to create audio output"
-msgstr "Impossibile creare l'uscita audio."
-
-#: ../quodlibet/player/gstbe.py:51
-#, python-format
-msgid ""
-"The audio output pipeline %r could not be created. Check your GStreamer "
-"settings in ~/.quodlibet/config."
+#: ../quodlibet/player/gstbe.py:59
+msgid "Could not create default GStreamer pipeline."
 msgstr ""
-"L'audio output pipeline %r non può essere creato. Controlla le tue "
-"impostazioni di GStreamer in ~/.quodlibet/config."
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:240
+#: ../quodlibet/player/gstbe.py:249
 msgid "Output Error"
 msgstr "Output Error"
 
-#: ../quodlibet/player/gstbe.py:241
+#: ../quodlibet/player/gstbe.py:250
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
@@ -2442,17 +2433,21 @@ msgstr ""
 "essere invalido, o il dispositivo può essere in uso. Controlla le preferenze "
 "del lettore multimediale."
 
-#: ../quodlibet/player/gstbe.py:394
+#: ../quodlibet/player/gstbe.py:403
 msgid "Unable to open input files"
 msgstr "Impossibile aprire i file di input"
 
-#: ../quodlibet/player/gstbe.py:395
+#: ../quodlibet/player/gstbe.py:404
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
 msgstr ""
 "GStreamer non ha l'elemento per gestire i file in lettura. Controlla i "
 "settaggi della tua installazione di GStreamer."
+
+#: ../quodlibet/player/xinebe.py:37
+msgid "Unable to create audio output"
+msgstr "Impossibile creare l'uscita audio."
 
 #: ../quodlibet/player/xinebe.py:38
 #, python-format
@@ -2803,6 +2798,13 @@ msgstr "Operazioni attive"
 #, python-format
 msgid "%d tasks running"
 msgstr "%d operazioni in esecuzione"
+
+#~ msgid ""
+#~ "The audio output pipeline %r could not be created. Check your GStreamer "
+#~ "settings in ~/.quodlibet/config."
+#~ msgstr ""
+#~ "L'audio output pipeline %r non può essere creato. Controlla le tue "
+#~ "impostazioni di GStreamer in ~/.quodlibet/config."
 
 #~ msgid "[option]"
 #~ msgstr "[opzione]"
