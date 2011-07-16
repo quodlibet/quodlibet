@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-31 23:57+0200\n"
+"POT-Creation-Date: 2011-07-16 21:14+0200\n"
 "PO-Revision-Date: 2010-03-30 10:12+0300\n"
 "Last-Translator: Einars Sprugis <einars8@gmail.com>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
@@ -34,194 +34,194 @@ msgstr "Atskaņo, pārlūko vai rediģē jūsu audio kolekciju"
 msgid "Music Player"
 msgstr "Mūzikas atskaņotājs"
 
-#: ../quodlibet.py:118
+#: ../quodlibet.py:120
 msgid "No song is currently playing."
 msgstr "Pašreiz netiek atskaņota neviena dziesma."
 
-#: ../quodlibet.py:126
+#: ../quodlibet.py:128
 msgid "Quod Libet is not running."
 msgstr "Quod Libet nav palaists."
 
-#: ../quodlibet.py:137
+#: ../quodlibet.py:139
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "Neizdevās uz %s. Dzēš to."
 
-#: ../quodlibet.py:173
+#: ../quodlibet.py:175
 msgid "a music library and player"
 msgstr "mūzikas bibliotēka un atskaņotājs"
 
-#: ../quodlibet.py:174
+#: ../quodlibet.py:176
 msgid "[ --print-playing | control ]"
 msgstr "[ --print-playing | vadīkla ]"
 
-#: ../quodlibet.py:176
+#: ../quodlibet.py:178
 msgid "Print the playing song and exit"
 msgstr "Izdrukā pašreiz atskaņoto dziesmu un iziet"
 
-#: ../quodlibet.py:177
+#: ../quodlibet.py:179
 msgid "Begin playing immediately"
 msgstr "Nekavējoties uzsāk atskaņošanu"
 
-#: ../quodlibet.py:180
+#: ../quodlibet.py:182
 msgid "Jump to next song"
 msgstr "Pāriet uz nākamo dziesmu"
 
-#: ../quodlibet.py:181
+#: ../quodlibet.py:183
 msgid "Jump to previous song"
 msgstr "Pāriet uz iepriekšējo dziesmu"
 
-#: ../quodlibet.py:182
+#: ../quodlibet.py:184
 msgid "Start playback"
 msgstr "Sākt atskaņošanu"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.py:185
 msgid "Pause playback"
 msgstr "Pauzēt atskaņošanu"
 
-#: ../quodlibet.py:184
+#: ../quodlibet.py:186
 msgid "Toggle play/pause mode"
 msgstr "Pārslēgt atskaņošanas/pauzes režīmu"
 
-#: ../quodlibet.py:185
+#: ../quodlibet.py:187
 msgid "Turn up volume"
 msgstr "Palielināt skaļumu"
 
-#: ../quodlibet.py:186
+#: ../quodlibet.py:188
 msgid "Turn down volume"
 msgstr "Samazināt skaļumu"
 
-#: ../quodlibet.py:187
+#: ../quodlibet.py:189
 msgid "Print player status"
 msgstr "Izdrukāt atskaņotāja statusu"
 
-#: ../quodlibet.py:188
+#: ../quodlibet.py:190
 msgid "Hide main window"
 msgstr "Slēpt galveno logu"
 
-#: ../quodlibet.py:189
+#: ../quodlibet.py:191
 msgid "Show main window"
 msgstr "Rādīt galveno logu"
 
-#: ../quodlibet.py:190
+#: ../quodlibet.py:192
 msgid "Toggle main window visibility"
 msgstr "Pārslēgt galvenā loga redzamību"
 
-#: ../quodlibet.py:191
+#: ../quodlibet.py:193
 msgid "Focus the running player"
 msgstr "Fokusēties uz darbojošos atskaņotāju"
 
-#: ../quodlibet.py:192
+#: ../quodlibet.py:194
 msgid "Remove active browser filters"
 msgstr "Noņemt aktīvos pārlūka filtrus"
 
-#: ../quodlibet.py:193
+#: ../quodlibet.py:195
 msgid "Refresh and rescan library"
 msgstr "Atsvaidzināt un pārskenēt bibliotēku"
 
-#: ../quodlibet.py:194
+#: ../quodlibet.py:196
 msgid "Print the current playlist"
 msgstr "Izdrukāt pašreizējo repertuāru"
 
-#: ../quodlibet.py:195
+#: ../quodlibet.py:197
 msgid "Print the contents of the queue"
 msgstr "Izdrukāt rindas saturu"
 
-#: ../quodlibet.py:196
+#: ../quodlibet.py:198
 msgid "Exit Quod Libet"
 msgstr "Iziet no Quod Libet"
 
-#: ../quodlibet.py:200
+#: ../quodlibet.py:202
 msgid "Seek within the playing song"
 msgstr "Meklēt pašreizējā dziesmā"
 
-#: ../quodlibet.py:200
+#: ../quodlibet.py:202
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: ../quodlibet.py:201
+#: ../quodlibet.py:203
 msgid "Set or toggle the playback order"
 msgstr "Iestatīt vai pārslēgt atskaņošanas kārtību"
 
-#: ../quodlibet.py:203
+#: ../quodlibet.py:205
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Izslēgt, ieslēgt vai pārslēgt atkārtošanu"
 
-#: ../quodlibet.py:204
+#: ../quodlibet.py:206
 msgid "Set the volume"
 msgstr "Iestatīt skaļumu"
 
-#: ../quodlibet.py:205
+#: ../quodlibet.py:207
 msgid "Search your audio library"
 msgstr "Meklēt jūsu audio bibliotēkā"
 
-#: ../quodlibet.py:205 ../quodlibet.py:215 ../quodlibet.py:217
+#: ../quodlibet.py:207 ../quodlibet.py:217 ../quodlibet.py:219
 msgid "query"
 msgstr "vaicājums"
 
-#: ../quodlibet.py:206
+#: ../quodlibet.py:208
 msgid "Play a file"
 msgstr "Atskaņot failu"
 
-#: ../quodlibet.py:206 ../quodlibet.py:215 ../quodlibet.py:217
+#: ../quodlibet.py:208 ../quodlibet.py:217 ../quodlibet.py:219
 msgid "command|filename"
 msgstr "faila_nosaukums"
 
-#: ../quodlibet.py:207
+#: ../quodlibet.py:209
 msgid "Rate the playing song"
 msgstr "Novērtēt pašreiz atskaņoto dziesmu"
 
-#: ../quodlibet.py:208
+#: ../quodlibet.py:210
 msgid "Set the current browser"
 msgstr "Iestatīt pašreizējo pārlūku"
 
-#: ../quodlibet.py:209
+#: ../quodlibet.py:211
 msgid "Open a new browser"
 msgstr "Atvērt jaunu pārlūku"
 
-#: ../quodlibet.py:210
+#: ../quodlibet.py:212
 msgid "Show or hide the queue"
 msgstr "Rādīt vai slēpt rindu"
 
-#: ../quodlibet.py:211
+#: ../quodlibet.py:213
 msgid "Show or hide the main song list"
 msgstr "Rādīt vai slēpt galveno dziesmu sarakstu"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:214
 msgid "Filter on a random value"
 msgstr "Filtrēt pēc nejaušas vērtības"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:214
 msgid "command|tag"
 msgstr "tags"
 
-#: ../quodlibet.py:213
+#: ../quodlibet.py:215
 msgid "Filter on a tag value"
 msgstr "Filtrēt pēc taga vērtības"
 
-#: ../quodlibet.py:213
+#: ../quodlibet.py:215
 msgid "tag=value"
 msgstr "tags=vērtība"
 
-#: ../quodlibet.py:214
+#: ../quodlibet.py:216
 msgid "Enqueue a file or query"
 msgstr "Ierindot failu vai vaicājumu"
 
-#: ../quodlibet.py:216
+#: ../quodlibet.py:218
 msgid "Unqueue a file or query"
 msgstr "Atrindot failu vai vaicājumu"
 
-#: ../quodlibet.py:255
+#: ../quodlibet.py:257
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "Nederīgs arguments priekš '%s'."
 
-#: ../quodlibet.py:256 ../quodlibet/util/__init__.py:158
+#: ../quodlibet.py:258 ../quodlibet/util/__init__.py:165
 #, python-format
 msgid "Try %s --help."
 msgstr "Mēģiniet %s --help."
 
-#: ../quodlibet.py:287
+#: ../quodlibet.py:289
 msgid "Quod Libet is already running."
 msgstr "Quod Libet jau ir palaists."
 
@@ -890,7 +890,7 @@ msgstr "MM:SS"
 msgid "Bookmarks"
 msgstr "Grāmatzīmes"
 
-#: ../quodlibet/qltk/browser.py:56 ../quodlibet/util/__init__.py:268
+#: ../quodlibet/qltk/browser.py:56 ../quodlibet/util/__init__.py:275
 #: ../quodlibet/qltk/notif.py:280
 msgid "No time information"
 msgstr "Nav ilguma informācijas"
@@ -1074,7 +1074,7 @@ msgstr ""
 #. the user can configure).
 #: ../quodlibet/qltk/edittags.py:532 ../quodlibet/qltk/edittags.py:681
 #: ../quodlibet/qltk/edittags.py:688 ../quodlibet/qltk/tagsfrompath.py:152
-#: ../quodlibet/util/__init__.py:483 ../quodlibet/util/tags.py:119
+#: ../quodlibet/util/__init__.py:490 ../quodlibet/util/tags.py:119
 msgid "Invalid tag"
 msgstr "Nederīgs tags"
 
@@ -1292,7 +1292,7 @@ msgid "bitrate"
 msgstr "bitātrums"
 
 #: ../quodlibet/qltk/information.py:291 ../quodlibet/qltk/properties.py:55
-#: ../quodlibet/qltk/renamefiles.py:80 ../quodlibet/qltk/tagsfrompath.py:169
+#: ../quodlibet/qltk/renamefiles.py:79 ../quodlibet/qltk/tagsfrompath.py:169
 #: ../quodlibet/qltk/tracknumbers.py:57
 msgid "File"
 msgstr "Fails"
@@ -1716,7 +1716,7 @@ msgid "Unable to add songs"
 msgstr "Neizdevās pievienot dziesmas"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:320
-#: ../quodlibet/qltk/quodlibetwindow.py:776
+#: ../quodlibet/qltk/quodlibetwindow.py:783
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> izmanto neatbalstītu protokolu."
@@ -1857,34 +1857,34 @@ msgstr ""
 "40 dziesmas, ko esi atskaņojis visretāk (var tikt atlasītas vairāk nekā 40, "
 "ja ir 'neizšķirti' gadījumi)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:764
+#: ../quodlibet/qltk/quodlibetwindow.py:771
 msgid "Add a Location"
 msgstr "Pievienot vietu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:765
+#: ../quodlibet/qltk/quodlibetwindow.py:772
 msgid "Enter the location of an audio file:"
 msgstr "Ievadiet audio faila atrašanās vietu:"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:770
-#: ../quodlibet/qltk/quodlibetwindow.py:775
+#: ../quodlibet/qltk/quodlibetwindow.py:777
+#: ../quodlibet/qltk/quodlibetwindow.py:782
 msgid "Unable to add location"
 msgstr "Neizdevās pievienot vietu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:771
+#: ../quodlibet/qltk/quodlibetwindow.py:778
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> nav derīga vieta."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:787
 #: ../quodlibet/qltk/quodlibetwindow.py:794
+#: ../quodlibet/qltk/quodlibetwindow.py:801
 msgid "Add Music"
 msgstr "Pievienot mūziku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:788
+#: ../quodlibet/qltk/quodlibetwindow.py:795
 msgid "Watch this folder for new songs"
 msgstr "Vērot šo mapi"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:813
+#: ../quodlibet/qltk/quodlibetwindow.py:820
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -1893,7 +1893,7 @@ msgstr ""
 "%s nevarēja tikt pievienota jūsu bibliotēkai.\n"
 "\n"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:818
+#: ../quodlibet/qltk/quodlibetwindow.py:825
 msgid "Unable to add song"
 msgstr "Neizdevās pievienot dziesmu"
 
@@ -1905,39 +1905,39 @@ msgstr "Aizvietot atstarpes ar pa_svītrām"
 msgid "Strip _Windows-incompatible characters"
 msgstr "Izņemt ar Windows nesavietojamas rakstzīmes"
 
-#: ../quodlibet/qltk/renamefiles.py:45
+#: ../quodlibet/qltk/renamefiles.py:44
 msgid "Strip _diacritical marks"
 msgstr "Izņemt _diakritiskās zīmes"
 
-#: ../quodlibet/qltk/renamefiles.py:54
+#: ../quodlibet/qltk/renamefiles.py:53
 msgid "Strip non-_ASCII characters"
 msgstr "Izņemt ne-ASCII rakstzīmes"
 
-#: ../quodlibet/qltk/renamefiles.py:62
+#: ../quodlibet/qltk/renamefiles.py:61
 msgid "Use only _lowercase characters"
 msgstr ""
 
-#: ../quodlibet/qltk/renamefiles.py:70
+#: ../quodlibet/qltk/renamefiles.py:69
 msgid "Rename Files"
 msgstr "Pārdēvēt failus"
 
-#: ../quodlibet/qltk/renamefiles.py:86
+#: ../quodlibet/qltk/renamefiles.py:85
 msgid "New Name"
 msgstr "Jauns nosaukums"
 
-#: ../quodlibet/qltk/renamefiles.py:119
+#: ../quodlibet/qltk/renamefiles.py:118
 msgid "Ignore _All Errors"
 msgstr "Ignorēt vis_as kļūdas"
 
-#: ../quodlibet/qltk/renamefiles.py:121
+#: ../quodlibet/qltk/renamefiles.py:120
 msgid "_Continue"
 msgstr "_Turpināt"
 
-#: ../quodlibet/qltk/renamefiles.py:123
+#: ../quodlibet/qltk/renamefiles.py:122
 msgid "Unable to rename file"
 msgstr "Neizdevās pārdēvēt failu"
 
-#: ../quodlibet/qltk/renamefiles.py:124
+#: ../quodlibet/qltk/renamefiles.py:123
 #, python-format
 msgid ""
 "Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
@@ -1947,11 +1947,11 @@ msgstr ""
 "Neizdevās pārdēvēt <b>%s</b> par <b>%s</b>. Mērķa fails, iespējams, jau "
 "eksistē, vai arī jums nav atļauju izveidot jaunu vai dzēst veco failu."
 
-#: ../quodlibet/qltk/renamefiles.py:158
+#: ../quodlibet/qltk/renamefiles.py:157
 msgid "Path is not absolute"
 msgstr "Ceļš nav absolūts"
 
-#: ../quodlibet/qltk/renamefiles.py:159
+#: ../quodlibet/qltk/renamefiles.py:158
 #, python-format
 msgid ""
 "The pattern\n"
@@ -1982,31 +1982,31 @@ msgstr ""
 "Jūs grasāties mainīt vērtējumu %d dziesmām.\n"
 "Vai vēlaties turpināt?"
 
-#: ../quodlibet/qltk/songlist.py:1044
+#: ../quodlibet/qltk/songlist.py:1049
 msgid "_Track Headers"
 msgstr "_Celiņu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1045
+#: ../quodlibet/qltk/songlist.py:1050
 msgid "_Album Headers"
 msgstr "_Albumu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1046
+#: ../quodlibet/qltk/songlist.py:1051
 msgid "_People Headers"
 msgstr "C_ilvēku galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1047
+#: ../quodlibet/qltk/songlist.py:1052
 msgid "_Date Headers"
 msgstr "_Datumu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1048
+#: ../quodlibet/qltk/songlist.py:1053
 msgid "_File Headers"
 msgstr "_Failu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1049
+#: ../quodlibet/qltk/songlist.py:1054
 msgid "_Production Headers"
 msgstr "_Producēšanas galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1062
+#: ../quodlibet/qltk/songlist.py:1067
 msgid "_Customize Headers..."
 msgstr "Pielāg_ot galvenes..."
 
@@ -2095,7 +2095,7 @@ msgstr "_Celiņi kopā:"
 msgid "Track"
 msgstr "Celiņš"
 
-#: ../quodlibet/qltk/views.py:248
+#: ../quodlibet/qltk/views.py:256
 #, python-format
 msgid "and %d more..."
 msgstr "un vēl %d..."
@@ -2187,24 +2187,24 @@ msgstr "gtk-media-play"
 msgid "gtk-media-pause"
 msgstr "gtk-media-pause"
 
-#: ../quodlibet/util/__init__.py:74
+#: ../quodlibet/util/__init__.py:81
 msgid "Display brief usage information"
 msgstr "Parādīt īsu lietošanas informāciju"
 
-#: ../quodlibet/util/__init__.py:76
+#: ../quodlibet/util/__init__.py:83
 msgid "Display version and copyright"
 msgstr "Parādīt versiju un autortiesības"
 
-#: ../quodlibet/util/__init__.py:112 ../quodlibet/util/__init__.py:113
+#: ../quodlibet/util/__init__.py:119 ../quodlibet/util/__init__.py:120
 #, python-format
 msgid "Usage: %s %s"
 msgstr "Lietošana: %s %s"
 
-#: ../quodlibet/util/__init__.py:113
+#: ../quodlibet/util/__init__.py:120
 msgid "[options]"
 msgstr "[opcijas]"
 
-#: ../quodlibet/util/__init__.py:133
+#: ../quodlibet/util/__init__.py:140
 #, python-format
 msgid ""
 "%s %s - <quod-libet-development@googlegroups.com>\n"
@@ -2220,22 +2220,22 @@ msgstr ""
 "Netiek dota NEKĀDA garantija, pat PIEPRASĪJUMA vai NODERĪBAS ĪPAŠAM\n"
 "MĒRĶIM garantija.\n"
 
-#: ../quodlibet/util/__init__.py:150
+#: ../quodlibet/util/__init__.py:157
 #, python-format
 msgid "Option %r not recognized."
 msgstr "Opcija %r nav atpazīta."
 
-#: ../quodlibet/util/__init__.py:153
+#: ../quodlibet/util/__init__.py:160
 #, python-format
 msgid "Option %r requires an argument."
 msgstr "Opcijai %r nepieciešams arguments."
 
-#: ../quodlibet/util/__init__.py:156
+#: ../quodlibet/util/__init__.py:163
 #, python-format
 msgid "%r is not a unique prefix."
 msgstr "%r nav unikāls prefikss."
 
-#: ../quodlibet/util/__init__.py:329 ../quodlibet/util/__init__.py:336
+#: ../quodlibet/util/__init__.py:336 ../quodlibet/util/__init__.py:343
 msgid "[Invalid Encoding]"
 msgstr "[Nederīgs kodējums]"
 
@@ -2243,7 +2243,7 @@ msgstr "[Nederīgs kodējums]"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../quodlibet/util/__init__.py:492
+#: ../quodlibet/util/__init__.py:499
 msgid "check|titlecase?"
 msgstr "nē"
 
@@ -2435,25 +2435,16 @@ msgstr "Audio aizmugure %r nav instalēta."
 msgid "Invalid GStreamer output pipeline, trying default."
 msgstr "Nederīga GStreamer izvades līnija, mēģina noklusēto."
 
-#: ../quodlibet/player/gstbe.py:50 ../quodlibet/player/xinebe.py:37
-msgid "Unable to create audio output"
-msgstr "Neizdevās izveidot audio izvadi"
-
-#: ../quodlibet/player/gstbe.py:51
-#, python-format
-msgid ""
-"The audio output pipeline %r could not be created. Check your GStreamer "
-"settings in ~/.quodlibet/config."
+#: ../quodlibet/player/gstbe.py:59
+msgid "Could not create default GStreamer pipeline."
 msgstr ""
-"Audio izvades līnija %r nevarēja tikt izveidota. Pārbaudiet jūsu GStreamer "
-"iestatījumus failā ~/.quodlibet/config."
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:240
+#: ../quodlibet/player/gstbe.py:249
 msgid "Output Error"
 msgstr "Izvades kļūda"
 
-#: ../quodlibet/player/gstbe.py:241
+#: ../quodlibet/player/gstbe.py:250
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
@@ -2461,17 +2452,21 @@ msgstr ""
 "Neizdevās inicializēt GStreamer izvades līniju. Līnija var nebūt derīga, vai "
 "arī ierīce jau tiek izmantota. Pārbaudiet jūsu atskaņotāja iestatījumus."
 
-#: ../quodlibet/player/gstbe.py:394
+#: ../quodlibet/player/gstbe.py:403
 msgid "Unable to open input files"
 msgstr "Neizdevās atvērt ievades failus"
 
-#: ../quodlibet/player/gstbe.py:395
+#: ../quodlibet/player/gstbe.py:404
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
 msgstr ""
 "GStreamer nav elementa failu nolasīšanai. Pārbaudiet jūsu GStreamer "
 "instalācijas iestatījumus."
+
+#: ../quodlibet/player/xinebe.py:37
+msgid "Unable to create audio output"
+msgstr "Neizdevās izveidot audio izvadi"
 
 #: ../quodlibet/player/xinebe.py:38
 #, python-format
@@ -2829,6 +2824,13 @@ msgstr ""
 #, python-format
 msgid "%d tasks running"
 msgstr ""
+
+#~ msgid ""
+#~ "The audio output pipeline %r could not be created. Check your GStreamer "
+#~ "settings in ~/.quodlibet/config."
+#~ msgstr ""
+#~ "Audio izvades līnija %r nevarēja tikt izveidota. Pārbaudiet jūsu "
+#~ "GStreamer iestatījumus failā ~/.quodlibet/config."
 
 #~ msgid "pattern"
 #~ msgstr "paraugs"
