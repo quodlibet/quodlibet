@@ -21,7 +21,7 @@ except ImportError:
 
 import gobject, gtk
 
-from quodlibet import player, config, const, widgets, parse, util
+from quodlibet import player, config, const, widgets, parse, util, qltk
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.ccb import ConfigCheckButton
@@ -414,17 +414,9 @@ class QLScrobbler(EventPlugin):
                 queue.quick_dialog("Authentication successful.",
                     gtk.MESSAGE_INFO)
 
-        box = gtk.VBox()
+        box = gtk.VBox(spacing=12)
 
         # first frame
-        acc = gtk.Frame(_("<b>Account</b>"))
-        acc.set_shadow_type(gtk.SHADOW_NONE)
-        acc.get_label_widget().set_use_markup(True)
-
-        acc_align = gtk.Alignment(0, 0, 1, 1)
-        acc_align.set_padding(6, 6, 12, 12)
-        acc.add(acc_align)
-
         table = gtk.Table(5, 2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
@@ -480,22 +472,13 @@ class QLScrobbler(EventPlugin):
         row += 1
 
         # verify data
-        button = gtk.Button(_("_Verify account data"))
+        button = qltk.Button(_("_Verify account data"), gtk.STOCK_INFO)
         button.connect('clicked', check_login)
         table.attach(button, 0, 2, 4, 5)
 
-        acc_align.add(table)
-        box.pack_start(acc)
+        box.pack_start(qltk.Frame(_("Account"), child=table))
 
         # second frame
-        subm = gtk.Frame(_("<b>Submission</b>"))
-        subm.set_shadow_type(gtk.SHADOW_NONE)
-        subm.get_label_widget().set_use_markup(True)
-
-        subm_align = gtk.Alignment(0, 0, 1, 1)
-        subm_align.set_padding(6, 6, 12, 12)
-        subm.add(subm_align)
-
         table = gtk.Table(4, 2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
@@ -548,7 +531,6 @@ class QLScrobbler(EventPlugin):
         offline.set_active(config_get('offline') == "true")
         table.attach(offline, 0, 2, row, row + 1)
 
-        subm_align.add(table)
-        box.pack_start(subm)
+        box.pack_start(qltk.Frame(_("Submission"), child=table))
 
         return box

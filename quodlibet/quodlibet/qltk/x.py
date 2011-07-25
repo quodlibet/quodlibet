@@ -111,7 +111,7 @@ def Frame(label, child=None):
     label_w = gtk.Label()
     label_w.set_markup("<b>%s</b>" % util.escape(label))
     align = gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
-    align.set_padding(3, 0, 12, 0)
+    align.set_padding(6, 0, 12, 0)
     frame.add(align)
     frame.set_shadow_type(gtk.SHADOW_NONE)
     frame.set_label_widget(label_w)
