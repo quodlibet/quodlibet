@@ -1055,8 +1055,11 @@ class SongList(AllTreeView, util.InstanceTracker):
             ~uri""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
+        all_headers = reduce(lambda x,y: x+y,
+            [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo])
 
         for name, group in [
+            (_("All _Headers"), all_headers),
             (_("_Track Headers"), trackinfo),
             (_("_Album Headers"), albuminfo),
             (_("_People Headers"), peopleinfo),
