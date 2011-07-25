@@ -61,8 +61,9 @@ class SongsMenu(gtk.Menu):
             b = gtk.ImageMenuItem(stock.ENQUEUE)
             b.connect('activate', self.__enqueue, songs)
             if accels is not None:
+                key, val = gtk.accelerator_parse("<ctrl>Return")
                 b.add_accelerator(
-                    'activate', accels, ord('Q'), 0, gtk.ACCEL_VISIBLE)
+                    'activate', accels, key, val, gtk.ACCEL_VISIBLE)
             self.append(b)
             b.set_sensitive(can_add)
 
