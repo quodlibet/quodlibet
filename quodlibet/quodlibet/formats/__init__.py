@@ -14,7 +14,11 @@ from quodlibet import util, const
 base = dirname(__file__)
 self = basename(base)
 parent = basename(dirname(base))
-modules = [splitext(f)[0] for f in glob(join(base, "[!_]*.py*"))]
+if os.name == 'nt':
+    # Windows needs to load .pyc files
+    glob_pattern = "[!_]*.py*"
+else: glob_pattern = "[!_]*.py"
+modules = [splitext(f)[0] for f in glob(join(base, glob_pattern))]
 modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in set(modules)]
 
 _infos = {}
