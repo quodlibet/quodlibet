@@ -23,7 +23,17 @@ class LoggingWindow(qltk.Window):
             buffer = view.get_buffer()
             buffer.set_text(text)
             notebook.append_page(sw, logname)
-        self.add(notebook)
+
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close.connect_object('clicked', lambda x: x.destroy(), self)
+        button_box = gtk.HButtonBox()
+        button_box.set_layout(gtk.BUTTONBOX_END)
+        button_box.pack_start(close)
+
+        vbox = gtk.VBox(spacing=12)
+        vbox.pack_start(notebook)
+        vbox.pack_start(button_box, expand=False)
+        self.add(vbox)
 
         self.show_all()
 

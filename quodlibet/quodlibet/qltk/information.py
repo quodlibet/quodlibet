@@ -557,7 +557,7 @@ class ManySongs(qltk.Notebook):
 
 class Information(Window):
     def __init__(self, library, songs, parent=None):
-        super(Information, self).__init__()
+        super(Information, self).__init__(dialog=False)
         self.set_border_width(12)
         self.set_default_size(400, 400)
         if len(songs) > 1:

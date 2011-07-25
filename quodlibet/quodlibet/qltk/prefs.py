@@ -23,6 +23,7 @@ from quodlibet.qltk.songlist import SongList
 
 class PreferencesWindow(qltk.UniqueWindow):
     class SongList(gtk.VBox):
+        name = "songlist"
         def __init__(self):
             super(PreferencesWindow.SongList, self).__init__(spacing=12)
             self.set_border_width(12)
@@ -131,6 +132,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             SongList.set_all_column_headers(headers)
 
     class Browsers(gtk.VBox):
+        name = "browser"
         def __init__(self):
             super(PreferencesWindow.Browsers, self).__init__(spacing=12)
             self.set_border_width(12)
@@ -189,6 +191,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             config.set(section, name, entry.get_text())
 
     class Player(gtk.VBox):
+        name = "playback"
         def __init__(self):
             super(PreferencesWindow.Player, self).__init__(spacing=12)
             self.set_border_width(12)
@@ -252,6 +255,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             player.playlist.volume = player.playlist.volume
 
     class Library(gtk.VBox):
+        name = "library"
         def __init__(self):
             super(PreferencesWindow.Library, self).__init__(spacing=12)
             self.set_border_width(12)
@@ -340,6 +344,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
 
     class AlbumArt(gtk.VBox):
+        name = "albumart"
         def __init__(self):
             super(PreferencesWindow.AlbumArt, self).__init__(spacing=12)
             self.set_border_width(12)
@@ -399,12 +404,29 @@ class PreferencesWindow(qltk.UniqueWindow):
         self.set_resizable(False)
         self.set_transient_for(qltk.get_top_parent(parent))
 
-        self.add(qltk.Notebook())
+        self.__notebook = notebook = qltk.Notebook()
         for Page in [self.SongList, self.Browsers, self.AlbumArt, self.Player,
-            self.Library]: self.child.append_page(Page())
+            self.Library]: notebook.append_page(Page())
+
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close.connect_object('clicked', lambda x: x.destroy(), self)
+        button_box = gtk.HButtonBox()
+        button_box.set_layout(gtk.BUTTONBOX_END)
+        button_box.pack_start(close)
+
+        vbox = gtk.VBox(spacing=12)
+        vbox.pack_start(notebook)
+        vbox.pack_start(button_box, expand=False)
+        self.add(vbox)
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)
         self.show_all()
+
+    def set_page(self, name):
+        notebook = self.__notebook
+        for p in range(notebook.get_n_pages()):
+            if notebook.get_nth_page(p).name == name:
+                notebook.set_current_page(p)
 
     def __destroy(self):
         config.write(const.CONFIG)

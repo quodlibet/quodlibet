@@ -26,6 +26,7 @@ from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.renamefiles import RenameFiles
 from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
+from quodlibet.qltk.entry import UndoEntry
 from quodlibet.plugins.editing import EditingPlugins
 from quodlibet.plugins.songsmenu import SongsMenuPlugins
 
@@ -225,7 +226,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
         vbox = gtk.VBox(spacing=6)
         hb = gtk.HBox(spacing=6)
-        e = gtk.Entry()
+        e = UndoEntry()
         e.set_text(config.get("editing", "split_on"))
         e.connect('changed', self.__changed, 'editing', 'split_on')
         l = gtk.Label(_("Split _on:"))
@@ -239,7 +240,17 @@ class PreferencesWindow(qltk.UniqueWindow):
         vbox.pack_start(hb, expand=False)
         vbox.pack_start(cb, expand=False)
         f = qltk.Frame(_("Tag Editing"), child=vbox)
-        self.add(f)
+
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close.connect_object('clicked', lambda x: x.destroy(), self)
+        button_box = gtk.HButtonBox()
+        button_box.set_layout(gtk.BUTTONBOX_END)
+        button_box.pack_start(close)
+
+        main_vbox = gtk.VBox(spacing=12)
+        main_vbox.pack_start(f)
+        main_vbox.pack_start(button_box, expand=False)
+        self.add(main_vbox)
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)
         self.show_all()

@@ -1098,8 +1098,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         # Prefs has to import SongList, so do this here to avoid
         # a circular import.
         from quodlibet.qltk.prefs import PreferencesWindow
-        win = PreferencesWindow(self)
-        win.child.set_current_page(0)
+        PreferencesWindow(self).set_page("songlist")
 
     def __showmenu(self, column, event=None):
         time = gtk.get_current_event_time()
