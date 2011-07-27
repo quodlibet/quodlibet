@@ -17,17 +17,11 @@ if not getattr(gtk.Entry, "set_icon_from_stock", None):
     except ImportError: pass
 
 from quodlibet import config
-from quodlibet.qltk.x import ClearButton, get_top_parent
+from quodlibet.qltk.x import ClearButton, is_accel
 
 class EditableUndo(object):
     """A simple undo/redo implementation for gtk widgets that
     support the gtk.Editable interface"""
-
-    __gsignals__ = {
-        "undo": (
-        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ()),
-        "redo": (
-        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
 
     def set_undo(self, val):
         if val: self.__enable_undo()
@@ -57,21 +51,19 @@ class EditableUndo(object):
 
         self.__handlers = [
             self.connect("insert-text", self.__insert_before),
-            self.connect("delete-text", self.__delete_before)]
+            self.connect("delete-text", self.__delete_before),
+            self.connect('populate-popup', self.__popup),
+            self.connect('key-press-event', self.__key_press),
+            ]
 
-        self.__accels = gtk.AccelGroup()
-        self.add_accelerator('undo', self.__accels, ord('z'),
-            gtk.gdk.CONTROL_MASK, 0)
-        self.add_accelerator('redo', self.__accels, ord('z'),
-            gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK, 0)
-
-        self.__rlz = self.connect('realize', self.__realize)
-
-        self.__handlers.extend([
-            self.connect('undo', lambda *x: self.undo()),
-            self.connect('redo', lambda *x: self.redo()),
-            self.connect('populate-popup', self.__popup)
-            ])
+    def __key_press(self, entry, event):
+        if is_accel(event, "<ctrl>z"):
+            self.undo()
+            return True
+        elif is_accel(event, "<ctrl><shift>z"):
+            self.redo()
+            return True
+        return False
 
     def __disable_undo(self):
         for handler in self.__handlers:
@@ -82,12 +74,6 @@ class EditableUndo(object):
         del self.__last_space
         del self.__in_pos
         del self.__del_pos
-
-    def __realize(self, *args):
-        self.disconnect(self.__rlz)
-        del self.__rlz
-        parent = get_top_parent(self)
-        parent.add_accel_group(self.__accels)
 
     def __popup(self, entry, menu):
         undo =  gtk.ImageMenuItem(gtk.STOCK_UNDO)
@@ -159,7 +145,6 @@ class EditableUndo(object):
         self.__uninhibit()
 
 class UndoEntry(IconEntry, EditableUndo):
-    __gsignals__ = EditableUndo.__gsignals__
     def __init__(self, *args, **kwargs):
         super(UndoEntry, self).__init__(*args, **kwargs)
         self.set_undo(True)
@@ -169,7 +154,6 @@ class UndoEntry(IconEntry, EditableUndo):
         self.reset_undo()
 
 class UndoNoSexyEntry(gtk.Entry, EditableUndo):
-    __gsignals__ = EditableUndo.__gsignals__
     def __init__(self, *args):
         super(UndoNoSexyEntry, self).__init__(*args)
         self.set_undo(True)

@@ -11,7 +11,7 @@ import gobject
 import gtk
 
 from quodlibet import util
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, is_accel
 
 class Window(gtk.Window):
     """A Window that binds the ^W accelerator to close. This should not

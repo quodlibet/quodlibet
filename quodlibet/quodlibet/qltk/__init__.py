@@ -40,7 +40,34 @@ def popup_menu_under_widget(menu, widget, button, time):
         return (menu_x, menu_y, True) # x, y, move_within_screen
     menu.popup(None, None, pos_func, button, time)
     return True
-            
+
+def is_accel(event, accel):
+    """Checks if the given gtk.gdk.Event matches an accelerator string
+
+    example: is_accel(event, "<shift><ctrl>z")
+    """
+    if event.type != gtk.gdk.KEY_PRESS:
+        return False
+
+    # ctrl+shift+x gives us ctrl+shift+X and accelerator_parse returns
+    # lowercase values for matching, so lowercase it if possible
+    keyval = event.keyval
+    if not keyval & ~0xFF:
+        keyval = ord(chr(keyval).lower())
+
+    default_mod = gtk.accelerator_get_default_mod_mask()
+    accel_keyval, accel_mod = gtk.accelerator_parse(accel)
+
+    # If the accel contains non default modifiers matching will never work and
+    # since no one should use them, complain
+    non_default = accel_mod & ~default_mod
+    if non_default:
+        print_w("Accelerator '%s' contains a non default modifier '%s'." %
+            (accel, gtk.accelerator_name(0, non_default) or ""))
+
+    # Remove everything except default modifiers and compare
+    return (accel_keyval, accel_mod) == (keyval, event.state & default_mod)
+
 # Legacy plugin/code support.
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import *
