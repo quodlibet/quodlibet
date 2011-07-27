@@ -778,7 +778,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         elif qltk.is_accel(event, "<ctrl>Return"):
             self.__enqueue(self.get_selected_songs())
             return True
-        elif qltk.is_accel("<control>F"):
+        elif qltk.is_accel(event, "<control>F"):
             self.emit('start-interactive-search')
             return True
         return False
