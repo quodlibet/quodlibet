@@ -771,17 +771,14 @@ class SongList(AllTreeView, util.InstanceTracker):
         librarian.changed(songs)
 
     def __key_press(self, songlist, event, librarian):
-        # remove num mask
-        accel = (event.keyval, event.state & ~gtk.gdk.MOD2_MASK)
-
         if event.string in ['0', '1', '2', '3', '4']:
             rating = min(1.0, int(event.string) * util.RATING_PRECISION)
             self.__set_rating(rating, self.get_selected_songs(), librarian)
             return True
-        elif accel == gtk.accelerator_parse("<ctrl>Return"):
+        elif qltk.is_accel(event, "<ctrl>Return"):
             self.__enqueue(self.get_selected_songs())
             return True
-        elif accel == gtk.accelerator_parse("<control>F"):
+        elif qltk.is_accel("<control>F"):
             self.emit('start-interactive-search')
             return True
         return False

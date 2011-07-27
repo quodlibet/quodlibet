@@ -12,6 +12,7 @@ import gtk
 from quodlibet import config
 from quodlibet import const
 from quodlibet import util
+from quodlibet import qltk
 
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList
@@ -162,7 +163,7 @@ class PlayQueue(SongList):
         self.connect('key-press-event', self.__delete_key_pressed)
 
     def __delete_key_pressed(self, widget, event):
-        if (event.keyval, event.state) == gtk.accelerator_parse("Delete"):
+        if qltk.is_accel(event, "Delete"):
             self.__remove(None)
             return True
         return False
