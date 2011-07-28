@@ -132,8 +132,12 @@ class SearchBarBox(gtk.HBox):
 
         text = entry.get_text().decode('utf-8').strip()
         if text and Query.is_parsable(text):
+            # Adding the active text to the model triggers a changed signal
+            # (get_active is no longer -1), so inhibit
+            self.__inhibit()
             self.__combo.prepend_text(text)
             self.__combo.write()
+            self.__uninhibit()
 
     def __remove_timeout(self):
         if self.__refill_id is not None:
