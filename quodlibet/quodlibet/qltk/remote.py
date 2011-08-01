@@ -299,7 +299,7 @@ class FIFOControl(object):
         if value.startswith("t"):
             value = not window.song_scroller.get_property('visible')
         else: value = value not in ['0', 'off', 'false']
-        window.songlist.set_property('visible', value)
+        window.song_scroller.set_property('visible', value)
 
     def _queue(self, value, library, window, player):
         if value.startswith("t"):
