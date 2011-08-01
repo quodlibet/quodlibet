@@ -105,7 +105,7 @@ class ResizeImage(gtk.Image):
             pixbuf = self.__get_no_cover(width, height)
         else:
             try:
-                round_thumbs = config.getboolean("settings", "round")
+                round_thumbs = config.getboolean("albumart", "round")
                 pixbuf = thumbnails.get_thumbnail(self.__path, (width, height))
                 pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
             except gobject.GError:

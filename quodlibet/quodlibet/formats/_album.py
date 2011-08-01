@@ -271,7 +271,7 @@ class Album(Collection):
 
         if cover is not None:
             try:
-                round = config.getboolean("settings", "round")
+                round = config.getboolean("albumart", "round")
                 self.cover = thumbnails.get_thumbnail(cover.name, (48, 48))
                 self.cover = thumbnails.add_border(self.cover, 30, round)
             except gobject.GError:
