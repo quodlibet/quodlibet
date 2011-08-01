@@ -31,9 +31,9 @@ class FilterCheckButton(ConfigCheckButton):
     def filter(self, original, filename): raise NotImplementedError
     def filter_list(self, origs, names): return map(self.filter, origs, names)
 
-    def __cmp__(self, other):
-        return (cmp(self._order, other._order) or
-                cmp(type(self).__name__, type(other).__name__))
+    def __lt__(self, other):
+        return (self._order, type(self).__name__) < \
+            (other._order, type(other).__name__)
 
 class EditPane(gtk.VBox):
     def __init__(self, cbes_filename, cbes_defaults, plugins):

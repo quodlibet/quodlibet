@@ -12,9 +12,13 @@ class TGStreamerSink(TestCase):
             self.failUnlessEqual(name, n)
 
     def test_fallback(self):
-            obj, name = Sink("notarealsink")
-            self.failUnless(obj)
-            self.failUnlessEqual(name, "autoaudiosink")
+        import __builtin__
+        pw = print_w
+        __builtin__.__dict__["print_w"] = lambda *x: None
+        obj, name = Sink("notarealsink")
+        __builtin__.__dict__["print_w"] = pw
+        self.failUnless(obj)
+        self.failUnlessEqual(name, "autoaudiosink")
 
     def test_append_sink(self):
         obj, name = Sink("volume")

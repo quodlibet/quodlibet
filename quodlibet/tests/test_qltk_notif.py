@@ -23,7 +23,7 @@ class TTaskController(TestCase):
 
     def test_multiple_tasks(self):
         self.assertEquals(self.c.active_tasks, [])
-        self.assertEquals(self.c.source, "")
+        self.assertNotEqual(self.c.source, "")
         t1 = Task("src", "desc", controller = self.c)
         self.assertEquals(self.c.source, "src")
         self.assertEquals(self.c.active_tasks, [t1])
