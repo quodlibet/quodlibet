@@ -434,6 +434,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.set_fixed_height_mode(True)
+        self.__csig = self.connect('columns-changed', self.__columns_changed)
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
         sigs = []
@@ -471,7 +472,6 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.accelerators.connect_group(
             key, mod, 0, lambda *args: self.__information(librarian))
 
-        self.__csig = self.connect('columns-changed', self.__columns_changed)
         self.connect('destroy', self.__destroy)
 
         self.__scroll_delay = None
@@ -804,7 +804,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         except ValueError: pass
         cls.headers = headers
         for listview in cls.instances():
-            listview.set_column_headers(headers, inhibit=True)
+            listview.set_column_headers(headers)
 
         star = list(Query.STAR)
         for header in headers:
@@ -991,10 +991,10 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     # Build a new filter around our list model, set the headers to their
     # new values.
-    def set_column_headers(self, headers, inhibit=False):
+    def set_column_headers(self, headers):
         if len(headers) == 0: return
 
-        if inhibit: self.handler_block(self.__csig)
+        self.handler_block(self.__csig)
 
         old_sort = self.is_sorted() and self.get_sort_by()
         map(self.remove_column, self.get_columns())
@@ -1028,7 +1028,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             header, order = old_sort
             self.set_sort_by(None, header, order, False)
 
-        if inhibit: self.handler_unblock(self.__csig)
+        self.handler_unblock(self.__csig)
 
     def __getmenu(self, column):
         menu = gtk.Menu()
