@@ -363,7 +363,7 @@ class DiscogsParser(object):
         return dom
 
     def __parse_list(self, dom):
-        """Returns a list with the album name and the release ID.
+        """Returns a list with the album name and the uri.
         Since the naming of releases in the specific release pages
         seems complex.. use the one from the search result page."""
 
@@ -371,24 +371,24 @@ class DiscogsParser(object):
         results = dom.getElementsByTagName('result')
         for result in results:
             uri_tag = result.getElementsByTagName('uri')[0]
-            id = uri_tag.firstChild.data.split('/')[-1]
+            uri = uri_tag.firstChild.data
             name = result.getElementsByTagName('title')[0].firstChild.data
-            list.append((id, name))
+            list.append((uri, name))
 
         return list
 
-    def __parse_release(self, id, name):
+    def __parse_release(self, url, name):
         """Parse the release page and add the cover to the list."""
 
         if len(self.cover_list) >= self.limit:
             return
 
-        rel_url = self.url + '/release/' + id
         rel_paras = {}
         rel_paras['api_key'] = self.api_key
         rel_paras['f'] = 'xml'
 
-        data, enc = get_url(rel_url, get=rel_paras)
+        data, enc = get_url(url, get=rel_paras)
+
         dom = minidom.parseString(data)
 
         imgs = dom.getElementsByTagName('image')
@@ -438,14 +438,14 @@ class DiscogsParser(object):
             all = int(result[0].getAttribute('numResults'))
             end = int(result[0].getAttribute('end'))
 
-            ids = self.__parse_list(dom)
+            urls = self.__parse_list(dom)
 
             thread_list = []
-            for id, name in ids:
+            for url, name in urls:
                 self.limit_count += 1
 
                 thr = threading.Thread(target=self.__parse_release,
-                    args=(id, name))
+                    args=(url, name))
                 thr.setDaemon(True)
                 thr.start()
                 thread_list.append(thr)
@@ -464,7 +464,6 @@ class DiscogsParser(object):
                 break
 
             page += 1
-
         return self.cover_list
 
 class AmazonParser(object):
@@ -1140,7 +1139,7 @@ class AlbumArtWindow(qltk.Window):
     def __add_cover_to_list(self, cover):
         try:
             pbloader = gtk.gdk.PixbufLoader()
-            pbloader.write(urllib.urlopen(cover['thumbnail']).read())
+            pbloader.write(get_url(cover['thumbnail'])[0])
             pbloader.close()
 
             size = 48
@@ -1155,7 +1154,9 @@ class AlbumArtWindow(qltk.Window):
         except gobject.GError, IOError:
             pass
         else:
-            self.liststore.append([thumb, cover])
+            def append(data):
+                self.liststore.append(data)
+            gobject.idle_add(append, [thumb, cover])
 
     def __search_callback(self, covers, progress):
         for cover in covers:
