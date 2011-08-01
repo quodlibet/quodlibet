@@ -775,7 +775,8 @@ class SongList(AllTreeView, util.InstanceTracker):
             rating = min(1.0, int(event.string) * util.RATING_PRECISION)
             self.__set_rating(rating, self.get_selected_songs(), librarian)
             return True
-        elif qltk.is_accel(event, "<ctrl>Return"):
+        elif qltk.is_accel(event, "<ctrl>Return") or \
+            qltk.is_accel(event, "<ctrl>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
         elif qltk.is_accel(event, "<control>F"):
