@@ -21,6 +21,7 @@ from quodlibet.parse import Query, Pattern
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.util.uri import URI
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
@@ -412,17 +413,9 @@ class SongList(AllTreeView, util.InstanceTracker):
         if (header not in ["artist", "album"] and can_filter(header)):
             menu.prepend(Filter(header))
 
-        item = gtk.MenuItem(_("_Rating"))
-        m2 = gtk.Menu()
-        item.set_submenu(m2)
-        for i in range(0, int(1.0/util.RATING_PRECISION)+1):
-            i *= util.RATING_PRECISION
-            itm = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
-            m2.append(itm)
-            itm.connect_object(
-                'activate', self.__set_rating, i, songs, library)
+        ratings = RatingsMenuItem(songs, library)
         menu.preseparate()
-        menu.prepend(item)
+        menu.prepend(ratings)
         menu.show_all()
         return menu
 

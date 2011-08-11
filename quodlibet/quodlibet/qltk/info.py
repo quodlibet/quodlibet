@@ -15,6 +15,7 @@ from quodlibet import qltk
 from quodlibet import stock
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
+from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 
 from quodlibet.parse import XMLFromPattern
 from quodlibet.qltk.textedit import PatternEdit
@@ -50,6 +51,14 @@ class SongInfo(gtk.Label):
         self._compiled = XMLFromPattern(self._pattern)
 
     def __menu(self, player, menu, library):
+        # Issue 298 - Rate current playing song
+        sep = gtk.SeparatorMenuItem()
+        menu.prepend(sep)
+        sep.show()
+        rating = RatingsMenuItem([player.song], library)
+        rating.show()
+        menu.prepend(rating)
+
         item = qltk.MenuItem(_("_Edit Display..."), gtk.STOCK_EDIT)
         item.show()
         item.connect_object('activate', self.__edit, player)
