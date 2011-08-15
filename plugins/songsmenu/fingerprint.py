@@ -24,6 +24,12 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+if not gst.element_factory_find("chromaprint"):
+    from quodlibet import plugins
+    if not hasattr(plugins, "PluginImportException"):
+        raise gst.PluginNotFoundError("chromaprint")
+    raise plugins.PluginImportException("Couldn't find gst-chromaprint.")
+
 def get_num_threads():
     # multiprocessing is >= 2.6.
     # Default to 2 threads if cpu_count isn't implemented for the current arch
@@ -571,8 +577,15 @@ class FingerprintDialog(Window):
         self.__set_fp_fraction()
 
     def __start_puid(self):
-        self.__musicdns_thread = MusicDNSThread(self.__fp_results,
-            self.__puid_update, self.__puid_done)
+        for song, data in self.__fp_results.iteritems():
+            if "ofa" in data:
+                self.__label.set_markup("<b>%s</b>" % _("Looking up PUIDs:"))
+                self.__set_fraction(0)
+                self.__musicdns_thread = MusicDNSThread(self.__fp_results,
+                    self.__puid_update, self.__puid_done)
+                break
+        else:
+            self.__submit.set_sensitive(True)
 
     def __puid_done(self, thread):
         thread.join()
@@ -581,7 +594,6 @@ class FingerprintDialog(Window):
         self.__submit.set_sensitive(True)
 
     def __puid_update(self, song, progress):
-        self.__label.set_markup("<b>%s</b>" % _("Looking up PUIDs:"))
         self.__label_song.set_text(song("~filename"))
         self.__set_fraction(progress)
 
@@ -605,15 +617,19 @@ class FingerprintDialog(Window):
 
     def __submit_cb(self, *args):
         self.__submit.set_sensitive(False)
+        self.__label.set_markup("<b>%s</b>" % _("Submitting Fingerprints:"))
+        self.__set_fraction(0)
         self.__acoustid_thread = AcoustidSubmissionThread(
             self.__fp_results, self.__acoustid_update, self.__acoustid_done)
 
     def __acoustid_update(self, progress):
-        self.__label.set_markup("<b>%s</b>" % _("Submitting Fingerprints:"))
         self.__set_fraction(progress)
+        self.__label_song.set_text(_("Submitting..."))
 
     def __acoustid_done(self, thread):
         thread.join()
+        self.__set_fraction(1.0)
+        self.__label_song.set_text(_("Done"))
         gobject.timeout_add(500, self.destroy)
 
 def get_api_key():
