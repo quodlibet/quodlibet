@@ -153,9 +153,6 @@ class FingerPrintPipeline(threading.Thread):
                 if key in tags.keys():
                     self.__fingerprints["ofa"] = tags[key]
         elif message.type == gst.MESSAGE_EOS:
-            # It seems that even if the song is shorter than the
-            # the fingerprint duration, the tag message kicks in before eos
-            # I don't know if this is timing related or on purpose.
             error = "EOS"
         elif message.type == gst.MESSAGE_ERROR:
             error = message.parse_error()[0]
@@ -275,20 +272,19 @@ class MusicDNSThread(threading.Thread):
             print_w("[fingerprint] " + _("MusicDNS lookup failed: ") + error)
 
     def run(self):
+        self.__sem.release()
         gobject.timeout_add(self.INTERVAL, self.__inc_sem)
-        i = 0
-        for song, data in self.__fingerprints.iteritems():
-            if not "ofa" in data: continue
+
+        items = [(s,d) for s,d in self.__fingerprints.iteritems() if "ofa" in d]
+        for i, (song, data) in enumerate(items):
+            self.__sem.acquire()
+            if self.__stopped: return
 
             puid = self.__get_puid(data["ofa"], data["length"])
             if puid: data["puid"] = puid
-            i += 1
 
             gobject.idle_add(self.__progress_cb, song,
-                float(i)/len(self.__fingerprints))
-
-            self.__sem.acquire()
-            if self.__stopped: return
+                float(i + 1) / len(items))
 
         gobject.idle_add(self.__callback, self)
 
@@ -321,6 +317,9 @@ class AcoustidSubmissionThread(threading.Thread):
         self.start()
 
     def __send(self, urldata):
+        self.__sem.acquire()
+        if self.__stopped: return
+
         self.__done += len(urldata)
 
         basedata = urllib.urlencode({
@@ -364,9 +363,8 @@ class AcoustidSubmissionThread(threading.Thread):
         gobject.idle_add(self.__progress_cb,
                 float(self.__done)/len(self.__fingerprints))
 
-        self.__sem.acquire()
-
     def run(self):
+        self.__sem.release()
         gobject.timeout_add(self.INTERVAL, self.__inc_sem)
 
         urldata = []
@@ -524,11 +522,13 @@ class FingerprintDialog(Window):
     def __update_stats(self):
         all = len(self.__songs)
         to_send = all - len(self.__invalid_songs)
+        valid_fp = len(self.__fp_results)
 
         text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, " \
             "a <i><b>puid</b></i>\nor <i><b>artist</b></i> / " \
             "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
-        text += _("\n\n<i>Songs with MBIDs:</i> %d/%d") % (self.__mbids, all)
+        text += _("\n\n<i>Fingerprints:</i> %d/%d") % (valid_fp, all)
+        text += _("\n<i>Songs with MBIDs:</i> %d/%d") % (self.__mbids, all)
         text += _("\n<i>Songs with PUIDs:</i> %d/%d") % (self.__puids, all)
         text += _("\n<i>Songs with sufficient tags:</i> %d/%d") % (
             self.__meta, all)
@@ -557,7 +557,7 @@ class FingerprintDialog(Window):
         frac = self.__fp_done / float(len(self.__songs))
         self.__set_fraction(frac)
         if self.__fp_done == len(self.__songs):
-            self.__start_puid()
+            gobject.timeout_add(500, self.__start_puid)
 
     def __fp_started_cb(self, pool, song):
         # increase by an amount smaller than one song, so that the user can
@@ -571,10 +571,13 @@ class FingerprintDialog(Window):
         result.setdefault("length", song("~#length") * 1000)
         self.__fp_results[song] = result
         self.__set_fp_fraction()
+        self.__update_stats()
 
     def __fp_error_cb(self, pool, song, error):
         print_w("[fingerprint] " + error)
+        self.__invalid_songs.add(song)
         self.__set_fp_fraction()
+        self.__update_stats()
 
     def __start_puid(self):
         for song, data in self.__fp_results.iteritems():
@@ -587,10 +590,16 @@ class FingerprintDialog(Window):
         else:
             self.__submit.set_sensitive(True)
 
+    def __show_final_stats(self):
+        all = len(self.__songs)
+        to_send = all - len(self.__invalid_songs)
+        self.__label_song.set_text(
+            _("Done. %d/%d songs to submit.") % (to_send, all))
+
     def __puid_done(self, thread):
         thread.join()
         self.__set_fraction(1.0)
-        self.__label_song.set_text(_("Done"))
+        self.__show_final_stats()
         self.__submit.set_sensitive(True)
 
     def __puid_update(self, song, progress):
@@ -629,7 +638,7 @@ class FingerprintDialog(Window):
     def __acoustid_done(self, thread):
         thread.join()
         self.__set_fraction(1.0)
-        self.__label_song.set_text(_("Done"))
+        self.__show_final_stats()
         gobject.timeout_add(500, self.destroy)
 
 def get_api_key():
