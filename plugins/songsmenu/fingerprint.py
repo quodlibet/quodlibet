@@ -141,22 +141,23 @@ class FingerPrintPipeline(threading.Thread):
         error = None
         if message.type == gst.MESSAGE_TAG:
             if message.src == chroma:
-                self.__todo.remove(chroma)
                 tags = message.parse_tag()
                 key = "chromaprint-fingerprint"
                 if key in tags.keys():
+                    if chroma in self.__todo:
+                        self.__todo.remove(chroma)
                     self.__fingerprints["chromaprint"] = tags[key]
             elif message.src == ofa:
-                self.__todo.remove(ofa)
                 tags = message.parse_tag()
                 key = "ofa-fingerprint"
                 if key in tags.keys():
+                    if ofa in self.__todo:
+                        self.__todo.remove(ofa)
                     self.__fingerprints["ofa"] = tags[key]
         elif message.type == gst.MESSAGE_EOS:
             error = "EOS"
         elif message.type == gst.MESSAGE_ERROR:
-            error = message.parse_error()[0]
-
+            error = str(message.parse_error()[0])
         if not self.__shutdown and (not self.__todo or error):
             gobject.idle_add(self.__pool._callback, self.__song,
                 self.__fingerprints, error, self)
@@ -202,7 +203,7 @@ class FingerPrintThreadPool(gobject.GObject):
         thread.join()
         self.__threads.remove(thread)
         if self.__stopped: return
-        if result:
+        if not error:
             self.emit("fingerprint-done", song, result)
         else:
             self.emit("fingerprint-error", song, error)
@@ -306,10 +307,11 @@ class AcoustidSubmissionThread(threading.Thread):
     APP_KEY = "C6IduH7D"
     SONGS_PER_SUBMISSION = 50 # be gentle :)
 
-    def __init__(self, fingerprints, progress_cb, callback):
+    def __init__(self, fingerprints, invalid, progress_cb, callback):
         super(AcoustidSubmissionThread, self).__init__()
         self.__callback = callback
         self.__fingerprints = fingerprints
+        self.__invalid = invalid
         self.__stopped = False
         self.__progress_cb = progress_cb
         self.__sem = threading.Semaphore()
@@ -369,6 +371,8 @@ class AcoustidSubmissionThread(threading.Thread):
 
         urldata = []
         for i, (song, data) in enumerate(self.__fingerprints.iteritems()):
+            if song in self.__invalid: continue
+
             track = {
                 "duration": int(round(data["length"] / 1000)),
                 "fingerprint": data["chromaprint"],
@@ -428,6 +432,8 @@ class FingerprintDialog(Window):
         self.set_border_width(12)
         self.set_title(_("Submit Acoustic Fingerprints"))
         self.set_default_size(300, 0)
+
+        outer_box = gtk.VBox(spacing=12)
 
         box = gtk.VBox(spacing=6)
 
@@ -493,7 +499,8 @@ class FingerprintDialog(Window):
         bbox.pack_start(submit)
         bbox.pack_start(cancel)
 
-        box.pack_start(bbox, expand=False, fill=False)
+        outer_box.pack_start(box, expand=False)
+        outer_box.pack_start(bbox, expand=False)
 
         pool.connect('fingerprint-done', self.__fp_done_cb)
         pool.connect('fingerprint-error', self.__fp_error_cb)
@@ -516,7 +523,7 @@ class FingerprintDialog(Window):
 
         self.connect_object('delete-event', self.__cancel_cb, pool)
 
-        self.add(box)
+        self.add(outer_box)
         self.show_all()
 
     def __update_stats(self):
@@ -629,7 +636,8 @@ class FingerprintDialog(Window):
         self.__label.set_markup("<b>%s</b>" % _("Submitting Fingerprints:"))
         self.__set_fraction(0)
         self.__acoustid_thread = AcoustidSubmissionThread(
-            self.__fp_results, self.__acoustid_update, self.__acoustid_done)
+            self.__fp_results, self.__invalid_songs,
+            self.__acoustid_update, self.__acoustid_done)
 
     def __acoustid_update(self, progress):
         self.__set_fraction(progress)
