@@ -149,10 +149,23 @@ class FingerPrintPipeline(threading.Thread):
                     self.__fingerprints["chromaprint"] = tags[key]
             elif message.src == ofa:
                 tags = message.parse_tag()
+                # https://bugzilla.gnome.org/show_bug.cgi?id=656641
+                # (which promptly got fixed)
+                # Because libofa fails if the first 135 seconds are silent
+                # gst-ofa will emit an empty tag list and then segfault
+                # on EOS. It will also segfault if there is no data flow at
+                # all before EOS, but there is nothing we can do about it
+                # and that shouldn't happen very often.
+                #
+                # As a workaround we mark it done whenever it emits something
+                # and since it should come after chromaprint (chromaprint
+                # defaults to 120, while ofa to 135 seconds) the pipeline
+                # should stop after this.
+                if ofa in self.__todo:
+                    self.__todo.remove(ofa)
+
                 key = "ofa-fingerprint"
                 if key in tags.keys():
-                    if ofa in self.__todo:
-                        self.__todo.remove(ofa)
                     self.__fingerprints["ofa"] = tags[key]
         elif message.type == gst.MESSAGE_EOS:
             error = "EOS"
