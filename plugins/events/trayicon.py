@@ -31,6 +31,7 @@ from quodlibet.qltk.controls import StopAfterMenu
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
+from quodlibet.util.thumbnails import scale, calc_scale_size
 from quodlibet.widgets import main as window, watcher
 
 class Preferences(gtk.VBox):
@@ -264,32 +265,44 @@ class TrayIcon(EventPlugin):
         p.connect('destroy', self.__prefs_destroy)
         return p
 
+    def __get_paused_pixbuf(self, size, diff):
+        """Returns a pixbuf for a paused icon frokm the current theme.
+        The returned pixbuf can have a size of size->size+diff"""
+
+        names = ('media-playback-pause', gtk.STOCK_MEDIA_PAUSE)
+        theme = gtk.icon_theme_get_default()
+
+        # Get the suggested icon
+        info =  theme.choose_icon(names, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+        if not info: return
+
+        try:
+            pixbuf = info.load_icon()
+        except gobject.GError: pass
+        else:
+            # In case it is too big, rescale
+            if pixbuf.get_height() - size > diff:
+                return scale(pixbuf, (size,) * 2)
+            return pixbuf
+
     def __update_icon(self):
         if self.__size <= 0:
             return
 
-        pixbuf_size = max(int(self.__size * 0.75), 1)
-        #windows panel has enough padding
-        if sys.platform == "win32":
-            pixbuf_size = self.__size
-
         if not self.__pixbuf:
             try:
                 self.__pixbuf = self.__icon_theme.load_icon(
-                    "quodlibet", pixbuf_size, 0)
+                    "quodlibet", self.__size, 0)
             except gobject.GError: pass
-            else:
-                if self.__pixbuf.props.width != self.__pixbuf.props.height != \
-                    pixbuf_size:
-                    self.__pixbuf = self.__pixbuf.scale_simple(
-                        pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
 
         # images got moved into the theme dir after 2.3
+        # this can be removed after 2.4 is out
         if not self.__pixbuf:
+            pixbuf_size = max(int(self.__size * 0.75), 1)
             filename = os.path.join(const.IMAGEDIR, "quodlibet.")
             try:
                 self.__pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                    filename + "svg", pixbuf_size * 2, pixbuf_size * 2)
+                    filename + "svg", *(pixbuf_size * 2,) * 2)
             except gobject.GError:
                 try:
                     self.__pixbuf = gtk.gdk.pixbuf_new_from_file(
@@ -297,63 +310,49 @@ class TrayIcon(EventPlugin):
                 except gobject.GError:
                     pass
             if self.__pixbuf:
-                self.__pixbuf = self.__pixbuf.scale_simple(
-                    pixbuf_size, pixbuf_size, gtk.gdk.INTERP_BILINEAR)
+                self.__pixbuf = scale(self.__pixbuf, (pixbuf_size,) * 2)
+
+        #we need to fill the whole height that is given to us, or
+        #the KDE panel will emit size-changed until we reach 0
+        w, h = self.__pixbuf.get_width(), self.__pixbuf.get_height()
+        if h < self.__size:
+            bg = gtk.gdk.Pixbuf(
+                gtk.gdk.COLORSPACE_RGB, True, 8, w, self.__size)
+            bg.fill(0)
+            self.__pixbuf.copy_area(0, 0, w, h, bg, 0, (self.__size - h) / 2)
+            self.__pixbuf = bg
+
+        if player.paused and not self.__pixbuf_paused:
+            base = self.__pixbuf.copy()
+            w, h = base.get_width(), base.get_height()
+            pad = h / 15
+
+            # get the area where we can place the icon
+            wn, hn = calc_scale_size((w - pad, 5 * (h - pad) / 8), (1, 1))
+
+            # get a pixbuf with roughly the size we want
+            diff = (h - hn - pad) / 3
+            overlay = self.__get_paused_pixbuf(hn, diff)
+
+            if overlay:
+                wo, ho = overlay.get_width(), overlay.get_height()
+
+                overlay.composite(base, w - wo - pad, h - ho - pad,
+                    wo, ho, w - wo - pad, h - ho - pad,
+                    1, 1,
+                    gtk.gdk.INTERP_BILINEAR, 255)
+
+            self.__pixbuf_paused = base
 
         if player.paused:
-            if not self.__pixbuf_paused:
-                overlay = None
-                # basic Kubuntu 10.10 has got no gtk.STOCK_MEDIA_PAUSE
-                theme = self.__icon_theme
-                icon_names = (gtk.STOCK_MEDIA_PAUSE, 'media-playback-pause')
-                for name in icon_names:
-                    icon_info = theme.lookup_icon(name, pixbuf_size, 0)
-                    if icon_info is not None:
-                        try: overlay = icon_info.load_icon()
-                        except gobject.GError: pass
-                        else: break
-
-                # everything failed, fall back to builtin
-                if overlay is None:
-                    try:
-                        overlay = theme.lookup_icon(gtk.STOCK_MEDIA_PAUSE,
-                            pixbuf_size, gtk.ICON_LOOKUP_USE_BUILTIN
-                            ).load_icon()
-                    except gobject.GError: pass
-
-                if overlay is not None:
-                    base = self.__pixbuf.copy()
-                    w, h = base.get_width(), base.get_height()
-                    wo, ho = overlay.get_width(), overlay.get_height()
-                    r = 2
-                    b = 8
-                    l = b - r
-
-                    overlay.composite(base, w * r // b, h * r // b,
-                        l * w // b, l * h // b,
-                        w * r // b, h * r // b + 1,
-                        float(l * w) / b / wo, float(l * h) / b / ho,
-                        gtk.gdk.INTERP_BILINEAR, 255)
-                else:
-                    base = self.__pixbuf
-
-                self.__pixbuf_paused = base
-
             new_pixbuf = self.__pixbuf_paused
         else:
             new_pixbuf = self.__pixbuf
 
-        #we need to fill the whole height that is given to us, or
-        #the KDE panel will emit size-changed until we reach 0
-        w, h = new_pixbuf.get_width(), new_pixbuf.get_height()
-        background = gtk.gdk.Pixbuf(
-            gtk.gdk.COLORSPACE_RGB, True, 8, w, self.__size)
-        background.fill(0)
-        new_pixbuf.copy_area(0, 0, w, h, background, 0, (self.__size-h)/2)
-
-        self.__icon.set_from_pixbuf(background)
+        self.__icon.set_from_pixbuf(new_pixbuf)
 
     def __theme_changed(self, theme, *args):
+        self.__pixbuf = None
         self.__pixbuf_paused = None
         self.__update_icon()
 
