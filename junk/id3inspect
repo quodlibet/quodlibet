@@ -1,8 +1,0 @@
-#!/usr/bin/env python
-
-import pyid3lib, sys
-
-for arg in sys.argv[1:]:
-    for tag in pyid3lib.tag(arg):
-        if tag["frameid"] != "APIC": print tag
-        else: print "Picture found."
