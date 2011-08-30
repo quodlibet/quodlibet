@@ -159,9 +159,9 @@ class Dep(object):
 class PythonDep(Dep):
     """Fetcher for the win32 Python MSI."""
     def _get_versions(self):
-        url = 'http://www.python.org/download/releases/'
-        return re.findall('href="/download/releases/([1234567890.]+)[/]?"',
-                          Page(url).text)
+        url = 'http://www.python.org/ftp/python/'
+        print re.findall('href="([1234567890.]+)[/]?"', Page(url).text)
+        return re.findall('href="([1234567890.]+)[/]?"', Page(url).text)
 
     def _get_release(self, version):
         return ('http://www.python.org/ftp/python/%(ver)s/python-%(ver)s.msi' %
@@ -324,7 +324,7 @@ class SetuptoolsInst(Installer):
 def do_setup(rev):
     PYVER='2.6'
     deps = [
-    (PythonDep('Python', PYVER),
+    (PythonDep('Python', "2.6.6"),
         MSIInst('Python')),
     (OnePageDep('setuptools', None, 'http://pypi.python.org/pypi/setuptools',
                 '[^"]*setuptools[^"]*tar.gz[^"#]*'),
@@ -501,7 +501,10 @@ def do_setup(rev):
         copytree2(join(gtk_path, dir), join(dist_path, dir))
 
     # Copy stock icon replacements
-    copytree2('icons', join(dist_path, 'share', 'icons'))
+    # FIXME: Disabled for now because gtk ignores all icon themes
+    # except the first one it finds (on win only).
+    # And logos have higher priority than sharp volum icons
+    #copytree2('icons', join(dist_path, 'share', 'icons'))
 
     built_locales = join(os.getcwd(), r'..\quodlibet\build\share\locale')
     # Prune GTK locales without a corresponding QL one:
@@ -530,8 +533,8 @@ def do_setup(rev):
 
     # Finally, run that installer script.
     subprocess.check_call([NSIS_PATH,
-                           join(TDIR, r'ql\junk\win_installer.nsi')])
-    shutil.copy(join(TDIR, r'ql\junk\quodlibet-LATEST.exe'),
+                           join(TDIR, r'ql\win_installer\win_installer.nsi')])
+    shutil.copy(join(TDIR, r'ql\win_installer\quodlibet-LATEST.exe'),
                 'quodlibet-%s-installer.exe' % rev.replace('quodlibet-', ''))
 
 if __name__ == "__main__":

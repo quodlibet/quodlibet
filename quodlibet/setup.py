@@ -220,6 +220,17 @@ def recursive_include(dir, pre, ext):
     os.chdir(old_dir)
     return all
 
+def recursive_include_py2exe(dir, pre, ext):
+    all = []
+    dir = os.path.join(dir, pre)
+    for path, dirs, files in os.walk(dir):
+        all_path = []
+        for file in files:
+            if file.split('.')[-1] in ext:
+                all_path.append(os.path.join(path, file))
+        if all_path: all.append((path, all_path))
+    return all
+
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -290,10 +301,9 @@ if __name__ == "__main__":
             # no build path setup, no worries.
             pass
 
-        data_files = [('', ['COPYING']),
-                      (join('quodlibet', 'images'),
-                        glob.glob(join('quodlibet', 'images', '*.png')) +
-                        glob.glob(join('quodlibet', 'images', '*.svg')))]
+        data_files = [('', ['COPYING'])] +  recursive_include_py2exe(
+            "quodlibet", "images", ("svg", "png", "cache", "theme"))
+
         for type in ["playorder", "songsmenu", "editing", "events"]:
             data_files.append((join('quodlibet', 'plugins', type),
                 glob.glob(join('..', 'plugins', type, '*.py'))))
