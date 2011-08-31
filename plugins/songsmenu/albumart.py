@@ -1355,23 +1355,23 @@ class DownloadAlbumArt(SongsMenuPlugin):
     def PluginPreferences(klass, window):
         global engines, change_config, config_eng_prefix
 
-        vbox = gtk.VBox(spacing=5)
-        vbox.set_border_width(5)
+        table = gtk.Table(len(engines), 2)
+        table.set_col_spacings(6)
+        table.set_row_spacings(6)
 
-        for eng in engines:
+        frame = qltk.Frame(_("Sources"), child=table)
+
+        for i, eng in enumerate(sorted(engines, key=lambda x: x["url"])):
             check = gtk.CheckButton(eng['config_id'].title())
-            vbox.pack_start(check)
-            check.connect('toggled', change_config, eng['config_id'])
-
+            table.attach(check, 0, 1, i, i + 1)
             checked = cfg_get(config_eng_prefix + eng['config_id'], True)
-
             check.set_active(checked)
 
             button = gtk.Button(eng['url'])
             button.connect('clicked', lambda s:util.website(s.get_label()))
-            vbox.pack_start(button)
+            table.attach(button, 1, 2, i, i + 1, xoptions=gtk.FILL | gtk.SHRINK)
 
-        return vbox
+        return frame
 
     PluginPreferences = classmethod(PluginPreferences)
 
