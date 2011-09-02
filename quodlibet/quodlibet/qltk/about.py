@@ -46,4 +46,4 @@ class AboutQuodLibet(AboutDialog):
 
 class AboutExFalso(AboutDialog):
     def __init__(self, parent, player=None):
-        super(AboutExFalso, self).__init__(parent, player, "ExFalso")
+        super(AboutExFalso, self).__init__(parent, player, "Ex Falso")
