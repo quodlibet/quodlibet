@@ -419,22 +419,26 @@ def split_album(s):
             except: return (s, None)
         else: return (s, None)
 
-def split_numeric(s, reg=re.compile(r"([0-9]+\.?[0-9]*)")):
+def split_numeric(s, limit=10,
+        reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
+        join=u" ".join):
     """Seperate numeric values from the string and convert to float, so
     it can be used for human sorting. Also removes all extra whitespace."""
-    if not s: return ('',)
-    result = reg.search(s)
-    if not result: return (u" ".join(s.split()),)
+    result = reg(s)
+    if not result or not limit:
+        return (join(s.split()),)
     else:
-        first = u" ".join(s[:result.start()].split())
-        last = s[result.end():].strip()
-        return (first, float(result.group(0)), split_numeric(last))
+        start, end = result.span()
+        return (
+            join(s[:start].split()),
+            float(result.group()),
+            split_numeric(s[end:], limit - 1))
 
-def human_sort_key(s):
+def human_sort_key(s, normalize=unicodedata.normalize):
     if not isinstance(s, unicode):
         s = s.decode("utf-8")
-    s = unicodedata.normalize('NFD', s.lower())
-    return split_numeric(s[:1024])
+    s = normalize("NFD", s.lower())
+    return split_numeric(s)
 
 def find_subtitle(title):
     if isinstance(title, str): title = title.decode('utf-8', 'replace')
