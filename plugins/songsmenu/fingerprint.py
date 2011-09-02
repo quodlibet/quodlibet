@@ -10,7 +10,6 @@ import gtk
 import pango
 
 import threading
-import random
 import urllib
 import urllib2
 import StringIO
@@ -56,54 +55,77 @@ class FingerPrintPipeline(threading.Thread):
         self.start()
 
     def run(self):
-        # TODO: change playbin to uridecodebin / filesrc+decodebin?
+        # pipeline
+        pipe = gst.Pipeline("pipe")
 
-        # I sometimes get:
-        # GStreamer-CRITICAL **:
-        # Trying to dispose element test, but it is in READY
-        # instead of the NULL state.
-        #
-        # GStreamer problem? Getting rid of playbin might fix this too..
+        # decodebin2 got declared stable with 0.10.31
+        # https://bugzilla.gnome.org/show_bug.cgi?id=624949
+        use_decodebin2 = gst.version() >= (0, 10, 31)
 
-        gbin = gst.Bin()
+        # decode part
+        filesrc = gst.element_factory_make("filesrc")
+        pipe.add(filesrc)
+        if use_decodebin2:
+            decode = gst.element_factory_make("decodebin2")
+        else:
+            decode = gst.element_factory_make("decodebin")
+        pipe.add(decode)
+        gst.element_link_many(filesrc, decode)
 
-        tee = gst.element_factory_make("tee")
-        gbin.add(tee)
+        # convert to right format
+        elements = map(gst.element_factory_make,
+                       ["audioconvert", "audioresample"])
+        map(pipe.add, elements)
+        gst.element_link_many(*elements)
+        convert, resample = elements
 
-        chroma = ["queue", "chromaprint", "fakesink"]
-        chroma = map(gst.element_factory_make, chroma)
-        map(gbin.add, chroma)
-        gst.element_link_many(tee, *chroma)
-        self.__todo = [chroma[1]]
+        # decodebin creates pad, we link it
+        if use_decodebin2:
+            decode.connect_object("pad-added", self.__new_decoded_pad, convert)
+        else:
+            decode.connect_object(
+                "new-decoded-pad", self.__new_decoded_pad, convert)
 
-        if self.__ofa and gst.element_factory_find("ofa"):
-            ofa = ["queue", "ofa", "fakesink"]
-            ofa = map(gst.element_factory_make, ofa)
-            map(gbin.add, ofa)
-            gst.element_link_many(tee, *ofa)
-            self.__todo += [ofa[1]]
+        chroma_src = resample
 
-        gbin.add_pad(gst.GhostPad('sink', tee.get_pad('sink')))
+        use_ofa = self.__ofa and gst.element_factory_find("ofa")
 
-        # playbin
-        playbin = gst.element_factory_make("playbin")
-        playbin.set_property('audio-sink', gbin)
-        video_fake = gst.element_factory_make('fakesink')
-        playbin.set_property('video-sink', video_fake)
-        playbin.set_property('uri', self.__song("~uri"))
+        if use_ofa:
+            # create a tee and one queue for chroma
+            elements = map(gst.element_factory_make, ["tee", "queue"])
+            map(pipe.add, elements)
+            gst.element_link_many(resample, *elements)
+            tee, chroma_queue = elements
+
+            chroma_src = chroma_queue
+
+            elements = map(gst.element_factory_make,
+                           ["queue", "ofa", "fakesink"])
+            map(pipe.add, elements)
+            gst.element_link_many(tee, *elements)
+            ofa = elements[1]
+            self.__todo.append(ofa)
+
+        elements = map(gst.element_factory_make, ["chromaprint", "fakesink"])
+        map(pipe.add, elements)
+        gst.element_link_many(chroma_src, *elements)
+        chroma = elements[0]
+        self.__todo.append(chroma)
+
+        filesrc.set_property("location", self.__song["~filename"])
 
         # bus
-        bus = playbin.get_bus()
+        bus = pipe.get_bus()
         bus.add_signal_watch()
         bus.enable_sync_message_emission()
-        bus.connect("sync-message", self.__bus_message, chroma[1],
-            self.__ofa and ofa[1])
+        bus.connect("sync-message", self.__bus_message, chroma,
+                    use_ofa and ofa)
 
         # get it started
         self.__cv.acquire()
-        playbin.set_state(gst.STATE_PLAYING)
+        pipe.set_state(gst.STATE_PLAYING)
 
-        result = playbin.get_state()[0]
+        result = pipe.get_state()[0]
         if result == gst.STATE_CHANGE_FAILURE:
             # something failed, error message kicks in before, so check
             # for shutdown
@@ -116,7 +138,7 @@ class FingerPrintPipeline(threading.Thread):
             # (and it's more precise for PUID lookup)
             # In case this fails, we insert the mutagen value later
             # (this only works in active playing state)
-            try: d = playbin.query_duration(gst.FORMAT_TIME)[0]
+            try: d = pipe.query_duration(gst.FORMAT_TIME)[0]
             except gst.QueryError: pass
             else: self.__fingerprints["length"] = d / gst.MSECOND
 
@@ -125,17 +147,20 @@ class FingerPrintPipeline(threading.Thread):
 
         # clean up
         bus.remove_signal_watch()
-        playbin.set_state(gst.STATE_NULL)
+        pipe.set_state(gst.STATE_NULL)
 
         # we need to make sure the state change has finished, before
         # we can return and hand it over to the python GC
-        playbin.get_state()
+        pipe.get_state()
 
     def stop(self):
         self.__shutdown = True
         self.__cv.acquire()
         self.__cv.notify()
         self.__cv.release()
+
+    def __new_decoded_pad(self, convert, pad, *args):
+        pad.link(convert.get_pad("sink"))
 
     def __bus_message(self, bus, message, chroma, ofa):
         error = None
@@ -518,11 +543,6 @@ class FingerprintDialog(Window):
         pool.connect('fingerprint-done', self.__fp_done_cb)
         pool.connect('fingerprint-error', self.__fp_error_cb)
         pool.connect('fingerprint-started', self.__fp_started_cb)
-
-        # different formats have different decoding speeds, so randomizing
-        # gives us a more uniform update distribution with multiple
-        # threads.
-        random.shuffle(songs)
 
         for song in songs:
             option = get_puid_lookup()
