@@ -27,6 +27,7 @@ from quodlibet.qltk.renamefiles import RenameFiles
 from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.qltk.about import AboutExFalso
 from quodlibet.plugins.editing import EditingPlugins
 from quodlibet.plugins.songsmenu import SongsMenuPlugins
 
@@ -61,11 +62,19 @@ class ExFalsoWindow(gtk.Window):
         vb = gtk.VBox(spacing=6)
 
         bbox = gtk.HBox(spacing=6)
+
+        about = gtk.Button()
+        about.add(gtk.image_new_from_stock(
+            gtk.STOCK_ABOUT, gtk.ICON_SIZE_BUTTON))
+        about.connect_object('clicked', self.__show_about, self)
+        bbox.pack_start(about, expand=False)
+
         prefs = gtk.Button()
         prefs.add(gtk.image_new_from_stock(
             gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_BUTTON))
         prefs.connect_object('clicked', PreferencesWindow, self)
         bbox.pack_start(prefs, expand=False)
+
         plugins = gtk.Button(stock=stock.PLUGINS)
         plugins.connect_object('clicked', PluginWindow, self)
         bbox.pack_start(plugins, expand=False)
@@ -130,6 +139,11 @@ class ExFalsoWindow(gtk.Window):
         if config.getint("memory", "exfalso_maximized"):
             self.maximize()
         self.resize(*map(int, config.get("memory", "exfalso_size").split()))
+
+    def __show_about(self, window):
+        about = AboutExFalso(self)
+        about.run()
+        about.destroy()
 
     def __window_state_changed(self, window, event):
         self.__state = event.new_window_state

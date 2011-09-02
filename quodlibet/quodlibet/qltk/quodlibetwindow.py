@@ -19,7 +19,6 @@ from quodlibet import const
 from quodlibet import formats
 from quodlibet import player
 from quodlibet import qltk
-from quodlibet.qltk import about
 from quodlibet import stock
 from quodlibet import util
 
@@ -43,6 +42,7 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, PlaylistMux
 from quodlibet.qltk.x import RPaned
+from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool
 from quodlibet.util.uri import URI
 from quodlibet.util.library import background_filter
@@ -436,7 +436,7 @@ class QuodLibetWindow(gtk.Window):
         ag.add_actions(actions)
 
         act = gtk.Action("About", None, None, gtk.STOCK_ABOUT)
-        act.connect_object('activate', about.show, self, player)
+        act.connect_object('activate', self.__show_about, player)
         ag.add_action_with_accel(act, None)
 
         act = gtk.Action(
@@ -518,6 +518,11 @@ class QuodLibetWindow(gtk.Window):
         self.ui.get_widget("/Menu/Filters/Bottom").set_tooltip_text(
                 _("The 40 songs you've played least (more than 40 may "
                   "be chosen if there are ties)"))
+
+    def __show_about(self, player):
+        about = AboutQuodLibet(self, player)
+        about.run()
+        about.destroy()
 
     def __browser_configure(self, paned, event, browser):
         if paned.get_property('position-set'):
