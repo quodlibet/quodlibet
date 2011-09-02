@@ -91,10 +91,10 @@ class BasePlayer(gtk.Object):
         if self.song:
             self.paused = False
 
-    def previous(self):
+    def previous(self, force=False):
         # Go back if standing at the beginning of the song,
         # otherwise restart the current song.
-        if self.get_position() < 1000:
+        if force or self.get_position() < 1500:
             self._source.previous()
             self._end(True)
         else:

@@ -103,6 +103,7 @@ class FIFOControl(object):
             return True
 
     def _previous(self, library, window, player): player.previous()
+    def _force_previous(self, library, window, player): player.previous(True)
     def _next(self, library, window, player): player.next()
     def _pause(self, library, window, player): player.paused = True
     def _play(self, library, window, player):

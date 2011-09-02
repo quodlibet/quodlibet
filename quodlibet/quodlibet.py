@@ -167,7 +167,7 @@ def enable_periodic_save(library):
 def process_arguments():
     controls = ["next", "previous", "play", "pause", "play-pause",
                 "hide-window", "show-window", "toggle-window",
-                "focus", "quit", "unfilter", "refresh"]
+                "focus", "quit", "unfilter", "refresh", "force-previous"]
     controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "random",
                     "song-list", "queue"]
@@ -182,7 +182,9 @@ def process_arguments():
 
     for opt, help in [
         ("next", _("Jump to next song")),
-        ("previous", _("Jump to previous song")),
+        ("previous",
+            _("Jump to previous song or restart if near the beginning")),
+        ("force-previous", _("Jump to previous song")),
         ("play", _("Start playback")),
         ("pause", _("Pause playback")),
         ("play-pause", _("Toggle play/pause mode")),
