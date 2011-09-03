@@ -442,6 +442,11 @@ class GStreamerPlayer(BasePlayer):
             self.get_position()
             return self._in_gapless_transition
 
+        def set_next_uri():
+            self._source.next_ended()
+            if self._source.current and self.bin:
+                self.bin.set_property('uri', self._source.current("~uri"))
+
         self._in_gapless_transition = False
         self._finish_position = self.get_position()
         self._in_gapless_transition = True
@@ -449,9 +454,9 @@ class GStreamerPlayer(BasePlayer):
         # song change is about to happen, check frequently
         gobject.timeout_add(100, check_position)
 
-        self._source.next_ended()
-        if self._source.current and self.bin:
-            self.bin.set_property('uri', self._source.current("~uri"))
+        # calling the play order has to be done in the main loop
+        # since they expect the song list not to change [issue 799]
+        gobject.idle_add(set_next_uri, priority=gobject.PRIORITY_HIGH)
 
     def stop(self):
         self._end(True, stop=True)
