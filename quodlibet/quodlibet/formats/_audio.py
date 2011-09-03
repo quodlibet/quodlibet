@@ -49,6 +49,8 @@ SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
 
+FILESYSTEM_TAGS = "~filename ~basename ~dirname".split()
+
 # tags that should alone identify an album, ordered by descending preference
 UNIQUE_ALBUM_IDENTIFIERS = ["musicbrainz_albumid", "labelid"]
 
@@ -102,6 +104,8 @@ class AudioFile(dict):
             return title_sort
         elif tag == "artistsort":
             return artist_sort
+        elif tag in FILESYSTEM_TAGS:
+            return lambda song: util.fsdecode(song(tag), note=False)
         elif tag.startswith("~#") and "~" not in tag[2:]:
             return lambda song: (song(tag), song.sort_key)
         return lambda song: (human(song(tag)), song.sort_key)
@@ -209,6 +213,7 @@ class AudioFile(dict):
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
+                # FIXME: decode ~filename etc.
                 if not isinstance(default, basestring): return default
                 return connector.join(
                     filter(None,

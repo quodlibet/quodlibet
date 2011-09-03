@@ -378,6 +378,20 @@ class TAudioFile(TestCase):
         self.failIf(AudioFile({"a": "b"}) == AudioFile({"a": "b"}))
         self.failUnless(AudioFile({"a": "b"}) != AudioFile({"a": "b"}))
 
+    def test_invalid_fs_encoding(self):
+        # issue 798
+        a = AudioFile()
+        a.sanitize("/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg") # latin 1 encoded
+        a.sort_by_func("~filename")(a)
+        a.sort_by_func("~basename")(a)
+        a.sort_by_func("~dirname")(a)
+
+        # windows
+        a.sanitize("/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1"))
+        a.sort_by_func("~filename")(a)
+        a.sort_by_func("~basename")(a)
+        a.sort_by_func("~dirname")(a)
+
     def tearDown(self):
         os.unlink(quux["~filename"])
 add(TAudioFile)

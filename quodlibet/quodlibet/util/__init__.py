@@ -290,16 +290,23 @@ def format_time_long(time):
     if len(time_str) > 2: time_str.pop()
     return ", ".join(time_str)
 
-def fsdecode(s):
-    """Decoding a string according to the filesystem encoding."""
+def fsdecode(s, note=True):
+    """Decoding a string according to the filesystem encoding.
+    note specifies whether a note should be appended if decoding failed."""
     if isinstance(s, unicode): return s
-    else: return decode(s, fscoding)
+    elif note:
+        return decode(s, fscoding)
+    else:
+        return s.decode(fscoding, 'replace')
 
-def fsencode(s):
-    """Encode a string according to the filesystem encoding, replacing
-    errors."""
+def fsencode(s, note=False):
+    """Encode a string according to the filesystem encoding.
+    note specifies whether a note should be appended if encoding failed."""
     if isinstance(s, str): return s
-    else: return s.encode(fscoding, 'replace')
+    elif note:
+        return encode(s, fscoding)
+    else:
+        return s.encode(fscoding, 'replace')
 
 """
 Path related functions like open, os.listdir have different behavior on win32

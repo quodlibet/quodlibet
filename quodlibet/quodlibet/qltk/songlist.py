@@ -24,7 +24,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.util.uri import URI
 from quodlibet.qltk.playorder import ORDERS
-from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
+from quodlibet.formats._audio import TAG_TO_SORT, FILESYSTEM_TAGS, AudioFile
 
 class PlaylistMux(object):
 
@@ -335,11 +335,10 @@ class SongList(AllTreeView, util.InstanceTracker):
     class FSColumn(WideTextColumn):
         # Contains text in the filesystem encoding, so needs to be
         # decoded safely (and also more slowly).
-        def _cdf(self, column, cell, model, iter, tag, code=const.FSCODING):
+        def _cdf(self, column, cell, model, iter, tag):
             value = model[iter][0].comma(tag)
             if not self._needs_update(value): return
-            cell.set_property('text', util.unexpand(
-                value.decode(code, 'replace')))
+            cell.set_property('text', util.unexpand(util.fsdecode(value)))
 
     class NumericColumn(TextColumn):
         # Any '~#' keys except dates.
@@ -1005,7 +1004,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             elif t == "~#filesize": column = self.FilesizeColumn()
             elif t in ["~rating", "~#rating"]: column = self.RatingColumn()
             elif t.startswith("~#"): column = self.NumericColumn(t)
-            elif t in ["~filename", "~basename", "~dirname"]:
+            elif t in FILESYSTEM_TAGS:
                 column = self.FSColumn(t)
             elif t.startswith("<"):
                 column = self.PatternColumn(t)
