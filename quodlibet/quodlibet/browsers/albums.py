@@ -486,10 +486,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def __scan_covers(self):
         while self.__pending_covers:
             model, path = self.__pending_covers.pop()
-            row = model[path]
-            album = row[0]
-            album.scan_cover()
-            self._refresh_albums([album])
+            try:
+                row = model[path]
+            # row could have gone away by now
+            except IndexError: pass
+            else:
+                album = row[0]
+                album.scan_cover()
+                self._refresh_albums([album])
             yield True
 
     def __stop_cover_update(self, *args):
