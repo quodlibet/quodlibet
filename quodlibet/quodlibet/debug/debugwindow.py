@@ -125,7 +125,7 @@ Quod Libet may now be unstable. Closing it and restarting is recommended. Your l
 
         window.show_all()
         filename = util.unexpand(dump)
-        offset = label.get_text().find(filename)
+        offset = label.get_text().decode("utf-8").find(filename)
         label.select_region(offset, offset + len(filename))
         return window
 
