@@ -551,6 +551,8 @@ class MPRIS2Object(MPRISObject):
             "changed", self.__update_metadata_changed,
             self.__player_interface, "Metadata")
 
+        self.__seek_sig = player.connect("seek", self.__seeked)
+
     def paused(self):
         self.__update_property(self.__player_interface, "PlaybackStatus")
     unpaused = paused
@@ -565,6 +567,7 @@ class MPRIS2Object(MPRISObject):
         window.repeat.disconnect(self.__rsig)
         window.order.disconnect(self.__ssig)
         librarian.disconnect(self.__lsig)
+        player.disconnect(self.__seek_sig)
 
     def __update_metadata_changed(self, interface, song, prop):
         if song is player.info:
@@ -577,7 +580,7 @@ class MPRIS2Object(MPRISObject):
         self.PropertiesChanged(interface, {prop: val}, [])
 
     def __seeked(self, player, song, ms):
-        self.Seeked(long(ms * 1000))
+        self.Seeked(ms * 1000)
 
     @dbus.service.method(__introspect_interface)
     def Introspect(self):
