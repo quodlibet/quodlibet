@@ -449,9 +449,13 @@ class GStreamerPlayer(BasePlayer):
         # song change is about to happen, check frequently
         gobject.timeout_add(100, check_position)
 
+        # uri has to be set in this thread, so idle_add doesn't work
+        gtk.gdk.threads_enter()
         self._source.next_ended()
-        if self._source.current and self.bin:
-            self.bin.set_property('uri', self._source.current("~uri"))
+        song = self._source.current
+        gtk.gdk.threads_leave()
+        if song and self.bin:
+            self.bin.set_property('uri', song("~uri"))
 
     def stop(self):
         self._end(True, stop=True)
