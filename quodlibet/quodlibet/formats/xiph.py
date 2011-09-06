@@ -150,6 +150,10 @@ else:
     extensions.append(".spx")
     ogg_formats.append(OggSpeex)
 
+from mutagen.oggtheora import OggTheora
+extensions.append(".ogv")
+ogg_formats.append(OggTheora)
+
 try: from mutagen.id3 import ID3
 except ImportError: ID3 = None
 
@@ -164,6 +168,10 @@ class OggFLACFile(MutagenVCFile):
 class OggSpeexFile(MutagenVCFile):
     format = "Ogg Speex"
     MutagenType = OggSpeex
+
+class OggTheoraFile(MutagenVCFile):
+    format = "Ogg Theora"
+    MutagenType = OggTheora
 
 class FLACFile(MutagenVCFile):
     format = "FLAC"
