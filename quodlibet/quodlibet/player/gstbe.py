@@ -363,6 +363,14 @@ class GStreamerPlayer(BasePlayer):
         fakesink = gst.element_factory_make('fakesink')
         self.bin.set_property('video-sink', fakesink)
 
+        # disable all video/text decoding in playbin2
+        if USE_PLAYBIN2:
+            GST_PLAY_FLAG_VIDEO = 1 << 0
+            GST_PLAY_FLAG_TEXT = 1 << 2
+            flags = self.bin.get_property("flags")
+            flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
+            self.bin.set_property("flags", flags)
+
         # ReplayGain information gets lost when destroying
         self.volume = self.volume
 
