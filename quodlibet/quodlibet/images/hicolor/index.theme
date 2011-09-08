@@ -2,7 +2,7 @@
 Name=ql
 Comment=qltheme
 Hidden=true
-Directories=16x16/devices,24x24/actions,24x24/status,48x48/devices,48x48/apps,64x64/apps,64x64/status,scalable/apps,scalable/status
+Directories=16x16/devices,24x24/actions,24x24/status,48x48/devices,64x64/apps,64x64/status,scalable/apps
 
 [scalable/apps]
 Size=48

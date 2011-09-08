@@ -314,7 +314,7 @@ if __name__ == "__main__":
                 {
                     "script": "quodlibet.py",
                     "icon_resources": [(0,
-                       join('quodlibet', 'images', 'quodlibet.ico'))]
+                       join('..', 'win_installer', 'quodlibet.ico'))]
                 },
                 # workaround icon not working under Vista/7
                 # exe resource identifiers get incremented and start at 0.
@@ -322,12 +322,12 @@ if __name__ == "__main__":
                 {
                     "script": "quodlibet.py",
                     "icon_resources": [(0,
-                       join('quodlibet', 'images', 'quodlibet.ico'))]
+                       join('..', 'win_installer', 'quodlibet.ico'))]
                 },
                 {
                     "script": "exfalso.py",
                     "icon_resources": [(0,
-                        join('quodlibet', 'images', 'exfalso.ico'))]
+                        join('..', 'win_installer', 'exfalso.ico'))]
                 }
             ],
             'options': {

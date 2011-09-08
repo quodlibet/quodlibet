@@ -26,7 +26,6 @@
   ;Name and file
   Name "Quod Libet"
   OutFile "quodlibet-LATEST.exe"
-  Icon "..\quodlibet\quodlibet\images\quodlibet.ico"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\Quod Libet"
@@ -48,6 +47,7 @@
 ;Interface Settings
 
   !define MUI_ABORTWARNING
+  !define MUI_ICON "quodlibet.ico"
 
 ;--------------------------------
 ;Pages
