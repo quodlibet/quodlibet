@@ -13,9 +13,4 @@ include tests/data/*
 include tests/*.py
 include gdist/*.py
 include *.desktop.in
-include mmkeys/*.[ch]
-include mmkeys/mmkeys.defs
-include mmkeys/mmkeys.override
-include trayicon/*.[ch]
-include trayicon/trayicon.defs
-include trayicon/trayicon.override
+recursive-include gobject/ *.defs *.override *.[ch]
