@@ -698,6 +698,14 @@ def can_play_uri(uri):
 
 def init(librarian):
     gst.debug_set_default_threshold(gst.LEVEL_ERROR)
+
+    # the fluendo decoder is twice as slow as mad, but wins
+    # at autoplug because it has the same rank and f < m
+    # -> put it slightly behind mad or leave it if it already is
+    flu, mad = map(gst.element_factory_find, ["flump3dec", "mad"])
+    if flu and mad:
+        flu.set_rank(min(flu.get_rank(), max(mad.get_rank() - 1, 0)))
+
     if gst.element_make_from_uri(
         gst.URI_SRC,
         "file:///fake/path/for/gst", ""):

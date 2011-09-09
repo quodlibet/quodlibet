@@ -161,12 +161,21 @@ class FingerPrintPipeline(threading.Thread):
         self.__cv.release()
 
     def __sort_decoders(self, decode, pad, caps, factories):
-        # ffdec_mp3 > mad > flump3dec
-        # and GStreamer seems to use the slowest possible one, uhm..
+        # mad is the default decoder with GST_RANK_SECONDARY
+        # flump3dec also is GST_RANK_SECONDARY, is slower than mad,
+        # but wins because of its name, ffdec_mp3 is faster but had some
+        # stability problems (which all seem resolved by now and we call
+        # this >= 0.10.31 anyway). Finally there is mpg123
+        # (http://gst.homeunix.net/) which is even faster but not in the
+        # GStreamer core (FIXME: re-evaluate if it gets merged)
+        #
+        # Example (atom CPU) 248 sec song:
+        #   mpg123: 3.5s / ffdec_mp3: 5.5s / mad: 7.2s / flump3dec: 13.3s
 
         def set_prio(x):
             i, f = x
-            return ({"mad": -1, "ffdec_mp3": -2}.get(f.get_name(), i), f)
+            i = {"mad": -1, "ffdec_mp3": -2, "mpg123": -3}.get(f.get_name(), i)
+            return (i, f)
 
         return zip(*sorted(map(set_prio, enumerate(factories))))[1]
 
