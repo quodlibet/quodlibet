@@ -71,8 +71,8 @@ class ExceptionDialog(gtk.Window):
         view.connect('row-activated', self.__stack_row_activated)
         def cdf(column, cell, model, iter):
             cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
-                model[iter][1], model[iter][2],
-                util.unexpand(util.escape(model[iter][0]))))
+                util.escape(model[iter][1]), model[iter][2],
+                util.escape(util.unexpand(model[iter][0]))))
         render = gtk.CellRendererText()
         col = gtk.TreeViewColumn(str(value).replace("_", "__"), render)
         col.set_cell_data_func(render, cdf)
