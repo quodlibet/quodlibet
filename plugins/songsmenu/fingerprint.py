@@ -82,6 +82,7 @@ class FingerPrintPipeline(threading.Thread):
         # decodebin creates pad, we link it
         if use_decodebin2:
             decode.connect_object("pad-added", self.__new_decoded_pad, convert)
+            decode.connect("autoplug-sort", self.__sort_decoders)
         else:
             decode.connect_object(
                 "new-decoded-pad", self.__new_decoded_pad, convert)
@@ -158,6 +159,16 @@ class FingerPrintPipeline(threading.Thread):
         self.__cv.acquire()
         self.__cv.notify()
         self.__cv.release()
+
+    def __sort_decoders(self, decode, pad, caps, factories):
+        # ffdec_mp3 > mad > flump3dec
+        # and GStreamer seems to use the slowest possible one, uhm..
+
+        def set_prio(x):
+            i, f = x
+            return ({"mad": -1, "ffdec_mp3": -2}.get(f.get_name(), i), f)
+
+        return zip(*sorted(map(set_prio, enumerate(factories))))[1]
 
     def __new_decoded_pad(self, convert, pad, *args):
         pad.link(convert.get_pad("sink"))
