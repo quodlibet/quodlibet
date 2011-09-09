@@ -58,6 +58,10 @@ def main():
     else: const.DEFAULT_RATING = default_rating
 
     window = widgets.init(player, library)
+
+    from quodlibet.qltk import session
+    session.init("quodlibet", window)
+
     if "--debug" not in sys.argv:
         enable_periodic_save(library)
     if play:
@@ -295,6 +299,8 @@ def process_arguments():
             play = True
 
 if __name__ == "__main__":
+    quodlibet._init_signal()
+
     process_arguments()
     # Issue 736 - only run when idle, or gtk resets title
     if os.name != "nt":

@@ -9,12 +9,14 @@
 import os
 import sys
 
-def main(argv):
+def main():
     import quodlibet
     from quodlibet import util
     from quodlibet import const
     from quodlibet import set_process_title
     import gobject
+
+    quodlibet._init_signal()
 
     opts = util.OptionParser(
         "Ex Falso", const.VERSION,
@@ -33,11 +35,18 @@ def main(argv):
         gobject.idle_add(set_process_title, const.PROCESS_TITLE_EF)
 
     from quodlibet.qltk.exfalsowindow import ExFalsoWindow
+    window = ExFalsoWindow(library, args[0])
+
+    from quodlibet.qltk import session
+    session.init("exfalso", window)
+
+    # some code expects the main window in widgets.main
     from quodlibet import widgets
-    widgets.main = ExFalsoWindow(library, args[0])
-    quodlibet.main(widgets.main)
+    widgets.main = window
+
+    quodlibet.main(window)
     quodlibet.quit((backend, library, player))
     config.write(const.CONFIG)
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()

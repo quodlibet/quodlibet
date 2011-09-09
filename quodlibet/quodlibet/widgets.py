@@ -18,7 +18,6 @@ from quodlibet.plugins.editing import EditingPlugins
 from quodlibet.plugins.songsmenu import SongsMenuPlugins
 from quodlibet.plugins.events import EventPlugins
 from quodlibet.plugins.playorder import PlayOrderPlugins
-from quodlibet.qltk import session
 from quodlibet.qltk.tracker import SongTracker
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.properties import SongProperties
@@ -47,8 +46,6 @@ def init(player, library):
     global main, watcher
 
     watcher = library.librarian
-
-    session.init()
 
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")

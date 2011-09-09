@@ -11,7 +11,6 @@ import gettext
 import locale
 import os
 import re
-import signal
 import sys
 import time
 import traceback
@@ -220,16 +219,50 @@ def quit((backend, library, device), save=False):
                 library.destroy()
     print_d("Finished shutdown.")
 
+def _init_signal(window=None):
+    """Catches certain signals and destroys the window if they occur.
+    If called without a window, it catches all signals and will destroy
+    the window shortly after the mainloop gets started.
+
+    Has to be called with a valid window before the mainloop starts."""
+
+    import signal
+    import gobject
+    import gtk
+
+    _init_signal.window = window
+
+    def pipe_can_read(*args):
+        window = _init_signal.window
+        if window:
+            gtk.gdk.threads_enter()
+            window.destroy()
+            gtk.gdk.threads_leave()
+        return False
+
+    # The signal handler can not call gtk functions, thus we have to
+    # build a dummy pipe to pass it into the gtk mainloop
+
+    r, w = os.pipe()
+    gobject.io_add_watch(r, gobject.IO_IN, pipe_can_read, window)
+
+    SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
+    for sig in filter(None, SIGS):
+        signal.signal(sig, lambda sig, frame: os.write(w, "die!!!"))
+
 def main(window):
     print_d("Entering quodlibet.main")
     import gtk
 
-    SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
-    for sig in filter(None, SIGS):
-        signal.signal(sig, window.destroy)
+    def quit_gtk(*args):
+        while gtk.events_pending():
+            gtk.main_iteration(False)
+        gtk.main_quit()
 
-    window.connect('destroy', gtk.main_quit)
+    window.connect('destroy', quit_gtk)
     window.show()
+
+    _init_signal(window)
 
     # This has been known to cause segmentation faults in some Python,
     # GTK+, and GStreamer versions.

@@ -11,11 +11,11 @@ import gtk
 
 from quodlibet import const
 
-def init():
+def init(app_id, main_window):
     try: import gnome, gnome.ui
     except ImportError: return
 
-    gnome.init("quodlibet", const.VERSION)
+    gnome.init(app_id, const.VERSION)
     client = gnome.ui.master_client()
     client.set_restart_style(gnome.ui.RESTART_IF_RUNNING)
     command = os.path.normpath(os.path.join(os.getcwd(), sys.argv[0]))
@@ -25,4 +25,9 @@ def init():
         # http://www.sacredchao.net/quodlibet/ticket/591
         # http://trac.gajim.org/ticket/929
         client.set_restart_command(len(sys.argv), [command] + sys.argv[1:])
-    client.connect('die', gtk.main_quit)
+
+    def destroy_window(client, window):
+        gtk.gdk.threads_enter()
+        window.destroy()
+        gtk.gdk.threads_leave()
+    client.connect('die', destroy_window, main_window)
