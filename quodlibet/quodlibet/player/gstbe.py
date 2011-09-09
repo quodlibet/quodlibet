@@ -706,6 +706,11 @@ def init(librarian):
     if flu and mad:
         flu.set_rank(min(flu.get_rank(), max(mad.get_rank() - 1, 0)))
 
+    # doesn't provide seeking but has a high rank -> blacklist
+    # (this is no core plugin)
+    mpg123 = gst.element_factory_find("mpg123")
+    if mpg123: mpg123.set_rank(0)
+
     if gst.element_make_from_uri(
         gst.URI_SRC,
         "file:///fake/path/for/gst", ""):
