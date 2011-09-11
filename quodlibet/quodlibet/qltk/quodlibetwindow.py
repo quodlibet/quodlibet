@@ -627,7 +627,8 @@ class QuodLibetWindow(gtk.Window):
                     "/Menu/Filters/Filter%s" % h.capitalize()).set_sensitive(
                     h in song)
 
-        if song and not self.songlist._activated and \
+        # don't jump on stream changes (player.info != player.song)
+        if song and player.song is song and not self.songlist._activated and \
             config.getboolean("settings", "jump"):
             self.__jump_to_current(False)
 
