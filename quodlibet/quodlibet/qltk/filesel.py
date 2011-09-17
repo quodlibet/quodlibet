@@ -7,6 +7,7 @@
 
 import os
 import urlparse
+import errno
 
 import gobject
 import gtk
@@ -134,7 +135,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         delete = menu.get_children()[1]
         try: delete.set_sensitive(len(os.listdir(util.fsnative(directory))) == 0)
         except OSError, err:
-            if err.errno == 2: model.remove(model.get_iter(path))
+            if err.errno == errno.ENOENT: model.remove(model.get_iter(path))
         else:
             selection = self.get_selection()
             selection.unselect_all()
