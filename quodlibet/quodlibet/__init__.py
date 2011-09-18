@@ -228,13 +228,13 @@ def _init_signal(window=None):
 
     import signal
     import gobject
-    import gtk
 
     _init_signal.window = window
 
     def pipe_can_read(*args):
         window = _init_signal.window
         if window:
+            import gtk
             gtk.gdk.threads_enter()
             window.destroy()
             gtk.gdk.threads_leave()
