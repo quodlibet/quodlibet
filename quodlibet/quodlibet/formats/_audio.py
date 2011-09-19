@@ -77,21 +77,27 @@ class AudioFile(dict):
     format = "Unknown Audio File"
 
     @util.cached_property
-    def sort_key(self):
-        return (self.album_key,
-            self("~#disc"), self("~#track"),
+    def __song_key(self):
+        return (self("~#disc"), self("~#track"),
             human(self("artistsort")),
             self.get("musicbrainz_artistid", ""),
             human(self.get("title", "")),
             self.get("~filename"))
 
+    @util.cached_property
+    def album_key(self):
+        return (human(self("albumsort", "")),
+                self.get("album_grouping_key") or self.get("labelid") or
+                self.get("musicbrainz_albumid") or "")
+
+    @util.cached_property
+    def sort_key(self):
+        return [self.album_key, self.__song_key]
+
     @staticmethod
     def sort_by_func(tag):
         """Returns a fast sort function for a specific tag (or pattern).
         Some keys are already in the sort cache, so we can use them."""
-        def title_sort(song):
-            key = song.sort_key
-            return (key[5], key)
         def artist_sort(song):
             key = song.sort_key
             return (key[3], key)
@@ -100,8 +106,6 @@ class AudioFile(dict):
             return lambda song: (human(tag(song)), song.sort_key)
         elif tag == "albumsort":
             return lambda song: song.sort_key
-        elif tag == "title":
-            return title_sort
         elif tag == "artistsort":
             return artist_sort
         elif tag in FILESYSTEM_TAGS:
@@ -120,20 +124,14 @@ class AudioFile(dict):
 
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, value)
-        self.__dict__.pop("sort_key", None)
+        self.__dict__.clear()
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
-        self.__dict__.pop("sort_key", None)
+        self.__dict__.clear()
 
     key = property(lambda self: self["~filename"])
     mountpoint = property(lambda self: self["~mountpoint"])
-
-    def __album_key(self):
-        return (human(self("albumsort", "")),
-                self.get("album_grouping_key") or self.get("labelid") or
-                self.get("musicbrainz_albumid") or "")
-    album_key = property(__album_key)
 
     def _album_id_values(self, use_artist=False):
         """Returns a "best attempt" conjunction (=AND) of album identifiers
