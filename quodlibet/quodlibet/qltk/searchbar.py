@@ -52,6 +52,9 @@ class SearchBarBox(gtk.HBox):
         entry = combo.child
         self.__entry = entry
 
+        if completion:
+            entry.set_completion(completion)
+
         self.connect('destroy', lambda w: w.__remove_timeout())
 
         self.__sig = combo.connect('changed', self.__text_changed)
