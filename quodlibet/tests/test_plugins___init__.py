@@ -4,6 +4,7 @@ import os
 
 from tempfile import mkstemp, mkdtemp
 
+from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.plugins import SongWrapper, ListWrapper
 
@@ -18,8 +19,12 @@ class TSongWrapper(TestCase):
     pwrap = SongWrapper(psong)
 
     def setUp(self):
+        config.init()
         self.wrap = SongWrapper(AudioFile(
             {"title": "woo", "~filename": "/dev/null"}))
+
+    def tearDown(self):
+        config.quit()
 
     def test_slots(self):
         def breakme(): self.wrap.woo = 1

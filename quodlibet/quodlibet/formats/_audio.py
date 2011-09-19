@@ -54,12 +54,6 @@ FILESYSTEM_TAGS = "~filename ~basename ~dirname".split()
 # tags that should alone identify an album, ordered by descending preference
 UNIQUE_ALBUM_IDENTIFIERS = ["musicbrainz_albumid", "labelid"]
 
-def cfg_getboolean(section, key, default=False):
-    try:
-        return config.getboolean(section, key)
-    except (NoSectionError, NoOptionError):
-        return default
-
 class AudioFile(dict):
     """An audio file. It looks like a dict, but implements synthetic
     and tied tags via __call__ rather than __getitem__. This means
@@ -585,7 +579,7 @@ class AudioFile(dict):
         if not self.is_file: return
 
         # If preferred, check for picture stored in the metadata...
-        if (cfg_getboolean("albumart", "prefer_embedded", False) and
+        if (config.getboolean("albumart", "prefer_embedded") and
                 "~picture" in self):
             print_d("Preferring embedded art for %s" % self("~filename"))
             return self.get_format_cover()
@@ -594,7 +588,7 @@ class AudioFile(dict):
         images = []
 
         # Issue 374: Specify artwork filename
-        if cfg_getboolean("albumart", "force_filename", False):
+        if config.getboolean("albumart", "force_filename"):
             path = os.path.join(base, config.get("albumart", "filename"))
             if os.path.isfile(path):
                 images = [(100, path)]
