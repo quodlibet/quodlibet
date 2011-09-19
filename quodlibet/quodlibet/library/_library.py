@@ -189,7 +189,13 @@ class Library(gtk.Object):
         # sorting takes advantage of the filesystem cache when we
         # reload/rescan the files.
         items.sort(key=lambda item: item.key)
-        pickle.dump(items, fileobj, pickle.HIGHEST_PROTOCOL)
+        # While protocol 2 is usualy faster it uses __setitem__
+        # for unpickle and we override it to clear the sort cache.
+        # This roundtrip makes it much slower, so we use protocol 1
+        # unpickle numbers (py2.7):
+        #   2: 0.66s / 2 + __set_item__: 1.18s / 1 + __set_item__: 0.72s
+        # see: http://bugs.python.org/issue826897
+        pickle.dump(items, fileobj, 1)
         fileobj.flush()
         os.fsync(fileobj.fileno())
         fileobj.close()
