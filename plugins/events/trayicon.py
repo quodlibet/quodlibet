@@ -240,7 +240,7 @@ class TrayIcon(EventPlugin):
         self.__icon.connect('scroll-event', self.__scroll)
         self.__icon.connect('button-press-event', self.__button_middle)
 
-        self.__w_sig_map = window.connect('map-event', self.__window_map)
+        self.__w_sig_map = window.connect('map', self.__window_map)
         self.__w_sig_del = window.connect('delete-event', self.__window_delete)
 
         self.__stop_after = StopAfterMenu(player)
@@ -373,7 +373,7 @@ class TrayIcon(EventPlugin):
         self.__hide_window()
         return True
 
-    def __window_map(self, win, event):
+    def __window_map(self, win):
         try:
             visible = config.getboolean("plugins", "icon_window_visible")
         except config.error:
