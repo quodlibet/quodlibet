@@ -94,7 +94,7 @@ class AudioFile(dict):
         Some keys are already in the sort cache, so we can use them."""
         def artist_sort(song):
             key = song.sort_key
-            return (key[3], key)
+            return (key[1][2], key)
 
         if callable(tag):
             return lambda song: (human(tag(song)), song.sort_key)

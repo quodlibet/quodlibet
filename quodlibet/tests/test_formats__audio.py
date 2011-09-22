@@ -392,6 +392,32 @@ class TAudioFile(TestCase):
         a.sort_by_func("~basename")(a)
         a.sort_by_func("~dirname")(a)
 
+    def test_sort_cache(self):
+        copy = AudioFile(bar_1_1)
+
+        sort_1 = tuple(copy.sort_key)
+        copy["title"] = copy["title"] + "something"
+        sort_2 = tuple(copy.sort_key)
+        self.failIfEqual(sort_1, sort_2)
+
+        album_sort_1 = tuple(copy.album_key)
+        copy["album"] = copy["album"] + "something"
+        sort_3 = tuple(copy.sort_key)
+        self.failIfEqual(sort_2, sort_3)
+
+        album_sort_2 = tuple(copy.album_key)
+        self.failIfEqual(album_sort_1, album_sort_2)
+
+    def test_sort_func(self):
+        tags = [lambda s: s("foo"), "artistsort", "albumsort",
+                "~filename", "~format", "discnumber", "~#track"]
+
+        for tag in tags:
+            f = AudioFile.sort_by_func(tag)
+            f(bar_1_1)
+            f(bar_1_2)
+            f(bar_2_1)
+
     def tearDown(self):
         os.unlink(quux["~filename"])
 add(TAudioFile)
