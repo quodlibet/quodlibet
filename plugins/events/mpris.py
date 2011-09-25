@@ -263,11 +263,11 @@ class MPRIS1PlayerObject(MPRISObject):
     unpaused = paused
 
     def song_started(self, song):
-        self.TrackChanged(self._get_metadata(song))
+        self.TrackChange(self._get_metadata(song))
 
     def __update_track_changed(self, library, songs):
         if player.info in songs:
-             self.TrackChanged(self._get_metadata(player.info))
+             self.TrackChange(self._get_metadata(player.info))
 
     def __update_status(self, *args):
         self.StatusChange(self.__get_status())
@@ -298,19 +298,34 @@ class MPRIS1PlayerObject(MPRISObject):
             if val:
                 metadata[key] = val
 
-        metadata["audio-bitrate"] = song("~#bitrate", 0) * 1024
-        metadata["rating"] = int(round(song("~#rating") * 5))
-        metadata["year"] = song("~#year", 0)
-        metadata["time"] = song("~#length", 0)
-        metadata["mtime"] = song("~#length", 0) * 1000
+        nums = [("audio-bitrate", 1024, "~#bitrate"),
+                ("rating", 5, "~#rating"),
+                ("year", 1, "~#year"),
+                ("time", 1, "~#length"),
+                ("mtime", 1000, "~#length")]
+
+        for target, mul, key in nums:
+            value = song(key, None)
+            if value is None:
+                continue
+            value = int(value * mul)
+            # dbus uses python types to guess the dbus type without
+            # checking maxint, also we need uint (dbus always trys int)
+            try: value = dbus.UInt32(value)
+            except OverflowError: continue
+            metadata[target] = value
 
         year = song("~year")
         if year:
             try: tuple_time = time.strptime(year, "%Y")
             except ValueError: pass
             else:
-                try: metadata["date"] = int(time.mktime(tuple_time))
-                except ValueError: pass
+                try:
+                    date = int(time.mktime(tuple_time))
+                    date = dbus.UInt32(date)
+                except (ValueError, OverflowError): pass
+                else:
+                    metadata["date"] = date
 
         return metadata
 
@@ -386,7 +401,7 @@ class MPRIS1PlayerObject(MPRISObject):
         return int(player.get_position())
 
     @dbus.service.signal(__interface, signature="a{sv}")
-    def TrackChanged(self, metadata):
+    def TrackChange(self, metadata):
         pass
 
     @dbus.service.signal(__interface, signature="(iiii)")
