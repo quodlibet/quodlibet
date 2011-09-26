@@ -71,6 +71,13 @@ class Tformat_rating(TestCase):
         for i in range(0, int(1/util.RATING_PRECISION+1)):
             self.failUnlessEqual(
                 i, len(util.format_rating(i * util.RATING_PRECISION)))
+
+    def test_bogus(self):
+        max_length = int(1 / util.RATING_PRECISION)
+        self.failUnlessEqual(len(util.format_rating(2**32-1)), max_length)
+
+        self.failUnlessEqual(len(util.format_rating(-4.2)), 0)
+
 add(Tformat_rating)
 
 class Tescape(TestCase):
