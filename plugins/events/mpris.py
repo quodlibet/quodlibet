@@ -5,6 +5,7 @@
 # published by the Free Software Foundation.
 
 import time
+import tempfile
 
 import gtk
 import dbus
@@ -355,7 +356,8 @@ class MPRIS1PlayerObject(MPRISObject):
 
     @dbus.service.method(dbus_interface=__interface)
     def Stop(self):
-        player.stop()
+        player.paused = True
+        player.seek(0)
 
     @dbus.service.method(dbus_interface=__interface)
     def Play(self):
@@ -421,26 +423,28 @@ class MPRIS2Object(MPRISObject):
     __prop_interface = "org.freedesktop.DBus.Properties"
     __introspect_interface = "org.freedesktop.DBus.Introspectable"
 
-    def __get_playback_status():
+    def __get_playback_status(self):
+        if not player.song or (player.paused and not player.get_position()):
+            return "Stopped"
         return ("Playing", "Paused")[int(player.paused)]
 
-    def __get_loop_status():
+    def __get_loop_status(self):
         return ("None", "Playlist")[int(window.repeat.get_active())]
 
-    def __set_loop_status(value):
+    def __set_loop_status(self, value):
         window.repeat.set_active(value == "Playlist")
 
-    def __get_shuffle():
+    def __get_shuffle(self):
         return (window.order.get_active_name() == "shuffle")
 
-    def __set_shuffle(value):
+    def __set_shuffle(self, value):
         shuffle_on = window.order.get_active_name() == "shuffle"
         if shuffle_on and not value:
             window.order.set_active("inorder")
         elif not shuffle_on and value:
             window.order.set_active("shuffle")
 
-    def __get_metadata():
+    def __get_metadata(self):
         """http://xmms2.org/wiki/MPRIS_Metadata"""
         song = player.info
 
@@ -449,15 +453,22 @@ class MPRIS2Object(MPRISObject):
         if not song: return metadata
 
         metadata["mpris:trackid"] += str(id(song))
-        metadata["mpris:length"] = long(player.info.get("~#length", 0) * 1000)
-        cover = song.find_cover()
+        metadata["mpris:length"] = \
+            long(player.info.get("~#length", 0) * 1000000)
+
+        self.__cover = cover = song.find_cover()
+        is_temp = False
         if cover:
             name = cover.name
+            is_temp = name.startswith(tempfile.gettempdir())
             if isinstance(name, str):
                 name = util.fsdecode(name)
             # This doesn't work for embedded images.. the file gets unlinked
             # after loosing the file handle
             metadata["mpris:artUrl"] = str(URI.frompath(name))
+
+        if not is_temp:
+            self.__cover = None
 
         # All list values
         list_val = {"artist": "artist", "albumArtist": "albumartist",
@@ -506,13 +517,13 @@ class MPRIS2Object(MPRISObject):
 
         return metadata
 
-    def __get_volume():
+    def __get_volume(self):
         return float(player.volume)
 
-    def __set_volume(value):
+    def __set_volume(self, value):
         player.volume = max(0, value)
 
-    def __get_position():
+    def __get_position(self):
         return long(player.get_position()*1000)
 
     __root_interface = "org.mpris.MediaPlayer2"
@@ -527,32 +538,33 @@ class MPRIS2Object(MPRISObject):
     }
 
     __player_interface = "org.mpris.MediaPlayer2.Player"
-    __player_props = {
-        "PlaybackStatus": (__get_playback_status, None),
-        "LoopStatus": (__get_loop_status, __set_loop_status),
-        "Rate": (1.0, None),
-        "Shuffle": (__get_shuffle, __set_shuffle),
-        "Metadata": (__get_metadata, None),
-        "Volume": (__get_volume, __set_volume),
-        "Position": (__get_position, None),
-        "MinimumRate": (1.0, None),
-        "MaximumRate": (1.0, None),
-        "CanGoNext": (True, None), # Pretend we can do everything for now
-        "CanGoPrevious": (True, None),
-        "CanPlay": (True, None),
-        "CanPause": (True, None),
-        "CanSeek": (True, None),
-        "CanControl": (True, None),
-    }
-
-    __prop_mapping = {
-        __player_interface: __player_props,
-        __root_interface: __root_props}
 
     def __init__(self):
         bus = dbus.SessionBus()
         name = dbus.service.BusName(self.__bus_name, bus)
         super(MPRIS2Object, self).__init__(name, self.__path)
+
+        self.__player_props = {
+            "PlaybackStatus": (self.__get_playback_status, None),
+            "LoopStatus": (self.__get_loop_status, self.__set_loop_status),
+            "Rate": (1.0, None),
+            "Shuffle": (self.__get_shuffle, self.__set_shuffle),
+            "Metadata": (self.__get_metadata, None),
+            "Volume": (self.__get_volume, self.__set_volume),
+            "Position": (self.__get_position, None),
+            "MinimumRate": (1.0, None),
+            "MaximumRate": (1.0, None),
+            "CanGoNext": (True, None), # Pretend we can do everything for now
+            "CanGoPrevious": (True, None),
+            "CanPlay": (True, None),
+            "CanPause": (True, None),
+            "CanSeek": (True, None),
+            "CanControl": (True, None),
+        }
+
+        self.__prop_mapping = {
+            self.__player_interface: self.__player_props,
+            self.__root_interface: self.__root_props}
 
         self.__rsig = window.repeat.connect_object(
             "toggled", self.__update_property,
@@ -568,6 +580,8 @@ class MPRIS2Object(MPRISObject):
 
         self.__seek_sig = player.connect("seek", self.__seeked)
 
+        self.__update_property(self.__player_interface, "Metadata")
+
     def paused(self):
         self.__update_property(self.__player_interface, "PlaybackStatus")
     unpaused = paused
@@ -579,6 +593,7 @@ class MPRIS2Object(MPRISObject):
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS2Object, self).remove_from_connection(*arg, **kwargs)
 
+        self.__cover = None
         window.repeat.disconnect(self.__rsig)
         window.order.disconnect(self.__ssig)
         librarian.disconnect(self.__lsig)
@@ -642,7 +657,8 @@ class MPRIS2Object(MPRISObject):
 
     @dbus.service.method(__player_interface)
     def Stop(self):
-        player.stop()
+        player.paused = True
+        player.seek(0)
 
     @dbus.service.method(__player_interface, in_signature="x")
     def Seek(self, offset):
