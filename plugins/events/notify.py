@@ -310,15 +310,15 @@ class Notify(EventPlugin):
 
         image_path = ""
         if "icon-static" in self.__caps:
-            self.image_fp = song.find_cover()
-            if self.image_fp:
-                image_path = self.image_fp.name
+            self.__image_fp = song.find_cover()
+            if self.__image_fp:
+                image_path = self.__image_fp.name
 
         is_temp = image_path.startswith(tempfile.gettempdir())
 
         # If it is not an embeded cover, drop the file handle
         if not is_temp:
-            self.image_fp = None
+            self.__image_fp = None
 
         # spec recommends it, and it seems to work
         if image_path and self.__spec_version >= (1, 1):
