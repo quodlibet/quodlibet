@@ -958,7 +958,32 @@ class SongList(AllTreeView, util.InstanceTracker):
     def __song_removed(self, librarian, songs):
         # The selected songs are removed from the library and should
         # be removed from the view.
-        map(self.model.remove, self.model.find_all(songs))
+
+        if not len(self.model):
+            return
+
+        songs = set(songs)
+
+        # search in the selection first
+        # speeds up common case: select songs and remove them
+        selection = self.get_selection()
+        model, rows = selection.get_selected_rows()
+        rows = rows or []
+        iters = [model[r].iter for r in rows if model[r][0] in songs]
+
+        # if not all songs were in the selection, search the whole view
+        if len(iters) != len(songs):
+            iters = model.find_all(songs)
+
+        map(model.remove, iters)
+
+        # model.remove makes the removed iter point to the next row if possible
+        # so check if the last iter is a valid one and select it or
+        # simply select the last row
+        if len(iters) and model.iter_is_valid(iters[-1]):
+            selection.select_iter(iters[-1])
+        elif len(model):
+            selection.select_path(model[-1].path)
 
     def __song_properties(self, librarian):
         model, rows = self.get_selection().get_selected_rows()
