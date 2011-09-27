@@ -966,8 +966,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         # search in the selection first
         # speeds up common case: select songs and remove them
-        selection = self.get_selection()
-        model, rows = selection.get_selected_rows()
+        model, rows = self.get_selection().get_selected_rows()
         rows = rows or []
         iters = [model[r].iter for r in rows if model[r][0] in songs]
 
@@ -975,11 +974,16 @@ class SongList(AllTreeView, util.InstanceTracker):
         if len(iters) != len(songs):
             iters = model.find_all(songs)
 
+        self._remove(iters)
+
+    def _remove(self, iters):
+        model = self.model
         map(model.remove, iters)
 
         # model.remove makes the removed iter point to the next row if possible
         # so check if the last iter is a valid one and select it or
         # simply select the last row
+        selection = self.get_selection()
         if len(iters) and model.iter_is_valid(iters[-1]):
             selection.select_iter(iters[-1])
         elif len(model):

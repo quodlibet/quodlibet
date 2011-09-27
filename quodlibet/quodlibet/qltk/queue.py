@@ -164,7 +164,7 @@ class PlayQueue(SongList):
 
     def __delete_key_pressed(self, widget, event):
         if qltk.is_accel(event, "Delete"):
-            self.__remove(None)
+            self.__remove()
             return True
         return False
 
@@ -203,9 +203,10 @@ class PlayQueue(SongList):
         menu.show_all()
         return self.popup_menu(menu, 0, gtk.get_current_event_time())
 
-    def __remove(self, item):
+    def __remove(self, *args):
         model, paths = self.get_selection().get_selected_rows()
-        if model: map(self.model.remove, map(model.get_iter, paths))
+        if not paths: return
+        self._remove(map(model.get_iter, paths))
 
     def set_sort_by(self, *args): pass
     def get_sort_by(self, *args): return "", False
