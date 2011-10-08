@@ -18,15 +18,15 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk.views import RCMTreeView
 import ConfigParser
 import gobject
 import gtk
 import pango
 
 
-class DuplicateSongsView(RCMHintedTreeView):
-    """A modified RCMHintedTreeView allowing full tree-like functionality"""
+class DuplicateSongsView(RCMTreeView):
+    """A modified RCMTreeView allowing full tree-like functionality"""
 
     def get_selected_songs(self):
         selection = self.get_selection()
@@ -41,7 +41,6 @@ class DuplicateSongsView(RCMHintedTreeView):
                 for child in model[row].iterchildren():
                     #print_d("Child[0]=%s" % child[0], context=self)
                     selected.append(child[0])
-
         return selected
 
     def Menu(self, library):
@@ -68,16 +67,21 @@ class DuplicateSongsView(RCMHintedTreeView):
 
     def __removed(self, library, songs):
         model = self.get_model()
-        for song in songs:
-            row = model.find_row(song)
-            if row: model.remove(row)
-            else: print_w("Couldn't delete song %s" % song)
+        if model:
+            for song in songs:
+                row = model.find_row(song)
+                if row: model.remove(row)
+                else: print_w("Couldn't delete song %s" % song)
+        else:
+            print_d("Null model returned.", context=self)
+            print_w("Couldn't delete songs %s" % songs)
 
     def __init__(self,  model):
         super(DuplicateSongsView, self).__init__(model)
         self.connect_object('row-activated',self.__select_song, player.playlist)
+        # Selecting multiple is a nice feature it turns out.
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-
+        # Handle removals propagated from the underlying library
         library.connect('removed', self.__removed)
         
         # TODO: work out if this is really needed
@@ -109,10 +113,10 @@ class DuplicatesTreeModel(gtk.TreeStore):
             print_d("Failed to find song", context=self)
         return self.__iter
 
-    def remove(self, iter):
-        if self.__iter and self[iter].path == self[self.__iter].path:
+    def remove(self, itr):
+        if self.__iter and self[itr].path == self[self.__iter].path:
             self.__iter = None
-        super(DuplicatesTreeModel, self).remove(iter)
+        super(DuplicatesTreeModel, self).remove(itr)
 
     def get(self):
         return [row[0] for row in self]
@@ -143,7 +147,7 @@ class DuplicatesTreeModel(gtk.TreeStore):
             object, str, str, str, str, str, str, str)
 
 
-class DuplicateDialog(gtk.Dialog):
+class DuplicateDialog(gtk.Window):
     """Main dialog for browsing duplicate results"""
     def __quit(self, widget=None, response=None):
         if response == gtk.RESPONSE_OK or response == gtk.RESPONSE_CLOSE:
@@ -163,11 +167,11 @@ class DuplicateDialog(gtk.Dialog):
     def __init__(self, model):
         songs_text = ngettext("%d duplicate group", "%d duplicate groups",
                 len(model)) % len(model)
-        t = "%s (%s)" % (Duplicates.PLUGIN_NAME, songs_text)
-        super(DuplicateDialog, self).__init__(title=t,
-                buttons=(gtk.STOCK_OK, gtk.RESPONSE_OK))
+        super(DuplicateDialog, self).__init__()
+        self.set_destroy_with_parent(True)
+        self.set_title("Quod Libet - %s (%s)" % (Duplicates.PLUGIN_NAME, songs_text))
         self.finished = False
-        self.connect('response', self.__quit)
+        #self.connect('response', self.__quit)
         self.set_default_size(960, 480)
         self.set_border_width(6)
         swin = gtk.ScrolledWindow()
@@ -180,21 +184,37 @@ class DuplicateDialog(gtk.Dialog):
             col = gtk.TreeViewColumn(util.tag(tag),
                 gobject.new(gtk.CellRendererText,ellipsize=pango.ELLIPSIZE_END),
                 markup=i+1)
-            col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            # Numeric columns are better smaller here.
+            if tag.startswith("~#"):
+                col.set_fixed_width(80)
+                col.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            else:
+                col.set_expand(True)
+                col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             col.set_resizable(True)
-            col.set_expand(True)
             view.append_column(col)
+
         view.connect('popup-menu', self.__songs_popup_menu)
         swin.add(view)
-        self.vbox.pack_start(swin)
-        self.vbox.show_all()
+        # A basic information area
+        hbox = gtk.HBox(spacing=6)
+        label = gtk.Label(_("Duplicate key expression is '%s'") %
+                Duplicates.get_key_expression())
+        hbox.pack_start(label)
+
+        vbox = gtk.VBox(spacing=6)
+        vbox.pack_start(swin)
+        vbox.pack_start(hbox, expand=False)
+        self.add(vbox)
+        self.show_all()
+
 
 class Duplicates(SongsMenuPlugin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Find and browse similarly tagged versions of songs.')
     PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
-    PLUGIN_VERSION = "0.2"
+    PLUGIN_VERSION = "0.3"
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"
@@ -243,13 +263,14 @@ class Duplicates(SongsMenuPlugin):
         vb.show_all()
         return vb
 
-    def id(x): return x
+    def i(x): return x
+
     # Define columns to display (and how, in lieu of using qltk.browsers)
     TAG_MAP = [
-        ("artist",id), ("title",id), ("album",id),
+        ("artist",i), ("title",i), ("album",i),
         ("~#length",lambda s: util.format_time(int(s))),
-        ("~#filesize",util.format_size), ("~#bitrate",id),
-        ("~filename",id)]
+        ("~#filesize",lambda s: util.format_size(int(s))), ("~#bitrate",i),
+        ("~filename",i)]
     # Now make a dict. This seems clunky.
     tag_functions = {}
     for t,f in TAG_MAP: tag_functions[t] = f
@@ -264,7 +285,7 @@ class Duplicates(SongsMenuPlugin):
         else:
             try:
                 return Duplicates.tag_functions[tag](group_val)
-            except (ValueError, TypeError): return group_val
+            except (ValueError, TypeError), e: return group_val
 
     def plugin_songs(self, songs):
         self.key_expression = self.get_key_expression()
@@ -279,8 +300,8 @@ class Duplicates(SongsMenuPlugin):
             if key and key in groups:
                 groups[key].add(song._song)
             elif key: groups[key] = set([song._song])
-        print_d("Groups found based on '%s': %r" %
-                (self.key_expression, groups.keys()))
+        #print_d("Groups found based on '%s': %r" %
+        #        (self.key_expression, groups.keys()))
 
         for song in library:
             key = song(self.key_expression)
@@ -303,7 +324,4 @@ class Duplicates(SongsMenuPlugin):
                 model.append(parent, row)
 
         dialog = DuplicateDialog(model)
-        dialog.present()
-        # wait for the dialog to be closed
-        while not dialog.finished:
-            gtk.main_iteration()
+        dialog.show()
