@@ -24,7 +24,8 @@ try:
 except ImportError:
     fcntl = None
 
-from quodlibet import util
+from quodlibet import util, print_d, print_w
+from quodlibet.qltk.msg import ErrorMessage
 
 class Library(gtk.Object):
     """A Library contains useful objects.
@@ -179,6 +180,14 @@ class Library(gtk.Object):
         print_d("Saving contents to %r." % filename, self)
         if not os.path.isdir(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
+        # Issue 479. Catch problem early
+        if os.path.isdir(filename):
+            msg = _("Cannot save library contents to %s (it's a directory). "
+                    "Please remove it and try again.") % filename
+            print_w(msg)
+            # TODO: Better handling of this edge-case...
+            ErrorMessage(None, _("Library Error"), msg).run()
+            return
         fileobj = file(filename + ".tmp", "wb")
         if fcntl is not None:
             fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
@@ -189,7 +198,7 @@ class Library(gtk.Object):
         # sorting takes advantage of the filesystem cache when we
         # reload/rescan the files.
         items.sort(key=lambda item: item.key)
-        # While protocol 2 is usualy faster it uses __setitem__
+        # While protocol 2 is usually faster it uses __setitem__
         # for unpickle and we override it to clear the sort cache.
         # This roundtrip makes it much slower, so we use protocol 1
         # unpickle numbers (py2.7):
