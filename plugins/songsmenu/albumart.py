@@ -52,7 +52,7 @@ import gtk
 import gobject
 import pango
 
-from quodlibet import util, qltk, config
+from quodlibet import util, qltk, config, print_w
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.parse import Pattern
@@ -731,9 +731,11 @@ class CoverArea(gtk.VBox):
             else:
                 fn_list.append("<artist> - <album>.jpg")
         else:
+            print_w("No album for \"%s\". Could be difficult finding art..." %
+                    song("~filename"))
             title = song("title")
             if title and artist:
-                fn_list.append("<artist> - <title>.jpg" % (artist, title))
+                fn_list.append("<artist> - <title>.jpg")
         if (labelid):
             fn_list.append("<labelid>.jpg")
 
