@@ -571,107 +571,6 @@ class AmazonParser(object):
 
         return self.covers
 
-class DarktownParser(BasicHTMLParser):
-    """A class for searching covers from darktown.to"""
-
-    def __init__(self):
-        super(DarktownParser, self).__init__()
-
-        self.root_url = 'http://www.darktown.ws'
-        self.page_count = 0
-        self.limit = 0
-        self.covers = []
-
-        self.main_links = []
-
-    def start(self, query, limit=10):
-        """Start the search and returns the covers"""
-
-        self.page_count = 0
-        self.limit = limit
-        #site only takes and returns latin-1
-
-        enc = get_encoding(self.root_url)
-        query = query.decode('utf-8').encode(enc)
-        self.covers = []
-        self.main_links = []
-
-        #get first page
-        self.__parse_page(1, query)
-
-        #look if there are more
-        self.__parse_page_count()
-
-        #parse all the cover urls from page 1
-        self.__parse_search_list()
-
-        #do the same for the rest until the limit is reached
-        for i in xrange(2, min(limit / 100, self.page_count) + 1):
-            self.__parse_page(i, query)
-            self.__parse_search_list()
-
-        #go to each url and get all the infos
-        self.__parse_all_covers()
-
-        #delete all the parsed data
-        del self.data
-
-        return self.covers
-
-    def __parse_all_covers(self):
-        """Reads all URLs and adds the covers to the list"""
-
-        for link in self.main_links:
-            self.parse_url(self.root_url + link)
-
-            cover = {}
-            cover['source'] = self.root_url
-
-            for tag in xrange(len(self.data)):
-                if self.data[tag][0] == 'img' and 'thumbnail' not in cover:
-                    cover['thumbnail'] = self.data[tag][1]['src']
-                elif self.data[tag][0] == 'a' and 'cover' not in cover:
-                    cover['cover'] = self.data[tag][1]['href']
-                elif self.data[tag][0] == 'font' and 'size' in \
-                    self.data[tag][1] and self.data[tag][1]['size'] == '4':
-                    cover['name'] = (self.data[tag][2] + ' - ' + \
-                        self.data[tag + 2][2]).strip()
-                    cover['size'] = self.data[tag + 13][2].strip()
-
-            self.covers.append(cover)
-
-    def __parse_page(self, page, query):
-        """Parses the search result page and saves the data to self.data"""
-
-        params = {'action': 'search', 'what': query, \
-            'category': 'audio', 'page': page}
-        self.parse_url(self.root_url + '/search.php', get=params)
-
-    def __parse_page_count(self):
-        """Tries to figure out how many result pages we got."""
-
-        for i in self.data:
-            if 'href' in i[1]:
-                if i[1]['href'].startswith('/search.php') \
-                    and not i[2].isdigit():
-                    start = i[1]['href'].rfind('=') + 1
-                    self.page_count = int(i[1]['href'][start:])
-                    break
-                elif i[1]['href'].startswith('javascript:'):
-                    break
-
-    def __parse_search_list(self):
-        """Extracts all album urls from the result page"""
-
-        for tag in self.data:
-            if tag[0] == 'a':
-                split = tag[1]['href'].split('\'')
-                if len(split) > 1 and split[1].endswith('&type=Front'):
-                    self.main_links.append(split[1])
-
-            if len(self.main_links) >= self.limit:
-                break
-
 class CoverArea(gtk.VBox):
     """The image display and saving part."""
 
@@ -1304,15 +1203,6 @@ def get_size_of_url(url):
 
 #------------------------------------------------------------------------------
 engines = []
-
-#-------
-eng = {}
-eng['class'] = DarktownParser
-eng['url'] = 'http://www.darktown.ws/'
-eng['replace'] = ' '
-eng['config_id'] = 'darktown'
-
-engines.append(eng)
 
 #-------
 eng = {}
