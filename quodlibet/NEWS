@@ -1,6 +1,16 @@
 Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
 
+2.3.2 (2011-10-17) - It doesn't matter! My beats are great!
+    * Fix "--song-list"
+    * Fix crash in album browser [781]
+    * Plugins:
+        * DBus multimedia keys: Make it work with gnome-settings-daemon 3.x
+        * Album art: Remove darktown, fix discogs.
+        * MPRIS: Various fixes [776, 817, 827]
+    * Translation Updates:
+        Lithuanian (Naglis Jonaitis)
+
 2.3.1 (2011-07-16) - YES It works in BOTH temporal directions
     * Absolute path renaming on Windows [506]
     * Fix dynamic song removal of songs not matching the query [713]

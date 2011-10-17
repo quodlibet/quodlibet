@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-16 21:14+0200\n"
+"POT-Creation-Date: 2011-10-17 15:58+0200\n"
 "PO-Revision-Date: 2011-04-01 21:00+0100\n"
 "Last-Translator: Nick Boultbee <nick.boultbee@gmail.com>\n"
 "Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
@@ -312,7 +312,7 @@ msgstr[1] "%d albums"
 msgid "Sort _by:"
 msgstr ""
 
-#: ../quodlibet/browsers/albums.py:573
+#: ../quodlibet/browsers/albums.py:577
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Reload album _cover"
