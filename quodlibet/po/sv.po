@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-16 21:14+0200\n"
+"POT-Creation-Date: 2011-10-17 15:58+0200\n"
 "PO-Revision-Date: 2006-08-12 10:03+0200\n"
 "Last-Translator: Erik Christiansson <spam.erik@alphafish.com>\n"
 "Language-Team: SWEDISH\n"
@@ -316,7 +316,7 @@ msgstr[1] "%d album"
 msgid "Sort _by:"
 msgstr "Sortera efter datum"
 
-#: ../quodlibet/browsers/albums.py:573
+#: ../quodlibet/browsers/albums.py:577
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"

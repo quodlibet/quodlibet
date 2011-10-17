@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-16 21:14+0200\n"
+"POT-Creation-Date: 2011-10-17 15:58+0200\n"
 "PO-Revision-Date: 2006-11-08 19:59+0100\n"
 "Last-Translator: Lukáš Lalinský <lalinsky@gmail.com>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -317,7 +317,7 @@ msgstr[2] "%d albumov"
 msgid "Sort _by:"
 msgstr "Podľa dátumu"
 
-#: ../quodlibet/browsers/albums.py:573
+#: ../quodlibet/browsers/albums.py:577
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"

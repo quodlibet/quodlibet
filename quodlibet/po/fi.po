@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-16 21:14+0200\n"
+"POT-Creation-Date: 2011-10-17 15:58+0200\n"
 "PO-Revision-Date: 2007-04-28 16:55+0300\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -318,7 +318,7 @@ msgstr[1] "%d albumia"
 msgid "Sort _by:"
 msgstr "Järjestys: päivämäärä"
 
-#: ../quodlibet/browsers/albums.py:573
+#: ../quodlibet/browsers/albums.py:577
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"

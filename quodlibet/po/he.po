@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-16 21:14+0200\n"
+"POT-Creation-Date: 2011-10-17 15:58+0200\n"
 "PO-Revision-Date: 2006-10-12 23:24+0200\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
@@ -318,7 +318,7 @@ msgstr[1] "%d אלבומים"
 msgid "Sort _by:"
 msgstr "מיין לפי תאריך"
 
-#: ../quodlibet/browsers/albums.py:573
+#: ../quodlibet/browsers/albums.py:577
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
