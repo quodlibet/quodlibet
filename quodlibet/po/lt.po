@@ -1,23 +1,24 @@
-# translation of lt.po to Lithuanian
-# Copyright (C) 2006
-# This file is distributed under the same license as the Quod Libet package.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
+# Translators:
 # Jonas <jonas.slivka@gmail.com>, 2006, Naglis Jonaitis <njonaitis@gmail.com>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: lt\n"
+"Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-16 21:14+0200\n"
-"PO-Revision-Date: 2011-04-12 19:36+0300\n"
+"POT-Creation-Date: 2011-10-17 15:53+0200\n"
+"PO-Revision-Date: 2011-10-15 15:19+0000\n"
 "Last-Translator: Naglis Jonaitis <njonaitis@gmail.com>\n"
-"Language-Team: Lithuanian <en@li.org>\n"
+"Language-Team: Lithuanian (http://www.transifex.net/projects/p/quodlibet/"
+"team/lt/)\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
-"%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: KBabel 1.11.2\n"
+"%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #: ../exfalso.desktop.in.h:1
 msgid "Audio tag editor"
@@ -317,7 +318,7 @@ msgstr[2] "%d albumų"
 msgid "Sort _by:"
 msgstr "Rikiuoti _pagal:"
 
-#: ../quodlibet/browsers/albums.py:573
+#: ../quodlibet/browsers/albums.py:577
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Atnaujinti albumo _viršelį"
@@ -863,7 +864,8 @@ msgstr "Garsų įrenginys: %s"
 #: ../quodlibet/qltk/about.py:34
 msgid "translator-credits"
 msgstr ""
-"Jonas Slivka <jonas.slivka@gmail.com>, Naglis Jonaitis <njonaitis@gmail.com>"
+"Jonas Slivka <jonas.slivka@gmail.com>,\n"
+"Naglis Jonaitis <njonaitis@gmail.com>"
 
 #. Translators: Refers to the beginning of the playing song.
 #: ../quodlibet/qltk/bookmarks.py:23
@@ -1567,12 +1569,12 @@ msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
-"GStreamer išvesties vamzdynas naudojamas grojimui, pvz. 'alsasink "
-"device=default'. Palikite tuščią, jei norite naudoti numatytąjį vamzdyną."
+"GStreamer išvestis naudojama grojimui, pvz. 'alsasink device=default'. "
+"Palikie tuščią, jei norite naudoti numatytąją išvestį."
 
 #: ../quodlibet/qltk/prefs.py:198
 msgid "_Output pipeline:"
-msgstr "Išvesties _vamzdynas:"
+msgstr "_Išvestis:"
 
 #: ../quodlibet/qltk/prefs.py:212
 msgid "_Jump to playing song automatically"
@@ -1642,7 +1644,7 @@ msgstr "At_naujinti biblioteką paleidus programą"
 
 #: ../quodlibet/qltk/prefs.py:306
 msgid "Scan _Directories"
-msgstr "Skanuoti _aplankus"
+msgstr "Peržvelgti _aplankus"
 
 #: ../quodlibet/qltk/prefs.py:315
 msgid "Separators for splitting tags"
@@ -2236,7 +2238,6 @@ msgstr "„%r“ nėra unikalus priešdėlis."
 msgid "[Invalid Encoding]"
 msgstr "[Netaisyklinga koduotė]"
 
-# Kadangi lietuvių kalboje nepriimtinas pirmųjų žodžių raidžių pakeitimas didžiosiomis, verčiame bet kaip, svarbu tik, kad skirtųsi nuo angliškojo varianto.
 #. Translators: If tag names, when capitalized, should not
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
@@ -2433,12 +2434,11 @@ msgstr "Garso posistemė „%r“ neįdiegta."
 
 #: ../quodlibet/player/gstbe.py:41
 msgid "Invalid GStreamer output pipeline, trying default."
-msgstr ""
-"Netaisyklingas GStreamer išvesties vamzdynas, bandoma naudoti numatytąjį."
+msgstr "Netaisyklinga GStreamer išvestis, bandoma naudoti numatytąją."
 
 #: ../quodlibet/player/gstbe.py:59
 msgid "Could not create default GStreamer pipeline."
-msgstr ""
+msgstr "Nepavyko sukurti GStreamer išvesties."
 
 #. Backend error; show message and halt playback
 #: ../quodlibet/player/gstbe.py:249
@@ -2450,8 +2450,8 @@ msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
-"GStreamer išvesties vamzdyno inicijuoti nepavyko. Gali būti, jog vamzdynas "
-"netaisyklingas arba įrenginys šiuo metu naudojamas. Patikrinkite grotuvo "
+"GStreamer išvesties inicijuoti nepavyko. Gali būti, jog išvestis "
+"netaisyklinga arba įrenginys šiuo metu naudojamas. Patikrinkite grotuvo "
 "nustatymus."
 
 #: ../quodlibet/player/gstbe.py:403
@@ -2824,186 +2824,3 @@ msgstr "Aktyvios užduotys"
 #, python-format
 msgid "%d tasks running"
 msgstr "%d užduotys vykdomos"
-
-#~ msgid ""
-#~ "The audio output pipeline %r could not be created. Check your GStreamer "
-#~ "settings in ~/.quodlibet/config."
-#~ msgstr ""
-#~ "Garso išvesties vamzdyno %r sukurti nepavyko. Patikrinkite GStreamer "
-#~ "nuostatas ~/.quodlibet/config."
-
-#, fuzzy
-#~ msgid "pattern"
-#~ msgstr "Netaisyklingas šablonas"
-
-#~ msgid "_Information"
-#~ msgstr "_Informacija"
-
-#~ msgid "Sort by title"
-#~ msgstr "Rikiuoti pagal pavadinimą"
-
-#~ msgid "Sort by artist"
-#~ msgstr "Rikiuoti pagal atlikėją"
-
-#~ msgid "Lyrics provided by %s."
-#~ msgstr "Dainos žodžius pateikė %s."
-
-#~ msgid ""
-#~ "No lyrics found.\n"
-#~ "\n"
-#~ "You can click the Download button to have Quod Libet search for lyrics "
-#~ "online.  You can also enter them yourself and click save."
-#~ msgstr ""
-#~ "Nerasti dainos žodžiai.\n"
-#~ "\n"
-#~ "Jūs galite spragtelti „Atsisiųsti“ mygtuką, kad Quod Libet Internete "
-#~ "ieškotų dainos žodžių. Taip pat galite patys juos įvesti ir spragtelti "
-#~ "„Išsaugoti“ mygtuką."
-
-#~ msgid "part"
-#~ msgstr "dalis"
-
-#~ msgid "Opening audio device."
-#~ msgstr "Atveriamas garso įrenginys."
-
-#~ msgid "%d/%d songs saved"
-#~ msgstr "%d/%d dainų išsaugota"
-
-#~ msgid "MusicBrainz album ID"
-#~ msgstr "„MusicBrainz“ albumo ID"
-
-#~ msgid "Loaded song library."
-#~ msgstr "Garsų biblioteka įkrauta."
-
-#~ msgid "Unable to open audio device"
-#~ msgstr "Negalima atverti garsų įrenginio"
-
-#~ msgid ""
-#~ "Quod Libet tried to access the 'autosink' and '%(sink)s' drivers but "
-#~ "could not open them. Set your GStreamer pipeline by changing the\n"
-#~ "    <b>pipeline = %(sink)s</b>\n"
-#~ "line in ~/.quodlibet/config."
-#~ msgstr ""
-#~ "„Quod Libet“ pamėgino pasiekti „alsasink“, „osssink“ ir „%(sink)s“ "
-#~ "tvarkykles, tačiau nė vienos negalėjo atverti. Nustatykite „GStreamer“ "
-#~ "garso patiektį pakeisdami\n"
-#~ "    <b>pipeline = %(sink)s</b>\n"
-#~ "eilutę „~/.quodlibet/config“ faile."
-
-#~ msgid ""
-#~ "Quod Libet could not find the 'filesrc' GStreamer element. Check your "
-#~ "GStreamer installation."
-#~ msgstr ""
-#~ "Quod Libet negalėjo rasti „filesrc“ GStreamer elemento. Patikrinkite, ar "
-#~ "GStreamer tinkamai įdiegtas."
-
-#~ msgid "GStreamer was unable to load the selected song."
-#~ msgstr "GStreamer nepavyko įkelti pasirinktos dainos."
-
-#, fuzzy
-#~ msgid "C_opy album covers"
-#~ msgstr "Rodyti albumų _viršelius"
-
-#~ msgid "Unable to retag multiple values"
-#~ msgstr "Negalima iš naujo pakeisti keletos žymų reikšmių"
-
-#~ msgid "Changing the name of a tag with multiple values is not supported."
-#~ msgstr "Žymės su keletu reikšmių vardo pakeitimas nėra palaikomas."
-
-#~ msgid "W: %s is not a QL song database."
-#~ msgstr "W: %s nėra QL dainų duomenų bazė."
-
-#~ msgid "tag"
-#~ msgstr "žymė"
-
-#~ msgid "Per-song (\"Radio\") volume adjustment"
-#~ msgstr "Garsumo suvienodinimas dainai („Radio“)"
-
-#~ msgid "Per-album (\"Audiophile\") volume adjustment"
-#~ msgstr "Garsumo suvienodinimas albumui („Audiophile“)"
-
-#~ msgid "_Volume Normalization"
-#~ msgstr "_Garso suvienodinimas"
-
-#~ msgid ""
-#~ "Scanning your library. This may take several minutes.\n"
-#~ "\n"
-#~ "%d songs reloaded\n"
-#~ "%d songs removed"
-#~ msgstr ""
-#~ "Skanuojama biblioteka. Tai gali užtrukti keletą minučių.\n"
-#~ "\n"
-#~ "%d dainų įkelta iš naujo\n"
-#~ "%d dainų pašalinta"
-
-#~ msgid ""
-#~ "Scanning for new songs and adding them to your library.\n"
-#~ "\n"
-#~ "%d songs added"
-#~ msgstr ""
-#~ "Skanuojamos naujos dainos ir įkeliamos į biblioteką.\n"
-#~ "\n"
-#~ "%d dainų pridėta"
-
-#~ msgid "_Remove Station"
-#~ msgstr "_Pašalinti stotį"
-
-#~ msgid "No new stations"
-#~ msgstr "Jokių naujų stočių"
-
-#~ msgid "M3U playlists cannot be loaded."
-#~ msgstr "M3U grojaraščiai negali būti įkelti."
-
-#~ msgid "This station is already in your library."
-#~ msgstr "Ši stotis jau yra Jūsų bibliotekoje."
-
-#~ msgid ""
-#~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
-#~ "(<~length>)><version|\n"
-#~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-#~ "by <~people>><album|\n"
-#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b"
-#~ "\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"
-#~ msgstr ""
-#~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
-#~ "(<~length>)><version|\n"
-#~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
-#~ "atlieka <~people>><album|\n"
-#~ "\\<b\\><album>\\</b\\><discnumber| - Diskas <discnumber>><part| - \\<b"
-#~ "\\><part>\\</b\\>><tracknumber| - Takelis <tracknumber>>>"
-
-#~ msgid "Tray Icon Preferences"
-#~ msgstr "Sisteminio skydelio nustatymai"
-
-#~ msgid ""
-#~ "Scroll wheel adjusts volume\n"
-#~ "Shift and scroll wheel changes song"
-#~ msgstr ""
-#~ "Sukimas pelės ratuku keičia garsumą\n"
-#~ "Shift klavišas ir sukimas pelės ratuku keičia dainą"
-
-#~ msgid ""
-#~ "Scroll wheel changes song\n"
-#~ "Shift and scroll wheel adjusts volume"
-#~ msgstr ""
-#~ "Sukimas pelės ratuku keičia dainą;\n"
-#~ "Shift klavišas ir sukimas pelės ratuku keičia garsumą"
-
-#, fuzzy
-#~ msgid "Scroll _Wheel"
-#~ msgstr "Sukimas pelės ratuku"
-
-#~ msgid "Tooltip Display"
-#~ msgstr "Mygtuko etiketės vaizdas"
-
-#~ msgid "Play _Order"
-#~ msgstr "Grojimo _tvarka"
-
-#~ msgid "The library cannot be refreshed while Quod Libet is running."
-#~ msgstr "Biblioteka negali būti atnaujinta kol Quod Libet yra paleistas."
-
-#~ msgid "Loading, scanning, and saving your library."
-#~ msgstr "Įkeliama, skanuojama ir išsaugojama jūsų biblioteka."
-
-#~ msgid "Rescan your library and exit"
-#~ msgstr "Iš naujo nuskaityti biblioteką ir išeiti"
