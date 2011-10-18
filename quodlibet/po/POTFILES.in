@@ -67,3 +67,4 @@ quodlibet/util/tags.py
 quodlibet/util/logging.py
 quodlibet/qltk/notif.py
 quodlibet/qltk/ratingsmenu.py
+quodlibet/qltk/sortdialog.py

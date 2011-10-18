@@ -25,6 +25,8 @@ from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.util.uri import URI
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.formats._audio import TAG_TO_SORT, FILESYSTEM_TAGS, AudioFile
+from quodlibet.qltk.sortdialog import SortDialog
+from quodlibet.util import human_sort_key
 
 class PlaylistMux(object):
 
@@ -729,6 +731,31 @@ class SongList(AllTreeView, util.InstanceTracker):
             for song in songs: values.update(song.list(header))
         browser.filter(header, list(values))
 
+    def __custom_sort(self, *args):
+        sd = SortDialog(qltk.get_top_parent(self))
+        if sd.run() == gtk.RESPONSE_OK:
+            # sort_keys yields a list of pairs (sort header, order)
+            headers = sd.sort_keys()
+            if not headers:
+                return
+            # from this, we have to construct a comparison function for sort
+            def _get_key(song, tag):
+                if tag.startswith("~#") and "~" not in tag[2:]:
+                    return song(tag)
+                return human_sort_key(song(tag))
+            def comparer(x, y):
+                for (h, o) in headers:
+                    c = cmp(_get_key(x, h), _get_key(y, h))
+                    if c == 0: continue
+                    if o != gtk.SORT_ASCENDING:
+                        c *= -1
+                    return c
+                return 0
+            songs = self.get_songs()
+            songs.sort(cmp=comparer)
+            self.set_songs(songs, sorted=True)
+        sd.hide()
+
     def __button_press(self, view, event, librarian):
         if event.button != 1: return
         x, y = map(int, [event.x, event.y])
@@ -1121,6 +1148,12 @@ class SongList(AllTreeView, util.InstanceTracker):
         sep = gtk.SeparatorMenuItem()
         sep.show()
         menu.append(sep)
+
+        b = gtk.MenuItem(_("Custom _Sort..."))
+        menu.append(b)
+        b.show()
+        b.connect('activate', self.__custom_sort)
+
         custom = gtk.MenuItem(_("_Customize Headers..."))
         custom.show()
         custom.connect('activate', self.__add_custom_column)
