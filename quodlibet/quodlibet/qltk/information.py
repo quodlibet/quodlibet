@@ -119,13 +119,13 @@ class OneSong(qltk.Notebook):
 
     def _title(self, song, box):
         l = Label()
-        text = "<big><b>%s</b></big>" % util.escape(song("title"))
+        text = "<big><b>%s</b></big>" % util.escape(song.comma("title"))
         if "version" in song:
             text += "\n" + util.escape(song.comma("version"))
         l.set_markup(text)
         l.set_ellipsize(pango.ELLIPSIZE_END)
         box.pack_start(l, expand=False, fill=False)
-        self.title = song("title")
+        self.title = song.comma("title")
 
     def _album(self, song, box):
         if "album" not in song: return
