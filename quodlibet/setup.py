@@ -259,17 +259,17 @@ if __name__ == "__main__":
         'man_pages': ["man/quodlibet.1", "man/exfalso.1"],
         'gobject_modules': [
                     GObjectExtension("quodlibet._mmkeys",
-                            "gobject/mmkeys/mmkeys.defs",
-                            "gobject/mmkeys/mmkeys.override",
-                            ["gobject/mmkeys/mmkeys.c",
-                            "gobject/mmkeys/mmkeysmodule.c"],
-                            include_dirs=["gobject/mmkeys"]),
+                            "gobject_ext/mmkeys/mmkeys.defs",
+                            "gobject_ext/mmkeys/mmkeys.override",
+                            ["gobject_ext/mmkeys/mmkeys.c",
+                            "gobject_ext/mmkeys/mmkeysmodule.c"],
+                            include_dirs=["gobject_ext/mmkeys"]),
                     GObjectExtension("quodlibet._trayicon",
-                            "gobject/trayicon/trayicon.defs",
-                            "gobject/trayicon/trayicon.override",
-                            ["gobject/trayicon/eggtrayicon.c",
-                             "gobject/trayicon/trayiconmodule.c"],
-                            include_dirs=["gobject/trayicon"])
+                            "gobject_ext/trayicon/trayicon.defs",
+                            "gobject_ext/trayicon/trayicon.override",
+                            ["gobject_ext/trayicon/eggtrayicon.c",
+                             "gobject_ext/trayicon/trayiconmodule.c"],
+                            include_dirs=["gobject_ext/trayicon"])
                     ],
         }
     if os.name == 'nt':
