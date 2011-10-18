@@ -330,16 +330,16 @@ class QuodLibetWindow(gtk.Window):
 
     def hide(self):
         super(QuodLibetWindow, self).hide()
-        map(gtk.Window.hide, qltk.Window.childs)
+        map(gtk.Window.hide, qltk.Window.instances)
 
     def present(self):
         super(QuodLibetWindow, self).present()
-        map(gtk.Window.present, qltk.Window.childs)
+        map(gtk.Window.present, qltk.Window.instances)
 
     def show(self):
         self.move(*map(int, config.get('memory', 'position').split()))
         super(QuodLibetWindow, self).show()
-        map(gtk.Window.show, qltk.Window.childs)
+        map(gtk.Window.show, qltk.Window.instances)
 
     def destroy(self, *args):
         # The tray icon plugin tries to unhide QL because it gets disabled

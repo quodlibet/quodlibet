@@ -254,7 +254,15 @@ def main(window):
     print_d("Entering quodlibet.main")
     import gtk
 
-    def quit_gtk(*args):
+    def quit_gtk(m):
+        # destroy all open windows so they hide immediately on close:
+        # destroying all top level windows doesn't work (weird errors),
+        # so we hide them all and only destroy our tracked instances
+        # (browser windows, tag editors, pref window etc.)
+        from quodlibet.qltk import Window
+        map(gtk.Window.hide, gtk.window_list_toplevels())
+        map(gtk.Window.destroy, Window.instances)
+
         while gtk.events_pending():
             gtk.main_iteration(False)
         gtk.main_quit()

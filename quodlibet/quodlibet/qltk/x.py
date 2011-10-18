@@ -17,14 +17,14 @@ class Window(gtk.Window):
     """A Window that binds the ^W accelerator to close. This should not
     be used for dialogs; Escape closes (cancels) those."""
 
-    childs = []
+    instances = []
 
     __gsignals__ = {"close-accel": (
         gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
     def __init__(self, *args, **kwargs):
         dialog = kwargs.pop("dialog", True)
         super(Window, self).__init__(*args, **kwargs)
-        type(self).childs.append(self)
+        type(self).instances.append(self)
         self.__accels = gtk.AccelGroup()
         if dialog:
             self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
@@ -35,7 +35,7 @@ class Window(gtk.Window):
             'close-accel', self.__accels, ord('w'), gtk.gdk.CONTROL_MASK, 0)
         esc, mod = gtk.accelerator_parse("Escape")
         self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
-        self.connect_object('destroy', type(self).childs.remove, self)
+        self.connect_object('destroy', type(self).instances.remove, self)
 
     def set_transient_for(self, parent):
         if parent is None:
