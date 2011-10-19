@@ -9,6 +9,7 @@ import gtk
 import pango
 
 from quodlibet import config
+from quodlibet.qltk import get_top_parent
 
 class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
@@ -54,6 +55,7 @@ class TreeViewHints(gtk.Window):
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
             view.connect('focus-out-event', self.__undisplay),
+            view.connect('unmap', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
         ]
 
@@ -74,15 +76,21 @@ class TreeViewHints(gtk.Window):
 
     def __motion(self, view, event):
         # trigger over row area, not column headers
-        if event.window is not view.get_bin_window(): return self.__undisplay()
-        suppress = (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK |
-                gtk.gdk.SUPER_MASK | gtk.gdk.HYPER_MASK | gtk.gdk.META_MASK)
-        if event.get_state() & suppress: return self.__undisplay()
+        if event.window is not view.get_bin_window():
+            return self.__undisplay()
+
+        # hide if any modifier is active
+        if event.state & gtk.accelerator_get_default_mod_mask():
+            return self.__undisplay()
 
         x, y = map(int, [event.x, event.y])
         try: path, col, cellx, celly = view.get_path_at_pos(x, y)
         # no hints where no rows exist
         except TypeError: return self.__undisplay()
+
+        # hide for partial hidden rows at the bottom
+        if y > view.get_visible_rect().height:
+            return self.__undisplay()
 
         if self.__current_path != path or self.__current_col != col:
             self.__undisplay()
@@ -168,6 +176,10 @@ class TreeViewHints(gtk.Window):
     def __event(self, event):
         if not self.__view:
             return True
+
+        # hack: present the main window on key press
+        if event.type == gtk.gdk.BUTTON_PRESS:
+            get_top_parent(self.__view).present()
 
         if event.type != gtk.gdk.SCROLL:
             event.x += self.__dx
