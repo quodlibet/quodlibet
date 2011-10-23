@@ -398,7 +398,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         gobject_weak(view.connect_object, 'popup-menu',
             self.__popup, view, library)
 
-        search = SearchBarBox(button=False, completion=AlbumTagCompletion())
+        self.accelerators = gtk.AccelGroup()
+        search = SearchBarBox(button=False, completion=AlbumTagCompletion(),
+                              accel_group=self.accelerators)
         search.connect('query-changed', self.__update_filter)
         search.connect_object('focus-out', lambda w: w.grab_focus(), view)
 

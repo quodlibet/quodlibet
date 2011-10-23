@@ -10,9 +10,6 @@ import os
 import gtk
 import gobject
 
-# todo focus in browser
-# subclass limit
-
 from quodlibet import config
 from quodlibet import const
 
@@ -37,7 +34,8 @@ class SearchBarBox(gtk.HBox):
 
     timeout = 400
 
-    def __init__(self, filename=None, button=True, completion=None):
+    def __init__(self, filename=None, button=True, completion=None,
+            accel_group=None):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
@@ -89,6 +87,11 @@ class SearchBarBox(gtk.HBox):
             search.add(hb)
             search.set_tooltip_text(_("Search your library"))
             self.pack_start(search, expand=False)
+
+        if accel_group:
+            key, mod = gtk.accelerator_parse("<ctrl>L")
+            accel_group.connect_group(key, mod, 0,
+                                      lambda *x: label.mnemonic_activate(True))
 
         self.show_all()
 

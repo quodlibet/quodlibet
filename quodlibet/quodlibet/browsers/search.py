@@ -188,10 +188,13 @@ class SearchBar(EmptyBar):
         self.__save = bool(player)
 
         completion = LibraryTagCompletion(library.librarian)
+        self.accelerators = gtk.AccelGroup()
         if limit:
-            self._search_bar = LimitSearchBar(completion=completion)
+            self._search_bar = LimitSearchBar(completion=completion,
+                                              accel_group=self.accelerators)
         else:
-            self._search_bar = SearchBarBox(completion=completion)
+            self._search_bar = SearchBarBox(completion=completion,
+                                            accel_group=self.accelerators)
         self._search_bar.connect('query-changed', self._text_parse)
 
         def focus(widget, *args):

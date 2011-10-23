@@ -621,7 +621,6 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self._register_instance()
         self.__save = player
 
-        self.accelerators = gtk.AccelGroup()
         keyval, mod = gtk.accelerator_parse("<control>Home")
         s = self.accelerators.connect_group(keyval, mod, 0, self.__all)
         self.connect_object('destroy',
