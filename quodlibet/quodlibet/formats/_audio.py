@@ -93,20 +93,17 @@ class AudioFile(dict):
         """Returns a fast sort function for a specific tag (or pattern).
         Some keys are already in the sort cache, so we can use them."""
         def artist_sort(song):
-            key = song.sort_key
-            return (key[1][2], key)
+            return (song.sort_key[1][2])
 
         if callable(tag):
-            return lambda song: (human(tag(song)), song.sort_key)
-        elif tag == "albumsort":
-            return lambda song: song.sort_key
+            return lambda song: human(tag(song))
         elif tag == "artistsort":
             return artist_sort
         elif tag in FILESYSTEM_TAGS:
             return lambda song: util.fsdecode(song(tag), note=False)
         elif tag.startswith("~#") and "~" not in tag[2:]:
-            return lambda song: (song(tag), song.sort_key)
-        return lambda song: (human(song(tag)), song.sort_key)
+            return lambda song: song(tag)
+        return lambda song: human(song(tag))
 
     def __getstate__(self):
         """Don't pickle anything from __dict__"""

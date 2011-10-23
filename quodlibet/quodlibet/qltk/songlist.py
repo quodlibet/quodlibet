@@ -474,10 +474,6 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.__scroll_length = 0
         self.__scroll_last = None
 
-        # If the a song changes, we can't simply reverse the model
-        # (same tag, changed song order)
-        self.__sort_dirty = False
-
     def __destroy(self, *args):
         self.handler_block(self.__csig)
         map(self.remove_column, self.get_columns())
@@ -871,15 +867,10 @@ class SongList(AllTreeView, util.InstanceTracker):
                 h.set_sort_order(s)
             else: h.set_sort_indicator(False)
         if refresh:
-            if rev:
-                if self.__sort_dirty:
-                    # python sort is faster if it's presorted.
-                    songs = self.get_songs()
-                    songs.reverse()
-                    self.set_songs(songs)
-                else:
-                    self.reverse()
-            else: self.set_songs(self.get_songs())
+            songs = self.get_songs()
+            if rev:  # python sort is faster if it's presorted.
+                songs.reverse()
+            self.set_songs(songs)
 
     def set_model(self, model):
         super(SongList, self).set_model(model)
@@ -892,8 +883,8 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     def __get_sort_tag(self, tag):
         replace_order = {
-            "~#track": "album",
-            "~#disc": "album",
+            "~#track": "",
+            "~#disc": "",
             "~length": "~#length"
         }
 
@@ -921,7 +912,6 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     def set_songs(self, songs, sorted=False):
         model = self.get_model()
-        self.__sort_dirty = False
 
         if not sorted:
             tag, reverse = self.get_sort_by()
@@ -936,8 +926,12 @@ class SongList(AllTreeView, util.InstanceTracker):
                         h.set_sort_order(gtk.SORT_ASCENDING)
                         break
 
-            sort_func = AudioFile.sort_by_func(tag)
-            songs.sort(key=sort_func, reverse=reverse)
+            if not tag:
+                songs.sort(key=lambda s: s.sort_key, reverse=reverse)
+            else:
+                sort_func = AudioFile.sort_by_func(tag)
+                songs.sort(key=lambda s: s.sort_key)
+                songs.sort(key=sort_func, reverse=reverse)
         else:
             self.set_sort_by(None, refresh=False)
 
@@ -952,14 +946,6 @@ class SongList(AllTreeView, util.InstanceTracker):
         print_d("Model attached.", context=self)
         map(gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
 
-    def reverse(self):
-        model = self.get_model()
-        sorts = map(gtk.TreeViewColumn.get_sort_indicator, self.get_columns())
-        self.set_model(None)
-        model.reverse()
-        self.set_model(model)
-        map(gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
-
     def get_selected_songs(self):
         selection = self.get_selection()
         if selection is None: return []
@@ -969,7 +955,6 @@ class SongList(AllTreeView, util.InstanceTracker):
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.
         Warning: This makes the row-changed signal useless."""
-        self.__sort_dirty = True
         #pygtk 2.12: prevent invalid ranges or GTK asserts
         if not self.flags() & gtk.REALIZED or \
             self.get_path_at_pos(0,0) is None: return
