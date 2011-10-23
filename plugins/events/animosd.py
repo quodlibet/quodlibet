@@ -363,40 +363,25 @@ by <~people>>'''
     def __init__(self):
         self.__current_window = None
 
-        # now load config, resetting values which had errors to their default
         def str_to_tuple(s):
             return tuple(map(float, s.split()))
-        def tuple_to_str(t):
-            return ' '.join(map(str, t))
+
         config_map = [
-            ('text', config.get, str_to_tuple, tuple_to_str),
-            ('fill', config.get, str_to_tuple, tuple_to_str),
-            ('font', config.get, None, str),
-            ('delay', config.getint, None, str),
-            ('pos_y', config.getfloat, None, str),
-            ('string', config.get, None, str),
+            ('text', config.get, str_to_tuple),
+            ('fill', config.get, str_to_tuple),
+            ('font', config.get, None),
+            ('delay', config.getint, None),
+            ('pos_y', config.getfloat, None),
+            ('string', config.get, None),
             ]
-        for key, cget, getconv, setconv in config_map:
+        for key, cget, getconv in config_map:
             try: value = cget('plugins', 'animosd_' + key)
-            except: value = None
+            except: continue
+
             try:
                 if getconv is not None:
                     value = getconv(value)
-            except:
-                # auto-upgrade old hash-values to new tuple floats
-                if (value is not None and value.startswith('#')) and \
-                        ((key == 'text' and len(value) == 7) or \
-                         (key == 'fill' and len(value) == 9)):
-                    colors = [value[1:3], value[3:5], value[5:7]]
-                    # fill has extra value for alpha
-                    if key == 'fill':
-                        colors.append(value[7:9])
-                    colors = [int(c, 16) / 255.0 for c in colors]
-                    config.set('plugins', 'animosd_' + key,
-                            setconv(colors))
-                else:
-                    config.set('plugins', 'animosd_' + key,
-                            setconv(getattr(self.conf, key)))
+            except: pass
             else:
                 setattr(self.conf, key, value)
 
