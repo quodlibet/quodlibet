@@ -402,6 +402,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                               accel_group=self.accelerators)
         search.connect('query-changed', self.__update_filter)
         search.connect_object('focus-out', lambda w: w.grab_focus(), view)
+        self.__search = search
 
         prefs = gtk.Button()
         prefs.add(gtk.image_new_from_stock(
@@ -511,22 +512,29 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.__scan_timeout = gobject.timeout_add(
             50, self.__update_visible_covers, view)
 
-    def __update_filter(self, entry, text):
+    def __update_filter(self, entry, text, restore=False):
         #This could be called after the browsers is already closed
         if not self.view.get_selection(): return
         model = self.view.get_model()
-        if not text:
-            self.__filter = None
-        else:
+
+        self.__filter = None
+        if not Query.match_all(text):
             self.__filter = Query(text, star=["~people", "album"]).search
         self.__bg_filter = background_filter()
+
         self.__inhibit()
+
         # We could be smart and try to scroll to a selected album
         # but that introduces lots of wild scrolling. Feel free to change it.
         # Without scrolling the TV trys to stay at the same position (40% down)
         # which makes no sence so always go to the top.
-        self.view.scroll_to_point(0, 0)
-        model.refilter()
+        if not restore:
+            self.view.scroll_to_point(0, 0)
+
+        # don't filter on restore if there is nothing to filter
+        if not restore or self.__filter or self.__bg_filter:
+            model.refilter()
+
         self.__uninhibit()
 
     def __parse_query(self, model, iter):
@@ -658,6 +666,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.view.get_selection().handler_unblock(self.__sig)
 
     def restore(self):
+        text = config.get("browsers", "query_text").decode("utf-8")
+        entry = self.__search
+        entry.set_text(text)
+        self.__update_filter(entry, text, restore=True)
+
         albums = config.get("browsers", "albums").split("\n")
         view = self.view
         selection = view.get_selection()
@@ -713,6 +726,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         selection = self.view.get_selection()
         conf = self.__get_config_string(selection)
         config.set("browsers", "albums", conf)
+        text = self.__search.get_text().encode("utf-8")
+        config.set("browsers", "query_text", text)
 
     def __update_songs(self, selection):
         if not self.__dict__: return

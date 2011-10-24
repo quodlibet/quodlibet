@@ -111,7 +111,7 @@ class SearchBarBox(gtk.HBox):
         self.__uninhibit()
 
     def get_text(self):
-        return self.__entry.get_text()
+        return self.__entry.get_text().decode("utf-8")
 
     def changed(self):
         """Triggers a filter-changed signal if the current text
