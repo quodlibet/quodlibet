@@ -228,6 +228,10 @@ def _init_signal(window=None):
 
     import signal
     import gobject
+    import os
+
+    if os.name == "nt":
+        return
 
     _init_signal.window = window
 
