@@ -263,6 +263,11 @@ class TQuery(TestCase):
 
         self.failIf(filter(lambda x: not isinstance(x, type(inter)), tests))
 
+    def test_match_all(self):
+        self.failUnless(Query.match_all(""))
+        self.failUnless(Query.match_all("    "))
+        self.failIf(Query.match_all("foo"))
+
 add(TQuery)
 
 class TQuery_is_valid_color(TestCase):

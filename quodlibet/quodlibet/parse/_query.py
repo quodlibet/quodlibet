@@ -257,20 +257,22 @@ def _expand_query(string, tags):
 
 STAR = ["artist", "album", "title"]
 def Query(string, star=STAR):
-    string = string.strip()
     if not isinstance(string, unicode): string = string.decode('utf-8')
-    if string == "": return match.Inter([])
+    if Query.match_all(string): return match.Inter([])
     string = _expand_query(string, star)
     return QueryParser(QueryLexer(string)).StartQuery()
 Query.STAR = STAR
 
 def is_valid(string):
-    if string.strip() == "": return True
+    if Query.match_all(string): return True
     try: QueryParser(QueryLexer(string)).StartQuery()
     except error: return False
     else: return True
 Query.is_valid = is_valid
 
+def match_all(string):
+    return string.strip() == ""
+Query.match_all = match_all
 
 def is_parsable(string):
     string = _expand_query(string, ["foo"])

@@ -62,10 +62,6 @@ class TEmptyBar(TestCase):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
             self.failUnless(self.bar.can_filter(key))
 
-    def test_default_none(self):
-        self.expected = None
-        self._do()
-
     def test_empty_is_all(self):
         self.bar.set_text("")
         self.expected = list(sorted(SONGS))

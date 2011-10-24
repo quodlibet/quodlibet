@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,7 +18,6 @@ from quodlibet import qltk
 
 from quodlibet.browsers._base import Browser
 from quodlibet.parse import Query
-from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -37,10 +36,7 @@ class EmptyBar(gtk.VBox, Browser):
 
     def __init__(self, library, player):
         super(EmptyBar, self).__init__()
-        # When _text is None, calls to activate are ignored. This is to
-        # avoid the song list changing when the user switches browses and
-        # then refreshes.
-        self._text = None
+        self._text = ""
         self._filter = None
         self._library = library
         self.commands = {"query": self.__query}
@@ -58,15 +54,12 @@ class EmptyBar(gtk.VBox, Browser):
         if isinstance(text, str): text = text.decode('utf-8')
         self._text = text
 
-    status = property(lambda s: s._text)
-
     def __query(self, text, library, window, player):
         self.set_text(text)
         self.activate()
 
     def save(self):
-        if self._text is not None:
-            config.set("browsers", "query_text", self._text.encode('utf-8'))
+        config.set("browsers", "query_text", self._text.encode('utf-8'))
 
     def restore(self):
         try: self.set_text(config.get("browsers", "query_text"))
@@ -75,13 +68,21 @@ class EmptyBar(gtk.VBox, Browser):
     def finalize(self, restore):
         config.set("browsers", "query_text", "")
 
-    def activate(self):
-        if self._text is not None:
-            try: self._filter = Query(self._text, star=SongList.star).search
-            except Query.error: pass
+    def _get_songs(self):
+        try: self._filter = Query(self._text, star=SongList.star).search
+        except Query.error: pass
+        else:
+            if Query.match_all(self._text):
+                songs = self._library.values()
+                self._filter = None
             else:
                 songs = filter(self._filter, self._library)
-                self.emit('songs-selected', songs, None)
+            return songs
+
+    def activate(self):
+        songs = self._get_songs()
+        if songs is not None:
+            gobject.idle_add(self.emit, 'songs-selected', songs, None)
 
     def can_filter(self, key): return True
 
@@ -183,7 +184,6 @@ class SearchBar(EmptyBar):
     def __init__(self, library, player, limit=True):
         super(SearchBar, self).__init__(library, player)
         self.set_spacing(6)
-        self.__save = bool(player)
 
         completion = LibraryTagCompletion(library.librarian)
         self.accelerators = gtk.AccelGroup()
@@ -193,7 +193,7 @@ class SearchBar(EmptyBar):
         else:
             self._search_bar = SearchBarBox(completion=completion,
                                             accel_group=self.accelerators)
-        self._search_bar.connect('query-changed', self._text_parse)
+        self._search_bar.connect('query-changed', self.__text_parse)
 
         def focus(widget, *args):
             qltk.get_top_parent(widget).songlist.grab_focus()
@@ -207,18 +207,13 @@ class SearchBar(EmptyBar):
         self._search_bar = None
 
     def activate(self):
-        if self._text is not None:
-            try:
-                self._filter = Query(self._text, star=SongList.star).search
-            except Query.error:
-                pass
-            else:
-                songs = filter(self._filter, self._library.itervalues())
-                songs = self._search_bar.limit(songs)
-                self.emit('songs-selected', songs, None)
+        songs = self._get_songs()
+        if songs is not None:
+            songs = self._search_bar.limit(songs)
+            gobject.idle_add(self.emit, 'songs-selected', songs, None)
 
-    def _text_parse(self, bar, text):
-        self._text = text.decode('utf-8')
+    def __text_parse(self, bar, text):
+        super(SearchBar, self).set_text(text)
         self.activate()
 
     def set_text(self, text):
