@@ -623,23 +623,23 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         view = self.view
         self.__inhibit()
         selection = view.get_selection()
-        selection.unselect_all()
         model = view.get_model()
         first = True
         for row in model:
             if row[0] is not None and row[0].title in values:
-                selection.select_path(row.path)
                 if first:
                     view.scroll_to_cell(row.path[0],
                         use_align=True, row_align=0.5)
+                    view.set_cursor(row.path)
                     first = False
+                else:
+                    selection.select_path(row.path)
         self.__uninhibit()
-        selection.emit('changed')
+        if not first:
+            selection.emit('changed')
 
     def unfilter(self):
-        selection = self.view.get_selection()
-        selection.unselect_all()
-        selection.select_path((0,))
+        self.view.set_cursor((0,))
 
     def activate(self):
         self.view.get_selection().emit('changed')
@@ -666,18 +666,21 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         # no albums. If it's "" and some other stuff, assume no albums,
         # otherwise all albums.
         self.__inhibit()
-        selection.unselect_all()
-        if albums == [""]:  selection.select_path((0,))
+        if albums == [""]:
+            selection.unselect_all()
+            selection.select_path((0,))
         else:
             model = selection.get_tree_view().get_model()
-            first = None
+            first = True
             for row in model:
                 if row[0] is not None and row[0].title in albums:
-                    selection.select_path(row.path)
-                    first = first or row.path
-
-            if first:
-                view.scroll_to_cell(first[0], use_align=True, row_align=0.5)
+                    if first:
+                        view.scroll_to_cell(row.path, use_align=True,
+                                            row_align=0.5)
+                        view.set_cursor(row.path)
+                        first = False
+                    else:
+                        selection.select_path(row.path)
         self.__uninhibit()
 
     def scroll(self, song):
@@ -687,9 +690,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         for row in model:
             if row[0] is not None and row[0].key == album_key:
                 view.scroll_to_cell(row.path[0], use_align=True, row_align=0.5)
-                sel = view.get_selection()
-                sel.unselect_all()
-                sel.select_path(row.path[0])
+                view.set_cursor(row.path)
                 break
 
     def __get_config_string(self, selection):

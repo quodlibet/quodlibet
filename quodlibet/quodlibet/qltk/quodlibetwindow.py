@@ -699,9 +699,7 @@ class QuodLibetWindow(gtk.Window):
 
             self.songlist.scroll_to_cell(path, use_align=True, row_align=0.5)
             if select:
-                selection = self.songlist.get_selection()
-                selection.unselect_all()
-                selection.select_path(path)
+                self.songlist.set_cursor(path)
 
         song = player.playlist.song
         model =  self.songlist.model

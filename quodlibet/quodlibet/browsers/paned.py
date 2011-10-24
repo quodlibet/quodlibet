@@ -531,11 +531,9 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             values = self.__get_format_keys(song)
             for row in self.__model:
                 if row[0] != ALL and row[1].key in values:
-                    self.scroll_to_cell(
-                        row.path[0], use_align=True, row_align=0.5)
-                    sel = self.get_selection()
-                    sel.unselect_all()
-                    sel.select_path(row.path[0])
+                    path = row.path
+                    self.scroll_to_cell(path, use_align=True, row_align=0.5)
+                    self.set_cursor(path)
                     break
 
         def get_selected(self):
@@ -558,26 +556,23 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             selection = self.get_selection()
             if values != self.get_selected():
                 self.inhibit()
-                selection.unselect_all()
+                first = True
 
                 for row in model:
-                    if row[0] == ALL:
-                        if None in values:
-                            selection.select_path(row.path)
-                    else:
-                        if row[1].key in values:
+                    if (row[0] == ALL and None in values) or \
+                            (row[0] == SONGS and row[1].key in values):
+                        if first:
+                            if jump:
+                                self.scroll_to_cell(row.path)
+                            self.set_cursor(row.path)
+                            first = False
+                        else:
                             selection.select_path(row.path)
 
                 # We didn't find something to select, so select All
-                model, paths = selection.get_selected_rows()
-                if not paths: selection.select_path((0,))
+                if first:
+                    self.set_cursor((0,))
                 self.uninhibit()
-
-            if jump:
-                model, paths = selection.get_selected_rows()
-                for path in paths:
-                    self.scroll_to_cell(path)
-                    break
 
             self.get_selection().emit('changed')
 
