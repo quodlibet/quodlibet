@@ -788,7 +788,6 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.fill_panes()
 
     def fill(self, songs):
-        if self.__save: self.save()
         gobject.idle_add(self.emit, 'songs-selected', list(songs), None)
 
 browsers = [PanedBrowser]

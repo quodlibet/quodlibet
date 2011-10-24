@@ -278,7 +278,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
     def save(self):
         selection = self.__view.get_selection()
         model, iter = selection.get_selected()
-        config.set('browsers', 'media', model[iter][0]['name'])
+        if iter:
+            config.set('browsers', 'media', model[iter][0]['name'])
 
     def restore(self):
         try: name = config.get('browsers', 'media')

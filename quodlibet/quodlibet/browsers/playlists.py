@@ -557,9 +557,12 @@ class Playlists(gtk.VBox, Browser):
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
-        name = iter and model[iter][0].name or ""
-        if self.__main: config.set("browsers", "playlist", name)
         self.emit('songs-selected', songs, resort)
+
+    def save(self):
+        model, iter = self.__view.get_selection().get_selected()
+        name = iter and model[iter][0].name or ""
+        config.set("browsers", "playlist", name)
 
     def __new_playlist(self, activator):
         playlist = Playlist.new()

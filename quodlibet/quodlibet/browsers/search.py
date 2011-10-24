@@ -43,7 +43,6 @@ class EmptyBar(gtk.VBox, Browser):
         self._text = None
         self._filter = None
         self._library = library
-        self.__main = bool(player)
         self.commands = {"query": self.__query}
         self.connect('destroy', self.__destroy)
 
@@ -83,7 +82,6 @@ class EmptyBar(gtk.VBox, Browser):
             else:
                 songs = filter(self._filter, self._library)
                 self.emit('songs-selected', songs, None)
-                if self.__main: self.save()
 
     def can_filter(self, key): return True
 
@@ -218,7 +216,6 @@ class SearchBar(EmptyBar):
                 songs = filter(self._filter, self._library.itervalues())
                 songs = self._search_bar.limit(songs)
                 self.emit('songs-selected', songs, None)
-                if self.__save: self.save()
 
     def _text_parse(self, bar, text):
         self._text = text.decode('utf-8')

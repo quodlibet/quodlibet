@@ -342,6 +342,9 @@ class QuodLibetWindow(gtk.Window):
         map(gtk.Window.show, qltk.Window.instances)
 
     def destroy(self, *args):
+        try: self.browser.save()
+        except NotImplementedError: pass
+
         # The tray icon plugin tries to unhide QL because it gets disabled
         # on Ql exit. The window should be hidden after destroy gets called.
         self.show = lambda: None

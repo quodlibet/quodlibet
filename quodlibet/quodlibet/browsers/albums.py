@@ -313,7 +313,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self._register_instance()
         if self.__model is None:
             self._init_model(library)
-        self.__save = bool(player)
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
@@ -710,12 +709,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
             confval = "\n" + confval[:-1]
         return confval
 
+    def save(self):
+        selection = self.view.get_selection()
+        conf = self.__get_config_string(selection)
+        config.set("browsers", "albums", conf)
+
     def __update_songs(self, selection):
         if not self.__dict__: return
         songs = self.__get_selected_songs(selection, False)
         self.emit('songs-selected', songs, None)
-        if self.__save:
-            conf = self.__get_config_string(selection)
-            config.set("browsers", "albums", conf)
 
 browsers = [AlbumList]

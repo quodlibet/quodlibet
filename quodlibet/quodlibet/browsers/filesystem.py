@@ -87,8 +87,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         sel = dt.get_selection()
         sel.unselect_all()
         sel.connect_object('changed', copool.add, self.__songs_selected, dt)
-        if player: dt.connect('row-activated', self.__play, player)
-        else: self.save = lambda: None
+        if player:
+            dt.connect('row-activated', lambda *a: player.reset())
         self.add(dt)
         self.show_all()
 
@@ -111,9 +111,6 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         else:
             uris = [song("~uri") for song in songs]
             sel.set_uris(uris)
-
-    def __play(self, view, indices, column, player):
-        player.reset()
 
     def can_filter(self, key):
         return (key == "~dirname")
@@ -217,6 +214,5 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         if self.window:
             self.window.set_cursor(None)
         self.emit('songs-selected', songs, None)
-        self.save()
 
 browsers = [FileSystem]
