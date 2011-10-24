@@ -83,24 +83,8 @@ class ExFalsoWindow(gtk.Window):
         l.set_alignment(1.0, 0.5)
         l.set_ellipsize(pango.ELLIPSIZE_END)
         bbox.pack_start(l)
-        
-        if os.name == "nt":
-            # use HOME, Documents (if not under HOME), and non-floppy drives
-            folders = [const.HOME]
-            try: from win32com.shell import shell, shellcon as con
-            except ImportError, e: pass
-            else:
-                documents = shell.SHGetFolderPath(0, con.CSIDL_PERSONAL, 0, 0)
-                if not documents.startswith(const.HOME + os.sep):
-                    folders.append(documents)
-                music = shell.SHGetFolderPath(0, con.CSIDL_MYMUSIC, 0, 0)
-                folders.insert(0, music)
-            folders = filter(os.path.isdir, folders +
-                [letter + ":\\" for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ"])
-        else:
-            folders = [const.HOME, "/"]
 
-        fs = FileSelector(dir, folders=folders)
+        fs = FileSelector(dir)
 
         vb.pack_start(fs)
         vb.pack_start(bbox, expand=False)

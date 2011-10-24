@@ -55,28 +55,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
 
-        def get_win32_drives():
-            import string
-            from ctypes import windll
-            drives = []
-            bitmask = windll.kernel32.GetLogicalDrives()
-            for letter in string.uppercase:
-                if bitmask & 1:
-                    drives.append(letter + ":\\")
-                bitmask >>= 1
-            return drives
-
         folders = filter(None, split_scan_dirs(config.get("settings", "scan")))
-        if folders:
-            folders.append(None)
-        if const.HOME not in folders:
-            folders.append(const.HOME)
-        if sys.platform == "win32":
-            for folder in get_win32_drives():
-                if folder not in folders:
-                    folders.append(folder)
-        elif "/" not in folders:
-            folders.append("/")
 
         dt = DirectoryTree(folders=folders)
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),

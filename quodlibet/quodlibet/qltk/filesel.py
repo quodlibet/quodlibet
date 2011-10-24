@@ -46,7 +46,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 os.path.basename(value) or value))
     cell_data = staticmethod(cell_data)
 
-    def __init__(self, initial=None, folders=[const.HOME, "/"]):
+    def __init__(self, initial=None, folders=None):
         super(DirectoryTree, self).__init__(gtk.TreeStore(str))
         column = gtk.TreeViewColumn(_("Folders"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -60,6 +60,26 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         column.set_attributes(render, text=0)
         self.append_column(column)
         self.set_search_equal_func(search_func, True)
+
+        if folders is None:
+            folders = []
+
+        if os.name == "nt":
+            try: from win32com.shell import shell, shellcon as con
+            except ImportError, e: pass
+            else:
+                if folders: folders.append(None)
+                desktop = shell.SHGetFolderPath(0, con.CSIDL_DESKTOP, 0, 0)
+                folders.append(desktop)
+                folders.append(const.HOME)
+                music = shell.SHGetFolderPath(0, con.CSIDL_MYMUSIC, 0, 0)
+                folders.append(music)
+            if folders: folders.append(None)
+            drives = [letter + ":\\" for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ"]
+            map(folders.append, filter(os.path.isdir, drives))
+        else:
+            if folders: folders.append(None)
+            folders.extend([const.HOME, "/"])
 
         # Read in the GTK bookmarks list; gjc says this is the right way
         try: f = file(os.path.join(const.HOME, ".gtk-bookmarks"))
@@ -259,8 +279,7 @@ class FileSelector(gtk.VPaned):
                                  gobject.TYPE_NONE, (gtk.TreeSelection,))
                      }
 
-    def __init__(self, initial=None, filter=filesel_filter,
-                 folders=[const.HOME, "/"]):
+    def __init__(self, initial=None, filter=filesel_filter, folders=None):
         super(FileSelector, self).__init__()
         self.__filter = filter
 
