@@ -12,7 +12,7 @@
 #    published by the Free Software Foundation.
 #
 from gettext import ngettext
-from library import library
+from quodlibet.library import library
 from quodlibet import config, player, print_d, print_w, util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.edittags import AudioFileGroup
