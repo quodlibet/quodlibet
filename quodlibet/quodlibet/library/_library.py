@@ -14,6 +14,7 @@ import cPickle as pickle
 import itertools
 import os
 import shutil
+import threading
 
 import gobject
 import gtk
@@ -49,6 +50,7 @@ class Library(gtk.Object):
 
     def __init__(self, name=None):
         super(Library, self).__init__()
+        self._save_lock = threading.Lock()
         self._contents = {}
         self._masked = {}
         for key in ['get', 'keys', 'values', 'items', 'iterkeys',
@@ -175,6 +177,7 @@ class Library(gtk.Object):
 
     def save(self, filename=None):
         """Save the library to the given filename."""
+        self._save_lock.acquire()
         if filename is None:
             filename = self.filename
         print_d("Saving contents to %r." % filename, self)
@@ -187,6 +190,7 @@ class Library(gtk.Object):
             print_w(msg)
             # TODO: Better handling of this edge-case...
             ErrorMessage(None, _("Library Error"), msg).run()
+            self._save_lock.release()
             return
         fileobj = file(filename + ".tmp", "wb")
         if fcntl is not None:
@@ -214,6 +218,7 @@ class Library(gtk.Object):
         os.rename(filename + ".tmp", filename)
         self.dirty = False
         print_d("Done saving contents to %r." % filename, self)
+        self._save_lock.release()
 
 class Librarian(gtk.Object):
     """The librarian is a nice interface to all active libraries.

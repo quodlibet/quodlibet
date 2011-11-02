@@ -27,20 +27,9 @@ def _gtk_init(icon=None):
     import pygtk
     pygtk.require('2.0')
     import gtk
-    import gobject
-
-    # http://bugzilla.gnome.org/show_bug.cgi?id=318953
-    if gtk.gtk_version < (2, 8, 8):
-        class TVProxy(gtk.TreeView):
-            def set_search_equal_func(self, func, *args): pass
-        gtk.TreeView = TVProxy
 
     import quodlibet.stock
     quodlibet.stock.init()
-
-    gobject.set_application_name(_("Quod Libet").encode('utf-8'))
-    os.environ["PULSE_PROP_media.role"] = "music"
-    os.environ["PULSE_PROP_application.icon_name"] = "quodlibet"
 
     if icon:
         theme = gtk.icon_theme_get_default()
@@ -49,6 +38,17 @@ def _gtk_init(icon=None):
             try: pixbufs.append(theme.load_icon(icon, size, 0))
             except gobject.GError: pass
         gtk.window_set_default_icon_list(*pixbufs)
+
+    def website_wrap(activator, link):
+        if not quodlibet.util.website(link):
+            from quodlibet.qltk.msg import ErrorMessage
+            ErrorMessage(
+                main, _("Unable to start web browser"),
+                _("A web browser could not be found. Please set "
+                  "your $BROWSER variable, or make sure "
+                  "/usr/bin/sensible-browser exists.")).run()
+
+    gtk.about_dialog_set_url_hook(website_wrap)
 
 def _gettext_init():
     try: locale.setlocale(locale.LC_ALL, '')
@@ -123,6 +123,10 @@ def print_e(string):
 def set_process_title(title):
     """Sets process name as visible in ps or top. Requires ctypes libc
     and is almost certainly *nix-only. See issue 736"""
+
+    if os.name == "nt":
+        return
+
     try:
         import ctypes
         libc = ctypes.CDLL('libc.so.6')
@@ -168,56 +172,71 @@ del(_dummy_ngettext)
 _python_init()
 _gettext_init()
 
-def init(gtk=True, backend=None, library=None, icon=None):
+def init(library=None, icon=None, title=None, name=None):
     print_d("Entering quodlibet.init")
-    if gtk:
-        _gtk_init(icon)
+
+    _gtk_init(icon)
+
+    import gobject
+
+    if title:
+        gobject.set_prgname(title)
+        set_process_title(title)
+        # Issue 736 - set after main loop has started (gtk seems to reset it)
+        gobject.idle_add(set_process_title, title)
+
+    if name:
+        gobject.set_application_name(name)
 
     # We already imported this, but Python is dumb and thinks we're rebinding
     # a local when we import it later.
     import quodlibet.util
-
     quodlibet.util.mkdir(quodlibet.const.USERDIR)
 
-    if backend:
-        import quodlibet.player
-        print_(_("Initializing audio backend (%s)") % backend)
-        backend = quodlibet.player.init(backend)
     if library:
-        print_(_("Initializing main library (%s)") % (
+        print_d("Initializing main library (%s)" % (
             quodlibet.util.unexpand(library)))
 
     import quodlibet.library
     library = quodlibet.library.init(library)
-
-    if backend:
-        device = quodlibet.player.init_device(library.librarian)
-    else:
-        device = None
 
     print_d("Initializing debugging extensions")
     import quodlibet.debug
     quodlibet.debug.init()
 
     print_d("Finished initialization.")
-    return (backend, library, device)
 
-def quit((backend, library, device), save=False):
-    print_d("Entering quodlibet.quit")
-    if device is not None:
-        print_d("Shutting down player device %r." % device.version_info)
-        quodlibet.player.quit(device)
+    return library
 
-    if library is not None:
-        if save:
-            try: library.save()
-            except EnvironmentError, err:
-                from quodlibet.qltk.msg import ErrorMessage
-                err = str(err).decode('utf-8', 'replace')
-                ErrorMessage(None, _("Unable to save library"), err).run()
-            else:
-                library.destroy()
-    print_d("Finished shutdown.")
+def init_backend(backend, librarian):
+    import quodlibet.player
+    print_d("Initializing audio backend (%s)" % backend)
+    backend = quodlibet.player.init(backend)
+    device = quodlibet.player.init_device(librarian)
+    return device
+
+def enable_periodic_save(save_library):
+    import quodlibet.library
+    from quodlibet.util import copool
+
+    timeout = 5 * 60 * 1000  # 5 minutes
+
+    def periodic_config_save():
+        while 1:
+            config.save(quodlibet.const.CONFIG)
+            yield
+
+    copool.add(periodic_config_save, timeout=timeout)
+
+    if not save_library:
+        return
+
+    def periodic_library_save():
+        while 1:
+            quodlibet.library.save()
+            yield
+
+    copool.add(periodic_library_save, timeout=timeout)
 
 def _init_signal(window=None):
     """Catches certain signals and destroys the window if they occur.
@@ -282,7 +301,3 @@ def main(window):
     gtk.gdk.threads_enter()
     gtk.main()
     gtk.gdk.threads_leave()
-
-def error_and_quit(error):
-    from quodlibet.qltk.msg import ErrorMessage
-    ErrorMessage(None, error.short_desc, error.long_desc).run()

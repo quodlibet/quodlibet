@@ -13,7 +13,6 @@ def main():
     import quodlibet
     from quodlibet import util
     from quodlibet import const
-    from quodlibet import set_process_title
     import gobject
 
     quodlibet._init_signal()
@@ -28,25 +27,30 @@ def main():
 
     from quodlibet import config
     config.init(const.CONFIG)
-    backend, library, player = quodlibet.init(icon="exfalso", backend="nullbe")
 
-    # See Issue 736.
-    if os.name != "nt":
-        gobject.idle_add(set_process_title, const.PROCESS_TITLE_EF)
+    library = quodlibet.init(icon="exfalso",
+                             name="Ex Falso",
+                             title=const.PROCESS_TITLE_EF)
+
+    player = quodlibet.init_backend("nullbe", library.librarian)
 
     from quodlibet.qltk.exfalsowindow import ExFalsoWindow
     window = ExFalsoWindow(library, args[0])
 
+    quodlibet.enable_periodic_save(save_library=False)
+
     from quodlibet.qltk import session
     session.init("exfalso", window)
 
-    # some code expects the main window in widgets.main
     from quodlibet import widgets
     widgets.main = window
+    widgets.watcher = library.librarian
 
     quodlibet.main(window)
-    quodlibet.quit((backend, library, player))
-    config.write(const.CONFIG)
+
+    config.save(const.CONFIG)
+
+    print_d("Finished shutdown.")
 
 if __name__ == "__main__":
     main()

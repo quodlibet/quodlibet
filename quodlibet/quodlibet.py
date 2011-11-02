@@ -12,42 +12,40 @@ import os
 import signal
 import sys
 import tempfile
-import time
 
 import quodlibet
-import quodlibet.player
 
 from quodlibet import config
 from quodlibet import const
 from quodlibet import util
 from quodlibet.util.uri import URI
-# Stops IDEs moaning
-from quodlibet import print_d, print_w, print_e, print_, set_process_title
 
-import gobject
-from threading import Thread
-
-global play
 play = False
 
 def main():
+    import gobject
+    import quodlibet.player
+
     config.init(const.CONFIG)
 
-    try:
-        backend, library, player = quodlibet.init(
-            backend=config.get("player", "backend"),
-            library=const.LIBRARY, icon="quodlibet",
-            )
-    except quodlibet.player.error, error:
-        import gobject
-        import gtk
-        gobject.idle_add(quodlibet.error_and_quit, error)
-        gobject.idle_add(gtk.main_quit)
-        gtk.main()
-        config.write(const.CONFIG)
-        raise SystemExit(True)
+    library = quodlibet.init(library=const.LIBRARY,
+                             icon="quodlibet",
+                             name="Quod Libet",
+                             title=const.PROCESS_TITLE_QL)
 
-    from quodlibet import widgets
+    os.environ["PULSE_PROP_media.role"] = "music"
+    os.environ["PULSE_PROP_application.icon_name"] = "quodlibet"
+
+    for backend in [config.get("player", "backend"), "nullbe"]:
+        try:
+            player = quodlibet.init_backend(backend, library.librarian)
+        except quodlibet.player.error, error:
+            print_e("%s. %s" % (error.short_desc, error.long_desc))
+        else:
+            break
+
+    from quodlibet import browsers
+    from quodlibet.qltk.songlist import SongList
 
     try: ratings = config.getint("settings", "ratings")
     except (ValueError, TypeError): pass
@@ -57,19 +55,91 @@ def main():
     except (ValueError, TypeError): pass
     else: const.DEFAULT_RATING = default_rating
 
-    window = widgets.init(player, library)
+    if config.get("settings", "headers").split() == []:
+       config.set("settings", "headers", "title")
+    headers = config.get("settings", "headers").split()
+    SongList.set_all_column_headers(headers)
+
+    for opt in config.options("header_maps"):
+        val = config.get("header_maps", opt)
+        util.tags.add(opt, val)
+
+    in_all =("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
+             "~#added ~#bitrate ~current ~#laststarted ~basename "
+             "~dirname").split()
+    for Kind in browsers.browsers:
+        if Kind.headers is not None: Kind.headers.extend(in_all)
+        Kind.init(library)
+
+    # main window
+    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
+    window = QuodLibetWindow(library, player)
+
+    from quodlibet import widgets
+    widgets.main = window
+    widgets.watcher = library.librarian
+
+    init_plugins(window, player, library.librarian)
+
+    from quodlibet.qltk.remote import FSInterface, FIFOControl
+    from quodlibet.qltk.tracker import SongTracker
+    try:
+        from quodlibet.qltk.dbus_ import DBusHandler
+    except ImportError:
+        DBusHandler = lambda player, library: None
+
+    FSInterface(player)
+    FIFOControl(library, window, player)
+    DBusHandler(player, library)
+    SongTracker(library.librarian, player, window.playlist)
+
+    if play:
+        player.paused = False
+
+    quodlibet.enable_periodic_save(save_library=True)
 
     from quodlibet.qltk import session
     session.init("quodlibet", window)
 
-    if "--debug" not in sys.argv:
-        enable_periodic_save(library)
-    if play:
-        player.paused = False
     quodlibet.main(window)
-    quodlibet.quit((backend, library, player), save=True)
-    try: config.write(const.CONFIG)
-    except EnvironmentError, err: pass
+
+    print_d("Shutting down player device %r." % player.version_info)
+    quodlibet.player.quit(player)
+
+    quodlibet.library.save(force=True)
+    config.save(const.CONFIG)
+
+    print_d("Finished shutdown.")
+
+def init_plugins(window, player, librarian):
+    from quodlibet.plugins.editing import EditingPlugins
+    from quodlibet.plugins.songsmenu import SongsMenuPlugins
+    from quodlibet.plugins.events import EventPlugins
+    from quodlibet.plugins.playorder import PlayOrderPlugins
+    from quodlibet.qltk.songsmenu import SongsMenu
+    from quodlibet.qltk.properties import SongProperties
+
+    SongsMenu.plugins = SongsMenuPlugins(
+        [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
+         os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
+    SongsMenu.plugins.rescan()
+
+    SongProperties.plugins = EditingPlugins(
+        [os.path.join(const.BASEDIR, "plugins", "editing"),
+         os.path.join(const.USERDIR, "plugins", "editing")], "editing")
+
+    playorder = PlayOrderPlugins(
+        [os.path.join(const.BASEDIR, "plugins", "playorder"),
+         os.path.join(const.USERDIR, "plugins", "playorder")], "playorder")
+    playorder.rescan()
+
+    events = EventPlugins(librarian, player, [
+        os.path.join(const.BASEDIR, "plugins", "events"),
+        os.path.join(const.USERDIR, "plugins", "events")], "events")
+    events.rescan()
+
+    for p in [playorder, SongsMenu.plugins, SongProperties.plugins, events]:
+        window.connect('destroy', p.destroy)
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):
@@ -149,24 +219,6 @@ def control(c):
                 raise SystemExit(True)
         else:
             raise SystemExit
-
-def enable_periodic_save(library):
-    # Check every 5 minutes to see if the library/config on disk are
-    # over 15 minutes old; if so, update them. This function can, in theory,
-    # break if saving the library takes more than 5 minutes.
-    import gobject
-
-    def save():
-        if library.dirty:
-            if (time.time() - util.mtime(const.LIBRARY)) > 15*60:
-                library.save(const.LIBRARY)
-            if (time.time() - util.mtime(const.CONFIG)) > 15*60:
-                config.write(const.CONFIG)
-        thread = Thread(target=save)
-        gobject.timeout_add(
-            5*60000, thread.start, priority=gobject.PRIORITY_LOW)
-    thread = Thread(target=save)
-    gobject.timeout_add(5*60000, thread.start, priority=gobject.PRIORITY_LOW)
 
 def process_arguments():
     controls = ["next", "previous", "play", "pause", "play-pause",
@@ -302,9 +354,6 @@ if __name__ == "__main__":
     quodlibet._init_signal()
 
     process_arguments()
-    # Issue 736 - only run when idle, or gtk resets title
-    if os.name != "nt":
-        gobject.idle_add(set_process_title, const.PROCESS_TITLE_QL)
     if isrunning() and not os.environ.get("QUODLIBET_DEBUG"):
         print_(_("Quod Libet is already running."))
         control('focus')

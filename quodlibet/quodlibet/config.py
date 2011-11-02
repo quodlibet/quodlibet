@@ -61,6 +61,12 @@ def write(filename):
     _config.write(f)
     f.close()
 
+def save(filename):
+    print_d("Writing config...")
+    try: write(filename)
+    except EnvironmentError:
+        print_w("Unable to write config.")
+
 def quit():
     for section in _config.sections():
         _config.remove_section(section)
