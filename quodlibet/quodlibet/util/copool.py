@@ -26,6 +26,7 @@ def add(func, *args, **kwargs):
     Optional Keyword Arguments:
     priority -- priority to run at (default PRIORITY_LOW)
     funcid -- mutex/removal identifier for this function
+    timeout -- use timeout_add (with given timeout) instead of idle_add
 
     Only one function with the same funcid can be running at once.
     Starting a new function with the same ID will stop the old one. If
@@ -36,9 +37,13 @@ def add(func, *args, **kwargs):
     if funcid in __routines or funcid in __paused:
         remove(funcid)
     priority = kwargs.pop("priority", gobject.PRIORITY_LOW)
+    timeout = kwargs.pop("timeout", None)
     next = __wrap(func, funcid, args, kwargs).next
-    idle_id = gobject.idle_add(next, priority=priority)
-    __routines[funcid] = (idle_id, next, priority)
+    if timeout:
+        src_id = gobject.timeout_add(timeout, next, priority=priority)
+    else:
+        src_id = gobject.idle_add(next, priority=priority)
+    __routines[funcid] = (src_id, next, priority, timeout)
     print_d("Added copool function %r with id %r" % (func, funcid))
 
 def remove(funcid):
@@ -64,10 +69,13 @@ def pause(funcid):
 def resume(funcid):
     """Resume a paused routine."""
     if funcid in __paused:
-        old_idle_id, func, priority = __paused[funcid]
+        old_src_id, func, priority, timeout = __paused[funcid]
         del(__paused[funcid])
-        idle_id = gobject.idle_add(func, priority=priority)
-        __routines[funcid] = (idle_id, func, priority)
+        if timeout:
+            src_id = gobject.timeout_add(timeout, func, priority=priority)
+        else:
+            src_id = gobject.idle_add(func, priority=priority)
+        __routines[funcid] = (src_id, func, priority)
 
 def step(funcid):
     """Force this function to iterate once."""
