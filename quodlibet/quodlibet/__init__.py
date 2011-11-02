@@ -160,7 +160,9 @@ def _python_init():
                     return sys.modules["quodlibet." + module]
             else:
                 raise
-    __builtin__.__dict__["__import__"] = import_ql
+
+    if os.environ.get("QUODLIBET_OLDIMPORT"):
+        __builtin__.__dict__["__import__"] = import_ql
     __builtin__.__dict__["print_"] = print_
     __builtin__.__dict__["print_d"] = print_d
     __builtin__.__dict__["print_e"] = print_e
