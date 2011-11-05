@@ -193,6 +193,12 @@ class SplitPerformer(SplitPerson):
     needs = ["performer"]
     title = _("Split _Performer out of Artist")
 
+class SplitPerformerFromTitle(SplitPerson):
+    tags = ["title"]
+    needs = ["performer"]
+    title = _("Split _Performer out of Title")
+
+
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change, library):
         if can_change == True:
@@ -450,7 +456,7 @@ class EditTags(gtk.VBox):
         can_change = min([model[path][CANEDIT] for path in rows])
 
         items = [SplitDisc, SplitTitle, SplitPerformer, SplitArranger,
-                 SplitValues]
+                 SplitValues, SplitPerformerFromTitle]
         items.extend(parent.plugins.EditTagsPlugins())
         items.sort(key=lambda item: (item._order, item.__name__))
 
