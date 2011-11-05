@@ -3,7 +3,7 @@ from tests import TestCase, add
 import os
 import tempfile
 
-from quodlibet.qltk.cbes import ComboBoxEntrySave
+from quodlibet.qltk.cbes import ComboBoxEntrySave, StandaloneEditor
 import quodlibet.config
 
 class TComboBoxEntrySave(TestCase):
@@ -67,4 +67,45 @@ class TComboBoxEntrySave(TestCase):
         os.unlink(self.fname + ".saved")
         quodlibet.config.quit()
 
-add(TComboBoxEntrySave)
+class TStandaloneEditor(TestCase):
+    TEST_KV_DATA = [("Search Foo", "https://foo.com/search?q=<artist>-<title>")]
+    def setUp(self):
+        quodlibet.config.init()
+        self.fname = tempfile.mkstemp()[1]
+        f = file(self.fname + ".saved", "w")
+        f.write("%s\n%s\n" % (self.TEST_KV_DATA[0][1], self.TEST_KV_DATA[0][0]))
+        f.close()
+        self.sae = StandaloneEditor(self.fname, "test", None, None)
+
+    def test_constructor(self):
+        self.failUnless(self.sae.model)
+        data = [(row[1], row[0]) for row in self.sae.model]
+        self.failUnlessEqual(data, self.TEST_KV_DATA)
+
+    def test_load_values(self):
+        values = StandaloneEditor.load_values(self.fname + ".saved")
+        self.failUnlessEqual(self.TEST_KV_DATA, values)
+
+    def test_defaults(self):
+        defaults = [("Dot-com Dream", "http://<artist>.com")]
+        try:
+            os.unlink(self.fname)
+        except OSError:
+            pass
+        # Now create a new SAE without saved results and use defaults
+        self.fname = "foo"
+        self.sae = StandaloneEditor(self.fname, "test2", defaults, None)
+        self.sae.write()
+        data = [(row[1], row[0]) for row in self.sae.model]
+        self.failUnlessEqual(defaults, data)
+
+    def tearDown(self):
+        self.sae.destroy()
+        try:
+            os.unlink(self.fname)
+            os.unlink(self.fname + ".saved")
+        except OSError:
+            pass
+        quodlibet.config.quit()
+
+add([TComboBoxEntrySave, TStandaloneEditor])

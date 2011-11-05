@@ -1,4 +1,5 @@
-# Copyright 2005-2010 Joe Wreschnig, Michael Urman, Christoph Reiter
+# Copyright 2005-2011 Joe Wreschnig, Michael Urman, Christoph Reiter,
+#                     Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,17 +11,20 @@ import gtk
 import pango
 
 from quodlibet import qltk
-
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import entry
 
-class CBESEditor(qltk.Window):
-    def __init__(self, cbes, title, validator=None):
-        super(CBESEditor, self).__init__()
+class _KeyValueEditor(qltk.Window):
+    """Base class for key-value edit widgets"""
+
+    _WIDTH = 400
+    _HEIGHT = 300
+
+    def __init__(self, title, validator=None):
+        super(_KeyValueEditor, self).__init__()
         self.set_border_width(12)
         self.set_title(title)
-        self.set_transient_for(qltk.get_top_parent(cbes))
-        self.set_default_size(400, 300)
+        self.set_default_size(self._WIDTH, self._HEIGHT)
 
         self.add(gtk.VBox(spacing=6))
         self.accels = gtk.AccelGroup()
@@ -39,24 +43,23 @@ class CBESEditor(qltk.Window):
         t.attach(name, 1, 2, 0, 1)
 
         l = gtk.Label(_("_Value:"))
-        value = entry.ValidatingEntry(validator)
-        l.set_mnemonic_widget(value)
+        self.value = entry.ValidatingEntry(validator)
+        l.set_mnemonic_widget(self.value)
         l.set_use_underline(True)
         l.set_alignment(0.0, 0.5)
         t.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL)
-        t.attach(value, 1, 2, 1, 2)
+        t.attach(self.value, 1, 2, 1, 2)
         add = gtk.Button(stock=gtk.STOCK_ADD)
         add.set_sensitive(False)
         t.attach(add, 2, 3, 1, 2, xoptions=gtk.FILL)
 
         self.child.pack_start(t, expand=False)
 
-        model = gtk.ListStore(str, str)
-        for row in cbes.get_model():
-            if row[2] is not None: break
-            else: model.append((row[0], row[1]))
+        # Set up the model for this widget
+        self.model = gtk.ListStore(str, str)
+        self.fill_values()
 
-        view = RCMHintedTreeView(model)
+        view = RCMHintedTreeView(self.model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
         view.set_rules_hint(True)
@@ -65,6 +68,7 @@ class CBESEditor(qltk.Window):
         column = gtk.TreeViewColumn("", render)
         column.set_cell_data_func(render, self.__cdf)
         view.append_column(column)
+
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -88,13 +92,12 @@ class CBESEditor(qltk.Window):
         self.child.pack_start(bbox, expand=False)
 
         selection = view.get_selection()
-        name.connect_object('activate', gtk.Entry.grab_focus, value)
-        value.connect_object('activate', gtk.Button.clicked, add)
-        value.connect('changed', self.__changed, [add])
+        name.connect_object('activate', gtk.Entry.grab_focus, self.value)
+        self.value.connect_object('activate', gtk.Button.clicked, add)
+        self.value.connect('changed', self.__changed, [add])
         add.connect_object(
-            'clicked', self.__add, selection, name, value, model)
-        selection.connect('changed', self.__set_text, name, value, rem_b)
-        self.connect_object('destroy', self.__finish, model, cbes)
+            'clicked', self.__add, selection, name, self.value, self.model)
+        selection.connect('changed', self.__set_text, name, self.value, rem_b)
         view.connect('popup-menu', self.__popup, menu)
         remove.connect_object('activate', self.__remove, view.get_selection())
         rem_b.connect_object('clicked', self.__remove, view.get_selection())
@@ -103,8 +106,11 @@ class CBESEditor(qltk.Window):
         self.connect_object('destroy', gtk.Menu.destroy, menu)
 
         name.grab_focus()
-        value.set_text(cbes.child.get_text())
         self.show_all()
+
+    def fill_values(self):
+        """Responsible for populating self.model (eg with values from disk)"""
+        raise NotImplementedError
 
     def __view_key_press(self, view, event):
         if event.keyval == gtk.accelerator_parse("Delete")[0]:
@@ -139,15 +145,89 @@ class CBESEditor(qltk.Window):
             iter = model.append(row=[value, name])
             selection.select_iter(iter)
 
-    def __finish(self, model, cbes):
+
+class CBESEditor(_KeyValueEditor):
+    def __init__(self, cbes, title, validator=None):
+        # Do this before calling parent constructor
+        self.cbes = cbes
+        super(CBESEditor, self).__init__(title, validator)
+        self.set_transient_for(qltk.get_top_parent(cbes))
+        self.connect_object('destroy', self.__finish, cbes)
+        self.value.set_text(cbes.child.get_text())
+
+    def fill_values(self):
+        for row in self.cbes.get_model():
+            if row[2] is not None:
+                break
+            else:
+                self.model.append((row[0], row[1]))
+
+    def __finish(self, cbes):
         cbes_model = cbes.get_model()
         iter = cbes_model.get_iter_first()
         while cbes_model[iter][2] is None:
             cbes_model.remove(iter)
             iter = cbes_model.get_iter_first()
-        for row in model:
+        for row in self.model:
             cbes_model.insert_before(iter, row=[row[0], row[1], None])
         cbes.write()
+
+
+class StandaloneEditor(_KeyValueEditor):
+    """A key-value pair editor that can be used without CBES.
+    Saves to disk in a single file of the same format with suffix '.saved'
+    """
+
+    # Make this editor a bit bigger
+    _WIDTH = 500
+    _HEIGHT = 350
+
+    @classmethod
+    def load_values(cls, filename):
+        """Returns a list of tuples representing k,v pairs of the given file"""
+        ret = []
+        if os.path.exists(filename):
+            fileobj = file(filename, "rU")
+            lines = list(fileobj.readlines())
+            for i in range(len(lines) / 2 ):
+                ret.append( (lines[i*2+1].strip(), lines[i*2].strip()) )
+        return ret
+
+    def __init__(self, filename, title, initial=None, validator=None):
+        self.filename = filename
+        self.initial = initial or []
+        super(StandaloneEditor, self).__init__(title, validator)
+        self.connect_object('destroy', self.write, True)
+
+    def fill_values(self):
+        filename = self.filename + ".saved"
+        if os.path.exists(filename):
+            fileobj = file(filename, "rU")
+            lines = list(fileobj.readlines())
+            lines.reverse()
+            while len(lines) > 1:
+                self.model.prepend(
+                    row=[lines.pop(1).strip(), lines.pop(0).strip()])
+        if not len(self.model) and self.initial:
+            #print_d("None found - using defaults.", context=self)
+            for (k,v) in self.initial:
+                self.model.append(row=[v.strip(), k.strip()] )
+
+    def write(self, create=True):
+        """Save to a filename. If create is True, any needed parent
+        directories will be created."""
+        try:
+            if create:
+                if not os.path.isdir(os.path.dirname(self.filename)):
+                    os.makedirs(os.path.dirname(self.filename))
+
+            saved = file(self.filename + ".saved", "w")
+            for row in self.model:
+                saved.write(row[0] + "\n")
+                saved.write(row[1] + "\n")
+            saved.close()
+        except EnvironmentError:
+            pass
 
 ICONS = {gtk.STOCK_EDIT: CBESEditor}
 
