@@ -5,13 +5,13 @@
 # published by the Free Software Foundation
 
 import random
-import math
 
 import gtk
 import gobject
 
-from quodlibet import config, player, widgets, util
+from quodlibet import config, player, widgets
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.library import library
 try: from quodlibet.qltk import notif
 except: notif = None
 
@@ -109,7 +109,6 @@ class RandomAlbum(EventPlugin):
 
     def _score(self, album_names):
         """Score each album. Returns a list of (score, name) tuples."""
-        from library import library
 
         # Find the songs for each album name, and extract keys being measured
         albums = {}
@@ -148,7 +147,6 @@ class RandomAlbum(EventPlugin):
             # Unfortunately, browsers can't (yet) filter on the album key
             try: values = browser.list('album')
             except AttributeError:
-                from library import library
                 values = library.tag_values('album')
             if not values: return
 
