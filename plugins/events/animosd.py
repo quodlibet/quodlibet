@@ -58,7 +58,7 @@ class OSDWindow(gtk.Window):
             print_exc()
 
         # now calculate size of window
-        mgeo = screen.get_monitor_geometry(0)
+        mgeo = screen.get_monitor_geometry(conf.monitor)
         coverwidth = min(120, mgeo.width // 8)
         textwidth = mgeo.width - 2 * (conf.border + conf.margin)
         if cover is not None:
@@ -269,6 +269,12 @@ class AnimOsd(EventPlugin):
             config.set("plugins", "animosd_delay", str(value))
             self.conf.delay = value
 
+        def change_monitor(button):
+            """Monitor number config change handler"""
+            value = int(button.get_value())
+            config.set("plugins", "animosd_monitor", str(value))
+            self.conf.monitor = value
+
         def change_position(button):
             value = button.get_active() / 2.0
             config.set("plugins", "animosd_pos_y", str(value))
@@ -299,18 +305,38 @@ class AnimOsd(EventPlugin):
         font.connect('font-set', set_font)
         vb.pack_start(font, expand=False)
 
-        hb = gtk.HBox(spacing=3)
+        t1 = gtk.Table(2, 3)
+        t1.set_homogeneous(False)
+
+        l1 = Label("Display delay: ")
+        t1.attach(l1, 0, 1, 0, 1, xoptions=gtk.SHRINK)
+
         timeout = gtk.SpinButton(
             gtk.Adjustment(self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
-            0.1,
-            1)
+            0.1, 1)
         timeout.set_numeric(True)
         timeout.connect('value-changed', change_delay)
+        t1.attach(timeout, 1, 2, 0, 1, xoptions=gtk.SHRINK)
+        t1.attach(Label("seconds"), 2, 3, 0, 1, xoptions=gtk.SHRINK,
+                  xpadding=6)
 
-        hb.pack_start(Label("Display delay: "), expand=False)
-        hb.pack_start(timeout, expand=False);
-        hb.pack_start(Label("seconds"), expand=False)
-        vb.pack_start(hb, expand=False)
+        #set monitor to display osd on if there's more than one
+        monitor_cnt = gtk.gdk.screen_get_default().get_n_monitors()
+        if monitor_cnt > 1:
+            l2 = Label("Monitor: ")
+            t1.attach(l2, 0, 1, 1, 2, xoptions=gtk.SHRINK)
+            monitor = gtk.SpinButton(
+                gtk.Adjustment(value=self.conf.monitor, lower=0,
+                upper=monitor_cnt-1, step_incr=1)
+            )
+            monitor.set_numeric(True)
+            monitor.connect('value-changed', change_monitor)
+
+            t1.attach(monitor, 1, 2, 1, 2, xoptions=gtk.SHRINK)
+        else:
+            self.conf.monitor = 0 #should be this by default anyway
+
+        vb.pack_start(t1, expand=False)
 
         t = gtk.Table(2, 2)
         t.set_col_spacings(3)
@@ -348,6 +374,7 @@ class AnimOsd(EventPlugin):
         fadetime = 1.5 # take this many seconds to fade in or out
         ms = 40 # wait this many milliseconds between steps
         delay = 2500 # wait this many milliseconds before hiding
+        monitor = 0 # monitor to display osd on
         font = "Sans 22"
         text = (1.0, 0.8125, 0.586) # main font color
         outline = (0.125, 0.125, 0.125) # color or None - surrounds text and cover
@@ -371,6 +398,7 @@ by <~people>>'''
             ('fill', config.get, str_to_tuple),
             ('font', config.get, None),
             ('delay', config.getint, None),
+            ('monitor', config.getint, None),
             ('pos_y', config.getfloat, None),
             ('string', config.get, None),
             ]
