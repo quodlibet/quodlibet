@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#                     Christoph Reiter, Steven Robertson
+# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna,
+#                     Christoph Reiter, Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -20,7 +20,7 @@ from quodlibet import util
 from quodlibet.browsers.search import SearchBar
 from quodlibet.formats import PEOPLE
 from quodlibet.formats._album import Collection
-from quodlibet.parse import Query, Pattern, XMLFromPattern
+from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
@@ -632,6 +632,9 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.connect_object('destroy', select.disconnect, s)
         self._search_bar.pack_start(prefs, expand=False)
 
+        # We only want one handler for this (ie not the base class's)
+        if self._added_hander: library.disconnect(self._added_hander)
+
         for s in [library.connect('changed', self.__changed),
                   library.connect('added', self.__added),
                   library.connect('removed', self.__removed)
@@ -650,9 +653,11 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
     def __added(self, library, songs):
         songs = filter(self._filter, songs)
+        print_d("Adding to panes: %s " % [s("~filename") for s in songs], self)
         for pane in self.__panes:
             pane._add(songs)
             songs = filter(pane._matches, songs)
+        self.__all()
 
     def __removed(self, library, songs, remove_if_empty=True):
         songs = filter(self._filter, songs)

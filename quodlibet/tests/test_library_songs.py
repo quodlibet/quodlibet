@@ -1,13 +1,16 @@
 import os
-import sys
 import unittest
 
 from tempfile import mkstemp
 
 from quodlibet.library.songs import SongLibrary, SongFileLibrary, SongLibrarian
 
-from tests import TestCase, add
+from tests import add
 from tests.test_library__library import Fake, TLibrary, TLibrarian
+from quodlibet.formats.xiph import FLACFile
+
+import shutil
+from quodlibet import config
 
 class FakeSong(Fake):
     def list(self, tag):
@@ -118,6 +121,48 @@ class TSongFileLibrary(TSongLibrary):
         self.failIf(new._valid)
         self.failIf(new in self.library)
         self.failUnlessEqual(new, self.library._masked[new][new])
+
+    def test_add_filename(self):
+        config.init()
+        try:
+            config.set("editing", "save_email", "")
+            fd, filename = mkstemp(".flac")
+            shutil.copy(os.path.join('tests', 'data', 'empty.flac'), filename)
+            song = FLACFile(filename)
+            self.failIf(len(self.library), "Library should start empty")
+            ret = self.library.add_filename(filename)
+            self.failUnlessEqual(sorted(ret), sorted(song))
+            self.failUnlessEqual(1, len(self.library))
+            self.failUnless(song in self.library)
+            os.unlink(filename)
+        finally:
+            config.quit()
+
+    def test_add_filename_multiple(self):
+        config.init()
+        try:
+            config.set("editing", "save_email", "")
+            fd, filename = mkstemp(".flac")
+            fd2, filename2 = mkstemp(".flac")
+            shutil.copy(os.path.join('tests', 'data', 'empty.flac'), filename)
+            shutil.copy(os.path.join('tests', 'data', 'empty.flac'), filename2)
+            song = FLACFile(filename)
+            song2 = FLACFile(filename2)
+            self.failIf(len(self.library), "Library should start empty")
+            ret = self.library.add_filename([filename, filename2])
+            self.failUnlessEqual(len(ret), 2)
+            # Assert that the songs returned are in some way the ones we added
+            self.failUnlessEqual(sorted([sorted(song), sorted(song2)]),
+                                 sorted(sorted(s) for s in ret))
+            self.failUnlessEqual(2, len(self.library),
+                "Couldn't add 2 files (found %d)" % len(self.library))
+            self.failUnless(song in self.library)
+            self.failUnless(song2 in self.library)
+            os.unlink(filename)
+            os.unlink(filename2)
+        finally:
+            config.quit()
+
 add(TSongFileLibrary)
 
 class TSongLibrarian(TLibrarian):
