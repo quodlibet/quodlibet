@@ -1,4 +1,5 @@
 # Copyright 2006 Joe Wreschnig
+#           2011 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -447,25 +448,40 @@ class FileLibrary(Library):
 class SongFileLibrary(SongLibrary, FileLibrary):
     """A library containing song files."""
 
-    def add_filename(self, filename, signal=True):
-        """Add a song to the library based on filename.
+    def __add__single_filename(self, filename):
+        if filename not in self._contents:
+            song = MusicFile(filename)
+            if song:
+                print_d("Adding %r based on filename" % filename, self)
+                self.dirty = True
+                self._contents[song.key] = song
+                return song
+        else:
+            print_d("Already got file %r" % (filename,), self)
+            return self._contents[filename]
 
-        If 'signal' is true, the 'added' signal may fire.
+    def add_filename(self, filenames, signal=True):
+        """Add a song (or songs) to the library based on filename.
+
+        If 'signal' is true, the 'added' signal will be fired.
 
         If the song was added, it is returned. Otherwise, None
         is returned.
         """
         try:
-            if filename not in self._contents:
-                song = MusicFile(filename)
-                if song:
-                    print_d("Adding %r based on filename." % filename, self)
-                    self.dirty = True
-                    self._contents[song.key] = song
-                    if signal:
-                        self.add([song])
-                    return song
+            if isinstance(filenames, list):
+                songs = []
+                for filename in filenames:
+                    song = self.__add__single_filename(filename)
+                    if song: songs.append(song)
+                ret = songs
             else:
-                return self._contents[filename]
+                filename = filenames
+                ret = self.__add__single_filename(filename)
+                songs = [ret]
+            if signal and ret:
+                self.emit("added", songs)
+            # Return either the single song, or a list
+            return ret
         except StandardError:
             util.print_exc()
