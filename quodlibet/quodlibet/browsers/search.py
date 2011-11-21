@@ -45,7 +45,7 @@ class EmptyBar(gtk.VBox, Browser):
     def __destroy(self, *args):
         del self.commands
 
-    def dynamic(self, song):
+    def active_filter(self, song):
         if self._filter is not None:
             return self._filter(song)
         else: return True

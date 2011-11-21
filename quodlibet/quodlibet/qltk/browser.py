@@ -32,7 +32,7 @@ class LibraryBrowser(Window):
         self.set_default_size(x, y)
         self.connect('configure-event', LibraryBrowser.__save_size, cfg_name)
 
-        view = SongList(library)
+        view = SongList(library, update=True)
         self.add_accel_group(view.accelerators)
         self.songlist = view
 

@@ -75,9 +75,17 @@ class Browser(object):
     def init(klass, library): pass
     init = classmethod(init)
 
-    # Returns true if the song should remain on the song list. Used to
-    # implement dynamic playlist removal when a song ends.
-    def dynamic(self, song): return True
+    # Deprecated: use active_filter instead
+    def dynamic(self, song):
+        if callable(self.active_filter):
+            return self.active_filter(song)
+        return True
+
+    # A callable that returns True if the passed song should be in the
+    # song list, or None. Used for adding new songs to the song list or
+    # dynamic playlist removal when a song ends.
+    # def active_filter(self, song): ...
+    active_filter = None
 
     # Save/restore selected songlist. Browsers should save whatever
     # they need to recreate the criteria for the current song list (not

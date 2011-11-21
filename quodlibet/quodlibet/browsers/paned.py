@@ -664,6 +664,18 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.__added(library, songs)
         self.__removed(library, [])
 
+    def active_filter(self, song):
+        # check with the search filter
+        if not self._filter(song):
+            return False
+
+        # check if the selection is right in every pane
+        for pane in self.__panes:
+            if not pane._matches(song):
+                return False
+
+        return True
+
     def activate(self):
         if self._text is not None and Query.is_parsable(self._text):
             star = dict.fromkeys(SongList.star)

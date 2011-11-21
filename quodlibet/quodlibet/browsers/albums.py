@@ -624,6 +624,26 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     def __play_selection(self, view, indices, col, player):
         player.reset()
 
+    def active_filter(self, song):
+        key = song.album_key
+
+        selection = self.view.get_selection()
+        if not selection:
+            return False
+
+        model, rows = selection.get_selected_rows()
+        if not model or not rows:
+            return False
+
+        if rows and model[rows[0]][0] is None:
+            return True
+
+        for album in [model[row][0] for row in rows]:
+            if key == album.key:
+                return True
+
+        return False
+
     def filter(self, key, values):
         assert(key == "album")
         if not values: values = [""]

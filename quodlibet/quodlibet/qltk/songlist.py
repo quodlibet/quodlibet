@@ -420,7 +420,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         menu.show_all()
         return menu
 
-    def __init__(self, library, player=None):
+    def __init__(self, library, player=None, update=False):
         super(SongList, self).__init__()
         self._register_instance(SongList)
         self.set_model(PlaylistModel())
@@ -439,6 +439,8 @@ class SongList(AllTreeView, util.InstanceTracker):
             sigs.append(s)
         sigs.extend([librarian.connect('changed', self.__song_updated),
                 librarian.connect('removed', self.__song_removed)])
+        if update:
+            sigs.append(librarian.connect('added', self.__song_added))
         for sig in sigs:
             self.connect_object('destroy', librarian.disconnect, sig)
         if player:
@@ -872,6 +874,17 @@ class SongList(AllTreeView, util.InstanceTracker):
                 songs.reverse()
             self.set_songs(songs)
 
+    def set_sort_by_tag(self, tag, order=None):
+        for h in self.get_columns():
+            name = h.header_name
+            if self.__get_sort_tag(name) == tag:
+                if order: s = gtk.SORT_DESCENDING
+                else: s = gtk.SORT_ASCENDING
+                h.set_sort_order(s)
+                h.set_sort_indicator(True)
+            else:
+                h.set_sort_indicator(False)
+
     def set_model(self, model):
         super(SongList, self).set_model(model)
         self.model = model
@@ -910,6 +923,36 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         return tag
 
+    def add_songs(self, songs):
+        """Add songs to the list in the right order and position"""
+
+        if not songs: return
+
+        model = self.get_model()
+        if not len(model):
+            self.set_songs(songs)
+            return
+
+        tag, reverse = self.get_sort_by()
+        tag = self.__get_sort_tag(tag)
+
+        if not self.is_sorted():
+            self.set_sort_by_tag(tag, reverse)
+
+        # FIXME: Replace with something fast
+
+        old_songs = self.get_songs()
+        old_songs.extend(songs)
+
+        if not tag:
+            old_songs.sort(key=lambda s: s.sort_key, reverse=reverse)
+        else:
+            old_songs.sort(key=lambda s: s.sort_key)
+            old_songs.sort(key=sort_func, reverse=reverse)
+
+        for index, song in sorted(zip(map(old_songs.index, songs), songs)):
+            model.insert(index, row=[song])
+
     def set_songs(self, songs, sorted=False):
         model = self.get_model()
 
@@ -919,12 +962,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
             #try to set a sort indicator that matches the default order
             if not self.is_sorted():
-                for h in self.get_columns():
-                    name = h.header_name
-                    if self.__get_sort_tag(name) == tag:
-                        h.set_sort_indicator(True)
-                        h.set_sort_order(gtk.SORT_ASCENDING)
-                        break
+                self.set_sort_by_tag(tag, reverse)
 
             if not tag:
                 songs.sort(key=lambda s: s.sort_key, reverse=reverse)
@@ -966,6 +1004,12 @@ class SongList(AllTreeView, util.InstanceTracker):
             row = model[path]
             if row[0] in songs:
                 model.row_changed(row.path, row.iter)
+
+    def __song_added(self, librarian, songs):
+        window = qltk.get_top_parent(self)
+        filter_ = window.browser.active_filter
+        if callable(filter_):
+            self.add_songs(filter(filter_, songs))
 
     def __song_removed(self, librarian, songs):
         # The selected songs are removed from the library and should

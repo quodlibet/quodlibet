@@ -83,7 +83,7 @@ class MainSongList(SongList):
     _activated = False
 
     def __init__(self, library, player):
-        super(MainSongList, self).__init__(library, player)
+        super(MainSongList, self).__init__(library, player, update=True)
 
         self.connect_object('row-activated', self.__select_song, player)
 
