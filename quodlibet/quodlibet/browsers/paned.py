@@ -632,9 +632,6 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.connect_object('destroy', select.disconnect, s)
         self._search_bar.pack_start(prefs, expand=False)
 
-        # We only want one handler for this (ie not the base class's)
-        if self._added_hander: library.disconnect(self._added_hander)
-
         for s in [library.connect('changed', self.__changed),
                   library.connect('added', self.__added),
                   library.connect('removed', self.__removed)
@@ -653,11 +650,9 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
     def __added(self, library, songs):
         songs = filter(self._filter, songs)
-        print_d("Adding to panes: %s " % [s("~filename") for s in songs], self)
         for pane in self.__panes:
             pane._add(songs)
             songs = filter(pane._matches, songs)
-        self.__all()
 
     def __removed(self, library, songs, remove_if_empty=True):
         songs = filter(self._filter, songs)

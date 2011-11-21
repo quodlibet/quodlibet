@@ -41,14 +41,6 @@ class EmptyBar(gtk.VBox, Browser):
         self._library = library
         self.commands = {"query": self.__query}
         self.connect('destroy', self.__destroy)
-        self._added_hander = library.connect('added', self.__added)
-
-    def __added(self, library, songs):
-        print_d("Adding %d song(s)." % len(songs), self)
-        if songs is None: return
-        if self._filter is not None:
-            songs = filter(self._filter, songs)
-            if songs: self.activate()
 
     def __destroy(self, *args):
         del self.commands
