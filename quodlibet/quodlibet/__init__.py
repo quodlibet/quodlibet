@@ -280,6 +280,18 @@ def main(window):
     import gtk
 
     def quit_gtk(m):
+        # stop all copools
+        print_d("Quit GTK: Stop all copools")
+        from quodlibet.util import copool
+        copool.remove_all()
+
+        # events that add new events to the main loop (like copool)
+        # can block the shutdown, so force stop after some time.
+        # gtk.main_iteration will return True if quit gets called here
+        import gobject
+        gobject.timeout_add(4 * 1000, gtk.main_quit,
+                            priority=gobject.PRIORITY_HIGH)
+
         # destroy all open windows so they hide immediately on close:
         # destroying all top level windows doesn't work (weird errors),
         # so we hide them all and only destroy our tracked instances
@@ -288,9 +300,14 @@ def main(window):
         map(gtk.Window.hide, gtk.window_list_toplevels())
         map(gtk.Window.destroy, Window.instances)
 
+        print_d("Quit GTK: Process pending events...")
         while gtk.events_pending():
-            gtk.main_iteration(False)
+            if gtk.main_iteration(False):
+                print_d("Quit GTK: Timeout occured, force quit.")
+                break
+
         gtk.main_quit()
+        print_d("Quit GTK: done.")
 
     window.connect('destroy', quit_gtk)
     window.show()
