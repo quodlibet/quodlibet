@@ -33,9 +33,6 @@ class TPanedBrowser(TestCase):
             self.failIf(self.bar.can_filter(key))
         self.failUnless(self.bar.can_filter("artist"))
 
-    def test_dynamic(self):
-        self.failUnless(self.bar.dynamic(SONGS[0]))
-
     def test_filter_value(self):
         self.expected = [SONGS[0]]
         self.bar.filter("artist", ["boris"])
