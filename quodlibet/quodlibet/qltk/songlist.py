@@ -947,6 +947,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         if not tag:
             old_songs.sort(key=lambda s: s.sort_key, reverse=reverse)
         else:
+            sort_func = AudioFile.sort_by_func(tag)
             old_songs.sort(key=lambda s: s.sort_key)
             old_songs.sort(key=sort_func, reverse=reverse)
 

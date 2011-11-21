@@ -43,7 +43,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, PlaylistMux
 from quodlibet.qltk.x import RPaned
 from quodlibet.qltk.about import AboutQuodLibet
-from quodlibet.util import copool
+from quodlibet.util import copool, gobject_weak
 from quodlibet.util.uri import URI
 from quodlibet.util.library import background_filter
 
@@ -252,13 +252,20 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.get_selection().connect(
                 'changed', util.DeferredSignal(self.__set_time))
 
-        library.librarian.connect('removed', self.__set_time)
-        library.librarian.connect('added', self.__set_time)
-        library.librarian.connect_object('changed', self.__song_changed, player)
-        player.connect('song-ended', self.__song_ended)
-        player.connect('song-started', self.__song_started)
-        player.connect('paused', self.__update_paused, True)
-        player.connect('unpaused', self.__update_paused, False)
+        lib = library.librarian
+        gobject_weak(lib.connect, 'removed', self.__set_time, parent=self)
+        gobject_weak(lib.connect, 'added', self.__set_time, parent=self)
+        gobject_weak(lib.connect_object, 'changed', self.__song_changed,
+                     player, parent=self)
+
+        player_sigs = [
+            ('song-ended', self.__song_ended),
+            ('song-started', self.__song_started),
+            ('paused', self.__update_paused, True),
+            ('unpaused', self.__update_paused, False),
+        ]
+        for sig in player_sigs:
+            gobject_weak(player.connect, *sig, parent=self)
 
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
@@ -587,7 +594,7 @@ class QuodLibetWindow(gtk.Window):
 
     def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
-        if not menu or not menu.child: return # shutting down
+
         if paused: key = gtk.STOCK_MEDIA_PLAY
         else: key = gtk.STOCK_MEDIA_PAUSE
         text = gtk.stock_lookup(key)[1]
