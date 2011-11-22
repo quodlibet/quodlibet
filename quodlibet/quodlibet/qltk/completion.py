@@ -99,11 +99,13 @@ class LibraryTagCompletion(EntryWordCompletion):
         model.clear()
 
         tags = set()
-        for count, song in enumerate(list(library)):
+        songs = list(library)
+        for count, song in enumerate(songs):
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
-            if count % 500 == 0:
+
+            if count % 500 == 0 or count + 1 == len(songs):
                 tags -= all_tags
                 for tag in tags:
                     model.append([tag])
@@ -111,13 +113,14 @@ class LibraryTagCompletion(EntryWordCompletion):
                 tags.clear()
                 yield True
 
-        tags.clear()
         tags.update(["~dirname", "~basename", "~people", "~format"])
         for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
                     "mtime", "added", "rating", "length"]:
             tags.add("#(" + tag)
         for tag in ["date", "bpm"]:
-            if tag in tags: tags.add("#(" + tag)
+            if tag in all_tags: tags.add("#(" + tag)
+
+        tags -= all_tags
         for tag in tags:
             model.append([tag])
         all_tags.update(tags)
