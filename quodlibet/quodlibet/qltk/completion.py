@@ -76,7 +76,7 @@ class LibraryTagCompletion(EntryWordCompletion):
             library.connect('changed', self.__update_song, model)
             library.connect('added', self.__update_song, model)
             library.connect('removed', self.__update_song, model)
-            self.__build_model(library, model)
+            copool.add(self.__build_model, library, model)
         self.set_model(model)
         self.set_text_column(0)
 
@@ -95,12 +95,23 @@ class LibraryTagCompletion(EntryWordCompletion):
     @classmethod
     def __build_model(klass, library, model):
         print_d("Updating tag model for whole library")
-        tags = klass.__tags
+        all_tags = klass.__tags
         model.clear()
+
+        tags = set()
         for count, song in enumerate(list(library)):
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
                     tags.add(tag)
+            if count % 500 == 0:
+                tags -= all_tags
+                for tag in tags:
+                    model.append([tag])
+                all_tags.update(tags)
+                tags.clear()
+                yield True
+
+        tags.clear()
         tags.update(["~dirname", "~basename", "~people", "~format"])
         for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
                     "mtime", "added", "rating", "length"]:
@@ -109,6 +120,8 @@ class LibraryTagCompletion(EntryWordCompletion):
             if tag in tags: tags.add("#(" + tag)
         for tag in tags:
             model.append([tag])
+        all_tags.update(tags)
+
         print_d("Done updating tag model for whole library")
 
 class LibraryValueCompletion(gtk.EntryCompletion):
