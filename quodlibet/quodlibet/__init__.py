@@ -12,16 +12,14 @@ import locale
 import os
 import re
 import sys
-import time
 import traceback
 import warnings
 
 import quodlibet.const
 import quodlibet.util
-import quodlibet.util.logging
 
-from quodlibet.const import ENCODING
 from quodlibet.util.i18n import GlibTranslations
+from quodlibet.util.dprint import print_, print_d, print_w, print_e
 
 def _gtk_init(icon=None):
     import pygtk
@@ -69,56 +67,6 @@ def _gettext_init():
     except IOError:
         t = GlibTranslations()
     t.install(unicode=True)
-
-def print_(string, frm="utf-8", prefix="", output=sys.stdout, log=None):
-    if prefix:
-        string = prefix + ("\n" + prefix).join(string.splitlines())
-
-    quodlibet.util.logging.log(string, log)
-
-    if os.name == 'nt':
-        return
-
-    if output:
-        if isinstance(string, unicode):
-            string = string.encode(ENCODING, "replace")
-        else:
-            string = string.decode(frm).encode(ENCODING, "replace")
-        try:
-            print >>output, string
-        except IOError, e:
-            pass
-
-def print_d(string, context=""):
-    """Print debugging information."""
-    if quodlibet.const.DEBUG:
-        output = sys.stderr
-    else:
-        output = None
-
-    if context and not isinstance(context, str):
-        try:
-            context = type(context).__name__
-            context += "." + traceback.extract_stack()[-2][2] + ": "
-        except AttributeError:
-            context = "Unknown Context"
-
-    timestr = "%0.2f" % time.time()
-    string = "%s: %s%s" % (timestr[-6:], context, string)
-    # Translators: Name of the debug Output Log window
-    print_(string, prefix="D: ", log=_("Debug"), output=output)
-
-def print_w(string):
-    """Print warnings."""
-    # Translators: "W" as in "Warning". It is prepended to
-    # terminal output. APT uses a similar output format.
-    print_(string, prefix=_("W: "), log=_("Warnings"), output=sys.stderr)
-
-def print_e(string):
-    """Print errors."""
-    # Translators: "E" as in "Error". It is prepended to
-    # terminal output. APT uses a similar output format.
-    print_(string, prefix=_("E: "), log=_("Errors"), output=sys.stderr)
 
 def set_process_title(title):
     """Sets process name as visible in ps or top. Requires ctypes libc

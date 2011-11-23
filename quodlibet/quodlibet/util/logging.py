@@ -38,5 +38,5 @@ def dump(path=LOGDIR):
             fileobj.close()
             
     except (IOError, OSError):
-        print _("Unable to dump logs, you're boned.")
+        print_w("Unable to dump logs.")
     
