@@ -137,7 +137,7 @@ def print_d(string, context=""):
 
     context = extract_caller_info()
     # strip the package name
-    if context.startswith("quodlibet."):
+    if context.startswith("quodlibet.") and context.count(".") > 1:
         context = context[10:]
 
     timestr = ("%0.2f" % time.time())[-6:]
