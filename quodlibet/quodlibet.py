@@ -190,7 +190,7 @@ def print_query(query):
     '''
     print_d("Querying library for %r" %query)
     import quodlibet.library
-    library = quodlibet.library.init(const.LIBRARY, verbose=False)
+    library = quodlibet.library.init(const.LIBRARY)
     songs = library.query(query)
     #songs.sort()
     sys.stdout.write("\n".join([song("~filename") for song in songs]) + "\n")
