@@ -354,7 +354,7 @@ if __name__ == "__main__":
     quodlibet._init_signal()
 
     process_arguments()
-    if isrunning() and not os.environ.get("QUODLIBET_DEBUG"):
+    if isrunning() and not quodlibet.const.DEBUG:
         print_(_("Quod Libet is already running."))
         control('focus')
     main()

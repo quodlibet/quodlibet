@@ -108,15 +108,7 @@ NBP_EXAMPLES = """\
 /path/<artist> - <album>/<tracknumber>. <title>
 /path/<artist>/<album>/<tracknumber> - <title>"""
 
-if "QUODLIBET_DEBUG" in os.environ:
-    DEBUG = True
-    DEBUG_MENU = """\
-      <menuitem action='DebugReload'/>
-      <menuitem action='DebugCauseError'/>
-"""
-else:
-    DEBUG = False
-    DEBUG_MENU = ""
+DEBUG = "QUODLIBET_DEBUG" in os.environ
 
 MENU = """<ui>
   <menubar name='Menu'>

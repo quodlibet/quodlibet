@@ -81,6 +81,7 @@ class OptionParser(object):
             "help", shorts="h", help=_("Display brief usage information"))
         self.add(
             "version", shorts="v", help=_("Display version and copyright"))
+        self.add("debug", shorts="d")
 
     def add(self, canon, help=None, arg="", shorts="", longs=[]):
         self.__args[canon] = arg
@@ -179,6 +180,9 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
                 elif o == "version":
                     print_(self.version())
                     raise SystemExit
+                elif o == "debug":
+                    from quodlibet import const
+                    const.DEBUG = True
                 if self.__args[o]: transopts[o] = a
                 else: transopts[o] = True
 

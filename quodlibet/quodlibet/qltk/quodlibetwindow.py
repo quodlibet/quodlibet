@@ -426,7 +426,7 @@ class QuodLibetWindow(gtk.Window):
              None, None, lambda *args: LoggingWindow(self)),
             ]
 
-        if "QUODLIBET_DEBUG" in os.environ:
+        if const.DEBUG:
             from quodlibet.debug import cause_error, enc
             actions.append(("DebugReload", gtk.STOCK_DIALOG_WARNING,
                             _("_Edit and Continue"), None, None,
@@ -504,11 +504,16 @@ class QuodLibetWindow(gtk.Window):
             act.connect_object('activate', LibraryBrowser, Kind, library)
             ag.add_action_with_accel(act, None)
 
+        debug_menu = ""
+        if const.DEBUG:
+            debug_menu = ("<menuitem action='DebugReload'/>\n"
+                          "<menuitem action='DebugCauseError'/>")
+
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(ag, -1)
         menustr = const.MENU % {"browsers": browsers.BrowseLibrary(),
                                 "views": browsers.ViewBrowser(),
-                                "debug": const.DEBUG_MENU}
+                                "debug": debug_menu}
         self.ui.add_ui_from_string(menustr)
 
         # Cute. So. UIManager lets you attach tooltips, but when they're
