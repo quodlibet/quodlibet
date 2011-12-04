@@ -52,6 +52,15 @@ def _gettext_init():
     try: locale.setlocale(locale.LC_ALL, '')
     except locale.Error: pass
 
+    unexpand = quodlibet.util.unexpand
+
+    # Use the locale dir in ../build/share/locale if there is one
+    localedir = os.path.dirname(quodlibet.const.BASEDIR)
+    localedir = os.path.join(localedir, "build", "share", "locale")
+    if os.path.isdir(localedir):
+        print_d("Using local localedir: %r" % unexpand(localedir))
+        gettext.bindtextdomain("quodlibet", localedir)
+
     localedir = gettext.bindtextdomain("quodlibet")
     if os.name == "nt":
         import ctypes
@@ -65,6 +74,7 @@ def _gettext_init():
         t = gettext.translation("quodlibet", localedir,
             class_=GlibTranslations)
     except IOError:
+        print_d("No translation found in %r" % unexpand(localedir))
         t = GlibTranslations()
     t.install(unicode=True)
 
