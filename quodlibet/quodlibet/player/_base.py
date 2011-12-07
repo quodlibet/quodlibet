@@ -103,7 +103,7 @@ class BasePlayer(gtk.Object):
             self.paused = False
 
     def go_to(self, song, explicit=False):
-        print_d("Going to %r" % song, context=self)
+        print_d("Going to %r" % getattr(song, "key", song))
         res = self._source.go_to(song, explicit)
         if explicit and not res:
             return False
