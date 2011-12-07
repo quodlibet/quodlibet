@@ -122,44 +122,40 @@ class TSongFileLibrary(TSongLibrary):
         self.failIf(new in self.library)
         self.failUnlessEqual(new, self.library._masked[new][new])
 
+    def __get_file(self):
+        fd, filename = mkstemp(".flac")
+        shutil.copy(os.path.join('tests', 'data', 'empty.flac'), filename)
+        return filename
+
     def test_add_filename(self):
         config.init()
         try:
-            config.set("editing", "save_email", "")
-            fd, filename = mkstemp(".flac")
-            shutil.copy(os.path.join('tests', 'data', 'empty.flac'), filename)
-            song = FLACFile(filename)
-            self.failIf(len(self.library), "Library should start empty")
+            filename = self.__get_file()
             ret = self.library.add_filename(filename)
-            self.failUnlessEqual(sorted(ret), sorted(song))
+            self.failUnless(ret)
             self.failUnlessEqual(1, len(self.library))
-            self.failUnless(song in self.library)
+            self.failUnlessEqual(len(self.added), 1)
+            ret = self.library.add_filename(filename)
+            self.failIf(ret)
+            self.failUnlessEqual(len(self.added), 1)
             os.unlink(filename)
-        finally:
-            config.quit()
 
-    def test_add_filename_multiple(self):
-        config.init()
-        try:
-            config.set("editing", "save_email", "")
-            fd, filename = mkstemp(".flac")
-            fd2, filename2 = mkstemp(".flac")
-            shutil.copy(os.path.join('tests', 'data', 'empty.flac'), filename)
-            shutil.copy(os.path.join('tests', 'data', 'empty.flac'), filename2)
-            song = FLACFile(filename)
-            song2 = FLACFile(filename2)
-            self.failIf(len(self.library), "Library should start empty")
-            ret = self.library.add_filename([filename, filename2])
-            self.failUnlessEqual(len(ret), 2)
-            # Assert that the songs returned are in some way the ones we added
-            self.failUnlessEqual(sorted([sorted(song), sorted(song2)]),
-                                 sorted(sorted(s) for s in ret))
-            self.failUnlessEqual(2, len(self.library),
-                "Couldn't add 2 files (found %d)" % len(self.library))
-            self.failUnless(song in self.library)
-            self.failUnless(song2 in self.library)
+            filename = self.__get_file()
+            ret = self.library.add_filename(filename, add=False)
+            self.failUnless(ret)
+            self.failIf(ret in self.library)
+            self.failUnlessEqual(len(self.added), 1)
+            self.library.add([ret])
+            self.failUnless(ret in self.library)
+            self.failUnlessEqual(len(self.added), 2)
+            self.failUnlessEqual(2, len(self.library))
             os.unlink(filename)
-            os.unlink(filename2)
+
+            ret = self.library.add_filename("")
+            self.failIf(ret)
+            self.failUnlessEqual(len(self.added), 2)
+            self.failUnlessEqual(2, len(self.library))
+
         finally:
             config.quit()
 

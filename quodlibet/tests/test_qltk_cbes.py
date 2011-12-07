@@ -108,4 +108,5 @@ class TStandaloneEditor(TestCase):
             pass
         quodlibet.config.quit()
 
-add([TComboBoxEntrySave, TStandaloneEditor])
+add(TComboBoxEntrySave)
+add(TStandaloneEditor)

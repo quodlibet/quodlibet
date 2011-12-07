@@ -375,7 +375,7 @@ class FileLibrary(Library):
         for value in self.scan(paths, exclude, cofuncid):
             yield value
 
-    def add_filename(self, filename, signal=True):
+    def add_filename(self, filename, add=True):
         """Add a file based on its filename.
 
         Subclasses must override this to open the file correctly.
@@ -407,7 +407,7 @@ class FileLibrary(Library):
                                 if item is not None:
                                     added.append(item)
                                     if len(added) > 20:
-                                        self.emit('added', added)
+                                        self.add(added)
                                         added = []
                                         task.pulse()
                                         yield True
@@ -448,40 +448,26 @@ class FileLibrary(Library):
 class SongFileLibrary(SongLibrary, FileLibrary):
     """A library containing song files."""
 
-    def __add__single_filename(self, filename):
+    def add_filename(self, filename, add=True):
+        """Add a song to the library based on filename.
+
+        If 'add' is true, the song will be added and the 'added' signal
+        may be fired.
+
+        Example (add=False):
+            load many songs and call Library.add(songs) to add all in one go.
+
+        If the song was/can be added, it is returned.
+        Otherwise, None is returned.
+        """
+
+        song = None
         if filename not in self._contents:
             song = MusicFile(filename)
-            if song:
-                print_d("Adding %r based on filename" % filename, self)
-                self.dirty = True
-                self._contents[song.key] = song
-                return song
+            if song and add:
+                self.add([song])
         else:
-            print_d("Already got file %r" % (filename,), self)
-            return self._contents[filename]
+            print_d("Already got file %r." % filename)
+            return
 
-    def add_filename(self, filenames, signal=True):
-        """Add a song (or songs) to the library based on filename.
-
-        If 'signal' is true, the 'added' signal will be fired.
-
-        If the song was added, it is returned. Otherwise, None
-        is returned.
-        """
-        try:
-            if isinstance(filenames, list):
-                songs = []
-                for filename in filenames:
-                    song = self.__add__single_filename(filename)
-                    if song: songs.append(song)
-                ret = songs
-            else:
-                filename = filenames
-                ret = self.__add__single_filename(filename)
-                songs = [ret]
-            if signal and ret:
-                self.emit("added", songs)
-            # Return either the single song, or a list
-            return ret
-        except StandardError:
-            util.print_exc()
+        return song

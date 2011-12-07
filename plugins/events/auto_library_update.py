@@ -64,9 +64,14 @@ class LibraryEvent(ProcessEvent):
         path = os.path.join(event.path, event.name)
         if event.dir:
             print_d('Scanning directories...', self)
+            songs = []
             for path, dnames, fnames in os.walk(path):
                 print_d('Found %d file(s) in "%s"' % (len(fnames), path), self)
-                lib.add_filename([os.path.join(path, fn) for fn in fnames])
+                for filename in (os.path.join(path, fn) for fn in fnames):
+                    song = lib.add_filename(filename, add=False)
+                    if song:
+                        songs.append(song)
+            lib.add(songs)
         else:
             item = lib.add_filename(path)
         return False
