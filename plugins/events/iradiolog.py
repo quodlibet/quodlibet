@@ -17,7 +17,7 @@ class IRadioLog(EventPlugin):
     def plugin_on_song_started(self, song):
         if song is None: return
 
-        from player import playlist as player
+        from quodlibet.player import playlist as player
 
         if player.song.multisong and not song.multisong:
             time = player.get_position()
