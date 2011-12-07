@@ -16,7 +16,6 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet import stock
 
 from quodlibet.browsers._base import Browser
 from quodlibet.parse import Query, XMLFromPattern
@@ -27,6 +26,7 @@ from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk.searchbar import SearchBarBox
+from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 
@@ -138,6 +138,93 @@ class Preferences(qltk.UniqueWindow):
         else: edit.apply.set_sensitive(True)
         label.set_markup(text)
 
+
+class PreferencesButton(gtk.HBox):
+    def __init__(self, model):
+        super(PreferencesButton, self).__init__()
+
+        sort_orders = [
+            (_("_Title"), self.__compare_title),
+            (_("_Artist"), self.__compare_artist),
+            (_("_Date"), self.__compare_date),
+            ]
+
+        menu = gtk.Menu()
+
+        sort_item = gtk.MenuItem(_("Sort _by..."))
+        sort_menu = gtk.Menu()
+
+        active = config.getint('browsers', 'album_sort', 1)
+
+        item = None
+        for i, (label, func) in enumerate(sort_orders):
+            item = gtk.RadioMenuItem(item, label)
+            model.set_sort_func(100 + i, func)
+            if i == active:
+                model.set_sort_column_id(100 + i, gtk.SORT_ASCENDING)
+                item.set_active(True)
+            gobject_weak(item.connect, "toggled",
+                         util.DeferredSignal(self.__sort_toggled_cb),
+                         model, i)
+            sort_menu.append(item)
+
+        sort_item.set_submenu(sort_menu)
+        menu.append(sort_item)
+
+        pref_item = MenuItem(_("_Preferences"), gtk.STOCK_PREFERENCES)
+        menu.append(pref_item)
+        gobject_weak(pref_item.connect, "activate", Preferences)
+
+        menu.show_all()
+
+        button = MenuButton(
+            gtk.image_new_from_stock(
+                gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU),
+                arrow=False)
+        button.set_menu(menu)
+        self.pack_start(button)
+
+    def __sort_toggled_cb(self, item, model, num):
+        if item.get_active():
+            config.set("browsers", "album_sort", str(num))
+            model.set_sort_column_id(100 + num, gtk.SORT_ASCENDING)
+
+    def __compare_title(self, model, i1, i2):
+        a1, a2 = model[i1][0], model[i2][0]
+        if (a1 and a2) is None: return cmp(a1, a2)
+        elif not a1.title: return 1
+        elif not a2.title: return -1
+        elif not a1.sort: return 1
+        elif not a2.sort: return -1
+        else: return cmp((a1.sort, a1.key), (a2.sort, a2.key))
+
+    def __compare_artist(self, model, i1, i2):
+        a1, a2 = model[i1][0], model[i2][0]
+        if (a1 and a2) is None: return cmp(a1, a2)
+        elif not a1.title: return 1
+        elif not a2.title: return -1
+        elif not a1.sort: return 1
+        elif not a2.sort: return -1
+        elif not a1.peoplesort and a2.peoplesort: return 1
+        elif not a2.peoplesort and a1.peoplesort: return -1
+        else: return (cmp(a1.peoplesort and a1.peoplesort[0],
+                          a2.peoplesort and a2.peoplesort[0]) or
+                      cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
+                      cmp((a1.sort, a1.key), (a2.sort, a2.key)))
+
+    def __compare_date(self, model, i1, i2):
+        a1, a2 = model[i1][0], model[i2][0]
+        if (a1 and a2) is None: return cmp(a1, a2)
+        elif not a1.title: return 1
+        elif not a2.title: return -1
+        elif not a1.sort: return 1
+        elif not a2.sort: return -1
+        elif not a1.date and a2.date: return 1
+        elif not a2.date and a1.date: return -1
+        else: return (cmp(a1.date, a2.date) or
+            cmp((a1.sort, a1.key), (a2.sort, a2.key)))
+
+
 class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
@@ -245,69 +332,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
                 model.row_changed(row.path, row.iter)
                 if not changed_albums: break
 
-    class SortCombo(gtk.ComboBox):
-        """ComboBox which sets the sort function on a TreeModelSort."""
-        def __init__(self, model):
-            # Contains string to display, function to do sorting
-            cbmodel = gtk.ListStore(str)
-            gtk.ComboBox.__init__(self, cbmodel)
-            cell = gtk.CellRendererText()
-            self.pack_start(cell, True)
-            self.add_attribute(cell, 'text', 0)
-            model.set_sort_func(100, self.__compare_title)
-            model.set_sort_func(101, self.__compare_artist)
-            model.set_sort_func(102, self.__compare_date)
-
-            for text in [_("Title"), _("Artist"), _("Date")]:
-                cbmodel.append(row=[text])
-
-            gobject_weak(self.connect_object, 'changed',
-                self.__set_cmp_func, model)
-
-            try: active = config.getint('browsers', 'album_sort')
-            except: active = 0
-            self.set_active(active)
-
-        def __set_cmp_func(self, model):
-            active = self.get_active()
-            config.set("browsers", "album_sort", str(active))
-            model.set_sort_column_id(100 + active, gtk.SORT_ASCENDING)
-
-        def __compare_title(self, model, i1, i2):
-            a1, a2 = model[i1][0], model[i2][0]
-            if (a1 and a2) is None: return cmp(a1, a2)
-            elif not a1.title: return 1
-            elif not a2.title: return -1
-            elif not a1.sort: return 1
-            elif not a2.sort: return -1
-            else: return cmp((a1.sort, a1.key), (a2.sort, a2.key))
-
-        def __compare_artist(self, model, i1, i2):
-            a1, a2 = model[i1][0], model[i2][0]
-            if (a1 and a2) is None: return cmp(a1, a2)
-            elif not a1.title: return 1
-            elif not a2.title: return -1
-            elif not a1.sort: return 1
-            elif not a2.sort: return -1
-            elif not a1.peoplesort and a2.peoplesort: return 1
-            elif not a2.peoplesort and a1.peoplesort: return -1
-            else: return (cmp(a1.peoplesort and a1.peoplesort[0],
-                              a2.peoplesort and a2.peoplesort[0]) or
-                          cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
-                          cmp((a1.sort, a1.key), (a2.sort, a2.key)))
-
-        def __compare_date(self, model, i1, i2):
-            a1, a2 = model[i1][0], model[i2][0]
-            if (a1 and a2) is None: return cmp(a1, a2)
-            elif not a1.title: return 1
-            elif not a2.title: return -1
-            elif not a1.sort: return 1
-            elif not a2.sort: return -1
-            elif not a1.date and a2.date: return 1
-            elif not a2.date and a1.date: return -1
-            else: return (cmp(a1.date, a2.date) or
-                cmp((a1.sort, a1.key), (a2.sort, a2.key)))
-
     def __init__(self, library, player):
         super(AlbumList, self).__init__(spacing=6)
         self._register_instance()
@@ -404,22 +428,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         search.connect_object('focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
 
-        prefs = gtk.Button()
-        prefs.add(gtk.image_new_from_stock(
-            gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
-        gobject_weak(prefs.connect, 'clicked', Preferences)
+        prefs = PreferencesButton(model_sort)
         search.pack_start(prefs, expand=False)
         self.pack_start(search, expand=False)
         self.pack_start(sw, expand=True)
-
-        hb = gtk.HBox(spacing=6)
-        l = gtk.Label(_("Sort _by:"))
-        l.set_use_underline(True)
-        sc = self.SortCombo(model_sort)
-        l.set_mnemonic_widget(sc)
-        hb.pack_start(l, expand=False)
-        hb.pack_start(sc)
-        self.pack_start(hb, expand=False)
 
         self.connect("destroy", self.__destroy)
 
