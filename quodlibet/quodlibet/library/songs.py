@@ -412,7 +412,7 @@ class FileLibrary(Library):
                                         task.pulse()
                                         yield True
                     if added:
-                        self.emit('added', added)
+                        self.add(added)
                         added = []
                         task.pulse()
                         yield True
