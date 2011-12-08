@@ -118,7 +118,7 @@ class Library(gtk.Object):
             return
         print_d("Changing %d items." % len(items), self)
         self.dirty = True
-        self.emit('changed', items)
+        gobject.idle_add(self.emit, 'changed', items)
 
     def __iter__(self):
         """Iterate over the items in the library."""
