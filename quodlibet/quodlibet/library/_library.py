@@ -11,6 +11,7 @@ least useful but most content-agnostic.
 """
 
 import cPickle as pickle
+import cStringIO
 import itertools
 import os
 import shutil
@@ -146,8 +147,14 @@ class Library(gtk.Object):
         print_d("Loading contents of %r." % filename, self)
         try:
             if os.path.exists(filename):
+                # pickle makes 1000 read syscalls for 6000 songs
+                # read the file into memory so that there are less
+                # context switches. saves 40% here..
                 fileobj = file(filename, "rb")
-                try: items = pickle.load(fileobj)
+                string_io = cStringIO.StringIO(fileobj.read())
+                fileobj.close()
+
+                try: items = pickle.load(string_io)
                 except (pickle.PickleError, EnvironmentError,
                         ImportError, EOFError):
                     util.print_exc()
@@ -155,7 +162,8 @@ class Library(gtk.Object):
                     except EnvironmentError:
                         util.print_exc()
                     items = []
-                fileobj.close()
+
+                string_io.close()
             else: return
         except EnvironmentError:
             return
