@@ -225,8 +225,13 @@ class QuodLibetWindow(gtk.Window):
         hbox.pack_start(self.statusbar)
         self.statusbar.show()
 
-        self.select_browser(
-            self, config.get("memory", "browser"), library, player, True)
+        try:
+            self.select_browser(
+                self, config.get("memory", "browser"), library, player, True)
+        except:
+            config.set("memory", "browser", browsers.name(0))
+            config.save(const.CONFIG)
+            raise
 
         def delayed_song_set():
             song = library.get(config.get("memory", "song"))

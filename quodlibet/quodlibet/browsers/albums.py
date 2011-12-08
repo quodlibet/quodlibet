@@ -712,7 +712,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         text = config.get("browsers", "query_text").decode("utf-8")
         entry = self.__search
         entry.set_text(text)
-        self.__update_filter(entry, text, restore=True)
+
+        # update_filter expects a parsable query
+        if Query.is_parsable(text):
+            self.__update_filter(entry, text, restore=True)
 
         albums = config.get("browsers", "albums").split("\n")
         view = self.view
