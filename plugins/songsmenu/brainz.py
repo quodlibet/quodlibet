@@ -271,7 +271,8 @@ class SearchWindow(gtk.Dialog):
             if (config_get('albumartist', True)
                 and extractUuid(album.artist.id) != VARIOUS_ARTISTS_ARTISTID):
                 shared['albumartist'] = album.artist.name
-                if config_get('artist_sort', True):
+                if config_get('artist_sort', False) and \
+                        album.artist.sortName != album.artist.name:
                     shared['albumartistsort'] = album.artist.sortName
 
         if config_get('standard', True):
@@ -290,11 +291,13 @@ class SearchWindow(gtk.Dialog):
                 song['musicbrainz_trackid'] = extractUuid(track.id)
             if album.isSingleArtistRelease() or not track.artist:
                 song['artist'] = album.artist.name
-                if config_get('artist_sort', True):
+                if config_get('artist_sort', False) and \
+                        album.artist.sortName != album.artist.name:
                     song['artistsort'] = album.artist.sortName
             else:
                 song['artist'] = track.artist.name
-                if config_get('artist_sort', True):
+                if config_get('artist_sort', False) and \
+                        track.artist.sortName != track.artist.name:
                     song['artistsort'] = track.artist.sortName
                 if config_get('standard', True):
                     song['musicbrainz_artistid'] = extractUuid(track.artist.id)
