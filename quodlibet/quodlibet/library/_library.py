@@ -11,7 +11,6 @@ least useful but most content-agnostic.
 """
 
 import cPickle as pickle
-import cStringIO
 import itertools
 import os
 import shutil
@@ -151,10 +150,7 @@ class Library(gtk.Object):
                 # read the file into memory so that there are less
                 # context switches. saves 40% here..
                 fileobj = file(filename, "rb")
-                string_io = cStringIO.StringIO(fileobj.read())
-                fileobj.close()
-
-                try: items = pickle.load(string_io)
+                try: items = pickle.loads(fileobj.read())
                 except (pickle.PickleError, EnvironmentError,
                         ImportError, EOFError):
                     util.print_exc()
@@ -162,8 +158,7 @@ class Library(gtk.Object):
                     except EnvironmentError:
                         util.print_exc()
                     items = []
-
-                string_io.close()
+                fileobj.close()
             else: return
         except EnvironmentError:
             return
