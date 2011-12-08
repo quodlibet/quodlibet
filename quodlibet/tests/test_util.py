@@ -194,6 +194,11 @@ class Thuman_sort(TestCase):
 
         self.failUnlessEqual(self.smaller(u"bbb", u"zzz3"), True)
 
+    def test_false(self):
+        # album browser needs that to sort albums without artist/title
+        # to the bottom
+        self.failIf(util.human_sort_key(""))
+
     def test_white(self):
         self.failUnlessEqual(
             util.human_sort_key(u"  3foo    bar6 42.8"),

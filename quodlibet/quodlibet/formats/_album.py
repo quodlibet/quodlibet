@@ -244,8 +244,11 @@ class Album(Collection):
 
     @util.cached_property
     def peoplesort(self):
-        val = self.get("~peoplesort").split("\n")
-        return map(util.human_sort_key, val)
+        return util.human_sort_key(self.get("~peoplesort").split("\n")[0])
+
+    @util.cached_property
+    def genre(self):
+        return util.human_sort_key(self.get("genre").split("\n")[0])
 
     date = property(lambda self: self.get("date"))
     title = property(lambda self: self.get("album"))
@@ -261,6 +264,7 @@ class Album(Collection):
         """Call this after songs got added or removed"""
         super(Album, self).finalize()
         self.__dict__.pop("peoplesort", None)
+        self.__dict__.pop("genre", None)
 
     def scan_cover(self):
         if self.scanned or not self.songs: return

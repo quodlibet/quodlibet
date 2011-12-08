@@ -138,6 +138,11 @@ class Preferences(qltk.UniqueWindow):
         else: edit.apply.set_sensitive(True)
         label.set_markup(text)
 
+def cmpa(a, b):
+    """Like cmp but treats values that evaluate to false as inf"""
+    if not a and b: return 1
+    if not b and a: return -1
+    return cmp(a, b)
 
 class PreferencesButton(gtk.HBox):
     def __init__(self, model):
@@ -147,6 +152,7 @@ class PreferencesButton(gtk.HBox):
             (_("_Title"), self.__compare_title),
             (_("_Artist"), self.__compare_artist),
             (_("_Date"), self.__compare_date),
+            (_("_Genre"), self.__compare_genre),
             ]
 
         menu = gtk.Menu()
@@ -191,38 +197,43 @@ class PreferencesButton(gtk.HBox):
 
     def __compare_title(self, model, i1, i2):
         a1, a2 = model[i1][0], model[i2][0]
+        # all albums has to stay at the top
         if (a1 and a2) is None: return cmp(a1, a2)
-        elif not a1.title: return 1
-        elif not a2.title: return -1
-        elif not a1.sort: return 1
-        elif not a2.sort: return -1
-        else: return cmp((a1.sort, a1.key), (a2.sort, a2.key))
+        # move album without a title to the bottom
+        if not a1.title: return 1
+        if not a2.title: return -1
+        return (cmpa(a1.sort, a2.sort) or
+                cmp(a1.key, a2.key))
 
     def __compare_artist(self, model, i1, i2):
         a1, a2 = model[i1][0], model[i2][0]
         if (a1 and a2) is None: return cmp(a1, a2)
-        elif not a1.title: return 1
-        elif not a2.title: return -1
-        elif not a1.sort: return 1
-        elif not a2.sort: return -1
-        elif not a1.peoplesort and a2.peoplesort: return 1
-        elif not a2.peoplesort and a1.peoplesort: return -1
-        else: return (cmp(a1.peoplesort and a1.peoplesort[0],
-                          a2.peoplesort and a2.peoplesort[0]) or
-                      cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
-                      cmp((a1.sort, a1.key), (a2.sort, a2.key)))
+        if not a1.title: return 1
+        if not a2.title: return -1
+        return (cmpa(a1.peoplesort, a2.peoplesort) or
+                cmpa(a1.date, a2.date) or
+                cmpa(a1.sort, a2.sort) or
+                cmp(a1.key, a2.key))
 
     def __compare_date(self, model, i1, i2):
         a1, a2 = model[i1][0], model[i2][0]
         if (a1 and a2) is None: return cmp(a1, a2)
-        elif not a1.title: return 1
-        elif not a2.title: return -1
-        elif not a1.sort: return 1
-        elif not a2.sort: return -1
-        elif not a1.date and a2.date: return 1
-        elif not a2.date and a1.date: return -1
-        else: return (cmp(a1.date, a2.date) or
-            cmp((a1.sort, a1.key), (a2.sort, a2.key)))
+        if not a1.title: return 1
+        if not a2.title: return -1
+        return (cmpa(a1.date, a2.date) or
+                cmpa(a1.sort, a2.sort) or
+                cmp(a1.key, a2.key))
+
+    def __compare_genre(self, model, i1, i2):
+        a1, a2 = model[i1][0], model[i2][0]
+        if (a1 and a2) is None: return cmp(a1, a2)
+        if not a1.title: return 1
+        if not a2.title: return -1
+        return (cmpa(a1.genre, a2.genre) or
+                cmpa(a1.peoplesort, a2.peoplesort) or
+                cmpa(a1.date, a2.date) or
+                cmpa(a1.sort, a2.sort) or
+                cmp(a1.key, a2.key))
 
 
 class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
