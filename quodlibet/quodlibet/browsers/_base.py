@@ -78,11 +78,14 @@ class Browser(object):
     # Deprecated: use active_filter instead
     def dynamic(self, song):
         if callable(self.active_filter):
-            return self.active_filter(song)
+            ret = self.active_filter(song)
+            if ret is not None:
+                return ret
         return True
 
     # A callable that returns True if the passed song should be in the
-    # song list, or None. Used for adding new songs to the song list or
+    # song list, False if not and None if no filter is active.
+    # Used for adding new songs to the song list or
     # dynamic playlist removal when a song ends.
     # def active_filter(self, song): ...
     active_filter = None
