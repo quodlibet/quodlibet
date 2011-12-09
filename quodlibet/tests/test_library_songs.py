@@ -1,3 +1,5 @@
+import gtk
+
 import os
 import unittest
 
@@ -33,6 +35,7 @@ class TSongLibrary(TLibrary):
         song = FakeSong(10)
         self.library.add([song])
         self.library.rename(song, 20)
+        while gtk.events_pending(): gtk.main_iteration()
         self.failUnless(song in self.changed)
         self.failUnless(song in self.library)
         self.failUnless(song.key in self.library)
@@ -181,6 +184,7 @@ class TSongLibrarian(TLibrarian):
         self.lib1.add([new])
         self.lib2.add([new])
         self.librarian.rename(new, 20)
+        while gtk.events_pending(): gtk.main_iteration()
         self.failUnlessEqual(new.key, 20)
         self.failUnless(new in self.lib1)
         self.failUnless(new in self.lib2)

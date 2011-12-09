@@ -1,3 +1,5 @@
+import gtk
+
 import os
 import sys
 
@@ -52,15 +54,18 @@ class TLibrary(TestCase):
     def test_changed(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(5))
+        while gtk.events_pending(): gtk.main_iteration()
         self.failUnlessEqual(self.changed, self.Frange(5))
 
     def test_changed_not_present(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(2, 20, 3))
+        while gtk.events_pending(): gtk.main_iteration()
         self.failUnlessEqual(self.changed, [2, 5, 8])
 
     def test_changed_none_present(self):
         self.library.changed(self.Frange(5))
+        while gtk.events_pending(): gtk.main_iteration()
 
     def test___iter__(self):
         self.library.add(self.Frange(10))
@@ -248,6 +253,7 @@ class TLibrarian(TestCase):
         self.lib1.add(self.Frange(12))
         self.lib2.add(self.Frange(12, 24))
         self.librarian.changed(self.Frange(6, 18))
+        while gtk.events_pending(): gtk.main_iteration()
         self.failUnlessEqual(sorted(self.changed), self.Frange(6, 18))
         self.failUnlessEqual(self.changed_1, self.Frange(6, 12))
         self.failUnlessEqual(self.changed_2, self.Frange(12, 18))
