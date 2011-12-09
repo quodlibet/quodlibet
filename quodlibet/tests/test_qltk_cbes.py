@@ -94,6 +94,7 @@ class TStandaloneEditor(TestCase):
             pass
         # Now create a new SAE without saved results and use defaults
         self.fname = "foo"
+        self.sae.destroy()
         self.sae = StandaloneEditor(self.fname, "test2", defaults, None)
         self.sae.write()
         data = [(row[1], row[0]) for row in self.sae.model]
