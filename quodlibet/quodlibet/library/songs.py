@@ -457,7 +457,7 @@ class SongFileLibrary(SongLibrary, FileLibrary):
         Example (add=False):
             load many songs and call Library.add(songs) to add all in one go.
 
-        If the song was/can be added, it is returned.
+        The song is returned if it is in the library after this call.
         Otherwise, None is returned.
         """
 
@@ -468,6 +468,6 @@ class SongFileLibrary(SongLibrary, FileLibrary):
                 self.add([song])
         else:
             print_d("Already got file %r." % filename)
-            return
+            song = self._contents[filename]
 
         return song

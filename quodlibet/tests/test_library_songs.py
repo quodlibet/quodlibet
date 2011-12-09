@@ -139,7 +139,7 @@ class TSongFileLibrary(TSongLibrary):
             self.failUnlessEqual(1, len(self.library))
             self.failUnlessEqual(len(self.added), 1)
             ret = self.library.add_filename(filename)
-            self.failIf(ret)
+            self.failUnless(ret)
             self.failUnlessEqual(len(self.added), 1)
             os.unlink(filename)
 

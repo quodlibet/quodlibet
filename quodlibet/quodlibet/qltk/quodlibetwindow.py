@@ -304,7 +304,6 @@ class QuodLibetWindow(gtk.Window):
             uris = [uri.encode('ascii', 'replace')]
 
         dirs = []
-        files = []
         error = False
         for uri in uris:
             try: uri = URI(uri)
@@ -316,12 +315,10 @@ class QuodLibetWindow(gtk.Window):
                 else:
                     loc = os.path.realpath(loc)
                     if loc not in self.__library:
-                        song = self.__library.add_filename(loc)
-                        if song: files.append(song)
+                        self.__library.add_filename(loc)
             elif player.can_play_uri(uri):
                 if uri not in self.__library:
-                    files.append(RemoteFile(uri))
-                    self.__library.add([files[-1]])
+                    self.__library.add([RemoteFile(uri)])
             else:
                 error = True
                 break
@@ -835,13 +832,11 @@ class QuodLibetWindow(gtk.Window):
                 self.last_dir = fns[0]
                 copool.add(self.__library.scan, fns, funcid="library")
             else:
-                added = []
                 self.last_dir = os.path.basename(fns[0])
                 for filename in map(os.path.realpath, map(util.fsnative, fns)):
                     if filename in self.__library: continue
                     song = self.__library.add_filename(filename)
-                    if song: added.append(song)
-                    else:
+                    if not song:
                         from traceback import format_exception_only as feo
                         tb = feo(sys.last_type, sys.last_value)
                         msg = _("%s could not be added to your library.\n\n")
@@ -853,8 +848,6 @@ class QuodLibetWindow(gtk.Window):
                         d.label.set_selectable(True)
                         d.run()
                         continue
-                if added:
-                    self.browser.activate()
 
         if cb and cb.get_active():
             dirs = util.split_scan_dirs(config.get("settings", "scan"))
