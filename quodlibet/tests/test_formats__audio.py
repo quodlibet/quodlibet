@@ -322,10 +322,10 @@ class TAudioFile(TestCase):
 
     def test_album_key(self):
         album_key_tests = [
-            ({}, (('',), '')),
+            ({}, ('', '')),
             ({'album': 'foo'}, (('foo',), '')),
-            ({'labelid': 'foo'}, (('',), 'foo')),
-            ({'musicbrainz_albumid': 'foo'}, (('',), 'foo')),
+            ({'labelid': 'foo'}, ('', 'foo')),
+            ({'musicbrainz_albumid': 'foo'}, ('', 'foo')),
             ({'album': 'foo', 'labelid': 'bar'}, (('foo',), 'bar')),
             ({'album': 'foo', 'labelid': 'bar', 'musicbrainz_albumid': 'quux'},
                 (('foo',), 'bar'))
