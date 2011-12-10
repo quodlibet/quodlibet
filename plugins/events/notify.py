@@ -28,6 +28,7 @@ from quodlibet.player import playlist as qlplayer
 from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.util import unescape
 from quodlibet.util.uri import URI
 
 # configuration stuff
@@ -295,7 +296,7 @@ class Notify(EventPlugin):
         strip_images = lambda t: re.subn("\<img.*?\>", "", t)[0]
 
         title = XMLFromPattern(get_conf_value("titlepattern")) % song
-        title = strip_markup(strip_links(strip_images(title)))
+        title = unescape(strip_markup(strip_links(strip_images(title))))
 
         body = ""
         if "body" in self.__caps:
