@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-10 10:39+0100\n"
-"PO-Revision-Date: 2011-12-10 16:23+0800\n"
+"POT-Creation-Date: 2011-12-11 13:19+0900\n"
+"PO-Revision-Date: 2011-12-11 13:19+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -476,6 +476,7 @@ msgid "Choose New Stations"
 msgstr "Выберите новые станции"
 
 #: ../quodlibet/browsers/iradio.py:177 ../quodlibet/browsers/iradio.py:305
+#: ../quodlibet/qltk/searchbar.py:67
 msgid "_Search:"
 msgstr "_Найти:"
 
@@ -961,6 +962,20 @@ msgstr ""
 #, python-format
 msgid "Couldn't find module %s."
 msgstr "Не удалось найти модуль %s."
+
+#: ../quodlibet/library/_library.py:191
+#, python-format
+msgid ""
+"Cannot save library contents to %s (it's a directory). Please remove it and "
+"try again."
+msgstr ""
+"Не удалось сохранить данные в %s (это директория). Удалите директорию и "
+"попробуйте снова."
+
+#. TODO: Better handling of this edge-case...
+#: ../quodlibet/library/_library.py:195
+msgid "Library Error"
+msgstr "Ошибка фонотеки"
 
 #: ../quodlibet/library/songs.py:342 ../quodlibet/library/songs.py:351
 #: ../quodlibet/library/songs.py:391 ../quodlibet/qltk/information.py:253
@@ -2293,6 +2308,22 @@ msgstr ""
 "\t<b>%s</b>\n"
 "содержит «/», но начинается не с корневого каталога. Чтобы избежать ошибки в "
 "названиях папок, начните шаблон с «/» или «~/»."
+
+#: ../quodlibet/qltk/searchbar.py:45
+msgid "Saved Searches"
+msgstr "Сохранённые запросы"
+
+#: ../quodlibet/qltk/searchbar.py:46
+msgid "Edit saved searches..."
+msgstr "Сохранённые запросы..."
+
+#: ../quodlibet/qltk/searchbar.py:86
+msgid "Search"
+msgstr "Найти"
+
+#: ../quodlibet/qltk/searchbar.py:88
+msgid "Search your library"
+msgstr "Найти в фонотеке"
 
 #: ../quodlibet/qltk/songlist.py:411
 #, python-format

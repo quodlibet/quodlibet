@@ -21,6 +21,7 @@ quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
 quodlibet/library/__init__.py
+quodlibet/library/_library.py
 quodlibet/library/songs.py
 quodlibet/player/gstbe.py
 quodlibet/player/__init__.py
@@ -53,6 +54,7 @@ quodlibet/qltk/quodlibetwindow.py
 quodlibet/qltk/ratingsmenu.py
 quodlibet/qltk/remote.py
 quodlibet/qltk/renamefiles.py
+quodlibet/qltk/searchbar.py
 quodlibet/qltk/songlist.py
 quodlibet/qltk/sortdialog.py
 quodlibet/qltk/tagsfrompath.py
