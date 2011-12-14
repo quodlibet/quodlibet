@@ -32,7 +32,12 @@ from quodlibet.qltk.entry import UndoEntry
 USE_PLAYBIN2 = gst.version() >= (0, 10, 24)
 
 if 'QUODLIBET_PLAYBIN1' in os.environ:
+    print_d("QUODLIBET_PLAYBIN1")
     USE_PLAYBIN2 = False
+
+USE_QUEUE = 'QUODLIBET_GSTBE_QUEUE' in os.environ
+if USE_QUEUE:
+    print_d("QUODLIBET_GSTBE_QUEUE")
 
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
@@ -290,8 +295,6 @@ class GStreamerPlayer(BasePlayer):
         """
         if self.bin: return True
 
-        # TODO: use the volume property of the sink if available (pulsesink)
-
         pipeline = config.get("player", "gst_pipeline")
         pipeline, self.name = GStreamerSink(pipeline)
         if not pipeline:
@@ -315,15 +318,21 @@ class GStreamerPlayer(BasePlayer):
             pipeline = [filt, eq, conv] + pipeline
 
         if USE_PLAYBIN2:
-            # The output buffer is necessary to run the song-ended and
-            # song-started events through QL's signal handlers before the
-            # playbin2 hits EOF inside a gapless transition.
-            queue = gst.element_factory_make('queue')
-            queue.set_property('max-size-time', 500 * gst.MSECOND)
+            prefix = []
 
-            # The volume element is needed to remove the volume change delay.
+            if USE_QUEUE:
+                queue = gst.element_factory_make('queue')
+                queue.set_property('max-size-time', 500 * gst.MSECOND)
+                prefix.append(queue)
+
+            # playbin2 has started to control the volume through pulseaudio,
+            # which means the volume property can change without us noticing.
+            # Use our own volume element for now until this works with PA.
+            # Also, when using the queue, this removes the delay..
             self._vol_element = gst.element_factory_make('volume')
-            pipeline = [queue,  self._vol_element] + pipeline
+            prefix.append(self._vol_element)
+
+            pipeline = prefix + pipeline
 
         bufbin = gst.Bin()
         map(bufbin.add, pipeline)
