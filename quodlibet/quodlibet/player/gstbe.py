@@ -599,10 +599,16 @@ class GStreamerPlayer(BasePlayer):
                 self.emit('seek', self.song, pos)
 
     def _end(self, stopped, stop=False):
+        song, info = self.song, self.info
+
+        # set the new volume before the signals to avoid delays
+        if self._in_gapless_transition:
+            self.song = self._source.current
+            self.volume = self.volume
+
         # We need to set self.song to None before calling our signal
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
-        song, info = self.song, self.info
         self.__info_buffer = self.song = self.info = None
         if song is not info:
             self.emit('song-ended', info, stopped)
@@ -614,8 +620,8 @@ class GStreamerPlayer(BasePlayer):
         self.emit('song-started', self.song)
 
         if self.song is not None:
-            self.volume = self.volume
             if not self._in_gapless_transition:
+                self.volume = self.volume
                 # Due to extensive problems with playbin2, we destroy the
                 # entire pipeline and recreate it each time we're not in
                 # a gapless transition.
