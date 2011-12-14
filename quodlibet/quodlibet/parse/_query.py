@@ -12,13 +12,12 @@ import re
 
 from quodlibet.parse import _match as match
 from quodlibet.parse._scanner import Scanner
+from quodlibet.parse._match import error, ParseError
 
 # Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
  CLOSERE, REMODS, COMMA, TAG, RE, RELOP, NUMCMP, EOF) = range(15)
 
-class error(ValueError): pass
-class ParseError(error): pass
 class LexerError(error): pass
 
 class QueryLexer(Scanner):

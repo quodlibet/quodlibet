@@ -1,10 +1,15 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
+#           2011 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 import time
+import operator
+
+class error(ValueError): pass
+class ParseError(error): pass
 
 TIME_KEYS = ["added", "mtime", "lastplayed", "laststarted"]
 SIZE_KEYS = ["filesize"]
@@ -81,63 +86,23 @@ class Neg(object):
 # Numeric comparisons
 class Numcmp(object):
     def __init__(self, tag, op, value):
-        if isinstance(tag, unicode): self.__tag = tag.encode("utf-8")
-        else: self.__tag = tag
-        self.__ftag = "~#" + self.__tag
-        self.__op = op
-        value = value.strip().lower()
-
-        if tag in TIME_KEYS:
-            if self.__op == ">": self.__op = "<"
-            elif self.__op == "<": self.__op = ">"
-            elif self.__op == "<=": self.__op = ">="
-            elif self.__op == ">=": self.__op = "<="
-
-        if value in ["now"]: value = int(time.time())
-        elif value in ["today"]: value = int(time.time() - 24 * 60 * 60)
+        if isinstance(tag, unicode):
+            self.__tag = tag.encode("utf-8")
         else:
-            parts = value.split()
-            try: value = round(float(parts[0]), 2)
-            except ValueError:
-                try:
-                    hms = map(int, value.split(":"))
-                    value = 0
-                    for t in hms:
-                        value *= 60
-                        value += t
-                except ValueError:
-                    value = 0
-            if len(parts) > 1:
-                unit = parts[1].strip("s")
-                if unit == "minute": value *= 60
-                if unit == "hour": value *= 60 * 60
-                elif unit == "day": value *= 24 * 60 * 60
-                elif unit == "week": value *= 7 * 24 * 60 * 60
-                elif unit == "year": value *= 365 * 24 * 60 * 60
-                elif unit == "gb": value *= 1024**3
-                elif unit == "mb": value *= 1024**2
-                elif unit == "kb": value *= 1024
+            self.__tag = tag
 
-                if tag in TIME_KEYS:
-                    value = int(time.time() - value)
-
-        self.__value = value
+        self.__ftag = "~#" + self.__tag
+        self.__op, self.__value = map_numeric_op(self.__tag, op, value)
 
     def search(self, data):
         num = data(self.__ftag, None)
-        if num is None: return False
-        num = round(num, 2)
-        if   self.__op == ">":  return num >  self.__value
-        elif self.__op == "<":  return num <  self.__value
-        elif self.__op == "=":  return num == self.__value
-        elif self.__op == ">=": return num >= self.__value
-        elif self.__op == "<=": return num <= self.__value
-        elif self.__op == "!=": return num != self.__value
-        else: raise ValueError("Unknown operator %s" % self.__op)
+        if num is not None:
+            return self.__op(round(num, 2), self.__value)
+        return False
 
     def __repr__(self):
-        return "<Numcmp tag=%r, op=%r, value=%d>"%(
-            self.__tag, self.__op, self.__value)
+        return "<Numcmp tag=%r, op=%r, value=%.2f>" % (
+            self.__tag, self.__op.__name__, self.__value)
 
     def __and__(self, other):
         if not isinstance(other, Inter):
@@ -187,3 +152,103 @@ class Tag(object):
         if not isinstance(other, Union):
             return Union([self, other])
         return NotImplemented
+
+
+def map_numeric_op(tag, op, value, time_=None):
+    """Takes a tag, an operator string and and a value string.
+    Returns an (operator function, numeric value) tuple.
+
+    (time_ is only used for testing)
+
+    handles cases like '< 3 days', '>5MB' etc..
+
+    if parsing failes, raises a ParseError
+    """
+
+    if tag in TIME_KEYS:
+        if op == ">": op = "<"
+        elif op == "<": op = ">"
+        elif op == "<=": op = ">="
+        elif op == ">=": op = "<="
+
+    op_fun = {"<": operator.lt, "<=": operator.le,
+              ">": operator.gt, ">=": operator.ge,
+              "=": operator.eq, "!=": operator.ne}.get(op, None)
+
+    if op_fun is None:
+        raise ParseError("Unknown operator %s" % op)
+    op = op_fun
+
+    value = value.lower().strip()
+
+    if tag in TIME_KEYS:
+        if value == "now":
+            value = (time_ or time.time())
+            return (op, value)
+        if value == "today":
+            value = (time_ or time.time()) - 24 * 60 * 60
+            return (op, value)
+
+    # check for time formats: "5:30"
+    # TODO: handle "5:30 ago"
+    try:
+        hms = map(int, value.split(":"))
+    except ValueError: pass
+    else:
+        value = 0
+        for t in hms:
+            value *= 60
+            value += t
+        if tag in TIME_KEYS:
+            value = (time_ or time.time()) - value
+        return (op, value)
+
+    # get the biggest float/int
+    max_val = ""
+    for i in xrange(1, len(value) + 1):
+        try:
+            float(value[:i])
+            max_val = value[:i]
+        except ValueError:
+            break
+
+    if not max_val:
+        raise ParseError("No numeric value %r" % value)
+
+    unit = value[len(max_val):].strip()
+
+    try:
+        value = int(max_val)
+    except ValueError:
+        value = float(max_val)
+
+    if tag in TIME_KEYS:
+        part = unit.split()[0].rstrip("s")
+        if part == "minute":
+            value *= 60
+        elif part == "hour":
+            value *= 60 * 60
+        elif part == "day":
+            value *= 24 * 60 * 60
+        elif part == "week":
+            value *= 7 * 24 * 60 * 60
+        elif part == "year":
+            value *= 365 * 24 * 60 * 60
+        elif unit:
+            raise ParseError("No time unit: %r" % unit)
+        value = int((time_ or time.time()) - value)
+    elif tag in SIZE_KEYS:
+        if unit.startswith("g"):
+            value *= 1024 ** 3
+        elif unit.startswith("m"):
+            value *= 1024 ** 2
+        elif unit.startswith("k"):
+            value *= 1024
+        elif unit.startswith("b"):
+            pass
+        elif unit:
+            raise ParseError("No size unit: %r" % unit)
+    elif unit:
+        raise ParseError("Tag %r does not support units (%r)" % (tag, unit))
+
+    return (op, value)
