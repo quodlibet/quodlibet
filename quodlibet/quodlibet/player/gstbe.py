@@ -39,6 +39,8 @@ USE_QUEUE = 'QUODLIBET_GSTBE_QUEUE' in os.environ
 if USE_QUEUE:
     print_d("QUODLIBET_GSTBE_QUEUE")
 
+USE_TRACK_CHANGE = gst.version() >= (0, 10, 28)
+
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
     * Try making the pipeline (defaulting to gconfaudiosink or
@@ -196,7 +198,6 @@ class GStreamerPlayer(BasePlayer):
     _paused = True
     _in_gapless_transition = False
     _inhibit_play = False
-    _finish_position = -1
     _last_position = 0
 
     _task = None
@@ -396,7 +397,6 @@ class GStreamerPlayer(BasePlayer):
 
         self._in_gapless_transition = False
         self._inhibit_play = False
-        self._finish_position = -1
         self._last_position = 0
 
         self._vol_element = None
@@ -439,7 +439,7 @@ class GStreamerPlayer(BasePlayer):
             # This gets sent on song change. Because it is not in the docs
             # we can not rely on it. Additionally we check in get_position
             # which should trigger shortly after this.
-            if self._in_gapless_transition and \
+            if USE_TRACK_CHANGE and self._in_gapless_transition and \
                 name == "playbin2-stream-changed":
                     self._end(False)
 
@@ -454,25 +454,19 @@ class GStreamerPlayer(BasePlayer):
         return True
 
     def __about_to_finish(self, pipeline):
-        def check_position(*args):
-            # Query the current position until gapless is over
-            self.get_position()
-            return self._in_gapless_transition
-
-        self._in_gapless_transition = False
-        self._finish_position = self.get_position()
         self._in_gapless_transition = True
-
-        # song change is about to happen, check frequently
-        gobject.timeout_add(100, check_position)
 
         # uri has to be set in this thread, so idle_add doesn't work
         gtk.gdk.threads_enter()
         self._source.next_ended()
         song = self._source.current
         gtk.gdk.threads_leave()
+
         if song and self.bin:
             self.bin.set_property('uri', song("~uri"))
+
+        if not USE_TRACK_CHANGE:
+            gobject.idle_add(self._end, False)
 
     def stop(self):
         self._end(True, stop=True)
@@ -503,11 +497,6 @@ class GStreamerPlayer(BasePlayer):
                 # During stream seeking querying the position fails.
                 # Better return the last valid one instead of 0.
                 self._last_position = p
-                # In case the current position is less than at the about to
-                # finish signal, we can assume that we are playing a new song.
-                # Sometimes the time decreases a bit.. therefore divide by 2
-                if self._in_gapless_transition and p < self._finish_position/2:
-                    self._end(False)
         return p
 
     def __buffering(self, percent):
