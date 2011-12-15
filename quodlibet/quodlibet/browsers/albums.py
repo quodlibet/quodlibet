@@ -236,7 +236,115 @@ class PreferencesButton(gtk.HBox):
                 cmp(a1.key, a2.key))
 
 
-class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
+class VisibleUpdate(object):
+
+    # how many rows should be updated
+    # beyond the visible area in both directions
+    PRELOAD_COUNT = 35
+
+    def enable_row_update(self, view, sw, column):
+        gobject_weak(view.connect_object, 'expose-event',
+                     self.__update_visibility, view)
+
+        gobject_weak(sw.get_vadjustment().connect, "value-changed",
+                     self.__stop_update)
+
+        self.__pending_paths = []
+        self.__scan_timeout = None
+        self.__column = column
+        self.__first_expose = True
+
+    def disable_row_update(self):
+        if self.__scan_timeout:
+            gobject.source_remove(self.__scan_timeout)
+            self.__scan_timeout = None
+
+        copool.remove(self.__scan_paths)
+
+        self.__column = None
+        self.__pending_paths = []
+
+    def _row_needs_update(self, row):
+        """Should return True if the rows should be updated"""
+        raise NotImplementedError
+
+    def _update_row(self, row):
+        """Do whatever is needed to update the row"""
+        raise NotImplementedError
+
+    def __stop_update(self, *args):
+        copool.remove(self.__scan_paths)
+        self.__pending_paths = []
+
+    def __update_visibility(self, view, *args):
+        if not self.__column.get_visible():
+            return
+
+        # update all visible rows on first expose event
+        if self.__first_expose:
+            self.__first_expose = False
+            self.__update_visible_rows(view, 0)
+            for i in self.__scan_paths(): pass
+
+        if self.__scan_timeout:
+            gobject.source_remove(self.__scan_timeout)
+            self.__scan_timeout = None
+
+        self.__scan_timeout = gobject.timeout_add(
+            50, self.__update_visible_rows, view, self.PRELOAD_COUNT)
+
+    def __scan_paths(self):
+        while self.__pending_paths:
+            model, path = self.__pending_paths.pop()
+            try:
+                row = model[path]
+            # row could have gone away by now
+            except IndexError: pass
+            else:
+                self._update_row(row)
+                yield True
+
+    def __update_visible_rows(self, view, preload):
+        vrange = view.get_visible_range()
+        if vrange is None: return
+
+        model_filter = view.get_model()
+        model = model_filter.get_model()
+
+        #generate a path list so that cover scanning starts in the middle
+        #of the visible area and alternately moves up and down
+        start, end = vrange
+        start = start[0] - preload - 1
+        end = end[0] + preload
+
+        vlist = range(end, start, -1)
+        top = vlist[:len(vlist)/2]
+        bottom = vlist[len(vlist)/2:]
+        top.reverse()
+
+        vlist_new = []
+        for i in vlist:
+            if top: vlist_new.append(top.pop())
+            if bottom: vlist_new.append(bottom.pop())
+        vlist_new = filter(lambda s: s >= 0, vlist_new)
+
+        visible_paths = []
+        for path in vlist_new:
+            model_path = model_filter.convert_path_to_child_path(path)
+            try:
+                row = model[model_path]
+            except TypeError:
+                pass
+            else:
+                if self._row_needs_update(row):
+                    visible_paths.append([model, model_path])
+
+        if not self.__pending_paths and visible_paths:
+            copool.add(self.__scan_paths)
+        self.__pending_paths = visible_paths
+
+
+class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
     __model = None
@@ -360,14 +468,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         self.__filter = None
         model_filter.set_visible_func(self.__parse_query)
 
-        self.__pending_covers = []
-        self.__scan_timeout = None
-        gobject_weak(view.connect_object, 'expose-event',
-            self.__update_visibility, view)
-
-        gobject_weak(sw.get_vadjustment().connect, "value-changed",
-            self.__stop_cover_update)
-
         render = gtk.CellRendererPixbuf()
         self.__cover_column = column = gtk.TreeViewColumn("covers", render)
         column.set_visible(config.getboolean("browsers", "album_covers"))
@@ -446,10 +546,21 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
 
         self.connect("destroy", self.__destroy)
 
+        self.enable_row_update(view, sw, self.__cover_column)
+
         self.show_all()
 
+    def _row_needs_update(self, row):
+        album = row[0]
+        return album is not None and not album.scanned
+
+    def _update_row(self, row):
+        album = row[0]
+        album.scan_cover()
+        self._refresh_albums([album])
+
     def __destroy(self, browser):
-        copool.remove(self.__scan_covers)
+        self.disable_row_update()
 
         # https://bugzilla.gnome.org/show_bug.cgi?id=624112
         # filter model keeps its filter function reference.
@@ -465,75 +576,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker):
         klass = type(browser)
         if not klass.instances():
             klass._destroy_model()
-
-    def __update_visible_covers(self, view):
-        vrange = view.get_visible_range()
-        if vrange is None: return
-
-        model_filter = view.get_model()
-        model = model_filter.get_model()
-
-        #generate a path list so that cover scanning starts in the middle
-        #of the visible area and alternately moves up and down
-        preload_count = 35
-
-        start, end = vrange
-        start = start[0] - preload_count - 1
-        end = end[0] + preload_count
-
-        vlist = range(end, start, -1)
-        top = vlist[:len(vlist)/2]
-        bottom = vlist[len(vlist)/2:]
-        top.reverse()
-
-        vlist_new = []
-        for i in vlist:
-            if top: vlist_new.append(top.pop())
-            if bottom: vlist_new.append(bottom.pop())
-        vlist_new = filter(lambda s: s >= 0, vlist_new)
-
-        visible_albums = []
-        for path in vlist_new:
-            model_path = model_filter.convert_path_to_child_path(path)
-            try:
-                row = model[model_path]
-            except TypeError:
-                pass
-            else:
-                album = row[0]
-                if album is not None and not album.scanned:
-                    visible_albums.append([model, model_path])
-
-        if not self.__pending_covers and visible_albums:
-            copool.add(self.__scan_covers)
-        self.__pending_covers = visible_albums
-
-    def __scan_covers(self):
-        while self.__pending_covers:
-            model, path = self.__pending_covers.pop()
-            try:
-                row = model[path]
-            # row could have gone away by now
-            except IndexError: pass
-            else:
-                album = row[0]
-                album.scan_cover()
-                self._refresh_albums([album])
-            yield True
-
-    def __stop_cover_update(self, *args):
-        self.__pending_covers = []
-
-    def __update_visibility(self, view, *args):
-        if not self.__cover_column.get_visible():
-            return
-
-        if self.__scan_timeout:
-            gobject.source_remove(self.__scan_timeout)
-            self.__scan_timeout = None
-
-        self.__scan_timeout = gobject.timeout_add(
-            50, self.__update_visible_covers, view)
 
     def __update_filter(self, entry, text, restore=False):
         #This could be called after the browsers is already closed
