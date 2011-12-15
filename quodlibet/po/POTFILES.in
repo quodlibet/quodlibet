@@ -24,6 +24,7 @@ quodlibet/library/__init__.py
 quodlibet/library/_library.py
 quodlibet/library/songs.py
 quodlibet/player/gstbe.py
+quodlibet/player/_gstutils.py
 quodlibet/player/__init__.py
 quodlibet/player/xinebe.py
 quodlibet/plugins/__init__.py
