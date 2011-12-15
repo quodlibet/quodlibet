@@ -535,8 +535,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         self.accelerators = gtk.AccelGroup()
         search = SearchBarBox(button=False, completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
-        search.connect('query-changed', self.__update_filter)
-        search.connect_object('focus-out', lambda w: w.grab_focus(), view)
+        gobject_weak(search.connect, 'query-changed', self.__update_filter)
+        gobject_weak(search.connect_object,
+                     'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
 
         prefs = PreferencesButton(model_sort)
@@ -578,8 +579,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
             klass._destroy_model()
 
     def __update_filter(self, entry, text, restore=False):
-        #This could be called after the browsers is already closed
-        if not self.view.get_selection(): return
         model = self.view.get_model()
 
         self.__filter = None
