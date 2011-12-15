@@ -626,7 +626,7 @@ class CoverArea(gtk.VBox):
         if album:
             fn_list.append("<album>.jpg")
             if alartist:
-                fn_list.append("<albumartist> - <album>")
+                fn_list.append("<albumartist> - <album>.jpg")
             else:
                 fn_list.append("<artist> - <album>.jpg")
         else:
