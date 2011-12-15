@@ -4,6 +4,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import re
+
 from quodlibet.plugins.events import EventPlugin
 
 class RadioAdMute(EventPlugin):
@@ -15,10 +17,21 @@ class RadioAdMute(EventPlugin):
 
     SPAM = ["www.webex.co.uk",
             "di.fm/premium",
-           ]
+            "There's more to Digitally Imported!",
+            "Digitally Imported AMTAG_60 ADWTAG_30000_START=0",
+            ]
+
+    RE_SPAM = ["Sponsored Message\s+\([0-9]+\)",
+            ]
+
+    SPAM = map(re.escape, SPAM) + RE_SPAM
+    SPAM = [re.compile(s, re.I) for s in SPAM]
 
     __old_volume = 0
     __muted = False
+
+    def disabled(self):
+        self.plugin_on_song_ended()
 
     def plugin_on_song_started(self, song):
         from quodlibet.player import playlist as player
@@ -27,15 +40,15 @@ class RadioAdMute(EventPlugin):
         if player.song is player.info:
             return
 
-        data = song("~title~artist").lower()
+        data = song("~title~artist")
         for spam in self.SPAM:
-            if spam in data:
+            if spam.search(data):
                 self.__old_volume = player.volume
                 self.__muted = True
                 player.volume = 0
                 break
 
-    def plugin_on_song_ended(self, song, skipped):
+    def plugin_on_song_ended(self, *args):
         if not self.__muted:
             return
         self.__muted = False
