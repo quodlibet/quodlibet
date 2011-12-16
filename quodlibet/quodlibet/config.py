@@ -195,6 +195,12 @@ def init(*rc_files):
 
     _config.read(rc_files)
 
+    # revision 94d389a710f1
+    from_ = ("settings", "round")
+    if _config.has_option(*from_):
+        _config.set("albumart", "round", _config.get(*from_))
+        _config.remove_option(*from_)
+
 def state(arg):
     return _config.getboolean("settings", arg)
 
