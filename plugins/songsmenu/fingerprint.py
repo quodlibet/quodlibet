@@ -79,6 +79,14 @@ class FingerPrintPipeline(threading.Thread):
         gst.element_link_many(*elements)
         convert, resample = elements
 
+        # ffdec_mp3 got disabled in gstreamer
+        # (for a reason they don't remember), reenable it..
+        # http://cgit.freedesktop.org/gstreamer/gst-ffmpeg/commit/
+        # ?id=2de5aaf22d6762450857d644e815d858bc0cce65
+        ffdec_mp3 = gst.element_factory_find("ffdec_mp3")
+        if ffdec_mp3:
+            ffdec_mp3.set_rank(gst.RANK_MARGINAL)
+
         # decodebin creates pad, we link it
         if use_decodebin2:
             decode.connect_object("pad-added", self.__new_decoded_pad, convert)
