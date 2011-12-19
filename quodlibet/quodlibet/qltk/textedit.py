@@ -33,7 +33,7 @@ else:
             super(TextBuffer, self).set_text(*args)
             self.end_not_undoable_action()
 
-class TextEditBox(gtk.VBox):
+class TextEditBox(gtk.HBox):
     """A simple text editing area with a default value, a revert button,
     and an apply button. The 'buffer' attribute is the text buffer, the
     'apply' attribute is the apply button.
@@ -51,9 +51,9 @@ class TextEditBox(gtk.VBox):
         self.pack_start(sw)
         self.buffer = sw.child.get_buffer()
 
-        box = gtk.HButtonBox()
+        box = gtk.VButtonBox()
         box.set_spacing(12)
-        box.set_layout(gtk.BUTTONBOX_END)
+        box.set_layout(gtk.BUTTONBOX_START)
         rev = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
         app = gtk.Button(stock=gtk.STOCK_APPLY)
         box.pack_start(rev)
@@ -101,14 +101,28 @@ class TextEdit(qltk.UniqueWindow):
         self.set_title(_("Edit Display"))
         self.set_transient_for(qltk.get_top_parent(parent))
         self.set_border_width(12)
-        self.set_default_size(400, 200)
-        self.add(self.Box(default))
-        self.apply = self.child.apply
-        self.revert = self.child.revert
+        self.set_default_size(420, 190)
+
+        vbox = gtk.VBox(spacing=12)
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close.connect('clicked', lambda *x: self.destroy())
+        b = gtk.HButtonBox()
+        b.set_layout(gtk.BUTTONBOX_END)
+        b.pack_start(close)
+
+        self.box = box = self.Box(default)
+        vbox.pack_start(box)
+        vbox.pack_start(b, expand=False)
+
+        self.add(vbox)
+        self.apply = box.apply
+        self.revert = box.revert
+
+        close.grab_focus()
         self.show_all()
 
-    text = property(lambda s: s.child.text,
-                    lambda s, v: setattr(s.child, 'text', v))
+    text = property(lambda s: s.box.text,
+                    lambda s, v: setattr(s.box, 'text', v))
 
 class PatternEdit(TextEdit):
     """A window with a pattern editing box in it."""

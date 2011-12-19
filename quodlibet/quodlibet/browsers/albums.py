@@ -81,21 +81,22 @@ class Preferences(qltk.UniqueWindow):
         super(Preferences, self).__init__()
         self.set_border_width(12)
         self.set_title(_("Album List Preferences") + " - Quod Libet")
-        self.add(gtk.VBox(spacing=6))
-        self.set_default_size(300, 250)
+        self.set_default_size(400, 270)
         self.set_transient_for(qltk.get_top_parent(parent))
+
+        box = gtk.VBox(spacing=6)
 
         cb = ConfigCheckButton(
             _("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
         gobject_weak(cb.connect, 'toggled', lambda s: AlbumList.toggle_covers())
-        self.child.pack_start(cb, expand=False)
+        box.pack_start(cb, expand=False)
 
         cb = ConfigCheckButton(
             _("Inline _search includes people"),
             "browsers", "album_substrings")
         cb.set_active(config.getboolean("browsers", "album_substrings"))
-        self.child.pack_start(cb, expand=False)
+        box.pack_start(cb, expand=False)
 
         vbox = gtk.VBox(spacing=6)
         label = gtk.Label()
@@ -110,8 +111,20 @@ class Preferences(qltk.UniqueWindow):
         vbox.pack_start(edit)
         self.__preview_pattern(edit, label)
         f = qltk.Frame(_("Album Display"), child=vbox)
-        self.child.pack_start(f)
+        box.pack_start(f)
 
+        main_box = gtk.VBox(spacing=12)
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close.connect('clicked', lambda *x: self.destroy())
+        b = gtk.HButtonBox()
+        b.set_layout(gtk.BUTTONBOX_END)
+        b.pack_start(close)
+
+        main_box.pack_start(box)
+        main_box.pack_start(b, expand=False)
+        self.add(main_box)
+
+        close.grab_focus()
         self.show_all()
 
     def __set_pattern(self, apply, edit):
