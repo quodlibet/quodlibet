@@ -233,6 +233,9 @@ class QuodLibetWindow(gtk.Window):
             config.save(const.CONFIG)
             raise
 
+        # set at least the playlist before the mainloop starts..
+        player.setup(self.playlist, None, 0)
+
         def delayed_song_set():
             song = library.get(config.get("memory", "song"))
             seek_pos = config.getint("memory", "seek")
