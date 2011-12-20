@@ -591,6 +591,9 @@ class CoverArea(gtk.VBox):
         self.button.set_sensitive(False)
         self.button.connect('clicked', self.__save)
 
+        close_button = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close_button.connect('clicked', lambda x: self.main_win.destroy())
+
         self.window_fit = gtk.CheckButton(_('Fit image to _window'))
         self.window_fit.connect('toggled', self.__scale_pixbuf)
 
@@ -665,11 +668,18 @@ class CoverArea(gtk.VBox):
         self.scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
         bbox = gtk.HButtonBox()
+        bbox.set_spacing(6)
+        bbox.set_layout(gtk.BUTTONBOX_END)
         bbox.pack_start(self.button)
+        bbox.pack_start(close_button)
+
+        bb_align = gtk.Alignment(0, 1, 1, 0)
+        bb_align.set_property('right-padding', 6)
+        bb_align.add(bbox)
 
         main_hbox = gtk.HBox()
-        main_hbox.pack_start(table, False, padding=5)
-        main_hbox.pack_start(bbox)
+        main_hbox.pack_start(table, False, padding=6)
+        main_hbox.pack_start(bb_align)
 
         top_hbox = gtk.HBox()
         top_hbox.pack_start(self.open_check)
