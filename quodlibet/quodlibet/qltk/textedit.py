@@ -42,7 +42,7 @@ class TextEditBox(gtk.HBox):
     """
 
     def __init__(self, default=""):
-        super(TextEditBox, self).__init__(spacing=12)
+        super(TextEditBox, self).__init__(spacing=6)
 
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
@@ -51,13 +51,11 @@ class TextEditBox(gtk.HBox):
         self.pack_start(sw)
         self.buffer = sw.child.get_buffer()
 
-        box = gtk.VButtonBox()
-        box.set_spacing(12)
-        box.set_layout(gtk.BUTTONBOX_START)
+        box = gtk.VBox(spacing=6)
         rev = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
         app = gtk.Button(stock=gtk.STOCK_APPLY)
-        box.pack_start(rev)
-        box.pack_start(app)
+        box.pack_start(rev, expand=False)
+        box.pack_start(app, expand=False)
         self.pack_start(box, expand=False)
         rev.connect_object('clicked', self.buffer.set_text, default)
         self.revert = rev
@@ -103,7 +101,7 @@ class TextEdit(qltk.UniqueWindow):
         self.set_border_width(12)
         self.set_default_size(420, 190)
 
-        vbox = gtk.VBox(spacing=12)
+        vbox = gtk.VBox(spacing=6)
         close = gtk.Button(stock=gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
         b = gtk.HButtonBox()
