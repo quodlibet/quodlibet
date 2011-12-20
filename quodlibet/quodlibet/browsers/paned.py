@@ -28,132 +28,193 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import tag, pattern
 from quodlibet.util.library import background_filter
 
-class Preferences(qltk.UniqueWindow):
-    def __init__(self, parent=None):
-        if self.is_not_unique(): return
-        super(Preferences, self).__init__()
-        self.set_transient_for(qltk.get_top_parent(parent))
 
-        self.set_border_width(12)
-        self.set_resizable(False)
-        self.set_title(_("Paned Browser Preferences") + " - Quod Libet")
-        vb = gtk.VBox(spacing=0)
-        gpa = gtk.RadioButton(None, "_" + tag("genre~~people~album"))
-        gpa.headers = ["genre", "~people", "album"]
-        pa = gtk.RadioButton(gpa, "_" + tag("~~people~album"))
-        pa.headers = ["~people", "album"]
-        headers = self.get_headers()
-        custom = gtk.RadioButton(gpa, _("_Custom"))
-        custom.headers = headers
+def get_headers():
+    #<=2.1 saved the headers tab seperated, but had a space seperated
+    #default value, so check for that.
+    headers = config.get("browsers", "panes")
+    if headers == "~people album":
+        return headers.split()
+    else:
+        return headers.split("\t")
 
-        align = gtk.Alignment()
-        align.set_padding(0, 0, 12, 0)
-        align.add(gtk.HBox(spacing=6))
 
-        model = gtk.ListStore(str)
-        for t in headers:
-            model.append(row=[t])
+def save_headers(headers):
+    headers = "\t".join(headers)
+    config.set("browsers", "panes", headers)
+
+
+class PatternEditor(gtk.VBox):
+
+    PRESETS = [
+            ["genre", "~people", "album"],
+            ["~people", "album"],
+        ]
+
+    COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year"]
+
+    def __init__(self):
+        super(PatternEditor, self).__init__(spacing=6)
+
+        self.__headers = headers = {}
+        buttons = []
+
+        group = None
+        for tags in self.PRESETS:
+            tied = "~" + "~".join(tags)
+            group = gtk.RadioButton(group, "_" + tag(tied))
+            headers[group] = tags
+            buttons.append(group)
+
+        group = gtk.RadioButton(group, _("_Custom"))
+        self.__custom = group
+        headers[group] = []
+        buttons.append(group)
+
+        button_box = gtk.HBox(spacing=6)
+        self.__model = model = gtk.ListStore(str)
+
+        radio_box = gtk.VBox(spacing=6)
+        for button in buttons:
+            radio_box.pack_start(button, expand=False)
+            button.connect('toggled', self.__toggled, button_box, model)
+
+        self.pack_start(radio_box, expand=False)
+
+        cb = TagsComboBoxEntry(self.COMPLETION)
 
         view = gtk.TreeView(model)
         view.set_reorderable(True)
         view.set_headers_visible(False)
-        view.set_size_request(-1, 100)
+
+        ctrl_box = gtk.VBox(spacing=6)
+
+        add = gtk.Button(stock=gtk.STOCK_ADD)
+        ctrl_box.pack_start(add, expand=False)
+        add.connect('clicked', self.__add, model, cb)
+
+        selection = view.get_selection()
+        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+        ctrl_box.pack_start(remove, expand=False)
+        remove.connect('clicked', self.__remove, selection)
+        selection.connect('changed', self.__selection_changed, remove)
+        selection.emit('changed')
+
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.add(view)
+
+        edit_box = gtk.VBox(spacing=6)
+        edit_box.pack_start(cb, expand=False)
+        edit_box.pack_start(sw)
+
+        button_box.pack_start(edit_box)
+        button_box.pack_start(ctrl_box, expand=False)
+        self.pack_start(button_box)
 
         render = gtk.CellRendererText()
         render.set_property("editable", True)
-        render.connect("edited", self.__edited, model)
 
-        col = gtk.TreeViewColumn("Tags", render, text=0)
-        view.append_column(col)
+        def edited_cb(render, path, text, model):
+            model[path][0] = text
+        render.connect("edited", edited_cb, model)
 
-        for button in [gpa, pa, custom]:
-            vb.pack_start(button, expand=False)
-            button.connect('toggled', self.__toggled, align, model)
+        column = gtk.TreeViewColumn(None, render, text=0)
+        view.append_column(column)
 
-        align.set_sensitive(False)
-        if headers == gpa.headers: gpa.set_active(True)
-        elif headers == pa.headers: pa.set_active(True)
-        else: custom.set_active(True)
+    def __get_headers(self):
+        for button in self.__headers.iterkeys():
+            if button.get_active():
+                if button == self.__custom:
+                    model_headers = [row[0] for row in self.__model]
+                    self.__headers[self.__custom] = model_headers
+                return self.__headers[button]
 
-        vb_1 = gtk.VBox(spacing=6)
-        cb = TagsComboBoxEntry(
-            ["genre", "grouping", "~people", "artist", "album", "~year"])
-        vb_1.pack_start(cb, expand=False)
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.add(view)
-        vb_1.pack_start(sw)
-        align.child.pack_start(vb_1, expand=True, fill=True)
-
-        vb_2 = gtk.VBox(spacing=6)
-        add = gtk.Button(stock=gtk.STOCK_ADD)
-        add.connect('clicked', self.__add, model, cb)
-        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
-
-        self.selection = view.get_selection()
-        remove.connect('clicked', self.__remove, self.selection)
-        self.selection.connect('changed', self.__changed, remove)
-        vb_2.pack_start(add, expand=False)
-        vb_2.pack_start(remove, expand=False)
-        align.child.pack_start(vb_2, expand=False, fill=False)
-
-        vb.pack_start(align)
-
-        self.add(gtk.VBox(spacing=12))
-        self.child.pack_start(vb)
-
-        apply = gtk.Button(stock=gtk.STOCK_APPLY)
-        model.connect('row-deleted', self.__row_deleted, apply)
-        model.connect('row-inserted', self.__row_inserted, apply)
-        apply.connect('clicked', self.__apply, model)
-        box = gtk.HButtonBox()
-        box.set_layout(gtk.BUTTONBOX_END)
-        box.pack_start(apply)
-        self.child.pack_start(box, expand=False)
-
-        self.show_all()
-
-    @staticmethod
-    def get_headers():
-        #<=2.1 saved the headers tab seperated, but had a space seperated
-        #default value, so check for that.
-        headers = config.get("browsers", "panes")
-        if headers == "~people album":
-            return headers.split()
+    def __set_headers(self, new_headers):
+        for button, headers in self.__headers.iteritems():
+            if headers == new_headers:
+                button.set_active(True)
+                break
         else:
-            return headers.split("\t")
+            self.__headers[self.__custom] = new_headers
+            self.__custom.set_active(True)
+
+    headers = property(__get_headers, __set_headers)
+
+    def __selection_changed(self, selection, remove):
+        remove.set_sensitive(bool(selection.get_selected()[1]))
 
     def __add(self, button, model, cb):
-        model.append(row=[cb.tag])
+        if cb.tag:
+            model.append(row=[cb.tag])
 
     def __remove(self, button, selection):
         model, iter = selection.get_selected()
-        if iter: model.remove(iter)
+        if iter:
+            model.remove(iter)
 
-    def __changed(self, selection, remove):
-        remove.set_sensitive(bool(selection.get_selected()[1]))
+    def __toggled(self, button, edit_widget, model):
+        tags = self.__headers[button]
 
-    def __edited(self, render, path, text, model):
-        model[path][0] = text
-
-    def __row_deleted(self, model, path, button):
-        button.set_sensitive(len(model) > 0)
-
-    def __row_inserted(self, model, path, iter, button):
-        button.set_sensitive(len(model) > 0)
-
-    def __apply(self, button, model):
-        headers = "\t".join([row[0] for row in model])
-        config.set("browsers", "panes", headers)
-        PanedBrowser.set_all_panes()
-
-    def __toggled(self, button, align, model):
-        if button.headers:
+        if tags:
             model.clear()
-            for h in button.headers:
+            for h in tags:
                 model.append(row=[h])
-        align.set_sensitive(button.get_label() == _("_Custom"))
+
+        edit_widget.set_sensitive(
+            button.get_active() and button is self.__custom)
+
+
+class Preferences(qltk.UniqueWindow):
+    def __init__(self, parent=None):
+        if self.is_not_unique():
+            return
+        super(Preferences, self).__init__()
+
+        self.set_transient_for(qltk.get_top_parent(parent))
+        self.set_default_size(350, 270)
+        self.set_border_width(12)
+
+        self.set_title(_("Paned Browser Preferences") + " - Quod Libet")
+
+        vbox = gtk.VBox(spacing=12)
+
+        editor = PatternEditor()
+        editor.headers = get_headers()
+
+        apply = gtk.Button(stock=gtk.STOCK_APPLY)
+        apply.connect_object("clicked", self.__apply, editor, False)
+
+        cancel = gtk.Button(stock=gtk.STOCK_CANCEL)
+        cancel.connect("clicked", lambda x: self.destroy())
+
+        ok = gtk.Button(stock=gtk.STOCK_OK)
+        ok.connect_object("clicked", self.__apply, editor, True)
+
+        box = gtk.HButtonBox()
+        box.set_spacing(6)
+        box.set_layout(gtk.BUTTONBOX_END)
+        box.pack_start(apply)
+        box.pack_start(cancel)
+        box.pack_start(ok)
+
+        vbox.pack_start(editor)
+        vbox.pack_start(box, expand=False)
+
+        self.add(vbox)
+
+        ok.grab_focus()
+        self.show_all()
+
+    def __apply(self, editor, close):
+        if editor.headers != get_headers():
+            save_headers(editor.headers)
+            PanedBrowser.set_all_panes()
+
+        if close:
+            self.destroy()
+
 
 ALL, SONGS, UNKNOWN = range(3)
 UNKNOWN_MARKUP = "<b>%s</b>" % _("Unknown")
@@ -700,7 +761,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         hbox.set_size_request(100, 100)
         # fill in the pane list. the last pane reports back to us.
         self.__panes = [self]
-        panes = Preferences.get_headers()
+        panes = get_headers()
         panes.reverse()
         for pane in panes:
             self.__panes.insert(
