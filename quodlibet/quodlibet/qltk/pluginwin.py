@@ -167,9 +167,20 @@ class PluginWindow(qltk.UniqueWindow):
         prefs = gtk.Frame()
         prefs.set_shadow_type(gtk.SHADOW_NONE)
 
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close.connect('clicked', lambda *x: self.destroy())
+
+        bb_align = gtk.Alignment(0, 1, 1, 0)
+
+        bb = gtk.HButtonBox()
+        bb.set_layout(gtk.BUTTONBOX_END)
+        bb.pack_start(close)
+        bb_align.add(bb)
+
         vb2 = gtk.VBox(spacing=12)
         vb2.pack_start(desc, expand=False)
         vb2.pack_start(prefs, expand=False)
+        vb2.pack_start(bb_align)
         hbox.pack_start(vb2, expand=True)
 
         self.add(hbox)
