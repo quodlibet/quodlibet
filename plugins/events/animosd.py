@@ -282,11 +282,11 @@ class AnimOsd(EventPlugin):
 
         def edit_string(button):
             w = PatternEdit(button, AnimOsd.conf.string)
-            w.child.text = self.conf.string
+            w.text = self.conf.string
             w.apply.connect_object_after('clicked', set_string, w)
 
         def set_string(window):
-            value = window.child.text
+            value = window.text
             config.set("plugins", "animosd_string", value)
             self.conf.string = value
 
