@@ -93,10 +93,11 @@ class PatternEditor(gtk.VBox):
         ctrl_box.pack_start(add, expand=False)
         add.connect('clicked', self.__add, model, cb)
 
-        selection = view.get_selection()
         remove = gtk.Button(stock=gtk.STOCK_REMOVE)
         ctrl_box.pack_start(remove, expand=False)
-        remove.connect('clicked', self.__remove, selection)
+        remove.connect('clicked', self.__remove, view)
+
+        selection = view.get_selection()
         selection.connect('changed', self.__selection_changed, remove)
         selection.emit('changed')
 
@@ -149,8 +150,8 @@ class PatternEditor(gtk.VBox):
         if cb.tag:
             model.append(row=[cb.tag])
 
-    def __remove(self, button, selection):
-        model, iter = selection.get_selected()
+    def __remove(self, button, view):
+        model, iter = view.get_selection().get_selected()
         if iter:
             model.remove(iter)
 
