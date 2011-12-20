@@ -101,7 +101,7 @@ class TextEdit(qltk.UniqueWindow):
         self.set_border_width(12)
         self.set_default_size(420, 190)
 
-        vbox = gtk.VBox(spacing=6)
+        vbox = gtk.VBox(spacing=12)
         close = gtk.Button(stock=gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
         b = gtk.HButtonBox()
