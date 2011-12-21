@@ -490,6 +490,10 @@ class AmazonParser(object):
         parameters['SearchIndex'] = 'Music'
         parameters['Keywords'] = query
         parameters['ItemPage'] = page
+        # This specifies where the money goes and needed since 1.11.2011
+        # (What a good reason to break API..)
+        # ...so use the gnome.org one
+        parameters['AssociateTag'] = 'gnomestore-20'
 
         data, enc = get_url(url, get=parameters)
         dom = minidom.parseString(data)
