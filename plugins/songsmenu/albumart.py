@@ -1272,6 +1272,7 @@ class DownloadAlbumArt(SongsMenuPlugin):
             table.attach(check, 0, 1, i, i + 1)
             checked = cfg_get(config_eng_prefix + eng['config_id'], True)
             check.set_active(checked)
+            check.connect('toggled', change_config, eng['config_id'])
 
             button = gtk.Button(eng['url'])
             button.connect('clicked', lambda s:util.website(s.get_label()))
