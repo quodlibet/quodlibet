@@ -547,7 +547,11 @@ def pattern(pat, cap=True, esc=False):
 
     fakesong = Fakesong({'filename': tag('filename', cap)})
     fakesong.cap = cap
-    p = (esc and XMLFromPattern(pat)) or Pattern(pat)
+    try:
+        p = (esc and XMLFromPattern(pat)) or Pattern(pat)
+    except ValueError:
+        return _("Invalid pattern")
+
     return p.format(fakesong)
 
 def spawn(argv, stdout=False):

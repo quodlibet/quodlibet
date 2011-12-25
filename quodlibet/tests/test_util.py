@@ -395,6 +395,8 @@ class Tpattern(TestCase):
                             "<i>&amp;</i>")
     def test_invalid(self):
         self.failUnlessEqual(util.pattern("<date"), "")
+        util.pattern("<d\\")
+
 add(Tpattern)
 
 class Tformat_time_long(TestCase):

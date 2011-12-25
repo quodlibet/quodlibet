@@ -387,6 +387,8 @@ class SongList(AllTreeView, util.InstanceTracker):
     class PatternColumn(WideTextColumn):
         def _cdf(self, column, cell, model, iter, tag):
             song = model.get_value(iter, 0)
+            if not self._pattern:
+                return
             value = self._pattern % song
             if not self._needs_update(value): return
             cell.set_property('text', value)
@@ -394,7 +396,9 @@ class SongList(AllTreeView, util.InstanceTracker):
         def __init__(self, pattern):
             super(SongList.PatternColumn, self).__init__(util.pattern(pattern))
             self.header_name = pattern
-            self._pattern = Pattern(pattern)
+            self._pattern = None
+            try: self._pattern = Pattern(pattern)
+            except ValueError: pass
 
     def Menu(self, header, browser, library):
         songs = self.get_selected_songs()
@@ -834,7 +838,10 @@ class SongList(AllTreeView, util.InstanceTracker):
         star = list(Query.STAR)
         for header in headers:
             if "<" in header:
-                tags = Pattern(header).tags
+                try:
+                    tags = Pattern(header).tags
+                except ValueError:
+                    continue
             else:
                 tags = util.tagsplit(header)
             for tag in tags:
