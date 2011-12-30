@@ -1,35 +1,50 @@
 # -*- coding: utf-8 -*-
-# Copyright 2005 Joe Wreschnig
+# Copyright 2011 Joe Wreschnig, Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 import os
+import bz2
+import urllib2
 import urllib
-import re
-from xml.parsers import expat
+import itertools
+import math
 
 import gobject
 import gtk
-import pango
 
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import config
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats.remote import RemoteFile
-from quodlibet.formats._audio import TAG_TO_SORT
+from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE
 from quodlibet.library import SongLibrary
 from quodlibet.parse import Query
-from quodlibet.qltk.entry import ValidatingEntry
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.qltk.views import HintedTreeView
+from quodlibet.qltk.notif import Task
+from quodlibet.util import copool, gobject_weak, sanitize_tags
+from quodlibet.util.uri import URI
+from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.searchbar import SearchBarBox
+from quodlibet.qltk.completion import LibraryTagCompletion
+from quodlibet.qltk.x import MenuItem
 
-ICECAST_YP = "http://dir.xiph.org/yp.xml"
-STATIONS = os.path.join(const.USERDIR, "stations")
+
+STATION_LIST_URL = "http://quodlibet.googlecode.com/files/radiolist.bz2"
+STATIONS_FAV = os.path.join(const.USERDIR, "stations")
+STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
+
+# TODO: - Migrate statistics on library update
+#       - Don't add stations that are already in favorites
+#       - Do the update in a thread
+#       - Ranking: reduce duplicate stations (max 3 URLs per station)
+#                  prefer stations that match a genre?
 
 class IRFile(RemoteFile):
     multisong = True
@@ -43,6 +58,9 @@ class IRFile(RemoteFile):
         base_call = super(IRFile, self).__call__
         if key == "title" and "title" not in self and "organization" in self:
             return base_call("organization", *args, **kwargs)
+        if key == "~format" and "audio-codec" in self:
+            return "%s (%s)" % (self.format,
+                base_call("audio-codec", *args, **kwargs))
         return base_call(key, *args, **kwargs)
 
     def get(self, key, *args):
@@ -52,10 +70,15 @@ class IRFile(RemoteFile):
             return base_call("website", *args)
         return base_call(key, *args)
 
-    def write(self): pass
+    def write(self):
+        pass
+
     def can_change(self, k=None):
-        if k is None: return self.__CAN_CHANGE
-        else: return k in self.__CAN_CHANGE
+        if k is None:
+            return self.__CAN_CHANGE
+        else:
+            return k in self.__CAN_CHANGE
+
 
 def ParsePLS(file):
     data = {}
@@ -95,10 +118,11 @@ def ParsePLS(file):
             None, _("Unsupported file type"),
             _("Station lists can only contain locations of stations, "
               "not other station lists or playlists. The following locations "
-              "cannot be loaded:\n%s") % "\n  ".join(map(util.escape,warnings))
+              "cannot be loaded:\n%s") % "\n  ".join(map(util.escape, warnings))
             ).run()
 
     return files
+
 
 def ParseM3U(fileobj):
     files = []
@@ -116,141 +140,135 @@ def ParseM3U(fileobj):
             files.append(irf)
     return files
 
-class YPParser(object):
-    _valid_keys = "server_name listen_url server_type bitrate genre"
-    def __init__(self):
-        self.parser = expat.ParserCreate()
-        self.parser.StartElementHandler = self.handle_start
-        self.parser.EndElementHandler = self.handle_end
-        self.parser.CharacterDataHandler = self.handle_char_data
-    def handle_start(self, name, attrs):
-        if name in self._valid_keys:
-            self._key = name
-            self._val = ''
-        if name == 'entry':
-            self._current = {}
-    def handle_char_data(self, data):
-        if self._key:
-            self._val = self._val + data
-    def handle_end(self, name):
-        if name == 'entry':
-            type = self._current.get("server_type")
-            if type.startswith("audio") or (type == "application/ogg" and
-                not self._current.get("listen_url").endswith("ogv")):
-                irf = IRFile(self._current.get("listen_url"))
-                irf["title"] = self._current.get("server_name", u"")
-                genres = self._current.get("genre", u"").split()
-                irf["genre"] = '\n'.join(filter(lambda s: len(s) > 1, genres))
-                try: br = int(self._current.get("bitrate", 0))
-                except: br = 0
-                if br > 1000: br = br / 1000
-                irf["~#bitrate"] = br
-                self.files.append(irf)
-            self._current = None
-        elif self._key and self._current is not None:
-            self._current[self._key] = self._val.strip()
-            self._key = None
-            self._val = None
-    def parse(self, fileobj):
-        self.files = []
-        self._key = None
-        self.parser.ParseFile(fileobj)
-        return self.files
 
-class ChooseNewStations(gtk.Dialog):
-    def __init__(self, irfs):
-        super(ChooseNewStations, self).__init__(title=_("Choose New Stations"))
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         gtk.STOCK_ADD, gtk.RESPONSE_OK)
-        self.set_default_size(500, 400)
-        has_genre, has_bitrate = (False, False)
-        for song in irfs:
-            if song("genre"): has_genre = True
-            if song("~#bitrate"): has_bitrate = True
+def add_station(uri):
+    """Fetches the URI content and extracts IRFiles"""
 
-        # (song, index, visible, checked, title, genres, bitrate)
-        listmodel = gtk.ListStore(object, int, bool, bool, str, str, int)
-        filtermodel = listmodel.filter_new()
-        filtermodel.set_visible_column(2)
-        model = gtk.TreeModelSort(filtermodel)
-        hbox_search = gtk.HBox()
-        lbl = gtk.Label(_('_Search:'))
-        lbl.set_use_underline(True)
-        hbox_search.pack_start(lbl, expand=False)
-        query = gtk.Entry()
-        lbl.set_mnemonic_widget(query)
-        def filter_visible(query, filter, listmodel):
-            iter = listmodel.get_iter_root()
-            qre_text = '|'.join(re.escape(query.get_text()).split())
-            query_re = re.compile(qre_text, flags = re.IGNORECASE)
-            while iter:
-                (title, genres) = listmodel.get(iter, 4, 5)
-                if query_re.search(title) or query_re.search(genres):
-                    listmodel.set_value(iter, 2, True)
-                else:
-                    listmodel.set_value(iter, 2, False)
-                iter = listmodel.iter_next(iter)
-            filter.refilter()
-        query.connect('changed', filter_visible, filtermodel, listmodel)
-        hbox_search.pack_start(query)
-        self.vbox.pack_start(hbox_search, expand=False)
+    irfs = []
+    if isinstance(uri, unicode):
+        uri = uri.encode('utf-8')
 
-        self.tv = tv = HintedTreeView()
-        tv.set_model(model)
-        render = gtk.CellRendererToggle()
-        render.connect('toggled', self.__toggled)
-        c = gtk.TreeViewColumn(_("Add"), render, active=3)
-        tv.append_column(c)
-        # These next two are out of model order so that resizing works better
-        if has_bitrate:
-            render = gtk.CellRendererText()
-            render.set_property('xalign', 1.0)
-            c = gtk.TreeViewColumn(_("Bitrate"), render, text=6)
-            c.set_sort_column_id(6)
-            tv.append_column(c)
-        if has_genre:
-            render = gtk.CellRendererText()
-            render.set_property('ellipsize', pango.ELLIPSIZE_END)
-            render.set_property('width', 100)
-            c = gtk.TreeViewColumn(_("Genre"), render, text=5)
-            c.set_property('resizable', True)
-            c.set_sort_column_id(5)
-            tv.append_column(c)
-        render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
-        c = gtk.TreeViewColumn(_("Title"), render, text=4)
-        c.set_property('resizable', True)
-        c.set_sort_column_id(4)
-        tv.append_column(c)
-        tv.set_search_column(4)
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.add(tv)
-        sw.set_border_width(6)
-        self.vbox.pack_start(sw)
+    if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
+        try: sock = urllib.urlopen(uri)
+        except EnvironmentError, e:
+            try: err = e.strerror.decode(const.ENCODING, 'replace')
+            except (TypeError, AttributeError):
+                err = e.strerror[1].decode(const.ENCODING, 'replace')
+            qltk.ErrorMessage(None, _("Unable to add station"), err).run()
+            return []
 
-        for id, song in enumerate(irfs):
-            listmodel.append([song, id, True, False, song("~artist~title"),
-                              ', '.join(song("genre").split()),
-                              song("~#bitrate", 0)])
-        self.listmodel = listmodel
-        self.model = model
-        self.connect_object('destroy', tv.set_model, None)
-        self.child.show_all()
+        if uri.lower().endswith(".pls"):
+            irfs = ParsePLS(sock)
+        elif uri.lower().endswith(".m3u"):
+            irfs = ParseM3U(sock)
 
-    def __toggled(self, toggle, path):
-        listmodel_path = self.model[path][1]
-        self.listmodel[listmodel_path][3] ^= True
+        sock.close()
+    else:
+        try:
+            irfs = [IRFile(uri)]
+        except ValueError, err:
+            qltk.ErrorMessage(None, _("Unable to add station"), err).run()
 
-    def get_irfs(self):
-        stations = [row[0] for row in self.model if row[2] and row[3]]
-        if not stations:
-            # If none are checked, try going with what's selected instead
-            model, iter = self.tv.get_selection().get_selected()
-            if iter:
-                stations = [model[iter][0]]
-        return stations
+    return irfs
+
+
+def download_taglist(callback, cofuncid, step=1024 * 10):
+    """Generator for loading the bz2 compressed tag list.
+
+    Calls callback with the decompressed data or None in case of
+    an error."""
+
+    with Task(_("Internet Radio"), _("Downloading station list")) as task:
+        if cofuncid: task.copool(cofuncid)
+
+        try:
+            response = urllib2.urlopen(STATION_LIST_URL)
+        except urllib2.URLError:
+            gobject.idle_add(callback, None)
+            return
+
+        try:
+            size = int(response.info().get("content-length", 0))
+        except ValueError:
+            size = 0
+
+        decomp = bz2.BZ2Decompressor()
+
+        data = ""
+        temp = ""
+        read = 0
+        while temp or not data:
+            read += len(temp)
+
+            if size: task.update(float(read) / size)
+            else: task.pulse()
+            yield True
+
+            try:
+                data += decomp.decompress(temp)
+                temp = response.read(step)
+            except (IOError, EOFError):
+                data = None
+                break
+        response.close()
+
+        yield True
+
+        stations = None
+        if data:
+            stations = parse_taglist(data)
+
+        gobject.idle_add(callback, stations)
+
+
+def parse_taglist(data):
+    """Parses a dump file like list of tags and returns a list of IRFiles
+
+    uri=http://...
+    tag=value1
+    tag2=value
+    tag=value2
+    uri=http://...
+    ...
+
+    """
+
+    stations = []
+    station = None
+
+    for l in data.split("\n"):
+        key = l.split("=")[0]
+        value = l.split("=", 1)[1]
+        if key == "uri":
+            if station:
+                stations.append(station)
+            station = IRFile(value)
+            continue
+
+        value = util.decode(value)
+        san = sanitize_tags({key: value}, stream=True).items()
+        if not san:
+            continue
+
+        key, value = san[0]
+        if isinstance(value, str):
+            value = value.decode("utf-8")
+            if value not in station.list(key):
+                station.add(key, value)
+        else:
+            station[key] = value
+
+    if station:
+        stations.append(station)
+
+    return stations
+
+
+def sort_stations(station):
+    bitrate = station("~#bitrate", 96)
+    listeners = int(station("~listenerpeak", 20))
+    return (listeners >= 20, bitrate, listeners)
+
 
 class AddNewStation(GetStringDialog):
     def __init__(self, parent):
@@ -258,128 +276,336 @@ class AddNewStation(GetStringDialog):
             parent, _("New Station"),
             _("Enter the location of an Internet radio station:"),
             okbutton=gtk.STOCK_ADD)
-        b = qltk.Button(_("_Stations..."), gtk.STOCK_CONNECT)
-        b.connect_object('clicked', self._val.set_text, ICECAST_YP)
-        b.connect_object('clicked', self.response, gtk.RESPONSE_OK)
-        b.show_all()
-        self.action_area.pack_start(b, expand=False)
-        self.action_area.reorder_child(b, 0)
 
-class InternetRadio(gtk.HBox, Browser):
+    def _verify_clipboard(self, text):
+        # try to extract an URI from the clipboard
+        for line in text.splitlines():
+            line = line.strip()
+
+            try:
+                URI(line)
+            except ValueError:
+                pass
+            else:
+                return line
+
+
+class GenreFilter(object):
+    STAR = ["genre", "organization"]
+
+    # This probably needs improvements
+    GENRES = {
+        "electronic": (_("Electronic"),
+            "|(electr,house,techno,trance,/trip.?hop/,&(drum,n,bass),chill,"
+            "dnb,minimal,/down(beat|tempo)/,&(dub,step))"),
+        "rap": (_("Hip Hop / Rap"), "|(&(hip,hop),rap)"),
+        "oldies": (_("Oldies"), "|(/[2-9]0\S?s/,oldies)"),
+        "r&b": (_("R&B"), "/r(\&|n)b/"),
+        "japanese": (_("Japanese"), "|(anime,jpop,japan,jrock)"),
+        "indian": (_("Indian"), "|(bollywood,hindi,indian,bhangra)"),
+        "religious": (_("Religious"),
+            "|(religious,christian,bible,gospel,spiritual,islam)"),
+        "charts": (_("Charts"), "|(charts,hits,top)"),
+        "turkish": (_("Turkish"), "|(turkish,turkce)"),
+        "reggae": (_("Reggae / Dancehall"), "|(/reggae([^\w]|$)/,dancehall)"),
+        "latin": (_("Latin"), "|(latin,salsa)"),
+        "college": (_("College Radio"), "|(college,campus)"),
+        "talk_news": (_("Talk / News"), "|(news,talk)"),
+        "ambient": (_("Ambient"), "|(ambient,easy)"),
+        "jazz": (_("Jazz"), "|(jazz,swing)"),
+        "classical": (_("Classical"), "classic"),
+        "pop": (_("Pop"), None),
+        "alternative": (_("Alternative"), None),
+        "metal": (_("Metal"), None),
+        "country": (_("Country"), None),
+        "news": (_("News"), None),
+        "schlager": (_("Schlager"), None),
+        "funk": (_("Funk"), None),
+        "indie": (_("Indie"), None),
+        "blues": (_("Blues"), None),
+        "soul": (_("Soul"), None),
+        "lounge": (_("Lounge"), None),
+        "punk": (_("Punk"), None),
+        "reggaeton": (_("Reggaeton"), None),
+        "slavic": (_("Slavic"),
+            "|(narodna,albanian,manele,shqip,kosova)"),
+        "greek": (_("Greek"), None),
+        "gothic": (_("Gothic"), None),
+        "rock": (_("Rock"), None),
+    }
+
+    # parsing all above takes 350ms on an atom, so only generate when needed
+    __CACHE = {}
+
+    def keys(self):
+        return self.GENRES.keys()
+
+    def query(self, key):
+        if key not in self.__CACHE:
+            text, filter_ = self.GENRES[key]
+            if filter_ is None:
+                filter_ = key
+            self.__CACHE[key] = Query(filter_, star=self.STAR)
+        return self.__CACHE[key]
+
+    def text(self, key):
+        return self.GENRES[key][0]
+
+
+class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
-    __stations = SongLibrary("iradio")
-    __sig = None
+
+    __stations = None
+    __fav_stations = None
+    __librarian = None
+
     __filter = None
-    __refill_id = None
 
-    headers = "title artist ~people grouping genre website".split()
+    name = _("Internet Radio2")
+    accelerated_name = _("_Internet Radio2")
+    priority = 16
+    headers = "title artist ~people grouping genre website ~format " \
+        "channel-mode ~listenerpeak".split()
 
-    name = _("Internet Radio")
-    accelerated_name = _("_Internet Radio")
-    priority = 15
+    TYPE, STOCK, KEY, NAME = range(4)
+    TYPE_FILTER, TYPE_ALL, TYPE_FAV, TYPE_SEP, TYPE_NOCAT = range(5)
+    STAR = ["artist", "title", "website", "genre", "comment"]
 
     @classmethod
-    def init(klass, library):
-        klass.__stations.load(STATIONS)
+    def _init(klass, library):
+        klass.__librarian = library.librarian
+
+        klass.__stations = SongLibrary("iradio-remote")
+        klass.__stations.load(STATIONS_ALL, skip=lambda x: True)
+
+        klass.__fav_stations = SongLibrary("iradio")
+        klass.__fav_stations.load(STATIONS_FAV, skip=lambda x: True)
+
+        klass.filters = GenreFilter()
+
+    @classmethod
+    def _destroy(klass):
+        if klass.__stations.dirty:
+            klass.__stations.save()
+        klass.__stations.destroy()
+        klass.__stations = None
+
+        if klass.__fav_stations.dirty:
+            klass.__fav_stations.save()
+        klass.__fav_stations.destroy()
+        klass.__fav_stations = None
+
+        klass.__librarian = None
+
+        klass.filters = None
+
+    def __inhibit(self):
+        self.view.get_selection().handler_block(self.__changed_sig)
+
+    def __uninhibit(self):
+        self.view.get_selection().handler_unblock(self.__changed_sig)
+
+    def __destroy(self, *args):
+        if not self.instances():
+            self._destroy()
 
     def __init__(self, library, player):
         super(InternetRadio, self).__init__(spacing=12)
-        self.commands = {"add-station": self.__add_station_remote}
 
-        add = qltk.Button(_("_New Station"), gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
-        self.__search = gtk.Entry()
-        self.pack_start(add, expand=False)
-        add.connect('clicked', self.__add)
-        if InternetRadio.__sig is None:
-            InternetRadio.__sig = library.connect(
-                'changed', InternetRadio.__changed)
+        if not self.instances():
+            self._init(library)
+        self._register_instance()
 
-        for s in [self.__stations.connect('removed', self.activate),
-                  self.__stations.connect('added', self.activate)
-                  ]:
-            self.connect_object('destroy', self.__stations.disconnect, s)
-        self.connect_object('destroy', self.__stations.save, STATIONS)
-        self.connect_object('destroy', self.emit, 'songs-selected', [], None)
+        self.connect('destroy', self.__destroy)
 
-        hb = gtk.HBox(spacing=3)
-        lab = gtk.Label(_("_Search:"))
-        self.pygtkbug = search = ValidatingEntry(Query.is_valid_color)
-        lab.set_use_underline(True)
-        lab.set_mnemonic_widget(search)
-        search.connect('changed', self.__filter_changed)
-        hb.pack_start(lab, expand=False)
-        hb.pack_start(search)
-        search.pack_clear_button(hb)
-        self.pack_start(hb)
+        completion = LibraryTagCompletion(self.__stations)
+        self.__searchbar = search = SearchBarBox(completion=completion)
+        gobject_weak(search.connect, 'query-changed', self.__filter_changed)
+
+        # alignment for search bar
+        search_align = gtk.Alignment(1, 1, 1, 1)
+        search_align.set_property('left-padding', 6)
+        search_align.add(search)
+
+        # left filter pane
+        self.__filter_pane = pane = gtk.VBox(spacing=6)
+
+        # new station button
+        add_button = qltk.Button(_("_New Station"),
+                                 gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
+        gobject_weak(add_button.connect, 'clicked', self.__add)
+
+        # treeview
+        scrolled_window = gtk.ScrolledWindow()
+        scrolled_window.set_shadow_type(gtk.SHADOW_IN)
+        self.view = view = AllTreeView()
+        view.set_headers_visible(False)
+        scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        scrolled_window.add(view)
+        model = gtk.ListStore(int, str, str, str)
+
+        model.append(row=[self.TYPE_ALL, gtk.STOCK_DIRECTORY, "__all",
+                          _("All Stations")])
+        model.append(row=[self.TYPE_SEP, gtk.STOCK_DIRECTORY, "", ""])
+        #Translators: Favorite radio stations
+        model.append(row=[self.TYPE_FAV, gtk.STOCK_DIRECTORY, "__fav",
+                          _("Favorites")])
+        model.append(row=[self.TYPE_SEP, gtk.STOCK_DIRECTORY, "", ""])
+
+        filters = self.filters
+        for text, k in sorted([(filters.text(k), k) for k in filters.keys()]):
+            model.append(row=[self.TYPE_FILTER, gtk.STOCK_FIND, k, text])
+
+        model.append(row=[self.TYPE_NOCAT, gtk.STOCK_DIRECTORY,
+                          "nocat", _("No Category")])
+
+        def separator(model, iter):
+            return model[iter][self.TYPE] == self.TYPE_SEP
+        view.set_row_separator_func(separator)
+
+        def search_func(model, column, key, iter):
+            return key.lower() not in model[iter][column].lower()
+        view.set_search_column(self.NAME)
+        view.set_search_equal_func(search_func)
+
+        column = gtk.TreeViewColumn("genres")
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+
+        renderpb = gtk.CellRendererPixbuf()
+        column.pack_start(renderpb, False)
+        column.set_attributes(renderpb, stock_id=self.STOCK)
+
+        render = gtk.CellRendererText()
+        view.append_column(column)
+        column.pack_start(render)
+        column.set_attributes(render, text=self.NAME)
+
+        view.set_model(model)
+
+        # selection
+        selection = view.get_selection()
+        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        self.__changed_sig = gobject_weak(selection.connect, 'changed',
+            util.DeferredSignal(lambda x: self.activate()), parent=view)
+
+        # update button
+        update_button = qltk.Button(_("_Update Stations"), gtk.STOCK_REFRESH,
+                             gtk.ICON_SIZE_MENU)
+        gobject_weak(update_button.connect, 'clicked', self.__update)
+
+
+        self.pack_start(search_align)
+        pane.pack_start(add_button, expand=False)
+        pane.pack_start(scrolled_window)
+        pane.pack_start(update_button, expand=False)
 
         self.show_all()
-        gobject.idle_add(self.activate)
 
-    def __filter_changed(self, entry):
-        if self.__refill_id is not None:
-            gobject.source_remove(self.__refill_id)
-            self.__refill_id = None
-        text = entry.get_text().decode('utf-8')
-        if Query.is_parsable(text):
-            star = ["artist", "album", "title", "website", "genre", "comment"]
-            if text: self.__filter = Query(text, star).search
-            else: self.__filter = None
-            self.__refill_id = gobject.timeout_add(500, self.activate)
+    def pack(self, songpane):
+        container = qltk.RHPaned()
+        right = gtk.VBox(spacing=6)
+        container.pack1(self.__filter_pane, resize=False, shrink=False)
+        container.pack2(right, resize=True, shrink=False)
+        container.show_all()
+        right.pack_start(self, expand=False)
+        right.pack_start(songpane)
+        return container
 
-    def Menu(self, songs, songlist, library):
-        menu = SongsMenu(self.__stations, songs, playlists=False,
-                         queue=False, accels=songlist.accelerators,
-                         parent=self)
-        return menu
+    def unpack(self, container, songpane):
+        right = container.get_child2()
+        right.remove(songpane)
+        right.remove(self)
 
-    def __remove(self, button, songs):
-        self.__stations.remove(songs)
-        self.__stations.save(STATIONS)
-        self.activate()
+    def __update(self, *args):
+        copool.add(download_taglist, self.__update_done,
+                   cofuncid="radio-load", funcid="radio-load")
 
-    def __changed(klass, library, songs):
-        if filter(lambda s: s in klass.__stations, songs):
-            klass.__stations.save(STATIONS)
-    __changed = classmethod(__changed)
+    def __update_done(self, stations):
+        if stations:
+            stations.sort(key=sort_stations, reverse=True)
+            stations = stations[:4000]
 
-    def __add_station_remote(self, *args):
-        gtk.threads_enter()
-        if len(args) == 3:
-            self.__add(None, args[0])
+            # remove the tags only used for ranking
+            for s in stations:
+                s.pop("~listenerpeak", None)
+
+            self.__stations.remove(self.__stations.values())
+            self.__stations.add(stations)
         else:
-            self.__add_station(args[0], args[1])
-        gtk.threads_leave()
+            print_w("Loading remote station list failed.")
+
+    def __filter_changed(self, bar, text, restore=False):
+        self.__filter = None
+        if not Query.match_all(text):
+            self.__filter = Query(text, self.STAR)
+
+        if not restore:
+            self.activate()
+
+    def __get_selected_libraries(self):
+        """Returns the libraries to search in depending on the
+        filter selection"""
+
+        selection = self.view.get_selection()
+        model, rows = selection.get_selected_rows()
+        types = [model[row][self.TYPE] for row in rows]
+        libs = [self.__fav_stations]
+        if types != [self.TYPE_FAV]:
+            libs.append(self.__stations)
+
+        return libs
+
+    def __get_selection_filter(self):
+        """Retuns a filter object for the current selection or None
+        if nothing should be filtered"""
+
+        selection = self.view.get_selection()
+        model, rows = selection.get_selected_rows()
+
+        filter_ = None
+        for row in rows:
+            type_ = model[row][self.TYPE]
+            if type_ == self.TYPE_FILTER:
+                key = model[row][self.KEY]
+                current_filter = self.filters.query(key)
+                if current_filter:
+                    if filter_:
+                        filter_ |= current_filter
+                    else:
+                        filter_ = current_filter
+            elif type_ == self.TYPE_NOCAT:
+                # if notcat is selected, combine all filters, negate and merge
+                all_ = [self.filters.query(k) for k in self.filters.keys()]
+                nocat_filter = all_ and -reduce(lambda x, y: x | y, all_)
+                if nocat_filter:
+                    if filter_:
+                        filter_ |= nocat_filter
+                    else:
+                        filter_ = nocat_filter
+            elif type_ == self.TYPE_ALL:
+                filter_ = None
+                break
+
+        return filter_
+
+    def __add_fav(self, songs):
+        songs = [s for s in songs if s in self.__stations]
+        type(self).__librarian.move(
+            songs, self.__stations, self.__fav_stations)
+
+    def __remove_fav(self, songs):
+        songs = [s for s in songs if s in self.__fav_stations]
+        type(self).__librarian.move(
+            songs, self.__fav_stations, self.__stations)
 
     def __add(self, button):
-        uri = (AddNewStation(qltk.get_top_parent(self)).run() or "").strip()
-        if uri == "": return
-        else: self.__add_station(uri)
+        parent = qltk.get_top_parent(self)
+        uri = (AddNewStation(parent).run(clipboard=True) or "").strip()
+        if uri != "":
+            self.__add_station(uri)
 
     def __add_station(self, uri):
-        if isinstance(uri, unicode): uri = uri.encode('utf-8')
-        if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u") \
-            or uri == ICECAST_YP:
-            try: sock = urllib.urlopen(uri)
-            except EnvironmentError, e:
-                try: err = e.strerror.decode(const.ENCODING, 'replace')
-                except (TypeError, AttributeError):
-                    err = e.strerror[1].decode(const.ENCODING, 'replace')
-                qltk.ErrorMessage(None, _("Unable to add station"), err).run()
-                return
-            if uri.lower().endswith(".pls"):
-                irfs = ParsePLS(sock)
-            elif uri.lower().endswith(".m3u"):
-                irfs = ParseM3U(sock)
-            elif uri == ICECAST_YP:
-                p = YPParser()
-                irfs = p.parse(sock)
-            sock.close()
-        else:
-            try:
-                irfs = [IRFile(uri)]
-            except ValueError, err:
-                qltk.ErrorMessage(None, _("Unable to add station"), err).run()
-                return
+        irfs = add_station(uri)
 
         if not irfs:
             qltk.ErrorMessage(
@@ -388,30 +614,146 @@ class InternetRadio(gtk.HBox, Browser):
                 util.escape(uri)).run()
             return
 
-        irfs = filter(lambda station: station not in self.__stations, irfs)
+        irfs = filter(lambda station: station not in self.__fav_stations, irfs)
         if not irfs:
             qltk.WarningMessage(
                 None, _("Unable to add station"),
                 _("All stations listed are already in your library.")).run()
-        elif len(irfs) > 1:
-            d = ChooseNewStations(sorted(irfs))
-            if d.run() == gtk.RESPONSE_OK:
-                irfs = d.get_irfs()
+
+        if irfs:
+            self.__fav_stations.add(irfs)
+
+    def Menu(self, songs, songlist, library):
+        menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
+                         queue=False, accels=songlist.accelerators,
+                         devices=False, parent=self)
+
+        menu.prepend(gtk.SeparatorMenuItem())
+
+        in_fav = False
+        in_all = False
+        for song in songs:
+            if song in self.__fav_stations:
+                in_fav = True
+            elif song in self.__stations:
+                in_all = True
+            if in_fav and in_all:
+                break
+
+        button = MenuItem(_("Remove from Favorites"), gtk.STOCK_REMOVE)
+        button.set_sensitive(in_fav)
+        gobject_weak(button.connect_object, 'activate',
+                     self.__remove_fav, songs)
+        menu.prepend(button)
+
+        button = MenuItem(_("Add to Favorites"), gtk.STOCK_ADD)
+        button.set_sensitive(in_all)
+        gobject_weak(button.connect_object, 'activate',
+                     self.__add_fav, songs)
+        menu.prepend(button)
+
+        return menu
+
+    def restore(self):
+        text = config.get("browsers", "query_text").decode("utf-8")
+        self.__searchbar.set_text(text)
+        if Query.is_parsable(text):
+            self.__filter_changed(self.__searchbar, text, restore=True)
+
+        keys = config.get("browsers", "radio").splitlines()
+        selection = self.view.get_selection()
+        model = self.view.get_model()
+        view = self.view
+
+        # get all paths that have a matching key, and the favorites
+        fav = None
+        found = []
+        for row in model:
+            if row[self.TYPE] != self.TYPE_SEP and row[self.KEY] in keys:
+                found.append(row.path)
+            if row[self.TYPE] == self.TYPE_FAV:
+                fav = row.path
+
+        # if nothing was found, default to favorites
+        if not found:
+            found.append(fav)
+
+        # select accordingly
+        self.__inhibit()
+        selection.unselect_all()
+        first = True
+        for path in found:
+            if first:
+                view.scroll_to_cell(path, use_align=True, row_align=0.5)
+                view.set_cursor(path)
+                first = False
             else:
-                irfs = []
-            d.destroy()
-        if irfs and self.__stations.add(irfs):
-            self.__stations.save(STATIONS)
+                selection.select_path(path)
+        self.__uninhibit()
 
-    def restore(self): self.activate()
-    def activate(self, *args):
-        self.emit('songs-selected',
-                  filter(self.__filter, self.__stations), None)
+    def __get_filter(self):
+        filter_ = self.__get_selection_filter()
 
-    def save(self): pass
+        if filter_:
+            if self.__filter:
+                filter_ &= self.__filter
+        else:
+            filter_ = self.__filter
+
+        return filter_
+
+    def activate(self):
+        filter_ = self.__get_filter()
+        libs = self.__get_selected_libraries()
+        songs = itertools.chain(*libs)
+
+        if filter_:
+            songs = filter(filter_.search, songs)
+        else:
+            songs = list(songs)
+
+        self.emit('songs-selected', songs, None)
+
+    def active_filter(self, song):
+        if song not in self.__stations and song not in self.__fav_stations:
+            return False
+
+        filter_ = self.__get_filter()
+
+        if filter_:
+            return filter_.search(song)
+        return True
+
+    def save(self):
+        text = self.__searchbar.get_text().encode("utf-8")
+        config.set("browsers", "query_text", text)
+
+        selection = self.view.get_selection()
+        model, rows = selection.get_selected_rows()
+        names = filter(None, [model[row][self.KEY] for row in rows])
+        config.set("browsers", "radio", "\n".join(names))
+
+    def scroll(self, song):
+        # nothing we care about
+        if song not in self.__stations and song not in self.__fav_stations:
+            return
+
+        path = None
+        for row in self.view.get_model():
+            if row[self.TYPE] == self.TYPE_FILTER:
+                if self.filters.query(row[self.KEY]).search(song):
+                    path = row.path
+                    break
+        else:
+            # in case nothing matches, select all
+            path = (0,)
+
+        self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
+        self.view.set_cursor(path)
 
     def statusbar(self, i):
         return ngettext("%(count)d station", "%(count)d stations", i)
+
 
 from quodlibet import player
 if player.can_play_uri("http://"):

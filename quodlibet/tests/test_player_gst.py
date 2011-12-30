@@ -6,7 +6,8 @@ import gst
 from tests import TestCase, add
 
 from quodlibet.player.gstbe import GStreamerSink as Sink
-from quodlibet.player.gstbe import parse_gstreamer_taglist, sanitize_tags
+from quodlibet.player.gstbe import parse_gstreamer_taglist
+from quodlibet.util import sanitize_tags
 
 class TGStreamerSink(TestCase):
     def test_simple(self):

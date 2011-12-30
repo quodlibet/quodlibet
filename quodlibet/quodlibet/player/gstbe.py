@@ -21,7 +21,7 @@ except ImportError:
 from quodlibet import config
 from quodlibet import const
 
-from quodlibet.util import fver
+from quodlibet.util import fver, sanitize_tags
 from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.player._gstutils import *

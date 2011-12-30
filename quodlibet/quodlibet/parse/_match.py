@@ -38,6 +38,9 @@ class Union(object):
             return Inter([self, other])
         return NotImplemented
 
+    def __neg__(self):
+        return Neg(self)
+
 # True if the object matches all of its REs.
 class Inter(object):
     def __init__(self, res):
@@ -62,6 +65,9 @@ class Inter(object):
             return Union([self, other])
         return NotImplemented
 
+    def __neg__(self):
+        return Neg(self)
+
 # True if the object doesn't match its RE.
 class Neg(object):
     def __init__(self, re):
@@ -82,6 +88,9 @@ class Neg(object):
         if not isinstance(other, Union):
             return Union([self, other])
         return NotImplemented
+
+    def __neg__(self):
+        return self.__re
 
 # Numeric comparisons
 class Numcmp(object):
@@ -113,6 +122,9 @@ class Numcmp(object):
         if not isinstance(other, Union):
             return Union([self, other])
         return NotImplemented
+
+    def __neg__(self):
+        return Neg(self)
 
 # See if a property of the object matches its RE.
 class Tag(object):
@@ -153,6 +165,8 @@ class Tag(object):
             return Union([self, other])
         return NotImplemented
 
+    def __neg__(self):
+        return Neg(self)
 
 def map_numeric_op(tag, op, value, time_=None):
     """Takes a tag, an operator string and and a value string.

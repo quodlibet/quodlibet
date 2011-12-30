@@ -68,10 +68,11 @@ class Library(gtk.Object):
         items = filter(lambda item: item not in self, items)
         if not items:
             return
+
         print_d("Adding %d items." % len(items), self)
         for item in items:
-            print_d("Adding %r." % item.key, self)
             self._contents[item.key] = item
+
         self.dirty = True
         self.emit('added', items)
         return items
@@ -80,10 +81,11 @@ class Library(gtk.Object):
         """Remove items. This causes a 'removed' signal."""
         if not items:
             return
+
         print_d("Removing %d items." % len(items), self)
         for item in items:
-            print_d("Removing %r." % item.key, self)
             del(self._contents[item.key])
+
         self.dirty = True
         self.emit('removed', items)
 
