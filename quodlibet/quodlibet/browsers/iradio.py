@@ -715,7 +715,10 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         self.emit('songs-selected', songs, None)
 
     def active_filter(self, song):
-        if song not in self.__stations and song not in self.__fav_stations:
+        for lib in self.__get_selected_libraries():
+            if song in lib:
+                break
+        else:
             return False
 
         filter_ = self.__get_filter()
