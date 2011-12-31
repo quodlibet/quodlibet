@@ -85,7 +85,7 @@ def init(*rc_files):
           "pre_amp_gain" : "0.0",
           "backend": "gstbe",
           "gst_pipeline": "",
-          "gst_buffer": "0.5",
+          "gst_buffer": "1.5", # stream buffer duration in seconds
           },
 
         "library":
