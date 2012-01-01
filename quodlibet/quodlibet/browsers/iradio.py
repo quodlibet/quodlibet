@@ -5,6 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from __future__ import with_statement
+
 import os
 import bz2
 import urllib2
