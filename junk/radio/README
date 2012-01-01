@@ -1,0 +1,17 @@
+A bunch of scripts for retrieving internet radio stream URLs and their metadata
+
+ - crawer_*.py: Add new URIs to uris.txt
+ - clean_uris.py: cleans up the list
+ - update_taglist.py: creates the final radiolist file
+
+HOWTO
+-----
+
+ - crawler_sky_di_fm.py
+ - crawler_google.py (takes some hours)
+ - clean_uris.py
+    Use the google dns for good results: 8.8.8.8
+ - update_taglist.py
+    Call it on two different days, at different times, because
+    some stations are not online all the time.
+    Always delete the uris_failed.txt after a complete run.
