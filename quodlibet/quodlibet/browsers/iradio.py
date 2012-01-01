@@ -41,7 +41,6 @@ STATIONS_FAV = os.path.join(const.USERDIR, "stations")
 STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
 
 # TODO: - Migrate statistics on library update
-#       - Don't add stations that are already in favorites
 #       - Do the update in a thread
 #       - Ranking: reduce duplicate stations (max 3 URLs per station)
 #                  prefer stations that match a genre?
@@ -531,6 +530,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
 
             self.__stations.remove(self.__stations.values())
             self.__stations.add(stations)
+            self.__stations.remove(self.__fav_stations.values())
         else:
             print_w("Loading remote station list failed.")
 
