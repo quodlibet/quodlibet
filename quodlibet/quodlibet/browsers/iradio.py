@@ -12,7 +12,6 @@ import bz2
 import urllib2
 import urllib
 import itertools
-import math
 
 import gobject
 import gtk
@@ -24,7 +23,7 @@ from quodlibet import config
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats.remote import RemoteFile
-from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE
+from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE, AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.parse import Query
 from quodlibet.qltk.getstring import GetStringDialog
@@ -522,19 +521,45 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
                    cofuncid="radio-load", funcid="radio-load")
 
     def __update_done(self, stations):
-        if stations:
-            stations.sort(key=sort_stations, reverse=True)
-            stations = stations[:4000]
-
-            # remove the tags only used for ranking
-            for s in stations:
-                s.pop("~listenerpeak", None)
-
-            self.__stations.remove(self.__stations.values())
-            self.__stations.add(stations)
-            self.__stations.remove(self.__fav_stations.values())
-        else:
+        if not stations:
             print_w("Loading remote station list failed.")
+            return
+
+        # take the best 4000
+        stations.sort(key=sort_stations, reverse=True)
+        stations = stations[:2000]
+
+        # remove the tags only used for ranking
+        for s in stations:
+            s.pop("~listenerpeak", None)
+
+        stations = dict(((s.key, s) for s in stations))
+
+        # don't add ones that are in the fav list
+        for fav in self.__fav_stations.iterkeys():
+            stations.pop(fav, None)
+
+        # separate
+        o, n = set(self.__stations.iterkeys()), set(stations)
+        to_add, to_change, to_remove = n - o, o & n, o - n
+        del o, n
+
+        # migrate stats
+        to_change = [stations.pop(k) for k in to_change]
+        for new in to_change:
+            old = self.__stations[new.key]
+            # clear everything except stats
+            AudioFile.reload(old)
+            # add new metadata except stats
+            for k in (x for x in new.iterkeys() if x not in MIGRATE):
+                old[k] = new[k]
+
+        to_add = [stations.pop(k) for k in to_add]
+        to_remove = [self.__stations[k] for k in to_remove]
+
+        self.__stations.remove(to_remove)
+        self.__stations.changed(to_change)
+        self.__stations.add(to_add)
 
     def __filter_changed(self, bar, text, restore=False):
         self.__filter = None
