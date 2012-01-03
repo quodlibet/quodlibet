@@ -41,8 +41,7 @@ STATION_LIST_URL = "http://quodlibet.googlecode.com/files/radiolist.bz2"
 STATIONS_FAV = os.path.join(const.USERDIR, "stations")
 STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
 
-# TODO: - Migrate statistics on library update
-#       - Do the update in a thread
+# TODO: - Do the update in a thread
 #       - Ranking: reduce duplicate stations (max 3 URLs per station)
 #                  prefer stations that match a genre?
 
@@ -527,7 +526,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
 
         # take the best 4000
         stations.sort(key=sort_stations, reverse=True)
-        stations = stations[:2000]
+        stations = stations[:4000]
 
         # remove the tags only used for ranking
         for s in stations:
