@@ -418,8 +418,14 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         self.connect('destroy', self.__destroy)
 
         completion = LibraryTagCompletion(self.__stations)
-        self.__searchbar = search = SearchBarBox(completion=completion)
+        self.accelerators = gtk.AccelGroup()
+        self.__searchbar = search = SearchBarBox(completion=completion,
+                                                 accel_group=self.accelerators)
         gobject_weak(search.connect, 'query-changed', self.__filter_changed)
+
+        def focus(widget, *args):
+            qltk.get_top_parent(widget).songlist.grab_focus()
+        gobject_weak(search.connect, 'focus-out', focus, parent=self)
 
         # alignment for search bar
         search_align = gtk.Alignment(1, 1, 1, 1)
