@@ -91,3 +91,38 @@ def parse_gstreamer_taglist(tags):
             merged[key] = value
 
     return merged
+
+def bin_debug(elements, depth=0, lines=None):
+    """Takes a list of gst.Element that are part of a prerolled pipeline, and
+    recursively gets the children and all caps between the elements.
+
+    Returns a list of text lines suitable for printing.
+    """
+
+    from quodlibet.util.dprint import COLOR
+
+    if lines is None:
+        lines = []
+    else:
+        lines.append(" " * (depth - 1) + "\\")
+
+    for i, elm in enumerate(elements):
+        for pad in elm.pads():
+            if i and pad.get_direction() == gst.PAD_SINK:
+                caps = pad.get_negotiated_caps()
+                if caps is not None:
+                    d = dict(caps[0])
+                    d = sorted([(s[0], str(s[1])) for s in d.items()])
+                    d = [("format", caps[0].get_name())] + d
+                    d = ", ".join(map(":".join, d))
+                    lines.append("%s| %s" % (" " * depth, d))
+                    break
+        name = elm.get_name()
+        cls = COLOR.Blue(type(elm).__name__.split(".", 1)[-1])
+        lines.append("%s|-%s (%s)" % (" " * depth, cls, name))
+
+        if isinstance(elm, gst.Bin):
+            children = reversed(list(elm.sorted()))
+            bin_debug(children, depth + 1, lines)
+
+    return lines

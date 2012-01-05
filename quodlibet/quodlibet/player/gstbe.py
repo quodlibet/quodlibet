@@ -28,6 +28,7 @@ from quodlibet.player._gstutils import *
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.qltk.x import Button
 
 USE_PLAYBIN2 = gst.version() >= (0, 10, 24)
 
@@ -121,6 +122,17 @@ class GStreamerPlayer(BasePlayer):
         vbox.pack_start(hb)
         if USE_PLAYBIN2:
             vbox.pack_start(hb2)
+
+        if const.DEBUG:
+            def print_bin(player):
+                if player.bin:
+                    map(print_, bin_debug([player.bin]))
+                else:
+                    print_e("No active pipeline.")
+
+            b = Button("Print Pipeline", gtk.STOCK_DIALOG_INFO)
+            b.connect_object('clicked', print_bin, self)
+            vbox.pack_start(b)
 
         return vbox
 
