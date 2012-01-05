@@ -245,6 +245,21 @@ class GStreamerPlayer(BasePlayer):
         return True
 
     def __destroy_pipeline(self):
+        if self.__bus_id:
+            bus = self.bin.get_bus()
+            bus.disconnect(self.__bus_id)
+            bus.remove_signal_watch()
+            self.__bus_id = False
+
+        if self.__atf_id:
+            self.bin.disconnect(self.__atf_id)
+            self.__atf_id = False
+
+        if self.bin:
+            self.bin.set_state(gst.STATE_NULL)
+            self.bin.get_state(timeout=gst.SECOND/2)
+            self.bin = None
+
         if self._task:
             self._task.finish()
             self._task = None
@@ -255,21 +270,6 @@ class GStreamerPlayer(BasePlayer):
 
         self._vol_element = None
         self._eq_element = None
-
-        if self.bin is None: return
-        self.bin.set_state(gst.STATE_NULL)
-
-        bus = self.bin.get_bus()
-        if self.__bus_id:
-            bus.disconnect(self.__bus_id)
-            bus.remove_signal_watch()
-
-        if self.__atf_id:
-            self.bin.disconnect(self.__atf_id)
-
-        self.bin = None
-
-        return True
 
     def __rebuild_pipeline(self):
         """If a pipeline is active, rebuild it and restore vol, position etc"""
