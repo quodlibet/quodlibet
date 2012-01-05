@@ -29,17 +29,17 @@ class TDirectoryTree(TestCase):
             self.failUnlessEqual([path], selected)
 
     def test_bad_go_to(self):
-         newpath = "/woooooo/bar/fun/broken"
-         dirlist = DirectoryTree("/")
-         dirlist.go_to(newpath)
-         dirlist.destroy()
+        newpath = "/woooooo/bar/fun/broken"
+        dirlist = DirectoryTree("/")
+        dirlist.go_to(newpath)
+        dirlist.destroy()
 add(TDirectoryTree)
 
 class TFileSelector(TestCase):
     def setUp(self):
         quodlibet.config.init()
         self.fs = FileSelector(
-            initial="/dev", filter=(lambda s: s in ["null", "zero"]))
+            initial="/dev", filter=(lambda s: s in ["/dev/null", "/dev/zero"]))
         self.fs.connect('changed', self.changed)
         self.expected = []
         self.fs.rescan()

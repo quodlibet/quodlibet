@@ -342,7 +342,8 @@ class FileSelector(gtk.VPaned):
         dirs = [dmodel[row][0] for row in rows]
         for dir in dirs:
             try:
-                for file in filter(self.__filter, sorted(util.listdir(dir))):
+                files = filter(self.__filter, util.listdir(dir))
+                for file in sorted(files):
                     filename = os.path.join(dir, file)
                     if (os.access(filename, os.R_OK) and
                             not os.path.isdir(filename)):
