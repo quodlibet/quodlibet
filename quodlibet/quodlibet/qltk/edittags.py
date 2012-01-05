@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -279,7 +279,7 @@ class AddTagDialog(gtk.Dialog):
         tag = self.get_tag()
         value = self.get_value()
         fmt = massagers.tags.get(tag)
-        if fmt: valid = bool(fmt.validate(value))
+        if fmt: valid = fmt.is_valid(value)
         else: valid = True
         add.set_sensitive(valid)
         if valid:
@@ -662,14 +662,13 @@ class EditTags(gtk.VBox):
         row = model[path]
         if row[TAG] in massagers.tags:
             fmt = massagers.tags[row[TAG]]
-            new_validated = fmt.validate(new_value)
-            if not new_validated:
+            if not fmt.is_valid(new_value):
                 qltk.WarningMessage(
                     self, _("Invalid value"),
                     _("Invalid value: <b>%(value)s</b>\n\n%(error)s") %{
                     "value": new_value, "error": fmt.error}).run()
                 return
-            else: new_value = new_validated
+            else: new_value = fmt.validate(new_value)
         tag = self.__songinfo.get(row[TAG], None)
         if row[VALUE].split('<')[0] != new_value or (
                 tag and tag.shared and not tag.complete):
@@ -699,13 +698,14 @@ class EditTags(gtk.VBox):
         else:
             if new_tag in massagers.tags:
                 fmt = massagers.tags[new_tag]
-                value = fmt.validate(util.unescape(row[VALUE]))
-                if not value:
+                v = util.unescape(row[VALUE])
+                if not fmt.is_valid(v):
                     qltk.WarningMessage(
                         self, _("Invalid value"),
                         _("Invalid value: <b>%(value)s</b>\n\n%(error)s") %{
                         "value": row[VALUE], "error": fmt.error}).run()
                     return
+                value = fmt.validate(v)
             else:
                 value = row[VALUE]
                 idx = value.find('<i>')

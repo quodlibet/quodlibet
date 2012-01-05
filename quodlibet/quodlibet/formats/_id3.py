@@ -1,5 +1,5 @@
-# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Niklas Janlert,
-#                     Steven Robertson
+# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Niklas Janlert,
+#                     Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,10 +8,9 @@
 import mutagen.id3
 import tempfile
 
-from quodlibet import config
-from quodlibet import const
-
+from quodlibet import config, const, print_d
 from quodlibet.formats._audio import AudioFile
+from quodlibet.util.massagers import LanguageMassager
 
 def isascii(s):
     return ((len(s) == 0) or (ord(max(s)) < 128))
@@ -62,8 +61,8 @@ class ID3File(AudioFile):
             "TSOC": "composersort",
             "TMED": "media",
             "TCMP": "compilation",
-            # "language" should not make to TLAN. TLAN requires
-            # an ISO language code, and QL tags are freeform.
+            # TLAN requires an ISO 639-2 language code, check manually
+            #"TLAN": "language"
             }
     SDI = dict([(v, k) for k, v in IDS.iteritems()])
 
@@ -236,6 +235,21 @@ class ID3File(AudioFile):
             f = mutagen.id3.UFID(owner="http://musicbrainz.org",
                   data=self["musicbrainz_trackid"])
             tag.add(f)
+
+        # Issue 439 - Only write valid ISO 639-2 codes to TLAN (else TXXX)
+        tag.delall("TLAN")
+        if "language" in self:
+            lang = self["language"]
+            if lang in LanguageMassager.ISO_639_2:
+                # Save to TLAN tag. Value is guaranteed ASCII
+                try:
+                    tag.add(mutagen.id3.TLAN(encoding=3, text=lang))
+                    dontwrite += ["language"]
+                except Exception,e:
+                    print_w("Died adding tag (%s)" % e)
+            else:
+                print_d("Not using invalid language code '%s' in TLAN" %
+                        self["language"], context=self)
 
         mcl = mutagen.id3.TMCL(encoding=3, people=[])
 

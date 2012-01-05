@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -14,8 +14,15 @@ class Massager(object):
 
     tags = []
     error = "Metaerror. This should be overridden in subclasses."
+    options = []
+
     def validate(self, value):
+        """Returns a validated value, or False if invalid"""
         raise NotImplementedError
+
+    def is_valid(self, value):
+        """Returns True if a field is valid, False if not"""
+        return bool(self.validate(value))
 
 class DateMassager(Massager):
     tags = ["date"]
@@ -73,8 +80,70 @@ class MBAlbumStatus(Massager):
     # untranslated. They are the three possible literal values.
     error = _("MusicBrainz release status must be 'official', "
               "'promotional', or 'bootleg'.")
+    options = ["official", "promotional", "bootleg"]
     def validate(self, value):
-        return value in ["official", "promotional", "bootleg"] and value
+        return value in self.options and value
+
+class LanguageMassager(Massager):
+    tags = ["language"]
+    error = _("Language must be an ISO 639-2 three-letter code")
+    # Lovingly adapted from http://www.loc.gov/standards/iso639-2/
+    ISO_639_2 =  ['aar', 'abk', 'ace', 'ach', 'ada', 'ady', 'afa', 'afh', 'afr',
+    'ain', 'aka', 'akk', 'alb', 'sqi', 'ale', 'alg', 'alt', 'amh', 'ang', 'anp',
+    'apa', 'ara', 'arc', 'arg', 'arm', 'hye', 'arn', 'arp', 'art', 'arw', 'asm',
+    'ast', 'ath', 'aus', 'ava', 'ave', 'awa', 'aym', 'aze', 'bad', 'bai', 'bak',
+    'bal', 'bam', 'ban', 'baq', 'eus', 'bas', 'bat', 'bej', 'bel', 'bem', 'ben',
+    'ber', 'bho', 'bih', 'bik', 'bin', 'bis', 'bla', 'bnt', 'bos', 'bra', 'bre',
+    'btk', 'bua', 'bug', 'bul', 'bur', 'mya', 'byn', 'cad', 'cai', 'car', 'cat',
+    'cau', 'ceb', 'cel', 'cha', 'chb', 'che', 'chg', 'chi', 'zho', 'chk', 'chm',
+    'chn', 'cho', 'chp', 'chr', 'chu', 'chv', 'chy', 'cmc', 'cop', 'cor', 'cos',
+    'cpe', 'cpf', 'cpp', 'cre', 'crh', 'crp', 'csb', 'cus', 'cze', 'ces', 'dak',
+    'dan', 'dar', 'day', 'del', 'den', 'dgr', 'din', 'div', 'doi', 'dra', 'dsb',
+    'dua', 'dum', 'dut', 'nld', 'dyu', 'dzo', 'efi', 'egy', 'eka', 'elx', 'eng',
+    'enm', 'epo', 'est', 'ewe', 'ewo', 'fan', 'fao', 'fat', 'fij', 'fil', 'fin',
+    'fiu', 'fon', 'fre', 'fra', 'frm', 'fro', 'frr', 'frs', 'fry', 'ful', 'fur',
+    'gaa', 'gay', 'gba', 'gem', 'geo', 'kat', 'ger', 'deu', 'gez', 'gil', 'gla',
+    'gle', 'glg', 'glv', 'gmh', 'goh', 'gon', 'gor', 'got', 'grb', 'grc', 'gre',
+    'ell', 'grn', 'gsw', 'guj', 'gwi', 'hai', 'hat', 'hau', 'haw', 'heb', 'her',
+    'hil', 'him', 'hin', 'hit', 'hmn', 'hmo', 'hrv', 'hsb', 'hun', 'hup', 'iba',
+    'ibo', 'ice', 'isl', 'ido', 'iii', 'ijo', 'iku', 'ile', 'ilo', 'ina', 'inc',
+    'ind', 'ine', 'inh', 'ipk', 'ira', 'iro', 'ita', 'jav', 'jbo', 'jpn', 'jpr',
+    'jrb', 'kaa', 'kab', 'kac', 'kal', 'kam', 'kan', 'kar', 'kas', 'kau', 'kaw',
+    'kaz', 'kbd', 'kha', 'khi', 'khm', 'kho', 'kik', 'kin', 'kir', 'kmb', 'kok',
+    'kom', 'kon', 'kor', 'kos', 'kpe', 'krc', 'krl', 'kro', 'kru', 'kua', 'kum',
+    'kur', 'kut', 'lad', 'lah', 'lam', 'lao', 'lat', 'lav', 'lez', 'lim', 'lin',
+    'lit', 'lol', 'loz', 'ltz', 'lua', 'lub', 'lug', 'lui', 'lun', 'luo', 'lus',
+    'mac', 'mkd', 'mad', 'mag', 'mah', 'mai', 'mak', 'mal', 'man', 'mao', 'mri',
+    'map', 'mar', 'mas', 'may', 'msa', 'mdf', 'mdr', 'men', 'mga', 'mic', 'min',
+    'mis', 'mkh', 'mlg', 'mlt', 'mnc', 'mni', 'mno', 'moh', 'mon', 'mos', 'mul',
+    'mun', 'mus', 'mwl', 'mwr', 'myn', 'myv', 'nah', 'nai', 'nap', 'nau', 'nav',
+    'nbl', 'nde', 'ndo', 'nds', 'nep', 'new', 'nia', 'nic', 'niu', 'nno', 'nob',
+    'nog', 'non', 'nor', 'nqo', 'nso', 'nub', 'nwc', 'nya', 'nym', 'nyn', 'nyo',
+    'nzi', 'oci', 'oji', 'ori', 'orm', 'osa', 'oss', 'ota', 'oto', 'paa', 'pag',
+    'pal', 'pam', 'pan', 'pap', 'pau', 'peo', 'per', 'fas', 'phi', 'phn', 'pli',
+    'pol', 'pon', 'por', 'pra', 'pro', 'pus', 'que', 'raj', 'rap', 'rar', 'roa',
+    'roh', 'rom', 'rum', 'ron', 'run', 'rup', 'rus', 'sad', 'sag', 'sah', 'sai',
+    'sal', 'sam', 'san', 'sas', 'sat', 'scn', 'sco', 'sel', 'sem', 'sga', 'sgn',
+    'shn', 'sid', 'sin', 'sio', 'sit', 'sla', 'slo', 'slk', 'slv', 'sma', 'sme',
+    'smi', 'smj', 'smn', 'smo', 'sms', 'sna', 'snd', 'snk', 'sog', 'som', 'son',
+    'sot', 'spa', 'srd', 'srn', 'srp', 'srr', 'ssa', 'ssw', 'suk', 'sun', 'sus',
+    'sux', 'swa', 'swe', 'syc', 'syr', 'tah', 'tai', 'tam', 'tat', 'tel', 'tem',
+    'ter', 'tet', 'tgk', 'tgl', 'tha', 'tib', 'bod', 'tig', 'tir', 'tiv', 'tkl',
+    'tlh', 'tli', 'tmh', 'tog', 'ton', 'tpi', 'tsi', 'tsn', 'tso', 'tuk', 'tum',
+    'tup', 'tur', 'tut', 'tvl', 'twi', 'tyv', 'udm', 'uga', 'uig', 'ukr', 'umb',
+    'und', 'urd', 'uzb', 'vai', 'ven', 'vie', 'vol', 'vot', 'wak', 'wal', 'war',
+    'was', 'wel', 'cym', 'wen', 'wln', 'wol', 'xal', 'xho', 'yao', 'yap', 'yid',
+    'yor', 'ypk', 'zap', 'zbl', 'zen', 'zha', 'znd', 'zul', 'zun', 'zxx', 'zza']
+    options = ISO_639_2
+
+    tags = ["language"]
+    def validate(self, value):
+        # Issue 439: Actually, allow free-text through
+        return value
+
+    def is_valid(self, value):
+        # Override, to allow empty string to be a valid language (freetext)
+        return True
 
 tags = {}
 for f in globals().values():

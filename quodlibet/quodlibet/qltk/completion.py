@@ -1,17 +1,18 @@
-# Copyright 2005 Joe Wreschnig, Michael Urman
+# Copyright 2005 Joe Wreschnig, Michael Urman,
+#           2011 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 import gtk
+from quodlibet import formats, config, print_d
+from quodlibet.util import copool, massagers
 
-from quodlibet import formats, config
 
-from quodlibet.util import copool
 
 class EntryWordCompletion(gtk.EntryCompletion):
-    """Entry completion for simple words, where a word boundry is
+    """Entry completion for simple words, where a word boundary is
     roughly equivalent to the separators in the QL query language.
 
     You need to manually set a model containing the available words."""
@@ -128,7 +129,8 @@ class LibraryTagCompletion(EntryWordCompletion):
         print_d("Done updating tag model for whole library")
 
 class LibraryValueCompletion(gtk.EntryCompletion):
-    """Entry completion for a library value, for a specific tag."""
+    """Entry completion for a library value, for a specific tag.
+    Will add valid values from the tag massager where available"""
 
     def __init__(self, tag, library):
         super(LibraryValueCompletion, self).__init__()
@@ -152,7 +154,11 @@ class LibraryValueCompletion(gtk.EntryCompletion):
         model = self.get_model()
         model.clear()
         yield True
-        values = sorted(library.tag_values(tag))
+        # Issue 439: pre-fill with valid values if available
+        if tag in massagers.tags:
+            values = massagers.tags[tag].options
+        else: values = []
+        values = sorted(set(values + library.tag_values(tag)))
         self.set_minimum_key_length(int(len(values) > 100))
         yield True
         for count, value in enumerate(values):

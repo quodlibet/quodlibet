@@ -5,10 +5,10 @@ import quodlibet.util.massagers
 class TMassagers(TestCase):
     def validate(self, key, values):
         for val in values:
-            self.failUnless(quodlibet.util.massagers.tags[key].validate(val))
+            self.failUnless(quodlibet.util.massagers.tags[key].is_valid(val))
     def invalidate(self, key, values):
         for val in values:
-            self.failIf(quodlibet.util.massagers.tags[key].validate(val))
+            self.failIf(quodlibet.util.massagers.tags[key].is_valid(val))
     def equivs(self, key, equivs):
         for value, normed in equivs.items():
             self.failUnlessEqual(
@@ -66,6 +66,20 @@ class TMassagers(TestCase):
                       ["official", "promotional", "bootleg"])
         self.invalidate("musicbrainz_albumstatus",
                         ["", "unofficial", "\x99"])
-        
+
+    def test_language_valid(self):
+        self.validate("language", ["eng", "zho", "lol", "fre", "ger", "zza"])
+        self.validate("language", ["deu", "fra", "msa"])
+        # self.invalidate("language", ["xxx", "ROFL", "", "es", "ENG"])
+        # Issue 439: Actually, allow free-text.
+        self.validate("language", ["", "German", "Chinese", "Foobarlanguage"])
+        mas = quodlibet.util.massagers.tags["language"]
+
+        # Check completion help too
+        for code in ["eng", "fra", "fre", "deu", "zho"]:
+            self.failUnless(code in mas.options,
+                "'%s' should be in languages options" % code)
+        self.failIf("" in mas.options)
 
 add(TMassagers)
+
