@@ -55,6 +55,7 @@ class GStreamerPlayer(BasePlayer):
 
     bin = None
     _vol_element = None
+    _use_eq = False
     _eq_element = None
 
     __atf_id = None
@@ -76,17 +77,8 @@ class GStreamerPlayer(BasePlayer):
         l.set_use_underline(True)
         l.set_mnemonic_widget(e)
 
-        def apply_pipeline(*args):
-            paused = self.paused
-            pos = self.get_position()
-            self.__destroy_pipeline()
-            self.paused = True
-            self.go_to(self.song)
-            self.paused = paused
-            self.seek(pos)
-
         b = gtk.Button(stock=gtk.STOCK_APPLY)
-        b.connect('clicked', apply_pipeline)
+        b.connect_object('clicked', lambda x: x.__rebuild_pipeline(), self)
 
         hb = gtk.HBox(spacing=6)
         hb.pack_start(l, expand=False)
@@ -163,7 +155,7 @@ class GStreamerPlayer(BasePlayer):
         if not pipeline:
             return False
 
-        if gst.element_factory_find('equalizer-10bands'):
+        if self._use_eq and gst.element_factory_find('equalizer-10bands'):
             # The equalizer only operates on 16-bit ints or floats, and
             # will only pass these types through even when inactive.
             # We push floats through to this point, then let the second
@@ -278,6 +270,22 @@ class GStreamerPlayer(BasePlayer):
         self.bin = None
 
         return True
+
+    def __rebuild_pipeline(self):
+        """If a pipeline is active, rebuild it and restore vol, position etc"""
+
+        if not self.bin:
+            return
+
+        paused = self.paused
+        pos = self.get_position()
+
+        self.__destroy_pipeline()
+        self.paused = True
+        if self.__init_pipeline():
+            self.bin.set_property('uri', self.song("~uri"))
+        self.paused = paused
+        self.seek(pos)
 
     def __message(self, bus, message, librarian):
         if message.type == gst.MESSAGE_EOS:
@@ -549,12 +557,17 @@ class GStreamerPlayer(BasePlayer):
 
     @property
     def eq_bands(self):
-        if self._eq_element:
+        if gst.element_factory_find('equalizer-10bands'):
             return [29, 59, 119, 237, 474, 947, 1889, 3770, 7523, 15011]
         else:
             return []
 
     def update_eq_values(self):
+        need_eq = bool(sum(self._eq_values))
+        if need_eq != self._use_eq:
+            self._use_eq = need_eq
+            self.__rebuild_pipeline()
+
         if self._eq_element:
             for band, val in enumerate(self._eq_values):
                 self._eq_element.set_property('band%d' % band, val)

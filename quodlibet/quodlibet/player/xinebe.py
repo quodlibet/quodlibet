@@ -220,9 +220,14 @@ class XinePlaylistPlayer(BasePlayer):
     def update_eq_values(self):
         from quodlibet.player import _xine as _xine_module
         bands = self.eq_bands
+        need_eq = bool(sum(self._eq_values))
         for band, val in enumerate(self._eq_values):
             param = getattr(_xine_module, 'XINE_PARAM_EQ_%dHZ' % bands[band])
-            xine_set_param(self._stream, param, int(val*100/24.))
+            # between 1..200; 100 is the default gain; 0 means no EQ filter
+            # only negative gain seems to work
+            val = (int(val * 100 / 24.0) + 100) or 1
+            val *= int(need_eq)
+            xine_set_param(self._stream, param, val)
 
 _xine = None
 _plugins = None
