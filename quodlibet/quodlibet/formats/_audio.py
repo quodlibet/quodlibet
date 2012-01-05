@@ -301,6 +301,11 @@ class AudioFile(dict):
                 try: fileobj = file(self.lyric_filename, "rU")
                 except EnvironmentError: return default
                 else: return fileobj.read().decode("utf-8", "replace")
+            elif key.startswith("#replaygain_"):
+                try:
+                    val = self.get(key[1:], default)
+                    return round(float(val.split(" ")[0]), 2)
+                except (ValueError, TypeError, AttributeError): return default
             elif key[:1] == "#":
                 key = "~" + key
                 if key in self: self[key]

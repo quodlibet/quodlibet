@@ -428,10 +428,11 @@ class Treplay_gain(TestCase):
     minus_6db = 0.501187234
 
     def setUp(self):
-        self.song = AudioFile({"replaygain_album_gain": "-1.00 dB",
-                               "replaygain_album_peak": "1.1",
-                               "replaygain_track_gain": "+1.0 dB",
-                               "replaygain_track_peak": "0.9"})
+        self.rg_data = {"replaygain_album_gain": "-1.00 dB",
+                        "replaygain_album_peak": "1.1",
+                        "replaygain_track_gain": "+1.0000001 dB",
+                        "replaygain_track_peak": "0.9"}
+        self.song = AudioFile(self.rg_data)
 
     def test_nogain(self):
         self.failUnlessEqual(self.song.replay_gain(["none", "track"]), 1)
@@ -480,6 +481,21 @@ class Treplay_gain(TestCase):
         # verify defaulting to track when album is present
         self.failUnlessAlmostEqual(
             self.song.replay_gain(["album", "track"]), radio_rg)
+
+    def test_numeric_rg_tags(self):
+        """"Tests fully-numeric (ie no "db") RG tags.  See Issue 865"""
+        self.failUnless(self.song("replaygain_album_gain"), "-1.00 db")
+        for key, exp in self.rg_data.items():
+            # Hack the nasties off and produce the "real" expected value
+            exp = float(exp.split(" ")[0])
+            # Compare as floats. Seems fairer.
+            album_rg = self.song("~#%s" % key)
+            try:
+                val = float(album_rg)
+            except ValueError: self.fail("Invalid %s returned: %s" %
+                                         (key,album_rg))
+            self.failUnlessAlmostEqual(val, exp, places=5,
+                                 msg="%s should be %s not %s" % (key,exp,val))
 add(Treplay_gain)
 
 # Special test case for find_cover since it has to create/remove
