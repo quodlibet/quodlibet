@@ -115,11 +115,23 @@ class AudioFile(dict):
 
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, value)
-        self.__dict__.clear()
+
+        if not self.__dict__:
+            return
+        pop = self.__dict__.pop
+        pop("album_key", None)
+        pop("sort_key", None)
+        pop("__song_key", None)
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
-        self.__dict__.clear()
+
+        if not self.__dict__:
+            return
+        pop = self.__dict__.pop
+        pop("album_key", None)
+        pop("sort_key", None)
+        pop("__song_key", None)
 
     key = property(lambda self: self["~filename"])
     mountpoint = property(lambda self: self["~mountpoint"])

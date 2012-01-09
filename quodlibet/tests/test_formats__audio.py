@@ -408,6 +408,13 @@ class TAudioFile(TestCase):
         album_sort_2 = tuple(copy.album_key)
         self.failIfEqual(album_sort_1, album_sort_2)
 
+    def test_cache_attributes(self):
+        x = AudioFile()
+        x.multisong = not x.multisong
+        x["a"] = "b" # clears cache
+        # attribute should be unchanged
+        self.failIfEqual(AudioFile().multisong, x.multisong)
+
     def test_sort_func(self):
         tags = [lambda s: s("foo"), "artistsort", "albumsort",
                 "~filename", "~format", "discnumber", "~#track"]
