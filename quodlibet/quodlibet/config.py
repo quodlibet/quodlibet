@@ -122,6 +122,7 @@ def init(*rc_files):
           "album_sort": "0", # album sorting mode, default is title
           "album_covers": "1", # album cover display, on/off
           "album_substrings": "1", # include substrings in inline search
+          "radio": "", # radio filter selection
           "rating_click": "true", # click to rate song, on/off
           "rating_confirm_multiple": "false", # confirm rating multiple songs
           },
