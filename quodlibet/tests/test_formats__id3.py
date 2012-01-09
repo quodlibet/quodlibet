@@ -83,6 +83,18 @@ class TID3File(TestCase):
             self.failIf(u'TXXX:QuodLibet::language' in tags)
             af.clear()
 
+    def test_tlen(self):
+        f = mutagen.File(self.filename)
+        f.tags.add(mutagen.id3.TLEN(encoding=0, text=['20000']))
+        f.save()
+        self.failUnlessEqual(MP3File(self.filename)("~#length"), 20)
+
+        # ignore <= 0 [issue 222]
+        f = mutagen.File(self.filename)
+        f.tags.add(mutagen.id3.TLEN(encoding=0, text=['0']))
+        f.save()
+        self.failUnless(MP3File(self.filename)("~#length") > 0)
+
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
