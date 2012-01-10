@@ -57,6 +57,15 @@ class IRFile(RemoteFile):
         base_call = super(IRFile, self).__call__
         if key == "title" and "title" not in self and "organization" in self:
             return base_call("organization", *args, **kwargs)
+
+        # split title by " - " if no artist tag is present and
+        # this is not the main song: common format for shoutcast stations
+        if not self.multisong and key in ("title", "artist") and \
+                "title" in self and "artist" not in self:
+            title = base_call("title").split(" - ", 1)
+            if len(title) > 1:
+                return (key == "title" and title[-1]) or title[0]
+
         if key == "~format" and "audio-codec" in self:
             return "%s (%s)" % (self.format,
                 base_call("audio-codec", *args, **kwargs))
