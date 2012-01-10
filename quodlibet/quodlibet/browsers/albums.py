@@ -260,7 +260,7 @@ class VisibleUpdate(object):
                      self.__update_visibility, view)
 
         gobject_weak(sw.get_vadjustment().connect, "value-changed",
-                     self.__stop_update)
+                     self.__stop_update ,view)
 
         self.__pending_paths = []
         self.__scan_timeout = None
@@ -272,7 +272,8 @@ class VisibleUpdate(object):
             gobject.source_remove(self.__scan_timeout)
             self.__scan_timeout = None
 
-        copool.remove(self.__scan_paths)
+        if self.__pending_paths:
+            copool.remove(self.__scan_paths)
 
         self.__column = None
         self.__pending_paths = []
@@ -285,9 +286,11 @@ class VisibleUpdate(object):
         """Do whatever is needed to update the row"""
         raise NotImplementedError
 
-    def __stop_update(self, *args):
-        copool.remove(self.__scan_paths)
-        self.__pending_paths = []
+    def __stop_update(self, adj, view):
+        if self.__pending_paths:
+            copool.remove(self.__scan_paths)
+            self.__pending_paths = []
+            self.__update_visibility(view)
 
     def __update_visibility(self, view, *args):
         if not self.__column.get_visible():
