@@ -398,40 +398,53 @@ class GStreamerPlayer(BasePlayer):
             self.bin.set_state(gst.STATE_PLAYING)
 
     def _set_paused(self, paused):
-        if paused != self._paused:
-            self._paused = paused
-            if self.song:
-                if not self.bin and not paused:
-                    if self.__init_pipeline():
-                        self.bin.set_property('uri', self.song("~uri"))
-                    else:
-                        # Backend error; show message and halt playback
-                        ErrorMessage(None, _("Output Error"),
-                            _("GStreamer output pipeline could not be "
-                              "initialized. The pipeline might be invalid, "
-                              "or the device may be in use. Check the "
-                              "player preferences.")).run()
-                        self._paused = paused = True
-                self.emit((paused and 'paused') or 'unpaused')
-                if self.bin:
-                    if not self._paused:
-                        if not self._inhibit_play:
-                            self.bin.set_state(gst.STATE_PLAYING)
-                    elif self.song.is_file:
-                        self.bin.set_state(gst.STATE_PAUSED)
-                    else:
-                        # seekable streams have a duration >= 0
-                        try: d = self.bin.query_duration(gst.FORMAT_TIME)[0]
-                        except gst.QueryError: d = -1
-                        if d >= 0:
-                            self.bin.set_state(gst.STATE_PAUSED)
-                        else:
-                            self.__destroy_pipeline()
-            elif paused is True:
+        if paused == self._paused:
+            return
+        self._paused = paused
+
+        if not self.song:
+            if paused:
                 # Something wants us to pause between songs, or when
                 # we've got no song playing (probably StopAfterMenu).
                 self.emit('paused')
                 self.__destroy_pipeline()
+            return
+
+        if paused:
+            if self.bin:
+                if self.song.is_file:
+                    # fast path
+                    self.bin.set_state(gst.STATE_PAUSED)
+                else:
+                    # seekable streams (seem to) have a duration >= 0
+                    try: d = self.bin.query_duration(gst.FORMAT_TIME)[0]
+                    except gst.QueryError: d = -1
+
+                    if d >= 0:
+                        self.bin.set_state(gst.STATE_PAUSED)
+                    else:
+                        # destroy so that we rebuffer on resume
+                        self.__destroy_pipeline()
+        else:
+            if self.bin:
+                # don't start while we are buffering
+                if not self._inhibit_play:
+                    self.bin.set_state(gst.STATE_PLAYING)
+            else:
+                if self.__init_pipeline():
+                    self.bin.set_property('uri', self.song("~uri"))
+                    self.bin.set_state(gst.STATE_PLAYING)
+                else:
+                    # Backend error; show message and halt playback
+                    ErrorMessage(None, _("Output Error"),
+                        _("GStreamer output pipeline could not be "
+                          "initialized. The pipeline might be invalid, "
+                          "or the device may be in use. Check the "
+                          "player preferences.")).run()
+                    self.emit((paused and 'paused') or 'unpaused')
+                    self._paused = paused = True
+
+        self.emit((paused and 'paused') or 'unpaused')
 
     def _get_paused(self): return self._paused
     paused = property(_get_paused, _set_paused)
