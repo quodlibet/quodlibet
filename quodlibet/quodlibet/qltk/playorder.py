@@ -180,6 +180,7 @@ class PlayOrder(gtk.ComboBox):
     def __init__(self, model, player):
         super(PlayOrder, self).__init__(gtk.ListStore(str))
         cell = gtk.CellRendererText()
+        cell.set_padding(1, 0)
         self.pack_start(cell, True)
         self.add_attribute(cell, 'text', 0)
         for order in ORDERS:
