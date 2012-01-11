@@ -15,6 +15,7 @@ from quodlibet import const
 
 from quodlibet.parse import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
+from quodlibet.qltk.x import Button
 
 class SearchBarBox(gtk.HBox):
     """
@@ -78,13 +79,8 @@ class SearchBarBox(gtk.HBox):
 
         # search button
         if button:
-            search = gtk.Button()
+            search = Button(_("Search"), gtk.STOCK_FIND)
             search.connect('clicked', self.__filter_changed)
-            hb = gtk.HBox(spacing=3)
-            hb.pack_start(gtk.image_new_from_stock(
-                gtk.STOCK_FIND, gtk.ICON_SIZE_MENU), expand=False)
-            hb.pack_start(gtk.Label(_("Search")))
-            search.add(hb)
             search.set_tooltip_text(_("Search your library"))
             self.pack_start(search, expand=False)
 
