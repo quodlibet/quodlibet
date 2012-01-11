@@ -576,7 +576,7 @@ class GStreamerPlayer(BasePlayer):
             return []
 
     def update_eq_values(self):
-        need_eq = bool(sum(self._eq_values))
+        need_eq = any(self._eq_values)
         if need_eq != self._use_eq:
             self._use_eq = need_eq
             self.__rebuild_pipeline()
