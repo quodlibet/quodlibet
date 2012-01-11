@@ -390,14 +390,17 @@ def split_title(s, splitters=["/", "&", ","]):
     if not subtitle: return (s, [])
     else: return (title.strip(), split_value(subtitle, splitters))
 
-def split_people(s, splitters=["/", "&", ","]):
-    FEATURING = ["feat.", "featuring", "feat", "ft", "ft.", "with", "w/"]
 
+__FEATURING = ["feat.", "featuring", "feat", "ft", "ft.", "with", "w/"]
+# Cache case-insensitive regex searches of the above
+__FEAT_REGEX = [re.compile(re.escape(s + " "), re.I) for s in __FEATURING]
+
+def split_people(s, splitters=["/", "&", ","]):
     title, subtitle = find_subtitle(s)
     if not subtitle:
         parts = s.split(" ")
         if len(parts) > 2:
-            for feat in FEATURING:
+            for feat in __FEATURING:
                 try:
                     i = [p.lower() for p in parts].index(feat)
                     orig = " ".join(parts[:i])
@@ -406,9 +409,11 @@ def split_people(s, splitters=["/", "&", ","]):
                 except (ValueError, IndexError): pass
         return (s, [])
     else:
-        for feat in FEATURING:
-            if subtitle.startswith(feat):
-                subtitle = subtitle.replace(feat, "", 1).lstrip()
+        old = subtitle
+        for regex in __FEAT_REGEX:
+            subtitle = re.sub(regex, "", subtitle, 1)
+            if old != subtitle:
+                # only change once
                 break
         values = split_value(subtitle, splitters)
         return (title.strip(), values)
