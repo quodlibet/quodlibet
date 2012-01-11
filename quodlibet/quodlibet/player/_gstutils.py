@@ -112,7 +112,7 @@ def bin_debug(elements, depth=0, lines=None):
                 caps = pad.get_negotiated_caps()
                 if caps is not None:
                     d = dict(caps[0])
-                    d = sorted([(s[0], str(s[1])) for s in d.items()])
+                    d = sorted([(s[0], repr(s[1])) for s in d.items()])
                     d = [("format", caps[0].get_name())] + d
                     d = ", ".join(map(":".join, d))
                     lines.append("%s| %s" % (" " * depth, d))
