@@ -317,13 +317,19 @@ class Tsplit_people(TestCase):
         self.failUnlessEqual(util.split_people("foo (bar)"), ("foo", ["bar"]))
     def test_with_person(self):
         self.failUnlessEqual(
-            util.split_people("foo (with bar)"), ("foo", ["bar"]))
+            util.split_people("foo (With bar)"), ("foo", ["bar"]))
     def test_with_with_person(self):
         self.failUnlessEqual(
             util.split_people("foo (with with bar)"), ("foo", ["with bar"]))
     def test_featuring_two_people(self):
         self.failUnlessEqual(
             util.split_people("foo featuring bar, qx"), ("foo", ["bar", "qx"]))
+    def test_featuring_person_bracketed(self):
+        self.failUnlessEqual(
+            util.split_people("foo (Ft. bar)"), ("foo", ["bar"]))
+        self.failUnlessEqual(
+            util.split_people("foo(feat barman)"), ("foo", ["barman"]))
+
 add(Tsplit_people)
 
 class Ttag(TestCase):
