@@ -332,6 +332,7 @@ class PlayControls(gtk.VBox):
 
     def __song_started(self, player, song, next, play):
         next.set_sensitive(bool(song))
+        play.set_active(not player.paused)
 
     def __playpause(self, button, player):
         if button.get_active() and player.song is None:
