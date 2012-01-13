@@ -41,7 +41,7 @@ class TID3File(TestCase):
         MP3File(self.filename)
 
     def test_lang_read(self):
-        """Tests that reading of language from ID3 is working"""
+        """Tests reading of language from TXXX"""
         # http://code.google.com/p/quodlibet/issues/detail?id=439
         f = mutagen.File(self.filename)
         try:
@@ -50,14 +50,33 @@ class TID3File(TestCase):
                                         text=lang))
             f.save()
             self.assertEquals(MP3File(self.filename)['language'], lang)
+        finally:
+            f.delete()
 
-            # This, of course, shouldn't happen.
-            f = mutagen.File(self.filename)
+    def test_lang_read_TLAN(self):
+        """Tests reading language from TLAN"""
+        f = mutagen.File(self.filename)
+        lang = u'eng'
+        try:
             f.tags.add(mutagen.id3.TLAN(encoding=3, text=lang))
             f.save()
             self.assertEquals(MP3File(self.filename)['language'], lang)
         finally:
             f.delete()
+
+    def test_lang_read_multiple_TLAN(self):
+        """Tests reading multiple language from TLAN"""
+        f = mutagen.File(self.filename)
+        # Include an invalid one; current behaviour is to load anyway
+        lang = u'eng\0der\0fra\0fooooo'
+        exp = u'eng\nder\nfra\nfooooo'
+        try:
+            f.tags.add(mutagen.id3.TLAN(encoding=3, text=lang))
+            f.save()
+            self.assertEquals(MP3File(self.filename)['language'], exp)
+        finally:
+            f.delete()
+
 
     def test_write_lang_freetext(self):
         """Tests that if you don't use an ISO 639-2 code, TXXX gets populated"""
@@ -79,9 +98,25 @@ class TID3File(TestCase):
             self.failUnlessEqual(af("language"), iso_lang)
             af.write()
             tags = mutagen.File(self.filename).tags
+            self.failIf(u'TXXX:QuodLibet::language' in tags,
+                    "Should have used TLAN tag for '%s'" % iso_lang)
             self.failUnlessEqual(tags[u'TLAN'], iso_lang)
-            self.failIf(u'TXXX:QuodLibet::language' in tags)
             af.clear()
+
+    def test_write_multiple_lang_iso(self):
+        """Tests using multiple ISO 639-2 codes"""
+        iso_langs = ['eng', 'ger', 'zho']
+        iso_langs_str = "\n".join(iso_langs)
+        af = MP3File(self.filename)
+        af["language"] = iso_langs_str
+        self.failUnlessEqual(af("language"), iso_langs_str)
+        af.write()
+        tags = mutagen.File(self.filename).tags
+        self.failIf(u'TXXX:QuodLibet::language' in tags,
+                    "Should have used TLAN for %s" % iso_langs)
+        self.failUnlessEqual(tags[u'TLAN'], iso_langs,
+                msg="Wrong tags: %s" % tags)
+        af.clear()
 
     def test_tlen(self):
         f = mutagen.File(self.filename)

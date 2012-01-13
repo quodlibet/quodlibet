@@ -147,6 +147,8 @@ class ID3File(AudioFile):
                     role = role.encode('utf-8')
                     self.add("performer:" + role, name)
                 continue
+            elif frame.FrameID == "TLAN":
+                self["language"] = "\n".join(frame.text)
             else: name = self.IDS.get(frame.FrameID, "").lower()
 
             name = name.lower()
@@ -242,14 +244,11 @@ class ID3File(AudioFile):
         # Issue 439 - Only write valid ISO 639-2 codes to TLAN (else TXXX)
         tag.delall("TLAN")
         if "language" in self:
-            lang = self["language"]
-            if lang in LanguageMassager.ISO_639_2:
-                # Save to TLAN tag. Value is guaranteed ASCII
-                try:
-                    tag.add(mutagen.id3.TLAN(encoding=3, text=lang))
-                    dontwrite += ["language"]
-                except Exception,e:
-                    print_w("Died adding tag (%s)" % e)
+            langs = self["language"].split("\n")
+            if all([lang in LanguageMassager.ISO_639_2 for lang in langs]):
+                # Save value(s) to TLAN tag. Guaranteed to be ASCII here
+                tag.add(mutagen.id3.TLAN(encoding=3, text=langs))
+                dontwrite += ["language"]
             else:
                 print_d("Not using invalid language code '%s' in TLAN" %
                         self["language"], context=self)
