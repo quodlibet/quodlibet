@@ -8,7 +8,7 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
    * Fix wrong path encoding in the exfalso file selector under Windows
    * Fix error when controlling playback during startup [810]
    * Handle invalid header patterns
-   * Don't loose the radio libary randomly [645]
+   * Don't lose the radio libary randomly [645]
    * Handle non utf-8 and invalid filenames in the song list [798]
    * Fix a crash when the song list changed during a gapless transition [799]
    * Tray icon doesn't appear in KDE panel [881]
@@ -40,7 +40,8 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
      by placing an icon in the current icon theme [614]
    * Close buttons in all dialogs (since GNOME 3 has no close button in
      the window decorations for dialogs by default) [772]
-   * Make main window resizeable with only the queue showing [657] (Florian Demmer)
+   * Make main window resizeable with only the queue showing [657]
+     (Florian Demmer)
    * Make the paned browser prefs resizable
    * Search bar: No delays for any keyboard/mouse actions except typing
    * Estimate FLAC bitrate using the filesize [342] (Nick Boultbee)
@@ -53,7 +54,7 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
    * album browser: Restore search on start
    * album browser: Move sort order in the preference button sub menu
    * album browser: Load all visible covers before showing the album list
-   * album browser: Less redraws after filtering
+   * album browser: Fewer redraws after filtering
    * album browser: Add sort by genre option [340]
    * radio browser: Genre filter list
    * radio browser: Use the default search bar (with history)
@@ -88,8 +89,9 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
    * German translation update (Rüdiger Arp)
    * Italian translation update (Luca Baraldi)
  * Tagging/Ex Falso:
-   * Improve support for language tag, with ISO 639-2 suggestions (Nick Boultbee)
-   * (forthcoming update) ID3: handle TLAN [439] (Nick Boultbee)
+   * Improve support for language tag, with ISO 639-2 suggestions
+     (Nick Boultbee)
+   * ID3: handle TLAN [439] (Nick Boultbee)
    * Ignore zero TLEN id3 frame [222]
    * Allow performer to be split out of title (Nick Boultbee)
    * Ogg Theora support
@@ -117,7 +119,8 @@ but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
    * NEW: Acoustid.org fingerprint plugin (only for submitting atm)
    * NEW: Duplicates browser (Nick Boultbee)
    * NEW: Mute radio advertisements (di.fm only atm)
-   * NEW: Watch directories for file changes (using pyinotify) [270] (Nick Boultbee, Joe Higton)
+   * NEW: Watch directories for file changes (using pyinotify) [270]
+          (Nick Boultbee, Joe Higton)
    * NEW: Theme switcher plugin
    * NEW: Squeezebox plugin (Nick Boultbee)
 
