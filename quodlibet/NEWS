@@ -1,6 +1,126 @@
 Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
 
+2.3.91 (2012-01-16) - Players only love you when they're playing
+ * Fixes:
+   * Don't remove periods from tag values in patterns [368]
+   * Don't jump to playing song on stream changes
+   * Fix wrong path encoding in the exfalso file selector under Windows
+   * Fix error when controlling playback during startup [810]
+   * Handle invalid header patterns
+   * Don't loose the radio libary randomly [645]
+   * Handle non utf-8 and invalid filenames in the song list [798]
+   * Fix a crash when the song list changed during a gapless transition [799]
+   * Tray icon doesn't appear in KDE panel [881]
+   * xine backend: Fix equalizer value range
+ * Plugin Fixes:
+   * Fix "&amp;" in notifications (xfce4-notifyd) (Anton Shestakov)
+   * Fix animosd config again
+   * Fix Amazon cover search (API change)
+ * General
+   * Improved startup speed
+   * GNOME session shutdown fixes
+   * Hide all windows on shutdown
+   * Handle signals during startup
+   * Correctly push signals into the gtk+ mainloop (no more segfaults)
+   * Cyclic saving of all libraries not just the main one
+   * Rename the process to "quodlibet" or "exfalso" [736] (Nick Boultbee)
+   * Queue keyboard shortcut is now Ctrl+Return not just Q [747]
+   * Add new songs that match the active filter to the song list
+   * Focus search entry with ctrl+l [666]
+   * Fix reverse sort (sort by album first)
+   * Custom sort dialog [820] (Philipp Müller, Joschka Fischer)
+   * Make the paned browser the default one
+   * Focus the first row in all automatic list selections [835]
+   * Select next song in the song list after song removal [785]
+   * Speed up song removal in long lists [785]
+   * Delete keyboard shurtcut in the queue
+   * Add menu entry to rate current playing song (Nick Boultbee)
+   * Make it possible to override quodlibet/exfalso icon,
+     by placing an icon in the current icon theme [614]
+   * Close buttons in all dialogs (since GNOME 3 has no close button in
+     the window decorations for dialogs by default) [772]
+   * Make main window resizeable with only the queue showing [657] (Florian Demmer)
+   * Make the paned browser prefs resizable
+   * Search bar: No delays for any keyboard/mouse actions except typing
+   * Estimate FLAC bitrate using the filesize [342] (Nick Boultbee)
+   * New ~#filesize tag: requires library reload (Nick Boultbee)
+   * Enhancements to the ways album art is detected (Nick Boultbee):
+     new tab in prefs,
+     new option for forcing art filename [328],
+     new option for preferring embedded image over external ones
+   * Allow numeric ~#replaygain_xxx tags (Nick Boultbee)
+   * album browser: Restore search on start
+   * album browser: Move sort order in the preference button sub menu
+   * album browser: Load all visible covers before showing the album list
+   * album browser: Less redraws after filtering
+   * album browser: Add sort by genre option [340]
+   * radio browser: Genre filter list
+   * radio browser: Use the default search bar (with history)
+   * radio browser: Remote station list with 4000 stations
+   * radio browser: Properly sync the song list play icon with song changes
+   * radio browser: Prefill new station dialog with last URL in the clipboard
+   * radio browser: title falls back to organization and artist to website
+     (for the song list)
+   * radio browser: Buffer process shown in status bar
+   * search: Stricter numeric value parsing (only allow valid units)
+   * search: Don't require a space between number and unit: #(added<1day)
+   * search: Support GB/KB/MB/B units for ~#filesize
+ * Gstreamer:
+   * Fully support playbin1 again (QUODLIBET_PLAYBIN1 env var)
+   * Allow setting of stream buffer duration [696]
+   * Sync replaygain volume change with track change [652]
+     (use track-changed signal in newer gstreamer)
+     this needed the removal of the 500ms queue. Can be enabled if there
+     are problems with gapless (QUODLIBET_GSTBE_QUEUE env var)
+   * Don't add equalizer if the plugin is disabled:
+     No unnecessary conversions to float (flac, mp3 decoder), less CPU
+   * Don't use the fluendo mp3 decoder if mad is available, less CPU
+   * No video decoding/playing (mp4 files for example)
+   * Properly emit song-started/ended for radio stream songs
+     (so they get counted as auto started by the new notify plugin)
+   * Add button in the prefs to print the currently used pipeline
+     including format conversions (only in --debug mode)
+   * No more jumping of the position slider during song changes
+   * Better parsing of stream metadata [750]
+ * Translations:
+   * Russian translation update (Anton Shestakov)
+   * German translation update (Rüdiger Arp)
+   * Italian translation update (Luca Baraldi)
+ * Tagging/Ex Falso:
+   * Improve support for language tag, with ISO 639-2 suggestions (Nick Boultbee)
+   * (forthcoming update) ID3: handle TLAN [439] (Nick Boultbee)
+   * Ignore zero TLEN id3 frame [222]
+   * Allow performer to be split out of title (Nick Boultbee)
+   * Ogg Theora support
+   * Ex Falso about dialog
+ * CLI:
+   * --debug (colored output, yay)
+   * --enqueue-files=file,file [716] (Nick Boultbee)
+   * --print-query=query [716] (Nick Boultbee)
+   * --force-previous [441] (go to previous not depending on the
+     current position)
+ * Plugins:
+   * Removed old plugin import fallback code: In case loading
+     a third party plugin fails, set the QUODLIBET_OLDIMPORT env var.
+   * Show an error message instead of the stack trace for common
+     plugin loading errors (import errors)
+   * Improved notification plugin [588] (Felix Krull)
+   * Improved scrobbler preferences with account data verification
+   * Trayicon: Use custom theme icons [614]
+     Prevent the main window from showing on startup
+   * Musicbrainz: Only write sort tags that are different
+   * Titlecase: New prefs switch to allow all caps in tags (Nick Boultbee)
+   * NEW: Website Search (Nick Boultbee)
+   * NEW: Inhibit Screensaver while playing (GNOME)
+   * NEW: Pause while the screensaver is active (GNOME)
+   * NEW: Acoustid.org fingerprint plugin (only for submitting atm)
+   * NEW: Duplicates browser (Nick Boultbee)
+   * NEW: Mute radio advertisements (di.fm only atm)
+   * NEW: Watch directories for file changes (using pyinotify) [270] (Nick Boultbee, Joe Higton)
+   * NEW: Theme switcher plugin
+   * NEW: Squeezebox plugin (Nick Boultbee)
+
 2.3.2 (2011-10-17) - It doesn't matter! My beats are great!
     * Fix "--song-list"
     * Fix crash in album browser [781]

@@ -7,7 +7,7 @@ import locale
 if os.name == "nt":
     from win32com.shell import shellcon, shell
 
-VERSION_TUPLE = (2, 3, 2, -1)
+VERSION_TUPLE = (2, 3, 91)
 VERSION = ".".join(map(str, VERSION_TUPLE))
 PROCESS_TITLE_QL = "quodlibet"
 PROCESS_TITLE_EF = "exfalso"
