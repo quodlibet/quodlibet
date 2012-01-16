@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-03 11:54+0100\n"
+"POT-Creation-Date: 2012-01-16 12:22+0100\n"
 "PO-Revision-Date: 2011-11-03 11:54+0000\n"
 "Last-Translator: Honza Hejzl <honza.hejzl@gmail.com>\n"
 "Language-Team: Czech (Czech Republic)\n"
@@ -339,7 +339,7 @@ msgstr[2] "%d disky"
 
 #: ../quodlibet/browsers/albums.py:145 ../quodlibet/browsers/albums.py:149
 #: ../quodlibet/qltk/tagsfrompath.py:134 ../quodlibet/qltk/textedit.py:84
-#: ../quodlibet/util/__init__.py:553
+#: ../quodlibet/util/__init__.py:558
 #, fuzzy
 msgid "Invalid pattern"
 msgstr "Neplatné zadání"
@@ -374,22 +374,22 @@ msgstr "Seřadit podle:"
 msgid "_Preferences"
 msgstr "Nastavení Ex Falsa"
 
-#: ../quodlibet/browsers/albums.py:368
+#: ../quodlibet/browsers/albums.py:371
 #, fuzzy
 msgid "Album List"
 msgstr "Seznam alb"
 
-#: ../quodlibet/browsers/albums.py:369
+#: ../quodlibet/browsers/albums.py:372
 #, fuzzy
 msgid "_Album List"
 msgstr "_Seznam alb"
 
-#: ../quodlibet/browsers/albums.py:510
+#: ../quodlibet/browsers/albums.py:513
 #, fuzzy
 msgid "All Albums"
 msgstr "Všechna alba"
 
-#: ../quodlibet/browsers/albums.py:511
+#: ../quodlibet/browsers/albums.py:514
 #, fuzzy, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -397,7 +397,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d alba"
 msgstr[2] "%d alba"
 
-#: ../quodlibet/browsers/albums.py:651
+#: ../quodlibet/browsers/albums.py:654
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -409,7 +409,7 @@ msgstr[2] "Znovu načíst přebaly CD"
 #: ../quodlibet/browsers/audiofeeds.py:49
 #: ../quodlibet/browsers/audiofeeds.py:50
 #: ../quodlibet/browsers/audiofeeds.py:113 ../quodlibet/browsers/paned.py:221
-#: ../quodlibet/formats/_audio.py:323 ../quodlibet/qltk/information.py:224
+#: ../quodlibet/formats/_audio.py:340 ../quodlibet/qltk/information.py:224
 #: ../quodlibet/qltk/information.py:232 ../quodlibet/qltk/information.py:258
 #: ../quodlibet/qltk/playorder.py:15 ../quodlibet/qltk/wlw.py:65
 #, fuzzy
@@ -524,12 +524,12 @@ msgstr "_Přidat do sbírky"
 msgid "%r doesn't contain any browsers."
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:117
+#: ../quodlibet/browsers/iradio.py:126
 #, fuzzy
 msgid "Unsupported file type"
 msgstr "Nepodporovaný formát souboru"
 
-#: ../quodlibet/browsers/iradio.py:118
+#: ../quodlibet/browsers/iradio.py:127
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -537,221 +537,221 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:156 ../quodlibet/browsers/iradio.py:169
-#: ../quodlibet/browsers/iradio.py:646
+#: ../quodlibet/browsers/iradio.py:165 ../quodlibet/browsers/iradio.py:178
+#: ../quodlibet/browsers/iradio.py:661
 #, fuzzy
 msgid "Unable to add station"
 msgstr "Nelze přidat stanici"
 
-#: ../quodlibet/browsers/iradio.py:180 ../quodlibet/browsers/iradio.py:363
+#: ../quodlibet/browsers/iradio.py:189 ../quodlibet/browsers/iradio.py:372
 #, fuzzy
 msgid "Internet Radio"
 msgstr "Internetová rádia"
 
-#: ../quodlibet/browsers/iradio.py:180
+#: ../quodlibet/browsers/iradio.py:189
 #, fuzzy
 msgid "Downloading station list"
 msgstr "Stáhnout soubory"
 
-#: ../quodlibet/browsers/iradio.py:275
+#: ../quodlibet/browsers/iradio.py:284
 #, fuzzy
 msgid "New Station"
 msgstr "Nová stanice"
 
-#: ../quodlibet/browsers/iradio.py:276
+#: ../quodlibet/browsers/iradio.py:285
 #, fuzzy
 msgid "Enter the location of an Internet radio station:"
 msgstr "Zadejte umístění stanice internetového rádia:"
 
-#: ../quodlibet/browsers/iradio.py:297
+#: ../quodlibet/browsers/iradio.py:306
 msgid "Electronic"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:300
+#: ../quodlibet/browsers/iradio.py:309
 msgid "Hip Hop / Rap"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:301
+#: ../quodlibet/browsers/iradio.py:310
 msgid "Oldies"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:302
+#: ../quodlibet/browsers/iradio.py:311
 msgid "R&B"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:303
+#: ../quodlibet/browsers/iradio.py:312
 msgid "Japanese"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:304
+#: ../quodlibet/browsers/iradio.py:313
 msgid "Indian"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:305
+#: ../quodlibet/browsers/iradio.py:314
 msgid "Religious"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:307
+#: ../quodlibet/browsers/iradio.py:316
 msgid "Charts"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:308
+#: ../quodlibet/browsers/iradio.py:317
 msgid "Turkish"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:309
+#: ../quodlibet/browsers/iradio.py:318
 msgid "Reggae / Dancehall"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:310
+#: ../quodlibet/browsers/iradio.py:319
 #, fuzzy
 msgid "Latin"
 msgstr "hodnocení"
 
-#: ../quodlibet/browsers/iradio.py:311
+#: ../quodlibet/browsers/iradio.py:320
 msgid "College Radio"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:312
+#: ../quodlibet/browsers/iradio.py:321
 msgid "Talk / News"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:313
+#: ../quodlibet/browsers/iradio.py:322
 msgid "Ambient"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:314
+#: ../quodlibet/browsers/iradio.py:323
 msgid "Jazz"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:315
+#: ../quodlibet/browsers/iradio.py:324
 msgid "Classical"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:316
+#: ../quodlibet/browsers/iradio.py:325
 msgid "Pop"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:317
+#: ../quodlibet/browsers/iradio.py:326
 msgid "Alternative"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:318
+#: ../quodlibet/browsers/iradio.py:327
 msgid "Metal"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:319
+#: ../quodlibet/browsers/iradio.py:328
 msgid "Country"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:320
+#: ../quodlibet/browsers/iradio.py:329
 msgid "News"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:321
+#: ../quodlibet/browsers/iradio.py:330
 msgid "Schlager"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:322
+#: ../quodlibet/browsers/iradio.py:331
 msgid "Funk"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:323
+#: ../quodlibet/browsers/iradio.py:332
 msgid "Indie"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:324
+#: ../quodlibet/browsers/iradio.py:333
 msgid "Blues"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:325
+#: ../quodlibet/browsers/iradio.py:334
 msgid "Soul"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:326
+#: ../quodlibet/browsers/iradio.py:335
 msgid "Lounge"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:327
+#: ../quodlibet/browsers/iradio.py:336
 msgid "Punk"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:328
+#: ../quodlibet/browsers/iradio.py:337
 msgid "Reggaeton"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:329
+#: ../quodlibet/browsers/iradio.py:338
 msgid "Slavic"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:331
+#: ../quodlibet/browsers/iradio.py:340
 msgid "Greek"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:332
+#: ../quodlibet/browsers/iradio.py:341
 msgid "Gothic"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:333
+#: ../quodlibet/browsers/iradio.py:342
 msgid "Rock"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:364
+#: ../quodlibet/browsers/iradio.py:373
 #, fuzzy
 msgid "_Internet Radio"
 msgstr "_Internetová rádia"
 
 #. new station button
-#: ../quodlibet/browsers/iradio.py:433
+#: ../quodlibet/browsers/iradio.py:448
 #, fuzzy
 msgid "_New Station"
 msgstr "_Nová stanice"
 
-#: ../quodlibet/browsers/iradio.py:447
+#: ../quodlibet/browsers/iradio.py:462
 #, fuzzy
 msgid "All Stations"
 msgstr "Nová stanice"
 
-#: ../quodlibet/browsers/iradio.py:451
+#: ../quodlibet/browsers/iradio.py:466
 msgid "Favorites"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:459
+#: ../quodlibet/browsers/iradio.py:474
 #, fuzzy
 msgid "No Category"
 msgstr "Žádná kategorie"
 
 #. update button
-#: ../quodlibet/browsers/iradio.py:491
+#: ../quodlibet/browsers/iradio.py:506
 #, fuzzy
 msgid "_Update Stations"
 msgstr "_Nová stanice"
 
-#: ../quodlibet/browsers/iradio.py:638
+#: ../quodlibet/browsers/iradio.py:653
 #, fuzzy
 msgid "No stations found"
 msgstr "Nenalezena žádná stanice"
 
-#: ../quodlibet/browsers/iradio.py:639
+#: ../quodlibet/browsers/iradio.py:654
 #, fuzzy, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Na %s nebyly nalezeny žádné audio zdroje."
 
-#: ../quodlibet/browsers/iradio.py:647
+#: ../quodlibet/browsers/iradio.py:662
 #, fuzzy
 msgid "All stations listed are already in your library."
 msgstr "Všechny stanice na seznamu jsou už ve sbírce."
 
-#: ../quodlibet/browsers/iradio.py:669
+#: ../quodlibet/browsers/iradio.py:684
 #, fuzzy
 msgid "Remove from Favorites"
 msgstr "_Odstranit ze seznamu"
 
-#: ../quodlibet/browsers/iradio.py:675
+#: ../quodlibet/browsers/iradio.py:690
 msgid "Add to Favorites"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:784
+#: ../quodlibet/browsers/iradio.py:799
 #, fuzzy, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -1171,7 +1171,7 @@ msgstr "Soubor existuje"
 msgid "Overwrite <b>%s</b>?"
 msgstr ""
 
-#: ../quodlibet/formats/_audio.py:647
+#: ../quodlibet/formats/_audio.py:664
 #, python-format
 msgid "Failed reading album art \"%s\""
 msgstr ""
@@ -1235,55 +1235,55 @@ msgstr "Načítání sbírky"
 msgid "Scanning %s"
 msgstr "Načítání %s"
 
-#: ../quodlibet/player/gstbe.py:66
+#: ../quodlibet/player/gstbe.py:68
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:74
+#: ../quodlibet/player/gstbe.py:76
 msgid "_Output pipeline:"
 msgstr ""
 
 #. seconds
-#: ../quodlibet/player/gstbe.py:97
+#: ../quodlibet/player/gstbe.py:90
 #, python-format
 msgid "%.1f s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:112
+#: ../quodlibet/player/gstbe.py:105
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:193
+#: ../quodlibet/player/gstbe.py:197
 #, python-format
 msgid "Could not link GStreamer pipeline: '%s'"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:359
+#: ../quodlibet/player/gstbe.py:379
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:359
+#: ../quodlibet/player/gstbe.py:379
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:389
+#: ../quodlibet/player/gstbe.py:439
 msgid "Output Error"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:390
+#: ../quodlibet/player/gstbe.py:440
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:574
+#: ../quodlibet/player/gstbe.py:612
 msgid "Unable to open input files"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:575
+#: ../quodlibet/player/gstbe.py:613
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -1608,15 +1608,15 @@ msgstr ""
 #. Return a 'natural' version of the tag for human-readable bits.
 #. Strips ~ and ~# from the start and runs it through a map (which
 #. the user can configure).
-#: ../quodlibet/qltk/edittags.py:538 ../quodlibet/qltk/edittags.py:687
-#: ../quodlibet/qltk/edittags.py:694 ../quodlibet/qltk/tagsfrompath.py:152
-#: ../quodlibet/util/__init__.py:505 ../quodlibet/util/tags.py:120
+#: ../quodlibet/qltk/edittags.py:538 ../quodlibet/qltk/edittags.py:686
+#: ../quodlibet/qltk/edittags.py:693 ../quodlibet/qltk/tagsfrompath.py:152
+#: ../quodlibet/util/__init__.py:510 ../quodlibet/util/tags.py:120
 #, fuzzy
 msgid "Invalid tag"
 msgstr "Neplatný tag"
 
-#: ../quodlibet/qltk/edittags.py:539 ../quodlibet/qltk/edittags.py:688
-#: ../quodlibet/qltk/edittags.py:695 ../quodlibet/qltk/tagsfrompath.py:153
+#: ../quodlibet/qltk/edittags.py:539 ../quodlibet/qltk/edittags.py:687
+#: ../quodlibet/qltk/edittags.py:694 ../quodlibet/qltk/tagsfrompath.py:153
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1644,12 +1644,12 @@ msgstr ""
 msgid "Unable to save song"
 msgstr "Skladbu nelze uložit"
 
-#: ../quodlibet/qltk/edittags.py:668 ../quodlibet/qltk/edittags.py:705
+#: ../quodlibet/qltk/edittags.py:667 ../quodlibet/qltk/edittags.py:704
 #, fuzzy
 msgid "Invalid value"
 msgstr "Neplatná hodnota"
 
-#: ../quodlibet/qltk/edittags.py:669 ../quodlibet/qltk/edittags.py:706
+#: ../quodlibet/qltk/edittags.py:668 ../quodlibet/qltk/edittags.py:705
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -2271,7 +2271,7 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
-#: ../quodlibet/qltk/queue.py:39 ../quodlibet/qltk/quodlibetwindow.py:490
+#: ../quodlibet/qltk/queue.py:39 ../quodlibet/qltk/quodlibetwindow.py:489
 msgid "_Queue"
 msgstr ""
 
@@ -2287,169 +2287,169 @@ msgstr ""
 msgid "_Order:"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:197
+#: ../quodlibet/qltk/quodlibetwindow.py:196
 msgid "_Repeat"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:198
+#: ../quodlibet/qltk/quodlibetwindow.py:197
 msgid "Restart the playlist when finished"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:331
+#: ../quodlibet/qltk/quodlibetwindow.py:330
 msgid "Unable to add songs"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:332
-#: ../quodlibet/qltk/quodlibetwindow.py:810
+#: ../quodlibet/qltk/quodlibetwindow.py:331
+#: ../quodlibet/qltk/quodlibetwindow.py:809
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:393
+#: ../quodlibet/qltk/quodlibetwindow.py:392
 msgid "_Music"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:394
+#: ../quodlibet/qltk/quodlibetwindow.py:393
 msgid "_Add a Folder..."
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:396
+#: ../quodlibet/qltk/quodlibetwindow.py:395
 #, fuzzy
 msgid "_Add a File..."
 msgstr "_Přidat soubor..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:398
+#: ../quodlibet/qltk/quodlibetwindow.py:397
 #, fuzzy
 msgid "_Add a Location..."
 msgstr "_Přidat umístění..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:400
+#: ../quodlibet/qltk/quodlibetwindow.py:399
 #, fuzzy
 msgid "_Browse Library"
 msgstr "_Procházet sbírku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:406
+#: ../quodlibet/qltk/quodlibetwindow.py:405
 #, fuzzy
 msgid "_Filters"
 msgstr "_Filtry"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:408
+#: ../quodlibet/qltk/quodlibetwindow.py:407
 #, fuzzy
 msgid "Not Played To_day"
 msgstr "Dnes nehrané"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:410
+#: ../quodlibet/qltk/quodlibetwindow.py:409
 #, fuzzy
 msgid "Not Played in a _Week"
 msgstr "Nehrané v posledním týdnu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:412
+#: ../quodlibet/qltk/quodlibetwindow.py:411
 #, fuzzy
 msgid "Not Played in a _Month"
 msgstr "Nehrané za poslední měsíc"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:414
+#: ../quodlibet/qltk/quodlibetwindow.py:413
 #, fuzzy
 msgid "_Never Played"
 msgstr "_Nikdy nehrané"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:416
+#: ../quodlibet/qltk/quodlibetwindow.py:415
 #, fuzzy
 msgid "_Top 40"
 msgstr "_Top 40"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:417
+#: ../quodlibet/qltk/quodlibetwindow.py:416
 msgid "B_ottom 40"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:419
+#: ../quodlibet/qltk/quodlibetwindow.py:418
 msgid "_Control"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:425
+#: ../quodlibet/qltk/quodlibetwindow.py:424
 msgid "_Jump to Playing Song"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:428
+#: ../quodlibet/qltk/quodlibetwindow.py:427
 #, fuzzy
 msgid "_View"
 msgstr "_Zobrazení"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:429
+#: ../quodlibet/qltk/quodlibetwindow.py:428
 #, fuzzy
 msgid "_Help"
 msgstr "_Pomoc"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:430
+#: ../quodlibet/qltk/quodlibetwindow.py:429
 #, fuzzy
 msgid "_Output Log"
 msgstr "_Log z výstupu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:437
+#: ../quodlibet/qltk/quodlibetwindow.py:436
 #, fuzzy
 msgid "_Edit and Continue"
 msgstr "_Upravit a pokračovat"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:440
+#: ../quodlibet/qltk/quodlibetwindow.py:439
 msgid "_Cause an Error"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:458
+#: ../quodlibet/qltk/quodlibetwindow.py:457
 #, fuzzy
 msgid "Re_fresh Library"
 msgstr "Obnovit sbírku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:462
+#: ../quodlibet/qltk/quodlibetwindow.py:461
 #, fuzzy
 msgid "Re_load Library"
 msgstr "Znovu načíst sbírku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:467
+#: ../quodlibet/qltk/quodlibetwindow.py:466
 #, fuzzy
 msgid "Filter on _Genre"
 msgstr "Filtrovat podle žádru"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:468
+#: ../quodlibet/qltk/quodlibetwindow.py:467
 #, fuzzy
 msgid "Filter on _Artist"
 msgstr "Filtrovat podle umělce"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:469
+#: ../quodlibet/qltk/quodlibetwindow.py:468
 #, fuzzy
 msgid "Filter on Al_bum"
 msgstr "Filtrovat podle alba"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:476
+#: ../quodlibet/qltk/quodlibetwindow.py:475
 #, fuzzy
 msgid "Random _Genre"
 msgstr "Náhodný žánr"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:477
+#: ../quodlibet/qltk/quodlibetwindow.py:476
 #, fuzzy
 msgid "Random _Artist"
 msgstr "Náhodný umělec"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:478
+#: ../quodlibet/qltk/quodlibetwindow.py:477
 #, fuzzy
 msgid "Random Al_bum"
 msgstr "Náhodné album"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:485
+#: ../quodlibet/qltk/quodlibetwindow.py:484
 #, fuzzy
 msgid "Song _List"
 msgstr "Seznam skladeb"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:528
+#: ../quodlibet/qltk/quodlibetwindow.py:527
 #, fuzzy
 msgid "Check for changes in your library"
 msgstr "Zkontrolovat změny ve sbírce"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:531
+#: ../quodlibet/qltk/quodlibetwindow.py:530
 #, fuzzy
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "Znovu načíst všechny skladby ve sbírce (to může trvat dost dlouho)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:535
+#: ../quodlibet/qltk/quodlibetwindow.py:534
 #, fuzzy
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
@@ -2458,48 +2458,48 @@ msgstr ""
 "40 skladeb, které jste poslouchali nejvíc (více než 40 jich může být vybráno "
 "také)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:539
+#: ../quodlibet/qltk/quodlibetwindow.py:538
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:798
+#: ../quodlibet/qltk/quodlibetwindow.py:797
 #, fuzzy
 msgid "Add a Location"
 msgstr "Přidat umístění"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:799
+#: ../quodlibet/qltk/quodlibetwindow.py:798
 msgid "Enter the location of an audio file:"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:804
-#: ../quodlibet/qltk/quodlibetwindow.py:809
+#: ../quodlibet/qltk/quodlibetwindow.py:803
+#: ../quodlibet/qltk/quodlibetwindow.py:808
 msgid "Unable to add location"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:805
+#: ../quodlibet/qltk/quodlibetwindow.py:804
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:821
-#: ../quodlibet/qltk/quodlibetwindow.py:828
+#: ../quodlibet/qltk/quodlibetwindow.py:820
+#: ../quodlibet/qltk/quodlibetwindow.py:827
 msgid "Add Music"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:822
+#: ../quodlibet/qltk/quodlibetwindow.py:821
 msgid "Watch this folder for new songs"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:845
+#: ../quodlibet/qltk/quodlibetwindow.py:844
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
 "\n"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:850
+#: ../quodlibet/qltk/quodlibetwindow.py:849
 msgid "Unable to add song"
 msgstr ""
 
@@ -2597,26 +2597,26 @@ msgid ""
 "your pattern by starting it with / or ~/."
 msgstr ""
 
-#: ../quodlibet/qltk/searchbar.py:45
+#: ../quodlibet/qltk/searchbar.py:46
 #, fuzzy
 msgid "Saved Searches"
 msgstr "Uložené hodnoty"
 
-#: ../quodlibet/qltk/searchbar.py:46
+#: ../quodlibet/qltk/searchbar.py:47
 #, fuzzy
 msgid "Edit saved searches..."
 msgstr "Upravit uložené hodnoty..."
 
-#: ../quodlibet/qltk/searchbar.py:67
+#: ../quodlibet/qltk/searchbar.py:68
 #, fuzzy
 msgid "_Search:"
 msgstr "_Hledat"
 
-#: ../quodlibet/qltk/searchbar.py:86
+#: ../quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr ""
 
-#: ../quodlibet/qltk/searchbar.py:88
+#: ../quodlibet/qltk/searchbar.py:84
 msgid "Search your library"
 msgstr ""
 
@@ -2935,7 +2935,7 @@ msgstr ""
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../quodlibet/util/__init__.py:514
+#: ../quodlibet/util/__init__.py:519
 msgid "check|titlecase?"
 msgstr ""
 
@@ -2975,29 +2975,33 @@ msgstr ""
 msgid "No log available."
 msgstr ""
 
-#: ../quodlibet/util/massagers.py:22
+#: ../quodlibet/util/massagers.py:29
 msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
 
-#: ../quodlibet/util/massagers.py:32
+#: ../quodlibet/util/massagers.py:39
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
 msgstr ""
 
-#: ../quodlibet/util/massagers.py:46
+#: ../quodlibet/util/massagers.py:53
 msgid "Replay Gain peaks must be entered in 'x.yy' format."
 msgstr ""
 
-#: ../quodlibet/util/massagers.py:59
+#: ../quodlibet/util/massagers.py:66
 msgid "MusicBrainz IDs must be in UUID format."
 msgstr ""
 
 #. Translators: Leave "official", "promotional", and "bootleg"
 #. untranslated. They are the three possible literal values.
-#: ../quodlibet/util/massagers.py:74
+#: ../quodlibet/util/massagers.py:81
 msgid ""
 "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
+msgstr ""
+
+#: ../quodlibet/util/massagers.py:89
+msgid "Language must be an ISO 639-2 three-letter code"
 msgstr ""
 
 #: ../quodlibet/util/tags.py:23
