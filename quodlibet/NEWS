@@ -1,7 +1,7 @@
 Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
 
-2.3.91 (2012-01-16) - Players only love you when they're playing
+2.3.91/92 (2012-01-16) - Players only love you when they're playing
  * Fixes:
    * Don't remove periods from tag values in patterns [368]
    * Don't jump to playing song on stream changes
