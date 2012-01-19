@@ -132,7 +132,9 @@ class ID3File(AudioFile):
             elif frame.FrameID in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
-                elif frame.desc.startswith("replaygain_"):
+                elif frame.desc.startswith("replaygain_") and \
+                        frame.desc[11:] in ("track_peak", "track_gain",
+                                            "album_peak", "album_gain"):
                     # Some versions of Foobar2000 write broken Replay Gain
                     # tags in this format.
                     name = frame.desc
@@ -144,16 +146,19 @@ class ID3File(AudioFile):
                 continue
             elif frame.FrameID == "TMCL":
                 for role, name in frame.people:
-                    role = role.encode('utf-8')
-                    self.add("performer:" + role, name)
+                    key = self.__validate_name("performer:" + role)
+                    if key:
+                        self.add(key, name)
                 continue
             elif frame.FrameID == "TLAN":
                 self["language"] = "\n".join(frame.text)
+                continue
             else: name = self.IDS.get(frame.FrameID, "").lower()
 
+            name = self.__validate_name(name)
+            if not name:
+                continue
             name = name.lower()
-
-            if not name: continue
 
             id3id = frame.FrameID
             if id3id.startswith("T"):
@@ -173,6 +178,9 @@ class ID3File(AudioFile):
             else: self[name] = text
             self[name] = self[name].strip()
 
+            # to catch a missing continue above
+            del name
+
         # foobar2000 writes long dates in a TXXX DATE tag, leaving the TDRC
         # tag out. Read the TXXX DATE, but only if the TDRC tag doesn't exist
         # to avoid reverting or duplicating tags in existing libraries.
@@ -185,6 +193,15 @@ class ID3File(AudioFile):
         except AttributeError: pass
 
         self.sanitize(filename)
+
+    def __validate_name(self, k):
+        """Returns a ascii string or None if the key isn't supported"""
+        if isinstance(k, unicode):
+            k = k.encode("utf-8")
+        if not (k and "=" not in k and "~" not in k
+                and k.encode("ascii", "replace") == k):
+            return
+        return k
 
     def __process_rg(self, frame):
         if frame.channel == 1:
@@ -209,8 +226,18 @@ class ID3File(AudioFile):
     def write(self):
         try: tag = mutagen.id3.ID3(self['~filename'])
         except mutagen.id3.error: tag = mutagen.id3.ID3()
-        tag.delall("COMM:QuodLibet:")
-        tag.delall("TXXX:QuodLibet:")
+
+        # prefill TMCL with the ones we can't read
+        mcl = tag.get("TMCL", mutagen.id3.TMCL(encoding=3, people=[]))
+        mcl.people = [(r, n) for (r, n) in mcl.people
+                      if not self.__validate_name(r)]
+
+        # delete all TXXX/COMM we can read except empty COMM
+        for frame in ["COMM:", "TXXX:"]:
+            for t in tag.getall(frame + "QuodLibet:"):
+                if t.desc and self.__validate_name(t.desc):
+                    del tag[t.HashKey]
+
         for key in ["UFID:http://musicbrainz.org",
                     "TMCL",
                     "POPM:%s" % const.EMAIL,
@@ -253,8 +280,6 @@ class ID3File(AudioFile):
                 print_d("Not using invalid language code '%s' in TLAN" %
                         self["language"], context=self)
 
-        mcl = mutagen.id3.TMCL(encoding=3, people=[])
-
         for key in filter(lambda x: x not in self.SDI and x not in dontwrite,
                           self.realkeys()):
             if not isascii(self[key]): enc = 1
@@ -289,18 +314,21 @@ class ID3File(AudioFile):
             tag.add(mutagen.id3.COMM(
                 encoding=enc, text=t, desc=u"", lang="\x00\x00\x00"))
 
-        for k in ["normalize", "album", "track"]:
-            try: del(tag["RVA2:"+k])
-            except KeyError: pass
-
         for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
             # Delete Foobar droppings.
             try: del(tag["TXXX:replaygain_" + k])
             except KeyError: pass
 
+        # we shouldn't delete all, but we use unknown ones as fallback, so make
+        # sure they don't come back after reloading
+        for t in tag.getall("RVA2"):
+            if t.channel == 1:
+                del tag[t.HashKey]
+
         for k in ["track", "album"]:
             if ('replaygain_%s_gain' % k) in self:
-                gain = float(self["replaygain_%s_gain" % k].split()[0])
+                try: gain = float(self["replaygain_%s_gain" % k].split()[0])
+                except ValueError: gain=0
                 try: peak = float(self["replaygain_%s_peak" % k])
                 except (ValueError, KeyError): peak = 0
                 f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=peak)
@@ -333,12 +361,18 @@ class ID3File(AudioFile):
         try: tag = mutagen.id3.ID3(self["~filename"])
         except (EnvironmentError, mutagen.id3.error):
             return None
-        else:
-            for frame in tag.getall("APIC"):
-                f = tempfile.NamedTemporaryFile()
-                f.write(frame.data)
-                f.flush()
-                f.seek(0, 0)
-                return f
-            else:
-                return None
+
+        cover = None
+        for frame in tag.getall("APIC"):
+            cover = cover or frame
+            if frame.type == 3:
+                cover = frame
+                break
+
+        if cover:
+            f = tempfile.NamedTemporaryFile()
+            f.write(cover.data)
+            f.flush()
+            f.seek(0, 0)
+            return f
+
