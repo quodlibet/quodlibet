@@ -20,6 +20,8 @@ class ThemeSwitcher(EventPlugin):
     PLUGIN_VERSION = "0.2"
     PLUGIN_DESC = ("Change the active GTK+ theme.")
 
+    __enabled = False
+
     def PluginPreferences(self, *args):
         hb = gtk.HBox(spacing=6)
         label = gtk.Label(_("_Theme:"))
@@ -87,8 +89,10 @@ class ThemeSwitcher(EventPlugin):
         self.__default_theme = settings.get_property('gtk-theme-name')
 
         try: theme = config.get("plugins", __name__)
-        except config.error: pass
-        else: self.__set_theme(theme)
+        except config.error:
+            theme = None
+
+        self.__set_theme(theme)
 
     def disabled(self):
         self.__set_theme(None)
