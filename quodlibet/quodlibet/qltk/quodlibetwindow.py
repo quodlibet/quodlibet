@@ -272,7 +272,7 @@ class QuodLibetWindow(gtk.Window):
             ('unpaused', self.__update_paused, False),
         ]
         for sig in player_sigs:
-            gobject_weak(player.connect, *sig, parent=self)
+            gobject_weak(player.connect, *sig, **{"parent": self})
 
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
