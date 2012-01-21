@@ -79,7 +79,8 @@ class SearchBarBox(gtk.HBox):
 
         # search button
         if button:
-            search = Button(_("Search"), gtk.STOCK_FIND)
+            search = Button(_("Search"), gtk.STOCK_FIND,
+                            size=gtk.ICON_SIZE_MENU)
             search.connect('clicked', self.__filter_changed)
             search.set_tooltip_text(_("Search your library"))
             self.pack_start(search, expand=False)
