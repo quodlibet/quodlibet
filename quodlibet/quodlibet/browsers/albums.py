@@ -330,6 +330,11 @@ class VisibleUpdate(object):
         #generate a path list so that cover scanning starts in the middle
         #of the visible area and alternately moves up and down
         start, end = vrange
+
+        # pygtk2.12 sometimes returns empty tuples
+        if not start or not end:
+            return
+
         start = start[0] - preload - 1
         end = end[0] + preload
 
