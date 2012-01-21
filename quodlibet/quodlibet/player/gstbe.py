@@ -191,12 +191,14 @@ class GStreamerPlayer(BasePlayer):
 
         bufbin = gst.Bin()
         map(bufbin.add, pipeline)
-        try:
-            gst.element_link_many(*pipeline)
-        except gst.LinkError, e:
-            print_w(_("Could not link GStreamer pipeline: '%s'") % e)
-            self.__destroy_pipeline()
-            return False
+        if len(pipeline) > 1:
+            try:
+                gst.element_link_many(*pipeline)
+            except gst.LinkError, e:
+                print_w(
+                    _("Could not link GStreamer pipeline: '%s'") % e)
+                self.__destroy_pipeline()
+                return False
 
         # Test to ensure output pipeline can preroll
         bufbin.set_state(gst.STATE_READY)
