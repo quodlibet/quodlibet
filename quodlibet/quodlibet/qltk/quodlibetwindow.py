@@ -289,6 +289,15 @@ class QuodLibetWindow(gtk.Window):
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
 
+        self.connect("delete-event", self.__save_browser)
+        self.connect("destroy", self.__destroy)
+
+    def __destroy(self, *args):
+        # The tray icon plugin tries to unhide QL because it gets disabled
+        # on Ql exit. The window should stay hidden after destroy.
+        self.show = lambda: None
+        self.present = self.show
+
     def __drag_motion(self, ctx, x, y, time):
         # Don't accept drops from QL itself, since it offers text/uri-list.
         if ctx.get_source_widget() is None:
@@ -352,14 +361,13 @@ class QuodLibetWindow(gtk.Window):
         super(QuodLibetWindow, self).show()
         map(gtk.Window.show, qltk.Window.instances)
 
-    def destroy(self, *args):
+    def __save_browser(self, *args):
+        print_d("Saving active browser state")
         try: self.browser.save()
         except NotImplementedError: pass
 
-        # The tray icon plugin tries to unhide QL because it gets disabled
-        # on Ql exit. The window should be hidden after destroy gets called.
-        self.show = lambda: None
-        self.present = self.show
+    def destroy(self, *args):
+        self.__save_browser()
         super(QuodLibetWindow, self).destroy()
 
     def __show_or(self, widget, prop):
