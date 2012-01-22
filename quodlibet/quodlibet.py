@@ -71,15 +71,7 @@ def main():
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(library)
 
-    # main window
-    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
-    window = QuodLibetWindow(library, player)
-
-    from quodlibet import widgets
-    widgets.main = window
-    widgets.watcher = library.librarian
-
-    init_plugins(window, player, library.librarian)
+    window = init_plugins(player, library)
 
     from quodlibet.qltk.remote import FSInterface, FIFOControl
     from quodlibet.qltk.tracker import SongTracker
@@ -111,13 +103,16 @@ def main():
 
     print_d("Finished shutdown.")
 
-def init_plugins(window, player, librarian):
+def init_plugins(player, library):
     from quodlibet.plugins.editing import EditingPlugins
     from quodlibet.plugins.songsmenu import SongsMenuPlugins
     from quodlibet.plugins.events import EventPlugins
     from quodlibet.plugins.playorder import PlayOrderPlugins
     from quodlibet.qltk.songsmenu import SongsMenu
     from quodlibet.qltk.properties import SongProperties
+    from quodlibet import widgets
+
+    widgets.watcher = library.librarian
 
     SongsMenu.plugins = SongsMenuPlugins(
         [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
@@ -133,13 +128,20 @@ def init_plugins(window, player, librarian):
          os.path.join(const.USERDIR, "plugins", "playorder")], "playorder")
     playorder.rescan()
 
-    events = EventPlugins(librarian, player, [
+    # main window
+    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
+    window = QuodLibetWindow(library, player)
+    widgets.main = window
+
+    events = EventPlugins(library.librarian, player, [
         os.path.join(const.BASEDIR, "plugins", "events"),
         os.path.join(const.USERDIR, "plugins", "events")], "events")
     events.rescan()
 
     for p in [playorder, SongsMenu.plugins, SongProperties.plugins, events]:
         window.connect('destroy', p.destroy)
+
+    return window
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):
