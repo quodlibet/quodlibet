@@ -44,7 +44,7 @@ import gzip
 
 import urllib
 import urllib2
-from HTMLParser import HTMLParser
+from HTMLParser import HTMLParser, HTMLParseError
 from cStringIO import StringIO
 from xml.dom import minidom
 
@@ -56,9 +56,6 @@ from quodlibet import util, qltk, config, print_w
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.parse import Pattern
-
-#switch off, so that broken search engines wont crash the whole plugin
-debug = False
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
@@ -131,8 +128,11 @@ class BasicHTMLParser(HTMLParser, object):
         #strip script tags/content. HTMLParser doesn't handle them well
         text = "".join([p.split("script>")[-1] for p in text.split("<script")])
 
-        self.feed(text)
-        self.close()
+        try:
+            self.feed(text)
+            self.close()
+        except HTMLParseError:
+            pass
 
     def handle_starttag(self, tag, attrs):
         if self.__buffer:
@@ -149,192 +149,134 @@ class BasicHTMLParser(HTMLParser, object):
         else:
             self.data.append(['', {}, data])
 
+
 class CoverParadiseParser(BasicHTMLParser):
     """A class for searching covers from coverparadise.to"""
 
-    def __init__(self):
-        super(CoverParadiseParser, self).__init__()
-
-        self.cover_count = 0
-        self.page_step = 0
-        self.query = ''
-        self.root_url = 'http://coverparadise.to'
-
-        self.covers = []
+    ROOT_URL = 'http://coverparadise.to'
 
     def start(self, query, limit=10):
         """Start the search and return a list of covers"""
 
-        self.cover_count = 0
-        self.page_step = 0
-        enc = get_encoding(self.root_url)
-        self.query = query.decode("utf-8").encode(enc)
-        self.covers = []
+        if isinstance(query, str):
+            query = query.decode("utf-8")
 
-        #site only takes 3+ chars
+        # site only takes 3+ chars
         if len(query) < 3:
                 return []
 
-        #parse the first page
-        self.__parse_search_list(0)
+        query = query.encode(get_encoding(self.ROOT_URL))
 
-        #if there are pagenumbers: its a list
-        if self.__parse_page_num():
-            if limit > 0:
-                self.limit = min(limit, self.cover_count)
-            else:
-                self.limit = self.cover_count
+        # parse the first page
+        self.__parse_search_list(query)
 
-            self.__extract_from_list()
+        # get the max number of offsets and the step size
+        max_offset = -1
+        step_size = 0
+        for i, (tag, attr, data) in enumerate(self.data):
+            if "SimpleSearchPage" in attr.get("href", ""):
+                offset = int(attr["href"].split(",")[1].strip("' "))
+                if offset > max_offset:
+                    step_size = step_size or (offset - max_offset)
+                    max_offset = offset
 
-            #get the rest of the list
-            for offset in xrange(self.page_step, self.limit, self.page_step):
-                self.__parse_search_list(offset)
-                self.__extract_from_list()
-        #search went directly to the album page
+        if max_offset == -1:
+            # if there is no offset, this is a single result page
+            covers = self.__extract_from_single()
         else:
-            self.__extract_from_single()
+            # otherwise parse it as a list for each page
+            covers = self.__extract_from_list()
+            for offset in range(step_size, max_offset + 1, step_size):
+                if len(covers) >= limit:
+                    break
+                self.__parse_search_list(query, offset)
+                covers.extend(self.__extract_from_list())
 
-        #delete the parsing data
         del self.data
+        return covers
 
-        return self.covers
+    def __parse_search_list(self, query, offset=0):
+        post = {"SearchString": query,
+                "Page": offset,
+                "Sektion": "2",
+                }
+
+        self.parse_url(self.ROOT_URL + '/?Module=SimpleSearch', post=post)
 
     def __extract_from_single(self):
-        """The site will directly return the album page if there is only
-        one search result"""
+        covers = []
 
-        cover = {}
+        cover = None
+        for i, (tag, attr, data) in enumerate(self.data):
+            data = data.strip()
 
-        head_pos = 0
-        for i, entry in enumerate(self.data):
-            if entry[0] == 'div' and 'class' in entry[1] and \
-                entry[1]['class'] == 'BoxHeadline':
-                head_pos = i
-                break
+            if attr.get("class", "") == "ThumbDetails":
+                cover = {"source": self.ROOT_URL}
 
-        cover['name'] = ''
-        for i in xrange(head_pos + 1, len(self.data)):
-            cover['name'] += self.data[i][2]
-            if self.data[i + 1][0].strip():
-                break
+            if cover:
+                if attr.get("href"):
+                    cover["cover"] = self.ROOT_URL + attr["href"]
 
-        cover['name'] = cover['name'].strip()
+                if attr.get("src") and "thumbnail" not in cover:
+                    cover["thumbnail"] = attr["src"]
+                    if "front" not in attr.get("alt").lower():
+                        cover = None
+                        continue
 
-        if not cover['name']:
-            return
+                if attr.get("title"):
+                    cover["name"] = attr["title"]
 
-        pic_pos = 0
-        for i in xrange(head_pos, len(self.data)):
-            if self.data[i][0] == 'img' and 'src' in self.data[i][1] and \
-                self.data[i][1]['src'].find('/thumbs/') != -1:
-                pic_pos = i
-                break
+                if tag == "br":
+                    if data.endswith("px"):
+                        cover["resolution"] = data.strip("@ ")
+                    elif data.lower().endswith("b"):
+                        cover["size"] = data.strip("@ ")
 
-        cover['thumbnail'] = self.data[pic_pos][1]['src']
+                if len(cover.keys()) >= 6:
+                    covers.append(cover)
+                    cover = None
 
-        cover['cover'] = cover['thumbnail'].replace('/thumbs/', '/')
-
-        sub_data = []
-        for i in xrange(pic_pos + 1, len(self.data)):
-            if self.data[i][0] == 'tr':
-                break
-            if not self.data[i][1] and self.data[i][2].strip():
-                sub_data.append(self.data[i])
-
-        cover['resolution'] = sub_data[-2][2].split(':')[1].strip()
-
-        cover['size'] = sub_data[-3][2].split(':')[1].strip().replace(',', '.')
-
-        cover['source'] = self.root_url
-
-        self.covers.append(cover)
-
-    def __parse_search_list(self, offset):
-        """Will parse a specific page of a search"""
-
-        search_url = self.root_url + '/?Module=SimpleSearch'
-        #Sektion 2 is for audio, Page is a search result offset
-        post_dic = {'SearchString' : self.query, 'Page': offset, 'Sektion' : 2}
-
-        self.parse_url(search_url, post=post_dic)
+        return covers
 
     def __extract_from_list(self):
-        """Extracts all the needed information from the already parsed
-        search result page and adds the found cover to the list."""
+        covers = []
 
-        table_pos = []
-        for i, entry in enumerate(self.data):
-            if entry[0] == 'div' and 'class' in entry[1] and \
-                entry[1]['class'] == 'ResultScroller':
-                table_pos.append(i)
+        cover = None
+        old_data = ""
+        last_entry = ""
+        for i, (tag, attr, data) in enumerate(self.data):
+            data = data.strip()
 
-        table_pos = table_pos[-2:]
+            if "ViewEntry" in attr.get("href", "") and \
+                    attr.get("href") != last_entry:
+                cover = {"source": self.ROOT_URL}
+                last_entry = attr.get("href")
 
-        if len(table_pos) != 2:
-            return
+            if cover:
+                if attr.get("src") and "thumbnail" not in cover:
+                    cover["thumbnail"] = attr["src"]
 
-        tr_pos = []
-        for i in xrange(table_pos[0], table_pos[1]):
-            if self.data[i][0] == 'tr' and not self.data[i][1]:
-                tr_pos.append(i)
+                    uid = attr["src"].rsplit("/")[-1].split(".")[0]
+                    url = self.ROOT_URL + "/res/exe/GetElement.php?ID=" + uid
+                    cover["cover"] = url
 
-        for tr in xrange(0, len(tr_pos) - 1):
-            cover = {}
+                if data and "name" not in cover:
+                    cover["name"] = data
 
-            album = self.data[tr_pos[tr] : tr_pos[tr + 1]]
+                if "dimension" in old_data.lower() and data:
+                    cover["resolution"] = data
 
-            name = []
-            for i, entry in enumerate(album):
-                if entry[0] == 'b':
-                    for a in xrange(i, len(album)):
-                        name.append(album[a][2])
-                        if album[a + 1][0] == 'b':
-                            break
-                    break
+                if "filesize" in old_data.lower() and data:
+                    cover["size"] = data
 
-            cover['name'] = ''.join(name).strip()
+                if len(cover.keys()) >= 6:
+                    covers.append(cover)
+                    cover = None
 
-            sub_data = [i[2] for i in album if i[0] == '' and i[2].strip()]
+            old_data = data
 
-            cover['size'] = sub_data[-1].strip().replace(',', '.')
+        return covers
 
-            cover['resolution'] = sub_data[-2].strip()
-
-            thumb_tag = [i[1] for i in album if i[0] == 'img'][0]
-            cover['thumbnail'] = thumb_tag['src']
-
-            id = cover['thumbnail'].split("/")[-1].split(".")[0]
-            cover['cover'] = self.root_url + "/res/exe/GetElement.php?ID=" + id
-
-            cover['source'] = self.root_url
-
-            self.covers.append(cover)
-
-            if(len(self.covers) >= self.limit):
-                break
-
-    def __parse_page_num(self):
-        """Tries to find the number of found covers on an already parsed
-        search result page and how many results are on one page
-        (needed for result/page offset)"""
-
-        pos = 0
-
-        for i, entry in enumerate(self.data):
-            if entry[0] == 'div' and 'class' in entry[1] and \
-                entry[1]['class'] == 'BoxHeadline':
-                pos = i
-                break
-
-        text = self.data[pos][2]
-        nums = [int(i) for i in text.split() if i.isdigit()][-2:]
-
-        if len(nums) == 2:
-            self.page_step, self.cover_count = nums
-            return True
-        else:
-            return False
 
 class DiscogsParser(object):
     """A class for searching covers from discogs.com"""
@@ -1123,26 +1065,14 @@ class CoverSearch(object):
         """Creates searching threads which call the callback function after
         they are finished"""
 
-        global debug
-
         clean_query = self.__cleanup_query(query, replace)
 
-        #Catch exceptions and print them in the warning console.
-        #Some engines might break over time since the web interfaces
-        #could change.
-
-        if debug:
-            eng_instance = engine()
-            result = eng_instance.start(clean_query, self.overall_limit)
-        else:
-            try:
-                eng_instance = engine()
-                result = eng_instance.start(clean_query, self.overall_limit)
-            except Exception, msg:
-                text = _('[AlbumArt] %s failed: "%s", "%s"') \
-                    % (engine.__name__, query, msg)
-                print_w(text)
-                result = []
+        result = []
+        try:
+            result = engine().start(clean_query, self.overall_limit)
+        except Exception:
+            print_w("[AlbumArt] %s: %r" % (engine.__name__, query))
+            util.print_exc()
 
         self.finished += 1
         #progress is between 0..1
@@ -1237,13 +1167,13 @@ eng['config_id'] = 'amazon'
 engines.append(eng)
 
 #-------
-eng = {}
-eng['class'] = DiscogsParser
-eng['url'] = 'http://www.discogs.com/'
-eng['replace'] = ' '
-eng['config_id'] = 'discogs'
+#eng = {}
+#eng['class'] = DiscogsParser
+#eng['url'] = 'http://www.discogs.com/'
+#eng['replace'] = ' '
+#eng['config_id'] = 'discogs'
 
-engines.append(eng)
+#engines.append(eng)
 #------------------------------------------------------------------------------
 
 def change_config(checkb, id):
