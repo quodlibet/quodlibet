@@ -344,6 +344,7 @@ class SqueezeboxSyncPlugin(EventPlugin):
         return vb
 
     def init_server(self):
+        """Initialises a server, and connects to check if it's alive"""
         try:
             cur = int(self.cfg_get("current_player", 0))
         except ValueError:
@@ -356,10 +357,13 @@ class SqueezeboxSyncPlugin(EventPlugin):
             library_dir=self.cfg_get("server_library_dir", self.ql_base_dir),
             current_player=cur)
         try:
-            print_d("Squeezebox server version: %s. Current player: #%d (%s)." %
-                (self.server.get_version(),
-                 cur,
-                 self.server.get_players()[cur]["name"]))
+            ver = self.server.get_version()
+            if self.server.is_connected:
+                print_d(
+                    "Squeezebox server version: %s. Current player: #%d (%s)." %
+                    (ver,
+                     cur,
+                     self.server.get_players()[cur]["name"]))
         except (IndexError, KeyError), e:
             print_d("Couldn't get player info (%s)." % e)
 
@@ -371,7 +375,7 @@ class SqueezeboxSyncPlugin(EventPlugin):
         else:
             qltk.ErrorMessage(
                 None,
-                _("Error finding Squeezebox device"),
+                _("Error finding Squeezebox server"),
                 _("Error finding %s. Please check settings") % self.server.config
             ).run()
 
