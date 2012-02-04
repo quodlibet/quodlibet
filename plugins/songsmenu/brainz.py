@@ -55,6 +55,11 @@ def config_get(key, default=''):
     except config.error:
         return default
 
+def dialog_get_widget_for_stockid(dialog, stockid):
+    for child in dialog.get_action_area().get_children():
+        if child.get_label() == stockid:
+            return child
+
 class ResultTreeView(HintedTreeView, MultiDragTreeView):
     """The result treeview. The model only stores local tracks; info about
     remote results is pulled from self.remote_album."""
@@ -366,7 +371,8 @@ class SearchWindow(gtk.Dialog):
         self.result_treeview.update_remote_album(release.tracks)
         self.current_release = release
         self.release_combo.update(release)
-        self.get_action_area().get_children()[1].set_sensitive(True)
+        save_button = dialog_get_widget_for_stockid(self, gtk.STOCK_SAVE)
+        save_button.set_sensitive(True)
 
     def __init__(self, album, cache):
         self.album = album
@@ -382,6 +388,9 @@ class SearchWindow(gtk.Dialog):
                     gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
         self.set_default_size(650, 500)
         self.set_border_width(5)
+
+        save_button = dialog_get_widget_for_stockid(self, gtk.STOCK_SAVE)
+        save_button.set_sensitive(False)
 
         vb = gtk.VBox()
         vb.set_spacing(8)
