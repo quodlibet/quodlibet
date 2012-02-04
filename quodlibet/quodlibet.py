@@ -23,7 +23,6 @@ from quodlibet.util.uri import URI
 play = False
 
 def main():
-    import gobject
     import quodlibet.player
 
     config.init(const.CONFIG)

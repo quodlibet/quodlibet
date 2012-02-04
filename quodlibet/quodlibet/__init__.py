@@ -138,6 +138,7 @@ def init(library=None, icon=None, title=None, name=None):
     _gtk_init(icon)
 
     import gobject
+    gobject.threads_init()
 
     if title:
         gobject.set_prgname(title)
