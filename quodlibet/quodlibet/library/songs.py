@@ -105,6 +105,15 @@ class AlbumLibrary(gtk.Object):
         self.library = library
         self.__loaded = False
 
+    def __len__(self):
+        return len(self.__albums)
+
+    def __getitem__(self, key):
+        return self.__albums[key]
+
+    def __iter__(self):
+        return self.__albums.itervalues()
+
     def refresh(self, items):
         """Refresh albums after a manual change."""
         self.emit('changed', set(items))
