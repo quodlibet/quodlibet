@@ -266,8 +266,8 @@ class Album(Collection):
         self.__dict__.pop("peoplesort", None)
         self.__dict__.pop("genre", None)
 
-    def scan_cover(self):
-        if self.scanned or not self.songs: return
+    def scan_cover(self, force=False):
+        if (self.scanned and not force) or not self.songs: return
         self.scanned = True
 
         song = iter(self.songs).next()

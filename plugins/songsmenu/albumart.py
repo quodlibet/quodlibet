@@ -52,7 +52,7 @@ import gtk
 import gobject
 import pango
 
-from quodlibet import util, qltk, config, print_w
+from quodlibet import util, qltk, config, widgets, print_w
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.parse import Pattern
@@ -673,6 +673,8 @@ class CoverArea(gtk.VBox):
                     util.spawn([self.cmd.get_text(), file_path])
                 except:
                     pass
+            window = widgets.main
+            window.emit("artwork-changed", [self.song])
 
         self.main_win.destroy()
 
@@ -1212,4 +1214,5 @@ class DownloadAlbumArt(SongsMenuPlugin):
 
     PluginPreferences = classmethod(PluginPreferences)
 
-    plugin_album = AlbumArtWindow
+    def plugin_album(self, songs):
+        return AlbumArtWindow(songs)

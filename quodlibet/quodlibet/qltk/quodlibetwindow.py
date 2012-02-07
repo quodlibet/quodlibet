@@ -118,6 +118,11 @@ class SongListScroller(gtk.ScrolledWindow):
         config.set("memory", "songlist", str(value))
 
 class QuodLibetWindow(gtk.Window):
+    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+    __gsignals__ = {
+        'artwork-changed': SIG_PYOBJECT,
+    }
+
     def __init__(self, library, player):
         super(QuodLibetWindow, self).__init__()
         self.last_dir = const.HOME
@@ -176,6 +181,7 @@ class QuodLibetWindow(gtk.Window):
         # cover image
         self.image = CoverImage(resize=True)
         player.connect('song-started', self.image.set_song)
+        self.connect('artwork-changed', self.__song_art_changed)
         hbox.pack_start(self.image, expand=False)
 
         realvbox.pack_start(hbox, expand=False)
@@ -634,6 +640,18 @@ class QuodLibetWindow(gtk.Window):
         self.__update_title(player)
         for song in songs:
             self.__check_remove_song(player, song)
+
+    def __song_art_changed(self, player, songs):
+        self.image.refresh()
+        refresh_albums = []
+        for song in songs:
+            # Album browser only (currently):
+            album = self.__library.albums.get(song.album_key, None)
+            if album:
+                album.scan_cover(force=True)
+                refresh_albums.append(album)
+        if refresh_albums:
+            self.__library.albums.refresh(refresh_albums)
 
     def __update_title(self, player):
         song = player.info

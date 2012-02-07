@@ -670,8 +670,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         selection = view.get_selection()
         albums = self.__get_selected_albums(selection)
         for album in albums:
-            album.scanned = False
-            album.scan_cover()
+            album.scan_cover(True)
         self._refresh_albums(albums)
 
     def __get_selected_albums(self, selection):

@@ -1,21 +1,25 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna,
-# Christoph Reiter
+# Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 
 import gobject
 import gtk
 
 from quodlibet import qltk
-from quodlibet import stock
 from quodlibet import config
-from quodlibet import const
+from quodlibet import print_d, print_w
 from quodlibet.util import thumbnails
+from quodlibet.plugins import Manager
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+
+# TODO: neater way of managing dependency on this particular plugin
+ALBUM_ART_PLUGIN_ID = "Download Album art"
+
 
 class BigCenteredImage(qltk.Window):
     """Load an image and display it, scaling down to 1/2 the screen's
@@ -50,7 +54,7 @@ class BigCenteredImage(qltk.Window):
         self.destroy()
 
 class ResizeImage(gtk.Image):
-    """Automatically resizes to the maximum height given by it's
+    """Automatically resizes to the maximum height given by its
     parent container. If resize is True, size and max will be ignored"""
     def __init__(self, resize, size=0, max=128):
         super(ResizeImage, self).__init__()
@@ -141,6 +145,12 @@ class CoverImage(gtk.EventBox):
             self.child.set_path(None)
         self.__song = song
 
+    def refresh(self):
+        if not (self.child and self.__song): return
+        print_d("Refreshing icon for %s." % self.__song("~filename"), self)
+        self.__file = self.__song.find_cover()
+        self.child.set_path(self.__file and self.__file.name)
+
     def __nonzero__(self):
         return bool(self.__file)
 
@@ -149,9 +159,14 @@ class CoverImage(gtk.EventBox):
 
     def __show_cover(self, box, event):
         """Show the cover as a detached BigCenteredImage.
-        If one is already showing, destroy it instead"""
-        if (self.__song and event.button == 1 and self.__file and
-            event.type == gtk.gdk.BUTTON_PRESS):
+        If one is already showing, destroy it instead
+        If there is no image, run the AlbumArt plugin
+        """
+        if (not self.__song or event.button != 1 or
+                event.type != gtk.gdk.BUTTON_PRESS):
+            return
+
+        if self.__file:
             if self.__current_bci is not None:
                 # We're displaying it; destroy it.
                 self.__current_bci.destroy()
@@ -166,3 +181,17 @@ class CoverImage(gtk.EventBox):
                 else:
                     self.__current_bci.connect('destroy', self.__reset_bci)
                     break
+        else:
+            try: mgr = Manager.instances["songsmenu"]
+            except KeyError:
+                print_d("Couldn't find any songsmenu plugins.")
+                return
+            for pk in mgr.find_subclasses(SongsMenuPlugin):
+                if pk.PLUGIN_ID == ALBUM_ART_PLUGIN_ID:
+                    plugin = pk([self.__song])
+                    print_d("Running \"%s\" plugin... (%r)" %
+                            (ALBUM_ART_PLUGIN_ID, plugin))
+                    plugin.plugin_album([self.__song])
+                    return
+            print_d("Couldn't find \"%s\" plugin. Is it installed and enabled?"
+                    % ALBUM_ART_PLUGIN_ID)
