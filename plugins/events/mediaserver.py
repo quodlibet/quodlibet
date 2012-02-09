@@ -4,6 +4,9 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
+import re
+import tempfile
+
 import gtk
 
 import dbus
@@ -12,7 +15,11 @@ import dbus.glib
 
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import Pattern
+from quodlibet import util
+from quodlibet.util.uri import URI
 
+BASE_PATH = "/org/gnome/UPnP/MediaServer2"
+BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
 
 class MediaServer(EventPlugin):
     PLUGIN_ID = "mediaserver"
@@ -28,8 +35,9 @@ class MediaServer(EventPlugin):
         entry = EntryObject()
         albums = AlbumsObject(entry, library)
         song = SongObject(library, [albums])
+        icon = Icon(entry)
 
-        self.objects = [entry, albums, song]
+        self.objects = [entry, albums, song, icon]
 
     def disabled(self):
         for obj in self.objects:
@@ -63,15 +71,15 @@ class DBusIntrospectable(object):
                                DBusIntrospectable.ISPEC)
 
     def set_introspection(self, interface, introspection):
-        self.__ispec[interface] = introspection
+        self.__ispec.setdefault(interface, []).append(introspection)
 
     @dbus.service.method(IFACE)
     def Introspect(self):
         parts = []
         parts.append("<node>")
-        for iface, intro in self.__ispec.iteritems():
+        for iface, intros in self.__ispec.iteritems():
             parts.append("<interface name=\"%s\">" % iface)
-            parts.append(intro)
+            parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")
         return "\n".join(parts)
@@ -120,6 +128,14 @@ class DBusProperty(object):
         self.__props = {}
         self.__impl = {}
         self.set_introspection(DBusProperty.IFACE, DBusProperty.ISPEC)
+
+    def set_property_introspection(self, interface, ispec):
+        """Set introspection for all registered proerties only"""
+        reg = re.compile("name\s*=\s*[\"'](.*?)[\"']").search
+        props = self.__props[interface]
+        spec = ispec.splitlines()
+        spec = filter(lambda l: reg(l) and reg(l).group(1) in props, spec)
+        self.set_introspection(interface, "\n".join(spec))
 
     def get_properties(self, interface):
         """Returns a list of (interface, property) for all properties of
@@ -250,13 +266,14 @@ class DBusPropertyFilter(DBusProperty):
 
 class MediaContainer(object):
     IFACE = "org.gnome.UPnP.MediaContainer2"
-    ISPEC = """
+    ISPEC_PROP = """
 <property type="u" name="ChildCount" access="read"/>
 <property type="u" name="ItemCount" access="read"/>
 <property type="u" name="ContainerCount" access="read"/>
 <property type="b" name="Searchable" access="read"/>
 <property type="o" name="Icon" access="read"/>
-
+"""
+    ISPEC = """
 <method name="ListChildren">
     <arg type="u" name="offset" direction="in"/>
     <arg type="u" name="max" direction="in"/>
@@ -286,15 +303,15 @@ class MediaContainer(object):
 <signal name="Updated"/>
 """
 
-    def __init__(self, icon=False):
+    def __init__(self, optional=tuple()):
         self.set_introspection(MediaContainer.IFACE, MediaContainer.ISPEC)
 
         props = ["ChildCount", "ItemCount", "ContainerCount", "Searchable"]
-        if icon:
-            props.append("Icon")
-
+        props += list(optional)
         for p in props:
             self.register_property(MediaContainer.IFACE, p)
+        self.set_property_introspection(MediaContainer.IFACE,
+                                        MediaContainer.ISPEC_PROP)
 
         self.implement_interface(MediaContainer.IFACE, MediaObject.IFACE)
 
@@ -354,19 +371,23 @@ class MediaItem(object):
     ISPEC = """
 <property type="as" name="URLs" access="read"/>
 <property type="s" name="MIMEType" access="read"/>
+
+<property type="i" name="Height" access="read"/>
+<property type="i" name="Width" access="read"/>
+<property type="i" name="ColorDepth" access="read"/>
 """
 
-    def __init__(self):
-        self.set_introspection(MediaItem.IFACE, MediaItem.ISPEC)
-        for p in ["URLs", "MIMEType"]:
+    def __init__(self, optional=tuple()):
+        for p in ["URLs", "MIMEType"] + list(optional):
             self.register_property(MediaItem.IFACE, p)
+
         self.implement_interface(MediaItem.IFACE, MediaObject.IFACE)
+        self.set_property_introspection(MediaItem.IFACE, MediaItem.ISPEC)
 
 
 class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
                   DBusIntrospectable, dbus.service.Object):
-    BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
-    PATH = "/org/gnome/UPnP/MediaServer2/QuodLibet"
+    PATH = BASE_PATH + "/QuodLibet"
     DISPLAY_NAME = "@REALNAME@'s Quod Libet on @HOSTNAME@"
 
     def __init__(self):
@@ -375,10 +396,10 @@ class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
         DBusIntrospectable.__init__(self)
         DBusPropertyFilter.__init__(self)
         MediaObject.__init__(self)
-        MediaContainer.__init__(self, False)
+        MediaContainer.__init__(self, optional=["Icon"])
 
         bus = dbus.SessionBus()
-        name = dbus.service.BusName(self.BUS_NAME, bus)
+        name = dbus.service.BusName(BUS_NAME, bus)
         dbus.service.Object.__init__(self, bus, self.PATH, name)
 
     def get_property(self, interface, name):
@@ -391,6 +412,8 @@ class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
                 return dbus.UInt32(len(self.__sub))
             elif name == "Searchable":
                 return False
+            elif name == "Icon":
+                return dbus.ObjectPath(Icon.PATH)
         elif interface == MediaObject.IFACE:
             if name == "Parent":
                 return dbus.ObjectPath(self.parent.PATH)
@@ -436,7 +459,6 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
     atm. a prefix can look like "Albums/123456"
     """
 
-    BASE_PATH = "/org/gnome/UPnP/MediaServer2"
     SUPPORTS_MULTIPLE_OBJECT_PATHS = False
     __pattern = Pattern(
         "<discnumber|<discnumber>.><tracknumber>. <title>")
@@ -454,7 +476,7 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
     def get_property(self, interface, name):
         if interface == MediaObject.IFACE:
             if name == "Parent":
-                return dbus.ObjectPath(self.BASE_PATH + "/" + self.__prefix)
+                return dbus.ObjectPath(BASE_PATH + "/" + self.__prefix)
             elif name == "Type":
                 return "audio"
             elif name == "Path":
@@ -481,7 +503,7 @@ class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
         DBusIntrospectable.__init__(self)
         DBusPropertyFilter.__init__(self)
         MediaObject.__init__(self, parent)
-        MediaContainer.__init__(self, False)
+        MediaContainer.__init__(self)
         self.__song = DummySongObject(self)
 
     def get_dummy(self, song):
@@ -529,8 +551,7 @@ class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
 
 class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
                  dbus.service.FallbackObject):
-    BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
-    PATH = "/org/gnome/UPnP/MediaServer2/Song"
+    PATH = BASE_PATH + "/Song"
 
     def __init__(self, library, users):
         DBusIntrospectable.__init__(self)
@@ -539,7 +560,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         MediaItem.__init__(self)
 
         bus = dbus.SessionBus()
-        self.ref = dbus.service.BusName(self.BUS_NAME, bus)
+        self.ref = dbus.service.BusName(BUS_NAME, bus)
         dbus.service.FallbackObject.__init__(self, bus, self.PATH)
 
         self.__library = library
@@ -597,8 +618,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
 
 class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
                    DBusIntrospectable, dbus.service.FallbackObject):
-    BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
-    PATH = "/org/gnome/UPnP/MediaServer2/Albums"
+    PATH = BASE_PATH + "/Albums"
     DISPLAY_NAME = "Albums"
 
     __library = None
@@ -607,10 +627,10 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         DBusIntrospectable.__init__(self)
         DBusPropertyFilter.__init__(self)
         MediaObject.__init__(self, parent)
-        MediaContainer.__init__(self, False)
+        MediaContainer.__init__(self)
 
         bus = dbus.SessionBus()
-        self.ref = dbus.service.BusName(self.BUS_NAME, bus)
+        self.ref = dbus.service.BusName(BUS_NAME, bus)
         dbus.service.FallbackObject.__init__(self, bus, self.PATH)
 
         parent.register_child(self)
@@ -721,3 +741,56 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         if path == "/":
             return self.__list_albums(offset, max_, filter_)
         return self.get_path_dummy(path).list_children(offset, max_, filter_)
+
+
+class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
+                 dbus.service.Object):
+    PATH = BASE_PATH + "/Icon"
+
+    SIZE = 160
+
+    def __init__(self, parent):
+        DBusIntrospectable.__init__(self)
+        DBusProperty.__init__(self)
+        MediaObject.__init__(self, parent=parent)
+        MediaItem.__init__(self, optional=["Height", "Width", "ColorDepth"])
+
+        bus = dbus.SessionBus()
+        name = dbus.service.BusName(BUS_NAME, bus)
+        dbus.service.Object.__init__(self, bus, self.PATH, name)
+
+        # https://bugzilla.gnome.org/show_bug.cgi?id=669677
+        self.implement_interface("org.gnome.UPnP.MediaItem1", MediaItem.IFACE)
+
+        # load into a pixbuf
+        theme = gtk.icon_theme_get_default()
+        pixbuf = theme.load_icon("quodlibet", Icon.SIZE, 0)
+
+        # make sure the size is right
+        pixbuf = pixbuf.scale_simple(Icon.SIZE, Icon.SIZE,
+                                     gtk.gdk.INTERP_BILINEAR)
+        self.__depth = pixbuf.get_bits_per_sample()
+
+        # save and keep reference
+        self.__f = f = tempfile.NamedTemporaryFile()
+        pixbuf.save(f.name, "png")
+
+    def get_property(self, interface, name):
+        if interface == MediaObject.IFACE:
+            if name == "Parent":
+                return dbus.ObjectPath(EntryObject.PATH)
+            elif name == "Type":
+                return "image"
+            elif name == "Path":
+                return dbus.ObjectPath(Icon.PATH)
+            elif name == "DisplayName":
+                return "I'm an icon \o/"
+        elif interface == MediaItem.IFACE:
+            if name == "URLs":
+                return [URI.frompath(util.fsdecode(self.__f.name))]
+            elif name == "MIMEType":
+                return "image/png"
+            elif name == "Width" or name == "Height":
+                return dbus.Int32(Icon.SIZE)
+            elif name == "ColorDepth":
+                return dbus.Int32(self.__depth)
