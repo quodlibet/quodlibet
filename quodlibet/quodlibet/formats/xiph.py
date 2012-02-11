@@ -60,6 +60,13 @@ class MutagenVCFile(AudioFile):
             self["~picture"] = "y"
             del(self["metadata_block_picture"])
 
+        if "coverart" in self:
+            self["~picture"] = "y"
+            del(self["coverart"])
+
+        if "coverartmime" in self:
+            del(self["coverartmime"])
+
     def get_format_cover(self):
         try: from mutagen.flac import Picture
         except ImportError: return
@@ -71,17 +78,26 @@ class MutagenVCFile(AudioFile):
         for data in audio.tags.get("metadata_block_picture", []):
             try: pictures.append(Picture(base64.b64decode(data)))
             except TypeError: pass
-        if not pictures: return
 
         cover = None
         for pic in pictures:
             if pic.type == 3:
-                cover = pic
+                cover = pic.data
                 break
-        else: cover = pictures[0]
+            cover = cover or pic.data
+
+        if not cover:
+            cover = audio.tags.get("coverart")
+            try: cover = cover and base64.b64decode(cover[0])
+            except TypeError: cover = None
+
+        if not cover:
+            if "~picture" in self:
+                del self["~picture"]
+            return
 
         fn = tempfile.NamedTemporaryFile()
-        fn.write(cover.data)
+        fn.write(cover)
         fn.flush()
         fn.seek(0, 0)
         return fn
@@ -92,7 +108,8 @@ class MutagenVCFile(AudioFile):
         else: return (super(MutagenVCFile, self).can_change(k) and
                       k not in ["totaltracks", "tracktotal", "disctotal",
                                 "rating", "playcount",
-                                "metadata_block_picture"] and
+                                "metadata_block_picture",
+                                "coverart", "coverartmime"] and
                       not k.startswith("rating:") and
                       not k.startswith("playcount:"))
 
@@ -102,7 +119,9 @@ class MutagenVCFile(AudioFile):
             if key.startswith("rating:") or key.startswith("playcount:"):
                 if key.split(":", 1)[1] in [const.EMAIL, email]:
                     del(comments[key])
-            else: del(comments[key])
+            elif key not in ["metadata_block_picture", "coverart",
+                    "coverartmime"]:
+                del(comments[key])
 
         if config.getboolean("editing", "save_to_songs"):
             email = email or const.EMAIL
