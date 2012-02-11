@@ -1,3 +1,4 @@
+# Copyright (C) 2012 Nick Boultbee, Thomas Vogt
 # Copyright (C) 2008 Andreas Bombe
 # Copyright (C) 2005  Michael Urman
 # Based on osd.py (C) 2005 Ton van den Heuvel, Joe Wreshnig
@@ -13,11 +14,13 @@ import gobject
 import pango
 import cairo
 import pangocairo
+from math import pi
 
 from quodlibet import config, qltk
 from quodlibet.qltk.textedit import PatternEdit
 from quodlibet.parse import XMLFromPattern
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.player import playlist
 
 def Label(text):
     l = gtk.Label(text)
@@ -68,11 +71,11 @@ class OSDWindow(gtk.Window):
         else:
             coverheight = 0
         self.cover_pixbuf = cover
-        self.cover_rectangle = gtk.gdk.Rectangle(conf.border, conf.border,
-                coverwidth, coverheight)
 
         layout = self.create_pango_layout('')
-        layout.set_alignment(pango.ALIGN_CENTER)
+        layout.set_alignment((pango.ALIGN_LEFT,
+                pango.ALIGN_CENTER, pango.ALIGN_RIGHT)[conf.align])
+        layout.set_spacing(pango.SCALE * 7)
         layout.set_font_description(pango.FontDescription(conf.font))
         layout.set_markup(XMLFromPattern(conf.string) % song)
         layout.set_width(pango.SCALE * textwidth)
@@ -87,6 +90,9 @@ class OSDWindow(gtk.Window):
             winw += coverwidth + conf.border
         winh = max(coverheight, layoutsize[1]) + 2 * conf.border
         self.set_default_size(winw, winh)
+
+        self.cover_rectangle = gtk.gdk.Rectangle(conf.border,
+                (winh - coverheight) // 2, coverwidth, coverheight)
 
         winx = int((mgeo.width - winw) * conf.pos_x)
         winx = max(conf.margin, min(mgeo.width - conf.margin - winw, winx))
@@ -132,23 +138,51 @@ class OSDWindow(gtk.Window):
         cr.set_source_pixmap(title_surface, 0, 0)
         cr.paint_with_alpha(self.get_opacity())
 
-    def draw_title_info(self, cr):
-        #cr.set_line_width(1.0)
-        do_shadow = self.conf.shadow is not None
-        do_outline = self.conf.outline is not None
+    def rounded_rectangle (self, cr, x, y, radius, width, height):
+        cr.move_to(x + radius, y)
+        cr.line_to(x + width - radius, y)
+        cr.arc (x + width - radius, y + radius, radius,
+                - 90.0 * pi / 180.0, 0.0 * pi / 180.0)
+        cr.line_to(x + width, y + height - radius)
+        cr.arc (x + width - radius, y + height - radius, radius,
+                0.0 * pi / 180.0, 90.0 * pi / 180.0)
+        cr.line_to(x + radius, y + height)
+        cr.arc (x + radius, y + height - radius, radius,
+                90.0 * pi / 180.0, 180.0 * pi / 180.0)
+        cr.line_to(x, y + radius)
+        cr.arc (x + radius, y + radius, radius,
+                180.0 * pi / 180.0, 270.0 * pi / 180.0)
+        cr.close_path()
 
-        # clear with configured background fill
-        cr.set_operator(cairo.OPERATOR_SOURCE)
-        cr.set_source_rgba(*self.conf.fill)
-        cr.paint()
+    def draw_conf_rect(self, cr, x, y, width, height, radius):
+        if self.conf.corners != 0:
+                self.rounded_rectangle(cr, x, y, radius, width, height)
+        else:
+                cr.rectangle(x, y, width, height)
+
+    def draw_title_info(self, cr):
+        do_shadow = (self.conf.shadow[0] != -1.0)
+        do_outline = (self.conf.outline[0] != -1.0)
+
+        cr.set_operator(cairo.OPERATOR_CLEAR)
+        cr.rectangle(0, 0, *self.get_size())
+        cr.fill()
 
         cr.set_operator(cairo.OPERATOR_OVER)
+        cr.set_source_rgba(*self.conf.fill)
+        radius = min(25, self.conf.corners * min(*self.get_size()))
+        self.draw_conf_rect(cr, 0, 0, self.get_size()[0], self.get_size()[1], radius)
+        cr.fill()
 
         # draw border
-        if self.conf.bcolor is not None:
-            cr.set_source_rgb(*self.conf.bcolor)
-            a = self.allocation
-            cr.rectangle(a.x, a.y, a.width, a.height)
+        if (do_outline):
+            # Make border darker and more translucent than the fill
+            f = self.conf.fill
+            rgba = (f[0]/1.25, f[1]/1.25, f[2]/1.25, f[3]/2.0)
+            cr.set_source_rgba(*rgba)
+            self.draw_conf_rect(cr, 1, 1,
+                self.get_size()[0] - 2, self.get_size()[1] - 2, radius)
+            cr.set_line_width(2.0)
             cr.stroke()
 
         textx = self.conf.border
@@ -160,13 +194,15 @@ class OSDWindow(gtk.Window):
             transmat = cairo.Matrix()
 
             if do_shadow:
-                cr.set_source_rgb(*self.conf.shadow)
-                cr.rectangle(rect.x + 2, rect.y + 2, rect.width, rect.height)
+                cr.set_source_rgba(*self.conf.shadow)
+                self.draw_conf_rect(cr, rect.x + 2, rect.y + 2,
+                        rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
                 cr.fill()
 
             if do_outline:
-                cr.set_source_rgb(*self.conf.outline)
-                cr.rectangle(rect)
+                cr.set_source_rgba(*self.conf.outline)
+                self.draw_conf_rect(cr, rect.x, rect.y,
+                        rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
                 cr.stroke()
 
             cr.set_source_pixbuf(pbuf, 0, 0)
@@ -174,23 +210,25 @@ class OSDWindow(gtk.Window):
                     pbuf.get_height() / float(rect.height))
             transmat.translate(-rect.x, -rect.y)
             cr.get_source().set_matrix(transmat)
-            cr.rectangle(rect)
+            self.draw_conf_rect(cr, rect.x, rect.y,
+                 rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
             cr.fill()
 
         pcc = pangocairo.CairoContext(cr)
         pcc.update_layout(self.title_layout)
+        texty = (self.get_size()[1] - self.title_layout.get_pixel_size()[1]) // 2
 
         if do_shadow:
-            cr.set_source_rgb(*self.conf.shadow)
-            cr.move_to(textx + 2, self.conf.border + 2)
+            cr.set_source_rgba(*self.conf.shadow)
+            cr.move_to(textx + 2, texty + 2)
             pcc.show_layout(self.title_layout)
         if do_outline:
-            cr.set_source_rgb(*self.conf.outline)
-            cr.move_to(textx, self.conf.border)
+            cr.set_source_rgba(*self.conf.outline)
+            cr.move_to(textx, texty)
             pcc.layout_path(self.title_layout)
             cr.stroke()
-        cr.set_source_rgb(*self.conf.text)
-        cr.move_to(textx, self.conf.border)
+        cr.set_source_rgb(*self.conf.text[:3])
+        cr.move_to(textx, texty)
         pcc.show_layout(self.title_layout)
 
     def fade_in(self):
@@ -236,33 +274,46 @@ class AnimOsd(EventPlugin):
     PLUGIN_ID = "Animated On-Screen Display"
     PLUGIN_NAME = _("Animated On-Screen Display")
     PLUGIN_DESC = _("Display song information on your screen when it changes.")
-    PLUGIN_VERSION = "1.0"
+    PLUGIN_VERSION = "1.1"
 
     def PluginPreferences(self, parent):
         def __coltofloat(x):
             return x / 65535.0
+
         def __floattocol(x):
             return int(x * 65535)
 
+        def cfg_set_tuple(name, t):
+            string = " ".join(map(str,t))
+            #print_d("Writing config: %s=%s" % (name, string))
+            config.set("plugins", "animosd_%s" % name, string)
+
+        class ConfigLabel(gtk.Label):
+            def __init__(self, text, widget):
+                super(ConfigLabel, self).__init__(text)
+                self.set_use_underline(True)
+                self.set_mnemonic_widget(widget)
+
         def set_text(button):
             color = button.get_color()
-            color = map(__coltofloat, (color.red, color.green, color.blue))
-            config.set("plugins", "animosd_text",
-                    "%f %f %f" % (color[0], color[1], color[2]))
+            color = map(__coltofloat, (color.red, color.green, color.blue, 0.0))
             self.conf.text = tuple(color)
+            cfg_set_tuple("text", self.conf.text)
+            self.plugin_single_song(playlist.song)
 
         def set_fill(button):
             color = button.get_color()
             color = map(__coltofloat, (color.red, color.green, color.blue,
                 button.get_alpha()))
-            config.set("plugins", "animosd_fill",
-                    "%f %f %f %f" % (color[0], color[1], color[2], color[3]))
             self.conf.fill = tuple(color)
+            cfg_set_tuple("fill", self.conf.fill)
+            self.plugin_single_song(playlist.song)
 
         def set_font(button):
             font = button.get_font_name()
             config.set("plugins", "animosd_font", font)
             self.conf.font = font
+            self.plugin_single_song(playlist.song)
 
         def change_delay(button):
             value = int(button.get_value() * 1000)
@@ -279,6 +330,39 @@ class AnimOsd(EventPlugin):
             value = button.get_active() / 2.0
             config.set("plugins", "animosd_pos_y", str(value))
             self.conf.pos_y = value
+            self.plugin_single_song(playlist.song)
+
+        def change_align(button):
+            value = button.get_active()
+            config.set("plugins", "animosd_align", str(value))
+            self.conf.align = value
+            self.plugin_single_song(playlist.song)
+
+        def change_shadow(button):
+            if button.get_active():
+                self.conf.shadow = (0.0, 0.0, 0.0, self.conf.fill[3])
+            else:
+                self.conf.shadow = (-1.0, 0.0, 0.0, 0.0)
+            cfg_set_tuple("shadow", self.conf.shadow)
+            self.plugin_single_song(playlist.song)
+
+        def change_outline(button):
+            if button.get_active():
+                # Vary with fill alpha to create a smoother outline edge
+                alpha = (min(1.0, self.conf.fill[3] * 1.25))
+                self.conf.outline = (0.1, 0.1, 0.1, alpha)
+            else:
+                self.conf.outline = (-1.0, 0.0, 0.0)
+            cfg_set_tuple("outline", self.conf.outline)
+            self.plugin_single_song(playlist.song)
+
+        def change_rounded(button):
+            if button.get_active():
+                self.conf.corners = 0.14
+            else:
+                self.conf.corners = 0
+            config.set("plugins", "animosd_corners", str(self.conf.corners))
+            self.plugin_single_song(playlist.song)
 
         def edit_string(button):
             w = PatternEdit(button, AnimOsd.conf.string)
@@ -289,57 +373,78 @@ class AnimOsd(EventPlugin):
             value = window.text
             config.set("plugins", "animosd_string", value)
             self.conf.string = value
+            self.plugin_single_song(playlist.song)
 
+        # Main VBox to return
         vb = gtk.VBox(spacing=6)
 
-        cb = gtk.combo_box_new_text()
-        cb.append_text(_("Display on top of screen"))
-        cb.append_text(_("Display in middle of screen"))
-        cb.append_text(_("Display on bottom of screen"))
-        cb.set_active(int(self.conf.pos_y * 2.0))
-        cb.connect('changed', change_position)
-        vb.pack_start(cb, expand=False)
-
-        font = gtk.FontButton()
-        font.set_font_name(self.conf.font)
-        font.connect('font-set', set_font)
-        vb.pack_start(font, expand=False)
-
-        t1 = gtk.Table(2, 3)
-        t1.set_homogeneous(False)
-
-        l1 = Label("Display delay: ")
-        t1.attach(l1, 0, 1, 0, 1, xoptions=gtk.SHRINK)
-
-        timeout = gtk.SpinButton(
-            gtk.Adjustment(self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
-            0.1, 1)
-        timeout.set_numeric(True)
-        timeout.connect('value-changed', change_delay)
-        t1.attach(timeout, 1, 2, 0, 1, xoptions=gtk.SHRINK)
-        t1.attach(Label("seconds"), 2, 3, 0, 1, xoptions=gtk.SHRINK,
-                  xpadding=6)
-
-        #set monitor to display osd on if there's more than one
+        # Display
+        vb2 = gtk.VBox(spacing=3)
+        hb = gtk.HBox(spacing=6)
+        # Set monitor to display OSD on if there's more than one
         monitor_cnt = gtk.gdk.screen_get_default().get_n_monitors()
         if monitor_cnt > 1:
-            l2 = Label("Monitor: ")
-            t1.attach(l2, 0, 1, 1, 2, xoptions=gtk.SHRINK)
             monitor = gtk.SpinButton(
                 gtk.Adjustment(value=self.conf.monitor, lower=0,
-                upper=monitor_cnt-1, step_incr=1)
+                upper=monitor_cnt - 1, step_incr=1)
             )
             monitor.set_numeric(True)
             monitor.connect('value-changed', change_monitor)
-
-            t1.attach(monitor, 1, 2, 1, 2, xoptions=gtk.SHRINK)
+            l2 = ConfigLabel("_Monitor:", monitor)
+            hb.pack_start(l2, expand=False)
+            hb.pack_start(monitor, expand=False)
+            vb2.pack_start(hb)
         else:
             self.conf.monitor = 0 #should be this by default anyway
 
-        vb.pack_start(t1, expand=False)
+        hb = gtk.HBox(spacing=6)
+        cb = gtk.combo_box_new_text()
+        cb.append_text(_("Top of screen"))
+        cb.append_text(_("Middle of screen"))
+        cb.append_text(_("Bottom of screen"))
+        cb.set_active(int(self.conf.pos_y * 2.0))
+        cb.connect('changed', change_position)
+        lbl = ConfigLabel(_("_Position:"), cb)
 
+        hb.pack_start(lbl, expand=False)
+        hb.pack_start(cb, expand=False)
+        vb2.pack_start(hb, expand=False)
+
+        frame = qltk.Frame(label=_("Display"), child=vb2)
+        frame.set_border_width(6)
+        vb.pack_start(frame, expand=False)
+
+        # Text
+        vb2 = gtk.VBox(spacing=6)
+        hb = gtk.HBox(spacing=6)
+        font = gtk.FontButton()
+        font.set_font_name(self.conf.font)
+        font.connect('font-set', set_font)
+        lbl = ConfigLabel(_("_Font:"), font)
+        hb.pack_start(lbl, expand=False)
+        hb.pack_start(font)
+        vb2.pack_start(hb, expand=False)
+
+        hb = gtk.HBox(spacing=3)
+        align = gtk.combo_box_new_text()
+        align.append_text(_("Left"))
+        align.append_text(_("Center"))
+        align.append_text(_("Right"))
+        align.set_active(self.conf.align)
+        align.connect('changed', change_align)
+        lbl = ConfigLabel(_("_Align text:"), align)
+        hb.pack_start(lbl, expand=False)
+        hb.pack_start(align, expand=False)
+        vb2.pack_start(hb, expand=False)
+
+        frame = qltk.Frame(label=_("Text"), child=vb2)
+        frame.set_border_width(6)
+        vb.pack_start(frame, expand=False)
+
+        # Colors
         t = gtk.Table(2, 2)
-        t.set_col_spacings(3)
+        t.set_col_spacings(6)
+        t.set_row_spacings(3)
         b = gtk.ColorButton(color=gtk.gdk.Color(*map(__floattocol,
             self.conf.text)))
         l = Label(_("_Text:"))
@@ -358,10 +463,42 @@ class AnimOsd(EventPlugin):
         t.attach(b, 1, 2, 1, 2)
 
         f = qltk.Frame(label=_("Colors"), child=t)
-        f.set_border_width(12)
+        f.set_border_width(6)
         vb.pack_start(f, expand=False, fill=False)
 
-        string = qltk.Button(_("_Edit Display"), gtk.STOCK_EDIT)
+        # Effects
+        vb2 = gtk.VBox(spacing=3)
+        hb = gtk.HBox(spacing=6)
+        toggles = [
+            ("_Shadows", self.conf.shadow[0], change_shadow),
+            ("_Outline", self.conf.outline[0], change_outline),
+            ("Rou_nded Corners", self.conf.corners - 1, change_rounded),
+            ]
+
+        for (label, current, callback) in toggles:
+            checkb = gtk.CheckButton(label)
+            checkb.set_active(current != -1)
+            checkb.connect("toggled", callback)
+            hb.pack_start(checkb)
+        vb2.pack_start(hb)
+
+        hb = gtk.HBox(spacing=6)
+        timeout = gtk.SpinButton(
+            gtk.Adjustment(self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
+            0.1, 1)
+        timeout.set_numeric(True)
+        timeout.connect('value-changed', change_delay)
+        l1 = ConfigLabel("_Delay:", timeout)
+        hb.pack_start(l1, expand=False)
+        hb.pack_start(timeout, expand=False)
+        vb2.pack_start(hb, expand=False)
+
+        frame = qltk.Frame(label=_("Effects"), child=vb2)
+        frame.set_border_width(6)
+        vb.pack_start(frame, expand=False)
+
+
+        string = qltk.Button(_("Ed_it Display"), gtk.STOCK_EDIT)
         string.connect('clicked', edit_string)
         vb.pack_start(string, expand=False)
         return vb
@@ -369,18 +506,20 @@ class AnimOsd(EventPlugin):
     class conf(object):
         pos_x = 0.5 # position of window 0--1 horizontal
         pos_y = 0.0 # position of window 0--1 vertical
-        margin = 16 # never any closer to the screen edge than this
-        border = 8 # text/cover this far apart, from edge
-        fadetime = 1.5 # take this many seconds to fade in or out
+        margin = 50 # never any closer to the screen edge than this
+        border = 20 # text/cover this far apart, from edge
+        fadetime = 0.3 # take this many seconds to fade in or out
         ms = 40 # wait this many milliseconds between steps
         delay = 2500 # wait this many milliseconds before hiding
-        monitor = 0 # monitor to display osd on
+        monitor = 0 # monitor to display OSD on
         font = "Sans 22"
-        text = (1.0, 0.8125, 0.586) # main font color
-        outline = (0.125, 0.125, 0.125) # color or None - surrounds text and cover
-        shadow = (0.0, 0.0, 0.0) # color or None - shadows outline or text and cover
-        fill = (0.25, 0.25, 0.25, 0.5) # color+alpha or None - fills rectangular area
-        bcolor = (0.0, 0.0, 0.0) # color or None - borders rectangular area
+        text = (0.9, 0.9, 0.9, 0.0) # main font color. Alpha is ignored.
+        align = 1 # align text: 0 (left), 1 (center), 2 (right)
+        corners = 0 # rounded corner radius, 0 for angled corners
+        outline = (-1.0, 0.0, 0.0, 0.2) # color,alpha or (-1.0,0.0,0.0,0.0) - surrounds text and cover
+        shadow = (-1.0, 0.0, 0.0, 0.1) # color,alpha or (-1.0,0.0,0.0) - shadows outline for text and cover
+        fill = (0.25, 0.25, 0.25, 0.5) # color,alpha or None - fills rectangular area
+        bcolor = (0.0, 0.0, 0.0, 0.2) # color,alpha or (-1.0,0.0,0.0,0.5) - borders the whole OSD
         # song information to use - like in main window
         string = r'''<album|\<b\><album>\</b\><discnumber| - Disc <discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
 >\<span weight='bold' size='large'\><title>\</span\> - <~length><version|
@@ -391,12 +530,19 @@ by <~people>>'''
         self.__current_window = None
 
         def str_to_tuple(s):
-            return tuple(map(float, s.split()))
+            lst = map(float, s.split())
+            while len(lst)<4: lst.append(0.0)
+            return tuple(lst)
 
         config_map = [
             ('text', config.get, str_to_tuple),
             ('fill', config.get, str_to_tuple),
+            ('shadow', config.get, str_to_tuple),
+            ('outline', config.get, str_to_tuple),
+            ('bcolor', config.get, str_to_tuple),
+            ('corners', config.getfloat, None),
             ('font', config.get, None),
+            ('align', config.getint, None),
             ('delay', config.getint, None),
             ('monitor', config.getint, None),
             ('pos_y', config.getfloat, None),
@@ -409,11 +555,12 @@ by <~people>>'''
             try:
                 if getconv is not None:
                     value = getconv(value)
-            except: pass
+            except Exception,err:
+                print_d("Error getting config: %s" % err)
             else:
                 setattr(self.conf, key, value)
 
-    # for rapid debugging
+    # for rapid debugging and for the preview
     def plugin_single_song(self, song):
         self.plugin_on_song_started(song)
 
