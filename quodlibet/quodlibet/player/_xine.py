@@ -7,18 +7,31 @@
 import sys
 import ctypes
 
+_version = 2
 try:
-    _libxine = ctypes.cdll.LoadLibrary('libxine.so.1')
-except (ImportError, OSError), e:
-    raise ImportError, e
+    _libxine = ctypes.cdll.LoadLibrary('libxine.so.2')
+except (ImportError, OSError):
+    _version = 1
+    try:
+        _libxine = ctypes.cdll.LoadLibrary('libxine.so.1')
+    except (ImportError, OSError), e:
+        raise ImportError, e
 
 class xine_event_t(ctypes.Structure):
-    _fields_ = [
-        ('type', ctypes.c_int),
-        ('stream', ctypes.c_void_p),
-        ('data', ctypes.c_void_p),
-        ('data_length', ctypes.c_int),
-    ]
+    if _version == 1:
+        _fields_ = [
+            ('type', ctypes.c_int),
+            ('stream', ctypes.c_void_p),
+            ('data', ctypes.c_void_p),
+            ('data_length', ctypes.c_int),
+        ]
+    elif _version == 2:
+        _fields_ = [
+            ('stream', ctypes.c_void_p),
+            ('data', ctypes.c_void_p),
+            ('data_length', ctypes.c_int),
+            ('type', ctypes.c_int),
+        ]
 
 class xine_ui_message_data_t(ctypes.Structure):
     _fields_ = [
@@ -122,6 +135,7 @@ XINE_MSG_SECURITY              = 10 # (security message)
 XINE_MSG_AUDIO_OUT_UNAVAILABLE = 11 # none
 XINE_MSG_PERMISSION_ERROR      = 12 # (file name or mrl)
 XINE_MSG_FILE_EMPTY            = 13 # file is empty
+XINE_MSG_AUTHENTICATION_NEEDED = 14 # (mrl, likely http); added in 1.2
 
 # xine_t *xine_new(void)
 _libxine.xine_new.restype = ctypes.c_void_p
