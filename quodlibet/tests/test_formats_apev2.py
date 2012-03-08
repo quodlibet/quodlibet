@@ -7,13 +7,13 @@ import tempfile
 import mutagen
 
 from mutagen.apev2 import BINARY, APEValue
-from quodlibet.formats._apev2 import APEv2File
 
-class TAPEv2File(TestCase):
+from quodlibet.formats.monkeysaudio import MonkeysAudioFile
+from quodlibet.formats.mpc import MPCFile
+
+class TAPEv2FileBase(TestCase):
     def setUp(self):
-        self.f = tempfile.mkstemp(".mpc")[1]
-        shutil.copy(os.path.join('tests', 'data', 'silence-44-s.mpc'), self.f)
-        self.s = APEv2File(self.f)
+        raise NotImplementedError
 
     def test_can_change(self):
         self.failUnlessEqual(self.s.can_change(), True)
@@ -78,4 +78,16 @@ class TAPEv2File(TestCase):
     def tearDown(self):
         os.unlink(self.f)
 
-add(TAPEv2File)
+class TMPCFile(TAPEv2FileBase):
+    def setUp(self):
+        self.f = tempfile.mkstemp(".mpc")[1]
+        shutil.copy(os.path.join('tests', 'data', 'silence-44-s.mpc'), self.f)
+        self.s = MPCFile(self.f)
+add(TMPCFile)
+
+class TMAFile(TAPEv2FileBase):
+    def setUp(self):
+        self.f = tempfile.mkstemp(".ape")[1]
+        shutil.copy(os.path.join('tests', 'data', 'silence-44-s.ape'), self.f)
+        self.s = MonkeysAudioFile(self.f)
+add(TMAFile)
