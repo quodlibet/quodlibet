@@ -33,7 +33,10 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugins
 
 class ExFalsoWindow(gtk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
-                                 gobject.TYPE_NONE, (object,))
+                                 gobject.TYPE_NONE, (object,)),
+
+                     'artwork-changed': (gobject.SIGNAL_RUN_LAST,
+                                         gobject.TYPE_NONE, (object,))
                      }
 
     def __init__(self, library, dir=None):
