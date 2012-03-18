@@ -347,7 +347,7 @@ class AudioFile(dict):
 
     lyric_filename = property(lambda self: util.fsencode(
         os.path.join(util.expanduser("~/.lyrics"),
-                     self.comma("artist").replace('/', '')[:128],
+                     (self.comma("lyricist") or self.comma("artist")).replace('/', '')[:128],
                      self.comma("title").replace('/', '')[:128] + '.lyric')))
 
     def comma(self, key):
