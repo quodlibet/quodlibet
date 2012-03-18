@@ -1,5 +1,18 @@
 Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
-but recommends Python 2.5, PyGTK 2.12, and Mutagen 1.20 or later.
+but recommends Python 2.5, PyGTK 2.16, and Mutagen 1.20 or later.
+
+2.4 (2012-03-18) - He decides he must become... Abe Atman!
+   * Support xinelib 1.2 [904]
+   * MP3/ID3: fix some rare crashes; prefer main embedded cover
+   * Vorbiscomment: Ignore coverart and use it as cover art source [910]
+                    Fix deletion of metadata_block_picture
+   * album art: update coverparadise, disable discogs (API changed)
+   * squeezebox fixes (Nick Boultbee)
+   * German translation update (Rüdiger Arp)
+   * Various fixes [890, 909, 899]
+ * Fixed regressions:
+   * Python 2.5 / PyGTK 2.12 compatibility
+   * Restore saved play order [891]
 
 2.3.91/92 (2012-01-16) - Players only love you when they're playing
  * Fixes:
