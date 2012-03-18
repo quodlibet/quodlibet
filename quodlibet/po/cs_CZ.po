@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-16 12:22+0100\n"
+"POT-Creation-Date: 2012-03-18 17:06+0100\n"
 "PO-Revision-Date: 2011-11-03 11:54+0000\n"
 "Last-Translator: Honza Hejzl <honza.hejzl@gmail.com>\n"
 "Language-Team: Czech (Czech Republic)\n"
@@ -38,261 +38,261 @@ msgstr ""
 
 #: ../quodlibet.desktop.in.h:1
 #, fuzzy
-msgid "Listen to, browse, or edit your audio collection"
-msgstr "Poslouchejte, procházejte nebo upravujte svou hudební sbírku"
-
-#: ../quodlibet.desktop.in.h:2
-#, fuzzy
 msgid "Music Player"
 msgstr "Přehrávač hudby"
 
-#: ../quodlibet.py:183
+#: ../quodlibet.desktop.in.h:2
+#, fuzzy
+msgid "Listen to, browse, or edit your audio collection"
+msgstr "Poslouchejte, procházejte nebo upravujte svou hudební sbírku"
+
+#: ../quodlibet.py:184
 #, fuzzy
 msgid "No song is currently playing."
 msgstr "Nyní se nic nepřehrává"
 
-#: ../quodlibet.py:204
+#: ../quodlibet.py:205
 #, fuzzy
 msgid "Quod Libet is not running."
 msgstr "Quod Libet neběží"
 
-#: ../quodlibet.py:215
+#: ../quodlibet.py:216
 #, fuzzy, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "Nelze zapisovat do %s. Odstraňuji."
 
-#: ../quodlibet.py:233
+#: ../quodlibet.py:234
 #, fuzzy
 msgid "a music library and player"
 msgstr "hudební sbírka a přehrávač"
 
-#: ../quodlibet.py:234
+#: ../quodlibet.py:235
 msgid "[option]"
 msgstr ""
 
-#: ../quodlibet.py:236
+#: ../quodlibet.py:237
 #, fuzzy
 msgid "Print the playing song and exit"
 msgstr "Vypsat přehrávanou skladbu a skončit."
 
-#: ../quodlibet.py:237
+#: ../quodlibet.py:238
 #, fuzzy
 msgid "Begin playing immediately"
 msgstr "Ihned začít přehrávat"
 
-#: ../quodlibet.py:240
+#: ../quodlibet.py:241
 #, fuzzy
 msgid "Jump to next song"
 msgstr "Další skladba"
 
-#: ../quodlibet.py:242
+#: ../quodlibet.py:243
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
 
-#: ../quodlibet.py:243
+#: ../quodlibet.py:244
 #, fuzzy
 msgid "Jump to previous song"
 msgstr "Předchozí skladba"
 
-#: ../quodlibet.py:244
+#: ../quodlibet.py:245
 #, fuzzy
 msgid "Start playback"
 msgstr "Přehrávat"
 
-#: ../quodlibet.py:245
+#: ../quodlibet.py:246
 #, fuzzy
 msgid "Pause playback"
 msgstr "Pauza"
 
-#: ../quodlibet.py:246
+#: ../quodlibet.py:247
 #, fuzzy
 msgid "Toggle play/pause mode"
 msgstr "Prohodit režim přehrávání/pauza"
 
-#: ../quodlibet.py:247
+#: ../quodlibet.py:248
 #, fuzzy
 msgid "Turn up volume"
 msgstr "Zesílit hlasitost"
 
-#: ../quodlibet.py:248
+#: ../quodlibet.py:249
 #, fuzzy
 msgid "Turn down volume"
 msgstr "Snížit hlasitost"
 
-#: ../quodlibet.py:249
+#: ../quodlibet.py:250
 #, fuzzy
 msgid "Print player status"
 msgstr "Zobrazit stav přehrávače"
 
-#: ../quodlibet.py:250
+#: ../quodlibet.py:251
 #, fuzzy
 msgid "Hide main window"
 msgstr "Skrýt hlavní okno"
 
-#: ../quodlibet.py:251
+#: ../quodlibet.py:252
 #, fuzzy
 msgid "Show main window"
 msgstr "Obnovit hlavní okno"
 
-#: ../quodlibet.py:252
+#: ../quodlibet.py:253
 #, fuzzy
 msgid "Toggle main window visibility"
 msgstr "Přepnout viditelnost hlavního okna"
 
-#: ../quodlibet.py:253
+#: ../quodlibet.py:254
 #, fuzzy
 msgid "Focus the running player"
 msgstr "Zaměřit běžící přehrávač"
 
-#: ../quodlibet.py:254
+#: ../quodlibet.py:255
 #, fuzzy
 msgid "Remove active browser filters"
 msgstr "Odstranit aktivní fiiltry procházení"
 
-#: ../quodlibet.py:255
+#: ../quodlibet.py:256
 #, fuzzy
 msgid "Refresh and rescan library"
 msgstr "Obnovit a znovu načíst sbírku"
 
-#: ../quodlibet.py:256
+#: ../quodlibet.py:257
 #, fuzzy
 msgid "Print the current playlist"
 msgstr "Zobrazit současný playlist"
 
-#: ../quodlibet.py:257
+#: ../quodlibet.py:258
 #, fuzzy
 msgid "Print the contents of the queue"
 msgstr "Zobrazit obsah fronty"
 
-#: ../quodlibet.py:258
+#: ../quodlibet.py:259
 #, fuzzy
 msgid "Exit Quod Libet"
 msgstr "Ukončit Quod Libet"
 
-#: ../quodlibet.py:262
+#: ../quodlibet.py:263
 #, fuzzy
 msgid "Seek within the playing song"
 msgstr "Vyhledávat v přehrávané skladbě"
 
-#: ../quodlibet.py:262
+#: ../quodlibet.py:263
 #, fuzzy
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ HH:] MM: SS"
 
-#: ../quodlibet.py:263
+#: ../quodlibet.py:264
 #, fuzzy
 msgid "Set or toggle the playback order"
 msgstr "Nastavit nebo přepnout pořadí přehrávání"
 
-#: ../quodlibet.py:265
+#: ../quodlibet.py:266
 #, fuzzy
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Vypnout/zapnout či přepnout opakování"
 
-#: ../quodlibet.py:266
+#: ../quodlibet.py:267
 #, fuzzy
 msgid "Set the volume"
 msgstr "Nastavit hlasitost"
 
-#: ../quodlibet.py:267
+#: ../quodlibet.py:268
 #, fuzzy
 msgid "Search your audio library"
 msgstr "Procházet sbírku skladeb"
 
-#: ../quodlibet.py:267 ../quodlibet.py:277 ../quodlibet.py:281
-#: ../quodlibet.py:283
+#: ../quodlibet.py:268 ../quodlibet.py:278 ../quodlibet.py:282
+#: ../quodlibet.py:284
 #, fuzzy
 msgid "query"
 msgstr "dotaz"
 
-#: ../quodlibet.py:268
+#: ../quodlibet.py:269
 #, fuzzy
 msgid "Play a file"
 msgstr "Přehrát soubor"
 
-#: ../quodlibet.py:268 ../quodlibet.py:277 ../quodlibet.py:283
+#: ../quodlibet.py:269 ../quodlibet.py:278 ../quodlibet.py:284
 #, fuzzy
 msgid "command|filename"
 msgstr "příkaz | název souboru"
 
-#: ../quodlibet.py:269
+#: ../quodlibet.py:270
 #, fuzzy
 msgid "Rate the playing song"
 msgstr "Ohodnotit přehrávanou skladbu"
 
-#: ../quodlibet.py:270
+#: ../quodlibet.py:271
 #, fuzzy
 msgid "Set the current browser"
 msgstr "Nastavit aktuální prohlížeč"
 
-#: ../quodlibet.py:271
+#: ../quodlibet.py:272
 #, fuzzy
 msgid "Open a new browser"
 msgstr "Otevřít nový prohlížeč"
 
-#: ../quodlibet.py:272
+#: ../quodlibet.py:273
 #, fuzzy
 msgid "Show or hide the queue"
 msgstr "Zobrazit nebo skrýt frontu"
 
-#: ../quodlibet.py:273
+#: ../quodlibet.py:274
 #, fuzzy
 msgid "Show or hide the main song list"
 msgstr "Zobrazit nebo skrýt hlavní seznam skladeb"
 
-#: ../quodlibet.py:274
+#: ../quodlibet.py:275
 #, fuzzy
 msgid "Filter on a random value"
 msgstr "Filtr s náhodnou hodnotou"
 
-#: ../quodlibet.py:274
+#: ../quodlibet.py:275
 #, fuzzy
 msgid "command|tag"
 msgstr "příkaz | tag"
 
-#: ../quodlibet.py:275
+#: ../quodlibet.py:276
 #, fuzzy
 msgid "Filter on a tag value"
 msgstr "Filtr na hodnotu tagu"
 
-#: ../quodlibet.py:275
+#: ../quodlibet.py:276
 #, fuzzy
 msgid "tag=value"
 msgstr "tag=hodnota"
 
-#: ../quodlibet.py:276
+#: ../quodlibet.py:277
 #, fuzzy
 msgid "Enqueue a file or query"
 msgstr "Zařadit do fronty soubor nebo dotaz."
 
-#: ../quodlibet.py:278
+#: ../quodlibet.py:279
 msgid "Enqueue comma-separated files"
 msgstr ""
 
-#: ../quodlibet.py:279 ../quodlibet/util/tags.py:93
+#: ../quodlibet.py:280 ../quodlibet/util/tags.py:93
 msgid "filename"
 msgstr ""
 
-#: ../quodlibet.py:280
+#: ../quodlibet.py:281
 msgid "Print filenames of results of query to stdout"
 msgstr ""
 
-#: ../quodlibet.py:282
+#: ../quodlibet.py:283
 #, fuzzy
 msgid "Unqueue a file or query"
 msgstr "Vyřadit z fronty soubor nebo dotaz."
 
-#: ../quodlibet.py:320
+#: ../quodlibet.py:321
 #, fuzzy, python-format
 msgid "Invalid argument for '%s'."
 msgstr "Neplatný argument pro '%s'."
 
-#: ../quodlibet.py:321 ../quodlibet/util/__init__.py:166
+#: ../quodlibet.py:322 ../quodlibet/util/__init__.py:166
 #, fuzzy, python-format
 msgid "Try %s --help."
 msgstr "Zkuste %s --help"
 
-#: ../quodlibet.py:358
+#: ../quodlibet.py:359
 #, fuzzy
 msgid "Quod Libet is already running."
 msgstr "Quod Libet už běží."
@@ -374,22 +374,22 @@ msgstr "Seřadit podle:"
 msgid "_Preferences"
 msgstr "Nastavení Ex Falsa"
 
-#: ../quodlibet/browsers/albums.py:371
+#: ../quodlibet/browsers/albums.py:376
 #, fuzzy
 msgid "Album List"
 msgstr "Seznam alb"
 
-#: ../quodlibet/browsers/albums.py:372
+#: ../quodlibet/browsers/albums.py:377
 #, fuzzy
 msgid "_Album List"
 msgstr "_Seznam alb"
 
-#: ../quodlibet/browsers/albums.py:513
+#: ../quodlibet/browsers/albums.py:518
 #, fuzzy
 msgid "All Albums"
 msgstr "Všechna alba"
 
-#: ../quodlibet/browsers/albums.py:514
+#: ../quodlibet/browsers/albums.py:519
 #, fuzzy, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -397,7 +397,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d alba"
 msgstr[2] "%d alba"
 
-#: ../quodlibet/browsers/albums.py:654
+#: ../quodlibet/browsers/albums.py:659
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -1255,35 +1255,35 @@ msgstr ""
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:197
+#: ../quodlibet/player/gstbe.py:199
 #, python-format
 msgid "Could not link GStreamer pipeline: '%s'"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:379
+#: ../quodlibet/player/gstbe.py:381
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:379
+#: ../quodlibet/player/gstbe.py:381
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:439
+#: ../quodlibet/player/gstbe.py:441
 msgid "Output Error"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:440
+#: ../quodlibet/player/gstbe.py:442
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:612
+#: ../quodlibet/player/gstbe.py:614
 msgid "Unable to open input files"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:613
+#: ../quodlibet/player/gstbe.py:615
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -2271,7 +2271,7 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
-#: ../quodlibet/qltk/queue.py:39 ../quodlibet/qltk/quodlibetwindow.py:489
+#: ../quodlibet/qltk/queue.py:39 ../quodlibet/qltk/quodlibetwindow.py:497
 msgid "_Queue"
 msgstr ""
 
@@ -2295,161 +2295,161 @@ msgstr ""
 msgid "Restart the playlist when finished"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:330
+#: ../quodlibet/qltk/quodlibetwindow.py:339
 msgid "Unable to add songs"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:331
-#: ../quodlibet/qltk/quodlibetwindow.py:809
+#: ../quodlibet/qltk/quodlibetwindow.py:340
+#: ../quodlibet/qltk/quodlibetwindow.py:817
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:392
+#: ../quodlibet/qltk/quodlibetwindow.py:400
 msgid "_Music"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:393
+#: ../quodlibet/qltk/quodlibetwindow.py:401
 msgid "_Add a Folder..."
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:395
+#: ../quodlibet/qltk/quodlibetwindow.py:403
 #, fuzzy
 msgid "_Add a File..."
 msgstr "_Přidat soubor..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:397
+#: ../quodlibet/qltk/quodlibetwindow.py:405
 #, fuzzy
 msgid "_Add a Location..."
 msgstr "_Přidat umístění..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:399
+#: ../quodlibet/qltk/quodlibetwindow.py:407
 #, fuzzy
 msgid "_Browse Library"
 msgstr "_Procházet sbírku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:405
+#: ../quodlibet/qltk/quodlibetwindow.py:413
 #, fuzzy
 msgid "_Filters"
 msgstr "_Filtry"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:407
+#: ../quodlibet/qltk/quodlibetwindow.py:415
 #, fuzzy
 msgid "Not Played To_day"
 msgstr "Dnes nehrané"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:409
+#: ../quodlibet/qltk/quodlibetwindow.py:417
 #, fuzzy
 msgid "Not Played in a _Week"
 msgstr "Nehrané v posledním týdnu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:411
+#: ../quodlibet/qltk/quodlibetwindow.py:419
 #, fuzzy
 msgid "Not Played in a _Month"
 msgstr "Nehrané za poslední měsíc"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:413
+#: ../quodlibet/qltk/quodlibetwindow.py:421
 #, fuzzy
 msgid "_Never Played"
 msgstr "_Nikdy nehrané"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:415
+#: ../quodlibet/qltk/quodlibetwindow.py:423
 #, fuzzy
 msgid "_Top 40"
 msgstr "_Top 40"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:416
+#: ../quodlibet/qltk/quodlibetwindow.py:424
 msgid "B_ottom 40"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:418
+#: ../quodlibet/qltk/quodlibetwindow.py:426
 msgid "_Control"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:424
+#: ../quodlibet/qltk/quodlibetwindow.py:432
 msgid "_Jump to Playing Song"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:427
+#: ../quodlibet/qltk/quodlibetwindow.py:435
 #, fuzzy
 msgid "_View"
 msgstr "_Zobrazení"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:428
+#: ../quodlibet/qltk/quodlibetwindow.py:436
 #, fuzzy
 msgid "_Help"
 msgstr "_Pomoc"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:429
+#: ../quodlibet/qltk/quodlibetwindow.py:437
 #, fuzzy
 msgid "_Output Log"
 msgstr "_Log z výstupu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:436
+#: ../quodlibet/qltk/quodlibetwindow.py:444
 #, fuzzy
 msgid "_Edit and Continue"
 msgstr "_Upravit a pokračovat"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:439
+#: ../quodlibet/qltk/quodlibetwindow.py:447
 msgid "_Cause an Error"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:457
+#: ../quodlibet/qltk/quodlibetwindow.py:465
 #, fuzzy
 msgid "Re_fresh Library"
 msgstr "Obnovit sbírku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:461
+#: ../quodlibet/qltk/quodlibetwindow.py:469
 #, fuzzy
 msgid "Re_load Library"
 msgstr "Znovu načíst sbírku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:466
+#: ../quodlibet/qltk/quodlibetwindow.py:474
 #, fuzzy
 msgid "Filter on _Genre"
 msgstr "Filtrovat podle žádru"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:467
+#: ../quodlibet/qltk/quodlibetwindow.py:475
 #, fuzzy
 msgid "Filter on _Artist"
 msgstr "Filtrovat podle umělce"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:468
+#: ../quodlibet/qltk/quodlibetwindow.py:476
 #, fuzzy
 msgid "Filter on Al_bum"
 msgstr "Filtrovat podle alba"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:475
+#: ../quodlibet/qltk/quodlibetwindow.py:483
 #, fuzzy
 msgid "Random _Genre"
 msgstr "Náhodný žánr"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:476
+#: ../quodlibet/qltk/quodlibetwindow.py:484
 #, fuzzy
 msgid "Random _Artist"
 msgstr "Náhodný umělec"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:477
+#: ../quodlibet/qltk/quodlibetwindow.py:485
 #, fuzzy
 msgid "Random Al_bum"
 msgstr "Náhodné album"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:484
+#: ../quodlibet/qltk/quodlibetwindow.py:492
 #, fuzzy
 msgid "Song _List"
 msgstr "Seznam skladeb"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:527
+#: ../quodlibet/qltk/quodlibetwindow.py:535
 #, fuzzy
 msgid "Check for changes in your library"
 msgstr "Zkontrolovat změny ve sbírce"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:530
+#: ../quodlibet/qltk/quodlibetwindow.py:538
 #, fuzzy
 msgid "Reload all songs in your library (this can take a long time)"
 msgstr "Znovu načíst všechny skladby ve sbírce (to může trvat dost dlouho)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:534
+#: ../quodlibet/qltk/quodlibetwindow.py:542
 #, fuzzy
 msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
@@ -2458,48 +2458,48 @@ msgstr ""
 "40 skladeb, které jste poslouchali nejvíc (více než 40 jich může být vybráno "
 "také)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:538
+#: ../quodlibet/qltk/quodlibetwindow.py:546
 msgid ""
 "The 40 songs you've played least (more than 40 may be chosen if there are "
 "ties)"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:797
+#: ../quodlibet/qltk/quodlibetwindow.py:805
 #, fuzzy
 msgid "Add a Location"
 msgstr "Přidat umístění"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:798
+#: ../quodlibet/qltk/quodlibetwindow.py:806
 msgid "Enter the location of an audio file:"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:803
-#: ../quodlibet/qltk/quodlibetwindow.py:808
+#: ../quodlibet/qltk/quodlibetwindow.py:811
+#: ../quodlibet/qltk/quodlibetwindow.py:816
 msgid "Unable to add location"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:804
+#: ../quodlibet/qltk/quodlibetwindow.py:812
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:820
-#: ../quodlibet/qltk/quodlibetwindow.py:827
+#: ../quodlibet/qltk/quodlibetwindow.py:828
+#: ../quodlibet/qltk/quodlibetwindow.py:835
 msgid "Add Music"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:821
+#: ../quodlibet/qltk/quodlibetwindow.py:829
 msgid "Watch this folder for new songs"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:844
+#: ../quodlibet/qltk/quodlibetwindow.py:852
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
 "\n"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:849
+#: ../quodlibet/qltk/quodlibetwindow.py:857
 msgid "Unable to add song"
 msgstr ""
 
@@ -2616,7 +2616,7 @@ msgstr "_Hledat"
 msgid "Search"
 msgstr ""
 
-#: ../quodlibet/qltk/searchbar.py:84
+#: ../quodlibet/qltk/searchbar.py:85
 msgid "Search your library"
 msgstr ""
 
