@@ -126,6 +126,7 @@ class TrackNumbers(gtk.VBox):
             song["tracknumber"] = track
             try: song.write()
             except:
+                util.print_exc()
                 qltk.ErrorMessage(
                     win, _("Unable to save song"),
                     _("Saving <b>%s</b> failed. The file may be "

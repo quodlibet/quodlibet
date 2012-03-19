@@ -113,6 +113,7 @@ class RenameFiles(EditPane):
                 newname = util.fsnative(newname)
                 library.rename(song, newname, changed=was_changed)
             except StandardError:
+                util.print_exc()
                 if skip_all: continue
                 RESPONSE_SKIP_ALL = 1
                 buttons = (_("Ignore _All Errors"), RESPONSE_SKIP_ALL,

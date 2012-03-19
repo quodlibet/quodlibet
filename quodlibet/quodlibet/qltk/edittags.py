@@ -640,6 +640,7 @@ class EditTags(gtk.VBox):
             if changed:
                 try: song.write()
                 except:
+                    util.print_exc()
                     qltk.ErrorMessage(
                         self, _("Unable to save song"),
                         _("Saving <b>%s</b> failed. The file "
