@@ -155,12 +155,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             c.set_tooltip_text(_("Show search results after the user "
                 "stops typing."))
             vb.pack_start(c)
-            c = ConfigCheckButton(
-                _("Color _search terms"), 'browsers', 'color')
-            c.set_active(config.getboolean("browsers", "color"))
-            c.set_tooltip_text(_("Display simple searches in blue, "
-                     "advanced ones in green, and invalid ones in red"))
-            vb.pack_start(c)
+
             f = qltk.Frame(_("Search Library"), child=vb)
             self.pack_start(f, expand=False)
 

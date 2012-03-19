@@ -281,10 +281,10 @@ Query.is_parsable = is_parsable
 def is_valid_color(string):
     if is_parsable(string):
         if _get_query_type(string) == STRING:
-            return "blue"
+            return None
         else:
-            return "dark green"
-    return "red"
+            return True
+    return False
 Query.is_valid_color = is_valid_color
 
 Query.error = error

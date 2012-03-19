@@ -273,13 +273,13 @@ add(TQuery)
 class TQuery_is_valid_color(TestCase):
     def test_red(self):
         for p in ["a = /w", "|(sa#"]:
-            self.failUnlessEqual("red", Query.is_valid_color(p))
+            self.failUnlessEqual(False, Query.is_valid_color(p))
 
-    def test_blue(self):
+    def test_black(self):
         for p in ["a test", "more test hooray"]:
-            self.failUnlessEqual("blue", Query.is_valid_color(p))
+            self.failUnlessEqual(None, Query.is_valid_color(p))
 
     def test_green(self):
         for p in ["a = /b/", "&(a = b, c = d)", "/abc/", "!x", "!&(abc, def)"]:
-            self.failUnlessEqual("dark green", Query.is_valid_color(p))
+            self.failUnlessEqual(True, Query.is_valid_color(p))
 add(TQuery_is_valid_color)
