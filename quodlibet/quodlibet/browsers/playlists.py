@@ -408,7 +408,24 @@ class Playlists(gtk.VBox, Browser):
         keyval, mod = gtk.accelerator_parse("F2")
         self.accelerators.connect_group(keyval, mod, 0, self.__rename)
 
+        self.connect('key-press-event', self.__key_pressed)
+
         self.show_all()
+
+    def __key_pressed(self, widget, event):
+        if qltk.is_accel(event, "Delete"):
+            model, iter = self.__view.get_selection().get_selected()
+            if iter:
+                if qltk.ConfirmAction(
+                    self, _("Confirm playlist removal"),
+                    _("You are about to delete the playlist '<i>%s</i>'.\n"
+                      "Do you wish to continue?")
+                      % util.escape(model[iter][0].name)).run():
+                    model[iter][0].delete()
+                    model.get_model().remove(
+                        model.convert_iter_to_child_iter(None, iter))
+                    return True
+        return False
 
     def __rename(self, group, acceleratable, keyval, modifier):
         model, iter = self.__view.get_selection().get_selected()
