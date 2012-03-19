@@ -27,13 +27,6 @@ class Ttitle(TestCase):
         # This is actually an accent character, not an apostrophe either.
         s.assertEquals(u"Mama`S Boy", title(u"mama`s boy"))
 
-    def test_tricky_apostrophes(s):
-        s.assertEquals(u"Guns 'n' Roses", title(u"Guns 'n' roses"))
-        s.assertEquals(u"Scarlett O'Hara", title(u"scarlett o'hara"))
-        s.assertEquals(u"Scarlett O'Hara", title(u"Scarlett O'hara"))
-        s.assertEquals(u"No Life 'til Leather", title(u"no life 'til leather"))
-
-
     def test_quotes(s):
         s.assertEquals(u"Hello Goodbye (A Song)",
                  title(u"hello goodbye (a song)"))
@@ -70,7 +63,9 @@ class Ttitle(TestCase):
         # but still Python doesn't capitalize the es-zed properly.
         # s.assertEquals(u"SSbahn", title(u"ßbahn"))
 
-    def test_english_human_titlecase(s):
+    # human title case got moved in the plugin..
+    # move once we have a test suite for plugins
+    def __skip_test_english_human_titlecase(s):
         """Checks human title casing, assuming that it defaults to enabled"""
         s.assertEquals(u"System of a Down",
                  title(u"System Of A Down"))
@@ -92,8 +87,14 @@ class Ttitle(TestCase):
         s.assertEquals(u"Space:  The Final Frontier",
                  title(u"Space:  the final frontier"))
 
+    def __skip_test_tricky_apostrophes(s):
+        s.assertEquals(u"Guns 'n' Roses", title(u"Guns 'n' roses"))
+        s.assertEquals(u"Scarlett O'Hara", title(u"scarlett o'hara"))
+        s.assertEquals(u"Scarlett O'Hara", title(u"Scarlett O'hara"))
+        s.assertEquals(u"No Life 'til Leather", title(u"no life 'til leather"))
 
-    def test_english_human_titlecase_sentences(s):
+
+    def __skip_test_english_human_titlecase_sentences(s):
         """Checks trickier human title casing, also assuming it's enabled"""
         s.assertEquals(u"Buffy the Vampire Slayer: The Album",
                  title(u"Buffy the vampire slayer: the album"))

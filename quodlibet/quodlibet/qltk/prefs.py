@@ -295,12 +295,6 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(e)
             vbox.pack_start(hb, expand=False)
 
-            cb = ConfigCheckButton(
-                _("Enable _human title case"), 'editing', 'human_title_case')
-            cb.set_active(config.getboolean("editing", 'human_title_case'))
-            cb.set_tooltip_text(_("Uses common English rules for title casing, as in \"Dark Night of the Soul\""))
-            vbox.pack_start(cb, expand=False)
-
             vb2 = gtk.VBox(spacing=0)
             cb = ConfigCheckButton(
                 _("Save ratings and play _counts"), "editing", "save_to_songs")
