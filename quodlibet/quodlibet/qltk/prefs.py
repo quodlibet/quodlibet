@@ -192,58 +192,78 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.set_border_width(12)
             self.title = _("Playback")
 
+            # player backend
             if player.backend and hasattr(player.device, 'PlayerPreferences'):
                 player_prefs = player.device.PlayerPreferences()
                 self.pack_start(player_prefs, expand=False)
 
-            vbox = gtk.VBox(spacing=6)
-            c = ConfigCheckButton(_("_Enable Replay Gain volume adjustment"),
-                                    "player", "replaygain")
-            c.set_active(config.getboolean("player", "replaygain"))
-            c.connect('toggled', self.__toggled_gain)
-            vbox.pack_start(c, expand=False)
-            try:
-                fallback_gain = config.getfloat("player", "fallback_gain")
-            except:
-                fallback_gain = 0.0
+            # replaygain
+            fallback_gain = config.getfloat("player", "fallback_gain", 0.0)
             adj = gtk.Adjustment(fallback_gain, -12.0, 12.0, 0.5, 0.5, 0.0)
-            s = gtk.SpinButton(adj)
-            s.set_digits(1)
-            s.connect('changed', self.__changed, 'player', 'fallback_gain')
-            s.set_tooltip_text(_("If no Replay Gain information is available "
-                                 "for a song, scale the volume by this value"))
-            l = gtk.Label(_("Fall-back gain (dB):"))
-            l.set_use_underline(True)
-            l.set_mnemonic_widget(s)
+            fb_spin = gtk.SpinButton(adj)
+            fb_spin.set_digits(1)
+            fb_spin.connect('changed', self.__changed,
+                            'player', 'fallback_gain')
+            fb_spin.set_tooltip_text(
+                _("If no Replay Gain information is available "
+                  "for a song, scale the volume by this value"))
 
-            hb = gtk.HBox(spacing=6)
-            hb.pack_start(l, expand=False)
-            hb.pack_start(s, expand=False)
-            vbox.pack_start(hb, expand=False)
-            try:
-                pre_amp_gain = config.getfloat("player", "pre_amp_gain")
-            except:
-                pre_amp_gain = 0
+            fb_label = gtk.Label(_("_Fall-back gain (dB):"))
+            fb_label.set_use_underline(True)
+            fb_label.set_mnemonic_widget(fb_spin)
+
+            pre_amp_gain = config.getfloat("player", "pre_amp_gain", 0.0)
             adj = gtk.Adjustment(pre_amp_gain, -6, 6, 0.5, 0.5, 0.0)
             adj.connect('value-changed', self.__changed,
                         'player', 'pre_amp_gain')
-            s = gtk.SpinButton(adj)
-            s.set_digits(1)
-            s.set_tooltip_text(_("Scale volume for all songs by this value, "
-                                 "as long as the result will not clip"))
-            l = gtk.Label(_("Pre-amp gain (dB):"))
-            l.set_use_underline(True)
-            l.set_mnemonic_widget(s)
-            hb = gtk.HBox(spacing=6)
-            hb.pack_start(l, expand=False)
-            hb.pack_start(s, expand=False)
-            vbox.pack_start(hb, expand=False)
-            f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vbox)
-            self.pack_start(f)
+            pre_spin = gtk.SpinButton(adj)
+            pre_spin.set_digits(1)
+            pre_spin.set_tooltip_text(
+                _("Scale volume for all songs by this value, "
+                  "as long as the result will not clip"))
+
+            pre_label = gtk.Label(_("_Pre-amp gain (dB):"))
+            pre_label.set_use_underline(True)
+            pre_label.set_mnemonic_widget(pre_spin)
+
+            widgets = [pre_label, pre_spin, fb_label, fb_spin]
+            c = ConfigCheckButton(_("_Enable Replay Gain volume adjustment"),
+                                    "player", "replaygain")
+            c.set_active(config.getboolean("player", "replaygain"))
+            c.connect('toggled', self.__toggled_gain, widgets)
+
+            # packing
+            table = gtk.Table(3, 2)
+            table.set_col_spacings(6)
+            table.set_row_spacings(6)
+
+            table.attach(c, 0, 2, 0, 1)
+            fb_label.set_alignment(0, 0.5)
+            table.attach(fb_label, 0, 1, 1, 2,
+                         xoptions=0)
+            pre_label.set_alignment(0, 0.5)
+            table.attach(pre_label, 0, 1, 2, 3,
+                         xoptions=0)
+
+            fb_align = gtk.Alignment(0, 0.5, 0, 1)
+            fb_align.add(fb_spin)
+            table.attach(fb_align, 1, 2, 1, 2)
+
+            pre_align = gtk.Alignment(0, 0.5, 0, 1)
+            pre_align.add(pre_spin)
+            table.attach(pre_align, 1, 2, 2, 3)
+
+            f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=table)
+
+            c.emit('toggled')
+
+            self.pack_start(f, expand=False)
             self.show_all()
 
-        def __toggled_gain(self, activator):
+        def __toggled_gain(self, activator, widgets):
             player.playlist.volume = player.playlist.volume
+            for widget in widgets:
+                widget.set_sensitive(activator.get_active())
 
         def __changed(self, adj, section, name):
             config.set(section, name, str(adj.get_value()))
