@@ -293,24 +293,9 @@ class TrayIcon(EventPlugin):
             try:
                 self.__pixbuf = self.__icon_theme.load_icon(
                     "quodlibet", self.__size, 0)
-            except gobject.GError: pass
-
-        # images got moved into the theme dir after 2.3
-        # this can be removed after 2.4 is out
-        if not self.__pixbuf:
-            pixbuf_size = max(int(self.__size * 0.75), 1)
-            filename = os.path.join(const.IMAGEDIR, "quodlibet.")
-            try:
-                self.__pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                    filename + "svg", *(pixbuf_size * 2,) * 2)
             except gobject.GError:
-                try:
-                    self.__pixbuf = gtk.gdk.pixbuf_new_from_file(
-                        filename + "png")
-                except gobject.GError:
-                    pass
-            if self.__pixbuf:
-                self.__pixbuf = scale(self.__pixbuf, (pixbuf_size,) * 2)
+                util.print_exc()
+                return
 
         #we need to fill the whole height that is given to us, or
         #the KDE panel will emit size-changed until we reach 0
