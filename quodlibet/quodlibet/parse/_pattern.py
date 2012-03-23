@@ -301,7 +301,6 @@ class _FileFromPattern(PatternFormatter):
                    (lambda k, s: s.replace(os.sep, "_")),
                    (lambda k, s: s.replace(u"\uff0f", "_")),
                    (lambda k, s: s.strip()),
-                   (lambda k, s: (len(s) > 100 and s[:100] + "...") or s),
                    ]
 
     def _post(self, value, song):
@@ -312,7 +311,19 @@ class _FileFromPattern(PatternFormatter):
             if not ext == val_ext: value += ext.lower()
             if os.name == "nt":
                 value = util.strip_win32_incompat_from_path(value)
+
             value = util.expanduser(value)
+
+            # Limit each path section to 255 (bytes on linux, chars on win).
+            # http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
+            path, ext = os.path.splitext(value)
+            path = map(util.fsnative, path.split(os.sep))
+            limit = [255] * len(path)
+            limit[-1] -= len(util.fsnative(ext))
+            elip = lambda (p, l): (len(p) > l and p[:l-2] + "..") or p
+            path = os.sep.join(map(elip, zip(path, limit)))
+            value = util.fsdecode(path) + ext
+
             if os.sep in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")
         return value

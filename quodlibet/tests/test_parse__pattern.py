@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase, add
 
 import os
 
+from quodlibet import util
 from quodlibet.parse import FileFromPattern, XMLFromPattern, Pattern
 
 class _TPattern(TestCase):
@@ -167,6 +169,13 @@ class TFileFromPattern(_TPattern):
         if os.name == 'nt':
             pat = FileFromPattern(r'Z:\<artist>\<title>')
             s.assertEquals(pat.format(s.a), 'Z:/Artist/Title5.mp3')
+
+    def test_long_filename(s):
+        a = s.AudioFile({"title": "x"*300, "~filename": "/f.mp3"})
+        path = FileFromPattern(u'/foobar/ä<title>/<title>').format(a)
+        s.failUnlessEqual(len(util.fsnative(path)), 1 + 6 + 1 + 255 + 1 + 255)
+        path = FileFromPattern(u'äüö<title><title>').format(a)
+        s.failUnlessEqual(len(util.fsnative(path)), 255)
 
 class TXMLFromPattern(_TPattern):
     def test_markup_passthrough(s):
