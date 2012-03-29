@@ -12,7 +12,7 @@
 #    published by the Free Software Foundation.
 #
 from gettext import ngettext
-from quodlibet import config, player, print_d, print_w, util
+from quodlibet import config, player, print_d, print_w, util, qltk
 from quodlibet.library import library
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.edittags import AudioFileGroup
@@ -23,8 +23,9 @@ import ConfigParser
 import gobject
 import gtk
 import pango
-import unicodedata
 import string
+import unicodedata
+from quodlibet.qltk.ccb import ConfigCheckButton
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -115,8 +116,6 @@ class DuplicateSongsView(RCMHintedTreeView):
                     print_d("Calling model.row_changed(%s, %s)..." %
                             (row.path, row.iter))
                     model.row_changed(row.path, row.iter)
-#                    print_d("calling row_changed(%s, %s)..." % (model[parent].path, model[parent].iter))
-#                    model.row_changed(model[parent].path, model[parent].iter)
             else:
                 model.add_to_existing_group(key, song)
 
@@ -319,37 +318,56 @@ class Duplicates(SongsMenuPlugin):
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Find and browse similarly tagged versions of songs.')
     PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
-    PLUGIN_VERSION = "0.4"
+    PLUGIN_VERSION = "0.5"
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"
     __DEFAULT_KEY_VALUE = "~artist~title~version"
 
+    _CFG_REMOVE_WHITESPACE = 'remove_whitespace'
+    _CFG_REMOVE_DIACRITICS = 'remove_diacritics'
+    _CFG_REMOVE_PUNCTUATION = 'remove_punctuation'
+    _CFG_CASE_INSENSITIVE = 'case_insensitive'
+
     # Cached values
     key_expression = None
+    __cfg_cache = {}
 
     # Faster than a speeding bullet
     __trans = string.maketrans("","")
 
-    # Munging algorithms to apply for more (looser) matches
-    key_lower = True
-    key_remove_accents = True
-    key_remove_whitespace = True
-    key_remove_punctuation = True
+    @classmethod
+    def _cfg_key(cls, key):
+        return "%s_%s" % (__name__, key)
 
     @classmethod
     def cfg_get(cls, name, default=None):
         try:
-            key = __name__ + "_" + name
+            key = cls._cfg_key(name)
             return config.get("plugins", key)
         except (ValueError, ConfigParser.Error):
-            print_w("Duplicate key config entry not found. Using '%s'" %
-                    (default,))
+            print_w("Duplicates config entry for '%s' not found."
+                    "Defaulting to  '%s'" % (key, default))
             return default
 
     @classmethod
+    def cfg_get_bool(cls, key, default=True):
+        if key in cls.__cfg_cache: return bool(cls.__cfg_cache[key])
+        try:
+            key = cls._cfg_key(key)
+            cls.__cfg_cache[key] = bool
+            return bool(config.getboolean("plugins", key))
+        except (ValueError, ConfigParser.Error, TypeError):
+            print_w("Duplicates config entry for '%s' not found."
+                    "Defaulting to  '%s'" % (key, default))
+            return default
+
+
+    @classmethod
     def cfg_set(cls, name, value):
-        key = __name__ + "_" + name
+        cls.key_expression = value
+        key = cls._cfg_key(name)
+        print_d("Setting %s to '%s'" % (key,value))
         config.set("plugins", key, value)
 
     @classmethod
@@ -379,7 +397,25 @@ class Duplicates(SongsMenuPlugin):
         lbl.set_use_underline(True)
         hbox.pack_start(lbl, expand=False)
         hbox.pack_start(e, expand=False)
-        vb.pack_start(hbox, expand=True)
+        frame = qltk.Frame(label=_("Duplicate Key"), child=hbox)
+        vb.pack_start(frame, expand=True)
+
+        # Matching Option
+        toggles = [
+            (cls._CFG_REMOVE_WHITESPACE, _("Remove _Whitespace")),
+            (cls._CFG_REMOVE_DIACRITICS, _("Remove _Diacritics")),
+            (cls._CFG_REMOVE_PUNCTUATION, _("Remove _Punctuation")),
+            (cls._CFG_CASE_INSENSITIVE, _("Case _Insensitive")),
+        ]
+        vb2=gtk.VBox(spacing=6)
+        for key, label in toggles:
+            ccb = ConfigCheckButton(label, 'plugins', cls._cfg_key(key))
+            ccb.set_active(cls.cfg_get_bool(key))
+            vb2.pack_start(ccb)
+
+        frame = qltk.Frame(label=_("Matching options"), child=vb2)
+        vb.pack_start(frame, expand=False)
+
         vb.show_all()
         return vb
 
@@ -391,16 +427,19 @@ class Duplicates(SongsMenuPlugin):
     @classmethod
     def get_key(cls, song):
         key = song(cls.get_key_expression())
-        # TODO: make this configurable
-        if cls.key_remove_accents: key = cls.remove_accents(key)
-        if cls.key_lower: key = key.lower()
-        if cls.key_remove_punctuation:
+        if cls.cfg_get_bool(cls._CFG_REMOVE_DIACRITICS):
+            key = cls.remove_accents(key)
+        if cls.cfg_get_bool(cls._CFG_CASE_INSENSITIVE):
+            key = key.lower()
+        if cls.cfg_get_bool(cls._CFG_REMOVE_PUNCTUATION):
             key = str(key).translate(cls.__trans, string.punctuation)
-        if cls.key_remove_whitespace: key = "_".join(key.split())
+        if cls.cfg_get_bool(cls._CFG_REMOVE_WHITESPACE):
+            key = "_".join(key.split())
         return key
 
     def plugin_songs(self, songs):
         model = DuplicatesTreeModel()
+        self.__cfg_cache = {}
 
         # Index all songs by our custom key
         # TODO: make this cache-friendly
