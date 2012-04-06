@@ -8,6 +8,7 @@
 
 import os
 import gtk
+import pango
 
 from quodlibet import config
 from quodlibet import const
@@ -20,6 +21,109 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.views import RCMHintedTreeView
+
+def get_init_select_dir():
+    scandirs = util.split_scan_dirs(config.get("settings", "scan"))
+    if scandirs and os.path.isdir(scandirs[-1]):
+        # start with last added directory
+        return scandirs[-1]
+    else:
+        return const.HOME
+
+class ScanBox(gtk.HBox):
+    def __init__(self):
+        super(ScanBox, self).__init__(spacing=6)
+
+        self.model = model = gtk.ListStore(str)
+        view = RCMHintedTreeView(model)
+        view.set_fixed_height_mode(True)
+        view.set_headers_visible(False)
+
+        view.set_tooltip_text(_("Songs in the listed folders will be "
+            "added to the library during a library refresh"))
+
+        menu = gtk.Menu()
+        remove_item = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        menu.append(remove_item)
+        menu.show_all()
+        view.connect('popup-menu', self.__popup, menu)
+        remove_item.connect_object('activate',
+                                   self.__remove, view.get_selection())
+
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.add(view)
+        sw.set_size_request(-1, max(sw.size_request()[1], 100))
+
+        render = gtk.CellRendererText()
+        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+
+        def cdf(column, cell, model, iter):
+            row = model[iter]
+            cell.set_property('text', util.unexpand(row[0]))
+
+        column = gtk.TreeViewColumn(None, render)
+        column.set_cell_data_func(render, cdf)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        view.append_column(column)
+
+        add = gtk.Button(stock=gtk.STOCK_ADD)
+        add.connect("clicked", self.__add)
+        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+
+        selection = view.get_selection()
+        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        selection.connect("changed", self.__select_changed, remove)
+        selection.emit("changed")
+
+        remove.connect_object("clicked", self.__remove, selection)
+
+        vbox = gtk.VBox(spacing=6)
+        vbox.pack_start(add, expand=False)
+        vbox.pack_start(remove, expand=False)
+
+        self.pack_start(sw)
+        self.pack_start(vbox, expand=False)
+        self.show_all()
+
+        paths = util.split_scan_dirs(config.get("settings", "scan"))
+        paths = map(util.fsdecode, paths)
+        for path in paths:
+            model.append(row=[path])
+
+    def __popup(self, view, menu):
+        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+
+    def __select_changed(self, selection, remove_button):
+        remove_button.set_sensitive(selection.count_selected_rows())
+
+    def __save(self):
+        paths = map(util.fsencode, [r[0] for r in self.model])
+        config.set("settings", "scan", ":".join(paths))
+
+    def __remove(self, selection):
+        model, paths = selection.get_selected_rows()
+
+        iters = [model[p].iter for p in paths]
+        map(model.remove, iters)
+
+        if len(iters) and model.iter_is_valid(iters[-1]):
+            selection.select_iter(iters[-1])
+        elif len(model):
+            selection.select_path(model[-1].path)
+
+        self.__save()
+
+    def __add(self, *args):
+        initial = get_init_select_dir()
+        chooser = FolderChooser(self, _("Select Directories"), initial)
+        fns = chooser.run()
+        chooser.destroy()
+        for fn in fns:
+            self.model.append(row=[fn])
+        self.__save()
 
 class PreferencesWindow(qltk.UniqueWindow):
     class SongList(gtk.VBox):
@@ -62,7 +166,6 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             vbox.pack_start(table, expand=False)
 
-            vbox2 = gtk.VBox()
             tiv = gtk.CheckButton(_("Title includes _version"))
             if "~title~version" in checks:
                 buttons["title"].set_active(True)
@@ -137,6 +240,9 @@ class PreferencesWindow(qltk.UniqueWindow):
             super(PreferencesWindow.Browsers, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Browsers")
+
+            vb = gtk.VBox(spacing=6)
+
             hb = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Global filter:"))
             l.set_use_underline(True)
@@ -146,18 +252,16 @@ class PreferencesWindow(qltk.UniqueWindow):
             l.set_mnemonic_widget(e)
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
-            self.pack_start(hb, expand=False)
+            vb.pack_start(hb, expand=False)
 
-            vb = gtk.VBox(spacing=6)
             c = ConfigCheckButton(
                 _("Search after _typing"), 'settings', 'eager_search')
             c.set_active(config.getboolean('settings', 'eager_search'))
             c.set_tooltip_text(_("Show search results after the user "
                 "stops typing."))
-            vb.pack_start(c)
+            vb.pack_start(c, expand=False)
 
-            f = qltk.Frame(_("Search Library"), child=vb)
-            self.pack_start(f, expand=False)
+            self.pack_start(vb, expand=False)
 
             c1 = ConfigCheckButton(
                 _("Confirm _multiple ratings"),
@@ -178,9 +282,52 @@ class PreferencesWindow(qltk.UniqueWindow):
             vbox = gtk.VBox(spacing=6)
             vbox.pack_start(c1, expand=False)
             vbox.pack_start(c2, expand=False)
+            f = qltk.Frame(_("Ratings"), child=vbox)
+            self.pack_start(f, expand=False)
 
-            f1 = qltk.Frame(_("Ratings"), child=vbox)
-            self.pack_start(f1, expand=False)
+
+            vb = gtk.VBox(spacing=6)
+            c = ConfigCheckButton(
+                _("_Use rounded corners on thumbnails"), 'albumart', 'round')
+            c.set_tooltip_text(_("Round the corners of album artwork "
+                    "thumbnail images. May require restart to take effect."))
+            c.set_active(config.getboolean('albumart', 'round'))
+            vb.pack_start(c, expand=False)
+
+            # Filename choice algorithm config
+            cb = ConfigCheckButton(
+                    _("Prefer _embedded art"), 'albumart', 'prefer_embedded')
+            cb.set_tooltip_text(_("Choose to use artwork embedded in the audio "
+                    "(where available) over other sources"))
+            cb.set_active(config.getboolean('albumart', 'prefer_embedded'))
+            vb.pack_start(cb, expand=False)
+
+            hb = gtk.HBox(spacing=3)
+            cb = ConfigCheckButton(
+                    _("_Force image filename:"), 'albumart', 'force_filename')
+            cb.set_active(config.getboolean('albumart', 'force_filename'))
+            hb.pack_start(cb, expand=False)
+
+            entry = UndoEntry()
+            entry.set_tooltip_text(
+                    _("The album art image file to use when forced"))
+            entry.set_text(config.get("albumart", "filename"))
+            entry.connect('changed', self.__changed_text, 'filename')
+            # Disable entry when not forcing
+            entry.set_sensitive(cb.get_active())
+            cb.connect('toggled', self.__toggled_force_filename, entry)
+            hb.pack_start(entry)
+            vb.pack_start(hb, expand=False)
+
+            f = qltk.Frame(_("Album Art"), child=vb)
+
+            self.pack_start(f, expand=False)
+
+        def __changed_text(self, entry, name):
+            config.set('albumart', name, entry.get_text())
+
+        def __toggled_force_filename(self, cb, fn_entry):
+            fn_entry.set_sensitive(cb.get_active())
 
         def _entry(self, entry, name, section="settings"):
             config.set(section, name, entry.get_text())
@@ -195,7 +342,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             # player backend
             if player.backend and hasattr(player.device, 'PlayerPreferences'):
                 player_prefs = player.device.PlayerPreferences()
-                self.pack_start(player_prefs, expand=False)
+                f = qltk.Frame(_("Playback"), child=player_prefs)
+                self.pack_start(f, expand=False)
 
             # replaygain
             fallback_gain = config.getfloat("player", "fallback_gain", 0.0)
@@ -261,7 +409,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.show_all()
 
         def __toggled_gain(self, activator, widgets):
-            player.playlist.volume = player.playlist.volume
+            if player.playlist: # tests
+                player.playlist.volume = player.playlist.volume
             for widget in widgets:
                 widget.set_sensitive(activator.get_active())
 
@@ -269,40 +418,20 @@ class PreferencesWindow(qltk.UniqueWindow):
             config.set(section, name, str(adj.get_value()))
             player.playlist.volume = player.playlist.volume
 
-    class Library(gtk.VBox):
-        name = "library"
+    class Tagging(gtk.VBox):
+        name = "tagging"
         def __init__(self):
-            super(PreferencesWindow.Library, self).__init__(spacing=12)
+            super(PreferencesWindow.Tagging, self).__init__(spacing=12)
             self.set_border_width(12)
-            self.title = _("Library")
-            hb = gtk.HBox(spacing=6)
-            b = qltk.Button(_("_Select"), gtk.STOCK_OPEN)
-            e = UndoEntry()
-            e.set_text(util.fsdecode(config.get("settings", "scan")))
-            hb.pack_start(e)
-            e.set_tooltip_text(_("Songs placed in these folders (separated "
-                     "by ':') will be added to your library"))
-            hb.pack_start(b, expand=False)
-            scandirs = util.split_scan_dirs(config.get("settings", "scan"))
-            if scandirs and os.path.isdir(scandirs[-1]):
-                # start with last added directory
-                initial = scandirs[-1]
-            else:
-                initial = const.HOME
-            b.connect('clicked', self.__select, e, initial)
-            e.connect('changed', self.__changed, 'settings', 'scan')
-
-            cb = ConfigCheckButton(
-                _("_Refresh library on start"), "library", "refresh_on_start")
-            cb.set_active(config.getboolean("library", "refresh_on_start"))
-            vb3 = gtk.VBox(spacing=6)
-            vb3.pack_start(hb)
-            vb3.pack_start(cb)
-            f = qltk.Frame(_("Scan _Directories"), child=vb3)
-            f.get_label_widget().set_mnemonic_widget(e)
-            self.pack_start(f, expand=False)
+            self.title = _("Tags")
 
             vbox = gtk.VBox(spacing=6)
+
+            cb = ConfigCheckButton(
+                _("Show _programmatic tags"), 'editing', 'alltags')
+            cb.set_active(config.getboolean("editing", 'alltags'))
+            vbox.pack_start(cb, expand=False)
+
             hb = gtk.HBox(spacing=6)
             e = UndoEntry()
             e.set_text(config.get("editing", "split_on"))
@@ -315,12 +444,12 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(e)
             vbox.pack_start(hb, expand=False)
 
-            vb2 = gtk.VBox(spacing=0)
+            vb2 = gtk.VBox(spacing=6)
             cb = ConfigCheckButton(
                 _("Save ratings and play _counts"), "editing", "save_to_songs")
             cb.set_active(config.getboolean("editing", "save_to_songs"))
             vb2.pack_start(cb)
-            hb = gtk.HBox(spacing=3)
+            hb = gtk.HBox(spacing=6)
             lab = gtk.Label(_("_Email:"))
             entry = UndoEntry()
             entry.set_tooltip_text(_("Ratings and play counts will be set "
@@ -332,78 +461,54 @@ class PreferencesWindow(qltk.UniqueWindow):
             lab.set_mnemonic_widget(entry)
             lab.set_use_underline(True)
             vb2.pack_start(hb)
-            vbox.pack_start(vb2, expand=False)
 
-            cb = ConfigCheckButton(
-                _("Show _programmatic tags"), 'editing', 'alltags')
-            cb.set_active(config.getboolean("editing", 'alltags'))
-            vbox.pack_start(cb, expand=False)
             f = qltk.Frame(_("Tag Editing"), child=vbox)
-            self.pack_start(f)
-            self.show_all()
+            self.pack_start(f, expand=False)
 
-        def __select(self, button, entry, initial):
-            chooser = FolderChooser(self, _("Select Directories"), initial)
-            fns = chooser.run()
-            chooser.destroy()
-            if fns: entry.set_text(":".join(map(util.fsdecode, fns)))
+            f = qltk.Frame(_("Ratings"), child=vb2)
+            self.pack_start(f, expand=False)
+
+            self.show_all()
 
         def __changed(self, entry, section, name):
             config.set(section, name, entry.get_text())
 
-
-    class AlbumArt(gtk.VBox):
-        name = "albumart"
+    class Library(gtk.VBox):
+        name = "library"
         def __init__(self):
-            super(PreferencesWindow.AlbumArt, self).__init__(spacing=12)
+            super(PreferencesWindow.Library, self).__init__(spacing=12)
             self.set_border_width(12)
-            self.title = _("Album Art")
+            self.title = _("Library")
 
-            vb = gtk.VBox(spacing=6)
-            display_frame = qltk.Frame(_("Display"), child=vb)
-            c = ConfigCheckButton(
-                _("_Use rounded corners on thumbnails"), 'albumart', 'round')
-            c.set_tooltip_text(_("Round the corners of album artwork "
-                    "thumbnail images. May require restart to take effect."))
-            c.set_active(config.getboolean('albumart', 'round'))
-            vb.pack_start(c, expand=False)
-
-            # Filename choice algorithm config
-            vb = gtk.VBox(spacing=6)
-            file_frame = qltk.Frame(_("Art sources"), child=vb)
             cb = ConfigCheckButton(
-                    _("Prefer _embedded art"), 'albumart', 'prefer_embedded')
-            cb.set_tooltip_text(_("Choose to use artwork embedded in the audio "
-                    "(where available) over other sources"))
-            cb.set_active(config.getboolean('albumart', 'prefer_embedded'))
-            vb.pack_start(cb, expand=False)
+                _("_Refresh library on start"), "library", "refresh_on_start")
+            cb.set_active(config.getboolean("library", "refresh_on_start"))
 
-            hb = gtk.HBox(spacing=3)
-            cb = ConfigCheckButton(
-                    _("_Force image filename:"), 'albumart', 'force_filename')
-            cb.set_active(config.getboolean('albumart', 'force_filename'))
-            hb.pack_start(cb, expand=False)
+            scan_dirs = ScanBox()
 
-            entry = UndoEntry()
-            entry.set_tooltip_text(
-                    _("The album art image file to use when forced"))
-            entry.set_text(config.get("albumart", "filename"))
-            entry.connect('changed', self.__changed_text, 'filename')
-            # Disable entry when not forcing
-            entry.set_sensitive(cb.get_active())
-            cb.connect('toggled', self.__toggled_force_filename, entry)
-            hb.pack_start(entry)
-            vb.pack_start(hb, expand=False)
+            vb3 = gtk.VBox(spacing=6)
+            vb3.pack_start(scan_dirs)
 
-            self.pack_start(display_frame, expand=False)
-            self.pack_start(file_frame, expand=False)
+            def refresh_cb(button):
+                from quodlibet.library import library
+                from quodlibet.util import copool
+                paths = util.split_scan_dirs(config.get("settings", "scan"))
+                exclude = config.get("library", "exclude").split(":")
+                copool.add(library.rebuild,
+                   paths, False, exclude, cofuncid="library", funcid="library")
 
-        def __changed_text(self, entry, name):
-            config.set('albumart', name, entry.get_text())
+            refresh = qltk.Button(_("Refresh Library"), gtk.STOCK_REFRESH)
+            refresh.connect("clicked", refresh_cb)
 
-        def __toggled_force_filename(self, cb, fn_entry):
-            fn_entry.set_sensitive(cb.get_active())
+            hb = gtk.HBox(spacing=6)
+            hb.pack_start(cb)
+            hb.pack_start(refresh, expand=False)
 
+            vb3.pack_start(hb, expand=False)
+            f = qltk.Frame(_("Scan Directories"), child=vb3)
+            self.pack_start(f, expand=False)
+
+            self.show_all()
 
     def __init__(self, parent):
         if self.is_not_unique(): return
@@ -414,8 +519,8 @@ class PreferencesWindow(qltk.UniqueWindow):
         self.set_transient_for(qltk.get_top_parent(parent))
 
         self.__notebook = notebook = qltk.Notebook()
-        for Page in [self.SongList, self.Browsers, self.AlbumArt, self.Player,
-            self.Library]: notebook.append_page(Page())
+        for Page in [self.SongList, self.Browsers, self.Player,
+            self.Library, self.Tagging]: notebook.append_page(Page())
 
         close = gtk.Button(stock=gtk.STOCK_CLOSE)
         close.connect_object('clicked', lambda x: x.destroy(), self)
