@@ -774,9 +774,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         # otherwise all albums.
         self.__inhibit()
         if albums == [""]:
-            selection = self.view.get_selection()
-            selection.unselect_all()
-            selection.set_cursor((0,))
+            self.view.set_cursor((0,))
         else:
             select = lambda r: r[0] and r[0].title in albums
             self.view.select_by_func(select)
