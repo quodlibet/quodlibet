@@ -70,8 +70,8 @@ Many parts of Quod Libet benefit from D-Bus and its Python bindings
 (http://dbus.freedesktop.org/). iPod support depends on libgpod
 and its Python bindings (http://www.gtkpod.org/).
 
-Quod Libet requires the PyGTK development libraries, intltool, and the
-Python distutils suite to build and install. You can do this with
+Quod Libet requires intltool, and the Python distutils suite to build and
+install. You can do this with
  $ ./setup.py build
  $ ./setup.py install
 

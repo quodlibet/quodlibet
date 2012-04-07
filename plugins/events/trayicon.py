@@ -14,10 +14,7 @@ import gobject
 
 gtk_216 = gtk.gtk_version >= (2, 16)
 if not gtk_216:
-    try:
-        import egg.trayicon as trayicon
-    except ImportError:
-        import _trayicon as trayicon
+    import egg.trayicon as trayicon
 
 from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
 

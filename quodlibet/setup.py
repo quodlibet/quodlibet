@@ -9,9 +9,8 @@ from distutils.core import setup, Command
 from distutils.dep_util import newer
 from distutils.command.build_scripts import build_scripts as distutils_build_scripts
 
-from gdist import GDistribution, GObjectExtension
+from gdist import GDistribution
 from gdist.clean import clean as gdist_clean
-from gdist.gobject import build_gobject_ext as gdist_build_gobject_ext
 
 PACKAGES = ("browsers devices formats library parse plugins qltk "
             "util player debug").split()
@@ -19,11 +18,6 @@ PACKAGES = ("browsers devices formats library parse plugins qltk "
 class clean(gdist_clean):
     def run(self):
         gdist_clean.run(self)
-
-        for ext in self.distribution.gobject_modules:
-            path = ext.name.replace(".", "/") + ".so"
-            if os.path.exists(path):
-                os.unlink(path)
 
         if not self.all:
             return
@@ -199,15 +193,7 @@ class check(Command):
 
         print """\n\
 Your system meets the installation requirements. Run %(setup)s install to
-install it. You may want to make some extensions first; you can do that
-with %(setup)s build_gobject.""" % dict(setup=sys.argv[0])
-
-class build_gobject_ext(gdist_build_gobject_ext):
-    def run(self):
-        gdist_build_gobject_ext.run(self)
-        for ext in self.distribution.gobject_modules:
-            path = ext.name.replace(".", "/") + ".so"
-            self.copy_file(os.path.join(self.build_lib, path), path)
+install it.""" % dict(setup=sys.argv[0])
 
 def recursive_include(dir, pre, ext):
     all = []
@@ -236,8 +222,7 @@ if __name__ == "__main__":
 
     from quodlibet import const
     cmd_classes = {"check": check, 'clean': clean, "test": test_cmd,
-                   "coverage": coverage_cmd, "build_scripts": build_scripts,
-                   "build_gobject_ext": build_gobject_ext}
+                   "coverage": coverage_cmd, "build_scripts": build_scripts}
     setup_kwargs = {
         'distclass': GDistribution,
         'cmdclass': cmd_classes,
@@ -257,20 +242,6 @@ if __name__ == "__main__":
         'po_package': "quodlibet",
         'shortcuts': ["quodlibet.desktop", "exfalso.desktop"],
         'man_pages': ["man/quodlibet.1", "man/exfalso.1"],
-        'gobject_modules': [
-                    GObjectExtension("quodlibet._mmkeys",
-                            "gobject_ext/mmkeys/mmkeys.defs",
-                            "gobject_ext/mmkeys/mmkeys.override",
-                            ["gobject_ext/mmkeys/mmkeys.c",
-                            "gobject_ext/mmkeys/mmkeysmodule.c"],
-                            include_dirs=["gobject_ext/mmkeys"]),
-                    GObjectExtension("quodlibet._trayicon",
-                            "gobject_ext/trayicon/trayicon.defs",
-                            "gobject_ext/trayicon/trayicon.override",
-                            ["gobject_ext/trayicon/eggtrayicon.c",
-                             "gobject_ext/trayicon/trayiconmodule.c"],
-                            include_dirs=["gobject_ext/trayicon"])
-                    ],
         }
     if os.name == 'nt':
         # (probably) necessary to get the right DLLs pulled in by py2exe

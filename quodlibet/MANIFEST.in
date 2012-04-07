@@ -12,4 +12,3 @@ include tests/data/*
 include tests/*.py
 include gdist/*.py
 include *.desktop.in
-recursive-include gobject_ext *.defs *.override *.[ch]

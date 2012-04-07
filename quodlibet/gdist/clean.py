@@ -24,7 +24,6 @@ class clean(distutils_clean, GCommand):
     def finalize_options(self):
         distutils_clean.finalize_options(self)
         GCommand.finalize_options(self)
-        self.extensions = self.distribution.gobject_modules
         self.shortcuts = self.distribution.shortcuts
         self.po_package = self.distribution.po_package
         self.po_directory = self.distribution.po_directory

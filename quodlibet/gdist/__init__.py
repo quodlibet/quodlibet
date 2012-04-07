@@ -21,7 +21,6 @@ from distutils.command.build import build as distutils_build
 from distutils.command.install import install as distutils_install
 
 from gdist.core import GCommand
-from gdist.gobject import build_gobject_ext, GObjectExtension
 from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
 from gdist.po import build_mo, install_mo
@@ -40,8 +39,6 @@ class build(distutils_build):
          lambda self: self.distribution.has_po()),
         ("build_shortcuts",
          lambda self: self.distribution.has_shortcuts()),
-        ("build_gobject_ext",
-         lambda self: self.distribution.has_gobject_ext()),
         ("build_icon_cache",
          lambda self: self.distribution.need_icon_cache()),
         ]
@@ -65,11 +62,9 @@ class GDistribution(Distribution):
       po_directory -- directory where .po files are contained
       po_package -- package name for translation files
       shortcuts -- list of .desktop files to build/install
-      gobject_modules -- list of GObjectExtensions to build
       man_pages -- list of man pages to install
 
     Using the translation features requires intltool.
-    Using GObjectExtensions requires pygtk-codegen-2.0.
 
     Example:
       from distutils.core import setup
@@ -78,7 +73,6 @@ class GDistribution(Distribution):
       setup(distclass=GDistribution, ...)
       """
 
-    gobject_modules = []
     shortcuts = []
     po_directory = None
     man_pages = []
@@ -86,7 +80,6 @@ class GDistribution(Distribution):
 
     def __init__(self, *args, **kwargs):
         Distribution.__init__(self, *args, **kwargs)
-        self.cmdclass.setdefault("build_gobject_ext", build_gobject_ext)
         self.cmdclass.setdefault("build_mo", build_mo)
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
         self.cmdclass.setdefault("build_icon_cache", build_icon_cache)
@@ -102,13 +95,10 @@ class GDistribution(Distribution):
     def has_shortcuts(self):
         return os.name != 'nt' and bool(self.shortcuts)
 
-    def has_gobject_ext(self):
-        return os.name != 'nt' and bool(self.gobject_modules)
-
     def has_man_pages(self):
         return os.name != 'nt' and bool(self.man_pages)
 
     def need_icon_cache(self):
         return os.name != 'nt'
 
-__all__ = ["GDistribution", "GObjectExtension"]
+__all__ = ["GDistribution"]

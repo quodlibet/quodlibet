@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,21 +8,44 @@
 
 class MmKeys(object):
     def __init__(self, player):
-        try: import quodlibet._mmkeys as mmkeys
-        except:
-            try: import mmkeys
-            except: return
-        self.__keys = mmkeys.MmKeys()
-        self.__keys.connect('mm_prev', self.__previous, player)
-        self.__keys.connect('mm_next', self.__next, player)
-        self.__keys.connect('mm_stop', self.__stop, player)
-        self.__keys.connect('mm_playpause', self.__play_pause, player)
+        self.__player = player
+        if not self.__init_keybinder():
+            self.__init_mmkeys()
 
-    def __previous(self, keys, key, player): player.previous()
-    def __next(self, keys, key, player): player.next()
-    def __stop(self, keys, key, player): player.stop()
+    def __init_keybinder(self):
+        try: import keybinder
+        except: return
 
-    def __play_pause(self, keys, key, player):
-        if player.song is None:
-            player.reset()
-        else: player.paused ^= True
+        signals = {"XF86AudioPrev": "prev", "XF86AudioNext": "next",
+                   "XF86AudioStop": "stop", "XF86AudioPlay": "play"}
+        for sig, action in signals.items():
+            keybinder.bind(sig, self.__action, action)
+
+        return True
+
+    def __init_mmkeys(self):
+        try: import mmkeys
+        except: return
+
+        self.__keys = keys = mmkeys.MmKeys()
+        signals = {"mm_prev": "prev", "mm_next": "next", "mm_stop": "stop",
+                   "mm_playpause": "play"}
+        for sig, action in signals.items():
+            keys.connect_object(sig, self.__action, action)
+
+        return True
+
+    def __action(self, action, *args):
+        player = self.__player
+
+        if action == "prev":
+            player.previous()
+        elif action == "next":
+            player.next()
+        elif action == "stop":
+            player.stop()
+        elif action == "play":
+            if player.song is None:
+                player.reset()
+            else:
+                player.paused ^= True
