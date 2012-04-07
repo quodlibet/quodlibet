@@ -123,15 +123,19 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.set_border_width(12)
             self.title = _("Song List")
 
+            # Behaviour
+            vbox = gtk.VBox(spacing=6)
             c = ConfigCheckButton(
                 _("_Jump to playing song automatically"), 'settings', 'jump')
             c.set_tooltip_text(_("When the playing song changes, "
                                  "scroll to it in the song list"))
             c.set_active(config.getboolean("settings", "jump"))
-            self.pack_start(c, expand=False)
+            vbox.pack_start(c, expand=False)
+            frame = qltk.Frame(_("Behavior"), child=vbox)
+            self.pack_start(frame, expand=False)
 
+            # Columns
             vbox = gtk.VBox(spacing=12)
-
             buttons = {}
             table = gtk.Table(3, 3)
             table.set_homogeneous(True)
@@ -231,14 +235,15 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.set_border_width(12)
             self.title = _("Browsers")
 
+            # Search
             vb = gtk.VBox(spacing=6)
-
             hb = gtk.HBox(spacing=6)
             l = gtk.Label(_("_Global filter:"))
             l.set_use_underline(True)
             e = ValidatingEntry(Query.is_valid_color)
             e.set_text(config.get("browsers", "background"))
             e.connect('changed', self._entry, 'background', 'browsers')
+            e.set_tooltip_text(_("Apply this query in addition to all others"))
             l.set_mnemonic_widget(e)
             hb.pack_start(l, expand=False)
             hb.pack_start(e)
@@ -250,9 +255,11 @@ class PreferencesWindow(qltk.UniqueWindow):
             c.set_tooltip_text(_("Show search results after the user "
                 "stops typing."))
             vb.pack_start(c, expand=False)
+            f = qltk.Frame(_("Search"), child=vb)
+            self.pack_start(f, expand=False)
 
-            self.pack_start(vb, expand=False)
-
+            # Ratings
+            vb = gtk.VBox(spacing=6)
             c1 = ConfigCheckButton(
                 _("Confirm _multiple ratings"),
                 'browsers', 'rating_confirm_multiple')
@@ -275,7 +282,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             f = qltk.Frame(_("Ratings"), child=vbox)
             self.pack_start(f, expand=False)
 
-
+            # Album Art
             vb = gtk.VBox(spacing=6)
             c = ConfigCheckButton(
                 _("_Use rounded corners on thumbnails"), 'albumart', 'round')
@@ -310,7 +317,6 @@ class PreferencesWindow(qltk.UniqueWindow):
             vb.pack_start(hb, expand=False)
 
             f = qltk.Frame(_("Album Art"), child=vb)
-
             self.pack_start(f, expand=False)
 
         def __changed_text(self, entry, name):
@@ -332,7 +338,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             # player backend
             if player.backend and hasattr(player.device, 'PlayerPreferences'):
                 player_prefs = player.device.PlayerPreferences()
-                f = qltk.Frame(_("Playback"), child=player_prefs)
+                f = qltk.Frame(_("Output Configuration"), child=player_prefs)
                 self.pack_start(f, expand=False)
 
             # replaygain
@@ -426,7 +432,9 @@ class PreferencesWindow(qltk.UniqueWindow):
             e = UndoEntry()
             e.set_text(config.get("editing", "split_on"))
             e.connect('changed', self.__changed, 'editing', 'split_on')
-            e.set_tooltip_text(_('Separators for splitting tags'))
+            e.set_tooltip_text(
+                _("A list of separators to use when splitting tag values. "
+                   "The list is space-separated"))
             l = gtk.Label(_("Split _on:"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(e)
