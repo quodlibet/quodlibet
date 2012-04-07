@@ -48,8 +48,7 @@ class ScanBox(gtk.HBox):
         menu.append(remove_item)
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)
-        remove_item.connect_object('activate',
-                                   self.__remove, view.get_selection())
+        remove_item.connect_object('activate', self.__remove, view)
 
         sw = gtk.ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -78,7 +77,7 @@ class ScanBox(gtk.HBox):
         selection.connect("changed", self.__select_changed, remove)
         selection.emit("changed")
 
-        remove.connect_object("clicked", self.__remove, selection)
+        remove.connect_object("clicked", self.__remove, view)
 
         vbox = gtk.VBox(spacing=6)
         vbox.pack_start(add, expand=False)
@@ -103,17 +102,8 @@ class ScanBox(gtk.HBox):
         paths = map(util.fsencode, [r[0] for r in self.model])
         config.set("settings", "scan", ":".join(paths))
 
-    def __remove(self, selection):
-        model, paths = selection.get_selected_rows()
-
-        iters = [model[p].iter for p in paths]
-        map(model.remove, iters)
-
-        if len(iters) and model.iter_is_valid(iters[-1]):
-            selection.select_iter(iters[-1])
-        elif len(model):
-            selection.select_path(model[-1].path)
-
+    def __remove(self, view):
+        view.remove_selection()
         self.__save()
 
     def __add(self, *args):

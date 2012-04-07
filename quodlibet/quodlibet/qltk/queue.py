@@ -204,9 +204,7 @@ class PlayQueue(SongList):
         return self.popup_menu(menu, 0, gtk.get_current_event_time())
 
     def __remove(self, *args):
-        model, paths = self.get_selection().get_selected_rows()
-        if not paths: return
-        self._remove(map(model.get_iter, paths))
+        self.remove_selection()
 
     def set_sort_by(self, *args): pass
     def get_sort_by(self, *args): return "", False

@@ -199,7 +199,79 @@ class TreeViewHints(gtk.Window):
     def do_leave_notify_event(self, event): return self.__event(event)
     def do_scroll_event(self, event): return self.__event(event)
 
-class MultiDragTreeView(gtk.TreeView):
+class BaseView(gtk.TreeView):
+    def remove_paths(self, paths):
+        """Remove rows and restore the selection if it got removed"""
+
+        self.remove_iters(map(self.get_model().get_iter, paths))
+
+    def remove_iters(self, iters):
+        """Remove rows and restore the selection if it got removed"""
+
+        self.__remove_iters(iters)
+
+    def remove_selection(self):
+        """Remove all currently selected rows and select the position
+        of the first removed one."""
+
+        selection = self.get_selection()
+        mode = selection.get_mode()
+        if mode in (gtk.SELECTION_SINGLE, gtk.SELECTION_BROWSE):
+            model, iter_ = selection.get_selected()
+            if iter_:
+                self.__remove_iters([iter_], force_restore=True)
+        elif mode == gtk.SELECTION_MULTIPLE:
+            model, paths = selection.get_selected_rows()
+            iters = map(model.get_iter, paths or [])
+            self.__remove_iters(iters, force_restore=True)
+
+    def select_by_func(self, func, scroll=True, one=False):
+        """Calls func with every gtk.TreeModelRow in the model and selects
+        it if func returns True. In case func never returned True,
+        the selection will not be changed.
+
+        Returns True if the selection was changed."""
+
+        selection = self.get_selection()
+        first = True
+        for row in self.get_model():
+            if func(row):
+                if not first:
+                    selection.select_path(row.path)
+                    continue
+                if scroll:
+                    self.scroll_to_cell(row.path, use_align=True,
+                                        row_align=0.5)
+                self.set_cursor(row.path)
+                if one:
+                    break
+                first = False
+        return not first
+
+    def __remove_iters(self, iters, force_restore=False):
+        if not iters: return
+
+        selection = self.get_selection()
+        model = self.get_model()
+
+        if force_restore:
+             map(model.remove, iters)
+        else:
+            old_count = selection.count_selected_rows()
+            map(model.remove, iters)
+            # only restore a selection if all selected rows are gone afterwards
+            if not old_count or selection.count_selected_rows():
+                return
+
+        # model.remove makes the removed iter point to the next row if possible
+        # so check if the last iter is a valid one and select it or
+        # simply select the last row
+        if model.iter_is_valid(iters[-1]):
+            selection.select_iter(iters[-1])
+        elif len(model):
+            selection.select_path(model[-1].path)
+
+class MultiDragTreeView(BaseView):
     """TreeView with multirow drag support:
     * Selections don't change until button-release-event...
     * Unless they're a Shift/Ctrl modification, then they happen immediately
@@ -280,7 +352,7 @@ class MultiDragTreeView(gtk.TreeView):
             gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
             self.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
 
-class RCMTreeView(gtk.TreeView):
+class RCMTreeView(BaseView):
     """Emits popup-menu when a row is right-clicked on."""
 
     def __init__(self, *args):
@@ -363,7 +435,7 @@ class RCMTreeView(gtk.TreeView):
 
         return (menu_x, menu_y, True) # x, y, move_within_screen
 
-class HintedTreeView(gtk.TreeView):
+class HintedTreeView(BaseView):
     """A TreeView that pops up a tooltip when you hover over a cell that
     contains ellipsized text."""
 

@@ -702,34 +702,16 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
             self.__filter_changed(self.__searchbar, text, restore=True)
 
         keys = config.get("browsers", "radio").splitlines()
-        selection = self.view.get_selection()
-        model = self.view.get_model()
-        view = self.view
+        def select_func(row):
+            return row[self.TYPE] != self.TYPE_SEP and row[self.KEY] in keys
 
-        # get all paths that have a matching key, and the favorites
-        fav = None
-        found = []
-        for row in model:
-            if row[self.TYPE] != self.TYPE_SEP and row[self.KEY] in keys:
-                found.append(row.path)
-            if row[self.TYPE] == self.TYPE_FAV:
-                fav = row.path
-
-        # if nothing was found, default to favorites
-        if not found:
-            found.append(fav)
-
-        # select accordingly
         self.__inhibit()
-        selection.unselect_all()
-        first = True
-        for path in found:
-            if first:
-                view.scroll_to_cell(path, use_align=True, row_align=0.5)
-                view.set_cursor(path)
-                first = False
-            else:
-                selection.select_path(path)
+        view = self.view
+        if not view.select_by_func(select_func):
+            for row in view.get_model():
+                if row[self.TYPE] == self.TYPE_FAV:
+                    self.set_cursor(row.path)
+                    break
         self.__uninhibit()
 
     def __get_filter(self):

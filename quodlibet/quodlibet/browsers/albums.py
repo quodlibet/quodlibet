@@ -730,23 +730,13 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def filter(self, key, values):
         assert(key == "album")
         if not values: values = [""]
-        view = self.view
+
+        select = lambda r: r[0] and r[0].title in values
         self.__inhibit()
-        selection = view.get_selection()
-        model = view.get_model()
-        first = True
-        for row in model:
-            if row[0] is not None and row[0].title in values:
-                if first:
-                    view.scroll_to_cell(row.path[0],
-                        use_align=True, row_align=0.5)
-                    view.set_cursor(row.path)
-                    first = False
-                else:
-                    selection.select_path(row.path)
+        changed = self.view.select_by_func(select)
         self.__uninhibit()
-        if not first:
-            selection.emit('changed')
+        if changed:
+            self.view.get_selection().emit('changed')
 
     def unfilter(self):
         self.view.set_cursor((0,))
@@ -778,38 +768,24 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
             self.__update_filter(entry, text, restore=True)
 
         albums = config.get("browsers", "albums").split("\n")
-        view = self.view
-        selection = view.get_selection()
+
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
         # otherwise all albums.
         self.__inhibit()
         if albums == [""]:
+            selection = self.view.get_selection()
             selection.unselect_all()
-            selection.select_path((0,))
+            selection.set_cursor((0,))
         else:
-            model = selection.get_tree_view().get_model()
-            first = True
-            for row in model:
-                if row[0] is not None and row[0].title in albums:
-                    if first:
-                        view.scroll_to_cell(row.path, use_align=True,
-                                            row_align=0.5)
-                        view.set_cursor(row.path)
-                        first = False
-                    else:
-                        selection.select_path(row.path)
+            select = lambda r: r[0] and r[0].title in albums
+            self.view.select_by_func(select)
         self.__uninhibit()
 
     def scroll(self, song):
-        view = self.view
-        model = view.get_model()
         album_key = song.album_key
-        for row in model:
-            if row[0] is not None and row[0].key == album_key:
-                view.scroll_to_cell(row.path[0], use_align=True, row_align=0.5)
-                view.set_cursor(row.path)
-                break
+        select = lambda r: r[0] and r[0].key == album_key
+        self.view.select_by_func(select, one=True)
 
     def __get_config_string(self, selection):
         if not selection: return ""

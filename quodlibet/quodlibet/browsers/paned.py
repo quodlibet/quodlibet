@@ -24,7 +24,7 @@ from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
-from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.views import AllTreeView, BaseView
 from quodlibet.util import tag, pattern
 from quodlibet.util.library import background_filter
 
@@ -83,7 +83,7 @@ class PatternEditor(gtk.VBox):
 
         cb = TagsComboBoxEntry(self.COMPLETION)
 
-        view = gtk.TreeView(model)
+        view = BaseView(model)
         view.set_reorderable(True)
         view.set_headers_visible(False)
 
@@ -151,9 +151,7 @@ class PatternEditor(gtk.VBox):
             model.append(row=[cb.tag])
 
     def __remove(self, button, view):
-        model, iter = view.get_selection().get_selected()
-        if iter:
-            model.remove(iter)
+        view.remove_selection()
 
     def __toggled(self, button, edit_widget, model):
         tags = self.__headers[button]
@@ -591,12 +589,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
         def scroll(self, song):
             values = self.__get_format_keys(song)
-            for row in self.__model:
-                if row[0] != ALL and row[1].key in values:
-                    path = row.path
-                    self.scroll_to_cell(path, use_align=True, row_align=0.5)
-                    self.set_cursor(path)
-                    break
+            select_func = lambda r: r[0] != ALL and r[1].key in values
+            self.select_by_func(select_func, one=True)
 
         def get_selected(self):
             try: model, paths = self.get_selection().get_selected_rows()
@@ -609,30 +603,17 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                     return [model[p][1].key for p in paths]
 
         def set_selected(self, values, jump=False):
-            model = self.__model
-            if not len(model): return
+            if not len(self.__model): return
 
-            if not values: values = [None]
+            values = values or [None]
+            def select_func(row):
+                return (row[0] == ALL and None in values) or \
+                       (row[0] == SONGS and row[1].key in values)
 
             # If the selection is the same, change nothing
-            selection = self.get_selection()
             if values != self.get_selected():
                 self.inhibit()
-                first = True
-
-                for row in model:
-                    if (row[0] == ALL and None in values) or \
-                            (row[0] == SONGS and row[1].key in values):
-                        if first:
-                            if jump:
-                                self.scroll_to_cell(row.path)
-                            self.set_cursor(row.path)
-                            first = False
-                        else:
-                            selection.select_path(row.path)
-
-                # We didn't find something to select, so select All
-                if first:
+                if not self.select_by_func(select_func, scroll=jump):
                     self.set_cursor((0,))
                 self.uninhibit()
 

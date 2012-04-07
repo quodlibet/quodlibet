@@ -620,12 +620,8 @@ class Playlists(gtk.VBox, Browser):
 
     def restore(self):
         try: name = config.get("browsers", "playlist")
-        except: pass
-        else:
-            for i, row in enumerate(self.__lists):
-                if row[0].name == name:
-                    self.__view.get_selection().select_path((i,))
-                    break
+        except: return
+        self.__view.select_by_func(lambda r: r[0].name == name, one=True)
 
     def reordered(self, songlist):
         songs = songlist.get_songs()

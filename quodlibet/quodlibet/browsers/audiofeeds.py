@@ -416,12 +416,7 @@ class AudioFeeds(Browser, gtk.VBox):
         try: names = config.get("browsers", "audiofeeds").split("\t")
         except: pass
         else:
-            paths = [(i,) for i, row in enumerate(self.__feeds)
-                     if row[0].name in names]
-            if paths:
-                selection = self.__view.get_selection()
-                selection.unselect_all()
-                map(selection.select_path, paths)
+            self.__view.select_by_func(lambda r: r[0].name in names)
 
 browsers = []
 try:

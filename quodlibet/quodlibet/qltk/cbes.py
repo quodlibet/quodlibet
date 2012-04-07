@@ -99,8 +99,8 @@ class _KeyValueEditor(qltk.Window):
             'clicked', self.__add, selection, name, self.value, self.model)
         selection.connect('changed', self.__set_text, name, self.value, rem_b)
         view.connect('popup-menu', self.__popup, menu)
-        remove.connect_object('activate', self.__remove, view.get_selection())
-        rem_b.connect_object('clicked', self.__remove, view.get_selection())
+        remove.connect_object('activate', self.__remove, view)
+        rem_b.connect_object('clicked', self.__remove, view)
         close.connect_object('clicked', qltk.Window.destroy, self)
         view.connect('key-press-event', self.__view_key_press)
         self.connect_object('destroy', gtk.Menu.destroy, menu)
@@ -114,14 +114,13 @@ class _KeyValueEditor(qltk.Window):
 
     def __view_key_press(self, view, event):
         if event.keyval == gtk.accelerator_parse("Delete")[0]:
-            self.__remove(view.get_selection())
+            self.__remove(view)
 
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, gtk.get_current_event_time())
 
-    def __remove(self, selection):
-        model, iter = selection.get_selected()
-        if iter is not None: model.remove(iter)
+    def __remove(self, view):
+        view.remove_selection()
 
     def __set_text(self, selection, name, value, remove):
         model, iter = selection.get_selected()

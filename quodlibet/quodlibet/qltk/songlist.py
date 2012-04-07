@@ -1045,26 +1045,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         if len(iters) != len(songs):
             iters = model.find_all(songs)
 
-        selection_removed = (len(iters) == len(rows))
-        self._remove(iters, set_selection=selection_removed)
-
-    def _remove(self, iters, set_selection=True):
-        """Removes the rows from the model and selects the row
-        after the last removed one if specified."""
-
-        model = self.model
-        map(model.remove, iters)
-
-        if not set_selection: return
-
-        # model.remove makes the removed iter point to the next row if possible
-        # so check if the last iter is a valid one and select it or
-        # simply select the last row
-        selection = self.get_selection()
-        if len(iters) and model.iter_is_valid(iters[-1]):
-            selection.select_iter(iters[-1])
-        elif len(model):
-            selection.select_path(model[-1].path)
+        self.remove_iters(iters)
 
     def __song_properties(self, librarian):
         model, rows = self.get_selection().get_selected_rows()

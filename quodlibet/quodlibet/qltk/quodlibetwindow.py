@@ -630,7 +630,7 @@ class QuodLibetWindow(gtk.Window):
         if not self.browser.dynamic(song):
             iter = self.songlist.model.find(song)
             if iter:
-                self.songlist.model.remove(iter)
+                self.songlist.remove_iters([iter])
                 self.__set_time()
 
     def __song_ended(self, player, song, stopped):
