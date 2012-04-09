@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import traceback
+import platform
 
 import gtk
 
@@ -34,9 +35,9 @@ class ExceptionDialog(gtk.Window):
         from quodlibet.util import logging
         dumpobj = file(dump, "w")
         minidumpobj = file(minidump, "w")
-        header = "Quod Libet %s\nMutagen %s\nPython %s %s" %(
+        header = "Quod Libet %s\nMutagen %s\nPython %s %s\nPlatform %s" %(
             const.VERSION, mutagen.version_string, sys.version,
-            sys.platform)
+            sys.platform, platform.platform())
 
         minidump_data = ("=== SYSTEM INFORMATION:\n%s\n\n"
                          "=== STACK TRACE\n%s\n\n") % (
