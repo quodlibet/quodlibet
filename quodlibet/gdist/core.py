@@ -27,12 +27,13 @@ class GCommand(Command):
         self.po_directory = self.distribution.po_directory
 
     def capture(self, args):
-        p = subprocess.Popen(args, stdout=subprocess.PIPE)
+        p = subprocess.Popen(args, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
         ret = p.wait()
         if ret != 0:
             raise SystemExit("External program '%s' exited with error %d."
                              % (' '.join(args), ret))
-        return p.stdout.read()
+        return p.stdout.read(), p.stderr.read()
 
     def check_po(self):
         """Exit if translation is needed and not available"""

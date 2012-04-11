@@ -19,6 +19,43 @@ from distutils.util import change_root
 from distutils.spawn import find_executable
 from gdist.core import GCommand
 
+class po_stats(GCommand):
+    description = "Show translation statistics"
+    build_base = None
+
+    def finalize_options(self):
+        GCommand.finalize_options(self)
+        self.po_package = self.distribution.po_package
+        self.po_files = glob.glob(os.path.join(self.po_directory, "*.po"))
+        self.set_undefined_options('build', ('build_base', 'build_base'))
+
+    def run(self):
+        self.run_command("build_mo")
+
+        basepath = os.path.join(self.build_base, 'share', 'locale')
+
+        res = []
+        for po in self.po_files:
+            language = os.path.basename(po).split(".")[0]
+            output = self.capture(["msgfmt", "--statistics", po])[1].strip()
+            res.append((language, output))
+
+        stats = []
+        for po, r in res:
+            nums = [int(p.split()[0]) for p in r.split(",")]
+            if len(nums) == 2:
+                trans, untrans = nums
+                fuzzy = 0
+            else:
+                trans, fuzzy, untrans = nums
+            stats.append((po, trans, fuzzy, untrans))
+
+        stats.sort(key=lambda x: x[1], reverse=True)
+        print "#"*30
+        for po, trans, fuzzy, untrans in stats:
+            all_ = float(trans + fuzzy + untrans)/100
+            print "%5s: %3d%% (+%2d%% fuzzy)" % (po, trans/all_, fuzzy/all_)
+
 class build_mo(GCommand):
     """build message catalog files
 
@@ -52,6 +89,7 @@ class build_mo(GCommand):
         infiles = file(infilename).read().splitlines()
         pot_name = os.path.join(
             self.po_directory, self.po_package + ".pot")
+
         for filename in infiles:
             if newer(filename, pot_name):
                 oldpath = os.getcwd()
@@ -103,4 +141,4 @@ class install_mo(GCommand):
             dest = change_root(self.root, dest)
         self.copy_tree(src, dest)
 
-__all__ = ["build_mo", "install_mo"]
+__all__ = ["build_mo", "install_mo", "po_stats"]
