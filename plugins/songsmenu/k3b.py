@@ -1,15 +1,13 @@
 # Copyright 2005 Joe Wreschnig,
-#           2009 Christoph Reiter
+#           2009,2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import gtk
 
-from quodlibet import util, config
-from quodlibet.qltk import ErrorMessage
+from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class BurnCD(SongsMenuPlugin):
@@ -24,45 +22,30 @@ class BurnCD(SongsMenuPlugin):
         'Brasero': ['brasero', '--audio']
     }
 
-    try:
-        config.get("plugins", __name__)
-    except:
-        config.set("plugins", __name__, burn_programs.keys()[0])
+    def __init__(self, *args, **kwargs):
+        super(BurnCD, self).__init__(*args, **kwargs)
+        self.prog_name = None
 
-    def PluginPreferences(klass, window):
-        vb = gtk.HBox(spacing=10)
-        vb.set_border_width(10)
-        label = gtk.Label(_("_Program:"))
-        combo = gtk.combo_box_new_text()
+        items = self.burn_programs.items()
+        progs = [(util.iscommand(x[1][0]), x) for x in items]
+        progs.sort(reverse=True)
 
-        select = 0
-        name = config.get("plugins", __name__)
-        for i, prog in enumerate(klass.burn_programs.iterkeys()):
-            combo.append_text(prog)
-            if prog == name:
-                select = i
+        submenu = gtk.Menu()
+        for (is_cmd, (name, (cmd, arg))) in progs:
+            item = gtk.MenuItem(name)
+            if not is_cmd:
+                item.set_sensitive(False)
+            else:
+                item.connect_object('activate', self.__set, name)
+            submenu.append(item)
+        self.set_submenu(submenu)
 
-        combo.set_active(select)
-        combo.connect('changed',
-            lambda e: config.set('plugins', __name__, e.get_active_text()))
-
-        label.set_mnemonic_widget(combo)
-        label.set_use_underline(True)
-        vb.pack_start(label, expand=False)
-        vb.pack_start(combo, expand=False)
-        vb.show_all()
-        return vb
-
-    PluginPreferences = classmethod(PluginPreferences)
+    def __set(self, name):
+        self.prog_name = name
 
     def plugin_songs(self, songs):
-        name = config.get("plugins", __name__)
-        prog = self.burn_programs[name]
+        if self.prog_name is None:
+            return
 
-        if not util.iscommand(prog[0]):
-            ErrorMessage(
-                None, "%s not found" % name,
-                "The %s burning program was not found. " % name).run()
-        else:
-            files = [song['~filename'] for song in songs]
-            util.spawn(prog + files)
+        cmd, arg = self.burn_programs[self.prog_name]
+        util.spawn([cmd, arg] + [song['~filename'] for song in songs])
