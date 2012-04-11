@@ -8,6 +8,7 @@ import sys
 from distutils.core import setup, Command
 from distutils.dep_util import newer
 from distutils.command.build_scripts import build_scripts as distutils_build_scripts
+from distutils.spawn import find_executable
 
 from gdist import GDistribution
 from gdist.clean import clean as gdist_clean
@@ -194,6 +195,12 @@ class check(Command):
             raise SystemExit("not found\n%s requires Mutagen 1.11.\n"
                 "(http://code.google.com/p/mutagen/downloads/list)" %
                 self.NAME)
+        else: print "found"
+
+        print "Checking intltool/gettext:",
+        if not find_executable("intltool-update") or \
+                not find_executable("msgfmt"):
+            raise SystemExit("intltool/gettext not found")
         else: print "found"
 
         print """\n\
