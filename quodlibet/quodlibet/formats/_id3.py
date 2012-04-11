@@ -24,6 +24,14 @@ class ID3hack(mutagen.id3.ID3):
             self[tag.HashKey].extend(tag[:])
         else: self[tag.HashKey] = tag
 
+class ID3bug(mutagen.id3.ID3):
+    def load(self, *args, **kwargs):
+        # work arround mutagen bug by throwing away unknown 2.3 frames on load
+        # http://code.google.com/p/mutagen/issues/detail?id=97
+        super(ID3bug, self).load(*args, **kwargs)
+        if self.version == (2, 3, 0) and mutagen.version < (1, 21):
+            del self.unknown_frames[:]
+
 # ID3 is absolutely the worst thing ever.
 class ID3File(AudioFile):
 
@@ -224,7 +232,7 @@ class ID3File(AudioFile):
         return text
 
     def write(self):
-        try: tag = mutagen.id3.ID3(self['~filename'])
+        try: tag = ID3bug(self['~filename'])
         except mutagen.id3.error: tag = mutagen.id3.ID3()
 
         # prefill TMCL with the ones we can't read

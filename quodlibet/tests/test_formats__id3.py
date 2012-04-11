@@ -17,6 +17,8 @@ class TID3File(TestCase):
         config.init()
         self.filename = tempfile.mkstemp(".mp3")[1]
         shutil.copy(os.path.join('tests', 'data', 'silence-44-s.mp3'), self.filename)
+        self.filename2 = tempfile.mkstemp(".mp3")[1]
+        shutil.copy(os.path.join('tests', 'data', 'mutagen-bug.mp3'), self.filename2)
 
     def test_optional_POPM_count(self):
         #http://code.google.com/p/quodlibet/issues/detail?id=364
@@ -316,6 +318,18 @@ class TID3File(TestCase):
         song = MP3File(self.filename)
         self.failUnlessEqual(len(song.list("artist")), 2)
 
+    def test_id3_bug(self):
+        # http://code.google.com/p/mutagen/issues/detail?id=97
+        tag = mutagen.id3.ID3(self.filename2)
+        self.failUnless(tag.unknown_frames)
+        version = mutagen.version
+        mutagen.version = (1, 20)
+        song = MP3File(self.filename2)
+        song.write()
+        mutagen.version = version
+        tag = mutagen.id3.ID3(self.filename2)
+        self.failIf(tag.unknown_frames)
+
     def test_encoding(self):
         song = MP3File(self.filename)
         song["foo"] = u"öäü"
@@ -448,6 +462,7 @@ class TID3File(TestCase):
         self.failUnlessEqual(MP3File(self.filename)("artist"), x)
 
     def tearDown(self):
+        os.unlink(self.filename2)
         os.unlink(self.filename)
         config.quit()
 
