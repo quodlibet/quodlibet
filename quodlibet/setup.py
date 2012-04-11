@@ -74,10 +74,12 @@ class build_scripts(distutils_build_scripts):
 
 class coverage_cmd(Command):
     description = "generate test coverage data"
-    user_options = []
+    user_options = [
+        ("to-run=", None, "list of tests to run (default all)"),
+    ]
 
     def initialize_options(self):
-        pass
+        self.to_run = []
 
     def finalize_options(self):
         pass
@@ -94,7 +96,10 @@ class coverage_cmd(Command):
             count=True, trace=False,
             ignoredirs=[sys.prefix, sys.exec_prefix])
         def run_tests():
-            self.run_command("test")
+            cmd = self.reinitialize_command("test")
+            cmd.to_run = self.to_run[:]
+            cmd.ensure_finalized()
+            cmd.run()
         tracer.runfunc(run_tests)
         results = tracer.results()
         coverage = os.path.join(os.path.dirname(__file__), "coverage")
