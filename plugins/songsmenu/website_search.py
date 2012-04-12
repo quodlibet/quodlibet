@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011 Nick Boultbee
+# Copyright 2011, 2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -25,14 +25,13 @@ class WebsiteSearch(SongsMenuPlugin):
     """Loads a browser with a URL designed to search on tags of the song. 
     This may include a standard web search engine, eg Google, or a more specific
     site look-up. The URLs are customisable using tag patterns."""
-    
+
     PLUGIN_ICON = gtk.STOCK_OPEN
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
-    PLUGIN_DESC = _("Searches your choice of website using any song tags."
-                    "Requires QL 2.3.3+")
-    PLUGIN_VERSION = '0.2'
-    
+    PLUGIN_DESC = _("Searches your choice of website using any song tags.")
+    PLUGIN_VERSION = '0.3'
+
     # Here are some starters...
     # Sorry, PEP-8 : sometimes you're unrealistic
     DEFAULT_URL_PATS = [
@@ -42,6 +41,8 @@ class WebsiteSearch(SongsMenuPlugin):
             "http://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
         ("Musicbrainz album listing",
             "http://musicbrainz.org/<musicbrainz_albumid|release/<musicbrainz_albumid>|search?query=<album>&type=release>"),
+        ("Discogs album search",
+            "http://www.discogs.com/advanced_search?artist=<albumartist|<albumartist>|<artist>>&release_title=<album>"),
         ("ISOHunt FLAC album torrent search",
             "https://isohunt.com/torrents/?ihq=<albumartist|<albumartist>|<artist>>+<album>+flac"),
         ("The Pirate Bay torrent search",
