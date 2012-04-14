@@ -710,7 +710,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         if not view.select_by_func(select_func):
             for row in view.get_model():
                 if row[self.TYPE] == self.TYPE_FAV:
-                    self.set_cursor(row.path)
+                    view.set_cursor(row.path)
                     break
         self.__uninhibit()
 
