@@ -24,6 +24,7 @@ from quodlibet import util
 
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.parse import Query
+from quodlibet.qltk import mmkeys_ as mmkeys
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
 from quodlibet.qltk.controls import PlayControls
@@ -32,7 +33,6 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.logging import LoggingWindow
-from quodlibet.qltk.mmkeys_ import MmKeys
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.playorder import PlayOrder
@@ -222,7 +222,7 @@ class QuodLibetWindow(gtk.Window):
 
         self.browser = None
 
-        self.__keys = MmKeys(player)
+        mmkeys.init(self, player)
 
         self.child.show_all()
 

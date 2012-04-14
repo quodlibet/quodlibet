@@ -1,41 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright 2007 Ronny Haryanto <ronny at haryan.to>
-#           2011 Christoph Reiter <christoph.reiter@gmx.at>
+#           2011,2012 Christoph Reiter <christoph.reiter@gmx.at>
 #
-# Thank you to Joe Wreschnig for the hints and Facundo Batista
-# for the initial patch to quodlibet.py.
-#
-# This plugin is needed for quod libet to handle multimedia keys properly in
-# GNOME 2.18. gnome-settings-daemon grabs all keys and publish it as dbus
-# signals, thus preventing applications like quod libet to grab the key
-# directly. When this plugin is enabled quod libet will use whichever
-# method is currently available. For more info and background to the story,
-# see: https://bugs.launchpad.net/ubuntu/+source/quodlibet/+bug/43464
-#
-# ------------------------------------------------------------------------
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# published by the Free Software Foundation.
 
 import time
 
 import dbus
+import gobject
 
-from quodlibet import widgets
-from quodlibet.plugins.events import EventPlugin
 
-def get_bus():
-    try:
-        return dbus.Bus(dbus.Bus.TYPE_SESSION)
-    except dbus.DBusException, err:
-        print_w("[dbusmmkey] %s", err)
-
-class DBusMMKey(EventPlugin):
-    PLUGIN_ID = "DBusMMKey"
-    PLUGIN_NAME = _("DBus Multimedia Keys")
-    PLUGIN_DESC = _("Enable DBus-based Multimedia Shortcut Keys")
-    PLUGIN_VERSION = "0.3"
-
+class DBusMMKey(gobject.GObject):
     DBUS_NAME = "org.gnome.SettingsDaemon"
 
     # Work around the gnome-settings-daemon dbus interface
@@ -46,14 +23,35 @@ class DBusMMKey(EventPlugin):
                   {"path": "/org/gnome/SettingsDaemon/MediaKeys",
                    "interface": "org.gnome.SettingsDaemon.MediaKeys"}]
 
-    APP_NAME = "quodlibet"
+    __gsignals__ = {
+        'action': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        }
 
-    __interface = None
-    __watch = None
-    __grab_time = -1
+    @classmethod
+    def is_active(cls):
+        """If the gsd plugin is active atm"""
+        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+        # FIXME: check if the media-keys plugin is active
+        return bus.name_has_owner(cls.DBUS_NAME)
 
-    __key_pressed_sig = None
-    __focus_sig = None
+    def __init__(self, window, name):
+        super(DBusMMKey, self).__init__()
+        self.__interface = None
+        self.__watch = None
+        self.__grab_time = -1
+        self.__name = name
+        self.__key_pressed_sig = None
+
+        self.__grab()
+        self.__enable_watch()
+        self.__focus_sig = window.connect("notify::is-active",
+                                          self.__focus_event)
+        window.connect("destroy", self.__destroy)
+
+    def __destroy(self, window):
+        self.__disable_watch()
+        self.__release()
+        window.disconnect(self.__focus_sig)
 
     def __update_interface(self):
         """If __interface is None, set a proxy interface object and connect
@@ -62,16 +60,14 @@ class DBusMMKey(EventPlugin):
         if self.__interface:
             return self.__interface
 
-        bus = get_bus()
-        if not bus:
-            return
+        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
 
         for desc in self.DBUS_IFACES:
             try:
                 obj = bus.get_object(self.DBUS_NAME, desc["path"])
                 iface = dbus.Interface(obj, desc["interface"])
                 # try to call a method to test the interface
-                iface.ReleaseMediaPlayerKeys(self.APP_NAME)
+                iface.ReleaseMediaPlayerKeys(self.__name)
             except dbus.DBusException:
                 pass
             else:
@@ -87,10 +83,7 @@ class DBusMMKey(EventPlugin):
         if self.__watch:
             return
 
-        bus = get_bus()
-        if not bus:
-            return
-
+        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
         # This also triggers for existing name owners
         self.__watch = bus.watch_name_owner(self.DBUS_NAME,
                                             self.__owner_changed)
@@ -114,26 +107,10 @@ class DBusMMKey(EventPlugin):
             self.__grab(update=False)
 
     def __key_pressed(self, application, action):
-        if application != self.APP_NAME:
+        if application != self.__name:
             return
 
-        from quodlibet.player import playlist as player
-
-        # TODO: Rewind, FastForward, Repeat, Shuffle
-        if action == "Play":
-            if player.song is None:
-                player.reset()
-            else:
-                player.paused ^= True
-        elif action == "Pause":
-            player.paused = True
-        elif action == "Stop":
-            player.paused = True
-            player.seek(0)
-        elif action == "Next":
-            player.next()
-        elif action == "Previous":
-            player.previous()
+        self.emit("action", action)
 
     def __grab(self, update=True):
         """Tells gsd that QL started or got the focus.
@@ -151,8 +128,10 @@ class DBusMMKey(EventPlugin):
         if not iface:
             return
 
-        try: iface.GrabMediaPlayerKeys(self.APP_NAME, self.__grab_time)
-        except dbus.DBusException: pass
+        try:
+            iface.GrabMediaPlayerKeys(self.__name, self.__grab_time)
+        except dbus.DBusException:
+            pass
 
     def __release(self):
         """Tells gsd that we don't want events anymore and
@@ -163,22 +142,12 @@ class DBusMMKey(EventPlugin):
             self.__key_pressed_sig = None
 
         if self.__interface:
-            try: self.__interface.ReleaseMediaPlayerKeys(self.APP_NAME)
-            except dbus.DBusException: pass
+            try:
+                self.__interface.ReleaseMediaPlayerKeys(self.__name)
+            except dbus.DBusException:
+                pass
             self.__interface = None
 
     def __focus_event(self, window, param):
         if window.get_property(param.name):
             self.__grab()
-
-    def enabled(self):
-        self.__grab()
-        self.__enable_watch()
-        self.__focus_sig = widgets.main.connect("notify::is-active",
-                                                self.__focus_event)
-
-    def disabled(self):
-        widgets.main.disconnect(self.__focus_sig)
-        self.__disable_watch()
-        self.__release()
-        self.__grab_time = -1
