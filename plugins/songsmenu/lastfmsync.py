@@ -108,10 +108,13 @@ class LastFMSyncCache(object):
                     msg = "HTTP error %d, retrying in %d seconds."
                     log(msg % (err.code, 15))
                     for i in range(15, 0, -1):
-                        sleep(1)
+                        time.sleep(1)
                         prog(msg % (err.code, i), None)
                     resp = apicall('user.getweeklytrackchart', **args)
-                tracks = resp['weeklytrackchart']['track']
+                try:
+                    tracks = resp['weeklytrackchart']['track']
+                except KeyError:
+                    tracks = []
                 # Delightfully, the API JSON frontend unboxes 1-element lists.
                 if isinstance(tracks, dict):
                     tracks = [tracks]
@@ -119,12 +122,13 @@ class LastFMSyncCache(object):
                     self._update_stats(track, fro, to)
                 self.charts[(fro, to)] = False
             prog(_("Sync complete."), 1.)
-        except EnvironmentError, err:
-            log(str(err))
-            prog(_("Error during sync: %s") % err, None)
         except ValueError:
             # this is probably from prog()
             pass
+        except Exception:
+            util.print_exc()
+            prog(_("Error during sync"), None)
+            return False
 
         return True
 
@@ -169,8 +173,8 @@ class LastFMSyncCache(object):
             if 'musiscbrainz_artistid' in song:
                 keys.append((song['musicbrainz_artistid'].lower(),
                             song.get('title', '').lower()))
-            keys.append((song.get('artist').lower(),
-                         song.get('title').lower()))
+            keys.append((song.get('artist', '').lower(),
+                         song.get('title', '').lower()))
             stats = filter(None, map(self.songs.get, keys))
             if not stats:
                 continue
