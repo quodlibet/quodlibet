@@ -274,7 +274,9 @@ class FIFOControl(object):
         playlist.unqueue(songs)
 
     def _quit(self, library, window, player):
+        gtk.gdk.threads_enter()
         window.destroy()
+        gtk.gdk.threads_leave()
 
     def _status(self, value, library, window, player):
         try: f = file(value, "w")
