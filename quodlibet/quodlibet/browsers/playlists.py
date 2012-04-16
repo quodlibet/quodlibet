@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
+#           2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -154,7 +155,7 @@ class Playlist(list):
                 changed = True
         return changed
 
-    def remove_songs(self, songs, library):
+    def remove_songs(self, songs, library, leave_dupes=False):
         changed = False
         # TODO: document the "library.masked" business
         for song in songs:
@@ -164,7 +165,11 @@ class Playlist(list):
                     except ValueError: break
                     else: changed = True
             else:
-                while song in self: self.remove(song)
+                while song in self:
+                    self.remove(song)
+                    if leave_dupes:
+                        changed = True
+                        break
                 else: changed = True
         return changed
 
@@ -222,9 +227,18 @@ class Playlist(list):
                 songs_text,
                 util.format_time(self.length()))
 
+    def has_duplicates(self):
+        """Returns True if there are any duplicated files in this playlist"""
+        unique = set()
+        for s in self:
+            if s in unique: return False
+            else: unique.add(s)
+        return True
+
     def __cmp__(self, other):
         try: return cmp(self.name, other.name)
         except AttributeError: return -1
+
 
 class GetPlaylistName(GetStringDialog):
     def __init__(self, parent):
@@ -548,6 +562,33 @@ class Playlists(gtk.VBox, Browser):
         menu = SongsMenu(
             library, songs, playlists=False, remove=False, parent=self)
         menu.preseparate()
+
+        de_dupe = gtk.MenuItem(_("Remove Duplicates"))
+
+        def de_duplicate(model, iter):
+            playlist = model[iter][0]
+            unique = set()
+            dupes = list()
+            for s in songs:
+                if s in unique: dupes.append(s)
+                else: unique.add(s)
+            if len(dupes) < 1:
+                print_d("No duplicates in this playlist")
+                return
+            print_d("Duplicated: %s" % ([s("~filename") for s in dupes]))
+            action_msg = ngettext("You are about to remove %d song.",
+                    "You are about to remove %d songs.",len(dupes)) % len(dupes)
+            if qltk.ConfirmAction(self,
+                    _("Confirm duplicates removal"),
+                    "%s\n%s" % (action_msg, _("Do you wish to continue?"))
+                    ).run():
+                playlist.remove_songs(dupes, library, True)
+                Playlists.changed(playlist)
+                self.activate()
+
+        de_dupe.connect_object('activate', de_duplicate, model, iter)
+        de_dupe.set_sensitive(not model[iter][0].has_duplicates())
+        menu.prepend(de_dupe)
 
         rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         def remove(model, iter):
