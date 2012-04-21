@@ -52,6 +52,10 @@ def set(section, option, value):
         value = str(value)
     _config.set(section, option, value)
 
+def setdefault(section, option, default):
+    if not _config.has_option(section, option):
+        set(section, option, default)
+
 def write(filename):
     if isinstance(filename, basestring):
         if not os.path.isdir(os.path.dirname(filename)):
