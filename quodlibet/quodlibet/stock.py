@@ -1,10 +1,9 @@
 # Copyright 2005 Joe Wreschnig
+#           2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
-import os
 
 import gtk
 
@@ -51,7 +50,9 @@ def init():
     # Don't literally translate "ql-remove". It needs an access key, so
     # a sample translation would be "_Remove from Library".
     if _("ql-remove") == "ql-remove":
-        gtk.stock_add([(REMOVE,) + gtk.stock_lookup(gtk.STOCK_REMOVE)[1:]])
+        # Use explicit text instead of ambiguous "Remove". See Issue 950.
+        gtk.stock_add([(REMOVE, _("_Remove from library")) +
+                       gtk.stock_lookup(gtk.STOCK_REMOVE)[2:]])
     else:
         old = gtk.stock_lookup(gtk.STOCK_REMOVE)
         gtk.stock_add([(REMOVE, _("ql-remove"), 0, 0, "")])
