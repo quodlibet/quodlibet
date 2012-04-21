@@ -465,7 +465,7 @@ class MyBrainz(SongsMenuPlugin):
                 discnum = int(song.get('discnumber', '1').split('/')[0])
                 discs.setdefault(discnum, []).append(song)
             for disc in discs.values():
-                s = SearchWindow(disc, self.cache).run()
+                SearchWindow(disc, self.cache).run()
 
     @classmethod
     def PluginPreferences(self, win):

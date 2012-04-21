@@ -73,7 +73,7 @@ class LibraryEvent(ProcessEvent):
                         songs.append(song)
             lib.add(songs)
         else:
-            item = lib.add_filename(path)
+            lib.add_filename(path)
         return False
 
     def update(self, event):

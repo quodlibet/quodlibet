@@ -162,7 +162,7 @@ class DuplicatesTreeModel(gtk.TreeStore):
         else:
             try:
                 group_val = cls.tag_functions[tag](group_val)
-            except (ValueError, TypeError), e:
+            except (ValueError, TypeError):
                 pass
         return group_val.replace("\n", ", ")
 

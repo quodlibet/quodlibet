@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 import gtk
-import gobject
 
 from quodlibet import qltk
 from quodlibet.plugins.songsmenu import SongsMenuPlugin

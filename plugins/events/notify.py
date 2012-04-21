@@ -12,7 +12,6 @@
 # note. As for the license, GPLv2 is the only choice anyway, as it calls
 # Quod Libet code, which is GPLv2 as well, so I thought it safe to add this.
 
-import os.path
 import re
 import tempfile
 
@@ -20,7 +19,7 @@ import dbus
 import gtk
 import gobject
 
-from quodlibet import config, const, qltk
+from quodlibet import config, qltk
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import XMLFromPattern
 from quodlibet.widgets import main as qlmainwindow

@@ -7,7 +7,6 @@
 import mutagen.apev2
 
 from quodlibet.formats._apev2 import APEv2File
-from quodlibet.formats.mp3 import MP3File
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class APEv2toID3v2(SongsMenuPlugin):

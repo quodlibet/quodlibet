@@ -1,9 +1,6 @@
-import os
-
 import gtk
 
 from quodlibet import util
-from quodlibet.qltk import ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 class Command(object):

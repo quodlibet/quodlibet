@@ -72,7 +72,7 @@ class SqueezeboxServer:
                 self.failures = 0
                 print_d("Connected to Squeezebox Server! %s" % self)
                 # Reset players (forces reload)
-                players = []
+                self.players = []
                 self.get_players()
 
     def get_library_dir(self):

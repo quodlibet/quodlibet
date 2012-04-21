@@ -34,4 +34,7 @@ class Kakasi(RenameFilesPlugin, gtk.CheckButton):
         try: return r.read().decode('shift-jis').strip().split("\n")
         except: return values
 
-if not util.iscommand("kakasi"): del(Kakasi)
+if not util.iscommand("kakasi"):
+    from quodlibet import plugins
+    raise plugins.PluginImportException(
+        "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi).")

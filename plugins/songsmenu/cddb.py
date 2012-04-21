@@ -138,7 +138,6 @@ class CDDBLookup(SongsMenuPlugin):
                 "Query could not be executed, connection timed out")).run()
             return
 
-        info = None
         if stat in (200,211):
             xcode = 'utf8:utf8'
             dlg = gtk.Dialog(_('Select an album'))

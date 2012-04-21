@@ -1010,7 +1010,7 @@ class AlbumArtWindow(qltk.Window):
                 size + 2, size + 2)
             thumb.fill(0x000000ff)
             pixbuf.copy_area(0, 0, size, size, thumb, 1, 1)
-        except gobject.GError, IOError:
+        except (gobject.GError, IOError):
             pass
         else:
             def append(data):

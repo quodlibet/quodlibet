@@ -5,7 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import sys
 
 import gtk
@@ -18,7 +17,7 @@ if not gtk_216:
 
 from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
 
-from quodlibet import browsers, config, const, qltk, stock, util
+from quodlibet import browsers, config, qltk, stock, util
 from quodlibet.library import library
 from quodlibet.parse import Pattern
 from quodlibet.player import playlist as player
@@ -216,7 +215,7 @@ class TrayIcon(EventPlugin):
 
     def enabled(self):
         global gtk_216
-        filename = os.path.join(const.IMAGEDIR, "quodlibet.")
+
         if gtk_216:
             self.__icon = gtk.StatusIcon()
         else:
