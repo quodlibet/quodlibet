@@ -8,11 +8,14 @@
 import time
 import operator
 
+from quodlibet.util import fsdecode
+
 class error(ValueError): pass
 class ParseError(error): pass
 
 TIME_KEYS = ["added", "mtime", "lastplayed", "laststarted"]
 SIZE_KEYS = ["filesize"]
+FS_KEYS = ["~filename", "~basename", "~dirname"]
 
 # True if the object matches any of its REs.
 class Union(object):
@@ -138,10 +141,20 @@ class Tag(object):
               "d": "date",
               }
     def __init__(self, names, res):
-        names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
-        self.__names = [n for n in names if not n.startswith("~")]
-        self.__intern = [n for n in names if n.startswith("~")]
         self.__res = res
+        self.__names = []
+        self.__intern = []
+        self.__fs = []
+
+        names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
+        for name in names:
+            if name[:1] == "~":
+                if name in FS_KEYS:
+                    self.__fs.append(name)
+                else:
+                    self.__intern.append(name)
+            else:
+                self.__names.append(name)
 
     def search(self, data):
         for name in self.__names:
@@ -149,6 +162,8 @@ class Tag(object):
             if self.__res.search(val): return True
         for name in self.__intern:
             if self.__res.search(data(name)): return True
+        for name in self.__fs:
+            if self.__res.search(fsdecode(data(name))): return True
         return False
 
     def __repr__(self):
