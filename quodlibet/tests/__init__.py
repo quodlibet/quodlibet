@@ -58,6 +58,7 @@ class Runner(object):
 
 def unit(run=[], filter_func=None):
     import quodlibet.const
+    import quodlibet.config
     quodlibet.const.CONFIG = os.path.join(os.getcwd(), "config.temp")
 
     runner = Runner()
@@ -68,6 +69,7 @@ def unit(run=[], filter_func=None):
             or test.__name__ in run
             or test.__module__[11:] in run):
             failures |= runner.run(test)
+            quodlibet.config.quit()
     try: os.remove(quodlibet.const.CONFIG)
     except EnvironmentError: pass
     return failures
