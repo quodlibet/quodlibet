@@ -7,8 +7,6 @@
 
 import gtk
 
-from quodlibet.plugins import Manager
-
 class RenameFilesPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be
     packed into the RenameFiles pane (currently a ScrolledWindow hidden
@@ -126,15 +124,3 @@ class EditTagsPlugin(gtk.ImageMenuItem):
         else:
             super(EditTagsPlugin, self).connect(
                 signal, callback, *args, **kwargs)
-
-class EditingPlugins(Manager):
-    Kinds = [EditTagsPlugin, RenameFilesPlugin, TagsFromPathPlugin]
-
-    def RenamePlugins(self):
-        return super(EditingPlugins, self).find_subclasses(RenameFilesPlugin)
-
-    def TagsFromPathPlugins(self):
-        return super(EditingPlugins, self).find_subclasses(TagsFromPathPlugin)
-
-    def EditTagsPlugins(self):
-        return super(EditingPlugins, self).find_subclasses(EditTagsPlugin)

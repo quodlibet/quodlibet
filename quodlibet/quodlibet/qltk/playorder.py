@@ -9,6 +9,7 @@ import random
 import gtk
 
 from quodlibet import config
+from quodlibet.plugins import PluginManager
 
 class Order(object):
     name = "unknown_order"
@@ -184,14 +185,46 @@ class PlayOrder(gtk.ComboBox):
         cell.props.ypad = 0
         self.pack_start(cell, True)
         self.add_attribute(cell, 'text', 0)
-        for order in ORDERS:
-            self.append_text(order.display_name)
-        self.connect_object('changed', self.__changed_order, model, player)
+
+        self.__plugins = []
+        PluginManager.instance.register_handler(self)
+
+        self.refresh()
+        self.__sig = self.connect_object(
+            'changed', self.__changed_order, model, player)
         self.set_active(config.get("memory", "order"))
+
+    def plugin_handle(self, plugin):
+        from quodlibet.plugins.playorder import PlayOrderPlugin
+        return issubclass(plugin, PlayOrderPlugin)
+
+    def plugin_enable(self, plugin, obj):
+        if plugin.name is None:
+            plugin.name = plugin.PLUGIN_ID
+        if plugin.display_name is None:
+            plugin.display_name = plugin.PLUGIN_NAME
+        if plugin.accelerated_name is None:
+            plugin.accelerated_name = plugin.display_name
+
+        self.__plugins.append(plugin)
+        self.refresh()
+
+    def plugin_disable(self, plugin):
+        self.__plugins.remove(plugin)
+
+        # Don't safe changes from plugin changes
+        # so that disables on shutdown don't change the config.
+        if self.__sig:
+            self.handler_block(self.__sig)
+            self.refresh()
+            self.handler_unblock(self.__sig)
+        else:
+            self.refresh()
 
     def refresh(self):
         name = self.get_active_name()
         self.get_model().clear()
+        set_orders(self.__plugins)
         for order in ORDERS:
             self.append_text(order.display_name)
         if name:

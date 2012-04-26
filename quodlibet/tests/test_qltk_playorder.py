@@ -1,13 +1,17 @@
 from tests import TestCase, add
 
+import gtk
+
 from quodlibet.qltk.playorder import PlayOrder
 import quodlibet.config
+import quodlibet.plugins
 
 class TPlayOrder(TestCase):
     def setUp(self):
         self.order = -1
         self.volume = 0
         self.replaygain_profiles = [None, None, None]
+        quodlibet.plugins.init()
         quodlibet.config.init()
         self.win = PlayOrder(self, self)
         self.win.set_active(0)
@@ -34,6 +38,7 @@ class TPlayOrder(TestCase):
 
     def tearDown(self):
         self.win.destroy()
+        quodlibet.plugins.quit()
         quodlibet.config.quit()
 
 add(TPlayOrder)

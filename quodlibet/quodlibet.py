@@ -103,42 +103,36 @@ def main():
     print_d("Finished shutdown.")
 
 def init_plugins(player, library):
-    from quodlibet.plugins.editing import EditingPlugins
-    from quodlibet.plugins.songsmenu import SongsMenuPlugins
-    from quodlibet.plugins.events import EventPlugins
-    from quodlibet.plugins.playorder import PlayOrderPlugins
+    pm = quodlibet.init_plugins()
+
     from quodlibet.qltk.songsmenu import SongsMenu
-    from quodlibet.qltk.properties import SongProperties
+    SongsMenu.init_plugins()
+
+    # uhh hacky.. plugins import widget.main/watcher,
+    # but we want to assign them later.
+    # So go through the plugin globals, replace them and pray
     from quodlibet import widgets
+    widgets.main = main_dummy = object()
+    widgets.watcher = watcher_dummy = object()
 
-    widgets.watcher = library.librarian
+    pm.rescan()
 
-    SongsMenu.plugins = SongsMenuPlugins(
-        [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
-         os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
-    SongsMenu.plugins.rescan()
-
-    SongProperties.plugins = EditingPlugins(
-        [os.path.join(const.BASEDIR, "plugins", "editing"),
-         os.path.join(const.USERDIR, "plugins", "editing")], "editing")
-
-    playorder = PlayOrderPlugins(
-        [os.path.join(const.BASEDIR, "plugins", "playorder"),
-         os.path.join(const.USERDIR, "plugins", "playorder")], "playorder")
-    playorder.rescan()
-
-    # main window
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
     window = QuodLibetWindow(library, player)
+
     widgets.main = window
+    widgets.watcher = library.librarian
 
-    events = EventPlugins(library.librarian, player, [
-        os.path.join(const.BASEDIR, "plugins", "events"),
-        os.path.join(const.USERDIR, "plugins", "events")], "events")
-    events.rescan()
+    for module in pm._modules:
+        for key, value in vars(module).items():
+            if value is main_dummy:
+                vars(module)[key] = widgets.main
+            elif value is watcher_dummy:
+                vars(module)[key] = widgets.watcher
 
-    for p in [playorder, SongsMenu.plugins, SongProperties.plugins, events]:
-        window.connect('destroy', p.destroy)
+    from quodlibet.plugins.events import EventPluginHandler
+    handler = EventPluginHandler(library.librarian, player)
+    pm.register_handler(handler)
 
     return window
 

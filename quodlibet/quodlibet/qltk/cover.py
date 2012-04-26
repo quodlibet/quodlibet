@@ -14,8 +14,7 @@ from quodlibet import qltk
 from quodlibet import config
 from quodlibet import print_d, print_w
 from quodlibet.util import thumbnails
-from quodlibet.plugins import Manager
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
+
 
 # TODO: neater way of managing dependency on this particular plugin
 ALBUM_ART_PLUGIN_ID = "Download Album art"
@@ -182,11 +181,8 @@ class CoverImage(gtk.EventBox):
                     self.__current_bci.connect('destroy', self.__reset_bci)
                     break
         else:
-            try: mgr = Manager.instances["songsmenu"]
-            except KeyError:
-                print_d("Couldn't find any songsmenu plugins.")
-                return
-            for pk in mgr.find_subclasses(SongsMenuPlugin):
+            from quodlibet.qltk.songsmenu import SongsMenu
+            for pk in SongsMenu.handler.plugins:
                 if pk.PLUGIN_ID == ALBUM_ART_PLUGIN_ID:
                     plugin = pk([self.__song])
                     print_d("Running \"%s\" plugin... (%r)" %

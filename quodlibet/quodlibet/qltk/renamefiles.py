@@ -16,6 +16,7 @@ from quodlibet import util
 
 from quodlibet.parse import FileFromPattern
 from quodlibet.qltk._editpane import EditPane, FilterCheckButton
+from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.qltk.wlw import WritingWindow
 
 class SpacesToUnderscores(FilterCheckButton):
@@ -65,15 +66,21 @@ class Lowercase(FilterCheckButton):
     def filter(self, original, filename):
         return filename.lower()
 
+
+class RenameFilesPluginHandler(EditingPluginHandler):
+    from quodlibet.plugins.editing import RenameFilesPlugin
+    Kind = RenameFilesPlugin
+
+
 class RenameFiles(EditPane):
     title = _("Rename Files")
     FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
                StripNonASCII, Lowercase]
+    handler = RenameFilesPluginHandler()
 
     def __init__(self, parent, library):
-        plugins = parent.plugins.RenamePlugins()
         super(RenameFiles, self).__init__(
-            const.NBP, const.NBP_EXAMPLES.split("\n"), plugins)
+            const.NBP, const.NBP_EXAMPLES.split("\n"))
 
         column = gtk.TreeViewColumn(
             _('File'), gtk.CellRendererText(), text=1)

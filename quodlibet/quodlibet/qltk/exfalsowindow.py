@@ -18,6 +18,7 @@ from quodlibet import qltk
 from quodlibet import stock
 from quodlibet import util
 
+from quodlibet.plugins import PluginManager
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.delete import DeleteDialog
 from quodlibet.qltk.edittags import EditTags
@@ -28,8 +29,7 @@ from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
-from quodlibet.plugins.editing import EditingPlugins
-from quodlibet.plugins.songsmenu import SongsMenuPlugins
+from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 
 class ExFalsoWindow(gtk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
@@ -39,22 +39,18 @@ class ExFalsoWindow(gtk.Window):
                                          gobject.TYPE_NONE, (object,))
                      }
 
+    pm = SongsMenuPluginHandler()
+
+    @classmethod
+    def init_plugins(cls):
+        PluginManager.instance.register_handler(cls.pm)
+
     def __init__(self, library, dir=None):
         super(ExFalsoWindow, self).__init__()
         self.set_title("Ex Falso")
         self.set_default_size(700, 500)
 
-        # plugin support
         self.__library = library
-        self.pm = SongsMenuPlugins(
-            [os.path.join(const.BASEDIR, "plugins", "songsmenu"),
-             os.path.join(const.USERDIR, "plugins", "songsmenu")], "songsmenu")
-        self.pm.rescan()
-
-        self.plugins = EditingPlugins(
-            [os.path.join(const.BASEDIR, "plugins", "editing"),
-             os.path.join(const.USERDIR, "plugins", "editing")], "editing")
-        self.plugins.rescan()
 
         hp = gtk.HPaned()
         hp.set_border_width(6)

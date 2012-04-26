@@ -169,6 +169,26 @@ def init(library=None, icon=None, title=None, name=None):
 
     return library
 
+def init_plugins():
+    print_d("Starting plugin manager")
+
+    from quodlibet import plugins
+    folders = [os.path.join(const.BASEDIR, "plugins", "editing"),
+               os.path.join(const.BASEDIR, "plugins", "events"),
+               os.path.join(const.BASEDIR, "plugins", "playorder"),
+               os.path.join(const.BASEDIR, "plugins", "songsmenu"),
+               os.path.join(const.USERDIR, "plugins")]
+    pm = plugins.init(folders)
+
+    from quodlibet.qltk.edittags import EditTags
+    from quodlibet.qltk.renamefiles import RenameFiles
+    from quodlibet.qltk.tagsfrompath import TagsFromPath
+    EditTags.init_plugins()
+    RenameFiles.init_plugins()
+    TagsFromPath.init_plugins()
+
+    return pm
+
 def init_backend(backend, librarian):
     import quodlibet.player
     print_d("Initializing audio backend (%s)" % backend)
@@ -239,6 +259,10 @@ def main(window):
     import gtk
 
     def quit_gtk(m):
+        # disable plugins
+        import quodlibet.plugins
+        quodlibet.plugins.quit()
+
         # stop all copools
         print_d("Quit GTK: Stop all copools")
         from quodlibet.util import copool

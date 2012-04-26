@@ -13,7 +13,7 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.plugins import Manager
+from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.entry import ClearEntry
 
@@ -36,8 +36,7 @@ class PluginErrorWindow(qltk.UniqueWindow):
         scrolledwin.add_with_viewport(vbox)
 
         failures = {}
-        for pm in Manager.instances.values():
-            failures.update(pm.list_failures())
+        failures.update(PluginManager.instance.failures)
         keys = failures.keys()
         show_expanded = len(keys) <= 3
         for key in sorted(keys):
@@ -288,11 +287,11 @@ class PluginWindow(qltk.UniqueWindow):
         failures = False
         model.clear()
 
-        for pm in Manager.instances.values():
-            pm.rescan()
-            for plugin in pm.list():
-                plugins.append((plugin.PLUGIN_NAME, plugin, pm))
-            failures = failures or bool(pm.list_failures())
+        pm = PluginManager.instance
+        pm.rescan()
+        for plugin in pm.plugins:
+            plugins.append((plugin.PLUGIN_NAME, plugin, pm))
+        failures = failures or bool(pm.failures)
 
         tags = []
         no_tags = False

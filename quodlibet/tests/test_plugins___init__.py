@@ -6,7 +6,7 @@ from tempfile import mkstemp, mkdtemp
 
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
-from quodlibet.plugins import SongWrapper, ListWrapper
+from quodlibet.plugins._songwrapper import SongWrapper, ListWrapper
 
 class TSongWrapper(TestCase):
 

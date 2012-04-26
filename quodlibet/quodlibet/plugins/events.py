@@ -8,7 +8,9 @@
 import gobject
 
 from quodlibet import util
-from quodlibet.plugins import Manager, SongWrapper, ListWrapper
+
+from quodlibet.plugins._songwrapper import SongWrapper, ListWrapper
+from quodlibet.plugins._songwrapper import check_wrapper_changed
 
 class EventPlugin(object):
     """Plugins that run in the background and receive events.
@@ -27,6 +29,8 @@ class EventPlugin(object):
         obj.plugin_on_seek(song, msec)
     """
 
+    PLUGIN_INSTANCE = True
+
     def enabled(self):
         """Called when the plugin is enabled."""
         pass
@@ -35,114 +39,56 @@ class EventPlugin(object):
         """Called when the plugin is disabled."""
         pass
 
-    def destroy(self):
-        """Called when the plugin should release any private resources,
-        usually because it's being upgraded or on program exit"""
-        pass
+def _map_signals(obj, prefix="plugin_on_", blacklist=tuple()):
+    sigs = list(gobject.signal_list_names(obj))
+    map(sigs.remove, blacklist)
+    sigs = [(s.replace('-', '_'), prefix + s.replace('-', '_')) for s in sigs]
+    return sigs
 
-class EventPlugins(Manager):
-    library_events = []
-    player_events = []
+class EventPluginHandler(object):
 
-    def __init__(self, librarian=None, player=None, folders=[], name=None):
-        super(EventPlugins, self).__init__(folders, name)
-
+    def __init__(self, librarian=None, player=None):
         if librarian:
-            self.library_events = [
-                (s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                for s in gobject.signal_list_names(librarian)]
-        if player:
-            self.player_events = [
-                (s.replace('-', '_'), 'plugin_on_' + s.replace('-', '_'))
-                for s in gobject.signal_list_names(player)]
-            self.player_events.remove(('error', 'plugin_on_error'))
-        self.all_events = self.library_events + self.player_events
-
-        self.librarian = librarian
-
-        if librarian:
-            for event, handle in self.library_events:
+            for event, handle in _map_signals(librarian):
                 def handler(librarian, *args):
                     self.__invoke(librarian, args[-1], *args[:-1])
                 librarian.connect(event, handler, event)
-        if player:
-            for event, handle in self.player_events:
-                def handler(player, *args):
+
+        if librarian and player:
+            for event, handle in _map_signals(player, blacklist=("error",)):
+                def cb_handler(player, *args):
                     self.__invoke(player, args[-1], *args[:-1])
-                player.connect_object(event, handler, librarian, event)
+                player.connect_object(event, cb_handler, librarian, event)
 
-    def _load(self, name, module):
-        try: objs = [getattr(module, attr) for attr in module.__all__]
-        except AttributeError:
-            objs = [getattr(module, attr) for attr in vars(module)
-                    if not attr.startswith("_")]
-        def is_plugin(obj):
-            if not isinstance(obj, type): return False
-            elif not issubclass(obj, EventPlugin): return False
-            elif obj is EventPlugin: return False
-            else: return True
-
-        kinds = filter(is_plugin, objs)
-
-        for Kind in kinds:
-            try: Kind.PLUGIN_ID
-            except AttributeError:
-                try: Kind.PLUGIN_ID = Kind.PLUGIN_NAME
-                except AttributeError:
-                    Kind.PLUGIN_ID = Kind.__name__
-
-            try: Kind.PLUGIN_NAME
-            except AttributeError:
-                Kind.PLUGIN_NAME = Kind.PLUGIN_ID
-
-            try: obj = Kind()
-            except:
-                util.print_exc()
-            else:
-                if obj.PLUGIN_ID in self._plugins:
-                    old_obj = self._plugins[obj.PLUGIN_ID]
-                    self.enable(old_obj, False)
-                    old_obj.destroy()
-                self._plugins[obj.PLUGIN_ID] = obj
-
-    def list(self):
-        return self._plugins.values()
-
-    def enable(self, plugin, enabled):
-        if self.enabled(plugin) != enabled:
-            super(EventPlugins, self).enable(plugin, enabled)
-            try:
-                if enabled: plugin.enabled()
-                else: plugin.disabled()
-            except:
-                util.print_exc()
-
-    def destroy(self, *args):
-        for obj in self._plugins.itervalues():
-            self.enable(obj, False)
-            obj.destroy()
+        self.__plugins = {}
 
     def __invoke(self, librarian, event, *args):
-        try:
-            args = list(args)
-            if args and args[0]:
-                if isinstance(args[0], dict):
-                    args[0] = SongWrapper(args[0])
-                elif isinstance(args[0], list):
-                    args[0] = ListWrapper(args[0])
-            for plugin in self._plugins.itervalues():
-                if not self.enabled(plugin):
-                    continue
-                handler = getattr(plugin, 'plugin_on_' + event, None)
-                if handler is not None:
-                    try: handler(*args)
-                    except Exception:
-                        util.print_exc()
-        finally:
-            if event not in ["removed", "changed"] and args:
-                from quodlibet.widgets import main
-                songs = args[0]
-                if not isinstance(songs, list):
-                    songs = [songs]
-                songs = filter(None, songs)
-                self._check_change(librarian, main, songs)
+        args = list(args)
+        if args and args[0]:
+            if isinstance(args[0], dict):
+                args[0] = SongWrapper(args[0])
+            elif isinstance(args[0], list):
+                args[0] = ListWrapper(args[0])
+        for plugin in self.__plugins.itervalues():
+            handler = getattr(plugin, 'plugin_on_' + event, None)
+            if handler is not None:
+                try: handler(*args)
+                except Exception:
+                    util.print_exc()
+
+        if event not in ["removed", "changed"] and args:
+            from quodlibet.widgets import main
+            songs = args[0]
+            if not isinstance(songs, list):
+                songs = [songs]
+            songs = filter(None, songs)
+            check_wrapper_changed(librarian, main, songs)
+
+    def plugin_handle(self, plugin):
+        return issubclass(plugin, EventPlugin)
+
+    def plugin_enable(self, plugin, obj):
+        self.__plugins[plugin] = obj
+
+    def plugin_disable(self, plugin):
+        self.__plugins.pop(plugin)

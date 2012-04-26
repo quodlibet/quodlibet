@@ -16,6 +16,7 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.qltk._editpane import EditPane, FilterCheckButton
+from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.qltk.wlw import WritingWindow
 
 class TagsFromPattern(object):
@@ -95,14 +96,20 @@ class SplitTag(FilterCheckButton):
         spls = spls.split()
         return "\n".join(util.split_value(value, spls))
 
+
+class TagsFromPathPluginHandler(EditingPluginHandler):
+    from quodlibet.plugins.editing import TagsFromPathPlugin
+    Kind = TagsFromPathPlugin
+
+
 class TagsFromPath(EditPane):
     title = _("Tags From Path")
     FILTERS = [UnderscoresToSpaces, TitleCase, SplitTag]
-        
+    handler = TagsFromPathPluginHandler()
+
     def __init__(self, parent, library):
-        plugins = parent.plugins.TagsFromPathPlugins()
         super(TagsFromPath, self).__init__(
-            const.TBP, const.TBP_EXAMPLES.split("\n"), plugins)
+            const.TBP, const.TBP_EXAMPLES.split("\n"))
 
         vbox = self.get_children()[2]
         addreplace = gtk.combo_box_new_text()

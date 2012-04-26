@@ -22,6 +22,8 @@ from quodlibet.qltk.completion import LibraryValueCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk._editpane import EditingPluginHandler
+from quodlibet.plugins import PluginManager
 
 class AudioFileGroup(dict):
 
@@ -310,7 +312,17 @@ def strip_missing(string):
     try: return string[:string.index(" <i>")]
     except ValueError: return string
 
+class EditTagsPluginHandler(EditingPluginHandler):
+    from quodlibet.plugins.editing import EditTagsPlugin
+    Kind = EditTagsPlugin
+
 class EditTags(gtk.VBox):
+    handler = EditTagsPluginHandler()
+
+    @classmethod
+    def init_plugins(cls):
+        PluginManager.instance.register_handler(cls.handler)
+
     def __init__(self, parent, library):
         super(EditTags, self).__init__(spacing=12)
         self.title = _("Edit Tags")
@@ -457,7 +469,7 @@ class EditTags(gtk.VBox):
 
         items = [SplitDisc, SplitTitle, SplitPerformer, SplitArranger,
                  SplitValues, SplitPerformerFromTitle]
-        items.extend(parent.plugins.EditTagsPlugins())
+        items.extend(self.handler.plugins)
         items.sort(key=lambda item: (item._order, item.__name__))
 
         if len(rows) == 1:

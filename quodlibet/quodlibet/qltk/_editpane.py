@@ -12,8 +12,36 @@ from quodlibet import config
 from quodlibet import stock
 from quodlibet import util
 
+from quodlibet.plugins import PluginManager
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
+
+class EditingPluginHandler(gobject.GObject):
+    __gsignals__ = {
+        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        }
+
+    Kind = None
+
+    def __init__(self):
+        super(EditingPluginHandler, self).__init__()
+        self.__plugins = []
+
+    @property
+    def plugins(self):
+        return list(self.__plugins)
+
+    def plugin_handle(self, plugin):
+        return issubclass(plugin, self.Kind)
+
+    def plugin_enable(self, plugin, obj):
+        self.__plugins.append(plugin)
+        self.emit("changed")
+
+    def plugin_disable(self, plugin):
+        self.__plugins.remove(plugin)
+        self.emit("changed")
+
 
 class FilterCheckButton(ConfigCheckButton):
     __gsignals__ = {
@@ -36,7 +64,11 @@ class FilterCheckButton(ConfigCheckButton):
             (other._order, type(other).__name__)
 
 class EditPane(gtk.VBox):
-    def __init__(self, cbes_filename, cbes_defaults, plugins):
+    @classmethod
+    def init_plugins(cls):
+        PluginManager.instance.register_handler(cls.handler)
+
+    def __init__(self, cbes_filename, cbes_defaults):
         super(EditPane, self).__init__(spacing=6)
         self.set_border_width(12)
         hbox = gtk.HBox(spacing=12)
@@ -87,16 +119,38 @@ class EditPane(gtk.VBox):
 
         vbox = gtk.VBox()
 
-        self.filters = []
+        self.__filters = filters
+        self.__plugins = []
 
+        self.handler.connect("changed", self.__refresh_plugins, vbox, expander)
+
+        sw.add_with_viewport(vbox)
+        self.pack_start(sw, expand=False)
+
+        expander.connect("notify::expanded", self.__notify_expanded, sw)
+        expander.set_expanded(False)
+
+        self.show_all()
+        self.handler.emit("changed")
+        sw.hide()
+
+    @property
+    def filters(self):
+        return self.__filters + self.__plugins
+
+    def __refresh_plugins(self, handler, vbox, expander):
         instances = []
-        for Kind in plugins:
+        for Kind in handler.plugins:
             try: f = Kind()
             except:
                 util.print_exc()
                 continue
             else: instances.append(f)
         instances.sort()
+
+        for child in vbox.children():
+            child.destroy()
+        del self.__plugins[:]
 
         for f in instances:
             try: vbox.pack_start(f)
@@ -111,22 +165,16 @@ class EditPane(gtk.VBox):
                         'changed', self._changed, self.combo.child)
                     except:
                         util.print_exc()
-                    else: self.filters.append(f)
-                else: self.filters.append(f)
+                    else: self.__plugins.append(f)
+                else: self.__plugins.append(f)
+        vbox.show_all()
 
-        self.filters.extend(filters)
-        self.filters.sort()
-
-        sw.add_with_viewport(vbox)
-        self.pack_start(sw, expand=False)
-
-        expander.connect("notify::expanded", self.__notify_expanded, sw)
-        expander.set_expanded(False)
-
-        self.show_all()
         # Don't display the expander if there aren't any plugins.
-        if len(self.filters) == len(self.FILTERS): expander.hide()
-        sw.hide()
+        if not vbox.children():
+            expander.set_expanded(False)
+            expander.hide()
+        else:
+            expander.show()
 
     def __notify_expanded(self, expander, event, vbox):
         vbox.set_property('visible', expander.get_property('expanded'))

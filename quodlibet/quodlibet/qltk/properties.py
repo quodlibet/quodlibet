@@ -28,7 +28,6 @@ class SongProperties(qltk.Window):
         self.set_transient_for(qltk.get_top_parent(parent))
         if len(songs) > 1: self.set_default_size(600, 400)
         else: self.set_default_size(400, 400)
-        self.plugins.rescan()
 
         paned = gtk.HPaned()
         notebook = qltk.Notebook()

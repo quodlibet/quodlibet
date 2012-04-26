@@ -165,7 +165,9 @@ def init(*rc_files):
           "add": "false",
           },
 
-        "plugins": { },
+        "plugins":
+        { "active_plugins": "", # newline separated plugin IDs
+          },
 
         "editing":
         { "split_on": "/ & ,", # words to split on
