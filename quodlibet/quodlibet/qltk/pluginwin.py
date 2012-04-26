@@ -45,7 +45,7 @@ class PluginErrorWindow(qltk.UniqueWindow):
             if show_expanded: expander.set_expanded(True)
 
             # second line is always the __rescan line; don't show it
-            message = failures[key][0:1] + failures[key][2:]
+            message = failures[key][0:1] + failures[key][3:]
             failure = gtk.Label(''.join(message).strip())
             failure.set_alignment(0, 0)
             failure.set_padding(12, 6)
