@@ -75,7 +75,7 @@ def resume(funcid):
             src_id = gobject.timeout_add(timeout, func, priority=priority)
         else:
             src_id = gobject.idle_add(func, priority=priority)
-        __routines[funcid] = (src_id, func, priority)
+        __routines[funcid] = (src_id, func, priority, timeout)
 
 def step(funcid):
     """Force this function to iterate once."""
