@@ -17,58 +17,64 @@ from glob import glob
 from quodlibet.browsers._base import Browser
 
 BROWSERS = os.path.join(const.USERDIR, "browsers")
-
-base = dirname(__file__)
-self = basename(base)
-parent = basename(dirname(base))
-if os.name == 'nt':
-    # Windows needs to load .pyc files
-    glob_pattern = "[!_]*.py*"
-else: glob_pattern = "[!_]*.py"
-modules = [splitext(f)[0] for f in glob(join(base, glob_pattern))]
-modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in modules]
-
-if isdir(BROWSERS):
-    sys.path.insert(0, BROWSERS)
-    modules.extend([splitext(basename(f))[0] for f in
-                    glob(join(BROWSERS, "[!_]*.py*"))])
-
-# Browsers are declared and stored as a magic 4-tuple. The first element is
-# the sort order (built-in browsers are numbered with integers). The second
-# element is the label for the browser (should be marked for translation).
-# The third is the constructor for the class. The last is a boolean
-# indicating whether it should appear in the "Browse Library" menu (EmptyBar
-# and PlaylistBar are useless there, for example).
-#
-# Browser-tuples are stored as a list in <mod>.browsers.
-#
-# FIXME: Replace that crap with something sane.
-
 browsers = []
-for name in set(modules):
-    try: browser = __import__(name, {}, {}, self)
-    except Exception, err:
-        util.print_exc()
-        continue
 
-    try: browsers.extend(browser.browsers)
-    except AttributeError:
-        print_w(_("%r doesn't contain any browsers.") % browser.__name__)
+def init():
+    global browsers
 
-def is_browser(Kind):
-    return isinstance(Kind, type) and issubclass(Kind, Browser)
-browsers = filter(is_browser, browsers)
+    base = dirname(__file__)
+    self = basename(base)
+    parent = basename(dirname(base))
+    if os.name == 'nt':
+        # Windows needs to load .pyc files
+        glob_pattern = "[!_]*.py*"
+    else: glob_pattern = "[!_]*.py"
+    modules = [splitext(f)[0] for f in glob(join(base, glob_pattern))]
+    modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in modules]
 
-if not browsers:
-    raise SystemExit("No browsers found!")
+    if isdir(BROWSERS):
+        sys.path.insert(0, BROWSERS)
+        modules.extend([splitext(basename(f))[0] for f in
+                        glob(join(BROWSERS, "[!_]*.py*"))])
 
-try: sys.path.remove(BROWSERS)
-except ValueError: pass
+    # Browsers are declared and stored as a magic 4-tuple. The first element is
+    # the sort order (built-in browsers are numbered with integers). The second
+    # element is the label for the browser (should be marked for translation).
+    # The third is the constructor for the class. The last is a boolean
+    # indicating whether it should appear in the "Browse Library" menu (EmptyBar
+    # and PlaylistBar are useless there, for example).
+    #
+    # Browser-tuples are stored as a list in <mod>.browsers.
+    #
+    # FIXME: Replace that crap with something sane.
 
-browsers.sort(key=lambda Kind: Kind.priority)
+    for name in set(modules):
+        try: browser = __import__(name, {}, {}, self)
+        except Exception, err:
+            util.print_exc()
+            continue
 
-try: sys.modules["browsers.iradio"] = sys.modules["quodlibet.browsers.iradio"]
-except KeyError: pass
+        try: browsers.extend(browser.browsers)
+        except AttributeError:
+            print_w(_("%r doesn't contain any browsers.") % browser.__name__)
+
+    def is_browser(Kind):
+        return isinstance(Kind, type) and issubclass(Kind, Browser)
+    browsers = filter(is_browser, browsers)
+
+    if not browsers:
+        raise SystemExit("No browsers found!")
+
+    try: sys.path.remove(BROWSERS)
+    except ValueError: pass
+
+    browsers.sort(key=lambda Kind: Kind.priority)
+
+    try:
+        sys.modules["browsers.iradio"] = \
+            sys.modules["quodlibet.browsers.iradio"]
+    except KeyError: pass
+
 
 # Return the name of the ith browser.
 def name(i): return browsers[i].__name__

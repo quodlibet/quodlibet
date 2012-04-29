@@ -44,6 +44,8 @@ def main():
             break
 
     from quodlibet import browsers
+    browsers.init()
+
     from quodlibet.qltk.songlist import SongList
 
     try: ratings = config.getint("settings", "ratings")
