@@ -52,13 +52,13 @@ class SongInfo(gtk.Label):
 
     def __menu(self, player, menu, library):
         # Issue 298 - Rate current playing song
-        if player.song:
-            sep = gtk.SeparatorMenuItem()
-            menu.prepend(sep)
-            sep.show()
-            rating = RatingsMenuItem([player.song], library)
-            rating.show()
-            menu.prepend(rating)
+        sep = gtk.SeparatorMenuItem()
+        menu.prepend(sep)
+        sep.show()
+        rating = RatingsMenuItem([player.song], library)
+        rating.set_sensitive(bool(player.song))
+        rating.show()
+        menu.prepend(rating)
 
         item = qltk.MenuItem(_("_Edit Display..."), gtk.STOCK_EDIT)
         item.show()
