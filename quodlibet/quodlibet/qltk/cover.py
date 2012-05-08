@@ -182,7 +182,7 @@ class CoverImage(gtk.EventBox):
                     break
         else:
             from quodlibet.qltk.songsmenu import SongsMenu
-            for pk in SongsMenu.handler.plugins:
+            for pk in SongsMenu.plugins.plugins:
                 if pk.PLUGIN_ID == ALBUM_ART_PLUGIN_ID:
                     plugin = pk([self.__song])
                     print_d("Running \"%s\" plugin... (%r)" %
