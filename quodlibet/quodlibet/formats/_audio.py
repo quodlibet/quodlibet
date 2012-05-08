@@ -581,10 +581,13 @@ class AudioFile(dict):
         ["scan", "scans", "images", "covers", "artwork"])
     __cover_exts = frozenset(["jpg", "jpeg", "png", "gif"])
 
-    __cover_positive = frozenset(["front", "cover", "jacket",
-        "folder", "albumart", "edited"])
+    __cover_positive_words = ["front", "cover", "frontcover", "jacket",
+            "folder", "albumart", "edited"]
+    __cover_positive_regexes = frozenset(
+            map(lambda s:re.compile(r'(\b|_)' + s + r'(\b|_)'),
+            __cover_positive_words))
     __cover_negative_regexes = frozenset(
-        map(lambda s:re.compile(r'(\b|_)' + s + r'(\b|_)'),
+            map(lambda s:re.compile(r'(\b|_|)' + s + r'(\b|_)'),
             ["back", "inlay", "inset", "inside"]))
 
     def find_cover(self):
@@ -637,14 +640,13 @@ class AudioFile(dict):
 
                 # Track-related keywords
                 keywords =  [k.lower().strip() for k in [self("artist"),
-                    self("albumartist"), self("album")] if len(k) > 1]
+                             self("albumartist"), self("album")] if len(k) > 1]
                 score += 2 * sum(map(lfn.__contains__, keywords))
 
                 # Generic keywords
-                score += 3 * sum(map(lfn.__contains__, self.__cover_positive))
+                score += 3 * sum(r.search(lfn) is not None
+                                 for r in self.__cover_positive_regexes)
 
-                # Negatives are word-boundary-wrapped
-                # This avoids problems like "Nickelback - front"
                 negs = sum(r.search(lfn) is not None
                            for r in self.__cover_negative_regexes)
                 score -= 2 * negs

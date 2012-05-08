@@ -533,8 +533,8 @@ class Tfind_cover(TestCase):
 
     def test_regular(self):
         files = [os.path.join(self.dir, f) for f in
-                 ["cover.png", "frontcover.jpg", "frontfoldercover.gif",
-                  "jacketcoverfrontfolder.jpeg"]]
+                 ["cover.png", "folder.jpg", "frontcover.jpg",
+                  "front_folder_cover.gif", "jacket_cover.front.folder.jpeg"]]
         for f in files:
             file(f, "w").close()
             self.files.append(f)
@@ -558,6 +558,34 @@ class Tfind_cover(TestCase):
             else:
                 # Here, no cover is better than the back...
                 self.failUnlessEqual(f, self.full_path("Quuxly - back.jpg"))
+
+    def test_embedded_special_cover_words(self):
+        """Tests that words incidentally containing embedded "special" words 
+        album keywords (e.g. cover, disc, back) don't trigger
+        See Issue 818"""
+
+        song = AudioFile({
+            "~filename": "tests/data/asong.ogg",
+            "album": "foobar",
+            "title": "Ode to Baz",
+            "artist": "Q-Man",
+        })
+        files = [self.full_path(f) for f in
+                 ['back.jpg',
+                  'discovery.jpg', "Pharell - frontin'.jpg",
+                  'nickelback - Curb.jpg',
+                  'foobar.jpg', 'folder.jpg',     # Though this is debatable
+                  'Q-Man - foobar.jpg', 'Q-man - foobar (cover).jpg']]
+        for f in files:
+            file(f, "w").close()
+            self.files.append(f)
+            cover = song.find_cover()
+            if cover:
+                actual = os.path.abspath(cover.name)
+                self.failUnlessEqual(actual, f,
+                                     "\"%s\" should trump \"%s\"" % (f, actual))
+            else:
+                self.failUnless(f, self.full_path('back.jpg'));
 
     def tearDown(self):
         map(os.unlink, self.files)
