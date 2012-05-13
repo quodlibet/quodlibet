@@ -67,34 +67,33 @@ class DuplicateSongsView(RCMHintedTreeView):
 #            if player.go_to(songs[0], True):
 #                player.paused = False
 
-    def __removed(self, library, songs):
+    def _removed(self, library, songs):
         model = self.get_model()
-        if model:
-            for song in songs:
-                row = model.find_row(song)
-                if row:
-                    group_row = model.iter_parent(row.iter)
-                    print_d("Found parent group = %s" % group_row)
-                    model.remove(row.iter)
-                    num_kids = model.iter_n_children(group_row)
-                    if num_kids < Duplicates.MIN_GROUP_SIZE:
-                        print_d("Removing group %s" % group_row)
-                        model.remove(group_row)
-                else:
-                    # print_w("Couldn't delete song %s" % song)
-                    pass
-        else:
-            print_d("Null model returned.", self)
+        if not model: return
+        for song in songs:
+            row = model.find_row(song)
+            if row:
+                group_row = model.iter_parent(row.iter)
+                print_d("Found parent group = %s" % group_row)
+                model.remove(row.iter)
+                num_kids = model.iter_n_children(group_row)
+                if num_kids < Duplicates.MIN_GROUP_SIZE:
+                    print_d("Removing group %s" % group_row)
+                    model.remove(group_row)
+            else:
+                # print_w("Couldn't delete song %s" % song)
+                pass
 
-    def __added(self, library, songs):
+    def _added(self, library, songs):
         model = self.get_model()
+        if not model: return
         for song in songs:
             key = Duplicates.get_key(song)
             model.add_to_existing_group(key, song)
             # TODO: handle creation of new groups based on songs that were
             #       in original list but not as a duplicate
 
-    def __changed(self, library, songs):
+    def _changed(self, library, songs):
         model = self.get_model()
         if not model:  # Keeps happening on next song - bug / race condition?
             return
@@ -126,16 +125,25 @@ class DuplicateSongsView(RCMHintedTreeView):
         # Selecting multiple is a nice feature it turns out.
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
 
-        # Handle removals propagated from the underlying library
-        library.connect('removed', self.__removed)
-        library.connect('added', self.__added)
-        library.connect('changed', self.__changed)
+        # Handle signals propagated from the underlying library
+        self.connected_library_sigs = []
+        SIGNAL_MAP = {
+            'removed': self._removed,
+            'added': self._added,
+            'changed': self._changed
+        }
+        for (sig, callback) in SIGNAL_MAP.items():
+            print_d("Listening to library.%s signals" % sig)
+            self.connected_library_sigs.append(library.connect(sig, callback))
 
-        # TODO: work out if this is really needed
-        def reset_activated(*args):
-            self._activated = False
-        s = player.playlist.connect_after('song-started', reset_activated)
-        self.connect_object('destroy', player.playlist.disconnect, s)
+        # And disconnect, or Bad Stuff happens.
+        self.connect('destroy', self.on_destroy)
+
+
+    def on_destroy(self, view):
+        print_d("Disconnecting from library signals...")
+        for sig in self.connected_library_sigs:
+            library.disconnect(sig)
 
 
 class DuplicatesTreeModel(gtk.TreeStore):
@@ -196,7 +204,7 @@ class DuplicatesTreeModel(gtk.TreeStore):
         """Adds a new group, returning the row created"""
         group = AudioFileGroup(songs)
         # Add the group first.
-        parent=self.append(None,
+        parent = self.append(None,
             [key] +
             [self.group_value(group, tag) for tag, f in self.TAG_MAP])
 
@@ -269,7 +277,8 @@ class DuplicateDialog(gtk.Window):
                 len(model)) % len(model)
         super(DuplicateDialog, self).__init__()
         self.set_destroy_with_parent(True)
-        self.set_title("Quod Libet - %s (%s)" % (Duplicates.PLUGIN_NAME, songs_text))
+        self.set_title("Quod Libet - %s (%s)" % (Duplicates.PLUGIN_NAME,
+                                                 songs_text))
         self.finished = False
         self.set_default_size(960, 480)
         self.set_border_width(6)
@@ -280,7 +289,7 @@ class DuplicateDialog(gtk.Window):
         view = DuplicateSongsView(model)
         # Set up the columns
         for i, (tag, f) in enumerate(DuplicatesTreeModel.TAG_MAP):
-            e = (pango.ELLIPSIZE_START if tag=='~filename'
+            e = (pango.ELLIPSIZE_START if tag == '~filename'
                 else pango.ELLIPSIZE_END)
             col = gtk.TreeViewColumn(util.tag(tag),
                 gobject.new(gtk.CellRendererText, ellipsize=e),
@@ -318,7 +327,7 @@ class Duplicates(SongsMenuPlugin):
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Find and browse similarly tagged versions of songs.')
     PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
-    PLUGIN_VERSION = "0.5"
+    PLUGIN_VERSION = "0.6"
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"
@@ -334,7 +343,7 @@ class Duplicates(SongsMenuPlugin):
     __cfg_cache = {}
 
     # Faster than a speeding bullet
-    __trans = string.maketrans("","")
+    __trans = string.maketrans("", "")
 
     @classmethod
     def _cfg_key(cls, key):
