@@ -1083,7 +1083,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             self.append_column(self.CurrentColumn())
 
         for i, t in enumerate(headers):
-            if t in ["tracknumber", "discnumber"]:
+            if t in ["tracknumber", "discnumber", "language"]:
                 column = self.TextColumn(t)
             elif t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
                 column = self.DateColumn(t)
