@@ -301,6 +301,11 @@ class AudioFile(dict):
             elif key == "#year":
                 try: return int(self.get("date", default)[:4])
                 except (ValueError, TypeError, KeyError): return default
+            elif key == "originalyear":
+                return self.get("originaldate", default)[:4]
+            elif key == "#originalyear":
+                try: return int(self.get("originaldate", default)[:4])
+                except (ValueError, TypeError, KeyError): return default
             elif key == "#tracks":
                 try: return int(self["tracknumber"].split("/")[1])
                 except (ValueError, IndexError, TypeError, KeyError):

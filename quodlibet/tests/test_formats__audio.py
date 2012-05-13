@@ -11,13 +11,13 @@ bar_1_1 = AudioFile({
     "~filename": "/fakepath/1",
     "title": "A song",
     "discnumber": "1/2", "tracknumber": "1/3",
-    "artist": "Foo", "album": "Bar" })
+    "artist": "Foo", "album": "Bar"})
 bar_1_2 = AudioFile({
     "~filename": "/fakepath/2",
     "title": "Perhaps another",
     "discnumber": "1", "tracknumber": "2/3",
     "artist": "Lali-ho!", "album": "Bar",
-    "date": "2004-12-12"})
+    "date": "2004-12-12", "originaldate": "2005-01-01"})
 bar_2_1 = AudioFile({
     "~filename": "does not/exist",
     "title": "more songs",
@@ -81,6 +81,11 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_2("~year"), "2004")
         self.failUnlessEqual(bar_1_2("~#year"), 2004)
         self.failUnlessEqual(bar_1_1("~#year", 1999), 1999)
+
+    def test_originalyear(self):
+        self.failUnlessEqual(bar_1_2("~originalyear"), "2005")
+        self.failUnlessEqual(bar_1_2("~#originalyear"), 2005)
+        self.failUnlessEqual(bar_1_1("~#originalyear", 1999), 1999)
 
     def test_call_people(self):
         self.failUnlessEqual(quux("~people"), "")

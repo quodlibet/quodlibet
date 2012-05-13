@@ -76,9 +76,11 @@ class TAlbum(TestCase):
     def test_numeric_ops(s):
         songs = [
             Fakesong({"~#length": 4, "~#added": 5, "~#lastplayed": 1,
-            "~#bitrate": 200, "date": "100", "~#rating": 0.1}),
+            "~#bitrate": 200, "date": "100", "~#rating": 0.1,
+            "originaldate": "2004-01-01"}),
             Fakesong({"~#length": 7, "~#added": 7, "~#lastplayed": 88,
-            "~#bitrate": 220, "date": "99", "~#rating": 0.3}),
+            "~#bitrate": 220, "date": "99", "~#rating": 0.3,
+            "originaldate": "2002-01-01"}),
             Fakesong({"~#length": 1, "~#added": 3, "~#lastplayed": 43,
             "~#bitrate": 60, "date": "33", "~#rating": 0.5})
         ]
@@ -98,6 +100,7 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.get("~#bitrate"), 200)
         s.failUnlessEqual(album.get("~#year"), 33)
         s.failUnlessEqual(album.get("~#rating"), 0.3)
+        s.failUnlessEqual(album.get("~#originalyear"), 2002)
 
     def test_defaults(s):
         failUnlessEq = s.failUnlessEqual

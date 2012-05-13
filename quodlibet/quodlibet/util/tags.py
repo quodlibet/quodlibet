@@ -103,6 +103,7 @@ TAGS = dict([
     IT("performers", _("performers")),
     IT("rating", _("rating")),
     IT("year", _("year")),
+    IT("originalyear", _("original release year")),
     IT("bookmark", _("bookmark")),
     IT("bitrate", _("bitrate")),
     IT("filesize", _("file size")),
