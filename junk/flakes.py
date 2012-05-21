@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-# ./flakes.py <path>
+# ./flakes.py [--all] <path>
+# ./flakes.py ../quodlibet
 
 # pyflakes has no way to define additions to __builtin__,
 # so add them manually
@@ -12,8 +13,26 @@ for name in NAMES:
 del __builtin__
 del NAMES
 
+class NullStream:
+    BL = ["imported but unused", "redefinition of unused",
+          "unable to detect undefined names", "redefinition of function"]
+    def __init__(self, out):
+        self.stdout = out
+
+    def write(self, text):
+        for p in self.BL:
+            if p in text:
+                return
+        if not text.strip():
+            return
+        print>>self.stdout, text
+
 import sys
 argv = sys.argv
+if "--all" in argv:
+    argv.remove("--all")
+else:
+    sys.stdout = NullStream(sys.stdout)
 del sys
 
 from pyflakes.scripts.pyflakes import main
