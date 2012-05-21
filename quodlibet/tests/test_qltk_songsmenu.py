@@ -8,7 +8,7 @@ import quodlibet.player
 class TSongsMenu(TestCase):
     def setUp(self):
         self.library = SongLibrary()
-        backend = quodlibet.player.init("nullbe")
+        quodlibet.player.init("nullbe")
         self.device = quodlibet.player.init_device(self.library)
         
         self.songs = [AudioFile({"title": x}) for x in

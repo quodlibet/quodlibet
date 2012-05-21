@@ -32,7 +32,7 @@ class TTaskController(TestCase):
         t2 = Task("src2", "desc2", controller = self.c)
         self.assertEquals(self.c.source, _("Active tasks"))
         self.assertEquals(self.c.frac, 0.25)
-        t3 = Task("src3", "desc3", controller = self.c, known_length=False)
+        Task("src3", "desc3", controller = self.c, known_length=False)
         self.assertAlmostEqual(self.c.frac, 0.5/3)
         t1.finish()
         t2.finish()

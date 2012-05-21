@@ -9,7 +9,6 @@ import os
 
 import quodlibet.devices
 
-from quodlibet import util
 
 class Device(dict):
     # The default icon for this device.

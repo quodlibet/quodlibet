@@ -16,7 +16,6 @@ if not getattr(gtk.Entry, "set_icon_from_stock", None):
     try: from sexy import IconEntry
     except ImportError: pass
 
-from quodlibet import config
 from quodlibet.qltk.x import ClearButton, is_accel
 
 class EditableUndo(object):

@@ -1,7 +1,6 @@
 from tests import TestCase, add
 
 from quodlibet import config
-from quodlibet import widgets
 
 from quodlibet.browsers.paned import PanedBrowser
 from quodlibet.formats._audio import AudioFile

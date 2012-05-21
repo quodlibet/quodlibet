@@ -49,7 +49,6 @@ class TSongsMenuPlugins(TestCase):
         file.close()
 
     def test_empty_has_no_plugins(self):
-        dirname = self.create_plugin()
         self.pm.rescan()
         self.assertEquals(self.pm.plugins, [])
 
@@ -96,6 +95,6 @@ class TSongsMenuPlugins(TestCase):
 
     def test_Menu(self):
         self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
-        menu = self.handler.Menu(None, None, [AudioFile()])
+        self.handler.Menu(None, None, [AudioFile()])
 
 add(TSongsMenuPlugins)

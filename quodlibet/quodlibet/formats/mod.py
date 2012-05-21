@@ -31,7 +31,6 @@ class ModFile(AudioFile):
     format = "MOD/XM/IT"
 
     def __init__(self, filename):
-        size = os.path.getsize(filename)
         data = file(filename).read()
         f = _modplug.ModPlug_Load(data, len(data))
         if not f: raise IOError("%r not a valid MOD file" % filename)

@@ -11,7 +11,6 @@ import sys
 
 import gobject
 import gtk
-import pango
 
 from quodlibet import browsers
 from quodlibet import config
@@ -23,7 +22,6 @@ from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.formats.remote import RemoteFile
-from quodlibet.parse import Query
 from quodlibet.qltk import mmkeys_ as mmkeys
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
@@ -60,16 +58,16 @@ class MainSongList(SongList):
             row = model[iter]
             if row.path == model.current_path:
                 if model.sourced:
-                    stock = pixbuf[player.playlist.paused]
+                    stock_icon = pixbuf[player.playlist.paused]
                 else:
-                    stock = gtk.STOCK_MEDIA_STOP
+                    stock_icon = gtk.STOCK_MEDIA_STOP
             elif row[0].get("~errors"):
-                stock = gtk.STOCK_DIALOG_ERROR
+                stock_icon = gtk.STOCK_DIALOG_ERROR
             else:
-                stock = ''
-            if self.__last_stock == stock: return
-            self.__last_stock = stock
-            cell.set_property('stock-id', stock)
+                stock_icon = ''
+            if self.__last_stock == stock_icon: return
+            self.__last_stock = stock_icon
+            cell.set_property('stock-id', stock_icon)
 
         def __init__(self):
             self._render = gtk.CellRendererPixbuf()
@@ -836,7 +834,7 @@ class QuodLibetWindow(gtk.Window):
                     util.escape(name))).run()
             else:
                 if name not in self.__library:
-                    song = self.__library.add([RemoteFile(name)])
+                    self.__library.add([RemoteFile(name)])
 
     def open_chooser(self, action):
         if not os.path.exists(self.last_dir):

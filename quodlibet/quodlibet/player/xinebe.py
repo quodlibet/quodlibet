@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 import gobject
-import time
 
 from quodlibet import config
 from quodlibet.player import error as PlayerError

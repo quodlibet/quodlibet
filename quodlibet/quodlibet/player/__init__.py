@@ -36,7 +36,6 @@ def quit(dev):
 def init_device(librarian):
     global playlist, device
     playlist = device = backend.init(librarian)
-    PlaylistPlayer = type(device)
     return device
 
 def can_play_uri(uri):

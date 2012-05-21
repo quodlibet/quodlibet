@@ -1,7 +1,5 @@
 from tests import TestCase, add
 
-import gtk
-
 from quodlibet.qltk.playorder import PlayOrder
 import quodlibet.config
 import quodlibet.plugins

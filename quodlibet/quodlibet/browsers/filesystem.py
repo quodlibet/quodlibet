@@ -10,12 +10,10 @@
 # needs them to be there.
 
 import os
-import sys
 
 import gtk
 
 from quodlibet import config
-from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
 

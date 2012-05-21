@@ -55,7 +55,7 @@ def save(force=False):
 
         if force:
             try: lib.save()
-            except EnvironmentError, err: pass
+            except EnvironmentError: pass
             lib.destroy()
         elif (time.time() - util.mtime(filename)) > 15 * 60:  # 15 minutes
             threading.Thread(target=lib.save).run()

@@ -2,8 +2,6 @@ from tests import TestCase, add
 
 import os
 
-from tempfile import mkstemp, mkdtemp
-
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.plugins._songwrapper import SongWrapper, ListWrapper

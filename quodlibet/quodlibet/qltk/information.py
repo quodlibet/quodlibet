@@ -19,7 +19,7 @@ from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.x import Window
 from quodlibet.util import tag
-from quodlibet.util.titlecase import title
+
 
 def Label(*args):
     l = gtk.Label(*args)
@@ -537,10 +537,10 @@ class ManySongs(qltk.Notebook):
                         expand=False, fill=False)
 
     def _file(self, songs, box):
-        time = 0
+        length = 0
         size = 0
         for song in songs:
-            time += song.get("~#length", 0)
+            length += song.get("~#length", 0)
             try: size += util.size(song["~filename"])
             except EnvironmentError: pass
         table = gtk.Table(2, 2)
@@ -548,7 +548,7 @@ class ManySongs(qltk.Notebook):
         table.attach(Label(_("Total length:")), 0, 1, 0, 1,
                      xoptions=gtk.FILL)
         table.attach(
-            Label(util.format_time_long(time)), 1, 2, 0, 1)
+            Label(util.format_time_long(length)), 1, 2, 0, 1)
         table.attach(Label(_("Total size:")), 0, 1, 1, 2,
                      xoptions=gtk.FILL)
         table.attach(Label(util.format_size(size)), 1, 2, 1, 2)

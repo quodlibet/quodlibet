@@ -11,7 +11,6 @@ import gtk
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.qltk import bookmarks
-from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.qltk.ccb import ConfigCheckMenuItem

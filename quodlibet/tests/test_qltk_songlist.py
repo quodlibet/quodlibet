@@ -52,12 +52,6 @@ class TPlaylistModel(TestCase):
         for i, v in zip(iters, to_find):
             self.failUnlessEqual(self.pl[i][0], v)
 
-    def test_find_all(self):
-        to_find = [1, 4, 5, 8, 9]
-        iters = self.pl.find_all(to_find)
-        for i, v in zip(iters, to_find):
-            self.failUnlessEqual(self.pl[i][0], v)
-
     def test_find_all_some_missing(self):
         to_find = [1, 4, 18, 5, 8, 9, -1]
         iters = self.pl.find_all(to_find)

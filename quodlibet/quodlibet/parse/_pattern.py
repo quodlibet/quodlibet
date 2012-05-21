@@ -226,8 +226,10 @@ class PatternCompiler(object):
         content.extend(self.__pattern(self.__root, {}, tags))
         content.append("  return r")
         code = "\n".join(content)
-        exec compile(code, "<string>", "exec")
-        return f, tags
+
+        scope = {}
+        exec compile(code, "<string>", "exec") in scope
+        return scope["f"], tags
 
     def __escape(self, text):
         text = text.replace("\\", r"\\")

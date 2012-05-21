@@ -136,7 +136,7 @@ class EditBookmarksPane(gtk.VBox):
         else: model[path][0] = time
 
     def __check_entry(self, add, time, name):
-        try: t = util.parse_time(time.get_text(), None)
+        try: util.parse_time(time.get_text(), None)
         except: add.set_sensitive(False)
         else: add.set_sensitive(bool(name.get_text()))
 

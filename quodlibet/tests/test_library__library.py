@@ -1,7 +1,6 @@
 import gtk
 
 import os
-import sys
 
 from tests import TestCase, add
 from tempfile import mkstemp
@@ -163,7 +162,7 @@ class TLibrary(TestCase):
             self.library.save(filename)
 
             library = self.Library()
-            ret = library.load(filename)
+            library.load(filename)
             self.failUnlessEqual(
                 sorted(self.library.items()), sorted(library.items()))
         finally:

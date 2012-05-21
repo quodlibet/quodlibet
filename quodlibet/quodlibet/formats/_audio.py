@@ -9,8 +9,6 @@
 # more readable, unless they're also faster.
 
 import os
-import stat
-import glob
 import shutil
 import time
 import re
@@ -18,14 +16,12 @@ import re
 from quodlibet import const
 from quodlibet import util
 from quodlibet import config
-from ConfigParser import NoSectionError, NoOptionError
 
 from quodlibet.util.uri import URI
 from quodlibet.util import HashableDict
 from quodlibet.util import human_sort_key as human
 from quodlibet.util.tags import STANDARD_TAGS as USEFUL_TAGS
 from quodlibet.util.tags import MACHINE_TAGS
-from quodlibet.util.titlecase import title
 
 
 MIGRATE = frozenset(("~#playcount ~#laststarted ~#lastplayed ~#added "

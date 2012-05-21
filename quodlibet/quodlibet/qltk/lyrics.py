@@ -72,8 +72,6 @@ class LyricsPane(gtk.VBox):
 
     def __add(self, add, song):
         artist = song.comma('artist').encode('utf-8')
-        title = song.comma('title').encode('utf-8')
-        album = song.comma('album').encode('utf-8')
 
         util.website("http://lyricwiki.org/%s" % (urllib.quote(artist)))
 

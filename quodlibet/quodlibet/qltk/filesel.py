@@ -66,7 +66,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
         if os.name == "nt":
             try: from win32com.shell import shell, shellcon as con
-            except ImportError, e: pass
+            except ImportError: pass
             else:
                 if folders: folders.append(None)
                 desktop = shell.SHGetFolderPath(0, con.CSIDL_DESKTOP, 0, 0)

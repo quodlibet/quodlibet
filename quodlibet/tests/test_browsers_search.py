@@ -2,7 +2,6 @@ from tests import TestCase, add
 
 import gtk
 
-from quodlibet import widgets
 import quodlibet.browsers.search
 import quodlibet.config
 

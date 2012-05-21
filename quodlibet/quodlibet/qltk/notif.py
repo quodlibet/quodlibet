@@ -30,7 +30,6 @@ Of course, right now it does none of these things.
 import gobject
 import gtk
 import pango
-import traceback
 
 from quodlibet.util import copool
 

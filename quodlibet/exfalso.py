@@ -13,7 +13,6 @@ def main():
     import quodlibet
     from quodlibet import util
     from quodlibet import const
-    import gobject
 
     quodlibet._init_signal()
 
@@ -32,7 +31,7 @@ def main():
                              name="Ex Falso",
                              title=const.PROCESS_TITLE_EF)
 
-    player = quodlibet.init_backend("nullbe", library.librarian)
+    quodlibet.init_backend("nullbe", library.librarian)
 
     pm = quodlibet.init_plugins()
 

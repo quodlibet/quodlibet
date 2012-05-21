@@ -17,9 +17,7 @@
 #
 
 import os
-import sys
 
-import gtk
 import gobject
 
 __all__ = []

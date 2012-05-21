@@ -203,10 +203,6 @@ class SplitPerformerFromTitle(SplitPerson):
 
 class AddTagDialog(gtk.Dialog):
     def __init__(self, parent, can_change, library):
-        if can_change == True:
-            can = sorted(formats.USEFUL_TAGS)
-        else:
-            can = sorted(can_change)
         super(AddTagDialog, self).__init__(
             _("Add a Tag"), qltk.get_top_parent(parent))
         self.set_border_width(6)
@@ -460,8 +456,6 @@ class EditTags(gtk.VBox):
 
     def __popup_menu(self, view, parent):
         menu = gtk.Menu()
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
 
         view.ensure_popup_selection()
         model, rows = view.get_selection().get_selected_rows()
@@ -527,10 +521,6 @@ class EditTags(gtk.VBox):
             qltk.ErrorMessage(self, title, msg).run()
             return
 
-        edited = True
-        edit = True
-        orig = None
-        deleted = False
         iters = [row.iter for row in model if row[TAG] == tag]
         row = [tag, util.escape(value), True, True, False, None, False, None]
         if len(iters): model.insert_after(iters[-1], row=row)
@@ -721,7 +711,6 @@ class EditTags(gtk.VBox):
                 value = fmt.validate(v)
             else:
                 value = row[VALUE]
-                idx = value.find('<i>')
                 value = util.unescape(value)
 
             if row[ORIGVALUE] is None:

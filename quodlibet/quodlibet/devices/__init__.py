@@ -11,10 +11,7 @@ import ConfigParser
 from os.path import dirname, basename, join
 from glob import glob
 
-try:
-    import ctypes
-except ImportError:
-    ctypes = None
+import ctypes
 
 import gobject
 try:
@@ -309,9 +306,6 @@ class DKD(DeviceManager):
         super(DKD, self).__init__("org.freedesktop.%s" % self.__bus)
 
         error = False
-        if ctypes is None:
-            print_w(_("%s: Could not import ctypes.") % self.__bus)
-            error = True
 
         try:
             self.__udev = UdevWrapper()
@@ -379,7 +373,6 @@ class DKD(DeviceManager):
         return prop_get(prop_if, "partition-slave")
 
     def eject(self, path):
-        prop_if = self.__get_dev_prop_interface(path)
         dev_if = self.__get_dev_interface(path)
         parent_path = self.__get_parent_disk_path(path)
         parent_if = self.__get_dev_interface(parent_path)

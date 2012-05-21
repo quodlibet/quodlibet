@@ -31,9 +31,6 @@ class po_stats(GCommand):
 
     def run(self):
         self.run_command("build_mo")
-
-        basepath = os.path.join(self.build_base, 'share', 'locale')
-
         res = []
         for po in self.po_files:
             language = os.path.basename(po).split(".")[0]

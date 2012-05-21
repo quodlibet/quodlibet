@@ -1,7 +1,5 @@
 from tests import TestCase, add
 
-import os
-
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
 import quodlibet.config
 

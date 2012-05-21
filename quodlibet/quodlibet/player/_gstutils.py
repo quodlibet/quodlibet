@@ -29,7 +29,7 @@ def GStreamerSink(pipeline):
         pipeline = "gconfaudiosink profile=music"
 
     try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
-    except gobject.GError, err:
+    except gobject.GError:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
         try: pipe = [gst.parse_launch("autoaudiosink")]
         except gobject.GError: pipe = None

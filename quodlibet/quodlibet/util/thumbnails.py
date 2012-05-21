@@ -6,7 +6,6 @@
 # published by the Free Software Foundation
 
 import os
-import urllib
 import tempfile
 
 try:
@@ -14,7 +13,6 @@ try:
 except ImportError:
   import md5 as hash
 
-import gobject
 import gtk
 
 from quodlibet.util import mtime, fsnative, fsdecode, pathname2url

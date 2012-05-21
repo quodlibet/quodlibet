@@ -160,7 +160,7 @@ class TQuery(TestCase):
         self.failUnless(Query("#(13 > track > 11)").search(self.s2))
         self.failUnless(Query("#(20 > track < 20)").search(self.s2))
 
-    def test_not(self):
+    def test_not_2(self):
         for s in ["album = !/i hate/", "artist = !/pi*/", "title = !/x.y/"]:
             self.failUnless(Query(s).search(self.s2))
             self.failIf(Query(s).search(self.s1))

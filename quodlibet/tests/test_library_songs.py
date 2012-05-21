@@ -9,7 +9,6 @@ from quodlibet.library.songs import SongLibrary, SongFileLibrary, SongLibrarian
 
 from tests import add
 from tests.test_library__library import Fake, TLibrary, TLibrarian
-from quodlibet.formats.xiph import FLACFile
 
 import shutil
 from quodlibet import config

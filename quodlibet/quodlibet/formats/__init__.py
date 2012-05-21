@@ -9,7 +9,7 @@ import sys
 
 from glob import glob
 from os.path import dirname, basename, join, splitext
-from quodlibet import util, const
+from quodlibet import util
 
 base = dirname(__file__)
 self = basename(base)

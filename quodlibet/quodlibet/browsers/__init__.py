@@ -50,7 +50,7 @@ def init():
 
     for name in set(modules):
         try: browser = __import__(name, {}, {}, self)
-        except Exception, err:
+        except Exception:
             util.print_exc()
             continue
 

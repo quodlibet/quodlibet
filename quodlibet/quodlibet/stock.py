@@ -54,7 +54,6 @@ def init():
         gtk.stock_add([(REMOVE, _("_Remove from library")) +
                        gtk.stock_lookup(gtk.STOCK_REMOVE)[2:]])
     else:
-        old = gtk.stock_lookup(gtk.STOCK_REMOVE)
         gtk.stock_add([(REMOVE, _("ql-remove"), 0, 0, "")])
 
     for key, name in [

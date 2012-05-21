@@ -9,7 +9,6 @@
 # Free Media Player Specifications 1.1 by Jeff Mitchell
 # http://freedesktop.org/wiki/Specifications/free-media-player-specs
 
-import gtk
 
 FMPS_NOTHING = u"FMPS_NOTHING"
 
