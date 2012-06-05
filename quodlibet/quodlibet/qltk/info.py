@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2011,2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,6 +14,7 @@ import pango
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import stock
+from quodlibet import browsers
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
@@ -51,6 +53,25 @@ class SongInfo(gtk.Label):
         self._compiled = XMLFromPattern(self._pattern)
 
     def __menu(self, player, menu, library):
+
+
+        try:
+            # Get a real submenu, unless there's no song, in which case an
+            # empty one looks more consistent than None
+            submenu = (browsers.playlists.Menu([player.song], player)
+                       if player.song else gtk.Menu())
+        except AttributeError,e:
+            print_d(e)
+        else:
+            b = gtk.ImageMenuItem(stock.PLAYLISTS)
+            b.set_sensitive(player.song is not None and player.song.can_add)
+            b.set_submenu(submenu)
+            b.show_all()
+            sep = gtk.SeparatorMenuItem()
+            menu.prepend(sep)
+            sep.show()
+            menu.prepend(b)
+
         # Issue 298 - Rate current playing song
         sep = gtk.SeparatorMenuItem()
         menu.prepend(sep)
