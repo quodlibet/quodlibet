@@ -1,4 +1,5 @@
 # Copyright 2004-2011 Joe Wreschnig, Christoph Reiter
+#           2009-2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -176,6 +177,7 @@ def init(*rc_files):
           "save_to_songs": "true",
           "save_email": const.EMAIL,
           "alltags": "true", # show all tags, or just "human-readable" ones
+          "auto_save_changes" : "false" # Skip dialog to save or revert changes
           },
 
         "albumart":

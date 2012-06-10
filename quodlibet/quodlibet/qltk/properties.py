@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#                2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,6 +12,7 @@ import pango
 
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import config
 
 from quodlibet.qltk.edittags import EditTags
 from quodlibet.qltk.renamefiles import RenameFiles
@@ -26,8 +28,10 @@ class SongProperties(qltk.Window):
     def __init__(self, library, songs, parent=None):
         super(SongProperties, self).__init__(dialog=False)
         self.set_transient_for(qltk.get_top_parent(parent))
-        if len(songs) > 1: self.set_default_size(600, 400)
-        else: self.set_default_size(400, 400)
+        self.set_default_size((600 if len(songs) > 1 else 400), 400)
+
+        self.auto_save_on_change = config.getboolean(
+                'editing', 'auto_save_changes', False)
 
         paned = gtk.HPaned()
         notebook = qltk.Notebook()
@@ -141,10 +145,16 @@ class SongProperties(qltk.Window):
 
     def __pre_selection_changed(self, view, event):
         if self.__save:
+            if self.auto_save_on_change:
+                self.__save.clicked()
+                return
             resp = qltk.CancelRevertSave(self).run()
-            if resp == gtk.RESPONSE_YES: self.__save.clicked()
-            elif resp == gtk.RESPONSE_NO: return False
-            else: return True # cancel or closed
+            if resp == gtk.RESPONSE_YES:
+                self.__save.clicked()
+            elif resp == gtk.RESPONSE_NO:
+                return False
+            else:
+                return True # cancel or closed
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()
