@@ -128,7 +128,7 @@ class QLSubmitQueue:
             disk_queue_file.close()
             os.unlink(self.DUMP)
             self.queue += disk_queue
-        except:
+        except Exception:
             pass
 
     @classmethod
@@ -220,7 +220,7 @@ class QLSubmitQueue:
 
         try:
             resp = urllib2.urlopen(url)
-        except IOError:
+        except (IOError, HTTPException):
             if show_dialog:
                 self.quick_dialog(
                     "Could not contact service '%s'." %
@@ -266,7 +266,7 @@ class QLSubmitQueue:
         data_str = urllib.urlencode(data)
         try:
             resp = urllib2.urlopen(url, data_str)
-        except IOError:
+        except (IOError, HTTPException):
             print_d("Audioscrobbler server not responding, will try later.")
             return False
 
@@ -321,7 +321,7 @@ class QLScrobbler(EventPlugin):
     PLUGIN_ID = "QLScrobbler"
     PLUGIN_NAME = _("AudioScrobbler Submission")
     PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
-        "Audioscrobbler services.")
+                    "Audioscrobbler services.")
     PLUGIN_ICON = gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.11"
 
