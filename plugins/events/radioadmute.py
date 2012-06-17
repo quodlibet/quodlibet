@@ -1,4 +1,4 @@
-# Copyright 2011 Christoph Reiter
+# Copyright 2011, 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -19,6 +19,9 @@ class RadioAdMute(EventPlugin):
             "di.fm/premium",
             "There's more to Digitally Imported!",
             "Digitally Imported AMTAG_60 ADWTAG_30000_START=0",
+            "PhotonVPS.com",
+            "Get Digitally Imported Premium",
+            "More of the show after these messages",
             ]
 
     RE_SPAM = ["Sponsored Message\s+\([0-9]+\)",
