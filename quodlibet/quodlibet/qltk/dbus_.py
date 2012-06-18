@@ -12,6 +12,7 @@ from dbus import DBusException
 
 from quodlibet import player
 from quodlibet import util
+from quodlibet.util import dbusutils
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
 
@@ -34,13 +35,11 @@ class DBusHandler(dbus.service.Object):
     def __dict(self, song):
         dict = {}
         for key, value in (song or {}).items():
-            if isinstance(value, unicode):
-                if '\x00' not in value:
-                    dict[key] = value.encode('utf-8')
-            elif not isinstance(value, str):
-                dict[key] = str(value)
-            else:
-                dict[key] = util.fsdecode(value)
+            if not isinstance(value, basestring):
+                value = unicode(value)
+            elif isinstance(value, str):
+                value = util.fsdecode(value)
+            dict[key] = dbusutils.dbus_unicode_validate(value)
         if song:
             dict["~uri"] = song("~uri")
         return dict
