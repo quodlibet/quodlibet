@@ -264,8 +264,9 @@ def main(window):
             if gtk.main_iteration(False):
                 print_d("Quit GTK: Timeout occured, force quit.")
                 break
+        else:
+            gtk.main_quit()
 
-        gtk.main_quit()
         print_d("Quit GTK: done.")
 
     window.connect('destroy', quit_gtk)
