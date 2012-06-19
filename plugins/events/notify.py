@@ -255,12 +255,9 @@ class Notify(EventPlugin):
         return PreferencesWidget(parent, self)
 
     def __get_interface(self):
-        try:
-            obj = dbus.SessionBus().get_object(
-                "org.freedesktop.Notifications",
-                "/org/freedesktop/Notifications")
-        except dbus.DBusException:
-            return (None,) * 3
+        obj = dbus.SessionBus().get_object(
+            "org.freedesktop.Notifications",
+            "/org/freedesktop/Notifications")
 
         interface = dbus.Interface(obj, "org.freedesktop.Notifications")
 
@@ -282,12 +279,12 @@ class Notify(EventPlugin):
         # try to get a interface
         if not self.__interface:
             # if it failes, don't do anything
-            self.__interface, self.__caps, self.__spec_version = \
-                self.__get_interface()
-            if not self.__interface:
-                print_w(
-                    "[notify] %s" %
-                    _("Couldn't connect to notification daemon."))
+            try:
+                self.__interface, self.__caps, self.__spec_version = \
+                        self.__get_interface()
+            except dbus.DBusException:
+                print_w("[notify] %s" %
+                        _("Couldn't connect to notification daemon."))
                 return False
 
         strip_markup = lambda t: re.subn("\</?[iub]\>", "", t)[0]
