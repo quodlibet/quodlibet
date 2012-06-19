@@ -225,15 +225,15 @@ class TaskWidget(gtk.HBox):
     Displays a task.
     """
     def __init__(self, task):
-        super(TaskWidget, self).__init__()
+        super(TaskWidget, self).__init__(spacing=2)
         self.task = task
         self.label = gtk.Label()
         self.label.set_alignment(1.0, 0.5)
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(self.label, padding=12)
+        self.pack_start(self.label, padding=12, expand=True)
         self.progress = gtk.ProgressBar()
-        self.progress.set_size_request(200, -1)
-        self.pack_start(self.progress, expand=False)
+        self.progress.set_size_request(100, -1)
+        self.pack_start(self.progress, expand=True)
         self.pause = gtk.ToggleButton()
         self.pause.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PAUSE, SIZE))
         self.pause.connect('toggled', self.__pause_toggled)
@@ -278,9 +278,10 @@ class StatusBar(gtk.HBox):
         self.default_label = gtk.Label()
         self.default_label.set_alignment(1.0, 0.5)
         self.default_label.set_text(_("No time information"))
+        self.default_label.set_ellipsize(pango.ELLIPSIZE_END)
         self.pack_start(self.default_label)
         self.task_widget = TaskWidget(task_controller)
-        self.pack_start(self.task_widget)
+        self.pack_start(self.task_widget, expand=True)
         # The history button will eventually hold the full list of running
         # tasks, as well as the list of previous notifications.
         #self.history_btn = gtk.Button(stock=gtk.STOCK_MISSING_IMAGE)
