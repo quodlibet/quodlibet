@@ -110,6 +110,63 @@ class TVCFile(TestCase):
     def test_can_change(self):
         self.failUnless(self.song.can_change())
 
+
+class TOggVorbis(TestCase):
+    def setUp(self):
+        config.init()
+        self.filename = tempfile.mkstemp(".ogg")[1]
+        shutil.copy(os.path.join('tests', 'data', 'empty.ogg'), self.filename)
+
+    def test_load_new(self):
+        m = OggVorbis(self.filename)
+        m.tags["tracknumber"] = "3"
+        m.tags["totaltracks"] = "10"
+        m.save()
+
+        song = OggFile(self.filename)
+        self.failUnlessEqual(song["tracknumber"], "3/10")
+
+    def test_load_old_format(self):
+        m = OggVorbis(self.filename)
+        m.tags["tracknumber"] = "6/7"
+        m.save()
+
+        song = OggFile(self.filename)
+        self.failUnlessEqual(song["tracknumber"], "6/7")
+
+    def test_toaltracks_save(self):
+        self.failIf(OggVorbis(self.filename).tags)
+        song = OggFile(self.filename)
+        song["tracknumber"] = "4/5"
+        song.write()
+
+        m = OggVorbis(self.filename)
+        self.failUnlessEqual(m.tags["tracknumber"], ["4"])
+        self.failUnlessEqual(m.tags["totaltracks"], ["5"])
+
+    def test_save_single(self):
+        song = OggFile(self.filename)
+        song["tracknumber"] = "12"
+        song.write()
+
+        m = OggVorbis(self.filename)
+        self.failUnlessEqual(m.tags["tracknumber"], ["12"])
+        self.failIf("totaltracks" in m.tags)
+
+    def test_both(self):
+        song = OggFile(self.filename)
+        song["tracknumber"] = "1/50"
+        song["totaltracks"] = "100"
+        song.write()
+        song.reload()
+        self.failUnlessEqual(song["tracknumber"], "1/100")
+
+    def tearDown(self):
+        os.unlink(self.filename)
+        config.quit()
+add(TOggVorbis)
+
+
 class TFLACFile(TVCFile):
     def setUp(self):
         TVCFile.setUp(self)

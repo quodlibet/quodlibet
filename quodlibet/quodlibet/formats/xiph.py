@@ -42,19 +42,27 @@ class MutagenVCFile(AudioFile):
                     except ValueError: pass
                     del(self[key])
 
+        # only store total tracks information in totaltracks
+        if "tracktotal" in self:
+            self.setdefault("totaltracks", self["tracktotal"])
+            del(self["tracktotal"])
+
+        # only store total discs information in totaldiscs
+        if "disctotal" in self:
+            self.setdefault("totaldiscs", self["disctotal"])
+            del(self["disctotal"])
+
+        # QL expects tracknumber to include total tracks
         if "totaltracks" in self:
-            self.setdefault("tracktotal", self["totaltracks"])
+            if "tracknumber" in self:
+                self["tracknumber"] += "/" + self["totaltracks"]
             del(self["totaltracks"])
 
-        # tracktotal is incredibly stupid; use tracknumber=x/y instead.
-        if "tracktotal" in self:
-            if "tracknumber" in self:
-                self["tracknumber"] += "/" + self["tracktotal"]
-            del(self["tracktotal"])
-        if "disctotal" in self:
+        # QL expects discnumber to include total discs
+        if "totaldiscs" in self:
             if "discnumber" in self:
-                self["discnumber"] += "/" + self["disctotal"]
-            del(self["disctotal"])
+                self["discnumber"] += "/" + self["totaldiscs"]
+            del(self["totaldiscs"])
 
         if "metadata_block_picture" in self:
             self["~picture"] = "y"
@@ -106,8 +114,7 @@ class MutagenVCFile(AudioFile):
         if k is None:
             return super(MutagenVCFile, self).can_change(None)
         else: return (super(MutagenVCFile, self).can_change(k) and
-                      k not in ["totaltracks", "tracktotal", "disctotal",
-                                "rating", "playcount",
+                      k not in ["rating", "playcount",
                                 "metadata_block_picture",
                                 "coverart", "coverartmime"] and
                       not k.startswith("rating:") and
@@ -137,8 +144,23 @@ class MutagenVCFile(AudioFile):
         if audio.tags is None:
             audio.add_tags()
         self._prep_write(audio.tags)
+
+        split_total = {"tracknumber": "totaltracks",
+                       "discnumber": "totaldiscs"}
+
         for key in self.realkeys():
+            # Split tracknumber and save the total part as totaltracks
+            # In case there is a totaltracks, ignore the second track part
+            if key in split_total:
+                value = self[key]
+                total_key = split_total[key]
+                parts = value.split("/", 1)
+                audio.tags[key] = parts[0]
+                if len(parts) > 1 and total_key not in self:
+                    audio.tags[total_key] = parts[1]
+                continue
             audio.tags[key] = self.list(key)
+
         audio.save()
         self.sanitize()
 
