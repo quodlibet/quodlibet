@@ -425,6 +425,18 @@ class TAudioFile(TestCase):
             f(bar_1_2)
             f(bar_2_1)
 
+    def test_uri(self):
+        # On windows where we have unicode paths (windows encoding is utf-16)
+        # we need to encode to utf-8 first, then escape.
+        # On linux we take the byte stream and escape it.
+        # see g_filename_to_uri
+
+        f = AudioFile({"~filename": "/\x87\x12.mp3", "title": "linux"})
+        self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
+
+        f = AudioFile({"~filename": u"/\xf6\xe4.mp3", "title": "win"})
+        self.failUnlessEqual(f("~uri"), "file:///%C3%B6%C3%A4.mp3")
+
     def tearDown(self):
         os.unlink(quux["~filename"])
 add(TAudioFile)
