@@ -289,7 +289,7 @@ class AudioFile(dict):
             elif key == "uri":
                 try: return self["~uri"]
                 except KeyError:
-                    return URI.frompath(util.fsdecode(self["~filename"]))
+                    return URI.frompath(self["~filename"])
             elif key == "format":
                 return self.get("~format", self.format)
             elif key == "year":

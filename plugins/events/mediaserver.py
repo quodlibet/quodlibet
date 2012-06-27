@@ -787,7 +787,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
                 return "I'm an icon \o/"
         elif interface == MediaItem.IFACE:
             if name == "URLs":
-                return [URI.frompath(util.fsdecode(self.__f.name))]
+                return [URI.frompath(self.__f.name)]
             elif name == "MIMEType":
                 return "image/png"
             elif name == "Width" or name == "Height":
