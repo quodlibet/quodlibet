@@ -14,7 +14,7 @@ from quodlibet.qltk import bookmarks
 from quodlibet import util
 
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.qltk.sliderbutton import HSlider, VSlider
+from quodlibet.qltk.sliderbutton import HSlider
 
 SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
 SUBSIZE = gtk.ICON_SIZE_MENU
@@ -145,27 +145,24 @@ class SeekBar(HSlider):
         menu.get_children()[-1].set_sensitive(self.__seekable)
         self.scale.emit('value-changed')
 
-class Volume(VSlider):
+
+class Volume(gtk.VolumeButton):
     def __init__(self, device):
-        i = gtk.Image()
-        pad = gtk.VBox()
-        pad.pack_start(i, padding=1)
-        super(type(self), self).__init__(pad)
-        self.scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
-        self.scale.set_inverted(True)
-        self.get_value = self.scale.get_value
-        self.scale.connect('value-changed', self.__volume_changed, device, i)
+        super(Volume, self).__init__()
+
+        self.set_relief(gtk.RELIEF_NORMAL)
+        self.set_adjustment(gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0))
+
         self.set_value(config.getfloat("memory", "volume"))
+        self.connect('value-changed', self.__volume_changed, device)
         device.connect('notify::volume', self.__volume_notify)
-        self.__volume_changed(self.scale, device, i)
+
         self.show_all()
 
         replaygain_menu = ReplayGainMenu(device)
-        # mouse click
-        self.child.connect_object('button-press-event',
-            self.__volume_button_press, replaygain_menu)
-        # keyboard
-        self.child.connect('popup-menu', self.__popup, replaygain_menu)
+        self.connect('popup-menu', self.__popup, replaygain_menu)
+        self.connect_object('button-press-event', self.__volume_button_press,
+                            replaygain_menu)
 
     def __popup(self, widget, menu):
         time = gtk.get_current_event_time()
@@ -177,30 +174,21 @@ class Volume(VSlider):
             menu.popup(None, None, None, event.button, event.time)
             return True
 
-    def set_value(self, v):
-        self.scale.set_value(max(0.0, min(1.0, v)))
-
     def __iadd__(self, v):
-        self.set_value(min(1.0, self.get_value() + v))
+        self.set_value(self.get_value() + v)
         return self
+
     def __isub__(self, v):
-        self.set_value(max(0.0, self.get_value() - v))
+        self.set_value(self.get_value() - v)
         return self
 
-    def __volume_changed(self, slider, device, image):
-        val = slider.get_value()
-        if val == 0: img = 'audio-volume-muted'
-        elif val < 0.33: img = 'audio-volume-low'
-        elif val < 0.66: img = 'audio-volume-medium'
-        else: img = 'audio-volume-high'
+    def __volume_changed(self, button, volume, device):
+        config.set("memory", "volume", str(volume))
+        device.volume = volume
 
-        image.set_from_icon_name(img, SUBSIZE)
+    def __volume_notify(self, device, prop):
+        self.set_value(device.props.volume)
 
-        device.volume = val
-        config.set("memory", "volume", str(slider.get_value()))
-
-    def __volume_notify(self, device, property):
-        self.scale.set_value(device.props.volume)
 
 class ReplayGainMenu(gtk.Menu):
     __modes = (
