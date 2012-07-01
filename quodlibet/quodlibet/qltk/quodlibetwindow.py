@@ -587,23 +587,31 @@ class QuodLibetWindow(gtk.Window):
             self.add_accel_group(self.browser.accelerators)
 
         container = self.browser.__container = self.browser.pack(self.songpane)
+
+        # Look for a paned if the container is none
+        sub = container
+        if not isinstance(container, RPaned):
+            for child in container.get_children():
+                if isinstance(child, RPaned):
+                    sub = child
+
         # Save position if container is a RPaned
-        if isinstance(container, RPaned):
+        if isinstance(sub, RPaned):
             try:
                 key = "%s_pos" % self.browser.__class__.__name__
                 val = config.getfloat("browsers", key)
                 # Use a minimum restore size
                 val = max(val, 0.1)
             except: val = 0.4
-            container.connect(
+            sub.connect(
                 'notify::position', self.__browser_configure, self.browser)
             def set_size(paned, alloc, pos):
                 paned.set_relative(pos)
                 paned.disconnect(paned._size_sig)
                 # The signal disconnects itself! I hate GTK sizing.
                 del(paned._size_sig)
-            sig = container.connect('size-allocate', set_size, val)
-            container._size_sig = sig
+            sig = sub.connect('size-allocate', set_size, val)
+            sub._size_sig = sig
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.volume = player.volume
