@@ -15,6 +15,7 @@ import threading
 import os
 import cPickle as pickle
 from quodlibet.util.dprint import print_d
+from httplib import HTTPException
 
 try:
     from hashlib import md5
