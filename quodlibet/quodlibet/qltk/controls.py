@@ -150,6 +150,7 @@ class Volume(gtk.VolumeButton):
     def __init__(self, device):
         super(Volume, self).__init__()
 
+        self.props.size = SUBSIZE
         self.set_relief(gtk.RELIEF_NORMAL)
         self.set_adjustment(gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0))
 
