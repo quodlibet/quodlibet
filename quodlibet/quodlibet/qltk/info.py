@@ -126,9 +126,15 @@ class SongInfo(gtk.Label):
     def __check_started(self, player, song):
         self.__update_info(player)
 
-    def __update_info(self, player):
+    def __update_info(self, player, last={}):
         if player.info is not None:
             text = self._compiled % player.info
         else:
             text = "<span size='xx-large'>%s</span>" % _("Not playing")
-        self.set_markup(text)
+
+        # some radio streams update way too often and updating the label
+        # destroys the text selection
+        if text not in last:
+            self.set_markup(text)
+            last.clear()
+            last[text] = True
