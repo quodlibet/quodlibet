@@ -75,13 +75,19 @@ class LibraryBrowser(Window):
         self.__set_pane_size()
 
     def __set_pane_size(self):
-        if isinstance(self.__container, RPaned):
+        sub = self.__container
+        if not isinstance(self.__container, RPaned):
+            for child in self.__container.get_children():
+                if isinstance(child, RPaned):
+                    sub = child
+
+        if isinstance(sub, RPaned):
             try:
                 key = "%s_pos" % self.browser.__class__.__name__
                 val = config.getfloat("browsers", key)
             except:
                 val = 0.4
-            self.__container.set_relative(val)
+            sub.set_relative(val)
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:
