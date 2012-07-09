@@ -340,6 +340,9 @@ class GStreamerPlayer(BasePlayer):
 
     def __about_to_finish(self, pipeline):
         print_d("About to finish")
+        # this can trigger twice, see issue 987
+        if self._in_gapless_transition:
+            return
         self._in_gapless_transition = True
 
         def change_in_main_loop(event, source):
