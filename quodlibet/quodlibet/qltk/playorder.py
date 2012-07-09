@@ -193,6 +193,7 @@ class PlayOrder(gtk.ComboBox):
         self.__sig = self.connect_object(
             'changed', self.__changed_order, model, player)
         self.set_active(config.get("memory", "order"))
+        self.emit("changed")
 
     def plugin_handle(self, plugin):
         from quodlibet.plugins.playorder import PlayOrderPlugin
