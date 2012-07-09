@@ -8,6 +8,7 @@
 import gtk
 import gobject
 import os
+import threading
 
 import pygst
 pygst.require("0.10")
@@ -352,14 +353,21 @@ class GStreamerPlayer(BasePlayer):
     def __about_to_finish(self, pipeline):
         self._in_gapless_transition = True
 
-        # uri has to be set in this thread, so idle_add doesn't work
-        gtk.gdk.threads_enter()
-        self._source.next_ended()
-        song = self._source.current
-        gtk.gdk.threads_leave()
+        def change_in_main_loop(event, source):
+            source.next_ended()
+            event.set()
 
-        if song and self.bin:
-            self.bin.set_property('uri', song("~uri"))
+        # push in the main loop and wait for it to finish
+        event = threading.Event()
+        gobject.idle_add(change_in_main_loop, event, self._source,
+                         priority=gobject.PRIORITY_HIGH)
+        event.wait()
+
+        song = self._source.current
+        bin = self.bin
+
+        if song and bin:
+            bin.set_property('uri', song("~uri"))
 
         if not USE_TRACK_CHANGE:
             gobject.idle_add(self._end, False)
