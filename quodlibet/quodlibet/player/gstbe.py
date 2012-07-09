@@ -37,10 +37,6 @@ if 'QUODLIBET_PLAYBIN1' in os.environ:
     print_d("QUODLIBET_PLAYBIN1")
     USE_PLAYBIN2 = False
 
-USE_QUEUE = 'QUODLIBET_GSTBE_QUEUE' in os.environ
-if USE_QUEUE:
-    print_d("QUODLIBET_GSTBE_QUEUE")
-
 USE_TRACK_CHANGE = gst.version() >= (0, 10, 28)
 
 
@@ -194,21 +190,11 @@ class GStreamerPlayer(BasePlayer):
             pipeline = [filt, eq, conv] + pipeline
 
         if USE_PLAYBIN2:
-            prefix = []
-
-            if USE_QUEUE:
-                queue = gst.element_factory_make('queue')
-                queue.set_property('max-size-time', 500 * gst.MSECOND)
-                prefix.append(queue)
-
             # playbin2 has started to control the volume through pulseaudio,
             # which means the volume property can change without us noticing.
             # Use our own volume element for now until this works with PA.
-            # Also, when using the queue, this removes the delay..
             self._vol_element = gst.element_factory_make('volume')
-            prefix.append(self._vol_element)
-
-            pipeline = prefix + pipeline
+            pipeline.insert(0, self._vol_element)
 
         bufbin = gst.Bin()
         map(bufbin.add, pipeline)
