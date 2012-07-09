@@ -302,6 +302,7 @@ class GStreamerPlayer(BasePlayer):
 
     def __message(self, bus, message, librarian):
         if message.type == gst.MESSAGE_EOS:
+            print_d("Stream EOS")
             if not self._in_gapless_transition:
                 self._source.next_ended()
             self._end(False)
@@ -324,6 +325,7 @@ class GStreamerPlayer(BasePlayer):
             # which should trigger shortly after this.
             if USE_TRACK_CHANGE and self._in_gapless_transition and \
                 name == "playbin2-stream-changed":
+                    print_d("Stream changed")
                     self._end(False)
 
             if pbutils and name.startswith('missing-'):
@@ -337,6 +339,7 @@ class GStreamerPlayer(BasePlayer):
         return True
 
     def __about_to_finish(self, pipeline):
+        print_d("About to finish")
         self._in_gapless_transition = True
 
         def change_in_main_loop(event, source):
@@ -491,6 +494,7 @@ class GStreamerPlayer(BasePlayer):
                 self.emit('seek', self.song, pos)
 
     def _end(self, stopped, stop=False):
+        print_d("End song")
         song, info = self.song, self.info
 
         # set the new volume before the signals to avoid delays
@@ -511,6 +515,7 @@ class GStreamerPlayer(BasePlayer):
             self.song = self.info = self._source.current
         self.emit('song-started', self.song)
 
+        print_d("Next song")
         if self.song is not None:
             if not self._in_gapless_transition:
                 self.volume = self.volume
