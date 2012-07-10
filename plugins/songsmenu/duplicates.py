@@ -108,8 +108,8 @@ class DuplicateSongsView(RCMHintedTreeView):
                 if old_key != key:
                     print_d("Key changed from \"%s\" -> \"%s\"" %
                             (old_key, key))
-                    self.__removed(library, [song])
-                    self.__added(library, [song])
+                    self._removed(library, [song])
+                    self._added(library, [song])
                 else:
                     # Still might be a displayable change
                     print_d("Calling model.row_changed(%s, %s)..." %
