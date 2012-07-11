@@ -397,7 +397,7 @@ class DKD(DeviceManager):
         be retrieved through libudev"""
         try:
             dev = get_device_from_path(self.__udev, devpath)
-        except EnvironmentError:
+        except Exception:
             print_w("Retreiving udev properties for %r failed" % devpath)
             util.print_exc()
             return

@@ -26,7 +26,6 @@ def _register_class(base, ptr, prefix, methods):
     global _classes
     _classes.append((base, ptr, prefix, methods))
 
-
 def _wrap_class(lib, base, ptr, prefix, methods):
     for name, ret, args in methods:
         try:
@@ -39,8 +38,15 @@ def _wrap_class(lib, base, ptr, prefix, methods):
         func.argtypes = args
         func.restype = ret
 
+        def add_self(f, check_null=False):
+            def check(*args):
+                # the first arg is the pointer to the struct, check for
+                # null pointers before passing it...
+                args[0].contents
+                return f(*args)
+            return check
+
         if args and args[0] == ptr:
-            add_self = lambda f: lambda *args: f(*args)
             setattr(ptr, name, add_self(func))
         else:
             setattr(base, name, func)
