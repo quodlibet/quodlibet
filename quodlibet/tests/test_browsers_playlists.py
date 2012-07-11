@@ -10,6 +10,8 @@ import quodlibet.config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library.songs import SongLibrarian, FileLibrary
 
+PLAYLISTS = tempfile.gettempdir()
+
 def makename():
     return tempfile.mkstemp()[1]
 
@@ -25,7 +27,7 @@ class TParsePlaylist(TestCase):
         file(name, "w").close()
         pl = self.Parse(name)
         os.unlink(name)
-        self.failUnlessEqual(pl, [])
+        self.failUnlessEqual(0, len(pl))
         pl.delete()
 
     def test_parse_onesong(self):
@@ -68,32 +70,32 @@ add(TParsePLS)
 
 class TPlaylist(TestCase):
     def test_make(self):
-        p1 = Playlist.new("Does not exist")
-        self.failUnlessEqual(p1, [])
+        p1 = Playlist.new(PLAYLISTS, "Does not exist")
+        self.failUnlessEqual(0, len(p1))
         self.failUnlessEqual(p1.name, "Does not exist")
         p1.delete()
 
     def test_rename_working(self):
-        p1 = Playlist.new("Foobar")
+        p1 = Playlist.new(PLAYLISTS, "Foobar")
         p1.rename("Foo Quuxly")
         self.failUnlessEqual(p1.name, "Foo Quuxly")
         p1.delete()
 
     def test_rename_nothing(self):
-        p1 = Playlist.new("Foobar")
+        p1 = Playlist.new(PLAYLISTS, "Foobar")
         self.failUnlessRaises(ValueError, p1.rename, "")
         p1.delete()
 
     def test_rename_dup(self):
-        p1 = Playlist.new("Foobar")
-        p2 = Playlist.new("Crazy")
+        p1 = Playlist.new(PLAYLISTS, "Foobar")
+        p2 = Playlist.new(PLAYLISTS, "Crazy")
         self.failUnlessRaises(ValueError, p2.rename, "Foobar")
         p1.delete()
         p2.delete()
 
     def test_make_dup(self):
-        p1 = Playlist.new("Does not exist")
-        p2 = Playlist.new("Does not exist")
+        p1 = Playlist.new(PLAYLISTS, "Does not exist")
+        p2 = Playlist.new(PLAYLISTS, "Does not exist")
         self.failUnlessEqual(p1.name, "Does not exist")
         self.failUnless(p2.name.startswith("Does not exist"))
         self.failIfEqual(p1.name, p2.name)
@@ -135,8 +137,8 @@ class TPlaylistIntegration(TestCase):
         for af in self.SONGS:
             af.sanitize()
         self.lib.add(self.SONGS)
-        self.pl = Playlist.new("Foobar")
-        self.pl += self.SONGS
+        self.pl = Playlist.new(PLAYLISTS, "Foobar")
+        self.pl.extend(self.SONGS)
 
     def tearDown(self):
         self.pl.delete()
@@ -160,7 +162,7 @@ class TPlaylistIntegration(TestCase):
         self.failUnlessEqual(len(self.pl), len(self.SONGS) - 2)
 
     def test_remove_multi_duplicated_song(self):
-        self.pl += [self.SONG, self.SONG]
+        self.pl.extend([self.SONG, self.SONG])
         self.failUnlessEqual(len(self.pl), 7)
         self.pl.remove_songs([self.SONG], self.lib, False)
         self.failUnlessEqual(len(self.pl), 7-2-2)

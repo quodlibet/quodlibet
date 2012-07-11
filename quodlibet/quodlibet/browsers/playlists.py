@@ -24,6 +24,7 @@ from tempfile import NamedTemporaryFile
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
+from quodlibet.formats._album import Playlist
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.wlw import WaitLoadWindow
@@ -57,7 +58,7 @@ def ParsePLS(filename, name="", library=None):
     return __ParsePlaylist(plname, filename, filenames, library)
 
 def __ParsePlaylist(name, plfilename, files, library):
-    playlist = Playlist.new(name, library=library)
+    playlist = Playlist.new(PLAYLISTS, name, library=library)
     songs = []
     win = WaitLoadWindow(
         None, len(files),
@@ -88,156 +89,6 @@ def __ParsePlaylist(name, plfilename, files, library):
     win.destroy()
     playlist.extend(filter(None, songs))
     return playlist
-
-class Playlist(list):
-    quote = staticmethod(util.escape_filename)
-    unquote = staticmethod(util.unescape_filename)
-
-    def new(klass, base=_("New Playlist"), library={}):
-        p = Playlist("", library=library)
-        i = 0
-        try: p.rename(base)
-        except ValueError:
-            while not p.name:
-                i += 1
-                try: p.rename("%s %d" % (base, i))
-                except ValueError: pass
-        return p
-    new = classmethod(new)
-
-    def fromsongs(klass, songs, library={}):
-        if len(songs) == 1:
-            title = songs[0].comma("title")
-        else:
-            title = ngettext(
-                "%(title)s and %(count)d more",
-                "%(title)s and %(count)d more",
-                len(songs) - 1) % (
-                {'title': songs[0].comma("title"), 'count': len(songs) - 1})
-        playlist = klass.new(title, library=library)
-        playlist.extend(songs)
-        return playlist
-    fromsongs = classmethod(fromsongs)
-
-    def __init__(self, name, library=None):
-        super(Playlist, self).__init__()
-        if isinstance(name, unicode) and os.name != "nt":
-            name = name.encode('utf-8')
-        self.name = name
-        basename = self.quote(name)
-        try:
-            for line in file(os.path.join(PLAYLISTS, basename), "r"):
-                line = util.fsnative(line.rstrip())
-                if line in library:
-                    self.append(library[line])
-                elif library and library.masked(line):
-                    self.append(line)
-        except IOError:
-            if self.name: self.write()
-
-    def rename(self, newname):
-        if isinstance(newname, unicode): newname = newname.encode('utf-8')
-        if newname == self.name: return
-        elif os.path.exists(os.path.join(PLAYLISTS, self.quote(newname))):
-            raise ValueError(
-                _("A playlist named %s already exists.") % newname)
-        else:
-            try: os.unlink(os.path.join(PLAYLISTS, self.quote(self.name)))
-            except EnvironmentError: pass
-            self.name = newname
-            self.write()
-
-    def add_songs(self, filenames, library):
-        changed = False
-        for i in range(len(self)):
-            if isinstance(self[i], basestring) and self[i] in filenames:
-                self[i] = library[self[i]]
-                changed = True
-        return changed
-
-    def remove_songs(self, songs, library, leave_dupes=False):
-        changed = False
-        # TODO: document the "library.masked" business
-        for song in songs:
-            if library.masked(song("~filename")):
-                while True:
-                    try: self[self.index(song)] = song("~filename")
-                    except ValueError: break
-                    else: changed = True
-            else:
-                while song in self:
-                    self.remove(song)
-                    if leave_dupes:
-                        changed = True
-                        break
-                else: changed = True
-        return changed
-
-    def has_songs(self, songs):
-        # TODO(rm): consider the "library.masked" business
-        some, all = False, True
-        for song in songs:
-            found = song in self
-            some = some or found
-            all = all and found
-            if some and not all:
-                break
-        return some, all
-
-    def delete(self):
-        del(self[:])
-        try: os.unlink(os.path.join(PLAYLISTS, self.quote(self.name)))
-        except EnvironmentError: pass
-
-    def write(self):
-        basename = self.quote(self.name)
-        f = file(os.path.join(PLAYLISTS, basename), "w")
-        for song in self:
-            try: f.write(util.fsencode(song("~filename")) + "\n")
-            except TypeError: f.write(song + "\n")
-        f.close()
-
-    def file_size(self):
-        """Returns the total file size of tracks in this playlist"""
-        try:
-            # TODO: better way of dealing with missing filesize entries
-            return sum([song.get("~#filesize") or 0
-                        for song in self if isinstance(song, AudioFile)])
-        except EnvironmentError:
-            return _("Total size unknown")
-
-    def length(self):
-        """Returns the total length of tracks in this playlist"""
-        return sum([t.get("~#length") or 0
-                    for t in self if isinstance(t, AudioFile)])
-
-    def format(self):
-        total_size = self.file_size()
-        songs_text = ngettext("%d song", "%d songs", len(self)) % len(self)
-        if (total_size > 0):
-            # see Issue 504
-            return "<b>%s</b>\n<small>%s (%s / %s)</small>" % (
-                util.escape(self.name),
-                songs_text,
-                util.format_time(self.length()),
-                util.format_size(total_size))
-        else:
-            return "<b>%s</b>\n<small>%s (%s)</small>" % (
-                util.escape(self.name),
-                songs_text,
-                util.format_time(self.length()))
-
-    def has_duplicates(self):
-        """Returns True if there are any duplicated files in this playlist"""
-        unique = set()
-        for s in self:
-            if s in unique: return False
-            else: unique.add(s)
-        return True
-
-    def __cmp__(self, other):
-        try: return cmp(self.name, other.name)
-        except AttributeError: return -1
 
 
 class GetPlaylistName(GetStringDialog):
@@ -280,7 +131,7 @@ class Menu(gtk.Menu):
                     {'title': songs[0].comma("title"), 'count': len(songs) - 1})
             title = GetPlaylistName(qltk.get_top_parent(parent)).run(title)
             if title is None: return
-            playlist = Playlist.new(title)
+            playlist = Playlist.new(PLAYLISTS, title)
         playlist.extend(songs)
         Playlists.changed(playlist)
     __add_to_playlist = staticmethod(__add_to_playlist)
@@ -294,22 +145,25 @@ class Playlists(gtk.VBox, Browser):
     priority = 2
     replaygain_profiles = ["track"]
 
+    @classmethod
     def init(klass, library):
         model = klass.__lists.get_model()
         for playlist in os.listdir(util.fsnative(PLAYLISTS)):
             try:
-                playlist = Playlist(Playlist.unquote(playlist), library=library)
+                playlist = Playlist(PLAYLISTS, Playlist.unquote(playlist),
+                                    library=library)
                 model.append(row=[playlist])
             except EnvironmentError:
                 pass
         library.connect('removed', klass.__removed)
         library.connect('added', klass.__added)
         library.connect('changed', klass.__changed)
-    init = classmethod(init)
 
-    def playlists(klass): return [row[0] for row in klass.__lists]
-    playlists = classmethod(playlists)
+    @classmethod
+    def playlists(klass):
+        return [row[0] for row in klass.__lists]
 
+    @classmethod
     def changed(klass, playlist, refresh=True):
         model = klass.__lists
         for row in model:
@@ -321,33 +175,32 @@ class Playlists(gtk.VBox, Browser):
         else:
             model.get_model().append(row=[playlist])
             playlist.write()
-    changed = classmethod(changed)
 
+    @classmethod
     def __removed(klass, library, songs):
         for playlist in klass.playlists():
             if playlist.remove_songs(songs, library):
                 Playlists.changed(playlist)
-    __removed = classmethod(__removed)
 
+    @classmethod
     def __added(klass, library, songs):
         filenames = set([song("~filename") for song in songs])
         for playlist in klass.playlists():
             if playlist.add_songs(filenames, library):
                 Playlists.changed(playlist)
-    __added = classmethod(__added)
 
+    @classmethod
     def __changed(klass, library, songs):
         for playlist in klass.playlists():
             for song in songs:
-                if song in playlist:
+                if song in playlist.songs:
                     Playlists.changed(playlist, refresh=False)
                     break
-    __changed = classmethod(__changed)
 
+    @staticmethod
     def cell_data(col, render, model, iter):
         render.markup = model[iter][0].format()
         render.set_property('markup', render.markup)
-    cell_data = staticmethod(cell_data)
 
     def Menu(self, songs, songlist, library):
         menu = super(Playlists, self).Menu(songs, songlist, library)
@@ -480,8 +333,8 @@ class Playlists(gtk.VBox, Browser):
         if iter:
             map(smodel.remove, iters)
             playlist = model[iter][0]
-            del(playlist[:])
-            for row in smodel: playlist.append(row[0])
+            playlist.clear()
+            playlist.extend([row[0] for row in smodel])
             Playlists.changed(playlist)
             self.activate()
 
@@ -495,7 +348,7 @@ class Playlists(gtk.VBox, Browser):
             if not songs: return True
             try: path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
-                playlist = Playlist.fromsongs(songs, library)
+                playlist = Playlist.fromsongs(PLAYLISTS, songs, library)
                 gobject.idle_add(self.__select_playlist, playlist)
             else:
                 playlist = model[path][0]
@@ -623,7 +476,7 @@ class Playlists(gtk.VBox, Browser):
         config.set("browsers", "playlist", name)
 
     def __new_playlist(self, activator):
-        playlist = Playlist.new()
+        playlist = Playlist.new(PLAYLISTS)
         self.__lists.get_model().append(row=[playlist])
         self.__select_playlist(playlist)
 
@@ -660,8 +513,9 @@ class Playlists(gtk.VBox, Browser):
             library.add(playlist)
 
     def restore(self):
-        try: name = config.get("browsers", "playlist")
-        except: return
+        try:
+            name = config.get("browsers", "playlist")
+        except Exception: return
         self.__view.select_by_func(lambda r: r[0].name == name, one=True)
 
     def reordered(self, songlist):
@@ -672,7 +526,7 @@ class Playlists(gtk.VBox, Browser):
             playlist = model[iter][0]
             playlist[:] = songs
         elif songs:
-            playlist = Playlist.fromsongs(songs)
+            playlist = Playlist.fromsongs(PLAYLISTS, songs)
             gobject.idle_add(self.__select_playlist, playlist)
         if playlist:
             Playlists.changed(playlist)

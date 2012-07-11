@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
+#                2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -22,7 +24,6 @@ from quodlibet.util import HashableDict
 from quodlibet.util import human_sort_key as human
 from quodlibet.util.tags import STANDARD_TAGS as USEFUL_TAGS
 from quodlibet.util.tags import MACHINE_TAGS
-
 
 MIGRATE = frozenset(("~#playcount ~#laststarted ~#lastplayed ~#added "
            "~#skipcount ~#rating ~bookmark").split())
@@ -314,6 +315,20 @@ class AudioFile(dict):
                 try: fileobj = file(self.lyric_filename, "rU")
                 except EnvironmentError: return default
                 else: return fileobj.read().decode("utf-8", "replace")
+            elif key == "playlists":
+                # See Issue 876
+                # Avoid circular references from formats/__init__.py
+                from quodlibet.formats._album import Playlist
+                try:
+                    start = time.time()
+                    playlists = Playlist.playlists_featuring(self)
+                    import random
+                    if not random.randint(0, 1000):
+                        print_d("A sample song('~playlists') call: took %d μs "
+                                % (1E6 * (time.time() - start)))
+                    return "\n".join([s.name for s in playlists])
+                except KeyError, e:
+                    return default
             elif key.startswith("#replaygain_"):
                 try:
                     val = self.get(key[1:], default)
