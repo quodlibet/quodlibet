@@ -398,7 +398,7 @@ class DKD(DeviceManager):
         try:
             dev = get_device_from_path(self.__udev, devpath)
         except Exception:
-            print_w("Retreiving udev properties for %r failed" % devpath)
+            print_w("Failed to retrieve udev properties for %r" % devpath)
             util.print_exc()
             return
 
