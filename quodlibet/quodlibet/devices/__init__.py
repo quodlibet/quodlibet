@@ -24,6 +24,7 @@ except ImportError:
 
 from quodlibet import const
 from quodlibet import util
+from quodlibet.devices import _udev as udev
 
 base = dirname(__file__)
 self = basename(base)
@@ -226,75 +227,53 @@ class HAL(DeviceManager):
         obj = self._system_bus.get_object('org.freedesktop.Hal', udi)
         return dbus.Interface(obj, interface)
 
-class UdevWrapper(object):
-    __udev = None
-    __context = None
 
-    def __init__(self):
-        self.__udev = ctypes.cdll.LoadLibrary("libudev.so.0")
-        self.__context = self.__udev.udev_new()
+def get_device_from_path(udev_ctx, path):
+    """A dict of device attributes for the given device path"""
 
-    def __get_attributes(self, device):
-        """Pack all device attributes in a dict"""
-        get_name = self.__udev.udev_list_entry_get_name
-        get_value = self.__udev.udev_list_entry_get_value
-        device_get_properties_list_entry = \
-            self.__udev.udev_device_get_properties_list_entry
-        list_entry_get_next = self.__udev.udev_list_entry_get_next
+    path = path.encode("ascii")
+    enum = udev.UdevEnumerate.new(udev_ctx)
 
-        entry = device_get_properties_list_entry(device)
-        device = {}
-        while entry:
-            name = ctypes.c_char_p(get_name(entry)).value
-            value = ctypes.c_char_p(get_value(entry)).value
-            device[name] = value.decode("string-escape")
-            entry = list_entry_get_next(entry)
-        return device
+    if not enum:
+        raise EnvironmentError
 
-    def get_device_from_path(self, path):
-        """Return the first device that matches the path"""
-        path = path.encode("ascii")
-        udev = self.__udev
-        enumerate_scan_devices = udev.udev_enumerate_scan_devices
-        device_new_from_syspath = udev.udev_device_new_from_syspath
-        list_entry_get_name = udev.udev_list_entry_get_name
-        enumerate_get_list_entry = udev.udev_enumerate_get_list_entry
-        device_unref = udev.udev_device_unref
-        enumerate_new = udev.udev_enumerate_new
-        enumerate_unref = udev.udev_enumerate_unref
-        enumerate_add_match_property = udev.udev_enumerate_add_match_property
+    # only match the device we want
+    if enum.add_match_property("DEVNAME", path):
+        enum.unref()
+        raise EnvironmentError
 
-        enum = enumerate_new(self.__context)
-        if not enum: return {}
+    # search for it
+    if enum.scan_devices():
+        enum.unref()
+        raise EnvironmentError
 
-        # only match the device we want
-        if enumerate_add_match_property(enum, "DEVNAME", path) != 0:
-            enumerate_unref(enum)
-            return {}
+    # take the first entry
+    entry = enum.get_list_entry()
+    if not entry:
+        enum.unref()
+        raise EnvironmentError
 
-        # search for it
-        if enumerate_scan_devices(enum) != 0:
-            enumerate_unref(enum)
-            return {}
+    device = udev.UdevDevice.new_from_syspath(udev_ctx, entry.get_name())
+    if not device:
+        enum.unref()
+        raise EnvironmentError
 
-        # take the first entry
-        entry = enumerate_get_list_entry(enum)
-        if not entry:
-            enumerate_unref(enum)
-            return {}
+    entry = device.get_properties_list_entry()
+    if not entry:
+        enum.unref()
+        device.unref()
+        raise EnvironmentError
 
-        dev = device_new_from_syspath(self.__context,
-            list_entry_get_name(entry))
+    attrs = {}
+    for e in entry:
+        name = e.get_name()
+        value = e.get_value()
+        attrs[name] = value.decode("string-escape")
 
-        if not dev:
-            enumerate_unref(enum)
-            return {}
+    enum.unref()
+    device.unref()
+    return attrs
 
-        device = self.__get_attributes(dev)
-        device_unref(dev)
-        enumerate_unref(enum)
-
-        return device
 
 class DKD(DeviceManager):
     __interface = None
@@ -308,10 +287,12 @@ class DKD(DeviceManager):
         error = False
 
         try:
-            self.__udev = UdevWrapper()
+            udev.init()
         except OSError:
             print_w(_("%s: Could not find libudev.") % self.__bus)
             error = True
+        else:
+            self.__udev = udev.Udev.new()
 
         if self.__get_mpi_dir() is None:
             print_w(_("%s: Could not find media-player-info.") % self.__bus)
@@ -414,7 +395,13 @@ class DKD(DeviceManager):
         """DKD is for highlevel device stuff. The info if the device is
         a media player and what protocol/formats it supports can only
         be retrieved through libudev"""
-        dev = self.__udev.get_device_from_path(devpath)
+        try:
+            dev = get_device_from_path(self.__udev, devpath)
+        except EnvironmentError:
+            print_w("Retreiving udev properties for %r failed" % devpath)
+            util.print_exc()
+            return
+
         try: return dev["ID_MEDIA_PLAYER"]
         except KeyError: return None
 
