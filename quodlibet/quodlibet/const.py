@@ -138,13 +138,9 @@ MENU = """<ui>
       <menuitem action='RandomArtist'/>
       <menuitem action='RandomAlbum'/>
       <separator/>
-      <menuitem action='NotPlayedDay'/>
-      <menuitem action='NotPlayedWeek'/>
-      <menuitem action='NotPlayedMonth'/>
-      <menuitem action='NotPlayedEver'/>
-      <separator/>
-      <menuitem action='Top'/>
-      <menuitem action='Bottom'/>
+      <menuitem action='PlayedRecently'/>
+      <menuitem action='AddedRecently'/>
+      <menuitem action='TopRated'/>
     </menu>
     <menu action='Control'>
       <menuitem action='Previous'/>

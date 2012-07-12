@@ -416,17 +416,13 @@ class QuodLibetWindow(gtk.Window):
             ("Quit", gtk.STOCK_QUIT, None, None, None, self.destroy),
             ('Filters', None, _("_Filters")),
 
-            ("NotPlayedDay", gtk.STOCK_FIND, _("Not Played To_day"),
-             "", None, self.lastplayed_day),
-            ("NotPlayedWeek", gtk.STOCK_FIND, _("Not Played in a _Week"),
-             "", None, self.lastplayed_week),
-            ("NotPlayedMonth", gtk.STOCK_FIND, _("Not Played in a _Month"),
-             "", None, self.lastplayed_month),
-            ("NotPlayedEver", gtk.STOCK_FIND, _("_Never Played"),
-             "", None, self.lastplayed_never),
-            ("Top", gtk.STOCK_GO_UP, _("_Top 40"), "", None, self.__top40),
-            ("Bottom", gtk.STOCK_GO_DOWN,_("B_ottom 40"), "",
-             None, self.__bottom40),
+            ("PlayedRecently", gtk.STOCK_FIND, _("Recently _Played"),
+             "", None, self.__filter_menu_actions),
+            ("AddedRecently", gtk.STOCK_FIND, _("Recently _Added"),
+             "", None, self.__filter_menu_actions),
+            ("TopRated", gtk.STOCK_FIND, _("_Top 40"),
+             "", None, self.__filter_menu_actions),
+
             ("Control", None, _("_Control")),
             ("EditTags", stock.EDIT_TAGS, None, "", None,
              self.__current_song_prop),
@@ -542,12 +538,8 @@ class QuodLibetWindow(gtk.Window):
                 _("Reload all songs in your library "
                   "(this can take a long time)"))
 
-        self.ui.get_widget("/Menu/Filters/Top").set_tooltip_text(
+        self.ui.get_widget("/Menu/Filters/TopRated").set_tooltip_text(
                 _("The 40 songs you've played most (more than 40 may "
-                  "be chosen if there are ties)"))
-
-        self.ui.get_widget("/Menu/Filters/Bottom").set_tooltip_text(
-                _("The 40 songs you've played least (more than 40 may "
                   "be chosen if there are ties)"))
 
     def __show_about(self, player):
@@ -781,36 +773,24 @@ class QuodLibetWindow(gtk.Window):
                 value = random.choice(values)
                 self.browser.filter(key, [value])
 
-    def lastplayed_day(self, menuitem):
-        self.__make_query("#(lastplayed > today)")
-    def lastplayed_week(self, menuitem):
-        self.__make_query("#(lastplayed > 7 days ago)")
-    def lastplayed_month(self, menuitem):
-        self.__make_query("#(lastplayed > 30 days ago)")
-    def lastplayed_never(self, menuitem):
-        self.__make_query("#(playcount = 0)")
+    def __filter_menu_actions(self, menuitem):
+        name = menuitem.get_name()
 
-    def __top40(self, menuitem):
-        bg = background_filter()
-        songs = (bg and filter(bg, self.__library)) or self.__library
-        songs = [song.get("~#playcount", 0) for song in songs]
-        if len(songs) == 0: return
-        songs.sort()
-        if len(songs) < 40:
-            self.__make_query("#(playcount > %d)" % (songs[0] - 1))
-        else:
-            self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
-
-    def __bottom40(self, menuitem):
-        bg = background_filter()
-        songs = (bg and filter(bg, self.__library)) or self.__library
-        songs = [song.get("~#playcount", 0) for song in songs]
-        if len(songs) == 0: return
-        songs.sort()
-        if len(songs) < 40:
-            self.__make_query("#(playcount < %d)" % (songs[-1] + 1))
-        else:
-            self.__make_query("#(playcount < %d)" % (songs[-40] + 1))
+        if name == "PlayedRecently":
+            self.__make_query("#(lastplayed < 7 days ago)")
+        elif name == "AddedRecently":
+            self.__make_query("#(added < 7 days ago)")
+        elif name == "TopRated":
+            bg = background_filter()
+            songs = (bg and filter(bg, self.__library)) or self.__library
+            songs = [song.get("~#playcount", 0) for song in songs]
+            if len(songs) == 0:
+                return
+            songs.sort()
+            if len(songs) < 40:
+                self.__make_query("#(playcount > %d)" % (songs[0] - 1))
+            else:
+                self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
 
     def __rebuild(self, activator, force):
         paths = util.split_scan_dirs(config.get("settings", "scan"))
@@ -913,12 +893,10 @@ class QuodLibetWindow(gtk.Window):
                            "/Menu/Filters/RandomArtist"],
                  'album':  ["/Menu/Filters/FilterAlbum",
                            "/Menu/Filters/RandomAlbum"],
-                 None: ["/Menu/Filters/NotPlayedDay",
-                        "/Menu/Filters/NotPlayedWeek",
-                        "/Menu/Filters/NotPlayedMonth",
-                        "/Menu/Filters/NotPlayedEver",
-                        "/Menu/Filters/Top",
-                        "/Menu/Filters/Bottom"]}
+                 None: ["/Menu/Filters/PlayedRecently",
+                        "/Menu/Filters/AddedRecently",
+                        "/Menu/Filters/TopRated",
+                        "/Menu/Filters/TopRated"]}
         for key, widgets in menus.items():
             c = self.browser.can_filter(key)
             for widget in widgets:
