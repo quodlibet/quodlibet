@@ -9,10 +9,6 @@ from unittest import TestCase
 suites = []
 add = suites.append
 
-for name in glob.glob(os.path.join(os.path.dirname(__file__), "test_*.py")):
-    module = __name__ + "." + os.path.basename(name)
-    __import__(module[:-3], {}, {}, [])
-
 class Result(unittest.TestResult):
 
     separator1 = '=' * 70
@@ -56,7 +52,16 @@ class Runner(object):
         result.printErrors()
         return bool(result.failures + result.errors)
 
-def unit(run=[], filter_func=None):
+def unit(run=[], filter_func=None, subdir=None):
+    path = os.path.dirname(__file__)
+    if subdir is not None:
+        path = os.path.join(path, subdir)
+
+    for name in glob.glob(os.path.join(path, "test_*.py")):
+        module = __name__ + "." + os.path.basename(name)
+        parts = filter(None, [__name__, subdir, os.path.basename(name)[:-3]])
+        __import__(".".join(parts), {}, {}, [])
+
     import quodlibet.const
     import quodlibet.config
     quodlibet.const.CONFIG = os.path.join(os.getcwd(), "config.temp")

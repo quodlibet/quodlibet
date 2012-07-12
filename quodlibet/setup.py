@@ -57,8 +57,9 @@ class test_cmd(Command):
             self.to_run = self.to_run.split(",")
 
     def run(self):
-        tests = __import__(self.suite)
-        if tests.unit(self.to_run):
+        tests = __import__("tests")
+        subdir = (self.suite != "tests" and self.suite) or None
+        if tests.unit(self.to_run, subdir=subdir):
             raise SystemExit("Test failures are listed above.")
 
 class build_scripts(distutils_build_scripts):
