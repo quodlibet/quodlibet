@@ -154,9 +154,9 @@ class Volume(gtk.VolumeButton):
         self.set_relief(gtk.RELIEF_NORMAL)
         self.set_adjustment(gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0))
 
-        self.set_value(config.getfloat("memory", "volume"))
         self.connect('value-changed', self.__volume_changed, device)
         device.connect('notify::volume', self.__volume_notify)
+        self.set_value(config.getfloat("memory", "volume"))
 
         self.show_all()
 
