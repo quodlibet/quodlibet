@@ -74,7 +74,7 @@ class PluginWindow(qltk.UniqueWindow):
         super(PluginWindow, self).__init__()
         self.set_title(_("Quod Libet Plugins"))
         self.set_border_width(12)
-        self.set_default_size(625, 350)
+        self.set_default_size(625, 500)
         self.set_transient_for(parent)
 
         hbox = gtk.HBox(spacing=12)
