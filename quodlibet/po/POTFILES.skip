@@ -1,1 +1,2 @@
+tests/test_qltk_notif.py
 tests/test_util.py

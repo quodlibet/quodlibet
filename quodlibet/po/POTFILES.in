@@ -1,7 +1,5 @@
 exfalso.desktop.in
 exfalso.py
-quodlibet.desktop.in
-quodlibet.py
 quodlibet/browsers/albums.py
 quodlibet/browsers/audiofeeds.py
 quodlibet/browsers/_base.py
@@ -13,10 +11,12 @@ quodlibet/browsers/paned.py
 quodlibet/browsers/playlists.py
 quodlibet/browsers/search.py
 quodlibet/debug/debugwindow.py
+quodlibet.desktop.in
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
 quodlibet/devices/ipod.py
 quodlibet/devices/storage.py
+quodlibet/formats/_album.py
 quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
@@ -28,6 +28,8 @@ quodlibet/player/_gstutils.py
 quodlibet/player/__init__.py
 quodlibet/player/xinebe.py
 quodlibet/plugins/__init__.py
+quodlibet/plugins/_songwrapper.py
+quodlibet.py
 quodlibet/qltk/about.py
 quodlibet/qltk/bookmarks.py
 quodlibet/qltk/browser.py
@@ -66,8 +68,8 @@ quodlibet/qltk/views.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
 quodlibet/stock.py
-quodlibet/util/__init__.py
 quodlibet/util/dprint.py
+quodlibet/util/__init__.py
 quodlibet/util/logging.py
 quodlibet/util/massagers.py
 quodlibet/util/tags.py
