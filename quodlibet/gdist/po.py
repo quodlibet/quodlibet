@@ -53,6 +53,22 @@ class po_stats(GCommand):
             all_ = float(trans + fuzzy + untrans)/100
             print "%5s: %3d%% (+%2d%% fuzzy)" % (po, trans/all_, fuzzy/all_)
 
+
+class check_pot(GCommand):
+    description = "check for missing files in POTFILES.in"
+
+    def finalize_options(self):
+        GCommand.finalize_options(self)
+        self.po_package = self.distribution.po_package
+
+    def run(self):
+        oldpath = os.getcwd()
+        os.chdir(self.po_directory)
+        self.spawn(["intltool-update", "--maintain",
+                    "--gettext-package", self.po_package])
+        os.chdir(oldpath)
+
+
 class build_mo(GCommand):
     """build message catalog files
 
@@ -138,4 +154,4 @@ class install_mo(GCommand):
             dest = change_root(self.root, dest)
         self.copy_tree(src, dest)
 
-__all__ = ["build_mo", "install_mo", "po_stats"]
+__all__ = ["build_mo", "install_mo", "po_stats", "check_potfiles"]

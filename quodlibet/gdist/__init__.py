@@ -23,7 +23,7 @@ from distutils.command.install import install as distutils_install
 from gdist.core import GCommand
 from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
-from gdist.po import build_mo, install_mo, po_stats
+from gdist.po import build_mo, install_mo, po_stats, check_pot
 
 import os
 
@@ -89,6 +89,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build", build)
         self.cmdclass.setdefault("install", install)
         self.cmdclass.setdefault("po_stats", po_stats)
+        self.cmdclass.setdefault("check_pot", check_pot)
 
     def has_po(self):
         return os.name != 'nt' and bool(self.po_directory)
