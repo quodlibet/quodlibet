@@ -63,9 +63,19 @@ def chdir(path):
     yield
     os.chdir(cwd)
 
+def split_numeric(s, limit=10, reg=re.compile(r"[0-9]+").search):
+    result = reg(s)
+    if not result or not limit:
+        return (u" ".join(s.split()),)
+    else:
+        start, end = result.span()
+        return (
+            u" ".join(s[:start].split()),
+            int(result.group()),
+            split_numeric(s[end:], limit - 1))
+
 def vsorted(lst):
-    return sorted(lst, key=lambda k:
-            map(lambda s: not s.isdigit() and s or int(s), k.split('%20')[-1].split('.')))
+    return sorted(lst, key=lambda k: split_numeric(k.split('%20')[-1]))
 
 def urlfetch(url):
     """Generator function for fetching a URL in 32k chunks w/ feedback."""
@@ -160,7 +170,6 @@ class PythonDep(Dep):
     """Fetcher for the win32 Python MSI."""
     def _get_versions(self):
         url = 'http://www.python.org/ftp/python/'
-        print re.findall('href="([1234567890.]+)[/]?"', Page(url).text)
         return re.findall('href="([1234567890.]+)[/]?"', Page(url).text)
 
     def _get_release(self, version):
@@ -343,16 +352,12 @@ def do_setup(rev):
         ZipInst('gtk')),
     (GnomeDep('libgsf', '1.14', '[^"]*libgsf_[^"]*win32.zip'),
         ZipInst('gtk')),
-    (GnomeDep('librsvg', '2.26', '[^"]*librsvg_[^"]*win32.zip'),
+    (GnomeDep('librsvg', '2.32', '[^"]*librsvg_[^"]*win32.zip'),
         ZipInst('gtk')),
-    (GnomeDep('librsvg', '2.26', '[^"]*svg-gdk-pixbuf-loader_[^"]*win32.zip'),
+    (GnomeDep('librsvg', '2.32', '[^"]*svg-gdk-pixbuf-loader_[^"]*win32.zip'),
         ZipInst('gtk')),
-    (GnomeDep('pycairo', '1.8', '[^"]*win32-py%s.exe' % PYVER),
-        EasyInstallExeInst()),
-    (GnomeDep('pygobject', '2.20', '[^"]*win32-py%s.exe' % PYVER),
-        EasyInstallExeInst()),
-    (GnomeDep('pygtk', '2.16', '[^"]*glade.win32-py%s.exe' % PYVER),
-        EasyInstallExeInst()),
+    (GnomeDep('pygtk', '2.24', '[^"]*pygtk-all-in-one-[1234567890.]*.win32-py%s.msi' % PYVER),
+        MSIInst('Python')),
     (DirectDep('GStreamer', None,
         'http://ossbuild.googlecode.com/files/GStreamer-WinBuilds-GPL-x86.msi'),
         MSIInst('gstreamer')),
@@ -367,10 +372,10 @@ def do_setup(rev):
     (EasyInstallDep('feedparser'), EasyInstallInst()),
     (EasyInstallDep('python-musicbrainz2'), EasyInstallInst()),
     (SFDep('cddb-py', 'cddb-py', None, 'CDDB-[1234567890.]*.tar.gz'), TarInst('cddb')),
-    (GnomeDep('gtk+', '2.16', '[^"]*-bundle_.*_win32.zip'),
-        ZipInst('gtk')), # >2.16 has windows theming disabled.
-    (GnomeDep('glib', '2.24', 'glib_[^"]*_win32.zip'),
-        ZipInst('gtk')), # current svg deps need a newer glib
+    (GnomeDep('gtk+', '2.24', '[^"]*-bundle_.*_win32.zip'),
+        ZipInst('gtk')),
+    (GnomeDep('glib', '2.28', 'glib_[^"]*_win32.zip'),
+        ZipInst('gtk')),
     #OnePageStep('NSIS', None, re='[^"]*nsis-[1234567890.]*-setup.exe[^"]*',
     #   page='http://nsis.sourceforge.net/Download', args=['/S']),
     ]
@@ -409,7 +414,7 @@ def do_setup(rev):
         inst.install(dep)
 
     # pygst -> python
-    pygst_path = join(TDIR, r'pygst\PFiles\bindings\python\v2.6')
+    pygst_path = join(TDIR, r'pygst\PFiles\bindings\python\v%s' % PYVER)
     pygst_dist = join(TDIR, 'Python')
     copytree2(pygst_path, pygst_dist)
 
@@ -521,10 +526,6 @@ def do_setup(rev):
             os.makedirs(dest)
         shutil.copy(join(built_locales, locale, r'LC_MESSAGES\quodlibet.mo'),
                     dest)
-
-    # Set the theme
-    shutil.copy(join(dist_path, r'share\themes\MS-Windows\gtk-2.0\gtkrc'),
-                join(dist_path, r'etc\gtk-2.0'))
 
     print "\n\nIf you have a license for redistributing the MSVC runtime,"
     print "you should drop it in %s now." % join(TDIR, r'ql\quodlibet\dist\bin')
