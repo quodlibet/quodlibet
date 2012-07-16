@@ -677,7 +677,7 @@ class SongList(AllTreeView, util.InstanceTracker):
                 try: return URI(s).filename
                 except ValueError: return None
 
-            filenames = map(to_filename, sel.get_uris())
+            filenames = filter(None, map(to_filename, sel.get_uris()))
             move = False
         else:
             ctx.finish(False, False, etime)
