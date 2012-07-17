@@ -545,9 +545,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         if iter:
             device = model[iter][0]
             status = device.eject()
-            if status == True:
-                self.__refresh(True)
-            else:
+            if status != True:
                 msg = _("Ejecting <b>%s</b> failed.") % device['name']
                 if status:
                     msg += "\n\n%s" % status
