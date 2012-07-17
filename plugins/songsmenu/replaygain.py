@@ -25,7 +25,7 @@ class ReplayGain(SongsMenuPlugin):
     PLUGIN_VERSION = "2.2"
 
     def plugin_albums(self, albums):
-        win = gtk.Dialog(title='ReplayGain',
+        win = gtk.Dialog(title='ReplayGain', parent=self.plugin_window,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         win.set_default_size(400, 300)
