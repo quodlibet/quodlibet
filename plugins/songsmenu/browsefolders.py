@@ -7,7 +7,16 @@
 import subprocess
 
 import gtk
-import dbus
+
+try:
+    import dbus
+except ImportError:
+    class FakeDbus(object):
+        def __getattribute__(self, name):
+            if name == "DBusException":
+                return Exception
+            raise Exception
+    dbus = FakeDbus()
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.uri import URI
@@ -65,18 +74,32 @@ def browse_files_thunar(songs, display=""):
                                          display, STARTUP_ID)
 
 
-def browse_folders_gnome_open(songs, callback=None):
+def browse_folders_gnome_open(songs):
     dirs = list(set([s("~dirname") for s in songs]))
     for dir_ in dirs:
         if subprocess.call(["gnome-open", dir_]) != 0:
             raise EnvironmentError
 
 
-def browse_folders_xdg_open(songs, callback=None):
+def browse_folders_xdg_open(songs):
     dirs = list(set([s("~dirname") for s in songs]))
     for dir_ in dirs:
         if subprocess.call(["xdg-open", dir_]) != 0:
             raise EnvironmentError
+
+
+# http://support.microsoft.com/kb/152457
+def browse_folders_win_explorer(songs):
+    dirs = list(set([s("~dirname") for s in songs]))
+    for dir_ in dirs:
+        # FIXME: returns always 1 under XP, but if the
+        # executable isn't found it will raise OSError anyway
+        subprocess.call(["Explorer", "/root,", dir_])
+
+
+def browse_files_win_explorer(songs):
+    for song in songs:
+        subprocess.call(["Explorer", "/select,", song("~filename")])
 
 
 class BrowseFolters(SongsMenuPlugin):
@@ -87,7 +110,8 @@ class BrowseFolters(SongsMenuPlugin):
     PLUGIN_VERSION = '1'
 
     _HANDLERS = [browse_folders_fdo, browse_folders_thunar,
-                 browse_folders_xdg_open, browse_folders_gnome_open]
+                 browse_folders_xdg_open, browse_folders_gnome_open,
+                 browse_folders_win_explorer]
 
     def plugin_songs(self, songs):
         print_d("Try to browse folders")
@@ -110,12 +134,13 @@ class BrowseFolters(SongsMenuPlugin):
 
 class BrowseFiles(SongsMenuPlugin):
     PLUGIN_ID = 'Browse Files'
-    PLUGIN_NAME = _('Browse File')
-    PLUGIN_DESC = "View the songs' files in a file manager"
+    PLUGIN_NAME = _('Show File')
+    PLUGIN_DESC = "View the song's file in a file manager"
     PLUGIN_ICON = gtk.STOCK_OPEN
     PLUGIN_VERSION = '1'
 
-    _HANDLERS = [browse_files_fdo, browse_files_thunar]
+    _HANDLERS = [browse_files_fdo, browse_files_thunar,
+                 browse_files_win_explorer]
 
     # TODO: switch to plugin_songs if nautilus/thunar handle multiselection
     def plugin_single_song(self, song):
