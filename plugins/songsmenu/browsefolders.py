@@ -23,7 +23,10 @@ from quodlibet.util.uri import URI
 from quodlibet.qltk.msg import ErrorMessage
 
 
-STARTUP_ID = "quodlibet"  # TODO: figure out what to do about the startup spec
+def get_startup_id():
+    from quodlibet.widgets import main
+    app_name = type(main).__name__
+    return "%s_TIME%d" % (app_name, gtk.get_current_event_time())
 
 
 # http://www.freedesktop.org/wiki/Specifications/file-manager-interface
@@ -37,7 +40,7 @@ def browse_folders_fdo(songs):
     bus_object = bus.get_object(FDO_NAME, FDO_PATH)
     bus_iface = dbus.Interface(bus_object, dbus_interface=FDO_IFACE)
     uris = map(URI.frompath, set([s("~dirname") for s in songs]))
-    bus_iface.ShowFolders(uris, STARTUP_ID)
+    bus_iface.ShowFolders(uris, get_startup_id())
 
 
 def browse_files_fdo(songs):
@@ -45,7 +48,7 @@ def browse_files_fdo(songs):
     bus_object = bus.get_object(FDO_NAME, FDO_PATH)
     bus_iface = dbus.Interface(bus_object, dbus_interface=FDO_IFACE)
     uris = [s("~uri") for s in songs]
-    bus_iface.ShowItems(uris, STARTUP_ID)
+    bus_iface.ShowItems(uris, get_startup_id())
 
 
 # http://git.xfce.org/xfce/thunar/tree/thunar/thunar-dbus-service-infos.xml
@@ -60,7 +63,7 @@ def browse_folders_thunar(songs, display=""):
     bus_iface = dbus.Interface(bus_object, dbus_interface=XFCE_IFACE)
     uris = map(URI.frompath, set([s("~dirname") for s in songs]))
     for uri in uris:
-        bus_iface.DisplayFolder(uri, display, STARTUP_ID)
+        bus_iface.DisplayFolder(uri, display, get_startup_id())
 
 
 def browse_files_thunar(songs, display=""):
@@ -71,7 +74,7 @@ def browse_files_thunar(songs, display=""):
         dirname = song("~dirname")
         basename = song("~basename")
         bus_iface.DisplayFolderAndSelect(URI.frompath(dirname), basename,
-                                         display, STARTUP_ID)
+                                         display, get_startup_id())
 
 
 def browse_folders_gnome_open(songs):
