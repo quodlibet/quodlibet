@@ -4,6 +4,7 @@ _GenericName=Audio tag editor
 _Comment=Edit tags in your audio files
 Exec=exfalso
 Terminal=false
+StartupNotify=true
 Type=Application
 Icon=exfalso
 Categories=AudioVideo;Audio;GTK;

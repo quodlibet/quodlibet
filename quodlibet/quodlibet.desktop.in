@@ -4,6 +4,7 @@ _GenericName=Music Player
 _Comment=Listen to, browse, or edit your audio collection
 Exec=quodlibet
 Terminal=false
+StartupNotify=true
 Type=Application
 Icon=quodlibet
 Categories=AudioVideo;Audio;Player;GTK;
