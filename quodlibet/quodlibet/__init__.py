@@ -133,6 +133,14 @@ del(_dummy_ngettext)
 _python_init()
 _gettext_init()
 
+
+def exit(status=None):
+    """Call this to abort the startup"""
+    import gtk
+    gtk.gdk.notify_startup_complete()
+    raise SystemExit(status)
+
+
 def init(library=None, icon=None, title=None, name=None):
     print_d("Entering quodlibet.init")
 

@@ -140,7 +140,7 @@ def init_plugins(player, library):
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):
-        raise SystemExit("not-running")
+        quodlibet.exit("not-running")
     else:
         fd, filename = tempfile.mkstemp()
         try:
@@ -160,11 +160,11 @@ def print_fifo(command):
             try: os.unlink(filename)
             except EnvironmentError: pass
             f.close()
-            raise SystemExit
+            quodlibet.exit()
         except TypeError:
             try: os.unlink(filename)
             except EnvironmentError: pass
-            raise SystemExit("not-running")
+            quodlibet.exit("not-running")
 
 def print_playing(fstring="<artist~album~tracknumber~title>"):
     from quodlibet.formats._audio import AudioFile
@@ -175,10 +175,10 @@ def print_playing(fstring="<artist~album~tracknumber~title>"):
         song = AudioFile()
         song.from_dump(text)
         print_(Pattern(fstring).format(song))
-        raise SystemExit
+        quodlibet.exit()
     except (OSError, IOError):
         print_(_("No song is currently playing."))
-        raise SystemExit(True)
+        quodlibet.exit(True)
 
 def print_query(query):
     '''Queries library, dumping filenames of matches to stdout
@@ -191,14 +191,14 @@ def print_query(query):
     songs = library.query(query)
     #songs.sort()
     sys.stdout.write("\n".join([song("~filename") for song in songs]) + "\n")
-    raise SystemExit
+    quodlibet.exit()
 
 def isrunning():
     return os.path.exists(const.CONTROL)
 
 def control(c):
     if not isrunning():
-        raise SystemExit(_("Quod Libet is not running."))
+        quodlibet.exit(_("Quod Libet is not running."))
     else:
         try:
             # This is a total abuse of Python! Hooray!
@@ -213,9 +213,9 @@ def control(c):
             try: os.unlink(const.CONTROL)
             except OSError: pass
             if c != 'focus':
-                raise SystemExit(True)
+                raise quodlibet.exit(True)
         else:
-            raise SystemExit
+            quodlibet.exit()
 
 def process_arguments():
     controls = ["next", "previous", "play", "pause", "play-pause",
@@ -316,7 +316,7 @@ def process_arguments():
             if command in validators and not validators[command](arg):
                 print_e(_("Invalid argument for '%s'.") % command)
                 print_e(_("Try %s --help.") % sys.argv[0])
-                raise SystemExit(True)
+                quodlibet.exit(True)
             else: control(command + " " + arg)
         elif command == "status": print_fifo("status")
         elif command == "print-playlist": print_fifo("dump-playlist")
