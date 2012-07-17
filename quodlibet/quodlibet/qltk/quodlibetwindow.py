@@ -293,8 +293,28 @@ class QuodLibetWindow(gtk.Window):
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
 
+        self.connect_object("key-press-event", self.__key_pressed, player)
+
         self.connect("delete-event", self.__save_browser)
         self.connect("destroy", self.__destroy)
+
+    def __key_pressed(self, player, event):
+        if not player.song:
+            return
+
+        def seek_relative(seconds):
+            current = player.get_position()
+            current += seconds * 1000
+            current = min(player.song("~#length") * 1000 -1, current)
+            current = max(0, current)
+            player.seek(current)
+
+        if qltk.is_accel(event, "<ctrl>Right"):
+            seek_relative(10)
+            return True
+        elif qltk.is_accel(event, "<ctrl>Left"):
+            seek_relative(-10)
+            return True
 
     def __destroy(self, *args):
         # The tray icon plugin tries to unhide QL because it gets disabled
