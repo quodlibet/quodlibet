@@ -116,7 +116,15 @@ class BrowseFolters(SongsMenuPlugin):
                  browse_folders_xdg_open, browse_folders_gnome_open,
                  browse_folders_win_explorer]
 
+    def plugin_handles(self, songs):
+        handle = False
+        for song in songs:
+            if song.is_file:
+                return True
+        return handle
+
     def plugin_songs(self, songs):
+        songs = (s for s in songs if s.is_file)
         print_d("Try to browse folders")
         for handler in self._HANDLERS:
             name = handler.__name__
@@ -145,9 +153,15 @@ class BrowseFiles(SongsMenuPlugin):
     _HANDLERS = [browse_files_fdo, browse_files_thunar,
                  browse_files_win_explorer]
 
-    # TODO: switch to plugin_songs if nautilus/thunar handle multiselection
+    def plugin_handles(self, songs):
+        handle = False
+        for song in songs:
+            if song.is_file:
+                return True
+        return handle
+
     def plugin_single_song(self, song):
-        songs = [song]
+        songs = (s for s in [song] if s.is_file)
 
         print_d("Try to browse files")
         for handler in self._HANDLERS:
