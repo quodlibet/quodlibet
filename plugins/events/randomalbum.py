@@ -62,9 +62,10 @@ class RandomAlbum(EventPlugin):
             self.delay = int(spin.get_value())
             config.set("plugins", "randomalbum_delay", str(self.delay))
 
-        def toggled_cb(check, widget):
+        def toggled_cb(check, widgets):
             self.use_weights = check.get_active()
-            widget.set_sensitive(self.use_weights)
+            for w in widgets:
+                w.set_sensitive(self.use_weights)
             config.set("plugins", "randomalbum_use_weights",
                     str(int(self.use_weights)))
 
@@ -84,9 +85,10 @@ class RandomAlbum(EventPlugin):
 
         check = gtk.CheckButton(_("Play some albums more than others"))
         vbox.pack_start(check, expand=False)
-        check.connect("toggled", toggled_cb, frame)
+        # Toggle both frame and contained table; frame doesn't always work?
+        check.connect("toggled", toggled_cb, [frame,table])
         check.set_active(self.use_weights)
-        toggled_cb(check, table)
+        toggled_cb(check, [frame,table])
 
         frame.add(table)
         vbox.pack_start(frame)
@@ -159,7 +161,11 @@ class RandomAlbum(EventPlugin):
             if not browser.can_filter('album'): return
 
             # Use the AlbumLibrary for free...
+            library.albums.load()
             values = library.albums
+            if not values:
+                print_w("No albums found in this library (%s)" % library)
+                return
 
             if self.use_weights:
                 # Select 3% of albums, or at least 3 albums
@@ -170,7 +176,7 @@ class RandomAlbum(EventPlugin):
                     print_d("%0.2f scored by %s" % (score, album("album")))
                 album = max(album_scores)[1]
             else:
-                album = random.choice(values)
+                album = library.albums[random.choice(values.keys())]
             if album is not None:
                 self.schedule_change(album)
 
