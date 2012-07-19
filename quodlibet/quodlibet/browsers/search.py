@@ -15,6 +15,7 @@ import gobject
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
+from quodlibet import util
 
 from quodlibet.browsers._base import Browser
 from quodlibet.parse import Query
@@ -87,18 +88,9 @@ class EmptyBar(gtk.VBox, Browser):
     def can_filter(self, key): return True
 
     def filter(self, key, values):
-        if not values: return
-        if key.startswith("~#"):
-            nheader = key[2:]
-            queries = ["#(%s = %s)" % (nheader, i) for i in values]
-            if len(queries) > 1: self.set_text(u"|(%s)" % ", ".join(queries))
-            else: self.set_text(queries[0])
-        else:
-            text = ", ".join(
-                ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
-                 for v in values])
-            if len(values) == 1: self.set_text(u"%s = %s" % (key, text))
-            else: self.set_text(u"%s = |(%s)" % (key, text))
+        if not values:
+            return
+        self.set_text(util.build_filter_query(key, values))
         self.activate()
 
     def unfilter(self):

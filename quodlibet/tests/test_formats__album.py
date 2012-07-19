@@ -1,7 +1,7 @@
 from __future__ import print_function
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
-from quodlibet.formats._album import Album
+from quodlibet.formats._album import Album, Playlist
 import tempfile
 from tests import TestCase, add
 

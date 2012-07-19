@@ -775,3 +775,31 @@ def sanitize_tags(tags, stream=False):
                 san[key] = value
 
     return san
+
+
+def build_filter_query(key, values):
+    """Create a text query that matches a union of all values for a key
+
+    build_filter_query("foo", ["x", "y"])
+    => foo = |("x"c, "y"c)
+    build_filter_query("~#foo", ["1"])
+    => #(foo = 1)
+    """
+
+    if not values:
+        return u""
+    if key.startswith("~#"):
+        nheader = key[2:]
+        queries = ["#(%s = %s)" % (nheader, i) for i in values]
+        if len(queries) > 1:
+            return u"|(%s)" % ", ".join(queries)
+        else:
+            return queries[0]
+    else:
+        text = ", ".join(
+            ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
+             for v in values])
+        if len(values) == 1:
+            return u"%s = %s" % (key, text)
+        else:
+            return u"%s = |(%s)" % (key, text)
