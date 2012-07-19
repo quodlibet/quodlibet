@@ -65,15 +65,29 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             folders = []
 
         if os.name == "nt":
-            try: from win32com.shell import shell, shellcon as con
+            try:
+                from win32com.shell import shell, shellcon as con
+                import pywintypes
             except ImportError: pass
             else:
                 if folders: folders.append(None)
-                desktop = shell.SHGetFolderPath(0, con.CSIDL_DESKTOP, 0, 0)
-                folders.append(desktop)
+
+                try:
+                    desktop = shell.SHGetFolderPath(0, con.CSIDL_DESKTOP, 0, 0)
+                except pywintypes.com_error:
+                    pass
+                else:
+                    folders.append(desktop)
+
                 folders.append(const.HOME)
-                music = shell.SHGetFolderPath(0, con.CSIDL_MYMUSIC, 0, 0)
-                folders.append(music)
+
+                try:
+                    music = shell.SHGetFolderPath(0, con.CSIDL_MYMUSIC, 0, 0)
+                except pywintypes.com_error:
+                    pass
+                else:
+                    folders.append(music)
+
             if folders: folders.append(None)
             drives = [letter + ":\\" for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ"]
             map(folders.append, filter(os.path.isdir, drives))
