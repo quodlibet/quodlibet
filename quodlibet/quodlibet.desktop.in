@@ -8,3 +8,18 @@ StartupNotify=true
 Type=Application
 Icon=quodlibet
 Categories=AudioVideo;Audio;Player;GTK;
+
+# for unity-panel integration
+X-Ayatana-Desktop-Shortcuts=X-Play;X-Next;X-Prev;
+[X-Play Shortcut Group]
+_Name=Play/Pause
+Exec=quodlibet --play-pause
+TargetEnvironment=Unity
+[X-Next Shortcut Group]
+_Name=Next
+Exec=quodlibet --next
+TargetEnvironment=Unity
+[X-Prev Shortcut Group]
+_Name=Previous
+Exec=quodlibet --prev
+TargetEnvironment=Unity
