@@ -173,6 +173,11 @@ add(TAlbum)
 
 class TPlaylist(TestCase):
 
+    TWO_SONGS= [
+        Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
+        Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
+    ]
+
     def test_equality(s):
         pl = Playlist(PLAYLISTS, "playlist")
         pl2 = Playlist(PLAYLISTS, "playlist")
@@ -183,14 +188,24 @@ class TPlaylist(TestCase):
         pl4 = Playlist(PLAYLISTS, "foobar")
         s.failIfEqual(pl, pl4)
 
+    def test_index(s):
+        pl = Playlist(PLAYLISTS, "playlist")
+        songs = s.TWO_SONGS
+        pl.extend(songs)
+        # Just a sanity check...
+        s.failUnlessEqual(1, songs.index(songs[1]))
+        # And now the happy paths..
+        s.failUnlessEqual(0, pl.index(songs[0]))
+        s.failUnlessEqual(1, pl.index(songs[1]))
+        # ValueError is what we want here
+        try:
+            pl.index(Fakesong({}))
+            s.fail()
+        except ValueError: pass
 
     def test_internal_tags(s):
-        songs = [
-            Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
-            Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
-        ]
         pl = Playlist(PLAYLISTS, "playlist")
-        pl.extend(songs)
+        pl.extend(s.TWO_SONGS)
 
         s.failIfEqual(pl.comma("~long-length"), "")
         s.failIfEqual(pl.comma("~tracks"), "")

@@ -423,6 +423,9 @@ class Playlist(Collection, Iterable):
         # Support slices
         return self.songs.__getitem__(item)
 
+    def index(self, value):
+        return self.songs.index(value)
+
     def __setitem__(self, key, value):
         # TODO: more intelligent cache management
         for song in self.songs:
