@@ -616,8 +616,14 @@ class QuodLibetWindow(gtk.Window):
         else: key = gtk.STOCK_MEDIA_PAUSE
         text = gtk.stock_lookup(key)[1]
         menu.get_image().set_from_stock(key, gtk.ICON_SIZE_MENU)
-        menu.child.set_text(text)
-        menu.child.set_use_underline(True)
+        if hasattr(menu, "set_label"):
+            # pygtk 2.16+, for unity:
+            # http://code.google.com/p/quodlibet/issues/detail?id=1013
+            menu.set_label(text)
+            menu.set_use_underline(True)
+        else:
+            menu.child.set_text(text)
+            menu.child.set_use_underline(True)
 
     def __check_remove_song(self, player, song):
         if song is None: return
