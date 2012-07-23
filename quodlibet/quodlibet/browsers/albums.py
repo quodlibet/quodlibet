@@ -724,9 +724,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def filter(self, key, values):
         # in case of album: clear entry, refilter, select albums
         if key == "album":
-            self.__search.set_text("")
-            self.__update_filter(self.__search, "", scroll_up=False)
-
             values = values or [""]
             select = lambda r: r[0] and r[0].title in values
 

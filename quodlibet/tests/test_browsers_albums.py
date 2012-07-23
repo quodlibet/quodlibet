@@ -75,7 +75,8 @@ class TAlbumBrowser(TestCase):
         self.bar.set_text("dsagfsag")
         self._wait()
         self.failUnlessEqual(len(self.songs), 0)
-
+        self.bar.set_text("")
+        self._wait()
         self.bar.filter("album", ["one", "three"])
         self._wait()
         self.failUnlessEqual(len(self.songs), 3)
@@ -92,6 +93,10 @@ class TAlbumBrowser(TestCase):
     def test_list(self):
         albums = self.bar.list("album")
         self.failUnlessEqual(set(albums), set(["one", "two", "three"]))
+        self.bar.set_text("one")
+        self._wait()
+        albums = self.bar.list("album")
+        self.failUnlessEqual(set(albums), set(["one"]))
 
     def test_active_filter(self):
         self.bar.filter("artist", ["piman"])
