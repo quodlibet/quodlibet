@@ -195,6 +195,12 @@ from mutagen.oggtheora import OggTheora
 extensions.append(".ogv")
 ogg_formats.append(OggTheora)
 
+try: from mutagen.oggopus import OggOpus
+except ImportError: OggOpus = None
+else:
+    extensions.append(".opus")
+    ogg_formats.append(OggOpus)
+
 try: from mutagen.id3 import ID3
 except ImportError: ID3 = None
 
@@ -213,6 +219,10 @@ class OggSpeexFile(MutagenVCFile):
 class OggTheoraFile(MutagenVCFile):
     format = "Ogg Theora"
     MutagenType = OggTheora
+
+class OggOpusFile(MutagenVCFile):
+    format = "Ogg Opus"
+    MutagenType = OggOpus
 
 class FLACFile(MutagenVCFile):
     format = "FLAC"

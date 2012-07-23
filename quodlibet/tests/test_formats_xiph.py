@@ -6,7 +6,7 @@ import tempfile
 import base64
 
 from quodlibet import config, const, formats
-from quodlibet.formats.xiph import OggFile, FLACFile
+from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -360,3 +360,23 @@ class TOggFile(TVCFile):
         os.unlink(self.filename)
         config.quit()
 add(TOggFile)
+
+
+class TOggOpusFile(TVCFile):
+    def setUp(self):
+        TVCFile.setUp(self)
+        self.filename = tempfile.mkstemp(".ogg")[1]
+        shutil.copy(os.path.join('tests', 'data', 'empty.opus'), self.filename)
+        self.song = OggOpusFile(self.filename)
+
+    def test_length(self):
+        self.failUnlessEqual(self.song("~#length"), 3)
+        self.failUnless("opusenc" in self.song("encoder"))
+
+    def tearDown(self):
+        os.unlink(self.filename)
+        config.quit()
+
+if OggOpus:
+    add(TOggOpusFile)
+
