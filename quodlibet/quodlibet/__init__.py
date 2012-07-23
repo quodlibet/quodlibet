@@ -46,7 +46,8 @@ def _gtk_init(icon=None):
                   "your $BROWSER variable, or make sure "
                   "/usr/bin/sensible-browser exists.")).run()
 
-    gtk.about_dialog_set_url_hook(website_wrap)
+    # only works with a running main loop
+    gobject.idle_add(gtk.about_dialog_set_url_hook, website_wrap)
 
 def _gettext_init():
     try: locale.setlocale(locale.LC_ALL, '')
