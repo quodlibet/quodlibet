@@ -10,7 +10,7 @@ import tempfile
 from quodlibet import util
 from quodlibet.formats._audio import AudioFile
 
-extensions = ['.mp4', '.m4a']
+extensions = ['.mp4', '.m4a', '.m4v']
 
 try:
     from mutagen.mp4 import MP4
