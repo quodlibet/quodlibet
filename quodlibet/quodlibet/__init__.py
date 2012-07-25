@@ -25,6 +25,7 @@ def _gtk_init(icon=None):
     import pygtk
     pygtk.require('2.0')
     import gtk
+    import gobject
 
     import quodlibet.stock
     quodlibet.stock.init()
@@ -180,6 +181,7 @@ def init_backend(backend, librarian):
 def enable_periodic_save(save_library):
     import quodlibet.library
     from quodlibet.util import copool
+    from quodlibet import config
 
     timeout = 5 * 60 * 1000  # 5 minutes
 
