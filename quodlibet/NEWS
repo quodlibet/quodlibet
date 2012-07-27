@@ -1,6 +1,20 @@
 Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
 but recommends Python 2.5, PyGTK 2.16, and Mutagen 1.20 or later.
 
+2.4.1 (2012-07-27) - Man! If I were a robot, a lot of things would be different
+ * Fixes:
+   * Fix skipping one song during a song change [987]
+     (This also broke the random album plugin in some cases)
+   * Windows: Crash in file system view if 'My Music' folder is missing [1008]
+   * Fix --quit [958]
+   * Fix playing of files that don't match the file system encoding [989]
+   * Workaround for mutagen ID3v2.3 update bug [mutagen 97]
+   * Various fixes [1013, 1002, 962]
+ * Plugin fixes:
+   * lastfmsync crashes [957]
+   * Various Duplicate browser fixes [999, 954]
+   * Notification crash [975]
+
 2.4 (2012-03-18) - He decides he must become... Abe Atman!
    * Support xinelib 1.2 [904]
    * MP3/ID3: fix some rare crashes; prefer main embedded cover
