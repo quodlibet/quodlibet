@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-18 17:06+0100\n"
+"POT-Creation-Date: 2012-07-27 10:17+0200\n"
 "PO-Revision-Date: 2006-11-18 00:56-0800\n"
 "Last-Translator: Emfox Zhou <EmfoxZhou@gmail.com>\n"
 "Language-Team: Emfox Zhou <EmfoxZhou@gmail.com>\n"
@@ -1067,11 +1067,11 @@ msgstr ""
 msgid "Error loading %r"
 msgstr ""
 
-#: ../quodlibet/__init__.py:44
+#: ../quodlibet/__init__.py:45
 msgid "Unable to start web browser"
 msgstr "无法启动网页浏览器"
 
-#: ../quodlibet/__init__.py:45
+#: ../quodlibet/__init__.py:46
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1079,11 +1079,11 @@ msgstr ""
 "无法找到网页浏览器。请设定好您的 $BROWSER 变量，或者确保存在 /usr/bin/"
 "sensible-browser。"
 
-#: ../quodlibet/__init__.py:95
+#: ../quodlibet/__init__.py:97
 msgid "Not setting process title."
 msgstr ""
 
-#: ../quodlibet/__init__.py:94
+#: ../quodlibet/__init__.py:96
 #, python-format
 msgid "Couldn't find module %s."
 msgstr ""
@@ -1122,56 +1122,56 @@ msgstr "已导入曲目库。"
 msgid "Scanning %s"
 msgstr "正在检查 %s"
 
-#: ../quodlibet/player/gstbe.py:68
+#: ../quodlibet/player/gstbe.py:69
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:76
+#: ../quodlibet/player/gstbe.py:77
 msgid "_Output pipeline:"
 msgstr ""
 
 #. seconds
-#: ../quodlibet/player/gstbe.py:90
+#: ../quodlibet/player/gstbe.py:91
 #, python-format
 msgid "%.1f s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:105
+#: ../quodlibet/player/gstbe.py:106
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:199
+#: ../quodlibet/player/gstbe.py:200
 #, python-format
 msgid "Could not link GStreamer pipeline: '%s'"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:441
+#: ../quodlibet/player/gstbe.py:455
 msgid "Output Error"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:442
+#: ../quodlibet/player/gstbe.py:456
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:614
+#: ../quodlibet/player/gstbe.py:625
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "无法打开文件"
 
-#: ../quodlibet/player/gstbe.py:615
+#: ../quodlibet/player/gstbe.py:626
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -1278,7 +1278,7 @@ msgstr "已保存值"
 msgid "Edit saved values..."
 msgstr "编辑已保存的值..."
 
-#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:290
+#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:304
 msgid "Songs"
 msgstr "曲目"
 
@@ -1535,29 +1535,29 @@ msgstr "标签编辑"
 msgid "Folders"
 msgstr "文件夹"
 
-#: ../quodlibet/qltk/filesel.py:111
+#: ../quodlibet/qltk/filesel.py:125
 #, fuzzy
 msgid "_New Folder..."
 msgstr "新文件夹..."
 
-#: ../quodlibet/qltk/filesel.py:120
+#: ../quodlibet/qltk/filesel.py:134
 #, fuzzy
 msgid "_Select All Subfolders"
 msgstr "全选(_A)"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "New Folder"
 msgstr "新文件夹"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "Enter a name for the new folder:"
 msgstr "输入新文件夹的名字："
 
-#: ../quodlibet/qltk/filesel.py:181
+#: ../quodlibet/qltk/filesel.py:195
 msgid "Unable to create folder"
 msgstr "无法创建文件夹"
 
-#: ../quodlibet/qltk/filesel.py:194
+#: ../quodlibet/qltk/filesel.py:208
 msgid "Unable to delete folder"
 msgstr "无法删除文件夹"
 
@@ -1578,11 +1578,11 @@ msgstr "唱片 %s"
 msgid "Track %s"
 msgstr "音轨 %s"
 
-#: ../quodlibet/qltk/info.py:62
+#: ../quodlibet/qltk/info.py:63
 msgid "_Edit Display..."
 msgstr ""
 
-#: ../quodlibet/qltk/info.py:111
+#: ../quodlibet/qltk/info.py:112
 msgid "Not playing"
 msgstr ""
 
@@ -2119,7 +2119,7 @@ msgid "Unable to add songs"
 msgstr "无法添加曲目信息"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:340
-#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:823
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b>使用不支持的协议。"
@@ -2258,34 +2258,34 @@ msgid ""
 "ties)"
 msgstr "40首您播放得最少的歌(如果有绑定的话，可能会多于40首)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:805
+#: ../quodlibet/qltk/quodlibetwindow.py:811
 msgid "Add a Location"
 msgstr "加入位置"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:806
+#: ../quodlibet/qltk/quodlibetwindow.py:812
 msgid "Enter the location of an audio file:"
 msgstr "输入音频文件的位置："
 
-#: ../quodlibet/qltk/quodlibetwindow.py:811
-#: ../quodlibet/qltk/quodlibetwindow.py:816
+#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:822
 msgid "Unable to add location"
 msgstr "无法添加位置"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:812
+#: ../quodlibet/qltk/quodlibetwindow.py:818
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> 不是合法的位置。"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:828
-#: ../quodlibet/qltk/quodlibetwindow.py:835
+#: ../quodlibet/qltk/quodlibetwindow.py:834
+#: ../quodlibet/qltk/quodlibetwindow.py:841
 msgid "Add Music"
 msgstr "添加音乐"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:829
+#: ../quodlibet/qltk/quodlibetwindow.py:835
 msgid "Watch this folder for new songs"
 msgstr "监视这个文件夹的新曲目"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:852
+#: ../quodlibet/qltk/quodlibetwindow.py:858
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -2294,7 +2294,7 @@ msgstr ""
 "%s 无法添加到您的库。\n"
 "\n"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:857
+#: ../quodlibet/qltk/quodlibetwindow.py:863
 msgid "Unable to add song"
 msgstr "无法添加曲目"
 

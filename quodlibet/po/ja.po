@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-18 17:06+0100\n"
+"POT-Creation-Date: 2012-07-27 10:17+0200\n"
 "PO-Revision-Date: 2007-04-29 20:38+0900\n"
 "Last-Translator: Yasushi Iwata <yasusii@lowlife.jp>\n"
 "Language-Team: Japanese\n"
@@ -1070,11 +1070,11 @@ msgstr ""
 msgid "Error loading %r"
 msgstr ""
 
-#: ../quodlibet/__init__.py:44
+#: ../quodlibet/__init__.py:45
 msgid "Unable to start web browser"
 msgstr "webブラウザを起動できません"
 
-#: ../quodlibet/__init__.py:45
+#: ../quodlibet/__init__.py:46
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1082,11 +1082,11 @@ msgstr ""
 "webブラウザが見つかりません。環境変数$BOWSERを設定するか、/usr/sbin/sensible-"
 "browserが存在することを確認してください。"
 
-#: ../quodlibet/__init__.py:95
+#: ../quodlibet/__init__.py:97
 msgid "Not setting process title."
 msgstr ""
 
-#: ../quodlibet/__init__.py:94
+#: ../quodlibet/__init__.py:96
 #, python-format
 msgid "Couldn't find module %s."
 msgstr ""
@@ -1125,56 +1125,56 @@ msgstr "ソングライブラリ読み込み中"
 msgid "Scanning %s"
 msgstr "%sをチェックしています"
 
-#: ../quodlibet/player/gstbe.py:68
+#: ../quodlibet/player/gstbe.py:69
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:76
+#: ../quodlibet/player/gstbe.py:77
 msgid "_Output pipeline:"
 msgstr ""
 
 #. seconds
-#: ../quodlibet/player/gstbe.py:90
+#: ../quodlibet/player/gstbe.py:91
 #, python-format
 msgid "%.1f s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:105
+#: ../quodlibet/player/gstbe.py:106
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:199
+#: ../quodlibet/player/gstbe.py:200
 #, python-format
 msgid "Could not link GStreamer pipeline: '%s'"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:441
+#: ../quodlibet/player/gstbe.py:455
 msgid "Output Error"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:442
+#: ../quodlibet/player/gstbe.py:456
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:614
+#: ../quodlibet/player/gstbe.py:625
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "ファイルのオープンに失敗しました"
 
-#: ../quodlibet/player/gstbe.py:615
+#: ../quodlibet/player/gstbe.py:626
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -1283,7 +1283,7 @@ msgstr "保存された値"
 msgid "Edit saved values..."
 msgstr "保存されている値を編集..."
 
-#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:290
+#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:304
 msgid "Songs"
 msgstr "曲"
 
@@ -1552,29 +1552,29 @@ msgstr "タグの編集"
 msgid "Folders"
 msgstr "フォルダ"
 
-#: ../quodlibet/qltk/filesel.py:111
+#: ../quodlibet/qltk/filesel.py:125
 #, fuzzy
 msgid "_New Folder..."
 msgstr "新規フォルダ(_N)"
 
-#: ../quodlibet/qltk/filesel.py:120
+#: ../quodlibet/qltk/filesel.py:134
 #, fuzzy
 msgid "_Select All Subfolders"
 msgstr "全て選択(_S)"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "New Folder"
 msgstr "新規フォルダ"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "Enter a name for the new folder:"
 msgstr "フォルダ名を入力してください:"
 
-#: ../quodlibet/qltk/filesel.py:181
+#: ../quodlibet/qltk/filesel.py:195
 msgid "Unable to create folder"
 msgstr "フォルダを作成できません"
 
-#: ../quodlibet/qltk/filesel.py:194
+#: ../quodlibet/qltk/filesel.py:208
 msgid "Unable to delete folder"
 msgstr "フォルダを削除できません"
 
@@ -1595,11 +1595,11 @@ msgstr "ディスク %s"
 msgid "Track %s"
 msgstr "トラック %s"
 
-#: ../quodlibet/qltk/info.py:62
+#: ../quodlibet/qltk/info.py:63
 msgid "_Edit Display..."
 msgstr "ディスプレイの編集(_E)"
 
-#: ../quodlibet/qltk/info.py:111
+#: ../quodlibet/qltk/info.py:112
 msgid "Not playing"
 msgstr "再生中の曲はありません"
 
@@ -2141,7 +2141,7 @@ msgid "Unable to add songs"
 msgstr "曲を追加できません"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:340
-#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:823
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b>で使われているプロトコルをサポートしていません。"
@@ -2284,34 +2284,34 @@ msgstr ""
 "再生回数の下位40曲(組になっているものがある場合40曲以上が選択される場合もあり"
 "ます)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:805
+#: ../quodlibet/qltk/quodlibetwindow.py:811
 msgid "Add a Location"
 msgstr "場所の追加"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:806
+#: ../quodlibet/qltk/quodlibetwindow.py:812
 msgid "Enter the location of an audio file:"
 msgstr "オーディオファイルのある場所を入力してください:"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:811
-#: ../quodlibet/qltk/quodlibetwindow.py:816
+#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:822
 msgid "Unable to add location"
 msgstr "場所の追加ができません"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:812
+#: ../quodlibet/qltk/quodlibetwindow.py:818
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "指定された場所 <b>%s</b> にアクセスできません。"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:828
-#: ../quodlibet/qltk/quodlibetwindow.py:835
+#: ../quodlibet/qltk/quodlibetwindow.py:834
+#: ../quodlibet/qltk/quodlibetwindow.py:841
 msgid "Add Music"
 msgstr "ミュージックの追加"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:829
+#: ../quodlibet/qltk/quodlibetwindow.py:835
 msgid "Watch this folder for new songs"
 msgstr "このフォルダの新しい曲をチェックする"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:852
+#: ../quodlibet/qltk/quodlibetwindow.py:858
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -2320,7 +2320,7 @@ msgstr ""
 "%s をライブラリに追加できませんでした。\n"
 "\n"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:857
+#: ../quodlibet/qltk/quodlibetwindow.py:863
 msgid "Unable to add song"
 msgstr "曲を追加できません"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-18 17:06+0100\n"
+"POT-Creation-Date: 2012-07-27 10:17+0200\n"
 "PO-Revision-Date: 2007-04-28 16:55+0300\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -1065,11 +1065,11 @@ msgstr ""
 msgid "Error loading %r"
 msgstr ""
 
-#: ../quodlibet/__init__.py:44
+#: ../quodlibet/__init__.py:45
 msgid "Unable to start web browser"
 msgstr "Web-selainta ei voi käynnistää"
 
-#: ../quodlibet/__init__.py:45
+#: ../quodlibet/__init__.py:46
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1077,11 +1077,11 @@ msgstr ""
 "Web-selainta ei löydy. Aseta $BROWSER-muuttujasi, tai varmista, että /usr/"
 "bin/sensible-browser on olemassa."
 
-#: ../quodlibet/__init__.py:95
+#: ../quodlibet/__init__.py:97
 msgid "Not setting process title."
 msgstr ""
 
-#: ../quodlibet/__init__.py:94
+#: ../quodlibet/__init__.py:96
 #, python-format
 msgid "Couldn't find module %s."
 msgstr ""
@@ -1118,56 +1118,56 @@ msgstr "Luetaan musiikkikirjastoa"
 msgid "Scanning %s"
 msgstr "Luetaan kohdetta %s"
 
-#: ../quodlibet/player/gstbe.py:68
+#: ../quodlibet/player/gstbe.py:69
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:76
+#: ../quodlibet/player/gstbe.py:77
 msgid "_Output pipeline:"
 msgstr ""
 
 #. seconds
-#: ../quodlibet/player/gstbe.py:90
+#: ../quodlibet/player/gstbe.py:91
 #, python-format
 msgid "%.1f s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:105
+#: ../quodlibet/player/gstbe.py:106
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:199
+#: ../quodlibet/player/gstbe.py:200
 #, python-format
 msgid "Could not link GStreamer pipeline: '%s'"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:441
+#: ../quodlibet/player/gstbe.py:455
 msgid "Output Error"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:442
+#: ../quodlibet/player/gstbe.py:456
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:614
+#: ../quodlibet/player/gstbe.py:625
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "Tiedostojen avaaminen ei onnistu"
 
-#: ../quodlibet/player/gstbe.py:615
+#: ../quodlibet/player/gstbe.py:626
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -1275,7 +1275,7 @@ msgstr "Tallennetut arvot"
 msgid "Edit saved values..."
 msgstr "Muokkaa tallennettuja arvoja..."
 
-#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:290
+#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:304
 msgid "Songs"
 msgstr "Kappaleet"
 
@@ -1547,27 +1547,27 @@ msgstr "Tunnisteiden muokkaus"
 msgid "Folders"
 msgstr "Kansiot"
 
-#: ../quodlibet/qltk/filesel.py:111
+#: ../quodlibet/qltk/filesel.py:125
 msgid "_New Folder..."
 msgstr "_Uusi kansio..."
 
-#: ../quodlibet/qltk/filesel.py:120
+#: ../quodlibet/qltk/filesel.py:134
 msgid "_Select All Subfolders"
 msgstr "_Valitse alihakemistot"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "New Folder"
 msgstr "Uusi kansio"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "Enter a name for the new folder:"
 msgstr "Anna uuden kansion nimi:"
 
-#: ../quodlibet/qltk/filesel.py:181
+#: ../quodlibet/qltk/filesel.py:195
 msgid "Unable to create folder"
 msgstr "Kansiota ei voi luoda"
 
-#: ../quodlibet/qltk/filesel.py:194
+#: ../quodlibet/qltk/filesel.py:208
 msgid "Unable to delete folder"
 msgstr "Kansiota ei voi poistaa"
 
@@ -1588,11 +1588,11 @@ msgstr "Levy %s"
 msgid "Track %s"
 msgstr "Raita %s"
 
-#: ../quodlibet/qltk/info.py:62
+#: ../quodlibet/qltk/info.py:63
 msgid "_Edit Display..."
 msgstr "_Muokkaa näkymää..."
 
-#: ../quodlibet/qltk/info.py:111
+#: ../quodlibet/qltk/info.py:112
 msgid "Not playing"
 msgstr "Soitto katkaistu"
 
@@ -2139,7 +2139,7 @@ msgid "Unable to add songs"
 msgstr "Kappaleita ei voi lisätä"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:340
-#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:823
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "Kohteen <b>%s</b> käyttämää protokollaa ei tueta."
@@ -2282,34 +2282,34 @@ msgstr ""
 "40 vähiten soittamaasi kappaletta (tasapelitilanteissa saatetaan valita "
 "enemmän kuin 40)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:805
+#: ../quodlibet/qltk/quodlibetwindow.py:811
 msgid "Add a Location"
 msgstr "Lisää sijainti"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:806
+#: ../quodlibet/qltk/quodlibetwindow.py:812
 msgid "Enter the location of an audio file:"
 msgstr "Syötä äänitiedoston sijainti:"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:811
-#: ../quodlibet/qltk/quodlibetwindow.py:816
+#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:822
 msgid "Unable to add location"
 msgstr "Sijaintia ei voi lisätä"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:812
+#: ../quodlibet/qltk/quodlibetwindow.py:818
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> ei ole kelvollinen sijainti."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:828
-#: ../quodlibet/qltk/quodlibetwindow.py:835
+#: ../quodlibet/qltk/quodlibetwindow.py:834
+#: ../quodlibet/qltk/quodlibetwindow.py:841
 msgid "Add Music"
 msgstr "Lisää musiikkia"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:829
+#: ../quodlibet/qltk/quodlibetwindow.py:835
 msgid "Watch this folder for new songs"
 msgstr "Tarkkaile tätä kansiota uusien kappaleitten varalta"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:852
+#: ../quodlibet/qltk/quodlibetwindow.py:858
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -2318,7 +2318,7 @@ msgstr ""
 "Kohdetta %s ei voitu lisätä kirjastoosi.\n"
 "\n"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:857
+#: ../quodlibet/qltk/quodlibetwindow.py:863
 msgid "Unable to add song"
 msgstr "Kappaletta ei voitu lisätä"
 

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-18 17:06+0100\n"
+"POT-Creation-Date: 2012-07-27 10:17+0200\n"
 "PO-Revision-Date: 2007-04-29 15:44+0200\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
@@ -1066,11 +1066,11 @@ msgstr ""
 msgid "Error loading %r"
 msgstr ""
 
-#: ../quodlibet/__init__.py:44
+#: ../quodlibet/__init__.py:45
 msgid "Unable to start web browser"
 msgstr "Niet in staat om een webbrowser te starten"
 
-#: ../quodlibet/__init__.py:45
+#: ../quodlibet/__init__.py:46
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1078,11 +1078,11 @@ msgstr ""
 "Een web browser kon niet niet gevonden worden Stel alstublieft uw $BROWSER "
 "variabele in, of controleer that /usr/bin/sensibe-browser bestaat."
 
-#: ../quodlibet/__init__.py:95
+#: ../quodlibet/__init__.py:97
 msgid "Not setting process title."
 msgstr ""
 
-#: ../quodlibet/__init__.py:94
+#: ../quodlibet/__init__.py:96
 #, python-format
 msgid "Couldn't find module %s."
 msgstr ""
@@ -1119,56 +1119,56 @@ msgstr "Scan song collectie"
 msgid "Scanning %s"
 msgstr "Scant %s"
 
-#: ../quodlibet/player/gstbe.py:68
+#: ../quodlibet/player/gstbe.py:69
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:76
+#: ../quodlibet/player/gstbe.py:77
 msgid "_Output pipeline:"
 msgstr ""
 
 #. seconds
-#: ../quodlibet/player/gstbe.py:90
+#: ../quodlibet/player/gstbe.py:91
 #, python-format
 msgid "%.1f s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:105
+#: ../quodlibet/player/gstbe.py:106
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:199
+#: ../quodlibet/player/gstbe.py:200
 #, python-format
 msgid "Could not link GStreamer pipeline: '%s'"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:441
+#: ../quodlibet/player/gstbe.py:455
 msgid "Output Error"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:442
+#: ../quodlibet/player/gstbe.py:456
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:614
+#: ../quodlibet/player/gstbe.py:625
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "Niet in staan om het bestanden te openen"
 
-#: ../quodlibet/player/gstbe.py:615
+#: ../quodlibet/player/gstbe.py:626
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -1276,7 +1276,7 @@ msgstr "Opgeslagen Waarden"
 msgid "Edit saved values..."
 msgstr "Bewerk opgeslagen waarden..."
 
-#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:290
+#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:304
 msgid "Songs"
 msgstr "Songs"
 
@@ -1549,27 +1549,27 @@ msgstr "Tag Bewerken"
 msgid "Folders"
 msgstr "Folders"
 
-#: ../quodlibet/qltk/filesel.py:111
+#: ../quodlibet/qltk/filesel.py:125
 msgid "_New Folder..."
 msgstr "_Nieuwe Folder..."
 
-#: ../quodlibet/qltk/filesel.py:120
+#: ../quodlibet/qltk/filesel.py:134
 msgid "_Select All Subfolders"
 msgstr "_Selecteer Alle Subfolders"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "New Folder"
 msgstr "Nieuwe folder"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "Enter a name for the new folder:"
 msgstr "Voer een naam in voor de nieuwe folder:"
 
-#: ../quodlibet/qltk/filesel.py:181
+#: ../quodlibet/qltk/filesel.py:195
 msgid "Unable to create folder"
 msgstr "Niet in staat om folder te maken"
 
-#: ../quodlibet/qltk/filesel.py:194
+#: ../quodlibet/qltk/filesel.py:208
 msgid "Unable to delete folder"
 msgstr "Niet in staat om folder te verwijderen"
 
@@ -1590,11 +1590,11 @@ msgstr "Schijf %s"
 msgid "Track %s"
 msgstr "Track %s"
 
-#: ../quodlibet/qltk/info.py:62
+#: ../quodlibet/qltk/info.py:63
 msgid "_Edit Display..."
 msgstr "_Bewerk Weergave..."
 
-#: ../quodlibet/qltk/info.py:111
+#: ../quodlibet/qltk/info.py:112
 msgid "Not playing"
 msgstr "Speelt niet"
 
@@ -2143,7 +2143,7 @@ msgid "Unable to add songs"
 msgstr "Niet in staat om songs toe te voegen"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:340
-#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:823
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> gebruikt een protocol dat niet wordt ondersteund."
@@ -2286,34 +2286,34 @@ msgstr ""
 "De 40 songs die je het minst heb beluisterd (meer dan 40 kunnen worden "
 "gekozen als er sprake is van gelijkspel)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:805
+#: ../quodlibet/qltk/quodlibetwindow.py:811
 msgid "Add a Location"
 msgstr "Voeg Locatie Toe"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:806
+#: ../quodlibet/qltk/quodlibetwindow.py:812
 msgid "Enter the location of an audio file:"
 msgstr "Voer de locatie van een audio bestand in:"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:811
-#: ../quodlibet/qltk/quodlibetwindow.py:816
+#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:822
 msgid "Unable to add location"
 msgstr "Niet in staat om locatie toe te voegen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:812
+#: ../quodlibet/qltk/quodlibetwindow.py:818
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> is geen geldige locatie."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:828
-#: ../quodlibet/qltk/quodlibetwindow.py:835
+#: ../quodlibet/qltk/quodlibetwindow.py:834
+#: ../quodlibet/qltk/quodlibetwindow.py:841
 msgid "Add Music"
 msgstr "Voeg Muziek Toe"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:829
+#: ../quodlibet/qltk/quodlibetwindow.py:835
 msgid "Watch this folder for new songs"
 msgstr "Bewaak deze folder voor nieuwe songs"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:852
+#: ../quodlibet/qltk/quodlibetwindow.py:858
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -2322,7 +2322,7 @@ msgstr ""
 "%s kon niet worden toegevoegd aan je collectie.\n"
 "\n"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:857
+#: ../quodlibet/qltk/quodlibetwindow.py:863
 msgid "Unable to add song"
 msgstr "Niet in staat om song toe te voegen"
 

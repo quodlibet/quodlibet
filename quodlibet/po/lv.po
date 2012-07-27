@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-18 17:06+0100\n"
+"POT-Creation-Date: 2012-07-27 10:17+0200\n"
 "PO-Revision-Date: 2010-03-30 10:12+0300\n"
 "Last-Translator: Einars Sprugis <einars8@gmail.com>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
@@ -1080,11 +1080,11 @@ msgstr ""
 msgid "Error loading %r"
 msgstr "Kļūda ielādējot %r"
 
-#: ../quodlibet/__init__.py:44
+#: ../quodlibet/__init__.py:45
 msgid "Unable to start web browser"
 msgstr "Neizdevās palaist tīmekļa pārlūku"
 
-#: ../quodlibet/__init__.py:45
+#: ../quodlibet/__init__.py:46
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1092,11 +1092,11 @@ msgstr ""
 "Neizdevās atrast tīmekļa pārlūku. Lūdzu, iestatiet mainīgo '$BROWSER', vai "
 "arī pārliecinieties, ka /usr/bin/sensible-browser eksistē."
 
-#: ../quodlibet/__init__.py:95
+#: ../quodlibet/__init__.py:97
 msgid "Not setting process title."
 msgstr ""
 
-#: ../quodlibet/__init__.py:94
+#: ../quodlibet/__init__.py:96
 #, fuzzy, python-format
 msgid "Couldn't find module %s."
 msgstr "%s: neizdevās atrast media-player-info."
@@ -1133,7 +1133,7 @@ msgstr "Skenē bibliotēku"
 msgid "Scanning %s"
 msgstr "Skenē %s"
 
-#: ../quodlibet/player/gstbe.py:68
+#: ../quodlibet/player/gstbe.py:69
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
@@ -1141,39 +1141,39 @@ msgstr ""
 "GStreamer izvades līnija, kas tiks izmantota atskaņošanai, piemēram, "
 "'alsasink device=default'. Atstājiet tukšu, lai izmantotu noklusēto līniju."
 
-#: ../quodlibet/player/gstbe.py:76
+#: ../quodlibet/player/gstbe.py:77
 msgid "_Output pipeline:"
 msgstr "_Izvades līnija:"
 
 #. seconds
-#: ../quodlibet/player/gstbe.py:90
+#: ../quodlibet/player/gstbe.py:91
 #, python-format
 msgid "%.1f s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:105
+#: ../quodlibet/player/gstbe.py:106
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:199
+#: ../quodlibet/player/gstbe.py:200
 #, python-format
 msgid "Could not link GStreamer pipeline: '%s'"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:381
+#: ../quodlibet/player/gstbe.py:395
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:441
+#: ../quodlibet/player/gstbe.py:455
 msgid "Output Error"
 msgstr "Izvades kļūda"
 
-#: ../quodlibet/player/gstbe.py:442
+#: ../quodlibet/player/gstbe.py:456
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
@@ -1181,11 +1181,11 @@ msgstr ""
 "Neizdevās inicializēt GStreamer izvades līniju. Līnija var nebūt derīga, vai "
 "arī ierīce jau tiek izmantota. Pārbaudiet jūsu atskaņotāja iestatījumus."
 
-#: ../quodlibet/player/gstbe.py:614
+#: ../quodlibet/player/gstbe.py:625
 msgid "Unable to open input files"
 msgstr "Neizdevās atvērt ievades failus"
 
-#: ../quodlibet/player/gstbe.py:615
+#: ../quodlibet/player/gstbe.py:626
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -1295,7 +1295,7 @@ msgstr "Saglabātās vērtības"
 msgid "Edit saved values..."
 msgstr "Rediģēt saglabātās vērtības..."
 
-#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:290
+#: ../quodlibet/qltk/chooser.py:38 ../quodlibet/qltk/filesel.py:304
 msgid "Songs"
 msgstr "Dziesmas"
 
@@ -1569,27 +1569,27 @@ msgstr "Tagu rediģēšana"
 msgid "Folders"
 msgstr "Mapes"
 
-#: ../quodlibet/qltk/filesel.py:111
+#: ../quodlibet/qltk/filesel.py:125
 msgid "_New Folder..."
 msgstr "Jau_na mape..."
 
-#: ../quodlibet/qltk/filesel.py:120
+#: ../quodlibet/qltk/filesel.py:134
 msgid "_Select All Subfolders"
 msgstr "Izvēlēties vi_sas apakšmapes"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "New Folder"
 msgstr "Jauna mape"
 
-#: ../quodlibet/qltk/filesel.py:172
+#: ../quodlibet/qltk/filesel.py:186
 msgid "Enter a name for the new folder:"
 msgstr "Ievadiet jaunās mapes nosaukumu:"
 
-#: ../quodlibet/qltk/filesel.py:181
+#: ../quodlibet/qltk/filesel.py:195
 msgid "Unable to create folder"
 msgstr "Neizdevās izveidot mapi"
 
-#: ../quodlibet/qltk/filesel.py:194
+#: ../quodlibet/qltk/filesel.py:208
 msgid "Unable to delete folder"
 msgstr "Neizdevās izdzēst mapi"
 
@@ -1610,11 +1610,11 @@ msgstr "%s. disks"
 msgid "Track %s"
 msgstr "%s. celiņš"
 
-#: ../quodlibet/qltk/info.py:62
+#: ../quodlibet/qltk/info.py:63
 msgid "_Edit Display..."
 msgstr "R_ediģēt rādāmo..."
 
-#: ../quodlibet/qltk/info.py:111
+#: ../quodlibet/qltk/info.py:112
 msgid "Not playing"
 msgstr "Pašreiz neatskaņo"
 
@@ -2165,7 +2165,7 @@ msgid "Unable to add songs"
 msgstr "Neizdevās pievienot dziesmas"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:340
-#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:823
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "<b>%s</b> izmanto neatbalstītu protokolu."
@@ -2306,34 +2306,34 @@ msgstr ""
 "40 dziesmas, ko esi atskaņojis visretāk (var tikt atlasītas vairāk nekā 40, "
 "ja ir 'neizšķirti' gadījumi)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:805
+#: ../quodlibet/qltk/quodlibetwindow.py:811
 msgid "Add a Location"
 msgstr "Pievienot vietu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:806
+#: ../quodlibet/qltk/quodlibetwindow.py:812
 msgid "Enter the location of an audio file:"
 msgstr "Ievadiet audio faila atrašanās vietu:"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:811
-#: ../quodlibet/qltk/quodlibetwindow.py:816
+#: ../quodlibet/qltk/quodlibetwindow.py:817
+#: ../quodlibet/qltk/quodlibetwindow.py:822
 msgid "Unable to add location"
 msgstr "Neizdevās pievienot vietu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:812
+#: ../quodlibet/qltk/quodlibetwindow.py:818
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> nav derīga vieta."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:828
-#: ../quodlibet/qltk/quodlibetwindow.py:835
+#: ../quodlibet/qltk/quodlibetwindow.py:834
+#: ../quodlibet/qltk/quodlibetwindow.py:841
 msgid "Add Music"
 msgstr "Pievienot mūziku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:829
+#: ../quodlibet/qltk/quodlibetwindow.py:835
 msgid "Watch this folder for new songs"
 msgstr "Vērot šo mapi"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:852
+#: ../quodlibet/qltk/quodlibetwindow.py:858
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -2342,7 +2342,7 @@ msgstr ""
 "%s nevarēja tikt pievienota jūsu bibliotēkai.\n"
 "\n"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:857
+#: ../quodlibet/qltk/quodlibetwindow.py:863
 msgid "Unable to add song"
 msgstr "Neizdevās pievienot dziesmu"
 
