@@ -158,7 +158,7 @@ class SongsMenu(gtk.Menu):
         librarian = getattr(library, 'librarian', library)
 
         if plugins:
-            submenu = self.plugins.Menu(librarian, self, songs)
+            submenu = self.plugins.Menu(librarian, parent, songs)
             if submenu is not None:
                 b = gtk.ImageMenuItem(stock.PLUGINS)
                 self.append(b)

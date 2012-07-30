@@ -134,7 +134,7 @@ class Browser(object):
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(
             library, songs, delete=True, accels=songlist.accelerators,
-            parent=self)
+            parent=songlist)
         return menu
 
     def statusbar(self, i):
