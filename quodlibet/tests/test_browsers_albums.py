@@ -64,12 +64,15 @@ class TAlbumBrowser(TestCase):
         self.failIf(self.bar.can_filter("title"))
 
     def test_set_text(self):
+        self.bar.set_text("artist=piman")
+        self.bar.activate()
+        self._wait()
         self.bar.set_text("")
         self._wait()
-        self.failUnlessEqual(set(self.songs), set(SONGS))
-        self.bar.set_text("artist=piman")
-        self._wait()
         self.failUnlessEqual(len(self.songs), 1)
+        self.bar.activate()
+        self._wait()
+        self.failUnlessEqual(set(self.songs), set(SONGS))
 
     def test_filter_album(self):
         self.bar.set_text("dsagfsag")

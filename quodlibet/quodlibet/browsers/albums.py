@@ -719,7 +719,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         self.__search.set_text(text)
         if Query.is_parsable(text):
             self.__update_filter(self.__search, text)
+            self.__inhibit()
             self.view.set_cursor((0,))
+            self.__uninhibit()
 
     def filter(self, key, values):
         # in case of album: clear entry, refilter, select albums
@@ -739,6 +741,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         else:
             # otherwise: build query, refilter
             self.set_text(util.build_filter_query(key, values))
+            self.activate()
 
     def unfilter(self):
         self.set_text("")
