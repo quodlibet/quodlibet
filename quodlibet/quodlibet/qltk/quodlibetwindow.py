@@ -679,9 +679,10 @@ class QuodLibetWindow(gtk.Window):
 
     def __update_title(self, player):
         song = player.info
+        title = "Quod Libet"
         if song:
-            self.set_title("Quod Libet - " + song.comma("~title~version"))
-        else: self.set_title("Quod Libet")
+            title = song.comma("~title~version~~people") + " - " + title
+        self.set_title(title)
 
     def __song_started(self, player, song):
         self.__update_title(player)

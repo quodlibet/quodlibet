@@ -506,7 +506,7 @@ class PreferencesWindow(qltk.UniqueWindow):
     def __init__(self, parent):
         if self.is_not_unique(): return
         super(PreferencesWindow, self).__init__()
-        self.set_title(_("Quod Libet Preferences"))
+        self.set_title(_("Preferences") + " - Quod Libet")
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(qltk.get_top_parent(parent))

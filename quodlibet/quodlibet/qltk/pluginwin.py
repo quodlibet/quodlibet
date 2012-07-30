@@ -72,7 +72,7 @@ class PluginWindow(qltk.UniqueWindow):
     def __init__(self, parent):
         if self.is_not_unique(): return
         super(PluginWindow, self).__init__()
-        self.set_title(_("Quod Libet Plugins"))
+        self.set_title(_("Plugins") + " - Quod Libet")
         self.set_border_width(12)
         self.set_default_size(625, 500)
         self.set_transient_for(parent)
