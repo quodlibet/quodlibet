@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 # Quod Libet Telepathy Plugin
-# Copyright 2012 Nick Boultbee
+# Copyright 2012 Nick Boultbee, Christoph Reiter
 #
-# Thanks also to
-# http://blogs.gnome.org/danni/2011/11/17/let-us-not-mourn-telepathy-python/
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -14,7 +12,6 @@ import gtk
 
 from quodlibet.parse._pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
-from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet import config
@@ -50,8 +47,9 @@ def set_accounts_requested_presence(paths, status, message):
 class PluginConfigMixin(object):
     """Mixin for storage and editing of plugin config in a standard way"""
 
-    def _cfg_key(self, name):
-        return "%s_%s" % (self.PLUGIN_ID, name)
+    @classmethod
+    def _cfg_key(cls, name):
+        return "%s_%s" % (cls.PLUGIN_ID.lower().replace(" ", "_"), name)
 
     def cfg_get(self, name, default=None):
         """Gets a config string value for this plugin"""
@@ -59,7 +57,7 @@ class PluginConfigMixin(object):
             return config.get(PM.CONFIG_SECTION, self._cfg_key(name))
         except config.error:
             # Set the missing config
-            config.set("plugins", "%s_%s" % (self.PLUGIN_ID, name), default)
+            config.set(PM.CONFIG_SECTION, self._cfg_key(name), default)
             return default
 
     def cfg_set(self, name, value):
@@ -86,7 +84,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_DESC = _("Updates all Telepathy-based IM accounts (as configured in "
                     "Empathy etc) with a status message based on current song.")
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.1"
+    PLUGIN_VERSION = "0.2"
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
     DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")
@@ -96,13 +94,14 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     CFG_PAT_PAUSED = "paused_pattern"
 
     def _set_status(self, text):
-        print_d("Setting status to \"%s\"" % text)
+        print_d("Setting status to \"%s\"..." % text)
         self.status = text
         try:
             accounts = get_active_account_paths()
+            # TODO: account filtering
             set_accounts_requested_presence(accounts, "available", text)
         except dbus.DBusException:
-            print_d("setting failed")
+            print_d("...but setting failed")
             util.print_exc()
 
     def plugin_on_song_started(self, song):
@@ -127,7 +126,6 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
             self._set_status(self.cfg_get(self.CFG_STATUS_SONGLESS))
 
     def enabled(self):
-        print_d("Setting up Telepathy hooks...")
         self.song = None
         self.status = ""
 
@@ -149,7 +147,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         hb.pack_start(entry)
         vb.pack_start(hb)
 
-        # Playing
+        # Paused
         hb = gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.cfg_get(self.CFG_PAT_PAUSED,
