@@ -617,7 +617,9 @@ def can_play_uri(uri):
     return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
 
 def init(librarian):
-    gst.debug_set_default_threshold(gst.LEVEL_ERROR)
+    # Enable error messages by default
+    if gst.debug_get_default_threshold() == gst.LEVEL_NONE:
+        gst.debug_set_default_threshold(gst.LEVEL_ERROR)
 
     # the fluendo decoder is twice as slow as mad, but wins
     # at autoplug because it has the same rank and f < m
