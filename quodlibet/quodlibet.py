@@ -218,7 +218,7 @@ def control(c):
             quodlibet.exit()
 
 def process_arguments():
-    controls = ["next", "previous", "play", "pause", "play-pause",
+    controls = ["next", "previous", "play", "pause", "play-pause", "stop",
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
     controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
@@ -241,6 +241,7 @@ def process_arguments():
         ("play", _("Start playback")),
         ("pause", _("Pause playback")),
         ("play-pause", _("Toggle play/pause mode")),
+        ("stop", _("Stop playback")),
         ("volume-up", _("Turn up volume")),
         ("volume-down", _("Turn down volume")),
         ("status", _("Print player status")),

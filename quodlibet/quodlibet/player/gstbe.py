@@ -255,6 +255,9 @@ class GStreamerPlayer(BasePlayer):
         bus.add_signal_watch()
         self.__bus_id = bus.connect('message', self.__message, self._librarian)
 
+        if self.song:
+            self.bin.set_property('uri', self.song("~uri"))
+
         return True
 
     def __destroy_pipeline(self):
@@ -295,8 +298,7 @@ class GStreamerPlayer(BasePlayer):
 
         self.__destroy_pipeline()
         self.paused = True
-        if self.__init_pipeline():
-            self.bin.set_property('uri', self.song("~uri"))
+        self.__init_pipeline()
         self.paused = paused
         self.seek(pos)
 
@@ -365,7 +367,8 @@ class GStreamerPlayer(BasePlayer):
             gobject.idle_add(self._end, False)
 
     def stop(self):
-        self._end(True, stop=True)
+        super(GStreamerPlayer, self).stop()
+        self.__destroy_pipeline()
 
     def do_set_property(self, property, v):
         if property.name == 'volume':
@@ -458,7 +461,6 @@ class GStreamerPlayer(BasePlayer):
                     self.bin.set_state(gst.STATE_PLAYING)
             else:
                 if self.__init_pipeline():
-                    self.bin.set_property('uri', self.song("~uri"))
                     self.bin.set_state(gst.STATE_PLAYING)
                 else:
                     # Backend error; show message and halt playback
@@ -484,9 +486,17 @@ class GStreamerPlayer(BasePlayer):
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
         # Don't allow seeking during gapless. We can't go back to the old song.
-        if self.bin and self.song and not self._in_gapless_transition:
-            # ensure any pending state changes have completed
-            self.bin.get_state(timeout=gst.SECOND/2)
+        if not self.song or self._in_gapless_transition:
+            return
+
+        if self.__init_pipeline():
+            # ensure any pending state changes have completed and we have
+            # at least paused state, so we can seek
+            state = self.bin.get_state(timeout=gst.SECOND/2)[1]
+            if state < gst.STATE_PAUSED:
+                self.bin.set_state(gst.STATE_PAUSED)
+                self.bin.get_state(timeout=gst.SECOND/2)
+
             pos = max(0, int(pos))
             gst_time = pos * gst.MSECOND
             event = gst.event_new_seek(
@@ -496,7 +506,7 @@ class GStreamerPlayer(BasePlayer):
                 self._last_position = pos
                 self.emit('seek', self.song, pos)
 
-    def _end(self, stopped, stop=False):
+    def _end(self, stopped):
         print_d("End song")
         song, info = self.song, self.info
 
@@ -514,8 +524,7 @@ class GStreamerPlayer(BasePlayer):
         self.emit('song-ended', song, stopped)
 
         # Then, set up the next song.
-        if not stop:
-            self.song = self.info = self._source.current
+        self.song = self.info = self._source.current
         self.emit('song-started', self.song)
 
         print_d("Next song")
@@ -526,9 +535,8 @@ class GStreamerPlayer(BasePlayer):
                 # entire pipeline and recreate it each time we're not in
                 # a gapless transition.
                 self.__destroy_pipeline()
-                if self.__init_pipeline():
-                    self.bin.set_property('uri', self.song("~uri"))
-                else: self.paused = True
+                if not self.__init_pipeline():
+                    self.paused = True
             if self.bin:
                 if self.paused:
                     self.bin.set_state(gst.STATE_PAUSED)

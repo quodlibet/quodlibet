@@ -113,6 +113,9 @@ class FIFOControl(object):
             player.reset()
         else: player.paused ^= True
 
+    def _stop(self, library, window, player):
+        player.stop()
+
     def _focus(self, library, window, player):
         window.show()
         window.present()
