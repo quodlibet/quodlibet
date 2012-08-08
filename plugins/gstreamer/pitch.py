@@ -82,7 +82,7 @@ class Preferences(gtk.VBox):
         self.pack_start(qltk.Frame(_("Preferences"), child=table))
 
 
-class Compressor(GStreamerPlugin):
+class Pitch(GStreamerPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Audio Pitch / Speed")
     PLUGIN_DESC = _("Control the pitch of an audio stream.")
