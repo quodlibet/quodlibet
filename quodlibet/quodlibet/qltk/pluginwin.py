@@ -19,6 +19,42 @@ from quodlibet.qltk.entry import ClearEntry
 
 TAG, ALL, NO, DIS, EN, SEP = range(6)
 
+
+class WrapLabel(gtk.Label):
+    __gtype_name__ = 'WrapLabel'
+
+    def __init__(self):
+        super(WrapLabel, self).__init__()
+        self.__wrap_width = 0
+        self.get_layout().set_wrap(pango.WRAP_WORD_CHAR)
+        self.set_alignment(0.0, 0.0)
+
+    def do_size_request(self, requisition):
+        width, height = self.get_layout().get_pixel_size()
+        requisition.width = 0
+        requisition.height = height
+
+    def do_size_allocate(self, allocation):
+        gtk.Label.do_size_allocate(self, allocation)
+        self.__set_wrap_width(allocation.width)
+
+    def set_text(self, *args):
+        super(WrapLabel, self).set_text(*args)
+        self.__set_wrap_width(self.__wrap_width)
+
+    def set_markup(self, *args):
+        super(WrapLabel, self).set_markup(*args)
+        self.__set_wrap_width(self.__wrap_width)
+
+    def __set_wrap_width(self, width):
+        if width == 0:
+            return
+        self.get_layout().set_width(width * pango.SCALE)
+        if self.__wrap_width != width:
+            self.__wrap_width = width
+            self.queue_resize()
+
+
 class PluginErrorWindow(qltk.UniqueWindow):
     def __init__(self, parent):
         if self.is_not_unique(): return
@@ -74,7 +110,7 @@ class PluginWindow(qltk.UniqueWindow):
         super(PluginWindow, self).__init__()
         self.set_title(_("Plugins") + " - Quod Libet")
         self.set_border_width(12)
-        self.set_default_size(625, 500)
+        self.set_default_size(655, 404)
         self.set_transient_for(parent)
 
         hbox = gtk.HBox(spacing=12)
@@ -139,6 +175,7 @@ class PluginWindow(qltk.UniqueWindow):
 
         sw.add(tv)
         sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_size_request(250, -1)
 
         tv.set_headers_visible(False)
 
@@ -152,15 +189,11 @@ class PluginWindow(qltk.UniqueWindow):
         vbox.pack_start(fb, expand=False)
         vbox.pack_start(sw)
         vbox.pack_start(bbox, expand=False)
-        vbox.set_size_request(250, -1)
         hbox.pack_start(vbox, expand=False)
 
         selection = tv.get_selection()
-        desc = gtk.Label()
-        desc.set_alignment(0, 0)
+        desc = WrapLabel()
         desc.set_selectable(True)
-        desc.set_line_wrap(True)
-        desc.set_size_request(self.get_default_size()[0] - 300, -1)
         selection.connect('changed', self.__description, desc)
 
         prefs = gtk.Frame()
@@ -231,13 +264,20 @@ class PluginWindow(qltk.UniqueWindow):
 
     def __description(self, selection, label):
         model, iter = selection.get_selected()
-        if not iter: return
-        text = "<big><b>%s</b></big>\n" % util.escape(model[iter][0].PLUGIN_NAME)
-        try: text += "<small>%s %s</small>\n" %(_("Version:"),
-            util.escape(model[iter][0].PLUGIN_VERSION))
-        except (TypeError, AttributeError): pass
-        try: text += "\n" + util.escape(model[iter][0].PLUGIN_DESC)
-        except (TypeError, AttributeError): pass
+        if not iter:
+            return
+        name = util.escape(model[iter][0].PLUGIN_NAME)
+        text = "<big><b>%s</b></big>" % name
+        try:
+            version = util.escape(model[iter][0].PLUGIN_VERSION)
+            text += " <small>(%s %s)</small>" %(_("Version:"), version)
+        except (TypeError, AttributeError):
+            pass
+        try:
+            desc = model[iter][0].PLUGIN_DESC
+            text += "<span font='4'>\n\n</span>" + desc
+        except (TypeError, AttributeError):
+            pass
 
         label.set_markup(text)
 
