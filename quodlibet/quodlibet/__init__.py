@@ -187,6 +187,7 @@ def init_plugins():
                os.path.join(quodlibet.const.BASEDIR, "plugins", "events"),
                os.path.join(quodlibet.const.BASEDIR, "plugins", "playorder"),
                os.path.join(quodlibet.const.BASEDIR, "plugins", "songsmenu"),
+               os.path.join(quodlibet.const.BASEDIR, "plugins", "gstreamer"),
                os.path.join(quodlibet.const.USERDIR, "plugins")]
     pm = plugins.init(folders)
 

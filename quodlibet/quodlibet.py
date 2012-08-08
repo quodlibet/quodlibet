@@ -107,6 +107,9 @@ def main():
 def init_plugins(player, library):
     pm = quodlibet.init_plugins()
 
+    if hasattr(player, "init_plugins"):
+        player.init_plugins()
+
     from quodlibet.qltk.songsmenu import SongsMenu
     SongsMenu.init_plugins()
 

@@ -40,7 +40,7 @@ if 'QUODLIBET_PLAYBIN1' in os.environ:
 USE_TRACK_CHANGE = gst.version() >= (0, 10, 28)
 
 
-class GStreamerPlayer(BasePlayer):
+class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
 
@@ -105,7 +105,7 @@ class GStreamerPlayer(BasePlayer):
 
         def rebuild_pipeline(combo):
             combo.refresh()
-            self.__rebuild_pipeline()
+            self._rebuild_pipeline()
 
         apply_button.connect_object('clicked', rebuild_pipeline, device_combo)
 
@@ -146,6 +146,7 @@ class GStreamerPlayer(BasePlayer):
         return vbox
 
     def __init__(self, librarian=None):
+        GStreamerPluginHandler.__init__(self)
         super(GStreamerPlayer, self).__init__()
         self.version_info = "GStreamer: %s / PyGSt: %s" % (
             fver(gst.version()), fver(gst.pygst_version))
@@ -195,6 +196,15 @@ class GStreamerPlayer(BasePlayer):
             # Use our own volume element for now until this works with PA.
             self._vol_element = gst.element_factory_make('volume')
             pipeline.insert(0, self._vol_element)
+
+        # Get all plugin elements and append audio converters.
+        # playbin already includes one at the end
+        plugin_pipeline = []
+        for plugin in self._get_plugin_elements():
+            plugin_pipeline.append(plugin)
+            plugin_pipeline.append(gst.element_factory_make('audioconvert'))
+            plugin_pipeline.append(gst.element_factory_make('audioresample'))
+        pipeline = plugin_pipeline + pipeline
 
         bufbin = gst.Bin()
         map(bufbin.add, pipeline)
@@ -261,6 +271,8 @@ class GStreamerPlayer(BasePlayer):
         return True
 
     def __destroy_pipeline(self):
+        self._remove_plugin_elements()
+
         if self.__bus_id:
             bus = self.bin.get_bus()
             bus.disconnect(self.__bus_id)
@@ -287,7 +299,7 @@ class GStreamerPlayer(BasePlayer):
         self._vol_element = None
         self._eq_element = None
 
-    def __rebuild_pipeline(self):
+    def _rebuild_pipeline(self):
         """If a pipeline is active, rebuild it and restore vol, position etc"""
 
         if not self.bin:
@@ -615,7 +627,7 @@ class GStreamerPlayer(BasePlayer):
         need_eq = any(self._eq_values)
         if need_eq != self._use_eq:
             self._use_eq = need_eq
-            self.__rebuild_pipeline()
+            self._rebuild_pipeline()
 
         if self._eq_element:
             for band, val in enumerate(self._eq_values):
