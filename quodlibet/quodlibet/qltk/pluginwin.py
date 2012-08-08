@@ -158,7 +158,10 @@ class PluginWindow(qltk.UniqueWindow):
         render = gtk.CellRendererPixbuf()
         def cell_data2(col, render, model, iter):
             icon = getattr(model[iter][0], 'PLUGIN_ICON', gtk.STOCK_EXECUTE)
-            render.set_property('stock-id', icon)
+            if gtk.stock_lookup(icon):
+                render.set_property('stock-id', icon)
+            else:
+                render.set_property('icon-name', icon)
         column = gtk.TreeViewColumn("image", render)
         column.set_cell_data_func(render, cell_data2)
         tv.append_column(column)

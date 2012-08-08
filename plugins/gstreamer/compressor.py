@@ -102,6 +102,7 @@ class Compressor(GStreamerPlugin):
     PLUGIN_NAME = _("Audio Compressor")
     PLUGIN_DESC = _("Change the amplitude of all samples above a specific "
                     "threshold with a specific ratio.")
+    PLUGIN_ICON = "audio-volume-high"
 
     @classmethod
     def setup_element(cls):

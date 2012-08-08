@@ -150,6 +150,7 @@ class Crossfeed(GStreamerPlugin):
     PLUGIN_DESC = _("Mixes the left and right channel in a way that simulates"
                     " a speaker setup while using headphones, or to adjust "
                     "for early Stereo recordings.")
+    PLUGIN_ICON = "audio-volume-high"
 
     @classmethod
     def setup_element(cls):
