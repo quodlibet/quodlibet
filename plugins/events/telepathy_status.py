@@ -25,6 +25,7 @@ AM_IFACE = "org.freedesktop.Telepathy.AccountManager"
 AC_IFACE = "org.freedesktop.Telepathy.Account"
 PROPS_IFACE = "org.freedesktop.DBus.Properties"
 CONN_PRESENCE_TYPE_AVAILABLE = 2
+is_valid_presence_type = lambda x: x not in [0, 7, 8]
 
 
 def get_active_account_paths():
@@ -34,12 +35,14 @@ def get_active_account_paths():
     return bus_iface.Get(AM_IFACE, "ValidAccounts")
 
 
-def set_accounts_requested_presence(paths, status, message):
+def set_accounts_requested_presence(paths, message):
     bus = dbus.SessionBus()
     for path in paths:
         bus_object = bus.get_object(AM_NAME, path)
         bus_iface = dbus.Interface(bus_object, dbus_interface=PROPS_IFACE)
-        presence_type = dbus.UInt32(CONN_PRESENCE_TYPE_AVAILABLE)
+        presence_type, status = bus_iface.Get(AC_IFACE, "CurrentPresence")[:2]
+        if not is_valid_presence_type(presence_type):
+            presence_type = dbus.UInt32(CONN_PRESENCE_TYPE_AVAILABLE)
         value = dbus.Struct([presence_type, status, message])
         bus_iface.Set(AC_IFACE, "RequestedPresence", value)
 
@@ -99,7 +102,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         try:
             accounts = get_active_account_paths()
             # TODO: account filtering
-            set_accounts_requested_presence(accounts, "available", text)
+            set_accounts_requested_presence(accounts, text)
         except dbus.DBusException:
             print_d("...but setting failed")
             util.print_exc()
