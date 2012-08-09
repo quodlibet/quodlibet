@@ -324,7 +324,7 @@ class PluginWindow(qltk.UniqueWindow):
         selected = None
         if fiter:
             iter = fmodel.convert_iter_to_child_iter(fiter)
-            selected = model[iter][0]
+            selected = model[iter][0].PLUGIN_ID
 
         plugins = []
         failures = False
@@ -342,7 +342,7 @@ class PluginWindow(qltk.UniqueWindow):
         plugins.sort()
         for plugin in plugins:
             it = model.append(row=plugin[1:])
-            if plugin[1] is selected:
+            if plugin[1].PLUGIN_ID is selected:
                 fit = fmodel.convert_child_iter_to_iter(it)
                 view.get_selection().select_iter(fit)
             plugin_tags = getattr(plugin[1], "PLUGIN_TAGS", ())
