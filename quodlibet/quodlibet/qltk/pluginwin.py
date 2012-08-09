@@ -233,6 +233,12 @@ class PluginWindow(qltk.UniqueWindow):
         self.show_all()
         filter_entry.grab_focus()
 
+        restore_id = config.get("memory", "plugin_selection")
+        def restore_sel(row):
+            return row[0].PLUGIN_ID == restore_id
+        if not tv.select_by_func(restore_sel, one=True) and tv.get_model():
+            tv.set_cursor((0,))
+
     def __filter(self, model, iter, widgets):
         row = model[iter]
         plugin = row[0]
@@ -268,7 +274,11 @@ class PluginWindow(qltk.UniqueWindow):
     def __description(self, selection, label):
         model, iter = selection.get_selected()
         if not iter:
+            label.set_markup("")
             return
+
+        config.set("memory", "plugin_selection", model[iter][0].PLUGIN_ID)
+
         name = util.escape(model[iter][0].PLUGIN_NAME)
         text = "<big><b>%s</b></big>" % name
         try:

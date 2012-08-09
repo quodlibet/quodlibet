@@ -116,6 +116,7 @@ def init(*rc_files):
           "shufflequeue": "false", # on or off
           "sortby": "0album", # <reversed?>tagname, song list sort
           "order": "inorder",
+          "plugin_selection": "", # selected plugin in manager
           },
 
         "browsers":

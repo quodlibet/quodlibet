@@ -243,9 +243,9 @@ class BaseView(gtk.TreeView):
                     self.scroll_to_cell(row.path, use_align=True,
                                         row_align=0.5)
                 self.set_cursor(row.path)
+                first = False
                 if one:
                     break
-                first = False
         return not first
 
     def __remove_iters(self, iters, force_restore=False):
