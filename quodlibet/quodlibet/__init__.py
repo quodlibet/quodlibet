@@ -93,8 +93,8 @@ def set_process_title(title):
         # 15 = PR_SET_NAME, apparently
         libc.prctl(15, title, 0, 0, 0)
     except:
-        print_w(_("Couldn't find module %s." % ("libc.so.6 (ctypes)", ) + " "
-           + _("Not setting process title.")))
+        print_d("Couldn't find module libc.so.6 (ctypes). "
+                "Not setting process title.")
 
 def _python_init():
     # The default regex escaping function doesn't work for non-ASCII.
