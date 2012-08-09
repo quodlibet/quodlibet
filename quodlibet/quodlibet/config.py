@@ -14,7 +14,16 @@ import const
 # We don't need/want variable interpolation.
 from ConfigParser import RawConfigParser as ConfigParser, Error as error
 
-_config = ConfigParser()
+# In newer RawConfigParser it is possible to replace the internal dict. The
+# implementation only uses items() for writing, so replace with a dict that
+# returns them sorted. This makes it easier to look up entries in the file.
+class _sorted_dict(dict):
+    def items(self):
+        return sorted(super(_sorted_dict, self).items())
+try:
+    _config = ConfigParser(dict_type=_sorted_dict)
+except TypeError:
+    _config = ConfigParser()
 options = _config.options
 
 def get(*args):
