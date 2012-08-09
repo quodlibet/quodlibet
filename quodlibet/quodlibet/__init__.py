@@ -104,25 +104,6 @@ def _python_init():
         return "".join(map(needs_escape, str))
     re.escape = re_esc
 
-    # Set up import wrappers for Quod Libet 1.x compatibility.
-    old_import = __import__
-    def import_ql(module, *args, **kwargs):
-        try: return old_import(module, *args, **kwargs)
-        except ImportError:
-            # If it looks like a plugin import error, forgive it, and
-            # try prepending quodlibet to the module name.
-            tb = traceback.extract_stack()
-            for (filename, linenum, func, text) in tb:
-                if "plugins" in filename:
-                    warnings.warn(
-                        "enabling legacy plugin API", DeprecationWarning)
-                    old_import("quodlibet." + module, *args, **kwargs)
-                    return sys.modules["quodlibet." + module]
-            else:
-                raise
-
-    if os.environ.get("QUODLIBET_OLDIMPORT"):
-        __builtin__.__dict__["__import__"] = import_ql
     __builtin__.__dict__["print_"] = print_
     __builtin__.__dict__["print_d"] = print_d
     __builtin__.__dict__["print_e"] = print_e
