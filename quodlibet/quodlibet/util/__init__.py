@@ -238,9 +238,10 @@ def parse_time(timestr, err=(ValueError, re.error)):
     except err: return 0
 
 RATING_PRECISION = 0.25
+RATING_SYMBOL = u'\u266a'
 def format_rating(value):
     """Turn a number into a sequence of music notes."""
-    return (u'\u266a' * int(round((1/RATING_PRECISION) * min(value, 1.0))))
+    return (RATING_SYMBOL * int(round((1/RATING_PRECISION) * min(value, 1.0))))
 
 def format_size(size):
     """Turn an integer size value into something human-readable."""
