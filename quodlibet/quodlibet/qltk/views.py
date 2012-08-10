@@ -128,11 +128,13 @@ class TreeViewHints(gtk.Window):
         label = self.__label
         if markup is None:
             label.set_text(renderer.get_property('text'))
-            w, h0 = label.get_layout().get_pixel_size()
         else:
-            if isinstance(markup, int): markup = model[path][markup]
+            if isinstance(markup, int):
+                markup = model[path][markup]
             label.set_markup(markup)
-            w, h1 = label.get_layout().get_pixel_size()
+        # size_request makes sure the size got updated
+        label.size_request()
+        w = label.get_layout().get_pixel_size()[0]
 
         if w + 5 < cellw: return # don't display if it doesn't need expansion
 
