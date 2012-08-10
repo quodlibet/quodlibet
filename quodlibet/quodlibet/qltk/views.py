@@ -164,6 +164,11 @@ class TreeViewHints(gtk.Window):
         else:
             label.set_padding(0, 0)
 
+        # Don't show if the resulting tooltip would be smaller
+        # than the visible area (if not all is on the display=
+        if w < cw:
+            return
+
         if not((x<=int(event.x_root) < x+w) and (y <= int(event.y_root) < y+h)):
             return # reject if cursor isn't above hint
 
