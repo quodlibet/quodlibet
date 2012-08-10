@@ -136,24 +136,34 @@ class TreeViewHints(gtk.Window):
         label.size_request()
         w = label.get_layout().get_pixel_size()[0]
 
-        if w + 5 < cellw: return # don't display if it doesn't need expansion
+        if w + 5 < cellw:
+            return # don't display if it doesn't need expansion
 
+        # cell coordinates (in view), size
         x, y, cw, h = area
+        # add the render offset (in case of multiple renderers)
         x += cell_offset
-        self.__dx = x
-        self.__dy = y
+        # save for passing through click events to the view
+        self.__dx, self.__dy = x, y
+        # add the height of the tv header
         y += view.get_bin_window().get_position()[1]
         ox, oy = view.window.get_origin()
-        x += ox; y += oy; w += 5
-        if gtk.gtk_version >= (2,8,0): w += 1 # width changed in 2.8?
+        x += ox
+        y += oy
+        w += 6
+
+        # If the tooltip is bigger than the left over space + some border,
+        # clip it. The padding hack is needed, since somehow padding is lost
+        # if the label child is bigger than the window.. TODO: less hacky
         screen_width = gtk.gdk.screen_width()
-        x_overflow = min([x, x + w - screen_width])
-        label.set_ellipsize(pango.ELLIPSIZE_NONE)
-        if x_overflow > 0:
-            self.__dx -= x_overflow
-            x -= x_overflow
-            w = min([w, screen_width])
-            label.set_ellipsize(pango.ELLIPSIZE_END)
+        screen_border = 5 #  leave some space
+        space_right = screen_width - x - w - screen_border
+        if space_right <= 0:
+            w += space_right
+            label.set_padding(2, 0)
+        else:
+            label.set_padding(0, 0)
+
         if not((x<=int(event.x_root) < x+w) and (y <= int(event.y_root) < y+h)):
             return # reject if cursor isn't above hint
 
