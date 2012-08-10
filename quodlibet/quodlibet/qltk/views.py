@@ -181,7 +181,9 @@ class TreeViewHints(gtk.Window):
 
         # hack: present the main window on key press
         if event.type == gtk.gdk.BUTTON_PRESS:
-            get_top_parent(self.__view).present()
+            # hack: present is overridden to present all windows.
+            # bypass to only select one
+            gtk.Window.present(get_top_parent(self.__view))
 
         if event.type != gtk.gdk.SCROLL:
             event.x += self.__dx
