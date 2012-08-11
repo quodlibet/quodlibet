@@ -180,6 +180,9 @@ class TreeViewHints(gtk.Window):
         self.set_size_request(w, h)
         self.resize(w, h)
         self.move(x, y)
+        # Workaround for Gnome Shell. It sometimes ignores move/resize if
+        # we don't call unrealize.
+        self.unrealize()
         self.show_all()
 
     def __undisplay(self, *args):
