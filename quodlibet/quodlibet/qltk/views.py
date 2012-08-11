@@ -95,21 +95,20 @@ class TreeViewHints(gtk.Window):
         if self.__current_path != path or self.__current_col != col:
             self.__undisplay()
 
-        cell_offset = 0
-        area = view.get_cell_area(path, col)
         renderers = col.get_cell_renderers()
-        renderer = None
-        if not renderers: return
+        if not renderers:
+            return
+        area = view.get_cell_area(path, col)
+
+        # get the renderer at the mouse position and get the xpos/width
         if len(renderers) == 1:
             renderer = renderers[0]
+            cell_width = area[2]
+            cell_offset = 0
         else:
-            rends = [(r.get_size(view, area), r) for r in renderers]
-            rends.sort(reverse=True)
-            for size, render in rends:
-                if cellx >= size[0]:
-                    renderer = render
-                    cell_offset = size[0]
-                    break
+            pos = [list(col.cell_get_position(r)) + [r] for r in renderers]
+            pos = filter(lambda (x, w, r): x < cellx, pos)
+            cell_offset, cell_width, renderer = sorted(pos)[-1]
 
         if self.__current_renderer == renderer : return
         else: self.__undisplay()
@@ -141,8 +140,9 @@ class TreeViewHints(gtk.Window):
 
         # cell coordinates (in view), size
         x, y, cw, h = area
-        # add the render offset (in case of multiple renderers)
+        # add the render offset/width (in case of multiple renderers)
         x += cell_offset
+        cw = cell_width
         # save for passing through click events to the view
         self.__dx, self.__dy = x, y
         # add the height of the tv header
@@ -165,7 +165,7 @@ class TreeViewHints(gtk.Window):
             label.set_padding(0, 0)
 
         # Don't show if the resulting tooltip would be smaller
-        # than the visible area (if not all is on the display=
+        # than the visible area (if not all is on the display)
         if w < cw:
             return
 
