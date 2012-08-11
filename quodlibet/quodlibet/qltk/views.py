@@ -26,7 +26,8 @@ class TreeViewHints(gtk.Window):
     def __init__(self):
         super(TreeViewHints, self).__init__(gtk.WINDOW_POPUP)
         self.__label = label = gtk.Label()
-        label.set_alignment(0.5, 0.5)
+        label.set_alignment(0, 0.5)
+        label.show()
         label.set_ellipsize(pango.ELLIPSIZE_NONE)
         self.add(label)
 
@@ -134,8 +135,9 @@ class TreeViewHints(gtk.Window):
         # size_request makes sure the size got updated
         label.size_request()
         w = label.get_layout().get_pixel_size()[0]
+        w += label.get_layout_offsets()[0] or 0
 
-        if w + 5 < cellw:
+        if w  < cellw:
             return # don't display if it doesn't need expansion
 
         # cell coordinates (in view), size
@@ -150,19 +152,21 @@ class TreeViewHints(gtk.Window):
         ox, oy = view.window.get_origin()
         x += ox
         y += oy
-        w += 6
 
-        # If the tooltip is bigger than the left over space + some border,
-        # clip it. The padding hack is needed, since somehow padding is lost
-        # if the label child is bigger than the window.. TODO: less hacky
+        # Use the renderer padding as label padding so the text offset matches
+        # and increase the width so the window is big enough
+        render_xpad = renderer.get_padding()[0]
+        label.set_padding(render_xpad, 0)
+        w += render_xpad
+
         screen_width = gtk.gdk.screen_width()
         screen_border = 5 #  leave some space
         space_right = screen_width - x - w - screen_border
         if space_right <= 0:
             w += space_right
-            label.set_padding(2, 0)
+            label.set_ellipsize(pango.ELLIPSIZE_END)
         else:
-            label.set_padding(0, 0)
+            label.set_ellipsize(pango.ELLIPSIZE_NONE)
 
         # Don't show if the resulting tooltip would be smaller
         # than the visible area (if not all is on the display)
@@ -183,7 +187,7 @@ class TreeViewHints(gtk.Window):
         # Workaround for Gnome Shell. It sometimes ignores move/resize if
         # we don't call unrealize.
         self.unrealize()
-        self.show_all()
+        self.show()
 
     def __undisplay(self, *args):
         if self.__current_renderer and self.__edit_id:
