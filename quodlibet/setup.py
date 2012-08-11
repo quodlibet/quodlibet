@@ -289,7 +289,7 @@ if __name__ == "__main__":
         data_files = [('', ['COPYING'])] +  recursive_include_py2exe(
             "quodlibet", "images", ("svg", "png", "cache", "theme"))
 
-        for type in ["playorder", "songsmenu", "editing", "events"]:
+        for type in ["playorder", "songsmenu", "editing", "events", "gstreamer"]:
             data_files.append((join('quodlibet', 'plugins', type),
                 glob.glob(join('..', 'plugins', type, '*.py'))))
 
