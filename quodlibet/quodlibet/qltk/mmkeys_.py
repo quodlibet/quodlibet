@@ -6,6 +6,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import gobject
+
 __all__ = ["init"]
 
 def do_action(player, action):
@@ -89,7 +91,7 @@ def init_pyhook(player):
     def keyboard_cb(event):
         key = event.Key
         if key in signals:
-            do_action(player, signals[key])
+            gobject.idle_add(do_action, player, signals[key])
         return True
 
     hm = pyHook.HookManager()
