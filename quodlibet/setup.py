@@ -319,7 +319,7 @@ if __name__ == "__main__":
                 'py2exe': {
                     'packages': ('encodings, feedparser, quodlibet, '
                                  'HTMLParser, gtk, glib, gobject, '
-                                 'musicbrainz2, shelve, json'),
+                                 'musicbrainz2, shelve, json, pyHook'),
                     'includes': ('cairo, pango, pangocairo, atk, gio, '
                                  'pygst, gst, quodlibet.player.gstbe, '
                                  'CDDB'),

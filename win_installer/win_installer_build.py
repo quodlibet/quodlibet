@@ -368,6 +368,8 @@ def do_setup(rev):
         EasyInstallExeInst()),
     (SFDep('pywin32', 'pywin32', None, 'pywin32-[1234567890.]*.win32-py%s.exe' % PYVER),
         EasyInstallExeInst()),
+    (SFDep('pyhook', 'pyhook', None, 'pyHook-[1234567890.]*.win32-py%s.exe' % PYVER),
+        EasyInstallExeInst()),
     (EasyInstallDep('mutagen'), EasyInstallInst()),
     (EasyInstallDep('feedparser'), EasyInstallInst()),
     (EasyInstallDep('python-musicbrainz2'), EasyInstallInst()),

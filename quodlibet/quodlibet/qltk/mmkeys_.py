@@ -77,6 +77,26 @@ def init_keybinder(player):
 
     return True
 
+def init_pyhook(player):
+    try:
+        import pyHook
+    except ImportError:
+        return False
+
+    signals = {"Media_Prev_Track": "prev", "Media_Next_Track": "next",
+               "Media_Stop": "stop", "Media_Play_Pause": "play"}
+
+    def keyboard_cb(event):
+        key = event.Key
+        if key in signals:
+            do_action(player, signals[key])
+        return True
+
+    hm = pyHook.HookManager()
+    hm.KeyDown = keyboard_cb
+    hm.HookKeyboard()
+
+    return True
 
 def init(window, player):
     print_d("Grab multimedia keys")
@@ -91,6 +111,10 @@ def init(window, player):
 
     if init_keybinder(player):
         print_d("keybinder: ok")
+        return
+
+    if init_pyhook(player):
+        print_d("pyhook: ok")
         return
 
     print_d("grabbing failed..")
