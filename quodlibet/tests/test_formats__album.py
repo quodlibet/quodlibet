@@ -1,12 +1,12 @@
-from __future__ import print_function
+import os
+import tempfile
+import shutil
+
+from tests import TestCase, add
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.formats._album import Album, Playlist
-import tempfile
-from tests import TestCase, add
 
-
-PLAYLISTS = tempfile.gettempdir()
 
 NUMERIC_SONGS = [
     Fakesong({"~filename":"fake1.mp3",
@@ -178,18 +178,26 @@ class TPlaylist(TestCase):
         Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
     ]
 
+    def setUp(self):
+        self.temp = tempfile.mkdtemp()
+        self.temp2 = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp)
+        shutil.rmtree(self.temp2)
+
     def test_equality(s):
-        pl = Playlist(PLAYLISTS, "playlist")
-        pl2 = Playlist(PLAYLISTS, "playlist")
-        pl3 = Playlist("./", "playlist")
+        pl = Playlist(s.temp, "playlist")
+        pl2 = Playlist(s.temp, "playlist")
+        pl3 = Playlist(s.temp2, "playlist")
         s.failUnlessEqual(pl, pl2)
         # Debatable
         s.failUnlessEqual(pl, pl3)
-        pl4 = Playlist(PLAYLISTS, "foobar")
+        pl4 = Playlist(s.temp, "foobar")
         s.failIfEqual(pl, pl4)
 
     def test_index(s):
-        pl = Playlist(PLAYLISTS, "playlist")
+        pl = Playlist(s.temp, "playlist")
         songs = s.TWO_SONGS
         pl.extend(songs)
         # Just a sanity check...
@@ -204,7 +212,7 @@ class TPlaylist(TestCase):
         except ValueError: pass
 
     def test_internal_tags(s):
-        pl = Playlist(PLAYLISTS, "playlist")
+        pl = Playlist(s.temp, "playlist")
         pl.extend(s.TWO_SONGS)
 
         s.failIfEqual(pl.comma("~long-length"), "")
@@ -218,7 +226,7 @@ class TPlaylist(TestCase):
 
     def test_numeric_ops(s):
         songs = NUMERIC_SONGS
-        pl = Playlist(PLAYLISTS, "playlist")
+        pl = Playlist(s.temp, "playlist")
         pl.extend(songs)
 
         s.failUnlessEqual(pl.get("~#length"), 12)
@@ -238,7 +246,7 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl.get("~#originalyear"), 2002)
 
     def test_listlike(s):
-        pl = Playlist(PLAYLISTS, "playlist")
+        pl = Playlist(s.temp, "playlist")
         pl.extend(NUMERIC_SONGS)
         s.failUnlessEqual(NUMERIC_SONGS[0], pl[0])
         s.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
@@ -247,12 +255,12 @@ class TPlaylist(TestCase):
     def test_playlists_featuring(s):
         Playlist._remove_all()
         Playlist._clear_global_cache()
-        pl = Playlist(PLAYLISTS, "playlist")
+        pl = Playlist(s.temp, "playlist")
         pl.extend(NUMERIC_SONGS)
         playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
         s.failUnlessEqual(playlists, set([pl]))
         # Now add a second one, check that instance tracking works
-        pl2 = Playlist(PLAYLISTS, "playlist2")
+        pl2 = Playlist(s.temp, "playlist2")
         pl2.append(NUMERIC_SONGS[0])
         playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
         s.failUnlessEqual(playlists, set([pl, pl2]))
@@ -263,7 +271,7 @@ class TPlaylist(TestCase):
         Playlist._remove_all()
         Playlist._clear_global_cache()
         pl_name="playlist 123!"
-        pl = Playlist(PLAYLISTS, pl_name)
+        pl = Playlist(self.temp, pl_name)
         pl.extend(songs)
         for song in songs:
             self.assertEquals(pl_name, song("~playlists"))
