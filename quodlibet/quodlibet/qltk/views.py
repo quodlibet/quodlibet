@@ -62,9 +62,11 @@ class TreeViewHints(gtk.Window):
 
     def disconnect_view(self, view):
         try:
-            for handler in self.__handlers[view]: view.disconnect(handler)
+            for handler in self.__handlers[view]:
+                view.disconnect(handler)
             del self.__handlers[view]
-        except KeyError: pass
+        except KeyError:
+            pass
         # Hide if the active treeview is going away
         if view is self.__view:
             self.__undisplay()
@@ -76,93 +78,100 @@ class TreeViewHints(gtk.Window):
                 None, self, "tooltip", 0, 0, w, h)
 
     def __motion(self, view, event):
+        label = self.__label
+
         # trigger over row area, not column headers
         if event.window is not view.get_bin_window():
-            return self.__undisplay()
+            self.__undisplay()
+            return
 
         # hide if any modifier is active
         if event.state & gtk.accelerator_get_default_mod_mask():
-            return self.__undisplay()
+            self.__undisplay()
+            return
 
+        # get the cell at the mouse position
         x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        # no hints where no rows exist
-        except TypeError: return self.__undisplay()
+        try:
+            path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError:
+            # no hints where no rows exist
+            self.__undisplay()
+            return
 
         # hide for partial hidden rows at the bottom
         if y > view.get_visible_rect().height:
-            return self.__undisplay()
-
-        if self.__current_path != path or self.__current_col != col:
             self.__undisplay()
-
-        renderers = col.get_cell_renderers()
-        if not renderers:
             return
-        area = view.get_cell_area(path, col)
 
         # get the renderer at the mouse position and get the xpos/width
-        if len(renderers) == 1:
-            renderer = renderers[0]
-            cell_width = area[2]
-            cell_offset = 0
+        renderers = col.get_cell_renderers()
+        pos = sorted(zip(map(col.cell_get_position, renderers), renderers))
+        pos = filter(lambda ((x, w), r): x < cellx, pos)
+        if not pos:
+            self.__undisplay()
+            return
+        (render_offset, render_width), renderer = pos[-1]
+
+        if self.__current_renderer == renderer:
+            return
         else:
-            pos = [list(col.cell_get_position(r)) + [r] for r in renderers]
-            pos = filter(lambda (x, w, r): x < cellx, pos)
-            cell_offset, cell_width, renderer = sorted(pos)[-1]
+            self.__undisplay()
 
-        if self.__current_renderer == renderer : return
-        else: self.__undisplay()
+        # only ellipsized text renderers
+        if not isinstance(renderer, gtk.CellRendererText):
+            return
+        if renderer.get_property('ellipsize') == pango.ELLIPSIZE_NONE:
+            return
 
-        if not isinstance(renderer, gtk.CellRendererText): return
-        if renderer.get_property('ellipsize') == pango.ELLIPSIZE_NONE: return
-
+        # set the cell renderer attributes for the active cell
         model = view.get_model()
         col.cell_set_cell_data(model, model.get_iter(path), False, False)
-        cellw = col.cell_get_position(renderer)[1]
 
-        try: markup = renderer.markup
-        except AttributeError:
-            markup = None
-
-        label = self.__label
+        # the markup attribute is write only, so the markup text needs
+        # to be saved on the python side, so we can copy it to the label
+        markup = getattr(renderer, "markup", None)
         if markup is None:
             label.set_text(renderer.get_property('text'))
         else:
+            # markup can also be column index
             if isinstance(markup, int):
                 markup = model[path][markup]
             label.set_markup(markup)
-        # size_request makes sure the size got updated
-        label.size_request()
-        w = label.get_layout().get_pixel_size()[0]
-        w += label.get_layout_offsets()[0] or 0
-
-        if w  < cellw:
-            return # don't display if it doesn't need expansion
-
-        # cell coordinates (in view), size
-        x, y, cw, h = area
-        # add the render offset/width (in case of multiple renderers)
-        x += cell_offset
-        cw = cell_width
-        # save for passing through click events to the view
-        self.__dx, self.__dy = x, y
-        # add the height of the tv header
-        y += view.get_bin_window().get_position()[1]
-        ox, oy = view.window.get_origin()
-        x += ox
-        y += oy
 
         # Use the renderer padding as label padding so the text offset matches
-        # and increase the width so the window is big enough
         render_xpad = renderer.get_padding()[0]
         label.set_padding(render_xpad, 0)
-        w += render_xpad
+        # size_request makes sure the layout size got updated
+        label.size_request()
+        label_width = label.get_layout().get_pixel_size()[0]
+        label_width += label.get_layout_offsets()[0] or 0
+        # layout offset includes the left padding, so add one more
+        label_width += render_xpad
 
-        screen_width = gtk.gdk.screen_width()
-        screen_border = 5 #  leave some space
-        space_right = screen_width - x - w - screen_border
-        if space_right <= 0:
+        # don't display if it doesn't need expansion
+        if label_width < render_width:
+            return
+
+        # the column header height
+        header_height = view.get_bin_window().get_position()[1]
+
+        area = view.get_cell_area(path, col)
+        ox, oy = view.window.get_origin()
+
+        # save for adjusting passthrough events
+        self.__dx, self.__dy = area.x, area.y
+
+        # final window coordinates/size
+        x = ox + area.x + render_offset
+        y = oy + header_height + area.y
+        w = label_width
+        h = area.height
+
+        # clip on the right if it's bigger than the screen
+        screen_border = 5  # leave some space
+        space_right = gtk.gdk.screen_width() - x - w - screen_border
+        if space_right < 0:
             w += space_right
             label.set_ellipsize(pango.ELLIPSIZE_END)
         else:
@@ -170,26 +179,33 @@ class TreeViewHints(gtk.Window):
 
         # Don't show if the resulting tooltip would be smaller
         # than the visible area (if not all is on the display)
-        if w < cw:
+        if w < render_width:
             return
 
-        if not((x<=int(event.x_root) < x+w) and (y <= int(event.y_root) < y+h)):
-            return # reject if cursor isn't above hint
+        # reject if cursor isn't above hint
+        x_root, y_root = map(int, [event.x_root, event.y_root])
+        if not((x <= x_root < x + w) and (y <= y_root < y + h)):
+            return
 
         self.__view = view
         self.__current_renderer = renderer
         self.__edit_id = renderer.connect('editing-started', self.__undisplay)
         self.__current_path = path
         self.__current_col = col
+
         self.set_size_request(w, h)
         self.resize(w, h)
         self.move(x, y)
+
         # Workaround for Gnome Shell. It sometimes ignores move/resize if
         # we don't call unrealize.
         self.unrealize()
         self.show()
 
     def __undisplay(self, *args):
+        if not self.__view:
+            return
+
         if self.__current_renderer and self.__edit_id:
             self.__current_renderer.disconnect(self.__edit_id)
         self.__current_renderer = self.__edit_id = None
