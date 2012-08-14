@@ -198,12 +198,12 @@ def size(filename):
     try: return os.path.getsize(filename)
     except OSError: return 0
 
-def mkdir(dir):
+def mkdir(dir, *args):
     """Make a directory, including all its parent directories. This does not
     raise an exception if the directory already exists (and is a
     directory)."""
     if not os.path.isdir(dir):
-        os.makedirs(dir)
+        os.makedirs(dir, *args)
 
 def escape(str):
     """Escape a string in a manner suitable for XML/Pango."""
@@ -659,6 +659,13 @@ def xdg_get_system_data_dirs():
         return map(os.path.abspath, data_dirs.split(":"))
     else:
         return ("/usr/local/share/", "/usr/share/")
+
+def xdg_get_cache_home():
+    data_home = os.getenv("XDG_CACHE_HOME")
+    if data_home:
+        return os.path.abspath(data_home)
+    else:
+        return os.path.join(os.path.expanduser("~"), ".cache")
 
 def xdg_get_data_home():
     data_home = os.getenv("XDG_DATA_HOME")

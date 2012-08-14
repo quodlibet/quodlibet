@@ -16,6 +16,7 @@ except ImportError:
 import gtk
 
 from quodlibet.util import mtime, fsnative, fsdecode, pathname2url
+from quodlibet.util import xdg_get_cache_home, mkdir
 from quodlibet.const import USERDIR
 
 def add_border(pixbuf, val, round=False):
@@ -95,10 +96,25 @@ def scale(pixbuf, boundary, scale_up=True, force_copy=False):
 
     return pixbuf.scale_simple(scale_w, scale_h, gtk.gdk.INTERP_BILINEAR)
 
+def get_thumbnail_folder():
+    """Returns a path to an existing folder"""
+
+    if os.name == "nt":
+        thumb_folder = os.path.join(USERDIR, "thumbnails")
+    else:
+        cache_folder = os.path.join(xdg_get_cache_home(), "thumbnails")
+        thumb_folder = os.path.expanduser('~/.thumbnails')
+        if os.path.exists(cache_folder) or not os.path.exists(thumb_folder):
+            thumb_folder = cache_folder
+
+    mkdir(thumb_folder, 0700)
+    return thumb_folder
+
 def get_thumbnail(path, boundary):
     """Get a thumbnail of an image. Will create/use a thumbnail in
     the user's thumbnail directory if possible. Follows the
-    Free Desktop specification. http://jens.triq.net/thumbnail-spec/"""
+    Free Desktop specification.
+    http://specifications.freedesktop.org/thumbnail-spec/"""
 
     width, height = boundary
 
@@ -108,15 +124,6 @@ def get_thumbnail(path, boundary):
         width > 256 or height > 256 or mtime(path) == 0:
         return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
 
-    if os.name == "nt":
-        thumb_folder = os.path.join(USERDIR, "thumbnails")
-    else:
-        thumb_folder = os.path.expanduser('~/.thumbnails')
-
-    if not os.path.exists(thumb_folder):
-        os.mkdir(thumb_folder)
-        os.chmod(thumb_folder, 0700)
-
     if width <= 128 and height <= 128:
         size_name = "normal"
         thumb_size = 128
@@ -124,11 +131,9 @@ def get_thumbnail(path, boundary):
         size_name = "large"
         thumb_size = 256
 
+    thumb_folder = get_thumbnail_folder()
     cache_dir = os.path.join(thumb_folder, size_name)
-
-    if not os.path.exists(cache_dir):
-        os.mkdir(cache_dir)
-        os.chmod(cache_dir, 0700)
+    mkdir(cache_dir, 0700)
 
     if isinstance(path, str): bytes = fsdecode(path).encode("utf-8")
     else: bytes = path.encode("utf-8")
