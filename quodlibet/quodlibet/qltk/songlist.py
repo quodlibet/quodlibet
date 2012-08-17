@@ -22,8 +22,8 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
+from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.util.uri import URI
-from quodlibet.qltk.playorder import ORDERS
 from quodlibet.formats._audio import TAG_TO_SORT, FILESYSTEM_TAGS, AudioFile
 from quodlibet.qltk.sortdialog import SortDialog
 from quodlibet.util import human_sort_key
@@ -88,140 +88,6 @@ class PlaylistMux(object):
     def unqueue(self, songs):
         map(self.q.remove, filter(None, map(self.q.find, songs)))
 
-class PlaylistModel(gtk.ListStore):
-    order = None
-    repeat = False
-    sourced = False
-    __iter = None
-    __old_value = None
-
-    __gsignals__ = {
-        'songs-set': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
-        }
-
-    def __init__(self):
-        super(PlaylistModel, self).__init__(object)
-        self.order = ORDERS[0](self)
-
-        # The playorder plugins use paths atm to remember songs so
-        # we need to reset them if the paths change somehow.
-        self.__sigs = []
-        for sig in ['row-deleted', 'row-inserted', 'rows-reordered']:
-            s = self.connect(sig, lambda pl, *x: self.order.reset(pl))
-            self.__sigs.append(s)
-
-    def set(self, songs):
-        oldsong = self.current
-        if oldsong is None: oldsong = self.__old_value
-        else: self.__old_value = oldsong
-        self.order.reset(self)
-        self.current_iter = None
-
-        # We just reset the order manually so block the signals
-        map(self.handler_block, self.__sigs)
-        print_d("Clearing model.", context=self)
-        self.clear()
-        print_d("Setting %d songs." % len(songs), context=self)
-        insert = self.insert
-        for song in reversed(songs):
-            iter = insert(0, (song,))
-            if song is oldsong:
-                self.current_iter = iter
-        if self.__iter is not None:
-            self.__old_value = None
-        print_d("Done filling model.", context=self)
-        map(self.handler_unblock, self.__sigs)
-        self.emit('songs-set')
-
-    def reverse(self):
-        if not len(self): return
-        self.order.reset(self)
-        map(self.handler_block, self.__sigs)
-        self.reorder(range(len(self)-1, -1, -1))
-        map(self.handler_unblock, self.__sigs)
-
-    def remove(self, iter):
-        if self.__iter and self[iter].path == self[self.__iter].path:
-            self.current_iter = None
-        super(PlaylistModel, self).remove(iter)
-
-    def get(self):
-        return [row[0] for row in self]
-
-    def get_current(self):
-        if self.__iter is None: return None
-        elif self.is_empty(): return None
-        else: return self[self.__iter][0]
-
-    current = property(get_current)
-
-    def get_current_path(self):
-        if self.__iter is None: return None
-        elif self.is_empty(): return None
-        else: return self[self.__iter].path
-    current_path = property(get_current_path)
-
-    def __set_current_iter(self, iter_):
-        # emit a row-changed for the previous and the new iter after it is set
-        # so that the currentcolumn icon gets updated on song changes
-        old_iter = self.current_iter
-        self.__iter = iter_
-        for iter_ in filter(None, (self.__iter, old_iter)):
-            self.row_changed(self.get_path(iter_), iter_)
-
-    def get_current_iter(self):
-        if self.__iter is None: return None
-        elif self.is_empty(): return None
-        else: return self.__iter
-    current_iter = property(get_current_iter, __set_current_iter)
-
-    def next(self):
-        self.current_iter = self.order.next_explicit(self, self.__iter)
-
-    def next_ended(self):
-        self.current_iter = self.order.next_implicit(self, self.__iter)
-
-    def previous(self):
-        self.current_iter = self.order.previous_explicit(self, self.__iter)
-
-    def go_to(self, song, explicit=False):
-        print_d("Told to go to %r" % getattr(song, "key", song))
-        self.current_iter = None
-        if isinstance(song, gtk.TreeIter):
-            self.current_iter = song
-            self.sourced = True
-        elif song is not None:
-            for row in self:
-                if row[0] == song:
-                    self.current_iter = row.iter
-                    print_d("Found song at %r" % row, context=self)
-                    self.sourced = True
-                    break
-            else:
-                print_d("Failed to find song", context=self)
-        if explicit:
-            self.current_iter = self.order.set_explicit(self, self.__iter)
-        else:
-            self.current_iter = self.order.set_implicit(self, self.__iter)
-        return self.__iter
-
-    def find(self, song):
-        for row in self:
-            if row[0] == song: return row.iter
-        return None
-
-    def find_all(self, songs):
-        return [row.iter for row in self if row[0] in songs]
-
-    def __contains__(self, song):
-        return bool(self.find(song))
-
-    def is_empty(self):
-        return not len(self)
-
-    def reset(self):
-        self.go_to(None)
-        self.order.reset(self)
 
 class SongList(AllTreeView, util.InstanceTracker):
     # A TreeView containing a list of songs.
@@ -243,7 +109,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             return True
 
         def _cdf(self, column, cell, model, iter, tag):
-            text = model[iter][0].comma(tag)
+            text = model.get_value(iter, 0).comma(tag)
             if not self._needs_update(text): return
             cell.set_property('text', text)
             self._update_layout(text, cell)
@@ -292,7 +158,7 @@ class SongList(AllTreeView, util.InstanceTracker):
     class DateColumn(TextColumn):
         # The '~#' keys that are dates.
         def _cdf(self, column, cell, model, iter, tag):
-            stamp = model[iter][0](tag)
+            stamp = model.get_value(iter, 0)(tag)
             if not self._needs_update(stamp): return
             if not stamp:
                 cell.set_property('text', _("Never"))
@@ -322,11 +188,12 @@ class SongList(AllTreeView, util.InstanceTracker):
         # Render ~#rating directly (simplifies filtering, saves
         # a function call).
         def _cdf(self, column, cell, model, iter, tag):
-                value = model[iter][0].get("~#rating", const.DEFAULT_RATING)
-                if not self._needs_update(value): return
-                cell.set_property('text', util.format_rating(value))
-                # No need to update layout, we know this width at
-                # at startup.
+            song = model.get_value(iter, 0)
+            value = song.get("~#rating", const.DEFAULT_RATING)
+            if not self._needs_update(value): return
+            cell.set_property('text', util.format_rating(value))
+            # No need to update layout, we know this width at
+            # at startup.
 
         def __init__(self):
             super(SongList.RatingColumn, self).__init__("~#rating")
@@ -338,7 +205,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         # Optimize for non-synthesized keys by grabbing them directly.
         # Used for any tag without a '~' except 'title'.
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].get(tag, "")
+            value = model.get_value(iter, 0).get(tag, "")
             if not self._needs_update(value): return
             cell.set_property('text', value.replace("\n", ", "))
 
@@ -346,14 +213,14 @@ class SongList(AllTreeView, util.InstanceTracker):
         # Contains text in the filesystem encoding, so needs to be
         # decoded safely (and also more slowly).
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].comma(tag)
+            value = model.get_value(iter, 0).comma(tag)
             if not self._needs_update(value): return
             cell.set_property('text', util.unexpand(util.fsdecode(value)))
 
     class NumericColumn(TextColumn):
         # Any '~#' keys except dates.
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].comma(tag)
+            value = model.get_value(iter, 0).comma(tag)
             if not self._needs_update(value): return
             text = unicode(value)
             cell.set_property('text', text)
@@ -366,7 +233,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     class LengthColumn(NumericColumn):
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].get("~#length", 0)
+            value = model.get_value(iter, 0).get("~#length", 0)
             if not self._needs_update(value): return
             text = util.format_time(value)
             cell.set_property('text', text)
@@ -376,7 +243,7 @@ class SongList(AllTreeView, util.InstanceTracker):
 
     class FilesizeColumn(NumericColumn):
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].get("~#filesize", 0)
+            value = model.get_value(iter, 0).get("~#filesize", 0)
             if not self._needs_update(value): return
             text = util.format_size(value)
             cell.set_property('text', text)
@@ -435,11 +302,11 @@ class SongList(AllTreeView, util.InstanceTracker):
     def __init__(self, library, player=None, update=False):
         super(SongList, self).__init__()
         self._register_instance(SongList)
+        self.set_fixed_height_mode(True)
         self.set_model(PlaylistModel())
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        self.set_fixed_height_mode(True)
         self.__csig = self.connect('columns-changed', self.__columns_changed)
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
@@ -469,6 +336,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.connect('drag-leave', self.__drag_leave)
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('drag-data-received', self.__drag_data_received, library)
+        self.connect('drag-data-delete', self.__drag_data_delete)
 
         self.set_search_equal_func(self.__search_func)
 
@@ -636,8 +504,7 @@ class SongList(AllTreeView, util.InstanceTracker):
             return True
 
     def __drag_data_delete(self, view, ctx):
-        map(view.get_model(), self.__drag_iters)
-        self.__drag_iters = []
+        view.stop_emission('drag_data_delete')
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
@@ -668,6 +535,8 @@ class SongList(AllTreeView, util.InstanceTracker):
         else: return False
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
+        view.stop_emission('drag_data_received')
+
         model = view.get_model()
         if info == 1:
             filenames = sel.data.split("\x00")
@@ -905,8 +774,8 @@ class SongList(AllTreeView, util.InstanceTracker):
         self.set_search_column(0)
 
     def get_songs(self):
-        try: return self.get_model().get()
-        except AttributeError: return [] # model is None
+        model = self.get_model()
+        return (model and model.get_songs()) or []
 
     def __get_sort_tag(self, tag):
         replace_order = {
@@ -993,7 +862,7 @@ class SongList(AllTreeView, util.InstanceTracker):
         sorts = map(gtk.TreeViewColumn.get_sort_indicator, self.get_columns())
         print_d("Detaching model.", context=self)
         self.set_model(None)
-        model.set(songs)
+        model.set_songs(songs)
         print_d("Attaching model.", context=self)
         self.set_model(model)
         print_d("Model attached.", context=self)
