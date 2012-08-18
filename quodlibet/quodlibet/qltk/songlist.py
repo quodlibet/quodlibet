@@ -1,4 +1,5 @@
 # Copyright 2005 Joe Wreschnig
+#           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -20,7 +21,7 @@ from quodlibet import util
 from quodlibet.parse import Query, Pattern
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
-from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.util.uri import URI
 from quodlibet.qltk.playorder import ORDERS
@@ -223,7 +224,7 @@ class PlaylistModel(gtk.ListStore):
         self.go_to(None)
         self.order.reset(self)
 
-class SongList(AllTreeView, util.InstanceTracker):
+class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     # A TreeView containing a list of songs.
 
     headers = [] # The list of current headers.
@@ -482,12 +483,6 @@ class SongList(AllTreeView, util.InstanceTracker):
 
         self.connect('destroy', self.__destroy)
 
-        self.__scroll_delay = None
-        self.__scroll_periodic = None
-        self.__scroll_args = (0, 0, 0, 0)
-        self.__scroll_length = 0
-        self.__scroll_last = None
-
     def __destroy(self, *args):
         self.handler_block(self.__csig)
         map(self.remove_column, self.get_columns())
@@ -517,115 +512,14 @@ class SongList(AllTreeView, util.InstanceTracker):
             gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         self.drag_dest_unset()
 
-    def __enable_scroll(self):
-        """Start scrolling if it hasn't already"""
-        if self.__scroll_periodic is not None or \
-            self.__scroll_delay is not None:
-            return
-
-        def periodic_scroll():
-            """Get the tree coords for 0,0 and scroll from there"""
-            wx, wy, dist, ref = self.__scroll_args
-            x, y = self.widget_to_tree_coords(0, 0)
-
-            # We reached an end, stop
-            if self.__scroll_last == y:
-                self.__disable_scroll()
-                return
-            self.__scroll_last = y
-
-            # If we went full speed for a while.. speed up
-            # .. every number is made up here
-            if self.__scroll_length >= 50 * ref:
-                dist *= self.__scroll_length / (ref * 10)
-            if self.__scroll_length < 2000 * ref:
-                self.__scroll_length += abs(dist)
-
-            self.scroll_to_point(-1, y + dist)
-            self.__drag_set_dest(wx, wy)
-            # we have to readd the timeout.. otherwise they could add up
-            # because scroll can last longer than 50ms
-            gobject.source_remove(self.__scroll_periodic)
-            enable_periodic_scroll()
-
-        def enable_periodic_scroll():
-            self.__scroll_periodic = gobject.timeout_add(50, periodic_scroll)
-
-        self.__scroll_delay = gobject.timeout_add(350, enable_periodic_scroll)
-
-    def __disable_scroll(self):
-        if self.__scroll_periodic is not None:
-            gobject.source_remove(self.__scroll_periodic)
-            self.__scroll_periodic = None
-        if self.__scroll_delay is not None:
-            gobject.source_remove(self.__scroll_delay)
-            self.__scroll_delay = None
-        self.__scroll_length = 0
-        self.__scroll_last = None
-
-    def __scroll_motion(self, x, y):
-        # TODO: move it views so every treeview can use it
-        visible_rect = self.get_visible_rect()
-        if visible_rect is None:
-            self.__disable_scroll()
-            return
-
-        # I guess the bin to visible_rect difference is the header height
-        # but this could be wrong
-        start = self.get_bin_window().get_geometry()[1] - 1
-        end = visible_rect.height + start
-
-        # Get the font height as size reference
-        reference = self.create_pango_layout("").get_pixel_size()[1]
-
-        # If the drag is in the scroll area, adjust the speed
-        scroll_offset = int(reference * 3)
-        in_upper_scroll = (start < y < start + scroll_offset)
-        in_lower_scroll = (y > end - scroll_offset)
-
-        # thanks TI200
-        accel = lambda x: int(1.1**(x*12/reference)) - (x/reference)
-        if in_lower_scroll:
-            diff = accel(y - end + scroll_offset)
-        elif in_upper_scroll:
-            diff = - accel(start + scroll_offset - y)
-        else:
-            self.__disable_scroll()
-            return
-
-        # The area where we can go to full speed
-        full_offset = int(reference * 0.8)
-        in_upper_full = (start < y < start + full_offset)
-        in_lower_full = (y > end - full_offset)
-        if not in_upper_full and not in_lower_full:
-            self.__scroll_length = 0
-
-        # For the periodic scroll function
-        self.__scroll_args = (x, y, diff, reference)
-
-        # The area to trigger a scroll is a bit smaller
-        trigger_offset = int(reference * 2.5)
-        in_upper_trigger = (start < y < start + trigger_offset)
-        in_lower_trigger = (y > end - trigger_offset)
-
-        if in_upper_trigger or in_lower_trigger:
-            self.__enable_scroll()
-
     def __drag_leave(self, widget, ctx, time):
         widget.parent.drag_unhighlight()
-        self.__disable_scroll()
-
-    def __drag_set_dest(self, x, y):
-        try: self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
-        except TypeError:
-            if len(self.get_model()) == 0: path = 0
-            else: path = len(self.get_model()) - 1
-            self.set_drag_dest_row(path, gtk.TREE_VIEW_DROP_AFTER)
+        self.scroll_disable()
 
     def __drag_motion(self, view, ctx, x, y, time):
         if self.__drop_by_row:
-            self.__drag_set_dest(x, y)
-            self.__scroll_motion(x, y)
+            self.set_drag_dest(x, y)
+            self.scroll_motion(x, y)
             if ctx.get_source_widget() == self: kind = gtk.gdk.ACTION_MOVE
             else: kind = gtk.gdk.ACTION_COPY
             ctx.drag_status(kind, time)
@@ -634,10 +528,6 @@ class SongList(AllTreeView, util.InstanceTracker):
             self.parent.drag_highlight()
             ctx.drag_status(gtk.gdk.ACTION_COPY, time)
             return True
-
-    def __drag_data_delete(self, view, ctx):
-        map(view.get_model(), self.__drag_iters)
-        self.__drag_iters = []
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()

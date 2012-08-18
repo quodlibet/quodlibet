@@ -1,4 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -241,6 +242,119 @@ class TreeViewHints(gtk.Window):
     def do_leave_notify_event(self, event): return self.__event(event)
     def do_scroll_event(self, event): return self.__event(event)
 
+
+class DragScroll(object):
+    """A treeview mixin for smooth drag and scroll (needs BaseView).
+
+    Call scroll_motion in the 'drag-motion' handler and
+    scroll_disable in the 'drag-leave' handler.
+
+    """
+
+    __scroll_delay = None
+    __scroll_periodic = None
+    __scroll_args = (0, 0, 0, 0)
+    __scroll_length = 0
+    __scroll_last = None
+
+    def __enable_scroll(self):
+        """Start scrolling if it hasn't already"""
+        if self.__scroll_periodic is not None or \
+            self.__scroll_delay is not None:
+            return
+
+        def periodic_scroll():
+            """Get the tree coords for 0,0 and scroll from there"""
+            wx, wy, dist, ref = self.__scroll_args
+            x, y = self.widget_to_tree_coords(0, 0)
+
+            # We reached an end, stop
+            if self.__scroll_last == y:
+                self.scroll_disable()
+                return
+            self.__scroll_last = y
+
+            # If we went full speed for a while.. speed up
+            # .. every number is made up here
+            if self.__scroll_length >= 50 * ref:
+                dist *= self.__scroll_length / (ref * 10)
+            if self.__scroll_length < 2000 * ref:
+                self.__scroll_length += abs(dist)
+
+            self.scroll_to_point(-1, y + dist)
+            self.set_drag_dest(wx, wy)
+            # we have to re-add the timeout.. otherwise they could add up
+            # because scroll can last longer than 50ms
+            gobject.source_remove(self.__scroll_periodic)
+            enable_periodic_scroll()
+
+        def enable_periodic_scroll():
+            self.__scroll_periodic = gobject.timeout_add(50, periodic_scroll)
+
+        self.__scroll_delay = gobject.timeout_add(350, enable_periodic_scroll)
+
+    def scroll_disable(self):
+        """Disable all scrolling"""
+        if self.__scroll_periodic is not None:
+            gobject.source_remove(self.__scroll_periodic)
+            self.__scroll_periodic = None
+        if self.__scroll_delay is not None:
+            gobject.source_remove(self.__scroll_delay)
+            self.__scroll_delay = None
+        self.__scroll_length = 0
+        self.__scroll_last = None
+
+    def scroll_motion(self, x, y):
+        """Call with current widget coords during a dnd action to update
+           scrolling speed"""
+
+        visible_rect = self.get_visible_rect()
+        if visible_rect is None:
+            self.scroll_disable()
+            return
+
+        # I guess the bin to visible_rect difference is the header height
+        # but this could be wrong
+        start = self.get_bin_window().get_geometry()[1] - 1
+        end = visible_rect.height + start
+
+        # Get the font height as size reference
+        reference = self.create_pango_layout("").get_pixel_size()[1]
+
+        # If the drag is in the scroll area, adjust the speed
+        scroll_offset = int(reference * 3)
+        in_upper_scroll = (start < y < start + scroll_offset)
+        in_lower_scroll = (y > end - scroll_offset)
+
+        # thanks TI200
+        accel = lambda x: int(1.1**(x*12/reference)) - (x/reference)
+        if in_lower_scroll:
+            diff = accel(y - end + scroll_offset)
+        elif in_upper_scroll:
+            diff = - accel(start + scroll_offset - y)
+        else:
+            self.scroll_disable()
+            return
+
+        # The area where we can go to full speed
+        full_offset = int(reference * 0.8)
+        in_upper_full = (start < y < start + full_offset)
+        in_lower_full = (y > end - full_offset)
+        if not in_upper_full and not in_lower_full:
+            self.__scroll_length = 0
+
+        # For the periodic scroll function
+        self.__scroll_args = (x, y, diff, reference)
+
+        # The area to trigger a scroll is a bit smaller
+        trigger_offset = int(reference * 2.5)
+        in_upper_trigger = (start < y < start + trigger_offset)
+        in_lower_trigger = (y > end - trigger_offset)
+
+        if in_upper_trigger or in_lower_trigger:
+            self.__enable_scroll()
+
+
 class BaseView(gtk.TreeView):
     def remove_paths(self, paths):
         """Remove rows and restore the selection if it got removed"""
@@ -289,6 +403,19 @@ class BaseView(gtk.TreeView):
                 if one:
                     break
         return not first
+
+    def set_drag_dest(self, x, y):
+        """Sets a drag destination for widget coords"""
+
+        dest_row = self.get_dest_row_at_pos(x, y)
+        if dest_row is None:
+            rows = len(self.get_model())
+            if not rows:
+                (self.get_parent() or self).drag_highlight()
+            else:
+                self.set_drag_dest_row(rows - 1, gtk.TREE_VIEW_DROP_AFTER)
+        else:
+            self.set_drag_dest_row(*dest_row)
 
     def __remove_iters(self, iters, force_restore=False):
         if not iters: return
