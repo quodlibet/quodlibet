@@ -38,7 +38,8 @@ from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
-from quodlibet.qltk.songlist import SongList, PlaylistMux
+from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RPaned
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
