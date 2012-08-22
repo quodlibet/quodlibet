@@ -6,7 +6,7 @@ from tests import TestCase, add
 from tests.plugin import PluginTestCase, import_plugin
 
 # Allow some debugging
-const.DEBUG = True
+const.DEBUG = False
 
 # Import our module in a way that mirrors would-be packaging
 randomalbum = import_plugin("events", "randomalbum")

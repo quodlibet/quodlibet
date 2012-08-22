@@ -187,7 +187,8 @@ class PlayOrder(gtk.ComboBox):
         self.add_attribute(cell, 'text', 0)
 
         self.__plugins = []
-        PluginManager.instance.register_handler(self)
+        if PluginManager.instance:
+            PluginManager.instance.register_handler(self)
 
         self.refresh()
         self.__sig = self.connect_object(
