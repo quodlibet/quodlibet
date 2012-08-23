@@ -489,8 +489,8 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
             if name == "URLs":
                 return [self.__song("~uri")]
             elif name == "MIMEType":
-                # FIXME
-                return "audio/mpeg"
+                mimes = self.__song.mimes
+                return mimes and mimes[0]
 
 
 class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
