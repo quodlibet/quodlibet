@@ -14,6 +14,7 @@ except (ImportError, OSError):
 
 class MPCFile(APEv2File):
     format = "Musepack"
+    mimes = ["audio/x-musepack", "audio/x-mpc"]
 
     def __init__(self, filename):
         audio = Musepack(filename)
@@ -40,3 +41,4 @@ class MPCFile(APEv2File):
         self.sanitize(filename)
 
 info = MPCFile
+types = [MPCFile]

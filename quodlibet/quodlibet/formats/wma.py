@@ -17,6 +17,8 @@ except ImportError:
 
 class WMAFile(AudioFile):
     multiple_values = False
+    mimes = ["audio/x-ms-wma", "audio/x-ms-wmv", "video/x-ms-asf",
+             "audio/x-wma", "video/x-wmv"]
     format = "Windows Media Audio"
 
     #http://msdn.microsoft.com/en-us/library/dd743066%28VS.85%29.aspx
@@ -134,3 +136,4 @@ def unpack_image(data):
     return (mime.decode("utf-16-le"), image_data, type)
 
 info = WMAFile
+types = [WMAFile]

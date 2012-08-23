@@ -66,6 +66,7 @@ class AudioFile(dict):
     multiple_values = True
 
     format = "Unknown Audio File"
+    mimes = []
 
     @util.cached_property
     def __song_key(self):

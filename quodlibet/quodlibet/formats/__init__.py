@@ -21,6 +21,7 @@ else: glob_pattern = "[!_]*.py"
 modules = [splitext(f)[0] for f in glob(join(base, glob_pattern))]
 modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in set(modules)]
 
+mimes = set()
 _infos = {}
 for i, name in enumerate(modules):
     try: format = __import__(name, {}, {}, self)
@@ -30,6 +31,8 @@ for i, name in enumerate(modules):
     format = __import__(name, {}, {}, self)
     for ext in format.extensions:
         _infos[ext] = format.info
+    for type_ in format.types:
+        mimes.update(type_.mimes)
     # Migrate pre-0.16 library, which was using an undocumented "feature".
     sys.modules[name.replace(".", "/")] = format
     if name and name.startswith("quodlibet."):

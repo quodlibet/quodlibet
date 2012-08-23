@@ -1,4 +1,4 @@
-# Copyright 2010 Christoph Reiter <christoph.reiter@gmx.at>
+# Copyright 2010,2012 Christoph Reiter <christoph.reiter@gmx.at>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -19,7 +19,7 @@ from quodlibet.widgets import main as window
 from quodlibet.library import librarian
 from quodlibet.plugins.events import EventPlugin
 
-# TODO: OpenUri, UriSchemes, Mimetypes, CanXYZ
+# TODO: OpenUri, CanXYZ
 # Date parsing (util?)
 
 # python dbus bindings don't include annotations and properties
@@ -527,17 +527,21 @@ class MPRIS2Object(MPRISObject):
     def __get_position(self):
         return long(player.get_position()*1000)
 
-    __root_interface = "org.mpris.MediaPlayer2"
-    __root_props = {
-        "CanQuit": (True, None),
-        "CanRaise": (True, None),
-        "HasTrackList": (False, None),
-        "Identity": ("Quod Libet", None),
-        "DesktopEntry": ("quodlibet", None),
-        "SupportedUriSchemes": (dbus.Array(signature="s"), None),
-        "SupportedMimeTypes": (dbus.Array(signature="s"), None)
-    }
+    def __get_uri_schemes(self):
+        from quodlibet.player import backend
+        can = lambda s: backend.can_play_uri("%s://fake" % s)
+        array = dbus.Array(signature="s")
+        # TODO: enable once OpenUri is done
+        # array.extend(filter(can, ["http", "https", "ftp", "file", "mms"]))
+        return array
 
+    def __get_mime_types(self):
+        from quodlibet import formats
+        array = dbus.Array(signature="s")
+        array.extend(formats.mimes)
+        return array
+
+    __root_interface = "org.mpris.MediaPlayer2"
     __player_interface = "org.mpris.MediaPlayer2.Player"
 
     def __init__(self):
@@ -561,6 +565,16 @@ class MPRIS2Object(MPRISObject):
             "CanPause": (True, None),
             "CanSeek": (True, None),
             "CanControl": (True, None),
+        }
+
+        self.__root_props = {
+            "CanQuit": (True, None),
+            "CanRaise": (True, None),
+            "HasTrackList": (False, None),
+            "Identity": ("Quod Libet", None),
+            "DesktopEntry": ("quodlibet", None),
+            "SupportedUriSchemes": (self.__get_uri_schemes, None),
+            "SupportedMimeTypes": (self.__get_mime_types, None)
         }
 
         self.__prop_mapping = {

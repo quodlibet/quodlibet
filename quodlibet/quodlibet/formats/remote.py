@@ -36,3 +36,4 @@ class RemoteFile(AudioFile):
     key = property(lambda self: self["~uri"])
 
 info = RemoteFile
+types = [RemoteFile]

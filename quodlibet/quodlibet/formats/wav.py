@@ -13,6 +13,7 @@ extensions = [".wav"]
 
 class WAVEFile(AudioFile):
     format = "WAVE"
+    mimes = ["audio/wav", "audio/x-wav", "audio/wave"]
 
     def __init__(self, filename):
         f = wave.open(filename, "rb")
@@ -31,3 +32,4 @@ class WAVEFile(AudioFile):
         else: return k == "artist"
 
 info = WAVEFile
+types =[WAVEFile]

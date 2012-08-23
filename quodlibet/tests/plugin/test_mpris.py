@@ -109,7 +109,7 @@ class TMPRIS(PluginTestCase):
         self.failUnlessEqual(self._wait()[0], [])
 
         self._prop().Get(piface, "SupportedMimeTypes", **args)
-        self.failUnlessEqual(self._wait()[0], [])
+        self.failUnless("audio/vorbis" in self._wait()[0])
 
     def test_player(self):
         args = {"reply_handler": self._reply, "error_handler": self._error}

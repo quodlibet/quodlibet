@@ -22,3 +22,4 @@ class MonkeysAudioFile(APEv2File):
         self.sanitize(filename)
 
 info = MonkeysAudioFile
+types = [MonkeysAudioFile]

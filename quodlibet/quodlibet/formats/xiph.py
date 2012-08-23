@@ -206,26 +206,32 @@ except ImportError: ID3 = None
 
 class OggFile(MutagenVCFile):
     format = "Ogg Vorbis"
+    mimes = ["audio/vorbis", "audio/ogg; codecs=vorbis"]
     MutagenType = OggVorbis
 
 class OggFLACFile(MutagenVCFile):
     format = "Ogg FLAC"
+    mimes = ["audio/x-oggflac","audio/ogg; codecs=flac"]
     MutagenType = OggFLAC
 
 class OggSpeexFile(MutagenVCFile):
     format = "Ogg Speex"
+    mimes = ["audio/x-speex", "audio/ogg; codecs=speex"]
     MutagenType = OggSpeex
 
 class OggTheoraFile(MutagenVCFile):
     format = "Ogg Theora"
+    mimes = ["video/x-theora", "video/ogg; codecs=theora"]
     MutagenType = OggTheora
 
 class OggOpusFile(MutagenVCFile):
     format = "Ogg Opus"
+    mimes = ["audio/ogg; codecs=opus"]
     MutagenType = OggOpus
 
 class FLACFile(MutagenVCFile):
     format = "FLAC"
+    mimes = ["audio/x-flac", "application/x-flac"]
     MutagenType = FLAC
 
     def __init__(self, filename, audio=None):
@@ -262,6 +268,11 @@ class FLACFile(MutagenVCFile):
         if ID3 is not None:
             ID3().delete(filename=self["~filename"])
         super(FLACFile, self).write()
+
+types = []
+for var in globals().values():
+    if getattr(var, 'MutagenType', None):
+        types.append(var)
 
 def info(filename):
     try: audio = mutagen.File(filename, options = ogg_formats)

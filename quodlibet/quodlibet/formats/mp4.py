@@ -20,6 +20,7 @@ except ImportError:
 class MP4File(AudioFile):
     multiple_values = False
     format = "MPEG-4 AAC"
+    mimes = ["audio/mp4", "audio/x-m4a", "audio/mpeg4", "audio/aac"]
 
     __translate = {
         "\xa9nam": "title",
@@ -131,3 +132,4 @@ class MP4File(AudioFile):
                 return None
 
 info = MP4File
+types = [MP4File]

@@ -14,6 +14,7 @@ except ImportError:
 
 class WavpackFile(APEv2File):
     format = "WavPack"
+    mimes = ["audio/x-wavpack"]
     
     def __init__(self, filename):
         audio = WavPack(filename)
@@ -22,3 +23,4 @@ class WavpackFile(APEv2File):
         self.sanitize(filename)
 
 info = WavpackFile
+types = [WavpackFile]

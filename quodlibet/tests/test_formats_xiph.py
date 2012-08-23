@@ -174,6 +174,9 @@ class TFLACFile(TVCFile):
         shutil.copy(os.path.join('tests', 'data', 'empty.flac'), self.filename)
         self.song = FLACFile(self.filename)
 
+    def test_mime(self):
+        self.failUnless(self.song.mimes)
+
     def test_save_empty(self):
         self.song.write()
         flac = FLAC(self.filename)

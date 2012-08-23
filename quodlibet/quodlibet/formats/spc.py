@@ -29,3 +29,4 @@ class SPCFile(AudioFile):
         else: return k == "artist"
 
 info = SPCFile
+types = [SPCFile]
