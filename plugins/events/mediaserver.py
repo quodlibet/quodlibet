@@ -4,7 +4,6 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-import re
 import tempfile
 
 import gtk
@@ -15,11 +14,12 @@ import dbus.glib
 
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import Pattern
-from quodlibet import util
 from quodlibet.util.uri import URI
+from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
 BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
+
 
 class MediaServer(EventPlugin):
     PLUGIN_ID = "mediaserver"
@@ -43,209 +43,6 @@ class MediaServer(EventPlugin):
         for obj in self.objects:
             obj.remove_from_connection()
         self.objects = []
-
-
-class DBusIntrospectable(object):
-    """Simply collects all introspection data from other mixins
-    and provides the Introspect DBus method returning all combined.
-
-    All classes need to call set_introspection with their interface
-    and provided signals, properties, methods in the introspection
-    xml format.
-
-    The dbus bindings allready provide a Introspect method, but it doesn't
-    understand properties, also having them in text format in the class
-    is a nice documentation.
-    """
-
-    IFACE = "org.freedesktop.DBus.Introspectable"
-    ISPEC = """
-<method name="Introspect">
-    <arg type="s" name="xml_data" direction="out"/>
-</method>
-"""
-
-    def __init__(self):
-        self.__ispec = {}
-        self.set_introspection(DBusIntrospectable.IFACE,
-                               DBusIntrospectable.ISPEC)
-
-    def set_introspection(self, interface, introspection):
-        self.__ispec.setdefault(interface, []).append(introspection)
-
-    @dbus.service.method(IFACE)
-    def Introspect(self):
-        parts = []
-        parts.append("<node>")
-        for iface, intros in self.__ispec.iteritems():
-            parts.append("<interface name=\"%s\">" % iface)
-            parts.extend(intros)
-            parts.append("</interface>")
-        parts.append("</node>")
-        return "\n".join(parts)
-
-
-class DBusProperty(object):
-    """A mixin for dbus.Object classes to support dbus properties.
-
-    Each property needs to be registered using register_property, and
-    interfaces that implement other ones need to tell that by
-    calling implement_interface.
-
-    The class needs to provide get/set_property.
-
-    In case the base Object is a FallbackObject, get/set also need to handle
-    an additional realtive path parameter.
-
-    Whenever a property changes emit_properties_changed/invalidated need
-    to be called. In case of FallbackObject, with a relative path to
-    the real object (defaults to the main one).
-    """
-
-    IFACE = "org.freedesktop.DBus.Properties"
-    ISPEC = """
-<method name="Get">
-    <arg type="s" name="interface_name" direction="in"/>
-    <arg type="s" name="property_name" direction="in"/>
-    <arg type="v" name="value" direction="out"/>
-</method>
-<method name="GetAll">
-    <arg type="s" name="interface_name" direction="in"/>
-    <arg type="a{sv}" name="properties" direction="out"/>
-</method>
-<method name="Set">
-    <arg type="s" name="interface_name" direction="in"/>
-    <arg type="s" name="property_name" direction="in"/>
-    <arg type="v" name="value" direction="in"/>
-</method>
-<signal name="PropertiesChanged">
-    <arg type="s" name="interface_name"/>
-    <arg type="a{sv}" name="changed_properties"/>
-    <arg type="as" name="invalidated_properties"/>
-</signal>"""
-
-    def __init__(self):
-        self.__props = {}
-        self.__impl = {}
-        self.set_introspection(DBusProperty.IFACE, DBusProperty.ISPEC)
-
-    def set_property_introspection(self, interface, ispec):
-        """Set introspection for all registered proerties only"""
-        reg = re.compile("name\s*=\s*[\"'](.*?)[\"']").search
-        props = self.__props[interface]
-        spec = ispec.splitlines()
-        spec = filter(lambda l: reg(l) and reg(l).group(1) in props, spec)
-        self.set_introspection(interface, "\n".join(spec))
-
-    def get_properties(self, interface):
-        """Returns a list of (interface, property) for all properties of
-        the specified interface and subinterfaces"""
-
-        result = [(interface, p) for p in self.__props[interface]]
-        for sub in self.__impl[interface]:
-            result.extend(self.get_properties(sub))
-        return result
-
-    def get_value(self, interface, prop, path="/"):
-        """Returns the value of a property"""
-        interface = self.get_interface(interface, prop)
-        if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
-            return self.get_property(interface, prop, path)
-        else:
-            return self.get_property(interface, prop)
-
-    def get_interface(self, interface, prop):
-        """Returns the real interface that implements the property"""
-
-        if prop in self.__props[interface]:
-            return interface
-        for sub in self.__impl[interface]:
-            if self.get_interface(sub, prop):
-                return sub
-
-    def register_property(self, interface, name):
-        """Register a property on an interface"""
-
-        self.__props.setdefault(interface, []).append(name)
-        self.__impl.setdefault(interface, [])
-
-    def implement_interface(self, iface, sub_iface):
-        """Set a sub interface. All actions on that interface
-        will check the sub interface in case the property is not
-        found."""
-
-        self.__props.setdefault(iface, [])
-        self.__props.setdefault(sub_iface, [])
-        self.__impl.setdefault(iface, []).append(sub_iface)
-
-    def emit_properties_changed(self, interface, props, path="/"):
-        """Emits PropertiesChanged with the new values of the specified
-        properties."""
-
-        combos = {}
-        for prop in props:
-            iface = self.get_interface(interface, prop)
-            combos.setdefault(iface, []).append(prop)
-
-        for iface, props in combos.iteritems():
-            new_values = {}
-            for prop in props:
-                if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
-                    new_values[prop] = self.get_property(iface, prop, path)
-                else:
-                    new_values[prop] = self.get_property(iface, prop)
-
-            if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
-                self.PropertiesChanged(iface, new_values, [], rel=path)
-            else:
-                self.PropertiesChanged(iface, new_values, [])
-
-    def emit_properties_invalidate(self, interface, props, path="/"):
-        """Emits PropertiesChanged with a list of properties
-        that are no longer valid and need to be updated."""
-
-        combos = {}
-        for prop in props:
-            iface = self.get_interface(interface, prop)
-            combos.setdefault(iface, []).append(prop)
-
-        for iface, props in combos.iteritems():
-            if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
-                self.PropertiesChanged(iface, {}, [props], rel=path)
-            else:
-                self.PropertiesChanged(iface, {}, [props])
-
-    @dbus.service.method(dbus_interface=IFACE, in_signature="ss",
-                         out_signature="v", rel_path_keyword="path")
-    def Get(self, interface, prop, path):
-        interface = self.get_interface(interface, prop)
-        if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
-            return self.get_property(interface, prop, path)
-        return self.get_property(interface, prop)
-
-    @dbus.service.method(dbus_interface=IFACE, in_signature="ssv",
-                         out_signature="", rel_path_keyword="path")
-    def Set(self, interface, prop, value, path):
-        interface = self.get_interface(interface, prop)
-        if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
-            self.set_property(interface, prop, value, path)
-        else:
-            self.set_property(interface, prop, value)
-
-    @dbus.service.method(dbus_interface=IFACE, in_signature="s",
-                         out_signature="a{sv}", rel_path_keyword="path")
-    def GetAll(self, interface, path):
-        values = {}
-        for iface, prop in self.get_properties(interface):
-            if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
-                values[prop] = self.get_property(iface, prop, path)
-            else:
-                values[prop] = self.get_property(iface, prop)
-        return values
-
-    @dbus.service.signal(IFACE, signature="sa{sv}as", rel_path_keyword="rel")
-    def PropertiesChanged(self, interface, changed, invalidated, rel=""):
-        pass
 
 
 class DBusPropertyFilter(DBusProperty):
@@ -308,10 +105,8 @@ class MediaContainer(object):
 
         props = ["ChildCount", "ItemCount", "ContainerCount", "Searchable"]
         props += list(optional)
-        for p in props:
-            self.register_property(MediaContainer.IFACE, p)
-        self.set_property_introspection(MediaContainer.IFACE,
-                                        MediaContainer.ISPEC_PROP)
+        self.set_properties(MediaContainer.IFACE, MediaContainer.ISPEC_PROP,
+                            wl=props)
 
         self.implement_interface(MediaContainer.IFACE, MediaObject.IFACE)
 
@@ -360,9 +155,7 @@ class MediaObject(object):
     parent = None
 
     def __init__(self, parent=None):
-        self.set_introspection(MediaObject.IFACE, MediaObject.ISPEC)
-        for p in ["Parent", "Type", "Path", "DisplayName"]:
-            self.register_property(MediaObject.IFACE, p)
+        self.set_properties(MediaObject.IFACE, MediaObject.ISPEC)
         self.parent = parent or self
 
 
@@ -378,11 +171,9 @@ class MediaItem(object):
 """
 
     def __init__(self, optional=tuple()):
-        for p in ["URLs", "MIMEType"] + list(optional):
-            self.register_property(MediaItem.IFACE, p)
-
+        props = ["URLs", "MIMEType"] + list(optional)
+        self.set_properties(MediaItem.IFACE, MediaItem.ISPEC, wl=props)
         self.implement_interface(MediaItem.IFACE, MediaObject.IFACE)
-        self.set_property_introspection(MediaItem.IFACE, MediaItem.ISPEC)
 
 
 class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
