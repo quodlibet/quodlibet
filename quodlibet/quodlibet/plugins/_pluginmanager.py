@@ -221,12 +221,18 @@ class PluginManager(object):
             self.__enabled.discard(plugin.PLUGIN_ID)
             instance = self.__instance.get(plugin)
             if instance and hasattr(instance, "disabled"):
-                instance.disabled()
+                try:
+                    instance.disabled()
+                except Exception:
+                    util.print_exc()
         else:
             print_d("Enable %r" % plugin.PLUGIN_ID)
             obj = self.get_instance(plugin)
             if obj and hasattr(obj, "enabled"):
-                obj.enabled()
+                try:
+                    obj.enabled()
+                except Exception:
+                    util.print_exc()
             for handler in self.__handlers[plugin]:
                 handler.plugin_enable(plugin, obj)
             self.__enabled.add(plugin.PLUGIN_ID)
