@@ -612,15 +612,11 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
                 can = lambda s: False
                 # from quodlibet.player import backend
                 #can = lambda s: backend.can_play_uri("%s://fake" % s)
-                array = dbus.Array(signature="s")
                 schemes = ["http", "https", "ftp", "file", "mms"]
-                array.extend(filter(can, schemes))
-                return array
+                return filter(can, schemes)
             elif name == "SupportedMimeTypes":
                 from quodlibet import formats
-                array = dbus.Array(signature="s")
-                array.extend(formats.mimes)
-                return array
+                return formats.mimes
         elif interface == self.PLAYER_IFACE:
             if name == "PlaybackStatus":
                 paused = player.paused
@@ -637,9 +633,9 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
             elif name == "Metadata":
                 return self.__get_metadata()
             elif name == "Volume":
-                return float(player.volume)
+                return player.volume
             elif name == "Position":
-                return long(player.get_position() * 1000)
+                return player.get_position() * 1000
             elif name == "MinimumRate":
                 return 1.0
             elif name == "MaximumRate":

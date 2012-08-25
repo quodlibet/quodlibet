@@ -196,22 +196,22 @@ class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
     def get_property(self, interface, name):
         if interface == MediaContainer.IFACE:
             if name == "ChildCount":
-                return dbus.UInt32(len(self.__sub))
+                return len(self.__sub)
             elif name == "ItemCount":
-                return dbus.UInt32(0)
+                return 0
             elif name == "ContainerCount":
-                return dbus.UInt32(len(self.__sub))
+                return len(self.__sub)
             elif name == "Searchable":
                 return False
             elif name == "Icon":
-                return dbus.ObjectPath(Icon.PATH)
+                return Icon.PATH
         elif interface == MediaObject.IFACE:
             if name == "Parent":
-                return dbus.ObjectPath(self.parent.PATH)
+                return self.parent.PATH
             elif name == "Type":
                 return "container"
             elif name == "Path":
-                return dbus.ObjectPath(self.PATH)
+                return self.PATH
             elif name == "DisplayName":
                 return self.DISPLAY_NAME
 
@@ -267,7 +267,7 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
     def get_property(self, interface, name):
         if interface == MediaObject.IFACE:
             if name == "Parent":
-                return dbus.ObjectPath(BASE_PATH + "/" + self.__prefix)
+                return BASE_PATH + "/" + self.__prefix
             elif name == "Type":
                 return "audio"
             elif name == "Path":
@@ -308,18 +308,18 @@ class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
     def get_property(self, interface, name):
         if interface == MediaContainer.IFACE:
             if name == "ChildCount" or name == "ItemCount":
-                return dbus.UInt32(len(self.__album.songs))
+                return len(self.__album.songs)
             elif name == "ContainerCount":
-                return dbus.UInt32(0)
+                return 0
             elif name == "Searchable":
                 return False
         elif interface == MediaObject.IFACE:
             if name == "Parent":
-                return dbus.ObjectPath(self.parent.PATH)
+                return self.parent.PATH
             elif name == "Type":
                 return "container"
             elif name == "Path":
-                return dbus.ObjectPath(self.PATH)
+                return self.PATH
             elif name == "DisplayName":
                 return self.__pattern % self.__album
 
@@ -485,20 +485,20 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
     def __get_albums_property(self, interface, name):
         if interface == MediaContainer.IFACE:
             if name == "ChildCount":
-                return dbus.UInt32(len(self.__library))
+                return len(self.__library)
             elif name == "ItemCount":
-                return dbus.UInt32(0)
+                return 0
             elif name == "ContainerCount":
-                return dbus.UInt32(len(self.__library))
+                return len(self.__library)
             elif name == "Searchable":
                 return False
         elif interface == MediaObject.IFACE:
             if name == "Parent":
-                return dbus.ObjectPath(self.parent.PATH)
+                return self.parent.PATH
             elif name == "Type":
                 return "container"
             elif name == "Path":
-                return dbus.ObjectPath(self.PATH)
+                return self.PATH
             elif name == "DisplayName":
                 return self.DISPLAY_NAME
 
@@ -569,11 +569,11 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
     def get_property(self, interface, name):
         if interface == MediaObject.IFACE:
             if name == "Parent":
-                return dbus.ObjectPath(EntryObject.PATH)
+                return EntryObject.PATH
             elif name == "Type":
                 return "image"
             elif name == "Path":
-                return dbus.ObjectPath(Icon.PATH)
+                return Icon.PATH
             elif name == "DisplayName":
                 return "I'm an icon \o/"
         elif interface == MediaItem.IFACE:
@@ -582,6 +582,6 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             elif name == "MIMEType":
                 return "image/png"
             elif name == "Width" or name == "Height":
-                return dbus.Int32(Icon.SIZE)
+                return Icon.SIZE
             elif name == "ColorDepth":
-                return dbus.Int32(self.__depth)
+                return self.__depth
