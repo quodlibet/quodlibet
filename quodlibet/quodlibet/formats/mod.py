@@ -5,6 +5,7 @@
 # published by the Free Software Foundation
 
 import os
+import ctypes
 
 from quodlibet.formats._audio import AudioFile
 
@@ -12,19 +13,27 @@ extensions = [
     '.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med', '.mod', '.mt2',
     '.mtm', '.okt', '.s3m', '.stm', '.ult', '.gdm', '.xm']
 
-try:
-    import ctypes
-except ImportError:
-    extensions = []
-else:
-    for so_version in ("libmodplug.so.1", "libmodplug.so.0"):
-        try:
-            _modplug = ctypes.cdll.LoadLibrary(so_version)
-            _modplug.ModPlug_GetName.restype = ctypes.c_char_p
-        except OSError: continue
-        else: break
+
+for so_version in ("libmodplug.so.1", "libmodplug.so.0"):
+    try:
+        _modplug = ctypes.cdll.LoadLibrary(so_version)
+    except OSError:
+        continue
     else:
-        extensions = []
+        _modplug.ModPlug_GetName.argtypes = [ctypes.c_void_p]
+        _modplug.ModPlug_GetName.restype = ctypes.c_char_p
+
+        _modplug.ModPlug_Load.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        _modplug.ModPlug_Load.restype = ctypes.c_void_p
+
+        _modplug.ModPlug_GetLength.argtypes = [ctypes.c_void_p]
+        _modplug.ModPlug_GetLength.restype = ctypes.c_int
+
+        _modplug.ModPlug_Unload.argtypes = [ctypes.c_void_p]
+        _modplug.ModPlug_Unload.restype = None
+        break
+else:
+    extensions = []
 
 class ModFile(AudioFile):
 
