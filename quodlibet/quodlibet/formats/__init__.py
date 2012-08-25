@@ -31,8 +31,9 @@ for i, name in enumerate(modules):
     format = __import__(name, {}, {}, self)
     for ext in format.extensions:
         _infos[ext] = format.info
-    for type_ in format.types:
-        mimes.update(type_.mimes)
+    if format.extensions:
+        for type_ in format.types:
+            mimes.update(type_.mimes)
     # Migrate pre-0.16 library, which was using an undocumented "feature".
     sys.modules[name.replace(".", "/")] = format
     if name and name.startswith("quodlibet."):
