@@ -14,19 +14,63 @@ class SPCFile(AudioFile):
     format = "SPC700 DSP Data"
 
     def __init__(self, filename):
-        self["~#length"] = 0
-        self.sanitize(filename)
+        h = open(filename, "rb")
+        try:
+            head = h.read(46)
+            if len(head) != 46 or head[:27] != 'SNES-SPC700 Sound File Data':
+                raise IOError("Not a valid SNES-SPC700 file")
 
-    def sanitize(self, filename):
-        super(SPCFile, self).sanitize(filename)
-        self["title"] = os.path.basename(self["~filename"])[:-4]
+            if head[35] == '\x1a':
+                data = h.read(210)
+                if len(data) == 210:
+                    self.update(parse_id666(data))
+        finally:
+            h.close()
+
+        self.setdefault("title", os.path.basename(filename)[:-4])
+        self.sanitize(filename)
 
     def write(self):
         pass
 
     def can_change(self, k=None):
-        if k is None: return ["artist"]
-        else: return k == "artist"
+        TAGS = ["artist", "album", "title", "comments"]
+        if k is None: return TAGS
+        else: return k in TAGS
+
+
+def parse_id666(data):
+    #http://snesmusic.org/files/spc_file_format.txt
+
+    tags = {}
+
+    tags["title"] = data[:32]
+    tags["album"] = data[32:64]
+    tags["dumper"] = data[64:80]
+    tags["comments"] = data[80:112]
+
+    # Artist differs based on binary or text mode, which is implicit.
+    # Instead of detecting "perfectly", we'll just detect enough for
+    # the "artist" field. This fails for artist names that begin with
+    # numbers or symbols less than ascii value A.
+    if data[130] < 'A':
+        try:
+            tags["~#length"] = int(data[123:126].strip("\x00"))
+        except ValueError:
+            pass
+        tags["artist"] = data[131:163]
+    else:
+        tags["artist"] = data[130:162]
+
+    for k in tags.keys():
+        if k[:2] == "~#":
+            continue
+        tags[k] = tags[k].replace("\x00", "").decode("ascii", "ignore")
+        if not tags[k]:
+            del tags[k]
+
+    return tags
+
 
 info = SPCFile
 types = [SPCFile]
