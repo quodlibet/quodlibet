@@ -181,6 +181,9 @@ class EggTrayIconWrapper(object):
     def set_tooltip(self, tip):
         self.__tips.set_tip(self.__icon, tip)
 
+    def is_embedded(self):
+        return True
+
     def place_menu(self, menu):
         (width, height) = menu.size_request()
         (menu_xpos, menu_ypos) = self.__icon.window.get_origin()
@@ -351,8 +354,7 @@ class TrayIcon(EventPlugin):
             self.plugin_on_song_started(player.song)
 
     def __window_delete(self, win, event):
-        self.__hide_window()
-        return True
+        return self.__hide_window()
 
     def __window_map(self, win):
         try:
@@ -368,8 +370,12 @@ class TrayIcon(EventPlugin):
 
     def __hide_window(self):
         self.__first_map = False
+        # Don't hide if it's not visible
+        if not self.__icon.is_embedded():
+            return False
         window.hide()
         config.set("plugins", "icon_window_visible", "false")
+        return True
 
     def __show_window(self):
         window.show()
