@@ -201,7 +201,7 @@ class MPRIS1Player(MPRISObject):
         for key, tag in strings.iteritems():
             val = song.comma(tag)
             if val:
-                metadata[key] = val
+                metadata[key] = unival(val)
 
         nums = [("audio-bitrate", 1024, "~#bitrate"),
                 ("rating", 5, "~#rating"),
