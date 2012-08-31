@@ -317,7 +317,7 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
             elif name == "Duration":
                 return self.__song("~#length")
             elif name == "TrackNumber":
-                return self.__song("~#track")
+                return self.__song("~#track", 0)
 
 
 class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
