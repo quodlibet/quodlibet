@@ -43,7 +43,7 @@ class GetStringDialog(gtk.Dialog):
         """Return an altered text or None if the content was invalid."""
         return
 
-    def run(self, text="", clipboard=False):
+    def run(self, text="", clipboard=False, test=False):
         """Shows the dialog and returns the entered value.
 
         If clipboard is set, the initial value will be pulled from the
@@ -61,7 +61,9 @@ class GetStringDialog(gtk.Dialog):
         self._val.set_text(text)
         self._val.set_activates_default(True)
         self._val.grab_focus()
-        resp = super(GetStringDialog, self).run()
+        resp = gtk.RESPONSE_OK
+        if not test:
+            resp = super(GetStringDialog, self).run()
         if resp == gtk.RESPONSE_OK:
             value = self._val.get_text()
         else: value = None
