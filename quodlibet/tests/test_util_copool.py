@@ -19,18 +19,22 @@ class Tcopool(TestCase):
     def test_add_remove(self):
         copool.add(self.__set_buffer)
         gtk.main_iteration(block=False)
+        gtk.main_iteration(block=False)
         self.assertEquals(self.buffer, True)
         copool.remove(self.__set_buffer)
         self.buffer = None
+        gtk.main_iteration(block=False)
         gtk.main_iteration(block=False)
         self.assertEquals(self.buffer, None)
 
     def test_add_remove_with_funcid(self):
         copool.add(self.__set_buffer, funcid="test")
         gtk.main_iteration(block=False)
+        gtk.main_iteration(block=False)
         self.assertEquals(self.buffer, True)
         copool.remove("test")
         self.buffer = None
+        gtk.main_iteration(block=False)
         gtk.main_iteration(block=False)
         self.assertEquals(self.buffer, None)
 
