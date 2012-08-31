@@ -21,13 +21,16 @@ from quodlibet.player.nullbe import NullPlayer
 
 
 A1 = AudioFile(
-        {'album': 'greatness', 'title': 'excellent', 'artist': 'fooman',
-         '~#lastplayed': 1234, '~#rating': 0.75, '~filename': '/foo',
-         "~#length": 123})
+        {'album': u'greatness', 'title': 'excellent', 'artist': 'fooman\ngo',
+         '~#lastplayed': 1234, '~#rating': 0.75, '~filename': '/foo a/b',
+         "~#length": 123, "albumartist": "aa\nbb", "bpm": "123.5",
+         "tracknumber": "6/7"})
 A1.sanitize()
+
 A2 = AudioFile(
-        {'album': 'greatness2', 'title': 'superlative', 'artist': 'fooman',
-         '~#lastplayed': 1234, '~#rating': 1.0, '~filename': '/foo'})
+        {'album': u'greatness2\ufffe', 'title': 'superlative',
+         'artist': u'fooman\ufffe', '~#lastplayed': 1234, '~#rating': 1.0,
+         '~filename': '/foo'})
 A2.sanitize()
 
 
@@ -90,23 +93,21 @@ class TMPRIS(PluginTestCase):
         self.failUnless(widgets.main.get_visible())
         widgets.main.hide()
 
-        self._prop().Get(piface, "CanQuit", **args)
-        self.failUnlessEqual(self._wait()[0], True)
+        props = {
+            "CanQuit": dbus.Boolean(True),
+            "CanRaise": dbus.Boolean(True),
+            "CanSetFullscreen": dbus.Boolean(False),
+            "HasTrackList": dbus.Boolean(False),
+            "Identity": dbus.String("Quod Libet"),
+            "DesktopEntry": dbus.String("quodlibet"),
+            "SupportedUriSchemes": dbus.Array(),
+        }
 
-        self._prop().Get(piface, "CanRaise", **args)
-        self.failUnlessEqual(self._wait()[0], True)
-
-        self._prop().Get(piface, "HasTrackList", **args)
-        self.failUnlessEqual(self._wait()[0], False)
-
-        self._prop().Get(piface, "Identity", **args)
-        self.failUnlessEqual(self._wait()[0], "Quod Libet")
-
-        self._prop().Get(piface, "DesktopEntry", **args)
-        self.failUnlessEqual(self._wait()[0], "quodlibet")
-
-        self._prop().Get(piface, "SupportedUriSchemes", **args)
-        self.failUnlessEqual(self._wait()[0], [])
+        for key, value in props.iteritems():
+            self._prop().Get(piface, key, **args)
+            resp = self._wait()[0]
+            self.failUnlessEqual(resp, value)
+            self.failUnless(isinstance(resp, type(value)))
 
         self._prop().Get(piface, "SupportedMimeTypes", **args)
         self.failUnless("audio/vorbis" in self._wait()[0])
@@ -115,72 +116,88 @@ class TMPRIS(PluginTestCase):
         args = {"reply_handler": self._reply, "error_handler": self._error}
         piface = "org.mpris.MediaPlayer2.Player"
 
-        self._prop().Get(piface, "PlaybackStatus", **args)
-        self.failUnlessEqual(self._wait()[0], "Stopped")
+        props = {
+            "PlaybackStatus": dbus.String("Stopped"),
+            "LoopStatus": dbus.String("None"),
+            "Rate": dbus.Double(1.0),
+            "Shuffle": dbus.Boolean(False),
+            "Volume": dbus.Double(1.0),
+            "Position": dbus.Int64(0),
+            "MinimumRate": dbus.Double(1.0),
+            "MaximumRate": dbus.Double(1.0),
+            "CanGoNext": dbus.Boolean(True),
+            "CanGoPrevious": dbus.Boolean(True),
+            "CanPlay": dbus.Boolean(True),
+            "CanPause": dbus.Boolean(True),
+            "CanSeek": dbus.Boolean(True),
+            "CanControl": dbus.Boolean(True),
+        }
 
-        self._prop().Get(piface, "LoopStatus", **args)
-        self.failUnlessEqual(self._wait()[0], "None")
-
-        self._prop().Get(piface, "Rate", **args)
-        self.failUnlessEqual(self._wait()[0], 1.0)
-
-        self._prop().Get(piface, "Shuffle", **args)
-        self.failUnlessEqual(self._wait()[0], False)
-
-        self._prop().Get(piface, "Metadata", **args)
-        resp = self._wait()[0]
-        self.failUnlessEqual(resp["mpris:trackid"], "/org/mpris/MediaPlayer2/")
-
-        self._prop().Get(piface, "Volume", **args)
-        self.failUnlessEqual(self._wait()[0], 1.0)
-
-        self._prop().Get(piface, "Position", **args)
-        self.failUnlessEqual(self._wait()[0], 0)
-
-        self._prop().Get(piface, "MinimumRate", **args)
-        self.failUnlessEqual(self._wait()[0], 1.0)
-
-        self._prop().Get(piface, "MaximumRate", **args)
-        self.failUnlessEqual(self._wait()[0], 1.0)
-
-        self._prop().Get(piface, "CanGoNext", **args)
-        self.failUnlessEqual(self._wait()[0], True)
-
-        self._prop().Get(piface, "CanGoPrevious", **args)
-        self.failUnlessEqual(self._wait()[0], True)
-
-        self._prop().Get(piface, "CanPlay", **args)
-        self.failUnlessEqual(self._wait()[0], True)
-
-        self._prop().Get(piface, "CanPause", **args)
-        self.failUnlessEqual(self._wait()[0], True)
-
-        self._prop().Get(piface, "CanSeek", **args)
-        self.failUnlessEqual(self._wait()[0], True)
-
-        self._prop().Get(piface, "CanControl", **args)
-        self.failUnlessEqual(self._wait()[0], True)
+        for key, value in props.iteritems():
+            self._prop().Get(piface, key, **args)
+            resp = self._wait()[0]
+            self.failUnlessEqual(resp, value)
+            self.failUnless(isinstance(resp, type(value)))
 
     def test_metadata(self):
         args = {"reply_handler": self._reply, "error_handler": self._error}
         piface = "org.mpris.MediaPlayer2.Player"
 
+        # No song case
+        self._prop().Get(piface, "Metadata", **args)
+        resp = self._wait()[0]
+        self.failUnlessEqual(resp["mpris:trackid"],
+                             "/net/sacredchao/QuodLibet/NoTrack")
+        self.failUnless(isinstance(resp["mpris:trackid"], dbus.ObjectPath))
+
+        # go to next song
         self._player_iface().Next(**args)
         self._wait()
 
         self._prop().Get(piface, "Metadata", **args)
         resp = self._wait()[0]
-        self.failIfEqual(resp["mpris:trackid"], "/org/mpris/MediaPlayer2/")
 
+        # mpris stuff
+        self.failIf(resp["mpris:trackid"].startswith("/org/mpris/"))
+        self.failUnless(isinstance(resp["mpris:trackid"], dbus.ObjectPath))
+
+        self.failUnlessEqual(resp["mpris:length"], 123 * 10 ** 6)
+        self.failUnless(isinstance(resp["mpris:length"], dbus.Int64))
+
+        # list text values
+        self.failUnlessEqual(resp["xesam:artist"], ["fooman", "go"])
+        self.failUnlessEqual(resp["xesam:albumArtist"], ["aa", "bb"])
+
+        # single text values
         self.failUnlessEqual(resp["xesam:album"], "greatness")
-        self.failUnlessEqual(resp["xesam:artist"], ["fooman"])
-        self.failUnlessAlmostEqual(resp["xesam:userRating"], 0.75)
+        self.failUnlessEqual(resp["xesam:title"], "excellent")
+        self.failUnlessEqual(resp["xesam:url"], "file:///foo%20a/b")
 
-        self.failUnlessEqual(resp["mpris:length"], 123 * 10**6)
+        # integers
+        self.failUnlessEqual(resp["xesam:audioBPM"], 123)
+        self.failUnless(isinstance(resp["xesam:audioBPM"], dbus.Int32))
+
+        self.failUnlessEqual(resp["xesam:trackNumber"], 6)
+        self.failUnless(isinstance(resp["xesam:trackNumber"], dbus.Int32))
+
+        # rating
+        self.failUnlessAlmostEqual(resp["xesam:userRating"], 0.75)
+        self.failUnless(isinstance(resp["xesam:userRating"], dbus.Double))
+
+        # time
         from time import strptime
         from calendar import timegm
         seconds = timegm(strptime(resp["xesam:lastUsed"], "%Y-%m-%dT%H:%M:%S"))
         self.failUnlessEqual(seconds, 1234)
+
+        # go to next song with invalid utf-8
+        self._player_iface().Next(**args)
+        self._wait()
+
+        self._prop().Get(piface, "Metadata", **args)
+        resp = self._wait()[0]
+        self.failUnlessEqual(resp["xesam:album"], u'greatness2\ufffd')
+        self.failUnlessEqual(resp["xesam:artist"], [u'fooman\ufffd'])
 
     def tearDown(self):
         self.m.disabled()

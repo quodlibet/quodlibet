@@ -12,9 +12,9 @@ import dbus
 import dbus.service
 import dbus.glib
 
-from quodlibet import util
 from quodlibet.util.uri import URI
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
+from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 from quodlibet.player import playlist as player
 from quodlibet.widgets import main as window
 from quodlibet.library import librarian
@@ -89,7 +89,9 @@ class MPRIS1Root(MPRISObject):
 
     @dbus.service.method(IFACE)
     def Quit(self):
+        gtk.gdk.threads_enter()
         window.destroy()
+        gtk.gdk.threads_leave()
 
     @dbus.service.method(IFACE, out_signature="(qq)")
     def MprisVersion(self):
@@ -334,9 +336,9 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 <method name="Quit"/>"""
 
     ROOT_PROPS = """
-<annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
 <property name="CanQuit" type="b" access="read"/>
 <property name="CanRaise" type="b" access="read"/>
+<property name="CanSetFullscreen" type="b" access="read"/>
 <property name="HasTrackList" type="b" access="read"/>
 <property name="Identity" type="s" access="read"/>
 <property name="DesktopEntry" type="s" access="read"/>
@@ -372,9 +374,7 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 <property name="Rate" type="d" access="readwrite"/>
 <property name="Shuffle" type="b" access="readwrite"/>
 <property name="Metadata" type="a{sv}" access="read"/>
-<property name="Volume" type="d" access="readwrite">
-  <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
-</property>
+<property name="Volume" type="d" access="readwrite"/>
 <property name="Position" type="x" access="read">
   <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
 </property>
@@ -403,19 +403,11 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         name = dbus.service.BusName(self.BUS_NAME, bus)
         MPRISObject.__init__(self, bus, self.PATH, name)
 
-        self.__rsig = window.repeat.connect_object(
-            "toggled", self.emit_properties_changed,
-            self.PLAYER_IFACE, ["LoopStatus"])
-
-        self.__ssig = window.order.connect_object(
-            "changed", self.emit_properties_changed,
-            self.PLAYER_IFACE, ["Shuffle"])
-
+        self.__rsig = window.repeat.connect("toggled", self.__repeat_changed)
+        self.__ssig = window.order.connect("changed", self.__order_changed)
         self.__lsig = librarian.connect("changed", self.__library_changed)
-
+        self.__vsig = player.connect("notify::volume", self.__volume_changed)
         self.__seek_sig = player.connect("seek", self.__seeked)
-
-        self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
 
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS2, self).remove_from_connection(*arg, **kwargs)
@@ -424,7 +416,26 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         window.repeat.disconnect(self.__rsig)
         window.order.disconnect(self.__ssig)
         librarian.disconnect(self.__lsig)
+        player.disconnect(self.__vsig)
         player.disconnect(self.__seek_sig)
+
+    def __volume_changed(self, *args):
+        self.emit_properties_changed(self.PLAYER_IFACE, ["Volume"])
+
+    def __repeat_changed(self, *args):
+        self.emit_properties_changed(self.PLAYER_IFACE, ["LoopStatus"])
+
+    def __order_changed(self, *args):
+        self.emit_properties_changed(self.PLAYER_IFACE,
+                                     ["Shuffle", "LoopStatus"])
+
+    def __seeked(self, player, song, ms):
+        self.Seeked(ms * 1000)
+
+    def __library_changed(self, library, song):
+        if song and song is not player.info:
+            return
+        self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
 
     @dbus.service.method(ROOT_IFACE)
     def Raise(self):
@@ -433,7 +444,9 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 
     @dbus.service.method(ROOT_IFACE)
     def Quit(self):
+        gtk.gdk.threads_enter()
         window.destroy()
+        gtk.gdk.threads_leave()
 
     @dbus.service.signal(PLAYER_IFACE, signature="x")
     def Seeked(self, position):
@@ -480,8 +493,7 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 
     @dbus.service.method(PLAYER_IFACE, in_signature="ox")
     def SetPosition(self, track_id, position):
-        current_track_id = self.PATH + "/" + str(id(player.info))
-        if track_id == current_track_id:
+        if track_id == self.__get_current_track_id():
             player.seek(position / 1000)
 
     def paused(self):
@@ -489,37 +501,35 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
     unpaused = paused
 
     def song_started(self, song):
-        self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
+        # so the position in clients gets updated faster
+        self.Seeked(0)
 
-    def __seeked(self, player, song, ms):
-        self.Seeked(ms * 1000)
+        self.emit_properties_changed(self.PLAYER_IFACE,
+                                    ["PlaybackStatus", "Metadata"])
 
-    def __library_changed(self, library, song):
-        if song and song is not player.info:
-            return
-        self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
+    def __get_current_track_id(self):
+        path = "/net/sacredchao/QuodLibet"
+        if not player.info:
+            return dbus.ObjectPath(path + "/" + "NoTrack")
+        return dbus.ObjectPath(path + "/" + str(id(player.info)))
 
     def __get_metadata(self):
         """http://xmms2.org/wiki/MPRIS_Metadata"""
 
-        song = player.info
+        metadata = {}
+        metadata["mpris:trackid"] = self.__get_current_track_id()
 
-        metadata = dbus.Dictionary(signature="sv")
-        metadata["mpris:trackid"] = self.PATH + "/"
+        song = player.info
         if not song:
             return metadata
 
-        metadata["mpris:trackid"] += str(id(song))
-        metadata["mpris:length"] = \
-            long(player.info.get("~#length", 0) * 1000000)
+        metadata["mpris:length"] = dbus.Int64(song("~#length") * 10 ** 6)
 
         self.__cover = cover = song.find_cover()
         is_temp = False
         if cover:
             name = cover.name
             is_temp = name.startswith(tempfile.gettempdir())
-            if isinstance(name, str):
-                name = util.fsdecode(name)
             # This doesn't work for embedded images.. the file gets unlinked
             # after loosing the file handle
             metadata["mpris:artUrl"] = str(URI.frompath(name))
@@ -534,27 +544,29 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         for xesam, tag in list_val.iteritems():
             vals = song.list(tag)
             if vals:
-                metadata["xesam:" + xesam] = vals
+                metadata["xesam:" + xesam] = map(unival, vals)
 
         # All single values
         sing_val = {"album": "album", "title": "title", "asText": "~lyrics"}
         for xesam, tag in sing_val.iteritems():
             vals = song.comma(tag)
             if vals:
-                metadata["xesam:" + xesam] = vals
+                metadata["xesam:" + xesam] = unival(vals)
 
         # URI
         metadata["xesam:url"] = song("~uri")
 
-        # Numbers
-        num_val = {"audioBPM ": "bpm", "discNumber": "disc",
-            "trackNumber": "track", "useCount": "playcount",
-            "userRating": "rating"}
+        # Integers
+        num_val = {"audioBPM": "bpm", "discNumber": "disc",
+                   "trackNumber": "track", "useCount": "playcount"}
 
         for xesam, tag in num_val.iteritems():
             val = song("~#" + tag, None)
             if val is not None:
-                metadata["xesam:" + xesam] = val
+                metadata["xesam:" + xesam] = int(val)
+
+        # Rating
+        metadata["xesam:userRating"] = float(song("~#rating"))
 
         # Dates
         ISO_8601_format = "%Y-%m-%dT%H:%M:%S"
@@ -566,32 +578,34 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         if year:
             try:
                 tuple_time = time.strptime(year, "%Y")
+                iso_time = time.strftime(ISO_8601_format, tuple_time)
             except ValueError:
                 pass
             else:
-                try:
-                    iso_time = time.strftime(ISO_8601_format, tuple_time)
-                except ValueError:
-                    pass
-                else:
-                    metadata["xesam:contentCreated"] = iso_time
+                metadata["xesam:contentCreated"] = iso_time
 
         return metadata
 
     def set_property(self, interface, name, value):
         if interface == self.PLAYER_IFACE:
             if name == "LoopStatus":
-                window.repeat.set_active(value == "Playlist")
+                if value == "Playlist":
+                    window.repeat.set_active(True)
+                    window.order.set_active("inorder")
+                elif value == "Track":
+                    window.repeat.set_active(True)
+                    window.order.set_active("onesong")
+                elif value == "None":
+                    window.repeat.set_active(False)
             elif name == "Rate":
                 pass
             elif name == "Shuffle":
-                shuffle_on = window.order.get_active_name() == "shuffle"
-                if shuffle_on and not value:
-                    window.order.set_active("inorder")
-                elif not shuffle_on and value:
+                if value:
                     window.order.set_active("shuffle")
+                else:
+                    window.order.set_active("inorder")
             elif name == "Volume":
-                player.volume = max(0, value)
+                player.volume = value
 
     def get_property(self, interface, name):
         if interface == self.ROOT_IFACE:
@@ -619,13 +633,19 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
                 return formats.mimes
         elif interface == self.PLAYER_IFACE:
             if name == "PlaybackStatus":
-                paused = player.paused
-                if not player.song or (paused and not player.get_position()):
+                if not player.song:
                     return "Stopped"
-                return ("Playing", "Paused")[int(paused)]
+                return ("Playing", "Paused")[int(player.paused)]
             elif name == "LoopStatus":
-                # TODO: track status
-                return ("None", "Playlist")[int(window.repeat.get_active())]
+                repeat = window.repeat.get_active()
+                if repeat:
+                    onesong = window.order.get_active_name() == "onesong"
+                    if onesong:
+                        return "Track"
+                    else:
+                        return "Playlist"
+                else:
+                    return "None"
             elif name == "Rate":
                 return 1.0
             elif name == "Shuffle":

@@ -10,14 +10,12 @@ import dbus
 import dbus.service
 
 
-ANNOTATION_EMITS = "org.freedesktop.DBus.Property.EmitsChangedSignal"
-
-
 def dbus_unicode_validate(text):
     """Takes a unicode string and replaces all invalid codepoints that would
     lead to errors if passed to dbus"""
 
-    assert isinstance(text, unicode)
+    if isinstance(text, str):
+        text = text.decode("utf-8")
 
     # https://bugs.freedesktop.org/show_bug.cgi?id=40817
     def valid(c):
@@ -44,6 +42,8 @@ def list_spec_properties(spec):
     'type' is the dbus data type (dbus.Signature instance)
     'emit' can be true/false/invalidates (see dbus spec)
     """
+
+    ANNOTATION_EMITS = "org.freedesktop.DBus.Property.EmitsChangedSignal"
 
     def get_emit(element, fallback):
         for anno in element.findall("annotation"):
