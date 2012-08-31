@@ -16,6 +16,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import Pattern
 from quodlibet.util.uri import URI
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
+from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
 BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
@@ -165,9 +166,28 @@ class MediaItem(object):
 <property type="as" name="URLs" access="read"/>
 <property type="s" name="MIMEType" access="read"/>
 
-<property type="i" name="Height" access="read"/>
+<property type="x" name="Size" access="read"/>
+<property type="s" name="Artist" access="read"/>
+<property type="s" name="Album" access="read"/>
+<property type="s" name="Date" access="read"/>
+<property type="s" name="Genre" access="read"/>
+<property type="s" name="DLNAProfile" access="read"/>
+
+<property type="i" name="Duration" access="read"/>
+<property type="i" name="Bitrate" access="read"/>
+<property type="i" name="SampleRate" access="read"/>
+<property type="i" name="BitsPerSample" access="read"/>
+
 <property type="i" name="Width" access="read"/>
+<property type="i" name="Height" access="read"/>
 <property type="i" name="ColorDepth" access="read"/>
+<property type="i" name="PixelWidth" access="read"/>
+<property type="i" name="PixelHeight" access="read"/>
+<property type="o" name="Thumbnail" access="read"/>
+
+<property type="o" name="AlbumArt" access="read"/>
+
+<property type="i" name="TrackNumber" access="read"/>
 """
 
     def __init__(self, optional=tuple()):
@@ -234,6 +254,8 @@ class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
     def list_items(self, offset, max_, filter_):
         return []
 
+SUPPORTED_SONG_PROPERTIES = ("Size", "Artist", "Album", "Date", "Genre",
+                             "Duration", "TrackNumber")
 
 class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
                       DBusIntrospectable):
@@ -258,7 +280,7 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
         DBusIntrospectable.__init__(self)
         DBusPropertyFilter.__init__(self)
         MediaObject.__init__(self, parent)
-        MediaItem.__init__(self)
+        MediaItem.__init__(self, optional=SUPPORTED_SONG_PROPERTIES)
 
     def set_song(self, song, prefix):
         self.__song = song
@@ -269,19 +291,33 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
             if name == "Parent":
                 return BASE_PATH + "/" + self.__prefix
             elif name == "Type":
-                return "audio"
+                return "music"
             elif name == "Path":
                 path = SongObject.PATH
                 path += "/" + self.__prefix + "/" + str(id(self.__song))
                 return path
             elif name == "DisplayName":
-                return self.__pattern % self.__song
+                return unival(self.__song.comma("title"))
         elif interface == MediaItem.IFACE:
             if name == "URLs":
                 return [self.__song("~uri")]
             elif name == "MIMEType":
                 mimes = self.__song.mimes
                 return mimes and mimes[0]
+            elif name == "Size":
+                return self.__song("~#filesize")
+            elif name == "Artist":
+                return unival(self.__song.comma("artist"))
+            elif name == "Album":
+                return unival(self.__song.comma("album"))
+            elif name == "Date":
+                return unival(self.__song.comma("date"))
+            elif name == "Genre":
+                return unival(self.__song.comma("genre"))
+            elif name == "Duration":
+                return self.__song("~#length")
+            elif name == "TrackNumber":
+                return self.__song("~#track")
 
 
 class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
@@ -321,7 +357,7 @@ class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
             elif name == "Path":
                 return self.PATH
             elif name == "DisplayName":
-                return self.__pattern % self.__album
+                return unival(self.__pattern % self.__album)
 
     def list_containers(self, offset, max_, filter_):
         return []
@@ -348,7 +384,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         DBusIntrospectable.__init__(self)
         DBusProperty.__init__(self)
         MediaObject.__init__(self, None)
-        MediaItem.__init__(self)
+        MediaItem.__init__(self, optional=SUPPORTED_SONG_PROPERTIES)
 
         bus = dbus.SessionBus()
         self.ref = dbus.service.BusName(BUS_NAME, bus)
