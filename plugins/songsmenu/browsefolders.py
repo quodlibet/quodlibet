@@ -124,7 +124,7 @@ class BrowseFolters(SongsMenuPlugin):
         return handle
 
     def plugin_songs(self, songs):
-        songs = (s for s in songs if s.is_file)
+        songs = [s for s in songs if s.is_file]
         print_d("Try to browse folders")
         for handler in self._HANDLERS:
             name = handler.__name__
@@ -161,7 +161,7 @@ class BrowseFiles(SongsMenuPlugin):
         return handle
 
     def plugin_single_song(self, song):
-        songs = (s for s in [song] if s.is_file)
+        songs = [s for s in [song] if s.is_file]
 
         print_d("Try to browse files")
         for handler in self._HANDLERS:
