@@ -11,7 +11,14 @@ import gtk
 import dbus
 import dbus.service
 import dbus.glib
+try:
+    import indicate
+except ImportError:
+    indicate = None
 
+from quodlibet import config
+from quodlibet import qltk
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util.uri import URI
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
@@ -27,19 +34,49 @@ from quodlibet.plugins.events import EventPlugin
 class MPRIS(EventPlugin):
     PLUGIN_ID = "mpris"
     PLUGIN_NAME = _("MPRIS D-Bus support")
-    PLUGIN_DESC = _("Lets you control Quod Libet using the "
+    PLUGIN_DESC = _("Control Quod Libet using the "
         "MPRIS 1.0/2.0 D-Bus Interface Specification.")
     PLUGIN_ICON = gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.2"
 
+    def PluginPreferences(self, parent):
+        box = gtk.HBox()
+        ccb = ConfigCheckButton(_("Hide main window on close"),
+                                'plugins', 'mpris_window_hide')
+        ccb.set_active(self.__do_hide())
+        box.pack_start(qltk.Frame(_("Preferences"), child=ccb))
+        return box
+
+    def __do_hide(self):
+        return config.getboolean('plugins', 'mpris_window_hide', False)
+
+    def __window_delete(self, win, event):
+        if self.__do_hide():
+            win.hide()
+            return True
+
     def enabled(self):
+        self.__sig = window.connect('delete-event', self.__window_delete)
+
         self.objects = [MPRIS1Root(), MPRIS1DummyTracklist(),
                         MPRIS1Player(), MPRIS2()]
 
+        # Needed for sound menu support in some older Ubuntu versions
+        if indicate:
+            self.__indicate_server = s = indicate.indicate_server_ref_default()
+            s.set_type("music.quodlibet")
+            s.set_desktop_file("/usr/share/applications/quodlibet.desktop")
+            s.show()
+
     def disabled(self):
+        if indicate:
+            self.__indicate_server.hide()
+
         for obj in self.objects:
             obj.remove_from_connection()
         self.objects = []
+
+        window.disconnect(self.__sig)
 
     def plugin_on_paused(self):
         for obj in self.objects:
