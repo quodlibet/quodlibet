@@ -4,7 +4,7 @@ import os
 
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
-from quodlibet.plugins._songwrapper import SongWrapper, ListWrapper
+from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 
 class TSongWrapper(TestCase):
 

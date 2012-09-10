@@ -1,5 +1,5 @@
 from tests import TestCase
-from quodlibet.plugins._modulescanner import load_module
+from quodlibet.util.modulescanner import load_module
 import sys
 import os
 

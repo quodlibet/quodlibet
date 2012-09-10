@@ -9,8 +9,8 @@ import gobject
 
 from quodlibet import util
 
-from quodlibet.plugins._songwrapper import SongWrapper, ListWrapper
-from quodlibet.plugins._songwrapper import check_wrapper_changed
+from quodlibet.util.songwrapper import SongWrapper, ListWrapper
+from quodlibet.util.songwrapper import check_wrapper_changed
 
 class EventPlugin(object):
     """Plugins that run in the background and receive events.

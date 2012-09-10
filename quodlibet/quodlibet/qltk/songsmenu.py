@@ -14,7 +14,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.plugins import PluginManager
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.plugins._songwrapper import ListWrapper, check_wrapper_changed
+from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
 
 
 class SongsMenuPluginHandler(object):
