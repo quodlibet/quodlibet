@@ -15,7 +15,6 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
-from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.plugins import PluginManager
@@ -74,7 +73,7 @@ class ExFalsoWindow(gtk.Window):
         prefs.connect_object('clicked', PreferencesWindow, self)
         bbox.pack_start(prefs, expand=False)
 
-        plugins = gtk.Button(stock=stock.PLUGINS)
+        plugins = qltk.Button(_("_Plugins"), gtk.STOCK_EXECUTE)
         plugins.connect_object('clicked', PluginWindow, self)
         bbox.pack_start(plugins, expand=False)
 

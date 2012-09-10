@@ -13,7 +13,6 @@ import pango
 from quodlibet import config
 from quodlibet import devices
 from quodlibet import qltk
-from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.browsers._base import Browser
@@ -326,7 +325,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         props.set_sensitive(not self.__busy)
         menu.prepend(props)
 
-        ren = gtk.ImageMenuItem(stock.RENAME)
+        ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
         keyval, mod = gtk.accelerator_parse("F2")
         ren.add_accelerator(
             'activate', self.accelerators, keyval, mod, gtk.ACCEL_VISIBLE)

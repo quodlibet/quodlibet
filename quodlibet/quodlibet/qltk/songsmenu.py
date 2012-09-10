@@ -6,7 +6,6 @@
 
 import gtk
 
-from quodlibet import stock
 from quodlibet import qltk
 
 from quodlibet.util import print_exc
@@ -160,7 +159,7 @@ class SongsMenu(gtk.Menu):
         if plugins:
             submenu = self.plugins.Menu(librarian, parent, songs)
             if submenu is not None:
-                b = gtk.ImageMenuItem(stock.PLUGINS)
+                b = qltk.MenuItem(_("_Plugins"), gtk.STOCK_EXECUTE)
                 self.append(b)
                 b.set_submenu(submenu)
                 self.append(gtk.SeparatorMenuItem())
@@ -186,12 +185,12 @@ class SongsMenu(gtk.Menu):
             try: submenu = browsers.playlists.Menu(songs, parent)
             except AttributeError: pass
             else:
-                b = gtk.ImageMenuItem(stock.PLAYLISTS)
+                b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
                 b.set_sensitive(can_add)
                 b.set_submenu(submenu)
                 self.append(b)
         if queue:
-            b = gtk.ImageMenuItem(stock.ENQUEUE)
+            b = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
             b.connect('activate', self.__enqueue, songs)
             if accels is not None:
                 key, val = gtk.accelerator_parse("<ctrl>Return")
@@ -207,7 +206,7 @@ class SongsMenu(gtk.Menu):
             else:
                 if browsers.media.MediaDevices in browsers.browsers:
                     submenu = browsers.media.Menu(songs, library)
-                    b = gtk.ImageMenuItem(stock.DEVICES)
+                    b = qltk.MenuItem(_("_Copy to Device"), gtk.STOCK_COPY)
                     b.set_sensitive(can_add and len(submenu) > 0)
                     b.set_submenu(submenu)
                     self.append(b)
@@ -216,7 +215,7 @@ class SongsMenu(gtk.Menu):
             self.separate()
 
         if remove:
-            b = gtk.ImageMenuItem(stock.REMOVE)
+            b = qltk.MenuItem(_("_Remove from library"), gtk.STOCK_REMOVE)
             if callable(remove):
                 b.connect_object('activate', remove, songs)
             else:
@@ -234,7 +233,7 @@ class SongsMenu(gtk.Menu):
             self.append(b)
 
         if edit:
-            b = gtk.ImageMenuItem(stock.EDIT_TAGS)
+            b = qltk.MenuItem(_("Edit _Tags"), gtk.STOCK_PROPERTIES)
             if accels is not None:
                 key, val = gtk.accelerator_parse("<alt>Return")
                 b.add_accelerator(

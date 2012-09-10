@@ -8,7 +8,6 @@
 import gtk
 
 from quodlibet import qltk
-from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.qltk.views import HintedTreeView
@@ -41,7 +40,7 @@ class TrackNumbers(gtk.VBox):
         label_total.set_mnemonic_widget(spin_total)
         hbox_total.pack_start(label_total)
         hbox_total.pack_start(spin_total)
-        preview = gtk.Button(stock=stock.PREVIEW)
+        preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
 
         hbox2.pack_start(hbox_start, expand=True, fill=False)
         hbox2.pack_start(hbox_total, expand=True, fill=False)

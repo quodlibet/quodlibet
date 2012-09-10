@@ -27,11 +27,10 @@ def _gtk_init(icon=None):
     import gtk
     import gobject
 
-    import quodlibet.stock
-    quodlibet.stock.init()
+    theme = gtk.icon_theme_get_default()
+    theme.append_search_path(quodlibet.const.IMAGEDIR)
 
     if icon:
-        theme = gtk.icon_theme_get_default()
         pixbufs = []
         for size in [64, 48, 32, 16]:
             try: pixbufs.append(theme.load_icon(icon, size, 0))

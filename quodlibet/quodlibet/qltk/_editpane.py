@@ -9,8 +9,8 @@ import gobject
 import gtk
 
 from quodlibet import config
-from quodlibet import stock
 from quodlibet import util
+from quodlibet import qltk
 
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.cbes import ComboBoxEntrySave
@@ -76,7 +76,7 @@ class EditPane(gtk.VBox):
             title=_("Path Patterns"),
             edit_title=_("Edit saved patterns..."))
         hbox.pack_start(self.combo)
-        self.preview = gtk.Button(stock=stock.PREVIEW)
+        self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
         hbox.pack_start(self.preview, expand=False)
         self.pack_start(hbox, expand=False)
         self.combo.child.connect('changed', self._changed)

@@ -17,7 +17,7 @@ if not gtk_216:
 
 from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
 
-from quodlibet import browsers, config, qltk, stock, util
+from quodlibet import browsers, config, qltk, util
 from quodlibet.library import library
 from quodlibet.parse import Pattern
 from quodlibet.player import playlist as player
@@ -500,7 +500,7 @@ class TrayIcon(EventPlugin):
 
         browse.set_submenu(browse_sub)
 
-        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
+        props = qltk.MenuItem(_("Edit _Tags"), gtk.STOCK_PROPERTIES)
         props.connect('activate', self.__properties)
 
         info = gtk.ImageMenuItem(gtk.STOCK_INFO)

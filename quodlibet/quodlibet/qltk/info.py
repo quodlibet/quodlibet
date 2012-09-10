@@ -13,7 +13,6 @@ import pango
 
 from quodlibet import const
 from quodlibet import qltk
-from quodlibet import stock
 from quodlibet import browsers
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
@@ -63,7 +62,7 @@ class SongInfo(gtk.Label):
         except AttributeError,e:
             print_d(e)
         else:
-            b = gtk.ImageMenuItem(stock.PLAYLISTS)
+            b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
             b.set_sensitive(player.song is not None and player.song.can_add)
             b.set_submenu(submenu)
             b.show_all()
@@ -89,7 +88,7 @@ class SongInfo(gtk.Label):
         sep = gtk.SeparatorMenuItem()
         menu.append(sep)
         sep.show()
-        props = gtk.ImageMenuItem(stock.EDIT_TAGS)
+        props = qltk.MenuItem(_("Edit _Tags"), gtk.STOCK_PROPERTIES)
         props.connect_object(
             'activate', SongProperties, library, [player.song], self)
         props.show()

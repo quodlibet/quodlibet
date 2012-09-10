@@ -18,7 +18,6 @@ from quodlibet import const
 from quodlibet import formats
 from quodlibet import player
 from quodlibet import qltk
-from quodlibet import stock
 from quodlibet import util
 
 from quodlibet.formats.remote import RemoteFile
@@ -432,7 +431,7 @@ class QuodLibetWindow(gtk.Window):
             ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library'), ""),
             ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
-            ("Plugins", stock.PLUGINS, None, None, None,
+            ("Plugins", gtk.STOCK_EXECUTE, _("_Plugins"), None, None,
              self.__plugins),
             ("Quit", gtk.STOCK_QUIT, None, None, None, self.destroy),
             ('Filters', None, _("_Filters")),
@@ -445,7 +444,7 @@ class QuodLibetWindow(gtk.Window):
              "", None, self.__filter_menu_actions),
 
             ("Control", None, _("_Control")),
-            ("EditTags", stock.EDIT_TAGS, None, "", None,
+            ("EditTags", gtk.STOCK_PROPERTIES, _("Edit _Tags"), "", None,
              self.__current_song_prop),
             ("Information", gtk.STOCK_INFO, None, None, None,
              self.__current_song_info),

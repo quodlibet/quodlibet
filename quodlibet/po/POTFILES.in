@@ -67,7 +67,6 @@ quodlibet/qltk/tracknumbers.py
 quodlibet/qltk/views.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
-quodlibet/stock.py
 quodlibet/util/dprint.py
 quodlibet/util/__init__.py
 quodlibet/util/logging.py
