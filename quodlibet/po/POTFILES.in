@@ -16,7 +16,6 @@ quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
 quodlibet/devices/ipod.py
 quodlibet/devices/storage.py
-quodlibet/formats/_album.py
 quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
@@ -28,7 +27,6 @@ quodlibet/player/_gstutils.py
 quodlibet/player/__init__.py
 quodlibet/player/xinebe.py
 quodlibet/plugins/__init__.py
-quodlibet/plugins/_songwrapper.py
 quodlibet.py
 quodlibet/qltk/about.py
 quodlibet/qltk/bookmarks.py
@@ -59,6 +57,7 @@ quodlibet/qltk/remote.py
 quodlibet/qltk/renamefiles.py
 quodlibet/qltk/searchbar.py
 quodlibet/qltk/songlist.py
+quodlibet/qltk/songsmenu.py
 quodlibet/qltk/sortdialog.py
 quodlibet/qltk/tagsfrompath.py
 quodlibet/qltk/textedit.py
@@ -67,9 +66,11 @@ quodlibet/qltk/tracknumbers.py
 quodlibet/qltk/views.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
+quodlibet/util/collection.py
 quodlibet/util/dprint.py
 quodlibet/util/__init__.py
 quodlibet/util/logging.py
 quodlibet/util/massagers.py
+quodlibet/util/songwrapper.py
 quodlibet/util/tags.py
 quodlibet/widgets.py
