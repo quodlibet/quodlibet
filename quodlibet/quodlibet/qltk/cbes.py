@@ -265,14 +265,14 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             self.__fill(filename, initial, edit_title)
 
         self.remove(self.child)
-        self.add(entry.ValidatingNoSexyEntry(validator))
+        self.add(entry.ValidatingEntry(validator))
 
         self.connect_object('destroy', self.set_model, None)
         self.connect_object('changed', self.__changed, model,
             validator, title)
 
-    def pack_clear_button(self, *args):
-        self.child.pack_clear_button(*args)
+    def enable_clear_button(self):
+        self.child.enable_clear_button()
 
     def __changed(self, model, validator, title):
         iter = self.get_active_iter()

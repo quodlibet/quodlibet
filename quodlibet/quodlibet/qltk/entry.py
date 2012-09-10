@@ -1,4 +1,5 @@
-# Copyright 2005-2011 Joe Wreschnig, Michael Urman, Christoph Reiter
+# Copyright 2005 Joe Wreschnig, Michael Urman
+#           2011, 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,16 +8,10 @@
 import gtk
 import gobject
 
-# We use sexy.IconEntry with older GTK+, but ComboboxEntry only allows
-# gtk.Entry (it kind of works, but alignment is wrong and there are lots of
-# warnings), so also provide all entries without libsexy.
-
 IconEntry = gtk.Entry
-if not getattr(gtk.Entry, "set_icon_from_stock", None):
-    try: from sexy import IconEntry
-    except ImportError: pass
 
-from quodlibet.qltk.x import ClearButton, is_accel
+from quodlibet.qltk.x import is_accel
+
 
 class EditableUndo(object):
     """A simple undo/redo implementation for gtk widgets that
@@ -143,23 +138,16 @@ class EditableUndo(object):
         self.set_position(pos)
         self.__uninhibit()
 
-class UndoEntry(IconEntry, EditableUndo):
-    def __init__(self, *args, **kwargs):
-        super(UndoEntry, self).__init__(*args, **kwargs)
-        self.set_undo(True)
 
-    def set_text(self, *args, **kwargs):
-        super(UndoEntry, self).set_text(*args, **kwargs)
-        self.reset_undo()
-
-class UndoNoSexyEntry(gtk.Entry, EditableUndo):
+class UndoEntry(gtk.Entry, EditableUndo):
     def __init__(self, *args):
-        super(UndoNoSexyEntry, self).__init__(*args)
+        super(UndoEntry, self).__init__(*args)
         self.set_undo(True)
 
     def set_text(self, *args):
-        super(UndoNoSexyEntry, self).set_text(*args)
+        super(UndoEntry, self).set_text(*args)
         self.reset_undo()
+
 
 class ClearEntryMixin(object):
     """A clear icon mixin supporting newer gtk.Entry or sexy.IconEntry /
@@ -169,19 +157,12 @@ class ClearEntryMixin(object):
     __gsignals__ = {'clear': (
         gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
 
-    def pack_clear_button(self, container=None):
-        """Enables the clear icon in the entry. For older gtk+
-        versions and without libsexy, a clear button will be packed in
-        container.
-        """
-        if getattr(self, "set_icon_from_stock", None):
-            self.set_icon_from_stock(
-                gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
-            self.connect("icon-release", self.__clear)
-        elif container:
-            button = ClearButton(self)
-            container.pack_start(button, False)
-            button.connect('clicked', self.__clear)
+    def enable_clear_button(self):
+        """Enables the clear icon in the entry"""
+
+        self.set_icon_from_stock(
+            gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
+        self.connect("icon-release", self.__clear)
 
     def __clear(self, button, *args):
         # TODO: don't change the order.. we connect to clear and remove all
@@ -189,10 +170,10 @@ class ClearEntryMixin(object):
         self.delete_text(0, -1)
         self.emit('clear')
 
+
 class ClearEntry(UndoEntry, ClearEntryMixin):
     __gsignals__ = ClearEntryMixin.__gsignals__
-class ClearNoSexyEntry(UndoNoSexyEntry, ClearEntryMixin):
-    __gsignals__ = ClearEntryMixin.__gsignals__
+
 
 class ValidatingEntryMixin(object):
     """An entry with visual feedback as to whether it is valid or not.
@@ -223,13 +204,8 @@ class ValidatingEntryMixin(object):
         else:
             self.modify_text(gtk.STATE_NORMAL, None)
 
+
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):
     def __init__(self, validator=None, *args):
         super(ValidatingEntry, self).__init__(*args)
         self.set_validate(validator)
-
-class ValidatingNoSexyEntry(ClearNoSexyEntry, ValidatingEntryMixin):
-    def __init__(self, validator=None, *args):
-        super(ValidatingNoSexyEntry, self).__init__(*args)
-        self.set_validate(validator)
-

@@ -141,10 +141,8 @@ class PluginWindow(qltk.UniqueWindow):
         fb = gtk.HBox(spacing=6)
         fb.pack_start(filter_combo, expand=False)
 
-        input = gtk.HBox()
-        input.pack_start(filter_entry)
-        filter_entry.pack_clear_button(input)
-        fb.pack_start(input)
+        filter_entry.enable_clear_button()
+        fb.pack_start(filter_entry)
 
         render = gtk.CellRendererToggle()
         def cell_data(col, render, model, iter):

@@ -45,6 +45,7 @@ class SearchBarBox(gtk.HBox):
         combo = ComboBoxEntrySave(filename, count=8,
             validator=Query.is_valid_color, title=_("Saved Searches"),
             edit_title=_("Edit saved searches..."))
+        combo.enable_clear_button()
 
         self.__refill_id = None
         self.__combo = combo
@@ -71,11 +72,7 @@ class SearchBarBox(gtk.HBox):
         label.set_mnemonic_widget(entry)
         self.pack_start(label, expand=False)
 
-        # for the clear button fallback
-        combo_hb = gtk.HBox()
-        combo_hb.pack_start(combo)
-        combo.pack_clear_button(combo_hb)
-        self.pack_start(combo_hb)
+        self.pack_start(combo)
 
         # search button
         if button:
