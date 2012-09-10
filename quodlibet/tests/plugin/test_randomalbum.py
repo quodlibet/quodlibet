@@ -1,5 +1,4 @@
-from quodlibet.formats._album import Album
-
+from quodlibet.util.collection import Album
 from quodlibet.formats._audio import AudioFile
 from quodlibet import const
 from tests import TestCase, add

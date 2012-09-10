@@ -1,6 +1,6 @@
 import tempfile
 from quodlibet.formats._audio import AudioFile as Fakesong
-from quodlibet.formats._album import Playlist
+from quodlibet.util.collection import Playlist
 from tests import TestCase, add
 from random import randint
 from timeit import timeit,default_timer

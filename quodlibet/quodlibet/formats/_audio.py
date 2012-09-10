@@ -319,7 +319,7 @@ class AudioFile(dict):
             elif key == "playlists":
                 # See Issue 876
                 # Avoid circular references from formats/__init__.py
-                from quodlibet.formats._album import Playlist
+                from quodlibet.util.collection import Playlist
                 try:
                     start = time.time()
                     playlists = Playlist.playlists_featuring(self)

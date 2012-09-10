@@ -23,7 +23,7 @@ from tempfile import NamedTemporaryFile
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._album import Playlist
+from quodlibet.util.collection import Playlist
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.wlw import WaitLoadWindow

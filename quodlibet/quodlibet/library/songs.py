@@ -21,7 +21,7 @@ import gobject
 from quodlibet import util
 
 from quodlibet.formats import MusicFile
-from quodlibet.formats._album import Album
+from quodlibet.util.collection import Album
 from quodlibet.library._library import Library, Librarian
 from quodlibet.parse import Query
 from quodlibet.qltk.notif import Task

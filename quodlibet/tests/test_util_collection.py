@@ -5,7 +5,7 @@ import shutil
 from tests import TestCase, add
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
-from quodlibet.formats._album import Album, Playlist
+from quodlibet.util.collection import Album, Playlist
 
 
 NUMERIC_SONGS = [

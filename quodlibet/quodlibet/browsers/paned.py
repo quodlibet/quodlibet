@@ -19,7 +19,7 @@ from quodlibet import util
 
 from quodlibet.browsers.search import SearchBar
 from quodlibet.formats import PEOPLE
-from quodlibet.formats._album import Collection
+from quodlibet.util.collection import Collection
 from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
