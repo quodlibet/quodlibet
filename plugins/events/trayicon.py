@@ -11,10 +11,6 @@ import gtk
 import pango
 import gobject
 
-gtk_216 = gtk.gtk_version >= (2, 16)
-if not gtk_216:
-    import egg.trayicon as trayicon
-
 from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
 
 from quodlibet import browsers, config, qltk, util
@@ -123,77 +119,6 @@ class Preferences(gtk.VBox):
         label.get_parent().set_tooltip_text(text)
         config.set("plugins", "icon_tooltip", entry.get_text())
 
-class EggTrayIconWrapper(object):
-    __popup_sig = None
-    __activate_sig = None
-    __button_press_sig = None
-    __size_changed_sig = None
-    __icon = None
-
-    def __init__(self):
-        self.__icon = trayicon.TrayIcon("quodlibet")
-        self.__tips = gtk.Tooltips()
-        self.__eb = gtk.EventBox()
-        self.__image = gtk.Image()
-        self.__eb.add(self.__image)
-        self.__icon.add(self.__eb)
-        self.__icon.show_all()
-
-    def destroy(self):
-        if self.__icon:
-            self.__icon.destroy()
-
-    def connect(self, *args):
-        if args[0] == "size-changed":
-            self.__size_changed_sig = args[1]
-            self.__eb.connect('size-allocate', self.__size_changed)
-        elif args[0] == "activate":
-            self.__activate_sig = args[1]
-        elif args[0] == "popup-menu":
-            self.__popup_sig = args[1]
-        elif args[0] == "button-press-event":
-            self.__button_press_sig = args[1]
-            self.__eb.connect(args[0], self.__button_press)
-        elif args[0] == "scroll-event":
-            return self.__eb.connect(*args)
-        return None
-
-    def __button_press(self, eb, event):
-        if event.button == 1 and event.type == gtk.gdk.BUTTON_PRESS:
-            self.__activate_sig(eb)
-        elif event.button == 2:
-            self.__button_press_sig(eb, event)
-        elif event.button == 3:
-            self.__popup_sig(eb, event.button, event.time)
-
-    def __size_changed(self, eb, rect):
-        self.__size_changed_sig(eb, rect.height)
-
-    def set_visible(self, val):
-        if val:
-            self.__icon.show()
-        else:
-            self.__icon.hide()
-
-    def set_from_pixbuf(self, pb):
-        self.__image.set_from_pixbuf(pb)
-
-    def set_tooltip(self, tip):
-        self.__tips.set_tip(self.__icon, tip)
-
-    def is_embedded(self):
-        return True
-
-    def place_menu(self, menu):
-        (width, height) = menu.size_request()
-        (menu_xpos, menu_ypos) = self.__icon.window.get_origin()
-        menu_xpos += self.__icon.allocation.x
-        menu_ypos += self.__icon.allocation.y
-        if menu_ypos > self.__icon.get_screen().get_height() / 2:
-            menu_ypos -= height
-        else:
-            menu_ypos += self.__icon.allocation.height
-        return (menu_xpos, menu_ypos, True)
 
 class TrayIcon(EventPlugin):
     __icon = None
@@ -217,13 +142,7 @@ class TrayIcon(EventPlugin):
     PLUGIN_VERSION = "2.0"
 
     def enabled(self):
-        global gtk_216
-
-        if gtk_216:
-            self.__icon = gtk.StatusIcon()
-        else:
-            self.__icon =  EggTrayIconWrapper()
-
+        self.__icon = gtk.StatusIcon()
         self.__icon_theme = gtk.icon_theme_get_default()
         self.__theme_sig = self.__icon_theme.connect('changed',
             self.__theme_changed)
@@ -442,8 +361,6 @@ class TrayIcon(EventPlugin):
             return True
 
     def __button_right(self, icon, button, time):
-        global gtk_216
-
         if self.__destroy_win32_menu(): return
         self.__menu = menu = gtk.Menu()
 
@@ -544,11 +461,9 @@ class TrayIcon(EventPlugin):
 
         if sys.platform == "win32":
             menu.popup(None, None, None, button, time, self.__icon)
-        elif gtk_216:
+        else:
             menu.popup(None, None, gtk.status_icon_position_menu,
                 button, time, self.__icon)
-        else:
-            menu.popup(None, None, self.__icon.place_menu, button, time)
 
     plugin_on_paused = __update_icon
     plugin_on_unpaused = __update_icon
