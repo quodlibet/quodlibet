@@ -29,7 +29,7 @@ The following will lead to an almost automatic rejection:
  * Lines longer than 79 characters.
  * Sending whole files rather than patches.
 
-Currently we are limiting the code to features in PyGTK 2.12 and
+Currently we are limiting the code to features in PyGTK 2.16 and
 Python 2.5.
 
 Please prepare your patches against the latest Mercurial release,

@@ -143,12 +143,12 @@ class check(Command):
             raise SystemExit("%s requires at least Python 2.5. "
                              "(http://www.python.org)" % self.NAME)
 
-        print "Checking for PyGTK >= 2.12:",
+        print "Checking for PyGTK >= 2.16:",
         try:
             import pygtk
             pygtk.require('2.0')
             import gtk
-            if gtk.pygtk_version < (2, 12) or gtk.gtk_version < (2, 12):
+            if gtk.pygtk_version < (2, 16) or gtk.gtk_version < (2, 16):
                 raise ImportError
         except ImportError:
             raise SystemExit("not found\n%s requires PyGTK 2.10. "
