@@ -339,6 +339,9 @@ class ID3File(AudioFile):
                 except ValueError: gain=0
                 try: peak = float(self["replaygain_%s_peak" % k])
                 except (ValueError, KeyError): peak = 0
+                # http://code.google.com/p/quodlibet/issues/detail?id=1027
+                peak = max(min(1.9, peak), 0)
+                gain = max(min(63.9, gain), -64)
                 f = mutagen.id3.RVA2(desc=k, channel=1, gain=gain, peak=peak)
                 tag.add(f)
 

@@ -382,6 +382,15 @@ class TID3File(TestCase):
         f = mutagen.File(self.filename)
         self.failUnlessEqual(dict(f.tags["TMCL"].people)["quux"], "foo")
 
+    def test_rva_large(self):
+        song = MP3File(self.filename)
+        song["replaygain_track_peak"] = "3"
+        song["replaygain_track_gain"] = "100"
+        song.write()
+        song["replaygain_track_peak"] = "-1"
+        song["replaygain_track_gain"] = "-100"
+        song.write()
+
     def test_rva(self):
         f = mutagen.File(self.filename)
         f.tags.add(mutagen.id3.RVA2(desc="track", channel=1,
