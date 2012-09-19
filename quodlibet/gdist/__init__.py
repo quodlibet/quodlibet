@@ -12,6 +12,9 @@ implements build and install commands for operations related to
 Python GTK+ and GObject support. This includes installation
 of man pages and gettext/intltool support.
 """
+
+import os
+
 try:
     from py2exe import Distribution
 except ImportError:
@@ -24,13 +27,8 @@ from gdist.core import GCommand
 from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
 from gdist.po import build_mo, install_mo, po_stats, check_pot
+from gdist.icons import build_icon_cache, install_icons
 
-import os
-
-class build_icon_cache(GCommand):
-    """Update the icon theme cache"""
-    def run(self):
-        self.spawn(['gtk-update-icon-cache', '-f', 'quodlibet/images/hicolor'])
 
 class build(distutils_build):
     """Override the default build with new subcommands."""
@@ -50,6 +48,7 @@ class install(distutils_install):
         ("install_shortcuts", lambda self: self.distribution.has_shortcuts()),
         ("install_man", lambda self: self.distribution.has_man_pages()),
         ("install_mo", lambda self: self.distribution.has_po()),
+        ("install_icons", lambda self: self.distribution.need_icon_install()),
        ]
 
 class GDistribution(Distribution):
@@ -83,6 +82,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build_mo", build_mo)
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
         self.cmdclass.setdefault("build_icon_cache", build_icon_cache)
+        self.cmdclass.setdefault("install_icons", install_icons)
         self.cmdclass.setdefault("install_shortcuts", install_shortcuts)
         self.cmdclass.setdefault("install_man", install_man)
         self.cmdclass.setdefault("install_mo", install_mo)
@@ -101,6 +101,9 @@ class GDistribution(Distribution):
         return os.name != 'nt' and bool(self.man_pages)
 
     def need_icon_cache(self):
+        return os.name != 'nt'
+
+    def need_icon_install(self):
         return os.name != 'nt'
 
 __all__ = ["GDistribution"]
