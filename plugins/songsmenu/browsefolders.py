@@ -24,8 +24,8 @@ from quodlibet.qltk.msg import ErrorMessage
 
 
 def get_startup_id():
-    from quodlibet.widgets import main
-    app_name = type(main).__name__
+    from quodlibet import app
+    app_name = type(app.window).__name__
     return "%s_TIME%d" % (app_name, gtk.get_current_event_time())
 
 

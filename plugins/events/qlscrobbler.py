@@ -24,7 +24,7 @@ except ImportError:
 
 import gobject, gtk
 
-from quodlibet import player, config, const, widgets, parse, util, qltk
+from quodlibet import config, const, app, parse, util, qltk
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.ccb import ConfigCheckButton
@@ -311,7 +311,7 @@ class QLSubmitQueue:
         return self._check_submit(self.nowplaying_url, data)
 
     def quick_dialog_helper(self, dialog_type, msg):
-        dialog = Message(dialog_type, widgets.main, "QLScrobbler", msg)
+        dialog = Message(dialog_type, app.window, "QLScrobbler", msg)
         dialog.connect('response', lambda dia, resp: dia.destroy())
         dialog.show()
 
@@ -377,12 +377,12 @@ class QLScrobbler(EventPlugin):
         if song is None:
             return
         self.start_time = int(time.time())
-        if player.playlist.paused:
+        if app.player.paused:
             self.unpaused_time = 0
         else:
             self.unpaused_time = time.time()
         self.elapsed = 0
-        if self.__enabled and not player.playlist.paused:
+        if self.__enabled and not app.player.paused:
             self.send_nowplaying(song)
         else:
             self.nowplaying = song

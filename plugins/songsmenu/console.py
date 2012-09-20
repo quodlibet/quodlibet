@@ -38,21 +38,26 @@ class PyConsole(SongsMenuPlugin):
         win.set_icon_name(self.PLUGIN_ICON)
         win.set_title(self.PLUGIN_DESC + " (Quod Libet)")
 
+        from quodlibet import app
         console = PythonConsole(
             namespace = {
                 'songs' : songs,
                 'files': files,
-                'sdict': song_dicts})
+                'sdict': song_dicts,
+                'app': app})
         win.add(console)
         win.show_all()
 
         acces_string = _("You can access the following objects by default:\\n"
             "  '%s' (SongWrapper objects)\\n"
             "  '%s' (Song dictionaries)\\n"
-            "  '%s' (Filename list)") % ("songs", "sdict", "files")
+            "  '%s' (Filename list)\\n"
+            "  '%s' (Application instance)") % (
+            "songs", "sdict", "files", "app")
 
         dir_string = _("Your current working directory is:")
 
+        console.eval("import mutagen", False)
         console.eval("import os", False)
         console.eval("print \"Python: %s / Quod Libet: %s\"" %
             (sys.version.split()[0], const.VERSION), False)

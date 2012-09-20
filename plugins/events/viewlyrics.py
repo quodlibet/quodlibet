@@ -22,7 +22,7 @@ import os
 
 import gtk
 
-from quodlibet import widgets
+from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -57,16 +57,13 @@ class ViewLyrics(EventPlugin):
 
         self.expander.add(self.scrolled_window)
         self.scrolled_window.show()
-        if isinstance(widgets.main.songpane, gtk.VPaned):
-            # Newer Quod Libet, we can't pack into songpane.
-            # So we pack into the window itself, throwing in some padding.
-            self.expander.set_border_width(6)
-            widgets.main.child.pack_start(self.expander, expand=False,
-                                          fill=True)
-        else:
-            # Older Quod Libet. Just pack straight into songpane.
-            widgets.main.songpane.pack_start(self.expander, expand=False,
-                                             fill=True)
+
+        # Newer Quod Libet, we can't pack into songpane.
+        # So we pack into the window itself, throwing in some padding.
+        self.expander.set_border_width(6)
+        app.window.child.pack_start(self.expander, expand=False,
+                                      fill=True)
+
         # We don't show the expander here because it will be shown when a song
         # starts playing (see plugin_on_song_started).
 

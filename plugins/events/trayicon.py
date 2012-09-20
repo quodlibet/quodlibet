@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,10 +14,8 @@ import gobject
 
 from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
 
-from quodlibet import browsers, config, qltk, util
-from quodlibet.library import library
+from quodlibet import browsers, config, qltk, util, app
 from quodlibet.parse import Pattern
-from quodlibet.player import playlist as player
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.controls import StopAfterMenu
@@ -24,7 +23,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.util.thumbnails import scale, calc_scale_size
-from quodlibet.widgets import main as window, watcher
+
 
 class Preferences(gtk.VBox):
     """A small window to configure the tray icon's tooltip."""
@@ -77,7 +76,7 @@ class Preferences(gtk.VBox):
         for cb in cbs:
             cb.connect('toggled', self.__changed_cb, cbs, entry)
         entry.connect(
-            'changed', self.__changed_entry, cbs, preview, player)
+            'changed', self.__changed_entry, cbs, preview)
         try:
             entry.set_text(config.get("plugins", "icon_tooltip"))
         except:
@@ -95,7 +94,7 @@ class Preferences(gtk.VBox):
         text = "<%s>" % "~".join([cb.tag for cb in cbs if cb.get_active()])
         entry.set_text(text)
 
-    def __changed_entry(self, entry, cbs, label, player):
+    def __changed_entry(self, entry, cbs, label):
         text = entry.get_text()
         if text[0:1] == "<" and text[-1:] == ">":
             parts = text[1:-1].split("~")
@@ -113,8 +112,8 @@ class Preferences(gtk.VBox):
         else:
             for cb in cbs: cb.set_inconsistent(True)
 
-        if player.info is None: text = _("Not playing")
-        else: text = Pattern(entry.get_text()) % player.info
+        if app.player.info is None: text = _("Not playing")
+        else: text = Pattern(entry.get_text()) % app.player.info
         label.set_text(text)
         label.get_parent().set_tooltip_text(text)
         config.set("plugins", "icon_tooltip", entry.get_text())
@@ -158,20 +157,20 @@ class TrayIcon(EventPlugin):
         self.__icon.connect('scroll-event', self.__scroll)
         self.__icon.connect('button-press-event', self.__button_middle)
 
-        self.__w_sig_map = window.connect('map', self.__window_map)
-        self.__w_sig_del = window.connect('delete-event', self.__window_delete)
+        self.__w_sig_map = app.window.connect('map', self.__window_map)
+        self.__w_sig_del = app.window.connect('delete-event', self.__window_delete)
 
-        self.__stop_after = StopAfterMenu(player)
+        self.__stop_after = StopAfterMenu(app.player)
 
         self.plugin_on_paused()
-        self.plugin_on_song_started(player.song)
+        self.plugin_on_song_started(app.player.song)
 
     def disabled(self):
         self.__icon_theme.disconnect(self.__theme_sig)
         self.__icon_theme = None
         self.__stop_after = None
-        window.disconnect(self.__w_sig_map)
-        window.disconnect(self.__w_sig_del)
+        app.window.disconnect(self.__w_sig_map)
+        app.window.disconnect(self.__w_sig_del)
         self.__icon.set_visible(False)
         try: self.__icon.destroy()
         except AttributeError: pass
@@ -225,7 +224,7 @@ class TrayIcon(EventPlugin):
             self.__pixbuf.copy_area(0, 0, w, h, bg, 0, (self.__size - h) / 2)
             self.__pixbuf = bg
 
-        if player.paused and not self.__pixbuf_paused:
+        if app.player.paused and not self.__pixbuf_paused:
             base = self.__pixbuf.copy()
             w, h = base.get_width(), base.get_height()
             pad = h / 15
@@ -247,7 +246,7 @@ class TrayIcon(EventPlugin):
 
             self.__pixbuf_paused = base
 
-        if player.paused:
+        if app.player.paused:
             new_pixbuf = self.__pixbuf_paused
         else:
             new_pixbuf = self.__pixbuf
@@ -270,7 +269,7 @@ class TrayIcon(EventPlugin):
 
     def __prefs_destroy(self, *args):
         if self.__icon:
-            self.plugin_on_song_started(player.song)
+            self.plugin_on_song_started(app.player.song)
 
     def __window_delete(self, win, event):
         return self.__hide_window()
@@ -289,20 +288,17 @@ class TrayIcon(EventPlugin):
 
     def __hide_window(self):
         self.__first_map = False
-        # Don't hide if it's not visible
-        if not self.__icon.is_embedded():
-            return False
-        window.hide()
+        app.window.hide()
         config.set("plugins", "icon_window_visible", "false")
         return True
 
     def __show_window(self):
-        window.show()
-        window.present()
+        app.window.show()
+        app.window.present()
 
     def __button_left(self, icon):
         if self.__destroy_win32_menu(): return
-        if window.get_property('visible'):
+        if app.window.get_property('visible'):
             self.__hide_window()
         else:
             self.__show_window()
@@ -313,6 +309,7 @@ class TrayIcon(EventPlugin):
             self.__play_pause()
 
     def __play_pause(self, *args):
+        player = app.player
         if player.song:
             player.paused ^= True
         else:
@@ -327,6 +324,7 @@ class TrayIcon(EventPlugin):
         if event.direction in [SCROLL_LEFT, SCROLL_RIGHT]:
             event.state = gtk.gdk.SHIFT_MASK
 
+        player = app.player
         if event.state & gtk.gdk.SHIFT_MASK:
             if event.direction in [SCROLL_UP, SCROLL_LEFT]:
                 player.previous()
@@ -363,6 +361,9 @@ class TrayIcon(EventPlugin):
     def __button_right(self, icon, button, time):
         if self.__destroy_win32_menu(): return
         self.__menu = menu = gtk.Menu()
+
+        player = app.player
+        window = app.window
 
         pp_icon = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
         playpause = gtk.ImageMenuItem(pp_icon)
@@ -412,7 +413,7 @@ class TrayIcon(EventPlugin):
 
         for Kind in browsers.browsers:
             i = gtk.MenuItem(Kind.accelerated_name)
-            i.connect_object('activate', LibraryBrowser, Kind, library)
+            i.connect_object('activate', LibraryBrowser, Kind, app.library)
             browse_sub.append(i)
 
         browse.set_submenu(browse_sub)
@@ -430,7 +431,7 @@ class TrayIcon(EventPlugin):
             if song is None: return
             else:
                 song["~#rating"] = value
-                watcher.changed([song])
+                app.librarian.changed([song])
 
         for i in range(0, int(1.0 / util.RATING_PRECISION) + 1):
             j = i * util.RATING_PRECISION
@@ -441,7 +442,7 @@ class TrayIcon(EventPlugin):
         rating.set_submenu(rating_sub)
 
         quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        quit.connect('activate', window.destroy)
+        quit.connect('activate', lambda *x: app.quit())
 
         menu.append(playpause)
         menu.append(gtk.SeparatorMenuItem())
@@ -469,9 +470,11 @@ class TrayIcon(EventPlugin):
     plugin_on_unpaused = __update_icon
 
     def __properties(self, *args):
-        if player.song:
-            SongProperties(watcher, [player.song])
+        song = app.player.song
+        if song:
+            SongProperties(app.librarian, [song])
 
     def __information(self, *args):
-        if player.song:
-            Information(watcher, [player.song])
+        song = app.player.song
+        if song:
+            Information(app.window, [song])

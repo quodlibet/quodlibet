@@ -16,7 +16,7 @@ from pickle import PickleError
 import gtk
 import gobject
 
-from quodlibet import const, config, util, widgets
+from quodlibet import const, config, util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 try:
@@ -189,9 +189,9 @@ class LastFMSyncCache(object):
             song['~#added'] = min(song['~#added'], stats['added'])
 
 class LastFMSyncWindow(gtk.Dialog):
-    def __init__(self):
+    def __init__(self, parent):
         super(LastFMSyncWindow, self).__init__(
-                _("Last.fm Sync"), widgets.main, buttons = (
+                _("Last.fm Sync"), parent, buttons = (
                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                     gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
         self.set_border_width(5)
@@ -252,7 +252,7 @@ class LastFMSync(SongsMenuPlugin):
         except (ValueError, PickleError, IOError):
             cache = self.cache_shelf[user] = LastFMSyncCache(user)
 
-        self.dialog = LastFMSyncWindow()
+        self.dialog = LastFMSyncWindow(self.plugin_window)
         self.running = True
         thread = Thread(target=self.runner, args=(cache,))
         thread.daemon = True

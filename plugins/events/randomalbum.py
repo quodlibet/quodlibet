@@ -10,7 +10,8 @@ import random
 import gtk
 import gobject
 
-from quodlibet import config, player, widgets
+from quodlibet import app
+from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.library import library
 from quodlibet import util
@@ -156,8 +157,8 @@ class RandomAlbum(EventPlugin):
 
     def plugin_on_song_started(self, song):
         if (song is None and config.get("memory", "order") != "onesong" and
-            not player.playlist.paused):
-            browser = widgets.main.browser
+            not app.player.paused):
+            browser = app.window.browser
             if not browser.can_filter('album'): return
 
             # Use the AlbumLibrary for free...
@@ -199,7 +200,7 @@ class RandomAlbum(EventPlugin):
             self.change_album(album)
 
     def change_album(self, album):
-        browser = widgets.main.browser
+        browser = app.window.browser
         if not browser.can_filter('album'): return
         # TODO: fix assumption: album("album") is potentially ambiguous.
         # See Issue 659.
@@ -211,5 +212,5 @@ class RandomAlbum(EventPlugin):
         # after the song ended. Also, if this is program startup and the
         # previous current song wasn't found, we'll get this condition
         # as well, so just leave the player paused if that's the case.
-        try: player.playlist.next()
-        except AttributeError: player.playlist.paused = True
+        try: app.player.next()
+        except AttributeError: app.player.paused = True

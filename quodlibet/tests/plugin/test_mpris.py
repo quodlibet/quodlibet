@@ -12,11 +12,11 @@ from tests.plugin import PluginTestCase, import_plugin
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
-from quodlibet import widgets
 from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
 from quodlibet import library
 from quodlibet import browsers
 from quodlibet import player
+from quodlibet import app
 from quodlibet.player.nullbe import NullPlayer
 
 
@@ -33,7 +33,6 @@ A2 = AudioFile(
          '~filename': '/foo'})
 A2.sanitize()
 
-
 class TMPRIS(PluginTestCase):
     @classmethod
     def setUpClass(cls):
@@ -41,13 +40,17 @@ class TMPRIS(PluginTestCase):
         browsers.init()
         library.init()
         player.init("nullbe")
-        player.init_device(library.librarian)
-        widgets.main = QuodLibetWindow(library.library, player.playlist)
+
+        app.player = player.init_device(library.librarian)
+        app.window = QuodLibetWindow(library.library, player.playlist)
+        app.librarian = library.librarian
+        app.player = player.playlist
+
         cls.plugin = import_plugin("events", "mpris").MPRIS
 
     def setUp(self):
-        widgets.main.songlist.set_songs([A1, A2])
-        player.playlist.go_to(None)
+        app.window.songlist.set_songs([A1, A2])
+        app.player.go_to(None)
         self.m = self.plugin()
         self.m.enabled()
         self._replies = []
@@ -86,12 +89,12 @@ class TMPRIS(PluginTestCase):
         args = {"reply_handler": self._reply, "error_handler": self._error}
         piface = "org.mpris.MediaPlayer2"
 
-        widgets.main.hide()
-        self.failIf(widgets.main.get_visible())
+        app.window.hide()
+        self.failIf(app.window.get_visible())
         self._main_iface().Raise(**args)
         self.failIf(self._wait())
-        self.failUnless(widgets.main.get_visible())
-        widgets.main.hide()
+        self.failUnless(app.window.get_visible())
+        app.window.hide()
 
         props = {
             "CanQuit": dbus.Boolean(True),
@@ -205,7 +208,7 @@ class TMPRIS(PluginTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        widgets.main.destroy()
+        app.window.destroy()
         config.quit()
 
 add(TMPRIS)

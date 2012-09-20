@@ -9,8 +9,7 @@
 #
 
 from os import path
-from quodlibet import qltk, config, widgets, print_w, print_d
-from quodlibet.player import playlist as player
+from quodlibet import qltk, config, print_w, print_d, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import Message
@@ -201,7 +200,7 @@ class SqueezeboxServer(object):
         end = time.time()
         took = (end - start) * 1000
         reported_time = self.get_milliseconds()
-        ql_pos = player.get_position()
+        ql_pos = app.player.get_position()
         # Assume 50% of the time taken to complete is response.
         new_delta = ql_pos - reported_time
         # TODO: Better predictive modelling
@@ -220,7 +219,7 @@ class SqueezeboxServer(object):
 
     def unpause(self):
         if self.is_stopped(): self.play()
-        ms = player.get_position()
+        ms = app.player.get_position()
         self.seek_to(ms)
         #self.player_request("pause 0")
 
@@ -345,7 +344,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
     @staticmethod
     def _show_dialog(dialog_type, msg):
-        dialog = Message(dialog_type, widgets.main, "Squeezebox", msg)
+        dialog = Message(dialog_type, app.window, "Squeezebox", msg)
         dialog.connect('response', lambda dia, resp: dia.destroy())
         dialog.show()
 
@@ -365,7 +364,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         if cls.server.is_connected:
             ret = 0
             if len(cls.server.players) > 1:
-                dialog = GetPlayerDialog(widgets.main, cls.server.players,
+                dialog = GetPlayerDialog(app.window, cls.server.players,
                                          cls.server.current_player)
                 ret = dialog.run() or 0
             else:
@@ -496,6 +495,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     def post_reconnect(cls):
         cls.server.stop()
         SqueezeboxPluginMixin.post_reconnect()
+        player = app.player
         cls.plugin_on_song_started(player.info)
         cls.plugin_on_seek(player.info, player.get_position())
 
@@ -521,11 +521,11 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
         # Yucky hack to allow some form of immediacy on re-configuration
         cls.server._debug = cls._debug = cls.cfg_get_bool("debug", False)
         if cls._debug:
-            print_d("Paused" if player.paused else "Not paused")
+            print_d("Paused" if app.player.paused else "Not paused")
         if song and cls.server and cls.server.is_connected:
             path = cls.get_path(song)
             print_d("Requesting to play %s..." % path)
-            if player.paused:
+            if app.player.paused:
                 cls.server.change_song(path)
             else:
                 cls.server.playlist_play(path)
@@ -540,7 +540,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
 
     @classmethod
     def plugin_on_seek(cls, song, msec):
-        if not player.paused:
+        if not app.player.paused:
             if cls.server:
                 cls.server.seek_to(msec)
                 cls.server.play()
@@ -565,7 +565,7 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
 
     def __add_songs(self, songs):
         self.server.playlist_save(self.TEMP_PLAYLIST)
-        # player._set_paused(True)
+        # app.player.paused = True
         self.server.playlist_clear()
         for song in songs:
             #print_d(song("~filename"))
@@ -588,7 +588,7 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
                 _("Error finding %s. Please check settings") %self.server.config
             ).run()
         else:
-            paused = player._get_paused()
+            paused = app.player.paused
             # Spin a worker thread.
             worker = Thread(target=self.__add_songs, args=(songs,))
             print_d("Starting worker thread...")
@@ -600,6 +600,6 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
             worker.join(timeout=30)
             # Only save once we're done adding
             self.server.playlist_save(name)
-            player._set_paused(paused)
+            app.player.paused = paused
             self.server.playlist_resume(self.TEMP_PLAYLIST,
-                                        not player._get_paused(), True)
+                                        not app.player.paused, True)

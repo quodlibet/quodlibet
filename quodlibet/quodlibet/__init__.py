@@ -21,6 +21,43 @@ import quodlibet.util
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 
+
+class Application(object):
+    """A main application class for controlling the application as a whole
+    and accessing sub-modules.
+
+    window    - The main window which is present as long as QL is running
+    library   - The main library (see library.SongFileLibrary)
+    librarian - The main (and atm only) librarian (see library.SongLibrarian)
+    player    - see player._base
+
+    quit()    - Quit the application
+
+    """
+
+    window = None
+    library = None
+    librarian = None
+    player = None
+
+    def quit(self):
+        import gobject
+
+        def idle_quit():
+            import gtk
+            if self.window:
+                gtk.gdk.threads_enter()
+                self.window.destroy()
+                gtk.gdk.threads_leave()
+
+        # so this can be called from a signal handler and before
+        # the main loop starts
+        gobject.idle_add(idle_quit, priority=gobject.PRIORITY_HIGH)
+
+
+app = Application()
+
+
 def _gtk_init(icon=None):
     import pygtk
     pygtk.require('2.0')
@@ -211,12 +248,9 @@ def enable_periodic_save(save_library):
 
     copool.add(periodic_library_save, timeout=timeout)
 
-def _init_signal(window=None):
-    """Catches certain signals and destroys the window if they occur.
-    If called without a window, it catches all signals and will destroy
-    the window shortly after the mainloop gets started.
-
-    Has to be called with a valid window before the mainloop starts."""
+def _init_signal():
+    """Catches certain signals and quits the application once the
+    mainloop has started."""
 
     import signal
     import gobject
@@ -225,26 +259,20 @@ def _init_signal(window=None):
     if os.name == "nt":
         return
 
-    _init_signal.window = window
-
     def pipe_can_read(*args):
-        window = _init_signal.window
-        if window:
-            import gtk
-            gtk.gdk.threads_enter()
-            window.destroy()
-            gtk.gdk.threads_leave()
+        app.quit()
         return False
 
     # The signal handler can not call gtk functions, thus we have to
     # build a dummy pipe to pass it into the gtk mainloop
 
     r, w = os.pipe()
-    gobject.io_add_watch(r, gobject.IO_IN, pipe_can_read, window)
+    gobject.io_add_watch(r, gobject.IO_IN, pipe_can_read)
 
     SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
     for sig in filter(None, SIGS):
         signal.signal(sig, lambda sig, frame: os.write(w, "die!!!"))
+
 
 def main(window):
     print_d("Entering quodlibet.main")
@@ -287,8 +315,6 @@ def main(window):
 
     window.connect('destroy', quit_gtk)
     window.show()
-
-    _init_signal(window)
 
     # This has been known to cause segmentation faults in some Python,
     # GTK+, and GStreamer versions.

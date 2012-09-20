@@ -8,8 +8,7 @@
 from quodlibet.plugins.playorder import PlayOrderPlugin, \
     PlayOrderRememberedMixin, PlayOrderInOrderMixin
 
-# Importing main directly fails, as it is assigned after this file is read
-from quodlibet import widgets
+from quodlibet import app
 
 class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
     PlayOrderInOrderMixin):
@@ -25,7 +24,7 @@ class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
         next_fallback = PlayOrderInOrderMixin.next(self, playlist, iter)
         PlayOrderRememberedMixin.next(self, playlist, iter)
 
-        selected = widgets.main.songlist.get_selected_songs()
+        selected = app.window.songlist.get_selected_songs()
         if not selected:
             return next_fallback
 

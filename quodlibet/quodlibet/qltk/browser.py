@@ -97,10 +97,9 @@ class LibraryBrowser(Window):
         self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column):
-        from quodlibet.widgets import main
-        from quodlibet.player import playlist as player
-        main.playlist.enqueue([view.get_model()[path][0]])
-        if player.song is None: player.next()
+        from quodlibet import app
+        app.window.playlist.enqueue([view.get_model()[path][0]])
+        if app.player.song is None: app.player.next()
 
     def __drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)

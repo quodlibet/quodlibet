@@ -19,11 +19,9 @@ import dbus
 import gtk
 import gobject
 
-from quodlibet import config, qltk
+from quodlibet import config, qltk, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import XMLFromPattern
-from quodlibet.widgets import main as qlmainwindow
-from quodlibet.player import playlist as qlplayer
 from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
@@ -122,12 +120,12 @@ class PreferencesWidget(gtk.VBox):
         # preview button
         preview_button = qltk.Button(
             _("_Show notification"), gtk.STOCK_EXECUTE)
-        preview_button.set_sensitive(qlplayer.info is not None)
+        preview_button.set_sensitive(app.player.info is not None)
         preview_button.connect("clicked", self.on_preview_button_clicked)
         self.qlplayer_connected_signals = [
-            qlplayer.connect("paused", self.on_player_state_changed,
+            app.player.connect("paused", self.on_player_state_changed,
                              preview_button),
-            qlplayer.connect("unpaused", self.on_player_state_changed,
+            app.player.connect("unpaused", self.on_player_state_changed,
                              preview_button),
         ]
 
@@ -207,8 +205,8 @@ class PreferencesWidget(gtk.VBox):
         set_conf_value(cfgname, button.get_active())
 
     def on_preview_button_clicked(self, button):
-        if qlplayer.info is not None:
-            if not self.plugin_instance.show_notification(qlplayer.info):
+        if app.player.info is not None:
+            if not self.plugin_instance.show_notification(app.player.info):
                 ErrorMessage(self, _("Connection Error"),
                     _("Couldn't connect to notification daemon.")).run()
 
@@ -217,7 +215,7 @@ class PreferencesWidget(gtk.VBox):
 
     def on_destroyed(self, ev):
         for sig in self.qlplayer_connected_signals:
-            qlplayer.disconnect(sig)
+            app.player.disconnect(sig)
         self.qlplayer_connected_signals = []
         self.plugin_instance = None
 
@@ -341,12 +339,12 @@ class Notify(EventPlugin):
         if notify_id == self.__last_id and key == "next":
             # Always show a new notification if the next button got clicked
             self.__force_notification = True
-            qlplayer.next()
+            app.player.next()
 
     def on_song_change(self, song, typ):
         if get_conf_value("show_notifications") in [typ, "all"] \
                 and not (get_conf_bool("show_only_when_unfocused") \
-                     and qlmainwindow.has_toplevel_focus()) \
+                     and app.window.has_toplevel_focus()) \
                 or self.__force_notification:
             def idle_show(song):
                 self.show_notification(song)

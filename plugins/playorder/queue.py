@@ -7,8 +7,7 @@
 
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
 
-# Importing main directly fails, as it is assigned after this file is read
-from quodlibet import widgets
+from quodlibet import app
 
 class QueueOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
     PLUGIN_ID = "queue"
@@ -25,5 +24,4 @@ class QueueOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
         if iter is None: return
         song = playlist[iter][0]
         if song is None: return
-        widgets.main.playlist.enqueue([playlist[iter][0]])
-
+        app.window.playlist.enqueue([playlist[iter][0]])

@@ -16,11 +16,11 @@ import cairo
 import pangocairo
 from math import pi
 
-from quodlibet import config, qltk
+from quodlibet import config, qltk, app
 from quodlibet.qltk.textedit import PatternEdit
 from quodlibet.parse import XMLFromPattern
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.player import playlist
+
 
 def Label(text):
     l = gtk.Label(text)
@@ -299,7 +299,7 @@ class AnimOsd(EventPlugin):
             color = map(__coltofloat, (color.red, color.green, color.blue, 0.0))
             self.conf.text = tuple(color)
             cfg_set_tuple("text", self.conf.text)
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         def set_fill(button):
             color = button.get_color()
@@ -307,13 +307,13 @@ class AnimOsd(EventPlugin):
                 button.get_alpha()))
             self.conf.fill = tuple(color)
             cfg_set_tuple("fill", self.conf.fill)
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         def set_font(button):
             font = button.get_font_name()
             config.set("plugins", "animosd_font", font)
             self.conf.font = font
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         def change_delay(button):
             value = int(button.get_value() * 1000)
@@ -330,13 +330,13 @@ class AnimOsd(EventPlugin):
             value = button.get_active() / 2.0
             config.set("plugins", "animosd_pos_y", str(value))
             self.conf.pos_y = value
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         def change_align(button):
             value = button.get_active()
             config.set("plugins", "animosd_align", str(value))
             self.conf.align = value
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         def change_shadow(button):
             if button.get_active():
@@ -344,7 +344,7 @@ class AnimOsd(EventPlugin):
             else:
                 self.conf.shadow = (-1.0, 0.0, 0.0, 0.0)
             cfg_set_tuple("shadow", self.conf.shadow)
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         def change_outline(button):
             if button.get_active():
@@ -354,7 +354,7 @@ class AnimOsd(EventPlugin):
             else:
                 self.conf.outline = (-1.0, 0.0, 0.0)
             cfg_set_tuple("outline", self.conf.outline)
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         def change_rounded(button):
             if button.get_active():
@@ -362,7 +362,7 @@ class AnimOsd(EventPlugin):
             else:
                 self.conf.corners = 0
             config.set("plugins", "animosd_corners", str(self.conf.corners))
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         def edit_string(button):
             w = PatternEdit(button, AnimOsd.conf.string)
@@ -373,7 +373,7 @@ class AnimOsd(EventPlugin):
             value = window.text
             config.set("plugins", "animosd_string", value)
             self.conf.string = value
-            self.plugin_single_song(playlist.song)
+            self.plugin_single_song(app.player.song)
 
         # Main VBox to return
         vb = gtk.VBox(spacing=6)

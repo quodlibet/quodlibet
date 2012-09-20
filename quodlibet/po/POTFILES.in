@@ -73,4 +73,3 @@ quodlibet/util/logging.py
 quodlibet/util/massagers.py
 quodlibet/util/songwrapper.py
 quodlibet/util/tags.py
-quodlibet/widgets.py

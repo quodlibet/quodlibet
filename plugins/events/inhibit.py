@@ -7,13 +7,13 @@
 import gtk
 import dbus
 
+from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 
 
 def get_toplevel_xid():
-    from quodlibet.widgets import main
-    if main.window:
-        return main.window.xid
+    if app.window.window:
+        return app.window.window.xid
     return 0
 
 
@@ -42,13 +42,11 @@ class SessionInhibit(EventPlugin):
     __cookie = None
 
     def enabled(self):
-        from quodlibet.player import playlist as player
-        if not player.paused:
+        if not app.player.paused:
             self.plugin_on_unpaused()
 
     def disabled(self):
-        from quodlibet.player import playlist as player
-        if not player.paused:
+        if not app.player.paused:
             self.plugin_on_paused()
 
     def plugin_on_unpaused(self):

@@ -267,8 +267,8 @@ class SongsMenu(gtk.Menu):
     def __enqueue(self, item, songs):
         songs = filter(lambda s: s.can_add, songs)
         if songs:
-            from quodlibet.widgets import main
-            main.playlist.enqueue(songs)
+            from quodlibet import app
+            app.window.playlist.enqueue(songs)
 
     def __delete(self, item, songs, library):
         songs = set(songs)

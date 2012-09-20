@@ -512,8 +512,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __enqueue(self, songs):
         songs = filter(lambda s: s.can_add, songs)
         if songs:
-            from quodlibet.widgets import main
-            main.playlist.enqueue(songs)
+            from quodlibet import app
+            app.window.playlist.enqueue(songs)
 
     def __redraw_current(self, player, song=None):
         self.model.current_iter = self.model.current_iter
@@ -748,9 +748,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         if rows:
             songs = [model[row][0] for row in rows]
         else:
-            from quodlibet.player import playlist
-            if playlist.song:
-                songs = [playlist.song]
+            from quodlibet import app
+            if app.player.song:
+                songs = [app.player.song]
             else: return
         SongProperties(librarian, songs, parent=self)
 
@@ -759,9 +759,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         if rows:
             songs = [model[row][0] for row in rows]
         else:
-            from quodlibet.player import playlist
-            if playlist.song:
-                songs = [playlist.song]
+            from quodlibet import app
+            if app.player.song:
+                songs = [app.player.song]
             else: return
         Information(librarian, songs, self)
 

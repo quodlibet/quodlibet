@@ -10,8 +10,9 @@ import sys
 import gtk
 
 from quodlibet import const
+from quodlibet import app
 
-def init(app_id, main_window):
+def init(app_id):
     try: import gnome, gnome.ui
     except ImportError: return
 
@@ -26,8 +27,4 @@ def init(app_id, main_window):
         # http://trac.gajim.org/ticket/929
         client.set_restart_command(len(sys.argv), [command] + sys.argv[1:])
 
-    def destroy_window(client, window):
-        gtk.gdk.threads_enter()
-        window.destroy()
-        gtk.gdk.threads_leave()
-    client.connect('die', destroy_window, main_window)
+    client.connect('die', lambda *x: app.quit())

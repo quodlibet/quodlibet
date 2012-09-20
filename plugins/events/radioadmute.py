@@ -6,7 +6,9 @@
 
 import re
 
+from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
+
 
 class RadioAdMute(EventPlugin):
     PLUGIN_ID = "radio_ad_mute"
@@ -37,7 +39,7 @@ class RadioAdMute(EventPlugin):
         self.plugin_on_song_ended()
 
     def plugin_on_song_started(self, song):
-        from quodlibet.player import playlist as player
+        player = app.player
 
         # only check stream info songs
         if player.song is player.info:
@@ -56,8 +58,7 @@ class RadioAdMute(EventPlugin):
             return
         self.__muted = False
 
-        from quodlibet.player import playlist as player
-
+        player = app.player
         if player.volume != 0:  # volume changed, do nothing
             return
 

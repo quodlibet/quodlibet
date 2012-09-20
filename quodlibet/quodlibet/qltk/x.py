@@ -39,7 +39,8 @@ class Window(gtk.Window):
 
     def set_transient_for(self, parent):
         if parent is None:
-            from quodlibet.widgets import main as parent
+            from quodlibet import app
+            parent = app.window
         super(Window, self).set_transient_for(parent)
 
     def do_close_accel(self):

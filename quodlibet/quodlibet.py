@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2012 Christoph Reiter
 # <quod-libet-development@googlegroups.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -14,16 +15,25 @@ import sys
 import tempfile
 
 import quodlibet
+import quodlibet.player
 
+from quodlibet import app
 from quodlibet import config
+from quodlibet import browsers
 from quodlibet import const
 from quodlibet import util
 from quodlibet.util.uri import URI
 
 play = False
 
+
 def main():
-    import quodlibet.player
+    quodlibet._init_signal()
+
+    process_arguments()
+    if isrunning() and not quodlibet.const.DEBUG:
+        print_(_("Quod Libet is already running."))
+        control('focus')
 
     config.init(const.CONFIG)
 
@@ -31,19 +41,21 @@ def main():
                              icon="quodlibet",
                              name="Quod Libet",
                              title=const.PROCESS_TITLE_QL)
-
-    os.environ["PULSE_PROP_media.role"] = "music"
-    os.environ["PULSE_PROP_application.icon_name"] = "quodlibet"
+    app.library = library
+    app.librarian = library.librarian
 
     for backend in [config.get("player", "backend"), "nullbe"]:
         try:
-            player = quodlibet.init_backend(backend, library.librarian)
+            player = quodlibet.init_backend(backend, app.librarian)
         except quodlibet.player.error, error:
             print_e("%s. %s" % (error.short_desc, error.long_desc))
         else:
             break
+    app.player = player
 
-    from quodlibet import browsers
+    os.environ["PULSE_PROP_media.role"] = "music"
+    os.environ["PULSE_PROP_application.icon_name"] = "quodlibet"
+
     browsers.init()
 
     from quodlibet.qltk.songlist import SongList
@@ -76,7 +88,21 @@ def main():
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(library)
 
-    window = init_plugins(player, library)
+    pm = quodlibet.init_plugins()
+
+    if hasattr(player, "init_plugins"):
+        player.init_plugins()
+
+    from quodlibet.qltk.songsmenu import SongsMenu
+    SongsMenu.init_plugins()
+
+    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
+    app.window = window = QuodLibetWindow(library, player)
+
+    from quodlibet.plugins.events import EventPluginHandler
+    pm.register_handler(EventPluginHandler(library.librarian, player))
+
+    pm.rescan()
 
     from quodlibet.qltk.remote import FSInterface, FIFOControl
     from quodlibet.qltk.tracker import SongTracker
@@ -90,60 +116,24 @@ def main():
     DBusHandler(player, library)
     SongTracker(library.librarian, player, window.playlist)
 
-    if play:
-        player.paused = False
+    from quodlibet.qltk import session
+    session.init("quodlibet")
 
     quodlibet.enable_periodic_save(save_library=True)
 
-    from quodlibet.qltk import session
-    session.init("quodlibet", window)
+    if play:
+        player.paused = False
 
     quodlibet.main(window)
 
     print_d("Shutting down player device %r." % player.version_info)
     quodlibet.player.quit(player)
-
     quodlibet.library.save(force=True)
+
     config.save(const.CONFIG)
 
     print_d("Finished shutdown.")
 
-def init_plugins(player, library):
-    pm = quodlibet.init_plugins()
-
-    if hasattr(player, "init_plugins"):
-        player.init_plugins()
-
-    from quodlibet.qltk.songsmenu import SongsMenu
-    SongsMenu.init_plugins()
-
-    # uhh hacky.. plugins import widget.main/watcher,
-    # but we want to assign them later.
-    # So go through the plugin globals, replace them and pray
-    from quodlibet import widgets
-    widgets.main = main_dummy = object()
-    widgets.watcher = watcher_dummy = object()
-
-    pm.rescan()
-
-    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
-    window = QuodLibetWindow(library, player)
-
-    widgets.main = window
-    widgets.watcher = library.librarian
-
-    for module in pm._modules:
-        for key, value in vars(module).items():
-            if value is main_dummy:
-                vars(module)[key] = widgets.main
-            elif value is watcher_dummy:
-                vars(module)[key] = widgets.watcher
-
-    from quodlibet.plugins.events import EventPluginHandler
-    handler = EventPluginHandler(library.librarian, player)
-    pm.register_handler(handler)
-
-    return window
 
 def print_fifo(command):
     if not os.path.exists(const.CURRENT):
@@ -356,10 +346,4 @@ def process_arguments():
             play = True
 
 if __name__ == "__main__":
-    quodlibet._init_signal()
-
-    process_arguments()
-    if isrunning() and not quodlibet.const.DEBUG:
-        print_(_("Quod Libet is already running."))
-        control('focus')
     main()

@@ -6,6 +6,7 @@ import platform
 
 import gtk
 
+from quodlibet import app
 from quodlibet import const
 from quodlibet import util
 
@@ -84,7 +85,6 @@ class ExceptionDialog(gtk.Window):
     # that handles things going wrong, i.e. it only uses GTK+ code,
     # no QLTK wrappers.
     def __create_window(self, Kind, value, traceback, dump, minidump):
-        from quodlibet.widgets import main
         window = gtk.Window()
         window.set_default_size(400, 400)
         window.set_border_width(12)
@@ -119,7 +119,7 @@ Quod Libet may now be unstable. Closing it and restarting is recommended. Your l
 
         window.connect('destroy', self.__destroy)
         cancel.connect_object('clicked', gtk.Window.destroy, window)
-        close.connect('clicked', main.destroy)
+        close.connect('clicked', lambda *x: app.quit())
 
         window.show_all()
         filename = util.unexpand(dump)

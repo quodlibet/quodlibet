@@ -16,15 +16,13 @@ try:
 except ImportError:
     indicate = None
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util.uri import URI
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
-from quodlibet.player import playlist as player
-from quodlibet.widgets import main as window
-from quodlibet.library import librarian
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -56,7 +54,7 @@ class MPRIS(EventPlugin):
             return True
 
     def enabled(self):
-        self.__sig = window.connect('delete-event', self.__window_delete)
+        self.__sig = app.window.connect('delete-event', self.__window_delete)
 
         self.objects = [MPRIS1Root(), MPRIS1DummyTracklist(),
                         MPRIS1Player(), MPRIS2()]
@@ -76,7 +74,7 @@ class MPRIS(EventPlugin):
             obj.remove_from_connection()
         self.objects = []
 
-        window.disconnect(self.__sig)
+        app.window.disconnect(self.__sig)
 
     def plugin_on_paused(self):
         for obj in self.objects:
@@ -126,9 +124,7 @@ class MPRIS1Root(MPRISObject):
 
     @dbus.service.method(IFACE)
     def Quit(self):
-        gtk.gdk.threads_enter()
-        window.destroy()
-        gtk.gdk.threads_leave()
+        app.quit()
 
     @dbus.service.method(IFACE, out_signature="(qq)")
     def MprisVersion(self):
@@ -147,7 +143,7 @@ class MPRIS1DummyTracklist(MPRISObject):
 
     @dbus.service.method(IFACE, in_signature="i", out_signature="a{sv}")
     def GetMetadata(self, position):
-        song = player.info
+        song = app.player.info
         if position != 0:
             song = None
         return MPRIS1Player._get_metadata(song)
@@ -167,10 +163,11 @@ class MPRIS1DummyTracklist(MPRISObject):
 
     @dbus.service.method(IFACE, in_signature="b")
     def SetLoop(self, loop):
-        window.repeat.set_active(loop)
+        app.window.repeat.set_active(loop)
 
     @dbus.service.method(IFACE, in_signature="b")
     def SetRandom(self, shuffle):
+        window = app.window
         shuffle_on = window.order.get_active_name() == "shuffle"
         if shuffle_on and not shuffle:
             window.order.set_active("inorder")
@@ -188,16 +185,16 @@ class MPRIS1Player(MPRISObject):
         name = dbus.service.BusName(self.BUS_NAME, bus)
         super(MPRIS1Player, self).__init__(name, self.PATH)
 
-        self.__rsig = window.repeat.connect("toggled", self.__update_status)
-        self.__ssig = window.order.connect("changed", self.__update_status)
-        self.__lsig = librarian.connect("changed", self.__update_track_changed)
+        self.__rsig = app.window.repeat.connect("toggled", self.__update_status)
+        self.__ssig = app.window.order.connect("changed", self.__update_status)
+        self.__lsig = app.librarian.connect("changed", self.__update_track_changed)
 
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS1Player, self).remove_from_connection(*arg, **kwargs)
 
-        window.repeat.disconnect(self.__rsig)
-        window.order.disconnect(self.__ssig)
-        librarian.disconnect(self.__lsig)
+        app.window.repeat.disconnect(self.__rsig)
+        app.window.order.disconnect(self.__ssig)
+        app.librarian.disconnect(self.__lsig)
 
     def paused(self):
         self.StatusChange(self.__get_status())
@@ -207,8 +204,8 @@ class MPRIS1Player(MPRISObject):
         self.TrackChange(self._get_metadata(song))
 
     def __update_track_changed(self, library, songs):
-        if player.info in songs:
-            self.TrackChange(self._get_metadata(player.info))
+        if app.player.info in songs:
+            self.TrackChange(self._get_metadata(app.player.info))
 
     def __update_status(self, *args):
         self.StatusChange(self.__get_status())
@@ -277,7 +274,8 @@ class MPRIS1Player(MPRISObject):
         return metadata
 
     def __get_status(self):
-        play = (not player.info and 2) or int(player.paused)
+        window = app.window
+        play = (not app.player.info and 2) or int(app.player.paused)
         shuffle = (window.order.get_active_name() != "inorder")
         repeat_one = (window.order.get_active_name() == "onesong" and
             window.repeat.get_active())
@@ -287,25 +285,26 @@ class MPRIS1Player(MPRISObject):
 
     @dbus.service.method(IFACE)
     def Next(self):
-        player.next()
+        app.player.next()
 
     @dbus.service.method(IFACE)
     def Prev(self):
-        player.previous()
+        app.player.previous()
 
     @dbus.service.method(IFACE)
     def Pause(self):
-        if player.song is None:
-            player.reset()
+        if app.player.song is None:
+            app.player.reset()
         else:
-            player.paused ^= True
+            app.player.paused ^= True
 
     @dbus.service.method(IFACE)
     def Stop(self):
-        player.stop()
+        app.player.stop()
 
     @dbus.service.method(IFACE)
     def Play(self):
+        player = app.player
         if player.song is None:
             player.reset()
         else:
@@ -324,7 +323,7 @@ class MPRIS1Player(MPRISObject):
 
     @dbus.service.method(IFACE, out_signature="a{sv}")
     def GetMetadata(self):
-        return self._get_metadata(player.info)
+        return self._get_metadata(app.player.info)
 
     @dbus.service.method(IFACE, out_signature="i")
     def GetCaps(self):
@@ -333,19 +332,19 @@ class MPRIS1Player(MPRISObject):
 
     @dbus.service.method(IFACE, in_signature="i")
     def VolumeSet(self, volume):
-        player.volume = volume / 100.0
+        app.player.volume = volume / 100.0
 
     @dbus.service.method(IFACE, out_signature="i")
     def VolumeGet(self):
-        return int(round(player.volume * 100))
+        return int(round(app.player.volume * 100))
 
     @dbus.service.method(IFACE, in_signature="i")
     def PositionSet(self, position):
-        player.seek(position)
+        app.player.seek(position)
 
     @dbus.service.method(IFACE, out_signature="i")
     def PositionGet(self):
-        return int(player.get_position())
+        return int(app.player.get_position())
 
     @dbus.service.signal(IFACE, signature="a{sv}")
     def TrackChange(self, metadata):
@@ -440,21 +439,21 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         name = dbus.service.BusName(self.BUS_NAME, bus)
         MPRISObject.__init__(self, bus, self.PATH, name)
 
-        self.__rsig = window.repeat.connect("toggled", self.__repeat_changed)
-        self.__ssig = window.order.connect("changed", self.__order_changed)
-        self.__lsig = librarian.connect("changed", self.__library_changed)
-        self.__vsig = player.connect("notify::volume", self.__volume_changed)
-        self.__seek_sig = player.connect("seek", self.__seeked)
+        self.__rsig = app.window.repeat.connect("toggled", self.__repeat_changed)
+        self.__ssig = app.window.order.connect("changed", self.__order_changed)
+        self.__lsig = app.librarian.connect("changed", self.__library_changed)
+        self.__vsig = app.player.connect("notify::volume", self.__volume_changed)
+        self.__seek_sig = app.player.connect("seek", self.__seeked)
 
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS2, self).remove_from_connection(*arg, **kwargs)
 
         self.__cover = None
-        window.repeat.disconnect(self.__rsig)
-        window.order.disconnect(self.__ssig)
-        librarian.disconnect(self.__lsig)
-        player.disconnect(self.__vsig)
-        player.disconnect(self.__seek_sig)
+        app.window.repeat.disconnect(self.__rsig)
+        app.window.order.disconnect(self.__ssig)
+        app.librarian.disconnect(self.__lsig)
+        app.player.disconnect(self.__vsig)
+        app.player.disconnect(self.__seek_sig)
 
     def __volume_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE, ["Volume"])
@@ -470,20 +469,18 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         self.Seeked(ms * 1000)
 
     def __library_changed(self, library, song):
-        if song and song is not player.info:
+        if song and song is not app.player.info:
             return
         self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
 
     @dbus.service.method(ROOT_IFACE)
     def Raise(self):
-        window.show()
-        window.present()
+        app.window.show()
+        app.window.present()
 
     @dbus.service.method(ROOT_IFACE)
     def Quit(self):
-        gtk.gdk.threads_enter()
-        window.destroy()
-        gtk.gdk.threads_leave()
+        app.quit()
 
     @dbus.service.signal(PLAYER_IFACE, signature="x")
     def Seeked(self, position):
@@ -491,29 +488,32 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 
     @dbus.service.method(PLAYER_IFACE)
     def Next(self):
+        player = app.player
         paused = player.paused
         player.next()
         player.paused = paused
 
     @dbus.service.method(PLAYER_IFACE)
     def Previous(self):
+        player = app.player
         paused = player.paused
         player.previous()
         player.paused = paused
 
     @dbus.service.method(PLAYER_IFACE)
     def Pause(self):
-        player.paused = True
+        app.player.paused = True
 
     @dbus.service.method(PLAYER_IFACE)
     def Play(self):
-        if player.song is None:
-            player.reset()
+        if app.player.song is None:
+            app.player.reset()
         else:
-            player.paused = False
+            app.player.paused = False
 
     @dbus.service.method(PLAYER_IFACE)
     def PlayPause(self):
+        player = app.player
         if player.song is None:
             player.reset()
         else:
@@ -521,17 +521,17 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 
     @dbus.service.method(PLAYER_IFACE)
     def Stop(self):
-        player.stop()
+        app.player.stop()
 
     @dbus.service.method(PLAYER_IFACE, in_signature="x")
     def Seek(self, offset):
-        new_pos = player.get_position() + offset / 1000
-        player.seek(new_pos)
+        new_pos = app.player.get_position() + offset / 1000
+        app.player.seek(new_pos)
 
     @dbus.service.method(PLAYER_IFACE, in_signature="ox")
     def SetPosition(self, track_id, position):
         if track_id == self.__get_current_track_id():
-            player.seek(position / 1000)
+            app.player.seek(position / 1000)
 
     def paused(self):
         self.emit_properties_changed(self.PLAYER_IFACE, ["PlaybackStatus"])
@@ -546,9 +546,9 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 
     def __get_current_track_id(self):
         path = "/net/sacredchao/QuodLibet"
-        if not player.info:
+        if not app.player.info:
             return dbus.ObjectPath(path + "/" + "NoTrack")
-        return dbus.ObjectPath(path + "/" + str(id(player.info)))
+        return dbus.ObjectPath(path + "/" + str(id(app.player.info)))
 
     def __get_metadata(self):
         """http://xmms2.org/wiki/MPRIS_Metadata"""
@@ -556,7 +556,7 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         metadata = {}
         metadata["mpris:trackid"] = self.__get_current_track_id()
 
-        song = player.info
+        song = app.player.info
         if not song:
             return metadata
 
@@ -624,6 +624,9 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         return metadata
 
     def set_property(self, interface, name, value):
+        player = app.player
+        window = app.window
+
         if interface == self.PLAYER_IFACE:
             if name == "LoopStatus":
                 if value == "Playlist":
@@ -645,6 +648,9 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
                 player.volume = value
 
     def get_property(self, interface, name):
+        player = app.player
+        window = app.window
+
         if interface == self.ROOT_IFACE:
             if name == "CanQuit":
                 return True
