@@ -13,19 +13,23 @@ gettext message catalogs.
 
 import os
 import glob
+from subprocess import Popen, PIPE
 
 from distutils.dep_util import newer
 from distutils.util import change_root
 from distutils.spawn import find_executable
-from gdist.core import GCommand
+from distutils.core import Command
 
-class po_stats(GCommand):
+class po_stats(Command):
     description = "Show translation statistics"
     build_base = None
 
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        GCommand.finalize_options(self)
         self.po_package = self.distribution.po_package
+        self.po_directory = self.distribution.po_directory
         self.po_files = glob.glob(os.path.join(self.po_directory, "*.po"))
         self.set_undefined_options('build', ('build_base', 'build_base'))
 
@@ -34,7 +38,8 @@ class po_stats(GCommand):
         res = []
         for po in self.po_files:
             language = os.path.basename(po).split(".")[0]
-            output = self.capture(["msgfmt", "--statistics", po])[1].strip()
+            p = Popen(["msgfmt", "--statistics", po], stdout=PIPE, stderr=PIPE)
+            output = p.communicate()[1]
             res.append((language, output))
 
         stats = []
@@ -54,11 +59,13 @@ class po_stats(GCommand):
             print "%5s: %3d%% (+%2d%% fuzzy)" % (po, trans/all_, fuzzy/all_)
 
 
-class check_pot(GCommand):
+class check_pot(Command):
     description = "check for missing files in POTFILES.in"
 
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        GCommand.finalize_options(self)
         self.po_package = self.distribution.po_package
 
     def run(self):
@@ -69,7 +76,7 @@ class check_pot(GCommand):
         os.chdir(oldpath)
 
 
-class build_mo(GCommand):
+class build_mo(Command):
     """build message catalog files
 
     Build message catalog (.mo) files from .po files using xgettext
@@ -83,8 +90,11 @@ class build_mo(GCommand):
     po_files = None
     pot_file = None
 
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        GCommand.finalize_options(self)
+        self.po_directory = self.distribution.po_directory
         self.shortcuts = self.distribution.shortcuts
         self.po_package = self.distribution.po_package
         self.set_undefined_options('build', ('build_base', 'build_base'))
@@ -122,7 +132,7 @@ class build_mo(GCommand):
                 self.mkpath(fullpath)
                 self.spawn(["msgfmt", "-o", destpath, po])
 
-class install_mo(GCommand):
+class install_mo(Command):
     """install message catalog files
 
     Copy compiled message catalog files into their installation
@@ -136,8 +146,10 @@ class install_mo(GCommand):
     install_base = None
     root = None
 
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        GCommand.finalize_options(self)
         self.set_undefined_options('build', ('build_base', 'build_base'))
         self.set_undefined_options(
             'install',

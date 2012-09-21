@@ -13,9 +13,9 @@ Commands to install Unix man pages.
 import os
 
 from distutils.util import change_root
-from gdist.core import GCommand
+from distutils.core import Command
 
-class install_man(GCommand):
+class install_man(Command):
     """install man pages
 
     Install man pages into $prefix/share/man/manN.
@@ -27,8 +27,10 @@ class install_man(GCommand):
     prefix = None
     root = None
 
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        GCommand.finalize_options(self)
         self.set_undefined_options('install', ('root', 'root'), ('install_base', 'prefix'))
         self.man_pages = self.distribution.man_pages
         for man_page in self.man_pages:

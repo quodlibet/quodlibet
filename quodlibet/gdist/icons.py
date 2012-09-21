@@ -9,24 +9,32 @@ import os
 import subprocess
 
 from distutils.util import change_root
-from gdist.core import GCommand
+from distutils.core import Command
 
 
-class build_icon_cache(GCommand):
+class build_icon_cache(Command):
     """Update the icon theme cache"""
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
 
     def run(self):
         self.spawn(['gtk-update-icon-cache', '-f', 'quodlibet/images/hicolor'])
 
 
-class install_icons(GCommand):
+class install_icons(Command):
     """Copy app icons to hicolor/pixmaps and update the global cache"""
 
     root = None
     prefix = None
 
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        GCommand.finalize_options(self)
         self.set_undefined_options('install',
                                    ('root', 'root'),
                                    ('install_base', 'prefix'))

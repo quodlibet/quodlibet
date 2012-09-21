@@ -9,9 +9,9 @@ import os
 
 from distutils.dep_util import newer
 from distutils.util import change_root
-from gdist.core import GCommand
+from distutils.core import Command
 
-class build_shortcuts(GCommand):
+class build_shortcuts(Command):
     """Build .desktop files
 
     Move .desktop files to the appropriate location in the build tree.
@@ -22,10 +22,18 @@ class build_shortcuts(GCommand):
     user_options = []
     build_base = None
 
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        GCommand.finalize_options(self)
         self.shortcuts = self.distribution.shortcuts
+        self.po_directory = self.distribution.po_directory
         self.set_undefined_options('build', ('build_base', 'build_base'))
+
+    def __check_po(self):
+        """Exit if translation is needed and not available"""
+        if not (self.po_directory and os.path.isdir(self.po_directory)):
+            raise SystemExit("PO directory %r not found." % self.po_directory)
 
     def run(self):
         basepath = os.path.join(self.build_base, 'share', 'applications')
@@ -33,7 +41,7 @@ class build_shortcuts(GCommand):
         for shortcut in self.shortcuts:
             if os.path.exists(shortcut + ".in"):
                 fullpath = os.path.join(basepath, shortcut)
-                self.check_po()
+                self.__check_po()
                 if newer(shortcut + ".in", fullpath):
                     self.spawn(["intltool-merge",
                                 "-d", self.po_directory,
@@ -41,7 +49,7 @@ class build_shortcuts(GCommand):
             else:
                 self.copy_file(shortcut, os.path.join(basepath, shortcut))
 
-class install_shortcuts(GCommand):
+class install_shortcuts(Command):
     """Install .desktop files
 
     Install any .desktop files from the build tree to their final
@@ -56,8 +64,10 @@ class install_shortcuts(GCommand):
     build_base = None
     root = None
 
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        GCommand.finalize_options(self)
         self.set_undefined_options('build', ('build_base', 'build_base'))
         self.set_undefined_options(
             'install',

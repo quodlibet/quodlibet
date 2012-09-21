@@ -23,7 +23,6 @@ except ImportError:
 from distutils.command.build import build as distutils_build
 from distutils.command.install import install as distutils_install
 
-from gdist.core import GCommand
 from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
 from gdist.po import build_mo, install_mo, po_stats, check_pot

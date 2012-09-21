@@ -9,10 +9,10 @@
 
 import os
 
-from gdist.core import GCommand
+from distutils.core import Command
 from distutils.command.clean import clean as distutils_clean
 
-class clean(distutils_clean, GCommand):
+class clean(distutils_clean, Command):
     """clean up output of 'build' commands
 
     GDistribution commands generate files that the normal distutils
@@ -21,9 +21,11 @@ class clean(distutils_clean, GCommand):
 
     description = "clean up output of 'build' commands"
 
+    def initialize_options(self):
+        distutils_clean.initialize_options(self)
+
     def finalize_options(self):
         distutils_clean.finalize_options(self)
-        GCommand.finalize_options(self)
         self.shortcuts = self.distribution.shortcuts
         self.po_package = self.distribution.po_package
         self.po_directory = self.distribution.po_directory
