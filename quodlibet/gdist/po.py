@@ -154,4 +154,4 @@ class install_mo(GCommand):
             dest = change_root(self.root, dest)
         self.copy_tree(src, dest)
 
-__all__ = ["build_mo", "install_mo", "po_stats", "check_potfiles"]
+__all__ = ["build_mo", "install_mo", "po_stats", "check_pot"]

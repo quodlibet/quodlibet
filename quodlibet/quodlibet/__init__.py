@@ -11,9 +11,6 @@ import gettext
 import locale
 import os
 import re
-import sys
-import traceback
-import warnings
 
 import quodlibet.const
 import quodlibet.util

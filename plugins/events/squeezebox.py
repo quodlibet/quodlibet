@@ -17,7 +17,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins import PluginManager as PM
 from telnetlib import Telnet
-from threading import Event,Thread
+from threading import Thread
 import _socket
 import gtk
 import socket

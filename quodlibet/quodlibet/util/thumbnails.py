@@ -15,7 +15,7 @@ except ImportError:
 
 import gtk
 
-from quodlibet.util import mtime, fsnative, fsdecode, pathname2url
+from quodlibet.util import mtime, fsnative, pathname2url
 from quodlibet.util import xdg_get_cache_home, mkdir
 from quodlibet.const import USERDIR
 

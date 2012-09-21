@@ -20,7 +20,6 @@ import shelve
 import urllib2
 import zipfile
 import tarfile
-import optparse
 import tempfile
 import traceback
 import subprocess
@@ -109,7 +108,7 @@ def copytree2(src, dst):
         except shutil.Error, err:
             errors.extend(err.args[0])
     if errors:
-        raise Error(errors)
+        raise shutil.Error(errors)
 
 class Page(object):
     """A page cache for doing version lookups and the like."""
@@ -441,7 +440,6 @@ def do_setup(rev):
     with open(pyexe_boot, "wb") as f:
         f.write(new_text)
 
-    old_path = os.getcwd()
     repo_path = join(TDIR, 'ql')
 
     print 'Cloning this repo into temporary directory'

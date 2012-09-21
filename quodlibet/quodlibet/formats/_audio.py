@@ -328,7 +328,7 @@ class AudioFile(dict):
                         print_d("A sample song('~playlists') call: took %d μs "
                                 % (1E6 * (time.time() - start)))
                     return "\n".join([s.name for s in playlists])
-                except KeyError, e:
+                except KeyError:
                     return default
             elif key.startswith("#replaygain_"):
                 try:

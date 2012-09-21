@@ -62,7 +62,7 @@ def reverse_lookup(uri):
             time.sleep(0.5)
             c += 1
             continue
-        except Exception, e:
+        except Exception:
             pass
         else:
             rev = rev.rstrip(".")
@@ -98,7 +98,7 @@ def lookup(uri):
             time.sleep(0.5)
             c += 1
             continue
-        except Exception, e:
+        except Exception:
             pass
         break
 

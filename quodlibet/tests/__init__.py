@@ -58,7 +58,6 @@ def unit(run=[], filter_func=None, subdir=None):
         path = os.path.join(path, subdir)
 
     for name in glob.glob(os.path.join(path, "test_*.py")):
-        module = __name__ + "." + os.path.basename(name)
         parts = filter(None, [__name__, subdir, os.path.basename(name)[:-3]])
         __import__(".".join(parts), {}, {}, [])
 

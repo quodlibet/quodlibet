@@ -7,8 +7,6 @@
 import os
 import sys
 
-import gtk
-
 from quodlibet import const
 from quodlibet import app
 

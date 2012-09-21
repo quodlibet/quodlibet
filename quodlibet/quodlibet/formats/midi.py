@@ -7,7 +7,6 @@
 import struct
 
 from quodlibet.formats._audio import AudioFile
-from quodlibet import util
 
 
 class MidiError(Exception):
@@ -136,8 +135,8 @@ def read_midi_length(fileobj):
     ntracks = struct.unpack(">H", chunk[2:4])[0]
     tickdiv = struct.unpack(">H", chunk[4:6])[0]
     if tickdiv >> 15:
-        fps = (-(tickdiv >> 8)) & 0xFF
-        subres = tickdiv & 0xFF
+        # fps = (-(tickdiv >> 8)) & 0xFF
+        # subres = tickdiv & 0xFF
         # never saw one of those
         raise MidiError("Not supported timing interval")
 

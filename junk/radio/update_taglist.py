@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 import multiprocessing
-import subprocess
 import cPickle as pickle
 import random
 import urllib2
@@ -27,7 +26,7 @@ def get_listener_peak(uri):
         p = re.compile(r'<.*?>')
         data = p.sub(' ', data).split()
         listener_peak = int(data[data.index("Peak:") + 1])
-    except Exception, e:
+    except Exception:
         return -1
     else:
         return listener_peak
