@@ -151,7 +151,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.version_info = "GStreamer: %s / PyGSt: %s" % (
             fver(gst.version()), fver(gst.pygst_version))
         self._librarian = librarian
-        self.connect('destroy', lambda s: self.__destroy_pipeline())
+
+    def destroy(self):
+        self.__destroy_pipeline()
 
     def __init_pipeline(self):
         """Creates a gstreamer pipeline with the following elements

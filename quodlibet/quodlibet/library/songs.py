@@ -15,7 +15,6 @@ from __future__ import with_statement
 
 import os
 
-import gtk
 import gobject
 
 from quodlibet import util
@@ -82,7 +81,7 @@ class SongLibrarian(Librarian):
                 library._contents[item.key] = item
                 library.emit('changed', [item])
 
-class AlbumLibrary(gtk.Object):
+class AlbumLibrary(gobject.GObject):
     """An AlbumLibrary listens to a SongLibrary and sorts its songs into
     albums. The library behaves like a dictionary: the keys are album_keys of
     AudioFiles, the values are Album objects.
@@ -123,10 +122,14 @@ class AlbumLibrary(gtk.Object):
         so this must be called at least one time before using the library"""
         if not self.__loaded:
             self.__loaded = True
-            self.library.connect('added', self.__added)
-            self.library.connect('removed', self.__removed)
-            self.library.connect('changed', self.__changed)
+            self._asig = self.library.connect('added', self.__added)
+            self._rsig = self.library.connect('removed', self.__removed)
+            self._csig = self.library.connect('changed', self.__changed)
             self.__added(self.library, self.library.values(), signal=False)
+
+    def destroy(self):
+        if self.__loaded:
+            map(self.library.disconnect, [self._asig, self._rsig, self._csig])
 
     def __add(self, items):
         changed = set()
@@ -224,6 +227,10 @@ class SongLibrary(Library):
     def __init__(self, *args, **kwargs):
         super(SongLibrary, self).__init__(*args, **kwargs)
         self.albums = AlbumLibrary(self)
+
+    def destroy(self):
+        super(SongLibrary, self).destroy()
+        self.albums.destroy()
 
     def tag_values(self, tag):
         """Return a list of all values for the given tag."""

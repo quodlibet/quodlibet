@@ -17,7 +17,6 @@ import shutil
 import threading
 
 import gobject
-import gtk
 
 # Windows doesn't have fcntl, just don't lock for now
 try:
@@ -28,7 +27,7 @@ except ImportError:
 from quodlibet import util, print_d, print_w
 from quodlibet.qltk.msg import ErrorMessage
 
-class Library(gtk.Object):
+class Library(gobject.GObject):
     """A Library contains useful objects.
 
     The only required method these objects support is a .key
@@ -53,11 +52,16 @@ class Library(gtk.Object):
         self._save_lock = threading.Lock()
         self._contents = {}
         self._masked = {}
+        self._name = name
         for key in ['get', 'keys', 'values', 'items', 'iterkeys',
                     'itervalues', 'iteritems', 'has_key']:
             setattr(self, key, getattr(self._contents, key))
         if self.librarian is not None and name is not None:
             self.librarian.register(self, name)
+
+    def destroy(self):
+        if self.librarian is not None and self._name is not None:
+            self.librarian._unregister(self, self._name)
 
     def add(self, items):
         """Add items. This causes an 'added' signal.
@@ -225,7 +229,7 @@ class Library(gtk.Object):
         print_d("Done saving contents to %r." % filename, self)
         self._save_lock.release()
 
-class Librarian(gtk.Object):
+class Librarian(gobject.GObject):
     """The librarian is a nice interface to all active libraries.
 
     Librarians are a kind of meta-library. When any of their
@@ -250,6 +254,9 @@ class Librarian(gtk.Object):
         self.libraries = {}
         self.__signals = {}
 
+    def destroy(self):
+        pass
+
     def register(self, library, name):
         """Register a library with this librarian."""
         if name in self.libraries or name in self.__signals:
@@ -258,15 +265,15 @@ class Librarian(gtk.Object):
         added_sig = library.connect('added', self.__added)
         removed_sig = library.connect('removed', self.__removed)
         changed_sig = library.connect('changed', self.__changed)
-        library.connect('destroy', self.__unregister, name)
         self.libraries[name] = library
         self.__signals[library] = [added_sig, removed_sig, changed_sig]
 
-    def __unregister(self, library, name):
+    def _unregister(self, library, name):
         # This function, unlike register, should be private.
         # Libraries get unregistered at the discretion of the
         # librarian, not the libraries.
         del(self.libraries[name])
+        map(library.disconnect, self.__signals[library])
         del(self.__signals[library])
 
     # FIXME: We can be smarter about this -- queue a list of items

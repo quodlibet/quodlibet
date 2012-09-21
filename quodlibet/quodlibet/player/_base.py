@@ -1,7 +1,6 @@
 import gobject
-import gtk
 
-class BasePlayer(gtk.Object):
+class BasePlayer(gobject.GObject):
     """Interfaces between a QL PlaylistModel and a GSt playbin.
 
     Attributes:
@@ -52,6 +51,9 @@ class BasePlayer(gtk.Object):
 
     def __init__(self, *args, **kwargs):
         super(BasePlayer, self).__init__()
+
+    def destroy(self):
+        pass
 
     def do_get_property(self, property):
         if property.name == 'volume':
