@@ -140,12 +140,6 @@ class ID3File(AudioFile):
             elif frame.FrameID in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
-                elif frame.desc.startswith("replaygain_") and \
-                        frame.desc[11:] in ("track_peak", "track_gain",
-                                            "album_peak", "album_gain"):
-                    # Some versions of Foobar2000 write broken Replay Gain
-                    # tags in this format.
-                    name = frame.desc
                 elif frame.desc in self.TXXX_MAP:
                     name = self.TXXX_MAP[frame.desc]
                 else: continue
@@ -195,6 +189,13 @@ class ID3File(AudioFile):
         if audio.tags and "date" not in self:
             for frame in tag.getall('TXXX:DATE'):
                 self["date"] = "\n".join(map(unicode, frame.text))
+
+        # Read TXXX replaygain in case we don't have any (from RVA2)
+        for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
+            k = "replaygain_" + k
+            if k not in self:
+                for frame in tag.getall("TXXX:" + k):
+                    self[k] = "\n".join(map(unicode, frame.text))
 
         self.setdefault("~#length", int(audio.info.length))
         try: self.setdefault("~#bitrate", int(audio.info.bitrate / 1000))
@@ -322,10 +323,17 @@ class ID3File(AudioFile):
             tag.add(mutagen.id3.COMM(
                 encoding=enc, text=t, desc=u"", lang="\x00\x00\x00"))
 
+        # Delete old foobar replaygain and write new one
         for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
+            k = "replaygain_" + k
             # Delete Foobar droppings.
-            try: del(tag["TXXX:replaygain_" + k])
+            try: del(tag["TXXX:" + k])
             except KeyError: pass
+            # Add new ones
+            if k in self:
+                tag.add(mutagen.id3.TXXX(
+                        encoding=0, text=self[k].split("\n"),
+                        desc=k))
 
         # we shouldn't delete all, but we use unknown ones as fallback, so make
         # sure they don't come back after reloading
