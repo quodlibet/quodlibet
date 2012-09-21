@@ -372,18 +372,9 @@ class QuodLibetWindow(gtk.Window):
         if callable(self.browser.reordered): self.browser.reordered(view)
         self.songlist.set_sort_by(None, refresh=False)
 
-    def hide(self):
-        super(QuodLibetWindow, self).hide()
-        map(gtk.Window.hide, qltk.Window.instances)
-
-    def present(self):
-        super(QuodLibetWindow, self).present()
-        map(gtk.Window.present, qltk.Window.instances)
-
     def show(self):
         self.move(*map(int, config.get('memory', 'position').split()))
         super(QuodLibetWindow, self).show()
-        map(gtk.Window.show, qltk.Window.instances)
 
     def __save_browser(self, *args):
         print_d("Saving active browser state")

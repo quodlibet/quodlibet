@@ -288,13 +288,12 @@ class TrayIcon(EventPlugin):
 
     def __hide_window(self):
         self.__first_map = False
-        app.window.hide()
+        app.hide()
         config.set("plugins", "icon_window_visible", "false")
         return True
 
     def __show_window(self):
-        app.window.show()
-        app.window.present()
+        app.present()
 
     def __button_left(self, icon):
         if self.__destroy_win32_menu(): return

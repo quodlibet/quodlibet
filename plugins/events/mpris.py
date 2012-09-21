@@ -475,8 +475,7 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 
     @dbus.service.method(ROOT_IFACE)
     def Raise(self):
-        app.window.show()
-        app.window.present()
+        app.present()
 
     @dbus.service.method(ROOT_IFACE)
     def Quit(self):

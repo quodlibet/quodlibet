@@ -1,3 +1,9 @@
+# Copyright 2012 Christoph Reiter
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 import __builtin__
 
 _dummy_gettext = lambda value: value
@@ -51,6 +57,26 @@ class Application(object):
         # the main loop starts
         gobject.idle_add(idle_quit, priority=gobject.PRIORITY_HIGH)
 
+    def show(self):
+        from quodlibet.qltk import Window
+        self.window.show()
+        for window in Window.instances:
+            window.show()
+
+    def present(self):
+        # deiconify is needed if the window is on another workspace
+        from quodlibet.qltk import Window
+        self.window.deiconify()
+        self.window.present()
+        for window in Window.instances:
+            window.deiconify()
+            window.present()
+
+    def hide(self):
+        from quodlibet.qltk import Window
+        for window in Window.instances:
+            window.hide()
+        self.window.hide()
 
 app = Application()
 
