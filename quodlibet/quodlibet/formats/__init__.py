@@ -1,4 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
+#           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,49 +8,55 @@
 import os
 import sys
 
-from glob import glob
-from os.path import dirname, basename, join, splitext
+from quodlibet.util.modulescanner import load_dir_modules
 from quodlibet import util
-
-base = dirname(__file__)
-self = basename(base)
-parent = basename(dirname(base))
-if os.name == 'nt':
-    # Windows needs to load .pyc files
-    glob_pattern = "[!_]*.py*"
-else: glob_pattern = "[!_]*.py"
-modules = [splitext(f)[0] for f in glob(join(base, glob_pattern))]
-modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in set(modules)]
 
 mimes = set()
 _infos = {}
-for i, name in enumerate(modules):
-    try: format = __import__(name, {}, {}, self)
-    except Exception, err:
-        util.print_exc()
-        continue
-    format = __import__(name, {}, {}, self)
-    for ext in format.extensions:
-        _infos[ext] = format.info
-    if format.extensions:
-        for type_ in format.types:
-            mimes.update(type_.mimes)
-    # Migrate pre-0.16 library, which was using an undocumented "feature".
-    sys.modules[name.replace(".", "/")] = format
-    if name and name.startswith("quodlibet."):
-        sys.modules[name.split(".", 1)[1]] = sys.modules[name]
-    modules[i] = (format.extensions and name.split(".")[-1])
+modules = []
 
-if not _infos:
-    raise SystemExit("No formats found!")
+def init():
+    global mimes, _infos, modules
 
-try: sys.modules["formats.flac"] = sys.modules["formats.xiph"]
-except KeyError: pass
-try: sys.modules["formats.oggvorbis"] = sys.modules["formats.xiph"]
-except KeyError: pass
+    base = os.path.dirname(__file__)
+    load_pyc = os.name == 'nt'
+    formats = load_dir_modules(base,
+                               package=__package__,
+                               load_compiled=load_pyc)
 
-modules = filter(None, modules)
-modules.sort()
+    for format in formats:
+        name = format.__name__
+
+        for ext in format.extensions:
+            _infos[ext] = format.info
+
+        if format.extensions:
+            for type_ in format.types:
+                mimes.update(type_.mimes)
+            modules.append(name.split(".")[-1])
+
+        # Migrate pre-0.16 library, which was using an undocumented "feature".
+        sys.modules[name.replace(".", "/")] = format
+        # Migrate old layout
+        if name.startswith("quodlibet."):
+            sys.modules[name.split(".", 1)[1]] = format
+
+    modules.sort()
+
+    # Migrate old layout
+    try:
+        xiph = sys.modules["quodlibet.formats.xiph"]
+    except KeyError:
+        pass
+    else:
+        sys.modules["formats.flac"] = xiph
+        sys.modules["formats.oggvorbis"] = xiph
+
+    if not _infos:
+        raise SystemExit("No formats found!")
+
+init()
+
 
 def MusicFile(filename):
     for ext in _infos.keys():

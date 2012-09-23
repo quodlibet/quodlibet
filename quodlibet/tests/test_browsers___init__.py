@@ -1,3 +1,4 @@
+import sys
 from tests import TestCase, add
 
 from quodlibet import browsers
@@ -21,4 +22,10 @@ class TBrowsers(TestCase):
     def test_get_invalid(self):
         self.failUnless(
             browsers.get("DoesNotExist") is browsers.search.EmptyBar)
+
+    def test_migrate(self):
+        self.failUnless(
+            sys.modules["browsers.audiofeeds"] is browsers.audiofeeds)
+        self.failUnless(
+            sys.modules["browsers.iradio"] is browsers.iradio)
 add(TBrowsers)

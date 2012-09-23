@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,53 +11,35 @@ import sys
 
 from quodlibet import const
 from quodlibet import util
+from quodlibet.util.modulescanner import load_dir_modules
 
 from os.path import dirname, basename, isdir, join, splitext
 from glob import glob
 
 from quodlibet.browsers._base import Browser
 
-BROWSERS = os.path.join(const.USERDIR, "browsers")
 browsers = []
 
 def init():
     global browsers
 
-    base = dirname(__file__)
-    self = basename(base)
-    parent = basename(dirname(base))
-    if os.name == 'nt':
-        # Windows needs to load .pyc files
-        glob_pattern = "[!_]*.py*"
-    else: glob_pattern = "[!_]*.py"
-    modules = [splitext(f)[0] for f in glob(join(base, glob_pattern))]
-    modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in modules]
+    this_dir = dirname(__file__)
+    load_pyc = os.name == 'nt'
+    modules = load_dir_modules(this_dir,
+                               package=__package__,
+                               load_compiled=load_pyc)
 
-    if isdir(BROWSERS):
-        sys.path.insert(0, BROWSERS)
-        modules.extend([splitext(basename(f))[0] for f in
-                        glob(join(BROWSERS, "[!_]*.py*"))])
+    user_dir = os.path.join(const.USERDIR, "browsers")
+    if os.path.isdir(user_dir):
+        modules += load_dir_modules(user_dir,
+                                    package="quodlibet.fake.browsers",
+                                    load_compiled=load_pyc)
 
-    # Browsers are declared and stored as a magic 4-tuple. The first element is
-    # the sort order (built-in browsers are numbered with integers). The second
-    # element is the label for the browser (should be marked for translation).
-    # The third is the constructor for the class. The last is a boolean
-    # indicating whether it should appear in the "Browse Library" menu (EmptyBar
-    # and PlaylistBar are useless there, for example).
-    #
-    # Browser-tuples are stored as a list in <mod>.browsers.
-    #
-    # FIXME: Replace that crap with something sane.
-
-    for name in set(modules):
-        try: browser = __import__(name, {}, {}, self)
-        except Exception:
-            util.print_exc()
-            continue
-
-        try: browsers.extend(browser.browsers)
+    for browser in modules:
+        try:
+            browsers.extend(browser.browsers)
         except AttributeError:
-            print_w(_("%r doesn't contain any browsers.") % browser.__name__)
+            print_w("%r doesn't contain any browsers." % browser.__name__)
 
     def is_browser(Kind):
         return isinstance(Kind, type) and issubclass(Kind, Browser)
@@ -65,15 +48,7 @@ def init():
     if not browsers:
         raise SystemExit("No browsers found!")
 
-    try: sys.path.remove(BROWSERS)
-    except ValueError: pass
-
     browsers.sort(key=lambda Kind: Kind.priority)
-
-    try:
-        sys.modules["browsers.iradio"] = \
-            sys.modules["quodlibet.browsers.iradio"]
-    except KeyError: pass
 
 
 # Return the name of the ith browser.
@@ -87,6 +62,7 @@ def get(i):
     except (IndexError, ValueError, TypeError):
         try: return get(index(i))
         except (IndexError, ValueError): return browsers[0]
+
 # Return the index of a browser given its name. Defaults to the first
 # browser if all else fails.
 def index(i):

@@ -8,6 +8,7 @@
 from __future__ import with_statement
 
 import os
+import sys
 import bz2
 import urllib2
 import urllib
@@ -37,7 +38,6 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk.menubutton import MenuButton
 
-
 STATION_LIST_URL = "http://quodlibet.googlecode.com/files/radiolist.bz2"
 STATIONS_FAV = os.path.join(const.USERDIR, "stations")
 STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
@@ -45,6 +45,9 @@ STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
 # TODO: - Do the update in a thread
 #       - Ranking: reduce duplicate stations (max 3 URLs per station)
 #                  prefer stations that match a genre?
+
+# Migration path for pickle
+sys.modules["browsers.iradio"] = sys.modules[__name__]
 
 class IRFile(RemoteFile):
     multisong = True

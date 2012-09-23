@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Markus Koller
+#           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,10 +9,7 @@
 import os
 import subprocess
 import ConfigParser
-from os.path import dirname, basename, join
-from glob import glob
-
-import ctypes
+from os.path import dirname, basename
 
 import gobject
 try:
@@ -25,25 +23,26 @@ except ImportError:
 from quodlibet import const
 from quodlibet import util
 from quodlibet.devices import _udev as udev
-
-base = dirname(__file__)
-self = basename(base)
-parent = basename(dirname(base))
-modules = [f[:-3] for f in glob(join(base, "[!_]*.py"))]
-modules = ["%s.%s.%s" % (parent, self, basename(m)) for m in modules]
+from quodlibet.util.modulescanner import load_dir_modules
 
 devices = []
-for _name in modules:
-    try: device = __import__(_name, {}, {}, self)
-    except Exception, err:
-        util.print_exc()
-        continue
 
-    try: devices.extend(device.devices)
-    except AttributeError:
-        print_w(_("%r doesn't contain any devices.") % device.__name__)
+def init_devices():
+    global devices
 
-devices.sort()
+    load_pyc = os.name == 'nt'
+    modules = load_dir_modules(dirname(__file__),
+                               package=__package__,
+                               load_compiled=load_pyc)
+
+    for mod in modules:
+        try: devices.extend(mod.devices)
+        except AttributeError:
+            print_w("%r doesn't contain any devices." % mod.__name__)
+
+    devices.sort()
+
+init_devices()
 
 DEVICES = os.path.join(const.USERDIR, "devices")
 

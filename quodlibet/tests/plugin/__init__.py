@@ -8,8 +8,8 @@ PLUGIN_DIR = os.path.abspath(os.path.join(sys.path[0], '../plugins'))
 
 
 def import_plugin(subdir, fn):
-    dir = os.path.join(PLUGIN_DIR, subdir, "%s.py" % fn)
-    module = load_module(fn, dir)
+    dir = os.path.join(PLUGIN_DIR, subdir)
+    module = load_module(fn, "quodlibet.fake.test.plugin", dir)
     print_d("Loaded module from (%s) = %s" % (dir, module))
     return module
 

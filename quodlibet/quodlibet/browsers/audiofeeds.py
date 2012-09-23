@@ -32,6 +32,9 @@ from quodlibet.qltk.views import AllTreeView
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
 
+# Migration path for pickle
+sys.modules["browsers.audiofeeds"] = sys.modules[__name__]
+
 class InvalidFeed(ValueError): pass
 
 class Feed(list):
@@ -202,16 +205,12 @@ class AudioFeeds(Browser, gtk.VBox):
     write = classmethod(write)
 
     def init(klass, library):
-        try: sys.modules["browsers.audiofeeds"] = sys.modules["quodlibet.browsers.audiofeeds"]
-        except KeyError: pass
         try: feeds = pickle.load(file(FEEDS, "rb"))
         except (pickle.PickleError, EnvironmentError, EOFError): pass
         else:
             for feed in feeds:
                 klass.__feeds.append(row=[feed])
         gobject.idle_add(klass.__do_check)
-        try: del(sys.modules["browsers.audiofeeds"])
-        except KeyError: pass
     init = classmethod(init)
 
     def __do_check(klass):

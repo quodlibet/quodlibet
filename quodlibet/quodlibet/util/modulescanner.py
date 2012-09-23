@@ -15,6 +15,40 @@ from traceback import format_exception
 from quodlibet import util
 
 
+def load_dir_modules(path, package, load_compiled=False):
+    """Load all modules in path (non-recursive).
+    Load pyc files if load_compiled is True.
+    In case the module is already loaded, doesn't reload it.
+    """
+
+    try:
+        entries = os.listdir(path)
+    except OSError:
+        print_w("%r not found" % path)
+        return []
+
+    modules = set()
+    for entry in entries:
+        if entry[:1] == "_":
+            continue
+        if entry.endswith(".py"):
+            modules.add(entry[:-3])
+        elif load_compiled and entry.endswith(".pyc"):
+            modules.add(entry[:-4])
+
+    loaded = []
+    for name in modules:
+        try:
+            mod = load_module(name, package, path)
+        except Exception:
+            util.print_exc()
+            continue
+        if mod:
+            loaded.append(mod)
+
+    return loaded
+
+
 def get_importables(folder):
     """Searches a folder and its subfolders for modules and packages to import.
     No subfolders in packages, .pyc, .so supported.
@@ -32,21 +66,38 @@ def get_importables(folder):
                 yield (join(root, name), [join(root, name)])
 
 
-def load_module(name, path):
+def load_module(name, package, path, reload=False):
     """Load a module/package. Returns the module or None.
-       Doesn't catch any exceptions during the actual import"""
+       Doesn't catch any exceptions during the actual import.
+       If reload is True and the module is already loaded, reload it.
+       """
+
+    fullname = package + "." + name
+    try:
+        return sys.modules[fullname]
+    except KeyError:
+        pass
 
     try:
         # this also handles packages
-        fp, path, desc = imp.find_module(name, [dirname(path)])
+        fp, path, desc = imp.find_module(name, [path])
     except ImportError:
         return
 
+    # modules need a parent package
+    if package not in sys.modules:
+        sys.modules[package] = imp.new_module(package)
+
     try:
-        return imp.load_module(name, fp, path, desc)
+        mod = imp.load_module(fullname, fp, path, desc)
     finally:
         if fp:
             fp.close()
+
+    # make it accessible from the parent, like __import__ does
+    vars(sys.modules[package])[name] = mod
+
+    return mod
 
 
 class ModuleScanner(object):
@@ -141,7 +192,8 @@ class ModuleScanner(object):
                 continue
 
             try:
-                mod = load_module(name, path)
+                mod = load_module(name, "quodlibet.fake.plugins",
+                                  dirname(path), reload=True)
                 if mod is None:
                     continue
             except Exception, err:
