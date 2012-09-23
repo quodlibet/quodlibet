@@ -309,10 +309,10 @@ class QuodLibetWindow(gtk.Window):
             current = max(0, current)
             player.seek(current)
 
-        if qltk.is_accel(event, "<ctrl>Right"):
+        if qltk.is_accel(event, "<alt>Right"):
             seek_relative(10)
             return True
-        elif qltk.is_accel(event, "<ctrl>Left"):
+        elif qltk.is_accel(event, "<alt>Left"):
             seek_relative(-10)
             return True
 
