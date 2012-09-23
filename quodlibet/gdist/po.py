@@ -22,6 +22,7 @@ from distutils.core import Command
 
 class po_stats(Command):
     description = "Show translation statistics"
+    user_options = []
     build_base = None
 
     def initialize_options(self):
@@ -61,11 +62,13 @@ class po_stats(Command):
 
 class check_pot(Command):
     description = "check for missing files in POTFILES.in"
+    user_options = []
 
     def initialize_options(self):
         pass
 
     def finalize_options(self):
+        self.po_directory = self.distribution.po_directory
         self.po_package = self.distribution.po_package
 
     def run(self):
@@ -140,6 +143,7 @@ class install_mo(Command):
     """
 
     description = "install message catalog files"
+    user_options = []
 
     skip_build = None
     build_base = None

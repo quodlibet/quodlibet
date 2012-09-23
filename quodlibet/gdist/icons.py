@@ -15,6 +15,8 @@ from distutils.core import Command
 class build_icon_cache(Command):
     """Update the icon theme cache"""
 
+    user_options = []
+
     def initialize_options(self):
         pass
 
@@ -28,6 +30,7 @@ class build_icon_cache(Command):
 class install_icons(Command):
     """Copy app icons to hicolor/pixmaps and update the global cache"""
 
+    user_options = []
     root = None
     prefix = None
 

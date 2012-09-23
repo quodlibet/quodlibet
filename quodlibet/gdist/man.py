@@ -22,6 +22,7 @@ class install_man(Command):
     """
 
     description = "install man pages"
+    user_options = []
 
     man_pages = None
     prefix = None

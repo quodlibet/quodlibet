@@ -57,6 +57,7 @@ class install_shortcuts(Command):
     """
 
     description = "install .desktop files"
+    user_options = []
 
     prefix = None
     skip_build = None
