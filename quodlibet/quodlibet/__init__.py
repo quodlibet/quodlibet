@@ -227,7 +227,7 @@ def init(library=None, icon=None, title=None, name=None):
 
     return library
 
-def init_plugins():
+def init_plugins(no_plugins=False):
     print_d("Starting plugin manager")
 
     from quodlibet import plugins
@@ -237,7 +237,7 @@ def init_plugins():
                os.path.join(quodlibet.const.BASEDIR, "plugins", "songsmenu"),
                os.path.join(quodlibet.const.BASEDIR, "plugins", "gstreamer"),
                os.path.join(quodlibet.const.USERDIR, "plugins")]
-    pm = plugins.init(folders)
+    pm = plugins.init(folders, no_plugins)
 
     from quodlibet.qltk.edittags import EditTags
     from quodlibet.qltk.renamefiles import RenameFiles

@@ -25,6 +25,7 @@ from quodlibet import util
 from quodlibet.util.uri import URI
 
 play = False
+no_plugins = False
 
 
 def main():
@@ -88,7 +89,7 @@ def main():
         if Kind.headers is not None: Kind.headers.extend(in_all)
         Kind.init(library)
 
-    pm = quodlibet.init_plugins()
+    pm = quodlibet.init_plugins(no_plugins)
 
     if hasattr(player, "init_plugins"):
         player.init_plugins()
@@ -250,6 +251,7 @@ def process_arguments():
         ("refresh", _("Refresh and rescan library")),
         ("print-playlist", _("Print the current playlist")),
         ("print-queue", _("Print the contents of the queue")),
+        ("no-plugins", _("Start without plugins")),
         ("quit", _("Exit Quod Libet")),
         ]: options.add(opt, help=help)
 
@@ -344,6 +346,9 @@ def process_arguments():
         elif command == "start-playing":
             global play
             play = True
+        elif command == "no-plugins":
+            global no_plugins
+            no_plugins = True
 
 if __name__ == "__main__":
     main()

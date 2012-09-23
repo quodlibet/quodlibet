@@ -10,7 +10,13 @@ from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
 
 
-def init(folders=None):
+def init(folders=None, disable_plugins=False):
+    """folders: list of paths to look for plugins
+    disable_plugins: disables all plugins, but does not forget which
+    plugins are enabled.
+    """
+    if disable_plugins:
+        folders = []
     manager = PluginManager.instance = PluginManager(folders)
     return manager
 
