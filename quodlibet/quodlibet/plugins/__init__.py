@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012 Christoph Reiter
+# Copyright 2012 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,6 +8,8 @@
 from quodlibet import config
 from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
+from quodlibet.util.dprint import print_d
+from quodlibet.qltk.ccb import ConfigCheckButton
 
 
 def init(folders=None, disable_plugins=False):
@@ -300,3 +302,63 @@ class PluginManager(object):
         for plugin, handlers in self.__handlers.iteritems():
             if self.enabled(plugin):
                 self.enable(plugin, True, force=True)
+
+PM = PluginManager
+
+
+class PluginConfigMixin(object):
+    """
+    Mixin for storage and editing of plugin config in a standard way
+    Will use `CONFIG_SECTION`, if defined, for storing config, otherwise,
+    it will base the keys on `PLUGIN_ID`.
+    """
+
+    @classmethod
+    def _config_key(cls, name):
+        try:
+            prefix = cls.CONFIG_SECTION
+        except AttributeError:
+            prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
+        return "%s_%s" % (prefix, name)
+
+    @classmethod
+    def config_get(cls, name, default=None):
+        """Gets a config string value for this plugin"""
+        try:
+            return config.get(PM.CONFIG_SECTION, cls._config_key(name))
+        except config.error:
+            # Set the missing config
+            config.set(PM.CONFIG_SECTION, cls._config_key(name), default)
+            return default
+
+    @classmethod
+    def config_set(cls, name, value):
+        """Saves a config string value for this plugin"""
+        try:
+            config.set(PM.CONFIG_SECTION, cls._config_key(name), value)
+        except config.error:
+            print_d("Couldn't set config item '%s' to %r" % (name, value))
+
+    @classmethod
+    def config_get_bool(cls, name, default=False):
+        """Gets a config boolean for this plugin"""
+        return config.getboolean(PM.CONFIG_SECTION, cls._config_key(name),
+            default)
+
+    def config_entry_changed(self, entry, key):
+        """React to a change in an gtk.Entry (by saving it to config)"""
+        if entry.get_property('sensitive'):
+            self.config_set(key, entry.get_text())
+
+    @classmethod
+    def ConfigCheckButton(cls, label, name, default=False):
+        """
+        Create a new `ConfigCheckButton` for `name`, pre-populated correctly
+        """
+        option = cls._config_key(name)
+        try:
+            config.getboolean(PM.CONFIG_SECTION, option)
+        except config.error:
+            cls.config_set(name, default)
+        return ConfigCheckButton(label, PM.CONFIG_SECTION,
+            option, populate=True)

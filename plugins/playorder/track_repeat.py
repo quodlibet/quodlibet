@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011 Nick Boultbee
+# Copyright 2011,2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,48 +13,33 @@
 #
 
 import gtk
-from quodlibet import config
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderShuffleMixin
+from quodlibet.util.dprint import print_d
+from quodlibet.plugins import PluginConfigMixin
 
 
-class TrackRepeatOrder(PlayOrderPlugin, PlayOrderShuffleMixin):
+class TrackRepeatOrder(PlayOrderPlugin,
+        PlayOrderShuffleMixin, PluginConfigMixin):
     PLUGIN_ID = "track_repeat"
     PLUGIN_NAME = _("Track Repeat")
     PLUGIN_ICON = "gtk-refresh"
-    PLUGIN_VERSION = "0.1"
+    PLUGIN_VERSION = "0.2"
     PLUGIN_DESC = _("Shuffle songs, "
                     "but repeat every track a set number of times.")
+    PLAY_EACH_DEFAULT = 2
 
+    # Plays of the current song
     play_count = 0
-    play_each_default = 2
 
     @classmethod
-    def get_config(klass, name):
-        key = __name__ + "_" + name
-        return config.get("plugins", key)
-
-    @classmethod
-    def set_config(klass, name, value):
-        key = __name__ + "_" + name
-        config.set("plugins", key, value)
-
-    @classmethod
-    def get_play_each(klass):
-        try:
-            return int(klass.get_config("play_each"))
-        except (config.error, ValueError):
-            return klass.play_each_default
-
-    @classmethod
-    def PluginPreferences(klass, window):
+    def PluginPreferences(cls):
         def plays_changed(spin):
-            print_d("setting to %d" % int(spin.get_value()))
-            klass.set_config("play_each", int(spin.get_value()))
+            cls.config_set("play_each", int(spin.get_value()))
 
         vb = gtk.VBox(spacing=10)
         vb.set_border_width(10)
         hbox = gtk.HBox(spacing=6)
-        val = klass.get_play_each()
+        val = cls.config_get("play_each", cls.PLAY_EACH_DEFAULT)
         spin = gtk.SpinButton(gtk.Adjustment(float(val), 2, 20, 1, 10))
         spin.connect("value-changed", plays_changed)
         hbox.pack_start(spin, expand=False)
@@ -70,10 +55,9 @@ class TrackRepeatOrder(PlayOrderPlugin, PlayOrderShuffleMixin):
 
     def next(self, playlist, iter):
         self.play_count += 1
-        play_each = self.get_play_each()
-        print_d("Play count now at %d/%d" % (self.play_count, play_each),
-                context=self)
-        if (self.play_count < play_each and iter is not None):
+        play_each = int(self.config_get('play_each', self.PLAY_EACH_DEFAULT))
+        print_d("Play count now at %d/%d" % (self.play_count, play_each))
+        if self.play_count < play_each and iter is not None:
             return iter
         else:
             self.restart_counting()

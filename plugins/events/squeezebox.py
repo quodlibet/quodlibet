@@ -13,9 +13,8 @@ from quodlibet import qltk, config, print_w, print_d, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import Message
-from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.plugins import PluginManager as PM
 from telnetlib import Telnet
 from threading import Thread
 import _socket
@@ -243,7 +242,8 @@ class GetPlayerDialog(gtk.Dialog):
         self.set_default_response(gtk.RESPONSE_OK)
 
         box = gtk.VBox(spacing=6)
-        label = gtk.Label(_("Found Squeezebox server.\nPlease choose the player"))
+        label = gtk.Label(
+                _("Found Squeezebox server.\nPlease choose the player"))
         box.set_border_width(6)
         label.set_line_wrap(True)
         label.set_justify(gtk.JUSTIFY_CENTER)
@@ -269,56 +269,6 @@ class GetPlayerDialog(gtk.Dialog):
         self.destroy()
         return value
 
-
-class PluginConfigMixin(object):
-    """Mixin for storage and editing of plugin config in a standard way"""
-
-    @classmethod
-    def _cfg_key(cls, name):
-        try:
-            prefix = cls.CONFIG_SECTION
-        except AttributeError:
-            prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
-        return "%s_%s" % (prefix, name)
-
-    @classmethod
-    def cfg_get(cls, name, default=None):
-        """Gets a config string value for this plugin"""
-        try:
-            return config.get(PM.CONFIG_SECTION, cls._cfg_key(name))
-        except config.error:
-            # Set the missing config
-            config.set(PM.CONFIG_SECTION, cls._cfg_key(name), default)
-            return default
-
-    @classmethod
-    def cfg_set(cls, name, value):
-        """Saves a config string value for this plugin"""
-        try:
-            config.set(PM.CONFIG_SECTION, cls._cfg_key(name), value)
-        except config.error:
-            print_d("Couldn't set config item '%s' to %r" % (name, value))
-
-    @classmethod
-    def cfg_get_bool(cls, name, default=False):
-        """Gets a config boolean for this plugin"""
-        return config.getboolean(PM.CONFIG_SECTION, cls._cfg_key(name),
-            default)
-
-    def cfg_entry_changed(self, entry, key):
-        """React to a change in an gtk.Entry (by saving it to config)"""
-        if entry.get_property('sensitive'):
-            self.cfg_set(key, entry.get_text())
-
-    @classmethod
-    def ConfigCheckButton(cls, label, name, default=False):
-        option = cls._cfg_key(name)
-        try:
-            config.getboolean(PM.CONFIG_SECTION, option)
-        except config.error:
-            cls.cfg_set(name, default)
-        return ConfigCheckButton(label, PM.CONFIG_SECTION,
-                                 option, populate=True)
 
 class SqueezeboxPluginMixin(PluginConfigMixin):
     """
@@ -355,7 +305,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
     @classmethod
     def set_player(cls, val):
         cls.server.current_player = val
-        cls.cfg_set("current_player", val)
+        cls.config_set("current_player", val)
         print_d("Setting player to #%d (%s)" % (val, cls.server.players[val]))
 
     @classmethod
@@ -453,17 +403,17 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
     def init_server(cls):
         """Initialises a server, and connects to check if it's alive"""
         try:
-            cur = int(cls.cfg_get("current_player", 0))
+            cur = int(cls.config_get("current_player", 0))
         except ValueError:
             cur = 0
         cls.server = SqueezeboxServer(
-            hostname=cls.cfg_get("server_hostname", "localhost"),
-            port=cls.cfg_get("server_port", 9090),
-            user=cls.cfg_get("server_user", ""),
-            password=cls.cfg_get("server_password", ""),
-            library_dir=cls.cfg_get("server_library_dir", cls.ql_base_dir),
+            hostname=cls.config_get("server_hostname", "localhost"),
+            port=cls.config_get("server_port", 9090),
+            user=cls.config_get("server_user", ""),
+            password=cls.config_get("server_password", ""),
+            library_dir=cls.config_get("server_library_dir", cls.ql_base_dir),
             current_player=cur,
-            debug=cls.cfg_get_bool("debug", False))
+            debug=cls.config_get_bool("debug", False))
         try:
             ver = cls.server.get_version()
             if cls.server.is_connected:
@@ -519,7 +469,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     @classmethod
     def plugin_on_song_started(cls, song):
         # Yucky hack to allow some form of immediacy on re-configuration
-        cls.server._debug = cls._debug = cls.cfg_get_bool("debug", False)
+        cls.server._debug = cls._debug = cls.config_get_bool("debug", False)
         if cls._debug:
             print_d("Paused" if app.player.paused else "Not paused")
         if song and cls.server and cls.server.is_connected:

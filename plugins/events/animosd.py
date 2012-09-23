@@ -20,6 +20,8 @@ from quodlibet import config, qltk, app
 from quodlibet.qltk.textedit import PatternEdit
 from quodlibet.parse import XMLFromPattern
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.plugins import PluginConfigMixin
+from quodlibet.util.dprint import print_d
 
 
 def Label(text):
@@ -175,7 +177,7 @@ class OSDWindow(gtk.Window):
         cr.fill()
 
         # draw border
-        if (do_outline):
+        if do_outline:
             # Make border darker and more translucent than the fill
             f = self.conf.fill
             rgba = (f[0]/1.25, f[1]/1.25, f[2]/1.25, f[3]/2.0)
@@ -196,13 +198,15 @@ class OSDWindow(gtk.Window):
             if do_shadow:
                 cr.set_source_rgba(*self.conf.shadow)
                 self.draw_conf_rect(cr, rect.x + 2, rect.y + 2,
-                        rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
+                        rect.width, rect.height,
+                        0.6 * self.conf.corners * rect.width)
                 cr.fill()
 
             if do_outline:
                 cr.set_source_rgba(*self.conf.outline)
                 self.draw_conf_rect(cr, rect.x, rect.y,
-                        rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
+                        rect.width, rect.height,
+                        0.6 * self.conf.corners * rect.width)
                 cr.stroke()
 
             cr.set_source_pixbuf(pbuf, 0, 0)
@@ -216,7 +220,8 @@ class OSDWindow(gtk.Window):
 
         pcc = pangocairo.CairoContext(cr)
         pcc.update_layout(self.title_layout)
-        texty = (self.get_size()[1] - self.title_layout.get_pixel_size()[1]) // 2
+        height = self.title_layout.get_pixel_size()[1]
+        texty = (self.get_size()[1] - height) // 2
 
         if do_shadow:
             cr.set_source_rgba(*self.conf.shadow)
@@ -270,11 +275,13 @@ class OSDWindow(gtk.Window):
             return False
         return True
 
-class AnimOsd(EventPlugin):
+class AnimOsd(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "Animated On-Screen Display"
     PLUGIN_NAME = _("Animated On-Screen Display")
     PLUGIN_DESC = _("Display song information on your screen when it changes.")
-    PLUGIN_VERSION = "1.1"
+    PLUGIN_VERSION = "1.2"
+    # Retain compatibility with old configuration
+    CONFIG_SECTION = 'animosd'
 
     def PluginPreferences(self, parent):
         def __coltofloat(x):
@@ -286,7 +293,7 @@ class AnimOsd(EventPlugin):
         def cfg_set_tuple(name, t):
             string = " ".join(map(str,t))
             #print_d("Writing config: %s=%s" % (name, string))
-            config.set("plugins", "animosd_%s" % name, string)
+            self.config_set("%s" % name, string)
 
         class ConfigLabel(gtk.Label):
             def __init__(self, text, widget):
@@ -311,30 +318,30 @@ class AnimOsd(EventPlugin):
 
         def set_font(button):
             font = button.get_font_name()
-            config.set("plugins", "animosd_font", font)
+            self.config_set("font", font)
             self.conf.font = font
             self.plugin_single_song(app.player.song)
 
         def change_delay(button):
             value = int(button.get_value() * 1000)
-            config.set("plugins", "animosd_delay", str(value))
+            self.config_set("delay", str(value))
             self.conf.delay = value
 
         def change_monitor(button):
             """Monitor number config change handler"""
             value = int(button.get_value())
-            config.set("plugins", "animosd_monitor", str(value))
+            self.config_set("monitor", str(value))
             self.conf.monitor = value
 
         def change_position(button):
             value = button.get_active() / 2.0
-            config.set("plugins", "animosd_pos_y", str(value))
+            self.config_set("pos_y", str(value))
             self.conf.pos_y = value
             self.plugin_single_song(app.player.song)
 
         def change_align(button):
             value = button.get_active()
-            config.set("plugins", "animosd_align", str(value))
+            self.config_set("align", str(value))
             self.conf.align = value
             self.plugin_single_song(app.player.song)
 
@@ -361,7 +368,7 @@ class AnimOsd(EventPlugin):
                 self.conf.corners = 0.14
             else:
                 self.conf.corners = 0
-            config.set("plugins", "animosd_corners", str(self.conf.corners))
+            self.config_set("corners", str(self.conf.corners))
             self.plugin_single_song(app.player.song)
 
         def edit_string(button):
@@ -371,7 +378,7 @@ class AnimOsd(EventPlugin):
 
         def set_string(window):
             value = window.text
-            config.set("plugins", "animosd_string", value)
+            self.config_set("string", value)
             self.conf.string = value
             self.plugin_single_song(app.player.song)
 
@@ -504,22 +511,38 @@ class AnimOsd(EventPlugin):
         return vb
 
     class conf(object):
-        pos_x = 0.5 # position of window 0--1 horizontal
-        pos_y = 0.0 # position of window 0--1 vertical
-        margin = 50 # never any closer to the screen edge than this
-        border = 20 # text/cover this far apart, from edge
-        fadetime = 0.3 # take this many seconds to fade in or out
-        ms = 40 # wait this many milliseconds between steps
-        delay = 2500 # wait this many milliseconds before hiding
-        monitor = 0 # monitor to display OSD on
+        # position of window 0--1 horizontal
+        pos_x = 0.5
+        # position of window 0--1 vertical
+        pos_y = 0.0
+        # never any closer to the screen edge than this
+        margin = 50
+        # text/cover this far apart, from edge
+        border = 20
+        # take this many seconds to fade in or out
+        fadetime = 0.3
+        # wait this many milliseconds between steps
+        ms = 40
+        # wait this many milliseconds before hiding
+        delay = 2500
+        # monitor to display OSD on
+        monitor = 0
+        # Font
         font = "Sans 22"
-        text = (0.9, 0.9, 0.9, 0.0) # main font color. Alpha is ignored.
-        align = 1 # align text: 0 (left), 1 (center), 2 (right)
-        corners = 0 # rounded corner radius, 0 for angled corners
-        outline = (-1.0, 0.0, 0.0, 0.2) # color,alpha or (-1.0,0.0,0.0,0.0) - surrounds text and cover
-        shadow = (-1.0, 0.0, 0.0, 0.1) # color,alpha or (-1.0,0.0,0.0) - shadows outline for text and cover
-        fill = (0.25, 0.25, 0.25, 0.5) # color,alpha or None - fills rectangular area
-        bcolor = (0.0, 0.0, 0.0, 0.2) # color,alpha or (-1.0,0.0,0.0,0.5) - borders the whole OSD
+        # main font color. Alpha is ignored.
+        text = (0.9, 0.9, 0.9, 0.0)
+        # align text: 0 (left), 1 (center), 2 (right)
+        align = 1
+        # rounded corner radius, 0 for angled corners
+        corners = 0
+        # color,alpha or (-1.0,0.0,0.0,0.0) - surrounds text and cover
+        outline = (-1.0, 0.0, 0.0, 0.2)
+        # color,alpha or (-1.0,0.0,0.0) - shadows outline for text and cover
+        shadow = (-1.0, 0.0, 0.0, 0.1)
+        # color,alpha or None - fills rectangular area
+        fill = (0.25, 0.25, 0.25, 0.5)
+        # color,alpha or (-1.0,0.0,0.0,0.5) - borders the whole OSD
+        bcolor = (0.0, 0.0, 0.0, 0.2)
         # song information to use - like in main window
         string = r'''<album|\<b\><album>\</b\><discnumber| - Disc <discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
 >\<span weight='bold' size='large'\><title>\</span\> - <~length><version|
@@ -535,22 +558,23 @@ by <~people>>'''
             return tuple(lst)
 
         config_map = [
-            ('text', config.get, str_to_tuple),
-            ('fill', config.get, str_to_tuple),
-            ('shadow', config.get, str_to_tuple),
-            ('outline', config.get, str_to_tuple),
-            ('bcolor', config.get, str_to_tuple),
-            ('corners', config.getfloat, None),
-            ('font', config.get, None),
-            ('align', config.getint, None),
-            ('delay', config.getint, None),
-            ('monitor', config.getint, None),
-            ('pos_y', config.getfloat, None),
-            ('string', config.get, None),
+            ('text', str_to_tuple),
+            ('fill', str_to_tuple),
+            ('shadow', str_to_tuple),
+            ('outline', str_to_tuple),
+            ('bcolor', str_to_tuple),
+            ('corners', float),
+            ('font', None),
+            ('align', int),
+            ('delay', int),
+            ('monitor', int),
+            ('pos_y', float),
+            ('string', None),
             ]
-        for key, cget, getconv in config_map:
-            try: value = cget('plugins', 'animosd_' + key)
-            except: continue
+        for key, getconv in config_map:
+            try:
+                value = self.config_get(key)
+            except (config.error, ValueError, KeyError): continue
 
             try:
                 if getconv is not None:

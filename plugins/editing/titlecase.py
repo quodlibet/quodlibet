@@ -8,7 +8,7 @@ import gtk
 
 from quodlibet import config, util
 from quodlibet.plugins.editing import EditTagsPlugin
-from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.plugins import PluginConfigMixin
 
 # Cheat list for human title-casing in English. See Issue 424.
 ENGLISH_INCORRECTLY_CAPITALISED_WORDS = \
@@ -46,14 +46,13 @@ def humanise(text):
     return u" ".join(words)
 
 
-class TitleCase(EditTagsPlugin):
+class TitleCase(EditTagsPlugin, PluginConfigMixin):
     PLUGIN_ID = "Title Case"
     PLUGIN_NAME = _("Title Case")
     PLUGIN_DESC = _("Title-case tag values in the tag editor.")
     PLUGIN_ICON = gtk.STOCK_SPELL_CHECK
-    PLUGIN_VERSION = "1.2"
-
-    CFG_PREFIX = "titlecase_"
+    PLUGIN_VERSION = "1.3"
+    CONFIG_SECTION = "titlecase"
 
     # Issue 753: Allow all caps (as before).
     # Set to False means you get Run Dmc, Ac/Dc, Cd 1/2 etc
@@ -65,16 +64,9 @@ class TitleCase(EditTagsPlugin):
         value = util.title(value)
         return humanise(value) if self.human else value
 
-    @classmethod
-    def cfg_get(cls, key, default=''):
-        try:
-            return config.getboolean('plugins', cls.CFG_PREFIX + key)
-        except config.error:
-            return default
-
     def __init__(self, tag, value):
-        self.allow_all_caps = self.cfg_get('allow_all_caps', True)
-        self.human = self.cfg_get('human_title_case', True)
+        self.allow_all_caps = self.config_get('allow_all_caps', True)
+        self.human = self.config_get('human_title_case', True)
 
         super(TitleCase, self).__init__(_("Title-_case Value"))
         self.set_image(
@@ -92,8 +84,7 @@ class TitleCase(EditTagsPlugin):
                " \"Dark Night of the Soul\""), True),
         ]
         for key, label, tooltip, default in config_toggles:
-            ccb = ConfigCheckButton(label, 'plugins', cls.CFG_PREFIX + key)
-            ccb.set_active(cls.cfg_get(key, default))
+            ccb = cls.ConfigCheckButton(label, key, default)
             if tooltip:
                 ccb.set_tooltip_text(tooltip)
             vb.pack_start(ccb)

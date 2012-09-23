@@ -27,8 +27,8 @@ import gobject, gtk
 from quodlibet import config, const, app, parse, util, qltk
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
-from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.plugins import PluginConfigMixin,ConfigCheckButton
 
 SERVICES = {
             'Last.fm':  'http://post.audioscrobbler.com/',
@@ -48,27 +48,32 @@ def config_get(key, default=''):
     except config.error:
         return default
 
-def config_get_url():
-    # This logic is used often enough to be split out
-    service = config_get('service', DEFAULT_SERVICE)
-    if service in SERVICES:
-        return SERVICES[service]
-    else:
-        return config_get('url')
-
-class QLSubmitQueue:
+class QLSubmitQueue(PluginConfigMixin):
     """Manages the submit queue for scrobbles. Works independently of the
     QLScrobbler plugin being enabled; other plugins may use submit() to queue
-    songs for scrobbling."""
+    songs for scrobbling.
+    """
 
     CLIENT = "qlb"
     PROTOCOL_VERSION = "1.2"
     DUMP = os.path.join(const.USERDIR, "scrobbler_cache")
+    # This must be the kept the same as `QLScrobbler`
+    CONFIG_SECTION = "scrobbler"
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL
     queue = []
     changed_event = threading.Event()
+
+    def config_get_url(self):
+        """Gets the URL for the currently configured service.
+        This logic was used often enough to be split out from generic config"""
+        # TODO: share this between the classes better
+        service = self.config_get('service', DEFAULT_SERVICE)
+        if service in SERVICES:
+            return SERVICES[service]
+        else:
+            return self.config_get('url')
 
     def set_nowplaying(self, song):
         """Send a Now Playing notification."""
@@ -120,8 +125,8 @@ class QLSubmitQueue:
         self.username, self.password, self.base_url = ('', '', '')
 
         # These need to be set early for _format_song to work
-        self.titlepat = parse.Pattern(config_get('titlepat', DEFAULT_TITLEPAT))
-        self.artpat = parse.Pattern(config_get('artistpat', DEFAULT_ARTISTPAT))
+        self.titlepat = parse.Pattern(self.config_get('titlepat', DEFAULT_TITLEPAT))
+        self.artpat = parse.Pattern(self.config_get('artistpat', DEFAULT_ARTISTPAT))
 
         try:
             disk_queue_file = open(self.DUMP, 'r')
@@ -144,9 +149,9 @@ class QLSubmitQueue:
         return 0
 
     def _check_config(self):
-        user = config_get('username')
-        passw = md5(config_get('password')).hexdigest()
-        url = config_get_url()
+        user = self.config_get('username')
+        passw = md5(self.config_get('password')).hexdigest()
+        url = self.config_get_url()
         if not user or not passw or not url:
             if self.queue and not self.broken:
                 self.quick_dialog("Please visit the Plugins window to set "
@@ -157,9 +162,11 @@ class QLSubmitQueue:
             self.username, self.password, self.base_url = (user, passw, url)
             self.broken = False
             self.handshake_sent = False
-        self.offline = (config_get('offline') == "true")
-        self.titlepat = parse.Pattern(config_get('titlepat', DEFAULT_TITLEPAT))
-        self.artpat = parse.Pattern(config_get('artistpat', DEFAULT_ARTISTPAT))
+        self.offline = self.config_get_bool('offline')
+        self.titlepat = parse.Pattern(
+                self.config_get('titlepat', DEFAULT_TITLEPAT))
+        self.artpat = parse.Pattern(
+                self.config_get('artistpat', DEFAULT_ARTISTPAT))
 
     def changed(self):
         """Signal that settings or queue contents were changed."""
@@ -318,13 +325,15 @@ class QLSubmitQueue:
     def quick_dialog(self, msg, dialog_type):
         gobject.idle_add(self.quick_dialog_helper, dialog_type, msg)
 
-class QLScrobbler(EventPlugin):
+class QLScrobbler(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "QLScrobbler"
     PLUGIN_NAME = _("AudioScrobbler Submission")
     PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
                     "Audioscrobbler services.")
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.11"
+    PLUGIN_VERSION = "0.12"
+    # Retain original config section
+    CONFIG_SECTION = "scrobbler"
 
     def __init__(self):
         self.__enabled = False
@@ -338,10 +347,19 @@ class QLScrobbler(EventPlugin):
         self.elapsed = 0
         self.nowplaying = None
 
-        self.exclude = config_get('exclude')
+        self.exclude = self.config_get('exclude')
 
         # Set up exit hook to dump queue
         gtk.quit_add(0, self.queue.dump_queue)
+
+    def config_get_url(self):
+        """Gets the URL for the currently configured service.
+        This logic was used often enough to be split out from generic config"""
+        service = self.config_get('service', DEFAULT_SERVICE)
+        if service in SERVICES:
+            return SERVICES[service]
+        else:
+            return self.config_get('url')
 
     def plugin_on_song_ended(self, song, stopped):
         if song is None or not self.__enabled:
@@ -415,7 +433,7 @@ class QLScrobbler(EventPlugin):
             service = widget.get_active_text()
             config.set("plugins", "scrobbler_service", service)
             urlent.set_sensitive( (service not in SERVICES) )
-            urlent.set_text(config_get_url())
+            urlent.set_text(self.config_get_url())
 
         def check_login(*args):
             queue = QLSubmitQueue()
@@ -445,7 +463,7 @@ class QLScrobbler(EventPlugin):
         row = 0
         service_combo = gtk.combo_box_new_text()
         table.attach(service_combo, 1, 2, row, row + 1)
-        cur_service = config_get('service')
+        cur_service = self.config_get('service')
         for idx, serv in enumerate(sorted(SERVICES.keys()) + ["Other..."]):
             service_combo.append_text(serv)
             if cur_service == serv:
@@ -457,7 +475,7 @@ class QLScrobbler(EventPlugin):
 
         # url
         entry = UndoEntry()
-        entry.set_text(config_get('url'))
+        entry.set_text(self.config_get('url'))
         entry.connect('changed', changed, 'url')
         service_combo.connect('changed', combo_changed, entry)
         service_combo.emit('changed')
@@ -467,7 +485,7 @@ class QLScrobbler(EventPlugin):
 
         # username
         entry = UndoEntry()
-        entry.set_text(config_get('username'))
+        entry.set_text(self.config_get('username'))
         entry.connect('changed', changed, 'username')
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
@@ -475,7 +493,7 @@ class QLScrobbler(EventPlugin):
 
         # password
         entry = UndoEntry()
-        entry.set_text(config_get('password'))
+        entry.set_text(self.config_get('password'))
         entry.set_visibility(False)
         entry.connect('changed', changed, 'password')
         table.attach(entry, 1, 2, row, row + 1)
@@ -508,7 +526,7 @@ class QLScrobbler(EventPlugin):
         row = 0
         # artist pattern
         entry = UndoEntry()
-        entry.set_text(config_get('artistpat'))
+        entry.set_text(self.config_get('artistpat'))
         entry.connect('changed', changed, 'artistpat')
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("The pattern used to format "
@@ -518,7 +536,7 @@ class QLScrobbler(EventPlugin):
 
         # title pattern
         entry = UndoEntry()
-        entry.set_text(config_get('titlepat'))
+        entry.set_text(self.config_get('titlepat'))
         entry.connect('changed', changed, 'titlepat')
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("The pattern used to format "
@@ -528,7 +546,7 @@ class QLScrobbler(EventPlugin):
 
         # exclude filter
         entry = ValidatingEntry(parse.Query.is_valid_color)
-        entry.set_text(config_get('exclude'))
+        entry.set_text(self.config_get('exclude'))
         entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))
         entry.connect('changed', changed, 'exclude')
@@ -537,9 +555,10 @@ class QLScrobbler(EventPlugin):
         row += 1
 
         # offline mode
-        offline = ConfigCheckButton(_("_Offline mode (don't submit anything)"),
-                                'plugins', 'scrobbler_offline')
-        offline.set_active(config_get('offline') == "true")
+        offline = self.ConfigCheckButton(
+                _("_Offline mode (don't submit anything)"),
+                'scrobbler_offline')
+        offline.set_active(self.config_get('offline') == "true")
         table.attach(offline, 0, 2, row, row + 1)
 
         box.pack_start(qltk.Frame(_("Submission"), child=table))

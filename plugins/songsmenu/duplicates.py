@@ -14,6 +14,7 @@
 from gettext import ngettext
 from quodlibet import config, player, print_d, print_w, util, qltk
 from quodlibet.library import library
+from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.entry import UndoEntry
@@ -322,12 +323,12 @@ class DuplicateDialog(gtk.Window):
         self.show_all()
 
 
-class Duplicates(SongsMenuPlugin):
+class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Find and browse similarly tagged versions of songs.')
     PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
-    PLUGIN_VERSION = "0.6"
+    PLUGIN_VERSION = "0.7"
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"
@@ -346,51 +347,17 @@ class Duplicates(SongsMenuPlugin):
     __trans = string.maketrans("", "")
 
     @classmethod
-    def _cfg_key(cls, key):
-        return "%s_%s" % (__name__, key)
-
-    @classmethod
-    def cfg_get(cls, name, default=None):
-        try:
-            key = cls._cfg_key(name)
-            return config.get("plugins", key)
-        except (ValueError, ConfigParser.Error):
-            print_w("Duplicates config entry for '%s' not found."
-                    "Defaulting to  '%s'" % (key, default))
-            return default
-
-    @classmethod
-    def cfg_get_bool(cls, key, default=True):
-        if key in cls.__cfg_cache: return bool(cls.__cfg_cache[key])
-        try:
-            key = cls._cfg_key(key)
-            cls.__cfg_cache[key] = bool
-            return bool(config.getboolean("plugins", key))
-        except (ValueError, ConfigParser.Error, TypeError):
-            print_w("Duplicates config entry for '%s' not found."
-                    "Defaulting to  '%s'" % (key, default))
-            return default
-
-
-    @classmethod
-    def cfg_set(cls, name, value):
-        cls.key_expression = value
-        key = cls._cfg_key(name)
-        print_d("Setting %s to '%s'" % (key,value))
-        config.set("plugins", key, value)
-
-    @classmethod
     def get_key_expression(cls):
         if not cls.key_expression:
             cls.key_expression = (
-                    cls.cfg_get(cls._CFG_KEY_KEY, cls.__DEFAULT_KEY_VALUE))
+                    cls.config_get(cls._CFG_KEY_KEY, cls.__DEFAULT_KEY_VALUE))
         return cls.key_expression
 
     @classmethod
     def PluginPreferences(cls, window):
         def key_changed(entry):
             #print_d("setting to %s" % entry.get_text().strip())
-            cls.cfg_set(cls._CFG_KEY_KEY, entry.get_text().strip())
+            cls.config_set(cls._CFG_KEY_KEY, entry.get_text().strip())
 
         vb = gtk.VBox(spacing=10)
         vb.set_border_width(0)
@@ -418,8 +385,8 @@ class Duplicates(SongsMenuPlugin):
         ]
         vb2=gtk.VBox(spacing=6)
         for key, label in toggles:
-            ccb = ConfigCheckButton(label, 'plugins', cls._cfg_key(key))
-            ccb.set_active(cls.cfg_get_bool(key))
+            ccb = ConfigCheckButton(label, 'plugins', cls._config_key(key))
+            ccb.set_active(cls.config_get_bool(key))
             vb2.pack_start(ccb)
 
         frame = qltk.Frame(label=_("Matching options"), child=vb2)
@@ -436,13 +403,13 @@ class Duplicates(SongsMenuPlugin):
     @classmethod
     def get_key(cls, song):
         key = song(cls.get_key_expression())
-        if cls.cfg_get_bool(cls._CFG_REMOVE_DIACRITICS):
+        if cls.config_get_bool(cls._CFG_REMOVE_DIACRITICS):
             key = cls.remove_accents(key)
-        if cls.cfg_get_bool(cls._CFG_CASE_INSENSITIVE):
+        if cls.config_get_bool(cls._CFG_CASE_INSENSITIVE):
             key = key.lower()
-        if cls.cfg_get_bool(cls._CFG_REMOVE_PUNCTUATION):
+        if cls.config_get_bool(cls._CFG_REMOVE_PUNCTUATION):
             key = str(key).translate(cls.__trans, string.punctuation)
-        if cls.cfg_get_bool(cls._CFG_REMOVE_WHITESPACE):
+        if cls.config_get_bool(cls._CFG_REMOVE_WHITESPACE):
             key = "_".join(key.split())
         return key
 
@@ -469,7 +436,6 @@ class Duplicates(SongsMenuPlugin):
         # Now display the grouped duplicates
         for (key, children) in groups.items():
             if len(children) < self.MIN_GROUP_SIZE: continue
-
             # The parent (group) label
             model.add_group(key, children)
 

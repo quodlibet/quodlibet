@@ -14,9 +14,9 @@ from quodlibet.parse._pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet import util
 
-from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.plugins import PluginManager as PM
+from quodlibet.plugins import PluginConfigMixin
+from quodlibet.util.dprint import print_d
 
 
 AM_PATH = "/org/freedesktop/Telepathy/AccountManager"
@@ -47,39 +47,6 @@ def set_accounts_requested_presence(paths, message):
         bus_iface.Set(AC_IFACE, "RequestedPresence", value)
 
 
-class PluginConfigMixin(object):
-    """Mixin for storage and editing of plugin config in a standard way"""
-
-    @classmethod
-    def _cfg_key(cls, name):
-        return "%s_%s" % (cls.PLUGIN_ID.lower().replace(" ", "_"), name)
-
-    def cfg_get(self, name, default=None):
-        """Gets a config string value for this plugin"""
-        try:
-            return config.get(PM.CONFIG_SECTION, self._cfg_key(name))
-        except config.error:
-            # Set the missing config
-            config.set(PM.CONFIG_SECTION, self._cfg_key(name), default)
-            return default
-
-    def cfg_set(self, name, value):
-        """Saves a config string value for this plugin"""
-        try:
-            config.set(PM.CONFIG_SECTION, self._cfg_key(name), value)
-        except config.error:
-            print_d("Couldn't set config item '%s' to %r" % (name, value))
-
-    def cfg_get_bool(self, name, default=False):
-        """Gets a config boolean for this plugin"""
-        return config.getboolean(PM.CONFIG_SECTION, self._cfg_key(name),
-                                 default)
-
-    def cfg_entry_changed(self, entry, key):
-        """React to a change in an gtk.Entry (by saving it to config)"""
-        if entry.get_property('sensitive'):
-            self.cfg_set(key, entry.get_text())
-
 
 class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "Telepathy Status"
@@ -87,7 +54,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_DESC = _("Updates all Telepathy-based IM accounts (as configured in "
                     "Empathy etc) with a status message based on current song.")
     PLUGIN_ICON = gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.2"
+    PLUGIN_VERSION = "0.3"
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
     DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")
@@ -109,14 +76,14 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
 
     def plugin_on_song_started(self, song):
         self.song = song
-        pat_str = self.cfg_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT)
+        pat_str = self.config_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT)
         pattern = Pattern(pat_str)
         status = (pattern.format(song) if song
-                       else self.cfg_get(self.CFG_STATUS_SONGLESS, ""))
+                       else self.config_get(self.CFG_STATUS_SONGLESS, ""))
         self._set_status(status)
 
     def plugin_on_paused(self):
-        pat_str = self.cfg_get(self.CFG_PAT_PAUSED, self.DEFAULT_PAT_PAUSED)
+        pat_str = self.config_get(self.CFG_PAT_PAUSED, self.DEFAULT_PAT_PAUSED)
         pattern = Pattern(pat_str)
         self.status = pattern.format(self.song) if self.song else ""
         self._set_status(self.status)
@@ -126,7 +93,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
 
     def disabled(self):
         if self.status:
-            self._set_status(self.cfg_get(self.CFG_STATUS_SONGLESS))
+            self._set_status(self.config_get(self.CFG_STATUS_SONGLESS))
 
     def enabled(self):
         self.song = None
@@ -139,8 +106,8 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         # Playing
         hb = gtk.HBox(spacing=6)
         entry = UndoEntry()
-        entry.set_text(self.cfg_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT))
-        entry.connect('changed', self.cfg_entry_changed, self.CFG_PAT_PLAYING)
+        entry.set_text(self.config_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT))
+        entry.connect('changed', self.config_entry_changed, self.CFG_PAT_PLAYING)
         lbl = gtk.Label(_("Playing:"))
         entry.set_tooltip_markup(_("Status text when a song is started. "
                                  "Accepts QL Patterns e.g. <tt>%s</tt>")
@@ -153,9 +120,9 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         # Paused
         hb = gtk.HBox(spacing=6)
         entry = UndoEntry()
-        entry.set_text(self.cfg_get(self.CFG_PAT_PAUSED,
+        entry.set_text(self.config_get(self.CFG_PAT_PAUSED,
                                     self.DEFAULT_PAT_PAUSED))
-        entry.connect('changed', self.cfg_entry_changed, self.CFG_PAT_PAUSED)
+        entry.connect('changed', self.config_entry_changed, self.CFG_PAT_PAUSED)
         lbl = gtk.Label(_("Paused:"))
         entry.set_tooltip_markup(_("Status text when a song is paused. "
                                    "Accepts QL Patterns e.g. <tt>%s</tt>")
@@ -168,8 +135,8 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         # No Song
         hb = gtk.HBox(spacing=6)
         entry = UndoEntry()
-        entry.set_text(self.cfg_get(self.CFG_STATUS_SONGLESS, ""))
-        entry.connect('changed', self.cfg_entry_changed,
+        entry.set_text(self.config_get(self.CFG_STATUS_SONGLESS, ""))
+        entry.connect('changed', self.config_entry_changed,
                       self.CFG_STATUS_SONGLESS)
         entry.set_tooltip_text(
                 _("Plain text for status when there is no current song"))
