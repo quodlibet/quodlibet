@@ -27,21 +27,17 @@ class SongTracker(object):
         self.elapsed = 0
         gtk.quit_add(1, self.__quit, librarian, player)
 
-    def __error(self, player, song, error, lock, librarian):
+    def __error(self, player, song, error, librarian):
         newstr = u"%s: %s\n\n" % (
             util.decode(time.asctime(), const.ENCODING), error)
         self.__errors_in_a_row += 1
         if self.__errors_in_a_row > MAX_ERRORS:
             self.__errors_in_a_row = 0
-            if lock:
-                gtk.gdk.threads_enter()
             ErrorMessage(None, _("Too Many Errors"),
                          _("Stopping playback because there were %d errors "
                            "in a row.") % MAX_ERRORS).run()
             player.go_to(None)
             player.paused = True
-            if lock:
-                gtk.gdk.threads_leave()
         song["~errors"] = newstr + song.get("~errors", "")
 
     def __start(self, librarian, song):

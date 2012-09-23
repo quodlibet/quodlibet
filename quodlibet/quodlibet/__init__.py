@@ -47,11 +47,8 @@ class Application(object):
         import gobject
 
         def idle_quit():
-            import gtk
             if self.window:
-                gtk.gdk.threads_enter()
                 self.window.destroy()
-                gtk.gdk.threads_leave()
 
         # so this can be called from a signal handler and before
         # the main loop starts
@@ -86,6 +83,18 @@ def _gtk_init(icon=None):
     pygtk.require('2.0')
     import gtk
     import gobject
+    gobject.threads_init()
+
+    def warn_threads(func):
+        def w():
+            name = func.__module__ + "." + func.__name__
+            print_w("Don't use %r. Use idle_add instead." % name)
+            func()
+        return w
+
+    gtk.gdk.threads_init = warn_threads(gtk.gdk.threads_init)
+    gtk.gdk.threads_enter = warn_threads(gtk.gdk.threads_enter)
+    gtk.gdk.threads_leave = warn_threads(gtk.gdk.threads_leave)
 
     theme = gtk.icon_theme_get_default()
     theme.append_search_path(quodlibet.const.IMAGEDIR)
@@ -188,7 +197,6 @@ def init(library=None, icon=None, title=None, name=None):
     _gtk_init(icon)
 
     import gobject
-    gobject.threads_init()
 
     if title:
         gobject.set_prgname(title)
@@ -339,9 +347,4 @@ def main(window):
     window.connect('destroy', quit_gtk)
     window.show()
 
-    # This has been known to cause segmentation faults in some Python,
-    # GTK+, and GStreamer versions.
-    gtk.gdk.threads_init()
-    gtk.gdk.threads_enter()
     gtk.main()
-    gtk.gdk.threads_leave()

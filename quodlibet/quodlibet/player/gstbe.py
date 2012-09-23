@@ -327,7 +327,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         elif message.type == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
             err = str(err).decode(const.ENCODING, 'replace')
-            self.error(err, True)
+            self._error(err)
         elif message.type == gst.MESSAGE_BUFFERING:
             percent = message.parse_buffering()
             self.__buffering(percent)
@@ -491,9 +491,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def _get_paused(self): return self._paused
     paused = property(_get_paused, _set_paused)
 
-    def error(self, message, lock):
+    def _error(self, message):
         print_w(message)
-        self.emit('error', self.song, message, lock)
+        self.emit('error', self.song, message)
         if not self.paused:
             self.next()
 

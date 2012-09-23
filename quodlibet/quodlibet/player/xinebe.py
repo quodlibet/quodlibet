@@ -107,7 +107,7 @@ class XinePlaylistPlayer(BasePlayer):
                     message = string_at(addressof(msg) + msg.explanation)
                 else:
                     message = "xine error %s" % msg.type
-                gobject.idle_add(self.error, message, True)
+                gobject.idle_add(self.error, message)
         return True
 
     def do_set_property(self, property, v):
@@ -163,9 +163,9 @@ class XinePlaylistPlayer(BasePlayer):
 
     paused = property(lambda s: s._paused, _set_paused)
 
-    def error(self, message, lock):
+    def _error(self, message):
         self._stop()
-        self.emit('error', self.song, message, lock)
+        self.emit('error', self.song, message)
         if not self.paused:
             self.next()
 

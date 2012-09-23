@@ -40,8 +40,7 @@ class BasePlayer(gobject.GObject):
         (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, int)),
         'paused': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
         'unpaused': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        'error': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                  (object, str, bool)),
+        'error': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, str)),
         }
 
     _gproperties_ = {
