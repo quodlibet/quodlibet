@@ -25,9 +25,10 @@ class TSongTracker(TestCase):
 
     def test_play(self):
         import time
-        # Allow at least 1 second to elapse to simulate playing
+        # Allow at least 2 second to elapse to simulate playing
+        self.p.song = self.s1
         self.p.paused = False
-        time.sleep(1.1)
+        time.sleep(2)
         self.do()
         self.p.emit('song-ended', self.s1, False)
         self.do()
