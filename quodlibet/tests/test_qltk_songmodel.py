@@ -5,7 +5,7 @@ import gtk
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
-from quodlibet.qltk.playorder import ORDERS
+from quodlibet.qltk.playorder import ORDERS, Order
 
 def do_events():
     while gtk.events_pending():
@@ -163,6 +163,19 @@ class TPlaylistModel(TestCase):
             self.failUnlessEqual(self.pl.current, 5)
             self.pl.go_to(1)
             self.failUnlessEqual(self.pl.current, 1)
+
+    def test_go_to(self):
+        class SetOrder(Order):
+            # most orders don't change iter here,
+            # so make sure this gets handled right
+            def set_explicit(self, playlist, iter):
+                return playlist.iter_next(iter)
+            def set_implicit(self, playlist, iter):
+                return playlist.iter_next(playlist.iter_next(iter))
+
+        self.pl.order = SetOrder(self.pl)
+        self.failUnlessEqual(self.pl[self.pl.go_to(5, True)][0], 6)
+        self.failUnlessEqual(self.pl[self.pl.go_to(5, False)][0], 7)
 
     def test_go_to_none(self):
         for i in range(5):

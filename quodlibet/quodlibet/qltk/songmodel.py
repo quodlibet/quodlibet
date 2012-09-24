@@ -179,8 +179,7 @@ class PlaylistModel(TrackCurrentModel):
         else:
             self.current_iter = self.order.set_implicit(self, iter_)
 
-        self.current_iter = iter_
-        return iter_
+        return self.current_iter
 
     def set(self, songs):
         self.order.reset(self)
