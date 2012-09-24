@@ -478,4 +478,4 @@ class TrayIcon(EventPlugin):
     def __information(self, *args):
         song = app.player.song
         if song:
-            Information(app.window, [song])
+            Information(app.librarian, [song])
