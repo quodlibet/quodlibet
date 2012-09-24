@@ -238,6 +238,7 @@ def init_plugins(no_plugins=False):
                os.path.join(quodlibet.const.BASEDIR, "plugins", "gstreamer"),
                os.path.join(quodlibet.const.USERDIR, "plugins")]
     pm = plugins.init(folders, no_plugins)
+    pm.rescan()
 
     from quodlibet.qltk.edittags import EditTags
     from quodlibet.qltk.renamefiles import RenameFiles

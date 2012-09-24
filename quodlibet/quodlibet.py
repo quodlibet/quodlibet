@@ -103,8 +103,6 @@ def main():
     from quodlibet.plugins.events import EventPluginHandler
     pm.register_handler(EventPluginHandler(library.librarian, player))
 
-    pm.rescan()
-
     from quodlibet.qltk.remote import FSInterface, FIFOControl
     from quodlibet.qltk.tracker import SongTracker
     try:
