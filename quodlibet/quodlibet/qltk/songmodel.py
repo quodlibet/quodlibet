@@ -71,16 +71,73 @@ class PlaylistMux(object):
         map(self.q.remove, filter(None, map(self.q.find, songs)))
 
 
-class PlaylistModel(gtk.ListStore):
-    order = None
-    repeat = False
-    sourced = False
+class TrackCurrentModel(gtk.ListStore):
     __iter = None
     __old_value = None
 
-    __gsignals__ = {
-        'songs-set': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
-        }
+    def set(self, songs):
+        print_d("Clearing model.")
+        self.clear()
+        self.__iter = None
+
+        print_d("Setting %d songs." % len(songs))
+        insert = self.insert
+        oldsong = self.__old_value
+        for song in reversed(songs):
+            iter_ = insert(0, (song,))
+            if song is oldsong:
+                self.__iter = iter_
+        print_d("Done filling model.")
+
+    def remove(self, iter_):
+        if self.__iter and self[iter_].path == self[self.__iter].path:
+            self.__iter = None
+        super(TrackCurrentModel, self).remove(iter_)
+
+    def get(self):
+        return [row[0] for row in self]
+
+    @property
+    def current(self):
+        return self.__iter and self.get_value(self.__iter, 0)
+
+    @property
+    def current_path(self):
+        return self.__iter and self.get_path(self.__iter)
+
+    def __set_current_iter(self, iter_):
+        # emit a row-changed for the previous and the new iter after it is set
+        # so that the currentcolumn icon gets updated on song changes
+        for it in filter(None, (self.__iter, iter_)):
+            self.row_changed(self.get_path(it), it)
+        self.__iter = iter_
+        self.__old_value = self.current
+
+    def __get_current_iter(self):
+        return self.__iter
+
+    current_iter = property(__get_current_iter, __set_current_iter)
+
+    def find(self, song):
+        for row in self:
+            if row[0] == song:
+                return row.iter
+        return None
+
+    def find_all(self, songs):
+        return [row.iter for row in self if row[0] in songs]
+
+    def __contains__(self, song):
+        return bool(self.find(song))
+
+    def is_empty(self):
+        return not len(self)
+
+
+class PlaylistModel(TrackCurrentModel):
+    order = None
+    repeat = False
+    sourced = False
 
     def __init__(self):
         super(PlaylistModel, self).__init__(object)
@@ -93,114 +150,43 @@ class PlaylistModel(gtk.ListStore):
             s = self.connect(sig, lambda pl, *x: self.order.reset(pl))
             self.__sigs.append(s)
 
-    def set(self, songs):
-        oldsong = self.current
-        if oldsong is None: oldsong = self.__old_value
-        else: self.__old_value = oldsong
-        self.order.reset(self)
-        self.current_iter = None
-
-        # We just reset the order manually so block the signals
-        map(self.handler_block, self.__sigs)
-        print_d("Clearing model.", context=self)
-        self.clear()
-        print_d("Setting %d songs." % len(songs), context=self)
-        insert = self.insert
-        for song in reversed(songs):
-            iter = insert(0, (song,))
-            if song is oldsong:
-                self.current_iter = iter
-        if self.__iter is not None:
-            self.__old_value = None
-        print_d("Done filling model.", context=self)
-        map(self.handler_unblock, self.__sigs)
-        self.emit('songs-set')
-
-    def reverse(self):
-        if not len(self): return
-        self.order.reset(self)
-        map(self.handler_block, self.__sigs)
-        self.reorder(range(len(self)-1, -1, -1))
-        map(self.handler_unblock, self.__sigs)
-
-    def remove(self, iter):
-        if self.__iter and self[iter].path == self[self.__iter].path:
-            self.current_iter = None
-        super(PlaylistModel, self).remove(iter)
-
-    def get(self):
-        return [row[0] for row in self]
-
-    def get_current(self):
-        if self.__iter is None: return None
-        elif self.is_empty(): return None
-        else: return self[self.__iter][0]
-
-    current = property(get_current)
-
-    def get_current_path(self):
-        if self.__iter is None: return None
-        elif self.is_empty(): return None
-        else: return self[self.__iter].path
-    current_path = property(get_current_path)
-
-    def __set_current_iter(self, iter_):
-        # emit a row-changed for the previous and the new iter after it is set
-        # so that the currentcolumn icon gets updated on song changes
-        old_iter = self.current_iter
-        self.__iter = iter_
-        for iter_ in filter(None, (self.__iter, old_iter)):
-            self.row_changed(self.get_path(iter_), iter_)
-
-    def get_current_iter(self):
-        if self.__iter is None: return None
-        elif self.is_empty(): return None
-        else: return self.__iter
-    current_iter = property(get_current_iter, __set_current_iter)
-
     def next(self):
-        self.current_iter = self.order.next_explicit(self, self.__iter)
+        iter_ = self.current_iter
+        self.current_iter = self.order.next_explicit(self, iter_)
 
     def next_ended(self):
-        self.current_iter = self.order.next_implicit(self, self.__iter)
+        iter_ = self.current_iter
+        self.current_iter = self.order.next_implicit(self, iter_)
 
     def previous(self):
-        self.current_iter = self.order.previous_explicit(self, self.__iter)
+        iter_ = self.current_iter
+        self.current_iter = self.order.previous_explicit(self, iter_)
 
     def go_to(self, song, explicit=False):
         print_d("Told to go to %r" % getattr(song, "key", song))
-        self.current_iter = None
+
+        iter_ = None
         if isinstance(song, gtk.TreeIter):
-            self.current_iter = song
-            self.sourced = True
+            iter_ = song
         elif song is not None:
-            for row in self:
-                if row[0] == song:
-                    self.current_iter = row.iter
-                    print_d("Found song at %r" % row, context=self)
-                    self.sourced = True
-                    break
-            else:
-                print_d("Failed to find song", context=self)
+            iter_ = self.find(song)
+
+        if iter_:
+            self.sourced = True
+
         if explicit:
-            self.current_iter = self.order.set_explicit(self, self.__iter)
+            self.current_iter = self.order.set_explicit(self, iter_)
         else:
-            self.current_iter = self.order.set_implicit(self, self.__iter)
-        return self.__iter
+            self.current_iter = self.order.set_implicit(self, iter_)
 
-    def find(self, song):
-        for row in self:
-            if row[0] == song: return row.iter
-        return None
+        self.current_iter = iter_
+        return iter_
 
-    def find_all(self, songs):
-        return [row.iter for row in self if row[0] in songs]
-
-    def __contains__(self, song):
-        return bool(self.find(song))
-
-    def is_empty(self):
-        return not len(self)
+    def set(self, songs):
+        self.order.reset(self)
+        map(self.handler_block, self.__sigs)
+        super(PlaylistModel, self).set(songs)
+        map(self.handler_unblock, self.__sigs)
 
     def reset(self):
         self.go_to(None)
