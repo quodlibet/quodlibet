@@ -185,6 +185,7 @@ class HAL(DeviceManager):
             self.emit("added", device)
 
     def __device_removed(self, udi):
+        device = self.__get_by_udi(udi)
         if device is not None:
             self.emit("removed", udi)
 
