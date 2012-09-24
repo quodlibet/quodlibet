@@ -117,8 +117,8 @@ class FIFOControl(object):
         player.stop()
 
     def _focus(self, library, window, player):
-        window.show()
-        window.present()
+        from quodlibet import app
+        app.present()
 
     def _volume(self, value, library, window, player):
         if value[0] in ('+', '-'):
@@ -191,13 +191,19 @@ class FIFOControl(object):
         player.next()
 
     def _toggle_window(self, library, window, player):
-        if window.get_property('visible'): window.hide()
-        else: window.present()
+        from quodlibet import app
+        if window.get_property('visible'):
+            app.hide()
+        else:
+            app.show()
 
     def _hide_window(self, library, window, player):
-        window.hide()
+        from quodlibet import app
+        app.hide()
 
-    _show_window = _focus
+    def _show_window(self, library, window, player):
+        from quodlibet import app
+        app.show()
 
     def _set_rating(self, value, library, window, player):
         song = player.song
