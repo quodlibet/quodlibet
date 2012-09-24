@@ -41,7 +41,7 @@ class LibraryBrowser(Window):
         sw.add(view)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
 
-        self.browser = browser = Kind(library, None)
+        self.browser = browser = Kind(library, False)
         if browser.reordered:
             view.enable_drop()
         elif browser.dropped:

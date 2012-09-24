@@ -21,7 +21,8 @@ class Browser(object):
     # So, we need to reasssign this in every subclass.
     __gsignals__ = {
         'songs-selected':
-        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object))
+        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object)),
+        'activated': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
         }
 
     # The browser's name, without an accelerator.

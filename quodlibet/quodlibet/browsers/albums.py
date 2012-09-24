@@ -472,7 +472,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
                 model.row_changed(row.path, row.iter)
                 if not changed_albums: break
 
-    def __init__(self, library, player):
+    def __init__(self, library, main):
         super(AlbumList, self).__init__(spacing=6)
         self._register_instance()
         if self.__model is None:
@@ -538,9 +538,9 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
 
-        if player:
+        if main:
             gobject_weak(view.connect, 'row-activated',
-                self.__play_selection, player)
+                self.__play_selection)
 
         self.__sig = gobject_weak(view.get_selection().connect, 'changed',
             util.DeferredSignal(self.__update_songs), parent=view)
@@ -705,8 +705,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
         else: sel.set_uris([song("~uri") for song in songs])
 
-    def __play_selection(self, view, indices, col, player):
-        player.reset()
+    def __play_selection(self, view, indices, col):
+        self.emit("activated")
 
     def active_filter(self, song):
         selection = self.view.get_selection()

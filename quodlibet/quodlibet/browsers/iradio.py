@@ -421,7 +421,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         if not self.instances():
             self._destroy()
 
-    def __init__(self, library, player):
+    def __init__(self, library, main):
         super(InternetRadio, self).__init__(spacing=12)
 
         if not self.instances():

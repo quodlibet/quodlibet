@@ -35,7 +35,7 @@ class EmptyBar(gtk.VBox, Browser):
     priority = 0
     in_menu = False
 
-    def __init__(self, library, player):
+    def __init__(self, library, main):
         super(EmptyBar, self).__init__()
         self._text = ""
         self._filter = None
@@ -173,8 +173,8 @@ class SearchBar(EmptyBar):
     priority = 1
     in_menu = True
 
-    def __init__(self, library, player, limit=True):
-        super(SearchBar, self).__init__(library, player)
+    def __init__(self, library, main, limit=True):
+        super(SearchBar, self).__init__(library, main)
         self.set_spacing(6)
 
         completion = LibraryTagCompletion(library.librarian)

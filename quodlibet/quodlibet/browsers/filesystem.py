@@ -48,7 +48,7 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         songs = filter(klass.__library.__contains__, songs)
         klass.__library.remove(songs)
 
-    def __init__(self, library, player):
+    def __init__(self, library, main):
         super(FileSystem, self).__init__()
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.set_shadow_type(gtk.SHADOW_IN)
@@ -64,8 +64,8 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         sel = dt.get_selection()
         sel.unselect_all()
         sel.connect_object('changed', copool.add, self.__songs_selected, dt)
-        if player:
-            dt.connect('row-activated', lambda *a: player.reset())
+        if main:
+            dt.connect('row-activated', lambda *a: self.emit("activated"))
         self.add(dt)
         self.show_all()
 

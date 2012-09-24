@@ -215,9 +215,9 @@ class Playlists(gtk.VBox, Browser):
     __lists = gtk.TreeModelSort(gtk.ListStore(object))
     __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
 
-    def __init__(self, library, player):
+    def __init__(self, library, main):
         super(Playlists, self).__init__(spacing=6)
-        self.__main = bool(player)
+        self.__main = main
         self.__view = view = RCMHintedTreeView()
         self.__view.set_enable_search(True)
         self.__view.set_search_column(0)
@@ -263,8 +263,10 @@ class Playlists(gtk.VBox, Browser):
         view.connect('drag-data-get', self.__drag_data_get)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
-        if player: view.connect('row-activated', self.__play, player)
-        else: render.set_property('editable', True)
+        if main:
+            view.connect('row-activated', lambda *x: self.emit("activated"))
+        else:
+            render.set_property('editable', True)
         view.get_selection().connect('changed', self.activate)
 
         s = view.get_model().connect('row-changed', self.__check_current)
@@ -300,9 +302,6 @@ class Playlists(gtk.VBox, Browser):
             self.__view.set_cursor(model.get_path(iter),
                                    self.__view.get_columns()[0],
                                    start_editing=True)
-
-    def __play(self, view, path, column, player):
-        player.reset()
 
     def __check_current(self, model, path, iter):
         model, citer = self.__view.get_selection().get_selected()

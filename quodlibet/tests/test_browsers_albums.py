@@ -36,7 +36,7 @@ class TAlbumBrowser(TestCase):
             af.sanitize()
         library.add(SONGS)
 
-        cls.bar = AlbumList(library, False)
+        cls.bar = AlbumList(library, True)
         w = gtk.Window()
         w.add(cls.bar)
         w.show_all()
@@ -45,9 +45,14 @@ class TAlbumBrowser(TestCase):
 
     def setUp(self):
         self._id = self.bar.connect("songs-selected", self._selected)
+        self._id2 = self.bar.connect("activated", self._activated)
         self.bar.set_text("")
         self._wait()
         self.songs = []
+        self.activated = False
+
+    def _activated(self, albumlist):
+        self.activated = True
 
     def _selected(self, albumlist, songs, *args):
         self.songs = songs
@@ -55,6 +60,11 @@ class TAlbumBrowser(TestCase):
     def _wait(self):
         while gtk.events_pending():
             gtk.main_iteration()
+
+    def test_activated(self):
+        view = self.bar.view
+        view.row_activated((0,), view.get_column(0))
+        self.failUnless(self.activated)
 
     def test_can_filter(self):
         self.failUnless(self.bar.can_filter(None))
@@ -111,6 +121,7 @@ class TAlbumBrowser(TestCase):
 
     def tearDown(self):
         self.bar.disconnect(self._id)
+        self.bar.disconnect(self._id2)
 
     @classmethod
     def tearDownClass(cls):

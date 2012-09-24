@@ -653,11 +653,11 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                 return sorted(s, key=operator.attrgetter("sort_key"))
             return s
 
-    def __init__(self, library, player):
-        super(PanedBrowser, self).__init__(library, player, limit=False)
+    def __init__(self, library, main):
+        super(PanedBrowser, self).__init__(library, main, limit=False)
 
         self._register_instance()
-        self.__save = player
+        self.__main = main
 
         keyval, mod = gtk.accelerator_parse("<control>Home")
         s = self.accelerators.connect_group(keyval, mod, 0, self.__all)
@@ -751,7 +751,9 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.__panes.pop() # remove self
 
         for pane in self.__panes:
-            if self.__save: pane.connect('row-activated', self.__start)
+            if self.__main:
+                pane.connect('row-activated',
+                             lambda *x: self.emit("activated"))
             sw = gtk.ScrolledWindow()
             sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             sw.set_shadow_type(gtk.SHADOW_IN)
@@ -768,9 +770,6 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.__panes[-1].inhibit()
         self.activate()
         self.__panes[-1].uninhibit()
-
-    def __start(self, view, indices, col):
-        self.__save.reset()
 
     def __get_filter_pane(self, key):
         """Get the best pane for filtering etc."""

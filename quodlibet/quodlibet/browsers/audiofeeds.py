@@ -287,7 +287,6 @@ class AudioFeeds(Browser, gtk.VBox):
 
     def __init__(self, library, main):
         super(AudioFeeds, self).__init__(spacing=6)
-        self.__main = bool(main)
 
         self.__view = view = AllTreeView()
         self.__render = render = gtk.CellRendererText()

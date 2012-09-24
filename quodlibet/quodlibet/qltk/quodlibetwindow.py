@@ -575,8 +575,9 @@ class QuodLibetWindow(gtk.Window):
                 self.remove_accel_group(self.browser.accelerators)
             container.destroy()
             self.browser.destroy()
-        self.browser = Browser(library, player)
+        self.browser = Browser(library, True)
         self.browser.connect('songs-selected', self.__browser_cb)
+        self.browser.connect('activated', self.__browser_activate)
         if restore:
             self.browser.restore()
             self.browser.activate()
@@ -919,6 +920,12 @@ class QuodLibetWindow(gtk.Window):
             c = self.browser.can_filter(key)
             for widget in widgets:
                 self.ui.get_widget(widget).set_property('visible', c)
+
+    def __browser_activate(self, browser):
+        model = self.songlist.get_model()
+        model.reset()
+        if player.playlist.go_to(model.get_iter_first(), True):
+            player.playlist.paused = False
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:

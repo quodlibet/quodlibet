@@ -159,7 +159,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 klass.__devices.remove(row.iter)
                 break
 
-    def __init__(self, library, player):
+    def __init__(self, library, main):
         super(MediaDevices, self).__init__(spacing=6)
         self._register_instance()
 
@@ -178,7 +178,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         view.get_selection().set_mode(gtk.SELECTION_BROWSE)
         view.get_selection().connect_object('changed', self.__refresh, False)
         view.connect('popup-menu', self.__popup_menu, library)
-        if player: view.connect('row-activated', lambda *a: player.reset())
+        if main:
+            view.connect('row-activated', lambda *a: self.emit("activated"))
         swin.add(view)
 
         col = gtk.TreeViewColumn("Devices")
