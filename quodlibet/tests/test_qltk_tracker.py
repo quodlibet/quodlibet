@@ -45,7 +45,7 @@ class TSongTracker(TestCase):
 
     def test_error(self):
         self.current = self.p.song = self.s1
-        self.p.error('Test error', None)
+        self.p.error('Test error')
         self.do()
         self.assertEquals(self.s1["~#playcount"], 0)
         self.assertEquals(self.s1["~#skipcount"], 0)

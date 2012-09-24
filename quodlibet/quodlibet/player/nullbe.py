@@ -41,8 +41,8 @@ class NullPlayer(BasePlayer):
         else:
             raise AttributeError
 
-    def error(self, message, lock):
-        self.emit('error', self.song, message, lock)
+    def error(self, message):
+        self.emit('error', self.song, message)
         if not self.paused:
             self.next()
 
