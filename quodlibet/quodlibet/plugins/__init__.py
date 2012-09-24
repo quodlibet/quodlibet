@@ -5,6 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import sys
+
 from quodlibet import config
 from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
@@ -31,11 +33,23 @@ def quit():
 
 class PluginImportException(Exception):
     desc = ""
+    platforms = None
 
-    def __init__(self, desc):
+    def __init__(self, desc, platforms=None):
+        """platforms is a list of platform names where this error should be
+        shown. In case it is None it will always be shown."""
         super(PluginImportException, self).__init__()
         self.desc = desc
+        self.platforms = platforms
 
+    def should_show(self):
+        """If the error should be shown on the current platform"""
+        if self.platforms is not None:
+            sw = lambda x: sys.platform.startswith(x)
+            if sum(map(sw, self.platforms)):
+                return True
+            return False
+        return True
 
 def migrate_old_config():
     active = []
@@ -258,6 +272,8 @@ class PluginManager(object):
         errors = {}
         for (name, (exc, text)) in self.__scanner.failures.iteritems():
             if isinstance(exc, PluginImportException):
+                if not exc.should_show():
+                    continue
                 errors[name] = [exc.desc]
             else:
                 errors[name] = text

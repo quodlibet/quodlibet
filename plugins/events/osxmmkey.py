@@ -30,6 +30,11 @@ import sys
 try:
     from quodlibet import const
     from quodlibet.plugins.events import EventPlugin
+
+    if not sys.platform.startswith("darwin"):
+        from quodlibet.plugins import PluginImportException
+        raise PluginImportException("wrong platform", ["darwin"])
+
 except ImportError:
     # When executing the event tap process, we may not be able to import
     # quodlibet libraries, which is fine.
