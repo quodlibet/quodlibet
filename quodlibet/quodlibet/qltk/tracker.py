@@ -17,12 +17,64 @@ from quodlibet.qltk.msg import ErrorMessage
 
 MAX_ERRORS = 50
 
+
+class TimeTracker(gobject.GObject):
+    """Emits tick every second (with up to one second jitter) as long
+    as the player is activly playing.
+
+    Uses timeout_add_seconds, so multiple instances of this should
+    sync and not produce more wakeups.
+    """
+
+    __gsignals__ = {
+        'tick': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    }
+
+    def __init__(self, player):
+        super(TimeTracker, self).__init__()
+
+        self.__player = player
+        self.__id = None
+        self.__sigs = [
+            player.connect("paused", self.__paused),
+            player.connect("unpaused", self.__unpaused),
+        ]
+
+    def destroy(self):
+        map(self.__player.disconnect, self.__sigs)
+        self.__source_remove()
+
+    def __source_remove(self):
+        if self.__id is not None:
+            gobject.source_remove(self.__id)
+            self.__id = None
+
+    def __update(self):
+        if self.__stop:
+            self.__source_remove()
+            return False
+
+        self.emit("tick")
+        return True
+
+    def __paused(self, *args):
+        # By removing the timeout only in the callback we are safe from
+        # huge deviation caused by lots of pause/unpause actions.
+        self.__stop = True
+
+    def __unpaused(self, *args):
+        self.__stop = False
+        if self.__id is None:
+            self.__id = gobject.timeout_add_seconds(1, self.__update)
+
+
 class SongTracker(object):
     def __init__(self, librarian, player, pl):
         player.connect_object('song-ended', self.__end, librarian, pl)
         player.connect_object('song-started', self.__start, librarian)
         player.connect('error', self.__error, librarian)
-        gobject.timeout_add(1000, self.__timer, librarian, player)
+        timer = TimeTracker(player)
+        timer.connect("tick", self.__timer)
         self.__errors_in_a_row = 0
         self.elapsed = 0
         gtk.quit_add(1, self.__quit, librarian, player)
@@ -72,8 +124,5 @@ class SongTracker(object):
         player.emit('song-ended', player.song, True)
         return 0
 
-    def __timer(self, librarian, player):
-        # This is easier, if lamer, QLScrobbler's time() shenanigans
-        if not player.paused:
-            self.elapsed += 1
-        return True
+    def __timer(self, timer):
+        self.elapsed += 1

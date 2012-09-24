@@ -15,6 +15,7 @@ from quodlibet import util
 
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.sliderbutton import HSlider
+from quodlibet.qltk.tracker import TimeTracker
 
 SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
 SUBSIZE = gtk.ICON_SIZE_MENU
@@ -57,7 +58,9 @@ class SeekBar(HSlider):
         self.connect_object('popup-menu', self.__popup_menu, m, player,
                 self.child.child)
 
-        gobject.timeout_add(1000, self.__check_time, player)
+        timer = TimeTracker(player)
+        timer.connect_object('tick', self.__check_time, player)
+
         player.connect('song-started', self.__song_changed, l, m)
         player.connect('seek', self.__seeked)
 
