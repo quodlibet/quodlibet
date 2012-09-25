@@ -332,6 +332,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             value = int(button.get_value())
             self.config_set("monitor", str(value))
             self.conf.monitor = value
+            self.plugin_single_song(app.player.song)
 
         def change_position(button):
             value = button.get_active() / 2.0
@@ -572,15 +573,25 @@ by <~people>>'''
             ('string', None),
             ]
         for key, getconv in config_map:
+            try: default = getattr(self.conf, key)
+            except AttributeError:
+                print_d("Unknown config item '%s'" % key)
             try:
-                value = self.config_get(key)
-            except (config.error, ValueError, KeyError): continue
+                value = self.config_get(key, default)
+                # This should never happen now that we default, but still..
+                if value is None: continue
+            except (config.error, ValueError):
+                print_d("Couldn't find config item %s" % key)
+                continue
 
             try:
                 if getconv is not None:
                     value = getconv(value)
             except Exception,err:
-                print_d("Error getting config: %s" % err)
+                print_d("Error parsing config for %s (%s) - defaulting to %r"
+                        % (key, err, default))
+                # Replace the invalid value
+                if default is not None: self.config_set(key, default)
             else:
                 setattr(self.conf, key, value)
 
