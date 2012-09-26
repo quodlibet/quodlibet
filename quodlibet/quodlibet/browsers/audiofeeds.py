@@ -29,6 +29,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.x import ScrolledWindow, Alignment
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
 
@@ -297,7 +298,7 @@ class AudioFeeds(Browser, gtk.VBox):
         view.set_model(self.__feeds)
         view.set_rules_hint(True)
         view.set_headers_visible(False)
-        swin = gtk.ScrolledWindow()
+        swin = ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         swin.add(view)
@@ -317,7 +318,7 @@ class AudioFeeds(Browser, gtk.VBox):
 
         self.connect_object('destroy', self.__save, view)
 
-        self.pack_start(new, expand=False)
+        self.pack_start(Alignment(new, left=3, bottom=3), expand=False)
         self.show_all()
 
     def __drag_motion(self, view, ctx, x, y, time):

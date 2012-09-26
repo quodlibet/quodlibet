@@ -18,13 +18,14 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
+from quodlibet.qltk.x import ScrolledWindow
 
 QUEUE = os.path.join(const.USERDIR, "queue")
 
 class QueueExpander(gtk.Expander):
     def __init__(self, menu, library, player):
         super(QueueExpander, self).__init__()
-        sw = gtk.ScrolledWindow()
+        sw = ScrolledWindow()
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.queue = PlayQueue(library, player)

@@ -91,6 +91,37 @@ class UniqueWindow(Window):
     def __destroy(self, *args):
         type(self).__window = None
 
+
+class ScrolledWindow(gtk.ScrolledWindow):
+    """Draws a border around all edges that don't touch the parent window"""
+
+    __gsignals__ = {'size-allocate': 'override'}
+
+    def do_size_allocate(self, alloc):
+        if self.get_shadow_type() != gtk.SHADOW_NONE:
+            ywidth = self.style.ythickness
+            xwidth = self.style.xthickness
+
+            parent = self.get_parent_window()
+            if parent:
+                width, height = parent.get_size()
+                if alloc.y + alloc.height == height:
+                    alloc.height += ywidth
+
+                if alloc.x + alloc.width == width:
+                    alloc.width += xwidth
+
+            if alloc.y == 0:
+                alloc.y -= ywidth
+                alloc.height += ywidth
+
+            if alloc.x == 0:
+                alloc.x -= xwidth
+                alloc.width += xwidth
+
+        super(ScrolledWindow, self).do_size_allocate(self, alloc)
+
+
 class Notebook(gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no
     label is given, the page's 'title' attribute (either a string or

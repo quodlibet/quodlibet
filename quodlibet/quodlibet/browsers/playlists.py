@@ -28,6 +28,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.qltk.x import ScrolledWindow, Alignment
 from quodlibet.util.uri import URI
 
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
@@ -234,7 +235,7 @@ class Playlists(gtk.VBox, Browser):
         view.set_model(self.__lists)
         view.set_rules_hint(True)
         view.set_headers_visible(False)
-        swin = gtk.ScrolledWindow()
+        swin = ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         swin.add(view)
@@ -248,7 +249,7 @@ class Playlists(gtk.VBox, Browser):
         hb.set_homogeneous(True)
         hb.pack_start(newpl)
         hb.pack_start(importpl)
-        self.pack_start(hb, expand=False)
+        self.pack_start(Alignment(hb, left=3, bottom=3), expand=False)
 
         view.connect('popup-menu', self.__popup_menu, library)
 

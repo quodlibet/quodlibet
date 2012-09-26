@@ -22,7 +22,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.wlw import WaitLoadBar
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.delete import DeleteDialog
-from quodlibet.qltk.x import Alignment
+from quodlibet.qltk.x import Alignment, ScrolledWindow
 
 
 class DeviceProperties(gtk.Dialog):
@@ -168,7 +168,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__cache = {}
 
         # Device list on the left pane
-        swin = gtk.ScrolledWindow()
+        swin = ScrolledWindow()
         swin.set_shadow_type(gtk.SHADOW_IN)
         swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.pack_start(swin)

@@ -64,3 +64,9 @@ class TAlignment(TestCase):
         self.failUnless(a.get_child() is button)
         a.destroy()
 add(TAlignment)
+
+class TScrolledWindow(TestCase):
+    def test_ctr(self):
+        w = x.ScrolledWindow()
+        w.destroy()
+add(TScrolledWindow)

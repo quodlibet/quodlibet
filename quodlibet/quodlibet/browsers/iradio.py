@@ -35,7 +35,7 @@ from quodlibet.util.uri import URI
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
-from quodlibet.qltk.x import MenuItem, Alignment
+from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
 from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = "http://quodlibet.googlecode.com/files/radiolist.bz2"
@@ -456,7 +456,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         gobject_weak(search.connect, 'focus-out', focus, parent=self)
 
         # treeview
-        scrolled_window = gtk.ScrolledWindow()
+        scrolled_window = ScrolledWindow()
         scrolled_window.set_shadow_type(gtk.SHADOW_IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)

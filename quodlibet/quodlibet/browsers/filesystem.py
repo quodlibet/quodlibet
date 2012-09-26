@@ -22,10 +22,12 @@ from quodlibet.browsers._base import Browser
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import DirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.util import copool, split_scan_dirs
 
-class FileSystem(Browser, gtk.ScrolledWindow):
+class FileSystem(Browser, gtk.HBox):
     __gsignals__ = Browser.__gsignals__
+
     expand = qltk.RHPaned
     __library = None
 
@@ -50,8 +52,9 @@ class FileSystem(Browser, gtk.ScrolledWindow):
 
     def __init__(self, library, main):
         super(FileSystem, self).__init__()
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.set_shadow_type(gtk.SHADOW_IN)
+        sw = ScrolledWindow()
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(gtk.SHADOW_IN)
 
         folders = filter(None, split_scan_dirs(config.get("settings", "scan")))
 
@@ -66,8 +69,13 @@ class FileSystem(Browser, gtk.ScrolledWindow):
         sel.connect_object('changed', copool.add, self.__songs_selected, dt)
         if main:
             dt.connect('row-activated', lambda *a: self.emit("activated"))
-        self.add(dt)
+        sw.add(dt)
+        self.pack_start(sw)
         self.show_all()
+
+    @property
+    def child(self):
+        return self.get_children()[0].get_child()
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         for songs in self.__find_songs(view.get_selection()):

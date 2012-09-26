@@ -25,6 +25,7 @@ from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView, BaseView
+from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.util import tag, pattern
 from quodlibet.util.library import background_filter
 
@@ -754,7 +755,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             if self.__main:
                 pane.connect('row-activated',
                              lambda *x: self.emit("activated"))
-            sw = gtk.ScrolledWindow()
+            sw = ScrolledWindow()
             sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
             sw.set_shadow_type(gtk.SHADOW_IN)
             sw.add(pane)

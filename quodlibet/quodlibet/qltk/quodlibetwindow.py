@@ -39,7 +39,7 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import RPaned, Alignment
+from quodlibet.qltk.x import RPaned, Alignment, ScrolledWindow
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.uri import URI
@@ -104,7 +104,7 @@ class MainSongList(SongList):
         config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
 
 
-class SongListScroller(gtk.ScrolledWindow):
+class SongListScroller(ScrolledWindow):
     def __init__(self, menu):
         super(SongListScroller, self).__init__()
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)

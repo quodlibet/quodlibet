@@ -24,7 +24,7 @@ from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem, Alignment
+from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
@@ -478,7 +478,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if self.__model is None:
             self._init_model(library)
 
-        sw = gtk.ScrolledWindow()
+        sw = ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)
