@@ -215,7 +215,8 @@ class PluginManager(object):
                 if self.__handlers.get(plugin):
                     self.__handlers[plugin].append(handler)
                     if self.enabled(plugin):
-                        handler.plugin_enable(plugin)
+                        obj = self.get_instance(plugin)
+                        handler.plugin_enable(plugin, obj)
                 else:
                     self.__handlers[plugin] = [handler]
                     if self.enabled(plugin):
