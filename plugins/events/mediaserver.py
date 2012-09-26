@@ -10,7 +10,6 @@ import gtk
 
 import dbus
 import dbus.service
-import dbus.glib
 
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import Pattern

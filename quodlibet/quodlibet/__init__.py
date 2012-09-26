@@ -118,6 +118,20 @@ def _gtk_init(icon=None):
     # only works with a running main loop
     gobject.idle_add(gtk.about_dialog_set_url_hook, website_wrap)
 
+
+def _dbus_init():
+    try:
+        from dbus.mainloop.glib import DBusGMainLoop, threads_init
+    except ImportError:
+        try:
+            import dbus.glib
+        except ImportError:
+            return
+    else:
+        threads_init()
+        DBusGMainLoop(set_as_default=True)
+
+
 def _gettext_init():
     try: locale.setlocale(locale.LC_ALL, '')
     except locale.Error: pass
@@ -195,6 +209,7 @@ def init(library=None, icon=None, title=None, name=None):
     print_d("Entering quodlibet.init")
 
     _gtk_init(icon)
+    _dbus_init()
 
     import gobject
 

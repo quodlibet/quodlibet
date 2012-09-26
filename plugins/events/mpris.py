@@ -10,7 +10,7 @@ import tempfile
 import gtk
 import dbus
 import dbus.service
-import dbus.glib
+
 try:
     import indicate
 except ImportError:

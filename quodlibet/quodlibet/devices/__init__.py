@@ -14,7 +14,6 @@ from os.path import dirname, basename
 import gobject
 try:
     import dbus
-    import dbus.glib
 except ImportError:
     print_w(_("Could not import dbus-python, which is needed for "
         "device support."))

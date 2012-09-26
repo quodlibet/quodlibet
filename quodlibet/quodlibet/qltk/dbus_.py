@@ -6,8 +6,6 @@
 
 import dbus
 import dbus.service
-import dbus.glib
-
 from dbus import DBusException
 
 from quodlibet import player
