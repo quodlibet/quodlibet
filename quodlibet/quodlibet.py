@@ -103,6 +103,7 @@ def main():
     from quodlibet.plugins.events import EventPluginHandler
     pm.register_handler(EventPluginHandler(library.librarian, player))
 
+    from quodlibet.qltk import mmkeys_ as mmkeys
     from quodlibet.qltk.remote import FSInterface, FIFOControl
     from quodlibet.qltk.tracker import SongTracker
     try:
@@ -110,6 +111,7 @@ def main():
     except ImportError:
         DBusHandler = lambda player, library: None
 
+    mmkeys.init(window, player)
     FSInterface(player)
     FIFOControl(library, window, player)
     DBusHandler(player, library)

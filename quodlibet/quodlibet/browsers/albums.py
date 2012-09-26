@@ -24,7 +24,7 @@ from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem
+from quodlibet.qltk.x import MenuItem, Alignment
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
@@ -563,7 +563,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         prefs = PreferencesButton(model_sort)
         search.pack_start(prefs, expand=False)
-        self.pack_start(search, expand=False)
+        self.pack_start(Alignment(search, left=3), expand=False)
         self.pack_start(sw, expand=True)
 
         self.connect("destroy", self.__destroy)

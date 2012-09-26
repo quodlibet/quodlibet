@@ -22,6 +22,8 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.wlw import WaitLoadBar
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.delete import DeleteDialog
+from quodlibet.qltk.x import Alignment
+
 
 class DeviceProperties(gtk.Dialog):
     def __init__(self, parent, device):
@@ -197,7 +199,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         hbox = gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
-        self.pack_start(hbox, expand=False)
+        self.pack_start(Alignment(hbox, left=3, bottom=3), expand=False)
 
         self.__refresh_button = refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
         refresh.connect_object('clicked', self.__refresh, True)

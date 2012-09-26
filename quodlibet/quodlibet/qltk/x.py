@@ -122,6 +122,14 @@ def Frame(label, child=None):
         label_w.set_use_underline(True)
     return frame
 
+def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0):
+    align = gtk.Alignment(xscale=1.0, yscale=1.0)
+    align.set_padding(top + border, bottom + border,
+                      left + border, right + border)
+    if child:
+        align.add(child)
+    return align
+
 def MenuItem(label, stock_id):
     """An ImageMenuItem with a custom label and stock image."""
     item = gtk.ImageMenuItem(label)

@@ -56,3 +56,11 @@ class RVPaned(TestCase):
     def test_ctr(self): x.RVPaned().destroy()
 add(RVPaned)
 
+class TAlignment(TestCase):
+    def test_ctr(self):
+        button = gtk.Button()
+        a = x.Alignment(button, left=2, right=4, top=5, bottom=-2, border=2)
+        self.failUnlessEqual(a.get_padding(), (7, 0, 4, 6))
+        self.failUnless(a.get_child() is button)
+        a.destroy()
+add(TAlignment)

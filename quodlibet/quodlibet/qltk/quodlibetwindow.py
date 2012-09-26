@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -21,7 +22,6 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.formats.remote import RemoteFile
-from quodlibet.qltk import mmkeys_ as mmkeys
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
 from quodlibet.qltk.controls import PlayControls
@@ -39,7 +39,7 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import RPaned
+from quodlibet.qltk.x import RPaned, Alignment
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.uri import URI
@@ -103,6 +103,7 @@ class MainSongList(SongList):
         tag, reverse = self.get_sort_by()
         config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
 
+
 class SongListScroller(gtk.ScrolledWindow):
     def __init__(self, menu):
         super(SongListScroller, self).__init__()
@@ -115,6 +116,68 @@ class SongListScroller(gtk.ScrolledWindow):
         menu.set_active(value)
         config.set("memory", "songlist", str(value))
 
+
+class TopBar(gtk.HBox):
+    def __init__(self, parent, player, library):
+        super(TopBar, self).__init__(spacing=3)
+
+        # play controls
+        t = PlayControls(player, library.librarian)
+        self.volume = t.volume
+        self.pack_start(t, expand=False, fill=False)
+
+        # song text
+        text = SongInfo(library.librarian, player)
+        self.pack_start(Alignment(text, border=3))
+
+        # cover image
+        self.image = CoverImage(resize=True)
+        player.connect('song-started', self.image.set_song)
+        parent.connect('artwork-changed', self.__song_art_changed, library)
+        self.pack_start(self.image, expand=False)
+
+    def __song_art_changed(self, player, songs, library):
+        self.image.refresh()
+        refresh_albums = []
+        for song in songs:
+            # Album browser only (currently):
+            album = library.albums.get(song.album_key, None)
+            if album:
+                album.scan_cover(force=True)
+                refresh_albums.append(album)
+        if refresh_albums:
+            library.albums.refresh(refresh_albums)
+
+
+class StatusBarBox(gtk.HBox):
+    def __init__(self, model, player):
+        super(StatusBarBox, self).__init__(spacing=12)
+
+        self.order = order = PlayOrder(model, player)
+
+        hb = gtk.HBox(spacing=6)
+        label = gtk.Label(_("_Order:"))
+        label.set_mnemonic_widget(order)
+        label.set_use_underline(True)
+        hb.pack_start(label)
+        hb.pack_start(order)
+        self.pack_start(hb, expand=False)
+
+        self.repeat = repeat = qltk.ccb.ConfigCheckButton(
+            _("_Repeat"), "settings", "repeat")
+        repeat.set_tooltip_text(_("Restart the playlist when finished"))
+        self.pack_start(repeat, expand=False)
+
+        repeat.connect('toggled', self.__repeat, model)
+        repeat.set_active(config.getboolean('settings', 'repeat'))
+
+        self.statusbar = StatusBar(TaskController.default_instance)
+        self.pack_start(self.statusbar)
+
+    def __repeat(self, button, model):
+        model.repeat = button.get_active()
+
+
 class QuodLibetWindow(gtk.Window):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
     __gsignals__ = {
@@ -125,14 +188,10 @@ class QuodLibetWindow(gtk.Window):
         super(QuodLibetWindow, self).__init__()
         self.last_dir = const.HOME
 
-        self.set_title("Quod Libet")
+        self.__update_title(player)
 
-        x, y = map(int, config.get('memory', 'size').split())
-        screen = self.get_screen()
-        x = min(x, screen.get_width())
-        y = min(y, screen.get_height())
-        self.set_default_size(x, y)
-        self.add(gtk.VBox())
+        main_box = gtk.VBox()
+        self.add(main_box)
 
         # create main menubar, load/restore accelerator groups
         self.__library = library
@@ -144,11 +203,7 @@ class QuodLibetWindow(gtk.Window):
         accelgroup = gtk.accel_groups_from_object(self)[0]
         accelgroup.connect('accel-changed',
                 lambda *args: gtk.accel_map_save(accel_fn))
-        self.child.pack_start(self.ui.get_widget("/Menu"), expand=False)
-
-        self.__vbox = realvbox = gtk.VBox(spacing=6)
-        realvbox.set_border_width(6)
-        self.child.pack_start(realvbox)
+        main_box.pack_start(self.ui.get_widget("/Menu"), expand=False)
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
@@ -164,45 +219,19 @@ class QuodLibetWindow(gtk.Window):
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
 
-        # song info (top part of window)
-        hbox = gtk.HBox(spacing=6)
+        top_bar = TopBar(self, player, library)
+        main_box.pack_start(Alignment(top_bar, border=3), expand=False)
 
-        # play controls
-        t = PlayControls(player, library.librarian)
-        self.volume = t.volume
-        hbox.pack_start(t, expand=False, fill=False)
+        self.__browserbox = Alignment(top=3, bottom=3)
+        main_box.pack_start(self.__browserbox)
 
-        # song text
-        text = SongInfo(library.librarian, player)
-        hbox.pack_start(text)
+        statusbox = StatusBarBox(self.songlist.model, player)
+        self.order = statusbox.order
+        self.repeat = statusbox.repeat
+        self.statusbar = statusbox.statusbar
 
-        # cover image
-        self.image = CoverImage(resize=True)
-        player.connect('song-started', self.image.set_song)
-        self.connect('artwork-changed', self.__song_art_changed)
-        hbox.pack_start(self.image, expand=False)
-
-        realvbox.pack_start(hbox, expand=False)
-
-        # status area
-        align = gtk.Alignment(xscale=1, yscale=1)
-        align.set_padding(0, 6, 6, 6)
-        hbox = gtk.HBox(spacing=12)
-        hb = gtk.HBox(spacing=6)
-        label = gtk.Label(_("_Order:"))
-        self.order = order = PlayOrder(self.songlist.model, player)
-        label.set_mnemonic_widget(order)
-        label.set_use_underline(True)
-        hb.pack_start(label)
-        hb.pack_start(order)
-        hbox.pack_start(hb, expand=False)
-        self.repeat = repeat = qltk.ccb.ConfigCheckButton(
-            _("_Repeat"), "settings", "repeat")
-        repeat.set_tooltip_text(_("Restart the playlist when finished"))
-        hbox.pack_start(repeat, expand=False)
-
-        align.add(hbox)
-        self.child.pack_end(align, expand=False)
+        main_box.pack_start(Alignment(statusbox, border=3, top=-3),
+                            expand=False)
 
         self.songpane = gtk.VPaned()
         self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
@@ -220,13 +249,7 @@ class QuodLibetWindow(gtk.Window):
 
         self.browser = None
 
-        mmkeys.init(self, player)
-
-        self.child.show_all()
-
-        self.statusbar = StatusBar(TaskController.default_instance)
-        hbox.pack_start(self.statusbar)
-        self.statusbar.show()
+        main_box.show_all()
 
         try:
             self.select_browser(
@@ -247,9 +270,6 @@ class QuodLibetWindow(gtk.Window):
         gobject.idle_add(delayed_song_set)
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
-
-        repeat.connect('toggled', self.__repeat, self.songlist.model)
-        repeat.set_active(config.getboolean('settings', 'repeat'))
 
         # track window position/size
         self.connect("show", self.__restore_window_position)
@@ -286,9 +306,15 @@ class QuodLibetWindow(gtk.Window):
         self.connect_object(
             'drag-data-received', QuodLibetWindow.__drag_data_received, self)
 
+        # restore size
+        x, y = map(int, config.get('memory', 'size').split())
+        screen = self.get_screen()
+        x = min(x, screen.get_width())
+        y = min(y, screen.get_height())
+        self.set_default_size(x, y)
+        self.resize(x, y)
         if config.getint("memory", "maximized"):
             self.maximize()
-        self.resize(*map(int, config.get("memory", "size").split()))
 
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
@@ -619,7 +645,7 @@ class QuodLibetWindow(gtk.Window):
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.volume = player.volume
-        self.__vbox.pack_end(container)
+        self.__browserbox.add(container)
         container.show()
         self.__hide_menus()
         self.__hide_headers()
@@ -632,14 +658,8 @@ class QuodLibetWindow(gtk.Window):
         else: key = gtk.STOCK_MEDIA_PAUSE
         text = gtk.stock_lookup(key)[1]
         menu.get_image().set_from_stock(key, gtk.ICON_SIZE_MENU)
-        if hasattr(menu, "set_label"):
-            # pygtk 2.16+, for unity:
-            # http://code.google.com/p/quodlibet/issues/detail?id=1013
-            menu.set_label(text)
-            menu.set_use_underline(True)
-        else:
-            menu.child.set_text(text)
-            menu.child.set_use_underline(True)
+        menu.set_label(text)
+        menu.set_use_underline(True)
 
     def __check_remove_song(self, player, song):
         if song is None: return
@@ -656,18 +676,6 @@ class QuodLibetWindow(gtk.Window):
         self.__update_title(player)
         for song in songs:
             self.__check_remove_song(player, song)
-
-    def __song_art_changed(self, player, songs):
-        self.image.refresh()
-        refresh_albums = []
-        for song in songs:
-            # Album browser only (currently):
-            album = self.__library.albums.get(song.album_key, None)
-            if album:
-                album.scan_cover(force=True)
-                refresh_albums.append(album)
-        if refresh_albums:
-            self.__library.albums.refresh(refresh_albums)
 
     def __update_title(self, player):
         song = player.info
@@ -717,10 +725,7 @@ class QuodLibetWindow(gtk.Window):
         qex = self.qexpander.get_property('visible')
         brv = self.browser.expand
 
-        self.__vbox.set_spacing(6)
         if (not brv and not (ssv or qex)):
-            if self.browser.size_request()[1] == 0:
-                self.__vbox.set_spacing(0)
             width, height = self.get_size()
             height = self.size_request()[1]
             self.resize(width, height)
@@ -782,8 +787,6 @@ class QuodLibetWindow(gtk.Window):
     def __next_song(self, *args): player.playlist.next()
     def __previous_song(self, *args): player.playlist.previous()
 
-    def __repeat(self, button, model):
-        model.repeat = button.get_active()
 
     def __random(self, item, key):
         if self.browser.can_filter(key):

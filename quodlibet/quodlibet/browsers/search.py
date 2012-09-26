@@ -22,6 +22,7 @@ from quodlibet.parse import Query
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import SearchBarBox
+from quodlibet.qltk.x import Alignment
 
 QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 
@@ -192,7 +193,9 @@ class SearchBar(EmptyBar):
         self._search_bar.connect('focus-out', focus)
 
         self.connect('destroy', self.__destroy)
-        self.pack_start(self._search_bar, expand=False)
+        align = Alignment(self._search_bar, left=3, right=3)
+        align.show()
+        self.pack_start(align, expand=False)
         self.show()
 
     def __destroy(self, *args):
