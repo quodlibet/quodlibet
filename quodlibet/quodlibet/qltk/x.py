@@ -102,20 +102,43 @@ class ScrolledWindow(gtk.ScrolledWindow):
             ywidth = self.style.ythickness
             xwidth = self.style.xthickness
 
+            # Don't remove the border if the border is drawn inside
+            # and the scrollbar on that edge is visible
+            top = bottom = left = right = False
+            if not self.style_get_property("scrollbars-within-bevel"):
+                placement = self.get_placement()
+                hscroll = self.get_hscrollbar()
+                hscroll = hscroll and hscroll.get_visible()
+                vscroll = self.get_vscrollbar()
+                vscroll = vscroll and vscroll.get_visible()
+
+                if placement == gtk.CORNER_TOP_LEFT:
+                    bottom = hscroll
+                    right = vscroll
+                elif placement == CORNER_BOTTOM_LEFT:
+                    top = hscroll
+                    right = vscroll
+                elif placement == gtk.CORNER_TOP_RIGHT:
+                    bottom = hscroll
+                    left = vscroll
+                elif placement == gtk.CORNER_BOTTOM_RIGHT:
+                    top = hscroll
+                    left = vscroll
+
             parent = self.get_parent_window()
             if parent:
                 width, height = parent.get_size()
-                if alloc.y + alloc.height == height:
+                if alloc.y + alloc.height == height and not bottom:
                     alloc.height += ywidth
 
-                if alloc.x + alloc.width == width:
+                if alloc.x + alloc.width == width and not right:
                     alloc.width += xwidth
 
-            if alloc.y == 0:
+            if alloc.y == 0 and not top:
                 alloc.y -= ywidth
                 alloc.height += ywidth
 
-            if alloc.x == 0:
+            if alloc.x == 0 and not left:
                 alloc.x -= xwidth
                 alloc.width += xwidth
 
