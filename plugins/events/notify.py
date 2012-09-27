@@ -227,7 +227,16 @@ class Notify(EventPlugin):
     PLUGIN_ICON = gtk.STOCK_DIALOG_INFO
     PLUGIN_VERSION = "1.1"
 
+    DBUS_NAME = "org.freedesktop.Notifications"
+    DBUS_IFACE = "org.freedesktop.Notifications"
+    DBUS_PATH = "/org/freedesktop/Notifications"
+
+    # these can all be used even if it wasn't enabled
     __enabled = False
+    __last_id = 0
+    __image_fp = None
+    __interface = None
+    __action_sig = None
 
     def enabled(self):
         self.__enabled = True
@@ -239,51 +248,90 @@ class Notify(EventPlugin):
         #    on_song_started event in any case.
         self.__was_stopped_by_user = True
 
-        self.__last_id = 0
         self.__force_notification = False
-        self.__image_fp = None
-        self.__interface = self.__caps = self.__spec_version = None
+        self.__caps = None
+        self.__spec_version = None
+
+        self.__enable_watch()
 
     def disabled(self):
+        self.__disable_watch()
+        self.__disconnect()
         self.__enabled = False
         self.__image_fp = None
+
+    def __enable_watch(self):
+        """Enable events for dbus name owner change"""
+        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+        # This also triggers for existing name owners
+        self.__watch = bus.watch_name_owner(self.DBUS_NAME,
+                                            self.__owner_changed)
+
+    def __disable_watch(self):
+        """Disable name owner change events"""
+        if self.__watch:
+            self.__watch.cancel()
+            self.__watch = None
+
+    def __disconnect(self):
         self.__interface = None
+        if self.__action_sig:
+            self.__action_sig.remove()
+            self.__action_sig = None
+
+    def __owner_changed(self, owner):
+        # In case the owner gets removed, remove all references to it
+        if not owner:
+            self.__disconnect()
 
     def PluginPreferences(self, parent):
         return PreferencesWidget(parent, self)
 
     def __get_interface(self):
-        obj = dbus.SessionBus().get_object(
-            "org.freedesktop.Notifications",
-            "/org/freedesktop/Notifications")
+        """Returns a fresh proxy + info about the server"""
 
-        interface = dbus.Interface(obj, "org.freedesktop.Notifications")
+        obj = dbus.SessionBus().get_object(self.DBUS_NAME, self.DBUS_PATH)
+        interface = dbus.Interface(obj, self.DBUS_IFACE)
 
         name, vendor, version, spec_version = \
             map(str, interface.GetServerInformation())
         spec_version = map(int, spec_version.split("."))
         caps = map(str, interface.GetCapabilities())
 
-        if "actions" in caps:
-            interface.connect_to_signal("ActionInvoked", self.on_dbus_action)
-
         return interface, caps, spec_version
 
     def show_notification(self, song):
         """Returns True if showing the notification was successful"""
-        if not song or not self.__enabled:
+
+        if not song:
             return True
 
-        # try to get a interface
-        if not self.__interface:
-            # if it failes, don't do anything
-            try:
-                self.__interface, self.__caps, self.__spec_version = \
-                        self.__get_interface()
-            except dbus.DBusException:
-                print_w("[notify] %s" %
-                        _("Couldn't connect to notification daemon."))
-                return False
+        try:
+            if self.__enabled:
+                # we are enabled try to work with the data we have and
+                # keep it fresh
+                if not self.__interface:
+                    iface, caps, spec = self.__get_interface()
+                    self.__interface = iface
+                    self.__caps = caps
+                    self.__spec_version = spec
+                    if "actions" in caps:
+                        self.__action_sig = iface.connect_to_signal(
+                            "ActionInvoked", self.on_dbus_action)
+                else:
+                    iface = self.__interface
+                    caps = self.__caps
+                    spec = self.__spec_version
+            else:
+                # not enabled, just get everything temporary,
+                # propably preview
+                iface, caps, spec = self.__get_interface()
+
+        except dbus.DBusException, e:
+            print_w("[notify] %s" %
+                    _("Couldn't connect to notification daemon."))
+            self.__disconnect()
+            return False
 
         strip_markup = lambda t: re.subn("\</?[iub]\>", "", t)[0]
         strip_links = lambda t: re.subn("\</?a.*?\>", "", t)[0]
@@ -293,18 +341,18 @@ class Notify(EventPlugin):
         title = unescape(strip_markup(strip_links(strip_images(title))))
 
         body = ""
-        if "body" in self.__caps:
+        if "body" in caps:
             body = XMLFromPattern(get_conf_value("bodypattern")) % song
 
-            if "body-markup" not in self.__caps:
+            if "body-markup" not in caps:
                 body = strip_markup(body)
-            if "body-hyperlinks" not in self.__caps:
+            if "body-hyperlinks" not in caps:
                 body = strip_links(body)
-            if "body-images" not in self.__caps:
+            if "body-images" not in caps:
                 body = strip_images(body)
 
         image_path = ""
-        if "icon-static" in self.__caps:
+        if "icon-static" in caps:
             self.__image_fp = song.find_cover()
             if self.__image_fp:
                 image_path = self.__image_fp.name
@@ -316,11 +364,11 @@ class Notify(EventPlugin):
             self.__image_fp = None
 
         # spec recommends it, and it seems to work
-        if image_path and self.__spec_version >= (1, 1):
+        if image_path and spec >= (1, 1):
             image_path = URI.frompath(image_path)
 
         actions = []
-        if "actions" in self.__caps:
+        if "actions" in caps:
             actions = ["next", _("Next")]
 
         hints = {
@@ -330,14 +378,19 @@ class Notify(EventPlugin):
         }
 
         try:
-            self.__last_id = self.__interface.Notify(
+            self.__last_id = iface.Notify(
                 "Quod Libet", self.__last_id,
                 image_path, title, body, actions, hints,
                 get_conf_int("timeout"))
         except dbus.DBusException:
-            # New daemon, delete interface and try again
-            self.__interface = None
-            return self.show_notification(song)
+            print_w("[notify] %s" %
+                    _("Couldn't connect to notification daemon."))
+            self.__disconnect()
+            return False
+
+        # preview done, remove all references again
+        if not self.__enabled:
+            self.__disconnect()
 
         return True
 
