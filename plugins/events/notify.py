@@ -323,10 +323,16 @@ class Notify(EventPlugin):
         if "actions" in self.__caps:
             actions = ["next", _("Next")]
 
+        hints = {
+            "desktop-entry": "quodlibet",
+            "transient": True,
+            "urgency": dbus.Byte(0),
+        }
+
         try:
             self.__last_id = self.__interface.Notify(
                 "Quod Libet", self.__last_id,
-                image_path, title, body, actions, {},
+                image_path, title, body, actions, hints,
                 get_conf_int("timeout"))
         except dbus.DBusException:
             # New daemon, delete interface and try again
