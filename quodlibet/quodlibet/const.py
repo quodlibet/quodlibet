@@ -36,7 +36,11 @@ LOGDIR  = os.path.join(USERDIR, "logs")
 
 DEFAULT_RATING = 0.5
 
+# Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
+
+# Displayed as registered / help email address
+SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
 BASEDIR = os.path.dirname(os.path.realpath(__file__))
 IMAGEDIR = os.path.join(BASEDIR, "images")

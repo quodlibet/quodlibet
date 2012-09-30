@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
+#           2011,2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -15,7 +17,8 @@ import urllib
 # title function was moved to a separate module
 from quodlibet.util.titlecase import title
 
-from quodlibet.const import FSCODING as fscoding, ENCODING
+from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL
+from quodlibet.util.dprint import print_d, print_
 
 if os.name == "nt":
     from win32com.shell import shellcon, shell
@@ -64,8 +67,9 @@ class InstanceTracker(object):
         self.__kinds.setdefault(klass, []).append(self)
         self.connect('destroy', self.__kinds[klass].remove)
 
-    def instances(klass): return klass.__kinds.get(klass, [])
-    instances = classmethod(instances)
+    @classmethod
+    def instances(klass):
+        return klass.__kinds.get(klass, [])
 
 class OptionParser(object):
     def __init__(self, name, version, description=None, usage=None):
@@ -117,9 +121,8 @@ class OptionParser(object):
         for k in self.__help.keys():
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
-        if self.__usage: s = _("Usage: %s %s") % (sys.argv[0], self.__usage)
-        else: s = _("Usage: %s %s") % (sys.argv[0], _("[options]"))
-        s += "\n"
+        s = _("Usage: %s %s\n") % (
+                 sys.argv[0], self.__usage if self.__usage else _("[options]"))
         if self.__description:
             s += "%s - %s\n" % (self.__name, self.__description)
         s += "\n"
@@ -139,12 +142,16 @@ class OptionParser(object):
 
     def version(self):
         return _("""\
-%s %s - <quod-libet-development@googlegroups.com>
-Copyright 2004-2005 Joe Wreschnig, Michael Urman, and others
+{title} {version}
+<{email}>
+Copyright {dates}\t{authors}
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-""") % (self.__name, self.__version)
+""").format(title=self.__name,  version=self.__version, dates="2004-2012",
+        email=SUPPORT_EMAIL,
+        authors="Joe Wreschnig, Michael Urman, Iñigo Serna,\n\t\t\t"
+                "Steven Robertson, Christoph Reiter, Nick Boultbee and others.")
 
     def parse(self, args=None):
         if args is None: args = sys.argv[1:]
@@ -231,7 +238,6 @@ def parse_time(timestr, err=(ValueError, re.error)):
         m = -1
         timestr = timestr[1:]
     else: m = 1
-
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
                           re.split(r":|\.", timestr), 0)
@@ -241,7 +247,7 @@ RATING_PRECISION = 0.25
 RATING_SYMBOL = u'\u266a'
 def format_rating(value):
     """Turn a number into a sequence of music notes."""
-    return (RATING_SYMBOL * int(round((1/RATING_PRECISION) * min(value, 1.0))))
+    return RATING_SYMBOL * int(round((1/RATING_PRECISION) * min(value, 1.0)))
 
 def format_size(size):
     """Turn an integer size value into something human-readable."""
@@ -359,12 +365,12 @@ def iscommand(s):
     fully-qualified existing executable file."""
 
     if s == "" or os.path.sep in s:
-        return (os.path.isfile(s) and os.access(s, os.X_OK))
+        return os.path.isfile(s) and os.access(s, os.X_OK)
     else:
         s = s.split()[0]
         for p in os.defpath.split(os.path.pathsep):
             p2 = os.path.join(p, s)
-            if (os.path.isfile(p2) and os.access(p2, os.X_OK)):
+            if os.path.isfile(p2) and os.access(p2, os.X_OK):
                 return True
         else: return False
 
@@ -388,8 +394,8 @@ def split_value(s, splitters=["/", "&", ","]):
 
 def split_title(s, splitters=["/", "&", ","]):
     title, subtitle = find_subtitle(s)
-    if not subtitle: return (s, [])
-    else: return (title.strip(), split_value(subtitle, splitters))
+    return ((title.strip(), split_value(subtitle, splitters))
+            if subtitle else (s, []))
 
 
 __FEATURING = ["feat.", "featuring", "feat", "ft", "ft.", "with", "w/"]
@@ -439,7 +445,7 @@ def split_album(s):
 def split_numeric(s, limit=10,
         reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
         join=u" ".join):
-    """Seperate numeric values from the string and convert to float, so
+    """Separate numeric values from the string and convert to float, so
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
     if not result or not limit:

@@ -19,7 +19,8 @@ class TFSInterface(TestCase):
 
     def test_init(self):
         self.do()
-        self.failIf(os.path.exists(const.CURRENT))
+        self.failIf(os.path.exists(const.CURRENT),
+                    "%s already exists. Is QL already running?" % const.CURRENT)
 
     def test_start(self):
         self.p.emit('song_started', AudioFile({"woo": "bar", "~#length": 10}))
