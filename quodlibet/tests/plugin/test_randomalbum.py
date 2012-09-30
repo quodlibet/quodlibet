@@ -2,13 +2,10 @@ from quodlibet.util.collection import Album
 from quodlibet.formats._audio import AudioFile
 from quodlibet import const
 from tests import TestCase, add
-from tests.plugin import PluginTestCase, import_plugin
+from tests.plugin import PluginTestCase
 
 # Allow some debugging
 const.DEBUG = False
-
-# Import our module in a way that mirrors would-be packaging
-randomalbum = import_plugin("events", "randomalbum")
 
 A1S1 = AudioFile(
         {'album': 'greatness', 'title': 'excellent', 'artist': 'fooman',
@@ -47,7 +44,7 @@ class TRandomAlbum(PluginTestCase):
                'length': 0, 'skipcount': 0, 'playcount': 0}
 
     def setUp(self):
-        self.plugin = randomalbum.RandomAlbum()
+        self.plugin = self.plugins["Random Album Playback"]()
         self.albums = [A1, A2, A3]
 
     def get_winner(self, albums):

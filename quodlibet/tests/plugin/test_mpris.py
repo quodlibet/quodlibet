@@ -8,7 +8,7 @@ import gtk
 import dbus
 
 from tests import TestCase, add
-from tests.plugin import PluginTestCase, import_plugin
+from tests.plugin import PluginTestCase
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
@@ -46,7 +46,7 @@ class TMPRIS(PluginTestCase):
         app.librarian = library.librarian
         app.player = player.playlist
 
-        cls.plugin = import_plugin("events", "mpris").MPRIS
+        cls.plugin = cls.plugins["mpris"]
 
     def setUp(self):
         app.window.songlist.set_songs([A1, A2])

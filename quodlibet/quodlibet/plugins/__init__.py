@@ -339,14 +339,9 @@ class PluginConfigMixin(object):
         return "%s_%s" % (prefix, name)
 
     @classmethod
-    def config_get(cls, name, default=None):
+    def config_get(cls, name, default=""):
         """Gets a config string value for this plugin"""
-        try:
-            return config.get(PM.CONFIG_SECTION, cls._config_key(name))
-        except config.error:
-            # Set the missing config
-            config.set(PM.CONFIG_SECTION, cls._config_key(name), default)
-            return default
+        return config.get(PM.CONFIG_SECTION, cls._config_key(name), default)
 
     @classmethod
     def config_set(cls, name, value):
