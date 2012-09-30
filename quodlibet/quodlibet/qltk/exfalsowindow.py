@@ -95,7 +95,9 @@ class ExFalsoWindow(gtk.Window):
         nb.show()
         for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
             nb.append_page(Page(self, self.__library))
-        hp.pack2(nb, resize=True, shrink=False)
+        align = Alignment(nb, top=3)
+        align.show()
+        hp.pack2(align, resize=True, shrink=False)
         fs.connect('changed', self.__changed, l)
         s = self.__library.connect_object('changed', FileSelector.rescan, fs)
         self.connect_object('destroy', self.__library.disconnect, s)
