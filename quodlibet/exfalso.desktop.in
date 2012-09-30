@@ -7,4 +7,5 @@ Terminal=false
 StartupNotify=true
 Type=Application
 Icon=exfalso
+MimeType=inode/directory;
 Categories=AudioVideo;Audio;GTK;
