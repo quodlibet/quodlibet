@@ -88,6 +88,14 @@ class QueueExpander(gtk.Expander):
         player.connect('unpaused', self.__update_state_icon_pause,
                         state, gtk.STOCK_MEDIA_PLAY)
 
+        # to make the children clickable if mapped in expanded state
+        # ....no idea why, but works
+        def hack(expander):
+            if expander.get_expanded():
+                expander.set_expanded(False)
+                expander.set_expanded(True)
+        self.connect("map", hack)
+
     def __update_state_icon(self, player, song, state):
         if self.model.sourced: icon = gtk.STOCK_MEDIA_PLAY
         else: icon = gtk.STOCK_MEDIA_STOP
