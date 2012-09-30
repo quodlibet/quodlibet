@@ -7,9 +7,13 @@
 import time
 
 try:
+    import __builtin__
+    # zeitgeist overrides our gettext functions
+    old_builtin = __builtin__.__dict__.copy()
     from zeitgeist.client import ZeitgeistClient
     from zeitgeist.datamodel import Event, Subject
     from zeitgeist.datamodel import Interpretation, Manifestation
+     __builtin__.__dict__.update(old_builtin)
 except ImportError:
     from quodlibet.plugins import PluginImportException
     raise PluginImportException(
