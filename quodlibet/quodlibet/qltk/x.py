@@ -132,10 +132,8 @@ class ScrolledWindow(gtk.ScrolledWindow):
 
                 if alloc.x + alloc.width == width and not right:
                     alloc.width += xwidth
-
-            if alloc.y == 0 and not top:
-                alloc.y -= ywidth
-                alloc.height += ywidth
+            else:
+                gobject.idle_add(self.queue_resize)
 
             if alloc.x == 0 and not left:
                 alloc.x -= xwidth
@@ -148,6 +146,29 @@ class Notebook(gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no
     label is given, the page's 'title' attribute (either a string or
     a widget) is used."""
+
+    __gsignals__ = {'size-allocate': 'override'}
+
+    def do_size_allocate(self, alloc):
+        ywidth = self.style.ythickness
+        xwidth = self.style.xthickness
+
+        parent = self.get_parent_window()
+        if parent:
+            width, height = parent.get_size()
+            if alloc.y + alloc.height == height:
+                alloc.height += ywidth
+
+            if alloc.x + alloc.width == width:
+                alloc.width += xwidth
+        else:
+            gobject.idle_add(self.queue_resize)
+
+        if alloc.x == 0:
+            alloc.x -= xwidth
+            alloc.width += xwidth
+
+        super(Notebook, self).do_size_allocate(self, alloc)
 
     def append_page(self, page, label=None):
         if label is None:

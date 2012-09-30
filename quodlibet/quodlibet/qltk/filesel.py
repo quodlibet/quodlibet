@@ -19,6 +19,8 @@ from quodlibet import util
 
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
+from quodlibet.qltk.x import ScrolledWindow
+
 
 def search_func(model, column, key, iter, handledirs):
     check = model.get_value(iter, 0)
@@ -305,6 +307,7 @@ class FileSelector(gtk.VPaned):
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_FILE)
+        render.set_padding(3, 0)
         column.pack_start(render, expand=False)
         render = gtk.CellRendererText()
         column.pack_start(render)
@@ -327,13 +330,13 @@ class FileSelector(gtk.VPaned):
         dirlist.connect('row-activated', select_all_files,
             filelist.get_selection())
 
-        sw = gtk.ScrolledWindow()
+        sw = ScrolledWindow()
         sw.add(dirlist)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.set_shadow_type(gtk.SHADOW_IN)
         self.pack1(sw, resize=True)
 
-        sw = gtk.ScrolledWindow()
+        sw = ScrolledWindow()
         sw.add(filelist)
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.set_shadow_type(gtk.SHADOW_IN)

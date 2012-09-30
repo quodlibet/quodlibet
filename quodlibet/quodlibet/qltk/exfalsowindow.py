@@ -29,6 +29,7 @@ from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
+from quodlibet.qltk.x import Alignment
 
 class ExFalsoWindow(gtk.Window):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
@@ -52,12 +53,12 @@ class ExFalsoWindow(gtk.Window):
         self.__library = library
 
         hp = gtk.HPaned()
-        hp.set_border_width(6)
+        hp.set_border_width(0)
         hp.set_position(250)
         hp.show()
         self.add(hp)
 
-        vb = gtk.VBox(spacing=6)
+        vb = gtk.VBox()
 
         bbox = gtk.HBox(spacing=6)
 
@@ -85,7 +86,7 @@ class ExFalsoWindow(gtk.Window):
         fs = FileSelector(dir)
 
         vb.pack_start(fs)
-        vb.pack_start(bbox, expand=False)
+        vb.pack_start(Alignment(bbox, border=6), expand=False)
         vb.show_all()
 
         hp.pack1(vb, resize=True, shrink=False)
