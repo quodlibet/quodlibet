@@ -6,6 +6,7 @@
 
 import __builtin__
 import gettext
+import os
 
 class GlibTranslations(gettext.GNUTranslations):
     """Provide a glib-like translation API for Python.
@@ -51,6 +52,19 @@ class GlibTranslations(gettext.GNUTranslations):
             _Q = self.qgettext
             ngettext = self.ngettext
             _N = lambda s: s
+
+        test_key = "QUODLIBET_TEST_TRANS"
+        if test_key in os.environ:
+            text = os.environ[test_key]
+            def wrap(f):
+                def g(*args):
+                    return text + f(*args) + text
+                return g
+
+            _ = wrap(_)
+            _Q = wrap(_Q)
+            _N = wrap(_N)
+            ngettext = wrap(ngettext)
 
         __builtin__.__dict__["_"] = _
         __builtin__.__dict__["Q_"] = _Q
