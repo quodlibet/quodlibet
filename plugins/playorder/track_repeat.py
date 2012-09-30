@@ -32,7 +32,7 @@ class TrackRepeatOrder(PlayOrderPlugin,
     play_count = 0
 
     @classmethod
-    def PluginPreferences(cls):
+    def PluginPreferences(cls, parent):
         def plays_changed(spin):
             cls.config_set("play_each", int(spin.get_value()))
 
