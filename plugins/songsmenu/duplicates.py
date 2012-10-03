@@ -39,11 +39,12 @@ class DuplicateSongsView(RCMHintedTreeView):
         if not rows: return []
         selected = []
         for row in rows:
-            if model[row][0]: selected.append(model[row][0])
-            else:
-                # TODO: reflect child-selections in GUI
-                for child in model[row].iterchildren():
+            row = model[row]
+            if row.parent is None:
+                for child in row.iterchildren():
                     selected.append(child[0])
+            else:
+                selected.append(row[0])
         return selected
 
     def Menu(self, library):
