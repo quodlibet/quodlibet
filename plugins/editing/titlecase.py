@@ -65,8 +65,8 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
         return humanise(value) if self.human else value
 
     def __init__(self, tag, value):
-        self.allow_all_caps = self.config_get('allow_all_caps', True)
-        self.human = self.config_get('human_title_case', True)
+        self.allow_all_caps = self.config_get_bool('allow_all_caps', True)
+        self.human = self.config_get_bool('human_title_case', True)
 
         super(TitleCase, self).__init__(_("Title-_case Value"))
         self.set_image(
