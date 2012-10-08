@@ -15,7 +15,6 @@ import gobject
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
-from quodlibet import util
 
 from quodlibet.browsers._base import Browser
 from quodlibet.parse import Query
@@ -52,20 +51,26 @@ class EmptyBar(gtk.VBox, Browser):
             return self._filter(song)
         else: return True
 
-    def set_text(self, text):
-        if isinstance(text, str): text = text.decode('utf-8')
+    def filter_text(self, text):
         self._text = text
+        self.activate()
 
     def __query(self, text, library, window, player):
-        self.set_text(text)
-        self.activate()
+        self.filter_text(text)
 
     def save(self):
         config.set("browsers", "query_text", self._text.encode('utf-8'))
 
-    def restore(self):
-        try: self.set_text(config.get("browsers", "query_text"))
-        except: pass
+    def restore(self, activate=True):
+        try:
+            text = config.get("browsers", "query_text")
+        except:
+            return
+
+        if activate:
+            self.filter_text(text)
+        else:
+            self._text = text
 
     def finalize(self, restore):
         config.set("browsers", "query_text", "")
@@ -86,17 +91,11 @@ class EmptyBar(gtk.VBox, Browser):
         if songs is not None:
             gobject.idle_add(self.emit, 'songs-selected', songs, None)
 
-    def can_filter(self, key): return True
-
-    def filter(self, key, values):
-        if not values:
-            return
-        self.set_text(util.build_filter_query(key, values))
-        self.activate()
+    def can_filter_text(self):
+        return True
 
     def unfilter(self):
-        self.set_text("")
-        self.activate()
+        self.filter_text("")
 
 class LimitSearchBar(SearchBarBox):
 
@@ -208,11 +207,12 @@ class SearchBar(EmptyBar):
             gobject.idle_add(self.emit, 'songs-selected', songs, None)
 
     def __text_parse(self, bar, text):
-        super(SearchBar, self).set_text(text)
+        self._text = text
         self.activate()
 
-    def set_text(self, text):
-        super(SearchBar, self).set_text(text)
+    def filter_text(self, text):
+        self._text = text
         self._search_bar.set_text(text)
+        self.activate()
 
 browsers = [EmptyBar, SearchBar]

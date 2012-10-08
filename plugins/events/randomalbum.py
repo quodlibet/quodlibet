@@ -159,14 +159,18 @@ class RandomAlbum(EventPlugin):
         if (song is None and config.get("memory", "order") != "onesong" and
             not app.player.paused):
             browser = app.window.browser
-            if not browser.can_filter('album'): return
 
-            # Use the AlbumLibrary for free...
-            library.albums.load()
-            values = library.albums
-            if not values:
-                print_w("No albums found in this library (%s)" % library)
+            if not browser.can_filter('album'):
                 return
+
+            library.albums.load()
+
+            if browser.can_filter_albums():
+                keys = browser.list_albums()
+                values = [library.albums[k] for k in keys]
+            else:
+                keys = set(browser.list("album"))
+                values = [a for a in library.albums if a("album") in keys]
 
             if self.use_weights:
                 # Select 3% of albums, or at least 3 albums
@@ -177,7 +181,8 @@ class RandomAlbum(EventPlugin):
                     print_d("%0.2f scored by %s" % (score, album("album")))
                 album = max(album_scores)[1]
             else:
-                album = library.albums[random.choice(values.keys())]
+                album = random.choice(values)
+
             if album is not None:
                 self.schedule_change(album)
 
@@ -201,10 +206,13 @@ class RandomAlbum(EventPlugin):
 
     def change_album(self, album):
         browser = app.window.browser
-        if not browser.can_filter('album'): return
-        # TODO: fix assumption: album("album") is potentially ambiguous.
-        # See Issue 659.
-        browser.filter('album', [album("album")])
+        if not browser.can_filter('album'):
+            return
+
+        if browser.can_filter_albums():
+            browser.filter_albums([album.key])
+        else:
+            browser.filter('album', [album("album")])
         gobject.idle_add(self.unpause)
 
     def unpause(self):

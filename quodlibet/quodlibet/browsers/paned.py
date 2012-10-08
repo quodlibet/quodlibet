@@ -782,8 +782,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         canditates.sort()
         return (canditates and canditates[0][1]) or None
 
-    def can_filter(self, key):
-        if key is None: return True
+    def can_filter_tag(self, key):
         return (self.__get_filter_pane(key) is not None)
 
     def filter(self, key, values):
@@ -800,6 +799,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
     def list(self, key):
         filter_pane = self.__get_filter_pane(key)
+        if filter_pane is None:
+            return super(PanedBrowser, self).list(key)
 
         for pane in self.__panes:
             if pane is filter_pane:
@@ -824,7 +825,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         config.set("browsers", "pane_selection", "\n".join(selected))
 
     def restore(self):
-        super(PanedBrowser, self).restore()
+        super(PanedBrowser, self).restore(activate=False)
         selected = config.get("browsers", "pane_selection")
         if not selected: return
         pane_values = [sel.split("\t") for sel in selected.split("\n")]

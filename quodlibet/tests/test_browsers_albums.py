@@ -46,7 +46,7 @@ class TAlbumBrowser(TestCase):
     def setUp(self):
         self._id = self.bar.connect("songs-selected", self._selected)
         self._id2 = self.bar.connect("activated", self._activated)
-        self.bar.set_text("")
+        self.bar.filter_text("")
         self._wait()
         self.songs = []
         self.activated = False
@@ -74,21 +74,18 @@ class TAlbumBrowser(TestCase):
         self.failIf(self.bar.can_filter("title"))
 
     def test_set_text(self):
-        self.bar.set_text("artist=piman")
-        self.bar.activate()
-        self._wait()
-        self.bar.set_text("")
+        self.bar.filter_text("artist=piman")
         self._wait()
         self.failUnlessEqual(len(self.songs), 1)
-        self.bar.activate()
+        self.bar.filter_text("")
         self._wait()
         self.failUnlessEqual(set(self.songs), set(SONGS))
 
     def test_filter_album(self):
-        self.bar.set_text("dsagfsag")
+        self.bar.filter_text("dsagfsag")
         self._wait()
         self.failUnlessEqual(len(self.songs), 0)
-        self.bar.set_text("")
+        self.bar.filter_text("")
         self._wait()
         self.bar.filter("album", ["one", "three"])
         self._wait()
@@ -104,12 +101,12 @@ class TAlbumBrowser(TestCase):
         self.failIf(self.bar.headers)
 
     def test_list(self):
-        albums = self.bar.list("album")
-        self.failUnlessEqual(set(albums), set(["one", "two", "three"]))
-        self.bar.set_text("one")
+        albums = self.bar.list_albums()
+        self.failUnlessEqual(set(albums), set([s.album_key for s in SONGS]))
+        self.bar.filter_albums([SONGS[0].album_key])
         self._wait()
-        albums = self.bar.list("album")
-        self.failUnlessEqual(set(albums), set(["one"]))
+        self.failUnlessEqual(set([s.album_key for s in self.songs]),
+                             set([SONGS[0].album_key]))
 
     def test_active_filter(self):
         self.bar.filter("artist", ["piman"])

@@ -53,7 +53,6 @@ class TEmptyBar(TestCase):
         self.expected = None
 
     def _do(self):
-        self.bar.activate()
         while gtk.events_pending(): gtk.main_iteration()
         self.failUnless(self.expected is None)
 
@@ -62,15 +61,14 @@ class TEmptyBar(TestCase):
             self.failUnless(self.bar.can_filter(key))
 
     def test_empty_is_all(self):
-        self.bar.set_text("")
+        self.bar.filter_text("")
         self.expected = list(sorted(SONGS))
         self._do()
 
     def test_dynamic(self):
         self.failUnless(self.bar.dynamic(SONGS[0]))
-        self.bar.set_text("this does not match any song")
+        self.bar.filter_text("this does not match any song")
         self.expected = []
-        self.bar.activate()
         self.failIf(self.bar.dynamic(SONGS[0]))
 
     def test_filter(self):
@@ -98,11 +96,11 @@ class TEmptyBar(TestCase):
         self.bar.filter("~#length", [0])
 
     def test_saverestore(self):
-        self.bar.set_text("title = %s" % SONGS[0]["title"])
+        self.bar.filter_text("title = %s" % SONGS[0]["title"])
         self.expected = [SONGS[0]]
         self._do()
         self.bar.save()
-        self.bar.set_text("")
+        self.bar.filter_text("")
         self.expected = list(sorted(SONGS))
         self._do()
         self.bar.restore()

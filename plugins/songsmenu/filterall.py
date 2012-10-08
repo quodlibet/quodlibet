@@ -83,7 +83,7 @@ class FilterAll(SongsMenuPlugin):
 
     def plugin_songs(self, songs):
         browser = self.plugin_window.browser
-        if not browser.can_filter(None):
+        if not browser.can_filter_text():
             return
 
         keys = set()

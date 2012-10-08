@@ -715,56 +715,46 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
                 return True
         return False
 
-    def set_text(self, text):
+    def can_filter_text(self):
+        return True
+
+    def filter_text(self, text):
         self.__search.set_text(text)
         if Query.is_parsable(text):
             self.__update_filter(self.__search, text)
             self.__inhibit()
             self.view.set_cursor((0,))
             self.__uninhibit()
+            self.activate()
 
-    def filter(self, key, values):
-        # in case of album: clear entry, refilter, select albums
-        if key == "album":
-            values = values or [""]
-            select = lambda r: r[0] and r[0].title in values
+    def can_filter(self, key):
+        # numerics are different for collections, and title
+        # works, but not of much use here
+        if key is not None and (key.startswith("~#") or key == "title"):
+            return False
+        return super(AlbumList, self).can_filter(key)
 
-            def delayed_select():
-                self.__inhibit()
-                changed = self.view.select_by_func(select)
-                self.__uninhibit()
-                if changed:
-                    self.view.get_selection().emit('changed')
-            # wait for the filter to finish, or the selection position could
-            # change and move the selection out of the view
-            gobject.idle_add(delayed_select)
-        else:
-            # otherwise: build query, refilter
-            self.set_text(util.build_filter_query(key, values))
+    def can_filter_albums(self):
+        return True
+
+    def list_albums(self):
+        model = self.view.get_model()
+        return [row[0].key for row in model if row[0]]
+
+    def filter_albums(self, values):
+        view = self.view
+        self.__inhibit()
+        changed = view.select_by_func(lambda r: r[0] and r[0].key in values)
+        self.__uninhibit()
+        if changed:
             self.activate()
 
     def unfilter(self):
-        self.set_text("")
+        self.filter_text("")
         self.view.set_cursor((0,))
 
     def activate(self):
         self.view.get_selection().emit('changed')
-
-    def can_filter(self, key):
-        # we can handle text queries through set_text
-        if key is None:
-            return True
-
-        # numerics are different for collections, and title
-        # works, but not of much use here
-        if not key.startswith("~#") and key not in ["title"]:
-            return True
-
-    def list(self, key):
-        if key != "album":
-            return super(AlbumList, self).list(key)
-        model = self.view.get_model()
-        return [row[0].title for row in model if row[0]]
 
     def __inhibit(self):
         self.view.get_selection().handler_block(self.__sig)

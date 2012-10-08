@@ -7,7 +7,6 @@
 # published by the Free Software Foundation
 
 import os
-import random
 import sys
 
 import gobject
@@ -789,11 +788,7 @@ class QuodLibetWindow(gtk.Window):
 
 
     def __random(self, item, key):
-        if self.browser.can_filter(key):
-            values = self.browser.list(key)
-            if values:
-                value = random.choice(values)
-                self.browser.filter(key, [value])
+        self.browser.filter_random(key)
 
     def __filter_menu_actions(self, menuitem):
         name = menuitem.get_name()
@@ -938,18 +933,19 @@ class QuodLibetWindow(gtk.Window):
         self.songlist.set_songs(songs, sorted)
 
     def __filter_on(self, header, songs, player):
-        if not self.browser or not self.browser.can_filter(header):
-            return
-        if songs is None:
-            if player.song: songs = [player.song]
-            else: return
+        browser = self.browser
 
-        values = set()
-        if header.startswith("~#"):
-            values.update([song(header, 0) for song in songs])
-        else:
-            for song in songs: values.update(song.list(header))
-        self.browser.filter(header, list(values))
+        if not browser:
+            return
+
+        # Fall back to the playing song
+        if songs is None:
+            if player.song:
+                songs = [player.song]
+            else:
+                return
+
+        browser.filter_on(songs, header)
 
     def __hide_headers(self, activator=None):
         for column in self.songlist.get_columns():
@@ -972,8 +968,8 @@ class QuodLibetWindow(gtk.Window):
             SongList.headers = headers
 
     def __make_query(self, query):
-        if self.browser.can_filter(None):
-            self.browser.set_text(query.encode('utf-8'))
+        if self.browser.can_filter_text():
+            self.browser.filter_text(query.encode('utf-8'))
             self.browser.activate()
 
     def __set_time(self, *args, **kwargs):

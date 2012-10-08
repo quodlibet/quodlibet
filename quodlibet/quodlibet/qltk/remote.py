@@ -6,7 +6,6 @@
 # published by the Free Software Foundation
 
 import os
-import random
 import re
 import sys
 
@@ -176,10 +175,9 @@ class FIFOControl(object):
     def _add_directory(self, value, library, window, player):
         filename = os.path.normpath(os.path.realpath(value))
         for added in library.scan([filename]): pass
-        if window.browser.can_filter(None):
-            window.browser.set_text(
+        if window.browser.can_filter_text():
+            window.browser.filter_text(
                 "filename = /^%s/c" % re.escape(filename))
-            window.browser.activate()
         else:
             basepath = filename + "/"
             songs = [song for (filename, song) in library.iteritems()
@@ -226,10 +224,7 @@ class FIFOControl(object):
 
     def _random(self, tag, library, window, player):
         if window.browser.can_filter(tag):
-            values = window.browser.list(tag)
-            if values:
-                value = random.choice(values)
-                window.browser.filter(tag, [value])
+            window.browser.filter_random(tag)
 
     def _filter(self, value, library, window, player):
         tag, values = value.split('=', 1)

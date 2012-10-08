@@ -97,7 +97,7 @@ class FileSystem(Browser, gtk.HBox):
             uris = [song("~uri") for song in songs]
             sel.set_uris(uris)
 
-    def can_filter(self, key):
+    def can_filter_tag(self, key):
         return (key == "~dirname")
 
     def filter(self, key, values):

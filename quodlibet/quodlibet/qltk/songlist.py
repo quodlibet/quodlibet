@@ -225,11 +225,13 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         header = util.tagsplit(header)[0]
 
-        if can_filter("album") or can_filter("artist") or can_filter(header):
+        if can_filter("artist") or can_filter("album") or can_filter(header):
             menu.preseparate()
 
-        if can_filter("artist"): menu.prepend(Filter("artist"))
-        if can_filter("album"): menu.prepend(Filter("album"))
+        if can_filter("artist"):
+            menu.prepend(Filter("artist"))
+        if can_filter("album"):
+            menu.prepend(Filter("album"))
         if (header not in ["artist", "album"] and can_filter(header)):
             menu.prepend(Filter(header))
 
@@ -425,17 +427,17 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             ctx.finish(True, move, etime)
 
     def __filter_on(self, header, songs, browser):
-        if not browser or not browser.can_filter(header): return
-        if songs is None:
-            if player.playlist.song: songs = [player.playlist.song]
-            else: return
+        if not browser:
+            return
 
-        values = set()
-        if header.startswith("~#"):
-            values.update([song(header, 0) for song in songs])
-        else:
-            for song in songs: values.update(song.list(header))
-        browser.filter(header, list(values))
+        # Fall back to the playing song
+        if songs is None:
+            if player.playlist.song:
+                songs = [player.song]
+            else:
+                return
+
+        browser.filter_on(songs, header)
 
     def __custom_sort(self, *args):
         sd = SortDialog(qltk.get_top_parent(self))

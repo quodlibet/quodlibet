@@ -29,7 +29,7 @@ class TPanedBrowser(TestCase):
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.failIf(self.bar.can_filter(key))
+            self.failIf(self.bar.can_filter_tag(key))
         self.failUnless(self.bar.can_filter("artist"))
 
     def test_filter_value(self):
