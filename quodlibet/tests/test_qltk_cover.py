@@ -20,7 +20,7 @@ class TCoverImage(TestCase):
 
     def test_set_song(self):
         c = CoverImage()
-        c.set_song(None, AudioFile({"~filename":"woo"}))
+        c.set_song(AudioFile({"~filename":"woo"}))
         event = gtk.gdk.Event(gtk.gdk.BUTTON_PRESS)
         event.button = 1
         c.emit("button-press-event", event)

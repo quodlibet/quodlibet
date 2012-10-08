@@ -79,6 +79,20 @@ class SongsMenuPluginHandler(object):
         map(list.sort, albums)
         return albums
 
+    def handle(self, plugin_id, library, parent, songs):
+        """Start a song menu plugin directly without a menu"""
+
+        for plugin in self.__plugins:
+            if plugin.PLUGIN_ID == plugin_id:
+                songs = ListWrapper(songs)
+                try:
+                    plugin = plugin(songs)
+                except Exception:
+                    print_exc()
+                else:
+                    self.__handle(plugin, library, parent, songs)
+                return
+
     def __handle(self, plugin, library, parent, songs):
         if len(songs) == 0: return
 
@@ -123,10 +137,6 @@ class SongsMenuPluginHandler(object):
         finally:
             del(plugin.plugin_window)
             check_wrapper_changed(library, parent, filter(None, songs))
-
-    @property
-    def plugins(self):
-        return list(self.__plugins)
 
     def plugin_handle(self, plugin):
         return issubclass(plugin, SongsMenuPlugin)

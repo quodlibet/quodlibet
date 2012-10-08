@@ -125,30 +125,29 @@ class ResizeImage(gtk.Image):
         self.disconnect(self.__sig)
 
 class CoverImage(gtk.EventBox):
-    __file = None
-    __current_bci = None
 
     def __init__(self, resize=False, size=70, song=None):
         super(CoverImage, self).__init__()
+        self.__song = None
+        self.__file = None
+        self.__current_bci = None
+
         self.add(ResizeImage(resize, size))
         self.connect('button-press-event', self.__show_cover)
-        self.set_song(self, song)
+        self.set_song(song)
         self.show_all()
 
-    def set_song(self, activator, song):
-        if not self.child: return
+    def set_song(self, song):
+        self.__song = song
         if song:
             self.__file = song.find_cover()
             self.child.set_path(self.__file and self.__file.name)
         else:
+            self.__file = None
             self.child.set_path(None)
-        self.__song = song
 
     def refresh(self):
-        if not (self.child and self.__song): return
-        print_d("Refreshing icon for %s." % self.__song("~filename"), self)
-        self.__file = self.__song.find_cover()
-        self.child.set_path(self.__file and self.__file.name)
+        self.set_song(self.__song)
 
     def __nonzero__(self):
         return bool(self.__file)
@@ -161,33 +160,31 @@ class CoverImage(gtk.EventBox):
         If one is already showing, destroy it instead
         If there is no image, run the AlbumArt plugin
         """
-        if (not self.__song or event.button != 1 or
-                event.type != gtk.gdk.BUTTON_PRESS):
+
+        song = self.__song
+        if not song:
             return
 
-        if self.__file:
-            if self.__current_bci is not None:
-                # We're displaying it; destroy it.
-                self.__current_bci.destroy()
-                return
-            # We're not displaying it yet; display it.
-            while self.__file:
-                try:
-                    self.__current_bci = BigCenteredImage(
-                        self.__song.comma("album"), self.__file.name, self)
-                except gobject.GError: # reload in case the image file is gone
-                    self.set_song(self, self.__song)
-                else:
-                    self.__current_bci.connect('destroy', self.__reset_bci)
-                    break
-        else:
+        if event.button != 1 or event.type != gtk.gdk.BUTTON_PRESS:
+            return
+
+        if not self.__file:
             from quodlibet.qltk.songsmenu import SongsMenu
-            for pk in SongsMenu.plugins.plugins:
-                if pk.PLUGIN_ID == ALBUM_ART_PLUGIN_ID:
-                    plugin = pk([self.__song])
-                    print_d("Running \"%s\" plugin... (%r)" %
-                            (ALBUM_ART_PLUGIN_ID, plugin))
-                    plugin.plugin_album([self.__song])
-                    return
-            print_d("Couldn't find \"%s\" plugin. Is it installed and enabled?"
-                    % ALBUM_ART_PLUGIN_ID)
+            from quodlibet import app
+
+            SongsMenu.plugins.handle("Download Album art", app.library,
+                                     qltk.get_top_parent(self), [song])
+            return
+
+        if self.__current_bci is not None:
+            # We're displaying it; destroy it.
+            self.__current_bci.destroy()
+            return
+
+        try:
+            self.__current_bci = BigCenteredImage(
+                song.comma("album"), self.__file.name, parent=self)
+        except gobject.GError: # reload in case the image file is gone
+            self.refresh()
+        else:
+            self.__current_bci.connect('destroy', self.__reset_bci)

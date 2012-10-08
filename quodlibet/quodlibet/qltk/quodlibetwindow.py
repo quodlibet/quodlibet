@@ -131,7 +131,7 @@ class TopBar(gtk.HBox):
 
         # cover image
         self.image = CoverImage(resize=True)
-        player.connect('song-started', self.image.set_song)
+        player.connect('song-started', lambda x, s: self.image.set_song(s))
         parent.connect('artwork-changed', self.__song_art_changed, library)
         self.pack_start(self.image, expand=False)
 
