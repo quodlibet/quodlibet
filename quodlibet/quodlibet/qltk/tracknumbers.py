@@ -10,7 +10,7 @@ import gtk
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.qltk.views import HintedTreeView
+from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 
 class TrackNumbers(gtk.VBox):
@@ -52,12 +52,12 @@ class TrackNumbers(gtk.VBox):
         self.pack_start(hbox2, expand=False)
 
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_('File'), render, text=1)
+        column = TreeViewColumn(_('File'), render, text=1)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         view.append_column(column)
         render = gtk.CellRendererText()
         render.set_property('editable', True)
-        column = gtk.TreeViewColumn(_('Track'), render, text=2)
+        column = TreeViewColumn(_('Track'), render, text=2)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         view.append_column(column)
         view.set_reorderable(True)

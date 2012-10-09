@@ -17,6 +17,7 @@ from quodlibet import util
 from quodlibet.parse import FileFromPattern
 from quodlibet.qltk._editpane import EditPane, FilterCheckButton
 from quodlibet.qltk._editpane import EditingPluginHandler
+from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 
 class SpacesToUnderscores(FilterCheckButton):
@@ -82,14 +83,14 @@ class RenameFiles(EditPane):
         super(RenameFiles, self).__init__(
             const.NBP, const.NBP_EXAMPLES.split("\n"))
 
-        column = gtk.TreeViewColumn(
+        column = TreeViewColumn(
             _('File'), gtk.CellRendererText(), text=1)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         self.view.append_column(column)
         render = gtk.CellRendererText()
         render.set_property('editable', True)
 
-        column = gtk.TreeViewColumn(_('New Name'), render, text=2)
+        column = TreeViewColumn(_('New Name'), render, text=2)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         self.view.append_column(column)
 

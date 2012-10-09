@@ -19,6 +19,7 @@ from quodlibet import util
 
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
+from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow
 
 
@@ -50,7 +51,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
     def __init__(self, initial=None, folders=None):
         super(DirectoryTree, self).__init__(gtk.TreeStore(str))
-        column = gtk.TreeViewColumn(_("Folders"))
+        column = TreeViewColumn(_("Folders"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_DIRECTORY)
@@ -303,7 +304,7 @@ class FileSelector(gtk.VPaned):
             initial = os.path.dirname(initial)
         dirlist = DirectoryTree(initial, folders=folders)
         filelist = AllTreeView(gtk.ListStore(str))
-        column = gtk.TreeViewColumn(_("Songs"))
+        column = TreeViewColumn(_("Songs"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_FILE)

@@ -24,7 +24,7 @@ from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
-from quodlibet.qltk.views import AllTreeView, BaseView
+from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.util import tag, pattern
 from quodlibet.util.library import background_filter
@@ -304,11 +304,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.__sort_cache = {}
             self.__key_cache = {}
 
-            column = gtk.TreeViewColumn()
-            label = gtk.Label(title)
-            label.set_use_markup(True)
-            column.set_widget(label)
-            label.show()
+            column = TreeViewColumn(title)
+            column.set_use_markup(True)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
             column.set_fixed_width(50)
 

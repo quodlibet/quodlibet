@@ -20,7 +20,7 @@ from quodlibet.util import massagers
 
 from quodlibet.qltk.completion import LibraryValueCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
-from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.plugins import PluginManager
@@ -328,7 +328,7 @@ class EditTags(gtk.VBox):
         view = RCMHintedTreeView(model)
         selection = view.get_selection()
         render = gtk.CellRendererPixbuf()
-        column = gtk.TreeViewColumn(_("Write"), render)
+        column = TreeViewColumn(_("Write"), render)
 
         style = view.get_style()
         pixbufs = [ style.lookup_icon_set(stock)
@@ -347,7 +347,7 @@ class EditTags(gtk.VBox):
         view.append_column(column)
 
         render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(
+        column = TreeViewColumn(
             _('Tag'), render, text=0, editable=3, strikethrough=4)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render.set_property('editable', True)
@@ -363,7 +363,7 @@ class EditTags(gtk.VBox):
         render.connect(
             'editing-started', self.__value_editing_started, model, library)
         render.markup = 1
-        column = gtk.TreeViewColumn(
+        column = TreeViewColumn(
             _('Value'), render, markup=1, editable=3, strikethrough=4)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         view.append_column(column)
