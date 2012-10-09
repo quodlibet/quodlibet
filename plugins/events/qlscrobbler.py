@@ -125,8 +125,10 @@ class QLSubmitQueue(PluginConfigMixin):
         self.username, self.password, self.base_url = ('', '', '')
 
         # These need to be set early for _format_song to work
-        self.titlepat = parse.Pattern(self.config_get('titlepat', DEFAULT_TITLEPAT))
-        self.artpat = parse.Pattern(self.config_get('artistpat', DEFAULT_ARTISTPAT))
+        self.titlepat = parse.Pattern(
+            self.config_get('titlepat', "") or DEFAULT_TITLEPAT)
+        self.artpat = parse.Pattern(
+            self.config_get('artistpat', "") or DEFAULT_ARTISTPAT)
 
         try:
             disk_queue_file = open(self.DUMP, 'r')
@@ -164,9 +166,9 @@ class QLSubmitQueue(PluginConfigMixin):
             self.handshake_sent = False
         self.offline = self.config_get_bool('offline')
         self.titlepat = parse.Pattern(
-                self.config_get('titlepat', DEFAULT_TITLEPAT))
+                self.config_get('titlepat', "") or DEFAULT_TITLEPAT)
         self.artpat = parse.Pattern(
-                self.config_get('artistpat', DEFAULT_ARTISTPAT))
+                self.config_get('artistpat', "") or DEFAULT_ARTISTPAT)
 
     def changed(self):
         """Signal that settings or queue contents were changed."""
