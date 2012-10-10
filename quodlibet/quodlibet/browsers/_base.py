@@ -52,7 +52,7 @@ class Filter(object):
         raise NotImplementedError
 
     # Return a list of unique album keys (song.album_key)
-    def list_albums():
+    def list_albums(self):
         albums = quodlibet.library.library.albums
         albums.load()
         return [a.key for a in albums]
