@@ -66,8 +66,7 @@ class SelectionWindow(Window):
         if len(selected) >= 2:
             joined = "&(%s)" % joined
 
-        browser.set_text(joined)
-        browser.activate()
+        browser.filter_text(joined)
 
     def __toggeled(self, render, path, model, browser):
         model[path][0] = not model[path][0]
