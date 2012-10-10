@@ -100,6 +100,12 @@ class TreeViewHints(gtk.Window):
             self.__undisplay()
             return
 
+        area = view.get_cell_area(path, col)
+        # make sure we are on the same level
+        if  x < area.x:
+            self.__undisplay()
+            return
+
         # hide for partial hidden rows at the bottom
         if y > view.get_visible_rect().height:
             self.__undisplay()
@@ -157,11 +163,10 @@ class TreeViewHints(gtk.Window):
         # the column header height
         header_height = view.get_bin_window().get_position()[1]
 
-        area = view.get_cell_area(path, col)
         ox, oy = view.window.get_origin()
 
         # save for adjusting passthrough events
-        self.__dx, self.__dy = area.x, area.y
+        self.__dx, self.__dy = area.x + render_offset, area.y
 
         # final window coordinates/size
         x = ox + area.x + render_offset
