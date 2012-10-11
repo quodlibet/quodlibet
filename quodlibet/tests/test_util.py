@@ -329,6 +329,19 @@ class Tsplit_people(TestCase):
             util.split_people("foo (Ft. bar)"), ("foo", ["bar"]))
         self.failUnlessEqual(
             util.split_people("foo(feat barman)"), ("foo", ["barman"]))
+    def test_originally_by(self):
+        self.failUnlessEqual(
+            util.split_people("title (originally by artist)"),
+            ("title", ["artist"]))
+        self.failUnlessEqual(
+            util.split_people("title [originally by artist & artist2]"),
+            ("title", ["artist", "artist2"]))
+    def test_cover(self):
+        self.failUnlessEqual(
+            util.split_people("Pyscho Killer [Talking Heads Cover]"),
+            ("Pyscho Killer", ["Talking Heads"]))
+
+
 
 add(Tsplit_people)
 

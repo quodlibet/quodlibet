@@ -399,8 +399,10 @@ def split_title(s, splitters=["/", "&", ","]):
 
 
 __FEATURING = ["feat.", "featuring", "feat", "ft", "ft.", "with", "w/"]
+__ORIGINALLY = ["originally by ", " cover"]
 # Cache case-insensitive regex searches of the above
 __FEAT_REGEX = [re.compile(re.escape(s + " "), re.I) for s in __FEATURING]
+__ORIG_REGEX = [re.compile(re.escape(s), re.I) for s in __ORIGINALLY]
 
 def split_people(s, splitters=["/", "&", ","]):
     title, subtitle = find_subtitle(s)
@@ -417,10 +419,11 @@ def split_people(s, splitters=["/", "&", ","]):
         return (s, [])
     else:
         old = subtitle
-        for regex in __FEAT_REGEX:
+        # TODO: allow multiple substitutions across types, maybe
+        for regex in (__FEAT_REGEX + __ORIG_REGEX):
             subtitle = re.sub(regex, "", subtitle, 1)
             if old != subtitle:
-                # only change once
+                # Only change once
                 break
         values = split_value(subtitle, splitters)
         return (title.strip(), values)
