@@ -30,6 +30,7 @@ from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.x import ScrolledWindow, Alignment
 from quodlibet.util.uri import URI
+from quodlibet.util.dprint import print_d
 
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
 if not os.path.isdir(PLAYLISTS): util.mkdir(PLAYLISTS)
@@ -406,19 +407,18 @@ class Playlists(gtk.VBox, Browser):
                 view.get_selection().select_iter(row.iter)
 
     def __popup_menu(self, view, library):
-        model, iter = view.get_selection().get_selected()
-        if iter is None:
+        # TODO: Consider allowing plugins to expose themselves in playlist
+        model, itr = view.get_selection().get_selected()
+        if itr is None:
             return
-        songs = list(model[iter][0])
+        songs = list(model[itr][0])
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
         menu = SongsMenu(
             library, songs, playlists=False, remove=False, parent=self)
         menu.preseparate()
 
-        de_dupe = gtk.MenuItem(_("Remove Duplicates"))
-
-        def de_duplicate(model, iter):
-            playlist = model[iter][0]
+        def _de_duplicate(model, itr):
+            playlist = model[itr][0]
             unique = set()
             dupes = list()
             for s in songs:
@@ -438,26 +438,40 @@ class Playlists(gtk.VBox, Browser):
                 Playlists.changed(playlist)
                 self.activate()
 
-        de_dupe.connect_object('activate', de_duplicate, model, iter)
-        de_dupe.set_sensitive(not model[iter][0].has_duplicates())
+        de_dupe = gtk.MenuItem(_("Remove Duplicates"))
+        de_dupe.connect_object('activate', _de_duplicate, model, itr)
+        de_dupe.set_sensitive(not model[itr][0].has_duplicates())
         menu.prepend(de_dupe)
 
-        rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
-        def remove(model, iter):
-            model[iter][0].delete()
+        def _shuffle(model, itr):
+            playlist = model[itr][0]
+            playlist.shuffle()
+            self.activate()
+
+        shuffle = gtk.MenuItem(_("_Shuffle"))
+        shuffle .connect_object('activate', _shuffle, model, itr)
+        shuffle.set_sensitive(bool(len(model[itr][0])))
+        menu.prepend(shuffle)
+        menu.prepend(gtk.SeparatorMenuItem())
+
+        def _remove(model, itr):
+            model[itr][0].delete()
             model.get_model().remove(
-                model.convert_iter_to_child_iter(None, iter))
-        rem.connect_object('activate', remove, model, iter)
+                model.convert_iter_to_child_iter(None, itr))
+
+        rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        rem.connect_object('activate', _remove, model, itr)
         menu.prepend(rem)
+
+        def _rename(path):
+            self.__render.set_property('editable', True)
+            view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
         ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
         keyval, mod = gtk.accelerator_parse("F2")
         ren.add_accelerator(
             'activate', self.accelerators, keyval, mod, gtk.ACCEL_VISIBLE)
-        def rename(path):
-            self.__render.set_property('editable', True)
-            view.set_cursor(path, view.get_columns()[0], start_editing=True)
-        ren.connect_object('activate', rename, model.get_path(iter))
+        ren.connect_object('activate', _rename, model.get_path(itr))
         menu.prepend(ren)
 
         menu.show_all()

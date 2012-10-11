@@ -8,6 +8,7 @@
 
 import gobject
 import os
+import random
 
 from quodlibet import util
 from quodlibet import config
@@ -238,6 +239,7 @@ class Collection(object):
             sorted(result.items(), key=lambda x: x[1]))
         if not values: return None
         return "\n".join(values)
+
 
 class Album(Collection):
     """Like a collection but adds cover scanning, some attributes for sorting
@@ -539,10 +541,18 @@ class Playlist(Collection, Iterable):
             else: unique.add(s)
         return True
 
+    def shuffle(self):
+        """
+        Randomly shuffles this playlist, permanently.
+        Currently this is unweighted
+        """
+        random.shuffle(self.songs)
+        self.write()
+
     def __cmp__(self, other):
         try:
             return cmp(self.name, other.name)
-        except (AttributeError):
+        except AttributeError:
             return -1
 
     def __str__(self):
