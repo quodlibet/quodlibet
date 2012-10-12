@@ -137,6 +137,7 @@ class PatternEditor(gtk.VBox):
         for button, headers in self.__headers.iteritems():
             if headers == new_headers:
                 button.set_active(True)
+                button.emit("toggled")
                 break
         else:
             self.__headers[self.__custom] = new_headers
