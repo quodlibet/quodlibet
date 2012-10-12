@@ -380,7 +380,15 @@ class BaseView(gtk.TreeView):
         elif is_accel(event, "Left") or is_accel(event, "<ctrl>Left"):
             first = get_first_selected()
             if first:
-                self.collapse_row(first)
+                if self.row_expanded(first):
+                    self.collapse_row(first)
+                else:
+                    # if we can't collapse, move the selection to the parent,
+                    # so that a second attempt collapses the parent
+                    model = self.get_model()
+                    parent = model.iter_parent(model.get_iter(first))
+                    if parent:
+                        self.set_cursor(model.get_path(parent))
                 return True
 
     def remove_paths(self, paths):
