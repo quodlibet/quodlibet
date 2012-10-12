@@ -10,7 +10,7 @@ import gtk
 import pango
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, is_accel
 
 class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
@@ -361,6 +361,28 @@ class DragScroll(object):
 
 
 class BaseView(gtk.TreeView):
+
+    def __init__(self, *args, **kwargs):
+        super(BaseView, self).__init__(*args, **kwargs)
+        self.connect("key-press-event", self.__key_pressed)
+
+    def __key_pressed(self, view, event):
+        def get_first_selected():
+            selection = self.get_selection()
+            model, paths = selection.get_selected_rows()
+            return paths and paths[0] or None
+
+        if is_accel(event, "Right") or is_accel(event, "<ctrl>Right"):
+            first = get_first_selected()
+            if first:
+                self.expand_row(first, False)
+                return True
+        elif is_accel(event, "Left") or is_accel(event, "<ctrl>Left"):
+            first = get_first_selected()
+            if first:
+                self.collapse_row(first)
+                return True
+
     def remove_paths(self, paths):
         """Remove rows and restore the selection if it got removed"""
 

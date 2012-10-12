@@ -57,17 +57,18 @@ class DuplicateSongsView(RCMHintedTreeView):
         menu.show_all()
         return menu
 
-    def __select_song(self, player, indices, col):
-        songs = self.get_selected_songs()
-        #print_d("Trying to play %s" % songs[0]("~artist~title~version"), self)
-        if player.go_to(songs[0], True):
-            player.paused = False
+    def __select_song(self, player, path, col):
+        if len(path) == 1:
+            if self.row_expanded(path):
+                self.collapse_row(path)
+            else:
+                self.expand_row(path, False)
         else:
-            print_w("Sorry, can't play song outside current list.")
-            # This is evil. EVIL. But it half-works.
-#            player.setup(self.get_model(), songs[0], 0)
-#            if player.go_to(songs[0], True):
-#                player.paused = False
+            songs = self.get_selected_songs()
+            if songs and player.go_to(songs[0], True):
+                player.paused = False
+            else:
+                print_w("Sorry, can't play song outside current list.")
 
     def _removed(self, library, songs):
         model = self.get_model()
