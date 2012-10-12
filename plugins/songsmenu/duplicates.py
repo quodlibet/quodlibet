@@ -290,13 +290,19 @@ class DuplicateDialog(gtk.Window):
         swin.set_shadow_type(gtk.SHADOW_IN)
         # Set up the browser view
         view = DuplicateSongsView(model)
+
+        def cell_text(column, cell, model, iter_, index):
+            text = model[iter_][index]
+            cell.markup = text
+            cell.set_property("markup", text)
+
         # Set up the columns
         for i, (tag, f) in enumerate(DuplicatesTreeModel.TAG_MAP):
             e = (pango.ELLIPSIZE_START if tag == '~filename'
                 else pango.ELLIPSIZE_END)
-            col = gtk.TreeViewColumn(util.tag(tag),
-                gobject.new(gtk.CellRendererText, ellipsize=e),
-                markup=i + 1)
+            render = gtk.CellRendererText()
+            render.set_property("ellipsize", e)
+            col = gtk.TreeViewColumn(util.tag(tag), render)
             # Numeric columns are better smaller here.
             if tag.startswith("~#"):
                 col.set_fixed_width(80)
@@ -305,6 +311,7 @@ class DuplicateDialog(gtk.Window):
                 col.set_expand(True)
                 col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             col.set_resizable(True)
+            col.set_cell_data_func(render, cell_text, i + 1)
             view.append_column(col)
 
         view.connect('popup-menu', self.__songs_popup_menu)
