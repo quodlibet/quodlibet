@@ -318,6 +318,22 @@ class DuplicateDialog(gtk.Window):
         swin.add(view)
         # A basic information area
         hbox = gtk.HBox(spacing=6)
+
+        def expand_all(*args):
+            model = view.get_model()
+            for row in model:
+                if view.row_expanded(row.path):
+                    for row in model:
+                        view.collapse_row(row.path)
+                    break
+            else:
+                for row in model:
+                    view.expand_row(row.path, False)
+
+        expand = gtk.Button(_("Collapse / Expand all"))
+        expand.connect_object("clicked", expand_all, view)
+        hbox.pack_start(expand, expand=False)
+
         label = gtk.Label(_("Duplicate key expression is '%s'") %
                 Duplicates.get_key_expression())
         hbox.pack_start(label)
