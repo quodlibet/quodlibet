@@ -2,6 +2,7 @@
 #
 #    ReplayGain Album Analysis using gstreamer rganalysis element
 #    Copyright (C) 2005,2007,2009  Michael Urman
+#                            2012  Nick Boultbee
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of version 2 of the GNU General Public License as
@@ -20,15 +21,15 @@ __all__ = ['ReplayGain']
 class ReplayGain(SongsMenuPlugin):
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = 'Replay Gain'
-    PLUGIN_DESC = 'Analyzes ReplayGain with gstreamer, grouped by album'
+    PLUGIN_DESC = _('Analyzes ReplayGain with gstreamer, grouped by album')
     PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
-    PLUGIN_VERSION = "2.2"
+    PLUGIN_VERSION = "2.3"
 
     def plugin_albums(self, albums):
         win = gtk.Dialog(title='ReplayGain', parent=self.plugin_window,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
-        win.set_default_size(400, 300)
+        win.set_default_size(500, 350)
         win.set_border_width(6)
         swin = gtk.ScrolledWindow()
         win.vbox.pack_start(swin)
@@ -38,8 +39,9 @@ class ReplayGain(SongsMenuPlugin):
         model = gtk.TreeStore(object, str, int, str, str)
         view = HintedTreeView(model)
         swin.add(view)
-        err_lbl = gtk.Label("One or more songs could not be analyzed.\n"
-                "Data for these songs will not be written.")
+        err_lbl = gtk.Label("%s\n%s" % (
+                _("One or more songs could not be analyzed.)"),
+                _("Data for these songs will not be written.")))
         err_lbl.set_child_visible(False)
         win.vbox.pack_start(err_lbl, expand=False)
 
@@ -52,22 +54,23 @@ class ReplayGain(SongsMenuPlugin):
         col.set_fixed_width(120)
         view.append_column(col)
 
-        col = gtk.TreeViewColumn('Progress',
+        col = gtk.TreeViewColumn(_('Progress'),
                 gtk.CellRendererProgress(), value=2)
         col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         view.append_column(col)
 
-        col = gtk.TreeViewColumn('Gain', gtk.CellRendererText(), text=3)
+        col = gtk.TreeViewColumn(_('Gain'), gtk.CellRendererText(), text=3)
         col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         view.append_column(col)
 
-        col = gtk.TreeViewColumn('Peak', gtk.CellRendererText(), text=4)
+        col = gtk.TreeViewColumn(_('Peak'), gtk.CellRendererText(), text=4)
         col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         view.append_column(col)
 
         for album in albums:
+            album_heading = album[0]('~artist~album').replace("\n", ", ")
             base = model.append(None,
-                [None, album[0]('~artist~album'), 0, "-", "-"])
+                [None, album_heading, 0, "-", "-"])
             for s in album:
                 model.append(base,
                     [s, s('~tracknumber~title~version'), 0, "-", "-"])
