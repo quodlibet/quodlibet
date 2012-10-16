@@ -271,7 +271,6 @@ class QuodLibetWindow(gtk.Window):
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 
         # track window position/size
-        self.connect("show", self.__restore_window_position)
         self.connect('configure-event', QuodLibetWindow.__save_size)
         self.connect('window-state-event', self.__window_state_changed)
         self.__state = 0
@@ -714,10 +713,6 @@ class QuodLibetWindow(gtk.Window):
             config.set("memory", "size", "%d %d" % (event.width, event.height))
             if self.get_property("visible"):
                 config.set('memory', 'position', '%s %s' % self.get_position())
-
-    def __restore_window_position(self, window):
-        pos = map(int, config.get('memory', 'position').split())
-        self.move(*pos)
 
     def __refresh_size(self):
         ssv = self.song_scroller.get_property('visible')
