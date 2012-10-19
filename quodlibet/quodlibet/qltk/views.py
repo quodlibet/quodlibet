@@ -376,7 +376,6 @@ class BaseView(gtk.TreeView):
             first = get_first_selected()
             if first:
                 self.expand_row(first, False)
-                return True
         elif is_accel(event, "Left") or is_accel(event, "<ctrl>Left"):
             first = get_first_selected()
             if first:
@@ -389,7 +388,6 @@ class BaseView(gtk.TreeView):
                     parent = model.iter_parent(model.get_iter(first))
                     if parent:
                         self.set_cursor(model.get_path(parent))
-                return True
 
     def remove_paths(self, paths):
         """Remove rows and restore the selection if it got removed"""
