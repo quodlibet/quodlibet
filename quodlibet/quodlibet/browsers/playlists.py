@@ -286,11 +286,11 @@ class Playlists(gtk.VBox, Browser):
         if qltk.is_accel(event, "Delete"):
             model, iter = self.__view.get_selection().get_selected()
             if iter:
-                if qltk.ConfirmAction(
-                    self, _("Confirm playlist removal"),
-                    _("You are about to delete the playlist '<i>%s</i>'.\n"
-                      "Do you wish to continue?")
-                      % util.escape(model[iter][0].name)).run():
+                msg = (_("You are about to delete the playlist <i>%s</i>.\n")
+                       % util.escape(model[iter][0].name)
+                      + _("Do you wish to continue?"))
+                title = _("Confirm playlist removal")
+                if qltk.ConfirmAction(self, title, msg).run():
                     model[iter][0].delete()
                     model.get_model().remove(
                         model.convert_iter_to_child_iter(None, iter))

@@ -489,10 +489,10 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         if (count > 1 and
             config.getboolean("browsers", "rating_confirm_multiple")):
             if not qltk.ConfirmAction(
-                self, _("Confirm rating"),
-                _("You are about to change the rating of %d songs.\n"
-                  "Do you wish to continue?") % count).run():
-                return;
+                    self, _("Confirm rating"),
+                    _("You are about to change the rating of %d songs.") % count
+                    + _("Do you wish to continue?")).run():
+                return
         for song in songs:
             song["~#rating"] = value
         librarian.changed(songs)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Markus Koller
-#           2012 Christoph Reiter
+#           2012 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,13 +10,14 @@ import os
 import subprocess
 import ConfigParser
 from os.path import dirname, basename
+from quodlibet.util.dprint import print_d, print_w
 
 import gobject
 try:
     import dbus
 except ImportError:
-    print_w(_("Could not import dbus-python, which is needed for "
-        "device support."))
+    print_w(_("Could not import %s, which is needed for "
+        "device support.") % "dbus-python")
     dbus = None
 
 from quodlibet import const
@@ -288,13 +289,14 @@ class DKD(DeviceManager):
         try:
             udev.init()
         except OSError:
-            print_w(_("%s: Could not find libudev.") % self.__bus)
+            print_w(_("%s: Could not find %s.") % (self.__bus, libudev))
             error = True
         else:
             self.__udev = udev.Udev.new()
 
         if self.__get_mpi_dir() is None:
-            print_w(_("%s: Could not find media-player-info.") % self.__bus)
+            print_w(_("%s: Could not find %s.")
+                    % (self.__bus, "media-player-info"))
             error = True
 
         if error:
@@ -391,7 +393,7 @@ class DKD(DeviceManager):
         return str(self.__get_dev_property(prop_if, 'device-file'))
 
     def __get_media_player_id(self, devpath):
-        """DKD is for highlevel device stuff. The info if the device is
+        """DKD is for high-level device stuff. The info if the device is
         a media player and what protocol/formats it supports can only
         be retrieved through libudev"""
         try:

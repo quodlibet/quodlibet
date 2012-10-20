@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011 Nick Boultbee
+# Copyright 2011, 2012 Nick Boultbee
 #           2005 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,10 +20,10 @@ class RatingsMenuItem(gtk.MenuItem):
                 config.getboolean("browsers", "rating_confirm_multiple")):
             # There are many plural forms in some supported languages
             # Translators: ratings changes for multiple files
-            msg = ngettext("You are about to change the rating of %d song.\n"
-                            "Do you wish to continue?",
-                    "You are about to change the rating of %d songs.\n"
-                            "Do you wish to continue?", count) % count
+            msg = ngettext("You are about to change the rating of %d song.",
+                           "You are about to change the rating of %d songs.",
+                           count) % count
+            msg += "\n%s" % _("Do you wish to continue?")
             if not qltk.ConfirmAction(self, _("Confirm rating"), msg).run():
                 return
         for song in songs:

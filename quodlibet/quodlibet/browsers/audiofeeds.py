@@ -421,8 +421,8 @@ browsers = []
 try:
     import feedparser
 except ImportError:
-    print_w(_("Could not import python-feedparser, "
-        "Audio Feeds browser disabled."))
+    print_w(_("Could not import %s. Audio Feeds browser disabled.")
+            % "python-feedparser")
 else:
     from quodlibet import player
     if player.can_play_uri("http://"):

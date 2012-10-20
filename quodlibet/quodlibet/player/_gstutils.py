@@ -147,8 +147,8 @@ class DeviceComboBox(gtk.ComboBox):
 
         if not len(model):
             self.handler_unblock(self.__sig)
-            # Translators: Unkown audio output device.
-            model.append(row=["", _("Unkown")])
+            # Translators: Unknown audio output device.
+            model.append(row=["", _("Unknown")])
             self.set_active(0)
             self.set_sensitive(False)
             return
