@@ -207,6 +207,7 @@ class SplitOriginalArtistFromTitle(SplitPerson):
 
 
 class AddTagDialog(gtk.Dialog):
+
     def __init__(self, parent, can_change, library):
         super(AddTagDialog, self).__init__(
             _("Add a Tag"), qltk.get_top_parent(parent))
@@ -222,8 +223,8 @@ class AddTagDialog(gtk.Dialog):
         table.set_col_spacings(6)
         table.set_border_width(6)
 
-        if can_change == True: self.__tag = TagsComboBoxEntry()
-        else: self.__tag = TagsComboBox(can_change)
+        self.__tag = (TagsComboBoxEntry() if can_change == True
+                      else TagsComboBox(can_change))
 
         label = gtk.Label()
         label.set_alignment(0.0, 0.5)
@@ -318,6 +319,12 @@ class EditTagsPluginHandler(EditingPluginHandler):
     Kind = EditTagsPlugin
 
 class EditTags(gtk.VBox):
+    _SAVE_BUTTON_KEY = 'ql-save'
+    _REVERT_BUTTON_KEY = 'ql-revert'
+    # Translators: translate only to override the text for the tag "save" button
+    _SAVE_BUTTON_TEXT = _('ql-save')
+    # Translators: translate only to override the  for the tag "revert" button
+    _REVERT_BUTTON_TEXT = _('ql-revert')
     handler = EditTagsPluginHandler()
 
     @classmethod
@@ -379,6 +386,7 @@ class EditTags(gtk.VBox):
         sw.add(view)
         self.pack_start(sw)
 
+        # Add and Remove [tags] buttons
         buttonbox = gtk.HBox(spacing=18)
         bbox1 = gtk.HButtonBox()
         bbox1.set_spacing(6)
@@ -386,26 +394,35 @@ class EditTags(gtk.VBox):
         add = gtk.Button(stock=gtk.STOCK_ADD)
         add.set_focus_on_click(False)
         add.connect('clicked', self.__add_tag, model, library)
+        bbox1.pack_start(add)
+        # Remove button
         remove = gtk.Button(stock=gtk.STOCK_REMOVE)
         remove.set_focus_on_click(False)
         remove.connect('clicked', self.__remove_tag, view)
         remove.set_sensitive(False)
-        bbox1.pack_start(add)
+
         bbox1.pack_start(remove)
 
+        # Revert and save buttons
+        # Both can have customised translated text (and thus accels)
         bbox2 = gtk.HButtonBox()
         bbox2.set_spacing(6)
         bbox2.set_layout(gtk.BUTTONBOX_END)
-        revert = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
-        save = gtk.Button(stock=gtk.STOCK_SAVE)
+        revert = (gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
+                  if self._REVERT_BUTTON_KEY == self._REVERT_BUTTON_TEXT
+                  else gtk.Button(label=self._REVERT_BUTTON_TEXT))
         revert.set_sensitive(False)
+        # Save button.
+        save = (gtk.Button(stock=gtk.STOCK_SAVE)
+                if self._SAVE_BUTTON_TEXT == self._SAVE_BUTTON_KEY
+                else gtk.Button(label=self._SAVE_BUTTON_TEXT))
         save.set_sensitive(False)
+        self.save = save
         bbox2.pack_start(revert)
         bbox2.pack_start(save)
 
         buttonbox.pack_start(bbox1)
         buttonbox.pack_start(bbox2)
-
         self.pack_start(buttonbox, expand=False)
 
         UPDATE_ARGS = [
@@ -432,8 +449,13 @@ class EditTags(gtk.VBox):
     def __view_key_press_event(self, view, event):
         # We can't use a real accelerator to this because it would
         # interfere with typeahead and row editing.
+        ctrl = event.state & gtk.gdk.CONTROL_MASK
+        keyval_name = gtk.gdk.keyval_name(event.keyval)
         if event.keyval == gtk.accelerator_parse("Delete")[0]:
             self.__remove_tag(view, view)
+        elif ctrl and keyval_name == 's':
+            # Issue 697: allow Ctrl-s to save.
+            self.save.emit('clicked')
 
     def __enable_save(self, *args):
         buttons = args[-1]
@@ -493,7 +515,6 @@ class EditTags(gtk.VBox):
                         b.set_sensitive(False)
 
                     menu.append(b)
-
 
             if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
 
