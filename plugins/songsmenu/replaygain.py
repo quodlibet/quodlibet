@@ -75,20 +75,17 @@ class ReplayGain(SongsMenuPlugin):
                 model.append(base,
                     [s, s('~tracknumber~title~version'), 0, "-", "-"])
 
+        win.connect("destroy", self.__plugin_done)
         win.vbox.show_all()
         win.present()
-        win.finished = False
 
         # kick off the analysis
         analysis = Analysis(win, view, model)
         analysis.next_song()
 
-        # wait for the dialog to be closed
-        while not win.finished:
-            gtk.main_iteration()
+    def __plugin_done(self, win):
+        self.plugin_finish()
 
-        win.hide()
-        win.destroy()
 
 class Analysis(object):
     error_str = "Error!"
@@ -228,7 +225,7 @@ class Analysis(object):
     def set_finished(self, done):
         # enable/disable the save button
         try:
-            buttons = self.win.vbox.get_children()[3].get_children()
+            buttons = self.win.vbox.get_children()[2].get_children()
         except IndexError:
             pass
         else:
@@ -242,10 +239,10 @@ class Analysis(object):
         # kill the pipeline in case this is a cancel
         self.pipe.set_state(gst.STATE_NULL)
         self.set_finished(True)
-        self.win.finished = True
 
         # save only if response says to
         if response != gtk.RESPONSE_OK:
+            win.destroy()
             return
 
         ialbum = self.model.get_iter_first()
@@ -277,6 +274,8 @@ class Analysis(object):
                     song['replaygain_album_gain'] = albumgain
                 if albumpeak != '-' and albumgain != self.error_str:
                     song['replaygain_album_peak'] = albumpeak
+
+        win.destroy()
 
 if gst.registry_get_default() is gst:
     import sys

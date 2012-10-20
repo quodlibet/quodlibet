@@ -6,6 +6,9 @@
 
 import gtk
 
+from quodlibet.util.songwrapper import check_wrapper_changed
+
+
 class SongsMenuPlugin(gtk.ImageMenuItem):
     """Plugins of this type are subclasses of gtk.ImageMenuItem.
     They will be added, in alphabetical order, to the "Plugins" menu
@@ -23,7 +26,8 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
     above order if they match until one returns a true value. They are
     not called with real AudioFile objects, but rather wrappers that
     automatically detect metadata or disk changes, and save or reload
-    the files as appropriate.
+    the files as appropriate. If the wrappers get changed after the above
+    methods return, call self.plugin_finish() to check for changes.
 
     The single_ variant is only called if a single song/album is selected.
 
@@ -55,8 +59,11 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
     plugin_albums = None
 
     __initialized = False
-    def __init__(self, songs):
+    def __init__(self, songs, library, window):
         super(SongsMenuPlugin, self).__init__(self.PLUGIN_NAME)
+        self.__library = library
+        self.__songs = songs
+        self.plugin_window = window
         self.__initialized = True
         try: i = gtk.image_new_from_stock(self.PLUGIN_ICON, gtk.ICON_SIZE_MENU)
         except AttributeError: pass
@@ -71,3 +78,6 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
 
     def plugin_handles(self, songs):
         return True
+
+    def plugin_finish(self):
+        check_wrapper_changed(self.__library, self.plugin_window, self.__songs)

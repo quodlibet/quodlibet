@@ -44,7 +44,7 @@ class SongsMenuPluginHandler(object):
         for Kind in kinds:
             usable = max([callable(getattr(Kind, s)) for s in attrs])
             if usable:
-                try: items.append(Kind(songs))
+                try: items.append(Kind(songs, library, parent))
                 except: print_exc()
         items = filter(lambda i: i.initialized, items)
 
@@ -86,7 +86,7 @@ class SongsMenuPluginHandler(object):
             if plugin.PLUGIN_ID == plugin_id:
                 songs = ListWrapper(songs)
                 try:
-                    plugin = plugin(songs)
+                    plugin = plugin(songs, library, parent)
                 except Exception:
                     print_exc()
                 else:
@@ -96,7 +96,6 @@ class SongsMenuPluginHandler(object):
     def __handle(self, plugin, library, parent, songs):
         if len(songs) == 0: return
 
-        plugin.plugin_window = parent
         try:
             if len(songs) == 1 and callable(plugin.plugin_single_song):
                 try: ret = plugin.plugin_single_song(songs[0])
@@ -135,7 +134,6 @@ class SongsMenuPluginHandler(object):
                     if ret: return
 
         finally:
-            del(plugin.plugin_window)
             check_wrapper_changed(library, parent, filter(None, songs))
 
     def plugin_handle(self, plugin):
