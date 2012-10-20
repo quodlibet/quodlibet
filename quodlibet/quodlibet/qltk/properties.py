@@ -50,7 +50,6 @@ class SongProperties(qltk.Window):
         fview.set_rules_hint(True)
         selection = fview.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
-        csig = selection.connect('changed', self.__selection_changed)
         self.__save = None
 
         if len(songs) > 1:
@@ -78,6 +77,7 @@ class SongProperties(qltk.Window):
         selection.select_all()
         paned.pack2(notebook, shrink=False, resize=True)
 
+        csig = selection.connect('changed', self.__selection_changed)
         s1 = library.connect(
             'changed', self.__refresh, fbasemodel, fview)
         s2 = library.connect(
