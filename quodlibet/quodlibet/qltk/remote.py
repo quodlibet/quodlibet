@@ -288,7 +288,7 @@ class FIFOControl(object):
             if player.paused: strings = ["paused"]
             else: strings = ["playing"]
             strings.append(type(window.browser).__name__)
-            strings.append("%0.3f" % window.volume.get_value())
+            strings.append("%0.3f" % player.volume)
             strings.append(window.order.get_active_name())
             strings.append((window.repeat.get_active() and "on") or "off")
             progress = 0
