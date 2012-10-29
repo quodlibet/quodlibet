@@ -78,6 +78,14 @@ class PersistentWindowMixin(object):
         self.__name = config_prefix
         self.connect('configure-event', self.__save_size)
         self.connect('window-state-event', self.__window_state_changed)
+        self.connect('map', self.__map)
+        self.__restore_window_state()
+
+    def __map(self, *args):
+        # Some WMs (metacity..) tend to forget the position randomly
+        self.__restore_window_state()
+
+    def __restore_window_state(self):
         self.__restore_size()
         self.__restore_state()
         self.__restore_position()
