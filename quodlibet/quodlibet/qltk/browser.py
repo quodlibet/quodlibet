@@ -19,7 +19,7 @@ from quodlibet.util.library import background_filter
 class LibraryBrowser(Window, PersistentWindowMixin):
     def __init__(self, Kind, library):
         super(LibraryBrowser, self).__init__(dialog=False)
-        self.set_default_size(500, 300)
+        self.set_default_size(600, 400)
         self.enable_window_tracking("browser_" + Kind.__name__)
         self.set_border_width(6)
         self.set_title(Kind.name + " - Quod Libet")
