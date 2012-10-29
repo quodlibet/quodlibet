@@ -19,8 +19,10 @@ from quodlibet.qltk.renamefiles import RenameFiles
 from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.views import HintedTreeView
+from quodlibet.qltk.window import PeristentWindowMixin
 
-class SongProperties(qltk.Window):
+
+class SongProperties(qltk.Window, PeristentWindowMixin):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (object,))
                      }
@@ -29,6 +31,7 @@ class SongProperties(qltk.Window):
         super(SongProperties, self).__init__(dialog=False)
         self.set_transient_for(qltk.get_top_parent(parent))
         self.set_default_size((600 if len(songs) > 1 else 400), 400)
+        self.enable_window_tracking("quodlibet_properties")
 
         self.auto_save_on_change = config.getboolean(
                 'editing', 'auto_save_changes', False)
