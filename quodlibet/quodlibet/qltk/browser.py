@@ -11,26 +11,19 @@ from quodlibet import config
 from quodlibet import util
 
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import Window
-from quodlibet.qltk.x import RPaned
+from quodlibet.qltk.x import Window, RPaned
+from quodlibet.qltk.window import PeristentWindowMixin
 from quodlibet.util.library import background_filter
 
-class LibraryBrowser(Window):
+
+class LibraryBrowser(Window, PeristentWindowMixin):
     def __init__(self, Kind, library):
         super(LibraryBrowser, self).__init__(dialog=False)
+        self.set_default_size(500, 300)
+        self.enable_window_tracking("browser_" + Kind.__name__)
         self.set_border_width(6)
         self.set_title(Kind.name + " - Quod Libet")
         self.add(gtk.VBox(spacing=6))
-        name = Kind.__name__
-        cfg_name = "browser_size_" + name
-        try: x, y = map(int, config.get('memory', cfg_name).split())
-        except (config.error, ValueError):
-            x, y = 500, 300
-        screen = self.get_screen()
-        x = min(x, screen.get_width())
-        y = min(y, screen.get_height())
-        self.set_default_size(x, y)
-        self.connect('configure-event', LibraryBrowser.__save_size, cfg_name)
 
         view = SongList(library, update=True)
         self.add_accel_group(view.accelerators)
@@ -133,6 +126,3 @@ class LibraryBrowser(Window):
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         statusbar.set_text(t)
-
-    def __save_size(self, event, cfg_name):
-        config.set('memory', cfg_name, '%d %d' %(event.width, event.height))

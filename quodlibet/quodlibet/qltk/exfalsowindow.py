@@ -30,8 +30,10 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Alignment
+from quodlibet.qltk.window import PeristentWindowMixin
 
-class ExFalsoWindow(gtk.Window):
+
+class ExFalsoWindow(gtk.Window, PeristentWindowMixin):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (object,)),
 
@@ -48,7 +50,8 @@ class ExFalsoWindow(gtk.Window):
     def __init__(self, library, dir=None):
         super(ExFalsoWindow, self).__init__()
         self.set_title("Ex Falso")
-        self.set_default_size(700, 500)
+        self.set_default_size(650, 475)
+        self.enable_window_tracking("exfalso")
 
         self.__library = library
 
@@ -117,31 +120,10 @@ class ExFalsoWindow(gtk.Window):
         self.__ag.connect_group(key, mod, 0, lambda *x: self.destroy())
         self.add_accel_group(self.__ag)
 
-        self.connect('configure-event', ExFalsoWindow.__save_size)
-        self.connect('window-state-event', self.__window_state_changed)
-        self.__state = 0
-
-        if config.getint("memory", "exfalso_maximized"):
-            self.maximize()
-        self.resize(*map(int, config.get("memory", "exfalso_size").split()))
-
     def __show_about(self, window):
         about = AboutExFalso(self)
         about.run()
         about.destroy()
-
-    def __window_state_changed(self, window, event):
-        self.__state = event.new_window_state
-        if self.__state & gtk.gdk.WINDOW_STATE_WITHDRAWN: return
-        if self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            config.set("memory", "exfalso_maximized", "1")
-        else:
-            config.set("memory", "exfalso_maximized", "0")
-
-    def __save_size(self, event):
-        if not self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            config.set("memory", "exfalso_size",
-                "%d %d" % (event.width, event.height))
 
     def set_pending(self, button, *excess):
         self.__save = button

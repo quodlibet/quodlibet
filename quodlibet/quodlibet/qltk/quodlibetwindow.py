@@ -43,6 +43,7 @@ from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.uri import URI
 from quodlibet.util.library import background_filter
+from quodlibet.qltk.window import PeristentWindowMixin
 
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
@@ -177,7 +178,7 @@ class StatusBarBox(gtk.HBox):
         model.repeat = button.get_active()
 
 
-class QuodLibetWindow(gtk.Window):
+class QuodLibetWindow(gtk.Window, PeristentWindowMixin):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
     __gsignals__ = {
         'artwork-changed': SIG_PYOBJECT,
@@ -188,6 +189,7 @@ class QuodLibetWindow(gtk.Window):
         self.last_dir = const.HOME
 
         self.__update_title(player)
+        self.set_default_size(550, 450)
 
         main_box = gtk.VBox()
         self.add(main_box)
@@ -270,11 +272,6 @@ class QuodLibetWindow(gtk.Window):
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 
-        # track window position/size
-        self.connect('configure-event', QuodLibetWindow.__save_size)
-        self.connect('window-state-event', self.__window_state_changed)
-        self.__state = 0
-
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.connect('columns-changed', self.__hide_headers)
@@ -304,16 +301,6 @@ class QuodLibetWindow(gtk.Window):
         self.connect_object(
             'drag-data-received', QuodLibetWindow.__drag_data_received, self)
 
-        # restore size
-        x, y = map(int, config.get('memory', 'size').split())
-        screen = self.get_screen()
-        x = min(x, screen.get_width())
-        y = min(y, screen.get_height())
-        self.set_default_size(x, y)
-        self.resize(x, y)
-        if config.getint("memory", "maximized"):
-            self.maximize()
-
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
 
@@ -321,6 +308,8 @@ class QuodLibetWindow(gtk.Window):
 
         self.connect("delete-event", self.__save_browser)
         self.connect("destroy", self.__destroy)
+
+        self.enable_window_tracking("quodlibet")
 
     def __key_pressed(self, player, event):
         if not player.song:
@@ -395,10 +384,6 @@ class QuodLibetWindow(gtk.Window):
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered): self.browser.reordered(view)
         self.songlist.set_sort_by(None, refresh=False)
-
-    def show(self):
-        self.move(*map(int, config.get('memory', 'position').split()))
-        super(QuodLibetWindow, self).show()
 
     def __save_browser(self, *args):
         print_d("Saving active browser state")
@@ -699,20 +684,6 @@ class QuodLibetWindow(gtk.Window):
         if song and player.song is song and not self.songlist._activated and \
             config.getboolean("settings", "jump"):
             self.__jump_to_current(False)
-
-    def __window_state_changed(self, window, event):
-        self.__state = event.new_window_state
-        if self.__state & gtk.gdk.WINDOW_STATE_WITHDRAWN: return
-        if self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            config.set("memory", "maximized", "1")
-        else:
-            config.set("memory", "maximized", "0")
-
-    def __save_size(self, event):
-        if not self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            config.set("memory", "size", "%d %d" % (event.width, event.height))
-            if self.get_property("visible"):
-                config.set('memory', 'position', '%s %s' % self.get_position())
 
     def __refresh_size(self):
         ssv = self.song_scroller.get_property('visible')
