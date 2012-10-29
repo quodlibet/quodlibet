@@ -12,8 +12,12 @@ from quodlibet.qltk import get_top_parent
 
 
 class Window(gtk.Window):
-    """A Window that binds the ^W accelerator to close. This should not
-    be used for dialogs; Escape closes (cancels) those."""
+    """Base window class the keeps track of all window instances.
+
+    All active instances can be accessed through Window.instances.
+    By defining dialog=True as a kwarg binds Escape to close, otherwise
+    ^W will close the window.
+    """
 
     instances = []
 
@@ -29,13 +33,21 @@ class Window(gtk.Window):
         self.set_destroy_with_parent(True)
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         self.add_accel_group(self.__accels)
-        self.add_accelerator(
-            'close-accel', self.__accels, ord('w'), gtk.gdk.CONTROL_MASK, 0)
-        esc, mod = gtk.accelerator_parse("Escape")
-        self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
+        if not dialog:
+            self.add_accelerator(
+                'close-accel', self.__accels, ord('w'), gtk.gdk.CONTROL_MASK, 0)
+        else:
+            esc, mod = gtk.accelerator_parse("Escape")
+            self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
         self.connect_object('destroy', type(self).instances.remove, self)
 
     def set_transient_for(self, parent):
+        """Set a parent for the window.
+
+        In case parent=None, fall back to the main window.
+
+        """
+
         if parent is None:
             from quodlibet import app
             parent = app.window
