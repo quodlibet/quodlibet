@@ -3,6 +3,7 @@ exfalso.py
 quodlibet/browsers/albums.py
 quodlibet/browsers/audiofeeds.py
 quodlibet/browsers/_base.py
+quodlibet/browsers/collection.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
 quodlibet/browsers/iradio.py
