@@ -192,7 +192,7 @@ class PreferencesButton(gtk.HBox):
 
         pref_item = MenuItem(_("_Preferences"), gtk.STOCK_PREFERENCES)
         menu.append(pref_item)
-        gobject_weak(pref_item.connect, "activate", Preferences)
+        gobject_weak(pref_item.connect_object, "activate", Preferences, self)
 
         menu.show_all()
 
