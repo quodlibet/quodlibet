@@ -43,7 +43,7 @@ from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.uri import URI
 from quodlibet.util.library import background_filter
-from quodlibet.qltk.window import PeristentWindowMixin
+from quodlibet.qltk.window import PersistentWindowMixin
 
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
@@ -178,7 +178,7 @@ class StatusBarBox(gtk.HBox):
         model.repeat = button.get_active()
 
 
-class QuodLibetWindow(gtk.Window, PeristentWindowMixin):
+class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
     SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
     __gsignals__ = {
         'artwork-changed': SIG_PYOBJECT,

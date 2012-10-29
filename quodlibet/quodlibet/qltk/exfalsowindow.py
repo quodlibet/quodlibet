@@ -30,10 +30,10 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Alignment
-from quodlibet.qltk.window import PeristentWindowMixin
+from quodlibet.qltk.window import PersistentWindowMixin
 
 
-class ExFalsoWindow(gtk.Window, PeristentWindowMixin):
+class ExFalsoWindow(gtk.Window, PersistentWindowMixin):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (object,)),
 

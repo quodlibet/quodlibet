@@ -12,11 +12,11 @@ from quodlibet import util
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import Window, RPaned
-from quodlibet.qltk.window import PeristentWindowMixin
+from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util.library import background_filter
 
 
-class LibraryBrowser(Window, PeristentWindowMixin):
+class LibraryBrowser(Window, PersistentWindowMixin):
     def __init__(self, Kind, library):
         super(LibraryBrowser, self).__init__(dialog=False)
         self.set_default_size(500, 300)

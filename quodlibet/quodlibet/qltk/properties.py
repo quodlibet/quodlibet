@@ -19,10 +19,10 @@ from quodlibet.qltk.renamefiles import RenameFiles
 from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.views import HintedTreeView
-from quodlibet.qltk.window import PeristentWindowMixin
+from quodlibet.qltk.window import PersistentWindowMixin
 
 
-class SongProperties(qltk.Window, PeristentWindowMixin):
+class SongProperties(qltk.Window, PersistentWindowMixin):
     __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
                                  gobject.TYPE_NONE, (object,))
                      }

@@ -18,7 +18,7 @@ from quodlibet.qltk.bookmarks import EditBookmarksPane
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.x import Window
-from quodlibet.qltk.window import PeristentWindowMixin
+from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util import tag
 
 
@@ -556,7 +556,7 @@ class ManySongs(qltk.Notebook):
         box.pack_start(Frame(_("Files"), table),
                        expand=False, fill=False)
 
-class Information(Window, PeristentWindowMixin):
+class Information(Window, PersistentWindowMixin):
     def __init__(self, library, songs, parent=None):
         super(Information, self).__init__(dialog=False)
         self.set_border_width(12)

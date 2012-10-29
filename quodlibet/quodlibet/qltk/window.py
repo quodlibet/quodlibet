@@ -52,7 +52,7 @@ class Window(gtk.Window):
             self.destroy()
 
 
-class PeristentWindowMixin(object):
+class PersistentWindowMixin(object):
     """A mixin for saving/restoring window size/position/maximized state"""
 
     def enable_window_tracking(self, config_prefix):
