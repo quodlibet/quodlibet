@@ -48,7 +48,11 @@ class Window(gtk.Window):
 
         """
 
-        if parent is None:
+        is_toplevel = parent and parent.props.type == gtk.WINDOW_TOPLEVEL
+
+        if parent is None or not is_toplevel:
+            if parent:
+                print_w("Not a toplevel window set for: %r" % self)
             from quodlibet import app
             parent = app.window
         super(Window, self).set_transient_for(parent)
