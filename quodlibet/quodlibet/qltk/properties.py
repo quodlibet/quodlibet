@@ -30,8 +30,16 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
     def __init__(self, library, songs, parent=None):
         super(SongProperties, self).__init__(dialog=False)
         self.set_transient_for(qltk.get_top_parent(parent))
-        self.set_default_size((600 if len(songs) > 1 else 400), 400)
-        self.enable_window_tracking("quodlibet_properties")
+
+        default_width = 600
+        config_suffix = ""
+        if len(songs) <= 1:
+            default_width -= 200
+            config_suffix += "single"
+        self.set_default_size(default_width, 400)
+
+        self.enable_window_tracking("quodlibet_properties",
+                                    size_suffix=config_suffix)
 
         self.auto_save_on_change = config.getboolean(
                 'editing', 'auto_save_changes', False)

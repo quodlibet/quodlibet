@@ -71,11 +71,20 @@ class Window(gtk.Window):
 class PersistentWindowMixin(object):
     """A mixin for saving/restoring window size/position/maximized state"""
 
-    def enable_window_tracking(self, config_prefix):
-        """Enable tracking/saving of changes and restore size/pos/maximized"""
+    def enable_window_tracking(self, config_prefix, size_suffix=""):
+        """Enable tracking/saving of changes and restore size/pos/maximized
+
+        config_prefix -- prefix for the config key
+                         (prefix_size, prefix_position, prefix_maximized)
+        size_suffix -- optional suffix for saving the size. For cases where the
+                       window has multiple states with different content sizes.
+                       (example: edit tags with one song or multiple)
+
+        """
 
         self.__state = 0
         self.__name = config_prefix
+        self.__size_suffix = size_suffix
         self.connect('configure-event', self.__save_size)
         self.connect('window-state-event', self.__window_state_changed)
         self.connect('map', self.__map)
@@ -91,6 +100,8 @@ class PersistentWindowMixin(object):
         self.__restore_position()
 
     def __conf(self, name):
+        if name == "size":
+            name += "_" + self.__size_suffix
         return "%s_%s" % (self.__name, name)
 
     def __restore_state(self):
