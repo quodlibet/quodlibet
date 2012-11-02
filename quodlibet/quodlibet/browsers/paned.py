@@ -242,6 +242,69 @@ class SongSelection(Collection):
         return True
 
 
+class PanePattern(object):
+    """Row pattern format: 'categorize_pattern:display_pattern'
+
+    * display_pattern is optional (fallback: ~#tracks)
+    * patterns, tied and normal tags.
+    * display patterns can have function prefixes for numerical tags.
+    * ':' has to be escaped ('\:')
+
+    TODO: sort pattern, filter query
+
+    """
+
+    def __init__(self, row_pattern):
+        parts = re.split(r"(?<!\\):", row_pattern)
+        parts = map(lambda p: p.replace("\:", ":"), parts)
+
+        is_numeric = lambda s: s[:2] == "~#" and "~" not in s[2:]
+        is_pattern = lambda s: '<' in s
+        f_round = lambda s: (isinstance(s, float) and "%.2f" % s) or s
+
+        disp = (len(parts) >= 2 and parts[1]) or "\<i\>(<~#tracks>)\</i\>"
+        cat = parts[0]
+
+        if is_pattern(cat):
+            title = pattern(cat, esc=True)
+            try:
+                pc = XMLFromPattern(cat)
+            except ValueError:
+                pc = XMLFromPattern("")
+            tags = pc.tags
+            format = pc.format_list
+            has_markup = True
+        else:
+            title = tag(cat)
+            tags = util.tagsplit(cat)
+            has_markup = False
+            if is_numeric(cat):
+                format = lambda song: [unicode(f_round(song(cat)))]
+            else:
+                format = lambda song: song.list_separate(cat)
+
+        if is_pattern(disp):
+            try:
+                pd = XMLFromPattern(disp)
+            except ValueError:
+                pd = XMLFromPattern("")
+            format_display = pd.format
+        else:
+            if is_numeric(disp):
+                format_display = lambda coll: unicode(f_round(coll(disp)))
+            else:
+                format_display = lambda coll: util.escape(coll.comma(disp))
+
+        self.title = title
+        self.tags = set(tags)
+        self.format = format
+        self.format_display = format_display
+        self.has_markup = has_markup
+
+    def __repr__(self):
+        return "<%s title=%r>" % (self.__class__.__name__, self.title)
+
+
 class Pane(AllTreeView):
     __render = gtk.CellRendererText()
     __render.set_property('ellipsize', pango.ELLIPSIZE_END)
@@ -285,8 +348,8 @@ class Pane(AllTreeView):
         super(Pane, self).__init__()
         self.set_fixed_height_mode(True)
 
-        title, self.tags, self.__format, \
-            self.__markup, disp_format = self.__parse_prefs(prefs)
+        self.pattern = PanePattern(prefs)
+        self.tags = self.pattern.tags
 
         self.__next = next
         self.__model = model = gtk.ListStore(int, object)
@@ -294,17 +357,17 @@ class Pane(AllTreeView):
         self.__sort_cache = {}
         self.__key_cache = {}
 
-        column = TreeViewColumn(title)
+        column = TreeViewColumn(self.pattern.title)
         column.set_use_markup(True)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         column.set_fixed_width(50)
 
         column.pack_start(self.__render)
         column.set_cell_data_func(self.__render,
-            self.__text_cdf, self.__markup)
+            self.__text_cdf, self.pattern.has_markup)
         column.pack_start(self.__render_count, expand=False)
         column.set_cell_data_func(self.__render_count,
-            self.__count_cdf, disp_format)
+            self.__count_cdf, self.pattern.format_display)
 
         self.append_column(column)
         self.set_model(model)
@@ -344,67 +407,12 @@ class Pane(AllTreeView):
         else:
             sel.set_uris([song("~uri") for song in songs])
 
-    @staticmethod
-    def __parse_prefs(row_pattern):
-        """
-        Row pattern format: 'categorize_pattern:display_pattern'
-
-        * display_pattern is optional (fallback: ~#tracks)
-        * patterns, tied and normal tags.
-        * display patterns can have function prefixes for numerical tags.
-        * ':' has to be escaped ('\:')
-
-        TODO: sort pattern, filter query
-        """
-
-        parts = re.split(r"(?<!\\):", row_pattern)
-        parts = map(lambda p: p.replace("\:", ":"), parts)
-
-        is_numeric = lambda s: s[:2] == "~#" and "~" not in s[2:]
-        is_pattern = lambda s: '<' in s
-        f_round = lambda s: (isinstance(s, float) and "%.2f" % s) or s
-
-        disp = (len(parts) >= 2 and parts[1]) or "\<i\>(<~#tracks>)\</i\>"
-        cat = parts[0]
-
-        if is_pattern(cat):
-            title = pattern(cat, esc=True)
-            try:
-                pc = XMLFromPattern(cat)
-            except ValueError:
-                pc = XMLFromPattern("")
-            tags = pc.tags
-            format = pc.format_list
-            format_markup = True
-        else:
-            title = tag(cat)
-            tags = util.tagsplit(cat)
-            format_markup = False
-            if is_numeric(cat):
-                format = lambda song: [unicode(f_round(song(cat)))]
-            else:
-                format = lambda song: song.list_separate(cat)
-
-        if is_pattern(disp):
-            try:
-                pd = XMLFromPattern(disp)
-            except ValueError:
-                pd = XMLFromPattern("")
-            format_display = pd.format
-        else:
-            if is_numeric(disp):
-                format_display = lambda coll: unicode(f_round(coll(disp)))
-            else:
-                format_display = lambda coll: util.escape(coll.comma(disp))
-
-        return title, tags, format, format_markup, format_display
-
     def __get_format_keys(self, song):
         try:
             return self.__key_cache[song]
         except KeyError:
             # We filter out empty values, so Unknown can be ""
-            self.__key_cache[song] = filter(None, self.__format(song))
+            self.__key_cache[song] = filter(None, self.pattern.format(song))
             return self.__key_cache[song]
 
     def __human_sort_key(self, text, reg=re.compile('<.*?>')):
@@ -412,7 +420,7 @@ class Pane(AllTreeView):
             return self.__sort_cache[text]
         except KeyError:
             # remove the markup so it doesn't affect the sort order
-            if self.__markup:
+            if self.pattern.has_markup:
                 text = reg.sub("", text)
             self.__sort_cache[text] = util.human_sort_key(text)
             return self.__sort_cache[text]
