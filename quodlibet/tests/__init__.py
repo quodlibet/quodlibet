@@ -4,6 +4,8 @@ import glob
 import os
 import sys
 import unittest
+import tempfile
+import shutil
 
 from unittest import TestCase
 suites = []
@@ -64,9 +66,13 @@ def unit(run=[], filter_func=None, subdir=None):
         parts = filter(None, [__name__, subdir, os.path.basename(name)[:-3]])
         __import__(".".join(parts), {}, {}, [])
 
+    # create a user dir in /tmp
+    user_dir = tempfile.mkdtemp(prefix="QL-TEST-")
+    os.environ['QUODLIBET_USERDIR'] = user_dir
     import quodlibet.const
+    reload(quodlibet.const)
+
     import quodlibet.config
-    quodlibet.const.CONFIG = os.path.join(os.getcwd(), "config.temp")
 
     runner = Runner()
     failures = False
@@ -77,6 +83,8 @@ def unit(run=[], filter_func=None, subdir=None):
             or test.__module__[11:] in run):
             failures |= runner.run(test)
             quodlibet.config.quit()
-    try: os.remove(quodlibet.const.CONFIG)
+
+    try: shutil.rmtree(user_dir)
     except EnvironmentError: pass
+
     return failures

@@ -240,11 +240,18 @@ class FIFOControl(object):
             # no value given, use the current song; slide arguments
             # to the right.
             value, library, window, player = None, value, library, window
+
         if value:
-            if value in library: songs = [library[value]]
-            else: songs = library.query(value)
-            SongProperties(songs, library, parent=self)
-        else: SongProperties([player.song], library, parent=self)
+            if value in library:
+                songs = [library[value]]
+            else:
+                songs = library.query(value)
+        else:
+            songs = [player.song]
+        songs = filter(None, songs)
+
+        if songs:
+            SongProperties(library, songs, parent=window)
 
     def _enqueue(self, value, library, window, player):
         playlist = window.playlist
