@@ -14,6 +14,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
+from quodlibet.util.dprint import print_d
 from collections import Iterable
 
 ELPOEP = list(reversed(PEOPLE))
@@ -379,7 +380,7 @@ class Playlist(Collection, Iterable):
 
     def __remove_from_cache(self, song):
         """Removes this playlist from the global cache for `song`"""
-        print_d("Evicting %s from cache for \"%s\"..." %
+        print_d("Evicting \"%s\" from cache for \"%s\"..." %
                 (self.name, song['~filename']))
         try:
             self._song_map_cache[song].remove(self)
@@ -477,24 +478,36 @@ class Playlist(Collection, Iterable):
         return changed
 
     def remove_songs(self, songs, library, leave_dupes=False):
-        print_d("Removing %d song(s)..." % len(songs))
+        """
+         Removes `songs` from this playlist if they are there,
+         removing only the first reference if `leave_dupes` is True
+        """
         changed = False
-        # TODO: document the "library.masked" business
         for song in songs:
+            # TODO: document the "library.masked" business
             if library.masked(song("~filename")):
                 while True:
-                    try: self[self.index(song)] = song("~filename")
-                    except ValueError: break
-                    else: changed = True
+                    try:
+                        self[self.index(song)] = song("~filename")
+                    except ValueError:
+                        break
+                    else:
+                        changed = True
             else:
                 while song in self.songs:
+                    print_d("Removing \"%s\" from playlist \"%s\"..."
+                            % (song["~filename"], self.name))
                     self.songs.remove(song)
                     if leave_dupes:
                         changed = True
                         break
-                else: changed = True
-            # Evict from cache
-            self.__remove_from_cache(song)
+                else:
+                    changed = True
+            # Evict song from cache entirely
+            try:
+                del self._song_map_cache[song]
+                print_d("Removed playlist cache for \"%s\"" % song["~filename"])
+            except KeyError: pass
         return changed
 
     def has_songs(self, songs):

@@ -1,14 +1,14 @@
 # Automatic library update plugin
 #
 # (c) 2009 Joe Higton
-#     2011 Nick Boultbee
+#     2011, 2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from pyinotify import WatchManager, EventsCodes, ProcessEvent, Notifier,\
-    ThreadedNotifier
+        ThreadedNotifier
 from quodlibet import config, print_d
 from quodlibet.plugins.events import EventPlugin
 import gobject
@@ -24,7 +24,7 @@ class LibraryEvent(ProcessEvent):
         self._library = library
 
     def process_default(self, event):
-        print_d('Uncaught event for %s' % self.pevent, self)
+        print_d('Uncaught event for %s' % (event.maskname if event else "??"))
 
     def process_IN_CLOSE_WRITE(self, event):
         path = os.path.join(event.path, event.name)
@@ -38,24 +38,24 @@ class LibraryEvent(ProcessEvent):
             gobject.idle_add(self.add, event)
             self._being_created.remove(event.path)
         else:
-            print_d("Ignoring modification on %s" % path, self)
+            print_d("Ignoring modification on %s" % path)
 
     def process_IN_MOVED_TO(self, event):
-        print_d('Triggered for "%s"' % event.name, self)
+        print_d('Triggered for "%s"' % event.name)
         gobject.idle_add(self.add, event)
 
     def process_IN_CREATE(self, event):
-        #print_d('Triggered for "%s"' % event.name, self)
+        #print_d('Triggered for "%s"' % event.name)
         # Just remember that they've been created, process in further updates
         path = os.path.join(event.path, event.name)
         self._being_created.add(path)
 
     def process_IN_DELETE(self, event):
-        print_d('Triggered for "%s"' % event.name, self)
+        print_d('Triggered for "%s"' % event.name)
         gobject.idle_add(self.update, event)
 
     def process_IN_MOVED_FROM(self, event):
-        print_d('Triggered for "%s"' % event.name, self)
+        print_d('Triggered for "%s"' % event.name)
         gobject.idle_add(self.update, event)
 
     def add(self, event):
@@ -63,10 +63,10 @@ class LibraryEvent(ProcessEvent):
         lib = self._library
         path = os.path.join(event.path, event.name)
         if event.dir:
-            print_d('Scanning directories...', self)
+            print_d('Scanning directories...')
             songs = []
             for path, dnames, fnames in os.walk(path):
-                print_d('Found %d file(s) in "%s"' % (len(fnames), path), self)
+                print_d('Found %d file(s) in "%s"' % (len(fnames), path))
                 for filename in (os.path.join(path, fn) for fn in fnames):
                     song = lib.add_filename(filename, add=False)
                     if song:
@@ -81,7 +81,7 @@ class LibraryEvent(ProcessEvent):
         lib = self._library
         path = os.path.join(event.path, event.name)
         if event.dir:
-            print_d('Checking directory %s...' % path, self)
+            print_d('Checking directory %s...' % path)
             to_reload = []
             for filename in lib._contents:
                 if filename.startswith(path):
@@ -89,7 +89,7 @@ class LibraryEvent(ProcessEvent):
                     if item:
                         # Don't modify whilst iterating...
                         to_reload.append(item)
-            print_d('Reloading %d matching songs(s)' % len(to_reload), self)
+            print_d('Reloading %d matching songs(s)' % len(to_reload))
             for item in to_reload:
                 lib.reload(item)
         else:
@@ -103,7 +103,7 @@ class AutoLibraryUpdate(EventPlugin):
     PLUGIN_ID = "Automatic library update"
     PLUGIN_DESC = _("Keep your library up to date with inotify. "
                     "Requires %s.") % "pyinotify"
-    PLUGIN_VERSION = "0.2"
+    PLUGIN_VERSION = "0.3"
 
     # TODO: make a config option
     USE_THREADS = True
@@ -124,12 +124,12 @@ class AutoLibraryUpdate(EventPlugin):
             # Choose event types to watch for
             # FIXME: watch for IN_CREATE or for some reason folder copies
             # are missed,  --nickb
-            FLAGS = ['IN_DELETE', 'IN_CLOSE_WRITE', 'IN_MODIFY',
+            FLAGS = ['IN_DELETE', 'IN_CLOSE_WRITE', #'IN_MODIFY',
                      'IN_MOVED_FROM', 'IN_MOVED_TO', 'IN_CREATE']
             mask = reduce(lambda x, s: x | EventsCodes.ALL_FLAGS[s], FLAGS , 0)
 
             if self.USE_THREADS:
-                print_d("Using threaded notifier", self)
+                print_d("Using threaded notifier")
                 self.notifier = ThreadedNotifier(wm, self.event_handler)
                 # Daemonize to ensure thread dies on exit
                 self.notifier.daemon = True
@@ -139,7 +139,7 @@ class AutoLibraryUpdate(EventPlugin):
                 gobject.timeout_add(1000, self.unthreaded_callback)
 
             for path in self.get_library_dirs():
-                print_d('Watching directory %s for %s' % (path, FLAGS), self)
+                print_d('Watching directory %s for %s' % (path, FLAGS))
                 # See https://github.com/seb-m/pyinotify/wiki/Frequently-Asked-Questions
                 wm.add_watch(path, mask, rec=True, auto_add=True)
 
@@ -161,7 +161,7 @@ class AutoLibraryUpdate(EventPlugin):
         if self.running:
             self.running = False
         if self.notifier:
-            print_d("Stopping inotify watch...", self)
+            print_d("Stopping inotify watch...")
             self.notifier.stop()
 
     # find list of directories to scan
