@@ -28,10 +28,42 @@ class MutagenVCFile(AudioFile):
         except AttributeError: pass
         for key, value in (audio.tags or {}).items():
             self[key] = "\n".join(value)
-        self._post_read()
+        self.__post_read()
         self.sanitize(filename)
 
-    def _post_read(self):
+    def __post_read_total(self, main, fallback, single):
+        one = None
+        total = None
+
+        if single in self:
+            parts = self[single].split("/", 1)
+            if parts[0]:
+                one = parts[0]
+            if len(parts) > 1:
+                total = parts[1]
+            del self[single]
+
+        if main in self:
+            total = self[main]
+            del self[main]
+        else:
+            if fallback in self:
+                total = self[fallback]
+                del self[fallback]
+
+        final = None
+        if one is not None:
+            final = one
+        if total is not None:
+            if final is None:
+                final = "/" + total
+            else:
+                final += "/" + total
+
+        if final is not None:
+            self[single] = final
+
+    def __post_read(self):
         email = config.get("editing", "save_email").strip()
         maps = {"rating": float, "playcount": int}
         for keyed_key, func in maps.items():
@@ -41,28 +73,6 @@ class MutagenVCFile(AudioFile):
                     try: self["~#" + keyed_key] = func(self[key])
                     except ValueError: pass
                     del(self[key])
-
-        # only store total tracks information in totaltracks
-        if "tracktotal" in self:
-            self.setdefault("totaltracks", self["tracktotal"])
-            del(self["tracktotal"])
-
-        # only store total discs information in totaldiscs
-        if "disctotal" in self:
-            self.setdefault("totaldiscs", self["disctotal"])
-            del(self["disctotal"])
-
-        # QL expects tracknumber to include total tracks
-        if "totaltracks" in self:
-            if "tracknumber" in self:
-                self["tracknumber"] += "/" + self["totaltracks"]
-            del(self["totaltracks"])
-
-        # QL expects discnumber to include total discs
-        if "totaldiscs" in self:
-            if "discnumber" in self:
-                self["discnumber"] += "/" + self["totaldiscs"]
-            del(self["totaldiscs"])
 
         if "metadata_block_picture" in self:
             self["~picture"] = "y"
@@ -74,6 +84,9 @@ class MutagenVCFile(AudioFile):
 
         if "coverartmime" in self:
             del(self["coverartmime"])
+
+        self.__post_read_total("tracktotal", "totaltracks", "tracknumber")
+        self.__post_read_total("disctotal", "totaldiscs", "discnumber")
 
     def get_format_cover(self):
         try: from mutagen.flac import Picture
@@ -120,7 +133,7 @@ class MutagenVCFile(AudioFile):
                       not k.startswith("rating:") and
                       not k.startswith("playcount:"))
 
-    def _prep_write(self, comments):
+    def __prep_write(self, comments):
         email = config.get("editing", "save_email").strip()
         for key in comments.keys():
             if key.startswith("rating:") or key.startswith("playcount:"):
@@ -139,27 +152,42 @@ class MutagenVCFile(AudioFile):
             if playcount != 0:
                 comments["playcount:" + email] = str(playcount)
 
+    def __prep_write_total(self, comments, main, fallback, single):
+        for k in [main, fallback, single]:
+            if k in comments:
+                del comments[k]
+
+        if single in self:
+            parts = self[single].split("/", 1)
+
+            if parts[0]:
+                comments[single] = [parts[0]]
+
+            if len(parts) > 1:
+                comments[main] = [parts[1]]
+
+        if main in self:
+            comments[main] = self.list(main)
+
+        if fallback in self:
+            if main in comments:
+                comments[fallback] = self.list(fallback)
+            else:
+                comments[main] = self.list(fallback)
+
     def write(self):
         audio = self.MutagenType(self["~filename"])
         if audio.tags is None:
             audio.add_tags()
-        self._prep_write(audio.tags)
 
-        split_total = {"tracknumber": "totaltracks",
-                       "discnumber": "totaldiscs"}
-
+        self.__prep_write(audio.tags)
         for key in self.realkeys():
-            # Split tracknumber and save the total part as totaltracks
-            # In case there is a totaltracks, ignore the second track part
-            if key in split_total:
-                value = self[key]
-                total_key = split_total[key]
-                parts = value.split("/", 1)
-                audio.tags[key] = parts[0]
-                if len(parts) > 1 and total_key not in self:
-                    audio.tags[total_key] = parts[1]
-                continue
             audio.tags[key] = self.list(key)
+
+        self.__prep_write_total(audio.tags,
+                                "tracktotal", "totaltracks", "tracknumber")
+        self.__prep_write_total(audio.tags,
+                                "disctotal", "totaldiscs", "discnumber")
 
         audio.save()
         self.sanitize()

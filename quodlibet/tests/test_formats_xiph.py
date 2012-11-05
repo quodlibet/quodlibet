@@ -79,22 +79,6 @@ class TVCFile(TestCase):
         song = type(self.song)(self.filename)
         self.failUnlessEqual(song["~#playcount"], count)
 
-    def test_totaltracks(self):
-        self.song["tracknumber"] = "1"
-        self.song["totaltracks"] = "1"
-        self.song.write()
-        song = type(self.song)(self.filename)
-        self.failUnlessEqual(song["tracknumber"], "1/1")
-        self.failIf("totaltracks" in song)
-
-    def test_tracktotal(self):
-        self.song["tracknumber"] = "1"
-        self.song["tracktotal"] = "1"
-        self.song.write()
-        song = type(self.song)(self.filename)
-        self.failUnlessEqual(song["tracknumber"], "1/1")
-        self.failIf("tracktotal" in song)
-
     def test_parameter(self):
         for bad in ["rating", "playcount", "rating:foo", "playcount:bar"]:
             self.failIf(self.song.can_change(bad))
@@ -110,61 +94,140 @@ class TVCFile(TestCase):
     def test_can_change(self):
         self.failUnless(self.song.can_change())
 
+class TTotalTagsBase(TestCase):
+    """Test conversation between the tracknumber/totaltracks/tracktotal
+    format and the tracknumber="x/y" format.
 
-class TOggVorbis(TestCase):
+    """
+
+    MAIN = None
+    FALLBACK = None
+    SINGLE = None
+
     def setUp(self):
         config.init()
         self.filename = tempfile.mkstemp(".ogg")[1]
         shutil.copy(os.path.join('tests', 'data', 'empty.ogg'), self.filename)
 
-    def test_load_new(self):
-        m = OggVorbis(self.filename)
-        m.tags["tracknumber"] = "3"
-        m.tags["totaltracks"] = "10"
-        m.save()
-
-        song = OggFile(self.filename)
-        self.failUnlessEqual(song["tracknumber"], "3/10")
-
-    def test_load_old_format(self):
-        m = OggVorbis(self.filename)
-        m.tags["tracknumber"] = "6/7"
-        m.save()
-
-        song = OggFile(self.filename)
-        self.failUnlessEqual(song["tracknumber"], "6/7")
-
-    def test_toaltracks_save(self):
-        self.failIf(OggVorbis(self.filename).tags)
-        song = OggFile(self.filename)
-        song["tracknumber"] = "4/5"
-        song.write()
-
-        m = OggVorbis(self.filename)
-        self.failUnlessEqual(m.tags["tracknumber"], ["4"])
-        self.failUnlessEqual(m.tags["totaltracks"], ["5"])
-
-    def test_save_single(self):
-        song = OggFile(self.filename)
-        song["tracknumber"] = "12"
-        song.write()
-
-        m = OggVorbis(self.filename)
-        self.failUnlessEqual(m.tags["tracknumber"], ["12"])
-        self.failIf("totaltracks" in m.tags)
-
-    def test_both(self):
-        song = OggFile(self.filename)
-        song["tracknumber"] = "1/50"
-        song["totaltracks"] = "100"
-        song.write()
-        song.reload()
-        self.failUnlessEqual(song["tracknumber"], "1/100")
-
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
-add(TOggVorbis)
+
+    def __load_tags(self, tags, expected):
+        m = OggVorbis(self.filename)
+        for key, value in tags.iteritems():
+            m.tags[key] = value
+        m.save()
+        song = OggFile(self.filename)
+        for key, value in expected.iteritems():
+            self.failUnlessEqual(song(key), value)
+        if self.MAIN not in expected:
+            self.failIf(self.MAIN in song)
+        if self.SINGLE not in expected:
+            self.failIf(self.SINGLE in song)
+        if self.FALLBACK not in expected:
+            self.failIf(self.FALLBACK in song)
+
+    def test_load_old_single(self):
+        self.__load_tags(
+            {self.SINGLE: "1/42"},
+            {self.SINGLE: "1/42"})
+
+    def test_load_main(self):
+        self.__load_tags(
+            {self.SINGLE: "3", self.MAIN: "10"},
+            {self.SINGLE: "3/10"})
+
+    def test_load_fallback(self):
+        self.__load_tags(
+            {self.SINGLE: "3", self.FALLBACK: "10"},
+            {self.SINGLE: "3/10"})
+
+    def test_load_all(self):
+        self.__load_tags(
+            {self.SINGLE: "3", self.FALLBACK: "10", self.MAIN: "5"},
+            {self.SINGLE: "3/5", self.FALLBACK: "10"})
+
+    def test_load_main_no_single(self):
+        self.__load_tags(
+            {self.MAIN: "5"},
+            {self.SINGLE: "/5"})
+
+    def test_load_fallback_no_single(self):
+        self.__load_tags(
+            {self.FALLBACK: "6"},
+            {self.SINGLE: "/6"})
+
+    def test_load_both_no_single(self):
+        self.__load_tags(
+            {self.FALLBACK: "6", self.MAIN: "5"},
+            {self.FALLBACK: "6", self.SINGLE: "/5"})
+
+    def __save_tags(self, tags, expected):
+        #return
+        song = OggFile(self.filename)
+        for key, value in tags.iteritems():
+            song[key] = value
+        song.write()
+        m = OggVorbis(self.filename)
+        # test if all values ended up where we wanted
+        for key, value in expected.iteritems():
+            self.failUnless(key in m.tags)
+            self.failUnlessEqual(m.tags[key], [value])
+
+        # test if not specified are not there
+        if self.MAIN not in expected:
+            self.failIf(self.MAIN in m.tags)
+        if self.FALLBACK not in expected:
+            self.failIf(self.FALLBACK in m.tags)
+        if self.SINGLE not in expected:
+            self.failIf(self.SINGLE in m.tags)
+
+    def test_save_single(self):
+        self.__save_tags(
+            {self.SINGLE: "1/2"},
+            {self.SINGLE: "1", self.MAIN: "2"})
+
+    def test_save_main(self):
+        self.__save_tags(
+            {self.MAIN: "3"},
+            {self.MAIN: "3"})
+
+    def test_save_fallback(self):
+        self.__save_tags(
+            {self.FALLBACK: "3"},
+            {self.MAIN: "3"})
+
+    def test_save_single_and_main(self):
+        # not clear what to do here...
+        self.__save_tags(
+            {self.SINGLE: "1/2", self.MAIN: "3"},
+            {self.SINGLE: "1", self.MAIN: "3"})
+
+    def test_save_single_and_fallback(self):
+        self.__save_tags(
+            {self.SINGLE: "1/2", self.FALLBACK: "3"},
+            {self.SINGLE: "1", self.MAIN: "2", self.FALLBACK: "3"})
+
+    def test_save_all(self):
+        # not clear what to do here...
+        self.__save_tags(
+            {self.SINGLE: "1/2", self.MAIN: "4", self.FALLBACK: "3"},
+            {self.SINGLE: "1", self.MAIN: "4", self.FALLBACK: "3"})
+
+
+class TTrackTotal(TTotalTagsBase):
+    MAIN = "tracktotal"
+    FALLBACK = "totaltracks"
+    SINGLE = "tracknumber"
+add(TTrackTotal)
+
+
+class TDiscTotal(TTotalTagsBase):
+    MAIN = "disctotal"
+    FALLBACK = "totaldiscs"
+    SINGLE = "discnumber"
+add(TDiscTotal)
 
 
 class TFLACFile(TVCFile):
