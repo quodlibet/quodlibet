@@ -4,6 +4,15 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+# Basic ctypes wrapper for libudev.
+# You have to call init() to make class methods available.
+
+# Versions:
+# The first API stable libudev version is 143.
+# The first API incompatible change (version bump) was introduced in 183
+# http://cgit.freedesktop.org/systemd/systemd/commit/?id=20bbd54f603994a3
+
+
 from ctypes import POINTER, Structure, cdll
 from ctypes import c_longlong, c_int, c_char_p, c_void_p, c_long, c_char
 
@@ -14,20 +23,32 @@ _classes = []
 
 
 def init():
+    """Initialise the bindings. Raises OSError if udev isn't installed"""
+
     global _classes
 
-    udevlib = cdll.LoadLibrary("libudev.so.0")
+    try:
+        udevlib = cdll.LoadLibrary("libudev.so.1")
+        version = 1
+    except OSError:
+        udevlib = cdll.LoadLibrary("libudev.so.0")
+        version = 0
 
     for info in _classes:
-        _wrap_class(udevlib, *info)
+        _wrap_class(udevlib, version, *info)
 
 
 def _register_class(base, ptr, prefix, methods):
     global _classes
     _classes.append((base, ptr, prefix, methods))
 
-def _wrap_class(lib, base, ptr, prefix, methods):
-    for name, ret, args in methods:
+
+def _wrap_class(lib, version, base, ptr, prefix, methods):
+    for method in methods:
+        name, ret, args = method[:3]
+        if len(method) > 3 and method[-1] != version:
+            continue
+
         try:
             func = getattr(lib, prefix + name)
         except AttributeError:
@@ -62,13 +83,14 @@ class UdevPtr(POINTER(Udev)):
 
 _register_class(Udev, UdevPtr, "udev_", [
     ("ref", UdevPtr, [UdevPtr]),
-    ("unref", c_void, [UdevPtr]),
+    ("unref", c_void, [UdevPtr], 0),
+    ("unref", UdevPtr, [UdevPtr], 1),
     ("new", UdevPtr, []),
     #("set_log_fn", None, ...
     ("get_log_priority", c_int, [UdevPtr]),
     ("set_log_priority", c_void, [UdevPtr, c_int]),
-    ("get_sys_path", c_char_p, [UdevPtr]),
-    ("get_dev_path", c_char_p, [UdevPtr]),
+    ("get_sys_path", c_char_p, [UdevPtr], 0),
+    ("get_dev_path", c_char_p, [UdevPtr], 0),
     ("get_userdata", c_void_p, [UdevPtr]),
     ("set_userdata", c_void, [UdevPtr, c_void_p]),
 ])
@@ -118,7 +140,9 @@ class UdevDevicePtr(POINTER(UdevDevice)):
 
 _register_class(UdevDevice, UdevDevicePtr, "udev_device_", [
     ("ref", UdevDevicePtr, [UdevDevicePtr]),
-    ("unref", c_void, [UdevDevicePtr]),
+    ("unref", c_void, [UdevDevicePtr], 0),
+    ("unref", UdevDevicePtr, [UdevDevicePtr], 1),
+    ("get_udev", UdevPtr, [UdevDevicePtr]),
     ("new_from_syspath", UdevDevicePtr, [UdevPtr, c_char_p]),
     ("new_from_devnum", UdevDevicePtr, [UdevPtr, c_char, dev_t]),
     ("new_from_subsystem_sysname",
@@ -154,10 +178,11 @@ class UdevMonitorPtr(POINTER(UdevMonitor)):
 
 _register_class(UdevMonitor, UdevMonitorPtr, "udev_monitor_", [
     ("ref", UdevMonitorPtr, [UdevMonitorPtr]),
-    ("unref", c_void, [UdevMonitorPtr]),
+    ("unref", c_void, [UdevMonitorPtr], 0),
+    ("unref", UdevMonitorPtr, [UdevMonitorPtr], 1),
     ("get_udev", UdevPtr, [UdevMonitorPtr]),
     ("new_from_netlink", UdevMonitorPtr, [UdevPtr, c_char_p]),
-    ("new_from_socket", UdevMonitorPtr, [UdevPtr, c_char_p]),
+    ("new_from_socket", UdevMonitorPtr, [UdevPtr, c_char_p], 0),
     ("enable_receiving", c_int, [UdevMonitorPtr]),
     ("get_fd", c_int, [UdevMonitorPtr]),
     ("receive_device", UdevDevicePtr, [UdevMonitorPtr]),
@@ -178,7 +203,8 @@ class UdevEnumeratePtr(POINTER(UdevEnumerate)):
 
 _register_class(UdevEnumerate, UdevEnumeratePtr, "udev_enumerate_", [
     ("ref", UdevEnumeratePtr, [UdevEnumeratePtr]),
-    ("unref", c_void, [UdevEnumeratePtr]),
+    ("unref", c_void, [UdevEnumeratePtr], 0),
+    ("unref", UdevEnumeratePtr, [UdevEnumeratePtr], 1),
     ("get_udev", UdevPtr, [UdevEnumeratePtr]),
     ("new", UdevEnumeratePtr, [UdevPtr]),
     ("add_match_subsystem", c_int, [UdevEnumeratePtr, c_char_p]),
@@ -204,7 +230,8 @@ class UdevQueuePtr(POINTER(UdevQueue)):
 
 _register_class(UdevQueue, UdevQueuePtr, "udev_queue_", [
     ("ref", UdevQueuePtr, [UdevQueuePtr]),
-    ("unref", c_void, [UdevQueuePtr]),
+    ("unref", c_void, [UdevQueuePtr], 0),
+    ("unref", UdevQueuePtr, [UdevQueuePtr], 1),
     ("get_udev", UdevPtr, [UdevQueuePtr]),
     ("new", UdevQueuePtr,  [UdevPtr]),
     ("get_udev_is_active", c_int, [UdevQueuePtr]),
