@@ -90,10 +90,10 @@ class TMPRIS(PluginTestCase):
         piface = "org.mpris.MediaPlayer2"
 
         app.window.hide()
-        self.failIf(app.window.get_visible())
+        self.failIf(app.window.flags() & gtk.VISIBLE)
         self._main_iface().Raise(**args)
         self.failIf(self._wait())
-        self.failUnless(app.window.get_visible())
+        self.failUnless(app.window.flags() & gtk.VISIBLE)
         app.window.hide()
 
         props = {

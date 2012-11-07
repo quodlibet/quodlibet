@@ -148,7 +148,7 @@ class EditPane(gtk.VBox):
             else: instances.append(f)
         instances.sort()
 
-        for child in vbox.children():
+        for child in vbox.get_children():
             child.destroy()
         del self.__plugins[:]
 
@@ -170,7 +170,7 @@ class EditPane(gtk.VBox):
         vbox.show_all()
 
         # Don't display the expander if there aren't any plugins.
-        if not vbox.children():
+        if not vbox.get_children():
             expander.set_expanded(False)
             expander.hide()
         else:

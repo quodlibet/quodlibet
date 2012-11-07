@@ -24,8 +24,7 @@ SONGS.sort()
 
 class TAlbumBrowser(TestCase):
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         config.init()
 
         library = SongLibrary()
@@ -36,14 +35,13 @@ class TAlbumBrowser(TestCase):
             af.sanitize()
         library.add(SONGS)
 
-        cls.bar = AlbumList(library, True)
+        self.bar = AlbumList(library, True)
         w = gtk.Window()
-        w.add(cls.bar)
+        w.add(self.bar)
         w.show_all()
         w.hide()
-        cls.w = w
+        self.w = w
 
-    def setUp(self):
         self._id = self.bar.connect("songs-selected", self._selected)
         self._id2 = self.bar.connect("activated", self._activated)
         self.bar.filter_text("")
@@ -119,10 +117,7 @@ class TAlbumBrowser(TestCase):
     def tearDown(self):
         self.bar.disconnect(self._id)
         self.bar.disconnect(self._id2)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.w.destroy()
+        self.w.destroy()
         config.quit()
 
 add(TAlbumBrowser)

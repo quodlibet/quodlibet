@@ -56,7 +56,11 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, devices=True, remove=False, delete=False, edit=False)
-        self.failUnlessEqual(1, len(self.menu))
+        from quodlibet import browsers
+        if browsers.media.MediaDevices in browsers.browsers:
+            self.failUnlessEqual(1, len(self.menu))
+        else:
+            self.failUnlessEqual(0, len(self.menu))
 
     def test_remove(self):
         self.menu = SongsMenu(

@@ -74,6 +74,19 @@ def unit(run=[], filter_func=None, subdir=None):
 
     import quodlibet.config
 
+    # emulate python2.7 behavior
+    def setup_test(test):
+        if hasattr(TestCase, "setUpClass"):
+            return
+        if hasattr(test, "setUpClass"):
+            test.setUpClass()
+
+    def teardown_test(test):
+        if hasattr(TestCase, "setUpClass"):
+            return
+        if hasattr(test, "tearDownClass"):
+            test.tearDownClass()
+
     runner = Runner()
     failures = False
     use_suites = filter(filter_func, suites)
@@ -81,7 +94,9 @@ def unit(run=[], filter_func=None, subdir=None):
         if (not run
             or test.__name__ in run
             or test.__module__[11:] in run):
+            setup_test(test)
             failures |= runner.run(test)
+            teardown_test(test)
             quodlibet.config.quit()
 
     try: shutil.rmtree(user_dir)

@@ -46,6 +46,10 @@ class TThumb(TestCase):
         uri = "file://" + urllib.pathname2url(s.filename)
         name = hash.md5(uri).hexdigest() + ".png"
         path = os.path.expanduser("~/.thumbnails")
+        # newer spec
+        new_path = os.path.expanduser("~/.cache/thumbnails")
+        if os.path.exists(new_path):
+            path = new_path
         path = os.path.join(path, "normal", name)
 
         s.failUnless(os.path.isfile(path))

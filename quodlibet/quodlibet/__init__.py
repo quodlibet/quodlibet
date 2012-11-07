@@ -128,6 +128,8 @@ def _dbus_init():
         except ImportError:
             return
     else:
+        import gobject
+        gobject.threads_init()
         threads_init()
         DBusGMainLoop(set_as_default=True)
 
