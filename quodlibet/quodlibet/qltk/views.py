@@ -147,7 +147,7 @@ class TreeViewHints(gtk.Window):
             label.set_markup(markup)
 
         # Use the renderer padding as label padding so the text offset matches
-        render_xpad = renderer.get_padding()[0]
+        render_xpad = renderer.get_property("xpad")
         label.set_padding(render_xpad, 0)
         # size_request makes sure the layout size got updated
         label.size_request()
