@@ -492,7 +492,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
 
         renderpb = gtk.CellRendererPixbuf()
-        renderpb.set_padding(3, 0)
+        renderpb.props.xpad = 3
         column.pack_start(renderpb, False)
         column.set_attributes(renderpb, stock_id=self.STOCK)
 

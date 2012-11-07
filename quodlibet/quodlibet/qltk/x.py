@@ -31,8 +31,9 @@ class ScrolledWindow(gtk.ScrolledWindow):
             if not self.style_get_property("scrollbars-within-bevel"):
                 placement = self.get_placement()
                 h, v = self.get_hscrollbar(), self.get_vscrollbar()
-                hscroll = h and h.get_visible() and sum(h.size_request())
-                vscroll = v and v.get_visible() and sum(v.size_request())
+                get_visible = lambda w: w.flags() & gtk.VISIBLE
+                hscroll = h and get_visible(h) and sum(h.size_request())
+                vscroll = v and get_visible(v) and sum(v.size_request())
 
                 if placement == gtk.CORNER_TOP_LEFT:
                     bottom = hscroll

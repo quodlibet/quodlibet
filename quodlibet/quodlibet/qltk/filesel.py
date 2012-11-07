@@ -308,7 +308,7 @@ class FileSelector(gtk.VPaned):
         column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         render = gtk.CellRendererPixbuf()
         render.set_property('stock_id', gtk.STOCK_FILE)
-        render.set_padding(3, 0)
+        render.props.xpad = 3
         column.pack_start(render, expand=False)
         render = gtk.CellRendererText()
         column.pack_start(render)
