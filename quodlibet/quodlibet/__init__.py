@@ -85,6 +85,10 @@ def _gtk_init(icon=None):
     import gobject
     gobject.threads_init()
 
+    if gtk.pygtk_version < (2, 16):
+        version = ".".join(map(str, gtk.pygtk_version))
+        print_w("PyGTK 2.16 required. %s found." % version)
+
     def warn_threads(func):
         def w():
             name = func.__module__ + "." + func.__name__
@@ -181,6 +185,12 @@ def set_process_title(title):
                 "Not setting process title.")
 
 def _python_init():
+
+    import sys
+    if sys.version_info < (2, 6):
+        version = ".".join(map(str, sys.version_info[:3]))
+        print_w("Python 2.6 required. %s found." % version)
+
     # The default regex escaping function doesn't work for non-ASCII.
     # Use a blacklist of regex-specific characters instead.
     def re_esc(str, BAD="/.^$*+?{,\\[]|()<>#=!:"):

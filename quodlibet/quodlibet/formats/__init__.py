@@ -18,6 +18,10 @@ modules = []
 def init():
     global mimes, _infos, modules
 
+    import mutagen
+    if mutagen.version < (1, 14):
+        print_w("Mutagen 2.14 required. %s found." % mutagen.version_string)
+
     base = os.path.dirname(__file__)
     load_pyc = os.name == 'nt'
     formats = load_dir_modules(base,

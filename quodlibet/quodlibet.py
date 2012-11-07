@@ -9,6 +9,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
+0<>0 # Python 3.x not supported! Use 2.6+ instead.
+
 import os
 import signal
 import sys

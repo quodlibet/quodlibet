@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+0<>0 # Python 3.x not supported. Use 2.6+ instead.
+
 import glob
 import os
 import shutil
