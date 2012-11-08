@@ -192,7 +192,10 @@ class SearchBar(EmptyBar):
         self._search_bar.connect('focus-out', focus)
 
         self.connect('destroy', self.__destroy)
-        align = Alignment(self._search_bar, left=3, right=3)
+        if main:
+            align = Alignment(self._search_bar, left=3, right=3, top=3)
+        else:
+            align = Alignment(self._search_bar)
         align.show()
         self.pack_start(align, expand=False)
         self.show()

@@ -199,7 +199,10 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         hbox = gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
-        self.pack_start(Alignment(hbox, left=3, bottom=3), expand=False)
+        if main:
+            self.pack_start(Alignment(hbox, left=3, bottom=3), expand=False)
+        else:
+            self.pack_start(hbox, expand=False)
 
         self.__refresh_button = refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
         refresh.connect_object('clicked', self.__refresh, True)

@@ -221,7 +221,8 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             player, self.qexpander.model, self.songlist.model)
 
         top_bar = TopBar(self, player, library)
-        main_box.pack_start(Alignment(top_bar, border=3), expand=False)
+        top_align = Alignment(top_bar, border=3, bottom=-3)
+        main_box.pack_start(top_align, expand=False)
 
         self.__browserbox = Alignment(top=3, bottom=3)
         main_box.pack_start(self.__browserbox)

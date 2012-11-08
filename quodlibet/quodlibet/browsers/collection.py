@@ -620,7 +620,10 @@ class CollectionBrowser(Browser, gtk.VBox, util.InstanceTracker):
         hbox.pack_start(search)
         hbox.pack_start(prefs, expand=False)
 
-        self.pack_start(Alignment(hbox, left=3), expand=False)
+        if main:
+            self.pack_start(Alignment(hbox, left=3, top=3), expand=False)
+        else:
+            self.pack_start(hbox, expand=False)
 
         self.pack_start(sw, expand=True)
 

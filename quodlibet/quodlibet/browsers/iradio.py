@@ -512,7 +512,10 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         box = gtk.HBox(spacing=6)
         box.pack_start(search)
         box.pack_start(button, expand=False)
-        self.pack_start(Alignment(box, left=3, right=3))
+        if main:
+            self.pack_start(Alignment(box, left=3, right=3, top=3))
+        else:
+            self.pack_start(box)
         self.__filter_list = scrolled_window
 
         self.show_all()

@@ -563,7 +563,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         prefs = PreferencesButton(model_sort)
         search.pack_start(prefs, expand=False)
-        self.pack_start(Alignment(search, left=3), expand=False)
+        if main:
+            self.pack_start(Alignment(search, left=3, top=3), expand=False)
+        else:
+            self.pack_start(search, expand=False)
+
         self.pack_start(sw, expand=True)
 
         self.connect("destroy", self.__destroy)
