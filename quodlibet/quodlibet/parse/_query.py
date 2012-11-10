@@ -18,7 +18,10 @@ from quodlibet.parse._match import error, ParseError
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
  CLOSERE, REMODS, COMMA, TAG, RE, RELOP, NUMCMP, EOF) = range(15)
 
-class LexerError(error): pass
+
+class LexerError(error):
+    pass
+
 
 class QueryLexer(Scanner):
     def __init__(self, s):
@@ -37,7 +40,8 @@ class QueryLexer(Scanner):
         return QueryLexeme(RE, string[1:-1])
 
     def str_to_re(self, scanner, string):
-        if isinstance(string, unicode): string = string.encode('utf-8')
+        if isinstance(string, unicode):
+            string = string.encode('utf-8')
         string = string[1:-1].decode('string_escape')
         string = string.decode('utf-8')
         return QueryLexeme(RE, "^%s$" % re.escape(string))
@@ -49,22 +53,25 @@ class QueryLexer(Scanner):
         return QueryLexeme(RELOP, string)
 
     def table(self, scanner, string):
-        return QueryLexeme({ '!': NEGATION, '&': INTERSECT, '|': UNION,
-                             '(': OPENP, ')': CLOSEP, '=': EQUALS,
-                             ',': COMMA, '#': NUMCMP }[string], string)
+        return QueryLexeme({'!': NEGATION, '&': INTERSECT, '|': UNION,
+                            '(': OPENP, ')': CLOSEP, '=': EQUALS,
+                            ',': COMMA, '#': NUMCMP}[string], string)
 
     def __iter__(self):
         s = self.scan(self.string)
-        if s[1] != "": raise LexerError("characters left over in string")
-        else: return iter(s[0] + [QueryLexeme(EOF, "")])
+        if s[1] != "":
+            raise LexerError("characters left over in string")
+        else:
+            return iter(s[0] + [QueryLexeme(EOF, "")])
+
 
 class QueryLexeme(object):
-    _reverse = { NEGATION: "NEGATION", INTERSECT: "INTERSECT",
-                 OPENRE: "OPENRE", CLOSERE: "CLOSERE", REMODS: "REMODS",
-                 OPENP: "OPENP", CLOSEP: "CLOSEP", UNION: "UNION",
-                 EQUALS: "EQUALS", COMMA: "COMMA", TAG: "TAG", RE: "RE",
-                 RELOP: "RELOP", NUMCMP: "NUMCP", EOF: "EOF",
-                 }
+    _reverse = {NEGATION: "NEGATION", INTERSECT: "INTERSECT",
+                OPENRE: "OPENRE", CLOSERE: "CLOSERE", REMODS: "REMODS",
+                OPENP: "OPENP", CLOSEP: "CLOSEP", UNION: "UNION",
+                EQUALS: "EQUALS", COMMA: "COMMA", TAG: "TAG", RE: "RE",
+                RELOP: "RELOP", NUMCMP: "NUMCP", EOF: "EOF",
+                }
 
     def __init__(self, typ, lexeme):
         self.type = typ
@@ -75,9 +82,11 @@ class QueryLexeme(object):
                 " type=" + repr(self.type) + " (" +
                 str(self._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
-    
-# Parse the input. One lookahead token, start symbol is Query.
+
+
 class QueryParser(object):
+    """Parse the input. One lookahead token, start symbol is Query."""
+
     def __init__(self, tokens):
         self.tokens = iter(tokens)
         self.lookahead = self.tokens.next()
@@ -88,7 +97,8 @@ class QueryParser(object):
         m = InternalType()
         if len(m) > 1:
             m = ReturnType(m)
-        else: m = m[0]
+        else:
+            m = m[0]
         self.match(CLOSEP)
         return m
 
@@ -100,11 +110,16 @@ class QueryParser(object):
         return l
 
     def Query(self):
-        if self.lookahead.type == UNION: return self.QueryUnion()
-        elif self.lookahead.type == INTERSECT: return self.QueryInter()
-        elif self.lookahead.type == NEGATION: return self.QueryNeg()
-        elif self.lookahead.type == NUMCMP: return self.QueryNumcmp()
-        elif self.lookahead.type == TAG: return self.QueryPart()
+        if self.lookahead.type == UNION:
+            return self.QueryUnion()
+        elif self.lookahead.type == INTERSECT:
+            return self.QueryInter()
+        elif self.lookahead.type == NEGATION:
+            return self.QueryNeg()
+        elif self.lookahead.type == NUMCMP:
+            return self.QueryNumcmp()
+        elif self.lookahead.type == TAG:
+            return self.QueryPart()
         else:
             raise ParseError("The expected symbol should be |, &, !, #, or "
                              "a tag name, but was %s" % self.lookahead.lexeme)
@@ -167,11 +182,16 @@ class QueryParser(object):
         return match.Tag(names, res)
 
     def RegexpSet(self, no_tag=False):
-        if self.lookahead.type == UNION: return self.RegexpUnion()
-        elif self.lookahead.type == INTERSECT: return self.RegexpInter()
-        elif self.lookahead.type == NEGATION: return self.RegexpNeg()
-        elif self.lookahead.type == TAG and not no_tag: return self.MatchTag()
-        elif self.lookahead.type == RE: return self.Regexp()
+        if self.lookahead.type == UNION:
+            return self.RegexpUnion()
+        elif self.lookahead.type == INTERSECT:
+            return self.RegexpInter()
+        elif self.lookahead.type == NEGATION:
+            return self.RegexpNeg()
+        elif self.lookahead.type == TAG and not no_tag:
+            return self.MatchTag()
+        elif self.lookahead.type == RE:
+            return self.Regexp()
         else:
             raise ParseError("The expected symbol should be |, &, !, or "
                              "a tag name, but was %s" % self.lookahead.lexeme)
@@ -192,7 +212,8 @@ class QueryParser(object):
     def MatchTag(self):
         tag = self.lookahead.lexeme
         self.match(TAG)
-        try: return re.compile(re.escape(tag), re.IGNORECASE | re.UNICODE)
+        try:
+            return re.compile(re.escape(tag), re.IGNORECASE | re.UNICODE)
         except re.error:
             raise ParseError("The regular expression was invalid")
 
@@ -202,12 +223,17 @@ class QueryParser(object):
         mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
         if self.lookahead.type == TAG:
             s = self.lookahead.lexeme.lower()
-            if "c" in s: mods &= ~re.IGNORECASE
-            if "i" in s: mods |= re.IGNORECASE
-            if "s" in s: mods |= re.DOTALL
-            if "l" in s: mods = (mods & ~re.UNICODE) | re.LOCALE
+            if "c" in s:
+                mods &= ~re.IGNORECASE
+            if "i" in s:
+                mods |= re.IGNORECASE
+            if "s" in s:
+                mods |= re.DOTALL
+            if "l" in s:
+                mods = (mods & ~re.UNICODE) | re.LOCALE
             self.match(TAG)
-        try: return re.compile(regex, mods)
+        try:
+            return re.compile(regex, mods)
         except re.error:
             raise ParseError("The regular expression /%s/ is invalid." % regex)
 
@@ -219,12 +245,15 @@ class QueryParser(object):
             if self.lookahead.type in tokens:
                 self.lookahead = self.tokens.next()
             else:
-                raise ParseError("The token '%s' is not the type exected." %(
+                raise ParseError("The token '%s' is not the type exected." % (
                     self.lookahead.lexeme))
         except StopIteration:
             self.lookahead = QueryLexeme(EOF, "")
 
+
 NORMAL, VALUE, STRING = range(3)
+
+
 def _get_query_type(string):
     try:
         q = QueryParser(QueryLexer(string))
@@ -237,9 +266,11 @@ def _get_query_type(string):
         return VALUE
     return NORMAL
 
+
 def _expand_query(string, tags):
     string = string.strip()
-    if string == "": return ""
+    if string == "":
+        return ""
     query_type = _get_query_type(string)
     if query_type == STRING:
         parts = ("%s = /%s/" % (", ".join(tags), re.escape(p))
@@ -255,30 +286,75 @@ def _expand_query(string, tags):
     return string
 
 STAR = ["artist", "album", "title"]
+
+
 def Query(string, star=STAR):
-    if not isinstance(string, unicode): string = string.decode('utf-8')
-    if Query.match_all(string): return match.Inter([])
+    """Parses the query string and returns a match object.
+
+    star -- List of tags to look in if none are specified in the query.
+            You can add some by extending Query.START and pass it here.
+
+    This parses the above query language as well as some tagless shortcuts:
+        "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
+        "!foo" -> star1,star2=!foo
+        "&(foo, bar)" -> star1,star2=&(foo, bar)
+        "|(foo, bar)" -> star1,star2=|(foo, bar)
+        "!(foo, bar)" -> !star1,star2=(foo, bar)
+        etc...
+
+    """
+
+    if not isinstance(string, unicode):
+        string = string.decode('utf-8')
+
+    # fast path
+    if Query.match_all(string):
+        return match.Inter([])
+
+    # insert star in text only or tagless queries
     string = _expand_query(string, star)
+
     return QueryParser(QueryLexer(string)).StartQuery()
+
+
+# default tags to search in, use/extend and pass to Query()
 Query.STAR = STAR
+# query base exception
+Query.error = error
+
 
 def is_valid(string):
-    if Query.match_all(string): return True
-    try: QueryParser(QueryLexer(string)).StartQuery()
-    except error: return False
-    else: return True
+    """Whether a full query can be parsed"""
+
+    if Query.match_all(string):
+        return True
+
+    try:
+        QueryParser(QueryLexer(string)).StartQuery()
+    except error:
+        return False
+    return True
 Query.is_valid = is_valid
 
+
 def match_all(string):
+    """Whether the resulting query will not filter anything"""
+
     return string.strip() == ""
 Query.match_all = match_all
 
+
 def is_parsable(string):
+    """Whether the text can be parsed"""
+
     string = _expand_query(string, ["foo"])
     return is_valid(string)
 Query.is_parsable = is_parsable
 
+
 def is_valid_color(string):
+    """Returns True/False for a query, None for a text only query"""
+
     if is_parsable(string):
         if _get_query_type(string) == STRING:
             return None
@@ -286,5 +362,3 @@ def is_valid_color(string):
             return True
     return False
 Query.is_valid_color = is_valid_color
-
-Query.error = error
