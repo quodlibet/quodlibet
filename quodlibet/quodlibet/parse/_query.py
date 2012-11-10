@@ -241,6 +241,8 @@ class QueryParser(object):
         mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
         if self.lookahead.type == TAG:
             s = self.lookahead.lexeme.lower()
+            if set(s) - set("cisl"):
+                raise ParseError("Invalid regular expression flags: %r" % s)
             if "c" in s:
                 mods &= ~re.IGNORECASE
             if "i" in s:

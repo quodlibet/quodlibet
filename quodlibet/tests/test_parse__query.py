@@ -9,6 +9,8 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid('t = /an re/c'))
         self.failUnless(Query.is_valid('t = /an\\/re/'))
         self.failIf(Query.is_valid('t = /an/re/'))
+        self.failUnless(Query.is_valid('t = /aaa/lsic'))
+        self.failIf(Query.is_valid('t = /aaa/icslx'))
     def test_str(self):
         self.failUnless(Query.is_valid('t = "a str"'))
         self.failUnless(Query.is_valid('t = "a str"c'))
