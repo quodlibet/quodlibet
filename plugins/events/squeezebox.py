@@ -16,13 +16,15 @@ from quodlibet.qltk.msg import Message
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from telnetlib import Telnet
-from threading import Thread
 import _socket
 import gtk
 import socket
 import time
 import urllib
 import gobject
+from quodlibet.util import copool
+from quodlibet.qltk.notif import Task
+from threading import Thread
 
 
 class SqueezeboxServerSettings(dict):
@@ -88,7 +90,7 @@ class SqueezeboxServer(object):
     def get_library_dir(self):
         return self.config['library_dir']
 
-    def __request(self, line, raw=False):
+    def __request(self, line, raw=False, want_reply=True):
         """
         Send a request to the server, if connected, and return its response
         """
@@ -101,6 +103,7 @@ class SqueezeboxServer(object):
         if self._debug: print ">>>> \"%s\"" % line
         try:
             self.telnet.write(line + "\n")
+            if not want_reply: return None
             raw_response = self.telnet.read_until("\n").strip()
         except _socket.error, e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
@@ -142,11 +145,12 @@ class SqueezeboxServer(object):
         assert (count == len(self.players))
         return self.players
 
-    def player_request(self, line):
+    def player_request(self, line, want_reply=True):
         if not self.is_connected: return
         try:
             return self.__request(
-                "%s %s" % (self.players[self.current_player]["playerid"], line))
+                "%s %s" % (self.players[self.current_player]["playerid"], line),
+                want_reply=want_reply)
         except IndexError:
             return None
 
@@ -170,17 +174,18 @@ class SqueezeboxServer(object):
         self.player_request("playlist play %s" % (urllib.quote(path)))
 
     def playlist_add(self, path):
-        self.player_request("playlist add %s" % (urllib.quote(path)))
+        self.player_request("playlist add %s" % (urllib.quote(path)), False)
 
     def playlist_save(self, name):
-        self.player_request("playlist save %s" % (urllib.quote(name)))
+        self.player_request("playlist save %s" % (urllib.quote(name)), False)
 
     def playlist_clear(self):
-        self.player_request("playlist clear")
+        self.player_request("playlist clear", False)
 
     def playlist_resume(self, name, resume, wipe=False):
         self.player_request("playlist resume %s noplay:%d wipePlaylist:%d" %
-                            (urllib.quote(name), int(not resume), int(wipe)))
+                            (urllib.quote(name), int(not resume), int(wipe)),
+                           want_reply=False)
 
     def change_song(self, path):
         """Queue up a song"""
@@ -504,22 +509,47 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
                     "playlists, provided both share a directory structure. "
                     "Shares configuration with Squeezebox Sync plugin")
     PLUGIN_ICON = gtk.STOCK_EDIT
-    PLUGIN_VERSION = '0.1'
-    TEMP_PLAYLIST = "_temp"
+    PLUGIN_VERSION = '0.2'
+    TEMP_PLAYLIST = "_quodlibet"
 
-    def __init__(self, songs):
-        print_d("Calling SqueezeboxPluginMixin.__init__()...")
-        SqueezeboxPluginMixin.__init__(self)
-        SongsMenuPlugin.__init__(self, songs)
-
-
-    def __add_songs(self, songs):
+    def __add_songs(self, task, songs, name):
+        """Generator for copool to add songs to the temp playlist"""
+        print_d("Backing up current Squeezebox playlist")
+        self.__cancel = False
         self.server.playlist_save(self.TEMP_PLAYLIST)
-        # app.player.paused = True
         self.server.playlist_clear()
-        for song in songs:
-            #print_d(song("~filename"))
-            self.server.playlist_add(self.get_path(song))
+        # Check if we're currently playing.
+        stopped = self.server.is_stopped()
+        total = len(songs)
+        print_d("Adding %d song(s) to Squeezebox playlist. "
+                "This might take a while..." % total)
+        for i,song in enumerate(songs):
+            if self.__cancel:
+                print_d("Cancelled squeezebox export")
+                self.__cancel = False
+                break
+            # Actually do the (slow) call
+            worker = Thread(target=self.server.playlist_add,
+                                      args = (self.get_path(song),))
+            worker.daemon = True
+            worker.start()
+            worker.join(timeout=3)
+            #self.server.playlist_add(self.get_path(song))
+            task.update(float(i) / total)
+            yield True
+        print_d("Saving Squeezebox playlist \"%s\"" % name)
+        task.pulse()
+        self.server.playlist_save(name)
+        yield True
+        task.pulse()
+        # Resume if we actually stopped
+        self.server.playlist_resume(self.TEMP_PLAYLIST, not stopped, True)
+        task.finish()
+
+
+    def __cancel_add(self):
+        """Tell the copool to stop (adding songs)"""
+        self.__cancel = True
 
     def __get_playlist_name(self):
         dialog = qltk.GetStringDialog(None,
@@ -538,18 +568,8 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
                 _("Error finding %s. Please check settings") %self.server.config
             ).run()
         else:
-            paused = app.player.paused
-            # Spin a worker thread.
-            worker = Thread(target=self.__add_songs, args=(songs,))
-            print_d("Starting worker thread...")
-            worker.setDaemon(True)
-            worker.start()
-            print_d("Worker thread started")
-            #self.quick_dialog("Adding %d songs..." % len(songs))
             name = self.__get_playlist_name()
-            worker.join(timeout=30)
-            # Only save once we're done adding
-            self.server.playlist_save(name)
-            app.player.paused = paused
-            self.server.playlist_resume(self.TEMP_PLAYLIST,
-                                        not app.player.paused, True)
+            task = Task("Squeezebox", _("Export to Squeezebox playlist"),
+                        stop=self.__cancel_add)
+            copool.add(self.__add_songs, task, songs, name,
+                       funcid="squeezebox-playlist-save")

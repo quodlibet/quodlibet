@@ -45,7 +45,9 @@ class SongsMenuPluginHandler(object):
             usable = max([callable(getattr(Kind, s)) for s in attrs])
             if usable:
                 try: items.append(Kind(songs, library, parent))
-                except: print_exc()
+                except:
+                    print_e("Couldn't initalise song plugin %s. Stack trace:" % Kind)
+                    print_exc()
         items = filter(lambda i: i.initialized, items)
 
         if items:
