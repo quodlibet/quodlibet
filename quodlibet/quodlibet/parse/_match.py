@@ -27,22 +27,22 @@ FS_KEYS = ["~filename", "~basename", "~dirname"]
 # True if the object matches any of its REs.
 class Union(object):
     def __init__(self, res):
-        self.__res = res
+        self.res = res
 
     def search(self, data):
-        for re in self.__res:
+        for re in self.res:
             if re.search(data):
                 return True
         return False
 
     def __repr__(self):
-        return "<Union %r>" % self.__res
+        return "<Union %r>" % self.res
 
     def __or__(self, other):
         if isinstance(other, Union):
-            return Union(self.__res + other.__res)
+            return Union(self.res + other.res)
         else:
-            return Union(self.__res + [other])
+            return Union(self.res + [other])
     __ror__ = __or__
 
     def __and__(self, other):
@@ -57,22 +57,22 @@ class Union(object):
 # True if the object matches all of its REs.
 class Inter(object):
     def __init__(self, res):
-        self.__res = res
+        self.res = res
 
     def search(self, data):
-        for re in self.__res:
+        for re in self.res:
             if not re.search(data):
                 return False
         return True
 
     def __repr__(self):
-        return "<Inter %r>" % self.__res
+        return "<Inter %r>" % self.res
 
     def __and__(self, other):
         if isinstance(other, Inter):
-            return Inter(self.__res + other.__res)
+            return Inter(self.res + other.res)
         else:
-            return Inter(self.__res + [other])
+            return Inter(self.res + [other])
     __rand__ = __and__
 
     def __or__(self, other):
@@ -86,14 +86,14 @@ class Inter(object):
 
 # True if the object doesn't match its RE.
 class Neg(object):
-    def __init__(self, re):
-        self._re = re
+    def __init__(self, res):
+        self.res = res
 
     def search(self, data):
-        return not self._re.search(data)
+        return not self.res.search(data)
 
     def __repr__(self):
-        return "<Neg %r>" % self._re
+        return "<Neg %r>" % self.res
 
     def __and__(self, other):
         if not isinstance(other, Inter):
@@ -106,7 +106,7 @@ class Neg(object):
         return NotImplemented
 
     def __neg__(self):
-        return self._re
+        return self.res
 
 
 # Numeric comparisons
@@ -157,7 +157,7 @@ class Tag(object):
              }
 
     def __init__(self, names, res):
-        self.__res = res
+        self.res = res
         self.__names = []
         self.__intern = []
         self.__fs = []
@@ -175,19 +175,19 @@ class Tag(object):
     def search(self, data):
         for name in self.__names:
             val = data.get(name) or data.get("~" + name, "")
-            if self.__res.search(val):
+            if self.res.search(val):
                 return True
         for name in self.__intern:
-            if self.__res.search(data(name)):
+            if self.res.search(data(name)):
                 return True
         for name in self.__fs:
-            if self.__res.search(fsdecode(data(name))):
+            if self.res.search(fsdecode(data(name))):
                 return True
         return False
 
     def __repr__(self):
         names = self.__names + self.__intern
-        return ("<Tag names=%r, res=%r>" % (names, self.__res))
+        return ("<Tag names=%r, res=%r>" % (names, self.res))
 
     def __and__(self, other):
         if not isinstance(other, Inter):

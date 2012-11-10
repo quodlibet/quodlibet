@@ -213,10 +213,9 @@ class TQuery(TestCase):
         self.failIf(Query("|(foo, bar)").search(self.s1))
         self.failIf(Query("&(ate, foobar)").search(self.s1))
         self.failIf(Query("! !&(ate, foobar)").search(self.s1))
-        self.failIf(Query("&blah").search(self.s1))
-        self.failUnless(Query("&blah oh").search(self.s5))
         self.failUnless(Query("!oh no").search(self.s5))
-        self.failIf(Query("|blah").search(self.s1))
+        # http://code.google.com/p/quodlibet/issues/detail?id=1056
+        self.failUnless(Query("&(ate, piman)").search(self.s1))
 
     def test_dumb_search_value_negate(self):
         self.failUnless(Query("!xyz").search(self.s1))

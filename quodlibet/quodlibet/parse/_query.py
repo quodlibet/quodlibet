@@ -129,6 +129,24 @@ class QueryParser(object):
         self.match(EOF)
         return s
 
+    def StartStarQuery(self, star):
+        s = self.RegexpSet(no_tag=True)
+        self.match(EOF)
+
+        def insert_tags(p):
+            # pack all values in tags
+            if isinstance(p, match.Inter):
+                return match.Inter([match.Tag(star, v) for v in p.res])
+            elif isinstance(p, match.Union):
+                return match.Union([match.Tag(star, v) for v in p.res])
+            elif isinstance(p, match.Neg):
+                # we want Neg to negate the whole query, not the value
+                return match.Neg(insert_tags(p.res))
+            else:
+                return match.Tag(star, p)
+
+        return insert_tags(s)
+
     def QueryNeg(self):
         self.match(NEGATION)
         return match.Neg(self.Query())
@@ -256,9 +274,7 @@ NORMAL, VALUE, STRING = range(3)
 
 def _get_query_type(string):
     try:
-        q = QueryParser(QueryLexer(string))
-        q.RegexpSet(no_tag=True)
-        q.match(EOF)
+        QueryParser(QueryLexer(string)).StartStarQuery([])
     except error:
         if not set("#=").intersection(string):
             return STRING
@@ -266,24 +282,6 @@ def _get_query_type(string):
         return VALUE
     return NORMAL
 
-
-def _expand_query(string, tags):
-    string = string.strip()
-    if string == "":
-        return ""
-    query_type = _get_query_type(string)
-    if query_type == STRING:
-        parts = ("%s = /%s/" % (", ".join(tags), re.escape(p))
-                 for p in string.split())
-        string = "&(" + ",".join(parts) + ")"
-    elif query_type == VALUE:
-        # instead of negating the value negate the whole query
-        stripped = string.lstrip(" !")
-        neg = string[:len(string) - len(stripped)]
-        string = "%s = %s" % (", ".join(tags), stripped)
-        if neg.count("!") % 2:
-            string = "!" + string
-    return string
 
 STAR = ["artist", "album", "title"]
 
@@ -296,9 +294,10 @@ def Query(string, star=STAR):
 
     This parses the above query language as well as some tagless shortcuts:
         "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
-        "!foo" -> star1,star2=!foo
-        "&(foo, bar)" -> star1,star2=&(foo, bar)
-        "|(foo, bar)" -> star1,star2=|(foo, bar)
+        "!foo" -> !star1,star2=foo
+        "&(foo, bar)" -> &(star1,star2=foo, star1,star2=bar)
+        "|(foo, bar)" -> |(star1,star2=foo, star1,star2=bar)
+        "!&(foo, bar)" -> !&(star1,star2=foo, star1,star2=bar)
         "!(foo, bar)" -> !star1,star2=(foo, bar)
         etc...
 
@@ -311,8 +310,19 @@ def Query(string, star=STAR):
     if Query.match_all(string):
         return match.Inter([])
 
-    # insert star in text only or tagless queries
-    string = _expand_query(string, star)
+    query_type = _get_query_type(string)
+
+    # normal string, put it in a intersection to get a value list
+    if query_type == STRING:
+        string = "&(" + ",".join(map(re.escape, string.split())) + ")"
+        query_type = VALUE
+
+    # try to parse with a taglist
+    if query_type == VALUE:
+        try:
+            return QueryParser(QueryLexer(string)).StartStarQuery(star)
+        except error:
+            pass
 
     return QueryParser(QueryLexer(string)).StartQuery()
 
@@ -347,8 +357,11 @@ Query.match_all = match_all
 def is_parsable(string):
     """Whether the text can be parsed"""
 
-    string = _expand_query(string, ["foo"])
-    return is_valid(string)
+    try:
+        Query(string)
+    except error:
+        return False
+    return True
 Query.is_parsable = is_parsable
 
 
