@@ -10,12 +10,19 @@ import operator
 
 from quodlibet.util import fsdecode
 
-class error(ValueError): pass
-class ParseError(error): pass
+
+class error(ValueError):
+    pass
+
+
+class ParseError(error):
+    pass
+
 
 TIME_KEYS = ["added", "mtime", "lastplayed", "laststarted"]
 SIZE_KEYS = ["filesize"]
 FS_KEYS = ["~filename", "~basename", "~dirname"]
+
 
 # True if the object matches any of its REs.
 class Union(object):
@@ -24,7 +31,8 @@ class Union(object):
 
     def search(self, data):
         for re in self.__res:
-            if re.search(data): return True
+            if re.search(data):
+                return True
         return False
 
     def __repr__(self):
@@ -33,7 +41,8 @@ class Union(object):
     def __or__(self, other):
         if isinstance(other, Union):
             return Union(self.__res + other.__res)
-        else: return Union(self.__res + [other])
+        else:
+            return Union(self.__res + [other])
     __ror__ = __or__
 
     def __and__(self, other):
@@ -44,6 +53,7 @@ class Union(object):
     def __neg__(self):
         return Neg(self)
 
+
 # True if the object matches all of its REs.
 class Inter(object):
     def __init__(self, res):
@@ -51,7 +61,8 @@ class Inter(object):
 
     def search(self, data):
         for re in self.__res:
-            if not re.search(data): return False
+            if not re.search(data):
+                return False
         return True
 
     def __repr__(self):
@@ -60,7 +71,8 @@ class Inter(object):
     def __and__(self, other):
         if isinstance(other, Inter):
             return Inter(self.__res + other.__res)
-        else: return Inter(self.__res + [other])
+        else:
+            return Inter(self.__res + [other])
     __rand__ = __and__
 
     def __or__(self, other):
@@ -71,16 +83,17 @@ class Inter(object):
     def __neg__(self):
         return Neg(self)
 
+
 # True if the object doesn't match its RE.
 class Neg(object):
     def __init__(self, re):
-        self.__re = re
+        self._re = re
 
     def search(self, data):
-        return not self.__re.search(data)
+        return not self._re.search(data)
 
     def __repr__(self):
-        return "<Neg %r>" % self.__re
+        return "<Neg %r>" % self._re
 
     def __and__(self, other):
         if not isinstance(other, Inter):
@@ -93,7 +106,8 @@ class Neg(object):
         return NotImplemented
 
     def __neg__(self):
-        return self.__re
+        return self._re
+
 
 # Numeric comparisons
 class Numcmp(object):
@@ -129,17 +143,19 @@ class Numcmp(object):
     def __neg__(self):
         return Neg(self)
 
+
 # See if a property of the object matches its RE.
 class Tag(object):
 
     # Shorthand for common tags.
-    ABBRS = { "a": "artist",
-              "b": "album",
-              "v": "version",
-              "t": "title",
-              "n": "tracknumber",
-              "d": "date",
-              }
+    ABBRS = {"a": "artist",
+             "b": "album",
+             "v": "version",
+             "t": "title",
+             "n": "tracknumber",
+             "d": "date",
+             }
+
     def __init__(self, names, res):
         self.__res = res
         self.__names = []
@@ -158,12 +174,15 @@ class Tag(object):
 
     def search(self, data):
         for name in self.__names:
-            val = data.get(name) or data.get("~"+name, "")
-            if self.__res.search(val): return True
+            val = data.get(name) or data.get("~" + name, "")
+            if self.__res.search(val):
+                return True
         for name in self.__intern:
-            if self.__res.search(data(name)): return True
+            if self.__res.search(data(name)):
+                return True
         for name in self.__fs:
-            if self.__res.search(fsdecode(data(name))): return True
+            if self.__res.search(fsdecode(data(name))):
+                return True
         return False
 
     def __repr__(self):
@@ -183,22 +202,32 @@ class Tag(object):
     def __neg__(self):
         return Neg(self)
 
+
 def map_numeric_op(tag, op, value, time_=None):
-    """Takes a tag, an operator string and and a value string.
-    Returns an (operator function, numeric value) tuple.
+    """Maps a human readable numeric comparison to something we can use.
+
+    Handles cases like '< 3 days', '>5MB' etc..
+    If parsing fails, raises a ParseError.
+
+    Takes a tag, an operator string and and a value string:
+        op, v = map_numeric_op("added", "<", "today")
+
+    Returns an (operator function, numeric value) tuple:
+        if op(v, song("~#added")): ...
 
     (time_ is only used for testing)
 
-    handles cases like '< 3 days', '>5MB' etc..
-
-    if parsing failes, raises a ParseError
     """
 
     if tag in TIME_KEYS:
-        if op == ">": op = "<"
-        elif op == "<": op = ">"
-        elif op == "<=": op = ">="
-        elif op == ">=": op = "<="
+        if op == ">":
+            op = "<"
+        elif op == "<":
+            op = ">"
+        elif op == "<=":
+            op = ">="
+        elif op == ">=":
+            op = "<="
 
     op_fun = {"<": operator.lt, "<=": operator.le,
               ">": operator.gt, ">=": operator.ge,
@@ -222,7 +251,8 @@ def map_numeric_op(tag, op, value, time_=None):
     # TODO: handle "5:30 ago"
     try:
         hms = map(int, value.split(":"))
-    except ValueError: pass
+    except ValueError:
+        pass
     else:
         value = 0
         for t in hms:
