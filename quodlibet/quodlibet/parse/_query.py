@@ -316,7 +316,8 @@ def Query(string, star=STAR):
 
     # normal string, put it in a intersection to get a value list
     if query_type == STRING:
-        string = "&(" + ",".join(map(re.escape, string.split())) + ")"
+        parts = ["/%s/" % re.escape(s) for s in string.split()]
+        string = "&(" + ",".join(parts) + ")"
         query_type = VALUE
 
     # try to parse with a taglist
