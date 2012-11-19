@@ -36,6 +36,9 @@ LOGDIR  = os.path.join(USERDIR, "logs")
 
 DEFAULT_RATING = 0.5
 
+# entry point for the user guide / wiki
+ONLINE_HELP = "http://code.google.com/p/quodlibet/wiki/QuickStart"
+
 # Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 
@@ -163,6 +166,7 @@ MENU = """<ui>
       %(views)s
     </menu>
     <menu action='Help'>
+      <menuitem action='OnlineHelp'/>
       <menuitem action='About'/>
       <separator/>
       <menuitem action='OutputLog'/>
