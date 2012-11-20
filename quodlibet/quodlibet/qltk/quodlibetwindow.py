@@ -486,6 +486,10 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
         act.connect_object('activate', util.website, const.ONLINE_HELP)
         ag.add_action_with_accel(act, "F1")
 
+        act = gtk.Action("SearchHelp", _("Search Help"), None, "")
+        act.connect_object('activate', util.website, const.SEARCH_HELP)
+        ag.add_action_with_accel(act, None)
+
         act = gtk.Action(
             "RefreshLibrary", _("Re_fresh Library"), None, gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, False)

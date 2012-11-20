@@ -38,6 +38,7 @@ DEFAULT_RATING = 0.5
 
 # entry point for the user guide / wiki
 ONLINE_HELP = "http://code.google.com/p/quodlibet/wiki/QuickStart"
+SEARCH_HELP = "http://code.google.com/p/quodlibet/wiki/SearchingGuide"
 
 # Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
@@ -167,6 +168,7 @@ MENU = """<ui>
     </menu>
     <menu action='Help'>
       <menuitem action='OnlineHelp'/>
+      <menuitem action='SearchHelp'/>
       <menuitem action='About'/>
       %(debug)s
     </menu>
