@@ -168,8 +168,6 @@ MENU = """<ui>
     <menu action='Help'>
       <menuitem action='OnlineHelp'/>
       <menuitem action='About'/>
-      <separator/>
-      <menuitem action='OutputLog'/>
       %(debug)s
     </menu>
   </menubar>

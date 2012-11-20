@@ -543,7 +543,9 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
 
         debug_menu = ""
         if const.DEBUG:
-            debug_menu = ("<menuitem action='DebugReload'/>\n"
+            debug_menu = ("<separator/>"
+                          "<menuitem action='OutputLog'/>"
+                          "<menuitem action='DebugReload'/>"
                           "<menuitem action='DebugCauseError'/>")
 
         self.ui = gtk.UIManager()
