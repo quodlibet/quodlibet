@@ -102,6 +102,8 @@ class SongTracker(object):
                 config.set("memory", "song", song["~filename"])
             song["~#laststarted"] = int(time.time())
             librarian.changed([song])
+        else:
+            config.set("memory", "song", "")
 
     def __end(self, librarian, song, ended, pl):
         if song is None or song.multisong:
