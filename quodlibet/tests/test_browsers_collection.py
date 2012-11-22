@@ -87,8 +87,6 @@ class TCollectionAlbums(TestCase):
         a.sort(key=lambda x: x.key)
 
         path = StoreUtils.get_path_for_album(model, a[0])
-        self.failUnlessEqual(path, (3, 0))
-
         albums = StoreUtils.get_albums_for_path(model, path)
         self.failUnless(a[0] in albums)
 
