@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-23 13:37+0100\n"
-"PO-Revision-Date: 2012-08-27 02:29+0300\n"
+"POT-Creation-Date: 2012-11-23 22:50+0100\n"
+"PO-Revision-Date: 2012-11-23 20:26+0200\n"
 "Last-Translator: Dimitris Papageorgiou <dipap@gmx.com>\n"
 "Language-Team: Greek\n"
 "Language: el\n"
@@ -228,20 +228,20 @@ msgstr "Ετικέτα"
 
 #: ../quodlibet/browsers/collection.py:150
 msgid "Merge"
-msgstr ""
+msgstr "Συγχώνευση"
 
 #: ../quodlibet/browsers/collection.py:208
 #, fuzzy
 msgid "Album Collection Preferences"
-msgstr "Προτιμήσεις Λίστας Άλμπουμ"
+msgstr "Προτιμήσεις Συλλογής Άλμπουμ"
 
 #: ../quodlibet/browsers/collection.py:489
 msgid "Album Collection"
-msgstr ""
+msgstr "Συλλογή Άλμπουμ"
 
 #: ../quodlibet/browsers/collection.py:490
 msgid "Album _Collection"
-msgstr ""
+msgstr "Σ_υλλογή Άλμπουμ"
 
 #: ../quodlibet/browsers/filesystem.py:34
 msgid "File System"
@@ -1157,7 +1157,7 @@ msgstr "Εμφάνιση των περιεχομένων της ουράς αν�
 
 #: ../quodlibet.py:256
 msgid "Start without plugins"
-msgstr ""
+msgstr "Εκκίνηση με απενεργοποιημένα πρόσθετα"
 
 #: ../quodlibet.py:257
 msgid "Exit Quod Libet"
@@ -2266,7 +2266,7 @@ msgstr "_Προσθήκη Τοποθεσίας"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:432
 msgid "_Browse Library"
-msgstr "Π_εριηγήσου στην Μουσικοθήκη"
+msgstr "Π_εριήγηση στην Μουσικοθήκη"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:438
 msgid "_Filters"
@@ -2314,7 +2314,7 @@ msgstr "Πρόκληση _Λάθους"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:485
 msgid "Online Help"
-msgstr ""
+msgstr "Βοήθεια στο Διαδίκτυο"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:489
 #, fuzzy
