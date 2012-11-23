@@ -27,8 +27,6 @@ News for translators
  * "setup.py check_pot" to see if a file containing translatable strings is
    missing from POTFILES.in
 
-Changes by Christoph Reiter where not specified.
-
 General
  * Search: Handle non-ascii values for filesystem tags
    (~filename, ~dirname..) [227]
@@ -46,7 +44,7 @@ General
  * Shortcut: ctrl+left/right, left/right for treeview navigation
  * Some UI cleanup, less padding in the main window
  * Remember window size & position for properties, info, browsers [106]
- * Device selection for the  back-end
+ * Device selection for the gstreamer back-end
  * Use lyricist for finding lyrics if available
  * Click on default cover icon launches album art plugin [2] (Nick Boultbee)
  * Fix: Work with Compiz window placement plugin [871]
@@ -55,7 +53,6 @@ General
  * Fix: Filter on album in album browser now uses the album key
  * New: PluginConfigMixin added to core to simplify plugin prefs (Nick Boultbee)
  * Fix: --status (carlo.teubner) [1045]
- * Removed junk folder (and contents) from codebase
 
 Formats
  * New: Monkey's Audio
