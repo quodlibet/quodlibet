@@ -12,12 +12,12 @@ News for packagers
  * PyGTK 2.16+
  * Python 2.6+
  * Support for libudev.so.1 (>= 183)
- * new: python-keybinder needed for multimedia keys
- * new plugin directory: gstreamer
+ * New: python-keybinder needed for multimedia keys
+ * New plugin directory: gstreamer
  * Optional plugin dependencies:
-   * removed: python-indicate (Ubuntu sound menu),
+   * Removed: python-indicate (Ubuntu sound menu),
               lastfmsubmitd (old last.fm plugin)
-   * new: rygel (DBus UPnP MediaServer), python-zeitgeist (Zeitgeist)
+   * New: rygel (DBus UPnP MediaServer), python-zeitgeist (Zeitgeist)
 
 News for translators
  * QUODLIBET_TEST_TRANS=xxx will append/prepend "xxx" to all translations so
@@ -27,81 +27,84 @@ News for translators
  * "setup.py check_pot" to see if a file containing translatable strings is
    missing from POTFILES.in
 
+Changes by Christoph Reiter where not specified.
+
 General
- * search: Handle non-ascii values for filesystem tags
+ * Search: Handle non-ascii values for filesystem tags
    (~filename, ~dirname..) [227]
- * new internal tags:  ~originalyear ~#originalyear. [966]
- * new internal tag: ~playlists (Nick Boultbee)
- * shortcut: alt + left/right -> seek +/- 10 seconds
+ * New internal tags:  ~originalyear ~#originalyear. [966]
+ * New internal tag: ~playlists (Nick Boultbee)
+ * Shortcut: alt + left/right -> seek +/- 10 seconds [981]
  * Support startup notification spec
  * Support newest thumbnail spec (v0.8.0)
  * Basic Unity quicklist
- * new --stop switch to stop and release the audio device
- * List tooltips: work with gnome shell, never shift left, support trees
- * new --no-plugins switch to start without plugins
+ * New --stop switch to stop and release the audio device [1018]
+ * List tooltips: work with gnome shell, never shift left, support trees [778]
+ * New --no-plugins switch to start without plugins
  * No wakeups if nothing is playing.
  * Directory mimetype for Ex Falso
- * shortcut: ctrl+left/right, left/right for treeview navigation
+ * Shortcut: ctrl+left/right, left/right for treeview navigation
  * Some UI cleanup, less padding in the main window
- * Rememebr window size / position for properties, info, browsers
- * Device selection for the gstreamer backend
+ * Remember window size & position for properties, info, browsers [106]
+ * Device selection for the  back-end
  * Use lyricist for finding lyrics if available
- * click on default cover icon launches album art plugin (Nick Boultbee)
- * fix: Work with compiz window placement plugin [871]
- * fix: queue widgets not clickable in some cases
- * fix: double click on album will plays song from queue
- * fix: filter on album in album browser now uses the album key
- * new: PluginConfigMixin added to core to simplify plugin preferences.
- * fix: --status (carlo.teubner) [1045] 
+ * Click on default cover icon launches album art plugin [2] (Nick Boultbee)
+ * Fix: Work with Compiz window placement plugin [871]
+ * Fix: Queue widgets not clickable in some cases
+ * Fix: Double-click on album will plays song from queue [231]
+ * Fix: Filter on album in album browser now uses the album key
+ * New: PluginConfigMixin added to core to simplify plugin prefs (Nick Boultbee)
+ * Fix: --status (carlo.teubner) [1045]
+ * Removed junk folder (and contents) from codebase
 
 Formats
- * new: Monkey's Audio
- * new: Ogg Opus (needs mutagen 0.21)
- * new: MIDI
- * Basic SPC tag parsing (David Schneider) [282]
+ * New: Monkey's Audio
+ * New: Ogg Opus (needs mutagen 0.21) [1012]
+ * New: MIDI
+ * Basic SPC tag parsing [282] (David Schneider)
  * Add m4v to valid mp4 extensions 
 
 Tagging
  * Limit path sections to 255 chars instead of tags to 100 [915]
  * ID3: Write foobar style replaygain tags. [1027]
- * VORBISCOMMENT: Write totaltracks/totaldiscs (Michael Ball) [929]
- * shortcut: ctrl-s for saving changes, and configurable standard accels
-   per locale (alex.geoffrey.smith, Nick Boultbee) [697]
- * Updates to tag splitting (originalartist, performer)
+ * VORBISCOMMENT: Write totaltracks/totaldiscs [929] (Michael Ball)
+ * Shortcut: ctrl-s for saving changes, and configurable standard accels
+   per locale [697] (alex.geoffrey.smith, Nick Boultbee)
+ * Updates to tag splitting (originalartist, performer) (Nick Boultbee)
 
 Translations
- * new: Greek translation (Dimitris Papageorgiou)
+ * New: Greek translation (Dimitris Papageorgiou)
  * German translation update (Rüdiger Arp)
  * British English translation update (Nick Boultbee)
- * French translation update (Nick Boultbee)
+ * French translation partial update (Nick Boultbee)
 
 Plugins
- * removed: lastfmsubmitd
- * removed: DBus mmkeys (moved to core)
- * removed: Ubuntu Sound Menu (no longer needed)
- * new: UPnP AV Media Server plugin (needs rygel)
- * new: ViewLyrics plugin (Vasiliy Faronov)
- * new: filter on directory [922]
- * new: Zeitgeist plugin [717]
- * new: Mac OS X mmkeys plugin (Martijn Pieters) [967]
- * new: Telepathy/Empathy status plugin (Nick Boultbee)
- * new GStreamer: Compressor, Crossfeed, Pitch, Mono
- * new: Filter on multiple tags [1014]
- * new: Squeezebox Playlist Export
+ * Removed: lastfmsubmitd
+ * Removed: DBus mmkeys (moved to core)
+ * Removed: Ubuntu Sound Menu (no longer needed)
+ * New: UPnP AV Media Server plugin (needs rygel)
+ * New: ViewLyrics plugin (Vasiliy Faronov)
+ * New: Filter on directory [922]
+ * New: Zeitgeist plugin [717]
+ * New: Mac OS X mmkeys plugin (Martijn Pieters) [967]
+ * New: Telepathy/Empathy status plugin [478] (Nick Boultbee)
+ * New GStreamer plugins: Compressor, Crossfeed, Pitch, Mono
+ * New: Filter on multiple tags [1014]
+ * New: Squeezebox Playlist Export (Nick Boultbee)
  * Browse Folders: Use the default file browser [983]
  * Equalizer: add presets
  * MPRIS: various fixes (for the GS plugin)
- * notify: Dismiss notifications after some time
- * duplicate browser: expand/unexpand all button
- * CD burn: menu based
- * updated: Auto Library Updater
+ * Notify: Dismiss notifications after some time
+ * Duplicate Browser: expand/unexpand all button
+ * CD burn: now menu-based
+ * Updated: Auto Library Updater (Nick Boultbee)
  
 Browsers
- * new: Album Tree View
+ * New: Album Collection - provides a tree-like view of albums similar to Paned.
  * Playlists:
-   * Delete shortcut (Johannes Marbach) [942]
-   * Shuffle playlist
-   * Remove duplicates
+   * Delete shortcut [942] (Johannes Marbach)
+   * Shuffle playlist (Nick Boultbee)
+   * Remove duplicates [685] (Nick Boultbee)
  * Album list: more filters
 
 Windows
