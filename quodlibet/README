@@ -34,8 +34,8 @@ and search and foramtting pattern syntax.
 
 Quod Libet depends on the Python runtime and associated libraries.
 
-    * Python (>= 2.4):		http://www.python.org
-    * PyGTK (>= 2.10):		http://www.pygtk.org
+    * Python (>= 2.6):		http://www.python.org
+    * PyGTK (>= 2.16):		http://www.pygtk.org
     * PyGSt (>= 0.10.2):	http://gstreamer.freedesktop.org/
     * Mutagen (>= 1.10):
 	http://code.google.com/p/quodlibet/wiki/Mutagen
@@ -76,4 +76,4 @@ install. You can do this with
  $ ./setup.py install
 
 For more information, see 
-http://code.google.com/p/quodlibet/wiki/Guide_Requirements
+http://code.google.com/p/quodlibet/wiki/Requirements
