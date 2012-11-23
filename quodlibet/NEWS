@@ -1,5 +1,112 @@
-Quod Libet requires Python 2.5, PyGTK 2.12, and Mutagen 1.11,
-but recommends Python 2.5, PyGTK 2.16, and Mutagen 1.20 or later.
+Quod Libet requires Python 2.6, PyGTK 2.16, and Mutagen 1.11,
+but recommends Python 2.6, PyGTK 2.16, and Mutagen 1.20 or later.
+
+2.4.91 (2012-11-23) - hello and thank you for installing an internet!
+
+News for packagers
+ * setup.py will install png and svg icons into hicolor and a png icon into
+   pixmaps. It will also try to call gtk-update-icon-cache if it's in the
+   target prefix/root (make sure the icon cache gets updated on package
+   install)
+ * C extensions removed. QL is now Python only.
+ * PyGTK 2.16+
+ * Python 2.6+
+ * Support for libudev.so.1 (>= 183)
+ * new: python-keybinder needed for multimedia keys
+ * new plugin directory: gstreamer
+ * Optional plugin dependencies:
+   * removed: python-indicate (Ubuntu sound menu),
+              lastfmsubmitd (old last.fm plugin)
+   * new: rygel (DBus UPnP MediaServer), python-zeitgeist (Zeitgeist)
+
+News for translators
+ * QUODLIBET_TEST_TRANS=xxx will append/prepend "xxx" to all translations so
+   you see what is translatable and for devs to check how, long translations
+   will affect the UI.
+ * "setup.py po_stats" to see how much is translated for each po file.
+ * "setup.py check_pot" to see if a file containing translatable strings is
+   missing from POTFILES.in
+
+General
+ * search: Handle non-ascii values for filesystem tags
+   (~filename, ~dirname..) [227]
+ * new internal tags:  ~originalyear ~#originalyear. [966]
+ * new internal tag: ~playlists (Nick Boultbee)
+ * shortcut: alt + left/right -> seek +/- 10 seconds
+ * Support startup notification spec
+ * Support newest thumbnail spec (v0.8.0)
+ * Basic Unity quicklist
+ * new --stop switch to stop and release the audio device
+ * List tooltips: work with gnome shell, never shift left, support trees
+ * new --no-plugins switch to start without plugins
+ * No wakeups if nothing is playing.
+ * Directory mimetype for Ex Falso
+ * shortcut: ctrl+left/right, left/right for treeview navigation
+ * Some UI cleanup, less padding in the main window
+ * Rememebr window size / position for properties, info, browsers
+ * Device selection for the gstreamer backend
+ * Use lyricist for finding lyrics if available
+ * click on default cover icon launches album art plugin (Nick Boultbee)
+ * fix: Work with compiz window placement plugin [871]
+ * fix: queue widgets not clickable in some cases
+ * fix: double click on album will plays song from queue
+ * fix: filter on album in album browser now uses the album key
+ * new: PluginConfigMixin added to core to simplify plugin preferences.
+ * fix: --status (carlo.teubner) [1045] 
+
+Formats
+ * new: Monkey's Audio
+ * new: Ogg Opus (needs mutagen 0.21)
+ * new: MIDI
+ * Basic SPC tag parsing (David Schneider) [282]
+ * Add m4v to valid mp4 extensions 
+
+Tagging
+ * Limit path sections to 255 chars instead of tags to 100 [915]
+ * ID3: Write foobar style replaygain tags. [1027]
+ * VORBISCOMMENT: Write totaltracks/totaldiscs (Michael Ball) [929]
+ * shortcut: ctrl-s for saving changes, and configurable standard accels
+   per locale (alex.geoffrey.smith, Nick Boultbee) [697]
+ * Updates to tag splitting (originalartist, performer)
+
+Translations
+ * new: Greek translation (Dimitris Papageorgiou)
+ * German translation update (Rüdiger Arp)
+ * British English translation update (Nick Boultbee)
+ * French translation update (Nick Boultbee)
+
+Plugins
+ * removed: lastfmsubmitd
+ * removed: DBus mmkeys (moved to core)
+ * removed: Ubuntu Sound Menu (no longer needed)
+ * new: UPnP AV Media Server plugin (needs rygel)
+ * new: ViewLyrics plugin (Vasiliy Faronov)
+ * new: filter on directory [922]
+ * new: Zeitgeist plugin [717]
+ * new: Mac OS X mmkeys plugin (Martijn Pieters) [967]
+ * new: Telepathy/Empathy status plugin (Nick Boultbee)
+ * new GStreamer: Compressor, Crossfeed, Pitch, Mono
+ * new: Filter on multiple tags [1014]
+ * new: Squeezebox Playlist Export
+ * Browse Folders: Use the default file browser [983]
+ * Equalizer: add presets
+ * MPRIS: various fixes (for the GS plugin)
+ * notify: Dismiss notifications after some time
+ * duplicate browser: expand/unexpand all button
+ * CD burn: menu based
+ * updated: Auto Library Updater
+ 
+Browsers
+ * new: Album Tree View
+ * Playlists:
+   * Delete shortcut (Johannes Marbach) [942]
+   * Shuffle playlist
+   * Remove duplicates
+ * Album list: more filters
+
+Windows
+ * Make Browse folder plugin work [993]
+ * Multimedia keys support
 
 2.4.1 (2012-07-27) - Man! If I were a robot, a lot of things would be different
  * Fixes:
