@@ -23,6 +23,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
+from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, FILESYSTEM_TAGS, AudioFile
@@ -488,10 +489,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         count = len(songs)
         if (count > 1 and
             config.getboolean("browsers", "rating_confirm_multiple")):
-            if not qltk.ConfirmAction(
-                    self, _("Confirm rating"),
-                    _("You are about to change the rating of %d songs.") % count
-                    + _("Do you wish to continue?")).run():
+            dialog = ConfirmRateMultipleDialog(self, count, value)
+            if dialog.run() != gtk.RESPONSE_YES:
                 return
         for song in songs:
             song["~#rating"] = value
