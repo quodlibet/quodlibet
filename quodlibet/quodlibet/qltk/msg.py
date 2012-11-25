@@ -15,7 +15,8 @@ class Message(gtk.MessageDialog):
     def __init__(
         self, kind, parent, title, description, buttons=gtk.BUTTONS_OK):
         parent = get_top_parent(parent)
-        text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
+        text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
+                % (title, description))
         super(Message, self).__init__(
             parent, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             kind, buttons)
@@ -46,7 +47,8 @@ class CancelRevertSave(gtk.MessageDialog):
         title = _("Discard tag changes?")
         description = _("Tags have been changed but not saved. Save these "
                         "files, or revert and discard changes?")
-        text = "<span size='xx-large'>%s</span>\n\n%s" % (title, description)
+        text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
+                % (title, description))
         parent = get_top_parent(parent)
         super(CancelRevertSave, self).__init__(
             parent, flags=0, type=gtk.MESSAGE_WARNING,
