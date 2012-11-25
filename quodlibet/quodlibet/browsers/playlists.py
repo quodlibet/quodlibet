@@ -106,6 +106,21 @@ class ConfirmRemovePlaylistDialog(qltk.Message):
                          gtk.STOCK_DELETE, gtk.RESPONSE_YES)
 
 
+class ConfirmRemoveDuplicatesDialog(qltk.Message):
+    def __init__(self, parent, playlist, count):
+        title = ngettext("Are you sure you want to remove %d duplicate song?",
+                         "Are you sure you want to remove %d duplicate songs?",
+                         count) % count
+        description = (_("The duplicate songs will be removed "
+                         "from the playlist '%s'.") % playlist.name)
+
+        super(ConfirmRemoveDuplicatesDialog, self).__init__(
+            gtk.MESSAGE_WARNING, parent, title, description, gtk.BUTTONS_NONE)
+
+        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                         gtk.STOCK_DELETE, gtk.RESPONSE_YES)
+
+
 class GetPlaylistName(GetStringDialog):
     def __init__(self, parent):
         super(GetPlaylistName, self).__init__(
@@ -441,13 +456,8 @@ class Playlists(gtk.VBox, Browser):
             if len(dupes) < 1:
                 print_d("No duplicates in this playlist")
                 return
-            print_d("Duplicated: %s" % ([s("~filename") for s in dupes]))
-            action_msg = ngettext("You are about to remove %d song.",
-                    "You are about to remove %d songs.",len(dupes)) % len(dupes)
-            if qltk.ConfirmAction(self,
-                    _("Confirm duplicates removal"),
-                    "%s\n%s" % (action_msg, _("Do you wish to continue?"))
-                    ).run():
+            dialog = ConfirmRemoveDuplicatesDialog(self, playlist, len(dupes))
+            if dialog.run() == gtk.RESPONSE_YES:
                 playlist.remove_songs(dupes, library, True)
                 Playlists.changed(playlist)
                 self.activate()
