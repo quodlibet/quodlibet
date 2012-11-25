@@ -11,6 +11,23 @@ from quodlibet import util, config
 from quodlibet import qltk
 from gettext import ngettext
 
+
+class ConfirmRateMultipleDialog(qltk.Message):
+    def __init__(self, parent, count, value):
+        assert count > 1
+
+        title = (_("Are you sure you want to change the "
+                   "rating of all %d songs?") % count)
+        description = _("The rating of all selected songs will "
+                        "be changed to '%s'") % util.format_rating(value)
+
+        super(ConfirmRateMultipleDialog, self).__init__(
+            gtk.MESSAGE_WARNING, parent, title, description, gtk.BUTTONS_NONE)
+
+        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                         gtk.STOCK_APPLY, gtk.RESPONSE_YES)
+
+
 class RatingsMenuItem(gtk.MenuItem):
     __accels = gtk.AccelGroup()
 
@@ -18,13 +35,8 @@ class RatingsMenuItem(gtk.MenuItem):
         count = len(songs)
         if (count > 1 and
                 config.getboolean("browsers", "rating_confirm_multiple")):
-            # There are many plural forms in some supported languages
-            # Translators: ratings changes for multiple files
-            msg = ngettext("You are about to change the rating of %d song.",
-                           "You are about to change the rating of %d songs.",
-                           count) % count
-            msg += "\n%s" % _("Do you wish to continue?")
-            if not qltk.ConfirmAction(self, _("Confirm rating"), msg).run():
+            dialog = ConfirmRateMultipleDialog(self, count, value)
+            if dialog.run() != gtk.RESPONSE_YES:
                 return
         for song in songs:
             song["~#rating"] = value
