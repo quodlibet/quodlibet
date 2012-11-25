@@ -92,6 +92,20 @@ def __ParsePlaylist(name, plfilename, files, library):
     return playlist
 
 
+class ConfirmRemovePlaylistDialog(qltk.Message):
+    def __init__(self, parent, playlist):
+        title = (_("Are you sure you want to delete the playlist '%s'?")
+                 % playlist.name)
+        description = (_("All information about the selected playlist "
+                         "will be deleted and can not be restored."))
+
+        super(ConfirmRemovePlaylistDialog, self).__init__(
+            gtk.MESSAGE_WARNING, parent, title, description, gtk.BUTTONS_NONE)
+
+        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                         gtk.STOCK_DELETE, gtk.RESPONSE_YES)
+
+
 class GetPlaylistName(GetStringDialog):
     def __init__(self, parent):
         super(GetPlaylistName, self).__init__(
@@ -285,16 +299,16 @@ class Playlists(gtk.VBox, Browser):
     def __key_pressed(self, widget, event):
         if qltk.is_accel(event, "Delete"):
             model, iter = self.__view.get_selection().get_selected()
-            if iter:
-                msg = (_("You are about to delete the playlist <i>%s</i>.\n")
-                       % util.escape(model[iter][0].name)
-                      + _("Do you wish to continue?"))
-                title = _("Confirm playlist removal")
-                if qltk.ConfirmAction(self, title, msg).run():
-                    model[iter][0].delete()
-                    model.get_model().remove(
-                        model.convert_iter_to_child_iter(None, iter))
-                    return True
+            if not iter:
+                return False
+
+            playlist = model[iter][0]
+            dialog = ConfirmRemovePlaylistDialog(self, playlist)
+            if dialog.run() == gtk.RESPONSE_YES:
+                playlist.delete()
+                model.get_model().remove(
+                    model.convert_iter_to_child_iter(None, iter))
+
         return False
 
     def __rename(self, group, acceleratable, keyval, modifier):
@@ -455,9 +469,12 @@ class Playlists(gtk.VBox, Browser):
         menu.prepend(gtk.SeparatorMenuItem())
 
         def _remove(model, itr):
-            model[itr][0].delete()
-            model.get_model().remove(
-                model.convert_iter_to_child_iter(None, itr))
+            playlist = model[itr][0]
+            dialog = ConfirmRemovePlaylistDialog(self, playlist)
+            if dialog.run() == gtk.RESPONSE_YES:
+                playlist.delete()
+                model.get_model().remove(
+                    model.convert_iter_to_child_iter(None, itr))
 
         rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
         rem.connect_object('activate', _remove, model, itr)

@@ -253,7 +253,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             c.set_tooltip_text(_("Show search results after the user "
                 "stops typing."))
             vb.pack_start(c, expand=False)
-            f = qltk.Frame(_("Search"), child=vb)
+            # Translators: The heading of the preference group, no action
+            f = qltk.Frame(Q_("heading|Search"), child=vb)
             self.pack_start(f, expand=False)
 
             # Ratings
