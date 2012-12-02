@@ -1,11 +1,8 @@
 from quodlibet.util.collection import Album
 from quodlibet.formats._audio import AudioFile
-from quodlibet import const
-from tests import TestCase, add
+from tests import add
 from tests.plugin import PluginTestCase
-
-# Allow some debugging
-const.DEBUG = False
+from quodlibet.util.dprint import print_d
 
 A1S1 = AudioFile(
         {'album': 'greatness', 'title': 'excellent', 'artist': 'fooman',
@@ -42,6 +39,7 @@ class TRandomAlbum(PluginTestCase):
     """Some basic tests for the random album plugin algorithm"""
     WEIGHTS = {'rating': 0, 'added': 0, 'laststarted': 0, 'lastplayed': 0,
                'length': 0, 'skipcount': 0, 'playcount': 0}
+
 
     def setUp(self):
         self.plugin = self.plugins["Random Album Playback"]()
