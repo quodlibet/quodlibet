@@ -10,10 +10,13 @@ PLUGIN_DIR = os.path.abspath(os.path.join(sys.path[0], '../plugins'))
 ms = ModuleScanner([PLUGIN_DIR])
 ms.rescan()
 plugins = {}
+modules = {}
 for name, module in ms.modules.iteritems():
     for plugin in list_plugins(module):
         plugins[plugin.PLUGIN_ID] = plugin
+        modules[plugin.PLUGIN_ID] = module
 
 class PluginTestCase(TestCase):
     """Base class for all plugin tests"""
     plugins = plugins
+    modules = modules

@@ -14,18 +14,12 @@ from tests import add
 from tests.plugin import PluginTestCase
 from quodlibet import config
 
-# Oh, yuck
-SONGSMENU_PLUGINS_DIR = os.path.abspath(
-        os.path.join(dirname(__file__), "../../../plugins/songsmenu"))
-print SONGSMENU_PLUGINS_DIR
-sys.path.append(SONGSMENU_PLUGINS_DIR)
-from custom_commands import *
-
 
 class TCustomCommands(PluginTestCase):
     """Test CustomCommands plugin and associated classes"""
 
     def setUp(self):
+        globals().update(vars(self.modules["CustomCommands"]))
         config.init()
         self.cmd_list = CustomCommands.DEFAULT_COMS
         self.commands = JSONObjectDict.from_list(self.cmd_list)
@@ -36,6 +30,7 @@ class TCustomCommands(PluginTestCase):
     def test_JSONBasedEditor(self):
         ed = JSONBasedEditor(Command, self.commands, None, "title")
         ed.show_now()
+        ed.destroy()
 
 
 add(TCustomCommands)
