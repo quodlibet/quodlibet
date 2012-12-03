@@ -71,9 +71,13 @@ def main():
     except (ValueError, TypeError): pass
     else: const.DEFAULT_RATING = default_rating
 
-    try: symbol = config.get("settings", "rating_symbol").decode("utf-8")
+    try: symbol = config.get("settings", "rating_symbol_full").decode("utf-8")
     except UnicodeDecodeError: pass
     else: util.RATING_SYMBOL = symbol
+
+    try: symbol = config.get("settings", "rating_symbol_blank").decode("utf-8")
+    except UnicodeDecodeError: pass
+    else: util.RATING_SYMBOL_BLANK = symbol
 
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")

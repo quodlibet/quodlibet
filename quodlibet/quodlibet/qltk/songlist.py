@@ -138,9 +138,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         def __init__(self):
             super(SongList.RatingColumn, self).__init__("~#rating")
-            self._update_layout(util.format_rating(1.0))
             self.set_resizable(False)
             self.set_expand(False)
+            self._update_layout(util.format_rating(1.0), force=True)
 
     class NonSynthTextColumn(WideTextColumn):
         # Optimize for non-synthesized keys by grabbing them directly.
@@ -476,7 +476,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
             song = view.get_model()[path][0]
             l = gtk.Label()
-            l.set_text(util.format_rating(util.RATING_PRECISION))
+            l.set_text(util.format_rating(util.RATING_PRECISION, blank=False))
             width = l.size_request()[0]
             l.destroy()
             count = int(float(cellx - 5) / width) + 1

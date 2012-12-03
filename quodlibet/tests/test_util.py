@@ -62,21 +62,54 @@ add(Tunexpand)
 
 class Tformat_rating(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(util.format_rating(0), "")
+        self.failUnlessEqual(util.format_rating(0, blank=False), "")
 
     def test_full(self):
         self.failUnlessEqual(
-            len(util.format_rating(1)), int(1/util.RATING_PRECISION))
-    def test_rating(self):
+            len(util.format_rating(1, blank=False)),
+            int(1/util.RATING_PRECISION))
+
+    def test_rating_length(self):
+        util.RATING_PRECISION = 4
         for i in range(0, int(1/util.RATING_PRECISION+1)):
             self.failUnlessEqual(
-                i, len(util.format_rating(i * util.RATING_PRECISION)))
+                i, len(util.format_rating(i * util.RATING_PRECISION,
+                                          blank=False)))
 
     def test_bogus(self):
         max_length = int(1 / util.RATING_PRECISION)
-        self.failUnlessEqual(len(util.format_rating(2**32-1)), max_length)
+        self.failUnlessEqual(len(util.format_rating(2**32-1, blank=False)),
+                             max_length)
+        self.failUnlessEqual(len(util.format_rating(-4.2, blank=False)), 0)
 
-        self.failUnlessEqual(len(util.format_rating(-4.2)), 0)
+    def test_blank_lengths(self):
+        """Check that there are no unsuspected edge-cases
+        for various rating precisions"""
+        for util.RATING_PRECISION in [0.1, 0.2, 0.25, 1/3.0, 0.5]:
+            steps = int(1/util.RATING_PRECISION)
+            self.failUnlessEqual(len(util.format_rating(1)), steps)
+            self.failUnlessEqual(len(util.format_rating(0)), steps)
+            self.failUnlessEqual(len(util.format_rating(0.5)), steps)
+            self.failUnlessEqual(len(util.format_rating(1/3.0)), steps)
+
+    def test_blank_values(self):
+        util.RATING_PRECISION = 0.2
+        util.BLANK_RATING_SYMBOL = "0"
+        util.RATING_SYMBOL = "1"
+        # Easy ones first
+        self.failUnlessEqual(util.format_rating(0.0), "00000")
+        self.failUnlessEqual(util.format_rating(0.2), "10000")
+        self.failUnlessEqual(util.format_rating(0.8), "11110")
+        self.failUnlessEqual(util.format_rating(1.0), "11111")
+        # A bit arbitrary, but standard behaviour
+        self.failUnlessEqual(util.format_rating(0.5), "11100")
+        # Test rounding down...
+        self.failUnlessEqual(util.format_rating(0.6), "11100")
+        # Test rounding up...
+        self.failUnlessEqual(util.format_rating(0.9), "11111")
+        # You never know...
+        self.failUnlessEqual(util.format_rating(3.0), "11111")
+        self.failUnlessEqual(util.format_rating(-0.5), "00000")
 
 add(Tformat_rating)
 
