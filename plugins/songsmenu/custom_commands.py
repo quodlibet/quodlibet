@@ -137,8 +137,8 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         hb.set_border_width(0)
 
         button = qltk.Button(_("Edit Custom Commands") + "...", gtk.STOCK_EDIT)
-        button.set_tooltip_markup(_("Supports QL patterns\neg "
-                                    "<tt>stat <~filename></tt>"))
+        button.set_tooltip_markup(util.escape(_("Supports QL patterns\neg "
+                                    "<tt>stat <~filename></tt>")))
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, expand=True)
         hb.show_all()

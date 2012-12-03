@@ -226,8 +226,11 @@ class JSONBasedEditor(qltk.UniqueWindow):
     def __cdf(self, column, cell, model, iter):
         row = model[iter]
         obj = row[0]
-        cell.set_property('markup', '<b>%s</b>\n%s'
-                                    % (obj.name, util.escape(str(obj))))
+        obj_name = util.escape(obj.name)
+        obj_description = util.escape(str(obj))
+        markup = '<b>%s</b>\n%s' % (obj_name, obj_description)
+        cell.markup = markup
+        cell.set_property('markup', markup)
 
     def __finish(self, widget):
         # TODO: Warn about impending deletion of nameless items, or something
