@@ -79,6 +79,15 @@ def main():
     except UnicodeDecodeError: pass
     else: util.RATING_SYMBOL_BLANK = symbol
 
+    from quodlibet.util.collection import Album
+    try:
+        cover_size = config.getint("browsers", "cover_size")
+    except config.error:
+        pass
+    else:
+        if cover_size > 0:
+            Album.COVER_SIZE = cover_size
+
     if config.get("settings", "headers").split() == []:
        config.set("settings", "headers", "title")
     headers = config.get("settings", "headers").split()

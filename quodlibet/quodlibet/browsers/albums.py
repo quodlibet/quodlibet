@@ -29,6 +29,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
+from quodlibet.util.collection import Album
 
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| (<date>)>
@@ -390,13 +391,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
             klass._pattern_text = PATTERN
 
         theme = gtk.icon_theme_get_default()
+        cover_size = Album.COVER_SIZE
         try:
             klass.__no_cover = theme.load_icon(
-                "quodlibet-missing-cover", 48, 0)
+                "quodlibet-missing-cover", cover_size, 0)
         except gobject.GError: pass
         else:
             klass.__no_cover = thumbnails.scale(
-                klass.__no_cover, (48, 48))
+                klass.__no_cover, (cover_size, cover_size))
 
         klass._pattern = XMLFromPattern(klass._pattern_text)
 
@@ -493,8 +495,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         self.__cover_column = column = gtk.TreeViewColumn("covers", render)
         column.set_visible(config.getboolean("browsers", "album_covers"))
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column.set_fixed_width(60)
-        render.set_property('height', 56)
+        column.set_fixed_width(Album.COVER_SIZE + 12)
+        render.set_property('height', Album.COVER_SIZE + 8)
 
         def cell_data_pb(column, cell, model, iter, no_cover):
             album = model[iter][0]

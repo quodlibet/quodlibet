@@ -136,6 +136,7 @@ def init(*rc_files):
           "radio": "", # radio filter selection
           "rating_click": "true", # click to rate song, on/off
           "rating_confirm_multiple": "false", # confirm rating multiple songs
+          "cover_size": "-1", # max cover height/width, <= 0 is default
           },
 
         # Kind of a dumping ground right now, should probably be
