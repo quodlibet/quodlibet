@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-23 13:37+0100\n"
+"POT-Creation-Date: 2012-12-08 14:12+0100\n"
 "PO-Revision-Date: 2011-10-15 15:19+0000\n"
 "Last-Translator: Naglis Jonaitis <njonaitis@gmail.com>\n"
 "Language-Team: Lithuanian (http://www.transifex.net/projects/p/quodlibet/"
@@ -80,10 +80,9 @@ msgstr[2] "%d diskų"
 msgid "Invalid pattern"
 msgstr "Netaisyklingas šablonas"
 
-#: ../quodlibet/browsers/albums.py:165
-#, fuzzy
+#: ../quodlibet/browsers/albums.py:166
 msgid "_Title"
-msgstr "Pavadinimas"
+msgstr "Pa_vadinimas"
 
 #: ../quodlibet/browsers/albums.py:166 ../quodlibet/qltk/prefs.py:147
 msgid "_Artist"
@@ -93,20 +92,17 @@ msgstr "_Atlikėjas"
 msgid "_Date"
 msgstr "_Data"
 
-#: ../quodlibet/browsers/albums.py:168
-#, fuzzy
+#: ../quodlibet/browsers/albums.py:169
 msgid "_Genre"
-msgstr "Žanras"
+msgstr "_Žanras"
 
-#: ../quodlibet/browsers/albums.py:173
-#, fuzzy
+#: ../quodlibet/browsers/albums.py:174
 msgid "Sort _by..."
-msgstr "Rikiuoti _pagal:"
+msgstr "Rikiuoti _pagal..."
 
-#: ../quodlibet/browsers/albums.py:193
-#, fuzzy
+#: ../quodlibet/browsers/albums.py:194
 msgid "_Preferences"
-msgstr "Pasirinktys"
+msgstr "_Nuostatos"
 
 #: ../quodlibet/browsers/albums.py:376
 msgid "Album List"
@@ -192,9 +188,9 @@ msgstr ""
 "nėra garso kanalas."
 
 #: ../quodlibet/browsers/audiofeeds.py:424
-#, fuzzy, python-format
+#, python-format
 msgid "Could not import %s. Audio Feeds browser disabled."
-msgstr "Negalima įkelti python-feedparser, Audio kanalų naršyklė išjungta."
+msgstr "Nepavyko įkelti %s. Audio kanalų naršyklė išjungta."
 
 #: ../quodlibet/browsers/audiofeeds.py:431
 msgid ""
@@ -219,14 +215,14 @@ msgstr[1] "%(count)d dainos (%(time)s)"
 msgstr[2] "%(count)d dainų (%(time)s)"
 
 #: ../quodlibet/browsers/collection.py:36
-#, fuzzy, python-format
+#, python-format
 msgid "Unknown %s"
-msgstr "Nežinoma"
+msgstr "Nežinoma (-s) %s"
 
 #: ../quodlibet/browsers/collection.py:37
-#, fuzzy, python-format
+#, python-format
 msgid "Multiple %s Values"
-msgstr "Iš_skaidyti į keletą reikšmių"
+msgstr "Kelios lauko %s reikšmės"
 
 #: ../quodlibet/browsers/collection.py:89 ../quodlibet/browsers/paned.py:70
 msgid "_Custom"
@@ -238,20 +234,19 @@ msgstr "Žymė"
 
 #: ../quodlibet/browsers/collection.py:150
 msgid "Merge"
-msgstr ""
+msgstr "Sulieti"
 
 #: ../quodlibet/browsers/collection.py:208
-#, fuzzy
 msgid "Album Collection Preferences"
-msgstr "Albumų sąrašo nustatymai"
+msgstr "Albumų sąrašo nuostatos"
 
 #: ../quodlibet/browsers/collection.py:489
 msgid "Album Collection"
-msgstr ""
+msgstr "Albumų kolekcija"
 
 #: ../quodlibet/browsers/collection.py:490
 msgid "Album _Collection"
-msgstr ""
+msgstr "Albumų _kolekcija"
 
 #: ../quodlibet/browsers/filesystem.py:34
 msgid "File System"
@@ -262,11 +257,11 @@ msgid "_File System"
 msgstr "_Failų sistema"
 
 #: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/browsers/media.py:452
-#: ../quodlibet/qltk/songlist.py:347
+#: ../quodlibet/qltk/songlist.py:348
 msgid "Unable to copy songs"
 msgstr "Negalima kopijuoti dainų"
 
-#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:348
+#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:349
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Failai, kuriuos pasirinkote, negali būti nukopijuoti į kitą dainų sąrašą ar "
@@ -301,9 +296,8 @@ msgid "Internet Radio"
 msgstr "Interneto radijas"
 
 #: ../quodlibet/browsers/iradio.py:193
-#, fuzzy
 msgid "Downloading station list"
-msgstr "Atsiųsti failus"
+msgstr "Atsiunčiamas stočių sąrašas"
 
 #: ../quodlibet/browsers/iradio.py:288
 msgid "New Station"
@@ -315,136 +309,135 @@ msgstr "Įveskite Interneto radijo stočių adresą:"
 
 #: ../quodlibet/browsers/iradio.py:310
 msgid "Electronic"
-msgstr ""
+msgstr "Elektroninė"
 
 #: ../quodlibet/browsers/iradio.py:313
 msgid "Hip Hop / Rap"
-msgstr ""
+msgstr "Hiphopas / Repas"
 
 #: ../quodlibet/browsers/iradio.py:314
 msgid "Oldies"
-msgstr ""
+msgstr "Senesnė muzika"
 
 #: ../quodlibet/browsers/iradio.py:315
 msgid "R&B"
-msgstr ""
+msgstr "R&B"
 
 #: ../quodlibet/browsers/iradio.py:316
 msgid "Japanese"
-msgstr ""
+msgstr "Japonų"
 
 #: ../quodlibet/browsers/iradio.py:317
 msgid "Indian"
-msgstr ""
+msgstr "Indų"
 
 #: ../quodlibet/browsers/iradio.py:318
 msgid "Religious"
-msgstr ""
+msgstr "Religinė"
 
 #: ../quodlibet/browsers/iradio.py:320
 msgid "Charts"
-msgstr ""
+msgstr "Topai"
 
 #: ../quodlibet/browsers/iradio.py:321
 msgid "Turkish"
-msgstr ""
+msgstr "Turkų"
 
 #: ../quodlibet/browsers/iradio.py:322
 msgid "Reggae / Dancehall"
-msgstr ""
+msgstr "Regis / „Šokių salės“ regis"
 
 #: ../quodlibet/browsers/iradio.py:323
-#, fuzzy
 msgid "Latin"
-msgstr "reitingas"
+msgstr "Lotynų"
 
 #: ../quodlibet/browsers/iradio.py:324
 msgid "College Radio"
-msgstr ""
+msgstr "Koledžų radijo stotys"
 
 #: ../quodlibet/browsers/iradio.py:325
 msgid "Talk / News"
-msgstr ""
+msgstr "Pokalbiai / Žinios"
 
 #: ../quodlibet/browsers/iradio.py:326
 msgid "Ambient"
-msgstr ""
+msgstr "Ambientinė"
 
 #: ../quodlibet/browsers/iradio.py:327
 msgid "Jazz"
-msgstr ""
+msgstr "Džiazas"
 
 #: ../quodlibet/browsers/iradio.py:328
 msgid "Classical"
-msgstr ""
+msgstr "Klasikinė"
 
 #: ../quodlibet/browsers/iradio.py:329
 msgid "Pop"
-msgstr ""
+msgstr "Pop"
 
 #: ../quodlibet/browsers/iradio.py:330
 msgid "Alternative"
-msgstr ""
+msgstr "Alternatyvioji"
 
 #: ../quodlibet/browsers/iradio.py:331
 msgid "Metal"
-msgstr ""
+msgstr "Metalas"
 
 #: ../quodlibet/browsers/iradio.py:332
 msgid "Country"
-msgstr ""
+msgstr "Kantri"
 
 #: ../quodlibet/browsers/iradio.py:333
 msgid "News"
-msgstr ""
+msgstr "Žinios"
 
 #: ../quodlibet/browsers/iradio.py:334
 msgid "Schlager"
-msgstr ""
+msgstr "Šlageriai"
 
 #: ../quodlibet/browsers/iradio.py:335
 msgid "Funk"
-msgstr ""
+msgstr "Fank"
 
 #: ../quodlibet/browsers/iradio.py:336
 msgid "Indie"
-msgstr ""
+msgstr "Indie"
 
 #: ../quodlibet/browsers/iradio.py:337
 msgid "Blues"
-msgstr ""
+msgstr "Bliuzas"
 
 #: ../quodlibet/browsers/iradio.py:338
 msgid "Soul"
-msgstr ""
+msgstr "Soul"
 
 #: ../quodlibet/browsers/iradio.py:339
 msgid "Lounge"
-msgstr ""
+msgstr "Lounge"
 
 #: ../quodlibet/browsers/iradio.py:340
 msgid "Punk"
-msgstr ""
+msgstr "Pank"
 
 #: ../quodlibet/browsers/iradio.py:341
 msgid "Reggaeton"
-msgstr ""
+msgstr "Regetonas"
 
 #: ../quodlibet/browsers/iradio.py:342
 msgid "Slavic"
-msgstr ""
+msgstr "Slavų"
 
 #: ../quodlibet/browsers/iradio.py:344
 msgid "Greek"
-msgstr ""
+msgstr "Graikų"
 
 #: ../quodlibet/browsers/iradio.py:345
 msgid "Gothic"
-msgstr ""
+msgstr "Gotikinė"
 
 #: ../quodlibet/browsers/iradio.py:346
 msgid "Rock"
-msgstr ""
+msgstr "Rokas"
 
 #: ../quodlibet/browsers/iradio.py:377
 msgid "_Internet Radio"
@@ -455,21 +448,18 @@ msgid "_New Station"
 msgstr "_Nauja stotis"
 
 #: ../quodlibet/browsers/iradio.py:443
-#, fuzzy
 msgid "_Update Stations"
-msgstr "_Nauja stotis"
+msgstr "_Atnaujinti stotis"
 
 #: ../quodlibet/browsers/iradio.py:468
-#, fuzzy
 msgid "All Stations"
-msgstr "Nauja stotis"
+msgstr "Visos stotys"
 
 #: ../quodlibet/browsers/iradio.py:472
 msgid "Favorites"
-msgstr ""
+msgstr "Mėgstamiausios"
 
 #: ../quodlibet/browsers/iradio.py:480
-#, fuzzy
 msgid "No Category"
 msgstr "Be kategorijos"
 
@@ -487,14 +477,12 @@ msgid "All stations listed are already in your library."
 msgstr "Visos šios stotys jau yra Jūsų bibliotekoje."
 
 #: ../quodlibet/browsers/iradio.py:689
-#, fuzzy
 msgid "Remove from Favorites"
-msgstr "_Pašalinti iš grojaraščio"
+msgstr "Pašalinti iš Mėgstamiausių"
 
 #: ../quodlibet/browsers/iradio.py:695
-#, fuzzy
 msgid "Add to Favorites"
-msgstr "_Pridėti į grojaraštį"
+msgstr "Pridėti prie Mėgstamiausių"
 
 #: ../quodlibet/browsers/iradio.py:786
 #, python-format
@@ -536,7 +524,7 @@ msgstr "_Medijos įrenginiai"
 msgid "_Eject"
 msgstr "At_jungti"
 
-#: ../quodlibet/browsers/media.py:334 ../quodlibet/browsers/playlists.py:470
+#: ../quodlibet/browsers/media.py:334 ../quodlibet/browsers/playlists.py:497
 msgid "_Rename"
 msgstr "Per_vadinti"
 
@@ -631,20 +619,45 @@ msgstr ""
 "\n"
 "%(current)d/%(total)d dainų pridėta."
 
-#: ../quodlibet/browsers/playlists.py:98
-#: ../quodlibet/browsers/playlists.py:367 ../quodlibet/util/collection.py:313
+#: ../quodlibet/browsers/playlists.py:97
+#, python-format
+msgid "Are you sure you want to delete the playlist '%s'?"
+msgstr "Ar tikrai norite ištrinti grojaraštį '%s'?"
+
+#: ../quodlibet/browsers/playlists.py:99
+msgid ""
+"All information about the selected playlist will be deleted and can not be "
+"restored."
+msgstr ""
+"Visa pažymėto grojaraščio informacija bus ištrinta be atkūrimo galimybės."
+
+#: ../quodlibet/browsers/playlists.py:111
+#, python-format
+msgid "Are you sure you want to remove %d duplicate song?"
+msgid_plural "Are you sure you want to remove %d duplicate songs?"
+msgstr[0] "Ar tikrai norite pašalinti %d pasikartojančią dainą?"
+msgstr[1] "Ar tikrai norite pašalinti %d pasikartojančias dainas?"
+msgstr[2] "Ar tikrai norite pašalinti %d pasikartojančių dainų?"
+
+#: ../quodlibet/browsers/playlists.py:114
+#, python-format
+msgid "The duplicate songs will be removed from the playlist '%s'."
+msgstr "Pasikartojančios dainos bus pašalintos iš grojaraščio '%s'."
+
+#: ../quodlibet/browsers/playlists.py:127
+#: ../quodlibet/browsers/playlists.py:396 ../quodlibet/util/collection.py:313
 msgid "New Playlist"
 msgstr "Naujas grojaraštis"
 
-#: ../quodlibet/browsers/playlists.py:99
+#: ../quodlibet/browsers/playlists.py:128
 msgid "Enter a name for the new playlist:"
 msgstr "Įveskite naujo grojaraščio pavadinimą:"
 
-#: ../quodlibet/browsers/playlists.py:105
+#: ../quodlibet/browsers/playlists.py:134
 msgid "_New Playlist"
 msgstr "_Naujas grojaraštis"
 
-#: ../quodlibet/browsers/playlists.py:129
+#: ../quodlibet/browsers/playlists.py:158
 #: ../quodlibet/qltk/exfalsowindow.py:192 ../quodlibet/qltk/properties.py:133
 #: ../quodlibet/util/collection.py:332
 #, python-format
@@ -654,72 +667,45 @@ msgstr[0] "%(title)s bei dar %(count)d"
 msgstr[1] "%(title)s bei dar %(count)d"
 msgstr[2] "%(title)s bei dar %(count)d"
 
-#: ../quodlibet/browsers/playlists.py:144
+#: ../quodlibet/browsers/playlists.py:173
 msgid "Playlists"
 msgstr "Grojaraščiai"
 
-#: ../quodlibet/browsers/playlists.py:145
+#: ../quodlibet/browsers/playlists.py:174
 msgid "_Playlists"
 msgstr "_Grojaraščiai"
 
-#: ../quodlibet/browsers/playlists.py:210
+#: ../quodlibet/browsers/playlists.py:239
 msgid "_Remove from Playlist"
 msgstr "_Pašalinti iš grojaraščio"
 
-#: ../quodlibet/browsers/playlists.py:247
+#: ../quodlibet/browsers/playlists.py:276
 msgid "_Import"
 msgstr "_Importuoti"
 
-#: ../quodlibet/browsers/playlists.py:289
-#, python-format
-msgid "You are about to delete the playlist <i>%s</i>.\n"
-msgstr ""
-
-#: ../quodlibet/browsers/playlists.py:291
-#: ../quodlibet/browsers/playlists.py:435 ../quodlibet/qltk/ratingsmenu.py:26
-#: ../quodlibet/qltk/songlist.py:494
-msgid "Do you wish to continue?"
-msgstr ""
-
-#: ../quodlibet/browsers/playlists.py:292
-msgid "Confirm playlist removal"
-msgstr ""
-
-#: ../quodlibet/browsers/playlists.py:387
-#: ../quodlibet/browsers/playlists.py:521
+#: ../quodlibet/browsers/playlists.py:416
+#: ../quodlibet/browsers/playlists.py:548
 msgid "Unable to import playlist"
 msgstr "Negalima importuoti grojaraščio"
 
-#: ../quodlibet/browsers/playlists.py:388
-#: ../quodlibet/browsers/playlists.py:522
+#: ../quodlibet/browsers/playlists.py:417
+#: ../quodlibet/browsers/playlists.py:549
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod Libet gali importuoti tik M3U ir PLS formato grojaraščius."
 
-#: ../quodlibet/browsers/playlists.py:431
-#, python-format
-msgid "You are about to remove %d song."
-msgid_plural "You are about to remove %d songs."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#: ../quodlibet/browsers/playlists.py:434
-msgid "Confirm duplicates removal"
-msgstr ""
-
-#: ../quodlibet/browsers/playlists.py:441
+#: ../quodlibet/browsers/playlists.py:465
 msgid "Remove Duplicates"
-msgstr ""
+msgstr "Pašalinti pasikartojančias dainas"
 
-#: ../quodlibet/browsers/playlists.py:451 ../quodlibet/qltk/playorder.py:123
+#: ../quodlibet/browsers/playlists.py:475 ../quodlibet/qltk/playorder.py:123
 msgid "_Shuffle"
 msgstr "_Išmaišytai"
 
-#: ../quodlibet/browsers/playlists.py:503
+#: ../quodlibet/browsers/playlists.py:530
 msgid "Unable to rename playlist"
 msgstr "Negalima pervadinti grojaraščio"
 
-#: ../quodlibet/browsers/playlists.py:510
+#: ../quodlibet/browsers/playlists.py:537
 msgid "Import Playlist"
 msgstr "Importuoti grojaraštį"
 
@@ -788,28 +774,26 @@ msgstr "Muzikos grotuvas"
 msgid "Listen to, browse, or edit your audio collection"
 msgstr "Klausykite, naršykite ar redaguokite savo muzikos kolekciją"
 
-#: ../quodlibet.desktop.in.h:3
-#, fuzzy
-msgid "Play/Pause"
-msgstr "Grotuvas"
-
 #: ../quodlibet.desktop.in.h:4
+msgid "Play/Pause"
+msgstr "Groti/Pristabdyti"
+
+#: ../quodlibet.desktop.in.h:3
 msgid "Next"
-msgstr ""
+msgstr "Kita"
 
 #: ../quodlibet.desktop.in.h:5
-#, fuzzy
 msgid "Previous"
-msgstr "Perž_iūra"
+msgstr "Ankstesnė"
 
 #: ../quodlibet/devices/_base.py:58
 msgid "Unknown Device"
 msgstr "Nežinomas įrenginys"
 
 #: ../quodlibet/devices/__init__.py:19
-#, fuzzy, python-format
+#, python-format
 msgid "Could not import %s, which is needed for device support."
-msgstr "Negalima įkelti dbus-python, kuri yra būtina įrenginio palaikymui."
+msgstr "Nepavyko įkelti %s, kuri yra būtina įrenginio palaikymui."
 
 #: ../quodlibet/devices/__init__.py:132
 #, python-format
@@ -821,9 +805,9 @@ msgid "No eject command found."
 msgstr "Nerasta atjungimo komanda."
 
 #: ../quodlibet/devices/__init__.py:292 ../quodlibet/devices/__init__.py:298
-#, fuzzy, python-format
+#, python-format
 msgid "%s: Could not find %s."
-msgstr "%s: Nepavyko rasti libudev."
+msgstr "%s: Nepavyko rasti %s."
 
 #: ../quodlibet/devices/__init__.py:475
 msgid "Initializing device backend."
@@ -914,7 +898,7 @@ msgstr "Perrašyti <b>%s</b>?"
 #: ../quodlibet/formats/_audio.py:683
 #, python-format
 msgid "Failed reading album art \"%s\""
-msgstr ""
+msgstr "Nepavyko perskaityti albumo viršelio \"%s\""
 
 #: ../quodlibet/formats/__init__.py:78
 #, python-format
@@ -939,16 +923,17 @@ msgid ""
 "Cannot save library contents to %s (it's a directory). Please remove it and "
 "try again."
 msgstr ""
+"Negalima išsaugoti bibliotekos turinio į '%s' (tai aplankas). Pašalinkite jį "
+"ir bandykite dar kartą."
 
 #. TODO: Better handling of this edge-case...
 #: ../quodlibet/library/_library.py:201
-#, fuzzy
 msgid "Library Error"
-msgstr "Bibliotekos naršyklė"
+msgstr "Bibliotekos klaida"
 
 #: ../quodlibet/library/songs.py:358 ../quodlibet/library/songs.py:367
 #: ../quodlibet/library/songs.py:407 ../quodlibet/qltk/information.py:254
-#: ../quodlibet/qltk/prefs.py:476
+#: ../quodlibet/qltk/prefs.py:477
 msgid "Library"
 msgstr "Biblioteka"
 
@@ -978,31 +963,30 @@ msgid "_Output pipeline:"
 msgstr "_Išvestis:"
 
 #: ../quodlibet/player/gstbe.py:81
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f seconds"
-msgstr "%d sekundė"
+msgstr "%.1f sekundė"
 
 #: ../quodlibet/player/gstbe.py:96
 msgid "_Buffer duration:"
-msgstr ""
+msgstr "_Buferizavimo trukmė:"
 
 #: ../quodlibet/player/gstbe.py:102
-#, fuzzy
 msgid "_Output device:"
-msgstr "_Išvestis:"
+msgstr "Išvesties įren_ginys:"
 
 #: ../quodlibet/player/gstbe.py:218
-#, fuzzy, python-format
+#, python-format
 msgid "Could not link GStreamer pipeline: '%s'"
-msgstr "Nepavyko sukurti GStreamer išvesties."
+msgstr "Nepavyko susieti GStreamer išvesties: '%s'"
 
 #: ../quodlibet/player/gstbe.py:422
 msgid "Stream"
-msgstr ""
+msgstr "Srautas"
 
 #: ../quodlibet/player/gstbe.py:422
 msgid "Buffering"
-msgstr ""
+msgstr "Buferizuojama"
 
 #. Backend error; show message and halt playback
 #: ../quodlibet/player/gstbe.py:481
@@ -1041,7 +1025,7 @@ msgstr "Nepavyko sukurti GStreamer išvesties."
 #. Translators: Default audio output device.
 #: ../quodlibet/player/_gstutils.py:159
 msgid "Default"
-msgstr ""
+msgstr "Numatytasis"
 
 #: ../quodlibet/player/__init__.py:24
 msgid "Invalid audio backend"
@@ -1086,10 +1070,9 @@ msgstr "Negalima rašyti į %s. Pašalinama."
 msgid "a music library and player"
 msgstr "muzikos biblioteka ir grotuvas"
 
-#: ../quodlibet.py:231
-#, fuzzy
+#: ../quodlibet.py:244
 msgid "[option]"
-msgstr "[pasirinktys]"
+msgstr "[pasirinktis]"
 
 #: ../quodlibet.py:233
 msgid "Print the playing song and exit"
@@ -1103,9 +1086,11 @@ msgstr "Iškart pradėti groti"
 msgid "Jump to next song"
 msgstr "Peršokti į kitą dainą"
 
-#: ../quodlibet.py:239
+#: ../quodlibet.py:252
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
+"Peršokti į praėjusią dainą arba groti esamą dainą iš naujo, jei netoli "
+"pradžios"
 
 #: ../quodlibet.py:240
 msgid "Jump to previous song"
@@ -1123,10 +1108,9 @@ msgstr "Pristabdyti grojimą"
 msgid "Toggle play/pause mode"
 msgstr "Perjungti grojimo/pauzės režimą"
 
-#: ../quodlibet.py:244
-#, fuzzy
+#: ../quodlibet.py:257
 msgid "Stop playback"
-msgstr "Pradėti grojimą"
+msgstr "Sustabdyti grojimą"
 
 #: ../quodlibet.py:245
 msgid "Turn up volume"
@@ -1172,9 +1156,9 @@ msgstr "Parašyti dabartinį grojaraštį"
 msgid "Print the contents of the queue"
 msgstr "Parašyti eilės turinį"
 
-#: ../quodlibet.py:256
+#: ../quodlibet.py:269
 msgid "Start without plugins"
-msgstr ""
+msgstr "Paleisti be įskiepių"
 
 #: ../quodlibet.py:257
 msgid "Exit Quod Libet"
@@ -1257,17 +1241,17 @@ msgstr "žymė=reikšmė"
 msgid "Enqueue a file or query"
 msgstr "Pridėti į eilę failą ar užklausą"
 
-#: ../quodlibet.py:277
+#: ../quodlibet.py:290
 msgid "Enqueue comma-separated files"
-msgstr ""
+msgstr "Pridėti į eilę kableliu atskirtus failus"
 
 #: ../quodlibet.py:278 ../quodlibet/util/tags.py:93
 msgid "filename"
 msgstr "failo vardas"
 
-#: ../quodlibet.py:279
+#: ../quodlibet.py:292
 msgid "Print filenames of results of query to stdout"
-msgstr ""
+msgstr "Spausdinti užklausų rezultatų failų vardus į standartinę išvestį"
 
 #: ../quodlibet.py:281
 msgid "Unqueue a file or query"
@@ -1357,17 +1341,15 @@ msgstr "Redaguoti _žymes..."
 
 #: ../quodlibet/qltk/controls.py:199
 msgid "Auto_matic"
-msgstr ""
+msgstr "Auto_matinis"
 
 #: ../quodlibet/qltk/controls.py:200
-#, fuzzy
 msgid "_Track Mode"
-msgstr "_Dainų antraštės"
+msgstr "_Takelio režimas"
 
 #: ../quodlibet/qltk/controls.py:201
-#, fuzzy
 msgid "_Album Mode"
-msgstr "_Albumų antraštės"
+msgstr "_Albumo režimas"
 
 #: ../quodlibet/qltk/controls.py:239
 msgid "Stop after this song"
@@ -1443,12 +1425,11 @@ msgstr "Eilėje"
 
 #: ../quodlibet/qltk/_editpane.py:76
 msgid "Path Patterns"
-msgstr ""
+msgstr "Kelio šablonai"
 
 #: ../quodlibet/qltk/_editpane.py:77
-#, fuzzy
 msgid "Edit saved patterns..."
-msgstr "Redaguoti išsaugotas reikšmes..."
+msgstr "Redaguoti išsaugotus šablonus..."
 
 #: ../quodlibet/qltk/_editpane.py:79 ../quodlibet/qltk/tracknumbers.py:43
 msgid "_Preview"
@@ -1495,14 +1476,12 @@ msgid "Split _Performer out of Artist"
 msgstr "Išskaidyti muzikantą iš atlikėjo"
 
 #: ../quodlibet/qltk/edittags.py:201
-#, fuzzy
 msgid "Split _Performer out of Title"
-msgstr "Išskaidyti muzikantą iš atlikėjo"
+msgstr "Išskaidyti _Muzikantą iš Pavadinimo žymės"
 
 #: ../quodlibet/qltk/edittags.py:206
-#, fuzzy
 msgid "Split _Originalartist out of Title"
-msgstr "Išskaidyti _versiją iš pavadinimo"
+msgstr "Išskaidyti _Originalo atlikėją iš Pavadinimo žymės"
 
 #: ../quodlibet/qltk/edittags.py:213
 msgid "Add a Tag"
@@ -1515,13 +1494,12 @@ msgstr "Žy_mė:"
 #. Translators: translate only to override the text for the tag "save" button
 #: ../quodlibet/qltk/edittags.py:325
 msgid "ql-save"
-msgstr ""
+msgstr "ql-save"
 
 #. Translators: translate only to override the  for the tag "revert" button
 #: ../quodlibet/qltk/edittags.py:327
-#, fuzzy
 msgid "ql-revert"
-msgstr "ql-remove"
+msgstr "ql-revert"
 
 #: ../quodlibet/qltk/edittags.py:336
 msgid "Edit Tags"
@@ -1639,15 +1617,15 @@ msgstr[2] "%d dainų"
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso Pasirinktys"
 
-#: ../quodlibet/qltk/exfalsowindow.py:213 ../quodlibet/qltk/prefs.py:436
+#: ../quodlibet/qltk/exfalsowindow.py:213 ../quodlibet/qltk/prefs.py:437
 msgid "Split _on:"
 msgstr "At_skirti ties:"
 
-#: ../quodlibet/qltk/exfalsowindow.py:219 ../quodlibet/qltk/prefs.py:422
+#: ../quodlibet/qltk/exfalsowindow.py:219 ../quodlibet/qltk/prefs.py:423
 msgid "Show _programmatic tags"
 msgstr "Rodyti programuojamas žymes"
 
-#: ../quodlibet/qltk/exfalsowindow.py:223 ../quodlibet/qltk/prefs.py:460
+#: ../quodlibet/qltk/exfalsowindow.py:223 ../quodlibet/qltk/prefs.py:461
 msgid "Tag Editing"
 msgstr "Žymių redagavimas"
 
@@ -1755,7 +1733,7 @@ msgid "performers"
 msgstr "muzikantai"
 
 #: ../quodlibet/qltk/information.py:221 ../quodlibet/qltk/information.py:234
-#: ../quodlibet/qltk/songlist.py:105
+#: ../quodlibet/qltk/songlist.py:106
 msgid "Never"
 msgstr "Niekada"
 
@@ -1899,11 +1877,11 @@ msgstr "Ieškoma dainos žodžių..."
 msgid "Unable to download lyrics."
 msgstr "Negalima atsiųsti dainos žodžių."
 
-#: ../quodlibet/qltk/msg.py:46
+#: ../quodlibet/qltk/msg.py:47
 msgid "Discard tag changes?"
 msgstr "Atšaukti žymių pakeitimus?"
 
-#: ../quodlibet/qltk/msg.py:47
+#: ../quodlibet/qltk/msg.py:48
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -1957,18 +1935,16 @@ msgid "Plugin Errors"
 msgstr "Priedų klaidos"
 
 #: ../quodlibet/qltk/pluginwin.py:111
-#, fuzzy
 msgid "Plugins"
-msgstr "_Priedai"
+msgstr "Priedai"
 
 #: ../quodlibet/qltk/pluginwin.py:184
 msgid "Show _Errors"
 msgstr "Rodyti klaidas"
 
 #: ../quodlibet/qltk/pluginwin.py:284
-#, fuzzy
 msgid "Version:"
-msgstr "versija"
+msgstr "Versija:"
 
 #: ../quodlibet/qltk/pluginwin.py:368
 msgid "Enabled"
@@ -1987,13 +1963,12 @@ msgid "No plugins found."
 msgstr "Nerasta priedų."
 
 #: ../quodlibet/qltk/prefs.py:43
-#, fuzzy
 msgid ""
 "Songs in the listed folders will be added to the library during a library "
 "refresh"
 msgstr ""
-"Dainos, esančios šiuose aplankuose (atskiriama su ':'), bus pridėtos į Jūsų "
-"biblioteką"
+"Dainos, esančios šiuose aplankuose, bus pridėtos į Jūsų biblioteką jos "
+"atnaujinimo metu"
 
 #: ../quodlibet/qltk/prefs.py:111
 msgid "Select Directories"
@@ -2013,7 +1988,7 @@ msgstr "Kai pasikeičia grojama daina, perškoti ties ja dainų sąraše"
 
 #: ../quodlibet/qltk/prefs.py:133
 msgid "Behavior"
-msgstr ""
+msgstr "Elgsena"
 
 #: ../quodlibet/qltk/prefs.py:143
 msgid "_Disc"
@@ -2031,7 +2006,7 @@ msgstr "Failo _vardas"
 msgid "_Track"
 msgstr "_Dainos nr."
 
-#: ../quodlibet/qltk/prefs.py:148 ../quodlibet/qltk/ratingsmenu.py:33
+#: ../quodlibet/qltk/prefs.py:148 ../quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Reitingas"
 
@@ -2065,7 +2040,7 @@ msgstr "_Bendras filtras:"
 
 #: ../quodlibet/qltk/prefs.py:245
 msgid "Apply this query in addition to all others"
-msgstr ""
+msgstr "Taikyti šią užklausą kartu su kitomis"
 
 #: ../quodlibet/qltk/prefs.py:251
 msgid "Search after _typing"
@@ -2075,36 +2050,37 @@ msgstr "Ieško_ti bevedant užklausą"
 msgid "Show search results after the user stops typing."
 msgstr "Rodyti paieškos rezultatus vartotojui baigus įvesti užklausą."
 
-#: ../quodlibet/qltk/prefs.py:256 ../quodlibet/qltk/searchbar.py:79
-msgid "Search"
-msgstr "Ieškoti"
+#. Translators: The heading of the preference group, no action
+#: ../quodlibet/qltk/prefs.py:257
+msgid "heading|Search"
+msgstr "heading|Paieška"
 
-#: ../quodlibet/qltk/prefs.py:262
+#: ../quodlibet/qltk/prefs.py:263
 msgid "Confirm _multiple ratings"
 msgstr "Patvirtinti su_dėtinius reitingus"
 
-#: ../quodlibet/qltk/prefs.py:264
+#: ../quodlibet/qltk/prefs.py:265
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr "Prašyti patvirtinimo prieš pakeičiant kelių dainų reitingą vienu metu"
 
-#: ../quodlibet/qltk/prefs.py:267
+#: ../quodlibet/qltk/prefs.py:268
 msgid "Enable _one-click ratings"
 msgstr "Įjungti vien_o paspaudimo reitingus"
 
-#: ../quodlibet/qltk/prefs.py:269
+#: ../quodlibet/qltk/prefs.py:270
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "Įjungti reitingų keitimą spragtelėjus reitingo stulpelyje dainų sąraše"
 
-#: ../quodlibet/qltk/prefs.py:275 ../quodlibet/qltk/prefs.py:463
+#: ../quodlibet/qltk/prefs.py:276 ../quodlibet/qltk/prefs.py:464
 msgid "Ratings"
 msgstr "Reitingai"
 
-#: ../quodlibet/qltk/prefs.py:280
+#: ../quodlibet/qltk/prefs.py:281
 msgid "_Use rounded corners on thumbnails"
 msgstr "Apvalinti miniatiūrų kamp_us"
 
-#: ../quodlibet/qltk/prefs.py:282
+#: ../quodlibet/qltk/prefs.py:283
 msgid ""
 "Round the corners of album artwork thumbnail images. May require restart to "
 "take effect."
@@ -2113,40 +2089,41 @@ msgstr ""
 "paleisti programą iš naujo, kad pakeitimai įsigaliotų."
 
 #. Filename choice algorithm config
-#: ../quodlibet/qltk/prefs.py:287
+#: ../quodlibet/qltk/prefs.py:288
 msgid "Prefer _embedded art"
-msgstr ""
+msgstr "Pageidautina naudoti į_terptinius albumų viršelius"
 
-#: ../quodlibet/qltk/prefs.py:289
+#: ../quodlibet/qltk/prefs.py:290
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
 msgstr ""
+"Pasirinkite, jei norite, kad pirmenybė būtų teikiama į audio failus "
+"įterptiems albumų viršeliams (kai prieinama)"
 
-#: ../quodlibet/qltk/prefs.py:294
+#: ../quodlibet/qltk/prefs.py:295
 msgid "_Force image filename:"
-msgstr ""
+msgstr "_Priverstinai naudotino paveikslėlio failo vardas:"
 
-#: ../quodlibet/qltk/prefs.py:300
+#: ../quodlibet/qltk/prefs.py:301
 msgid "The album art image file to use when forced"
 msgstr ""
+"Naudotino albumo viršelio paveikslėlio failo vardas (esant keliems galimiems "
+"variantams)"
 
-#: ../quodlibet/qltk/prefs.py:309
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:310
 msgid "Album Art"
-msgstr "Albumų sąrašas"
+msgstr "Albumų viršeliai"
 
-#: ../quodlibet/qltk/prefs.py:326
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:327
 msgid "Playback"
-msgstr "Pristabdyti grojimą"
+msgstr "Grojimas"
 
-#: ../quodlibet/qltk/prefs.py:331
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:332
 msgid "Output Configuration"
-msgstr "Išvesties žurnalas"
+msgstr "Išvesties sąranka"
 
-#: ../quodlibet/qltk/prefs.py:342
+#: ../quodlibet/qltk/prefs.py:343
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
@@ -2154,87 +2131,84 @@ msgstr ""
 "Jei Replay Gain garso derinimo informacija dainai neprieinama, pakoreguoti "
 "garsumo lygį šia reikšme"
 
-#: ../quodlibet/qltk/prefs.py:345
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:346
 msgid "_Fall-back gain (dB):"
-msgstr "Numatytasis derinimas (dB):"
+msgstr "_Numatytasis derinimas (dB):"
 
-#: ../quodlibet/qltk/prefs.py:356
+#: ../quodlibet/qltk/prefs.py:357
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 "Pakoreguoti garsumo lygį visoms dainoms šia reikšme, kol neatsiras iškraipymų"
 
-#: ../quodlibet/qltk/prefs.py:359
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:360
 msgid "_Pre-amp gain (dB):"
-msgstr "Pirminis derinimas (dB):"
+msgstr "_Pirminis derinimas (dB):"
 
-#: ../quodlibet/qltk/prefs.py:364
+#: ../quodlibet/qltk/prefs.py:365
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "Įjungti Replay Gain garso d_erinimą"
 
-#: ../quodlibet/qltk/prefs.py:389
+#: ../quodlibet/qltk/prefs.py:390
 msgid "Replay Gain Volume Adjustment"
 msgstr "Garsumo derinimas (Replay Gain)"
 
-#: ../quodlibet/qltk/prefs.py:411
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:412
 msgid "Tags"
-msgstr "Redaguoti žymes"
+msgstr "Žymės"
 
-#: ../quodlibet/qltk/prefs.py:415
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:416
 msgid "Auto-save tag changes"
-msgstr "Atšaukti žymių pakeitimus?"
+msgstr "Automatiškai išsaugoti žymių pakeitimus"
 
-#: ../quodlibet/qltk/prefs.py:418
+#: ../quodlibet/qltk/prefs.py:419
 msgid "Save changes to tags without confirmation when editing multiple files"
-msgstr ""
+msgstr "Redaguojant keletą failų išsaugoti žymių pakeitimus be patvirtinimo"
 
-#: ../quodlibet/qltk/prefs.py:425
+#: ../quodlibet/qltk/prefs.py:426
 msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
 msgstr ""
+"Prieiti prie visų žymių, įskaitant kompiuterio sugeneruotas, pvz. "
+"MusicBrainz ar ReplayGain žymes"
 
-#: ../quodlibet/qltk/prefs.py:434
+#: ../quodlibet/qltk/prefs.py:435
 msgid ""
 "A list of separators to use when splitting tag values. The list is space-"
 "separated"
 msgstr ""
+"Skyriklių, naudojamų žymių reikšmių išskaidymui, sąrašas. Skyrikliai "
+"atskirti tarpais"
 
-#: ../quodlibet/qltk/prefs.py:444
+#: ../quodlibet/qltk/prefs.py:445
 msgid "Save ratings and play _counts"
 msgstr "Saugoti reitingus bei grojimo _kartų vertes"
 
-#: ../quodlibet/qltk/prefs.py:448
+#: ../quodlibet/qltk/prefs.py:449
 msgid "_Email:"
 msgstr "_El. paštas:"
 
-#: ../quodlibet/qltk/prefs.py:450
+#: ../quodlibet/qltk/prefs.py:451
 msgid "Ratings and play counts will be set for this email address"
 msgstr ""
 "Reitingai bei grojimo kartų vertės bus susietos su šiuo el. pašto adresu"
 
-#: ../quodlibet/qltk/prefs.py:478
+#: ../quodlibet/qltk/prefs.py:479
 msgid "_Refresh library on start"
 msgstr "At_naujinti biblioteką paleidus programą"
 
-#: ../quodlibet/qltk/prefs.py:493
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:494
 msgid "Refresh Library"
-msgstr "At_naujinti biblioteką"
+msgstr "Atnaujinti biblioteką"
 
-#: ../quodlibet/qltk/prefs.py:501
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:502
 msgid "Scan Directories"
-msgstr "Peržvelgti _aplankus"
+msgstr "Peržvelgiami aplankai"
 
-#: ../quodlibet/qltk/prefs.py:509
-#, fuzzy
+#: ../quodlibet/qltk/prefs.py:510
 msgid "Preferences"
-msgstr "Pasirinktys"
+msgstr "Nuostatos"
 
 #: ../quodlibet/qltk/properties.py:137 ../quodlibet/qltk/properties.py:138
 msgid "Properties"
@@ -2299,13 +2273,12 @@ msgid "_Filters"
 msgstr "_Filtrai"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:440
-#, fuzzy
 msgid "Recently _Played"
-msgstr "_Niekada negrota"
+msgstr "_Neseniai grota"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:442
 msgid "Recently _Added"
-msgstr ""
+msgstr "Neseniai _pridėta"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:444
 msgid "_Top 40"
@@ -2341,12 +2314,11 @@ msgstr "Suke_lta klaida"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:485
 msgid "Online Help"
-msgstr ""
+msgstr "Pagalba Internete"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:489
-#, fuzzy
 msgid "Search Help"
-msgstr "Ieškoti"
+msgstr "Paieškos bibliotekoje pagalba"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:494
 msgid "Re_fresh Library"
@@ -2440,25 +2412,15 @@ msgstr ""
 msgid "Unable to add song"
 msgstr "Negalima pridėti dainos"
 
-#. There are many plural forms in some supported languages
-#. Translators: ratings changes for multiple files
-#: ../quodlibet/qltk/ratingsmenu.py:23
-#, fuzzy, python-format
-msgid "You are about to change the rating of %d song."
-msgid_plural "You are about to change the rating of %d songs."
-msgstr[0] ""
-"Ketinate pakeisti %d dainų reitingą.\n"
-"Ar norite tęsti?"
-msgstr[1] ""
-"Ketinate pakeisti %d dainų reitingą.\n"
-"Ar norite tęsti?"
-msgstr[2] ""
-"Ketinate pakeisti %d dainų reitingą.\n"
-"Ar norite tęsti?"
+#: ../quodlibet/qltk/ratingsmenu.py:19
+#, python-format
+msgid "Are you sure you want to change the rating of all %d songs?"
+msgstr "Ar tikrai norite pakeisti visų %d dainų įvertį?"
 
-#: ../quodlibet/qltk/ratingsmenu.py:27 ../quodlibet/qltk/songlist.py:492
-msgid "Confirm rating"
-msgstr "Patvirtinti reitingą"
+#: ../quodlibet/qltk/ratingsmenu.py:21
+#, python-format
+msgid "The rating of all selected songs will be changed to '%s'"
+msgstr "Pažymėtų dainų įvertis bus pakeistas į '%s'"
 
 #: ../quodlibet/qltk/remote.py:97
 #, python-format
@@ -2468,7 +2430,7 @@ msgstr "Gauta netaisyklinga komanda %r."
 #: ../quodlibet/qltk/remote.py:100
 #, python-format
 msgid "Error running command %r, caused by: %r."
-msgstr ""
+msgstr "Klaida vykdant komandą %r, sukėlėjas: %r."
 
 #: ../quodlibet/qltk/remote.py:217 ../quodlibet/qltk/remote.py:223
 #, python-format
@@ -2543,70 +2505,63 @@ msgstr ""
 "nurodykite kelyje šaknį jį pradėdami „/“ arba „~/“."
 
 #: ../quodlibet/qltk/searchbar.py:46
-#, fuzzy
 msgid "Saved Searches"
-msgstr "Išsaugotos reikšmės"
+msgstr "Išsaugotos paieškos reikšmės"
 
 #: ../quodlibet/qltk/searchbar.py:47
-#, fuzzy
 msgid "Edit saved searches..."
-msgstr "Redaguoti išsaugotas reikšmes..."
+msgstr "Redaguoti išsaugotas paieškos reikšmes..."
 
 #: ../quodlibet/qltk/searchbar.py:69
 msgid "_Search:"
 msgstr "_Paieška:"
 
+#: ../quodlibet/qltk/searchbar.py:79
+msgid "Search"
+msgstr "Ieškoti"
+
 #: ../quodlibet/qltk/searchbar.py:82
 msgid "Search your library"
 msgstr "Ieškoti bibliotekoje"
 
-#: ../quodlibet/qltk/songlist.py:222
+#: ../quodlibet/qltk/songlist.py:223
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtras laukui „%s“"
 
-#: ../quodlibet/qltk/songlist.py:493
-#, fuzzy, python-format
-msgid "You are about to change the rating of %d songs."
-msgstr ""
-"Ketinate pakeisti %d dainų reitingą.\n"
-"Ar norite tęsti?"
+#: ../quodlibet/qltk/songlist.py:854
+msgid "All _Headers"
+msgstr "_Visos antraštės"
 
 #: ../quodlibet/qltk/songlist.py:855
-#, fuzzy
-msgid "All _Headers"
-msgstr "_Albumų antraštės"
-
-#: ../quodlibet/qltk/songlist.py:856
 msgid "_Track Headers"
 msgstr "_Dainų antraštės"
 
-#: ../quodlibet/qltk/songlist.py:857
+#: ../quodlibet/qltk/songlist.py:856
 msgid "_Album Headers"
 msgstr "_Albumų antraštės"
 
-#: ../quodlibet/qltk/songlist.py:858
+#: ../quodlibet/qltk/songlist.py:857
 msgid "_People Headers"
 msgstr "A_tlikėjų antraštės"
 
-#: ../quodlibet/qltk/songlist.py:859
+#: ../quodlibet/qltk/songlist.py:858
 msgid "_Date Headers"
 msgstr "Dat_os antraštės"
 
-#: ../quodlibet/qltk/songlist.py:860
+#: ../quodlibet/qltk/songlist.py:859
 msgid "_File Headers"
 msgstr "_Failų antraštės"
 
-#: ../quodlibet/qltk/songlist.py:861
+#: ../quodlibet/qltk/songlist.py:860
 msgid "_Production Headers"
 msgstr "_Produkcijos antraštės"
 
-#: ../quodlibet/qltk/songlist.py:875
-#, fuzzy
+#: ../quodlibet/qltk/songlist.py:874
 msgid "Custom _Sort..."
-msgstr "Pasi_rinktinės antraštės..."
+msgstr "Individualizuotas _rikiavimas..."
 
-#: ../quodlibet/qltk/songlist.py:880
+#: ../quodlibet/qltk/songlist.py:879
 msgid "_Customize Headers..."
 msgstr "Pasi_rinktinės antraštės..."
 
@@ -2619,57 +2574,48 @@ msgid "_Copy to Device"
 msgstr "_Kopijuoti į įrenginį"
 
 #: ../quodlibet/qltk/songsmenu.py:228
-#, fuzzy
 msgid "_Remove from library"
-msgstr "_Pašalinti iš grojaraščio"
+msgstr "_Pašalinti iš bibliotekos"
 
 #: ../quodlibet/qltk/sortdialog.py:19
-#, fuzzy
 msgid "Track Headers"
-msgstr "_Dainų antraštės"
+msgstr "_Takelio antraštės"
 
 #: ../quodlibet/qltk/sortdialog.py:22
-#, fuzzy
 msgid "People Headers"
-msgstr "A_tlikėjų antraštės"
+msgstr "Atlikėjų antraštės"
 
 #: ../quodlibet/qltk/sortdialog.py:25
-#, fuzzy
 msgid "Album Headers"
-msgstr "_Albumų antraštės"
+msgstr "Albumo antraštės"
 
 #: ../quodlibet/qltk/sortdialog.py:28
-#, fuzzy
 msgid "Date Headers"
-msgstr "Dat_os antraštės"
+msgstr "Datos antraštės"
 
 #: ../quodlibet/qltk/sortdialog.py:31
-#, fuzzy
 msgid "File Headers"
-msgstr "_Failų antraštės"
+msgstr "Failo antraštės"
 
 #: ../quodlibet/qltk/sortdialog.py:33
-#, fuzzy
 msgid "Production Headers"
-msgstr "_Produkcijos antraštės"
+msgstr "Produkcijos antraštės"
 
 #: ../quodlibet/qltk/sortdialog.py:67
-#, fuzzy
 msgid "Tag:"
-msgstr "Žy_mė:"
+msgstr "Žymė:"
 
 #: ../quodlibet/qltk/sortdialog.py:71
 msgid "Ascending"
-msgstr ""
+msgstr "Didėjančia tvarka"
 
 #: ../quodlibet/qltk/sortdialog.py:73
 msgid "Descending"
-msgstr ""
+msgstr "Mažėjančia tvarka"
 
 #: ../quodlibet/qltk/sortdialog.py:119
-#, fuzzy
 msgid "Custom sort"
-msgstr "_Pasirinktinai"
+msgstr "Individualizuotas rikiavimas"
 
 #: ../quodlibet/qltk/tagsfrompath.py:76
 msgid "Replace _underscores with spaces"
@@ -2804,9 +2750,8 @@ msgstr "Grojaraštis vardu %s jau egzistuoja."
 #. Translators: "D" as in "Debug". It is prepended to
 #. terminal output. APT uses a similar output format.
 #: ../quodlibet/util/dprint.py:147
-#, fuzzy
 msgid "D: "
-msgstr "Įsp:"
+msgstr "Der:"
 
 #. Translators: Name of the debug tab in the Output Log window
 #: ../quodlibet/util/dprint.py:159
@@ -2839,16 +2784,15 @@ msgid "Display version and copyright"
 msgstr "Rodyti versijos numerį ir autorių teises"
 
 #: ../quodlibet/util/__init__.py:124
-#, fuzzy, python-format
+#, python-format
 msgid "Usage: %s %s\n"
-msgstr "Naudojimas: %s %s"
+msgstr "Naudojimas: %s %s\n"
 
 #: ../quodlibet/util/__init__.py:125
 msgid "[options]"
 msgstr "[pasirinktys]"
 
 #: ../quodlibet/util/__init__.py:144
-#, fuzzy
 msgid ""
 "{title} {version}\n"
 "<{email}>\n"
@@ -2857,8 +2801,9 @@ msgid ""
 "This is free software; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 msgstr ""
-"%s %s - <quodlibet@lists.sacredchao.net>\n"
-"Autorinės teisės 2004-2005 Joe Wreschnig, Michael Urman bei kiti\n"
+"{title} {version}\n"
+"<{email}>\n"
+"Autorinės teisės {dates}\t{authors}\n"
 "\n"
 "Tai nemokama programinė įranga, kopijavimo sąlygų ieškokite išeities "
 "tekstuose.  Nesuteikiama JOKIŲ \n"
@@ -2930,7 +2875,7 @@ msgstr ""
 
 #: ../quodlibet/util/massagers.py:89
 msgid "Language must be an ISO 639-2 three-letter code"
-msgstr ""
+msgstr "Kalba privalo būti ISO 639-2 trijų raidžių kodas"
 
 #: ../quodlibet/util/tags.py:23
 msgid "album"
@@ -3162,9 +3107,8 @@ msgid "year"
 msgstr "metai"
 
 #: ../quodlibet/util/tags.py:106
-#, fuzzy
 msgid "original release year"
-msgstr "originalo išleidimo data"
+msgstr "originalo išleidimo metai"
 
 #: ../quodlibet/util/tags.py:107
 msgid "bookmark"
@@ -3234,6 +3178,22 @@ msgid_plural "%d years"
 msgstr[0] "%d metai"
 msgstr[1] "%d metai"
 msgstr[2] "%d metų"
+
+#, fuzzy
+#~ msgid "You are about to change the rating of %d song."
+#~ msgid_plural "You are about to change the rating of %d songs."
+#~ msgstr[0] ""
+#~ "Ketinate pakeisti %d dainų reitingą.\n"
+#~ "Ar norite tęsti?"
+#~ msgstr[1] ""
+#~ "Ketinate pakeisti %d dainų reitingą.\n"
+#~ "Ar norite tęsti?"
+#~ msgstr[2] ""
+#~ "Ketinate pakeisti %d dainų reitingą.\n"
+#~ "Ar norite tęsti?"
+
+#~ msgid "Confirm rating"
+#~ msgstr "Patvirtinti reitingą"
 
 #~ msgid "%r doesn't contain any browsers."
 #~ msgstr "%r nėra naršyklių."
