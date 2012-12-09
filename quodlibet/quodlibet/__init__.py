@@ -23,7 +23,7 @@ import quodlibet.util
 
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
-from quodlibet.const import PYTHON_MIN_VERSION, PYGTK_MIN_VERSION
+from quodlibet.const import MinVersions, Version
 
 
 class Application(object):
@@ -86,10 +86,9 @@ def _gtk_init(icon=None):
     import gobject
     gobject.threads_init()
 
-    if gtk.pygtk_version < PYGTK_MIN_VERSION:
-        version = ".".join(map(str, gtk.pygtk_version))
-        min = ".".join(map(str, PYGTK_MIN_VERSION))
-        print_w("PyGTK %s required. %s found." % (min, version))
+    pygtk_ver = Version(gtk.pygtk_version)
+    if pygtk_ver < MinVersions.PYGTK:
+        print_w("PyGTK %s required. %s found."% (MinVersions.PYGTK, pygtk_ver))
 
     def warn_threads(func):
         def w():
@@ -189,10 +188,9 @@ def set_process_title(title):
 def _python_init():
 
     import sys
-    if sys.version_info < (2, 6):
-        version = ".".join(map(str, sys.version_info[:3]))
-        min = ".".join(map(str, quodlibet.PYTHON_MIN_VERSION))
-        print_w("Python %s required. %s found." % (min, version))
+    if sys.version_info < MinVersions.PYTHON:
+        actual = Version(sys.version_info[:3])
+        print_w("Python %s required. %s found." % (MinVersions.PYTHON, actual))
 
     # The default regex escaping function doesn't work for non-ASCII.
     # Use a blacklist of regex-specific characters instead.
