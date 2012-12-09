@@ -18,6 +18,10 @@ from gdist.clean import clean as gdist_clean
 PACKAGES = ("browsers devices formats library parse plugins qltk "
             "util player debug").split()
 
+# TODO: link this better to the app definitions
+MIN_PYTHON_VER = (2,6)
+MIN_PYTHON_VER_STR = ".".join(map(str,MIN_PYTHON_VER))
+
 class clean(gdist_clean):
     def run(self):
         gdist_clean.run(self)
@@ -139,11 +143,12 @@ class check(Command):
         pass
 
     def run(self):
-        print "Checking Python version >= 2.5:",
+        print "Checking Python version >= %s:" % MIN_PYTHON_VER_STR,
         print ".".join(map(str, sys.version_info[:2]))
-        if sys.version_info < (2, 5):
-            raise SystemExit("%s requires at least Python 2.5. "
-                             "(http://www.python.org)" % self.NAME)
+        if sys.version_info < MIN_PYTHON_VER:
+            raise SystemExit("%s requires at least Python %s. "
+                             "(http://www.python.org)"
+                             % (self.NAME, ".".join(map(str,MIN_PYTHON_VER))))
 
         print "Checking for PyGTK >= 2.16:",
         try:

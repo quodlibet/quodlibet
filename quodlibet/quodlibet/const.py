@@ -7,8 +7,29 @@ import locale
 if os.name == "nt":
     from win32com.shell import shellcon, shell
 
-VERSION_TUPLE = (2, 4, 91, -1)
-VERSION = ".".join(map(str, VERSION_TUPLE))
+class Version(tuple):
+    """Represent the version of a dependency as a tuple"""
+
+    def __new__(cls, *args):
+        # Support tuple or varargs instantiation
+        value = args[0] if len(args) == 1 else args
+        return tuple.__new__(Version, value)
+
+    def human_version(self):
+        return ".".join(map(str, self))
+
+    def __str__(self):
+        return self.human_version()
+
+class MinVersions(object):
+    """Dependency requirements for Quod Libet / Ex Falso"""
+    PYTHON = Version(2, 6)
+    PYGTK = Version((2, 16))
+    MUTAGEN = Version(1, 14)
+
+VERSION_TUPLE = Version(2, 5, -1)
+VERSION = str(VERSION_TUPLE)
+
 PROCESS_TITLE_QL = "quodlibet"
 PROCESS_TITLE_EF = "exfalso"
 

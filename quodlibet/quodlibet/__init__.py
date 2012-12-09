@@ -23,6 +23,7 @@ import quodlibet.util
 
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
+from quodlibet.const import MinVersions, Version
 
 
 class Application(object):
@@ -85,9 +86,9 @@ def _gtk_init(icon=None):
     import gobject
     gobject.threads_init()
 
-    if gtk.pygtk_version < (2, 16):
-        version = ".".join(map(str, gtk.pygtk_version))
-        print_w("PyGTK 2.16 required. %s found." % version)
+    pygtk_ver = Version(gtk.pygtk_version)
+    if pygtk_ver < MinVersions.PYGTK:
+        print_w("PyGTK %s required. %s found."% (MinVersions.PYGTK, pygtk_ver))
 
     def warn_threads(func):
         def w():
@@ -187,9 +188,9 @@ def set_process_title(title):
 def _python_init():
 
     import sys
-    if sys.version_info < (2, 6):
-        version = ".".join(map(str, sys.version_info[:3]))
-        print_w("Python 2.6 required. %s found." % version)
+    if sys.version_info < MinVersions.PYTHON:
+        actual = Version(sys.version_info[:3])
+        print_w("Python %s required. %s found." % (MinVersions.PYTHON, actual))
 
     # The default regex escaping function doesn't work for non-ASCII.
     # Use a blacklist of regex-specific characters instead.
@@ -365,7 +366,7 @@ def main(window):
         print_d("Quit GTK: Process pending events...")
         while gtk.events_pending():
             if gtk.main_iteration(False):
-                print_d("Quit GTK: Timeout occured, force quit.")
+                print_d("Quit GTK: Timeout occurred, force quit.")
                 break
         else:
             gtk.main_quit()

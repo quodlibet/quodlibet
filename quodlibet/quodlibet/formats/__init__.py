@@ -10,6 +10,8 @@ import sys
 
 from quodlibet.util.modulescanner import load_dir_modules
 from quodlibet import util
+from quodlibet.util.dprint import print_w
+from quodlibet.const import MinVersions
 
 mimes = set()
 _infos = {}
@@ -19,8 +21,9 @@ def init():
     global mimes, _infos, modules
 
     import mutagen
-    if mutagen.version < (1, 14):
-        print_w("Mutagen 2.14 required. %s found." % mutagen.version_string)
+    if mutagen.version < MinVersions.MUTAGEN:
+        print_w("Mutagen %s required. %s found."
+                % (MinVersions.MUTAGEN, mutagen.version_string))
 
     base = os.path.dirname(__file__)
     load_pyc = os.name == 'nt'
