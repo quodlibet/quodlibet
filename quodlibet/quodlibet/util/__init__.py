@@ -623,7 +623,6 @@ class DeferredSignal(object):
     widget.connect('signal', DeferredSignal(func), user_arg)
     """
 
-    import gobject
     __slots__ = ['func', 'dirty']
     def __init__(self, func):
         self.func = func
@@ -632,7 +631,8 @@ class DeferredSignal(object):
     def __call__(self, *args):
         if not self.dirty:
             self.dirty = True
-            self.gobject.idle_add(self._wrap, *args)
+            import gobject
+            gobject.idle_add(self._wrap, *args)
 
     def _wrap(self, *args):
         self.func(*args)
