@@ -63,46 +63,6 @@ class Ttitle(TestCase):
         # but still Python doesn't capitalize the es-zed properly.
         # s.assertEquals(u"SSbahn", title(u"ßbahn"))
 
-    # human title case got moved in the plugin..
-    # move once we have a test suite for plugins
-    def __skip_test_english_human_titlecase(s):
-        """Checks human title casing, assuming that it defaults to enabled"""
-        s.assertEquals(u"System of a Down",
-                 title(u"System Of A Down"))
-        s.assertEquals(u"The Man with the Golden Gun",
-                 title(u"The Man With The Golden gun"))
-        s.assertEquals(u"Live and Let Die",
-                 title(u"Live And Let Die"))
-        # s.assertEquals(u"The Vitamins are in my Fresh California Raisins",
-        # Updated to match modifications to is/are/am rules:
-        s.assertEquals(u"The Vitamins Are in My Fresh California Raisins",
-                 title(u"the vitamins are in my fresh california raisins"))
-        s.assertEquals(u"Dig In",
-                 title(u"dig in"))
-        s.assertEquals(u"In da Club",
-                 title(u"in da club"))
-        # See Issue 616
-        s.assertEquals(u" Dodgy Are  the Spaces ",
-                 title(u" dodgy are  the spaces "))
-        s.assertEquals(u"Space:  The Final Frontier",
-                 title(u"Space:  the final frontier"))
-
-    def __skip_test_tricky_apostrophes(s):
-        s.assertEquals(u"Guns 'n' Roses", title(u"Guns 'n' roses"))
-        s.assertEquals(u"Scarlett O'Hara", title(u"scarlett o'hara"))
-        s.assertEquals(u"Scarlett O'Hara", title(u"Scarlett O'hara"))
-        s.assertEquals(u"No Life 'til Leather", title(u"no life 'til leather"))
-
-
-    def __skip_test_english_human_titlecase_sentences(s):
-        """Checks trickier human title casing, also assuming it's enabled"""
-        s.assertEquals(u"Buffy the Vampire Slayer: The Album",
-                 title(u"Buffy the vampire slayer: the album"))
-        s.assertEquals(u"Killing Is My Business... and Business Is Good!",
-                 title(u"Killing is my business... And business is good!"))
-        s.assertEquals(u"Herbie Hancock - The Definitive",
-                 title(u"herbie hancock - the definitive"))
-
 
     # Old tests, somewhat redundant with the above, but you can never have
     # too many tests...
