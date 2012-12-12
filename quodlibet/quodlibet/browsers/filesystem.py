@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#                2012 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -24,6 +25,8 @@ from quodlibet.qltk.filesel import DirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.util import copool, split_scan_dirs
+from quodlibet.util.dprint import print_d
+from quodlibet.util.uri import URI
 
 class FileSystem(Browser, gtk.HBox):
     __gsignals__ = Browser.__gsignals__
@@ -34,6 +37,8 @@ class FileSystem(Browser, gtk.HBox):
     name = _("File System")
     accelerated_name = _("_File System")
     priority = 10
+
+    TARGET_QL, TARGET_EXT = range(1,3)
 
     def __added(klass, library, songs):
         klass.__library.remove(songs)
@@ -59,8 +64,8 @@ class FileSystem(Browser, gtk.HBox):
         folders = filter(None, split_scan_dirs(config.get("settings", "scan")))
 
         dt = DirectoryTree(folders=folders)
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
+        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, self.TARGET_QL),
+                   ("text/uri-list", 0, self.TARGET_EXT)]
         dt.drag_source_set(gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         dt.connect('drag-data-get', self.__drag_data_get)
 
@@ -78,9 +83,11 @@ class FileSystem(Browser, gtk.HBox):
         return self.get_children()[0].get_child()
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
+        model, rows = view.get_selection().get_selected_rows()
+        dirs = [model[row][0] for row in rows]
         for songs in self.__find_songs(view.get_selection()):
             pass
-        if tid == 1:
+        if tid == self.TARGET_QL:
             cant_add = filter(lambda s: not s.can_add, songs)
             if cant_add:
                 qltk.ErrorMessage(
@@ -94,11 +101,13 @@ class FileSystem(Browser, gtk.HBox):
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
         else:
-            uris = [song("~uri") for song in songs]
+            # External target (app) is delivered a list of URIS of songs
+            uris = list(set([URI.frompath(dir) for dir in dirs]))
+            print_d("Directories to drop: %s" % [u.filename for u in uris])
             sel.set_uris(uris)
 
     def can_filter_tag(self, key):
-        return (key == "~dirname")
+        return key == "~dirname"
 
     def filter(self, key, values):
         self.child.get_selection().unselect_all()
