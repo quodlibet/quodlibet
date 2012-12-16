@@ -46,11 +46,9 @@ class po_stats(Command):
         stats = []
         for po, r in res:
             nums = [int(p.split()[0]) for p in r.split(",")]
-            if len(nums) == 2:
-                trans, untrans = nums
-                fuzzy = 0
-            else:
-                trans, fuzzy, untrans = nums
+            while len(nums) < 3:
+                nums.append(0)
+            trans, fuzzy, untrans = nums
             stats.append((po, trans, fuzzy, untrans))
 
         stats.sort(key=lambda x: x[1], reverse=True)
