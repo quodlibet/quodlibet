@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-23 13:37+0100\n"
+"POT-Creation-Date: 2012-12-19 09:31+0100\n"
 "PO-Revision-Date: 2009-09-15 17:25+0300\n"
 "Last-Translator: Turerkan <turerkan@gmail.com>\n"
 "Language-Team: Turerkan <turerkan@gmail.com>\n"
@@ -253,11 +253,11 @@ msgid "_File System"
 msgstr "_Dosya Sistemi"
 
 #: ../quodlibet/browsers/filesystem.py:87 ../quodlibet/browsers/media.py:452
-#: ../quodlibet/qltk/songlist.py:347
+#: ../quodlibet/qltk/songlist.py:348
 msgid "Unable to copy songs"
 msgstr "Şarkılar kopyalanamıyor"
 
-#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:348
+#: ../quodlibet/browsers/filesystem.py:88 ../quodlibet/qltk/songlist.py:349
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Seçilen şarkılar başka çalma listelerine veya çalma kuyruğuna kopyalanamıyor."
@@ -524,7 +524,7 @@ msgstr "_Ortam Aygıtları"
 msgid "_Eject"
 msgstr "_Çıkart"
 
-#: ../quodlibet/browsers/media.py:334 ../quodlibet/browsers/playlists.py:470
+#: ../quodlibet/browsers/media.py:334 ../quodlibet/browsers/playlists.py:497
 msgid "_Rename"
 msgstr "_Yeniden Adlandır"
 
@@ -618,21 +618,44 @@ msgstr ""
 "\n"
 "%(current)d/%(total)d şarkı eklendi."
 
-#: ../quodlibet/browsers/playlists.py:98
-#: ../quodlibet/browsers/playlists.py:367 ../quodlibet/util/collection.py:313
+#: ../quodlibet/browsers/playlists.py:97
+#, python-format
+msgid "Are you sure you want to delete the playlist '%s'?"
+msgstr ""
+
+#: ../quodlibet/browsers/playlists.py:99
+msgid ""
+"All information about the selected playlist will be deleted and can not be "
+"restored."
+msgstr ""
+
+#: ../quodlibet/browsers/playlists.py:111
+#, python-format
+msgid "Are you sure you want to remove %d duplicate song?"
+msgid_plural "Are you sure you want to remove %d duplicate songs?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../quodlibet/browsers/playlists.py:114
+#, python-format
+msgid "The duplicate songs will be removed from the playlist '%s'."
+msgstr ""
+
+#: ../quodlibet/browsers/playlists.py:127
+#: ../quodlibet/browsers/playlists.py:396 ../quodlibet/util/collection.py:313
 msgid "New Playlist"
 msgstr "Yeni Çalma Listesi"
 
-#: ../quodlibet/browsers/playlists.py:99
+#: ../quodlibet/browsers/playlists.py:128
 #, fuzzy
 msgid "Enter a name for the new playlist:"
 msgstr "Yeni dizin için isim girin:"
 
-#: ../quodlibet/browsers/playlists.py:105
+#: ../quodlibet/browsers/playlists.py:134
 msgid "_New Playlist"
 msgstr "_Yeni Çalma Listesi"
 
-#: ../quodlibet/browsers/playlists.py:129
+#: ../quodlibet/browsers/playlists.py:158
 #: ../quodlibet/qltk/exfalsowindow.py:192 ../quodlibet/qltk/properties.py:133
 #: ../quodlibet/util/collection.py:332
 #, python-format
@@ -641,72 +664,46 @@ msgid_plural "%(title)s and %(count)d more"
 msgstr[0] "%(title)s ve %(count)d tane daha"
 msgstr[1] "%(title)s ve %(count)d tane daha"
 
-#: ../quodlibet/browsers/playlists.py:144
+#: ../quodlibet/browsers/playlists.py:173
 msgid "Playlists"
 msgstr "Çalma Listeleri"
 
-#: ../quodlibet/browsers/playlists.py:145
+#: ../quodlibet/browsers/playlists.py:174
 msgid "_Playlists"
 msgstr "_Çalma Listeleri"
 
-#: ../quodlibet/browsers/playlists.py:210
+#: ../quodlibet/browsers/playlists.py:239
 msgid "_Remove from Playlist"
 msgstr "Çalma Listesinden _Çıkar"
 
-#: ../quodlibet/browsers/playlists.py:247
+#: ../quodlibet/browsers/playlists.py:276
 msgid "_Import"
 msgstr "İçe _Aktar"
 
-#: ../quodlibet/browsers/playlists.py:289
-#, python-format
-msgid "You are about to delete the playlist <i>%s</i>.\n"
-msgstr ""
-
-#: ../quodlibet/browsers/playlists.py:291
-#: ../quodlibet/browsers/playlists.py:435 ../quodlibet/qltk/ratingsmenu.py:26
-#: ../quodlibet/qltk/songlist.py:494
-msgid "Do you wish to continue?"
-msgstr ""
-
-#: ../quodlibet/browsers/playlists.py:292
-msgid "Confirm playlist removal"
-msgstr ""
-
-#: ../quodlibet/browsers/playlists.py:387
-#: ../quodlibet/browsers/playlists.py:521
+#: ../quodlibet/browsers/playlists.py:416
+#: ../quodlibet/browsers/playlists.py:548
 msgid "Unable to import playlist"
 msgstr "Çalma listesi içe aktarılamadı"
 
-#: ../quodlibet/browsers/playlists.py:388
-#: ../quodlibet/browsers/playlists.py:522
+#: ../quodlibet/browsers/playlists.py:417
+#: ../quodlibet/browsers/playlists.py:549
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr ""
 "Quod Libet sadece M3u ve PLS biçimli çalma listelerini içe aktarabilir."
 
-#: ../quodlibet/browsers/playlists.py:431
-#, python-format
-msgid "You are about to remove %d song."
-msgid_plural "You are about to remove %d songs."
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../quodlibet/browsers/playlists.py:434
-msgid "Confirm duplicates removal"
-msgstr ""
-
-#: ../quodlibet/browsers/playlists.py:441
+#: ../quodlibet/browsers/playlists.py:465
 msgid "Remove Duplicates"
 msgstr ""
 
-#: ../quodlibet/browsers/playlists.py:451 ../quodlibet/qltk/playorder.py:123
+#: ../quodlibet/browsers/playlists.py:475 ../quodlibet/qltk/playorder.py:123
 msgid "_Shuffle"
 msgstr "_Rastgele"
 
-#: ../quodlibet/browsers/playlists.py:503
+#: ../quodlibet/browsers/playlists.py:530
 msgid "Unable to rename playlist"
 msgstr "Çalma Listesinin adı değiştirilemedi"
 
-#: ../quodlibet/browsers/playlists.py:510
+#: ../quodlibet/browsers/playlists.py:537
 msgid "Import Playlist"
 msgstr "Çalma Listesi İçe Aktar"
 
@@ -903,16 +900,16 @@ msgstr "<b>%s</b> dosyasının üstüne yazılsın mı?"
 msgid "Failed reading album art \"%s\""
 msgstr ""
 
-#: ../quodlibet/formats/__init__.py:78
+#: ../quodlibet/formats/__init__.py:81
 #, python-format
 msgid "Error loading %r"
 msgstr "%r yüklenemedi."
 
-#: ../quodlibet/__init__.py:117
+#: ../quodlibet/__init__.py:118
 msgid "Unable to start web browser"
 msgstr "İnternet gezicisi başlatılamadı"
 
-#: ../quodlibet/__init__.py:118
+#: ../quodlibet/__init__.py:119
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -935,7 +932,7 @@ msgstr "Arşiv Gezici"
 
 #: ../quodlibet/library/songs.py:358 ../quodlibet/library/songs.py:367
 #: ../quodlibet/library/songs.py:407 ../quodlibet/qltk/information.py:254
-#: ../quodlibet/qltk/prefs.py:476
+#: ../quodlibet/qltk/prefs.py:477
 msgid "Library"
 msgstr "Arşiv"
 
@@ -1619,15 +1616,15 @@ msgstr[1] "%d şarkı"
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso Ayarları"
 
-#: ../quodlibet/qltk/exfalsowindow.py:213 ../quodlibet/qltk/prefs.py:436
+#: ../quodlibet/qltk/exfalsowindow.py:213 ../quodlibet/qltk/prefs.py:437
 msgid "Split _on:"
 msgstr "Buna göre _ayır:"
 
-#: ../quodlibet/qltk/exfalsowindow.py:219 ../quodlibet/qltk/prefs.py:422
+#: ../quodlibet/qltk/exfalsowindow.py:219 ../quodlibet/qltk/prefs.py:423
 msgid "Show _programmatic tags"
 msgstr "_Programatik etiketleri göster"
 
-#: ../quodlibet/qltk/exfalsowindow.py:223 ../quodlibet/qltk/prefs.py:460
+#: ../quodlibet/qltk/exfalsowindow.py:223 ../quodlibet/qltk/prefs.py:461
 msgid "Tag Editing"
 msgstr "Etiket değiştirme"
 
@@ -1735,7 +1732,7 @@ msgid "performers"
 msgstr "seslendirenler"
 
 #: ../quodlibet/qltk/information.py:221 ../quodlibet/qltk/information.py:234
-#: ../quodlibet/qltk/songlist.py:105
+#: ../quodlibet/qltk/songlist.py:106
 msgid "Never"
 msgstr "Hiçbir Zaman"
 
@@ -1875,11 +1872,11 @@ msgstr "Şarkı sözleri aranıyor..."
 msgid "Unable to download lyrics."
 msgstr "Şarkı sözleri indirilemedi."
 
-#: ../quodlibet/qltk/msg.py:46
+#: ../quodlibet/qltk/msg.py:47
 msgid "Discard tag changes?"
 msgstr "Etiket değişikliklerini gözardı et?"
 
-#: ../quodlibet/qltk/msg.py:47
+#: ../quodlibet/qltk/msg.py:48
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -2007,7 +2004,7 @@ msgstr "_Dosya Adı"
 msgid "_Track"
 msgstr "Şarkı _No"
 
-#: ../quodlibet/qltk/prefs.py:148 ../quodlibet/qltk/ratingsmenu.py:33
+#: ../quodlibet/qltk/prefs.py:148 ../quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Puan"
 
@@ -2052,38 +2049,40 @@ msgstr "Bu şarkıdan sonra dur"
 msgid "Show search results after the user stops typing."
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:256 ../quodlibet/qltk/searchbar.py:79
-msgid "Search"
+#. Translators: The heading of the preference group, no action
+#: ../quodlibet/qltk/prefs.py:257
+#, fuzzy
+msgid "heading|Search"
 msgstr "Ara"
 
-#: ../quodlibet/qltk/prefs.py:262
+#: ../quodlibet/qltk/prefs.py:263
 msgid "Confirm _multiple ratings"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:264
+#: ../quodlibet/qltk/prefs.py:265
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:267
+#: ../quodlibet/qltk/prefs.py:268
 msgid "Enable _one-click ratings"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:269
+#: ../quodlibet/qltk/prefs.py:270
 #, fuzzy
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "Çalan şarkı değişince listede yeni şarkıya git"
 
-#: ../quodlibet/qltk/prefs.py:275 ../quodlibet/qltk/prefs.py:463
+#: ../quodlibet/qltk/prefs.py:276 ../quodlibet/qltk/prefs.py:464
 #, fuzzy
 msgid "Ratings"
 msgstr "_Puan"
 
-#: ../quodlibet/qltk/prefs.py:280
+#: ../quodlibet/qltk/prefs.py:281
 msgid "_Use rounded corners on thumbnails"
 msgstr "Önizlemelerde _yuvarlatılmış köşeler kullan"
 
-#: ../quodlibet/qltk/prefs.py:282
+#: ../quodlibet/qltk/prefs.py:283
 msgid ""
 "Round the corners of album artwork thumbnail images. May require restart to "
 "take effect."
@@ -2092,122 +2091,122 @@ msgstr ""
 "gerektirebilir."
 
 #. Filename choice algorithm config
-#: ../quodlibet/qltk/prefs.py:287
+#: ../quodlibet/qltk/prefs.py:288
 msgid "Prefer _embedded art"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:289
+#: ../quodlibet/qltk/prefs.py:290
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:294
+#: ../quodlibet/qltk/prefs.py:295
 msgid "_Force image filename:"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:300
+#: ../quodlibet/qltk/prefs.py:301
 msgid "The album art image file to use when forced"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:309
+#: ../quodlibet/qltk/prefs.py:310
 #, fuzzy
 msgid "Album Art"
 msgstr "Albüm Listesi"
 
-#: ../quodlibet/qltk/prefs.py:326
+#: ../quodlibet/qltk/prefs.py:327
 #, fuzzy
 msgid "Playback"
 msgstr "Çalmayı duraklat"
 
-#: ../quodlibet/qltk/prefs.py:331
+#: ../quodlibet/qltk/prefs.py:332
 #, fuzzy
 msgid "Output Configuration"
 msgstr "Çıktı Kaydı"
 
-#: ../quodlibet/qltk/prefs.py:342
+#: ../quodlibet/qltk/prefs.py:343
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr "Ses Düzeyi Düzeltmesi bilgisi yoksa, sesi buna ayarla"
 
-#: ../quodlibet/qltk/prefs.py:345
+#: ../quodlibet/qltk/prefs.py:346
 #, fuzzy
 msgid "_Fall-back gain (dB):"
 msgstr "Öntanımlı ses (dB):"
 
-#: ../quodlibet/qltk/prefs.py:356
+#: ../quodlibet/qltk/prefs.py:357
 #, fuzzy
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr "Kesilme olmadığı sürece bütün şarkıların ses düzeyini buna ayarla"
 
-#: ../quodlibet/qltk/prefs.py:359
+#: ../quodlibet/qltk/prefs.py:360
 #, fuzzy
 msgid "_Pre-amp gain (dB):"
 msgstr "Pre-amp düzeyi (dB):"
 
-#: ../quodlibet/qltk/prefs.py:364
+#: ../quodlibet/qltk/prefs.py:365
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "Ses Düzeyi Düzeltmesini etkinleştir (Replay Gain)"
 
-#: ../quodlibet/qltk/prefs.py:389
+#: ../quodlibet/qltk/prefs.py:390
 msgid "Replay Gain Volume Adjustment"
 msgstr "Ses Düzeyi Düzeltmesi"
 
-#: ../quodlibet/qltk/prefs.py:411
+#: ../quodlibet/qltk/prefs.py:412
 #, fuzzy
 msgid "Tags"
 msgstr "Etiketleri değiştir"
 
-#: ../quodlibet/qltk/prefs.py:415
+#: ../quodlibet/qltk/prefs.py:416
 #, fuzzy
 msgid "Auto-save tag changes"
 msgstr "Etiket değişikliklerini gözardı et?"
 
-#: ../quodlibet/qltk/prefs.py:418
+#: ../quodlibet/qltk/prefs.py:419
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:425
+#: ../quodlibet/qltk/prefs.py:426
 msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:434
+#: ../quodlibet/qltk/prefs.py:435
 msgid ""
 "A list of separators to use when splitting tag values. The list is space-"
 "separated"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:444
+#: ../quodlibet/qltk/prefs.py:445
 msgid "Save ratings and play _counts"
 msgstr "_Puan ve çalma seferlerini kaydet"
 
-#: ../quodlibet/qltk/prefs.py:448
+#: ../quodlibet/qltk/prefs.py:449
 msgid "_Email:"
 msgstr "_E-posta:"
 
-#: ../quodlibet/qltk/prefs.py:450
+#: ../quodlibet/qltk/prefs.py:451
 msgid "Ratings and play counts will be set for this email address"
 msgstr "Puan ve çalma seferleri bu posta adresi için kaydedilecek"
 
-#: ../quodlibet/qltk/prefs.py:478
+#: ../quodlibet/qltk/prefs.py:479
 msgid "_Refresh library on start"
 msgstr "Başlangıçta arşivi _yenile"
 
-#: ../quodlibet/qltk/prefs.py:493
+#: ../quodlibet/qltk/prefs.py:494
 #, fuzzy
 msgid "Refresh Library"
 msgstr "Arşivi _Yenile"
 
-#: ../quodlibet/qltk/prefs.py:501
+#: ../quodlibet/qltk/prefs.py:502
 #, fuzzy
 msgid "Scan Directories"
 msgstr "_Dizinleri tara"
 
-#: ../quodlibet/qltk/prefs.py:509
+#: ../quodlibet/qltk/prefs.py:510
 #, fuzzy
 msgid "Preferences"
 msgstr "Ayarlar"
@@ -2414,19 +2413,15 @@ msgstr ""
 msgid "Unable to add song"
 msgstr "Şarkı eklenemedi"
 
-#. There are many plural forms in some supported languages
-#. Translators: ratings changes for multiple files
-#: ../quodlibet/qltk/ratingsmenu.py:23
+#: ../quodlibet/qltk/ratingsmenu.py:19
 #, python-format
-msgid "You are about to change the rating of %d song."
-msgid_plural "You are about to change the rating of %d songs."
-msgstr[0] ""
-msgstr[1] ""
+msgid "Are you sure you want to change the rating of all %d songs?"
+msgstr ""
 
-#: ../quodlibet/qltk/ratingsmenu.py:27 ../quodlibet/qltk/songlist.py:492
-#, fuzzy
-msgid "Confirm rating"
-msgstr "Bilgi"
+#: ../quodlibet/qltk/ratingsmenu.py:21
+#, python-format
+msgid "The rating of all selected songs will be changed to '%s'"
+msgstr ""
 
 #: ../quodlibet/qltk/remote.py:97
 #, python-format
@@ -2527,55 +2522,54 @@ msgstr "Kayıtlı değerleri değiştir..."
 msgid "_Search:"
 msgstr "_Ara:"
 
+#: ../quodlibet/qltk/searchbar.py:79
+msgid "Search"
+msgstr "Ara"
+
 #: ../quodlibet/qltk/searchbar.py:82
 msgid "Search your library"
 msgstr "Arşivinizde arama yapın"
 
-#: ../quodlibet/qltk/songlist.py:222
+#: ../quodlibet/qltk/songlist.py:223
 #, python-format
 msgid "_Filter on %s"
 msgstr "%s etiketine göre süz"
 
-#: ../quodlibet/qltk/songlist.py:493
-#, python-format
-msgid "You are about to change the rating of %d songs."
-msgstr ""
-
-#: ../quodlibet/qltk/songlist.py:855
+#: ../quodlibet/qltk/songlist.py:854
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Albüm Etiketleri"
 
-#: ../quodlibet/qltk/songlist.py:856
+#: ../quodlibet/qltk/songlist.py:855
 msgid "_Track Headers"
 msgstr "Şarkı _Numarası Etiketleri"
 
-#: ../quodlibet/qltk/songlist.py:857
+#: ../quodlibet/qltk/songlist.py:856
 msgid "_Album Headers"
 msgstr "_Albüm Etiketleri"
 
-#: ../quodlibet/qltk/songlist.py:858
+#: ../quodlibet/qltk/songlist.py:857
 msgid "_People Headers"
 msgstr "_Kişi Etiketleri"
 
-#: ../quodlibet/qltk/songlist.py:859
+#: ../quodlibet/qltk/songlist.py:858
 msgid "_Date Headers"
 msgstr "_Tarih Etiketleri"
 
-#: ../quodlibet/qltk/songlist.py:860
+#: ../quodlibet/qltk/songlist.py:859
 msgid "_File Headers"
 msgstr "_Dosya Etiketleri"
 
-#: ../quodlibet/qltk/songlist.py:861
+#: ../quodlibet/qltk/songlist.py:860
 msgid "_Production Headers"
 msgstr "_Yapımcı Etiketleri"
 
-#: ../quodlibet/qltk/songlist.py:875
+#: ../quodlibet/qltk/songlist.py:874
 #, fuzzy
 msgid "Custom _Sort..."
 msgstr "_Etiketleri Özelleştir..."
 
-#: ../quodlibet/qltk/songlist.py:880
+#: ../quodlibet/qltk/songlist.py:879
 msgid "_Customize Headers..."
 msgstr "_Etiketleri Özelleştir..."
 
@@ -3205,6 +3199,10 @@ msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d yıl"
 msgstr[1] "%d yıl"
+
+#, fuzzy
+#~ msgid "Confirm rating"
+#~ msgstr "Bilgi"
 
 #~ msgid "%r doesn't contain any browsers."
 #~ msgstr "%r hiçbir gezici içermiyor."

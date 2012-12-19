@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-08 14:12+0100\n"
+"POT-Creation-Date: 2012-12-19 09:31+0100\n"
 "PO-Revision-Date: 2011-10-15 15:19+0000\n"
 "Last-Translator: Naglis Jonaitis <njonaitis@gmail.com>\n"
 "Language-Team: Lithuanian (http://www.transifex.net/projects/p/quodlibet/"
@@ -80,7 +80,7 @@ msgstr[2] "%d diskų"
 msgid "Invalid pattern"
 msgstr "Netaisyklingas šablonas"
 
-#: ../quodlibet/browsers/albums.py:166
+#: ../quodlibet/browsers/albums.py:165
 msgid "_Title"
 msgstr "Pa_vadinimas"
 
@@ -92,15 +92,15 @@ msgstr "_Atlikėjas"
 msgid "_Date"
 msgstr "_Data"
 
-#: ../quodlibet/browsers/albums.py:169
+#: ../quodlibet/browsers/albums.py:168
 msgid "_Genre"
 msgstr "_Žanras"
 
-#: ../quodlibet/browsers/albums.py:174
+#: ../quodlibet/browsers/albums.py:173
 msgid "Sort _by..."
 msgstr "Rikiuoti _pagal..."
 
-#: ../quodlibet/browsers/albums.py:194
+#: ../quodlibet/browsers/albums.py:193
 msgid "_Preferences"
 msgstr "_Nuostatos"
 
@@ -774,11 +774,11 @@ msgstr "Muzikos grotuvas"
 msgid "Listen to, browse, or edit your audio collection"
 msgstr "Klausykite, naršykite ar redaguokite savo muzikos kolekciją"
 
-#: ../quodlibet.desktop.in.h:4
+#: ../quodlibet.desktop.in.h:3
 msgid "Play/Pause"
 msgstr "Groti/Pristabdyti"
 
-#: ../quodlibet.desktop.in.h:3
+#: ../quodlibet.desktop.in.h:4
 msgid "Next"
 msgstr "Kita"
 
@@ -900,16 +900,16 @@ msgstr "Perrašyti <b>%s</b>?"
 msgid "Failed reading album art \"%s\""
 msgstr "Nepavyko perskaityti albumo viršelio \"%s\""
 
-#: ../quodlibet/formats/__init__.py:78
+#: ../quodlibet/formats/__init__.py:81
 #, python-format
 msgid "Error loading %r"
 msgstr "Klaida įkeliant %r"
 
-#: ../quodlibet/__init__.py:117
+#: ../quodlibet/__init__.py:118
 msgid "Unable to start web browser"
 msgstr "Negalima įkelti Interneto naršyklės"
 
-#: ../quodlibet/__init__.py:118
+#: ../quodlibet/__init__.py:119
 msgid ""
 "A web browser could not be found. Please set your $BROWSER variable, or make "
 "sure /usr/bin/sensible-browser exists."
@@ -1070,7 +1070,7 @@ msgstr "Negalima rašyti į %s. Pašalinama."
 msgid "a music library and player"
 msgstr "muzikos biblioteka ir grotuvas"
 
-#: ../quodlibet.py:244
+#: ../quodlibet.py:231
 msgid "[option]"
 msgstr "[pasirinktis]"
 
@@ -1086,7 +1086,7 @@ msgstr "Iškart pradėti groti"
 msgid "Jump to next song"
 msgstr "Peršokti į kitą dainą"
 
-#: ../quodlibet.py:252
+#: ../quodlibet.py:239
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
 "Peršokti į praėjusią dainą arba groti esamą dainą iš naujo, jei netoli "
@@ -1108,7 +1108,7 @@ msgstr "Pristabdyti grojimą"
 msgid "Toggle play/pause mode"
 msgstr "Perjungti grojimo/pauzės režimą"
 
-#: ../quodlibet.py:257
+#: ../quodlibet.py:244
 msgid "Stop playback"
 msgstr "Sustabdyti grojimą"
 
@@ -1156,7 +1156,7 @@ msgstr "Parašyti dabartinį grojaraštį"
 msgid "Print the contents of the queue"
 msgstr "Parašyti eilės turinį"
 
-#: ../quodlibet.py:269
+#: ../quodlibet.py:256
 msgid "Start without plugins"
 msgstr "Paleisti be įskiepių"
 
@@ -1241,7 +1241,7 @@ msgstr "žymė=reikšmė"
 msgid "Enqueue a file or query"
 msgstr "Pridėti į eilę failą ar užklausą"
 
-#: ../quodlibet.py:290
+#: ../quodlibet.py:277
 msgid "Enqueue comma-separated files"
 msgstr "Pridėti į eilę kableliu atskirtus failus"
 
@@ -1249,7 +1249,7 @@ msgstr "Pridėti į eilę kableliu atskirtus failus"
 msgid "filename"
 msgstr "failo vardas"
 
-#: ../quodlibet.py:292
+#: ../quodlibet.py:279
 msgid "Print filenames of results of query to stdout"
 msgstr "Spausdinti užklausų rezultatų failų vardus į standartinę išvestį"
 
