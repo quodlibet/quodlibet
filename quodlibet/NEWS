@@ -1,6 +1,12 @@
 Quod Libet requires Python 2.6, PyGTK 2.16, and Mutagen 1.11,
 but recommends Python 2.6, PyGTK 2.16, and Mutagen 1.20 or later.
 
+2.5 (2012-12-19) - Reading on the floor: literature!
+
+ * Greek translation update (Dimitris Papageorgiou) [1064]
+ * Russian translation update (Anton Shestakov) [1072]
+ * Lithuanian translation update (Naglis Jonaitis)[1079]
+
 2.4.91 (2012-11-23) - hello and thank you for installing an internet!
 
 News for packagers
