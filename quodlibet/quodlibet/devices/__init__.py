@@ -133,100 +133,6 @@ class DeviceManager(gobject.GObject):
 
         return device
 
-class HAL(DeviceManager):
-    __interface = None
-
-    def __init__(self):
-        super(HAL, self).__init__("org.freedesktop.Hal")
-        self.__interface = self.__get_interface(
-            '/org/freedesktop/Hal/Manager', 'Manager')
-
-        self.__interface.connect_to_signal('DeviceAdded', self.__device_added)
-        self.__interface.connect_to_signal('DeviceRemoved',
-            self.__device_removed)
-
-    def discover(self):
-        devs = self.__interface.FindDeviceByCapability('portable_audio_player')
-        for udi in devs:
-            device = self.__get_by_udi(udi)
-            if device is not None:
-                self.emit("added", device)
-
-    def eject(self, udi):
-        if util.iscommand("eject"):
-            pipe = subprocess.Popen(['eject', self.get_block_device(udi)],
-                    stderr=subprocess.PIPE, close_fds=True)
-            if pipe.wait() == 0: return True
-            else: return pipe.stderr.read()
-        else:
-            return _("No eject command found.")
-
-    def get_name(self, udi):
-        device = self.__get_interface(udi)
-        vendor = device.GetProperty('info.vendor')
-        name = device.GetProperty('info.product')
-        return " ".join([vendor, name])
-
-    def get_mountpoint(self, udi):
-        udis = self.__interface.FindDeviceStringMatch('info.parent', udi)
-        for vol_udi in udis:
-            volume = self.__get_interface(vol_udi)
-            if volume.GetProperty('volume.is_mounted'):
-                return str(volume.GetProperty('volume.mount_point'))
-        return ''
-
-    def get_block_device(self, udi):
-        device = self.__get_interface(udi)
-        return str(device.GetProperty('block.device'))
-
-    def __device_added(self, udi):
-        device = self.__get_by_udi(udi)
-        if device is not None:
-            self.emit("added", device)
-
-    def __device_removed(self, udi):
-        device = self.__get_by_udi(udi)
-        if device is not None:
-            self.emit("removed", udi)
-
-    def __get_by_udi(self, udi):
-        """Return a new device instance for the given UDI"""
-        interface = self.__get_interface(udi)
-        try:
-            capabilities = interface.GetProperty('info.capabilities')
-        except dbus.DBusException:
-            return None
-
-        try:
-            media = interface.GetProperty('storage.removable.media_available')
-            if not media:
-                return None
-        except dbus.DBusException:
-            pass
-
-        if 'portable_audio_player' in capabilities:
-            try:
-                protocols = interface.GetProperty(
-                    'portable_audio_player.access_method.protocols')
-            except dbus.DBusException:
-                try:
-                    # Support older HAL versions which don't use the
-                    # 'protocols' property and only store one access method
-                    # as a string
-                    protocols = [interface.GetProperty(
-                        'portable_audio_player.access_method')]
-                except dbus.DBusException:
-                    return None
-
-            #the udi is both the HAL dbus path and unique for the device
-            return self.create_device(udi, basename(udi), protocols)
-
-    def __get_interface(self, udi, interface='Device'):
-        """Return a HAL interface for the given UDI"""
-        interface = 'org.freedesktop.Hal.' + interface
-        obj = self._system_bus.get_object('org.freedesktop.Hal', udi)
-        return dbus.Interface(obj, interface)
-
 
 def get_device_from_path(udev_ctx, path):
     """A dict of device attributes for the given device path"""
@@ -485,11 +391,6 @@ def init():
     if device_manager is None:
         print_d(try_text % "UDisks")
         try: device_manager = DKD(("UDisks",))
-        except (LookupError, dbus.DBusException): pass
-
-    if device_manager is None:
-        print_d(try_text % "HAL")
-        try: device_manager = HAL()
         except (LookupError, dbus.DBusException): pass
 
     if device_manager is None:
