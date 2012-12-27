@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Copyright 2011 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,8 +12,8 @@ import urllib2
 import re
 
 
-PROCESSES = 75 # 30 is about 1 gig RAM on 64bit
-TIMEOUT = 15 # seconds
+PROCESSES = 100 # 30 is about 1 gig RAM on 64bit
+TIMEOUT = 3 # seconds
 
 
 def get_listener_peak(uri):
@@ -37,12 +38,6 @@ def get_tags(uri):
     import gst
     import signal
 
-    def alarm_handler(*args):
-        raise IOError
-
-    signal.signal(signal.SIGALRM, alarm_handler)
-    signal.alarm(TIMEOUT)
-
     tags = {}
     player = gst.element_factory_make("playbin2", "player")
     fakesink = gst.element_factory_make("fakesink", "fakesink")
@@ -52,15 +47,21 @@ def get_tags(uri):
     bus = player.get_bus()
     bus.add_signal_watch()
 
-    ml = gobject.MainLoop()
-    sig = None
-
-    def done(player, bus):
+    def done(*args):
         bus.remove_signal_watch()
         bus.disconnect(sig)
         player.set_state(gst.STATE_NULL)
         player.get_state()
         ml.quit()
+
+    ml = gobject.MainLoop()
+    sig = None
+
+    def alarm_handler(*args):
+        gobject.idle_add(done)
+
+    signal.signal(signal.SIGALRM, alarm_handler)
+    signal.alarm(TIMEOUT)
 
     def message(bus, message, player):
         if message.type == gst.MESSAGE_TAG:
@@ -96,9 +97,12 @@ def get_tags(uri):
     except: pass
 
     if tags:
-        peak = get_listener_peak(uri)
-        if peak >= 0:
-            tags["~listenerpeak"] = [str(peak)]
+        try:
+            peak = get_listener_peak(uri)
+            if peak >= 0:
+                tags["~listenerpeak"] = [str(peak)]
+        except:
+            raise IOError
 
     return uri, tags
 
@@ -118,7 +122,7 @@ def get_all_tags(uris):
             else:
                 print "FAILED"
                 failed.append(uri)
-    except KeyboardInterrupt:
+    except:
         pool.terminate()
 
     pool.close()

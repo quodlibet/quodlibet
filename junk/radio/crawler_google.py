@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Copyright 2011 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -32,14 +33,14 @@ f.close()
 print "# urls: ", len(all_urls)
 
 try:
-    gen = sorted(list(itertools.product(searches, periods, subfixes)))
+    gen = list(sorted(list(itertools.product(searches, periods, subfixes))))
     for i, (search, period, index) in enumerate(gen):
 
         if i < skip:
             continue
 
         print "#" * 30
-        print i, (search, period, index)
+        print i, len(gen), (search, period, index)
 
         page_start = 0
         while page_start < 64:

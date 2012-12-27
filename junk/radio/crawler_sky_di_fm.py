@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Copyright 2011 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,8 +9,8 @@ import urllib2
 import re
 
 def fetch_difm_urls():
-    urls = {"http://www.sky.fm": "/include/menus/skyguest.js",
-            "http://www.di.fm": "/menus/diguest.js",
+    urls = {"http://www.sky.fm": "/",
+            "http://www.di.fm": "/",
             }
 
     print "fetching playlists.."
@@ -17,6 +18,7 @@ def fetch_difm_urls():
     lists = set()
     for root, url in urls.iteritems():
         print "%s ..." % root
+        print root+url
         sock = urllib2.urlopen(root + url)
         data = sock.read()
         reg = re.compile("href=\"(.+?\.pls)\"")
@@ -34,6 +36,7 @@ def fetch_difm_urls():
         print url
         print "%d of %d" % (i + 1, len(lists))
 
+        print url
         try: sock = urllib2.urlopen(url)
         except:
             print "error fetching %s" % url
