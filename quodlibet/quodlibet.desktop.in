@@ -9,6 +9,9 @@ Type=Application
 Icon=quodlibet
 Categories=AudioVideo;Audio;Player;GTK;
 
+#http://live.gnome.org/GnomeGoals/NotificationSource
+X-GNOME-UsesNotifications=true
+
 # for unity-panel integration
 X-Ayatana-Desktop-Shortcuts=X-Play;X-Next;X-Prev;
 [X-Play Shortcut Group]
