@@ -12,6 +12,7 @@ import random
 
 from quodlibet import util
 from quodlibet import config
+from quodlibet import const
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
 from quodlibet.util.dprint import print_d
@@ -20,6 +21,18 @@ from collections import Iterable
 ELPOEP = list(reversed(PEOPLE))
 PEOPLE_SCORE = [100**i for i in xrange(len(PEOPLE))]
 
+def avg(nums):
+    """Returns the average (arithmetic mean) of a list of numbers"""
+    return float(sum(nums)) / len(nums)
+
+def bayesian_average(nums, c=None, m=None):
+    """Returns the Bayesian average of an iterable of numbers,
+    with parameters defaulting to config specific to ~#rating."""
+    m = m or const.DEFAULT_RATING
+    c = c or config.getfloat("settings", "bayesian_rating_factor", 0.0)
+    ret = float(m * c + sum(nums)) / (c + len(nums))
+    return ret
+
 NUM_DEFAULT_FUNCS = {
     "length": "sum",
     "playcount": "sum",
@@ -27,7 +40,7 @@ NUM_DEFAULT_FUNCS = {
     "lastplayed": "max",
     "laststarted": "max",
     "mtime": "max",
-    "rating": "avg",
+    "rating": "bav",
     "skipcount": "sum",
     "year": "min",
     "originalyear": "min",
@@ -35,8 +48,11 @@ NUM_DEFAULT_FUNCS = {
 }
 
 NUM_FUNCS = {
-    "max": max, "min": min, "sum": sum,
-    "avg": lambda s: float(sum(s)) / len(s)
+    "max": max,
+    "min": min,
+    "sum": sum,
+    "avg": avg,
+    "bav": bayesian_average
 }
 
 
@@ -141,15 +157,12 @@ class Collection(object):
                 if not length: return 0
                 w = lambda s: s("~#bitrate", 0) * s("~#length", 0)
                 return sum(w(song) for song in self.songs) / length
-            elif key in NUM_DEFAULT_FUNCS:
-                func = NUM_DEFAULT_FUNCS[key]
             else:
                 #Unknown key. AudioFile will try to cast the values to int,
                 #default to avg
-                func = "avg"
+                func = NUM_DEFAULT_FUNCS.get(key, "avg")
 
             key = "~#" + key
-
             func = NUM_FUNCS.get(func)
             if func:
                 #if none of the songs can return a numeric key

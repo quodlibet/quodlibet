@@ -1,28 +1,32 @@
-import os
 import tempfile
 import shutil
+from quodlibet import config
+from quodlibet.const import DEFAULT_RATING
 
 from tests import TestCase, add
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
-from quodlibet.util.collection import Album, Playlist
-
+from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
 
 NUMERIC_SONGS = [
-    Fakesong({"~filename":"fake1.mp3",
+    Fakesong({"~filename": "fake1.mp3",
               "~#length": 4, "~#added": 5, "~#lastplayed": 1,
               "~#bitrate": 200, "date": "100", "~#rating": 0.1,
-              "originaldate": "2004-01-01", "~#filesize":101}),
-    Fakesong({"~filename":"fake2.mp3",
+              "originaldate": "2004-01-01", "~#filesize": 101}),
+    Fakesong({"~filename": "fake2.mp3",
               "~#length": 7, "~#added": 7, "~#lastplayed": 88,
               "~#bitrate": 220, "date": "99", "~#rating": 0.3,
-              "originaldate": "2002-01-01", "~#filesize":202}),
-    Fakesong({"~filename":"fake3.mp3",
+              "originaldate": "2002-01-01", "~#filesize": 202}),
+    Fakesong({"~filename": "fake3.mp3",
               "~#length": 1, "~#added": 3, "~#lastplayed": 43,
               "~#bitrate": 60, "date": "33", "~#rating": 0.5})
 ]
 
+
 class TAlbum(TestCase):
+    def setUp(self):
+        config.init()
+
     def test_people_sort(s):
         songs = [
             Fakesong({"albumartist": "aa", "artist": "b\na"}),
@@ -92,17 +96,7 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.get("~#"), "")
 
     def test_numeric_ops(s):
-        songs = [
-            Fakesong({"~#length": 4, "~#added": 5, "~#lastplayed": 1,
-            "~#bitrate": 200, "date": "100", "~#rating": 0.1,
-            "originaldate": "2004-01-01"}),
-            Fakesong({"~#length": 7, "~#added": 7, "~#lastplayed": 88,
-            "~#bitrate": 220, "date": "99", "~#rating": 0.3,
-            "originaldate": "2002-01-01"}),
-            Fakesong({"~#length": 1, "~#added": 3, "~#lastplayed": 43,
-            "~#bitrate": 60, "date": "33", "~#rating": 0.5})
-        ]
-
+        songs = NUMERIC_SONGS
         album = Album(songs[0])
         album.songs = set(songs)
 
@@ -119,6 +113,57 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.get("~#year"), 33)
         s.failUnlessEqual(album.get("~#rating"), 0.3)
         s.failUnlessEqual(album.get("~#originalyear"), 2002)
+
+    def test_single_rating(s):
+        songs = [Fakesong({"~#rating": 0.75})]
+        album = Album(songs[0])
+        album.songs = set(songs)
+        # One song should average to its own rating
+        s.failUnlessEqual(album.get("~#rating:avg"), songs[0]("~#rating"))
+        # BAV should now be default for rating
+        s.failUnlessEqual(album.get("~#rating:bav"), album.get("~#rating:avg"))
+
+    def test_multiple_ratings(s):
+        r1, r2 = 1.0, 0.5
+        songs = [Fakesong({"~#rating": r1}), Fakesong({"~#rating": r2})]
+        album = Album(songs[0])
+        album.songs = set(songs)
+        # Standard averaging still available
+        s.failUnlessEqual(album("~#rating:avg"), avg([r1, r2]))
+
+        # C = 0.0 => emulate arithmetic mean
+        config.set("settings", "bayesian_rating_factor", 0.0)
+        s.failUnlessEqual(album("~#rating:bav"), album("~#rating:avg"))
+
+    def test_bayesian_multiple_ratings(s):
+        # separated from above to avoid caching
+        c, r1, r2 = 5, 1.0, 0.5
+        songs = [Fakesong({"~#rating": r1}), Fakesong({"~#rating": r2})]
+        album = Album(songs[0])
+        album.songs = set(songs)
+
+        config.set("settings", "bayesian_rating_factor", float(c))
+        s.failUnlessEqual(
+            config.getfloat("settings", "bayesian_rating_factor"), float(c))
+        expected = avg(c * [DEFAULT_RATING] + [r1, r2])
+        s.failUnlessEqual(album("~#rating:bav"), expected)
+        s.failUnlessEqual(album("~#rating"), expected)
+
+    def test_bayesian_average(s):
+        bav = bayesian_average
+        l = [1, 2, 3, 4]
+        a = avg(l)
+        # c=0 => this becomes a mean regardless of m
+        s.failUnlessEqual(a, bav(l, 0, 0))
+        s.failUnlessEqual(a, bav(l, 0, 999))
+        # c=1, m = a (i.e. just adding another mean score) => no effect
+        s.failUnlessEqual(a, bav(l, 1, a))
+        # Harder ones
+        s.failUnlessEqual(20.0 / 9, bav(l, 5, 2))
+        expected = 40.0 / 14
+        s.failUnlessEqual(expected, bav(l, 10, 3))
+        # Also check another iterable
+        s.failUnlessEqual(expected, bav(tuple(l), 10, 3))
 
     def test_defaults(s):
         failUnlessEq = s.failUnlessEqual
@@ -169,11 +214,14 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.comma("c"), "cc3, cc1")
         s.failUnlessEqual(album.comma("~c~b"), "cc3, cc1 - bb1, bb4")
 
+    def tearDown(self):
+        config.quit()
+
 add(TAlbum)
 
-class TPlaylist(TestCase):
 
-    TWO_SONGS= [
+class TPlaylist(TestCase):
+    TWO_SONGS = [
         Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
         Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
     ]
@@ -236,6 +284,8 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl.get("~#length:avg"), 4)
         s.failUnlessEqual(pl.get("~#length:foo"), 0)
 
+        s.failUnlessEqual(pl.get("~#rating:avg"), avg([0.1, 0.3, 0.5]))
+
         s.failUnlessEqual(pl.get("~#filesize"), 303)
 
         s.failUnlessEqual(pl.get("~#added"), 7)
@@ -270,9 +320,10 @@ class TPlaylist(TestCase):
         songs = NUMERIC_SONGS
         Playlist._remove_all()
         Playlist._clear_global_cache()
-        pl_name="playlist 123!"
+        pl_name = "playlist 123!"
         pl = Playlist(self.temp, pl_name)
         pl.extend(songs)
         for song in songs:
             self.assertEquals(pl_name, song("~playlists"))
+
 add(TPlaylist)
