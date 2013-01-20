@@ -13,6 +13,8 @@ import traceback
 import urlparse
 import unicodedata
 import urllib
+import subprocess
+import webbrowser
 
 # title function was moved to a separate module
 from quodlibet.util.titlecase import title
@@ -497,21 +499,49 @@ def unexpand(filename, HOME=expanduser("~")):
         filename = filename.replace(HOME, sub, 1)
     return filename
 
+
 def website(site):
-    site = site.replace("\\", "\\\\").replace("\"", "\\\"")
-    for prog in (["gnome-open", "xdg-open", "sensible-browser"] +
-              os.environ.get("BROWSER","").split(":")):
-        if iscommand(prog):
-            args = prog.split()
-            for i, arg in enumerate(args):
-                if arg == "%s":
-                    args[i] = site
-                    break
-            else: args.append(site)
-            try: spawn(args)
-            except RuntimeError: return False
-            else: return True
-    else: return False
+    """Open the given URL in the user's default browser"""
+
+    if os.name == "nt":
+        return webbrowser.open(site)
+
+    # all commands here return immediately
+    for prog in ["xdg-open", "gnome-open"]:
+        if not iscommand(prog):
+            continue
+
+        status = subprocess.check_call([prog, site])
+        if status == 0:
+            return True
+
+    # sensible-browser is a debian thing
+    blocking_progs = ["sensible-browser"]
+    blocking_progs.extend(os.environ.get("BROWSER", "").split(":"))
+
+    for prog in blocking_progs:
+        if not iscommand(prog):
+            continue
+
+        # replace %s with the url
+        args = prog.split()
+        for i, arg in enumerate(args):
+            if arg == "%s":
+                args[i] = site
+                break
+        else:
+            args.append(site)
+
+        # calling e.g. firefox blocks, so call async and hope for the best
+        try:
+            spawn(args)
+        except RuntimeError:
+            continue
+        else:
+            return True
+
+    return False
+
 
 def tag(name, cap=True):
     # Return a 'natural' version of the tag for human-readable bits.
