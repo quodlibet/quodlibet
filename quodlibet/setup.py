@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from quodlibet.util.dprint import Colorise
 
 0<>0 # Python 3.x not supported. Use 2.6+ instead.
 
@@ -53,6 +54,7 @@ class test_cmd(Command):
         ("to-run=", None, "list of tests to run (default all)"),
         ("suite=", None, "test suite (folder) to run (default 'tests')"),
         ]
+    use_colors = sys.stderr.isatty() and os.name != "nt"
 
     def initialize_options(self):
         self.to_run = []
@@ -62,6 +64,10 @@ class test_cmd(Command):
         if self.to_run:
             self.to_run = self.to_run.split(",")
 
+    @classmethod
+    def _red(cls, text):
+        return Colorise.red(text) if cls.use_colors else text
+
     def run(self):
         mods = sys.modules.keys()
         if "gobject" in mods or "gtk" in mods or "glib" in mods:
@@ -69,8 +75,11 @@ class test_cmd(Command):
 
         tests = __import__("tests")
         subdir = (self.suite != "tests" and self.suite) or None
-        if tests.unit(self.to_run, subdir=subdir):
-            raise SystemExit("Test failures are listed above.")
+        failures, errors = tests.unit(self.to_run, subdir=subdir)
+        if failures or errors:
+            raise SystemExit(self._red("%d test failure(s) and "
+                                       "%d test error(s), as detailed above."
+                             % (failures, errors)))
 
 class build_scripts(distutils_build_scripts):
     description = "copy scripts to build directory"

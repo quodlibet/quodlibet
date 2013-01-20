@@ -65,42 +65,46 @@ def extract_caller_info():
             return info
 
 
-class COLOR(object):
+class Colorise(object):
     @classmethod
     def __reset(cls, text):
         return text + '\033[0m'
 
     @classmethod
-    def Magenta(cls, text):
+    def magenta(cls, text):
         return cls.__reset('\033[95m' + text)
 
     @classmethod
-    def Blue(cls, text):
+    def blue(cls, text):
         return cls.__reset('\033[94m' + text)
 
     @classmethod
-    def Cyan(cls, text):
+    def cyan(cls, text):
         return cls.__reset('\033[96m' + text)
 
     @classmethod
-    def White(cls, text):
+    def white(cls, text):
         return cls.__reset('\033[97m' + text)
 
     @classmethod
-    def Yellow(cls, text):
+    def yellow(cls, text):
         return cls.__reset('\033[93m' + text)
 
     @classmethod
-    def Green(cls, text):
+    def green(cls, text):
         return cls.__reset('\033[92m' + text)
 
     @classmethod
-    def Red(cls, text):
+    def red(cls, text):
         return cls.__reset('\033[91m' + text)
 
     @classmethod
-    def Black(cls, text):
+    def black(cls, text):
         return cls.__reset('\033[90m' + text)
+
+    @classmethod
+    def bold(cls, text):
+        return cls.__reset('\033[1m' + text)
 
 
 def _print(string, color=None, frm="utf-8", output=sys.stdout):
@@ -146,9 +150,9 @@ def print_d(string, context=""):
     # terminal output. APT uses a similar output format.
     prefix = _("D: ")
 
-    color_string = "%s: %s: %s" % (COLOR.Magenta(timestr),
-                                   COLOR.Blue(context), string)
-    color_string = _format_print(color_string, COLOR.Green(prefix))
+    color_string = "%s: %s: %s" % (Colorise.magenta(timestr),
+                                   Colorise.blue(context), string)
+    color_string = _format_print(color_string, Colorise.green(prefix))
 
     string = "%s: %s: %s" % (timestr, context, string)
     string = _format_print(string, prefix)
@@ -165,7 +169,7 @@ def print_w(string):
     # terminal output. APT uses a similar output format.
     prefix = _("W: ")
 
-    color_string = _format_print(string, COLOR.Red(prefix))
+    color_string = _format_print(string, Colorise.red(prefix))
     string = _format_print(string, prefix)
 
     _print(string, color_string, output=sys.stderr)
@@ -180,7 +184,7 @@ def print_e(string, context=None):
     # terminal output. APT uses a similar output format.
     prefix = _("E: ")
 
-    color_string = _format_print(string, COLOR.Red(prefix))
+    color_string = _format_print(string, Colorise.red(prefix))
     string = _format_print(string, prefix)
 
     _print(string, color_string, output=sys.stderr)
