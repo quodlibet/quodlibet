@@ -146,6 +146,7 @@ def init(*rc_files):
           "jump": "true", # scroll song list on current song change
           "default_rating": "0.5", # initial rating of new song
           "ratings": "4", # maximum rating value
+          "bayesian_rating_factor": "0.0", #  (0 = disabled i.e. arithmetic mean)
           "rating_symbol_full": "\xe2\x98\x85",   # rating symbol (black star)
           "rating_symbol_blank": "\xe2\x98\x86",  # rating symbol (hollow star)
 

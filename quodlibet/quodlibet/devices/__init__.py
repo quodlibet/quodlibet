@@ -195,7 +195,7 @@ class DKD(DeviceManager):
         try:
             udev.init()
         except OSError:
-            print_w(_("%s: Could not find %s.") % (self.__bus, libudev))
+            print_w(_("%s: Could not find 'libudev'.") % self.__bus)
             error = True
         else:
             self.__udev = udev.Udev.new()

@@ -9,6 +9,9 @@ from tests import add
 from tests.plugin import PluginTestCase
 from quodlibet import config, util
 
+
+humanise = None
+
 class TTitlecase(PluginTestCase):
     def setUp(self):
         globals().update(vars(self.modules["Title Case"]))

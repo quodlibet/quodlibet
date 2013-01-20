@@ -327,7 +327,7 @@ class Notify(EventPlugin):
                 # propably preview
                 iface, caps, spec = self.__get_interface()
 
-        except dbus.DBusException, e:
+        except dbus.DBusException:
             print_w("[notify] %s" %
                     _("Couldn't connect to notification daemon."))
             self.__disconnect()

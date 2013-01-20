@@ -271,7 +271,7 @@ def bin_debug(elements, depth=0, lines=None):
     Returns a list of text lines suitable for printing.
     """
 
-    from quodlibet.util.dprint import COLOR
+    from quodlibet.util.dprint import Colorise
 
     if lines is None:
         lines = []
@@ -290,7 +290,7 @@ def bin_debug(elements, depth=0, lines=None):
                     lines.append("%s| %s" % (" " * depth, d))
                     break
         name = elm.get_name()
-        cls = COLOR.Blue(type(elm).__name__.split(".", 1)[-1])
+        cls = Colorise.blue(type(elm).__name__.split(".", 1)[-1])
         lines.append("%s|-%s (%s)" % (" " * depth, cls, name))
 
         if isinstance(elm, gst.Bin):

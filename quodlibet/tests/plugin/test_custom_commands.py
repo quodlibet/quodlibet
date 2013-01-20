@@ -15,6 +15,8 @@ from tests.plugin import PluginTestCase
 from quodlibet import config
 
 
+CustomCommands, Command = None
+
 class TCustomCommands(PluginTestCase):
     """Test CustomCommands plugin and associated classes"""
 

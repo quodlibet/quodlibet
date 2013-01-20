@@ -167,6 +167,7 @@ class PreferencesButton(gtk.HBox):
             (_("_Artist"), self.__compare_artist),
             (_("_Date"), self.__compare_date),
             (_("_Genre"), self.__compare_genre),
+            (_("_Rating"), self.__compare_rating),
             ]
 
         menu = gtk.Menu()
@@ -245,6 +246,14 @@ class PreferencesButton(gtk.HBox):
         if not a2.title: return -1
         return (cmpa(a1.genre, a2.genre) or
                 cmpa(a1.peoplesort, a2.peoplesort) or
+                cmpa(a1.date, a2.date) or
+                cmpa(a1.sort, a2.sort) or
+                cmp(a1.key, a2.key))
+
+    def __compare_rating(self, model, i2, i1):
+        a1, a2 = model[i1][0], model[i2][0]
+        if (a1 and a2) is None:return cmp(a1, a2)
+        return (cmpa(a1("~#rating"), a2("~#rating")) or
                 cmpa(a1.date, a2.date) or
                 cmpa(a1.sort, a2.sort) or
                 cmp(a1.key, a2.key))

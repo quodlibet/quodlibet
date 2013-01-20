@@ -15,6 +15,7 @@ from quodlibet import const
 from quodlibet import player
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet.library import library
 
 from quodlibet.parse import Query
 from quodlibet.qltk.ccb import ConfigCheckButton
@@ -22,6 +23,9 @@ from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.util import DeferredSignal, copool
+from quodlibet.util.dprint import print_d
+from quodlibet.util.library import emit_signal
 
 def get_init_select_dir():
     scandirs = util.split_scan_dirs(config.get("settings", "scan"))
@@ -406,10 +410,12 @@ class PreferencesWindow(qltk.UniqueWindow):
 
     class Tagging(gtk.VBox):
         name = "tagging"
+
         def __init__(self):
             super(PreferencesWindow.Tagging, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Tags")
+            self._songs = []
 
             vbox = gtk.VBox(spacing=6)
 
@@ -442,6 +448,29 @@ class PreferencesWindow(qltk.UniqueWindow):
             vbox.pack_start(hb, expand=False)
 
             vb2 = gtk.VBox(spacing=6)
+
+            bayesian_factor = config.getfloat("settings",
+                                              "bayesian_rating_factor", 0.0)
+            adj = gtk.Adjustment(bayesian_factor, 0.0, 10.0, 0.5, 0.5, 0.0)
+            bayes_spin = gtk.SpinButton(adj)
+            bayes_spin.set_digits(1)
+            bayes_spin.connect('changed', self.__changed_and_signal_library,
+                    'settings', 'bayesian_rating_factor')
+            bayes_spin.set_tooltip_text(
+                _("Bayesian Average factor (C) for aggregated ratings.\n"
+                  "0 means a conventional average, higher values mean that "
+                  "albums with few tracks will have less extreme ratings. "
+                  "Changing this value triggers a re-calculation for all "
+                  "albums."))
+
+            bayes_label = gtk.Label(_("_Bayesian averaging amount:"))
+            bayes_label.set_use_underline(True)
+            bayes_label.set_mnemonic_widget(bayes_spin)
+            hb = gtk.HBox(spacing=6)
+            hb.pack_start(bayes_label, expand=False)
+            hb.pack_start(bayes_spin, expand=False)
+            vb2.pack_start(hb)
+
             cb = ConfigCheckButton(_("Save ratings and play _counts"),
                                    "editing", "save_to_songs", populate=True)
             vb2.pack_start(cb)
@@ -469,6 +498,15 @@ class PreferencesWindow(qltk.UniqueWindow):
         def __changed(self, entry, section, name):
             config.set(section, name, entry.get_text())
 
+        def __changed_and_signal_library(self, entry, section, name):
+            self.__changed(entry, section, name)
+            print_d("Signalling \"changed\" to entire library. Hold tight...")
+            # Cache over clicks
+            self._songs = self._songs or library.values()
+            copool.add(emit_signal, self._songs, funcid="library changed",
+                    name=_("Updating for new ratings"))
+
+
     class Library(gtk.VBox):
         name = "library"
         def __init__(self):
@@ -484,8 +522,6 @@ class PreferencesWindow(qltk.UniqueWindow):
             vb3.pack_start(scan_dirs)
 
             def refresh_cb(button):
-                from quodlibet.library import library
-                from quodlibet.util import copool
                 paths = util.split_scan_dirs(config.get("settings", "scan"))
                 exclude = config.get("library", "exclude").split(":")
                 copool.add(library.rebuild,
