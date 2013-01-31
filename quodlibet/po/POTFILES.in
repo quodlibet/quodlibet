@@ -71,6 +71,7 @@ quodlibet/qltk/x.py
 quodlibet/util/collection.py
 quodlibet/util/dprint.py
 quodlibet/util/__init__.py
+quodlibet/util/library.py
 quodlibet/util/logging.py
 quodlibet/util/massagers.py
 quodlibet/util/songwrapper.py
