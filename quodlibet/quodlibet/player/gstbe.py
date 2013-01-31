@@ -231,6 +231,31 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         sink = pipeline[-1]
         set_sink_device(sink)
 
+        # Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=680252
+        # http://code.google.com/p/quodlibet/issues/detail?id=994
+        # Remove after this is ported to gst1.0!
+
+        # get the real sink
+        real_sink = sink
+        if isinstance(sink, gst.Bin):
+            real_sink = list(sink.recurse())[-1]
+
+        # if a discont happens resync without waiting, this happens
+        # on ogg -> flac transitions.
+        try:
+            real_sink.set_property("discont-wait", 0)
+        except TypeError:
+            pass
+
+        # The above removes jitter detection, so increase the drift-tolerance
+        # so we don't skip. We only do audio and don't care about sync.
+        # This value isn't maxed since the gstreamer code doesn't care about
+        # overflows.
+        try:
+            real_sink.set_property("drift-tolerance", 10**7)
+        except TypeError:
+            pass
+
         # Make the sink of the first element the sink of the bin
         gpad = gst.GhostPad('sink', pipeline[0].get_pad('sink'))
         bufbin.add_pad(gpad)
