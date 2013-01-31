@@ -1,5 +1,6 @@
 exfalso.desktop.in
 exfalso.py
+operon.py
 quodlibet/browsers/albums.py
 quodlibet/browsers/audiofeeds.py
 quodlibet/browsers/_base.py

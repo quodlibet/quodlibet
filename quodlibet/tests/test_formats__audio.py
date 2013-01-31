@@ -17,7 +17,8 @@ bar_1_2 = AudioFile({
     "title": "Perhaps another",
     "discnumber": "1", "tracknumber": "2/3",
     "artist": "Lali-ho!", "album": "Bar",
-    "date": "2004-12-12", "originaldate": "2005-01-01"})
+    "date": "2004-12-12", "originaldate": "2005-01-01",
+    "~#filesize": 1024**2})
 bar_2_1 = AudioFile({
     "~filename": "does not/exist",
     "title": "more songs",
@@ -81,6 +82,10 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_2("~year"), "2004")
         self.failUnlessEqual(bar_1_2("~#year"), 2004)
         self.failUnlessEqual(bar_1_1("~#year", 1999), 1999)
+
+    def test_filesize(self):
+        self.failUnlessEqual(bar_1_2("~filesize"), "1.00 MB")
+        self.failUnlessEqual(bar_1_2("~#filesize"), 1024**2)
 
     def test_originalyear(self):
         self.failUnlessEqual(bar_1_2("~originalyear"), "2005")

@@ -270,7 +270,7 @@ if __name__ == "__main__":
         'packages': ["quodlibet"] + map("quodlibet.".__add__, PACKAGES),
         'package_data': {"quodlibet": recursive_include("quodlibet", "images",
             ("svg", "png", "cache", "theme"))},
-        'scripts': ["quodlibet.py", "exfalso.py"],
+        'scripts': ["quodlibet.py", "exfalso.py", "operon.py"],
         'po_directory': "po",
         'po_package': "quodlibet",
         'shortcuts': ["quodlibet.desktop", "exfalso.desktop"],

@@ -107,6 +107,10 @@ class Colorise(object):
     def bold(cls, text):
         return cls.__reset('\033[1m' + text)
 
+    @classmethod
+    def gray(cls, text):
+        return cls.__reset('\033[2m' + text)
+
 
 def _strip_color(text, reg=re.compile("(\x1b\[\d{1,2}m|\\x1b\[0m)")):
     return reg.sub("", text)
