@@ -274,7 +274,7 @@ if __name__ == "__main__":
         'po_directory': "po",
         'po_package': "quodlibet",
         'shortcuts': ["quodlibet.desktop", "exfalso.desktop"],
-        'man_pages': ["man/quodlibet.1", "man/exfalso.1"],
+        'man_pages': ["man/quodlibet.1", "man/exfalso.1", "man/operon.1"],
         }
     if os.name == 'nt':
         # (probably) necessary to get the right DLLs pulled in by py2exe
