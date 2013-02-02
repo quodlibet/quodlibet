@@ -1,188 +1,279 @@
-.TH quodlibet 1 "November 26th, 2005"
+.\" Man page generated from reStructeredText.
+.
+.TH QUODLIBET 1 "" "" ""
 .SH NAME
 quodlibet \- audio library manager and player
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
 .SH SYNOPSIS
-\fBquodlibet\fR [ \fB\-\-print\-playing\fR | \fIcontrol\fR ]
-.br
-\fBexfalso\fR [ \fIdirectory\fR ]
+.nf
+\fBquodlibet\fP [ \fB\-\-print\-playing\fP | \fIcontrol\fP ]
+\fBexfalso\fP [ \fIdirectory\fP ]
+.fi
+.sp
 .SH DESCRIPTION
-Quod Libet is a music management program. It provides several different ways
-to view your audio library, as well as support for Internet radio and
+.sp
+Quod Libet is a music management program. It provides several different
+ways to view your audio library, as well as support for Internet radio and
 audio feeds. It has extremely flexible metadata tag editing and searching
 capabilities.
-.PP
-This manual page is only a short reference for Quod Libet.
-Complete documentation is available at
-http://code.google.com/p/quodlibet/wiki/Guide.
-.SH QUOD\ LIBET\ OPTIONS
-.IP \-\-enqueue\ \fIfilename\fR|\fIquery\fR 4
-Enqueue a filename or query results.
-.IP \-\-filter\ \fItag\fR=\fIvalue\fR 4
+.sp
+This manual page is only a short reference for Quod Libet. Complete
+documentation is available at \fI\%http://code.google.com/p/quodlibet/wiki/Guide\fP.
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \-\-enqueue filename|query
+Enqueue a filename or query results
+.TP
+.B \-\-filter tag=value
 Filter on a tag value
-.IP \-\-focus 4
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-focus
 Focus the running player
-.IP \-\-hide\-window 4
+.TP
+.B \-\-hide\-window
 Hide main window
-.IP \-\-next 4
+.TP
+.B \-\-next
 Jump to next song
-.IP \-\-open\-browser=\fIBrowserName\fR 4
+.TP
+.BI \-\-open\-browser\fB= BrowserName
 Open a new browser
-.IP \-\-order=\fBinorder\fR|\fBshuffle\fR|\fBweighted\fR|\fBonesong\fR|\fBtoggle\fR 4
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-order=inorder|shuffle|weighted|onesong|toggle
 Set or toggle the playback order
-.IP \-\-pause 4
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-pause
 Pause playback
-.IP \-\-play 4
+.TP
+.B \-\-play
 Start playback
-.IP \-\-play\-file=\fIfilename\fR 4
+.TP
+.BI \-\-play\-file\fB= filename
 Play a file
-.IP \-\-play\-pause 4
+.TP
+.B \-\-play\-pause
 Toggle play/pause mode
-.IP \-\-previous 4
+.TP
+.B \-\-previous
 Jump to previous song or restart if near the beginning
-.IP \-\-force\-previous 4
+.TP
+.B \-\-force\-previous
 Jump to previous song
-.IP \-\-print-playlist 4
+.TP
+.B \-\-print\-playlist
 Print the current playlist
-.IP \-\-print-queue 4
+.TP
+.B \-\-print\-queue
 Print the contents of the queue
-.IP \-\-print\-playing 4
-Print out information about the currently playing song. You may provide
-in a string like the kind described in the \fBRENAMING FILES\fR section
-below.
-.IP \-\-query=\fIsearch\-string\fR 4
+.TP
+.B \-\-print\-playing
+Print out information about the currently playing song. You may
+provide in a string like the kind described in the RENAMING FILES
+section below.
+.TP
+.BI \-\-query\fB= search\-string
 Search your audio library
-.IP \-\-quit 4
+.TP
+.B \-\-quit
 Exit Quod Libet
-.IP \-\-random=\fItag\fR 4
+.TP
+.BI \-\-random\fB= tag
 Filter on a random value
-.IP \-\-repeat=\fBoff\fR|\fBon\fR|\fBt\fR 4
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-repeat=off|on|t
 Turn repeat off, on, or toggle
-.IP \-\-seek=\fI[+|\-][HH:]MM:SS\fR 4
+.TP
+.B \-\-seek=[+|\-][HH:]MM:SS
 Seek within the playing song
-.IP \-\-set\-browser=\fIBrowserName\fR 4
+.UNINDENT
+.INDENT 0.0
+.TP
+.BI \-\-set\-browser\fB= BrowserName
 Set the current browser
-.IP \-\-set\-rating=\fB0.0\fR..\fB1.0\fR 4
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-set\-rating=0.0..1.0
 Rate the playing song
-.IP \-\-show\-window 4
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-show\-window
 Hide main window
-.IP \-\-start\-playing 4
+.TP
+.B \-\-start\-playing
 Begin playing immediately
-.IP \-\-status 4
+.TP
+.B \-\-status
 Print playing status
-.IP \-\-toggle\-window 4
+.TP
+.B \-\-toggle\-window
 Toggle main window visibility
-.IP \-\-unfilter 4
+.TP
+.B \-\-unfilter
 Remove active browser filters
-.IP \-\-unqueue=\fIfilename\fR|\fIquery\fR 4
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-unqueue=filename|query
 Unqueue a file or query
-.IP \-\-volume=(\fB+\fR|\fB\-\fR|)\fB0\fR..\fB100\fR 4
+.TP
+.B \-\-volume=(+|\-|)0..100
 Set the volume
+.UNINDENT
 .SH ALBUM COVERS
-Album covers should be put in the same directory as the songs they
-apply to, and have "folder", "front", or "cover" in their filenames.
-If you want to store multiple albums in the same directory but keep
-distinct cover images, the name of the appropriate image file must
-contain the \fBlabelid\fR tag value, e.g. \fICOCX\-32760 cover.jpg\fR.
+.sp
+Album covers should be put in the same directory as the songs they apply
+to, and have "folder", "front", or "cover" in their filenames. If you want
+to store multiple albums in the same directory but keep distinct cover
+images, the name of the appropriate image file must contain the labelid tag
+value, e.g. COCX\-32760 cover.jpg.
 .SH TIED TAGS
-Many places in Quod Libet allow you to use "tied tags". Tied tags are two tag
-names joined together with a "~" like "title~version" or "album~part".
+.sp
+Many places in Quod Libet allow you to use "tied tags". Tied tags are two
+tag names joined together with a "~" like "title~version" or "album~part".
 Tied tags result in "nice" displays even when one of the tags is missing;
-for example, "title~version" will result in \fITitle\ \-\ Version\fR when
-a version tag is present, but only \fITitle\fR when one isn't. You can
-tie any number of tags together.
+for example, "title~version" will result in Title \- Version when a version
+tag is present, but only Title when one isn\(aqt. You can tie any number of
+tags together.
 .SH SEARCH SYNTAX
-All of Quod Libet's search boxes support advanced searches of the
+.sp
+All of Quod  Libet\(aqs search boxes support advanced searches of the
 following forms:
-.RS 4
+.sp
+
+.nf
 tag = value
-.br
 tag = !value
-.br
 tag = "value"
-.br
 tag = /value/
-.br
 tag = &(value1, value2)
-.br
 tag = |(value1, value2)
-.br
 !tag = value
-.br
 |(tag1 = value1, tag2 = value2)
-.br
 &(tag1 = value1, tag2 = value2)
-.br
 #(numerictag < value)
-.br
 #(numerictag = value)
-.br
 #(numerictag > value)
-.RE
-The '\fBc\fR' postfix on strings or regular expressions makes the search
-case-sensitive. Numeric values may be given as integers, floating-point
+.fi
+.sp
+.sp
+
+.sp
+The \(aqc\(aq postfix on strings or regular expressions makes the  search
+case\-sensitive. Numeric values may be given as integers, floating\-point
 numbers, MM:SS format, or simple English, e.g. "3 days", "2 hours".
-.PP
-See http://code.google.com/p/quodlibet/wiki/Guide_Searching.
-.PP
-All internal tags begin with a ~ character. Non-numeric internal tags
-are ~basename, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
+.sp
+See \fI\%http://code.google.com/p/quodlibet/wiki/Guide_Searching\fP.
+.sp
+All internal tags begin with a ~ character. Non\-numeric internal tags are
+~base‐ name, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
 Numeric internal tags are ~#added, ~#bitrate, ~#disc, ~#lastplayed,
 ~#laststarted, ~#length, ~#mtime, ~#playcount, ~#skipcount, and ~#track.
-.PP
-See http://code.google.com/p/quodlibet/wiki/Guide_InternalTags.
+.sp
+See \fI\%http://code.google.com/p/quodlibet/wiki/Guide_InternalTags\fP.
 .SH RENAMING FILES
-Quod Libet allows you to rename files based on their tags. In some
-cases you may wish to alter the filename depending on whether some
-tags are present or missing, in addition to their values. A common
-pattern might be
-.RS 4
-<tracknumber>. <title~version>
-.RE
-You can use a '|' to only text when a tag is present:
-.RS 4
-<tracknumber|<tracknumber>. ><title~version>
-.RE
-You can also specify literal text to use if the tag is missing by adding
-another '|':
-.RS 4
-<album|<album>|No Album> \- <title>
-.RE
-See http://code.google.com/p/quodlibet/wiki/Guide_Renaming.
+.sp
+Quod Libet allows you to rename files based on their tags. In some cases
+you may wish to alter the filename depending on whether some tags are
+present or missing, in addition to their values. A common pattern might be
+.sp
+\fB<tracknumber>. <title~version>\fP
+.sp
+You can use a \(aq|\(aq to only text when a tag is present:
+.sp
+\fB<tracknumber|<tracknumber>. ><title~version>\fP
+.sp
+You can also specify literal text to use if the tag is missing by adding another \(aq|\(aq:
+.sp
+\fB<album|<album>|No Album> \- <title>\fP
+.sp
+See \fI\%http://code.google.com/p/quodlibet/wiki/Guide_Renaming\fP.
 .SH AUDIO BACKENDS
+.sp
 Quod Libet uses GStreamer for audio playback. It tries to read your GConf
-GStreamer configuration, but if that fails it falls back to osssink. You
-can change the \fBpipeline\fR option in \fI~/.quodlibet/config\fR to use
-a different sink, or pass options to the sink. For example, you might use
-\fBesdsink\fR or \fBalsasink device=hw:1\fR.
-.PP
-See http://code.google.com/p/quodlibet/wiki/Guide_AudioBackends.
+GStreamer configuration, but if that fails it falls back to osssink. You can
+change the pipeline option in ~/.quodlibet/config to use a different sink, or
+pass options to the sink. For example, you might use esdsink or alsasink
+device=hw:1.
+.sp
+See \fI\%http://code.google.com/p/quodlibet/wiki/Guide_AudioBackends\fP.
 .SH FILES
-.IP \fI~/.quodlibet/songs\fR 4
-A pickled Python dict of cached metadata. Deleting this file will remove
-all songs from your library.
-.IP \fI~/.quodlibet/config\fR 4
-Quod Libet's configuration file. This file is overwritten when Quod Libet
+.INDENT 0.0
+.TP
+.B ~/.quodlibet/songs
+A pickled Python dict of cached metadata. Deleting this file will remove all
+songs from your library.
+.TP
+.B ~/.quodlibet/config
+Quod Libet\(aqs configuration file. This file is overwritten when Quod Libet
 exits.
-.IP \fI~/.quodlibet/current\fR 4
+.TP
+.B ~/.quodlibet/current
 A "key=value" file containing information about the currently playing song.
-.IP \fI~/.quodlibet/control\fR 4
-A FIFO connected to the most-recently-started instance of the program.
+.TP
+.B ~/.quodlibet/control
+A FIFO connected to the most\-recently\-started instance of the program.
 \-\-next, \-\-previous, etc., use this to control the player.
-.IP \fI~/.quodlibet/plugins/\fR 4
-Put plugins (from http://code.google.com/p/quodlibet/wiki/Guide_Plugins) here.
-.IP \fI~/.quodlibet/browsers/\fR 4
+.TP
+.B ~/.quodlibet/plugins/
+Put plugins (from \fI\%http://code.google.com/p/quodlibet/wiki/Guide_Plugins\fP)
+here.
+.TP
+.B ~/.quodlibet/browsers/
 Put custom library browsers here.
-.PP
-See http://code.google.com/p/quodlibet/wiki/Guide_Extending.
+.UNINDENT
+.sp
+See \fI\%http://code.google.com/p/quodlibet/wiki/Guide_Extending\fP.
 .SH BUGS
-See http://code.google.com/p/quodlibet/issues/list for a list of
-all currently open bugs and feature requests.
+.sp
+See \fI\%http://code.google.com/p/quodlibet/issues/list\fP for a list of all
+currently open bugs and feature requests.
 .SH AUTHORS
+.sp
 Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 .SH SEE ALSO
-http://code.google.com/p/quodlibet/wiki/Guide,
-.br
-http://code.google.com/p/quodlibet/wiki/FAQ,
-.br
-.BR regex (7),
-.BR gst-launch (1)
+.nf
+\fI\%http://code.google.com/p/quodlibet/wiki/Guide\fP,
+\fI\%http://code.google.com/p/quodlibet/wiki/FAQ\fP,
+\fBregex\fP(7), \fBgst\-launch\fP(1)
+.fi
+.sp
+.\" Generated by docutils manpage writer.
+.\" 
+.
