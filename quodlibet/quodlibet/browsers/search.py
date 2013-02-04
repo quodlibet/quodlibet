@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#                     Christoph Reiter, Steven Robertson
+# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+#                     Christoph Reiter, Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,16 +18,20 @@ from quodlibet import qltk
 
 from quodlibet.browsers._base import Browser
 from quodlibet.parse import Query
+from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
+from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.searchbar import SearchBarBox
+from quodlibet.qltk.searchbar import SearchBarBox, LimitSearchBarBox
 from quodlibet.qltk.x import Alignment
 
 QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 
-# A browser that the user only interacts with indirectly, via the
-# Filter menu. The VBox remains empty.
+
 class EmptyBar(gtk.VBox, Browser):
+    """A browser that the user only interacts with indirectly, via the
+    Filter menu. The VBox remains empty."""
+
     __gsignals__ = Browser.__gsignals__
 
     name = _("Disable Browser")
@@ -64,7 +68,7 @@ class EmptyBar(gtk.VBox, Browser):
     def restore(self, activate=True):
         try:
             text = config.get("browsers", "query_text")
-        except:
+        except Exception:
             return
 
         if activate:
@@ -76,7 +80,8 @@ class EmptyBar(gtk.VBox, Browser):
         config.set("browsers", "query_text", "")
 
     def _get_songs(self):
-        try: self._filter = Query(self._text, star=SongList.star).search
+        try:
+            self._filter = Query(self._text, star=SongList.star).search
         except Query.error: pass
         else:
             if Query.match_all(self._text):
@@ -97,81 +102,34 @@ class EmptyBar(gtk.VBox, Browser):
     def unfilter(self):
         self.filter_text("")
 
-class LimitSearchBar(SearchBarBox):
 
-    class Limit(gtk.HBox):
-        def __init__(self):
-            super(LimitSearchBar.Limit, self).__init__(spacing=3)
-            label = gtk.Label(_("_Limit:"))
-            self.pack_start(label)
-
-            self.__limit = limit = gtk.SpinButton()
-            limit.set_numeric(True)
-            limit.set_range(0, 99999)
-            limit.set_increments(5, 50)
-            label.set_mnemonic_widget(limit)
-            label.set_use_underline(True)
-            self.pack_start(limit)
-
-            self.__weight = gtk.CheckButton(_("_Weight"))
-            self.pack_start(self.__weight)
-            map(lambda w: w.show(), self.get_children())
-
-        def limit(self, songs):
-            limit = self.__limit.get_value_as_int()
-            if not limit or len(songs) < limit: return songs
-            else:
-                if self.__weight.get_active():
-                    def choose(r1, r2):
-                        if r1 or r2: return cmp(random.random(), r1/(r1+r2))
-                        else: return random.randint(-1, 1)
-                    def rating(song):
-                        return song("~#rating")
-                    songs.sort(cmp=choose, key=rating)
-                else: random.shuffle(songs)
-                return songs[:limit]
-
-    def __init__(self, *args, **kwargs):
-        super(LimitSearchBar, self).__init__(*args, **kwargs)
-        self.__limit = self.Limit()
-        self.__sep = gtk.VSeparator()
-        self.pack_start(self.__sep, expand=False)
-        self.reorder_child(self.__sep, 0)
-        self.pack_start(self.__limit, expand=False)
-        self.reorder_child(self.__limit, 0)
-        self.pack_start(gtk.HSeparator(), expand=False)
-        self.__limit.set_no_show_all(True)
-        self.__sep.set_no_show_all(True)
-
-    def limit(self, songs):
-        return self.__limit.limit(songs)
-
-    def Menu(self, menu):
-        sep = gtk.SeparatorMenuItem()
-        menu.prepend(sep)
-        item = gtk.CheckMenuItem(_("_Limit Results"))
-        menu.prepend(item)
-        item.set_active(self.__limit.get_property('visible'))
-        item.connect('toggled', self.__showhide_limit)
-        item.show()
-        sep.show()
-
-    def __showhide_limit(self, button):
-        if button.get_active():
-            self.__limit.show()
-            self.__sep.show()
-        else:
-            self.__limit.hide()
-            self.__sep.hide()
-
-# Like EmptyBar, but the user can also enter a query manually. This
-# is QL's default browser. EmptyBar handles all the GObject stuff.
 class SearchBar(EmptyBar):
+    """Like EmptyBar, but the user can also enter a query manually.
+    This is QL's default browser. EmptyBar handles all the GObject stuff."""
 
     name = _("Search Library")
     accelerated_name = _("_Search Library")
     priority = 1
     in_menu = True
+
+    class PreferencesButton(gtk.HBox):
+
+        def __init__(self, search_bar_box):
+            super(SearchBar.PreferencesButton, self).__init__()
+            menu = gtk.Menu()
+
+            limit_item = ConfigCheckMenuItem(_("_Limit Results"),
+                    "browsers", "search_limit", True)
+            limit_item.connect("toggled", search_bar_box.toggle_limit_widgets)
+            menu.append(limit_item)
+            menu.show_all()
+
+            button = MenuButton(
+                gtk.image_new_from_stock(
+                    gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU),
+                arrow=True)
+            button.set_menu(menu)
+            self.pack_start(button)
 
     def __init__(self, library, main, limit=True):
         super(SearchBar, self).__init__(library, main)
@@ -180,33 +138,36 @@ class SearchBar(EmptyBar):
         completion = LibraryTagCompletion(library.librarian)
         self.accelerators = gtk.AccelGroup()
         if limit:
-            self._search_bar = LimitSearchBar(completion=completion,
-                                              accel_group=self.accelerators)
+            show_limit = config.getboolean("browsers", "search_limit")
+            sbb = LimitSearchBarBox(completion=completion,
+                                    accel_group=self.accelerators,
+                                    show_limit=show_limit)
         else:
-            self._search_bar = SearchBarBox(completion=completion,
-                                            accel_group=self.accelerators)
-        self._search_bar.connect('query-changed', self.__text_parse)
+            sbb = SearchBarBox(completion=completion,
+                               accel_group=self.accelerators)
+        sbb.connect('query-changed', self.__text_parse)
+        sbb.connect('focus-out', self.__focus)
+        self._sb_box = sbb
 
-        def focus(widget, *args):
-            qltk.get_top_parent(widget).songlist.grab_focus()
-        self._search_bar.connect('focus-out', focus)
-
-        self.connect('destroy', self.__destroy)
-        if main:
-            align = Alignment(self._search_bar, left=3, right=3, top=3)
-        else:
-            align = Alignment(self._search_bar)
-        align.show()
+        if limit:
+            prefs = SearchBar.PreferencesButton(sbb)
+            sbb.pack_start(prefs, expand=False)
+        align = (Alignment(sbb, left=6, right=3, top=3) if main
+                 else Alignment(sbb))
         self.pack_start(align, expand=False)
-        self.show()
+        self.connect('destroy', self.__destroy)
+        self.show_all()
 
     def __destroy(self, *args):
-        self._search_bar = None
+        self._sb_box = None
+
+    def __focus(self, widget, *args):
+        qltk.get_top_parent(widget).songlist.grab_focus()
 
     def activate(self):
         songs = self._get_songs()
-        if songs is not None and self._search_bar:
-            songs = self._search_bar.limit(songs)
+        if songs is not None and self._sb_box:
+            songs = self._sb_box.limit(songs)
             gobject.idle_add(self.emit, 'songs-selected', songs, None)
 
     def __text_parse(self, bar, text):
@@ -215,7 +176,7 @@ class SearchBar(EmptyBar):
 
     def filter_text(self, text):
         self._text = text
-        self._search_bar.set_text(text)
+        self._sb_box.set_text(text)
         self.activate()
 
 browsers = [EmptyBar, SearchBar]

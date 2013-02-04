@@ -137,6 +137,7 @@ def init(*rc_files):
           "rating_click": "true", # click to rate song, on/off
           "rating_confirm_multiple": "false", # confirm rating multiple songs
           "cover_size": "-1", # max cover height/width, <= 0 is default
+          "search_limit": "false", # Show the limit widgets for SearchBar
           },
 
         # Kind of a dumping ground right now, should probably be

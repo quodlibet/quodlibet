@@ -238,13 +238,14 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
     __last = ""
 
     def __init__(self, filename=None, initial=[], count=5, id=None,
-        validator=None, title=_("Saved Values"),
-        edit_title=_("Edit saved values...")):
+                 validator=None, title=_("Saved Values"),
+                 edit_title=_("Edit saved values...")):
         self.count = count
         self.filename = filename
         id = filename or id
 
-        try: model = self.__models[id]
+        try:
+            model = self.__models[id]
         except KeyError:
             model = type(self).__models[id] = gtk.ListStore(str, str, str)
 

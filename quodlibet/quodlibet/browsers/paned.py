@@ -701,7 +701,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.connect_object('destroy',
             self.accelerators.disconnect_key, keyval, mod)
         select = gtk.Button(_("Select _All"))
-        self._search_bar.pack_start(select, expand=False)
+        self._sb_box.pack_start(select, expand=False)
 
         prefs = gtk.Button()
         prefs.add(gtk.image_new_from_stock(
@@ -710,7 +710,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.connect_object('destroy', prefs.disconnect, s)
         s = select.connect('clicked', self.__all)
         self.connect_object('destroy', select.disconnect, s)
-        self._search_bar.pack_start(prefs, expand=False)
+        self._sb_box.pack_start(prefs, expand=False)
 
         for s in [library.connect('changed', self.__changed),
                   library.connect('added', self.__added),
