@@ -113,12 +113,7 @@ def _gtk_init(icon=None):
 
     def website_wrap(activator, link):
         if not quodlibet.util.website(link):
-            from quodlibet.qltk.msg import ErrorMessage
-            ErrorMessage(
-                main, _("Unable to start web browser"),
-                _("A web browser could not be found. Please set "
-                  "your $BROWSER variable, or make sure "
-                  "/usr/bin/sensible-browser exists.")).run()
+            print_w("opening %r failed" % link)
 
     # only works with a running main loop
     gobject.idle_add(gtk.about_dialog_set_url_hook, website_wrap)
