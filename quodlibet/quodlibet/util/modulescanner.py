@@ -192,10 +192,18 @@ class ModuleScanner(object):
                 continue
 
             try:
-                mod = load_module(name, "quodlibet.fake.plugins",
+                # add a real module, so that pickle works
+                # http://code.google.com/p/quodlibet/issues/detail?id=1093
+                parent = "quodlibet.fake"
+                if parent not in sys.modules:
+                    sys.modules[parent] = imp.new_module(parent)
+                vars(sys.modules["quodlibet"])["fake"] = sys.modules[parent]
+
+                mod = load_module(name, parent + ".plugins",
                                   dirname(path), reload=True)
                 if mod is None:
                     continue
+
             except Exception, err:
                 text = format_exception(*sys.exc_info())
                 self.__failures[name] = (err, text)

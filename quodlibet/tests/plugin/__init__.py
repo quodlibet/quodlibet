@@ -6,8 +6,9 @@ import os
 
 # Nasty hack to allow importing of plugins...
 PLUGIN_DIR = os.path.abspath(os.path.join(sys.path[0], '../plugins'))
+TEST_PLUGIN_DIR = os.path.join(os.path.dirname(__file__), "test_plugins")
 
-ms = ModuleScanner([PLUGIN_DIR])
+ms = ModuleScanner([PLUGIN_DIR, TEST_PLUGIN_DIR])
 ms.rescan()
 plugins = {}
 for name, module in ms.modules.iteritems():
