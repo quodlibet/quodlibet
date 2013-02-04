@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2010 Felix Krull <f_krull@gmx.de>
-#               2011 Christoph Reiter <christoph.reiter@gmx.at>
+#               2011-2013 Christoph Reiter <christoph.reiter@gmx.at>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -300,6 +300,21 @@ class Notify(EventPlugin):
 
         return interface, caps, spec_version
 
+    def close_notification(self):
+        """Closes the last opened notification"""
+
+        if not self.__last_id:
+            return
+
+        try:
+            obj = dbus.SessionBus().get_object(self.DBUS_NAME, self.DBUS_PATH)
+            interface = dbus.Interface(obj, self.DBUS_IFACE)
+            interface.CloseNotification(self.__last_id)
+        except dbus.DBusException:
+            pass
+        else:
+            self.__last_id = 0
+
     def show_notification(self, song):
         """Returns True if showing the notification was successful"""
 
@@ -373,8 +388,6 @@ class Notify(EventPlugin):
 
         hints = {
             "desktop-entry": "quodlibet",
-            "transient": True,
-            "urgency": dbus.Byte(0),
         }
 
         try:
@@ -401,6 +414,8 @@ class Notify(EventPlugin):
             app.player.next()
 
     def on_song_change(self, song, typ):
+        if not song:
+            self.close_notification()
         if get_conf_value("show_notifications") in [typ, "all"] \
                 and not (get_conf_bool("show_only_when_unfocused") \
                      and app.window.has_toplevel_focus()) \
@@ -418,4 +433,3 @@ class Notify(EventPlugin):
         # if `stopped` is `True`, this song was ended due to some kind of user
         # interaction.
         self.__was_stopped_by_user = stopped
-
