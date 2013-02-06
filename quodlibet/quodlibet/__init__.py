@@ -162,7 +162,11 @@ def _gettext_init():
     except IOError:
         print_d("No translation found in %r" % unexpand(localedir))
         t = GlibTranslations()
+    else:
+        print_d("Translations loaded: %r" % unexpand(t.path))
+
     t.install(unicode=True)
+
 
 def set_process_title(title):
     """Sets process name as visible in ps or top. Requires ctypes libc

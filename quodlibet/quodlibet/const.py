@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Constants used in various parts of QL, mostly strings.
 
+import sys
 import os
 import locale
 
@@ -137,7 +138,7 @@ NBP_EXAMPLES = """\
 /path/<artist> - <album>/<tracknumber>. <title>
 /path/<artist>/<album>/<tracknumber> - <title>"""
 
-DEBUG = "QUODLIBET_DEBUG" in os.environ
+DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ)
 
 MENU = """<ui>
   <menubar name='Menu'>
