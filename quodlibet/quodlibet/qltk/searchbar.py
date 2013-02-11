@@ -96,7 +96,7 @@ class SearchBarBox(gtk.HBox):
         if accel_group:
             key, mod = gtk.accelerator_parse("<ctrl>L")
             accel_group.connect_group(key, mod, 0,
-                                      lambda *x: label.mnemonic_activate(True))
+                    lambda *x: entry.mnemonic_activate(True))
 
         self.show_all()
 
