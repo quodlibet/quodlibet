@@ -108,7 +108,7 @@ class Command(object):
 
 class ListCommand(Command):
     NAME = "list"
-    DESCRIPTION = _("List all tags.")
+    DESCRIPTION = _("List tags")
     USAGE = "[-a] [-t] [-c <c1>,<c2>...] <file>"
 
     def _add_options(self, p):
@@ -439,7 +439,7 @@ class AddCommand(Command):
 
 class InfoCommand(Command):
     NAME = "info"
-    DESCRIPTION = _("List file informations")
+    DESCRIPTION = _("List file information")
     USAGE = "[-t] [-c <c1>,<c2>...] <file>"
 
     def _add_options(self, p):
@@ -492,7 +492,7 @@ class ImageExtractCommand(Command):
 
 class RenameCommand(Command):
     NAME = "rename"
-    DESCRIPTION = "Rename files based on tags"
+    DESCRIPTION = _("Rename files based on tags")
     USAGE = "[--dry-run] <pattern> <file> [<files>]"
 
     def _add_options(self, p):
@@ -506,7 +506,7 @@ class RenameCommand(Command):
 
 class FillCommand(Command):
     NAME = "fill"
-    DESCRIPTION = "Fill tags based on the file path"
+    DESCRIPTION = _("Fill tags based on the file path")
     USAGE = "[--dry-run] <pattern> <file> [<files>]"
 
     def _add_options(self, p):
@@ -520,7 +520,7 @@ class FillCommand(Command):
 
 class FillTracknumberCommand(Command):
     NAME = "fill-tracknumber"
-    DESCRIPTION = "Fill tracknumbers for all files"
+    DESCRIPTION = _("Fill tracknumbers for all files")
     USAGE = "[--dry-run] [--start] [--total] <file> [<files>]"
 
     def _add_options(self, p):
@@ -538,7 +538,7 @@ class FillTracknumberCommand(Command):
 
 class PrintCommand(Command):
     NAME = "print"
-    DESCRIPTION = "print tags based on the given pattern"
+    DESCRIPTION = _("Print tags based on the given pattern")
     USAGE = "[-p <pattern>] <file> [<files>]"
 
     def _add_options(self, p):
@@ -567,7 +567,7 @@ class PrintCommand(Command):
 
 class HelpCommand(Command):
     NAME = "help"
-    DESCRIPTION = "display help information"
+    DESCRIPTION = _("Display help information")
     USAGE = "[<command>]"
 
     def _execute(self, options, args):
