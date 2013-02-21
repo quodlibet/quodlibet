@@ -67,7 +67,7 @@ class ScrolledWindow(gtk.ScrolledWindow):
                 alloc.x -= xwidth
                 alloc.width += xwidth
 
-        super(ScrolledWindow, self).do_size_allocate(self, alloc)
+        return gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
 
 class Notebook(gtk.Notebook):
@@ -96,7 +96,7 @@ class Notebook(gtk.Notebook):
             alloc.x -= xwidth
             alloc.width += xwidth
 
-        super(Notebook, self).do_size_allocate(self, alloc)
+        return gtk.Notebook.do_size_allocate(self, alloc)
 
     def append_page(self, page, label=None):
         if label is None:
