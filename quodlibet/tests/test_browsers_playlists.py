@@ -8,7 +8,8 @@ from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
 import quodlibet.config
 from quodlibet.formats._audio import AudioFile
-from quodlibet.library.songs import SongLibrarian, FileLibrary
+from quodlibet.library.librarians import SongLibrarian
+from quodlibet.library.libraries import FileLibrary
 
 PLAYLISTS = tempfile.gettempdir()
 

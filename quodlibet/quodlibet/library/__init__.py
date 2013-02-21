@@ -15,10 +15,12 @@ also be queried in various ways.
 import time
 import threading
 
-from quodlibet import util
+from quodlibet import util, print_d
 import quodlibet.formats as formats
+from quodlibet.const import LIBRARY_SAVE_PERIOD_SECONDS
 
-from quodlibet.library.songs import SongFileLibrary, SongLibrary, SongLibrarian
+from quodlibet.library.libraries import SongFileLibrary, SongLibrary
+from quodlibet.library.librarians import SongLibrarian
 
 librarian = library = None
 
@@ -41,8 +43,8 @@ def init(cache_fn=None):
 def save(force=False):
     """Save all registered libraries that have a filename and are marked dirty.
 
-    If force = True save all of them blocking, else save non blocking and
-    only if they were last saved more than 15 minutes ago.
+    If force = True save all of them blocking, else save non-blocking and
+    only if they were last saved more than LIBRARY_SAVE_PERIOD_SECONDS ago.
     """
     global librarian
 
@@ -57,5 +59,5 @@ def save(force=False):
             try: lib.save()
             except EnvironmentError: pass
             lib.destroy()
-        elif (time.time() - util.mtime(filename)) > 15 * 60:  # 15 minutes
+        elif (time.time() - util.mtime(filename)) > LIBRARY_SAVE_PERIOD_SECONDS:
             threading.Thread(target=lib.save).run()

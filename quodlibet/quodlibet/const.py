@@ -56,6 +56,9 @@ CURRENT = os.path.join(USERDIR, "current")
 LIBRARY = os.path.join(USERDIR, "songs")
 LOGDIR  = os.path.join(USERDIR, "logs")
 
+# Don't bother saving the library more often than this
+LIBRARY_SAVE_PERIOD_SECONDS = 15 * 60
+
 DEFAULT_RATING = 0.5
 
 # entry point for the user guide / wiki
