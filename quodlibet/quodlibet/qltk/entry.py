@@ -136,7 +136,7 @@ class EditableUndo(object):
         self.__uninhibit()
 
 
-class UndoEntry(gtk.Entry, EditableUndo):
+class UndoEntry(Gtk.Entry, EditableUndo):
     def __init__(self, *args):
         super(UndoEntry, self).__init__(*args)
         self.set_undo(True)
@@ -147,7 +147,7 @@ class UndoEntry(gtk.Entry, EditableUndo):
 
 
 class ClearEntryMixin(object):
-    """A clear icon mixin supporting newer gtk.Entry or sexy.IconEntry /
+    """A clear icon mixin supporting newer Gtk.Entry or
     a separate clear button as a fallback.
     """
 
