@@ -5,9 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject
-
-IconEntry = gtk.Entry
+from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet.qltk.x import is_accel
 
@@ -69,11 +67,11 @@ class EditableUndo(object):
         del self.__del_pos
 
     def __popup(self, entry, menu):
-        undo =  gtk.ImageMenuItem(gtk.STOCK_UNDO)
-        redo =  gtk.ImageMenuItem(gtk.STOCK_REDO)
-        sep = gtk.SeparatorMenuItem()
+        undo =  Gtk.ImageMenuItem(Gtk.STOCK_UNDO)
+        redo =  Gtk.ImageMenuItem(Gtk.STOCK_REDO)
+        sep = Gtk.SeparatorMenuItem()
 
-        map(gtk.Widget.show, (sep, redo, undo))
+        map(Gtk.Widget.show, (sep, redo, undo))
 
         undo.connect('activate', lambda *x: self.undo())
         redo.connect('activate', lambda *x: self.redo())
@@ -154,13 +152,13 @@ class ClearEntryMixin(object):
     """
 
     __gsignals__ = {'clear': (
-        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
+        GObject.SignalFlags.RUN_LAST|GObject.SignalFlags.ACTION, None, ())}
 
     def enable_clear_button(self):
         """Enables the clear icon in the entry"""
 
         self.set_icon_from_stock(
-            gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
+            Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_CLEAR)
         self.connect("icon-release", self.__clear)
 
     def __clear(self, button, *args):
@@ -184,8 +182,8 @@ class ValidatingEntryMixin(object):
     If the "Color search terms" option is off, the entry will not
     change color."""
 
-    INVALID = gtk.gdk.Color(*[c * 255 for c in (0xcc, 0x0, 0x0)])
-    VALID = gtk.gdk.Color(*[c * 180 for c in (0x4e, 0x9a, 0x06)])
+    INVALID = Gdk.Color(*[c * 255 for c in (0xcc, 0x0, 0x0)])
+    VALID = Gdk.Color(*[c * 180 for c in (0x4e, 0x9a, 0x06)])
 
     def set_validate(self, validator=None):
         if validator: self.connect_object('changed', self.__color, validator)
@@ -195,13 +193,13 @@ class ValidatingEntryMixin(object):
         if value is True: color = self.VALID
         elif value is False: color = self.INVALID
         elif value and isinstance(value, str):
-            color = gtk.gdk.color_parse(value)
+            color = Gdk.color_parse(value)
         else: color = None
 
         if color and self.get_property('sensitive'):
-            self.modify_text(gtk.STATE_NORMAL, color)
+            self.modify_text(Gtk.StateType.NORMAL, color)
         else:
-            self.modify_text(gtk.STATE_NORMAL, None)
+            self.modify_text(Gtk.StateType.NORMAL, None)
 
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):
