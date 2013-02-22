@@ -22,7 +22,6 @@ from quodlibet.const import LIBRARY_SAVE_PERIOD_SECONDS
 from quodlibet.library.libraries import SongFileLibrary, SongLibrary
 from quodlibet.library.librarians import SongLibrarian
 
-#librarian = library = None
 
 def init(cache_fn=None):
     """Set up the library and return the main one.
