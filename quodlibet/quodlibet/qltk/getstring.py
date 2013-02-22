@@ -4,40 +4,40 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
+from gi.repository import Gdk
 
 from quodlibet.qltk.entry import UndoEntry
 
-class GetStringDialog(gtk.Dialog):
+class GetStringDialog(Gtk.Dialog):
     def __init__(
-        self, parent, title, text, options=[], okbutton=gtk.STOCK_OPEN):
+        self, parent, title, text, options=[], okbutton=Gtk.STOCK_OPEN):
         super(GetStringDialog, self).__init__(title, parent)
         self.set_border_width(6)
-        self.set_has_separator(False)
         self.set_resizable(False)
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         okbutton, gtk.RESPONSE_OK)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                         okbutton, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
-        self.set_default_response(gtk.RESPONSE_OK)
+        self.set_default_response(Gtk.ResponseType.OK)
 
-        box = gtk.VBox(spacing=6)
-        lab = gtk.Label(text)
+        box = Gtk.VBox(spacing=6)
+        lab = Gtk.Label(label=text)
         box.set_border_width(6)
         lab.set_line_wrap(True)
-        lab.set_justify(gtk.JUSTIFY_CENTER)
-        box.pack_start(lab)
+        lab.set_justify(Gtk.Justification.CENTER)
+        box.pack_start(lab, True, True, 0)
 
         if options:
-            self._entry = gtk.combo_box_entry_new_text()
+            self._entry = Gtk.ComboBoxText.new_with_entry()
             for o in options: self._entry.append_text(o)
-            self._val = self._entry.child
-            box.pack_start(self._entry)
+            self._val = self._entry.get_child()
+            box.pack_start(self._entry, True, True, 0)
         else:
             self._val = UndoEntry()
-            box.pack_start(self._val)
+            box.pack_start(self._val, True, True, 0)
 
-        self.vbox.pack_start(box)
-        self.child.show_all()
+        self.vbox.pack_start(box, True, True, 0)
+        self.get_child().show_all()
 
     def _verify_clipboard(self, text):
         """Return an altered text or None if the content was invalid."""
@@ -52,7 +52,7 @@ class GetStringDialog(gtk.Dialog):
 
         self.show()
         if clipboard:
-            clipboard = gtk.clipboard_get()
+            clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
             clip = clipboard.wait_for_text()
             if clip is not None:
                 clip = self._verify_clipboard(clip)
@@ -61,10 +61,10 @@ class GetStringDialog(gtk.Dialog):
         self._val.set_text(text)
         self._val.set_activates_default(True)
         self._val.grab_focus()
-        resp = gtk.RESPONSE_OK
+        resp = Gtk.ResponseType.OK
         if not test:
             resp = super(GetStringDialog, self).run()
-        if resp == gtk.RESPONSE_OK:
+        if resp == Gtk.ResponseType.OK:
             value = self._val.get_text()
         else: value = None
         self.destroy()

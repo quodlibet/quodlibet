@@ -7,8 +7,7 @@
 
 import os
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import config
 from quodlibet import devices

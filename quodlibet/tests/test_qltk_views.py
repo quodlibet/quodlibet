@@ -1,7 +1,7 @@
 from tests import TestCase, add
 from quodlibet.qltk.views import AllTreeView, BaseView
 import quodlibet.config
-import gtk
+from gi.repository import Gtk
 
 class THintedTreeView(TestCase):
     def setUp(self):

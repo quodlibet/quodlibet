@@ -1,4 +1,5 @@
-import gobject
+from gi.repository import GObject
+
 
 class BasePlayer(gobject.GObject):
     """Interfaces between a QL PlaylistModel and a GSt playbin.

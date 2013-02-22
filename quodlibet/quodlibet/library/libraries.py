@@ -23,8 +23,9 @@ import cPickle as pickle
 import os
 import shutil
 import threading
-import gobject
 from UserDict import DictMixin
+
+from gi.repository import GObject
 
 from quodlibet.formats import MusicFile
 from quodlibet.parse import Query

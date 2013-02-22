@@ -7,8 +7,7 @@
 
 import time
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import const
 from quodlibet import qltk

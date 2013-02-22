@@ -1,6 +1,7 @@
 from tests import TestCase, add
 
-import gtk
+from gi.repository import Gtk
+
 import os
 import urllib
 try:

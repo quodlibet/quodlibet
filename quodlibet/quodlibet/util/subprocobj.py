@@ -16,7 +16,7 @@
 
 import os
 
-import gobject
+from gi.repository import GObject
 
 __all__ = []
 

@@ -9,8 +9,7 @@ import os
 import urlparse
 import errno
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet import const
 from quodlibet import formats

@@ -8,8 +8,7 @@
 
 import random
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet import app
 from quodlibet import util

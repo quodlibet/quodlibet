@@ -27,9 +27,7 @@ Of course, right now it does none of these things.
 # TODO: Add notification button/callback support (prereq for global undo)
 # TODO: Optimize performance (deferred signals, etc)
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 from quodlibet.util import copool
 

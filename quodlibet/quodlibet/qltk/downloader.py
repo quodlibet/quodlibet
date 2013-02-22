@@ -7,9 +7,7 @@
 import os
 import urllib
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import qltk
 from quodlibet import util

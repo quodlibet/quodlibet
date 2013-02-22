@@ -6,7 +6,7 @@
 
 import os
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import const
 from quodlibet import util

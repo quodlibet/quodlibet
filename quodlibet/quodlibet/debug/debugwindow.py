@@ -4,7 +4,7 @@ import time
 import traceback
 import platform
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import app
 from quodlibet import const

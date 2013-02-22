@@ -7,8 +7,7 @@
 # Things that are more or less direct wrappers around GTK widgets to
 # ease constructors.
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet import util
 from quodlibet.qltk import is_accel

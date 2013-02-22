@@ -6,7 +6,7 @@
 
 import random
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet.plugins import PluginManager

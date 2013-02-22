@@ -7,9 +7,8 @@
 import pygst
 pygst.require("0.10")
 
-import gtk
+from gi.repository import Gtk, GObject
 import gst
-import gobject
 
 from quodlibet import util
 from quodlibet import config

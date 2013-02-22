@@ -8,9 +8,7 @@
 import datetime
 import time
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import config
 from quodlibet import const

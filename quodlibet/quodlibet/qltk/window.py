@@ -4,8 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
-import gobject
+from gi.repository import Gtk, GObject
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent

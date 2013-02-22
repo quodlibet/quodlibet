@@ -1,4 +1,5 @@
-import gtk
+from gi.repository import Gtk
+
 from tests import TestCase, add
 from quodlibet.library import SongLibrarian
 from quodlibet.library.libraries import Library, SongFileLibrary

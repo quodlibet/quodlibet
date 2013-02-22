@@ -13,7 +13,7 @@ try:
 except ImportError:
   import md5 as hash
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.util import mtime, fsnative, pathname2url
 from quodlibet.util import xdg_get_cache_home, mkdir

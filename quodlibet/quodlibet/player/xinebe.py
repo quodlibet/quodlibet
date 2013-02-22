@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gobject
+from gi.repository import GObject
 
 from quodlibet import config
 from quodlibet.player import error as PlayerError

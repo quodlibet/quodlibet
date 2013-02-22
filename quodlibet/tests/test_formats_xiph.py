@@ -269,7 +269,7 @@ class TVCCover(TestCase):
         config.init()
 
     def __get_jpeg(self, size=5):
-        import gtk
+        from gi.repository import Gdk
         pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, size, size)
         fn = tempfile.NamedTemporaryFile()
         pb.save(fn.name, "jpeg")

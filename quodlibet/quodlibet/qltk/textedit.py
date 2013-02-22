@@ -5,9 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import qltk
 from quodlibet import util
@@ -18,8 +16,8 @@ from quodlibet.parse import XMLFromPattern
 try:
     import gtksourceview2
 except ImportError:
-    from gtk import TextView
-    from gtk import TextBuffer
+    TextView = Gtk.TextView
+    TextBuffer = Gtk.TextBuffer
 else:
     TextView = gtksourceview2.View
     class TextBuffer(gtksourceview2.Buffer):

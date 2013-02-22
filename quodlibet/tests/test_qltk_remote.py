@@ -1,7 +1,7 @@
 from tests import add, TestCase
 
 import os
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import const
 from quodlibet import config
@@ -18,7 +18,8 @@ class TFSInterface(TestCase):
         self.fs = FSInterface(self.p)
 
     def do(self):
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def test_init(self):
         self.do()

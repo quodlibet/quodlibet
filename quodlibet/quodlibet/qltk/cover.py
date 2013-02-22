@@ -6,9 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet import qltk
 from quodlibet import config

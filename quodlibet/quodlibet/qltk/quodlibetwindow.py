@@ -9,8 +9,7 @@
 import os
 import sys
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet import browsers
 from quodlibet import config

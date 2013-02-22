@@ -6,7 +6,7 @@
 
 """Manage a pool of routines using Python iterators."""
 
-import gobject
+from gi.repository import GObject
 
 __routines = {}
 __paused = {}

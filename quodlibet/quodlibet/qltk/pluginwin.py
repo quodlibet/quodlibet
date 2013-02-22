@@ -5,8 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import config
 from quodlibet import const

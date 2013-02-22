@@ -1,4 +1,4 @@
-import gtk
+from gi.repository import Gtk
 
 import os
 import shutil

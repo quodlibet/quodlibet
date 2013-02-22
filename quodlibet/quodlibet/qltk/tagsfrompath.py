@@ -8,7 +8,7 @@
 import os
 import re
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet import const

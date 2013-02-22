@@ -11,7 +11,8 @@ import ConfigParser
 from os.path import dirname, basename
 from quodlibet.util.dprint import print_d, print_w
 
-import gobject
+from gi.repository import GObject
+
 try:
     import dbus
 except ImportError:

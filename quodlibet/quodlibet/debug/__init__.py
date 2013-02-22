@@ -3,7 +3,8 @@ import sys
 from quodlibet.debug.debugwindow import ExceptionDialog
 
 def init():
-    import gobject
+    from gi.repository import GObject
+
     def _override_exceptions():
         print_d("Enabling custom exception handler.")
         sys.excepthook = ExceptionDialog.excepthook

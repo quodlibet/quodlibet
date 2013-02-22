@@ -8,8 +8,10 @@
 Librarians for libraries.
 """
 
-import gobject
 import itertools
+
+from gi.repository import GObject
+
 from quodlibet.util.dprint import print_d
 
 class Librarian(gobject.GObject):

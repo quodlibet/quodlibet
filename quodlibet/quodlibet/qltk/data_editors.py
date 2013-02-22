@@ -4,8 +4,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
+
 from quodlibet import qltk, util
 from quodlibet.util.dprint import print_d
 from quodlibet.qltk.entry import UndoEntry, ValidatingEntry

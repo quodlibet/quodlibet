@@ -1,6 +1,7 @@
 from tests import TestCase, add
 
-import gtk
+from gi.repository import Gtk
+
 from quodlibet.util import copool
 
 class Tcopool(TestCase):

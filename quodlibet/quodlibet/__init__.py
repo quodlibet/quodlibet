@@ -48,7 +48,7 @@ class Application(object):
         return self.library.librarian
 
     def quit(self):
-        import gobject
+        from gi.repository import GObject
 
         def idle_quit():
             if self.window:
@@ -83,11 +83,15 @@ app = Application()
 
 
 def _gtk_init(icon=None):
-    import pygtk
-    pygtk.require('2.0')
-    import gtk
-    import gobject
-    gobject.threads_init()
+    import gi
+    gi.require_version("Gtk", "3.0")
+    gi.require_version("Gdk", "3.0")
+    gi.require_version("GObject", "2.0")
+    gi.require_version("Pango", "1.0")
+
+    from gi.repository import Gtk, GObject
+
+    GObject.threads_init()
 
     pygtk_ver = Version(gtk.pygtk_version)
     if pygtk_ver < MinVersions.PYGTK:
@@ -131,8 +135,8 @@ def _dbus_init():
         except ImportError:
             return
     else:
-        import gobject
-        gobject.threads_init()
+        from gi.repository import GObject
+        GObject.threads_init()
         threads_init()
         DBusGMainLoop(set_as_default=True)
 
@@ -215,8 +219,8 @@ _gettext_init()
 
 def exit(status=None):
     """Call this to abort the startup"""
-    import gtk
-    gtk.gdk.notify_startup_complete()
+    from gi.repository import Gdk
+    Gdk.notify_startup_complete()
     raise SystemExit(status)
 
 
@@ -226,7 +230,7 @@ def init(library=None, icon=None, title=None, name=None):
     _gtk_init(icon)
     _dbus_init()
 
-    import gobject
+    from gi.repository import GObject
 
     if title:
         gobject.set_prgname(title)
@@ -315,8 +319,8 @@ def _init_signal():
     mainloop has started."""
 
     import signal
-    import gobject
     import os
+    from gi.repository import GObject
 
     if os.name == "nt":
         return
@@ -338,7 +342,7 @@ def _init_signal():
 
 def main(window):
     print_d("Entering quodlibet.main")
-    import gtk
+    from gi.repository import Gtk
 
     def quit_gtk(m):
         # disable plugins
@@ -353,7 +357,7 @@ def main(window):
         # events that add new events to the main loop (like copool)
         # can block the shutdown, so force stop after some time.
         # gtk.main_iteration will return True if quit gets called here
-        import gobject
+        from gi.repository import GObject
         gobject.timeout_add(4 * 1000, gtk.main_quit,
                             priority=gobject.PRIORITY_HIGH)
 

@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-import gtk
+from gi.repository import Gtk
 
 import quodlibet.browsers.search
 import quodlibet.config

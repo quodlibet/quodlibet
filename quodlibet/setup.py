@@ -70,8 +70,8 @@ class test_cmd(Command):
 
     def run(self):
         mods = sys.modules.keys()
-        if "gobject" in mods or "gtk" in mods or "glib" in mods:
-            raise SystemExit("E: setup.py shouldn't depend on pygtk")
+        if "gi" in mods:
+            raise SystemExit("E: setup.py shouldn't depend on gi")
 
         tests = __import__("tests")
         subdir = (self.suite != "tests" and self.suite) or None

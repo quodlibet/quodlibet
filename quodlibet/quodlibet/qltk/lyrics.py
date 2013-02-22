@@ -13,8 +13,7 @@ import os
 import threading
 import urllib
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet import const
 from quodlibet import qltk

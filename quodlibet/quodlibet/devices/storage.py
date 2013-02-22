@@ -7,9 +7,10 @@
 
 import os
 import shutil
-import gtk
 import copy
 from glob import glob
+
+from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet import const

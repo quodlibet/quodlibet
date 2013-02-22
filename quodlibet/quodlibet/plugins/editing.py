@@ -5,7 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
+
 
 class RenameFilesPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be

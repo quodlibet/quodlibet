@@ -7,8 +7,7 @@
 
 import time
 
-import gtk.gdk
-import gobject
+from gi.repository import Gdk, GObject
 
 from quodlibet import const
 from quodlibet import config

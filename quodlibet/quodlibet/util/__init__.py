@@ -615,7 +615,8 @@ def spawn(argv, stdout=False):
     argv must be strictly str objects to avoid encoding confusion.
     """
 
-    import gobject
+    from gi.repository import GObject
+
     types = map(type, argv)
     if not (min(types) == max(types) == str):
         raise TypeError("executables and arguments must be str objects")
@@ -662,7 +663,7 @@ class DeferredSignal(object):
     def __call__(self, *args):
         if not self.dirty:
             self.dirty = True
-            import gobject
+            from gi.repository import GObject
             gobject.idle_add(self._wrap, *args)
 
     def _wrap(self, *args):

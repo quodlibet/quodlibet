@@ -5,7 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
+
 from quodlibet import formats, config, print_d
 from quodlibet.util import copool, massagers
 

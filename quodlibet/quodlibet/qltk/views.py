@@ -5,9 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel

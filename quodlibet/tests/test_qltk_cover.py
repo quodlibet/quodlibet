@@ -1,6 +1,7 @@
 import tempfile
 import os
-import gtk
+
+from gi.repository import Gtk
 
 from tests import TestCase, add
 from quodlibet import config
