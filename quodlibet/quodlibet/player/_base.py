@@ -1,7 +1,7 @@
 from gi.repository import GObject
 
 
-class BasePlayer(gobject.GObject):
+class BasePlayer(GObject.GObject):
     """Interfaces between a QL PlaylistModel and a GSt playbin.
 
     Attributes:
@@ -34,19 +34,19 @@ class BasePlayer(gobject.GObject):
 
     _gsignals_ = {
         'song-started':
-        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+        (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'song-ended':
-        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, bool)),
+        (GObject.SignalFlags.RUN_LAST, None, (object, bool)),
         'seek':
-        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, int)),
-        'paused': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        'unpaused': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        'error': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, str)),
+        (GObject.SignalFlags.RUN_LAST, None, (object, int)),
+        'paused': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'unpaused': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'error': (GObject.SignalFlags.RUN_LAST, None, (object, str)),
         }
 
     _gproperties_ = {
         'volume': (float, 'player volume', 'the volume of the player',
-                   0.0, 1.0, 1.0, gobject.PARAM_READWRITE)
+                   0.0, 1.0, 1.0, GObject.PARAM_READWRITE)
         }
 
     def __init__(self, *args, **kwargs):

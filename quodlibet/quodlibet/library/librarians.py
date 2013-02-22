@@ -14,7 +14,8 @@ from gi.repository import GObject
 
 from quodlibet.util.dprint import print_d
 
-class Librarian(gobject.GObject):
+
+class Librarian(GObject.GObject):
     """The librarian is a nice interface to all active libraries.
 
     Librarians are a kind of meta-library. When any of their
@@ -27,11 +28,10 @@ class Librarian(gobject.GObject):
     libraries -- a dict mapping library names to libraries
     """
 
-    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
     __gsignals__ = {
-        'changed': SIG_PYOBJECT,
-        'removed': SIG_PYOBJECT,
-        'added': SIG_PYOBJECT,
+        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        'removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        'added': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         }
 
     def __init__(self):
