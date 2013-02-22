@@ -6,6 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet.qltk.notif import Task
 from quodlibet.util.dprint import print_d
@@ -27,7 +28,6 @@ def emit_signal(songs, signal="changed", block_size=50, name=None,
     in blocks of `block_size`. Useful for copools.
     """
     i = 0
-    from quodlibet.library import library
     with Task(_("Library"), name or signal) as task:
         if cofuncid:
             task.copool(cofuncid)
@@ -40,6 +40,6 @@ def emit_signal(songs, signal="changed", block_size=50, name=None,
                 print_d("Signalling '%s' (%d/%d songs)"
                         % (signal, i, total))
             task.update(float(i) / total)
-            library.emit(signal, more)
+            app.library.emit(signal, more)
             i += block_size
             yield

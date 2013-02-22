@@ -11,7 +11,6 @@ import urllib2
 import time
 from datetime import date
 from threading import Thread
-from pickle import PickleError
 
 import gtk
 import gobject
@@ -249,7 +248,8 @@ class LastFMSync(SongsMenuPlugin):
         user = config_get('username', '')
         try:
             cache = self.cache_shelf.setdefault(user, LastFMSyncCache(user))
-        except (ValueError, PickleError, IOError):
+        except Exception:
+            # unpickle can fail in many ways. this is just cache, so ignore
             cache = self.cache_shelf[user] = LastFMSyncCache(user)
 
         self.dialog = LastFMSyncWindow(self.plugin_window)

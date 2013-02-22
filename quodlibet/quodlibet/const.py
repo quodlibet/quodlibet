@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Constants used in various parts of QL, mostly strings.
 
+import sys
 import os
 import locale
 
@@ -54,6 +55,9 @@ CONFIG  = os.path.join(USERDIR, "config")
 CURRENT = os.path.join(USERDIR, "current")
 LIBRARY = os.path.join(USERDIR, "songs")
 LOGDIR  = os.path.join(USERDIR, "logs")
+
+# Don't bother saving the library more often than this
+LIBRARY_SAVE_PERIOD_SECONDS = 15 * 60
 
 DEFAULT_RATING = 0.5
 
@@ -137,7 +141,7 @@ NBP_EXAMPLES = """\
 /path/<artist> - <album>/<tracknumber>. <title>
 /path/<artist>/<album>/<tracknumber> - <title>"""
 
-DEBUG = "QUODLIBET_DEBUG" in os.environ
+DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ)
 
 MENU = """<ui>
   <menubar name='Menu'>

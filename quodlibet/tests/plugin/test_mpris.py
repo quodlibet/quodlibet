@@ -7,7 +7,7 @@
 import gtk
 import dbus
 
-from tests import TestCase, add
+from tests import add
 from tests.plugin import PluginTestCase
 
 from quodlibet.formats._audio import AudioFile
@@ -17,7 +17,6 @@ from quodlibet import library
 from quodlibet import browsers
 from quodlibet import player
 from quodlibet import app
-from quodlibet.player.nullbe import NullPlayer
 
 
 A1 = AudioFile(
@@ -38,12 +37,11 @@ class TMPRIS(PluginTestCase):
     def setUpClass(cls):
         config.init()
         browsers.init()
-        library.init()
         player.init("nullbe")
 
-        app.player = player.init_device(library.librarian)
-        app.window = QuodLibetWindow(library.library, player.playlist)
-        app.librarian = library.librarian
+        app.library = library.init()
+        app.player = player.init_device(app.librarian)
+        app.window = QuodLibetWindow(app.library, player.playlist)
         app.player = player.playlist
 
         cls.plugin = cls.plugins["mpris"]

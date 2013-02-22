@@ -6,9 +6,11 @@
 
 import gtk
 
+from quodlibet import app
 from quodlibet import browsers
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+
 
 class FilterBrowser(SongsMenuPlugin):
     PLUGIN_ID = 'filterbrowser'
@@ -24,6 +26,5 @@ class FilterBrowser(SongsMenuPlugin):
         for song in songs:
             values.extend(song.list(tag))
 
-        from quodlibet.library import library
-        browser = LibraryBrowser(browsers.get("SearchBar"), library)
+        browser = LibraryBrowser(browsers.get("SearchBar"), app.library)
         browser.browser.filter(tag, set(values))

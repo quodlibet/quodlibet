@@ -7,7 +7,6 @@
 # published by the Free Software Foundation
 
 import os
-import subprocess
 import ConfigParser
 from os.path import dirname, basename
 from quodlibet.util.dprint import print_d, print_w

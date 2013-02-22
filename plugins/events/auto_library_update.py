@@ -11,6 +11,7 @@ from pyinotify import WatchManager, EventsCodes, ProcessEvent, Notifier,\
         ThreadedNotifier
 from quodlibet import config, print_d
 from quodlibet.plugins.events import EventPlugin
+from quodlibet import app
 import gobject
 import os
 
@@ -108,18 +109,13 @@ class AutoLibraryUpdate(EventPlugin):
     # TODO: make a config option
     USE_THREADS = True
 
-    library = None
     event_handler = None
     running = False
-
-    def __init__(self):
-        from quodlibet.library import library as library
-        self.library = library
 
     def enabled(self):
         if not self.running :
             wm = WatchManager()
-            self.event_handler = LibraryEvent(self.library)
+            self.event_handler = LibraryEvent(app.library)
 
             # Choose event types to watch for
             # FIXME: watch for IN_CREATE or for some reason folder copies

@@ -688,12 +688,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # Doing set_model(None) resets the sort indicator, so we need to
         # remember it before doing that.
         sorts = map(gtk.TreeViewColumn.get_sort_indicator, self.get_columns())
-        print_d("Detaching model.", context=self)
         self.set_model(None)
         model.set(songs)
-        print_d("Attaching model.", context=self)
         self.set_model(model)
-        print_d("Model attached.", context=self)
         map(gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
 
     def get_selected_songs(self):

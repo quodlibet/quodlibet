@@ -11,22 +11,22 @@
 #    it under the terms of version 2 of the GNU General Public License as
 #    published by the Free Software Foundation.
 #
-from gettext import ngettext
-from quodlibet import config, player, print_d, print_w, util, qltk
-from quodlibet.library import library
+
+import string
+import unicodedata
+
+import gtk
+import pango
+
+from quodlibet import app
+from quodlibet import player, print_d, print_w, util, qltk
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
-import ConfigParser
-import gobject
-import gtk
-import pango
-import string
-import unicodedata
-from quodlibet.qltk.ccb import ConfigCheckButton
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -137,7 +137,8 @@ class DuplicateSongsView(RCMHintedTreeView):
         }
         for (sig, callback) in SIGNAL_MAP.items():
             print_d("Listening to library.%s signals" % sig)
-            self.connected_library_sigs.append(library.connect(sig, callback))
+            self.connected_library_sigs.append(
+                app.library.connect(sig, callback))
 
         # And disconnect, or Bad Stuff happens.
         self.connect('destroy', self.on_destroy)
@@ -146,7 +147,7 @@ class DuplicateSongsView(RCMHintedTreeView):
     def on_destroy(self, view):
         print_d("Disconnecting from library signals...")
         for sig in self.connected_library_sigs:
-            library.disconnect(sig)
+            app.library.disconnect(sig)
 
 
 class DuplicatesTreeModel(gtk.TreeStore):
@@ -271,7 +272,7 @@ class DuplicateDialog(gtk.Window):
 
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
-        menu = songlist.Menu(library)
+        menu = songlist.Menu(app.library)
         if menu is not None:
             return songlist.popup_menu(menu, 0, gtk.get_current_event_time())
 
@@ -453,7 +454,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
             elif key:
                 groups[key] = set([song._song])
 
-        for song in library:
+        for song in app.library:
             key = self.get_key(song)
             if key in groups:
                 groups[key].add(song)

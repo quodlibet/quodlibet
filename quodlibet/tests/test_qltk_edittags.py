@@ -6,9 +6,6 @@
 
 from tests import TestCase, add
 
-import os
-import sys
-
 from quodlibet.qltk.edittags import *
 from quodlibet.library import SongLibrary
 import quodlibet.config

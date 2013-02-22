@@ -11,6 +11,7 @@ import gtk
 import dbus
 import dbus.service
 
+from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import Pattern
 from quodlibet.util.uri import URI
@@ -30,11 +31,9 @@ class MediaServer(EventPlugin):
     PLUGIN_VERSION = "0.1"
 
     def enabled(self):
-        from quodlibet.library import library
-
         entry = EntryObject()
-        albums = AlbumsObject(entry, library)
-        song = SongObject(library, [albums])
+        albums = AlbumsObject(entry, app.library)
+        song = SongObject(app.library, [albums])
         icon = Icon(entry)
 
         self.objects = [entry, albums, song, icon]

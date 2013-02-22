@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -31,8 +31,8 @@ from quodlibet.util.library import background_filter
 
 
 def get_headers():
-    #<=2.1 saved the headers tab seperated, but had a space seperated
-    #default value, so check for that.
+    # QL <= 2.1 saved the headers tab-separated, but had a space-separated
+    # default value, so check for that.
     headers = config.get("browsers", "panes")
     if headers == "~people album":
         return headers.split()
@@ -48,10 +48,9 @@ def save_headers(headers):
 class PatternEditor(gtk.VBox):
 
     PRESETS = [
-            ["genre", "~people", "album"],
-            ["~people", "album"],
-        ]
-
+        ["genre", "~people", "album"],
+        ["~people", "album"],
+    ]
     COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year"]
 
     def __init__(self):
@@ -229,8 +228,8 @@ class SongSelection(Collection):
         self.key = key
 
     def all_have(self, key, value):
-        """Check if all songs have the give tag and it contains the value.
-        Used for filtering.."""
+        """Check if all songs have tag `key` set  to `value`.
+        Used for filtering."""
         if key[:2] == "~#" and "~" not in key[2:]:
             for song in self.songs:
                 if song(key) != value:
@@ -251,7 +250,6 @@ class PanePattern(object):
     * ':' has to be escaped ('\:')
 
     TODO: sort pattern, filter query
-
     """
 
     def __init__(self, row_pattern):
@@ -363,12 +361,11 @@ class Pane(AllTreeView):
         column.set_fixed_width(50)
 
         column.pack_start(self.__render)
-        column.set_cell_data_func(self.__render,
-            self.__text_cdf, self.pattern.has_markup)
+        column.set_cell_data_func(self.__render, self.__text_cdf,
+                                  self.pattern.has_markup)
         column.pack_start(self.__render_count, expand=False)
-        column.set_cell_data_func(self.__render_count,
-            self.__count_cdf, self.pattern.format_display)
-
+        column.set_cell_data_func(self.__render_count, self.__count_cdf,
+                                  self.pattern.format_display)
         self.append_column(column)
         self.set_model(model)
 
@@ -381,11 +378,10 @@ class Pane(AllTreeView):
         self.connect_object('destroy', self.disconnect, s)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
-               ("text/uri-list", 0, 2)]
-        self.drag_source_set(
-            gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+                   ("text/uri-list", 0, 2)]
+        self.drag_source_set(gtk.gdk.BUTTON1_MASK, targets,
+                             gtk.gdk.ACTION_COPY)
         self.connect("drag-data-get", self.__drag_data_get)
-
         self.connect("destroy", self.__destroy)
 
     def __destroy(self, *args):
@@ -494,7 +490,7 @@ class Pane(AllTreeView):
                     collection[key][0].songs.add(song)
 
         items = sorted(collection.iteritems(),
-            key=lambda s: s[1][1], reverse=True)
+                       key=lambda s: s[1][1], reverse=True)
 
         # faster...
         model = self.__model
@@ -566,14 +562,13 @@ class Pane(AllTreeView):
         self.get_selection().handler_unblock(self.__sig)
 
     def list(self, key):
-        #We get all tag values and check if all songs have it.
+        # We get all tag values and check if all songs have it.
         model = self.__model
         # If the key is the only tag, return everything
         if len(self.tags) == 1 and key in self.tags:
             return [r[1].key for r in model if r[0] != ALL]
-        # For patterns/tied tags we have to make sure that
-        # filtering for that key will return only songs that all have
-        # the specified value
+        # For patterns/tied tags we have to make sure that filtering for
+        # that key will return only songs that all have the specified value
         all = set()
         sels = (row[1] for row in model if row[0] == SONGS)
         for sel in sels:
@@ -587,11 +582,11 @@ class Pane(AllTreeView):
         return list(all)
 
     def fill(self, songs):
-        # restore the selection
+        # Restore the selection
         restore = self.__restore_values
         selected = (restore and restore.pop(0)) or self.get_selected()
         model = self.__model
-        # if previously all entries were selected: select All
+        # If previously all entries were selected: select All
         if len(model) == len(selected):
             selected = None
         self.inhibit()
@@ -643,6 +638,7 @@ class Pane(AllTreeView):
 
     def set_selected_by_tag(self, tag, values, jump=False):
         """Select the entries which songs all have one of the values."""
+
         # Like with self.list we can select all matching keys if the tag
         # is our only tag
         if len(self.tags) == 1 and tag in self.tags:
@@ -655,7 +651,7 @@ class Pane(AllTreeView):
                     if data.all_have(tag, value):
                         pattern_values.append(data.key)
                         break
-        # select unknown
+        # Select unknown
         if "" in values:
             pattern_values.append("")
         self.set_selected(pattern_values, jump)
@@ -678,6 +674,10 @@ class Pane(AllTreeView):
 
 
 class PanedBrowser(SearchBar, util.InstanceTracker):
+    """A Browser enabling "drilling down" of tracks by successive
+    selections in multiple tag pattern panes (e.g. Genre / People / Album ).
+    It presents available values (and track counts) for each pane's tag"""
+
     expand = qltk.RVPaned
 
     name = _("Paned Browser")
@@ -699,18 +699,18 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         keyval, mod = gtk.accelerator_parse("<control>Home")
         s = self.accelerators.connect_group(keyval, mod, 0, self.__all)
         self.connect_object('destroy',
-            self.accelerators.disconnect_key, keyval, mod)
+                            self.accelerators.disconnect_key, keyval, mod)
         select = gtk.Button(_("Select _All"))
-        self._search_bar.pack_start(select, expand=False)
+        self._sb_box.pack_start(select, expand=False)
 
         prefs = gtk.Button()
-        prefs.add(gtk.image_new_from_stock(
-            gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
+        prefs.add(gtk.image_new_from_stock(gtk.STOCK_PREFERENCES,
+                                           gtk.ICON_SIZE_MENU))
         s = prefs.connect('clicked', Preferences)
         self.connect_object('destroy', prefs.disconnect, s)
         s = select.connect('clicked', self.__all)
         self.connect_object('destroy', select.disconnect, s)
-        self._search_bar.pack_start(prefs, expand=False)
+        self._sb_box.pack_start(prefs, expand=False)
 
         for s in [library.connect('changed', self.__changed),
                   library.connect('added', self.__added),
@@ -782,13 +782,12 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         hbox = gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
         hbox.set_size_request(100, 100)
-        # fill in the pane list. the last pane reports back to us.
+        # Fill in the pane list. The last pane reports back to us.
         self.__panes = [self]
         panes = get_headers()
         panes.reverse()
         for pane in panes:
-            self.__panes.insert(
-                0, Pane(pane, self.__panes[0], self._library))
+            self.__panes.insert(0, Pane(pane, self.__panes[0], self._library))
         self.__panes.pop()  # remove self
 
         for pane in self.__panes:
@@ -818,7 +817,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         canditates = []
         for pane in self.__panes:
             if (key in pane.tags or
-                (key in PEOPLE and "~people" in pane.tags)):
+                    (key in PEOPLE and "~people" in pane.tags)):
                 canditates.append((len(pane.tags), pane))
         canditates.sort()
         return (canditates and canditates[0][1]) or None
@@ -862,7 +861,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             all = str(int(bool(all)))
             values.insert(0, all)
 
-            # the config lib strips all whitespace, so add a bogus . at the end
+            # The config lib strips all whitespace,
+            # so add a bogus . at the end
             selected.append("\t".join(values) + "\t.")
         config.set("browsers", "pane_selection", "\n".join(selected))
 

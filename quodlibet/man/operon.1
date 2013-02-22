@@ -1,0 +1,287 @@
+.\" Man page generated from reStructeredText.
+.
+.TH OPERON 1 "" "" ""
+.SH NAME
+operon \- command line music tagger
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.SH SYNOPSIS
+.nf
+\fBoperon\fP [\-\-version] [\-\-help] [\-v | \-\-verbose] <\fIcommand\fP> [<\fIargument\fP>...]
+\fBoperon help\fP <\fIcommand\fP>
+.fi
+.sp
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-version
+Print the program version
+.TP
+.B \-v,  \-\-verbose
+Verbose mode
+.UNINDENT
+.SH COMMAND-OVERVIEW
+.SS Edit Tags
+.nf
+\fIadd\fP         Add a tag value
+\fIremove\fP      Remove a tag value
+\fIset\fP         Set a tag and remove existing values
+\fIclear\fP       Remove tags
+\fIcopy\fP        Copy tags from one file to another
+\fIdump\fP        Print all tags to stdout
+.fi
+.sp
+.SS Show file metadata
+.nf
+\fIlist\fP        List tags
+\fIinfo\fP        List file information
+\fIprint\fP       Print tags based on the given pattern
+.fi
+.sp
+.SS Miscellaneous
+.nf
+\fItags\fP        List all common tags
+\fIhelp\fP        Display help information
+.fi
+.sp
+.SH EDIT TAGS
+.SS add
+.sp
+Add a new tag \fB<tag>\fP with the value \fB<value>\fP to all files.
+.sp
+operon add [\-h] <tag> <value> <file>...
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.TP
+.B Example:
+operon add artist \(aqThe Beatles\(aq song1.ogg song2.ogg
+.UNINDENT
+.SS remove
+.sp
+Remove all values from the tag \fB<tag>\fP that match either \fB<value>\fP or
+the regular expression \fB<pattern>\fP from all files.
+.sp
+operon remove [\-h] [\-\-dry\-run] <tag> (\-e <pattern> | <value>) <file>...
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-dry\-run
+Print the results without changing any files
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-e | \-\-regexp <regexp>
+Remove all tag values that match the given regular expression
+.TP
+.B Example:
+operon remove artist \(aqThe Beatles\(aq song.ogg
+.UNINDENT
+.SS set
+.sp
+Replace all values of the tag \fB<tag>\fP by \fB<value>\fP in all files.
+.sp
+operon set [\-h] [\-\-dry\-run] <tag> <value> <file>...
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-dry\-run
+Print the results without changing any files
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Example:
+operon set artist \(aqThe Beatles\(aq song.ogg
+.UNINDENT
+.SS clear
+.sp
+Remove all tags that match \fB<tag>\fP or the regular expression \fB<pattern>\fP
+from all files. If \fI\-\-all\fP is specified, all known tags will be removed.
+.sp
+operon clear [\-h] [\-\-dry\-run] (\-a | \-e <pattern> | <tag>) <file>...
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-dry\-run
+Print the results without changing any files
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-a | \-\-all
+Remove all tags
+.TP
+.B \-e | \-\-regexp <regexp>
+Remove all tags that match the given regular expression
+.TP
+.B Example:
+operon clear \-a song.ogg
+.sp
+operon clear \-e \(aqmusicbrainz_.*\(aq song.ogg
+.sp
+operon clear date song.ogg
+.UNINDENT
+.SS copy
+.sp
+Copy all tags from the file \fI<source>\fP to \fI<dest>\fP. All tags in \fB<dest>\fP
+will be preserved. In case the destination format doesn\(aqt support setting a
+tag from source, no tags will be copied. To ignore tags that aren\(aqt
+supported by the destination format pass \fI\-\-ignore\-errors\fP.
+.sp
+operon copy [\-h] [\-\-dry\-run] [\-\-ignore\-errors] <source> <dest>
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-dry\-run
+Print the results without changing any files
+.TP
+.B \-\-ignore\-errors
+Skip tags which the target file does not support
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Example:
+operon copy song.flac song.ogg
+.UNINDENT
+.SS dump
+.sp
+Print all tags to stdout. The format is not specified. The data can be
+loaded again using \fIoperon load\fP, given the same version was used to create
+the data.
+.sp
+operon dump [\-h] <src\-file>
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.TP
+.B Example:
+operon dump song.flac > backup.tags
+.UNINDENT
+.SH SHOW FILE METADATA
+.SS list
+.sp
+Lists all tags, values and a description of each tag in a table.
+.sp
+operon list [\-h] [\-a] [\-t] [\-c <c1>,<c2>...] <file>
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.TP
+.B \-a | \-\-all
+Also list programmatic tags
+.TP
+.B \-t | \-\-terse
+Output is terse and suitable for script processing
+.TP
+.B \-c | \-\-columns <name>,...
+Defines which columns should be printed and in which order
+.TP
+.B Example:
+operon list \-a song.flac
+.sp
+operon list \-t \-c tag,value song.ogg
+.UNINDENT
+.SS info
+.sp
+Lists non\-tag metadata like length, size and format.
+.sp
+operon info [\-h] [\-t] [\-c <c1>,<c2>...] <file>
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.TP
+.B \-t | \-\-terse
+Output is terse and suitable for script processing
+.TP
+.B \-c | \-\-columns <name>,...
+Defines which columns should be printed and in which order
+.TP
+.B Example:
+operon info a.ogg
+.UNINDENT
+.SS print
+.sp
+Prints information per file built from tag values. The pattern can be
+customized by passing a pattern string (See \fBquodlibet\fP(1) for the
+pattern format)
+.sp
+operon print [\-h] [\-p <pattern>] <file>...
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.TP
+.B \-p | \-\-pattern <pattern>
+Use a custom pattern
+.TP
+.B Example:
+operon print \-p "<album> \- <artist>" a.ogg
+.UNINDENT
+.SH COMMANDS
+.SS help
+.sp
+operon help [<command>]
+.INDENT 0.0
+.TP
+.B Example:
+operon help list
+.UNINDENT
+.SH SEE ALSO
+.nf
+\fBregex\fP(7)
+\fBexfalso\fP(1)
+\fBquodlibet\fP(1)
+.fi
+.sp
+.\" Generated by docutils manpage writer.
+.\" 
+.

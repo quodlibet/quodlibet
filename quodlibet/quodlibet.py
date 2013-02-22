@@ -45,7 +45,6 @@ def main():
                              name="Quod Libet",
                              title=const.PROCESS_TITLE_QL)
     app.library = library
-    app.librarian = library.librarian
 
     for backend in [config.get("player", "backend"), "nullbe"]:
         try:

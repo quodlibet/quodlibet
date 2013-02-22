@@ -10,7 +10,7 @@ from tests import TestCase, add
 import dbus
 from quodlibet.util.dbusutils import apply_signature, list_spec_properties
 from quodlibet.util.dbusutils import filter_property_spec, DBusProperty
-from quodlibet.util.dbusutils import dbus_unicode_validate, DBusIntrospectable
+from quodlibet.util.dbusutils import dbus_unicode_validate
 
 
 ANN1 = """

@@ -323,6 +323,8 @@ class AudioFile(dict):
                 try: fileobj = file(self.lyric_filename, "rU")
                 except EnvironmentError: return default
                 else: return fileobj.read().decode("utf-8", "replace")
+            elif key == "filesize":
+                return util.format_size(self("~#filesize", 0))
             elif key == "playlists":
                 # See Issue 876
                 # Avoid circular references from formats/__init__.py

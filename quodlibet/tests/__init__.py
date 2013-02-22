@@ -47,7 +47,7 @@ class Result(unittest.TestResult):
             out.flush()
         pref = '%s (%d): ' % (self.bold(test_name), num_tests)
         line = pref + " " * (self.TEST_NAME_WIDTH - len(test_name)
-                             - 6 - int(log(num_tests, 10)))
+                             - 6 - int(num_tests and log(num_tests, 10) or 0))
         out.write(line)
 
     def addSuccess(self, test):

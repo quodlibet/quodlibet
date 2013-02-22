@@ -15,7 +15,7 @@ from quodlibet import const
 from quodlibet import player
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet.library import library
+from quodlibet import app
 
 from quodlibet.parse import Query
 from quodlibet.qltk.ccb import ConfigCheckButton
@@ -23,7 +23,7 @@ from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.util import DeferredSignal, copool
+from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal
 
@@ -502,7 +502,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.__changed(entry, section, name)
             print_d("Signalling \"changed\" to entire library. Hold tight...")
             # Cache over clicks
-            self._songs = self._songs or library.values()
+            self._songs = self._songs or app.library.values()
             copool.add(emit_signal, self._songs, funcid="library changed",
                     name=_("Updating for new ratings"))
 
@@ -524,7 +524,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             def refresh_cb(button):
                 paths = util.split_scan_dirs(config.get("settings", "scan"))
                 exclude = config.get("library", "exclude").split(":")
-                copool.add(library.rebuild,
+                copool.add(app.library.rebuild,
                    paths, False, exclude, cofuncid="library", funcid="library")
 
             refresh = qltk.Button(_("Refresh Library"), gtk.STOCK_REFRESH)

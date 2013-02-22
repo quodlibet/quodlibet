@@ -13,7 +13,6 @@ import gobject
 from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.library import library
 from quodlibet import util
 try: from quodlibet.qltk import notif
 except Exception: notif = None
@@ -163,14 +162,15 @@ class RandomAlbum(EventPlugin):
             if not browser.can_filter('album'):
                 return
 
-            library.albums.load()
+            albumlib = app.library.albums
+            albumlib.load()
 
             if browser.can_filter_albums():
                 keys = browser.list_albums()
-                values = [library.albums[k] for k in keys]
+                values = [albumlib[k] for k in keys]
             else:
                 keys = set(browser.list("album"))
-                values = [a for a in library.albums if a("album") in keys]
+                values = [a for a in albumlib if a("album") in keys]
 
             if self.use_weights:
                 # Select 3% of albums, or at least 3 albums

@@ -6,9 +6,10 @@
 
 import gtk
 
-from tests import TestCase, add
+from tests import add
 from tests.plugin import PluginTestCase
 from quodlibet import config
+
 
 class TPrefs(PluginTestCase):
     def setUp(self):

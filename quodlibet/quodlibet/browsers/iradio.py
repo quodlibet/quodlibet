@@ -290,7 +290,7 @@ class AddNewStation(GetStringDialog):
             okbutton=gtk.STOCK_ADD)
 
     def _verify_clipboard(self, text):
-        # try to extract an URI from the clipboard
+        # try to extract a URI from the clipboard
         for line in text.splitlines():
             line = line.strip()
 
@@ -437,7 +437,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         gobject_weak(search.connect, 'query-changed', self.__filter_changed)
 
         menu = gtk.Menu()
-        new_item = MenuItem(_("_New Station"), gtk.STOCK_ADD)
+        new_item = MenuItem(_("_New Station..."), gtk.STOCK_ADD)
         gobject_weak(new_item.connect, 'activate', self.__add)
         menu.append(new_item)
         update_item = MenuItem(_("_Update Stations"), gtk.STOCK_REFRESH)

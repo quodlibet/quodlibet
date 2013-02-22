@@ -7,9 +7,9 @@
 import gtk
 from os.path import splitext, extsep, dirname
 
+from quodlibet import app
 from quodlibet.qltk import ErrorMessage
 from quodlibet.const import HOME as lastfolder
-from quodlibet.library import library
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 __all__ = ['Export', 'Import']
@@ -131,5 +131,4 @@ class Import(SongsMenuPlugin):
             if rename:
                 origname = song['~filename']
                 newname = name + origname[origname.rfind('.'):]
-                if library is not None: library.rename(origname, newname)
-                else: song.rename(newname) # ex falso case doesn't use library
+                app.library.rename(origname, newname)

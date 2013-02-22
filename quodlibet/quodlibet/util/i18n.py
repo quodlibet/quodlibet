@@ -20,10 +20,11 @@ class GlibTranslations(gettext.GNUTranslations):
     (though it won't be able to translate anything, of course).
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, fp=None):
+        self.path = (fp and fp.name) or ""
         self._catalog = {}
         self.plural = lambda n: n != 1
-        gettext.GNUTranslations.__init__(self, *args, **kwargs)
+        gettext.GNUTranslations.__init__(self, fp)
 
     def qgettext(self, msgid):
         msgstr = self.gettext(msgid)

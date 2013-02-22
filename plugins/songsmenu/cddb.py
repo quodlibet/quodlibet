@@ -7,7 +7,6 @@
 import os
 from os import path
 
-from gettext import ngettext
 import CDDB
 import gtk
 

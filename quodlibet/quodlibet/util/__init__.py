@@ -7,6 +7,7 @@
 # published by the Free Software Foundation
 
 import os
+import random
 import re
 import sys
 import traceback
@@ -856,3 +857,24 @@ def build_filter_query(key, values):
             return u"%s = %s" % (key, text)
         else:
             return u"%s = |(%s)" % (key, text)
+
+
+def limit_songs(songs, max, weight_by_ratings=False):
+    """Choose at most `max` songs from `songs`,
+    optionally giving weighting to ~#rating"""
+
+    if not max or len(songs) < max:
+        return songs
+    else:
+        if weight_by_ratings:
+            def choose(r1, r2):
+                if r1 or r2:
+                    return cmp(random.random(), r1 / (r1+r2))
+                else:
+                    return random.randint(-1, 1)
+            def rating(song):
+                return song("~#rating")
+            songs.sort(cmp=choose, key=rating)
+        else:
+            random.shuffle(songs)
+        return songs[:max]

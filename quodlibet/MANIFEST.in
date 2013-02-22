@@ -5,7 +5,7 @@ include README
 include po/*.po
 include po/POTFILES.in
 include po/POTFILES.skip
-include man/*.1
+include man/*
 include quodlibet/images/README
 recursive-include quodlibet/images/hicolor/ *.cache *.theme *.svg *.png
 include tests/data/*

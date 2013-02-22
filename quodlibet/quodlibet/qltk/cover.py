@@ -12,7 +12,6 @@ import gtk
 
 from quodlibet import qltk
 from quodlibet import config
-from quodlibet import print_d
 from quodlibet.util import thumbnails
 
 

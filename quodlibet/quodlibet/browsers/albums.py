@@ -201,7 +201,7 @@ class PreferencesButton(gtk.HBox):
         button = MenuButton(
             gtk.image_new_from_stock(
                 gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU),
-                arrow=False)
+                arrow=True)
         button.set_menu(menu)
         self.pack_start(button)
 
@@ -566,7 +566,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         self.accelerators = gtk.AccelGroup()
         search = SearchBarBox(button=False, completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
+                              accel_group=self.accelerators,
+                              compact=True)
         gobject_weak(search.connect, 'query-changed', self.__update_filter)
         gobject_weak(search.connect_object,
                      'focus-out', lambda w: w.grab_focus(), view)

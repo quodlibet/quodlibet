@@ -15,39 +15,39 @@ also be queried in various ways.
 import time
 import threading
 
-from quodlibet import util
+from quodlibet import util, print_d
 import quodlibet.formats as formats
+from quodlibet.const import LIBRARY_SAVE_PERIOD_SECONDS
 
-from quodlibet.library.songs import SongFileLibrary, SongLibrary, SongLibrarian
+from quodlibet.library.libraries import SongFileLibrary, SongLibrary
+from quodlibet.library.librarians import SongLibrarian
 
-librarian = library = None
 
 def init(cache_fn=None):
     """Set up the library and return the main one.
 
-    Create the 'global' main library, and also a librarian for
+    Return a main library, and set a librarian for
     all future SongLibraries.
     """
-    global library, librarian
     s = ", ".join(formats.modules)
     print_d("Supported formats: %s" % s)
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
     library = SongFileLibrary("main")
-    librarian = library.librarian
     if cache_fn:
         library.load(cache_fn, skip=formats.supported)
     return library
 
+
 def save(force=False):
     """Save all registered libraries that have a filename and are marked dirty.
 
-    If force = True save all of them blocking, else save non blocking and
-    only if they were last saved more than 15 minutes ago.
+    If force = True save all of them blocking, else save non-blocking and
+    only if they were last saved more than LIBRARY_SAVE_PERIOD_SECONDS ago.
     """
-    global librarian
 
     print_d("Saving all libraries...")
 
+    librarian = SongFileLibrary.librarian
     for lib in librarian.libraries.values():
         filename = lib.filename
         if not filename or not lib.dirty:
@@ -57,5 +57,5 @@ def save(force=False):
             try: lib.save()
             except EnvironmentError: pass
             lib.destroy()
-        elif (time.time() - util.mtime(filename)) > 15 * 60:  # 15 minutes
+        elif (time.time() - util.mtime(filename)) > LIBRARY_SAVE_PERIOD_SECONDS:
             threading.Thread(target=lib.save).run()

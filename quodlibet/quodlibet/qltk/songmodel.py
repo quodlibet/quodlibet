@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 import gtk
-import gobject
 
 from quodlibet.qltk.playorder import ORDERS
 

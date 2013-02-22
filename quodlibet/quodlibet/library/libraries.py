@@ -1,151 +1,344 @@
 # Copyright 2006 Joe Wreschnig
-#           2011 Nick Boultbee
+#           2013 Nick Boultbee
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-"""Song library classes.
+"""Base library classes.
 
-These libraries require their items to be AudioFiles, or something
-close enough.
+These classes are the most basic library classes. As such they are the
+least useful but most content-agnostic.
 """
 
-from __future__ import with_statement
+# Windows doesn't have fcntl, just don't lock for now
+try:
+    import fcntl
+    fcntl
+except ImportError:
+    fcntl = None
 
+import cPickle as pickle
 import os
-
+import shutil
+import threading
 import gobject
-
-from quodlibet import util
+from UserDict import DictMixin
 
 from quodlibet.formats import MusicFile
-from quodlibet.util.collection import Album
-from quodlibet.library._library import Library, Librarian
 from quodlibet.parse import Query
 from quodlibet.qltk.notif import Task
+from quodlibet.util.collection import Album
+from quodlibet import util
+from quodlibet.util.dprint import print_d, print_w
 
-class SongLibrarian(Librarian):
-    """A librarian for SongLibraries."""
 
-    def tag_values(self, tag):
-        """Return a list of all values for the given tag."""
-        tags = set()
-        for library in self.libraries.itervalues():
-            tags.update(library.tag_values(tag))
-        return list(tags)
+class Library(gobject.GObject, DictMixin):
+    """A Library contains useful objects.
 
-    def rename(self, song, newname, changed=None):
-        """Rename the song in all libraries it belongs to.
+    The only required method these objects support is a .key
+    attribute, but specific types of libraries may require more
+    advanced interfaces.
 
-        The 'changed' signal will fire for any library the song is in.
+    WARNING: The library implements the dict interface with the exception
+    that iterating over it yields values and not keys.
+    """
+
+    __gsignals__ = {
+        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+        'removed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+        'added': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+    }
+
+    librarian = None
+    dirty = False
+
+    def __init__(self, name=None):
+        super(Library, self).__init__()
+        self._contents = {}
+        self._name = name
+        if self.librarian is not None and name is not None:
+            self.librarian.register(self, name)
+
+    def destroy(self):
+        if self.librarian is not None and self._name is not None:
+            self.librarian._unregister(self, self._name)
+
+    def changed(self, items):
+        """Alert other users that these items have changed.
+
+        This causes a 'changed' signal. If a librarian is available
+        this function will call its changed method instead, and all
+        libraries that librarian manages may fire a 'changed' signal.
+
+        The item list may be filtered to those items actually in the
+        library. If a librarian is available, it will handle the
+        filtering instead. That means if this method is delegated to
+        the librarian, this library's changed signal may not fire, but
+        another's might.
         """
-        # This needs to poke around inside the library directly.  If
-        # it uses add/remove to handle the songs it fires incorrect
-        # signals. If it uses the library's rename method, it breaks
-        # the call for future libraries because the item's key has
-        # changed. So, it needs to reimplement the method.
-        re_add = []
-        print_d("Renaming %r to %r" % (song.key, newname), self)
-        for library in self.libraries.itervalues():
-            try: del(library._contents[song.key])
-            except KeyError: pass
-            else: re_add.append(library)
-        song.rename(newname)
-        for library in re_add:
-            library._contents[song.key] = song
-            if changed is None:
-                library._changed([song])
-            else:
-                print_d("Delaying changed signal for %r." % library, self)
-                changed.append(song)
+        if not items:
+            return
+        if self.librarian and self in self.librarian.libraries.itervalues():
+            print_d("Changing %d items via librarian." % len(items), self)
+            self.librarian.changed(items)
+        else:
+            items = filter(self.__contains__, items)
+            if not items:
+                return
+            print_d("Changing %d items directly." % len(items), self)
+            self._changed(items)
 
-    def reload(self, item, changed=None, removed=None):
-        """Reload a song."""
-        re_add = []
-        print_d("Reloading %r" % item.key, self)
-        for library in self.libraries.itervalues():
-            try: del(library._contents[item.key])
-            except KeyError: pass
-            else: re_add.append(library)
-        try: library = re_add[0]
-        except IndexError: return
-        # Rely on the first library in the list to do the actual
-        # load, then just inform the other libraries what happened.
-        was_changed, was_removed = library._load(item)
-        if was_removed:
-            for library in re_add:
-                library.emit('removed', [item])
-        elif was_changed:
-            for library in re_add:
-                library._contents[item.key] = item
-                library.emit('changed', [item])
+    def _changed(self, items):
+        # Called by the changed method and Librarians.
+        if not items:
+            return
+        print_d("Changing %d items." % len(items), self)
+        self.dirty = True
+        self.emit('changed', items)
 
-class AlbumLibrary(gobject.GObject):
+    def __iter__(self):
+        """Iterate over the items in the library."""
+        return self._contents.itervalues()
+
+    def iteritems(self):
+        return self._contents.iteritems()
+
+    def iterkeys(self):
+        return self._contents.iterkeys()
+
+    def __len__(self):
+        """The number of items in the library."""
+        return len(self._contents)
+
+    def __getitem__(self, key):
+        """Find a item given its key."""
+        return self._contents[key]
+
+    def __contains__(self, item):
+        """Check if a key or item is in the library."""
+        try:
+            return item in self._contents or item.key in self._contents
+        except AttributeError:
+            return False
+
+    def get_content(self):
+        """All items including hidden ones for saving the library
+           (see FileLibrary with masked items)"""
+        return self.values()
+
+    def keys(self):
+        return self._contents.keys()
+
+    def _load_item(self, item):
+        """Load (add) an item into this library"""
+        # Subclasses should override this if they want to check
+        # item validity; see `FileLibrary`.
+        print_d("Loading %r." % item.key, self)
+        self.dirty = True
+        self._contents[item.key] = item
+
+    def add(self, items):
+        """Add items. This causes an 'added' signal.
+
+        Return the list of items actually added, filtering out items
+        already in the library.
+        """
+        items = filter(lambda item: item not in self, items)
+        if not items:
+            return
+
+        print_d("Adding %d items." % len(items), self)
+        for item in items:
+            self._contents[item.key] = item
+
+        self.dirty = True
+        self.emit('added', items)
+        return items
+
+    def remove(self, items):
+        """Remove items. This causes a 'removed' signal."""
+        if not items:
+            return
+
+        print_d("Removing %d items." % len(items), self)
+        for item in items:
+            del(self._contents[item.key])
+
+        self.dirty = True
+        self.emit('removed', items)
+
+
+def dump_items(filename, items):
+    """Pickle items to disk"""
+
+    dirname = os.path.dirname(filename)
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)
+
+    temp_filename = filename + ".tmp"
+
+    with open(temp_filename, "wb") as fileobj:
+        if fcntl is not None:
+          fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
+
+        # While protocol 2 is usually faster it uses __setitem__
+        # for unpickle and we override it to clear the sort cache.
+        # This roundtrip makes it much slower, so we use protocol 1
+        # unpickle numbers (py2.7):
+        #   2: 0.66s / 2 + __set_item__: 1.18s / 1 + __set_item__: 0.72s
+        # see: http://bugs.python.org/issue826897
+        pickle.dump(items, fileobj, 1)
+
+        fileobj.flush()
+        os.fsync(fileobj.fileno())
+
+        # No atomic rename on windows
+        if os.name == "nt":
+            try:
+                os.remove(filename)
+            except EnvironmentError:
+                pass
+
+        try:
+            os.rename(temp_filename, filename)
+        except EnvironmentError:
+            print_w("Couldn't save library to path: %r" % filename)
+
+
+def load_items(filename, default=None):
+    """Load items from disk"""
+
+    if default is None:
+        default = []
+
+    try:
+        fp = open(filename, "rb")
+    except EnvironmentError:
+        print_w("Couldn't load library from: %r" % filename)
+        return default
+
+    # pickle makes 1000 read syscalls for 6000 songs
+    # read the file into memory so that there are less
+    # context switches. saves 40% CPU time..
+    with fp:
+        data = fp.read()
+
+    try:
+        items = pickle.loads(data)
+    except Exception:
+        # there are too many ways this could fail
+        util.print_exc()
+
+        # move the broken file out of the way
+        try:
+            shutil.copy(filename, filename + ".not-valid")
+        except EnvironmentError:
+            util.print_exc()
+
+        items = default
+
+    return items
+
+
+class PicklingMixin(object):
+    """A mixin to provide persistence of a library by pickling to disk"""
+
+    filename = None
+
+    def __init__(self):
+        self._save_lock = threading.Lock()
+
+    def load(self, filename, skip=False):
+        """Load a library from a file, containing a picked list.
+
+        Loading does not cause added, changed, or removed signals.
+        """
+
+        self.filename = filename
+        print_d("Loading contents of %r." % filename, self)
+
+        items = load_items(filename)
+
+        if skip:
+            for item in filter(skip, items):
+                self._contents[item.key] = item
+        else:
+            map(self._load_item, items)
+
+        print_d("Done loading contents of %r." % filename, self)
+
+    def save(self, filename=None):
+        """Save the library to the given filename, or the default if `None`"""
+
+        if filename is None:
+            filename = self.filename
+
+        with self._save_lock:
+            print_d("Saving contents to %r." % filename, self)
+
+            dump_items(filename, self.get_content())
+            self.dirty = False
+
+
+class PicklingLibrary(Library, PicklingMixin):
+    """A library that pickles its contents to disk"""
+    def __init__(self, name=None):
+        print_d("Using pickling persistence for library \"%s\"" % name)
+        PicklingMixin.__init__(self)
+        Library.__init__(self, name)
+
+
+class AlbumLibrary(Library):
     """An AlbumLibrary listens to a SongLibrary and sorts its songs into
-    albums. The library behaves like a dictionary: the keys are album_keys of
+    albums.
+
+    The library behaves like a dictionary: the keys are album_keys of
     AudioFiles, the values are Album objects.
     """
 
-    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
-    __gsignals__ = {
-        'changed': SIG_PYOBJECT,
-        'removed': SIG_PYOBJECT,
-        'added': SIG_PYOBJECT,
-        }
-
     def __init__(self, library):
-        super(AlbumLibrary, self).__init__()
-        self.__albums = {}
-        for key in ['get', 'keys', 'values', 'items', 'iterkeys',
-                    'itervalues', 'iteritems', 'has_key']:
-            setattr(self, key, getattr(self.__albums, key))
+        self.librarian = None
+        print_d("Initializing Album Library to watch %r" % library._name)
 
-        self.library = library
-        self.__loaded = False
+        super(AlbumLibrary, self).__init__(
+            "AlbumLibrary for %s" % library._name)
 
-    def __len__(self):
-        return len(self.__albums)
-
-    def __getitem__(self, key):
-        return self.__albums[key]
-
-    def __iter__(self):
-        return self.__albums.itervalues()
+        self._library = library
+        self._asig = library.connect('added', self.__added)
+        self._rsig = library.connect('removed', self.__removed)
+        self._csig = library.connect('changed', self.__changed)
+        self.__added(library, library.values(), signal=False)
 
     def refresh(self, items):
         """Refresh albums after a manual change."""
-        self.emit('changed', set(items))
+        self._changed(set(items))
 
     def load(self):
-        """Loading takes some time, and not every view needs it,
-        so this must be called at least one time before using the library"""
-        if not self.__loaded:
-            self.__loaded = True
-            self._asig = self.library.connect('added', self.__added)
-            self._rsig = self.library.connect('removed', self.__removed)
-            self._csig = self.library.connect('changed', self.__changed)
-            self.__added(self.library, self.library.values(), signal=False)
+        # deprectated
+        pass
 
     def destroy(self):
-        if self.__loaded:
-            map(self.library.disconnect, [self._asig, self._rsig, self._csig])
+        map(self._library.disconnect, [self._asig, self._rsig, self._csig])
+
+    def _get(self, item):
+        return self._contents.get(item)
 
     def __add(self, items):
         changed = set()
         new = set()
         for song in items:
             key = song.album_key
-            if key in self.__albums:
-                changed.add(self.__albums[key])
+            if key in self._contents:
+                changed.add(self._contents[key])
             else:
                 album = Album(song)
-                self.__albums[key] = album
+                self._contents[key] = album
                 new.add(album)
-            self.__albums[key].songs.add(song)
+            self._contents[key].songs.add(song)
 
         changed -= new
-
         return changed, new
 
     def __added(self, library, items, signal=True):
@@ -163,12 +356,12 @@ class AlbumLibrary(gobject.GObject):
         removed = set()
         for song in items:
             key = song.album_key
-            album = self.__albums[key]
+            album = self._contents[key]
             album.songs.remove(song)
             changed.add(album)
             if not album.songs:
                 removed.add(album)
-                del self.__albums[key]
+                del self._contents[key]
 
         changed -= removed
 
@@ -181,17 +374,18 @@ class AlbumLibrary(gobject.GObject):
     def __changed(self, library, items):
         """Album keys could change between already existing ones.. so we
         have to do it the hard way and search by id."""
+        print_d("Updating affected albums for %d items" % len(items))
         changed = set()
         removed = set()
         to_add = []
         for song in items:
             # in case the key hasn't changed
             key = song.album_key
-            if key in self.__albums and song in self.__albums[key].songs:
-                changed.add(self.__albums[key])
+            if key in self._contents and song in self._contents[key].songs:
+                changed.add(self._contents[key])
             else: # key changed.. look for it in each album
                 to_add.append(song)
-                for key, album in self.__albums.iteritems():
+                for key, album in self._contents.iteritems():
                     if song in album.songs:
                         album.songs.remove(song)
                         if not album.songs:
@@ -207,7 +401,7 @@ class AlbumLibrary(gobject.GObject):
         # check if albums that were empty at some point are still empty
         for album in removed:
             if not album.songs:
-                del self.__albums[album.key]
+                del self._contents[album.key]
                 changed.discard(album)
 
         for album in changed:
@@ -217,7 +411,8 @@ class AlbumLibrary(gobject.GObject):
         if changed: self.emit("changed", changed)
         if new: self.emit("added", new)
 
-class SongLibrary(Library):
+
+class SongLibrary(PicklingLibrary):
     """A library for songs.
 
     Items in this kind of library must support (roughly) the AudioFile
@@ -226,11 +421,15 @@ class SongLibrary(Library):
 
     def __init__(self, *args, **kwargs):
         super(SongLibrary, self).__init__(*args, **kwargs)
-        self.albums = AlbumLibrary(self)
+
+    @util.cached_property
+    def albums(self):
+        return AlbumLibrary(self)
 
     def destroy(self):
         super(SongLibrary, self).destroy()
-        self.albums.destroy()
+        if "albums" in self.__dict__:
+            self.albums.destroy()
 
     def tag_values(self, tag):
         """Return a list of all values for the given tag."""
@@ -255,7 +454,7 @@ class SongLibrary(Library):
         song.rename(newname)
         self._contents[song.key] = song
         if changed is not None:
-            print_d("%s: Delaying changed signal." % (type(self).__name__))
+            print_d("%s: Delaying changed signal." % (type(self).__name__,))
             changed.append(song)
         else:
             self.changed([song])
@@ -267,17 +466,23 @@ class SongLibrary(Library):
         else: songs = filter(Query(text, star).search, self)
         return songs
 
-class FileLibrary(Library):
+
+class FileLibrary(PicklingLibrary):
     """A library containing items on a local(-ish) filesystem.
 
     These must support the valid, exists, mounted, and reload methods,
     and have a mountpoint attribute.
     """
 
-    def _load(self, item, force=False):
-        # Add an item, or refresh it if it's already in the library.
-        # No signals will be fired. Return a tuple of booleans,
-        # (changed, removed)
+    def __init__(self, name=None):
+        super(FileLibrary, self).__init__(name)
+        self._masked = {}
+
+    def _load_item(self, item, force=False):
+        """Add an item, or refresh it if it's already in the library.
+        No signals will be fired.
+        Return a tuple of booleans: (changed, removed)
+        """
         print_d("Loading %r." % item.key, self)
         valid = item.valid()
 
@@ -327,7 +532,7 @@ class FileLibrary(Library):
         itself. It *always* handles library contents, so do not
         try to remove (again) a song that appears in the removed list.
         """
-        was_changed, was_removed = self._load(item, force=True)
+        was_changed, was_removed = self._load_item(item, force=True)
         if was_changed and changed is not None:
             changed.append(item)
         elif was_removed and removed is not None:
@@ -370,7 +575,7 @@ class FileLibrary(Library):
         for i, (key, item) in task.list(enumerate(sorted(self.items()))):
             if key in self._contents and force or not item.valid():
                 self.reload(item, changed, removed)
-            # These numbers are pretty empirical. We should yield more
+                # These numbers are pretty empirical. We should yield more
             # often than we emit signals; that way the main loop stays
             # interactive and doesn't get bogged down in updates.
             if len(changed) > 100:
@@ -382,7 +587,7 @@ class FileLibrary(Library):
             if len(changed) > 5 or i % 100 == 0:
                 yield True
         print_d("Removing %d, changing %d." % (len(removed), len(changed)),
-                self)
+            self)
         if removed:
             self.emit('removed', removed)
         if changed:
@@ -433,6 +638,20 @@ class FileLibrary(Library):
                         task.pulse()
                         yield True
 
+    def get_content(self):
+        """Return visible and masked items"""
+
+        items = self.values()
+        for masked in self._masked.values():
+            items.extend(masked.values())
+
+        # Item keys are often based on filenames, in which case
+        # sorting takes advantage of the filesystem cache when we
+        # reload/rescan the files.
+        items.sort(key=lambda item: item.key)
+
+        return items
+
     def masked(self, item):
         """Return true if the item is in the library but masked."""
         try: point = item.mountpoint
@@ -461,8 +680,14 @@ class FileLibrary(Library):
             self.remove(removed.values())
         self._masked.setdefault(point, {}).update(removed)
 
+
 class SongFileLibrary(SongLibrary, FileLibrary):
-    """A library containing song files."""
+    """A library containing song files.
+    Pickles contents to disk as `FileLibrary`"""
+
+    def __init__(self, name=None):
+        print_d("Initializing SongFileLibrary \"%s\"." % name)
+        super(SongFileLibrary, self).__init__(name)
 
     def add_filename(self, filename, add=True):
         """Add a song to the library based on filename.
