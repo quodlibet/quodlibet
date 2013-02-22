@@ -4,13 +4,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent
 
 
-class Window(gtk.Window):
+class Window(Gtk.Window):
     """Base window class the keeps track of all window instances.
 
     All active instances can be accessed through Window.instances.
@@ -21,22 +21,23 @@ class Window(gtk.Window):
     instances = []
 
     __gsignals__ = {"close-accel": (
-        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
+        GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION, GObject.TYPE_NONE, ())}
+
     def __init__(self, *args, **kwargs):
         dialog = kwargs.pop("dialog", True)
         super(Window, self).__init__(*args, **kwargs)
         type(self).instances.append(self)
-        self.__accels = gtk.AccelGroup()
+        self.__accels = Gtk.AccelGroup()
         if dialog:
-            self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+            self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_destroy_with_parent(True)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.add_accel_group(self.__accels)
         if not dialog:
             self.add_accelerator(
-                'close-accel', self.__accels, ord('w'), gtk.gdk.CONTROL_MASK, 0)
+                'close-accel', self.__accels, ord('w'), Gdk.ModifierType.CONTROL_MASK, 0)
         else:
-            esc, mod = gtk.accelerator_parse("Escape")
+            esc, mod = Gtk.accelerator_parse("Escape")
             self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
         self.connect_object('destroy', type(self).instances.remove, self)
 
@@ -47,7 +48,7 @@ class Window(gtk.Window):
 
         """
 
-        is_toplevel = parent and parent.props.type == gtk.WINDOW_TOPLEVEL
+        is_toplevel = parent and parent.props.type == Gtk.WindowType.TOPLEVEL
 
         if parent is None or not is_toplevel:
             if parent:
@@ -57,13 +58,13 @@ class Window(gtk.Window):
         super(Window, self).set_transient_for(parent)
 
     def do_close_accel(self):
-        #Do not close the window if we edit a gtk.CellRendererText.
+        #Do not close the window if we edit a Gtk.CellRendererText.
         #Focus the treeview instead.
-        if isinstance(self.get_focus(), gtk.Entry) and \
-            isinstance(self.get_focus().parent, gtk.TreeView):
+        if isinstance(self.get_focus(), Gtk.Entry) and \
+            isinstance(self.get_focus().parent, Gtk.TreeView):
             self.get_focus().parent.grab_focus()
             return
-        if not self.emit('delete-event', gtk.gdk.Event(gtk.gdk.DELETE)):
+        if not self.emit('delete-event', Gdk.Event(Gdk.GdkEventType.DELETE)):
             self.destroy()
 
 
@@ -128,7 +129,7 @@ class PersistentWindowMixin(object):
             self.resize(x, y)
 
     def __save_size(self, window, event):
-        if self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+        if self.__state & Gdk.WindowState.MAXIMIZED:
             return
 
         value = "%d %d" % (event.width, event.height)
@@ -139,9 +140,9 @@ class PersistentWindowMixin(object):
 
     def __window_state_changed(self, window, event):
         self.__state = event.new_window_state
-        if self.__state & gtk.gdk.WINDOW_STATE_WITHDRAWN:
+        if self.__state & Gdk.WindowState.WITHDRAWN:
             return
-        maximized = int(self.__state & gtk.gdk.WINDOW_STATE_MAXIMIZED)
+        maximized = int(self.__state & Gdk.WindowState.MAXIMIZED)
         config.set("memory", self.__conf("maximized"), maximized)
 
 
@@ -158,7 +159,7 @@ class UniqueWindow(Window):
             return super(UniqueWindow, klass).__new__(klass, *args, **kwargs)
         #Look for widgets in the args, if there is one and it has
         #a new top level window, reparent and reposition the window.
-        widgets = filter(lambda x: isinstance(x, gtk.Widget), args)
+        widgets = filter(lambda x: isinstance(x, Gtk.Widget), args)
         if widgets:
             parent = window.get_transient_for()
             new_parent = get_top_parent(widgets[0])
