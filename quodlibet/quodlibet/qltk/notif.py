@@ -31,7 +31,7 @@ from gi.repository import Gtk, GObject, Pango
 
 from quodlibet.util import copool
 
-SIZE = gtk.ICON_SIZE_MENU
+SIZE = Gtk.IconSize.MENU
 
 class ParentProperty(object):
     """
@@ -218,28 +218,28 @@ class TaskController(object):
 # Oh so deliciously hacky.
 TaskController.default_instance = TaskController()
 
-class TaskWidget(gtk.HBox):
+class TaskWidget(Gtk.HBox):
     """
     Displays a task.
     """
     def __init__(self, task):
         super(TaskWidget, self).__init__(spacing=2)
         self.task = task
-        self.label = gtk.Label()
+        self.label = Gtk.Label()
         self.label.set_alignment(1.0, 0.5)
-        self.label.set_ellipsize(pango.ELLIPSIZE_END)
+        self.label.set_ellipsize(Pango.EllipsizeMode.END)
         self.pack_start(self.label, padding=12, expand=True)
-        self.progress = gtk.ProgressBar()
+        self.progress = Gtk.ProgressBar()
         self.progress.set_size_request(100, -1)
-        self.pack_start(self.progress, expand=True)
-        self.pause = gtk.ToggleButton()
-        self.pause.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PAUSE, SIZE))
+        self.pack_start(self.progress, True, True, 0)
+        self.pause = Gtk.ToggleButton()
+        self.pause.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_PAUSE, SIZE))
         self.pause.connect('toggled', self.__pause_toggled)
-        self.pack_start(self.pause, expand=False)
-        self.stop = gtk.Button()
-        self.stop.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_STOP, SIZE))
+        self.pack_start(self.pause, False, True, 0)
+        self.stop = Gtk.Button()
+        self.stop.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_STOP, SIZE))
         self.stop.connect('clicked', self.__stop_clicked)
-        self.pack_start(self.stop, expand=False)
+        self.pack_start(self.stop, False, True, 0)
 
     def __pause_toggled(self, btn):
         if self.task.pausable:
@@ -265,7 +265,7 @@ class TaskWidget(gtk.HBox):
         if self.stop.props.sensitive != self.task.stoppable:
             self.stop.props.sensitive = self.task.stoppable
 
-class StatusBar(gtk.HBox):
+class StatusBar(Gtk.HBox):
     def __init__(self, task_controller):
         super(StatusBar, self).__init__()
         self.__dirty = False
@@ -273,17 +273,17 @@ class StatusBar(gtk.HBox):
         self.task_controller = task_controller
         self.task_controller.parent = self
 
-        self.default_label = gtk.Label()
+        self.default_label = Gtk.Label()
         self.default_label.set_alignment(1.0, 0.5)
         self.default_label.set_text(_("No time information"))
-        self.default_label.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(self.default_label)
+        self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self.pack_start(self.default_label, True, True, 0)
         self.task_widget = TaskWidget(task_controller)
-        self.pack_start(self.task_widget, expand=True)
+        self.pack_start(self.task_widget, True, True, 0)
         # The history button will eventually hold the full list of running
         # tasks, as well as the list of previous notifications.
-        #self.history_btn = gtk.Button(stock=gtk.STOCK_MISSING_IMAGE)
-        #self.pack_start(self.history_btn, expand=False)
+        #self.history_btn = Gtk.Button(stock=Gtk.STOCK_MISSING_IMAGE)
+        #self.pack_start(self.history_btn, False, True, 0)
 
         self.show_all()
         self.set_no_show_all(True)
@@ -309,5 +309,5 @@ class StatusBar(gtk.HBox):
     def update(self):
         if not self.__dirty:
             self.__dirty = True
-            gobject.idle_add(self.__update)
+            GObject.idle_add(self.__update)
 
