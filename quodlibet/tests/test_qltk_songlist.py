@@ -1,7 +1,5 @@
 from tests import TestCase, add
 
-import gtk
-
 from quodlibet.library import SongLibrary
 from quodlibet.qltk.songlist import SongList
 import quodlibet.config

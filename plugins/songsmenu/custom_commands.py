@@ -4,24 +4,20 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-import json
-import pango
-from quodlibet.qltk.data_editors import JSONBasedEditor
-
-from quodlibet.util.dprint import print_w, print_d, print_e
-from quodlibet import qltk
-from quodlibet.const import USERDIR
-from quodlibet.parse._pattern import Pattern
-from quodlibet.plugins import PluginConfigMixin
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import ErrorMessage
-from quodlibet import util
 
 import gtk
 import os
-from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
-from quodlibet.qltk.views import RCMHintedTreeView
 import re
+
+from quodlibet.const import USERDIR
+from quodlibet import qltk
+from quodlibet import util
+from quodlibet.parse._pattern import Pattern
+from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.data_editors import JSONBasedEditor
+from quodlibet.qltk import ErrorMessage
+from quodlibet.util.dprint import print_w, print_d, print_e
 from quodlibet.util.json_data import JSONObject, JSONObjectDict
 
 

@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 import subprocess
 import tempfile
 import shutil

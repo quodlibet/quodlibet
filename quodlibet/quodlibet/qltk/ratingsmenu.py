@@ -7,9 +7,10 @@
 # published by the Free Software Foundation
 
 import gtk
-from quodlibet import util, config
+
+from quodlibet import util
+from quodlibet import config
 from quodlibet import qltk
-from gettext import ngettext
 
 
 class ConfirmRateMultipleDialog(qltk.Message):

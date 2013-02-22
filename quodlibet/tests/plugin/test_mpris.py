@@ -7,7 +7,7 @@
 import gtk
 import dbus
 
-from tests import TestCase, add
+from tests import add
 from tests.plugin import PluginTestCase
 
 from quodlibet.formats._audio import AudioFile
@@ -17,7 +17,6 @@ from quodlibet import library
 from quodlibet import browsers
 from quodlibet import player
 from quodlibet import app
-from quodlibet.player.nullbe import NullPlayer
 
 
 A1 = AudioFile(

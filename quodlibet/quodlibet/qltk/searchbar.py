@@ -9,7 +9,6 @@ import os
 
 import gtk
 import gobject
-import random
 
 from quodlibet import config
 from quodlibet import const

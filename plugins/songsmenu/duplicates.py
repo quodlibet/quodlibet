@@ -12,23 +12,21 @@
 #    published by the Free Software Foundation.
 #
 
-from gettext import ngettext
+import string
+import unicodedata
+
+import gtk
+import pango
 
 from quodlibet import app
-from quodlibet import config, player, print_d, print_w, util, qltk
+from quodlibet import player, print_d, print_w, util, qltk
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
-import ConfigParser
-import gobject
-import gtk
-import pango
-import string
-import unicodedata
-from quodlibet.qltk.ccb import ConfigCheckButton
 
 
 class DuplicateSongsView(RCMHintedTreeView):

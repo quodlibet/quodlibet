@@ -8,27 +8,29 @@
 #                  Nick Boultbee <nick.boultbee@gmail.com>
 # Licensed under GPLv2. See Quod Libet's COPYING for more information.
 
+from httplib import HTTPException
+import cPickle as pickle
+import os
+import threading
+import time
 import urllib
 import urllib2
-import time
-import threading
-import os
-import cPickle as pickle
-from quodlibet.util.dprint import print_d
-from httplib import HTTPException
+
+import gobject
+import gtk
 
 try:
     from hashlib import md5
 except ImportError:
     from md5 import md5
 
-import gobject, gtk
-
 from quodlibet import config, const, app, parse, util, qltk
-from quodlibet.qltk.msg import Message
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.plugins import PluginConfigMixin,ConfigCheckButton
+from quodlibet.plugins import PluginConfigMixin
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
+from quodlibet.qltk.msg import Message
+from quodlibet.util.dprint import print_d
+
 
 SERVICES = {
             'Last.fm':  'http://post.audioscrobbler.com/',

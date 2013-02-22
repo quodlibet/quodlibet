@@ -7,23 +7,18 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 
 from quodlibet import const
-from quodlibet import util
 from quodlibet.util.modulescanner import load_dir_modules
-
-from os.path import dirname, basename, isdir, join, splitext
-from glob import glob
-
 from quodlibet.browsers._base import Browser
+
 
 browsers = []
 
 def init():
     global browsers
 
-    this_dir = dirname(__file__)
+    this_dir = os.path.dirname(__file__)
     load_pyc = os.name == 'nt'
     modules = load_dir_modules(this_dir,
                                package=__package__,

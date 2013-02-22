@@ -11,7 +11,6 @@ import urllib2
 import time
 from datetime import date
 from threading import Thread
-from pickle import PickleError
 
 import gtk
 import gobject

@@ -23,7 +23,7 @@ from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.util import DeferredSignal, copool
+from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal
 

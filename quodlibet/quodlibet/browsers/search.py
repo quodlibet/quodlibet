@@ -7,7 +7,6 @@
 # published by the Free Software Foundation
 
 import os
-import random
 
 import gtk
 import gobject

@@ -6,7 +6,7 @@
 
 import gtk
 
-from quodlibet import config, util
+from quodlibet import util
 from quodlibet.plugins.editing import EditTagsPlugin
 from quodlibet.plugins import PluginConfigMixin
 
