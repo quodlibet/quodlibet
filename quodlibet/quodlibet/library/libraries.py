@@ -1,5 +1,6 @@
 # Copyright 2006 Joe Wreschnig
 #           2013 Nick Boultbee
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -14,6 +15,7 @@ least useful but most content-agnostic.
 # Windows doesn't have fcntl, just don't lock for now
 try:
     import fcntl
+    fcntl
 except ImportError:
     fcntl = None
 
@@ -22,7 +24,7 @@ import os
 import shutil
 import threading
 import gobject
-import functools
+from UserDict import DictMixin
 
 from quodlibet.formats import MusicFile
 from quodlibet.parse import Query
@@ -30,26 +32,24 @@ from quodlibet.qltk.notif import Task
 from quodlibet.util.collection import Album
 from quodlibet import util
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.qltk.msg import ErrorMessage
 
 
-class Library(gobject.GObject):
+class Library(gobject.GObject, DictMixin):
     """A Library contains useful objects.
 
     The only required method these objects support is a .key
     attribute, but specific types of libraries may require more
     advanced interfaces.
+
+    WARNING: The library implements the dict interface with the exception
+    that iterating over it yields values and not keys.
     """
 
-    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
     __gsignals__ = {
-        'changed': SIG_PYOBJECT,
-        'removed': SIG_PYOBJECT,
-        'added': SIG_PYOBJECT,
-        }
-    del SIG_PYOBJECT
-    _COLLECTION_METHODS = ['get', 'keys', 'values', 'items', 'iterkeys',
-                            'itervalues', 'iteritems', 'has_key']
+        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+        'removed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+        'added': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+    }
 
     librarian = None
     dirty = False
@@ -59,48 +59,12 @@ class Library(gobject.GObject):
         self._contents = {}
         self._masked = {}
         self._name = name
-        self._add_collection_methods()
         if self.librarian is not None and name is not None:
             self.librarian.register(self, name)
-
-    def _add_collection_methods(self):
-        """Emulate collection interface methods, or close enough"""
-        for key in self._COLLECTION_METHODS:
-            setattr(self, key, getattr(self._contents, key))
 
     def destroy(self):
         if self.librarian is not None and self._name is not None:
             self.librarian._unregister(self, self._name)
-
-    def add(self, items):
-        """Add items. This causes an 'added' signal.
-
-        Return the list of items actually added, filtering out items
-        already in the library.
-        """
-        items = filter(lambda item: item not in self, items)
-        if not items:
-            return
-
-        print_d("Adding %d items." % len(items), self)
-        for item in items:
-            self._contents[item.key] = item
-
-        self.dirty = True
-        self.emit('added', items)
-        return items
-
-    def remove(self, items):
-        """Remove items. This causes a 'removed' signal."""
-        if not items:
-            return
-
-        print_d("Removing %d items." % len(items), self)
-        for item in items:
-            del(self._contents[item.key])
-
-        self.dirty = True
-        self.emit('removed', items)
 
     def changed(self, items):
         """Alert other users that these items have changed.
@@ -139,6 +103,12 @@ class Library(gobject.GObject):
         """Iterate over the items in the library."""
         return self._contents.itervalues()
 
+    def iteritems(self):
+        return self._contents.iteritems()
+
+    def iterkeys(self):
+        return self._contents.iterkeys()
+
     def __len__(self):
         """The number of items in the library."""
         return len(self._contents)
@@ -154,6 +124,9 @@ class Library(gobject.GObject):
         except AttributeError:
             return False
 
+    def keys(self):
+        return self._contents.keys()
+
     def _load_item(self, item):
         """Load (add) an item into this library"""
         # Subclasses should override this if they want to check
@@ -161,6 +134,108 @@ class Library(gobject.GObject):
         print_d("Loading %r." % item.key, self)
         self.dirty = True
         self._contents[item.key] = item
+
+    def add(self, items):
+        """Add items. This causes an 'added' signal.
+
+        Return the list of items actually added, filtering out items
+        already in the library.
+        """
+        items = filter(lambda item: item not in self, items)
+        if not items:
+            return
+
+        print_d("Adding %d items." % len(items), self)
+        for item in items:
+            self._contents[item.key] = item
+
+        self.dirty = True
+        self.emit('added', items)
+        return items
+
+    def remove(self, items):
+        """Remove items. This causes a 'removed' signal."""
+        if not items:
+            return
+
+        print_d("Removing %d items." % len(items), self)
+        for item in items:
+            del(self._contents[item.key])
+
+        self.dirty = True
+        self.emit('removed', items)
+
+
+def dump_items(filename, items):
+    """Pickle items to disk"""
+
+    dirname = os.path.dirname(filename)
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)
+
+    temp_filename = filename + ".tmp"
+
+    with open(temp_filename, "wb") as fileobj:
+        if fcntl is not None:
+          fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
+
+        # While protocol 2 is usually faster it uses __setitem__
+        # for unpickle and we override it to clear the sort cache.
+        # This roundtrip makes it much slower, so we use protocol 1
+        # unpickle numbers (py2.7):
+        #   2: 0.66s / 2 + __set_item__: 1.18s / 1 + __set_item__: 0.72s
+        # see: http://bugs.python.org/issue826897
+        pickle.dump(items, fileobj, 1)
+
+        fileobj.flush()
+        os.fsync(fileobj.fileno())
+
+        # No atomic rename on windows
+        if os.name == "nt":
+            try:
+                os.remove(filename)
+            except EnvironmentError:
+                pass
+
+        try:
+            os.rename(temp_filename, filename)
+        except EnvironmentError:
+            print_w("Couldn't save library to path: %r" % filename)
+
+
+def load_items(filename, default=None):
+    """Load items from disk"""
+
+    if default is None:
+        default = []
+
+    try:
+        fp = open(filename, "rb")
+    except EnvironmentError:
+        print_w("Couldn't load library from: %r" % filename)
+        return default
+
+    # pickle makes 1000 read syscalls for 6000 songs
+    # read the file into memory so that there are less
+    # context switches. saves 40% CPU time..
+    with fp:
+        data = fp.read()
+
+    try:
+        items = pickle.loads(data)
+    except Exception:
+        # there are too many ways this could fail
+        util.print_exc()
+
+        # move the broken file out of the way
+        try:
+            shutil.copy(filename, filename + ".not-valid")
+        except EnvironmentError:
+            util.print_exc()
+
+        items = default
+
+    return items
 
 
 class PicklingMixin(object):
@@ -176,81 +251,41 @@ class PicklingMixin(object):
 
         Loading does not cause added, changed, or removed signals.
         """
+
         self.filename = filename
         print_d("Loading contents of %r." % filename, self)
-        try:
-            if os.path.exists(filename):
-                # pickle makes 1000 read syscalls for 6000 songs
-                # read the file into memory so that there are less
-                # context switches. saves 40% here..
-                fileobj = file(filename, "rb")
-                try:
-                    items = pickle.loads(fileobj.read())
-                except (pickle.PickleError, EnvironmentError,
-                        ImportError, EOFError):
-                    util.print_exc()
-                    try:
-                        shutil.copy(filename, filename + ".not-valid")
-                    except EnvironmentError:
-                        util.print_exc()
-                    items = []
-                fileobj.close()
-            else:
-                return
-        except EnvironmentError:
-            return
+
+        items = load_items(filename)
 
         if skip:
             for item in filter(skip, items):
                 self._contents[item.key] = item
         else:
             map(self._load_item, items)
+
         print_d("Done loading contents of %r." % filename, self)
 
     def save(self, filename=None):
         """Save the library to the given filename, or the default if `None`"""
-        self._save_lock.acquire()
+
         if filename is None:
             filename = self.filename
-        print_d("Saving contents to %r." % filename, self)
-        if not os.path.isdir(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename))
-        # Issue 479. Catch problem early
-        if os.path.isdir(filename):
-            msg = _("Cannot save library contents to %s (it's a directory). "
-                    "Please remove it and try again.") % filename
-            print_w(msg)
-            # TODO: Better handling of this edge-case...
-            ErrorMessage(None, _("Library Error"), msg).run()
-            self._save_lock.release()
-            return
-        fileobj = file(filename + ".tmp", "wb")
-        if fcntl is not None:
-            fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
-        items = self.values()
-        for masked in self._masked.values():
-            items.extend(masked.values())
-        # Item keys are often based on filenames, in which case
-        # sorting takes advantage of the filesystem cache when we
-        # reload/rescan the files.
-        items.sort(key=lambda item: item.key)
-        # While protocol 2 is usually faster it uses __setitem__
-        # for unpickle and we override it to clear the sort cache.
-        # This roundtrip makes it much slower, so we use protocol 1
-        # unpickle numbers (py2.7):
-        #   2: 0.66s / 2 + __set_item__: 1.18s / 1 + __set_item__: 0.72s
-        # see: http://bugs.python.org/issue826897
-        pickle.dump(items, fileobj, 1)
-        fileobj.flush()
-        os.fsync(fileobj.fileno())
-        fileobj.close()
-        if os.name == "nt":
-            try: os.remove(filename)
-            except EnvironmentError: pass
-        os.rename(filename + ".tmp", filename)
-        self.dirty = False
-        print_d("Done saving contents to %r." % filename, self)
-        self._save_lock.release()
+
+        with self._save_lock:
+            print_d("Saving contents to %r." % filename, self)
+
+            items = self.values()
+            for masked in self._masked.values():
+                items.extend(masked.values())
+
+            # Item keys are often based on filenames, in which case
+            # sorting takes advantage of the filesystem cache when we
+            # reload/rescan the files.
+            items.sort(key=lambda item: item.key)
+
+            dump_items(filename, items)
+
+            self.dirty = False
 
 
 class PicklingLibrary(Library, PicklingMixin):
@@ -270,50 +305,30 @@ class AlbumLibrary(Library):
     """
 
     def __init__(self, library):
-        self.__loaded = False
-        self.library = library
-        print_d("Initializing Album Library to watch \"%s\" library."
-                % library._name)
+        self.librarian = None
+        print_d("Initializing Album Library to watch %r" % library._name)
+
         super(AlbumLibrary, self).__init__(
             "AlbumLibrary for %s" % library._name)
 
-    def _load_first(self, method, *args, **kwargs):
-        """Wrapper for `method`, to ensure album library is loaded first"""
-        self.load()
-        #print_d("Now doing %s on %s and %s" % (method, args, kwargs))
-        return getattr(self._contents, method)(*args, **kwargs)
-
-    def _add_collection_methods(self):
-        # Make sure Album Library sets itself up first
-        # Deprecates explicit loading...
-        for key in self._COLLECTION_METHODS:
-            setattr(self, key, functools.partial(self._load_first, key))
+        self._library = library
+        self._asig = library.connect('added', self.__added)
+        self._rsig = library.connect('removed', self.__removed)
+        self._csig = library.connect('changed', self.__changed)
+        self.__added(library, library.values(), signal=False)
 
     def refresh(self, items):
         """Refresh albums after a manual change."""
-        self.emit('changed', set(items))
+        self._changed(set(items))
 
     def load(self):
-        """Loading takes some time, and not every view needs it,
-        so this must be called at least one time before using the library"""
-        if not self.__loaded:
-            print_d("Loading album library...")
-            self.__loaded = True
-            self._asig = self.library.connect('added', self.__added)
-            self._rsig = self.library.connect('removed', self.__removed)
-            self._csig = self.library.connect('changed', self.__changed)
-            self.__added(self.library, self.library.values(), signal=False)
+        # deprectated
+        pass
 
     def destroy(self):
-        if self.__loaded:
-            map(self.library.disconnect, [self._asig, self._rsig, self._csig])
-
-    def __getitem__(self, item):
-        self.load()
-        return self._contents[item]
+        map(self._library.disconnect, [self._asig, self._rsig, self._csig])
 
     def _get(self, item):
-        self.load()
         return self._contents.get(item)
 
     def __add(self, items):
@@ -412,11 +427,15 @@ class SongLibrary(PicklingLibrary):
 
     def __init__(self, *args, **kwargs):
         super(SongLibrary, self).__init__(*args, **kwargs)
-        self.albums = AlbumLibrary(self)
+
+    @util.cached_property
+    def albums(self):
+        return AlbumLibrary(self)
 
     def destroy(self):
         super(SongLibrary, self).destroy()
-        self.albums.destroy()
+        if "albums" in self.__dict__:
+            self.albums.destroy()
 
     def tag_values(self, tag):
         """Return a list of all values for the given tag."""
