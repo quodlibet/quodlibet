@@ -35,7 +35,6 @@ def main():
     app.library = quodlibet.init(icon="exfalso",
                                  name="Ex Falso",
                                  title=const.PROCESS_TITLE_EF)
-    app.librarian = app.library.librarian
     app.player = quodlibet.init_backend("nullbe", app.librarian)
     pm = quodlibet.init_plugins()
     pm.rescan()

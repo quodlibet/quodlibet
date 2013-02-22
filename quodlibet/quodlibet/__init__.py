@@ -41,8 +41,11 @@ class Application(object):
 
     window = None
     library = None
-    librarian = None
     player = None
+
+    @property
+    def librarian(self):
+        return self.library.librarian
 
     def quit(self):
         import gobject

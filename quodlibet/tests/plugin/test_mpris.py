@@ -38,12 +38,11 @@ class TMPRIS(PluginTestCase):
     def setUpClass(cls):
         config.init()
         browsers.init()
-        library.init()
         player.init("nullbe")
 
-        app.player = player.init_device(library.librarian)
-        app.window = QuodLibetWindow(library.library, player.playlist)
-        app.librarian = library.librarian
+        app.library = library.init()
+        app.player = player.init_device(app.librarian)
+        app.window = QuodLibetWindow(app.library, player.playlist)
         app.player = player.playlist
 
         cls.plugin = cls.plugins["mpris"]

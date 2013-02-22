@@ -11,8 +11,7 @@ import random
 import gobject
 import gtk
 
-import quodlibet.library
-
+from quodlibet import app
 from quodlibet import util
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.util.library import background_filter
@@ -53,7 +52,7 @@ class Filter(object):
 
     # Return a list of unique album keys (song.album_key)
     def list_albums(self):
-        albums = quodlibet.library.library.albums
+        albums = app.library.albums
         albums.load()
         return [a.key for a in albums]
 
@@ -66,7 +65,7 @@ class Filter(object):
     # Return a list of unique values for the given tag. This needs to be
     # here since not all browsers pull from the default library.
     def list(self, tag):
-        library = quodlibet.library.library
+        library = app.library
         bg = background_filter()
         if bg:
             songs = filter(bg, library.itervalues())
