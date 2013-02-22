@@ -221,7 +221,6 @@ class TPicklingMixin(TestCase):
         def __init__(self):
             PicklingMixin.__init__(self)
             self._contents = {}
-            self._masked = {}
             # set up just enough of the library interface to work
             self.values = self._contents.values
             self.items = self._contents.items
@@ -256,6 +255,15 @@ class TSongLibrary(TLibrary):
     Frange = staticmethod(FSrange)
     Library = SongLibrary
 
+    def test_rename_dirty(self):
+        self.library.dirty = False
+        song = FakeSong(10)
+        self.library.add([song])
+        self.failUnless(self.library.dirty)
+        self.library.dirty = False
+        self.library.rename(song, 20)
+        self.failUnless(self.library.dirty)
+
     def test_rename(self):
         song = FakeSong(10)
         self.library.add([song])
@@ -279,6 +287,13 @@ class TSongFileLibrary(TSongLibrary):
     Fake = FakeSongFile
     Frange = staticmethod(FSFrange)
     Library = SongFileLibrary
+
+    def test_content_masked(self):
+        new = self.Fake(100)
+        new._mounted = False
+        self.failIf(self.library.get_content())
+        self.library._load_item(new)
+        self.failUnless(self.library.get_content())
 
     def test__load_exists_invalid(self):
         new = self.Fake(100)
@@ -445,8 +460,6 @@ class TAlbumLibrary(TestCase):
         self.failUnlessEqual(len(album2.songs), 4)
 
     def test_misc(self):
-        # We don't support masked in AlbumLibrary
-        self.failIf(self.library._masked)
         # It shouldn't implement FileLibrary etc
         self.failIf(getattr(self.library, "filename", None))
 

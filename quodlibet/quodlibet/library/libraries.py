@@ -57,7 +57,6 @@ class Library(gobject.GObject, DictMixin):
     def __init__(self, name=None):
         super(Library, self).__init__()
         self._contents = {}
-        self._masked = {}
         self._name = name
         if self.librarian is not None and name is not None:
             self.librarian.register(self, name)
@@ -123,6 +122,11 @@ class Library(gobject.GObject, DictMixin):
             return item in self._contents or item.key in self._contents
         except AttributeError:
             return False
+
+    def get_content(self):
+        """All items including hidden ones for saving the library
+           (see FileLibrary with masked items)"""
+        return self.values()
 
     def keys(self):
         return self._contents.keys()
@@ -274,17 +278,7 @@ class PicklingMixin(object):
         with self._save_lock:
             print_d("Saving contents to %r." % filename, self)
 
-            items = self.values()
-            for masked in self._masked.values():
-                items.extend(masked.values())
-
-            # Item keys are often based on filenames, in which case
-            # sorting takes advantage of the filesystem cache when we
-            # reload/rescan the files.
-            items.sort(key=lambda item: item.key)
-
-            dump_items(filename, items)
-
+            dump_items(filename, self.get_content())
             self.dirty = False
 
 
@@ -482,6 +476,7 @@ class FileLibrary(PicklingLibrary):
 
     def __init__(self, name=None):
         super(FileLibrary, self).__init__(name)
+        self._masked = {}
 
     def _load_item(self, item, force=False):
         """Add an item, or refresh it if it's already in the library.
@@ -642,6 +637,20 @@ class FileLibrary(PicklingLibrary):
                         added = []
                         task.pulse()
                         yield True
+
+    def get_content(self):
+        """Return visible and masked items"""
+
+        items = self.values()
+        for masked in self._masked.values():
+            items.extend(masked.values())
+
+        # Item keys are often based on filenames, in which case
+        # sorting takes advantage of the filesystem cache when we
+        # reload/rescan the files.
+        items.sort(key=lambda item: item.key)
+
+        return items
 
     def masked(self, item):
         """Return true if the item is in the library but masked."""
