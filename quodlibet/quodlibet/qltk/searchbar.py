@@ -17,7 +17,7 @@ from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.x import Button
 from quodlibet.util import limit_songs
 
-class SearchBarBox(gtk.HBox):
+class SearchBarBox(Gtk.HBox):
     """
         A search bar widget for inputting queries.
 
@@ -29,8 +29,8 @@ class SearchBarBox(gtk.HBox):
 
     __gsignals__ = {
         'query-changed': (
-            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
-        'focus-out': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+            GObject.SignalFlags.RUN_LAST, None, (object,)),
+        'focus-out': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
     timeout = 400
@@ -48,7 +48,7 @@ class SearchBarBox(gtk.HBox):
 
         self.__refill_id = None
         self.__combo = combo
-        entry = combo.child
+        entry = combo.get_child()
         self.__entry = entry
         if completion:
             entry.set_completion(completion)
@@ -67,32 +67,32 @@ class SearchBarBox(gtk.HBox):
 
         # The naked entry looks better with the search button on the right.
         pos = self.__search_icon_pos = int(not compact)
-        entry.set_icon_from_stock(pos, gtk.STOCK_FIND)
+        entry.set_icon_from_stock(pos, Gtk.STOCK_FIND)
         entry.set_icon_tooltip_text(pos,
                 _("Search your library, using free text or QL queries"))
 
         if not compact:
-            label = gtk.Label(_("_Search:"))
+            label = Gtk.Label(label=_("_Search:"))
             label.set_use_underline(True)
             label.connect('mnemonic-activate', self.__mnemonic_activate)
             label.set_mnemonic_widget(entry)
-            self.pack_start(label, expand=False)
+            self.pack_start(label, False, True, 0)
         else:
             entry.set_tooltip_text(_("Search your library, "
                                      "using free text or QL queries"))
             # combo.enable_clear_button()
-        self.pack_start(combo)
+        self.pack_start(combo, True, True, 0)
 
         # search button
         if button:
-            search = Button(_("Search"), gtk.STOCK_FIND,
-                            size=gtk.ICON_SIZE_MENU)
+            search = Button(_("Search"), Gtk.STOCK_FIND,
+                            size=Gtk.IconSize.MENU)
             search.connect('clicked', self.__filter_changed)
             search.set_tooltip_text(_("Search your library"))
-            self.pack_start(search, expand=False)
+            self.pack_start(search, False, True, 0)
 
         if accel_group:
-            key, mod = gtk.accelerator_parse("<ctrl>L")
+            key, mod = Gtk.accelerator_parse("<ctrl>L")
             accel_group.connect_group(key, mod, 0,
                     lambda *x: entry.mnemonic_activate(True))
 
@@ -154,7 +154,7 @@ class SearchBarBox(gtk.HBox):
 
     def __remove_timeout(self):
         if self.__refill_id is not None:
-            gobject.source_remove(self.__refill_id)
+            GObject.source_remove(self.__refill_id)
             self.__refill_id = None
 
     def __filter_changed(self, *args):
@@ -162,7 +162,7 @@ class SearchBarBox(gtk.HBox):
 
         text = self.__entry.get_text().decode('utf-8')
         if Query.is_parsable(text):
-            self.__refill_id = gobject.idle_add(
+            self.__refill_id = GObject.idle_add(
                 self.emit, 'query-changed', text)
 
     def __text_changed(self, *args):
@@ -182,7 +182,7 @@ class SearchBarBox(gtk.HBox):
         # parse and new timeout
         text = self.__entry.get_text().decode('utf-8')
         if Query.is_parsable(text):
-            self.__refill_id = gobject.timeout_add(
+            self.__refill_id = GObject.timeout_add(
                     self.timeout, self.__filter_changed)
 
 
@@ -190,22 +190,22 @@ class LimitSearchBarBox(SearchBarBox):
     """A version of `SearchBarBox` that allows specifying the limiting and
     weighting of a search."""
 
-    class Limit(gtk.HBox):
+    class Limit(Gtk.HBox):
         def __init__(self):
             super(LimitSearchBarBox.Limit, self).__init__(spacing=3)
-            label = gtk.Label(_("_Limit:"))
-            self.pack_start(label)
+            label = Gtk.Label(label=_("_Limit:"))
+            self.pack_start(label, True, True, 0)
 
-            self.__limit = limit = gtk.SpinButton()
+            self.__limit = limit = Gtk.SpinButton()
             limit.set_numeric(True)
             limit.set_range(0, 9999)
             limit.set_increments(5, 100)
             label.set_mnemonic_widget(limit)
             label.set_use_underline(True)
-            self.pack_start(limit)
+            self.pack_start(limit, True, True, 0)
 
-            self.__weight = gtk.CheckButton(_("_Weight"))
-            self.pack_start(self.__weight)
+            self.__weight = Gtk.CheckButton(_("_Weight"))
+            self.pack_start(self.__weight, True, True, 0)
             map(lambda w: w.show(), self.get_children())
 
         @property
@@ -219,7 +219,7 @@ class LimitSearchBarBox(SearchBarBox):
     def __init__(self, show_limit=False, *args, **kwargs):
         super(LimitSearchBarBox, self).__init__(*args, **kwargs)
         self.__limit = self.Limit()
-        self.pack_start(self.__limit, expand=False)
+        self.pack_start(self.__limit, False, True, 0)
         self.__limit.set_no_show_all(not show_limit)
 
     def limit(self, songs):

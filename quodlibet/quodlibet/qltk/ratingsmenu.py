@@ -45,7 +45,7 @@ class RatingsMenuItem(Gtk.MenuItem):
         librarian.changed([song])
 
     def __init__(self, songs, library, label=_("_Rating")):
-        super(RatingsMenuItem, self).__init__(label)
+        super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
         submenu = Gtk.Menu()
         self.set_submenu(submenu)
         for i in range(0, int(1.0 / util.RATING_PRECISION) + 1):

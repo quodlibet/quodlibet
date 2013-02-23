@@ -177,9 +177,9 @@ def set_orders(orders):
                 cmp(K1.priority, K2.priority) or cmp(K1.name, K2.name))
 set_orders([])
 
-class PlayOrder(Gtk.ComboBox):
+class PlayOrder(Gtk.ComboBoxText):
     def __init__(self, model, player):
-        super(PlayOrder, self).__init__(Gtk.ListStore(str))
+        super(PlayOrder, self).__init__(model=Gtk.ListStore(str))
         cell = Gtk.CellRendererText()
         cell.props.xpad = 1
         cell.props.ypad = 0

@@ -13,7 +13,7 @@ try:
 except ImportError:
   import md5 as hash
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 
 from quodlibet.util import mtime, fsnative, pathname2url
 from quodlibet.util import xdg_get_cache_home, mkdir
@@ -26,8 +26,8 @@ def add_border(pixbuf, val, round=False):
     c = (val << 24) | (val << 16) | (val << 8) | 0xFF
 
     w, h = pixbuf.get_width(), pixbuf.get_height()
-    newpb = gtk.gdk.Pixbuf(
-        gtk.gdk.COLORSPACE_RGB, True, 8, w + 2, h + 2)
+    rgb = GdkPixbuf.Colorspace.RGB
+    newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, w + 2, h + 2)
     newpb.fill(c)
     pixbuf.copy_area(0, 0, w, h, newpb, 1, 1)
 
@@ -46,7 +46,7 @@ def add_border(pixbuf, val, round=False):
             (p, l, e, e)
             )
 
-        overlay = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, 1, 1)
+        overlay = GdkPixbuf.Pixbuf.new(rgb, True, 8, 1, 1)
         overlay.fill(m)
 
         for y, row in enumerate(mask):
@@ -54,9 +54,9 @@ def add_border(pixbuf, val, round=False):
                 for xn, yn in [(x, y), (w+1-x, y), (w+1-x, h+1-y), (x, h+1-y)]:
                     if pix == l:
                         overlay.composite(newpb, xn, yn, 1, 1, 0, 0, 1, 1,
-                            gtk.gdk.INTERP_NEAREST, 70)
+                            GdkPixbuf.InterpType.NEAREST, 70)
                     elif pix != e:
-                        newpb.subpixbuf(xn, yn, 1, 1).fill(pix)
+                        newpb.new_subpixbuf(xn, yn, 1, 1).fill(pix)
     return newpb
 
 def calc_scale_size(boundary, size, scale_up=True):
@@ -94,7 +94,7 @@ def scale(pixbuf, boundary, scale_up=True, force_copy=False):
             return pixbuf.copy()
         return pixbuf
 
-    return pixbuf.scale_simple(scale_w, scale_h, gtk.gdk.INTERP_BILINEAR)
+    return pixbuf.scale_simple(scale_w, scale_h, GdkPixbuf.InterpType.BILINEAR)
 
 def get_thumbnail_folder():
     """Returns a path to an existing folder"""
@@ -145,18 +145,19 @@ def get_thumbnail(path, boundary):
 
     pb = meta_mtime = None
     if os.path.exists(thumb_path):
-        pb = gtk.gdk.pixbuf_new_from_file(thumb_path)
+        pb = GdkPixbuf.Pixbuf.new_from_file(thumb_path)
         meta_mtime = pb.get_option("tEXt::Thumb::MTime")
         meta_mtime = meta_mtime and int(meta_mtime)
 
     if not pb or meta_mtime != int(mtime(path)):
-        pb = gtk.gdk.pixbuf_new_from_file(path)
+        pb = GdkPixbuf.Pixbuf.new_from_file(path)
 
         #Too small picture, no thumbnail needed
         if pb.get_width() < thumb_size and pb.get_height() < thumb_size:
             return scale(pb, boundary)
 
-        mime = gtk.gdk.pixbuf_get_file_info(path)[0]['mime_types'][0]
+        info = GdkPixbuf.Pixbuf.get_file_info(path)[0]
+        mime = info.get_mime_types()[0]
         options = {
             "tEXt::Thumb::Image::Width": str(pb.get_width()),
             "tEXt::Thumb::Image::Height": str(pb.get_height()),
@@ -168,7 +169,7 @@ def get_thumbnail(path, boundary):
             }
 
         pb = scale(pb, (thumb_size, thumb_size))
-        pb.save(thumb_path, "png", options)
+        pb.savev(thumb_path, "png", options.keys(), options.values())
         os.chmod(thumb_path, 0600)
 
     return scale(pb, boundary)

@@ -252,7 +252,7 @@ class SongsMenu(Gtk.Menu):
                 'activate', SongProperties, librarian, songs, parent)
             self.append(b)
 
-            b = Gtk.ImageMenuItem(Gtk.STOCK_INFO)
+            b = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_INFO)
             if accels is not None:
                 b.add_accelerator('activate', accels, ord('I'),
                                   Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)

@@ -14,13 +14,13 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.parse import XMLFromPattern
 
 try:
-    import gtksourceview2
+    from gi.repository import GtkSource
 except ImportError:
     TextView = Gtk.TextView
     TextBuffer = Gtk.TextBuffer
 else:
-    TextView = gtksourceview2.View
-    class TextBuffer(gtksourceview2.Buffer):
+    TextView = GtkSource.View
+    class TextBuffer(GtkSource.Buffer):
         def __init__(self, *args):
             super(TextBuffer, self).__init__(*args)
             self.set_highlight_matching_brackets(False)
@@ -31,7 +31,7 @@ else:
             super(TextBuffer, self).set_text(*args)
             self.end_not_undoable_action()
 
-class TextEditBox(gtk.HBox):
+class TextEditBox(Gtk.HBox):
     """A simple text editing area with a default value, a revert button,
     and an apply button. The 'buffer' attribute is the text buffer, the
     'apply' attribute is the apply button.
@@ -42,19 +42,19 @@ class TextEditBox(gtk.HBox):
     def __init__(self, default=""):
         super(TextEditBox, self).__init__(spacing=6)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(TextView(TextBuffer()))
-        self.pack_start(sw)
-        self.buffer = sw.child.get_buffer()
+        self.pack_start(sw, True, True, 0)
+        self.buffer = sw.get_child().get_buffer()
 
-        box = gtk.VBox(spacing=6)
-        rev = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
-        app = gtk.Button(stock=gtk.STOCK_APPLY)
-        box.pack_start(rev, expand=False)
-        box.pack_start(app, expand=False)
-        self.pack_start(box, expand=False)
+        box = Gtk.VBox(spacing=6)
+        rev = Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
+        app = Gtk.Button(stock=Gtk.STOCK_APPLY)
+        box.pack_start(rev, False, True, 0)
+        box.pack_start(app, False, True, 0)
+        self.pack_start(box, False, True, 0)
         rev.connect_object('clicked', self.buffer.set_text, default)
         self.revert = rev
         self.apply = app
@@ -76,8 +76,8 @@ class PatternEditBox(TextEditBox):
     def __check_markup(self, apply):
         try:
             f = AudioFile({"~filename":"dummy"})
-            pango.parse_markup(XMLFromPattern(self.text) % f, u"\u0000")
-        except (ValueError, gobject.GError), e:
+            Pango.parse_markup(XMLFromPattern(self.text) % f, u"\u0000")
+        except (ValueError, GObject.GError), e:
             qltk.ErrorMessage(
                 self, _("Invalid pattern"),
                 _("The pattern you entered was invalid. Make sure you enter "
@@ -99,16 +99,16 @@ class TextEdit(qltk.UniqueWindow):
         self.set_border_width(12)
         self.set_default_size(420, 190)
 
-        vbox = gtk.VBox(spacing=12)
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        vbox = Gtk.VBox(spacing=12)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
-        b = gtk.HButtonBox()
-        b.set_layout(gtk.BUTTONBOX_END)
-        b.pack_start(close)
+        b = Gtk.HButtonBox()
+        b.set_layout(Gtk.ButtonBoxStyle.END)
+        b.pack_start(close, True, True, 0)
 
         self.box = box = self.Box(default)
-        vbox.pack_start(box)
-        vbox.pack_start(b, expand=False)
+        vbox.pack_start(box, True, True, 0)
+        vbox.pack_start(b, False, True, 0)
 
         self.add(vbox)
         self.apply = box.apply

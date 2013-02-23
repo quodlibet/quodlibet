@@ -52,7 +52,7 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         scroll_within = value.get_boolean()
         value.unset()
 
-        if scroll_within:
+        if not scroll_within:
             h, v = self.get_hscrollbar(), self.get_vscrollbar()
             hscroll = vscroll = False
             if h.get_visible():

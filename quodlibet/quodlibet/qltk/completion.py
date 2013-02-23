@@ -23,7 +23,7 @@ class EntryWordCompletion(Gtk.EntryCompletion):
 
     def __init__(self):
         super(EntryWordCompletion, self).__init__()
-        self.set_match_func(self.__match_filter)
+        self.set_match_func(self.__match_filter, None)
         self.connect('match-selected', self.__match_selected)
 
     def __match_filter(self, completion, entrytext, iter):
@@ -74,7 +74,7 @@ class LibraryTagCompletion(EntryWordCompletion):
         super(LibraryTagCompletion, self).__init__()
         try: model = self.__model
         except AttributeError:
-            model = type(self).__model = gtk.ListStore(str)
+            model = type(self).__model = Gtk.ListStore(str)
             library.connect('changed', self.__update_song, model)
             library.connect('added', self.__update_song, model)
             library.connect('removed', self.__update_song, model)

@@ -228,7 +228,7 @@ class TaskWidget(Gtk.HBox):
         self.label = Gtk.Label()
         self.label.set_alignment(1.0, 0.5)
         self.label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.pack_start(self.label, padding=12, expand=True)
+        self.pack_start(self.label, True, True, 12)
         self.progress = Gtk.ProgressBar()
         self.progress.set_size_request(100, -1)
         self.pack_start(self.progress, True, True, 0)

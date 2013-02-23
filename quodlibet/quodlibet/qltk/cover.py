@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk, GdkPixbuf
 
 from quodlibet import qltk
 from quodlibet import config
@@ -26,24 +26,31 @@ class BigCenteredImage(qltk.Window):
     def __init__(self, title, filename, parent=None):
         super(BigCenteredImage, self).__init__()
         self.set_transient_for(qltk.get_top_parent(parent))
-        width = gtk.gdk.screen_width() / 2
-        height = gtk.gdk.screen_height() / 2
+        width = Gdk.Screen.width() / 2
+        height = Gdk.Screen.height() / 2
 
-        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
         pixbuf = thumbnails.scale(pixbuf, (width, height), scale_up=False)
 
         self.set_title(title)
         self.set_decorated(False)
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_position(Gtk.WindowPosition.CENTER)
         self.set_modal(False)
-        self.add(gtk.Frame())
-        self.child.set_shadow_type(gtk.SHADOW_OUT)
-        self.child.add(gtk.EventBox())
-        self.child.child.add(gtk.Image())
-        self.child.child.child.set_from_pixbuf(pixbuf)
 
-        self.child.child.connect('button-press-event', self.__destroy)
-        self.child.child.connect('key-press-event', self.__destroy)
+        image = Gtk.Image()
+        image.set_from_pixbuf(pixbuf)
+
+        event_box = Gtk.EventBox()
+        event_box.add(image)
+
+        frame = Gtk.Frame()
+        frame.set_shadow_type(Gtk.ShadowType.OUT)
+        frame.add(event_box)
+
+        self.add(frame)
+
+        event_box.connect('button-press-event', self.__destroy)
+        event_box.connect('key-press-event', self.__destroy)
         self.show_all()
 
     def __destroy(self, *args):
@@ -82,11 +89,11 @@ class ResizeImage(Gtk.Image):
         size = min(width, height)
         if self.__no_cover is None or min(self.__no_cover.get_width(),
             self.__no_cover.get_height()) != size:
-            theme = gtk.icon_theme_get_default()
+            theme = Gtk.IconTheme.get_default()
             try:
                 self.__no_cover = theme.load_icon(
                     "quodlibet-missing-cover", size, 0)
-            except gobject.GError: pass
+            except GObject.GError: pass
             else:
                 self.__no_cover = thumbnails.scale(
                     self.__no_cover, (size, size))
@@ -109,7 +116,7 @@ class ResizeImage(Gtk.Image):
                 round_thumbs = config.getboolean("albumart", "round")
                 pixbuf = thumbnails.get_thumbnail(self.__path, (width, height))
                 pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
-            except gobject.GError:
+            except GObject.GError:
                 pixbuf = self.__get_no_cover(width, height)
 
         self.set_from_pixbuf(pixbuf)
@@ -139,10 +146,10 @@ class CoverImage(Gtk.EventBox):
         self.__song = song
         if song:
             self.__file = song.find_cover()
-            self.child.set_path(self.__file and self.__file.name)
+            self.get_child().set_path(self.__file and self.__file.name)
         else:
             self.__file = None
-            self.child.set_path(None)
+            self.get_child().set_path(None)
 
     def refresh(self):
         self.set_song(self.__song)
@@ -163,7 +170,7 @@ class CoverImage(Gtk.EventBox):
         if not song:
             return
 
-        if event.button != 1 or event.type != gtk.gdk.BUTTON_PRESS:
+        if event.button != 1 or event.type != Gdk.EventType.BUTTON_PRESS:
             return
 
         if not self.__file:
@@ -182,7 +189,7 @@ class CoverImage(Gtk.EventBox):
         try:
             self.__current_bci = BigCenteredImage(
                 song.comma("album"), self.__file.name, parent=self)
-        except gobject.GError: # reload in case the image file is gone
+        except GObject.GError: # reload in case the image file is gone
             self.refresh()
         else:
             self.__current_bci.connect('destroy', self.__reset_bci)

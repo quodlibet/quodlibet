@@ -9,7 +9,7 @@ import os
 import re
 import sys
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import browsers
 from quodlibet import config
@@ -26,7 +26,8 @@ class FSInterface(object):
     def __init__(self, player):
         player.connect('song-started', self.__started)
         player.connect('song-ended', self.__ended)
-        gtk.quit_add(1, self.__cleanup)
+        # FIXME: GIPORT
+        #Gtk.quit_add(1, self.__cleanup)
 
     def __cleanup(self):
         try: os.unlink(const.CURRENT)
@@ -49,7 +50,8 @@ class FIFOControl(object):
 
     def __init__(self, library, window, player):
         self.__open(library, window, player)
-        gtk.quit_add(1, self.__cleanup)
+        # FIXME: GIPORT
+        #Gtk.quit_add(1, self.__cleanup)
 
     def __cleanup(self):
         try: os.unlink(const.CONTROL)
@@ -62,8 +64,8 @@ class FIFOControl(object):
                 os.mkfifo(const.CONTROL, 0600)
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             f = os.fdopen(fifo, "r", 4096)
-            gobject.io_add_watch(
-                f, gtk.gdk.INPUT_READ, self.__process, *args)
+            GObject.io_add_watch(
+                f, Gdk.INPUT_READ, self.__process, *args)
         except (EnvironmentError, AttributeError): pass
 
     def __getitem__(self, key):

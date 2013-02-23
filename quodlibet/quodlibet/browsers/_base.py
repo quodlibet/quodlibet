@@ -130,8 +130,8 @@ class Browser(Filter):
     # So, we need to reasssign this in every subclass.
     __gsignals__ = {
         'songs-selected':
-        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object)),
-        'activated': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        'activated': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
     # The browser's name, without an accelerator.
@@ -159,9 +159,9 @@ class Browser(Filter):
             container.pack1(self, resize=True)
             container.pack2(songpane, resize=True)
         else:
-            container = gtk.VBox(spacing=6)
-            container.pack_start(self, expand=False)
-            container.pack_start(songpane)
+            container = Gtk.VBox(spacing=6)
+            container.pack_start(self, False, True, 0)
+            container.pack_start(songpane, True, True, 0)
         return container
 
     # Unpack the browser and songlist when switching browsers in the main
@@ -225,7 +225,7 @@ class Browser(Filter):
     # the browser is.
     accelerators = None
 
-    # This method returns a gtk.Menu, probably a SongsMenu. After this
+    # This method returns a Gtk.Menu, probably a SongsMenu. After this
     # menu is returned the SongList may modify it further.
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(

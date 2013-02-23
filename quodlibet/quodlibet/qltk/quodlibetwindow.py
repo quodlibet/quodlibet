@@ -9,7 +9,7 @@
 import os
 import sys
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import browsers
 from quodlibet import config
@@ -47,32 +47,32 @@ from quodlibet.qltk.window import PersistentWindowMixin
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
 
-    class CurrentColumn(gtk.TreeViewColumn):
+    class CurrentColumn(Gtk.TreeViewColumn):
         # Displays the current song indicator, either a play or pause icon.
         header_name = "~current"
         __last_stock = None
 
-        def _cdf(self, column, cell, model, iter,
-                 pixbuf=(gtk.STOCK_MEDIA_PLAY, gtk.STOCK_MEDIA_PAUSE)):
+        def _cdf(self, column, cell, model, iter, data,
+                 pixbuf=(Gtk.STOCK_MEDIA_PLAY, Gtk.STOCK_MEDIA_PAUSE)):
             row = model[iter]
             if row.path == model.current_path:
                 if model.sourced:
                     stock_icon = pixbuf[player.playlist.paused]
                 else:
-                    stock_icon = gtk.STOCK_MEDIA_STOP
+                    stock_icon = Gtk.STOCK_MEDIA_STOP
             elif row[0].get("~errors"):
-                stock_icon = gtk.STOCK_DIALOG_ERROR
+                stock_icon = Gtk.STOCK_DIALOG_ERROR
             else:
-                stock_icon = ''
+                stock_icon = None
             if self.__last_stock == stock_icon: return
             self.__last_stock = stock_icon
             cell.set_property('stock-id', stock_icon)
 
         def __init__(self):
-            self._render = gtk.CellRendererPixbuf()
+            self._render = Gtk.CellRendererPixbuf()
             self._render.set_property('xalign', 0.5)
             super(MainSongList.CurrentColumn, self).__init__("", self._render)
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            self.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
             self.set_fixed_width(24)
             self.set_cell_data_func(self._render, self._cdf)
             self.header_name = "~current"
@@ -106,8 +106,8 @@ class MainSongList(SongList):
 class SongListScroller(ScrolledWindow):
     def __init__(self, menu):
         super(SongListScroller, self).__init__()
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-        self.set_shadow_type(gtk.SHADOW_IN)
+        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+        self.set_shadow_type(Gtk.ShadowType.IN)
         self.connect_object('notify::visible', self.__visibility, menu)
 
     def __visibility(self, menu, event):
@@ -116,24 +116,24 @@ class SongListScroller(ScrolledWindow):
         config.set("memory", "songlist", str(value))
 
 
-class TopBar(gtk.HBox):
+class TopBar(Gtk.HBox):
     def __init__(self, parent, player, library):
         super(TopBar, self).__init__(spacing=3)
 
         # play controls
         t = PlayControls(player, library.librarian)
         self.volume = t.volume
-        self.pack_start(t, expand=False, fill=False)
+        self.pack_start(t, False, False, 0)
 
         # song text
         text = SongInfo(library.librarian, player)
-        self.pack_start(Alignment(text, border=3))
+        self.pack_start(Alignment(text, border=3), True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
         player.connect('song-started', lambda x, s: self.image.set_song(s))
         parent.connect('artwork-changed', self.__song_art_changed, library)
-        self.pack_start(self.image, expand=False)
+        self.pack_start(self.image, False, True, 0)
 
     def __song_art_changed(self, player, songs, library):
         self.image.refresh()
@@ -148,37 +148,37 @@ class TopBar(gtk.HBox):
             library.albums.refresh(refresh_albums)
 
 
-class StatusBarBox(gtk.HBox):
+class StatusBarBox(Gtk.HBox):
     def __init__(self, model, player):
         super(StatusBarBox, self).__init__(spacing=12)
 
         self.order = order = PlayOrder(model, player)
 
-        hb = gtk.HBox(spacing=6)
-        label = gtk.Label(_("_Order:"))
+        hb = Gtk.HBox(spacing=6)
+        label = Gtk.Label(label=_("_Order:"))
         label.set_mnemonic_widget(order)
         label.set_use_underline(True)
-        hb.pack_start(label)
-        hb.pack_start(order)
-        self.pack_start(hb, expand=False)
+        hb.pack_start(label, True, True, 0)
+        hb.pack_start(order, True, True, 0)
+        self.pack_start(hb, False, True, 0)
 
         self.repeat = repeat = qltk.ccb.ConfigCheckButton(
             _("_Repeat"), "settings", "repeat")
         repeat.set_tooltip_text(_("Restart the playlist when finished"))
-        self.pack_start(repeat, expand=False)
+        self.pack_start(repeat, False, True, 0)
 
         repeat.connect('toggled', self.__repeat, model)
         repeat.set_active(config.getboolean('settings', 'repeat'))
 
         self.statusbar = StatusBar(TaskController.default_instance)
-        self.pack_start(self.statusbar)
+        self.pack_start(self.statusbar, True, True, 0)
 
     def __repeat(self, button, model):
         model.repeat = button.get_active()
 
 
-class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
-    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
+    SIG_PYOBJECT = (GObject.SignalFlags.RUN_LAST, None, (object,))
     __gsignals__ = {
         'artwork-changed': SIG_PYOBJECT,
     }
@@ -190,7 +190,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
         self.__update_title(player)
         self.set_default_size(550, 450)
 
-        main_box = gtk.VBox()
+        main_box = Gtk.VBox()
         self.add(main_box)
 
         # create main menubar, load/restore accelerator groups
@@ -199,11 +199,11 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
         self.add_accel_group(self.ui.get_accel_group())
 
         accel_fn = os.path.join(const.USERDIR, "accels")
-        gtk.accel_map_load(accel_fn)
-        accelgroup = gtk.accel_groups_from_object(self)[0]
-        accelgroup.connect('accel-changed',
-                lambda *args: gtk.accel_map_save(accel_fn))
-        main_box.pack_start(self.ui.get_widget("/Menu"), expand=False)
+        Gtk.AccelMap.load(accel_fn)
+        accelgroup = Gtk.accel_groups_from_object(self)[0]
+        GObject.Object.connect(accelgroup, 'accel-changed',
+                lambda *args: Gtk.AccelMap.save(accel_fn))
+        main_box.pack_start(self.ui.get_widget("/Menu"), False, True, 0)
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
@@ -221,10 +221,10 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
 
         top_bar = TopBar(self, player, library)
         top_align = Alignment(top_bar, border=3, bottom=-3)
-        main_box.pack_start(top_align, expand=False)
+        main_box.pack_start(top_align, False, True, 0)
 
         self.__browserbox = Alignment(top=3, bottom=3)
-        main_box.pack_start(self.__browserbox)
+        main_box.pack_start(self.__browserbox, True, True, 0)
 
         statusbox = StatusBarBox(self.songlist.model, player)
         self.order = statusbox.order
@@ -232,9 +232,9 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
         self.statusbar = statusbox.statusbar
 
         main_box.pack_start(Alignment(statusbox, border=3, top=-3),
-                            expand=False)
+                            False, True, 0)
 
-        self.songpane = gtk.VPaned()
+        self.songpane = Gtk.VPaned()
         self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
         self.songpane.pack2(self.qexpander, resize=True, shrink=False)
         self.__handle_position =  self.songpane.get_property("position")
@@ -268,7 +268,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             seek_pos = config.getint("memory", "seek")
             config.set("memory", "seek", 0)
             player.setup(self.playlist, song, seek_pos)
-        gobject.idle_add(delayed_song_set)
+        GObject.idle_add(delayed_song_set)
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 
@@ -294,8 +294,10 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             gobject_weak(player.connect, *sig, **{"parent": self})
 
         targets = [("text/uri-list", 0, 1)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
         self.drag_dest_set(
-            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
+            Gtk.DestDefaults.ALL, targets, Gdk.DragAction.DEFAULT)
         self.connect_object('drag-motion', QuodLibetWindow.__drag_motion, self)
         self.connect_object('drag-leave', QuodLibetWindow.__drag_leave, self)
         self.connect_object(
@@ -418,83 +420,83 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
                 self.songpane.set_property("position", p_max)
 
     def __create_menu(self, player, library):
-        ag = gtk.ActionGroup('QuodLibetWindowActions')
+        ag = Gtk.ActionGroup('QuodLibetWindowActions')
 
         actions = [
             ('Music', None, _("_Music")),
-            ('AddFolders', gtk.STOCK_ADD, _('_Add a Folder...'),
+            ('AddFolders', Gtk.STOCK_ADD, _('_Add a Folder...'),
              "<control>O", None, self.open_chooser),
-            ('AddFiles', gtk.STOCK_ADD, _('_Add a File...'),
+            ('AddFiles', Gtk.STOCK_ADD, _('_Add a File...'),
              None, None, self.open_chooser),
-            ('AddLocation', gtk.STOCK_ADD, _('_Add a Location...'),
+            ('AddLocation', Gtk.STOCK_ADD, _('_Add a Location...'),
              None, None, self.open_location),
-            ('BrowseLibrary', gtk.STOCK_FIND, _('_Browse Library'), ""),
-            ("Preferences", gtk.STOCK_PREFERENCES, None, None, None,
+            ('BrowseLibrary', Gtk.STOCK_FIND, _('_Browse Library'), ""),
+            ("Preferences", Gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
-            ("Plugins", gtk.STOCK_EXECUTE, _("_Plugins"), None, None,
+            ("Plugins", Gtk.STOCK_EXECUTE, _("_Plugins"), None, None,
              self.__plugins),
-            ("Quit", gtk.STOCK_QUIT, None, None, None, self.destroy),
+            ("Quit", Gtk.STOCK_QUIT, None, None, None, self.destroy),
             ('Filters', None, _("_Filters")),
 
-            ("PlayedRecently", gtk.STOCK_FIND, _("Recently _Played"),
+            ("PlayedRecently", Gtk.STOCK_FIND, _("Recently _Played"),
              "", None, self.__filter_menu_actions),
-            ("AddedRecently", gtk.STOCK_FIND, _("Recently _Added"),
+            ("AddedRecently", Gtk.STOCK_FIND, _("Recently _Added"),
              "", None, self.__filter_menu_actions),
-            ("TopRated", gtk.STOCK_FIND, _("_Top 40"),
+            ("TopRated", Gtk.STOCK_FIND, _("_Top 40"),
              "", None, self.__filter_menu_actions),
 
             ("Control", None, _("_Control")),
-            ("EditTags", gtk.STOCK_PROPERTIES, _("Edit _Tags"), "", None,
+            ("EditTags", Gtk.STOCK_PROPERTIES, _("Edit _Tags"), "", None,
              self.__current_song_prop),
-            ("Information", gtk.STOCK_INFO, None, None, None,
+            ("Information", Gtk.STOCK_INFO, None, None, None,
              self.__current_song_info),
 
-            ("Jump", gtk.STOCK_JUMP_TO, _("_Jump to Playing Song"),
+            ("Jump", Gtk.STOCK_JUMP_TO, _("_Jump to Playing Song"),
              "<control>J", None, self.__jump_to_current),
 
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
-            ("OutputLog", gtk.STOCK_EDIT, _("_Output Log"),
+            ("OutputLog", Gtk.STOCK_EDIT, _("_Output Log"),
              None, None, lambda *args: LoggingWindow(self)),
             ]
 
         if const.DEBUG:
             from quodlibet.debug import cause_error, enc
-            actions.append(("DebugReload", gtk.STOCK_DIALOG_WARNING,
+            actions.append(("DebugReload", Gtk.STOCK_DIALOG_WARNING,
                             _("_Edit and Continue"), None, None,
                             lambda *args: enc.reload()))
-            actions.append(("DebugCauseError", gtk.STOCK_DIALOG_ERROR,
+            actions.append(("DebugCauseError", Gtk.STOCK_DIALOG_ERROR,
                             _("_Cause an Error"), None, None, cause_error))
 
-        actions.append(("Previous", gtk.STOCK_MEDIA_PREVIOUS, None,
+        actions.append(("Previous", Gtk.STOCK_MEDIA_PREVIOUS, None,
                         "<control>comma", None, self.__previous_song))
 
-        actions.append(("PlayPause", gtk.STOCK_MEDIA_PLAY, None,
+        actions.append(("PlayPause", Gtk.STOCK_MEDIA_PLAY, None,
                         "<control>space", None, self.__play_pause))
 
-        actions.append(("Next", gtk.STOCK_MEDIA_NEXT, None,
+        actions.append(("Next", Gtk.STOCK_MEDIA_NEXT, None,
                         "<control>period", None, self.__next_song))
 
         ag.add_actions(actions)
 
-        act = gtk.Action("About", None, None, gtk.STOCK_ABOUT)
+        act = Gtk.Action("About", None, None, Gtk.STOCK_ABOUT)
         act.connect_object('activate', self.__show_about, player)
         ag.add_action_with_accel(act, None)
 
-        act = gtk.Action("OnlineHelp", _("Online Help"), None, gtk.STOCK_HELP)
+        act = Gtk.Action("OnlineHelp", _("Online Help"), None, Gtk.STOCK_HELP)
         act.connect_object('activate', util.website, const.ONLINE_HELP)
         ag.add_action_with_accel(act, "F1")
 
-        act = gtk.Action("SearchHelp", _("Search Help"), None, "")
+        act = Gtk.Action("SearchHelp", _("Search Help"), None, "")
         act.connect_object('activate', util.website, const.SEARCH_HELP)
         ag.add_action_with_accel(act, None)
 
-        act = gtk.Action(
-            "RefreshLibrary", _("Re_fresh Library"), None, gtk.STOCK_REFRESH)
+        act = Gtk.Action(
+            "RefreshLibrary", _("Re_fresh Library"), None, Gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, False)
         ag.add_action_with_accel(act, None)
-        act = gtk.Action(
-            "ReloadLibrary", _("Re_load Library"), None, gtk.STOCK_REFRESH)
+        act = Gtk.Action(
+            "ReloadLibrary", _("Re_load Library"), None, Gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, True)
         ag.add_action_with_accel(act, None)
 
@@ -502,8 +504,8 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             ("genre", _("Filter on _Genre")),
             ("artist", _("Filter on _Artist")),
             ("album", _("Filter on Al_bum"))]:
-            act = gtk.Action(
-                "Filter%s" % util.capitalize(tag_), lab, None, gtk.STOCK_INDEX)
+            act = Gtk.Action(
+                "Filter%s" % util.capitalize(tag_), lab, None, Gtk.STOCK_INDEX)
             act.connect_object('activate', self.__filter_on, tag_, None, player)
             ag.add_action_with_accel(act, None)
 
@@ -511,8 +513,8 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             ("genre", "G", _("Random _Genre")),
             ("artist", "T", _("Random _Artist")),
             ("album", "M", _("Random Al_bum"))]:
-            act = gtk.Action("Random%s" % util.capitalize(tag_), label,
-                             None, gtk.STOCK_DIALOG_QUESTION)
+            act = Gtk.Action("Random%s" % util.capitalize(tag_), label,
+                             None, Gtk.STOCK_DIALOG_QUESTION)
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<control>" + accel)
 
@@ -532,15 +534,17 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             label = Kind.accelerated_name
             view_actions.append((action, None, label, None, None, i))
         current = browsers.index(config.get("memory", "browser"))
+        def action_callback(view_action, current):
+            self.select_browser(view_action, current, library, player)
         ag.add_radio_actions(
-            view_actions, current, self.select_browser,
-            (library, player))
+            view_actions, current, action_callback,
+            None)
 
         for Kind in browsers.browsers:
             if not Kind.in_menu: continue
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
-            act = gtk.Action(action, label, None, None)
+            act = Gtk.Action(action, label, None, None)
             act.connect_object('activate', LibraryBrowser, Kind, library)
             ag.add_action_with_accel(act, None)
 
@@ -551,7 +555,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
                           "<menuitem action='DebugReload'/>"
                           "<menuitem action='DebugCauseError'/>")
 
-        self.ui = gtk.UIManager()
+        self.ui = Gtk.UIManager()
         self.ui.insert_action_group(ag, -1)
         menustr = const.MENU % {"browsers": browsers.BrowseLibrary(),
                                 "views": browsers.ViewBrowser(),
@@ -583,7 +587,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             config.set("browsers", key, str(paned.get_relative()))
 
     def select_browser(self, activator, current, library, player, restore=False):
-        if isinstance(current, gtk.RadioAction):
+        if isinstance(current, Gtk.RadioAction):
             current = current.get_current_value()
         Browser = browsers.get(current)
         config.set("memory", "browser", Browser.__name__)
@@ -647,10 +651,10 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
     def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
 
-        if paused: key = gtk.STOCK_MEDIA_PLAY
-        else: key = gtk.STOCK_MEDIA_PAUSE
-        text = gtk.stock_lookup(key)[1]
-        menu.get_image().set_from_stock(key, gtk.ICON_SIZE_MENU)
+        if paused: key = Gtk.STOCK_MEDIA_PLAY
+        else: key = Gtk.STOCK_MEDIA_PAUSE
+        text = Gtk.stock_lookup(key).stock_id
+        menu.get_image().set_from_stock(key, Gtk.IconSize.MENU)
         menu.set_label(text)
         menu.set_use_underline(True)
 
@@ -704,9 +708,12 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             width, height = self.get_size()
             height = self.size_request()[1]
             self.resize(width, height)
-            self.set_geometry_hints(None, max_height=height, max_width=32000)
+            # FIXME: GIPORT
+            # self.set_geometry_hints(None, max_height=height, max_width=32000)
         else:
-            self.set_geometry_hints(None, max_height=-1, max_width=-1)
+            # FIXME: GIPORT
+            # self.set_geometry_hints(None, max_height=-1, max_width=-1)
+            pass
 
     def showhide_playlist(self, toggle):
         self.song_scroller.set_property('visible', toggle.get_active())
@@ -757,7 +764,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             # We need to wait until the browser has finished
             # scrolling/filling and the songlist is ready.
             # Not perfect, but works for now.
-            gobject.idle_add(jump_to, song, priority=gobject.PRIORITY_LOW)
+            GObject.idle_add(jump_to, song, priority=GObject.PRIORITY_LOW)
 
     def __next_song(self, *args): player.playlist.next()
     def __previous_song(self, *args): player.playlist.previous()
@@ -801,7 +808,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
     def open_location(self, action):
         name = GetStringDialog(self, _("Add a Location"),
             _("Enter the location of an audio file:"),
-            okbutton=gtk.STOCK_ADD).run()
+            okbutton=Gtk.STOCK_ADD).run()
         if name:
             if not util.uri_is_valid(name):
                 ErrorMessage(
@@ -823,7 +830,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
 
         if action.get_name() == "AddFolders":
             chooser = FolderChooser(self, _("Add Music"), self.last_dir)
-            cb = gtk.CheckButton(_("Watch this folder for new songs"))
+            cb = Gtk.CheckButton(_("Watch this folder for new songs"))
             cb.set_active(not config.get("settings", "scan"))
             cb.show()
             chooser.set_extra_widget(cb)
@@ -869,7 +876,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
         menu = self.songlist.Menu(header, self.browser, self.__library)
         if menu is not None:
             return self.songlist.popup_menu(menu, 0,
-                    gtk.get_current_event_time())
+                    Gtk.get_current_event_time())
 
     def __current_song_prop(self, *args):
         song = player.playlist.song

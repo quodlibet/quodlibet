@@ -8,7 +8,7 @@
 import datetime
 import time
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GObject, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -58,7 +58,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             max_width = -1
             width = self.get_fixed_width()
             for text, pad, cell_pad in self._text:
-                self._label.set_text(text)
+                self._label.set_text(text, -1)
                 new_width = self._label.get_pixel_size()[0] + pad +  cell_pad
                 if new_width > max_width:
                     max_width = new_width
@@ -278,15 +278,17 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('drag-data-received', self.__drag_data_received, library)
 
-        self.set_search_equal_func(self.__search_func)
+        self.set_search_equal_func(self.__search_func, None)
 
         self.accelerators = Gtk.AccelGroup()
         key, mod = Gtk.accelerator_parse("<alt>Return")
-        self.accelerators.connect_group(
-            key, mod, 0, lambda *args: self.__song_properties(librarian))
+        # FIXME: GIPORT
+        #self.accelerators.connect_group(
+        #    key, mod, 0, lambda *args: self.__song_properties(librarian))
         key, mod = Gtk.accelerator_parse("<control>I")
-        self.accelerators.connect_group(
-            key, mod, 0, lambda *args: self.__information(librarian))
+        # FIXME: GIPORT
+        #self.accelerators.connect_group(
+        #    key, mod, 0, lambda *args: self.__information(librarian))
 
         self.connect('destroy', self.__destroy)
 
@@ -305,6 +307,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def enable_drop(self, by_row=True):
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
         self.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets,
             Gdk.DragAction.COPY|Gdk.DragAction.MOVE)
@@ -315,6 +318,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def disable_drop(self):
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
         self.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         self.drag_dest_unset()

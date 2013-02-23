@@ -31,10 +31,10 @@ def GStreamerSink(pipeline):
         pipeline = "gconfaudiosink profile=music"
 
     try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
-    except gobject.GError:
+    except GObject.GError:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
         try: pipe = [gst.parse_launch("autoaudiosink")]
-        except gobject.GError: pipe = None
+        except GObject.GError: pipe = None
         else: pipeline = "autoaudiosink"
 
     if pipe:
@@ -116,17 +116,17 @@ class GStreamerPluginHandler(object):
             plugin.update_element(self.__elements[plugin])
 
 
-class DeviceComboBox(gtk.ComboBox):
+class DeviceComboBox(Gtk.ComboBox):
     """A ComboBox that is prefilled with all possible devices
     of the pipeline."""
 
     DEVICE, NAME = range(2)
 
     def __init__(self):
-        model = gtk.ListStore(str, str)
+        model = Gtk.ListStore(str, str)
         super(DeviceComboBox, self).__init__(model)
 
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         self.pack_start(cell, True)
         self.set_cell_data_func(cell, self.__draw_device)
 
