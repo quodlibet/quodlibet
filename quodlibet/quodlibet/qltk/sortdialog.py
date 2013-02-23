@@ -35,7 +35,7 @@ class SortCriterionBox(Gtk.ComboBox):
     ]
 
     def __init__(self):
-        super(SortCriterionBox, self).__init__(Gtk.TreeStore(str, str))
+        super(SortCriterionBox, self).__init__(model=Gtk.TreeStore(str, str))
 
         render = Gtk.CellRendererText()
         self.pack_start(render, True)
@@ -90,9 +90,7 @@ class SortCriterionChooser(Gtk.Table):
 
 class SortDialog(Gtk.Dialog):
 
-    def sort_keys(self):
-        """This returns a list of tuples (sorting key, order)."""
-        return [(cc.tag, cc.order) for cc in self.choosers if cc.tag]
+    sort_keys = []
 
     def __add_criterion(self, *args):
         vbox = self.box
@@ -138,5 +136,6 @@ class SortDialog(Gtk.Dialog):
 
     def run(self):
         resp = super(SortDialog, self).run()
+        self.sort_key = [(cc.tag, cc.order) for cc in self.choosers if cc.tag]
         self.destroy()
         return resp

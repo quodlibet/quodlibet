@@ -446,7 +446,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         sd = SortDialog(qltk.get_top_parent(self))
         if sd.run() == Gtk.ResponseType.OK:
             # sort_keys yields a list of pairs (sort header, order)
-            headers = sd.sort_keys()
+            headers = sd.sort_key
             if not headers:
                 return
             # from this, we have to construct a comparison function for sort
@@ -858,7 +858,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             (_("_File Headers"), fileinfo),
             (_("_Production Headers"), copyinfo),
         ]:
-            item = Gtk.MenuItem(name)
+            item = Gtk.MenuItem(name, use_underline=True)
             item.show()
             menu.append(item)
             submenu = Gtk.Menu()
@@ -870,12 +870,12 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         sep.show()
         menu.append(sep)
 
-        b = Gtk.MenuItem(_("Custom _Sort..."))
+        b = Gtk.MenuItem(_("Custom _Sort..."), use_underline=True)
         menu.append(b)
         b.show()
         b.connect('activate', self.__custom_sort)
 
-        custom = Gtk.MenuItem(_("_Customize Headers..."))
+        custom = Gtk.MenuItem(_("_Customize Headers..."), use_underline=True)
         custom.show()
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)
@@ -906,7 +906,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             return
 
         if event:
-            self.__getmenu(column).popup(None, None, None, event.button, time)
+            self.__getmenu(column).popup(None, None, None, None, event.button, time)
             return True
 
         widget = column.get_widget()
