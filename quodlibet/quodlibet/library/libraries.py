@@ -108,6 +108,9 @@ class Library(gobject.GObject, DictMixin):
     def iterkeys(self):
         return self._contents.iterkeys()
 
+    def itervalues(self):
+        return self._contents.itervalues()
+
     def __len__(self):
         """The number of items in the library."""
         return len(self._contents)
@@ -130,6 +133,9 @@ class Library(gobject.GObject, DictMixin):
 
     def keys(self):
         return self._contents.keys()
+
+    def values(self):
+        return self._contents.values()
 
     def _load_item(self, item):
         """Load (add) an item into this library"""
