@@ -179,12 +179,7 @@ set_orders([])
 
 class PlayOrder(Gtk.ComboBoxText):
     def __init__(self, model, player):
-        super(PlayOrder, self).__init__(model=Gtk.ListStore(str))
-        cell = Gtk.CellRendererText()
-        cell.props.xpad = 1
-        cell.props.ypad = 0
-        self.pack_start(cell, True)
-        self.add_attribute(cell, 'text', 0)
+        super(PlayOrder, self).__init__()
 
         self.__plugins = []
         if PluginManager.instance:
