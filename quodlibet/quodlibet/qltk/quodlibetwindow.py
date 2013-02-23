@@ -653,7 +653,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         if paused: key = Gtk.STOCK_MEDIA_PLAY
         else: key = Gtk.STOCK_MEDIA_PAUSE
-        text = Gtk.stock_lookup(key).stock_id
+        text = Gtk.stock_lookup(key).label
         menu.get_image().set_from_stock(key, Gtk.IconSize.MENU)
         menu.set_label(text)
         menu.set_use_underline(True)
