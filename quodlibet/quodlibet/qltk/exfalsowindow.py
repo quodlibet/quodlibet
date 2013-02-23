@@ -96,9 +96,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         nb.show()
 
         for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
-            widget = Page(self, self.__library)
-            nb.append_page(widget, None)
-            nb.set_tab_label_text(widget, widget.title)
+            nb.append_page(Page(self, self.__library))
 
         align = Alignment(nb, top=3)
         align.show()

@@ -79,25 +79,34 @@ class Notebook(Gtk.Notebook):
     __gsignals__ = {'size-allocate': 'override'}
 
     def do_size_allocate(self, alloc):
-        ywidth = self.style.ythickness
-        xwidth = self.style.xthickness
+        ctx = self.get_style_context()
+        border = ctx.get_border(Gtk.StateFlags.NORMAL)
 
-        parent = self.get_parent_window()
-        if parent:
-            width, height = parent.get_size()
-            if alloc.y + alloc.height == height:
-                alloc.height += ywidth
+        toplevel = self.get_toplevel()
+        top_window = toplevel.get_window()
+        window = self.get_window()
 
-            if alloc.x + alloc.width == width:
-                alloc.width += xwidth
-        else:
-            gobject.idle_add(self.queue_resize)
+        if not window:
+            GObject.idle_add(self.queue_resize)
+            return Gtk.Notebook.do_size_allocate(self, alloc)
 
-        if alloc.x == 0:
-            alloc.x -= xwidth
-            alloc.width += xwidth
+        dummy, x1, y1 = top_window.get_origin()
+        dummy, x2, y2 = window.get_origin()
+        dx = x2 - x1
+        dy = y2 - y1
 
-        return gtk.Notebook.do_size_allocate(self, alloc)
+        width, height = toplevel.get_size()
+        if alloc.y + alloc.height + dy == height:
+            alloc.height += border.bottom
+
+        if alloc.x + alloc.width + dx == width:
+            alloc.width += border.right
+
+        if alloc.x + dx == 0:
+            alloc.x -= border.left
+            alloc.width += border.left
+
+        return Gtk.Notebook.do_size_allocate(self, alloc)
 
     def append_page(self, page, label=None):
         if label is None:
@@ -105,12 +114,9 @@ class Notebook(Gtk.Notebook):
             except AttributeError:
                 raise TypeError("no page.title and no label given")
 
-        if not isinstance(label, gtk.Widget):
-            label = gtk.Label(label)
+        if not isinstance(label, Gtk.Widget):
+            label = Gtk.Label(label)
         super(Notebook, self).append_page(page, label)
-
-# FIXME: port Notebook
-Notebook = Gtk.Notebook
 
 
 def Frame(label, child=None):
