@@ -467,6 +467,8 @@ class Playlist(Collection, Iterable):
                 line = util.fsnative(line.rstrip())
                 if line in library:
                     self.songs.append(library[line])
+                elif library and library.masked(line):
+                    self.songs.append(line)
         except IOError:
             if self.name: self.write()
 
@@ -498,15 +500,25 @@ class Playlist(Collection, Iterable):
         """
         changed = False
         for song in songs:
-            while song in self.songs:
-                print_d("Removing \"%s\" from playlist \"%s\"..."
-                        % (song["~filename"], self.name))
-                self.songs.remove(song)
-                if leave_dupes:
-                    changed = True
-                    break
+            # TODO: document the "library.masked" business
+            if library.masked(song("~filename")):
+                while True:
+                    try:
+                        self[self.index(song)] = song("~filename")
+                    except ValueError:
+                        break
+                    else:
+                        changed = True
             else:
-                changed = True
+                while song in self.songs:
+                    print_d("Removing \"%s\" from playlist \"%s\"..."
+                            % (song["~filename"], self.name))
+                    self.songs.remove(song)
+                    if leave_dupes:
+                        changed = True
+                        break
+                else:
+                    changed = True
             # Evict song from cache entirely
             try:
                 del self._song_map_cache[song]
@@ -515,6 +527,7 @@ class Playlist(Collection, Iterable):
         return changed
 
     def has_songs(self, songs):
+        # TODO(rm): consider the "library.masked" business
         some, all = False, True
         for song in songs:
             found = song in self.songs
@@ -533,7 +546,8 @@ class Playlist(Collection, Iterable):
         basename = self.quote(self.name)
         f = file(os.path.join(self.dir, basename), "w")
         for song in self:
-            f.write(util.fsencode(song("~filename")) + "\n")
+            try: f.write(util.fsencode(song("~filename")) + "\n")
+            except TypeError: f.write(song + "\n")
         f.close()
 
     def format(self):
