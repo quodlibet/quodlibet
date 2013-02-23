@@ -40,9 +40,9 @@ class FileSystem(Browser, Gtk.HBox):
 
     TARGET_QL, TARGET_EXT = range(1,3)
 
+    @classmethod
     def __added(klass, library, songs):
         klass.__library.remove(songs)
-    __added = classmethod(__added)
 
     @classmethod
     def init(klass, library):
@@ -66,7 +66,10 @@ class FileSystem(Browser, Gtk.HBox):
         dt = DirectoryTree(folders=folders)
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_QL),
                    ("text/uri-list", 0, self.TARGET_EXT)]
-        dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
+        dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,
+                           targets, Gdk.DragAction.COPY)
         dt.connect('drag-data-get', self.__drag_data_get)
 
         sel = dt.get_selection()
@@ -76,10 +79,10 @@ class FileSystem(Browser, Gtk.HBox):
             dt.connect('row-activated', lambda *a: self.emit("activated"))
         sw.add(dt)
         self.pack_start(sw, True, True, 0)
+
         self.show_all()
 
-    @property
-    def child(self):
+    def get_child(self):
         return self.get_children()[0].get_child()
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
@@ -139,7 +142,9 @@ class FileSystem(Browser, Gtk.HBox):
             return not bool(paths)
         first = []
         self.get_child().get_model().foreach(select, (paths, first))
-        if first: self.get_child().scroll_to_cell(first[0], None, True, 0.5)
+        # FIXME: PGIPORT .. segfaults
+        #if first:
+        #    self.get_child().scroll_to_cell(first[0], None, True, 0.5)
 
     def save(self):
         model, rows = self.get_child().get_selection().get_selected_rows()
@@ -201,12 +206,12 @@ class FileSystem(Browser, Gtk.HBox):
         yield songs
 
     def __songs_selected(self, view):
-        if self.window:
-            self.window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+        if self.get_window():
+            self.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         for songs in self.__find_songs(view.get_selection()):
             yield True
-        if self.window:
-            self.window.set_cursor(None)
+        if self.get_window():
+            self.get_window().set_cursor(None)
         self.emit('songs-selected', songs, None)
 
 browsers = [FileSystem]
