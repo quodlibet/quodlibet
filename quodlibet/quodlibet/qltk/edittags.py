@@ -53,7 +53,8 @@ class AudioFileGroup(dict):
                 return ", ".join([d, m])
 
         def safenicestr(self):
-            if self.shared and self.complete: return str(self)
+            if self.shared and self.complete:
+                return util.escape(self.encode("utf-8"))
             elif self.shared:
                 return "\n".join(['%s<i> (%s)</i>' % (s, self.paren())
                                   for s in str(self).split("\n")])
@@ -211,7 +212,6 @@ class AddTagDialog(Gtk.Dialog):
         super(AddTagDialog, self).__init__(
             _("Add a Tag"), qltk.get_top_parent(parent))
         self.set_border_width(6)
-        self.set_has_separator(False)
         self.set_resizable(False)
         self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         add = self.add_button(Gtk.STOCK_ADD, Gtk.ResponseType.OK)
@@ -287,7 +287,7 @@ class AddTagDialog(Gtk.Dialog):
         add.set_sensitive(valid)
         if valid:
             invalid.hide()
-            box.set_tooltip_text(None)
+            box.set_tooltip_text("")
         else:
             invalid.show()
             box.set_tooltip_text(fmt.error)
@@ -517,7 +517,7 @@ class EditTags(Gtk.VBox):
 
             if menu.get_children(): menu.append(Gtk.SeparatorMenuItem())
 
-        b = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, Gtk.IconSize.MENU)
+        b = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_REMOVE, None)
         b.connect('activate', self.__remove_tag, view)
         keyval, mod = Gtk.accelerator_parse("Delete")
         menu.__accels = Gtk.AccelGroup()

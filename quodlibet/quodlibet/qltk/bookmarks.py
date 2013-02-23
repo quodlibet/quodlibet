@@ -59,13 +59,13 @@ class EditBookmarksPane(Gtk.VBox):
         sw.add(RCMHintedTreeView(model))
 
         render = Gtk.CellRendererText()
-        def cdf(column, cell, model, iter):
+        def cdf(column, cell, model, iter, data):
             if model[iter][0] < 0: cell.set_property('text', _("N/A"))
             else: cell.set_property('text', util.format_time(model[iter][0]))
         render.set_property('editable', True)
         render.connect('edited', self.__edit_time, model)
         col = Gtk.TreeViewColumn(_("Time"), render)
-        col.set_cell_data_func(render, cdf)
+        col.set_cell_data_func(render, cdf, None)
         sw.get_child().append_column(col)
 
         render = Gtk.CellRendererText()

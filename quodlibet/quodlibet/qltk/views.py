@@ -562,7 +562,8 @@ class RCMTreeView(BaseView):
             'button-press-event', RCMTreeView.__button_press, self)
 
     def __button_press(self, event):
-        if event.button == 3: return self.__check_popup(event)
+        if event.button == 3:
+            return self.__check_popup(event)
 
     def __check_popup(self, event):
         x, y = map(int, [event.x, event.y])
@@ -573,7 +574,7 @@ class RCMTreeView(BaseView):
         if not selection.path_is_selected(path):
             self.set_cursor(path, col, 0)
         else:
-            col.focus_cell(col.get_cell_renderers()[0])
+            col.focus_cell(col.get_cells()[0])
         self.__position_at_mouse = True
         self.emit('popup-menu')
         return True
@@ -604,7 +605,7 @@ class RCMTreeView(BaseView):
         else:
             pos_func = None
 
-        menu.popup(None, None, pos_func, button, time)
+        menu.popup(None, None, pos_func, None, button, time)
         return True
 
     def __popup_position(self, menu):

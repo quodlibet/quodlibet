@@ -65,7 +65,7 @@ class _KeyValueEditor(qltk.Window):
         render = Gtk.CellRendererText()
         render.props.ellipsize = Pango.EllipsizeMode.END
         column = Gtk.TreeViewColumn("", render)
-        column.set_cell_data_func(render, self.__cdf)
+        column.set_cell_data_func(render, self.__cdf, None)
         view.append_column(column)
 
         sw = Gtk.ScrolledWindow()
@@ -128,7 +128,7 @@ class _KeyValueEditor(qltk.Window):
             name.set_text(model[iter][1])
             value.set_text(model[iter][0])
 
-    def __cdf(self, column, cell, model, iter):
+    def __cdf(self, column, cell, model, iter, data):
         row = model[iter]
         content, name = row[0], row[1]
         cell.set_property('text', '%s\n\t%s' % (name, content))
