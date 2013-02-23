@@ -26,7 +26,7 @@ class EntryWordCompletion(Gtk.EntryCompletion):
         self.set_match_func(self.__match_filter, None)
         self.connect('match-selected', self.__match_selected)
 
-    def __match_filter(self, completion, entrytext, iter):
+    def __match_filter(self, completion, entrytext, iter, data):
         model = completion.get_model()
         entry = self.get_entry()
         entrytext = entrytext.decode('utf-8')

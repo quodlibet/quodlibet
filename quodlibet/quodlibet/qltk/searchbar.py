@@ -93,8 +93,9 @@ class SearchBarBox(Gtk.HBox):
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<ctrl>L")
-            accel_group.connect_group(key, mod, 0,
-                    lambda *x: entry.mnemonic_activate(True))
+            # FIXME: GIPORT
+            #accel_group.connect_group(key, mod, 0,
+            #        lambda *x: entry.mnemonic_activate(True))
 
         self.show_all()
 
@@ -204,7 +205,7 @@ class LimitSearchBarBox(SearchBarBox):
             label.set_use_underline(True)
             self.pack_start(limit, True, True, 0)
 
-            self.__weight = Gtk.CheckButton(_("_Weight"))
+            self.__weight = Gtk.CheckButton(_("_Weight"), use_underline=True)
             self.pack_start(self.__weight, True, True, 0)
             map(lambda w: w.show(), self.get_children())
 
