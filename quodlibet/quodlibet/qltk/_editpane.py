@@ -15,9 +15,9 @@ from quodlibet.plugins import PluginManager
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 
-class EditingPluginHandler(gobject.GObject):
+class EditingPluginHandler(GObject.GObject):
     __gsignals__ = {
-        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        "changed": (GObject.SignalFlags.RUN_LAST, None, ())
         }
 
     Kind = None
@@ -44,7 +44,7 @@ class EditingPluginHandler(gobject.GObject):
 
 class FilterCheckButton(ConfigCheckButton):
     __gsignals__ = {
-        "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        "preview": (GObject.SignalFlags.RUN_LAST, None, ())
         }
 
     def __init__(self):
@@ -62,7 +62,7 @@ class FilterCheckButton(ConfigCheckButton):
         return (self._order, type(self).__name__) < \
             (other._order, type(other).__name__)
 
-class EditPane(gtk.VBox):
+class EditPane(Gtk.VBox):
     @classmethod
     def init_plugins(cls):
         PluginManager.instance.register_handler(cls.handler)
@@ -70,53 +70,54 @@ class EditPane(gtk.VBox):
     def __init__(self, cbes_filename, cbes_defaults):
         super(EditPane, self).__init__(spacing=6)
         self.set_border_width(12)
-        hbox = gtk.HBox(spacing=12)
+        hbox = Gtk.HBox(spacing=12)
         self.combo = ComboBoxEntrySave(cbes_filename, cbes_defaults,
             title=_("Path Patterns"),
             edit_title=_("Edit saved patterns..."))
-        hbox.pack_start(self.combo)
-        self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
-        hbox.pack_start(self.preview, expand=False)
-        self.pack_start(hbox, expand=False)
-        self.combo.child.connect('changed', self._changed)
+        hbox.pack_start(self.combo, True, True, 0)
+        self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
+        hbox.pack_start(self.preview, False, True, 0)
+        self.pack_start(hbox, False, True, 0)
+        self.combo.get_child().connect('changed', self._changed)
 
-        model = gtk.ListStore(object, str, str)
-        self.view = gtk.TreeView(model)
+        model = Gtk.ListStore(object, str, str)
+        self.view = Gtk.TreeView(model)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(self.view)
-        self.pack_start(sw)
+        self.pack_start(sw, True, True, 0)
 
         filters = [Kind() for Kind in self.FILTERS]
         filters.sort()
-        vbox = gtk.VBox()
-        map(vbox.pack_start, filters)
-        self.pack_start(vbox, expand=False)
+        vbox = Gtk.VBox()
+        for f in filters:
+            vbox.pack_start(f, True, True, 0)
+        self.pack_start(vbox, False, True, 0)
 
-        hb = gtk.HBox()
-        expander = gtk.Expander(label=_("_More options..."))
+        hb = Gtk.HBox()
+        expander = Gtk.Expander(label=_("_More options..."))
         expander.set_use_underline(True)
-        adj = gtk.Alignment(yalign=1.0, xscale=1.0)
+        adj = Gtk.Alignment(yalign=1.0, xscale=1.0)
         adj.add(expander)
-        hb.pack_start(adj)
+        hb.pack_start(adj, True, True, 0)
 
         # Save button
-        self.save = gtk.Button(stock=gtk.STOCK_SAVE)
-        bbox = gtk.HButtonBox()
-        bbox.set_layout(gtk.BUTTONBOX_END)
-        bbox.pack_start(self.save)
-        hb.pack_start(bbox, expand=False)
-        self.pack_start(hb, expand=False)
+        self.save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        bbox = Gtk.HButtonBox()
+        bbox.set_layout(Gtk.ButtonBoxStyle.END)
+        bbox.pack_start(self.save, True, True, 0)
+        hb.pack_start(bbox, False, True, 0)
+        self.pack_start(hb, False, True, 0)
 
         for filt in filters:
-            filt.connect_object('preview', gtk.Button.clicked, self.preview)
+            filt.connect_object('preview', Gtk.Button.clicked, self.preview)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
 
         self.__filters = filters
         self.__plugins = []
@@ -124,7 +125,7 @@ class EditPane(gtk.VBox):
         self.handler.connect("changed", self.__refresh_plugins, vbox, expander)
 
         sw.add_with_viewport(vbox)
-        self.pack_start(sw, expand=False)
+        self.pack_start(sw, False, True, 0)
 
         expander.connect("notify::expanded", self.__notify_expanded, sw)
         expander.set_expanded(False)
@@ -152,16 +153,16 @@ class EditPane(gtk.VBox):
         del self.__plugins[:]
 
         for f in instances:
-            try: vbox.pack_start(f)
+            try: vbox.pack_start(f, True, True, 0)
             except:
                 util.print_exc()
                 f.destroy()
             else:
                 try: f.connect_object(
-                    'preview', gtk.Button.clicked, self.preview)
+                    'preview', Gtk.Button.clicked, self.preview)
                 except:
                     try: f.connect_object(
-                        'changed', self._changed, self.combo.child)
+                        'changed', self._changed, self.combo.get_child())
                     except:
                         util.print_exc()
                     else: self.__plugins.append(f)

@@ -8,7 +8,7 @@ def init():
     def _override_exceptions():
         print_d("Enabling custom exception handler.")
         sys.excepthook = ExceptionDialog.excepthook
-    gobject.idle_add(_override_exceptions)
+    GObject.idle_add(_override_exceptions)
 
 def cause_error(*args):
     raise Exception

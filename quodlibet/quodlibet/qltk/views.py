@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, Gdk, GObject, Pango
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel
@@ -499,15 +499,15 @@ class MultiDragTreeView(BaseView):
         if ((selection.path_is_selected(path)
             and not (event.get_state() & (Gdk.ModifierType.CONTROL_MASK|Gdk.ModifierType.SHIFT_MASK)))):
             self.__pending_event = [x, y]
-            selection.set_select_function(lambda *args: False)
+            selection.set_select_function(lambda *args: False, None)
         elif event.type == Gdk.EventType.BUTTON_PRESS:
             self.__pending_event = None
-            selection.set_select_function(lambda *args: True)
+            selection.set_select_function(lambda *args: True, None)
 
     def __button_release(self, event):
         if self.__pending_event:
             selection = self.get_selection()
-            selection.set_select_function(lambda *args: True)
+            selection.set_select_function(lambda *args: True, None)
             oldevent = self.__pending_event
             self.__pending_event = None
             if oldevent != [event.x, event.y]: return True
@@ -642,6 +642,8 @@ class HintedTreeView(BaseView):
 
     def __init__(self, *args):
         super(HintedTreeView, self).__init__(*args)
+        # FIXME: GIPORT port to GTK3
+        return
         if not config.state('disable_hints'):
             try: tvh = HintedTreeView.hints
             except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()

@@ -116,15 +116,15 @@ class AudioFileGroup(dict):
             can = min([song.can_change(k) for song in self.songs])
         return can
 
-class SplitValues(gtk.ImageMenuItem):
+class SplitValues(Gtk.ImageMenuItem):
     tags = False
     needs = []
     _order = 0.0
 
     def __init__(self, tag, value):
         super(SplitValues, self).__init__(_("Split into _Multiple Values"))
-        self.set_image(gtk.image_new_from_stock(
-            gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU))
+        self.set_image(Gtk.Image.new_from_stock(
+            Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
         self.set_sensitive(len(util.split_value(value, spls)) > 1)
@@ -134,30 +134,30 @@ class SplitValues(gtk.ImageMenuItem):
             'utf-8', 'replace').split()
         return [(tag, value) for value in util.split_value(value, spls)]
 
-class SplitDisc(gtk.ImageMenuItem):
+class SplitDisc(Gtk.ImageMenuItem):
     tags = ["album"]
     needs = ["discnumber"]
     _order = 0.5
 
     def __init__(self, tag, value):
         super(SplitDisc, self).__init__(_("Split Disc out of _Album"))
-        self.set_image(gtk.image_new_from_stock(
-            gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU))
+        self.set_image(Gtk.Image.new_from_stock(
+            Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         self.set_sensitive(util.split_album(value)[1] is not None)
 
     def activated(self, tag, value):
         album, disc = util.split_album(value)
         return [(tag, album), ("discnumber", disc)]
 
-class SplitTitle(gtk.ImageMenuItem):
+class SplitTitle(Gtk.ImageMenuItem):
     tags = ["title"]
     needs = ["version"]
     _order = 0.5
 
     def __init__(self, tag, value):
         super(SplitTitle, self).__init__(_("Split _Version out of Title"))
-        self.set_image(gtk.image_new_from_stock(
-            gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU))
+        self.set_image(Gtk.Image.new_from_stock(
+            Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
         self.set_sensitive(bool(util.split_title(value, spls)[1]))
@@ -168,14 +168,14 @@ class SplitTitle(gtk.ImageMenuItem):
         title, versions = util.split_title(value, spls)
         return [(tag, title)] + [("version", v) for v in versions]
 
-class SplitPerson(gtk.ImageMenuItem):
+class SplitPerson(Gtk.ImageMenuItem):
     tags = ["artist"]
     _order = 0.5
 
     def __init__(self, tag, value):
         super(SplitPerson, self).__init__(self.title)
-        self.set_image(gtk.image_new_from_stock(
-            gtk.STOCK_FIND_AND_REPLACE, gtk.ICON_SIZE_MENU))
+        self.set_image(Gtk.Image.new_from_stock(
+            Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
         self.set_sensitive(bool(util.split_people(value, spls)[1]))
@@ -205,7 +205,7 @@ class SplitOriginalArtistFromTitle(SplitPerson):
     title = _("Split _Originalartist out of Title")
 
 
-class AddTagDialog(gtk.Dialog):
+class AddTagDialog(Gtk.Dialog):
 
     def __init__(self, parent, can_change, library):
         super(AddTagDialog, self).__init__(
@@ -213,11 +213,11 @@ class AddTagDialog(gtk.Dialog):
         self.set_border_width(6)
         self.set_has_separator(False)
         self.set_resizable(False)
-        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        add = self.add_button(gtk.STOCK_ADD, gtk.RESPONSE_OK)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        add = self.add_button(Gtk.STOCK_ADD, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
-        self.set_default_response(gtk.RESPONSE_OK)
-        table = gtk.Table(2, 2)
+        self.set_default_response(Gtk.ResponseType.OK)
+        table = Gtk.Table(2, 2)
         table.set_row_spacings(12)
         table.set_col_spacings(6)
         table.set_border_width(6)
@@ -225,7 +225,7 @@ class AddTagDialog(gtk.Dialog):
         self.__tag = (TagsComboBoxEntry() if can_change == True
                       else TagsComboBox(can_change))
 
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_alignment(0.0, 0.5)
         label.set_text(_("_Tag:"))
         label.set_use_underline(True)
@@ -233,26 +233,26 @@ class AddTagDialog(gtk.Dialog):
         table.attach(label, 0, 1, 0, 1)
         table.attach(self.__tag, 1, 2, 0, 1)
 
-        self.__val = gtk.Entry()
+        self.__val = Gtk.Entry()
         self.__val.set_completion(LibraryValueCompletion("", library))
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_text(_("_Value:"))
         label.set_alignment(0.0, 0.5)
         label.set_use_underline(True)
         label.set_mnemonic_widget(self.__val)
-        valuebox = gtk.EventBox()
+        valuebox = Gtk.EventBox()
         table.attach(label, 0, 1, 1, 2)
         table.attach(valuebox, 1, 2, 1, 2)
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         valuebox.add(hbox)
-        hbox.pack_start(self.__val)
+        hbox.pack_start(self.__val, True, True, 0)
         hbox.set_spacing(6)
-        invalid = gtk.image_new_from_stock(
-            gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        hbox.pack_start(invalid)
+        invalid = Gtk.Image.new_from_stock(
+            Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR)
+        hbox.pack_start(invalid, True, True, 0)
 
-        self.vbox.pack_start(table)
-        self.child.show_all()
+        self.vbox.pack_start(table, True, True, 0)
+        self.get_child().show_all()
         invalid.hide()
 
         for entry in [self.__tag, self.__val]:
@@ -262,8 +262,8 @@ class AddTagDialog(gtk.Dialog):
         self.__set_value_completion(self.__tag, library)
 
         if can_change == True:
-            self.__tag.child.connect_object(
-                'activate', gtk.Entry.grab_focus, self.__val)
+            self.__tag.get_child().connect_object(
+                'activate', Gtk.Entry.grab_focus, self.__val)
 
     def __set_value_completion(self, tag, library):
         completion = self.__val.get_completion()
@@ -317,7 +317,7 @@ class EditTagsPluginHandler(EditingPluginHandler):
     from quodlibet.plugins.editing import EditTagsPlugin
     Kind = EditTagsPlugin
 
-class EditTags(gtk.VBox):
+class EditTags(Gtk.VBox):
     _SAVE_BUTTON_KEY = 'ql-save'
     _REVERT_BUTTON_KEY = 'ql-revert'
     # Translators: translate only to override the text for the tag "save" button
@@ -335,40 +335,40 @@ class EditTags(gtk.VBox):
         self.title = _("Edit Tags")
         self.set_border_width(12)
 
-        model = gtk.ListStore(str, str, bool, bool, bool, str, bool, str)
+        model = Gtk.ListStore(str, str, bool, bool, bool, str, bool, str)
         view = RCMHintedTreeView(model)
         selection = view.get_selection()
-        render = gtk.CellRendererPixbuf()
+        render = Gtk.CellRendererPixbuf()
         column = TreeViewColumn(_("Write"), render)
 
         style = view.get_style()
         pixbufs = [ style.lookup_icon_set(stock)
-                    .render_icon(style, gtk.TEXT_DIR_NONE, state,
-                        gtk.ICON_SIZE_MENU, view, None)
-                    for state in (gtk.STATE_INSENSITIVE, gtk.STATE_NORMAL)
-                        for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
+                    .render_icon(style, Gtk.TextDirection.NONE, state,
+                        Gtk.IconSize.MENU, view, None)
+                    for state in (Gtk.StateType.INSENSITIVE, Gtk.StateType.NORMAL)
+                        for stock in (Gtk.STOCK_EDIT, Gtk.STOCK_DELETE) ]
         def cdf_write(col, rend, model, iter, (write, delete)):
             row = model[iter]
             if row[CANEDIT]:
                 rend.set_property('stock-id', None)
                 rend.set_property('pixbuf', pixbufs[2*row[EDITED]+row[DELETED]])
             else:
-                rend.set_property('stock-id', gtk.STOCK_DIALOG_AUTHENTICATION)
+                rend.set_property('stock-id', Gtk.STOCK_DIALOG_AUTHENTICATION)
         column.set_cell_data_func(render, cdf_write, (2, 4))
         view.append_column(column)
 
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         column = TreeViewColumn(
             _('Tag'), render, text=0, editable=3, strikethrough=4)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render.set_property('editable', True)
         render.connect('edited', self.__edit_tag_name, model)
         render.connect(
             'editing-started', self.__tag_editing_started, model, library)
         view.append_column(column)
 
-        render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.set_property('editable', True)
         render.connect('edited', self.__edit_tag, model)
         render.connect(
@@ -376,53 +376,53 @@ class EditTags(gtk.VBox):
         render.markup = 1
         column = TreeViewColumn(
             _('Value'), render, markup=1, editable=3, strikethrough=4)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         view.append_column(column)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
-        self.pack_start(sw)
+        self.pack_start(sw, True, True, 0)
 
         # Add and Remove [tags] buttons
-        buttonbox = gtk.HBox(spacing=18)
-        bbox1 = gtk.HButtonBox()
+        buttonbox = Gtk.HBox(spacing=18)
+        bbox1 = Gtk.HButtonBox()
         bbox1.set_spacing(6)
-        bbox1.set_layout(gtk.BUTTONBOX_START)
-        add = gtk.Button(stock=gtk.STOCK_ADD)
+        bbox1.set_layout(Gtk.ButtonBoxStyle.START)
+        add = Gtk.Button(stock=Gtk.STOCK_ADD)
         add.set_focus_on_click(False)
         add.connect('clicked', self.__add_tag, model, library)
-        bbox1.pack_start(add)
+        bbox1.pack_start(add, True, True, 0)
         # Remove button
-        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         remove.set_focus_on_click(False)
         remove.connect('clicked', self.__remove_tag, view)
         remove.set_sensitive(False)
 
-        bbox1.pack_start(remove)
+        bbox1.pack_start(remove, True, True, 0)
 
         # Revert and save buttons
         # Both can have customised translated text (and thus accels)
-        bbox2 = gtk.HButtonBox()
+        bbox2 = Gtk.HButtonBox()
         bbox2.set_spacing(6)
-        bbox2.set_layout(gtk.BUTTONBOX_END)
-        revert = (gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)
+        bbox2.set_layout(Gtk.ButtonBoxStyle.END)
+        revert = (Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
                   if self._REVERT_BUTTON_KEY == self._REVERT_BUTTON_TEXT
-                  else gtk.Button(label=self._REVERT_BUTTON_TEXT))
+                  else Gtk.Button(label=self._REVERT_BUTTON_TEXT))
         revert.set_sensitive(False)
         # Save button.
-        save = (gtk.Button(stock=gtk.STOCK_SAVE)
+        save = (Gtk.Button(stock=Gtk.STOCK_SAVE)
                 if self._SAVE_BUTTON_TEXT == self._SAVE_BUTTON_KEY
-                else gtk.Button(label=self._SAVE_BUTTON_TEXT))
+                else Gtk.Button(label=self._SAVE_BUTTON_TEXT))
         save.set_sensitive(False)
         self.save = save
-        bbox2.pack_start(revert)
-        bbox2.pack_start(save)
+        bbox2.pack_start(revert, True, True, 0)
+        bbox2.pack_start(save, True, True, 0)
 
-        buttonbox.pack_start(bbox1)
-        buttonbox.pack_start(bbox2)
-        self.pack_start(buttonbox, expand=False)
+        buttonbox.pack_start(bbox1, True, True, 0)
+        buttonbox.pack_start(bbox2, True, True, 0)
+        self.pack_start(buttonbox, False, True, 0)
 
         UPDATE_ARGS = [
             view, buttonbox, model, add, [save, revert, remove]]
@@ -442,15 +442,15 @@ class EditTags(gtk.VBox):
         view.connect('button-press-event', self.__button_press)
         view.connect('key-press-event', self.__view_key_press_event)
         selection.connect('changed', self.__tag_select, remove)
-        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         self.show_all()
 
     def __view_key_press_event(self, view, event):
         # We can't use a real accelerator to this because it would
         # interfere with typeahead and row editing.
-        ctrl = event.state & gtk.gdk.CONTROL_MASK
-        keyval_name = gtk.gdk.keyval_name(event.keyval)
-        if event.keyval == gtk.accelerator_parse("Delete")[0]:
+        ctrl = event.get_state() & Gdk.ModifierType.CONTROL_MASK
+        keyval_name = Gdk.keyval_name(event.keyval)
+        if event.keyval == Gtk.accelerator_parse("Delete")[0]:
             self.__remove_tag(view, view)
         elif ctrl and keyval_name == 's':
             # Issue 697: allow Ctrl-s to save.
@@ -481,7 +481,7 @@ class EditTags(gtk.VBox):
         if not replaced: row[EDITED] = row[DELETED] = True
 
     def __popup_menu(self, view, parent):
-        menu = gtk.Menu()
+        menu = Gtk.Menu()
 
         view.ensure_popup_selection()
         model, rows = view.get_selection().get_selected_rows()
@@ -515,14 +515,14 @@ class EditTags(gtk.VBox):
 
                     menu.append(b)
 
-            if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
+            if menu.get_children(): menu.append(Gtk.SeparatorMenuItem())
 
-        b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        b = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, Gtk.IconSize.MENU)
         b.connect('activate', self.__remove_tag, view)
-        keyval, mod = gtk.accelerator_parse("Delete")
-        menu.__accels = gtk.AccelGroup()
+        keyval, mod = Gtk.accelerator_parse("Delete")
+        menu.__accels = Gtk.AccelGroup()
         b.add_accelerator(
-            'activate', menu.__accels, keyval, mod, gtk.ACCEL_VISIBLE)
+            'activate', menu.__accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
         menu.append(b)
 
         menu.show_all()
@@ -531,7 +531,7 @@ class EditTags(gtk.VBox):
         for c in menu.get_children():
             c.set_sensitive(can_change and c.get_property('sensitive'))
         menu.connect('selection-done', lambda m: m.destroy())
-        return view.popup_menu(menu, 3, gtk.get_current_event_time())
+        return view.popup_menu(menu, 3, Gtk.get_current_event_time())
 
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()
@@ -557,7 +557,7 @@ class EditTags(gtk.VBox):
 
         while True:
             resp = add.run()
-            if resp != gtk.RESPONSE_OK: break
+            if resp != Gtk.ResponseType.OK: break
             tag = add.get_tag()
             value = add.get_value()
             if tag in massagers.tags:
@@ -766,9 +766,9 @@ class EditTags(gtk.VBox):
                 if idx >= 0: row[VALUE] = row[VALUE][:idx].strip()
             return True
         elif event.button == 2 and col == view.get_columns()[2]:
-            display = gtk.gdk.display_manager_get().get_default_display()
+            display = Gdk.display_manager_get().get_default_display()
             clipboardname = ["PRIMARY", "CLIPBOARD"][sys.platform == "win32"]
-            clipboard = gtk.Clipboard(display, clipboardname)
+            clipboard = Gtk.Clipboard(display, clipboardname)
             for rend in col.get_cell_renderers():
                 if rend.get_property('editable'):
                     clipboard.request_text(self.__paste, (rend, path[0]))
@@ -826,7 +826,7 @@ class EditTags(gtk.VBox):
                 editable.set_completion(completion)
         except AttributeError:
             pass
-        if isinstance(editable, gtk.Entry):
+        if isinstance(editable, Gtk.Entry):
             editable.set_text(util.unescape(model[path][VALUE].split('<')[0]))
 
     def __tag_editing_started(self, render, editable, path, model, library):

@@ -112,12 +112,12 @@ class TagsFromPath(EditPane):
             const.TBP, const.TBP_EXAMPLES.split("\n"))
 
         vbox = self.get_children()[2]
-        addreplace = gtk.combo_box_new_text()
+        addreplace = Gtk.ComboBoxText()
         addreplace.append_text(_("Tags replace existing ones"))
         addreplace.append_text(_("Tags are added to existing ones"))
         addreplace.set_active(config.getboolean("tagsfrompath", "add"))
         addreplace.connect('changed', self.__add_changed)
-        vbox.pack_start(addreplace)
+        vbox.pack_start(addreplace, True, True, 0)
         addreplace.show()
 
         self.preview.connect_object('clicked', self.__preview, None)
@@ -133,7 +133,7 @@ class TagsFromPath(EditPane):
         if songs is None:
             songs = [row[0] for row in (self.view.get_model() or [])]
 
-        if songs: pattern_text = self.combo.child.get_text().decode("utf-8")
+        if songs: pattern_text = self.combo.get_child().get_text().decode("utf-8")
         else: pattern_text = ""
         try: pattern = TagsFromPattern(pattern_text)
         except re.error:
@@ -168,22 +168,22 @@ class TagsFromPath(EditPane):
             pattern = TagsFromPattern("")
 
         self.view.set_model(None)
-        model = gtk.ListStore(
+        model = Gtk.ListStore(
             object, str, *([str] * len(pattern.headers)))
         for col in self.view.get_columns():
             self.view.remove_column(col)
 
-        col = gtk.TreeViewColumn(_('File'), gtk.CellRendererText(),
+        col = Gtk.TreeViewColumn(_('File'), Gtk.CellRendererText(),
                                  text=1)
-        col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(col)
         for i, header in enumerate(pattern.headers):
-            render = gtk.CellRendererText()
+            render = Gtk.CellRendererText()
             render.set_property('editable', True)
             render.connect('edited', self.__row_edited, model, i + 2)
             escaped_title = header.replace("_", "__")
-            col = gtk.TreeViewColumn(escaped_title, render, text=i + 2)
-            col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            col = Gtk.TreeViewColumn(escaped_title, render, text=i + 2)
+            col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
             self.view.append_column(col)
 
         for song in songs:
@@ -205,7 +205,7 @@ class TagsFromPath(EditPane):
         self.save.set_sensitive(len(pattern.headers) > 0)
 
     def __save(self, addreplace, library):
-        pattern_text = self.combo.child.get_text().decode('utf-8')
+        pattern_text = self.combo.get_child().get_text().decode('utf-8')
         pattern = TagsFromPattern(pattern_text)
         model = self.view.get_model()
         add = bool(addreplace.get_active())

@@ -84,14 +84,14 @@ class RenameFiles(EditPane):
             const.NBP, const.NBP_EXAMPLES.split("\n"))
 
         column = TreeViewColumn(
-            _('File'), gtk.CellRendererText(), text=1)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            _('File'), Gtk.CellRendererText(), text=1)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(column)
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         render.set_property('editable', True)
 
         column = TreeViewColumn(_('New Name'), render, text=2)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(column)
 
         self.preview.connect_object('clicked', self.__preview, None)
@@ -125,26 +125,26 @@ class RenameFiles(EditPane):
                 if skip_all: continue
                 RESPONSE_SKIP_ALL = 1
                 buttons = (_("Ignore _All Errors"), RESPONSE_SKIP_ALL,
-                           gtk.STOCK_STOP, gtk.RESPONSE_CANCEL,
-                           _("_Continue"), gtk.RESPONSE_OK)
+                           Gtk.STOCK_STOP, Gtk.ResponseType.CANCEL,
+                           _("_Continue"), Gtk.ResponseType.OK)
                 msg = qltk.Message(
-                    gtk.MESSAGE_ERROR, win, _("Unable to rename file"),
+                    Gtk.MessageType.ERROR, win, _("Unable to rename file"),
                     _("Renaming <b>%s</b> to <b>%s</b> failed. "
                       "Possibly the target file already exists, "
                       "or you do not have permission to make the "
                       "new file or remove the old one.") %(
                     util.escape(util.fsdecode(oldname)),
                     util.escape(util.fsdecode(newname))),
-                    buttons=gtk.BUTTONS_NONE)
+                    buttons=Gtk.ButtonsType.NONE)
                 msg.add_buttons(*buttons)
-                msg.set_default_response(gtk.RESPONSE_OK)
+                msg.set_default_response(Gtk.ResponseType.OK)
                 resp = msg.run()
                 skip_all |= (resp == RESPONSE_SKIP_ALL)
                 # Preserve old behavior: shift-click is Ignore All
-                mods = gtk.gdk.display_get_default().get_pointer()[3]
-                skip_all |= mods & gtk.gdk.SHIFT_MASK
+                mods = Gdk.Display.get_default().get_pointer()[3]
+                skip_all |= mods & Gdk.ModifierType.SHIFT_MASK
                 library.reload(song, changed=was_changed)
-                if resp != gtk.RESPONSE_OK and resp != RESPONSE_SKIP_ALL:
+                if resp != Gtk.ResponseType.OK and resp != RESPONSE_SKIP_ALL:
                     break
             if win.step(): break
 
@@ -157,7 +157,7 @@ class RenameFiles(EditPane):
         model = self.view.get_model()
         if songs is None:
             songs = [row[0] for row in model]
-        pattern = self.combo.child.get_text().decode("utf-8")
+        pattern = self.combo.get_child().get_text().decode("utf-8")
 
         try:
             pattern = FileFromPattern(pattern)
@@ -171,8 +171,8 @@ class RenameFiles(EditPane):
                 util.escape(pattern))).run()
             return
         else:
-            if self.combo.child.get_text():
-                self.combo.prepend_text(self.combo.child.get_text())
+            if self.combo.get_child().get_text():
+                self.combo.prepend_text(self.combo.get_child().get_text())
                 self.combo.write(const.NBP)
 
         orignames = [song["~filename"] for song in songs]
@@ -186,7 +186,7 @@ class RenameFiles(EditPane):
             basename = util.fsdecode(song("~basename"))
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)
-        self.save.set_sensitive(bool(self.combo.child.get_text()))
+        self.save.set_sensitive(bool(self.combo.get_child().get_text()))
         for song in songs:
             if not song.is_file:
                 self.set_sensitive(False)

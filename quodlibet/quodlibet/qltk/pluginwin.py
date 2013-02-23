@@ -19,13 +19,13 @@ from quodlibet.qltk.entry import ClearEntry
 TAG, ALL, NO, DIS, EN, SEP = range(6)
 
 
-class WrapLabel(gtk.Label):
+class WrapLabel(Gtk.Label):
     __gtype_name__ = 'WrapLabel'
 
     def __init__(self):
         super(WrapLabel, self).__init__()
         self.__wrap_width = 0
-        self.get_layout().set_wrap(pango.WRAP_WORD_CHAR)
+        self.get_layout().set_wrap(Pango.WrapMode.WORD_CHAR)
         self.set_alignment(0.0, 0.0)
 
     def do_size_request(self, requisition):
@@ -34,7 +34,7 @@ class WrapLabel(gtk.Label):
         requisition.height = height
 
     def do_size_allocate(self, allocation):
-        gtk.Label.do_size_allocate(self, allocation)
+        Gtk.Label.do_size_allocate(self, allocation)
         self.__set_wrap_width(allocation.width)
 
     def set_text(self, *args):
@@ -48,7 +48,7 @@ class WrapLabel(gtk.Label):
     def __set_wrap_width(self, width):
         if width == 0:
             return
-        self.get_layout().set_width(width * pango.SCALE)
+        self.get_layout().set_width(width * Pango.SCALE)
         if self.__wrap_width != width:
             self.__wrap_width = width
             self.queue_resize()
@@ -64,10 +64,10 @@ class PluginErrorWindow(qltk.UniqueWindow):
         self.set_transient_for(parent)
         self.set_default_size(420, 250)
 
-        scrolledwin = gtk.ScrolledWindow()
-        vbox = gtk.VBox(spacing=6)
+        scrolledwin = Gtk.ScrolledWindow()
+        vbox = Gtk.VBox(spacing=6)
         vbox.set_border_width(6)
-        scrolledwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolledwin.add_with_viewport(vbox)
 
         failures = {}
@@ -75,29 +75,29 @@ class PluginErrorWindow(qltk.UniqueWindow):
         keys = failures.keys()
         show_expanded = len(keys) <= 3
         for key in sorted(keys):
-            expander = gtk.Expander("<b>%s</b>" % util.escape(key))
+            expander = Gtk.Expander("<b>%s</b>" % util.escape(key))
             expander.set_use_markup(True)
             if show_expanded: expander.set_expanded(True)
 
             # second line is always the __rescan line; don't show it
             message = failures[key][0:1] + failures[key][3:]
-            failure = gtk.Label(''.join(message).strip())
+            failure = Gtk.Label(label=''.join(message).strip())
             failure.set_alignment(0, 0)
             failure.set_padding(12, 6)
             failure.set_selectable(True)
 
-            vbox.pack_start(expander, expand=False)
+            vbox.pack_start(expander, False, True, 0)
             expander.add(failure)
 
-        vbox2 = gtk.VBox(spacing=12)
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        vbox2 = Gtk.VBox(spacing=12)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
-        b = gtk.HButtonBox()
-        b.set_layout(gtk.BUTTONBOX_END)
-        b.pack_start(close)
+        b = Gtk.HButtonBox()
+        b.set_layout(Gtk.ButtonBoxStyle.END)
+        b.pack_start(close, True, True, 0)
 
-        vbox2.pack_start(scrolledwin)
-        vbox2.pack_start(b, expand=False)
+        vbox2.pack_start(scrolledwin, True, True, 0)
+        vbox2.pack_start(b, False, True, 0)
         self.add(vbox2)
 
         self.show_all()
@@ -112,13 +112,13 @@ class PluginWindow(qltk.UniqueWindow):
         self.set_default_size(655, 404)
         self.set_transient_for(parent)
 
-        hbox = gtk.HBox(spacing=12)
-        vbox = gtk.VBox(spacing=6)
+        hbox = Gtk.HBox(spacing=12)
+        vbox = Gtk.VBox(spacing=6)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         tv = HintedTreeView()
-        model = gtk.ListStore(object, object)
+        model = Gtk.ListStore(object, object)
         filter = model.filter_new()
 
         tv.set_model(filter)
@@ -127,46 +127,46 @@ class PluginWindow(qltk.UniqueWindow):
         filter_entry = ClearEntry()
         filter_entry.connect("changed", lambda s: filter.refilter())
 
-        combo_store = gtk.ListStore(str, int)
-        filter_combo = gtk.ComboBox(combo_store)
-        cell = gtk.CellRendererText()
+        combo_store = Gtk.ListStore(str, int)
+        filter_combo = Gtk.ComboBox(model=combo_store)
+        cell = Gtk.CellRendererText()
         filter_combo.pack_start(cell, True)
         filter_combo.add_attribute(cell, "text", 0)
         filter_combo.connect("changed", lambda s: filter.refilter())
 
-        combo_sep = lambda model, iter: model[iter][1] == SEP
-        filter_combo.set_row_separator_func(combo_sep)
+        combo_sep = lambda model, iter, data: model[iter][1] == SEP
+        filter_combo.set_row_separator_func(combo_sep, None)
 
-        fb = gtk.HBox(spacing=6)
-        fb.pack_start(filter_combo, expand=False)
+        fb = Gtk.HBox(spacing=6)
+        fb.pack_start(filter_combo, False, True, 0)
 
         filter_entry.enable_clear_button()
-        fb.pack_start(filter_entry)
+        fb.pack_start(filter_entry, True, True, 0)
 
-        render = gtk.CellRendererToggle()
+        render = Gtk.CellRendererToggle()
         def cell_data(col, render, model, iter):
             row = model[iter]
             render.set_active(row[1].enabled(row[0]))
         render.connect('toggled', self.__toggled, filter)
-        column = gtk.TreeViewColumn("enabled", render)
+        column = Gtk.TreeViewColumn("enabled", render)
         column.set_cell_data_func(render, cell_data)
         tv.append_column(column)
 
-        render = gtk.CellRendererPixbuf()
+        render = Gtk.CellRendererPixbuf()
         def cell_data2(col, render, model, iter):
-            icon = getattr(model[iter][0], 'PLUGIN_ICON', gtk.STOCK_EXECUTE)
-            if gtk.stock_lookup(icon):
+            icon = getattr(model[iter][0], 'PLUGIN_ICON', Gtk.STOCK_EXECUTE)
+            if Gtk.stock_lookup(icon):
                 render.set_property('stock-id', icon)
             else:
                 render.set_property('icon-name', icon)
-        column = gtk.TreeViewColumn("image", render)
+        column = Gtk.TreeViewColumn("image", render)
         column.set_cell_data_func(render, cell_data2)
         tv.append_column(column)
 
-        render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.set_property('xalign', 0.0)
-        column = gtk.TreeViewColumn("name", render)
+        column = Gtk.TreeViewColumn("name", render)
         def cell_data3(col, render, model, iter):
             render.set_property('text', model[iter][0].PLUGIN_NAME)
         column.set_cell_data_func(render, cell_data3)
@@ -174,46 +174,46 @@ class PluginWindow(qltk.UniqueWindow):
         tv.append_column(column)
 
         sw.add(tv)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_size_request(250, -1)
 
         tv.set_headers_visible(False)
 
-        bbox = gtk.HBox(homogeneous=True, spacing=12)
-        errors = qltk.Button(_("Show _Errors"), gtk.STOCK_DIALOG_WARNING)
+        bbox = Gtk.HBox(homogeneous=True, spacing=12)
+        errors = qltk.Button(_("Show _Errors"), Gtk.STOCK_DIALOG_WARNING)
         errors.set_focus_on_click(False)
-        bbox.pack_start(errors)
-        refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
+        bbox.pack_start(errors, True, True, 0)
+        refresh = Gtk.Button(stock=Gtk.STOCK_REFRESH)
         refresh.set_focus_on_click(False)
-        bbox.pack_start(refresh)
-        vbox.pack_start(fb, expand=False)
-        vbox.pack_start(sw)
-        vbox.pack_start(bbox, expand=False)
-        hbox.pack_start(vbox, expand=False)
+        bbox.pack_start(refresh, True, True, 0)
+        vbox.pack_start(fb, False, True, 0)
+        vbox.pack_start(sw, True, True, 0)
+        vbox.pack_start(bbox, False, True, 0)
+        hbox.pack_start(vbox, False, True, 0)
 
         selection = tv.get_selection()
         desc = WrapLabel()
         desc.set_selectable(True)
         selection.connect('changed', self.__description, desc)
 
-        prefs = gtk.Frame()
-        prefs.set_shadow_type(gtk.SHADOW_NONE)
+        prefs = Gtk.Frame()
+        prefs.set_shadow_type(Gtk.ShadowType.NONE)
 
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
 
-        bb_align = gtk.Alignment(0, 1, 1, 0)
+        bb_align = Gtk.Alignment.new(0, 1, 1, 0)
 
-        bb = gtk.HButtonBox()
-        bb.set_layout(gtk.BUTTONBOX_END)
-        bb.pack_start(close)
+        bb = Gtk.HButtonBox()
+        bb.set_layout(Gtk.ButtonBoxStyle.END)
+        bb.pack_start(close, True, True, 0)
         bb_align.add(bb)
 
-        vb2 = gtk.VBox(spacing=12)
-        vb2.pack_start(desc, expand=False)
-        vb2.pack_start(prefs, expand=False)
-        vb2.pack_start(bb_align)
-        hbox.pack_start(vb2, expand=True)
+        vb2 = Gtk.VBox(spacing=12)
+        vb2.pack_start(desc, False, True, 0)
+        vb2.pack_start(prefs, False, True, 0)
+        vb2.pack_start(bb_align, True, True, 0)
+        hbox.pack_start(vb2, True, True, 0)
 
         self.add(hbox)
         selection.connect('changed', self.__preferences, prefs)
@@ -293,7 +293,7 @@ class PluginWindow(qltk.UniqueWindow):
 
     def __preferences(self, selection, frame):
         model, iter = selection.get_selected()
-        if frame.child: frame.child.destroy()
+        if frame.get_child(): frame.get_child().destroy()
         if iter and hasattr(model[iter][0], 'PluginPreferences'):
             try:
                 prefs = model[iter][0].PluginPreferences(self)
@@ -301,12 +301,12 @@ class PluginWindow(qltk.UniqueWindow):
                 util.print_exc()
                 frame.hide()
             else:
-                if isinstance(prefs, gtk.Window):
-                    b = gtk.Button(stock=gtk.STOCK_PREFERENCES)
-                    b.connect_object('clicked', gtk.Window.show, prefs)
-                    b.connect_object('destroy', gtk.Window.destroy, prefs)
+                if isinstance(prefs, Gtk.Window):
+                    b = Gtk.Button(stock=Gtk.STOCK_PREFERENCES)
+                    b.connect_object('clicked', Gtk.Window.show, prefs)
+                    b.connect_object('destroy', Gtk.Window.destroy, prefs)
                     frame.add(b)
-                    frame.child.set_border_width(6)
+                    frame.get_child().set_border_width(6)
                 else:
                     frame.add(prefs)
                 frame.show_all()

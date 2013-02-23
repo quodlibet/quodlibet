@@ -17,7 +17,7 @@ from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.x import Button
 
-class DeleteDialog(gtk.Dialog):
+class DeleteDialog(Gtk.Dialog):
     def __init__(self, parent, files, asktrash=True, askonly=False):
         super(DeleteDialog, self).__init__(
             _("Delete Files"), get_top_parent(parent))
@@ -30,48 +30,48 @@ class DeleteDialog(gtk.Dialog):
         self.__files = files
 
         if asktrash and trash.can_trash():
-            b = Button(_("_Move to Trash"), gtk.STOCK_DELETE)
+            b = Button(_("_Move to Trash"), Gtk.STOCK_DELETE)
             self.add_action_widget(b, 0)
 
         self.__askonly = askonly
 
-        self.add_button(gtk.STOCK_CANCEL, 1)
-        self.add_button(gtk.STOCK_DELETE, 2)
+        self.add_button(Gtk.STOCK_CANCEL, 1)
+        self.add_button(Gtk.STOCK_DELETE, 2)
 
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_border_width(6)
-        i = gtk.Image()
-        i.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_DIALOG)
+        i = Gtk.Image()
+        i.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.DIALOG)
         i.set_padding(12, 0)
         i.set_alignment(0.5, 0.0)
-        hbox.pack_start(i, expand=False)
-        vbox = gtk.VBox(spacing=6)
+        hbox.pack_start(i, False, True, 0)
+        vbox = Gtk.VBox(spacing=6)
 
         base = os.path.basename(files[0])
         if len(files) == 1: l = _("Permanently delete this file?")
         else: l = _("Permanently delete these files?")
         if len(files) == 1:
-            exp = gtk.Expander("%s" % util.fsdecode(base))
+            exp = Gtk.Expander("%s" % util.fsdecode(base))
         else:
-            exp = gtk.Expander(ngettext("%(title)s and %(count)d more...",
+            exp = Gtk.Expander(ngettext("%(title)s and %(count)d more...",
                 "%(title)s and %(count)d more...", len(files)-1) %
                 {'title': util.fsdecode(base), 'count': len(files) - 1})
 
-        lab = gtk.Label()
+        lab = Gtk.Label()
         lab.set_markup("<big><b>%s</b></big>" % l)
         lab.set_alignment(0.0, 0.5)
-        vbox.pack_start(lab, expand=False)
+        vbox.pack_start(lab, False, True, 0)
 
-        lab = gtk.Label("\n".join(
+        lab = Gtk.Label("\n".join(
             map(util.fsdecode, map(util.unexpand, files))))
         lab.set_alignment(0.1, 0.0)
-        exp.add(gtk.ScrolledWindow())
-        exp.child.add_with_viewport(lab)
-        exp.child.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        exp.child.child.set_shadow_type(gtk.SHADOW_NONE)
-        vbox.pack_start(exp)
-        hbox.pack_start(vbox)
-        self.vbox.pack_start(hbox)
+        exp.add(Gtk.ScrolledWindow())
+        exp.get_child().add_with_viewport(lab)
+        exp.get_child().set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        exp.get_child().child.set_shadow_type(Gtk.ShadowType.NONE)
+        vbox.pack_start(exp, True, True, 0)
+        hbox.pack_start(vbox, True, True, 0)
+        self.vbox.pack_start(hbox, True, True, 0)
         self.vbox.show_all()
 
     def run(self):
@@ -80,7 +80,7 @@ class DeleteDialog(gtk.Dialog):
             self.destroy()
             return resp
 
-        if resp == 1 or resp == gtk.RESPONSE_DELETE_EVENT: return []
+        if resp == 1 or resp == Gtk.ResponseType.DELETE_EVENT: return []
         elif resp == 0: s = _("Moving %(current)d/%(total)d.")
         elif resp == 2: s = _("Deleting %(current)d/%(total)d.")
         else: return []

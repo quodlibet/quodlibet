@@ -12,7 +12,7 @@ from quodlibet.util import copool, massagers
 
 
 
-class EntryWordCompletion(gtk.EntryCompletion):
+class EntryWordCompletion(Gtk.EntryCompletion):
     """Entry completion for simple words, where a word boundary is
     roughly equivalent to the separators in the QL query language.
 
@@ -129,13 +129,13 @@ class LibraryTagCompletion(EntryWordCompletion):
 
         print_d("Done updating tag model for whole library")
 
-class LibraryValueCompletion(gtk.EntryCompletion):
+class LibraryValueCompletion(Gtk.EntryCompletion):
     """Entry completion for a library value, for a specific tag.
     Will add valid values from the tag massager where available"""
 
     def __init__(self, tag, library):
         super(LibraryValueCompletion, self).__init__()
-        self.set_model(gtk.ListStore(str))
+        self.set_model(Gtk.ListStore(str))
         self.set_text_column(0)
         self.set_tag(tag, library)
 

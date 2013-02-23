@@ -9,7 +9,7 @@ import os
 import urlparse
 import errno
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import const
 from quodlibet import formats
@@ -41,7 +41,7 @@ def filesel_filter(filename):
     return False
 
 class DirectoryTree(RCMTreeView, MultiDragTreeView):
-    def cell_data(column, cell, model, iter):
+    def cell_data(column, cell, model, iter, userdata):
         value = model[iter][0]
         if value is not None:
             cell.set_property('text', util.fsdecode(
@@ -49,14 +49,14 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
     cell_data = staticmethod(cell_data)
 
     def __init__(self, initial=None, folders=None):
-        super(DirectoryTree, self).__init__(gtk.TreeStore(str))
+        super(DirectoryTree, self).__init__(Gtk.TreeStore(str))
         column = TreeViewColumn(_("Folders"))
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        render = gtk.CellRendererPixbuf()
-        render.set_property('stock_id', gtk.STOCK_DIRECTORY)
-        column.pack_start(render, expand=False)
-        render = gtk.CellRendererText()
-        column.pack_start(render)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        render = Gtk.CellRendererPixbuf()
+        render.set_property('stock_id', Gtk.STOCK_DIRECTORY)
+        column.pack_start(render, False)
+        render = Gtk.CellRendererText()
+        column.pack_start(render, True)
         column.set_cell_data_func(render, self.cell_data)
 
         column.set_attributes(render, text=0)
@@ -116,24 +116,25 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             niter = self.get_model().append(None, [path])
             if path is not None:
                 self.get_model().append(niter, ["dummy"])
-        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.connect(
             'test-expand-row', DirectoryTree.__expanded, self.get_model())
-        self.set_row_separator_func(lambda model, iter: model[iter][0] is None)
+        self.set_row_separator_func(
+            lambda model, iter, data: model[iter][0] is None, None)
 
         if initial: self.go_to(initial)
 
-        menu = gtk.Menu()
-        m = qltk.MenuItem(_("_New Folder..."), gtk.STOCK_NEW)
+        menu = Gtk.Menu()
+        m = qltk.MenuItem(_("_New Folder..."), Gtk.STOCK_NEW)
         m.connect('activate', self.__mkdir)
         menu.append(m)
-        m = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        m = Gtk.ImageMenuItem(Gtk.STOCK_DELETE)
         m.connect('activate', self.__rmdir)
         menu.append(m)
-        m = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
+        m = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH)
         m.connect('activate', self.__refresh)
         menu.append(m)
-        m = qltk.MenuItem(_("_Select All Subfolders"), gtk.STOCK_DIRECTORY)
+        m = qltk.MenuItem(_("_Select All Subfolders"), Gtk.STOCK_DIRECTORY)
         m.connect('activate', self.__expand)
         menu.append(m)
         menu.show_all()
@@ -160,7 +161,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             path.insert(0, 0)
         else: path.insert(0, 1)
         for i in range(len(path)):
-            self.expand_row(tuple(path[:i+1]), False)
+            self.expand_row(Gtk.TreePath(tuple(path[:i+1])), False)
         self.get_selection().select_path(tuple(path))
         self.scroll_to_cell(tuple(path))
 
@@ -176,7 +177,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             selection = self.get_selection()
             selection.unselect_all()
             selection.select_path(path)
-            return self.popup_menu(menu, 0, gtk.get_current_event_time())
+            return self.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __mkdir(self, button):
         model, rows = self.get_selection().get_selected_rows()
@@ -253,10 +254,10 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 child = model.iter_next(child)
 
     def __expanded(self, iter, path, model):
-        window = self.window
+        window = self.get_window()
         if window:
-            window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-            gtk.main_iteration(block=False)
+            window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+            Gtk.main_iteration_do(False)
         try:
             try:
                 if model is None:
@@ -284,15 +285,15 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             if window:
                 window.set_cursor(None)
 
-class FileSelector(gtk.VPaned):
-    def cell_data(column, cell, model, iter):
+class FileSelector(Gtk.VPaned):
+    def cell_data(column, cell, model, iter, userdata):
         value = model[iter][0]
         if value is not None:
             cell.set_property('text', util.fsdecode(os.path.basename(value)))
     cell_data = staticmethod(cell_data)
 
-    __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
-                                 gobject.TYPE_NONE, (gtk.TreeSelection,))
+    __gsignals__ = { 'changed': (GObject.SignalFlags.RUN_LAST,
+                                 None, (Gtk.TreeSelection,))
                      }
 
     def __init__(self, initial=None, filter=filesel_filter, folders=None):
@@ -302,20 +303,20 @@ class FileSelector(gtk.VPaned):
         if initial and os.path.isfile(initial):
             initial = os.path.dirname(initial)
         dirlist = DirectoryTree(initial, folders=folders)
-        filelist = AllTreeView(gtk.ListStore(str))
+        filelist = AllTreeView(Gtk.ListStore(str))
         column = TreeViewColumn(_("Songs"))
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        render = gtk.CellRendererPixbuf()
-        render.set_property('stock_id', gtk.STOCK_FILE)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        render = Gtk.CellRendererPixbuf()
+        render.set_property('stock_id', Gtk.STOCK_FILE)
         render.props.xpad = 3
-        column.pack_start(render, expand=False)
-        render = gtk.CellRendererText()
-        column.pack_start(render)
+        column.pack_start(render, False)
+        render = Gtk.CellRendererText()
+        column.pack_start(render, True)
         column.set_cell_data_func(render, self.cell_data)
         column.set_attributes(render, text=0)
         filelist.append_column(column)
         filelist.set_rules_hint(True)
-        filelist.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        filelist.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         filelist.set_search_equal_func(search_func, False)
 
         self.__sig = filelist.get_selection().connect(
@@ -332,18 +333,18 @@ class FileSelector(gtk.VPaned):
 
         sw = ScrolledWindow()
         sw.add(dirlist)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack1(sw, resize=True)
 
         sw = ScrolledWindow()
         sw.add(filelist)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack2(sw, resize=True)
 
     def rescan(self, *args):
-        self.get_child1().child.get_selection().emit('changed')
+        self.get_child1().get_child().get_selection().emit('changed')
 
     def __changed(self, selection):
         self.emit('changed', selection)

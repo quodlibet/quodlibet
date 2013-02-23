@@ -70,7 +70,7 @@ class PlaylistMux(object):
         map(self.q.remove, filter(None, map(self.q.find, songs)))
 
 
-class TrackCurrentModel(gtk.ListStore):
+class TrackCurrentModel(Gtk.ListStore):
     __iter = None
     __old_value = None
 
@@ -165,7 +165,7 @@ class PlaylistModel(TrackCurrentModel):
         print_d("Told to go to %r" % getattr(song, "key", song))
 
         iter_ = None
-        if isinstance(song, gtk.TreeIter):
+        if isinstance(song, Gtk.TreeIter):
             iter_ = song
         elif song is not None:
             iter_ = self.find(song)

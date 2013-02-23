@@ -19,21 +19,22 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
-class LyricsPane(gtk.VBox):
+
+class LyricsPane(Gtk.VBox):
     def __init__(self, song):
         # Commented code in this method is due to Lyric Wiki's disappearance.
         # See issue 273.
         super(LyricsPane, self).__init__(spacing=12)
         self.set_border_width(12)
-        view = gtk.TextView()
-        sw = gtk.ScrolledWindow()
+        view = Gtk.TextView()
+        sw = Gtk.ScrolledWindow()
         sw.add(view)
-        refresh = qltk.Button(_("_Download"), gtk.STOCK_CONNECT)
-        save = gtk.Button(stock=gtk.STOCK_SAVE)
-        delete = gtk.Button(stock=gtk.STOCK_DELETE)
-        add = gtk.Button(stock=gtk.STOCK_EDIT)
-        view.set_wrap_mode(gtk.WRAP_WORD)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        refresh = qltk.Button(_("_Download"), Gtk.STOCK_CONNECT)
+        save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        delete = Gtk.Button(stock=Gtk.STOCK_DELETE)
+        add = Gtk.Button(stock=Gtk.STOCK_EDIT)
+        view.set_wrap_mode(Gtk.WrapMode.WORD)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         lyricname = song.lyric_filename
         buffer = view.get_buffer()
@@ -43,18 +44,18 @@ class LyricsPane(gtk.VBox):
         delete.connect('clicked', self.__delete, lyricname, save)
         add.connect('clicked', self.__add, song)
 
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        self.pack_start(sw, expand=True)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        self.pack_start(sw, True, True, 0)
 
-        #self.pack_start(gtk.Label(_("Lyrics provided by %s.") %(
+        #self.pack_start(Gtk.Label(_("Lyrics provided by %s.", True, True, 0) %(
         #    "http://lyricwiki.org")), expand=False)
 
-        bbox = gtk.HButtonBox()
-        bbox.pack_start(save)
-        bbox.pack_start(delete)
-        #bbox.pack_start(refresh)
-        bbox.pack_start(add)
-        self.pack_start(bbox, expand=False)
+        bbox = Gtk.HButtonBox()
+        bbox.pack_start(save, True, True, 0)
+        bbox.pack_start(delete, True, True, 0)
+        #bbox.pack_start(refresh, True, True, 0)
+        bbox.pack_start(add, True, True, 0)
+        self.pack_start(bbox, False, True, 0)
 
         save.set_sensitive(False)
         add.set_sensitive(True)
@@ -96,18 +97,18 @@ class LyricsPane(gtk.VBox):
         except Exception, err:
             try: err = err.strerror.decode(const.ENCODING, 'replace')
             except: err = _("Unable to download lyrics.")
-            gobject.idle_add(buffer.set_text, err)
+            GObject.idle_add(buffer.set_text, err)
             return
 
         sock.close()
 
         if text == 'Not found':
-            gobject.idle_add(
+            GObject.idle_add(
                 buffer.set_text, _("No lyrics found for this song."))
             return
         else:
-            gobject.idle_add(buffer.set_text, text)
-            gobject.idle_add(refresh.set_sensitive, True)
+            GObject.idle_add(buffer.set_text, text)
+            GObject.idle_add(refresh.set_sensitive, True)
 
     def __save(self, save, lyricname, buffer, delete):
         try: os.makedirs(os.path.dirname(lyricname))

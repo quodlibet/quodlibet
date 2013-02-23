@@ -12,7 +12,7 @@ from quodlibet import util
 
 old_hook = sys.excepthook
 
-class ExceptionDialog(gtk.Window):
+class ExceptionDialog(Gtk.Window):
     running = False
 
     @classmethod
@@ -72,8 +72,8 @@ class ExceptionDialog(gtk.Window):
             cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
                 util.escape(model[iter][1]), model[iter][2],
                 util.escape(util.unexpand(model[iter][0]))))
-        render = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(str(value).replace("_", "__"), render)
+        render = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(str(value).replace("_", "__"), render)
         col.set_cell_data_func(render, cdf)
         col.set_visible(True)
         col.set_expand(True)
@@ -85,12 +85,12 @@ class ExceptionDialog(gtk.Window):
     # that handles things going wrong, i.e. it only uses GTK+ code,
     # no QLTK wrappers.
     def __create_window(self, Kind, value, traceback, dump, minidump):
-        window = gtk.Window()
+        window = Gtk.Window()
         window.set_default_size(400, 400)
         window.set_border_width(12)
         window.set_title(_("Error Occurred"))
 
-        label = gtk.Label(_("""\
+        label = Gtk.Label(_("""\
 An exception has occured in Quod Libet. A dump file has been saved to <b>%s</b> that will help us debug the crash. Please file a new issue at http://code.google.com/p/quodlibet/issues/list and attach this file or include its contents. This file may contain some identifying information about you or your system, such as a list of recent files played. If this is unacceptable, send <b>%s</b> instead with a description of what you were doing.
 
 Quod Libet may now be unstable. Closing it and restarting is recommended. Your library will be saved.""")
@@ -98,27 +98,27 @@ Quod Libet may now be unstable. Closing it and restarting is recommended. Your l
         label.set_selectable(True)
         label.set_use_markup(True)
         label.set_line_wrap(True)
-        box = gtk.VBox(spacing=6)
-        buttons = gtk.HButtonBox()
-        view = gtk.TreeView()
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        box = Gtk.VBox(spacing=6)
+        buttons = Gtk.HButtonBox()
+        view = Gtk.TreeView()
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        model = gtk.ListStore(str, str, int)
+        model = Gtk.ListStore(str, str, int)
         self.__fill_list(view, model, value, traceback)
         view.set_model(model)
-        cancel = gtk.Button(stock=gtk.STOCK_CANCEL)
-        close = gtk.Button(stock=gtk.STOCK_QUIT)
-        buttons.pack_start(close)
-        buttons.pack_start(cancel)
-        box.pack_start(label, expand=False)
-        box.pack_start(sw)
-        box.pack_start(buttons, expand=False)
+        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        close = Gtk.Button(stock=Gtk.STOCK_QUIT)
+        buttons.pack_start(close, True, True, 0)
+        buttons.pack_start(cancel, True, True, 0)
+        box.pack_start(label, False, True, 0)
+        box.pack_start(sw, True, True, 0)
+        box.pack_start(buttons, False, True, 0)
         window.add(box)
 
         window.connect('destroy', self.__destroy)
-        cancel.connect_object('clicked', gtk.Window.destroy, window)
+        cancel.connect_object('clicked', Gtk.Window.destroy, window)
         close.connect('clicked', lambda *x: app.quit())
 
         window.show_all()

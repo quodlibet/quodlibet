@@ -9,7 +9,7 @@ from gi.repository import Gtk
 from quodlibet.util import tag
 
 
-class SortCriterionBox(gtk.ComboBox):
+class SortCriterionBox(Gtk.ComboBox):
     """A ComboBox containing a list of tags for the user to choose from.
     The tag names are presented both translated and untranslated.
 
@@ -35,9 +35,9 @@ class SortCriterionBox(gtk.ComboBox):
     ]
 
     def __init__(self):
-        super(SortCriterionBox, self).__init__(gtk.TreeStore(str, str))
+        super(SortCriterionBox, self).__init__(Gtk.TreeStore(str, str))
 
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         self.pack_start(render, True)
         self.add_attribute(render, 'text', 1)
 
@@ -58,37 +58,37 @@ class SortCriterionBox(gtk.ComboBox):
         return row[0]
 
 
-class SortCriterionChooser(gtk.Table):
+class SortCriterionChooser(Gtk.Table):
     def __init__(self):
         super(SortCriterionChooser, self).__init__()
         self.set_row_spacing(0, 6)
         self.set_col_spacing(0, 6)
 
-        label = gtk.Label(_("Tag:"))
+        label = Gtk.Label(label=_("Tag:"))
 
         self.combo = SortCriterionBox()
-        optbox = gtk.HBox()
-        self.optasc = gtk.RadioButton(label=_("Ascending"))
-        self.optdesc = gtk.RadioButton(group=self.optasc,
+        optbox = Gtk.HBox()
+        self.optasc = Gtk.RadioButton(label=_("Ascending"))
+        self.optdesc = Gtk.RadioButton(group=self.optasc,
                                        label=_("Descending"))
         optbox.add(self.optasc)
         optbox.add(self.optdesc)
-        self.attach(label, 0, 1, 0, 1, xoptions=gtk.FILL)
+        self.attach(label, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
         self.attach(self.combo, 1, 2, 0, 1)
         self.attach(optbox, 0, 2, 1, 2)
 
     @property
     def order(self):
         if self.optasc.get_active():
-            return gtk.SORT_ASCENDING
-        return gtk.SORT_DESCENDING
+            return Gtk.SortType.ASCENDING
+        return Gtk.SortType.DESCENDING
 
     @property
     def tag(self):
         return self.combo.tag
 
 
-class SortDialog(gtk.Dialog):
+class SortDialog(Gtk.Dialog):
 
     def sort_keys(self):
         """This returns a list of tuples (sorting key, order)."""
@@ -97,15 +97,15 @@ class SortDialog(gtk.Dialog):
     def __add_criterion(self, *args):
         vbox = self.box
 
-        hbox = gtk.HBox(spacing=6)
-        vbox.pack_start(hbox, expand=False)
+        hbox = Gtk.HBox(spacing=6)
+        vbox.pack_start(hbox, False, True, 0)
 
         cc = SortCriterionChooser()
         hbox.add(cc)
 
-        del_btn = gtk.Button(stock=gtk.STOCK_REMOVE)
+        del_btn = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         del_btn.connect_object("clicked", self.__remove_criterion, cc, hbox)
-        hbox.pack_start(del_btn, expand=False)
+        hbox.pack_start(del_btn, False, True, 0)
 
         hbox.show_all()
 
@@ -119,21 +119,21 @@ class SortDialog(gtk.Dialog):
         super(SortDialog, self).__init__(title=_("Custom sort"))
         self.set_transient_for(parent)
 
-        self.box = vbox = gtk.VBox(spacing=6)
+        self.box = vbox = Gtk.VBox(spacing=6)
         vbox.set_border_width(10)
 
-        add_btn = gtk.Button(stock=gtk.STOCK_ADD)
+        add_btn = Gtk.Button(stock=Gtk.STOCK_ADD)
         add_btn.connect("clicked", self.__add_criterion)
-        vbox.pack_start(add_btn, expand=False)
+        vbox.pack_start(add_btn, False, True, 0)
 
         self.choosers = []
         for cc in xrange(critcount):
             self.__add_criterion()
 
-        self.vbox.pack_start(vbox)
+        self.vbox.pack_start(vbox, True, True, 0)
 
-        self.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+        self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         self.show_all()
 
     def run(self):

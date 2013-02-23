@@ -25,74 +25,74 @@ class _KeyValueEditor(qltk.Window):
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
-        self.add(gtk.VBox(spacing=6))
-        self.accels = gtk.AccelGroup()
+        self.add(Gtk.VBox(spacing=6))
+        self.accels = Gtk.AccelGroup()
 
-        t = gtk.Table(2, 3)
+        t = Gtk.Table(2, 3)
         t.set_row_spacings(3)
         t.set_col_spacing(0, 3)
         t.set_col_spacing(1, 12)
 
-        l = gtk.Label(_("_Name:"))
+        l = Gtk.Label(label=_("_Name:"))
         name = entry.UndoEntry()
         l.set_mnemonic_widget(name)
         l.set_use_underline(True)
         l.set_alignment(0.0, 0.5)
-        t.attach(l, 0, 1, 0, 1, xoptions=gtk.FILL)
+        t.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
         t.attach(name, 1, 2, 0, 1)
 
-        l = gtk.Label(_("_Value:"))
+        l = Gtk.Label(label=_("_Value:"))
         self.value = entry.ValidatingEntry(validator)
         l.set_mnemonic_widget(self.value)
         l.set_use_underline(True)
         l.set_alignment(0.0, 0.5)
-        t.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL)
+        t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
         t.attach(self.value, 1, 2, 1, 2)
-        add = gtk.Button(stock=gtk.STOCK_ADD)
+        add = Gtk.Button(stock=Gtk.STOCK_ADD)
         add.set_sensitive(False)
-        t.attach(add, 2, 3, 1, 2, xoptions=gtk.FILL)
+        t.attach(add, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
-        self.child.pack_start(t, expand=False)
+        self.get_child().pack_start(t, False, True, 0)
 
         # Set up the model for this widget
-        self.model = gtk.ListStore(str, str)
+        self.model = Gtk.ListStore(str, str)
         self.fill_values()
 
         view = RCMHintedTreeView(self.model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
         view.set_rules_hint(True)
-        render = gtk.CellRendererText()
-        render.props.ellipsize = pango.ELLIPSIZE_END
-        column = gtk.TreeViewColumn("", render)
+        render = Gtk.CellRendererText()
+        render.props.ellipsize = Pango.EllipsizeMode.END
+        column = Gtk.TreeViewColumn("", render)
         column.set_cell_data_func(render, self.__cdf)
         view.append_column(column)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
-        self.child.pack_start(sw)
+        self.get_child().pack_start(sw, True, True, 0)
 
-        menu = gtk.Menu()
-        remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
-        keyval, mod = gtk.accelerator_parse("Delete")
+        menu = Gtk.Menu()
+        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
+        keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(
-            'activate', self.accels, keyval, mod, gtk.ACCEL_VISIBLE)
+            'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
         menu.append(remove)
         menu.show_all()
 
-        bbox = gtk.HButtonBox()
-        rem_b = gtk.Button(stock=gtk.STOCK_REMOVE)
+        bbox = Gtk.HButtonBox()
+        rem_b = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         rem_b.set_sensitive(False)
-        bbox.pack_start(rem_b)
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
-        bbox.pack_start(close)
-        self.child.pack_start(bbox, expand=False)
+        bbox.pack_start(rem_b, True, True, 0)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        bbox.pack_start(close, True, True, 0)
+        self.get_child().pack_start(bbox, False, True, 0)
 
         selection = view.get_selection()
-        name.connect_object('activate', gtk.Entry.grab_focus, self.value)
-        self.value.connect_object('activate', gtk.Button.clicked, add)
+        name.connect_object('activate', Gtk.Entry.grab_focus, self.value)
+        self.value.connect_object('activate', Gtk.Button.clicked, add)
         self.value.connect('changed', self.__changed, [add])
         add.connect_object(
             'clicked', self.__add, selection, name, self.value, self.model)
@@ -102,7 +102,7 @@ class _KeyValueEditor(qltk.Window):
         rem_b.connect_object('clicked', self.__remove, view)
         close.connect_object('clicked', qltk.Window.destroy, self)
         view.connect('key-press-event', self.__view_key_press)
-        self.connect_object('destroy', gtk.Menu.destroy, menu)
+        self.connect_object('destroy', Gtk.Menu.destroy, menu)
 
         name.grab_focus()
         self.show_all()
@@ -112,11 +112,11 @@ class _KeyValueEditor(qltk.Window):
         raise NotImplementedError
 
     def __view_key_press(self, view, event):
-        if event.keyval == gtk.accelerator_parse("Delete")[0]:
+        if event.keyval == Gtk.accelerator_parse("Delete")[0]:
             self.__remove(view)
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __remove(self, view):
         view.remove_selection()
@@ -151,7 +151,7 @@ class CBESEditor(_KeyValueEditor):
         super(CBESEditor, self).__init__(title, validator)
         self.set_transient_for(qltk.get_top_parent(cbes))
         self.connect_object('destroy', self.__finish, cbes)
-        self.value.set_text(cbes.child.get_text())
+        self.value.set_text(cbes.get_child().get_text())
 
     def fill_values(self):
         for row in self.cbes.get_model():
@@ -227,9 +227,9 @@ class StandaloneEditor(_KeyValueEditor):
         except EnvironmentError:
             pass
 
-ICONS = {gtk.STOCK_EDIT: CBESEditor}
+ICONS = {Gtk.STOCK_EDIT: CBESEditor}
 
-class ComboBoxEntrySave(gtk.ComboBoxEntry):
+class ComboBoxEntrySave(Gtk.ComboBox):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
     and can save itself to (and load itself from) a filename or file-like."""
 
@@ -246,25 +246,26 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
         try:
             model = self.__models[id]
         except KeyError:
-            model = type(self).__models[id] = gtk.ListStore(str, str, str)
+            model = type(self).__models[id] = Gtk.ListStore(str, str, str)
 
-        super(ComboBoxEntrySave, self).__init__(model, 0)
+        super(ComboBoxEntrySave, self).__init__(
+            model=model, id_column=0, has_entry=True)
         self.clear()
 
-        render = gtk.CellRendererPixbuf()
+        render = Gtk.CellRendererPixbuf()
         self.pack_start(render, False)
         self.add_attribute(render, 'stock-id', 2)
 
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         self.pack_start(render, True)
         self.add_attribute(render, 'text', 1)
 
-        self.set_row_separator_func(self.__separator_func)
+        self.set_row_separator_func(self.__separator_func, None)
 
         if not len(model):
             self.__fill(filename, initial, edit_title)
 
-        self.remove(self.child)
+        self.remove(self.get_child())
         self.add(entry.ValidatingEntry(validator))
 
         self.connect_object('destroy', self.set_model, None)
@@ -272,27 +273,27 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             validator, title)
 
     def enable_clear_button(self):
-        self.child.enable_clear_button()
+        self.get_child().enable_clear_button()
 
     def __changed(self, model, validator, title):
         iter = self.get_active_iter()
         if iter:
             if model[iter][2] in ICONS:
-                self.child.set_text(self.__last)
+                self.get_child().set_text(self.__last)
                 Kind = ICONS[model[iter][2]]
                 Kind(self, title, validator)
                 self.set_active(-1)
             else:
                 self.__focus_entry()
-        self.__last = self.child.get_text()
+        self.__last = self.get_child().get_text()
 
     def __focus_entry(self):
-        self.child.grab_focus()
-        self.child.emit('move-cursor', gtk.MOVEMENT_BUFFER_ENDS, 0, False)
+        self.get_child().grab_focus()
+        self.get_child().emit('move-cursor', Gtk.MovementStep.BUFFER_ENDS, 0, False)
 
     def __fill(self, filename, initial, edit_title):
         model = self.get_model()
-        model.append(row=["", edit_title, gtk.STOCK_EDIT])
+        model.append(row=["", edit_title, Gtk.STOCK_EDIT])
         model.append(row=[None, None, None])
 
         if filename is None: return
@@ -315,7 +316,7 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
 
         self.__shorten()
 
-    def __separator_func(self, model, iter):
+    def __separator_func(self, model, iter, userdata):
         return model[iter][1] is None
 
     def __shorten(self):
