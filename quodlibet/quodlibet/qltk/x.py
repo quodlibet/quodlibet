@@ -169,7 +169,7 @@ def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0):
 
 def MenuItem(label, stock_id):
     """An ImageMenuItem with a custom label and stock image."""
-    item = Gtk.ImageMenuItem(label=label)
+    item = Gtk.ImageMenuItem.new_with_mnemonic(label)
     item.set_image(Gtk.Image(stock=stock_id, icon_size=Gtk.IconSize.MENU))
     return item
 
