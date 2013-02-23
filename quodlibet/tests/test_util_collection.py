@@ -7,6 +7,9 @@ from tests import TestCase, add
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
+from quodlibet.util.collection import HashedList
+from quodlibet.library.libraries import FileLibrary
+
 
 NUMERIC_SONGS = [
     Fakesong({"~filename": "fake1.mp3",
@@ -220,6 +223,68 @@ class TAlbum(TestCase):
 add(TAlbum)
 
 
+class THashedList(TestCase):
+    def test_init(self):
+        l = HashedList([1, 2, 3])
+        self.failUnless(1 in l)
+
+        l = HashedList()
+        self.failIf(1 in l)
+
+    def test_length(self):
+        l = HashedList([1, 2, 3, 3])
+        self.failUnlessEqual(len(l), 4)
+
+    def test_insert(self):
+        l = HashedList([1, 2, 3, 3])
+        l.insert(0, 3)
+        self.failUnlessEqual(len(l), 5)
+
+    def test_delete(self):
+        l = HashedList([2, 2])
+        self.failUnless(2 in l)
+        del l[0]
+        self.failUnless(2 in l)
+        del l[0]
+        self.failIf(2 in l)
+
+    def test_iter(self):
+        l = HashedList([1, 2, 3, 3])
+        new = [a for a in l]
+        self.failUnlessEqual(new, [1, 2, 3, 3])
+
+    def test_del_slice(self):
+        l = HashedList([1, 2, 3, 3])
+        del l[1:3]
+        self.failUnlessEqual(len(l), 2)
+        self.failUnless(1 in l)
+        self.failUnless(3 in l)
+        self.failIf(2 in l)
+
+    def test_set_slice(self):
+        l = HashedList([1, 2, 3, 3])
+        l[:3] = [4]
+        self.failUnless(4 in l)
+        self.failUnless(3 in l)
+        self.failIf(2 in l)
+
+    def test_extend(self):
+        l = HashedList()
+        l.extend([1, 1, 2])
+        self.failUnless(1 in l)
+        self.failUnlessEqual(len(l), 3)
+
+    def test_duplicates(self):
+        l = HashedList()
+        self.failIf(l.has_duplicates())
+        l = HashedList(range(10))
+        self.failIf(l.has_duplicates())
+        l.append(5)
+        self.failUnless(l.has_duplicates())
+
+add(THashedList)
+
+
 class TPlaylist(TestCase):
     TWO_SONGS = [
         Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
@@ -234,6 +299,33 @@ class TPlaylist(TestCase):
         shutil.rmtree(self.temp)
         shutil.rmtree(self.temp2)
 
+    def test_masked_handling(self):
+        # playlists can contain songs and paths for masked handling..
+        pl = Playlist(self.temp, "playlist")
+        song = Fakesong({"date": "2038", "~filename": "/fake"})
+        song.sanitize()
+        lib = FileLibrary("foobar")
+        lib.add([song])
+
+        # mask and update
+        lib.mask("/")
+        pl.append(song)
+        pl.remove_songs([song], lib)
+        self.failUnless("/fake" in pl)
+
+        pl.extend(self.TWO_SONGS)
+
+        # check if collections can handle the mix
+        self.failUnlessEqual(pl("date"), "2038")
+
+        # unmask and update
+        lib.unmask("/")
+        pl.add_songs(["/fake"], lib)
+        self.failUnless(song in pl)
+
+        pl.delete()
+        lib.destroy()
+
     def test_equality(s):
         pl = Playlist(s.temp, "playlist")
         pl2 = Playlist(s.temp, "playlist")
@@ -243,6 +335,10 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl, pl3)
         pl4 = Playlist(s.temp, "foobar")
         s.failIfEqual(pl, pl4)
+        pl.delete()
+        pl2.delete()
+        pl3.delete()
+        pl4.delete()
 
     def test_index(s):
         pl = Playlist(s.temp, "playlist")
@@ -258,6 +354,7 @@ class TPlaylist(TestCase):
             pl.index(Fakesong({}))
             s.fail()
         except ValueError: pass
+        pl.delete()
 
     def test_internal_tags(s):
         pl = Playlist(s.temp, "playlist")
@@ -271,6 +368,7 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl.comma(""), "")
         s.failUnlessEqual(pl.comma("~"), "")
         s.failUnlessEqual(pl.get("~#"), "")
+        pl.delete()
 
     def test_numeric_ops(s):
         songs = NUMERIC_SONGS
@@ -294,6 +392,7 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl.get("~#year"), 33)
         s.failUnlessEqual(pl.get("~#rating"), 0.3)
         s.failUnlessEqual(pl.get("~#originalyear"), 2002)
+        pl.delete()
 
     def test_listlike(s):
         pl = Playlist(s.temp, "playlist")
@@ -301,29 +400,29 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(NUMERIC_SONGS[0], pl[0])
         s.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
         s.failUnless(NUMERIC_SONGS[1] in pl)
+        pl.delete()
 
     def test_playlists_featuring(s):
-        Playlist._remove_all()
-        Playlist._clear_global_cache()
         pl = Playlist(s.temp, "playlist")
         pl.extend(NUMERIC_SONGS)
         playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
-        s.failUnlessEqual(playlists, set([pl]))
+        s.failUnlessEqual(set(playlists), set([pl]))
         # Now add a second one, check that instance tracking works
         pl2 = Playlist(s.temp, "playlist2")
         pl2.append(NUMERIC_SONGS[0])
         playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
-        s.failUnlessEqual(playlists, set([pl, pl2]))
+        s.failUnlessEqual(set(playlists), set([pl, pl2]))
+        pl.delete()
+        pl2.delete()
 
     def test_playlists_tag(self):
         # Arguably belongs in _audio
         songs = NUMERIC_SONGS
-        Playlist._remove_all()
-        Playlist._clear_global_cache()
         pl_name = "playlist 123!"
         pl = Playlist(self.temp, pl_name)
         pl.extend(songs)
         for song in songs:
             self.assertEquals(pl_name, song("~playlists"))
+        pl.delete()
 
 add(TPlaylist)
