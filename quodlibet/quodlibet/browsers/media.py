@@ -187,19 +187,19 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         view.append_column(col)
 
         render = Gtk.CellRendererPixbuf()
-        col.pack_start(render, False, True, 0)
+        col.pack_start(render, False)
         col.add_attribute(render, 'icon-name', 1)
 
         self.__render = render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.connect('edited', self.__edited)
-        col.pack_start(render, True, True, 0)
+        col.pack_start(render, True)
         col.set_cell_data_func(render, MediaDevices.cell_data)
 
         hbox = Gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
         if main:
-            self.pack_start(Alignment(hbox, left=3, bottom=3), expand=False)
+            self.pack_start(Alignment(hbox, left=3, bottom=3), False, True, 0)
         else:
             self.pack_start(hbox, False, True, 0)
 
@@ -237,7 +237,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
         self.accelerators = Gtk.AccelGroup()
         key, mod = Gtk.accelerator_parse('F2')
-        self.accelerators.connect_group(key, mod, 0, self.__rename)
+        # FIXME: GIPORT
+        # self.accelerators.connect_group(key, mod, 0, self.__rename)
 
         self.__statusbar = WaitLoadBar()
 

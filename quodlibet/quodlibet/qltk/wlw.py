@@ -188,7 +188,7 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
             Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.MENU))
 
         self.pack_start(self._label, True, True, 0)
-        self.pack_start(self._progress, expand=False, padding=6)
+        self.pack_start(self._progress, False, True, 6)
         self.pack_start(self._pause_button, False, True, 0)
         self.pack_start(self._cancel_button, False, True, 0)
 
