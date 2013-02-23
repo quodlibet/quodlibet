@@ -4,6 +4,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+
 """
 Librarians for libraries.
 """
@@ -11,6 +12,7 @@ Librarians for libraries.
 import gobject
 import itertools
 from quodlibet.util.dprint import print_d
+
 
 class Librarian(gobject.GObject):
     """The librarian is a nice interface to all active libraries.
@@ -83,13 +85,18 @@ class Librarian(gobject.GObject):
     def __getitem__(self, key):
         """Find a item given its key."""
         for library in self.libraries.itervalues():
-            try: return library[key]
-            except KeyError: pass
-        else: raise KeyError, key
+            try:
+                return library[key]
+            except KeyError:
+                pass
+        else:
+            raise KeyError(key)
 
     def get(self, key, default=None):
-        try: return self[key]
-        except KeyError: return default
+        try:
+            return self[key]
+        except KeyError:
+            return default
 
     def remove(self, items):
         """Remove items from all libraries."""
@@ -101,7 +108,8 @@ class Librarian(gobject.GObject):
         for library in self.libraries.itervalues():
             if item in library:
                 return True
-        else: return False
+        else:
+            return False
 
     def __iter__(self):
         """Iterate over all items in all libraries."""
@@ -147,9 +155,12 @@ class SongLibrarian(Librarian):
         re_add = []
         print_d("Renaming %r to %r" % (song.key, newname), self)
         for library in self.libraries.itervalues():
-            try: del(library._contents[song.key])
-            except KeyError: pass
-            else: re_add.append(library)
+            try:
+                del library._contents[song.key]
+            except KeyError:
+                pass
+            else:
+                re_add.append(library)
         song.rename(newname)
         for library in re_add:
             library._contents[song.key] = song
@@ -164,11 +175,16 @@ class SongLibrarian(Librarian):
         re_add = []
         print_d("Reloading %r" % item.key, self)
         for library in self.libraries.itervalues():
-            try: del(library._contents[item.key])
-            except KeyError: pass
-            else: re_add.append(library)
-        try: library = re_add[0]
-        except IndexError: return
+            try:
+                del library._contents[item.key]
+            except KeyError:
+                pass
+            else:
+                re_add.append(library)
+        try:
+            library = re_add[0]
+        except IndexError:
+            return
         # Rely on the first library in the list to do the actual
         # load, then just inform the other libraries what happened.
         was_changed, was_removed = library._load_item(item)
