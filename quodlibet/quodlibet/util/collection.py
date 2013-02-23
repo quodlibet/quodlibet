@@ -17,7 +17,8 @@ from quodlibet import const
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
 from quodlibet.util.dprint import print_d
-from collections import Iterable
+from collections import Iterable, MutableSequence, defaultdict
+
 
 ELPOEP = list(reversed(PEOPLE))
 PEOPLE_SCORE = [100**i for i in xrange(len(PEOPLE))]
@@ -309,19 +310,86 @@ class Album(Collection):
         return "Album(%s)" % repr(self.key)
 
 
+class HashedList(MutableSequence):
+    """A list like that can only take hashable items and provides fast
+    membership tests.
+
+    Can handle duplicates entries.
+    """
+
+    def __init__(self, arg=None):
+        self._map = defaultdict(int)
+        if arg is None:
+            self._data = []
+            return
+
+        self._data = list(arg)
+        for item in arg:
+            self._map[item] += 1
+
+    def __setitem__(self, index, item):
+        old_items = self._data[index]
+        if not isinstance(index, slice):
+            old_items = [old_items]
+
+        for old in old_items:
+            self._map[old] -= 1
+            if not self._map[old]:
+                del self._map[old]
+
+        self._data[index] = item
+
+        items = item
+        if not isinstance(index, slice):
+            items = [items]
+
+        for item in items:
+            self._map[item] += 1
+
+    def __getitem__(self, index):
+        return self._data[index]
+
+    def __delitem__(self, index):
+        items = self._data[index]
+        if not isinstance(index, slice):
+            items = [items]
+        for item in items:
+            self._map[item] -= 1
+            if not self._map[item]:
+                del self._map[item]
+        del self._data[index]
+
+    def __len__(self):
+        return len(self._data)
+
+    def insert(self, index, item):
+        self._data.insert(index, item)
+        self._map[item] += 1
+
+    def __contains__(self, item):
+        return item in self._map
+
+    def __iter__(self):
+        for item in self._data:
+            yield item
+
+    def has_duplicates(self):
+        """If any item is contained more then once"""
+
+        return len(self._map) != len(self)
+
+    def __repr__(self):
+        return repr(self._data)
+
+
 class Playlist(Collection, Iterable):
     """A Playlist is a `Collection` that has list-like features
     Songs can appear more than once.
-    """
-    __instances = []
-    _song_map_cache = {}
-    _hits = 0
-    _misses = 0
 
-    @classmethod
-    def _remove_all(cls):
-        """De-registers all instances of Playlists"""
-        cls.__instances = []
+    TODO: Fix this crap
+    """
+
+    __instances = []
 
     quote = staticmethod(util.escape_filename)
     unquote = staticmethod(util.unescape_filename)
@@ -355,141 +423,91 @@ class Playlist(Collection, Iterable):
         return playlist
 
     @classmethod
-    def _uncached_playlists_featuring(cls, song):
-        """Returns the set of playlists this song appears in"""
-        ret = set([])
-        for pl in cls.__instances:
-            if song in pl: ret.add(pl)
-        return ret
-
-    @classmethod
-    def _cached_playlists_featuring(cls, song):
-        """Returns the set of playlists this song appears in,
+    def playlists_featuring(cls, song):
+        """Returns the list of playlists this song appears in,
         using a global cache of unlimited size"""
-        try:
-            playlists = cls._song_map_cache[song]
-            cls._hits += 1
-        except KeyError:
-            cls._misses += 1
-            playlists = set([])
-            if cls.__instances:
-                for pl in cls.__instances:
-                    if song in pl: playlists.add(pl)
-                if not len(cls._song_map_cache) % 500:
-                    print_d("Cache for %d playlists, of %d entries, is at %d KB"
-                            %  (len(cls.__instances),
-                                len(cls._song_map_cache),
-                                cls._get_cache_size()))
-                cls._song_map_cache[song] = playlists
+
+        playlists = []
+        for instance in cls.__instances:
+            if song in instance._list:
+                playlists.append(instance)
         return playlists
-
-    # Default to using the cached version
-    playlists_featuring = _cached_playlists_featuring
-
-    def __add_song_to_cache(self, song):
-        print_d("Pre-caching \"%s\"..." % song("~filename"))
-        try:
-            playlists = self._song_map_cache[song]
-            playlists.add(self)
-        except KeyError:
-            playlists = set([self])
-            self._song_map_cache[song] = playlists
-
-    def __remove_from_cache(self, song):
-        """Removes this playlist from the global cache for `song`"""
-        print_d("Evicting \"%s\" from cache for \"%s\"..." %
-                (self.name, song['~filename']))
-        try:
-            self._song_map_cache[song].remove(self)
-            # This may not be good. Depends how much songs come in and out
-            if not self._song_map_cache[song]:
-                del self._song_map_cache[song]
-        except (KeyError, IndexError): return
-
-    @classmethod
-    def _clear_global_cache(cls):
-        """Clears the entire song -> playlists cache"""
-        cls._song_map_cache = {}
-
-    @classmethod
-    def _get_cache_size(cls):
-        """Returns size in KB of current cache. For debugging mainly."""
-        return cls._song_map_cache.__sizeof__() / 1024
-
 
     # List-like methods, for compatibilty with original Playlist class.
     def extend(self, songs):
-        self.songs.extend(songs)
-        for song in songs:
-            self.__add_song_to_cache(song)
+        self._list.extend(songs)
 
     def append(self, song):
-        self.__add_song_to_cache(song)
-        return self.songs.append(song)
+        return self._list.append(song)
 
     def clear(self):
-        print_d("Removing all songs from \"%s\"" % self.name)
-        for song in self.songs:
-            self.__remove_from_cache(song)
-        del self.songs[:]
+        del self._list[:]
 
     def __iter__(self):
-        return iter(self.songs)
+        return iter(self._list)
 
     def __len__(self):
-        return len(self.songs)
+        return len(self._list)
 
-    def __getitem__(self, item):
-        # Support slices
-        return self.songs.__getitem__(item)
+    def __getitem__(self, index):
+        return self._list[index]
 
     def index(self, value):
-        return self.songs.index(value)
+        return self._list.index(value)
 
     def __setitem__(self, key, value):
-        # TODO: more intelligent cache management
-        for song in self.songs:
-            self.__remove_from_cache(song)
-        self.songs.__setitem__(key, value)
-        for song in self.songs:
-            self.__add_song_to_cache(song)
+        self._list[key] = value
+
+    @property
+    def songs(self):
+        return [s for s in self._list if not isinstance(s, basestring)]
 
     def __init__(self, dir, name, library=None):
         super(Playlist, self).__init__()
+        self.__instances.append(self)
+
         if isinstance(name, unicode) and os.name != "nt":
             name = name.encode('utf-8')
+
         self.name = name
         self.dir = dir
-        self.songs = []
-        self.__instances.append(self)
+        self._list = HashedList()
+
         basename = self.quote(name)
         try:
             for line in file(os.path.join(self.dir, basename), "r"):
                 line = util.fsnative(line.rstrip())
                 if line in library:
-                    self.songs.append(library[line])
+                    self._list.append(library[line])
+                elif library and library.masked(line):
+                    self._list.append(line)
         except IOError:
-            if self.name: self.write()
+            if self.name:
+                self.write()
 
     def rename(self, newname):
-        if isinstance(newname, unicode): newname = newname.encode('utf-8')
-        if newname == self.name: return
+        if isinstance(newname, unicode):
+            newname = newname.encode('utf-8')
+
+        if newname == self.name:
+            return
         elif os.path.exists(os.path.join(self.dir, self.quote(newname))):
             raise ValueError(
                 _("A playlist named %s already exists.") % newname)
         else:
-            try: os.unlink(os.path.join(self.dir, self.quote(self.name)))
-            except EnvironmentError: pass
+            try:
+                os.unlink(os.path.join(self.dir, self.quote(self.name)))
+            except EnvironmentError:
+                pass
             self.name = newname
             self.write()
 
     def add_songs(self, filenames, library):
         changed = False
         for i in range(len(self)):
-            if isinstance(self[i], basestring) and self.songs[i] in filenames:
-                song = self.songs[i] = library[self.songs[i]]
+            if isinstance(self[i], basestring) and self._list[i] in filenames:
+                song = self._list[i] = library[self._list[i]]
                 changed = True
-                self.__add_song_to_cache(song)
         return changed
 
     def remove_songs(self, songs, library, leave_dupes=False):
@@ -499,26 +517,30 @@ class Playlist(Collection, Iterable):
         """
         changed = False
         for song in songs:
-            while song in self.songs:
-                print_d("Removing \"%s\" from playlist \"%s\"..."
-                        % (song["~filename"], self.name))
-                self.songs.remove(song)
-                if leave_dupes:
-                    changed = True
-                    break
+            # TODO: document the "library.masked" business
+            if library.masked(song):
+                while True:
+                    try:
+                        self._list[self.index(song)] = song("~filename")
+                    except ValueError:
+                        break
+                    else:
+                        changed = True
             else:
-                changed = True
-            # Evict song from cache entirely
-            try:
-                del self._song_map_cache[song]
-                print_d("Removed playlist cache for \"%s\"" % song["~filename"])
-            except KeyError: pass
+                while song in self._list:
+                    self._list.remove(song)
+                    if leave_dupes:
+                        changed = True
+                        break
+                else:
+                    changed = True
         return changed
 
     def has_songs(self, songs):
+        # TODO(rm): consider the "library.masked" business
         some, all = False, True
         for song in songs:
-            found = song in self.songs
+            found = song in self._list
             some = some or found
             all = all and found
             if some and not all:
@@ -529,12 +551,15 @@ class Playlist(Collection, Iterable):
         self.clear()
         try: os.unlink(os.path.join(self.dir, self.quote(self.name)))
         except EnvironmentError: pass
+        if self in self.__instances:
+            self.__instances.remove(self)
 
     def write(self):
         basename = self.quote(self.name)
         f = file(os.path.join(self.dir, basename), "w")
-        for song in self:
-            f.write(util.fsencode(song("~filename")) + "\n")
+        for song in self._list:
+            try: f.write(util.fsencode(song("~filename")) + "\n")
+            except TypeError: f.write(song + "\n")
         f.close()
 
     def format(self):
@@ -551,18 +576,14 @@ class Playlist(Collection, Iterable):
 
     def has_duplicates(self):
         """Returns True if there are any duplicated files in this playlist"""
-        unique = set()
-        for s in self:
-            if s in unique: return False
-            else: unique.add(s)
-        return True
+        return self._list.has_duplicates()
 
     def shuffle(self):
         """
         Randomly shuffles this playlist, permanently.
         Currently this is unweighted
         """
-        random.shuffle(self.songs)
+        random.shuffle(self._list)
         self.write()
 
     def __cmp__(self, other):
