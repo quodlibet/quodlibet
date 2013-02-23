@@ -9,7 +9,7 @@
 import re
 import operator
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GObject, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import qltk
@@ -60,11 +60,11 @@ class PatternEditor(Gtk.VBox):
         group = None
         for tags in self.PRESETS:
             tied = "~" + "~".join(tags)
-            group = Gtk.RadioButton(group, "_" + tag(tied))
+            group = Gtk.RadioButton.new_with_mnemonic_from_widget(group, "_" + tag(tied))
             headers[group] = tags
             buttons.append(group)
 
-        group = Gtk.RadioButton(group, _("_Custom"))
+        group = Gtk.RadioButton.new_with_mnemonic_from_widget(group, _("_Custom"))
         self.__custom = group
         headers[group] = []
         buttons.append(group)
@@ -377,6 +377,8 @@ class Pane(AllTreeView):
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets,
                              Gdk.DragAction.COPY)
         self.connect("drag-data-get", self.__drag_data_get)
@@ -699,7 +701,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         #s = self.accelerators.connect_group(keyval, mod, 0, self.__all)
         self.connect_object('destroy',
                             self.accelerators.disconnect_key, keyval, mod)
-        select = Gtk.Button(_("Select _All"))
+        select = Gtk.Button(_("Select _All"), use_underline=True)
         self._sb_box.pack_start(select, False, True, 0)
 
         prefs = Gtk.Button()
