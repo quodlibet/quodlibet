@@ -320,16 +320,8 @@ class AudioFile(dict):
                 # See Issue 876
                 # Avoid circular references from formats/__init__.py
                 from quodlibet.util.collection import Playlist
-                try:
-                    start = time.time()
-                    playlists = Playlist.playlists_featuring(self)
-                    import random
-                    if not random.randint(0, 1000):
-                        print_d("A sample song('~playlists') call: took %d μs "
-                                % (1E6 * (time.time() - start)))
-                    return "\n".join([s.name for s in playlists])
-                except KeyError:
-                    return default
+                playlists = Playlist.playlists_featuring(self)
+                return "\n".join([s.name for s in playlists]) or default
             elif key.startswith("#replaygain_"):
                 try:
                     val = self.get(key[1:], default)

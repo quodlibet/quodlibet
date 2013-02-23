@@ -1,4 +1,5 @@
 import tempfile
+import shutil
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.util.collection import Playlist
 from tests import TestCase, add
@@ -6,11 +7,15 @@ from random import randint
 from timeit import timeit,default_timer
 from quodlibet import const
 
-PLAYLISTS = tempfile.gettempdir()
-
 const.DEBUG = True
 
 class TPlaylistPerformance(TestCase):
+    def setUp(self):
+        self.temp = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp)
+
     def test_playlists_featuring_performance(s):
         """Basic performance tests for `playlists_featuring()`
 
@@ -41,9 +46,8 @@ class TPlaylistPerformance(TestCase):
         library = []
 
         def setup():
-            Playlist._remove_all()
             for i in xrange(NUM_PLAYLISTS):
-                pls.append(Playlist(PLAYLISTS, "List %d" % (i+1)))
+                pls.append(Playlist(s.temp, "List %d" % (i+1)))
             for i in xrange(NUM_SONGS):
                 a = ARTISTS[randint(0,2)]
                 t = "Song %d" % i
@@ -72,30 +76,15 @@ class TPlaylistPerformance(TestCase):
                 # s.failUnless(song in list(playlists)[0])
 
         REPEATS = 2
-        func = Playlist._uncached_playlists_featuring
-        print_d("Using %d songs and %d playlists, with 1 in %d songs "
-              "in %d playlist(s) => each playlist has %d songs. "
-              %  (NUM_SONGS, NUM_PLAYLISTS,
-                  SONGS_TO_PLAYLIST_SIZE_RATIO,
-                  PLAYLISTS_PER_PLAYLISTED_SONG,
-                  PLAYLISTS_PER_PLAYLISTED_SONG * NUM_SONGS
-                  / (SONGS_TO_PLAYLIST_SIZE_RATIO * NUM_PLAYLISTS)))
-        print_d("Timing basic get_playlists_featuring()... ")
-        duration = timeit(get_playlists, "pass", default_timer, REPEATS)
-        print_d("averages %.1f ms" % (duration * 1000.0 / REPEATS))
 
         # Now try caching version
-        func = Playlist._cached_playlists_featuring
+        func = Playlist.playlists_featuring
         print_d("Timing cached get_playlists_featuring()...")
         cold = timeit(get_playlists, "pass", default_timer, 1)
         # And now it's warmed up...
-        print_d("cold: averages %.1f ms" % (cold* 1000.0))
+        print_w("cold: averages %.1f ms" % (cold* 1000.0))
         warm = timeit(get_playlists, "pass", default_timer, REPEATS -1)
-        print_d("warm: averages %.1f ms (speedup = %.1f X)"
+        print_w("warm: averages %.1f ms (speedup = %.1f X)"
               % (warm * 1000.0 / (REPEATS-1), cold/warm))
-        print_d("Cache hits = %d, misses = %d (%d%% hits). Size of cache=%.2f KB"
-              % (Playlist._hits, Playlist._misses,
-                 Playlist._hits * 100 / (Playlist._misses + Playlist._hits),
-                 Playlist._get_cache_size()))
 
 add(TPlaylistPerformance)
