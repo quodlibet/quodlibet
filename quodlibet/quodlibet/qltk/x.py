@@ -20,55 +20,79 @@ class ScrolledWindow(Gtk.ScrolledWindow):
     __gsignals__ = {'size-allocate': 'override'}
 
     def do_size_allocate(self, alloc):
-        if self.get_shadow_type() != gtk.SHADOW_NONE:
-            ywidth = self.style.ythickness
-            xwidth = self.style.xthickness
+        if self.get_shadow_type() == Gtk.ShadowType.NONE:
+            return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
-            # Don't remove the border if the border is drawn inside
-            # and the scrollbar on that edge is visible
-            bottom = left = right = top = False
-            if not self.style_get_property("scrollbars-within-bevel"):
-                placement = self.get_placement()
-                h, v = self.get_hscrollbar(), self.get_vscrollbar()
-                get_visible = lambda w: w.flags() & gtk.VISIBLE
-                hscroll = h and get_visible(h) and sum(h.size_request())
-                vscroll = v and get_visible(v) and sum(v.size_request())
+        toplevel = self.get_toplevel()
+        top_window = toplevel.get_window()
+        window = self.get_window()
 
-                if placement == gtk.CORNER_TOP_LEFT:
-                    bottom = hscroll
-                    right = vscroll
-                elif placement == gtk.CORNER_BOTTOM_LEFT:
-                    right = vscroll
-                    top = hscroll
-                elif placement == gtk.CORNER_TOP_RIGHT:
-                    bottom = hscroll
-                    left = vscroll
-                elif placement == gtk.CORNER_BOTTOM_RIGHT:
-                    left = vscroll
-                    top = hscroll
+        if not window:
+            GObject.idle_add(self.queue_resize)
+            return Gtk.Notebook.do_size_allocate(self, alloc)
 
-            parent = self.get_parent_window()
-            if parent:
-                width, height = parent.get_size()
-                if alloc.y + alloc.height == height and not bottom:
-                    alloc.height += ywidth
+        dummy, x1, y1 = top_window.get_origin()
+        dummy, x2, y2 = window.get_origin()
+        dx = x2 - x1
+        dy = y2 - y1
 
-                if alloc.x + alloc.width == width and not right:
-                    alloc.width += xwidth
-            else:
-                gobject.idle_add(self.queue_resize)
+        ctx = self.get_style_context()
+        border = ctx.get_border(self.get_state_flags())
 
-            if alloc.y == 0 and not top:
-                alloc.y -= ywidth
-                alloc.height += ywidth
+        # FIXME: GIPORT there is no border?... hardcode for now
+        border.left = border.top = border.right = border.bottom = 1
 
-            if alloc.x == 0 and not left:
-                alloc.x -= xwidth
-                alloc.width += xwidth
+        # Don't remove the border if the border is drawn inside
+        # and the scrollbar on that edge is visible
+        bottom = left = right = top = False
 
-        return gtk.ScrolledWindow.do_size_allocate(self, alloc)
-# FIXME: port ScrolledWindow
-ScrolledWindow = Gtk.ScrolledWindow
+        value = GObject.Value()
+        value.init(GObject.TYPE_BOOLEAN)
+        ctx.get_style_property("scrollbars-within-bevel", value)
+        scroll_within = value.get_boolean()
+        value.unset()
+
+        if scroll_within:
+            h, v = self.get_hscrollbar(), self.get_vscrollbar()
+            hscroll = vscroll = False
+            if h.get_visible():
+                req = h.size_request()
+                hscroll = bool(req.width + req.height)
+
+            if v.get_visible():
+                req = v.size_request()
+                vscroll = bool(req.width + req.height)
+
+            placement = self.get_placement()
+            if placement == Gtk.CornerType.TOP_LEFT:
+                bottom = hscroll
+                right = vscroll
+            elif placement == Gtk.CornerType.BOTTOM_LEFT:
+                right = vscroll
+                top = hscroll
+            elif placement == Gtk.CornerType.TOP_RIGHT:
+                bottom = hscroll
+                left = vscroll
+            elif placement == Gtk.CornerType.BOTTOM_RIGHT:
+                left = vscroll
+                top = hscroll
+
+        width, height = toplevel.get_size()
+        if alloc.y + alloc.height + dy == height and not bottom:
+            alloc.height += border.bottom
+
+        if alloc.x + alloc.width + dx == width and not right:
+            alloc.width += border.right
+
+        if alloc.y + dy == 0 and not top:
+            alloc.y -= border.top
+            alloc.height += border.top
+
+        if alloc.x + dx == 0 and not left:
+            alloc.x -= border.left
+            alloc.width += border.left
+
+        return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
 
 class Notebook(Gtk.Notebook):
@@ -80,7 +104,7 @@ class Notebook(Gtk.Notebook):
 
     def do_size_allocate(self, alloc):
         ctx = self.get_style_context()
-        border = ctx.get_border(Gtk.StateFlags.NORMAL)
+        border = ctx.get_border(self.get_state_flags())
 
         toplevel = self.get_toplevel()
         top_window = toplevel.get_window()
