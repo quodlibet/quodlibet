@@ -32,6 +32,19 @@ def unlink_many(elements):
     return True
 
 
+def recurse_bin(element):
+    objects = [element]
+
+    iter_ = element.iterate_recurse()
+    while 1:
+        status, value = iter_.next()
+        if status == Gst.IteratorResult.OK:
+            objects.append(value)
+        else:
+            break
+    return objects
+
+
 def GStreamerSink(pipeline):
     """Try to create a GStreamer pipeline:
     * Try making the pipeline (defaulting to gconfaudiosink or
@@ -137,11 +150,11 @@ class DeviceComboBox(Gtk.ComboBox):
 
     def __init__(self):
         model = Gtk.ListStore(str, str)
-        super(DeviceComboBox, self).__init__(model)
+        super(DeviceComboBox, self).__init__(model=model)
 
         cell = Gtk.CellRendererText()
         self.pack_start(cell, True)
-        self.set_cell_data_func(cell, self.__draw_device)
+        self.set_cell_data_func(cell, self.__draw_device, None)
 
         self.__sig = self.connect_object(
             'changed', self.__device_changed, model)
@@ -193,8 +206,8 @@ class DeviceComboBox(Gtk.ComboBox):
 
         base_sink = sink
 
-        if isinstance(sink, gst.Bin):
-            sink = list(sink.recurse())[-1]
+        if isinstance(sink, Gst.Bin):
+            sink = recurse_bin(sink)[-1]
 
         if hasattr(sink, "probe_property_name"):
             sink.probe_property_name("device")
@@ -204,14 +217,14 @@ class DeviceComboBox(Gtk.ComboBox):
                 sink.set_property("device", dev)
                 model.append(row=[dev, sink.get_property("device-name")])
 
-        base_sink.set_state(gst.STATE_NULL)
-        base_sink.get_state()
+        base_sink.set_state(Gst.State.NULL)
+        base_sink.get_state(0)
 
     def __device_changed(self, model):
         row = model[self.get_active_iter()]
         config.set("player", "gst_device", row[self.DEVICE])
 
-    def __draw_device(self, column, cell, model, it):
+    def __draw_device(self, column, cell, model, it, data):
         cell.set_property('text', model[it][self.NAME])
 
 

@@ -58,7 +58,7 @@ class ScanBox(Gtk.HBox):
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        sw.set_size_request(-1, max(sw.size_request()[1], 100))
+        sw.set_size_request(-1, max(sw.size_request().height, 100))
 
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
@@ -154,7 +154,7 @@ class PreferencesWindow(qltk.UniqueWindow):
                   ("date", _("_Date")),
                   ("~#length",_("_Length"))]]):
                 for i, (k, t) in enumerate(l):
-                    buttons[k] = Gtk.CheckButton(t)
+                    buttons[k] = Gtk.CheckButton(t, use_underline=True)
                     if k in checks:
                         buttons[k].set_active(True)
                         checks.remove(k)
@@ -187,7 +187,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             vbox.pack_start(t, False, True, 0)
 
             hbox = Gtk.HBox(spacing=6)
-            l = Gtk.Label(label=_("_Others:"))
+            l = Gtk.Label(label=_("_Others:"), use_underline=True)
             hbox.pack_start(l, False, True, 0)
             others = UndoEntry()
             if "~current" in checks: checks.remove("~current")
@@ -339,7 +339,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             # replaygain
             fallback_gain = config.getfloat("player", "fallback_gain", 0.0)
             adj = Gtk.Adjustment(fallback_gain, -12.0, 12.0, 0.5, 0.5, 0.0)
-            fb_spin = Gtk.SpinButton(adj)
+            fb_spin = Gtk.SpinButton(adjustment=adj)
             fb_spin.set_digits(1)
             fb_spin.connect('changed', self.__changed,
                             'player', 'fallback_gain')
@@ -355,7 +355,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             adj = Gtk.Adjustment(pre_amp_gain, -6, 6, 0.5, 0.5, 0.0)
             adj.connect('value-changed', self.__changed,
                         'player', 'pre_amp_gain')
-            pre_spin = Gtk.SpinButton(adj)
+            pre_spin = Gtk.SpinButton(adjustment=adj)
             pre_spin.set_digits(1)
             pre_spin.set_tooltip_text(
                 _("Scale volume for all songs by this value, "
@@ -452,7 +452,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             bayesian_factor = config.getfloat("settings",
                                               "bayesian_rating_factor", 0.0)
             adj = Gtk.Adjustment(bayesian_factor, 0.0, 10.0, 0.5, 0.5, 0.0)
-            bayes_spin = Gtk.SpinButton(adj)
+            bayes_spin = Gtk.SpinButton(adjustment=adj)
             bayes_spin.set_digits(1)
             bayes_spin.connect('changed', self.__changed_and_signal_library,
                     'settings', 'bayesian_rating_factor')

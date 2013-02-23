@@ -476,9 +476,9 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         model.append(row=[self.TYPE_NOCAT, Gtk.STOCK_DIRECTORY,
                           "nocat", _("No Category")])
 
-        def separator(model, iter):
+        def separator(model, iter, data):
             return model[iter][self.TYPE] == self.TYPE_SEP
-        view.set_row_separator_func(separator)
+        view.set_row_separator_func(separator, None)
 
         def search_func(model, column, key, iter, data):
             return key.lower() not in model[iter][column].lower()
@@ -510,7 +510,8 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         box.pack_start(search, True, True, 0)
         box.pack_start(button, False, True, 0)
         if main:
-            self.pack_start(Alignment(box, left=3, right=3, top=3))
+            self.pack_start(Alignment(box, left=3, right=3, top=3),
+                            True, True, 0)
         else:
             self.pack_start(box, True, True, 0)
         self.__filter_list = scrolled_window

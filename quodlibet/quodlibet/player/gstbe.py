@@ -74,11 +74,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         def scale_changed(scale):
             config.set("player", "gst_buffer", scale.get_value())
             if self.bin:
-                duration = int(scale.get_value() * 1000) * gst.MSECOND
+                duration = int(scale.get_value() * 1000) * Gst.MSECOND
                 self.bin.set_property('buffer-duration', duration)
 
         duration = config.getfloat("player", "gst_buffer")
-        scale = Gtk.HScale(Gtk.Adjustment(duration, 0.2, 10))
+        scale = Gtk.HScale.new(Gtk.Adjustment(duration, 0.2, 10))
         scale.set_value_pos(Gtk.PositionType.RIGHT)
         scale.set_show_fill_level(True)
         scale.connect('format-value', format_buffer)
@@ -210,7 +210,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         bufbin.set_state(Gst.State.READY)
         result, state, pending = bufbin.get_state(timeout=Gst.SECOND/2)
         if result == Gst.StateChangeReturn.FAILURE:
-            bufbin.set_state(gst.State.NULL)
+            bufbin.set_state(Gst.State.NULL)
             self.__destroy_pipeline()
             return False
 
@@ -332,7 +332,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     message)
                 context = pbutils.InstallPluginsContext()
                 pbutils.install_plugins_async([detail], context,
-                    lambda *args: gst.update_registry())
+                    lambda *args: Gst.update_registry())
 
         return True
 
@@ -438,8 +438,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     self.bin.set_state(Gst.State.PAUSED)
                 else:
                     # seekable streams (seem to) have a duration >= 0
-                    try: d = self.bin.query_duration(gst.FORMAT_TIME)[0]
-                    except gst.QueryError: d = -1
+                    ok, d = self.bin.query_duration(Gst.Format.TIME)
+                    if not ok:
+                        d = -1
 
                     if d >= 0:
                         self.bin.set_state(Gst.State.PAUSED)
@@ -484,16 +485,16 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if self.__init_pipeline():
             # ensure any pending state changes have completed and we have
             # at least paused state, so we can seek
-            state = self.bin.get_state(timeout=gst.SECOND/2)[1]
-            if state < gst.STATE_PAUSED:
-                self.bin.set_state(gst.STATE_PAUSED)
-                self.bin.get_state(timeout=gst.SECOND/2)
+            state = self.bin.get_state(timeout=Gst.SECOND/2)[1]
+            if state < Gst.State.PAUSED:
+                self.bin.set_state(Gst.State.PAUSED)
+                self.bin.get_state(timeout=Gst.SECOND/2)
 
             pos = max(0, int(pos))
-            gst_time = pos * gst.MSECOND
-            event = gst.event_new_seek(
-                1.0, gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH,
-                gst.SEEK_TYPE_SET, gst_time, gst.SEEK_TYPE_NONE, 0)
+            gst_time = pos * Gst.MSECOND
+            event = Gst.Event.new_seek(
+                1.0, Gst.Format.TIME, Gst.SeekFlags.FLUSH,
+                Gst.SeekType.SET, gst_time, Gst.SeekType.NONE, 0)
             if self.bin.send_event(event):
                 self._last_position = pos
                 self.emit('seek', self.song, pos)
@@ -542,7 +543,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
-            self._fill_stream(tags, librarian)
+            # FIXME: GIPORT
+            pass#self._fill_stream(tags, librarian)
         elif self.song and self.song.fill_metadata:
             pass
 
@@ -598,7 +600,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     @property
     def eq_bands(self):
-        if gst.element_factory_find('equalizer-10bands'):
+        if Gst.ElementFactory.find('equalizer-10bands'):
             return [29, 59, 119, 237, 474, 947, 1889, 3770, 7523, 15011]
         else:
             return []

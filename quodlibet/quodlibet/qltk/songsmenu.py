@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import qltk
 
@@ -234,7 +234,7 @@ class SongsMenu(Gtk.Menu):
             self.append(b)
 
         if delete:
-            b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE)
+            b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
             if callable(delete):
                 b.connect_object('activate', delete, songs)
             else:
@@ -252,7 +252,7 @@ class SongsMenu(Gtk.Menu):
                 'activate', SongProperties, librarian, songs, parent)
             self.append(b)
 
-            b = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_INFO)
+            b = Gtk.ImageMenuItem(Gtk.STOCK_INFO, use_stock=True)
             if accels is not None:
                 b.add_accelerator('activate', accels, ord('I'),
                                   Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE)

@@ -7,7 +7,7 @@
 
 import os
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GObject, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -80,11 +80,11 @@ class PatternEditor(Gtk.HBox):
         group = None
         for tags in self.PRESETS:
             tied = "~" + "~".join([t[0] for t in tags])
-            group = Gtk.RadioButton(group, "_" + util.tag(tied))
+            group = Gtk.RadioButton.new_with_mnemonic_from_widget(group, "_" + util.tag(tied))
             headers[group] = tags
             buttons.append(group)
 
-        group = Gtk.RadioButton(group, _("_Custom"))
+        group = Gtk.RadioButton.new_with_mnemonic_from_widget(group, _("_Custom"))
         self.__custom = group
         headers[group] = []
         buttons.append(group)
@@ -550,7 +550,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         model_filter.set_visible_func(self.__parse_query)
         view.set_model(model_filter)
 
-        def sort(model, i1, i2):
+        def sort(model, i1, i2, data):
             t1, t2 = model[i1][0], model[i2][0]
             if t1 is None or t2 is None:
                 # FIXME: why?
@@ -575,12 +575,12 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
 
         column = Gtk.TreeViewColumn("albums")
 
-        def cell_data(column, cell, model, iter_):
+        def cell_data(column, cell, model, iter_, data):
             markup = StoreUtils.get_markup(model, self.__model.tags, iter_)
             cell.markup = markup
             cell.set_property('markup', markup)
 
-        def cell_data_pb(column, cell, model, iter_):
+        def cell_data_pb(column, cell, model, iter_, data):
             album = StoreUtils.get_album(model, iter_)
             if album is None:
                 cell.set_property('stock_id', Gtk.STOCK_DIRECTORY)
@@ -619,7 +619,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         hbox.pack_start(prefs, False, True, 0)
 
         if main:
-            self.pack_start(Alignment(hbox, left=3, top=3), expand=False)
+            self.pack_start(Alignment(hbox, left=3, top=3), False, True, 0)
         else:
             self.pack_start(hbox, False, True, 0)
 
@@ -633,6 +633,8 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         view.connect("drag-data-get", self.__drag_data_get)
@@ -641,7 +643,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
 
         self.show_all()
 
-    def __parse_query(self, model, iter_):
+    def __parse_query(self, model, iter_, data):
         f, b = self.__filter, self.__bg_filter
         if f is None and b is None:
             return True

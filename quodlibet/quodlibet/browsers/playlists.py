@@ -129,12 +129,12 @@ class GetPlaylistName(GetStringDialog):
 class Menu(Gtk.Menu):
     def __init__(self, songs, parent=None):
         super(Menu, self).__init__()
-        i = Gtk.MenuItem(_("_New Playlist"))
+        i = Gtk.MenuItem(_("_New Playlist"), use_underline=True)
         i.connect_object('activate',
             self.__add_to_playlist, None, songs, parent)
         self.append(i)
         self.append(Gtk.SeparatorMenuItem())
-        self.set_size_request(int(i.size_request()[0] * 2), -1)
+        self.set_size_request(int(i.size_request().width * 2), -1)
 
         for playlist in Playlists.playlists():
             name = playlist.name
@@ -226,7 +226,7 @@ class Playlists(Gtk.VBox, Browser):
                     break
 
     @staticmethod
-    def cell_data(col, render, model, iter):
+    def cell_data(col, render, model, iter, data):
         render.markup = model[iter][0].format()
         render.set_property('markup', render.markup)
 
@@ -473,7 +473,7 @@ class Playlists(Gtk.VBox, Browser):
             playlist.shuffle()
             self.activate()
 
-        shuffle = Gtk.MenuItem(_("_Shuffle"))
+        shuffle = Gtk.MenuItem(_("_Shuffle"), use_underline=True)
         shuffle .connect_object('activate', _shuffle, model, itr)
         shuffle.set_sensitive(bool(len(model[itr][0])))
         menu.prepend(shuffle)
@@ -487,7 +487,7 @@ class Playlists(Gtk.VBox, Browser):
                 model.get_model().remove(
                     model.convert_iter_to_child_iter(None, itr))
 
-        rem = Gtk.ImageMenuItem(Gtk.STOCK_DELETE)
+        rem = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
         rem.connect_object('activate', _remove, model, itr)
         menu.prepend(rem)
 
@@ -529,7 +529,8 @@ class Playlists(Gtk.VBox, Browser):
         except ValueError, s:
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
-        else: self.__lists[path] = self.__lists[path]
+        else:
+            self.__lists[path] = self.__lists[path]
         render.set_property('editable', not self.__main)
 
     def __import(self, activator, library):
