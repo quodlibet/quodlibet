@@ -109,6 +109,9 @@ class Library(GObject.GObject, DictMixin):
     def iterkeys(self):
         return self._contents.iterkeys()
 
+    def itervalues(self):
+        return self._contents.itervalues()
+
     def __len__(self):
         """The number of items in the library."""
         return len(self._contents)
@@ -131,6 +134,9 @@ class Library(GObject.GObject, DictMixin):
 
     def keys(self):
         return self._contents.keys()
+
+    def values(self):
+        return self._contents.values()
 
     def _load_item(self, item):
         """Load (add) an item into this library"""
@@ -182,7 +188,7 @@ def dump_items(filename, items):
 
     with open(temp_filename, "wb") as fileobj:
         if fcntl is not None:
-          fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
+            fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
 
         # While protocol 2 is usually faster it uses __setitem__
         # for unpickle and we override it to clear the sort cache.
@@ -266,7 +272,8 @@ class PicklingMixin(object):
             for item in filter(skip, items):
                 self._contents[item.key] = item
         else:
-            map(self._load_item, items)
+            for item in items:
+                self._load_item(item)
 
         print_d("Done loading contents of %r." % filename, self)
 
@@ -321,7 +328,8 @@ class AlbumLibrary(Library):
         pass
 
     def destroy(self):
-        map(self._library.disconnect, [self._asig, self._rsig, self._csig])
+        for sig in [self._asig, self._rsig, self._csig]:
+            self._library.disconnect(sig)
 
     def _get(self, item):
         return self._contents.get(item)
@@ -349,8 +357,10 @@ class AlbumLibrary(Library):
             album.finalize()
 
         if signal:
-            if new: self.emit('added', new)
-            if changed: self.emit('changed', changed)
+            if new:
+                self.emit('added', new)
+            if changed:
+                self.emit('changed', changed)
 
     def __removed(self, library, items):
         changed = set()
@@ -369,8 +379,10 @@ class AlbumLibrary(Library):
         for album in changed:
             album.finalize()
 
-        if removed: self.emit('removed', removed)
-        if changed: self.emit('changed', changed)
+        if removed:
+            self.emit('removed', removed)
+        if changed:
+            self.emit('changed', changed)
 
     def __changed(self, library, items):
         """Album keys could change between already existing ones.. so we
@@ -384,7 +396,7 @@ class AlbumLibrary(Library):
             key = song.album_key
             if key in self._contents and song in self._contents[key].songs:
                 changed.add(self._contents[key])
-            else: # key changed.. look for it in each album
+            else:  # key changed.. look for it in each album
                 to_add.append(song)
                 for key, album in self._contents.iteritems():
                     if song in album.songs:
@@ -408,9 +420,12 @@ class AlbumLibrary(Library):
         for album in changed:
             album.finalize()
 
-        if removed: self.emit("removed", removed)
-        if changed: self.emit("changed", changed)
-        if new: self.emit("added", new)
+        if removed:
+            self.emit("removed", removed)
+        if changed:
+            self.emit("changed", changed)
+        if new:
+            self.emit("added", new)
 
 
 class SongLibrary(PicklingLibrary):
@@ -462,9 +477,12 @@ class SongLibrary(PicklingLibrary):
 
     def query(self, text, sort=None, star=Query.STAR):
         """Query the library and return matching songs."""
-        if isinstance(text, str): text = text.decode('utf-8')
-        if text == "": songs = self.values()
-        else: songs = filter(Query(text, star).search, self)
+        if isinstance(text, str):
+            text = text.decode('utf-8')
+
+        songs = self.values()
+        if text != "":
+            songs = filter(Query(text, star).search, songs)
         return songs
 
 
@@ -496,9 +514,12 @@ class FileLibrary(PicklingLibrary):
             # Either we should force a load, or the item is not okay.
             # We're going to reload; this could change the key.  So
             # remove the item if it's currently in.
-            try: del(self._contents[item.key])
-            except KeyError: present = False
-            else: present = True
+            try:
+                del(self._contents[item.key])
+            except KeyError:
+                present = False
+            else:
+                present = True
             # If the item still exists, reload it.
             if item.exists():
                 try:
@@ -562,7 +583,8 @@ class FileLibrary(PicklingLibrary):
         print_d("Rebuilding, force is %s." % force, self)
 
         task = Task(_("Library"), _("Checking mount points"))
-        if cofuncid: task.copool(cofuncid)
+        if cofuncid:
+            task.copool(cofuncid)
         for i, (point, items) in task.list(enumerate(self._masked.items())):
             if os.path.ismount(point):
                 self._contents.update(items)
@@ -571,7 +593,8 @@ class FileLibrary(PicklingLibrary):
                 yield True
 
         task = Task(_("Library"), _("Scanning library"))
-        if cofuncid: task.copool(cofuncid)
+        if cofuncid:
+            task.copool(cofuncid)
         changed, removed = [], []
         for i, (key, item) in task.list(enumerate(sorted(self.items()))):
             if key in self._contents and force or not item.valid():
@@ -611,7 +634,8 @@ class FileLibrary(PicklingLibrary):
             print_d("Scanning %r." % fullpath, self)
             desc = _("Scanning %s") % (util.unexpand(util.fsdecode(fullpath)))
             with Task(_("Library"), desc) as task:
-                if cofuncid: task.copool(cofuncid)
+                if cofuncid:
+                    task.copool(cofuncid)
                 fullpath = util.expanduser(fullpath)
                 if filter(fullpath.startswith, exclude):
                     continue
@@ -655,7 +679,8 @@ class FileLibrary(PicklingLibrary):
 
     def masked(self, item):
         """Return true if the item is in the library but masked."""
-        try: point = item.mountpoint
+        try:
+            point = item.mountpoint
         except AttributeError:
             # Checking a key.
             for point in self._masked.itervalues():
