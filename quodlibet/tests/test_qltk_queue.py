@@ -11,7 +11,7 @@ class TQueueExpander(TestCase):
     def setUp(self):
         quodlibet.config.init()
         player = NullPlayer()
-        self.queue = QueueExpander(gtk.CheckMenuItem(), SongLibrary(), player)
+        self.queue = QueueExpander(Gtk.CheckMenuItem(), SongLibrary(), player)
 
     def test_ctr(self):
         pass

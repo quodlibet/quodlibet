@@ -63,7 +63,7 @@ class ScanBox(Gtk.HBox):
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
-        def cdf(column, cell, model, iter):
+        def cdf(column, cell, model, iter, data):
             row = model[iter]
             cell.set_property('text', util.unexpand(row[0]))
 

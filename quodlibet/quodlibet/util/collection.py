@@ -302,7 +302,7 @@ class Album(Collection):
                 round = config.getboolean("albumart", "round")
                 self.cover = thumbnails.get_thumbnail(cover.name, (s, s))
                 self.cover = thumbnails.add_border(self.cover, 30, round)
-            except gobject.GError:
+            except GObject.GError:
                 return
 
     def __repr__(self):

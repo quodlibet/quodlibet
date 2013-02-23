@@ -33,6 +33,6 @@ class TTagsComboBoxEntry(TagsCombo):
     from quodlibet.qltk.tagscombobox import TagsComboBoxEntry as Kind
 
     def test_custom(self):
-        self.all.child.set_text("a new tag")
+        self.all.get_child().set_text("a new tag")
         self.failUnlessEqual(self.all.tag, "a new tag")
 add(TTagsComboBoxEntry)

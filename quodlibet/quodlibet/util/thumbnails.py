@@ -122,7 +122,7 @@ def get_thumbnail(path, boundary):
     # and too big thumbnails make no sense
     if path.startswith(tempfile.gettempdir()) or \
         width > 256 or height > 256 or mtime(path) == 0:
-        return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
+        return GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height)
 
     if width <= 128 and height <= 128:
         size_name = "normal"

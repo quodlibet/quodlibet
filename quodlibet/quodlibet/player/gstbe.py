@@ -5,18 +5,18 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gst
+
+import sys
+inited, sys.argv = Gst.init_check(sys.argv)
+if not inited:
+    raise ImportError("GStreamer init failed")
+
+# FIXME
+pbutils = None
+
 import os
 import threading
-
-import pygst
-pygst.require("0.10")
-
-import gst
-try:
-    from gst import pbutils
-except ImportError:
-    pbutils = None
 
 from quodlibet import config
 from quodlibet import const
@@ -29,14 +29,6 @@ from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import Button
-
-USE_PLAYBIN2 = gst.version() >= (0, 10, 24)
-
-if 'QUODLIBET_PLAYBIN1' in os.environ:
-    print_d("QUODLIBET_PLAYBIN1")
-    USE_PLAYBIN2 = False
-
-USE_TRACK_CHANGE = gst.version() >= (0, 10, 28)
 
 
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
@@ -70,11 +62,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             config.set('player', 'gst_pipeline', entry.get_text())
         e.connect('changed', changed)
 
-        pipe_label = gtk.Label(_('_Output pipeline:'))
+        pipe_label = Gtk.Label(label=_('_Output pipeline:'))
         pipe_label.set_use_underline(True)
         pipe_label.set_mnemonic_widget(e)
 
-        apply_button = gtk.Button(stock=gtk.STOCK_APPLY)
+        apply_button = Gtk.Button(stock=Gtk.STOCK_APPLY)
 
         def format_buffer(scale, value):
             return _("%.1f seconds") % value
@@ -86,19 +78,19 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 self.bin.set_property('buffer-duration', duration)
 
         duration = config.getfloat("player", "gst_buffer")
-        scale = gtk.HScale(gtk.Adjustment(duration, 0.2, 10))
-        scale.set_value_pos(gtk.POS_RIGHT)
+        scale = Gtk.HScale(Gtk.Adjustment(duration, 0.2, 10))
+        scale.set_value_pos(Gtk.PositionType.RIGHT)
         scale.set_show_fill_level(True)
         scale.connect('format-value', format_buffer)
         scale.connect('value-changed', scale_changed)
 
-        buffer_label = gtk.Label(_('_Buffer duration:'))
+        buffer_label = Gtk.Label(label=_('_Buffer duration:'))
         buffer_label.set_use_underline(True)
         buffer_label.set_mnemonic_widget(scale)
 
         device_combo = DeviceComboBox()
 
-        device_label = gtk.Label(_('_Output device:'))
+        device_label = Gtk.Label(label=_('_Output device:'))
         device_label.set_use_underline(True)
         device_label.set_mnemonic_widget(device_combo)
 
@@ -111,25 +103,25 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         widgets = [(pipe_label, e, apply_button),
                    (device_label, device_combo, None),
                    ]
-        if USE_PLAYBIN2:
-            widgets.append((buffer_label, scale, None))
 
-        table = gtk.Table(len(widgets), 3)
+        widgets.append((buffer_label, scale, None))
+
+        table = Gtk.Table(len(widgets), 3)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         for i, (left, middle, right) in enumerate(widgets):
             left.set_alignment(0.0, 0.5)
             table.attach(left, 0, 1, i, i + 1,
-                         xoptions=gtk.FILL | gtk.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
             if right:
                 table.attach(middle, 1, 2, i, i + 1)
                 table.attach(right, 2, 3, i, i + 1,
-                             xoptions=gtk.FILL | gtk.SHRINK)
+                             xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
             else:
                 table.attach(middle, 1, 3, i, i + 1)
 
-        vbox = gtk.VBox(spacing=6)
-        vbox.pack_start(table)
+        vbox = Gtk.VBox(spacing=6)
+        vbox.pack_start(table, True, True, 0)
 
         if const.DEBUG:
             def print_bin(player):
@@ -138,17 +130,16 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 else:
                     print_e("No active pipeline.")
 
-            b = Button("Print Pipeline", gtk.STOCK_DIALOG_INFO)
+            b = Button("Print Pipeline", Gtk.STOCK_DIALOG_INFO)
             b.connect_object('clicked', print_bin, self)
-            vbox.pack_start(b)
+            vbox.pack_start(b, True, True, 0)
 
         return vbox
 
     def __init__(self, librarian=None):
         GStreamerPluginHandler.__init__(self)
         super(GStreamerPlayer, self).__init__()
-        self.version_info = "GStreamer: %s / PyGSt: %s" % (
-            fver(gst.version()), fver(gst.pygst_version))
+        self.version_info = "GStreamer: %s" % fver(Gst.version())
         self._librarian = librarian
 
     def destroy(self):
@@ -174,7 +165,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if not pipeline:
             return False
 
-        if self._use_eq and gst.element_factory_find('equalizer-10bands'):
+        if self._use_eq and Gst.ElementFactory.find('equalizer-10bands'):
             # The equalizer only operates on 16-bit ints or floats, and
             # will only pass these types through even when inactive.
             # We push floats through to this point, then let the second
@@ -182,47 +173,44 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # pipeline supports. As a bonus, this seems to automatically
             # select the highest-precision format supported by the
             # rest of the chain.
-            filt = gst.element_factory_make('capsfilter')
+            filt = Gst.ElementFactory.make('capsfilter')
             filt.set_property('caps',
-                              gst.caps_from_string('audio/x-raw-float'))
-            eq = gst.element_factory_make('equalizer-10bands')
+                              Gst.Caps.from_string('audio/x-raw-float'))
+            eq = Gst.ElementFactory.make('equalizer-10bands')
             self._eq_element = eq
             self.update_eq_values()
-            conv = gst.element_factory_make('audioconvert')
+            conv = Gst.ElementFactory.make('audioconvert')
             pipeline = [filt, eq, conv] + pipeline
 
-        if USE_PLAYBIN2:
-            # playbin2 has started to control the volume through pulseaudio,
-            # which means the volume property can change without us noticing.
-            # Use our own volume element for now until this works with PA.
-            self._vol_element = gst.element_factory_make('volume')
-            pipeline.insert(0, self._vol_element)
+        # playbin2 has started to control the volume through pulseaudio,
+        # which means the volume property can change without us noticing.
+        # Use our own volume element for now until this works with PA.
+        self._vol_element = Gst.ElementFactory.make('volume', None)
+        pipeline.insert(0, self._vol_element)
 
         # Get all plugin elements and append audio converters.
         # playbin already includes one at the end
         plugin_pipeline = []
         for plugin in self._get_plugin_elements():
             plugin_pipeline.append(plugin)
-            plugin_pipeline.append(gst.element_factory_make('audioconvert'))
-            plugin_pipeline.append(gst.element_factory_make('audioresample'))
+            plugin_pipeline.append(Gst.ElementFactory.make('audioconvert', None))
+            plugin_pipeline.append(Gst.ElementFactory.make('audioresample', None))
         pipeline = plugin_pipeline + pipeline
 
-        bufbin = gst.Bin()
+        bufbin = Gst.Bin()
         map(bufbin.add, pipeline)
         if len(pipeline) > 1:
-            try:
-                gst.element_link_many(*pipeline)
-            except gst.LinkError, e:
+            if not link_many(pipeline):
                 print_w(
                     _("Could not link GStreamer pipeline: '%s'") % e)
                 self.__destroy_pipeline()
                 return False
 
         # Test to ensure output pipeline can preroll
-        bufbin.set_state(gst.STATE_READY)
-        result, state, pending = bufbin.get_state(timeout=gst.SECOND/2)
-        if result == gst.STATE_CHANGE_FAILURE:
-            bufbin.set_state(gst.STATE_NULL)
+        bufbin.set_state(Gst.State.READY)
+        result, state, pending = bufbin.get_state(timeout=Gst.SECOND/2)
+        if result == Gst.StateChangeReturn.FAILURE:
+            bufbin.set_state(gst.State.NULL)
             self.__destroy_pipeline()
             return False
 
@@ -230,59 +218,29 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         sink = pipeline[-1]
         set_sink_device(sink)
 
-        # Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=680252
-        # http://code.google.com/p/quodlibet/issues/detail?id=994
-        # Remove after this is ported to gst1.0!
-
-        # get the real sink
-        real_sink = sink
-        if isinstance(sink, gst.Bin):
-            real_sink = list(sink.recurse())[-1]
-
-        # if a discont happens resync without waiting, this happens
-        # on ogg -> flac transitions.
-        try:
-            real_sink.set_property("discont-wait", 0)
-        except TypeError:
-            pass
-
-        # The above removes jitter detection, so increase the drift-tolerance
-        # so we don't skip. We only do audio and don't care about sync.
-        # This value isn't maxed since the gstreamer code doesn't care about
-        # overflows.
-        try:
-            real_sink.set_property("drift-tolerance", 10**7)
-        except TypeError:
-            pass
-
         # Make the sink of the first element the sink of the bin
-        gpad = gst.GhostPad('sink', pipeline[0].get_pad('sink'))
+        gpad = Gst.GhostPad.new('sink', pipeline[0].get_static_pad('sink'))
         bufbin.add_pad(gpad)
 
-        if USE_PLAYBIN2:
-            self.bin = gst.element_factory_make('playbin2')
-            self.__atf_id = self.bin.connect('about-to-finish',
-                self.__about_to_finish)
-            duration = config.getfloat("player", "gst_buffer")
-            duration = int(duration * 1000) * gst.MSECOND
-            self.bin.set_property('buffer-duration', duration)
-        else:
-            self.bin = gst.element_factory_make('playbin')
-            self._vol_element = self.bin
+        self.bin = Gst.ElementFactory.make('playbin', None)
+        self.__atf_id = self.bin.connect('about-to-finish',
+            self.__about_to_finish)
+        duration = config.getfloat("player", "gst_buffer")
+        duration = int(duration * 1000) * Gst.MSECOND
+        self.bin.set_property('buffer-duration', duration)
 
         self.bin.set_property('audio-sink', bufbin)
 
         # by default playbin will render video -> suppress using fakesink
-        fakesink = gst.element_factory_make('fakesink')
+        fakesink = Gst.ElementFactory.make('fakesink', None)
         self.bin.set_property('video-sink', fakesink)
 
-        # disable all video/text decoding in playbin2
-        if USE_PLAYBIN2:
-            GST_PLAY_FLAG_VIDEO = 1 << 0
-            GST_PLAY_FLAG_TEXT = 1 << 2
-            flags = self.bin.get_property("flags")
-            flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
-            self.bin.set_property("flags", flags)
+        # disable all video/text decoding in playbin
+        GST_PLAY_FLAG_VIDEO = 1 << 0
+        GST_PLAY_FLAG_TEXT = 1 << 2
+        flags = self.bin.get_property("flags")
+        flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
+        self.bin.set_property("flags", flags)
 
         # ReplayGain information gets lost when destroying
         self.volume = self.volume
@@ -310,8 +268,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.__atf_id = False
 
         if self.bin:
-            self.bin.set_state(gst.STATE_NULL)
-            self.bin.get_state(timeout=gst.SECOND/2)
+            self.bin.set_state(Gst.State.NULL)
+            self.bin.get_state(timeout=Gst.SECOND/2)
             self.bin = None
 
         if self._task:
@@ -341,21 +299,21 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.seek(pos)
 
     def __message(self, bus, message, librarian):
-        if message.type == gst.MESSAGE_EOS:
+        if message.type == Gst.MessageType.EOS:
             print_d("Stream EOS")
             if not self._in_gapless_transition:
                 self._source.next_ended()
             self._end(False)
-        elif message.type == gst.MESSAGE_TAG:
+        elif message.type == Gst.MessageType.TAG:
             self.__tag(message.parse_tag(), librarian)
-        elif message.type == gst.MESSAGE_ERROR:
+        elif message.type == Gst.MessageType.ERROR:
             err, debug = message.parse_error()
             err = str(err).decode(const.ENCODING, 'replace')
             self._error(err)
-        elif message.type == gst.MESSAGE_BUFFERING:
+        elif message.type == Gst.MessageType.BUFFERING:
             percent = message.parse_buffering()
             self.__buffering(percent)
-        elif message.type == gst.MESSAGE_ELEMENT:
+        elif message.type == Gst.MessageType.ELEMENT:
             name = ""
             if hasattr(message.structure, "get_name"):
                 name = message.structure.get_name()
@@ -363,7 +321,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # This gets sent on song change. Because it is not in the docs
             # we can not rely on it. Additionally we check in get_position
             # which should trigger shortly after this.
-            if USE_TRACK_CHANGE and self._in_gapless_transition and \
+            if self._in_gapless_transition and \
                 name == "playbin2-stream-changed":
                     print_d("Stream changed")
                     self._end(False)
@@ -391,8 +349,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # push in the main loop and wait for it to finish
         event = threading.Event()
-        gobject.idle_add(change_in_main_loop, event, self._source,
-                         priority=gobject.PRIORITY_HIGH)
+        GObject.idle_add(change_in_main_loop, event, self._source,
+                         priority=GObject.PRIORITY_HIGH)
         event.wait()
 
         song = self._source.current
@@ -400,9 +358,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if song and bin:
             bin.set_property('uri', song("~uri"))
-
-        if not USE_TRACK_CHANGE:
-            gobject.idle_add(self._end, False)
 
     def stop(self):
         super(GStreamerPlayer, self).stop()
@@ -427,10 +382,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         or 0 if no song is playing."""
         p = self._last_position
         if self.song and self.bin:
-            try: p = self.bin.query_position(gst.FORMAT_TIME)[0]
-            except gst.QueryError: pass
-            else:
-                p //= gst.MSECOND
+            ok, p = self.bin.query_position(Gst.Format.TIME)
+            if ok:
+                p //= Gst.MSECOND
                 # During stream seeking querying the position fails.
                 # Better return the last valid one instead of 0.
                 self._last_position = p
@@ -460,9 +414,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self._inhibit_play = inhibit
         if inhibit:
-            self.bin.set_state(gst.STATE_PAUSED)
+            self.bin.set_state(Gst.State.PAUSED)
         elif not self.paused:
-            self.bin.set_state(gst.STATE_PLAYING)
+            self.bin.set_state(Gst.State.PLAYING)
 
     def _set_paused(self, paused):
         if paused == self._paused:
@@ -481,14 +435,14 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             if self.bin:
                 if self.song.is_file:
                     # fast path
-                    self.bin.set_state(gst.STATE_PAUSED)
+                    self.bin.set_state(Gst.State.PAUSED)
                 else:
                     # seekable streams (seem to) have a duration >= 0
                     try: d = self.bin.query_duration(gst.FORMAT_TIME)[0]
                     except gst.QueryError: d = -1
 
                     if d >= 0:
-                        self.bin.set_state(gst.STATE_PAUSED)
+                        self.bin.set_state(Gst.State.PAUSED)
                     else:
                         # destroy so that we rebuffer on resume
                         self.__destroy_pipeline()
@@ -496,10 +450,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             if self.bin:
                 # don't start while we are buffering
                 if not self._inhibit_play:
-                    self.bin.set_state(gst.STATE_PLAYING)
+                    self.bin.set_state(Gst.State.PLAYING)
             else:
                 if self.__init_pipeline():
-                    self.bin.set_state(gst.STATE_PLAYING)
+                    self.bin.set_state(Gst.State.PLAYING)
                 else:
                     # Backend error; show message and halt playback
                     ErrorMessage(None, _("Output Error"),
@@ -577,9 +531,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     self.paused = True
             if self.bin:
                 if self.paused:
-                    self.bin.set_state(gst.STATE_PAUSED)
+                    self.bin.set_state(Gst.State.PAUSED)
                 else:
-                    self.bin.set_state(gst.STATE_PLAYING)
+                    self.bin.set_state(Gst.State.PLAYING)
         else:
             self.__destroy_pipeline()
             self.paused = True
@@ -660,22 +614,22 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 self._eq_element.set_property('band%d' % band, val)
 
 def can_play_uri(uri):
-    return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
+    return Gst.Element.make_from_uri(Gst.URIType.SRC, uri, '') is not None
 
 def init(librarian):
     # Enable error messages by default
-    if gst.debug_get_default_threshold() == gst.LEVEL_NONE:
-        gst.debug_set_default_threshold(gst.LEVEL_ERROR)
+    if Gst.debug_get_default_threshold() == Gst.DebugLevel.NONE:
+        Gst.debug_set_default_threshold(Gst.DebugLevel.ERROR)
 
     # the fluendo decoder is twice as slow as mad, but wins
     # at autoplug because it has the same rank and f < m
     # -> put it slightly behind mad or leave it if it already is
-    flu, mad = map(gst.element_factory_find, ["flump3dec", "mad"])
+    flu, mad = map(Gst.ElementFactory.find, ["flump3dec", "mad"])
     if flu and mad:
         flu.set_rank(min(flu.get_rank(), max(mad.get_rank() - 1, 0)))
 
-    if gst.element_make_from_uri(
-        gst.URI_SRC,
+    if Gst.Element.make_from_uri(
+        Gst.URIType.SRC,
         "file:///fake/path/for/gst", ""):
         return GStreamerPlayer(librarian)
     else:

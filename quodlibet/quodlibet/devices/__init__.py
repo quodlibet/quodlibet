@@ -75,8 +75,8 @@ def get_by_protocols(protocols):
 
     return None
 
-class DeviceManager(gobject.GObject):
-    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+class DeviceManager(GObject.GObject):
+    SIG_PYOBJECT = (GObject.SignalFlags.RUN_LAST, None, (object,))
     __gsignals__ = {
         'removed': SIG_PYOBJECT,
         'added': SIG_PYOBJECT,

@@ -14,9 +14,9 @@ from quodlibet.util import mtime
 
 class TThumb(TestCase):
     def setUp(s):
-        s.wide = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, 150, 10)
-        s.high = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, 10, 100)
-        s.small = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, 10, 20)
+        s.wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
+        s.high = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
+        s.small = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
         s.filename = os.path.join(os.getcwd(), "test_thumbnail.png")
         s.wide.save(s.filename, "png")
 
@@ -56,7 +56,7 @@ class TThumb(TestCase):
         s.failUnless(os.path.isfile(path))
 
         #check for metadata
-        thumb_pb = gtk.gdk.pixbuf_new_from_file(path)
+        thumb_pb = GdkPixbuf.Pixbuf.new_from_file(path)
         meta_mtime = thumb_pb.get_option("tEXt::Thumb::MTime")
         meta_uri = thumb_pb.get_option("tEXt::Thumb::URI")
 

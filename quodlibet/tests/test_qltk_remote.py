@@ -49,7 +49,7 @@ class TFIFOControl(TestCase):
         config.init()
         self.p = NullPlayer()
         self.l = SongFileLibrary()
-        self.w = gtk.Window()
+        self.w = Gtk.Window()
         self.fifo = FIFOControl(self.l, self.w, self.p)
 
     def tearDown(self):
@@ -62,8 +62,8 @@ class TFIFOControl(TestCase):
         f = open(const.CONTROL, "wb")
         f.write(command)
         f.close()
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def test_player(self):
         self.__send("previous")

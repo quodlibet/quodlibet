@@ -10,7 +10,7 @@ from quodlibet.qltk.completion import LibraryValueCompletion
 class TEntryWordCompletion(TestCase):
     def test_ctr(self):
         w = EntryWordCompletion()
-        e = gtk.Entry()
+        e = Gtk.Entry()
         e.set_completion(w)
         self.failUnlessEqual(w.get_entry(), e)
         self.failUnlessEqual(e.get_completion(), w)
@@ -20,7 +20,7 @@ add(TEntryWordCompletion)
 class TLibraryTagCompletion(TestCase):
     def test_ctr(self):
         w = LibraryTagCompletion(SongLibrary())
-        e = gtk.Entry()
+        e = Gtk.Entry()
         e.set_completion(w)
         self.failUnlessEqual(w.get_entry(), e)
         self.failUnlessEqual(e.get_completion(), w)
@@ -36,7 +36,7 @@ class TLibraryValueCompletion(TestCase):
 
     def test_ctr(self):
         w = LibraryValueCompletion("artist", SongLibrary())
-        e = gtk.Entry()
+        e = Gtk.Entry()
         e.set_completion(w)
         self.failUnlessEqual(w.get_entry(), e)
         self.failUnlessEqual(e.get_completion(), w)

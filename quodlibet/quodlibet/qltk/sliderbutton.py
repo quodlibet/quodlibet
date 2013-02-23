@@ -50,8 +50,8 @@ class _PopupSlider(Gtk.EventBox):
         if self.__window.get_property('visible'): return
         self.__window.get_child().show_all()
         self.__window.size_request()
-        x, y = self.get_child().window.get_origin()
-        w, h = self.get_child().window.get_size()        
+        dummy, x, y = self.get_child().get_window().get_origin()
+        w, h = self.get_child().get_window().get_size()
         ww, wh = self.__window.get_child().parent.get_size()
         sx, sy = self._move_to(x, y, w, h, ww, wh, pad=3)
         self.__window.set_transient_for(get_top_parent(self))

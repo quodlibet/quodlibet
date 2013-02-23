@@ -36,7 +36,7 @@ class TAlbumBrowser(TestCase):
         library.add(SONGS)
 
         self.bar = AlbumList(library, True)
-        w = gtk.Window()
+        w = Gtk.Window()
         w.add(self.bar)
         w.show_all()
         w.hide()
@@ -56,12 +56,12 @@ class TAlbumBrowser(TestCase):
         self.songs = songs
 
     def _wait(self):
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def test_activated(self):
         view = self.bar.view
-        view.row_activated((0,), view.get_column(0))
+        view.row_activated(Gtk.TreePath((0,)), view.get_column(0))
         self.failUnless(self.activated)
 
     def test_can_filter(self):

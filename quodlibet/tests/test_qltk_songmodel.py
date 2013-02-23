@@ -8,8 +8,8 @@ from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
 from quodlibet.qltk.playorder import ORDERS, Order
 
 def do_events():
-    while gtk.events_pending():
-        gtk.main_iteration()
+    while Gtk.events_pending():
+        Gtk.main_iteration()
 
 class TPlaylistModel(TestCase):
     def setUp(self):
@@ -26,7 +26,7 @@ class TPlaylistModel(TestCase):
     def test_get(self):
         self.assertEqual(self.pl.get(), range(10))
         self.pl.set(range(12))
-        gtk.main_iteration(False)
+        Gtk.main_iteration(False)
         self.assertEqual(self.pl.get(), range(12))
 
     def test_next(self):
@@ -101,7 +101,7 @@ class TPlaylistModel(TestCase):
         r2 = AudioFile({'~#rating': 2})
         r3 = AudioFile({'~#rating': 3})
         self.pl.set([r0, r1, r2, r3])
-        gtk.main_iteration(False)
+        Gtk.main_iteration(False)
         songs = [self.pl.current for i in range(1000)
                  if self.pl.next() or True]
         self.assert_(songs.count(r1) > songs.count(r0))
@@ -152,7 +152,7 @@ class TPlaylistModel(TestCase):
         self.pl.go_to(5)
         self.failUnlessEqual(self.pl.current, 5)
         self.pl.set([5, 10, 15, 20])
-        gtk.main_iteration(False)
+        Gtk.main_iteration(False)
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 10)
 
@@ -202,7 +202,7 @@ class TPlaylistModel(TestCase):
     def test_restart(self):
         self.pl.go_to(1)
         self.pl.set([101, 102, 103, 104])
-        gtk.main_iteration(False)
+        Gtk.main_iteration(False)
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 101)
 
@@ -211,7 +211,7 @@ class TPlaylistModel(TestCase):
         self.pl.repeat = True
         self.pl.order = ORDERS[1](self.pl)
         self.pl.set([])
-        gtk.main_iteration(False)
+        Gtk.main_iteration(False)
         self.pl.next()
 
     def shutDown(self):

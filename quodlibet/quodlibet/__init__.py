@@ -4,6 +4,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+# FIXME: GIPORT.. some code depends on the changed default encoding
+# after importing pygtk
+
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 import __builtin__
 
 _dummy_gettext = lambda value: value

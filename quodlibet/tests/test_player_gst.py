@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-import pygst
-pygst.require("0.10")
-import gst
+
+from gi.repository import Gst
 
 from tests import TestCase, add
 
@@ -36,7 +35,7 @@ add(TGStreamerSink)
 
 class TGstreamerTagList(TestCase):
     def test_parse(self):
-        # gst.TagList can't be filled using pygtk... so use a dict instead
+        # gst.TagList can't be filled using pyGtk... so use a dict instead
 
         l = {}
         l["extended-comment"] = u"foo=bar"

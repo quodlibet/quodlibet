@@ -107,18 +107,18 @@ class TLibrary(TestCase):
     def test_changed(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(5))
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failUnlessEqual(self.changed, self.Frange(5))
 
     def test_changed_not_present(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(2, 20, 3))
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failUnlessEqual(self.changed, [2, 5, 8])
 
     def test_changed_none_present(self):
         self.library.changed(self.Frange(5))
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
 
     def test___iter__(self):
         self.library.add(self.Frange(10))
@@ -268,7 +268,7 @@ class TSongLibrary(TLibrary):
         song = FakeSong(10)
         self.library.add([song])
         self.library.rename(song, 20)
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failUnless(song in self.changed)
         self.failUnless(song in self.library)
         self.failUnless(song.key in self.library)

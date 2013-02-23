@@ -18,7 +18,7 @@ add(THintedTreeView)
 
 class TBaseView(TestCase):
     def setUp(self):
-        self.m = gtk.ListStore(str)
+        self.m = Gtk.ListStore(str)
         self.c = BaseView(self.m)
 
     def test_remove(self):

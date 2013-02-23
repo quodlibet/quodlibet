@@ -35,13 +35,13 @@ class TSongProperties(TestCase):
         self.test_twosong()
         self.window.hide()
         self.library.emit('changed', [self.af2])
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
 
     def test_removed(self):
         self.test_twosong()
         self.window.hide()
         self.library.emit('removed', [self.af2])
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
 
     def tearDown(self):
         try: self.window.destroy()

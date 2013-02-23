@@ -4,16 +4,32 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import pygst
-pygst.require("0.10")
-
-from gi.repository import Gtk, GObject
-import gst
+from gi.repository import Gtk, GObject, Gst
 
 from quodlibet import util
 from quodlibet import config
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet.plugins import PluginManager
+
+
+def link_many(elements):
+    last = None
+    for element in elements:
+        if last:
+            if not Gst.Element.link(last, element):
+                return False
+        last = element
+    return True
+
+
+def unlink_many(elements):
+    last = None
+    for element in elements:
+        if last:
+            if not Gst.Element.unlink(last, element):
+                return False
+        last = element
+    return True
 
 
 def GStreamerSink(pipeline):
@@ -25,12 +41,12 @@ def GStreamerSink(pipeline):
 
     Returns the pipeline's description and a list of disconnected elements."""
 
-    if not pipeline and not gst.element_factory_find('gconfaudiosink'):
+    if not pipeline and not Gst.ElementFactory.find('gconfaudiosink'):
         pipeline = "autoaudiosink"
     elif not pipeline or pipeline == "gconf":
         pipeline = "gconfaudiosink profile=music"
 
-    try: pipe = [gst.parse_launch(element) for element in pipeline.split('!')]
+    try: pipe = [Gst.parse_launch(element) for element in pipeline.split('!')]
     except GObject.GError:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
         try: pipe = [gst.parse_launch("autoaudiosink")]
@@ -40,12 +56,9 @@ def GStreamerSink(pipeline):
     if pipe:
         # In case the last element is linkable with a fakesink
         # it is not an audiosink, so we append the default pipeline
-        fake = gst.element_factory_make('fakesink')
-        try:
-            gst.element_link_many(pipe[-1], fake)
-        except gst.LinkError: pass
-        else:
-            gst.element_unlink_many(pipe[-1], fake)
+        fake = Gst.ElementFactory.make('fakesink', None)
+        if link_many([pipe[-1], fake]):
+            Gst.Element.unlink_many(pipe[-1], fake)
             default, default_text = GStreamerSink("")
             if default:
                 return pipe + default, pipeline + " ! "  + default_text
@@ -176,7 +189,7 @@ class DeviceComboBox(Gtk.ComboBox):
             return
 
         sink = pipeline[-1]
-        sink.set_state(gst.STATE_READY)
+        sink.set_state(Gst.State.READY)
 
         base_sink = sink
 
