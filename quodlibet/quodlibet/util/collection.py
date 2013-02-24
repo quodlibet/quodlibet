@@ -15,16 +15,17 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
-from quodlibet.util.dprint import print_d
 from collections import Iterable, MutableSequence, defaultdict
 
 
 ELPOEP = list(reversed(PEOPLE))
-PEOPLE_SCORE = [100**i for i in xrange(len(PEOPLE))]
+PEOPLE_SCORE = [100 ** i for i in xrange(len(PEOPLE))]
+
 
 def avg(nums):
     """Returns the average (arithmetic mean) of a list of numbers"""
     return float(sum(nums)) / len(nums)
+
 
 def bayesian_average(nums, c=None, m=None):
     """Returns the Bayesian average of an iterable of numbers,
@@ -76,7 +77,8 @@ class Collection(object):
         self.__used = []
 
     def finalize(self):
-        """Call this after songs got added or removed"""
+        """Finalize the collection.
+        Call this after songs get added or removed"""
         self.__cache.clear()
         self.__default.clear()
         self.__used = []
@@ -85,16 +87,19 @@ class Collection(object):
         if not self.songs:
             return default
         if key[:1] == "~" and "~" in key[1:]:
-            if not isinstance(default, basestring): return default
+            if not isinstance(default, basestring):
+                return default
             keys = util.tagsplit(key)
             v = map(self.__get_cached_value, keys)
+
             def default_funct(x):
-                if x is None: return default
+                if x is None:
+                    return default
                 return x
-            v = map(default_funct , v)
+            v = map(default_funct, v)
             v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
             v = map(lambda x: isinstance(x, basestring) and x or str(x), v)
-            return  connector.join(filter(None, v)) or default
+            return connector.join(filter(None, v)) or default
         else:
             value = self.__get_cached_value(key)
             if value is None:
@@ -105,16 +110,12 @@ class Collection(object):
 
     def comma(self, key):
         value = self.get(key)
-        if isinstance(value, (int, float)): return value
-        return value.replace("\n", ", ")
+        return (value if isinstance(value, (int, float))
+                else value.replace("\n", ", "))
 
     def list(self, key):
-        if "~" in key[1:]:
-            v = self.get(key, connector=u"\n")
-        else: v = self.get(key)
-        if v == "": return []
-        else: return v.split("\n")
-        return []
+        v = self.get(key, connector=u"\n") if "~" in key[1:] else self.get(key)
+        return [] if v == "" else v.split("\n")
 
     def __get_cached_value(self, key):
         if key in self.__cache:
@@ -130,7 +131,7 @@ class Collection(object):
             else:
                 self.__used.insert(0, key)
                 self.__cache[key] = val
-            # remove the oldest if the cache is full
+            # Remove the oldest if the cache is full
             if len(self.__used) > self._cache_size:
                 self.__cache.pop(self.__used.pop(-1))
         return val
@@ -155,23 +156,23 @@ class Collection(object):
                 return len(set([song("~#disc", 1) for song in self.songs]))
             elif key == "bitrate":
                 length = self.__get_value("~#length")
-                if not length: return 0
+                if not length:
+                    return 0
                 w = lambda s: s("~#bitrate", 0) * s("~#length", 0)
                 return sum(w(song) for song in self.songs) / length
             else:
-                #Unknown key. AudioFile will try to cast the values to int,
-                #default to avg
+                # Unknown key. AudioFile will try to cast the values to int,
+                # default to avg
                 func = NUM_DEFAULT_FUNCS.get(key, "avg")
 
             key = "~#" + key
             func = NUM_FUNCS.get(func)
             if func:
-                #if none of the songs can return a numeric key
-                #the album returns default
+                # If none of the songs can return a numeric key,
+                # the album returns default
                 values = (song(key) for song in self.songs)
                 values = [v for v in values if v != ""]
-                if values: return func(values)
-                else: return None
+                return func(values) if values else None
             elif key in INTERN_NUM_DEFAULT:
                 return 0
             return None
@@ -194,11 +195,11 @@ class Collection(object):
                         for person in persons:
                             peoplesort[person] = (peoplesort.get(person, 0) -
                                                   PEOPLE_SCORE[w])
-                #It's cheaper to get people and peoplesort in one go
+                # It's cheaper to get people and peoplesort in one go
                 keys["people"] = sorted(people.keys(),
-                    key=people.__getitem__)[:100]
+                                        key=people.__getitem__)[:100]
                 keys["peoplesort"] = sorted(peoplesort.keys(),
-                    key=peoplesort.__getitem__)[:100]
+                                            key=peoplesort.__getitem__)[:100]
 
                 ret = keys.pop(key)
                 ret = (ret and "\n".join(ret)) or None
@@ -212,25 +213,24 @@ class Collection(object):
                         self.__used.remove(other)
                     self.__used.append(other)
                     self.__cache[other] = "\n".join(values)
-
                 return ret
             elif key == "length":
                 length = self.__get_value("~#length")
-                if length is None: return None
-                return util.format_time(length)
+                return None if length is None else util.format_time(length)
             elif key == "long-length":
                 length = self.__get_value("~#length")
-                if length is None: return None
-                return util.format_time_long(length)
+                return None if length is None else util.format_time_long(length)
             elif key == "tracks":
                 tracks = self.__get_value("~#tracks")
-                if tracks is None: return None
-                return ngettext("%d track", "%d tracks", tracks) % tracks
+                return (None if tracks is None else
+                        ngettext("%d track", "%d tracks", tracks) % tracks)
             elif key == "discs":
                 discs = self.__get_value("~#discs")
                 if discs > 1:
                     return ngettext("%d disc", "%d discs", discs) % discs
-                else: return None
+                else:
+                    # TODO: check this is correct for discs == 1
+                    return None
             elif key == "rating":
                 rating = self.__get_value("~#rating")
                 if rating is None: return None
@@ -239,25 +239,23 @@ class Collection(object):
                 return ((self.cover != type(self).cover) and "y") or None
             elif key == "filesize":
                 size = self.__get_value("~#filesize")
-                if size is None: return None
-                return util.format_size(size)
+                return None if size is None else util.format_size(size)
             key = "~" + key
 
-        #Nothing special was found, so just take all values of the songs
-        #and sort them by their number of appearance
+        # Nothing special was found, so just take all values of the songs
+        # and sort them by their number of appearance
         result = {}
         for song in self.songs:
             for value in song.list(key):
                 result[value] = result.get(value, 0) - 1
 
         values = map(lambda x: x[0],
-            sorted(result.items(), key=lambda x: x[1]))
-        if not values: return None
-        return "\n".join(values)
+                     sorted(result.items(), key=lambda x: x[1]))
+        return "\n".join(values) if values else None
 
 
 class Album(Collection):
-    """Like a collection but adds cover scanning, some attributes for sorting
+    """Like a `Collection` but adds cover scanning, some attributes for sorting
     and uses a set for the songs."""
 
     COVER_SIZE = 48
@@ -279,18 +277,19 @@ class Album(Collection):
     def __init__(self, song):
         super(Album, self).__init__()
         self.songs = set()
-        #albumsort is part of the album_key, so every song has the same
+        # albumsort is part of the album_key, so every song has the same
         self.sort = util.human_sort_key(song("albumsort"))
         self.key = song.album_key
 
     def finalize(self):
-        """Call this after songs got added or removed"""
+        """Finalize this album. Call after songs get added or removed"""
         super(Album, self).finalize()
         self.__dict__.pop("peoplesort", None)
         self.__dict__.pop("genre", None)
 
     def scan_cover(self, force=False):
-        if (self.scanned and not force) or not self.songs: return
+        if (self.scanned and not force) or not self.songs:
+            return
         self.scanned = True
 
         song = iter(self.songs).next()
@@ -310,10 +309,10 @@ class Album(Collection):
 
 
 class HashedList(MutableSequence):
-    """A list like that can only take hashable items and provides fast
-    membership tests.
+    """A list-like collection that can only take hashable items
+    and provides fast membership tests.
 
-    Can handle duplicates entries.
+    Can handle duplicate entries.
     """
 
     def __init__(self, arg=None):
@@ -373,8 +372,7 @@ class HashedList(MutableSequence):
             yield item
 
     def has_duplicates(self):
-        """If any item is contained more then once"""
-
+        """Returns True if any item is contained more then once"""
         return len(self._map) != len(self)
 
     def __repr__(self):
@@ -399,11 +397,13 @@ class Playlist(Collection, Iterable):
             raise ValueError("Invalid playlist directory '%s'" % (dir,))
         p = Playlist(dir, "", library=library)
         i = 0
-        try:p.rename(base)
+        try:
+            p.rename(base)
         except ValueError:
             while not p.name:
                 i += 1
-                try: p.rename("%s %d" % (base, i))
+                try:
+                    p.rename("%s %d" % (base, i))
                 except ValueError: pass
         return p
 
@@ -416,16 +416,15 @@ class Playlist(Collection, Iterable):
                 "%(title)s and %(count)d more",
                 "%(title)s and %(count)d more",
                 len(songs) - 1) % (
-                    {'title': songs[0].comma("title"), 'count': len(songs) - 1})
+                    {'title': songs[0].comma("title"),
+                     'count': len(songs) - 1})
         playlist = cls.new(dir, title, library=library)
         playlist.extend(songs)
         return playlist
 
     @classmethod
     def playlists_featuring(cls, song):
-        """Returns the list of playlists this song appears in,
-        using a global cache of unlimited size"""
-
+        """Returns the list of playlists in which this song appears"""
         playlists = []
         for instance in cls.__instances:
             if song in instance._list:
@@ -471,7 +470,6 @@ class Playlist(Collection, Iterable):
         self.name = name
         self.dir = dir
         self._list = HashedList()
-
         basename = self.quote(name)
         try:
             for line in file(os.path.join(self.dir, basename), "r"):
@@ -505,13 +503,12 @@ class Playlist(Collection, Iterable):
         changed = False
         for i in range(len(self)):
             if isinstance(self[i], basestring) and self._list[i] in filenames:
-                song = self._list[i] = library[self._list[i]]
+                self._list[i] = library[self._list[i]]
                 changed = True
         return changed
 
     def remove_songs(self, songs, library, leave_dupes=False):
-        """
-         Removes `songs` from this playlist if they are there,
+        """Removes `songs` from this playlist if they are there,
          removing only the first reference if `leave_dupes` is True
         """
         changed = False
@@ -548,40 +545,39 @@ class Playlist(Collection, Iterable):
 
     def delete(self):
         self.clear()
-        try: os.unlink(os.path.join(self.dir, self.quote(self.name)))
+        try:
+            os.unlink(os.path.join(self.dir, self.quote(self.name)))
         except EnvironmentError: pass
         if self in self.__instances:
             self.__instances.remove(self)
 
     def write(self):
         basename = self.quote(self.name)
-        f = file(os.path.join(self.dir, basename), "w")
-        for song in self._list:
-            try: f.write(util.fsencode(song("~filename")) + "\n")
-            except TypeError: f.write(song + "\n")
-        f.close()
+        with open(os.path.join(self.dir, basename), "w") as f:
+            for song in self._list:
+                try:
+                    f.write(util.fsencode(song("~filename")) + "\n")
+                except TypeError:
+                    f.write(song + "\n")
 
     def format(self):
-        """A markup representation of information for this playlist"""
+        """Return a markup representation of information for this playlist"""
         total_size = float(self.get("~#filesize") or 0.0)
         songs_text = (ngettext("%d song", "%d songs", len(self.songs))
                       % len(self.songs))
         # see Issue 504
         return "<b>%s</b>\n<small>%s (%s%s)</small>" % (
-                util.escape(self.name),
-                songs_text,
-                self.get("~length", "0:00"),
-                " / %s" % util.format_size(total_size) if total_size>0 else "")
+               util.escape(self.name),
+               songs_text,
+               self.get("~length", "0:00"),
+               " / %s" % util.format_size(total_size) if total_size>0 else "")
 
     def has_duplicates(self):
         """Returns True if there are any duplicated files in this playlist"""
         return self._list.has_duplicates()
 
     def shuffle(self):
-        """
-        Randomly shuffles this playlist, permanently.
-        Currently this is unweighted
-        """
+        """Randomly shuffles this playlist, without weighting"""
         random.shuffle(self._list)
         self.write()
 
