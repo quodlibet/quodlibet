@@ -22,8 +22,7 @@ quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
 quodlibet/library/__init__.py
-quodlibet/library/_library.py
-quodlibet/library/songs.py
+quodlibet/library/libraries.py
 quodlibet/player/gstbe.py
 quodlibet/player/_gstutils.py
 quodlibet/player/__init__.py
