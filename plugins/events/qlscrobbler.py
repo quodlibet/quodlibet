@@ -47,7 +47,7 @@ def config_get(key, default=''):
     return default."""
     try:
         return (config.get("plugins", "scrobbler_%s" % key) or default)
-    except config.Error:
+    except config.error:
         return default
 
 class QLSubmitQueue(PluginConfigMixin):

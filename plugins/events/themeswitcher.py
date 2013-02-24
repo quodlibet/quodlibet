@@ -27,7 +27,10 @@ class ThemeSwitcher(EventPlugin):
         label = gtk.Label(_("_Theme:"))
         combo = gtk.combo_box_new_text()
 
-        theme = config.get("plugins", __name__, None)
+        try:
+            theme = config.get("plugins", __name__)
+        except config.error:
+            theme = None
 
         combo.append_text(_("Default Theme"))
         themes = self.__get_themes()
@@ -85,7 +88,9 @@ class ThemeSwitcher(EventPlugin):
         settings = gtk.settings_get_default()
         self.__default_theme = settings.get_property('gtk-theme-name')
 
-        theme = config.get("plugins", __name__, None)
+        try: theme = config.get("plugins", __name__)
+        except config.error:
+            theme = None
 
         self.__set_theme(theme)
 

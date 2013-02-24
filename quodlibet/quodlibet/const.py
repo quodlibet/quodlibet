@@ -124,10 +124,6 @@ Jakub Steiner
 Fabien Devaux
 """.strip().split("\n"))
 
-# Default songlist column headers
-DEFAULT_COLUMNS = "~#track ~people ~title~version ~album~discsubtitle " \
-                  "~#length".split()
-
 TBP = os.path.join(USERDIR, "lists", "tagpatterns")
 TBP_EXAMPLES = """\
 <tracknumber>. <title>

@@ -59,7 +59,7 @@ def migrate_old_config():
         key = "active_" + key
         try:
             active.extend(config.get("plugins", key).splitlines())
-        except config.Error:
+        except config.error:
             pass
         else:
             config._config.remove_option("plugins", key)
@@ -348,7 +348,7 @@ class PluginConfigMixin(object):
         """Saves a config string value for this plugin"""
         try:
             config.set(PM.CONFIG_SECTION, cls._config_key(name), value)
-        except config.Error:
+        except config.error:
             print_d("Couldn't set config item '%s' to %r" % (name, value))
 
     @classmethod
@@ -370,7 +370,7 @@ class PluginConfigMixin(object):
         option = cls._config_key(name)
         try:
             config.getboolean(PM.CONFIG_SECTION, option)
-        except config.Error:
+        except config.error:
             cls.config_set(name, default)
         return ConfigCheckButton(label, PM.CONFIG_SECTION,
             option, populate=True)
