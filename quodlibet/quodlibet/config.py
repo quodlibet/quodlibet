@@ -1,18 +1,21 @@
 # Copyright 2004-2011 Joe Wreschnig, Christoph Reiter
-#           2009-2012 Nick Boultbee
+#           2009-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 # Simple proxy to a Python ConfigParser.
+# TODO: refactor methods names for PEP-8
 
 import os
 
 import const
+from quodlibet.util.dprint import print_d, print_w
 
 # We don't need/want variable interpolation.
-from ConfigParser import RawConfigParser as ConfigParser, Error as error
+from ConfigParser import RawConfigParser as ConfigParser, Error
+
 
 # In newer RawConfigParser it is possible to replace the internal dict. The
 # implementation only uses items() for writing, so replace with a dict that
@@ -26,34 +29,48 @@ except TypeError:
     _config = ConfigParser()
 options = _config.options
 
+
 def get(*args):
     if len(args) == 3:
-        try: return _config.get(*args[:2])
-        except error: return args[-1]
+        try:
+            return _config.get(*args[:2])
+        except Error:
+            return args[-1]
     return _config.get(*args)
+
 
 def getboolean(*args):
     if len(args) == 3:
-        if not isinstance(args[-1], bool): raise ValueError
-        try: return _config.getboolean(*args[:2])
+        if not isinstance(args[-1], bool):
+            raise ValueError
+        try:
+            return _config.getboolean(*args[:2])
         # ValueError if the value found in the config file
         # does not match any string representation -> so catch it too
-        except (ValueError, error): return args[-1]
+        except (ValueError, Error):
+            return args[-1]
     return _config.getboolean(*args)
+
 
 def getint(*args):
     if len(args) == 3:
         if not isinstance(args[-1], int): raise ValueError
-        try: return _config.getint(*args[:2])
-        except error: return args[-1]
+        try:
+            return _config.getint(*args[:2])
+        except Error:
+            return args[-1]
     return _config.getint(*args)
+
 
 def getfloat(*args):
     if len(args) == 3:
         if not isinstance(args[-1], float): raise ValueError
-        try: return _config.getfloat(*args[:2])
-        except error: return args[-1]
+        try:
+            return _config.getfloat(*args[:2])
+        except Error:
+            return args[-1]
     return _config.getfloat(*args)
+
 
 # RawConfigParser only allows string values but doesn't scream if they are not
 # (and it only fails before the first config save..)
@@ -62,32 +79,40 @@ def set(section, option, value):
         value = str(value)
     _config.set(section, option, value)
 
+
 def setdefault(section, option, default):
     if not _config.has_option(section, option):
         set(section, option, default)
+
 
 def write(filename):
     if isinstance(filename, basestring):
         if not os.path.isdir(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
         f = file(filename, "w")
-    else: f = filename
+    else:
+        f = filename
     _config.write(f)
     f.close()
 
+
 def save(filename):
     print_d("Writing config...")
-    try: write(filename)
+    try:
+        write(filename)
     except EnvironmentError:
         print_w("Unable to write config.")
+
 
 def quit():
     for section in _config.sections():
         _config.remove_section(section)
 
+
 def init(*rc_files):
     if len(_config.sections()):
-        raise ValueError("config initialized twice without quitting: %r" % _config.sections())
+        raise ValueError("config initialized twice without quitting: %r"
+                         % _config.sections())
     initial = {
         # User-defined tag name -> human name mappings
         "header_maps": {},
@@ -221,8 +246,10 @@ def init(*rc_files):
         _config.set("albumart", "round", _config.get(*from_))
         _config.remove_option(*from_)
 
+
 def state(arg):
     return _config.getboolean("settings", arg)
+
 
 def add_section(section):
     if not _config.has_section(section):

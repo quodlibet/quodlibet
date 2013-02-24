@@ -288,7 +288,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     def restore(self):
         try: name = config.get('browsers', 'media')
-        except config.error: pass
+        except config.Error: pass
         else:
             for row in self.__devices:
                 if row[0]['name'] == name: break

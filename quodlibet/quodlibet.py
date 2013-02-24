@@ -81,7 +81,7 @@ def main():
     from quodlibet.util.collection import Album
     try:
         cover_size = config.getint("browsers", "cover_size")
-    except config.error:
+    except config.Error:
         pass
     else:
         if cover_size > 0:

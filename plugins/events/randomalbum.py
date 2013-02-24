@@ -41,15 +41,12 @@ class RandomAlbum(EventPlugin):
 
     def __init__(self):
         for (key, text, func) in self.keys:
-            try: val = config.getfloat("plugins", "randomalbum_%s" % key)
-            except config.error: val = 0
+            val = config.getfloat("plugins", "randomalbum_%s" % key, 0.0)
             self.weights[key] = val
 
-        try: use = config.getint("plugins", "randomalbum_use_weights")
-        except config.error: use = 0
+        use = config.getint("plugins", "randomalbum_use_weights", 0)
         self.use_weights = use
-        try: delay = config.getint("plugins", "randomalbum_delay")
-        except config.error: delay = 0
+        delay = config.getint("plugins", "randomalbum_delay", 0)
         self.delay = delay
 
     def PluginPreferences(self, song):

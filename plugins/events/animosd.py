@@ -580,7 +580,7 @@ by <~people>>'''
                 value = self.config_get(key, default)
                 # This should never happen now that we default, but still..
                 if value is None: continue
-            except (config.error, ValueError):
+            except (config.Error, ValueError):
                 print_d("Couldn't find config item %s" % key)
                 continue
 

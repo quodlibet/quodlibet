@@ -711,16 +711,10 @@ class FingerprintDialog(Window):
         gobject.timeout_add(500, self.destroy)
 
 def get_api_key():
-    try:
-        return config.get("plugins", "fingerprint_acoustid_api_key")
-    except config.error:
-        return ""
+    return config.get("plugins", "fingerprint_acoustid_api_key", "")
 
 def get_puid_lookup():
-    try:
-        return config.get("plugins", "fingerprint_puid_lookup")
-    except config.error:
-        return "no_mbid"
+    return config.get("plugins", "fingerprint_puid_lookup", "no_mbid")
 
 class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_ID = "AcoustidSubmit"
