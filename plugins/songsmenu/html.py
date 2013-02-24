@@ -59,7 +59,7 @@ class ExportToHTML(SongsMenuPlugin):
         fn = chooser.get_filename()
         chooser.destroy()
 
-        cols = config.get("settings", "headers").split()
+        cols = config.get_columns()
 
         cols_s = ""
         for col in cols:

@@ -1118,7 +1118,7 @@ def cfg_get(key, default):
             return type(default)(value)
         except ValueError:
             return default
-    except (config.error, AttributeError):
+    except (config.Error, AttributeError):
         return default
 
 config_eng_prefix = 'engine_'

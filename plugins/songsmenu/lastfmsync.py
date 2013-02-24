@@ -48,10 +48,8 @@ def apicall(method, **kwargs):
     return resp
 
 def config_get(key, default=None):
-    try:
-        return config.get('plugins', 'lastfmsync_%s' % key)
-    except config.error:
-        return default
+    return config.get('plugins', 'lastfmsync_%s' % key, default)
+
 
 class LastFMSyncCache(object):
     """Stores the Last.fm charts for a particular user."""

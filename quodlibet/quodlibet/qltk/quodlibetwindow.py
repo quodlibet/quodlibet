@@ -937,11 +937,12 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
 
     def __cols_changed(self, songlist):
         headers = [col.header_name for col in songlist.get_columns()]
-        try: headers.remove('~current')
+        try:
+            headers.remove('~current')
         except ValueError: pass
-        if len(headers) == len(config.get("settings", "headers").split()):
+        if len(headers) == len(config.get_columns()):
             # Not an addition or removal (handled separately)
-            config.set("settings", "headers", " ".join(headers))
+            config.set_columns(headers)
             SongList.headers = headers
 
     def __make_query(self, query):

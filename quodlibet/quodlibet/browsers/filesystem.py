@@ -119,7 +119,7 @@ class FileSystem(Browser, gtk.HBox):
     def restore(self):
         try:
             paths = config.get("browsers", "filesystem").split("\n")
-        except config.error:
+        except config.Error:
             pass
         else:
             self.__select_paths(paths)
