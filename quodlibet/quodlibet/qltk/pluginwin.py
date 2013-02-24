@@ -315,7 +315,7 @@ class PluginWindow(qltk.UniqueWindow):
     def __toggled(self, render, fpath, fmodel):
         render.set_active(not render.get_active())
 
-        path = fmodel.convert_path_to_child_path(fpath)
+        path = fmodel.convert_path_to_child_path(Gtk.TreePath(fpath))
         model = fmodel.get_model()
 
         row = model[path]

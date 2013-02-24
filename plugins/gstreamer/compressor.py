@@ -38,34 +38,36 @@ def set_cfg(option, value):
         config.set("plugins", cfg_option, value)
 
 
-class Preferences(gtk.VBox):
+class Preferences(Gtk.VBox):
     __gsignals__ = {
-        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, tuple()),
+        'changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
     }
 
     def __init__(self):
         super(Preferences, self).__init__(spacing=12)
 
-        table = gtk.Table(2, 2)
+        table = Gtk.Table(2, 2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
         labels = {}
         for idx, key in enumerate(["threshold", "ratio"]):
             text, tooltip = _SETTINGS[key][:2]
-            label = gtk.Label(text)
+            label = Gtk.Label(label=text)
             labels[key] = label
             label.set_tooltip_text(tooltip)
             label.set_alignment(0.0, 0.5)
             label.set_padding(0, 6)
             label.set_use_underline(True)
             table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=gtk.FILL | gtk.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL |
+                         Gtk.AttachOptions.SHRINK)
 
-        threshold_scale = gtk.HScale(gtk.Adjustment(0, 0, 1, 0.01, 0.1))
+        threshold_scale = Gtk.HScale(
+            adjustment=Gtk.Adjustment(0, 0, 1, 0.01, 0.1))
         threshold_scale.set_digits(2)
         labels["threshold"].set_mnemonic_widget(threshold_scale)
-        threshold_scale.set_value_pos(gtk.POS_RIGHT)
+        threshold_scale.set_value_pos(Gtk.PositionType.RIGHT)
 
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)
@@ -79,10 +81,10 @@ class Preferences(gtk.VBox):
         threshold_scale.connect('value-changed', threshold_changed)
         threshold_scale.set_value(get_cfg("threshold"))
 
-        ratio_scale = gtk.HScale(gtk.Adjustment(0, 0, 1, 0.01, 0.1))
+        ratio_scale = Gtk.HScale(adjustment=Gtk.Adjustment(0, 0, 1, 0.01, 0.1))
         ratio_scale.set_digits(2)
         labels["ratio"].set_mnemonic_widget(ratio_scale)
-        ratio_scale.set_value_pos(gtk.POS_RIGHT)
+        ratio_scale.set_value_pos(Gtk.PositionType.RIGHT)
         table.attach(ratio_scale, 1, 2, 1, 2)
 
         def ratio_changed(scale):
@@ -92,7 +94,8 @@ class Preferences(gtk.VBox):
         ratio_scale.connect('value-changed', ratio_changed)
         ratio_scale.set_value(get_cfg("ratio"))
 
-        self.pack_start(qltk.Frame(_("Preferences"), child=table))
+        self.pack_start(qltk.Frame(_("Preferences"), child=table),
+                        True, True, 0)
 
 
 class Compressor(GStreamerPlugin):
@@ -104,10 +107,7 @@ class Compressor(GStreamerPlugin):
 
     @classmethod
     def setup_element(cls):
-        try:
-            return gst.element_factory_make('audiodynamic', cls.PLUGIN_ID)
-        except gst.ElementNotFoundError:
-            pass
+        return Gst.ElementFactory.make('audiodynamic', cls.PLUGIN_ID)
 
     @classmethod
     def update_element(cls, element):

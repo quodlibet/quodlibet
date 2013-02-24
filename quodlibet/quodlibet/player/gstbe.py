@@ -201,8 +201,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         map(bufbin.add, pipeline)
         if len(pipeline) > 1:
             if not link_many(pipeline):
-                print_w(
-                    _("Could not link GStreamer pipeline: '%s'") % e)
+                print_w("Could not link GStreamer pipeline")
                 self.__destroy_pipeline()
                 return False
 
