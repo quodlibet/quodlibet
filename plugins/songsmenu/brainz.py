@@ -50,10 +50,7 @@ def get_trackcount(album):
         t.get('tracknumber', '0').split('/'))), album)), len(album)) # (;))
 
 def config_get(key, default=''):
-    try:
-        return config.getboolean('plugins', 'brainz_' + key)
-    except config.error:
-        return default
+    return config.getboolean('plugins', 'brainz_' + key, default)
 
 def dialog_get_widget_for_stockid(dialog, stockid):
     for child in dialog.get_action_area().get_children():

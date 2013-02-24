@@ -38,9 +38,8 @@ class Preferences(gtk.VBox):
                             "Shift and scroll wheel changes song"))
         combo.append_text(_("Scroll wheel changes song\n"
                             "Shift and scroll wheel adjusts volume"))
-        try: combo.set_active(int(
-            config.getboolean("plugins", "icon_modifier_swap")))
-        except config.error: combo.set_active(0)
+        combo.set_active(int(
+                config.getboolean("plugins", "icon_modifier_swap", False)))
         combo.connect('changed', self.__changed_combo)
 
         self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo))
@@ -52,8 +51,8 @@ class Preferences(gtk.VBox):
 
         cbs = []
         for i, tag in enumerate([
-            "genre", "artist", "album", "discnumber", "part", "tracknumber",
-            "title", "version"]):
+                "genre", "artist", "album", "discnumber", "part",
+                "tracknumber", "title", "version"]):
             cb = gtk.CheckButton(util.tag(tag))
             cb.tag = tag
             cbs.append(cb)
@@ -275,10 +274,7 @@ class TrayIcon(EventPlugin):
         return self.__hide_window()
 
     def __window_map(self, win):
-        try:
-            visible = config.getboolean("plugins", "icon_window_visible")
-        except config.error:
-            return
+        visible = config.getboolean("plugins", "icon_window_visible", False)
 
         config.set("plugins", "icon_window_visible", "true")
 
@@ -317,7 +313,7 @@ class TrayIcon(EventPlugin):
     def __scroll(self, widget, event):
         try:
             event.state ^= config.getboolean("plugins", "icon_modifier_swap")
-        except config.error:
+        except config.Error:
             pass
 
         if event.direction in [SCROLL_LEFT, SCROLL_RIGHT]:
@@ -341,7 +337,7 @@ class TrayIcon(EventPlugin):
         if song:
             try:
                 pattern = Pattern(config.get("plugins", "icon_tooltip"))
-            except (ValueError, config.error):
+            except (ValueError, config.Error):
                 pattern = self.__pattern
 
             tooltip = pattern % song

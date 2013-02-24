@@ -1,20 +1,26 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
-from gi.repository import Gdk
 
 from quodlibet.qltk.entry import UndoEntry
 
+
 class GetStringDialog(Gtk.Dialog):
-    def __init__(
-        self, parent, title, text, options=[], okbutton=Gtk.STOCK_OPEN):
+    """Simple dialog to return a string from the user"""
+    _WIDTH = 300
+
+    def __init__(self, parent, title, text, options=None,
+                 okbutton=Gtk.STOCK_OPEN):
         super(GetStringDialog, self).__init__(title, parent)
+        options = options or []
         self.set_border_width(6)
-        self.set_resizable(False)
+        self.set_default_size(width=self._WIDTH, height=0)
+        self.set_resizable(True)
         self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                          okbutton, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
@@ -28,8 +34,9 @@ class GetStringDialog(Gtk.Dialog):
         box.pack_start(lab, True, True, 0)
 
         if options:
-            self._entry = Gtk.ComboBoxText.new_with_entry()
-            for o in options: self._entry.append_text(o)
+            self._entry = Gtk.combo_box_entry_new_text()
+            for o in options:
+                self._entry.append_text(o)
             self._val = self._entry.get_child()
             box.pack_start(self._entry, True, True, 0)
         else:
@@ -52,7 +59,7 @@ class GetStringDialog(Gtk.Dialog):
 
         self.show()
         if clipboard:
-            clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+            clipboard = Gtk.clipboard_get()
             clip = clipboard.wait_for_text()
             if clip is not None:
                 clip = self._verify_clipboard(clip)
@@ -66,6 +73,7 @@ class GetStringDialog(Gtk.Dialog):
             resp = super(GetStringDialog, self).run()
         if resp == Gtk.ResponseType.OK:
             value = self._val.get_text()
-        else: value = None
+        else:
+            value = None
         self.destroy()
         return value
