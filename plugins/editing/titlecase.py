@@ -50,7 +50,7 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
     PLUGIN_ID = "Title Case"
     PLUGIN_NAME = _("Title Case")
     PLUGIN_DESC = _("Title-case tag values in the tag editor.")
-    PLUGIN_ICON = gtk.STOCK_SPELL_CHECK
+    PLUGIN_ICON = Gtk.STOCK_SPELL_CHECK
     PLUGIN_VERSION = "1.3"
     CONFIG_SECTION = "titlecase"
 
@@ -70,12 +70,12 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
 
         super(TitleCase, self).__init__(_("Title-_case Value"))
         self.set_image(
-            gtk.image_new_from_stock(gtk.STOCK_EDIT, gtk.ICON_SIZE_MENU))
+            Gtk.Image.new_from_stock(Gtk.STOCK_EDIT, Gtk.IconSize.MENU))
         self.set_sensitive(self.process_tag(value) != value)
 
     @classmethod
     def PluginPreferences(cls, window):
-        vb = gtk.VBox()
+        vb = Gtk.VBox()
         vb.set_spacing(8)
         config_toggles = [
             ('allow_all_caps', _("Allow _ALL-CAPS in tags"), None, True),
@@ -87,7 +87,7 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
             ccb = cls.ConfigCheckButton(label, key, default)
             if tooltip:
                 ccb.set_tooltip_text(tooltip)
-            vb.pack_start(ccb)
+            vb.pack_start(ccb, True, True, 0)
         return vb
 
     def activated(self, tag, value):
