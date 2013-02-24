@@ -1,6 +1,6 @@
 import os
-import gtk
-import gobject
+
+from gi.repository import Gtk, GObject
 
 from quodlibet import util
 from quodlibet.plugins.editing import RenameFilesPlugin

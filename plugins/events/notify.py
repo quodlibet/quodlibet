@@ -16,8 +16,7 @@ import re
 import tempfile
 
 import dbus
-import gtk
-import gobject
+from gi.repository import Gtk, GObject
 
 from quodlibet import config, qltk, app
 from quodlibet.plugins.events import EventPlugin

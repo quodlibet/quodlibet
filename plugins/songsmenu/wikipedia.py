@@ -6,7 +6,7 @@
 
 from urllib import quote
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet.util import website

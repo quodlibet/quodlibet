@@ -17,11 +17,11 @@ from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from telnetlib import Telnet
 import _socket
-import gtk
+from gi.repository import Gtk, GObject
 import socket
 import time
 import urllib
-import gobject
+
 from quodlibet.util import copool
 from quodlibet.qltk.notif import Task
 from threading import Thread

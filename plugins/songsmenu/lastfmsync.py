@@ -12,8 +12,7 @@ import time
 from datetime import date
 from threading import Thread
 
-import gtk
-import gobject
+from gi.repository import Gtk, GObject
 
 from quodlibet import const, config, util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin

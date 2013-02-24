@@ -5,9 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gst
-import gtk
-import gobject
+from gi.repository import Gst, Gtk, GObject
 
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk

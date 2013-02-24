@@ -6,7 +6,7 @@
 
 import subprocess
 
-import gtk
+from gi.repository import Gtk
 
 try:
     import dbus

@@ -7,7 +7,8 @@
 # Encoding magic. Show off the submenu stuff.
 
 import locale
-import gtk
+
+from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet.plugins.editing import EditTagsPlugin

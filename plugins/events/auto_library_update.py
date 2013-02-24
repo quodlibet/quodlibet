@@ -12,7 +12,7 @@ from pyinotify import WatchManager, EventsCodes, ProcessEvent, Notifier,\
 from quodlibet import config, print_d
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import app
-import gobject
+from gi.repository import GObject
 import os
 
 class LibraryEvent(ProcessEvent):

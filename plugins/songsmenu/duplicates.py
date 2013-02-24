@@ -15,8 +15,7 @@
 import string
 import unicodedata
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import app
 from quodlibet import player, print_d, print_w, util, qltk

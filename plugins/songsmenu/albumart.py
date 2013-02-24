@@ -48,9 +48,7 @@ from HTMLParser import HTMLParser, HTMLParseError
 from cStringIO import StringIO
 from xml.dom import minidom
 
-import gtk
-import gobject
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import util, qltk, config, print_w, app
 from quodlibet.qltk.views import AllTreeView

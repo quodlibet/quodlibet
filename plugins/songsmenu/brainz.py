@@ -12,9 +12,7 @@ import re
 import threading
 import time
 
-import gtk
-import gobject
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 try:
     from musicbrainz2 import webservice as ws

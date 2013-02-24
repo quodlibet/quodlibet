@@ -16,7 +16,7 @@ from quodlibet.util.tags import STANDARD_TAGS, MACHINE_TAGS
 from urllib2 import quote
 
 import ConfigParser
-import gtk
+from gi.repository import Gtk
 import os
 from quodlibet.util.uri import URI
 

@@ -7,7 +7,7 @@
 
 from string import join
 
-import gtk
+from gi.repository import Gtk
 import dbus
 
 from quodlibet.plugins.events import EventPlugin

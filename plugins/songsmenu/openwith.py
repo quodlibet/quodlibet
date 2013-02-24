@@ -1,4 +1,4 @@
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin

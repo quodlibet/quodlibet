@@ -8,11 +8,7 @@
 
 import sys
 
-import gtk
-import pango
-import gobject
-
-from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
+from gi.repository import Gtk, Pango, GObject, Gdk
 
 from quodlibet import browsers, config, qltk, util, app
 from quodlibet.parse import Pattern

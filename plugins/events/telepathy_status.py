@@ -8,7 +8,7 @@
 # published by the Free Software Foundation
 
 import dbus
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.parse._pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry

@@ -4,10 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gst
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GObject, Gst, Pango
 
 import threading
 import urllib

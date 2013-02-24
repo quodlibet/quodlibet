@@ -144,7 +144,7 @@ class PluginWindow(qltk.UniqueWindow):
         fb.pack_start(filter_entry, True, True, 0)
 
         render = Gtk.CellRendererToggle()
-        def cell_data(col, render, model, iter):
+        def cell_data(col, render, model, iter, data):
             row = model[iter]
             render.set_active(row[1].enabled(row[0]))
         render.connect('toggled', self.__toggled, filter)
@@ -153,7 +153,7 @@ class PluginWindow(qltk.UniqueWindow):
         tv.append_column(column)
 
         render = Gtk.CellRendererPixbuf()
-        def cell_data2(col, render, model, iter):
+        def cell_data2(col, render, model, iter, data):
             icon = getattr(model[iter][0], 'PLUGIN_ICON', Gtk.STOCK_EXECUTE)
             if Gtk.stock_lookup(icon):
                 render.set_property('stock-id', icon)
@@ -167,7 +167,7 @@ class PluginWindow(qltk.UniqueWindow):
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.set_property('xalign', 0.0)
         column = Gtk.TreeViewColumn("name", render)
-        def cell_data3(col, render, model, iter):
+        def cell_data3(col, render, model, iter, data):
             render.set_property('text', model[iter][0].PLUGIN_NAME)
         column.set_cell_data_func(render, cell_data3)
         column.set_expand(True)

@@ -1,6 +1,6 @@
 import re
-import gtk
-import gobject
+
+from gi.repository import Gtk, GObject
 
 from quodlibet.plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
 

@@ -7,7 +7,7 @@
 #
 # TODO: Include presets, saving and loading.
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import config, player
 from quodlibet.plugins.events import EventPlugin

@@ -9,11 +9,8 @@
 # published by the Free Software Foundation.
 #
 
-import gtk
-import gobject
-import pango
-import cairo
-import pangocairo
+from gi.repository import Gtk, GObject, Pango, cairo, PangoCairo
+
 from math import pi
 
 from quodlibet import config, qltk, app

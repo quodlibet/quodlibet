@@ -6,7 +6,8 @@
 
 import os
 
-import gnomevfs
+# FIXME: GIPORT
+#import gnomevfs
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin

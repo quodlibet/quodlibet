@@ -259,9 +259,6 @@ def init_plugins(no_plugins=False):
                os.path.join(quodlibet.const.BASEDIR, "plugins", "songsmenu"),
                os.path.join(quodlibet.const.BASEDIR, "plugins", "gstreamer"),
                os.path.join(quodlibet.const.USERDIR, "plugins")]
-    # FIXME: GIPORT port plugins to GI (old gtk/gobject imports cause segfaults
-    # so don't even try to import them)
-    folders = []
 
     pm = plugins.init(folders, no_plugins)
     pm.rescan()

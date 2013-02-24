@@ -16,8 +16,7 @@ import time
 import urllib
 import urllib2
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 try:
     from hashlib import md5

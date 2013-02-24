@@ -8,7 +8,7 @@ import os
 from os import path
 
 import CDDB
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.qltk import ErrorMessage, ConfirmAction, Message
 from quodlibet.const import VERSION

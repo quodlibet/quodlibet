@@ -15,9 +15,7 @@ import sys
 import re
 import traceback
 
-import gobject
-import pango
-import gtk
+from gi.repository import Gtk, Pango, GObject
 
 from quodlibet import qltk, const
 from quodlibet.plugins.songsmenu import SongsMenuPlugin

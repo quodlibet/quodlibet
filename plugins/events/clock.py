@@ -6,8 +6,7 @@
 
 import time
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet import config, player
 from quodlibet.plugins.events import EventPlugin

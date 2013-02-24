@@ -7,7 +7,7 @@
 import os
 import shutil
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet.const import USERDIR

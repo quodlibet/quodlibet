@@ -9,10 +9,7 @@
 #    published by the Free Software Foundation.
 #
 
-import gtk
-import gobject
-import pango
-import gst
+from gi.repository import Gtk, GObject, Pango, Gst
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
@@ -276,13 +273,6 @@ class Analysis(object):
                     song['replaygain_album_peak'] = albumpeak
 
         win.destroy()
-
-if gst.registry_get_default() is gst:
-    import sys
-    del sys.modules['gst']
-    import pygst
-    pygst.require('0.10')
-    import gst
 
 if not gst.registry_get_default().find_plugin("replaygain"):
     __all__ = []

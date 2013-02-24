@@ -6,7 +6,7 @@
 
 import tempfile
 
-import gtk
+from gi.repository import Gtk
 
 import dbus
 import dbus.service
