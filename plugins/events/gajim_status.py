@@ -52,7 +52,8 @@ class GajimStatusMessage(EventPlugin):
             self.pattern = '<artist> - <title>'
             config.set('plugins', self.c_pattern, self.pattern)
 
-        gtk.quit_add(0, self.quit)
+        # FIXME: GIPORT
+        #Gtk.quit_add(0, self.quit)
 
         self.interface = None
         self.current = ''
@@ -116,39 +117,39 @@ class GajimStatusMessage(EventPlugin):
         config.set('plugins', self.c_statuses, join(self.statuses))
 
     def PluginPreferences(self, parent):
-        vb = gtk.VBox(spacing = 3)
+        vb = Gtk.VBox(spacing = 3)
 
-        pattern_box = gtk.HBox(spacing = 3)
+        pattern_box = Gtk.HBox(spacing = 3)
         pattern_box.set_border_width(3)
-        pattern = gtk.Entry()
+        pattern = Gtk.Entry()
         pattern.set_text(self.pattern)
         pattern.connect('changed', self.pattern_changed)
-        pattern_box.pack_start(gtk.Label("Pattern:"), expand = False)
-        pattern_box.pack_start(pattern)
+        pattern_box.pack_start(Gtk.Label("Pattern:"), True, True, 0)
+        pattern_box.pack_start(pattern, True, True, 0)
 
-        accounts_box = gtk.HBox(spacing = 3)
+        accounts_box = Gtk.HBox(spacing = 3)
         accounts_box.set_border_width(3)
-        accounts = gtk.Entry()
+        accounts = Gtk.Entry()
         accounts.set_text(join(self.accounts))
         accounts.connect('changed', self.accounts_changed)
         accounts.set_tooltip_text("List accounts, separated by spaces, for "
                              "changing status message. If none are specified, "
                              "status message of all accounts will be changed.")
-        accounts_box.pack_start(gtk.Label("Accounts:"), expand = False)
-        accounts_box.pack_start(accounts)
+        accounts_box.pack_start(Gtk.Label("Accounts:"), True, True, 0)
+        accounts_box.pack_start(accounts, True, True, 0)
 
-        c = gtk.CheckButton(label="Add '[paused]'")
+        c = Gtk.CheckButton(label="Add '[paused]'")
         c.set_active(self.paused)
         c.connect('toggled', self.paused_changed)
         c.set_tooltip_text("If checked, '[paused]' will be added to "
                            "status message on pause.")
 
-        table = gtk.Table()
+        table = Gtk.Table()
         self.list = []
         i = 0
         j = 0
         for status in ['online', 'offline', 'chat', 'away', 'xa', 'invisible']:
-            button = gtk.CheckButton(label=status)
+            button = Gtk.CheckButton(label=status)
             button.set_name(status)
             if status in self.statuses:
                 button.set_active(True)
@@ -161,11 +162,11 @@ class GajimStatusMessage(EventPlugin):
             else:
                 i += 1
 
-        vb.pack_start(pattern_box)
-        vb.pack_start(accounts_box)
-        vb.pack_start(c)
+        vb.pack_start(pattern_box, True, True, 0)
+        vb.pack_start(accounts_box, True, True, 0)
+        vb.pack_start(c, True, True, 0)
         vb.pack_start(Frame(label="Statuses for which status message\n"
-                                  "will be changed"))
-        vb.pack_start(table)
+                                  "will be changed"), True, True, 0)
+        vb.pack_start(table, True, True, 0)
 
         return vb

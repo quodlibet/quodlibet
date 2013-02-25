@@ -31,19 +31,19 @@ class LibraryEvent(ProcessEvent):
         path = os.path.join(event.path, event.name)
         # No need to add files for modifications only
         if path in self._being_created:
-            gobject.idle_add(self.add, event)
+            GObject.idle_add(self.add, event)
             self._being_created.remove(path)
         elif event.path in self._being_created:
             # The first file per new-directory gets missed for me (bug?)
             # TODO: so work out how/when to remove parent path properly
-            gobject.idle_add(self.add, event)
+            GObject.idle_add(self.add, event)
             self._being_created.remove(event.path)
         else:
             print_d("Ignoring modification on %s" % path)
 
     def process_IN_MOVED_TO(self, event):
         print_d('Triggered for "%s"' % event.name)
-        gobject.idle_add(self.add, event)
+        GObject.idle_add(self.add, event)
 
     def process_IN_CREATE(self, event):
         #print_d('Triggered for "%s"' % event.name)
@@ -53,11 +53,11 @@ class LibraryEvent(ProcessEvent):
 
     def process_IN_DELETE(self, event):
         print_d('Triggered for "%s"' % event.name)
-        gobject.idle_add(self.update, event)
+        GObject.idle_add(self.update, event)
 
     def process_IN_MOVED_FROM(self, event):
         print_d('Triggered for "%s"' % event.name)
-        gobject.idle_add(self.update, event)
+        GObject.idle_add(self.update, event)
 
     def add(self, event):
         """Add a library file / folder based on an incoming event"""
@@ -132,7 +132,7 @@ class AutoLibraryUpdate(EventPlugin):
                 self.notifier.start()
             else:
                 self.notifier = Notifier(wm, self.event_handler, timeout=100)
-                gobject.timeout_add(1000, self.unthreaded_callback)
+                GObject.timeout_add(1000, self.unthreaded_callback)
 
             for path in self.get_library_dirs():
                 print_d('Watching directory %s for %s' % (path, FLAGS))

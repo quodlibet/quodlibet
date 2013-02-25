@@ -81,7 +81,8 @@ class Preferences(Gtk.VBox):
         preset_combo.set_active(-1)
         table.attach(preset_combo, 1, 2, 0, 1)
 
-        fcut_scale = Gtk.HScale(Gtk.Adjustment(700, 300, 2000, 10, 100))
+        fcut_scale = Gtk.HScale(
+            adjustment=Gtk.Adjustment(700, 300, 2000, 10, 100))
         fcut_scale.set_tooltip_text(_SETTINGS["fcut"][1])
         labels["fcut"].set_mnemonic_widget(fcut_scale)
         fcut_scale.set_value_pos(Gtk.PositionType.RIGHT)

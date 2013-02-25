@@ -68,7 +68,7 @@ class ExceptionDialog(Gtk.Window):
             (filename, line, function, text) = frame
             model.append(row=[filename, function, line])
         view.connect('row-activated', self.__stack_row_activated)
-        def cdf(column, cell, model, iter):
+        def cdf(column, cell, model, iter, data):
             cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
                 util.escape(model[iter][1]), model[iter][2],
                 util.escape(util.unexpand(model[iter][0]))))

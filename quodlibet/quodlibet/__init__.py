@@ -64,7 +64,7 @@ class Application(object):
 
         # so this can be called from a signal handler and before
         # the main loop starts
-        gobject.idle_add(idle_quit, priority=gobject.PRIORITY_HIGH)
+        GObject.idle_add(idle_quit, priority=GObject.PRIORITY_HIGH)
 
     def show(self):
         from quodlibet.qltk import Window

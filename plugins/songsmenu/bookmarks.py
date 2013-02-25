@@ -15,12 +15,12 @@ class Bookmarks(SongsMenuPlugin):
     PLUGIN_ID = "Go to Bookmark..."
     PLUGIN_NAME = _("Go to Bookmark...")
     PLUGIN_DESC = "List all bookmarks in the selected files."
-    PLUGIN_ICON = gtk.STOCK_JUMP_TO
+    PLUGIN_ICON = Gtk.STOCK_JUMP_TO
     PLUGIN_VERSION = "0.4"
 
     def __init__(self, songs):
         super(Bookmarks, self).__init__(songs)
-        self.__menu = gtk.Menu()
+        self.__menu = Gtk.Menu()
         self.__menu.connect('map', self.__map, songs)
         self.__menu.connect('unmap', self.__unmap)
         self.set_submenu(self.__menu)
@@ -42,23 +42,23 @@ class Bookmarks(SongsMenuPlugin):
             if marks:
                 fake_player = self.FakePlayer(song)
 
-                song_item = gtk.MenuItem(song.comma("title"))
-                song_menu = gtk.Menu()
+                song_item = Gtk.MenuItem(song.comma("title"))
+                song_menu = Gtk.Menu()
                 song_item.set_submenu(song_menu)
                 menu.append(song_item)
 
                 items = qltk.bookmarks.MenuItems(marks, fake_player, True)
                 map(song_menu.append, items)
 
-                song_menu.append(gtk.SeparatorMenuItem())
-                i = qltk.MenuItem(_("_Edit Bookmarks..."), gtk.STOCK_EDIT)
+                song_menu.append(Gtk.SeparatorMenuItem())
+                i = qltk.MenuItem(_("_Edit Bookmarks..."), Gtk.STOCK_EDIT)
                 i.connect_object('activate',
                     qltk.bookmarks.EditBookmarks, None, app.library,
                     fake_player)
                 song_menu.append(i)
 
         if menu.get_active() is None:
-            no_marks = gtk.MenuItem(_("No Bookmarks"))
+            no_marks = Gtk.MenuItem(_("No Bookmarks"))
             no_marks.set_sensitive(False)
             menu.append(no_marks)
 

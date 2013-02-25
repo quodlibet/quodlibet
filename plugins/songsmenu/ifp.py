@@ -16,7 +16,7 @@ class IFPUpload(SongsMenuPlugin):
     PLUGIN_NAME = _("Send to iFP")
     PLUGIN_DESC = _("Upload songs to an iRiver iFP device.")
     PLUGIN_VERSION = "0.12"
-    PLUGIN_ICON = gtk.STOCK_CONVERT
+    PLUGIN_ICON = Gtk.STOCK_CONVERT
 
     def plugin_songs(self, songs):        
         if os.system("ifp typestring"):

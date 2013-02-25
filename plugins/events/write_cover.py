@@ -22,7 +22,7 @@ class PictureSaver(EventPlugin):
     PLUGIN_ID = "Picture Saver"
     PLUGIN_NAME = _("Picture Saver")
     PLUGIN_DESC = "The cover image of the current song is saved to a file."
-    PLUGIN_ICON = gtk.STOCK_SAVE
+    PLUGIN_ICON = Gtk.STOCK_SAVE
     PLUGIN_VERSION = "0.21"
 
     def plugin_on_song_started(self, song):
@@ -47,11 +47,11 @@ class PictureSaver(EventPlugin):
             except EnvironmentError: pass
             else: config.set("plugins", __name__, fn)
 
-        hb = gtk.HBox(spacing=6)
+        hb = Gtk.HBox(spacing=6)
         hb.set_border_width(6)
-        hb.pack_start(gtk.Label(_("File:")), expand=False)
-        e = gtk.Entry()
+        hb.pack_start(Gtk.Label(_("File:")), True, True, 0)
+        e = Gtk.Entry()
         e.set_text(config.get("plugins", __name__))
         e.connect('changed', changed)
-        hb.pack_start(e)
+        hb.pack_start(e, True, True, 0)
         return hb

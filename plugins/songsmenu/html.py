@@ -39,20 +39,20 @@ class ExportToHTML(SongsMenuPlugin):
     PLUGIN_ID = "Export to HTML"
     PLUGIN_NAME = _("Export to HTML")
     PLUGIN_DESC = _("Export the selected song list to HTML.")
-    PLUGIN_ICON = gtk.STOCK_CONVERT
+    PLUGIN_ICON = Gtk.STOCK_CONVERT
     PLUGIN_VERSION = "0.17"
 
     def plugin_songs(self, songs):
         if not songs: return
 
-        chooser = gtk.FileChooserDialog(
+        chooser = Gtk.FileChooserDialog(
             title="Export to HTML",
-            action=gtk.FILE_CHOOSER_ACTION_SAVE,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-                     gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-        chooser.set_default_response(gtk.RESPONSE_ACCEPT)
+            action=Gtk.FileChooserAction.SAVE,
+            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
+                     Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
+        chooser.set_default_response(Gtk.ResponseType.ACCEPT)
         resp = chooser.run()
-        if resp != gtk.RESPONSE_ACCEPT:
+        if resp != Gtk.ResponseType.ACCEPT:
             chooser.destroy()
             return
 

@@ -12,8 +12,8 @@ from quodlibet.plugins.events import EventPlugin
 
 
 def get_toplevel_xid():
-    if app.window.window:
-        return app.window.window.xid
+    if app.window.get_window():
+        return app.window.get_window().xid
     return 0
 
 
@@ -29,7 +29,7 @@ class SessionInhibit(EventPlugin):
     PLUGIN_NAME = _("Inhibit Screensaver")
     PLUGIN_DESC = _("Prevent the GNOME screensaver from activating while"
                     " a song is playing.")
-    PLUGIN_ICON = gtk.STOCK_STOP
+    PLUGIN_ICON = Gtk.STOCK_STOP
     PLUGIN_VERSION = "0.3"
 
     DBUS_NAME = "org.gnome.SessionManager"

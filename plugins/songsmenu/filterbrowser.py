@@ -16,7 +16,7 @@ class FilterBrowser(SongsMenuPlugin):
     PLUGIN_ID = 'filterbrowser'
     PLUGIN_NAME = _('Filter on Directory')
     PLUGIN_DESC = _("Filter on directory in a new browser window.")
-    PLUGIN_ICON = gtk.STOCK_INDEX
+    PLUGIN_ICON = Gtk.STOCK_INDEX
     PLUGIN_VERSION = '0.1'
 
     def plugin_songs(self, songs):

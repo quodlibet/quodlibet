@@ -137,7 +137,7 @@ class FingerPrintPipeline(threading.Thread):
             # for shutdown
             if not self.__shutdown:
                 self.__shutdown = True
-                gobject.idle_add(self.__pool._callback, self.__song,
+                GObject.idle_add(self.__pool._callback, self.__song,
                     None, "Error", self)
         elif not self.__shutdown:
             # GStreamer probably knows song durations better than we do.
@@ -222,21 +222,21 @@ class FingerPrintPipeline(threading.Thread):
         elif message.type == gst.MESSAGE_ERROR:
             error = str(message.parse_error()[0])
         if not self.__shutdown and (not self.__todo or error):
-            gobject.idle_add(self.__pool._callback, self.__song,
+            GObject.idle_add(self.__pool._callback, self.__song,
                 self.__fingerprints, error, self)
             self.__shutdown = True
             self.__cv.acquire()
             self.__cv.notify()
             self.__cv.release()
 
-class FingerPrintThreadPool(gobject.GObject):
+class FingerPrintThreadPool(GObject.GObject):
     __gsignals__ = {
         "fingerprint-done": (
-            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object)),
+            GObject.SignalFlags.RUN_LAST, None, (object, object)),
         "fingerprint-started": (
-            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+            GObject.SignalFlags.RUN_LAST, None, (object,)),
         "fingerprint-error": (
-            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object)),
+            GObject.SignalFlags.RUN_LAST, None, (object, object)),
         }
 
     def __init__(self, max_workers):
@@ -337,7 +337,7 @@ class MusicDNSThread(threading.Thread):
 
     def run(self):
         self.__sem.release()
-        gobject.timeout_add(self.INTERVAL, self.__inc_sem)
+        GObject.timeout_add(self.INTERVAL, self.__inc_sem)
 
         items = [(s,d) for s,d in self.__fingerprints.iteritems() if "ofa" in d]
         for i, (song, data) in enumerate(items):
@@ -347,10 +347,10 @@ class MusicDNSThread(threading.Thread):
             puid = self.__get_puid(data["ofa"], data["length"])
             if puid: data["puid"] = puid
 
-            gobject.idle_add(self.__progress_cb, song,
+            GObject.idle_add(self.__progress_cb, song,
                 float(i + 1) / len(items))
 
-        gobject.idle_add(self.__callback, self)
+        GObject.idle_add(self.__callback, self)
 
         # stop sem increment
         self.__stopped = True
@@ -425,12 +425,12 @@ class AcoustidSubmissionThread(threading.Thread):
             print_w("[fingerprint] " + _("Submission failed: ") + error)
 
         # emit progress
-        gobject.idle_add(self.__progress_cb,
+        GObject.idle_add(self.__progress_cb,
                 float(self.__done)/len(self.__fingerprints))
 
     def run(self):
         self.__sem.release()
-        gobject.timeout_add(self.INTERVAL, self.__inc_sem)
+        GObject.timeout_add(self.INTERVAL, self.__inc_sem)
 
         urldata = []
         for i, (song, data) in enumerate(self.__fingerprints.iteritems()):
@@ -475,7 +475,7 @@ class AcoustidSubmissionThread(threading.Thread):
         if urldata:
             self.__send(urldata)
 
-        gobject.idle_add(self.__callback, self)
+        GObject.idle_add(self.__callback, self)
 
         # stop sem increment
         self.__stopped = True
@@ -496,27 +496,27 @@ class FingerprintDialog(Window):
         self.set_title(_("Submit Acoustic Fingerprints"))
         self.set_default_size(300, 0)
 
-        outer_box = gtk.VBox(spacing=12)
+        outer_box = Gtk.VBox(spacing=12)
 
-        box = gtk.VBox(spacing=6)
+        box = Gtk.VBox(spacing=6)
 
-        self.__label = label = gtk.Label()
+        self.__label = label = Gtk.Label()
         label.set_markup("<b>%s</b>" % _("Generating fingerprints:"))
         label.set_alignment(0, 0.5)
-        box.pack_start(label, expand=False)
+        box.pack_start(label, False, True, 0)
 
-        self.__bar = bar = gtk.ProgressBar()
+        self.__bar = bar = Gtk.ProgressBar()
         self.__set_fraction(0)
-        box.pack_start(bar, expand=False)
-        self.__label_song = label_song = gtk.Label()
+        box.pack_start(bar, False, True, 0)
+        self.__label_song = label_song = Gtk.Label()
         label_song.set_alignment(0, 0.5)
-        label_song.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        box.pack_start(label_song, expand=False)
+        label_song.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
+        box.pack_start(label_song, False, True, 0)
 
-        self.__stats = stats = gtk.Label()
+        self.__stats = stats = Gtk.Label()
         stats.set_alignment(0, 0.5)
-        expand = gtk.expander_new_with_mnemonic(_("_Details"))
-        align = gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
+        expand = Gtk.expander_new_with_mnemonic(_("_Details"))
+        align = Gtk.Alignment.new(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
         align.set_padding(6, 0, 6, 0)
         expand.add(align)
         align.add(stats)
@@ -551,19 +551,19 @@ class FingerprintDialog(Window):
 
         pool = FingerPrintThreadPool(get_num_threads())
 
-        bbox = gtk.HButtonBox()
-        bbox.set_layout(gtk.BUTTONBOX_END)
+        bbox = Gtk.HButtonBox()
+        bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.set_spacing(6)
-        self.__submit = submit = Button(_("_Submit"), gtk.STOCK_APPLY)
+        self.__submit = submit = Button(_("_Submit"), Gtk.STOCK_APPLY)
         submit.set_sensitive(False)
         submit.connect('clicked', self.__submit_cb)
-        cancel = gtk.Button(stock=gtk.STOCK_CANCEL)
+        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         cancel.connect_object('clicked', self.__cancel_cb, pool)
-        bbox.pack_start(submit)
-        bbox.pack_start(cancel)
+        bbox.pack_start(submit, True, True, 0)
+        bbox.pack_start(cancel, True, True, 0)
 
-        outer_box.pack_start(box, expand=False)
-        outer_box.pack_start(bbox, expand=False)
+        outer_box.pack_start(box, False, True, 0)
+        outer_box.pack_start(bbox, False, True, 0)
 
         pool.connect('fingerprint-done', self.__fp_done_cb)
         pool.connect('fingerprint-error', self.__fp_error_cb)
@@ -622,7 +622,7 @@ class FingerprintDialog(Window):
         frac = self.__fp_done / float(len(self.__songs))
         self.__set_fraction(frac)
         if self.__fp_done == len(self.__songs):
-            gobject.timeout_add(500, self.__start_puid)
+            GObject.timeout_add(500, self.__start_puid)
 
     def __fp_started_cb(self, pool, song):
         # increase by an amount smaller than one song, so that the user can
@@ -687,7 +687,7 @@ class FingerprintDialog(Window):
                 self.__acoustid_thread.stop()
         # pool.stop can block a short time because the CV might be locked
         # during starting the pipeline -> idle_add -> no GUI blocking
-        gobject.idle_add(idle_cancel)
+        GObject.idle_add(idle_cancel)
 
     def __submit_cb(self, *args):
         self.__submit.set_sensitive(False)
@@ -705,7 +705,7 @@ class FingerprintDialog(Window):
         thread.join()
         self.__set_fraction(1.0)
         self.__show_final_stats()
-        gobject.timeout_add(500, self.destroy)
+        GObject.timeout_add(500, self.destroy)
 
 def get_api_key():
     return config.get("plugins", "fingerprint_acoustid_api_key", "")
@@ -718,7 +718,7 @@ class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_NAME = _("Submit Acoustic Fingerprints")
     PLUGIN_DESC = _("Generates acoustic fingerprints using chromaprint and "
         "libofa and submits them to 'acoustid.org'")
-    PLUGIN_ICON = gtk.STOCK_CONNECT
+    PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.1"
 
     def plugin_songs(self, songs):
@@ -731,31 +731,31 @@ class AcoustidSubmit(SongsMenuPlugin):
 
     @classmethod
     def PluginPreferences(self, win):
-        box = gtk.VBox(spacing=12)
+        box = Gtk.VBox(spacing=12)
 
         # api key section
         def key_changed(entry, *args):
             config.set("plugins", "fingerprint_acoustid_api_key",
                 entry.get_text())
 
-        button = Button(_("Request API key"), gtk.STOCK_NETWORK)
+        button = Button(_("Request API key"), Gtk.STOCK_NETWORK)
         button.connect("clicked",
             lambda s: util.website("https://acoustid.org/api-key"))
-        key_box = gtk.HBox(spacing=6)
+        key_box = Gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(get_api_key())
         entry.connect("changed", key_changed)
-        label = gtk.Label(_("API _key:"))
+        label = Gtk.Label(label=_("API _key:"))
         label.set_use_underline(True)
         label.set_mnemonic_widget(entry)
-        key_box.pack_start(label, expand=False)
-        key_box.pack_start(entry)
-        key_box.pack_start(button, expand=False)
+        key_box.pack_start(label, False, True, 0)
+        key_box.pack_start(entry, True, True, 0)
+        key_box.pack_start(button, False, True, 0)
 
-        box.pack_start(Frame(_("Acoustid Web Service"), child=key_box))
+        box.pack_start(Frame(_("Acoustid Web Service", True, True, 0), child=key_box))
 
         # puid lookup section
-        puid_box = gtk.VBox(spacing=6)
+        puid_box = Gtk.VBox(spacing=6)
         options = [
             ("no_mbid", _("If <i>_musicbrainz__trackid</i> is missing")),
             ("always", _("_Always")),
@@ -769,12 +769,12 @@ class AcoustidSubmit(SongsMenuPlugin):
         start_value = get_puid_lookup()
         radio = None
         for value, text in options:
-            radio = gtk.RadioButton(group=radio, label=text)
-            radio.child.set_use_markup(True)
+            radio = Gtk.RadioButton(group=radio, label=text)
+            radio.get_child().set_use_markup(True)
             radio.set_active(value == start_value)
             radio.connect("toggled", config_changed, value)
-            puid_box.pack_start(radio)
+            puid_box.pack_start(radio, True, True, 0)
 
-        box.pack_start(Frame(_("PUID Lookup"), child=puid_box))
+        box.pack_start(Frame(_("PUID Lookup", True, True, 0), child=puid_box))
 
         return box

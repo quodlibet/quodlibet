@@ -125,7 +125,7 @@ class DuplicateSongsView(RCMHintedTreeView):
         self.connect_object('row-activated',
                             self.__select_song, player.playlist)
         # Selecting multiple is a nice feature it turns out.
-        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
         # Handle signals propagated from the underlying library
         self.connected_library_sigs = []
@@ -149,7 +149,7 @@ class DuplicateSongsView(RCMHintedTreeView):
             app.library.disconnect(sig)
 
 
-class DuplicatesTreeModel(gtk.TreeStore):
+class DuplicatesTreeModel(Gtk.TreeStore):
     """A tree store to model duplicated song information"""
 
     # Define columns to display (and how, in lieu of using qltk.browsers)
@@ -218,7 +218,7 @@ class DuplicatesTreeModel(gtk.TreeStore):
     def go_to(self, song, explicit=False):
         #print_d("Duplicates: told to go to %r" % song, context=self)
         self.__iter = None
-        if isinstance(song, gtk.TreeIter):
+        if isinstance(song, Gtk.TreeIter):
             self.__iter = song
             self.sourced = True
         elif not self.find_row(song):
@@ -259,11 +259,11 @@ class DuplicatesTreeModel(gtk.TreeStore):
             object, str, str, str, str, str, str, str)
 
 
-class DuplicateDialog(gtk.Window):
+class DuplicateDialog(Gtk.Window):
     """Main dialog for browsing duplicate results"""
 
     def __quit(self, widget=None, response=None):
-        if response == gtk.RESPONSE_OK or response == gtk.RESPONSE_CLOSE:
+        if response == Gtk.ResponseType.OK or response == Gtk.ResponseType.CLOSE:
             print_d("Exiting plugin on user request...", self)
         self.finished = True
         self.destroy()
@@ -273,7 +273,7 @@ class DuplicateDialog(gtk.Window):
         path, col = songlist.get_cursor()
         menu = songlist.Menu(app.library)
         if menu is not None:
-            return songlist.popup_menu(menu, 0, gtk.get_current_event_time())
+            return songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __init__(self, model):
         songs_text = ngettext("%d duplicate group", "%d duplicate groups",
@@ -285,9 +285,9 @@ class DuplicateDialog(gtk.Window):
         self.finished = False
         self.set_default_size(960, 480)
         self.set_border_width(6)
-        swin = gtk.ScrolledWindow()
-        swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        swin.set_shadow_type(gtk.SHADOW_IN)
+        swin = Gtk.ScrolledWindow()
+        swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        swin.set_shadow_type(Gtk.ShadowType.IN)
         # Set up the browser view
         view = DuplicateSongsView(model)
 
@@ -298,18 +298,18 @@ class DuplicateDialog(gtk.Window):
 
         # Set up the columns
         for i, (tag, f) in enumerate(DuplicatesTreeModel.TAG_MAP):
-            e = (pango.ELLIPSIZE_START if tag == '~filename'
-                else pango.ELLIPSIZE_END)
-            render = gtk.CellRendererText()
+            e = (Pango.EllipsizeMode.START if tag == '~filename'
+                else Pango.EllipsizeMode.END)
+            render = Gtk.CellRendererText()
             render.set_property("ellipsize", e)
-            col = gtk.TreeViewColumn(util.tag(tag), render)
+            col = Gtk.TreeViewColumn(util.tag(tag), render)
             # Numeric columns are better smaller here.
             if tag.startswith("~#"):
                 col.set_fixed_width(80)
-                col.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+                col.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
             else:
                 col.set_expand(True)
-                col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+                col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
             col.set_resizable(True)
             col.set_cell_data_func(render, cell_text, i + 1)
             view.append_column(col)
@@ -317,7 +317,7 @@ class DuplicateDialog(gtk.Window):
         view.connect('popup-menu', self.__songs_popup_menu)
         swin.add(view)
         # A basic information area
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
 
         def expand_all(*args):
             model = view.get_model()
@@ -330,20 +330,20 @@ class DuplicateDialog(gtk.Window):
                 for row in model:
                     view.expand_row(row.path, False)
 
-        expand = gtk.Button(_("Collapse / Expand all"))
+        expand = Gtk.Button(_("Collapse / Expand all"))
         expand.connect_object("clicked", expand_all, view)
-        hbox.pack_start(expand, expand=False)
+        hbox.pack_start(expand, False, True, 0)
 
-        label = gtk.Label(_("Duplicate key expression is '%s'") %
+        label = Gtk.Label(label=_("Duplicate key expression is '%s'") %
                 Duplicates.get_key_expression())
-        hbox.pack_start(label)
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        hbox.pack_start(label, True, True, 0)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect('clicked', self.__quit)
-        hbox.pack_start(close, expand=False)
+        hbox.pack_start(close, False, True, 0)
 
-        vbox = gtk.VBox(spacing=6)
-        vbox.pack_start(swin)
-        vbox.pack_start(hbox, expand=False)
+        vbox = Gtk.VBox(spacing=6)
+        vbox.pack_start(swin, True, True, 0)
+        vbox.pack_start(hbox, False, True, 0)
         self.add(vbox)
         self.show_all()
 
@@ -352,7 +352,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Find and browse similarly tagged versions of songs.')
-    PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
+    PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
     PLUGIN_VERSION = "0.7"
 
     MIN_GROUP_SIZE = 2
@@ -384,22 +384,22 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
             #print_d("setting to %s" % entry.get_text().strip())
             cls.config_set(cls._CFG_KEY_KEY, entry.get_text().strip())
 
-        vb = gtk.VBox(spacing=10)
+        vb = Gtk.VBox(spacing=10)
         vb.set_border_width(0)
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
         # TODO: construct a decent validator and use ValidatingEntry
         e = UndoEntry()
         e.set_text(cls.get_key_expression())
         e.connect("changed", key_changed)
         e.set_tooltip_markup("Accepts QL tag expressions like "
                 "<tt>~artist~title</tt> or <tt>musicbrainz_track_id</tt>")
-        lbl = gtk.Label(_("_Group duplicates by:"))
+        lbl = Gtk.Label(label=_("_Group duplicates by:"))
         lbl.set_mnemonic_widget(e)
         lbl.set_use_underline(True)
-        hbox.pack_start(lbl, expand=False)
-        hbox.pack_start(e, expand=False)
+        hbox.pack_start(lbl, False, True, 0)
+        hbox.pack_start(e, False, True, 0)
         frame = qltk.Frame(label=_("Duplicate Key"), child=hbox)
-        vb.pack_start(frame, expand=True)
+        vb.pack_start(frame, True, True, 0)
 
         # Matching Option
         toggles = [
@@ -408,14 +408,14 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
             (cls._CFG_REMOVE_PUNCTUATION, _("Remove _Punctuation")),
             (cls._CFG_CASE_INSENSITIVE, _("Case _Insensitive")),
         ]
-        vb2=gtk.VBox(spacing=6)
+        vb2=Gtk.VBox(spacing=6)
         for key, label in toggles:
             ccb = ConfigCheckButton(label, 'plugins', cls._config_key(key))
             ccb.set_active(cls.config_get_bool(key))
-            vb2.pack_start(ccb)
+            vb2.pack_start(ccb, True, True, 0)
 
         frame = qltk.Frame(label=_("Matching options"), child=vb2)
-        vb.pack_start(frame, expand=False)
+        vb.pack_start(frame, False, True, 0)
 
         vb.show_all()
         return vb

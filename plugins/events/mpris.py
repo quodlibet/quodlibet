@@ -35,15 +35,15 @@ class MPRIS(EventPlugin):
     PLUGIN_NAME = _("MPRIS D-Bus support")
     PLUGIN_DESC = _("Control Quod Libet using the "
         "MPRIS 1.0/2.0 D-Bus Interface Specification.")
-    PLUGIN_ICON = gtk.STOCK_CONNECT
+    PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.2"
 
     def PluginPreferences(self, parent):
-        box = gtk.HBox()
+        box = Gtk.HBox()
         ccb = ConfigCheckButton(_("Hide main window on close"),
                                 'plugins', 'mpris_window_hide')
         ccb.set_active(self.__do_hide())
-        box.pack_start(qltk.Frame(_("Preferences"), child=ccb))
+        box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box
 
     def __do_hide(self):

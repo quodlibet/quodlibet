@@ -17,7 +17,7 @@ try: config.get("plugins", __name__)
 except: config.set("plugins", __name__, "en")
 
 class WikiSearch(object):
-    PLUGIN_ICON = gtk.STOCK_OPEN
+    PLUGIN_ICON = Gtk.STOCK_OPEN
     PLUGIN_VERSION = '0.14'
 
     def changed(self, e):
@@ -25,15 +25,15 @@ class WikiSearch(object):
     changed = classmethod(changed)
 
     def PluginPreferences(self, parent):
-        hb = gtk.HBox(spacing=3)
+        hb = Gtk.HBox(spacing=3)
         hb.set_border_width(6)
-        e = gtk.Entry(2)
+        e = Gtk.Entry(max_length=2)
         e.set_width_chars(3)
         e.set_text(config.get('plugins', __name__))
         e.connect('changed', self.changed)
-        hb.pack_start(gtk.Label("Search at http://"), expand=False)
-        hb.pack_start(e, expand=False)
-        hb.pack_start(gtk.Label(".wikipedia.org"), expand=False)
+        hb.pack_start(Gtk.Label("Search at http://"), True, True, 0)
+        hb.pack_start(e, False, True, 0)
+        hb.pack_start(Gtk.Label(".wikipedia.org"), True, True, 0)
         hb.show_all()
         return hb
     PluginPreferences = classmethod(PluginPreferences)

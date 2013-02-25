@@ -27,7 +27,7 @@ class MediaServer(EventPlugin):
     PLUGIN_NAME = _("UPnP AV Media Server")
     PLUGIN_DESC = _("Exposes all albums to the Rygel UPnP Media Server "
                     "through the MediaServer2 D-Bus interface")
-    PLUGIN_ICON = gtk.STOCK_CONNECT
+    PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.1"
 
     def enabled(self):
@@ -588,12 +588,12 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         self.implement_interface("org.gnome.UPnP.MediaItem1", MediaItem.IFACE)
 
         # load into a pixbuf
-        theme = gtk.icon_theme_get_default()
+        theme = Gtk.IconTheme.get_default()
         pixbuf = theme.load_icon("quodlibet", Icon.SIZE, 0)
 
         # make sure the size is right
         pixbuf = pixbuf.scale_simple(Icon.SIZE, Icon.SIZE,
-                                     gtk.gdk.INTERP_BILINEAR)
+                                     GdkPixbuf.InterpType.BILINEAR)
         self.__depth = pixbuf.get_bits_per_sample()
 
         # save and keep reference

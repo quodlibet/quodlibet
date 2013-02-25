@@ -88,7 +88,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect_object('clicked', qltk.Window.destroy, self)
         bbox.pack_start(close, True, True, 0)
-        align = Gtk.Alignment.new(yalign=1.0, xscale=1.0)
+        align = Gtk.Alignment(yalign=1.0, xscale=1.0)
         align.add(bbox)
         vbox.pack_end(align, True, True, 0)
 
@@ -129,7 +129,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             signal = "toggled"
         elif isinstance(val, int):
             adj = Gtk.Adjustment(0, 0, 10000, 1, 10, 0)
-            entry = Gtk.SpinButton(adj)
+            entry = Gtk.SpinButton(adjustment=adj)
             entry.set_numeric(True)
             callback = self.__changed_numeric_widget
         elif key.find("pattern") >= 0:
@@ -226,7 +226,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         if event.keyval == Gtk.accelerator_parse("Delete")[0]:
             self.__remove(view)
 
-    def __cdf(self, column, cell, model, iter):
+    def __cdf(self, column, cell, model, iter, data):
         row = model[iter]
         obj = row[0]
         obj_name = util.escape(obj.name)
@@ -311,7 +311,7 @@ class MultiStringEditor(qltk.UniqueWindow):
         self.show_all()
 
     def __setup_column(self, view):
-        def cdf(column, cell, model, iter):
+        def cdf(column, cell, model, iter, data):
             row = model[iter]
             if row:
                 cell.set_property('text', row[0])

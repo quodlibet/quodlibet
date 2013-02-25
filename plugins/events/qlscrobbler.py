@@ -159,7 +159,7 @@ class QLSubmitQueue(PluginConfigMixin):
             if self.queue and not self.broken:
                 self.quick_dialog("Please visit the Plugins window to set "
                               "QLScrobbler up. Until then, songs will not be "
-                              "submitted.", gtk.MESSAGE_INFO)
+                              "submitted.", Gtk.MessageType.INFO)
                 self.broken = True
         elif (self.username, self.password, self.base_url)!=(user, passw, url):
             self.username, self.password, self.base_url = (user, passw, url)
@@ -202,7 +202,7 @@ class QLSubmitQueue(PluginConfigMixin):
                 else:
                     self.handshake_event.clear()
                     self.handshake_delay = min(self.handshake_delay*2, 120)
-                    gobject.timeout_add(self.handshake_delay*60*1000,
+                    GObject.timeout_add(self.handshake_delay*60*1000,
                                         self.handshake_event.set)
                     continue
             self.changed_event.wait()
@@ -235,13 +235,13 @@ class QLSubmitQueue(PluginConfigMixin):
             if show_dialog:
                 self.quick_dialog(
                     "Could not contact service '%s'." %
-                    util.escape(self.base_url), gtk.MESSAGE_ERROR)
+                    util.escape(self.base_url), Gtk.MessageType.ERROR)
             else:
                 print_d("Could not contact service. Queueing submissions.")
             return False
         except ValueError:
             self.quick_dialog("Authentication failed: invalid URL.",
-                gtk.MESSAGE_ERROR)
+                Gtk.MessageType.ERROR)
             self.broken = True
             return False
 
@@ -259,17 +259,17 @@ class QLSubmitQueue(PluginConfigMixin):
         elif status == "BADAUTH":
             self.quick_dialog("Authentication failed: Invalid username '%s' "
                             "or bad password." % util.escape(self.username),
-                            gtk.MESSAGE_ERROR)
+                            Gtk.MessageType.ERROR)
             self.broken = True
         elif status == "BANNED":
             self.quick_dialog("Client is banned. Contact the author.",
-                              gtk.MESSAGE_ERROR)
+                              Gtk.MessageType.ERROR)
             self.broken = True
         elif status == "BADTIME":
             self.quick_dialog("Wrong system time. Submissions may fail until "
-                              "it is corrected.", gtk.MESSAGE_ERROR)
+                              "it is corrected.", Gtk.MessageType.ERROR)
         else:  # "FAILED"
-            self.quick_dialog(status, gtk.MESSAGE_ERROR)
+            self.quick_dialog(status, Gtk.MessageType.ERROR)
         self.changed()
         return False
 
@@ -326,14 +326,14 @@ class QLSubmitQueue(PluginConfigMixin):
         dialog.show()
 
     def quick_dialog(self, msg, dialog_type):
-        gobject.idle_add(self.quick_dialog_helper, dialog_type, msg)
+        GObject.idle_add(self.quick_dialog_helper, dialog_type, msg)
 
 class QLScrobbler(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "QLScrobbler"
     PLUGIN_NAME = _("AudioScrobbler Submission")
     PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
                     "Audioscrobbler services.")
-    PLUGIN_ICON = gtk.STOCK_CONNECT
+    PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.12"
     # Retain original config section
     CONFIG_SECTION = "scrobbler"
@@ -353,7 +353,8 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         self.exclude = self.config_get('exclude')
 
         # Set up exit hook to dump queue
-        gtk.quit_add(0, self.queue.dump_queue)
+        # FIXME: GIPORT
+        # Gtk.quit_add(0, self.queue.dump_queue)
 
     def config_get_url(self):
         """Gets the URL for the currently configured service.
@@ -444,27 +445,27 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
             status = queue.send_handshake(show_dialog=True)
             if status:
                 queue.quick_dialog("Authentication successful.",
-                    gtk.MESSAGE_INFO)
+                    Gtk.MessageType.INFO)
 
-        box = gtk.VBox(spacing=12)
+        box = Gtk.VBox(spacing=12)
 
         # first frame
-        table = gtk.Table(5, 2)
+        table = Gtk.Table(5, 2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
         labels = []
         label_names = [_("_Service:"), _("_URL:"), _("User_name:"),
             _("_Password:")]
-        for idx, label in enumerate(map(gtk.Label, label_names)):
+        for idx, label in enumerate(map(Gtk.Label, label_names)):
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
             table.attach(label, 0, 1, idx, idx+1,
-                         xoptions=gtk.FILL | gtk.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
             labels.append(label)
 
         row = 0
-        service_combo = gtk.combo_box_new_text()
+        service_combo = Gtk.ComboBoxText()
         table.attach(service_combo, 1, 2, row, row + 1)
         cur_service = self.config_get('service')
         for idx, serv in enumerate(sorted(SERVICES.keys()) + ["Other..."]):
@@ -504,14 +505,14 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         row += 1
 
         # verify data
-        button = qltk.Button(_("_Verify account data"), gtk.STOCK_INFO)
+        button = qltk.Button(_("_Verify account data"), Gtk.STOCK_INFO)
         button.connect('clicked', check_login)
         table.attach(button, 0, 2, 4, 5)
 
-        box.pack_start(qltk.Frame(_("Account"), child=table))
+        box.pack_start(qltk.Frame(_("Account"), child=table), True, True, 0)
 
         # second frame
-        table = gtk.Table(4, 2)
+        table = Gtk.Table(4, 2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -519,11 +520,11 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
             _("Exclude _filter:")]
 
         labels = []
-        for idx, label in enumerate(map(gtk.Label, label_names)):
+        for idx, label in enumerate(map(Gtk.Label, label_names)):
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
             table.attach(label, 0, 1, idx, idx+1,
-                         xoptions=gtk.FILL | gtk.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
             labels.append(label)
 
         row = 0
@@ -564,6 +565,6 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         offline.set_active(self.config_get('offline') == "true")
         table.attach(offline, 0, 2, row, row + 1)
 
-        box.pack_start(qltk.Frame(_("Submission"), child=table))
+        box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)
 
         return box

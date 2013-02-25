@@ -515,7 +515,7 @@ class AmazonParser(object):
 
         return self.covers
 
-class CoverArea(gtk.VBox):
+class CoverArea(Gtk.VBox):
     """The image display and saving part."""
 
     def __init__(self, parent, song):
@@ -530,32 +530,32 @@ class CoverArea(gtk.VBox):
         self.current_data = None
         self.current_pixbuf = None
 
-        self.image = gtk.Image()
-        self.button = gtk.Button(stock=gtk.STOCK_SAVE)
+        self.image = Gtk.Image()
+        self.button = Gtk.Button(stock=Gtk.STOCK_SAVE)
         self.button.set_sensitive(False)
         self.button.connect('clicked', self.__save)
 
-        close_button = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close_button = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close_button.connect('clicked', lambda x: self.main_win.destroy())
 
-        self.window_fit = gtk.CheckButton(_('Fit image to _window'))
+        self.window_fit = Gtk.CheckButton(_('Fit image to _window'))
         self.window_fit.connect('toggled', self.__scale_pixbuf)
 
-        self.name_combo = gtk.combo_box_new_text()
+        self.name_combo = Gtk.ComboBoxText()
 
         self.cmd = qltk.entry.ValidatingEntry(util.iscommand)
 
         #both labels
-        label_open = gtk.Label(_('_Program:'))
+        label_open = Gtk.Label(label=_('_Program:'))
         label_open.set_use_underline(True)
         label_open.set_mnemonic_widget(self.cmd)
-        label_open.set_justify(gtk.JUSTIFY_LEFT)
+        label_open.set_justify(Gtk.Justification.LEFT)
 
-        self.open_check = gtk.CheckButton(_('_Edit image after saving'))
-        label_name = gtk.Label(_('File_name:'))
+        self.open_check = Gtk.CheckButton(_('_Edit image after saving'))
+        label_name = Gtk.Label(label=_('File_name:'))
         label_name.set_use_underline(True)
         label_name.set_mnemonic_widget(self.name_combo)
-        label_name.set_justify(gtk.JUSTIFY_LEFT)
+        label_name.set_justify(Gtk.Justification.LEFT)
 
         # set all stuff from the config
         self.window_fit.set_active(cfg_get('fit', True))
@@ -595,7 +595,7 @@ class CoverArea(gtk.VBox):
         if self.name_combo.get_active() < 0:
             self.name_combo.set_active(0)
 
-        table = gtk.Table(rows=2, columns=2, homogeneous=False)
+        table = Gtk.Table(rows=2, columns=2, homogeneous=False)
         table.set_row_spacing(0, 5)
         table.set_row_spacing(1, 5)
         table.set_col_spacing(0, 5)
@@ -607,33 +607,33 @@ class CoverArea(gtk.VBox):
         table.attach(self.cmd, 1, 2, 0, 1)
         table.attach(self.name_combo, 1, 2, 1, 2)
 
-        self.scrolled = gtk.ScrolledWindow()
+        self.scrolled = Gtk.ScrolledWindow()
         self.scrolled.add_with_viewport(self.image)
-        self.scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        bbox = gtk.HButtonBox()
+        bbox = Gtk.HButtonBox()
         bbox.set_spacing(6)
-        bbox.set_layout(gtk.BUTTONBOX_END)
-        bbox.pack_start(self.button)
-        bbox.pack_start(close_button)
+        bbox.set_layout(Gtk.ButtonBoxStyle.END)
+        bbox.pack_start(self.button, True, True, 0)
+        bbox.pack_start(close_button, True, True, 0)
 
-        bb_align = gtk.Alignment(0, 1, 1, 0)
+        bb_align = Gtk.Alignment.new(0, 1, 1, 0)
         bb_align.set_property('right-padding', 6)
         bb_align.add(bbox)
 
-        main_hbox = gtk.HBox()
+        main_hbox = Gtk.HBox()
         main_hbox.pack_start(table, False, padding=6)
-        main_hbox.pack_start(bb_align)
+        main_hbox.pack_start(bb_align, True, True, 0)
 
-        top_hbox = gtk.HBox()
-        top_hbox.pack_start(self.open_check)
+        top_hbox = Gtk.HBox()
+        top_hbox.pack_start(self.open_check, True, True, 0)
         top_hbox.pack_start(self.window_fit, False)
 
-        main_vbox = gtk.VBox()
-        main_vbox.pack_start(top_hbox, padding=2)
-        main_vbox.pack_start(main_hbox)
+        main_vbox = Gtk.VBox()
+        main_vbox.pack_start(top_hbox, True, True, 2)
+        main_vbox.pack_start(main_hbox, True, True, 0)
 
-        self.pack_start(self.scrolled)
+        self.pack_start(self.scrolled, True, True, 0)
         self.pack_start(main_vbox, False, padding=5)
 
         # 5 MB image cache size
@@ -688,7 +688,7 @@ class CoverArea(gtk.VBox):
             return
 
         pixbuf = loader.get_pixbuf()
-        gobject.idle_add(self.image.set_from_pixbuf, pixbuf)
+        GObject.idle_add(self.image.set_from_pixbuf, pixbuf)
 
     def __scale_pixbuf(self, *data):
         if not self.current_pixbuf:
@@ -730,15 +730,15 @@ class CoverArea(gtk.VBox):
             self.image.set_from_pixbuf(pixbuf)
 
     def __scale_async(self, pixbuf, w, h):
-            pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
-            gobject.idle_add(self.image.set_from_pixbuf, pixbuf)
+            pixbuf = pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
+            GObject.idle_add(self.image.set_from_pixbuf, pixbuf)
 
     def __close(self, loader, *data):
         if self.stop_loading:
             return
 
         self.current_pixbuf = loader.get_pixbuf()
-        gobject.idle_add(self.__scale_pixbuf)
+        GObject.idle_add(self.__scale_pixbuf)
 
     def set_cover(self, url):
         thr = threading.Thread(target=self.__set_async, args=(url,))
@@ -762,10 +762,10 @@ class CoverArea(gtk.VBox):
 
         self.loading = True
 
-        gobject.idle_add(self.button.set_sensitive, False)
+        GObject.idle_add(self.button.set_sensitive, False)
         self.current_pixbuf = None
 
-        pbloader = gtk.gdk.PixbufLoader()
+        pbloader = GdkPixbuf.PixbufLoader()
         pbloader.connect('closed', self.__close)
 
         #look for cached images
@@ -817,13 +817,13 @@ class CoverArea(gtk.VBox):
 
         try:
             pbloader.close()
-        except gobject.GError:
+        except GObject.GError:
             pass
 
         self.current_data = raw_data
 
         if not self.stop_loading:
-            gobject.idle_add(self.button.set_sensitive, True)
+            GObject.idle_add(self.button.set_sensitive, True)
 
         self.loading = False
 
@@ -838,29 +838,29 @@ class AlbumArtWindow(qltk.Window):
         self.search_lock = False
 
         self.set_title(_('Album Art Downloader'))
-        self.set_icon_name(gtk.STOCK_FIND)
+        self.set_icon_name(Gtk.STOCK_FIND)
         self.set_default_size(800, 550)
 
         image = CoverArea(self, songs[0])
 
-        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, object)
+        self.liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, object)
         self.treeview = treeview = AllTreeView(self.liststore)
         self.treeview.set_headers_visible(False)
         self.treeview.set_rules_hint(True)
 
         targets = [("text/uri-list", 0, 0)]
         treeview.drag_source_set(
-            gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
 
         treeselection = self.treeview.get_selection()
-        treeselection.set_mode(gtk.SELECTION_SINGLE)
+        treeselection.set_mode(Gtk.SelectionMode.SINGLE)
         treeselection.connect('changed', self.__select_callback, image)
 
         self.treeview.connect("drag-data-get",
             self.__drag_data_get, treeselection)
 
-        rend_pix = gtk.CellRendererPixbuf()
-        img_col = gtk.TreeViewColumn('Thumb')
+        rend_pix = Gtk.CellRendererPixbuf()
+        img_col = Gtk.TreeViewColumn('Thumb')
         img_col.pack_start(rend_pix, False)
         img_col.add_attribute(rend_pix, 'pixbuf', 0)
         treeview.append_column(img_col)
@@ -891,36 +891,36 @@ class AlbumArtWindow(qltk.Window):
             cell.markup = txt
             cell.set_property('markup', cell.markup)
 
-        rend = gtk.CellRendererText()
-        rend.set_property('ellipsize', pango.ELLIPSIZE_END)
-        info_col = gtk.TreeViewColumn('Info', rend)
+        rend = Gtk.CellRendererText()
+        rend.set_property('ellipsize', Pango.EllipsizeMode.END)
+        info_col = Gtk.TreeViewColumn('Info', rend)
         info_col.set_cell_data_func(rend, cell_data)
 
         treeview.append_column(info_col)
 
-        sw_list = gtk.ScrolledWindow()
-        sw_list.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw_list.set_shadow_type(gtk.SHADOW_IN)
+        sw_list = Gtk.ScrolledWindow()
+        sw_list.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        sw_list.set_shadow_type(Gtk.ShadowType.IN)
         sw_list.add(treeview)
 
-        self.search_field = gtk.Entry()
-        self.search_button = gtk.Button(stock=gtk.STOCK_FIND)
+        self.search_field = Gtk.Entry()
+        self.search_button = Gtk.Button(stock=Gtk.STOCK_FIND)
         self.search_button.connect('clicked', self.start_search)
         self.search_field.connect('activate', self.start_search)
 
         widget_space = 5
 
-        search_hbox = gtk.HBox(False, widget_space)
-        search_hbox.pack_start(self.search_field)
+        search_hbox = Gtk.HBox(False, widget_space)
+        search_hbox.pack_start(self.search_field, True, True, 0)
         search_hbox.pack_start(self.search_button, False)
 
-        self.progress = gtk.ProgressBar()
+        self.progress = Gtk.ProgressBar()
 
-        left_vbox = gtk.VBox(False, widget_space)
+        left_vbox = Gtk.VBox(False, widget_space)
         left_vbox.pack_start(search_hbox, False)
-        left_vbox.pack_start(sw_list)
+        left_vbox.pack_start(sw_list, True, True, 0)
 
-        hpaned = gtk.HPaned()
+        hpaned = Gtk.HPaned()
         hpaned.set_border_width(widget_space)
         hpaned.pack1(left_vbox)
         hpaned.pack2(image)
@@ -983,7 +983,7 @@ class AlbumArtWindow(qltk.Window):
         """set the text and move the cursor to the end"""
 
         self.search_field.set_text(text)
-        self.search_field.emit('move-cursor', gtk.MOVEMENT_BUFFER_ENDS,
+        self.search_field.emit('move-cursor', Gtk.MovementStep.BUFFER_ENDS,
             0, False)
 
     def __select_callback(self, selection, image):
@@ -995,39 +995,39 @@ class AlbumArtWindow(qltk.Window):
 
     def __add_cover_to_list(self, cover):
         try:
-            pbloader = gtk.gdk.PixbufLoader()
+            pbloader = GdkPixbuf.PixbufLoader()
             pbloader.write(get_url(cover['thumbnail'])[0])
             pbloader.close()
 
             size = 48
 
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
-                gtk.gdk.INTERP_BILINEAR)
+                GdkPixbuf.InterpType.BILINEAR)
 
-            thumb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8,
+            thumb = GdkPixbuf.Pixbuf(GdkPixbuf.Colorspace.RGB, True, 8,
                 size + 2, size + 2)
             thumb.fill(0x000000ff)
             pixbuf.copy_area(0, 0, size, size, thumb, 1, 1)
-        except (gobject.GError, IOError):
+        except (GObject.GError, IOError):
             pass
         else:
             def append(data):
                 self.liststore.append(data)
-            gobject.idle_add(append, [thumb, cover])
+            GObject.idle_add(append, [thumb, cover])
 
     def __search_callback(self, covers, progress):
         for cover in covers:
             self.__add_cover_to_list(cover)
 
         if self.progress.get_fraction() < progress:
-            gobject.idle_add(self.progress.set_fraction, progress)
+            GObject.idle_add(self.progress.set_fraction, progress)
 
         if progress >= 1:
-            gobject.idle_add(self.progress.set_text, _('Done'))
+            GObject.idle_add(self.progress.set_text, _('Done'))
 
             time.sleep(0.7)
 
-            gobject.idle_add(self.progress.hide)
+            GObject.idle_add(self.progress.hide)
 
             self.search_button.set_sensitive(True)
             self.search_lock = False
@@ -1185,28 +1185,28 @@ class DownloadAlbumArt(SongsMenuPlugin):
     PLUGIN_ID = 'Download Album art'
     PLUGIN_NAME = _('Download Album Art')
     PLUGIN_DESC = _('Download album covers from various websites')
-    PLUGIN_ICON = gtk.STOCK_FIND
+    PLUGIN_ICON = Gtk.STOCK_FIND
     PLUGIN_VERSION = '0.5.1'
 
     def PluginPreferences(klass, window):
         global engines, change_config, config_eng_prefix
 
-        table = gtk.Table(len(engines), 2)
+        table = Gtk.Table(len(engines), 2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
         frame = qltk.Frame(_("Sources"), child=table)
 
         for i, eng in enumerate(sorted(engines, key=lambda x: x["url"])):
-            check = gtk.CheckButton(eng['config_id'].title())
+            check = Gtk.CheckButton(eng['config_id'].title())
             table.attach(check, 0, 1, i, i + 1)
             checked = cfg_get(config_eng_prefix + eng['config_id'], True)
             check.set_active(checked)
             check.connect('toggled', change_config, eng['config_id'])
 
-            button = gtk.Button(eng['url'])
+            button = Gtk.Button(eng['url'])
             button.connect('clicked', lambda s:util.website(s.get_label()))
-            table.attach(button, 1, 2, i, i + 1, xoptions=gtk.FILL | gtk.SHRINK)
+            table.attach(button, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
 
         return frame
 

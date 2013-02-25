@@ -27,7 +27,7 @@ from quodlibet.util.dprint import print_d
 def get_startup_id():
     from quodlibet import app
     app_name = type(app.window).__name__
-    return "%s_TIME%d" % (app_name, gtk.get_current_event_time())
+    return "%s_TIME%d" % (app_name, Gtk.get_current_event_time())
 
 
 # http://www.freedesktop.org/wiki/Specifications/file-manager-interface
@@ -140,7 +140,7 @@ class BrowseFolders(SongsMenuPlugin, HandlingMixin):
     PLUGIN_ID = 'Browse Folders'
     PLUGIN_NAME = _('Browse Folders')
     PLUGIN_DESC = "View the songs' folders in a file manager"
-    PLUGIN_ICON = gtk.STOCK_OPEN
+    PLUGIN_ICON = Gtk.STOCK_OPEN
     PLUGIN_VERSION = '1.1'
 
     _HANDLERS = [browse_folders_fdo, browse_folders_thunar,
@@ -160,7 +160,7 @@ class BrowseFiles(SongsMenuPlugin, HandlingMixin):
     PLUGIN_ID = 'Browse Files'
     PLUGIN_NAME = _('Show File')
     PLUGIN_DESC = "View the song's file in a file manager"
-    PLUGIN_ICON = gtk.STOCK_OPEN
+    PLUGIN_ICON = Gtk.STOCK_OPEN
     PLUGIN_VERSION = '1.1'
 
     _HANDLERS = [browse_files_fdo, browse_files_thunar,

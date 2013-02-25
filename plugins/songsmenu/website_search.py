@@ -26,7 +26,7 @@ class WebsiteSearch(SongsMenuPlugin):
     This may include a standard web search engine, eg Google, or a more specific
     site look-up. The URLs are customisable using tag patterns."""
 
-    PLUGIN_ICON = gtk.STOCK_OPEN
+    PLUGIN_ICON = Gtk.STOCK_OPEN
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
     PLUGIN_DESC = _("Searches your choice of website using any song tags.")
@@ -91,14 +91,14 @@ class WebsiteSearch(SongsMenuPlugin):
 
     @classmethod
     def PluginPreferences(cls, parent):
-        hb = gtk.HBox(spacing=3)
+        hb = Gtk.HBox(spacing=3)
         hb.set_border_width(0)
 
-        button = qltk.Button(_("Edit search URLs"), gtk.STOCK_EDIT)
+        button = qltk.Button(_("Edit search URLs"), Gtk.STOCK_EDIT)
         button.set_tooltip_markup(_("Supports QL patterns\neg "
                 "<tt>http://google.com?q=&lt;artist~title&gt;</tt>"))
         button.connect("clicked", cls.edit_patterns)
-        hb.pack_start(button, expand=True)
+        hb.pack_start(button, True, True, 0)
         hb.show_all()
         return hb
 
@@ -116,16 +116,16 @@ class WebsiteSearch(SongsMenuPlugin):
         super(WebsiteSearch, self).__init__(*args, **kwargs)
         self.chosen_site = None
         self._url_pats = []
-        submenu = gtk.Menu()
+        submenu = Gtk.Menu()
         self._get_saved_searches()
         for name,url_pat in self._url_pats:
-            item = gtk.MenuItem(name)
+            item = Gtk.MenuItem(name)
             item.connect_object('activate', self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        config = gtk.MenuItem(_("Configure searches..."))
+        config = Gtk.MenuItem(_("Configure searches..."))
         config.connect_object('activate', self.edit_patterns, config)
-        submenu.append(gtk.SeparatorMenuItem())
+        submenu.append(Gtk.SeparatorMenuItem())
         submenu.append(config)
         if submenu.get_children():
             self.set_submenu(submenu)

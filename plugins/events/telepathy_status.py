@@ -53,7 +53,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_NAME = _("Telepathy Status Messages")
     PLUGIN_DESC = _("Updates all Telepathy-based IM accounts (as configured in "
                     "Empathy etc) with a status message based on current song.")
-    PLUGIN_ICON = gtk.STOCK_CONNECT
+    PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.3"
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
@@ -100,56 +100,56 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         self.status = ""
 
     def PluginPreferences(self, parent):
-        outer_vb = gtk.VBox(spacing=12)
-        vb = gtk.VBox(spacing=12)
+        outer_vb = Gtk.VBox(spacing=12)
+        vb = Gtk.VBox(spacing=12)
 
         # Playing
-        hb = gtk.HBox(spacing=6)
+        hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT))
         entry.connect('changed', self.config_entry_changed, self.CFG_PAT_PLAYING)
-        lbl = gtk.Label(_("Playing:"))
+        lbl = Gtk.Label(label=_("Playing:"))
         entry.set_tooltip_markup(_("Status text when a song is started. "
                                  "Accepts QL Patterns e.g. <tt>%s</tt>")
                                  % util.escape("<~artist~title>"))
         lbl.set_mnemonic_widget(entry)
-        hb.pack_start(lbl, expand=False)
-        hb.pack_start(entry)
-        vb.pack_start(hb)
+        hb.pack_start(lbl, False, True, 0)
+        hb.pack_start(entry, True, True, 0)
+        vb.pack_start(hb, True, True, 0)
 
         # Paused
-        hb = gtk.HBox(spacing=6)
+        hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_PAT_PAUSED,
                                     self.DEFAULT_PAT_PAUSED))
         entry.connect('changed', self.config_entry_changed, self.CFG_PAT_PAUSED)
-        lbl = gtk.Label(_("Paused:"))
+        lbl = Gtk.Label(label=_("Paused:"))
         entry.set_tooltip_markup(_("Status text when a song is paused. "
                                    "Accepts QL Patterns e.g. <tt>%s</tt>")
                                    % util.escape("<~artist~title>"))
         lbl.set_mnemonic_widget(entry)
-        hb.pack_start(lbl, expand=False)
-        hb.pack_start(entry)
-        vb.pack_start(hb)
+        hb.pack_start(lbl, False, True, 0)
+        hb.pack_start(entry, True, True, 0)
+        vb.pack_start(hb, True, True, 0)
 
         # No Song
-        hb = gtk.HBox(spacing=6)
+        hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_STATUS_SONGLESS, ""))
         entry.connect('changed', self.config_entry_changed,
                       self.CFG_STATUS_SONGLESS)
         entry.set_tooltip_text(
                 _("Plain text for status when there is no current song"))
-        lbl = gtk.Label(_("No song:"))
+        lbl = Gtk.Label(label=_("No song:"))
         lbl.set_mnemonic_widget(entry)
-        hb.pack_start(lbl, expand=False)
-        hb.pack_start(entry)
-        vb.pack_start(hb)
+        hb.pack_start(lbl, False, True, 0)
+        hb.pack_start(entry, True, True, 0)
+        vb.pack_start(hb, True, True, 0)
 
         # Frame
-        frame = gtk.Frame(_("Status Patterns"))
+        frame = Gtk.Frame(label=_("Status Patterns"))
         frame.add(vb)
         vb.set_border_width(9)
-        outer_vb.pack_start(frame, expand=False)
+        outer_vb.pack_start(frame, False, True, 0)
 
         return outer_vb
