@@ -12,7 +12,6 @@ quodlibet/browsers/media.py
 quodlibet/browsers/paned.py
 quodlibet/browsers/playlists.py
 quodlibet/browsers/search.py
-quodlibet/debug/debugwindow.py
 quodlibet.desktop.in
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
@@ -35,6 +34,7 @@ quodlibet/qltk/browser.py
 quodlibet/qltk/cbes.py
 quodlibet/qltk/chooser.py
 quodlibet/qltk/controls.py
+quodlibet/qltk/debugwindow.py
 quodlibet/qltk/delete.py
 quodlibet/qltk/downloader.py
 quodlibet/qltk/_editpane.py

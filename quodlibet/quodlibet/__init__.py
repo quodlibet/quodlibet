@@ -17,6 +17,7 @@ import gettext
 import locale
 import os
 import re
+import sys
 
 import quodlibet.const
 import quodlibet.util
@@ -249,9 +250,7 @@ def init(library=None, icon=None, title=None, name=None):
     import quodlibet.library
     library = quodlibet.library.init(library)
 
-    print_d("Initializing debugging extensions")
-    import quodlibet.debug
-    quodlibet.debug.init()
+    _init_debug()
 
     print_d("Finished initialization.")
 
@@ -309,6 +308,18 @@ def enable_periodic_save(save_library):
             yield
 
     copool.add(periodic_library_save, timeout=timeout)
+
+
+def _init_debug():
+    import gobject
+    from quodlibet.qltk.debugwindow import ExceptionDialog
+
+    print_d("Initializing debugging extensions")
+    def _override_exceptions():
+        print_d("Enabling custom exception handler.")
+        sys.excepthook = ExceptionDialog.excepthook
+    gobject.idle_add(_override_exceptions)
+
 
 def _init_signal():
     """Catches certain signals and quits the application once the

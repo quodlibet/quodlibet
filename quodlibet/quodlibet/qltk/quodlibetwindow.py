@@ -460,10 +460,8 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
             ]
 
         if const.DEBUG:
-            from quodlibet.debug import cause_error, enc
-            actions.append(("DebugReload", gtk.STOCK_DIALOG_WARNING,
-                            _("_Edit and Continue"), None, None,
-                            lambda *args: enc.reload()))
+            def cause_error(*args):
+                raise Exception
             actions.append(("DebugCauseError", gtk.STOCK_DIALOG_ERROR,
                             _("_Cause an Error"), None, None, cause_error))
 
@@ -549,7 +547,6 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
         if const.DEBUG:
             debug_menu = ("<separator/>"
                           "<menuitem action='OutputLog'/>"
-                          "<menuitem action='DebugReload'/>"
                           "<menuitem action='DebugCauseError'/>")
 
         self.ui = gtk.UIManager()
