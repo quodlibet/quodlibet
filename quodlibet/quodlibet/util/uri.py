@@ -10,11 +10,11 @@
 #    Punycode for the domain) and back.
 
 import re
-
 from urllib import url2pathname, quote_plus, unquote_plus
 from urlparse import urlparse, urlunparse
 
 from quodlibet.util import pathname2url
+
 
 class URI(str):
     """A full URI string. This object provides several convenience
@@ -50,47 +50,70 @@ class URI(str):
             raise ValueError("URIs must have a scheme, such as 'http://'")
         elif not (obj.netloc or obj.path):
             raise ValueError("URIs must have a network location or path")
-        else: return obj
+        else:
+            return obj
 
+    @classmethod
     def frompath(klass, value):
         """Construct a URI from an unescaped filename."""
         # windows unicode path chars may break pathname2url; encode in UTF-8
-        if isinstance(value, unicode): value = value.encode("UTF-8")
+        if isinstance(value, unicode):
+            value = value.encode("UTF-8")
         return klass("file://" + pathname2url(value), escaped=True)
-    frompath = classmethod(frompath)
 
-    scheme = property(lambda self: urlparse(self)[0],
-                      None, None, "URI scheme (e.g. 'http')")
-    netloc = property(lambda self: urlparse(self)[1], None, None,
-                      "URI network location (e.g. 'example.com:21')")
-    path = property(lambda self: urlparse(self)[2],
-                    None, None, "URI path (e.g. '/~user')")
-    params = property(lambda self: urlparse(self)[3],
-                      None, None, "URI parameters")
-    query = property(lambda self: urlparse(self)[4],
-                     None, None, "URI query string (e.g. 'foo=bar&a=b')")
-    fragment = property(lambda self: urlparse(self)[5],
-                        None, None, "URI fragment ('foo' in '#foo')")
+    @property
+    def scheme(self):
+        """URI scheme (e.g. 'http')"""
+        return urlparse(self)[0]
 
+    @property
+    def netloc(self):
+        """URI network location (e.g. 'example.com:21')"""
+        return urlparse(self)[1]
+
+    @property
+    def path(self):
+        """URI path (e.g. '/~user')"""
+        return urlparse(self)[2]
+
+    @property
+    def params(self):
+        """URI parameters"""
+        return urlparse(self)[3]
+
+    @property
+    def query(self):
+        """URI query string (e.g. 'foo=bar&a=b')"""
+        return urlparse(self)[4]
+
+    @property
+    def fragment(self):
+        """URI fragment ('foo' in '#foo')"""
+        return urlparse(self)[5]
+
+    @property
     def unescaped(self):
+        """an unescaped str (not URI) version of the URI"""
         values = list(urlparse(self))
         values[2] = unquote_plus(values[2])
         return urlunparse(values)
-    unescaped = property(unescaped, None, None,
-                         "an unescaped str (not URI) version of the URI")
 
+    @property
     def filename(self):
+        """a local filename equivalent to the URI"""
         if self.scheme != "file":
             raise ValueError("only the file scheme supports filenames")
         elif self.netloc:
             raise ValueError("only local files have filenames")
-        else: return url2pathname(self.path)
-    filename = property(filename, None, None,
-                        "a local filename equivalent to the URI")
+        else:
+            return url2pathname(self.path)
 
-    is_filename = property(
-        lambda s: s.scheme == "file" and not s.netloc, None, None,
-        "True if the URI is a valid (not necessarily existing) local filename")
+    @property
+    def is_filename(self):
+        """True if the URI is a valid (not necessarily existing)
+        local filename
+        """
+        return self.scheme == "file" and not self.netloc
 
     def __repr__(self):
-        return "%s(%r)" % (type(self).__name__, self.unescaped)
+        return "<%s %r>" % (type(self).__name__, self.unescaped)
