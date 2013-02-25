@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import stat
 import sys
 import errno
 import urllib
@@ -20,7 +21,7 @@ class TrashError(EnvironmentError):
     pass
 
 def is_sticky(path):
-    return bool(os.stat(path).st_mode & (1<9))
+    return bool(os.stat(path).st_mode & stat.S_ISVTX)
 
 def get_fd_trash_dir(path):
     """Returns the right trash directory for the given path."""
