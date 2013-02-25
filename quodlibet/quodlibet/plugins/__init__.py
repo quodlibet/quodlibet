@@ -355,7 +355,7 @@ class PluginConfigMixin(object):
     def config_get_bool(cls, name, default=False):
         """Gets a config boolean for this plugin"""
         return config.getboolean(PM.CONFIG_SECTION, cls._config_key(name),
-            default)
+                                 default)
 
     def config_entry_changed(self, entry, key):
         """React to a change in an gtk.Entry (by saving it to config)"""
@@ -373,4 +373,4 @@ class PluginConfigMixin(object):
         except config.Error:
             cls.config_set(name, default)
         return ConfigCheckButton(label, PM.CONFIG_SECTION,
-            option, populate=True)
+                                 option, populate=True)

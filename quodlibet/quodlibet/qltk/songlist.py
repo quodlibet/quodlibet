@@ -526,11 +526,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         SongList.set_all_column_headers(headers)
         SongList.headers = headers
 
-    @classmethod
     def set_all_column_headers(cls, headers):
-        config.set_columns(headers)
-        try:
-            headers.remove("~current")
+        config.set("settings", "headers", " ".join(headers))
+        try: headers.remove("~current")
         except ValueError: pass
         cls.headers = headers
         for listview in cls.instances():
@@ -549,6 +547,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 if not tag.startswith("~#") and tag not in star:
                     star.append(tag)
         SongList.star = star
+
+    set_all_column_headers = classmethod(set_all_column_headers)
 
     def get_sort_by(self):
         for header in self.get_columns():

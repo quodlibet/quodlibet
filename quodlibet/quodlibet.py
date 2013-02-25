@@ -91,7 +91,9 @@ def main():
         if cover_size > 0:
             Album.COVER_SIZE = cover_size
 
-    headers = config.get_columns()
+    if config.get("settings", "headers").split() == []:
+       config.set("settings", "headers", "title")
+    headers = config.get("settings", "headers").split()
     SongList.set_all_column_headers(headers)
 
     for opt in config.options("header_maps"):

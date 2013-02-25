@@ -138,8 +138,9 @@ class JSONBasedEditor(qltk.UniqueWindow):
         else:
             entry = UndoEntry()
         entry.connect(signal or "changed",
-                      callback or self.__changed_widget, key)
+                callback or self.__changed_widget, key)
         return entry
+
 
     def __refresh_view(self):
         model, iter = self.selection.get_selected()

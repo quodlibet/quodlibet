@@ -49,7 +49,6 @@ def apicall(method, **kwargs):
 def config_get(key, default=None):
     return config.get('plugins', 'lastfmsync_%s' % key, default)
 
-
 class LastFMSyncCache(object):
     """Stores the Last.fm charts for a particular user."""
     def __init__(self, username):

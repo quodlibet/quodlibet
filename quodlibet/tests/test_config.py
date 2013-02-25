@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 from tests import TestCase, add
 
 from quodlibet import config
-
 
 class Tconfig(TestCase):
     def setUp(self):
@@ -30,40 +28,21 @@ class Tconfig(TestCase):
         self.failUnlessEqual(config.getfloat("foo", "nothing", 42.42), 42.42)
         self.failUnlessEqual(config.get("foo", "nothing", "foo"), "foo")
 
-    def test_get_default_raises(self):
+    def test_get_default_wrong(self):
         self.assertRaises(ValueError, config.getboolean, "foo", "nothing", "")
         self.assertRaises(ValueError, config.getint, "foo", "nothing", "")
         self.assertRaises(ValueError, config.getfloat, "foo", "nothing", "")
 
-    def test_setdefault_no_defaulting(self):
+    def test_setdefault(self):
         self.failUnlessEqual(None, config.get("foo", "bar", None))
         config.set("foo", "bar", "blah")
         config.setdefault("foo", "bar", "xxx")
         self.failUnlessEqual("blah", config.get("foo", "bar"))
 
-    def test_setdefault_defaulting(self):
+    def test_setdefault_2(self):
         self.failUnlessEqual(None, config.get("foo", "bar", None))
         config.setdefault("foo", "bar", "xxx")
         self.failUnlessEqual("xxx", config.get("foo", "bar"))
-
-    def test_stringlist_simple(self):
-        self.failIf(config.get("foo", "bar", None))
-        vals = ["one", "two", "three"]
-        config.setstringlist("foo", "bar", vals)
-        self.failUnlessEqual(config.getstringlist("foo", "bar"), vals)
-
-    def test_stringlist_mixed(self):
-        self.failIf(config.get("foo", "bar", None))
-        config.setstringlist("foo", "bar", ["one", 2])
-        self.failUnlessEqual(config.getstringlist("foo", "bar"), ["one", "2"])
-
-    def test_stringlist_quoting(self):
-        self.failIf(config.get("foo", "bar", None))
-        vals = ["foo's gold", "bar, \"best\" 'ever'",
-                u"le goût d'œufs à Noël"]
-        config.setstringlist("foo", "bar", vals)
-        self.failUnlessEqual(config.getstringlist("foo", "bar"), vals)
-
 
     def tearDown(self):
         config.quit()
