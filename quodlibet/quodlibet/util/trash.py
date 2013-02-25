@@ -17,11 +17,14 @@ from os.path import isdir, basename, exists, splitext
 
 from quodlibet.util import xdg_get_data_home, find_mount_point
 
+
 class TrashError(EnvironmentError):
     pass
 
+
 def is_sticky(path):
     return bool(os.stat(path).st_mode & stat.S_ISVTX)
+
 
 def get_fd_trash_dir(path):
     """Returns the right trash directory for the given path."""
@@ -41,6 +44,7 @@ def get_fd_trash_dir(path):
         else:
             root = join(mount, ".Trash-" + uid)
         return root
+
 
 def trash_free_desktop(path):
     """Partial implementation of
@@ -66,7 +70,8 @@ def trash_free_desktop(path):
     info = join(trash_dir, "info")
 
     for d in (files, info):
-        if not isdir(d): os.makedirs(d, 0700)
+        if not isdir(d):
+            os.makedirs(d, 0700)
 
     info_ext = ".trashinfo"
     name = basename(path)
@@ -115,9 +120,11 @@ def trash_free_desktop(path):
         os.unlink(info_path)
         raise
 
+
 def can_trash():
     """If the current platform supports moving files into a trash can."""
     return (os.name == "posix" and sys.platform != "darwin")
+
 
 def trash(path):
     if os.name == "posix" and sys.platform != "darwin":
