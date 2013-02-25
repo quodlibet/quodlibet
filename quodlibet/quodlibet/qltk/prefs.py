@@ -125,7 +125,7 @@ class PreferencesWindow(qltk.UniqueWindow):
         def __init__(self):
             super(PreferencesWindow.SongList, self).__init__(spacing=12)
             self.set_border_width(12)
-            self.title = _("Song List3")
+            self.title = _("Song List")
 
             # Behaviour
             vbox = gtk.VBox(spacing=6)
