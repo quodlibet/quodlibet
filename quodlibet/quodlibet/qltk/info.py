@@ -14,6 +14,7 @@ from gi.repository import Pango
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import browsers
+from quodlibet.util.dprint import print_d
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
@@ -53,14 +54,12 @@ class SongInfo(Gtk.Label):
         self._compiled = XMLFromPattern(self._pattern)
 
     def __menu(self, player, menu, library):
-
-
         try:
             # Get a real submenu, unless there's no song, in which case an
             # empty one looks more consistent than None
             submenu = (browsers.playlists.Menu([player.song], player)
                        if player.song else Gtk.Menu())
-        except AttributeError,e:
+        except AttributeError, e:
             print_d(e)
         else:
             b = qltk.MenuItem(_("_Add to Playlist"), Gtk.STOCK_ADD)
@@ -109,9 +108,11 @@ class SongInfo(Gtk.Label):
 
     def __set(self, edit, player):
         self._pattern = edit.text.rstrip()
-        if (self._pattern == SongInfo._pattern):
-            try: os.unlink(self.__PATTERN_FILENAME)
-            except OSError: pass
+        if self._pattern == SongInfo._pattern:
+            try:
+                os.unlink(self.__PATTERN_FILENAME)
+            except OSError:
+                pass
         else:
             pattern_file = file(os.path.join(const.USERDIR, "songinfo"), "w")
             pattern_file.write(self._pattern + "\n")
@@ -126,11 +127,11 @@ class SongInfo(Gtk.Label):
     def __check_started(self, player, song):
         self.__update_info(player)
 
-    def __update_info(self, player, last={}):
-        if player.info is not None:
-            text = self._compiled % player.info
-        else:
-            text = "<span size='xx-large'>%s</span>" % _("Not playing")
+    def __update_info(self, player, last=None):
+        last = last or {}
+        text = ("<span size='xx-large'>%s</span>" % _("Not playing")
+                if player.info is None
+                else self._compiled % player.info)
 
         # some radio streams update way too often and updating the label
         # destroys the text selection
