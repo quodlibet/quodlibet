@@ -175,7 +175,7 @@ class Volume(Gtk.VolumeButton):
 
     def __volume_button_press(self, menu, event):
         if event.button == 3:
-            menu.popup(None, None, None, event.button, event.time)
+            menu.popup(None, None, None, None, event.button, event.time)
             return True
 
     def __iadd__(self, v):
@@ -206,10 +206,8 @@ class ReplayGainMenu(Gtk.Menu):
 
         item = None
         for mode, title, profile in self.__modes:
-            if not item:
-                item = Gtk.RadioMenuItem.new_with_label([], title)
-            else:
-                item = Gtk.RadioMenuItem.new_with_label_from_widget(item, title)
+            item = Gtk.RadioMenuItem(group=item, label=title,
+                                     use_underline=True)
             self.append(item)
             item.connect("toggled", self.__changed, player, profile)
             if player.replaygain_profiles[0] == profile:
@@ -226,6 +224,7 @@ class ReplayGainMenu(Gtk.Menu):
         for child in self.get_children():
             child.set_sensitive(gain)
         return super(ReplayGainMenu, self).popup(*args)
+
 
 class StopAfterMenu(Gtk.Menu):
     __menu = None

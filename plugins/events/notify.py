@@ -140,25 +140,25 @@ class PreferencesWidget(Gtk.VBox):
         radio_box = Gtk.VBox(spacing=6)
         display_box.pack_start(radio_box, True, True, 0)
 
-        only_user_radio = Gtk.RadioButton.new_with_mnemonic(None, label=_(
+        only_user_radio = Gtk.RadioButton(label=_(
             "Only on <i>_manual</i> song changes"
-        ))
+        ), use_underline=True)
         only_user_radio.get_child().set_use_markup(True)
         only_user_radio.connect("toggled", self.on_radiobutton_toggled,
                                 "show_notifications", "user")
         radio_box.pack_start(only_user_radio, True, True, 0)
 
-        only_auto_radio = Gtk.RadioButton.new_with_mnemonic_from_widget(only_user_radio, label=_(
+        only_auto_radio = Gtk.RadioButton(group=only_user_radio, label=_(
             "Only on <i>_automatic</i> song changes"
-        ))
+        ), use_underline=True)
         only_auto_radio.get_child().set_use_markup(True)
         only_auto_radio.connect("toggled", self.on_radiobutton_toggled,
                                 "show_notifications", "auto")
         radio_box.pack_start(only_auto_radio, True, True, 0)
 
-        all_radio = Gtk.RadioButton.new_with_mnemonic_from_widget(only_user_radio, label=_(
+        all_radio = Gtk.RadioButton(group=only_user_radio, label=_(
             "On <i>a_ll</i> song changes"
-        ))
+        ), use_underline=True)
         all_radio.get_child().set_use_markup(True)
         all_radio.connect("toggled", self.on_radiobutton_toggled,
                           "show_notifications", "all")

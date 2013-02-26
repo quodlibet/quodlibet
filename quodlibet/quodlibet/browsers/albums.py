@@ -177,10 +177,8 @@ class PreferencesButton(Gtk.HBox):
 
         item = None
         for i, (label, func) in enumerate(sort_orders):
-            if not item:
-                item = Gtk.RadioMenuItem.new_with_label([], label)
-            else:
-                item = Gtk.RadioMenuItem.new_with_label_from_widget(item, label)
+            item = Gtk.RadioMenuItem(group=item, label=label,
+                                     use_underline=True)
             model.set_sort_func(100 + i, func)
             if i == active:
                 model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)

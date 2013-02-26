@@ -80,11 +80,13 @@ class PatternEditor(Gtk.HBox):
         group = None
         for tags in self.PRESETS:
             tied = "~" + "~".join([t[0] for t in tags])
-            group = Gtk.RadioButton.new_with_mnemonic_from_widget(group, "_" + util.tag(tied))
+            group = Gtk.RadioButton(group=group, label="_" + util.tag(tied),
+                                    use_underline=True)
             headers[group] = tags
             buttons.append(group)
 
-        group = Gtk.RadioButton.new_with_mnemonic_from_widget(group, _("_Custom"))
+        group = Gtk.RadioButton(group=group, label=_("_Custom"),
+                                use_underline=True)
         self.__custom = group
         headers[group] = []
         buttons.append(group)

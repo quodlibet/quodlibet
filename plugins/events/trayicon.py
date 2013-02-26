@@ -391,20 +391,14 @@ class TrayIcon(EventPlugin):
         order_items = []
         item = None
         for i, Kind in enumerate(ORDERS):
-            # FIXME: GIPORT
-            break
-            if not item:
-                item = Gtk.RadioMenuItem.new_with_mnemonic(
-                    None, Kind.accelerated_name)
-            else:
-                item = Gtk.RadioMenuItem.new_with_mnemonic_from_widget(
-                    item, Kind.accelerated_name)
-
+            item = Gtk.RadioMenuItem(
+                    group=item,
+                    label=Kind.accelerated_name,
+                    use_underline=True)
             order_items.append(item)
             item.connect('toggled', set_order, i)
 
-        #FIXME: GIPORT
-        #order_items[window.order.get_active()].set_active(True)
+        order_items[window.order.get_active()].set_active(True)
 
         order_sub = Gtk.Menu()
         order_sub.append(repeat)
