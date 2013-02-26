@@ -1,4 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,13 +9,19 @@ import gtk
 
 from quodlibet.qltk.entry import UndoEntry
 
+
 class GetStringDialog(gtk.Dialog):
-    def __init__(
-        self, parent, title, text, options=[], okbutton=gtk.STOCK_OPEN):
+    """Simple dialog to return a string from the user"""
+    _WIDTH = 300
+
+    def __init__(self, parent, title, text, options=None,
+                 okbutton=gtk.STOCK_OPEN):
         super(GetStringDialog, self).__init__(title, parent)
+        options = options or []
         self.set_border_width(6)
         self.set_has_separator(False)
-        self.set_resizable(False)
+        self.set_default_size(width=self._WIDTH, height=0)
+        self.set_resizable(True)
         self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                          okbutton, gtk.RESPONSE_OK)
         self.vbox.set_spacing(6)
@@ -29,7 +36,8 @@ class GetStringDialog(gtk.Dialog):
 
         if options:
             self._entry = gtk.combo_box_entry_new_text()
-            for o in options: self._entry.append_text(o)
+            for o in options:
+                self._entry.append_text(o)
             self._val = self._entry.child
             box.pack_start(self._entry)
         else:
@@ -66,6 +74,7 @@ class GetStringDialog(gtk.Dialog):
             resp = super(GetStringDialog, self).run()
         if resp == gtk.RESPONSE_OK:
             value = self._val.get_text()
-        else: value = None
+        else:
+            value = None
         self.destroy()
         return value
