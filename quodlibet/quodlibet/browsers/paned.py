@@ -66,7 +66,7 @@ class PatternEditor(Gtk.VBox):
             buttons.append(group)
 
         group = Gtk.RadioButton(group=group, label=_("_Custom"),
-                                use_unterline=True)
+                                use_underline=True)
         self.__custom = group
         headers[group] = []
         buttons.append(group)
