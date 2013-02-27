@@ -622,19 +622,19 @@ class CoverArea(Gtk.VBox):
         bb_align.add(bbox)
 
         main_hbox = Gtk.HBox()
-        main_hbox.pack_start(table, False, padding=6)
+        main_hbox.pack_start(table, False, True, 6)
         main_hbox.pack_start(bb_align, True, True, 0)
 
         top_hbox = Gtk.HBox()
         top_hbox.pack_start(self.open_check, True, True, 0)
-        top_hbox.pack_start(self.window_fit, False)
+        top_hbox.pack_start(self.window_fit, False, True, 0)
 
         main_vbox = Gtk.VBox()
         main_vbox.pack_start(top_hbox, True, True, 2)
         main_vbox.pack_start(main_hbox, True, True, 0)
 
         self.pack_start(self.scrolled, True, True, 0)
-        self.pack_start(main_vbox, False, padding=5)
+        self.pack_start(main_vbox, False, True, 5)
 
         # 5 MB image cache size
         self.max_cache_size = 1024 * 1024 * 5
@@ -849,6 +849,8 @@ class AlbumArtWindow(qltk.Window):
         self.treeview.set_rules_hint(True)
 
         targets = [("text/uri-list", 0, 0)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
         treeview.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
 
@@ -876,7 +878,7 @@ class AlbumArtWindow(qltk.Window):
 
             return util.escape(' '.join(data.split()))
 
-        def cell_data(column, cell, model, iter):
+        def cell_data(column, cell, model, iter, data):
             cover = model[iter][1]
 
             esc = escape_data
@@ -912,12 +914,12 @@ class AlbumArtWindow(qltk.Window):
 
         search_hbox = Gtk.HBox(False, widget_space)
         search_hbox.pack_start(self.search_field, True, True, 0)
-        search_hbox.pack_start(self.search_button, False)
+        search_hbox.pack_start(self.search_button, False, True, 0)
 
         self.progress = Gtk.ProgressBar()
 
         left_vbox = Gtk.VBox(False, widget_space)
-        left_vbox.pack_start(search_hbox, False)
+        left_vbox.pack_start(search_hbox, False, True, 0)
         left_vbox.pack_start(sw_list, True, True, 0)
 
         hpaned = Gtk.HPaned()
@@ -930,7 +932,7 @@ class AlbumArtWindow(qltk.Window):
 
         self.show_all()
 
-        left_vbox.pack_start(self.progress, False)
+        left_vbox.pack_start(self.progress, False, True, 0)
 
         if songs[0]('albumartist'):
             text = songs[0]('albumartist')
@@ -1004,7 +1006,7 @@ class AlbumArtWindow(qltk.Window):
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
 
-            thumb = GdkPixbuf.Pixbuf(GdkPixbuf.Colorspace.RGB, True, 8,
+            thumb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
                 size + 2, size + 2)
             thumb.fill(0x000000ff)
             pixbuf.copy_area(0, 0, size, size, thumb, 1, 1)
