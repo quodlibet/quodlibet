@@ -249,7 +249,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
             model = type(self).__models[id] = Gtk.ListStore(str, str, str)
 
         super(ComboBoxEntrySave, self).__init__(
-            model=model, id_column=0, has_entry=True)
+            model=model, entry_text_column=0, has_entry=True)
         self.clear()
 
         render = Gtk.CellRendererPixbuf()

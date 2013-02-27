@@ -58,7 +58,9 @@ class TagsComboBoxEntry(Gtk.ComboBox, _TagsCombo):
 
     def __init__(self, can_change=None):
         super(TagsComboBoxEntry, self).__init__(
-            model=Gtk.ListStore(str, str), id_column=0, has_entry=True)
+            model=Gtk.ListStore(str, str),
+            entry_text_column=0,
+            has_entry=True)
         self._fill_model(can_change)
 
     def _fill_model(self, can_change):
