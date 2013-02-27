@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib, Gdk
 
 from quodlibet import config
 from quodlibet import qltk
@@ -99,8 +99,8 @@ class SeekBar(HSlider):
     def __scroll(self, widget, event, player):
         self.__lock = True
         if self.__sig is not None:
-            GObject.source_remove(self.__sig)
-        self.__sig = GObject.timeout_add(100, self.__scroll_timeout, player)
+            GLib.source_remove(self.__sig)
+        self.__sig = GLib.timeout_add(100, self.__scroll_timeout, player)
 
     def __scroll_timeout(self, player):
         self.__lock = False

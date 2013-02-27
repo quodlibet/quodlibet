@@ -8,7 +8,7 @@
 import datetime
 import time
 
-from gi.repository import Gtk, GObject, Pango, Gdk
+from gi.repository import Gtk, GLib, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -76,10 +76,10 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 self._text.add((text, pad, cell_pad))
                 if force: self._delayed_update()
                 if self._timeout is not None:
-                    GObject.source_remove(self._timeout)
+                    GLib.source_remove(self._timeout)
                     self._timeout = None
-                self._timeout = GObject.idle_add(self._delayed_update,
-                    priority=GObject.PRIORITY_LOW)
+                self._timeout = GLib.idle_add(self._delayed_update,
+                    priority=GLib.PRIORITY_LOW)
 
         def __init__(self, t):
             self._render = Gtk.CellRendererText()

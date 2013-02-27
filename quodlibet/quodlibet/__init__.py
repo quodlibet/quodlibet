@@ -56,7 +56,7 @@ class Application(object):
         return self.library.librarian
 
     def quit(self):
-        from gi.repository import GObject
+        from gi.repository import GLib
 
         def idle_quit():
             if self.window:
@@ -64,7 +64,7 @@ class Application(object):
 
         # so this can be called from a signal handler and before
         # the main loop starts
-        GObject.idle_add(idle_quit, priority=GObject.PRIORITY_HIGH)
+        GLib.idle_add(idle_quit, priority=GLib.PRIORITY_HIGH)
 
     def show(self):
         from quodlibet.qltk import Window
@@ -97,7 +97,7 @@ def _gtk_init(icon=None):
     gi.require_version("GObject", "2.0")
     gi.require_version("Pango", "1.0")
 
-    from gi.repository import Gtk, GObject
+    from gi.repository import Gtk, GObject, GLib
 
     GObject.threads_init()
 
@@ -108,7 +108,7 @@ def _gtk_init(icon=None):
         pixbufs = []
         for size in [64, 48, 32, 16]:
             try: pixbufs.append(theme.load_icon(icon, size, 0))
-            except gobject.GError: pass
+            except GLib.GError: pass
         Gtk.Window.set_default_icon_list(pixbufs)
 
     def website_wrap(activator, link):
@@ -219,16 +219,16 @@ def init(library=None, icon=None, title=None, name=None):
     _gtk_init(icon)
     _dbus_init()
 
-    from gi.repository import GObject
+    from gi.repository import GLib
 
     if title:
-        GObject.set_prgname(title)
+        GLib.set_prgname(title)
         set_process_title(title)
         # Issue 736 - set after main loop has started (gtk seems to reset it)
-        GObject.idle_add(set_process_title, title)
+        GLib.idle_add(set_process_title, title)
 
     if name:
-        GObject.set_application_name(name)
+        GLib.set_application_name(name)
 
     # We already imported this, but Python is dumb and thinks we're rebinding
     # a local when we import it later.
@@ -304,14 +304,14 @@ def enable_periodic_save(save_library):
 
 
 def _init_debug():
-    from gi.repository import GObject
+    from gi.repository import GLib
     from quodlibet.qltk.debugwindow import ExceptionDialog
 
     print_d("Initializing debugging extensions")
     def _override_exceptions():
         print_d("Enabling custom exception handler.")
         sys.excepthook = ExceptionDialog.excepthook
-    GObject.idle_add(_override_exceptions)
+    GLib.idle_add(_override_exceptions)
 
 
 def _init_signal():
@@ -323,7 +323,7 @@ def _init_signal():
 
     import signal
     import os
-    from gi.repository import GObject
+    from gi.repository import GLib
 
     if os.name == "nt":
         return
@@ -336,7 +336,7 @@ def _init_signal():
     # build a dummy pipe to pass it into the gtk mainloop
 
     r, w = os.pipe()
-    gobject.io_add_watch(r, gobject.IO_IN, pipe_can_read)
+    GLib.io_add_watch(r, GLib.IO_IN, pipe_can_read)
 
     SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
     for sig in filter(None, SIGS):
@@ -360,9 +360,9 @@ def main(window):
         # events that add new events to the main loop (like copool)
         # can block the shutdown, so force stop after some time.
         # gtk.main_iteration will return True if quit gets called here
-        from gi.repository import GObject
-        GObject.timeout_add(4 * 1000, Gtk.main_quit,
-                            priority=GObject.PRIORITY_HIGH)
+        from gi.repository import GLib
+        GLib.timeout_add(4 * 1000, Gtk.main_quit,
+                         priority=GLib.PRIORITY_HIGH)
 
         # destroy all open windows so they hide immediately on close:
         # destroying all top level windows doesn't work (weird errors),

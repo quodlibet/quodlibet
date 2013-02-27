@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject, Gst, Pango
+from gi.repository import Gtk, GObject, Gst, Pango, GLib
 
 import threading
 import urllib
@@ -20,10 +20,8 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-if not gst.element_factory_find("chromaprint"):
+if not Gst.ElementFactory.find("chromaprint"):
     from quodlibet import plugins
-    if not hasattr(plugins, "PluginImportException"):
-        raise gst.PluginNotFoundError("chromaprint")
     raise plugins.PluginImportException("Couldn't find gst-chromaprint.")
 
 def get_num_threads():
@@ -137,7 +135,7 @@ class FingerPrintPipeline(threading.Thread):
             # for shutdown
             if not self.__shutdown:
                 self.__shutdown = True
-                GObject.idle_add(self.__pool._callback, self.__song,
+                GLib.idle_add(self.__pool._callback, self.__song,
                     None, "Error", self)
         elif not self.__shutdown:
             # GStreamer probably knows song durations better than we do.
@@ -222,7 +220,7 @@ class FingerPrintPipeline(threading.Thread):
         elif message.type == gst.MESSAGE_ERROR:
             error = str(message.parse_error()[0])
         if not self.__shutdown and (not self.__todo or error):
-            GObject.idle_add(self.__pool._callback, self.__song,
+            GLib.idle_add(self.__pool._callback, self.__song,
                 self.__fingerprints, error, self)
             self.__shutdown = True
             self.__cv.acquire()
@@ -337,7 +335,7 @@ class MusicDNSThread(threading.Thread):
 
     def run(self):
         self.__sem.release()
-        GObject.timeout_add(self.INTERVAL, self.__inc_sem)
+        GLib.timeout_add(self.INTERVAL, self.__inc_sem)
 
         items = [(s,d) for s,d in self.__fingerprints.iteritems() if "ofa" in d]
         for i, (song, data) in enumerate(items):
@@ -347,10 +345,10 @@ class MusicDNSThread(threading.Thread):
             puid = self.__get_puid(data["ofa"], data["length"])
             if puid: data["puid"] = puid
 
-            GObject.idle_add(self.__progress_cb, song,
+            GLib.idle_add(self.__progress_cb, song,
                 float(i + 1) / len(items))
 
-        GObject.idle_add(self.__callback, self)
+        GLib.idle_add(self.__callback, self)
 
         # stop sem increment
         self.__stopped = True
@@ -425,12 +423,12 @@ class AcoustidSubmissionThread(threading.Thread):
             print_w("[fingerprint] " + _("Submission failed: ") + error)
 
         # emit progress
-        GObject.idle_add(self.__progress_cb,
+        GLib.idle_add(self.__progress_cb,
                 float(self.__done)/len(self.__fingerprints))
 
     def run(self):
         self.__sem.release()
-        GObject.timeout_add(self.INTERVAL, self.__inc_sem)
+        GLib.timeout_add(self.INTERVAL, self.__inc_sem)
 
         urldata = []
         for i, (song, data) in enumerate(self.__fingerprints.iteritems()):
@@ -475,7 +473,7 @@ class AcoustidSubmissionThread(threading.Thread):
         if urldata:
             self.__send(urldata)
 
-        GObject.idle_add(self.__callback, self)
+        GLib.idle_add(self.__callback, self)
 
         # stop sem increment
         self.__stopped = True
@@ -622,7 +620,7 @@ class FingerprintDialog(Window):
         frac = self.__fp_done / float(len(self.__songs))
         self.__set_fraction(frac)
         if self.__fp_done == len(self.__songs):
-            GObject.timeout_add(500, self.__start_puid)
+            GLib.timeout_add(500, self.__start_puid)
 
     def __fp_started_cb(self, pool, song):
         # increase by an amount smaller than one song, so that the user can
@@ -687,7 +685,7 @@ class FingerprintDialog(Window):
                 self.__acoustid_thread.stop()
         # pool.stop can block a short time because the CV might be locked
         # during starting the pipeline -> idle_add -> no GUI blocking
-        GObject.idle_add(idle_cancel)
+        GLib.idle_add(idle_cancel)
 
     def __submit_cb(self, *args):
         self.__submit.set_sensitive(False)
@@ -705,7 +703,7 @@ class FingerprintDialog(Window):
         thread.join()
         self.__set_fraction(1.0)
         self.__show_final_stats()
-        GObject.timeout_add(500, self.destroy)
+        GLib.timeout_add(500, self.destroy)
 
 def get_api_key():
     return config.get("plugins", "fingerprint_acoustid_api_key", "")

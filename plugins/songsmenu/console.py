@@ -15,7 +15,7 @@ import sys
 import re
 import traceback
 
-from gi.repository import Gtk, Pango, GObject
+from gi.repository import Gtk, Pango, GLib, Gdk
 
 from quodlibet import qltk, const
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -64,7 +64,7 @@ class PyConsole(SongsMenuPlugin):
 
 class PythonConsole(Gtk.ScrolledWindow):
     def __init__(self, namespace = {}):
-        GObject.GObject.__init__(self)
+        Gtk.ScrolledWindow.__init__(self)
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.IN)
@@ -137,7 +137,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 cur = buffer.get_end_iter()
 
             buffer.place_cursor(cur)
-            GObject.idle_add(self.scroll_to_end)
+            GLib.idle_add(self.scroll_to_end)
             return True
 
         elif event.keyval == Gdk.KEY_Return or \
@@ -182,7 +182,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             cur = buffer.get_end_iter()
             buffer.move_mark(inp_mark, cur)
             buffer.place_cursor(cur)
-            GObject.idle_add(self.scroll_to_end)
+            GLib.idle_add(self.scroll_to_end)
             return True
 
         elif event.keyval == Gdk.KEY_KP_Down or \
@@ -190,7 +190,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             # Next entry from history
             view.emit_stop_by_name("key_press_event")
             self.history_down()
-            GObject.idle_add(self.scroll_to_end)
+            GLib.idle_add(self.scroll_to_end)
             return True
 
         elif event.keyval == Gdk.KEY_KP_Up or \
@@ -198,7 +198,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             # Previous entry from history
             view.emit_stop_by_name("key_press_event")
             self.history_up()
-            GObject.idle_add(self.scroll_to_end)
+            GLib.idle_add(self.scroll_to_end)
             return True
 
         elif event.keyval == Gdk.KEY_KP_Left or \
@@ -270,7 +270,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             buffer.insert(buffer.get_end_iter(), text)
         else:
             buffer.insert_with_tags(buffer.get_end_iter(), text, tag)
-        GObject.idle_add(self.scroll_to_end)
+        GLib.idle_add(self.scroll_to_end)
 
     def eval(self, command, display_command = False):
         buffer = self.view.get_buffer()

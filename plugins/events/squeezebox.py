@@ -17,7 +17,7 @@ from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from telnetlib import Telnet
 import _socket
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib
 import socket
 import time
 import urllib
@@ -305,7 +305,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
     @staticmethod
     def quick_dialog(msg, dialog_type=Gtk.MessageType.INFO):
-        GObject.idle_add(SqueezeboxPluginMixin._show_dialog, dialog_type, msg)
+        GLib.idle_add(SqueezeboxPluginMixin._show_dialog, dialog_type, msg)
 
     @classmethod
     def set_player(cls, val):

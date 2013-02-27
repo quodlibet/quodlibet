@@ -13,7 +13,7 @@ import os
 import threading
 import urllib
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib
 
 from quodlibet import const
 from quodlibet import qltk
@@ -97,18 +97,18 @@ class LyricsPane(Gtk.VBox):
         except Exception, err:
             try: err = err.strerror.decode(const.ENCODING, 'replace')
             except: err = _("Unable to download lyrics.")
-            GObject.idle_add(buffer.set_text, err)
+            GLib.idle_add(buffer.set_text, err)
             return
 
         sock.close()
 
         if text == 'Not found':
-            GObject.idle_add(
+            GLib.idle_add(
                 buffer.set_text, _("No lyrics found for this song."))
             return
         else:
-            GObject.idle_add(buffer.set_text, text)
-            GObject.idle_add(refresh.set_sensitive, True)
+            GLib.idle_add(buffer.set_text, text)
+            GLib.idle_add(refresh.set_sensitive, True)
 
     def __save(self, save, lyricname, buffer, delete):
         try: os.makedirs(os.path.dirname(lyricname))

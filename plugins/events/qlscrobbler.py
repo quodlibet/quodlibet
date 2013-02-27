@@ -16,7 +16,7 @@ import time
 import urllib
 import urllib2
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib
 
 try:
     from hashlib import md5
@@ -202,8 +202,8 @@ class QLSubmitQueue(PluginConfigMixin):
                 else:
                     self.handshake_event.clear()
                     self.handshake_delay = min(self.handshake_delay*2, 120)
-                    GObject.timeout_add(self.handshake_delay*60*1000,
-                                        self.handshake_event.set)
+                    GLib.timeout_add(self.handshake_delay*60*1000,
+                                     self.handshake_event.set)
                     continue
             self.changed_event.wait()
             if self.queue:
@@ -326,7 +326,7 @@ class QLSubmitQueue(PluginConfigMixin):
         dialog.show()
 
     def quick_dialog(self, msg, dialog_type):
-        GObject.idle_add(self.quick_dialog_helper, dialog_type, msg)
+        GLib.idle_add(self.quick_dialog_helper, dialog_type, msg)
 
 class QLScrobbler(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "QLScrobbler"

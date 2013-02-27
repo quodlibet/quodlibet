@@ -666,8 +666,8 @@ class DeferredSignal(object):
     def __call__(self, *args):
         if not self.dirty:
             self.dirty = True
-            from gi.repository import GObject
-            GObject.idle_add(self._wrap, *args)
+            from gi.repository import GLib
+            GLib.idle_add(self._wrap, *args)
 
     def _wrap(self, *args):
         self.func(*args)

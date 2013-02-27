@@ -46,10 +46,6 @@ def main():
                              title=const.PROCESS_TITLE_QL)
     app.library = library
 
-    import sys
-    sys.modules["gobject"] = None
-    sys.modules["gtk"] = None
-
     for backend in [config.get("player", "backend"), "nullbe"]:
         try:
             player = quodlibet.init_backend(backend, app.librarian)

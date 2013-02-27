@@ -48,7 +48,7 @@ from HTMLParser import HTMLParser, HTMLParseError
 from cStringIO import StringIO
 from xml.dom import minidom
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 
 from quodlibet import util, qltk, config, print_w, app
 from quodlibet.qltk.views import AllTreeView
@@ -688,7 +688,7 @@ class CoverArea(Gtk.VBox):
             return
 
         pixbuf = loader.get_pixbuf()
-        GObject.idle_add(self.image.set_from_pixbuf, pixbuf)
+        GLib.idle_add(self.image.set_from_pixbuf, pixbuf)
 
     def __scale_pixbuf(self, *data):
         if not self.current_pixbuf:
@@ -731,14 +731,14 @@ class CoverArea(Gtk.VBox):
 
     def __scale_async(self, pixbuf, w, h):
             pixbuf = pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
-            GObject.idle_add(self.image.set_from_pixbuf, pixbuf)
+            GLib.idle_add(self.image.set_from_pixbuf, pixbuf)
 
     def __close(self, loader, *data):
         if self.stop_loading:
             return
 
         self.current_pixbuf = loader.get_pixbuf()
-        GObject.idle_add(self.__scale_pixbuf)
+        GLib.idle_add(self.__scale_pixbuf)
 
     def set_cover(self, url):
         thr = threading.Thread(target=self.__set_async, args=(url,))
@@ -762,7 +762,7 @@ class CoverArea(Gtk.VBox):
 
         self.loading = True
 
-        GObject.idle_add(self.button.set_sensitive, False)
+        GLib.idle_add(self.button.set_sensitive, False)
         self.current_pixbuf = None
 
         pbloader = GdkPixbuf.PixbufLoader()
@@ -817,13 +817,13 @@ class CoverArea(Gtk.VBox):
 
         try:
             pbloader.close()
-        except GObject.GError:
+        except GLib.GError:
             pass
 
         self.current_data = raw_data
 
         if not self.stop_loading:
-            GObject.idle_add(self.button.set_sensitive, True)
+            GLib.idle_add(self.button.set_sensitive, True)
 
         self.loading = False
 
@@ -1008,26 +1008,26 @@ class AlbumArtWindow(qltk.Window):
                 size + 2, size + 2)
             thumb.fill(0x000000ff)
             pixbuf.copy_area(0, 0, size, size, thumb, 1, 1)
-        except (GObject.GError, IOError):
+        except (GLib.GError, IOError):
             pass
         else:
             def append(data):
                 self.liststore.append(data)
-            GObject.idle_add(append, [thumb, cover])
+            GLib.idle_add(append, [thumb, cover])
 
     def __search_callback(self, covers, progress):
         for cover in covers:
             self.__add_cover_to_list(cover)
 
         if self.progress.get_fraction() < progress:
-            GObject.idle_add(self.progress.set_fraction, progress)
+            GLib.idle_add(self.progress.set_fraction, progress)
 
         if progress >= 1:
-            GObject.idle_add(self.progress.set_text, _('Done'))
+            GLib.idle_add(self.progress.set_text, _('Done'))
 
             time.sleep(0.7)
 
-            GObject.idle_add(self.progress.hide)
+            GLib.idle_add(self.progress.hide)
 
             self.search_button.set_sensitive(True)
             self.search_lock = False

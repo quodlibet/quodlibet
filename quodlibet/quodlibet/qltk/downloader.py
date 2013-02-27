@@ -7,7 +7,7 @@
 import os
 import urllib
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GObject, Pango, GLib
 
 from quodlibet import qltk
 from quodlibet import util
@@ -107,7 +107,7 @@ class DownloadWindow(qltk.UniqueWindow):
     def __stop_download(self, iters):
         for iter in iters:
             if self.downloads[iter][2] != 0:
-                GObject.source_remove(self.downloads[iter][2])
+                GLib.source_remove(self.downloads[iter][2])
             if self.downloads[iter][0]:
                 self.downloads[iter][0].close()
             self.downloads[iter][1].close()
@@ -118,12 +118,12 @@ class DownloadWindow(qltk.UniqueWindow):
     def present(self):
         super(DownloadWindow, self).present()
         if self.__timeout is None:
-            self.__timeout = GObject.timeout_add(1000, self.__update)
+            self.__timeout = GLib.timeout_add(1000, self.__update)
 
     def __delete_event(self, event):
         self.hide()
         if self.__timeout is not None:
-            GObject.source_remove(self.__timeout)
+            GLib.source_remove(self.__timeout)
         self.__timeout = None
         return True
 

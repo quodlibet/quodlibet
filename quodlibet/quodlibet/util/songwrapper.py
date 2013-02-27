@@ -5,11 +5,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
-
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.wlw import WritingWindow
+
 
 class SongWrapper(object):
     __slots__ = ['_song', '_updated', '_needs_write']
@@ -88,8 +87,9 @@ def check_wrapper_changed(library, parent, songs):
                     util.escape(song('~basename')))).run()
             win.step()
         win.destroy()
-        while gtk.events_pending():
-            gtk.main_iteration()
+        from gi.repository import Gtk
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     changed = []
     for song in songs:

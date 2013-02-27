@@ -9,7 +9,7 @@
 import os
 import urllib
 
-from gi.repository import Gtk, GObject, Pango, Gdk
+from gi.repository import Gtk, GLib, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -379,7 +379,7 @@ class Playlists(Gtk.VBox, Browser):
             try: path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
                 playlist = Playlist.fromsongs(PLAYLISTS, songs, library)
-                GObject.idle_add(self.__select_playlist, playlist)
+                GLib.idle_add(self.__select_playlist, playlist)
             else:
                 playlist = model[path][0]
                 playlist.extend(songs)
@@ -569,7 +569,7 @@ class Playlists(Gtk.VBox, Browser):
             playlist[:] = songs
         elif songs:
             playlist = Playlist.fromsongs(PLAYLISTS, songs)
-            GObject.idle_add(self.__select_playlist, playlist)
+            GLib.idle_add(self.__select_playlist, playlist)
         if playlist:
             Playlists.changed(playlist, refresh=False)
 

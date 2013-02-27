@@ -16,7 +16,7 @@ import re
 import tempfile
 
 import dbus
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib
 
 from quodlibet import config, qltk, app
 from quodlibet.plugins.events import EventPlugin
@@ -421,7 +421,7 @@ class Notify(EventPlugin):
                 or self.__force_notification:
             def idle_show(song):
                 self.show_notification(song)
-            GObject.idle_add(idle_show, song)
+            GLib.idle_add(idle_show, song)
             self.__force_notification = False
 
     def plugin_on_song_started(self, song):

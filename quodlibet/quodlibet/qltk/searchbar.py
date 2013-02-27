@@ -7,7 +7,7 @@
 
 import os
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib
 
 from quodlibet import config
 from quodlibet import const
@@ -155,7 +155,7 @@ class SearchBarBox(Gtk.HBox):
 
     def __remove_timeout(self):
         if self.__refill_id is not None:
-            GObject.source_remove(self.__refill_id)
+            GLib.source_remove(self.__refill_id)
             self.__refill_id = None
 
     def __filter_changed(self, *args):
@@ -163,7 +163,7 @@ class SearchBarBox(Gtk.HBox):
 
         text = self.__entry.get_text().decode('utf-8')
         if Query.is_parsable(text):
-            self.__refill_id = GObject.idle_add(
+            self.__refill_id = GLib.idle_add(
                 self.emit, 'query-changed', text)
 
     def __text_changed(self, *args):
@@ -183,7 +183,7 @@ class SearchBarBox(Gtk.HBox):
         # parse and new timeout
         text = self.__entry.get_text().decode('utf-8')
         if Query.is_parsable(text):
-            self.__refill_id = GObject.timeout_add(
+            self.__refill_id = GLib.timeout_add(
                     self.timeout, self.__filter_changed)
 
 

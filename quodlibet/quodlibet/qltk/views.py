@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, Gdk, GObject, Pango
+from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel
@@ -289,21 +289,21 @@ class DragScroll(object):
             self.set_drag_dest(wx, wy)
             # we have to re-add the timeout.. otherwise they could add up
             # because scroll can last longer than 50ms
-            GObject.source_remove(self.__scroll_periodic)
+            GLib.source_remove(self.__scroll_periodic)
             enable_periodic_scroll()
 
         def enable_periodic_scroll():
-            self.__scroll_periodic = GObject.timeout_add(50, periodic_scroll)
+            self.__scroll_periodic = GLib.timeout_add(50, periodic_scroll)
 
-        self.__scroll_delay = GObject.timeout_add(350, enable_periodic_scroll)
+        self.__scroll_delay = GLib.timeout_add(350, enable_periodic_scroll)
 
     def scroll_disable(self):
         """Disable all scrolling"""
         if self.__scroll_periodic is not None:
-            GObject.source_remove(self.__scroll_periodic)
+            GLib.source_remove(self.__scroll_periodic)
             self.__scroll_periodic = None
         if self.__scroll_delay is not None:
-            GObject.source_remove(self.__scroll_delay)
+            GLib.source_remove(self.__scroll_delay)
             self.__scroll_delay = None
         self.__scroll_length = 0
         self.__scroll_last = None
@@ -550,7 +550,7 @@ class MultiDragTreeView(BaseView):
             final.draw_rectangle(gc, False, 0, 0, width-1, height-1)
             self.drag_source_set_icon(final.get_colormap(), final)
         else:
-            GObject.idle_add(ctx.drag_abort, Gtk.get_current_event_time())
+            GLib.idle_add(ctx.drag_abort, Gtk.get_current_event_time())
             self.drag_source_set_icon_stock(Gtk.STOCK_MISSING_IMAGE)
 
 class RCMTreeView(BaseView):

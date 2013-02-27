@@ -11,8 +11,10 @@ from quodlibet import const
 from quodlibet import app
 
 def init(app_id):
-    try: import gnome, gnome.ui
-    except ImportError: return
+    #FIXME: GIPORT
+    return
+    #try: import gnome, gnome.ui
+    #except ImportError: return
 
     gnome.init(app_id, const.VERSION)
     client = gnome.ui.master_client()

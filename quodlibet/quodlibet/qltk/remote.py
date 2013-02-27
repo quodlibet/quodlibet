@@ -9,7 +9,7 @@ import os
 import re
 import sys
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import GObject, Gdk
 
 from quodlibet import browsers
 from quodlibet import config

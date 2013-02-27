@@ -7,7 +7,7 @@
 # Things that are more or less direct wrappers around GTK widgets to
 # ease constructors.
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib
 
 from quodlibet import util
 from quodlibet.qltk import is_accel
@@ -28,7 +28,7 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         window = self.get_window()
 
         if not window:
-            GObject.idle_add(self.queue_resize)
+            GLib.idle_add(self.queue_resize)
             return Gtk.Notebook.do_size_allocate(self, alloc)
 
         dummy, x1, y1 = top_window.get_origin()
@@ -111,7 +111,7 @@ class Notebook(Gtk.Notebook):
         window = self.get_window()
 
         if not window:
-            GObject.idle_add(self.queue_resize)
+            GLib.idle_add(self.queue_resize)
             return Gtk.Notebook.do_size_allocate(self, alloc)
 
         dummy, x1, y1 = top_window.get_origin()

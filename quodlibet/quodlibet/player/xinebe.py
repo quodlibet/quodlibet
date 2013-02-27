@@ -4,8 +4,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import GObject
-
 from quodlibet import config
 from quodlibet.player import error as PlayerError
 from quodlibet.player._base import BasePlayer

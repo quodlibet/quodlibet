@@ -27,7 +27,7 @@ Of course, right now it does none of these things.
 # TODO: Add notification button/callback support (prereq for global undo)
 # TODO: Optimize performance (deferred signals, etc)
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GLib, Pango
 
 from quodlibet.util import copool
 
@@ -309,5 +309,5 @@ class StatusBar(Gtk.HBox):
     def update(self):
         if not self.__dirty:
             self.__dirty = True
-            GObject.idle_add(self.__update)
+            GLib.idle_add(self.__update)
 

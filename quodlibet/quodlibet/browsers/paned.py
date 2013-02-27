@@ -9,7 +9,7 @@
 import re
 import operator
 
-from gi.repository import Gtk, GObject, Pango, Gdk
+from gi.repository import Gtk, GLib, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import qltk
@@ -892,6 +892,6 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.fill_panes()
 
     def fill(self, songs):
-        GObject.idle_add(self.emit, 'songs-selected', list(songs), None)
+        GLib.idle_add(self.emit, 'songs-selected', list(songs), None)
 
 browsers = [PanedBrowser]

@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject, Gst
+from gi.repository import Gtk, GLib, Gst
 
 from quodlibet import util
 from quodlibet import config
@@ -60,10 +60,10 @@ def GStreamerSink(pipeline):
         pipeline = "gconfaudiosink profile=music"
 
     try: pipe = [Gst.parse_launch(element) for element in pipeline.split('!')]
-    except GObject.GError:
+    except GLib.GError:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
         try: pipe = [Gst.parse_launch("autoaudiosink")]
-        except GObject.GError: pipe = None
+        except GLib.GError: pipe = None
         else: pipeline = "autoaudiosink"
 
     if pipe:

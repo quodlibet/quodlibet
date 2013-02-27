@@ -121,10 +121,6 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         #self.__ag.connect_group(key, mod, 0, lambda *x: self.destroy())
         self.add_accel_group(self.__ag)
 
-        # something still imports old stuff.. this prevents segfaults
-        import sys
-        sys.modules["gobject"] = "nope"
-
     def __show_about(self, window):
         about = AboutExFalso(self)
         about.run()

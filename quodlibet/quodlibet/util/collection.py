@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import GObject
+from gi.repository import GLib
 
 import os
 import random
@@ -302,7 +302,7 @@ class Album(Collection):
                 round = config.getboolean("albumart", "round")
                 self.cover = thumbnails.get_thumbnail(cover.name, (s, s))
                 self.cover = thumbnails.add_border(self.cover, 30, round)
-            except GObject.GError:
+            except GLib.GError:
                 return
 
     def __repr__(self):

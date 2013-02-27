@@ -7,7 +7,7 @@
 
 import random
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib
 
 from quodlibet import app
 from quodlibet import config
@@ -184,19 +184,19 @@ class RandomAlbum(EventPlugin):
 
     def schedule_change(self, album):
         if self.delay:
-            srcid = GObject.timeout_add(1000 * self.delay,
-                                        self.change_album, album)
+            srcid = GLib.timeout_add(1000 * self.delay,
+                                     self.change_album, album)
             if notif is None: return
             task = notif.Task(_("Random Album"),
                               _("Waiting to start <i>%s</i>") % album("album"),
-                              stop=lambda: GObject.source_remove(srcid))
+                              stop=lambda: GLib.source_remove(srcid))
             def countdown():
                 for i in range(10 * self.delay):
                     task.update(i / (10. * self.delay))
                     yield True
                 task.finish()
                 yield False
-            GObject.timeout_add(100, countdown().next)
+            GLib.timeout_add(100, countdown().next)
         else:
             self.change_album(album)
 
@@ -209,7 +209,7 @@ class RandomAlbum(EventPlugin):
             browser.filter_albums([album.key])
         else:
             browser.filter('album', [album("album")])
-        GObject.idle_add(self.unpause)
+        GLib.idle_add(self.unpause)
 
     def unpause(self):
         # Wait for the next GTK loop to make sure everything's tidied up

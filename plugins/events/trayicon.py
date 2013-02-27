@@ -8,7 +8,7 @@
 
 import sys
 
-from gi.repository import Gtk, Pango, GObject, Gdk, GdkPixbuf
+from gi.repository import Gtk, Pango, Gdk, GdkPixbuf, GLib
 
 from quodlibet import browsers, config, qltk, util, app
 from quodlibet.parse import Pattern
@@ -191,7 +191,7 @@ class TrayIcon(EventPlugin):
 
         try:
             pixbuf = info.load_icon()
-        except GObject.GError: pass
+        except GLib.GError: pass
         else:
             # In case it is too big, rescale
             if pixbuf.get_height() - size > diff:
@@ -206,7 +206,7 @@ class TrayIcon(EventPlugin):
             try:
                 self.__pixbuf = self.__icon_theme.load_icon(
                     "quodlibet", self.__size, 0)
-            except GObject.GError:
+            except GLib.GError:
                 util.print_exc()
                 return
 

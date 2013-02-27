@@ -12,7 +12,7 @@ from pyinotify import WatchManager, EventsCodes, ProcessEvent, Notifier,\
 from quodlibet import config, print_d
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import app
-from gi.repository import GObject
+from gi.repository import GLib
 import os
 
 class LibraryEvent(ProcessEvent):
@@ -31,19 +31,19 @@ class LibraryEvent(ProcessEvent):
         path = os.path.join(event.path, event.name)
         # No need to add files for modifications only
         if path in self._being_created:
-            GObject.idle_add(self.add, event)
+            GLib.idle_add(self.add, event)
             self._being_created.remove(path)
         elif event.path in self._being_created:
             # The first file per new-directory gets missed for me (bug?)
             # TODO: so work out how/when to remove parent path properly
-            GObject.idle_add(self.add, event)
+            GLib.idle_add(self.add, event)
             self._being_created.remove(event.path)
         else:
             print_d("Ignoring modification on %s" % path)
 
     def process_IN_MOVED_TO(self, event):
         print_d('Triggered for "%s"' % event.name)
-        GObject.idle_add(self.add, event)
+        GLib.idle_add(self.add, event)
 
     def process_IN_CREATE(self, event):
         #print_d('Triggered for "%s"' % event.name)
@@ -53,11 +53,11 @@ class LibraryEvent(ProcessEvent):
 
     def process_IN_DELETE(self, event):
         print_d('Triggered for "%s"' % event.name)
-        GObject.idle_add(self.update, event)
+        GLib.idle_add(self.update, event)
 
     def process_IN_MOVED_FROM(self, event):
         print_d('Triggered for "%s"' % event.name)
-        GObject.idle_add(self.update, event)
+        GLib.idle_add(self.update, event)
 
     def add(self, event):
         """Add a library file / folder based on an incoming event"""
@@ -132,7 +132,7 @@ class AutoLibraryUpdate(EventPlugin):
                 self.notifier.start()
             else:
                 self.notifier = Notifier(wm, self.event_handler, timeout=100)
-                GObject.timeout_add(1000, self.unthreaded_callback)
+                GLib.timeout_add(1000, self.unthreaded_callback)
 
             for path in self.get_library_dirs():
                 print_d('Watching directory %s for %s' % (path, FLAGS))

@@ -9,7 +9,7 @@
 #    published by the Free Software Foundation.
 #
 
-from gi.repository import Gtk, GObject, Pango, Gst
+from gi.repository import Gtk, GLib, Pango, Gst
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
@@ -44,7 +44,7 @@ class ReplayGain(SongsMenuPlugin):
 
         # Create a view of title/progress/gain/peak for each track + album
         col = Gtk.TreeViewColumn('Track',
-            GObject.new(Gtk.CellRendererText, ellipsize=Pango.EllipsizeMode.END),
+            Gtk.CellRendererText(ellipsize=Pango.EllipsizeMode.END),
             text=1)
         col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         col.set_expand(True)
@@ -91,7 +91,7 @@ class Analysis(object):
         # bookkeeping
         self.win = win
         self.win.connect('response', self.response)
-        GObject.timeout_add(450, self.progress)
+        GLib.timeout_add(450, self.progress)
         self.set_finished(False)
         self.view = view
         self.model = model

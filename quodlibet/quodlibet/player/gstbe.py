@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject, Gst
+from gi.repository import Gtk, Gst, GLib
 
 import sys
 inited, sys.argv = Gst.init_check(sys.argv)
@@ -348,8 +348,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # push in the main loop and wait for it to finish
         event = threading.Event()
-        GObject.idle_add(change_in_main_loop, event, self._source,
-                         priority=GObject.PRIORITY_HIGH)
+        GLib.idle_add(change_in_main_loop, event, self._source,
+                         priority=GLib.PRIORITY_HIGH)
         event.wait()
 
         song = self._source.current

@@ -7,7 +7,7 @@
 
 import sys
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, Gdk
 
 from quodlibet import qltk
 

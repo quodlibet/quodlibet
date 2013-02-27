@@ -12,7 +12,7 @@ import time
 from datetime import date
 from threading import Thread
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib
 
 from quodlibet import const, config, util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -234,7 +234,7 @@ class LastFMSync(SongsMenuPlugin):
 
     def progress(self, msg, frac):
         if self.running:
-            GObject.idle_add(self.dialog.progress, msg, frac)
+            GLib.idle_add(self.dialog.progress, msg, frac)
             return True
         else:
             return False

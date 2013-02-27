@@ -12,7 +12,7 @@ import urllib2
 import urllib
 import itertools
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib
 
 from quodlibet import const
 from quodlibet import qltk
@@ -193,7 +193,7 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
         try:
             response = urllib2.urlopen(STATION_LIST_URL)
         except urllib2.URLError:
-            GObject.idle_add(callback, None)
+            GLib.idle_add(callback, None)
             return
 
         try:
@@ -227,7 +227,7 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
         if data:
             stations = parse_taglist(data)
 
-        GObject.idle_add(callback, stations)
+        GLib.idle_add(callback, stations)
 
 
 def parse_taglist(data):

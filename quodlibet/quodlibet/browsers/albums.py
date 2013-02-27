@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gtk, GObject, Pango, Gdk
+from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import config
 from quodlibet import const
@@ -144,7 +144,7 @@ class Preferences(qltk.UniqueWindow):
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
         try: Pango.parse_markup(text, u"\u0000")
-        except GObject.GError:
+        except GLib.GError:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
         else: edit.apply.set_sensitive(True)
@@ -278,7 +278,7 @@ class VisibleUpdate(object):
 
     def disable_row_update(self):
         if self.__scan_timeout:
-            GObject.source_remove(self.__scan_timeout)
+            GLib.source_remove(self.__scan_timeout)
             self.__scan_timeout = None
 
         if self.__pending_paths:
@@ -312,10 +312,10 @@ class VisibleUpdate(object):
             for i in self.__scan_paths(): pass
 
         if self.__scan_timeout:
-            GObject.source_remove(self.__scan_timeout)
+            GLib.source_remove(self.__scan_timeout)
             self.__scan_timeout = None
 
-        self.__scan_timeout = GObject.timeout_add(
+        self.__scan_timeout = GLib.timeout_add(
             50, self.__update_visible_rows, view, self.PRELOAD_COUNT)
 
     def __scan_paths(self):
@@ -405,7 +405,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         try:
             klass.__no_cover = theme.load_icon(
                 "quodlibet-missing-cover", cover_size, 0)
-        except GObject.GError: pass
+        except GLib.GError: pass
         else:
             klass.__no_cover = thumbnails.scale(
                 klass.__no_cover, (cover_size, cover_size))

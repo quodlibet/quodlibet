@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject, Gdk, GdkPixbuf
+from gi.repository import Gtk, GLib, Gdk, GdkPixbuf
 
 from quodlibet import qltk
 from quodlibet import config
@@ -93,7 +93,7 @@ class ResizeImage(Gtk.Image):
             try:
                 self.__no_cover = theme.load_icon(
                     "quodlibet-missing-cover", size, 0)
-            except GObject.GError: pass
+            except GLib.GError: pass
             else:
                 self.__no_cover = thumbnails.scale(
                     self.__no_cover, (size, size))
@@ -116,7 +116,7 @@ class ResizeImage(Gtk.Image):
                 round_thumbs = config.getboolean("albumart", "round")
                 pixbuf = thumbnails.get_thumbnail(self.__path, (width, height))
                 pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
-            except GObject.GError:
+            except GLib.GError:
                 pixbuf = self.__get_no_cover(width, height)
 
         self.set_from_pixbuf(pixbuf)
@@ -189,7 +189,7 @@ class CoverImage(Gtk.EventBox):
         try:
             self.__current_bci = BigCenteredImage(
                 song.comma("album"), self.__file.name, parent=self)
-        except GObject.GError: # reload in case the image file is gone
+        except GLib.GError: # reload in case the image file is gone
             self.refresh()
         else:
             self.__current_bci.connect('destroy', self.__reset_bci)

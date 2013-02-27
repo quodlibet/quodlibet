@@ -9,7 +9,7 @@
 import os
 import sys
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, GLib
 
 from quodlibet import browsers
 from quodlibet import config
@@ -268,7 +268,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             seek_pos = config.getint("memory", "seek")
             config.set("memory", "seek", 0)
             player.setup(self.playlist, song, seek_pos)
-        GObject.idle_add(delayed_song_set)
+        GLib.idle_add(delayed_song_set)
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 
@@ -463,7 +463,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         if const.DEBUG:
             def cause_error(*args):
                 raise Exception
-            actions.append(("DebugCauseError", gtk.STOCK_DIALOG_ERROR,
+            actions.append(("DebugCauseError", Gtk.STOCK_DIALOG_ERROR,
                             _("_Cause an Error"), None, None, cause_error))
 
         actions.append(("Previous", Gtk.STOCK_MEDIA_PREVIOUS, None,
@@ -762,7 +762,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             # We need to wait until the browser has finished
             # scrolling/filling and the songlist is ready.
             # Not perfect, but works for now.
-            GObject.idle_add(jump_to, song, priority=GObject.PRIORITY_LOW)
+            GLib.idle_add(jump_to, song, priority=GLib.PRIORITY_LOW)
 
     def __next_song(self, *args): player.playlist.next()
     def __previous_song(self, *args): player.playlist.previous()

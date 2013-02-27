@@ -20,7 +20,7 @@
 
 import os
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin

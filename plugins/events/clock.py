@@ -6,7 +6,7 @@
 
 import time
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GLib
 
 from quodlibet import config, player
 from quodlibet.plugins.events import EventPlugin
@@ -28,7 +28,7 @@ class Alarm(EventPlugin):
             self._times = config.get("plugins", self._pref_name).split(' ')[:7]
         except: pass
         else: self._times = (self._times + ["HH:MM"] * 7)[:7]
-        GObject.timeout_add(30000, self._check)
+        GLib.timeout_add(30000, self._check)
 
     def enabled(self): self._enabled = True
     def disabled(self): self._enabled = False
@@ -59,11 +59,11 @@ class Alarm(EventPlugin):
                 if player.playlist.song is None:
                     player.playlist.next()
                 else: player.playlist.paused = False
-        GObject.timeout_add(60000, self._longer_check)
+        GLib.timeout_add(60000, self._longer_check)
 
     def _longer_check(self):
         if self._ready(): self._fire()
-        else: GObject.timeout_add(30000, self._check)
+        else: GLib.timeout_add(30000, self._check)
 
     def _check(self):
         if self._ready(): self._fire()
@@ -101,9 +101,9 @@ class Lullaby(Alarm):
 
     def _fire(self):
         if self._enabled:
-            GObject.timeout_add(500, self._fade_out)
+            GLib.timeout_add(500, self._fade_out)
             self.__was_volume = player.playlist.volume
-        else: GObject.timeout_add(30000, self._check)
+        else: GLib.timeout_add(30000, self._check)
 
     def _fade_out(self):
         player.playlist.volume -= 0.005
@@ -111,5 +111,5 @@ class Lullaby(Alarm):
             player.playlist.paused = True
         if player.playlist.paused:
             player.playlist.volume = self.__was_volume
-            GObject.timeout_add(30000, self._check)
+            GLib.timeout_add(30000, self._check)
         else: return True

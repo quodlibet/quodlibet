@@ -7,7 +7,7 @@
 
 import os
 
-from gi.repository import Gtk, GObject, Pango, Gdk
+from gi.repository import Gtk, GLib, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -720,7 +720,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             songs = self.__get_selected_songs(False)
             if songs:
                 self.emit('songs-selected', songs, None)
-        GObject.idle_add(idle_emit)
+        GLib.idle_add(idle_emit)
 
     def can_filter_albums(self):
         return True

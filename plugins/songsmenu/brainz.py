@@ -12,7 +12,7 @@ import re
 import threading
 import time
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GObject, Pango, GLib
 
 try:
     from musicbrainz2 import webservice as ws
@@ -233,7 +233,7 @@ class QueryThread:
                         res = func(*args, **kwargs)
                     except:
                         res = None
-                GObject.idle_add(callback, res)
+                GLib.idle_add(callback, res)
             time.sleep(1)
 
 

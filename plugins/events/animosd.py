@@ -9,7 +9,9 @@
 # published by the Free Software Foundation.
 #
 
-from gi.repository import Gtk, GObject, Pango, cairo, PangoCairo
+from gi.repository import Gtk, GObject, GLib
+from gi.repository import Gdk, GdkPixbuf
+from gi.repository import Pango, PangoCairo, cairo
 
 from math import pi
 
@@ -33,7 +35,7 @@ class OSDWindow(Gtk.Window):
             }
 
     def __init__(self, conf, song):
-        GObject.GObject.__init__(self, Gtk.WindowType.POPUP)
+        Gtk.Window.__init__(self, Gtk.WindowType.POPUP)
         self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
 
         # for non-composite operation
@@ -53,7 +55,7 @@ class OSDWindow(Gtk.Window):
         try:
             if cover is not None:
                 cover = GdkPixbuf.Pixbuf.new_from_file(cover.name)
-        except GObject.GError, gerror:
+        except GLib.GError, gerror:
             print 'Error while loading cover image:', gerror.message
         except:
             from traceback import print_exc
@@ -215,7 +217,7 @@ class OSDWindow(Gtk.Window):
                  rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
             cr.fill()
 
-        pcc = pangocairo.CairoContext(cr)
+        pcc = PangoCairo.CairoContext(cr)
         pcc.update_layout(self.title_layout)
         height = self.title_layout.get_pixel_size()[1]
         texty = (self.get_size()[1] - height) // 2
@@ -251,7 +253,7 @@ class OSDWindow(Gtk.Window):
         self.fade_start_time = now - fraction * self.conf.fadetime
 
         if self.iteration_source is None:
-            self.iteration_source = GObject.timeout_add(self.conf.ms,
+            self.iteration_source = GLib.timeout_add(self.conf.ms,
                     self.fade_iteration_callback)
 
     def fade_iteration_callback(self):
@@ -630,7 +632,7 @@ by <~people>>'''
 
     def __fade_finished(self, window, fade_in):
         if fade_in:
-            GObject.timeout_add(self.conf.delay, self.start_fade_out, window)
+            GLib.timeout_add(self.conf.delay, self.start_fade_out, window)
         else:
             window.hide()
             if self.__current_window is window:
@@ -639,4 +641,4 @@ by <~people>>'''
             # the destroy is done immediately.  The compiz animation plugin
             # then sometimes triggers and causes undesirable effects while the
             # popup should already be invisible.
-            GObject.timeout_add(1000, window.destroy)
+            GLib.timeout_add(1000, window.destroy)

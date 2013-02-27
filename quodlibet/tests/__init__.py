@@ -12,10 +12,6 @@ from unittest import TestCase
 suites = []
 add = suites.append
 
-# FIXME: GIPORT
-import gi
-import sys
-sys.modules["gobject"] = None
 
 class Result(unittest.TestResult):
     TOTAL_WIDTH = 90

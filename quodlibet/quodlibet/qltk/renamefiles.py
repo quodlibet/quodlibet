@@ -8,7 +8,7 @@
 import os
 import unicodedata
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import const
 from quodlibet import qltk

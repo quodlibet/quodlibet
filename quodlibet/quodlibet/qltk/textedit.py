@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GLib, Pango
 
 from quodlibet import qltk
 from quodlibet import util
@@ -79,7 +79,7 @@ class PatternEditBox(TextEditBox):
         try:
             f = AudioFile({"~filename":"dummy"})
             Pango.parse_markup(XMLFromPattern(self.text) % f, u"\u0000")
-        except (ValueError, GObject.GError), e:
+        except (ValueError, GLib.GError), e:
             qltk.ErrorMessage(
                 self, _("Invalid pattern"),
                 _("The pattern you entered was invalid. Make sure you enter "

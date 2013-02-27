@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import GObject
+from gi.repository import GLib
 
 __all__ = ["init"]
 
@@ -91,7 +91,7 @@ def init_pyhook(player):
     def keyboard_cb(event):
         key = event.Key
         if key in signals:
-            gobject.idle_add(do_action, player, signals[key])
+            GLib.idle_add(do_action, player, signals[key])
         return True
 
     hm = pyHook.HookManager()

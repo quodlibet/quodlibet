@@ -7,7 +7,7 @@
 
 import time
 
-from gi.repository import Gdk, GObject
+from gi.repository import Gdk, GObject, GLib
 
 from quodlibet import const
 from quodlibet import config
@@ -45,7 +45,7 @@ class TimeTracker(GObject.GObject):
 
     def __source_remove(self):
         if self.__id is not None:
-            GObject.source_remove(self.__id)
+            GLib.source_remove(self.__id)
             self.__id = None
 
     def __update(self):
@@ -64,7 +64,7 @@ class TimeTracker(GObject.GObject):
     def __unpaused(self, *args):
         self.__stop = False
         if self.__id is None:
-            self.__id = GObject.timeout_add_seconds(1, self.__update)
+            self.__id = GLib.timeout_add_seconds(1, self.__update)
 
 
 class SongTracker(object):

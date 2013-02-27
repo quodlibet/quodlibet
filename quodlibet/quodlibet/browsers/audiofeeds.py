@@ -11,7 +11,7 @@ import sys
 import threading
 import time
 
-from gi.repository import Gtk, GObject, Pango, Gdk
+from gi.repository import Gtk, GLib, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -209,7 +209,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         else:
             for feed in feeds:
                 klass.__feeds.append(row=[feed])
-        GObject.idle_add(klass.__do_check)
+        GLib.idle_add(klass.__do_check)
     init = classmethod(init)
 
     def __do_check(klass):
@@ -226,7 +226,7 @@ class AudioFeeds(Browser, Gtk.VBox):
                 feed.changed = True
                 row[0] = feed
         klass.write()
-        GObject.timeout_add(60*60*1000, klass.__do_check)
+        GLib.timeout_add(60*60*1000, klass.__do_check)
     __check = classmethod(__check)
 
     def Menu(self, songs, songlist, library):
