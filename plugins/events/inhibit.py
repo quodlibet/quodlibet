@@ -12,8 +12,9 @@ from quodlibet.plugins.events import EventPlugin
 
 
 def get_toplevel_xid():
-    if app.window.get_window():
-        return app.window.get_window().xid
+    #FIXME: GIPORT
+    #if app.window.get_window():
+    #    return app.window.get_window().xid
     return 0
 
 

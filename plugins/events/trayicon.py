@@ -343,7 +343,7 @@ class TrayIcon(EventPlugin):
         else:
             tooltip = _("Not playing")
 
-        self.__icon.set_tooltip_markup(tooltip)
+        self.__icon.set_tooltip_markup(util.escape(tooltip))
 
     def __destroy_win32_menu(self):
         """Returns True if current action should only hide the menu"""
