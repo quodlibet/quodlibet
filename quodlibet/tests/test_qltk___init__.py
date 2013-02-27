@@ -22,10 +22,10 @@ class TQltk(TestCase):
         w.destroy(); l.destroy()
 
     def test_is_accel(self):
-        e = Gdk.Event(Gdk.EventType.KEY_RELEASE)
+        e = Gdk.Event.new(Gdk.EventType.KEY_RELEASE)
         self.failIf(qltk.is_accel(e, "a"))
 
-        e = Gdk.Event(Gdk.EventType.KEY_PRESS)
+        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
         e.keyval = keysyms.Return
         e.state =  Gdk.ModifierType.CONTROL_MASK
         self.failUnless(qltk.is_accel(e, "<ctrl>Return"))

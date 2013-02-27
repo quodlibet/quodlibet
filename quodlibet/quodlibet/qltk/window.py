@@ -64,7 +64,7 @@ class Window(Gtk.Window):
             isinstance(self.get_focus().get_parent(), Gtk.TreeView):
             self.get_focus().get_arent().grab_focus()
             return
-        if not self.emit('delete-event', Gdk.Event(Gdk.EventType.DELETE)):
+        if not self.emit('delete-event', Gdk.Event.new(Gdk.EventType.DELETE)):
             self.destroy()
 
 

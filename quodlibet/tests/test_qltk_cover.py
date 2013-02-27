@@ -22,7 +22,7 @@ class TCoverImage(TestCase):
     def test_set_song(self):
         c = CoverImage()
         c.set_song(AudioFile({"~filename":"woo"}))
-        event = Gdk.Event(Gdk.EventType.BUTTON_PRESS)
+        event = Gdk.Event.new(Gdk.EventType.BUTTON_PRESS)
         event.type.button = 1
         c.emit("button-press-event", event)
         c.destroy()
