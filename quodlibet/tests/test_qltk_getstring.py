@@ -12,8 +12,7 @@ class _ClipboadTestClass(GetStringDialog):
 class TGetStringDialog(TestCase):
     def setUp(self):
         self.gsd1 = GetStringDialog(None, "title", "enter a string")
-        self.gsd2 = _ClipboadTestClass(None, "title", "enter a string",
-                                       options=["1", "2"])
+        self.gsd2 = _ClipboadTestClass(None, "title", "enter a string")
 
     def test_getstring(self):
         ret = self.gsd1.run(text="foobar", test=True)
