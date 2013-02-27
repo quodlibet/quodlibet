@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 
 import os
 import urllib
@@ -18,7 +18,7 @@ class TThumb(TestCase):
         s.high = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
         s.small = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
         s.filename = os.path.join(os.getcwd(), "test_thumbnail.png")
-        s.wide.save(s.filename, "png")
+        s.wide.savev(s.filename, "png", [], [])
 
     def tearDown(s):
         os.remove(s.filename)

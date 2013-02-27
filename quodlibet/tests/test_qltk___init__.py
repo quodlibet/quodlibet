@@ -1,6 +1,7 @@
 from tests import TestCase, add
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
+from gi.overrides import keysyms
 
 from quodlibet import qltk
 
@@ -21,11 +22,11 @@ class TQltk(TestCase):
         w.destroy(); l.destroy()
 
     def test_is_accel(self):
-        e = Gdk.Event(Gdk.KEY_RELEASE)
+        e = Gdk.Event(Gdk.EventType.KEY_RELEASE)
         self.failIf(qltk.is_accel(e, "a"))
 
-        e = Gdk.Event(Gdk.KEY_PRESS)
-        e.keyval = 65293
+        e = Gdk.Event(Gdk.EventType.KEY_PRESS)
+        e.keyval = keysyms.Return
         e.state =  Gdk.ModifierType.CONTROL_MASK
         self.failUnless(qltk.is_accel(e, "<ctrl>Return"))
 

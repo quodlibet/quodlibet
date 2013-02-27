@@ -4,6 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import unittest
 from tests import TestCase, add
 
 from quodlibet import config
@@ -41,6 +42,7 @@ class TCollectionPreferences(TestCase):
 add(TCollectionPreferences)
 
 
+@unittest.skip("segfaults")
 class TCollectionAlbums(TestCase):
     def setUp(self):
         l = SongLibrary()

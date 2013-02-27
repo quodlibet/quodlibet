@@ -1,6 +1,7 @@
 from tests import add, TestCase
 
 import os
+import unittest
 from gi.repository import Gtk
 
 from quodlibet import const
@@ -44,6 +45,7 @@ class TFSInterface(TestCase):
 add(TFSInterface)
 
 
+@unittest.skip("deadlocks")
 class TFIFOControl(TestCase):
     def setUp(self):
         config.init()

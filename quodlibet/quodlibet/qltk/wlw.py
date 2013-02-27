@@ -7,7 +7,7 @@
 import math
 import time
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, Gdk
 
 from quodlibet.qltk import get_top_parent
 from quodlibet import util

@@ -37,7 +37,7 @@ class TComboBoxEntrySave(TestCase):
             self.failUnlessEqual(row1[2], row2[2])
 
     def test_shared_model(self):
-        self.cbes.append_text("a test")
+        self.cbes.prepend_text("a test")
         self.test_equivalence()
 
     def test_initial_size(self):

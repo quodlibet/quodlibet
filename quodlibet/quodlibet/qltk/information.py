@@ -58,8 +58,8 @@ class ErrorPane(Gtk.VBox):
         button = qltk.Button(_("_Clear Errors"), Gtk.STOCK_DIALOG_ERROR)
         button.connect('clicked', self.__clear_errors, song, view)
         view.set_editable(False)
-        self.pack_start(sw, expand=True, fill=True)
-        self.pack_start(button, expand=False, fill=True)
+        self.pack_start(sw, True, True, 0)
+        self.pack_start(button, False, True, 0)
 
     def __clear_errors(self, button, song, view):
         try: del(song["~errors"])
@@ -124,7 +124,7 @@ class OneSong(qltk.Notebook):
             text += "\n" + util.escape(song.comma("version"))
         l.set_markup(text)
         l.set_ellipsize(Pango.EllipsizeMode.END)
-        box.pack_start(l, expand=False, fill=False)
+        box.pack_start(l, False, False, 0)
         self.title = song.comma("title")
 
     def _album(self, song, box):
@@ -161,7 +161,7 @@ class OneSong(qltk.Notebook):
         else: cover.destroy()
 
         hb.pack_start(w, True, True, 0)
-        box.pack_start(Frame(tag("album", True, True, 0), hb), expand=False, fill=False)
+        box.pack_start(Frame(tag("album"), hb), False, False, 0)
 
     def _people(self, song, box):
         vb = Gtk.VBox()
@@ -186,7 +186,7 @@ class OneSong(qltk.Notebook):
                 l.set_ellipsize(Pango.EllipsizeMode.END)
                 if len(song.list(tag_)) == 1: name = tag(tag_)
                 else: name = _(names)
-                vb.pack_start(Frame(util.capitalize(name, True, True, 0), l), expand=False)
+                vb.pack_start(Frame(util.capitalize(name), l), False, False, 0)
         performers = {}
         for tag_ in song:
             if "performer:" in tag_:
@@ -211,9 +211,9 @@ class OneSong(qltk.Notebook):
             l.set_ellipsize(Pango.EllipsizeMode.END)
             if len(performers) == 1: name = tag("performer")
             else: name = _("performers")
-            vb.pack_start(Frame(util.capitalize(name, True, True, 0), l), expand=False)
+            vb.pack_start(Frame(util.capitalize(name), l), False, False, 0)
         if not vb.get_children(): vb.destroy()
-        else: box.pack_start(Frame(title, vb), expand=False, fill=False)
+        else: box.pack_start(Frame(title, vb), False, False, 0)
 
     def _library(self, song, box):
         def counter(i):
@@ -250,7 +250,7 @@ class OneSong(qltk.Notebook):
             t.attach(lab, 0, 1, i + 1, i + 2, xoptions=Gtk.AttachOptions.FILL)
             t.attach(Label(r), 1, 2, i + 1, i + 2)
 
-        box.pack_start(Frame(_("Library", True, True, 0), t), expand=False, fill=False)
+        box.pack_start(Frame(_("Library"), t), False, False, 0)
 
     def _file(self, song, box):
         def ftime(t):
@@ -288,7 +288,7 @@ class OneSong(qltk.Notebook):
             t.attach(lab, 0, 1, i + 1, i + 2, xoptions=Gtk.AttachOptions.FILL)
             t.attach(Label(r), 1, 2, i + 1, i + 2)
 
-        box.pack_start(Frame(_("File", True, True, 0), t), expand=False, fill=False)
+        box.pack_start(Frame(_("File"), t), False, False, 0)
 
 class OneAlbum(qltk.Notebook):
     def __init__(self, songs):
@@ -313,7 +313,7 @@ class OneAlbum(qltk.Notebook):
         text = "<big><b>%s</b></big>" % util.escape(song["album"])
         if "date" in song: text += "\n" + song["date"]
         l.set_markup(text)
-        box.pack_start(l, expand=False, fill=False)
+        box.pack_start(l, False, False, 0)
         self.title = song["album"]
 
     def _album(self, songs, box):
@@ -366,7 +366,7 @@ class OneAlbum(qltk.Notebook):
         else: cover.destroy()
 
         hb.pack_start(w, True, True, 0)
-        box.pack_start(hb, expand=False, fill=False)
+        box.pack_start(hb, False, False, 0)
 
     def _people(self, songs, box):
         artists = set([])
@@ -383,13 +383,13 @@ class OneAlbum(qltk.Notebook):
             else: title = _("artists")
             title = util.capitalize(title)
             box.pack_start(Frame(title, Label("\n".join(artists))),
-                           expand=False, fill=False)
+                           False, False, 0)
         if performers:
             if len(artists) == 1: title = _("performer")
             else: title = _("performers")
             title = util.capitalize(title)
             box.pack_start(Frame(title, Label("\n".join(performers))),
-                           expand=False, fill=False)
+                           False, False, 0)
 
     def _description(self, songs, box):
         text = []
@@ -423,7 +423,7 @@ class OneAlbum(qltk.Notebook):
         l = Label()
         l.set_markup("\n".join(text))
         l.set_ellipsize(Pango.EllipsizeMode.END)
-        box.pack_start(Frame(_("Track List", True, True, 0), l), expand=False, fill=False)
+        box.pack_start(Frame(_("Track List"), l), False, False, 0)
 
 class OneArtist(qltk.Notebook):
     def __init__(self, songs):
@@ -442,7 +442,7 @@ class OneArtist(qltk.Notebook):
         l.set_ellipsize(Pango.EllipsizeMode.END)
         artist = util.escape(songs[0]("artist"))
         l.set_markup("<b><big>%s</big></b>" % artist)
-        box.pack_start(l, expand=False, fill=False)
+        box.pack_start(l, False, False, 0)
         self.title = songs[0]["artist"]
 
     def _album(self, songs, box):
@@ -465,7 +465,7 @@ class OneArtist(qltk.Notebook):
                 "%d songs with no album", noalbum) % noalbum)
         l = Label("\n".join(albums))
         l.set_ellipsize(Pango.EllipsizeMode.END)
-        box.pack_start(Frame(_("Selected Discography", True, True, 0), l))
+        box.pack_start(Frame(_("Selected Discography"), l), False, False, 0)
 
         covers = [ac for ac in covers if bool(ac[1])]
         t = Gtk.Table(4, (len(covers) // 4) + 1)
@@ -502,7 +502,7 @@ class ManySongs(qltk.Notebook):
         t = ngettext("%d song", "%d songs", len(songs)) % len(songs)
         l.set_markup("<big><b>%s</b></big>" % t)
         self.title = t
-        box.pack_start(l, expand=False, fill=False)
+        box.pack_start(l, False, False, 0)
 
     def _people(self, songs, box):
         artists = set([])
@@ -518,7 +518,7 @@ class ManySongs(qltk.Notebook):
         box.pack_start(Frame(
             "%s (%d, True, True, 0)" % (util.capitalize(_("artists")), num_artists),
             Label("\n".join(artists))),
-                        expand=False, fill=False)
+                        False, False, 0)
 
     def _album(self, songs, box):
         albums = set([])
@@ -534,7 +534,7 @@ class ManySongs(qltk.Notebook):
         box.pack_start(Frame(
             "%s (%d, True, True, 0)" % (util.capitalize(_("albums")), num_albums),
             Label("\n".join(albums))),
-                        expand=False, fill=False)
+                        False, False, 0)
 
     def _file(self, songs, box):
         length = 0
@@ -552,8 +552,7 @@ class ManySongs(qltk.Notebook):
         table.attach(Label(_("Total size:")), 0, 1, 1, 2,
                      xoptions=Gtk.AttachOptions.FILL)
         table.attach(Label(util.format_size(size)), 1, 2, 1, 2)
-        box.pack_start(Frame(_("Files", True, True, 0), table),
-                       expand=False, fill=False)
+        box.pack_start(Frame(_("Files"), table), False, False, 0)
 
 class Information(Window, PersistentWindowMixin):
     def __init__(self, library, songs, parent=None):

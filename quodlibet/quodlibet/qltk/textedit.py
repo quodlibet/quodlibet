@@ -45,7 +45,7 @@ class TextEditBox(Gtk.HBox):
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(TextView(TextBuffer()))
+        sw.add(TextView(buffer=TextBuffer()))
         self.pack_start(sw, True, True, 0)
         self.buffer = sw.get_child().get_buffer()
 
@@ -60,9 +60,11 @@ class TextEditBox(Gtk.HBox):
         self.apply = app
 
     def __get_text(self):
-        return self.buffer.get_text(*self.buffer.get_bounds()).decode('utf-8')
-    text = property(__get_text,
-                    lambda s, v: s.buffer.set_text(v))
+        start, end = self.buffer.get_bounds()
+        return self.buffer.get_text(start, end, True).decode('utf-8')
+
+    text = property(__get_text, lambda s, v: s.buffer.set_text(v, -1))
+
 
 class PatternEditBox(TextEditBox):
     """A TextEditBox that stops the apply button's clicked signal if

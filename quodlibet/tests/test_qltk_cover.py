@@ -1,7 +1,7 @@
 import tempfile
 import os
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf, Gdk
 
 from tests import TestCase, add
 from quodlibet import config
@@ -12,8 +12,8 @@ class TCoverImage(TestCase):
     def setUp(self):
         config.init()
         self.fn = tempfile.mkstemp()[1]
-        pb = GdkPixbuf.Pixbuf(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
-        pb.save(self.fn, "png")
+        pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
+        pb.savev(self.fn, "png", [], [])
 
     def tearDown(self):
         config.quit()
@@ -23,7 +23,7 @@ class TCoverImage(TestCase):
         c = CoverImage()
         c.set_song(AudioFile({"~filename":"woo"}))
         event = Gdk.Event(Gdk.EventType.BUTTON_PRESS)
-        event.button = 1
+        event.type.button = 1
         c.emit("button-press-event", event)
         c.destroy()
 

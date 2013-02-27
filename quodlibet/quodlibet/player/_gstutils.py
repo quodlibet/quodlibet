@@ -62,7 +62,7 @@ def GStreamerSink(pipeline):
     try: pipe = [Gst.parse_launch(element) for element in pipeline.split('!')]
     except GObject.GError:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
-        try: pipe = [gst.parse_launch("autoaudiosink")]
+        try: pipe = [Gst.parse_launch("autoaudiosink")]
         except GObject.GError: pipe = None
         else: pipeline = "autoaudiosink"
 
@@ -71,7 +71,7 @@ def GStreamerSink(pipeline):
         # it is not an audiosink, so we append the default pipeline
         fake = Gst.ElementFactory.make('fakesink', None)
         if link_many([pipe[-1], fake]):
-            Gst.Element.unlink_many(pipe[-1], fake)
+            unlink_many([pipe[-1], fake])
             default, default_text = GStreamerSink("")
             if default:
                 return pipe + default, pipeline + " ! "  + default_text

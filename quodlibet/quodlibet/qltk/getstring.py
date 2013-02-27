@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk.entry import UndoEntry
 
@@ -34,7 +34,7 @@ class GetStringDialog(Gtk.Dialog):
         box.pack_start(lab, True, True, 0)
 
         if options:
-            self._entry = Gtk.combo_box_entry_new_text()
+            self._entry = Gtk.ComboBoxText()
             for o in options:
                 self._entry.append_text(o)
             self._val = self._entry.get_child()
@@ -59,12 +59,13 @@ class GetStringDialog(Gtk.Dialog):
 
         self.show()
         if clipboard:
-            clipboard = Gtk.clipboard_get()
+            clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
             clip = clipboard.wait_for_text()
             if clip is not None:
                 clip = self._verify_clipboard(clip)
             if clip is not None:
                 text = clip
+
         self._val.set_text(text)
         self._val.set_activates_default(True)
         self._val.grab_focus()

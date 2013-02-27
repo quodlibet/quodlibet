@@ -20,7 +20,7 @@ class DownloadWindow(qltk.UniqueWindow):
     def download(klass, source, target, parent=None):
         if klass.downloads is None:
             # source fileobj, target fileobj, I/O watch callback ID, source uri
-            klass.downloads = gtk.ListStore(object, object, int, object)
+            klass.downloads = Gtk.ListStore(object, object, int, object)
         win = DownloadWindow(parent)
         win._download(source, target)
     download = classmethod(download)
@@ -36,23 +36,23 @@ class DownloadWindow(qltk.UniqueWindow):
 
         view = AllTreeView()
         view.connect('popup-menu', self.__popup_menu)
-        view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         view.set_model(self.downloads)
         view.set_rules_hint(True)
 
-        render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_START)
-        column = gtk.TreeViewColumn(_("Filename"), render)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.START)
+        column = Gtk.TreeViewColumn(_("Filename"), render)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_expand(True)
         def cell_data_name(column, cell, model, iter):
             cell.set_property('text', model[iter][1].name)
         column.set_cell_data_func(render, cell_data_name)
         view.append_column(column)
 
-        render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn(_("Size"), render)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+        render = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn(_("Size"), render)
+        column.set_sizing(Gtk.TreeViewColumnSizing.GROW_ONLY)
         def cell_data_size(column, cell, model, iter):
             if model[iter][2] == 0: size = _("Queued")
             else: size = util.format_size(model[iter][1].tell())
@@ -60,10 +60,10 @@ class DownloadWindow(qltk.UniqueWindow):
         column.set_cell_data_func(render, cell_data_size)
         view.append_column(column)
 
-        sw = gtk.ScrolledWindow()
+        sw = Gtk.ScrolledWindow()
         sw.add(view)
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.add(sw)
         self.connect_object(
             'delete-event', DownloadWindow.__delete_event, self)
@@ -79,13 +79,13 @@ class DownloadWindow(qltk.UniqueWindow):
         model, paths = selection.get_selected_rows()
         if model:
             iters = map(model.get_iter, paths)
-            menu = gtk.Menu()
-            item = gtk.ImageMenuItem(gtk.STOCK_STOP)
+            menu = Gtk.Menu()
+            item = Gtk.ImageMenuItem(Gtk.STOCK_STOP)
             item.connect_object('activate', self.__stop_download, iters)
             menu.append(item)
             menu.connect('selection-done', lambda m: m.destroy())
             menu.show_all()
-            return view.popup_menu(menu, 0, gtk.get_current_event_time())
+            return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __start_next(self):
         started = len(filter(lambda row: row[2] != 0, self.downloads))
@@ -97,8 +97,8 @@ class DownloadWindow(qltk.UniqueWindow):
                 sock = url.fp._sock
                 sock.setblocking(0)
                 self.downloads[iter][0] = sock
-                sig_id = gobject.io_add_watch(
-                    sock, gobject.IO_IN|gobject.IO_ERR|gobject.IO_HUP,
+                sig_id = GObject.io_add_watch(
+                    sock, GObject.IO_IN|GObject.IO_ERR|GObject.IO_HUP,
                     self.__got_data, self.downloads[iter][1], iter)
                 self.downloads[iter][2] = sig_id
                 started += 1
@@ -107,7 +107,7 @@ class DownloadWindow(qltk.UniqueWindow):
     def __stop_download(self, iters):
         for iter in iters:
             if self.downloads[iter][2] != 0:
-                gobject.source_remove(self.downloads[iter][2])
+                GObject.source_remove(self.downloads[iter][2])
             if self.downloads[iter][0]:
                 self.downloads[iter][0].close()
             self.downloads[iter][1].close()
@@ -118,12 +118,12 @@ class DownloadWindow(qltk.UniqueWindow):
     def present(self):
         super(DownloadWindow, self).present()
         if self.__timeout is None:
-            self.__timeout = gobject.timeout_add(1000, self.__update)
+            self.__timeout = GObject.timeout_add(1000, self.__update)
 
     def __delete_event(self, event):
         self.hide()
         if self.__timeout is not None:
-            gobject.source_remove(self.__timeout)
+            GObject.source_remove(self.__timeout)
         self.__timeout = None
         return True
 
@@ -133,7 +133,7 @@ class DownloadWindow(qltk.UniqueWindow):
         self.__start_next()
 
     def __got_data(self, src, condition, fileobj, iter):
-        if condition in [gobject.IO_ERR, gobject.IO_HUP]:
+        if condition in [GObject.IO_ERR, GObject.IO_HUP]:
             fileobj.close()
             src.close()
             self.downloads.remove(iter)

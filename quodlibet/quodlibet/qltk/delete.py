@@ -23,7 +23,6 @@ class DeleteDialog(Gtk.Dialog):
             _("Delete Files"), get_top_parent(parent))
         self.set_border_width(6)
         self.vbox.set_spacing(6)
-        self.set_has_separator(False)
         self.action_area.set_border_width(0)
         self.set_resizable(False)
 
@@ -51,9 +50,9 @@ class DeleteDialog(Gtk.Dialog):
         if len(files) == 1: l = _("Permanently delete this file?")
         else: l = _("Permanently delete these files?")
         if len(files) == 1:
-            exp = Gtk.Expander("%s" % util.fsdecode(base))
+            exp = Gtk.Expander(label="%s" % util.fsdecode(base))
         else:
-            exp = Gtk.Expander(ngettext("%(title)s and %(count)d more...",
+            exp = Gtk.Expander(label=ngettext("%(title)s and %(count)d more...",
                 "%(title)s and %(count)d more...", len(files)-1) %
                 {'title': util.fsdecode(base), 'count': len(files) - 1})
 
@@ -68,7 +67,7 @@ class DeleteDialog(Gtk.Dialog):
         exp.add(Gtk.ScrolledWindow())
         exp.get_child().add_with_viewport(lab)
         exp.get_child().set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        exp.get_child().child.set_shadow_type(Gtk.ShadowType.NONE)
+        exp.get_child().get_child().set_shadow_type(Gtk.ShadowType.NONE)
         vbox.pack_start(exp, True, True, 0)
         hbox.pack_start(vbox, True, True, 0)
         self.vbox.pack_start(hbox, True, True, 0)
