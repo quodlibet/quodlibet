@@ -14,10 +14,9 @@ class GetStringDialog(Gtk.Dialog):
     """Simple dialog to return a string from the user"""
     _WIDTH = 300
 
-    def __init__(self, parent, title, text, options=None,
-                 okbutton=Gtk.STOCK_OPEN):
+    def __init__(self, parent, title, text, okbutton=Gtk.STOCK_OPEN):
         super(GetStringDialog, self).__init__(title, parent)
-        options = options or []
+
         self.set_border_width(6)
         self.set_default_size(width=self._WIDTH, height=0)
         self.set_resizable(True)
@@ -33,15 +32,8 @@ class GetStringDialog(Gtk.Dialog):
         lab.set_justify(Gtk.Justification.CENTER)
         box.pack_start(lab, True, True, 0)
 
-        if options:
-            self._entry = Gtk.ComboBoxText()
-            for o in options:
-                self._entry.append_text(o)
-            self._val = self._entry.get_child()
-            box.pack_start(self._entry, True, True, 0)
-        else:
-            self._val = UndoEntry()
-            box.pack_start(self._val, True, True, 0)
+        self._val = UndoEntry()
+        box.pack_start(self._val, True, True, 0)
 
         self.vbox.pack_start(box, True, True, 0)
         self.get_child().show_all()
