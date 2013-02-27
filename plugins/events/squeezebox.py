@@ -69,8 +69,8 @@ class SqueezeboxServer(object):
         self._debug = debug
         self.failures = 0
         self.delta = 600    # Default in ms
+        self.config = SqueezeboxServerSettings(locals())
         if hostname:
-            self.config = SqueezeboxServerSettings(locals())
             del self.config["self"]
             del self.config["current_player"]
             self.current_player = int(current_player) or 0
