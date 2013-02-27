@@ -8,23 +8,26 @@
 # published by the Free Software Foundation
 #
 
-from os import path
-from quodlibet import qltk, config, print_w, print_d, app
-from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk.entry import UndoEntry
-from quodlibet.qltk.msg import Message
-from quodlibet.plugins import PluginConfigMixin
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
+import os.path
 from telnetlib import Telnet
-import _socket
-import gtk
+from threading import Thread
 import socket
 import time
 import urllib
+
+import gtk
 import gobject
-from quodlibet.util import copool
+
+from quodlibet import app
+from quodlibet import config
+from quodlibet import qltk
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.entry import UndoEntry
+from quodlibet.qltk.msg import Message
 from quodlibet.qltk.notif import Task
-from threading import Thread
+from quodlibet.util import copool
 
 
 class SqueezeboxServerSettings(dict):
@@ -35,6 +38,7 @@ class SqueezeboxServerSettings(dict):
         except KeyError:
             return _("unidentified Squeezebox server")
 
+
 class SqueezeboxPlayerSettings(dict):
     """Encapsulates player settings"""
     def __str__(self):
@@ -42,6 +46,7 @@ class SqueezeboxPlayerSettings(dict):
             return "{name} [{playerid}]".format(**self)
         except KeyError:
             return _("unidentified Squeezebox player: %r" % self)
+
 
 class SqueezeboxException(Exception):
     """Errors communicating with the Squeezebox"""
@@ -60,7 +65,7 @@ class SqueezeboxServer(object):
     _debug = False
 
     def __init__(self, hostname="localhost", port=9090, user="", password="",
-        library_dir='', current_player = 0, debug=False):
+        library_dir='', current_player=0, debug=False):
         self._debug = debug
         self.failures = 0
         self.delta = 600    # Default in ms
@@ -70,7 +75,8 @@ class SqueezeboxServer(object):
             del self.config["current_player"]
             self.current_player = int(current_player) or 0
             try:
-                if self._debug: print "Trying %s..." % self.config
+                if self._debug:
+                    print_d("Trying %s..." % self.config)
                 self.telnet = Telnet(hostname, port, self._TIMEOUT)
             except socket.error:
                 print_w(_("Couldn't talk to %s") % (self.config,))
@@ -100,12 +106,14 @@ class SqueezeboxServer(object):
             print_d("Can't do '%s' - not connected" % line.split()[0], self)
             return None
 
-        if self._debug: print ">>>> \"%s\"" % line
+        if self._debug:
+            print_(">>>> \"%s\"" % line)
         try:
             self.telnet.write(line + "\n")
-            if not want_reply: return None
+            if not want_reply:
+                return None
             raw_response = self.telnet.read_until("\n").strip()
-        except _socket.error, e:
+        except socket.error, e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
@@ -113,13 +121,15 @@ class SqueezeboxServer(object):
                 self.is_connected = False
                 return None
         response = raw_response if raw else urllib.unquote(raw_response)
-        if self._debug: print "<<<< \"%s\"" % (response,)
+        if self._debug:
+            print_("<<<< \"%s\"" % (response,))
         return response[len(line) - 1:] if line.endswith("?")\
             else response[len(line) + 1:]
 
     def get_players(self):
         """ Returns (and caches) a list of the Squeezebox players available"""
-        if self.players: return self.players
+        if self.players:
+            return self.players
         pairs = self.__request("players 0 99", True).split(" ")
 
         def demunge(string):
@@ -140,16 +150,18 @@ class SqueezeboxServer(object):
             else:
                 self.players[playerindex][pair[0]] = pair[1]
         if self._debug:
-            print_d("Found %d player(s): %s" % (len(self.players),self.players),
-                    self)
+            print_d("Found %d player(s): %s" %
+                    (len(self.players), self.players))
         assert (count == len(self.players))
         return self.players
 
     def player_request(self, line, want_reply=True):
-        if not self.is_connected: return
+        if not self.is_connected:
+            return
         try:
             return self.__request(
-                "%s %s" % (self.players[self.current_player]["playerid"], line),
+                "%s %s" %
+                (self.players[self.current_player]["playerid"], line),
                 want_reply=want_reply)
         except IndexError:
             return None
@@ -194,7 +206,8 @@ class SqueezeboxServer(object):
 
     def seek_to(self, ms):
         """Seeks the current song to `ms` milliseconds from start"""
-        if not self.is_connected: return
+        if not self.is_connected:
+            return
         if self._debug:
             print_d("Requested %0.2f s, adding drift of %d ms..."
                     % (ms / 1000.0, self.delta))
@@ -222,7 +235,8 @@ class SqueezeboxServer(object):
         self.player_request("pause 1")
 
     def unpause(self):
-        if self.is_stopped(): self.play()
+        if self.is_stopped():
+            self.play()
         ms = app.player.get_position()
         self.seek_to(ms)
         #self.player_request("pause 0")
@@ -270,7 +284,8 @@ class GetPlayerDialog(gtk.Dialog):
         resp = super(GetPlayerDialog, self).run()
         if resp == gtk.RESPONSE_OK:
             value = self._val.get_active()
-        else: value = None
+        else:
+            value = None
         self.destroy()
         return value
 
@@ -282,10 +297,10 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
     # Maintain a singleton; we only support one SB server live in QL
     server = None
-    ql_base_dir = path.realpath(config.get("settings", "scan"))
+    ql_base_dir = os.path.realpath(config.get("settings", "scan"))
 
     # We want all derived classes to share the config section
-    CONFIG_SECTION="squeezebox"
+    CONFIG_SECTION = "squeezebox"
 
     @classmethod
     def get_path(cls, song):
@@ -388,7 +403,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         ve.connect('changed', value_changed, 'server_library_dir')
         rows.append((gtk.Label(_("Library path:")), ve))
 
-        for (row,(label, entry)) in enumerate(rows):
+        for (row, (label, entry)) in enumerate(rows):
             table.attach(label, 0, 1, row, row + 1)
             table.attach(entry, 1, 2, row, row + 1)
 
@@ -396,7 +411,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         button = gtk.Button(_("_Verify settings"))
         button.set_sensitive(cls.server is not None)
         button.connect('clicked', cls.check_settings)
-        table.attach(button, 0, 2, row+1, row + 2)
+        table.attach(button, 0, 2, row + 1, row + 2)
 
         cfg_frame_align.add(table)
         vb.pack_start(cfg_frame)
@@ -423,10 +438,8 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
             ver = cls.server.get_version()
             if cls.server.is_connected:
                 print_d(
-                    "Squeezebox server version: %s. Current player: #%d (%s)." %
-                    (ver,
-                     cur,
-                     cls.server.get_players()[cur]["name"]))
+                    "Squeezebox server version: %s. Current player: #%d (%s)."
+                    % (ver, cur, cls.server.get_players()[cur]["name"]))
         except (IndexError, KeyError), e:
             print_d("Couldn't get player info (%s)." % e)
 
@@ -463,12 +476,14 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
             qltk.ErrorMessage(
                 None,
                 _("Error finding Squeezebox server"),
-                _("Error finding %s. Please check settings") % self.server.config
+                _("Error finding %s. Please check settings") %
+                self.server.config
             ).run()
 
     def disabled(self):
         # Stopping might be annoying in some situations, but seems more correct
-        if self.server: self.server.stop()
+        if self.server:
+            self.server.stop()
         self.active = False
 
     @classmethod
@@ -487,11 +502,13 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
 
     @classmethod
     def plugin_on_paused(cls):
-        if cls.server: cls.server.pause()
+        if cls.server:
+            cls.server.pause()
 
     @classmethod
     def plugin_on_unpaused(cls):
-        if cls.server: cls.server.unpause()
+        if cls.server:
+            cls.server.unpause()
 
     @classmethod
     def plugin_on_seek(cls, song, msec):
@@ -499,7 +516,8 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
             if cls.server:
                 cls.server.seek_to(msec)
                 cls.server.play()
-        else: pass #cls.server.pause()
+        else:
+            pass
 
 
 class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
@@ -523,14 +541,14 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
         total = len(songs)
         print_d("Adding %d song(s) to Squeezebox playlist. "
                 "This might take a while..." % total)
-        for i,song in enumerate(songs):
+        for i, song in enumerate(songs):
             if self.__cancel:
                 print_d("Cancelled squeezebox export")
                 self.__cancel = False
                 break
             # Actually do the (slow) call
             worker = Thread(target=self.server.playlist_add,
-                                      args = (self.get_path(song),))
+                            args=(self.get_path(song),))
             worker.daemon = True
             worker.start()
             worker.join(timeout=3)
@@ -545,7 +563,6 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
         # Resume if we actually stopped
         self.server.playlist_resume(self.TEMP_PLAYLIST, not stopped, True)
         task.finish()
-
 
     def __cancel_add(self):
         """Tell the copool to stop (adding songs)"""
@@ -565,7 +582,8 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
             qltk.ErrorMessage(
                 None,
                 _("Error finding Squeezebox server"),
-                _("Error finding %s. Please check settings") %self.server.config
+                _("Error finding %s. Please check settings") %
+                self.server.config
             ).run()
         else:
             name = self.__get_playlist_name()
