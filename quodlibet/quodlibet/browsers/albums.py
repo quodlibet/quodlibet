@@ -22,7 +22,7 @@ from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
+from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
@@ -177,8 +177,8 @@ class PreferencesButton(Gtk.HBox):
 
         item = None
         for i, (label, func) in enumerate(sort_orders):
-            item = Gtk.RadioMenuItem(group=item, label=label,
-                                     use_underline=True)
+            item = RadioMenuItem(group=item, label=label,
+                                 use_underline=True)
             model.set_sort_func(100 + i, func)
             if i == active:
                 model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)

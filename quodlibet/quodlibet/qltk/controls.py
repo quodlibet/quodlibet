@@ -15,6 +15,8 @@ from quodlibet import util
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.sliderbutton import HSlider
 from quodlibet.qltk.tracker import TimeTracker
+from quodlibet.qltk.x import RadioMenuItem
+
 
 SIZE = Gtk.IconSize.LARGE_TOOLBAR
 SUBSIZE = Gtk.IconSize.MENU
@@ -215,8 +217,8 @@ class ReplayGainMenu(Gtk.Menu):
 
         item = None
         for mode, title, profile in self.__modes:
-            item = Gtk.RadioMenuItem(group=item, label=title,
-                                     use_underline=True)
+            item = RadioMenuItem(group=item, label=title,
+                                 use_underline=True)
             self.append(item)
             item.connect("toggled", self.__changed, player, profile)
             if player.replaygain_profiles[0] == profile:

@@ -18,6 +18,7 @@ from quodlibet.qltk.controls import StopAfterMenu
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
+from quodlibet.qltk.x import RadioMenuItem
 from quodlibet.util.thumbnails import scale, calc_scale_size
 
 
@@ -391,7 +392,7 @@ class TrayIcon(EventPlugin):
         order_items = []
         item = None
         for i, Kind in enumerate(ORDERS):
-            item = Gtk.RadioMenuItem(
+            item = RadioMenuItem(
                     group=item,
                     label=Kind.accelerated_name,
                     use_underline=True)

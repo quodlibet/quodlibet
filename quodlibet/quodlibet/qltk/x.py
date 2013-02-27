@@ -220,3 +220,11 @@ def EntryCompletion(words):
     comp.set_model(model)
     comp.set_text_column(0)
     return comp
+
+
+def RadioMenuItem(*args, **kwargs):
+    """RadioMenuItem that allows None for group"""
+
+    if kwargs.get("group", None) is None:
+        kwargs.pop("group", None)
+    return Gtk.RadioMenuItem(*args, **kwargs)
