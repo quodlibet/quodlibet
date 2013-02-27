@@ -19,6 +19,7 @@ from quodlibet.qltk.tracker import TimeTracker
 SIZE = Gtk.IconSize.LARGE_TOOLBAR
 SUBSIZE = Gtk.IconSize.MENU
 
+
 class SeekBar(HSlider):
     __lock = False
     __sig = None
@@ -73,12 +74,16 @@ class SeekBar(HSlider):
             menu.remove(child)
             child.destroy()
 
-        try: marks = player.song.bookmarks
-        except AttributeError: pass # song is None
+        try:
+            marks = player.song.bookmarks
+        except AttributeError:
+            # song is None
+            pass
         else:
             items = qltk.bookmarks.MenuItems(marks, player, self.__seekable)
             items.reverse()
-            for i in items: menu.insert(i, 2)
+            for i in items:
+                menu.insert(i, 2)
         time = Gtk.get_current_event_time()
         if widget:
             return qltk.popup_menu_under_widget(menu, widget, 3, time)
@@ -88,16 +93,19 @@ class SeekBar(HSlider):
 
     def __seeked(self, player, song, ms):
         # If it's not paused, we'll grab it in our next update.
-        if player.paused: self.scale.set_value(ms//1000)
+        if player.paused:
+            self.scale.set_value(ms // 1000)
 
     def __scroll(self, widget, event, player):
         self.__lock = True
-        if self.__sig is not None: GObject.source_remove(self.__sig)
+        if self.__sig is not None:
+            GObject.source_remove(self.__sig)
         self.__sig = GObject.timeout_add(100, self.__scroll_timeout, player)
 
     def __scroll_timeout(self, player):
         self.__lock = False
-        if self.__seekable: player.seek(self.scale.get_value() * 1000)
+        if self.__seekable:
+            player.seek(self.scale.get_value() * 1000)
         self.__sig = None
 
     def __seek_lock(self, scale, event):
@@ -114,7 +122,8 @@ class SeekBar(HSlider):
         if hasattr(event, "button"):
             event.button = 2
         self.__lock = False
-        if self.__seekable: player.seek(self.scale.get_value() * 1000)
+        if self.__seekable:
+            player.seek(self.scale.get_value() * 1000)
 
     def __check_time(self, player):
         # When the song is paused GStreamer returns < 1 for position
@@ -232,11 +241,14 @@ class StopAfterMenu(Gtk.Menu):
     def __new__(klass, parent):
         if klass.__menu is None:
             return super(StopAfterMenu, klass).__new__(klass)
-        else: return klass.__menu
+        else:
+            return klass.__menu
 
     def __init__(self, player):
-        if type(self).__menu: return
-        else: type(self).__menu = self
+        if type(self).__menu:
+            return
+        else:
+            type(self).__menu = self
         super(StopAfterMenu, self).__init__()
         self.__item = Gtk.CheckMenuItem(_("Stop after this song"))
         self.__item.set_active(False)
@@ -255,9 +267,12 @@ class StopAfterMenu(Gtk.Menu):
 
     def __get_active(self):
         return self.__item.get_active()
+
     def __set_active(self, active):
         return self.__item.set_active(active)
+
     active = property(__get_active, __set_active)
+
 
 class PlayControls(Gtk.VBox):
     def __init__(self, player, library):
@@ -333,5 +348,8 @@ class PlayControls(Gtk.VBox):
         else:
             player.paused = not button.get_active()
 
-    def __previous(self, player): player.previous()
-    def __next(self, player): player.next()
+    def __previous(self, player):
+        player.previous()
+
+    def __next(self, player):
+        player.next()

@@ -16,7 +16,8 @@ class _PopupSlider(Gtk.EventBox):
     def __init__(self, child=None, adj=None, req=None):
         super(_PopupSlider, self).__init__()
         button = Gtk.Button()
-        if child: button.add(child)
+        if child:
+            button.add(child)
         self.add(button)
         button.connect('clicked', self.__clicked)
         self.show_all()
@@ -47,42 +48,53 @@ class _PopupSlider(Gtk.EventBox):
         raise NotImplementedError
 
     def __clicked(self, button):
-        if self.__window.get_property('visible'): return
-        self.__window.get_child().show_all()
-        self.__window.size_request()
-        dummy, x, y = self.get_child().get_window().get_origin()
-        w, h = self.get_child().get_window().get_size()
-        ww, wh = self.__window.get_child().parent.get_size()
+        window = self.__window
+        frame = window.get_child()
+        button = self.get_child()
+
+        if window.get_property('visible'):
+            return
+
+        frame.show_all()
+        window.size_request()
+        x, y = button.get_window().get_origin()
+        w, h = button.get_window().get_size()
+        ww, wh = window.get_size()
         sx, sy = self._move_to(x, y, w, h, ww, wh, pad=3)
-        self.__window.set_transient_for(get_top_parent(self))
-        self.__window.move(sx, sy)
-        self.__window.show()
-        self.__window.grab_focus()
-        self.__window.grab_add()
-        pointer = Gdk.pointer_grab(
+        window.set_transient_for(get_top_parent(self))
+        window.move(sx, sy)
+        window.show()
+        window.grab_focus()
+        window.grab_add()
+
+        event_time = Gtk.get_current_event_time()
+
+        pointer = gtk.gdk.pointer_grab(
             self.__window.window, True,
             Gdk.EventMask.BUTTON_PRESS_MASK |
             Gdk.EventMask.BUTTON_RELEASE_MASK |
             Gdk.EventMask.BUTTON_MOTION_MASK |
             Gdk.EventMask.POINTER_MOTION_MASK |
-            Gdk.EventMask.SCROLL_MASK, None, None, Gtk.get_current_event_time())
+            Gdk.EventMask.SCROLL_MASK, None, None, event_time)
         keyboard = Gdk.keyboard_grab(
-            self.__window.window, True, Gtk.get_current_event_time())
+            self.__window.window, True, event_time)
 
         if pointer != Gdk.GrabStatus.SUCCESS or keyboard != Gdk.GrabStatus.SUCCESS:
             self.__window.grab_remove()
             self.__window.hide()
 
             if pointer == Gdk.GrabStatus.SUCCESS:
-                Gdk.pointer_ungrab(Gtk.get_current_event_time())
+                Gdk.pointer_ungrab(event_time)
             if keyboard == Gdk.GrabStatus.SUCCESS:
-                Gdk.keyboard_ungrab(Gtk.get_current_event_time())
+                Gdk.keyboard_ungrab(event_time)
 
     def __scroll(self, widget, ev, hscale):
         adj = self.__adj
         v = hscale.get_value()
-        if ev.direction in self.UP: v += adj.step_increment
-        else: v -= adj.step_increment
+        if ev.direction in self.UP:
+            v += adj.step_increment
+        else:
+            v -= adj.step_increment
         v = min(adj.upper, max(adj.lower, v))
         hscale.set_value(v)
 
@@ -90,14 +102,18 @@ class _PopupSlider(Gtk.EventBox):
         self.__popup_hide()
 
     def __key(self, hscale, ev):
-        if ev.string in ["\n", "\r", " ", "\x1b"]: # enter, space, escape
+        if ev.string in ["\n", "\r", " ", "\x1b"]:  # enter, space, escape
             self.__popup_hide()
 
     def __popup_hide(self):
-        self.__window.grab_remove()
-        Gdk.pointer_ungrab(Gtk.get_current_event_time())
-        Gdk.keyboard_ungrab(Gtk.get_current_event_time())
-        self.__window.hide()
+        window = self.__window
+        event_time = gtk.get_current_event_time()
+
+        window.grab_remove()
+        Gdk.pointer_ungrab(event_time)
+        Gdk.keyboard_ungrab(event_time)
+        window.hide()
+
 
 class HSlider(_PopupSlider):
     Scale = Gtk.HScale
@@ -107,16 +123,16 @@ class HSlider(_PopupSlider):
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         if Gtk.widget_get_default_direction() == Gtk.TextDirection.LTR:
-            return ((x + w + pad), (y + (h - wh)//2))
+            return ((x + w + pad), (y + (h - wh) // 2))
         else:
-            return ((x - (ww + pad)), (y + (h - wh)//2))
+            return ((x - (ww + pad)), (y + (h - wh) // 2))
+
 
 class VSlider(_PopupSlider):
     Scale = Gtk.VScale
     _req = (-1, 170)
     _adj = Gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0)
     UP = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
- 
-    def _move_to(self, x, y, w, h, ww, wh, pad=3):
-        return ((x + (w - ww)//2), y + h + pad)
 
+    def _move_to(self, x, y, w, h, ww, wh, pad=3):
+        return ((x + (w - ww) // 2), y + h + pad)
