@@ -154,7 +154,7 @@ class PreferencesWindow(qltk.UniqueWindow):
                   ("date", _("_Date")),
                   ("~#length",_("_Length"))]]):
                 for i, (k, t) in enumerate(l):
-                    buttons[k] = Gtk.CheckButton(t)
+                    buttons[k] = Gtk.CheckButton(t, use_underline=True)
                     if k in checks:
                         buttons[k].set_active(True)
                         checks.remove(k)
@@ -163,17 +163,20 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             vbox.pack_start(table, False, True, 0)
 
-            tiv = Gtk.CheckButton(_("Title includes _version"))
+            tiv = Gtk.CheckButton(_("Title includes _version"),
+                                  use_underline=True)
             if "~title~version" in checks:
                 buttons["title"].set_active(True)
                 tiv.set_active(True)
                 checks.remove("~title~version")
-            aip = Gtk.CheckButton(_("Album includes _disc subtitle"))
+            aip = Gtk.CheckButton(_("Album includes _disc subtitle"),
+                                  use_underline=True)
             if "~album~discsubtitle" in checks:
                 buttons["album"].set_active(True)
                 aip.set_active(True)
                 checks.remove("~album~discsubtitle")
-            fip = Gtk.CheckButton(_("Filename includes _folder"))
+            fip = Gtk.CheckButton(_("Filename includes _folder"),
+                                  use_underline=True)
             if "~filename" in checks:
                 buttons["~basename"].set_active(True)
                 fip.set_active(True)
