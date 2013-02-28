@@ -99,6 +99,13 @@ def _gtk_init(icon=None):
 
     from gi.repository import Gtk, GObject, GLib
 
+    # blacklist some modules, simply loading can cause segfaults
+    sys.modules["gtk"] = None
+    sys.modules["gpod"] = None
+    sys.modules["glib"] = None
+    sys.modules["gobject"] = None
+    sys.modules["gnome"] = None
+
     GObject.threads_init()
 
     theme = Gtk.IconTheme.get_default()
