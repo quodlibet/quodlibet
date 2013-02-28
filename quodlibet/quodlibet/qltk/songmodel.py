@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet.qltk.playorder import ORDERS
 
@@ -80,12 +80,19 @@ class TrackCurrentModel(Gtk.ListStore):
         self.__iter = None
 
         print_d("Setting %d songs." % len(songs))
-        insert = self.insert
+
+        value = GObject.Value()
+        value.init(GObject.TYPE_PYOBJECT)
+        insert = self.insert_with_valuesv
+        vset = value.set_boxed
         oldsong = self.__old_value
+        columns = [0]
         for song in reversed(songs):
-            iter_ = insert(0, (song,))
+            vset(song)
+            iter_ = insert(0, columns, [value])
             if song is oldsong:
                 self.__iter = iter_
+
         print_d("Done filling model.")
 
     def remove(self, iter_):
