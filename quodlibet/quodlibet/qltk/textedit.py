@@ -78,7 +78,7 @@ class PatternEditBox(TextEditBox):
     def __check_markup(self, apply):
         try:
             f = AudioFile({"~filename":"dummy"})
-            Pango.parse_markup(XMLFromPattern(self.text) % f, u"\u0000")
+            Pango.parse_markup(XMLFromPattern(self.text) % f, -1, u"\u0000")
         except (ValueError, GLib.GError), e:
             qltk.ErrorMessage(
                 self, _("Invalid pattern"),

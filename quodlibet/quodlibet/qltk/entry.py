@@ -157,8 +157,8 @@ class ClearEntryMixin(object):
     def enable_clear_button(self):
         """Enables the clear icon in the entry"""
 
-        self.set_icon_from_stock(
-            Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_CLEAR)
+        self.set_icon_from_icon_name(
+            Gtk.EntryIconPosition.SECONDARY, "edit-clear-symbolic")
         self.connect("icon-release", self.__clear)
 
     def __clear(self, button, *args):

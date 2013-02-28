@@ -75,7 +75,7 @@ class _KeyValueEditor(qltk.Window):
         self.get_child().pack_start(sw, True, True, 0)
 
         menu = Gtk.Menu()
-        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
+        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
         keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(
             'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)

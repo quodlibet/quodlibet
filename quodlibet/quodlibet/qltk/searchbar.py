@@ -35,8 +35,7 @@ class SearchBarBox(Gtk.HBox):
 
     timeout = 400
 
-    def __init__(self, filename=None, button=False, completion=None,
-                 accel_group=None, compact=False):
+    def __init__(self, filename=None, completion=None, accel_group=None):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
@@ -63,33 +62,13 @@ class SearchBarBox(Gtk.HBox):
         entry.connect('activate', self.__filter_changed)
         entry.connect('activate', self.__save_search)
         entry.connect('focus-out-event', self.__save_search)
-        entry.connect('icon-press', self.__icon_press)
 
-        # The naked entry looks better with the search button on the right.
-        pos = self.__search_icon_pos = int(not compact)
-        entry.set_icon_from_stock(pos, Gtk.STOCK_FIND)
-        entry.set_icon_tooltip_text(pos,
-                _("Search your library, using free text or QL queries"))
+        entry.set_placeholder_text(_("Search"))
+        entry.set_tooltip_text(_("Search your library, "
+                                 "using free text or QL queries"))
 
-        if not compact:
-            label = Gtk.Label(label=_("_Search:"))
-            label.set_use_underline(True)
-            label.connect('mnemonic-activate', self.__mnemonic_activate)
-            label.set_mnemonic_widget(entry)
-            self.pack_start(label, False, True, 0)
-        else:
-            entry.set_tooltip_text(_("Search your library, "
-                                     "using free text or QL queries"))
-            # combo.enable_clear_button()
+        combo.enable_clear_button()
         self.pack_start(combo, True, True, 0)
-
-        # search button
-        if button:
-            search = Button(_("Search"), Gtk.STOCK_FIND,
-                            size=Gtk.IconSize.MENU)
-            search.connect('clicked', self.__filter_changed)
-            search.set_tooltip_text(_("Search your library"))
-            self.pack_start(search, False, True, 0)
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<ctrl>L")
@@ -98,10 +77,6 @@ class SearchBarBox(Gtk.HBox):
             #        lambda *x: entry.mnemonic_activate(True))
 
         self.show_all()
-
-    def __icon_press(self, entry, pos, event, *args, **kwargs):
-        if pos == self.__search_icon_pos:
-            self.__filter_changed()
 
     def __inhibit(self):
         self.__combo.handler_block(self.__sig)

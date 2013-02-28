@@ -707,8 +707,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self._sb_box.pack_start(select, False, True, 0)
 
         prefs = Gtk.Button()
-        prefs.add(Gtk.Image.new_from_stock(Gtk.STOCK_PREFERENCES,
-                                           Gtk.IconSize.MENU))
+        prefs.add(Gtk.Image.new_from_icon_name("emblem-system-symbolic",
+                                               Gtk.IconSize.MENU))
         s = prefs.connect('clicked', Preferences)
         self.connect_object('destroy', prefs.disconnect, s)
         s = select.connect('clicked', self.__all)

@@ -52,21 +52,32 @@ class MainSongList(SongList):
         header_name = "~current"
         __last_stock = None
 
-        def _cdf(self, column, cell, model, iter, data,
-                 pixbuf=(Gtk.STOCK_MEDIA_PLAY, Gtk.STOCK_MEDIA_PAUSE)):
+        def _cdf(self, column, cell, model, iter, data):
+            PLAY = "media-playback-start"
+            PAUSE = "media-playback-pause"
+            STOP = "media-playback-stop"
+            ERROR = "dialog-error"
+
             row = model[iter]
+            song = row[0]
+
             if row.path == model.current_path:
                 if model.sourced:
-                    stock_icon = pixbuf[player.playlist.paused]
+                    stock_icon = [PLAY, PAUSE][player.playlist.paused]
                 else:
-                    stock_icon = Gtk.STOCK_MEDIA_STOP
-            elif row[0].get("~errors"):
-                stock_icon = Gtk.STOCK_DIALOG_ERROR
+                    stock_icon = STOP
+            elif song("~errors"):
+                stock_icon = ERROR
             else:
                 stock_icon = None
-            if self.__last_stock == stock_icon: return
+
+            if stock_icon is not None:
+                stock_icon += "-symbolic"
+
+            if self.__last_stock == stock_icon:
+                return
             self.__last_stock = stock_icon
-            cell.set_property('stock-id', stock_icon)
+            cell.set_property('icon-name', stock_icon)
 
         def __init__(self):
             self._render = Gtk.CellRendererPixbuf()

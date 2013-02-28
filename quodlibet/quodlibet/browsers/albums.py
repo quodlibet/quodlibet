@@ -143,7 +143,7 @@ class Preferences(qltk.UniqueWindow):
         except:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
-        try: Pango.parse_markup(text, u"\u0000")
+        try: Pango.parse_markup(text, -1, u"\u0000")
         except GLib.GError:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
@@ -170,7 +170,7 @@ class PreferencesButton(Gtk.HBox):
 
         menu = Gtk.Menu()
 
-        sort_item = Gtk.MenuItem(_("Sort _by..."))
+        sort_item = Gtk.MenuItem(_("Sort _by..."), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint('browsers', 'album_sort', 1)
@@ -198,8 +198,8 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            Gtk.Image.new_from_stock(
-                Gtk.STOCK_PREFERENCES, Gtk.IconSize.MENU),
+            Gtk.Image.new_from_icon_name(
+                "emblem-system-symbolic", Gtk.IconSize.MENU),
                 arrow=True)
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)
@@ -568,9 +568,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
-        search = SearchBarBox(button=False, completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators,
-                              compact=True)
+        search = SearchBarBox(completion=AlbumTagCompletion(),
+                              accel_group=self.accelerators)
         gobject_weak(search.connect, 'query-changed', self.__update_filter)
         gobject_weak(search.connect_object,
                      'focus-out', lambda w: w.grab_focus(), view)

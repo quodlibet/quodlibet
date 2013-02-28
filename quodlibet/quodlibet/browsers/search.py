@@ -123,8 +123,8 @@ class SearchBar(EmptyBar):
             menu.show_all()
 
             button = MenuButton(
-                Gtk.Image.new_from_stock(
-                    Gtk.STOCK_PREFERENCES, Gtk.IconSize.MENU),
+                Gtk.Image.new_from_icon_name(
+                    "emblem-system-symbolic", Gtk.IconSize.MENU),
                 arrow=True)
             button.set_menu(menu)
             self.pack_start(button, True, True, 0)
