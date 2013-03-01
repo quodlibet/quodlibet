@@ -19,41 +19,6 @@ from quodlibet.qltk.entry import ClearEntry
 TAG, ALL, NO, DIS, EN, SEP = range(6)
 
 
-class WrapLabel(Gtk.Label):
-    __gtype_name__ = 'WrapLabel'
-
-    def __init__(self):
-        super(WrapLabel, self).__init__()
-        self.__wrap_width = 0
-        self.get_layout().set_wrap(Pango.WrapMode.WORD_CHAR)
-        self.set_alignment(0.0, 0.0)
-
-    def do_size_request(self, requisition):
-        width, height = self.get_layout().get_pixel_size()
-        requisition.width = 0
-        requisition.height = height
-
-    def do_size_allocate(self, allocation):
-        Gtk.Label.do_size_allocate(self, allocation)
-        self.__set_wrap_width(allocation.width)
-
-    def set_text(self, *args):
-        super(WrapLabel, self).set_text(*args)
-        self.__set_wrap_width(self.__wrap_width)
-
-    def set_markup(self, *args):
-        super(WrapLabel, self).set_markup(*args)
-        self.__set_wrap_width(self.__wrap_width)
-
-    def __set_wrap_width(self, width):
-        if width == 0:
-            return
-        self.get_layout().set_width(width * Pango.SCALE)
-        if self.__wrap_width != width:
-            self.__wrap_width = width
-            self.queue_resize()
-
-
 class PluginErrorWindow(qltk.UniqueWindow):
     def __init__(self, parent):
         if self.is_not_unique(): return
@@ -192,7 +157,9 @@ class PluginWindow(qltk.UniqueWindow):
         hbox.pack_start(vbox, False, True, 0)
 
         selection = tv.get_selection()
-        desc = WrapLabel()
+        desc = Gtk.Label()
+        desc.set_line_wrap(True)
+        desc.set_alignment(0, 0.5)
         desc.set_selectable(True)
         selection.connect('changed', self.__description, desc)
 
@@ -350,7 +317,7 @@ class PluginWindow(qltk.UniqueWindow):
         for plugin in plugins:
             it = model.append(row=plugin[1:])
             if plugin[1].PLUGIN_ID is selected:
-                fit = fmodel.convert_child_iter_to_iter(it)
+                ok, fit = fmodel.convert_child_iter_to_iter(it)
                 view.get_selection().select_iter(fit)
             plugin_tags = getattr(plugin[1], "PLUGIN_TAGS", ())
             if isinstance(plugin_tags, basestring):
