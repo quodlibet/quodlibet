@@ -4,13 +4,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-# FIXME: GIPORT.. some code depends on the changed default encoding
-# after importing pygtk
-
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
-
 import __builtin__
 
 _dummy_gettext = lambda value: value
@@ -99,6 +92,10 @@ def _gtk_init(icon=None):
 
     from gi.repository import Gtk, GObject, GLib
 
+    # some code depends on utf-8 default encoding (pygtk used to set it)
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
     # blacklist some modules, simply loading can cause segfaults
     sys.modules["gtk"] = None
     sys.modules["gpod"] = None
@@ -118,9 +115,6 @@ def _gtk_init(icon=None):
             except GLib.GError: pass
         Gtk.Window.set_default_icon_list(pixbufs)
 
-    def website_wrap(activator, link):
-        if not quodlibet.util.website(link):
-            print_w("opening %r failed" % link)
 
 def _dbus_init():
     try:
