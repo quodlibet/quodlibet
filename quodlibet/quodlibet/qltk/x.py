@@ -39,7 +39,7 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         ctx = self.get_style_context()
         border = ctx.get_border(self.get_state_flags())
 
-        # FIXME: GIPORT there is no border?... hardcode for now
+        # https://bugzilla.gnome.org/show_bug.cgi?id=694844
         border.left = border.top = border.right = border.bottom = 1
 
         # Don't remove the border if the border is drawn inside
