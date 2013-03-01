@@ -29,7 +29,7 @@ class ScrolledWindow(Gtk.ScrolledWindow):
 
         if not window:
             GLib.idle_add(self.queue_resize)
-            return Gtk.Notebook.do_size_allocate(self, alloc)
+            return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
         dummy, x1, y1 = top_window.get_origin()
         dummy, x2, y2 = window.get_origin()
