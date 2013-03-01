@@ -94,6 +94,8 @@ def unit(run=[], filter_func=None, subdir=None):
 
     import quodlibet
     quodlibet._dbus_init()
+    quodlibet._gtk_init()
+    quodlibet._python_init()
 
     for name in glob.glob(os.path.join(path, "test_*.py")):
         parts = filter(None, [__name__, subdir, os.path.basename(name)[:-3]])
