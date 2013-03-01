@@ -440,11 +440,21 @@ class AudioFile(dict):
         should be checked before adding)."""
 
         if k is None:
-            if os.access(self["~filename"], os.W_OK): return True
-            else: return []
-        else: return (k and "=" not in k and "~" not in k
-                      and k.encode("ascii", "replace") == k
-                      and os.access(self["~filename"], os.W_OK))
+            if os.access(self["~filename"], os.W_OK):
+                return True
+            else:
+                return []
+
+        try:
+            if isinstance(k, unicode):
+                k = k.encode("ascii")
+            else:
+                k.decode("ascii")
+        except UnicodeError:
+            return False
+
+        return (k and "=" not in k and "~" not in k
+                and os.access(self["~filename"], os.W_OK))
 
     def rename(self, newname):
         """Rename a file. Errors are not handled. This shouldn't be used
