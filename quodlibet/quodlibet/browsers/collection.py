@@ -21,7 +21,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView, BaseView
-from quodlibet.qltk.x import ScrolledWindow, Alignment
+from quodlibet.qltk.x import ScrolledWindow, Alignment, SymbolicIconImage
 from quodlibet.util.collection import Album
 from quodlibet.util.library import background_filter
 from quodlibet.util.thumbnails import scale
@@ -608,8 +608,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         hbox = Gtk.HBox(spacing=6)
 
         prefs = Gtk.Button()
-        prefs.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_PREFERENCES, Gtk.IconSize.MENU))
+        prefs.add(SymbolicIconImage("emblem-system", Gtk.IconSize.MENU))
         prefs.connect('clicked', Preferences)
 
         search = SearchBarBox(completion=AlbumTagCompletion(),
