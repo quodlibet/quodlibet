@@ -719,7 +719,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         if (not brv and not (ssv or qex)):
             width, height = self.get_size()
-            height = self.size_request()[1]
+            height = self.size_request().height
             self.resize(width, height)
             # FIXME: GIPORT
             # self.set_geometry_hints(None, max_height=height, max_width=32000)
