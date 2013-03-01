@@ -90,7 +90,7 @@ class SeekBar(HSlider):
         if widget:
             return qltk.popup_menu_under_widget(menu, widget, 3, time)
         else:
-            menu.popup(None, None, None, 3, time)
+            menu.popup(None, None, None, None, 3, time)
             return True
 
     def __seeked(self, player, song, ms):
@@ -337,7 +337,7 @@ class PlayControls(Gtk.VBox):
         if widget:
             return qltk.popup_menu_under_widget(safter, widget, button, time)
         else:
-            safter.popup(None, None, None, button, time)
+            safter.popup(None, None, None, None, button, time)
         return True
 
     def __song_started(self, player, song, next, play):
