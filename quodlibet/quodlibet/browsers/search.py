@@ -21,7 +21,7 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import SearchBarBox, LimitSearchBarBox
-from quodlibet.qltk.x import Alignment
+from quodlibet.qltk.x import Alignment, SymbolicIconImage
 
 QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 
@@ -123,8 +123,7 @@ class SearchBar(EmptyBar):
             menu.show_all()
 
             button = MenuButton(
-                Gtk.Image.new_from_icon_name(
-                    "emblem-system-symbolic", Gtk.IconSize.MENU),
+                SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
                 arrow=True)
             button.set_menu(menu)
             self.pack_start(button, True, True, 0)

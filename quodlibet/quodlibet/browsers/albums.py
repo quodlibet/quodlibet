@@ -23,6 +23,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
@@ -198,8 +199,7 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            Gtk.Image.new_from_icon_name(
-                "emblem-system-symbolic", Gtk.IconSize.MENU),
+                SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
                 arrow=True)
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)

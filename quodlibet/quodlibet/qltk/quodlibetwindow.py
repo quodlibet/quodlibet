@@ -9,7 +9,7 @@
 import os
 import sys
 
-from gi.repository import Gtk, GObject, Gdk, GLib
+from gi.repository import Gtk, GObject, Gdk, GLib, Gio
 
 from quodlibet import browsers
 from quodlibet import config
@@ -50,7 +50,7 @@ class MainSongList(SongList):
     class CurrentColumn(Gtk.TreeViewColumn):
         # Displays the current song indicator, either a play or pause icon.
         header_name = "~current"
-        __last_stock = None
+        __last_name = None
 
         def _cdf(self, column, cell, model, iter, data):
             PLAY = "media-playback-start"
@@ -63,21 +63,25 @@ class MainSongList(SongList):
 
             if row.path == model.current_path:
                 if model.sourced:
-                    stock_icon = [PLAY, PAUSE][player.playlist.paused]
+                    name = [PLAY, PAUSE][player.playlist.paused]
                 else:
-                    stock_icon = STOP
+                    name = STOP
             elif song("~errors"):
-                stock_icon = ERROR
+                name = ERROR
             else:
-                stock_icon = None
+                name = None
 
-            if stock_icon is not None:
-                stock_icon += "-symbolic"
-
-            if self.__last_stock == stock_icon:
+            if self.__last_name == name:
                 return
-            self.__last_stock = stock_icon
-            cell.set_property('icon-name', stock_icon)
+            self.__last_name = name
+
+            if name is not None:
+                gicon = Gio.ThemedIcon.new_from_names(
+                    [name + "-symbolic", name])
+            else:
+                gicon = None
+
+            cell.set_property('gicon', gicon)
 
         def __init__(self):
             self._render = Gtk.CellRendererPixbuf()

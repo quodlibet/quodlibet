@@ -23,7 +23,7 @@ from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn
-from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage
 from quodlibet.util import tag, pattern
 from quodlibet.util.library import background_filter
 
@@ -707,8 +707,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self._sb_box.pack_start(select, False, True, 0)
 
         prefs = Gtk.Button()
-        prefs.add(Gtk.Image.new_from_icon_name("emblem-system-symbolic",
-                                               Gtk.IconSize.MENU))
+        prefs.add(SymbolicIconImage("emblem-system", Gtk.IconSize.MENU))
         s = prefs.connect('clicked', Preferences)
         self.connect_object('destroy', prefs.disconnect, s)
         s = select.connect('clicked', self.__all)

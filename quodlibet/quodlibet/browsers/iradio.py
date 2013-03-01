@@ -33,6 +33,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = "http://quodlibet.googlecode.com/files/radiolist.bz2"
@@ -443,9 +444,8 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         menu.show_all()
 
         button = MenuButton(
-            Gtk.Image.new_from_icon_name(
-                "emblem-system-symbolic", Gtk.IconSize.MENU),
-                arrow=True)
+            SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+            arrow=True)
         button.set_menu(menu)
 
         def focus(widget, *args):

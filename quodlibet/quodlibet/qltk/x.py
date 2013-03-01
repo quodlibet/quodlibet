@@ -7,7 +7,7 @@
 # Things that are more or less direct wrappers around GTK widgets to
 # ease constructors.
 
-from gi.repository import Gtk, GObject, GLib
+from gi.repository import Gtk, GObject, GLib, Gio
 
 from quodlibet import util
 from quodlibet.qltk import is_accel
@@ -228,3 +228,13 @@ def RadioMenuItem(*args, **kwargs):
     if kwargs.get("group", None) is None:
         kwargs.pop("group", None)
     return Gtk.RadioMenuItem(*args, **kwargs)
+
+
+def SymbolicIconImage(name, size, fallbacks=None):
+    """Gtk.Image that displays a symbolic version of 'name' and falls
+    back to the non-symbolic one.
+    """
+
+    symbolic_name = name + "-symbolic"
+    gicon = Gio.ThemedIcon.new_from_names([symbolic_name, name])
+    return Gtk.Image.new_from_gicon(gicon, Gtk.IconSize.MENU)

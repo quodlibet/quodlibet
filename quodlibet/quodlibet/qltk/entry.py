@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, Gio
 
 from quodlibet.qltk.x import is_accel
 
@@ -157,8 +157,9 @@ class ClearEntryMixin(object):
     def enable_clear_button(self):
         """Enables the clear icon in the entry"""
 
-        self.set_icon_from_icon_name(
-            Gtk.EntryIconPosition.SECONDARY, "edit-clear-symbolic")
+        gicon = Gio.ThemedIcon.new_from_names(
+            ["edit-clear-symbolic", "edit-clear"])
+        self.set_icon_from_gicon(Gtk.EntryIconPosition.SECONDARY, gicon)
         self.connect("icon-release", self.__clear)
 
     def __clear(self, button, *args):
