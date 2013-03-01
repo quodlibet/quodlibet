@@ -121,7 +121,7 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
             self.connect_object(
                 'destroy', WaitLoadWindow.__disconnect, self, sig, parent)
             self.set_transient_for(parent)
-            parent.window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+            parent.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         self.set_modal(True)
         self.set_decorated(False)
         self.set_resizable(False)
@@ -157,8 +157,8 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
         self.move(x + dx // 2 - dx2 // 2, y + dy // 2 - dy2 // 2)
 
     def __disconnect(self, sig, parent):
-        if parent.window:
-            parent.window.set_cursor(None)
+        if parent.get_window():
+            parent.get_window().set_cursor(None)
         parent.disconnect(sig)
 
 class WritingWindow(WaitLoadWindow):
