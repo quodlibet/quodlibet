@@ -20,7 +20,7 @@ class TreeViewHints(Gtk.Window):
     # will never be called.
     __gsignals__ = dict.fromkeys(
         ['button-press-event', 'button-release-event',
-        'motion-notify-event', 'leave-notify-event', 'scroll-event'],
+        'motion-notify-event', 'scroll-event'],
         'override')
 
     def __init__(self):
@@ -38,11 +38,13 @@ class TreeViewHints(Gtk.Window):
             Gdk.EventMask.SCROLL_MASK | Gdk.EventMask.POINTER_MOTION_MASK |
             Gdk.EventMask.POINTER_MOTION_HINT_MASK)
 
+        context = self.get_style_context()
+        context.add_class("tooltip")
+
         self.set_app_paintable(True)
         self.set_resizable(False)
         self.set_name("gtk-tooltips")
         self.set_border_width(1)
-        self.connect('expose-event', self.__expose)
         self.connect('leave-notify-event', self.__undisplay)
 
         self.__handlers = {}
@@ -70,12 +72,6 @@ class TreeViewHints(Gtk.Window):
         # Hide if the active treeview is going away
         if view is self.__view:
             self.__undisplay()
-
-    def __expose(self, widget, event):
-        w, h = self.get_size_request()
-        self.style.paint_flat_box(self.window,
-                Gtk.StateType.NORMAL, Gtk.ShadowType.OUT,
-                None, self, "tooltip", 0, 0, w, h)
 
     def __motion(self, view, event):
         label = self.__label
@@ -111,7 +107,7 @@ class TreeViewHints(Gtk.Window):
             return
 
         # get the renderer at the mouse position and get the xpos/width
-        renderers = col.get_cell_renderers()
+        renderers = col.get_cells()
         pos = sorted(zip(map(col.cell_get_position, renderers), renderers))
         pos = filter(lambda ((x, w), r): x < cellx, pos)
         if not pos:
@@ -162,7 +158,7 @@ class TreeViewHints(Gtk.Window):
         # the column header height
         header_height = view.get_bin_window().get_position()[1]
 
-        ox, oy = view.window.get_origin()
+        dummy, ox, oy = view.get_window().get_origin()
 
         # save for adjusting passthrough events
         self.__dx, self.__dy = area.x + render_offset, area.y
@@ -228,22 +224,30 @@ class TreeViewHints(Gtk.Window):
             # bypass to only select one
             Gtk.Window.present(get_top_parent(self.__view))
 
-        if event.type != Gdk.SCROLL:
-            event.x += self.__dx
-            event.y += self.__dy
+        type_ = event.type
+        real_event = None
+        if type_ == Gdk.EventType.BUTTON_PRESS:
+            real_event = event.button
+        elif type_ == Gdk.EventType.BUTTON_RELEASE:
+            real_event = event.button
+        elif type_ == Gdk.EventType.MOTION_NOTIFY:
+            real_event = event.motion
+
+        if real_event:
+            real_event.x += self.__dx
+            real_event.y += self.__dy
 
         # modifying event.window is a necessary evil, made okay because
         # nobody else should tie to any TreeViewHints events ever.
-        event.window = self.__view.get_bin_window()
+        event.any.window = self.__view.get_bin_window()
 
-        Gtk.main_do_event(event)
+        event.put()
 
         return True
 
     def do_button_press_event(self, event): return self.__event(event)
     def do_button_release_event(self, event): return self.__event(event)
     def do_motion_notify_event(self, event): return self.__event(event)
-    def do_leave_notify_event(self, event): return self.__event(event)
     def do_scroll_event(self, event): return self.__event(event)
 
 
@@ -643,8 +647,6 @@ class HintedTreeView(BaseView):
 
     def __init__(self, *args):
         super(HintedTreeView, self).__init__(*args)
-        # FIXME: GIPORT port to GTK3
-        return
         if not config.state('disable_hints'):
             try: tvh = HintedTreeView.hints
             except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
