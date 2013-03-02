@@ -241,7 +241,7 @@ class Playlists(Gtk.VBox, Browser):
         menu.prepend(i)
         return menu
 
-    __lists = Gtk.TreeModelSort(Gtk.ListStore(object))
+    __lists = Gtk.TreeModelSort(model=Gtk.ListStore(object))
     __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
 
     def __init__(self, library, main):
