@@ -56,6 +56,7 @@ quodlibet/qltk/quodlibetwindow.py
 quodlibet/qltk/ratingsmenu.py
 quodlibet/qltk/remote.py
 quodlibet/qltk/renamefiles.py
+quodlibet/qltk/scanbox.py
 quodlibet/qltk/searchbar.py
 quodlibet/qltk/songlist.py
 quodlibet/qltk/songsmenu.py
