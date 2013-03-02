@@ -282,13 +282,11 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         self.accelerators = Gtk.AccelGroup()
         key, mod = Gtk.accelerator_parse("<alt>Return")
-        # FIXME: GIPORT
-        #self.accelerators.connect_group(
-        #    key, mod, 0, lambda *args: self.__song_properties(librarian))
+        self.accelerators.connect(
+            key, mod, 0, lambda *args: self.__song_properties(librarian))
         key, mod = Gtk.accelerator_parse("<control>I")
-        # FIXME: GIPORT
-        #self.accelerators.connect_group(
-        #    key, mod, 0, lambda *args: self.__information(librarian))
+        self.accelerators.connect(
+            key, mod, 0, lambda *args: self.__information(librarian))
 
         self.connect('destroy', self.__destroy)
 

@@ -699,8 +699,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.__main = main
 
         keyval, mod = Gtk.accelerator_parse("<control>Home")
-        # FIXME: GIPORT
-        #s = self.accelerators.connect_group(keyval, mod, 0, self.__all)
+        s = self.accelerators.connect(keyval, mod, 0, self.__all)
         self.connect_object('destroy',
                             self.accelerators.disconnect_key, keyval, mod)
         select = Gtk.Button(_("Select _All"), use_underline=True)

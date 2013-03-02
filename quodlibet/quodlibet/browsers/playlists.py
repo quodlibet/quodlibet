@@ -305,8 +305,7 @@ class Playlists(Gtk.VBox, Browser):
 
         self.accelerators = Gtk.AccelGroup()
         keyval, mod = Gtk.accelerator_parse("F2")
-        # FIXME: GIPORT
-        #self.accelerators.connect_group(keyval, mod, 0, self.__rename)
+        self.accelerators.connect(keyval, mod, 0, self.__rename)
 
         self.connect('key-press-event', self.__key_pressed)
 

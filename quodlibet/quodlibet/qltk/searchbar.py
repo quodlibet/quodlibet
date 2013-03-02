@@ -72,9 +72,8 @@ class SearchBarBox(Gtk.HBox):
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<ctrl>L")
-            # FIXME: GIPORT
-            #accel_group.connect_group(key, mod, 0,
-            #        lambda *x: entry.mnemonic_activate(True))
+            accel_group.connect(key, mod, 0,
+                    lambda *x: entry.mnemonic_activate(True))
 
         self.show_all()
 

@@ -237,8 +237,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
         self.accelerators = Gtk.AccelGroup()
         key, mod = Gtk.accelerator_parse('F2')
-        # FIXME: GIPORT
-        # self.accelerators.connect_group(key, mod, 0, self.__rename)
+        self.accelerators.connect(key, mod, 0, self.__rename)
 
         self.__statusbar = WaitLoadBar()
 
