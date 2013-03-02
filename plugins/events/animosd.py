@@ -19,8 +19,11 @@ from quodlibet import config, qltk, app
 from quodlibet.qltk.textedit import PatternEdit
 from quodlibet.parse import XMLFromPattern
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins import PluginConfigMixin, PluginImportException
 from quodlibet.util.dprint import print_d
+
+
+raise PluginImportException("Not ported to GTK+3")
 
 
 def Label(text):
