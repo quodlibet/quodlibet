@@ -312,26 +312,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         elif message.type == Gst.MessageType.BUFFERING:
             percent = message.parse_buffering()
             self.__buffering(percent)
-        elif message.type == Gst.MessageType.ELEMENT:
-            name = ""
-            if hasattr(message.structure, "get_name"):
-                name = message.structure.get_name()
-
-            # This gets sent on song change. Because it is not in the docs
-            # we can not rely on it. Additionally we check in get_position
-            # which should trigger shortly after this.
-            if self._in_gapless_transition and \
-                name == "playbin2-stream-changed":
-                    print_d("Stream changed")
-                    self._end(False)
-
-            if pbutils and name.startswith('missing-'):
-                self.stop()
-                detail = pbutils.missing_plugin_message_get_installer_detail(
-                    message)
-                context = pbutils.InstallPluginsContext()
-                pbutils.install_plugins_async([detail], context,
-                    lambda *args: Gst.update_registry())
+        elif message.type == Gst.MessageType.STREAM_START:
+            if self._in_gapless_transition:
+                print_d("Stream changed")
+                self._end(False)
 
         return True
 
