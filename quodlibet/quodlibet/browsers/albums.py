@@ -494,7 +494,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)
-        model_sort = Gtk.TreeModelSort(self.__model)
+        model_sort = Gtk.TreeModelSort(model=self.__model)
         model_filter = model_sort.filter_new()
 
         self.__bg_filter = background_filter()

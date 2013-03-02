@@ -491,12 +491,12 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 3
         column.pack_start(renderpb, False)
-        column.set_attributes(renderpb, stock_id=self.STOCK)
+        column.add_attribute(renderpb, "stock_id", self.STOCK)
 
         render = Gtk.CellRendererText()
         view.append_column(column)
         column.pack_start(render, True)
-        column.set_attributes(render, text=self.NAME)
+        column.add_attribute(render, "text", self.NAME)
 
         view.set_model(model)
 

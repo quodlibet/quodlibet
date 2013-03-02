@@ -22,17 +22,21 @@ def MenuItems(marks, player, seekable):
         marks.insert(0, (0, _("Beginning")))
     for time, mark in marks:
         i = Gtk.MenuItem()
+        i.remove(i.get_child())
         i.connect_object('activate', player.seek, time * 1000)
         i.set_sensitive(time >= 0 and seekable)
-        i.add(Gtk.HBox(spacing=12))
-        if time < 0: l = Gtk.Label(label=_("N/A"))
-        else: l = Gtk.Label(label=util.format_time(time))
+        hbox = Gtk.HBox(spacing=12)
+        i.add(hbox)
+        if time < 0:
+			l = Gtk.Label(label=_("N/A"))
+        else:
+			l = Gtk.Label(label=util.format_time(time))
         l.set_alignment(0.0, 0.5)
         sizes.add_widget(l)
-        i.get_child().pack_start(l, False, True, 0)
+        hbox.pack_start(l, False, True, 0)
         m = Gtk.Label(label=mark)
         m.set_alignment(0.0, 0.5)
-        i.get_child().pack_start(m, True, True, 0)
+        hbox.pack_start(m, True, True, 0)
         i.show_all()
         items.append(i)
     return items

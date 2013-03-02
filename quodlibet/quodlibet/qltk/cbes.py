@@ -323,7 +323,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         model = self.get_model()
         for row in model:
             if row[0] is None:
-                offset = row.path[0] + 1
+                offset = row.path.get_indices()[0] + 1
                 break
         to_remove = (len(model) - offset) - self.count
         while to_remove > 0:

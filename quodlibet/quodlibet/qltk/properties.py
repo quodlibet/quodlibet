@@ -53,7 +53,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         self.set_border_width(12)
 
         fbasemodel = Gtk.ListStore(object, str)
-        fmodel = Gtk.TreeModelSort(fbasemodel)
+        fmodel = Gtk.TreeModelSort(model=fbasemodel)
         fview = HintedTreeView(fmodel)
         fview.connect('button-press-event', self.__pre_selection_changed)
         fview.set_rules_hint(True)

@@ -59,7 +59,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         column.pack_start(render, True)
         column.set_cell_data_func(render, self.cell_data)
 
-        column.set_attributes(render, text=0)
+        column.add_attribute(render, "text", 0)
         self.append_column(column)
         self.set_search_equal_func(search_func, True)
 
@@ -313,7 +313,7 @@ class FileSelector(Gtk.VPaned):
         render = Gtk.CellRendererText()
         column.pack_start(render, True)
         column.set_cell_data_func(render, self.cell_data)
-        column.set_attributes(render, text=0)
+        column.add_attribute(render, "text", 0)
         filelist.append_column(column)
         filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
