@@ -237,4 +237,4 @@ def SymbolicIconImage(name, size, fallbacks=None):
 
     symbolic_name = name + "-symbolic"
     gicon = Gio.ThemedIcon.new_from_names([symbolic_name, name])
-    return Gtk.Image.new_from_gicon(gicon, Gtk.IconSize.MENU)
+    return Gtk.Image.new_from_gicon(gicon, size)
