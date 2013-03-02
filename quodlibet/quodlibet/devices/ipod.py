@@ -409,11 +409,9 @@ class IPodDevice(Device):
     }
 
 try:
-    # FIXME: GIPORT
-    raise ImportError
-    #import gpod
+   from quodlibet.devices import _gpod as gpod
 except ImportError:
-    print_w(_("Could not import python-gpod, iPod support disabled."))
+    print_w(_("Could not find libgpod, iPod support disabled."))
     devices = []
 else:
     devices = [IPodDevice]
