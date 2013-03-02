@@ -121,7 +121,9 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
             self.connect_object(
                 'destroy', WaitLoadWindow.__disconnect, self, sig, parent)
             self.set_transient_for(parent)
-            parent.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+            window = parent.get_window()
+            if window:
+                window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         self.set_modal(True)
         self.set_decorated(False)
         self.set_resizable(False)
@@ -147,7 +149,8 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
         self.get_child().add(vbox)
 
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.show_all()
 
     def __recenter(self, parent, event):
