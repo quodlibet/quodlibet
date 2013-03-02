@@ -106,7 +106,7 @@ class EditBookmarksPane(Gtk.VBox):
         name.set_text(_("Bookmark Name"))
 
         menu = Gtk.Menu()
-        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
+        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
         remove.connect('activate', self.__remove, selection, library, song)
         keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(

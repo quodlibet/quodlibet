@@ -94,7 +94,7 @@ class SongInfo(Gtk.Label):
         props.show()
         props.set_sensitive(bool(player.song))
         menu.append(props)
-        info = Gtk.ImageMenuItem(Gtk.STOCK_INFO)
+        info = Gtk.ImageMenuItem(Gtk.STOCK_INFO, use_stock=True)
         info.connect_object(
             'activate', Information, library, [player.song], self)
         info.show()

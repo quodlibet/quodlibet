@@ -67,8 +67,8 @@ class EditableUndo(object):
         del self.__del_pos
 
     def __popup(self, entry, menu):
-        undo =  Gtk.ImageMenuItem(Gtk.STOCK_UNDO)
-        redo =  Gtk.ImageMenuItem(Gtk.STOCK_REDO)
+        undo =  Gtk.ImageMenuItem(Gtk.STOCK_UNDO, use_stock=True)
+        redo =  Gtk.ImageMenuItem(Gtk.STOCK_REDO, use_stock=True)
         sep = Gtk.SeparatorMenuItem()
 
         map(Gtk.Widget.show, (sep, redo, undo))
