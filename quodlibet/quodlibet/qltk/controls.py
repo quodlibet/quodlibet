@@ -314,6 +314,7 @@ class PlayControls(Gtk.VBox):
         prev.connect_object('clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, player)
         play.connect('button-press-event', self.__play_button_press, safter)
+        play.add_events(Gdk.EventMask.SCROLL_MASK)
         play.connect_object('scroll-event', self.__scroll, player)
         play.connect_object('popup-menu', self.__popup, safter, play.get_child())
         next.connect_object('clicked', self.__next, player)

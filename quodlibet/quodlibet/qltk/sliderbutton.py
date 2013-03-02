@@ -29,6 +29,8 @@ class _PopupSlider(Gtk.EventBox):
         frame.set_border_width(0)
         frame.set_shadow_type(Gtk.ShadowType.OUT)
 
+        self.add_events(Gdk.EventMask.SCROLL_MASK)
+
         hscale = self.Scale(adjustment=self.__adj)
         hscale.set_size_request(*(req or self._req))
         window.connect('button-press-event', self.__button)
@@ -38,13 +40,10 @@ class _PopupSlider(Gtk.EventBox):
         window.add(frame)
         frame.add(hscale)
         self.connect('scroll-event', self.__scroll, hscale)
-        self.__window.connect('scroll-event', self.__window_scroll)
-        self.scale.connect_object('scroll-event', self.emit, 'scroll-event')
 
-    def __window_scroll(self, window, event):
-        #FIXME: GIPORT
-        #self.emit('scroll-event', event)
-        pass
+        def foward_scroll(scale, event):
+            self.emit('scroll-event', event.copy())
+        self.scale.connect('scroll-event', foward_scroll)
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError
