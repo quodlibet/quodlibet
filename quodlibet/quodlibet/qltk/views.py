@@ -701,6 +701,8 @@ class RCMHintedTreeView(HintedTreeView, RCMTreeView):
     """A TreeView that has hints and a context menu."""
     pass
 
+# FIXME: GIPORT .. port to cairo
+MultiDragTreeView = object
 class AllTreeView(HintedTreeView, RCMTreeView, MultiDragTreeView):
     """A TreeView that has hints, a context menu, and multi-selection
     dragging support."""
