@@ -13,13 +13,14 @@ from quodlibet import formats
 from quodlibet.util import fver
 
 class AboutDialog(gtk.AboutDialog):
-    def __init__(self, parent, player, name):
+    def __init__(self, parent, player, name, icon):
         super(AboutDialog, self).__init__()
         self.set_transient_for(parent)
         self.set_program_name(name)
         self.set_version(const.VERSION)
         self.set_authors(const.AUTHORS)
         self.set_artists(const.ARTISTS)
+        self.set_logo_icon_name(icon)
         fmts = ", ".join(formats.modules)
         text = []
         text.append(_("Supported formats: %s") % fmts)
@@ -40,10 +41,14 @@ class AboutDialog(gtk.AboutDialog):
             "<quod-libet-development@googlegroups.com>")
         self.child.show_all()
 
+
 class AboutQuodLibet(AboutDialog):
     def __init__(self, parent, player):
-        super(AboutQuodLibet, self).__init__(parent, player, "Quod Libet")
+        super(AboutQuodLibet, self).__init__(
+            parent, player, "Quod Libet", "quodlibet")
+
 
 class AboutExFalso(AboutDialog):
     def __init__(self, parent, player=None):
-        super(AboutExFalso, self).__init__(parent, player, "Ex Falso")
+        super(AboutExFalso, self).__init__(
+            parent, player, "Ex Falso", "exfalso")

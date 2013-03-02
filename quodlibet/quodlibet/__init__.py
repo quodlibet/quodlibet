@@ -109,11 +109,7 @@ def _gtk_init(icon=None):
     theme.append_search_path(quodlibet.const.IMAGEDIR)
 
     if icon:
-        pixbufs = []
-        for size in [64, 48, 32, 16]:
-            try: pixbufs.append(theme.load_icon(icon, size, 0))
-            except gobject.GError: pass
-        gtk.window_set_default_icon_list(*pixbufs)
+        gtk.window_set_default_icon_name(icon)
 
     def website_wrap(activator, link):
         if not quodlibet.util.website(link):
