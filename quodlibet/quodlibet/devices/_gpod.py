@@ -861,7 +861,11 @@ _functions = [
 ]
 
 for name, ret, args in _functions:
-    handle = getattr(_lib, name)
+    try:
+        handle = getattr(_lib, name)
+    except AttributeError:
+        print_d("symbol not found: %r" % name)
+        continue
     handle.argtypes = args
     handle.restype = ret
     globals()[name] = handle
