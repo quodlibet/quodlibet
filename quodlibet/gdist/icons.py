@@ -24,7 +24,8 @@ class build_icon_cache(Command):
         pass
 
     def run(self):
-        self.spawn(['gtk-update-icon-cache', '-f', 'quodlibet/images/hicolor'])
+        self.spawn(
+            ['gtk-update-icon-cache-3.0', '-f', 'quodlibet/images/hicolor'])
 
 
 class install_icons(Command):
@@ -59,7 +60,7 @@ class install_icons(Command):
         self.copy_tree(png, png_dst)
 
         # this fails during packaging.. so ignore the outcome
-        subprocess.call(['gtk-update-icon-cache', basepath])
+        subprocess.call(['gtk-update-icon-cache-3.0', basepath])
 
         # install png versions to /usr/share/pixmaps
         basepath = os.path.join(self.prefix, 'share', 'pixmaps')
