@@ -85,7 +85,7 @@ class OrderInOrder(Order):
         elif iter is None:
             return playlist[(len(playlist) - 1,)].iter
         else:
-            path = max(1, playlist.get_path(iter)[0])
+            path = max(1, playlist.get_path(iter).get_indices()[0])
             try: return playlist.get_iter((path - 1,))
             except ValueError:
                 if playlist.repeat:
@@ -102,7 +102,7 @@ class OrderRemembered(Order):
 
     def next(self, playlist, iter):
         if iter is not None:
-            self._played.append(playlist.get_path(iter)[0])
+            self._played.append(playlist.get_path(iter).get_indices()[0])
 
     def previous(self, playlist, iter):
         try: path = self._played.pop()
@@ -111,7 +111,7 @@ class OrderRemembered(Order):
 
     def set(self, playlist, iter):
         if iter is not None:
-            self._played.append(playlist.get_path(iter)[0])
+            self._played.append(playlist.get_path(iter).get_indices()[0])
         return iter
 
     def reset(self, playlist):
