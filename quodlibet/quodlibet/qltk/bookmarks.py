@@ -22,15 +22,17 @@ def MenuItems(marks, player, seekable):
         marks.insert(0, (0, _("Beginning")))
     for time, mark in marks:
         i = Gtk.MenuItem()
-        i.remove(i.get_child())
+        # older pygobject (~3.2) added a child on creation
+        if i.get_child():
+            i.remove(i.get_child())
         i.connect_object('activate', player.seek, time * 1000)
         i.set_sensitive(time >= 0 and seekable)
         hbox = Gtk.HBox(spacing=12)
         i.add(hbox)
         if time < 0:
-			l = Gtk.Label(label=_("N/A"))
+            l = Gtk.Label(label=_("N/A"))
         else:
-			l = Gtk.Label(label=util.format_time(time))
+            l = Gtk.Label(label=util.format_time(time))
         l.set_alignment(0.0, 0.5)
         sizes.add_widget(l)
         hbox.pack_start(l, False, True, 0)
