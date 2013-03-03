@@ -9,6 +9,7 @@ import time
 
 from gi.repository import Gdk, GObject, GLib
 
+import quodlibet
 from quodlibet import const
 from quodlibet import config
 from quodlibet import util
@@ -76,8 +77,7 @@ class SongTracker(object):
         timer.connect("tick", self.__timer)
         self.__errors_in_a_row = 0
         self.elapsed = 0
-        # FIXME: GIPORT
-        # Gtk.quit_add(1, self.__quit, librarian, player)
+        quodlibet.quit_add(1, self.__quit, librarian, player)
 
     def __error(self, player, song, error, librarian):
         newstr = u"%s: %s\n\n" % (

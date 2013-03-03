@@ -339,12 +339,32 @@ def _init_signal():
             os.write(w, "die!!!")
         signal.signal(sig, handler)
 
+# minimal emulation of gtk.quit_add
+
+_quit_add_list = []
+
+def quit_add(level, func, *args):
+    assert level in (0, 1)
+
+    _quit_add_list.append([level, func, args])
+
+def _quit_before():
+    for level, func, args in _quit_add_list:
+        if level != 0:
+            func(*args)
+
+def _quite_after():
+    for level, func, args in _quit_add_list:
+        if level == 0:
+            func(*args)
+
 
 def main(window):
     print_d("Entering quodlibet.main")
     from gi.repository import Gtk
 
     def quit_gtk(m):
+        _quit_before()
         # disable plugins
         import quodlibet.plugins
         quodlibet.plugins.quit()
@@ -383,3 +403,5 @@ def main(window):
     window.show()
 
     Gtk.main()
+
+    _quite_after()

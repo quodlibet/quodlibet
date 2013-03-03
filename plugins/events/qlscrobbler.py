@@ -23,6 +23,7 @@ try:
 except ImportError:
     from md5 import md5
 
+import quodlibet
 from quodlibet import config, const, app, parse, util, qltk
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
@@ -353,8 +354,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         self.exclude = self.config_get('exclude')
 
         # Set up exit hook to dump queue
-        # FIXME: GIPORT
-        # Gtk.quit_add(0, self.queue.dump_queue)
+        quodlibet.quit_add(0, self.queue.dump_queue)
 
     def config_get_url(self):
         """Gets the URL for the currently configured service.

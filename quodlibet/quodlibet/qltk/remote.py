@@ -11,6 +11,7 @@ import sys
 
 from gi.repository import GObject, Gdk
 
+import quodlibet
 from quodlibet import browsers
 from quodlibet import config
 from quodlibet import const
@@ -26,8 +27,7 @@ class FSInterface(object):
     def __init__(self, player):
         player.connect('song-started', self.__started)
         player.connect('song-ended', self.__ended)
-        # FIXME: GIPORT
-        #Gtk.quit_add(1, self.__cleanup)
+        quodlibet.quit_add(1, self.__cleanup)
 
     def __cleanup(self):
         try: os.unlink(const.CURRENT)
@@ -50,8 +50,7 @@ class FIFOControl(object):
 
     def __init__(self, library, window, player):
         self.__open(library, window, player)
-        # FIXME: GIPORT
-        #Gtk.quit_add(1, self.__cleanup)
+        quodlibet.quit_add(1, self.__cleanup)
 
     def __cleanup(self):
         try: os.unlink(const.CONTROL)
