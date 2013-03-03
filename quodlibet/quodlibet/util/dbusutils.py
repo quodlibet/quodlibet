@@ -1,4 +1,4 @@
-# Copyright 2012 Christoph Reiter
+# Copyright 2012, 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -99,7 +99,6 @@ TYPE_MAP = {
     "d": dbus.Double,
     "o": dbus.ObjectPath,
     "g": dbus.Signature,
-    "s": dbus.String,
     "v": lambda x: x,
 }
 
@@ -112,9 +111,7 @@ def apply_signature(value, sig, utf8_strings=False):
     # dbus properties are variant, but have a signature defined, so
     # we have to convert manually here.
 
-    if utf8_strings and sig == "s":
-        return dbus.UTF8String(value)
-    elif sig in TYPE_MAP:
+    if sig in TYPE_MAP:
         return TYPE_MAP[sig](value)
     elif sig.startswith("a{"):
         return dbus.Dictionary(value, signature=sig[2:-1])
@@ -122,8 +119,15 @@ def apply_signature(value, sig, utf8_strings=False):
         return dbus.Struct(value, signature=sig[2:-1])
     elif sig.startswith("a"):
         return dbus.Array(value, signature=sig[1:])
-    elif utf8_strings and sig == "s":
-        return dbus.UTF8String(value)
+    elif sig == "s":
+        if utf8_strings:
+            if isinstance(value, unicode):
+                value = value.encode("utf-8")
+            return dbus.UTF8String(value)
+        else:
+            if isinstance(value, str):
+                value = value.decode("utf-8")
+            return dbus.String(value)
     else:
         return TYPE_MAP[sig](value)
 
