@@ -1022,14 +1022,12 @@ class AlbumArtWindow(qltk.Window):
             self.__add_cover_to_list(cover)
 
         if self.progress.get_fraction() < progress:
-            gobject.idle_add(self.progress.set_fraction, progress)
+            self.progress.set_fraction(progress)
 
         if progress >= 1:
-            gobject.idle_add(self.progress.set_text, _('Done'))
+            self.progress.set_text(_('Done'))
 
-            time.sleep(0.7)
-
-            gobject.idle_add(self.progress.hide)
+            gobject.timeout_add(700, self.progress.hide)
 
             self.search_button.set_sensitive(True)
             self.search_lock = False
@@ -1061,7 +1059,7 @@ class CoverSearch(object):
 
         #tell the other side that we are finished if there is nothing to do.
         if not len(self.engine_list):
-            self.callback([], 1)
+            gobject.idle_add(self.callback, [], 1)
 
     def __search_thread(self, engine, query, replace):
         """Creates searching threads which call the callback function after
@@ -1079,7 +1077,7 @@ class CoverSearch(object):
         self.finished += 1
         #progress is between 0..1
         progress = float(self.finished) / len(self.engine_list)
-        self.callback(result, progress)
+        gobject.idle_add(self.callback, result, progress)
 
     def __cleanup_query(self, query, replace):
         """split up at '-', remove some chars, only keep the longest words..
