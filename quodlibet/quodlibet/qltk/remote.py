@@ -9,7 +9,7 @@ import os
 import re
 import sys
 
-from gi.repository import GObject, Gdk
+from gi.repository import GObject, Gdk, GLib
 
 import quodlibet
 from quodlibet import browsers
@@ -64,8 +64,9 @@ class FIFOControl(object):
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             f = os.fdopen(fifo, "r", 4096)
             GObject.io_add_watch(
-                f, Gdk.INPUT_READ, self.__process, *args)
-        except (EnvironmentError, AttributeError): pass
+                f, GLib.IO_IN, self.__process, *args)
+        except (EnvironmentError, AttributeError), e:
+            pass
 
     def __getitem__(self, key):
         key = key.replace("-", "_")
