@@ -134,7 +134,8 @@ class FileSystem(Browser, Gtk.HBox):
                 paths.remove(model[iter][0])
                 if not first:
                     self.get_child().set_cursor(path)
-                    first.append(path)
+                    # copy treepath, gets invalid after the callback
+                    first.append(Gtk.TreePath(tuple(path.get_indices())))
             else:
                 for fpath in paths:
                     if model[path][0] and fpath.startswith(model[path][0]):
@@ -142,9 +143,8 @@ class FileSystem(Browser, Gtk.HBox):
             return not bool(paths)
         first = []
         self.get_child().get_model().foreach(select, (paths, first))
-        # FIXME: PGIPORT .. segfaults
-        #if first:
-        #    self.get_child().scroll_to_cell(first[0], None, True, 0.5)
+        if first:
+            self.get_child().scroll_to_cell(first[0], None, True, 0.5)
 
     def save(self):
         model, rows = self.get_child().get_selection().get_selected_rows()
