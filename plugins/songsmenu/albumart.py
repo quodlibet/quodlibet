@@ -538,7 +538,8 @@ class CoverArea(Gtk.VBox):
         close_button = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close_button.connect('clicked', lambda x: self.main_win.destroy())
 
-        self.window_fit = Gtk.CheckButton(_('Fit image to _window'))
+        self.window_fit = Gtk.CheckButton(_('Fit image to _window'),
+                                          use_underline=True)
         self.window_fit.connect('toggled', self.__scale_pixbuf)
 
         self.name_combo = Gtk.ComboBoxText()
@@ -551,8 +552,9 @@ class CoverArea(Gtk.VBox):
         label_open.set_mnemonic_widget(self.cmd)
         label_open.set_justify(Gtk.Justification.LEFT)
 
-        self.open_check = Gtk.CheckButton(_('_Edit image after saving'))
-        label_name = Gtk.Label(label=_('File_name:'))
+        self.open_check = Gtk.CheckButton(_('_Edit image after saving'),
+                                          use_underline=True)
+        label_name = Gtk.Label(label=_('File_name:'), use_underline=True)
         label_name.set_use_underline(True)
         label_name.set_mnemonic_widget(self.name_combo)
         label_name.set_justify(Gtk.Justification.LEFT)
@@ -700,9 +702,9 @@ class CoverArea(Gtk.VBox):
             pb_width = pixbuf.get_width()
             pb_height = pixbuf.get_height()
 
-            #substract 20 px because of the scrollbars
-            width = self.scrolled.allocation.width - 20
-            height = self.scrolled.allocation.height - 20
+            alloc = self.scrolled.get_allocation()
+            width = alloc.width
+            height = alloc.height
 
             if pb_width > width or pb_height > height:
                 pb_ratio = float(pb_width) / pb_height
@@ -1022,17 +1024,16 @@ class AlbumArtWindow(qltk.Window):
             self.__add_cover_to_list(cover)
 
         if self.progress.get_fraction() < progress:
-            GLib.idle_add(self.progress.set_fraction, progress)
+            self.progress.set_fraction(progress)
 
         if progress >= 1:
-            GLib.idle_add(self.progress.set_text, _('Done'))
+            self.progress.set_text(_('Done'))
 
-            time.sleep(0.7)
-
-            GLib.idle_add(self.progress.hide)
+            GLib.timeout_add(700, self.progress.hide)
 
             self.search_button.set_sensitive(True)
             self.search_lock = False
+
 
 class CoverSearch(object):
     """Class for glueing the search eninges together. No UI stuff."""
@@ -1061,7 +1062,7 @@ class CoverSearch(object):
 
         #tell the other side that we are finished if there is nothing to do.
         if not len(self.engine_list):
-            self.callback([], 1)
+            GLib.idle_add(self.callback, [], 1)
 
     def __search_thread(self, engine, query, replace):
         """Creates searching threads which call the callback function after
@@ -1079,7 +1080,7 @@ class CoverSearch(object):
         self.finished += 1
         #progress is between 0..1
         progress = float(self.finished) / len(self.engine_list)
-        self.callback(result, progress)
+        GLib.idle_add(self.callback, result, progress)
 
     def __cleanup_query(self, query, replace):
         """split up at '-', remove some chars, only keep the longest words..
