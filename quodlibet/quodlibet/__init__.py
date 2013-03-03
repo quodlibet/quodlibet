@@ -315,12 +315,7 @@ def _init_signal():
     """Catches certain signals and quits the application once the
     mainloop has started."""
 
-    # FIXME: GIPORT use glib signal hooks, python ones don't work with GTK3
-    return
-
-    import signal
     import os
-    from gi.repository import GLib
 
     if os.name == "nt":
         return
@@ -328,6 +323,9 @@ def _init_signal():
     def pipe_can_read(*args):
         app.quit()
         return False
+
+    import signal
+    from gi.repository import GLib
 
     # The signal handler can not call gtk functions, thus we have to
     # build a dummy pipe to pass it into the gtk mainloop
@@ -337,7 +335,9 @@ def _init_signal():
 
     SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
     for sig in filter(None, SIGS):
-        signal.signal(sig, lambda sig, frame: os.write(w, "die!!!"))
+        def handler(sig, frame):
+            os.write(w, "die!!!")
+        signal.signal(sig, handler)
 
 
 def main(window):
