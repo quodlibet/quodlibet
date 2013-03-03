@@ -51,69 +51,69 @@ class FingerPrintPipeline(threading.Thread):
 
     def run(self):
         # pipeline
-        pipe = gst.Pipeline("pipe")
-
-        # decodebin2 got declared stable with 0.10.31
-        # https://bugzilla.gnome.org/show_bug.cgi?id=624949
-        use_decodebin2 = gst.version() >= (0, 10, 31)
+        pipe = Gst.Pipeline()
 
         # decode part
-        filesrc = gst.element_factory_make("filesrc")
+        filesrc = Gst.ElementFactory.make("filesrc", None)
         pipe.add(filesrc)
-        if use_decodebin2:
-            decode = gst.element_factory_make("decodebin2")
-        else:
-            decode = gst.element_factory_make("decodebin")
+
+        decode = Gst.ElementFactory.make("decodebin", None)
         pipe.add(decode)
-        gst.element_link_many(filesrc, decode)
+        Gst.Element.link(filesrc, decode)
 
         # convert to right format
-        elements = map(gst.element_factory_make,
-                       ["audioconvert", "audioresample"])
-        map(pipe.add, elements)
-        gst.element_link_many(*elements)
-        convert, resample = elements
+        convert = Gst.ElementFactory.make("audioconvert", None)
+        resample = Gst.ElementFactory.make("audioresample", None)
+        pipe.add(convert)
+        pipe.add(resample)
+        Gst.Element.link(convert, resample)
 
         # ffdec_mp3 got disabled in gstreamer
         # (for a reason they don't remember), reenable it..
         # http://cgit.freedesktop.org/gstreamer/gst-ffmpeg/commit/
         # ?id=2de5aaf22d6762450857d644e815d858bc0cce65
-        ffdec_mp3 = gst.element_factory_find("ffdec_mp3")
+        ffdec_mp3 = Gst.ElementFactory.find("ffdec_mp3")
         if ffdec_mp3:
-            ffdec_mp3.set_rank(gst.RANK_MARGINAL)
+            ffdec_mp3.set_rank(Gst.Rank.MARGINAL)
 
         # decodebin creates pad, we link it
-        if use_decodebin2:
-            decode.connect_object("pad-added", self.__new_decoded_pad, convert)
-            decode.connect("autoplug-sort", self.__sort_decoders)
-        else:
-            decode.connect_object(
-                "new-decoded-pad", self.__new_decoded_pad, convert)
+        decode.connect_object("pad-added", self.__new_decoded_pad, convert)
+        decode.connect("autoplug-sort", self.__sort_decoders)
 
         chroma_src = resample
 
-        use_ofa = self.__ofa and gst.element_factory_find("ofa")
+        use_ofa = self.__ofa and Gst.ElementFactory.find("ofa")
 
         if use_ofa:
             # create a tee and one queue for chroma
-            elements = map(gst.element_factory_make, ["tee", "queue"])
-            map(pipe.add, elements)
-            gst.element_link_many(resample, *elements)
-            tee, chroma_queue = elements
+            tee = Gst.ElementFactory.make("tee", None)
+            chroma_queue = Gst.ElementFactory.make("queue", None)
+            pipe.add(tee)
+            pipe.add(chroma_queue)
+            Gst.Element.link(resample, tee)
+            Gst.Element.link(tee, chroma_queue)
 
             chroma_src = chroma_queue
 
-            elements = map(gst.element_factory_make,
-                           ["queue", "ofa", "fakesink"])
-            map(pipe.add, elements)
-            gst.element_link_many(tee, *elements)
-            ofa = elements[1]
+            ofa_queue = Gst.ElementFactory.make("queue", None)
+            ofa = Gst.ElementFactory.make("ofa", None)
+            fake = Gst.ElementFactory.make("fakesink", None)
+            pipe.add(ofa_queue)
+            pipe.add(ofa)
+            pipe.add(fake)
+
+            Gst.Element.link(tee, ofa_queue)
+            Gst.Element.link(ofa_queue, ofa)
+            Gst.Element.link(ofa, fake)
             self.__todo.append(ofa)
 
-        elements = map(gst.element_factory_make, ["chromaprint", "fakesink"])
-        map(pipe.add, elements)
-        gst.element_link_many(chroma_src, *elements)
-        chroma = elements[0]
+        chroma = Gst.ElementFactory.make("chromaprint", None)
+        fake2 = Gst.ElementFactory.make("fakesink", None)
+        pipe.add(chroma)
+        pipe.add(fake2)
+
+        Gst.Elementlink(chroma_src, chroma)
+        Gst.Element.link(chroma, fake2)
         self.__todo.append(chroma)
 
         filesrc.set_property("location", self.__song["~filename"])
@@ -127,10 +127,10 @@ class FingerPrintPipeline(threading.Thread):
 
         # get it started
         self.__cv.acquire()
-        pipe.set_state(gst.STATE_PLAYING)
+        pipe.set_state(Gst.State.PLAYING)
 
-        result = pipe.get_state()[0]
-        if result == gst.STATE_CHANGE_FAILURE:
+        result = pipe.get_state(timeout=Gst.SECOND/2)[0]
+        if result == Gst.StateChangeReturn.FAILURE:
             # something failed, error message kicks in before, so check
             # for shutdown
             if not self.__shutdown:
@@ -142,20 +142,20 @@ class FingerPrintPipeline(threading.Thread):
             # (and it's more precise for PUID lookup)
             # In case this fails, we insert the mutagen value later
             # (this only works in active playing state)
-            try: d = pipe.query_duration(gst.FORMAT_TIME)[0]
-            except gst.QueryError: pass
-            else: self.__fingerprints["length"] = d / gst.MSECOND
+            ok, d = pipe.query_duration(Gst.Format.TIME)[0]
+            if ok:
+                self.__fingerprints["length"] = d / Gst.MSECOND
 
             self.__cv.wait()
         self.__cv.release()
 
         # clean up
         bus.remove_signal_watch()
-        pipe.set_state(gst.STATE_NULL)
+        pipe.set_state(Gst.State.NULL)
 
         # we need to make sure the state change has finished, before
         # we can return and hand it over to the python GC
-        pipe.get_state()
+        pipe.get_state(timeout=Gst.SECOND/2)
 
     def stop(self):
         self.__shutdown = True
@@ -183,11 +183,11 @@ class FingerPrintPipeline(threading.Thread):
         return zip(*sorted(map(set_prio, enumerate(factories))))[1]
 
     def __new_decoded_pad(self, convert, pad, *args):
-        pad.link(convert.get_pad("sink"))
+        pad.link(convert.get_static_pad("sink"))
 
     def __bus_message(self, bus, message, chroma, ofa):
         error = None
-        if message.type == gst.MESSAGE_TAG:
+        if message.type == Gst.MessageType.TAG:
             if message.src == chroma:
                 tags = message.parse_tag()
                 key = "chromaprint-fingerprint"
@@ -215,9 +215,9 @@ class FingerPrintPipeline(threading.Thread):
                 key = "ofa-fingerprint"
                 if key in tags.keys():
                     self.__fingerprints["ofa"] = tags[key]
-        elif message.type == gst.MESSAGE_EOS:
+        elif message.type == Gst.MessageType.EOS:
             error = "EOS"
-        elif message.type == gst.MESSAGE_ERROR:
+        elif message.type == Gst.MessageType.ERROR:
             error = str(message.parse_error()[0])
         if not self.__shutdown and (not self.__todo or error):
             GLib.idle_add(self.__pool._callback, self.__song,
@@ -513,8 +513,8 @@ class FingerprintDialog(Window):
 
         self.__stats = stats = Gtk.Label()
         stats.set_alignment(0, 0.5)
-        expand = Gtk.expander_new_with_mnemonic(_("_Details"))
-        align = Gtk.Alignment.new(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
+        expand = Gtk.Expander.new_with_mnemonic(_("_Details"))
+        align = Gtk.Alignment.new(0.0, 0.0, 1.0, 1.0)
         align.set_padding(6, 0, 6, 0)
         expand.add(align)
         align.add(stats)
@@ -522,7 +522,7 @@ class FingerprintDialog(Window):
             self.resize(self.get_size()[0], 1)
         stats.connect("unmap", expand_cb)
 
-        box.pack_start(expand, expand=False, fill=False)
+        box.pack_start(expand, False, False, 0)
 
         self.__fp_results = {}
         self.__fp_done = 0
@@ -773,6 +773,6 @@ class AcoustidSubmit(SongsMenuPlugin):
             radio.connect("toggled", config_changed, value)
             puid_box.pack_start(radio, True, True, 0)
 
-        box.pack_start(Frame(_("PUID Lookup", True, True, 0), child=puid_box))
+        box.pack_start(Frame(_("PUID Lookup"), child=puid_box), True, True, 0)
 
         return box
