@@ -322,20 +322,22 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.drag_dest_unset()
 
     def __drag_leave(self, widget, ctx, time):
-        widget.parent.drag_unhighlight()
+        widget.get_parent().drag_unhighlight()
         self.scroll_disable()
 
     def __drag_motion(self, view, ctx, x, y, time):
         if self.__drop_by_row:
             self.set_drag_dest(x, y)
             self.scroll_motion(x, y)
-            if ctx.get_source_widget() == self: kind = Gdk.DragAction.MOVE
-            else: kind = Gdk.DragAction.COPY
-            ctx.drag_status(kind, time)
+            if Gtk.drag_get_source_widget(ctx) == self:
+                kind = Gdk.DragAction.MOVE
+            else:
+                kind = Gdk.DragAction.COPY
+            Gdk.drag_status(ctx, kind, time)
             return True
         else:
-            self.parent.drag_highlight()
-            ctx.drag_status(Gdk.DragAction.COPY, time)
+            self.get_parent().drag_highlight()
+            Gdk.drag_status(ctx, Gdk.DragAction.COPY, time)
             return True
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
@@ -348,11 +350,11 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                     qltk.get_top_parent(self), _("Unable to copy songs"),
                     _("The files selected cannot be copied to other "
                       "song lists or the queue.")).run()
-                ctx.drag_abort(etime)
+                Gdk.drag_abort(ctx, etime)
                 return
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
-            if ctx.action == Gdk.DragAction.MOVE:
+            if ctx.get_actions() == Gdk.DragAction.MOVE:
                 self.__drag_iters = map(model.get_iter, paths)
             else: self.__drag_iters = []
         else:
@@ -370,7 +372,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         model = view.get_model()
         if info == 1:
             filenames = sel.data.split("\x00")
-            move = (ctx.get_source_widget() == view)
+            move = (Gtk.get_source_widget(ctx) == view)
         elif info == 2:
             def to_filename(s):
                 try: return URI(s).filename
@@ -379,7 +381,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             filenames = filter(None, map(to_filename, sel.get_uris()))
             move = False
         else:
-            ctx.finish(False, False, etime)
+            Gtk.drag_finish(ctx, False, False, etime)
             return
 
         to_add = []
@@ -391,12 +393,12 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         library.add(to_add)
         songs = filter(None, map(library.get, filenames))
         if not songs:
-            ctx.finish(bool(not filenames), False, etime)
+            Gtk.drag_finish(ctx, bool(not filenames), False, etime)
             return
 
         if not self.__drop_by_row:
             success = self.__drag_data_browser_dropped(songs)
-            ctx.finish(success, False, etime)
+            Gtk.drag_finish(ctx, success, False, etime)
             return
 
         try: path, position = view.get_dest_row_at_pos(x, y)
@@ -404,7 +406,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             path = max(0, len(model) - 1)
             position = Gtk.TreeViewDropPosition.AFTER
 
-        if move and ctx.get_source_widget() == view:
+        if move and Gtk.get_source_widget(ctx) == view:
             iter = model.get_iter(path) # model can't be empty, we're moving
             if position in (Gtk.TreeViewDropPosition.BEFORE,
                             Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
@@ -413,7 +415,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             else:
                 while self.__drag_iters:
                     model.move_after(self.__drag_iters.pop(), iter)
-            ctx.finish(True, False, etime)
+            Gtk.drag_finish(ctx, True, False, etime)
         else:
             song = songs.pop(0)
             try: iter = model.get_iter(path)
@@ -425,7 +427,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 else: iter = model.insert_after(iter, [song])
             for song in songs:
                 iter = model.insert_after(iter, [song])
-            ctx.finish(True, move, etime)
+            Gtk.drag_finish(ctx, True, move, etime)
 
     def __filter_on(self, header, songs, browser):
         if not browser:

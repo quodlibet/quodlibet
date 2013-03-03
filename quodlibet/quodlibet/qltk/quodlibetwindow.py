@@ -354,7 +354,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
     def __drag_motion(self, ctx, x, y, time):
         # Don't accept drops from QL itself, since it offers text/uri-list.
-        if ctx.get_source_widget() is None:
+        if Gtk.get_source_widget(ctx) is None:
             self.drag_highlight()
             return True
         else: return False
@@ -387,7 +387,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             else:
                 error = True
                 break
-        ctx.finish(not error, False, etime)
+        Gtk.drag_finish(ctx, not error, False, etime)
         if error:
             ErrorMessage(
                 self, _("Unable to add songs"),

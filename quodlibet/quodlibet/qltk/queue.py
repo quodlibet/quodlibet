@@ -112,7 +112,7 @@ class QueueExpander(Gtk.Expander):
         self.model.clear()
 
     def __motion(self, wid, context, x, y, time):
-        context.drag_status(Gdk.DragAction.COPY, time)
+        Gdk.drag_status(context, Gdk.DragAction.COPY, time)
         return True
 
     def __update_count(self, model, path, lab):
