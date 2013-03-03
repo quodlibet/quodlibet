@@ -280,7 +280,7 @@ class StoreUtils(object):
             if model[iter_][0] is album:
                 # pygobject bug: treepath only valid in callback,
                 # so make a copy
-                result[0] = Gtk.TreePath(tuple(path.get_indices()))
+                result[0] = path.copy()
                 return True
             return False
 

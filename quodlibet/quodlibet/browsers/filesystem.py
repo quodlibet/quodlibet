@@ -135,7 +135,7 @@ class FileSystem(Browser, Gtk.HBox):
                 if not first:
                     self.get_child().set_cursor(path)
                     # copy treepath, gets invalid after the callback
-                    first.append(Gtk.TreePath(tuple(path.get_indices())))
+                    first.append(path.copy())
             else:
                 for fpath in paths:
                     if model[path][0] and fpath.startswith(model[path][0]):
