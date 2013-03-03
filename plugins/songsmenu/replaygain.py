@@ -140,10 +140,9 @@ class Analysis(object):
 
     def bus_message(self, bus, message):
         if message.type == Gst.MessageType.TAG:
-            # FIXME: Find a way to get the creator of the tags.
-            # all tags have the sink as source now and since decodebin
-            # also posts tags on the bus we can't be sure if the
-            # tags are new or old ones
+            # the sink is always the source of the tag messages.
+            # according to __tim, we should always get the rganalysis
+            # tags last so we replace the old tags found by decodebin
 
             track = self.model[self.song]
             album = self.model[self.album]
