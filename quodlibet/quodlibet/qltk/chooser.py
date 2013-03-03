@@ -33,8 +33,9 @@ class FileChooser(FolderChooser):
         super(FileChooser, self).__init__(
             parent, title, initial_dir, Gtk.FileChooserAction.OPEN)
         if filter:
-            def new_filter(args, realfilter): return realfilter(args[0])
+            def new_filter(args, realfilter):
+                return realfilter(args.filename)
             f = Gtk.FileFilter()
             f.set_name(_("Songs"))
-            f.add_custom(Gtk.FILE_FILTER_FILENAME, new_filter, filter)
+            f.add_custom(Gtk.FileFilterFlags.FILENAME, new_filter, filter)
             self.add_filter(f)

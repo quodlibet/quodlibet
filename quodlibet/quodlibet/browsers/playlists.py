@@ -242,7 +242,7 @@ class Playlists(Gtk.VBox, Browser):
         return menu
 
     __lists = Gtk.TreeModelSort(model=Gtk.ListStore(object))
-    __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
+    __lists.set_default_sort_func(lambda m, a, b, data: cmp(m[a][0], m[b][0]))
 
     def __init__(self, library, main):
         super(Playlists, self).__init__(spacing=6)
@@ -484,7 +484,7 @@ class Playlists(Gtk.VBox, Browser):
             if dialog.run() == Gtk.ResponseType.YES:
                 playlist.delete()
                 model.get_model().remove(
-                    model.convert_iter_to_child_iter(None, itr))
+                    model.convert_iter_to_child_iter(itr))
 
         rem = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
         rem.connect_object('activate', _remove, model, itr)
@@ -529,7 +529,8 @@ class Playlists(Gtk.VBox, Browser):
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
         else:
-            self.__lists[path] = self.__lists[path]
+            row = self.__lists[path]
+            self.__lists.row_changed(row.path, row.iter)
         render.set_property('editable', not self.__main)
 
     def __import(self, activator, library):
