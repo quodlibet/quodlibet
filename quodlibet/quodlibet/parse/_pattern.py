@@ -1,4 +1,5 @@
-# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Christoph Reiter
+# Copyright 2004-2010 Joe Wreschnig, Michael Urman
+# Copyright 2010,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -173,7 +174,7 @@ class PatternParser(object):
 
 
 class PatternFormatter(object):
-    _formatters = []
+    _format = None
     _post = None
 
     def __init__(self, func, list_func, tags):
@@ -190,9 +191,9 @@ class PatternFormatter(object):
             return [u""]
 
     class SongProxy(object):
-        def __init__(self, realsong, formatters):
+        def __init__(self, realsong, formatter):
             self.__song = realsong
-            self.__formatters = formatters
+            self.__formatter = formatter
 
         def comma(self, key):
             value = self.__song.comma(key)
@@ -202,8 +203,8 @@ class PatternFormatter(object):
                 if isinstance(value, float):
                     value = "%.2f" % value
                 value = unicode(value)
-            for f in self.__formatters:
-                value = f(key, value)
+            if self.__formatter:
+                return self.__formatter(key, value)
             return value
 
         def list_separate(self, key):
@@ -214,12 +215,13 @@ class PatternFormatter(object):
                 values = [unicode(value)]
             else:
                 values = self.__song.list_separate(key)
-            for f in self.__formatters:
-                values = [f(key, v) for v in values]
+
+            if self.__formatter:
+                return [self.__formatter(key, v) for v in values]
             return values
 
     def format(self, song):
-        value = "".join(self.__func(self.SongProxy(song, self._formatters)))
+        value = "".join(self.__func(self.SongProxy(song, self._format)))
         if self._post:
             return self._post(value, song)
         return value
@@ -228,7 +230,7 @@ class PatternFormatter(object):
         """Returns a set of formatted patterns with all tag combinations:
         <performer>-bla returns [performer1-bla, performer2-bla]"""
         vals = [""]
-        for val in self.__list_func(self.SongProxy(song, self._formatters)):
+        for val in self.__list_func(self.SongProxy(song, self._format)):
             if type(val) == list:
                 vals = [r + part for part in val for r in vals]
             else:
@@ -337,11 +339,13 @@ def _number(key, value):
 
 
 class _FileFromPattern(PatternFormatter):
-    _formatters = [_number,
-                   (lambda k, s: s.replace(os.sep, "_")),
-                   (lambda k, s: s.replace(u"\uff0f", "_")),
-                   (lambda k, s: s.strip()),
-                   ]
+
+    def _format(self, key, value):
+        value = _number(key, value)
+        value = value.replace(os.sep, "_")
+        value = value.replace(u"\uff0f", "_")
+        value = value.strip()
+        return value
 
     def _post(self, value, song):
         if value:
@@ -371,7 +375,8 @@ class _FileFromPattern(PatternFormatter):
 
 
 class _XMLFromPattern(PatternFormatter):
-    _formatters = [lambda k, s: util.escape(s)]
+    def _format(self, key, value):
+        return util.escape(value)
 
 
 def FileFromPattern(string):
