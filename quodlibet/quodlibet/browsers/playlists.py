@@ -341,21 +341,27 @@ class Playlists(Gtk.VBox, Browser):
             self.activate(resort=not songlist.is_sorted())
 
     def __drag_motion(self, view, ctx, x, y, time):
-        if "text/x-quodlibet-songs" in ctx.targets:
-            try: path = view.get_dest_row_at_pos(x, y)[0]
+        targets = [t.name() for t in ctx.list_targets()]
+        # FIXME: GIPORT
+        if "text/x-quodlibet-songs" in targets or 1:
+            try:
+                path = view.get_dest_row_at_pos(x, y)[0]
             except TypeError:
                 path = (len(view.get_model()) - 1,)
                 pos = Gtk.TreeViewDropPosition.AFTER
-            else: pos = Gtk.TreeViewDropPosition.INTO_OR_AFTER
-            if path > (-1,): view.set_drag_dest_row(path, pos)
+            else:
+                pos = Gtk.TreeViewDropPosition.INTO_OR_AFTER
+
+            if tuple(path.get_indices()) > (-1,):
+                view.set_drag_dest_row(path, pos)
             return True
         else:
             # Highlighting the view itself doesn't work.
-            view.parent.drag_highlight()
+            view.get_parent().drag_highlight()
             return True
 
     def __drag_leave(self, view, ctx, time):
-        view.parent.drag_unhighlight()
+        view.get_parent().drag_unhighlight()
 
     def __remove(self, iters, smodel):
         model, iter = self.__view.get_selection().get_selected()
@@ -372,7 +378,7 @@ class Playlists(Gtk.VBox, Browser):
         view.emit_stop_by_name('drag-data-received')
         model = view.get_model()
         if tid == 0:
-            filenames = sel.data.split("\x00")
+            filenames = sel.get_data().split("\x00")
             songs = filter(None, map(library.get, filenames))
             if not songs: return True
             try: path, pos = view.get_dest_row_at_pos(x, y)
@@ -383,7 +389,7 @@ class Playlists(Gtk.VBox, Browser):
                 playlist = model[path][0]
                 playlist.extend(songs)
             Playlists.changed(playlist)
-            ctx.finish(True, False, etime)
+            Gtk.drag_finish(ctx, True, False, etime)
         else:
             if tid == 1:
                 uri = sel.get_uris()[0]
@@ -391,7 +397,7 @@ class Playlists(Gtk.VBox, Browser):
             elif tid == 2:
                 uri, name = sel.data.decode('utf16', 'replace').split('\n')
             else:
-                ctx.finish(False, False, etime)
+                Gtk.drag_finish(ctx, False, False, etime)
                 return
             name = name or os.path.basename(uri) or _("New Playlist")
             uri = uri.encode('utf-8')
@@ -408,9 +414,9 @@ class Playlists(Gtk.VBox, Browser):
                 library.add_filename(playlist)
                 if name: playlist.rename(name)
                 Playlists.changed(playlist)
-                ctx.finish(True, False, etime)
+                Gtk.drag_finish(ctx, True, False, etime)
             except IOError:
-                ctx.finish(False, False, etime)
+                Gtk.drag_finish(ctx, False, False, etime)
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
                     _("Unable to import playlist"),
@@ -424,7 +430,8 @@ class Playlists(Gtk.VBox, Browser):
             songs += list(model[iter][0])
         if tid == 0:
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
         else:
             sel.set_uris([song("~uri") for song in songs])
 
