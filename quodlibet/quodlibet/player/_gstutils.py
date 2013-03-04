@@ -4,6 +4,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import collections
+
 from gi.repository import Gtk, GLib, Gst
 
 from quodlibet import util
@@ -141,6 +143,44 @@ class GStreamerPluginHandler(object):
         if plugin in self.__elements:
             plugin.update_element(self.__elements[plugin])
 
+
+class TagListWrapper(collections.Mapping):
+    def __init__(self, taglist, merge=False):
+        self._list = taglist
+        self._merge = merge
+
+    def __len__(self):
+        return self._list.n_tags()
+
+    def __iter__(self):
+        for i in xrange(len(self)):
+            yield self._list.nth_tag_name(i)
+
+    def __getitem__(self, key):
+        if not Gst.tag_exists(key):
+            raise KeyError
+
+        values = []
+        index = 0
+        while 1:
+            value = self._list.get_value_index(key, index)
+            if value is None:
+                break
+            values.append(value)
+            index += 1
+
+        if not values:
+            raise KeyError
+
+        if self._merge:
+            try:
+                return " - ".join(values)
+            except TypeError:
+                return values[0]
+
+        return values
+
+
 def parse_gstreamer_taglist(tags):
     """Takes a GStreamer taglist and returns a dict containing only
     numeric and unicode values and str keys."""
@@ -163,13 +203,9 @@ def parse_gstreamer_taglist(tags):
                         merged[sub_key] += "\n" + val
                 else:
                     merged[sub_key] = val
-        elif isinstance(value, gst.Date):
-                try: value = u"%d-%d-%d" % (value.year, value.month, value.day)
-                except (ValueError, TypeError): continue
-                merged[key] = value
-        elif isinstance(value, list):
-            # there are some lists for id3 containing gst.Buffer (binary data)
-            continue
+        elif isinstance(value, Gst.DateTime):
+            value = value.to_iso8601_string()
+            merged[key] = value
         else:
             if isinstance(value, str):
                 value = util.decode(value)

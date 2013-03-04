@@ -516,8 +516,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
-            # FIXME: GIPORT
-            pass#self._fill_stream(tags, librarian)
+            self._fill_stream(tags, librarian)
         elif self.song and self.song.fill_metadata:
             pass
 
@@ -536,6 +535,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         changed = False
         info_changed = False
 
+        tags = TagListWrapper(tags, merge=True)
         tags = parse_gstreamer_taglist(tags)
 
         for key, value in sanitize_tags(tags, stream=False).iteritems():

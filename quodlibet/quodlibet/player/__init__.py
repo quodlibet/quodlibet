@@ -4,6 +4,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import const
+from quodlibet import util
+
+
 global device, backend
 backend = None
 playlist = None
@@ -19,7 +23,9 @@ def init(backend_name):
 
     try:
         backend = __import__(modulename, {}, {}, "quodlibet.player")
-    except ImportError:
+    except ImportError, e:
+        if const.DEBUG:
+            util.print_exc()
         raise error(
             _("Invalid audio backend"),
             _("The audio backend %r is not installed.") % backend_name)
