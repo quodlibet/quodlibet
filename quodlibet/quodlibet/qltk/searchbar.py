@@ -166,12 +166,17 @@ class LimitSearchBarBox(SearchBarBox):
     weighting of a search."""
 
     class Limit(Gtk.HBox):
+        __gsignals__ = {
+            'changed': (GObject.SignalFlags.RUN_LAST, None, ()),
+        }
+
         def __init__(self):
             super(LimitSearchBarBox.Limit, self).__init__(spacing=3)
             label = Gtk.Label(label=_("_Limit:"))
             self.pack_start(label, True, True, 0)
 
             self.__limit = limit = Gtk.SpinButton()
+            self.__limit.connect("value-changed", self.__changed)
             limit.set_numeric(True)
             limit.set_range(0, 9999)
             limit.set_increments(5, 100)
@@ -180,8 +185,12 @@ class LimitSearchBarBox(SearchBarBox):
             self.pack_start(limit, True, True, 0)
 
             self.__weight = Gtk.CheckButton(_("_Weight"), use_underline=True)
+            self.__weight.connect("toggled", self.__changed)
             self.pack_start(self.__weight, True, True, 0)
             map(lambda w: w.show(), self.get_children())
+
+        def __changed(self, *args):
+            self.emit("changed")
 
         @property
         def value(self):
@@ -196,10 +205,17 @@ class LimitSearchBarBox(SearchBarBox):
         self.__limit = self.Limit()
         self.pack_start(self.__limit, False, True, 0)
         self.__limit.set_no_show_all(not show_limit)
+        self.__limit.connect("changed", self.__limit_changed)
+
+    def __limit_changed(self, *args):
+        self.changed()
 
     def limit(self, songs):
-        return limit_songs(songs, self.__limit.value,
-                           self.__limit.weighted)
+        if self.__limit.get_visible():
+            return limit_songs(songs, self.__limit.value,
+                               self.__limit.weighted)
+        else:
+            return songs
 
     def toggle_limit_widgets(self, button):
         """Toggles the visibility of the limit widget according to `button`"""
@@ -207,3 +223,4 @@ class LimitSearchBarBox(SearchBarBox):
             self.__limit.show()
         else:
             self.__limit.hide()
+        self.changed()
