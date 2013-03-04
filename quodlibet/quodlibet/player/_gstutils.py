@@ -32,10 +32,10 @@ def unlink_many(elements):
     return True
 
 
-def recurse_bin(element):
-    objects = [element]
+def iter_to_list(func):
+    objects = []
 
-    iter_ = element.iterate_recurse()
+    iter_ = func()
     while 1:
         status, value = iter_.next()
         if status == Gst.IteratorResult.OK:
@@ -197,22 +197,16 @@ def bin_debug(elements, depth=0, lines=None):
         lines.append(" " * (depth - 1) + "\\")
 
     for i, elm in enumerate(elements):
-        for pad in elm.pads():
-            if i and pad.get_direction() == gst.PAD_SINK:
-                caps = pad.get_negotiated_caps()
-                if caps is not None:
-                    d = dict(caps[0])
-                    d = sorted([(s[0], repr(s[1])) for s in d.items()])
-                    d = [("format", caps[0].get_name())] + d
-                    d = ", ".join(map(":".join, d))
-                    lines.append("%s| %s" % (" " * depth, d))
-                    break
+        for pad in iter_to_list(elm.iterate_sink_pads):
+            caps = pad.get_current_caps()
+            if caps:
+                lines.append("%s| %s" % (" " * depth, caps.to_string()))
         name = elm.get_name()
         cls = Colorise.blue(type(elm).__name__.split(".", 1)[-1])
         lines.append("%s|-%s (%s)" % (" " * depth, cls, name))
 
-        if isinstance(elm, gst.Bin):
-            children = reversed(list(elm.sorted()))
+        if isinstance(elm, Gst.Bin):
+            children = reversed(iter_to_list(elm.iterate_sorted))
             bin_debug(children, depth + 1, lines)
 
     return lines
