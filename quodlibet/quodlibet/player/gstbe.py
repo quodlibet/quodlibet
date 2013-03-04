@@ -91,23 +91,14 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         buffer_label.set_use_underline(True)
         buffer_label.set_mnemonic_widget(scale)
 
-        device_combo = DeviceComboBox()
 
-        device_label = Gtk.Label(label=_('_Output device:'))
-        device_label.set_use_underline(True)
-        device_label.set_mnemonic_widget(device_combo)
-
-        def rebuild_pipeline(combo):
-            combo.refresh()
+        def rebuild_pipeline(*args):
             self._rebuild_pipeline()
-
-        apply_button.connect_object('clicked', rebuild_pipeline, device_combo)
+        apply_button.connect('clicked', rebuild_pipeline)
 
         widgets = [(pipe_label, e, apply_button),
-                   (device_label, device_combo, None),
-                   ]
-
-        widgets.append((buffer_label, scale, None))
+                   (buffer_label, scale, None),
+        ]
 
         table = Gtk.Table(len(widgets), 3)
         table.set_col_spacings(6)
@@ -215,10 +206,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             bufbin.set_state(Gst.State.NULL)
             self.__destroy_pipeline()
             return False
-
-        # Set the device
-        sink = pipeline[-1]
-        set_sink_device(sink)
 
         # Make the sink of the first element the sink of the bin
         gpad = Gst.GhostPad.new('sink', pipeline[0].get_static_pad('sink'))
