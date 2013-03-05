@@ -9,31 +9,29 @@
 # published by the Free Software Foundation.
 #
 
+from collections import namedtuple
+
 from gi.repository import Gtk, GObject, GLib
 from gi.repository import Gdk, GdkPixbuf
-from gi.repository import Pango, PangoCairo, cairo
-
+from gi.repository import Pango, PangoCairo
+import cairo
 from math import pi
 
 from quodlibet import config, qltk, app
 from quodlibet.qltk.textedit import PatternEdit
 from quodlibet.parse import XMLFromPattern
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.plugins import PluginConfigMixin, PluginImportException
+from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util.dprint import print_d
 
 
-raise PluginImportException("Not ported to GTK+3")
-
-
 def Label(text):
-    l = Gtk.Label(label=text)
+    l = Gtk.Label(label=text, use_underline=True)
     l.set_alignment(0.0, 0.5)
     return l
 
 class OSDWindow(Gtk.Window):
     __gsignals__ = {
-            'expose-event': 'override',
             'fade-finished': (GObject.SignalFlags.RUN_LAST, None, (bool,)),
             }
 
@@ -46,10 +44,11 @@ class OSDWindow(Gtk.Window):
         self.titleinfo_surface = None
 
         screen = self.get_screen()
-        cmap = screen.get_rgba_colormap()
+        # FIXME: GIPORT
+        """cmap = screen.get_rgba_colormap()
         if cmap is None:
             cmap = screen.get_rgb_colormap()
-        self.set_colormap(cmap)
+        self.set_colormap(cmap)"""
 
         self.conf = conf
         self.iteration_source = None
@@ -95,8 +94,13 @@ class OSDWindow(Gtk.Window):
         winh = max(coverheight, layoutsize[1]) + 2 * conf.border
         self.set_default_size(winw, winh)
 
-        self.cover_rectangle = (conf.border,
-                (winh - coverheight) // 2, coverwidth, coverheight)
+        rect = namedtuple("Rect", ["x", "y", "width", "height"])
+        rect.x = conf.border
+        rect.y = (winh - coverheight) // 2
+        rect.width = coverwidth
+        rect.height = coverheight
+
+        self.cover_rectangle = rect
 
         winx = int((mgeo.width - winw) * conf.pos_x)
         winx = max(conf.margin, min(mgeo.width - conf.margin - winw, winx))
@@ -104,10 +108,12 @@ class OSDWindow(Gtk.Window):
         winy = max(conf.margin, min(mgeo.height - conf.margin - winh, winy))
         self.move(winx + mgeo.x, winy + mgeo.y)
 
-    def do_expose_event(self, event):
-        cr = self.window.cairo_create()
+    def do_draw(self, cr):
+        self.draw_title_info(cr)
+        return
 
-        if self.is_composited():
+        # FIXME: GIPORT
+        if self.is_composited() :
             # the simple case
             self.draw_title_info(cr)
             return
@@ -115,21 +121,22 @@ class OSDWindow(Gtk.Window):
         # manual transparency rendering follows
         back_pbuf = self.background_pixbuf
         title_surface = self.titleinfo_surface
-        walloc = self.allocation
+        walloc = self.get_allocation()
         wpos = self.get_position()
 
-        if back_pbuf is None:
+        if back_pbuf is None and 0:
             root = self.get_screen().get_root_window()
-            back_pbuf = GdkPixbuf.Pixbuf(GdkPixbuf.Colorspace.RGB, False, 8,
+            back_pbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8,
                     walloc.width, walloc.height)
             back_pbuf.get_from_drawable(root, root.get_colormap(),
                     wpos[0], wpos[1], 0, 0, walloc.width, walloc.height)
             self.background_pixbuf = back_pbuf
 
         if title_surface is None:
-            title_surface = Gdk.Pixmap(self.window, walloc.width,
-                    walloc.height)
-            titlecr = title_surface.cairo_create()
+            title_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+                walloc.width, walloc.height)
+            titlecr = Gdk.cairo_create(self.get_window())
+            titlecr.set_source_surface(title_surface)
             self.draw_title_info(titlecr)
 
         cr.set_operator(cairo.OPERATOR_SOURCE)
@@ -139,7 +146,7 @@ class OSDWindow(Gtk.Window):
             cr.set_source_rgb(0.3, 0.3, 0.3)
         cr.paint()
         cr.set_operator(cairo.OPERATOR_OVER)
-        cr.set_source_pixmap(title_surface, 0, 0)
+        cr.set_source_surface(title_surface, 0, 0)
         cr.paint_with_alpha(self.get_opacity())
 
     def rounded_rectangle (self, cr, x, y, radius, width, height):
@@ -211,7 +218,7 @@ class OSDWindow(Gtk.Window):
                         0.6 * self.conf.corners * rect.width)
                 cr.stroke()
 
-            cr.set_source_pixbuf(pbuf, 0, 0)
+            Gdk.cairo_set_source_pixbuf(cr, pbuf, 0, 0)
             transmat.scale(pbuf.get_width() / float(rect.width),
                     pbuf.get_height() / float(rect.height))
             transmat.translate(-rect.x, -rect.y)
@@ -220,23 +227,23 @@ class OSDWindow(Gtk.Window):
                  rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
             cr.fill()
 
-        pcc = PangoCairo.CairoContext(cr)
-        pcc.update_layout(self.title_layout)
+        pcc = PangoCairo.create_context(cr)
+        PangoCairo.update_layout(cr, self.title_layout)
         height = self.title_layout.get_pixel_size()[1]
         texty = (self.get_size()[1] - height) // 2
 
         if do_shadow:
             cr.set_source_rgba(*self.conf.shadow)
             cr.move_to(textx + 2, texty + 2)
-            pcc.show_layout(self.title_layout)
+            PangoCairo.show_layout(cr, self.title_layout)
         if do_outline:
             cr.set_source_rgba(*self.conf.outline)
             cr.move_to(textx, texty)
-            pcc.layout_path(self.title_layout)
+            PangoCairo.layout_path(cr, self.title_layout)
             cr.stroke()
         cr.set_source_rgb(*self.conf.text[:3])
         cr.move_to(textx, texty)
-        pcc.show_layout(self.title_layout)
+        PangoCairo.show_layout(cr, self.title_layout)
 
     def fade_in(self):
         self.do_fade_inout(True)
@@ -455,8 +462,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         t = Gtk.Table(2, 2)
         t.set_col_spacings(6)
         t.set_row_spacings(3)
-        b = Gtk.ColorButton(color=Gdk.Color(*map(__floattocol,
-            self.conf.text)))
+        b = Gtk.ColorButton(rgba=Gdk.RGBA(*map(__floattocol, self.conf.text)))
         l = Label(_("_Text:"))
         l.set_mnemonic_widget(b); l.set_use_underline(True)
         t.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
@@ -474,7 +480,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
 
         f = qltk.Frame(label=_("Colors"), child=t)
         f.set_border_width(6)
-        vb.pack_start(f, expand=False, fill=False)
+        vb.pack_start(f, False, False, 0)
 
         # Effects
         vb2 = Gtk.VBox(spacing=3)
@@ -486,16 +492,16 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             ]
 
         for (label, current, callback) in toggles:
-            checkb = Gtk.CheckButton(label)
+            checkb = Gtk.CheckButton(label, use_underline=True)
             checkb.set_active(current != -1)
             checkb.connect("toggled", callback)
             hb.pack_start(checkb, True, True, 0)
         vb2.pack_start(hb, True, True, 0)
 
         hb = Gtk.HBox(spacing=6)
-        timeout = Gtk.SpinButton(
+        timeout = Gtk.SpinButton(adjustment=
             Gtk.Adjustment(self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
-            0.1, 1)
+            climb_rate=0.1, digits=1)
         timeout.set_numeric(True)
         timeout.connect('value-changed', change_delay)
         l1 = ConfigLabel("_Delay:", timeout)
