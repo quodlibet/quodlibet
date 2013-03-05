@@ -57,7 +57,7 @@ class SongInfo(Gtk.Label):
         try:
             # Get a real submenu, unless there's no song, in which case an
             # empty one looks more consistent than None
-            submenu = (browsers.playlists.Menu([player.song], player)
+            submenu = (browsers.playlists.Menu([player.song], self)
                        if player.song else Gtk.Menu())
         except AttributeError, e:
             print_d(e)
