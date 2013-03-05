@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
+import cairo
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel
@@ -476,6 +477,7 @@ class BaseView(Gtk.TreeView):
         elif len(model):
             selection.select_path(model[-1].path)
 
+
 class MultiDragTreeView(BaseView):
     """TreeView with multirow drag support:
     * Selections don't change until button-release-event...
@@ -492,16 +494,20 @@ class MultiDragTreeView(BaseView):
         self.__pending_event = None
 
     def __button_press(self, event):
-        if event.button == 1: return self.__block_selection(event)
+        if event.button == 1:
+            return self.__block_selection(event)
 
     def __block_selection(self, event):
         x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-        except TypeError: return True
+        try:
+            path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError:
+            return True
+
         self.grab_focus()
         selection = self.get_selection()
         if ((selection.path_is_selected(path)
-            and not (event.get_state() & (Gdk.ModifierType.CONTROL_MASK|Gdk.ModifierType.SHIFT_MASK)))):
+            and not (event.get_state() & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)))):
             self.__pending_event = [x, y]
             selection.set_select_function(lambda *args: False, None)
         elif event.type == Gdk.EventType.BUTTON_PRESS:
@@ -514,48 +520,74 @@ class MultiDragTreeView(BaseView):
             selection.set_select_function(lambda *args: True, None)
             oldevent = self.__pending_event
             self.__pending_event = None
-            if oldevent != [event.x, event.y]: return True
+
+            if oldevent != [event.x, event.y]:
+                return True
+
             x, y = map(int, [event.x, event.y])
-            try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-            except TypeError: return True
+            try:
+                path, col, cellx, celly = self.get_path_at_pos(x, y)
+            except TypeError:
+                return True
             self.set_cursor(path, col, 0)
 
-    def __begin(self, ctx):
+    def __begin(self, drag_ctx):
         model, paths = self.get_selection().get_selected_rows()
-        MAX = 3
-        if paths:
-            icons = map(self.create_row_drag_icon, paths[:MAX])
-            height = (
-                sum(map(lambda s: s.get_size()[1], icons))-2*len(icons))+2
-            width = max(map(lambda s: s.get_size()[0], icons))
-            final = Gdk.Pixmap(icons[0], width, height)
-            gc = Gdk.GC(final)
-            gc.copy(self.style.fg_gc[Gtk.StateType.NORMAL])
-            gc.set_colormap(self.window.get_colormap())
-            count_y = 1
-            for icon in icons:
-                w, h = icon.get_size()
-                final.draw_drawable(gc, icon, 1, 1, 1, count_y, w-2, h-2)
-                count_y += h - 2
-            if len(paths) > MAX:
-                count_y -= h - 2
-                bgc = Gdk.GC(final)
-                bgc.copy(self.style.base_gc[Gtk.StateType.NORMAL])
-                final.draw_rectangle(bgc, True, 1, count_y, w-2, h-2)
-                more = _("and %d more...") % (len(paths) - MAX + 1)
-                layout = self.create_pango_layout(more)
-                attrs = Pango.AttrList()
-                attrs.insert(Pango.AttrStyle(Pango.Style.ITALIC, 0, len(more)))
-                layout.set_attributes(attrs)
-                layout.set_width(Pango.SCALE * (w - 2))
-                lw, lh = layout.get_pixel_size()
-                final.draw_layout(gc, (w-lw)//2, count_y + (h-lh)//2, layout)
-
-            final.draw_rectangle(gc, False, 0, 0, width-1, height-1)
-            self.drag_source_set_icon(final.get_colormap(), final)
-        else:
-            GLib.idle_add(ctx.drag_abort, Gtk.get_current_event_time())
+        if not paths:
+            GLib.idle_add(Gdk.drag_abort, drag_ctx,
+                          Gtk.get_current_event_time())
             self.drag_source_set_icon_stock(Gtk.STOCK_MISSING_IMAGE)
+            return
+
+        MAX = 3
+
+        icons = map(self.create_row_drag_icon, paths[:MAX])
+        width = max([s.get_width() for s in icons])
+        height = sum([s.get_height() for s in icons])
+
+        layout = None
+        if len(paths) > MAX:
+            more = _("and %d more...") % (len(paths) - MAX)
+            more = "<i>%s</i>" % more
+            layout = self.create_pango_layout("")
+            layout.set_markup(more)
+            layout.set_alignment(Pango.Alignment.CENTER)
+            layout.set_width(Pango.SCALE * (width - 2))
+            lw, lh = layout.get_pixel_size()
+            height += lh
+            height += 6  # padding
+
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+        ctx = cairo.Context(surface)
+
+        # render background
+        style_ctx = self.get_style_context()
+        Gtk.render_background(style_ctx, ctx, 0, 0, width, height)
+
+        # render rows
+        count_y = 0
+        for icon in icons:
+            ctx.save()
+            icon_width = icon.get_width()
+            icon_height = icon.get_height()
+            ctx.set_source_surface(icon, 2, count_y + 2)
+            ctx.rectangle(2, count_y + 2, icon_width - 4, icon_height - 4)
+            ctx.clip()
+            ctx.paint()
+            ctx.restore()
+            count_y += icon_height
+
+        if layout:
+            Gtk.render_layout(style_ctx, ctx, 1, count_y, layout)
+
+        # render border
+        Gtk.render_line(style_ctx, ctx, 0, 0, 0, height - 1)
+        Gtk.render_line(style_ctx, ctx, 0, height - 1, width - 1, height - 1)
+        Gtk.render_line(style_ctx, ctx, width - 1, height - 1, width - 1, 0)
+        Gtk.render_line(style_ctx, ctx, width - 1, 0, 0, 0)
+
+        Gtk.drag_set_icon_surface(drag_ctx, surface)
+
 
 class RCMTreeView(BaseView):
     """Emits popup-menu when a row is right-clicked on."""
@@ -701,8 +733,7 @@ class RCMHintedTreeView(HintedTreeView, RCMTreeView):
     """A TreeView that has hints and a context menu."""
     pass
 
-# FIXME: GIPORT .. port to cairo
-MultiDragTreeView = object
+
 class AllTreeView(HintedTreeView, RCMTreeView, MultiDragTreeView):
     """A TreeView that has hints, a context menu, and multi-selection
     dragging support."""
