@@ -59,28 +59,28 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
     """The result treeview. The model only stores local tracks; info about
     remote results is pulled from self.remote_album."""
 
-    def __name_datafunc(self, col, cell, model, itr):
+    def __name_datafunc(self, col, cell, model, itr, data):
         song = model[itr][0]
         if song:
             cell.set_property('text', os.path.basename(song.get("~filename")))
         else:
             cell.set_property('text', '')
 
-    def __track_datafunc(self, col, cell, model, itr):
+    def __track_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self.remote_album):
             cell.set_property('text', '')
         else:
             cell.set_property('text', idx + 1)
 
-    def __title_datafunc(self, col, cell, model, itr):
+    def __title_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self.remote_album):
             cell.set_property('text', '')
         else:
             cell.set_property('text', self.remote_album[idx].title)
 
-    def __artist_datafunc(self, col, cell, model, itr):
+    def __artist_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self.remote_album) or not self.remote_album[idx].artist:
             cell.set_property('text', '')
@@ -138,10 +138,10 @@ class ResultComboBox(Gtk.ComboBox):
     """Formatted picker for different Result entries."""
 
     def __init__(self, model):
-        super(ResultComboBox, self).__init__(model)
+        super(ResultComboBox, self).__init__(model=model)
         render = Gtk.CellRendererText()
         render.set_fixed_height_from_font(2)
-        def celldata(layout, cell, model, iter):
+        def celldata(layout, cell, model, iter, data):
             release = model[iter][0]
             if not release:
                 return
@@ -155,8 +155,8 @@ class ResultComboBox(Gtk.ComboBox):
                     util.escape(release.artist.name),
                     date, release.tracksCount)
             cell.set_property('markup', markup)
-        self.pack_start(render, True, True, 0)
-        self.set_cell_data_func(render, celldata)
+        self.pack_start(render, True)
+        self.set_cell_data_func(render, celldata, None)
 
 class ReleaseEventComboBox(Gtk.HBox):
     """A ComboBox for picking a release event."""
@@ -164,12 +164,12 @@ class ReleaseEventComboBox(Gtk.HBox):
     def __init__(self):
         super(ReleaseEventComboBox, self).__init__()
         self.model = Gtk.ListStore(object, str)
-        self.combo = Gtk.ComboBox(self.model)
+        self.combo = Gtk.ComboBox(model=self.model)
         render = Gtk.CellRendererText()
-        self.combo.pack_start(render, True, True, 0)
-        self.combo.set_attributes(render, markup=1)
+        self.combo.pack_start(render, True)
+        self.combo.add_attribute(render, "markup", 1)
         self.combo.set_sensitive(False)
-        self.label = Gtk.Label(label="_Release:")
+        self.label = Gtk.Label(label="_Release:", use_underline=True)
         self.label.set_use_underline(True)
         self.label.set_mnemonic_widget(self.combo)
         self.pack_start(self.label, False, True, 0)
@@ -408,7 +408,7 @@ class SearchWindow(Gtk.Dialog):
         lbl = Gtk.Label(label="_Query:")
         lbl.set_use_underline(True)
         lbl.set_mnemonic_widget(sq)
-        stb = self.search_button = Gtk.Button('S_earch')
+        stb = self.search_button = Gtk.Button('S_earch', use_underline=True)
         stb.connect('clicked', self.__do_query)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(sq, True, True, 0)
