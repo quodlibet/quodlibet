@@ -275,7 +275,8 @@ class DragScroll(object):
         def periodic_scroll():
             """Get the tree coords for 0,0 and scroll from there"""
             wx, wy, dist, ref = self.__scroll_args
-            x, y = self.widget_to_tree_coords(0, 0)
+            x, y = self.convert_widget_to_tree_coords(0, 0)
+            x, y = self.convert_bin_window_to_widget_coords(x, y)
 
             # We reached an end, stop
             if self.__scroll_last == y:
@@ -324,7 +325,7 @@ class DragScroll(object):
 
         # I guess the bin to visible_rect difference is the header height
         # but this could be wrong
-        start = self.get_bin_window().get_geometry()[1] - 1
+        start = self.convert_bin_window_to_widget_coords(0, 0)[1]
         end = visible_rect.height + start
 
         # Get the font height as size reference
@@ -337,6 +338,7 @@ class DragScroll(object):
 
         # thanks TI200
         accel = lambda x: int(1.1**(x*12/reference)) - (x/reference)
+
         if in_lower_scroll:
             diff = accel(y - end + scroll_offset)
         elif in_upper_scroll:
@@ -450,7 +452,8 @@ class BaseView(Gtk.TreeView):
             if not rows:
                 (self.get_parent() or self).drag_highlight()
             else:
-                self.set_drag_dest_row(rows - 1, Gtk.TreeViewDropPosition.AFTER)
+                self.set_drag_dest_row(Gtk.TreePath(rows - 1),
+                                       Gtk.TreeViewDropPosition.AFTER)
         else:
             self.set_drag_dest_row(*dest_row)
 
