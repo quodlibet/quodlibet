@@ -347,7 +347,7 @@ class Playlists(Gtk.VBox, Browser):
             try:
                 path = view.get_dest_row_at_pos(x, y)[0]
             except TypeError:
-                path = (len(view.get_model()) - 1,)
+                path = Gtk.TreePath((len(view.get_model()) - 1,))
                 pos = Gtk.TreeViewDropPosition.AFTER
             else:
                 pos = Gtk.TreeViewDropPosition.INTO_OR_AFTER
