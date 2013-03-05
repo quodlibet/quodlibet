@@ -598,7 +598,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
 
         # save and keep reference
         self.__f = f = tempfile.NamedTemporaryFile()
-        pixbuf.save(f.name, "png")
+        pixbuf.savev(f.name, "png", [], [])
 
     def get_property(self, interface, name):
         if interface == MediaObject.IFACE:
