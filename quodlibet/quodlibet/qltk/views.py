@@ -647,7 +647,7 @@ class RCMTreeView(BaseView):
         menu.popup(None, None, pos_func, None, button, time)
         return True
 
-    def __popup_position(self, menu):
+    def __popup_position(self, menu, *args):
         path, col = self.get_cursor()
         if col is None:
             col = self.get_column(0)
@@ -658,18 +658,18 @@ class RCMTreeView(BaseView):
         rect.width -= 6
         rect.y += 3
         rect.height -= 6
-        dx, dy = self.window.get_origin()
+        dummy, dx, dy = self.get_window().get_origin()
         dy += self.get_bin_window().get_position()[1]
 
         # fit menu to screen, aligned per text direction
         screen_width = Gdk.Screen.width()
         screen_height = Gdk.Screen.height()
         menu.realize()
-        ma = menu.allocation
+        ma = menu.get_allocation()
         menu_y = rect.y + rect.height + dy
         if menu_y + ma.height > screen_height and rect.y + dy - ma.height > 0:
             menu_y = rect.y + dy - ma.height
-        if Gtk.widget_get_default_direction() == Gtk.TextDirection.LTR:
+        if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
             menu_x = min(rect.x + dx, screen_width - ma.width)
         else:
             menu_x = max(0, rect.x + dx - ma.width + rect.width)

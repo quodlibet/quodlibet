@@ -181,7 +181,7 @@ class AudioFeeds(Browser, Gtk.VBox):
 
     __last_folder = const.HOME
 
-    def cell_data(col, render, model, iter):
+    def cell_data(col, render, model, iter, data):
         if model[iter][0].changed:
             render.markup = "<b>%s</b>" % util.escape(model[iter][0].name)
         else: render.markup = util.escape(model[iter][0].name)
@@ -358,11 +358,11 @@ class AudioFeeds(Browser, Gtk.VBox):
                   "or the location may not be an audio feed.") %(
                 util.escape(feed.uri))).run()
 
-    def __menu(self, view):
+    def __popup_menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
-        refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH)
-        delete = Gtk.ImageMenuItem(Gtk.STOCK_DELETE)
+        refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH, use_stock=True)
+        delete = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
 
         refresh.connect_object(
             'activate', self.__refresh, [model[p][0] for p in paths])
@@ -373,14 +373,11 @@ class AudioFeeds(Browser, Gtk.VBox):
         menu.append(delete)
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
-        return menu
+
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __save(self, view):
         AudioFeeds.write()
-
-    def __popup_menu(self, view):
-        return view.popup_menu(self.__menu(view), 0,
-                Gtk.get_current_event_time())
 
     def __refresh(self, feeds):
         changed = filter(Feed.parse, feeds)
