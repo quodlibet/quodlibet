@@ -191,10 +191,10 @@ class PreferencesWidget(Gtk.VBox):
         set_conf_value(cfgname, entry.get_text())
 
     def on_textview_unfocused(self, textview, event, cfgname):
-        set_conf_value(cfgname,
-                       textview.get_buffer().get_text(
-                            *textview.get_buffer().get_bounds()
-                       ))
+        text_buffer = textview.get_buffer()
+        start, end = text_buffer.get_bounds()
+        text = text_buffer.get_text(start, end, True)
+        set_conf_value(cfgname, text)
 
     def on_radiobutton_toggled(self, radio, cfgname, value):
         if radio.get_active():
