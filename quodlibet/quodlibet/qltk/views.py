@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2012 Christoph Reiter
+#           2012, 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -481,61 +481,15 @@ class BaseView(Gtk.TreeView):
             selection.select_path(model[-1].path)
 
 
-class MultiDragTreeView(BaseView):
-    """TreeView with multirow drag support:
+class DragIconTreeView(BaseView):
+    """TreeView that sets the selected rows as drag icons
 
-    - Selections don't change until button-release-event...
-    - Unless they're a Shift/Ctrl modification, then they happen immediately
     - Drag icons include 3 rows/2 plus a "and more" count
     """
 
-    def __init__(self, *args):
-        super(MultiDragTreeView, self).__init__(*args)
-        self.connect('button-press-event', self.__button_press)
-        self.connect('button-release-event', self.__button_release)
+    def __init__(self, *args, **kwargs):
+        super(DragIconTreeView, self).__init__(*args, **kwargs)
         self.connect('drag-begin', self.__begin)
-        self.__pending_event = None
-
-    def __button_press(self, view, event):
-        if event.button == 1:
-            return self.__block_selection(event)
-
-    def __block_selection(self, event):
-        x, y = map(int, [event.x, event.y])
-        try:
-            path, col, cellx, celly = self.get_path_at_pos(x, y)
-        except TypeError:
-            return True
-
-        self.grab_focus()
-        selection = self.get_selection()
-        is_selected = selection.path_is_selected(path)
-        mod_active = event.get_state() & (
-            Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
-
-        if is_selected and not mod_active:
-            self.__pending_event = [x, y]
-            selection.set_select_function(lambda *args: False, None)
-        elif event.type == Gdk.EventType.BUTTON_PRESS:
-            self.__pending_event = None
-            selection.set_select_function(lambda *args: True, None)
-
-    def __button_release(self, view, event):
-        if self.__pending_event:
-            selection = self.get_selection()
-            selection.set_select_function(lambda *args: True, None)
-            oldevent = self.__pending_event
-            self.__pending_event = None
-
-            x, y = map(int, [event.x, event.y])
-            if oldevent != [x, y]:
-                return True
-
-            try:
-                path, col, cellx, celly = self.get_path_at_pos(x, y)
-            except TypeError:
-                return True
-            self.set_cursor(path, col, 0)
 
     def __begin(self, view, drag_ctx):
         model, paths = self.get_selection().get_selected_rows()
@@ -545,6 +499,10 @@ class MultiDragTreeView(BaseView):
         MAX = 3
 
         icons = map(self.create_row_drag_icon, paths[:MAX])
+        if len(icons) == 1:
+            Gtk.drag_set_icon_surface(drag_ctx, icons[0])
+            return
+
         width = max([s.get_width() for s in icons])
         height = sum([s.get_height() for s in icons])
 
@@ -590,6 +548,62 @@ class MultiDragTreeView(BaseView):
         Gtk.render_line(style_ctx, ctx, width - 1, 0, 0, 0)
 
         Gtk.drag_set_icon_surface(drag_ctx, surface)
+
+
+class MultiDragTreeView(BaseView):
+    """TreeView with multirow drag support:
+
+    - Selections don't change until button-release-event...
+    - Unless they're a Shift/Ctrl modification, then they happen immediately
+    - Drag icons include 3 rows/2 plus a "and more" count
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(MultiDragTreeView, self).__init__(*args, **kwargs)
+        self.connect('button-press-event', self.__button_press)
+        self.connect('button-release-event', self.__button_release)
+        self.__pending_event = None
+
+    def __button_press(self, view, event):
+        if event.button == 1:
+            return self.__block_selection(event)
+
+    def __block_selection(self, event):
+        x, y = map(int, [event.x, event.y])
+        try:
+            path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError:
+            return True
+
+        self.grab_focus()
+        selection = self.get_selection()
+        is_selected = selection.path_is_selected(path)
+        mod_active = event.get_state() & (
+            Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
+
+        if is_selected and not mod_active:
+            self.__pending_event = [x, y]
+            selection.set_select_function(lambda *args: False, None)
+        elif event.type == Gdk.EventType.BUTTON_PRESS:
+            self.__pending_event = None
+            selection.set_select_function(lambda *args: True, None)
+
+    def __button_release(self, view, event):
+        if self.__pending_event:
+            selection = self.get_selection()
+            selection.set_select_function(lambda *args: True, None)
+            oldevent = self.__pending_event
+            self.__pending_event = None
+
+            x, y = map(int, [event.x, event.y])
+            if oldevent != [x, y]:
+                return True
+
+            try:
+                path, col, cellx, celly = self.get_path_at_pos(x, y)
+            except TypeError:
+                return True
+            self.set_cursor(path, col, 0)
 
 
 class RCMTreeView(BaseView):
@@ -732,12 +746,13 @@ class TreeViewColumnButton(TreeViewColumn):
         self.emit('popup-menu')
         return True
 
-class RCMHintedTreeView(HintedTreeView, RCMTreeView):
+class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):
     """A TreeView that has hints and a context menu."""
     pass
 
 
-class AllTreeView(HintedTreeView, RCMTreeView, MultiDragTreeView):
+class AllTreeView(HintedTreeView, RCMTreeView, DragIconTreeView,
+                  MultiDragTreeView):
     """A TreeView that has hints, a context menu, and multi-selection
     dragging support."""
     pass
