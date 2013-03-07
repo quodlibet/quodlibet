@@ -21,7 +21,7 @@ class TreeViewHints(Gtk.Window):
     # will never be called.
     __gsignals__ = dict.fromkeys(
         ['button-press-event', 'button-release-event',
-        'motion-notify-event', 'scroll-event'],
+         'motion-notify-event', 'scroll-event'],
         'override')
 
     def __init__(self):
@@ -32,11 +32,16 @@ class TreeViewHints(Gtk.Window):
         label.set_ellipsize(Pango.EllipsizeMode.NONE)
         self.add(label)
 
-        self.add_events(Gdk.EventMask.BUTTON_MOTION_MASK |
-            Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK |
-            Gdk.EventMask.KEY_PRESS_MASK | Gdk.EventMask.KEY_RELEASE_MASK |
-            Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK |
-            Gdk.EventMask.SCROLL_MASK | Gdk.EventMask.POINTER_MOTION_MASK |
+        self.add_events(
+            Gdk.EventMask.BUTTON_MOTION_MASK |
+            Gdk.EventMask.BUTTON_PRESS_MASK |
+            Gdk.EventMask.BUTTON_RELEASE_MASK |
+            Gdk.EventMask.KEY_PRESS_MASK |
+            Gdk.EventMask.KEY_RELEASE_MASK |
+            Gdk.EventMask.ENTER_NOTIFY_MASK |
+            Gdk.EventMask.LEAVE_NOTIFY_MASK |
+            Gdk.EventMask.SCROLL_MASK |
+            Gdk.EventMask.POINTER_MOTION_MASK |
             Gdk.EventMask.POINTER_MOTION_HINT_MASK)
 
         context = self.get_style_context()
@@ -98,7 +103,7 @@ class TreeViewHints(Gtk.Window):
 
         area = view.get_cell_area(path, col)
         # make sure we are on the same level
-        if  x < area.x:
+        if x < area.x:
             self.__undisplay()
             return
 
@@ -246,10 +251,17 @@ class TreeViewHints(Gtk.Window):
 
         return True
 
-    def do_button_press_event(self, event): return self.__event(event)
-    def do_button_release_event(self, event): return self.__event(event)
-    def do_motion_notify_event(self, event): return self.__event(event)
-    def do_scroll_event(self, event): return self.__event(event)
+    def do_button_press_event(self, event):
+        return self.__event(event)
+
+    def do_button_release_event(self, event):
+        return self.__event(event)
+
+    def do_motion_notify_event(self, event):
+        return self.__event(event)
+
+    def do_scroll_event(self, event):
+        return self.__event(event)
 
 
 class DragScroll(object):
@@ -269,7 +281,7 @@ class DragScroll(object):
     def __enable_scroll(self):
         """Start scrolling if it hasn't already"""
         if self.__scroll_periodic is not None or \
-            self.__scroll_delay is not None:
+                self.__scroll_delay is not None:
             return
 
         def periodic_scroll():
@@ -458,16 +470,19 @@ class BaseView(Gtk.TreeView):
             self.set_drag_dest_row(*dest_row)
 
     def __remove_iters(self, iters, force_restore=False):
-        if not iters: return
+        if not iters:
+            return
 
         selection = self.get_selection()
         model = self.get_model()
 
         if force_restore:
-             map(model.remove, iters)
+            for iter_ in iters:
+                model.remove(iter_)
         else:
             old_count = selection.count_selected_rows()
-            map(model.remove, iters)
+            for iter_ in iters:
+                model.remove(iter_)
             # only restore a selection if all selected rows are gone afterwards
             if not old_count or selection.count_selected_rows():
                 return
@@ -611,17 +626,18 @@ class RCMTreeView(BaseView):
 
     def __init__(self, *args):
         super(RCMTreeView, self).__init__(*args)
-        self.connect_object(
-            'button-press-event', RCMTreeView.__button_press, self)
+        self.connect('button-press-event', self.__button_press)
 
-    def __button_press(self, event):
+    def __button_press(self, view, event):
         if event.button == 3:
             return self.__check_popup(event)
 
     def __check_popup(self, event):
         x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-        except TypeError: return True
+        try:
+            path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError:
+            return True
         self.grab_focus()
         selection = self.get_selection()
         if not selection.path_is_selected(path):
@@ -688,7 +704,8 @@ class RCMTreeView(BaseView):
         else:
             menu_x = max(0, rect.x + dx - ma.width + rect.width)
 
-        return (menu_x, menu_y, True) # x, y, move_within_screen
+        return (menu_x, menu_y, True)  # x, y, move_within_screen
+
 
 class HintedTreeView(BaseView):
     """A TreeView that pops up a tooltip when you hover over a cell that
@@ -697,8 +714,10 @@ class HintedTreeView(BaseView):
     def __init__(self, *args):
         super(HintedTreeView, self).__init__(*args)
         if not config.state('disable_hints'):
-            try: tvh = HintedTreeView.hints
-            except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
+            try:
+                tvh = HintedTreeView.hints
+            except AttributeError:
+                tvh = HintedTreeView.hints = TreeViewHints()
             tvh.connect_view(self)
 
 
@@ -721,8 +740,7 @@ class TreeViewColumnButton(TreeViewColumn):
         button-press-event and popup-menu"""
 
     __gsignals__ = {
-        'button-press-event': (GObject.SignalFlags.RUN_LAST, None,
-                (object,)),
+        'button-press-event': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'popup-menu':  (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
@@ -745,6 +763,7 @@ class TreeViewColumnButton(TreeViewColumn):
     def popup_menu(self, widget):
         self.emit('popup-menu')
         return True
+
 
 class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):
     """A TreeView that has hints and a context menu."""
