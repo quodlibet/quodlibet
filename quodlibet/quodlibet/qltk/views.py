@@ -483,20 +483,20 @@ class BaseView(Gtk.TreeView):
 
 class MultiDragTreeView(BaseView):
     """TreeView with multirow drag support:
-    * Selections don't change until button-release-event...
-    * Unless they're a Shift/Ctrl modification, then they happen immediately
-    * Drag icons include 3 rows/2 plus a "and more" count"""
+
+    - Selections don't change until button-release-event...
+    - Unless they're a Shift/Ctrl modification, then they happen immediately
+    - Drag icons include 3 rows/2 plus a "and more" count
+    """
 
     def __init__(self, *args):
         super(MultiDragTreeView, self).__init__(*args)
-        self.connect_object(
-            'button-press-event', MultiDragTreeView.__button_press, self)
-        self.connect_object(
-            'button-release-event', MultiDragTreeView.__button_release, self)
-        self.connect_object('drag-begin', MultiDragTreeView.__begin, self)
+        self.connect('button-press-event', self.__button_press)
+        self.connect('button-release-event', self.__button_release)
+        self.connect('drag-begin', self.__begin)
         self.__pending_event = None
 
-    def __button_press(self, event):
+    def __button_press(self, view, event):
         if event.button == 1:
             return self.__block_selection(event)
 
@@ -509,37 +509,37 @@ class MultiDragTreeView(BaseView):
 
         self.grab_focus()
         selection = self.get_selection()
-        if ((selection.path_is_selected(path)
-            and not (event.get_state() & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)))):
+        is_selected = selection.path_is_selected(path)
+        mod_active = event.get_state() & (
+            Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
+
+        if is_selected and not mod_active:
             self.__pending_event = [x, y]
             selection.set_select_function(lambda *args: False, None)
         elif event.type == Gdk.EventType.BUTTON_PRESS:
             self.__pending_event = None
             selection.set_select_function(lambda *args: True, None)
 
-    def __button_release(self, event):
+    def __button_release(self, view, event):
         if self.__pending_event:
             selection = self.get_selection()
             selection.set_select_function(lambda *args: True, None)
             oldevent = self.__pending_event
             self.__pending_event = None
 
-            if oldevent != [event.x, event.y]:
+            x, y = map(int, [event.x, event.y])
+            if oldevent != [x, y]:
                 return True
 
-            x, y = map(int, [event.x, event.y])
             try:
                 path, col, cellx, celly = self.get_path_at_pos(x, y)
             except TypeError:
                 return True
             self.set_cursor(path, col, 0)
 
-    def __begin(self, drag_ctx):
+    def __begin(self, view, drag_ctx):
         model, paths = self.get_selection().get_selected_rows()
         if not paths:
-            GLib.idle_add(Gdk.drag_abort, drag_ctx,
-                          Gtk.get_current_event_time())
-            self.drag_source_set_icon_stock(Gtk.STOCK_MISSING_IMAGE)
             return
 
         MAX = 3
