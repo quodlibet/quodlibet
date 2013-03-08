@@ -32,9 +32,7 @@ class AboutDialog(gtk.AboutDialog):
         if player:
             text.append(player.version_info)
         self.set_comments("\n".join(text))
-        # Translators: Replace this with your name/email to have it appear
-        # in the "About" dialog.
-        self.set_translator_credits(_('translator-credits'))
+        self.set_translator_credits("\n".join(const.TRANSLATORS))
         self.set_website("http://code.google.com/p/quodlibet")
         self.set_copyright(
             "Copyright © 2004-2012 Joe Wreschnig, Michael Urman, & others\n"
