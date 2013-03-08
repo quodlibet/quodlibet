@@ -388,10 +388,10 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         klass.__librarian = library.librarian
 
         klass.__stations = SongLibrary("iradio-remote")
-        klass.__stations.load(STATIONS_ALL, skip=lambda x: True)
+        klass.__stations.load(STATIONS_ALL)
 
         klass.__fav_stations = SongLibrary("iradio")
-        klass.__fav_stations.load(STATIONS_FAV, skip=lambda x: True)
+        klass.__fav_stations.load(STATIONS_FAV)
 
         klass.filters = GenreFilter()
 
