@@ -71,47 +71,65 @@ BASEDIR = os.path.dirname(os.path.realpath(__file__))
 IMAGEDIR = os.path.join(BASEDIR, "images")
 
 AUTHORS = sorted("""\
-Joe Wreschnig
-Michael Urman
-Iñigo Serna
-Ben Zeigler
-Niklas Janlert
-Joshua Kwan
-Nikolai Prokoschenko
-Lalo Martins
-Tomasz Torcz
-Alexey Bobyakov
-Zack Weinberg
-Bastian Kleineidam
-Eduardo Gonzalez
-Decklin Foster
-Federico Pelloni
 Alexandre Passos
-Mickael Royer
-Robert Muth
-Markus Koller
-Martin Bergström
-Lukáš Lalinský
+Alexey Bobyakov
+Alex Geoffrey Smith
 Anders Carlsson
-Lee Willis
-Guillaume Chazarain
-Javier Kohen
-Erich Schubert
-David Kågedal
-Remi Vanicat
-Ari Pollak
-Jan Arne Petersen
-Josh Lee
-Steven Robertson
-Christoph Reiter
+Andreas Bombe
 Anton Shestakov
-Nicholas J. Michalek
-David Schneider
-Türerkan İnce
-Philipp Weis
-Johan Hovold
+Ari Pollak
+Aymeric Mansoux
+Bastian Kleineidam
 Bastien Gorissen
+Ben Zeigler
+Carlo Teubner
+Christine Spang
+Christoph Reiter
+David Kågedal
+David Schneider
+Decklin Foster
+Eduardo Gonzalez
+Erich Schubert
+Federico Pelloni
+Felix Krull
+Florian Demmer
+Guillaume Chazarain
+Iñigo Serna
+Jacob Lee
+Jan Arne Petersen
+Javier Kohen
+Joe Higton
+Joe Wreschnig
+Johan Hovold
+Johannes Marbach
+Johannes Rohrer
+Joschka Fischer
+Josh Lee
+Joshua Kwan
+Lalo Martins
+Lee Willis
+Lukáš Lalinský
+Markus Koller
+Martijn Pieters
+Martin Bergström
+Michaël Ball
+Michael Urman
+Mickael Royer
+Nicholas J. Michalek
 Nick Boultbee
+Niklas Janlert
+Nikolai Prokoschenko
+Philipp Müller
+Philipp Weis
+Remi Vanicat
+Robert Muth
+Steven Robertson
+Tomasz Miasko
+Tomasz Torcz
+Tshepang Lekhonkhobe
+Türerkan İnce
+Vasiliy Faronov
+Zack Weinberg
 """.strip().split("\n"))
 
 TRANSLATORS = sorted("""
