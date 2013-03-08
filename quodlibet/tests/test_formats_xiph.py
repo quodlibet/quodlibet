@@ -1,6 +1,7 @@
 from tests import add, TestCase
 
 import os
+import sys
 import shutil
 import tempfile
 import base64
@@ -11,6 +12,24 @@ from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
 from mutagen.oggvorbis import OggVorbis
+
+
+class TXiphPickle(TestCase):
+    # make sure the classes are available at the old paths
+    # so unpickling old libraries works.
+
+    def test_modules_flac(self):
+        self.failUnless("formats.flac" in sys.modules)
+        mod = sys.modules["formats.flac"]
+        self.failUnless(mod.FLACFile is FLACFile)
+
+    def test_modules_vorbis(self):
+        self.failUnless("formats.oggvorbis" in sys.modules)
+        mod = sys.modules["formats.oggvorbis"]
+        self.failUnless(mod.OggFile is OggFile)
+
+add(TXiphPickle)
+
 
 class TVCFile(TestCase):
     # Mixin to test Vorbis writing features

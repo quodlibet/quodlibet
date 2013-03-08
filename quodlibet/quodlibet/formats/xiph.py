@@ -1,9 +1,11 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import sys
 import tempfile
 import base64
 
@@ -13,6 +15,12 @@ from quodlibet import config
 from quodlibet import const
 
 from quodlibet.formats._audio import AudioFile
+
+
+# Migrate old layout
+sys.modules["formats.flac"] = sys.modules[__name__]
+sys.modules["formats.oggvorbis"] = sys.modules[__name__]
+
 
 class MutagenVCFile(AudioFile):
     format = "Unknown Mutagen + vorbiscomment"

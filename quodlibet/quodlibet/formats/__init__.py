@@ -51,15 +51,6 @@ def init():
 
     modules.sort()
 
-    # Migrate old layout
-    try:
-        xiph = sys.modules["quodlibet.formats.xiph"]
-    except KeyError:
-        pass
-    else:
-        sys.modules["formats.flac"] = xiph
-        sys.modules["formats.oggvorbis"] = xiph
-
     if not _infos:
         raise SystemExit("No formats found!")
 
