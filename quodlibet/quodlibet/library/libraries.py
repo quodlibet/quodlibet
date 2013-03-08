@@ -146,6 +146,14 @@ class Library(GObject.GObject, DictMixin):
         self.dirty = True
         self._contents[item.key] = item
 
+    def _load_init(self, items):
+        """Load many items into the library (on start)"""
+        # Subclasses should override this if they want to check
+        # item validity; see `FileLibrary`.
+        content = self._contents
+        for item in items:
+            content[item.key] = item
+
     def add(self, items):
         """Add items. This causes an 'added' signal.
 
@@ -257,7 +265,7 @@ class PicklingMixin(object):
     def __init__(self):
         self._save_lock = threading.Lock()
 
-    def load(self, filename, skip=False):
+    def load(self, filename):
         """Load a library from a file, containing a picked list.
 
         Loading does not cause added, changed, or removed signals.
@@ -268,12 +276,9 @@ class PicklingMixin(object):
 
         items = load_items(filename)
 
-        if skip:
-            for item in filter(skip, items):
-                self._contents[item.key] = item
-        else:
-            for item in items:
-                self._load_item(item)
+        # this loads all items without checking their validity, but makes
+        # sure that non-mounted items are masked
+        self._load_init(items)
 
         print_d("Done loading contents of %r." % filename, self)
 
@@ -496,6 +501,32 @@ class FileLibrary(PicklingLibrary):
     def __init__(self, name=None):
         super(FileLibrary, self).__init__(name)
         self._masked = {}
+
+    def _load_init(self, items):
+        """Add many items to the library, check if the
+        mountpoints are available and mark items as masked if not.
+
+        Does not check if items are valid.
+        """
+
+        mounts = {}
+        contents = self._contents
+        masked = self._masked
+
+        for item in items:
+            mountpoint = item.mountpoint
+
+            if mountpoint not in mounts:
+                is_mounted = os.path.ismount(mountpoint)
+                mounts[mountpoint] = is_mounted
+                # at least one not mounted, make sure masked has an entry
+                if not is_mounted:
+                    masked.setdefault(mountpoint, {})
+
+            if mounts[mountpoint]:
+                contents[item.key] = item
+            else:
+                masked[mountpoint][item.key] = item
 
     def _load_item(self, item, force=False):
         """Add an item, or refresh it if it's already in the library.

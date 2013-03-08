@@ -34,7 +34,7 @@ def init(cache_fn=None):
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
     library = SongFileLibrary("main")
     if cache_fn:
-        library.load(cache_fn, skip=formats.supported)
+        library.load(cache_fn)
     return library
 
 

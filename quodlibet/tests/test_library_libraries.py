@@ -42,7 +42,7 @@ class FakeSongFile(FakeSong):
     _valid = True
     _exists = True
     _mounted = True
-    mountpoint = property(lambda self: int(self))
+    mountpoint = property(lambda self: "/" if self._mounted else "/FAKE")
 
     def valid(self):
         return self._valid
@@ -295,6 +295,19 @@ class TSongFileLibrary(TSongLibrary):
         self.library._load_item(new)
         self.failUnless(self.library.get_content())
 
+    def test_init_masked(self):
+        new = self.Fake(100)
+        new._mounted = False
+        self.library._load_init([new])
+        self.failIf(self.library.items())
+        self.failUnlessEqual(new, self.library._masked[new.mountpoint][new])
+
+    def test_load_init_nonmasked(self):
+        new = self.Fake(200)
+        new._mounted = True
+        self.library._load_init([new])
+        self.failUnlessEqual(self.library.values(), [new])
+
     def test__load_exists_invalid(self):
         new = self.Fake(100)
         new._valid = False
@@ -341,7 +354,7 @@ class TSongFileLibrary(TSongLibrary):
         self.failIf(changed)
         self.failIf(new._valid)
         self.failIf(new in self.library)
-        self.failUnlessEqual(new, self.library._masked[new][new])
+        self.failUnlessEqual(new, self.library._masked[new.mountpoint][new])
 
     def __get_file(self):
         fd, filename = mkstemp(".flac")
