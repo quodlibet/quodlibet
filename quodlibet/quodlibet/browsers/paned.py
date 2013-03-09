@@ -868,6 +868,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
     def restore(self):
         super(PanedBrowser, self).restore(activate=False)
+        self._sb_box.set_text(self._text)
+
         selected = config.get("browsers", "pane_selection")
         if not selected:
             return
