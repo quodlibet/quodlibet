@@ -45,6 +45,13 @@ class TPanedBrowser(TestCase):
         self.expected = SONGS[1:3]
         self.bar.filter("artist", ["notvalue", "mu", "piman"])
 
+    def test_restore_entry_text(self):
+        self.bar.filter_text("foobar")
+        self.bar.save()
+        self.bar._sb_box.set_text("nope")
+        self.bar.restore()
+        self.failUnlessEqual(self.bar._sb_box.get_text(), "foobar")
+
     def tearDown(self):
         self.bar.destroy()
         config.quit()
