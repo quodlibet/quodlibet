@@ -1,4 +1,4 @@
-# Copyright 2012 Nick Boultbee
+# Copyright 2012-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -6,11 +6,14 @@
 
 import gtk
 import pango
+
 from quodlibet import qltk, util
 from quodlibet.util.dprint import print_d
 from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
-from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk.views import RCMHintedTreeView, HintedTreeView
 from quodlibet.util.json_data import JSONObjectDict
+from quodlibet.qltk.getstring import GetStringDialog
+
 
 class JSONBasedEditor(qltk.UniqueWindow):
     """
@@ -135,9 +138,8 @@ class JSONBasedEditor(qltk.UniqueWindow):
         else:
             entry = UndoEntry()
         entry.connect(signal or "changed",
-                callback or self.__changed_widget, key)
+                      callback or self.__changed_widget, key)
         return entry
-
 
     def __refresh_view(self):
         model, iter = self.selection.get_selected()
@@ -159,7 +161,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             self.__refresh_view()
 
     def _populate_fields(self, obj):
-        "Populates the input fields based on the `JSONData` object `obj`"
+        """Populates the input fields based on the `JSONData` object `obj`"""
         for fn,val in obj.data:
             widget = self.input_entries[fn]
             widget.set_sensitive(True)
@@ -237,3 +239,106 @@ class JSONBasedEditor(qltk.UniqueWindow):
         all = JSONObjectDict.from_list(
                 [row[0] for row in self.model if row[0].name])
         all.save(filename=self.filename)
+
+
+class MultiStringEditor(qltk.UniqueWindow):
+    """Dialog to edit a list of strings"""
+    _WIDTH = 400
+    _HEIGHT = 300
+
+    def __init__(self, title, values=None):
+        super(MultiStringEditor, self).__init__()
+        self.data = values or []
+        self.set_border_width(12)
+        self.set_title(title)
+        self.set_default_size(self._WIDTH, self._HEIGHT)
+
+        vbox = gtk.VBox(spacing=12)
+        hbox = gtk.HBox(spacing=12)
+
+        # Set up the model for this widget
+        self.model = gtk.ListStore(str)
+        self.__fill_values()
+
+        # Main view
+        view = self.view = HintedTreeView(self.model)
+        view.set_fixed_height_mode(True)
+        view.set_headers_visible(False)
+
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.add(view)
+        sw.set_size_request(-1, max(sw.size_request()[1], 100))
+        hbox.pack_start(sw)
+
+        self.__setup_column(view)
+
+        # Context menu
+        menu = gtk.Menu()
+        remove_item = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        menu.append(remove_item)
+        menu.show_all()
+        view.connect('popup-menu', self.__popup, menu)
+        remove_item.connect_object('activate', self.__remove, view)
+
+        # Add and Remove buttons
+        vbbox = gtk.VButtonBox()
+        vbbox.set_layout(gtk.BUTTONBOX_START)
+        vbbox.set_spacing(6)
+        add = gtk.Button(stock=gtk.STOCK_ADD)
+        add.connect("clicked", self.__add)
+        vbbox.pack_start(add, expand=False)
+        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+        remove.connect("clicked", self.__remove)
+        vbbox.pack_start(remove, expand=False)
+        hbox.pack_start(vbbox, expand=False)
+        vbox.pack_start(hbox)
+
+        # Close buttons
+        bbox = gtk.HButtonBox()
+        self.remove_but = gtk.Button(stock=gtk.STOCK_REMOVE)
+        self.remove_but.set_sensitive(False)
+        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close.connect_object('clicked', qltk.Window.destroy, self)
+        bbox.set_layout(gtk.BUTTONBOX_END)
+        bbox.pack_start(close)
+        vbox.pack_start(bbox, expand=False)
+
+        # Finish up
+        self.add(vbox)
+        self.show_all()
+
+    def __setup_column(self, view):
+        def cdf(column, cell, model, iter):
+            row = model[iter]
+            if row:
+                cell.set_property('text', row[0])
+
+        render = gtk.CellRendererText()
+        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        column = gtk.TreeViewColumn(None, render)
+        column.set_cell_data_func(render, cdf)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        view.append_column(column)
+
+    def __fill_values(self):
+        for s in self.data:
+            self.model.append(row=[s])
+
+    def get_strings(self):
+        strings = [row[0] for row in self.model if row]
+        return strings
+
+    def __remove(self, *args):
+        self.view.remove_selection()
+
+    def __add(self, *args):
+        dialog = GetStringDialog(self, _("Enter new value"), "",
+                                 okbutton=gtk.STOCK_ADD)
+        new = dialog.run()
+        if new:
+            self.model.append(row=[new])
+
+    def __popup(self, view, menu):
+        return view.popup_menu(menu, 0, gtk.get_current_event_time()).show()

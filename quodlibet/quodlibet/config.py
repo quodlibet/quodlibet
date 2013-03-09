@@ -6,7 +6,10 @@
 # published by the Free Software Foundation
 
 # Simple proxy to a Python ConfigParser.
-# TODO: refactor methods names for PEP-8
+# TODO: refactor method names for PEP-8
+
+from StringIO import StringIO
+import csv
 
 import os
 
@@ -23,6 +26,7 @@ from ConfigParser import RawConfigParser as ConfigParser, Error
 class _sorted_dict(dict):
     def items(self):
         return sorted(super(_sorted_dict, self).items())
+
 try:
     _config = ConfigParser(dict_type=_sorted_dict)
 except TypeError:
@@ -70,6 +74,32 @@ def getfloat(*args):
         except Error:
             return args[-1]
     return _config.getfloat(*args)
+
+
+def getstringlist(*args):
+    """Gets a list of strings, using CSV to parse and delimit"""
+    if len(args) == 3:
+        if not isinstance(args[-1], list):
+            raise ValueError
+        try:
+            value = _config.get(*args[:2])
+        except Error:
+            return args[-1]
+    else:
+        value = _config.get(*args)
+    parser = csv.reader([value])
+    vals = [v.decode('utf-8') for v in parser.next()]
+    print_d("%s.%s = %s" % (args + (vals,)))
+    return vals
+
+
+def setstringlist(section, option, values):
+    """Sets a config item to a list of quoted strings, using CSV"""
+    sw = StringIO()
+    values = [unicode(v).encode('utf-8') for v in values]
+    writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(values)
+    _config.set(section, option, sw.getvalue().strip())
 
 
 # RawConfigParser only allows string values but doesn't scream if they are not
@@ -179,8 +209,12 @@ def init(*rc_files):
           # probably belong in memory
           "repeat": "false",
 
-          # initial column headers
-          "headers": "~#track ~title~version ~album~discsubtitle ~#length",
+          # Now deprecated: space-separated headers column
+          #"headers": " ".join(const.DEFAULT_COLUMNS),
+
+          # 2.6: this gets migrated from headers entry in code.
+          # TODO: re-instate columns here in > 2.6 or once most have migrated
+          #"columns": ",".join(const.DEFAULT_COLUMNS),
 
           # hack to disable hints, see bug #526
           "disable_hints": "false",
@@ -255,3 +289,48 @@ def add_section(section):
     if not _config.has_section(section):
         _config.add_section(section)
 
+# Cache
+__songlist_columns = None
+
+
+def get_columns(refresh=False):
+    """
+    Gets the list of songlist column headings, caching unless `refresh` is True
+
+    This migrates from old to new format if necessary.
+    """
+    global __songlist_columns
+    if not refresh and __songlist_columns:
+        return __songlist_columns
+    try:
+        __songlist_columns = [str(s).lower()
+                              for s in getstringlist("settings", "columns")]
+        return __songlist_columns
+    except Error:
+        try:
+            __songlist_columns = columns = get("settings", "headers").split()
+        except Error:
+            # Both gone - something bad has happened
+            print_w("Both settings.columns and settings.headers empty")
+            return const.DEFAULT_COLUMNS
+        else:
+            print_d("Migrating from settings.headers to settings.columns...")
+            setstringlist("settings", "columns", columns)
+            print_d("Removing settings.headers...")
+            _config.remove_option("settings", "headers")
+            return columns
+
+
+def set_columns(vals, force=False):
+    """
+    Persists the settings for songlist headings held in `vals`
+    Will override the cache if `force` is True
+    """
+    global __songlist_columns
+    if vals != __songlist_columns or force:
+        print_d("Writing: %r" % vals)
+        vals = [str(col).lower() for col in vals]
+        setstringlist("settings", "columns", vals)
+        __songlist_columns = vals
+    else:
+        print_d("No change in columns to write")

@@ -17,6 +17,7 @@ from quodlibet import app
 
 from quodlibet.parse import Query
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.data_editors import MultiStringEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.songlist import SongList
@@ -31,6 +32,23 @@ class PreferencesWindow(qltk.UniqueWindow):
 
     class SongList(gtk.VBox):
         name = "songlist"
+
+        PREDEFINED_TAGS = [
+            ("~#disc", _("_Disc")),
+            ("~#track", _("_Track")),
+            ("grouping", _("Grou_ping")),
+
+            ("artist", _("_Artist")),
+            ("album", _("Al_bum")),
+            ("title", util.tag("title")),
+
+            ("genre", _("_Genre")),
+            ("date", _("_Date")),
+            ("~basename", _("_Filename")),
+
+            ("~#length", _("_Length")),
+            ("~#rating", _("_Rating")),
+            ("~#filesize", util.tag("~#filesize"))]
 
         def __init__(self):
             super(PreferencesWindow.SongList, self).__init__(spacing=12)
@@ -52,94 +70,127 @@ class PreferencesWindow(qltk.UniqueWindow):
             buttons = {}
             table = gtk.Table(3, 3)
             table.set_homogeneous(True)
-            checks = config.get("settings", "headers").split()
-            for j, l in enumerate(
-                [[("~#disc", _("_Disc")),
-                  ("album", _("Al_bum")),
-                  ("~basename",_("_Filename"))],
-                 [("~#track", _("_Track")),
-                  ("artist", _("_Artist")),
-                  ("~#rating", _("_Rating"))],
-                 [("title", util.tag("title")),
-                  ("date", _("_Date")),
-                  ("~#length",_("_Length"))]]):
-                for i, (k, t) in enumerate(l):
-                    buttons[k] = gtk.CheckButton(t)
-                    if k in checks:
-                        buttons[k].set_active(True)
-                        checks.remove(k)
+            cols = config.get_columns(refresh=True)
 
-                    table.attach(buttons[k], i, i + 1, j, j + 1)
-
+            for i, (k, t) in enumerate(self.PREDEFINED_TAGS):
+                x, y = i % 3, i / 3
+                buttons[k] = gtk.CheckButton(t)
+                if k in cols:
+                    buttons[k].set_active(True)
+                    cols.remove(k)
+                table.attach(buttons[k], x, x + 1, y, y + 1)
             vbox.pack_start(table, expand=False)
+            if "~current" in cols:
+                cols.remove("~current")
+            self.other_cols = cols
 
+            # Other columns
+            hbox = gtk.HBox(spacing=6)
+            l = gtk.Label(_("_Others:"))
+            hbox.pack_start(l, expand=False)
+            self.others = others = UndoEntry()
+            others.set_sensitive(False)
+            # Stock edit doesn't have ellipsis chars.
+            edit_button = gtk.Button(_("_Edit..."))
+            edit_button.connect("clicked", self.__config_cols)
+            edit_button.set_tooltip_text(_("Add or remove additional column "
+                                           "headers"))
+            l.set_mnemonic_widget(edit_button)
+            l.set_use_underline(True)
+            hbox.pack_start(others)
+            hbox.pack_start(edit_button, expand=False)
+            vbox.pack_start(hbox, expand=False)
+
+            frame = qltk.Frame(_("Visible Columns"), child=vbox)
+            self.pack_start(frame, expand=False)
+
+            # Column preferences
             tiv = gtk.CheckButton(_("Title includes _version"))
-            if "~title~version" in checks:
-                buttons["title"].set_active(True)
-                tiv.set_active(True)
-                checks.remove("~title~version")
+            aio = gtk.CheckButton(_("Artist includes all _people"))
             aip = gtk.CheckButton(_("Album includes _disc subtitle"))
-            if "~album~discsubtitle" in checks:
-                buttons["album"].set_active(True)
-                aip.set_active(True)
-                checks.remove("~album~discsubtitle")
             fip = gtk.CheckButton(_("Filename includes _folder"))
-            if "~filename" in checks:
-                buttons["~basename"].set_active(True)
-                fip.set_active(True)
-                checks.remove("~filename")
+            self._toggle_data = [
+                (tiv, "title", "~title~version"),
+                (aip, "album", "~album~discsubtitle"),
+                (fip, "~basename", "~filename"),
+                (aio, "artist", "~people")
+            ]
+            # Turn on the toggles if the toggled version is detected in config
+            for (check, off, on) in self._toggle_data:
+                if on in cols:
+                    buttons[off].set_active(True)
+                    check.set_active(True)
+                    cols.remove(on)
 
+            # Update text once to exclude ticked columns, munged or not
+            others.set_text(", ".join(cols))
             t = gtk.Table(2, 2)
             t.set_homogeneous(True)
             t.attach(tiv, 0, 1, 0, 1)
             t.attach(aip, 0, 1, 1, 2)
-            t.attach(fip, 1, 2, 0, 1)
-            vbox.pack_start(t, expand=False)
+            t.attach(aio, 1, 2, 0, 1)
+            t.attach(fip, 1, 2, 1, 2)
+            frame = qltk.Frame(_("Column Preferences"), child=t)
+            self.pack_start(frame, expand=False)
 
-            hbox = gtk.HBox(spacing=6)
-            l = gtk.Label(_("_Others:"))
-            hbox.pack_start(l, expand=False)
-            others = UndoEntry()
-            if "~current" in checks: checks.remove("~current")
-            others.set_text(" ".join(checks))
-            others.set_tooltip_text(
-                _("Other columns to display, separated by spaces"))
-            l.set_mnemonic_widget(others)
-            l.set_use_underline(True)
-            hbox.pack_start(others)
-            vbox.pack_start(hbox, expand=False)
-
+            # Apply button
+            vbox = gtk.VBox(spacing=12)
             apply = gtk.Button(stock=gtk.STOCK_APPLY)
-            apply.connect('clicked', self.__apply, buttons, tiv, aip, fip,
-                          others)
+            apply.set_tooltip_text(_("Apply current configuration to song "
+                                     "list, adding new columns to the end"))
             b = gtk.HButtonBox()
             b.set_layout(gtk.BUTTONBOX_END)
             b.pack_start(apply)
             vbox.pack_start(b)
-
-            frame = qltk.Frame(_("Visible Columns"), child=vbox)
-            self.pack_start(frame, expand=False)
+            self.pack_start(vbox)
+            apply.connect('clicked', self.__apply, buttons, tiv, aip, fip,
+                          aio)
+            # Apply on destroy, else config gets mangled
+            self.connect('destroy', self.__apply, buttons, tiv, aip, fip, aio)
             self.show_all()
 
-        def __apply(self, button, buttons, tiv, aip, fip, others):
-            headers = []
-            for key in ["~#disc", "~#track", "title", "album", "artist",
-                        "date", "~basename", "~#rating", "~#length"]:
-                if buttons[key].get_active(): headers.append(key)
-            if tiv.get_active():
-                try: headers[headers.index("title")] = "~title~version"
-                except ValueError: pass
-            if aip.get_active():
-                try: headers[headers.index("album")] = "~album~discsubtitle"
-                except ValueError: pass
-            if fip.get_active():
-                try: headers[headers.index("~basename")] = "~filename"
-                except ValueError: pass
+        def __apply(self, button, buttons, tiv, aip, fip, aio):
+            new_headers = set()
+            # Get the checked headers
+            for key, name in self.PREDEFINED_TAGS:
+                if buttons[key].get_active():
+                    new_headers.add(key)
+                # And the customs
+            new_headers.update(set(self.other_cols))
 
-            headers.extend(others.get_text().split())
-            if "~current" in headers: headers.remove("~current")
-            headers = [header.lower() for header in headers]
-            SongList.set_all_column_headers(headers)
+            on_to_off = {on: off for (w, off, on) in self._toggle_data}
+            result = []
+            cur_cols = config.get_columns(refresh=True)
+            for h in cur_cols:
+                if h in new_headers:
+                    result.append(h)
+                else:
+                    try:
+                        alternative = on_to_off[h]
+                        if alternative in new_headers:
+                            result.append(alternative)
+                    except KeyError: pass
+
+            # Add new ones on the end
+            result.extend(new_headers - set(result))
+
+            # After this, do the substitutions
+            for (check, off, on) in self._toggle_data:
+                if check.get_active():
+                    try:
+                        result[result.index(off)] = on
+                    except ValueError:
+                        pass
+
+            SongList.set_all_column_headers(result)
+
+        def __config_cols(self, button):
+            def __closed(widget):
+                self.other_cols = widget.get_strings()
+                self.others.set_text(", ".join(self.other_cols))
+
+            m = MultiStringEditor(_("Extra Columns"), self.other_cols)
+            m.connect('destroy', __closed)
 
     class Browsers(gtk.VBox):
         name = "browser"
@@ -165,8 +216,8 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             c = ConfigCheckButton(_("Search after _typing"),
                                   'settings', 'eager_search', populate=True)
-            c.set_tooltip_text(_("Show search results after the user "
-                "stops typing."))
+            c.set_tooltip_text(
+                    _("Show search results after the user stops typing."))
             vb.pack_start(c, expand=False)
             # Translators: The heading of the preference group, no action
             f = qltk.Frame(Q_("heading|Search"), child=vb)
