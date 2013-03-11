@@ -20,7 +20,7 @@ import webbrowser
 # title function was moved to a separate module
 from quodlibet.util.titlecase import title
 
-from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL
+from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_
 
 if os.name == "nt":
@@ -144,17 +144,13 @@ class OptionParser(object):
         self.__help = newhelp
 
     def version(self):
-        return _("""\
+        return ("""\
 {title} {version}
 <{email}>
-Copyright {dates}\t{authors}
-
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+{copyright}\
 """).format(title=self.__name,  version=self.__version, dates="2004-2012",
         email=SUPPORT_EMAIL,
-        authors="Joe Wreschnig, Michael Urman, Iñigo Serna,\n\t\t\t"
-                "Steven Robertson, Christoph Reiter, Nick Boultbee and others.")
+        copyright=COPYRIGHT)
 
     def parse(self, args=None):
         if args is None: args = sys.argv[1:]

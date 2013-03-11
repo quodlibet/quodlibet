@@ -65,6 +65,12 @@ DEFAULT_RATING = 0.5
 ONLINE_HELP = "http://code.google.com/p/quodlibet/wiki/QuickStart"
 SEARCH_HELP = "http://code.google.com/p/quodlibet/wiki/SearchingGuide"
 
+# about dialog, --version etc.
+WEBSITE = "http://code.google.com/p/quodlibet"
+COPYRIGHT = """\
+Copyright © 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+Steven Robertson, Christoph Reiter, Nick Boultbee, ..."""
+
 # Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 

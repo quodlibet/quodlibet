@@ -33,10 +33,9 @@ class AboutDialog(gtk.AboutDialog):
             text.append(player.version_info)
         self.set_comments("\n".join(text))
         self.set_translator_credits("\n".join(const.TRANSLATORS))
-        self.set_website("http://code.google.com/p/quodlibet")
-        self.set_copyright(
-            "Copyright © 2004-2012 Joe Wreschnig, Michael Urman, & others\n"
-            "<quod-libet-development@googlegroups.com>")
+        self.set_website(const.WEBSITE)
+        self.set_copyright(const.COPYRIGHT + "\n" + \
+                           "<%s>" % const.SUPPORT_EMAIL)
         self.child.show_all()
 
 
