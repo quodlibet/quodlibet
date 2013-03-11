@@ -7,17 +7,14 @@
 
 import os
 import tempfile
-
-try:
-  import hashlib as hash
-except ImportError:
-  import md5 as hash
+import hashlib as hash
 
 import gtk
 
 from quodlibet.util import mtime, fsnative, pathname2url
 from quodlibet.util import xdg_get_cache_home, mkdir
 from quodlibet.const import USERDIR
+
 
 def add_border(pixbuf, val, round=False):
     """Add a 1px border to the pixbuf and round of the edges if needed.
@@ -51,13 +48,15 @@ def add_border(pixbuf, val, round=False):
 
         for y, row in enumerate(mask):
             for x, pix in enumerate(row):
-                for xn, yn in [(x, y), (w+1-x, y), (w+1-x, h+1-y), (x, h+1-y)]:
+                for xn, yn in [(x, y), (w + 1 - x, y), (w + 1 - x, h + 1 - y),
+                               (x, h + 1 - y)]:
                     if pix == l:
                         overlay.composite(newpb, xn, yn, 1, 1, 0, 0, 1, 1,
                             gtk.gdk.INTERP_NEAREST, 70)
                     elif pix != e:
                         newpb.subpixbuf(xn, yn, 1, 1).fill(pix)
     return newpb
+
 
 def calc_scale_size(boundary, size, scale_up=True):
     """Returns the biggest possible size to fit into the boundary,
@@ -81,6 +80,7 @@ def calc_scale_size(boundary, size, scale_up=True):
 
     return scale_w, scale_h
 
+
 def scale(pixbuf, boundary, scale_up=True, force_copy=False):
     """Scale a pixbuf so it fits into the boundary.
     (preserves image aspect ratio)"""
@@ -96,6 +96,7 @@ def scale(pixbuf, boundary, scale_up=True, force_copy=False):
 
     return pixbuf.scale_simple(scale_w, scale_h, gtk.gdk.INTERP_BILINEAR)
 
+
 def get_thumbnail_folder():
     """Returns a path to an existing folder"""
 
@@ -109,6 +110,7 @@ def get_thumbnail_folder():
 
     mkdir(thumb_folder, 0700)
     return thumb_folder
+
 
 def get_thumbnail(path, boundary):
     """Get a thumbnail of an image. Will create/use a thumbnail in

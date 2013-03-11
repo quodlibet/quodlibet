@@ -14,11 +14,15 @@ from quodlibet.util.dprint import print_d
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
 
+
 def background_filter():
     bg = config.get("browsers", "background").decode('utf-8')
-    if not bg: return
-    try: return Query(bg, SongList.star).search
-    except Query.error: pass
+    if not bg:
+        return
+    try:
+        return Query(bg, SongList.star).search
+    except Query.error:
+        pass
 
 
 def emit_signal(songs, signal="changed", block_size=50, name=None,
@@ -33,10 +37,10 @@ def emit_signal(songs, signal="changed", block_size=50, name=None,
             task.copool(cofuncid)
         total = len(songs)
         while i < total:
-            more = songs[i:i+block_size]
+            more = songs[i:i + block_size]
             if not more:
                 return
-            if 0 == ((i/block_size) % 10):
+            if 0 == ((i / block_size) % 10):
                 print_d("Signalling '%s' (%d/%d songs)"
                         % (signal, i, total))
             task.update(float(i) / total)

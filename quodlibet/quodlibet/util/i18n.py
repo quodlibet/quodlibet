@@ -8,6 +8,7 @@ import __builtin__
 import gettext
 import os
 
+
 class GlibTranslations(gettext.GNUTranslations):
     """Provide a glib-like translation API for Python.
 
@@ -29,16 +30,20 @@ class GlibTranslations(gettext.GNUTranslations):
     def qgettext(self, msgid):
         msgstr = self.gettext(msgid)
         if msgstr == msgid:
-            try: return msgstr.split("|", 1)[1]
-            except IndexError: return msgstr
+            try:
+                return msgstr.split("|", 1)[1]
+            except IndexError:
+                return msgstr
         else:
             return msgstr
 
     def uqgettext(self, msgid):
         msgstr = self.ugettext(msgid)
         if msgstr == msgid:
-            try: return msgstr.split(u"|", 1)[1]
-            except IndexError: return msgstr
+            try:
+                return msgstr.split(u"|", 1)[1]
+            except IndexError:
+                return msgstr
         else:
             return msgstr
 
@@ -57,6 +62,7 @@ class GlibTranslations(gettext.GNUTranslations):
         test_key = "QUODLIBET_TEST_TRANS"
         if test_key in os.environ:
             text = os.environ[test_key]
+
             def wrap(f):
                 def g(*args):
                     return text + f(*args) + text

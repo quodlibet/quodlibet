@@ -14,6 +14,7 @@ FMPS_NOTHING = u"FMPS_NOTHING"
 LIST_SEPERATOR = u";;"
 ENTRY_SEPERATOR = u"::"
 
+
 def _split_left(val, sep):
     """Split a string by a delimiter which can be escaped by \\"""
     result = []
@@ -41,6 +42,7 @@ def _split_left(val, sep):
         result.append(temp)
     return result
 
+
 def _split(val, sep):
     """Split and filter invalid segments.
     Entries seperated by ::: for example need to be set invalid
@@ -55,7 +57,7 @@ def _split(val, sep):
     # and mark it and the next one as invalid (except the last one)
     for i, v in enumerate(vals[-1::-1]):
         new_c = v.startswith(sep[0])
-        excp = i == len(vals)-1
+        excp = i == len(vals) - 1
         if c or (new_c and not excp):
             inval.insert(0, v)
         else:
@@ -68,20 +70,26 @@ def _split(val, sep):
         invalid.insert(0, sep.join(inval))
     return invalid, valid
 
+
 def _unescape(val):
     return val.replace(
         ur"\;", u";").replace(ur"\:", u":").replace(ur"\\", u"\\")
+
+
 def _escape(val):
     return val.replace(
         u"\\", ur"\\").replace(u";", ur"\;").replace(u":", ur"\:")
+
 
 def _escape_inval(val):
     if val.startswith(";"):
         return u"\\" + val
     return val
 
+
 class FmpsValue(object):
     _data = None
+
     def __repr__(self):
         return "%s(%s)" % (self.__class__.__name__, repr(self._data))
 
@@ -93,6 +101,7 @@ class FmpsValue(object):
 
     def __str__(self):
         return str(self._data)
+
 
 class FmpsFloat(FmpsValue):
     def __init__(self, data):
@@ -110,13 +119,15 @@ class FmpsFloat(FmpsValue):
     def native(self):
         return float(self._data)
 
+
 class FmpsPositiveFloat(FmpsFloat):
     def _validate(self, data):
         num = super(FmpsPositiveFloat, self)._validate(data)
-        if num < 0  or (not isinstance(data, basestring)
-            and num > 4294967294.999999):
+        if num < 0 or (not isinstance(data, basestring)
+                       and num > 4294967294.999999):
             raise ValueError("Value not in range.")
         return num
+
 
 class FmpsRatingFloat(FmpsFloat):
     def _validate(self, data):
@@ -124,6 +135,7 @@ class FmpsRatingFloat(FmpsFloat):
         if not 0 <= num <= 1:
             raise ValueError("Value not in range.")
         return num
+
 
 class FmpsPositiveIntegerFloat(FmpsPositiveFloat):
     def _validate(self, data):
@@ -135,11 +147,15 @@ class FmpsPositiveIntegerFloat(FmpsPositiveFloat):
     def native(self):
         return int(super(FmpsPositiveIntegerFloat, self).native())
 
+
 class FmpsText(FmpsValue):
     def __init__(self, data):
         self._data = unicode(data)
 
-class FmpsInvalidValue(FmpsText): pass
+
+class FmpsInvalidValue(FmpsText):
+    pass
+
 
 class FmpsDict(object):
     _kind = None
@@ -230,6 +246,7 @@ class FmpsDict(object):
     def __repr__(self):
         return "%s(%s, invalid=%s)" % (
             self.__class__.__name__, repr(self.__dict), repr(self.__invalid))
+
 
 class FmpsNamespaceDict(object):
     _kind = None
@@ -379,6 +396,7 @@ class FmpsNamespaceDict(object):
         return "%s(%s, invalid=%s)" % (
             self.__class__.__name__, repr(self.__dict), repr(self.__invalid))
 
+
 class FmpsNoEmptyKeyDict(FmpsDict):
     def set_all(self, key, values):
         if not key:
@@ -390,28 +408,49 @@ class FmpsNoEmptyKeyDict(FmpsDict):
             raise ValueError("No empty key allowed.")
         super(FmpsNoEmptyKeyDict, self).extend(key, values)
 
+
 #All simple Formats
-class Rating(FmpsRatingFloat): pass
-class Playcount(FmpsPositiveIntegerFloat): pass
-class Lyrics(FmpsText): pass
+class Rating(FmpsRatingFloat):
+    pass
+
+
+class Playcount(FmpsPositiveIntegerFloat):
+    pass
+
+
+class Lyrics(FmpsText):
+    pass
+
 
 #All Dicts
 class RatingUser(FmpsNoEmptyKeyDict):
     _kind = FmpsRatingFloat
+
+
 class PlaycountUser(FmpsNoEmptyKeyDict):
     _kind = FmpsPositiveIntegerFloat
+
+
 class Performers(FmpsDict):
     _kind = FmpsText
+
+
 class LyricsSources(FmpsDict):
     _kind = FmpsText
 
+
 #All NamespaceDicts
 class RatingCritic(FmpsNamespaceDict):
-    _kind=FmpsRatingFloat
+    _kind = FmpsRatingFloat
+
+
 class RatingAlgorithm(FmpsNamespaceDict):
-    _kind=FmpsRatingFloat
+    _kind = FmpsRatingFloat
+
+
 class PlaycountAlgorithm(FmpsNamespaceDict):
-    _kind=FmpsPositiveFloat
+    _kind = FmpsPositiveFloat
+
 
 # AlbumsCompilations needs checks for unique
 # Application(case sensitive)+Type(case insensitive)+Identifier(case sensitive)

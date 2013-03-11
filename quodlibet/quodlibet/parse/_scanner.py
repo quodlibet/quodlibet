@@ -10,6 +10,7 @@ import sre_parse
 import sre_compile
 from sre_constants import BRANCH, SUBPATTERN
 
+
 class Scanner(object):
     def __init__(self, lexicon, flags=0):
         self.__lexicon = lexicon

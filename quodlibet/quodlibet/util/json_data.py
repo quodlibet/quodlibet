@@ -25,12 +25,12 @@ class JSONObject(object):
         self.name = str(name)
 
     def _data(self, fields=None):
-        """Returns a list of tuples of the persisted key:values in this class"""
+        """A list of tuples of the persisted key:values in this class"""
         if fields:
             return [(k, self.__getattribute__(k)) for k in fields]
         else:
-            print_d("No order specified for class %s" % self.__class__.__name__)
-            return dict([(k,v) for k,v in self.__dict__.items()
+            print_d("No order specified for class %s" % type(self).__name__)
+            return dict([(k, v) for k, v in self.__dict__.items()
                          if self._should_store(k)])
 
     @property
@@ -56,7 +56,6 @@ class JSONObjectDict(dict):
         self.Item = Item
         dict.__init__(self)
 
-
     @classmethod
     def from_json(cls, ItemKind, json_str):
         """
@@ -72,7 +71,7 @@ class JSONObjectDict(dict):
         except ValueError:
             print_d("Broken JSON: %s" % json_str)
         else:
-            for name,blob in data.items():
+            for name, blob in data.items():
                 print_d("Loading %s '%s' with data %s"
                         % (ItemKind.__name__, name, blob))
                 try:
@@ -96,13 +95,12 @@ class JSONObjectDict(dict):
             else:
                 if not j.name and raise_errors:
                     raise ValueError("Null key for %s object %s"
-                                     % (cls.__name__, j) )
+                                     % (cls.__name__, j))
                 if j.name in new:
                     print_w("Duplicate %s found named '%s'. Removing..."
                             % (cls.__name__, j.name))
                 new[j.name] = j
         return new
-
 
     def save(self, filename=None):
         """
@@ -112,7 +110,7 @@ class JSONObjectDict(dict):
         """
         print_d("Saving %d %s(s) to JSON.." % (len(self), self.Item.__name__))
         try:
-            obj_dict = dict([(o.name,dict(o.data)) for o in self.values()])
+            obj_dict = dict([(o.name, dict(o.data)) for o in self.values()])
         except AttributeError:
             raise
             obj_dict = {}
