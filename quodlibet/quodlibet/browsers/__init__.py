@@ -15,6 +15,7 @@ from quodlibet.browsers._base import Browser
 
 browsers = []
 
+
 def init():
     global browsers
 
@@ -47,24 +48,34 @@ def init():
 
 
 # Return the name of the ith browser.
-def name(i): return browsers[i].__name__
+def name(i):
+    return browsers[i].__name__
+
 
 # Return a constructor for a browser, either given by number, a string
 # of the number, or the name. Defaults to the first browser if all else
 # fails.
 def get(i):
-    try: return browsers[int(i)]
+    try:
+        return browsers[int(i)]
     except (IndexError, ValueError, TypeError):
-        try: return get(index(i))
-        except (IndexError, ValueError): return browsers[0]
+        try:
+            return get(index(i))
+        except (IndexError, ValueError):
+            return browsers[0]
+
 
 # Return the index of a browser given its name. Defaults to the first
 # browser if all else fails.
 def index(i):
-    try: return int(i)
+    try:
+        return int(i)
     except (ValueError, TypeError):
-        try: return map(name, range(len(browsers))).index(i)
-        except: return 0
+        try:
+            return map(name, range(len(browsers))).index(i)
+        except:
+            return 0
+
 
 def BrowseLibrary():
     items = []
@@ -73,6 +84,7 @@ def BrowseLibrary():
             item = "Browser" + Kind.__name__
             items.append("<menuitem action='%s'/>" % item)
     return "\n".join(items)
+
 
 def ViewBrowser():
     items = []

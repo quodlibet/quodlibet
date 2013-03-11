@@ -49,6 +49,7 @@ STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
 # Migration path for pickle
 sys.modules["browsers.iradio"] = sys.modules[__name__]
 
+
 class IRFile(RemoteFile):
     multisong = True
     can_add = False
@@ -96,15 +97,20 @@ def ParsePLS(file):
     data = {}
 
     lines = file.readlines()
-    if not lines or "[playlist]" not in lines.pop(0): return []
+    if not lines or "[playlist]" not in lines.pop(0):
+        return []
 
     for line in lines:
-        try: head, val = line.strip().split("=", 1)
-        except (TypeError, ValueError): continue
+        try:
+            head, val = line.strip().split("=", 1)
+        except (TypeError, ValueError):
+            continue
         else:
             head = head.lower()
-            if head.startswith("length") and val == "-1": continue
-            else: data[head] = val.decode('utf-8', 'replace')
+            if head.startswith("length") and val == "-1":
+                continue
+            else:
+                data[head] = val.decode('utf-8', 'replace')
 
     count = 1
     files = []
@@ -117,12 +123,17 @@ def ParsePLS(file):
             else:
                 irf = IRFile(filename)
                 for key in ["title", "genre", "artist"]:
-                    try: irf[key] = data["%s%d" % (key, count)]
-                    except KeyError: pass
-                try: irf["~#length"] = int(data["length%d" % count])
-                except (KeyError, TypeError, ValueError): pass
+                    try:
+                        irf[key] = data["%s%d" % (key, count)]
+                    except KeyError:
+                        pass
+                try:
+                    irf["~#length"] = int(data["length%d" % count])
+                except (KeyError, TypeError, ValueError):
+                    pass
                 files.append(irf)
-        else: break
+        else:
+            break
         count += 1
 
     if warnings:
@@ -130,7 +141,8 @@ def ParsePLS(file):
             None, _("Unsupported file type"),
             _("Station lists can only contain locations of stations, "
               "not other station lists or playlists. The following locations "
-              "cannot be loaded:\n%s") % "\n  ".join(map(util.escape, warnings))
+              "cannot be loaded:\n%s") %
+              "\n  ".join(map(util.escape, warnings))
             ).run()
 
     return files
@@ -142,8 +154,10 @@ def ParseM3U(fileobj):
     for line in fileobj:
         line = line.strip()
         if line.startswith("#EXTINF:"):
-            try: pending_title = line.split(",", 1)[1]
-            except IndexError: pending_title = None
+            try:
+                pending_title = line.split(",", 1)[1]
+            except IndexError:
+                pending_title = None
         elif line.startswith("http"):
             irf = IRFile(line)
             if pending_title:
@@ -161,9 +175,11 @@ def add_station(uri):
         uri = uri.encode('utf-8')
 
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
-        try: sock = urllib.urlopen(uri)
+        try:
+            sock = urllib.urlopen(uri)
         except EnvironmentError, e:
-            try: err = e.strerror.decode(const.ENCODING, 'replace')
+            try:
+                err = e.strerror.decode(const.ENCODING, 'replace')
             except (TypeError, AttributeError):
                 err = e.strerror[1].decode(const.ENCODING, 'replace')
             qltk.ErrorMessage(None, _("Unable to add station"), err).run()
@@ -191,7 +207,8 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
     an error."""
 
     with Task(_("Internet Radio"), _("Downloading station list")) as task:
-        if cofuncid: task.copool(cofuncid)
+        if cofuncid:
+            task.copool(cofuncid)
 
         try:
             response = urllib2.urlopen(STATION_LIST_URL)
@@ -212,8 +229,10 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
         while temp or not data:
             read += len(temp)
 
-            if size: task.update(float(read) / size)
-            else: task.pulse()
+            if size:
+                task.update(float(read) / size)
+            else:
+                task.pulse()
             yield True
 
             try:
@@ -707,6 +726,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
             self.__filter_changed(self.__searchbar, text, restore=True)
 
         keys = config.get("browsers", "radio").splitlines()
+
         def select_func(row):
             return row[self.TYPE] != self.TYPE_SEP and row[self.KEY] in keys
 

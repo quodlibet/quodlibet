@@ -31,12 +31,16 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import ScrolledWindow, Alignment
 
+
 FEEDS = os.path.join(const.USERDIR, "feeds")
 
 # Migration path for pickle
 sys.modules["browsers.audiofeeds"] = sys.modules[__name__]
 
-class InvalidFeed(ValueError): pass
+
+class InvalidFeed(ValueError):
+    pass
+
 
 class Feed(list):
     def __init__(self, uri):
@@ -50,10 +54,14 @@ class Feed(list):
         return time.time() - self.__lastgot
 
     def __fill_af(feed, af):
-        try: af["title"] = feed.title or _("Unknown")
-        except: af["title"] = _("Unknown")
-        try: af["date"] = "%04d-%02d-%02d" % feed.modified_parsed[:3]
-        except (AttributeError, TypeError): pass
+        try:
+            af["title"] = feed.title or _("Unknown")
+        except:
+            af["title"] = _("Unknown")
+        try:
+            af["date"] = "%04d-%02d-%02d" % feed.modified_parsed[:3]
+        except (AttributeError, TypeError):
+            pass
 
         for songkey, feedkey in [
             ("website", "link"),
@@ -62,16 +70,21 @@ class Feed(list):
             ("copyright", "copyright"),
             ("organization", "publisher"),
             ("license", "license")]:
-            try: value = getattr(feed, feedkey)
-            except: pass
+            try:
+                value = getattr(feed, feedkey)
+            except:
+                pass
             else:
                 if value and value not in af.list(songkey):
                     af.add(songkey, value)
 
-        try: author = feed.author_detail
+        try:
+            author = feed.author_detail
         except AttributeError:
-            try: author = feed.author
-            except AttributeError: pass
+            try:
+                author = feed.author
+            except AttributeError:
+                pass
             else:
                 if author and author not in af.list("artist"):
                     af.add('artist', author)
@@ -79,27 +92,37 @@ class Feed(list):
             try:
                 if author.email and author.email not in af.list("contact"):
                     af.add("contact", author.email)
-            except AttributeError: pass
+            except AttributeError:
+                pass
             try:
                 if author.name and author.name not in af.list("artist"):
                     af.add("artist", author.name)
-            except AttributeError: pass
+            except AttributeError:
+                pass
 
-        try: values = feed.contributors
-        except AttributeError: pass
+        try:
+            values = feed.contributors
+        except AttributeError:
+            pass
         else:
             for value in values:
-                try: value = value.name
-                except AttributeError: pass
+                try:
+                    value = value.name
+                except AttributeError:
+                    pass
                 else:
                     if value and value not in af.list("performer"):
                         af.add("performer", value)
 
-        try: af["~#length"] = util.parse_time(feed.itunes_duration)
-        except (AttributeError, ValueError): pass
+        try:
+            af["~#length"] = util.parse_time(feed.itunes_duration)
+        except (AttributeError, ValueError):
+            pass
 
-        try: values = dict(feed.categories).values()
-        except AttributeError: pass
+        try:
+            values = dict(feed.categories).values()
+        except AttributeError:
+            pass
         else:
             for value in values:
                 if value and value not in af.list("genre"):
@@ -107,18 +130,26 @@ class Feed(list):
     __fill_af = staticmethod(__fill_af)
 
     def parse(self):
-        try: doc = feedparser.parse(self.uri)
-        except: return False
+        try:
+            doc = feedparser.parse(self.uri)
+        except:
+            return False
 
-        try: album = doc.channel.title
-        except AttributeError: return False
+        try:
+            album = doc.channel.title
+        except AttributeError:
+            return False
 
-        if album: self.name = album
-        else: self.name = _("Unknown")
+        if album:
+            self.name = album
+        else:
+            self.name = _("Unknown")
 
         defaults = AudioFile({"feed": self.uri})
-        try: self.__fill_af(doc.channel, defaults)
-        except: return False
+        try:
+            self.__fill_af(doc.channel, defaults)
+        except:
+            return False
 
         entries = []
         uris = set()
@@ -130,17 +161,23 @@ class Feed(list):
                             "ogg" in enclosure.type or
                             formats.filter(enclosure.url)):
                             uri = enclosure.url.encode('ascii', 'replace')
-                            try: size = enclosure.length
-                            except AttributeError: size = 0
+                            try:
+                                size = enclosure.length
+                            except AttributeError:
+                                size = 0
                             entries.append((uri, entry, size))
                             uris.add(uri)
                             break
-                    except AttributeError: pass
-            except AttributeError: pass
+                    except AttributeError:
+                        pass
+            except AttributeError:
+                pass
 
         for entry in list(self):
-            if entry["~uri"] not in uris: self.remove(entry)
-            else: uris.remove(entry["~uri"])
+            if entry["~uri"] not in uris:
+                self.remove(entry)
+            else:
+                uris.remove(entry["~uri"])
 
         entries.reverse()
         for uri, entry, size in entries:
@@ -150,11 +187,15 @@ class Feed(list):
                 song.fill_metadata = False
                 song.update(defaults)
                 song["album"] = self.name
-                try: self.__fill_af(entry, song)
-                except: pass
-                else: self.insert(0, song)
+                try:
+                    self.__fill_af(entry, song)
+                except:
+                    pass
+                else:
+                    self.insert(0, song)
         self.__lastgot = time.time()
         return bool(uris)
+
 
 class AddFeedDialog(GetStringDialog):
     def __init__(self, parent):
@@ -165,13 +206,16 @@ class AddFeedDialog(GetStringDialog):
 
     def run(self):
         uri = super(AddFeedDialog, self).run()
-        if uri: return Feed(uri.encode('ascii', 'replace'))
-        else: return None
+        if uri:
+            return Feed(uri.encode('ascii', 'replace'))
+        else:
+            return None
+
 
 class AudioFeeds(Browser, gtk.VBox):
     __gsignals__ = Browser.__gsignals__
 
-    __feeds = gtk.ListStore(object) # unread
+    __feeds = gtk.ListStore(object)  # unread
 
     headers = ("title artist performer ~people album date website language "
                "copyright organization license contact").split()
@@ -186,7 +230,8 @@ class AudioFeeds(Browser, gtk.VBox):
     def cell_data(col, render, model, iter):
         if model[iter][0].changed:
             render.markup = "<b>%s</b>" % util.escape(model[iter][0].name)
-        else: render.markup = util.escape(model[iter][0].name)
+        else:
+            render.markup = util.escape(model[iter][0].name)
         render.set_property('markup', render.markup)
     cell_data = staticmethod(cell_data)
 
@@ -206,8 +251,10 @@ class AudioFeeds(Browser, gtk.VBox):
     write = classmethod(write)
 
     def init(klass, library):
-        try: feeds = pickle.load(file(FEEDS, "rb"))
-        except (pickle.PickleError, EnvironmentError, EOFError): pass
+        try:
+            feeds = pickle.load(file(FEEDS, "rb"))
+        except (pickle.PickleError, EnvironmentError, EOFError):
+            pass
         else:
             for feed in feeds:
                 klass.__feeds.append(row=[feed])
@@ -223,12 +270,13 @@ class AudioFeeds(Browser, gtk.VBox):
     def __check(klass):
         for row in klass.__feeds:
             feed = row[0]
-            if feed.get_age() < 2*60*60: continue
+            if feed.get_age() < 2 * 60 * 60:
+                continue
             elif feed.parse():
                 feed.changed = True
                 row[0] = feed
         klass.write()
-        gobject.timeout_add(60*60*1000, klass.__do_check)
+        gobject.timeout_add(60 * 60 * 1000, klass.__do_check)
     __check = classmethod(__check)
 
     def Menu(self, songs, songlist, library):
@@ -277,7 +325,8 @@ class AudioFeeds(Browser, gtk.VBox):
                      gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         chooser.set_current_folder(self.__last_folder)
         name = os.path.basename(source)
-        if name: chooser.set_current_name(name)
+        if name:
+            chooser.set_current_name(name)
         resp = chooser.run()
         if resp == gtk.RESPONSE_OK:
             target = chooser.get_filename()
@@ -353,7 +402,7 @@ class AudioFeeds(Browser, gtk.VBox):
             ErrorMessage(
                 self, _("Unable to add feed"),
                 _("<b>%s</b> could not be added. The server may be down, "
-                  "or the location may not be an audio feed.") %(
+                  "or the location may not be an audio feed.") % (
                 util.escape(feed.uri))).run()
 
     def __menu(self, view):
@@ -384,7 +433,8 @@ class AudioFeeds(Browser, gtk.VBox):
         changed = filter(Feed.parse, feeds)
         AudioFeeds.changed(changed)
 
-    def activate(self): self.__changed(self.__view.get_selection())
+    def activate(self):
+        self.__changed(self.__view.get_selection())
 
     def __changed(self, selection):
         model, paths = selection.get_selected_rows()
@@ -408,12 +458,14 @@ class AudioFeeds(Browser, gtk.VBox):
                 ErrorMessage(
                     self, _("Unable to add feed"),
                     _("<b>%s</b> could not be added. The server may be down, "
-                      "or the location may not be an audio feed.") %(
+                      "or the location may not be an audio feed.") % (
                     util.escape(feed.uri))).run()
 
     def restore(self):
-        try: names = config.get("browsers", "audiofeeds").split("\t")
-        except: pass
+        try:
+            names = config.get("browsers", "audiofeeds").split("\t")
+        except:
+            pass
         else:
             self.__view.select_by_func(lambda r: r[0].name in names)
 

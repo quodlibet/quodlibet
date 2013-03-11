@@ -28,6 +28,7 @@ from quodlibet.util import copool, split_scan_dirs
 from quodlibet.util.dprint import print_d
 from quodlibet.util.uri import URI
 
+
 class FileSystem(Browser, gtk.HBox):
     __gsignals__ = Browser.__gsignals__
 
@@ -38,7 +39,7 @@ class FileSystem(Browser, gtk.HBox):
     accelerated_name = _("_File System")
     priority = 10
 
-    TARGET_QL, TARGET_EXT = range(1,3)
+    TARGET_QL, TARGET_EXT = range(1, 3)
 
     def __added(klass, library, songs):
         klass.__library.remove(songs)
@@ -64,8 +65,9 @@ class FileSystem(Browser, gtk.HBox):
         folders = filter(None, split_scan_dirs(config.get("settings", "scan")))
 
         dt = DirectoryTree(folders=folders)
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, self.TARGET_QL),
-                   ("text/uri-list", 0, self.TARGET_EXT)]
+        targets = [
+            ("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, self.TARGET_QL),
+            ("text/uri-list", 0, self.TARGET_EXT)]
         dt.drag_source_set(gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         dt.connect('drag-data-get', self.__drag_data_get)
 
@@ -111,7 +113,8 @@ class FileSystem(Browser, gtk.HBox):
 
     def filter(self, key, values):
         self.child.get_selection().unselect_all()
-        for v in values: self.child.go_to(v)
+        for v in values:
+            self.child.go_to(v)
 
     def scroll(self, song):
         self.__select_paths([song("~dirname")])
@@ -139,7 +142,8 @@ class FileSystem(Browser, gtk.HBox):
             return not bool(paths)
         first = []
         self.child.get_model().foreach(select, (paths, first))
-        if first: self.child.scroll_to_cell(first[0], None, True, 0.5)
+        if first:
+            self.child.scroll_to_cell(first[0], None, True, 0.5)
 
     def save(self):
         model, rows = self.child.get_selection().get_selected_rows()
@@ -196,7 +200,8 @@ class FileSystem(Browser, gtk.HBox):
                             self.__library.reload(song)
                         if song in self.__library:
                             songs.append(song)
-            except OSError: pass
+            except OSError:
+                pass
         self.__library.add(to_add)
         yield songs
 

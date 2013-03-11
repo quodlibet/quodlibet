@@ -54,7 +54,7 @@ class DeviceProperties(gtk.Dialog):
 
         y = 0
         for title, value, key in props + device.Properties():
-            if title == None:
+            if title is None:
                 table.attach(gtk.HSeparator(), 0, 2, y, y + 1)
             else:
                 if key and isinstance(value, gtk.CheckButton):
@@ -96,6 +96,7 @@ class DeviceProperties(gtk.Dialog):
         dialog.destroy()
         devices.write()
 
+
 # This will be included in SongsMenu
 class Menu(gtk.Menu):
     def __init__(self, songs, library):
@@ -118,6 +119,7 @@ class Menu(gtk.Menu):
             browser = win.browser
         browser.select(device)
         browser.dropped(browser.get_toplevel().songlist, songs)
+
 
 class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
@@ -287,24 +289,32 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             config.set('browsers', 'media', model[iter][0]['name'])
 
     def restore(self):
-        try: name = config.get('browsers', 'media')
-        except config.Error: pass
+        try:
+            name = config.get('browsers', 'media')
+        except config.Error:
+            pass
         else:
             for row in self.__devices:
-                if row[0]['name'] == name: break
-            else: return
+                if row[0]['name'] == name:
+                    break
+            else:
+                return
             selection = self.__view.get_selection()
             selection.unselect_all()
             selection.select_iter(row.iter)
 
     def select(self, device):
         for row in self.__devices:
-            if row[0] == device: break
-        else: return
+            if row[0] == device:
+                break
+        else:
+            return
 
         # Force a full refresh
-        try: del self.__cache[device.bid]
-        except KeyError: pass
+        try:
+            del self.__cache[device.bid]
+        except KeyError:
+            pass
 
         selection = self.__view.get_selection()
         selection.unselect_all()
@@ -335,6 +345,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         keyval, mod = gtk.accelerator_parse("F2")
         ren.add_accelerator(
             'activate', self.accelerators, keyval, mod, gtk.ACCEL_VISIBLE)
+
         def rename(path):
             self.__render.set_property('editable', True)
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
@@ -387,11 +398,13 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             path = model[iter].path
-            if not rescan and self.__last == path: return
+            if not rescan and self.__last == path:
+                return
             self.__last = path
 
             device = model[iter][0]
-            self.__device_icon.set_from_icon_name(device.icon, gtk.ICON_SIZE_DIALOG)
+            self.__device_icon.set_from_icon_name(device.icon,
+                                                  gtk.ICON_SIZE_DIALOG)
             self.__set_name(device)
 
             songs = []
@@ -401,8 +414,10 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 self.__refresh_button.set_sensitive(True)
                 self.__refresh_space(device)
 
-                try: songs = self.__list_songs(device, rescan)
-                except NotImplementedError: pass
+                try:
+                    songs = self.__list_songs(device, rescan)
+                except NotImplementedError:
+                    pass
             else:
                 self.__eject_button.set_sensitive(False)
                 self.__refresh_button.set_sensitive(False)
@@ -413,7 +428,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             self.emit('songs-selected', [], False)
 
     def __refresh_space(self, device):
-        try: space, free = device.get_space()
+        try:
+            space, free = device.get_space()
         except NotImplementedError:
             self.__device_space.set_text("")
             self.__progress.hide()
@@ -446,7 +462,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
     def __copy_songs(self, songlist, songs):
         model, iter = self.__view.get_selection().get_selected()
-        if not iter: return False
+        if not iter:
+            return False
 
         device = model[iter][0]
         if not self.__check_device(device, _("Unable to copy songs")):
@@ -455,7 +472,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), { 'song': '' })
+        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), {'song': ''})
         wlb.show()
 
         model = songlist.get_model()
@@ -467,7 +484,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
             if len(model) > 0:
                 songlist.scroll_to_cell(model[-1].path)
-            while gtk.events_pending(): gtk.main_iteration()
+            while gtk.events_pending():
+                gtk.main_iteration()
 
             space, free = device.get_space()
             if free < os.path.getsize(song['~filename']):
@@ -481,8 +499,10 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             status = device.copy(songlist, song)
             if isinstance(status, AudioFile):
                 model.append([status])
-                try: self.__cache[device.bid].append(song)
-                except KeyError: pass
+                try:
+                    self.__cache[device.bid].append(song)
+                except KeyError:
+                    pass
                 self.__refresh_space(device)
             else:
                 msg = _("<b>%s</b> could not be copied.") % label
@@ -515,7 +535,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), { 'song': '' })
+        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), {'song': ''})
         wlb.show()
 
         model = songlist.get_model()
@@ -526,10 +546,12 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
                 break
 
             status = device.delete(songlist, song)
-            if status == True:
+            if status is True:
                 model.remove(model.find(song))
-                try: self.__cache[device.bid].remove(song)
-                except (KeyError, ValueError): pass
+                try:
+                    self.__cache[device.bid].remove(song)
+                except (KeyError, ValueError):
+                    pass
                 self.__refresh_space(device)
             else:
                 msg = _("<b>%s</b> could not be deleted.") % label
@@ -550,7 +572,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
         if iter:
             device = model[iter][0]
             status = device.eject()
-            if status != True:
+            if status is True:
                 msg = _("Ejecting <b>%s</b> failed.") % device['name']
                 if status:
                     msg += "\n\n%s" % status

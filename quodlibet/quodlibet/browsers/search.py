@@ -52,7 +52,8 @@ class EmptyBar(gtk.VBox, Browser):
     def active_filter(self, song):
         if self._filter is not None:
             return self._filter(song)
-        else: return True
+        else:
+            return True
 
     def filter_text(self, text):
         self._text = text
@@ -81,7 +82,8 @@ class EmptyBar(gtk.VBox, Browser):
     def _get_songs(self):
         try:
             self._filter = Query(self._text, star=SongList.star).search
-        except Query.error: pass
+        except Query.error:
+            pass
         else:
             if Query.match_all(self._text):
                 songs = self._library.values()

@@ -28,4 +28,9 @@ class TPEP8(TestCase):
         path = parse.__path__[0]
         subprocess.check_call(["pep8", path])
 
+    def test_browsers(self):
+        from quodlibet import browsers
+        path = browsers.__path__[0]
+        subprocess.check_call(["pep8", path])
+
 add(TPEP8)
