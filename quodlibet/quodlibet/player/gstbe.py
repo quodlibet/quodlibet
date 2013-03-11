@@ -1,12 +1,15 @@
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
-#                     Christoph Reiter
+#           2011-2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 import gi
-gi.require_version("Gst", "1.0")
+try:
+    gi.require_version("Gst", "1.0")
+except ValueError, e:
+    raise ImportError(e)
 
 from gi.repository import Gtk, Gst, GLib
 
