@@ -23,7 +23,7 @@ from quodlibet import config
 from quodlibet import const
 
 from quodlibet.util import fver, sanitize_tags
-from quodlibet.player import error as PlayerError
+from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.player._gstutils import *
 from quodlibet.qltk.msg import ErrorMessage
@@ -660,8 +660,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             for band, val in enumerate(self._eq_values):
                 self._eq_element.set_property('band%d' % band, val)
 
-def can_play_uri(uri):
-    return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
+
+    def can_play_uri(self, uri):
+        return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
+
 
 def init(librarian):
     # Enable error messages by default

@@ -12,9 +12,9 @@ import gobject
 import gtk
 import pango
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet import const
-from quodlibet import player
 from quodlibet import qltk
 from quodlibet import util
 
@@ -433,8 +433,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         # Fall back to the playing song
         if songs is None:
-            if player.playlist.song:
-                songs = [player.song]
+            if app.player.song:
+                songs = [app.player.song]
             else:
                 return
 

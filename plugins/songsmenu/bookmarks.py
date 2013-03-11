@@ -30,9 +30,8 @@ class Bookmarks(SongsMenuPlugin):
             self.song = song
 
         def seek(self, time):
-            from player import playlist as player
-            if player.go_to(self.song._song, explicit=True):
-                player.seek(time)
+            if app.player.go_to(self.song._song, explicit=True):
+                app.player.seek(time)
 
         get_position = lambda *x: 0
 

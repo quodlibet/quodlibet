@@ -9,7 +9,8 @@ import time
 import gobject
 import gtk
 
-from quodlibet import config, player
+from quodlibet import app
+from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.entry import ValidatingEntry
 
@@ -56,10 +57,10 @@ class Alarm(EventPlugin):
 
     def _fire(self):
         if self._enabled:
-            if player.playlist.paused:
-                if player.playlist.song is None:
-                    player.playlist.next()
-                else: player.playlist.paused = False
+            if app.player.paused:
+                if app.player.song is None:
+                    app.player.next()
+                else: app.player.paused = False
         gobject.timeout_add(60000, self._longer_check)
 
     def _longer_check(self):
@@ -103,14 +104,14 @@ class Lullaby(Alarm):
     def _fire(self):
         if self._enabled:
             gobject.timeout_add(500, self._fade_out)
-            self.__was_volume = player.playlist.volume
+            self.__was_volume = app.player.volume
         else: gobject.timeout_add(30000, self._check)
 
     def _fade_out(self):
-        player.playlist.volume -= 0.005
-        if player.playlist.volume == 0:
-            player.playlist.paused = True
-        if player.playlist.paused:
-            player.playlist.volume = self.__was_volume
+        app.player.volume -= 0.005
+        if app.player.volume == 0:
+            app.player.paused = True
+        if app.player.paused:
+            app.player.volume = self.__was_volume
             gobject.timeout_add(30000, self._check)
         else: return True

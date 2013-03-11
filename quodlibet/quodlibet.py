@@ -46,10 +46,11 @@ def main():
                              title=const.PROCESS_TITLE_QL)
     app.library = library
 
+    from quodlibet.player import PlayerError
     for backend in [config.get("player", "backend"), "nullbe"]:
         try:
             player = quodlibet.init_backend(backend, app.librarian)
-        except quodlibet.player.error, error:
+        except PlayerError, error:
             print_e("%s. %s" % (error.short_desc, error.long_desc))
         else:
             break
@@ -140,7 +141,7 @@ def main():
     quodlibet.main(window)
 
     print_d("Shutting down player device %r." % player.version_info)
-    quodlibet.player.quit(player)
+    player.destroy()
     quodlibet.library.save(force=True)
 
     config.save(const.CONFIG)

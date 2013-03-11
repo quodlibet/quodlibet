@@ -131,3 +131,6 @@ class BasePlayer(gobject.GObject):
             self.update_eq_values()
 
     eq_values = property(_get_eq_values,_set_eq_values)
+
+    def can_play_uri(self, uri):
+        raise NotImplementedError

@@ -7,7 +7,7 @@
 import gobject
 
 from quodlibet import config
-from quodlibet.player import error as PlayerError
+from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.player._xine import *
 
@@ -228,6 +228,16 @@ class XinePlaylistPlayer(BasePlayer):
             val *= int(need_eq)
             xine_set_param(self._stream, param, val)
 
+    def can_play_uri(self, uri):
+        global _xine, _plugins
+        if _xine is None:
+            _init_xine()
+        for plugin in _plugins:
+            if uri.startswith(plugin):
+                return True
+        return False
+
+
 _xine = None
 _plugins = None
 
@@ -248,14 +258,6 @@ def _exit_xine():
     if _xine:
         xine_exit(_xine)
 
-def can_play_uri(uri):
-    global _xine, _plugins
-    if _xine is None:
-        _init_xine()
-    for plugin in _plugins:
-        if uri.startswith(plugin):
-            return True
-    return False
 
 def init(librarian):
     try:

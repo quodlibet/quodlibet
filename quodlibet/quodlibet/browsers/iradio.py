@@ -786,7 +786,8 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         return ngettext("%(count)d station", "%(count)d stations", i)
 
 
-from quodlibet import player
-if player.can_play_uri("http://"):
+from quodlibet import app
+if not app.player or app.player.can_play_uri("http://"):
     browsers = [InternetRadio]
-else: browsers = []
+else:
+    browsers = []

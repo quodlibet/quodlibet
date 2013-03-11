@@ -10,7 +10,6 @@ import gtk
 
 from quodlibet import config
 from quodlibet import const
-from quodlibet import player
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
@@ -294,8 +293,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.title = _("Playback")
 
             # player backend
-            if player.backend and hasattr(player.device, 'PlayerPreferences'):
-                player_prefs = player.device.PlayerPreferences()
+            if app.player and hasattr(app.player, 'PlayerPreferences'):
+                player_prefs = app.player.PlayerPreferences()
                 f = qltk.Frame(_("Output Configuration"), child=player_prefs)
                 self.pack_start(f, expand=False)
 
@@ -362,14 +361,14 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.show_all()
 
         def __toggled_gain(self, activator, widgets):
-            if player.playlist: # tests
-                player.playlist.volume = player.playlist.volume
+            if app.player: # tests
+                app.player.volume = app.player.volume
             for widget in widgets:
                 widget.set_sensitive(activator.get_active())
 
         def __changed(self, adj, section, name):
             config.set(section, name, str(adj.get_value()))
-            player.playlist.volume = player.playlist.volume
+            app.player.volume = app.player.volume
 
     class Tagging(gtk.VBox):
         name = "tagging"

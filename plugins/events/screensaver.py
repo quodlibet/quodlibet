@@ -7,6 +7,7 @@
 import gtk
 import dbus
 
+from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -25,12 +26,11 @@ class ScreensaverPause(EventPlugin):
     __interface = None
 
     def __screensaver_changed(self, active):
-        from quodlibet.player import playlist as player
         if active:
-            self.__was_paused = player.paused
-            player.paused = True
+            self.__was_paused = app.player.paused
+            app.player.paused = True
         elif not self.__was_paused:
-            player.paused = False
+            app.player.paused = False
 
     def __remove_interface(self):
         if self.__interface:
