@@ -157,7 +157,7 @@ class PreferencesWindow(qltk.UniqueWindow):
                 # And the customs
             new_headers.update(set(self.other_cols))
 
-            on_to_off = {on: off for (w, off, on) in self._toggle_data}
+            on_to_off = dict((on, off) for (w, off, on) in self._toggle_data)
             result = []
             cur_cols = config.get_columns(refresh=True)
             for h in cur_cols:

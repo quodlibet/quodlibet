@@ -11,7 +11,7 @@ from tests import TestCase, add
 
 from quodlibet.util import iscommand
 
-@unittest.skipUnless(iscommand("pep8"), "pep8 not found")
+
 class TPEP8(TestCase):
     def test_utils(self):
         from quodlibet import util
@@ -33,4 +33,8 @@ class TPEP8(TestCase):
         path = browsers.__path__[0]
         subprocess.check_call(["pep8", path])
 
-add(TPEP8)
+
+if iscommand("pep8"):
+    add(TPEP8)
+else:
+    print_w("pep8 not found")
