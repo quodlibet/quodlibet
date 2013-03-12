@@ -24,7 +24,8 @@ class TPEP8(TestCase):
 
     def test_packages(self):
         for package in self.PACKAGES:
-            mod = __import__(package, {}, {}, "quodlibet." + package)
+            name = "quodlibet." + package
+            mod = getattr(__import__(name), package)
             self._run(mod.__path__[0])
 
 
