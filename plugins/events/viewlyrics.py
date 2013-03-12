@@ -61,7 +61,7 @@ class ViewLyrics(EventPlugin):
         # Newer Quod Libet, we can't pack into songpane.
         # So we pack into the window itself, throwing in some padding.
         self.expander.set_border_width(6)
-        app.window.child.pack_start(self.expander, expand=False,
+        app.window.get_child().pack_start(self.expander, expand=False,
                                       fill=True)
 
         # We don't show the expander here because it will be shown when a song

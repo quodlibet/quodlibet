@@ -66,7 +66,7 @@ class PlaylistExport(SongsMenuPlugin):
 
         dialog.set_current_folder(lastfolder)
 
-        diag_cont = dialog.child
+        diag_cont = dialog.get_child()
         hbox_path = gtk.HBox()
         combo_path = gtk.combo_box_new_text()
         hbox_path.pack_end(combo_path, False, False, padding=6)

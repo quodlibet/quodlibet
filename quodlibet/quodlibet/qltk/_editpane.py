@@ -79,7 +79,7 @@ class EditPane(gtk.VBox):
         self.preview = qltk.Button(_("_Preview"), gtk.STOCK_CONVERT)
         hbox.pack_start(self.preview, expand=False)
         self.pack_start(hbox, expand=False)
-        self.combo.child.connect('changed', self._changed)
+        self.combo.get_child().connect('changed', self._changed)
 
         model = gtk.ListStore(object, str, str)
         self.view = gtk.TreeView(model)

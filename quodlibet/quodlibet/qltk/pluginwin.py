@@ -294,7 +294,7 @@ class PluginWindow(qltk.UniqueWindow):
 
     def __preferences(self, selection, frame):
         model, iter = selection.get_selected()
-        if frame.child: frame.child.destroy()
+        if frame.get_child(): frame.get_child().destroy()
         if iter and hasattr(model[iter][0], 'PluginPreferences'):
             try:
                 prefs = model[iter][0].PluginPreferences(self)
@@ -307,7 +307,7 @@ class PluginWindow(qltk.UniqueWindow):
                     b.connect_object('clicked', gtk.Window.show, prefs)
                     b.connect_object('destroy', gtk.Window.destroy, prefs)
                     frame.add(b)
-                    frame.child.set_border_width(6)
+                    frame.get_child().set_border_width(6)
                 else:
                     frame.add(prefs)
                 frame.show_all()

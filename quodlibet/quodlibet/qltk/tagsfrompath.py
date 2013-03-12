@@ -133,7 +133,8 @@ class TagsFromPath(EditPane):
         if songs is None:
             songs = [row[0] for row in (self.view.get_model() or [])]
 
-        if songs: pattern_text = self.combo.child.get_text().decode("utf-8")
+        if songs:
+            pattern_text = self.combo.get_child().get_text().decode("utf-8")
         else: pattern_text = ""
         try: pattern = TagsFromPattern(pattern_text)
         except re.error:
@@ -205,7 +206,7 @@ class TagsFromPath(EditPane):
         self.save.set_sensitive(len(pattern.headers) > 0)
 
     def __save(self, addreplace, library):
-        pattern_text = self.combo.child.get_text().decode('utf-8')
+        pattern_text = self.combo.get_child().get_text().decode('utf-8')
         pattern = TagsFromPattern(pattern_text)
         model = self.view.get_model()
         add = bool(addreplace.get_active())

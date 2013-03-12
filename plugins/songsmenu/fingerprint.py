@@ -773,7 +773,7 @@ class AcoustidSubmit(SongsMenuPlugin):
         radio = None
         for value, text in options:
             radio = gtk.RadioButton(group=radio, label=text)
-            radio.child.set_use_markup(True)
+            radio.get_child().set_use_markup(True)
             radio.set_active(value == start_value)
             radio.connect("toggled", config_changed, value)
             puid_box.pack_start(radio)

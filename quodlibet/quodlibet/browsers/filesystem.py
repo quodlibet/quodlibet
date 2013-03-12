@@ -41,9 +41,9 @@ class FileSystem(Browser, gtk.HBox):
 
     TARGET_QL, TARGET_EXT = range(1, 3)
 
+    @classmethod
     def __added(klass, library, songs):
         klass.__library.remove(songs)
-    __added = classmethod(__added)
 
     @classmethod
     def init(klass, library):
@@ -80,8 +80,7 @@ class FileSystem(Browser, gtk.HBox):
         self.pack_start(sw)
         self.show_all()
 
-    @property
-    def child(self):
+    def get_child(self):
         return self.get_children()[0].get_child()
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
@@ -112,9 +111,9 @@ class FileSystem(Browser, gtk.HBox):
         return key == "~dirname"
 
     def filter(self, key, values):
-        self.child.get_selection().unselect_all()
+        self.get_child().get_selection().unselect_all()
         for v in values:
-            self.child.go_to(v)
+            self.get_child().go_to(v)
 
     def scroll(self, song):
         self.__select_paths([song("~dirname")])
@@ -130,28 +129,28 @@ class FileSystem(Browser, gtk.HBox):
     def __select_paths(self, paths):
         def select(model, path, iter, (paths, first)):
             if model[iter][0] in paths:
-                self.child.get_selection().select_path(path)
+                self.get_child().get_selection().select_path(path)
                 paths.remove(model[iter][0])
                 if not first:
-                    self.child.set_cursor(path)
+                    self.get_child().set_cursor(path)
                     first.append(path)
             else:
                 for fpath in paths:
                     if model[path][0] and fpath.startswith(model[path][0]):
-                        self.child.expand_row(path, False)
+                        self.get_child().expand_row(path, False)
             return not bool(paths)
         first = []
-        self.child.get_model().foreach(select, (paths, first))
+        self.get_child().get_model().foreach(select, (paths, first))
         if first:
-            self.child.scroll_to_cell(first[0], None, True, 0.5)
+            self.get_child().scroll_to_cell(first[0], None, True, 0.5)
 
     def save(self):
-        model, rows = self.child.get_selection().get_selected_rows()
+        model, rows = self.get_child().get_selection().get_selected_rows()
         paths = "\n".join([model[row][0] for row in rows])
         config.set("browsers", "filesystem", paths)
 
     def activate(self):
-        copool.add(self.__songs_selected, self.child)
+        copool.add(self.__songs_selected, self.get_child())
 
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
@@ -206,12 +205,12 @@ class FileSystem(Browser, gtk.HBox):
         yield songs
 
     def __songs_selected(self, view):
-        if self.window:
-            self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        if self.get_window():
+            self.get_window().set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
         for songs in self.__find_songs(view.get_selection()):
             yield True
-        if self.window:
-            self.window.set_cursor(None)
+        if self.get_window():
+            self.get_window().set_cursor(None)
         self.emit('songs-selected', songs, None)
 
 browsers = [FileSystem]

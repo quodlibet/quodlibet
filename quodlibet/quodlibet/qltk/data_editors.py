@@ -36,7 +36,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
         self.add(gtk.HBox(spacing=6))
-        self.child.set_homogeneous(True)
+        self.get_child().set_homogeneous(True)
         self.accels = gtk.AccelGroup()
 
         # Set up the model for this widget
@@ -58,7 +58,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.add(view)
-        self.child.pack_start(sw)
+        self.get_child().pack_start(sw)
 
         vbox = gtk.VBox(spacing=6)
         # Input for new ones.
@@ -92,7 +92,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         align.add(bbox)
         vbox.pack_end(align, expand=True)
 
-        self.child.pack_start(vbox, expand=True)
+        self.get_child().pack_start(vbox, expand=True)
         # Initialise
         self.selection = view.get_selection()
         model, iter = self.selection.get_selected()

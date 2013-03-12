@@ -54,10 +54,10 @@ class SeekBar(HSlider):
             'activate', bookmarks.EditBookmarks, self, library, player)
         m.append(i)
         m.show_all()
-        self.child.connect_object(
+        self.get_child().connect_object(
             'button-press-event', self.__check_menu, m, player)
         self.connect_object('popup-menu', self.__popup_menu, m, player,
-                self.child.child)
+                self.get_child().get_child())
 
         timer = TimeTracker(player)
         timer.connect_object('tick', self.__check_time, player)
@@ -312,7 +312,7 @@ class PlayControls(gtk.VBox):
         play.connect('toggled', self.__playpause, player)
         play.connect('button-press-event', self.__play_button_press, safter)
         play.connect_object('scroll-event', self.__scroll, player)
-        play.connect_object('popup-menu', self.__popup, safter, play.child)
+        play.connect_object('popup-menu', self.__popup, safter, play.get_child())
         next.connect_object('clicked', self.__next, player)
         player.connect('song-started', self.__song_started, next, play)
         player.connect_object('paused', play.set_active, False)

@@ -158,7 +158,7 @@ class Menu(gtk.Menu):
             some, all = playlist.has_songs(songs)
             i.set_active(some)
             i.set_inconsistent(some and not all)
-            i.child.set_ellipsize(pango.ELLIPSIZE_END)
+            i.get_child().set_ellipsize(pango.ELLIPSIZE_END)
             i.connect_object(
                 'activate', self.__add_to_playlist, playlist, songs, parent)
             self.append(i)
@@ -372,11 +372,11 @@ class Playlists(gtk.VBox, Browser):
             return True
         else:
             # Highlighting the view itself doesn't work.
-            view.parent.drag_highlight()
+            view.get_parent().drag_highlight()
             return True
 
     def __drag_leave(self, view, ctx, time):
-        view.parent.drag_unhighlight()
+        view.get_parent().drag_unhighlight()
 
     def __remove(self, iters, smodel):
         model, iter = self.__view.get_selection().get_selected()

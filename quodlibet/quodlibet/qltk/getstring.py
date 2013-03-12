@@ -37,7 +37,7 @@ class GetStringDialog(gtk.Dialog):
         box.pack_start(self._val)
 
         self.vbox.pack_start(box)
-        self.child.show_all()
+        self.get_child().show_all()
 
     def _verify_clipboard(self, text):
         """Return an altered text or None if the content was invalid."""

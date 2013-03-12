@@ -275,7 +275,7 @@ class GetPlayerDialog(gtk.Dialog):
         self._val = player_combo
         box.pack_start(self._val)
         self.vbox.pack_start(box)
-        self.child.show_all()
+        self.get_child().show_all()
 
     def run(self, text=""):
         self.show()

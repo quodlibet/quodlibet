@@ -30,10 +30,10 @@ def MenuItems(marks, player, seekable):
         else: l = gtk.Label(util.format_time(time))
         l.set_alignment(0.0, 0.5)
         sizes.add_widget(l)
-        i.child.pack_start(l, expand=False)
+        i.get_child().pack_start(l, expand=False)
         m = gtk.Label(mark)
         m.set_alignment(0.0, 0.5)
-        i.child.pack_start(m)
+        i.get_child().pack_start(m)
         i.show_all()
         items.append(i)
     return items
@@ -67,14 +67,14 @@ class EditBookmarksPane(gtk.VBox):
         render.connect('edited', self.__edit_time, model)
         col = gtk.TreeViewColumn(_("Time"), render)
         col.set_cell_data_func(render, cdf)
-        sw.child.append_column(col)
+        sw.get_child().append_column(col)
 
         render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         col = gtk.TreeViewColumn(_("Bookmark Name"), render, text=1)
         render.set_property('editable', True)
         render.connect('edited', self.__edit_name, model)
-        sw.child.append_column(col)
+        sw.get_child().append_column(col)
         self.pack_start(sw)
         self.accels = gtk.AccelGroup()
 
@@ -93,7 +93,7 @@ class EditBookmarksPane(gtk.VBox):
         model.set_sort_column_id(0, gtk.SORT_ASCENDING)
         model.connect('row-changed', self.__set_bookmarks, library, song)
 
-        selection = sw.child.get_selection()
+        selection = sw.get_child().get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
         selection.connect('changed', self.__check_selection, remove)
         remove.connect('clicked', self.__remove, selection, library, song)
@@ -114,8 +114,8 @@ class EditBookmarksPane(gtk.VBox):
             'activate', self.accels, keyval, mod, gtk.ACCEL_VISIBLE)
         menu.append(remove)
         menu.show_all()
-        sw.child.connect('popup-menu', self.__popup, menu)
-        sw.child.connect('key-press-event', self.__view_key_press, remove)
+        sw.get_child().connect('popup-menu', self.__popup, menu)
+        sw.get_child().connect('key-press-event', self.__view_key_press, remove)
         self.connect_object('destroy', gtk.Menu.destroy, menu)
 
         self.__fill(model, song)
@@ -180,14 +180,14 @@ class EditBookmarks(qltk.Window):
         self.connect_object('destroy', library.disconnect, s)
 
         position = player.get_position() // 1000
-        self.child.time.set_text(util.format_time(position))
-        self.child.markname.grab_focus()
+        self.get_child().time.set_text(util.format_time(position))
+        self.get_child().markname.grab_focus()
 
-        self.child.close.connect_object('clicked', qltk.Window.destroy, self)
+        self.get_child().close.connect_object('clicked', qltk.Window.destroy, self)
 
         self.show_all()
 
     def __check_lock(self, library, songs, song, model):
         if song in songs:
-            for c in self.child.get_children()[:-1]:
+            for c in self.get_child().get_children()[:-1]:
                 c.set_sensitive(False)

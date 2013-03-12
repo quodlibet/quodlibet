@@ -403,8 +403,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             self.__last = path
 
             device = model[iter][0]
-            self.__device_icon.set_from_icon_name(device.icon,
-                                                  gtk.ICON_SIZE_DIALOG)
+            self.__device_icon.set_from_icon_name(
+                device.icon, gtk.ICON_SIZE_DIALOG)
             self.__set_name(device)
 
             songs = []

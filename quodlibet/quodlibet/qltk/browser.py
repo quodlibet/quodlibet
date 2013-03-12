@@ -43,13 +43,13 @@ class LibraryBrowser(Window, PersistentWindowMixin):
             self.add_accel_group(browser.accelerators)
 
         self.__container = browser.pack(sw)
-        self.child.pack_start(self.__container)
+        self.get_child().pack_start(self.__container)
 
         self.__statusbar = gtk.Label()
         self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
         self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
-        self.child.pack_end(self.__statusbar, expand=False)
+        self.get_child().pack_end(self.__statusbar, expand=False)
 
         browser.connect('songs-selected', self.__browser_cb)
         browser.finalize(False)
@@ -61,9 +61,9 @@ class LibraryBrowser(Window, PersistentWindowMixin):
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
         sw.show_all()
-        for c in self.child.get_children():
+        for c in self.get_child().get_children():
             c.show()
-        self.child.show()
+        self.get_child().show()
         self.show()
         self.__set_pane_size()
 

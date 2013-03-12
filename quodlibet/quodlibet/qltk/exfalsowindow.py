@@ -107,13 +107,13 @@ class ExFalsoWindow(gtk.Window, PersistentWindowMixin):
         self.__save = None
         self.connect_object('changed', self.set_pending, None)
         for c in fs.get_children():
-            c.child.connect('button-press-event',
+            c.get_child().connect('button-press-event',
                 self.__pre_selection_changed, fs, nb)
-            c.child.connect('focus', self.__pre_selection_changed, fs, nb)
-        fs.get_children()[1].child.connect('popup-menu', self.__popup_menu, fs)
+            c.get_child().connect('focus', self.__pre_selection_changed, fs, nb)
+        fs.get_children()[1].get_child().connect('popup-menu', self.__popup_menu, fs)
         self.emit('changed', [])
 
-        self.child.show()
+        self.get_child().show()
 
         self.__ag = gtk.AccelGroup()
         key, mod = gtk.accelerator_parse("<control>Q")

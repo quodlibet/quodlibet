@@ -253,7 +253,7 @@ class AddTagDialog(gtk.Dialog):
         hbox.pack_start(invalid)
 
         self.vbox.pack_start(table)
-        self.child.show_all()
+        self.get_child().show_all()
         invalid.hide()
 
         for entry in [self.__tag, self.__val]:
@@ -263,7 +263,7 @@ class AddTagDialog(gtk.Dialog):
         self.__set_value_completion(self.__tag, library)
 
         if can_change == True:
-            self.__tag.child.connect_object(
+            self.__tag.get_child().connect_object(
                 'activate', gtk.Entry.grab_focus, self.__val)
 
     def __set_value_completion(self, tag, library):

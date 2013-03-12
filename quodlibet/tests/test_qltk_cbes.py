@@ -55,7 +55,7 @@ class TComboBoxEntrySave(TestCase):
         self.failUnlessEqual(self.saved, file(self.fname + ".saved").read())
 
     def test_set_text_then_prepend(self):
-        self.cbes.child.set_text("foobar")
+        self.cbes.get_child().set_text("foobar")
         self.cbes.prepend_text("foobar")
         self.memory = "foobar\npattern 1\n"
         self.test_save()

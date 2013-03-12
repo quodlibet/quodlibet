@@ -344,7 +344,7 @@ class FileSelector(gtk.VPaned):
         self.pack2(sw, resize=True)
 
     def rescan(self, *args):
-        self.get_child1().child.get_selection().emit('changed')
+        self.get_child1().get_child().get_selection().emit('changed')
 
     def __changed(self, selection):
         self.emit('changed', selection)

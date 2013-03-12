@@ -61,8 +61,8 @@ class Window(gtk.Window):
         #Do not close the window if we edit a gtk.CellRendererText.
         #Focus the treeview instead.
         if isinstance(self.get_focus(), gtk.Entry) and \
-            isinstance(self.get_focus().parent, gtk.TreeView):
-            self.get_focus().parent.grab_focus()
+            isinstance(self.get_focus().get_parent(), gtk.TreeView):
+            self.get_focus().get_parent().grab_focus()
             return
         if not self.emit('delete-event', gtk.gdk.Event(gtk.gdk.DELETE)):
             self.destroy()

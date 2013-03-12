@@ -49,7 +49,7 @@ class TextEditBox(gtk.HBox):
         sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         sw.add(TextView(TextBuffer()))
         self.pack_start(sw)
-        self.buffer = sw.child.get_buffer()
+        self.buffer = sw.get_child().get_buffer()
 
         box = gtk.VBox(spacing=6)
         rev = gtk.Button(stock=gtk.STOCK_REVERT_TO_SAVED)

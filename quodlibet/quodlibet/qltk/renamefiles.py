@@ -157,7 +157,7 @@ class RenameFiles(EditPane):
         model = self.view.get_model()
         if songs is None:
             songs = [row[0] for row in model]
-        pattern = self.combo.child.get_text().decode("utf-8")
+        pattern = self.combo.get_child().get_text().decode("utf-8")
 
         try:
             pattern = FileFromPattern(pattern)
@@ -171,8 +171,8 @@ class RenameFiles(EditPane):
                 util.escape(pattern))).run()
             return
         else:
-            if self.combo.child.get_text():
-                self.combo.prepend_text(self.combo.child.get_text())
+            if self.combo.get_child().get_text():
+                self.combo.prepend_text(self.combo.get_child().get_text())
                 self.combo.write(const.NBP)
 
         orignames = [song["~filename"] for song in songs]
@@ -186,7 +186,7 @@ class RenameFiles(EditPane):
             basename = util.fsdecode(song("~basename"))
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)
-        self.save.set_sensitive(bool(self.combo.child.get_text()))
+        self.save.set_sensitive(bool(self.combo.get_child().get_text()))
         for song in songs:
             if not song.is_file:
                 self.set_sensitive(False)

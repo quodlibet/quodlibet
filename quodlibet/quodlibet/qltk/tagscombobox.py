@@ -65,7 +65,7 @@ class TagsComboBoxEntry(_TagsCombo, gtk.ComboBoxEntry):
         comp = gtk.EntryCompletion()
         comp.set_model(self.get_model())
         comp.set_text_column(0)
-        self.child.set_completion(comp)
+        self.get_child().set_completion(comp)
 
     def _tag(self):
-        return self.child.get_text()
+        return self.get_child().get_text()

@@ -168,7 +168,7 @@ class CDDBLookup(SongsMenuPlugin):
 
             def update_discinfo(combo):
 
-                xcode = cbo.child.get_text()
+                xcode = cbo.get_child().get_text()
                 t,c,d, title, cat, discid = combo.get_model()[box.get_active()]
                 info = query(cat, discid, xcode=xcode)
                 discinfo.set_markup(
@@ -176,7 +176,7 @@ class CDDBLookup(SongsMenuPlugin):
 
             def crosscode_cddbinfo(combo):
                 try:
-                    xf, xt = combo.child.get_text().split(':')
+                    xf, xt = combo.get_child().get_text().split(':')
                     for row in model:
                         for show, store in zip(range(0,3), range(3,6)):
                             row[show] = row[store].encode(
@@ -200,7 +200,7 @@ class CDDBLookup(SongsMenuPlugin):
             dlg.vbox.show_all()
             resp = dlg.run()
 
-            xcode = cbo.child.get_text()
+            xcode = cbo.get_child().get_text()
             if resp == gtk.RESPONSE_OK:
                 t,c,d, title, cat, discid = model[box.get_active()]
                 (disc, track) = query(cat, discid, xcode=xcode)

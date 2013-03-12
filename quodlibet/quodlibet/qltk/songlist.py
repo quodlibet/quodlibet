@@ -322,7 +322,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.drag_dest_unset()
 
     def __drag_leave(self, widget, ctx, time):
-        widget.parent.drag_unhighlight()
+        widget.get_parent().drag_unhighlight()
         self.scroll_disable()
 
     def __drag_motion(self, view, ctx, x, y, time):
@@ -334,7 +334,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             ctx.drag_status(kind, time)
             return True
         else:
-            self.parent.drag_highlight()
+            self.get_parent().drag_highlight()
             ctx.drag_status(gtk.gdk.ACTION_COPY, time)
             return True
 

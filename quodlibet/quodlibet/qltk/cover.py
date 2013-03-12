@@ -34,22 +34,25 @@ class BigCenteredImage(qltk.Window):
         pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
         pixbuf = thumbnails.scale(pixbuf, (width, height), scale_up=False)
 
-        self.set_title(title)
-        self.set_decorated(False)
-        self.set_position(gtk.WIN_POS_CENTER)
-        self.set_modal(False)
-        self.add(gtk.Frame())
-        self.child.set_shadow_type(gtk.SHADOW_OUT)
-        self.child.add(gtk.EventBox())
-        self.child.child.add(gtk.Image())
-        self.child.child.child.set_from_pixbuf(pixbuf)
+        image = gtk.Image()
+        image.set_from_pixbuf(pixbuf)
 
-        self.child.child.connect('button-press-event', self.__destroy)
-        self.child.child.connect('key-press-event', self.__destroy)
+        event_box = gtk.EventBox()
+        event_box.add(image)
+
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_OUT)
+        frame.add(event_box)
+
+        self.add(frame)
+
+        event_box.connect('button-press-event', self.__destroy)
+        event_box.connect('key-press-event', self.__destroy)
         self.show_all()
 
     def __destroy(self, *args):
         self.destroy()
+
 
 class ResizeImage(gtk.Image):
     """Automatically resizes to the maximum height given by its
@@ -140,10 +143,10 @@ class CoverImage(gtk.EventBox):
         self.__song = song
         if song:
             self.__file = song.find_cover()
-            self.child.set_path(self.__file and self.__file.name)
+            self.get_child().set_path(self.__file and self.__file.name)
         else:
             self.__file = None
-            self.child.set_path(None)
+            self.get_child().set_path(None)
 
     def refresh(self):
         self.set_song(self.__song)

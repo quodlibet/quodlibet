@@ -476,7 +476,7 @@ class OneArtist(qltk.Notebook):
         for i, (album, cover, song) in enumerate(covers):
             if cover.name in added: continue
             cov = CoverImage(song=song)
-            cov.child.set_tooltip_text(album)
+            cov.get_child().set_tooltip_text(album)
             c = i % 4
             r = i // 4
             t.attach(cov, c, c + 1, r, r + 1,
@@ -588,7 +588,7 @@ class Information(Window, PersistentWindowMixin):
 
     def __update(self, library):
         songs = self.__songs
-        if self.child: self.child.destroy()
+        if self.get_child(): self.get_child().destroy()
         self.__songs = songs
         if not songs: self.add(NoSongs())
         elif len(songs) == 1: self.add(OneSong(library, songs[0]))
@@ -601,5 +601,5 @@ class Information(Window, PersistentWindowMixin):
                 self.add(OneArtist(songs))
             else: self.add(ManySongs(songs))
 
-        self.set_title(self.child.title + " - Quod Libet")
-        self.child.show_all()
+        self.set_title(self.get_child().title + " - Quod Libet")
+        self.get_child().show_all()
