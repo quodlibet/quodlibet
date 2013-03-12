@@ -338,7 +338,8 @@ class AudioFile(dict):
                 except (ValueError, TypeError, AttributeError): return default
             elif key[:1] == "#":
                 key = "~" + key
-                if key in self: self[key]
+                if key in self:
+                    return self[key]
                 elif key in INTERN_NUM_DEFAULT:
                     return dict.get(self, key, 0)
                 else:
