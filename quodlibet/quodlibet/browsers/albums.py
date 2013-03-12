@@ -375,8 +375,8 @@ class VisibleUpdate(object):
         if not start or not end:
             return
 
-        start = start[0] - preload - 1
-        end = end[0] + preload
+        start = start.get_indices()[0] - preload - 1
+        end = end.get_indices()[0] + preload
 
         vlist = range(end, start, -1)
         top = vlist[:len(vlist) / 2]
