@@ -10,9 +10,9 @@ import time
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet import const
-from quodlibet import player
 from quodlibet import qltk
 from quodlibet import util
 
@@ -435,8 +435,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         # Fall back to the playing song
         if songs is None:
-            if player.playlist.song:
-                songs = [player.song]
+            if app.player.song:
+                songs = [app.player.song]
             else:
                 return
 
@@ -526,9 +526,11 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         SongList.set_all_column_headers(headers)
         SongList.headers = headers
 
+    @classmethod
     def set_all_column_headers(cls, headers):
-        config.set("settings", "headers", " ".join(headers))
-        try: headers.remove("~current")
+        config.set_columns(headers)
+        try:
+            headers.remove("~current")
         except ValueError: pass
         cls.headers = headers
         for listview in cls.instances():
@@ -547,8 +549,6 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 if not tag.startswith("~#") and tag not in star:
                     star.append(tag)
         SongList.star = star
-
-    set_all_column_headers = classmethod(set_all_column_headers)
 
     def get_sort_by(self):
         for header in self.get_columns():

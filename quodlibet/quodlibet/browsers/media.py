@@ -95,6 +95,7 @@ class DeviceProperties(Gtk.Dialog):
         dialog.destroy()
         devices.write()
 
+
 # This will be included in SongsMenu
 class Menu(Gtk.Menu):
     def __init__(self, songs, library):
@@ -273,7 +274,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             delete = False
 
         menu = SongsMenu(library, songs, delete=delete, remove=False,
-            accels=songlist.accelerators, parent=self)
+                         accels=songlist.accelerators, parent=self)
         return menu
 
     def activate(self):
@@ -286,24 +287,32 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             config.set('browsers', 'media', model[iter][0]['name'])
 
     def restore(self):
-        try: name = config.get('browsers', 'media')
-        except config.Error: pass
+        try:
+            name = config.get('browsers', 'media')
+        except config.Error:
+            pass
         else:
             for row in self.__devices:
-                if row[0]['name'] == name: break
-            else: return
+                if row[0]['name'] == name:
+                    break
+            else:
+                return
             selection = self.__view.get_selection()
             selection.unselect_all()
             selection.select_iter(row.iter)
 
     def select(self, device):
         for row in self.__devices:
-            if row[0] == device: break
-        else: return
+            if row[0] == device:
+                break
+        else:
+            return
 
         # Force a full refresh
-        try: del self.__cache[device.bid]
-        except KeyError: pass
+        try:
+            del self.__cache[device.bid]
+        except KeyError:
+            pass
 
         selection = self.__view.get_selection()
         selection.unselect_all()
@@ -380,13 +389,14 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
     def __set_name(self, device):
         self.__device_name.set_markup(
             '<span size="x-large"><b>%s</b></span>' %
-                util.escape(device['name']))
+            util.escape(device['name']))
 
     def __refresh(self, rescan=False):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             path = model[iter].path
-            if not rescan and self.__last == path: return
+            if not rescan and self.__last == path:
+                return
             self.__last = path
 
             device = model[iter][0]
@@ -400,8 +410,10 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                 self.__refresh_button.set_sensitive(True)
                 self.__refresh_space(device)
 
-                try: songs = self.__list_songs(device, rescan)
-                except NotImplementedError: pass
+                try:
+                    songs = self.__list_songs(device, rescan)
+                except NotImplementedError:
+                    pass
             else:
                 self.__eject_button.set_sensitive(False)
                 self.__refresh_button.set_sensitive(False)
@@ -412,7 +424,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             self.emit('songs-selected', [], False)
 
     def __refresh_space(self, device):
-        try: space, free = device.get_space()
+        try:
+            space, free = device.get_space()
         except NotImplementedError:
             self.__device_space.set_text("")
             self.__progress.hide()
@@ -422,7 +435,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
             self.__device_space.set_markup(
                 _("<b>%s</b> used, <b>%s</b> available") %
-                    (util.format_size(used), util.format_size(free)))
+                (util.format_size(used), util.format_size(free)))
             self.__progress.set_fraction(fraction)
             self.__progress.set_text("%.f%%" % round(fraction * 100))
             self.__progress.show()
@@ -445,7 +458,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
     def __copy_songs(self, songlist, songs):
         model, iter = self.__view.get_selection().get_selected()
-        if not iter: return False
+        if not iter:
+            return False
 
         device = model[iter][0]
         if not self.__check_device(device, _("Unable to copy songs")):
@@ -454,7 +468,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), { 'song': '' })
+        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), {'song': ''})
         wlb.show()
 
         model = songlist.get_model()
@@ -466,7 +480,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
             if len(model) > 0:
                 songlist.scroll_to_cell(model[-1].path)
-            while Gtk.events_pending(): Gtk.main_iteration()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
 
             space, free = device.get_space()
             if free < os.path.getsize(song['~filename']):
@@ -480,8 +495,10 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             status = device.copy(songlist, song)
             if isinstance(status, AudioFile):
                 model.append([status])
-                try: self.__cache[device.bid].append(song)
-                except KeyError: pass
+                try:
+                    self.__cache[device.bid].append(song)
+                except KeyError:
+                    pass
                 self.__refresh_space(device)
             else:
                 msg = _("<b>%s</b> could not be copied.") % label
@@ -514,7 +531,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), { 'song': '' })
+        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), {'song': ''})
         wlb.show()
 
         model = songlist.get_model()
@@ -525,10 +542,12 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                 break
 
             status = device.delete(songlist, song)
-            if status == True:
+            if status is True:
                 model.remove(model.find(song))
-                try: self.__cache[device.bid].remove(song)
-                except (KeyError, ValueError): pass
+                try:
+                    self.__cache[device.bid].remove(song)
+                except (KeyError, ValueError):
+                    pass
                 self.__refresh_space(device)
             else:
                 msg = _("<b>%s</b> could not be deleted.") % label
@@ -549,7 +568,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         if iter:
             device = model[iter][0]
             status = device.eject()
-            if status != True:
+            if status is True:
                 msg = _("Ejecting <b>%s</b> failed.") % device['name']
                 if status:
                     msg += "\n\n%s" % status

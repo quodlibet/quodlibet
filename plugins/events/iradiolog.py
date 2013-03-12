@@ -4,6 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 
 class IRadioLog(EventPlugin):
@@ -17,7 +18,7 @@ class IRadioLog(EventPlugin):
     def plugin_on_song_started(self, song):
         if song is None: return
 
-        from quodlibet.player import playlist as player
+        player = app.player
 
         if player.song.multisong and not song.multisong:
             time = player.get_position()

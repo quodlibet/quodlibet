@@ -1,11 +1,15 @@
 from tests import TestCase, add
 
 from quodlibet.qltk.prefs import PreferencesWindow
-import quodlibet.config
+from quodlibet import config
+
 
 class TPreferencesWindow(TestCase):
+
     def setUp(self):
-        quodlibet.config.init()
+        config.init()
+        # Avoid warnings when running with empty config
+        config.set_columns(["artist", "title"])
         self.win = PreferencesWindow(None)
 
     def test_ctr(self):
@@ -13,5 +17,5 @@ class TPreferencesWindow(TestCase):
 
     def tearDown(self):
         self.win.destroy()
-        quodlibet.config.quit()
+        config.quit()
 add(TPreferencesWindow)

@@ -1,4 +1,5 @@
 # Copyright 2006 Federico Pelloni <federico.pelloni@gmail.com>
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -8,11 +9,11 @@ import dbus
 import dbus.service
 from dbus import DBusException
 
-from quodlibet import player
 from quodlibet import util
 from quodlibet.util import dbusutils
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
+
 
 class DBusHandler(dbus.service.Object):
     def __init__(self, player, library):
@@ -29,6 +30,7 @@ class DBusHandler(dbus.service.Object):
             player.connect('song-ended', self.__song_ended)
             player.connect('paused', lambda player: self.Paused())
             player.connect('unpaused', lambda player: self.Unpaused())
+            self._player = player
 
     def __dict(self, song):
         dict = {}
@@ -70,42 +72,42 @@ class DBusHandler(dbus.service.Object):
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def GetPosition(self):
-        return player.playlist.get_position()
+        return self._player.get_position()
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def IsPlaying(self):
-        return not player.playlist.paused
+        return not self._player.paused
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def CurrentSong(self):
-        return self.__dict(player.playlist.song)
+        return self.__dict(self._player.song)
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Next(self):
-        player.playlist.next()
+        self._player.next()
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Previous(self):
-        player.playlist.previous()
+        self._player.previous()
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Pause(self):
-        player.playlist.paused = True
+        self._player.paused = True
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Play(self):
-        if player.playlist.song is None:
-            player.playlist.reset()
+        if self._player.song is None:
+            self._player.reset()
         else:
-            player.playlist.paused = False
+            self._player.paused = False
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def PlayPause(self):
-        if player.playlist.song is None:
-            player.playlist.reset()
+        if self._player.song is None:
+            self._player.reset()
         else:
-            player.playlist.paused ^= True
-        return player.playlist.paused
+            self._player.paused ^= True
+        return self._player.paused
 
     @dbus.service.method('net.sacredchao.QuodLibet', in_signature='s')
     def Query(self, query):

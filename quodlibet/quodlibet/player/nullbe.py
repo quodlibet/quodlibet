@@ -66,9 +66,9 @@ class NullPlayer(BasePlayer):
         if self.song is None:
             self.paused = True
 
-def can_play_uri(uri):
-    return False
+    def can_play_uri(self, uri):
+        return False
+
 
 def init(librarian):
     return NullPlayer(librarian)
-

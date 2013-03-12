@@ -9,7 +9,8 @@
 
 from gi.repository import Gtk
 
-from quodlibet import config, player
+from quodlibet import app
+from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 
 # Presets taken from pulseaudio equalizer
@@ -69,7 +70,7 @@ class Equalizer(EventPlugin):
 
     @property
     def player_has_eq(self):
-        return hasattr(player.device, 'eq_bands') and player.device.eq_bands
+        return hasattr(app.player, 'eq_bands') and app.player.eq_bands
 
     def __init__(self):
         super(Equalizer, self).__init__()
@@ -79,8 +80,8 @@ class Equalizer(EventPlugin):
         if not self.player_has_eq:
             return
         levels = self._enabled and get_config() or []
-        lbands = len(player.device.eq_bands)
-        player.device.eq_values = (levels[:min(len(levels), lbands)] +
+        lbands = len(app.player.eq_bands)
+        app.player.eq_values = (levels[:min(len(levels), lbands)] +
                                    [0.] * max(0, (lbands - len(levels))))
 
     def enabled(self):
@@ -100,7 +101,7 @@ class Equalizer(EventPlugin):
             return vb
 
         bands = [(band >= 1000 and ('%.1f kHz' % (band/1000.))
-                  or ('%d Hz' % band)) for band in player.device.eq_bands]
+                  or ('%d Hz' % band)) for band in app.player.eq_bands]
         levels = get_config() + [0.] * len(bands)
 
         table = Gtk.Table(rows=len(bands), columns=3)
@@ -143,7 +144,7 @@ class Equalizer(EventPlugin):
             if not combo.get_active():
                 return
             gain = sorted_presets[combo.get_active() - 1][1][1]
-            gain = interp_bands(PRESET_BANDS, player.device.eq_bands, gain)
+            gain = interp_bands(PRESET_BANDS, app.player.eq_bands, gain)
             for (g, a) in zip(gain, adjustments):
                 a.set_value(g)
 

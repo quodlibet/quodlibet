@@ -132,7 +132,7 @@ class Browser(Filter):
         'songs-selected':
         (GObject.SignalFlags.RUN_LAST, None, (object, object)),
         'activated': (GObject.SignalFlags.RUN_LAST, None, ()),
-        }
+    }
 
     # The browser's name, without an accelerator.
     name = _("Library Browser")

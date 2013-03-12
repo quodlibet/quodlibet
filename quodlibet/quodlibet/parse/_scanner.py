@@ -10,6 +10,7 @@ import sre_parse
 import sre_compile
 from sre_constants import BRANCH, SUBPATTERN
 
+
 class Scanner(object):
     def __init__(self, lexicon, flags=0):
         self.__lexicon = lexicon
@@ -20,7 +21,7 @@ class Scanner(object):
         for phrase, action in lexicon:
             p.append(sre_parse.SubPattern(s, [
                 (SUBPATTERN, (len(p) + 1, sre_parse.parse(phrase, flags))),
-                ]))
+            ]))
         s.groups = len(p) + 1
         p = sre_parse.SubPattern(s, [(BRANCH, (None, p))])
         self.__scaner = sre_compile.compile(p)

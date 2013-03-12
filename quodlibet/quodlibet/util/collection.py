@@ -220,7 +220,10 @@ class Collection(object):
                 return None if length is None else util.format_time(length)
             elif key == "long-length":
                 length = self.__get_value("~#length")
-                return None if length is None else util.format_time_long(length)
+                if length is None:
+                    return None
+                else:
+                    return util.format_time_long(length)
             elif key == "tracks":
                 tracks = self.__get_value("~#tracks")
                 return (None if tracks is None else
@@ -234,7 +237,8 @@ class Collection(object):
                     return None
             elif key == "rating":
                 rating = self.__get_value("~#rating")
-                if rating is None: return None
+                if rating is None:
+                    return None
                 return util.format_rating(rating)
             elif key == "cover":
                 return ((self.cover != type(self).cover) and "y") or None
@@ -405,7 +409,8 @@ class Playlist(Collection, Iterable):
                 i += 1
                 try:
                     p.rename("%s %d" % (base, i))
-                except ValueError: pass
+                except ValueError:
+                    pass
         return p
 
     @classmethod
@@ -548,7 +553,8 @@ class Playlist(Collection, Iterable):
         self.clear()
         try:
             os.unlink(os.path.join(self.dir, self.quote(self.name)))
-        except EnvironmentError: pass
+        except EnvironmentError:
+            pass
         if self in self.__instances:
             self.__instances.remove(self)
 
@@ -571,7 +577,8 @@ class Playlist(Collection, Iterable):
                util.escape(self.name),
                songs_text,
                self.get("~length", "0:00"),
-               " / %s" % util.format_size(total_size) if total_size>0 else "")
+               " / %s" %
+               util.format_size(total_size) if total_size > 0 else "")
 
     def has_duplicates(self):
         """Returns True if there are any duplicated files in this playlist"""

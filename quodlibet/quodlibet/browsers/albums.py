@@ -37,6 +37,7 @@ PATTERN = r"""\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| (<date>)>
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
 ALBUM_QUERIES = os.path.join(const.USERDIR, "lists", "album_queries")
 
+
 class FakeAlbum(dict):
     def get(self, key, default="", connector=" - "):
         if key[:1] == "~" and '~' in key[1:]:
@@ -53,13 +54,16 @@ class FakeAlbum(dict):
 
     def comma(self, key):
         value = self.get(key)
-        if isinstance(value, (int, float)): return value
+        if isinstance(value, (int, float)):
+            return value
         return value.replace("\n", ", ")
+
 
 class AlbumTagCompletion(EntryWordCompletion):
     def __init__(self):
         super(AlbumTagCompletion, self).__init__()
-        try: model = self.__model
+        try:
+            model = self.__model
         except AttributeError:
             model = type(self).__model = Gtk.ListStore(str)
             self.__refreshmodel()
@@ -75,9 +79,11 @@ class AlbumTagCompletion(EntryWordCompletion):
             for suffix in ["avg", "max", "min", "sum"]:
                 self.__model.append(row=["#(%s:%s" % (tag, suffix)])
 
+
 class Preferences(qltk.UniqueWindow):
     def __init__(self, parent):
-        if self.is_not_unique(): return
+        if self.is_not_unique():
+            return
         super(Preferences, self).__init__()
         self.set_border_width(12)
         self.set_title(_("Album List Preferences") + " - Quod Libet")
@@ -89,7 +95,8 @@ class Preferences(qltk.UniqueWindow):
         cb = ConfigCheckButton(
             _("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
-        gobject_weak(cb.connect, 'toggled', lambda s: AlbumList.toggle_covers())
+        gobject_weak(cb.connect, 'toggled',
+                     lambda s: AlbumList.toggle_covers())
         box.pack_start(cb, False, True, 0)
 
         cb = ConfigCheckButton(
@@ -133,29 +140,37 @@ class Preferences(qltk.UniqueWindow):
     def __preview_pattern(self, edit, label):
         people = "\n".join(
             [util.tag("artist"), util.tag("performer"), util.tag("arranger")])
-        album = FakeAlbum({"date": "2004-10-31",
+        album = FakeAlbum({
+            "date": "2004-10-31",
             "~length": util.format_time(6319),
             "~long-length": util.format_time_long(6319),
             "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
             "~discs": ngettext("%d disc", "%d discs", 2) % 2,
             "~people": people})
 
-        try: text = XMLFromPattern(edit.text) % album
+        try:
+            text = XMLFromPattern(edit.text) % album
         except:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
-        try: Pango.parse_markup(text, -1, u"\u0000")
+        try:
+            Pango.parse_markup(text, -1, u"\u0000")
         except GLib.GError:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
-        else: edit.apply.set_sensitive(True)
+        else:
+            edit.apply.set_sensitive(True)
         label.set_markup(text)
+
 
 def cmpa(a, b):
     """Like cmp but treats values that evaluate to false as inf"""
-    if not a and b: return 1
-    if not b and a: return -1
+    if not a and b:
+        return 1
+    if not b and a:
+        return -1
     return cmp(a, b)
+
 
 class PreferencesButton(Gtk.HBox):
     def __init__(self, model):
@@ -167,7 +182,7 @@ class PreferencesButton(Gtk.HBox):
             (_("_Date"), self.__compare_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
-            ]
+        ]
 
         menu = Gtk.Menu()
 
@@ -212,18 +227,24 @@ class PreferencesButton(Gtk.HBox):
     def __compare_title(self, model, i1, i2, data):
         a1, a2 = model[i1][0], model[i2][0]
         # all albums has to stay at the top
-        if (a1 and a2) is None: return cmp(a1, a2)
+        if (a1 and a2) is None:
+            return cmp(a1, a2)
         # move album without a title to the bottom
-        if not a1.title: return 1
-        if not a2.title: return -1
+        if not a1.title:
+            return 1
+        if not a2.title:
+            return -1
         return (cmpa(a1.sort, a2.sort) or
                 cmp(a1.key, a2.key))
 
     def __compare_artist(self, model, i1, i2, data):
         a1, a2 = model[i1][0], model[i2][0]
-        if (a1 and a2) is None: return cmp(a1, a2)
-        if not a1.title: return 1
-        if not a2.title: return -1
+        if (a1 and a2) is None:
+            return cmp(a1, a2)
+        if not a1.title:
+            return 1
+        if not a2.title:
+            return -1
         return (cmpa(a1.peoplesort, a2.peoplesort) or
                 cmpa(a1.date, a2.date) or
                 cmpa(a1.sort, a2.sort) or
@@ -231,18 +252,24 @@ class PreferencesButton(Gtk.HBox):
 
     def __compare_date(self, model, i1, i2, data):
         a1, a2 = model[i1][0], model[i2][0]
-        if (a1 and a2) is None: return cmp(a1, a2)
-        if not a1.title: return 1
-        if not a2.title: return -1
+        if (a1 and a2) is None:
+            return cmp(a1, a2)
+        if not a1.title:
+            return 1
+        if not a2.title:
+            return -1
         return (cmpa(a1.date, a2.date) or
                 cmpa(a1.sort, a2.sort) or
                 cmp(a1.key, a2.key))
 
     def __compare_genre(self, model, i1, i2, data):
         a1, a2 = model[i1][0], model[i2][0]
-        if (a1 and a2) is None: return cmp(a1, a2)
-        if not a1.title: return 1
-        if not a2.title: return -1
+        if (a1 and a2) is None:
+            return cmp(a1, a2)
+        if not a1.title:
+            return 1
+        if not a2.title:
+            return -1
         return (cmpa(a1.genre, a2.genre) or
                 cmpa(a1.peoplesort, a2.peoplesort) or
                 cmpa(a1.date, a2.date) or
@@ -251,7 +278,8 @@ class PreferencesButton(Gtk.HBox):
 
     def __compare_rating(self, model, i2, i1, data):
         a1, a2 = model[i1][0], model[i2][0]
-        if (a1 and a2) is None:return cmp(a1, a2)
+        if (a1 and a2) is None:
+            return cmp(a1, a2)
         return (cmpa(a1("~#rating"), a2("~#rating")) or
                 cmpa(a1.date, a2.date) or
                 cmpa(a1.sort, a2.sort) or
@@ -309,7 +337,8 @@ class VisibleUpdate(object):
         if self.__first_expose:
             self.__first_expose = False
             self.__update_visible_rows(view, 0)
-            for i in self.__scan_paths(): pass
+            for i in self.__scan_paths():
+                pass
 
         if self.__scan_timeout:
             GLib.source_remove(self.__scan_timeout)
@@ -324,14 +353,16 @@ class VisibleUpdate(object):
             try:
                 row = model[path]
             # row could have gone away by now
-            except IndexError: pass
+            except IndexError:
+                pass
             else:
                 self._update_row(row)
                 yield True
 
     def __update_visible_rows(self, view, preload):
         vrange = view.get_visible_range()
-        if vrange is None: return
+        if vrange is None:
+            return
 
         model_filter = view.get_model()
         model = model_filter.get_model()
@@ -348,14 +379,16 @@ class VisibleUpdate(object):
         end = end[0] + preload
 
         vlist = range(end, start, -1)
-        top = vlist[:len(vlist)/2]
-        bottom = vlist[len(vlist)/2:]
+        top = vlist[:len(vlist) / 2]
+        bottom = vlist[len(vlist) / 2:]
         top.reverse()
 
         vlist_new = []
         for i in vlist:
-            if top: vlist_new.append(top.pop())
-            if bottom: vlist_new.append(bottom.pop())
+            if top:
+                vlist_new.append(top.pop())
+            if bottom:
+                vlist_new.append(bottom.pop())
         vlist_new = filter(lambda s: s >= 0, vlist_new)
 
         vlist_new = map(Gtk.TreePath, vlist_new)
@@ -405,7 +438,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         try:
             klass.__no_cover = theme.load_icon(
                 "quodlibet-missing-cover", cover_size, 0)
-        except GLib.GError: pass
+        except GLib.GError:
+            pass
         else:
             klass.__no_cover = thumbnails.scale(
                 klass.__no_cover, (cover_size, cover_size))
@@ -430,14 +464,15 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     @classmethod
     def refresh_pattern(klass, pattern_text):
-        if pattern_text == klass._pattern_text: return
+        if pattern_text == klass._pattern_text:
+            return
         klass._pattern_text = pattern_text
         klass._pattern = XMLFromPattern(pattern_text)
         for row in klass.__model:
             klass.__model.row_changed(row.path, row.iter)
         pattern_fn = os.path.join(const.USERDIR, "album_pattern")
         f = file(pattern_fn, "w")
-        f.write(pattern_text  + "\n")
+        f.write(pattern_text + "\n")
         f.close()
 
     @classmethod
@@ -472,7 +507,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             if row[0] and row[0] in removed_albums:
                 removed_albums.remove(row[0])
                 model.remove(row.iter)
-                if not removed_albums: break
+                if not removed_albums:
+                    break
 
     @classmethod
     def _change_albums(klass, library, changed, model):
@@ -482,7 +518,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             if row[0] and row[0] in changed_albums:
                 changed_albums.remove(row[0])
                 model.row_changed(row.path, row.iter)
-                if not changed_albums: break
+                if not changed_albums:
+                    break
 
     def __init__(self, library, main):
         super(AlbumList, self).__init__(spacing=6)
@@ -510,10 +547,14 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         def cell_data_pb(column, cell, model, iter, no_cover):
             album = model[iter][0]
-            if album is None: pixbuf = None
-            elif album.cover: pixbuf = album.cover
-            else: pixbuf = no_cover
-            if self.__last_render_pb == pixbuf: return
+            if album is None:
+                pixbuf = None
+            elif album.cover:
+                pixbuf = album.cover
+            else:
+                pixbuf = no_cover
+            if self.__last_render_pb == pixbuf:
+                return
             self.__last_render_pb = pixbuf
             cell.set_property('pixbuf', pixbuf)
 
@@ -534,7 +575,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             else:
                 markup = AlbumList._pattern % album
 
-            if self.__last_render == markup: return
+            if self.__last_render == markup:
+                return
             self.__last_render = markup
             cell.markup = markup
             cell.set_property('markup', markup)
@@ -552,9 +594,10 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         if main:
             gobject_weak(view.connect, 'row-activated',
-                self.__play_selection)
+                         self.__play_selection)
 
-        self.__sig = gobject_weak(view.get_selection().connect, 'changed',
+        self.__sig = gobject_weak(
+            view.get_selection().connect, 'changed',
             util.DeferredSignal(self.__update_songs), parent=view)
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
@@ -565,7 +608,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         gobject_weak(view.connect, "drag-data-get", self.__drag_data_get)
         gobject_weak(view.connect_object, 'popup-menu',
-            self.__popup, view, library)
+                     self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
@@ -642,18 +685,25 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     def __parse_query(self, model, iter, data):
         # leaked filter models try to refilter on model changes
-        if not self.__dict__: return
+        if not self.__dict__:
+            return
 
         f, b = self.__filter, self.__bg_filter
-        if f is None and b is None: return True
-        elif model[iter][0] is None: return True
-        elif b is None: return f(model[iter][0])
-        elif f is None: return b(model[iter][0])
-        else: return b(model[iter][0]) and f(model[iter][0])
+        if f is None and b is None:
+            return True
+        elif model[iter][0] is None:
+            return True
+        elif b is None:
+            return f(model[iter][0])
+        elif f is None:
+            return b(model[iter][0])
+        else:
+            return b(model[iter][0]) and f(model[iter][0])
 
     def __search_func(self, model, column, key, iter, data):
         album = model[iter][0]
-        if album is None: return True
+        if album is None:
+            return True
         key = key.decode('utf-8').lower()
         title = album.title.lower()
         if key in title:
@@ -695,7 +745,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if not selection:
             return []
         model, rows = selection.get_selected_rows()
-        if not model or not rows: return []
+        if not model or not rows:
+            return []
         if rows and model[rows[0]][0] is None:
             return [row[0] for row in model if row[0]]
         return [model[row][0] for row in rows]
@@ -721,7 +772,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if tid == 1:
             filenames = [song("~filename") for song in songs]
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
-        else: sel.set_uris([song("~uri") for song in songs])
+        else:
+            sel.set_uris([song("~uri") for song in songs])
 
     def __play_selection(self, view, indices, col):
         self.emit("activated")
@@ -808,12 +860,15 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         self.view.select_by_func(select, one=True)
 
     def __get_config_string(self, selection):
-        if not selection: return ""
+        if not selection:
+            return ""
         model, rows = selection.get_selected_rows()
-        if not model or not rows: return ""
+        if not model or not rows:
+            return ""
 
         # All is selected
-        if rows and model[rows[0]][0] is None: return ""
+        if rows and model[rows[0]][0] is None:
+            return ""
 
         # All selected albums
         albums = (model[row][0] for row in rows)
@@ -832,7 +887,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         config.set("browsers", "query_text", text)
 
     def __update_songs(self, selection):
-        if not self.__dict__: return
+        if not self.__dict__:
+            return
         songs = self.__get_selected_songs(selection, False)
         self.emit('songs-selected', songs, None)
 

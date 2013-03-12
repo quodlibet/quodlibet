@@ -10,13 +10,13 @@ from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet import const
-from quodlibet import player
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
 
 from quodlibet.parse import Query
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.data_editors import MultiStringEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.songlist import SongList
@@ -31,6 +31,23 @@ class PreferencesWindow(qltk.UniqueWindow):
 
     class SongList(Gtk.VBox):
         name = "songlist"
+
+        PREDEFINED_TAGS = [
+            ("~#disc", _("_Disc")),
+            ("~#track", _("_Track")),
+            ("grouping", _("Grou_ping")),
+
+            ("artist", _("_Artist")),
+            ("album", _("Al_bum")),
+            ("title", util.tag("title")),
+
+            ("genre", _("_Genre")),
+            ("date", _("_Date")),
+            ("~basename", _("_Filename")),
+
+            ("~#length", _("_Length")),
+            ("~#rating", _("_Rating")),
+            ("~#filesize", util.tag("~#filesize"))]
 
         def __init__(self):
             super(PreferencesWindow.SongList, self).__init__(spacing=12)
@@ -52,97 +69,131 @@ class PreferencesWindow(qltk.UniqueWindow):
             buttons = {}
             table = Gtk.Table(3, 3)
             table.set_homogeneous(True)
-            checks = config.get("settings", "headers").split()
-            for j, l in enumerate(
-                [[("~#disc", _("_Disc")),
-                  ("album", _("Al_bum")),
-                  ("~basename",_("_Filename"))],
-                 [("~#track", _("_Track")),
-                  ("artist", _("_Artist")),
-                  ("~#rating", _("_Rating"))],
-                 [("title", util.tag("title")),
-                  ("date", _("_Date")),
-                  ("~#length",_("_Length"))]]):
-                for i, (k, t) in enumerate(l):
-                    buttons[k] = Gtk.CheckButton(t, use_underline=True)
-                    if k in checks:
-                        buttons[k].set_active(True)
-                        checks.remove(k)
+            cols = config.get_columns(refresh=True)
 
-                    table.attach(buttons[k], i, i + 1, j, j + 1)
-
+            for i, (k, t) in enumerate(self.PREDEFINED_TAGS):
+                x, y = i % 3, i / 3
+                buttons[k] = Gtk.CheckButton(t, use_underline=True)
+                if k in cols:
+                    buttons[k].set_active(True)
+                    cols.remove(k)
+                table.attach(buttons[k], x, x + 1, y, y + 1)
             vbox.pack_start(table, False, True, 0)
+            if "~current" in cols:
+                cols.remove("~current")
+            self.other_cols = cols
 
+            # Other columns
+            hbox = Gtk.HBox(spacing=6)
+            l = Gtk.Label(label=_("_Others:"), use_underline=True)
+            hbox.pack_start(l, False, True, 0)
+            self.others = others = UndoEntry()
+            others.set_sensitive(False)
+            # Stock edit doesn't have ellipsis chars.
+            edit_button = Gtk.Button(_("_Edit..."), use_underline=True)
+            edit_button.connect("clicked", self.__config_cols)
+            edit_button.set_tooltip_text(_("Add or remove additional column "
+                                           "headers"))
+            l.set_mnemonic_widget(edit_button)
+            l.set_use_underline(True)
+            hbox.pack_start(others, True, True, 0)
+            hbox.pack_start(edit_button, False, True, 0)
+            vbox.pack_start(hbox, False, True, 0)
+
+            frame = qltk.Frame(_("Visible Columns"), child=vbox)
+            self.pack_start(frame, False, True, 0)
+
+            # Column preferences
             tiv = Gtk.CheckButton(_("Title includes _version"),
                                   use_underline=True)
-            if "~title~version" in checks:
-                buttons["title"].set_active(True)
-                tiv.set_active(True)
-                checks.remove("~title~version")
+            aio = Gtk.CheckButton(_("Artist includes all _people"),
+                                  use_underline=True)
             aip = Gtk.CheckButton(_("Album includes _disc subtitle"),
                                   use_underline=True)
-            if "~album~discsubtitle" in checks:
-                buttons["album"].set_active(True)
-                aip.set_active(True)
-                checks.remove("~album~discsubtitle")
             fip = Gtk.CheckButton(_("Filename includes _folder"),
                                   use_underline=True)
-            if "~filename" in checks:
-                buttons["~basename"].set_active(True)
-                fip.set_active(True)
-                checks.remove("~filename")
+            self._toggle_data = [
+                (tiv, "title", "~title~version"),
+                (aip, "album", "~album~discsubtitle"),
+                (fip, "~basename", "~filename"),
+                (aio, "artist", "~people")
+            ]
+            # Turn on the toggles if the toggled version is detected in config
+            for (check, off, on) in self._toggle_data:
+                if on in cols:
+                    buttons[off].set_active(True)
+                    check.set_active(True)
+                    cols.remove(on)
 
+            # Update text once to exclude ticked columns, munged or not
+            others.set_text(", ".join(cols))
             t = Gtk.Table(2, 2)
             t.set_homogeneous(True)
             t.attach(tiv, 0, 1, 0, 1)
             t.attach(aip, 0, 1, 1, 2)
-            t.attach(fip, 1, 2, 0, 1)
-            vbox.pack_start(t, False, True, 0)
+            t.attach(aio, 1, 2, 0, 1)
+            t.attach(fip, 1, 2, 1, 2)
+            frame = qltk.Frame(_("Column Preferences"), child=t)
+            self.pack_start(frame, False, True, 0)
 
-            hbox = Gtk.HBox(spacing=6)
-            l = Gtk.Label(label=_("_Others:"))
-            hbox.pack_start(l, False, True, 0)
-            others = UndoEntry()
-            if "~current" in checks: checks.remove("~current")
-            others.set_text(" ".join(checks))
-            others.set_tooltip_text(
-                _("Other columns to display, separated by spaces"))
-            l.set_mnemonic_widget(others)
-            l.set_use_underline(True)
-            hbox.pack_start(others, True, True, 0)
-            vbox.pack_start(hbox, False, True, 0)
-
+            # Apply button
+            vbox = Gtk.VBox(spacing=12)
             apply = Gtk.Button(stock=Gtk.STOCK_APPLY)
-            apply.connect(
-                'clicked', self.__apply, buttons, tiv, aip, fip, others)
+            apply.set_tooltip_text(_("Apply current configuration to song "
+                                     "list, adding new columns to the end"))
             b = Gtk.HButtonBox()
             b.set_layout(Gtk.ButtonBoxStyle.END)
             b.pack_start(apply, True, True, 0)
             vbox.pack_start(b, True, True, 0)
-
-            frame = qltk.Frame(_("Visible Columns"), child=vbox)
-            self.pack_start(frame, False, True, 0)
+            self.pack_start(vbox, True, True, 0)
+            apply.connect('clicked', self.__apply, buttons, tiv, aip, fip,
+                          aio)
+            # Apply on destroy, else config gets mangled
+            self.connect('destroy', self.__apply, buttons, tiv, aip, fip, aio)
             self.show_all()
 
-        def __apply(self, button, buttons, tiv, aip, fip, others):
-            headers = []
-            for key in ["~#disc", "~#track", "title", "album", "artist",
-                        "date", "~basename", "~#rating", "~#length"]:
-                if buttons[key].get_active(): headers.append(key)
-            if tiv.get_active():
-                try: headers[headers.index("title")] = "~title~version"
-                except ValueError: pass
-            if aip.get_active():
-                try: headers[headers.index("album")] = "~album~discsubtitle"
-                except ValueError: pass
-            if fip.get_active():
-                try: headers[headers.index("~basename")] = "~filename"
-                except ValueError: pass
+        def __apply(self, button, buttons, tiv, aip, fip, aio):
+            new_headers = set()
+            # Get the checked headers
+            for key, name in self.PREDEFINED_TAGS:
+                if buttons[key].get_active():
+                    new_headers.add(key)
+                # And the customs
+            new_headers.update(set(self.other_cols))
 
-            headers.extend(others.get_text().split())
-            if "~current" in headers: headers.remove("~current")
-            headers = [header.lower() for header in headers]
-            SongList.set_all_column_headers(headers)
+            on_to_off = dict((on, off) for (w, off, on) in self._toggle_data)
+            result = []
+            cur_cols = config.get_columns(refresh=True)
+            for h in cur_cols:
+                if h in new_headers:
+                    result.append(h)
+                else:
+                    try:
+                        alternative = on_to_off[h]
+                        if alternative in new_headers:
+                            result.append(alternative)
+                    except KeyError: pass
+
+            # Add new ones on the end
+            result.extend(new_headers - set(result))
+
+            # After this, do the substitutions
+            for (check, off, on) in self._toggle_data:
+                if check.get_active():
+                    try:
+                        result[result.index(off)] = on
+                    except ValueError:
+                        pass
+
+            SongList.set_all_column_headers(result)
+
+        def __config_cols(self, button):
+            def __closed(widget):
+                self.other_cols = widget.get_strings()
+                self.others.set_text(", ".join(self.other_cols))
+
+            m = MultiStringEditor(_("Extra Columns"), self.other_cols)
+            m.connect('destroy', __closed)
 
     class Browsers(Gtk.VBox):
         name = "browser"
@@ -168,8 +219,8 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             c = ConfigCheckButton(_("Search after _typing"),
                                   'settings', 'eager_search', populate=True)
-            c.set_tooltip_text(_("Show search results after the user "
-                "stops typing."))
+            c.set_tooltip_text(
+                    _("Show search results after the user stops typing."))
             vb.pack_start(c, False, True, 0)
             # Translators: The heading of the preference group, no action
             f = qltk.Frame(Q_("heading|Search"), child=vb)
@@ -177,8 +228,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             # Ratings
             vb = Gtk.VBox(spacing=6)
-            c1 = ConfigCheckButton(
-                    _("Confirm _multiple ratings"),
+            c1 = ConfigCheckButton(_("Confirm _multiple ratings"),
                     'browsers', 'rating_confirm_multiple', populate=True)
             c1.set_tooltip_text(_("Ask for confirmation before changing the "
                                   "rating of multiple songs at once"))
@@ -204,7 +254,8 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             # Filename choice algorithm config
             cb = ConfigCheckButton(_("Prefer _embedded art"),
-                                   'albumart', 'prefer_embedded', populate=True)
+                                   'albumart', 'prefer_embedded',
+                                   populate=True)
             cb.set_tooltip_text(_("Choose to use artwork embedded in the audio "
                                   "(where available) over other sources"))
             vb.pack_start(cb, False, True, 0)
@@ -246,8 +297,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.title = _("Playback")
 
             # player backend
-            if player.backend and hasattr(player.device, 'PlayerPreferences'):
-                player_prefs = player.device.PlayerPreferences()
+            if app.player and hasattr(app.player, 'PlayerPreferences'):
+                player_prefs = app.player.PlayerPreferences()
                 f = qltk.Frame(_("Output Configuration"), child=player_prefs)
                 self.pack_start(f, False, True, 0)
 
@@ -314,14 +365,14 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.show_all()
 
         def __toggled_gain(self, activator, widgets):
-            if player.playlist: # tests
-                player.playlist.volume = player.playlist.volume
+            if app.player: # tests
+                app.player.volume = app.player.volume
             for widget in widgets:
                 widget.set_sensitive(activator.get_active())
 
         def __changed(self, adj, section, name):
             config.set(section, name, str(adj.get_value()))
-            player.playlist.volume = player.playlist.volume
+            app.player.volume = app.player.volume
 
     class Tagging(Gtk.VBox):
         name = "tagging"
@@ -370,7 +421,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             bayes_spin = Gtk.SpinButton(adjustment=adj)
             bayes_spin.set_digits(1)
             bayes_spin.connect('changed', self.__changed_and_signal_library,
-                    'settings', 'bayesian_rating_factor')
+                               'settings', 'bayesian_rating_factor')
             bayes_spin.set_tooltip_text(
                 _("Bayesian Average factor (C) for aggregated ratings.\n"
                   "0 means a conventional average, higher values mean that "
@@ -419,7 +470,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             # Cache over clicks
             self._songs = self._songs or app.library.values()
             copool.add(emit_signal, self._songs, funcid="library changed",
-                    name=_("Updating for new ratings"))
+                       name=_("Updating for new ratings"))
 
     class Library(Gtk.VBox):
         name = "library"
@@ -430,7 +481,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.title = _("Library")
 
             cb = ConfigCheckButton(_("_Refresh library on start"),
-                                   "library", "refresh_on_start", populate=True)
+                                   "library", "refresh_on_start",
+                                   populate=True)
             scan_dirs = ScanBox()
 
             vb3 = Gtk.VBox(spacing=6)
@@ -439,8 +491,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             def refresh_cb(button):
                 paths = util.split_scan_dirs(config.get("settings", "scan"))
                 exclude = config.get("library", "exclude").split(":")
-                copool.add(app.library.rebuild,
-                   paths, False, exclude, cofuncid="library", funcid="library")
+                copool.add(app.library.rebuild, paths, False, exclude,
+                           cofuncid="library", funcid="library")
 
             refresh = qltk.Button(_("Refresh Library"), Gtk.STOCK_REFRESH)
             refresh.connect("clicked", refresh_cb)
@@ -465,7 +517,8 @@ class PreferencesWindow(qltk.UniqueWindow):
 
         self.__notebook = notebook = qltk.Notebook()
         for Page in [self.SongList, self.Browsers, self.Player,
-            self.Library, self.Tagging]: notebook.append_page(Page())
+                     self.Library, self.Tagging]:
+            notebook.append_page(Page())
 
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect_object('clicked', lambda x: x.destroy(), self)

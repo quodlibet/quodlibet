@@ -114,7 +114,8 @@ class FileSystem(Browser, Gtk.HBox):
 
     def filter(self, key, values):
         self.get_child().get_selection().unselect_all()
-        for v in values: self.get_child().go_to(v)
+        for v in values:
+            self.get_child().go_to(v)
 
     def scroll(self, song):
         self.__select_paths([song("~dirname")])
@@ -201,7 +202,8 @@ class FileSystem(Browser, Gtk.HBox):
                             self.__library.reload(song)
                         if song in self.__library:
                             songs.append(song)
-            except OSError: pass
+            except OSError:
+                pass
         self.__library.add(to_add)
         yield songs
 

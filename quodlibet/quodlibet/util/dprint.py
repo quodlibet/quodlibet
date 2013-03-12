@@ -14,6 +14,7 @@ import quodlibet.util.logging
 
 from quodlibet.const import ENCODING
 
+
 def _format_print(string, prefix=""):
     """Inserts the given prefix at the beginning of each line"""
     if prefix:

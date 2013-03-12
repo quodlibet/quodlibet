@@ -475,8 +475,8 @@ except ImportError:
     print_w(_("Could not import %s. Audio Feeds browser disabled.")
             % "python-feedparser")
 else:
-    from quodlibet import player
-    if player.can_play_uri("http://"):
+    from quodlibet import app
+    if not app.player or app.player.can_play_uri("http://"):
         browsers = [AudioFeeds]
     else:
         print_w(_("The current audio backend does not support URLs, "

@@ -54,8 +54,10 @@ def save(force=False):
             continue
 
         if force:
-            try: lib.save()
-            except EnvironmentError: pass
+            try:
+                lib.save()
+            except EnvironmentError:
+                pass
             lib.destroy()
-        elif (time.time() - util.mtime(filename)) > LIBRARY_SAVE_PERIOD_SECONDS:
+        elif time.time() - util.mtime(filename) > LIBRARY_SAVE_PERIOD_SECONDS:
             threading.Thread(target=lib.save).run()

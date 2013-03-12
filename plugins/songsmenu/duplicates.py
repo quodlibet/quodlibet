@@ -18,7 +18,7 @@ import unicodedata
 from gi.repository import Gtk, Pango
 
 from quodlibet import app
-from quodlibet import player, print_d, print_w, util, qltk
+from quodlibet import print_d, print_w, util, qltk
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.ccb import ConfigCheckButton
@@ -123,7 +123,7 @@ class DuplicateSongsView(RCMHintedTreeView):
     def __init__(self, model):
         super(DuplicateSongsView, self).__init__(model)
         self.connect_object('row-activated',
-                            self.__select_song, player.playlist)
+                            self.__select_song, app.player)
         # Selecting multiple is a nice feature it turns out.
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 

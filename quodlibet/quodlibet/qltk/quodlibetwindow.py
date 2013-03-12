@@ -15,9 +15,9 @@ from quodlibet import browsers
 from quodlibet import config
 from quodlibet import const
 from quodlibet import formats
-from quodlibet import player
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import app
 
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.browser import LibraryBrowser
@@ -63,7 +63,7 @@ class MainSongList(SongList):
 
             if row.path == model.current_path:
                 if model.sourced:
-                    name = [PLAY, PAUSE][player.playlist.paused]
+                    name = [PLAY, PAUSE][app.player.paused]
                 else:
                     name = STOP
             elif song("~errors"):
@@ -381,7 +381,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                     loc = os.path.realpath(loc)
                     if loc not in self.__library:
                         self.__library.add_filename(loc)
-            elif player.can_play_uri(uri):
+            elif app.player.can_play_uri(uri):
                 if uri not in self.__library:
                     self.__library.add([RemoteFile(uri)])
             else:
@@ -565,7 +565,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         if const.DEBUG:
             debug_menu = ("<separator/>"
                           "<menuitem action='OutputLog'/>"
-                          "<menuitem action='DebugReload'/>"
                           "<menuitem action='DebugCauseError'/>")
 
         self.ui = Gtk.UIManager()
@@ -737,9 +736,10 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.__refresh_size()
 
     def __play_pause(self, *args):
-        if player.playlist.song is None:
-            player.playlist.reset()
-        else: player.playlist.paused ^= True
+        if app.player.song is None:
+            app.player.reset()
+        else:
+            app.player.paused ^= True
 
     def __jump_to_current(self, explicit):
         """Select/scroll to the current playing song in the playlist.
@@ -763,7 +763,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             if select:
                 self.songlist.set_cursor(path)
 
-        song = player.playlist.song
+        song = app.player.song
         model =  self.songlist.model
 
         # We are not playing a song
@@ -773,15 +773,17 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         if song == model.current or (model.find(song) and explicit):
             jump_to(song, select=explicit)
         elif explicit:
-            self.browser.scroll(player.playlist.song)
+            self.browser.scroll(app.player.song)
             # We need to wait until the browser has finished
             # scrolling/filling and the songlist is ready.
             # Not perfect, but works for now.
             GLib.idle_add(jump_to, song, priority=GLib.PRIORITY_LOW)
 
-    def __next_song(self, *args): player.playlist.next()
-    def __previous_song(self, *args): player.playlist.previous()
+    def __next_song(self, *args): 
+        app.player.next()
 
+    def __previous_song(self, *args): 
+        app.player.previous()
 
     def __random(self, item, key):
         self.browser.filter_random(key)
@@ -828,7 +830,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                     self, _("Unable to add location"),
                     _("<b>%s</b> is not a valid location.") %(
                     util.escape(name))).run()
-            elif not player.can_play_uri(name):
+            elif not app.player.can_play_uri(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
                     _("<b>%s</b> uses an unsupported protocol.") %(
@@ -892,11 +894,12 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                     Gtk.get_current_event_time())
 
     def __current_song_prop(self, *args):
-        song = player.playlist.song
-        if song: SongProperties(self.__library.librarian, [song], parent=self)
+        song = app.player.song
+        if song:
+            SongProperties(self.__library.librarian, [song], parent=self)
 
     def __current_song_info(self, *args):
-        song = player.playlist.song
+        song = app.player.song
         if song: Information(self.__library.librarian, [song], self)
 
     def __hide_menus(self):
@@ -918,8 +921,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     def __browser_activate(self, browser):
         model = self.songlist.get_model()
         model.reset()
-        if player.playlist.go_to(model.get_iter_first(), True):
-            player.playlist.paused = False
+        if app.player.go_to(model.get_iter_first(), True):
+            app.player.paused = False
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:
@@ -956,11 +959,12 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
     def __cols_changed(self, songlist):
         headers = [col.header_name for col in songlist.get_columns()]
-        try: headers.remove('~current')
+        try:
+            headers.remove('~current')
         except ValueError: pass
-        if len(headers) == len(config.get("settings", "headers").split()):
+        if len(headers) == len(config.get_columns()):
             # Not an addition or removal (handled separately)
-            config.set("settings", "headers", " ".join(headers))
+            config.set_columns(headers)
             SongList.headers = headers
 
     def __make_query(self, query):

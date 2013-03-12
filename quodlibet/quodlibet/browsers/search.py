@@ -51,7 +51,8 @@ class EmptyBar(Gtk.VBox, Browser):
     def active_filter(self, song):
         if self._filter is not None:
             return self._filter(song)
-        else: return True
+        else:
+            return True
 
     def filter_text(self, text):
         self._text = text
@@ -80,7 +81,8 @@ class EmptyBar(Gtk.VBox, Browser):
     def _get_songs(self):
         try:
             self._filter = Query(self._text, star=SongList.star).search
-        except Query.error: pass
+        except Query.error:
+            pass
         else:
             if Query.match_all(self._text):
                 songs = self._library.values()
@@ -116,8 +118,8 @@ class SearchBar(EmptyBar):
             super(SearchBar.PreferencesButton, self).__init__()
             menu = Gtk.Menu()
 
-            limit_item = ConfigCheckMenuItem(_("_Limit Results"),
-                    "browsers", "search_limit", True)
+            limit_item = ConfigCheckMenuItem(
+                _("_Limit Results"), "browsers", "search_limit", True)
             limit_item.connect("toggled", search_bar_box.toggle_limit_widgets)
             menu.append(limit_item)
             menu.show_all()

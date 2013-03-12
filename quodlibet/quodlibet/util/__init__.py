@@ -20,22 +20,25 @@ import webbrowser
 # title function was moved to a separate module
 from quodlibet.util.titlecase import title
 
-from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL
+from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_
 
 if os.name == "nt":
     from win32com.shell import shellcon, shell
 
-def strip_win32_incompat(string, BAD = '\:*?;"<>|'):
+
+def strip_win32_incompat(string, BAD='\:*?;"<>|'):
     """Strip Win32-incompatible characters.
 
     This only works correctly on Unicode strings.
     """
     new = u"".join(map(lambda s: (s in BAD and "_") or s, string))
     parts = new.split(os.sep)
+
     def fix_end(string):
         return re.sub(r'[\. ]$', "_", string)
     return unicode(os.sep).join(map(fix_end, parts))
+
 
 def strip_win32_incompat_from_path(string):
     """Strip Win32-incompatible chars from a path, ignoring os.sep
@@ -44,19 +47,25 @@ def strip_win32_incompat_from_path(string):
     tail = os.sep.join(map(strip_win32_incompat, tail.split(os.sep)))
     return drive + tail
 
+
 def listdir(path, hidden=False):
     """List files in a directory, sorted, fully-qualified.
 
     If hidden is false, Unix-style hidden files are not returned.
     """
     path = fsnative(path)
-    if hidden: filt = None
-    else: filt = lambda base: not base.startswith(".")
-    if path.endswith(os.sep): join = "".join
-    else: join = os.sep.join
+    if hidden:
+        filt = None
+    else:
+        filt = lambda base: not base.startswith(".")
+    if path.endswith(os.sep):
+        join = "".join
+    else:
+        join = os.sep.join
     return [join([path, basename])
             for basename in sorted(os.listdir(path))
             if filt(basename)]
+
 
 class InstanceTracker(object):
     """A mixin for GObjects to return a list of all alive objects
@@ -66,13 +75,15 @@ class InstanceTracker(object):
 
     def _register_instance(self, klass=None):
         """Register this object to be returned in the active instance list."""
-        if klass is None: klass = type(self)
+        if klass is None:
+            klass = type(self)
         self.__kinds.setdefault(klass, []).append(self)
         self.connect('destroy', self.__kinds[klass].remove)
 
     @classmethod
     def instances(klass):
         return klass.__kinds.get(klass, [])
+
 
 class OptionParser(object):
     def __init__(self, name, version, description=None, usage=None):
@@ -92,9 +103,12 @@ class OptionParser(object):
 
     def add(self, canon, help=None, arg="", shorts="", longs=[]):
         self.__args[canon] = arg
-        for s in shorts: self.__translate_short[s] = canon
-        for l in longs: self.__translate_long[l] = canon
-        if help: self.__help[canon] = help
+        for s in shorts:
+            self.__translate_short[s] = canon
+        for l in longs:
+            self.__translate_long[l] = canon
+        if help:
+            self.__help[canon] = help
 
     def __shorts(self):
         shorts = ""
@@ -116,8 +130,8 @@ class OptionParser(object):
             if self.__args[opt]:
                 opt = "%s=%s" % (opt, self.__args[opt])
             return "  --%s %s\n" % (opt.ljust(space), help)
-
-        else: return ""
+        else:
+            return ""
 
     def help(self):
         l = 0
@@ -125,17 +139,23 @@ class OptionParser(object):
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
         s = _("Usage: %s %s\n") % (
-                 sys.argv[0], self.__usage if self.__usage else _("[options]"))
+            sys.argv[0], self.__usage if self.__usage else _("[options]"))
         if self.__description:
             s += "%s - %s\n" % (self.__name, self.__description)
         s += "\n"
         keys = sorted(self.__help.keys())
-        try: keys.remove("help")
-        except ValueError: pass
-        try: keys.remove("version")
-        except ValueError: pass
-        for h in keys: s += self.__format_help(h, l)
-        if keys: s += "\n"
+        try:
+            keys.remove("help")
+        except ValueError:
+            pass
+        try:
+            keys.remove("version")
+        except ValueError:
+            pass
+        for h in keys:
+            s += self.__format_help(h, l)
+        if keys:
+            s += "\n"
         s += self.__format_help("help", l)
         s += self.__format_help("version", l)
         return s
@@ -144,22 +164,19 @@ class OptionParser(object):
         self.__help = newhelp
 
     def version(self):
-        return _("""\
+        return ("""\
 {title} {version}
 <{email}>
-Copyright {dates}\t{authors}
-
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-""").format(title=self.__name,  version=self.__version, dates="2004-2012",
-        email=SUPPORT_EMAIL,
-        authors="Joe Wreschnig, Michael Urman, Iñigo Serna,\n\t\t\t"
-                "Steven Robertson, Christoph Reiter, Nick Boultbee and others.")
+{copyright}\
+""").format(title=self.__name, version=self.__version, dates="2004-2012",
+            email=SUPPORT_EMAIL, copyright=COPYRIGHT)
 
     def parse(self, args=None):
-        if args is None: args = sys.argv[1:]
+        if args is None:
+            args = sys.argv[1:]
         from getopt import getopt, GetoptError
-        try: opts, args = getopt(args, self.__shorts(), self.__longs())
+        try:
+            opts, args = getopt(args, self.__shorts(), self.__longs())
         except GetoptError, s:
             s = str(s)
             text = []
@@ -193,20 +210,29 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
                 elif o == "debug":
                     from quodlibet import const
                     const.DEBUG = True
-                if self.__args[o]: transopts[o] = a
-                else: transopts[o] = True
+                if self.__args[o]:
+                    transopts[o] = a
+                else:
+                    transopts[o] = True
 
             return transopts, args
 
+
 def mtime(filename):
     """Return the mtime of a file, or 0 if an error occurs."""
-    try: return os.path.getmtime(filename)
-    except OSError: return 0
+    try:
+        return os.path.getmtime(filename)
+    except OSError:
+        return 0
+
 
 def size(filename):
     """Return the size of a file, or 0 if an error occurs."""
-    try: return os.path.getsize(filename)
-    except OSError: return 0
+    try:
+        return os.path.getsize(filename)
+    except OSError:
+        return 0
+
 
 def mkdir(dir, *args):
     """Make a directory, including all its parent directories. This does not
@@ -215,13 +241,16 @@ def mkdir(dir, *args):
     if not os.path.isdir(dir):
         os.makedirs(dir, *args)
 
+
 def escape(str):
     """Escape a string in a manner suitable for XML/Pango."""
     return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+
 def unescape(str):
     """Unescape a string in a manner suitable for XML/Pango."""
     return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+
 
 def escape_filename(s):
     """Escape a string in a manner suitable for a filename."""
@@ -229,46 +258,52 @@ def escape_filename(s):
         s = s.encode("utf-8")
     return urllib.quote(s, safe="").decode("utf-8")
 
+
 def unescape_filename(s):
     """Unescape a string in a manner suitable for a filename."""
     if isinstance(s, unicode):
         s = s.encode("utf-8")
     return urllib.unquote(s).decode("utf-8")
 
+
 def parse_time(timestr, err=(ValueError, re.error)):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
     if timestr[0:1] == "-":
         m = -1
         timestr = timestr[1:]
-    else: m = 1
+    else:
+        m = 1
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
                           re.split(r":|\.", timestr), 0)
-    except err: return 0
+    except err:
+        return 0
 
 RATING_PRECISION = 0.25
 RATING_SYMBOL = u'\u2605'
 BLANK_RATING_SYMBOL = u'\u2606'
+
 
 def format_rating(value, blank=True):
     """Turn a number into a sequence of rating symbols."""
     steps = int(1 / RATING_PRECISION)
     value = max(min(value, 1.0), 0)
     ons = int(round(steps * value))
-    offs =  (steps - ons) if blank else 0
+    offs = (steps - ons) if blank else 0
     return RATING_SYMBOL * ons + BLANK_RATING_SYMBOL * offs
+
 
 def format_size(size):
     """Turn an integer size value into something human-readable."""
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
-    if size >= 1024*1024*1024:
-        return "%.1f GB" % (float(size) / (1024*1024*1024))
-    elif size >= 1024*1024 * 100:
-        return "%.0f MB" % (float(size) / (1024*1024))
-    elif size >= 1024*1024 * 10:
-        return "%.1f MB" % (float(size) / (1024*1024))
-    elif size >= 1024*1024:
-        return "%.2f MB" % (float(size) / (1024*1024))
+    if size >= 1024 ** 3:
+        return "%.1f GB" % (float(size) / (1024 ** 3))
+    elif size >= 1024 ** 2 * 100:
+        return "%.0f MB" % (float(size) / (1024 ** 2))
+    elif size >= 1024 ** 2 * 10:
+        return "%.1f MB" % (float(size) / (1024 ** 2))
+    elif size >= 1024 ** 2:
+        return "%.2f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 * 10:
         return "%d KB" % int(size / 1024)
     elif size >= 1024:
@@ -276,13 +311,15 @@ def format_size(size):
     else:
         return "%d B" % size
 
+
 def format_time(time):
     """Turn a time value in seconds into hh:mm:ss or mm:ss."""
     if time < 0:
         time = abs(time)
         prefix = "-"
-    else: prefix = ""
-    if time >= 3600: # 1 hour
+    else:
+        prefix = ""
+    if time >= 3600:  # 1 hour
         # time, in hours:minutes:seconds
         return "%s%d:%02d:%02d" % (prefix, time // 3600,
                                    (time % 3600) // 60, time % 60)
@@ -290,9 +327,11 @@ def format_time(time):
         # time, in minutes:seconds
         return "%s%d:%02d" % (prefix, time // 60, time % 60)
 
+
 def format_time_long(time):
     """Turn a time value in seconds into x hours, x minutes, etc."""
-    if time < 1: return _("No time information")
+    if time < 1:
+        return _("No time information")
     cutoffs = [
         (60, "%d seconds", "%d second"),
         (60, "%d minutes", "%d minute"),
@@ -302,27 +341,36 @@ def format_time_long(time):
     ]
     time_str = []
     for divisor, plural, single in cutoffs:
-        if time < 1: break
-        if divisor is None: time, unit = 0, time
-        else: time, unit = divmod(time, divisor)
-        if unit: time_str.append(ngettext(single, plural, unit) % unit)
+        if time < 1:
+            break
+        if divisor is None:
+            time, unit = 0, time
+        else:
+            time, unit = divmod(time, divisor)
+        if unit:
+            time_str.append(ngettext(single, plural, unit) % unit)
     time_str.reverse()
-    if len(time_str) > 2: time_str.pop()
+    if len(time_str) > 2:
+        time_str.pop()
     return ", ".join(time_str)
+
 
 def fsdecode(s, note=True):
     """Decoding a string according to the filesystem encoding.
     note specifies whether a note should be appended if decoding failed."""
-    if isinstance(s, unicode): return s
+    if isinstance(s, unicode):
+        return s
     elif note:
         return decode(s, fscoding)
     else:
         return s.decode(fscoding, 'replace')
 
+
 def fsencode(s, note=False):
     """Encode a string according to the filesystem encoding.
     note specifies whether a note should be appended if encoding failed."""
-    if isinstance(s, str): return s
+    if isinstance(s, str):
+        return s
     elif note:
         return encode(s, fscoding)
     else:
@@ -343,9 +391,10 @@ Path related functions like open, os.listdir have different behavior on win32
 """
 
 if sys.platform == "win32":
-    fsnative = fsdecode # Decode a filename on windows
+    fsnative = fsdecode  # Decode a filename on windows
 else:
-    fsnative = fsencode # Encode it on other platforms
+    fsnative = fsencode  # Encode it on other platforms
+
 
 def split_scan_dirs(s):
     """Split the value of the "scan" setting, accounting for drive letters on
@@ -355,19 +404,24 @@ def split_scan_dirs(s):
     else:
         return filter(None, s.split(":"))
 
+
 def decode(s, charset="utf-8"):
     """Decode a string; if an error occurs, replace characters and append
     a note to the string."""
-    try: return s.decode(charset)
+    try:
+        return s.decode(charset)
     except UnicodeError:
         return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
+
 
 def encode(s, charset="utf-8"):
     """Encode a string; if an error occurs, replace characters and append
     a note to the string."""
-    try: return s.encode(charset)
+    try:
+        return s.encode(charset)
     except UnicodeError:
         return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
+
 
 def iscommand(s):
     """True if an executable file 's' exists in the user's path, or is a
@@ -381,25 +435,31 @@ def iscommand(s):
             p2 = os.path.join(p, s)
             if os.path.isfile(p2) and os.access(p2, os.X_OK):
                 return True
-        else: return False
+        else:
+            return False
+
 
 def capitalize(str):
     """Capitalize a string, not affecting any character after the first."""
     return str[:1].upper() + str[1:]
 
+
 def split_value(s, splitters=["/", "&", ","]):
     """Splits a string. The first match in 'splitters' is used as the
     separator; subsequent matches are intentionally ignored."""
-    if not splitters: return [s.strip()]
+    if not splitters:
+        return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
         spl = re.compile(r"\b\s*%s\s*\b" % re.escape(spl), re.UNICODE)
-        if not filter(spl.search, values): continue
+        if not filter(spl.search, values):
+            continue
         new_values = []
         for v in values:
             new_values.extend([st.strip() for st in spl.split(v)])
         return new_values
     return values
+
 
 def split_title(s, splitters=["/", "&", ","]):
     title, subtitle = find_subtitle(s)
@@ -413,6 +473,7 @@ __ORIGINALLY = ["originally by ", " cover"]
 __FEAT_REGEX = [re.compile(re.escape(s + " "), re.I) for s in __FEATURING]
 __ORIG_REGEX = [re.compile(re.escape(s), re.I) for s in __ORIGINALLY]
 
+
 def split_people(s, splitters=["/", "&", ","]):
     title, subtitle = find_subtitle(s)
     if not subtitle:
@@ -422,9 +483,10 @@ def split_people(s, splitters=["/", "&", ","]):
                 try:
                     i = [p.lower() for p in parts].index(feat)
                     orig = " ".join(parts[:i])
-                    others = " ".join(parts[i+1:])
+                    others = " ".join(parts[i + 1:])
                     return (orig, split_value(others, splitters))
-                except (ValueError, IndexError): pass
+                except (ValueError, IndexError):
+                    pass
         return (s, [])
     else:
         old = subtitle
@@ -436,6 +498,7 @@ def split_people(s, splitters=["/", "&", ","]):
                 break
         values = split_value(subtitle, splitters)
         return (title.strip(), values)
+
 
 def split_album(s):
     name, disc = find_subtitle(s)
@@ -449,14 +512,18 @@ def split_album(s):
     else:
         parts = disc.split()
         if (len(parts) == 2 and
-            parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
-            try: return (name, parts[1])
-            except: return (s, None)
-        else: return (s, None)
+                parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
+            try:
+                return (name, parts[1])
+            except:
+                return (s, None)
+        else:
+            return (s, None)
+
 
 def split_numeric(s, limit=10,
-        reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
-        join=u" ".join):
+                  reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
+                  join=u" ".join):
     """Separate numeric values from the string and convert to float, so
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
@@ -469,39 +536,47 @@ def split_numeric(s, limit=10,
             float(result.group()),
             split_numeric(s[end:], limit - 1))
 
+
 def human_sort_key(s, normalize=unicodedata.normalize):
     if not isinstance(s, unicode):
         s = s.decode("utf-8")
     s = normalize("NFD", s.lower())
     return s and split_numeric(s)
 
+
 def find_subtitle(title):
-    if isinstance(title, str): title = title.decode('utf-8', 'replace')
+    if isinstance(title, str):
+        title = title.decode('utf-8', 'replace')
     for pair in [u"[]", u"()", u"~~", u"--", u"\u301c\u301c", u'\uff08\uff09']:
         if pair[0] in title[:-1] and title.endswith(pair[1]):
             r = len(pair[1])
             l = title[0:-r].rindex(pair[0])
             if l != 0:
-                subtitle = title[l+len(pair[0]):-r]
+                subtitle = title[l + len(pair[0]):-r]
                 title = title[:l]
                 return title.rstrip(), subtitle
-    else: return title, None
+    else:
+        return title, None
+
 
 def expanduser(filename):
     """needed because expanduser does not return wide character paths
     on windows even if a unicode path gets passed."""
     if os.name == "nt":
         profile = shell.SHGetFolderPath(0, shellcon.CSIDL_PROFILE, 0, 0)
-        if filename == "~": return profile
+        if filename == "~":
+            return profile
         if filename.startswith(u"~" + os.path.sep):
             return os.path.join(profile, filename[2:])
     return os.path.expanduser(filename)
+
 
 def unexpand(filename, HOME=expanduser("~")):
     """Replace the user's home directory with ~/, if it appears at the
     start of the path name."""
     sub = (os.name == "nt" and "%USERPROFILE%") or "~"
-    if filename == HOME: return sub
+    if filename == HOME:
+        return sub
     elif filename.startswith(HOME + os.path.sep):
         filename = filename.replace(HOME, sub, 1)
     return filename
@@ -554,7 +629,8 @@ def tag(name, cap=True):
     # Return a 'natural' version of the tag for human-readable bits.
     # Strips ~ and ~# from the start and runs it through a map (which
     # the user can configure).
-    if not name: return _("Invalid tag")
+    if not name:
+        return _("Invalid tag")
     else:
         from quodlibet.util.tags import readable
         parts = map(readable, tagsplit(name))
@@ -569,29 +645,37 @@ def tag(name, cap=True):
                 parts = map(capitalize, parts)
         return " / ".join(parts)
 
+
 def tagsplit(tag):
     """Split a (potentially) tied tag into a list of atomic tags. Two ~~s
     make the next tag prefixed with a ~, so ~foo~~bar => [foo, ~bar]."""
     if "~" in tag[1:]:
-        if tag.startswith("~") and not tag.startswith("~#"): tag = tag[1:]
+        if tag.startswith("~") and not tag.startswith("~#"):
+            tag = tag[1:]
         tags = []
         front = ""
         for part in tag.split("~"):
             if part:
                 tags.append(front + part)
                 front = ""
-            else: front = "~"
+            else:
+                front = "~"
         return tags
-    else: return [tag]
+    else:
+        return [tag]
+
 
 def pattern(pat, cap=True, esc=False):
     """Return a 'natural' version of the pattern string for human-readable
     bits. Assumes all tags in the pattern are present."""
     from quodlibet.parse import Pattern, XMLFromPattern
+
     class Fakesong(dict):
         cap = False
+
         def comma(self, key):
             return " - ".join(self.list(key))
+
         def list(self, key):
             return [tag(k, self.cap) for k in tagsplit(key)]
         list_seperate = list
@@ -605,6 +689,7 @@ def pattern(pat, cap=True, esc=False):
         return _("Invalid pattern")
 
     return p.format(fakesong)
+
 
 def spawn(argv, stdout=False):
     """Asynchronously run a program. argv[0] is the executable name, which
@@ -629,19 +714,25 @@ def spawn(argv, stdout=False):
     else:
         return args[0]
 
+
 def fver(tup):
     return ".".join(map(str, tup))
+
 
 def uri_is_valid(uri):
     return bool(urlparse.urlparse(uri)[0])
 
+
 def make_case_insensitive(filename):
     return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
 
+
 def print_exc(limit=None, file=None):
     """A wrapper preventing crashes on broken pipes in print_exc."""
-    if not file: file = sys.stderr
+    if not file:
+        file = sys.stderr
     print_(traceback.format_exc(limit=limit), output=file)
+
 
 class DeferredSignal(object):
     """A wrapper for connecting functions to signals.
@@ -659,6 +750,7 @@ class DeferredSignal(object):
     """
 
     __slots__ = ['func', 'dirty']
+
     def __init__(self, func):
         self.func = func
         self.dirty = False
@@ -673,6 +765,7 @@ class DeferredSignal(object):
         self.func(*args)
         self.dirty = False
 
+
 def gobject_weak(fun, *args, **kwargs):
     """Connect to a signal and disconnect if destroy gets emitted.
     If parent is given, it connects to its destroy signal
@@ -685,9 +778,12 @@ def gobject_weak(fun, *args, **kwargs):
     obj = fun.__self__
     sig = fun(*args)
     disconnect = lambda obj, handle: obj.disconnect(handle)
-    if parent: parent.connect_object('destroy', disconnect, obj, sig)
-    else: obj.connect('destroy', disconnect, sig)
+    if parent:
+        parent.connect_object('destroy', disconnect, obj, sig)
+    else:
+        obj.connect('destroy', disconnect, sig)
     return sig
+
 
 class cached_property(object):
     """A read-only @property that is only evaluated once."""
@@ -702,6 +798,7 @@ class cached_property(object):
         obj.__dict__[self.__name__] = result = self.fget(obj)
         return result
 
+
 def xdg_get_system_data_dirs():
     """http://standards.freedesktop.org/basedir-spec/latest/"""
     data_dirs = os.getenv("XDG_DATA_DIRS")
@@ -710,12 +807,14 @@ def xdg_get_system_data_dirs():
     else:
         return ("/usr/local/share/", "/usr/share/")
 
+
 def xdg_get_cache_home():
     data_home = os.getenv("XDG_CACHE_HOME")
     if data_home:
         return os.path.abspath(data_home)
     else:
         return os.path.join(os.path.expanduser("~"), ".cache")
+
 
 def xdg_get_data_home():
     data_home = os.getenv("XDG_DATA_HOME")
@@ -724,10 +823,12 @@ def xdg_get_data_home():
     else:
         return os.path.join(os.path.expanduser("~"), ".local", "share")
 
+
 def find_mount_point(path):
     while not os.path.ismount(path):
         path = os.path.dirname(path)
     return path
+
 
 def pathname2url_win32(path):
     # stdlib version raises IOError for more than one ':' which can appear
@@ -750,10 +851,13 @@ else:
 # See http://stackoverflow.com/questions/1151658/python-hashable-dicts
 class HashableDict(dict):
     """Standard dict, made hashable. Useful for making sets of dicts etc"""
+
     def __key(self):
-        return tuple((k,self[k]) for k in sorted(self))
+        return tuple((k, self[k]) for k in sorted(self))
+
     def __hash__(self):
         return hash(self.__key())
+
     def __eq__(self, other):
         return self.__key() == other.__key()
 
@@ -784,31 +888,40 @@ def sanitize_tags(tags, stream=False):
                     value = u"Ogg Vorbis"
 
             if lower in ("http://www.shoutcast.com", "http://localhost/",
-                "default genre", "none", "http://", "unnamed server",
-                "unspecified", "n/a"):
+                         "default genre", "none", "http://", "unnamed server",
+                         "unspecified", "n/a"):
                 continue
 
         if key == "duration":
-            try: value = int(long(value) / 1000)
-            except ValueError: pass
+            try:
+                value = int(long(value) / 1000)
+            except ValueError:
+                pass
             else:
-                if not stream: continue
+                if not stream:
+                    continue
                 key = "~#length"
         elif key == "bitrate":
-            try: value = int(value) / 1000
-            except ValueError: pass
+            try:
+                value = int(value) / 1000
+            except ValueError:
+                pass
             else:
-                if not stream: continue
+                if not stream:
+                    continue
                 key = "~#bitrate"
         elif key == "nominal-bitrate":
-            try: value = int(value) / 1000
-            except ValueError: pass
+            try:
+                value = int(value) / 1000
+            except ValueError:
+                pass
             else:
-                if stream: continue
+                if stream:
+                    continue
                 key = "~#bitrate"
 
         if key in ("emphasis", "mode", "layer", "maximum-bitrate",
-            "minimum-bitrate", "has-crc", "homepage"):
+                   "minimum-bitrate", "has-crc", "homepage"):
             continue
 
         if not stream and key in ("title", "album", "artist", "date"):
@@ -873,9 +986,10 @@ def limit_songs(songs, max, weight_by_ratings=False):
         if weight_by_ratings:
             def choose(r1, r2):
                 if r1 or r2:
-                    return cmp(random.random(), r1 / (r1+r2))
+                    return cmp(random.random(), r1 / (r1 + r2))
                 else:
                     return random.randint(-1, 1)
+
             def rating(song):
                 return song("~#rating")
             songs.sort(cmp=choose, key=rating)

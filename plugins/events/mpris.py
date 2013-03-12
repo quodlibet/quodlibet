@@ -667,8 +667,7 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
             elif name == "SupportedUriSchemes":
                 # TODO: enable once OpenUri is done
                 can = lambda s: False
-                # from quodlibet.player import backend
-                #can = lambda s: backend.can_play_uri("%s://fake" % s)
+                #can = lambda s: app.player.can_play_uri("%s://fake" % s)
                 schemes = ["http", "https", "ftp", "file", "mms"]
                 return filter(can, schemes)
             elif name == "SupportedMimeTypes":

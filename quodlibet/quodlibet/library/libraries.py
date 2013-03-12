@@ -32,6 +32,7 @@ from quodlibet.parse import Query
 from quodlibet.qltk.notif import Task
 from quodlibet.util.collection import Album
 from quodlibet import util
+from quodlibet import const
 from quodlibet.util.dprint import print_d, print_w
 
 
@@ -231,7 +232,8 @@ def load_items(filename, default=None):
     try:
         fp = open(filename, "rb")
     except EnvironmentError:
-        print_w("Couldn't load library from: %r" % filename)
+        if const.DEBUG or os.path.exists(filename):
+            print_w("Couldn't load library from: %r" % filename)
         return default
 
     # pickle makes 1000 read syscalls for 6000 songs
@@ -642,7 +644,7 @@ class FileLibrary(PicklingLibrary):
             if len(changed) > 5 or i % 100 == 0:
                 yield True
         print_d("Removing %d, changing %d." % (len(removed), len(changed)),
-            self)
+                self)
         if removed:
             self.emit('removed', removed)
         if changed:

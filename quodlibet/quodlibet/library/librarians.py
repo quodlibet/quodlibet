@@ -32,7 +32,7 @@ class Librarian(GObject.GObject):
         'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'added': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        }
+    }
 
     def __init__(self):
         super(Librarian, self).__init__()

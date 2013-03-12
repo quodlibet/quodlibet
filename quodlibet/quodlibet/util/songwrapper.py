@@ -22,7 +22,8 @@ class SongWrapper(object):
         return self._updated
 
     def __setitem__(self, key, value):
-        if key in self and self[key] == value: return
+        if key in self and self[key] == value:
+            return
         self._updated = True
         self._needs_write = (self._needs_write or not key.startswith("~"))
         return self._song.__setitem__(key, value)
@@ -49,12 +50,19 @@ class SongWrapper(object):
             return super(SongWrapper, self).__setattr__(attr, value)
 
     def __cmp__(self, other):
-        try: return cmp(self._song, other._song)
-        except: return cmp(self._song, other)
+        try:
+            return cmp(self._song, other._song)
+        except:
+            return cmp(self._song, other)
 
-    def __getitem__(self, *args): return self._song.__getitem__(*args)
-    def __contains__(self, key): return key in self._song
-    def __call__(self, *args): return self._song(*args)
+    def __getitem__(self, *args):
+        return self._song.__getitem__(*args)
+
+    def __contains__(self, key):
+        return key in self._song
+
+    def __call__(self, *args):
+        return self._song(*args)
 
     def update(self, other):
         self._updated = True
@@ -65,11 +73,15 @@ class SongWrapper(object):
         self._updated = True
         return self._song.rename(newname)
 
+
 def ListWrapper(songs):
     def wrap(song):
-        if song is None: return None
-        else: return SongWrapper(song)
+        if song is None:
+            return None
+        else:
+            return SongWrapper(song)
     return map(wrap, songs)
+
 
 def check_wrapper_changed(library, parent, songs):
     needs_write = filter(lambda s: s._needs_write, songs)
@@ -77,14 +89,15 @@ def check_wrapper_changed(library, parent, songs):
     if needs_write:
         win = WritingWindow(parent, len(needs_write))
         for song in needs_write:
-            try: song._song.write()
+            try:
+                song._song.write()
             except Exception:
                 qltk.ErrorMessage(
                     None, _("Unable to edit song"),
                     _("Saving <b>%s</b> failed. The file "
                       "may be read-only, corrupted, or you "
-                      "do not have permission to edit it.")%(
-                    util.escape(song('~basename')))).run()
+                      "do not have permission to edit it.") %
+                    util.escape(song('~basename'))).run()
             win.step()
         win.destroy()
         from gi.repository import Gtk
@@ -93,7 +106,8 @@ def check_wrapper_changed(library, parent, songs):
 
     changed = []
     for song in songs:
-        if song._was_updated(): changed.append(song._song)
+        if song._was_updated():
+            changed.append(song._song)
         elif not song.valid() and song.exists():
             library.reload(song._song)
     library.changed(changed)

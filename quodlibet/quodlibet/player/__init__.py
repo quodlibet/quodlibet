@@ -1,51 +1,32 @@
 # Copyright 2007 Joe Wreschnig
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet import const
-from quodlibet import util
 
-
-global device, backend
-backend = None
-playlist = None
-
-class error(RuntimeError):
+class PlayerError(Exception):
     def __init__(self, short_desc, long_desc):
         self.short_desc = short_desc
         self.long_desc = long_desc
 
+
 def init(backend_name):
-    global backend
+    """Imports the player backend module for the given name.
+    Raises PlayerError if the import fails.
+    
+    the module provides the following functions:
+        init(librarian) -> new player instance
+    """
+
     modulename = "quodlibet.player." + backend_name
 
     try:
         backend = __import__(modulename, {}, {}, "quodlibet.player")
-    except ImportError, e:
-        if const.DEBUG:
-            util.print_exc()
-        raise error(
+    except ImportError:
+        raise PlayerError(
             _("Invalid audio backend"),
             _("The audio backend %r is not installed.") % backend_name)
     else:
         return backend
-
-def quit(dev):
-    global backend, device, playlist
-    dev.destroy()
-    del(backend)
-    del(device)
-    del(playlist)
-
-def init_device(librarian):
-    global playlist, device
-    playlist = device = backend.init(librarian)
-    return device
-
-def can_play_uri(uri):
-    """Returns True if the player can play a stream at specified uri."""
-    if backend is not None:
-        return backend.can_play_uri(uri)
-    return True

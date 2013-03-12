@@ -6,18 +6,23 @@
 # the tag will not show up for editing, as it is generated internally
 # by Quod Libet.
 
+
 def T(name, translation, machine=False, internal=False):
     return (name, (translation, machine, internal))
+
 
 def MT(name, translation, internal=False):
     return T(name, translation, machine=True, internal=internal)
 
+
 def IT(name, translation, machine=False):
     return T(name, translation, machine=machine, internal=True)
+
 
 # Fake out gettext for some convenience.
 def N_(name):
     return T(name, _(name))
+
 
 TAGS = dict([
     N_("album"),
@@ -108,18 +113,24 @@ TAGS = dict([
     IT("bitrate", _("bitrate")),
     IT("filesize", _("file size")),
     IT("format", _("file format")),
-    ])
+])
+
 
 def add(tag, translation):
     TAGS[tag] = (translation, False, False)
 
+
 def readable(tag):
     try:
         if tag[0] == "~":
-            if tag[1] == "#": tag = tag[2:]
-            else: tag = tag[1:]
-    except IndexError: return _("Invalid tag")
-    else: return TAGS.get(tag, (tag,))[0]
+            if tag[1] == "#":
+                tag = tag[2:]
+            else:
+                tag = tag[1:]
+    except IndexError:
+        return _("Invalid tag")
+    else:
+        return TAGS.get(tag, (tag,))[0]
 
 STANDARD_TAGS = [key for key in TAGS if not (TAGS[key][1] or TAGS[key][2])]
 MACHINE_TAGS = [key for key in TAGS if TAGS[key][1]]

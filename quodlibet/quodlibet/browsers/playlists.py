@@ -30,8 +30,11 @@ from quodlibet.qltk.x import ScrolledWindow, Alignment
 from quodlibet.util.uri import URI
 from quodlibet.util.dprint import print_d
 
+
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
-if not os.path.isdir(PLAYLISTS): util.mkdir(PLAYLISTS)
+if not os.path.isdir(PLAYLISTS):
+    util.mkdir(PLAYLISTS)
+
 
 def ParseM3U(filename, library=None):
     plname = util.fsdecode(os.path.basename(
@@ -39,9 +42,12 @@ def ParseM3U(filename, library=None):
     filenames = []
     for line in file(filename):
         line = line.strip()
-        if line.startswith("#"): continue
-        else: filenames.append(line)
+        if line.startswith("#"):
+            continue
+        else:
+            filenames.append(line)
     return __ParsePlaylist(plname, filename, filenames, library)
+
 
 def ParsePLS(filename, name="", library=None):
     plname = util.fsdecode(os.path.basename(
@@ -49,12 +55,17 @@ def ParsePLS(filename, name="", library=None):
     filenames = []
     for line in file(filename):
         line = line.strip()
-        if not line.lower().startswith("file"): continue
+        if not line.lower().startswith("file"):
+            continue
         else:
-            try: line = line[line.index("=")+1:].strip()
-            except ValueError: pass
-            else: filenames.append(line)
+            try:
+                line = line[line.index("=") + 1:].strip()
+            except ValueError:
+                pass
+            else:
+                filenames.append(line)
     return __ParsePlaylist(plname, filename, filenames, library)
+
 
 def __ParsePlaylist(name, plfilename, files, library):
     playlist = Playlist.new(PLAYLISTS, name, library=library)
@@ -63,7 +74,8 @@ def __ParsePlaylist(name, plfilename, files, library):
         None, len(files),
         _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
     for i, filename in enumerate(files):
-        try: uri = URI(filename)
+        try:
+            uri = URI(filename)
         except ValueError:
             # Plain filename.
             filename = os.path.realpath(os.path.join(
@@ -84,7 +96,8 @@ def __ParsePlaylist(name, plfilename, files, library):
             else:
                 # Who knows! Hand it off to GStreamer.
                 songs.append(formats.remote.RemoteFile(uri))
-        if win.step(): break
+        if win.step():
+            break
     win.destroy()
     playlist.extend(filter(None, songs))
     return playlist
@@ -126,12 +139,13 @@ class GetPlaylistName(GetStringDialog):
             _("Enter a name for the new playlist:"),
             okbutton=Gtk.STOCK_ADD)
 
+
 class Menu(Gtk.Menu):
     def __init__(self, songs, parent=None):
         super(Menu, self).__init__()
         i = Gtk.MenuItem(_("_New Playlist"), use_underline=True)
-        i.connect_object('activate',
-            self.__add_to_playlist, None, songs, parent)
+        i.connect_object(
+            'activate', self.__add_to_playlist, None, songs, parent)
         self.append(i)
         self.append(Gtk.SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
@@ -155,14 +169,18 @@ class Menu(Gtk.Menu):
                 title = ngettext(
                     "%(title)s and %(count)d more",
                     "%(title)s and %(count)d more",
-                    len(songs) - 1) % (
-                    {'title': songs[0].comma("title"), 'count': len(songs) - 1})
+                    len(songs) - 1) % {
+                        'title': songs[0].comma("title"),
+                        'count': len(songs) - 1
+                    }
             title = GetPlaylistName(qltk.get_top_parent(parent)).run(title)
-            if title is None: return
+            if title is None:
+                return
             playlist = Playlist.new(PLAYLISTS, title)
         playlist.extend(songs)
         Playlists.changed(playlist)
     __add_to_playlist = staticmethod(__add_to_playlist)
+
 
 class Playlists(Gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
@@ -380,8 +398,10 @@ class Playlists(Gtk.VBox, Browser):
         if tid == 0:
             filenames = sel.get_data().split("\x00")
             songs = filter(None, map(library.get, filenames))
-            if not songs: return True
-            try: path, pos = view.get_dest_row_at_pos(x, y)
+            if not songs:
+                return True
+            try:
+                path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
                 playlist = Playlist.fromsongs(PLAYLISTS, songs, library)
                 GLib.idle_add(self.__select_playlist, playlist)
@@ -404,7 +424,8 @@ class Playlists(Gtk.VBox, Browser):
             try:
                 sock = urllib.urlopen(uri)
                 f = NamedTemporaryFile()
-                f.write(sock.read()); f.flush()
+                f.write(sock.read())
+                f.flush()
                 if uri.lower().endswith('.pls'):
                     playlist = ParsePLS(f.name, library=library)
                 elif uri.lower().endswith('.m3u'):
@@ -412,7 +433,8 @@ class Playlists(Gtk.VBox, Browser):
                 else:
                     raise IOError
                 library.add_filename(playlist)
-                if name: playlist.rename(name)
+                if name:
+                    playlist.rename(name)
                 Playlists.changed(playlist)
                 Gtk.drag_finish(ctx, True, False, etime)
             except IOError:
@@ -458,8 +480,10 @@ class Playlists(Gtk.VBox, Browser):
             unique = set()
             dupes = list()
             for s in songs:
-                if s in unique: dupes.append(s)
-                else: unique.add(s)
+                if s in unique:
+                    dupes.append(s)
+                else:
+                    unique.add(s)
             if len(dupes) < 1:
                 print_d("No duplicates in this playlist")
                 return
@@ -531,7 +555,8 @@ class Playlists(Gtk.VBox, Browser):
         editable.set_text(self.__lists[path][0].name)
 
     def __edited(self, render, path, newname):
-        try: self.__lists[path][0].rename(newname)
+        try:
+            self.__lists[path][0].rename(newname)
         except ValueError, s:
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
@@ -564,7 +589,8 @@ class Playlists(Gtk.VBox, Browser):
     def restore(self):
         try:
             name = config.get("browsers", "playlist")
-        except Exception: return
+        except Exception:
+            return
         self.__view.select_by_func(lambda r: r[0].name == name, one=True)
 
     def reordered(self, songlist):
