@@ -73,13 +73,13 @@ class IRFile(RemoteFile):
 
         if key == "~format" and "audio-codec" in self:
             return "%s (%s)" % (self.format,
-                base_call("audio-codec", *args, **kwargs))
+                                base_call("audio-codec", *args, **kwargs))
         return base_call(key, *args, **kwargs)
 
     def get(self, key, *args):
         base_call = super(IRFile, self).get
         if key in ("artist", TAG_TO_SORT["artist"]) and \
-            not base_call(key, *args) and "website" in self:
+                not base_call(key, *args) and "website" in self:
             return base_call("website", *args)
         return base_call(key, *args)
 
@@ -142,8 +142,8 @@ def ParsePLS(file):
             _("Station lists can only contain locations of stations, "
               "not other station lists or playlists. The following locations "
               "cannot be loaded:\n%s") %
-              "\n  ".join(map(util.escape, warnings))
-            ).run()
+            "\n  ".join(map(util.escape, warnings))
+        ).run()
 
     return files
 
@@ -326,7 +326,8 @@ class GenreFilter(object):
 
     # This probably needs improvements
     GENRES = {
-        "electronic": (_("Electronic"),
+        "electronic": (
+            _("Electronic"),
             "|(electr,house,techno,trance,/trip.?hop/,&(drum,n,bass),chill,"
             "dnb,minimal,/down(beat|tempo)/,&(dub,step))"),
         "rap": (_("Hip Hop / Rap"), "|(&(hip,hop),rap)"),
@@ -334,7 +335,8 @@ class GenreFilter(object):
         "r&b": (_("R&B"), "/r(\&|n)b/"),
         "japanese": (_("Japanese"), "|(anime,jpop,japan,jrock)"),
         "indian": (_("Indian"), "|(bollywood,hindi,indian,bhangra)"),
-        "religious": (_("Religious"),
+        "religious": (
+            _("Religious"),
             "|(religious,christian,bible,gospel,spiritual,islam)"),
         "charts": (_("Charts"), "|(charts,hits,top)"),
         "turkish": (_("Turkish"), "|(turkish,turkce)"),
@@ -358,7 +360,8 @@ class GenreFilter(object):
         "lounge": (_("Lounge"), None),
         "punk": (_("Punk"), None),
         "reggaeton": (_("Reggaeton"), None),
-        "slavic": (_("Slavic"),
+        "slavic": (
+            _("Slavic"),
             "|(narodna,albanian,manele,shqip,kosova)"),
         "greek": (_("Greek"), None),
         "gothic": (_("Gothic"), None),
@@ -467,7 +470,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         button = MenuButton(
             gtk.image_new_from_stock(
                 gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU),
-                arrow=True)
+            arrow=True)
         button.set_menu(menu)
 
         def focus(widget, *args):
@@ -525,8 +528,11 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         # selection
         selection = view.get_selection()
         selection.set_mode(gtk.SELECTION_MULTIPLE)
-        self.__changed_sig = gobject_weak(selection.connect, 'changed',
-            util.DeferredSignal(lambda x: self.activate()), parent=view)
+        self.__changed_sig = gobject_weak(
+            selection.connect,
+            'changed',
+            util.DeferredSignal(lambda x: self.activate()),
+            parent=view)
 
         box = gtk.HBox(spacing=6)
         box.pack_start(search)

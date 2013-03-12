@@ -41,7 +41,7 @@ def add_border(pixbuf, val, round=False):
             (0, o, m, l),
             (n, m, e, e),
             (p, l, e, e)
-            )
+        )
 
         overlay = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, 1, 1)
         overlay.fill(m)
@@ -52,7 +52,7 @@ def add_border(pixbuf, val, round=False):
                                (x, h + 1 - y)]:
                     if pix == l:
                         overlay.composite(newpb, xn, yn, 1, 1, 0, 0, 1, 1,
-                            gtk.gdk.INTERP_NEAREST, 70)
+                                          gtk.gdk.INTERP_NEAREST, 70)
                     elif pix != e:
                         newpb.subpixbuf(xn, yn, 1, 1).fill(pix)
     return newpb
@@ -123,7 +123,7 @@ def get_thumbnail(path, boundary):
     # embedded thumbnails come from /tmp/
     # and too big thumbnails make no sense
     if path.startswith(tempfile.gettempdir()) or \
-        width > 256 or height > 256 or mtime(path) == 0:
+            width > 256 or height > 256 or mtime(path) == 0:
         return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
 
     if width <= 128 and height <= 128:
@@ -167,7 +167,7 @@ def get_thumbnail(path, boundary):
             "tEXt::Thumb::Size": str(os.path.getsize(fsnative(path))),
             "tEXt::Thumb::Mimetype": mime,
             "tEXt::Software": "QuodLibet"
-            }
+        }
 
         pb = scale(pb, (thumb_size, thumb_size))
         pb.save(thumb_path, "png", options)

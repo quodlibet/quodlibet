@@ -205,7 +205,7 @@ class FmpsDict(object):
     def get_all(self, key):
         if key in self.__dict:
             return [f.native() for f in self.__dict[key]
-                if not isinstance(f, FmpsInvalidValue)]
+                    if not isinstance(f, FmpsInvalidValue)]
         return []
 
     def remove_all(self, key):
@@ -295,14 +295,14 @@ class FmpsNamespaceDict(object):
             if key is not None:
                 if key in self.__dict[namespace]:
                     return [f.native() for f in self.__dict[namespace][key]
-                        if not isinstance(f, FmpsInvalidValue)]
+                            if not isinstance(f, FmpsInvalidValue)]
                 else:
                     return []
             else:
                 new_dict = {}
                 for key, values in self.__dict[namespace].iteritems():
                     new_dict[key] = [f.native() for f in values
-                        if not isinstance(f, FmpsInvalidValue)]
+                                     if not isinstance(f, FmpsInvalidValue)]
                 return new_dict
         else:
             if key is not None:

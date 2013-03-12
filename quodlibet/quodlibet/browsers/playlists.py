@@ -146,8 +146,8 @@ class Menu(gtk.Menu):
     def __init__(self, songs, parent=None):
         super(Menu, self).__init__()
         i = gtk.MenuItem(_("_New Playlist"))
-        i.connect_object('activate',
-            self.__add_to_playlist, None, songs, parent)
+        i.connect_object(
+            'activate', self.__add_to_playlist, None, songs, parent)
         self.append(i)
         self.append(gtk.SeparatorMenuItem())
         self.set_size_request(int(i.size_request()[0] * 2), -1)
@@ -171,9 +171,10 @@ class Menu(gtk.Menu):
                 title = ngettext(
                     "%(title)s and %(count)d more",
                     "%(title)s and %(count)d more",
-                    len(songs) - 1) % (
-                    {'title': songs[0].comma("title"),
-                     'count': len(songs) - 1})
+                    len(songs) - 1) % {
+                        'title': songs[0].comma("title"),
+                        'count': len(songs) - 1
+                    }
             title = GetPlaylistName(qltk.get_top_parent(parent)).run(title)
             if title is None:
                 return

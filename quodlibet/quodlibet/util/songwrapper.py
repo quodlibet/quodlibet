@@ -98,8 +98,8 @@ def check_wrapper_changed(library, parent, songs):
                     None, _("Unable to edit song"),
                     _("Saving <b>%s</b> failed. The file "
                       "may be read-only, corrupted, or you "
-                      "do not have permission to edit it.") % (
-                    util.escape(song('~basename')))).run()
+                      "do not have permission to edit it.") %
+                    util.escape(song('~basename'))).run()
             win.step()
         win.destroy()
         while gtk.events_pending():

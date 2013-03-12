@@ -64,12 +64,12 @@ class Feed(list):
             pass
 
         for songkey, feedkey in [
-            ("website", "link"),
-            ("description", "tagline"),
-            ("language", "language"),
-            ("copyright", "copyright"),
-            ("organization", "publisher"),
-            ("license", "license")]:
+                ("website", "link"),
+                ("description", "tagline"),
+                ("language", "language"),
+                ("copyright", "copyright"),
+                ("organization", "publisher"),
+                ("license", "license")]:
             try:
                 value = getattr(feed, feedkey)
             except:
@@ -158,8 +158,8 @@ class Feed(list):
                 for enclosure in entry.enclosures:
                     try:
                         if ("audio" in enclosure.type or
-                            "ogg" in enclosure.type or
-                            formats.filter(enclosure.url)):
+                                "ogg" in enclosure.type or
+                                formats.filter(enclosure.url)):
                             uri = enclosure.url.encode('ascii', 'replace')
                             try:
                                 size = enclosure.length
@@ -402,8 +402,8 @@ class AudioFeeds(Browser, gtk.VBox):
             ErrorMessage(
                 self, _("Unable to add feed"),
                 _("<b>%s</b> could not be added. The server may be down, "
-                  "or the location may not be an audio feed.") % (
-                util.escape(feed.uri))).run()
+                  "or the location may not be an audio feed.") %
+                util.escape(feed.uri)).run()
 
     def __menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
@@ -427,7 +427,7 @@ class AudioFeeds(Browser, gtk.VBox):
 
     def __popup_menu(self, view):
         return view.popup_menu(self.__menu(view), 0,
-                gtk.get_current_event_time())
+                               gtk.get_current_event_time())
 
     def __refresh(self, feeds):
         changed = filter(Feed.parse, feeds)
@@ -445,7 +445,7 @@ class AudioFeeds(Browser, gtk.VBox):
                 songs.extend(model[path][0])
             self.emit('songs-selected', songs, True)
             config.set("browsers", "audiofeeds",
-                         "\t".join([model[path][0].name for path in paths]))
+                       "\t".join([model[path][0].name for path in paths]))
 
     def __new_feed(self, activator):
         feed = AddFeedDialog(self).run()
@@ -458,8 +458,8 @@ class AudioFeeds(Browser, gtk.VBox):
                 ErrorMessage(
                     self, _("Unable to add feed"),
                     _("<b>%s</b> could not be added. The server may be down, "
-                      "or the location may not be an audio feed.") % (
-                    util.escape(feed.uri))).run()
+                      "or the location may not be an audio feed.") %
+                    util.escape(feed.uri)).run()
 
     def restore(self):
         try:
@@ -481,4 +481,4 @@ else:
         browsers = [AudioFeeds]
     else:
         print_w(_("The current audio backend does not support URLs, "
-            "Audio Feeds browser disabled."))
+                  "Audio Feeds browser disabled."))

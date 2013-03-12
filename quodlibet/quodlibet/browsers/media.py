@@ -276,7 +276,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
             delete = False
 
         menu = SongsMenu(library, songs, delete=delete, remove=False,
-            accels=songlist.accelerators, parent=self)
+                         accels=songlist.accelerators, parent=self)
         return menu
 
     def activate(self):
@@ -392,7 +392,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
     def __set_name(self, device):
         self.__device_name.set_markup(
             '<span size="x-large"><b>%s</b></span>' %
-                util.escape(device['name']))
+            util.escape(device['name']))
 
     def __refresh(self, rescan=False):
         model, iter = self.__view.get_selection().get_selected()
@@ -439,7 +439,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
             self.__device_space.set_markup(
                 _("<b>%s</b> used, <b>%s</b> available") %
-                    (util.format_size(used), util.format_size(free)))
+                (util.format_size(used), util.format_size(free)))
             self.__progress.set_fraction(fraction)
             self.__progress.set_text("%.f%%" % round(fraction * 100))
             self.__progress.show()

@@ -643,7 +643,7 @@ class FileLibrary(PicklingLibrary):
             if len(changed) > 5 or i % 100 == 0:
                 yield True
         print_d("Removing %d, changing %d." % (len(removed), len(changed)),
-            self)
+                self)
         if removed:
             self.emit('removed', removed)
         if changed:

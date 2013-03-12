@@ -113,7 +113,7 @@ TAGS = dict([
     IT("bitrate", _("bitrate")),
     IT("filesize", _("file size")),
     IT("format", _("file format")),
-    ])
+])
 
 
 def add(tag, translation):

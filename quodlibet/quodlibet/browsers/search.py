@@ -119,8 +119,8 @@ class SearchBar(EmptyBar):
             super(SearchBar.PreferencesButton, self).__init__()
             menu = gtk.Menu()
 
-            limit_item = ConfigCheckMenuItem(_("_Limit Results"),
-                    "browsers", "search_limit", True)
+            limit_item = ConfigCheckMenuItem(
+                _("_Limit Results"), "browsers", "search_limit", True)
             limit_item.connect("toggled", search_bar_box.toggle_limit_widgets)
             menu.append(limit_item)
             menu.show_all()

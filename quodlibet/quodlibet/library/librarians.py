@@ -32,7 +32,7 @@ class Librarian(gobject.GObject):
         'changed': SIG_PYOBJECT,
         'removed': SIG_PYOBJECT,
         'added': SIG_PYOBJECT,
-        }
+    }
 
     def __init__(self):
         super(Librarian, self).__init__()

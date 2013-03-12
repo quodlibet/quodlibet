@@ -139,7 +139,7 @@ class OptionParser(object):
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
         s = _("Usage: %s %s\n") % (
-                 sys.argv[0], self.__usage if self.__usage else _("[options]"))
+            sys.argv[0], self.__usage if self.__usage else _("[options]"))
         if self.__description:
             s += "%s - %s\n" % (self.__name, self.__description)
         s += "\n"
@@ -168,9 +168,8 @@ class OptionParser(object):
 {title} {version}
 <{email}>
 {copyright}\
-""").format(title=self.__name,  version=self.__version, dates="2004-2012",
-        email=SUPPORT_EMAIL,
-        copyright=COPYRIGHT)
+""").format(title=self.__name, version=self.__version, dates="2004-2012",
+            email=SUPPORT_EMAIL, copyright=COPYRIGHT)
 
     def parse(self, args=None):
         if args is None:
@@ -513,7 +512,7 @@ def split_album(s):
     else:
         parts = disc.split()
         if (len(parts) == 2 and
-            parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
+                parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
             try:
                 return (name, parts[1])
             except:
@@ -523,8 +522,8 @@ def split_album(s):
 
 
 def split_numeric(s, limit=10,
-        reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
-        join=u" ".join):
+                  reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
+                  join=u" ".join):
     """Separate numeric values from the string and convert to float, so
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
@@ -887,8 +886,8 @@ def sanitize_tags(tags, stream=False):
                     value = u"Ogg Vorbis"
 
             if lower in ("http://www.shoutcast.com", "http://localhost/",
-                "default genre", "none", "http://", "unnamed server",
-                "unspecified", "n/a"):
+                         "default genre", "none", "http://", "unnamed server",
+                         "unspecified", "n/a"):
                 continue
 
         if key == "duration":
@@ -920,7 +919,7 @@ def sanitize_tags(tags, stream=False):
                 key = "~#bitrate"
 
         if key in ("emphasis", "mode", "layer", "maximum-bitrate",
-            "minimum-bitrate", "has-crc", "homepage"):
+                   "minimum-bitrate", "has-crc", "homepage"):
             continue
 
         if not stream and key in ("title", "album", "artist", "date"):

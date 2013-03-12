@@ -133,7 +133,7 @@ class Browser(Filter):
         'songs-selected':
         (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object, object)),
         'activated': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        }
+    }
 
     # The browser's name, without an accelerator.
     name = _("Library Browser")

@@ -64,7 +64,7 @@ def trash_free_desktop(path):
     # to make things easier
     if path.startswith(join(trash_dir, "")) or path == trash_dir:
         raise TrashError("Can't move files to the trash from within the"
-            "trash directory.")
+                         "trash directory.")
 
     files = join(trash_dir, "files")
     info = join(trash_dir, "info")

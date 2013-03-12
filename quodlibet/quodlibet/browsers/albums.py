@@ -113,7 +113,7 @@ class Preferences(qltk.UniqueWindow):
         edit.text = AlbumList._pattern_text
         gobject_weak(edit.apply.connect, 'clicked', self.__set_pattern, edit)
         gobject_weak(edit.buffer.connect_object, 'changed',
-            self.__preview_pattern, edit, label, parent=edit)
+                     self.__preview_pattern, edit, label, parent=edit)
 
         vbox.pack_start(label, expand=False)
         vbox.pack_start(edit)
@@ -141,7 +141,8 @@ class Preferences(qltk.UniqueWindow):
     def __preview_pattern(self, edit, label):
         people = "\n".join(
             [util.tag("artist"), util.tag("performer"), util.tag("arranger")])
-        album = FakeAlbum({"date": "2004-10-31",
+        album = FakeAlbum({
+            "date": "2004-10-31",
             "~length": util.format_time(6319),
             "~long-length": util.format_time_long(6319),
             "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
@@ -182,7 +183,7 @@ class PreferencesButton(gtk.HBox):
             (_("_Date"), self.__compare_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
-            ]
+        ]
 
         menu = gtk.Menu()
 
@@ -215,7 +216,7 @@ class PreferencesButton(gtk.HBox):
         button = MenuButton(
             gtk.image_new_from_stock(
                 gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU),
-                arrow=True)
+            arrow=True)
         button.set_menu(menu)
         self.pack_start(button)
 
@@ -592,9 +593,10 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         if main:
             gobject_weak(view.connect, 'row-activated',
-                self.__play_selection)
+                         self.__play_selection)
 
-        self.__sig = gobject_weak(view.get_selection().connect, 'changed',
+        self.__sig = gobject_weak(
+            view.get_selection().connect, 'changed',
             util.DeferredSignal(self.__update_songs), parent=view)
 
         targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
@@ -603,7 +605,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
             gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
         gobject_weak(view.connect, "drag-data-get", self.__drag_data_get)
         gobject_weak(view.connect_object, 'popup-menu',
-            self.__popup, view, library)
+                     self.__popup, view, library)
 
         self.accelerators = gtk.AccelGroup()
         search = SearchBarBox(button=False, completion=AlbumTagCompletion(),
@@ -723,7 +725,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
                 ngettext("Reload album _cover", "Reload album _covers", num),
                 gtk.STOCK_REFRESH)
             gobject_weak(button.connect, 'activate',
-                self.__refresh_album, view)
+                         self.__refresh_album, view)
             menu.prepend(gtk.SeparatorMenuItem())
             menu.prepend(button)
 
