@@ -12,9 +12,10 @@ try:
 except ImportError:
     extensions = []
 
+
 class MonkeysAudioFile(APEv2File):
     format = "Monkey's Audio"
-    
+
     def __init__(self, filename):
         audio = MonkeysAudio(filename)
         super(MonkeysAudioFile, self).__init__(filename, audio)

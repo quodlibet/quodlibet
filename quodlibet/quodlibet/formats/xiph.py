@@ -32,8 +32,10 @@ class MutagenVCFile(AudioFile):
         if audio is None:
             audio = self.MutagenType(filename)
         self["~#length"] = int(audio.info.length)
-        try: self["~#bitrate"] = int(audio.info.bitrate / 1000)
-        except AttributeError: pass
+        try:
+            self["~#bitrate"] = int(audio.info.bitrate / 1000)
+        except AttributeError:
+            pass
         for key, value in (audio.tags or {}).items():
             self[key] = "\n".join(value)
         self.__post_read()
@@ -78,8 +80,10 @@ class MutagenVCFile(AudioFile):
             for subkey in ["", ":" + const.EMAIL, ":" + email]:
                 key = keyed_key + subkey
                 if key in self:
-                    try: self["~#" + keyed_key] = func(self[key])
-                    except ValueError: pass
+                    try:
+                        self["~#" + keyed_key] = func(self[key])
+                    except ValueError:
+                        pass
                     del(self[key])
 
         if "metadata_block_picture" in self:
@@ -97,16 +101,22 @@ class MutagenVCFile(AudioFile):
         self.__post_read_total("disctotal", "totaldiscs", "discnumber")
 
     def get_format_cover(self):
-        try: from mutagen.flac import Picture
-        except ImportError: return
+        try:
+            from mutagen.flac import Picture
+        except ImportError:
+            return
 
-        try: audio = self.MutagenType(self["~filename"])
-        except EnvironmentError: return None
+        try:
+            audio = self.MutagenType(self["~filename"])
+        except EnvironmentError:
+            return None
 
         pictures = []
         for data in audio.tags.get("metadata_block_picture", []):
-            try: pictures.append(Picture(base64.b64decode(data)))
-            except TypeError: pass
+            try:
+                pictures.append(Picture(base64.b64decode(data)))
+            except TypeError:
+                pass
 
         cover = None
         for pic in pictures:
@@ -117,8 +127,10 @@ class MutagenVCFile(AudioFile):
 
         if not cover:
             cover = audio.tags.get("coverart")
-            try: cover = cover and base64.b64decode(cover[0])
-            except TypeError: cover = None
+            try:
+                cover = cover and base64.b64decode(cover[0])
+            except TypeError:
+                cover = None
 
         if not cover:
             if "~picture" in self:
@@ -134,12 +146,13 @@ class MutagenVCFile(AudioFile):
     def can_change(self, k=None):
         if k is None:
             return super(MutagenVCFile, self).can_change(None)
-        else: return (super(MutagenVCFile, self).can_change(k) and
-                      k not in ["rating", "playcount",
-                                "metadata_block_picture",
-                                "coverart", "coverartmime"] and
-                      not k.startswith("rating:") and
-                      not k.startswith("playcount:"))
+        else:
+            return (super(MutagenVCFile, self).can_change(k) and
+                    k not in ["rating", "playcount",
+                              "metadata_block_picture",
+                              "coverart", "coverartmime"] and
+                    not k.startswith("rating:") and
+                    not k.startswith("playcount:"))
 
     def __prep_write(self, comments):
         email = config.get("editing", "save_email").strip()
@@ -202,27 +215,35 @@ class MutagenVCFile(AudioFile):
 
 extensions = []
 ogg_formats = []
-try: from mutagen.oggvorbis import OggVorbis
-except ImportError: OggVorbis = None
+try:
+    from mutagen.oggvorbis import OggVorbis
+except ImportError:
+    OggVorbis = None
 else:
     extensions.append(".ogg")
     extensions.append(".oga")
     ogg_formats.append(OggVorbis)
 
-try: from mutagen.flac import FLAC, FLACNoHeaderError
-except ImportError: FLAC = None
+try:
+    from mutagen.flac import FLAC, FLACNoHeaderError
+except ImportError:
+    FLAC = None
 else:
     extensions.append(".flac")
     ogg_formats.append(FLAC)
 
-try: from mutagen.oggflac import OggFLAC
-except ImportError: OggFLAC = None
+try:
+    from mutagen.oggflac import OggFLAC
+except ImportError:
+    OggFLAC = None
 else:
     extensions.append(".oggflac")
     ogg_formats.append(OggFLAC)
 
-try: from mutagen.oggspeex import OggSpeex
-except ImportError: OggSpeex = None
+try:
+    from mutagen.oggspeex import OggSpeex
+except ImportError:
+    OggSpeex = None
 else:
     extensions.append(".spx")
     ogg_formats.append(OggSpeex)
@@ -231,39 +252,49 @@ from mutagen.oggtheora import OggTheora
 extensions.append(".ogv")
 ogg_formats.append(OggTheora)
 
-try: from mutagen.oggopus import OggOpus
-except ImportError: OggOpus = None
+try:
+    from mutagen.oggopus import OggOpus
+except ImportError:
+    OggOpus = None
 else:
     extensions.append(".opus")
     ogg_formats.append(OggOpus)
 
-try: from mutagen.id3 import ID3
-except ImportError: ID3 = None
+try:
+    from mutagen.id3 import ID3
+except ImportError:
+    ID3 = None
+
 
 class OggFile(MutagenVCFile):
     format = "Ogg Vorbis"
     mimes = ["audio/vorbis", "audio/ogg; codecs=vorbis"]
     MutagenType = OggVorbis
 
+
 class OggFLACFile(MutagenVCFile):
     format = "Ogg FLAC"
-    mimes = ["audio/x-oggflac","audio/ogg; codecs=flac"]
+    mimes = ["audio/x-oggflac", "audio/ogg; codecs=flac"]
     MutagenType = OggFLAC
+
 
 class OggSpeexFile(MutagenVCFile):
     format = "Ogg Speex"
     mimes = ["audio/x-speex", "audio/ogg; codecs=speex"]
     MutagenType = OggSpeex
 
+
 class OggTheoraFile(MutagenVCFile):
     format = "Ogg Theora"
     mimes = ["video/x-theora", "video/ogg; codecs=theora"]
     MutagenType = OggTheora
 
+
 class OggOpusFile(MutagenVCFile):
     format = "Ogg Opus"
     mimes = ["audio/ogg; codecs=opus"]
     MutagenType = OggOpus
+
 
 class FLACFile(MutagenVCFile):
     format = "FLAC"
@@ -310,14 +341,18 @@ for var in globals().values():
     if getattr(var, 'MutagenType', None):
         types.append(var)
 
+
 def info(filename):
-    try: audio = mutagen.File(filename, options = ogg_formats)
+    try:
+        audio = mutagen.File(filename, options=ogg_formats)
     except AttributeError:
         audio = OggVorbis(filename)
     if audio is None and FLAC is not None:
         # FLAC with ID3
-        try: audio = FLAC(filename)
-        except FLACNoHeaderError: pass
+        try:
+            audio = FLAC(filename)
+        except FLACNoHeaderError:
+            pass
     if audio is None:
         raise IOError("file type could not be determined")
     Kind = type(audio)

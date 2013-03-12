@@ -10,6 +10,7 @@ from quodlibet.formats._audio import AudioFile
 
 extensions = [".spc"]
 
+
 class SPCFile(AudioFile):
     format = "SPC700 DSP Data"
 
@@ -35,8 +36,10 @@ class SPCFile(AudioFile):
 
     def can_change(self, k=None):
         TAGS = ["artist", "album", "title", "comments"]
-        if k is None: return TAGS
-        else: return k in TAGS
+        if k is None:
+            return TAGS
+        else:
+            return k in TAGS
 
 
 def parse_id666(data):

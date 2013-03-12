@@ -12,6 +12,7 @@ try:
 except (ImportError, OSError):
     extensions = []
 
+
 class MPCFile(APEv2File):
     format = "Musepack"
     mimes = ["audio/x-musepack", "audio/x-mpc"]

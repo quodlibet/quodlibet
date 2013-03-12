@@ -21,6 +21,7 @@ from quodlibet.qltk import ConfirmAction
 
 CACHE = os.path.join(const.USERDIR, 'cache')
 
+
 class StorageDevice(Device):
     protocol = 'storage'
 
@@ -72,8 +73,10 @@ class StorageDevice(Device):
                 wlb.hide()
                 break
             if not wlb.paused:
-                try: next()
-                except StopIteration: break
+                try:
+                    next()
+                except StopIteration:
+                    break
             gtk.main_iteration()
 
         self.__save_library()
@@ -90,7 +93,7 @@ class StorageDevice(Device):
         if os.path.exists(target):
             if ConfirmAction(
                 songlist, _("File exists"),
-                _("Overwrite <b>%s</b>?") % util.escape(utarget),
+                _("Overwrite <b>%s</b>?") % util.escape(utarget)
                 ).run():
                 try:
                     # Remove the current song
@@ -99,8 +102,10 @@ class StorageDevice(Device):
                     pass
                 model = songlist.get_model()
                 for row in model:
-                    if row[0]['~filename'] == utarget: model.remove(row.iter)
-            else: return False
+                    if row[0]['~filename'] == utarget:
+                        model.remove(row.iter)
+            else:
+                return False
 
         try:
             if not os.path.isdir(dirname):
@@ -130,12 +135,14 @@ class StorageDevice(Device):
             os.unlink(path)
 
             if self['unclutter']:
-                files = glob(dir+'/*')
+                files = glob(dir + '/*')
                 if len(files) == 1 and os.path.isfile(files[0]) and \
-                    os.path.basename(files[0]) == 'folder.jpg':
+                        os.path.basename(files[0]) == 'folder.jpg':
                     os.unlink(files[0])
-                try: os.removedirs(os.path.dirname(path))
-                except OSError: pass
+                try:
+                    os.removedirs(os.path.dirname(path))
+                except OSError:
+                    pass
 
             return True
         except (OSError, IOError), exc:
