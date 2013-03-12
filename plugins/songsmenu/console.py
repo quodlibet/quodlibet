@@ -1,24 +1,40 @@
 # -*- coding: utf-8 -*-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# Copyright (C) 2006 - Steve Frécinaux
 #
-# Slightly modified version from totem (console.py)
-#     Copyright (C) 2006 - Steve Frécinaux
-# Parts from "Interactive Python-GTK Console" (from epiphany's console.py)
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+# Parts from "Interactive Python-GTK Console" (stolen from epiphany's console.py)
 #     Copyright (C), 1998 James Henstridge <james@daa.com.au>
 #     Copyright (C), 2005 Adam Hooper <adamh@densi.com>
 # Bits from gedit Python Console Plugin
 #     Copyrignt (C), 2005 Raphaël Slinckx
 
+# PythonConsole taken from totem
+# Plugin parts:
+# Copyright 2009,2010,2013 Christoph Reiter
+
+
 import sys
 import re
 import traceback
 
-from gi.repository import Gtk, Pango, GLib, Gdk
+from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import qltk, const
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+
 
 class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'
@@ -28,13 +44,20 @@ class PyConsole(SongsMenuPlugin):
     PLUGIN_VERSION = '0.2'
 
     def plugin_songs(self, songs):
+        win = ConsoleWindow(songs)
+        win.set_icon_name(self.PLUGIN_ICON)
+        win.set_title(self.PLUGIN_DESC + " (Quod Libet)")
+        win.show_all()
+
+
+class ConsoleWindow(Gtk.Window):
+    def __init__(self, songs):
+        Gtk.Window.__init__(self)
+
         files = [song('~filename') for song in songs]
         song_dicts = [song._song for song in songs]
 
-        self.win = win = qltk.Window()
-        win.set_size_request(600, 400)
-        win.set_icon_name(self.PLUGIN_ICON)
-        win.set_title(self.PLUGIN_DESC + " (Quod Libet)")
+        self.set_size_request(600, 400)
 
         from quodlibet import app
         console = PythonConsole(
@@ -43,8 +66,7 @@ class PyConsole(SongsMenuPlugin):
                 'files': files,
                 'sdict': song_dicts,
                 'app': app})
-        win.add(console)
-        win.show_all()
+        self.add(console)
 
         acces_string = _("You can access the following objects by default:\\n"
             "  '%s' (SongWrapper objects)\\n"
@@ -62,16 +84,20 @@ class PyConsole(SongsMenuPlugin):
         console.eval("print \"%s\"" % acces_string, False)
         console.eval("print \"%s \"+ os.getcwd()" % dir_string, False)
 
+        console.connect("destroy", lambda *x: self.destroy())
+
+
 class PythonConsole(Gtk.ScrolledWindow):
-    def __init__(self, namespace = {}):
+    def __init__(self, namespace = {}, destroy_cb = None):
         Gtk.ScrolledWindow.__init__(self)
 
-        self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.destroy_cb = destroy_cb
+        self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
         self.set_shadow_type(Gtk.ShadowType.IN)
         self.view = Gtk.TextView()
-        self.view.modify_font(Pango.FontDescription('Monospace'))
+        self.view.modify_font(Pango.font_description_from_string('Monospace'))
         self.view.set_editable(True)
-        self.view.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+        self.view.set_wrap_mode(Gtk.WrapMode.CHAR)
         self.add(self.view)
         self.view.show()
 
@@ -108,19 +134,19 @@ class PythonConsole(Gtk.ScrolledWindow):
 
 
     def __key_press_event_cb(self, view, event):
-        if event.keyval == Gdk.KEY_c and \
-            event.get_state() & Gdk.ModifierType.CONTROL_MASK:
-            self.set_command_line("")
+        modifier_mask = Gtk.accelerator_get_default_mod_mask()
+        event_state = event.state & modifier_mask
 
-        elif (event.keyval == Gdk.KEY_Return or \
-            event.keyval == Gdk.KEY_KP_Enter) and \
-            event.get_state() & Gdk.ModifierType.CONTROL_MASK:
+        if event.keyval == Gdk.KEY_d and event_state == Gdk.ModifierType.CONTROL_MASK:
+            self.destroy()
+
+        elif event.keyval == Gdk.KEY_Return and event_state == Gdk.ModifierType.CONTROL_MASK:
             # Get the command
             buffer = view.get_buffer()
             inp_mark = buffer.get_mark("input")
             inp = buffer.get_iter_at_mark(inp_mark)
             cur = buffer.get_end_iter()
-            line = buffer.get_text(inp, cur)
+            line = buffer.get_text(inp, cur, True)
             self.current_command = self.current_command + line + "\n"
             self.history_add(line)
 
@@ -140,8 +166,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_Return or \
-            event.keyval == Gdk.KEY_KP_Enter:
+        elif event.keyval == Gdk.KEY_Return:
             # Get the marks
             buffer = view.get_buffer()
             lin_mark = buffer.get_mark("input-line")
@@ -150,7 +175,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             # Get the command line
             inp = buffer.get_iter_at_mark(inp_mark)
             cur = buffer.get_end_iter()
-            line = buffer.get_text(inp, cur)
+            line = buffer.get_text(inp, cur, True)
             self.current_command = self.current_command + line + "\n"
             self.history_add(line)
 
@@ -185,25 +210,22 @@ class PythonConsole(Gtk.ScrolledWindow):
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_KP_Down or \
-            event.keyval == Gdk.KEY_Down:
+        elif event.keyval == Gdk.KEY_KP_Down or event.keyval == Gdk.KEY_Down:
             # Next entry from history
             view.emit_stop_by_name("key_press_event")
             self.history_down()
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_KP_Up or \
-            event.keyval == Gdk.KEY_Up:
+        elif event.keyval == Gdk.KEY_KP_Up or event.keyval == Gdk.KEY_Up:
             # Previous entry from history
             view.emit_stop_by_name("key_press_event")
             self.history_up()
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_KP_Left or \
-            event.keyval == Gdk.KEY_Left or \
-            event.keyval == Gdk.KEY_BackSpace:
+        elif event.keyval == Gdk.KEY_KP_Left or event.keyval == Gdk.KEY_Left or \
+             event.keyval == Gdk.KEY_BackSpace:
             buffer = view.get_buffer()
             inp = buffer.get_iter_at_mark(buffer.get_mark("input"))
             cur = buffer.get_iter_at_mark(buffer.get_insert())
@@ -213,7 +235,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             # Go to the begin of the command instead of the begin of the line
             buffer = view.get_buffer()
             inp = buffer.get_iter_at_mark(buffer.get_mark("input"))
-            if event.get_state() == Gdk.ModifierType.SHIFT_MASK:
+            if event_state == Gdk.ModifierType.SHIFT_MASK:
                 buffer.move_mark_by_name("insert", inp)
             else:
                 buffer.place_cursor(inp)
@@ -228,7 +250,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         buffer = self.view.get_buffer()
         inp = buffer.get_iter_at_mark(buffer.get_mark("input"))
         cur = buffer.get_end_iter()
-        return buffer.get_text(inp, cur)
+        return buffer.get_text(inp, cur, True)
 
     def set_command_line(self, command):
         buffer = self.view.get_buffer()
@@ -237,8 +259,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         cur = buffer.get_end_iter()
         buffer.delete(inp, cur)
         buffer.insert(inp, command)
-        buffer.select_range(
-            buffer.get_iter_at_mark(mark), buffer.get_end_iter())
+        buffer.select_range(buffer.get_iter_at_mark(mark), buffer.get_end_iter())
         self.view.grab_focus()
 
     def history_add(self, line):
@@ -261,15 +282,16 @@ class PythonConsole(Gtk.ScrolledWindow):
 
     def scroll_to_end(self):
         iter = self.view.get_buffer().get_end_iter()
-        self.view.scroll_to_iter(iter, 0.0)
-        self.view.emit('move-cursor', Gtk.MovementStep.BUFFER_ENDS, 1, False)
+        self.view.scroll_to_iter(iter, 0.0, False, 0.5, 0.5)
+        return False
 
     def write(self, text, tag = None):
-        buffer = self.view.get_buffer()
+        buf = self.view.get_buffer()
         if tag is None:
-            buffer.insert(buffer.get_end_iter(), text)
+            buf.insert(buf.get_end_iter(), text)
         else:
-            buffer.insert_with_tags(buffer.get_end_iter(), text, tag)
+            buf.insert_with_tags(buf.get_end_iter(), text, tag)
+
         GLib.idle_add(self.scroll_to_end)
 
     def eval(self, command, display_command = False):
@@ -293,7 +315,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         buffer.insert(cur, ">>> ")
         cur = buffer.get_end_iter()
         buffer.move_mark_by_name("input", cur)
-        self.view.scroll_to_iter(buffer.get_end_iter(), 0.0)
+        self.view.scroll_to_iter(buffer.get_end_iter(), 0.0, False, 0.5, 0.5)
 
     def __run(self, command):
         sys.stdout, self.stdout = self.stdout, sys.stdout
@@ -307,10 +329,14 @@ class PythonConsole(Gtk.ScrolledWindow):
             except SyntaxError:
                 exec command in self.namespace
         except:
-            traceback.print_exc()
+            if hasattr(sys, 'last_type') and sys.last_type == SystemExit:
+                self.destroy()
+            else:
+                traceback.print_exc()
 
         sys.stdout, self.stdout = self.stdout, sys.stdout
         sys.stderr, self.stderr = self.stderr, sys.stderr
+
 
 class OutFile:
     """A fake output file object. It sends output to a TK test widget,
