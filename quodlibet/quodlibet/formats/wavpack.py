@@ -12,10 +12,11 @@ try:
 except ImportError:
     extensions = []
 
+
 class WavpackFile(APEv2File):
     format = "WavPack"
     mimes = ["audio/x-wavpack"]
-    
+
     def __init__(self, filename):
         audio = WavPack(filename)
         super(WavpackFile, self).__init__(filename, audio)

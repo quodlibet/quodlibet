@@ -9,6 +9,7 @@ from quodlibet.util.uri import URI
 
 extensions = []
 
+
 class RemoteFile(AudioFile):
     is_file = False
     fill_metadata = True
@@ -20,18 +21,29 @@ class RemoteFile(AudioFile):
         self["~mountpoint"] = ""
         self.sanitize(uri)
 
-    def rename(self, newname): pass
-    def reload(self): pass
-    def exists(self): return True
-    def valid(self): return True
-    def mounted(self): return True
+    def rename(self, newname):
+        pass
+
+    def reload(self):
+        pass
+
+    def exists(self):
+        return True
+
+    def valid(self):
+        return True
+
+    def mounted(self):
+        return True
 
     def write(self):
         raise TypeError("RemoteFiles do not support writing!")
 
-    def can_change(self, k = None):
-        if k is None: return []
-        else: return False
+    def can_change(self, k=None):
+        if k is None:
+            return []
+        else:
+            return False
 
     key = property(lambda self: self["~uri"])
 

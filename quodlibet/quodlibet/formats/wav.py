@@ -11,6 +11,7 @@ from quodlibet.formats._audio import AudioFile
 
 extensions = [".wav"]
 
+
 class WAVEFile(AudioFile):
     format = "WAVE"
     mimes = ["audio/wav", "audio/x-wav", "audio/wave"]
@@ -28,8 +29,10 @@ class WAVEFile(AudioFile):
         pass
 
     def can_change(self, k=None):
-        if k is None: return ["artist"]
-        else: return k == "artist"
+        if k is None:
+            return ["artist"]
+        else:
+            return k == "artist"
 
 info = WAVEFile
-types =[WAVEFile]
+types = [WAVEFile]

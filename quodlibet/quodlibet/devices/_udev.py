@@ -233,7 +233,7 @@ _register_class(UdevQueue, UdevQueuePtr, "udev_queue_", [
     ("unref", c_void, [UdevQueuePtr], 0),
     ("unref", UdevQueuePtr, [UdevQueuePtr], 1),
     ("get_udev", UdevPtr, [UdevQueuePtr]),
-    ("new", UdevQueuePtr,  [UdevPtr]),
+    ("new", UdevQueuePtr, [UdevPtr]),
     ("get_udev_is_active", c_int, [UdevQueuePtr]),
     ("get_queue_is_empty", c_int, [UdevQueuePtr]),
     ("get_seqnum_is_finished", c_int, [UdevQueuePtr, c_long]),

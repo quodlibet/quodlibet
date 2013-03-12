@@ -15,6 +15,7 @@ try:
 except ImportError:
     extensions = []
 
+
 class WMAFile(AudioFile):
     multiple_values = False
     mimes = ["audio/x-ms-wma", "audio/x-ms-wmv", "video/x-ms-asf",
@@ -69,28 +70,36 @@ class WMAFile(AudioFile):
         for name, values in audio.tags.items():
             if name == "WM/Picture":
                 self["~picture"] = "y"
-            try: name = self.__translate[name]
-            except KeyError: continue
+            try:
+                name = self.__translate[name]
+            except KeyError:
+                continue
             self[name] = "\n".join(map(unicode, values))
         self.sanitize(filename)
 
     def write(self):
         audio = mutagen.asf.ASF(self["~filename"])
         for key in self.__translate.keys():
-            try: del(audio[key])
-            except KeyError: pass
+            try:
+                del(audio[key])
+            except KeyError:
+                pass
 
         for key in self.realkeys():
-            try: name = self.__rtranslate[key]
-            except KeyError: continue
+            try:
+                name = self.__rtranslate[key]
+            except KeyError:
+                continue
             audio.tags[name] = self.list(key)
         audio.save()
         self.sanitize()
 
     def can_change(self, key=None):
         OK = self.__rtranslate.keys()
-        if key is None: return super(WMAFile, self).can_change(key)
-        else: return super(WMAFile, self).can_change(key) and (key in OK)
+        if key is None:
+            return super(WMAFile, self).can_change(key)
+        else:
+            return super(WMAFile, self).can_change(key) and (key in OK)
 
     def get_format_cover(self):
         try:
@@ -100,7 +109,7 @@ class WMAFile(AudioFile):
         else:
             for image in tag.get("WM/Picture", []):
                 (mime, data, type) = unpack_image(image.value)
-                if type == 3: # Only cover images
+                if type == 3:  # Only cover images
                     fn = tempfile.NamedTemporaryFile()
                     fn.write(data)
                     fn.flush()
@@ -109,12 +118,14 @@ class WMAFile(AudioFile):
             else:
                 return None
 
+
 def unpack_image(data):
     """
     Helper function to unpack image data from a WM/Picture tag.
 
     The data has the following format:
-    1 byte: Picture type (0-20), see ID3 APIC frame specification at http://www.id3.org/id3v2.4.0-frames
+    1 byte: Picture type (0-20), see ID3 APIC frame specification at
+    http://www.id3.org/id3v2.4.0-frames
     4 bytes: Picture data length in LE format
     MIME type, null terminated UTF-16-LE string
     Description, null terminated UTF-16-LE string
@@ -123,16 +134,16 @@ def unpack_image(data):
     (type, size) = struct.unpack_from("<bi", data)
     pos = 5
     mime = ""
-    while data[pos:pos+2] != "\x00\x00":
-        mime += data[pos:pos+2]
+    while data[pos:pos + 2] != "\x00\x00":
+        mime += data[pos:pos + 2]
         pos += 2
     pos += 2
     description = ""
-    while data[pos:pos+2] != "\x00\x00":
-        description += data[pos:pos+2]
+    while data[pos:pos + 2] != "\x00\x00":
+        description += data[pos:pos + 2]
         pos += 2
     pos += 2
-    image_data = data[pos:pos+size]
+    image_data = data[pos:pos + size]
     return (mime.decode("utf-16-le"), image_data, type)
 
 info = WMAFile

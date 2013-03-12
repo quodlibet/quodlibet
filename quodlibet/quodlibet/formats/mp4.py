@@ -17,6 +17,7 @@ try:
 except ImportError:
     extensions = []
 
+
 class MP4File(AudioFile):
     multiple_values = False
     format = "MPEG-4 AAC"
@@ -90,12 +91,16 @@ class MP4File(AudioFile):
     def write(self):
         audio = MP4(self["~filename"])
         for key in self.__translate.keys() + self.__tupletranslate.keys():
-            try: del(audio[key])
-            except KeyError: pass
+            try:
+                del(audio[key])
+            except KeyError:
+                pass
 
         for key in self.realkeys():
-            try: name = self.__rtranslate[key]
-            except KeyError: continue
+            try:
+                name = self.__rtranslate[key]
+            except KeyError:
+                continue
             values = self.list(key)
             if name == "tmpo":
                 values = map(int, values)
@@ -113,8 +118,10 @@ class MP4File(AudioFile):
 
     def can_change(self, key=None):
         OK = self.__rtranslate.keys() + self.__rtupletranslate.keys()
-        if key is None: return OK
-        else: return super(MP4File, self).can_change(key) and (key in OK)
+        if key is None:
+            return OK
+        else:
+            return super(MP4File, self).can_change(key) and (key in OK)
 
     def get_format_cover(self):
         try:

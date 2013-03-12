@@ -35,6 +35,7 @@ for so_version in ("libmodplug.so.1", "libmodplug.so.0"):
 else:
     extensions = []
 
+
 class ModFile(AudioFile):
 
     format = "MOD/XM/IT"
@@ -42,11 +43,14 @@ class ModFile(AudioFile):
     def __init__(self, filename):
         data = file(filename).read()
         f = _modplug.ModPlug_Load(data, len(data))
-        if not f: raise IOError("%r not a valid MOD file" % filename)
+        if not f:
+            raise IOError("%r not a valid MOD file" % filename)
         self["~#length"] = _modplug.ModPlug_GetLength(f) // 1000
         title = _modplug.ModPlug_GetName(f) or os.path.basename(filename)
-        try: self["title"] = title.decode('utf-8')
-        except UnicodeError: self["title"] = title.decode("iso-8859-1")
+        try:
+            self["title"] = title.decode('utf-8')
+        except UnicodeError:
+            self["title"] = title.decode("iso-8859-1")
         _modplug.ModPlug_Unload(f)
         self.sanitize(filename)
 
@@ -56,11 +60,14 @@ class ModFile(AudioFile):
     def reload(self, *args):
         artist = self.get("artist")
         super(ModFile, self).reload(*args)
-        if artist is not None: self.setdefault("artist", artist)
+        if artist is not None:
+            self.setdefault("artist", artist)
 
     def can_change(self, k=None):
-        if k is None: return ["artist"]
-        else: return k == "artist"
+        if k is None:
+            return ["artist"]
+        else:
+            return k == "artist"
 
 info = ModFile
 types = [ModFile]

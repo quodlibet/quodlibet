@@ -17,6 +17,7 @@ from quodlibet import util
 from quodlibet.devices._base import Device
 from quodlibet.formats._audio import AudioFile
 
+
 # Wraps an itdb_track from libgpod in an AudioFile instance
 class IPodSong(AudioFile):
     is_file = False
@@ -41,10 +42,12 @@ class IPodSong(AudioFile):
         for key in ['bitrate', 'playcount']:
             value = getattr(track, key)
             if value:
-                self['~#'+key] = value
+                self['~#' + key] = value
 
-        try: self["date"] = unicode(track.year)
-        except AttributeError: pass
+        try:
+            self["date"] = unicode(track.year)
+        except AttributeError:
+            pass
 
         if track.cds:
             self["discnumber"] = u"%d/%d" % (track.cd_nr, track.cds)
@@ -67,6 +70,7 @@ class IPodSong(AudioFile):
     # Disable all tag editing
     def can_change(self, k=None):
         return []
+
 
 class IPodDevice(Device):
     icon = 'multimedia-player-ipod'
@@ -138,9 +142,11 @@ class IPodDevice(Device):
             file = open(sysinfo)
             while True:
                 line = file.readline()
-                if not line: break
+                if not line:
+                    break
                 parts = line.split()
-                if len(parts) < 2: continue
+                if len(parts) < 2:
+                    continue
 
                 parts[0] = parts[0].rstrip(":")
                 if parts[0] == "ModelNumStr" and parts[1] in self.__models:
@@ -162,14 +168,15 @@ class IPodDevice(Device):
         return d
 
     def list(self, wlb):
-        if self.__load_db() is None: return []
+        if self.__load_db() is None:
+            return []
         songs = []
         orphaned = False
         for track in gpod.sw_get_tracks(self.__itdb):
             filename = gpod.itdb_filename_on_ipod(track)
             if filename:
                 songs.append(IPodSong(track))
-            else: # Remove orphaned iTunesDB track
+            else:  # Remove orphaned iTunesDB track
                 orphaned = True
                 print_w(_("Removing orphaned iPod track"))
                 self.__remove_track(track)
@@ -179,15 +186,18 @@ class IPodDevice(Device):
         return songs
 
     def copy(self, songlist, song):
-        if self.__load_db() is None: return False
+        if self.__load_db() is None:
+            return False
         track = gpod.itdb_track_new()
 
         # All values should be utf-8 encoded strings
         # Filepaths should be encoded with the fs encoding
 
         # Either combine tags with comma, or only take the first value
-        if self['all_tags']: tag = song.comma
-        else: tag = lambda key: (song.list(key) or ('',))[0]
+        if self['all_tags']:
+            tag = song.comma
+        else:
+            tag = lambda key: (song.list(key) or ('',))[0]
 
         title = tag('title')
         if self['title_version'] and song('version'):
@@ -201,7 +211,7 @@ class IPodDevice(Device):
 
         # String keys
         for key in ['artist', 'genre', 'grouping', 'composer', 'albumartist']:
-            if hasattr(track, key): # albumartist since libgpod-0.4.2
+            if hasattr(track, key):  # albumartist since libgpod-0.4.2
                 setattr(track, key, util.encode(tag(key)))
         # Sort keys (since libgpod-0.5.0)
         for key in ['artist', 'album', 'albumartist']:
@@ -209,23 +219,27 @@ class IPodDevice(Device):
                 setattr(track, 'sort_' + key, util.encode(tag(key + 'sort')))
         # Numeric keys
         for key in ['bitrate', 'playcount', 'year']:
-            try: setattr(track, key, int(song('~#'+key)))
-            except ValueError: continue
+            try:
+                setattr(track, key, int(song('~#' + key)))
+            except ValueError:
+                continue
         # Numeric keys where the names differ
         for key, value in {
-            'cd_nr':         song('~#disc'),
-            'cds':           song('~#discs'),
-            'rating':        min(100, song('~#rating') * 100),
-            'time_added':    self.__mactime(time.time()),
+            'cd_nr': song('~#disc'),
+            'cds': song('~#discs'),
+            'rating': min(100, song('~#rating') * 100),
+            'time_added': self.__mactime(time.time()),
             'time_modified': self.__mactime(util.mtime(song('~filename'))),
-            'track_nr':      song('~#track'),
-            'tracklen':      song('~#length') * 1000,
-            'tracks':        song('~#tracks'),
-            'size':          util.size(song('~filename')),
-            'soundcheck':    self.__soundcheck(song),
+            'track_nr': song('~#track'),
+            'tracklen': song('~#length') * 1000,
+            'tracks': song('~#tracks'),
+            'size': util.size(song('~filename')),
+            'soundcheck': self.__soundcheck(song),
         }.items():
-            try: setattr(track, key, int(value))
-            except ValueError: continue
+            try:
+                setattr(track, key, int(value))
+            except ValueError:
+                continue
 
         track.filetype = song('~format')
         track.comment = util.encode(util.fsdecode(song('~filename')))
@@ -253,7 +267,8 @@ class IPodDevice(Device):
             return False
 
     def delete(self, songlist, song):
-        if self.__load_db() is None: return False
+        if self.__load_db() is None:
+            return False
         try:
             for track in gpod.sw_get_tracks(self.__itdb):
                 if gpod.itdb_filename_on_ipod(track) == song['~filename']:
@@ -281,7 +296,8 @@ class IPodDevice(Device):
             self.__covers = []
 
     def __load_db(self):
-        if self.__itdb: return self.__itdb
+        if self.__itdb:
+            return self.__itdb
 
         self.__itdb = gpod.itdb_parse(self.mountpoint, None)
         if not self.__itdb and self.is_connected() and qltk.ConfirmAction(
@@ -293,7 +309,8 @@ class IPodDevice(Device):
         return self.__itdb
 
     def __save_db(self):
-        if self.__itdb is None: return True
+        if self.__itdb is None:
+            return True
         if gpod.itdb_write(self.__itdb, None) == 1 and \
            gpod.itdb_shuffle_write(self.__itdb, None) == 1:
             return True
@@ -301,7 +318,7 @@ class IPodDevice(Device):
             return False
 
     def __create_db(self):
-        db = gpod.itdb_new();
+        db = gpod.itdb_new()
         gpod.itdb_set_mountpoint(db, self.mountpoint)
 
         master = gpod.itdb_playlist_new('iPod', False)
@@ -311,7 +328,8 @@ class IPodDevice(Device):
         return db
 
     def __close_db(self):
-        if self.__itdb is not None: gpod.itdb_free(self.__itdb)
+        if self.__itdb is not None:
+            gpod.itdb_free(self.__itdb)
         self.__itdb = None
 
     def __remove_track(self, track):
@@ -338,9 +356,10 @@ class IPodDevice(Device):
             db = float(song['replaygain_album_gain'].split()[0])
         elif 'replaygain_track_gain' in song:
             db = float(song['replaygain_track_gain'].split()[0])
-        else: db = 0.0
+        else:
+            db = 0.0
 
-        soundcheck = int(round(1000 * 10.**(
+        soundcheck = int(round(1000 * 10. ** (
             -0.1 * (db + float(self['gain'])))))
         return soundcheck
 
@@ -409,7 +428,7 @@ class IPodDevice(Device):
     }
 
 try:
-   from quodlibet.devices import _gpod as gpod
+    from quodlibet.devices import _gpod as gpod
 except ImportError:
     print_w(_("Could not find libgpod, iPod support disabled."))
     devices = []

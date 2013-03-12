@@ -34,7 +34,8 @@ class Device(dict):
         self.bid = bid = backend_id
 
         # Load default properties.
-        if self.defaults: self.update(self.defaults)
+        if self.defaults:
+            self.update(self.defaults)
 
         # Load configured properties.
         if quodlibet.devices.config.has_section(udi):
@@ -54,7 +55,7 @@ class Device(dict):
         dict.__setitem__(self, 'udi', str(udi))
 
         # Set a sensible name if none is set.
-        if not self.has_key('name'):
+        if "name" not in self:
             self['name'] = device_manager.get_name(bid) or _("Unknown Device")
 
     # Store all changed properties in the ConfigParser.
@@ -91,7 +92,8 @@ class Device(dict):
 
     # Returns a list of AudioFile instances representing the songs
     # on this device. The WaitLoadBar can be used to display messages.
-    def list(self, wlb): return []
+    def list(self, wlb):
+        return []
 
     # Whether the order of the files returned by list() is meaningful.
     # If it is, refreshing will reset the song list sort order.
@@ -101,7 +103,8 @@ class Device(dict):
     # song. If the copy was successful, it should return an AudioFile
     # instance, which will be added to the songlist. If the copy
     # failed, it should return False or a string describing the error.
-    def copy(self, songlist, song): raise NotImplementedError
+    def copy(self, songlist, song):
+        raise NotImplementedError
 
     # Deletes a song from the device. This will be called once for
     # each song. This is not needed if the device is file-based,
@@ -134,4 +137,5 @@ class Device(dict):
     # this will be ignored.
     #
     # Separators can be added by passing (None, None, None).
-    def Properties(self): return []
+    def Properties(self):
+        return []
