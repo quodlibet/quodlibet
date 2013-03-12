@@ -37,9 +37,8 @@ def init(app_id):
             print_d("GSM sent QueryEndSession")
             client_priv.EndSessionResponse(True, "")
 
-        query_id = client_priv.connect_to_signal("QueryEndSession",
-                                                 query_end_session_cb)
-        end_id = client_priv.connect_to_signal("EndSession", end_session_cb)
+        client_priv.connect_to_signal("QueryEndSession", query_end_session_cb)
+        client_priv.connect_to_signal("EndSession", end_session_cb)
     except dbus.DBusException:
         print_d("Connecting with the gnome session manager failed")
     else:

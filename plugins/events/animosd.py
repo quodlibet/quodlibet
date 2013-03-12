@@ -227,7 +227,6 @@ class OSDWindow(Gtk.Window):
                  rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
             cr.fill()
 
-        pcc = PangoCairo.create_context(cr)
         PangoCairo.update_layout(cr, self.title_layout)
         height = self.title_layout.get_pixel_size()[1]
         texty = (self.get_size()[1] - height) // 2

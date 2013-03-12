@@ -65,7 +65,7 @@ class FIFOControl(object):
             f = os.fdopen(fifo, "r", 4096)
             GObject.io_add_watch(
                 f, GLib.IO_IN, self.__process, *args)
-        except (EnvironmentError, AttributeError), e:
+        except (EnvironmentError, AttributeError):
             pass
 
     def __getitem__(self, key):

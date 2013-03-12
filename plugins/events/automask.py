@@ -8,6 +8,7 @@ import os
 
 # FIXME: GIPORT
 #import gnomevfs
+gnomevfs = None
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
@@ -24,6 +25,8 @@ class AutoMasking(EventPlugin):
     __monitor = None
 
     def enabled(self):
+        #FIXME GIPORT
+        return
         if self.__monitor is None:
             self.__monitor = gnomevfs.VolumeMonitor()
             self.__sigs = [
@@ -34,6 +37,8 @@ class AutoMasking(EventPlugin):
             map(self.__monitor.handler_unblock, self.__sigs)
 
     def disabled(self):
+        #FIXME GIPORT
+        return
         map(self.__monitor.handler_block, self.__sigs)
 
     def __mounted(self, monitor, volume):

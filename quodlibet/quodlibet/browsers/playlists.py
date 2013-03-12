@@ -111,7 +111,8 @@ class ConfirmRemovePlaylistDialog(qltk.Message):
                          "will be deleted and can not be restored."))
 
         super(ConfirmRemovePlaylistDialog, self).__init__(
-            Gtk.MessageType.WARNING, parent, title, description, Gtk.ButtonsType.NONE)
+            Gtk.MessageType.WARNING, parent, title, description,
+            Gtk.ButtonsType.NONE)
 
         self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                          Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
@@ -126,7 +127,8 @@ class ConfirmRemoveDuplicatesDialog(qltk.Message):
                          "from the playlist '%s'.") % playlist.name)
 
         super(ConfirmRemoveDuplicatesDialog, self).__init__(
-            Gtk.MessageType.WARNING, parent, title, description, Gtk.ButtonsType.NONE)
+            Gtk.MessageType.WARNING, parent, title, description,
+            Gtk.ButtonsType.NONE)
 
         self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                          Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
@@ -305,7 +307,7 @@ class Playlists(Gtk.VBox, Browser):
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets,
-                           Gdk.DragAction.COPY|Gdk.DragAction.DEFAULT)
+                           Gdk.DragAction.COPY | Gdk.DragAction.DEFAULT)
         view.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets[:2],
                              Gdk.DragAction.COPY)
         view.connect('drag-data-received', self.__drag_data_received, library)

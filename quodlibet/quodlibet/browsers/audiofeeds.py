@@ -269,13 +269,13 @@ class AudioFeeds(Browser, Gtk.VBox):
     def __check(klass):
         for row in klass.__feeds:
             feed = row[0]
-            if feed.get_age() < 2*60*60:
+            if feed.get_age() < 2 * 60 * 60:
                 continue
             elif feed.parse():
                 feed.changed = True
                 row[0] = feed
         klass.write()
-        GLib.timeout_add(60*60*1000, klass.__do_check)
+        GLib.timeout_add(60 * 60 * 1000, klass.__do_check)
 
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(

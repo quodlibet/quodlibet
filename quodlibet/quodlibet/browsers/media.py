@@ -53,19 +53,21 @@ class DeviceProperties(Gtk.Dialog):
 
         y = 0
         for title, value, key in props + device.Properties():
-            if title == None:
+            if title is None:
                 table.attach(Gtk.HSeparator(), 0, 2, y, y + 1)
             else:
                 if key and isinstance(value, Gtk.CheckButton):
                     value.set_label(title)
                     value.set_use_underline(True)
                     value.connect('toggled', self.__changed, key, device)
-                    table.attach(value, 0, 2, y, y + 1, xoptions=Gtk.AttachOptions.FILL)
+                    table.attach(value, 0, 2, y, y + 1,
+                                 xoptions=Gtk.AttachOptions.FILL)
                 else:
                     label = Gtk.Label()
                     label.set_markup("<b>%s</b>" % util.escape(title))
                     label.set_alignment(0.0, 0.5)
-                    table.attach(label, 0, 1, y, y + 1, xoptions=Gtk.AttachOptions.FILL)
+                    table.attach(label, 0, 1, y, y + 1,
+                                 xoptions=Gtk.AttachOptions.FILL)
                     if key and isinstance(value, Gtk.Widget):
                         widget = value
                         label.set_mnemonic_widget(widget)
@@ -118,6 +120,7 @@ class Menu(Gtk.Menu):
             browser = win.browser
         browser.select(device)
         browser.dropped(browser.get_toplevel().songlist, songs)
+
 
 class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
@@ -343,6 +346,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         keyval, mod = Gtk.accelerator_parse("F2")
         ren.add_accelerator(
             'activate', self.accelerators, keyval, mod, Gtk.AccelFlags.VISIBLE)
+
         def rename(path):
             self.__render.set_property('editable', True)
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
@@ -400,7 +404,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             self.__last = path
 
             device = model[iter][0]
-            self.__device_icon.set_from_icon_name(device.icon, Gtk.IconSize.DIALOG)
+            self.__device_icon.set_from_icon_name(
+                device.icon, Gtk.IconSize.DIALOG)
             self.__set_name(device)
 
             songs = []

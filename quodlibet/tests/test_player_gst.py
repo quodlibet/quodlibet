@@ -34,7 +34,6 @@ class TGStreamerSink(TestCase):
 add(TGStreamerSink)
 
 
-@unittest.skip("FIXME")
 class TGstreamerTagList(TestCase):
     def test_parse(self):
         # gst.TagList can't be filled using pyGtk... so use a dict instead
@@ -50,17 +49,15 @@ class TGstreamerTagList(TestCase):
 
 
         # date is abstract, so define our own
+        # (might work with pygobject now)
         class Foo(object):
-            year = 3000
-            month = 10
-            day = 2
+            def to_iso8601_string(self):
+                return "3000-10-2"
         l["date"] = Foo()
-        date = gst.Date
-        gst.Date = Foo
+        date = Gst.DateTime
+        Gst.DateTime = Foo
         self.failUnlessEqual(parse_gstreamer_taglist(l)["date"], "3000-10-2")
-        gst.Date = date
-
-        self.failIf(parse_gstreamer_taglist({"bla": ["xyz"]}))
+        Gst.DateTime = date
 
         l["foo"] = u"äöü"
         self.failUnless(isinstance(parse_gstreamer_taglist(l)["foo"], unicode))
@@ -79,7 +76,7 @@ class TGstreamerTagList(TestCase):
         l["bar"] = 9
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 9)
 
-        l["bar"] = gst.TagList() # some random gst instance
+        l["bar"] = Gst.TagList() # some random gst instance
         self.failUnless(isinstance(parse_gstreamer_taglist(l)["bar"], unicode))
         self.failUnless("GstTagList" in parse_gstreamer_taglist(l)["bar"])
 

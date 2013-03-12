@@ -479,7 +479,8 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)
-        scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scrolled_window.set_policy(
+            Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.add(view)
         model = Gtk.ListStore(int, str, str, str)
 

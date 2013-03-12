@@ -28,6 +28,7 @@ from quodlibet.util import copool, split_scan_dirs
 from quodlibet.util.dprint import print_d
 from quodlibet.util.uri import URI
 
+
 class FileSystem(Browser, Gtk.HBox):
     __gsignals__ = Browser.__gsignals__
 
@@ -38,7 +39,7 @@ class FileSystem(Browser, Gtk.HBox):
     accelerated_name = _("_File System")
     priority = 10
 
-    TARGET_QL, TARGET_EXT = range(1,3)
+    TARGET_QL, TARGET_EXT = range(1, 3)
 
     @classmethod
     def __added(klass, library, songs):
@@ -64,7 +65,8 @@ class FileSystem(Browser, Gtk.HBox):
         folders = filter(None, split_scan_dirs(config.get("settings", "scan")))
 
         dt = DirectoryTree(folders=folders)
-        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_QL),
+        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP,
+                    self.TARGET_QL),
                    ("text/uri-list", 0, self.TARGET_EXT)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
