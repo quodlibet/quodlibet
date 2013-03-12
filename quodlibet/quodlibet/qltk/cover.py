@@ -34,6 +34,11 @@ class BigCenteredImage(qltk.Window):
         pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
         pixbuf = thumbnails.scale(pixbuf, (width, height), scale_up=False)
 
+        self.set_title(title)
+        self.set_decorated(False)
+        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_modal(False)
+
         image = gtk.Image()
         image.set_from_pixbuf(pixbuf)
 
