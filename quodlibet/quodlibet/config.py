@@ -58,7 +58,8 @@ def getboolean(*args):
 
 def getint(*args):
     if len(args) == 3:
-        if not isinstance(args[-1], int): raise ValueError
+        if not isinstance(args[-1], int):
+            raise ValueError
         try:
             return _config.getint(*args[:2])
         except Error:
@@ -68,7 +69,8 @@ def getint(*args):
 
 def getfloat(*args):
     if len(args) == 3:
-        if not isinstance(args[-1], float): raise ValueError
+        if not isinstance(args[-1], float):
+            raise ValueError
         try:
             return _config.getfloat(*args[:2])
         except Error:
@@ -145,118 +147,114 @@ def init(*rc_files):
                          % _config.sections())
     initial = {
         # User-defined tag name -> human name mappings
-        "header_maps": {},
-
-        "player":
-        { "time_remaining": "false",
-          "replaygain": "on",
-          "fallback_gain" : "0.0",
-          "pre_amp_gain" : "0.0",
-          "backend": "gstbe",
-          "gst_pipeline": "",
-          "gst_buffer": "1.5", # stream buffer duration in seconds
-          "gst_device": "",
-          },
-
-        "library":
-        { "exclude": "",
-          "refresh_on_start": "true",
-          },
-
+        "header_maps": {
+        },
+        "player": {
+            "time_remaining": "false",
+            "replaygain": "on",
+            "fallback_gain": "0.0",
+            "pre_amp_gain": "0.0",
+            "backend": "gstbe",
+            "gst_pipeline": "",
+            "gst_buffer": "1.5", # stream buffer duration in seconds
+            "gst_device": "",
+        },
+        "library": {
+            "exclude": "",
+            "refresh_on_start": "true",
+        },
         # State about the player, to restore on startup
-        "memory":
-        {
-          "song": "", # filename of last song
-          "seek": "0", # last song position, in milliseconds
-          "volume": "1.0", # internal volume, [0.0, 1.0]
-          "browser": "PanedBrowser", # browser name
-          "songlist": "true", # on or off
-          "queue": "false", # on or off
-          "shufflequeue": "false", # on or off
-          "sortby": "0album", # <reversed?>tagname, song list sort
-          "order": "inorder",
-          "plugin_selection": "", # selected plugin in manager
-          },
-
-        "browsers":
-        { "query_text": "", # none/search bar text
-          "panes": "~people	<~year|\<b\>\<i\><~year>\</i\>\</b\> - ><album>", # panes in paned browser
-          "pane_selection": "", # selected pane values
-          "background": "", # "global" filter for SearchBar
-          "albums": "", # album list
-          "album_sort": "0", # album sorting mode, default is title
-          "album_covers": "1", # album cover display, on/off
-          "album_substrings": "1", # include substrings in inline search
-          "collection_headers": "~people 0",
-          "radio": "", # radio filter selection
-          "rating_click": "true", # click to rate song, on/off
-          "rating_confirm_multiple": "false", # confirm rating multiple songs
-          "cover_size": "-1", # max cover height/width, <= 0 is default
-          "search_limit": "false", # Show the limit widgets for SearchBar
-          },
-
+        "memory": {
+            "song": "", # filename of last song
+            "seek": "0", # last song position, in milliseconds
+            "volume": "1.0", # internal volume, [0.0, 1.0]
+            "browser": "PanedBrowser", # browser name
+            "songlist": "true", # on or off
+            "queue": "false", # on or off
+            "shufflequeue": "false", # on or off
+            "sortby": "0album", # <reversed?>tagname, song list sort
+            "order": "inorder",
+            "plugin_selection": "", # selected plugin in manager
+        },
+        "browsers": {
+            "query_text": "", # none/search bar text
+            # panes in paned browser
+            "panes":
+                "~people	<~year|\<b\>\<i\><~year>\</i\>\</b\> - ><album>",
+            "pane_selection": "", # selected pane values
+            "background": "", # "global" filter for SearchBar
+            "albums": "", # album list
+            "album_sort": "0", # album sorting mode, default is title
+            "album_covers": "1", # album cover display, on/off
+            "album_substrings": "1", # include substrings in inline search
+            "collection_headers": "~people 0",
+            "radio": "", # radio filter selection
+            "rating_click": "true", # click to rate song, on/off
+            "rating_confirm_multiple": "false", # confirm rating multiple songs
+            "cover_size": "-1", # max cover height/width, <= 0 is default
+            "search_limit": "false", # Show the limit widgets for SearchBar
+        },
         # Kind of a dumping ground right now, should probably be
         # cleaned out later.
-        "settings":
-        { "scan": "", # scan directories, :-separated
-          "jump": "true", # scroll song list on current song change
-          "default_rating": "0.5", # initial rating of new song
-          "ratings": "4", # maximum rating value
-          "bayesian_rating_factor": "0.0", #  (0 = disabled i.e. arithmetic mean)
-          "rating_symbol_full": "\xe2\x98\x85",   # rating symbol (black star)
-          "rating_symbol_blank": "\xe2\x98\x86",  # rating symbol (hollow star)
+        "settings": {
+            "scan": "", # scan directories, :-separated
+            "jump": "true", # scroll song list on current song change
+            "default_rating": "0.5", # initial rating of new song
+            "ratings": "4", # maximum rating value
+            # (0 = disabled i.e. arithmetic mean)
+            "bayesian_rating_factor": "0.0",
+            # rating symbol (black star)
+            "rating_symbol_full": "\xe2\x98\x85",
+            # rating symbol (hollow star)
+            "rating_symbol_blank": "\xe2\x98\x86",
 
-          # probably belong in memory
-          "repeat": "false",
+            # probably belong in memory
+            "repeat": "false",
 
-          # Now deprecated: space-separated headers column
-          #"headers": " ".join(const.DEFAULT_COLUMNS),
+            # Now deprecated: space-separated headers column
+            #"headers": " ".join(const.DEFAULT_COLUMNS),
 
-          # 2.6: this gets migrated from headers entry in code.
-          # TODO: re-instate columns here in > 2.6 or once most have migrated
-          #"columns": ",".join(const.DEFAULT_COLUMNS),
+            # 2.6: this gets migrated from headers entry in code.
+            # TODO: re-instate columns here in > 2.6 or once most have migrated
+            #"columns": ",".join(const.DEFAULT_COLUMNS),
 
-          # hack to disable hints, see bug #526
-          "disable_hints": "false",
+            # hack to disable hints, see bug #526
+            "disable_hints": "false",
 
-          # search as soon as text is typed into search box
-          "eager_search": "true",
-          },
-
-        "rename":
-        { "spaces": "false",
-          "windows": "true",
-          "ascii": "false",
-          },
-
-        "tagsfrompath":
-        { "underscores": "false",
-          "titlecase": "false",
-          "split": "false",
-          "add": "false",
-          },
-
-        "plugins":
-        { "active_plugins": "", # newline separated plugin IDs
-          },
-
-        "editing":
-        { "split_on": "/ & ,", # words to split on
-          "id3encoding": "", # ID3 encodings to try
-          "human_title_case": "true",
-          "save_to_songs": "true",
-          "save_email": const.EMAIL,
-          "alltags": "true", # show all tags, or just "human-readable" ones
-          "auto_save_changes" : "false" # Skip dialog to save or revert changes
-          },
-
-        "albumart":
-        { "round": "true", # use rounded corners for artwork thumbnails
-          "prefer_embedded": "false",
-          "force_filename": "false",
-          "filename": "folder.jpg",
-          }
+            # search as soon as text is typed into search box
+            "eager_search": "true",
+        },
+        "rename": {
+            "spaces": "false",
+            "windows": "true",
+            "ascii": "false",
+        },
+        "tagsfrompath": {
+            "underscores": "false",
+            "titlecase": "false",
+            "split": "false",
+            "add": "false",
+        },
+        "plugins": {
+            "active_plugins": "", # newline separated plugin IDs
+        },
+        "editing": {
+            "split_on": "/ & ,", # words to split on
+            "id3encoding": "", # ID3 encodings to try
+            "human_title_case": "true",
+            "save_to_songs": "true",
+            "save_email": const.EMAIL,
+            "alltags": "true", # show all tags, or just "human-readable" ones
+            # Skip dialog to save or revert changes
+            "auto_save_changes": "false"
+        },
+        "albumart": {
+            "round": "true", # use rounded corners for artwork thumbnails
+            "prefer_embedded": "false",
+            "force_filename": "false",
+            "filename": "folder.jpg",
         }
+    }
 
     # <=2.2.1 QL created the user folder in the profile folder
     # but it should be in the appdata folder, so move it.

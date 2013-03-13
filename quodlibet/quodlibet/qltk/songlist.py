@@ -50,7 +50,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         def _cdf(self, column, cell, model, iter, tag):
             text = model[iter][0].comma(tag)
-            if not self._needs_update(text): return
+            if not self._needs_update(text):
+                return
             cell.set_property('text', text)
             self._update_layout(text, cell)
 
@@ -59,13 +60,14 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             width = self.get_fixed_width()
             for text, pad, cell_pad in self._text:
                 self._label.set_text(text, -1)
-                new_width = self._label.get_pixel_size()[0] + pad +  cell_pad
+                new_width = self._label.get_pixel_size()[0] + pad + cell_pad
                 if new_width > max_width:
                     max_width = new_width
             if width < max_width:
                 self.set_fixed_width(max_width)
                 tv = self.get_tree_view()
-                if tv: tv.columns_autosize()
+                if tv:
+                    tv.columns_autosize()
             self._text.clear()
             self._timeout = None
             return False
@@ -74,7 +76,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             if not self.get_resizable():
                 cell_pad = (cell and cell.get_property('xpad')) or 0
                 self._text.add((text, pad, cell_pad))
-                if force: self._delayed_update()
+                if force:
+                    self._delayed_update()
                 if self._timeout is not None:
                     GLib.source_remove(self._timeout)
                     self._timeout = None
@@ -99,16 +102,20 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # The '~#' keys that are dates.
         def _cdf(self, column, cell, model, iter, tag):
             stamp = model[iter][0](tag)
-            if not self._needs_update(stamp): return
+            if not self._needs_update(stamp):
+                return
             if not stamp:
                 cell.set_property('text', _("Never"))
             else:
                 date = datetime.datetime.fromtimestamp(stamp).date()
                 today = datetime.datetime.now().date()
                 days = (today - date).days
-                if days == 0: format = "%X"
-                elif days < 7: format = "%A"
-                else: format = "%x"
+                if days == 0:
+                    format = "%X"
+                elif days < 7:
+                    format = "%A"
+                else:
+                    format = "%x"
                 stamp = time.localtime(stamp)
                 text = time.strftime(format, stamp).decode(const.ENCODING)
                 cell.set_property('text', text)
@@ -129,7 +136,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # a function call).
         def _cdf(self, column, cell, model, iter, tag):
                 value = model[iter][0].get("~#rating", const.DEFAULT_RATING)
-                if not self._needs_update(value): return
+                if not self._needs_update(value):
+                    return
                 cell.set_property('text', util.format_rating(value))
                 # No need to update layout, we know this width at
                 # at startup.
@@ -145,7 +153,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # Used for any tag without a '~' except 'title'.
         def _cdf(self, column, cell, model, iter, tag):
             value = model[iter][0].get(tag, "")
-            if not self._needs_update(value): return
+            if not self._needs_update(value):
+                return
             cell.set_property('text', value.replace("\n", ", "))
 
     class FSColumn(WideTextColumn):
@@ -153,14 +162,16 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # decoded safely (and also more slowly).
         def _cdf(self, column, cell, model, iter, tag):
             value = model[iter][0].comma(tag)
-            if not self._needs_update(value): return
+            if not self._needs_update(value):
+                return
             cell.set_property('text', util.unexpand(util.fsdecode(value)))
 
     class NumericColumn(TextColumn):
         # Any '~#' keys except dates.
         def _cdf(self, column, cell, model, iter, tag):
             value = model[iter][0].comma(tag)
-            if not self._needs_update(value): return
+            if not self._needs_update(value):
+                return
             text = unicode(value)
             cell.set_property('text', text)
             self._update_layout(text, cell)
@@ -173,20 +184,24 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     class LengthColumn(NumericColumn):
         def _cdf(self, column, cell, model, iter, tag):
             value = model[iter][0].get("~#length", 0)
-            if not self._needs_update(value): return
+            if not self._needs_update(value):
+                return
             text = util.format_time(value)
             cell.set_property('text', text)
             self._update_layout(text, cell)
+
         def __init__(self):
             super(SongList.LengthColumn, self).__init__("~#length")
 
     class FilesizeColumn(NumericColumn):
         def _cdf(self, column, cell, model, iter, tag):
             value = model[iter][0].get("~#filesize", 0)
-            if not self._needs_update(value): return
+            if not self._needs_update(value):
+                return
             text = util.format_size(value)
             cell.set_property('text', text)
             self._update_layout(text, cell)
+
         def __init__(self):
             super(SongList.FilesizeColumn, self).__init__("~#filesize")
 
@@ -196,19 +211,23 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             if not self._pattern:
                 return
             value = self._pattern % song
-            if not self._needs_update(value): return
+            if not self._needs_update(value):
+                return
             cell.set_property('text', value)
 
         def __init__(self, pattern):
             super(SongList.PatternColumn, self).__init__(util.pattern(pattern))
             self.header_name = pattern
             self._pattern = None
-            try: self._pattern = Pattern(pattern)
-            except ValueError: pass
+            try:
+                self._pattern = Pattern(pattern)
+            except ValueError:
+                pass
 
     def Menu(self, header, browser, library):
         songs = self.get_selected_songs()
-        if not songs: return
+        if not songs:
+            return
 
         can_filter = browser.can_filter
 
@@ -298,9 +317,12 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
             value = model.get_value(iter, 0)(column.header_name)
-            if not isinstance(value, basestring): continue
-            elif key in value.lower() or key in value: return False
-        else: return True
+            if not isinstance(value, basestring):
+                continue
+            elif key in value.lower() or key in value:
+                return False
+        else:
+            return True
 
     def enable_drop(self, by_row=True):
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
@@ -308,9 +330,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
         self.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets,
-            Gdk.DragAction.COPY|Gdk.DragAction.MOVE)
+            Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets,
-                           Gdk.DragAction.COPY|Gdk.DragAction.MOVE)
+                           Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
         self.__drop_by_row = by_row
 
     def disable_drop(self):
@@ -356,7 +378,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
             if ctx.get_actions() == Gdk.DragAction.MOVE:
                 self.__drag_iters = map(model.get_iter, paths)
-            else: self.__drag_iters = []
+            else:
+                self.__drag_iters = []
         else:
             uris = [model[path][0]("~uri") for path in paths]
             sel.set_uris(uris)
@@ -366,7 +389,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         window = qltk.get_top_parent(self)
         if callable(window.browser.dropped):
             return window.browser.dropped(self, songs)
-        else: return False
+        else:
+            return False
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
         model = view.get_model()
@@ -375,8 +399,10 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             move = (Gtk.get_source_widget(ctx) == view)
         elif info == 2:
             def to_filename(s):
-                try: return URI(s).filename
-                except ValueError: return None
+                try:
+                    return URI(s).filename
+                except ValueError:
+                    return None
 
             filenames = filter(None, map(to_filename, sel.get_uris()))
             move = False
@@ -401,7 +427,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             Gtk.drag_finish(ctx, success, False, etime)
             return
 
-        try: path, position = view.get_dest_row_at_pos(x, y)
+        try:
+            path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
             path = max(0, len(model) - 1)
             position = Gtk.TreeViewDropPosition.AFTER
@@ -418,13 +445,16 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             Gtk.drag_finish(ctx, True, False, etime)
         else:
             song = songs.pop(0)
-            try: iter = model.get_iter(path)
-            except ValueError: iter = model.append(row=[song]) # empty model
+            try:
+                iter = model.get_iter(path)
+            except ValueError:
+                iter = model.append(row=[song]) # empty model
             else:
                 if position in (Gtk.TreeViewDropPosition.BEFORE,
                                 Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
                     iter = model.insert_before(iter, [song])
-                else: iter = model.insert_after(iter, [song])
+                else:
+                    iter = model.insert_after(iter, [song])
             for song in songs:
                 iter = model.insert_after(iter, [song])
             Gtk.drag_finish(ctx, True, move, etime)
@@ -449,15 +479,18 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             headers = sd.sort_key
             if not headers:
                 return
+
             # from this, we have to construct a comparison function for sort
             def _get_key(song, tag):
                 if tag.startswith("~#") and "~" not in tag[2:]:
                     return song(tag)
                 return human_sort_key(song(tag))
+
             def comparer(x, y):
                 for (h, o) in headers:
                     c = cmp(_get_key(x, h), _get_key(y, h))
-                    if c == 0: continue
+                    if c == 0:
+                        continue
                     if o != Gtk.SortType.ASCENDING:
                         c *= -1
                     return c
@@ -468,13 +501,18 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         sd.hide()
 
     def __button_press(self, view, event, librarian):
-        if event.button != 1: return
+        if event.button != 1:
+            return
         x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return True
-        if event.window != self.get_bin_window(): return False
+        try:
+            path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError:
+            return True
+        if event.window != self.get_bin_window():
+            return False
         if col.header_name == "~#rating":
-            if not config.getboolean("browsers", "rating_click"): return
+            if not config.getboolean("browsers", "rating_click"):
+                return
 
             song = view.get_model()[path][0]
             l = Gtk.Label()
@@ -484,7 +522,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             count = int(float(cellx - 5) / width) + 1
             rating = max(0.0, min(1.0, count * util.RATING_PRECISION))
             if (rating <= util.RATING_PRECISION and
-                song("~#rating") == util.RATING_PRECISION): rating = 0
+                    song("~#rating") == util.RATING_PRECISION):
+                rating = 0
             self.__set_rating(rating, [song], librarian)
 
     def __set_rating(self, value, songs, librarian):
@@ -531,7 +570,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         config.set_columns(headers)
         try:
             headers.remove("~current")
-        except ValueError: pass
+        except ValueError:
+            pass
         cls.headers = headers
         for listview in cls.instances():
             listview.set_column_headers(headers)
@@ -556,14 +596,16 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 tag = header.header_name
                 sort = header.get_sort_order()
                 return (tag, sort == Gtk.SortType.DESCENDING)
-        else: return "", False
+        else:
+            return "", False
 
     def is_sorted(self):
         return max([c.get_sort_indicator() for c in self.get_columns()] or [0])
 
     # Resort based on the header clicked.
     def set_sort_by(self, header, tag=None, order=None, refresh=True):
-        if header and tag is None: tag = header.header_name
+        if header and tag is None:
+            tag = header.header_name
 
         rev = False
         for h in self.get_columns():
@@ -573,14 +615,18 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                     if (not header.get_sort_indicator() or
                         s == Gtk.SortType.DESCENDING):
                         s = Gtk.SortType.ASCENDING
-                    else: s = Gtk.SortType.DESCENDING
+                    else:
+                        s = Gtk.SortType.DESCENDING
                 else:
-                    if order: s = Gtk.SortType.DESCENDING
-                    else: s = Gtk.SortType.ASCENDING
+                    if order:
+                        s = Gtk.SortType.DESCENDING
+                    else:
+                        s = Gtk.SortType.ASCENDING
                 rev = h.get_sort_indicator()
                 h.set_sort_indicator(True)
                 h.set_sort_order(s)
-            else: h.set_sort_indicator(False)
+            else:
+                h.set_sort_indicator(False)
         if refresh:
             songs = self.get_songs()
             if rev:  # python sort is faster if it's presorted.
@@ -591,8 +637,10 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         for h in self.get_columns():
             name = h.header_name
             if self.__get_sort_tag(name) == tag:
-                if order: s = Gtk.SortType.DESCENDING
-                else: s = Gtk.SortType.ASCENDING
+                if order:
+                    s = Gtk.SortType.DESCENDING
+                else:
+                    s = Gtk.SortType.ASCENDING
                 h.set_sort_order(s)
                 h.set_sort_indicator(True)
             else:
@@ -604,8 +652,10 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.set_search_column(0)
 
     def get_songs(self):
-        try: return self.get_model().get()
-        except AttributeError: return [] # model is None
+        try:
+            return self.get_model().get()
+        except AttributeError:
+            return [] # model is None
 
     def __get_sort_tag(self, tag):
         replace_order = {
@@ -639,7 +689,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def add_songs(self, songs):
         """Add songs to the list in the right order and position"""
 
-        if not songs: return
+        if not songs:
+            return
 
         model = self.get_model()
         if not len(model):
@@ -697,7 +748,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     def get_selected_songs(self):
         selection = self.get_selection()
-        if selection is None: return []
+        if selection is None:
+            return []
         model, rows = selection.get_selected_rows()
         return [model[row][0] for row in rows]
 
@@ -706,12 +758,14 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         Warning: This makes the row-changed signal useless."""
         #pygtk 2.12: prevent invalid ranges or GTK asserts
         if not self.get_realized() or \
-            self.get_path_at_pos(0,0) is None: return
+                self.get_path_at_pos(0, 0) is None:
+            return
         vrange = self.get_visible_range()
-        if vrange is None: return
+        if vrange is None:
+            return
         (start,), (end,) = vrange
         model = self.get_model()
-        for path in xrange(start, end+1):
+        for path in xrange(start, end + 1):
             row = model[path]
             if row[0] in songs:
                 model.row_changed(row.path, row.iter)
@@ -751,7 +805,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             from quodlibet import app
             if app.player.song:
                 songs = [app.player.song]
-            else: return
+            else:
+                return
         SongProperties(librarian, songs, parent=self)
 
     def __information(self, librarian):
@@ -762,13 +817,15 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             from quodlibet import app
             if app.player.song:
                 songs = [app.player.song]
-            else: return
+            else:
+                return
         Information(librarian, songs, self)
 
     # Build a new filter around our list model, set the headers to their
     # new values.
     def set_column_headers(self, headers):
-        if len(headers) == 0: return
+        if len(headers) == 0:
+            return
 
         self.handler_block(self.__csig)
 
@@ -783,17 +840,22 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 column = self.TextColumn(t)
             elif t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
                 column = self.DateColumn(t)
-            elif t in ["~length", "~#length"]: column = self.LengthColumn()
-            elif t == "~#filesize": column = self.FilesizeColumn()
-            elif t in ["~rating", "~#rating"]: column = self.RatingColumn()
-            elif t.startswith("~#"): column = self.NumericColumn(t)
+            elif t in ["~length", "~#length"]:
+                column = self.LengthColumn()
+            elif t == "~#filesize":
+                column = self.FilesizeColumn()
+            elif t in ["~rating", "~#rating"]:
+                column = self.RatingColumn()
+            elif t.startswith("~#"):
+                column = self.NumericColumn(t)
             elif t in FILESYSTEM_TAGS:
                 column = self.FSColumn(t)
             elif t.startswith("<"):
                 column = self.PatternColumn(t)
             elif "~" not in t and t != "title":
                 column = self.NonSynthTextColumn(t)
-            else: column = self.WideTextColumn(t)
+            else:
+                column = self.WideTextColumn(t)
             column.connect('clicked', self.set_sort_by)
             column.connect('button-press-event', self.__showmenu)
             column.connect('popup-menu', self.__showmenu)
@@ -812,6 +874,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         current = SongList.headers[:]
         current_set = set(current)
+
         def tag_title(tag):
             if tag.startswith("<"):
                 return util.pattern(tag)
@@ -846,7 +909,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             ~uri""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
-        all_headers = reduce(lambda x,y: x+y,
+        all_headers = reduce(lambda x, y: x + y,
             [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo])
 
         for name, group in [
@@ -885,11 +948,15 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __toggle_header_item(self, item, column):
         headers = SongList.headers[:]
         if item.get_active():
-            try: headers.insert(self.get_columns().index(column), item.tag)
-            except ValueError: headers.append(item.tag)
+            try:
+                headers.insert(self.get_columns().index(column), item.tag)
+            except ValueError:
+                headers.append(item.tag)
         else:
-            try: headers.remove(item.tag)
-            except ValueError: pass
+            try:
+                headers.remove(item.tag)
+            except ValueError:
+                pass
 
         SongList.set_all_column_headers(headers)
         SongList.headers = headers
@@ -906,7 +973,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             return
 
         if event:
-            self.__getmenu(column).popup(None, None, None, None, event.button, time)
+            self.__getmenu(column).popup(None, None, None, None,
+                                         event.button, time)
             return True
 
         widget = column.get_widget()

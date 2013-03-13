@@ -19,12 +19,15 @@ class PlaylistMux(object):
     def __check_q(self, player, song):
         if song is not None:
             iter = self.q.find(song)
-            if iter: self.q.remove(iter)
+            if iter:
+                self.q.remove(iter)
             self.q.reset()
 
     def get_current(self):
-        if self.q.current is not None: return self.q.current
-        else: return self.pl.current
+        if self.q.current is not None:
+            return self.q.current
+        else:
+            return self.pl.current
 
     current = property(get_current)
 

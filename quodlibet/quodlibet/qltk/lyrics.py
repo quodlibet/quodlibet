@@ -47,9 +47,6 @@ class LyricsPane(Gtk.VBox):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack_start(sw, True, True, 0)
 
-        #self.pack_start(Gtk.Label(_("Lyrics provided by %s.", True, True, 0) %(
-        #    "http://lyricwiki.org")), expand=False)
-
         bbox = Gtk.HButtonBox()
         bbox.pack_start(save, True, True, 0)
         bbox.pack_start(delete, True, True, 0)
@@ -90,13 +87,15 @@ class LyricsPane(Gtk.VBox):
         try:
             sock = urllib.urlopen(
                 "http://lyricwiki.org/api.php?"
-                "client=QuodLibet&func=getSong&artist=%s&song=%s&fmt=text"%(
+                "client=QuodLibet&func=getSong&artist=%s&song=%s&fmt=text" % (
                 urllib.quote(artist.encode('utf-8')),
                 urllib.quote(title.encode('utf-8'))))
             text = sock.read()
         except Exception, err:
-            try: err = err.strerror.decode(const.ENCODING, 'replace')
-            except: err = _("Unable to download lyrics.")
+            try:
+                err = err.strerror.decode(const.ENCODING, 'replace')
+            except:
+                err = _("Unable to download lyrics.")
             GLib.idle_add(buffer.set_text, err)
             return
 
@@ -111,10 +110,13 @@ class LyricsPane(Gtk.VBox):
             GLib.idle_add(refresh.set_sensitive, True)
 
     def __save(self, save, lyricname, buffer, delete):
-        try: os.makedirs(os.path.dirname(lyricname))
-        except EnvironmentError, err: pass
+        try:
+            os.makedirs(os.path.dirname(lyricname))
+        except EnvironmentError, err:
+            pass
 
-        try: f = file(lyricname, "w")
+        try:
+            f = file(lyricname, "w")
         except EnvironmentError, err:
             print_w(err.strerror.decode(const.ENCODING, "replace"))
         else:
@@ -125,10 +127,14 @@ class LyricsPane(Gtk.VBox):
         save.set_sensitive(False)
 
     def __delete(self, delete, lyricname, save):
-        try: os.unlink(lyricname)
-        except EnvironmentError: pass
+        try:
+            os.unlink(lyricname)
+        except EnvironmentError:
+            pass
         lyricname = os.path.dirname(lyricname)
-        try: os.rmdir(lyricname)
-        except EnvironmentError: pass
+        try:
+            os.rmdir(lyricname)
+        except EnvironmentError:
+            pass
         delete.set_sensitive(False)
         save.set_sensitive(True)

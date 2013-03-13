@@ -24,18 +24,19 @@ from quodlibet.qltk.textedit import PatternEdit
 
 
 class SongInfo(Gtk.Label):
-    _pattern = """\
+    _pattern = ("""\
 \\<span weight='bold' size='large'\\><title>\\</span\\>\
 <~length| (<~length>)><version|
 \\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
 %(people)s><album|
 \\<b\\><album>\\</b\\><discnumber| - %(disc)s>\
-<discsubtitle| - \\<b\\><discsubtitle>\\</b\\>><tracknumber| - %(track)s>>"""%{
+<discsubtitle| - \\<b\\><discsubtitle>\\</b\\>><tracknumber| - %(track)s>>"""
+        % {
         # Translators: As in "by Artist Name"
         "people": _("by %s") % "<~people>",
         "disc": _("Disc %s") % "<discnumber>",
         "track": _("Track %s") % "<tracknumber>"
-        }
+        })
 
     __PATTERN_FILENAME = os.path.join(const.USERDIR, "songinfo")
 
@@ -49,13 +50,15 @@ class SongInfo(Gtk.Label):
 
         self.connect_object('populate-popup', self.__menu, player, library)
 
-        try: self._pattern = file(self.__PATTERN_FILENAME).read().rstrip()
-        except EnvironmentError: pass
+        try:
+            self._pattern = file(self.__PATTERN_FILENAME).read().rstrip()
+        except EnvironmentError:
+            pass
         self._compiled = XMLFromPattern(self._pattern)
 
     def __menu(self, player, menu, library):
         try:
-            # Get a real submenu, unless there's no song, in which case an
+            # Get a real sub-menu, unless there's no song, in which case an
             # empty one looks more consistent than None
             submenu = (browsers.playlists.Menu([player.song], self)
                        if player.song else Gtk.Menu())
@@ -89,14 +92,14 @@ class SongInfo(Gtk.Label):
         menu.append(sep)
         sep.show()
         props = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
-        props.connect_object(
-            'activate', SongProperties, library, [player.song], self)
+        props.connect_object('activate', SongProperties, library,
+                             [player.song], self)
         props.show()
         props.set_sensitive(bool(player.song))
         menu.append(props)
         info = Gtk.ImageMenuItem(Gtk.STOCK_INFO, use_stock=True)
-        info.connect_object(
-            'activate', Information, library, [player.song], self)
+        info.connect_object('activate', Information, library,
+                            [player.song], self)
         info.show()
         menu.append(info)
         info.set_sensitive(bool(player.song))

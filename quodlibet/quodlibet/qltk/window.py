@@ -20,8 +20,10 @@ class Window(Gtk.Window):
 
     instances = []
 
-    __gsignals__ = {"close-accel": (
-        GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION, GObject.TYPE_NONE, ())}
+    __gsignals__ = {
+        "close-accel": (GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION,
+                        GObject.TYPE_NONE, ())
+    }
 
     def __init__(self, *args, **kwargs):
         dialog = kwargs.pop("dialog", True)
@@ -34,8 +36,8 @@ class Window(Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.add_accel_group(self.__accels)
         if not dialog:
-            self.add_accelerator(
-                'close-accel', self.__accels, ord('w'), Gdk.ModifierType.CONTROL_MASK, 0)
+            self.add_accelerator('close-accel', self.__accels,
+                                 ord('w'), Gdk.ModifierType.CONTROL_MASK, 0)
         else:
             esc, mod = Gtk.accelerator_parse("Escape")
             self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
@@ -62,7 +64,7 @@ class Window(Gtk.Window):
         #Focus the treeview instead.
         if isinstance(self.get_focus(), Gtk.Entry) and \
             isinstance(self.get_focus().get_parent(), Gtk.TreeView):
-            self.get_focus().get_arent().grab_focus()
+            self.get_focus().get_parent().grab_focus()
             return
         if not self.emit('delete-event', Gdk.Event.new(Gdk.EventType.DELETE)):
             self.destroy()
@@ -176,8 +178,10 @@ class UniqueWindow(Window):
             return True
 
     def __init__(self, *args, **kwargs):
-        if type(self).__window: return
-        else: type(self).__window = self
+        if type(self).__window:
+            return
+        else:
+            type(self).__window = self
         super(UniqueWindow, self).__init__(*args, **kwargs)
         self.connect_object('destroy', self.__destroy, self)
 

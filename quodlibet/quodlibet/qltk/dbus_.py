@@ -112,8 +112,10 @@ class DBusHandler(dbus.service.Object):
     @dbus.service.method('net.sacredchao.QuodLibet', in_signature='s')
     def Query(self, query):
         if query is not None:
-            try: results = Query(query, star=SongList.star).search
-            except Query.error: pass
+            try:
+                results = Query(query, star=SongList.star).search
+            except Query.error:
+                pass
             else:
                 return [self.__dict(s) for s in self.library.itervalues()
                         if results(s)]

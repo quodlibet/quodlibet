@@ -4,6 +4,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+import glob
 import subprocess
 import unittest
 
@@ -15,8 +17,10 @@ from quodlibet.util import iscommand
 class TPEP8(TestCase):
     # E12x popped up in pep8 1.4 compared to 1.2..
     # drop them once 1.4 is common enough
-    IGNORE_ERROROS = "E12"
-    PACKAGES = "util library parse browsers devices formats".split()
+    # E261: at least two spaces before inline comment
+    IGNORE_ERROROS = "E12,E261"
+    PACKAGES = ("util library parse browsers devices formats "
+                "plugins qltk").split()
 
     def _run(self, path):
         subprocess.check_call(
@@ -28,6 +32,12 @@ class TPEP8(TestCase):
             mod = getattr(__import__(name), package)
             self._run(mod.__path__[0])
 
+    def test_main_package(self):
+        import quodlibet
+        path = quodlibet.__path__[0]
+        files = glob.glob(os.path.join(path, "*.py"))
+        for file_ in files:
+            self._run(file_)
 
 if iscommand("pep8"):
     add(TPEP8)

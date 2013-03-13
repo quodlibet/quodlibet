@@ -32,12 +32,12 @@ from quodlibet.qltk.window import PersistentWindowMixin
 
 
 class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
-    __gsignals__ = { 'changed': (GObject.SignalFlags.RUN_LAST,
-                                 None, (object,)),
-
-                     'artwork-changed': (GObject.SignalFlags.RUN_LAST,
-                                         None, (object,))
-                     }
+    __gsignals__ = {
+        'changed': (GObject.SignalFlags.RUN_LAST,
+                    None, (object,)),
+        'artwork-changed': (GObject.SignalFlags.RUN_LAST,
+                            None, (object,))
+    }
 
     pm = SongsMenuPluginHandler()
 
@@ -94,10 +94,8 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
 
         nb = qltk.Notebook()
         nb.show()
-
         for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
             nb.append_page(Page(self, self.__library))
-
         align = Alignment(nb, top=3)
         align.show()
         hp.pack2(align, resize=True, shrink=False)
@@ -109,8 +107,10 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         for c in fs.get_children():
             c.get_child().connect('button-press-event',
                 self.__pre_selection_changed, fs, nb)
-            c.get_child().connect('focus', self.__pre_selection_changed, fs, nb)
-        fs.get_children()[1].get_child().connect('popup-menu', self.__popup_menu, fs)
+            c.get_child().connect('focus',
+                                  self.__pre_selection_changed, fs, nb)
+        fs.get_children()[1].get_child().connect('popup-menu',
+                                                 self.__popup_menu, fs)
         self.emit('changed', [])
 
         self.get_child().show()
@@ -131,8 +131,10 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
     def __pre_selection_changed(self, view, event, fs, nb):
         if self.__save:
             resp = qltk.CancelRevertSave(self).run()
-            if resp == Gtk.ResponseType.YES: self.__save.clicked()
-            elif resp == Gtk.ResponseType.NO: FileSelector.rescan(fs)
+            if resp == Gtk.ResponseType.YES:
+                self.__save.clicked()
+            elif resp == Gtk.ResponseType.NO:
+                FileSelector.rescan(fs)
             else:
                 nb.grab_focus()
                 return True # cancel or closed
@@ -145,8 +147,10 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         songs = map(self.__library.get, filenames)
         if None not in songs:
             menu = self.pm.Menu(self.__library, self, songs)
-            if menu is None: menu = Gtk.Menu()
-            else: menu.prepend(Gtk.SeparatorMenuItem())
+            if menu is None:
+                menu = Gtk.Menu()
+            else:
+                menu.prepend(Gtk.SeparatorMenuItem())
         else:
             menu = Gtk.Menu()
         b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE)
@@ -154,7 +158,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         menu.prepend(b)
         menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time()) 
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __delete(self, item, files, fs):
         d = DeleteDialog(self, files)
@@ -168,22 +172,29 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         model, rows = selection.get_selected_rows()
         files = []
 
-        if len(rows) < 2: count = len(model or [])
-        else: count = len(rows)
+        if len(rows) < 2:
+            count = len(model or [])
+        else:
+            count = len(rows)
         label.set_text(ngettext("%d song", "%d songs", count) % count)
 
         for row in rows:
             filename = util.fsnative(model[row][0])
-            if not os.path.exists(filename): pass
+            if not os.path.exists(filename):
+                pass
             elif filename in self.__library:
                 file = self.__library[filename]
                 if file("~#mtime") + 1. < util.mtime(filename):
-                    try: file.reload()
-                    except StandardError: pass
+                    try:
+                        file.reload()
+                    except StandardError:
+                        pass
                 files.append(file)
-            else: files.append(formats.MusicFile(filename))
+            else:
+                files.append(formats.MusicFile(filename))
         files = filter(None, files)
-        if len(files) == 0: self.set_title("Ex Falso")
+        if len(files) == 0:
+            self.set_title("Ex Falso")
         elif len(files) == 1:
             self.set_title("%s - Ex Falso" % files[0].comma("title"))
         else:
@@ -196,9 +207,11 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         self.__library.add(files)
         self.emit('changed', files)
 
+
 class PreferencesWindow(qltk.UniqueWindow):
     def __init__(self, parent):
-        if self.is_not_unique(): return
+        if self.is_not_unique():
+            return
         super(PreferencesWindow, self).__init__()
         self.set_title(_("Ex Falso Preferences"))
         self.set_border_width(12)

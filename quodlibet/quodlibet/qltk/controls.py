@@ -316,7 +316,8 @@ class PlayControls(Gtk.VBox):
         play.connect('button-press-event', self.__play_button_press, safter)
         play.add_events(Gdk.EventMask.SCROLL_MASK)
         play.connect_object('scroll-event', self.__scroll, player)
-        play.connect_object('popup-menu', self.__popup, safter, play.get_child())
+        play.connect_object('popup-menu',
+                            self.__popup, safter, play.get_child())
         next.connect_object('clicked', self.__next, player)
         player.connect('song-started', self.__song_started, next, play)
         player.connect_object('paused', play.set_active, False)
@@ -324,9 +325,11 @@ class PlayControls(Gtk.VBox):
         self.show_all()
 
     def __scroll(self, player, event):
-        if event.direction in [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]:
+        if event.direction in [Gdk.ScrollDirection.UP,
+                               Gdk.ScrollDirection.LEFT]:
             player.previous()
-        elif event.direction in [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]:
+        elif event.direction in [Gdk.ScrollDirection.DOWN,
+                                 Gdk.ScrollDirection.RIGHT]:
             player.next()
 
     def __play_button_press(self, activator, event, safter):

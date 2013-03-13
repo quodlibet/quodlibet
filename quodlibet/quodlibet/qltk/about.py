@@ -29,14 +29,14 @@ class AboutDialog(Gtk.AboutDialog):
         if player:
             text.append(_("Audio device: %s") % player.name)
         text.append("Mutagen: %s" % fver(mutagen.version))
-        text.append("GTK+: %s / PyGObject: %s" %(
+        text.append("GTK+: %s / PyGObject: %s" % (
             fver(gtk_version), fver(pygobject_version)))
         if player:
             text.append(player.version_info)
         self.set_comments("\n".join(text))
         self.set_translator_credits("\n".join(const.TRANSLATORS))
         self.set_website(const.WEBSITE)
-        self.set_copyright(const.COPYRIGHT + "\n" + \
+        self.set_copyright(const.COPYRIGHT + "\n" +
                            "<%s>" % const.SUPPORT_EMAIL)
         self.get_child().show_all()
 

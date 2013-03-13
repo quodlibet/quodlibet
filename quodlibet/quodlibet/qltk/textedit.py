@@ -20,6 +20,7 @@ except ImportError:
     TextBuffer = Gtk.TextBuffer
 else:
     TextView = GtkSource.View
+
     class TextBuffer(GtkSource.Buffer):
         def __init__(self, *args):
             super(TextBuffer, self).__init__(*args)
@@ -30,6 +31,7 @@ else:
             self.begin_not_undoable_action()
             super(TextBuffer, self).set_text(*args)
             self.end_not_undoable_action()
+
 
 class TextEditBox(Gtk.HBox):
     """A simple text editing area with a default value, a revert button,
@@ -62,8 +64,8 @@ class TextEditBox(Gtk.HBox):
     def __get_text(self):
         start, end = self.buffer.get_bounds()
         return self.buffer.get_text(start, end, True).decode('utf-8')
-
-    text = property(__get_text, lambda s, v: s.buffer.set_text(v, -1))
+    text = property(__get_text,
+                    lambda s, v: s.buffer.set_text(v, -1))
 
 
 class PatternEditBox(TextEditBox):
@@ -77,7 +79,7 @@ class PatternEditBox(TextEditBox):
 
     def __check_markup(self, apply):
         try:
-            f = AudioFile({"~filename":"dummy"})
+            f = AudioFile({"~filename": "dummy"})
             Pango.parse_markup(XMLFromPattern(self.text) % f, -1, u"\u0000")
         except (ValueError, GLib.GError), e:
             qltk.ErrorMessage(
@@ -88,13 +90,15 @@ class PatternEditBox(TextEditBox):
             apply.stop_emission('clicked')
         return False
 
+
 class TextEdit(qltk.UniqueWindow):
     """A window with a text editing box in it."""
 
     Box = TextEditBox
 
     def __init__(self, parent, default=""):
-        if self.is_not_unique(): return
+        if self.is_not_unique():
+            return
         super(TextEdit, self).__init__()
         self.set_title(_("Edit Display"))
         self.set_transient_for(qltk.get_top_parent(parent))
@@ -121,6 +125,7 @@ class TextEdit(qltk.UniqueWindow):
 
     text = property(lambda s: s.box.text,
                     lambda s, v: setattr(s.box, 'text', v))
+
 
 class PatternEdit(TextEdit):
     """A window with a pattern editing box in it."""

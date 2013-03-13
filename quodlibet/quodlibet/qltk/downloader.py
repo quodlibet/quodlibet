@@ -14,6 +14,7 @@ from quodlibet import util
 
 from quodlibet.qltk.views import AllTreeView
 
+
 class DownloadWindow(qltk.UniqueWindow):
     downloads = None
 
@@ -26,7 +27,8 @@ class DownloadWindow(qltk.UniqueWindow):
     download = classmethod(download)
 
     def __init__(self, parent=None):
-        if self.is_not_unique(): return
+        if self.is_not_unique():
+            return
         super(DownloadWindow, self).__init__()
         self.set_title("Quod Libet - " + _("Downloads"))
         self.set_default_size(300, 150)
@@ -45,6 +47,7 @@ class DownloadWindow(qltk.UniqueWindow):
         column = Gtk.TreeViewColumn(_("Filename"), render)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_expand(True)
+
         def cell_data_name(column, cell, model, iter):
             cell.set_property('text', model[iter][1].name)
         column.set_cell_data_func(render, cell_data_name)
@@ -53,9 +56,12 @@ class DownloadWindow(qltk.UniqueWindow):
         render = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Size"), render)
         column.set_sizing(Gtk.TreeViewColumnSizing.GROW_ONLY)
+
         def cell_data_size(column, cell, model, iter):
-            if model[iter][2] == 0: size = _("Queued")
-            else: size = util.format_size(model[iter][1].tell())
+            if model[iter][2] == 0:
+                size = _("Queued")
+            else:
+                size = util.format_size(model[iter][1].tell())
             cell.set_property('text', size)
         column.set_cell_data_func(render, cell_data_size)
         view.append_column(column)
@@ -91,14 +97,15 @@ class DownloadWindow(qltk.UniqueWindow):
         started = len(filter(lambda row: row[2] != 0, self.downloads))
         iter = self.downloads.get_iter_root()
         while iter is not None:
-            if started >= 2: break
+            if started >= 2:
+                break
             if self.downloads[iter][2] == 0:
                 url = urllib.urlopen(self.downloads[iter][3])
                 sock = url.fp._sock
                 sock.setblocking(0)
                 self.downloads[iter][0] = sock
                 sig_id = GObject.io_add_watch(
-                    sock, GObject.IO_IN|GObject.IO_ERR|GObject.IO_HUP,
+                    sock, GObject.IO_IN | GObject.IO_ERR | GObject.IO_HUP,
                     self.__got_data, self.downloads[iter][1], iter)
                 self.downloads[iter][2] = sig_id
                 started += 1
@@ -140,8 +147,9 @@ class DownloadWindow(qltk.UniqueWindow):
             self.__start_next()
             return False
         else:
-            buf = src.recv(1024*1024)
-            if buf: fileobj.write(buf)
+            buf = src.recv(1024 * 1024)
+            if buf:
+                fileobj.write(buf)
             else:
                 fileobj.close()
                 src.close()

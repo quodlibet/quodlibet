@@ -128,8 +128,10 @@ def _dbus_init():
 
 
 def _gettext_init():
-    try: locale.setlocale(locale.LC_ALL, '')
-    except locale.Error: pass
+    try:
+        locale.setlocale(locale.LC_ALL, '')
+    except locale.Error:
+        pass
 
     unexpand = quodlibet.util.unexpand
 
@@ -176,6 +178,7 @@ def set_process_title(title):
     except:
         print_d("Couldn't find module libc.so.6 (ctypes). "
                 "Not setting process title.")
+
 
 def _python_init():
 
@@ -245,6 +248,7 @@ def init(library=None, icon=None, title=None, name=None):
 
     return library
 
+
 def init_plugins(no_plugins=False):
     print_d("Starting plugin manager")
 
@@ -255,7 +259,6 @@ def init_plugins(no_plugins=False):
                os.path.join(quodlibet.const.BASEDIR, "plugins", "songsmenu"),
                os.path.join(quodlibet.const.BASEDIR, "plugins", "gstreamer"),
                os.path.join(quodlibet.const.USERDIR, "plugins")]
-
     pm = plugins.init(folders, no_plugins)
     pm.rescan()
 
@@ -268,12 +271,14 @@ def init_plugins(no_plugins=False):
 
     return pm
 
+
 def init_backend(backend, librarian):
     import quodlibet.player
     print_d("Initializing audio backend (%s)" % backend)
     backend = quodlibet.player.init(backend)
     device = backend.init(librarian)
     return device
+
 
 def enable_periodic_save(save_library):
     import quodlibet.library
@@ -305,6 +310,7 @@ def _init_debug():
     from quodlibet.qltk.debugwindow import ExceptionDialog
 
     print_d("Initializing debugging extensions")
+
     def _override_exceptions():
         print_d("Enabling custom exception handler.")
         sys.excepthook = ExceptionDialog.excepthook
@@ -343,15 +349,18 @@ def _init_signal():
 
 _quit_add_list = []
 
+
 def quit_add(level, func, *args):
     assert level in (0, 1)
 
     _quit_add_list.append([level, func, args])
 
+
 def _quit_before():
     for level, func, args in _quit_add_list:
         if level != 0:
             func(*args)
+
 
 def _quite_after():
     for level, func, args in _quit_add_list:

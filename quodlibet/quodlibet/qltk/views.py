@@ -349,8 +349,7 @@ class DragScroll(object):
         in_lower_scroll = (y > end - scroll_offset)
 
         # thanks TI200
-        accel = lambda x: int(1.1**(x*12/reference)) - (x/reference)
-
+        accel = lambda x: int(1.1 ** (x * 12 / reference)) - (x / reference)
         if in_lower_scroll:
             diff = accel(y - end + scroll_offset)
         elif in_upper_scroll:
@@ -589,7 +588,6 @@ class MultiDragTreeView(BaseView):
             path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError:
             return True
-
         self.grab_focus()
         selection = self.get_selection()
         is_selected = selection.path_is_selected(path)
@@ -741,7 +739,7 @@ class TreeViewColumnButton(TreeViewColumn):
 
     __gsignals__ = {
         'button-press-event': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'popup-menu':  (GObject.SignalFlags.RUN_LAST, None, ()),
+        'popup-menu': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self, title="", *args, **kw):

@@ -8,6 +8,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk import get_top_parent
 
+
 class Message(Gtk.MessageDialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
@@ -18,14 +19,17 @@ class Message(Gtk.MessageDialog):
         text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
                 % (title, description))
         super(Message, self).__init__(
-            parent, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+            parent,
+            Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
             kind, buttons)
         self.set_markup(text)
 
     def run(self, destroy=True):
         resp = super(Message, self).run()
-        if destroy: self.destroy()
+        if destroy:
+            self.destroy()
         return resp
+
 
 class ConfirmAction(Message):
     """A message dialog that asks a yes/no question."""
@@ -35,12 +39,16 @@ class ConfirmAction(Message):
         super(ConfirmAction, self).__init__(
             Gtk.MessageType.WARNING, *args, **kwargs)
 
-    def run(self, destroy = True):
+    def run(self, destroy=True):
         """Returns True if yes was clicked, False otherwise."""
         resp = super(Message, self).run()
-        if destroy: self.destroy()
-        if resp == Gtk.ResponseType.YES: return True
-        else: return False
+        if destroy:
+            self.destroy()
+        if resp == Gtk.ResponseType.YES:
+            return True
+        else:
+            return False
+
 
 class CancelRevertSave(Gtk.MessageDialog):
     def __init__(self, parent):
@@ -64,10 +72,13 @@ class CancelRevertSave(Gtk.MessageDialog):
         self.destroy()
         return resp
 
+
 class ErrorMessage(Message):
     """Like Message, but uses an error-indicating picture."""
     def __init__(self, *args, **kwargs):
-        super(ErrorMessage, self).__init__(Gtk.MessageType.ERROR, *args, **kwargs)
+        super(ErrorMessage, self).__init__(
+            Gtk.MessageType.ERROR, *args, **kwargs)
+
 
 class WarningMessage(Message):
     """Like Message, but uses an warning-indicating picture."""
