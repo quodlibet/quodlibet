@@ -100,13 +100,15 @@ class Notebook(gtk.Notebook):
 
     def append_page(self, page, label=None):
         if label is None:
-            try: label = page.title
+            try:
+                label = page.title
             except AttributeError:
                 raise TypeError("no page.title and no label given")
 
         if not isinstance(label, gtk.Widget):
             label = gtk.Label(label)
         super(Notebook, self).append_page(page, label)
+
 
 def Frame(label, child=None):
     """A gtk.Frame with no shadow, 12px left padding, and 3px top padding."""
@@ -124,6 +126,7 @@ def Frame(label, child=None):
         label_w.set_use_underline(True)
     return frame
 
+
 def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0):
     align = gtk.Alignment(xscale=1.0, yscale=1.0)
     align.set_padding(top + border, bottom + border,
@@ -132,11 +135,13 @@ def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0):
         align.add(child)
     return align
 
+
 def MenuItem(label, stock_id):
     """An ImageMenuItem with a custom label and stock image."""
     item = gtk.ImageMenuItem(label)
     item.get_image().set_from_stock(stock_id, gtk.ICON_SIZE_MENU)
     return item
+
 
 def Button(label, stock_id, size=gtk.ICON_SIZE_BUTTON):
     """A Button with a custom label and stock image. It should pack
@@ -152,21 +157,30 @@ def Button(label, stock_id, size=gtk.ICON_SIZE_BUTTON):
     button.add(align)
     return button
 
+
 class RPaned(object):
     """A Paned that supports relative (percentage) width/height setting."""
 
     def get_relative(self):
         """Return the relative position of the separator, [0..1]."""
         if self.get_property('max-position') > 0:
-            return float(self.get_position())/self.get_property('max-position')
-        else: return 0.5
+            return (float(self.get_position()) /
+                    self.get_property('max-position'))
+        else:
+            return 0.5
 
     def set_relative(self, v):
         """Set the relative position of the separator, [0..1]."""
         return self.set_position(int(v * self.get_property('max-position')))
 
-class RHPaned(RPaned, gtk.HPaned): pass
-class RVPaned(RPaned, gtk.VPaned): pass
+
+class RHPaned(RPaned, gtk.HPaned):
+    pass
+
+
+class RVPaned(RPaned, gtk.VPaned):
+    pass
+
 
 def ClearButton(entry=None):
     clear = gtk.Button()
@@ -175,6 +189,7 @@ def ClearButton(entry=None):
     if entry is not None:
         clear.connect_object('clicked', entry.set_text, '')
     return clear
+
 
 def EntryCompletion(words):
     """Simple string completion."""

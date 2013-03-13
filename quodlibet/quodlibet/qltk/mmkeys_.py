@@ -10,6 +10,7 @@ import gobject
 
 __all__ = ["init"]
 
+
 def do_action(player, action):
     print_d("action: %s" % action)
 
@@ -79,6 +80,7 @@ def init_keybinder(player):
 
     return True
 
+
 def init_pyhook(player):
     try:
         import pyHook
@@ -99,6 +101,7 @@ def init_pyhook(player):
     hm.HookKeyboard()
 
     return True
+
 
 def init(window, player):
     print_d("Grab multimedia keys")

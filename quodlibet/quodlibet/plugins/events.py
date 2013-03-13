@@ -12,6 +12,7 @@ from quodlibet import util
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 from quodlibet.util.songwrapper import check_wrapper_changed
 
+
 class EventPlugin(object):
     """Plugins that run in the background and receive events.
 
@@ -39,11 +40,13 @@ class EventPlugin(object):
         """Called when the plugin is disabled."""
         pass
 
+
 def _map_signals(obj, prefix="plugin_on_", blacklist=tuple()):
     sigs = list(gobject.signal_list_names(obj))
     map(sigs.remove, blacklist)
     sigs = [(s.replace('-', '_'), prefix + s.replace('-', '_')) for s in sigs]
     return sigs
+
 
 class EventPluginHandler(object):
 
@@ -72,7 +75,8 @@ class EventPluginHandler(object):
         for plugin in self.__plugins.itervalues():
             handler = getattr(plugin, 'plugin_on_' + event, None)
             if handler is not None:
-                try: handler(*args)
+                try:
+                    handler(*args)
                 except Exception:
                     util.print_exc()
 

@@ -14,6 +14,7 @@ from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import entry
 
+
 class _KeyValueEditor(qltk.Window):
     """Base class for key-value edit widgets"""
 
@@ -135,7 +136,8 @@ class _KeyValueEditor(qltk.Window):
         cell.set_property('text', '%s\n\t%s' % (name, content))
 
     def __changed(self, entry, buttons):
-        for b in buttons: b.set_sensitive(bool(entry.get_text()))
+        for b in buttons:
+            b.set_sensitive(bool(entry.get_text()))
 
     def __add(self, selection, name, value, model):
         value = value.get_text()
@@ -188,8 +190,8 @@ class StandaloneEditor(_KeyValueEditor):
         if os.path.exists(filename):
             fileobj = file(filename, "rU")
             lines = list(fileobj.readlines())
-            for i in range(len(lines) / 2 ):
-                ret.append( (lines[i*2+1].strip(), lines[i*2].strip()) )
+            for i in range(len(lines) / 2):
+                ret.append((lines[i * 2 + 1].strip(), lines[i * 2].strip()))
         return ret
 
     def __init__(self, filename, title, initial=None, validator=None):
@@ -209,8 +211,8 @@ class StandaloneEditor(_KeyValueEditor):
                     row=[lines.pop(1).strip(), lines.pop(0).strip()])
         if not len(self.model) and self.initial:
             #print_d("None found - using defaults.", context=self)
-            for (k,v) in self.initial:
-                self.model.append(row=[v.strip(), k.strip()] )
+            for (k, v) in self.initial:
+                self.model.append(row=[v.strip(), k.strip()])
 
     def write(self, create=True):
         """Save to a filename. If create is True, any needed parent
@@ -229,6 +231,7 @@ class StandaloneEditor(_KeyValueEditor):
             pass
 
 ICONS = {gtk.STOCK_EDIT: CBESEditor}
+
 
 class ComboBoxEntrySave(gtk.ComboBoxEntry):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
@@ -289,14 +292,16 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
 
     def __focus_entry(self):
         self.get_child().grab_focus()
-        self.get_child().emit('move-cursor', gtk.MOVEMENT_BUFFER_ENDS, 0, False)
+        self.get_child().emit('move-cursor',
+                              gtk.MOVEMENT_BUFFER_ENDS, 0, False)
 
     def __fill(self, filename, initial, edit_title):
         model = self.get_model()
         model.append(row=["", edit_title, gtk.STOCK_EDIT])
         model.append(row=[None, None, None])
 
-        if filename is None: return
+        if filename is None:
+            return
 
         if os.path.exists(filename + ".saved"):
             fileobj = file(filename + ".saved", "rU")
@@ -333,7 +338,8 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
     def write(self, filename=None, create=True):
         """Save to a filename. If create is True, any needed parent
         directories will be created."""
-        if filename is None: filename = self.filename
+        if filename is None:
+            filename = self.filename
         try:
             if create:
                 if not os.path.isdir(os.path.dirname(filename)):
@@ -343,14 +349,16 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             memory = file(filename, "w")
             target = saved
             for row in self.get_model():
-                if row[0] is None: target = memory
+                if row[0] is None:
+                    target = memory
                 elif row[2] is None:
                     target.write(row[0] + "\n")
                     if target is saved:
                         target.write(row[1] + "\n")
             saved.close()
             memory.close()
-        except EnvironmentError: pass
+        except EnvironmentError:
+            pass
 
     def __remove_if_present(self, text):
         # Removes an item from the list if it's present in the remembered
@@ -365,12 +373,14 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
             elif row[2] is None and row[0] == text:
                 # Found the value, and it's not the magic value -- remove
                 # it if necessary, and return whether or not to continue.
-                if removable: model.remove(row.iter)
+                if removable:
+                    model.remove(row.iter)
                 return not removable
 
     def prepend_text(self, text):
         # If we find the value in the saved values, don't prepend it.
-        if self.__remove_if_present(text): return
+        if self.__remove_if_present(text):
+            return
 
         model = self.get_model()
         for row in model:

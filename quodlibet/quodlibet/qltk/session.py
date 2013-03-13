@@ -10,15 +10,20 @@ import sys
 from quodlibet import const
 from quodlibet import app
 
+
 def init(app_id):
-    try: import gnome, gnome.ui
-    except ImportError: return
+    try:
+        import gnome
+        import gnome.ui
+    except ImportError:
+        return
 
     gnome.init(app_id, const.VERSION)
     client = gnome.ui.master_client()
     client.set_restart_style(gnome.ui.RESTART_IF_RUNNING)
     command = os.path.normpath(os.path.join(os.getcwd(), sys.argv[0]))
-    try: client.set_restart_command([command] + sys.argv[1:])
+    try:
+        client.set_restart_command([command] + sys.argv[1:])
     except TypeError:
         # Fedora systems have a broken gnome-python wrapper for this function.
         # http://www.sacredchao.net/quodlibet/ticket/591

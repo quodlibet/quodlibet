@@ -19,22 +19,23 @@ from quodlibet.qltk._editpane import EditPane, FilterCheckButton
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.qltk.wlw import WritingWindow
 
+
 class TagsFromPattern(object):
     def __init__(self, pattern):
         self.compile(pattern)
 
     def compile(self, pattern):
         self.headers = []
-        self.slashes = len(pattern) - len(pattern.replace(os.path.sep,'')) + 1
+        self.slashes = len(pattern) - len(pattern.replace(os.path.sep, '')) + 1
         self.pattern = None
         # patterns look like <tagname> non regexy stuff <tagname> ...
         pieces = re.split(r'(<[A-Za-z0-9~_]+>)', pattern)
-        override = { '<tracknumber>': r'\d\d?', '<discnumber>': r'\d\d??' }
+        override = {'<tracknumber>': r'\d\d?', '<discnumber>': r'\d\d??'}
         dummies_found = 0
         for i, piece in enumerate(pieces):
             if not piece:
                 continue
-            if piece[0]+piece[-1] == '<>':
+            if piece[0] + piece[-1] == '<>':
                 piece = piece.lower()   # canonicalize to lowercase tag names
                 if "~" in piece:
                     dummies_found += 1
@@ -65,32 +66,42 @@ class TagsFromPattern(object):
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         sep = os.path.sep
-        matchon = sep+sep.join(song.split(sep)[-self.slashes:])
+        matchon = sep + sep.join(song.split(sep)[-self.slashes:])
         match = self.pattern.search(matchon)
 
         # dicts for all!
-        if match is None: return {}
-        else: return match.groupdict()
+        if match is None:
+            return {}
+        else:
+            return match.groupdict()
+
 
 class UnderscoresToSpaces(FilterCheckButton):
     _label = _("Replace _underscores with spaces")
     _section = "tagsfrompath"
     _key = "underscores"
     _order = 1.0
-    def filter(self, tag, value): return value.replace("_", " ")
+
+    def filter(self, tag, value):
+        return value.replace("_", " ")
+
 
 class TitleCase(FilterCheckButton):
     _label = _("_Title-case tags")
     _section = "tagsfrompath"
     _key = "titlecase"
     _order = 1.1
-    def filter(self, tag, value): return util.title(value)
+
+    def filter(self, tag, value):
+        return util.title(value)
+
 
 class SplitTag(FilterCheckButton):
     _label = _("Split into multiple _values")
     _section = "tagsfrompath"
     _key = "split"
     _order = 1.2
+
     def filter(self, tag, value):
         spls = config.get("editing", "split_on").decode('utf-8', 'replace')
         spls = spls.split()
@@ -135,14 +146,16 @@ class TagsFromPath(EditPane):
 
         if songs:
             pattern_text = self.combo.get_child().get_text().decode("utf-8")
-        else: pattern_text = ""
-        try: pattern = TagsFromPattern(pattern_text)
+        else:
+            pattern_text = ""
+        try:
+            pattern = TagsFromPattern(pattern_text)
         except re.error:
             qltk.ErrorMessage(
                 self, _("Invalid pattern"),
                 _("The pattern\n\t<b>%s</b>\nis invalid. "
                   "Possibly it contains the same tag twice or "
-                  "it has unbalanced brackets (&lt; / &gt;).")%(
+                  "it has unbalanced brackets (&lt; / &gt;).") % (
                 util.escape(pattern_text))).run()
             return
         else:
@@ -194,14 +207,16 @@ class TagsFromPath(EditPane):
             for h in pattern.headers:
                 text = match.get(h, '')
                 for f in self.filters:
-                    if f.active: text = f.filter(h, text)
+                    if f.active:
+                        text = f.filter(h, text)
                 if not song.multiple_values:
                     text = u", ".join(text.split("\n"))
                 row.append(text)
             model.append(row=row)
 
         # save for last to potentially save time
-        if songs: self.view.set_model(model)
+        if songs:
+            self.view.set_model(model)
         self.preview.set_sensitive(False)
         self.save.set_sensitive(len(pattern.headers) > 0)
 
@@ -222,7 +237,7 @@ class TagsFromPath(EditPane):
                 _("<b>%s</b> changed while the program was running. "
                   "Saving without refreshing your library may "
                   "overwrite other changes to the song.\n\n"
-                  "Save this song anyway?") %(
+                  "Save this song anyway?") % (
                 util.escape(util.fsdecode(song("~basename"))))
                 ).run():
                 break
@@ -240,20 +255,22 @@ class TagsFromPath(EditPane):
                                 changed = True
 
             if changed:
-                try: song.write()
+                try:
+                    song.write()
                 except:
                     qltk.ErrorMessage(
                         self, _("Unable to edit song"),
                         _("Saving <b>%s</b> failed. The file "
                           "may be read-only, corrupted, or you "
-                          "do not have permission to edit it.")%(
+                          "do not have permission to edit it.") % (
                         util.escape(util.fsdecode(song('~basename'))))
                         ).run()
                     library.reload(song, changed=was_changed)
                     break
                 was_changed.append(song)
 
-            if win.step(): break
+            if win.step():
+                break
 
         win.destroy()
         library.changed(was_changed)

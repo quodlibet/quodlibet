@@ -13,6 +13,7 @@ from quodlibet import util
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 
+
 class TrackNumbers(gtk.VBox):
     def __init__(self, prop, library):
         super(TrackNumbers, self).__init__(spacing=6)
@@ -80,7 +81,8 @@ class TrackNumbers(gtk.VBox):
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect('clicked', self.__preview_tracks, *preview_args)
-        revert.connect_object('clicked', self.__update, None, *preview_args[1:])
+        revert.connect_object('clicked', self.__update,
+                              None, *preview_args[1:])
         spin_total.connect(
             'value-changed', self.__preview_tracks, *preview_args)
         spin_start.connect(
@@ -117,24 +119,26 @@ class TrackNumbers(gtk.VBox):
                 _("<b>%s</b> changed while the program was running. "
                   "Saving without refreshing your library may "
                   "overwrite other changes to the song.\n\n"
-                  "Save this song anyway?") %(
-                util.escape(util.fsdecode(song("~basename"))))
+                  "Save this song anyway?") %
+                util.escape(util.fsdecode(song("~basename")))
                 ).run():
                 break
             song["tracknumber"] = track
-            try: song.write()
+            try:
+                song.write()
             except:
                 util.print_exc()
                 qltk.ErrorMessage(
                     win, _("Unable to save song"),
                     _("Saving <b>%s</b> failed. The file may be "
                       "read-only, corrupted, or you do not have "
-                      "permission to edit it.")%(
-                    util.escape(util.fsdecode(song('~basename'))))).run()
+                      "permission to edit it.") %
+                    util.escape(util.fsdecode(song('~basename')))).run()
                 library.reload(song, changed=was_changed)
                 break
             was_changed.append(song)
-            if win.step(): break
+            if win.step():
+                break
         library.changed(was_changed)
         win.destroy()
 
@@ -142,8 +146,10 @@ class TrackNumbers(gtk.VBox):
         start = start.get_value_as_int()
         total = total.get_value_as_int()
         for row in model:
-            if total: s = "%d/%d" % (row.path[0] + start, total)
-            else: s = str(row.path[0] + start)
+            if total:
+                s = "%d/%d" % (row.path[0] + start, total)
+            else:
+                s = str(row.path[0] + start)
             row[2] = s
         save.set_sensitive(True)
         revert.set_sensitive(True)
@@ -161,7 +167,8 @@ class TrackNumbers(gtk.VBox):
             if not song.can_change("tracknumber"):
                 self.set_sensitive(False)
                 break
-        else: self.set_sensitive(True)
+        else:
+            self.set_sensitive(True)
         for song in songs:
             basename = util.fsdecode(song("~basename"))
             model.append(row=[song, basename, song("tracknumber")])

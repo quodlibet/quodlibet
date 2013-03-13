@@ -31,6 +31,7 @@ def search_func(model, column, key, iter, handledirs):
         check = os.path.basename(check) or os.sep
     return key not in check.lower() and key not in check
 
+
 def filesel_filter(filename):
     IMAGES = [".jpg", ".png", ".jpeg"]
     if formats.filter(filename):
@@ -40,6 +41,7 @@ def filesel_filter(filename):
             if filename.lower().endswith(ext):
                 return True
     return False
+
 
 class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def cell_data(column, cell, model, iter):
@@ -71,9 +73,11 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             try:
                 from win32com.shell import shell, shellcon as con
                 import pywintypes
-            except ImportError: pass
+            except ImportError:
+                pass
             else:
-                if folders: folders.append(None)
+                if folders:
+                    folders.append(None)
 
                 try:
                     desktop = shell.SHGetFolderPath(0, con.CSIDL_DESKTOP, 0, 0)
@@ -91,16 +95,20 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 else:
                     folders.append(music)
 
-            if folders: folders.append(None)
+            if folders:
+                folders.append(None)
             drives = [letter + ":\\" for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ"]
             map(folders.append, filter(os.path.isdir, drives))
         else:
-            if folders: folders.append(None)
+            if folders:
+                folders.append(None)
             folders.extend([const.HOME, "/"])
 
         # Read in the GTK bookmarks list; gjc says this is the right way
-        try: f = file(os.path.join(const.HOME, ".gtk-bookmarks"))
-        except EnvironmentError: pass
+        try:
+            f = file(os.path.join(const.HOME, ".gtk-bookmarks"))
+        except EnvironmentError:
+            pass
         else:
             folders.append(None)
             for line in (l for l in f.readlines() if l.strip()):
@@ -122,7 +130,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             'test-expand-row', DirectoryTree.__expanded, self.get_model())
         self.set_row_separator_func(lambda model, iter: model[iter][0] is None)
 
-        if initial: self.go_to(initial)
+        if initial:
+            self.go_to(initial)
 
         menu = gtk.Menu()
         m = qltk.MenuItem(_("_New Folder..."), gtk.STOCK_NEW)
@@ -150,29 +159,39 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                     return (not t.startswith(".") and
                             os.access(joined, os.X_OK) and
                             os.path.isdir(joined))
-                try: dirs = filter(isvisibledir,
-                                   sorted(os.listdir(util.fsnative(head))))
-                except OSError: break
-                try: path.insert(0, dirs.index(tail))
-                except ValueError: break
+                try:
+                    dirs = filter(isvisibledir,
+                                  sorted(os.listdir(util.fsnative(head))))
+                except OSError:
+                    break
+                try:
+                    path.insert(0, dirs.index(tail))
+                except ValueError:
+                    break
             head, tail = os.path.split(head)
 
         if initial.startswith(const.HOME):
             path.insert(0, 0)
-        else: path.insert(0, 1)
+        else:
+            path.insert(0, 1)
         for i in range(len(path)):
-            self.expand_row(tuple(path[:i+1]), False)
+            self.expand_row(tuple(path[:i + 1]), False)
         self.get_selection().select_path(tuple(path))
         self.scroll_to_cell(tuple(path))
 
     def __popup_menu(self, menu):
-        try: model, (path,) = self.get_selection().get_selected_rows()
-        except ValueError: return True
+        try:
+            model, (path,) = self.get_selection().get_selected_rows()
+        except ValueError:
+            return True
         directory = model[path][0]
         delete = menu.get_children()[1]
-        try: delete.set_sensitive(len(os.listdir(util.fsnative(directory))) == 0)
+        try:
+            delete.set_sensitive(
+                len(os.listdir(util.fsnative(directory))) == 0)
         except OSError, err:
-            if err.errno == errno.ENOENT: model.remove(model.get_iter(path))
+            if err.errno == errno.ENOENT:
+                model.remove(model.get_iter(path))
         else:
             selection = self.get_selection()
             selection.unselect_all()
@@ -181,7 +200,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
     def __mkdir(self, button):
         model, rows = self.get_selection().get_selected_rows()
-        if len(rows) != 1: return
+        if len(rows) != 1:
+            return
 
         row = rows[0]
         directory = model[row][0]
@@ -191,7 +211,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         if dir:
             dir = util.fsnative(dir.decode('utf-8'))
             fullpath = os.path.realpath(os.path.join(directory, dir))
-            try: os.makedirs(fullpath)
+            try:
+                os.makedirs(fullpath)
             except EnvironmentError, err:
                 error = "<b>%s</b>: %s" % (err.filename, err.strerror)
                 qltk.ErrorMessage(
@@ -202,9 +223,11 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
     def __rmdir(self, button):
         model, rows = self.get_selection().get_selected_rows()
-        if len(rows) != 1: return
+        if len(rows) != 1:
+            return
         directory = model[rows[0]][0]
-        try: os.rmdir(directory)
+        try:
+            os.rmdir(directory)
         except EnvironmentError, err:
             error = "<b>%s</b>: %s" % (err.filename, err.strerror)
             qltk.ErrorMessage(
@@ -213,7 +236,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             prow = rows[0][:-1]
             expanded = self.row_expanded(prow)
             self.emit('test-expand-row', model.get_iter(prow), prow)
-            if expanded: self.expand_row(prow, False)
+            if expanded:
+                self.expand_row(prow, False)
 
     def __expand(self, button):
         selection = self.get_selection()
@@ -267,7 +291,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 folder = model[iter][0]
                 for path in util.listdir(folder):
                     try:
-                        if not os.path.isdir(path): continue
+                        if not os.path.isdir(path):
+                            continue
                         for filename in util.listdir(path):
                             if os.path.isdir(filename):
                                 niter = model.append(iter, [path])
@@ -285,6 +310,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
             if window:
                 window.set_cursor(None)
 
+
 class FileSelector(gtk.VPaned):
     def cell_data(column, cell, model, iter):
         value = model[iter][0]
@@ -292,9 +318,10 @@ class FileSelector(gtk.VPaned):
             cell.set_property('text', util.fsdecode(os.path.basename(value)))
     cell_data = staticmethod(cell_data)
 
-    __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
-                                 gobject.TYPE_NONE, (gtk.TreeSelection,))
-                     }
+    __gsignals__ = {
+        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                    (gtk.TreeSelection,))
+    }
 
     def __init__(self, initial=None, filter=filesel_filter, folders=None):
         super(FileSelector, self).__init__()
@@ -325,6 +352,7 @@ class FileSelector(gtk.VPaned):
         dirlist.get_selection().connect(
             'changed', self.__fill, filelist)
         dirlist.get_selection().emit('changed')
+
         def select_all_files(view, path, col, fileselection):
             view.expand_row(path, False)
             fileselection.select_all()

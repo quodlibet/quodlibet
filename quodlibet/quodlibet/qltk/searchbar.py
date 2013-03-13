@@ -18,6 +18,7 @@ from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.x import Button
 from quodlibet.util import limit_songs
 
+
 class SearchBarBox(gtk.HBox):
     """
         A search bar widget for inputting queries.

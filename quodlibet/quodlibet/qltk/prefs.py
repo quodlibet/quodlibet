@@ -168,7 +168,8 @@ class PreferencesWindow(qltk.UniqueWindow):
                         alternative = on_to_off[h]
                         if alternative in new_headers:
                             result.append(alternative)
-                    except KeyError: pass
+                    except KeyError:
+                        pass
 
             # Add new ones on the end
             result.extend(new_headers - set(result))
@@ -252,8 +253,9 @@ class PreferencesWindow(qltk.UniqueWindow):
             cb = ConfigCheckButton(_("Prefer _embedded art"),
                                    'albumart', 'prefer_embedded',
                                    populate=True)
-            cb.set_tooltip_text(_("Choose to use artwork embedded in the audio "
-                                  "(where available) over other sources"))
+            cb.set_tooltip_text(
+                _("Choose to use artwork embedded in the audio "
+                  "(where available) over other sources"))
             vb.pack_start(cb, expand=False)
 
             hb = gtk.HBox(spacing=3)
@@ -504,7 +506,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.show_all()
 
     def __init__(self, parent):
-        if self.is_not_unique(): return
+        if self.is_not_unique():
+            return
         super(PreferencesWindow, self).__init__()
         self.set_title(_("Preferences") + " - Quod Libet")
         self.set_border_width(12)

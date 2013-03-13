@@ -12,6 +12,7 @@ from quodlibet import util
 
 old_hook = sys.excepthook
 
+
 class ExceptionDialog(gtk.Window):
     running = False
 
@@ -35,7 +36,7 @@ class ExceptionDialog(gtk.Window):
         from quodlibet.util import logging
         dumpobj = file(dump, "w")
         minidumpobj = file(minidump, "w")
-        header = "Quod Libet %s\nMutagen %s\nPython %s %s\nPlatform %s" %(
+        header = "Quod Libet %s\nMutagen %s\nPython %s %s\nPlatform %s" % (
             const.VERSION, mutagen.version_string, sys.version,
             sys.platform, platform.platform())
 
@@ -49,7 +50,7 @@ class ExceptionDialog(gtk.Window):
         minidumpobj.close()
 
         for logname in logging.names():
-            print >>dumpobj, "=== LOG: %r\n%s\n\n" %(
+            print >>dumpobj, "=== LOG: %r\n%s\n\n" % (
                 logname, "\n".join(logging.contents(logname)[-50:]))
 
         dumpobj.close()
@@ -68,6 +69,7 @@ class ExceptionDialog(gtk.Window):
             (filename, line, function, text) = frame
             model.append(row=[filename, function, line])
         view.connect('row-activated', self.__stack_row_activated)
+
         def cdf(column, cell, model, iter):
             cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
                 util.escape(model[iter][1]), model[iter][2],
@@ -90,11 +92,20 @@ class ExceptionDialog(gtk.Window):
         window.set_border_width(12)
         window.set_title(_("Error Occurred"))
 
-        label = gtk.Label(_("""\
-An exception has occured in Quod Libet. A dump file has been saved to <b>%s</b> that will help us debug the crash. Please file a new issue at http://code.google.com/p/quodlibet/issues/list and attach this file or include its contents. This file may contain some identifying information about you or your system, such as a list of recent files played. If this is unacceptable, send <b>%s</b> instead with a description of what you were doing.
+        desc = _("An exception has occured in Quod Libet. A dump file "
+            "has been saved to <b >%s</b> that will help us debug the crash. "
+            "Please file a new issue at http://code.google.com/p/quodlibet/"
+            "issues /list and attach this file or include its contents. This "
+            "file may contain some identifying information about you or your "
+            "system, such as a list of recent files played. If this is "
+            "unacceptable, send <b>% s</b> instead with a description of what"
+            "you were doing.") % (util.unexpand(dump), util.unexpand(minidump))
 
-Quod Libet may now be unstable. Closing it and restarting is recommended. Your library will be saved.""")
-                          % (util.unexpand(dump), util.unexpand(minidump)))
+        suggestion = _("Quod Libet may now be unstable. Closing it and "
+            "restarting is recommended. Your library will be saved.")
+
+        label = gtk.Label(desc + "\n\n" + suggestion)
+
         label.set_selectable(True)
         label.set_use_markup(True)
         label.set_line_wrap(True)

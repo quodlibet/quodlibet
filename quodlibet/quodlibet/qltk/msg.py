@@ -8,6 +8,7 @@ import gtk
 
 from quodlibet.qltk import get_top_parent
 
+
 class Message(gtk.MessageDialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
@@ -24,8 +25,10 @@ class Message(gtk.MessageDialog):
 
     def run(self, destroy=True):
         resp = super(Message, self).run()
-        if destroy: self.destroy()
+        if destroy:
+            self.destroy()
         return resp
+
 
 class ConfirmAction(Message):
     """A message dialog that asks a yes/no question."""
@@ -35,12 +38,16 @@ class ConfirmAction(Message):
         super(ConfirmAction, self).__init__(
             gtk.MESSAGE_WARNING, *args, **kwargs)
 
-    def run(self, destroy = True):
+    def run(self, destroy=True):
         """Returns True if yes was clicked, False otherwise."""
         resp = super(Message, self).run()
-        if destroy: self.destroy()
-        if resp == gtk.RESPONSE_YES: return True
-        else: return False
+        if destroy:
+            self.destroy()
+        if resp == gtk.RESPONSE_YES:
+            return True
+        else:
+            return False
+
 
 class CancelRevertSave(gtk.MessageDialog):
     def __init__(self, parent):
@@ -64,10 +71,12 @@ class CancelRevertSave(gtk.MessageDialog):
         self.destroy()
         return resp
 
+
 class ErrorMessage(Message):
     """Like Message, but uses an error-indicating picture."""
     def __init__(self, *args, **kwargs):
         super(ErrorMessage, self).__init__(gtk.MESSAGE_ERROR, *args, **kwargs)
+
 
 class WarningMessage(Message):
     """Like Message, but uses an warning-indicating picture."""

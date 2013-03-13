@@ -4,6 +4,7 @@ import quodlibet.util.logging
 
 from quodlibet import qltk
 
+
 class LoggingWindow(qltk.Window):
     def __init__(self, parent=None):
         super(LoggingWindow, self).__init__()
@@ -36,4 +37,3 @@ class LoggingWindow(qltk.Window):
         self.add(vbox)
 
         self.show_all()
-

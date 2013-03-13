@@ -13,6 +13,7 @@ import pango
 from quodlibet.qltk import get_top_parent
 from quodlibet import util
 
+
 class WaitLoadBase(object):
     """Abstract class providing a label, a progressbar, pause/stop buttons,
     and the stepping logic."""
@@ -99,6 +100,7 @@ class WaitLoadBase(object):
             gtk.main_iteration()
         return self.quit
 
+
 class WaitLoadWindow(WaitLoadBase, gtk.Window):
     """A window with a progress bar and some nice updating text,
     as well as pause/stop buttons.
@@ -148,7 +150,8 @@ class WaitLoadWindow(WaitLoadBase, gtk.Window):
         self.get_child().add(vbox)
 
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
-        while gtk.events_pending(): gtk.main_iteration()
+        while gtk.events_pending():
+            gtk.main_iteration()
         self.show_all()
 
     def __recenter(self, parent, event):
@@ -162,6 +165,7 @@ class WaitLoadWindow(WaitLoadBase, gtk.Window):
             parent.window.set_cursor(None)
         parent.disconnect(sig)
 
+
 class WritingWindow(WaitLoadWindow):
     """A WaitLoadWindow that defaults to text suitable for saving files."""
 
@@ -169,10 +173,12 @@ class WritingWindow(WaitLoadWindow):
         super(WritingWindow, self).__init__(
             parent, count,
             (_("Saving the songs you changed.") + "\n\n" +
-             _("%(current)d/%(total)d songs saved\n(%(remaining)s remaining)")))
+             _("%(current)d/%(total)d songs saved\n(%(remaining)s remaining)")
+            ))
 
     def step(self):
         return super(WritingWindow, self).step()
+
 
 class WaitLoadBar(WaitLoadBase, gtk.HBox):
     def __init__(self):

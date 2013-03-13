@@ -95,7 +95,8 @@ class ResizeImage(gtk.Image):
             try:
                 self.__no_cover = theme.load_icon(
                     "quodlibet-missing-cover", size, 0)
-            except gobject.GError: pass
+            except gobject.GError:
+                pass
             else:
                 self.__no_cover = thumbnails.scale(
                     self.__no_cover, (size, size))
@@ -103,7 +104,8 @@ class ResizeImage(gtk.Image):
 
     def __update_image(self):
         height = self.__size
-        if not height: return
+        if not height:
+            return
 
         if self.__resize:
             height = min(self.__max_size, height)
@@ -130,6 +132,7 @@ class ResizeImage(gtk.Image):
     def __stop_ignore(self, *args):
         self.__ignore = False
         self.disconnect(self.__sig)
+
 
 class CoverImage(gtk.EventBox):
 

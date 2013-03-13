@@ -23,9 +23,9 @@ from quodlibet.qltk.window import PersistentWindowMixin
 
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
-    __gsignals__ = { 'changed': (gobject.SIGNAL_RUN_LAST,
-                                 gobject.TYPE_NONE, (object,))
-                     }
+    __gsignals__ = {
+        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+    }
 
     def __init__(self, library, songs, parent=None):
         super(SongProperties, self).__init__(dialog=False)
@@ -51,7 +51,8 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
                       [EditTags, TagsFromPath, RenameFiles]])
         if len(songs) > 1:
             pages.append(TrackNumbers(self, library))
-        for page in pages: notebook.append_page(page)
+        for page in pages:
+            notebook.append_page(page)
         self.set_border_width(12)
 
         fbasemodel = gtk.ListStore(object, str)
@@ -112,8 +113,10 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         # selection or we risk voiding edits on a selection that
         # doesn't include the removed songs.
         selection.handler_block(sig)
-        if len(model) == 1: rows = [(0,)]
-        else: rows = selection.get_selected_rows()[1]
+        if len(model) == 1:
+            rows = [(0,)]
+        else:
+            rows = selection.get_selected_rows()[1]
         to_remove = []
         changed = False
         for row in model:
@@ -127,20 +130,24 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
 
     def __set_title(self, songs):
         if songs:
-            if len(songs) == 1: title = songs[0].comma("title")
+            if len(songs) == 1:
+                title = songs[0].comma("title")
             else:
                 title = ngettext(
                     "%(title)s and %(count)d more",
                     "%(title)s and %(count)d more",
-                    len(songs) - 1) % (
-                    {'title': songs[0].comma("title"), 'count': len(songs) - 1})
+                    len(songs) - 1) % {'title': songs[0].comma("title"),
+                                       'count': len(songs) - 1}
             self.set_title("%s - %s" % (title, _("Properties")))
-        else: self.set_title(_("Properties"))
+        else:
+            self.set_title(_("Properties"))
 
     def __refresh(self, library, songs, model, view):
         view.freeze_notify()
-        if len(model) == 1: rows = [(0,)]
-        else: rows = view.get_selection().get_selected_rows()[1]
+        if len(model) == 1:
+            rows = [(0,)]
+        else:
+            rows = view.get_selection().get_selected_rows()[1]
         changed = False
         for row in model:
             song = row[0]

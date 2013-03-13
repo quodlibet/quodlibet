@@ -6,6 +6,7 @@
 
 import quodlibet.qltk.playorder
 
+
 class PlayOrderPlugin(quodlibet.qltk.playorder.Order):
     """Play order plugins define alternate play orders for
     Quod Libet. They appear, when enabled, in the combo box
@@ -58,17 +59,20 @@ class PlayOrderPlugin(quodlibet.qltk.playorder.Order):
     accelerated_name = None
     priority = quodlibet.qltk.playorder.Order.priority
 
+
 class PlayOrderRememberedMixin(quodlibet.qltk.playorder.OrderRemembered):
     name = None
     display_name = None
     accelerated_name = None
     priority = quodlibet.qltk.playorder.Order.priority
 
+
 class PlayOrderInOrderMixin(quodlibet.qltk.playorder.OrderInOrder):
     name = None
     display_name = None
     accelerated_name = None
     priority = quodlibet.qltk.playorder.Order.priority
+
 
 class PlayOrderShuffleMixin(quodlibet.qltk.playorder.OrderShuffle):
     name = None

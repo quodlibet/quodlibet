@@ -12,6 +12,7 @@ import pango
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel
 
+
 class TreeViewHints(gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
     columns, and in the future, tooltips."""
@@ -102,7 +103,7 @@ class TreeViewHints(gtk.Window):
 
         area = view.get_cell_area(path, col)
         # make sure we are on the same level
-        if  x < area.x:
+        if x < area.x:
             self.__undisplay()
             return
 
@@ -241,11 +242,20 @@ class TreeViewHints(gtk.Window):
 
         return True
 
-    def do_button_press_event(self, event): return self.__event(event)
-    def do_button_release_event(self, event): return self.__event(event)
-    def do_motion_notify_event(self, event): return self.__event(event)
-    def do_leave_notify_event(self, event): return self.__event(event)
-    def do_scroll_event(self, event): return self.__event(event)
+    def do_button_press_event(self, event):
+        return self.__event(event)
+
+    def do_button_release_event(self, event):
+        return self.__event(event)
+
+    def do_motion_notify_event(self, event):
+        return self.__event(event)
+
+    def do_leave_notify_event(self, event):
+        return self.__event(event)
+
+    def do_scroll_event(self, event):
+        return self.__event(event)
 
 
 class DragScroll(object):
@@ -332,7 +342,7 @@ class DragScroll(object):
         in_lower_scroll = (y > end - scroll_offset)
 
         # thanks TI200
-        accel = lambda x: int(1.1**(x*12/reference)) - (x/reference)
+        accel = lambda x: int(1.1 ** (x * 12 / reference)) - (x / reference)
         if in_lower_scroll:
             diff = accel(y - end + scroll_offset)
         elif in_upper_scroll:
@@ -451,16 +461,19 @@ class BaseView(gtk.TreeView):
             self.set_drag_dest_row(*dest_row)
 
     def __remove_iters(self, iters, force_restore=False):
-        if not iters: return
+        if not iters:
+            return
 
         selection = self.get_selection()
         model = self.get_model()
 
         if force_restore:
-             map(model.remove, iters)
+            for iter_ in iters:
+                model.remove(iter_)
         else:
             old_count = selection.count_selected_rows()
-            map(model.remove, iters)
+            for iter_ in iters:
+                model.remove(iter_)
             # only restore a selection if all selected rows are gone afterwards
             if not old_count or selection.count_selected_rows():
                 return
@@ -472,6 +485,7 @@ class BaseView(gtk.TreeView):
             selection.select_iter(iters[-1])
         elif len(model):
             selection.select_path(model[-1].path)
+
 
 class MultiDragTreeView(BaseView):
     """TreeView with multirow drag support:
@@ -489,16 +503,19 @@ class MultiDragTreeView(BaseView):
         self.__pending_event = None
 
     def __button_press(self, event):
-        if event.button == 1: return self.__block_selection(event)
+        if event.button == 1:
+            return self.__block_selection(event)
 
     def __block_selection(self, event):
         x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-        except TypeError: return True
+        try:
+            path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError:
+            return True
         self.grab_focus()
         selection = self.get_selection()
-        if ((selection.path_is_selected(path)
-            and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK)))):
+        if ((selection.path_is_selected(path) and not
+             (event.state & (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK)))):
             self.__pending_event = [x, y]
             selection.set_select_function(lambda *args: False)
         elif event.type == gtk.gdk.BUTTON_PRESS:
@@ -511,10 +528,13 @@ class MultiDragTreeView(BaseView):
             selection.set_select_function(lambda *args: True)
             oldevent = self.__pending_event
             self.__pending_event = None
-            if oldevent != [event.x, event.y]: return True
+            if oldevent != [event.x, event.y]:
+                return True
             x, y = map(int, [event.x, event.y])
-            try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-            except TypeError: return True
+            try:
+                path, col, cellx, celly = self.get_path_at_pos(x, y)
+            except TypeError:
+                return True
             self.set_cursor(path, col, 0)
 
     def __begin(self, ctx):
@@ -522,8 +542,8 @@ class MultiDragTreeView(BaseView):
         MAX = 3
         if paths:
             icons = map(self.create_row_drag_icon, paths[:MAX])
-            height = (
-                sum(map(lambda s: s.get_size()[1], icons))-2*len(icons))+2
+            height = (sum(
+                map(lambda s: s.get_size()[1], icons)) - 2 * len(icons)) + 2
             width = max(map(lambda s: s.get_size()[0], icons))
             final = gtk.gdk.Pixmap(icons[0], width, height)
             gc = gtk.gdk.GC(final)
@@ -532,13 +552,13 @@ class MultiDragTreeView(BaseView):
             count_y = 1
             for icon in icons:
                 w, h = icon.get_size()
-                final.draw_drawable(gc, icon, 1, 1, 1, count_y, w-2, h-2)
+                final.draw_drawable(gc, icon, 1, 1, 1, count_y, w - 2, h - 2)
                 count_y += h - 2
             if len(paths) > MAX:
                 count_y -= h - 2
                 bgc = gtk.gdk.GC(final)
                 bgc.copy(self.style.base_gc[gtk.STATE_NORMAL])
-                final.draw_rectangle(bgc, True, 1, count_y, w-2, h-2)
+                final.draw_rectangle(bgc, True, 1, count_y, w - 2, h - 2)
                 more = _("and %d more...") % (len(paths) - MAX + 1)
                 layout = self.create_pango_layout(more)
                 attrs = pango.AttrList()
@@ -546,13 +566,15 @@ class MultiDragTreeView(BaseView):
                 layout.set_attributes(attrs)
                 layout.set_width(pango.SCALE * (w - 2))
                 lw, lh = layout.get_pixel_size()
-                final.draw_layout(gc, (w-lw)//2, count_y + (h-lh)//2, layout)
+                final.draw_layout(gc, (w - lw) // 2,
+                                  count_y + (h - lh) // 2, layout)
 
-            final.draw_rectangle(gc, False, 0, 0, width-1, height-1)
+            final.draw_rectangle(gc, False, 0, 0, width - 1, height - 1)
             self.drag_source_set_icon(final.get_colormap(), final)
         else:
             gobject.idle_add(ctx.drag_abort, gtk.get_current_event_time())
             self.drag_source_set_icon_stock(gtk.STOCK_MISSING_IMAGE)
+
 
 class RCMTreeView(BaseView):
     """Emits popup-menu when a row is right-clicked on."""
@@ -563,12 +585,15 @@ class RCMTreeView(BaseView):
             'button-press-event', RCMTreeView.__button_press, self)
 
     def __button_press(self, event):
-        if event.button == 3: return self.__check_popup(event)
+        if event.button == 3:
+            return self.__check_popup(event)
 
     def __check_popup(self, event):
         x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = self.get_path_at_pos(x, y)
-        except TypeError: return True
+        try:
+            path, col, cellx, celly = self.get_path_at_pos(x, y)
+        except TypeError:
+            return True
         self.grab_focus()
         selection = self.get_selection()
         if not selection.path_is_selected(path):
@@ -637,6 +662,7 @@ class RCMTreeView(BaseView):
 
         return (menu_x, menu_y, True) # x, y, move_within_screen
 
+
 class HintedTreeView(BaseView):
     """A TreeView that pops up a tooltip when you hover over a cell that
     contains ellipsized text."""
@@ -644,8 +670,10 @@ class HintedTreeView(BaseView):
     def __init__(self, *args):
         super(HintedTreeView, self).__init__(*args)
         if not config.state('disable_hints'):
-            try: tvh = HintedTreeView.hints
-            except AttributeError: tvh = HintedTreeView.hints = TreeViewHints()
+            try:
+                tvh = HintedTreeView.hints
+            except AttributeError:
+                tvh = HintedTreeView.hints = TreeViewHints()
             tvh.connect_view(self)
 
 
@@ -670,7 +698,7 @@ class TreeViewColumnButton(TreeViewColumn):
     __gsignals__ = {
         'button-press-event': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
                 (object,)),
-        'popup-menu':  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'popup-menu': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
 
     def __init__(self, title="", *args, **kw):
@@ -693,9 +721,11 @@ class TreeViewColumnButton(TreeViewColumn):
         self.emit('popup-menu')
         return True
 
+
 class RCMHintedTreeView(HintedTreeView, RCMTreeView):
     """A TreeView that has hints and a context menu."""
     pass
+
 
 class AllTreeView(HintedTreeView, RCMTreeView, MultiDragTreeView):
     """A TreeView that has hints, a context menu, and multi-selection

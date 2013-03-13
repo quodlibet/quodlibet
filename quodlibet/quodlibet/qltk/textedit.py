@@ -22,6 +22,7 @@ except ImportError:
     from gtk import TextBuffer
 else:
     TextView = gtksourceview2.View
+
     class TextBuffer(gtksourceview2.Buffer):
         def __init__(self, *args):
             super(TextBuffer, self).__init__(*args)
@@ -32,6 +33,7 @@ else:
             self.begin_not_undoable_action()
             super(TextBuffer, self).set_text(*args)
             self.end_not_undoable_action()
+
 
 class TextEditBox(gtk.HBox):
     """A simple text editing area with a default value, a revert button,
@@ -66,6 +68,7 @@ class TextEditBox(gtk.HBox):
     text = property(__get_text,
                     lambda s, v: s.buffer.set_text(v))
 
+
 class PatternEditBox(TextEditBox):
     """A TextEditBox that stops the apply button's clicked signal if
     the pattern is invalid. You need to use connect_after to connect to
@@ -77,7 +80,7 @@ class PatternEditBox(TextEditBox):
 
     def __check_markup(self, apply):
         try:
-            f = AudioFile({"~filename":"dummy"})
+            f = AudioFile({"~filename": "dummy"})
             pango.parse_markup(XMLFromPattern(self.text) % f, u"\u0000")
         except (ValueError, gobject.GError), e:
             qltk.ErrorMessage(
@@ -88,13 +91,15 @@ class PatternEditBox(TextEditBox):
             apply.stop_emission('clicked')
         return False
 
+
 class TextEdit(qltk.UniqueWindow):
     """A window with a text editing box in it."""
 
     Box = TextEditBox
 
     def __init__(self, parent, default=""):
-        if self.is_not_unique(): return
+        if self.is_not_unique():
+            return
         super(TextEdit, self).__init__()
         self.set_title(_("Edit Display"))
         self.set_transient_for(qltk.get_top_parent(parent))
@@ -121,6 +126,7 @@ class TextEdit(qltk.UniqueWindow):
 
     text = property(lambda s: s.box.text,
                     lambda s, v: setattr(s.box, 'text', v))
+
 
 class PatternEdit(TextEdit):
     """A window with a pattern editing box in it."""

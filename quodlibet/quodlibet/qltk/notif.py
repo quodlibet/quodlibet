@@ -35,6 +35,7 @@ from quodlibet.util import copool
 
 SIZE = gtk.ICON_SIZE_MENU
 
+
 class ParentProperty(object):
     """
     A property which provides a thin layer of protection against accidental
@@ -43,11 +44,13 @@ class ParentProperty(object):
     """
     def __get__(self, inst, owner):
         return getattr(inst, '_parent', None)
+
     def __set__(self, inst, value):
         if getattr(inst, '_parent', None) is not None and value is not None:
             raise ValueError("Cannot set parent property without first "
                     "setting it to 'None'.")
         inst._parent = value
+
 
 class Task(object):
     def __init__(self, source, desc, known_length=True, controller=None,
@@ -109,7 +112,7 @@ class Task(object):
         try:
             if hasattr(gen, '__len__'):
                 for i, x in enumerate(gen):
-                    self.update(float(i)/len(gen))
+                    self.update(float(i) / len(gen))
                     yield x
             else:
                 for x in gen:
@@ -149,6 +152,7 @@ class Task(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.finish()
         return False
+
 
 class TaskController(object):
     """
@@ -191,9 +195,11 @@ class TaskController(object):
         for t in self.active_tasks:
             if t.pausable:
                 t.paused = val
+
     def __get_paused(self):
         pausable = [t for t in self.active_tasks if t.pausable]
-        if not pausable: return False
+        if not pausable:
+            return False
         return not [t for t in pausable if not t.paused]
     paused = property(__get_paused, __set_paused)
 
@@ -219,6 +225,7 @@ class TaskController(object):
 
 # Oh so deliciously hacky.
 TaskController.default_instance = TaskController()
+
 
 class TaskWidget(gtk.HBox):
     """
@@ -267,6 +274,7 @@ class TaskWidget(gtk.HBox):
         if self.stop.props.sensitive != self.task.stoppable:
             self.stop.props.sensitive = self.task.stoppable
 
+
 class StatusBar(gtk.HBox):
     def __init__(self, task_controller):
         super(StatusBar, self).__init__()
@@ -292,10 +300,14 @@ class StatusBar(gtk.HBox):
         self.__set_shown('default')
 
     def __set_shown(self, type):
-        if type == 'default':   self.default_label.show()
-        else:                   self.default_label.hide()
-        if type == 'task':      self.task_widget.show()
-        else:                   self.task_widget.hide()
+        if type == 'default':
+            self.default_label.show()
+        else:
+            self.default_label.hide()
+        if type == 'task':
+            self.task_widget.show()
+        else:
+            self.task_widget.hide()
 
     def set_default_text(self, text):
         self.default_label.set_text(text)
@@ -312,4 +324,3 @@ class StatusBar(gtk.HBox):
         if not self.__dirty:
             self.__dirty = True
             gobject.idle_add(self.__update)
-

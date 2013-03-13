@@ -16,10 +16,11 @@ from quodlibet.plugins import PluginManager
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 
+
 class EditingPluginHandler(gobject.GObject):
     __gsignals__ = {
         "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
-        }
+    }
 
     Kind = None
 
@@ -51,17 +52,23 @@ class FilterCheckButton(ConfigCheckButton):
     def __init__(self):
         super(FilterCheckButton, self).__init__(
             self._label, self._section, self._key)
-        try: self.set_active(config.getboolean(self._section, self._key))
-        except: pass
+        try:
+            self.set_active(config.getboolean(self._section, self._key))
+        except:
+            pass
         self.connect_object('toggled', self.emit, 'preview')
     active = property(lambda s: s.get_active())
 
-    def filter(self, original, filename): raise NotImplementedError
-    def filter_list(self, origs, names): return map(self.filter, origs, names)
+    def filter(self, original, filename):
+        raise NotImplementedError
+
+    def filter_list(self, origs, names):
+        return map(self.filter, origs, names)
 
     def __lt__(self, other):
         return (self._order, type(self).__name__) < \
             (other._order, type(other).__name__)
+
 
 class EditPane(gtk.VBox):
     @classmethod
@@ -141,11 +148,13 @@ class EditPane(gtk.VBox):
     def __refresh_plugins(self, handler, vbox, expander):
         instances = []
         for Kind in handler.plugins:
-            try: f = Kind()
+            try:
+                f = Kind()
             except:
                 util.print_exc()
                 continue
-            else: instances.append(f)
+            else:
+                instances.append(f)
         instances.sort()
 
         for child in vbox.get_children():
@@ -153,20 +162,25 @@ class EditPane(gtk.VBox):
         del self.__plugins[:]
 
         for f in instances:
-            try: vbox.pack_start(f)
+            try:
+                vbox.pack_start(f)
             except:
                 util.print_exc()
                 f.destroy()
             else:
-                try: f.connect_object(
-                    'preview', gtk.Button.clicked, self.preview)
+                try:
+                    f.connect_object(
+                        'preview', gtk.Button.clicked, self.preview)
                 except:
-                    try: f.connect_object(
-                        'changed', self._changed, self.combo.child)
+                    try:
+                        f.connect_object(
+                            'changed', self._changed, self.combo.child)
                     except:
                         util.print_exc()
-                    else: self.__plugins.append(f)
-                else: self.__plugins.append(f)
+                    else:
+                        self.__plugins.append(f)
+                else:
+                    self.__plugins.append(f)
         vbox.show_all()
 
         # Don't display the expander if there aren't any plugins.
@@ -182,4 +196,3 @@ class EditPane(gtk.VBox):
     def _changed(self, entry):
         self.save.set_sensitive(False)
         self.preview.set_sensitive(bool(entry.get_text()))
-

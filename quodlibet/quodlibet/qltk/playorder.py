@@ -11,6 +11,7 @@ import gtk
 from quodlibet import config
 from quodlibet.plugins import PluginManager
 
+
 class Order(object):
     name = "unknown_order"
     display_name = _("Unknown")
@@ -63,6 +64,7 @@ class Order(object):
     def reset(self, playlist):
         pass
 
+
 class OrderInOrder(Order):
     name = "inorder"
     display_name = _("In Order")
@@ -86,11 +88,13 @@ class OrderInOrder(Order):
             return playlist[(len(playlist) - 1,)].iter
         else:
             path = max(1, playlist.get_path(iter)[0])
-            try: return playlist.get_iter((path - 1,))
+            try:
+                return playlist.get_iter((path - 1,))
             except ValueError:
                 if playlist.repeat:
                     return playlist[(len(playlist) - 1,)].iter
         return None
+
 
 class OrderRemembered(Order):
     # Shared class for all the shuffle modes that keep a memory
@@ -105,9 +109,12 @@ class OrderRemembered(Order):
             self._played.append(playlist.get_path(iter)[0])
 
     def previous(self, playlist, iter):
-        try: path = self._played.pop()
-        except IndexError: return None
-        else: return playlist.get_iter(path)
+        try:
+            path = self._played.pop()
+        except IndexError:
+            return None
+        else:
+            return playlist.get_iter(path)
 
     def set(self, playlist, iter):
         if iter is not None:
@@ -116,6 +123,7 @@ class OrderRemembered(Order):
 
     def reset(self, playlist):
         del(self._played[:])
+
 
 class OrderShuffle(OrderRemembered):
     name = "shuffle"
@@ -138,6 +146,7 @@ class OrderShuffle(OrderRemembered):
             del(self._played[:])
             return None
 
+
 class OrderWeighted(OrderRemembered):
     name = "Weighted"
     display_name = _("Weighted")
@@ -157,6 +166,7 @@ class OrderWeighted(OrderRemembered):
         else:
             return playlist.get_iter_first()
 
+
 class OrderOneSong(OrderInOrder):
     name = "onesong"
     display_name = _("One Song")
@@ -170,12 +180,15 @@ class OrderOneSong(OrderInOrder):
             return None
 
 ORDERS = []
+
+
 def set_orders(orders):
     ORDERS[:] = [OrderInOrder, OrderShuffle, OrderWeighted, OrderOneSong]
     ORDERS.extend(orders)
     ORDERS.sort(lambda K1, K2:
                 cmp(K1.priority, K2.priority) or cmp(K1.name, K2.name))
 set_orders([])
+
 
 class PlayOrder(gtk.ComboBox):
     def __init__(self, model, player):
@@ -235,20 +248,25 @@ class PlayOrder(gtk.ComboBox):
             self.set_active(ORDERS[0]).name
 
     def set_active(self, value):
-        try: value = ORDERS.index(value)
+        try:
+            value = ORDERS.index(value)
         except ValueError:
             if isinstance(value, str):
                 for i, Order in enumerate(ORDERS):
                     if Order.name.lower() == value.lower():
                         value = i
                         break
-        try: value = int(value)
-        except ValueError: value = 0
+        try:
+            value = int(value)
+        except ValueError:
+            value = 0
         super(PlayOrder, self).set_active(value)
 
     def get_active_name(self):
-        try: return ORDERS[self.get_active()].name
-        except IndexError: return ORDERS[0].name
+        try:
+            return ORDERS[self.get_active()].name
+        except IndexError:
+            return ORDERS[0].name
 
     def __changed_order(self, model, player):
         Order = ORDERS[self.get_active()]

@@ -8,6 +8,7 @@ import locale
 if os.name == "nt":
     from win32com.shell import shellcon, shell
 
+
 class Version(tuple):
     """Represent the version of a dependency as a tuple"""
 
@@ -21,6 +22,7 @@ class Version(tuple):
 
     def __str__(self):
         return self.human_version()
+
 
 class MinVersions(object):
     """Dependency requirements for Quod Libet / Ex Falso"""
@@ -51,10 +53,10 @@ else:
         USERDIR = os.path.join(HOME, ".quodlibet")
 
 CONTROL = os.path.join(USERDIR, "control")
-CONFIG  = os.path.join(USERDIR, "config")
+CONFIG = os.path.join(USERDIR, "config")
 CURRENT = os.path.join(USERDIR, "current")
 LIBRARY = os.path.join(USERDIR, "songs")
-LOGDIR  = os.path.join(USERDIR, "logs")
+LOGDIR = os.path.join(USERDIR, "logs")
 
 # Don't bother saving the library more often than this
 LIBRARY_SAVE_PERIOD_SECONDS = 15 * 60
@@ -280,8 +282,10 @@ MENU = """<ui>
   </menubar>
 </ui>"""
 
-try: ENCODING = locale.getpreferredencoding()
-except locale.Error: ENCODING = "utf-8"
+try:
+    ENCODING = locale.getpreferredencoding()
+except locale.Error:
+    ENCODING = "utf-8"
 
 # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
 if "G_FILENAME_ENCODING" in os.environ:
@@ -290,8 +294,8 @@ if "G_FILENAME_ENCODING" in os.environ:
         FSCODING = ENCODING
 elif "G_BROKEN_FILENAMES" in os.environ:
     FSCODING = ENCODING
-else: FSCODING = "utf-8"
+else:
+    FSCODING = "utf-8"
 
 del(os)
 del(locale)
-

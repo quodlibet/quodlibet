@@ -7,6 +7,7 @@
 
 import gtk
 
+
 class RenameFilesPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be
     packed into the RenameFiles pane (currently a ScrolledWindow hidden
@@ -31,12 +32,16 @@ class RenameFilesPlugin(object):
     _order = 0.0
     active = False
 
-    def filter(self, original_filename, value): return value
-    def filter_list(self, origs, names): return map(self.filter, origs, names)
+    def filter(self, original_filename, value):
+        return value
+
+    def filter_list(self, origs, names):
+        return map(self.filter, origs, names)
 
     def __cmp__(self, other):
         return (cmp(self._order, other._order) or
                 cmp(type(self).__name__, type(other).__name__))
+
 
 class TagsFromPathPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be
@@ -66,11 +71,13 @@ class TagsFromPathPlugin(object):
     _order = 0
     active = False
 
-    def filter(self, tag, value): return value
+    def filter(self, tag, value):
+        return value
 
     def __cmp__(self, other):
         return (cmp(self._order, other._order) or
                 cmp(type(self).__name__, type(other).__name__))
+
 
 class EditTagsPlugin(gtk.ImageMenuItem):
     """Plugins of this type are subclasses of gtk.ImageMenuItem.
@@ -115,7 +122,8 @@ class EditTagsPlugin(gtk.ImageMenuItem):
     needs = []
     _order = 2.0
 
-    def activated(self, tag, value): return [(tag, value)]
+    def activated(self, tag, value):
+        return [(tag, value)]
 
     def connect(self, signal, callback, *args, **kwargs):
         if self.get_submenu():

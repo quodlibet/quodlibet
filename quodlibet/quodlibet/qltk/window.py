@@ -22,7 +22,9 @@ class Window(gtk.Window):
     instances = []
 
     __gsignals__ = {"close-accel": (
-        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
+        gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())
+    }
+
     def __init__(self, *args, **kwargs):
         dialog = kwargs.pop("dialog", True)
         super(Window, self).__init__(*args, **kwargs)
@@ -34,8 +36,8 @@ class Window(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         self.add_accel_group(self.__accels)
         if not dialog:
-            self.add_accelerator(
-                'close-accel', self.__accels, ord('w'), gtk.gdk.CONTROL_MASK, 0)
+            self.add_accelerator('close-accel', self.__accels,
+                                 ord('w'), gtk.gdk.CONTROL_MASK, 0)
         else:
             esc, mod = gtk.accelerator_parse("Escape")
             self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
@@ -176,8 +178,10 @@ class UniqueWindow(Window):
             return True
 
     def __init__(self, *args, **kwargs):
-        if type(self).__window: return
-        else: type(self).__window = self
+        if type(self).__window:
+            return
+        else:
+            type(self).__window = self
         super(UniqueWindow, self).__init__(*args, **kwargs)
         self.connect_object('destroy', self.__destroy, self)
 

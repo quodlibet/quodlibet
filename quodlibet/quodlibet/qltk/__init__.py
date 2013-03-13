@@ -6,6 +6,7 @@
 
 import gtk
 
+
 def get_top_parent(widget):
     """Return the ultimate parent of a widget; the assumption that code
     using this makes is that it will be a gtk.Window, i.e. the widget
@@ -15,6 +16,7 @@ def get_top_parent(widget):
         return parent
     else:
         return None
+
 
 def popup_menu_under_widget(menu, widget, button, time):
     def pos_func(menu, widget=widget):
@@ -33,13 +35,14 @@ def popup_menu_under_widget(menu, widget, button, time):
         menu_y = y + dy + wa.height
         if menu_y + ma.height > screen_height and y + dy - ma.height > 0:
             menu_y = y + dy - ma.height
-        if gtk.widget_get_default_direction() == gtk.TEXT_DIR_LTR: 
+        if gtk.widget_get_default_direction() == gtk.TEXT_DIR_LTR:
             menu_x = min(x + dx, screen_width - ma.width)
         else:
             menu_x = max(0, x + dx - ma.width + wa.width)
         return (menu_x, menu_y, True) # x, y, move_within_screen
     menu.popup(None, None, pos_func, button, time)
     return True
+
 
 def is_accel(event, accel):
     """Checks if the given gtk.gdk.Event matches an accelerator string

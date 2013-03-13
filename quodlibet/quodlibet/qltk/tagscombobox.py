@@ -10,6 +10,7 @@ from quodlibet.util import tag
 
 import quodlibet.formats
 
+
 class _TagsCombo(object):
     __tags = sorted(quodlibet.formats.USEFUL_TAGS)
 
@@ -31,8 +32,10 @@ class _TagsCombo(object):
         if len(model) == 0:
             raise ValueError("TagsCombo boxes require at least one tag name")
 
-    def __tag(self): return self._tag()
+    def __tag(self):
+        return self._tag()
     tag = property(__tag)
+
 
 class TagsComboBox(_TagsCombo, gtk.ComboBox):
     """A ComboBox containing a list of tags for the user to choose from.
@@ -48,6 +51,7 @@ class TagsComboBox(_TagsCombo, gtk.ComboBox):
     def _tag(self):
         iter = self.get_active_iter()
         return self.get_model()[iter][0]
+
 
 class TagsComboBoxEntry(_TagsCombo, gtk.ComboBoxEntry):
     """A ComboBoxEntry containing a list of tags for the user to choose from.

@@ -18,8 +18,10 @@ class EditableUndo(object):
     support the gtk.Editable interface"""
 
     def set_undo(self, val):
-        if val: self.__enable_undo()
-        else: self.__disable_undo()
+        if val:
+            self.__enable_undo()
+        else:
+            self.__disable_undo()
 
     def reset_undo(self):
         self.__history = []
@@ -70,8 +72,8 @@ class EditableUndo(object):
         del self.__del_pos
 
     def __popup(self, entry, menu):
-        undo =  gtk.ImageMenuItem(gtk.STOCK_UNDO)
-        redo =  gtk.ImageMenuItem(gtk.STOCK_REDO)
+        undo = gtk.ImageMenuItem(gtk.STOCK_UNDO)
+        redo = gtk.ImageMenuItem(gtk.STOCK_REDO)
         sep = gtk.SeparatorMenuItem()
 
         map(gtk.Widget.show, (sep, redo, undo))
@@ -125,7 +127,8 @@ class EditableUndo(object):
         return bool(source)
 
     def __do(self, source, target):
-        if not self.__can_do(source): return
+        if not self.__can_do(source):
+            return
         self.__del_pos = self.__in_pos = -1
         self.__inhibit()
         now = self.__all()
@@ -154,8 +157,10 @@ class ClearEntryMixin(object):
     a separate clear button as a fallback.
     """
 
-    __gsignals__ = {'clear': (
-        gobject.SIGNAL_RUN_LAST|gobject.SIGNAL_ACTION, gobject.TYPE_NONE, ())}
+    __gsignals__ = {
+        'clear': (gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION,
+                  gobject.TYPE_NONE, ())
+    }
 
     def enable_clear_button(self):
         """Enables the clear icon in the entry"""
@@ -189,15 +194,19 @@ class ValidatingEntryMixin(object):
     VALID = gtk.gdk.Color(*[c * 180 for c in (0x4e, 0x9a, 0x06)])
 
     def set_validate(self, validator=None):
-        if validator: self.connect_object('changed', self.__color, validator)
+        if validator:
+            self.connect_object('changed', self.__color, validator)
 
     def __color(self, validator):
         value = validator(self.get_text())
-        if value is True: color = self.VALID
-        elif value is False: color = self.INVALID
+        if value is True:
+            color = self.VALID
+        elif value is False:
+            color = self.INVALID
         elif value and isinstance(value, str):
             color = gtk.gdk.color_parse(value)
-        else: color = None
+        else:
+            color = None
 
         if color and self.get_property('sensitive'):
             self.modify_text(gtk.STATE_NORMAL, color)

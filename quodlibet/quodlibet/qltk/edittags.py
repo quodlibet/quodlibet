@@ -25,10 +25,12 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.plugins import PluginManager
 
+
 class AudioFileGroup(dict):
 
     class Comment(unicode):
         complete = True
+
         def __repr__(self):
             return '%s %s' % (str(self), self.paren())
 
@@ -54,16 +56,25 @@ class AudioFileGroup(dict):
                 return ", ".join([d, m])
 
         def safenicestr(self):
-            if self.shared and self.complete: return str(self)
+            if self.shared and self.complete:
+                return str(self)
             elif self.shared:
                 return "\n".join(['%s<i> (%s)</i>' % (s, self.paren())
                                   for s in str(self).split("\n")])
-            else: return '<i>(%s)</i>' % self.paren()
+            else:
+                return '<i>(%s)</i>' % self.paren()
 
-    class SharedComment(Comment): shared = True
-    class UnsharedComment(Comment): shared = False
-    class PartialSharedComment(SharedComment): complete = False
-    class PartialUnsharedComment(UnsharedComment): complete = False
+    class SharedComment(Comment):
+        shared = True
+
+    class UnsharedComment(Comment):
+        shared = False
+
+    class PartialSharedComment(SharedComment):
+        complete = False
+
+    class PartialUnsharedComment(UnsharedComment):
+        complete = False
 
     def realkeys(self):
         return filter(lambda s: s and "~" not in s and "=" not in s, self)
@@ -95,9 +106,12 @@ class AudioFileGroup(dict):
                     value = self.PartialUnsharedComment(first[comment])
             else:
                 decoded = first[comment]
-                if isinstance(decoded, str): decoded = util.decode(decoded)
-                if all[comment]: value = self.SharedComment(decoded)
-                else: value = self.UnsharedComment(decoded)
+                if isinstance(decoded, str):
+                    decoded = util.decode(decoded)
+                if all[comment]:
+                    value = self.SharedComment(decoded)
+                else:
+                    value = self.UnsharedComment(decoded)
             value.have = count
             value.total = total
             value.missing = total - count
@@ -109,13 +123,18 @@ class AudioFileGroup(dict):
             can = True
             for song in self.songs:
                 cantoo = song.can_change()
-                if can is True: can = cantoo
-                elif cantoo is True: pass
-                else: can = set(can) | set(cantoo)
+                if can is True:
+                    can = cantoo
+                elif cantoo is True:
+                    pass
+                else:
+                    can = set(can) | set(cantoo)
         else:
-            if not self.songs: return False
+            if not self.songs:
+                return False
             can = min([song.can_change(k) for song in self.songs])
         return can
+
 
 class SplitValues(gtk.ImageMenuItem):
     tags = False
@@ -135,6 +154,7 @@ class SplitValues(gtk.ImageMenuItem):
             'utf-8', 'replace').split()
         return [(tag, value) for value in util.split_value(value, spls)]
 
+
 class SplitDisc(gtk.ImageMenuItem):
     tags = ["album"]
     needs = ["discnumber"]
@@ -149,6 +169,7 @@ class SplitDisc(gtk.ImageMenuItem):
     def activated(self, tag, value):
         album, disc = util.split_album(value)
         return [(tag, album), ("discnumber", disc)]
+
 
 class SplitTitle(gtk.ImageMenuItem):
     tags = ["title"]
@@ -169,6 +190,7 @@ class SplitTitle(gtk.ImageMenuItem):
         title, versions = util.split_title(value, spls)
         return [(tag, title)] + [("version", v) for v in versions]
 
+
 class SplitPerson(gtk.ImageMenuItem):
     tags = ["artist"]
     _order = 0.5
@@ -187,18 +209,22 @@ class SplitPerson(gtk.ImageMenuItem):
         artist, others = util.split_people(value, spls)
         return [(tag, artist)] + [(self.needs[0], o) for o in others]
 
+
 class SplitArranger(SplitPerson):
     needs = ["arranger"]
     title = _("Split Arranger out of Ar_tist")
+
 
 class SplitPerformer(SplitPerson):
     needs = ["performer"]
     title = _("Split _Performer out of Artist")
 
+
 class SplitPerformerFromTitle(SplitPerson):
     tags = ["title"]
     needs = ["performer"]
     title = _("Split _Performer out of Title")
+
 
 class SplitOriginalArtistFromTitle(SplitPerson):
     tags = ["title"]
@@ -223,7 +249,7 @@ class AddTagDialog(gtk.Dialog):
         table.set_col_spacings(6)
         table.set_border_width(6)
 
-        self.__tag = (TagsComboBoxEntry() if can_change == True
+        self.__tag = (TagsComboBoxEntry() if can_change is True
                       else TagsComboBox(can_change))
 
         label = gtk.Label()
@@ -262,7 +288,7 @@ class AddTagDialog(gtk.Dialog):
         self.__tag.connect('changed', self.__set_value_completion, library)
         self.__set_value_completion(self.__tag, library)
 
-        if can_change == True:
+        if can_change is True:
             self.__tag.get_child().connect_object(
                 'activate', gtk.Entry.grab_focus, self.__val)
 
@@ -272,7 +298,8 @@ class AddTagDialog(gtk.Dialog):
             completion.set_tag(self.__tag.tag, library)
 
     def get_tag(self):
-        try: return self.__tag.tag
+        try:
+            return self.__tag.tag
         except AttributeError:
             return self.__tag.tag
 
@@ -283,8 +310,10 @@ class AddTagDialog(gtk.Dialog):
         tag = self.get_tag()
         value = self.get_value()
         fmt = massagers.tags.get(tag)
-        if fmt: valid = fmt.is_valid(value)
-        else: valid = True
+        if fmt:
+            valid = fmt.is_valid(value)
+        else:
+            valid = True
         add.set_sensitive(valid)
         if valid:
             invalid.hide()
@@ -301,27 +330,36 @@ class AddTagDialog(gtk.Dialog):
 
 TAG, VALUE, EDITED, CANEDIT, DELETED, ORIGVALUE, RENAMED, ORIGTAG = range(8)
 
+
 def is_special(string):
     return string.endswith("</i>")
+
 
 def is_different(string):
     return is_special(string) and string.startswith("<i>")
 
+
 def is_missing(string):
     return is_special(string) and not string.startswith("<i>")
 
+
 def strip_missing(string):
-    try: return string[:string.index(" <i>")]
-    except ValueError: return string
+    try:
+        return string[:string.index(" <i>")]
+    except ValueError:
+        return string
+
 
 class EditTagsPluginHandler(EditingPluginHandler):
     from quodlibet.plugins.editing import EditTagsPlugin
     Kind = EditTagsPlugin
 
+
 class EditTags(gtk.VBox):
     _SAVE_BUTTON_KEY = 'ql-save'
     _REVERT_BUTTON_KEY = 'ql-revert'
-    # Translators: translate only to override the text for the tag "save" button
+    # Translators: translate only to override the text
+    # for the tag "save" button
     _SAVE_BUTTON_TEXT = _('ql-save')
     # Translators: translate only to override the  for the tag "revert" button
     _REVERT_BUTTON_TEXT = _('ql-revert')
@@ -343,16 +381,18 @@ class EditTags(gtk.VBox):
         column = TreeViewColumn(_("Write"), render)
 
         style = view.get_style()
-        pixbufs = [ style.lookup_icon_set(stock)
-                    .render_icon(style, gtk.TEXT_DIR_NONE, state,
-                        gtk.ICON_SIZE_MENU, view, None)
-                    for state in (gtk.STATE_INSENSITIVE, gtk.STATE_NORMAL)
-                        for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE) ]
+        pixbufs = [style.lookup_icon_set(stock)
+                   .render_icon(style, gtk.TEXT_DIR_NONE, state,
+                                gtk.ICON_SIZE_MENU, view, None)
+                   for state in (gtk.STATE_INSENSITIVE, gtk.STATE_NORMAL)
+                   for stock in (gtk.STOCK_EDIT, gtk.STOCK_DELETE)]
+
         def cdf_write(col, rend, model, iter, (write, delete)):
             row = model[iter]
             if row[CANEDIT]:
                 rend.set_property('stock-id', None)
-                rend.set_property('pixbuf', pixbufs[2*row[EDITED]+row[DELETED]])
+                rend.set_property('pixbuf',
+                    pixbufs[2 * row[EDITED] + row[DELETED]])
             else:
                 rend.set_property('stock-id', gtk.STOCK_DIALOG_AUTHENTICATION)
         column.set_cell_data_func(render, cdf_write, (2, 4))
@@ -459,10 +499,12 @@ class EditTags(gtk.VBox):
 
     def __enable_save(self, *args):
         buttons = args[-1]
-        for b in buttons: b.set_sensitive(True)
+        for b in buttons:
+            b.set_sensitive(True)
 
     def __paste(self, clip, text, (rend, path)):
-        if text: rend.emit('edited', path, text.strip())
+        if text:
+            rend.emit('edited', path, text.strip())
 
     def __menu_activate(self, activator, view):
         model, (iter,) = view.get_selection().get_selected_rows()
@@ -477,9 +519,12 @@ class EditTags(gtk.VBox):
                     replaced = True
                     row[VALUE] = util.escape(aval)
                     row[EDITED] = True
-                else: self.__add_new_tag(model, atag, aval)
-        elif vals: replaced = True
-        if not replaced: row[EDITED] = row[DELETED] = True
+                else:
+                    self.__add_new_tag(model, atag, aval)
+        elif vals:
+            replaced = True
+        if not replaced:
+            row[EDITED] = row[DELETED] = True
 
     def __popup_menu(self, view, parent):
         menu = gtk.Menu()
@@ -502,21 +547,24 @@ class EditTags(gtk.VBox):
             multi = (value.split("<")[0] != value)
 
             for Item in items:
-                if Item.tags and row[TAG] not in Item.tags: continue
+                if Item.tags and row[TAG] not in Item.tags:
+                    continue
 
-                try: b = Item(row[TAG], text)
+                try:
+                    b = Item(row[TAG], text)
                 except:
                     util.print_exc()
                 else:
                     b.connect('activate', self.__menu_activate, view)
 
-                    if not min(map(self.__songinfo.can_change, b.needs)+[1]) \
-                        or multi:
+                    if (not min(map(self.__songinfo.can_change, b.needs) + [1])
+                            or multi):
                         b.set_sensitive(False)
 
                     menu.append(b)
 
-            if menu.get_children(): menu.append(gtk.SeparatorMenuItem())
+            if menu.get_children():
+                menu.append(gtk.SeparatorMenuItem())
 
         b = gtk.ImageMenuItem(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
         b.connect('activate', self.__remove_tag, view)
@@ -550,15 +598,18 @@ class EditTags(gtk.VBox):
 
         iters = [row.iter for row in model if row[TAG] == tag]
         row = [tag, util.escape(value), True, True, False, None, False, None]
-        if len(iters): model.insert_after(iters[-1], row=row)
-        else: model.append(row=row)
+        if len(iters):
+            model.insert_after(iters[-1], row=row)
+        else:
+            model.append(row=row)
 
     def __add_tag(self, activator, model, library):
         add = AddTagDialog(self, self.__songinfo.can_change(), library)
 
         while True:
             resp = add.run()
-            if resp != gtk.RESPONSE_OK: break
+            if resp != gtk.RESPONSE_OK:
+                break
             tag = add.get_tag()
             value = add.get_value()
             if tag in massagers.tags:
@@ -583,7 +634,8 @@ class EditTags(gtk.VBox):
         for row in rows:
             if row[ORIGVALUE] is not None:
                 row[EDITED] = row[DELETED] = True
-            else: model.remove(row.iter)
+            else:
+                model.remove(row.iter)
 
     def __save_files(self, save, revert, model, library):
         updated = {}
@@ -629,8 +681,10 @@ class EditTags(gtk.VBox):
                 for (new_value, old_value) in values:
                     new_value = util.unescape(new_value)
                     if song.can_change(key):
-                        if old_value is None: song.add(key, new_value)
-                        else: song.change(key, old_value, new_value)
+                        if old_value is None:
+                            song.add(key, new_value)
+                        else:
+                            song.change(key, old_value, new_value)
                         changed = True
             for key, values in added.iteritems():
                 for value in values:
@@ -667,25 +721,28 @@ class EditTags(gtk.VBox):
                 song.add(tag, value)
 
             if changed:
-                try: song.write()
+                try:
+                    song.write()
                 except:
                     util.print_exc()
                     qltk.ErrorMessage(
                         self, _("Unable to save song"),
                         _("Saving <b>%s</b> failed. The file "
                           "may be read-only, corrupted, or you "
-                          "do not have permission to edit it.")%(
+                          "do not have permission to edit it.") % (
                         util.escape(util.fsdecode(
                         song('~basename'))))).run()
                     library.reload(song, changed=was_changed)
                     break
                 was_changed.append(song)
 
-            if win.step(): break
+            if win.step():
+                break
 
         win.destroy()
         library.changed(was_changed)
-        for b in [save, revert]: b.set_sensitive(False)
+        for b in [save, revert]:
+            b.set_sensitive(False)
 
     def __edit_tag(self, renderer, path, new_value, model):
         new_value = ', '.join(new_value.splitlines())
@@ -695,10 +752,11 @@ class EditTags(gtk.VBox):
             if not fmt.is_valid(new_value):
                 qltk.WarningMessage(
                     self, _("Invalid value"),
-                    _("Invalid value: <b>%(value)s</b>\n\n%(error)s") %{
+                    _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
                     "value": new_value, "error": fmt.error}).run()
                 return
-            else: new_value = fmt.validate(new_value)
+            else:
+                new_value = fmt.validate(new_value)
         tag = self.__songinfo.get(row[TAG], None)
         if row[VALUE].split('<')[0] != new_value or (
                 tag and tag.shared and not tag.complete):
@@ -732,7 +790,7 @@ class EditTags(gtk.VBox):
                 if not fmt.is_valid(v):
                     qltk.WarningMessage(
                         self, _("Invalid value"),
-                        _("Invalid value: <b>%(value)s</b>\n\n%(error)s") %{
+                        _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
                         "value": row[VALUE], "error": fmt.error}).run()
                     return
                 value = fmt.validate(v)
@@ -754,17 +812,21 @@ class EditTags(gtk.VBox):
                 row[TAG] = new_tag
 
     def __button_press(self, view, event):
-        if event.button not in [1, 2]: return False
+        if event.button not in [1, 2]:
+            return False
         x, y = map(int, [event.x, event.y])
-        try: path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError: return False
+        try:
+            path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError:
+            return False
 
         if event.button == 1 and col is view.get_columns()[0]:
             row = view.get_model()[path]
             row[EDITED] = not row[EDITED]
             if row[EDITED]:
                 idx = row[VALUE].find('<i>')
-                if idx >= 0: row[VALUE] = row[VALUE][:idx].strip()
+                if idx >= 0:
+                    row[VALUE] = row[VALUE][:idx].strip()
             return True
         elif event.button == 2 and col == view.get_columns()[2]:
             display = gtk.gdk.display_manager_get().get_default_display()
@@ -774,8 +836,10 @@ class EditTags(gtk.VBox):
                 if rend.get_property('editable'):
                     clipboard.request_text(self.__paste, (rend, path[0]))
                     return True
-            else: return False
-        else: return False
+            else:
+                return False
+        else:
+            return False
 
     def __update(self, songs, view, buttonbox, model, add, buttons):
         if songs is None:
@@ -793,9 +857,12 @@ class EditTags(gtk.VBox):
 
         # reverse order here so insertion puts them in proper order.
         for tag in ['album', 'artist', 'title']:
-            try: keys.remove(tag)
-            except ValueError: pass
-            else: keys.insert(0, tag)
+            try:
+                keys.remove(tag)
+            except ValueError:
+                pass
+            else:
+                keys.insert(0, tag)
 
         for tag in keys:
             # Handle with care.
@@ -816,7 +883,8 @@ class EditTags(gtk.VBox):
                                       orig_value[i], renamed, newtag])
 
         buttonbox.set_sensitive(bool(songinfo.can_change()))
-        for b in buttons: b.set_sensitive(False)
+        for b in buttons:
+            b.set_sensitive(False)
         add.set_sensitive(bool(songs))
 
     def __value_editing_started(self, render, editable, path, model, library):
@@ -834,7 +902,7 @@ class EditTags(gtk.VBox):
         try:
             if not editable.get_completion():
                 tags = self.__songinfo.can_change()
-                if tags == True:
+                if tags is True:
                     from quodlibet.formats import USEFUL_TAGS as tags
                 completion = qltk.EntryCompletion(tags)
                 editable.set_completion(completion)

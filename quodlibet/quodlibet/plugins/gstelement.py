@@ -4,6 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+
 class GStreamerPlugin(object):
     """GStreamer Plugins define an element that gets inserted into the
     GStreamer pipeline before the audio sink and after the playbin.

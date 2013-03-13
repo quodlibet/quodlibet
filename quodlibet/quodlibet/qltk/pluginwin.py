@@ -57,7 +57,8 @@ class WrapLabel(gtk.Label):
 
 class PluginErrorWindow(qltk.UniqueWindow):
     def __init__(self, parent):
-        if self.is_not_unique(): return
+        if self.is_not_unique():
+            return
         super(PluginErrorWindow, self).__init__()
 
         self.set_title(_("Plugin Errors") + " - Quod Libet")
@@ -78,7 +79,8 @@ class PluginErrorWindow(qltk.UniqueWindow):
         for key in sorted(keys):
             expander = gtk.Expander("<b>%s</b>" % util.escape(key))
             expander.set_use_markup(True)
-            if show_expanded: expander.set_expanded(True)
+            if show_expanded:
+                expander.set_expanded(True)
 
             # second line is always the __rescan line; don't show it
             message = failures[key][0:1] + failures[key][3:]
@@ -104,9 +106,11 @@ class PluginErrorWindow(qltk.UniqueWindow):
         self.show_all()
         close.grab_focus()
 
+
 class PluginWindow(qltk.UniqueWindow):
     def __init__(self, parent):
-        if self.is_not_unique(): return
+        if self.is_not_unique():
+            return
         super(PluginWindow, self).__init__()
         self.set_title(_("Plugins") + " - Quod Libet")
         self.set_border_width(12)
@@ -145,6 +149,7 @@ class PluginWindow(qltk.UniqueWindow):
         fb.pack_start(filter_entry)
 
         render = gtk.CellRendererToggle()
+
         def cell_data(col, render, model, iter):
             row = model[iter]
             render.set_active(row[1].enabled(row[0]))
@@ -154,6 +159,7 @@ class PluginWindow(qltk.UniqueWindow):
         tv.append_column(column)
 
         render = gtk.CellRendererPixbuf()
+
         def cell_data2(col, render, model, iter):
             icon = getattr(model[iter][0], 'PLUGIN_ICON', gtk.STOCK_EXECUTE)
             if gtk.stock_lookup(icon):
@@ -168,6 +174,7 @@ class PluginWindow(qltk.UniqueWindow):
         render.set_property('ellipsize', pango.ELLIPSIZE_END)
         render.set_property('xalign', 0.0)
         column = gtk.TreeViewColumn("name", render)
+
         def cell_data3(col, render, model, iter):
             render.set_property('text', model[iter][0].PLUGIN_NAME)
         column.set_cell_data_func(render, cell_data3)
@@ -232,6 +239,7 @@ class PluginWindow(qltk.UniqueWindow):
         filter_entry.grab_focus()
 
         restore_id = config.get("memory", "plugin_selection")
+
         def restore_sel(row):
             return row[0].PLUGIN_ID == restore_id
         if not tv.select_by_func(restore_sel, one=True) and tv.get_model():
@@ -262,7 +270,7 @@ class PluginWindow(qltk.UniqueWindow):
 
         filter = entry.get_text().lower()
         if not filter or filter in plugin.PLUGIN_NAME.lower() or \
-            filter in getattr(plugin, "PLUGIN_DESC" , "").lower():
+                filter in getattr(plugin, "PLUGIN_DESC", "").lower():
             return True
         return False
 
@@ -281,7 +289,7 @@ class PluginWindow(qltk.UniqueWindow):
         text = "<big><b>%s</b></big>" % name
         try:
             version = util.escape(model[iter][0].PLUGIN_VERSION)
-            text += " <small>(%s %s)</small>" %(_("Version:"), version)
+            text += " <small>(%s %s)</small>" % (_("Version:"), version)
         except (TypeError, AttributeError):
             pass
         try:
@@ -294,7 +302,8 @@ class PluginWindow(qltk.UniqueWindow):
 
     def __preferences(self, selection, frame):
         model, iter = selection.get_selected()
-        if frame.get_child(): frame.get_child().destroy()
+        if frame.get_child():
+            frame.get_child().destroy()
         if iter and hasattr(model[iter][0], 'PluginPreferences'):
             try:
                 prefs = model[iter][0].PluginPreferences(self)
@@ -311,7 +320,8 @@ class PluginWindow(qltk.UniqueWindow):
                 else:
                     frame.add(prefs)
                 frame.show_all()
-        else: frame.hide()
+        else:
+            frame.hide()
 
     def __toggled(self, render, fpath, fmodel):
         render.set_active(not render.get_active())

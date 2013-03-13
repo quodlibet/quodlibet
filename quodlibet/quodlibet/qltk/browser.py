@@ -85,17 +85,20 @@ class LibraryBrowser(Window, PersistentWindowMixin):
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:
             bg = background_filter()
-            if bg: songs = filter(bg, songs)
+            if bg:
+                songs = filter(bg, songs)
         self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column):
         from quodlibet import app
         app.window.playlist.enqueue([view.get_model()[path][0]])
-        if app.player.song is None: app.player.next()
+        if app.player.song is None:
+            app.player.next()
 
     def __drag_data_recv(self, view, *args):
-        if callable(self.browser.reordered): self.browser.reordered(view)
+        if callable(self.browser.reordered):
+            self.browser.reordered(view)
         view.set_sort_by(None, refresh=False)
 
     def __cols_changed(self, view, browser):
@@ -105,7 +108,8 @@ class LibraryBrowser(Window, PersistentWindowMixin):
                 if t in browser.headers:
                     header.set_visible(True)
                     break
-            else: header.set_visible(False)
+            else:
+                header.set_visible(False)
 
     def __menu(self, view, library):
         path, col = view.get_cursor()

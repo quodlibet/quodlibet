@@ -22,6 +22,7 @@ from quodlibet.qltk.x import ScrolledWindow
 
 QUEUE = os.path.join(const.USERDIR, "queue")
 
+
 class QueueExpander(gtk.Expander):
     def __init__(self, menu, library, player):
         super(QueueExpander, self).__init__()
@@ -98,8 +99,10 @@ class QueueExpander(gtk.Expander):
         self.connect("map", hack)
 
     def __update_state_icon(self, player, song, state):
-        if self.model.sourced: icon = gtk.STOCK_MEDIA_PLAY
-        else: icon = gtk.STOCK_MEDIA_STOP
+        if self.model.sourced:
+            icon = gtk.STOCK_MEDIA_PLAY
+        else:
+            icon = gtk.STOCK_MEDIA_STOP
         state.set_from_stock(icon, gtk.ICON_SIZE_MENU)
 
     def __update_state_icon_pause(self, player, state, icon):
@@ -114,13 +117,14 @@ class QueueExpander(gtk.Expander):
         return True
 
     def __update_count(self, model, path, lab):
-        if len(model) == 0: text = ""
+        if len(model) == 0:
+            text = ""
         else:
             time = sum([row[0].get("~#length", 0) for row in model])
             text = ngettext("%(count)d song (%(time)s)",
                             "%(count)d songs (%(time)s)",
                             len(model)) % {
-                "count": len(model), "time": util.format_time(time) }
+                "count": len(model), "time": util.format_time(time)}
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):
@@ -150,10 +154,13 @@ class QueueExpander(gtk.Expander):
         cb.set_property('visible', self.get_expanded())
         clear.set_property('visible', self.get_expanded())
 
+
 class PlayQueue(SongList):
+
     class CurrentColumn(gtk.TreeViewColumn):
         # Match MainSongList column sizes by default.
         header_name = "~current"
+
         def __init__(self):
             super(PlayQueue.CurrentColumn, self).__init__()
             self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
@@ -183,8 +190,10 @@ class PlayQueue(SongList):
         player.next()
 
     def __fill(self, library):
-        try: filenames = file(QUEUE, "rU").readlines()
-        except EnvironmentError: pass
+        try:
+            filenames = file(QUEUE, "rU").readlines()
+        except EnvironmentError:
+            pass
         else:
             filenames = map(str.strip, filenames)
             if library.librarian:
@@ -201,7 +210,8 @@ class PlayQueue(SongList):
 
     def __popup(self, library):
         songs = self.get_selected_songs()
-        if not songs: return
+        if not songs:
+            return
 
         menu = SongsMenu(
             library, songs, queue=False, remove=False, delete=False,
@@ -216,5 +226,8 @@ class PlayQueue(SongList):
     def __remove(self, *args):
         self.remove_selection()
 
-    def set_sort_by(self, *args): pass
-    def get_sort_by(self, *args): return "", False
+    def set_sort_by(self, *args):
+        pass
+
+    def get_sort_by(self, *args):
+        return "", False

@@ -24,18 +24,19 @@ from quodlibet.qltk.textedit import PatternEdit
 
 
 class SongInfo(gtk.Label):
-    _pattern = """\
+    _pattern = ("""\
 \\<span weight='bold' size='large'\\><title>\\</span\\>\
 <~length| (<~length>)><version|
 \\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
 %(people)s><album|
 \\<b\\><album>\\</b\\><discnumber| - %(disc)s>\
-<discsubtitle| - \\<b\\><discsubtitle>\\</b\\>><tracknumber| - %(track)s>>"""%{
+<discsubtitle| - \\<b\\><discsubtitle>\\</b\\>><tracknumber| - %(track)s>>"""
+        % {
         # Translators: As in "by Artist Name"
         "people": _("by %s") % "<~people>",
         "disc": _("Disc %s") % "<discnumber>",
         "track": _("Track %s") % "<tracknumber>"
-        }
+        })
 
     __PATTERN_FILENAME = os.path.join(const.USERDIR, "songinfo")
 
@@ -49,8 +50,10 @@ class SongInfo(gtk.Label):
 
         self.connect_object('populate-popup', self.__menu, player, library)
 
-        try: self._pattern = file(self.__PATTERN_FILENAME).read().rstrip()
-        except EnvironmentError: pass
+        try:
+            self._pattern = file(self.__PATTERN_FILENAME).read().rstrip()
+        except EnvironmentError:
+            pass
         self._compiled = XMLFromPattern(self._pattern)
 
     def __menu(self, player, menu, library):

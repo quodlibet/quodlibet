@@ -20,6 +20,7 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
+
 class LyricsPane(gtk.VBox):
     def __init__(self, song):
         # Commented code in this method is due to Lyric Wiki's disappearance.
@@ -90,13 +91,15 @@ class LyricsPane(gtk.VBox):
         try:
             sock = urllib.urlopen(
                 "http://lyricwiki.org/api.php?"
-                "client=QuodLibet&func=getSong&artist=%s&song=%s&fmt=text"%(
+                "client=QuodLibet&func=getSong&artist=%s&song=%s&fmt=text" % (
                 urllib.quote(artist.encode('utf-8')),
                 urllib.quote(title.encode('utf-8'))))
             text = sock.read()
         except Exception, err:
-            try: err = err.strerror.decode(const.ENCODING, 'replace')
-            except: err = _("Unable to download lyrics.")
+            try:
+                err = err.strerror.decode(const.ENCODING, 'replace')
+            except:
+                err = _("Unable to download lyrics.")
             gobject.idle_add(buffer.set_text, err)
             return
 
@@ -111,10 +114,13 @@ class LyricsPane(gtk.VBox):
             gobject.idle_add(refresh.set_sensitive, True)
 
     def __save(self, save, lyricname, buffer, delete):
-        try: os.makedirs(os.path.dirname(lyricname))
-        except EnvironmentError, err: pass
+        try:
+            os.makedirs(os.path.dirname(lyricname))
+        except EnvironmentError, err:
+            pass
 
-        try: f = file(lyricname, "w")
+        try:
+            f = file(lyricname, "w")
         except EnvironmentError, err:
             print_w(err.strerror.decode(const.ENCODING, "replace"))
         else:
@@ -125,10 +131,14 @@ class LyricsPane(gtk.VBox):
         save.set_sensitive(False)
 
     def __delete(self, delete, lyricname, save):
-        try: os.unlink(lyricname)
-        except EnvironmentError: pass
+        try:
+            os.unlink(lyricname)
+        except EnvironmentError:
+            pass
         lyricname = os.path.dirname(lyricname)
-        try: os.rmdir(lyricname)
-        except EnvironmentError: pass
+        try:
+            os.rmdir(lyricname)
+        except EnvironmentError:
+            pass
         delete.set_sensitive(False)
         save.set_sensitive(True)

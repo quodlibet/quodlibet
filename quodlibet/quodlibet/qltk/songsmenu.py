@@ -28,7 +28,8 @@ class SongsMenuPluginHandler(object):
         attrs = ['plugin_song', 'plugin_songs',
                  'plugin_album', 'plugin_albums']
 
-        if len(songs) == 1: attrs.append('plugin_single_song')
+        if len(songs) == 1:
+            attrs.append('plugin_single_song')
 
         last = (songs and songs[-1]) or None
         for song in songs:
@@ -44,9 +45,11 @@ class SongsMenuPluginHandler(object):
         for Kind in kinds:
             usable = max([callable(getattr(Kind, s)) for s in attrs])
             if usable:
-                try: items.append(Kind(songs, library, parent))
+                try:
+                    items.append(Kind(songs, library, parent))
                 except:
-                    print_e("Couldn't initalise song plugin %s. Stack trace:" % Kind)
+                    print_e("Couldn't initalise song plugin %s. Stack trace:"
+                            % Kind)
                     print_exc()
         items = filter(lambda i: i.initialized, items)
 
@@ -66,7 +69,8 @@ class SongsMenuPluginHandler(object):
                     print_exc()
                     item.destroy()
 
-        else: menu = None
+        else:
+            menu = None
         return menu
 
     def __get_albums(self, songs):
@@ -96,44 +100,63 @@ class SongsMenuPluginHandler(object):
                 return
 
     def __handle(self, plugin, library, parent, songs):
-        if len(songs) == 0: return
+        if len(songs) == 0:
+            return
 
         try:
             if len(songs) == 1 and callable(plugin.plugin_single_song):
-                try: ret = plugin.plugin_single_song(songs[0])
-                except Exception: print_exc()
+                try:
+                    ret = plugin.plugin_single_song(songs[0])
+                except Exception:
+                    print_exc()
                 else:
-                    if ret: return
+                    if ret:
+                        return
             if callable(plugin.plugin_song):
-                try: ret = map(plugin.plugin_song, songs)
-                except Exception: print_exc()
+                try:
+                    ret = map(plugin.plugin_song, songs)
+                except Exception:
+                    print_exc()
                 else:
-                    if max(ret): return
+                    if max(ret):
+                        return
             if callable(plugin.plugin_songs):
-                try: ret = plugin.plugin_songs(songs)
-                except Exception: print_exc()
+                try:
+                    ret = plugin.plugin_songs(songs)
+                except Exception:
+                    print_exc()
                 else:
-                    if ret: return
+                    if ret:
+                        return
 
-            if max(map(callable,(plugin.plugin_single_album,
+            if max(map(callable, (plugin.plugin_single_album,
                 plugin.plugin_album, plugin.plugin_albums))):
                 albums = self.__get_albums(songs)
 
             if callable(plugin.plugin_single_album) and len(albums) == 1:
-                try: ret = plugin.plugin_single_album(albums[0])
-                except Exception: print_exc()
+                try:
+                    ret = plugin.plugin_single_album(albums[0])
+                except Exception:
+                    print_exc()
                 else:
-                    if ret: return
+                    if ret:
+                        return
             if callable(plugin.plugin_album):
-                try: ret = map(plugin.plugin_album, albums)
-                except Exception: print_exc()
+                try:
+                    ret = map(plugin.plugin_album, albums)
+                except Exception:
+                    print_exc()
                 else:
-                    if max(ret): return
+                    if max(ret):
+                        return
             if callable(plugin.plugin_albums):
-                try: ret = plugin.plugin_albums(albums)
-                except Exception: print_exc()
+                try:
+                    ret = plugin.plugin_albums(albums)
+                except Exception:
+                    print_exc()
                 else:
-                    if ret: return
+                    if ret:
+                        return
 
         finally:
             check_wrapper_changed(library, parent, filter(None, songs))
@@ -178,9 +201,12 @@ class SongsMenu(gtk.Menu):
         can_add = True
         is_file = True
         for song in songs:
-            if song not in library: in_lib = False
-            if not song.can_add: can_add = False
-            if not song.is_file: is_file = False
+            if song not in library:
+                in_lib = False
+            if not song.can_add:
+                can_add = False
+            if not song.is_file:
+                is_file = False
 
         self.separate()
 
@@ -192,8 +218,10 @@ class SongsMenu(gtk.Menu):
             # FIXME: Two things are now importing browsers, so we need
             # some kind of inversion of control here.
             from quodlibet import browsers
-            try: submenu = browsers.playlists.Menu(songs, parent)
-            except AttributeError: pass
+            try:
+                submenu = browsers.playlists.Menu(songs, parent)
+            except AttributeError:
+                pass
             else:
                 b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
                 b.set_sensitive(can_add)
@@ -211,8 +239,10 @@ class SongsMenu(gtk.Menu):
 
         if devices:
             from quodlibet import browsers
-            try: browsers.media
-            except AttributeError: pass
+            try:
+                browsers.media
+            except AttributeError:
+                pass
             else:
                 if browsers.media.MediaDevices in browsers.browsers:
                     submenu = browsers.media.Menu(songs, library)
@@ -262,12 +292,14 @@ class SongsMenu(gtk.Menu):
         self.connect_object('selection-done', gtk.Menu.destroy, self)
 
     def separate(self):
-        if not self.get_children(): return
+        if not self.get_children():
+            return
         elif not isinstance(self.get_children()[-1], gtk.SeparatorMenuItem):
             self.append(gtk.SeparatorMenuItem())
 
     def preseparate(self):
-        if not self.get_children(): return
+        if not self.get_children():
+            return
         elif not isinstance(self.get_children()[0], gtk.SeparatorMenuItem):
             self.prepend(gtk.SeparatorMenuItem())
 
@@ -288,6 +320,7 @@ class SongsMenu(gtk.Menu):
         d.destroy()
         removed = filter(lambda s: s["~filename"] in removed, songs)
         if removed:
-            try: library.librarian.remove(removed)
+            try:
+                library.librarian.remove(removed)
             except AttributeError:
                 library.remove(removed)

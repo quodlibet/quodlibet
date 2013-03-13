@@ -162,7 +162,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
 
     def _populate_fields(self, obj):
         """Populates the input fields based on the `JSONData` object `obj`"""
-        for fn,val in obj.data:
+        for fn, val in obj.data:
             widget = self.input_entries[fn]
             widget.set_sensitive(True)
             # TODO: link this logic better with the creational stuff
@@ -198,7 +198,8 @@ class JSONBasedEditor(qltk.UniqueWindow):
         return frame
 
     def _fill_values(self, data):
-        if not data: return
+        if not data:
+            return
         for (name, obj) in data.items():
             self.model.prepend(row=[obj])
 

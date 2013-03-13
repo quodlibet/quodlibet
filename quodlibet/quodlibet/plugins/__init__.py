@@ -51,6 +51,7 @@ class PluginImportException(Exception):
             return False
         return True
 
+
 def migrate_old_config():
     active = []
     old_keys = ["songsmenuplugins", "eventplugins", "editingplugins",
@@ -75,7 +76,8 @@ def list_plugins(module):
     If '__all__' is defined, only plugins in '__all__' will be loaded.
     """
 
-    try: objs = [getattr(module, attr) for attr in module.__all__]
+    try:
+        objs = [getattr(module, attr) for attr in module.__all__]
     except AttributeError:
         objs = [getattr(module, attr) for attr in vars(module)
                 if not attr.startswith("_")]
@@ -125,7 +127,7 @@ class PluginManager(object):
     CONFIG_SECTION = "plugins"
     CONFIG_OPTION = "active_plugins"
 
-    instance = None # default instance
+    instance = None  # default instance
 
     def __init__(self, folders=None):
         """folders is a list of paths that will be scanned for plugins.
@@ -188,7 +190,7 @@ class PluginManager(object):
         """Returns a list of plugin classes or instances"""
 
         items = self.__handlers.items()
-        return [self.get_instance(p) or p for (p,h) in items if h]
+        return [self.get_instance(p) or p for (p, h) in items if h]
 
     def get_instance(self, plugin):
         """"Returns a possibly shared instance of the plugin class"""

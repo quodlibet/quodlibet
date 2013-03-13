@@ -10,7 +10,6 @@ from quodlibet import formats, config, print_d
 from quodlibet.util import copool, massagers
 
 
-
 class EntryWordCompletion(gtk.EntryCompletion):
     """Entry completion for simple words, where a word boundary is
     roughly equivalent to the separators in the QL query language.
@@ -29,7 +28,8 @@ class EntryWordCompletion(gtk.EntryCompletion):
         model = completion.get_model()
         entry = self.get_entry()
         entrytext = entrytext.decode('utf-8')
-        if entry is None: return False
+        if entry is None:
+            return False
         cursor = entry.get_position()
         if (cursor != len(entrytext) and not
             max([entrytext[cursor:].startswith(s) for s in self.rightsep])):
@@ -38,10 +38,13 @@ class EntryWordCompletion(gtk.EntryCompletion):
         # find the border to the left
         left, f = max(
             [(entrytext.rfind(c, 0, cursor), c) for c in self.leftsep])
-        if left < 0: left += 1
-        else: left += len(f)
+        if left < 0:
+            left += 1
+        else:
+            left += len(f)
 
-        if left == cursor: return False
+        if left == cursor:
+            return False
         key = entrytext[left:cursor]
 
         value = model.get_value(iter, self.get_property('text-column'))
@@ -56,13 +59,16 @@ class EntryWordCompletion(gtk.EntryCompletion):
         text = text.decode('utf-8')
         left, f = max(
             [(text.rfind(c, 0, cursor), c) for c in self.leftsep])
-        if left == -1: left += 1
-        else: left += len(f)
+        if left == -1:
+            left += 1
+        else:
+            left += len(f)
         offset = cursor - left
 
         entry.insert_text(value[offset:], cursor)
         entry.set_position(left + len(value))
         return True
+
 
 class LibraryTagCompletion(EntryWordCompletion):
     """A completion for text entries tied to a library's tag list."""
@@ -71,7 +77,8 @@ class LibraryTagCompletion(EntryWordCompletion):
 
     def __init__(self, library):
         super(LibraryTagCompletion, self).__init__()
-        try: model = self.__model
+        try:
+            model = self.__model
         except AttributeError:
             model = type(self).__model = gtk.ListStore(str)
             library.connect('changed', self.__update_song, model)
@@ -119,7 +126,8 @@ class LibraryTagCompletion(EntryWordCompletion):
                     "mtime", "added", "rating", "length"]:
             tags.add("#(" + tag)
         for tag in ["date", "bpm"]:
-            if tag in all_tags: tags.add("#(" + tag)
+            if tag in all_tags:
+                tags.add("#(" + tag)
 
         tags -= all_tags
         for tag in tags:
@@ -127,6 +135,7 @@ class LibraryTagCompletion(EntryWordCompletion):
         all_tags.update(tags)
 
         print_d("Done updating tag model for whole library")
+
 
 class LibraryValueCompletion(gtk.EntryCompletion):
     """Entry completion for a library value, for a specific tag.
@@ -157,7 +166,8 @@ class LibraryValueCompletion(gtk.EntryCompletion):
         # Issue 439: pre-fill with valid values if available
         if tag in massagers.tags:
             values = massagers.tags[tag].options
-        else: values = []
+        else:
+            values = []
         values = sorted(set(values + library.tag_values(tag)))
         self.set_minimum_key_length(int(len(values) > 100))
         yield True

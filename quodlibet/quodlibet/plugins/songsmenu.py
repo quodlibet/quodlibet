@@ -14,7 +14,7 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
     They will be added, in alphabetical order, to the "Plugins" menu
     that appears when songs or lists of songs are right-clicked.
     They provide one or more of the following instance methods:
-    
+
         self.plugin_single_song(song)
         self.plugin_song(song)
         self.plugin_songs(songs)
@@ -59,15 +59,19 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
     plugin_albums = None
 
     __initialized = False
+
     def __init__(self, songs, library, window):
         super(SongsMenuPlugin, self).__init__(self.PLUGIN_NAME)
         self.__library = library
         self.__songs = songs
         self.plugin_window = window
         self.__initialized = True
-        try: i = gtk.image_new_from_stock(self.PLUGIN_ICON, gtk.ICON_SIZE_MENU)
-        except AttributeError: pass
-        else: self.set_image(i)
+        try:
+            i = gtk.image_new_from_stock(self.PLUGIN_ICON, gtk.ICON_SIZE_MENU)
+        except AttributeError:
+            pass
+        else:
+            self.set_image(i)
         self.set_sensitive(bool(self.plugin_handles(songs)))
 
     @property
