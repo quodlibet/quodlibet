@@ -194,7 +194,10 @@ class PlayOrder(Gtk.ComboBoxText):
     def __init__(self, model, player):
         super(PlayOrder, self).__init__()
 
-        #FIXME: GIPORT.. adjust renderer padding
+        cell = self.get_cells()[0]
+        cell.props.xpad = 1
+        cell.props.ypad = 0
+
         self.__plugins = []
         if PluginManager.instance:
             PluginManager.instance.register_handler(self)
