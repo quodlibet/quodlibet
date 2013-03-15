@@ -15,6 +15,7 @@ old_hook = sys.excepthook
 
 class ExceptionDialog(gtk.Window):
     running = False
+    instance = None
 
     @classmethod
     def excepthook(Kind, *args):
@@ -27,7 +28,7 @@ class ExceptionDialog(gtk.Window):
         # Don't get in a recursive exception handler loop.
         if not Kind.running:
             Kind.running = True
-            Kind(*full_args)
+            Kind.instance = Kind(*full_args)
         old_hook(*args)
 
     @classmethod
@@ -56,41 +57,16 @@ class ExceptionDialog(gtk.Window):
         dumpobj.close()
 
     def __init__(self, Kind, value, traceback, dump, minidump):
-        self.__create_window(Kind, value, traceback, dump, minidump)
+        # This is all implemented a bit different than the rest of Quod
+        # Libet's windows since I want it to be as stupid as possible, to
+        # minimize the chances of something going wrong with the thing
+        # that handles things going wrong, i.e. it only uses GTK+ code,
+        # no QLTK wrappers.
 
-    def __stack_row_activated(self, view, path, column):
-        model = view.get_model()
-        filename = model[path][0]
-        line = model[path][2]
-        util.spawn(["sensible-editor", "+%d" % line, filename])
-
-    def __fill_list(self, view, model, value, trace):
-        for frame in reversed(traceback.extract_tb(trace)):
-            (filename, line, function, text) = frame
-            model.append(row=[filename, function, line])
-        view.connect('row-activated', self.__stack_row_activated)
-
-        def cdf(column, cell, model, iter):
-            cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
-                util.escape(model[iter][1]), model[iter][2],
-                util.escape(util.unexpand(model[iter][0]))))
-        render = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(str(value).replace("_", "__"), render)
-        col.set_cell_data_func(render, cdf)
-        col.set_visible(True)
-        col.set_expand(True)
-        view.append_column(col)
-
-    # This is all implemented a bit different than the rest of Quod
-    # Libet's windows since I want it to be as stupid as possible, to
-    # minimize the chances of something going wrong with the thing
-    # that handles things going wrong, i.e. it only uses GTK+ code,
-    # no QLTK wrappers.
-    def __create_window(self, Kind, value, traceback, dump, minidump):
-        window = gtk.Window()
-        window.set_default_size(400, 400)
-        window.set_border_width(12)
-        window.set_title(_("Error Occurred"))
+        gtk.Window.__init__(self)
+        self.set_default_size(400, 400)
+        self.set_border_width(12)
+        self.set_title(_("Error Occurred"))
 
         desc = _("An exception has occured in Quod Libet. A dump file "
             "has been saved to <b >%s</b> that will help us debug the crash. "
@@ -126,18 +102,41 @@ class ExceptionDialog(gtk.Window):
         box.pack_start(label, expand=False)
         box.pack_start(sw)
         box.pack_start(buttons, expand=False)
-        window.add(box)
+        self.add(box)
 
-        window.connect('destroy', self.__destroy)
-        cancel.connect_object('clicked', gtk.Window.destroy, window)
+        self.connect('destroy', self.__destroy)
+        cancel.connect_object('clicked', gtk.Window.destroy, self)
         close.connect('clicked', lambda *x: app.quit())
 
-        window.show_all()
+        self.show_all()
         filename = util.unexpand(dump)
         offset = label.get_text().decode("utf-8").find(filename)
         label.select_region(offset, offset + len(filename))
-        return window
+
+    def __stack_row_activated(self, view, path, column):
+        model = view.get_model()
+        filename = model[path][0]
+        line = model[path][2]
+        util.spawn(["sensible-editor", "+%d" % line, filename])
+
+    def __fill_list(self, view, model, value, trace):
+        for frame in reversed(traceback.extract_tb(trace)):
+            (filename, line, function, text) = frame
+            model.append(row=[filename, function, line])
+        view.connect('row-activated', self.__stack_row_activated)
+
+        def cdf(column, cell, model, iter):
+            cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
+                util.escape(model[iter][1]), model[iter][2],
+                util.escape(util.unexpand(model[iter][0]))))
+        render = gtk.CellRendererText()
+        col = gtk.TreeViewColumn(str(value).replace("_", "__"), render)
+        col.set_cell_data_func(render, cdf)
+        col.set_visible(True)
+        col.set_expand(True)
+        view.append_column(col)
 
     def __destroy(self, window):
         type(self).running = False
+        type(self).instance = None
         window.destroy()

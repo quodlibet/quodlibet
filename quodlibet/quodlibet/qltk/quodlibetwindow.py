@@ -134,9 +134,14 @@ class TopBar(gtk.HBox):
 
         # cover image
         self.image = CoverImage(resize=True)
-        player.connect('song-started', lambda x, s: self.image.set_song(s))
-        parent.connect('artwork-changed', self.__song_art_changed, library)
+        gobject_weak(player.connect, 'song-started', self.__new_song,
+                     parent=self)
+        gobject_weak(parent.connect, 'artwork-changed',
+                     self.__song_art_changed, library, parent=self)
         self.pack_start(self.image, expand=False)
+
+    def __new_song(self, player, song):
+        self.image.set_song(song)
 
     def __song_art_changed(self, player, songs, library):
         self.image.refresh()
