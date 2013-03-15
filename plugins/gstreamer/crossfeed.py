@@ -71,7 +71,8 @@ class Preferences(Gtk.VBox):
             label.set_padding(0, 6)
             label.set_use_underline(True)
             table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL |
+                         Gtk.AttachOptions.SHRINK)
 
         preset_combo = Gtk.ComboBoxText()
         self.__combo = preset_combo

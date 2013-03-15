@@ -58,16 +58,19 @@ from quodlibet.parse import Pattern
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
 
+
 def get_encoding_from_socket(socket):
     content_type = socket.headers.get("Content-Type", "")
     p = map(str.strip, map(str.lower, content_type.split(";")))
     enc = [t.split("=")[-1].strip() for t in p if t.startswith("charset")]
     return (enc and enc[0]) or "utf-8"
 
+
 def get_url(url, post={}, get={}):
     post_params = urllib.urlencode(post)
     get_params = urllib.urlencode(get)
-    if get: get_params = '?' + get_params
+    if get:
+        get_params = '?' + get_params
 
     # add post, get data and headers
     url = '%s%s' % (url, get_params)
@@ -86,10 +89,11 @@ def get_url(url, post={}, get={}):
     # unzip the response if needed
     data = url_sock.read()
     if url_sock.headers.get("content-encoding", "") == "gzip":
-        data = gzip.GzipFile(fileobj = StringIO(data)).read()
+        data = gzip.GzipFile(fileobj=StringIO(data)).read()
     url_sock.close()
 
     return data, enc
+
 
 def get_encoding(url):
     request = urllib2.Request(url)
@@ -97,6 +101,7 @@ def get_encoding(url):
     request.add_header('User-Agent', USER_AGENT)
     url_sock = urllib2.urlopen(request)
     return get_encoding_from_socket(url_sock)
+
 
 class BasicHTMLParser(HTMLParser, object):
     """Basic Parser, stores all tags in a 3 tuple with tagname, attrs and data
@@ -113,7 +118,7 @@ class BasicHTMLParser(HTMLParser, object):
         #to make the crappy HTMLParser ignore more stuff
         self.CDATA_CONTENT_ELEMENTS = ()
 
-    def parse_url(self, url, post = {}, get = {}):
+    def parse_url(self, url, post={}, get={}):
         """Will read the data and parse it into the data variable.
         A tag will be ['tagname', {all attributes}, 'data until the next tag']
         Only starttags are handled/used."""
@@ -406,6 +411,7 @@ class DiscogsParser(object):
             page += 1
         return self.cover_list
 
+
 class AmazonParser(object):
     """A class for searching covers from amazon"""
 
@@ -508,12 +514,13 @@ class AmazonParser(object):
         self.__parse_page(1, query)
 
         if len(self.covers) < limit:
-            for page in xrange(2 ,self.page_count + 1):
+            for page in xrange(2, self.page_count + 1):
                 self.__parse_page(page, query)
                 if len(self.covers) >= limit:
                     break
 
         return self.covers
+
 
 class CoverArea(Gtk.VBox):
     """The image display and saving part."""
@@ -611,7 +618,8 @@ class CoverArea(Gtk.VBox):
 
         self.scrolled = Gtk.ScrolledWindow()
         self.scrolled.add_with_viewport(self.image)
-        self.scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.scrolled.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
 
         bbox = Gtk.HButtonBox()
         bbox.set_spacing(6)
@@ -804,7 +812,8 @@ class CoverArea(Gtk.VBox):
                     self.data_cache.insert(0, (url, raw_data))
 
                     while 1:
-                        cache_sizes = [len(data[1]) for data in self.data_cache]
+                        cache_sizes = [len(data[1]) for data in
+                                       self.data_cache]
                         if sum(cache_sizes) > self.max_cache_size:
                             del self.data_cache[-1]
                         else:
@@ -828,6 +837,7 @@ class CoverArea(Gtk.VBox):
             GLib.idle_add(self.button.set_sensitive, True)
 
         self.loading = False
+
 
 class AlbumArtWindow(qltk.Window):
     """The main window including the search list"""
@@ -875,7 +885,7 @@ class AlbumArtWindow(qltk.Window):
         rend_pix.set_property('height', 56)
 
         def escape_data(data):
-            for rep in ('\n','\t','\r', '\v'):
+            for rep in ('\n', '\t', '\r', '\v'):
                 data = data.replace(rep, ' ')
 
             return util.escape(' '.join(data.split()))
@@ -1108,6 +1118,7 @@ class CoverSearch(object):
 
         return new_query.rstrip()
 
+
 #------------------------------------------------------------------------------
 def cfg_get(key, default):
     try:
@@ -1124,11 +1135,13 @@ def cfg_get(key, default):
 
 config_eng_prefix = 'engine_'
 
+
 #------------------------------------------------------------------------------
 def cfg_set(key, value):
     if type(value) == bool:
         value = str(bool(value)).lower()
     config.set('plugins', "cover_" + key, value)
+
 
 #------------------------------------------------------------------------------
 def get_size_of_url(url):
@@ -1136,7 +1149,7 @@ def get_size_of_url(url):
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
     url_sock = urllib2.urlopen(request)
-    size =  url_sock.headers.get('content-length')
+    size = url_sock.headers.get('content-length')
     url_sock.close()
 
     if size:
@@ -1179,10 +1192,12 @@ engines.append(eng)
 #engines.append(eng)
 #------------------------------------------------------------------------------
 
+
 def change_config(checkb, id):
     global config_eng_prefix
 
     cfg_set(config_eng_prefix + id, checkb.get_active())
+
 
 class DownloadAlbumArt(SongsMenuPlugin):
     PLUGIN_ID = 'Download Album art'
@@ -1208,8 +1223,10 @@ class DownloadAlbumArt(SongsMenuPlugin):
             check.connect('toggled', change_config, eng['config_id'])
 
             button = Gtk.Button(eng['url'])
-            button.connect('clicked', lambda s:util.website(s.get_label()))
-            table.attach(button, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+            button.connect('clicked', lambda s: util.website(s.get_label()))
+            table.attach(button, 1, 2, i, i + 1,
+                         xoptions=Gtk.AttachOptions.FILL |
+                         Gtk.AttachOptions.SHRINK)
 
         return frame
 

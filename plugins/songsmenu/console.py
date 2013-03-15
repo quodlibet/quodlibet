@@ -15,7 +15,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-# Parts from "Interactive Python-GTK Console" (stolen from epiphany's console.py)
+# Parts from "Interactive Python-GTK Console"
+# (stolen from epiphany's console.py)
 #     Copyright (C), 1998 James Henstridge <james@daa.com.au>
 #     Copyright (C), 2005 Adam Hooper <adamh@densi.com>
 # Bits from gedit Python Console Plugin
@@ -61,8 +62,8 @@ class ConsoleWindow(Gtk.Window):
 
         from quodlibet import app
         console = PythonConsole(
-            namespace = {
-                'songs' : songs,
+            namespace={
+                'songs': songs,
                 'files': files,
                 'sdict': song_dicts,
                 'app': app})
@@ -88,11 +89,11 @@ class ConsoleWindow(Gtk.Window):
 
 
 class PythonConsole(Gtk.ScrolledWindow):
-    def __init__(self, namespace = {}, destroy_cb = None):
+    def __init__(self, namespace={}, destroy_cb=None):
         Gtk.ScrolledWindow.__init__(self)
 
         self.destroy_cb = destroy_cb
-        self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
+        self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.IN)
         self.view = Gtk.TextView()
         self.view.modify_font(Pango.font_description_from_string('Monospace'))
@@ -103,7 +104,7 @@ class PythonConsole(Gtk.ScrolledWindow):
 
         buffer = self.view.get_buffer()
         self.normal = buffer.create_tag("normal")
-        self.error  = buffer.create_tag("error")
+        self.error = buffer.create_tag("error")
         self.error.set_property("foreground", "red")
         self.command = buffer.create_tag("command")
         self.command.set_property("foreground", "blue")
@@ -132,15 +133,16 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.view.connect("key-press-event", self.__key_press_event_cb)
         buffer.connect("mark-set", self.__mark_set_cb)
 
-
     def __key_press_event_cb(self, view, event):
         modifier_mask = Gtk.accelerator_get_default_mod_mask()
         event_state = event.state & modifier_mask
 
-        if event.keyval == Gdk.KEY_d and event_state == Gdk.ModifierType.CONTROL_MASK:
+        if event.keyval == Gdk.KEY_d and \
+                event_state == Gdk.ModifierType.CONTROL_MASK:
             self.destroy()
 
-        elif event.keyval == Gdk.KEY_Return and event_state == Gdk.ModifierType.CONTROL_MASK:
+        elif event.keyval == Gdk.KEY_Return and \
+                event_state == Gdk.ModifierType.CONTROL_MASK:
             # Get the command
             buffer = view.get_buffer()
             inp_mark = buffer.get_mark("input")
@@ -159,7 +161,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             # Keep indentation of precendent line
             spaces = re.match(self.__spaces_pattern, line)
             if spaces is not None:
-                buffer.insert(cur, line[spaces.start() : spaces.end()])
+                buffer.insert(cur, line[spaces.start():spaces.end()])
                 cur = buffer.get_end_iter()
 
             buffer.place_cursor(cur)
@@ -224,8 +226,9 @@ class PythonConsole(Gtk.ScrolledWindow):
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_KP_Left or event.keyval == Gdk.KEY_Left or \
-             event.keyval == Gdk.KEY_BackSpace:
+        elif event.keyval == Gdk.KEY_KP_Left or \
+                event.keyval == Gdk.KEY_Left or \
+                event.keyval == Gdk.KEY_BackSpace:
             buffer = view.get_buffer()
             inp = buffer.get_iter_at_mark(buffer.get_mark("input"))
             cur = buffer.get_iter_at_mark(buffer.get_insert())
@@ -243,7 +246,7 @@ class PythonConsole(Gtk.ScrolledWindow):
 
     def __mark_set_cb(self, buffer, iter, name):
         input = buffer.get_iter_at_mark(buffer.get_mark("input"))
-        pos   = buffer.get_iter_at_mark(buffer.get_insert())
+        pos = buffer.get_iter_at_mark(buffer.get_insert())
         self.view.set_editable(pos.compare(input) != -1)
 
     def get_command_line(self):
@@ -259,7 +262,8 @@ class PythonConsole(Gtk.ScrolledWindow):
         cur = buffer.get_end_iter()
         buffer.delete(inp, cur)
         buffer.insert(inp, command)
-        buffer.select_range(buffer.get_iter_at_mark(mark), buffer.get_end_iter())
+        buffer.select_range(buffer.get_iter_at_mark(mark),
+                            buffer.get_end_iter())
         self.view.grab_focus()
 
     def history_add(self, line):
@@ -285,7 +289,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.view.scroll_to_iter(iter, 0.0, False, 0.5, 0.5)
         return False
 
-    def write(self, text, tag = None):
+    def write(self, text, tag=None):
         buf = self.view.get_buffer()
         if tag is None:
             buf.insert(buf.get_end_iter(), text)
@@ -294,7 +298,7 @@ class PythonConsole(Gtk.ScrolledWindow):
 
         GLib.idle_add(self.scroll_to_end)
 
-    def eval(self, command, display_command = False):
+    def eval(self, command, display_command=False):
         buffer = self.view.get_buffer()
         lin = buffer.get_mark("input-line")
         buffer.delete(buffer.get_iter_at_mark(lin),
@@ -325,7 +329,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             try:
                 r = eval(command, self.namespace, self.namespace)
                 if r is not None:
-                    print `r`
+                    print repr(r)
             except SyntaxError:
                 exec command in self.namespace
         except:
@@ -338,22 +342,45 @@ class PythonConsole(Gtk.ScrolledWindow):
         sys.stderr, self.stderr = self.stderr, sys.stderr
 
 
-class OutFile:
+class OutFile(object):
     """A fake output file object. It sends output to a TK test widget,
     and if asked for a file number, returns one set on instance creation"""
     def __init__(self, console, fn, tag):
         self.fn = fn
         self.console = console
         self.tag = tag
-    def close(self):         pass
-    def flush(self):         pass
-    def fileno(self):        return self.fn
-    def isatty(self):        return 0
-    def read(self, a):       return ''
-    def readline(self):      return ''
-    def readlines(self):     return []
-    def write(self, s):      self.console.write(s, self.tag)
-    def writelines(self, l): self.console.write(l, self.tag)
-    def seek(self, a):       raise IOError, (29, 'Illegal seek')
-    def tell(self):          raise IOError, (29, 'Illegal seek')
+
+    def close(self):
+        pass
+
+    def flush(self):
+        pass
+
+    def fileno(self):
+        return self.fn
+
+    def isatty(self):
+        return 0
+
+    def read(self, a):
+        return ''
+
+    def readline(self):
+        return ''
+
+    def readlines(self):
+        return []
+
+    def write(self, s):
+        self.console.write(s, self.tag)
+
+    def writelines(self, l):
+        self.console.write(l, self.tag)
+
+    def seek(self, a):
+        raise IOError(29, 'Illegal seek')
+
+    def tell(self):
+        raise IOError(29, 'Illegal seek')
+
     truncate = tell

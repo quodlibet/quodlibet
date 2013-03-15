@@ -24,12 +24,15 @@ ENGLISH_INCORRECTLY_CAPITALISED_WORDS = \
 # Allow basic sentence-like concepts eg "Artist: The Greatest Hits"
 ENGLISH_SENTENCE_ENDS = [".", ":", "-"]
 
+
 def previous_real_word(words, i):
     """Returns the first word from words before position i that is non-null"""
     while i > 0:
         i -= 1
-        if words[i] != "": break
+        if words[i] != "":
+            break
     return words[i]
+
 
 def humanise(text):
     """Returns a more natural (English) title-casing of text
@@ -92,4 +95,3 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
 
     def activated(self, tag, value):
         return [(tag, self.process_tag(value))]
-

@@ -370,7 +370,7 @@ class RemoveCommand(Command):
     def _add_options(self, p):
         p.add_option("--dry-run", action="store_true",
                      help=_("Show changes, don't apply them"))
-        p.add_option("-e", "--regexp",  action="store", type="string",
+        p.add_option("-e", "--regexp", action="store", type="string",
                      help=_("Value is a regular expression"))
 
     def _execute(self, options, args):

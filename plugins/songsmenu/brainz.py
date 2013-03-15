@@ -19,7 +19,8 @@ try:
     from musicbrainz2.utils import extractUuid
 except ImportError:
     from quodlibet import plugins
-    if not hasattr(plugins, "PluginImportException"): raise
+    if not hasattr(plugins, "PluginImportException"):
+        raise
     raise plugins.PluginImportException(
         "Couldn't find python-musicbrainz2.")
 
@@ -29,6 +30,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
 
 VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
+
 
 def get_artist(album):
     """Returns a single artist likely to be the MB AlbumArtist, or None."""
@@ -42,18 +44,22 @@ def get_artist(album):
             return None
     return None
 
+
 def get_trackcount(album):
     """Returns the track count, hammered into submission."""
     return max(max(map(lambda t: max(map(int,
         t.get('tracknumber', '0').split('/'))), album)), len(album)) # (;))
 
+
 def config_get(key, default=''):
     return config.getboolean('plugins', 'brainz_' + key, default)
+
 
 def dialog_get_widget_for_stockid(dialog, stockid):
     for child in dialog.get_action_area().get_children():
         if child.get_label() == stockid:
             return child
+
 
 class ResultTreeView(HintedTreeView, MultiDragTreeView):
     """The result treeview. The model only stores local tracks; info about
@@ -129,10 +135,12 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         has_artists = bool(filter(lambda t: t.artist, remote_album))
         col = self.get_column(3)
         # sometimes gets called after the treeview is already gone
-        if not col: return
+        if not col:
+            return
         col.set_visible(has_artists)
         self.columns_autosize()
         self.queue_draw()
+
 
 class ResultComboBox(Gtk.ComboBox):
     """Formatted picker for different Result entries."""
@@ -141,6 +149,7 @@ class ResultComboBox(Gtk.ComboBox):
         super(ResultComboBox, self).__init__(model=model)
         render = Gtk.CellRendererText()
         render.set_fixed_height_from_font(2)
+
         def celldata(layout, cell, model, iter, data):
             release = model[iter][0]
             if not release:
@@ -157,6 +166,7 @@ class ResultComboBox(Gtk.ComboBox):
             cell.set_property('markup', markup)
         self.pack_start(render, True)
         self.set_cell_data_func(render, celldata, None)
+
 
 class ReleaseEventComboBox(Gtk.HBox):
     """A ComboBox for picking a release event."""
@@ -187,8 +197,8 @@ class ReleaseEventComboBox(Gtk.HBox):
         for rel_event in events:
             text = '%s %s: <b>%s</b> <i>(%s)</i>' % (
                     rel_event.getDate() or '', rel_event.getLabel() or '',
-                    rel_event.getCatalogNumber(),rel_event.getCountry())
-            self.model.append( (rel_event, text) )
+                    rel_event.getCatalogNumber(), rel_event.getCountry())
+            self.model.append((rel_event, text))
         if len(events) > 0:
             self.combo.set_active(0)
         self.combo.set_sensitive((len(events) > 0))
@@ -202,6 +212,7 @@ class ReleaseEventComboBox(Gtk.HBox):
             return self.model[itr][0]
         else:
             return None
+
 
 class QueryThread:
     """Daemon thread which does HTTP retries and avoids flooding."""
@@ -280,12 +291,14 @@ class SearchWindow(Gtk.Dialog):
             shared['musicbrainz_albumid'] = extractUuid(album.id)
 
         for idx, (song, ) in enumerate(self.result_treeview.model):
-            if song is None: continue
+            if song is None:
+                continue
             song.update(shared)
-            if idx >= len(album.tracks): continue
+            if idx >= len(album.tracks):
+                continue
             track = album.tracks[idx]
             song['title'] = track.title
-            song['tracknumber'] = '%d/%d' % (idx+1,
+            song['tracknumber'] = '%d/%d' % (idx + 1,
                     max(len(album.tracks), len(self.result_treeview.model)))
             if config_get('standard', True):
                 song['musicbrainz_trackid'] = extractUuid(track.id)
@@ -346,7 +359,8 @@ class SearchWindow(Gtk.Dialog):
     def __result_changed(self, combo):
         """Called when a release is chosen from the result combo."""
         idx = combo.get_active()
-        if idx == -1: return
+        if idx == -1:
+            return
         rel_id = self._resultlist[idx][0].id
         if rel_id in self._releasecache:
             self.__update_results(self._releasecache[rel_id])
@@ -403,7 +417,7 @@ class SearchWindow(Gtk.Dialog):
         if art:
             alb = '%s AND artist:"%s"' % (alb, art.replace('"', ''))
         sq.set_text('%s AND tracks:%d' %
-                (alb, get_trackcount(album)) )
+                (alb, get_trackcount(album)))
 
         lbl = Gtk.Label(label="_Query:")
         lbl.set_use_underline(True)
@@ -486,5 +500,3 @@ class MyBrainz(SongsMenuPlugin):
             vb.pack_start(ccb, True, True, 0)
 
         return vb
-
-

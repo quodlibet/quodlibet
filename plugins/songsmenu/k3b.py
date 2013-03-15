@@ -10,6 +10,7 @@ from gi.repository import Gtk
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class BurnCD(SongsMenuPlugin):
     PLUGIN_ID = 'Burn CD'
     PLUGIN_NAME = _('Burn CD')

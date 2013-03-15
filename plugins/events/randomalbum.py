@@ -13,8 +13,11 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
-try: from quodlibet.qltk import notif
-except Exception: notif = None
+try:
+    from quodlibet.qltk import notif
+except Exception:
+    notif = None
+
 
 class RandomAlbum(EventPlugin):
     PLUGIN_ID = 'Random Album Playback'
@@ -70,7 +73,8 @@ class RandomAlbum(EventPlugin):
         table.set_border_width(3)
 
         hbox = Gtk.HBox(spacing=6)
-        spin = Gtk.SpinButton(adjustment=Gtk.Adjustment(self.delay, 0, 3600, 1, 10))
+        spin = Gtk.SpinButton(
+            adjustment=Gtk.Adjustment(self.delay, 0, 3600, 1, 10))
         spin.connect("value-changed", delay_changed_cb)
         hbox.pack_start(spin, False, True, 0)
         lbl = Gtk.Label(label=_("seconds before starting next album"))
@@ -82,9 +86,9 @@ class RandomAlbum(EventPlugin):
         check = Gtk.CheckButton(_("Play some albums more than others"))
         vbox.pack_start(check, False, True, 0)
         # Toggle both frame and contained table; frame doesn't always work?
-        check.connect("toggled", toggled_cb, [frame,table])
+        check.connect("toggled", toggled_cb, [frame, table])
         check.set_active(self.use_weights)
-        toggled_cb(check, [frame,table])
+        toggled_cb(check, [frame, table])
 
         frame.add(table)
         vbox.pack_start(frame, True, True, 0)
@@ -97,7 +101,8 @@ class RandomAlbum(EventPlugin):
         hb = Gtk.HBox(spacing=0)
         hb.pack_start(arr, False, True, 0)
         hb.pack_start(less_lbl, True, True, 0)
-        table.attach(hb, 1, 2, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
+        table.attach(hb, 1, 2, 0, 1, xpadding=3,
+                     xoptions=Gtk.AttachOptions.FILL)
         # More label
         more_lbl = Gtk.Label()
         arr = Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.OUT)
@@ -106,13 +111,15 @@ class RandomAlbum(EventPlugin):
         hb = Gtk.HBox(spacing=0)
         hb.pack_end(arr, False, True, 0)
         hb.pack_end(more_lbl, True, True, 0)
-        table.attach(hb, 2, 3, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
+        table.attach(hb, 2, 3, 0, 1, xpadding=3,
+                     xoptions=Gtk.AttachOptions.FILL)
 
         for (idx, (key, text, func)) in enumerate(self.keys):
             lbl = Gtk.Label(label=text)
             lbl.set_alignment(0, 0)
             table.attach(lbl, 0, 1, idx + 1, idx + 2,
-                         xoptions=Gtk.AttachOptions.FILL, xpadding=3, ypadding=3)
+                         xoptions=Gtk.AttachOptions.FILL,
+                         xpadding=3, ypadding=3)
             adj = Gtk.Adjustment(lower=-1.0, upper=1.0, step_incr=0.1)
             hscale = Gtk.HScale(adjustment=adj)
             hscale.set_value(self.weights[key])
@@ -120,7 +127,8 @@ class RandomAlbum(EventPlugin):
             hscale.set_show_fill_level(False)
             hscale.connect("value-changed", changed_cb, key)
             lbl.set_mnemonic_widget(hscale)
-            table.attach(hscale, 1, 3, idx + 1, idx + 2, xpadding=3, ypadding=3)
+            table.attach(hscale, 1, 3, idx + 1, idx + 2,
+                         xpadding=3, ypadding=3)
 
         return vbox
 
@@ -143,9 +151,6 @@ class RandomAlbum(EventPlugin):
             scores[album] = 0
             for (tag, text, func) in self.keys:
                 rank = ranked[tag].index(album)
-#                print_d("%s: ranked %d out of %d (with %s) for %s = +%d points"
-#                        % (album("album"), rank+1,len(albums),
-#                           album("~#%s" % tag), tag, rank * self.weights[tag]))
                 scores[album] += rank * self.weights[tag]
 
         return [(score, name) for name, score in scores.items()]
@@ -186,10 +191,12 @@ class RandomAlbum(EventPlugin):
         if self.delay:
             srcid = GLib.timeout_add(1000 * self.delay,
                                      self.change_album, album)
-            if notif is None: return
+            if notif is None:
+                return
             task = notif.Task(_("Random Album"),
                               _("Waiting to start <i>%s</i>") % album("album"),
                               stop=lambda: GLib.source_remove(srcid))
+
             def countdown():
                 for i in range(10 * self.delay):
                     task.update(i / (10. * self.delay))
@@ -216,5 +223,7 @@ class RandomAlbum(EventPlugin):
         # after the song ended. Also, if this is program startup and the
         # previous current song wasn't found, we'll get this condition
         # as well, so just leave the player paused if that's the case.
-        try: app.player.next()
-        except AttributeError: app.player.paused = True
+        try:
+            app.player.next()
+        except AttributeError:
+            app.player.paused = True

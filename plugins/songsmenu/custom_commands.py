@@ -127,7 +127,6 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
                               title=_("Edit Custom Commands"))
         win.show()
 
-
     @classmethod
     def PluginPreferences(cls, parent):
         hb = Gtk.HBox(spacing=3)
@@ -149,13 +148,13 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         try:
             with open(filename) as f:
                 coms = JSONObjectDict.from_json(Command, f.read())
-        except (IOError,ValueError), e:
+        except (IOError, ValueError), e:
             print_w("Couldn't open saved commands (%s)" % e)
 
         # Failing all else...
         if not coms:
             print_d("No commands found in %s. Using defaults." % filename)
-            coms = dict([(c.name,c) for c in cls.DEFAULT_COMS])
+            coms = dict([(c.name, c) for c in cls.DEFAULT_COMS])
         print_d("Commands = %s" % coms)
         return coms
 
@@ -166,7 +165,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         self.commands = {}
         submenu = Gtk.Menu()
         self.commands = self._get_saved_searches()
-        for (name,c) in self.commands.items():
+        for (name, c) in self.commands.items():
             item = Gtk.MenuItem(name)
             item.connect_object('activate', self.__set_pat, name)
             submenu.append(item)

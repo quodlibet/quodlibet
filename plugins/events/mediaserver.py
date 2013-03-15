@@ -255,6 +255,7 @@ class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
 SUPPORTED_SONG_PROPERTIES = ("Size", "Artist", "Album", "Date", "Genre",
                              "Duration", "TrackNumber")
 
+
 class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
                       DBusIntrospectable):
     """ A dummy song object that is not exported on the bus, but supports

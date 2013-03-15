@@ -24,8 +24,10 @@ except ImportError:
 
 API_KEY = "f536cdadb4c2aec75ae15e2b719cb3a1"
 
+
 def log(msg):
     print_d('[lastfmsync] %s' % msg)
+
 
 def apicall(method, **kwargs):
     """Performs Last.fm API call."""
@@ -46,8 +48,10 @@ def apicall(method, **kwargs):
         raise EnvironmentError(resp['error'], errmsg)
     return resp
 
+
 def config_get(key, default=None):
     return config.get('plugins', 'lastfmsync_%s' % key, default)
+
 
 class LastFMSyncCache(object):
     """Stores the Last.fm charts for a particular user."""
@@ -75,7 +79,7 @@ class LastFMSyncCache(object):
             # Last.fm updates their charts weekly; we only poll for new
             # charts if it's been more than a day since the last poll
             now = time.time()
-            if not self.lastupdated or self.lastupdated + (24*60*60) < now:
+            if not self.lastupdated or self.lastupdated + (24 * 60 * 60) < now:
                 prog("Updating chart list.", 0)
                 resp = apicall('user.getweeklychartlist', user=self.username)
                 charts = resp['weeklychartlist']['chart']
@@ -95,7 +99,7 @@ class LastFMSyncCache(object):
             for idx, (fro, to) in enumerate(sorted(new_charts)):
                 chart_week = date.fromtimestamp(fro).isoformat()
                 prog(_("Fetching chart for week of %s.") % chart_week,
-                     (idx+1.) / (len(new_charts)+2.))
+                     (idx + 1.) / (len(new_charts) + 2.))
                 args = {'user': self.username, 'from': fro, 'to': to}
                 try:
                     resp = apicall('user.getweeklytrackchart', **args)
@@ -183,10 +187,11 @@ class LastFMSyncCache(object):
                 song['~#lastplayed'] = lastplayed
             song['~#added'] = min(song['~#added'], stats['added'])
 
+
 class LastFMSyncWindow(Gtk.Dialog):
     def __init__(self, parent):
         super(LastFMSyncWindow, self).__init__(
-                _("Last.fm Sync"), parent, buttons = (
+                _("Last.fm Sync"), parent, buttons=(
                     Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
                     Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
         self.set_border_width(5)
@@ -211,6 +216,7 @@ class LastFMSyncWindow(Gtk.Dialog):
             self.progbar.set_text("%2.1f%%" % (fraction * 100))
             if fraction == 1:
                 self.set_response_sensitive(Gtk.ResponseType.ACCEPT, True)
+
 
 class LastFMSync(SongsMenuPlugin):
     PLUGIN_ID = "Last.fm Sync"
@@ -274,5 +280,3 @@ class LastFMSync(SongsMenuPlugin):
         hbox.pack_start(ent, True, True, 0)
 
         return hbox
-
-

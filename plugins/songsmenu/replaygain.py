@@ -15,6 +15,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 __all__ = ['ReplayGain']
 
+
 class ReplayGain(SongsMenuPlugin):
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = 'Replay Gain'

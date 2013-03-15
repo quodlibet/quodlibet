@@ -66,4 +66,5 @@ class Bookmarks(SongsMenuPlugin):
     def __unmap(self, menu):
         map(self.__menu.remove, self.__menu.get_children())
 
-    def plugin_songs(self, songs): pass
+    def plugin_songs(self, songs):
+        pass

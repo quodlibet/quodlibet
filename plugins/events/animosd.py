@@ -15,6 +15,7 @@ from gi.repository import Gtk, GObject, GLib
 from gi.repository import Gdk, GdkPixbuf
 from gi.repository import Pango, PangoCairo
 import cairo
+import pangocairo
 from math import pi
 
 from quodlibet import config, qltk, app
@@ -29,6 +30,7 @@ def Label(text):
     l = Gtk.Label(label=text, use_underline=True)
     l.set_alignment(0.0, 0.5)
     return l
+
 
 class OSDWindow(Gtk.Window):
     __gsignals__ = {
@@ -113,7 +115,7 @@ class OSDWindow(Gtk.Window):
         return
 
         # FIXME: GIPORT
-        if self.is_composited() :
+        if self.is_composited():
             # the simple case
             self.draw_title_info(cr)
             return
@@ -126,7 +128,8 @@ class OSDWindow(Gtk.Window):
 
         if back_pbuf is None and 0:
             root = self.get_screen().get_root_window()
-            back_pbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8,
+            back_pbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                    False, 8,
                     walloc.width, walloc.height)
             back_pbuf.get_from_drawable(root, root.get_colormap(),
                     wpos[0], wpos[1], 0, 0, walloc.width, walloc.height)
@@ -149,20 +152,20 @@ class OSDWindow(Gtk.Window):
         cr.set_source_surface(title_surface, 0, 0)
         cr.paint_with_alpha(self.get_opacity())
 
-    def rounded_rectangle (self, cr, x, y, radius, width, height):
+    def rounded_rectangle(self, cr, x, y, radius, width, height):
         cr.move_to(x + radius, y)
         cr.line_to(x + width - radius, y)
-        cr.arc (x + width - radius, y + radius, radius,
-                - 90.0 * pi / 180.0, 0.0 * pi / 180.0)
+        cr.arc(x + width - radius, y + radius, radius,
+               - 90.0 * pi / 180.0, 0.0 * pi / 180.0)
         cr.line_to(x + width, y + height - radius)
-        cr.arc (x + width - radius, y + height - radius, radius,
-                0.0 * pi / 180.0, 90.0 * pi / 180.0)
+        cr.arc(x + width - radius, y + height - radius, radius,
+               0.0 * pi / 180.0, 90.0 * pi / 180.0)
         cr.line_to(x + radius, y + height)
-        cr.arc (x + radius, y + height - radius, radius,
-                90.0 * pi / 180.0, 180.0 * pi / 180.0)
+        cr.arc(x + radius, y + height - radius, radius,
+               90.0 * pi / 180.0, 180.0 * pi / 180.0)
         cr.line_to(x, y + radius)
-        cr.arc (x + radius, y + radius, radius,
-                180.0 * pi / 180.0, 270.0 * pi / 180.0)
+        cr.arc(x + radius, y + radius, radius,
+               180.0 * pi / 180.0, 270.0 * pi / 180.0)
         cr.close_path()
 
     def draw_conf_rect(self, cr, x, y, width, height, radius):
@@ -182,14 +185,15 @@ class OSDWindow(Gtk.Window):
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(*self.conf.fill)
         radius = min(25, self.conf.corners * min(*self.get_size()))
-        self.draw_conf_rect(cr, 0, 0, self.get_size()[0], self.get_size()[1], radius)
+        self.draw_conf_rect(cr, 0, 0, self.get_size()[0],
+                            self.get_size()[1], radius)
         cr.fill()
 
         # draw border
         if do_outline:
             # Make border darker and more translucent than the fill
             f = self.conf.fill
-            rgba = (f[0]/1.25, f[1]/1.25, f[2]/1.25, f[3]/2.0)
+            rgba = (f[0] / 1.25, f[1] / 1.25, f[2] / 1.25, f[3] / 2.0)
             cr.set_source_rgba(*rgba)
             self.draw_conf_rect(cr, 1, 1,
                 self.get_size()[0] - 2, self.get_size()[1] - 2, radius)
@@ -283,6 +287,7 @@ class OSDWindow(Gtk.Window):
             return False
         return True
 
+
 class AnimOsd(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "Animated On-Screen Display"
     PLUGIN_NAME = _("Animated On-Screen Display")
@@ -299,7 +304,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             return int(x * 65535)
 
         def cfg_set_tuple(name, t):
-            string = " ".join(map(str,t))
+            string = " ".join(map(str, t))
             #print_d("Writing config: %s=%s" % (name, string))
             self.config_set("%s" % name, string)
 
@@ -311,7 +316,8 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
 
         def set_text(button):
             color = button.get_color()
-            color = map(__coltofloat, (color.red, color.green, color.blue, 0.0))
+            color = map(__coltofloat,
+                        (color.red, color.green, color.blue, 0.0))
             self.conf.text = tuple(color)
             cfg_set_tuple("text", self.conf.text)
             self.plugin_single_song(app.player.song)
@@ -411,7 +417,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             hb.pack_start(monitor, False, True, 0)
             vb2.pack_start(hb, True, True, 0)
         else:
-            self.conf.monitor = 0 #should be this by default anyway
+            self.conf.monitor = 0 # should be this by default anyway
 
         hb = Gtk.HBox(spacing=6)
         cb = Gtk.ComboBoxText()
@@ -463,7 +469,8 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         t.set_row_spacings(3)
         b = Gtk.ColorButton(rgba=Gdk.RGBA(*map(__floattocol, self.conf.text)))
         l = Label(_("_Text:"))
-        l.set_mnemonic_widget(b); l.set_use_underline(True)
+        l.set_mnemonic_widget(b)
+        l.set_use_underline(True)
         t.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
         t.attach(b, 1, 2, 0, 1)
         b.connect('color-set', set_text)
@@ -473,7 +480,8 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         b.set_alpha(__floattocol(self.conf.fill[3]))
         b.connect('color-set', set_fill)
         l = Label(_("_Fill:"))
-        l.set_mnemonic_widget(b); l.set_use_underline(True)
+        l.set_mnemonic_widget(b)
+        l.set_use_underline(True)
         t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
         t.attach(b, 1, 2, 1, 2)
 
@@ -511,7 +519,6 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         frame = qltk.Frame(label=_("Effects"), child=vb2)
         frame.set_border_width(6)
         vb.pack_start(frame, False, True, 0)
-
 
         string = qltk.Button(_("Ed_it Display"), Gtk.STOCK_EDIT)
         string.connect('clicked', edit_string)
@@ -552,7 +559,8 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         # color,alpha or (-1.0,0.0,0.0,0.5) - borders the whole OSD
         bcolor = (0.0, 0.0, 0.0, 0.2)
         # song information to use - like in main window
-        string = r'''<album|\<b\><album>\</b\><discnumber| - Disc <discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
+        string = r'''<album|\<b\><album>\</b\><discnumber| - Disc \
+<discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
 >\<span weight='bold' size='large'\><title>\</span\> - <~length><version|
 \<small\>\<i\><version>\</i\>\</small\>><~people|
 by <~people>>'''
@@ -562,7 +570,8 @@ by <~people>>'''
 
         def str_to_tuple(s):
             lst = map(float, s.split())
-            while len(lst)<4: lst.append(0.0)
+            while len(lst) < 4:
+                lst.append(0.0)
             return tuple(lst)
 
         config_map = [
@@ -580,13 +589,15 @@ by <~people>>'''
             ('string', None),
             ]
         for key, getconv in config_map:
-            try: default = getattr(self.conf, key)
+            try:
+                default = getattr(self.conf, key)
             except AttributeError:
                 print_d("Unknown config item '%s'" % key)
             try:
                 value = self.config_get(key, default)
                 # This should never happen now that we default, but still..
-                if value is None: continue
+                if value is None:
+                    continue
             except (config.Error, ValueError):
                 print_d("Couldn't find config item %s" % key)
                 continue
@@ -594,11 +605,12 @@ by <~people>>'''
             try:
                 if getconv is not None:
                     value = getconv(value)
-            except Exception,err:
+            except Exception as err:
                 print_d("Error parsing config for %s (%s) - defaulting to %r"
                         % (key, err, default))
                 # Replace the invalid value
-                if default is not None: self.config_set(key, default)
+                if default is not None:
+                    self.config_set(key, default)
             else:
                 setattr(self.conf, key, value)
 

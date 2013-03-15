@@ -24,6 +24,7 @@ if not Gst.ElementFactory.find("chromaprint"):
     from quodlibet import plugins
     raise plugins.PluginImportException("Couldn't find gst-chromaprint.")
 
+
 def get_num_threads():
     # multiprocessing is >= 2.6.
     # Default to 2 threads if cpu_count isn't implemented for the current arch
@@ -31,8 +32,10 @@ def get_num_threads():
     try:
         import multiprocessing
         threads = multiprocessing.cpu_count()
-    except (ImportError, NotImplementedError): threads = 2
+    except (ImportError, NotImplementedError):
+        threads = 2
     return threads
+
 
 class FingerPrintPipeline(threading.Thread):
     def __init__(self, pool, song, ofa):
@@ -129,7 +132,7 @@ class FingerPrintPipeline(threading.Thread):
         self.__cv.acquire()
         pipe.set_state(Gst.State.PLAYING)
 
-        result = pipe.get_state(timeout=Gst.SECOND/2)[0]
+        result = pipe.get_state(timeout=Gst.SECOND / 2)[0]
         if result == Gst.StateChangeReturn.FAILURE:
             # something failed, error message kicks in before, so check
             # for shutdown
@@ -155,7 +158,7 @@ class FingerPrintPipeline(threading.Thread):
 
         # we need to make sure the state change has finished, before
         # we can return and hand it over to the python GC
-        pipe.get_state(timeout=Gst.SECOND/2)
+        pipe.get_state(timeout=Gst.SECOND / 2)
 
     def stop(self):
         self.__shutdown = True
@@ -227,6 +230,7 @@ class FingerPrintPipeline(threading.Thread):
             self.__cv.notify()
             self.__cv.release()
 
+
 class FingerPrintThreadPool(GObject.GObject):
     __gsignals__ = {
         "fingerprint-done": (
@@ -263,7 +267,8 @@ class FingerPrintThreadPool(GObject.GObject):
         # make sure everythin is gone before starting new ones.
         thread.join()
         self.__threads.remove(thread)
-        if self.__stopped: return
+        if self.__stopped:
+            return
         if not error:
             self.emit("fingerprint-done", song, result)
         else:
@@ -272,6 +277,7 @@ class FingerPrintThreadPool(GObject.GObject):
             song, ofa = self.__queued.pop(0)
             self.__threads.append(FingerPrintPipeline(self, song, ofa))
             self.emit("fingerprint-started", song)
+
 
 class MusicDNSThread(threading.Thread):
     INTERVAL = 1500
@@ -323,8 +329,10 @@ class MusicDNSThread(threading.Thread):
             error = "urllib error"
         else:
             xml = response.read()
-            try: dom = parseString(xml)
-            except: error = "xml error"
+            try:
+                dom = parseString(xml)
+            except:
+                error = "xml error"
             else:
                 puids = dom.getElementsByTagName("puid")
                 if puids and puids[0].hasAttribute("id"):
@@ -337,13 +345,16 @@ class MusicDNSThread(threading.Thread):
         self.__sem.release()
         GLib.timeout_add(self.INTERVAL, self.__inc_sem)
 
-        items = [(s,d) for s,d in self.__fingerprints.iteritems() if "ofa" in d]
+        items = [(s, d) for s, d in self.__fingerprints.iteritems()
+                 if "ofa" in d]
         for i, (song, data) in enumerate(items):
             self.__sem.acquire()
-            if self.__stopped: return
+            if self.__stopped:
+                return
 
             puid = self.__get_puid(data["ofa"], data["length"])
-            if puid: data["puid"] = puid
+            if puid:
+                data["puid"] = puid
 
             GLib.idle_add(self.__progress_cb, song,
                 float(i + 1) / len(items))
@@ -361,6 +372,7 @@ class MusicDNSThread(threading.Thread):
     def stop(self):
         self.__stopped = True
         self.__sem.release()
+
 
 class AcoustidSubmissionThread(threading.Thread):
     INTERVAL = 1500
@@ -381,7 +393,8 @@ class AcoustidSubmissionThread(threading.Thread):
 
     def __send(self, urldata):
         self.__sem.acquire()
-        if self.__stopped: return
+        if self.__stopped:
+            return
 
         self.__done += len(urldata)
 
@@ -411,8 +424,10 @@ class AcoustidSubmissionThread(threading.Thread):
             error = "urllib error"
         else:
             xml = response.read()
-            try: dom = parseString(xml)
-            except: error = "xml error"
+            try:
+                dom = parseString(xml)
+            except:
+                error = "xml error"
             else:
                 status = dom.getElementsByTagName("status")
                 if not status or not status[0].childNodes or not \
@@ -424,7 +439,7 @@ class AcoustidSubmissionThread(threading.Thread):
 
         # emit progress
         GLib.idle_add(self.__progress_cb,
-                float(self.__done)/len(self.__fingerprints))
+                float(self.__done) / len(self.__fingerprints))
 
     def run(self):
         self.__sem.release()
@@ -432,7 +447,8 @@ class AcoustidSubmissionThread(threading.Thread):
 
         urldata = []
         for i, (song, data) in enumerate(self.__fingerprints.iteritems()):
-            if song in self.__invalid: continue
+            if song in self.__invalid:
+                continue
 
             track = {
                 "duration": int(round(data["length"] / 1000)),
@@ -452,7 +468,8 @@ class AcoustidSubmissionThread(threading.Thread):
             tuples = []
             for key, value in track.iteritems():
                 # this also dismisses 0.. which should be ok here.
-                if not value: continue
+                if not value:
+                    continue
                 # the postfixes don't have to start at a specific point,
                 # they just need to be different and numbers
                 key += ".%d" % i
@@ -468,7 +485,8 @@ class AcoustidSubmissionThread(threading.Thread):
                 self.__send(urldata)
                 urldata = []
 
-            if self.__stopped: return
+            if self.__stopped:
+                return
 
         if urldata:
             self.__send(urldata)
@@ -486,6 +504,7 @@ class AcoustidSubmissionThread(threading.Thread):
     def stop(self):
         self.__stopped = True
         self.__sem.release()
+
 
 class FingerprintDialog(Window):
     def __init__(self, songs):
@@ -518,6 +537,7 @@ class FingerprintDialog(Window):
         align.set_padding(6, 0, 6, 0)
         expand.add(align)
         align.add(stats)
+
         def expand_cb(expand, *args):
             self.resize(self.get_size()[0], 1)
         stats.connect("unmap", expand_cb)
@@ -587,8 +607,8 @@ class FingerprintDialog(Window):
         to_send = all - len(self.__invalid_songs)
         valid_fp = len(self.__fp_results)
 
-        text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, " \
-            "a <i><b>puid</b></i>\nor <i><b>artist</b></i> / " \
+        text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, "
+            "a <i><b>puid</b></i>\nor <i><b>artist</b></i> / "
             "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
         text += _("\n\n<i>Fingerprints:</i> %d/%d") % (valid_fp, all)
         text += _("\n<i>Songs with MBIDs:</i> %d/%d") % (self.__mbids, all)
@@ -604,7 +624,7 @@ class FingerprintDialog(Window):
         for song, data in self.__fp_results.iteritems():
             artist = song("artist")
             title = song.get("title", "") # title falls back to filename
-            album  = song("album")
+            album = song("album")
             puid = song("puid") or data.get("puid", "")
             mbid = song("musicbrainz_trackid")
             if mbid or puid or (artist and title and album):
@@ -677,6 +697,7 @@ class FingerprintDialog(Window):
 
     def __cancel_cb(self, pool, *args):
         self.destroy()
+
         def idle_cancel():
             pool.stop()
             if self.__musicdns_thread:
@@ -705,11 +726,14 @@ class FingerprintDialog(Window):
         self.__show_final_stats()
         GLib.timeout_add(500, self.destroy)
 
+
 def get_api_key():
     return config.get("plugins", "fingerprint_acoustid_api_key", "")
 
+
 def get_puid_lookup():
     return config.get("plugins", "fingerprint_puid_lookup", "no_mbid")
+
 
 class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_ID = "AcoustidSubmit"
@@ -750,7 +774,8 @@ class AcoustidSubmit(SongsMenuPlugin):
         key_box.pack_start(entry, True, True, 0)
         key_box.pack_start(button, False, True, 0)
 
-        box.pack_start(Frame(_("Acoustid Web Service", True, True, 0), child=key_box))
+        box.pack_start(Frame(_("Acoustid Web Service", True, True, 0),
+                       child=key_box))
 
         # puid lookup section
         puid_box = Gtk.VBox(spacing=6)

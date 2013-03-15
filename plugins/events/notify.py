@@ -40,6 +40,7 @@ DEFAULT_CONFIG = {
 ><~year|<~year>>""",
 }
 
+
 def get_conf_value(name, accessor="get"):
     try:
         value = getattr(config, accessor)("plugins", "notify_%s" % name)
@@ -50,8 +51,10 @@ def get_conf_value(name, accessor="get"):
 get_conf_bool = lambda name: get_conf_value(name, "getboolean")
 get_conf_int = lambda name: get_conf_value(name, "getint")
 
+
 def set_conf_value(name, value):
     config.set("plugins", "notify_%s" % name, unicode(value))
+
 
 class PreferencesWidget(Gtk.VBox):
     def __init__(self, parent, plugin_instance):
@@ -75,7 +78,9 @@ class PreferencesWidget(Gtk.VBox):
         title_label.set_use_underline(True)
         title_label.set_alignment(0, 0.5)
         title_label.set_mnemonic_widget(title_entry)
-        table.attach(title_label, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+        table.attach(title_label, 0, 1, 0, 1,
+                     xoptions=Gtk.AttachOptions.FILL |
+                     Gtk.AttachOptions.SHRINK)
 
         title_revert = Gtk.Button()
         title_revert.add(Gtk.Image.new_from_stock(
@@ -83,7 +88,8 @@ class PreferencesWidget(Gtk.VBox):
         title_revert.set_tooltip_text(_("Revert to default pattern"))
         title_revert.connect_object(
             "clicked", title_entry.set_text, DEFAULT_CONFIG["titlepattern"])
-        table.attach(title_revert, 2, 3, 0, 1, xoptions=Gtk.AttachOptions.SHRINK)
+        table.attach(title_revert, 2, 3, 0, 1,
+                     xoptions=Gtk.AttachOptions.SHRINK)
 
         body_textbuffer = TextBuffer()
         body_textview = TextView(buffer=body_textbuffer)
@@ -92,7 +98,8 @@ class PreferencesWidget(Gtk.VBox):
         body_textview.connect("focus-out-event", self.on_textview_unfocused,
                               "bodypattern")
         body_scrollarea = Gtk.ScrolledWindow()
-        body_scrollarea.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        body_scrollarea.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                   Gtk.PolicyType.AUTOMATIC)
         body_scrollarea.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         body_scrollarea.add(body_textview)
         table.attach(body_scrollarea, 1, 2, 1, 2)
@@ -114,7 +121,8 @@ class PreferencesWidget(Gtk.VBox):
         revert_align.add(body_revert)
         table.attach(
             revert_align, 2, 3, 1, 2,
-            xoptions=Gtk.AttachOptions.SHRINK, yoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+            xoptions=Gtk.AttachOptions.SHRINK,
+            yoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
 
         # preview button
         preview_button = qltk.Button(
@@ -129,7 +137,8 @@ class PreferencesWidget(Gtk.VBox):
         ]
 
         table.attach(
-            preview_button, 0, 3, 2, 3, xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+            preview_button, 0, 3, 2, 3,
+            xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
 
         self.pack_start(text_frame, True, True, 0)
 
@@ -416,8 +425,8 @@ class Notify(EventPlugin):
         if not song:
             self.close_notification()
         if get_conf_value("show_notifications") in [typ, "all"] \
-                and not (get_conf_bool("show_only_when_unfocused") \
-                     and app.window.has_toplevel_focus()) \
+                and not (get_conf_bool("show_only_when_unfocused")
+                         and app.window.has_toplevel_focus()) \
                 or self.__force_notification:
             def idle_show(song):
                 self.show_notification(song)

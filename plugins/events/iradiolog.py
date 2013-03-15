@@ -7,6 +7,7 @@
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 
+
 class IRadioLog(EventPlugin):
     PLUGIN_ID = "Internet Radio Log"
     PLUGIN_NAME = _("Internet Radio Log")
@@ -16,7 +17,8 @@ class IRadioLog(EventPlugin):
     PLUGIN_VERSION = "0.22"
 
     def plugin_on_song_started(self, song):
-        if song is None: return
+        if song is None:
+            return
 
         player = app.player
 
@@ -25,8 +27,10 @@ class IRadioLog(EventPlugin):
             title = song("title")
             bookmarks = player.song.bookmarks
             bookmarks.append([time // 1000, title])
-            try: bookmarks.pop(-10)
-            except IndexError: pass
+            try:
+                bookmarks.pop(-10)
+            except IndexError:
+                pass
             player.song.bookmarks = bookmarks
         elif song.multisong:
             song.bookmarks = []

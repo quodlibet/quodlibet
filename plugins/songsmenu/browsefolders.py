@@ -120,7 +120,8 @@ class HandlingMixin(object):
         to handle `songs`
         Returns False if none could be used
         """
-        if not hasattr(self, "_HANDLERS"): return False
+        if not hasattr(self, "_HANDLERS"):
+            return False
         for handler in self._HANDLERS:
             name = handler.__name__
             try:
@@ -132,7 +133,7 @@ class HandlingMixin(object):
             else:
                 print_d("...success!")
                 return True
-        print_d("No handlers could be used." )
+        print_d("No handlers could be used.")
         return False
 
 
