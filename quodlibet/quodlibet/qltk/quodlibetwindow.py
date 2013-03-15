@@ -289,7 +289,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             seek_pos = config.getint("memory", "seek")
             config.set("memory", "seek", 0)
             player.setup(self.playlist, song, seek_pos)
-        GLib.idle_add(delayed_song_set)
+        self.__delayed_setup = GLib.idle_add(delayed_song_set)
         self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
 
@@ -353,6 +353,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             return True
 
     def __destroy(self, *args):
+        GLib.source_remove(self.__delayed_setup)
         # The tray icon plugin tries to unhide QL because it gets disabled
         # on Ql exit. The window should stay hidden after destroy.
         self.show = lambda: None
