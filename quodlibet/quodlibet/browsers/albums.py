@@ -645,16 +645,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def __destroy(self, browser):
         self.disable_row_update()
 
-        # https://bugzilla.gnome.org/show_bug.cgi?id=624112
-        # filter model keeps its filter function reference.
-        # at least try to get rid of as much data as possible.
         self.__inhibit()
-        model = self.view.get_model()
         self.view.set_model(None)
-        model.clear_cache()
-        model = model.get_model()
-        model.clear_cache()
-        self.__dict__.clear()
 
         klass = type(browser)
         if not klass.instances():
@@ -684,10 +676,6 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         self.__uninhibit()
 
     def __parse_query(self, model, iter, data):
-        # leaked filter models try to refilter on model changes
-        if not self.__dict__:
-            return
-
         f, b = self.__filter, self.__bg_filter
         if f is None and b is None:
             return True
@@ -887,8 +875,6 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         config.set("browsers", "query_text", text)
 
     def __update_songs(self, selection):
-        if not self.__dict__:
-            return
         songs = self.__get_selected_songs(selection, False)
         self.emit('songs-selected', songs, None)
 

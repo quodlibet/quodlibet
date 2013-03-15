@@ -53,16 +53,19 @@ class test_cmd(Command):
     user_options = [
         ("to-run=", None, "list of tests to run (default all)"),
         ("suite=", None, "test suite (folder) to run (default 'tests')"),
+        ("strict", None, "make glib warnings / errors fatal"),
         ]
     use_colors = sys.stderr.isatty() and os.name != "nt"
 
     def initialize_options(self):
         self.to_run = []
         self.suite = "tests"
+        self.strict = False
 
     def finalize_options(self):
         if self.to_run:
             self.to_run = self.to_run.split(",")
+        self.strict = bool(self.strict)
 
     @classmethod
     def _red(cls, text):
@@ -75,7 +78,8 @@ class test_cmd(Command):
 
         tests = __import__("tests")
         subdir = (self.suite != "tests" and self.suite) or None
-        failures, errors = tests.unit(self.to_run, subdir=subdir)
+        failures, errors = tests.unit(self.to_run, subdir=subdir,
+                                      strict=self.strict)
         if failures or errors:
             raise SystemExit(self._red("%d test failure(s) and "
                                        "%d test error(s), as detailed above."
