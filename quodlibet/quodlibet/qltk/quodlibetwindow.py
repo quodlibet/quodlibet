@@ -671,7 +671,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                 paned.disconnect(paned._size_sig)
                 # The signal disconnects itself! I hate GTK sizing.
                 del(paned._size_sig)
-            sig = sub.connect('size-allocate', set_size, val)
+            sig = sub.connect('draw', set_size, val)
             sub._size_sig = sig
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
