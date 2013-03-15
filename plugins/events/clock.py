@@ -14,6 +14,7 @@ from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.entry import ValidatingEntry
 
+
 class Alarm(EventPlugin):
     PLUGIN_ID = "Alarm Clock"
     PLUGIN_NAME = _("Alarm Clock")
@@ -28,17 +29,25 @@ class Alarm(EventPlugin):
     def __init__(self):
         try:
             self._times = config.get("plugins", self._pref_name).split(' ')[:7]
-        except: pass
-        else: self._times = (self._times + ["HH:MM"] * 7)[:7]
+        except:
+            pass
+        else:
+            self._times = (self._times + ["HH:MM"] * 7)[:7]
         gobject.timeout_add(30000, self._check)
 
-    def enabled(self): self._enabled = True
-    def disabled(self): self._enabled = False
+    def enabled(self):
+        self._enabled = True
+
+    def disabled(self):
+        self._enabled = False
 
     def is_valid_time(time):
-        try: hour, minute = map(int, time.split(":"))
-        except: return False
-        else: return (hour < 24 and minute < 60)
+        try:
+            hour, minute = map(int, time.split(":"))
+        except:
+            return False
+        else:
+            return (hour < 24 and minute < 60)
     is_valid_time = staticmethod(is_valid_time)
 
     def plugin_on_song_started(self, song):
@@ -51,25 +60,33 @@ class Alarm(EventPlugin):
     def _ready(self):
         tdata = time.localtime()
         goal = self._times[tdata.tm_wday]
-        try: ghour, gminute = map(int, goal.split(":"))
-        except: return False
-        else: return (tdata.tm_hour, tdata.tm_min) == (ghour, gminute)
+        try:
+            ghour, gminute = map(int, goal.split(":"))
+        except:
+            return False
+        else:
+            return (tdata.tm_hour, tdata.tm_min) == (ghour, gminute)
 
     def _fire(self):
         if self._enabled:
             if app.player.paused:
                 if app.player.song is None:
                     app.player.next()
-                else: app.player.paused = False
+                else:
+                    app.player.paused = False
         gobject.timeout_add(60000, self._longer_check)
 
     def _longer_check(self):
-        if self._ready(): self._fire()
-        else: gobject.timeout_add(30000, self._check)
+        if self._ready():
+            self._fire()
+        else:
+            gobject.timeout_add(30000, self._check)
 
     def _check(self):
-        if self._ready(): self._fire()
-        else: return True
+        if self._ready():
+            self._fire()
+        else:
+            return True
 
     def PluginPreferences(self, parent):
         t = gtk.Table(2, 7)
@@ -92,6 +109,7 @@ class Alarm(EventPlugin):
             e.connect_object('changed', self._entry_changed, entries)
         return t
 
+
 class Lullaby(Alarm):
     PLUGIN_ID = "Lullaby"
     PLUGIN_NAME = _("Lullaby")
@@ -105,7 +123,8 @@ class Lullaby(Alarm):
         if self._enabled:
             gobject.timeout_add(500, self._fade_out)
             self.__was_volume = app.player.volume
-        else: gobject.timeout_add(30000, self._check)
+        else:
+            gobject.timeout_add(30000, self._check)
 
     def _fade_out(self):
         app.player.volume -= 0.005
@@ -114,4 +133,5 @@ class Lullaby(Alarm):
         if app.player.paused:
             app.player.volume = self.__was_volume
             gobject.timeout_add(30000, self._check)
-        else: return True
+        else:
+            return True

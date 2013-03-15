@@ -22,9 +22,10 @@ from quodlibet.util.uri import URI
 
 
 class WebsiteSearch(SongsMenuPlugin):
-    """Loads a browser with a URL designed to search on tags of the song. 
-    This may include a standard web search engine, eg Google, or a more specific
-    site look-up. The URLs are customisable using tag patterns."""
+    """Loads a browser with a URL designed to search on tags of the song.
+    This may include a standard web search engine, eg Google, or a more
+    specific site look-up. The URLs are customisable using tag patterns.
+    """
 
     PLUGIN_ICON = gtk.STOCK_OPEN
     PLUGIN_ID = "Website Search"
@@ -40,13 +41,17 @@ class WebsiteSearch(SongsMenuPlugin):
         ("Wikipedia (en) artist entry",
             "http://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
         ("Musicbrainz album listing",
-            "http://musicbrainz.org/<musicbrainz_albumid|release/<musicbrainz_albumid>|search?query=<album>&type=release>"),
+            "http://musicbrainz.org/<musicbrainz_albumid|release/"
+            "<musicbrainz_albumid>|search?query=<album>&type=release>"),
         ("Discogs album search",
-            "http://www.discogs.com/advanced_search?artist=<albumartist|<albumartist>|<artist>>&release_title=<album>"),
+            "http://www.discogs.com/advanced_search?artist="
+            "<albumartist|<albumartist>|<artist>>&release_title=<album>"),
         ("ISOHunt FLAC album torrent search",
-            "https://isohunt.com/torrents/?ihq=<albumartist|<albumartist>|<artist>>+<album>+flac"),
+            "https://isohunt.com/torrents/?ihq="
+            "<albumartist|<albumartist>|<artist>>+<album>+flac"),
         ("The Pirate Bay torrent search",
-            "http://thepiratebay.org/search/<albumartist|<albumartist>|<artist>> <album>/0/99/100")
+            "http://thepiratebay.org/search/"
+            "<albumartist|<albumartist>|<artist>> <album>/0/99/100")
     ]
     PATTERNS_FILE = os.path.join(USERDIR, 'lists', 'searchsites')
 
@@ -118,7 +123,7 @@ class WebsiteSearch(SongsMenuPlugin):
         self._url_pats = []
         submenu = gtk.Menu()
         self._get_saved_searches()
-        for name,url_pat in self._url_pats:
+        for name, url_pat in self._url_pats:
             item = gtk.MenuItem(name)
             item.connect_object('activate', self.__set_site, name)
             submenu.append(item)
@@ -141,12 +146,13 @@ class WebsiteSearch(SongsMenuPlugin):
             for song in songs:
                 # Generate a sanitised AudioFile; allow through most tags
                 subs = AudioFile()
-                for k,v in song.items():
+                for k, v in song.items():
                     if k in (STANDARD_TAGS + MACHINE_TAGS):
-                        try: subs[k] = quote(unicode(v).encode('utf-8'))
+                        try:
+                            subs[k] = quote(unicode(v).encode('utf-8'))
                         # Dodgy unicode problems
                         except KeyError:
-                            print_d("Problem with %s tag value: %r" % (k,v))
+                            print_d("Problem with %s tag value: %r" % (k, v))
                 url = str(pat.format(subs))
                 if not url:
                     print_w("Couldn't build URL using \"%s\"."

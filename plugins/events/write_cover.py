@@ -13,10 +13,12 @@ from quodlibet import config
 from quodlibet.const import USERDIR
 from quodlibet.plugins.events import EventPlugin
 
-try: config.get("plugins", __name__)
+try:
+    config.get("plugins", __name__)
 except:
     out = os.path.join(USERDIR, "current.cover")
     config.set("plugins", __name__, out)
+
 
 class PictureSaver(EventPlugin):
     PLUGIN_ID = "Picture Saver"
@@ -28,13 +30,17 @@ class PictureSaver(EventPlugin):
     def plugin_on_song_started(self, song):
         outfile = config.get("plugins", __name__)
         if song is None:
-            try: os.unlink(outfile)
-            except EnvironmentError: pass
+            try:
+                os.unlink(outfile)
+            except EnvironmentError:
+                pass
         else:
             cover = song.find_cover()
             if cover is None:
-                try: os.unlink(outfile)
-                except EnvironmentError: pass
+                try:
+                    os.unlink(outfile)
+                except EnvironmentError:
+                    pass
             else:
                 f = file(outfile, "wb")
                 f.write(cover.read())
@@ -43,9 +49,12 @@ class PictureSaver(EventPlugin):
     def PluginPreferences(self, parent):
         def changed(entry):
             fn = entry.get_text()
-            try: shutil.move(config.get("plugins", __name__), fn)
-            except EnvironmentError: pass
-            else: config.set("plugins", __name__, fn)
+            try:
+                shutil.move(config.get("plugins", __name__), fn)
+            except EnvironmentError:
+                pass
+            else:
+                config.set("plugins", __name__, fn)
 
         hb = gtk.HBox(spacing=6)
         hb.set_border_width(6)

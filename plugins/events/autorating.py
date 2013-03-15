@@ -6,6 +6,7 @@
 
 from quodlibet.plugins.events import EventPlugin
 
+
 class AutoRating(EventPlugin):
     PLUGIN_ID = "Automatic Rating"
     PLUGIN_NAME = _("Automatic Rating")
@@ -19,6 +20,8 @@ class AutoRating(EventPlugin):
             rating = song("~#rating")
             invrating = 1.0 - rating
             delta = min(rating, invrating) / 2.0
-            if skipped: rating -= delta
-            else: rating += delta
+            if skipped:
+                rating -= delta
+            else:
+                rating += delta
             song["~#rating"] = rating

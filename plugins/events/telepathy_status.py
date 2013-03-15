@@ -47,12 +47,12 @@ def set_accounts_requested_presence(paths, message):
         bus_iface.Set(AC_IFACE, "RequestedPresence", value)
 
 
-
 class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "Telepathy Status"
     PLUGIN_NAME = _("Telepathy Status Messages")
-    PLUGIN_DESC = _("Updates all Telepathy-based IM accounts (as configured in "
-                    "Empathy etc) with a status message based on current song.")
+    PLUGIN_DESC = _("Updates all Telepathy-based IM accounts (as configured "
+                    "in Empathy etc) with a status message based on current "
+                    "song.")
     PLUGIN_ICON = gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.3"
 
@@ -107,7 +107,8 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         hb = gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT))
-        entry.connect('changed', self.config_entry_changed, self.CFG_PAT_PLAYING)
+        entry.connect('changed', self.config_entry_changed,
+                      self.CFG_PAT_PLAYING)
         lbl = gtk.Label(_("Playing:"))
         entry.set_tooltip_markup(_("Status text when a song is started. "
                                  "Accepts QL Patterns e.g. <tt>%s</tt>")
@@ -121,8 +122,10 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         hb = gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_PAT_PAUSED,
-                                    self.DEFAULT_PAT_PAUSED))
-        entry.connect('changed', self.config_entry_changed, self.CFG_PAT_PAUSED)
+                                       self.DEFAULT_PAT_PAUSED))
+        entry.connect('changed',
+                      self.config_entry_changed,
+                      self.CFG_PAT_PAUSED)
         lbl = gtk.Label(_("Paused:"))
         entry.set_tooltip_markup(_("Status text when a song is paused. "
                                    "Accepts QL Patterns e.g. <tt>%s</tt>")

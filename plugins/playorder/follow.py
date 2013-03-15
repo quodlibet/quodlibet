@@ -10,6 +10,7 @@ from quodlibet.plugins.playorder import PlayOrderPlugin, \
 
 from quodlibet import app
 
+
 class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
     PlayOrderInOrderMixin):
     PLUGIN_ID = "follow"

@@ -16,7 +16,8 @@ from quodlibet.util import tag, escape, expanduser
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 CDDB.proto = 6 # utf8 instead of latin1
-CLIENTINFO = {'client_name': "quodlibet", 'client_version': VERSION }
+CLIENTINFO = {'client_name': "quodlibet", 'client_version': VERSION}
+
 
 class AskAction(ConfirmAction):
     """A message dialog that asks a yes/no question."""
@@ -25,7 +26,9 @@ class AskAction(ConfirmAction):
         Message.__init__(self, gtk.MESSAGE_QUESTION, *args, **kwargs)
 
 
-def sumdigits(n): return sum(map(long, str(n)))
+def sumdigits(n):
+    return sum(map(long, str(n)))
+
 
 def calculate_discid(album):
     lengths = [song.get('~#length', 0) for song in album]
@@ -38,6 +41,7 @@ def calculate_discid(album):
     discid = ((checksum % 0xff) << 24) | (total_time << 8) | len(album)
     return [discid, len(album)] + [75 * o for o in offsets] + [total_time]
 
+
 def query(category, discid, xcode='utf8:utf8'):
     discinfo = {}
     tracktitles = {}
@@ -46,9 +50,12 @@ def query(category, discid, xcode='utf8:utf8'):
         for line in file(dump):
             if line.startswith("TTITLE"):
                 track, title = line.split("=", 1)
-                try: track = int(track[6:])
-                except (ValueError): pass
-                else: tracktitles[track] = \
+                try:
+                    track = int(track[6:])
+                except (ValueError):
+                    pass
+                else:
+                    tracktitles[track] = \
                         title.decode('utf-8', 'replace').strip()
             elif line.startswith("DGENRE"):
                 discinfo['genre'] = line.split('=', 1)[1].strip()
@@ -60,14 +67,19 @@ def query(category, discid, xcode='utf8:utf8'):
                     discinfo['title'] = dtitle[0].strip()
             elif line.startswith("DYEAR"):
                 discinfo['year'] = line.split('=', 1)[1].strip()
-    except EnvironmentError: pass
-    else: return discinfo, tracktitles
+    except EnvironmentError:
+        pass
+    else:
+        return discinfo, tracktitles
 
     read, info = CDDB.read(category, discid, **CLIENTINFO)
-    if read != 210: return None
+    if read != 210:
+        return None
 
-    try: os.makedirs(path.join(expanduser("~"), '.cddb'))
-    except EnvironmentError: pass
+    try:
+        os.makedirs(path.join(expanduser("~"), '.cddb'))
+    except EnvironmentError:
+        pass
     try:
         save = file(dump, 'w')
         keys = info.keys()
@@ -75,25 +87,34 @@ def query(category, discid, xcode='utf8:utf8'):
         for key in keys:
             print>>save, "%s=%s" % (key, info[key])
         save.close()
-    except EnvironmentError: pass
+    except EnvironmentError:
+        pass
 
     xf, xt = xcode.split(':')
     for key, value in info.iteritems():
-        try: value = value.decode('utf-8', 'replace').strip().encode(
-            xf, 'replace').decode(xt, 'replace')
-        except AttributeError: pass
+        try:
+            value = value.decode('utf-8', 'replace').strip().encode(
+                xf, 'replace').decode(xt, 'replace')
+        except AttributeError:
+            pass
         if key.startswith('TTITLE'):
-            try: tracktitles[int(key[6:])] = value
-            except ValueError: pass
-        elif key == 'DGENRE': discinfo['genre'] = value
+            try:
+                tracktitles[int(key[6:])] = value
+            except ValueError:
+                pass
+        elif key == 'DGENRE':
+            discinfo['genre'] = value
         elif key == 'DTITLE':
             dtitle = value.strip().split(' / ', 1)
             if len(dtitle) == 2:
                 discinfo['artist'], discinfo['title'] = dtitle
-            else: discinfo['title'] = dtitle[0].strip()
-        elif key == 'DYEAR': discinfo['year'] = value
+            else:
+                discinfo['title'] = dtitle[0].strip()
+        elif key == 'DYEAR':
+            discinfo['year'] = value
 
     return discinfo, tracktitles
+
 
 def make_info_label((disc, track), album, discid):
     message = []
@@ -116,10 +137,11 @@ def make_info_label((disc, track), album, discid):
     keys = track.keys()
     keys.sort()
     for key in keys:
-        message.append('    <b>%d.</b> %s' % (key+1,
+        message.append('    <b>%d.</b> %s' % (key + 1,
             escape(track[key].encode('utf-8'))))
 
     return '\n'.join(message)
+
 
 class CDDBLookup(SongsMenuPlugin):
     PLUGIN_ID = 'CDDB lookup'
@@ -133,11 +155,11 @@ class CDDBLookup(SongsMenuPlugin):
         try:
             stat, discs = CDDB.query(discid, **CLIENTINFO)
         except IOError:
-            ErrorMessage(None, _("Timeout"),_(
+            ErrorMessage(None, _("Timeout"), _(
                 "Query could not be executed, connection timed out")).run()
             return
 
-        if stat in (200,211):
+        if stat in (200, 211):
             xcode = 'utf8:utf8'
             dlg = gtk.Dialog(_('Select an album'))
             dlg.set_border_width(6)
@@ -149,7 +171,7 @@ class CDDBLookup(SongsMenuPlugin):
             model = gtk.ListStore(str, str, str, str, str, str)
             for disc in discs:
                 model.append(
-                    [disc[s] for s in ('title','category','disc_id')] * 2)
+                    [disc[s] for s in ('title', 'category', 'disc_id')] * 2)
             box = gtk.ComboBox(model)
             box.set_active(0)
             for i in range(3):
@@ -167,9 +189,9 @@ class CDDBLookup(SongsMenuPlugin):
             cbo.set_active(0)
 
             def update_discinfo(combo):
-
                 xcode = cbo.get_child().get_text()
-                t,c,d, title, cat, discid = combo.get_model()[box.get_active()]
+                model = combo.get_model()
+                t, c, d, title, cat, discid = model[box.get_active()]
                 info = query(cat, discid, xcode=xcode)
                 discinfo.set_markup(
                     make_info_label(info, album, discs[0]['disc_id']))
@@ -178,16 +200,14 @@ class CDDBLookup(SongsMenuPlugin):
                 try:
                     xf, xt = combo.get_child().get_text().split(':')
                     for row in model:
-                        for show, store in zip(range(0,3), range(3,6)):
+                        for show, store in zip(range(0, 3), range(3, 6)):
                             row[show] = row[store].encode(
                                 xf, 'replace').decode(xt, 'replace')
                 except:
                     for row in model:
-                        for show, store in zip(range(0,3), range(3,6)):
+                        for show, store in zip(range(0, 3), range(3, 6)):
                             row[show] = row[store]
                 update_discinfo(box)
-
-
 
             cbo.connect('changed', crosscode_cddbinfo)
             box.connect('changed', update_discinfo)
@@ -202,22 +222,26 @@ class CDDBLookup(SongsMenuPlugin):
 
             xcode = cbo.get_child().get_text()
             if resp == gtk.RESPONSE_OK:
-                t,c,d, title, cat, discid = model[box.get_active()]
+                t, c, d, title, cat, discid = model[box.get_active()]
                 (disc, track) = query(cat, discid, xcode=xcode)
                 keys = track.keys()
                 keys.sort()
                 for key, song in zip(keys, album):
-                    if 'artist' in disc: song['artist'] = disc['artist']
-                    if 'title' in disc: song['album'] = disc['title']
-                    if 'year' in disc: song['date'] = disc['year']
-                    if 'genre' in disc: song['genre'] = disc['genre']
+                    if 'artist' in disc:
+                        song['artist'] = disc['artist']
+                    if 'title' in disc:
+                        song['album'] = disc['title']
+                    if 'year' in disc:
+                        song['date'] = disc['year']
+                    if 'genre' in disc:
+                        song['genre'] = disc['genre']
                     s = track[key].split("/")
                     if len(s) == 2:
                         song['artist'] = s[0]
                         song['title'] = s[1]
                     else:
                         song['title'] = track[key]
-                    song['tracknumber'] = '%d/%d' % (key+1, len(album))
+                    song['tracknumber'] = '%d/%d' % (key + 1, len(album))
             dlg.destroy()
         else:
             n = len(album)
@@ -226,6 +250,6 @@ class CDDBLookup(SongsMenuPlugin):
                 albumname = ngettext('%d track', '%d tracks', n) % n
             ErrorMessage(None, _("CDDB lookup failed (%s)" % stat),
                     ngettext("%(title)s and %(count)d more...",
-                        "%(title)s and %(count)d more...", n-1) % {
+                        "%(title)s and %(count)d more...", n - 1) % {
                         'title': album[0]('~basename'), 'count':
-                        n-1}).run()
+                        n - 1}).run()

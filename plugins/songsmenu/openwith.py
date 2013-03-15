@@ -3,8 +3,10 @@ import gtk
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class Command(object):
     FILES, URIS, FOLDERS = range(3)
+
     def __init__(self, title, command, type):
         self.title = title
         self.command = command
@@ -22,6 +24,7 @@ class Command(object):
             files = [song("~uri") for song in songs]
         files = dict.fromkeys(files).keys()
         util.spawn(self.command.split() + files)
+
 
 class SendTo(SongsMenuPlugin):
     PLUGIN_ID = 'SendTo'

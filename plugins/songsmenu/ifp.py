@@ -11,6 +11,7 @@ import gtk
 from quodlibet import util, qltk
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class IFPUpload(SongsMenuPlugin):
     PLUGIN_ID = "Send to iFP"
     PLUGIN_NAME = _("Send to iFP")
@@ -18,7 +19,7 @@ class IFPUpload(SongsMenuPlugin):
     PLUGIN_VERSION = "0.12"
     PLUGIN_ICON = gtk.STOCK_CONVERT
 
-    def plugin_songs(self, songs):        
+    def plugin_songs(self, songs):
         if os.system("ifp typestring"):
             qltk.ErrorMessage(
                 None, "No iFP device found",
@@ -36,7 +37,8 @@ class IFPUpload(SongsMenuPlugin):
             if self.__upload(song) or w.step(i, len(songs)):
                 w.destroy()
                 return True
-        else: w.destroy()
+        else:
+            w.destroy()
 
     def __upload(self, song):
         filename = song["~filename"]
@@ -53,6 +55,6 @@ class IFPUpload(SongsMenuPlugin):
             qltk.ErrorMessage(
                 None, "Error uploading",
                 "Unable to upload <b>%s</b>. The device may be "
-                "out of space, or turned off."%(
+                "out of space, or turned off." % (
                 util.escape(filename))).run()
             return True

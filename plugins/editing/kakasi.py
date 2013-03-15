@@ -5,6 +5,7 @@ import gobject
 from quodlibet import util
 from quodlibet.plugins.editing import RenameFilesPlugin
 
+
 class Kakasi(RenameFilesPlugin, gtk.CheckButton):
     PLUGIN_ID = "Kana/Kanji Simple Inverter"
     PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
@@ -14,7 +15,8 @@ class Kakasi(RenameFilesPlugin, gtk.CheckButton):
 
     __gsignals__ = {
         "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
-        }
+    }
+
     def __init__(self):
         super(Kakasi, self).__init__("Romanize _Japanese text")
         self.connect_object('toggled', self.emit, 'preview')
@@ -25,14 +27,19 @@ class Kakasi(RenameFilesPlugin, gtk.CheckButton):
     # for each filename.
     def filter_list(self, originals, values):
         value = "\n".join(values)
-        try: data = value.encode('shift-jis', 'replace')
-        except None: return value
+        try:
+            data = value.encode('shift-jis', 'replace')
+        except None:
+            return value
         line = ("kakasi -isjis -osjis -Ha -Ka -Ja -Ea -ka -s")
         w, r = os.popen2(line.split())
         w.write(data)
         w.close()
-        try: return r.read().decode('shift-jis').strip().split("\n")
-        except: return values
+        try:
+            return r.read().decode('shift-jis').strip().split("\n")
+        except:
+            return values
+
 
 if not util.iscommand("kakasi"):
     from quodlibet import plugins

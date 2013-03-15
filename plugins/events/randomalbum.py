@@ -14,8 +14,11 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
-try: from quodlibet.qltk import notif
-except Exception: notif = None
+try:
+    from quodlibet.qltk import notif
+except Exception:
+    notif = None
+
 
 class RandomAlbum(EventPlugin):
     PLUGIN_ID = 'Random Album Playback'
@@ -83,9 +86,9 @@ class RandomAlbum(EventPlugin):
         check = gtk.CheckButton(_("Play some albums more than others"))
         vbox.pack_start(check, expand=False)
         # Toggle both frame and contained table; frame doesn't always work?
-        check.connect("toggled", toggled_cb, [frame,table])
+        check.connect("toggled", toggled_cb, [frame, table])
         check.set_active(self.use_weights)
-        toggled_cb(check, [frame,table])
+        toggled_cb(check, [frame, table])
 
         frame.add(table)
         vbox.pack_start(frame)
@@ -121,7 +124,8 @@ class RandomAlbum(EventPlugin):
             hscale.set_show_fill_level(False)
             hscale.connect("value-changed", changed_cb, key)
             lbl.set_mnemonic_widget(hscale)
-            table.attach(hscale, 1, 3, idx + 1, idx + 2, xpadding=3, ypadding=3)
+            table.attach(hscale, 1, 3, idx + 1, idx + 2,
+                         xpadding=3, ypadding=3)
 
         return vbox
 
@@ -144,9 +148,6 @@ class RandomAlbum(EventPlugin):
             scores[album] = 0
             for (tag, text, func) in self.keys:
                 rank = ranked[tag].index(album)
-#                print_d("%s: ranked %d out of %d (with %s) for %s = +%d points"
-#                        % (album("album"), rank+1,len(albums),
-#                           album("~#%s" % tag), tag, rank * self.weights[tag]))
                 scores[album] += rank * self.weights[tag]
 
         return [(score, name) for name, score in scores.items()]
@@ -187,10 +188,12 @@ class RandomAlbum(EventPlugin):
         if self.delay:
             srcid = gobject.timeout_add(1000 * self.delay,
                                         self.change_album, album)
-            if notif is None: return
+            if notif is None:
+                return
             task = notif.Task(_("Random Album"),
                               _("Waiting to start <i>%s</i>") % album("album"),
                               stop=lambda: gobject.source_remove(srcid))
+
             def countdown():
                 for i in range(10 * self.delay):
                     task.update(i / (10. * self.delay))
@@ -217,5 +220,7 @@ class RandomAlbum(EventPlugin):
         # after the song ended. Also, if this is program startup and the
         # previous current song wasn't found, we'll get this condition
         # as well, so just leave the player paused if that's the case.
-        try: app.player.next()
-        except AttributeError: app.player.paused = True
+        try:
+            app.player.next()
+        except AttributeError:
+            app.player.paused = True

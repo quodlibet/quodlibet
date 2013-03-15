@@ -185,9 +185,12 @@ class MPRIS1Player(MPRISObject):
         name = dbus.service.BusName(self.BUS_NAME, bus)
         super(MPRIS1Player, self).__init__(name, self.PATH)
 
-        self.__rsig = app.window.repeat.connect("toggled", self.__update_status)
-        self.__ssig = app.window.order.connect("changed", self.__update_status)
-        self.__lsig = app.librarian.connect("changed", self.__update_track_changed)
+        self.__rsig = app.window.repeat.connect(
+            "toggled", self.__update_status)
+        self.__ssig = app.window.order.connect(
+            "changed", self.__update_status)
+        self.__lsig = app.librarian.connect(
+            "changed", self.__update_track_changed)
 
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS1Player, self).remove_from_connection(*arg, **kwargs)
@@ -412,7 +415,8 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 <property name="Metadata" type="a{sv}" access="read"/>
 <property name="Volume" type="d" access="readwrite"/>
 <property name="Position" type="x" access="read">
-  <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+  <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
+value="false"/>
 </property>
 <property name="MinimumRate" type="d" access="read"/>
 <property name="MaximumRate" type="d" access="read"/>
@@ -422,7 +426,8 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
 <property name="CanPause" type="b" access="read"/>
 <property name="CanSeek" type="b" access="read"/>
 <property name="CanControl" type="b" access="read">
-  <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+  <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
+value="false"/>
 </property>"""
 
     def __init__(self):
@@ -439,10 +444,12 @@ class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
         name = dbus.service.BusName(self.BUS_NAME, bus)
         MPRISObject.__init__(self, bus, self.PATH, name)
 
-        self.__rsig = app.window.repeat.connect("toggled", self.__repeat_changed)
+        self.__rsig = app.window.repeat.connect("toggled",
+                                                self.__repeat_changed)
         self.__ssig = app.window.order.connect("changed", self.__order_changed)
         self.__lsig = app.librarian.connect("changed", self.__library_changed)
-        self.__vsig = app.player.connect("notify::volume", self.__volume_changed)
+        self.__vsig = app.player.connect("notify::volume",
+                                         self.__volume_changed)
         self.__seek_sig = app.player.connect("seek", self.__seeked)
 
     def remove_from_connection(self, *arg, **kwargs):

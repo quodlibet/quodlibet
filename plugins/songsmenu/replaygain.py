@@ -18,6 +18,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 __all__ = ['ReplayGain']
 
+
 class ReplayGain(SongsMenuPlugin):
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = 'Replay Gain'
@@ -150,12 +151,14 @@ class Analysis(object):
                 try:
                     track[3] = '%.2f dB' % tags[gst.TAG_TRACK_GAIN]
                     track[4] = '%.4f' % tags[gst.TAG_TRACK_PEAK]
-                except KeyError: pass
+                except KeyError:
+                    pass
                 try:
                     if album[3] != self.error_str:
                         album[3] = '%.2f dB' % tags[gst.TAG_ALBUM_GAIN]
                         album[4] = '%.4f' % tags[gst.TAG_ALBUM_PEAK]
-                except KeyError: pass
+                except KeyError:
+                    pass
         elif message.type == gst.MESSAGE_EOS:
             self.next_song()
         elif message.type == gst.MESSAGE_ERROR:

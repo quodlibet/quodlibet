@@ -15,6 +15,7 @@ from quodlibet.parse import Pattern
 from quodlibet.qltk import Frame
 from quodlibet import config
 
+
 class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'
     PLUGIN_NAME = _('Gajim Status Message')
@@ -22,10 +23,10 @@ class GajimStatusMessage(EventPlugin):
                     "you are currently listening to.")
     PLUGIN_VERSION = '0.7.4'
 
-    c_accounts = __name__+'_accounts'
-    c_paused = __name__+'_paused'
-    c_statuses = __name__+'_statuses'
-    c_pattern = __name__+'_pattern'
+    c_accounts = __name__ + '_accounts'
+    c_paused = __name__ + '_paused'
+    c_statuses = __name__ + '_statuses'
+    c_pattern = __name__ + '_pattern'
 
     def __init__(self):
         try:
@@ -76,10 +77,12 @@ class GajimStatusMessage(EventPlugin):
             try:
                 for account in self.interface.list_accounts():
                     status = self.interface.get_status(account)
-                    if enabled_accounts != [] and account not in enabled_accounts:
+                    if enabled_accounts != [] and \
+                            account not in enabled_accounts:
                         continue
                     if status in self.statuses:
-                        self.interface.change_status(status, status_message, account)
+                        self.interface.change_status(
+                            status, status_message, account)
             except dbus.DBusException:
                 self.interface = None
 
@@ -111,22 +114,22 @@ class GajimStatusMessage(EventPlugin):
     def statuses_changed(self, b):
         if b.get_active() and b.get_name() not in self.statuses:
             self.statuses.append(b.get_name())
-        elif b.get_active() == False and b.get_name() in self.statuses:
+        elif b.get_active() is False and b.get_name() in self.statuses:
             self.statuses.remove(b.get_name())
         config.set('plugins', self.c_statuses, join(self.statuses))
 
     def PluginPreferences(self, parent):
-        vb = gtk.VBox(spacing = 3)
+        vb = gtk.VBox(spacing=3)
 
-        pattern_box = gtk.HBox(spacing = 3)
+        pattern_box = gtk.HBox(spacing=3)
         pattern_box.set_border_width(3)
         pattern = gtk.Entry()
         pattern.set_text(self.pattern)
         pattern.connect('changed', self.pattern_changed)
-        pattern_box.pack_start(gtk.Label("Pattern:"), expand = False)
+        pattern_box.pack_start(gtk.Label("Pattern:"), expand=False)
         pattern_box.pack_start(pattern)
 
-        accounts_box = gtk.HBox(spacing = 3)
+        accounts_box = gtk.HBox(spacing=3)
         accounts_box.set_border_width(3)
         accounts = gtk.Entry()
         accounts.set_text(join(self.accounts))
@@ -134,7 +137,7 @@ class GajimStatusMessage(EventPlugin):
         accounts.set_tooltip_text("List accounts, separated by spaces, for "
                              "changing status message. If none are specified, "
                              "status message of all accounts will be changed.")
-        accounts_box.pack_start(gtk.Label("Accounts:"), expand = False)
+        accounts_box.pack_start(gtk.Label("Accounts:"), expand=False)
         accounts_box.pack_start(accounts)
 
         c = gtk.CheckButton(label="Add '[paused]'")
@@ -154,7 +157,7 @@ class GajimStatusMessage(EventPlugin):
                 button.set_active(True)
             button.connect('toggled', self.statuses_changed)
             self.list.append(button)
-            table.attach(button, i, i+1, j, j+1)
+            table.attach(button, i, i + 1, j, j + 1)
             if i == 2:
                 i = 0
                 j += 1

@@ -15,6 +15,7 @@ from quodlibet import app
 import gobject
 import os
 
+
 class LibraryEvent(ProcessEvent):
     """pynotify event handler for library changes"""
 
@@ -113,16 +114,16 @@ class AutoLibraryUpdate(EventPlugin):
     running = False
 
     def enabled(self):
-        if not self.running :
+        if not self.running:
             wm = WatchManager()
             self.event_handler = LibraryEvent(app.library)
 
             # Choose event types to watch for
             # FIXME: watch for IN_CREATE or for some reason folder copies
             # are missed,  --nickb
-            FLAGS = ['IN_DELETE', 'IN_CLOSE_WRITE', #'IN_MODIFY',
+            FLAGS = ['IN_DELETE', 'IN_CLOSE_WRITE',# 'IN_MODIFY',
                      'IN_MOVED_FROM', 'IN_MOVED_TO', 'IN_CREATE']
-            mask = reduce(lambda x, s: x | EventsCodes.ALL_FLAGS[s], FLAGS , 0)
+            mask = reduce(lambda x, s: x | EventsCodes.ALL_FLAGS[s], FLAGS, 0)
 
             if self.USE_THREADS:
                 print_d("Using threaded notifier")
@@ -136,7 +137,8 @@ class AutoLibraryUpdate(EventPlugin):
 
             for path in self.get_library_dirs():
                 print_d('Watching directory %s for %s' % (path, FLAGS))
-                # See https://github.com/seb-m/pyinotify/wiki/Frequently-Asked-Questions
+                # See https://github.com/seb-m/pyinotify/wiki/
+                # Frequently-Asked-Questions
                 wm.add_watch(path, mask, rec=True, auto_add=True)
 
             self.running = True

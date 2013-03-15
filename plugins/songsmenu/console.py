@@ -22,6 +22,7 @@ import gtk
 from quodlibet import qltk, const
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'
     PLUGIN_NAME = _('Python Console')
@@ -40,8 +41,8 @@ class PyConsole(SongsMenuPlugin):
 
         from quodlibet import app
         console = PythonConsole(
-            namespace = {
-                'songs' : songs,
+            namespace={
+                'songs': songs,
                 'files': files,
                 'sdict': song_dicts,
                 'app': app})
@@ -64,8 +65,9 @@ class PyConsole(SongsMenuPlugin):
         console.eval("print \"%s\"" % acces_string, False)
         console.eval("print \"%s \"+ os.getcwd()" % dir_string, False)
 
+
 class PythonConsole(gtk.ScrolledWindow):
-    def __init__(self, namespace = {}):
+    def __init__(self, namespace={}):
         gtk.ScrolledWindow.__init__(self)
 
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -79,7 +81,7 @@ class PythonConsole(gtk.ScrolledWindow):
 
         buffer = self.view.get_buffer()
         self.normal = buffer.create_tag("normal")
-        self.error  = buffer.create_tag("error")
+        self.error = buffer.create_tag("error")
         self.error.set_property("foreground", "red")
         self.command = buffer.create_tag("command")
         self.command.set_property("foreground", "blue")
@@ -108,15 +110,13 @@ class PythonConsole(gtk.ScrolledWindow):
         self.view.connect("key-press-event", self.__key_press_event_cb)
         buffer.connect("mark-set", self.__mark_set_cb)
 
-
     def __key_press_event_cb(self, view, event):
         if event.keyval == gtk.keysyms.c and \
             event.state & gtk.gdk.CONTROL_MASK:
             self.set_command_line("")
-
-        elif (event.keyval == gtk.keysyms.Return or \
-            event.keyval == gtk.keysyms.KP_Enter) and \
-            event.state & gtk.gdk.CONTROL_MASK:
+        elif (event.keyval == gtk.keysyms.Return or
+              event.keyval == gtk.keysyms.KP_Enter) and \
+             event.state & gtk.gdk.CONTROL_MASK:
             # Get the command
             buffer = view.get_buffer()
             inp_mark = buffer.get_mark("input")
@@ -135,7 +135,7 @@ class PythonConsole(gtk.ScrolledWindow):
             # Keep indentation of precendent line
             spaces = re.match(self.__spaces_pattern, line)
             if spaces is not None:
-                buffer.insert(cur, line[spaces.start() : spaces.end()])
+                buffer.insert(cur, line[spaces.start():spaces.end()])
                 cur = buffer.get_end_iter()
 
             buffer.place_cursor(cur)
@@ -223,7 +223,7 @@ class PythonConsole(gtk.ScrolledWindow):
 
     def __mark_set_cb(self, buffer, iter, name):
         input = buffer.get_iter_at_mark(buffer.get_mark("input"))
-        pos   = buffer.get_iter_at_mark(buffer.get_insert())
+        pos = buffer.get_iter_at_mark(buffer.get_insert())
         self.view.set_editable(pos.compare(input) != -1)
 
     def get_command_line(self):
@@ -266,7 +266,7 @@ class PythonConsole(gtk.ScrolledWindow):
         self.view.scroll_to_iter(iter, 0.0)
         self.view.emit('move-cursor', gtk.MOVEMENT_BUFFER_ENDS, 1, False)
 
-    def write(self, text, tag = None):
+    def write(self, text, tag=None):
         buffer = self.view.get_buffer()
         if tag is None:
             buffer.insert(buffer.get_end_iter(), text)
@@ -274,7 +274,7 @@ class PythonConsole(gtk.ScrolledWindow):
             buffer.insert_with_tags(buffer.get_end_iter(), text, tag)
         gobject.idle_add(self.scroll_to_end)
 
-    def eval(self, command, display_command = False):
+    def eval(self, command, display_command=False):
         buffer = self.view.get_buffer()
         lin = buffer.get_mark("input-line")
         buffer.delete(buffer.get_iter_at_mark(lin),
@@ -305,7 +305,7 @@ class PythonConsole(gtk.ScrolledWindow):
             try:
                 r = eval(command, self.namespace, self.namespace)
                 if r is not None:
-                    print `r`
+                    print repr(r)
             except SyntaxError:
                 exec command in self.namespace
         except:
@@ -314,22 +314,46 @@ class PythonConsole(gtk.ScrolledWindow):
         sys.stdout, self.stdout = self.stdout, sys.stdout
         sys.stderr, self.stderr = self.stderr, sys.stderr
 
-class OutFile:
+
+class OutFile(object):
     """A fake output file object. It sends output to a TK test widget,
     and if asked for a file number, returns one set on instance creation"""
     def __init__(self, console, fn, tag):
         self.fn = fn
         self.console = console
         self.tag = tag
-    def close(self):         pass
-    def flush(self):         pass
-    def fileno(self):        return self.fn
-    def isatty(self):        return 0
-    def read(self, a):       return ''
-    def readline(self):      return ''
-    def readlines(self):     return []
-    def write(self, s):      self.console.write(s, self.tag)
-    def writelines(self, l): self.console.write(l, self.tag)
-    def seek(self, a):       raise IOError, (29, 'Illegal seek')
-    def tell(self):          raise IOError, (29, 'Illegal seek')
+
+    def close(self):
+        pass
+
+    def flush(self):
+        pass
+
+    def fileno(self):
+        return self.fn
+
+    def isatty(self):
+        return 0
+
+    def read(self, a):
+        return ''
+
+    def readline(self):
+        return ''
+
+    def readlines(self):
+        return []
+
+    def write(self, s):
+        self.console.write(s, self.tag)
+
+    def writelines(self, l):
+        self.console.write(l, self.tag)
+
+    def seek(self, a):
+        raise IOError(29, 'Illegal seek')
+
+    def tell(self):
+        raise IOError(29, 'Illegal seek')
+
     truncate = tell

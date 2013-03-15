@@ -6,6 +6,7 @@
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class ForceWrite(SongsMenuPlugin):
     PLUGIN_ID = "Force Write"
     PLUGIN_NAME = _("Force Write")

@@ -9,6 +9,7 @@ import gtk
 from quodlibet import util, const, config
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class ResetLibrary(SongsMenuPlugin):
     PLUGIN_ID = "Reset Library Data"
     PLUGIN_NAME = _("Reset Library Data")
@@ -21,6 +22,7 @@ class ResetLibrary(SongsMenuPlugin):
                     "~#laststarted", "~#rating"]:
             if key in song:
                 del song[key]
+
 
 class ResetRating(SongsMenuPlugin):
     PLUGIN_ID = "Reset Rating"
@@ -49,7 +51,8 @@ class ResetRating(SongsMenuPlugin):
 
         def default_rating_changed(combo, model):
             it = combo.get_active_iter()
-            if it is None: return
+            if it is None:
+                return
             default_rating = model[it][0]
             config.set("settings", "default_rating", default_rating)
             const.DEFAULT_RATING = default_rating
@@ -58,7 +61,7 @@ class ResetRating(SongsMenuPlugin):
         combo = gtk.ComboBox(model)
         cell = gtk.CellRendererText()
         combo.pack_start(cell, True)
-        for i in range(0, int(1.0/util.RATING_PRECISION)+1):
+        for i in range(0, int(1.0 / util.RATING_PRECISION) + 1):
             i *= util.RATING_PRECISION
             it = model.append(row=[i])
             if i == const.DEFAULT_RATING:

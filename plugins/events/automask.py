@@ -12,6 +12,7 @@ from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.uri import URI
 
+
 class AutoMasking(EventPlugin):
     PLUGIN_ID = "automask"
     PLUGIN_NAME = _("Automatic Masking")
@@ -36,11 +37,17 @@ class AutoMasking(EventPlugin):
         map(self.__monitor.handler_block, self.__sigs)
 
     def __mounted(self, monitor, volume):
-        try: filename = URI(volume.get_activation_uri()).filename
-        except ValueError: pass
-        else: app.library.unmask(os.path.normpath(filename))
+        try:
+            filename = URI(volume.get_activation_uri()).filename
+        except ValueError:
+            pass
+        else:
+            app.library.unmask(os.path.normpath(filename))
 
     def __unmounted(self, monitor, volume):
-        try: filename = URI(volume.get_activation_uri()).filename
-        except ValueError: pass
-        else: app.library.mask(os.path.normpath(filename))
+        try:
+            filename = URI(volume.get_activation_uri()).filename
+        except ValueError:
+            pass
+        else:
+            app.library.mask(os.path.normpath(filename))

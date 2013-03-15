@@ -9,6 +9,7 @@ from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
 
 from quodlibet import app
 
+
 class QueueOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
     PLUGIN_ID = "queue"
     PLUGIN_NAME = _("Queue Only")
@@ -21,7 +22,9 @@ class QueueOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
         return None
 
     def set_explicit(self, playlist, iter):
-        if iter is None: return
+        if iter is None:
+            return
         song = playlist[iter][0]
-        if song is None: return
+        if song is None:
+            return
         app.window.playlist.enqueue([playlist[iter][0]])

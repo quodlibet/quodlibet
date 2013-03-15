@@ -35,6 +35,7 @@ HTML = '''<?xml version="1.0" encoding="UTF-8"?>
 </html>
 '''
 
+
 class ExportToHTML(SongsMenuPlugin):
     PLUGIN_ID = "Export to HTML"
     PLUGIN_NAME = _("Export to HTML")
@@ -43,7 +44,8 @@ class ExportToHTML(SongsMenuPlugin):
     PLUGIN_VERSION = "0.17"
 
     def plugin_songs(self, songs):
-        if not songs: return
+        if not songs:
+            return
 
         chooser = gtk.FileChooserDialog(
             title="Export to HTML",
@@ -69,7 +71,7 @@ class ExportToHTML(SongsMenuPlugin):
         for song in songs:
             s = '<tr>'
             for col in cols:
-                col = {"~#rating":"~rating", "~#length":"~length"}.get(
+                col = {"~#rating": "~rating", "~#length": "~length"}.get(
                     col, col)
                 s += '\n<td>%s</td>' % (
                     escape(unicode(song.comma(col))) or '&nbsp;')

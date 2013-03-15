@@ -18,7 +18,8 @@ class TPEP8(TestCase):
     # E12x popped up in pep8 1.4 compared to 1.2..
     # drop them once 1.4 is common enough
     # E261: at least two spaces before inline comment
-    IGNORE_ERROROS = "E12,E261"
+    # W603: we use <> to check for py3k atm..
+    IGNORE_ERROROS = "E12,E261,W603"
     PACKAGES = ("util library parse browsers devices formats "
                 "plugins qltk").split()
 
@@ -36,6 +37,22 @@ class TPEP8(TestCase):
         import quodlibet
         path = quodlibet.__path__[0]
         files = glob.glob(os.path.join(path, "*.py"))
+        for file_ in files:
+            self._run(file_)
+
+    def test_plugins(self):
+        import quodlibet
+        path = quodlibet.__path__[0]
+        path = os.path.join(path, "../../plugins")
+        self._run(path)
+
+    def test_scripts(self):
+        import quodlibet
+        path = quodlibet.__path__[0]
+        path = os.path.join(path, "../")
+        files = glob.glob(os.path.join(path, "*.py"))
+        files = filter(lambda p: not p.endswith("setup.py"), files)
+
         for file_ in files:
             self._run(file_)
 

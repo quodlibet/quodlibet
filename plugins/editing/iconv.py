@@ -24,10 +24,12 @@ if util.fscoding not in ENCODINGS + ["utf-8", "latin1"]:
 if locale.getpreferredencoding() not in ENCODINGS + ["utf-8", "latin1"]:
     ENCODINGS.append(util.fscoding)
 
+
 class Iconv(EditTagsPlugin):
     PLUGIN_ID = "Convert Encodings"
     PLUGIN_NAME = _("Convert Encodings")
-    PLUGIN_DESC = _("Fix misinterpreted tag value encodings in the tag editor.")
+    PLUGIN_DESC = _("Fix misinterpreted tag value encodings in the "
+                    "tag editor.")
     PLUGIN_ICON = gtk.STOCK_CONVERT
     PLUGIN_VERSION = "2"
 
@@ -45,16 +47,16 @@ class Iconv(EditTagsPlugin):
             try:
                 new = value.encode('latin1').decode(enc)
             except (UnicodeEncodeError, UnicodeDecodeError, LookupError):
-                   continue
+                continue
             else:
                 if new == value:
                     continue
                 if not new in items:
                     items.append(new)
-        
+
         if not items:
             self.set_sensitive(False)
-        
+
         for i in items:
             item = gtk.MenuItem()
             item.value = i
@@ -70,5 +72,7 @@ class Iconv(EditTagsPlugin):
         self.activate()
 
     def activated(self, tag, value):
-        try: return [(tag, self.__value)]
-        except AttributeError: return [(tag, value)]
+        try:
+            return [(tag, self.__value)]
+        except AttributeError:
+            return [(tag, value)]

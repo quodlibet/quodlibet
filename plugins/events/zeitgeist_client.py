@@ -21,6 +21,7 @@ except ImportError:
 
 from quodlibet.plugins.events import EventPlugin
 
+
 class Zeitgeist(EventPlugin):
     PLUGIN_ID = "zeitgeist"
     PLUGIN_NAME = _("Event Logging")

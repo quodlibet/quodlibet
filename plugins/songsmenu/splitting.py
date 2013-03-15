@@ -7,6 +7,7 @@
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class SplitTags(SongsMenuPlugin):
     PLUGIN_ID = "Split Tags"
     PLUGIN_NAME = _("Split Tags")
@@ -20,14 +21,19 @@ class SplitTags(SongsMenuPlugin):
         if ("title" in song and
             song.can_change("title") and song.can_change("version")):
             title, versions = util.split_title(song["title"])
-            if title: song["title"] = title
-            if versions: song["version"] = "\n".join(versions)
+            if title:
+                song["title"] = title
+            if versions:
+                song["version"] = "\n".join(versions)
 
         if ("album" in song and "discnumber" not in song and
-            song.can_change("album") and song.can_change("discnumber")):
+                song.can_change("album") and song.can_change("discnumber")):
             album, disc = util.split_album(song["album"])
-            if album: song["album"] = album
-            if disc: song["discnumber"] = disc
+            if album:
+                song["album"] = album
+            if disc:
+                song["discnumber"] = disc
+
 
 class SplitAlbum(SongsMenuPlugin):
     PLUGIN_ID = "Split Album"
@@ -40,5 +46,7 @@ class SplitAlbum(SongsMenuPlugin):
         if ("album" in song and "discnumber" not in song and
             song.can_change("album") and song.can_change("discnumber")):
             album, disc = util.split_album(song["album"])
-            if album: song["album"] = album
-            if disc: song["discnumber"] = disc
+            if album:
+                song["album"] = album
+            if disc:
+                song["discnumber"] = disc

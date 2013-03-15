@@ -1,5 +1,6 @@
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
 
+
 class ReverseOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
     PLUGIN_ID = "reverse"
     PLUGIN_NAME = _("Reverse")

@@ -9,6 +9,7 @@ import mutagen.apev2
 from quodlibet.formats._apev2 import APEv2File
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class APEv2toID3v2(SongsMenuPlugin):
     PLUGIN_ID = "APEv2 to ID3v2"
     PLUGIN_NAME = _("APEv2 to ID3v2")
@@ -24,8 +25,10 @@ class APEv2toID3v2(SongsMenuPlugin):
         return True
 
     def plugin_song(self, song):
-        try: apesong = APEv2File(song["~filename"])
-        except: return # File doesn't have an APEv2 tag
+        try:
+            apesong = APEv2File(song["~filename"])
+        except:
+            return # File doesn't have an APEv2 tag
         song.update(apesong)
         mutagen.apev2.delete(song["~filename"])
         song._song.write()

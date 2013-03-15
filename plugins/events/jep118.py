@@ -20,6 +20,7 @@ format = """\
  <length>%d</length>
 </tune>"""
 
+
 class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
     PLUGIN_NAME = "JEP-118"
@@ -32,8 +33,10 @@ class JEP118(EventPlugin):
             try:
                 f = file(outfile, "w")
                 f.write("<tune xmlns='http://jabber.org/protocol/tune'/>")
-            except EnvironmentError: pass
-            else: f.close()
+            except EnvironmentError:
+                pass
+            else:
+                f.close()
         else:
             try:
                 f = file(outfile, "wb")
@@ -42,5 +45,7 @@ class JEP118(EventPlugin):
                     util.escape(song.comma("title")),
                     util.escape(song.comma("album")),
                     song("~#track", 0), song.get("~#length", 0)))
-            except EnvironmentError: pass
-            else: f.close()
+            except EnvironmentError:
+                pass
+            else:
+                f.close()

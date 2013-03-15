@@ -55,7 +55,7 @@ class SessionInhibit(EventPlugin):
 
         try:
             bus = dbus.SessionBus()
-            obj = bus.get_object(self.DBUS_NAME,  self.DBUS_PATH)
+            obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH)
             self.__cookie = obj.Inhibit(
                 self.APPLICATION_ID, xid, self.INHIBIT_REASON, flags)
         except dbus.DBusException:
@@ -67,7 +67,7 @@ class SessionInhibit(EventPlugin):
 
         try:
             bus = dbus.SessionBus()
-            obj = bus.get_object(self.DBUS_NAME,  self.DBUS_PATH)
+            obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH)
             obj.Uninhibit(self.__cookie)
             self.__cookie = None
         except dbus.DBusException:

@@ -6,6 +6,7 @@
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 def artist_to_sort(artist):
     try:
         rest, last = artist.rsplit(" ", 1)
@@ -13,6 +14,7 @@ def artist_to_sort(artist):
         return None
     else:
         return ", ".join([last, rest])
+
 
 def album_to_sort(album):
     try:
@@ -22,6 +24,7 @@ def album_to_sort(album):
     else:
         if first.lower() in ["a", "the"]:
             return ", ".join([rest, first])
+
 
 class MakeSortTags(SongsMenuPlugin):
     PLUGIN_ID = "SortTags"

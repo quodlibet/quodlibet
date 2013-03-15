@@ -41,6 +41,7 @@ DEFAULT_CONFIG = {
 ><~year|<~year>>""",
 }
 
+
 def get_conf_value(name, accessor="get"):
     try:
         value = getattr(config, accessor)("plugins", "notify_%s" % name)
@@ -51,8 +52,10 @@ def get_conf_value(name, accessor="get"):
 get_conf_bool = lambda name: get_conf_value(name, "getboolean")
 get_conf_int = lambda name: get_conf_value(name, "getint")
 
+
 def set_conf_value(name, value):
     config.set("plugins", "notify_%s" % name, unicode(value))
+
 
 class PreferencesWidget(gtk.VBox):
     def __init__(self, parent, plugin_instance):
@@ -417,8 +420,8 @@ class Notify(EventPlugin):
         if not song:
             self.close_notification()
         if get_conf_value("show_notifications") in [typ, "all"] \
-                and not (get_conf_bool("show_only_when_unfocused") \
-                     and app.window.has_toplevel_focus()) \
+                and not (get_conf_bool("show_only_when_unfocused")
+                         and app.window.has_toplevel_focus()) \
                 or self.__force_notification:
             def idle_show(song):
                 self.show_notification(song)

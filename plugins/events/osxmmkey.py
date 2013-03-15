@@ -8,12 +8,12 @@
 # osxmmkey - Mac OS X Media Keys support
 # --------------------------------------
 #
-# The osxmmkey plugin adds support for media keys under mac; when enabled the 
-# standard play, next and previous buttons control quodlibet the way you'd 
+# The osxmmkey plugin adds support for media keys under mac; when enabled the
+# standard play, next and previous buttons control quodlibet the way you'd
 # expect.
 #
-# Requires the PyObjC, with the Cocoa and Quartz bindings to be installed. 
-# Under macports, that's the `py27-pyobjc`, `py27-pyobjc-cocoa` 
+# Requires the PyObjC, with the Cocoa and Quartz bindings to be installed.
+# Under macports, that's the `py27-pyobjc`, `py27-pyobjc-cocoa`
 # and`py27-pyobjc-quartz` ports, or equivalents for the python version used by
 # quodlibet.
 #
@@ -55,7 +55,8 @@ else:
 
         def enabled(self):
             # Start the event capturing process
-            self.__eventsapp = subprocess.Popen((sys.executable, __file__, const.CONTROL))
+            self.__eventsapp = subprocess.Popen(
+                (sys.executable, __file__, const.CONTROL))
 
         def disabled(self):
             if self.__eventsapp is not None:
@@ -64,7 +65,7 @@ else:
 
 
 #
-# Quartz event tap, listens for media key events and translates these to 
+# Quartz event tap, listens for media key events and translates these to
 # control messages for quodlibet.
 #
 
@@ -73,6 +74,7 @@ import os
 import signal
 from AppKit import NSKeyUp, NSSystemDefined, NSEvent
 import Quartz
+
 
 class MacKeyEventsTap(object):
     def __init__(self, controlPath):
@@ -116,7 +118,8 @@ class MacKeyEventsTap(object):
             Quartz.kCGSessionEventTap, # Session level is enough for our needs
             Quartz.kCGHeadInsertEventTap, # Insert wherever, we do not filter
             Quartz.kCGEventTapOptionListenOnly, # Listening is enough
-            Quartz.CGEventMaskBit(NSSystemDefined), # NSSystemDefined for media keys
+            # NSSystemDefined for media keys
+            Quartz.CGEventMaskBit(NSSystemDefined),
             tapHandler.eventTap,
             None
         )

@@ -13,8 +13,11 @@ from quodlibet.util import website
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 WIKI_URL = "http://%s.wikipedia.org/wiki/"
-try: config.get("plugins", __name__)
-except: config.set("plugins", __name__, "en")
+try:
+    config.get("plugins", __name__)
+except:
+    config.set("plugins", __name__, "en")
+
 
 class WikiSearch(object):
     PLUGIN_ICON = gtk.STOCK_OPEN
@@ -44,10 +47,12 @@ class WikiSearch(object):
             a = quote(str(a).title().replace(' ', '_'))
             website(WIKI_URL % config.get('plugins', __name__) + a)
 
+
 class WikiArtist(WikiSearch, SongsMenuPlugin):
     PLUGIN_ID = 'Search artist in Wikipedia'
     PLUGIN_NAME = _('Search artist in Wikipedia')
     k = 'artist'
+
 
 class WikiAlbum(WikiSearch, SongsMenuPlugin):
     PLUGIN_ID = 'Search album in Wikipedia'

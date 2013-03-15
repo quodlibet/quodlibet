@@ -14,13 +14,18 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 __all__ = ['Export', 'Import']
 
+
 def filechooser(save, title):
     chooser = gtk.FileChooserDialog(
-        title=(save and "Export %s Metadata to ..." or "Import %s Metadata from ...") % title,
-        action=(save and gtk.FILE_CHOOSER_ACTION_SAVE or gtk.FILE_CHOOSER_ACTION_OPEN),
-        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        title=(save and "Export %s Metadata to ..." or
+               "Import %s Metadata from ...") % title,
+        action=(save and gtk.FILE_CHOOSER_ACTION_SAVE or
+                gtk.FILE_CHOOSER_ACTION_OPEN),
+        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                 gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 
-    for name, pattern in [('Tag files (*.tags)','*.tags'), ('All Files','*')]:
+    for name, pattern in [('Tag files (*.tags)', '*.tags'),
+                          ('All Files', '*')]:
         filter = gtk.FileFilter()
         filter.set_name(name)
         filter.add_pattern(pattern)
@@ -30,23 +35,27 @@ def filechooser(save, title):
     chooser.set_default_response(gtk.RESPONSE_ACCEPT)
     return chooser
 
-class Export(SongsMenuPlugin):
 
+class Export(SongsMenuPlugin):
     PLUGIN_ID = "ExportMeta"
     PLUGIN_NAME = _("Export Metadata")
     PLUGIN_ICON = 'gtk-save'
 
     def plugin_album(self, songs):
 
-        songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or cmp(a('~basename'), b('~basename')) or cmp(a, b))
+        songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or
+                                cmp(a('~basename'), b('~basename')) or
+                                cmp(a, b))
 
         chooser = filechooser(save=True, title=songs[0]('album'))
         resp = chooser.run()
         fn = chooser.get_filename()
         chooser.destroy()
-        if resp != gtk.RESPONSE_ACCEPT: return
+        if resp != gtk.RESPONSE_ACCEPT:
+            return
         base, ext = splitext(fn)
-        if not ext: fn = extsep.join([fn, 'tags'])
+        if not ext:
+            fn = extsep.join([fn, 'tags'])
 
         global lastfolder
         lastfolder = dirname(fn)
@@ -57,13 +66,14 @@ class Export(SongsMenuPlugin):
             keys = song.keys()
             keys.sort()
             for key in keys:
-                if key.startswith('~'): continue
+                if key.startswith('~'):
+                    continue
                 for val in song.list(key):
                     print>>out, '%s=%s' % (key, val.encode('utf-8'))
             print>>out
 
-class Import(SongsMenuPlugin):
 
+class Import(SongsMenuPlugin):
     PLUGIN_ID = "ImportMeta"
     PLUGIN_NAME = _("Import Metadata")
     PLUGIN_ICON = 'gtk-open'
@@ -73,7 +83,8 @@ class Import(SongsMenuPlugin):
     # them via the plugin system and just selecting a new .tags; this mimics
     # export of several albums.
     #
-    # However if one of the songs in your album is different from the rest (e.g.
+    # However if one of the songs in your album is different from the rest
+    # (e.g.
     # one isn't tagged, or only one is) it will be passed in as two different
     # invocations, neither of which has the right size. If you find yourself in
     # that scenario a lot more than the previous one, change this to
@@ -81,7 +92,9 @@ class Import(SongsMenuPlugin):
     # and comment out the songs.sort line for safety.
     def plugin_album(self, songs):
 
-        songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or cmp(a('~basename'), b('~basename')) or cmp(a, b))
+        songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or
+                                cmp(a('~basename'), b('~basename')) or
+                                cmp(a, b))
 
         chooser = filechooser(save=False, title=songs[0]('album'))
         box = gtk.HBox()
@@ -99,7 +112,8 @@ class Import(SongsMenuPlugin):
         rename = rename.get_active()
         fn = chooser.get_filename()
         chooser.destroy()
-        if resp != gtk.RESPONSE_ACCEPT: return
+        if resp != gtk.RESPONSE_ACCEPT:
+            return
 
         global lastfolder
         lastfolder = dirname(fn)
@@ -116,11 +130,16 @@ class Import(SongsMenuPlugin):
             else:
                 key, value = line[:-1].split('=', 1)
                 value = value.decode('utf-8')
-                try: metadata[index][key].append(value)
-                except KeyError: metadata[index][key] = [value]
+                try:
+                    metadata[index][key].append(value)
+                except KeyError:
+                    metadata[index][key] = [value]
 
         if not (len(songs) == len(metadata) == len(names)):
-            ErrorMessage(None, "Songs mismatch", "There are %(select)d songs selected, but %(meta)d songs in the file. Aborting." % dict(select=len(songs), meta=len(metadata))).run()
+            ErrorMessage(None, "Songs mismatch",
+                        "There are %(select)d songs selected, but %(meta)d "
+                        "songs in the file. Aborting." %
+                        dict(select=len(songs), meta=len(metadata))).run()
             return
 
         for song, meta, name in zip(songs, metadata, names):

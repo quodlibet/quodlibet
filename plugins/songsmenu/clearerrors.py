@@ -6,6 +6,7 @@
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
+
 class ForceWrite(SongsMenuPlugin):
     PLUGIN_ID = "ClearErrors"
     PLUGIN_NAME = _("Clear Errors")
@@ -14,5 +15,7 @@ class ForceWrite(SongsMenuPlugin):
     PLUGIN_VERSION = "1"
 
     def plugin_song(self, song):
-        try: del(song["~errors"])
-        except KeyError: pass
+        try:
+            del(song["~errors"])
+        except KeyError:
+            pass
