@@ -61,12 +61,16 @@ def GStreamerSink(pipeline):
     elif not pipeline or pipeline == "gconf":
         pipeline = "gconfaudiosink profile=music"
 
-    try: pipe = [Gst.parse_launch(element) for element in pipeline.split('!')]
+    try:
+        pipe = [Gst.parse_launch(element) for element in pipeline.split('!')]
     except GLib.GError:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
-        try: pipe = [Gst.parse_launch("autoaudiosink")]
-        except GLib.GError: pipe = None
-        else: pipeline = "autoaudiosink"
+        try:
+            pipe = [Gst.parse_launch("autoaudiosink")]
+        except GLib.GError:
+            pipe = None
+        else:
+            pipeline = "autoaudiosink"
 
     if pipe:
         # In case the last element is linkable with a fakesink
@@ -76,7 +80,7 @@ def GStreamerSink(pipeline):
             unlink_many([pipe[-1], fake])
             default, default_text = GStreamerSink("")
             if default:
-                return pipe + default, pipeline + " ! "  + default_text
+                return pipe + default, pipeline + " ! " + default_text
     else:
         print_w(_("Could not create default GStreamer pipeline."))
 
@@ -118,8 +122,10 @@ class GStreamerPluginHandler(object):
         self._rebuild_pipeline()
 
     def plugin_disable(self, plugin):
-        try: self.__elements.pop(plugin)
-        except KeyError: pass
+        try:
+            self.__elements.pop(plugin)
+        except KeyError:
+            pass
         self.__plugins.remove(plugin)
         self._rebuild_pipeline()
 
@@ -194,7 +200,8 @@ def parse_gstreamer_taglist(tags):
             if not isinstance(value, list):
                 value = [value]
             for val in value:
-                if not isinstance(val, unicode): continue
+                if not isinstance(val, unicode):
+                    continue
                 split = val.split("=", 1)
                 sub_key = util.decode(split[0])
                 val = split[-1]
@@ -217,6 +224,7 @@ def parse_gstreamer_taglist(tags):
             merged[key] = value
 
     return merged
+
 
 def bin_debug(elements, depth=0, lines=None):
     """Takes a list of gst.Element that are part of a prerolled pipeline, and

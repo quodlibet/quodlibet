@@ -64,6 +64,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 "playback, such as 'alsasink device=default'. "
                 "Leave blank for default pipeline."))
         e.set_text(config.get('player', 'gst_pipeline'))
+
         def changed(entry):
             config.set('player', 'gst_pipeline', entry.get_text())
         e.connect('changed', changed)
@@ -94,7 +95,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         buffer_label.set_use_underline(True)
         buffer_label.set_mnemonic_widget(scale)
 
-
         def rebuild_pipeline(*args):
             self._rebuild_pipeline()
         apply_button.connect('clicked', rebuild_pipeline)
@@ -109,11 +109,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         for i, (left, middle, right) in enumerate(widgets):
             left.set_alignment(0.0, 0.5)
             table.attach(left, 0, 1, i, i + 1,
-                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL |
+                         Gtk.AttachOptions.SHRINK)
             if right:
                 table.attach(middle, 1, 2, i, i + 1)
                 table.attach(right, 2, 3, i, i + 1,
-                             xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+                             xoptions=Gtk.AttachOptions.FILL |
+                             Gtk.AttachOptions.SHRINK)
             else:
                 table.attach(middle, 1, 3, i, i + 1)
 
@@ -155,7 +157,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 -> audioconvert -> user defined elements
                 -> gconf/autoaudiosink ]
         """
-        if self.bin: return True
+        if self.bin:
+            return True
 
         pipeline = config.get("player", "gst_pipeline")
         pipeline, self.name = GStreamerSink(pipeline)
@@ -190,8 +193,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         plugin_pipeline = []
         for plugin in self._get_plugin_elements():
             plugin_pipeline.append(plugin)
-            plugin_pipeline.append(Gst.ElementFactory.make('audioconvert', None))
-            plugin_pipeline.append(Gst.ElementFactory.make('audioresample', None))
+            plugin_pipeline.append(
+                Gst.ElementFactory.make('audioconvert', None))
+            plugin_pipeline.append(
+                Gst.ElementFactory.make('audioresample', None))
         pipeline = plugin_pipeline + pipeline
 
         bufbin = Gst.Bin()
@@ -204,7 +209,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # Test to ensure output pipeline can preroll
         bufbin.set_state(Gst.State.READY)
-        result, state, pending = bufbin.get_state(timeout=Gst.SECOND/2)
+        result, state, pending = bufbin.get_state(timeout=Gst.SECOND / 2)
         if result == Gst.StateChangeReturn.FAILURE:
             bufbin.set_state(Gst.State.NULL)
             self.__destroy_pipeline()
@@ -261,7 +266,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if self.bin:
             self.bin.set_state(Gst.State.NULL)
-            self.bin.get_state(timeout=Gst.SECOND/2)
+            self.bin.get_state(timeout=Gst.SECOND / 2)
             self.bin = None
 
         if self._task:
@@ -367,11 +372,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         return p
 
     def __buffering(self, percent):
-        def stop_buf(*args): self.paused = True
+        def stop_buf(*args):
+            self.paused = True
 
         if percent < 100:
             if self._task:
-                self._task.update(percent/100.0)
+                self._task.update(percent / 100.0)
             else:
                 self._task = Task(_("Stream"), _("Buffering"), stop=stop_buf)
         elif self._task:
@@ -443,7 +449,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self.emit((paused and 'paused') or 'unpaused')
 
-    def _get_paused(self): return self._paused
+    def _get_paused(self):
+        return self._paused
     paused = property(_get_paused, _set_paused)
 
     def _error(self, message):
@@ -461,10 +468,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if self.__init_pipeline():
             # ensure any pending state changes have completed and we have
             # at least paused state, so we can seek
-            state = self.bin.get_state(timeout=Gst.SECOND/2)[1]
+            state = self.bin.get_state(timeout=Gst.SECOND / 2)[1]
             if state < Gst.State.PAUSED:
                 self.bin.set_state(Gst.State.PAUSED)
-                self.bin.get_state(timeout=Gst.SECOND/2)
+                self.bin.get_state(timeout=Gst.SECOND / 2)
 
             pos = max(0, int(pos))
             gst_time = pos * Gst.MSECOND
@@ -591,8 +598,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             for band, val in enumerate(self._eq_values):
                 self._eq_element.set_property('band%d' % band, val)
 
-
     def can_play_uri(self, uri):
+        if not Gst.uri_is_valid(uri):
+            return False
         return Gst.Element.make_from_uri(Gst.URIType.SRC, uri, '') is not None
 
 

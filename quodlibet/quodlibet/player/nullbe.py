@@ -7,6 +7,7 @@
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.songlist import PlaylistModel
 
+
 class NullPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
@@ -17,11 +18,12 @@ class NullPlayer(BasePlayer):
         super(NullPlayer, self).__init__()
         self._set_paused(True)
         self._source = PlaylistModel()
+        self._position = 0
 
     def get_position(self):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
-        return 0
+        return self._position
 
     def _set_paused(self, paused):
         if paused != self._paused:
@@ -32,7 +34,9 @@ class NullPlayer(BasePlayer):
                 # Something wants us to pause between songs, or when
                 # we've got no song playing (probably StopAfterMenu).
                 self.emit('paused')
-    def _get_paused(self): return self._paused
+
+    def _get_paused(self):
+        return self._paused
     paused = property(_get_paused, _set_paused)
 
     def do_set_property(self, property, v):
@@ -50,6 +54,7 @@ class NullPlayer(BasePlayer):
         """Seek to a position in the song, in milliseconds."""
         if self.song:
             self.emit('seek', self.song, pos)
+        self._position = pos
 
     def _end(self, stopped):
         # We need to set self.song to None before calling our signal
@@ -65,6 +70,8 @@ class NullPlayer(BasePlayer):
 
         if self.song is None:
             self.paused = True
+
+        self._position = 0
 
     def can_play_uri(self, uri):
         return False

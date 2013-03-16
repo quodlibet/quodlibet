@@ -60,10 +60,8 @@ class PlaylistMux(object):
         return self.pl.go_to(song, explicit)
 
     def reset(self):
-        self.pl.reset()
         self.q.go_to(None)
-        if not self.pl.is_empty():
-            self.next()
+        self.pl.reset()
 
     def enqueue(self, songs):
         for song in songs:
@@ -199,3 +197,5 @@ class PlaylistModel(TrackCurrentModel):
     def reset(self):
         self.go_to(None)
         self.order.reset(self)
+        if not self.is_empty():
+            self.next()

@@ -28,9 +28,9 @@ class FSInterface(object):
     def __init__(self, player):
         player.connect('song-started', self.__started)
         player.connect('song-ended', self.__ended)
-        quodlibet.quit_add(1, self.__cleanup)
+        quodlibet.quit_add(1, self.destroy)
 
-    def __cleanup(self):
+    def destroy(self):
         try:
             os.unlink(const.CURRENT)
         except EnvironmentError:
@@ -58,9 +58,9 @@ class FIFOControl(object):
 
     def __init__(self, library, window, player):
         self.__open(library, window, player)
-        quodlibet.quit_add(1, self.__cleanup)
+        quodlibet.quit_add(1, self.destroy)
 
-    def __cleanup(self):
+    def destroy(self):
         try:
             os.unlink(const.CONTROL)
         except EnvironmentError:

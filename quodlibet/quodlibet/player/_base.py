@@ -1,7 +1,41 @@
+# Copyright 2007-2008 Joe Wreschnig
+#           2009,2010 Steven Robertson
+#           2009-2013 Christoph Reiter
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from gi.repository import GObject
 
 
-class BasePlayer(GObject.GObject):
+class Equalizer(object):
+    _eq_values = []
+
+    @property
+    def eq_bands(self):
+        """read-only list of equalizer bands (in Hz) supported."""
+
+        return []
+
+    @property
+    def eq_values(self):
+        """The list of equalizer values, in the range (-24dB, 12dB)."""
+
+        return self._eq_values
+
+    @eq_values.setter
+    def eq_values(self, value):
+        self._eq_values[:] = value
+        self.update_eq_values()
+
+    def update_eq_values(self):
+        """Override to apply equalizer values"""
+
+        pass
+
+
+class BasePlayer(GObject.GObject, Equalizer):
     """Interfaces between a QL PlaylistModel and a GSt playbin.
 
     Attributes:
@@ -30,7 +64,6 @@ class BasePlayer(GObject.GObject):
     replaygain_profiles = [None, None, None, ["none"]]
     _volume = 1.0
     _paused = True
-    _eq_values = []
 
     _gsignals_ = {
         'song-started':
@@ -53,12 +86,15 @@ class BasePlayer(GObject.GObject):
         super(BasePlayer, self).__init__()
 
     def destroy(self):
-        pass
+        """Free resources"""
+
+        self._source = None
 
     def do_get_property(self, property):
         if property.name == 'volume':
             return self._volume
-        else: raise AttributeError
+        else:
+            raise AttributeError
 
     def _set_volume(self, v):
         self.props.volume = min(1.0, max(0.0, v))
@@ -66,21 +102,42 @@ class BasePlayer(GObject.GObject):
 
     def setup(self, source, song, seek_pos):
         """Connect to a PlaylistModel, and load a song."""
+
         self._source = source
         self.go_to(song)
         if seek_pos:
             self.seek(seek_pos)
 
+    def seek(self, position):
+        """Seek to absolute position in milliseconds.
+        If position is larger than the duration start the next song
+        """
+
+        raise NotImplementedError
+
+    def get_position(self):
+        """The current position in milliseconds"""
+
+        raise NotImplementedError
+
     def remove(self, song):
-        if self.song is song:
+        """Make sure the song isn't played anymore"""
+
+        if song and self.song is song:
             self._source.next()
             self._end(True)
 
     def stop(self):
+        """Stop playback and reset the position.
+        Might release the audio device
+        """
+
         self.paused = True
         self.seek(0)
 
     def reset(self):
+        """Reset the source and start playing if possible"""
+
         self._source.reset()
         if self._source.current is not None:
             self._end(True)
@@ -88,14 +145,20 @@ class BasePlayer(GObject.GObject):
                 self.paused = False
 
     def next(self):
+        """Move to the next song"""
+
         self._source.next()
         self._end(True)
         if self.song:
             self.paused = False
 
     def previous(self, force=False):
-        # Go back if standing at the beginning of the song,
-        # otherwise restart the current song.
+        """Go back if standing at the beginning of the song
+        otherwise restart the current song.
+
+        If force is True always go back.
+        """
+
         if force or self.get_position() < 1500:
             self._source.previous()
             self._end(True)
@@ -105,6 +168,10 @@ class BasePlayer(GObject.GObject):
             self.paused = False
 
     def go_to(self, song, explicit=False):
+        """Activate the song in the playlist and play it.
+        explicit if the action comes from the user
+        """
+
         print_d("Going to %r" % getattr(song, "key", song))
         res = self._source.go_to(song, explicit)
         if explicit and not res:
@@ -112,26 +179,7 @@ class BasePlayer(GObject.GObject):
         self._end(True)
         return self.song is not None
 
-    @property
-    def eq_bands(self):
-        """
-        A read-only list of equalizer bands (in Hz) supported by this backend.
-        """
-        # For backwards compatibility, do a hasattr() before calling this.
-        return []
-
-    def _get_eq_values(self):
-        """
-        The list of equalizer values, in the range (-24dB, 12dB).
-        """
-        return self._eq_values
-
-    def _set_eq_values(self, value):
-        self._eq_values[:] = value
-        if hasattr(self, 'update_eq_values'):
-            self.update_eq_values()
-
-    eq_values = property(_get_eq_values,_set_eq_values)
-
     def can_play_uri(self, uri):
+        """Whether the player supports playing te given URI scheme"""
+
         raise NotImplementedError

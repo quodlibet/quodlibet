@@ -188,16 +188,14 @@ class TPlaylistModel(TestCase):
         self.pl.go_to(5)
         self.failUnlessEqual(self.pl.current, 5)
         self.pl.reset()
-        self.failUnlessEqual(self.pl.current, None)
-        self.pl.next()
         self.failUnlessEqual(self.pl.current, 0)
 
     def test_reset_order(self):
-        self.pl.order = ORDERS[1](self.pl)
+        self.pl.order = ORDERS[0](self.pl)
         self.pl.go_to(5)
         self.failUnlessEqual(self.pl.current, 5)
         self.pl.reset()
-        self.failUnlessEqual(self.pl.current, None)
+        self.failUnlessEqual(self.pl.current, 0)
 
     def test_restart(self):
         self.pl.go_to(1)

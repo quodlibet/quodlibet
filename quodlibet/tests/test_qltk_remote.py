@@ -55,6 +55,7 @@ class TFIFOControl(TestCase):
         self.fifo = FIFOControl(self.l, self.w, self.p)
 
     def tearDown(self):
+        self.fifo.destroy()
         self.p.destroy()
         self.l.destroy()
         self.w.destroy()
