@@ -67,11 +67,6 @@ class TPlayer(TestCase):
         self.player.volume = 0.5
         self.assertEqual(self.player.volume, 0.5)
 
-    def test_can_play_uri(self):
-        self.player.can_play_uri("")
-        self.player.can_play_uri("file://")
-        self.assertFalse(self.player.can_play_uri("fake://"))
-
     def test_remove(self):
         self.player.remove(None)
         self.player.go_to(FILES[0])
@@ -154,11 +149,21 @@ class TNullPlayer(TPlayer):
         self.player.stop()
         self.assertEqual(self.player.get_position(), 0)
 
+    def test_can_play_uri_xine(self):
+        self.assertFalse(self.player.can_play_uri(""))
+        self.assertFalse(self.player.can_play_uri("file://"))
+        self.assertFalse(self.player.can_play_uri("fake://"))
+
 add(TNullPlayer)
 
 
 class TXinePlayer(TPlayer):
     NAME = "xinebe"
+
+    def test_can_play_uri_xine(self):
+        self.assertFalse(self.player.can_play_uri(""))
+        self.assertTrue(self.player.can_play_uri("file://"))
+        self.assertFalse(self.player.can_play_uri("fake://"))
 
 if player.init(TXinePlayer.NAME):
     add(TXinePlayer)
@@ -168,6 +173,11 @@ else:
 
 class TGstPlayer(TPlayer):
     NAME = "gstbe"
+
+    def test_can_play_uri_gst(self):
+        self.assertFalse(self.player.can_play_uri(""))
+        self.assertTrue(self.player.can_play_uri("file://"))
+        self.assertFalse(self.player.can_play_uri("fake://"))
 
 if player.init(TGstPlayer.NAME):
     add(TGstPlayer)
