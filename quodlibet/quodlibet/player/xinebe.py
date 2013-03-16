@@ -12,6 +12,34 @@ from quodlibet.player._base import BasePlayer
 from quodlibet.player._xine import *
 
 
+class XineHandle(object):
+    def __init__(self):
+        _xine = xine_new()
+        xine_config_load(_xine, xine_get_homedir() + "/.xine/config")
+        xine_init(_xine)
+        self._xine = _xine
+
+    def list_input_plugins(self):
+        plugins = []
+        for plugin in xine_list_input_plugins(self._xine):
+            if not plugin:
+                break
+            plugins.append(plugin)
+        return plugins
+
+    def exit(self):
+        xine_exit(self._xine)
+
+    def open_audio_driver(self, identifier, data):
+        return xine_open_audio_driver(self._xine, identifier, data)
+
+    def close_audio_driver(self, driver):
+        xine_close_audio_driver(self._xine, driver)
+
+    def stream_new(self, audio_port, video_port):
+        return xine_stream_new(self._xine, audio_port, video_port)
+
+
 class XinePlaylistPlayer(BasePlayer):
     """Xine playlist player."""
     __gproperties__ = BasePlayer._gproperties_
@@ -23,21 +51,20 @@ class XinePlaylistPlayer(BasePlayer):
         super(XinePlaylistPlayer, self).__init__()
         self.name = "xine"
         self.version_info = "xine-lib: " + xine_get_version_string()
-        _init_xine()
+        self._handle = XineHandle()
         self._supports_gapless = xine_check_version(1, 1, 1) == 1
         self._event_queue = None
         self._new_stream(driver)
         self._librarian = librarian
 
     def _new_stream(self, driver):
-        global _xine
-        self._audio_port = xine_open_audio_driver(_xine, driver, None)
+        self._audio_port = self._handle.open_audio_driver(driver, None)
         if not self._audio_port:
             raise PlayerError(
                 _("Unable to create audio output"),
                 _("The audio device %r was not found. Check your Xine "
                   "settings in ~/.quodlibet/config.") % driver)
-        self._stream = xine_stream_new(_xine, self._audio_port, None)
+        self._stream = self._handle.stream_new(self._audio_port, None)
         xine_set_param(self._stream, XINE_PARAM_IGNORE_VIDEO, 1)
         xine_set_param(self._stream, XINE_PARAM_IGNORE_SPU, 1)
         self.update_eq_values()
@@ -50,15 +77,14 @@ class XinePlaylistPlayer(BasePlayer):
             self._event_listener, None)
 
     def destroy(self):
-        global _xine
         if self._stream:
             xine_close(self._stream)
             xine_dispose(self._stream)
         if self._event_queue:
             xine_event_dispose_queue(self._event_queue)
         if self._audio_port:
-            xine_close_audio_driver(_xine, self._audio_port)
-        _exit_xine()
+            self._handle.close_audio_driver(self._audio_port)
+        self._handle.exit()
         super(XinePlaylistPlayer, self).destroy()
 
     def _playback_finished(self):
@@ -230,36 +256,10 @@ class XinePlaylistPlayer(BasePlayer):
             xine_set_param(self._stream, param, val)
 
     def can_play_uri(self, uri):
-        global _xine, _plugins
-        if _xine is None:
-            _init_xine()
-        for plugin in _plugins:
-            if uri.startswith(plugin):
+        for plugin in self._handle.list_input_plugins():
+            if uri.startswith(plugin.lower()):
                 return True
         return False
-
-
-_xine = None
-_plugins = None
-
-
-def _init_xine():
-    global _xine, _plugins
-    _xine = xine_new()
-    if _xine:
-        xine_config_load(_xine, xine_get_homedir() + "/.xine/config")
-        xine_init(_xine)
-        _plugins = []
-        for plugin in xine_list_input_plugins(_xine):
-            if not plugin:
-                break
-            _plugins.append(plugin.lower())
-
-
-def _exit_xine():
-    global _xine
-    if _xine:
-        xine_exit(_xine)
 
 
 def init(librarian):
