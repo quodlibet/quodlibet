@@ -601,7 +601,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def can_play_uri(self, uri):
         if not Gst.uri_is_valid(uri):
             return False
-        return Gst.Element.make_from_uri(Gst.URIType.SRC, uri, '') is not None
+        try:
+            Gst.Element.make_from_uri(Gst.URIType.SRC, uri, '')
+        except GLib.GError:
+            return False
+        return True
 
 
 def init(librarian):
