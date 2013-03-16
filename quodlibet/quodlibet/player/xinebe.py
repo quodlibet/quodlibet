@@ -11,6 +11,7 @@ from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.player._xine import *
 
+
 class XinePlaylistPlayer(BasePlayer):
     """Xine playlist player."""
     __gproperties__ = BasePlayer._gproperties_
@@ -241,6 +242,7 @@ class XinePlaylistPlayer(BasePlayer):
 _xine = None
 _plugins = None
 
+
 def _init_xine():
     global _xine, _plugins
     _xine = xine_new()
@@ -252,6 +254,7 @@ def _init_xine():
             if not plugin:
                 break
             _plugins.append(plugin.lower())
+
 
 def _exit_xine():
     global _xine

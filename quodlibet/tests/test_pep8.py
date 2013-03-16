@@ -21,7 +21,7 @@ class TPEP8(TestCase):
     # W603: we use <> to check for py3k atm..
     IGNORE_ERROROS = "E12,E261,W603"
     PACKAGES = ("util library parse browsers devices formats "
-                "plugins qltk").split()
+                "plugins qltk player").split()
 
     def _run(self, path):
         subprocess.check_call(

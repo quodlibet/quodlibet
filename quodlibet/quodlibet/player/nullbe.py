@@ -7,6 +7,7 @@
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.songlist import PlaylistModel
 
+
 class NullPlayer(BasePlayer):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
@@ -33,7 +34,9 @@ class NullPlayer(BasePlayer):
                 # Something wants us to pause between songs, or when
                 # we've got no song playing (probably StopAfterMenu).
                 self.emit('paused')
-    def _get_paused(self): return self._paused
+
+    def _get_paused(self):
+        return self._paused
     paused = property(_get_paused, _set_paused)
 
     def do_set_property(self, property, v):

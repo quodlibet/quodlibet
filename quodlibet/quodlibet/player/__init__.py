@@ -15,7 +15,7 @@ class PlayerError(Exception):
 def init(backend_name):
     """Imports the player backend module for the given name.
     Raises PlayerError if the import fails.
-    
+
     the module provides the following functions:
         init(librarian) -> new player instance
     """
