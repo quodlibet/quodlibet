@@ -660,8 +660,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             for band, val in enumerate(self._eq_values):
                 self._eq_element.set_property('band%d' % band, val)
 
-
     def can_play_uri(self, uri):
+        if not gst.uri_is_valid(uri):
+            return False
         return gst.element_make_from_uri(gst.URI_SRC, uri, '') is not None
 
 

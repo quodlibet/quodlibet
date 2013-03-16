@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import contextlib
+
 import pygst
 pygst.require("0.10")
 import gst
@@ -8,6 +10,15 @@ from tests import TestCase, add
 from quodlibet.player.gstbe import GStreamerSink as Sink
 from quodlibet.player.gstbe import parse_gstreamer_taglist
 from quodlibet.util import sanitize_tags
+
+
+@contextlib.contextmanager
+def ignore_gst_errors():
+    old = gst.debug_get_default_threshold()
+    gst.debug_set_default_threshold(gst.LEVEL_NONE)
+    yield
+    gst.debug_set_default_threshold(old)
+
 
 class TGStreamerSink(TestCase):
     def test_simple(self):
@@ -22,7 +33,8 @@ class TGStreamerSink(TestCase):
         import __builtin__
         pw = print_w
         __builtin__.__dict__["print_w"] = lambda *x: None
-        obj, name = Sink("notarealsink")
+        with ignore_gst_errors():
+            obj, name = Sink("notarealsink")
         __builtin__.__dict__["print_w"] = pw
         self.failUnless(obj)
         self.failUnlessEqual(name, "autoaudiosink")
