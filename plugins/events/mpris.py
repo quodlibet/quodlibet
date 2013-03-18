@@ -74,6 +74,9 @@ class MPRIS(EventPlugin):
             obj.remove_from_connection()
         self.objects = []
 
+        import gc
+        gc.collect()
+
         app.window.disconnect(self.__sig)
 
     def plugin_on_paused(self):
