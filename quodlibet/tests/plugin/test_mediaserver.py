@@ -4,7 +4,8 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-import gtk
+from gi.repository import Gtk
+
 import dbus
 
 from tests import add
@@ -37,7 +38,7 @@ class TMediaServer(PluginTestCase):
 
     def _wait(self):
         while not self._replies:
-            gtk.main_iteration(False)
+            Gtk.main_iteration_do(False)
         return self._replies.pop(0)
 
     def _entry_props_iface(self):
