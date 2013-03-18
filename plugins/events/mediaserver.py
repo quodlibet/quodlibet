@@ -1,4 +1,4 @@
-# Copyright 2012 Christoph Reiter <christoph.reiter@gmx.at>
+# Copyright 2012,2013 Christoph Reiter <christoph.reiter@gmx.at>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -42,7 +42,14 @@ class MediaServer(EventPlugin):
     def disabled(self):
         for obj in self.objects:
             obj.remove_from_connection()
-        self.objects = []
+
+        for obj in self.objects:
+            obj.destroy()
+
+        del self.objects
+
+        import gc
+        gc.collect()
 
 
 class DBusPropertyFilter(DBusProperty):
@@ -233,6 +240,11 @@ class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
                 return self.PATH
             elif name == "DisplayName":
                 return self.DISPLAY_NAME
+
+    def destroy(self):
+        # break cycle
+        del self.__sub
+        del self.parent
 
     def register_child(self, child):
         self.__sub.append(child)
@@ -427,8 +439,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             del self.__map[self.__reverse[song]]
             del self.__reverse[song]
 
-    def remove_from_connection(self):
-        super(SongObject, self).remove_from_connection()
+    def destroy(self):
         map(self.__library.disconnect, self.__sigs)
 
     def get_dummy(self, song, prefix):
@@ -446,8 +457,6 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
                    DBusIntrospectable, dbus.service.FallbackObject):
     PATH = BASE_PATH + "/Albums"
     DISPLAY_NAME = "Albums"
-
-    __library = None
 
     def __init__(self, parent, library):
         DBusIntrospectable.__init__(self)
@@ -513,8 +522,7 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         album = self.__library[song.album_key]
         return "Albums/" + str(id(album))
 
-    def remove_from_connection(self):
-        super(AlbumsObject, self).remove_from_connection()
+    def destroy(self):
         map(self.__library.disconnect, self.__sigs)
 
     def __get_albums_property(self, interface, name):
@@ -620,3 +628,6 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
                 return Icon.SIZE
             elif name == "ColorDepth":
                 return self.__depth
+
+    def destroy(self):
+        pass

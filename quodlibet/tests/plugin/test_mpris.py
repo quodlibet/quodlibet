@@ -1,4 +1,4 @@
-# Copyright 2012 Christoph Reiter <christoph.reiter@gmx.at>
+# Copyright 2012,2013 Christoph Reiter <christoph.reiter@gmx.at>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -54,6 +54,10 @@ class TMPRIS(PluginTestCase):
         self.m = self.plugin()
         self.m.enabled()
         self._replies = []
+
+    def test_name_owner(self):
+        bus = dbus.SessionBus()
+        self.failUnless(bus.name_has_owner("org.mpris.quodlibet"))
 
     def _main_iface(self):
         bus = dbus.SessionBus()
@@ -203,7 +207,11 @@ class TMPRIS(PluginTestCase):
         self.failUnlessEqual(resp["xesam:artist"], [u'fooman\ufffd'])
 
     def tearDown(self):
+        bus = dbus.SessionBus()
+        self.failUnless(
+            bus.name_has_owner("org.mpris.quodlibet"))
         self.m.disabled()
+        self.failIf(bus.name_has_owner("org.mpris.quodlibet"))
         del self.m
 
     @classmethod
