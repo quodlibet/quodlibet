@@ -132,6 +132,10 @@ class TreeViewHints(Gtk.Window):
         if renderer.get_property('ellipsize') == Pango.EllipsizeMode.NONE:
             return
 
+        # don't display if the renderer is in editing mode
+        if renderer.props.editing:
+            return
+
         # set the cell renderer attributes for the active cell
         model = view.get_model()
         col.cell_set_cell_data(model, model.get_iter(path), False, False)
