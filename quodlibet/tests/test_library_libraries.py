@@ -30,12 +30,15 @@ class FakeSong(Fake):
 class AlbumSong(AudioFile):
     """A mock AudioFile belong to one of three albums,
     based on a single number"""
-    def __init__(self, num):
+    def __init__(self, num, album=None):
         super(AlbumSong, self).__init__()
         self["~filename"] = "file_%d.mp3" % (num + 1)
         self["title"] = "Song %d" % (num + 1)
         self["artist"] = "Fakeman"
-        self["album"] = "Album %d" % (num % 3 + 1)
+        if album is None:
+            self["album"] = "Album %d" % (num % 3 + 1)
+        else:
+            self["album"] = album
         self["labelid"] = self["album"]
 
 class FakeSongFile(FakeSong):
@@ -407,16 +410,24 @@ class TAlbumLibrary(TestCase):
         self.changed = []
         self.removed = []
 
-        self.underlying.connect_object('added', list.extend, self.added)
-        self.underlying.connect_object('changed', list.extend, self.changed)
-        self.underlying.connect_object('removed', list.extend, self.removed)
+        self._sigs = [
+            self.underlying.connect_object('added', list.extend, self.added),
+            self.underlying.connect_object(
+                'changed', list.extend, self.changed),
+            self.underlying.connect_object(
+                'removed', list.extend, self.removed),
+        ]
+
         self.library = AlbumLibrary(self.underlying)
 
         # Populate for every test
         self.underlying.add(self.Frange(12))
 
-        # Note: load() no longer necessary
-        #self.library.load()
+    def tearDown(self):
+        for s in self._sigs:
+            self.underlying.disconnect(s)
+        self.underlying.destroy()
+        self.library.destroy()
 
     def test_get(self):
         key = self.underlying.get("file_1.mp3").album_key
@@ -477,3 +488,62 @@ class TAlbumLibrary(TestCase):
         self.failIf(getattr(self.library, "filename", None))
 
 add(TAlbumLibrary)
+
+
+class TAlbumLibrarySignals(TestCase):
+    def setUp(self):
+        lib = SongLibrary()
+        received = []
+
+        def listen(name, items):
+            received.append(name)
+
+        self._sigs = [
+            lib.connect_object('added', listen, 'added'),
+            lib.connect_object('changed', listen, 'changed'),
+            lib.connect_object('removed', listen, 'removed'),
+        ]
+
+        albums = lib.albums
+        self._asigs = [
+            albums.connect_object('added', listen, 'a_added'),
+            albums.connect_object('changed', listen, 'a_changed'),
+            albums.connect_object('removed', listen, 'a_removed'),
+        ]
+
+        self.lib = lib
+        self.albums = albums
+        self.received = received
+
+    def test_add_one(self):
+        self.lib.add([AlbumSong(1)])
+        self.failUnlessEqual(self.received, ["added", "a_added"])
+
+    def test_add_two_same(self):
+        self.lib.add([AlbumSong(1, "a1")])
+        self.lib.add([AlbumSong(5, "a1")])
+        self.failUnlessEqual(self.received,
+            ["added", "a_added", "added", "a_changed"])
+
+    def test_remove(self):
+        songs = [AlbumSong(1, "a1"), AlbumSong(2, "a1"), AlbumSong(4, "a2")]
+        self.lib.add(songs)
+        self.lib.remove(songs[:2])
+        self.failUnlessEqual(self.received,
+            ["added", "a_added", "removed", "a_removed"])
+
+    def test_change(self):
+        songs = [AlbumSong(1, "a1"), AlbumSong(2, "a1"), AlbumSong(4, "a2")]
+        self.lib.add(songs)
+        self.lib.changed(songs)
+        self.failUnlessEqual(self.received,
+            ["added", "a_added", "changed", "a_changed"])
+
+    def tearDown(self):
+        for s in self._asigs:
+            self.albums.disconnect(s)
+        for s in self._sigs:
+            self.lib.disconnect(s)
+        self.lib.destroy()
+
+add(TAlbumLibrarySignals)
