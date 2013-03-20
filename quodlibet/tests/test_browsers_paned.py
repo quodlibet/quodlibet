@@ -48,9 +48,9 @@ class TPanedBrowser(TestCase):
     def test_restore_entry_text(self):
         self.bar.filter_text("foobar")
         self.bar.save()
-        self.bar._sb_box.set_text("nope")
+        self.bar._search_bar.set_text("nope")
         self.bar.restore()
-        self.failUnlessEqual(self.bar._sb_box.get_text(), "foobar")
+        self.failUnlessEqual(self.bar._search_bar.get_text(), "foobar")
 
     def tearDown(self):
         self.bar.destroy()
