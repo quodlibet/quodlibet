@@ -64,6 +64,11 @@ class Tconfig(TestCase):
         config.setstringlist("foo", "bar", vals)
         self.failUnlessEqual(config.getstringlist("foo", "bar"), vals)
 
+    def test_stringlist_spaces(self):
+        vals = [" ", "  ", " \t ", " \n \n"]
+        config.setstringlist("foo", "bar", vals)
+        self.failUnlessEqual(config.getstringlist("foo", "bar"), vals)
+
     def test_get_columns_migrates(self):
         self.failIf(config.get("settings", "headers", None))
         self.failIf(config.get("settings", "columns", None))

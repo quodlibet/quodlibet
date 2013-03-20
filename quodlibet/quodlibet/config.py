@@ -101,7 +101,7 @@ def setstringlist(section, option, values):
     values = [unicode(v).encode('utf-8') for v in values]
     writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(values)
-    _config.set(section, option, sw.getvalue().strip())
+    _config.set(section, option, sw.getvalue())
 
 
 # RawConfigParser only allows string values but doesn't scream if they are not
