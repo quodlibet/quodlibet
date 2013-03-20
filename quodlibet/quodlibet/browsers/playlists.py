@@ -342,7 +342,7 @@ class Playlists(Gtk.VBox, Browser):
             if dialog.run() == Gtk.ResponseType.YES:
                 playlist.delete()
                 model.get_model().remove(
-                    model.convert_iter_to_child_iter(None, iter))
+                    model.convert_iter_to_child_iter(iter))
 
         return False
 
