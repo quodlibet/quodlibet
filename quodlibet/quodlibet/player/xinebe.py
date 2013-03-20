@@ -58,7 +58,7 @@ class XinePlaylistPlayer(BasePlayer):
         if self._audio_port:
             xine_close_audio_driver(_xine, self._audio_port)
         _exit_xine()
-        super(BasePlayer, self).destroy()
+        super(XinePlaylistPlayer, self).destroy()
 
     def _playback_finished(self):
         self._source.next_ended()
@@ -107,7 +107,7 @@ class XinePlaylistPlayer(BasePlayer):
                     message = string_at(addressof(msg) + msg.explanation)
                 else:
                     message = "xine error %s" % msg.type
-                gobject.idle_add(self.error, message)
+                gobject.idle_add(self._error, message)
         return True
 
     def do_set_property(self, property, v):
