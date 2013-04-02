@@ -8,8 +8,10 @@
 
 from quodlibet import app
 from quodlibet import config
+from quodlibet import util
 from quodlibet.qltk.notif import Task
 from quodlibet.util.dprint import print_d
+from quodlibet.util import copool
 
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
@@ -23,6 +25,17 @@ def background_filter():
         return Query(bg, SongList.star).search
     except Query.error:
         pass
+
+
+def scan_libary(library, force):
+    """Start the global library rescan
+
+    If force is True reload all existing valid items.
+    """
+
+    paths = util.split_scan_dirs(config.get("settings", "scan"))
+    exclude = config.get("library", "exclude").split(":")
+    copool.add(library.rebuild, paths, force, exclude, cofuncid="library")
 
 
 def emit_signal(songs, signal="changed", block_size=50, name=None,

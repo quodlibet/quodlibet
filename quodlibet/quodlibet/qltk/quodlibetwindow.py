@@ -42,7 +42,7 @@ from quodlibet.qltk.x import RPaned, Alignment, ScrolledWindow
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.uri import URI
-from quodlibet.util.library import background_filter
+from quodlibet.util.library import background_filter, scan_libary
 from quodlibet.qltk.window import PersistentWindowMixin
 
 
@@ -815,10 +815,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
                 self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
 
     def __rebuild(self, activator, force):
-        paths = util.split_scan_dirs(config.get("settings", "scan"))
-        exclude = config.get("library", "exclude").split(":")
-        copool.add(self.__library.rebuild,
-                   paths, force, exclude, cofuncid="library", funcid="library")
+        scan_libary(self.__library, force)
 
     # Set up the preferences window.
     def __preferences(self, activator):
