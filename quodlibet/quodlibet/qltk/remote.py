@@ -21,6 +21,7 @@ from quodlibet.util.uri import URI
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.util import copool
+from quodlibet.util.library import scan_libary
 
 
 class FSInterface(object):
@@ -403,6 +404,4 @@ class FIFOControl(object):
             f.close()
 
     def _refresh(self, library, window, player):
-        paths = util.split_scan_dirs(config.get("settings", "scan"))
-        progress = window.statusbar.progress
-        copool.add(library.rebuild, paths, progress, False, funcid="library")
+        scan_libary(library, False)
