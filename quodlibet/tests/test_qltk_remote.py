@@ -45,7 +45,6 @@ class TFSInterface(TestCase):
 add(TFSInterface)
 
 
-@unittest.skip("deadlocks")
 class TFIFOControl(TestCase):
     def setUp(self):
         config.init()
