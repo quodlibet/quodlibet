@@ -266,8 +266,16 @@ MENU = """<ui>
   </menubar>
 </ui>"""
 
-try: ENCODING = locale.getpreferredencoding()
-except locale.Error: ENCODING = "utf-8"
+try:
+    ENCODING = locale.getpreferredencoding()
+except locale.Error:
+    ENCODING = "utf-8"
+else:
+    # python on macports can return a bugs result (empty string)
+    try:
+        u"".encode(ENCODING)
+    except LookupError:
+        ENCODING = "utf-8"
 
 # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
 if "G_FILENAME_ENCODING" in os.environ:
