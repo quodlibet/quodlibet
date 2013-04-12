@@ -32,10 +32,7 @@ class TPlayer(TestCase):
         lib = library.init()
         self.player = module.init(lib.librarian)
         source = PlaylistModel()
-        # FIXME: GIPORT, source.set segfaults here
-        #source.set(FILES)
-        for song in FILES:
-            source.append(row=[song])
+        source.set(FILES)
         self.player.setup(source, None, 0)
 
     def tearDown(self):
