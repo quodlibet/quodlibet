@@ -15,7 +15,7 @@ from gi.repository import Gtk, GObject, GLib
 from gi.repository import Gdk, GdkPixbuf
 from gi.repository import Pango, PangoCairo
 import cairo
-import pangocairo
+
 from math import pi
 
 from quodlibet import config, qltk, app
