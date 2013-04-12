@@ -12,9 +12,11 @@ from quodlibet.plugins.events import EventPlugin
 
 
 def get_toplevel_xid():
-    #FIXME: GIPORT
-    #if app.window.get_window():
-    #    return app.window.get_window().xid
+    if app.window.get_window():
+        try:
+            return app.window.get_window().get_xid()
+        except AttributeError:  # non x11
+            pass
     return 0
 
 

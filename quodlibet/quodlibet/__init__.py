@@ -85,6 +85,14 @@ app = Application()
 
 def _gtk_init(icon=None):
     import gi
+
+    try:
+        # not sure if this is available under Windows
+        gi.require_version("GdkX11", "3.0")
+        from gi.repository import GdkX11
+    except (ValueError, ImportError):
+        pass
+
     gi.require_version("Gtk", "3.0")
     gi.require_version("Gdk", "3.0")
     gi.require_version("GObject", "2.0")
