@@ -174,15 +174,25 @@ class Tag(object):
 
     def search(self, data):
         for name in self.__names:
-            val = data.get(name) or data.get("~" + name, "")
+            val = data.get(name)
+            if val is None:
+                # filename is the only real entry that's a path
+                if name == "filename":
+                    val = fsdecode(data.get("~filename", ""))
+                else:
+                    val = data.get("~" + name, "")
+
             if self.res.search(val):
                 return True
+
         for name in self.__intern:
             if self.res.search(data(name)):
                 return True
+
         for name in self.__fs:
             if self.res.search(fsdecode(data(name))):
                 return True
+
         return False
 
     def __repr__(self):

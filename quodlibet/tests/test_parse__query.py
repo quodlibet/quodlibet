@@ -280,6 +280,10 @@ class TQuery(TestCase):
         self.failUnless(Query(u"~dirname=öäü").search(self.s3))
         self.failUnless(Query(u"~basename=ü.ogg").search(self.s3))
 
+    def test_filename_utf8_fallback(self):
+        self.failUnless(Query(u"filename=foü.ogg").search(self.s3))
+        self.failUnless(Query(u"filename=öä").search(self.s3))
+
 add(TQuery)
 
 class TQuery_is_valid_color(TestCase):
