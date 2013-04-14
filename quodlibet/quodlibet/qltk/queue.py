@@ -69,6 +69,7 @@ class QueueExpander(Gtk.Expander):
                    ("text/uri-list", 0, 2)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
+        # FIXME: GIPORT (DnD)
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         self.connect('drag-motion', self.__motion)
         self.connect('drag-data-received', self.__drag_data_received)
@@ -136,6 +137,7 @@ class QueueExpander(Gtk.Expander):
         self.show()
 
     def __drag_data_received(self, expander, *args):
+        # FIXME: GIPORT (DnD)
         self.queue.emit('drag-data-received', *args)
 
     def __queue_shuffle(self, button, model):

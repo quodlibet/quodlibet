@@ -230,6 +230,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songlist = MainSongList(library, player)
         self.songlist.show_all()
         self.add_accel_group(self.songlist.accelerators)
+        # FIXME: GIPORT (DnD)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.song_scroller = SongListScroller(
@@ -317,6 +318,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         targets = [("text/uri-list", 0, 1)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
+        # FIXME: GIPORT (DnD)
         self.drag_dest_set(
             Gtk.DestDefaults.ALL, targets, Gdk.DragAction.DEFAULT)
         self.connect_object('drag-motion', QuodLibetWindow.__drag_motion, self)

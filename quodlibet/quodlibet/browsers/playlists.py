@@ -306,6 +306,7 @@ class Playlists(Gtk.VBox, Browser):
                    ("text/x-moz-url", 0, 2)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
+        # FIXME: GIPORT (DnD)
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets,
                            Gdk.DragAction.COPY | Gdk.DragAction.DEFAULT)
         view.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets[:2],

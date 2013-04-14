@@ -18,7 +18,7 @@ inited, sys.argv = Gst.init_check(sys.argv)
 if not inited:
     raise ImportError("GStreamer init failed")
 
-# FIXME
+# FIXME: GIPORT (missing plugin install)
 pbutils = None
 
 import os

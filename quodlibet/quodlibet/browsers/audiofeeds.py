@@ -361,6 +361,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
+        # FIXME: GIPORT (DnD)
         view.connect('drag-data-received', self.__drag_data_received)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
