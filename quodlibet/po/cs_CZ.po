@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-18 11:22+0100\n"
-"PO-Revision-Date: 2013-02-07 15:29+0100\n"
+"PO-Revision-Date: 2013-04-18 22:07+0100\n"
 "Last-Translator: Honza Hejzl <honza.hejzl@gmail.com>\n"
 "Language-Team: Czech (Czech Republic)\n"
 "Language: cs_CZ\n"
@@ -1608,12 +1608,12 @@ msgstr "_Tag:"
 #. Translators: translate only to override the text for the tag "save" button
 #: ../quodlibet/qltk/edittags.py:325
 msgid "ql-save"
-msgstr "ql-uložit"
+msgstr ""
 
 #. Translators: translate only to override the  for the tag "revert" button
 #: ../quodlibet/qltk/edittags.py:327
 msgid "ql-revert"
-msgstr "ql-obrátit"
+msgstr ""
 
 #: ../quodlibet/qltk/edittags.py:336
 msgid "Edit Tags"
