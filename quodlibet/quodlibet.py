@@ -15,6 +15,7 @@ import os
 import signal
 import sys
 import tempfile
+import stat
 
 import quodlibet
 import quodlibet.player
@@ -194,6 +195,16 @@ def print_query(query):
     quodlibet.exit()
 
 def isrunning():
+    # http://code.google.com/p/quodlibet/issues/detail?id=1131
+    # FIXME: There is a race where control() creates a new file
+    # instead of writing to the fifo, confusing the next QL instance.
+    # Remove non-fifos here for now.
+    try:
+        if not stat.S_ISFIFO(os.stat(const.CONTROL).st_mode):
+            print_d("%r not a FIFO. Remove it." % const.CONTROL)
+            os.remove(const.CONTROL)
+    except OSError:
+        pass
     return os.path.exists(const.CONTROL)
 
 def control(c):
