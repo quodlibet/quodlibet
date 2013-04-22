@@ -90,7 +90,7 @@ class Preferences(gtk.VBox):
             "plugins", "icon_modifier_swap", str(bool(combo.get_active())))
 
     def __changed_cb(self, cb, cbs, entry):
-        text = "<%s>" % "~".join([cb.tag for cb in cbs if cb.get_active()])
+        text = "<%s>" % "~".join([c.tag for c in cbs if c.get_active()])
         entry.set_text(text)
 
     def __changed_entry(self, entry, cbs, label):

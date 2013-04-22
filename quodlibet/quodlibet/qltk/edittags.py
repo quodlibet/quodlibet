@@ -152,7 +152,7 @@ class SplitValues(gtk.ImageMenuItem):
     def activated(self, tag, value):
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
-        return [(tag, value) for value in util.split_value(value, spls)]
+        return [(tag, v) for v in util.split_value(value, spls)]
 
 
 class SplitDisc(gtk.ImageMenuItem):
