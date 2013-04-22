@@ -223,8 +223,8 @@ class FIFOControl(object):
                 "filename = /^%s/c" % re.escape(filename))
         else:
             basepath = filename + "/"
-            songs = [song for (filename, song) in library.iteritems()
-                     if filename.startswith(basepath)]
+            songs = [song for (fn, song) in library.iteritems()
+                     if fn.startswith(basepath)]
             songs.sort(reverse=True)
             queue = window.playlist.q
             for song in songs:
