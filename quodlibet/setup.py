@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from quodlibet.util.dprint import Colorise
 
 0<>0 # Python 3.x not supported. Use 2.6+ instead.
 
@@ -7,6 +6,9 @@ import glob
 import os
 import shutil
 import sys
+
+# disable translations
+os.environ["QUODLIBET_NO_TRANS"] = ""
 
 from distutils.core import setup, Command
 from distutils.dep_util import newer
@@ -66,6 +68,7 @@ class test_cmd(Command):
 
     @classmethod
     def _red(cls, text):
+        from quodlibet.util.dprint import Colorise
         return Colorise.red(text) if cls.use_colors else text
 
     def run(self):
