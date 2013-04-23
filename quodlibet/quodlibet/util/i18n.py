@@ -48,6 +48,10 @@ class GlibTranslations(gettext.GNUTranslations):
             return msgstr
 
     def install(self, unicode=False):
+        # set by tests
+        if "QUODLIBET_NO_TRANS" in os.environ:
+            return
+
         if unicode:
             _ = self.ugettext
             _Q = self.uqgettext
