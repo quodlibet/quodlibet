@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-19 09:31+0100\n"
+"POT-Creation-Date: 2013-04-23 11:47+0200\n"
 "PO-Revision-Date: 2006-10-23 12:55+0800\n"
 "Last-Translator: Hsin-lin Cheng <lancetw@gmail.com>\n"
 "Language-Team: Hsin-lin Cheng <lancetw@gmail.com>\n"
@@ -54,14 +54,14 @@ msgid "Album Display"
 msgstr "專輯顯示"
 
 #: ../quodlibet/browsers/albums.py:139 ../quodlibet/qltk/information.py:342
-#: ../quodlibet/util/collection.py:214
+#: ../quodlibet/util/collection.py:215
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d 音軌"
 
 #: ../quodlibet/browsers/albums.py:140 ../quodlibet/qltk/information.py:340
-#: ../quodlibet/util/collection.py:218
+#: ../quodlibet/util/collection.py:219
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -69,7 +69,7 @@ msgstr[0] "%d 唱片"
 
 #: ../quodlibet/browsers/albums.py:145 ../quodlibet/browsers/albums.py:149
 #: ../quodlibet/qltk/tagsfrompath.py:141 ../quodlibet/qltk/textedit.py:84
-#: ../quodlibet/util/__init__.py:568
+#: ../quodlibet/util/__init__.py:598
 msgid "Invalid pattern"
 msgstr "無效的格式"
 
@@ -130,7 +130,7 @@ msgstr[0] "顯示專輯封面 (_C)"
 #: ../quodlibet/browsers/audiofeeds.py:53
 #: ../quodlibet/browsers/audiofeeds.py:54
 #: ../quodlibet/browsers/audiofeeds.py:117 ../quodlibet/browsers/paned.py:221
-#: ../quodlibet/formats/_audio.py:357 ../quodlibet/player/_gstutils.py:151
+#: ../quodlibet/formats/_audio.py:349 ../quodlibet/player/_gstutils.py:151
 #: ../quodlibet/qltk/information.py:225 ../quodlibet/qltk/information.py:233
 #: ../quodlibet/qltk/information.py:259 ../quodlibet/qltk/playorder.py:16
 #: ../quodlibet/qltk/wlw.py:65
@@ -632,7 +632,7 @@ msgid "The duplicate songs will be removed from the playlist '%s'."
 msgstr ""
 
 #: ../quodlibet/browsers/playlists.py:127
-#: ../quodlibet/browsers/playlists.py:396 ../quodlibet/util/collection.py:313
+#: ../quodlibet/browsers/playlists.py:396 ../quodlibet/util/collection.py:381
 msgid "New Playlist"
 msgstr "新的播放清單"
 
@@ -647,7 +647,7 @@ msgstr "新的播放清單 (_N)"
 
 #: ../quodlibet/browsers/playlists.py:158
 #: ../quodlibet/qltk/exfalsowindow.py:192 ../quodlibet/qltk/properties.py:133
-#: ../quodlibet/util/collection.py:332
+#: ../quodlibet/util/collection.py:400
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -781,7 +781,12 @@ msgstr "錯誤：「%s」不是一個獨特的前綴 (prefix)。"
 msgid "No eject command found."
 msgstr "未發現退出（裝置）指令。"
 
-#: ../quodlibet/devices/__init__.py:292 ../quodlibet/devices/__init__.py:298
+#: ../quodlibet/devices/__init__.py:292
+#, python-format
+msgid "%s: Could not find 'libudev'."
+msgstr ""
+
+#: ../quodlibet/devices/__init__.py:298
 #, python-format
 msgid "%s: Could not find %s."
 msgstr ""
@@ -875,12 +880,12 @@ msgstr "檔案已存在"
 msgid "Overwrite <b>%s</b>?"
 msgstr "是否複寫 <b>%s</b>？"
 
-#: ../quodlibet/formats/_audio.py:683
+#: ../quodlibet/formats/_audio.py:675
 #, python-format
 msgid "Failed reading album art \"%s\""
 msgstr ""
 
-#: ../quodlibet/formats/__init__.py:81
+#: ../quodlibet/formats/__init__.py:82
 #, python-format
 msgid "Error loading %r"
 msgstr ""
@@ -1023,222 +1028,222 @@ msgid ""
 "config."
 msgstr ""
 
-#: ../quodlibet.py:38
+#: ../quodlibet.py:39
 msgid "Quod Libet is already running."
 msgstr "Quod Libet 已經在執行了。"
 
-#: ../quodlibet.py:180
+#: ../quodlibet.py:181
 msgid "No song is currently playing."
 msgstr "當前沒有播放中的曲目。"
 
-#: ../quodlibet.py:201
+#: ../quodlibet.py:212
 msgid "Quod Libet is not running."
 msgstr "Quod Libet 並未執行。"
 
-#: ../quodlibet.py:212
+#: ../quodlibet.py:223
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "無法寫入 %s。正在移除。"
 
-#: ../quodlibet.py:230
+#: ../quodlibet.py:241
 msgid "a music library and player"
 msgstr "一個音樂資料庫與播放器"
 
-#: ../quodlibet.py:231
+#: ../quodlibet.py:242
 #, fuzzy
 msgid "[option]"
 msgstr "[選項]"
 
-#: ../quodlibet.py:233
+#: ../quodlibet.py:244
 msgid "Print the playing song and exit"
 msgstr "顯示播放中的曲目並離開"
 
-#: ../quodlibet.py:234
+#: ../quodlibet.py:245
 msgid "Begin playing immediately"
 msgstr "立即開始播放"
 
-#: ../quodlibet.py:237
+#: ../quodlibet.py:248
 msgid "Jump to next song"
 msgstr "跳到下一個曲目"
 
-#: ../quodlibet.py:239
+#: ../quodlibet.py:250
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
 
-#: ../quodlibet.py:240
+#: ../quodlibet.py:251
 msgid "Jump to previous song"
 msgstr "跳到上一個曲目"
 
-#: ../quodlibet.py:241
+#: ../quodlibet.py:252
 msgid "Start playback"
 msgstr "開始播放"
 
-#: ../quodlibet.py:242
+#: ../quodlibet.py:253
 msgid "Pause playback"
 msgstr "暫停播放"
 
-#: ../quodlibet.py:243
+#: ../quodlibet.py:254
 msgid "Toggle play/pause mode"
 msgstr "切換 播放／暫停 模式"
 
-#: ../quodlibet.py:244
+#: ../quodlibet.py:255
 #, fuzzy
 msgid "Stop playback"
 msgstr "開始播放"
 
-#: ../quodlibet.py:245
+#: ../quodlibet.py:256
 msgid "Turn up volume"
 msgstr "調高音量"
 
-#: ../quodlibet.py:246
+#: ../quodlibet.py:257
 msgid "Turn down volume"
 msgstr "調低音量"
 
-#: ../quodlibet.py:247
+#: ../quodlibet.py:258
 msgid "Print player status"
 msgstr "顯示播放器狀態"
 
-#: ../quodlibet.py:248
+#: ../quodlibet.py:259
 msgid "Hide main window"
 msgstr "隱藏主視窗"
 
-#: ../quodlibet.py:249
+#: ../quodlibet.py:260
 msgid "Show main window"
 msgstr "顯示主視窗"
 
-#: ../quodlibet.py:250
+#: ../quodlibet.py:261
 msgid "Toggle main window visibility"
 msgstr "切換主視窗可見性"
 
-#: ../quodlibet.py:251
+#: ../quodlibet.py:262
 msgid "Focus the running player"
 msgstr "焦點移到執行中的播放器"
 
-#: ../quodlibet.py:252
+#: ../quodlibet.py:263
 msgid "Remove active browser filters"
 msgstr ""
 
-#: ../quodlibet.py:253
+#: ../quodlibet.py:264
 #, fuzzy
 msgid "Refresh and rescan library"
 msgstr "重新整理資料庫 (_F)"
 
-#: ../quodlibet.py:254
+#: ../quodlibet.py:265
 msgid "Print the current playlist"
 msgstr "顯示當前的播放清單"
 
-#: ../quodlibet.py:255
+#: ../quodlibet.py:266
 msgid "Print the contents of the queue"
 msgstr "顯示佇列的內容"
 
-#: ../quodlibet.py:256
+#: ../quodlibet.py:267
 msgid "Start without plugins"
 msgstr ""
 
-#: ../quodlibet.py:257
+#: ../quodlibet.py:268
 msgid "Exit Quod Libet"
 msgstr "離開 Quod Libet"
 
-#: ../quodlibet.py:261
+#: ../quodlibet.py:272
 msgid "Seek within the playing song"
 msgstr "在其中找尋播放中的曲目"
 
-#: ../quodlibet.py:261
+#: ../quodlibet.py:272
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: ../quodlibet.py:262
+#: ../quodlibet.py:273
 msgid "Set or toggle the playback order"
 msgstr "設定或切換播放順序"
 
-#: ../quodlibet.py:264
+#: ../quodlibet.py:275
 msgid "Turn repeat off, on, or toggle it"
 msgstr "關掉、打開或切換重新播放"
 
-#: ../quodlibet.py:265
+#: ../quodlibet.py:276
 msgid "Set the volume"
 msgstr "設定音量"
 
-#: ../quodlibet.py:266
+#: ../quodlibet.py:277
 msgid "Search your audio library"
 msgstr "搜尋您的音訊資料庫"
 
-#: ../quodlibet.py:266 ../quodlibet.py:276 ../quodlibet.py:280
-#: ../quodlibet.py:282
+#: ../quodlibet.py:277 ../quodlibet.py:287 ../quodlibet.py:291
+#: ../quodlibet.py:293
 msgid "query"
 msgstr "查詢"
 
-#: ../quodlibet.py:267
+#: ../quodlibet.py:278
 msgid "Play a file"
 msgstr "播放檔案"
 
-#: ../quodlibet.py:267 ../quodlibet.py:276 ../quodlibet.py:282
+#: ../quodlibet.py:278 ../quodlibet.py:287 ../quodlibet.py:293
 msgid "command|filename"
 msgstr "command|filename"
 
-#: ../quodlibet.py:268
+#: ../quodlibet.py:279
 msgid "Rate the playing song"
 msgstr "評等播放中的曲目"
 
-#: ../quodlibet.py:269
+#: ../quodlibet.py:280
 msgid "Set the current browser"
 msgstr "設定當前的瀏覽器"
 
-#: ../quodlibet.py:270
+#: ../quodlibet.py:281
 msgid "Open a new browser"
 msgstr "開啟新的瀏覽器"
 
-#: ../quodlibet.py:271
+#: ../quodlibet.py:282
 msgid "Show or hide the queue"
 msgstr "顯示或隱藏佇列"
 
-#: ../quodlibet.py:272
+#: ../quodlibet.py:283
 msgid "Show or hide the main song list"
 msgstr "顯示或隱藏主要曲目清單"
 
-#: ../quodlibet.py:273
+#: ../quodlibet.py:284
 msgid "Filter on a random value"
 msgstr "以亂數篩選"
 
-#: ../quodlibet.py:273
+#: ../quodlibet.py:284
 msgid "command|tag"
 msgstr "command|tag"
 
-#: ../quodlibet.py:274
+#: ../quodlibet.py:285
 msgid "Filter on a tag value"
 msgstr "以標籤值篩選"
 
-#: ../quodlibet.py:274
+#: ../quodlibet.py:285
 msgid "tag=value"
 msgstr "tag=value"
 
-#: ../quodlibet.py:275
+#: ../quodlibet.py:286
 msgid "Enqueue a file or query"
 msgstr "佇列檔案或查詢"
 
-#: ../quodlibet.py:277
+#: ../quodlibet.py:288
 msgid "Enqueue comma-separated files"
 msgstr ""
 
-#: ../quodlibet.py:278 ../quodlibet/util/tags.py:93
+#: ../quodlibet.py:289 ../quodlibet/util/tags.py:93
 msgid "filename"
 msgstr "檔名"
 
-#: ../quodlibet.py:279
+#: ../quodlibet.py:290
 msgid "Print filenames of results of query to stdout"
 msgstr ""
 
-#: ../quodlibet.py:281
+#: ../quodlibet.py:292
 #, fuzzy
 msgid "Unqueue a file or query"
 msgstr "佇列檔案或查詢"
 
-#: ../quodlibet.py:319
+#: ../quodlibet.py:330
 #, fuzzy, python-format
 msgid "Invalid argument for '%s'."
 msgstr "錯誤：無效的參數：「%s」。"
 
-#: ../quodlibet.py:320 ../quodlibet/util/__init__.py:173
+#: ../quodlibet.py:331 ../quodlibet/util/__init__.py:175
 #, fuzzy, python-format
 msgid "Try %s --help."
 msgstr "錯誤：試試 %s --help。"
@@ -1252,16 +1257,6 @@ msgstr "支援格式：%s"
 #, python-format
 msgid "Audio device: %s"
 msgstr "音訊裝置：%s"
-
-#. Translators: Replace this with your name/email to have it appear
-#. in the "About" dialog.
-#: ../quodlibet/qltk/about.py:36
-msgid "translator-credits"
-msgstr ""
-"翻譯者資訊\n"
-"繁體中文翻譯：\n"
-"Hsin-lin Cheng <lancetw@gmail.com>\n"
-"若有任何關於本軟體的繁體中文翻譯問題，歡迎不吝指教。"
 
 #. Translators: Refers to the beginning of the playing song.
 #: ../quodlibet/qltk/bookmarks.py:23
@@ -1289,7 +1284,7 @@ msgid "Bookmarks"
 msgstr "書籤"
 
 #: ../quodlibet/qltk/browser.py:49 ../quodlibet/qltk/notif.py:280
-#: ../quodlibet/util/__init__.py:286
+#: ../quodlibet/util/__init__.py:288
 msgid "No time information"
 msgstr "無時間資訊"
 
@@ -1516,7 +1511,7 @@ msgstr ""
 #. the user can configure).
 #: ../quodlibet/qltk/edittags.py:567 ../quodlibet/qltk/edittags.py:716
 #: ../quodlibet/qltk/edittags.py:723 ../quodlibet/qltk/tagsfrompath.py:159
-#: ../quodlibet/util/__init__.py:520 ../quodlibet/util/tags.py:121
+#: ../quodlibet/util/__init__.py:550 ../quodlibet/util/tags.py:121
 msgid "Invalid tag"
 msgstr "無效的標籤"
 
@@ -1584,7 +1579,7 @@ msgid "_Plugins"
 msgstr "外掛 (_P)"
 
 #: ../quodlibet/qltk/exfalsowindow.py:173 ../quodlibet/qltk/information.py:503
-#: ../quodlibet/util/collection.py:540 ../quodlibet/util/collection.py:572
+#: ../quodlibet/util/collection.py:551 ../quodlibet/util/collection.py:579
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -2730,7 +2725,7 @@ msgstr "%d 之 %d"
 msgid "Clear search"
 msgstr "清除搜尋紀錄"
 
-#: ../quodlibet/util/collection.py:464
+#: ../quodlibet/util/collection.py:479
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "叫作 %s 的播放清單已經存在了。"
@@ -2764,24 +2759,24 @@ msgstr "評等 (_R)"
 msgid "E: "
 msgstr ""
 
-#: ../quodlibet/util/__init__.py:85
+#: ../quodlibet/util/__init__.py:87
 msgid "Display brief usage information"
 msgstr "顯示基本的使用方法"
 
-#: ../quodlibet/util/__init__.py:87
+#: ../quodlibet/util/__init__.py:89
 msgid "Display version and copyright"
 msgstr "顯示版本與著作權"
 
-#: ../quodlibet/util/__init__.py:124
+#: ../quodlibet/util/__init__.py:126
 #, fuzzy, python-format
 msgid "Usage: %s %s\n"
 msgstr "使用方法：%s %s"
 
-#: ../quodlibet/util/__init__.py:125
+#: ../quodlibet/util/__init__.py:127
 msgid "[options]"
 msgstr "[選項]"
 
-#: ../quodlibet/util/__init__.py:144
+#: ../quodlibet/util/__init__.py:146
 #, fuzzy
 msgid ""
 "{title} {version}\n"
@@ -2797,22 +2792,22 @@ msgstr ""
 "This is free softwae; see the source for copying conditions.  There is NO\n"
 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 
-#: ../quodlibet/util/__init__.py:165
+#: ../quodlibet/util/__init__.py:167
 #, fuzzy, python-format
 msgid "Option %r not recognized."
 msgstr "錯誤：選項「%s」未被辨識。"
 
-#: ../quodlibet/util/__init__.py:168
+#: ../quodlibet/util/__init__.py:170
 #, fuzzy, python-format
 msgid "Option %r requires an argument."
 msgstr "錯誤：選項「%s」需要一個參數。"
 
-#: ../quodlibet/util/__init__.py:171
+#: ../quodlibet/util/__init__.py:173
 #, fuzzy, python-format
 msgid "%r is not a unique prefix."
 msgstr "錯誤：「%s」不是一個獨特的前綴 (prefix)。"
 
-#: ../quodlibet/util/__init__.py:354 ../quodlibet/util/__init__.py:361
+#: ../quodlibet/util/__init__.py:356 ../quodlibet/util/__init__.py:363
 msgid "[Invalid Encoding]"
 msgstr "[無效的編碼]"
 
@@ -2820,7 +2815,7 @@ msgstr "[無效的編碼]"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "check|titlecase?".
-#: ../quodlibet/util/__init__.py:529
+#: ../quodlibet/util/__init__.py:559
 msgid "check|titlecase?"
 msgstr "check|titlecase?"
 
@@ -3166,6 +3161,13 @@ msgstr[0] "%d 日"
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d 年"
+
+#~ msgid "translator-credits"
+#~ msgstr ""
+#~ "翻譯者資訊\n"
+#~ "繁體中文翻譯：\n"
+#~ "Hsin-lin Cheng <lancetw@gmail.com>\n"
+#~ "若有任何關於本軟體的繁體中文翻譯問題，歡迎不吝指教。"
 
 #, fuzzy
 #~ msgid "Confirm rating"
