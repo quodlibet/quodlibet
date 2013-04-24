@@ -6,9 +6,8 @@
 # published by the Free Software Foundation
 
 import mutagen.id3
-import tempfile
 
-from quodlibet import config, const, print_d
+from quodlibet import config, const, print_d, util
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.massagers import LanguageMassager
 
@@ -422,19 +421,15 @@ class ID3File(AudioFile):
     def get_format_cover(self):
         try:
             tag = mutagen.id3.ID3(self["~filename"])
-        except (EnvironmentError, mutagen.id3.error):
-            return None
+        except Exception:
+            return
+        else:
+            cover = None
+            for frame in tag.getall("APIC"):
+                cover = cover or frame
+                if frame.type == 3:
+                    cover = frame
+                    break
 
-        cover = None
-        for frame in tag.getall("APIC"):
-            cover = cover or frame
-            if frame.type == 3:
-                cover = frame
-                break
-
-        if cover:
-            f = tempfile.NamedTemporaryFile()
-            f.write(cover.data)
-            f.flush()
-            f.seek(0, 0)
-            return f
+            if cover:
+                return util.get_temp_cover_file(cover.data)

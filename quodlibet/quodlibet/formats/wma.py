@@ -4,9 +4,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import tempfile
 import struct
 
+from quodlibet import util
 from quodlibet.formats._audio import AudioFile
 
 extensions = [".wma"]
@@ -104,19 +104,13 @@ class WMAFile(AudioFile):
     def get_format_cover(self):
         try:
             tag = mutagen.asf.ASF(self["~filename"])
-        except (OSError, IOError):
-            return None
+        except Exception:
+            return
         else:
             for image in tag.get("WM/Picture", []):
                 (mime, data, type) = unpack_image(image.value)
                 if type == 3:  # Only cover images
-                    fn = tempfile.NamedTemporaryFile()
-                    fn.write(data)
-                    fn.flush()
-                    fn.seek(0, 0)
-                    return fn
-            else:
-                return None
+                    return util.get_temp_cover_file(data)
 
 
 def unpack_image(data):
