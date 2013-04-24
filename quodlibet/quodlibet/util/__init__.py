@@ -14,6 +14,7 @@ import traceback
 import urlparse
 import unicodedata
 import urllib
+import tempfile
 import subprocess
 import webbrowser
 
@@ -994,3 +995,15 @@ def limit_songs(songs, max, weight_by_ratings=False):
         else:
             random.shuffle(songs)
         return songs[:max]
+
+
+def get_temp_cover_file(data):
+    try:
+        fn = tempfile.NamedTemporaryFile()
+        fn.write(data)
+        fn.flush()
+        fn.seek(0, 0)
+    except EnvironmentError:
+        return
+    else:
+        return fn

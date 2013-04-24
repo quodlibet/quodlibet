@@ -6,13 +6,13 @@
 # published by the Free Software Foundation
 
 import sys
-import tempfile
 import base64
 
 import mutagen
 
 from quodlibet import config
 from quodlibet import const
+from quodlibet import util
 
 from quodlibet.formats._audio import AudioFile
 
@@ -137,11 +137,7 @@ class MutagenVCFile(AudioFile):
                 del self["~picture"]
             return
 
-        fn = tempfile.NamedTemporaryFile()
-        fn.write(cover)
-        fn.flush()
-        fn.seek(0, 0)
-        return fn
+        return util.get_temp_cover_file(cover)
 
     def can_change(self, k=None):
         if k is None:
@@ -325,11 +321,7 @@ class FLACFile(MutagenVCFile):
             else:
                 pic = covers[0]
 
-            fn = tempfile.NamedTemporaryFile()
-            fn.write(pic.data)
-            fn.flush()
-            fn.seek(0, 0)
-            return fn
+            return util.get_temp_cover_file(pic.data)
 
     def write(self):
         if ID3 is not None:

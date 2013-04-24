@@ -5,8 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import tempfile
-
 from quodlibet import util
 from quodlibet.formats._audio import AudioFile
 
@@ -126,17 +124,13 @@ class MP4File(AudioFile):
     def get_format_cover(self):
         try:
             tag = MP4(self["~filename"])
-        except (OSError, IOError):
-            return None
+        except Exception:
+            return
         else:
             for cover in tag.get("covr", []):
-                fn = tempfile.NamedTemporaryFile()
-                fn.write(cover)
-                fn.flush()
-                fn.seek(0, 0)
-                return fn
-            else:
-                return None
+                fn = util.get_temp_cover_file(cover)
+                if fn:
+                    return fn
 
 info = MP4File
 types = [MP4File]
