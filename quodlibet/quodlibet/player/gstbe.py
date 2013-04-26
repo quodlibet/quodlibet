@@ -8,18 +8,16 @@
 import gi
 try:
     gi.require_version("Gst", "1.0")
+    gi.require_version("GstPbutils", "1.0")
 except ValueError, e:
     raise ImportError(e)
 
-from gi.repository import Gtk, Gst, GLib
+from gi.repository import Gtk, Gst, GLib, GstPbutils
 
 import sys
 inited, sys.argv = Gst.init_check(sys.argv)
 if not inited:
     raise ImportError("GStreamer init failed")
-
-# FIXME: GIPORT (missing plugin install)
-pbutils = None
 
 import os
 import threading
@@ -314,6 +312,28 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             if self._in_gapless_transition:
                 print_d("Stream changed")
                 self._end(False)
+        elif message.type == Gst.MessageType.ELEMENT:
+            message_name = message.get_structure().get_name()
+
+            if message_name == "missing-plugin":
+                self.stop()
+                details = \
+                    GstPbutils.missing_plugin_message_get_installer_detail(
+                        message)
+                if details is not None:
+                    print_w(_(
+                        "No GStreamer element found to handle the following "
+                        "media format: %(format_details)r") %
+                        {"format_details": details})
+
+                    context = GstPbutils.InstallPluginsContext.new()
+
+                    # TODO: track success
+                    def install_done_cb(*args):
+                        Gst.update_registry()
+                    result = GstPbutils.install_plugins_async(
+                        [details], context, install_done_cb, None)
+                    print_d("Gstreamer plugin install result: %r" % result)
 
         return True
 
