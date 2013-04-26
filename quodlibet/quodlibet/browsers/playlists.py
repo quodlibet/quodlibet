@@ -306,7 +306,6 @@ class Playlists(Gtk.VBox, Browser):
                    ("text/x-moz-url", 0, 2)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        # FIXME: GIPORT (DnD)
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets,
                            Gdk.DragAction.COPY | Gdk.DragAction.DEFAULT)
         view.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets[:2],
@@ -418,7 +417,8 @@ class Playlists(Gtk.VBox, Browser):
                 uri = sel.get_uris()[0]
                 name = os.path.basename(uri)
             elif tid == 2:
-                uri, name = sel.data.decode('utf16', 'replace').split('\n')
+                data = sel.get_data()
+                uri, name = data.decode('utf16', 'replace').split('\n')
             else:
                 Gtk.drag_finish(ctx, False, False, etime)
                 return

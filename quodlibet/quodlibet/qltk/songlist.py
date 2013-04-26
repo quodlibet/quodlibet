@@ -376,7 +376,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 Gdk.drag_abort(ctx, etime)
                 return
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
             if ctx.get_actions() == Gdk.DragAction.MOVE:
                 self.__drag_iters = map(model.get_iter, paths)
             else:
@@ -396,8 +397,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
         model = view.get_model()
         if info == 1:
-            filenames = sel.data.split("\x00")
-            move = (Gtk.get_source_widget(ctx) == view)
+            filenames = sel.get_data().split("\x00")
+            move = (Gtk.drag_get_source_widget(ctx) == view)
         elif info == 2:
             def to_filename(s):
                 try:
@@ -434,7 +435,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             path = max(0, len(model) - 1)
             position = Gtk.TreeViewDropPosition.AFTER
 
-        if move and Gtk.get_source_widget(ctx) == view:
+        if move and Gtk.drag_get_source_widget(ctx) == view:
             iter = model.get_iter(path) # model can't be empty, we're moving
             if position in (Gtk.TreeViewDropPosition.BEFORE,
                             Gtk.TreeViewDropPosition.INTO_OR_BEFORE):

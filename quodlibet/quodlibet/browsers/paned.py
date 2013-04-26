@@ -401,7 +401,8 @@ class Pane(AllTreeView):
         songs = self.__get_selected_songs(sort=True)
         if tid == 1:
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
         else:
             sel.set_uris([song("~uri") for song in songs])
 

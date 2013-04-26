@@ -104,7 +104,8 @@ class FileSystem(Browser, Gtk.HBox):
             to_add = filter(self.__library.__contains__, songs)
             self.__add_songs(view, to_add)
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
         else:
             # External target (app) is delivered a list of URIS of songs
             uris = list(set([URI.frompath(dir) for dir in dirs]))
