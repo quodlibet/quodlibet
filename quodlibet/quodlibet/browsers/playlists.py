@@ -368,7 +368,7 @@ class Playlists(Gtk.VBox, Browser):
     def __drag_motion(self, view, ctx, x, y, time):
         targets = [t.name() for t in ctx.list_targets()]
         if "text/x-quodlibet-songs" in targets:
-            view.set_drag_dest(x, y)
+            view.set_drag_dest(x, y, into_only=True)
             return True
         else:
             # Highlighting the view itself doesn't work.

@@ -475,10 +475,11 @@ class BaseView(Gtk.TreeView):
                                        Gtk.TreeViewDropPosition.AFTER)
         else:
             path, pos = dest_row
-            if pos == Gtk.TreeViewDropPosition.BEFORE:
-                pos = Gtk.TreeViewDropPosition.INTO_OR_BEFORE
-            elif pos == Gtk.TreeViewDropPosition.AFTER:
-                pos = Gtk.TreeViewDropPosition.INTO_OR_AFTER
+            if into_only:
+                if pos == Gtk.TreeViewDropPosition.BEFORE:
+                    pos = Gtk.TreeViewDropPosition.INTO_OR_BEFORE
+                elif pos == Gtk.TreeViewDropPosition.AFTER:
+                    pos = Gtk.TreeViewDropPosition.INTO_OR_AFTER
             self.set_drag_dest_row(path, pos)
 
     def __remove_iters(self, iters, force_restore=False):
