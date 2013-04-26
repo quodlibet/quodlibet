@@ -15,7 +15,7 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet.qltk.msg import ErrorMessage
 
-MAX_ERRORS = 50
+MAX_ERRORS = 10
 
 
 class TimeTracker(gobject.GObject):
