@@ -184,6 +184,9 @@ class Menu(Gtk.Menu):
     __add_to_playlist = staticmethod(__add_to_playlist)
 
 
+DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
+
+
 class Playlists(Gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
@@ -301,9 +304,11 @@ class Playlists(Gtk.VBox, Browser):
 
         view.connect('popup-menu', self.__popup_menu, library)
 
-        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 0),
-                   ("text/uri-list", 0, 1),
-                   ("text/x-moz-url", 0, 2)]
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+            ("text/uri-list", 0, DND_URI_LIST),
+            ("text/x-moz-url", 0, DND_MOZ_URL)
+        ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets,
@@ -362,18 +367,8 @@ class Playlists(Gtk.VBox, Browser):
 
     def __drag_motion(self, view, ctx, x, y, time):
         targets = [t.name() for t in ctx.list_targets()]
-        # FIXME: GIPORT
-        if "text/x-quodlibet-songs" in targets or 1:
-            try:
-                path = view.get_dest_row_at_pos(x, y)[0]
-            except TypeError:
-                path = Gtk.TreePath((len(view.get_model()) - 1,))
-                pos = Gtk.TreeViewDropPosition.AFTER
-            else:
-                pos = Gtk.TreeViewDropPosition.INTO_OR_AFTER
-
-            if tuple(path.get_indices()) > (-1,):
-                view.set_drag_dest_row(path, pos)
+        if "text/x-quodlibet-songs" in targets:
+            view.set_drag_dest(x, y)
             return True
         else:
             # Highlighting the view itself doesn't work.
@@ -397,11 +392,12 @@ class Playlists(Gtk.VBox, Browser):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
         view.emit_stop_by_name('drag-data-received')
         model = view.get_model()
-        if tid == 0:
+        if tid == DND_QL:
             filenames = sel.get_data().split("\x00")
             songs = filter(None, map(library.get, filenames))
             if not songs:
-                return True
+                Gtk.drag_finish(ctx, False, False, etime)
+                return
             try:
                 path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
@@ -413,10 +409,10 @@ class Playlists(Gtk.VBox, Browser):
             Playlists.changed(playlist)
             Gtk.drag_finish(ctx, True, False, etime)
         else:
-            if tid == 1:
+            if tid == DND_URI_LIST:
                 uri = sel.get_uris()[0]
                 name = os.path.basename(uri)
-            elif tid == 2:
+            elif tid == DND_MOZ_URL:
                 data = sel.get_data()
                 uri, name = data.decode('utf16', 'replace').split('\n')
             else:

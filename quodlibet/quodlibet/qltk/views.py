@@ -458,8 +458,12 @@ class BaseView(Gtk.TreeView):
                     break
         return not first
 
-    def set_drag_dest(self, x, y):
-        """Sets a drag destination for widget coords"""
+    def set_drag_dest(self, x, y, into_only=False):
+        """Sets a drag destination for widget coords
+
+        into_only will only highlight rows or the whole widget and no
+        lines between rows.
+        """
 
         dest_row = self.get_dest_row_at_pos(x, y)
         if dest_row is None:
@@ -470,7 +474,12 @@ class BaseView(Gtk.TreeView):
                 self.set_drag_dest_row(Gtk.TreePath(rows - 1),
                                        Gtk.TreeViewDropPosition.AFTER)
         else:
-            self.set_drag_dest_row(*dest_row)
+            path, pos = dest_row
+            if pos == Gtk.TreeViewDropPosition.BEFORE:
+                pos = Gtk.TreeViewDropPosition.INTO_OR_BEFORE
+            elif pos == Gtk.TreeViewDropPosition.AFTER:
+                pos = Gtk.TreeViewDropPosition.INTO_OR_AFTER
+            self.set_drag_dest_row(path, pos)
 
     def __remove_iters(self, iters, force_restore=False):
         if not iters:
