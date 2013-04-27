@@ -26,6 +26,9 @@ Mailing List: http://groups.google.com/group/quod-libet-development
 Installation Requirements
 -------------------------
 
+* intltool
+* gettext
+
 
 Runtime Requirements
 --------------------
