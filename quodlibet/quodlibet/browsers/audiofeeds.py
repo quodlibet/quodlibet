@@ -431,6 +431,9 @@ class AudioFeeds(Browser, Gtk.VBox):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
 
+        # XXX: keep the menu arround
+        self.__menu = menu
+
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __save(self, view):
