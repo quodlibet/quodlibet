@@ -320,7 +320,7 @@ class StoreUtils(object):
         if isinstance(obj, basestring):
             markup = util.escape(obj)
         else:
-            tag = util.tag(tags[len(self.get_path(iter_)) - 1])
+            tag = util.tag(tags[len(self.get_path(iter_).get_indices()) - 1])
             if obj is UnknownNode:
                 markup = UNKNOWN_PATTERN % util.escape(tag)
             else:
