@@ -165,10 +165,12 @@ class TXinePlayer(TPlayer):
         self.assertTrue(self.player.can_play_uri("file://"))
         self.assertFalse(self.player.can_play_uri("fake://"))
 
-if player.init(TXinePlayer.NAME):
-    add(TXinePlayer)
+try:
+    player.init(TXinePlayer.NAME)
+except player.PlayerError:
+    print_w("couldn't load/test xinebe")
 else:
-    print_w("couldn't load xinebe")
+    add(TXinePlayer)
 
 
 class TGstPlayer(TPlayer):
@@ -179,7 +181,10 @@ class TGstPlayer(TPlayer):
         self.assertTrue(self.player.can_play_uri("file://"))
         self.assertFalse(self.player.can_play_uri("fake://"))
 
-if player.init(TGstPlayer.NAME):
-    add(TGstPlayer)
+
+try:
+    player.init(TGstPlayer.NAME)
+except player.PlayerError:
+    print_w("couldn't load/test gstbe")
 else:
-    print_w("couldn't load gstbe")
+    add(TGstPlayer)
