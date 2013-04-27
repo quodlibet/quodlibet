@@ -198,6 +198,8 @@ class StatusBarBox(Gtk.HBox):
         model.repeat = button.get_active()
 
 
+DND_URI_LIST, = range(1)
+
 class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     SIG_PYOBJECT = (GObject.SignalFlags.RUN_LAST, None, (object,))
     __gsignals__ = {
@@ -230,7 +232,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songlist = MainSongList(library, player)
         self.songlist.show_all()
         self.add_accel_group(self.songlist.accelerators)
-        # FIXME: GIPORT (DnD)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.song_scroller = SongListScroller(
@@ -315,12 +316,11 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         for sig in player_sigs:
             gobject_weak(player.connect, *sig, **{"parent": self})
 
-        targets = [("text/uri-list", 0, 1)]
+        targets = [("text/uri-list", 0, DND_URI_LIST)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        # FIXME: GIPORT (DnD)
         self.drag_dest_set(
-            Gtk.DestDefaults.ALL, targets, Gdk.DragAction.DEFAULT)
+            Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         self.connect_object('drag-motion', QuodLibetWindow.__drag_motion, self)
         self.connect_object('drag-leave', QuodLibetWindow.__drag_leave, self)
         self.connect_object(
@@ -363,7 +363,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
     def __drag_motion(self, ctx, x, y, time):
         # Don't accept drops from QL itself, since it offers text/uri-list.
-        if Gtk.get_source_widget(ctx) is None:
+        if Gtk.drag_get_source_widget(ctx) is None:
             self.drag_highlight()
             return True
         else:
@@ -373,11 +373,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.drag_unhighlight()
 
     def __drag_data_received(self, ctx, x, y, sel, tid, etime):
-        if tid == 1:
-            uris = sel.get_uris()
-        if tid == 2:
-            uri = sel.data.decode('utf16', 'replace').split('\n')[0]
-            uris = [uri.encode('ascii', 'replace')]
+        assert tid == DND_URI_LIST
+
+        uris = sel.get_uris()
 
         dirs = []
         error = False

@@ -312,7 +312,7 @@ class Playlists(Gtk.VBox, Browser):
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets,
-                           Gdk.DragAction.COPY | Gdk.DragAction.DEFAULT)
+                           Gdk.DragAction.COPY)
         view.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets[:2],
                              Gdk.DragAction.COPY)
         view.connect('drag-data-received', self.__drag_data_received, library)
