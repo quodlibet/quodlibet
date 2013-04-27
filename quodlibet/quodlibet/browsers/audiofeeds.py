@@ -53,6 +53,7 @@ class Feed(list):
     def get_age(self):
         return time.time() - self.__lastgot
 
+    @staticmethod
     def __fill_af(feed, af):
         try:
             af["title"] = feed.title or _("Unknown")
@@ -127,7 +128,6 @@ class Feed(list):
             for value in values:
                 if value and value not in af.list("genre"):
                     af.add("genre", value)
-    __fill_af = staticmethod(__fill_af)
 
     def parse(self):
         try:
@@ -227,29 +227,30 @@ class AudioFeeds(Browser, gtk.VBox):
 
     __last_folder = const.HOME
 
+    @staticmethod
     def cell_data(col, render, model, iter):
         if model[iter][0].changed:
             render.markup = "<b>%s</b>" % util.escape(model[iter][0].name)
         else:
             render.markup = util.escape(model[iter][0].name)
         render.set_property('markup', render.markup)
-    cell_data = staticmethod(cell_data)
 
+    @classmethod
     def changed(klass, feeds):
         for row in klass.__feeds:
             if row[0] in feeds:
                 row[0].changed = True
                 row[0] = row[0]
         AudioFeeds.write()
-    changed = classmethod(changed)
 
+    @classmethod
     def write(klass):
         feeds = [row[0] for row in klass.__feeds]
         f = file(FEEDS, "wb")
         pickle.dump(feeds, f, pickle.HIGHEST_PROTOCOL)
         f.close()
-    write = classmethod(write)
 
+    @classmethod
     def init(klass, library):
         try:
             feeds = pickle.load(file(FEEDS, "rb"))
@@ -259,14 +260,14 @@ class AudioFeeds(Browser, gtk.VBox):
             for feed in feeds:
                 klass.__feeds.append(row=[feed])
         gobject.idle_add(klass.__do_check)
-    init = classmethod(init)
 
+    @classmethod
     def __do_check(klass):
         thread = threading.Thread(target=klass.__check, args=())
         thread.setDaemon(True)
         thread.start()
-    __do_check = classmethod(__do_check)
 
+    @classmethod
     def __check(klass):
         for row in klass.__feeds:
             feed = row[0]
@@ -277,7 +278,6 @@ class AudioFeeds(Browser, gtk.VBox):
                 row[0] = feed
         klass.write()
         gobject.timeout_add(60 * 60 * 1000, klass.__do_check)
-    __check = classmethod(__check)
 
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(
