@@ -37,7 +37,7 @@ class ViewLyrics(EventPlugin):
     PLUGIN_VERSION = '0.4'
 
     def enabled(self):
-        self.expander = Gtk.Expander(label=_("Lyrics"))
+        self.expander = Gtk.Expander(label=_("_Lyrics"), use_underline=True)
         self.expander.set_expanded(True)
 
         self.scrolled_window = Gtk.ScrolledWindow()
