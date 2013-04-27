@@ -31,6 +31,7 @@ from quodlibet.util import human_sort_key
 
 DND_QL, DND_URI_LIST = range(2)
 
+
 class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     # A TreeView containing a list of songs.
 
