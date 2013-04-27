@@ -1,0 +1,163 @@
+.. _Downloads:
+
+.. |ubuntu-logo| image:: http://f.666kb.com/i/c9p32f4lepzuqhs0u.png
+.. |debian-logo| image:: http://f.666kb.com/i/c904azd0y1bh5mkwc.png
+.. |fedora-logo| image:: http://f.666kb.com/i/c9mlwgf9lyihgbkc4.png
+.. |opensuse-logo| image:: http://f.666kb.com/i/c9n4w5fb5l14jwaes.png
+.. |windows-logo| image:: http://f.666kb.com/i/c904cja4hkg41b1ak.png
+.. |source-logo| image:: http://f.666kb.com/i/c904lpl958tadrlu4.png
+
+
+Downloads
+=========
+
+`All available files <http://code.google.com/p/quodlibet/downloads/list>`_
+
+
+|ubuntu-logo| Ubuntu
+--------------------
+
+Stable PPA::
+
+    $ sudo add-apt-repository ppa:lazka/ppa
+
+
+Unstable PPA::
+
+    $ sudo add-apt-repository ppa:lazka/dumpingplace
+
+
+|debian-logo| Debian
+--------------------
+
+Unstable Repo::
+
+    deb http://www.student.tugraz.at/christoph.reiter/debian/ quodlibet-unstable/
+
+
+Repo key::
+
+    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
+
+
+|fedora-logo| Fedora
+--------------------
+
+Stable Repos:
+
+  * `Fedora 16 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_16/>`_
+  * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_17/>`_
+  * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_18/>`_
+
+Unstable Repo:
+
+  * `Fedora 16 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_16/>`_
+  * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_17/>`_
+  * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_18/>`_
+
+
+|opensuse-logo| openSUSE
+------------------------
+
+Stable Repos:
+
+  * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.1/>`_
+  * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.2/>`_
+  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.3/>`_
+  * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`_
+
+Unstable Repo:
+
+  * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.1/>`_
+  * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.2/>`_
+  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.3/>`_
+  * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`_
+
+
+|windows-logo| Windows
+----------------------
+
+`Windows Installers <http://code.google.com/p/quodlibet/downloads/list?can=2&q=OpSys%3DWindows>`_
+
+
+Arch Linux
+----------
+
+::
+
+    $ pacman -S quodlibet
+
+
+|source-logo| Running from Source
+---------------------------------
+
+Install mercurial and check out the source::
+
+    $ hg clone https://code.google.com/p/quodlibet/
+    $ cd quodlibet
+
+QL/EF expects the plugins to be in "~/.quodlibet/plugins" so
+create a symlink::
+
+    $ mkdir ~/.quodlibet
+    $ ln -s $(readlink -f plugins) ~/.quodlibet/plugins
+
+Now switch to the real QL folder::
+
+    $ cd quodlibet
+
+If you want translations, you have to create the gettext translation files::
+
+$ ./setup.py build_mo
+
+Run Quod Libet or Ex Falso::
+
+    $ ./quodlibet.py
+    $ ./exfalso.py
+
+To update to the latest version, switch to the QL dir and run::
+
+ $ hg pull --update
+ $ ./setup.py build_mo # (only if you need translations)
+
+Mac OS X
+--------
+
+Simple way (using macports)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    sudo port install quodlibet
+
+Hard way (using jhbuild)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+There is no real Mac port available at the moment but it is possible to get
+Quod Libet running under Mac OS X using jhbuild.
+
+The following steps show roughly what is needed.
+
+  * Get OS X running. It is possible to run it in VirtualBox.
+  * If you're using VBox install the
+    `sound driver <http://forums.virtualbox.org/viewtopic.php?f=4&t=30843>`_.
+  * Install XCode
+    (check the OS X requirements.. you might need an older version)
+  * Install git.
+  * Get `jhbuild <http://sourceforge.net/apps/trac/gtk-osx/wiki/WikiStart>`_
+    running.
+  * Add ``~/.local/bin`` to ``PATH``
+  * ``jhbuild bootstrap``
+  * ``jhbuild build meta-gtk-osx-bootstrap``
+  * ``jhbuild build meta-gtk-osx-core``
+  * ``jhbuild build pygtk``
+  * Build/install mutagen.
+  * There is currently no pygst available in jhbuild, but you can patch in
+    the experimental `NSSound backend
+    <http://code.google.com/p/quodlibet/issues/detail?id=509>`_.
+  * Change QL config to macbe backend.
+  * ``jhbuild shell``
+  * ``python quodlibet.py``
+  * The quartz theme is not really usable, so you might want to:
+    * ``jhbuild build meta-gtk-osx-themes``
+    * copy clealooks gtkrc to .gtkrc-2.0

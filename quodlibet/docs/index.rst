@@ -2,6 +2,11 @@ Quod Libet Documentation
 ========================
 
 .. toctree::
-    :maxdepth: 2
+    :titlesonly:
 
+    screenshots
+    downloads
+    requirements
+    guide/index
+    contributing
     commands/index
