@@ -28,6 +28,7 @@ class TPlayer(TestCase):
 
     def setUp(self):
         config.init()
+        config.set("player", "gst_pipeline", "fakesink")
         module = player.init(self.NAME)
         lib = library.init()
         self.player = module.init(lib.librarian)
