@@ -1,5 +1,9 @@
-Quod Libet requires Python 2.6, PyGTK 2.16, and Mutagen 1.11,
-but recommends Python 2.6, PyGTK 2.16, and Mutagen 1.20 or later.
+Quod Libet requires Python 2.6, PyGObject 3.2, and Mutagen 1.11,
+but recommends Python 2.6, PyGObject 3.4, and Mutagen 1.20 or later.
+
+2.9.81 (2013-04-27) - Because my hypothesis is: it's rad
+
+ * PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 1 release
 
 2.5.1 (2013-04-23) - Yes: MY COMPUTER IS A PERSON.
 
