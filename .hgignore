@@ -6,6 +6,8 @@ syntax: glob
 *.rej
 *.orig
 *.cache
+docs/_build
+MANIFEST
 
 # Ignore build files
 build/*
