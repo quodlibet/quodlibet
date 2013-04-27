@@ -12,3 +12,4 @@ include tests/data/*
 recursive-include tests *.py
 include gdist/*.py
 include *.desktop.in
+include MANIFEST.in
