@@ -30,7 +30,7 @@ The following will lead to an almost automatic rejection:
  * Sending whole files rather than patches.
 
 Currently we are limiting the code to features in PyGTK 2.16 and
-Python 2.5.
+Python 2.6.
 
 Please prepare your patches against the latest Mercurial release,
 or the most recent release.
