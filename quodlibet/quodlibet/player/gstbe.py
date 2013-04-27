@@ -35,6 +35,9 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import Button
 
 
+STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
+
+
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
@@ -207,7 +210,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # Test to ensure output pipeline can preroll
         bufbin.set_state(Gst.State.READY)
-        result, state, pending = bufbin.get_state(timeout=Gst.SECOND / 2)
+        result, state, pending = bufbin.get_state(timeout=STATE_CHANGE_TIMEOUT)
         if result == Gst.StateChangeReturn.FAILURE:
             bufbin.set_state(Gst.State.NULL)
             self.__destroy_pipeline()
@@ -264,7 +267,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if self.bin:
             self.bin.set_state(Gst.State.NULL)
-            self.bin.get_state(timeout=Gst.SECOND / 2)
+            self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
             self.bin = None
 
         if self._task:
@@ -488,10 +491,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if self.__init_pipeline():
             # ensure any pending state changes have completed and we have
             # at least paused state, so we can seek
-            state = self.bin.get_state(timeout=Gst.SECOND / 2)[1]
+            state = self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)[1]
             if state < Gst.State.PAUSED:
                 self.bin.set_state(Gst.State.PAUSED)
-                self.bin.get_state(timeout=Gst.SECOND / 2)
+                self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
 
             pos = max(0, int(pos))
             gst_time = pos * Gst.MSECOND
