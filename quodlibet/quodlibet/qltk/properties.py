@@ -112,7 +112,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         # doesn't include the removed songs.
         selection.handler_block(sig)
         if len(model) == 1:
-            rows = [(0,)]
+            rows = [Gtk.TreePath((0,))]
         else:
             rows = selection.get_selected_rows()[1]
         to_remove = []
@@ -143,7 +143,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
     def __refresh(self, library, songs, model, view):
         view.freeze_notify()
         if len(model) == 1:
-            rows = [(0,)]
+            rows = [Gtk.TreePath((0,))]
         else:
             rows = view.get_selection().get_selected_rows()[1]
         changed = False
