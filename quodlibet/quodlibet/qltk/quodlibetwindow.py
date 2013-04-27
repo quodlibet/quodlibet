@@ -200,6 +200,7 @@ class StatusBarBox(Gtk.HBox):
 
 DND_URI_LIST, = range(1)
 
+
 class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     SIG_PYOBJECT = (GObject.SignalFlags.RUN_LAST, None, (object,))
     __gsignals__ = {
