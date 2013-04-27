@@ -31,8 +31,9 @@ Runtime Requirements
 --------------------
 
 * Python >= 2.6
-* PyGTK >= 2.16
-* PyGST >= 0.10.2 or xine-lib 1.x
+* PyGObject >= 3.2
+* GTK+ >= 3.0
+* GStreamer >= 1.0 or xine-lib 1.x
 * Mutagen >= 1.14
 
 
