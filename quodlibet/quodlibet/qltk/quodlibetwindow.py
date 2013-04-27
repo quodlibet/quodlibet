@@ -303,7 +303,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
 
         targets = [("text/uri-list", 0, 1)]
         self.drag_dest_set(
-            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_DEFAULT)
+            gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
         self.connect_object('drag-motion', QuodLibetWindow.__drag_motion, self)
         self.connect_object('drag-leave', QuodLibetWindow.__drag_leave, self)
         self.connect_object(
