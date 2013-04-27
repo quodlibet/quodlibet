@@ -2,6 +2,7 @@
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2008, 2011, 2012 Vasiliy Faronov <vfaronov@gmail.com>
+#                           2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2
@@ -36,7 +37,7 @@ class ViewLyrics(EventPlugin):
     PLUGIN_VERSION = '0.4'
 
     def enabled(self):
-        self.expander = Gtk.expander_new_with_mnemonic(_('_Lyrics'))
+        self.expander = Gtk.Expander(label=_("Lyrics"))
         self.expander.set_expanded(True)
 
         self.scrolled_window = Gtk.ScrolledWindow()
@@ -61,8 +62,7 @@ class ViewLyrics(EventPlugin):
         # Newer Quod Libet, we can't pack into songpane.
         # So we pack into the window itself, throwing in some padding.
         self.expander.set_border_width(6)
-        app.window.get_child().pack_start(self.expander, expand=False,
-                                      fill=True)
+        app.window.get_child().pack_start(self.expander, False, True, 0)
 
         # We don't show the expander here because it will be shown when a song
         # starts playing (see plugin_on_song_started).
