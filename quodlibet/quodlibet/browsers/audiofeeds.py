@@ -31,6 +31,7 @@ from quodlibet.qltk.x import ScrolledWindow, Alignment
 
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
+DND_URI_LIST, DND_MOZ_URL = range(2)
 
 # Migration path for pickle
 sys.modules["browsers.audiofeeds"] = sys.modules[__name__]
@@ -357,11 +358,13 @@ class AudioFeeds(Browser, Gtk.VBox):
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         view.connect('popup-menu', self.__popup_menu)
 
-        targets = [("text/uri-list", 0, 1), ("text/x-moz-url", 0, 2)]
+        targets = [
+            ("text/uri-list", 0, DND_URI_LIST),
+            ("text/x-moz-url", 0, DND_MOZ_URL)
+        ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        # FIXME: GIPORT (DnD)
         view.connect('drag-data-received', self.__drag_data_received)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
@@ -372,7 +375,8 @@ class AudioFeeds(Browser, Gtk.VBox):
         self.show_all()
 
     def __drag_motion(self, view, ctx, x, y, time):
-        if "text/x-quodlibet-songs" not in ctx.targets:
+        targets = [t.name() for t in ctx.list_targets()]
+        if "text/x-quodlibet-songs" not in targets:
             view.get_parent().drag_highlight()
             return True
         return False
@@ -382,13 +386,16 @@ class AudioFeeds(Browser, Gtk.VBox):
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
         view.emit_stop_by_name('drag-data-received')
-        targets = [("text/uri-list", 0, 1), ("text/x-moz-url", 0, 2)]
+        targets = [
+            ("text/uri-list", 0, DND_URI_LIST),
+            ("text/x-moz-url", 0, DND_MOZ_URL)
+        ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        if tid == 1:
+        if tid == DND_URI_LIST:
             uri = sel.get_uris()[0]
-        elif tid == 2:
+        elif tid == DND_MOZ_URL:
             uri = sel.data.decode('utf16', 'replace').split('\n')[0]
         else:
             ctx.finish(False, False, etime)
