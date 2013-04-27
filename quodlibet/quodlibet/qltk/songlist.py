@@ -295,7 +295,6 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.connect('key-press-event', self.__key_press, librarian)
 
         self.disable_drop()
-        # FIXME: GIPORT (DnD)
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-leave', self.__drag_leave)
         self.connect('drag-data-get', self.__drag_data_get)

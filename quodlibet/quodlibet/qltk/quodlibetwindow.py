@@ -747,12 +747,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             width, height = self.get_size()
             height = self.size_request().height
             self.resize(width, height)
-            # FIXME: GIPORT
-            # self.set_geometry_hints(None, max_height=height, max_width=32000)
-        else:
-            # FIXME: GIPORT
-            # self.set_geometry_hints(None, max_height=-1, max_width=-1)
-            pass
 
     def showhide_playlist(self, toggle):
         self.song_scroller.set_property('visible', toggle.get_active())
