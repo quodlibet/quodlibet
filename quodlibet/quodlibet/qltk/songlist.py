@@ -525,7 +525,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             song = view.get_model()[path][0]
             l = Gtk.Label()
             l.set_text(util.format_rating(util.RATING_PRECISION, blank=False))
-            width = l.size_request()[0]
+            width = l.size_request().width
             l.destroy()
             count = int(float(cellx - 5) / width) + 1
             rating = max(0.0, min(1.0, count * util.RATING_PRECISION))
