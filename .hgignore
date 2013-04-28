@@ -6,6 +6,10 @@ syntax: glob
 *.rej
 *.orig
 *.cache
+MANIFEST
+
+# Sphinx build files
+_build/*
 
 # Ignore build files
 build/*
