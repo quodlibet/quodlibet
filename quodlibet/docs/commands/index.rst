@@ -1,5 +1,5 @@
-Commands
-========
+Command Manuals
+===============
 
 .. toctree::
     :titlesonly:

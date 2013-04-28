@@ -6,13 +6,34 @@
 .. |opensuse-logo| image:: http://f.666kb.com/i/c9n4w5fb5l14jwaes.png
 .. |windows-logo| image:: http://f.666kb.com/i/c904cja4hkg41b1ak.png
 .. |source-logo| image:: http://f.666kb.com/i/c904lpl958tadrlu4.png
+.. |hg-logo| image:: http://f.666kb.com/i/cdmhj87a6v5xcdugp.png
+.. |arch-logo| image:: http://f.666kb.com/i/cdmhrzqnwlwvg3f5l.png
 
 
 Downloads
 =========
 
-`All available files <http://code.google.com/p/quodlibet/downloads/list>`_
+|hg-logo| Source
+----------------
 
+Quod Libet uses `Mercurial <http://mercurial.selenic.com/>`_ for source 
+control and is hosted on `Google Code <https://code.google.com/>`_ as well 
+as `Bitbucket <https://bitbucket.org/>`__:
+
+ * https://code.google.com/p/quodlibet
+ * https://bitbucket.org/lazka/quodlibet
+
+To clone the repository::
+
+    hg clone https://code.google.com/p/quodlibet
+    hg clone https://bitbucket.org/lazka/quodlibet
+
+
+|source-logo| Release Tarballs
+------------------------------
+
+Release tarballs can be downloaded from the Google Code `download page 
+<http://code.google.com/p/quodlibet/downloads/list?q=Type%3DSource>`__.
 
 |ubuntu-logo| Ubuntu
 --------------------
@@ -80,8 +101,8 @@ Unstable Repo:
 `Windows Installers <http://code.google.com/p/quodlibet/downloads/list?can=2&q=OpSys%3DWindows>`_
 
 
-Arch Linux
-----------
+|arch-logo| Arch Linux
+----------------------
 
 ::
 
