@@ -45,15 +45,15 @@ Repo key::
 
 Stable Repos:
 
-  * `Fedora 16 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_16/>`_
-  * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_17/>`_
-  * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_18/>`_
+  * `Fedora 16 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_16/>`__
+  * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_17/>`__
+  * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_18/>`__
 
 Unstable Repo:
 
-  * `Fedora 16 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_16/>`_
-  * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_17/>`_
-  * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_18/>`_
+  * `Fedora 16 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_16/>`__
+  * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_17/>`__
+  * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_18/>`__
 
 
 |opensuse-logo| openSUSE
@@ -61,17 +61,17 @@ Unstable Repo:
 
 Stable Repos:
 
-  * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.1/>`_
-  * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.2/>`_
-  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.3/>`_
-  * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`_
+  * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.1/>`__
+  * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.2/>`__
+  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.3/>`__
+  * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`__
 
 Unstable Repo:
 
-  * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.1/>`_
-  * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.2/>`_
-  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.3/>`_
-  * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`_
+  * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.1/>`__
+  * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.2/>`__
+  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.3/>`__
+  * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
 
 
 |windows-logo| Windows
@@ -87,6 +87,8 @@ Arch Linux
 
     $ pacman -S quodlibet
 
+
+.. _RunFromSource:
 
 |source-logo| Running from Source
 ---------------------------------

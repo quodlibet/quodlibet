@@ -8,7 +8,6 @@ User Guide
     tags/index
     searching
     browse/index
-    manage/index
     editing_tags
     renaming_files
     playback/index

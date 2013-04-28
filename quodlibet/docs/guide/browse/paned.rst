@@ -4,9 +4,8 @@ Paned Browser
 Overview
 --------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/paned.png
-    :target: http://wiki.quodlibet.googlecode.com/hg/images/paned.png
-    :width: 450px
+.. image:: ../../images/paned.png
+    :scale: 50%
     :align: right
 
 ThePaned Browser offers a convenient way to quickly drill down into a large 

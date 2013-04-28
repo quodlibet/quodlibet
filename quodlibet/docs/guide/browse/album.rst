@@ -12,17 +12,15 @@ one of three tags: ``album_grouping_key``, ``labelid``, and
 be used to identify the album it belongs to along with the ``album`` tag. 
 
 In short, if more than one album in your library has the same name, use one 
-of the secondary tags to separate them. The 
-[SongsMenuPlugins#Musicbrainz_Lookup MusicBrainz plugin] will add 
+of the secondary tags to separate them. The MusicBrainz plugin will add 
 ``musicbrainz_albumid`` tags automatically, and may be the easiest solution 
 for adding identically-named albums to your library.
 
 Album List Browser
 ------------------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/album.png
-    :target: http://wiki.quodlibet.googlecode.com/hg/images/album.png
-    :width: 450px
+.. image:: ../../images/album.png
+    :scale: 35%
     :align: right
 
 The *Album List* browser makes it easy to treat your music collection as a 

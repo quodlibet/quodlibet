@@ -1,7 +1,7 @@
 Overview
 ========
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/front.png
+.. image:: images/front.png
     :align: right
 
 **We believe that you know how to organize your music best.**
@@ -10,13 +10,13 @@ Quod Libet is a cross-platform music player that supports the features
 you'd expect from a modern media player, like Unicode support, multimedia 
 keys, advanced tag editing and Replay Gain. Quod Libet distinguishes itself 
 from other media players with its emphasis on simplicity, performance and 
-[SearchingGuide search].
+:ref:`search <Searching>`.
 
 Quod Libet uses `GTK+ <http://www.gtk.org/>`_, because GTK+ makes it easy 
 to create clean, simple standards compliant user interfaces.  Quod Libet 
 uses `Python <http://www.python.org/>`_, because Python makes it easy to 
 create clean, simple functional and object-oriented software. Various other 
-packages and libraries add to this - see [Requirements].
+packages and libraries add to this - see :ref:`Requirements`.
 
 Using the `Mutagen <http://code.google.com/p/mutagen/>`_ tagging library
 keeps the rest of Quod Libet as simple as possible and ensures every
@@ -54,7 +54,7 @@ Editing Tags
   * No ugly ``%a``, ``%t`` patterns -
     more readable ``<artist>``, ``<title>`` instead
   * Fast track renumbering 
-  * See full instructions at [EditingTags Edit Tags]
+  * See full instructions at :ref:`EditingTags`
 
 
 Audio Library

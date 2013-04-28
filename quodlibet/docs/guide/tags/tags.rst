@@ -1,3 +1,5 @@
+.. _AudioTags:
+
 An Introduction to Tags
 =======================
 

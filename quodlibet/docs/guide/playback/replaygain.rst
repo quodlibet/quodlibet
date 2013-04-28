@@ -11,10 +11,9 @@ in the song's metadata and adjusting the volume.
 Audio Analysis
 --------------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/guide/replaygain_plugin.png
-    :target: http://wiki.quodlibet.googlecode.com/hg/images/guide/replaygain_plugin.png
+.. image:: images/replaygain_plugin.png
     :align: right
-    :width: 350px
+    :scale: 85%
 
 For calculating replay gain values QL provides a replaygain plugin. Simply 
 select some songs, or some albums and activate the replaygain plugin in the 
@@ -23,11 +22,6 @@ data so this can take some time.
 
 After the the analyzing part is finished you can save the calculated
 values. They will be written into the song's metadata.
-
-See [Development_TagMapping Tag Mapping] and [Specs_ID3 ID3 Implementation 
-Details] for more detailed information.
-
-
 
 The replay gain plugin calculates a peak and a gain value for each song and
 for each album. The *gain value* specifies how much the volume of the song
@@ -49,8 +43,7 @@ ml/gst-plugins-good-plugins-rganalysis.html>`_ for more info.
 Setting it up
 -------------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/guide/replaygain_pref.png
-    :target: http://wiki.quodlibet.googlecode.com/hg/images/guide/replaygain_pref.png
+.. image:: images/replaygain_pref.png
     :align: right
 
 Under *Music* > *Preferences* > *Player* you can activate replay gain 
@@ -73,8 +66,7 @@ would exceed the volume limit and cause clipping.
 Applying volume adjustment
 --------------------------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/guide/replaygain_force.png
-    :target: http://wiki.quodlibet.googlecode.com/hg/images/guide/replaygain_force.png
+.. image:: images/replaygain_force.png
     :align: right
 
 In Quod Libet the gain type is tied to the active browser and play order. 

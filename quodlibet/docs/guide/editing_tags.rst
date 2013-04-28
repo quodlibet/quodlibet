@@ -1,10 +1,11 @@
+.. _EditingTags:
+
 Editing Tags
 ============
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/tagedit.png
+.. image:: ../images/tagedit.png
+    :scale: 45%
     :align: right
-    :width: 450px
-    :target: http://wiki.quodlibet.googlecode.com/hg/images/tagedit.png
 
 You can edit a song's tags by right clicking on it and selecting *Edit Tags*.
 
@@ -21,10 +22,10 @@ Editing tags for several songs at once
 To edit tags for several songs at once, select those songs (using Ctrl or
 Shift), then right click and "Edit Tags".
 
-Note that in the tag-editing window that opens, you have several tabs 
-available. The default *Edit tags* tab will apply the same tags to all 
-marked songs, so it only makes sense for tags that are common to all songs, 
-e.g. album or genre. However, the tabs *Tags from Path* and *Track Numbers* 
+Note that in the tag-editing window that opens, you have several tabs
+available. The default *Edit tags* tab will apply the same tags to all
+marked songs, so it only makes sense for tags that are common to all songs,
+e.g. album or genre. However, the tabs *Tags from Path* and *Track Numbers*
 let you edit tags that differ across songs:
 
 .. _tags-from-path:
@@ -48,10 +49,10 @@ Example:
  * Click on *Preview* to see how your pattern would be interpreted for
    each song.
 
-The preview is shown to the right of the current value; you may have to 
+The preview is shown to the right of the current value; you may have to
 scroll right to see it.
 
-You can even include information from the entire path in this pattern 
+You can even include information from the entire path in this pattern
 matching:
 
  * You have files like this
@@ -63,23 +64,23 @@ matching:
    it needs to given the pattern you put in, so you don't need to enter any
    (potentially complex) folder structure that is above the needed info.
 
-You can see recent patterns you used by clicking on the drop down arrow to 
-the right of the pattern input field. Additionally, clicking on *Edit saved 
-values* in the drop-down that opens will let you save patterns and 
-optionally name them. Use this for patterns that you apply frequently. If 
-you leave the *Name* field blank for your pattern, the name will be 
+You can see recent patterns you used by clicking on the drop down arrow to
+the right of the pattern input field. Additionally, clicking on *Edit saved
+values* in the drop-down that opens will let you save patterns and
+optionally name them. Use this for patterns that you apply frequently. If
+you leave the *Name* field blank for your pattern, the name will be
 identical to the pattern.
 
 
 Batch edit track numbers
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-The *Track Numbers* tab in the tag editing window lets you batch edit track 
-numbers ascending across the files. If your files are in the correct order, 
-you simply check that you like the *Start from* and *Total tracks* values. 
-If you put in any value greater than one for *Total tracks*, QL will use a 
-tracknumber pattern `tracknumber/totaltracks`, e.g. ``2/12`` for *Total 
-tracks* = ``12``. If you only want a single number for the track number, 
+The *Track Numbers* tab in the tag editing window lets you batch edit track
+numbers ascending across the files. If your files are in the correct order,
+you simply check that you like the *Start from* and *Total tracks* values.
+If you put in any value greater than one for *Total tracks*, QL will use a
+tracknumber pattern `tracknumber/totaltracks`, e.g. ``2/12`` for *Total
+tracks* = ``12``. If you only want a single number for the track number,
 set *Total tracks* to zero.
 
 If your files are not in the correct order, for example because they are

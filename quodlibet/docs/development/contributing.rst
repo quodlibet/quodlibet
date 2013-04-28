@@ -1,5 +1,7 @@
-Contributing
-============
+.. _Contribute:
+
+How to contribute
+=================
 
 Testing
 -------
@@ -10,10 +12,10 @@ version of Quod Libet. Development versions are kept stable, and the
 developers generally run the latest code to play their own music, so this
 is a safe and helpful way to contribute.
 
-Please keep in mind that Quod Libet is not forward compatible, meaning that
-if you use a newer version, reverting to an older version could lead to
-errors and data loss. So always backup your [ConfigFiles config files] if
-you plan to downgrade at a later point.
+Please keep in mind that Quod Libet is not forward compatible, meaning that 
+if you use a newer version, reverting to an older version could lead to 
+errors and data loss. So always backup your :ref:`config 
+files<ConfigFiles>` if you plan to downgrade at a later point.
 
 You can find find development packages in the :ref:`download section
 <Downloads>` .
@@ -37,6 +39,7 @@ any patches. Also, for more advanced usage or to test multiple patches
 together, you may also like to try `mercurial queues
 <http://mercurial.selenic.com/wiki/MqTutorial>`_.
 
+.. _BugReports:
 
 Filing bug reports
 ------------------
@@ -119,10 +122,8 @@ the issue numbers of previous ideas.
 Translation
 -----------
 
-Help us [Development_Translation translate Quod Libet into other languages].
+Help us :ref:`translate Quod Libet into other languages<Translating>`.
 You don't need to know how to program in Python to do it.
-Read our [Development_Vocabulary vocabulary and style guidelines],
-and [Development_Accelerators notes on access keys and accelerators].
 
 
 Submitting patches
@@ -142,5 +143,3 @@ checklist of common-sense code quality items. Make sure your patch:
   * is commented.
   * adds your name to the copyright header of every file you touch.
     This helps you get credit and helps us keep track of authorship.
-
-See [Development] on how to get started.

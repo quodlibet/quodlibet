@@ -11,7 +11,7 @@ When you start up Quod Libet for the first time, and have configured your
 library, it should look something a little like the screenshot here, which
 is show with annotations. These are all explained below.
 
-.. figure:: http://wiki.quodlibet.googlecode.com/hg/images/guide/main_overview.png
+.. figure:: images/main_overview.png
     :align: right
     :width: 400px
     :figwidth: 400px
@@ -87,7 +87,7 @@ music.
 The Queue
 ---------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/guide/queue.png
+.. image:: images/queue.png
     :width: 350px
     :align: right
 
@@ -102,7 +102,7 @@ To add songs to the queue, right-click and *Add to Queue*, use the shortcut
 More Browsers
 -------------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/guide/browser_window.png
+.. image:: images/browser_window.png
     :width: 350px
     :align: right
 
@@ -145,7 +145,7 @@ to perform the initial scan.
 Plugins
 -------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/guide/plugins.png
+.. image:: images/plugins.png
     :width: 450px
 
 

@@ -4,9 +4,8 @@ Playlists
 The Playlist Browser
 --------------------
 
-.. image:: http://wiki.quodlibet.googlecode.com/hg/images/guide/PlaylistBrowser.png
-    :target: http://wiki.quodlibet.googlecode.com/hg/images/guide/PlaylistBrowser.png
-    :width: 400px
+.. image:: ../images/PlaylistBrowser.png
+    :scale: 50%
     :align: right
 
 Choose the *Playlists* browser by clicking on *View* -> *Playlists*. The 
@@ -16,8 +15,7 @@ playlists (with summary information) in the right.
 Playlists are stored as plain text files on disk typically under 
 ``~/.quodlibet/playlists``. The names are URL-encoded. Whilst these can be 
 edited, it's recommended to leave it to Quod Libet, but it's good to back 
-them up (using ``svn`` / ``hg`` / ``git`` works well here too). See also 
-[#Library_Changes Library Changes].
+them up (using ``svn`` / ``hg`` / ``git`` works well here too).
 
 Any file in your library can belong to any playlist or many playlists - 
 it's up to you how you want to organize them...
@@ -77,10 +75,10 @@ will be added to your library. You can also drag and drop an `m3u` playlist
 file from an external browser onto the left-hand pane in the playlist 
 browser to import a playlist.
 
-To export playlists to `m3u`, you first need to install the 
-[SongsMenuPlugins#Playlist*Export playlist export plugin]. Once installed, 
-you can export playlists to M3U or PLS format by right clicking on the 
-playlist, then *Plugins* -> *Export Playlist*.
+To export playlists to `m3u`, you first need to install the Export playlist 
+export plugin. Once installed, you can export playlists to M3U or PLS 
+format by right clicking on the playlist, then *Plugins* -> *Export 
+Playlist*.
 
 Dynamic Playlists
 -----------------
@@ -99,7 +97,7 @@ Creating a dynamic playlist:
   * Go to the search browser, (either using *View* or *Music* ->
     *Browse Library*).
   * Enter what you want to search for
-    (see [SearchingGuide the section about searching] for QL's powerful
+    (see :ref:`the section about searching<Searching>` for QL's powerful
     search options), for example `artist = radiohead`. Optionally, click
     on search to test your search and modify it until you're happy.
   * Click the arrow next to the search box on the right, to open the
@@ -116,5 +114,5 @@ select your saved search from the list.
 
 If you want to create several of such saved searches at once, you may find 
 it more convenient to edit a text file instead of clicking through the GUI. 
-To do so, you can [ConfigFiles edit the configuration text file] 
+To do so, you can :ref:`edit the configuration text file <ConfigFiles>` 
 ``~/.quodlibet/lists/queries.saved``.

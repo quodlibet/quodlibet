@@ -5,9 +5,9 @@ Interacting with Quod Libet
 In Python
 ---------
 
-Quod Libet supports [PluginsGuide plugins written in Python]. These plugins
-can interact with songs more directly than the other interfaces, changing
-or reading metadata using dict-like !AudioFile objects. The plugin
+Quod Libet supports :ref:`plugins written in Python <PluginDev>`. These
+plugins can interact with songs more directly than the other interfaces,
+changing or reading metadata using dict-like !AudioFile objects. The plugin
 interface has not yet stabilized, although we do not expect it to change
 drastically in the future.
 
@@ -29,7 +29,7 @@ RenamingFiles interface to print information about the current song:
 ``quodlibet --print-playing '<artist> - <tracknumber~title>'``
 
 ``quodlibet --status`` provides player state information. The first word
-will be either _playing_, _paused_, or _not-running_, followed by
+will be either *playing*, *paused*, or *not-running*, followed by
 
  * the selected View,
  * volume setting (0.0 - 1.0)
@@ -82,23 +82,23 @@ After installing conky, add the following to your```~/.conkyrc`` file::
     ${endif}
 
 
-will display the current artist on one line with a scrolling display of 
-song title and album on the next line.  Conky will only attempt to display 
+will display the current artist on one line with a scrolling display of
+song title and album on the next line.  Conky will only attempt to display
 this information if quodlibet is playing.
 
 
 eSpeak: Speech Synthesizer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can use `eSpeak <http://espeak.sourceforge.net/>`_ to hear the current 
+You can use `eSpeak <http://espeak.sourceforge.net/>`_ to hear the current
 playing title.
 
 ::
 
     quodlibet --print-playing "<~~people~title>" | espeak -s 120  -v $(quodlibet --print-playing "<language|<language>|en>")
 
-In this example Quod Libet will use the value of the language tag to tell 
-eSpeak which language/voice to use for the specific title (Use ``espeak 
+In this example Quod Libet will use the value of the language tag to tell
+eSpeak which language/voice to use for the specific title (Use ``espeak
 --voices``` to get a list of all available languages).
 
 You can also lower the volume during speaking::

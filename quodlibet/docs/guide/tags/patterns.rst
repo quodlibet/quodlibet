@@ -72,24 +72,3 @@ markup which uses its own HTML-like patterns with tags like
     <album><tracknumber| : track <tracknumber>>>
 
 Note also the literal newlines.
-
-
-Debugging Tag Patterns
-----------------------
-
-For complex tag patterns, the Python Console plugin is very useful. Run it 
-on some test songs (right click and select from Plugins). Then enter 
-something like:
-
-::
-
-    from quodlibet.parse import Pattern
-
-    patter = Pattern("<albumartist|<albumartist>|<artist>> - <title><version| [<version>]>")
-
-    for song in songs:  # songs is a list of all selected songs
-        print pattern.format(song)
-
-
-By using the up key you can just edit the string and re-try your Pattern 
-quickly across all the selected songs.

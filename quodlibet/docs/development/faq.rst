@@ -1,5 +1,12 @@
-Development FAQ
-===============
+Frequently Asked Questions
+==========================
+
+Any plans to use Python 3?
+--------------------------
+
+No plans at the moment. First all dependencies (like mutagen) have to be 
+ported. At the moment Python 2 does its job.
+
 
 What format is the song database in?
 ------------------------------------

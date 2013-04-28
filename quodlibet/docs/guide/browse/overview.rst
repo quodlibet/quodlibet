@@ -14,10 +14,9 @@ Album List.
 Secondary Browsers
 ------------------
 
-.. figure:: http://wiki.quodlibet.googlecode.com/hg/images/queue_2browsers.png
+.. figure:: ../../images/queue_2browsers.png
     :align: right
-    :width: 400px
-    :target: http://wiki.quodlibet.googlecode.com/hg/images/queue_2browsers.png
+    :scale: 30%
 
     Multiple Browsers - Search & secondary Album List
 
@@ -41,8 +40,7 @@ The Song List
 The *Song List*, as the name implies, presents a list of all the songs that 
 the current browser has found, or filtered for you. The columns are 
 configurable, and can be any tag, or even combinations of tags from your 
-library. For more information on tags, see [AudioTags An Introduction to 
-Tags].
+library. For more information on tags, see :ref:`AudioTags`.
 
 Sorting:
 
@@ -52,5 +50,5 @@ Sorting:
     the sort key: *"albumsort or album, album_grouping_key or labelid or
     musicbrainz_albumid, ~#disc, ~#track, artistsort or artist,
     musicbrainz_artistid, title, ~filename"*
-    (see [AudioTags An Introduction to Tags])
+    (see :ref:`AudioTags`)
 

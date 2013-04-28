@@ -5,9 +5,10 @@ Development
     :titlesonly:
 
     contributing
-    overview
-    plugins
-    roadmap
-    faq
+    guidelines
     translating
+    plugins
     formats
+    misc
+    tools
+    faq

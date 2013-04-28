@@ -1,3 +1,5 @@
+.. _PluginDev:
+
 Plugin Development
 ==================
 
@@ -52,6 +54,7 @@ First we start with a minimal event plugin::
     class MyPlugin(EventPlugin):
         PLUGIN_ID = "myplugin"
         PLUGIN_NAME = _("My Plugin")
+
 ..
 
  * PLUGIN_ID should be something unique so QL can remember the plugin
