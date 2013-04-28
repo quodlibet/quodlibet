@@ -94,5 +94,5 @@ Rename Files Based on Tags
 QL also lets you rename the files of songs based on tags, either for one
 song or for several songs. Edit patterns the same way you would for *Edit
 tags from path* (see above). This feature even lets you move them to a
-different directory; for more info see the [RenamingFiles renaming files
-guide].
+different directory; for more info see the :ref:`renaming files
+guide <RenamingFiles>`.

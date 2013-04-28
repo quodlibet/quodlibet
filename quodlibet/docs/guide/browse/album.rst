@@ -1,5 +1,5 @@
-Browsing Albums
-===============
+Album Browser
+=============
 
 Identifying albums
 ------------------

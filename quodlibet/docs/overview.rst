@@ -29,8 +29,8 @@ Features
 Audio Playback
 ^^^^^^^^^^^^^^
 
-  * Multiple [AudioBackends audio back-ends] (GStreamer, xine-lib)
-  * [ReplayGain Replay Gain] support
+  * Multiple audio back-ends (GStreamer, xine-lib)
+  * Replay Gain support
   * Auto-selects between 'track' and 'album' mode based on
     current view and play order
   * Applies clipping prevention whenever available

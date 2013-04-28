@@ -153,6 +153,7 @@ specification, the tag must be a UTF-8 represention of the Unicode string.
 
 This tag may occur any number of times in a file.
 
+.. _PerformerRoles:
 
 Performer Roles
 ^^^^^^^^^^^^^^^

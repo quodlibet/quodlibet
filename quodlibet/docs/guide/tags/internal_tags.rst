@@ -17,7 +17,7 @@ String Tags
  * ``~format``: The file format
  * ``~length``: The length of the file in H:MM:SS format
  * ``~mountpoint``: The component of the full path name that corresponds to the file's immediate parent mount
- * ``~performers``: A list of performers, including [Specs_VorbisComments#PerformerRoles roles]
+ * ``~performers``: A list of performers, including :ref:`roles <PerformerRoles>`
  * ``~people``: A list of all people involved in the song
  * ``~rating``: A string representation of the song's rating (e.g. ★★★☆)
  * ``~uri``: The full URI of the song
@@ -26,8 +26,24 @@ String Tags
  * ``~playlist``: Playlist names of which the song is part of
  * ``~filesize``: Human formatted size (e.g. *4.5 MB*)
 
-Song Collections
-^^^^^^^^^^^^^^^^
+
+The ``~people`` Internal Tag
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The internal ``~people`` tag combines the following tags to one: 
+``albumartist``, ``artist``, ``author``, ``composer``, ``~performers``, 
+``originalartist``, ``lyricist``, ``arranger``, ``conductor`` in this exact 
+order.
+
+In case of sorting this means that all album artists come first followed by 
+all artists and so on.
+
+In case of song collections and albums the values of each included tag are 
+sorted by frequency.
+
+
+Song Collections / Albums
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
  * ``~length``: The length of all songs in H:MM:SS format
  * ``~long-length``: The length of all songs in "H hours, M minutes, S seconds" format 
@@ -64,8 +80,8 @@ Note some numeric tags have string tag equivalents (see above) for
 human-readable format. 
 
 
-Song Collections
-^^^^^^^^^^^^^^^^
+Song Collections / Albums
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
  * ``~#tracks``: The real number of songs in the collection
  * ``~#discs``: The number of different discs in the collection

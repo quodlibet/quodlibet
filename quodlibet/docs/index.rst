@@ -10,7 +10,6 @@ Quod Libet Documentation
     requirements
     guide/index
     development/index
-    contributing
     commands/index
     contact
     license

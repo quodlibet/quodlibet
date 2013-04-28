@@ -1,5 +1,5 @@
-The Paned Browser
-=================
+Paned Browser
+=============
 
 Overview
 --------

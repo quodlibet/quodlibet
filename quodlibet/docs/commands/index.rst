@@ -2,7 +2,7 @@ Commands
 ========
 
 .. toctree::
-    :maxdepth: 1
+    :titlesonly:
 
     quodlibet
     exfalso

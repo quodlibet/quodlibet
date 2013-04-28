@@ -1,5 +1,5 @@
-Translating Quod Libet
-======================
+Translating
+===========
 
 If you're fluent in a language other than English, and have some spare
 time, you can help us translate Quod Libet. Translation is a continuous

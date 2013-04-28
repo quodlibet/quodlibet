@@ -4,6 +4,7 @@ Development
 .. toctree::
     :titlesonly:
 
+    contributing
     overview
     plugins
     roadmap

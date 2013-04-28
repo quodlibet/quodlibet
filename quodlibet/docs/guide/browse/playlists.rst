@@ -1,5 +1,5 @@
-Playlist Guide
-==============
+Playlists
+=========
 
 The Playlist Browser
 --------------------

@@ -44,7 +44,7 @@ for the current song.
 
 There is also an entry called *Edit Display...* which lets you change
 everything that is shown in that area, like the file format, bitrate, font
-size etc. The syntax is the same as for [RenamingFiles renaming files].
+size etc. The syntax is the same as for :ref:`renaming files <RenamingFiles>`.
 
 
 3. The Song List & Browser
@@ -114,7 +114,7 @@ different browser windows as you want by selecting one under *Music* >
 In an separate browser, double-clicking a song will result in it being
 added to the queue rather than played immediately (as per the main browser).
 
-See the [BrowsersGuide Browsers Guide] for full details on browsers and the
+See the :ref:`Browsers Guide <Browse>` for full details on browsers and the
 various implementations.
 
 Example usage:

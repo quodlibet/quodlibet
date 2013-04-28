@@ -1,5 +1,5 @@
-Audio Tags
-==========
+An Introduction to Tags
+=======================
 
 Overview
 --------
@@ -10,11 +10,8 @@ names for common purposes is advised because it helps QL to write the tags
 in a way that other media players can understand them and also helps QL 
 understand certain tag values and make use of them.
 
-The [Development_TagMapping Tag Mapping] page gives an overview on how Quod 
-Libet/Ex Falso saves tags for each format.
-
 Quod Libet also supports expressions using "tied tags" in several contexts 
-- see [AdvancedTags#Tied_Tags Advanced Tags]
+- see :ref:`TiedTags`
 
 
 Sort Tags
@@ -23,7 +20,7 @@ Sort Tags
 Tags ``artistsort``, ``albumsort``, ``albumartistsort``, ``performersort`` 
 (including roles) will be used for sorting if they are present.
 
-Lets say you have a song with an ``artist`` tag _The Beatles_ and want it 
+Lets say you have a song with an ``artist`` tag *The Beatles* and want it 
 to be sorted as if it was named *Beatles, The*, you can add an 
 ``artistsort`` tag containing *Beatles, The*.
 
@@ -36,19 +33,9 @@ Internal Tags
 
 Internal tags are tags that start with a ``~`` like ``~people``, ``~length`` or 
 ``~year``. They are either not stored in files themselves, or are derived 
-from the values in the files. See InternalTags for a complete list.
+from the values in the files.
 
-
-The ``~people`` Tag
--------------------
-
-The internal ``~people`` tag combines the following tags to one: 
-``albumartist``, ``artist``, ``author``, ``composer``, ``~performers``, 
-``originalartist``, ``lyricist``, ``arranger``, ``conductor`` in this exact 
-order.
-
-In case of sorting this means that all album artists come first followed by 
-all artists and so on.
+See :ref:`InternalTags` for a complete list.
 
 
 Album Identification

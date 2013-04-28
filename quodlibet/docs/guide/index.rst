@@ -2,21 +2,16 @@ User Guide
 ==========
 
 .. toctree::
-    :maxdepth: 1
+    :titlesonly:
 
     overview
+    tags/index
     searching
-    internal_tags
+    browse/index
+    manage/index
     editing_tags
     renaming_files
-    library_browsing
-    paned_browser
-    playlists
-    album_browser
-    faq
-    tags
-    tags_advanced
-    audio_output
-    replaygain
+    playback/index
     interacting
     config_files
+    faq
