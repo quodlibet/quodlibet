@@ -5,3 +5,8 @@ Development
     :titlesonly:
 
     overview
+    plugins
+    roadmap
+    faq
+    translating
+    formats

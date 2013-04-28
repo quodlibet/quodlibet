@@ -4,6 +4,7 @@ Quod Libet Documentation
 .. toctree::
     :titlesonly:
 
+    overview
     screenshots
     downloads
     requirements
