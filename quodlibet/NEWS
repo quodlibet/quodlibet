@@ -1,11 +1,10 @@
-Quod Libet requires Python 2.6, PyGObject 3.2, and Mutagen 1.11,
-but recommends Python 2.6, PyGObject 3.4, and Mutagen 1.20 or later.
-
 2.9.81 (2013-04-27) - Because my hypothesis is: it's rad
+--------------------------------------------------------
 
  * PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 1 release
 
 2.5.1 (2013-04-23) - Yes: MY COMPUTER IS A PERSON.
+--------------------------------------------------
 
  * Fix various widgets not showing with pygtk/pygobject trunk
  * Fix QL refusing to start in some cases [1131]
@@ -13,16 +12,19 @@ but recommends Python 2.6, PyGObject 3.4, and Mutagen 1.20 or later.
  * Fix various problems with playlists + masked files [1095]
  * Reduce debug output if loading a file fails [1080]
  * Plugins:
+
    * notify: Don't set notifications to transient [1103]
    * lastfmsync: Fix loading/saving of cache [1093]
 
 2.5 (2012-12-19) - Reading on the floor: literature!
+----------------------------------------------------
 
  * Greek translation update (Dimitris Papageorgiou) [1064]
  * Russian translation update (Anton Shestakov) [1072]
  * Lithuanian translation update (Naglis Jonaitis)[1079]
 
 2.4.91 (2012-11-23) - hello and thank you for installing an internet!
+---------------------------------------------------------------------
 
 News for packagers
  * setup.py will install png and svg icons into hicolor and a png icon into
@@ -36,8 +38,9 @@ News for packagers
  * New: python-keybinder needed for multimedia keys
  * New plugin directory: gstreamer
  * Optional plugin dependencies:
+
    * Removed: python-indicate (Ubuntu sound menu),
-              lastfmsubmitd (old last.fm plugin)
+     lastfmsubmitd (old last.fm plugin)
    * New: rygel (DBus UPnP MediaServer), python-zeitgeist (Zeitgeist)
 
 News for translators
@@ -80,7 +83,7 @@ Formats
  * New: Ogg Opus (needs mutagen 0.21) [1012]
  * New: MIDI
  * Basic SPC tag parsing [282] (David Schneider)
- * Add m4v to valid mp4 extensions 
+ * Add m4v to valid mp4 extensions
 
 Tagging
  * Limit path sections to 255 chars instead of tags to 100 [915]
@@ -116,13 +119,15 @@ Plugins
  * Duplicate Browser: expand/unexpand all button
  * CD burn: now menu-based
  * Updated: Auto Library Updater (Nick Boultbee)
- 
+
 Browsers
  * New: Album Collection - provides a tree-like view of albums similar to Paned.
  * Playlists:
+
    * Delete shortcut [942] (Johannes Marbach)
    * Shuffle playlist (Nick Boultbee)
    * Remove duplicates [685] (Nick Boultbee)
+
  * Album list: more filters
 
 Windows
@@ -130,7 +135,10 @@ Windows
  * Multimedia keys support
 
 2.4.1 (2012-07-27) - Man! If I were a robot, a lot of things would be different
+-------------------------------------------------------------------------------
+
  * Fixes:
+
    * Fix skipping one song during a song change [987]
      (This also broke the random album plugin in some cases)
    * Windows: Crash in file system view if 'My Music' folder is missing [1008]
@@ -138,26 +146,40 @@ Windows
    * Fix playing of files that don't match the file system encoding [989]
    * Workaround for mutagen ID3v2.3 update bug [mutagen 97]
    * Various fixes [1013, 1002, 962]
+
  * Plugin fixes:
+
    * lastfmsync crashes [957]
    * Various Duplicate browser fixes [999, 954]
    * Notification crash [975]
 
 2.4 (2012-03-18) - He decides he must become... Abe Atman!
+----------------------------------------------------------
+
+ * Fixes:
+
    * Support xinelib 1.2 [904]
    * MP3/ID3: fix some rare crashes; prefer main embedded cover
-   * Vorbiscomment: Ignore coverart and use it as cover art source [910]
-                    Fix deletion of metadata_block_picture
+   * Vorbiscomment:
+
+     * Ignore coverart and use it as cover art source [910]
+     * Fix deletion of metadata_block_picture
+
    * album art: update coverparadise, disable discogs (API changed)
    * squeezebox fixes (Nick Boultbee)
    * German translation update (Rüdiger Arp)
    * Various fixes [890, 909, 899]
+
  * Fixed regressions:
+
    * Python 2.5 / PyGTK 2.12 compatibility
    * Restore saved play order [891]
 
 2.3.91/92 (2012-01-16) - Players only love you when they're playing
+-------------------------------------------------------------------
+
  * Fixes:
+
    * Don't remove periods from tag values in patterns [368]
    * Don't jump to playing song on stream changes
    * Fix wrong path encoding in the exfalso file selector under Windows
@@ -168,11 +190,15 @@ Windows
    * Fix a crash when the song list changed during a gapless transition [799]
    * Tray icon doesn't appear in KDE panel [881]
    * xine backend: Fix equalizer value range
+
  * Plugin Fixes:
+
    * Fix "&amp;" in notifications (xfce4-notifyd) (Anton Shestakov)
    * Fix animosd config again
    * Fix Amazon cover search (API change)
+
  * General
+
    * Improved startup speed
    * GNOME session shutdown fixes
    * Hide all windows on shutdown
@@ -222,7 +248,9 @@ Windows
    * search: Stricter numeric value parsing (only allow valid units)
    * search: Don't require a space between number and unit: #(added<1day)
    * search: Support GB/KB/MB/B units for ~#filesize
+
  * Gstreamer:
+
    * Fully support playbin1 again (QUODLIBET_PLAYBIN1 env var)
    * Allow setting of stream buffer duration [696]
    * Sync replaygain volume change with track change [652]
@@ -239,11 +267,15 @@ Windows
      including format conversions (only in --debug mode)
    * No more jumping of the position slider during song changes
    * Better parsing of stream metadata [750]
+
  * Translations:
+
    * Russian translation update (Anton Shestakov)
    * German translation update (Rüdiger Arp)
    * Italian translation update (Luca Baraldi)
+
  * Tagging/Ex Falso:
+
    * Improve support for language tag, with ISO 639-2 suggestions
      (Nick Boultbee)
    * ID3: handle TLAN [439] (Nick Boultbee)
@@ -251,13 +283,17 @@ Windows
    * Allow performer to be split out of title (Nick Boultbee)
    * Ogg Theora support
    * Ex Falso about dialog
+
  * CLI:
+
    * --debug (colored output, yay)
    * --enqueue-files=file,file [716] (Nick Boultbee)
    * --print-query=query [716] (Nick Boultbee)
    * --force-previous [441] (go to previous not depending on the
      current position)
+
  * Plugins:
+
    * Removed old plugin import fallback code: In case loading
      a third party plugin fails, set the QUODLIBET_OLDIMPORT env var.
    * Show an error message instead of the stack trace for common
@@ -275,21 +311,28 @@ Windows
    * NEW: Duplicates browser (Nick Boultbee)
    * NEW: Mute radio advertisements (di.fm only atm)
    * NEW: Watch directories for file changes (using pyinotify) [270]
-          (Nick Boultbee, Joe Higton)
+     (Nick Boultbee, Joe Higton)
    * NEW: Theme switcher plugin
    * NEW: Squeezebox plugin (Nick Boultbee)
 
 2.3.2 (2011-10-17) - It doesn't matter! My beats are great!
-    * Fix "--song-list"
+-----------------------------------------------------------
+
+
     * Fix crash in album browser [781]
     * Plugins:
-        * DBus multimedia keys: Make it work with gnome-settings-daemon 3.x
-        * Album art: Remove darktown, fix discogs.
-        * MPRIS: Various fixes [776, 817, 827]
+
+      * DBus multimedia keys: Make it work with gnome-settings-daemon 3.x
+      * Album art: Remove darktown, fix discogs.
+      * MPRIS: Various fixes [776, 817, 827]
+
     * Translation Updates:
-        Lithuanian (Naglis Jonaitis)
+
+      * Lithuanian (Naglis Jonaitis)
 
 2.3.1 (2011-07-16) - YES It works in BOTH temporal directions
+-------------------------------------------------------------
+
     * Absolute path renaming on Windows [506]
     * Fix dynamic song removal of songs not matching the query [713]
     * Fix "--print-playing <~#rating>" [730]
@@ -297,20 +340,26 @@ Windows
     * Fix hang with newer GStreamer versions and sinkless pipelines
     * Some minor fixes [682, 724, 704]
     * Plugins:
-        * Fix MPRIS not handling invalid dates (Nick Boultbee)
-        * Some OSD fixes (Nick Boultbee)
+
+      * Fix MPRIS not handling invalid dates (Nick Boultbee)
+      * Some OSD fixes (Nick Boultbee)
+
     * Translations:
-        German (Rüdiger Arp)
-        Italian (Luca Baraldi)
-        Lithuanian (Naglis Jonaitis)
+
+      * German (Rüdiger Arp)
+      * Italian (Luca Baraldi)
+      * Lithuanian (Naglis Jonaitis)
 
 2.3 (2011-04-01) - I THOUGHT THAT WAS PRETTY CLEAR
+---------------------------------------------------
+
     * Various minor bug fixes
     * Some small translation updates (Anton Shestakov)
     * Update of the 2.2.99 news entry
 
-2.2.99 (2011-03-13) - I can imagine that one day there could be a person
-                      who would read that
+2.2.99 (2011-03-13) - I can imagine that one day there could be aperson who would read that
+--------------------------------------------------------------------------------------------
+
     * Quod Libet now needs Python >=2.5
     * Drag and drop in paned browser
     * Speed up adding many songs to the queue
@@ -351,49 +400,59 @@ Windows
     * Various bug fixes, speed improvements (Jacob Lee, Johannes Rohrer,
       Tshepang Lekhonkhobe)
     * Bug fixes:
-        * Treeview hints now work with GTK+ >= 2.20
-        * Search history now gets properly shared between browsers
-        * Fix udev crashes
-        * Paned browser leaks
-        * Respect global filter in all browsers/filters
-        * Don't lose tag values with differently cased tag names (APEv2)
-        * Fix --set-browser (Carlo Teubner)
-        * Properly handle the case where a playing song gets deleted
-        * Fix redraw errors using compiz
-        * FSync on library save
-        * Fix crash when ~/.gtk-bookmarks contains empty lines (Felix Krull)
-        * Correctly identify rockboxed iPods
-    * Windows (Uninstall any previously installed version!):
-        * Fix translation under Win 7
-        * Fix cover art plugin saving
-        * Add all partitions to the file selector
-        * Fix various crashes with wide char user names
-        * Fix icon under Win 7
-        * Support multi-user installations
-        * Fix freezes after opening certain folders
-    * New plugins:
-        * Follow cursor play order plugin
-        * Equalizer plugin
-        * MPRIS 1.0/2.0 plugin
-        * Ubuntu sound menu plugin
-        * Rating reset plugin
-        * Track repeat plugin (Nick Boultbee)
-    * Plugins:
-        * Go to bookmark plugin now menu based
-        * Fix some album art plugin backends (Aymeric Mansoux, ..)
-        * Improved "human" title casing (Nick Boultbee)
-        * Fix queue only plugin stopping the current song.
-        * Only use allowed HTML in the notify plugin.
-        * musicbrainz: allow writing sort tags (Michaël Ball)
-    * Translations:
-        * new Latvian translation (Einars Sprugis)
-        * new Basque translation (Piarres Beobide)
-        * French translation updates (Nick Boultbee)
-        * Brazilian/Portuguese translation updates (Djavan Fagundes)
-        * Russian translation updates (Anton Shestakov)
 
-2.2.1 (2010-03-27) - Fewer than four out of ten people respect my promises
-                     -- and possibly more!
+      * Treeview hints now work with GTK+ >= 2.20
+      * Search history now gets properly shared between browsers
+      * Fix udev crashes
+      * Paned browser leaks
+      * Respect global filter in all browsers/filters
+      * Don't lose tag values with differently cased tag names (APEv2)
+      * Fix --set-browser (Carlo Teubner)
+      * Properly handle the case where a playing song gets deleted
+      * Fix redraw errors using compiz
+      * FSync on library save
+      * Fix crash when ~/.gtk-bookmarks contains empty lines (Felix Krull)
+      * Correctly identify rockboxed iPods
+
+    * Windows (Uninstall any previously installed version!):
+
+      * Fix translation under Win 7
+      * Fix cover art plugin saving
+      * Add all partitions to the file selector
+      * Fix various crashes with wide char user names
+      * Fix icon under Win 7
+      * Support multi-user installations
+      * Fix freezes after opening certain folders
+
+    * New plugins:
+
+      * Follow cursor play order plugin
+      * Equalizer plugin
+      * MPRIS 1.0/2.0 plugin
+      * Ubuntu sound menu plugin
+      * Rating reset plugin
+      * Track repeat plugin (Nick Boultbee)
+
+    * Plugins:
+
+      * Go to bookmark plugin now menu based
+      * Fix some album art plugin backends (Aymeric Mansoux, ..)
+      * Improved "human" title casing (Nick Boultbee)
+      * Fix queue only plugin stopping the current song.
+      * Only use allowed HTML in the notify plugin.
+      * musicbrainz: allow writing sort tags (Michaël Ball)
+
+    * Translations:
+
+      * new Latvian translation (Einars Sprugis)
+      * new Basque translation (Piarres Beobide)
+      * French translation updates (Nick Boultbee)
+      * Brazilian/Portuguese translation updates (Djavan Fagundes)
+      * Russian translation updates (Anton Shestakov)
+
+2.2.1 (2010-03-27) - Fewer than four out of ten people respect my promises -- and possibly more!
+------------------------------------------------------------------------------------------------
+
  * Fix for importing some mp3 files. [220]
  * More fixes for the device backend (iPod, multi partition DAPs). [410, 412]
  * Fix editing keys with multiple values. [440]
@@ -401,16 +460,21 @@ Windows
  * Save songlist column patterns. [447]
  * Some small fixes here and there.
  * Plugin fixes:
+
    * Title case: Improved title casing for English text. (Nick Boultbee)
    * Random Album: Algorithm improvements.
    * QLScrobbler: Fix preference pane ordering.
    * Album art: Some images weren't displayed. (Tomasz Miasko) [429]
    * Last.fm Sync, Musicbrainz: Minor fixes.
+
  * Translations:
+
    * Galician, Spanish (Johám-Luís Miguéns Vila).
    * German (Rüdiger Arp).
 
 2.2 (2010-02-02) - I know you are enjoying that song but a woman DIED
+---------------------------------------------------------------------
+
  * Saved searches extended to Album and Paned browsers [41].
  * Human sorting is now used in Album and Paned browsers [190].
  * Windows is now supported (for real this time).
@@ -420,17 +484,22 @@ Windows
  * Lyric downloading disabled until it can be fixed [273].
  * Editing both key and value with multiple keys fixed (extruded) [393].
  * Plugin changes:
+
    * AnimOSD: major update (Andreas Bombe, Christine Spang) [387].
    * MusicBrainz: major update.
    * Random Album: Changed algorithm to increase fairness.
    * QLScrobbler: Custom patterns for title and artist.
    * Last.fm Sync: new plugin to sync stats from Last.fm.
    * Notify OSD, Album Art: Minor fixes.
+
  * Translations:
+
    * Galician, Spanish (Johám-Luís Miguéns Vila).
    * French (Bastien Gorissen).
 
 2.1.98 (2010-01-04) - How are you going to convince people to use it?
+---------------------------------------------------------------------
+
  * Christoph Reiter is now a maintainer.
  * The GStreamer backend is now gapless [49].
  * Win32 is once again supported [248].
@@ -450,6 +519,7 @@ Windows
  * Song positions are now saved and restored when quitting [218].
  * DeviceKit-Disks (UDisks) supported for device discovery [252].
  * Plugin changes:
+
    * New playlist export plugin [30].
    * New queue only playorder plugin [43].
    * New Python console plugin. [229]
@@ -457,19 +527,26 @@ Windows
    * Updated album art plugin (Eduardo Gonzalez) [139].
    * Updated qlscrobbler plugin (Nicholas J. Michalek) [376].
    * Updated lastfmsubmit plugin [292].
+
  * Translations:
+
    * Russian (Anton Shestakov) [274].
    * Turkish (Türerkan İnce).
    * German (Rüdiger Arp).
+
  * Many bug fixes and performance improvements.
 
 2.1 - My God, Utahraptor, that's THE PERFECT SOLUTION.
+------------------------------------------------------
+
  * Bug fixes:
+
    * Installer fixes [15, 27, 88]
    * Right-click on menu causes crash [14]
    * Removing a pane from the paned browser causes segfault [131]
    * Null bytes in tags are now stripped on load [177, 242]
    * zh_CN translation updated [156]
+
  * Support .oga file extension for Ogg Vorbis files [52]
  * Support libre.fm scrobbling in qlscrobbler plugin
  * Get Internet Radio channel listing from yp.icecast.org [18]
@@ -478,11 +555,15 @@ Windows
  * Many minor fixes and enhancements.
 
 2.0 - Once upon a time there was a radical guy!
+-----------------------------------------------
+
  * Make Escape a synonym for Ctrl+W in QLTK Windows. (I#8)
  * Actually fix playlist error.
  * Fix Xine backend "Stop" behavior.
 
 1.999 - It has been a memorable day
+-----------------------------------
+
  * Fix playlist error when loading songs.
  * Unlock device when "stop" mmkey is pressed. (Javier Kohen, I#6)
  * Restart song when rewinding and > 0.5s in. (Javier Kohen, I#7)
@@ -490,20 +571,30 @@ Windows
  * Make requirements consistent across all documentation.
 
 1.99 - It is impossible to know if my dream came true
+-----------------------------------------------------
+
  * New distutils-based build/test/install system.
  * Multiple audio backend support.
+
    * Xine-based audio backend.
    * "Null" backend for Ex Falso.
+
  * Tag Editing:
+
    * Tags From Path: "<~>" will eat a string but not save it.
    * Track Numbers: Allow numbering up to 999.
+
  * Show image files in Ex Falso.
  * Direct output to console and to a debugging window.
+
    * Functions are accessible to plugins as print_d, print_e, and print_w.
+
  * default_rating configuration option. (Robert Muth)
  * Many bug fixes and performance improvements.
- 
+
 1.0 - Yeah they just showed up one day -- staring.
+--------------------------------------------------
+
  * Use Mutagen for ASF/WMA and MP4 support.
  * Add IsPlaying and GetPosition to the D-Bus API. (Mickael Royer)
  * Default "No Cover" image. (Jakub Steiner)
@@ -516,6 +607,7 @@ Windows
  * APEv2 tags can now override Musepack stream Replay Gain settings.
  * Numerous bug fixes, especially in media device handling.
  * Translation Updates:
+
    * Hungarian. (SZERVÁC Attila)
    * Finnish. (Jari Rahkonen)
    * Galician and Spanish. (Johám-Luís Miguéns Vila)
@@ -524,6 +616,8 @@ Windows
    * Japanese. (Yasushi Iwata)
 
 0.24 - One wonders if our conversation today would be an appropriate epitaph.
+-----------------------------------------------------------------------------
+
  * Media device (iPod and UMS so far) support. (Markus Koller)
  * Delete removes songs from the queue. (sciyoshi)
  * Per-browser window memory.
@@ -535,6 +629,7 @@ Windows
  * New Romanian translation, by Mugurel Tudor.
  * New Slovak translation, by Lukáš Lalinský.
  * Updated translations:
+
    * Traditional Chinese, by Hsin-lin Cheng.
    * Japanese, by Yasushi Iwata.
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
@@ -545,6 +640,8 @@ Windows
    * German, by Rüdiger Arp.
 
 0.23.1 - UNPOPULAR LIFE GOALS
+-----------------------------
+
  * Multivalued tag renaming.
  * Fix crash when ~/.gtk-bookmarks is not present.
  * Disable 'title' completion. (hopefully temporarily)
@@ -552,11 +649,15 @@ Windows
  * Updated Swedish translation, by Erik Christiansson.
 
 0.23 - THE NARRATIVE OF LIFE.
+-----------------------------
+
  * Bug Fixes:
+
    * Updated files no longer incorrectly appear in the paned browser.
    * Disambiguate 'filename' string for translation.
    * Hide unreadable files in Ex Falso.
    * Avoid (harmless) race condition when filling album list.
+
  * "Select All Subfolders" menu item when browsing directories.
    (thanks to Alexandre Passos).
  * Scan the library in the background when starting.
@@ -572,6 +673,7 @@ Windows
  * New Japanese translation, by Yasushi Iwata.
  * New Traditional Chinese translation, by Hsin-lin Cheng.
  * Updated Translations:
+
    * German, by Rüdiger Arp.
    * Polish, by Tomasz Torcz
    * French, by Guillaume Ayoub.
@@ -583,8 +685,9 @@ Windows
    * Hungarian, by SZERVÁC Attila.
    * Swedish, by Fredrik Olofsson.
 
-0.22 - Man, forget television, books, films, short films, to a lesser
-       extent plays and other theatre, and the remaining popular media!
+0.22 - Man, forget television, books, films, short films, to a lesser extent plays and other theatre, and the remaining popular media!
+--------------------------------------------------------------------------------------------------------------------------------------
+
  * The tray icon is now an optional plugin.
  * A D-BUS interface is available. (thanks to Federico Pelloni)
  * Tag editing values are autocompleted.
@@ -592,6 +695,7 @@ Windows
  * New "~lyrics" synthetic tag.
  * Python 2.4 is now required.
  * Updated Translations:
+
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
    * Italian, by Filippo Pappalardo.
    * Hebrew, by Roee Haimovich.
@@ -605,10 +709,15 @@ Windows
    * Korean, by Byung-Hee HWANG and ChangBom Yoon.
 
 0.21.1 - Dude! It's not like you can't just make your own!
+----------------------------------------------------------
+
  * MP3s with POPM can be loaded again (Thanks, Hans van Dok)
 
 0.21 - Faith, AND the possibility of weaponized kissing??
+---------------------------------------------------------
+
  * Bug Fixes:
+
    * Queue behaves correctly when randomizing two songs.
    * GStreamer error messages are properly localized.
    * Tray icon is more resiliant to panel crashes.
@@ -617,7 +726,9 @@ Windows
    * .pyo files are removed on clean.
    * util.unexpand caches the value of $HOME.
    * Fix plugin function call ordering.
+
  * UI Changes:
+
    * Improved tooltips in Preferences.
    * The Paned Browser shows song totals, and has a button to
      reset all selections.
@@ -625,12 +736,14 @@ Windows
      to a different email address.
    * The last-entered directory is used for Scan Directories
      configuration.
+
  * pyvorbis is no longer required if you use Mutagen 1.3.
  * Event plugins were redesigned, incompatibly.
  * Test coverage data can be generated using trace.py.
  * New Simplified Chinese translation by Emfox Zhou.
  * New Hungarian translation by SZERVÁC Attila.
  * Updated translations:
+
    * Finnish, by Jari Rahkonen.
    * Korean, by Byung-Hee HWANG and ChangBom Yoon.
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
@@ -641,10 +754,15 @@ Windows
    * Dutch, by Hans van Dok.
 
 0.20.1 - Thanks for the eye-opener, dinosaur zombies!
+-----------------------------------------------------
+
  * Vorbis/FLAC tag editing works again.
 
 0.20 - Feelings are boring. Kissing is awesome!
+-----------------------------------------------
+
  * Bug Fixes:
+
    * --play-file will use the queue.
    * Audio Feeds remember download locations.
    * Song changes don't revert tag edits.
@@ -657,15 +775,21 @@ Windows
    * Ex Falso no longer loads WAV or MOD files.
    * Allow more headers in Internet Radio and Audio Feeds.
    * New process launching method, util.spawn.
+
  * UI Changes:
+
    * Indicator to show when songs come from the queue.
    * Rating submenu always appears in the song list.
    * Album covers hide when clicked again.
    * Select current song when jumping to it.
+
  * New translations:
+
    * Norwegian Bokmål, by Andreas Bertheussen.
    * Swedish, by Erik Christiansson.
+
  * Updated translations:
+
    * Polish, by Tomasz Torcz.
    * Dutch, by Hans van Dok.
    * Finnish, by Jari Rahkonen.
@@ -675,6 +799,8 @@ Windows
    * Portuguese, by Alexandre Passos.
 
 0.19.1 - It's our secret! Our secret IDENTITY!
+----------------------------------------------
+
  * Work around broken Fedora/Mandrive GNOME bindings.
  * Fix global plugin directory scanning.
  * Add originalartist to ~people.
@@ -682,6 +808,8 @@ Windows
  * Updated Korean translation, by Byung-Hee HWANG and ChangBom Yoon.
 
 0.19 - i'm really thirsty you guys
+----------------------------------
+
  * Simple X session management.
  * Require Mutagen 1.0; drops Pymad.
  * WAV support.
@@ -692,12 +820,15 @@ Windows
  * Searches, tagging patterns, and file renaming patterns can be given
    aliases and saved.
  * Tag Editing:
+
    * MusicBrainz TXXX, artist/album/albumartist support.
    * Added albumartist, originalartist, originalalbum, originaldate,
      recordingdate.
    * Ratings, playcount Ogg Vorbis format changed.
    * COMM tags in Ex Falso are deleted properly.
+
  * UI Changes:
+
    * Drops from e.g. Nautilus add to playlists/queue.
    * Clear button in Album List.
    * Horizontal scrollbar when absolutely necessary for the song list.
@@ -708,12 +839,16 @@ Windows
    * Standard context menu for all browsers.
    * 'Delete' key works in Edit Tags.
    * Type-ahead search works in the Album List.
+
  * Bug fixes:
+
    * Double-appearances in the filesystem view.
    * FIFO misses some commands.
    * Stupid 'refresh' signal finally gone.
    * Error when seeking and keyboard can't be grabbed.
+
  * Updated translations:
+
    * Finnish, by Jari Rahkonen.
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
    * Polish, by Tomasz Torcz.
@@ -723,6 +858,8 @@ Windows
    * Hebrew, by Roee Haimovich.
 
 0.18 - "Babies Sporting Monocles"?
+----------------------------------
+
  * MP4 iTunes metadata can be written.
  * Alt+s switches between search entry and song list.
  * GStreamer 0.10 port.
@@ -730,12 +867,15 @@ Windows
  * The Album List text can be changed with a pattern.
  * "Limit" in the Search view can take ratings into account.
  * UI Changes:
+
    * Alt+Enter / Ctrl+I shows tags/information for selected songs.
    * DnD to playlists/the queue from the File System view.
    * F2 renames playlists.
    * "Add a Tag" autocompletes tag names.
    * RSS links can be dragged to the Audio Feeds sidebar.
+
  * Bug Fixes:
+
    * ID3v1 tags no longer interfere with APEv2 tags.
    * Playing albums with one song no longer skips forwards.
    * 'totaltracks' Vorbis tags are read properly.
@@ -746,11 +886,13 @@ Windows
    * Word-wrap in lyrics pane works properly.
    * Ex Falso properly opens an initial directory. (thanks to ch.trassl)
    * '~format' is usable from --print-playing. ([2810])
+
  * Plugin errors are captured in a dialog. ([2817])
  * New synthetic numeric tags, ~#tracks and ~#discs. ([2828])
  * Ex Falso no longer depends on GStreamer. ([2837])
  * New Lithuanian translation by Jonas Slivka. ([2780])
  * Updated translations:
+
    * Bulgarian, by Rostislav Raykov.
    * Finnish, by Jari Rahkonen.
    * Korean, by Byung-Hee HWANG and ChangBom Yoon.
@@ -762,10 +904,14 @@ Windows
    * French, by Joshua Kwan.
 
 0.17.1 - I'd like to have some nightmares, please!
+--------------------------------------------------
+
  * Updated German translation, by Rüdiger Arp.
  * Updated Russian translation, by Sergey Fedoseev.
 
 0.17 - the grizzly icing on the prospector cake!
+------------------------------------------------
+
  * Lyrics plugin merged into Information dialog.
  * "Edit Tags" now correctly removes all copies of multiple values,
    and displays "(missing from...)" for all missing values.
@@ -777,6 +923,7 @@ Windows
  * New plugin architecture for tag editing dialogs.
  * Korean translation, by ChangBom Yoon and Byung-Hee HWANG.
  * Updated translations:
+
    * Russian, by Sergey Fedoseev.
    * Finnish, by Jari Rahkonen.
    * Portuguese, by Alexandre Passos.
@@ -787,6 +934,8 @@ Windows
    * Polish, by Tomasz Torcz.
 
 0.16 - would it make a difference if it never really came up often?
+-------------------------------------------------------------------
+
  * Context menu plugins can make themselves insensitive.
  * More command-line and FIFO options.
  * Read-only M4A support. (thanks to Alexey Bobyakov)
@@ -798,6 +947,7 @@ Windows
  * ~laststarted internal tag.
  * Accents are stripped when renaming to ASCII filenames.
  * UI improvements:
+
    * Ex Falso lists are searchable in GTK 2.8.8+.
    * ^W closes transient windows.
    * More DnD support.
@@ -809,10 +959,12 @@ Windows
    * New icon that is not all black. (thanks to Tobias and Fabien)
    * Paned Browser entries have context menus.
    * Volume icons follow GTK+/GNOME theme.
+
  * More memory and CPU optimizations.
  * GStreamer error handling. (thanks to Zack Weinberg and Bastian Kleineidam)
  * Musepack, MOD support migrated to Mutagen/ctypes modules.
  * Updated translations:
+
    * Galician and Spanish, by Johám-Luís Miguéns Vila.
    * Italian, by Filippo Pappalardo.
    * Dutch, by Hans van Dok.
@@ -824,10 +976,11 @@ Windows
    * Hebrew, by Roee Haimovich.
 
 0.15 - Maybe I will.
+--------------------
+
  * An 'artist' tag can be stored in the library for MODs.
  * 'All Albums' remains on the album list after a search.
  * The Play Queue displays its total time and has a clear button.
-  
  * Songs can be enqueued multiple times.
  * '~people' includes more people.
  * Files can be added from remote URIs (e.g. HTTP).
@@ -837,14 +990,17 @@ Windows
  * Useless columns are not displayed in Internet Radio.
  * A single album cover can be refreshed in the Album List.
  * Playlists have been rewritten:
+
    * Songs may now be in a playlist multiple times.
    * Playlists can be reordered directly, without a special window.
    * Songs can be added to playlists directly from the context menu.
    * M3U and PLS playlists (along with their songs) can be imported.
    * The interface is much more attractive.
+
  * Drag-and-drop is generally more usable, faster, and attractive.
  * Many optimizations, especially during startup.
  * Updated translations:
+
    * Russian, by Sergey Fedoseev.
    * Galician, by Johám-Luís Miguéns Vila.
    * Dutch, by Hans van Dok.
@@ -853,32 +1009,44 @@ Windows
    * Finnish, by Jari Rahkonen.
    * Polish, by Tomasz Torcz.
    * Italian, by Filippo Pappalardo.
+
  * New translations:
+
    * Spanish and Portuguese, by Johám-Luís Miguéns Vila.
 
 0.14 - I'm almost certain!
+--------------------------
+
  * Internet radio / Shoutcast browser.
  * Album List separates albums with different labelids.
  * Ex Falso displays all available plugins in its menu.
  * Useful ~#lastplayed/~#added/~#mtime display thanks to Lalo Martins.
  * New Album List search keys and sorting options.
  * New translations:
+
    * Galician, by Johám-Luís Miguéns Vila.
    * Italian, by Filippo Pappalardo.
+
  * Updated translations:
+
    * Finnish, by Jari Rahkonen.
    * Polish, by Tomasz Torcz.
    * Dutch, by Hans van Dok.
    * Hebrew, by Roee Haimovich.
    * German, by Rüdiger Arp.
    * Russian, by Nikolai Prokoschenko.
+
  * Many bug fixes.
 
 0.13.1 - People will fall for this for sure!
+--------------------------------------------
+
  * Fix playlist creation.
  * Unplay when no song is playing.
 
 0.13 - So, um... let's- fletcherize?
+------------------------------------
+
  * The GStreamer backend is cleaned up, and is now the only backend.
    This results in lower background CPU usage and many fixes to
    our audio processing. Gapless playback is gone.
@@ -887,7 +1055,7 @@ Windows
    files outside of your library.
  * The Paned Browser has a search entry.
  * Search Library lets you limit the number of results.
- * {{{~/.quodlibet/browsers}}} is now scanned for custom browsers.
+ * ``~/.quodlibet/browsers`` is now scanned for custom browsers.
  * Synthetic tags ('''~dirname''', '''~basename''', &c.) can be searched.
  * Similarly, synthetic tags can be used in the Paned Browser.
  * New synthetic tags, '''~people''' and '''~playlist'''.
@@ -902,6 +1070,8 @@ Windows
  * Updated Hebrew translation by Roee Haimovich.
 
 0.12 - focus ENTIRELY on the sexy bits.
+---------------------------------------
+
  * New Mutagen ID3 reader/writer.
  * Experimental GStreamer backend.
  * Drag-and-drop to playlists.
@@ -912,6 +1082,7 @@ Windows
  * Support for multiple soundcards.
  * Localization enhancements.
  * Translation updates:
+
    * Dutch, thanks to Hans van Dok.
    * Finnish, thanks to Jari Rahkonen.
    * French, thanks to Joshua Kwan.
@@ -919,9 +1090,12 @@ Windows
    * Hebrew, thanks to Roee Haimovich.
    * Russian, thanks to Sergey Fedoseev and Nikolai Prokoschenko.
    * Polish, thanks to Witold Kieraś.
+
  * The usual round of interface tweaks and bug fixes.
 
 0.11 - spicy burnsauce with a side of ZING!
+-------------------------------------------
+
  * Plugins (either appearing in the right-click menu, or triggered on a
    player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins.
  * Browse songs by album, with a cover display.
@@ -938,9 +1112,13 @@ Windows
  * OSD moved to a plugin.
 
 0.10.1 - What if I said I'm not really kidding?
+-----------------------------------------------
+
  * The main window stays hidden when the song changes.
 
 0.10 - As it turns out, my life is NOT THAT INTERESTING!
+--------------------------------------------------------
+
  * --seek supports +/- prefix to seek relative to the current position.
  * Added Ex Falso, a tag editor based on QL (without audio playback).
  * Switched MP3 genres from TIT1 to TCON.
@@ -959,10 +1137,14 @@ Windows
  * A new icon and website.
 
 0.9 - I don't want any trouble, cephalopods!
+--------------------------------------------
+
  * Major updates to the Properties dialog:
+
    - A new detailed 'Information' tab was added.
    - Middle click pastes current PRIMARY clipboard text in 'Edit Tags'.
    - Text in the 'Rename Files' dialog can be conditionalized.
+
  * Non-UTF-8 filesystem encodings support (via CHARSET/G_BROKEN_FILENAMES).
  * New numeric keys "added" and "skipcount" can be searched on.
  * The --print-playing format string syntax has changed to match the one
@@ -976,9 +1158,13 @@ Windows
  * Updated German translation (thanks, Bastian!)
 
 0.8.1 - Our story takes a sudden dive...
+----------------------------------------
+
  * Fix a crash when encoding information is not available.
 
 0.8 - I make jokes about whomever I please!
+-------------------------------------------
+
  * New/reloaded libraries take 20% less disk space.
  * Double-clicking an album cover displays it in a larger window.
  * --shuffle, --repeat, and --volume (--volume-up and --volume-down are
@@ -993,6 +1179,8 @@ Windows
  * German translation, thanks to Bastian Kleineidam.
 
 0.7 - I'm going to ho-ho-hoard all these nuts!
+----------------------------------------------
+
  * Default to proper 'alsa09' driver (rather than 'alsa').
  * "Random Foo" searches are now anchored with ^...$.
  * Tag By Pattern values can be edited before being saved.
@@ -1008,6 +1196,8 @@ Windows
  * Delete songs (or move them to the trash) from the player.
 
 0.6 - People laugh at typos in heaven?!
+---------------------------------------
+
  * Many new filtering options (top 40, not played in X days).
  * Mass-set track numbers.
  * Tag by Pattern can replace or add new tags.
@@ -1021,6 +1211,8 @@ Windows
  * Bug fixes (including at least one crash).
 
 0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
+----------------------------------------------
+
  * The ao audio backend is back; see the "AUDIO BACKENDS" section in the
    manual page for instructions on using it. This should let ALSA users
    use software mixing.
@@ -1036,6 +1228,8 @@ Windows
    library from the "Music" menu.
 
 0.4 - The Power of Language
+---------------------------
+
  * Many bug fixes, primarily due to unit testing.
  * Tweaks to cover detection to pick 'frontcover' over 'backcover'.
  * Tweaks to song display, including proper support for the 'author' tag.
@@ -1050,11 +1244,15 @@ Windows
    this, so I could've done something horribly wrong.
 
 0.3
+---
+
  * Handle mono MP3s correctly.
  * Crash less, especially when editing tags.
  * Many smaller bug fixes.
 
 0.2
+---
+
  * Song properties dialog, featuring mass tag editing/addition/removal.
  * Build/installation scripts.
  * Interface tweaks for HIG compliance and accessibility.
@@ -1066,4 +1264,6 @@ Windows
    value your tags, please back them up.
 
 0.1
+---
+
  * Initial release.
