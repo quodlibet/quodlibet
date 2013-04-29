@@ -64,8 +64,11 @@ LIBRARY_SAVE_PERIOD_SECONDS = 15 * 60
 DEFAULT_RATING = 0.5
 
 # entry point for the user guide / wiki
-ONLINE_HELP = "http://code.google.com/p/quodlibet/wiki/QuickStart"
-SEARCH_HELP = "http://code.google.com/p/quodlibet/wiki/SearchingGuide"
+BRANCH_NAME = "default"
+DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/%s"
+DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "default" else "latest"
+ONLINE_HELP = DOCS_BASE_URL + "/guide/index.html"
+SEARCH_HELP = DOCS_BASE_URL + "/guide/searching.html"
 
 # about dialog, --version etc.
 WEBSITE = "http://code.google.com/p/quodlibet"
