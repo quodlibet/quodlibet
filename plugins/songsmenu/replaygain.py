@@ -157,9 +157,6 @@ class Analysis(object):
             if ok:
                 track[4] = '%.4f' % value
 
-            # FIXME: GIPORT
-            return
-
             if album[3] == self.error_str:
                 return
 
@@ -193,8 +190,7 @@ class Analysis(object):
             self.song = self.model.iter_next(self.song)
             self.nsong += 1
             # preserve rganalysis state across files
-            # FIXME: GIPORT
-            #self.analysis.set_locked_state(True)
+            self.analysis.set_locked_state(True)
             self.pipe.set_state(Gst.State.NULL)
 
         if self.current:
@@ -216,6 +212,12 @@ class Analysis(object):
             self.view.scroll_to_cell(self.model.get_path(self.song))
             self.current = self.model[self.song]
             self.filesrc.set_property("location", self.current[0]['~filename'])
+
+            # flush, so the element takes new data after EOS
+            pad = self.analysis.get_static_pad("src")
+            pad.send_event(Gst.Event.new_flush_start())
+            pad.send_event(Gst.Event.new_flush_stop(True))
+
             self.pipe.set_state(Gst.State.PLAYING)
             self.analysis.set_locked_state(False)
 
