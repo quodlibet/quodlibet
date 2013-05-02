@@ -13,3 +13,4 @@ recursive-include tests *.py
 include gdist/*.py
 include *.desktop.in
 include MANIFEST.in
+recursive-include docs conf.py Makefile *.rst *.png
