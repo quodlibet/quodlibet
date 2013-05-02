@@ -251,7 +251,7 @@ class ReplayGainPipeline(GObject.Object):
 
 class RGDialog(Gtk.Dialog):
 
-    def __init__(self, parent):
+    def __init__(self, albums, parent):
         super(RGDialog, self).__init__(
             title=_('ReplayGain Analyzer'), parent=parent,
             buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
@@ -343,8 +343,38 @@ class RGDialog(Gtk.Dialog):
         for i in xrange(multiprocessing.cpu_count()):
             self.pipes.append(ReplayGainPipeline())
 
+        self.albums = albums = [RGAlbum.from_songs(a) for a in albums]
+
+        # fill the view
+        for album in albums:
+            base = self.model.append(None, row=[album])
+            for song in album.songs:
+                self.model.append(base, row=[song])
+
+        if len(albums) == 1:
+            self.view.expand_all()
+
+        self._timeout = None
+        self._sigs = {}
+        self._done = []
+        self._todo = list(albums)
+        self._count = len(albums)
+
         self.connect("destroy", self.__destroy)
         self.connect('response', self.__response)
+
+    def start_analysis(self):
+        self._timeout = GLib.idle_add(self.__request_update)
+
+        # fill the pipelines
+        for p in self.pipes:
+            if not self._todo:
+                break
+            self._sigs[p] = [
+                p.connect("done", self.__done),
+                p.connect("update", self.__update),
+            ]
+            p.start(self._todo.pop(0))
 
     def __response(self, win, response):
         if response == Gtk.ResponseType.CANCEL:
@@ -356,12 +386,12 @@ class RGDialog(Gtk.Dialog):
 
     def __destroy(self, *args):
         # shut down any active processing and clean up resources, timeouts
-        GLib.source_remove(self._timeout)
+        if self._timeout:
+            GLib.source_remove(self._timeout)
         for p in self.pipes:
             if p in self._sigs:
-                s1, s2 = self._sigs[p]
-                p.disconnect(s1)
-                p.disconnect(s2)
+                for s in self._sigs.get(p, []):
+                    p.disconnect(s)
             p.quit()
 
     def __update(self, pipeline, album, song):
@@ -396,33 +426,6 @@ class RGDialog(Gtk.Dialog):
             self._timeout = GLib.timeout_add(400, self.__request_update)
         return False
 
-    def start_albums(self, albums):
-        self.albums = albums = [RGAlbum.from_songs(a) for a in albums]
-
-        # fill the view
-        for album in albums:
-            base = self.model.append(None, row=[album])
-            for song in album.songs:
-                self.model.append(base, row=[song])
-
-        if len(albums) == 1:
-            self.view.expand_all()
-
-        self._timeout = GLib.idle_add(self.__request_update)
-        self._sigs = {}
-        self._done = []
-        self._todo = list(albums)
-        self._count = len(albums)
-        # fill the pipelines
-        for p in self.pipes:
-            if not self._todo:
-                break
-            self._sigs[p] = [
-                p.connect("done", self.__done),
-                p.connect("update", self.__update),
-            ]
-            p.start(self._todo.pop(0))
-
 
 class ReplayGain(SongsMenuPlugin):
     PLUGIN_ID = 'ReplayGain'
@@ -431,9 +434,9 @@ class ReplayGain(SongsMenuPlugin):
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
 
     def plugin_albums(self, albums):
-        win = RGDialog(parent=self.plugin_window)
-        win.start_albums(albums)
+        win = RGDialog(albums, parent=self.plugin_window)
         win.show_all()
+        win.start_analysis()
 
         # plugin_done checks for metadata changes and opens the write dialog
         win.connect("destroy", self.__plugin_done)
