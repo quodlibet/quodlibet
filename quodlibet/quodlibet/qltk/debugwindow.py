@@ -74,7 +74,7 @@ class ExceptionDialog(gtk.Window):
             "issues /list and attach this file or include its contents. This "
             "file may contain some identifying information about you or your "
             "system, such as a list of recent files played. If this is "
-            "unacceptable, send <b>% s</b> instead with a description of what"
+            "unacceptable, send <b>%s</b> instead with a description of what "
             "you were doing.") % (util.unexpand(dump), util.unexpand(minidump))
 
         suggestion = _("Quod Libet may now be unstable. Closing it and "
