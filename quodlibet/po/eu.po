@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: QuodLibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-02 08:25+0200\n"
-"PO-Revision-Date: 2013-04-30 13:59+0100\n"
+"POT-Creation-Date: 2013-05-02 17:03+0200\n"
+"PO-Revision-Date: 2013-05-02 21:26+0100\n"
 "Last-Translator: ashtophet <galiza.ceive@gmail.com>\n"
 "Language-Team: Basque <librezale@librezale.es>\n"
 "Language: eu\n"
@@ -15,6 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../exfalso.desktop.in.h:1
 msgid "Audio tag editor"
@@ -35,43 +36,40 @@ msgstr "direktorioa"
 #: ../operon.py:81
 #, python-format
 msgid "Failed to load file: %r"
-msgstr ""
+msgstr "%r fitxategia kargatzeak huts egin du"
 
 #: ../operon.py:111
 msgid "List tags"
-msgstr ""
+msgstr "Erakutsi etiketak"
 
 #: ../operon.py:116 ../operon.py:154 ../operon.py:447
 msgid "Print terse output"
-msgstr ""
+msgstr "Erakutsi debugarako informazioa"
 
 #: ../operon.py:118 ../operon.py:156 ../operon.py:449
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
-msgstr ""
+msgstr "Zutabeak eta ordena Debugarako moduan (%s)"
 
 #: ../operon.py:121
-#, fuzzy
 msgid "Also list programmatic tags"
-msgstr "Ikusi etiketa _programatikoak"
+msgstr "Erakutsi etiketa _programatikoak"
 
 #: ../operon.py:125 ../operon.py:189 ../operon.py:215 ../operon.py:233
 #: ../operon.py:269 ../operon.py:283 ../operon.py:325 ../operon.py:329
 #: ../operon.py:379 ../operon.py:382 ../operon.py:420 ../operon.py:454
 #: ../operon.py:490
 msgid "Not enough arguments"
-msgstr ""
+msgstr "Argumentu nahikorik ez"
 
 #: ../operon.py:127 ../operon.py:161 ../operon.py:191 ../operon.py:217
 #: ../operon.py:235 ../operon.py:456
-#, fuzzy
 msgid "Too many arguments"
-msgstr "Errore gehiegi"
+msgstr "Argumentu gehiegi"
 
 #: ../operon.py:130 ../operon.py:163 ../operon.py:461
-#, fuzzy
 msgid "Description"
-msgstr "azalpena"
+msgstr "Azalpena"
 
 #: ../operon.py:130 ../operon.py:461 ../quodlibet/qltk/edittags.py:419
 msgid "Value"
@@ -84,115 +82,108 @@ msgstr "Etiketa"
 
 #: ../operon.py:149
 msgid "List all common tags"
-msgstr ""
+msgstr "Erakutsi ohiko etiketak"
 
 #: ../operon.py:184
 msgid "Print all tags to stdout"
-msgstr ""
+msgstr "Erakutsi etiketa guztiak irteera estandarrean"
 
 #: ../operon.py:204
 msgid "Load tags dumped with 'dump'"
-msgstr ""
+msgstr "Kargatu 'dump'-ek jaurkitako etiketak"
 
 #: ../operon.py:209 ../operon.py:227 ../operon.py:265 ../operon.py:279
 #: ../operon.py:313 ../operon.py:372
 msgid "Show changes, don't apply them"
-msgstr ""
+msgstr "Erakutsi aldaketak, ez ezarri"
 
 #: ../operon.py:211 ../operon.py:229
 msgid "Skip tags that can't be written"
-msgstr ""
+msgstr "Jauzi egin idatzi ezin daitezkeen etiketak"
 
 #: ../operon.py:222
 msgid "Copy tags from one file to another"
-msgstr ""
+msgstr "Kopiatu etiketak fitxategi batetik beste batera"
 
 #: ../operon.py:249
 #, python-format
 msgid "Can't copy tag %r to file: %r"
-msgstr ""
+msgstr "Ezin da %r %r fitxategira kopiatu"
 
 #: ../operon.py:260
-#, fuzzy
 msgid "Edit tags in an editor"
-msgstr "Audio etiketa editorea"
+msgstr "Editatu etiketak editore batez"
 
 #: ../operon.py:274
 msgid "Set a tag and remove existing values"
-msgstr ""
+msgstr "Jarri etiketa bat eta ezabatu aurreko baloreak"
 
 #: ../operon.py:294 ../operon.py:431
 #, python-format
 msgid "Can not set %r"
-msgstr ""
+msgstr "Ezin da %r jarri"
 
 #: ../operon.py:308
-#, fuzzy
 msgid "Remove tags"
-msgstr "Bikoiztuak ezabatu"
+msgstr "Ezabatu etiketak"
 
 #: ../operon.py:315 ../operon.py:374
 msgid "Value is a regular expression"
-msgstr ""
+msgstr "Balorea expresio erregularra da (RE)"
 
 #: ../operon.py:317
-#, fuzzy
 msgid "Remove all tags"
-msgstr "Bikoiztuak ezabatu"
+msgstr "Ezabatu etiketa guztiak"
 
 #: ../operon.py:321
 msgid "Can't combine '--all' with '--regexp'"
-msgstr ""
+msgstr "Ezin da '--all' eta '--regexp' aldi berean erabili"
 
 #: ../operon.py:355
 #, python-format
 msgid "Can't remove %r from %r"
-msgstr ""
+msgstr "Ezin da %r %r -tik ezabatu"
 
 #: ../operon.py:367
-#, fuzzy
 msgid "Remove a tag value"
-msgstr "Iragazi etiketa balio batez"
+msgstr "Ezabatu etiketaren balorea"
 
 #: ../operon.py:415
-#, fuzzy
 msgid "Add a tag value"
-msgstr "Iragazi etiketa balio batez"
+msgstr "Gehitu etiketaren balorea"
 
 #: ../operon.py:442
-#, fuzzy
 msgid "List file information"
-msgstr "Ez dago denbora informaziorik"
+msgstr "Erakutsi fitxategiari buruzko informazioa"
 
 #: ../operon.py:485
 msgid "Extract embedded images"
-msgstr ""
+msgstr "Atera irudi txertatuak"
 
 #: ../operon.py:495
 msgid "Rename files based on tags"
-msgstr ""
+msgstr "Izenaz aldatu etiketeen arabera"
 
 #: ../operon.py:509
 msgid "Fill tags based on the file path"
-msgstr ""
+msgstr "Bete etiketak fitxategiaren helbidearen arabera"
 
 #: ../operon.py:523
 msgid "Fill tracknumbers for all files"
-msgstr ""
+msgstr "Bete pista zenbakiak fitxategi guztietan"
 
 #: ../operon.py:541
 msgid "Print tags based on the given pattern"
-msgstr ""
+msgstr "Erakutsi emandako patroiarekin bat datozen etiketak"
 
 #: ../operon.py:570
-#, fuzzy
 msgid "Display help information"
-msgstr "Erakutsi erabiltze argibide laburpena"
+msgstr "Erakutsi languntzari buruzko informazioa"
 
 #: ../operon.py:598
-#, fuzzy, python-format
+#, python-format
 msgid "'%s' is not a valid column name (%s)."
-msgstr "<b>%s</b> ez da baliozko kokapen bat."
+msgstr "'%s' ez da egokia zutabearen izena bezela (%s)."
 
 #: ../quodlibet/browsers/albums.py:34 ../quodlibet/browsers/collection.py:32
 msgid "Songs not in an album"
@@ -596,9 +587,8 @@ msgid "_Internet Radio"
 msgstr "_Internet irratia"
 
 #: ../quodlibet/browsers/iradio.py:462
-#, fuzzy
 msgid "_New Station..."
-msgstr "_Kate berria"
+msgstr "_Kate berria..."
 
 #: ../quodlibet/browsers/iradio.py:465
 msgid "_Update Stations"
@@ -771,27 +761,29 @@ msgstr ""
 "%(current)d/%(total)d kanta gehiturik."
 
 #: ../quodlibet/browsers/playlists.py:110
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to delete the playlist '%s'?"
-msgstr "<i>%s</i> zerrenda ezabatzera zoaz.\n"
+msgstr "Ziur al zaude '%s' zerrenda ezabatu nahi duzula?"
 
 #: ../quodlibet/browsers/playlists.py:112
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
 msgstr ""
+"Aukeratutako zerrendari buruzko informazio guztia ezabatzera doa eta\n"
+"ezin da berreskuratu izango."
 
 #: ../quodlibet/browsers/playlists.py:124
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to remove %d duplicate song?"
 msgid_plural "Are you sure you want to remove %d duplicate songs?"
-msgstr[0] "%d kanta ezabatzera zatoz."
-msgstr[1] "%d kanta ezabatzera zatoz."
+msgstr[0] "Ziur al zaude kanta bikoiztu %d ezabatu nahi duzula?"
+msgstr[1] "Ziur al zaude %d kanta bikoiztuak ezabatu nahi dituzula?"
 
 #: ../quodlibet/browsers/playlists.py:127
 #, python-format
 msgid "The duplicate songs will be removed from the playlist '%s'."
-msgstr ""
+msgstr "Kanta bikoiztuak '%s' zerrendatik ezabatuko dira."
 
 #: ../quodlibet/browsers/playlists.py:140
 #: ../quodlibet/browsers/playlists.py:419 ../quodlibet/util/collection.py:399
@@ -914,9 +906,9 @@ msgid "%r is not a supported device."
 msgstr "%r ez da onartzen den gailu bat."
 
 #: ../quodlibet/devices/__init__.py:209
-#, fuzzy, python-format
+#, python-format
 msgid "%s: Could not find 'libudev'."
-msgstr "%s: Ezin da %s aurkitu."
+msgstr "%s: Ezin da libudev aurkitu."
 
 #: ../quodlibet/devices/__init__.py:215
 #, python-format
@@ -1438,14 +1430,14 @@ msgid "Error Occurred"
 msgstr "Errore bat gertatu da"
 
 #: ../quodlibet/qltk/debugwindow.py:71
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "An exception has occured in Quod Libet. A dump file has been saved to <b >"
 "%s</b> that will help us debug the crash. Please file a new issue at http://"
 "code.google.com/p/quodlibet/issues /list and attach this file or include its "
 "contents. This file may contain some identifying information about you or "
 "your system, such as a list of recent files played. If this is unacceptable, "
-"send <b>% s</b> instead with a description of whatyou were doing."
+"send <b>%s</b> instead with a description of what you were doing."
 msgstr ""
 "Salbuespen bat gertatu da Quod Libet-en. Iraulketa fitxategi bat gorde da <b>"
 "%s</b>-en zuri kraskatzea arazten laguntzeko. Mesedez ireki programa- errore "
@@ -1453,16 +1445,15 @@ msgstr ""
 "erantsi fitxategia edo bertako edukia. Fitxategi honek zure sistema "
 "ezagutagarri egin dezakeen informazioa izan dezake, azken erreproduzitutako "
 "abestiak adibidez. Hau onartezina bada bidali <b>%s</b> zer egiten ari zinen "
-"azalpenarekin..\n"
-"\n"
-"Quod Libet erabilezina egon liteke.Itxi eta berriz irekitzea gomendatzen da. "
-"Zure liburutegia gordea izango da."
+"azalpenarekin.."
 
 #: ../quodlibet/qltk/debugwindow.py:80
 msgid ""
 "Quod Libet may now be unstable. Closing it and restarting is recommended. "
 "Your library will be saved."
 msgstr ""
+"QuodLibet ezegonkor egon liteke. Itxi eta berriz irekitzea gomendatzen da. \n"
+"Bilduma gordea izango da."
 
 #: ../quodlibet/qltk/delete.py:24
 msgid "Delete Files"
@@ -2066,9 +2057,8 @@ msgid "_Track"
 msgstr "_Pista"
 
 #: ../quodlibet/qltk/prefs.py:38
-#, fuzzy
 msgid "Grou_ping"
-msgstr "taldekatzea"
+msgstr "Taldea"
 
 #: ../quodlibet/qltk/prefs.py:41
 msgid "Al_bum"
@@ -2106,39 +2096,37 @@ msgstr "_Besteak:"
 
 #. Stock edit doesn't have ellipsis chars.
 #: ../quodlibet/qltk/prefs.py:93
-#, fuzzy
 msgid "_Edit..."
-msgstr "_Editatu bistaratzea..."
+msgstr "_Editatu..."
 
 #: ../quodlibet/qltk/prefs.py:95
 msgid "Add or remove additional column headers"
-msgstr ""
+msgstr "Gehitu edo ezabatu informazio gehigarriko zutabeak"
 
 #: ../quodlibet/qltk/prefs.py:103
 msgid "Visible Columns"
 msgstr "Zutabe ikusgarriak"
 
 #: ../quodlibet/qltk/prefs.py:108
-#, fuzzy
 msgid "Artist includes all _people"
-msgstr "Sarezko _bilaketa jendea barneratuz"
+msgstr "_Jendea Artistan sartzen da"
 
 #: ../quodlibet/qltk/prefs.py:110
 msgid "Filename includes _folder"
 msgstr "Fitxategi-izenak _karpeta barneratzen du"
 
 #: ../quodlibet/qltk/prefs.py:132
-#, fuzzy
 msgid "Column Preferences"
-msgstr "Hobespenak"
+msgstr "Zutabe hobespenak"
 
 #: ../quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
+"Ezarri oraingo konfigurazioa zerrendari, zutabe berriak bukaeran jarriz"
 
 #: ../quodlibet/qltk/prefs.py:192
 msgid "Extra Columns"
-msgstr ""
+msgstr "Zutabe gehigarriak"
 
 #: ../quodlibet/qltk/prefs.py:201
 msgid "Browsers"
@@ -2163,9 +2151,8 @@ msgstr ""
 
 #. Translators: The heading of the preference group, no action
 #: ../quodlibet/qltk/prefs.py:223
-#, fuzzy
 msgid "heading|Search"
-msgstr "Bilatu"
+msgstr "Bilaketa"
 
 #: ../quodlibet/qltk/prefs.py:228
 msgid "Confirm _multiple ratings"
@@ -2299,10 +2286,14 @@ msgid ""
 "tracks will have less extreme ratings. Changing this value triggers a re-"
 "calculation for all albums."
 msgstr ""
+"Erantsitako balorazioa osatzeko Batezbesteko Bayesianaren faktorea (C).\n"
+"0k ohiko batezbesteko esan nahi du, balore handiagok esan nahi dute \n"
+"pista gutxiko albumek puntuazio estremo gutxiago izango dutela.\n"
+"Balore hau aldatutakoan, album guztientzat birkalkulatzea abiaraziko da."
 
 #: ../quodlibet/qltk/prefs.py:430
 msgid "_Bayesian averaging amount:"
-msgstr ""
+msgstr "_Batezbesteko Bayesianaren kopurua:"
 
 #: ../quodlibet/qltk/prefs.py:438
 msgid "Save ratings and play _counts"
@@ -2318,9 +2309,8 @@ msgstr ""
 "Balorazio eta erreprodukzio kontuak ezarriko dira posta helbide honentzat"
 
 #: ../quodlibet/qltk/prefs.py:471
-#, fuzzy
 msgid "Updating for new ratings"
-msgstr "_Eguneratu kateak"
+msgstr "Balorazio berria eguneratzen"
 
 #: ../quodlibet/qltk/prefs.py:481
 msgid "_Refresh library on start"
@@ -2537,14 +2527,14 @@ msgid "Unable to add song"
 msgstr "Ezin da abestia gehitu"
 
 #: ../quodlibet/qltk/ratingsmenu.py:20
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to change the rating of all %d songs?"
-msgstr "%d abestiren balorazioa aldatzera zoaz."
+msgstr "Ziur al zaude %d kanta guztien balorazioa aldatu nahi duzula?"
 
 #: ../quodlibet/qltk/ratingsmenu.py:22
-#, python-format
+#, fuzzy, python-format
 msgid "The rating of all selected songs will be changed to '%s'"
-msgstr ""
+msgstr "Hautatuko %d abestien balorazioa '%s'-ra aldatuko da"
 
 #: ../quodlibet/qltk/remote.py:117
 #, python-format
@@ -2650,7 +2640,7 @@ msgstr "Editatu gordetako bilaketak..."
 
 #: ../quodlibet/qltk/searchbar.py:74 ../quodlibet/qltk/searchbar.py:83
 msgid "Search your library, using free text or QL queries"
-msgstr ""
+msgstr "Bilatu zure bilduman, testua edo QL bilaketak erabiliz"
 
 #: ../quodlibet/qltk/searchbar.py:77
 msgid "_Search:"

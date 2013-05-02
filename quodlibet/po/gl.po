@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-02 08:25+0200\n"
-"PO-Revision-Date: 2013-04-30 11:21+0100\n"
+"POT-Creation-Date: 2013-05-02 17:03+0200\n"
+"PO-Revision-Date: 2013-05-02 17:04+0200\n"
 "Last-Translator: ashtophet <galiza.ceive@gmail.com>\n"
 "Language-Team: Galician (AGAL)\n"
 "Language: galician\n"
@@ -36,43 +36,40 @@ msgstr "cartafol"
 #: ../operon.py:81
 #, python-format
 msgid "Failed to load file: %r"
-msgstr ""
+msgstr "Erro ao carregar o arquivo: %r"
 
 #: ../operon.py:111
 msgid "List tags"
-msgstr ""
+msgstr "Mostrar as etiquetas"
 
 #: ../operon.py:116 ../operon.py:154 ../operon.py:447
 msgid "Print terse output"
-msgstr ""
+msgstr "Mostrar saída de depuraçom"
 
 #: ../operon.py:118 ../operon.py:156 ../operon.py:449
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
-msgstr ""
+msgstr "Colunas para serem mostradas e a sua orde no modo de depuraçom (%s)"
 
 #: ../operon.py:121
-#, fuzzy
 msgid "Also list programmatic tags"
-msgstr "Mostrar informaçom para de_puraçom"
+msgstr "Mostrar tamém etiquetas para depuraçom"
 
 #: ../operon.py:125 ../operon.py:189 ../operon.py:215 ../operon.py:233
 #: ../operon.py:269 ../operon.py:283 ../operon.py:325 ../operon.py:329
 #: ../operon.py:379 ../operon.py:382 ../operon.py:420 ../operon.py:454
 #: ../operon.py:490
 msgid "Not enough arguments"
-msgstr ""
+msgstr "Sem argumentos dabondo"
 
 #: ../operon.py:127 ../operon.py:161 ../operon.py:191 ../operon.py:217
 #: ../operon.py:235 ../operon.py:456
-#, fuzzy
 msgid "Too many arguments"
-msgstr "Demasiados erros"
+msgstr "Demasiados argumentos"
 
 #: ../operon.py:130 ../operon.py:163 ../operon.py:461
-#, fuzzy
 msgid "Description"
-msgstr "descriçom"
+msgstr "Descriçom"
 
 #: ../operon.py:130 ../operon.py:461 ../quodlibet/qltk/edittags.py:419
 msgid "Value"
@@ -85,115 +82,108 @@ msgstr "Etiqueta"
 
 #: ../operon.py:149
 msgid "List all common tags"
-msgstr ""
+msgstr "Mostrar todas as etiquetas habituais"
 
 #: ../operon.py:184
 msgid "Print all tags to stdout"
-msgstr ""
+msgstr "Mostrar todas as etiquetas na saída estándard"
 
 #: ../operon.py:204
 msgid "Load tags dumped with 'dump'"
-msgstr ""
+msgstr "Mostrar as etiquetas que arroja o 'dump'"
 
 #: ../operon.py:209 ../operon.py:227 ../operon.py:265 ../operon.py:279
 #: ../operon.py:313 ../operon.py:372
 msgid "Show changes, don't apply them"
-msgstr ""
+msgstr "Mostrar as mudanças, sem aplica-las"
 
 #: ../operon.py:211 ../operon.py:229
 msgid "Skip tags that can't be written"
-msgstr ""
+msgstr "Saltar as etiquetas que nom se podem escrever"
 
 #: ../operon.py:222
 msgid "Copy tags from one file to another"
-msgstr ""
+msgstr "Copiar as etiquetas dum arquivo para outro"
 
 #: ../operon.py:249
 #, python-format
 msgid "Can't copy tag %r to file: %r"
-msgstr ""
+msgstr "Nom se puido copiar a etiqueta %r para o arquivo: %r"
 
 #: ../operon.py:260
-#, fuzzy
 msgid "Edit tags in an editor"
-msgstr "Editor de etiquetas de áudio"
+msgstr "Editar as etiquetas num editor"
 
 #: ../operon.py:274
 msgid "Set a tag and remove existing values"
-msgstr ""
+msgstr "Estabelecer umha etiqueta e eliminar os valores anteriores"
 
 #: ../operon.py:294 ../operon.py:431
 #, python-format
 msgid "Can not set %r"
-msgstr ""
+msgstr "Nom se puido estabelecer %r"
 
 #: ../operon.py:308
-#, fuzzy
 msgid "Remove tags"
-msgstr "_Eliminar Emisora"
+msgstr "Eliminar etiquetas"
 
 #: ../operon.py:315 ../operon.py:374
 msgid "Value is a regular expression"
-msgstr ""
+msgstr "O valor é umha expressom regular"
 
 #: ../operon.py:317
-#, fuzzy
 msgid "Remove all tags"
-msgstr "Eliminar duplicados"
+msgstr "Eliminar todas as etiquetas"
 
 #: ../operon.py:321
 msgid "Can't combine '--all' with '--regexp'"
-msgstr ""
+msgstr "Impossível combinar '--all' com '--regexp'"
 
 #: ../operon.py:355
 #, python-format
 msgid "Can't remove %r from %r"
-msgstr ""
+msgstr "Impossível eliminar %r de %r"
 
 #: ../operon.py:367
-#, fuzzy
 msgid "Remove a tag value"
-msgstr "Filtrar num valor da etiqueta"
+msgstr "Eliminar o valor dumha etiqueta"
 
 #: ../operon.py:415
-#, fuzzy
 msgid "Add a tag value"
-msgstr "Filtrar num valor da etiqueta"
+msgstr "Engadir o valor dumha etiqueta"
 
 #: ../operon.py:442
-#, fuzzy
 msgid "List file information"
-msgstr "Sem informaçom sobre a duraçom"
+msgstr "Mostrar a informaçom do arquivo"
 
 #: ../operon.py:485
 msgid "Extract embedded images"
-msgstr ""
+msgstr "Extrair as imagens incrustadas"
 
 #: ../operon.py:495
 msgid "Rename files based on tags"
-msgstr ""
+msgstr "Mudar o nome dos arquivos a partires das etiquetas"
 
 #: ../operon.py:509
 msgid "Fill tags based on the file path"
-msgstr ""
+msgstr "Tirar as etiquetas da rota ao arquivo"
 
 #: ../operon.py:523
 msgid "Fill tracknumbers for all files"
-msgstr ""
+msgstr "Criar os números de pista para todos os arquivos"
 
 #: ../operon.py:541
 msgid "Print tags based on the given pattern"
-msgstr ""
+msgstr "Mostrar as etiquetas baseadas no padrom indicado"
 
 #: ../operon.py:570
-#, fuzzy
 msgid "Display help information"
-msgstr "Mostra informaçom sumária sobre o modo de utilizaçom"
+msgstr "Mostrar informaçom sobre a ajuda"
 
 #: ../operon.py:598
-#, fuzzy, python-format
+#, python-format
 msgid "'%s' is not a valid column name (%s)."
-msgstr "<b>%s</b> nom é umha localizaçom válida."
+msgstr "'%s' nom é um nome de coluna válido (%s)."
 
 #: ../quodlibet/browsers/albums.py:34 ../quodlibet/browsers/collection.py:32
 msgid "Songs not in an album"
@@ -600,9 +590,8 @@ msgid "_Internet Radio"
 msgstr "Radio por _Internet"
 
 #: ../quodlibet/browsers/iradio.py:462
-#, fuzzy
 msgid "_New Station..."
-msgstr "_Nova Emisora"
+msgstr "_Nova Emissora..."
 
 #: ../quodlibet/browsers/iradio.py:465
 msgid "_Update Stations"
@@ -622,16 +611,16 @@ msgstr "Sem categoria"
 
 #: ../quodlibet/browsers/iradio.py:683
 msgid "No stations found"
-msgstr "Nom se atopárom emisoras"
+msgstr "Nom se atopárom emissoras"
 
 #: ../quodlibet/browsers/iradio.py:684
 #, python-format
 msgid "No Internet radio stations were found at %s."
-msgstr "Nom se atopárom emisoras de radio por internet em %s"
+msgstr "Nom se atopárom emissoras de radio por internet em %s"
 
 #: ../quodlibet/browsers/iradio.py:692
 msgid "All stations listed are already in your library."
-msgstr "Todas as emisoras relacionadas já estám na sua colecçom"
+msgstr "Todas as emissoras relacionadas já estám na sua colecçom"
 
 #: ../quodlibet/browsers/iradio.py:714
 msgid "Remove from Favorites"
@@ -645,8 +634,8 @@ msgstr "Engadir a Prediletos"
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
-msgstr[0] "%(count)d emisora"
-msgstr[1] "%(count)d emisoras"
+msgstr[0] "%(count)d emissora"
+msgstr[1] "%(count)d emissoras"
 
 #: ../quodlibet/browsers/media.py:31
 msgid "Device Properties"
@@ -777,27 +766,29 @@ msgstr ""
 "%(current)d/%(total)d canções engadidas."
 
 #: ../quodlibet/browsers/playlists.py:110
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to delete the playlist '%s'?"
-msgstr "Está a piques de apagar a lista <i>%s</i>.\n"
+msgstr "Seguro que desejas eliminar a lista '%s'?"
 
 #: ../quodlibet/browsers/playlists.py:112
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
 msgstr ""
+"Toda a informaçom sobre a lista selecionada vai ser eliminada e nom se "
+"poderá repor"
 
 #: ../quodlibet/browsers/playlists.py:124
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to remove %d duplicate song?"
 msgid_plural "Are you sure you want to remove %d duplicate songs?"
-msgstr[0] "Está a piques de apagar %d cançom."
-msgstr[1] "Está a piques de apagar %d canções."
+msgstr[0] "Seguro que desejas eliminar %d cançom duplicada?"
+msgstr[1] "Seguro que desejas eliminar %d canções duplicadas?"
 
 #: ../quodlibet/browsers/playlists.py:127
 #, python-format
 msgid "The duplicate songs will be removed from the playlist '%s'."
-msgstr ""
+msgstr "As canções duplicadas serám eliminadas da lista '%s'."
 
 #: ../quodlibet/browsers/playlists.py:140
 #: ../quodlibet/browsers/playlists.py:419 ../quodlibet/util/collection.py:399
@@ -919,9 +910,9 @@ msgid "%r is not a supported device."
 msgstr "%r nom é um dispositivo admitido."
 
 #: ../quodlibet/devices/__init__.py:209
-#, fuzzy, python-format
+#, python-format
 msgid "%s: Could not find 'libudev'."
-msgstr "%s: Nom se puido atopar %s."
+msgstr "%s: Nom se puido atopar 'libudev'"
 
 #: ../quodlibet/devices/__init__.py:215
 #, python-format
@@ -1448,14 +1439,14 @@ msgid "Error Occurred"
 msgstr "Ocorreu un erro"
 
 #: ../quodlibet/qltk/debugwindow.py:71
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "An exception has occured in Quod Libet. A dump file has been saved to <b >"
 "%s</b> that will help us debug the crash. Please file a new issue at http://"
 "code.google.com/p/quodlibet/issues /list and attach this file or include its "
 "contents. This file may contain some identifying information about you or "
 "your system, such as a list of recent files played. If this is unacceptable, "
-"send <b>% s</b> instead with a description of whatyou were doing."
+"send <b>%s</b> instead with a description of what you were doing."
 msgstr ""
 "Ocorreu un problema no Quod Libet. Un arquivo de depuraçom, que nos pode "
 "ajudar a analisar o erro, foi guardado em <b>%s</b>. \n"
@@ -1463,17 +1454,16 @@ msgstr ""
 "list e inclúi o arquivo ou o contido do mesmo. \n"
 "O arquivo pode conter informaçom do teu sistema, p.ex. unha lista das "
 "canções reproduzidas recentemente. \n"
-"Se isso non é aceitável, envia <b>%s</b> com umha descriçom do que estavas a "
-"fazer.\n"
-"\n"
-"O Quod Libet pode-se tornar agora inestável. Fecha-lo e executá-lo de novo é "
-"o recomendado. A base de dados da sua coleçom guardará-se."
+"Se isso nom for aceitável, envia <b>%s</b> com umha descriçom do que estavas "
+"a fazer."
 
 #: ../quodlibet/qltk/debugwindow.py:80
 msgid ""
 "Quod Libet may now be unstable. Closing it and restarting is recommended. "
 "Your library will be saved."
 msgstr ""
+"QuodLibet pode ressultar inestável. Recomenda-se fechá-lo e reiniciá-lo.\n"
+"Guardará-se a colecçom."
 
 #: ../quodlibet/qltk/delete.py:24
 msgid "Delete Files"
@@ -2077,9 +2067,8 @@ msgid "_Track"
 msgstr "_Pista"
 
 #: ../quodlibet/qltk/prefs.py:38
-#, fuzzy
 msgid "Grou_ping"
-msgstr "agrupaçom"
+msgstr "A_grupamento"
 
 #: ../quodlibet/qltk/prefs.py:41
 msgid "Al_bum"
@@ -2115,39 +2104,37 @@ msgstr "_Outros:"
 
 #. Stock edit doesn't have ellipsis chars.
 #: ../quodlibet/qltk/prefs.py:93
-#, fuzzy
 msgid "_Edit..."
-msgstr "_Editar a vista..."
+msgstr "_Editar..."
 
 #: ../quodlibet/qltk/prefs.py:95
 msgid "Add or remove additional column headers"
-msgstr ""
+msgstr "Engadir ou eliminar colunas de informaçom adicionais."
 
 #: ../quodlibet/qltk/prefs.py:103
 msgid "Visible Columns"
 msgstr "Colunas visíveis"
 
 #: ../quodlibet/qltk/prefs.py:108
-#, fuzzy
 msgid "Artist includes all _people"
-msgstr "A procura _inclúi aos componentes"
+msgstr "Artista inclúi todos os _componentes"
 
 #: ../quodlibet/qltk/prefs.py:110
 msgid "Filename includes _folder"
 msgstr "O nome inclúi o _cartafol"
 
 #: ../quodlibet/qltk/prefs.py:132
-#, fuzzy
 msgid "Column Preferences"
-msgstr "Preferências"
+msgstr "Preferências de colunas"
 
 #: ../quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
+"Aplicar a configuraçom actual á lista, engadindo novas colunas ao final"
 
 #: ../quodlibet/qltk/prefs.py:192
 msgid "Extra Columns"
-msgstr ""
+msgstr "Colunas adicionais"
 
 #: ../quodlibet/qltk/prefs.py:201
 msgid "Browsers"
@@ -2171,9 +2158,8 @@ msgstr "Mostrar os resultados despois de rematar de escrever."
 
 #. Translators: The heading of the preference group, no action
 #: ../quodlibet/qltk/prefs.py:223
-#, fuzzy
 msgid "heading|Search"
-msgstr "Procurar"
+msgstr "Procura"
 
 #: ../quodlibet/qltk/prefs.py:228
 msgid "Confirm _multiple ratings"
@@ -2310,10 +2296,16 @@ msgid ""
 "tracks will have less extreme ratings. Changing this value triggers a re-"
 "calculation for all albums."
 msgstr ""
+"Factor de Média Bayesiana (C) para as qualificações agregadas.\n"
+"0 significa umha média convencional, valores máis elevados significam que os "
+"álbuns\n"
+"com poucas pistas terám menores qualificações estremas. Modificar este valor "
+"fai que se inicie\n"
+"o recálculo para todos os álbuns."
 
 #: ../quodlibet/qltk/prefs.py:430
 msgid "_Bayesian averaging amount:"
-msgstr ""
+msgstr "Quantidade da média _Bayesiana"
 
 #: ../quodlibet/qltk/prefs.py:438
 msgid "Save ratings and play _counts"
@@ -2329,9 +2321,8 @@ msgstr ""
 "As qualificações e o contador determinarám-se para este endereço de correio-e"
 
 #: ../quodlibet/qltk/prefs.py:471
-#, fuzzy
 msgid "Updating for new ratings"
-msgstr "_Atualizar as emissoras"
+msgstr "Atualiçando as novas qualificações"
 
 #: ../quodlibet/qltk/prefs.py:481
 msgid "_Refresh library on start"
@@ -2548,14 +2539,14 @@ msgid "Unable to add song"
 msgstr "Nom foi possível engadir a cançom"
 
 #: ../quodlibet/qltk/ratingsmenu.py:20
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to change the rating of all %d songs?"
-msgstr "Está a piques de mudar a qualificaçom de %d canções."
+msgstr "Seguro que deseja mudar a qualificaçom de todas as %d canções?"
 
 #: ../quodlibet/qltk/ratingsmenu.py:22
 #, python-format
 msgid "The rating of all selected songs will be changed to '%s'"
-msgstr ""
+msgstr "A qualificaçom de todas as canções seleccionadas mudará para '%s'"
 
 #: ../quodlibet/qltk/remote.py:117
 #, python-format
@@ -2662,7 +2653,7 @@ msgstr "Editar as procuras guardadas..."
 
 #: ../quodlibet/qltk/searchbar.py:74 ../quodlibet/qltk/searchbar.py:83
 msgid "Search your library, using free text or QL queries"
-msgstr ""
+msgstr "Procura na tua colecçom, empregando texto ou procuras do QL"
 
 #: ../quodlibet/qltk/searchbar.py:77
 msgid "_Search:"
