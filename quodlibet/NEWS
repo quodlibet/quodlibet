@@ -1,7 +1,17 @@
+2.9.82 (2013-05-02) - One day Marty McFly got bit by a werewolf!
+----------------------------------------------------------------
+
+PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 2 release:
+ * Fix lyricsview plugin (Nick Boultbee)
+ * Fix replaygain album gain/peak writing.
+ * Fix crash on one-click ratings in the song list.
+ * Fix crash when playing a song while editing its tags.
+ * gstbe: Increase operation timeouts (for spinning up disks etc.)
+
 2.9.81 (2013-04-27) - Because my hypothesis is: it's rad
 --------------------------------------------------------
 
- * PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 1 release
+PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 1 release
 
 2.5.1 (2013-04-23) - Yes: MY COMPUTER IS A PERSON.
 --------------------------------------------------

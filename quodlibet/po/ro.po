@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-27 13:38+0200\n"
+"POT-Creation-Date: 2013-05-02 09:24+0200\n"
 "PO-Revision-Date: 2006-10-10 20:08+0300\n"
 "Last-Translator: Mugurel Tudor <mugurelu@gnome.ro>\n"
 "Language-Team: Română <gnomero@lists.sourceforge.net>\n"
@@ -1064,57 +1064,57 @@ msgstr "Se verifică colecţia"
 msgid "Scanning %s"
 msgstr "Se verifică %s"
 
-#: ../quodlibet/player/gstbe.py:61
+#: ../quodlibet/player/gstbe.py:64
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:70
+#: ../quodlibet/player/gstbe.py:73
 msgid "_Output pipeline:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:77
+#: ../quodlibet/player/gstbe.py:80
 #, fuzzy, python-format
 msgid "%.1f seconds"
 msgstr "%d secundă"
 
-#: ../quodlibet/player/gstbe.py:92
+#: ../quodlibet/player/gstbe.py:95
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:325
+#: ../quodlibet/player/gstbe.py:328
 #, python-format
 msgid ""
 "No GStreamer element found to handle the following media format: "
 "%(format_details)r"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:402
+#: ../quodlibet/player/gstbe.py:405
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:402
+#: ../quodlibet/player/gstbe.py:405
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:462
+#: ../quodlibet/player/gstbe.py:465
 msgid "Output Error"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:463
+#: ../quodlibet/player/gstbe.py:466
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:649
+#: ../quodlibet/player/gstbe.py:652
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "Nu s-au putut deschide fişierele"
 
-#: ../quodlibet/player/gstbe.py:650
+#: ../quodlibet/player/gstbe.py:653
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."

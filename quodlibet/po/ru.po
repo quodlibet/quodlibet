@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-27 13:38+0200\n"
+"POT-Creation-Date: 2013-05-02 09:24+0200\n"
 "PO-Revision-Date: 2012-12-01 14:35+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
@@ -1057,7 +1057,7 @@ msgstr "Сканирование фонотеки"
 msgid "Scanning %s"
 msgstr "Сканирование %s"
 
-#: ../quodlibet/player/gstbe.py:61
+#: ../quodlibet/player/gstbe.py:64
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
@@ -1065,40 +1065,40 @@ msgstr ""
 "Конвейер GStreamer для воспроизведения, например: «alsasink device=default». "
 "Пустое поле соответствует значению по умолчанию."
 
-#: ../quodlibet/player/gstbe.py:70
+#: ../quodlibet/player/gstbe.py:73
 msgid "_Output pipeline:"
 msgstr "_Конвейер воспроизведения:"
 
-#: ../quodlibet/player/gstbe.py:77
+#: ../quodlibet/player/gstbe.py:80
 #, python-format
 msgid "%.1f seconds"
 msgstr "%.1f секунд"
 
-#: ../quodlibet/player/gstbe.py:92
+#: ../quodlibet/player/gstbe.py:95
 msgid "_Buffer duration:"
 msgstr "_Размер буфера:"
 
-#: ../quodlibet/player/gstbe.py:325
+#: ../quodlibet/player/gstbe.py:328
 #, python-format
 msgid ""
 "No GStreamer element found to handle the following media format: "
 "%(format_details)r"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:402
+#: ../quodlibet/player/gstbe.py:405
 msgid "Stream"
 msgstr "Поток"
 
-#: ../quodlibet/player/gstbe.py:402
+#: ../quodlibet/player/gstbe.py:405
 msgid "Buffering"
 msgstr "Буферизация"
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:462
+#: ../quodlibet/player/gstbe.py:465
 msgid "Output Error"
 msgstr "Ошибка воспроизведения"
 
-#: ../quodlibet/player/gstbe.py:463
+#: ../quodlibet/player/gstbe.py:466
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
@@ -1107,11 +1107,11 @@ msgstr ""
 "некорректным или устройство может быть занято. Проверьте настройки "
 "проигрывателя."
 
-#: ../quodlibet/player/gstbe.py:649
+#: ../quodlibet/player/gstbe.py:652
 msgid "Unable to open input files"
 msgstr "Не удалось открыть входные файлы"
 
-#: ../quodlibet/player/gstbe.py:650
+#: ../quodlibet/player/gstbe.py:653
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."

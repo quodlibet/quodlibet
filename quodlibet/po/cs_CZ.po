@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-27 13:38+0200\n"
+"POT-Creation-Date: 2013-05-02 09:24+0200\n"
 "PO-Revision-Date: 2013-04-18 22:07+0100\n"
 "Last-Translator: Honza Hejzl <honza.hejzl@gmail.com>\n"
 "Language-Team: Czech (Czech Republic)\n"
@@ -1050,7 +1050,7 @@ msgstr "Načítání sbírky"
 msgid "Scanning %s"
 msgstr "Načítání %s"
 
-#: ../quodlibet/player/gstbe.py:61
+#: ../quodlibet/player/gstbe.py:64
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
@@ -1058,40 +1058,40 @@ msgstr ""
 "Roura výstupu GStreameru používána pro přehrávání, jako např. 'alsasink "
 "device=default'. Nechte prázdné pro použití výchozí roury."
 
-#: ../quodlibet/player/gstbe.py:70
+#: ../quodlibet/player/gstbe.py:73
 msgid "_Output pipeline:"
 msgstr "_Výstupní roura:"
 
-#: ../quodlibet/player/gstbe.py:77
+#: ../quodlibet/player/gstbe.py:80
 #, python-format
 msgid "%.1f seconds"
 msgstr "%.1f vteřin"
 
-#: ../quodlibet/player/gstbe.py:92
+#: ../quodlibet/player/gstbe.py:95
 msgid "_Buffer duration:"
 msgstr "_Délka mezipaměti:"
 
-#: ../quodlibet/player/gstbe.py:325
+#: ../quodlibet/player/gstbe.py:328
 #, python-format
 msgid ""
 "No GStreamer element found to handle the following media format: "
 "%(format_details)r"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:402
+#: ../quodlibet/player/gstbe.py:405
 msgid "Stream"
 msgstr "Stream"
 
-#: ../quodlibet/player/gstbe.py:402
+#: ../quodlibet/player/gstbe.py:405
 msgid "Buffering"
 msgstr "Načítání do vyrovnávací paměti"
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:462
+#: ../quodlibet/player/gstbe.py:465
 msgid "Output Error"
 msgstr "Chyba výstupu"
 
-#: ../quodlibet/player/gstbe.py:463
+#: ../quodlibet/player/gstbe.py:466
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
@@ -1099,11 +1099,11 @@ msgstr ""
 "Výstupní roura GStreameru nemohla být načtena. Roura je možná neplatná, nebo "
 "může být zařízení používáno. Zkontrolujte nastavení přehrávače."
 
-#: ../quodlibet/player/gstbe.py:649
+#: ../quodlibet/player/gstbe.py:652
 msgid "Unable to open input files"
 msgstr "Nelze otevřít vstupní data"
 
-#: ../quodlibet/player/gstbe.py:650
+#: ../quodlibet/player/gstbe.py:653
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
