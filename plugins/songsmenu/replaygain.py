@@ -310,7 +310,7 @@ class RGDialog(Gtk.Dialog):
 
         def gain_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
-            if item.gain is None:
+            if item.gain is None or not item.done:
                 cell.set_property('text', "-")
             else:
                 cell.set_property('text', "%.2f db" % item.gain)
@@ -324,7 +324,7 @@ class RGDialog(Gtk.Dialog):
 
         def peak_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
-            if item.gain is None:
+            if item.gain is None or not item.done:
                 cell.set_property('text', "-")
             else:
                 cell.set_property('text', "%.2f" % item.peak)
