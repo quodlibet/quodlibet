@@ -102,7 +102,13 @@ class TrackCurrentModel(Gtk.ListStore):
         super(TrackCurrentModel, self).remove(iter_)
 
     def get(self):
-        return [row[0] for row in self]
+        songs = []
+
+        def func(model, path, iter_, user_data):
+            songs.append(model.get_value(iter_, 0))
+        self.foreach(func, None)
+
+        return songs
 
     @property
     def current(self):

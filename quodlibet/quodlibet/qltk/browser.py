@@ -55,7 +55,8 @@ class LibraryBrowser(Window, PersistentWindowMixin):
         view.connect('popup-menu', self.__menu, library)
         view.connect('drag-data-received', self.__drag_data_recv)
         view.connect('row-activated', self.__enqueue)
-        view.get_selection().connect('changed', self.__set_time)
+        view.get_selection().connect(
+            'changed', util.DeferredSignal(self.__set_time))
         if browser.headers is not None:
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
