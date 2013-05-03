@@ -18,7 +18,7 @@ from math import pi
 
 from quodlibet import config, qltk, app
 from quodlibet.qltk.textedit import PatternEdit
-from quodlibet.parse import XMLFromPattern
+from quodlibet import parse
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util.dprint import print_d
@@ -80,7 +80,10 @@ class OSDWindow(gtk.Window):
                 pango.ALIGN_CENTER, pango.ALIGN_RIGHT)[conf.align])
         layout.set_spacing(pango.SCALE * 7)
         layout.set_font_description(pango.FontDescription(conf.font))
-        layout.set_markup(XMLFromPattern(conf.string) % song)
+        try:
+            layout.set_markup(parse.XMLFromPattern(conf.string) % song)
+        except parse.error:
+            layout.set_markup("")
         layout.set_width(pango.SCALE * textwidth)
         layoutsize = layout.get_pixel_size()
         if layoutsize[0] < textwidth:
@@ -550,11 +553,11 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         # color,alpha or (-1.0,0.0,0.0,0.5) - borders the whole OSD
         bcolor = (0.0, 0.0, 0.0, 0.2)
         # song information to use - like in main window
-        string = r'''<album|\<b\><album>\</b\><discnumber| - Disc \
-<discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
+        string = (r"<album|\<b\><album>\</b\><discnumber| - Disc "
+r"""<discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
 >\<span weight='bold' size='large'\><title>\</span\> - <~length><version|
-\<small\>\<i\><version>\</i\>\</small\>><~people|
-by <~people>>'''
+\<small\>\<i\><version>\</i\>\</small\>><~people|"
+by <~people>>""")
 
     def __init__(self):
         self.__current_window = None
