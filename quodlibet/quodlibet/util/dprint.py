@@ -135,7 +135,9 @@ def _print(string, frm="utf-8", output=sys.stdout, strip_color=True):
             pass
 
 
-def print_(string, output=sys.stdout):
+def print_(string, output=None):
+    if output is None:
+        output = sys.stdout
     string = _format_print(string)
     quodlibet.util.logging.log(_strip_color(string))
     _print(string, output=output)

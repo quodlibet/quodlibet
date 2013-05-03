@@ -94,8 +94,11 @@ class Command(object):
 
         raise NotImplemented
 
-    def print_help(self, file=sys.stdout):
+    def print_help(self, file=None):
         """Print the help information about the comand"""
+
+        if file is None:
+            file = sys.stdout
 
         self.__parser.print_help(file=file)
 
@@ -659,8 +662,11 @@ def list_tags(song, machine=False):
     return tags
 
 
-def print_help(parser, file=sys.stdout):
+def print_help(parser, file=None):
     """Print a short help list for all commands"""
+
+    if file is None:
+        file = sys.stdout
 
     parser.print_help(file=file)
 
@@ -714,7 +720,7 @@ def run(argv=sys.argv):
     # --version somewhere
     if options.version:
         print_("%s version %s" % (PROGRAM, VERSION))
-        return
+        return 0
 
     # no sub command followed, help to stderr
     if offset == -1:
@@ -744,6 +750,8 @@ def run(argv=sys.argv):
                sys.stderr)
         return 1
 
+    return 0
+
 
 COMMANDS.extend([ListCommand, DumpCommand, CopyCommand,
             SetCommand, RemoveCommand, AddCommand, PrintCommand,
@@ -756,4 +764,4 @@ COMMANDS.sort(key=lambda c: c.NAME)
 
 if __name__ == "__main__":
     config.init()
-    sys.exit(run() or 0)
+    sys.exit(run())

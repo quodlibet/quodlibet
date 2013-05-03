@@ -7,7 +7,11 @@
 import os
 import subprocess
 import tempfile
+import imp
 import shutil
+import contextlib
+import StringIO
+import sys
 
 from tests import TestCase, add
 
@@ -16,16 +20,32 @@ from quodlibet import config
 from quodlibet.formats import MusicFile
 
 
-path = os.path.join(os.path.dirname(quodlibet.__path__[0]), "operon.py")
+@contextlib.contextmanager
+def capture_output():
+    err = StringIO.StringIO()
+    out = StringIO.StringIO()
+    old_err = sys.stderr
+    old_out = sys.stdout
+    sys.stderr = err
+    sys.stdout = out
+
+    yield (out, err)
+
+    sys.stderr = old_err
+    sys.stdout = old_out
 
 
 def call(args=None):
-    if args is None:
-        args = []
-    p = subprocess.Popen([path] + args, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
-    return (p.returncode, stdout, stderr)
+    path = os.path.join(os.path.dirname(quodlibet.__path__[0]), "operon.py")
+    mod = imp.load_source("operon", path)
+
+    with capture_output() as (out, err):
+        try:
+            return_code = mod.run(["operon.py"] + args)
+        except SystemExit, e:
+            return_code = e.code
+
+    return (return_code, out.getvalue(), err.getvalue())
 
 
 class TOperonBase(TestCase):
@@ -49,15 +69,11 @@ class TOperonBase(TestCase):
     def check_false(self, args, so, se, **kwargs):
         return self._check(args, False, so, se, **kwargs)
 
-    def _check(self, args, success, so, se, traceback=True):
+    def _check(self, args, success, so, se):
         s, o, e = call(args)
-        self.failUnlessEqual(s == 0, success, msg="\n".join([o, e]))
-        if traceback:
-            if "Traceback" in e:
-                print e
-            self.failIf("Traceback" in e)
-        self.failUnlessEqual(bool(o), so, msg=o)
-        self.failUnlessEqual(bool(e), se, msg=e)
+        self.failUnlessEqual(s == 0, success, msg=repr(s))
+        self.failUnlessEqual(bool(o), so, msg=repr(o))
+        self.failUnlessEqual(bool(e), se, msg=repr(e))
         return o, e
 
 
@@ -112,7 +128,7 @@ class TOperonAdd(TOperonBase):
     def test_permissions(self):
         os.chmod(self.f, 0000)
         self.check_false(["add", "foo", "bar", self.f, self.f],
-                         False, True, traceback=False)
+                         False, True)
         os.chmod(self.f, 0444)
         self.check_false(["add", "foo", "bar", self.f, self.f], False, True)
 add(TOperonAdd)
@@ -137,7 +153,7 @@ class TOperonPrint(TOperonBase):
     def test_permissions(self):
         os.chmod(self.f, 0000)
         self.check_false(["print", "-p", "<title>", self.f],
-                         False, True, traceback=False)
+                         False, True)
 add(TOperonPrint)
 
 
