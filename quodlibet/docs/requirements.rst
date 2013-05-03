@@ -29,7 +29,7 @@ Many parts of Quod Libet benefit from *D-Bus* and its `Python bindings
 <http://dbus.freedesktop.org>`_.
 
 *iPod support* depends on `libgpod and its Python bindings
-<http://www.gtkpod.org/ libgpod and its Python bindings>`_.
+<http://www.gtkpod.org/>`_.
 
 *Device support* depends on `UDisks 1
 <http://www.freedesktop.org/wiki/Software/udisks>`_.
