@@ -8,11 +8,11 @@ Core Dependencies
 
 Quod Libet depends on the Python runtime and associated libraries.
 
- * *Python* (>= 2.6):  http://www.python.org
- * *PyGTK* (>= 2.16):   http://www.pygtk.org
- * *PyGSt* (>= 0.10.1):  http://gstreamer.freedesktop.org/ or
-   *xine-lib* (>= 1.1): http://www.xine-project.org/
- * *Mutagen* (>= 1.14): https://mutagen.readthedocs.org/
+ * `Python <http://www.python.org>`__ (>= 2.6)
+ * `PyGObject <https://live.gnome.org/PyGObject>`__ (>= 3.2)
+ * `GStreamer <http://gstreamer.freedesktop.org/>`__ (>= 1.0) or
+   `xine-lib <http://www.xine-project.org/>`__ (>= 1.1): 
+ * `Mutagen <https://mutagen.readthedocs.org/>`__ (>= 1.14): 
 
 Particular audio formats depend on various *GStreamer* decoding elements,
 as well as other Python modules. GStreamer splits their downlads into
@@ -28,8 +28,7 @@ Additional Features
 Many parts of Quod Libet benefit from *D-Bus* and its `Python bindings
 <http://dbus.freedesktop.org>`_.
 
-*iPod support* depends on `libgpod and its Python bindings
-<http://www.gtkpod.org/ libgpod and its Python bindings>`_.
+*iPod support* depends on `libgpod <http://www.gtkpod.org/>`_.
 
 *Device support* depends on `UDisks 1
 <http://www.freedesktop.org/wiki/Software/udisks>`_.
