@@ -188,8 +188,8 @@ class ValidatingEntryMixin(object):
     If the "Color search terms" option is off, the entry will not
     change color."""
 
-    INVALID = Gdk.Color(*[c * 255 for c in (0xcc, 0x0, 0x0)])
-    VALID = Gdk.Color(*[c * 180 for c in (0x4e, 0x9a, 0x06)])
+    INVALID = Gdk.RGBA(0.8, 0, 0)
+    VALID = Gdk.RGBA(0.3, 0.6, 0.023)
 
     def set_validate(self, validator=None):
         if validator:
@@ -202,14 +202,15 @@ class ValidatingEntryMixin(object):
         elif value is False:
             color = self.INVALID
         elif value and isinstance(value, str):
-            color = Gdk.color_parse(value)
+            color = Gdk.RGBA()
+            color.parse(value)
         else:
             color = None
 
         if color and self.get_property('sensitive'):
-            self.modify_text(Gtk.StateType.NORMAL, color)
+            self.override_color(Gtk.StateType.NORMAL, color)
         else:
-            self.modify_text(Gtk.StateType.NORMAL, None)
+            self.override_color(Gtk.StateType.NORMAL, None)
 
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):
