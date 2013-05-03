@@ -21,6 +21,18 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 __all__ = ['ReplayGain']
 
 
+def get_num_threads():
+    # multiprocessing is >= 2.6.
+    # Default to 2 threads if cpu_count isn't implemented for the current arch
+    # or multiprocessing isn't available
+    try:
+        import multiprocessing
+        threads = multiprocessing.cpu_count()
+    except (ImportError, NotImplementedError):
+        threads = 2
+    return threads
+
+
 class RGAlbum(object):
     def __init__(self, rg_songs):
         self.songs = rg_songs
@@ -51,7 +63,7 @@ class RGAlbum(object):
     def title(self):
         if not self.songs:
             return ""
-        return self.songs[0].song('~artist~album').replace("\n", ", ")
+        return self.songs[0].song.comma('~artist~album')
 
     @property
     def error(self):
@@ -263,8 +275,7 @@ class RGDialog(gtk.Dialog):
         swin.set_shadow_type(gtk.SHADOW_IN)
 
         self.vbox.pack_start(swin)
-        self.model = model = gtk.TreeStore(object)
-        view = HintedTreeView(model)
+        view = HintedTreeView()
         swin.add(view)
 
         def icon_cdf(column, cell, model, iter_):
@@ -332,30 +343,29 @@ class RGDialog(gtk.Dialog):
         column.pack_start(peak_renderer)
         column.set_cell_data_func(peak_renderer, peak_cdf)
         view.append_column(column)
-        self.view = view
 
         # create as many pipelines as threads
-        import multiprocessing
         self.pipes = []
-        for i in xrange(multiprocessing.cpu_count()):
+        for i in xrange(get_num_threads()):
             self.pipes.append(ReplayGainPipeline())
-
-        self.albums = albums = [RGAlbum.from_songs(a) for a in albums]
-
-        # fill the view
-        for album in albums:
-            base = self.model.append(None, row=[album])
-            for song in album.songs:
-                self.model.append(base, row=[song])
-
-        if len(albums) == 1:
-            self.view.expand_all()
 
         self._timeout = None
         self._sigs = {}
         self._done = []
-        self._todo = list(albums)
-        self._count = len(albums)
+        self._todo = list([RGAlbum.from_songs(a) for a in albums])
+        self._count = len(self._todo)
+
+        # fill the view
+        self.model = model = gtk.TreeStore(object)
+        insert = model.insert
+        for album in reversed(self._todo):
+            base = insert(None, 0, row=[album])
+            for song in reversed(album.songs):
+                insert(base, 0, row=[song])
+        view.set_model(model)
+
+        if len(albums) == 1:
+            view.expand_all()
 
         self.connect("destroy", self.__destroy)
         self.connect('response', self.__response)
@@ -377,7 +387,7 @@ class RGDialog(gtk.Dialog):
         if response == gtk.RESPONSE_CANCEL:
             self.destroy()
         elif response == gtk.RESPONSE_OK:
-            for album in self.albums:
+            for album in self._done:
                 album.write()
             self.destroy()
 
