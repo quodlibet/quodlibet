@@ -174,14 +174,15 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # pipeline supports. As a bonus, this seems to automatically
             # select the highest-precision format supported by the
             # rest of the chain.
-            filt = Gst.ElementFactory.make('capsfilter')
+            filt = Gst.ElementFactory.make('capsfilter', None)
             filt.set_property('caps',
-                              Gst.Caps.from_string('audio/x-raw-float'))
-            eq = Gst.ElementFactory.make('equalizer-10bands')
+                              Gst.Caps.from_string('audio/x-raw,format=F32LE'))
+            eq = Gst.ElementFactory.make('equalizer-10bands', None)
             self._eq_element = eq
             self.update_eq_values()
-            conv = Gst.ElementFactory.make('audioconvert')
-            pipeline = [filt, eq, conv] + pipeline
+            conv = Gst.ElementFactory.make('audioconvert', None)
+            resample = Gst.ElementFactory.make('audioresample', None)
+            pipeline = [filt, eq, conv, resample] + pipeline
 
         # playbin2 has started to control the volume through pulseaudio,
         # which means the volume property can change without us noticing.

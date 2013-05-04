@@ -108,6 +108,12 @@ class TPlayer(TestCase):
         self.player.reset()
         self.assertEqual(self.player.song, FILES[0])
 
+    def test_equalizer(self):
+        self.player.eq_bands
+        self.player.eq_values
+        self.player.eq_values = [1,2,3,4]
+        self.player.next()
+
 
 class TNullPlayer(TPlayer):
     NAME = "nullbe"
