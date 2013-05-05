@@ -308,8 +308,6 @@ def get_columns(refresh=False):
         try:
             __songlist_columns = columns = get("settings", "headers").split()
         except Error:
-            # Both gone - something bad has happened
-            print_w("Both settings.columns and settings.headers empty")
             return const.DEFAULT_COLUMNS
         else:
             print_d("Migrating from settings.headers to settings.columns...")
