@@ -317,15 +317,12 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         for sig in player_sigs:
             gobject_weak(player.connect, *sig, **{"parent": self})
 
-        targets = [("text/uri-list", 0, DND_URI_LIST)]
+        targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         self.drag_dest_set(
             Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect_object('drag-motion', QuodLibetWindow.__drag_motion, self)
-        self.connect_object('drag-leave', QuodLibetWindow.__drag_leave, self)
-        self.connect_object(
-            'drag-data-received', QuodLibetWindow.__drag_data_received, self)
+        self.connect('drag-data-received', self.__drag_data_received)
 
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
@@ -362,18 +359,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.show = lambda: None
         self.present = self.show
 
-    def __drag_motion(self, ctx, x, y, time):
-        # Don't accept drops from QL itself, since it offers text/uri-list.
-        if Gtk.drag_get_source_widget(ctx) is None:
-            self.drag_highlight()
-            return True
-        else:
-            return False
-
-    def __drag_leave(self, ctx, time):
-        self.drag_unhighlight()
-
-    def __drag_data_received(self, ctx, x, y, sel, tid, etime):
+    def __drag_data_received(self, widget, ctx, x, y, sel, tid, etime):
         assert tid == DND_URI_LIST
 
         uris = sel.get_uris()
