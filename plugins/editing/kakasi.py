@@ -18,7 +18,8 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     }
 
     def __init__(self):
-        super(Kakasi, self).__init__("Romanize _Japanese text")
+        super(Kakasi, self).__init__(
+            _("Romanize _Japanese text"), use_underline=True)
         self.connect_object('toggled', self.emit, 'preview')
 
     active = property(lambda s: s.get_active())

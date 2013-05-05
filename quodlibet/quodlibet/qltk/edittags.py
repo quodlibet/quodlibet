@@ -141,7 +141,8 @@ class SplitValues(Gtk.ImageMenuItem):
     _order = 0.0
 
     def __init__(self, tag, value):
-        super(SplitValues, self).__init__(_("Split into _Multiple Values"))
+        super(SplitValues, self).__init__(
+            _("Split into _Multiple Values"), use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
@@ -160,7 +161,8 @@ class SplitDisc(Gtk.ImageMenuItem):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super(SplitDisc, self).__init__(_("Split Disc out of _Album"))
+        super(SplitDisc, self).__init__(
+            _("Split Disc out of _Album"), use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         self.set_sensitive(util.split_album(value)[1] is not None)
@@ -176,7 +178,8 @@ class SplitTitle(Gtk.ImageMenuItem):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super(SplitTitle, self).__init__(_("Split _Version out of Title"))
+        super(SplitTitle, self).__init__(
+            _("Split _Version out of Title"), use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
@@ -195,7 +198,7 @@ class SplitPerson(Gtk.ImageMenuItem):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super(SplitPerson, self).__init__(self.title)
+        super(SplitPerson, self).__init__(self.title, use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
@@ -579,6 +582,9 @@ class EditTags(Gtk.VBox):
         for c in menu.get_children():
             c.set_sensitive(can_change and c.get_property('sensitive'))
         menu.connect('selection-done', lambda m: m.destroy())
+
+        # XXX: Keep reference
+        self.__menu = menu
         return view.popup_menu(menu, 3, Gtk.get_current_event_time())
 
     def __tag_select(self, selection, remove):

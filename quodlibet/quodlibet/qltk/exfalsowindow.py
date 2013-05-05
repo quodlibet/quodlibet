@@ -153,7 +153,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
                 menu.prepend(Gtk.SeparatorMenuItem())
         else:
             menu = Gtk.Menu()
-        b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE)
+        b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
         b.connect('activate', self.__delete, filenames, fs)
         menu.prepend(b)
         menu.connect_object('selection-done', Gtk.Menu.destroy, menu)

@@ -35,7 +35,8 @@ class Iconv(EditTagsPlugin):
     PLUGIN_VERSION = "2"
 
     def __init__(self, tag, value):
-        super(Iconv, self).__init__("_Convert Encoding...")
+        super(Iconv, self).__init__(
+            _("_Convert Encoding..."), use_underline=True)
         self.set_image(
             Gtk.Image.new_from_stock(Gtk.STOCK_CONVERT, Gtk.IconSize.MENU))
         submenu = Gtk.Menu()
