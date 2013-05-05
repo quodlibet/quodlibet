@@ -422,6 +422,11 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
 
         for song in songs:
             song_id = str(id(song))
+            # https://code.google.com/p/quodlibet/issues/detail?id=1127
+            # XXX: Something is emitting wrong changed events..
+            # ignore song_ids we don't know for now
+            if song_id not in self.__map:
+                continue
             for user in self.__users:
                 # ask the user for the prefix whith which the song is used
                 prefix = user.get_prefix(song)
