@@ -58,8 +58,7 @@ class IRFile(RemoteFile):
 
     __CAN_CHANGE = "title artist grouping".split()
 
-    def __call__(self, key, *args, **kwargs):
-        base_call = super(IRFile, self).__call__
+    def __get(self, base_call, key, *args, **kwargs):
         if key == "title" and "title" not in self and "organization" in self:
             return base_call("organization", *args, **kwargs)
 
@@ -71,17 +70,22 @@ class IRFile(RemoteFile):
             if len(title) > 1:
                 return (key == "title" and title[-1]) or title[0]
 
+        if key in ("artist", TAG_TO_SORT["artist"]) and \
+                not base_call(key, *args) and "website" in self:
+            return base_call("website", *args)
+
         if key == "~format" and "audio-codec" in self:
             return "%s (%s)" % (self.format,
                                 base_call("audio-codec", *args, **kwargs))
         return base_call(key, *args, **kwargs)
 
-    def get(self, key, *args):
+    def __call__(self, key, *args, **kwargs):
+        base_call = super(IRFile, self).__call__
+        return self.__get(base_call, key, *args, **kwargs)
+
+    def get(self, key, *args, **kwargs):
         base_call = super(IRFile, self).get
-        if key in ("artist", TAG_TO_SORT["artist"]) and \
-                not base_call(key, *args) and "website" in self:
-            return base_call("website", *args)
-        return base_call(key, *args)
+        return self.__get(base_call, key, *args, **kwargs)
 
     def write(self):
         pass
