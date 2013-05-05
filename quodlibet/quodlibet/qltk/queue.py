@@ -15,7 +15,7 @@ from quodlibet import util
 from quodlibet import qltk
 
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow
@@ -65,8 +65,10 @@ class QueueExpander(Gtk.Expander):
         self.add(sw)
         self.connect_object('notify::expanded', self.__expand, cb, b)
 
-        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+            ("text/uri-list", 0, DND_URI_LIST)
+        ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
