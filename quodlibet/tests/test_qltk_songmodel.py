@@ -212,6 +212,11 @@ class TPlaylistModel(TestCase):
         gtk.main_iteration(False)
         self.pl.next()
 
+    def test_clear_current(self):
+        self.pl.go_to(1)
+        self.pl.clear()
+        self.pl.go_to(None)
+
     def shutDown(self):
         self.pl.destroy()
 add(TPlaylistModel)

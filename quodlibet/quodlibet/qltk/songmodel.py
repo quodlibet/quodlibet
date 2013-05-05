@@ -94,6 +94,10 @@ class TrackCurrentModel(gtk.ListStore):
             self.__iter = None
         super(TrackCurrentModel, self).remove(iter_)
 
+    def clear(self):
+        self.__iter = None
+        super(TrackCurrentModel, self).clear()
+
     def get(self):
         return [row[0] for row in self]
 
