@@ -301,13 +301,10 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
         for sig in player_sigs:
             gobject_weak(player.connect, *sig, **{"parent": self})
 
-        targets = [("text/uri-list", 0, 1)]
+        targets = [("text/uri-list", gtk.TARGET_OTHER_APP, 1)]
         self.drag_dest_set(
             gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
-        self.connect_object('drag-motion', QuodLibetWindow.__drag_motion, self)
-        self.connect_object('drag-leave', QuodLibetWindow.__drag_leave, self)
-        self.connect_object(
-            'drag-data-received', QuodLibetWindow.__drag_data_received, self)
+        self.connect('drag-data-received', self.__drag_data_received)
 
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
@@ -343,18 +340,7 @@ class QuodLibetWindow(gtk.Window, PersistentWindowMixin):
         self.show = lambda: None
         self.present = self.show
 
-    def __drag_motion(self, ctx, x, y, time):
-        # Don't accept drops from QL itself, since it offers text/uri-list.
-        if ctx.get_source_widget() is None:
-            self.drag_highlight()
-            return True
-        else:
-            return False
-
-    def __drag_leave(self, ctx, time):
-        self.drag_unhighlight()
-
-    def __drag_data_received(self, ctx, x, y, sel, tid, etime):
+    def __drag_data_received(self, widget, ctx, x, y, sel, tid, etime):
         if tid == 1:
             uris = sel.get_uris()
         if tid == 2:
