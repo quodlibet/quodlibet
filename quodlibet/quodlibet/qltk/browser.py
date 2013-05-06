@@ -25,6 +25,7 @@ class LibraryBrowser(Window, PersistentWindowMixin):
         self.add(Gtk.VBox(spacing=6))
 
         view = SongList(library, update=True)
+        view.info.connect("changed", self.__set_time)
         self.add_accel_group(view.accelerators)
         self.songlist = view
 
@@ -55,8 +56,7 @@ class LibraryBrowser(Window, PersistentWindowMixin):
         view.connect('popup-menu', self.__menu, library)
         view.connect('drag-data-received', self.__drag_data_recv)
         view.connect('row-activated', self.__enqueue)
-        view.get_selection().connect(
-            'changed', util.DeferredSignal(self.__set_time))
+
         if browser.headers is not None:
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
@@ -87,7 +87,6 @@ class LibraryBrowser(Window, PersistentWindowMixin):
             bg = background_filter()
             if bg:
                 songs = filter(bg, songs)
-        self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column):
@@ -119,14 +118,9 @@ class LibraryBrowser(Window, PersistentWindowMixin):
             view.popup_menu(menu, 0, Gtk.get_current_event_time())
         return True
 
-    def __set_time(self, *args, **kwargs):
-        statusbar = self.__statusbar
-        songs = kwargs.get("songs") or self.songlist.get_selected_songs()
-        if "songs" not in kwargs and len(songs) <= 1:
-            songs = self.songlist.get_songs()
-
+    def __set_time(self, info, songs):
         i = len(songs)
-        length = sum([song.get("~#length", 0) for song in songs])
+        length = sum(song.get("~#length", 0) for song in songs)
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
-        statusbar.set_text(t)
+        self.__statusbar.set_text(t)

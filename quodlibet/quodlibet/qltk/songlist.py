@@ -8,7 +8,7 @@
 import datetime
 import time
 
-from gi.repository import Gtk, GLib, Pango, Gdk
+from gi.repository import Gtk, GLib, Pango, Gdk, GObject
 
 from quodlibet import app
 from quodlibet import config
@@ -30,6 +30,82 @@ from quodlibet.util import human_sort_key
 
 
 DND_QL, DND_URI_LIST = range(2)
+
+
+class SongInfoSelection(GObject.Object):
+    """
+    InfoSelection: Songs which get included in the status bar
+    summary. changed gets fired after any of the songs in the
+    selection or the selection it self have changed.
+    The signal is async.
+
+    Two selection states:
+        - 0 or 1 selected row: all rows
+        - 2 or more: only the selected rows
+
+    The signals fires if the state changes.
+
+    FIXME:
+        row-changed for song lists isn't implemented (performance).
+        Since a library change could change the selection it should
+        also trigger a this.
+
+        Since this would happen quite often (song stat changes) and
+        would lead to a complete recalc in the common case ignore it for
+        now.
+    """
+
+    __gsignals__ = {
+        # changed(songs:list)
+        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,))
+    }
+
+    def __init__(self, songlist):
+        super(SongInfoSelection, self).__init__()
+
+        self.__idle = None
+        self.__songlist = songlist
+        self.__selection = sel = songlist.get_selection()
+        self.__count = sel.count_selected_rows()
+        self.__sel_id = sel.connect('changed', self.__selection_changed_cb)
+
+    def destroy(self):
+        self.__selection.disconnect(self.__sel_id)
+        if self.__idle:
+            GLib.source_remove(self.__idle)
+
+    def _update_songs(self, songs):
+        """After making changes (filling the list) call this to
+        skip any queued changes and emit the passed songs instead"""
+        self.__emit_info_selection(songs)
+        self.__count = len(songs)
+
+    def __idle_emit(self, songs):
+        if songs is None:
+            if self.__count <= 1:
+                songs = self.__songlist.get_songs()
+            else:
+                songs = self.__songlist.get_selected_songs()
+        self.emit('changed', songs)
+        self.__idle = None
+        False
+
+    def __emit_info_selection(self, songs=None):
+        if self.__idle:
+            GLib.source_remove(self.__idle)
+        self.__idle = GLib.idle_add(
+            self.__idle_emit, songs, priority=GLib.PRIORITY_LOW)
+
+    def __selection_changed_cb(self, selection):
+        count = selection.count_selected_rows()
+        if self.__count == count == 0:
+            return
+        if count <= 1:
+            if self.__count > 1:
+                self.__emit_info_selection()
+        else:
+            self.__emit_info_selection()
+        self.__count = count
 
 
 class SongList(AllTreeView, DragScroll, util.InstanceTracker):
@@ -266,6 +342,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         super(SongList, self).__init__()
         self._register_instance(SongList)
         self.set_model(PlaylistModel())
+        self.info = SongInfoSelection(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -313,6 +390,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.connect('destroy', self.__destroy)
 
     def __destroy(self, *args):
+        self.info.destroy()
         self.handler_block(self.__csig)
         map(self.remove_column, self.get_columns())
         self.handler_unblock(self.__csig)
@@ -754,12 +832,18 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.set_model(model)
         map(Gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
 
+        # the song selection has queued a change now, cancel that and
+        # pass the songs manually
+        self.info._update_songs(songs)
+
     def get_selected_songs(self):
+        songs = []
+
+        def func(model, path, iter_, user_data):
+            songs.append(model.get_value(iter_, 0))
         selection = self.get_selection()
-        if selection is None:
-            return []
-        model, rows = selection.get_selected_rows()
-        return [model[row][0] for row in rows]
+        selection.selected_foreach(func, None)
+        return songs
 
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.

@@ -299,12 +299,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.connect('columns-changed', self.__hide_headers)
-        self.songlist.get_selection().connect(
-                'changed', util.DeferredSignal(self.__set_time))
+        self.songlist.info.connect("changed", self.__set_time)
 
         lib = library.librarian
-        gobject_weak(lib.connect, 'removed', self.__set_time, parent=self)
-        gobject_weak(lib.connect, 'added', self.__set_time, parent=self)
         gobject_weak(lib.connect_object, 'changed', self.__song_changed,
                      player, parent=self)
 
@@ -688,7 +685,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             iter = self.songlist.model.find(song)
             if iter:
                 self.songlist.remove_iters([iter])
-                self.__set_time()
 
     def __song_ended(self, player, song, stopped):
         self.__check_remove_song(player, song)
@@ -939,7 +935,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             bg = background_filter()
             if bg:
                 songs = filter(bg, songs)
-        self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
 
     def __filter_on(self, header, songs, player):
@@ -985,12 +980,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             self.browser.filter_text(query.encode('utf-8'))
             self.browser.activate()
 
-    def __set_time(self, *args, **kwargs):
-        songs = kwargs.get("songs") or self.songlist.get_selected_songs()
-        if "songs" not in kwargs and len(songs) <= 1:
-            songs = self.songlist.get_songs()
+    def __set_time(self, info, songs):
         i = len(songs)
-        length = sum([song("~#length", 0) for song in songs])
+        length = sum(song.get("~#length", 0) for song in songs)
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
         self.statusbar.set_default_text(t)
