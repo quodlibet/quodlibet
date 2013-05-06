@@ -18,6 +18,7 @@ class APEv2File(AudioFile):
     IGNORE = ["file", "index", "introplay", "dummy"]
     TRANS = {"subtitle": "version",
              "track": "tracknumber",
+             "disc": "discnumber",
              "catalog": "labelid",
              "year": "date",
              "record location": "location",

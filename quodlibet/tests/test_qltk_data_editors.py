@@ -23,4 +23,4 @@ class TMultiStringEditor(TestCase):
     def tearDown(self):
         config.quit()
 
-add(MultiStringEditor)
+add(TMultiStringEditor)
