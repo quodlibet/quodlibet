@@ -35,7 +35,8 @@ def scan_libary(library, force):
 
     paths = util.split_scan_dirs(config.get("settings", "scan"))
     exclude = config.get("library", "exclude").split(":")
-    copool.add(library.rebuild, paths, force, exclude, cofuncid="library")
+    copool.add(library.rebuild, paths, force, exclude,
+               cofuncid="library", funcid="library")
 
 
 def emit_signal(songs, signal="changed", block_size=50, name=None,
