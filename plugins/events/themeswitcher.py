@@ -1,4 +1,4 @@
-# Copyright 2011 Christoph Reiter
+# Copyright 2011,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -17,7 +17,6 @@ from quodlibet.plugins.events import EventPlugin
 class ThemeSwitcher(EventPlugin):
     PLUGIN_ID = "Theme Switcher"
     PLUGIN_NAME = _("Theme Switcher")
-    PLUGIN_VERSION = "0.2"
     PLUGIN_DESC = ("Change the active GTK+ theme.")
 
     __enabled = False
@@ -64,8 +63,8 @@ class ThemeSwitcher(EventPlugin):
             except OSError:
                 continue
             for dir_ in subdirs:
-                rc = os.path.join(theme_dir, dir_, "gtk-2.0", "gtkrc")
-                if os.path.isfile(rc):
+                gtk_dir = os.path.join(theme_dir, dir_, "gtk-3.0")
+                if os.path.isdir(gtk_dir):
                     themes.add(dir_)
         return themes
 
