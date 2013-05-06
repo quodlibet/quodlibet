@@ -75,6 +75,32 @@ class TAPEv2FileBase(TestCase):
         self.failUnlessEqual("ISRC" in m, True)
         self.failUnlessEqual("Foobar" in m, True)
 
+    def test_disc_mapping(self):
+        m = mutagen.apev2.APEv2(self.f)
+        m["disc"] = "99/102"
+        m.save()
+        self.s.reload()
+        self.failUnlessEqual(self.s("~#disc"), 99)
+        self.failUnlessEqual(self.s("discnumber"), "99/102")
+
+        self.s["discnumber"] = "77/88"
+        self.s.write()
+        m = mutagen.apev2.APEv2(self.f)
+        self.failUnlessEqual(m["disc"], "77/88")
+
+    def test_track_mapping(self):
+        m = mutagen.apev2.APEv2(self.f)
+        m["track"] = "99/102"
+        m.save()
+        self.s.reload()
+        self.failUnlessEqual(self.s("~#track"), 99)
+        self.failUnlessEqual(self.s("tracknumber"), "99/102")
+
+        self.s["tracknumber"] = "77/88"
+        self.s.write()
+        m = mutagen.apev2.APEv2(self.f)
+        self.failUnlessEqual(m["track"], "77/88")
+
     def tearDown(self):
         os.unlink(self.f)
 
