@@ -10,7 +10,11 @@ from quodlibet.util.dprint import Colorise
 
 from unittest import TestCase
 suites = []
-add = suites.append
+
+
+def add(t):
+    assert issubclass(t, TestCase)
+    suites.append(t)
 
 
 class Result(unittest.TestResult):
