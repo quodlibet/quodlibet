@@ -100,3 +100,19 @@ class TCollectionAlbums(TestCase):
         for r in model:
             self.failUnless(StoreUtils.get_markup(model, model.tags, r.iter))
 add(TCollectionAlbums)
+
+
+class TCollectionBrowser(TestCase):
+
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_init(self):
+        library = SongLibrary()
+        x = CollectionBrowser(library, False)
+        x.destroy()
+
+add(TCollectionBrowser)
