@@ -286,16 +286,41 @@ class TSongLibrary(TLibrary):
 add(TSongLibrary)
 
 
-class TSongFileLibrary(TSongLibrary):
+class TFileLibrary(TLibrary):
     Fake = FakeSongFile
-    Frange = staticmethod(FSFrange)
-    Library = SongFileLibrary
+    Library = FileLibrary
+
+    def test_mask_invalid_mount_point(self):
+        new = self.Fake(1)
+        self.library.add([new])
+        self.failIf(self.library.masked_mount_points)
+        self.failUnless(len(self.library))
+        self.library.mask("/adsadsafaf")
+        self.failIf(self.library.masked_mount_points)
+        self.library.unmask("/adsadsafaf")
+        self.failIf(self.library.masked_mount_points)
+        self.failUnless(len(self.library))
+
+    def test_mask_basic(self):
+        new = self.Fake(1)
+        self.library.add([new])
+        self.failIf(self.library.masked_mount_points)
+        self.library.mask(new.mountpoint)
+        self.failUnlessEqual(self.library.masked_mount_points,
+                             [new.mountpoint])
+        self.failIf(len(self.library))
+        self.failUnlessEqual(self.library.get_masked(new.mountpoint), [new])
+        self.failUnless(self.library.masked(new))
+        self.library.unmask(new.mountpoint)
+        self.failUnless(len(self.library))
+        self.failUnlessEqual(self.library.get_masked(new.mountpoint), [])
 
     def test_content_masked(self):
         new = self.Fake(100)
         new._mounted = False
         self.failIf(self.library.get_content())
-        self.library._load_item(new)
+        self.library._load_init([new])
+        self.failUnless(self.library.masked(new))
         self.failUnless(self.library.get_content())
 
     def test_init_masked(self):
@@ -303,13 +328,21 @@ class TSongFileLibrary(TSongLibrary):
         new._mounted = False
         self.library._load_init([new])
         self.failIf(self.library.items())
-        self.failUnlessEqual(new, self.library._masked[new.mountpoint][new])
+        self.failUnless(self.library.masked(new))
 
     def test_load_init_nonmasked(self):
         new = self.Fake(200)
         new._mounted = True
         self.library._load_init([new])
         self.failUnlessEqual(self.library.values(), [new])
+
+add(TFileLibrary)
+
+
+class TSongFileLibrary(TSongLibrary):
+    Fake = FakeSongFile
+    Frange = staticmethod(FSFrange)
+    Library = SongFileLibrary
 
     def test__load_exists_invalid(self):
         new = self.Fake(100)
@@ -357,7 +390,7 @@ class TSongFileLibrary(TSongLibrary):
         self.failIf(changed)
         self.failIf(new._valid)
         self.failIf(new in self.library)
-        self.failUnlessEqual(new, self.library._masked[new.mountpoint][new])
+        self.failUnless(self.library.masked(new))
 
     def __get_file(self):
         fd, filename = mkstemp(".flac")

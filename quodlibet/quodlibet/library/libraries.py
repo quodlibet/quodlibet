@@ -736,7 +736,18 @@ class FileLibrary(PicklingLibrary):
                 removed[item.key] = item
         if removed:
             self.remove(removed.values())
-        self._masked.setdefault(point, {}).update(removed)
+            self._masked.setdefault(point, {}).update(removed)
+
+    @property
+    def masked_mount_points(self):
+        """List of mount points that contain masked items"""
+
+        return self._masked.keys()
+
+    def get_masked(self, mount_point):
+        """List of items for a mount point"""
+
+        return self._masked.get(mount_point, {}).values()
 
 
 class SongFileLibrary(SongLibrary, FileLibrary):
