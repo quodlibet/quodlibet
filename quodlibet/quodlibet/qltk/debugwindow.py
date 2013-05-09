@@ -106,7 +106,7 @@ class ExceptionDialog(Gtk.Window):
 
         self.connect('destroy', self.__destroy)
         cancel.connect_object('clicked', Gtk.Window.destroy, self)
-        close.connect('clicked', lambda *x: app.quit())
+        close.connect('clicked', lambda *x: Gtk.main_quit())
 
         self.show_all()
         filename = util.unexpand(dump)
