@@ -93,13 +93,13 @@ class SongInfo(Gtk.Label):
         sep.show()
         props = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
         props.connect_object('activate', SongProperties, library,
-                             [player.song], self)
+                             [player.info], self)
         props.show()
         props.set_sensitive(bool(player.song))
         menu.append(props)
         info = Gtk.ImageMenuItem(Gtk.STOCK_INFO, use_stock=True)
         info.connect_object('activate', Information, library,
-                            [player.song], self)
+                            [player.info], self)
         info.show()
         menu.append(info)
         info.set_sensitive(bool(player.song))
