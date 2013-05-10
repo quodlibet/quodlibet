@@ -64,10 +64,17 @@ class AudioFile(dict):
     If you need to sort many AudioFiles, you can use their sort_key
     attribute as a decoration."""
 
+    # New tags received from the backend will update the song
     fill_metadata = False
+    # Container for multiple songs, while played new songs can start/end
     multisong = False
+    # Part of a multisong
+    streamsong = False
+    # Can be added to the queue, playlists
     can_add = True
+    # Is a real file
     is_file = True
+    # Multiple tags for the same tag possible
     multiple_values = True
 
     format = "Unknown Audio File"

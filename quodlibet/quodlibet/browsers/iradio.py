@@ -91,7 +91,7 @@ class IRFile(RemoteFile):
         pass
 
     def can_change(self, k=None):
-        if not self.multisong:
+        if self.streamsong:
             if k is None:
                 return []
             else:

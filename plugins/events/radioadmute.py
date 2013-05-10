@@ -39,12 +39,11 @@ class RadioAdMute(EventPlugin):
         self.plugin_on_song_ended()
 
     def plugin_on_song_started(self, song):
-        player = app.player
-
         # only check stream info songs
-        if player.song is player.info:
+        if not song or not song.streamsong:
             return
 
+        player = app.player
         data = song("~title~artist")
         for spam in self.SPAM:
             if spam.search(data):

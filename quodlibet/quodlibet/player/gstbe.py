@@ -607,6 +607,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if not new_info:
             new_info = type(self.song)(self.song["~filename"])
             new_info.multisong = False
+            new_info.streamsong = True
 
             # copy from the old songs
             # we should probably listen to the library for self.song changes
