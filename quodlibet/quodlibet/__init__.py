@@ -52,7 +52,7 @@ class Application(object):
         from gi.repository import GLib
 
         def idle_quit():
-            if self.window:
+            if self.window and not self.window.in_destruction():
                 self.window.destroy()
 
         # so this can be called from a signal handler and before
@@ -93,6 +93,7 @@ def _gtk_init(icon=None):
     except (ValueError, ImportError):
         pass
 
+    gi.require_version("GLib", "2.0")
     gi.require_version("Gtk", "3.0")
     gi.require_version("Gdk", "3.0")
     gi.require_version("GObject", "2.0")
@@ -334,24 +335,35 @@ def _init_signal():
     if os.name == "nt":
         return
 
-    def pipe_can_read(*args):
+    def signal_action():
         app.quit()
-        return False
 
     import signal
+    import gi
+    gi.require_version("GLib", "2.0")
     from gi.repository import GLib
-
-    # The signal handler can not call gtk functions, thus we have to
-    # build a dummy pipe to pass it into the gtk mainloop
-
-    r, w = os.pipe()
-    GLib.io_add_watch(r, GLib.IO_IN, pipe_can_read)
 
     SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
     for sig in filter(None, SIGS):
-        def handler(sig, frame):
-            os.write(w, "die!!!")
-        signal.signal(sig, handler)
+        # Before the mainloop starts we catch signals in python
+        # directly and idle_add the app.quit
+        def idle_handler(*args):
+            print_d("Python signal handler activated.")
+            GLib.idle_add(signal_action, priority=GLib.PRIORITY_HIGH)
+        print_d("Register Python signal handler: %r" % sig)
+        signal.signal(sig, idle_handler)
+
+        # After the mainloop has started the python handler
+        # blocks if no mainloop is active (for whatever reason).
+        # Override the python handler with the GLib one, which works here.
+        def install_glib_handler(sig):
+            print_d("Register GLib signal handler: %r" % sig)
+
+            def handler(*args):
+                print_d("GLib signal handler activated.")
+                signal_action()
+            GLib.unix_signal_add(GLib.PRIORITY_HIGH, sig, handler, None)
+        GLib.idle_add(install_glib_handler, sig, priority=GLib.PRIORITY_HIGH)
 
 # minimal emulation of gtk.quit_add
 

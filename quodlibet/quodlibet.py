@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2012 Christoph Reiter
+#           2012, 2013 Christoph Reiter
 # <quod-libet-development@googlegroups.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,27 +17,27 @@ import sys
 import tempfile
 import stat
 
-import quodlibet
-import quodlibet.player
-
-from quodlibet import app
-from quodlibet import config
-from quodlibet import browsers
-from quodlibet import const
-from quodlibet import util
-from quodlibet.util.uri import URI
-
 play = False
 no_plugins = False
 
 
 def main():
-    quodlibet._init_signal()
-
     process_arguments()
-    if isrunning() and not quodlibet.const.DEBUG:
+
+    from quodlibet import const
+    if isrunning() and not const.DEBUG:
         print_(_("Quod Libet is already running."))
         control('focus')
+
+    import quodlibet
+    quodlibet._init_signal()
+
+    import quodlibet.player
+    from quodlibet import app
+    from quodlibet import config
+    from quodlibet import browsers
+    from quodlibet import const
+    from quodlibet import util
 
     config.init(const.CONFIG)
 
@@ -164,6 +164,9 @@ def main():
 
 
 def print_fifo(command):
+    import quodlibet
+    from quodlibet import const
+
     if not os.path.exists(const.CURRENT):
         quodlibet.exit("not-running")
     else:
@@ -197,8 +200,10 @@ def print_fifo(command):
 
 
 def print_playing(fstring="<artist~album~tracknumber~title>"):
+    import quodlibet
     from quodlibet.formats._audio import AudioFile
     from quodlibet.parse import Pattern
+    from quodlibet import const
 
     try:
         text = open(const.CURRENT, "rb").read()
@@ -216,8 +221,13 @@ def print_query(query):
 
         See Issue 716
     '''
-    print_d("Querying library for %r" % query)
+
+    import quodlibet
     import quodlibet.library
+    from quodlibet import const
+
+    print_d("Querying library for %r" % query)
+
     library = quodlibet.library.init(const.LIBRARY)
     songs = library.query(query)
     #songs.sort()
@@ -226,6 +236,8 @@ def print_query(query):
 
 
 def isrunning():
+    from quodlibet import const
+
     # http://code.google.com/p/quodlibet/issues/detail?id=1131
     # FIXME: There is a race where control() creates a new file
     # instead of writing to the fifo, confusing the next QL instance.
@@ -240,6 +252,9 @@ def isrunning():
 
 
 def control(c):
+    import quodlibet
+    from quodlibet import const
+
     if not isrunning():
         quodlibet.exit(_("Quod Libet is not running."))
     else:
@@ -264,6 +279,11 @@ def control(c):
 
 
 def process_arguments():
+    import quodlibet
+    from quodlibet.util.uri import URI
+    from quodlibet import util
+    from quodlibet import const
+
     controls = ["next", "previous", "play", "pause", "play-pause", "stop",
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
