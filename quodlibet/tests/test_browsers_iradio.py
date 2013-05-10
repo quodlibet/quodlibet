@@ -62,7 +62,7 @@ class TIRFile(TestCase):
 
     def testcan_write(self):
         self.failUnless(self.s.can_change("title"))
-        self.s.multisong = False
+        self.s.streamsong = True
         self.failIf(self.s.can_change("title"))
 
 add(TIRFile)
