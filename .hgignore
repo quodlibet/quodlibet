@@ -6,6 +6,7 @@ syntax: glob
 *.rej
 *.orig
 *.cache
+*.cover
 MANIFEST
 
 # Sphinx build files
