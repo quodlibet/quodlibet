@@ -60,4 +60,9 @@ class TIRFile(TestCase):
         self.assertEqual(self.s("~people"), "artist")
         self.assertEqual(self.s("~~people~foo"), "artist")
 
+    def testcan_write(self):
+        self.failUnless(self.s.can_change("title"))
+        self.s.multisong = False
+        self.failIf(self.s.can_change("title"))
+
 add(TIRFile)

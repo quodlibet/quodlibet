@@ -91,10 +91,16 @@ class IRFile(RemoteFile):
         pass
 
     def can_change(self, k=None):
-        if k is None:
-            return self.__CAN_CHANGE
+        if not self.multisong:
+            if k is None:
+                return []
+            else:
+                return False
         else:
-            return k in self.__CAN_CHANGE
+            if k is None:
+                return self.__CAN_CHANGE
+            else:
+                return k in self.__CAN_CHANGE
 
 
 def ParsePLS(file):
