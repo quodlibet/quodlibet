@@ -24,9 +24,7 @@ class MonoDownmix(GStreamerPlugin):
         if not element:
             return
 
-        caps = Gst.Caps.from_string(
-            'audio/x-raw,format=float,channels=1;'
-            'audio/x-raw,format=int,channels=1')
+        caps = Gst.Caps.from_string('audio/x-raw,channels=1')
 
         element.set_property('caps', caps)
         return element
