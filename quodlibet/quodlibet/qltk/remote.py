@@ -75,7 +75,8 @@ class FIFOControl(object):
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             f = os.fdopen(fifo, "r", 4096)
             GObject.io_add_watch(
-                f, GLib.IO_IN, self.__process, *args)
+                f, GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+                self.__process, *args)
         except (EnvironmentError, AttributeError):
             pass
 
@@ -90,36 +91,36 @@ class FIFOControl(object):
                 raise KeyError(key)
 
     def __process(self, source, condition, *args):
-        commands = source.read().rstrip("\n").splitlines()
-        if commands == []:
+        if condition in (GLib.IO_ERR, GLib.IO_HUP):
             self.__open(*args)
             return False
-        else:
-            for command in commands:
+
+        commands = source.read().rstrip("\n").splitlines()
+        for command in commands:
+            try:
+                try:
+                    cmd, arg = command.split(' ', 1)
+                except ValueError:
+                    self[command](*args)
+                else:
+                    print_d("Running %r with params %r " % (cmd, arg))
+                    self[cmd](arg, *args)
+            except KeyError:
+                commands = args[1].browser.commands
                 try:
                     try:
                         cmd, arg = command.split(' ', 1)
                     except ValueError:
-                        self[command](*args)
+                        commands[command](*args)
                     else:
-                        print_d("Running %r with params %r " % (cmd, arg))
-                        self[cmd](arg, *args)
-                except KeyError:
-                    commands = args[1].browser.commands
-                    try:
-                        try:
-                            cmd, arg = command.split(' ', 1)
-                        except ValueError:
-                            commands[command](*args)
-                        else:
-                            commands[cmd](arg, *args)
-                    except:
-                        print_w(_("Invalid command %r received.") % command)
+                        commands[cmd](arg, *args)
                 except:
-                    e = sys.exc_info()[1]
-                    print_e(_("Error running command %r, caused by: %r.") %
-                        (command, e))
-            return True
+                    print_w(_("Invalid command %r received.") % command)
+            except:
+                e = sys.exc_info()[1]
+                print_e(_("Error running command %r, caused by: %r.") %
+                    (command, e))
+        return True
 
     def _previous(self, library, window, player):
         player.previous()
