@@ -90,6 +90,24 @@ class IRFile(RemoteFile):
     def write(self):
         pass
 
+    def to_dump(self):
+        # dump without title
+        title = None
+        if "title" in self:
+            title = self["title"]
+            del self["title"]
+        dump = super(IRFile, self).to_dump()
+        if title is not None:
+            self["title"] = title
+
+        # add all generated tags
+        lines = dump.splitlines()
+        for tag in ["title", "artist", "~format"]:
+            value = self.get(tag)
+            if value is not None:
+                lines.append("%s=%s" % (tag, util.encode(value)))
+        return "\n".join(lines)
+
     def can_change(self, k=None):
         if self.streamsong:
             if k is None:
