@@ -325,19 +325,23 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     GstPbutils.missing_plugin_message_get_installer_detail(
                         message)
                 if details is not None:
-                    print_w(_(
+                    message = (_(
                         "No GStreamer element found to handle the following "
                         "media format: %(format_details)r") %
                         {"format_details": details})
+                    print_w(message)
 
                     context = GstPbutils.InstallPluginsContext.new()
 
                     # TODO: track success
                     def install_done_cb(*args):
                         Gst.update_registry()
-                    result = GstPbutils.install_plugins_async(
+                    res = GstPbutils.install_plugins_async(
                         [details], context, install_done_cb, None)
-                    print_d("Gstreamer plugin install result: %r" % result)
+                    print_d("Gstreamer plugin install result: %r" % res)
+                    if res in (GstPbutils.InstallPluginsReturn.HELPER_MISSING,
+                            GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE):
+                        self._error(message)
 
         return True
 
