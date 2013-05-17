@@ -315,6 +315,14 @@ class TFileLibrary(TLibrary):
         self.failUnless(len(self.library))
         self.failUnlessEqual(self.library.get_masked(new.mountpoint), [])
 
+    def test_remove_masked(self):
+        new = self.Fake(1)
+        self.library.add([new])
+        self.library.mask(new.mountpoint)
+        self.failUnless(self.library.masked_mount_points)
+        self.library.remove_masked(new.mountpoint)
+        self.failIf(self.library.masked_mount_points)
+
     def test_content_masked(self):
         new = self.Fake(100)
         new._mounted = False

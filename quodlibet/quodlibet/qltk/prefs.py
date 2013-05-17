@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson, Nick Boultbee
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -19,6 +20,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.data_editors import MultiStringEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.scanbox import ScanBox
+from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
@@ -502,6 +504,12 @@ class PreferencesWindow(qltk.UniqueWindow):
             vb3.pack_start(hb, expand=False)
             f = qltk.Frame(_("Scan Directories"), child=vb3)
             self.pack_start(f, expand=False)
+
+            # during testing
+            if app.library:
+                masked = MaskedBox(app.library)
+                f = qltk.Frame(_("Hidden Songs"), child=masked)
+                self.pack_start(f, expand=False)
 
             self.show_all()
 

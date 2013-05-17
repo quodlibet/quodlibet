@@ -45,7 +45,7 @@ class ScanBox(gtk.HBox):
         sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         sw.set_shadow_type(gtk.SHADOW_IN)
         sw.add(view)
-        sw.set_size_request(-1, max(sw.size_request()[1], 100))
+        sw.set_size_request(-1, max(sw.size_request()[1], 80))
 
         render = gtk.CellRendererText()
         render.set_property('ellipsize', pango.ELLIPSIZE_END)

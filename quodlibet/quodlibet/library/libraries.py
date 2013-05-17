@@ -749,6 +749,11 @@ class FileLibrary(PicklingLibrary):
 
         return self._masked.get(mount_point, {}).values()
 
+    def remove_masked(self, mount_point):
+        """Remove all songs for a masked point"""
+
+        self._masked.pop(mount_point, {})
+
 
 class SongFileLibrary(SongLibrary, FileLibrary):
     """A library containing song files.
