@@ -615,7 +615,7 @@ class CollectionBrowser(Browser, gtk.VBox, util.InstanceTracker):
         prefs.connect('clicked', Preferences)
 
         search = SearchBarBox(button=False, completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators, compact=True)
+                              accel_group=self.accelerators)
 
         search.connect('query-changed', self.__update_filter)
 

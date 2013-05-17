@@ -38,7 +38,7 @@ class SearchBarBox(gtk.HBox):
     timeout = 400
 
     def __init__(self, filename=None, button=False, completion=None,
-                 accel_group=None, compact=False):
+                 accel_group=None):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
@@ -65,24 +65,14 @@ class SearchBarBox(gtk.HBox):
         entry.connect('activate', self.__filter_changed)
         entry.connect('activate', self.__save_search)
         entry.connect('focus-out-event', self.__save_search)
-        entry.connect('icon-press', self.__icon_press)
 
-        # The naked entry looks better with the search button on the right.
-        pos = self.__search_icon_pos = int(not compact)
-        entry.set_icon_from_stock(pos, gtk.STOCK_FIND)
-        entry.set_icon_tooltip_text(pos,
-                _("Search your library, using free text or QL queries"))
+        label = gtk.Label(_("_Search:"))
+        label.set_use_underline(True)
+        label.connect('mnemonic-activate', self.__mnemonic_activate)
+        label.set_mnemonic_widget(entry)
+        self.pack_start(label, expand=False)
 
-        if not compact:
-            label = gtk.Label(_("_Search:"))
-            label.set_use_underline(True)
-            label.connect('mnemonic-activate', self.__mnemonic_activate)
-            label.set_mnemonic_widget(entry)
-            self.pack_start(label, expand=False)
-        else:
-            entry.set_tooltip_text(_("Search your library, "
-                                     "using free text or QL queries"))
-            # combo.enable_clear_button()
+        combo.enable_clear_button()
         self.pack_start(combo)
 
         # search button
@@ -99,10 +89,6 @@ class SearchBarBox(gtk.HBox):
                     lambda *x: entry.mnemonic_activate(True))
 
         self.show_all()
-
-    def __icon_press(self, entry, pos, event, *args, **kwargs):
-        if pos == self.__search_icon_pos:
-            self.__filter_changed()
 
     def __inhibit(self):
         self.__combo.handler_block(self.__sig)
