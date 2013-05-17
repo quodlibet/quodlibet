@@ -41,7 +41,7 @@ class MaskedBox(Gtk.HBox):
         unhide_item.connect_object('activate', self.__unhide, view, library)
         menu.append(unhide_item)
 
-        remove_item = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
+        remove_item = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
         remove_item.connect_object('activate', self.__remove, view, library)
         menu.append(remove_item)
 
