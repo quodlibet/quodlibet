@@ -100,10 +100,10 @@ def check_wrapper_changed(library, parent, songs):
                       "may be read-only, corrupted, or you "
                       "do not have permission to edit it.") %
                     util.escape(song('~basename'))).run()
-            win.step()
+
+            if win.step():
+                break
         win.destroy()
-        while gtk.events_pending():
-            gtk.main_iteration()
 
     changed = []
     for song in songs:
