@@ -266,7 +266,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.song_scroller.connect('notify::visible', self.__show_or)
         self.qexpander.connect('notify::visible', self.__show_or)
         self.qexpander.connect('notify::expanded', self.__expand_or)
-        self.qexpander.connect('size-allocate', self.__qex_size_allocate)
+        self.qexpander.connect('draw', self.__qex_size_allocate)
         self.songpane.connect('notify', self.__moved_pane_handle)
 
         sort = config.get('memory', 'sortby')
