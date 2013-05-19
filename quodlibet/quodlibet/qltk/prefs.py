@@ -506,7 +506,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.pack_start(f, expand=False)
 
             # during testing
-            if app.library:
+            if app.library is not None:
                 masked = MaskedBox(app.library)
                 f = qltk.Frame(_("Hidden Songs"), child=masked)
                 self.pack_start(f, expand=False)
