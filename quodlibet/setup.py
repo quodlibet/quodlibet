@@ -216,6 +216,7 @@ if __name__ == "__main__":
         'po_package': "quodlibet",
         'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
         'man_pages': ["man/quodlibet.1", "man/exfalso.1", "man/operon.1"],
+        "search_provider": "data/quodlibet-search-provider.ini",
         }
     if os.name == 'nt':
         # (probably) necessary to get the right DLLs pulled in by py2exe

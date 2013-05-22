@@ -12,5 +12,6 @@ include tests/data/*
 recursive-include tests *.py
 include gdist/*.py
 include data/*.desktop.in
+include data/*.ini
 include MANIFEST.in
 recursive-include docs conf.py Makefile *.rst *.png

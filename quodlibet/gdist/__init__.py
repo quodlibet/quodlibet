@@ -27,6 +27,7 @@ from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
 from gdist.po import build_mo, install_mo, po_stats, check_pot
 from gdist.icons import build_icon_cache, install_icons
+from gdist.search_provider import install_search_provider
 
 
 class build(distutils_build):
@@ -48,6 +49,8 @@ class install(distutils_install):
         ("install_man", lambda self: self.distribution.has_man_pages()),
         ("install_mo", lambda self: self.distribution.has_po()),
         ("install_icons", lambda self: self.distribution.need_icon_install()),
+        ("install_search_provider",
+         lambda self: self.distribution.need_search_provider()),
        ]
 
 class GDistribution(Distribution):
@@ -75,6 +78,7 @@ class GDistribution(Distribution):
     po_directory = None
     man_pages = []
     po_package = None
+    search_provider = None
 
     def __init__(self, *args, **kwargs):
         Distribution.__init__(self, *args, **kwargs)
@@ -85,6 +89,8 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("install_shortcuts", install_shortcuts)
         self.cmdclass.setdefault("install_man", install_man)
         self.cmdclass.setdefault("install_mo", install_mo)
+        self.cmdclass.setdefault("install_search_provider",
+                                 install_search_provider)
         self.cmdclass.setdefault("build", build)
         self.cmdclass.setdefault("install", install)
         self.cmdclass.setdefault("po_stats", po_stats)
@@ -103,6 +109,9 @@ class GDistribution(Distribution):
         return os.name != 'nt'
 
     def need_icon_install(self):
+        return os.name != 'nt'
+
+    def need_search_provider(self):
         return os.name != 'nt'
 
 __all__ = ["GDistribution"]
