@@ -11,6 +11,6 @@ recursive-include quodlibet/images/hicolor/ *.cache *.theme *.svg *.png
 include tests/data/*
 recursive-include tests *.py
 include gdist/*.py
-include *.desktop.in
+include data/*.desktop.in
 include MANIFEST.in
 recursive-include docs conf.py Makefile *.rst *.png

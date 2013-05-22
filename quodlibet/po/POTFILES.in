@@ -1,4 +1,5 @@
-exfalso.desktop.in
+data/exfalso.desktop.in
+data/quodlibet.desktop.in
 exfalso.py
 operon.py
 quodlibet/browsers/albums.py
@@ -12,7 +13,6 @@ quodlibet/browsers/media.py
 quodlibet/browsers/paned.py
 quodlibet/browsers/playlists.py
 quodlibet/browsers/search.py
-quodlibet.desktop.in
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
 quodlibet/devices/ipod.py

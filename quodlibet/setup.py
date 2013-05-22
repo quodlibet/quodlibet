@@ -214,7 +214,7 @@ if __name__ == "__main__":
         'scripts': ["quodlibet.py", "exfalso.py", "operon.py"],
         'po_directory': "po",
         'po_package': "quodlibet",
-        'shortcuts': ["quodlibet.desktop", "exfalso.desktop"],
+        'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
         'man_pages': ["man/quodlibet.1", "man/exfalso.1", "man/operon.1"],
         }
     if os.name == 'nt':
