@@ -5,8 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import util
 from quodlibet import qltk
@@ -19,83 +18,84 @@ class ConfirmMaskedRemoval(qltk.Message):
         description = _("The selected songs will be removed from the library.")
 
         super(ConfirmMaskedRemoval, self).__init__(
-            gtk.MESSAGE_WARNING, parent, title, description, gtk.BUTTONS_NONE)
+            Gtk.MessageType.WARNING, parent, title, description,
+            Gtk.ButtonsType.NONE)
 
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         gtk.STOCK_REMOVE, gtk.RESPONSE_YES)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                         Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
 
 
-class MaskedBox(gtk.HBox):
+class MaskedBox(Gtk.HBox):
 
     def __init__(self, library):
         super(MaskedBox, self).__init__(spacing=6)
 
-        self.model = model = gtk.ListStore(object)
+        self.model = model = Gtk.ListStore(object)
         view = RCMHintedTreeView(model)
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
         self.view = view
 
-        menu = gtk.Menu()
-        unhide_item = qltk.MenuItem(_("Unhide"), gtk.STOCK_ADD)
+        menu = Gtk.Menu()
+        unhide_item = qltk.MenuItem(_("Unhide"), Gtk.STOCK_ADD)
         unhide_item.connect_object('activate', self.__unhide, view, library)
         menu.append(unhide_item)
 
-        remove_item = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        remove_item = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
         remove_item.connect_object('activate', self.__remove, view, library)
         menu.append(remove_item)
 
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        sw.set_size_request(-1, max(sw.size_request()[1], 80))
+        sw.set_size_request(-1, max(sw.size_request().height, 80))
 
-        def cdf(column, cell, model, iter):
+        def cdf(column, cell, model, iter, data):
             row = model[iter]
             cell.set_property('text', util.fsdecode(row[0]))
 
-        def cdf_count(column, cell, model, iter):
+        def cdf_count(column, cell, model, iter, data):
             mount = model[iter][0]
             song_count = len(library.get_masked(mount))
             cell.set_property('text',
                 _("%(song_count)d songs") % {"song_count": song_count})
 
-        column = gtk.TreeViewColumn(None)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column = Gtk.TreeViewColumn(None)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
-        render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
-        column.pack_start(render)
+        render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        column.pack_start(render, True)
         column.set_cell_data_func(render, cdf)
 
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         render.props.sensitive = False
-        column.pack_start(render, expand=False)
+        column.pack_start(render, False)
         column.set_cell_data_func(render, cdf_count)
 
         view.append_column(column)
 
-        unhide = qltk.Button(_("Unhide"), gtk.STOCK_ADD)
+        unhide = qltk.Button(_("Unhide"), Gtk.STOCK_ADD)
         unhide.connect_object("clicked", self.__unhide, view, library)
-        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
 
         selection = view.get_selection()
-        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         selection.connect("changed", self.__select_changed, remove, unhide)
         selection.emit("changed")
 
         remove.connect_object("clicked", self.__remove, view, library)
 
-        vbox = gtk.VBox(spacing=6)
-        vbox.pack_start(unhide, expand=False)
-        vbox.pack_start(remove, expand=False)
+        vbox = Gtk.VBox(spacing=6)
+        vbox.pack_start(unhide, False, True, 0)
+        vbox.pack_start(remove, False, True, 0)
 
-        self.pack_start(sw)
-        self.pack_start(vbox, expand=False)
+        self.pack_start(sw, True, True, 0)
+        self.pack_start(vbox, False, True, 0)
         self.show_all()
 
         for path in library.masked_mount_points:
@@ -105,7 +105,7 @@ class MaskedBox(gtk.HBox):
             self.set_sensitive(False)
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __unhide(self, view, library):
         selection = view.get_selection()
@@ -122,7 +122,7 @@ class MaskedBox(gtk.HBox):
     def __remove(self, view, library):
         dialog = ConfirmMaskedRemoval(self)
         response = dialog.run()
-        if response == gtk.RESPONSE_YES:
+        if response == Gtk.ResponseType.YES:
             selection = view.get_selection()
             model, paths = selection.get_selected_rows()
             for path in paths:

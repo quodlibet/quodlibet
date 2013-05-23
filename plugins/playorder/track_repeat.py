@@ -12,7 +12,8 @@
 # TODO: notification of play count? Non-shuffle? Integration with main UI?
 #
 
-import gtk
+from gi.repository import Gtk
+
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderShuffleMixin
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
@@ -36,16 +37,17 @@ class TrackRepeatOrder(PlayOrderPlugin,
         def plays_changed(spin):
             cls.config_set("play_each", int(spin.get_value()))
 
-        vb = gtk.VBox(spacing=10)
+        vb = Gtk.VBox(spacing=10)
         vb.set_border_width(10)
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
         val = cls.config_get("play_each", cls.PLAY_EACH_DEFAULT)
-        spin = gtk.SpinButton(gtk.Adjustment(float(val), 2, 20, 1, 10))
+        spin = Gtk.SpinButton(
+            adjustment=Gtk.Adjustment(float(val), 2, 20, 1, 10))
         spin.connect("value-changed", plays_changed)
-        hbox.pack_start(spin, expand=False)
-        lbl = gtk.Label(_("Number of times to play each song"))
-        hbox.pack_start(lbl, expand=False)
-        vb.pack_start(hbox, expand=True)
+        hbox.pack_start(spin, False, True, 0)
+        lbl = Gtk.Label(label=_("Number of times to play each song"))
+        hbox.pack_start(lbl, False, True, 0)
+        vb.pack_start(hbox, True, True, 0)
         vb.show_all()
         return vb
 

@@ -8,11 +8,7 @@
 
 import sys
 
-import gtk
-import pango
-import gobject
-
-from gtk.gdk import SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN
+from gi.repository import Gtk, Pango, Gdk, GdkPixbuf, GLib
 
 from quodlibet import browsers, config, qltk, util, app
 from quodlibet.parse import Pattern
@@ -22,10 +18,11 @@ from quodlibet.qltk.controls import StopAfterMenu
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
+from quodlibet.qltk.x import RadioMenuItem
 from quodlibet.util.thumbnails import scale, calc_scale_size
 
 
-class Preferences(gtk.VBox):
+class Preferences(Gtk.VBox):
     """A small window to configure the tray icon's tooltip."""
 
     def __init__(self, activator):
@@ -33,7 +30,7 @@ class Preferences(gtk.VBox):
 
         self.set_border_width(6)
 
-        combo = gtk.combo_box_new_text()
+        combo = Gtk.ComboBoxText()
         combo.append_text(_("Scroll wheel adjusts volume\n"
                             "Shift and scroll wheel changes song"))
         combo.append_text(_("Scroll wheel changes song\n"
@@ -42,10 +39,11 @@ class Preferences(gtk.VBox):
                 config.getboolean("plugins", "icon_modifier_swap", False)))
         combo.connect('changed', self.__changed_combo)
 
-        self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo))
+        self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo),
+                        True, True, 0)
 
-        box = gtk.VBox(spacing=12)
-        table = gtk.Table(2, 4)
+        box = Gtk.VBox(spacing=12)
+        table = Gtk.Table(2, 4)
         table.set_row_spacings(6)
         table.set_col_spacings(12)
 
@@ -53,24 +51,24 @@ class Preferences(gtk.VBox):
         for i, tag in enumerate([
                 "genre", "artist", "album", "discnumber", "part",
                 "tracknumber", "title", "version"]):
-            cb = gtk.CheckButton(util.tag(tag))
+            cb = Gtk.CheckButton(util.tag(tag))
             cb.tag = tag
             cbs.append(cb)
             table.attach(cb, i % 3, i % 3 + 1, i // 3, i // 3 + 1)
-        box.pack_start(table)
+        box.pack_start(table, True, True, 0)
 
-        entry = gtk.Entry()
-        box.pack_start(entry, expand=False)
+        entry = Gtk.Entry()
+        box.pack_start(entry, False, True, 0)
 
-        preview = gtk.Label()
-        preview.set_ellipsize(pango.ELLIPSIZE_END)
-        ev = gtk.EventBox()
+        preview = Gtk.Label()
+        preview.set_ellipsize(Pango.EllipsizeMode.END)
+        ev = Gtk.EventBox()
         ev.add(preview)
-        box.pack_start(ev, expand=False)
+        box.pack_start(ev, False, True, 0)
 
         frame = qltk.Frame(_("Tooltip Display"), child=box)
         frame.get_label_widget().set_mnemonic_widget(entry)
-        self.pack_start(frame)
+        self.pack_start(frame, True, True, 0)
 
         for cb in cbs:
             cb.connect('toggled', self.__changed_cb, cbs, entry)
@@ -143,8 +141,8 @@ class TrayIcon(EventPlugin):
     PLUGIN_VERSION = "2.0"
 
     def enabled(self):
-        self.__icon = gtk.StatusIcon()
-        self.__icon_theme = gtk.icon_theme_get_default()
+        self.__icon = Gtk.StatusIcon()
+        self.__icon_theme = Gtk.IconTheme.get_default()
         self.__theme_sig = self.__icon_theme.connect('changed',
             self.__theme_changed)
 
@@ -191,17 +189,17 @@ class TrayIcon(EventPlugin):
         """Returns a pixbuf for a paused icon frokm the current theme.
         The returned pixbuf can have a size of size->size+diff"""
 
-        names = ('media-playback-pause', gtk.STOCK_MEDIA_PAUSE)
-        theme = gtk.icon_theme_get_default()
+        names = ('media-playback-pause', Gtk.STOCK_MEDIA_PAUSE)
+        theme = Gtk.IconTheme.get_default()
 
         # Get the suggested icon
-        info = theme.choose_icon(names, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+        info = theme.choose_icon(names, size, Gtk.IconLookupFlags.USE_BUILTIN)
         if not info:
             return
 
         try:
             pixbuf = info.load_icon()
-        except gobject.GError:
+        except GLib.GError:
             pass
         else:
             # In case it is too big, rescale
@@ -217,7 +215,7 @@ class TrayIcon(EventPlugin):
             try:
                 self.__pixbuf = self.__icon_theme.load_icon(
                     "quodlibet", self.__size, 0)
-            except gobject.GError:
+            except GLib.GError:
                 util.print_exc()
                 return
 
@@ -225,8 +223,8 @@ class TrayIcon(EventPlugin):
         #the KDE panel will emit size-changed until we reach 0
         w, h = self.__pixbuf.get_width(), self.__pixbuf.get_height()
         if h < self.__size:
-            bg = gtk.gdk.Pixbuf(
-                gtk.gdk.COLORSPACE_RGB, True, 8, w, self.__size)
+            bg = GdkPixbuf.Pixbuf(
+                GdkPixbuf.Colorspace.RGB, True, 8, w, self.__size)
             bg.fill(0)
             self.__pixbuf.copy_area(0, 0, w, h, bg, 0, (self.__size - h) / 2)
             self.__pixbuf = bg
@@ -249,7 +247,7 @@ class TrayIcon(EventPlugin):
                 overlay.composite(base, w - wo - pad, h - ho - pad,
                     wo, ho, w - wo - pad, h - ho - pad,
                     1, 1,
-                    gtk.gdk.INTERP_BILINEAR, 255)
+                    GdkPixbuf.InterpType.BILINEAR, 255)
 
             self.__pixbuf_paused = base
 
@@ -308,7 +306,7 @@ class TrayIcon(EventPlugin):
             self.__show_window()
 
     def __button_middle(self, widget, event):
-        if event.type == gtk.gdk.BUTTON_PRESS and event.button == 2:
+        if event.type == Gdk.EventType.BUTTON_PRESS and event.button == 2:
             if self.__destroy_win32_menu():
                 return
             self.__play_pause()
@@ -321,24 +319,26 @@ class TrayIcon(EventPlugin):
             player.reset()
 
     def __scroll(self, widget, event):
+        state = event.get_state()
         try:
-            event.state ^= config.getboolean("plugins", "icon_modifier_swap")
+            state ^= config.getboolean("plugins", "icon_modifier_swap")
         except config.Error:
             pass
 
-        if event.direction in [SCROLL_LEFT, SCROLL_RIGHT]:
-            event.state = gtk.gdk.SHIFT_MASK
+        DIR = Gdk.ScrollDirection
+        if event.direction in [DIR.LEFT, DIR.RIGHT]:
+            state = Gdk.ModifierType.SHIFT_MASK
 
         player = app.player
-        if event.state & gtk.gdk.SHIFT_MASK:
-            if event.direction in [SCROLL_UP, SCROLL_LEFT]:
+        if state & Gdk.ModifierType.SHIFT_MASK:
+            if event.direction in [DIR.UP, DIR.LEFT]:
                 player.previous()
-            elif event.direction in [SCROLL_DOWN, SCROLL_RIGHT]:
+            elif event.direction in [DIR.DOWN, DIR.RIGHT]:
                 player.next()
         else:
-            if event.direction in [SCROLL_UP, SCROLL_LEFT]:
+            if event.direction in [DIR.UP, DIR.LEFT]:
                 player.volume += 0.05
-            elif event.direction in [SCROLL_DOWN, SCROLL_RIGHT]:
+            elif event.direction in [DIR.DOWN, DIR.RIGHT]:
                 player.volume -= 0.05
 
     def plugin_on_song_started(self, song):
@@ -355,7 +355,7 @@ class TrayIcon(EventPlugin):
         else:
             tooltip = _("Not playing")
 
-        self.__icon.set_tooltip(tooltip)
+        self.__icon.set_tooltip_markup(util.escape(tooltip))
 
     def __destroy_win32_menu(self):
         """Returns True if current action should only hide the menu"""
@@ -367,23 +367,24 @@ class TrayIcon(EventPlugin):
     def __button_right(self, icon, button, time):
         if self.__destroy_win32_menu():
             return
-        self.__menu = menu = gtk.Menu()
+        self.__menu = menu = Gtk.Menu()
 
         player = app.player
         window = app.window
 
-        pp_icon = [gtk.STOCK_MEDIA_PAUSE, gtk.STOCK_MEDIA_PLAY][player.paused]
-        playpause = gtk.ImageMenuItem(pp_icon)
+        pp_icon = [Gtk.STOCK_MEDIA_PAUSE, Gtk.STOCK_MEDIA_PLAY][player.paused]
+        playpause = Gtk.ImageMenuItem.new_from_stock(pp_icon, None)
         playpause.connect('activate', self.__play_pause)
 
-        previous = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PREVIOUS)
+        previous = Gtk.ImageMenuItem.new_from_stock(
+            Gtk.STOCK_MEDIA_PREVIOUS, None)
         previous.connect('activate', lambda *args: player.previous())
-        next = gtk.ImageMenuItem(gtk.STOCK_MEDIA_NEXT)
+        next = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_MEDIA_NEXT, None)
         next.connect('activate', lambda *args: player.next())
 
-        orders = gtk.MenuItem(_("Play _Order"))
+        orders = Gtk.MenuItem(label=_("Play _Order"), use_underline=True)
 
-        repeat = gtk.CheckMenuItem(_("_Repeat"))
+        repeat = Gtk.CheckMenuItem(label=_("_Repeat"), use_underline=True)
         repeat.set_active(window.repeat.get_active())
         repeat.connect('toggled',
             lambda s: window.repeat.set_active(s.get_active()))
@@ -391,49 +392,53 @@ class TrayIcon(EventPlugin):
         def set_safter(widget, stop_after):
             stop_after.active = widget.get_active()
 
-        safter = gtk.CheckMenuItem(_("Stop _after this song"))
+        safter = Gtk.CheckMenuItem(label=_("Stop _after this song"),
+                                   use_underline=True)
         safter.set_active(self.__stop_after.active)
         safter.connect('activate', set_safter, self.__stop_after)
 
         def set_order(widget, num):
             window.order.set_active(num)
 
-        order_items = [None]
+        order_items = []
+        item = None
         for i, Kind in enumerate(ORDERS):
-            name = Kind.accelerated_name
-            order_items.append(gtk.RadioMenuItem(order_items[-1], name))
-            order_items[-1].connect('toggled', set_order, i)
+            item = RadioMenuItem(
+                    group=item,
+                    label=Kind.accelerated_name,
+                    use_underline=True)
+            order_items.append(item)
+            item.connect('toggled', set_order, i)
 
-        del order_items[0]
         order_items[window.order.get_active()].set_active(True)
 
-        order_sub = gtk.Menu()
+        order_sub = Gtk.Menu()
         order_sub.append(repeat)
         order_sub.append(safter)
-        order_sub.append(gtk.SeparatorMenuItem())
+        order_sub.append(Gtk.SeparatorMenuItem())
         map(order_sub.append, order_items)
         orders.set_submenu(order_sub)
 
-        browse = gtk.MenuItem(_("_Browse Library"), gtk.STOCK_FIND)
-        browse_sub = gtk.Menu()
+        browse = qltk.MenuItem(_("_Browse Library"), Gtk.STOCK_FIND)
+        browse_sub = Gtk.Menu()
 
         for Kind in browsers.browsers:
             if not Kind.in_menu:
                 continue
-            i = gtk.MenuItem(Kind.accelerated_name)
+            i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
             i.connect_object('activate', LibraryBrowser, Kind, app.library)
             browse_sub.append(i)
 
         browse.set_submenu(browse_sub)
 
-        props = qltk.MenuItem(_("Edit _Tags"), gtk.STOCK_PROPERTIES)
+        props = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
         props.connect('activate', self.__properties)
 
-        info = gtk.ImageMenuItem(gtk.STOCK_INFO)
+        info = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_INFO, None)
         info.connect('activate', self.__information)
 
-        rating = gtk.MenuItem(_("_Rating"))
-        rating_sub = gtk.Menu()
+        rating = Gtk.MenuItem(label=_("_Rating"), use_underline=True)
+        rating_sub = Gtk.Menu()
 
         def set_rating(value):
             song = player.song
@@ -445,27 +450,27 @@ class TrayIcon(EventPlugin):
 
         for i in range(0, int(1.0 / util.RATING_PRECISION) + 1):
             j = i * util.RATING_PRECISION
-            item = gtk.MenuItem("%0.2f\t%s" % (j, util.format_rating(j)))
+            item = Gtk.MenuItem("%0.2f\t%s" % (j, util.format_rating(j)))
             item.connect_object('activate', set_rating, j)
             rating_sub.append(item)
 
         rating.set_submenu(rating_sub)
 
-        quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        quit = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_QUIT, None)
         quit.connect('activate', lambda *x: app.quit())
 
         menu.append(playpause)
-        menu.append(gtk.SeparatorMenuItem())
+        menu.append(Gtk.SeparatorMenuItem())
         menu.append(previous)
         menu.append(next)
         menu.append(orders)
-        menu.append(gtk.SeparatorMenuItem())
+        menu.append(Gtk.SeparatorMenuItem())
         menu.append(browse)
-        menu.append(gtk.SeparatorMenuItem())
+        menu.append(Gtk.SeparatorMenuItem())
         menu.append(props)
         menu.append(info)
         menu.append(rating)
-        menu.append(gtk.SeparatorMenuItem())
+        menu.append(Gtk.SeparatorMenuItem())
         menu.append(quit)
 
         menu.show_all()
@@ -473,8 +478,8 @@ class TrayIcon(EventPlugin):
         if sys.platform == "win32":
             menu.popup(None, None, None, button, time, self.__icon)
         else:
-            menu.popup(None, None, gtk.status_icon_position_menu,
-                button, time, self.__icon)
+            menu.popup(None, None, Gtk.StatusIcon.position_menu, self.__icon,
+                button, time)
 
     plugin_on_paused = __update_icon
     plugin_on_unpaused = __update_icon

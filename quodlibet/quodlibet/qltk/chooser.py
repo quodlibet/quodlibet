@@ -5,19 +5,19 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.qltk import get_top_parent
 
 
 # Choose folders and return them when run.
-class FolderChooser(gtk.FileChooserDialog):
+class FolderChooser(Gtk.FileChooserDialog):
     def __init__(self, parent, title, initial_dir=None,
-                 action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER):
+                 action=Gtk.FileChooserAction.SELECT_FOLDER):
         super(FolderChooser, self).__init__(
             title=title, parent=get_top_parent(parent), action=action,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                     gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                     Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         if initial_dir:
             self.set_current_folder(initial_dir)
         self.set_local_only(True)
@@ -26,7 +26,7 @@ class FolderChooser(gtk.FileChooserDialog):
     def run(self):
         resp = super(FolderChooser, self).run()
         fns = self.get_filenames()
-        if resp == gtk.RESPONSE_OK:
+        if resp == Gtk.ResponseType.OK:
             return fns
         else:
             return []
@@ -36,11 +36,11 @@ class FolderChooser(gtk.FileChooserDialog):
 class FileChooser(FolderChooser):
     def __init__(self, parent, title, filter=None, initial_dir=None):
         super(FileChooser, self).__init__(
-            parent, title, initial_dir, gtk.FILE_CHOOSER_ACTION_OPEN)
+            parent, title, initial_dir, Gtk.FileChooserAction.OPEN)
         if filter:
             def new_filter(args, realfilter):
-                return realfilter(args[0])
-            f = gtk.FileFilter()
+                return realfilter(args.filename)
+            f = Gtk.FileFilter()
             f.set_name(_("Songs"))
-            f.add_custom(gtk.FILE_FILTER_FILENAME, new_filter, filter)
+            f.add_custom(Gtk.FileFilterFlags.FILENAME, new_filter, filter)
             self.add_filter(f)

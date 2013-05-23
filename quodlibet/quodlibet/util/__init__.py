@@ -701,13 +701,15 @@ def spawn(argv, stdout=False):
     argv must be strictly str objects to avoid encoding confusion.
     """
 
-    import gobject
+    from gi.repository import GLib
+
     types = map(type, argv)
     if not (min(types) == max(types) == str):
         raise TypeError("executables and arguments must be str objects")
     print_d("Running %r" % " ".join(argv))
-    args = gobject.spawn_async(
-        argv, flags=gobject.SPAWN_SEARCH_PATH, standard_output=stdout)
+    args = GLib.spawn_async(argv=argv, flags=GLib.SpawnFlags.SEARCH_PATH,
+                            standard_output=stdout)
+
     if stdout:
         return os.fdopen(args[2])
     else:
@@ -757,8 +759,8 @@ class DeferredSignal(object):
     def __call__(self, *args):
         if not self.dirty:
             self.dirty = True
-            import gobject
-            gobject.idle_add(self._wrap, *args)
+            from gi.repository import GLib
+            GLib.idle_add(self._wrap, *args)
 
     def _wrap(self, *args):
         self.func(*args)

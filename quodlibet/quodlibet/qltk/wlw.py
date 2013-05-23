@@ -7,8 +7,7 @@
 import math
 import time
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango, Gdk
 
 from quodlibet.qltk import get_top_parent
 from quodlibet import util
@@ -30,10 +29,10 @@ class WaitLoadBase(object):
 
         super(WaitLoadBase, self).__init__()
 
-        self._label = gtk.Label()
+        self._label = Gtk.Label()
         self._label.set_use_markup(True)
 
-        self._progress = gtk.ProgressBar()
+        self._progress = Gtk.ProgressBar()
         self._progress.set_pulse_step(0.08)
         self.pulse = self._progress.pulse
         self.set_fraction = self._progress.set_fraction
@@ -44,8 +43,8 @@ class WaitLoadBase(object):
         if self.count > limit or self.count == 0:
             # Add stop/pause buttons. count = 0 means an indefinite
             # number of steps.
-            self._cancel_button = gtk.Button(stock=gtk.STOCK_STOP)
-            self._pause_button = gtk.ToggleButton(gtk.STOCK_MEDIA_PAUSE)
+            self._cancel_button = Gtk.Button(stock=Gtk.STOCK_STOP)
+            self._pause_button = Gtk.ToggleButton(Gtk.STOCK_MEDIA_PAUSE)
             self._pause_button.set_use_stock(True)
             self._cancel_button.connect('clicked', self.__cancel_clicked)
             self._pause_button.connect('clicked', self.__pause_clicked)
@@ -96,12 +95,12 @@ class WaitLoadBase(object):
             values.setdefault("remaining", util.format_time(remaining))
         self._label.set_markup(self._text % values)
 
-        while not self.quit and (self.paused or gtk.events_pending()):
-            gtk.main_iteration()
+        while not self.quit and (self.paused or Gtk.events_pending()):
+            Gtk.main_iteration()
         return self.quit
 
 
-class WaitLoadWindow(WaitLoadBase, gtk.Window):
+class WaitLoadWindow(WaitLoadBase, Gtk.Window):
     """A window with a progress bar and some nice updating text,
     as well as pause/stop buttons.
 
@@ -124,34 +123,36 @@ class WaitLoadWindow(WaitLoadBase, gtk.Window):
             self.connect_object(
                 'destroy', WaitLoadWindow.__disconnect, self, sig, parent)
             self.set_transient_for(parent)
-            parent.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            window = parent.get_window()
+            if window:
+                window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         self.set_modal(True)
         self.set_decorated(False)
         self.set_resizable(False)
         self.set_focus_on_map(False)
-        self.add(gtk.Frame())
-        self.get_child().set_shadow_type(gtk.SHADOW_OUT)
-        vbox = gtk.VBox(spacing=12)
+        self.add(Gtk.Frame())
+        self.get_child().set_shadow_type(Gtk.ShadowType.OUT)
+        vbox = Gtk.VBox(spacing=12)
         vbox.set_border_width(12)
         self._label.set_size_request(170, -1)
         self._label.set_line_wrap(True)
-        self._label.set_justify(gtk.JUSTIFY_CENTER)
-        vbox.pack_start(self._label)
-        vbox.pack_start(self._progress)
+        self._label.set_justify(Gtk.Justification.CENTER)
+        vbox.pack_start(self._label, True, True, 0)
+        vbox.pack_start(self._progress, True, True, 0)
 
         if self._cancel_button and self._pause_button:
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
-            hbox = gtk.HBox(spacing=6, homogeneous=True)
-            hbox.pack_start(self._cancel_button)
-            hbox.pack_start(self._pause_button)
-            vbox.pack_start(hbox)
+            hbox = Gtk.HBox(spacing=6, homogeneous=True)
+            hbox.pack_start(self._cancel_button, True, True, 0)
+            hbox.pack_start(self._pause_button, True, True, 0)
+            vbox.pack_start(hbox, True, True, 0)
 
         self.get_child().add(vbox)
 
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
-        while gtk.events_pending():
-            gtk.main_iteration()
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.show_all()
 
     def __recenter(self, parent, event):
@@ -161,8 +162,8 @@ class WaitLoadWindow(WaitLoadBase, gtk.Window):
         self.move(x + dx // 2 - dx2 // 2, y + dy // 2 - dy2 // 2)
 
     def __disconnect(self, sig, parent):
-        if parent.window:
-            parent.window.set_cursor(None)
+        if parent.get_window():
+            parent.get_window().set_cursor(None)
         parent.disconnect(sig)
 
 
@@ -180,24 +181,24 @@ class WritingWindow(WaitLoadWindow):
         return super(WritingWindow, self).step()
 
 
-class WaitLoadBar(WaitLoadBase, gtk.HBox):
+class WaitLoadBar(WaitLoadBase, Gtk.HBox):
     def __init__(self):
         super(WaitLoadBar, self).__init__()
 
         self._label.set_alignment(0.0, 0.5)
-        self._label.set_ellipsize(pango.ELLIPSIZE_END)
+        self._label.set_ellipsize(Pango.EllipsizeMode.END)
 
         self._cancel_button.remove(self._cancel_button.get_child())
-        self._cancel_button.add(gtk.image_new_from_stock(
-            gtk.STOCK_STOP, gtk.ICON_SIZE_MENU))
+        self._cancel_button.add(Gtk.Image.new_from_stock(
+            Gtk.STOCK_STOP, Gtk.IconSize.MENU))
         self._pause_button.remove(self._pause_button.get_child())
-        self._pause_button.add(gtk.image_new_from_stock(
-            gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_MENU))
+        self._pause_button.add(Gtk.Image.new_from_stock(
+            Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.MENU))
 
-        self.pack_start(self._label)
-        self.pack_start(self._progress, expand=False, padding=6)
-        self.pack_start(self._pause_button, expand=False)
-        self.pack_start(self._cancel_button, expand=False)
+        self.pack_start(self._label, True, True, 0)
+        self.pack_start(self._progress, False, True, 6)
+        self.pack_start(self._pause_button, False, True, 0)
+        self.pack_start(self._cancel_button, False, True, 0)
 
         self.show_all()
 

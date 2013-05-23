@@ -1,4 +1,4 @@
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -30,7 +30,7 @@ class SendTo(SongsMenuPlugin):
     PLUGIN_ID = 'SendTo'
     PLUGIN_NAME = _('Send To...')
     PLUGIN_DESC = _("Generic file-opening plugin.")
-    PLUGIN_ICON = gtk.STOCK_EXECUTE
+    PLUGIN_ICON = Gtk.STOCK_EXECUTE
     PLUGIN_VERSION = '1'
 
     commands = [
@@ -41,9 +41,9 @@ class SendTo(SongsMenuPlugin):
     def __init__(self, *args, **kwargs):
         super(SendTo, self).__init__(*args, **kwargs)
         self.command = None
-        submenu = gtk.Menu()
+        submenu = Gtk.Menu()
         for command in self.commands:
-            item = gtk.MenuItem(command.title)
+            item = Gtk.MenuItem(command.title)
             if not command.exists():
                 item.set_sensitive(False)
             else:

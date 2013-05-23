@@ -49,15 +49,15 @@ class Application(object):
         return self.library.librarian
 
     def quit(self):
-        import gobject
+        from gi.repository import GLib
 
         def idle_quit():
-            if self.window:
+            if self.window and not self.window.in_destruction():
                 self.window.destroy()
 
         # so this can be called from a signal handler and before
         # the main loop starts
-        gobject.idle_add(idle_quit, priority=gobject.PRIORITY_HIGH)
+        GLib.idle_add(idle_quit, priority=GLib.PRIORITY_HIGH)
 
     def show(self):
         from quodlibet.qltk import Window
@@ -84,40 +84,41 @@ app = Application()
 
 
 def _gtk_init(icon=None):
-    import pygtk
-    pygtk.require('2.0')
-    import gtk
-    import gobject
-    gobject.threads_init()
+    import gi
 
-    pygtk_ver = Version(gtk.pygtk_version)
-    if pygtk_ver < MinVersions.PYGTK:
-        print_w("PyGTK %s required. %s found." %
-                (MinVersions.PYGTK, pygtk_ver))
+    try:
+        # not sure if this is available under Windows
+        gi.require_version("GdkX11", "3.0")
+        from gi.repository import GdkX11
+    except (ValueError, ImportError):
+        pass
 
-    def warn_threads(func):
-        def w():
-            name = func.__module__ + "." + func.__name__
-            print_w("Don't use %r. Use idle_add instead." % name)
-            func()
-        return w
+    gi.require_version("GLib", "2.0")
+    gi.require_version("Gtk", "3.0")
+    gi.require_version("Gdk", "3.0")
+    gi.require_version("GObject", "2.0")
+    gi.require_version("Pango", "1.0")
 
-    gtk.gdk.threads_init = warn_threads(gtk.gdk.threads_init)
-    gtk.gdk.threads_enter = warn_threads(gtk.gdk.threads_enter)
-    gtk.gdk.threads_leave = warn_threads(gtk.gdk.threads_leave)
+    from gi.repository import Gtk, GObject, GLib
 
-    theme = gtk.icon_theme_get_default()
+    # some code depends on utf-8 default encoding (pygtk used to set it)
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
+
+    # blacklist some modules, simply loading can cause segfaults
+    sys.modules["gtk"] = None
+    sys.modules["gpod"] = None
+    sys.modules["glib"] = None
+    sys.modules["gobject"] = None
+    sys.modules["gnome"] = None
+
+    GObject.threads_init()
+
+    theme = Gtk.IconTheme.get_default()
     theme.append_search_path(quodlibet.const.IMAGEDIR)
 
     if icon:
-        gtk.window_set_default_icon_name(icon)
-
-    def website_wrap(activator, link):
-        if not quodlibet.util.website(link):
-            print_w("opening %r failed" % link)
-
-    # only works with a running main loop
-    gobject.idle_add(gtk.about_dialog_set_url_hook, website_wrap)
+        Gtk.Window.set_default_icon_name(icon)
 
 
 def _dbus_init():
@@ -129,8 +130,8 @@ def _dbus_init():
         except ImportError:
             return
     else:
-        import gobject
-        gobject.threads_init()
+        from gi.repository import GObject
+        GObject.threads_init()
         threads_init()
         DBusGMainLoop(set_as_default=True)
 
@@ -216,8 +217,8 @@ _gettext_init()
 
 def exit(status=None):
     """Call this to abort the startup"""
-    import gtk
-    gtk.gdk.notify_startup_complete()
+    from gi.repository import Gdk
+    Gdk.notify_startup_complete()
     raise SystemExit(status)
 
 
@@ -227,16 +228,16 @@ def init(library=None, icon=None, title=None, name=None):
     _gtk_init(icon)
     _dbus_init()
 
-    import gobject
+    from gi.repository import GLib
 
     if title:
-        gobject.set_prgname(title)
+        GLib.set_prgname(title)
         set_process_title(title)
         # Issue 736 - set after main loop has started (gtk seems to reset it)
-        gobject.idle_add(set_process_title, title)
+        GLib.idle_add(set_process_title, title)
 
     if name:
-        gobject.set_application_name(name)
+        GLib.set_application_name(name)
 
     # We already imported this, but Python is dumb and thinks we're rebinding
     # a local when we import it later.
@@ -314,7 +315,7 @@ def enable_periodic_save(save_library):
 
 
 def _init_debug():
-    import gobject
+    from gi.repository import GLib
     from quodlibet.qltk.debugwindow import ExceptionDialog
 
     print_d("Initializing debugging extensions")
@@ -322,40 +323,81 @@ def _init_debug():
     def _override_exceptions():
         print_d("Enabling custom exception handler.")
         sys.excepthook = ExceptionDialog.excepthook
-    gobject.idle_add(_override_exceptions)
+    GLib.idle_add(_override_exceptions)
 
 
 def _init_signal():
     """Catches certain signals and quits the application once the
     mainloop has started."""
 
-    import signal
-    import gobject
     import os
 
     if os.name == "nt":
         return
 
-    def pipe_can_read(*args):
+    def signal_action():
         app.quit()
-        return False
 
-    # The signal handler can not call gtk functions, thus we have to
-    # build a dummy pipe to pass it into the gtk mainloop
-
-    r, w = os.pipe()
-    gobject.io_add_watch(r, gobject.IO_IN, pipe_can_read)
+    import signal
+    import gi
+    gi.require_version("GLib", "2.0")
+    from gi.repository import GLib
 
     SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
     for sig in filter(None, SIGS):
-        signal.signal(sig, lambda sig, frame: os.write(w, "die!!!"))
+        # Before the mainloop starts we catch signals in python
+        # directly and idle_add the app.quit
+        def idle_handler(*args):
+            print_d("Python signal handler activated.")
+            GLib.idle_add(signal_action, priority=GLib.PRIORITY_HIGH)
+        print_d("Register Python signal handler: %r" % sig)
+        signal.signal(sig, idle_handler)
+
+        # After the mainloop has started the python handler
+        # blocks if no mainloop is active (for whatever reason).
+        # Override the python handler with the GLib one, which works here.
+        def install_glib_handler(sig):
+
+            def handler(*args):
+                print_d("GLib signal handler activated.")
+                signal_action()
+            if hasattr(GLib, "unix_signal_add_full"):
+                print_d("Register GLib signal handler: %r" % sig)
+                GLib.unix_signal_add_full(
+                    GLib.PRIORITY_HIGH, sig, handler, None)
+            else:
+                print_d("Can't install GLib signal handler, too old gi.")
+        GLib.idle_add(install_glib_handler, sig, priority=GLib.PRIORITY_HIGH)
+
+# minimal emulation of gtk.quit_add
+
+_quit_add_list = []
+
+
+def quit_add(level, func, *args):
+    assert level in (0, 1)
+
+    _quit_add_list.append([level, func, args])
+
+
+def _quit_before():
+    for level, func, args in _quit_add_list:
+        if level != 0:
+            func(*args)
+
+
+def _quite_after():
+    for level, func, args in _quit_add_list:
+        if level == 0:
+            func(*args)
 
 
 def main(window):
     print_d("Entering quodlibet.main")
-    import gtk
+    from gi.repository import Gtk
 
     def quit_gtk(m):
+        _quit_before()
         # disable plugins
         import quodlibet.plugins
         quodlibet.plugins.quit()
@@ -368,29 +410,31 @@ def main(window):
         # events that add new events to the main loop (like copool)
         # can block the shutdown, so force stop after some time.
         # gtk.main_iteration will return True if quit gets called here
-        import gobject
-        gobject.timeout_add(4 * 1000, gtk.main_quit,
-                            priority=gobject.PRIORITY_HIGH)
+        from gi.repository import GLib
+        GLib.timeout_add(4 * 1000, Gtk.main_quit,
+                         priority=GLib.PRIORITY_HIGH)
 
         # destroy all open windows so they hide immediately on close:
         # destroying all top level windows doesn't work (weird errors),
         # so we hide them all and only destroy our tracked instances
         # (browser windows, tag editors, pref window etc.)
         from quodlibet.qltk import Window
-        map(gtk.Window.hide, gtk.window_list_toplevels())
-        map(gtk.Window.destroy, Window.instances)
+        map(Gtk.Window.hide, Gtk.Window.list_toplevels())
+        map(Gtk.Window.destroy, Window.instances)
 
         print_d("Quit GTK: Process pending events...")
-        while gtk.events_pending():
-            if gtk.main_iteration(False):
+        while Gtk.events_pending():
+            if Gtk.main_iteration_do(False):
                 print_d("Quit GTK: Timeout occurred, force quit.")
                 break
         else:
-            gtk.main_quit()
+            Gtk.main_quit()
 
         print_d("Quit GTK: done.")
 
     window.connect('destroy', quit_gtk)
     window.show()
 
-    gtk.main()
+    Gtk.main()
+
+    _quite_after()

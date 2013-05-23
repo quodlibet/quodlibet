@@ -12,8 +12,7 @@ import time
 from datetime import date
 from threading import Thread
 
-import gtk
-import gobject
+from gi.repository import Gtk, GLib
 
 from quodlibet import const, config, util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -189,25 +188,25 @@ class LastFMSyncCache(object):
             song['~#added'] = min(song['~#added'], stats['added'])
 
 
-class LastFMSyncWindow(gtk.Dialog):
+class LastFMSyncWindow(Gtk.Dialog):
     def __init__(self, parent):
         super(LastFMSyncWindow, self).__init__(
                 _("Last.fm Sync"), parent, buttons=(
-                    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-                    gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
+                    Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
+                    Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
         self.set_border_width(5)
         self.set_default_size(300, 100)
 
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         vbox.set_spacing(12)
 
-        self.progbar = gtk.ProgressBar()
-        vbox.pack_start(self.progbar, expand=False)
-        self.status = gtk.Label("")
-        vbox.pack_start(self.status)
-        self.get_content_area().pack_start(vbox)
+        self.progbar = Gtk.ProgressBar()
+        vbox.pack_start(self.progbar, False, True, 0)
+        self.status = Gtk.Label(label="")
+        vbox.pack_start(self.status, True, True, 0)
+        self.get_content_area().pack_start(vbox, True, True, 0)
 
-        self.set_response_sensitive(gtk.RESPONSE_ACCEPT, False)
+        self.set_response_sensitive(Gtk.ResponseType.ACCEPT, False)
         self.show_all()
 
     def progress(self, message, fraction):
@@ -216,7 +215,7 @@ class LastFMSyncWindow(gtk.Dialog):
             self.progbar.set_fraction(fraction)
             self.progbar.set_text("%2.1f%%" % (fraction * 100))
             if fraction == 1:
-                self.set_response_sensitive(gtk.RESPONSE_ACCEPT, True)
+                self.set_response_sensitive(Gtk.ResponseType.ACCEPT, True)
 
 
 class LastFMSync(SongsMenuPlugin):
@@ -241,7 +240,7 @@ class LastFMSync(SongsMenuPlugin):
 
     def progress(self, msg, frac):
         if self.running:
-            gobject.idle_add(self.dialog.progress, msg, frac)
+            GLib.idle_add(self.dialog.progress, msg, frac)
             return True
         else:
             return False
@@ -261,7 +260,7 @@ class LastFMSync(SongsMenuPlugin):
         thread.daemon = True
         thread.start()
         resp = self.dialog.run()
-        if resp == gtk.RESPONSE_ACCEPT:
+        if resp == Gtk.ResponseType.ACCEPT:
             cache.update_songs(songs)
         self.running = False
         self.dialog.destroy()
@@ -271,13 +270,13 @@ class LastFMSync(SongsMenuPlugin):
         def entry_changed(entry):
             config.set('plugins', 'lastfmsync_username', entry.get_text())
 
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_spacing(8)
 
-        hbox.pack_start(gtk.Label("Last.fm username:"), expand=False)
-        ent = gtk.Entry()
+        hbox.pack_start(Gtk.Label("Last.fm username:"), True, True, 0)
+        ent = Gtk.Entry()
         ent.set_text(config_get('username', ''))
         ent.connect('changed', entry_changed)
-        hbox.pack_start(ent)
+        hbox.pack_start(ent, True, True, 0)
 
         return hbox

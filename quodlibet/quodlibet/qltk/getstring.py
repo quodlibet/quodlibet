@@ -5,38 +5,37 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk.entry import UndoEntry
 
 
-class GetStringDialog(gtk.Dialog):
+class GetStringDialog(Gtk.Dialog):
     """Simple dialog to return a string from the user"""
     _WIDTH = 300
 
-    def __init__(self, parent, title, text, okbutton=gtk.STOCK_OPEN):
+    def __init__(self, parent, title, text, okbutton=Gtk.STOCK_OPEN):
         super(GetStringDialog, self).__init__(title, parent)
 
         self.set_border_width(6)
-        self.set_has_separator(False)
         self.set_default_size(width=self._WIDTH, height=0)
         self.set_resizable(True)
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         okbutton, gtk.RESPONSE_OK)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                         okbutton, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
-        self.set_default_response(gtk.RESPONSE_OK)
+        self.set_default_response(Gtk.ResponseType.OK)
 
-        box = gtk.VBox(spacing=6)
-        lab = gtk.Label(text)
+        box = Gtk.VBox(spacing=6)
+        lab = Gtk.Label(label=text)
         box.set_border_width(6)
         lab.set_line_wrap(True)
-        lab.set_justify(gtk.JUSTIFY_CENTER)
-        box.pack_start(lab)
+        lab.set_justify(Gtk.Justification.CENTER)
+        box.pack_start(lab, True, True, 0)
 
         self._val = UndoEntry()
-        box.pack_start(self._val)
+        box.pack_start(self._val, True, True, 0)
 
-        self.vbox.pack_start(box)
+        self.vbox.pack_start(box, True, True, 0)
         self.get_child().show_all()
 
     def _verify_clipboard(self, text):
@@ -52,19 +51,20 @@ class GetStringDialog(gtk.Dialog):
 
         self.show()
         if clipboard:
-            clipboard = gtk.clipboard_get()
+            clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
             clip = clipboard.wait_for_text()
             if clip is not None:
                 clip = self._verify_clipboard(clip)
             if clip is not None:
                 text = clip
+
         self._val.set_text(text)
         self._val.set_activates_default(True)
         self._val.grab_focus()
-        resp = gtk.RESPONSE_OK
+        resp = Gtk.ResponseType.OK
         if not test:
             resp = super(GetStringDialog, self).run()
-        if resp == gtk.RESPONSE_OK:
+        if resp == Gtk.ResponseType.OK:
             value = self._val.get_text()
         else:
             value = None

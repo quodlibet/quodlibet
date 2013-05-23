@@ -7,9 +7,10 @@
 
 import os
 import shutil
-import gtk
 import copy
 from glob import glob
+
+from gi.repository import Gtk, GLib, GdkPixbuf
 
 from quodlibet import util
 from quodlibet import const
@@ -47,16 +48,16 @@ class StorageDevice(Device):
     def Properties(self):
         props = []
 
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         entry.set_text(self['pattern'])
         entry.connect_after('changed', self.__set_pattern)
         props.append((_("_Filename Pattern:"), entry, 'pattern'))
 
-        check = gtk.CheckButton()
+        check = Gtk.CheckButton()
         check.set_active(self['covers'])
         props.append((_("Copy _album covers"), check, 'covers'))
 
-        check = gtk.CheckButton()
+        check = Gtk.CheckButton()
         check.set_active(self['unclutter'])
         props.append((_("_Remove unused covers and directories"),
             check, 'unclutter'))
@@ -77,7 +78,7 @@ class StorageDevice(Device):
                     next()
                 except StopIteration:
                     break
-            gtk.main_iteration()
+            Gtk.main_iteration()
 
         self.__save_library()
         return self.__library.values()
@@ -116,7 +117,7 @@ class StorageDevice(Device):
                 coverfile = os.path.join(dirname, 'folder.jpg')
                 cover = song.find_cover()
                 if cover and util.mtime(cover.name) > util.mtime(coverfile):
-                    image = gtk.gdk.pixbuf_new_from_file_at_size(
+                    image = GdkPixbuf.Pixbuf.new_from_file_at_size(
                         cover.name, 200, 200)
                     image.save(coverfile, 'jpeg')
 
@@ -124,7 +125,7 @@ class StorageDevice(Device):
             song.sanitize(target)
             self.__library.add([song])
             return song
-        except (OSError, IOError), exc:
+        except (OSError, IOError, GLib.GError), exc:
             return str(exc).decode(const.ENCODING, 'replace')
 
     def delete(self, songlist, song):

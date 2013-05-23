@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import qltk
 
@@ -54,7 +54,7 @@ class SongsMenuPluginHandler(object):
         items = filter(lambda i: i.initialized, items)
 
         if items:
-            menu = gtk.Menu()
+            menu = Gtk.Menu()
             for item in items:
                 try:
                     menu.append(item)
@@ -171,8 +171,8 @@ class SongsMenuPluginHandler(object):
         self.__plugins.remove(plugin)
 
 
-class SongsMenu(gtk.Menu):
-    __accels = gtk.AccelGroup()
+class SongsMenu(Gtk.Menu):
+    __accels = Gtk.AccelGroup()
 
     plugins = SongsMenuPluginHandler()
 
@@ -192,10 +192,10 @@ class SongsMenu(gtk.Menu):
         if plugins:
             submenu = self.plugins.Menu(librarian, parent, songs)
             if submenu is not None:
-                b = qltk.MenuItem(_("_Plugins"), gtk.STOCK_EXECUTE)
+                b = qltk.MenuItem(_("_Plugins"), Gtk.STOCK_EXECUTE)
                 self.append(b)
                 b.set_submenu(submenu)
-                self.append(gtk.SeparatorMenuItem())
+                self.append(Gtk.SeparatorMenuItem())
 
         in_lib = True
         can_add = True
@@ -223,17 +223,17 @@ class SongsMenu(gtk.Menu):
             except AttributeError:
                 pass
             else:
-                b = qltk.MenuItem(_("_Add to Playlist"), gtk.STOCK_ADD)
+                b = qltk.MenuItem(_("_Add to Playlist"), Gtk.STOCK_ADD)
                 b.set_sensitive(can_add)
                 b.set_submenu(submenu)
                 self.append(b)
         if queue:
-            b = qltk.MenuItem(_("Add to _Queue"), gtk.STOCK_ADD)
+            b = qltk.MenuItem(_("Add to _Queue"), Gtk.STOCK_ADD)
             b.connect('activate', self.__enqueue, songs)
             if accels is not None:
-                key, val = gtk.accelerator_parse("<ctrl>Return")
+                key, val = Gtk.accelerator_parse("<ctrl>Return")
                 b.add_accelerator(
-                    'activate', accels, key, val, gtk.ACCEL_VISIBLE)
+                    'activate', accels, key, val, Gtk.AccelFlags.VISIBLE)
             self.append(b)
             b.set_sensitive(can_add)
 
@@ -246,7 +246,7 @@ class SongsMenu(gtk.Menu):
             else:
                 if browsers.media.MediaDevices in browsers.browsers:
                     submenu = browsers.media.Menu(songs, library)
-                    b = qltk.MenuItem(_("_Copy to Device"), gtk.STOCK_COPY)
+                    b = qltk.MenuItem(_("_Copy to Device"), Gtk.STOCK_COPY)
                     b.set_sensitive(can_add and len(submenu) > 0)
                     b.set_submenu(submenu)
                     self.append(b)
@@ -255,7 +255,7 @@ class SongsMenu(gtk.Menu):
             self.separate()
 
         if remove:
-            b = qltk.MenuItem(_("_Remove from library"), gtk.STOCK_REMOVE)
+            b = qltk.MenuItem(_("_Remove from library"), Gtk.STOCK_REMOVE)
             if callable(remove):
                 b.connect_object('activate', remove, songs)
             else:
@@ -264,7 +264,7 @@ class SongsMenu(gtk.Menu):
             self.append(b)
 
         if delete:
-            b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+            b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
             if callable(delete):
                 b.connect_object('activate', delete, songs)
             else:
@@ -273,35 +273,36 @@ class SongsMenu(gtk.Menu):
             self.append(b)
 
         if edit:
-            b = qltk.MenuItem(_("Edit _Tags"), gtk.STOCK_PROPERTIES)
+            b = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
             if accels is not None:
-                key, val = gtk.accelerator_parse("<alt>Return")
+                key, val = Gtk.accelerator_parse("<alt>Return")
                 b.add_accelerator(
-                    'activate', accels, key, val, gtk.ACCEL_VISIBLE)
+                    'activate', accels, key, val, Gtk.AccelFlags.VISIBLE)
             b.connect_object(
                 'activate', SongProperties, librarian, songs, parent)
             self.append(b)
 
-            b = gtk.ImageMenuItem(gtk.STOCK_INFO)
+            b = Gtk.ImageMenuItem(Gtk.STOCK_INFO, use_stock=True)
             if accels is not None:
                 b.add_accelerator('activate', accels, ord('I'),
-                                  gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
+                                  Gdk.ModifierType.CONTROL_MASK,
+                                  Gtk.AccelFlags.VISIBLE)
             b.connect_object('activate', Information, librarian, songs, parent)
             self.append(b)
 
-        self.connect_object('selection-done', gtk.Menu.destroy, self)
+        self.connect_object('selection-done', Gtk.Menu.destroy, self)
 
     def separate(self):
         if not self.get_children():
             return
-        elif not isinstance(self.get_children()[-1], gtk.SeparatorMenuItem):
-            self.append(gtk.SeparatorMenuItem())
+        elif not isinstance(self.get_children()[-1], Gtk.SeparatorMenuItem):
+            self.append(Gtk.SeparatorMenuItem())
 
     def preseparate(self):
         if not self.get_children():
             return
-        elif not isinstance(self.get_children()[0], gtk.SeparatorMenuItem):
-            self.prepend(gtk.SeparatorMenuItem())
+        elif not isinstance(self.get_children()[0], Gtk.SeparatorMenuItem):
+            self.prepend(Gtk.SeparatorMenuItem())
 
     def __remove(self, item, songs, library):
         library.remove(set(songs))

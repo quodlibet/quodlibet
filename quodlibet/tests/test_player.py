@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from tests import TestCase, add
 
@@ -34,7 +34,6 @@ class TPlayer(TestCase):
         self.player = module.init(lib.librarian)
         source = PlaylistModel()
         source.set(FILES)
-        AudioFile()
         self.player.setup(source, None, 0)
 
     def tearDown(self):
@@ -42,11 +41,11 @@ class TPlayer(TestCase):
         pw = print_w
         __builtin__.__dict__["print_w"] = lambda *x: None
         # FIXME: idle_add should be removed on destroy, wait here instead
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.player.destroy()
-        while gtk.events_pending():
-            gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         __builtin__.__dict__["print_w"] = pw
         config.quit()
 
@@ -108,6 +107,12 @@ class TPlayer(TestCase):
         self.player.next()
         self.player.reset()
         self.assertEqual(self.player.song, FILES[0])
+
+    def test_equalizer(self):
+        self.player.eq_bands
+        self.player.eq_values
+        self.player.eq_values = [1,2,3,4]
+        self.player.next()
 
 
 class TNullPlayer(TPlayer):

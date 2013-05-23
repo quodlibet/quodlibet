@@ -5,9 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
-import gst
-import gobject
+from gi.repository import Gtk, Gst, GObject
 
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
@@ -51,31 +49,32 @@ def set_cfg(option, value):
         config.set("plugins", cfg_option, value)
 
 
-class Preferences(gtk.VBox):
+class Preferences(Gtk.VBox):
     __gsignals__ = {
-        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, tuple()),
+        'changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
     }
 
     def __init__(self):
         super(Preferences, self).__init__(spacing=12)
 
-        table = gtk.Table(3, 2)
+        table = Gtk.Table(3, 2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
         labels = {}
         for idx, key in enumerate(["preset", "fcut", "feed"]):
             text, tooltip = _SETTINGS[key]
-            label = gtk.Label(text)
+            label = Gtk.Label(label=text)
             labels[key] = label
             label.set_tooltip_text(tooltip)
             label.set_alignment(0.0, 0.5)
             label.set_padding(0, 6)
             label.set_use_underline(True)
             table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=gtk.FILL | gtk.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL |
+                         Gtk.AttachOptions.SHRINK)
 
-        preset_combo = gtk.combo_box_new_text()
+        preset_combo = Gtk.ComboBoxText()
         self.__combo = preset_combo
         labels["preset"].set_mnemonic_widget(preset_combo)
         for preset in _PRESETS:
@@ -83,10 +82,11 @@ class Preferences(gtk.VBox):
         preset_combo.set_active(-1)
         table.attach(preset_combo, 1, 2, 0, 1)
 
-        fcut_scale = gtk.HScale(gtk.Adjustment(700, 300, 2000, 10, 100))
+        fcut_scale = Gtk.HScale(
+            adjustment=Gtk.Adjustment(700, 300, 2000, 10, 100))
         fcut_scale.set_tooltip_text(_SETTINGS["fcut"][1])
         labels["fcut"].set_mnemonic_widget(fcut_scale)
-        fcut_scale.set_value_pos(gtk.POS_RIGHT)
+        fcut_scale.set_value_pos(Gtk.PositionType.RIGHT)
 
         def format_hz(scale, value):
             return _("%d Hz") % value
@@ -101,10 +101,10 @@ class Preferences(gtk.VBox):
         fcut_scale.connect('value-changed', fcut_changed)
         fcut_scale.set_value(get_cfg("fcut"))
 
-        level_scale = gtk.HScale(gtk.Adjustment(45, 10, 150, 1, 5))
+        level_scale = Gtk.HScale(adjustment=Gtk.Adjustment(45, 10, 150, 1, 5))
         level_scale.set_tooltip_text(_SETTINGS["feed"][1])
         labels["feed"].set_mnemonic_widget(level_scale)
-        level_scale.set_value_pos(gtk.POS_RIGHT)
+        level_scale.set_value_pos(Gtk.PositionType.RIGHT)
 
         def format_db(scale, value):
             return _("%.1f dB") % (value / 10.0)
@@ -131,7 +131,8 @@ class Preferences(gtk.VBox):
         preset_combo.connect("changed", combo_change, level_scale, fcut_scale)
         self.__update_combo()
 
-        self.pack_start(qltk.Frame(_("Preferences"), child=table))
+        self.pack_start(qltk.Frame(_("Preferences"), child=table),
+                        True, True, 0)
 
     def __update_combo(self):
         feed = get_cfg("feed")
@@ -154,10 +155,7 @@ class Crossfeed(GStreamerPlugin):
 
     @classmethod
     def setup_element(cls):
-        try:
-            return gst.element_factory_make('crossfeed', cls.PLUGIN_ID)
-        except gst.ElementNotFoundError:
-            pass
+        return Gst.ElementFactory.make('crossfeed', cls.PLUGIN_ID)
 
     @classmethod
     def update_element(cls, element):

@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-import gtk
+from gi.repository import Gtk
 
 import quodlibet.browsers.search
 import quodlibet.config
@@ -53,7 +53,7 @@ class TEmptyBar(TestCase):
         self.expected = None
 
     def _do(self):
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failUnless(self.expected is None)
 
     def test_can_filter(self):

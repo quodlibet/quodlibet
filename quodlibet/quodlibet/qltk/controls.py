@@ -5,8 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gobject
-import gtk
+from gi.repository import Gtk, GLib, Gdk
 
 from quodlibet import config
 from quodlibet import qltk
@@ -16,9 +15,11 @@ from quodlibet import util
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.sliderbutton import HSlider
 from quodlibet.qltk.tracker import TimeTracker
+from quodlibet.qltk.x import RadioMenuItem
 
-SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
-SUBSIZE = gtk.ICON_SIZE_MENU
+
+SIZE = Gtk.IconSize.LARGE_TOOLBAR
+SUBSIZE = Gtk.IconSize.MENU
 
 
 class SeekBar(HSlider):
@@ -27,11 +28,12 @@ class SeekBar(HSlider):
     __seekable = True
 
     def __init__(self, player, library):
-        hbox = gtk.HBox(spacing=3)
-        l = gtk.Label("0:00")
-        hbox.pack_start(l)
+        hbox = Gtk.HBox(spacing=3)
+        l = Gtk.Label(label="0:00")
+        hbox.pack_start(l, True, True, 0)
         hbox.pack_start(
-            gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE), expand=False)
+            Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE),
+            False, True, 0)
         super(SeekBar, self).__init__(hbox)
 
         self.scale.connect('button-press-event', self.__seek_lock)
@@ -41,15 +43,15 @@ class SeekBar(HSlider):
         self.connect('scroll-event', self.__scroll, player)
         self.scale.connect('value-changed', self.__update_time, l)
 
-        m = gtk.Menu()
+        m = Gtk.Menu()
         c = ConfigCheckMenuItem(
             _("Display remaining time"), "player", "time_remaining")
         c.set_active(config.getboolean("player", "time_remaining"))
         c.connect_object('toggled', self.scale.emit, 'value-changed')
         self.__remaining = c
         m.append(c)
-        m.append(gtk.SeparatorMenuItem())
-        i = qltk.MenuItem(_("_Edit Bookmarks..."), gtk.STOCK_EDIT)
+        m.append(Gtk.SeparatorMenuItem())
+        i = qltk.MenuItem(_("_Edit Bookmarks..."), Gtk.STOCK_EDIT)
         i.connect_object(
             'activate', bookmarks.EditBookmarks, self, library, player)
         m.append(i)
@@ -84,11 +86,11 @@ class SeekBar(HSlider):
             items.reverse()
             for i in items:
                 menu.insert(i, 2)
-        time = gtk.get_current_event_time()
+        time = Gtk.get_current_event_time()
         if widget:
             return qltk.popup_menu_under_widget(menu, widget, 3, time)
         else:
-            menu.popup(None, None, None, 3, time)
+            menu.popup(None, None, None, None, 3, time)
             return True
 
     def __seeked(self, player, song, ms):
@@ -99,8 +101,8 @@ class SeekBar(HSlider):
     def __scroll(self, widget, event, player):
         self.__lock = True
         if self.__sig is not None:
-            gobject.source_remove(self.__sig)
-        self.__sig = gobject.timeout_add(100, self.__scroll_timeout, player)
+            GLib.source_remove(self.__sig)
+        self.__sig = GLib.timeout_add(100, self.__scroll_timeout, player)
 
     def __scroll_timeout(self, player):
         self.__lock = False
@@ -131,14 +133,14 @@ class SeekBar(HSlider):
         if not (player.paused or self.__lock):
             position = player.get_position() // 1000
             if (not self.__seekable and
-                position > self.scale.get_adjustment().upper):
+                position > self.scale.get_adjustment().get_upper()):
                 self.scale.set_range(0, position)
             self.scale.set_value(position)
         return True
 
     def __update_time(self, scale, timer):
         value = scale.get_value()
-        max = scale.get_adjustment().upper
+        max = scale.get_adjustment().get_upper()
         value -= self.__remaining.get_active() * max
         timer.set_text(util.format_time(value))
 
@@ -158,13 +160,13 @@ class SeekBar(HSlider):
         self.scale.emit('value-changed')
 
 
-class Volume(gtk.VolumeButton):
+class Volume(Gtk.VolumeButton):
     def __init__(self, device):
         super(Volume, self).__init__()
 
         self.props.size = SUBSIZE
-        self.set_relief(gtk.RELIEF_NORMAL)
-        self.set_adjustment(gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0))
+        self.set_relief(Gtk.ReliefStyle.NORMAL)
+        self.set_adjustment(Gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0))
 
         self.connect('value-changed', self.__volume_changed, device)
         device.connect('notify::volume', self.__volume_notify)
@@ -178,13 +180,13 @@ class Volume(gtk.VolumeButton):
                             replaygain_menu)
 
     def __popup(self, widget, menu):
-        time = gtk.get_current_event_time()
+        time = Gtk.get_current_event_time()
         button = 3
         return qltk.popup_menu_under_widget(menu, widget, button, time)
 
     def __volume_button_press(self, menu, event):
         if event.button == 3:
-            menu.popup(None, None, None, event.button, event.time)
+            menu.popup(None, None, None, None, event.button, event.time)
             return True
 
     def __iadd__(self, v):
@@ -203,7 +205,7 @@ class Volume(gtk.VolumeButton):
         self.set_value(device.props.volume)
 
 
-class ReplayGainMenu(gtk.Menu):
+class ReplayGainMenu(Gtk.Menu):
     __modes = (
         ("auto", _("Auto_matic"), None),
         ("track", _("_Track Mode"), ["track"]),
@@ -215,7 +217,8 @@ class ReplayGainMenu(gtk.Menu):
 
         item = None
         for mode, title, profile in self.__modes:
-            item = gtk.RadioMenuItem(item, title, True)
+            item = RadioMenuItem(group=item, label=title,
+                                 use_underline=True)
             self.append(item)
             item.connect("toggled", self.__changed, player, profile)
             if player.replaygain_profiles[0] == profile:
@@ -234,7 +237,7 @@ class ReplayGainMenu(gtk.Menu):
         return super(ReplayGainMenu, self).popup(*args)
 
 
-class StopAfterMenu(gtk.Menu):
+class StopAfterMenu(Gtk.Menu):
     __menu = None
 
     def __new__(klass, parent):
@@ -249,7 +252,7 @@ class StopAfterMenu(gtk.Menu):
         else:
             type(self).__menu = self
         super(StopAfterMenu, self).__init__()
-        self.__item = gtk.CheckMenuItem(_("Stop after this song"))
+        self.__item = Gtk.CheckMenuItem(_("Stop after this song"))
         self.__item.set_active(False)
         self.append(self.__item)
         player.connect('paused', self.__paused)
@@ -273,29 +276,29 @@ class StopAfterMenu(gtk.Menu):
     active = property(__get_active, __set_active)
 
 
-class PlayControls(gtk.VBox):
+class PlayControls(Gtk.VBox):
     def __init__(self, player, library):
         super(PlayControls, self).__init__(spacing=3)
 
-        upper = gtk.Table(rows=1, columns=3, homogeneous=True)
+        upper = Gtk.Table(rows=1, columns=3, homogeneous=True)
         upper.set_row_spacings(3)
         upper.set_col_spacings(3)
 
-        prev = gtk.Button()
-        prev.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PREVIOUS, SIZE))
+        prev = Gtk.Button()
+        prev.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_PREVIOUS, SIZE))
         upper.attach(prev, 0, 1, 0, 1)
 
-        play = gtk.ToggleButton()
-        play.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY, SIZE))
+        play = Gtk.ToggleButton()
+        play.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_PLAY, SIZE))
         upper.attach(play, 1, 2, 0, 1)
 
         safter = StopAfterMenu(player)
 
-        next = gtk.Button()
-        next.add(gtk.image_new_from_stock(gtk.STOCK_MEDIA_NEXT, SIZE))
+        next = Gtk.Button()
+        next.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_NEXT, SIZE))
         upper.attach(next, 2, 3, 0, 1)
 
-        lower = gtk.Table(rows=1, columns=3, homogeneous=True)
+        lower = Gtk.Table(rows=1, columns=3, homogeneous=True)
         lower.set_row_spacings(3)
         lower.set_col_spacings(3)
 
@@ -305,12 +308,13 @@ class PlayControls(gtk.VBox):
         seekbar = SeekBar(player, library)
         lower.attach(seekbar, 1, 3, 0, 1)
 
-        self.pack_start(upper, expand=False)
-        self.pack_start(lower, expand=False)
+        self.pack_start(upper, False, True, 0)
+        self.pack_start(lower, False, True, 0)
 
         prev.connect_object('clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, player)
         play.connect('button-press-event', self.__play_button_press, safter)
+        play.add_events(Gdk.EventMask.SCROLL_MASK)
         play.connect_object('scroll-event', self.__scroll, player)
         play.connect_object('popup-menu',
                             self.__popup, safter, play.get_child())
@@ -321,9 +325,11 @@ class PlayControls(gtk.VBox):
         self.show_all()
 
     def __scroll(self, player, event):
-        if event.direction in [gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_LEFT]:
+        if event.direction in [Gdk.ScrollDirection.UP,
+                               Gdk.ScrollDirection.LEFT]:
             player.previous()
-        elif event.direction in [gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_RIGHT]:
+        elif event.direction in [Gdk.ScrollDirection.DOWN,
+                                 Gdk.ScrollDirection.RIGHT]:
             player.next()
 
     def __play_button_press(self, activator, event, safter):
@@ -331,11 +337,11 @@ class PlayControls(gtk.VBox):
             return self.__popup(safter, None, event.button, event.time)
 
     def __popup(self, safter, widget, button=3, time=None):
-        time = time or gtk.get_current_event_time()
+        time = time or Gtk.get_current_event_time()
         if widget:
             return qltk.popup_menu_under_widget(safter, widget, button, time)
         else:
-            safter.popup(None, None, None, button, time)
+            safter.popup(None, None, None, None, button, time)
         return True
 
     def __song_started(self, player, song, next, play):

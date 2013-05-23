@@ -5,15 +5,16 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 import mutagen
 
+from quodlibet.qltk import gtk_version, pygobject_version
 from quodlibet import const
 from quodlibet import formats
 from quodlibet.util import fver
 
 
-class AboutDialog(gtk.AboutDialog):
+class AboutDialog(Gtk.AboutDialog):
     def __init__(self, parent, player, name, icon):
         super(AboutDialog, self).__init__()
         self.set_transient_for(parent)
@@ -28,8 +29,8 @@ class AboutDialog(gtk.AboutDialog):
         if player:
             text.append(_("Audio device: %s") % player.name)
         text.append("Mutagen: %s" % fver(mutagen.version))
-        text.append("GTK+: %s / PyGTK: %s" % (
-            fver(gtk.gtk_version), fver(gtk.pygtk_version)))
+        text.append("GTK+: %s / PyGObject: %s" % (
+            fver(gtk_version), fver(pygobject_version)))
         if player:
             text.append(player.version_info)
         self.set_comments("\n".join(text))

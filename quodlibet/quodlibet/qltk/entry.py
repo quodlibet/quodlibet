@@ -5,10 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
-import gobject
-
-IconEntry = gtk.Entry
+from gi.repository import Gtk, GObject, Gdk, Gio
 
 from quodlibet.qltk.x import is_accel
 
@@ -72,11 +69,11 @@ class EditableUndo(object):
         del self.__del_pos
 
     def __popup(self, entry, menu):
-        undo = gtk.ImageMenuItem(gtk.STOCK_UNDO)
-        redo = gtk.ImageMenuItem(gtk.STOCK_REDO)
-        sep = gtk.SeparatorMenuItem()
+        undo = Gtk.ImageMenuItem(Gtk.STOCK_UNDO, use_stock=True)
+        redo = Gtk.ImageMenuItem(Gtk.STOCK_REDO, use_stock=True)
+        sep = Gtk.SeparatorMenuItem()
 
-        map(gtk.Widget.show, (sep, redo, undo))
+        map(Gtk.Widget.show, (sep, redo, undo))
 
         undo.connect('activate', lambda *x: self.undo())
         redo.connect('activate', lambda *x: self.redo())
@@ -142,7 +139,7 @@ class EditableUndo(object):
         self.__uninhibit()
 
 
-class UndoEntry(gtk.Entry, EditableUndo):
+class UndoEntry(Gtk.Entry, EditableUndo):
     def __init__(self, *args):
         super(UndoEntry, self).__init__(*args)
         self.set_undo(True)
@@ -153,20 +150,21 @@ class UndoEntry(gtk.Entry, EditableUndo):
 
 
 class ClearEntryMixin(object):
-    """A clear icon mixin supporting newer gtk.Entry or sexy.IconEntry /
+    """A clear icon mixin supporting newer Gtk.Entry or
     a separate clear button as a fallback.
     """
 
     __gsignals__ = {
-        'clear': (gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION,
-                  gobject.TYPE_NONE, ())
+        'clear': (GObject.SignalFlags.RUN_LAST | GObject.SignalFlags.ACTION,
+                  None, ())
     }
 
     def enable_clear_button(self):
         """Enables the clear icon in the entry"""
 
-        self.set_icon_from_stock(
-            gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
+        gicon = Gio.ThemedIcon.new_from_names(
+            ["edit-clear-symbolic", "edit-clear"])
+        self.set_icon_from_gicon(Gtk.EntryIconPosition.SECONDARY, gicon)
         self.connect("icon-release", self.__clear)
 
     def __clear(self, button, *args):
@@ -190,8 +188,8 @@ class ValidatingEntryMixin(object):
     If the "Color search terms" option is off, the entry will not
     change color."""
 
-    INVALID = gtk.gdk.Color(*[c * 255 for c in (0xcc, 0x0, 0x0)])
-    VALID = gtk.gdk.Color(*[c * 180 for c in (0x4e, 0x9a, 0x06)])
+    INVALID = Gdk.RGBA(0.8, 0, 0)
+    VALID = Gdk.RGBA(0.3, 0.6, 0.023)
 
     def set_validate(self, validator=None):
         if validator:
@@ -204,14 +202,15 @@ class ValidatingEntryMixin(object):
         elif value is False:
             color = self.INVALID
         elif value and isinstance(value, str):
-            color = gtk.gdk.color_parse(value)
+            color = Gdk.RGBA()
+            color.parse(value)
         else:
             color = None
 
         if color and self.get_property('sensitive'):
-            self.modify_text(gtk.STATE_NORMAL, color)
+            self.override_color(Gtk.StateType.NORMAL, color)
         else:
-            self.modify_text(gtk.STATE_NORMAL, None)
+            self.override_color(Gtk.StateType.NORMAL, None)
 
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):

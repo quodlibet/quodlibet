@@ -1,6 +1,41 @@
 2.5.91 (???)
 ------------
 
+2.9.91 (2013-05-13) - welcome to a place where incredibly terrible things can happen to you and your friends for no reason!
+---------------------------------------------------------------------------------------------------------------------------
+
+General
+ * Spanish, Basque and Galician translation updates (Johám-Luís Miguéns Vila)
+ * Tag editor: Fix context menu not showing
+ * Album collection: Fix crash with PyGObject 3.2
+ * Fix search bar text color
+ * Fix DnD to closed queue
+ * Fix hangs during unix signal handling
+ * Fix 100% CPU in some cases
+ * Fix library refresh pause/stop handling
+ * Some speed improvements and fixes
+
+Plugins
+ * ReplayGain plugin now processes albums in parallel
+ * New dark theme option in the theme switcher plugin
+ * Fix GStreamer equalizer
+ * Fix theme switcher plugin
+ * Fix GStreamer mono plugin
+
+2.9.82 (2013-05-02) - One day Marty McFly got bit by a werewolf!
+----------------------------------------------------------------
+
+PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 2 release:
+ * Fix lyricsview plugin (Nick Boultbee)
+ * Fix replaygain album gain/peak writing.
+ * Fix crash on one-click ratings in the song list.
+ * Fix crash when playing a song while editing its tags.
+ * gstbe: Increase operation timeouts (for spinning up disks etc.)
+
+2.9.81 (2013-04-27) - Because my hypothesis is: it's rad
+--------------------------------------------------------
+
+PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 1 release
 
 2.5.1 (2013-04-23) - Yes: MY COMPUTER IS A PERSON.
 --------------------------------------------------

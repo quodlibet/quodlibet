@@ -1,4 +1,4 @@
-import gtk
+from gi.repository import Gtk
 
 import quodlibet.util.logging
 
@@ -16,24 +16,24 @@ class LoggingWindow(qltk.Window):
 
         for logname in quodlibet.util.logging.names():
             text = "\n".join(quodlibet.util.logging.contents(logname))
-            view = gtk.TextView()
-            sw = gtk.ScrolledWindow()
-            sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            sw.set_shadow_type(gtk.SHADOW_IN)
+            view = Gtk.TextView()
+            sw = Gtk.ScrolledWindow()
+            sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+            sw.set_shadow_type(Gtk.ShadowType.IN)
             sw.add(view)
             buffer = view.get_buffer()
             buffer.set_text(text)
             notebook.append_page(sw, logname)
 
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect_object('clicked', lambda x: x.destroy(), self)
-        button_box = gtk.HButtonBox()
-        button_box.set_layout(gtk.BUTTONBOX_END)
-        button_box.pack_start(close)
+        button_box = Gtk.HButtonBox()
+        button_box.set_layout(Gtk.ButtonBoxStyle.END)
+        button_box.pack_start(close, True, True, 0)
 
-        vbox = gtk.VBox(spacing=12)
-        vbox.pack_start(notebook)
-        vbox.pack_start(button_box, expand=False)
+        vbox = Gtk.VBox(spacing=12)
+        vbox.pack_start(notebook, True, True, 0)
+        vbox.pack_start(button_box, False, True, 0)
         self.add(vbox)
 
         self.show_all()

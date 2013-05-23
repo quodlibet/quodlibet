@@ -8,7 +8,7 @@ import os
 from os import path
 
 import CDDB
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.qltk import ErrorMessage, ConfirmAction, Message
 from quodlibet.const import VERSION
@@ -22,8 +22,8 @@ CLIENTINFO = {'client_name': "quodlibet", 'client_version': VERSION}
 class AskAction(ConfirmAction):
     """A message dialog that asks a yes/no question."""
     def __init__(self, *args, **kwargs):
-        kwargs["buttons"] = gtk.BUTTONS_YES_NO
-        Message.__init__(self, gtk.MESSAGE_QUESTION, *args, **kwargs)
+        kwargs["buttons"] = Gtk.ButtonsType.YES_NO
+        Message.__init__(self, Gtk.MessageType.QUESTION, *args, **kwargs)
 
 
 def sumdigits(n):
@@ -161,31 +161,31 @@ class CDDBLookup(SongsMenuPlugin):
 
         if stat in (200, 211):
             xcode = 'utf8:utf8'
-            dlg = gtk.Dialog(_('Select an album'))
+            dlg = Gtk.Dialog(_('Select an album'))
             dlg.set_border_width(6)
             dlg.set_has_separator(False)
             dlg.set_resizable(False)
-            dlg.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK)
+            dlg.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
             dlg.vbox.set_spacing(6)
-            dlg.set_default_response(gtk.RESPONSE_OK)
-            model = gtk.ListStore(str, str, str, str, str, str)
+            dlg.set_default_response(Gtk.ResponseType.OK)
+            model = Gtk.ListStore(str, str, str, str, str, str)
             for disc in discs:
                 model.append(
                     [disc[s] for s in ('title', 'category', 'disc_id')] * 2)
-            box = gtk.ComboBox(model)
+            box = Gtk.ComboBox(model)
             box.set_active(0)
             for i in range(3):
-                crt = gtk.CellRendererText()
-                box.pack_start(crt)
+                crt = Gtk.CellRendererText()
+                box.pack_start(crt, True, True, 0)
                 box.set_attributes(crt, text=i)
-            discinfo = gtk.Label()
-            crosscode = gtk.ListStore(str)
+            discinfo = Gtk.Label()
+            crosscode = Gtk.ListStore(str)
             crosscode.append(['utf8:utf8'])
             crosscode.append(['latin1:latin2'])
             crosscode.append(['latin1:cp1251'])
             crosscode.append(['latin1:sjis'])
             crosscode.append(['latin1:euc-jp'])
-            cbo = gtk.ComboBoxEntry(crosscode, column=0)
+            cbo = Gtk.ComboBoxEntry(crosscode, column=0)
             cbo.set_active(0)
 
             def update_discinfo(combo):
@@ -212,16 +212,16 @@ class CDDBLookup(SongsMenuPlugin):
             cbo.connect('changed', crosscode_cddbinfo)
             box.connect('changed', update_discinfo)
             update_discinfo(box)
-            dlg.vbox.pack_start(gtk.Label(
-                _("Select the album you wish to retrieve.")))
-            dlg.vbox.pack_start(box)
-            dlg.vbox.pack_start(discinfo)
-            dlg.vbox.pack_start(cbo)
+            dlg.vbox.pack_start(Gtk.Label(
+                _("Select the album you wish to retrieve.", True, True, 0)))
+            dlg.vbox.pack_start(box, True, True, 0)
+            dlg.vbox.pack_start(discinfo, True, True, 0)
+            dlg.vbox.pack_start(cbo, True, True, 0)
             dlg.vbox.show_all()
             resp = dlg.run()
 
             xcode = cbo.get_child().get_text()
-            if resp == gtk.RESPONSE_OK:
+            if resp == Gtk.ResponseType.OK:
                 t, c, d, title, cat, discid = model[box.get_active()]
                 (disc, track) = query(cat, discid, xcode=xcode)
                 keys = track.keys()

@@ -4,14 +4,14 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from tests import TestCase, add
 from quodlibet import const
 
 class TIconTheme(TestCase):
     def test_icon_theme(self):
-        theme = gtk.icon_theme_get_default()
+        theme = Gtk.IconTheme.get_default()
         theme.append_search_path(const.IMAGEDIR)
 
         for i in ["audio-volume-high", "audio-volume-high",

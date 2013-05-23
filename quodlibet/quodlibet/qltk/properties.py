@@ -6,9 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import qltk
 from quodlibet import util
@@ -24,7 +22,7 @@ from quodlibet.qltk.window import PersistentWindowMixin
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
     __gsignals__ = {
-        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
 
     def __init__(self, library, songs, parent=None):
@@ -44,7 +42,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         self.auto_save_on_change = config.getboolean(
                 'editing', 'auto_save_changes', False)
 
-        paned = gtk.HPaned()
+        paned = Gtk.HPaned()
         notebook = qltk.Notebook()
         pages = []
         pages.extend([Ctr(self, library) for Ctr in
@@ -55,25 +53,25 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             notebook.append_page(page)
         self.set_border_width(12)
 
-        fbasemodel = gtk.ListStore(object, str)
-        fmodel = gtk.TreeModelSort(fbasemodel)
+        fbasemodel = Gtk.ListStore(object, str)
+        fmodel = Gtk.TreeModelSort(model=fbasemodel)
         fview = HintedTreeView(fmodel)
         fview.connect('button-press-event', self.__pre_selection_changed)
         fview.set_rules_hint(True)
         selection = fview.get_selection()
-        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__save = None
 
         if len(songs) > 1:
-            render = gtk.CellRendererText()
-            c1 = gtk.TreeViewColumn(_('File'), render, text=1)
-            render.set_property('ellipsize', pango.ELLIPSIZE_END)
+            render = Gtk.CellRendererText()
+            c1 = Gtk.TreeViewColumn(_('File'), render, text=1)
+            render.set_property('ellipsize', Pango.EllipsizeMode.END)
             c1.set_sort_column_id(1)
             fview.append_column(c1)
-            sw = gtk.ScrolledWindow()
+            sw = Gtk.ScrolledWindow()
             sw.add(fview)
-            sw.set_shadow_type(gtk.SHADOW_IN)
-            sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+            sw.set_shadow_type(Gtk.ShadowType.IN)
+            sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
             sw.show_all()
             paned.pack1(sw, shrink=True, resize=True)
 
@@ -114,7 +112,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         # doesn't include the removed songs.
         selection.handler_block(sig)
         if len(model) == 1:
-            rows = [(0,)]
+            rows = [Gtk.TreePath((0,))]
         else:
             rows = selection.get_selected_rows()[1]
         to_remove = []
@@ -145,7 +143,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
     def __refresh(self, library, songs, model, view):
         view.freeze_notify()
         if len(model) == 1:
-            rows = [(0,)]
+            rows = [Gtk.TreePath((0,))]
         else:
             rows = view.get_selection().get_selected_rows()[1]
         changed = False
@@ -167,9 +165,9 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
                 self.__save.clicked()
                 return
             resp = qltk.CancelRevertSave(self).run()
-            if resp == gtk.RESPONSE_YES:
+            if resp == Gtk.ResponseType.YES:
                 self.__save.clicked()
-            elif resp == gtk.RESPONSE_NO:
+            elif resp == Gtk.ResponseType.NO:
                 return False
             else:
                 return True # cancel or closed

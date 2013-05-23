@@ -6,9 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-
-import gobject
-import gtk
+from gi.repository import Gtk, GLib, Gdk, GdkPixbuf
 
 from quodlibet import qltk
 from quodlibet import config
@@ -28,25 +26,25 @@ class BigCenteredImage(qltk.Window):
     def __init__(self, title, filename, parent=None):
         super(BigCenteredImage, self).__init__()
         self.set_transient_for(qltk.get_top_parent(parent))
-        width = gtk.gdk.screen_width() / 2
-        height = gtk.gdk.screen_height() / 2
+        width = Gdk.Screen.width() / 2
+        height = Gdk.Screen.height() / 2
 
-        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
         pixbuf = thumbnails.scale(pixbuf, (width, height), scale_up=False)
 
         self.set_title(title)
         self.set_decorated(False)
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_position(Gtk.WindowPosition.CENTER)
         self.set_modal(False)
 
-        image = gtk.Image()
+        image = Gtk.Image()
         image.set_from_pixbuf(pixbuf)
 
-        event_box = gtk.EventBox()
+        event_box = Gtk.EventBox()
         event_box.add(image)
 
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_OUT)
+        frame = Gtk.Frame()
+        frame.set_shadow_type(Gtk.ShadowType.OUT)
         frame.add(event_box)
 
         self.add(frame)
@@ -59,82 +57,109 @@ class BigCenteredImage(qltk.Window):
         self.destroy()
 
 
-class ResizeImage(gtk.Image):
-    """Automatically resizes to the maximum height given by its
-    parent container. If resize is True, size and max will be ignored"""
-    def __init__(self, resize, size=0, max=128):
-        super(ResizeImage, self).__init__()
-        self.__path = None
-        self.__ignore = False
-        self.__resize = resize
-        self.__size = size
-        self.__max_size = max
-        self.__no_cover = None
-        if self.__resize:
-            self.set_size_request(-1, 0)
-            self.connect("size-allocate", self.__allocate)
+def get_no_cover_pixbuf(width, height):
+    size = max(width, height)
+    theme = Gtk.IconTheme.get_default()
+    try:
+        no_cover = theme.load_icon("quodlibet-missing-cover", size, 0)
+    except GLib.GError:
+        return
+    else:
+        return thumbnails.scale(no_cover, (width, height))
+
+
+class ResizeImage(Gtk.DrawingArea):
+    def __init__(self, resize=False, size=1):
+        Gtk.DrawingArea.__init__(self)
+        self._dirty = True
+        self._path = None
+        self._pixbuf = None
+        self._no_cover = None
+        self._size = size
+        self._resize = resize
 
     def set_path(self, path):
-        if path != self.__path:
-            self.__path = path
-            if self.__resize:
-                self.queue_resize()
-            else:
-                self.__update_image()
-
-    def __allocate(self, img, alloc):
-        self.__size = alloc.height - 2
-        if not self.__ignore:
-            self.__update_image()
-
-    def __get_no_cover(self, width, height):
-        size = min(width, height)
-        if self.__no_cover is None or min(self.__no_cover.get_width(),
-            self.__no_cover.get_height()) != size:
-            theme = gtk.icon_theme_get_default()
-            try:
-                self.__no_cover = theme.load_icon(
-                    "quodlibet-missing-cover", size, 0)
-            except gobject.GError:
-                pass
-            else:
-                self.__no_cover = thumbnails.scale(
-                    self.__no_cover, (size, size))
-        return self.__no_cover
-
-    def __update_image(self):
-        height = self.__size
-        if not height:
+        if self._path == path:
             return
 
-        if self.__resize:
-            height = min(self.__max_size, height)
-            width = self.__max_size
+        self._path = path
+        self._dirty = True
+        self.queue_resize()
+
+    def _get_pixbuf(self):
+        if not self._dirty:
+            return self._pixbuf
+
+        self._dirty = False
+
+        if self._path is None:
+            self._pixbuf = get_no_cover_pixbuf(256, 256)
+            return self._pixbuf
+
+        try:
+            self._pixbuf = thumbnails.get_thumbnail(self._path, (256, 256))
+        except GLib.GError:
+            pass
         else:
-            width = height
+            return self._pixbuf
 
-        if self.__path is None:
-            pixbuf = self.__get_no_cover(width, height)
+    def _get_size(self, max_width, max_height):
+        pixbuf = self._get_pixbuf()
+        if not pixbuf:
+            return 0, 0
+        width, height = pixbuf.get_width(), pixbuf.get_height()
+        return thumbnails.calc_scale_size(
+                (max_width, max_height),
+                (width, height))
+
+    def do_get_request_mode(self):
+        if self._resize:
+            return Gtk.SizeRequestMode.HEIGHT_FOR_WIDTH
+        return Gtk.SizeRequestMode.CONSTANT_SIZE
+
+    def do_get_preferred_width(self):
+        if self._resize:
+            return (0, 0)
         else:
-            try:
-                round_thumbs = config.getboolean("albumart", "round")
-                pixbuf = thumbnails.get_thumbnail(self.__path, (width, height))
-                pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
-            except gobject.GError:
-                pixbuf = self.__get_no_cover(width, height)
+            width, height = self._get_size(self._size, self._size)
+            return (width, width)
 
-        self.set_from_pixbuf(pixbuf)
-        if self.__resize:
-            self.__ignore = True
-            self.__sig = self.connect_after("size-allocate",
-                self.__stop_ignore)
+    def do_get_preferred_height(self):
+        if self._resize:
+            return (0, 0)
+        else:
+            width, height = self._get_size(self._size, self._size)
+            return (height, height)
 
-    def __stop_ignore(self, *args):
-        self.__ignore = False
-        self.disconnect(self.__sig)
+    def do_get_preferred_width_for_height(self, req_height):
+        width, height = self._get_size(300, req_height)
+
+        if width > 256:
+            width = width
+
+        return (width, width)
+
+    def do_draw(self, cairo_context):
+        pixbuf = self._get_pixbuf()
+        if not pixbuf:
+            return
+
+        alloc = self.get_allocation()
+        width, height = alloc.width, alloc.height
+        if self._path:
+            if width < 2 or height < 2:
+                return
+            round_thumbs = config.getboolean("albumart", "round")
+            pixbuf = thumbnails.scale(pixbuf, (width - 2, height - 2))
+            pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
+        else:
+            pixbuf = thumbnails.scale(pixbuf, (width, height))
+
+        style_context = self.get_style_context()
+        Gtk.render_icon(style_context, cairo_context, pixbuf, 0, 0)
 
 
-class CoverImage(gtk.EventBox):
+class CoverImage(Gtk.EventBox):
 
     def __init__(self, resize=False, size=70, song=None):
         super(CoverImage, self).__init__()
@@ -175,7 +200,7 @@ class CoverImage(gtk.EventBox):
         if not song:
             return
 
-        if event.button != 1 or event.type != gtk.gdk.BUTTON_PRESS:
+        if event.button != 1 or event.type != Gdk.EventType.BUTTON_PRESS:
             return
 
         if not self.__file:
@@ -194,7 +219,7 @@ class CoverImage(gtk.EventBox):
         try:
             self.__current_bci = BigCenteredImage(
                 song.comma("album"), self.__file.name, parent=self)
-        except gobject.GError: # reload in case the image file is gone
+        except GLib.GError: # reload in case the image file is gone
             self.refresh()
         else:
             self.__current_bci.connect('destroy', self.__reset_bci)

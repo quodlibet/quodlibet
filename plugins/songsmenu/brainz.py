@@ -12,9 +12,7 @@ import re
 import threading
 import time
 
-import gtk
-import gobject
-import pango
+from gi.repository import Gtk, GObject, Pango, GLib
 
 try:
     from musicbrainz2 import webservice as ws
@@ -67,28 +65,28 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
     """The result treeview. The model only stores local tracks; info about
     remote results is pulled from self.remote_album."""
 
-    def __name_datafunc(self, col, cell, model, itr):
+    def __name_datafunc(self, col, cell, model, itr, data):
         song = model[itr][0]
         if song:
             cell.set_property('text', os.path.basename(song.get("~filename")))
         else:
             cell.set_property('text', '')
 
-    def __track_datafunc(self, col, cell, model, itr):
+    def __track_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self.remote_album):
             cell.set_property('text', '')
         else:
             cell.set_property('text', idx + 1)
 
-    def __title_datafunc(self, col, cell, model, itr):
+    def __title_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self.remote_album):
             cell.set_property('text', '')
         else:
             cell.set_property('text', self.remote_album[idx].title)
 
-    def __artist_datafunc(self, col, cell, model, itr):
+    def __artist_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self.remote_album) or not self.remote_album[idx].artist:
             cell.set_property('text', '')
@@ -98,14 +96,14 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
     def __init__(self, album):
         self.album = album
         self.remote_album = []
-        self.model = gtk.ListStore(object)
+        self.model = Gtk.ListStore(object)
         map(self.model.append, zip(album))
 
         super(ResultTreeView, self).__init__(self.model)
         self.set_headers_clickable(True)
         self.set_rules_hint(True)
         self.set_reorderable(True)
-        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
         cols = [
                 ('Filename', self.__name_datafunc, True),
@@ -115,9 +113,9 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
             ]
 
         for title, func, resize in cols:
-            render = gtk.CellRendererText()
-            render.set_property('ellipsize', pango.ELLIPSIZE_END)
-            col = gtk.TreeViewColumn(title, render)
+            render = Gtk.CellRendererText()
+            render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            col = Gtk.TreeViewColumn(title, render)
             col.set_cell_data_func(render, func)
             col.set_resizable(resize)
             col.set_expand(resize)
@@ -144,15 +142,15 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         self.queue_draw()
 
 
-class ResultComboBox(gtk.ComboBox):
+class ResultComboBox(Gtk.ComboBox):
     """Formatted picker for different Result entries."""
 
     def __init__(self, model):
-        super(ResultComboBox, self).__init__(model)
-        render = gtk.CellRendererText()
+        super(ResultComboBox, self).__init__(model=model)
+        render = Gtk.CellRendererText()
         render.set_fixed_height_from_font(2)
 
-        def celldata(layout, cell, model, iter):
+        def celldata(layout, cell, model, iter, data):
             release = model[iter][0]
             if not release:
                 return
@@ -166,26 +164,26 @@ class ResultComboBox(gtk.ComboBox):
                     util.escape(release.artist.name),
                     date, release.tracksCount)
             cell.set_property('markup', markup)
-        self.pack_start(render)
-        self.set_cell_data_func(render, celldata)
+        self.pack_start(render, True)
+        self.set_cell_data_func(render, celldata, None)
 
 
-class ReleaseEventComboBox(gtk.HBox):
+class ReleaseEventComboBox(Gtk.HBox):
     """A ComboBox for picking a release event."""
 
     def __init__(self):
         super(ReleaseEventComboBox, self).__init__()
-        self.model = gtk.ListStore(object, str)
-        self.combo = gtk.ComboBox(self.model)
-        render = gtk.CellRendererText()
-        self.combo.pack_start(render)
-        self.combo.set_attributes(render, markup=1)
+        self.model = Gtk.ListStore(object, str)
+        self.combo = Gtk.ComboBox(model=self.model)
+        render = Gtk.CellRendererText()
+        self.combo.pack_start(render, True)
+        self.combo.add_attribute(render, "markup", 1)
         self.combo.set_sensitive(False)
-        self.label = gtk.Label("_Release:")
+        self.label = Gtk.Label(label="_Release:", use_underline=True)
         self.label.set_use_underline(True)
         self.label.set_mnemonic_widget(self.combo)
-        self.pack_start(self.label, expand=False)
-        self.pack_start(self.combo)
+        self.pack_start(self.label, False, True, 0)
+        self.pack_start(self.combo, True, True, 0)
 
     def update(self, release):
         self.model.clear()
@@ -246,15 +244,15 @@ class QueryThread:
                         res = func(*args, **kwargs)
                     except:
                         res = None
-                gobject.idle_add(callback, res)
+                GLib.idle_add(callback, res)
             time.sleep(1)
 
 
-class SearchWindow(gtk.Dialog):
+class SearchWindow(Gtk.Dialog):
     def __save(self, widget=None, response=None):
         """Writes values to Song objects."""
         self._qthread.stop()
-        if response != gtk.RESPONSE_ACCEPT:
+        if response != Gtk.ResponseType.ACCEPT:
             self.destroy()
             return
 
@@ -385,33 +383,33 @@ class SearchWindow(gtk.Dialog):
         self.result_treeview.update_remote_album(release.tracks)
         self.current_release = release
         self.release_combo.update(release)
-        save_button = dialog_get_widget_for_stockid(self, gtk.STOCK_SAVE)
+        save_button = dialog_get_widget_for_stockid(self, Gtk.STOCK_SAVE)
         save_button.set_sensitive(True)
 
     def __init__(self, album, cache):
         self.album = album
 
         self._query = ws.Query()
-        self._resultlist = gtk.ListStore(gobject.TYPE_PYOBJECT)
+        self._resultlist = Gtk.ListStore(GObject.TYPE_PYOBJECT)
         self._releasecache = cache
         self._qthread = QueryThread()
         self.current_release = None
 
         super(SearchWindow, self).__init__("MusicBrainz lookup", buttons=(
-                    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-                    gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
+                    Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
+                    Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
         self.set_default_size(650, 500)
         self.set_border_width(5)
 
-        save_button = dialog_get_widget_for_stockid(self, gtk.STOCK_SAVE)
+        save_button = dialog_get_widget_for_stockid(self, Gtk.STOCK_SAVE)
         save_button.set_sensitive(False)
 
-        vb = gtk.VBox()
+        vb = Gtk.VBox()
         vb.set_spacing(8)
 
-        hb = gtk.HBox()
+        hb = Gtk.HBox()
         hb.set_spacing(8)
-        sq = self.search_query = gtk.Entry()
+        sq = self.search_query = Gtk.Entry()
         sq.connect('activate', self.__do_query)
 
         alb = '"%s"' % album[0].comma("album").replace('"', '')
@@ -421,42 +419,42 @@ class SearchWindow(gtk.Dialog):
         sq.set_text('%s AND tracks:%d' %
                 (alb, get_trackcount(album)))
 
-        lbl = gtk.Label("_Query:")
+        lbl = Gtk.Label(label="_Query:")
         lbl.set_use_underline(True)
         lbl.set_mnemonic_widget(sq)
-        stb = self.search_button = gtk.Button('S_earch')
+        stb = self.search_button = Gtk.Button('S_earch', use_underline=True)
         stb.connect('clicked', self.__do_query)
-        hb.pack_start(lbl, expand=False)
-        hb.pack_start(sq)
-        hb.pack_start(stb, expand=False)
-        vb.pack_start(hb, expand=False)
+        hb.pack_start(lbl, False, True, 0)
+        hb.pack_start(sq, True, True, 0)
+        hb.pack_start(stb, False, True, 0)
+        vb.pack_start(hb, False, True, 0)
 
         self.result_combo = ResultComboBox(self._resultlist)
         self.result_combo.connect('changed', self.__result_changed)
-        vb.pack_start(self.result_combo, expand=False)
+        vb.pack_start(self.result_combo, False, True, 0)
 
-        rhb = gtk.HBox()
-        rl = gtk.Label()
+        rhb = Gtk.HBox()
+        rl = Gtk.Label()
         rl.set_markup("Results <i>(drag to reorder)</i>")
         rl.set_alignment(0, 0.5)
-        rhb.pack_start(rl, expand=False)
-        rl = self.result_label = gtk.Label("")
-        rhb.pack_end(rl, expand=False)
-        vb.pack_start(rhb, expand=False)
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        rhb.pack_start(rl, False, True, 0)
+        rl = self.result_label = Gtk.Label(label="")
+        rhb.pack_end(rl, False, True, 0)
+        vb.pack_start(rhb, False, True, 0)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         rtv = self.result_treeview = ResultTreeView(self.album)
         rtv.set_border_width(8)
         sw.add(rtv)
-        vb.pack_start(sw)
+        vb.pack_start(sw, True, True, 0)
 
-        hb = gtk.HBox()
+        hb = Gtk.HBox()
         hb.set_spacing(8)
         self.release_combo = ReleaseEventComboBox()
-        vb.pack_start(self.release_combo, expand=False)
+        vb.pack_start(self.release_combo, False, True, 0)
 
-        self.get_content_area().pack_start(vb)
+        self.get_content_area().pack_start(vb, True, True, 0)
         self.connect('response', self.__save)
 
         stb.emit('clicked')
@@ -466,7 +464,7 @@ class SearchWindow(gtk.Dialog):
 class MyBrainz(SongsMenuPlugin):
     PLUGIN_ID = "MusicBrainz lookup"
     PLUGIN_NAME = "MusicBrainz Lookup"
-    PLUGIN_ICON = gtk.STOCK_CDROM
+    PLUGIN_ICON = Gtk.STOCK_CDROM
     PLUGIN_DESC = 'Retag an album based on a MusicBrainz search.'
     PLUGIN_VERSION = '0.5'
 
@@ -493,12 +491,12 @@ class MyBrainz(SongsMenuPlugin):
             ('labelid', 'Write _labelid tag (fixes multi-disc albums)', True),
         ]
 
-        vb = gtk.VBox()
+        vb = Gtk.VBox()
         vb.set_spacing(8)
 
         for key, label, default in items:
             ccb = ConfigCheckButton(label, 'plugins', 'brainz_' + key)
             ccb.set_active(config_get(key, default))
-            vb.pack_start(ccb)
+            vb.pack_start(ccb, True, True, 0)
 
         return vb

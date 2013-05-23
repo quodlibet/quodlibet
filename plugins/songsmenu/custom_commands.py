@@ -5,7 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
+
 import os
 import re
 
@@ -73,7 +74,7 @@ class Command(JSONObject):
 
 class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
 
-    PLUGIN_ICON = gtk.STOCK_OPEN
+    PLUGIN_ICON = Gtk.STOCK_OPEN
     PLUGIN_ID = "CustomCommands"
     PLUGIN_NAME = _("Custom Commands")
     PLUGIN_DESC = _("Runs custom commands (in batches if required) on songs "
@@ -128,14 +129,14 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, parent):
-        hb = gtk.HBox(spacing=3)
+        hb = Gtk.HBox(spacing=3)
         hb.set_border_width(0)
 
-        button = qltk.Button(_("Edit Custom Commands") + "...", gtk.STOCK_EDIT)
+        button = qltk.Button(_("Edit Custom Commands") + "...", Gtk.STOCK_EDIT)
         button.set_tooltip_markup(util.escape(_("Supports QL patterns\neg "
                                     "<tt>stat <~filename></tt>")))
         button.connect("clicked", cls.edit_patterns)
-        hb.pack_start(button, expand=True)
+        hb.pack_start(button, True, True, 0)
         hb.show_all()
         return hb
 
@@ -162,16 +163,16 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         self.com_index = None
         self.unique_only = False
         self.commands = {}
-        submenu = gtk.Menu()
+        submenu = Gtk.Menu()
         self.commands = self._get_saved_searches()
         for (name, c) in self.commands.items():
-            item = gtk.MenuItem(name)
+            item = Gtk.MenuItem(name)
             item.connect_object('activate', self.__set_pat, name)
             submenu.append(item)
             # Add link to editor
-        config = gtk.MenuItem(_("Edit Custom Commands") + "...")
+        config = Gtk.MenuItem(_("Edit Custom Commands") + "...")
         config.connect_object('activate', self.edit_patterns, config)
-        submenu.append(gtk.SeparatorMenuItem())
+        submenu.append(Gtk.SeparatorMenuItem())
         submenu.append(config)
         if submenu.get_children():
             self.set_submenu(submenu)

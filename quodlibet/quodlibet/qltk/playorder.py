@@ -6,7 +6,7 @@
 
 import random
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet.plugins import PluginManager
@@ -87,7 +87,7 @@ class OrderInOrder(Order):
         elif iter is None:
             return playlist[(len(playlist) - 1,)].iter
         else:
-            path = max(1, playlist.get_path(iter)[0])
+            path = max(1, playlist.get_path(iter).get_indices()[0])
             try:
                 return playlist.get_iter((path - 1,))
             except ValueError:
@@ -106,7 +106,7 @@ class OrderRemembered(Order):
 
     def next(self, playlist, iter):
         if iter is not None:
-            self._played.append(playlist.get_path(iter)[0])
+            self._played.append(playlist.get_path(iter).get_indices()[0])
 
     def previous(self, playlist, iter):
         try:
@@ -118,7 +118,7 @@ class OrderRemembered(Order):
 
     def set(self, playlist, iter):
         if iter is not None:
-            self._played.append(playlist.get_path(iter)[0])
+            self._played.append(playlist.get_path(iter).get_indices()[0])
         return iter
 
     def reset(self, playlist):
@@ -190,14 +190,13 @@ def set_orders(orders):
 set_orders([])
 
 
-class PlayOrder(gtk.ComboBox):
+class PlayOrder(Gtk.ComboBoxText):
     def __init__(self, model, player):
-        super(PlayOrder, self).__init__(gtk.ListStore(str))
-        cell = gtk.CellRendererText()
+        super(PlayOrder, self).__init__()
+
+        cell = self.get_cells()[0]
         cell.props.xpad = 1
         cell.props.ypad = 0
-        self.pack_start(cell, True)
-        self.add_attribute(cell, 'text', 0)
 
         self.__plugins = []
         if PluginManager.instance:

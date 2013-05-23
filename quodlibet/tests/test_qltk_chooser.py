@@ -22,4 +22,8 @@ add(TFolderChooser)
 
 class TFileChooser(TFolderChooser):
     Kind = FileChooser
+
+    def test_filter(self):
+        f = lambda *x: None
+        FileChooser(None, "foo", filter=f)
 add(TFileChooser)

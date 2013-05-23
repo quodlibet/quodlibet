@@ -4,7 +4,7 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-import gtk
+from gi.repository import Gtk
 import dbus
 
 from quodlibet import app
@@ -15,7 +15,7 @@ class ScreensaverPause(EventPlugin):
     PLUGIN_ID = "screensaver_pause"
     PLUGIN_NAME = _("Screensaver Pause")
     PLUGIN_DESC = _("Pause while the GNOME screensaver is active.")
-    PLUGIN_ICON = gtk.STOCK_MEDIA_PAUSE
+    PLUGIN_ICON = Gtk.STOCK_MEDIA_PAUSE
     PLUGIN_VERSION = "0.2"
 
     DBUS_NAME = "org.gnome.ScreenSaver"

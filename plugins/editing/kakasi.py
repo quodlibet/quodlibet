@@ -1,24 +1,25 @@
 import os
-import gtk
-import gobject
+
+from gi.repository import Gtk, GObject
 
 from quodlibet import util
 from quodlibet.plugins.editing import RenameFilesPlugin
 
 
-class Kakasi(RenameFilesPlugin, gtk.CheckButton):
+class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     PLUGIN_ID = "Kana/Kanji Simple Inverter"
     PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
     PLUGIN_DESC = _("Convert kana/kanji to romaji before renaming.")
-    PLUGIN_ICON = gtk.STOCK_CONVERT
+    PLUGIN_ICON = Gtk.STOCK_CONVERT
     PLUGIN_VERSION = "1"
 
     __gsignals__ = {
-        "preview": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+        "preview": (GObject.SignalFlags.RUN_LAST, None, ())
     }
 
     def __init__(self):
-        super(Kakasi, self).__init__("Romanize _Japanese text")
+        super(Kakasi, self).__init__(
+            _("Romanize _Japanese text"), use_underline=True)
         self.connect_object('toggled', self.emit, 'preview')
 
     active = property(lambda s: s.get_active())

@@ -4,7 +4,7 @@ import time
 import traceback
 import platform
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import app
 from quodlibet import const
@@ -13,7 +13,7 @@ from quodlibet import util
 old_hook = sys.excepthook
 
 
-class ExceptionDialog(gtk.Window):
+class ExceptionDialog(Gtk.Window):
     running = False
     instance = None
 
@@ -63,7 +63,7 @@ class ExceptionDialog(gtk.Window):
         # that handles things going wrong, i.e. it only uses GTK+ code,
         # no QLTK wrappers.
 
-        gtk.Window.__init__(self)
+        Gtk.Window.__init__(self)
         self.set_default_size(400, 400)
         self.set_border_width(12)
         self.set_title(_("Error Occurred"))
@@ -80,33 +80,33 @@ class ExceptionDialog(gtk.Window):
         suggestion = _("Quod Libet may now be unstable. Closing it and "
             "restarting is recommended. Your library will be saved.")
 
-        label = gtk.Label(desc + "\n\n" + suggestion)
+        label = Gtk.Label(desc + "\n\n" + suggestion)
 
         label.set_selectable(True)
         label.set_use_markup(True)
         label.set_line_wrap(True)
-        box = gtk.VBox(spacing=6)
-        buttons = gtk.HButtonBox()
-        view = gtk.TreeView()
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        box = Gtk.VBox(spacing=6)
+        buttons = Gtk.HButtonBox()
+        view = Gtk.TreeView()
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        model = gtk.ListStore(str, str, int)
+        model = Gtk.ListStore(str, str, int)
         self.__fill_list(view, model, value, traceback)
         view.set_model(model)
-        cancel = gtk.Button(stock=gtk.STOCK_CANCEL)
-        close = gtk.Button(stock=gtk.STOCK_QUIT)
-        buttons.pack_start(close)
-        buttons.pack_start(cancel)
-        box.pack_start(label, expand=False)
-        box.pack_start(sw)
-        box.pack_start(buttons, expand=False)
+        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        close = Gtk.Button(stock=Gtk.STOCK_QUIT)
+        buttons.pack_start(close, True, True, 0)
+        buttons.pack_start(cancel, True, True, 0)
+        box.pack_start(label, False, True, 0)
+        box.pack_start(sw, True, True, 0)
+        box.pack_start(buttons, False, True, 0)
         self.add(box)
 
         self.connect('destroy', self.__destroy)
-        cancel.connect_object('clicked', gtk.Window.destroy, self)
-        close.connect('clicked', lambda *x: gtk.main_quit())
+        cancel.connect_object('clicked', Gtk.Window.destroy, self)
+        close.connect('clicked', lambda *x: Gtk.main_quit())
 
         self.show_all()
         filename = util.unexpand(dump)
@@ -125,12 +125,12 @@ class ExceptionDialog(gtk.Window):
             model.append(row=[filename, function, line])
         view.connect('row-activated', self.__stack_row_activated)
 
-        def cdf(column, cell, model, iter):
+        def cdf(column, cell, model, iter, data):
             cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
                 util.escape(model[iter][1]), model[iter][2],
                 util.escape(util.unexpand(model[iter][0]))))
-        render = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(str(value).replace("_", "__"), render)
+        render = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(str(value).replace("_", "__"), render)
         col.set_cell_data_func(render, cdf)
         col.set_visible(True)
         col.set_expand(True)

@@ -12,7 +12,7 @@
 
 import os
 
-import gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import config
 from quodlibet import formats
@@ -29,7 +29,7 @@ from quodlibet.util.dprint import print_d
 from quodlibet.util.uri import URI
 
 
-class FileSystem(Browser, gtk.HBox):
+class FileSystem(Browser, Gtk.HBox):
     __gsignals__ = Browser.__gsignals__
 
     expand = qltk.RHPaned
@@ -59,16 +59,19 @@ class FileSystem(Browser, gtk.HBox):
     def __init__(self, library, main):
         super(FileSystem, self).__init__()
         sw = ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
 
         folders = filter(None, split_scan_dirs(config.get("settings", "scan")))
 
         dt = DirectoryTree(folders=folders)
-        targets = [
-            ("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, self.TARGET_QL),
-            ("text/uri-list", 0, self.TARGET_EXT)]
-        dt.drag_source_set(gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP,
+                    self.TARGET_QL),
+                   ("text/uri-list", 0, self.TARGET_EXT)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
+        dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,
+                           targets, Gdk.DragAction.COPY)
         dt.connect('drag-data-get', self.__drag_data_get)
 
         sel = dt.get_selection()
@@ -77,7 +80,8 @@ class FileSystem(Browser, gtk.HBox):
         if main:
             dt.connect('row-activated', lambda *a: self.emit("activated"))
         sw.add(dt)
-        self.pack_start(sw)
+        self.pack_start(sw, True, True, 0)
+
         self.show_all()
 
     def get_child(self):
@@ -100,7 +104,8 @@ class FileSystem(Browser, gtk.HBox):
             to_add = filter(self.__library.__contains__, songs)
             self.__add_songs(view, to_add)
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
         else:
             # External target (app) is delivered a list of URIS of songs
             uris = list(set([URI.frompath(dir) for dir in dirs]))
@@ -133,7 +138,8 @@ class FileSystem(Browser, gtk.HBox):
                 paths.remove(model[iter][0])
                 if not first:
                     self.get_child().set_cursor(path)
-                    first.append(path)
+                    # copy treepath, gets invalid after the callback
+                    first.append(path.copy())
             else:
                 for fpath in paths:
                     if model[path][0] and fpath.startswith(model[path][0]):
@@ -156,7 +162,7 @@ class FileSystem(Browser, gtk.HBox):
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
                          delete=True, accels=songlist.accelerators,
                          parent=self)
-        i = qltk.MenuItem(_("_Add to Library"), gtk.STOCK_ADD)
+        i = qltk.MenuItem(_("_Add to Library"), Gtk.STOCK_ADD)
         i.set_sensitive(False)
         i.connect('activate', self.__add_songs, songs)
         for song in songs:
@@ -206,7 +212,7 @@ class FileSystem(Browser, gtk.HBox):
 
     def __songs_selected(self, view):
         if self.get_window():
-            self.get_window().set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            self.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         for songs in self.__find_songs(view.get_selection()):
             yield True
         if self.get_window():

@@ -15,8 +15,7 @@ import socket
 import time
 import urllib
 
-import gtk
-import gobject
+from gi.repository import Gtk, GLib
 
 from quodlibet import app
 from quodlibet import config
@@ -248,33 +247,33 @@ class SqueezeboxServer(object):
         return str(self.config)
 
 
-class GetPlayerDialog(gtk.Dialog):
+class GetPlayerDialog(Gtk.Dialog):
     def __init__(self, parent, players, current=0):
         title = _("Choose Squeezebox player")
         super(GetPlayerDialog, self).__init__(title, parent)
         self.set_border_width(6)
         self.set_has_separator(False)
         self.set_resizable(False)
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         gtk.STOCK_OK, gtk.RESPONSE_OK)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                         Gtk.STOCK_OK, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
-        self.set_default_response(gtk.RESPONSE_OK)
+        self.set_default_response(Gtk.ResponseType.OK)
 
-        box = gtk.VBox(spacing=6)
-        label = gtk.Label(
-                _("Found Squeezebox server.\nPlease choose the player"))
+        box = Gtk.VBox(spacing=6)
+        label = Gtk.Label(
+            label=_("Found Squeezebox server.\nPlease choose the player"))
         box.set_border_width(6)
         label.set_line_wrap(True)
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        box.pack_start(label)
+        label.set_justify(Gtk.Justification.CENTER)
+        box.pack_start(label, True, True, 0)
 
-        player_combo = gtk.combo_box_new_text()
+        player_combo = Gtk.ComboBoxText()
         for player in players:
             player_combo.append_text(player["name"])
         player_combo.set_active(current)
         self._val = player_combo
-        box.pack_start(self._val)
-        self.vbox.pack_start(box)
+        box.pack_start(self._val, True, True, 0)
+        self.vbox.pack_start(box, True, True, 0)
         self.get_child().show_all()
 
     def run(self, text=""):
@@ -282,7 +281,7 @@ class GetPlayerDialog(gtk.Dialog):
         #self._val.set_activates_default(True)
         self._val.grab_focus()
         resp = super(GetPlayerDialog, self).run()
-        if resp == gtk.RESPONSE_OK:
+        if resp == Gtk.ResponseType.OK:
             value = self._val.get_active()
         else:
             value = None
@@ -319,8 +318,8 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         dialog.show()
 
     @staticmethod
-    def quick_dialog(msg, dialog_type=gtk.MESSAGE_INFO):
-        gobject.idle_add(SqueezeboxPluginMixin._show_dialog, dialog_type, msg)
+    def quick_dialog(msg, dialog_type=Gtk.MessageType.INFO):
+        GLib.idle_add(SqueezeboxPluginMixin._show_dialog, dialog_type, msg)
 
     @classmethod
     def set_player(cls, val):
@@ -348,7 +347,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
         else:
             cls.quick_dialog(_("Couldn't connect to %s") % (cls.server,),
-                              gtk.MESSAGE_ERROR)
+                              Gtk.MessageType.ERROR)
 
     @classmethod
     def PluginPreferences(cls, parent):
@@ -357,21 +356,21 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
                 cls.server.config[key] = entry.get_text()
                 config.set("plugins", "squeezebox_" + key, entry.get_text())
 
-        vb = gtk.VBox(spacing=12)
+        vb = Gtk.VBox(spacing=12)
         if not cls.server:
             cls.init_server()
         cfg = cls.server.config
 
         # Server settings Frame
-        cfg_frame = gtk.Frame(_("<b>Squeezebox Server</b>"))
-        cfg_frame.set_shadow_type(gtk.SHADOW_NONE)
+        cfg_frame = Gtk.Frame(label=_("<b>Squeezebox Server</b>"))
+        cfg_frame.set_shadow_type(Gtk.ShadowType.NONE)
         cfg_frame.get_label_widget().set_use_markup(True)
-        cfg_frame_align = gtk.Alignment(0, 0, 1, 1)
+        cfg_frame_align = Gtk.Alignment.new(0, 0, 1, 1)
         cfg_frame_align.set_padding(6, 6, 12, 12)
         cfg_frame.add(cfg_frame_align)
 
         # Tabulate all settings for neatness
-        table = gtk.Table(3, 2)
+        table = Gtk.Table(3, 2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         rows = []
@@ -379,44 +378,44 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         ve = UndoEntry()
         ve.set_text(cfg["hostname"])
         ve.connect('changed', value_changed, 'server_hostname')
-        rows.append((gtk.Label(_("Hostname:")), ve))
+        rows.append((Gtk.Label(label=_("Hostname:")), ve))
 
         ve = UndoEntry()
         ve.set_width_chars(5)
         ve.set_text(str(cfg["port"]))
         ve.connect('changed', value_changed, 'server_port')
-        rows.append((gtk.Label(_("Port:")), ve))
+        rows.append((Gtk.Label(label=_("Port:")), ve))
 
         ve = UndoEntry()
         ve.set_text(cfg["user"])
         ve.connect('changed', value_changed, 'server_user')
-        rows.append((gtk.Label(_("Username:")), ve))
+        rows.append((Gtk.Label(label=_("Username:")), ve))
 
         ve = UndoEntry()
         ve.set_text(str(cfg["password"]))
         ve.connect('changed', value_changed, 'server_password')
-        rows.append((gtk.Label(_("Password:")), ve))
+        rows.append((Gtk.Label(label=_("Password:")), ve))
 
         ve = UndoEntry()
         ve.set_text(str(cfg["library_dir"]))
         ve.set_tooltip_text(_("Library directory the server connects to."))
         ve.connect('changed', value_changed, 'server_library_dir')
-        rows.append((gtk.Label(_("Library path:")), ve))
+        rows.append((Gtk.Label(label=_("Library path:")), ve))
 
         for (row, (label, entry)) in enumerate(rows):
             table.attach(label, 0, 1, row, row + 1)
             table.attach(entry, 1, 2, row, row + 1)
 
         # Add verify button
-        button = gtk.Button(_("_Verify settings"))
+        button = Gtk.Button(_("_Verify settings"))
         button.set_sensitive(cls.server is not None)
         button.connect('clicked', cls.check_settings)
         table.attach(button, 0, 2, row + 1, row + 2)
 
         cfg_frame_align.add(table)
-        vb.pack_start(cfg_frame)
+        vb.pack_start(cfg_frame, True, True, 0)
         debug = cls.ConfigCheckButton(_("Debug"), "debug")
-        vb.pack_start(debug)
+        vb.pack_start(debug, True, True, 0)
         return vb
 
     @classmethod
@@ -449,7 +448,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_NAME = _('Squeezebox Sync')
     PLUGIN_DESC = _("Make Logitech Squeezebox mirror Quod Libet output, "
             "provided both read from an identical library")
-    PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
+    PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
     PLUGIN_VERSION = '0.3'
     server = None
     active = False
@@ -526,7 +525,7 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
     PLUGIN_DESC = _("Dynamically export songs to Logitech Squeezebox "
                     "playlists, provided both share a directory structure. "
                     "Shares configuration with Squeezebox Sync plugin")
-    PLUGIN_ICON = gtk.STOCK_EDIT
+    PLUGIN_ICON = Gtk.STOCK_EDIT
     PLUGIN_VERSION = '0.2'
     TEMP_PLAYLIST = "_quodlibet"
 
@@ -572,7 +571,7 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
         dialog = qltk.GetStringDialog(None,
             _("Export selection to Squeezebox playlist"),
             _("Playlist name (will overwrite existing)"),
-            okbutton=gtk.STOCK_SAVE)
+            okbutton=Gtk.STOCK_SAVE)
         name = dialog.run(text="Quod Libet playlist")
         return name
 

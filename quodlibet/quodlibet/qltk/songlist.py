@@ -8,9 +8,7 @@
 import datetime
 import time
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GLib, Pango, Gdk, GObject
 
 from quodlibet import app
 from quodlibet import config
@@ -31,6 +29,85 @@ from quodlibet.qltk.sortdialog import SortDialog
 from quodlibet.util import human_sort_key
 
 
+DND_QL, DND_URI_LIST = range(2)
+
+
+class SongInfoSelection(GObject.Object):
+    """
+    InfoSelection: Songs which get included in the status bar
+    summary. changed gets fired after any of the songs in the
+    selection or the selection it self have changed.
+    The signal is async.
+
+    Two selection states:
+        - 0 or 1 selected row: all rows
+        - 2 or more: only the selected rows
+
+    The signals fires if the state changes.
+
+    FIXME:
+        row-changed for song lists isn't implemented (performance).
+        Since a library change could change the selection it should
+        also trigger a this.
+
+        Since this would happen quite often (song stat changes) and
+        would lead to a complete recalc in the common case ignore it for
+        now.
+    """
+
+    __gsignals__ = {
+        # changed(songs:list)
+        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,))
+    }
+
+    def __init__(self, songlist):
+        super(SongInfoSelection, self).__init__()
+
+        self.__idle = None
+        self.__songlist = songlist
+        self.__selection = sel = songlist.get_selection()
+        self.__count = sel.count_selected_rows()
+        self.__sel_id = sel.connect('changed', self.__selection_changed_cb)
+
+    def destroy(self):
+        self.__selection.disconnect(self.__sel_id)
+        if self.__idle:
+            GLib.source_remove(self.__idle)
+
+    def _update_songs(self, songs):
+        """After making changes (filling the list) call this to
+        skip any queued changes and emit the passed songs instead"""
+        self.__emit_info_selection(songs)
+        self.__count = len(songs)
+
+    def __idle_emit(self, songs):
+        if songs is None:
+            if self.__count <= 1:
+                songs = self.__songlist.get_songs()
+            else:
+                songs = self.__songlist.get_selected_songs()
+        self.emit('changed', songs)
+        self.__idle = None
+        False
+
+    def __emit_info_selection(self, songs=None):
+        if self.__idle:
+            GLib.source_remove(self.__idle)
+        self.__idle = GLib.idle_add(
+            self.__idle_emit, songs, priority=GLib.PRIORITY_LOW)
+
+    def __selection_changed_cb(self, selection):
+        count = selection.count_selected_rows()
+        if self.__count == count == 0:
+            return
+        if count <= 1:
+            if self.__count > 1:
+                self.__emit_info_selection()
+        else:
+            self.__emit_info_selection()
+        self.__count = count
+
+
 class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     # A TreeView containing a list of songs.
 
@@ -41,7 +118,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     class TextColumn(qltk.views.TreeViewColumnButton):
         # Base class for other kinds of columns.
-        _label = gtk.Label().create_pango_layout("")
+        _label = Gtk.Label().create_pango_layout("")
         __last_rendered = None
 
         def _needs_update(self, value):
@@ -61,7 +138,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             max_width = -1
             width = self.get_fixed_width()
             for text, pad, cell_pad in self._text:
-                self._label.set_text(text)
+                self._label.set_text(text, -1)
                 new_width = self._label.get_pixel_size()[0] + pad + cell_pad
                 if new_width > max_width:
                     max_width = new_width
@@ -81,17 +158,17 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 if force:
                     self._delayed_update()
                 if self._timeout is not None:
-                    gobject.source_remove(self._timeout)
+                    GLib.source_remove(self._timeout)
                     self._timeout = None
-                self._timeout = gobject.idle_add(self._delayed_update,
-                    priority=gobject.PRIORITY_LOW)
+                self._timeout = GLib.idle_add(self._delayed_update,
+                    priority=GLib.PRIORITY_LOW)
 
         def __init__(self, t):
-            self._render = gtk.CellRendererText()
+            self._render = Gtk.CellRendererText()
             title = util.tag(t)
             super(SongList.TextColumn, self).__init__(title, self._render)
             self.header_name = t
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            self.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
             self.set_visible(True)
             self.set_clickable(True)
             self.set_sort_indicator(False)
@@ -128,7 +205,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # a '~' in it, and 'title'.
         def __init__(self, tag):
             super(SongList.WideTextColumn, self).__init__(tag)
-            self._render.set_property('ellipsize', pango.ELLIPSIZE_END)
+            self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
             self.set_expand(True)
             self.set_resizable(True)
             self.set_fixed_width(1)
@@ -239,7 +316,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
             b = qltk.MenuItem(
-                _("_Filter on %s") % util.tag(t, True), gtk.STOCK_INDEX)
+                _("_Filter on %s") % util.tag(t, True), Gtk.STOCK_INDEX)
             b.connect_object('activate', self.__filter_on, t, songs, browser)
             return b
 
@@ -265,9 +342,10 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         super(SongList, self).__init__()
         self._register_instance(SongList)
         self.set_model(PlaylistModel())
+        self.info = SongInfoSelection(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
-        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.set_fixed_height_mode(True)
         self.__csig = self.connect('columns-changed', self.__columns_changed)
         self.set_column_headers(self.headers)
@@ -299,19 +377,20 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('drag-data-received', self.__drag_data_received, library)
 
-        self.set_search_equal_func(self.__search_func)
+        self.set_search_equal_func(self.__search_func, None)
 
-        self.accelerators = gtk.AccelGroup()
-        key, mod = gtk.accelerator_parse("<alt>Return")
-        self.accelerators.connect_group(
+        self.accelerators = Gtk.AccelGroup()
+        key, mod = Gtk.accelerator_parse("<alt>Return")
+        self.accelerators.connect(
             key, mod, 0, lambda *args: self.__song_properties(librarian))
-        key, mod = gtk.accelerator_parse("<control>I")
-        self.accelerators.connect_group(
+        key, mod = Gtk.accelerator_parse("<control>I")
+        self.accelerators.connect(
             key, mod, 0, lambda *args: self.__information(librarian))
 
         self.connect('destroy', self.__destroy)
 
     def __destroy(self, *args):
+        self.info.destroy()
         self.handler_block(self.__csig)
         map(self.remove_column, self.get_columns())
         self.handler_unblock(self.__csig)
@@ -327,20 +406,26 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             return True
 
     def enable_drop(self, by_row=True):
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+            ("text/uri-list", 0, DND_URI_LIST)
+        ]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
         self.drag_source_set(
-            gtk.gdk.BUTTON1_MASK, targets,
-            gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
-        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
-                           gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
+            Gdk.ModifierType.BUTTON1_MASK, targets,
+            Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
+        self.drag_dest_set(Gtk.DestDefaults.ALL, targets,
+                           Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
         self.__drop_by_row = by_row
 
     def disable_drop(self):
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+            ("text/uri-list", 0, DND_URI_LIST)
+        ]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
         self.drag_source_set(
-            gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         self.drag_dest_unset()
 
     def __drag_leave(self, widget, ctx, time):
@@ -351,20 +436,20 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         if self.__drop_by_row:
             self.set_drag_dest(x, y)
             self.scroll_motion(x, y)
-            if ctx.get_source_widget() == self:
-                kind = gtk.gdk.ACTION_MOVE
+            if Gtk.drag_get_source_widget(ctx) == self:
+                kind = Gdk.DragAction.MOVE
             else:
-                kind = gtk.gdk.ACTION_COPY
-            ctx.drag_status(kind, time)
+                kind = Gdk.DragAction.COPY
+            Gdk.drag_status(ctx, kind, time)
             return True
         else:
             self.get_parent().drag_highlight()
-            ctx.drag_status(gtk.gdk.ACTION_COPY, time)
+            Gdk.drag_status(ctx, Gdk.DragAction.COPY, time)
             return True
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, paths = self.get_selection().get_selected_rows()
-        if tid == 1:
+        if tid == DND_QL:
             songs = [model[path][0] for path in paths
                      if model[path][0].can_add]
             if len(songs) != len(paths):
@@ -372,11 +457,12 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                     qltk.get_top_parent(self), _("Unable to copy songs"),
                     _("The files selected cannot be copied to other "
                       "song lists or the queue.")).run()
-                ctx.drag_abort(etime)
+                Gdk.drag_abort(ctx, etime)
                 return
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
-            if ctx.action == gtk.gdk.ACTION_MOVE:
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
+            if ctx.get_actions() & Gdk.DragAction.MOVE:
                 self.__drag_iters = map(model.get_iter, paths)
             else:
                 self.__drag_iters = []
@@ -394,10 +480,10 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
         model = view.get_model()
-        if info == 1:
-            filenames = sel.data.split("\x00")
-            move = (ctx.get_source_widget() == view)
-        elif info == 2:
+        if info == DND_QL:
+            filenames = sel.get_data().split("\x00")
+            move = (Gtk.drag_get_source_widget(ctx) == view)
+        elif info == DND_URI_LIST:
             def to_filename(s):
                 try:
                     return URI(s).filename
@@ -407,7 +493,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             filenames = filter(None, map(to_filename, sel.get_uris()))
             move = False
         else:
-            ctx.finish(False, False, etime)
+            Gtk.drag_finish(ctx, False, False, etime)
             return
 
         to_add = []
@@ -419,30 +505,30 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         library.add(to_add)
         songs = filter(None, map(library.get, filenames))
         if not songs:
-            ctx.finish(bool(not filenames), False, etime)
+            Gtk.drag_finish(ctx, bool(not filenames), False, etime)
             return
 
         if not self.__drop_by_row:
             success = self.__drag_data_browser_dropped(songs)
-            ctx.finish(success, False, etime)
+            Gtk.drag_finish(ctx, success, False, etime)
             return
 
         try:
             path, position = view.get_dest_row_at_pos(x, y)
         except TypeError:
             path = max(0, len(model) - 1)
-            position = gtk.TREE_VIEW_DROP_AFTER
+            position = Gtk.TreeViewDropPosition.AFTER
 
-        if move and ctx.get_source_widget() == view:
+        if move and Gtk.drag_get_source_widget(ctx) == view:
             iter = model.get_iter(path) # model can't be empty, we're moving
-            if position in (gtk.TREE_VIEW_DROP_BEFORE,
-                            gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+            if position in (Gtk.TreeViewDropPosition.BEFORE,
+                            Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
                 while self.__drag_iters:
                     model.move_before(self.__drag_iters.pop(0), iter)
             else:
                 while self.__drag_iters:
                     model.move_after(self.__drag_iters.pop(), iter)
-            ctx.finish(True, False, etime)
+            Gtk.drag_finish(ctx, True, False, etime)
         else:
             song = songs.pop(0)
             try:
@@ -450,14 +536,14 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             except ValueError:
                 iter = model.append(row=[song]) # empty model
             else:
-                if position in (gtk.TREE_VIEW_DROP_BEFORE,
-                                gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                if position in (Gtk.TreeViewDropPosition.BEFORE,
+                                Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
                     iter = model.insert_before(iter, [song])
                 else:
                     iter = model.insert_after(iter, [song])
             for song in songs:
                 iter = model.insert_after(iter, [song])
-            ctx.finish(True, move, etime)
+            Gtk.drag_finish(ctx, True, move, etime)
 
     def __filter_on(self, header, songs, browser):
         if not browser:
@@ -474,9 +560,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     def __custom_sort(self, *args):
         sd = SortDialog(qltk.get_top_parent(self))
-        if sd.run() == gtk.RESPONSE_OK:
+        if sd.run() == Gtk.ResponseType.OK:
             # sort_keys yields a list of pairs (sort header, order)
-            headers = sd.sort_keys()
+            headers = sd.sort_key
             if not headers:
                 return
 
@@ -491,7 +577,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                     c = cmp(_get_key(x, h), _get_key(y, h))
                     if c == 0:
                         continue
-                    if o != gtk.SORT_ASCENDING:
+                    if o != Gtk.SortType.ASCENDING:
                         c *= -1
                     return c
                 return 0
@@ -515,9 +601,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 return
 
             song = view.get_model()[path][0]
-            l = gtk.Label()
+            l = Gtk.Label()
             l.set_text(util.format_rating(util.RATING_PRECISION, blank=False))
-            width = l.size_request()[0]
+            width = l.size_request().width
             l.destroy()
             count = int(float(cellx - 5) / width) + 1
             rating = max(0.0, min(1.0, count * util.RATING_PRECISION))
@@ -531,7 +617,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         if (count > 1 and
             config.getboolean("browsers", "rating_confirm_multiple")):
             dialog = ConfirmRateMultipleDialog(self, count, value)
-            if dialog.run() != gtk.RESPONSE_YES:
+            if dialog.run() != Gtk.ResponseType.YES:
                 return
         for song in songs:
             song["~#rating"] = value
@@ -595,7 +681,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             if header.get_sort_indicator():
                 tag = header.header_name
                 sort = header.get_sort_order()
-                return (tag, sort == gtk.SORT_DESCENDING)
+                return (tag, sort == Gtk.SortType.DESCENDING)
         else:
             return "", False
 
@@ -613,15 +699,15 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 if order is None:
                     s = header.get_sort_order()
                     if (not header.get_sort_indicator() or
-                        s == gtk.SORT_DESCENDING):
-                        s = gtk.SORT_ASCENDING
+                        s == Gtk.SortType.DESCENDING):
+                        s = Gtk.SortType.ASCENDING
                     else:
-                        s = gtk.SORT_DESCENDING
+                        s = Gtk.SortType.DESCENDING
                 else:
                     if order:
-                        s = gtk.SORT_DESCENDING
+                        s = Gtk.SortType.DESCENDING
                     else:
-                        s = gtk.SORT_ASCENDING
+                        s = Gtk.SortType.ASCENDING
                 rev = h.get_sort_indicator()
                 h.set_sort_indicator(True)
                 h.set_sort_order(s)
@@ -638,9 +724,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             name = h.header_name
             if self.__get_sort_tag(name) == tag:
                 if order:
-                    s = gtk.SORT_DESCENDING
+                    s = Gtk.SortType.DESCENDING
                 else:
-                    s = gtk.SORT_ASCENDING
+                    s = Gtk.SortType.ASCENDING
                 h.set_sort_order(s)
                 h.set_sort_indicator(True)
             else:
@@ -740,24 +826,30 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         # Doing set_model(None) resets the sort indicator, so we need to
         # remember it before doing that.
-        sorts = map(gtk.TreeViewColumn.get_sort_indicator, self.get_columns())
+        sorts = map(Gtk.TreeViewColumn.get_sort_indicator, self.get_columns())
         self.set_model(None)
         model.set(songs)
         self.set_model(model)
-        map(gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
+        map(Gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
+
+        # the song selection has queued a change now, cancel that and
+        # pass the songs manually
+        self.info._update_songs(songs)
 
     def get_selected_songs(self):
+        songs = []
+
+        def func(model, path, iter_, user_data):
+            songs.append(model.get_value(iter_, 0))
         selection = self.get_selection()
-        if selection is None:
-            return []
-        model, rows = selection.get_selected_rows()
-        return [model[row][0] for row in rows]
+        selection.selected_foreach(func, None)
+        return songs
 
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.
         Warning: This makes the row-changed signal useless."""
         #pygtk 2.12: prevent invalid ranges or GTK asserts
-        if not self.flags() & gtk.REALIZED or \
+        if not self.get_realized() or \
                 self.get_path_at_pos(0, 0) is None:
             return
         vrange = self.get_visible_range()
@@ -869,8 +961,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.handler_unblock(self.__csig)
 
     def __getmenu(self, column):
-        menu = gtk.Menu()
-        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
+        menu = Gtk.Menu()
+        menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
 
         current = SongList.headers[:]
         current_set = set(current)
@@ -882,7 +974,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         current = zip(map(tag_title, current), current)
 
         def add_header_toggle(menu, (header, tag), active, column=column):
-            item = gtk.CheckMenuItem(header)
+            item = Gtk.CheckMenuItem(header)
             item.tag = tag
             item.set_active(active)
             item.connect('activate', self.__toggle_header_item, column)
@@ -893,7 +985,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         for header in current:
             add_header_toggle(menu, header, True)
 
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         sep.show()
         menu.append(sep)
 
@@ -921,24 +1013,24 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             (_("_File Headers"), fileinfo),
             (_("_Production Headers"), copyinfo),
         ]:
-            item = gtk.MenuItem(name)
+            item = Gtk.MenuItem(name, use_underline=True)
             item.show()
             menu.append(item)
-            submenu = gtk.Menu()
+            submenu = Gtk.Menu()
             item.set_submenu(submenu)
             for header in sorted(zip(map(util.tag, group), group)):
                 add_header_toggle(submenu, header, header[1] in current_set)
 
-        sep = gtk.SeparatorMenuItem()
+        sep = Gtk.SeparatorMenuItem()
         sep.show()
         menu.append(sep)
 
-        b = gtk.MenuItem(_("Custom _Sort..."))
+        b = Gtk.MenuItem(_("Custom _Sort..."), use_underline=True)
         menu.append(b)
         b.show()
         b.connect('activate', self.__custom_sort)
 
-        custom = gtk.MenuItem(_("_Customize Headers..."))
+        custom = Gtk.MenuItem(_("_Customize Headers..."), use_underline=True)
         custom.show()
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)
@@ -968,12 +1060,13 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         PreferencesWindow(self).set_page("songlist")
 
     def __showmenu(self, column, event=None):
-        time = gtk.get_current_event_time()
+        time = Gtk.get_current_event_time()
         if event is not None and event.button != 3:
             return
 
         if event:
-            self.__getmenu(column).popup(None, None, None, event.button, time)
+            self.__getmenu(column).popup(None, None, None, None,
+                                         event.button, time)
             return True
 
         widget = column.get_widget()

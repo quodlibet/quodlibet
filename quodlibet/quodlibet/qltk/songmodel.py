@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet.qltk.playorder import ORDERS
 
@@ -71,7 +71,7 @@ class PlaylistMux(object):
         map(self.q.remove, filter(None, map(self.q.find, songs)))
 
 
-class TrackCurrentModel(gtk.ListStore):
+class TrackCurrentModel(Gtk.ListStore):
     __iter = None
     __old_value = None
 
@@ -81,12 +81,19 @@ class TrackCurrentModel(gtk.ListStore):
         self.__iter = None
 
         print_d("Setting %d songs." % len(songs))
-        insert = self.insert
+
+        value = GObject.Value()
+        value.init(GObject.TYPE_PYOBJECT)
+        insert = self.insert_with_valuesv
+        vset = value.set_boxed
         oldsong = self.__old_value
+        columns = [0]
         for song in reversed(songs):
-            iter_ = insert(0, (song,))
+            vset(song)
+            iter_ = insert(0, columns, [value])
             if song is oldsong:
                 self.__iter = iter_
+
         print_d("Done filling model.")
 
     def remove(self, iter_):
@@ -99,7 +106,13 @@ class TrackCurrentModel(gtk.ListStore):
         super(TrackCurrentModel, self).clear()
 
     def get(self):
-        return [row[0] for row in self]
+        songs = []
+
+        def func(model, path, iter_, user_data):
+            songs.append(model.get_value(iter_, 0))
+        self.foreach(func, None)
+
+        return songs
 
     @property
     def current(self):
@@ -170,7 +183,7 @@ class PlaylistModel(TrackCurrentModel):
         print_d("Told to go to %r" % getattr(song, "key", song))
 
         iter_ = None
-        if isinstance(song, gtk.TreeIter):
+        if isinstance(song, Gtk.TreeIter):
             iter_ = song
         elif song is not None:
             iter_ = self.find(song)

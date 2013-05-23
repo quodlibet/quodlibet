@@ -5,22 +5,23 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import qltk
 
 
-class MenuButton(gtk.ToggleButton):
+class MenuButton(Gtk.ToggleButton):
     __menu = None
     __menu_sig = None
 
     def __init__(self, widget, arrow=False):
         super(MenuButton, self).__init__()
 
-        bbox = gtk.HBox(spacing=3)
-        bbox.pack_start(widget)
+        bbox = Gtk.HBox(spacing=3)
+        bbox.pack_start(widget, True, True, 0)
         if arrow:
-            bbox.pack_start(gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_IN))
+            bbox.pack_start(Gtk.Arrow(Gtk.ArrowType.DOWN, Gtk.ShadowType.IN),
+                            True, True, 0)
 
         self.add(bbox)
 
@@ -58,7 +59,7 @@ class MenuButton(gtk.ToggleButton):
     def __toggled_cb(self, widget):
         menu = self.__menu
         if widget.get_active() and menu:
-            time = gtk.get_current_event_time()
+            time = Gtk.get_current_event_time()
             qltk.popup_menu_under_widget(menu, widget, 0, time)
         elif menu:
             menu.popdown()

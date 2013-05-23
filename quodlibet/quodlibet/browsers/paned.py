@@ -9,9 +9,7 @@
 import re
 import operator
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GLib, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import qltk
@@ -25,7 +23,7 @@ from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn
-from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage
 from quodlibet.util import tag, pattern
 from quodlibet.util.library import background_filter
 
@@ -45,7 +43,7 @@ def save_headers(headers):
     config.set("browsers", "panes", headers)
 
 
-class PatternEditor(gtk.VBox):
+class PatternEditor(Gtk.VBox):
 
     PRESETS = [
         ["genre", "~people", "album"],
@@ -62,24 +60,26 @@ class PatternEditor(gtk.VBox):
         group = None
         for tags in self.PRESETS:
             tied = "~" + "~".join(tags)
-            group = gtk.RadioButton(group, "_" + tag(tied))
+            group = Gtk.RadioButton(group=group, label="_" + tag(tied),
+                                    use_underline=True)
             headers[group] = tags
             buttons.append(group)
 
-        group = gtk.RadioButton(group, _("_Custom"))
+        group = Gtk.RadioButton(group=group, label=_("_Custom"),
+                                use_underline=True)
         self.__custom = group
         headers[group] = []
         buttons.append(group)
 
-        button_box = gtk.HBox(spacing=6)
-        self.__model = model = gtk.ListStore(str)
+        button_box = Gtk.HBox(spacing=6)
+        self.__model = model = Gtk.ListStore(str)
 
-        radio_box = gtk.VBox(spacing=6)
+        radio_box = Gtk.VBox(spacing=6)
         for button in buttons:
-            radio_box.pack_start(button, expand=False)
+            radio_box.pack_start(button, False, True, 0)
             button.connect('toggled', self.__toggled, button_box, model)
 
-        self.pack_start(radio_box, expand=False)
+        self.pack_start(radio_box, False, True, 0)
 
         cb = TagsComboBoxEntry(self.COMPLETION)
 
@@ -87,41 +87,41 @@ class PatternEditor(gtk.VBox):
         view.set_reorderable(True)
         view.set_headers_visible(False)
 
-        ctrl_box = gtk.VBox(spacing=6)
+        ctrl_box = Gtk.VBox(spacing=6)
 
-        add = gtk.Button(stock=gtk.STOCK_ADD)
-        ctrl_box.pack_start(add, expand=False)
+        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        ctrl_box.pack_start(add, False, True, 0)
         add.connect('clicked', self.__add, model, cb)
 
-        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
-        ctrl_box.pack_start(remove, expand=False)
+        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        ctrl_box.pack_start(remove, False, True, 0)
         remove.connect('clicked', self.__remove, view)
 
         selection = view.get_selection()
         selection.connect('changed', self.__selection_changed, remove)
         selection.emit('changed')
 
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
 
-        edit_box = gtk.VBox(spacing=6)
-        edit_box.pack_start(cb, expand=False)
-        edit_box.pack_start(sw)
+        edit_box = Gtk.VBox(spacing=6)
+        edit_box.pack_start(cb, False, True, 0)
+        edit_box.pack_start(sw, True, True, 0)
 
-        button_box.pack_start(edit_box)
-        button_box.pack_start(ctrl_box, expand=False)
-        self.pack_start(button_box)
+        button_box.pack_start(edit_box, True, True, 0)
+        button_box.pack_start(ctrl_box, False, True, 0)
+        self.pack_start(button_box, True, True, 0)
 
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         render.set_property("editable", True)
 
         def edited_cb(render, path, text, model):
             model[path][0] = text
         render.connect("edited", edited_cb, model)
 
-        column = gtk.TreeViewColumn(None, render, text=0)
+        column = Gtk.TreeViewColumn(None, render, text=0)
         view.append_column(column)
 
     def __get_headers(self):
@@ -178,29 +178,29 @@ class Preferences(qltk.UniqueWindow):
 
         self.set_title(_("Paned Browser Preferences") + " - Quod Libet")
 
-        vbox = gtk.VBox(spacing=12)
+        vbox = Gtk.VBox(spacing=12)
 
         editor = PatternEditor()
         editor.headers = get_headers()
 
-        apply = gtk.Button(stock=gtk.STOCK_APPLY)
+        apply = Gtk.Button(stock=Gtk.STOCK_APPLY)
         apply.connect_object("clicked", self.__apply, editor, False)
 
-        cancel = gtk.Button(stock=gtk.STOCK_CANCEL)
+        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         cancel.connect("clicked", lambda x: self.destroy())
 
-        ok = gtk.Button(stock=gtk.STOCK_OK)
+        ok = Gtk.Button(stock=Gtk.STOCK_OK)
         ok.connect_object("clicked", self.__apply, editor, True)
 
-        box = gtk.HButtonBox()
+        box = Gtk.HButtonBox()
         box.set_spacing(6)
-        box.set_layout(gtk.BUTTONBOX_END)
-        box.pack_start(apply)
-        box.pack_start(cancel)
-        box.pack_start(ok)
+        box.set_layout(Gtk.ButtonBoxStyle.END)
+        box.pack_start(apply, True, True, 0)
+        box.pack_start(cancel, True, True, 0)
+        box.pack_start(ok, True, True, 0)
 
-        vbox.pack_start(editor)
-        vbox.pack_start(box, expand=False)
+        vbox.pack_start(editor, True, True, 0)
+        vbox.pack_start(box, False, True, 0)
 
         self.add(vbox)
 
@@ -304,10 +304,10 @@ class PanePattern(object):
 
 
 class Pane(AllTreeView):
-    __render = gtk.CellRendererText()
-    __render.set_property('ellipsize', pango.ELLIPSIZE_END)
+    __render = Gtk.CellRendererText()
+    __render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
-    __render_count = gtk.CellRendererText()
+    __render_count = Gtk.CellRendererText()
     __render_count.set_property('xalign', 1.0)
 
     __restore_values = None
@@ -350,37 +350,39 @@ class Pane(AllTreeView):
         self.tags = self.pattern.tags
 
         self.__next = next
-        self.__model = model = gtk.ListStore(int, object)
+        self.__model = model = Gtk.ListStore(int, object)
 
         self.__sort_cache = {}
         self.__key_cache = {}
 
         column = TreeViewColumn(self.pattern.title)
         column.set_use_markup(True)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_fixed_width(50)
 
-        column.pack_start(self.__render)
+        column.pack_start(self.__render, True)
         column.set_cell_data_func(self.__render, self.__text_cdf,
                                   self.pattern.has_markup)
-        column.pack_start(self.__render_count, expand=False)
+        column.pack_start(self.__render_count, False)
         column.set_cell_data_func(self.__render_count, self.__count_cdf,
                                   self.pattern.format_display)
         self.append_column(column)
         self.set_model(model)
 
-        self.set_search_equal_func(self.__search_func)
+        self.set_search_equal_func(self.__search_func, None)
 
         selection = self.get_selection()
-        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__sig = selection.connect('changed', self.__selection_changed)
         s = self.connect('popup-menu', self.__popup_menu, library)
         self.connect_object('destroy', self.disconnect, s)
 
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
-        self.drag_source_set(gtk.gdk.BUTTON1_MASK, targets,
-                             gtk.gdk.ACTION_COPY)
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
+        self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets,
+                             Gdk.DragAction.COPY)
         self.connect("drag-data-get", self.__drag_data_get)
         self.connect("destroy", self.__destroy)
 
@@ -388,7 +390,7 @@ class Pane(AllTreeView):
         # needed for gc
         self.__next = None
 
-    def __search_func(self, model, column, key, iter):
+    def __search_func(self, model, column, key, iter, data):
         type, data = model[iter]
         key = key.decode('utf-8').lower()
         if type == SONGS and key in data.key.lower():
@@ -399,7 +401,8 @@ class Pane(AllTreeView):
         songs = self.__get_selected_songs(sort=True)
         if tid == 1:
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
         else:
             sel.set_uris([song("~uri") for song in songs])
 
@@ -425,7 +428,7 @@ class Pane(AllTreeView):
         songs = self.__get_selected_songs(sort=True)
         menu = SongsMenu(library, songs, parent=self)
         menu.show_all()
-        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __selection_changed(self, selection):
         if not self.__next:
@@ -696,21 +699,20 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self._register_instance()
         self.__main = main
 
-        keyval, mod = gtk.accelerator_parse("<control>Home")
-        s = self.accelerators.connect_group(keyval, mod, 0, self.__all)
+        keyval, mod = Gtk.accelerator_parse("<control>Home")
+        s = self.accelerators.connect(keyval, mod, 0, self.__all)
         self.connect_object('destroy',
                             self.accelerators.disconnect_key, keyval, mod)
-        select = gtk.Button(_("Select _All"))
-        self._sb_box.pack_start(select, expand=False)
+        select = Gtk.Button(_("Select _All"), use_underline=True)
+        self._sb_box.pack_start(select, False, True, 0)
 
-        prefs = gtk.Button()
-        prefs.add(gtk.image_new_from_stock(gtk.STOCK_PREFERENCES,
-                                           gtk.ICON_SIZE_MENU))
+        prefs = Gtk.Button()
+        prefs.add(SymbolicIconImage("emblem-system", Gtk.IconSize.MENU))
         s = prefs.connect('clicked', Preferences)
         self.connect_object('destroy', prefs.disconnect, s)
         s = select.connect('clicked', self.__all)
         self.connect_object('destroy', select.disconnect, s)
-        self._sb_box.pack_start(prefs, expand=False)
+        self._sb_box.pack_start(prefs, False, True, 0)
 
         for s in [library.connect('changed', self.__changed),
                   library.connect('added', self.__added),
@@ -779,7 +781,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         else:
             hbox.destroy()
 
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
         hbox.set_size_request(100, 100)
         # Fill in the pane list. The last pane reports back to us.
@@ -795,12 +797,12 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                 pane.connect('row-activated',
                              lambda *x: self.emit("activated"))
             sw = ScrolledWindow()
-            sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-            sw.set_shadow_type(gtk.SHADOW_IN)
+            sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+            sw.set_shadow_type(Gtk.ShadowType.IN)
             sw.add(pane)
-            hbox.pack_start(sw)
+            hbox.pack_start(sw, True, True, 0)
 
-        self.pack_start(hbox)
+        self.pack_start(hbox, True, True, 0)
         self.show_all()
 
         self.__star = {}
@@ -891,6 +893,6 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
             self.fill_panes()
 
     def fill(self, songs):
-        gobject.idle_add(self.emit, 'songs-selected', list(songs), None)
+        GLib.idle_add(self.emit, 'songs-selected', list(songs), None)
 
 browsers = [PanedBrowser]

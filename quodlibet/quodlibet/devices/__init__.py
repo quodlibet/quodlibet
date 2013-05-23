@@ -11,7 +11,8 @@ import ConfigParser
 from os.path import dirname, basename
 from quodlibet.util.dprint import print_d, print_w
 
-import gobject
+from gi.repository import GObject
+
 try:
     import dbus
 except ImportError:
@@ -82,8 +83,8 @@ def get_by_protocols(protocols):
     return None
 
 
-class DeviceManager(gobject.GObject):
-    SIG_PYOBJECT = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,))
+class DeviceManager(GObject.GObject):
+    SIG_PYOBJECT = (GObject.SignalFlags.RUN_LAST, None, (object,))
     __gsignals__ = {
         'removed': SIG_PYOBJECT,
         'added': SIG_PYOBJECT,

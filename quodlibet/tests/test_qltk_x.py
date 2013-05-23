@@ -1,6 +1,7 @@
 from tests import TestCase, add
 
-import gtk
+from gi.repository import Gtk
+
 from quodlibet.qltk import x
 
 class Window(TestCase):
@@ -11,22 +12,22 @@ add(Window)
 class Notebook(TestCase):
     def test_widget_str(self):
         n = x.Notebook()
-        c = gtk.VBox()
+        c = Gtk.VBox()
         n.append_page(c, "A Test")
         self.failUnlessEqual("A Test", n.get_tab_label(c).get_text())
         n.destroy()
 
     def test_widget_label(self):
-        l = gtk.Label("A Test")
+        l = Gtk.Label(label="A Test")
         n = x.Notebook()
-        c = gtk.VBox()
+        c = Gtk.VBox()
         n.append_page(c, l)
         self.failUnless(l is n.get_tab_label(c))
         c.destroy()
 
     def test_widget_error(self):
         n = x.Notebook()
-        w = gtk.VBox()
+        w = Gtk.VBox()
         self.failUnlessRaises(TypeError, n.append_page, w)
         w.destroy()
         n.destroy()
@@ -40,12 +41,12 @@ add(Frame)
 
 class MenuItem(TestCase):
     def test_ctr(self):
-        self.failUnless(x.MenuItem("foo", gtk.STOCK_FIND))
+        self.failUnless(x.MenuItem("foo", Gtk.STOCK_FIND))
 add(MenuItem)
 
 class Button(TestCase):    
     def test_ctr(self):
-        self.failUnless(x.Button("foo", gtk.STOCK_FIND))
+        self.failUnless(x.Button("foo", Gtk.STOCK_FIND))
 add(Button)
 
 class RHPaned(TestCase):
@@ -58,7 +59,7 @@ add(RVPaned)
 
 class TAlignment(TestCase):
     def test_ctr(self):
-        button = gtk.Button()
+        button = Gtk.Button()
         a = x.Alignment(button, left=2, right=4, top=5, bottom=-2, border=2)
         self.failUnlessEqual(a.get_padding(), (7, 0, 4, 6))
         self.failUnless(a.get_child() is button)

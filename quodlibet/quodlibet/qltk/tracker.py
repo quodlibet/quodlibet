@@ -7,9 +7,9 @@
 
 import time
 
-import gtk.gdk
-import gobject
+from gi.repository import Gdk, GObject, GLib
 
+import quodlibet
 from quodlibet import const
 from quodlibet import config
 from quodlibet import util
@@ -18,7 +18,7 @@ from quodlibet.qltk.msg import ErrorMessage
 MAX_ERRORS = 10
 
 
-class TimeTracker(gobject.GObject):
+class TimeTracker(GObject.GObject):
     """Emits tick every second (with up to one second jitter) as long
     as the player is activly playing.
 
@@ -27,7 +27,7 @@ class TimeTracker(gobject.GObject):
     """
 
     __gsignals__ = {
-        'tick': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'tick': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self, player):
@@ -46,7 +46,7 @@ class TimeTracker(gobject.GObject):
 
     def __source_remove(self):
         if self.__id is not None:
-            gobject.source_remove(self.__id)
+            GLib.source_remove(self.__id)
             self.__id = None
 
     def __update(self):
@@ -65,7 +65,7 @@ class TimeTracker(gobject.GObject):
     def __unpaused(self, *args):
         self.__stop = False
         if self.__id is None:
-            self.__id = gobject.timeout_add_seconds(1, self.__update)
+            self.__id = GLib.timeout_add_seconds(1, self.__update)
 
 
 class SongTracker(object):
@@ -77,7 +77,7 @@ class SongTracker(object):
         timer.connect("tick", self.__timer)
         self.__errors_in_a_row = 0
         self.elapsed = 0
-        gtk.quit_add(1, self.__quit, librarian, player)
+        quodlibet.quit_add(1, self.__quit, librarian, player)
 
     def __error(self, player, song, error, librarian):
         newstr = u"%s: %s\n\n" % (

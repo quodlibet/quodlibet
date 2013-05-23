@@ -5,19 +5,20 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import config
 
 
-class ConfigCheckButton(gtk.CheckButton):
+class ConfigCheckButton(Gtk.CheckButton):
     """A CheckButton that connects to QL's config module, and toggles
     a boolean configuration value when it is toggled.
 
     It is initialised to the current config value if `populate` is set True."""
 
     def __init__(self, label, section, option, populate=False):
-        super(ConfigCheckButton, self).__init__(label)
+        super(ConfigCheckButton, self).__init__(
+            label=label, use_underline=True)
         if populate:
             self.set_active(config.getboolean(section, option))
         self.connect('toggled', ConfigCheckButton.__toggled, section, option)
@@ -26,14 +27,15 @@ class ConfigCheckButton(gtk.CheckButton):
         config.set(section, option, str(bool(self.get_active())).lower())
 
 
-class ConfigCheckMenuItem(gtk.CheckMenuItem):
+class ConfigCheckMenuItem(Gtk.CheckMenuItem):
     """A CheckMenuItem that connects to QL's config module, and toggles
     a boolean configuration value when it is toggled.
 
     It is initialised to the current config value if `populate` is set True."""
 
     def __init__(self, label, section, option, populate=False):
-        super(ConfigCheckMenuItem, self).__init__(label)
+        super(ConfigCheckMenuItem, self).__init__(
+            label=label, use_underline=True)
         if populate:
             self.set_active(config.getboolean(section, option))
         self.connect('toggled', ConfigCheckMenuItem.__toggled, section, option)

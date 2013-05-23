@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.player.nullbe import NullPlayer
@@ -21,7 +21,7 @@ class TSongTracker(TestCase):
         self.current = None
 
     def do(self):
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
 
     def test_play(self):
         import time

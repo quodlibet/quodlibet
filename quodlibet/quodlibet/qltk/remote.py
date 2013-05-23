@@ -9,9 +9,9 @@ import os
 import re
 import sys
 
-import gobject
-import gtk
+from gi.repository import GObject, Gdk, GLib
 
+import quodlibet
 from quodlibet import browsers
 from quodlibet import config
 from quodlibet import const
@@ -29,7 +29,7 @@ class FSInterface(object):
     def __init__(self, player):
         player.connect('song-started', self.__started)
         player.connect('song-ended', self.__ended)
-        gtk.quit_add(1, self.destroy)
+        quodlibet.quit_add(1, self.destroy)
 
     def destroy(self):
         try:
@@ -59,7 +59,7 @@ class FIFOControl(object):
 
     def __init__(self, library, window, player):
         self.__open(library, window, player)
-        gtk.quit_add(1, self.destroy)
+        quodlibet.quit_add(1, self.destroy)
 
     def destroy(self):
         try:
@@ -74,8 +74,9 @@ class FIFOControl(object):
                 os.mkfifo(const.CONTROL, 0600)
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             f = os.fdopen(fifo, "r", 4096)
-            gobject.io_add_watch(
-                f, gtk.gdk.INPUT_READ, self.__process, *args)
+            GObject.io_add_watch(
+                f, GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+                self.__process, *args)
         except (EnvironmentError, AttributeError):
             pass
 
@@ -90,36 +91,36 @@ class FIFOControl(object):
                 raise KeyError(key)
 
     def __process(self, source, condition, *args):
-        commands = source.read().rstrip("\n").splitlines()
-        if commands == []:
+        if condition in (GLib.IO_ERR, GLib.IO_HUP):
             self.__open(*args)
             return False
-        else:
-            for command in commands:
+
+        commands = source.read().rstrip("\n").splitlines()
+        for command in commands:
+            try:
+                try:
+                    cmd, arg = command.split(' ', 1)
+                except ValueError:
+                    self[command](*args)
+                else:
+                    print_d("Running %r with params %r " % (cmd, arg))
+                    self[cmd](arg, *args)
+            except KeyError:
+                commands = args[1].browser.commands
                 try:
                     try:
                         cmd, arg = command.split(' ', 1)
                     except ValueError:
-                        self[command](*args)
+                        commands[command](*args)
                     else:
-                        print_d("Running %r with params %r " % (cmd, arg))
-                        self[cmd](arg, *args)
-                except KeyError:
-                    commands = args[1].browser.commands
-                    try:
-                        try:
-                            cmd, arg = command.split(' ', 1)
-                        except ValueError:
-                            commands[command](*args)
-                        else:
-                            commands[cmd](arg, *args)
-                    except:
-                        print_w(_("Invalid command %r received.") % command)
+                        commands[cmd](arg, *args)
                 except:
-                    e = sys.exc_info()[1]
-                    print_e(_("Error running command %r, caused by: %r.") %
-                        (command, e))
-            return True
+                    print_w(_("Invalid command %r received.") % command)
+            except:
+                e = sys.exc_info()[1]
+                print_e(_("Error running command %r, caused by: %r.") %
+                    (command, e))
+        return True
 
     def _previous(self, library, window, player):
         player.previous()

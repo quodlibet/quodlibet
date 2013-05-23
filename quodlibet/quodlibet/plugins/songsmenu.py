@@ -4,13 +4,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.util.songwrapper import check_wrapper_changed
 
 
-class SongsMenuPlugin(gtk.ImageMenuItem):
-    """Plugins of this type are subclasses of gtk.ImageMenuItem.
+class SongsMenuPlugin(Gtk.ImageMenuItem):
+    """Plugins of this type are subclasses of Gtk.ImageMenuItem.
     They will be added, in alphabetical order, to the "Plugins" menu
     that appears when songs or lists of songs are right-clicked.
     They provide one or more of the following instance methods:
@@ -43,7 +43,7 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
         self.plugin_handles(songs)
 
     When these functions are called, the self.plugin_window will be
-    available. This is the gtk.Window the plugin was invoked from. This
+    available. This is the Gtk.Window the plugin was invoked from. This
     provides access to two important widgets, self.plugin_window.browser
     and self.plugin_window.songlist.
 
@@ -67,7 +67,7 @@ class SongsMenuPlugin(gtk.ImageMenuItem):
         self.plugin_window = window
         self.__initialized = True
         try:
-            i = gtk.image_new_from_stock(self.PLUGIN_ICON, gtk.ICON_SIZE_MENU)
+            i = Gtk.Image.new_from_stock(self.PLUGIN_ICON, Gtk.IconSize.MENU)
         except AttributeError:
             pass
         else:

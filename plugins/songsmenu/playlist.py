@@ -9,7 +9,7 @@
 
 import os
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import util, qltk
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -47,20 +47,20 @@ class PlaylistExport(SongsMenuPlugin):
 
     def plugin_songs(self, songs):
         global lastfolder
-        dialog = gtk.FileChooserDialog(self.PLUGIN_NAME,
+        dialog = Gtk.FileChooserDialog(self.PLUGIN_NAME,
             None,
-            gtk.FILE_CHOOSER_ACTION_SAVE,
-            (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-            gtk.STOCK_SAVE, gtk.RESPONSE_OK))
-        dialog.set_default_response(gtk.RESPONSE_OK)
+            Gtk.FileChooserAction.SAVE,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+            Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        dialog.set_default_response(Gtk.ResponseType.OK)
 
-        ffilter = gtk.FileFilter()
+        ffilter = Gtk.FileFilter()
         ffilter.set_name("m3u")
         ffilter.add_mime_type("audio/x-mpegurl")
         ffilter.add_pattern("*.m3u")
         dialog.add_filter(ffilter)
 
-        ffilter = gtk.FileFilter()
+        ffilter = Gtk.FileFilter()
         ffilter.set_name("pls")
         ffilter.add_mime_type("audio/x-scpls")
         ffilter.add_pattern("*.pls")
@@ -69,8 +69,8 @@ class PlaylistExport(SongsMenuPlugin):
         dialog.set_current_folder(lastfolder)
 
         diag_cont = dialog.get_child()
-        hbox_path = gtk.HBox()
-        combo_path = gtk.combo_box_new_text()
+        hbox_path = Gtk.HBox()
+        combo_path = Gtk.ComboBoxText()
         hbox_path.pack_end(combo_path, False, False, padding=6)
         diag_cont.pack_start(hbox_path, False, False)
         diag_cont.show_all()
@@ -80,7 +80,7 @@ class PlaylistExport(SongsMenuPlugin):
 
         response = dialog.run()
 
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             file_path = dialog.get_filename()
             dir_path = os.path.dirname(file_path)
 

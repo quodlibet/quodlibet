@@ -6,7 +6,11 @@
 
 import os
 
-import gnomevfs
+
+import gi
+gi.require_version("Gio", "2.0")
+
+from gi.repository import Gio
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
@@ -25,10 +29,10 @@ class AutoMasking(EventPlugin):
 
     def enabled(self):
         if self.__monitor is None:
-            self.__monitor = gnomevfs.VolumeMonitor()
+            self.__monitor = Gio.VolumeMonitor.get()
             self.__sigs = [
-                self.__monitor.connect('volume-mounted', self.__mounted),
-                self.__monitor.connect('volume-unmounted', self.__unmounted),
+                self.__monitor.connect('mount-added', self.__mounted),
+                self.__monitor.connect('mount-removed', self.__unmounted),
                 ]
         else:
             map(self.__monitor.handler_unblock, self.__sigs)
@@ -36,18 +40,10 @@ class AutoMasking(EventPlugin):
     def disabled(self):
         map(self.__monitor.handler_block, self.__sigs)
 
-    def __mounted(self, monitor, volume):
-        try:
-            filename = URI(volume.get_activation_uri()).filename
-        except ValueError:
-            pass
-        else:
-            app.library.unmask(os.path.normpath(filename))
+    def __mounted(self, monitor, mount):
+        path = mount.get_default_location().get_path()
+        app.library.unmask(os.path.normpath(path))
 
-    def __unmounted(self, monitor, volume):
-        try:
-            filename = URI(volume.get_activation_uri()).filename
-        except ValueError:
-            pass
-        else:
-            app.library.mask(os.path.normpath(filename))
+    def __unmounted(self, monitor, mount):
+        path = mount.get_default_location().get_path()
+        app.library.mask(os.path.normpath(path))

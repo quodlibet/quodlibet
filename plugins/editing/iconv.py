@@ -7,7 +7,8 @@
 # Encoding magic. Show off the submenu stuff.
 
 import locale
-import gtk
+
+from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet.plugins.editing import EditTagsPlugin
@@ -30,14 +31,15 @@ class Iconv(EditTagsPlugin):
     PLUGIN_NAME = _("Convert Encodings")
     PLUGIN_DESC = _("Fix misinterpreted tag value encodings in the "
                     "tag editor.")
-    PLUGIN_ICON = gtk.STOCK_CONVERT
+    PLUGIN_ICON = Gtk.STOCK_CONVERT
     PLUGIN_VERSION = "2"
 
     def __init__(self, tag, value):
-        super(Iconv, self).__init__("_Convert Encoding...")
+        super(Iconv, self).__init__(
+            _("_Convert Encoding..."), use_underline=True)
         self.set_image(
-            gtk.image_new_from_stock(gtk.STOCK_CONVERT, gtk.ICON_SIZE_MENU))
-        submenu = gtk.Menu()
+            Gtk.Image.new_from_stock(Gtk.STOCK_CONVERT, Gtk.IconSize.MENU))
+        submenu = Gtk.Menu()
 
         items = []
 
@@ -58,9 +60,9 @@ class Iconv(EditTagsPlugin):
             self.set_sensitive(False)
 
         for i in items:
-            item = gtk.MenuItem()
+            item = Gtk.MenuItem()
             item.value = i
-            item_label = gtk.Label(i)
+            item_label = Gtk.Label(label=i)
             item_label.set_alignment(0.0, 0.5)
             item.add(item_label)
             item.connect('activate', self.__convert)

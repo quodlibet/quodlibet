@@ -12,6 +12,24 @@ from distutils.util import change_root
 from distutils.core import Command
 
 
+def update_icon_cache(*args):
+    args = list(args)
+    try:
+        subprocess.check_call(
+            ['gtk-update-icon-cache-3.0'] + args)
+    except OSError:
+        try:
+            subprocess.check_call(
+                ['gtk-update-icon-cache'] + args)
+        except OSError:
+            return False
+        except subprocess.CalledProcessError:
+            return False
+    except subprocess.CalledProcessError:
+        return False
+    return True
+
+
 class build_icon_cache(Command):
     """Update the icon theme cache"""
 
@@ -24,7 +42,8 @@ class build_icon_cache(Command):
         pass
 
     def run(self):
-        self.spawn(['gtk-update-icon-cache', '-f', 'quodlibet/images/hicolor'])
+        if not update_icon_cache('-f', 'quodlibet/images/hicolor'):
+            print "WARNING: gtk-update-icon-cache missing"
 
 
 class install_icons(Command):
@@ -59,7 +78,7 @@ class install_icons(Command):
         self.copy_tree(png, png_dst)
 
         # this fails during packaging.. so ignore the outcome
-        subprocess.call(['gtk-update-icon-cache', basepath])
+        update_icon_cache(basepath)
 
         # install png versions to /usr/share/pixmaps
         basepath = os.path.join(self.prefix, 'share', 'pixmaps')

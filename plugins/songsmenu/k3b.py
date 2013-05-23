@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -31,9 +31,9 @@ class BurnCD(SongsMenuPlugin):
         progs = [(util.iscommand(x[1][0]), x) for x in items]
         progs.sort(reverse=True)
 
-        submenu = gtk.Menu()
+        submenu = Gtk.Menu()
         for (is_cmd, (name, (cmd, arg))) in progs:
-            item = gtk.MenuItem(name)
+            item = Gtk.MenuItem(name)
             if not is_cmd:
                 item.set_sensitive(False)
             else:

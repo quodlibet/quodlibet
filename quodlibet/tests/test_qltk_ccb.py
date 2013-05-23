@@ -1,6 +1,6 @@
 from tests import TestCase, add
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import config
 
@@ -18,19 +18,19 @@ class TConfigCheckButton(TestCase):
         c.set_active(True)
         self.failUnless(config.getboolean("memory", "bar") and c.get_active())
         c.set_active(False)
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failIf(config.getboolean("memory", "bar") or c.get_active())
 
     def test_populate(self):
         # Assert that active state works
         config.set("memory", "bar", "on")
         c = ConfigCheckButton("dummy", "memory", "bar", populate=True)
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failUnless(c.get_active())
         # ...and inactive
         config.set("memory", "bar", "off")
         c = ConfigCheckButton("dummy", "memory", "bar", populate=True)
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failIf(c.get_active())
 
 add(TConfigCheckButton)
@@ -47,19 +47,19 @@ class TConfigCheckMenuItem(TestCase):
         c.set_active(True)
         self.failUnless(config.getboolean("memory", "bar") and c.get_active())
         c.set_active(False)
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failIf(config.getboolean("memory", "bar") or c.get_active())
 
     def test_populate(self):
         # Assert that active state works
         config.set("memory", "bar", "on")
         c = ConfigCheckMenuItem("dummy", "memory", "bar", populate=True)
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failUnless(c.get_active())
         # ...and inactive
         config.set("memory", "bar", "off")
         c = ConfigCheckMenuItem("dummy", "memory", "bar", populate=True)
-        while gtk.events_pending(): gtk.main_iteration()
+        while Gtk.events_pending(): Gtk.main_iteration()
         self.failIf(c.get_active())
 
 add(TConfigCheckMenuItem)

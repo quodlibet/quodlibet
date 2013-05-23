@@ -7,8 +7,7 @@
 
 # FIXME: Only allow one bookmark window per song.
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import qltk
 from quodlibet import util
@@ -17,124 +16,128 @@ from quodlibet.qltk.views import RCMHintedTreeView
 
 
 def MenuItems(marks, player, seekable):
-    sizes = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+    sizes = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
     items = []
     if not marks or marks[0][0] != 0:
         # Translators: Refers to the beginning of the playing song.
         marks.insert(0, (0, _("Beginning")))
     for time, mark in marks:
-        i = gtk.MenuItem()
+        i = Gtk.MenuItem()
+        # older pygobject (~3.2) added a child on creation
+        if i.get_child():
+            i.remove(i.get_child())
         i.connect_object('activate', player.seek, time * 1000)
         i.set_sensitive(time >= 0 and seekable)
-        i.add(gtk.HBox(spacing=12))
+        hbox = Gtk.HBox(spacing=12)
+        i.add(hbox)
         if time < 0:
-            l = gtk.Label(_("N/A"))
+            l = Gtk.Label(label=_("N/A"))
         else:
-            l = gtk.Label(util.format_time(time))
+            l = Gtk.Label(label=util.format_time(time))
         l.set_alignment(0.0, 0.5)
         sizes.add_widget(l)
-        i.get_child().pack_start(l, expand=False)
-        m = gtk.Label(mark)
+        hbox.pack_start(l, False, True, 0)
+        m = Gtk.Label(label=mark)
         m.set_alignment(0.0, 0.5)
-        i.get_child().pack_start(m)
+        hbox.pack_start(m, True, True, 0)
         i.show_all()
         items.append(i)
     return items
 
 
-class EditBookmarksPane(gtk.VBox):
+class EditBookmarksPane(Gtk.VBox):
     def __init__(self, library, song, close=False):
         super(EditBookmarksPane, self).__init__(spacing=6)
 
-        hb = gtk.HBox(spacing=12)
-        self.time = time = gtk.Entry()
+        hb = Gtk.HBox(spacing=12)
+        self.time = time = Gtk.Entry()
         time.set_width_chars(5)
-        self.markname = name = gtk.Entry()
-        add = gtk.Button(stock=gtk.STOCK_ADD)
-        add.get_image().set_from_icon_name(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
-        hb.pack_start(time, expand=False)
-        hb.pack_start(name)
-        hb.pack_start(add, expand=False)
-        self.pack_start(hb, expand=False)
+        self.markname = name = Gtk.Entry()
+        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add.get_image().set_from_icon_name(Gtk.STOCK_ADD, Gtk.IconSize.MENU)
+        hb.pack_start(time, False, True, 0)
+        hb.pack_start(name, True, True, 0)
+        hb.pack_start(add, False, True, 0)
+        self.pack_start(hb, False, True, 0)
 
-        model = gtk.ListStore(int, str)
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        model = Gtk.ListStore(int, str)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(RCMHintedTreeView(model))
 
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
 
-        def cdf(column, cell, model, iter):
+        def cdf(column, cell, model, iter, data):
             if model[iter][0] < 0:
                 cell.set_property('text', _("N/A"))
             else:
                 cell.set_property('text', util.format_time(model[iter][0]))
         render.set_property('editable', True)
         render.connect('edited', self.__edit_time, model)
-        col = gtk.TreeViewColumn(_("Time"), render)
-        col.set_cell_data_func(render, cdf)
+        col = Gtk.TreeViewColumn(_("Time"), render)
+        col.set_cell_data_func(render, cdf, None)
         sw.get_child().append_column(col)
 
-        render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
-        col = gtk.TreeViewColumn(_("Bookmark Name"), render, text=1)
+        render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        col = Gtk.TreeViewColumn(_("Bookmark Name"), render, text=1)
         render.set_property('editable', True)
         render.connect('edited', self.__edit_name, model)
         sw.get_child().append_column(col)
-        self.pack_start(sw)
-        self.accels = gtk.AccelGroup()
+        self.pack_start(sw, True, True, 0)
+        self.accels = Gtk.AccelGroup()
 
-        hbox = gtk.HButtonBox()
-        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
+        hbox = Gtk.HButtonBox()
+        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         remove.set_sensitive(False)
-        hbox.pack_start(remove)
+        hbox.pack_start(remove, True, True, 0)
         if close:
-            self.close = gtk.Button(stock=gtk.STOCK_CLOSE)
-            hbox.pack_start(self.close)
+            self.close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+            hbox.pack_start(self.close, True, True, 0)
         else:
-            hbox.set_layout(gtk.BUTTONBOX_END)
-        self.pack_start(hbox, expand=False)
+            hbox.set_layout(Gtk.ButtonBoxStyle.END)
+        self.pack_start(hbox, False, True, 0)
 
         add.connect_object('clicked', self.__add, model, time, name)
 
-        model.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         model.connect('row-changed', self.__set_bookmarks, library, song)
 
         selection = sw.get_child().get_selection()
-        selection.set_mode(gtk.SELECTION_MULTIPLE)
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         selection.connect('changed', self.__check_selection, remove)
         remove.connect('clicked', self.__remove, selection, library, song)
 
         time.connect_object('changed', self.__check_entry, add, time, name)
         name.connect_object('changed', self.__check_entry, add, time, name)
-        name.connect_object('activate', gtk.Button.clicked, add)
+        name.connect_object('activate', Gtk.Button.clicked, add)
 
         time.set_text(_("MM:SS"))
-        time.connect_object('activate', gtk.Entry.grab_focus, name)
+        time.connect_object('activate', Gtk.Entry.grab_focus, name)
         name.set_text(_("Bookmark Name"))
 
-        menu = gtk.Menu()
-        remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        menu = Gtk.Menu()
+        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
         remove.connect('activate', self.__remove, selection, library, song)
-        keyval, mod = gtk.accelerator_parse("Delete")
+        keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(
-            'activate', self.accels, keyval, mod, gtk.ACCEL_VISIBLE)
+            'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
         menu.append(remove)
         menu.show_all()
         sw.get_child().connect('popup-menu', self.__popup, menu)
         sw.get_child().connect('key-press-event',
                                 self.__view_key_press, remove)
-        self.connect_object('destroy', gtk.Menu.destroy, menu)
+        self.connect_object('destroy', Gtk.Menu.destroy, menu)
 
         self.__fill(model, song)
 
     def __view_key_press(self, view, event, remove):
-        if event.keyval == gtk.accelerator_parse("Delete")[0]:
+        if event.keyval == Gtk.accelerator_parse("Delete")[0]:
             remove.activate()
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __edit_name(self, render, path, new, model):
         if new:

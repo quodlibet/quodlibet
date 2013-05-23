@@ -8,8 +8,7 @@
 
 import os
 
-import gtk
-import gobject
+from gi.repository import Gtk, GLib
 
 from quodlibet import config
 from quodlibet import const
@@ -22,12 +21,12 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import SearchBarBox, LimitSearchBarBox
-from quodlibet.qltk.x import Alignment
+from quodlibet.qltk.x import Alignment, SymbolicIconImage
 
 QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 
 
-class EmptyBar(gtk.VBox, Browser):
+class EmptyBar(Gtk.VBox, Browser):
     """A browser that the user only interacts with indirectly, via the
     Filter menu. The VBox remains empty."""
 
@@ -95,7 +94,7 @@ class EmptyBar(gtk.VBox, Browser):
     def activate(self):
         songs = self._get_songs()
         if songs is not None:
-            gobject.idle_add(self.emit, 'songs-selected', songs, None)
+            GLib.idle_add(self.emit, 'songs-selected', songs, None)
 
     def can_filter_text(self):
         return True
@@ -113,11 +112,11 @@ class SearchBar(EmptyBar):
     priority = 1
     in_menu = True
 
-    class PreferencesButton(gtk.HBox):
+    class PreferencesButton(Gtk.HBox):
 
         def __init__(self, search_bar_box):
             super(SearchBar.PreferencesButton, self).__init__()
-            menu = gtk.Menu()
+            menu = Gtk.Menu()
 
             limit_item = ConfigCheckMenuItem(
                 _("_Limit Results"), "browsers", "search_limit", True)
@@ -126,18 +125,17 @@ class SearchBar(EmptyBar):
             menu.show_all()
 
             button = MenuButton(
-                gtk.image_new_from_stock(
-                    gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU),
+                SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
                 arrow=True)
             button.set_menu(menu)
-            self.pack_start(button)
+            self.pack_start(button, True, True, 0)
 
     def __init__(self, library, main, limit=True):
         super(SearchBar, self).__init__(library, main)
         self.set_spacing(6)
 
         completion = LibraryTagCompletion(library.librarian)
-        self.accelerators = gtk.AccelGroup()
+        self.accelerators = Gtk.AccelGroup()
         if limit:
             show_limit = config.getboolean("browsers", "search_limit")
             sbb = LimitSearchBarBox(completion=completion,
@@ -152,10 +150,10 @@ class SearchBar(EmptyBar):
 
         if limit:
             prefs = SearchBar.PreferencesButton(sbb)
-            sbb.pack_start(prefs, expand=False)
+            sbb.pack_start(prefs, False, True, 0)
         align = (Alignment(sbb, left=6, right=3, top=3) if main
                  else Alignment(sbb))
-        self.pack_start(align, expand=False)
+        self.pack_start(align, False, True, 0)
         self.connect('destroy', self.__destroy)
         self.show_all()
 
@@ -169,7 +167,7 @@ class SearchBar(EmptyBar):
         songs = self._get_songs()
         if songs is not None and self._sb_box:
             songs = self._sb_box.limit(songs)
-            gobject.idle_add(self.emit, 'songs-selected', songs, None)
+            GLib.idle_add(self.emit, 'songs-selected', songs, None)
 
     def __text_parse(self, bar, text):
         self._text = text

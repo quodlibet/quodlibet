@@ -5,12 +5,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
+
 from quodlibet import formats, config, print_d
 from quodlibet.util import copool, massagers
 
 
-class EntryWordCompletion(gtk.EntryCompletion):
+class EntryWordCompletion(Gtk.EntryCompletion):
     """Entry completion for simple words, where a word boundary is
     roughly equivalent to the separators in the QL query language.
 
@@ -21,10 +22,10 @@ class EntryWordCompletion(gtk.EntryCompletion):
 
     def __init__(self):
         super(EntryWordCompletion, self).__init__()
-        self.set_match_func(self.__match_filter)
+        self.set_match_func(self.__match_filter, None)
         self.connect('match-selected', self.__match_selected)
 
-    def __match_filter(self, completion, entrytext, iter):
+    def __match_filter(self, completion, entrytext, iter, data):
         model = completion.get_model()
         entry = self.get_entry()
         entrytext = entrytext.decode('utf-8')
@@ -80,7 +81,7 @@ class LibraryTagCompletion(EntryWordCompletion):
         try:
             model = self.__model
         except AttributeError:
-            model = type(self).__model = gtk.ListStore(str)
+            model = type(self).__model = Gtk.ListStore(str)
             library.connect('changed', self.__update_song, model)
             library.connect('added', self.__update_song, model)
             library.connect('removed', self.__update_song, model)
@@ -137,13 +138,13 @@ class LibraryTagCompletion(EntryWordCompletion):
         print_d("Done updating tag model for whole library")
 
 
-class LibraryValueCompletion(gtk.EntryCompletion):
+class LibraryValueCompletion(Gtk.EntryCompletion):
     """Entry completion for a library value, for a specific tag.
     Will add valid values from the tag massager where available"""
 
     def __init__(self, tag, library):
         super(LibraryValueCompletion, self).__init__()
-        self.set_model(gtk.ListStore(str))
+        self.set_model(Gtk.ListStore(str))
         self.set_text_column(0)
         self.set_tag(tag, library)
 

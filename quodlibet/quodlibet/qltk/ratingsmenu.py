@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet import config
@@ -23,33 +23,34 @@ class ConfirmRateMultipleDialog(qltk.Message):
                         "be changed to '%s'") % util.format_rating(value)
 
         super(ConfirmRateMultipleDialog, self).__init__(
-            gtk.MESSAGE_WARNING, parent, title, description, gtk.BUTTONS_NONE)
+            Gtk.MessageType.WARNING, parent, title, description,
+            Gtk.ButtonsType.NONE)
 
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         gtk.STOCK_APPLY, gtk.RESPONSE_YES)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                         Gtk.STOCK_APPLY, Gtk.ResponseType.YES)
 
 
-class RatingsMenuItem(gtk.MenuItem):
-    __accels = gtk.AccelGroup()
+class RatingsMenuItem(Gtk.MenuItem):
+    __accels = Gtk.AccelGroup()
 
     def set_rating(self, value, songs, librarian):
         count = len(songs)
         if (count > 1 and
                 config.getboolean("browsers", "rating_confirm_multiple")):
             dialog = ConfirmRateMultipleDialog(self, count, value)
-            if dialog.run() != gtk.RESPONSE_YES:
+            if dialog.run() != Gtk.ResponseType.YES:
                 return
         for song in songs:
             song["~#rating"] = value
         librarian.changed([song])
 
     def __init__(self, songs, library, label=_("_Rating")):
-        super(RatingsMenuItem, self).__init__(label)
-        submenu = gtk.Menu()
+        super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
+        submenu = Gtk.Menu()
         self.set_submenu(submenu)
         for i in range(0, int(1.0 / util.RATING_PRECISION) + 1):
             i *= util.RATING_PRECISION
-            itm = gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
+            itm = Gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
             submenu.append(itm)
             itm.connect_object('activate', self.set_rating, i, songs, library)
         submenu.show_all()

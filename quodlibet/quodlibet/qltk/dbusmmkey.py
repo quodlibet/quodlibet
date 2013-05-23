@@ -9,10 +9,10 @@
 import time
 
 import dbus
-import gobject
+from gi.repository import GObject
 
 
-class DBusMMKey(gobject.GObject):
+class DBusMMKey(GObject.GObject):
     DBUS_NAME = "org.gnome.SettingsDaemon"
 
     # Work around the gnome-settings-daemon dbus interface
@@ -24,7 +24,7 @@ class DBusMMKey(gobject.GObject):
                    "interface": "org.gnome.SettingsDaemon.MediaKeys"}]
 
     __gsignals__ = {
-        'action': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        'action': (GObject.SignalFlags.RUN_LAST, None, (str,)),
         }
 
     @classmethod

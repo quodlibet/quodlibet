@@ -55,16 +55,19 @@ class test_cmd(Command):
     user_options = [
         ("to-run=", None, "list of tests to run (default all)"),
         ("suite=", None, "test suite (folder) to run (default 'tests')"),
+        ("strict", None, "make glib warnings / errors fatal"),
         ]
     use_colors = sys.stderr.isatty() and os.name != "nt"
 
     def initialize_options(self):
         self.to_run = []
         self.suite = "tests"
+        self.strict = False
 
     def finalize_options(self):
         if self.to_run:
             self.to_run = self.to_run.split(",")
+        self.strict = bool(self.strict)
 
     @classmethod
     def _red(cls, text):
@@ -73,12 +76,13 @@ class test_cmd(Command):
 
     def run(self):
         mods = sys.modules.keys()
-        if "gobject" in mods or "gtk" in mods or "glib" in mods:
-            raise SystemExit("E: setup.py shouldn't depend on pygtk")
+        if "gi" in mods:
+            raise SystemExit("E: setup.py shouldn't depend on gi")
 
         tests = __import__("tests")
         subdir = (self.suite != "tests" and self.suite) or None
-        failures, errors = tests.unit(self.to_run, subdir=subdir)
+        failures, errors = tests.unit(self.to_run, subdir=subdir,
+                                      strict=self.strict)
         if failures or errors:
             raise SystemExit(self._red("%d test failure(s) and "
                                        "%d test error(s), as detailed above."
@@ -165,91 +169,6 @@ class coverage_cmd(Command):
         print "#" * 80
 
 
-class check(Command):
-    description = "check installation requirements"
-    user_options = []
-
-    NAME = "Quod Libet"
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        print "Checking Python version >= %s:" % MIN_PYTHON_VER_STR,
-        print ".".join(map(str, sys.version_info[:2]))
-        if sys.version_info < MIN_PYTHON_VER:
-            raise SystemExit("%s requires at least Python %s. "
-                             "(http://www.python.org)"
-                             % (self.NAME, ".".join(map(str,MIN_PYTHON_VER))))
-
-        print "Checking for PyGTK >= 2.16:",
-        try:
-            import pygtk
-            pygtk.require('2.0')
-            import gtk
-            if gtk.pygtk_version < (2, 16) or gtk.gtk_version < (2, 16):
-                raise ImportError
-        except ImportError:
-            raise SystemExit("not found\n%s requires PyGTK 2.10. "
-                             "(http://www.pygtk.org)" % self.NAME)
-        else: print "found"
-
-        print "Checking for gst-python >= 0.10.2:",
-        try:
-            import pygst
-            pygst.require("0.10")
-            import gst
-            if gst.pygst_version < (0, 10, 2):
-                raise ImportError
-        except ImportError:
-            have_pygst = False
-            print "not found"
-        else:
-            have_pygst = True
-            print "found"
-
-        print "Checking for xine-lib >= 1.1:",
-        try:
-            from quodlibet.player._xine import xine_check_version
-            if not xine_check_version(1, 1, 0):
-                raise ImportError
-        except ImportError:
-            have_xine = False
-            print "not found"
-        else:
-            have_xine = True
-            print "found"
-
-        if not have_pygst and not have_xine:
-            raise SystemExit("%s requires gst-python 0.10.2 "
-                             "(http://gstreamer.freedesktop.org)"
-                             " or xine-lib 1.1 "
-                             "(http://www.xinehq.de/)." % self.NAME)
-
-        print "Checking for Mutagen >= 1.11:",
-        try:
-            import mutagen
-            if mutagen.version < (1, 11):
-                raise ImportError
-        except ImportError:
-            raise SystemExit("not found\n%s requires Mutagen 1.11.\n"
-                "(http://code.google.com/p/mutagen/downloads/list)" %
-                self.NAME)
-        else: print "found"
-
-        print "Checking intltool/gettext:",
-        if not find_executable("intltool-update") or \
-                not find_executable("msgfmt"):
-            raise SystemExit("intltool/gettext not found")
-        else: print "found"
-
-        print """\n\
-Your system meets the installation requirements. Run %(setup)s install to
-install it.""" % dict(setup=sys.argv[0])
-
 def recursive_include(dir, pre, ext):
     all = []
     old_dir = os.getcwd()
@@ -276,7 +195,7 @@ if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     from quodlibet import const
-    cmd_classes = {"check": check, 'clean': clean, "test": test_cmd,
+    cmd_classes = {'clean': clean, "test": test_cmd,
                    "coverage": coverage_cmd, "build_scripts": build_scripts}
     setup_kwargs = {
         'distclass': GDistribution,
@@ -295,8 +214,9 @@ if __name__ == "__main__":
         'scripts': ["quodlibet.py", "exfalso.py", "operon.py"],
         'po_directory': "po",
         'po_package': "quodlibet",
-        'shortcuts': ["quodlibet.desktop", "exfalso.desktop"],
+        'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
         'man_pages': ["man/quodlibet.1", "man/exfalso.1", "man/operon.1"],
+        "search_provider": "data/quodlibet-search-provider.ini",
         }
     if os.name == 'nt':
         # (probably) necessary to get the right DLLs pulled in by py2exe

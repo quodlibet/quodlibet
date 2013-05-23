@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 from os.path import splitext, extsep, dirname
 
 from quodlibet import app
@@ -16,23 +16,23 @@ __all__ = ['Export', 'Import']
 
 
 def filechooser(save, title):
-    chooser = gtk.FileChooserDialog(
+    chooser = Gtk.FileChooserDialog(
         title=(save and "Export %s Metadata to ..." or
                "Import %s Metadata from ...") % title,
-        action=(save and gtk.FILE_CHOOSER_ACTION_SAVE or
-                gtk.FILE_CHOOSER_ACTION_OPEN),
-        buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                 gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        action=(save and Gtk.FileChooserAction.SAVE or
+                Gtk.FileChooserAction.OPEN),
+        buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+                 Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
 
     for name, pattern in [('Tag files (*.tags)', '*.tags'),
                           ('All Files', '*')]:
-        filter = gtk.FileFilter()
+        filter = Gtk.FileFilter()
         filter.set_name(name)
         filter.add_pattern(pattern)
         chooser.add_filter(filter)
 
     chooser.set_current_folder(lastfolder)
-    chooser.set_default_response(gtk.RESPONSE_ACCEPT)
+    chooser.set_default_response(Gtk.ResponseType.ACCEPT)
     return chooser
 
 
@@ -51,7 +51,7 @@ class Export(SongsMenuPlugin):
         resp = chooser.run()
         fn = chooser.get_filename()
         chooser.destroy()
-        if resp != gtk.RESPONSE_ACCEPT:
+        if resp != Gtk.ResponseType.ACCEPT:
             return
         base, ext = splitext(fn)
         if not ext:
@@ -97,13 +97,13 @@ class Import(SongsMenuPlugin):
                                 cmp(a, b))
 
         chooser = filechooser(save=False, title=songs[0]('album'))
-        box = gtk.HBox()
-        rename = gtk.CheckButton("Rename Files")
+        box = Gtk.HBox()
+        rename = Gtk.CheckButton("Rename Files")
         rename.set_active(False)
-        box.pack_start(rename)
-        append = gtk.CheckButton("Append Metadata")
+        box.pack_start(rename, True, True, 0)
+        append = Gtk.CheckButton("Append Metadata")
         append.set_active(True)
-        box.pack_start(append)
+        box.pack_start(append, True, True, 0)
         box.show_all()
         chooser.set_extra_widget(box)
 
@@ -112,7 +112,7 @@ class Import(SongsMenuPlugin):
         rename = rename.get_active()
         fn = chooser.get_filename()
         chooser.destroy()
-        if resp != gtk.RESPONSE_ACCEPT:
+        if resp != Gtk.ResponseType.ACCEPT:
             return
 
         global lastfolder

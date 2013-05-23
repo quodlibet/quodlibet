@@ -288,10 +288,10 @@ class TVCCover(TestCase):
         config.init()
 
     def __get_jpeg(self, size=5):
-        import gtk
-        pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, size, size)
+        from gi.repository import GdkPixbuf
+        pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, size, size)
         fn = tempfile.NamedTemporaryFile()
-        pb.save(fn.name, "jpeg")
+        pb.savev(fn.name, "jpeg", [], [])
         return fn.read()
 
     def test_no_cover(self):

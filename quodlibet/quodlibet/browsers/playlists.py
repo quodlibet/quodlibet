@@ -9,9 +9,7 @@
 import os
 import urllib
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GLib, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -113,10 +111,11 @@ class ConfirmRemovePlaylistDialog(qltk.Message):
                          "will be deleted and can not be restored."))
 
         super(ConfirmRemovePlaylistDialog, self).__init__(
-            gtk.MESSAGE_WARNING, parent, title, description, gtk.BUTTONS_NONE)
+            Gtk.MessageType.WARNING, parent, title, description,
+            Gtk.ButtonsType.NONE)
 
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         gtk.STOCK_DELETE, gtk.RESPONSE_YES)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                         Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
 
 
 class ConfirmRemoveDuplicatesDialog(qltk.Message):
@@ -128,10 +127,11 @@ class ConfirmRemoveDuplicatesDialog(qltk.Message):
                          "from the playlist '%s'.") % playlist.name)
 
         super(ConfirmRemoveDuplicatesDialog, self).__init__(
-            gtk.MESSAGE_WARNING, parent, title, description, gtk.BUTTONS_NONE)
+            Gtk.MessageType.WARNING, parent, title, description,
+            Gtk.ButtonsType.NONE)
 
-        self.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                         gtk.STOCK_DELETE, gtk.RESPONSE_YES)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                         Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
 
 
 class GetPlaylistName(GetStringDialog):
@@ -139,26 +139,26 @@ class GetPlaylistName(GetStringDialog):
         super(GetPlaylistName, self).__init__(
             parent, _("New Playlist"),
             _("Enter a name for the new playlist:"),
-            okbutton=gtk.STOCK_ADD)
+            okbutton=Gtk.STOCK_ADD)
 
 
-class Menu(gtk.Menu):
+class Menu(Gtk.Menu):
     def __init__(self, songs, parent=None):
         super(Menu, self).__init__()
-        i = gtk.MenuItem(_("_New Playlist"))
+        i = Gtk.MenuItem(_("_New Playlist"), use_underline=True)
         i.connect_object(
             'activate', self.__add_to_playlist, None, songs, parent)
         self.append(i)
-        self.append(gtk.SeparatorMenuItem())
-        self.set_size_request(int(i.size_request()[0] * 2), -1)
+        self.append(Gtk.SeparatorMenuItem())
+        self.set_size_request(int(i.size_request().width * 2), -1)
 
         for playlist in Playlists.playlists():
             name = playlist.name
-            i = gtk.CheckMenuItem(name)
+            i = Gtk.CheckMenuItem(name)
             some, all = playlist.has_songs(songs)
             i.set_active(some)
             i.set_inconsistent(some and not all)
-            i.get_child().set_ellipsize(pango.ELLIPSIZE_END)
+            i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
             i.connect_object(
                 'activate', self.__add_to_playlist, playlist, songs, parent)
             self.append(i)
@@ -184,7 +184,10 @@ class Menu(gtk.Menu):
     __add_to_playlist = staticmethod(__add_to_playlist)
 
 
-class Playlists(gtk.VBox, Browser):
+DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
+
+
+class Playlists(Gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
     expand = qltk.RHPaned
 
@@ -246,7 +249,7 @@ class Playlists(gtk.VBox, Browser):
                     break
 
     @staticmethod
-    def cell_data(col, render, model, iter):
+    def cell_data(col, render, model, iter, data):
         render.markup = model[iter][0].format()
         render.set_property('markup', render.markup)
 
@@ -254,15 +257,15 @@ class Playlists(gtk.VBox, Browser):
         menu = super(Playlists, self).Menu(songs, songlist, library)
         model, rows = songlist.get_selection().get_selected_rows()
         iters = map(model.get_iter, rows)
-        i = qltk.MenuItem(_("_Remove from Playlist"), gtk.STOCK_REMOVE)
+        i = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
         i.connect_object('activate', self.__remove, iters, model)
         i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
         menu.preseparate()
         menu.prepend(i)
         return menu
 
-    __lists = gtk.TreeModelSort(gtk.ListStore(object))
-    __lists.set_default_sort_func(lambda m, a, b: cmp(m[a][0], m[b][0]))
+    __lists = Gtk.TreeModelSort(model=Gtk.ListStore(object))
+    __lists.set_default_sort_func(lambda m, a, b, data: cmp(m[a][0], m[b][0]))
 
     def __init__(self, library, main):
         super(Playlists, self).__init__(spacing=6)
@@ -271,43 +274,47 @@ class Playlists(gtk.VBox, Browser):
         self.__view.set_enable_search(True)
         self.__view.set_search_column(0)
         self.__view.set_search_equal_func(
-            lambda model, col, key, iter:
-            not model[iter][col].name.lower().startswith(key.lower()))
-        self.__render = render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+            lambda model, col, key, iter, data:
+            not model[iter][col].name.lower().startswith(key.lower()), None)
+        self.__render = render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.connect('editing-started', self.__start_editing)
         render.connect('edited', self.__edited)
-        col = gtk.TreeViewColumn("Playlists", render)
+        col = Gtk.TreeViewColumn("Playlists", render)
         col.set_cell_data_func(render, Playlists.cell_data)
         view.append_column(col)
         view.set_model(self.__lists)
         view.set_rules_hint(True)
         view.set_headers_visible(False)
         swin = ScrolledWindow()
-        swin.set_shadow_type(gtk.SHADOW_IN)
-        swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        swin.set_shadow_type(Gtk.ShadowType.IN)
+        swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.add(view)
-        self.pack_start(swin)
+        self.pack_start(swin, True, True, 0)
 
-        newpl = gtk.Button(stock=gtk.STOCK_NEW)
+        newpl = Gtk.Button(stock=Gtk.STOCK_NEW)
         newpl.connect('clicked', self.__new_playlist)
-        importpl = qltk.Button(_("_Import"), gtk.STOCK_ADD)
+        importpl = qltk.Button(_("_Import"), Gtk.STOCK_ADD)
         importpl.connect('clicked', self.__import, library)
-        hb = gtk.HBox(spacing=6)
+        hb = Gtk.HBox(spacing=6)
         hb.set_homogeneous(True)
-        hb.pack_start(newpl)
-        hb.pack_start(importpl)
-        self.pack_start(Alignment(hb, left=3, bottom=3), expand=False)
+        hb.pack_start(newpl, True, True, 0)
+        hb.pack_start(importpl, True, True, 0)
+        self.pack_start(Alignment(hb, left=3, bottom=3), False, True, 0)
 
         view.connect('popup-menu', self.__popup_menu, library)
 
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 0),
-                   ("text/uri-list", 0, 1),
-                   ("text/x-moz-url", 0, 2)]
-        view.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets,
-                           gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_DEFAULT)
-        view.drag_source_set(gtk.gdk.BUTTON1_MASK, targets[:2],
-                             gtk.gdk.ACTION_COPY)
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+            ("text/uri-list", 0, DND_URI_LIST),
+            ("text/x-moz-url", 0, DND_MOZ_URL)
+        ]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
+        view.drag_dest_set(Gtk.DestDefaults.ALL, targets,
+                           Gdk.DragAction.COPY)
+        view.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets[:2],
+                             Gdk.DragAction.COPY)
         view.connect('drag-data-received', self.__drag_data_received, library)
         view.connect('drag-data-get', self.__drag_data_get)
         view.connect('drag-motion', self.__drag_motion)
@@ -321,9 +328,9 @@ class Playlists(gtk.VBox, Browser):
         s = view.get_model().connect('row-changed', self.__check_current)
         self.connect_object('destroy', view.get_model().disconnect, s)
 
-        self.accelerators = gtk.AccelGroup()
-        keyval, mod = gtk.accelerator_parse("F2")
-        self.accelerators.connect_group(keyval, mod, 0, self.__rename)
+        self.accelerators = Gtk.AccelGroup()
+        keyval, mod = Gtk.accelerator_parse("F2")
+        self.accelerators.connect(keyval, mod, 0, self.__rename)
 
         self.connect('key-press-event', self.__key_pressed)
 
@@ -337,10 +344,10 @@ class Playlists(gtk.VBox, Browser):
 
             playlist = model[iter][0]
             dialog = ConfirmRemovePlaylistDialog(self, playlist)
-            if dialog.run() == gtk.RESPONSE_YES:
+            if dialog.run() == Gtk.ResponseType.YES:
                 playlist.delete()
                 model.get_model().remove(
-                    model.convert_iter_to_child_iter(None, iter))
+                    model.convert_iter_to_child_iter(iter))
 
         return False
 
@@ -359,16 +366,9 @@ class Playlists(gtk.VBox, Browser):
             self.activate(resort=not songlist.is_sorted())
 
     def __drag_motion(self, view, ctx, x, y, time):
-        if "text/x-quodlibet-songs" in ctx.targets:
-            try:
-                path = view.get_dest_row_at_pos(x, y)[0]
-            except TypeError:
-                path = (len(view.get_model()) - 1,)
-                pos = gtk.TREE_VIEW_DROP_AFTER
-            else:
-                pos = gtk.TREE_VIEW_DROP_INTO_OR_AFTER
-            if path > (-1,):
-                view.set_drag_dest_row(path, pos)
+        targets = [t.name() for t in ctx.list_targets()]
+        if "text/x-quodlibet-songs" in targets:
+            view.set_drag_dest(x, y, into_only=True)
             return True
         else:
             # Highlighting the view itself doesn't work.
@@ -392,29 +392,31 @@ class Playlists(gtk.VBox, Browser):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
         view.emit_stop_by_name('drag-data-received')
         model = view.get_model()
-        if tid == 0:
-            filenames = sel.data.split("\x00")
+        if tid == DND_QL:
+            filenames = sel.get_data().split("\x00")
             songs = filter(None, map(library.get, filenames))
             if not songs:
-                return True
+                Gtk.drag_finish(ctx, False, False, etime)
+                return
             try:
                 path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
                 playlist = Playlist.fromsongs(PLAYLISTS, songs, library)
-                gobject.idle_add(self.__select_playlist, playlist)
+                GLib.idle_add(self.__select_playlist, playlist)
             else:
                 playlist = model[path][0]
                 playlist.extend(songs)
             Playlists.changed(playlist)
-            ctx.finish(True, False, etime)
+            Gtk.drag_finish(ctx, True, False, etime)
         else:
-            if tid == 1:
+            if tid == DND_URI_LIST:
                 uri = sel.get_uris()[0]
                 name = os.path.basename(uri)
-            elif tid == 2:
-                uri, name = sel.data.decode('utf16', 'replace').split('\n')
+            elif tid == DND_MOZ_URL:
+                data = sel.get_data()
+                uri, name = data.decode('utf16', 'replace').split('\n')
             else:
-                ctx.finish(False, False, etime)
+                Gtk.drag_finish(ctx, False, False, etime)
                 return
             name = name or os.path.basename(uri) or _("New Playlist")
             uri = uri.encode('utf-8')
@@ -433,9 +435,9 @@ class Playlists(gtk.VBox, Browser):
                 if name:
                     playlist.rename(name)
                 Playlists.changed(playlist)
-                ctx.finish(True, False, etime)
+                Gtk.drag_finish(ctx, True, False, etime)
             except IOError:
-                ctx.finish(False, False, etime)
+                Gtk.drag_finish(ctx, False, False, etime)
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
                     _("Unable to import playlist"),
@@ -449,7 +451,8 @@ class Playlists(gtk.VBox, Browser):
             songs += list(model[iter][0])
         if tid == 0:
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
         else:
             sel.set_uris([song("~uri") for song in songs])
 
@@ -484,12 +487,12 @@ class Playlists(gtk.VBox, Browser):
                 print_d("No duplicates in this playlist")
                 return
             dialog = ConfirmRemoveDuplicatesDialog(self, playlist, len(dupes))
-            if dialog.run() == gtk.RESPONSE_YES:
+            if dialog.run() == Gtk.ResponseType.YES:
                 playlist.remove_songs(dupes, library, True)
                 Playlists.changed(playlist)
                 self.activate()
 
-        de_dupe = gtk.MenuItem(_("Remove Duplicates"))
+        de_dupe = Gtk.MenuItem(_("Remove Duplicates"))
         de_dupe.connect_object('activate', _de_duplicate, model, itr)
         de_dupe.set_sensitive(not model[itr][0].has_duplicates())
         menu.prepend(de_dupe)
@@ -499,21 +502,21 @@ class Playlists(gtk.VBox, Browser):
             playlist.shuffle()
             self.activate()
 
-        shuffle = gtk.MenuItem(_("_Shuffle"))
+        shuffle = Gtk.MenuItem(_("_Shuffle"), use_underline=True)
         shuffle .connect_object('activate', _shuffle, model, itr)
         shuffle.set_sensitive(bool(len(model[itr][0])))
         menu.prepend(shuffle)
-        menu.prepend(gtk.SeparatorMenuItem())
+        menu.prepend(Gtk.SeparatorMenuItem())
 
         def _remove(model, itr):
             playlist = model[itr][0]
             dialog = ConfirmRemovePlaylistDialog(self, playlist)
-            if dialog.run() == gtk.RESPONSE_YES:
+            if dialog.run() == Gtk.ResponseType.YES:
                 playlist.delete()
                 model.get_model().remove(
-                    model.convert_iter_to_child_iter(None, itr))
+                    model.convert_iter_to_child_iter(itr))
 
-        rem = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        rem = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
         rem.connect_object('activate', _remove, model, itr)
         menu.prepend(rem)
 
@@ -521,15 +524,15 @@ class Playlists(gtk.VBox, Browser):
             self.__render.set_property('editable', True)
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
-        ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
-        keyval, mod = gtk.accelerator_parse("F2")
+        ren = qltk.MenuItem(_("_Rename"), Gtk.STOCK_EDIT)
+        keyval, mod = Gtk.accelerator_parse("F2")
         ren.add_accelerator(
-            'activate', self.accelerators, keyval, mod, gtk.ACCEL_VISIBLE)
+            'activate', self.accelerators, keyval, mod, Gtk.AccelFlags.VISIBLE)
         ren.connect_object('activate', _rename, model.get_path(itr))
         menu.prepend(ren)
 
         menu.show_all()
-        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def activate(self, widget=None, resort=True):
         model, iter = self.__view.get_selection().get_selected()
@@ -557,7 +560,8 @@ class Playlists(gtk.VBox, Browser):
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
         else:
-            self.__lists[path] = self.__lists[path]
+            row = self.__lists[path]
+            self.__lists.row_changed(row.path, row.iter)
         render.set_property('editable', not self.__main)
 
     def __import(self, activator, library):
@@ -597,7 +601,7 @@ class Playlists(gtk.VBox, Browser):
             playlist[:] = songs
         elif songs:
             playlist = Playlist.fromsongs(PLAYLISTS, songs)
-            gobject.idle_add(self.__select_playlist, playlist)
+            GLib.idle_add(self.__select_playlist, playlist)
         if playlist:
             Playlists.changed(playlist, refresh=False)
 

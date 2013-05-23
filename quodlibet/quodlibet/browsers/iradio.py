@@ -5,8 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from __future__ import with_statement
-
 import os
 import sys
 import bz2
@@ -14,8 +12,7 @@ import urllib2
 import urllib
 import itertools
 
-import gobject
-import gtk
+from gi.repository import Gtk, GLib
 
 from quodlibet import const
 from quodlibet import qltk
@@ -36,6 +33,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = "http://quodlibet.googlecode.com/files/radiolist.bz2"
@@ -241,7 +239,7 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
         try:
             response = urllib2.urlopen(STATION_LIST_URL)
         except urllib2.URLError:
-            gobject.idle_add(callback, None)
+            GLib.idle_add(callback, None)
             return
 
         try:
@@ -277,7 +275,7 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
         if data:
             stations = parse_taglist(data)
 
-        gobject.idle_add(callback, stations)
+        GLib.idle_add(callback, stations)
 
 
 def parse_taglist(data):
@@ -334,7 +332,7 @@ class AddNewStation(GetStringDialog):
         super(AddNewStation, self).__init__(
             parent, _("New Station"),
             _("Enter the location of an Internet radio station:"),
-            okbutton=gtk.STOCK_ADD)
+            okbutton=Gtk.STOCK_ADD)
 
     def _verify_clipboard(self, text):
         # try to extract a URI from the clipboard
@@ -414,7 +412,7 @@ class GenreFilter(object):
         return self.GENRES[key][0]
 
 
-class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
+class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
 
     __stations = None
@@ -481,23 +479,22 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
         self.connect('destroy', self.__destroy)
 
         completion = LibraryTagCompletion(self.__stations)
-        self.accelerators = gtk.AccelGroup()
+        self.accelerators = Gtk.AccelGroup()
         self.__searchbar = search = SearchBarBox(completion=completion,
                                                  accel_group=self.accelerators)
         gobject_weak(search.connect, 'query-changed', self.__filter_changed)
 
-        menu = gtk.Menu()
-        new_item = MenuItem(_("_New Station..."), gtk.STOCK_ADD)
+        menu = Gtk.Menu()
+        new_item = MenuItem(_("_New Station..."), Gtk.STOCK_ADD)
         gobject_weak(new_item.connect, 'activate', self.__add)
         menu.append(new_item)
-        update_item = MenuItem(_("_Update Stations"), gtk.STOCK_REFRESH)
+        update_item = MenuItem(_("_Update Stations"), Gtk.STOCK_REFRESH)
         gobject_weak(update_item.connect, 'activate', self.__update)
         menu.append(update_item)
         menu.show_all()
 
         button = MenuButton(
-            gtk.image_new_from_stock(
-                gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU),
+            SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
             arrow=True)
         button.set_menu(menu)
 
@@ -507,80 +504,79 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
 
         # treeview
         scrolled_window = ScrolledWindow()
-        scrolled_window.set_shadow_type(gtk.SHADOW_IN)
+        scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)
-        scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        scrolled_window.set_policy(
+            Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.add(view)
-        model = gtk.ListStore(int, str, str, str)
+        model = Gtk.ListStore(int, str, str, str)
 
-        model.append(row=[self.TYPE_ALL, gtk.STOCK_DIRECTORY, "__all",
+        model.append(row=[self.TYPE_ALL, Gtk.STOCK_DIRECTORY, "__all",
                           _("All Stations")])
-        model.append(row=[self.TYPE_SEP, gtk.STOCK_DIRECTORY, "", ""])
+        model.append(row=[self.TYPE_SEP, Gtk.STOCK_DIRECTORY, "", ""])
         #Translators: Favorite radio stations
-        model.append(row=[self.TYPE_FAV, gtk.STOCK_DIRECTORY, "__fav",
+        model.append(row=[self.TYPE_FAV, Gtk.STOCK_DIRECTORY, "__fav",
                           _("Favorites")])
-        model.append(row=[self.TYPE_SEP, gtk.STOCK_DIRECTORY, "", ""])
+        model.append(row=[self.TYPE_SEP, Gtk.STOCK_DIRECTORY, "", ""])
 
         filters = self.filters
         for text, k in sorted([(filters.text(k), k) for k in filters.keys()]):
-            model.append(row=[self.TYPE_FILTER, gtk.STOCK_FIND, k, text])
+            model.append(row=[self.TYPE_FILTER, Gtk.STOCK_FIND, k, text])
 
-        model.append(row=[self.TYPE_NOCAT, gtk.STOCK_DIRECTORY,
+        model.append(row=[self.TYPE_NOCAT, Gtk.STOCK_DIRECTORY,
                           "nocat", _("No Category")])
 
-        def separator(model, iter):
+        def separator(model, iter, data):
             return model[iter][self.TYPE] == self.TYPE_SEP
-        view.set_row_separator_func(separator)
+        view.set_row_separator_func(separator, None)
 
-        def search_func(model, column, key, iter):
+        def search_func(model, column, key, iter, data):
             return key.lower() not in model[iter][column].lower()
         view.set_search_column(self.NAME)
-        view.set_search_equal_func(search_func)
+        view.set_search_equal_func(search_func, None)
 
-        column = gtk.TreeViewColumn("genres")
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column = Gtk.TreeViewColumn("genres")
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
-        renderpb = gtk.CellRendererPixbuf()
+        renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 3
         column.pack_start(renderpb, False)
-        column.set_attributes(renderpb, stock_id=self.STOCK)
+        column.add_attribute(renderpb, "stock_id", self.STOCK)
 
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         view.append_column(column)
-        column.pack_start(render)
-        column.set_attributes(render, text=self.NAME)
+        column.pack_start(render, True)
+        column.add_attribute(render, "text", self.NAME)
 
         view.set_model(model)
 
         # selection
         selection = view.get_selection()
-        selection.set_mode(gtk.SELECTION_MULTIPLE)
-        self.__changed_sig = gobject_weak(
-            selection.connect,
-            'changed',
-            util.DeferredSignal(lambda x: self.activate()),
-            parent=view)
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE)
+        self.__changed_sig = gobject_weak(selection.connect, 'changed',
+            util.DeferredSignal(lambda x: self.activate()), parent=view)
 
-        box = gtk.HBox(spacing=6)
-        box.pack_start(search)
-        box.pack_start(button, expand=False)
+        box = Gtk.HBox(spacing=6)
+        box.pack_start(search, True, True, 0)
+        box.pack_start(button, False, True, 0)
         if main:
-            self.pack_start(Alignment(box, left=3, right=3, top=3))
+            self.pack_start(Alignment(box, left=3, right=3, top=3),
+                            True, True, 0)
         else:
-            self.pack_start(box)
+            self.pack_start(box, True, True, 0)
         self.__filter_list = scrolled_window
 
         self.show_all()
 
     def pack(self, songpane):
-        container = gtk.VBox(spacing=6)
+        container = Gtk.VBox(spacing=6)
         pane = qltk.RHPaned()
         pane.pack1(self.__filter_list, resize=False, shrink=False)
         pane.show_all()
         pane.pack2(songpane, resize=True, shrink=False)
-        container.pack_start(self, expand=False)
-        container.pack_start(pane)
+        container.pack_start(self, False, True, 0)
+        container.pack_start(pane, True, True, 0)
         return container
 
     def unpack(self, container, songpane):
@@ -727,7 +723,7 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
                          queue=False, accels=songlist.accelerators,
                          devices=False, parent=self)
 
-        menu.prepend(gtk.SeparatorMenuItem())
+        menu.prepend(Gtk.SeparatorMenuItem())
 
         in_fav = False
         in_all = False
@@ -739,13 +735,13 @@ class InternetRadio(gtk.VBox, Browser, util.InstanceTracker):
             if in_fav and in_all:
                 break
 
-        button = MenuItem(_("Remove from Favorites"), gtk.STOCK_REMOVE)
+        button = MenuItem(_("Remove from Favorites"), Gtk.STOCK_REMOVE)
         button.set_sensitive(in_fav)
         gobject_weak(button.connect_object, 'activate',
                      self.__remove_fav, songs)
         menu.prepend(button)
 
-        button = MenuItem(_("Add to Favorites"), gtk.STOCK_ADD)
+        button = MenuItem(_("Add to Favorites"), Gtk.STOCK_ADD)
         button.set_sensitive(in_all)
         gobject_weak(button.connect_object, 'activate',
                      self.__add_fav, songs)

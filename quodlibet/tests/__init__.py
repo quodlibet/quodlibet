@@ -91,13 +91,23 @@ class Runner(object):
         result.printErrors()
         return len(result.failures), len(result.errors)
 
-def unit(run=[], filter_func=None, subdir=None):
+def unit(run=[], filter_func=None, subdir=None, strict=False):
     path = os.path.dirname(__file__)
     if subdir is not None:
         path = os.path.join(path, subdir)
 
     import quodlibet
     quodlibet._dbus_init()
+    quodlibet._gtk_init()
+    quodlibet._python_init()
+
+    # make glib warnings fatal
+    if strict:
+        from gi.repository import GLib
+        GLib.log_set_always_fatal(
+            GLib.LogLevelFlags.LEVEL_CRITICAL |
+            GLib.LogLevelFlags.LEVEL_ERROR |
+            GLib.LogLevelFlags.LEVEL_WARNING)
 
     for name in glob.glob(os.path.join(path, "test_*.py")):
         parts = filter(None, [__name__, subdir, os.path.basename(name)[:-3]])

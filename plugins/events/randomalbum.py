@@ -7,8 +7,7 @@
 
 import random
 
-import gtk
-import gobject
+from gi.repository import Gtk, GLib
 
 from quodlibet import app
 from quodlibet import config
@@ -69,56 +68,60 @@ class RandomAlbum(EventPlugin):
             config.set("plugins", "randomalbum_use_weights",
                     str(int(self.use_weights)))
 
-        vbox = gtk.VBox(spacing=12)
-        table = gtk.Table(len(self.keys) + 1, 3)
+        vbox = Gtk.VBox(spacing=12)
+        table = Gtk.Table(len(self.keys) + 1, 3)
         table.set_border_width(3)
 
-        hbox = gtk.HBox(spacing=6)
-        spin = gtk.SpinButton(gtk.Adjustment(self.delay, 0, 3600, 1, 10))
+        hbox = Gtk.HBox(spacing=6)
+        spin = Gtk.SpinButton(
+            adjustment=Gtk.Adjustment(self.delay, 0, 3600, 1, 10))
         spin.connect("value-changed", delay_changed_cb)
-        hbox.pack_start(spin, expand=False)
-        lbl = gtk.Label(_("seconds before starting next album"))
-        hbox.pack_start(lbl, expand=False)
-        vbox.pack_start(hbox)
+        hbox.pack_start(spin, False, True, 0)
+        lbl = Gtk.Label(label=_("seconds before starting next album"))
+        hbox.pack_start(lbl, False, True, 0)
+        vbox.pack_start(hbox, True, True, 0)
 
-        frame = gtk.Frame(_("Weights"))
+        frame = Gtk.Frame(label=_("Weights"))
 
-        check = gtk.CheckButton(_("Play some albums more than others"))
-        vbox.pack_start(check, expand=False)
+        check = Gtk.CheckButton(_("Play some albums more than others"))
+        vbox.pack_start(check, False, True, 0)
         # Toggle both frame and contained table; frame doesn't always work?
         check.connect("toggled", toggled_cb, [frame, table])
         check.set_active(self.use_weights)
         toggled_cb(check, [frame, table])
 
         frame.add(table)
-        vbox.pack_start(frame)
+        vbox.pack_start(frame, True, True, 0)
 
         # Less label
-        less_lbl = gtk.Label()
-        arr = gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_OUT)
+        less_lbl = Gtk.Label()
+        arr = Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.OUT)
         less_lbl.set_markup("<i>%s</i>" % util.escape(_("avoid")))
         less_lbl.set_alignment(0, 0)
-        hb = gtk.HBox(spacing=0)
-        hb.pack_start(arr, expand=False)
-        hb.pack_start(less_lbl)
-        table.attach(hb, 1, 2, 0, 1, xpadding=3, xoptions=gtk.FILL)
+        hb = Gtk.HBox(spacing=0)
+        hb.pack_start(arr, False, True, 0)
+        hb.pack_start(less_lbl, True, True, 0)
+        table.attach(hb, 1, 2, 0, 1, xpadding=3,
+                     xoptions=Gtk.AttachOptions.FILL)
         # More label
-        more_lbl = gtk.Label()
-        arr = gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_OUT)
+        more_lbl = Gtk.Label()
+        arr = Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.OUT)
         more_lbl.set_markup("<i>%s</i>" % util.escape(_("prefer")))
         more_lbl.set_alignment(1, 0)
-        hb = gtk.HBox(spacing=0)
-        hb.pack_end(arr, expand=False)
-        hb.pack_end(more_lbl)
-        table.attach(hb, 2, 3, 0, 1, xpadding=3, xoptions=gtk.FILL)
+        hb = Gtk.HBox(spacing=0)
+        hb.pack_end(arr, False, True, 0)
+        hb.pack_end(more_lbl, True, True, 0)
+        table.attach(hb, 2, 3, 0, 1, xpadding=3,
+                     xoptions=Gtk.AttachOptions.FILL)
 
         for (idx, (key, text, func)) in enumerate(self.keys):
-            lbl = gtk.Label(text)
+            lbl = Gtk.Label(label=text)
             lbl.set_alignment(0, 0)
             table.attach(lbl, 0, 1, idx + 1, idx + 2,
-                         xoptions=gtk.FILL, xpadding=3, ypadding=3)
-            adj = gtk.Adjustment(lower=-1.0, upper=1.0, step_incr=0.1)
-            hscale = gtk.HScale(adj)
+                         xoptions=Gtk.AttachOptions.FILL,
+                         xpadding=3, ypadding=3)
+            adj = Gtk.Adjustment(lower=-1.0, upper=1.0, step_incr=0.1)
+            hscale = Gtk.HScale(adjustment=adj)
             hscale.set_value(self.weights[key])
             hscale.set_draw_value(False)
             hscale.set_show_fill_level(False)
@@ -186,13 +189,13 @@ class RandomAlbum(EventPlugin):
 
     def schedule_change(self, album):
         if self.delay:
-            srcid = gobject.timeout_add(1000 * self.delay,
-                                        self.change_album, album)
+            srcid = GLib.timeout_add(1000 * self.delay,
+                                     self.change_album, album)
             if notif is None:
                 return
             task = notif.Task(_("Random Album"),
                               _("Waiting to start <i>%s</i>") % album("album"),
-                              stop=lambda: gobject.source_remove(srcid))
+                              stop=lambda: GLib.source_remove(srcid))
 
             def countdown():
                 for i in range(10 * self.delay):
@@ -200,7 +203,7 @@ class RandomAlbum(EventPlugin):
                     yield True
                 task.finish()
                 yield False
-            gobject.timeout_add(100, countdown().next)
+            GLib.timeout_add(100, countdown().next)
         else:
             self.change_album(album)
 
@@ -213,7 +216,7 @@ class RandomAlbum(EventPlugin):
             browser.filter_albums([album.key])
         else:
             browser.filter('album', [album("album")])
-        gobject.idle_add(self.unpause)
+        GLib.idle_add(self.unpause)
 
     def unpause(self):
         # Wait for the next GTK loop to make sure everything's tidied up

@@ -1,10 +1,11 @@
 from tests import TestCase, add
 
-import gtk
+from gi.repository import Gtk
+
 from quodlibet.qltk.wlw import WaitLoadWindow
 
 class TWaitLoadWindow(TestCase):
-    class DummyConnector(gtk.Window):
+    class DummyConnector(Gtk.Window):
         count = 0
         def connect(self, *args): self.count += 1
         def disconnect(self, *args): self.count -= 1

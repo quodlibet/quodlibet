@@ -9,11 +9,13 @@
 # published by the Free Software Foundation.
 #
 
-import gtk
-import gobject
-import pango
+from collections import namedtuple
+
+from gi.repository import Gtk, GObject, GLib
+from gi.repository import Gdk, GdkPixbuf
+from gi.repository import Pango, PangoCairo
 import cairo
-import pangocairo
+
 from math import pi
 
 from quodlibet import config, qltk, app
@@ -25,30 +27,30 @@ from quodlibet.util.dprint import print_d
 
 
 def Label(text):
-    l = gtk.Label(text)
+    l = Gtk.Label(label=text, use_underline=True)
     l.set_alignment(0.0, 0.5)
     return l
 
 
-class OSDWindow(gtk.Window):
+class OSDWindow(Gtk.Window):
     __gsignals__ = {
-            'expose-event': 'override',
-            'fade-finished': (gobject.SIGNAL_RUN_LAST, None, (bool,)),
+            'fade-finished': (GObject.SignalFlags.RUN_LAST, None, (bool,)),
             }
 
     def __init__(self, conf, song):
-        gtk.Window.__init__(self, gtk.WINDOW_POPUP)
-        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NOTIFICATION)
+        Gtk.Window.__init__(self, Gtk.WindowType.POPUP)
+        self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
 
         # for non-composite operation
         self.background_pixbuf = None
         self.titleinfo_surface = None
 
         screen = self.get_screen()
-        cmap = screen.get_rgba_colormap()
+        # FIXME: GIPORT
+        """cmap = screen.get_rgba_colormap()
         if cmap is None:
             cmap = screen.get_rgb_colormap()
-        self.set_colormap(cmap)
+        self.set_colormap(cmap)"""
 
         self.conf = conf
         self.iteration_source = None
@@ -56,8 +58,8 @@ class OSDWindow(gtk.Window):
         cover = song.find_cover()
         try:
             if cover is not None:
-                cover = gtk.gdk.pixbuf_new_from_file(cover.name)
-        except gobject.GError, gerror:
+                cover = GdkPixbuf.Pixbuf.new_from_file(cover.name)
+        except GLib.GError, gerror:
             print 'Error while loading cover image:', gerror.message
         except:
             from traceback import print_exc
@@ -76,18 +78,18 @@ class OSDWindow(gtk.Window):
         self.cover_pixbuf = cover
 
         layout = self.create_pango_layout('')
-        layout.set_alignment((pango.ALIGN_LEFT,
-                pango.ALIGN_CENTER, pango.ALIGN_RIGHT)[conf.align])
-        layout.set_spacing(pango.SCALE * 7)
-        layout.set_font_description(pango.FontDescription(conf.font))
+        layout.set_alignment((Pango.Alignment.LEFT,
+                Pango.Alignment.CENTER, Pango.Alignment.RIGHT)[conf.align])
+        layout.set_spacing(Pango.SCALE * 7)
+        layout.set_font_description(Pango.FontDescription(conf.font))
         try:
             layout.set_markup(parse.XMLFromPattern(conf.string) % song)
         except parse.error:
             layout.set_markup("")
-        layout.set_width(pango.SCALE * textwidth)
+        layout.set_width(Pango.SCALE * textwidth)
         layoutsize = layout.get_pixel_size()
         if layoutsize[0] < textwidth:
-            layout.set_width(pango.SCALE * layoutsize[0])
+            layout.set_width(Pango.SCALE * layoutsize[0])
             layoutsize = layout.get_pixel_size()
         self.title_layout = layout
 
@@ -97,8 +99,13 @@ class OSDWindow(gtk.Window):
         winh = max(coverheight, layoutsize[1]) + 2 * conf.border
         self.set_default_size(winw, winh)
 
-        self.cover_rectangle = gtk.gdk.Rectangle(conf.border,
-                (winh - coverheight) // 2, coverwidth, coverheight)
+        rect = namedtuple("Rect", ["x", "y", "width", "height"])
+        rect.x = conf.border
+        rect.y = (winh - coverheight) // 2
+        rect.width = coverwidth
+        rect.height = coverheight
+
+        self.cover_rectangle = rect
 
         winx = int((mgeo.width - winw) * conf.pos_x)
         winx = max(conf.margin, min(mgeo.width - conf.margin - winw, winx))
@@ -106,9 +113,11 @@ class OSDWindow(gtk.Window):
         winy = max(conf.margin, min(mgeo.height - conf.margin - winh, winy))
         self.move(winx + mgeo.x, winy + mgeo.y)
 
-    def do_expose_event(self, event):
-        cr = self.window.cairo_create()
+    def do_draw(self, cr):
+        self.draw_title_info(cr)
+        return
 
+        # FIXME: GIPORT
         if self.is_composited():
             # the simple case
             self.draw_title_info(cr)
@@ -117,21 +126,23 @@ class OSDWindow(gtk.Window):
         # manual transparency rendering follows
         back_pbuf = self.background_pixbuf
         title_surface = self.titleinfo_surface
-        walloc = self.allocation
+        walloc = self.get_allocation()
         wpos = self.get_position()
 
-        if back_pbuf is None:
+        if back_pbuf is None and 0:
             root = self.get_screen().get_root_window()
-            back_pbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8,
+            back_pbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                    False, 8,
                     walloc.width, walloc.height)
             back_pbuf.get_from_drawable(root, root.get_colormap(),
                     wpos[0], wpos[1], 0, 0, walloc.width, walloc.height)
             self.background_pixbuf = back_pbuf
 
         if title_surface is None:
-            title_surface = gtk.gdk.Pixmap(self.window, walloc.width,
-                    walloc.height)
-            titlecr = title_surface.cairo_create()
+            title_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+                walloc.width, walloc.height)
+            titlecr = Gdk.cairo_create(self.get_window())
+            titlecr.set_source_surface(title_surface)
             self.draw_title_info(titlecr)
 
         cr.set_operator(cairo.OPERATOR_SOURCE)
@@ -141,14 +152,14 @@ class OSDWindow(gtk.Window):
             cr.set_source_rgb(0.3, 0.3, 0.3)
         cr.paint()
         cr.set_operator(cairo.OPERATOR_OVER)
-        cr.set_source_pixmap(title_surface, 0, 0)
+        cr.set_source_surface(title_surface, 0, 0)
         cr.paint_with_alpha(self.get_opacity())
 
     def rounded_rectangle(self, cr, x, y, radius, width, height):
         cr.move_to(x + radius, y)
         cr.line_to(x + width - radius, y)
         cr.arc(x + width - radius, y + radius, radius,
-               -90.0 * pi / 180.0, 0.0 * pi / 180.0)
+               - 90.0 * pi / 180.0, 0.0 * pi / 180.0)
         cr.line_to(x + width, y + height - radius)
         cr.arc(x + width - radius, y + height - radius, radius,
                0.0 * pi / 180.0, 90.0 * pi / 180.0)
@@ -214,7 +225,7 @@ class OSDWindow(gtk.Window):
                         0.6 * self.conf.corners * rect.width)
                 cr.stroke()
 
-            cr.set_source_pixbuf(pbuf, 0, 0)
+            Gdk.cairo_set_source_pixbuf(cr, pbuf, 0, 0)
             transmat.scale(pbuf.get_width() / float(rect.width),
                     pbuf.get_height() / float(rect.height))
             transmat.translate(-rect.x, -rect.y)
@@ -223,23 +234,22 @@ class OSDWindow(gtk.Window):
                  rect.width, rect.height, 0.6 * self.conf.corners * rect.width)
             cr.fill()
 
-        pcc = pangocairo.CairoContext(cr)
-        pcc.update_layout(self.title_layout)
+        PangoCairo.update_layout(cr, self.title_layout)
         height = self.title_layout.get_pixel_size()[1]
         texty = (self.get_size()[1] - height) // 2
 
         if do_shadow:
             cr.set_source_rgba(*self.conf.shadow)
             cr.move_to(textx + 2, texty + 2)
-            pcc.show_layout(self.title_layout)
+            PangoCairo.show_layout(cr, self.title_layout)
         if do_outline:
             cr.set_source_rgba(*self.conf.outline)
             cr.move_to(textx, texty)
-            pcc.layout_path(self.title_layout)
+            PangoCairo.layout_path(cr, self.title_layout)
             cr.stroke()
         cr.set_source_rgb(*self.conf.text[:3])
         cr.move_to(textx, texty)
-        pcc.show_layout(self.title_layout)
+        PangoCairo.show_layout(cr, self.title_layout)
 
     def fade_in(self):
         self.do_fade_inout(True)
@@ -251,7 +261,7 @@ class OSDWindow(gtk.Window):
         fadein = bool(fadein)
 
         self.fading_in = fadein
-        now = gobject.get_current_time()
+        now = GObject.get_current_time()
 
         fraction = self.get_opacity()
         if not fadein:
@@ -259,11 +269,11 @@ class OSDWindow(gtk.Window):
         self.fade_start_time = now - fraction * self.conf.fadetime
 
         if self.iteration_source is None:
-            self.iteration_source = gobject.timeout_add(self.conf.ms,
+            self.iteration_source = GLib.timeout_add(self.conf.ms,
                     self.fade_iteration_callback)
 
     def fade_iteration_callback(self):
-        delta = gobject.get_current_time() - self.fade_start_time
+        delta = GObject.get_current_time() - self.fade_start_time
         fraction = delta / self.conf.fadetime
 
         if self.fading_in:
@@ -301,7 +311,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             #print_d("Writing config: %s=%s" % (name, string))
             self.config_set("%s" % name, string)
 
-        class ConfigLabel(gtk.Label):
+        class ConfigLabel(Gtk.Label):
             def __init__(self, text, widget):
                 super(ConfigLabel, self).__init__(text)
                 self.set_use_underline(True)
@@ -391,29 +401,29 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             self.plugin_single_song(app.player.song)
 
         # Main VBox to return
-        vb = gtk.VBox(spacing=6)
+        vb = Gtk.VBox(spacing=6)
 
         # Display
-        vb2 = gtk.VBox(spacing=3)
-        hb = gtk.HBox(spacing=6)
+        vb2 = Gtk.VBox(spacing=3)
+        hb = Gtk.HBox(spacing=6)
         # Set monitor to display OSD on if there's more than one
-        monitor_cnt = gtk.gdk.screen_get_default().get_n_monitors()
+        monitor_cnt = Gdk.Screen.get_default().get_n_monitors()
         if monitor_cnt > 1:
-            monitor = gtk.SpinButton(
-                gtk.Adjustment(value=self.conf.monitor, lower=0,
+            monitor = Gtk.SpinButton(
+                Gtk.Adjustment(value=self.conf.monitor, lower=0,
                 upper=monitor_cnt - 1, step_incr=1)
             )
             monitor.set_numeric(True)
             monitor.connect('value-changed', change_monitor)
             l2 = ConfigLabel("_Monitor:", monitor)
-            hb.pack_start(l2, expand=False)
-            hb.pack_start(monitor, expand=False)
-            vb2.pack_start(hb)
+            hb.pack_start(l2, False, True, 0)
+            hb.pack_start(monitor, False, True, 0)
+            vb2.pack_start(hb, True, True, 0)
         else:
             self.conf.monitor = 0 # should be this by default anyway
 
-        hb = gtk.HBox(spacing=6)
-        cb = gtk.combo_box_new_text()
+        hb = Gtk.HBox(spacing=6)
+        cb = Gtk.ComboBoxText()
         cb.append_text(_("Top of screen"))
         cb.append_text(_("Middle of screen"))
         cb.append_text(_("Bottom of screen"))
@@ -421,54 +431,53 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         cb.connect('changed', change_position)
         lbl = ConfigLabel(_("_Position:"), cb)
 
-        hb.pack_start(lbl, expand=False)
-        hb.pack_start(cb, expand=False)
-        vb2.pack_start(hb, expand=False)
+        hb.pack_start(lbl, False, True, 0)
+        hb.pack_start(cb, False, True, 0)
+        vb2.pack_start(hb, False, True, 0)
 
         frame = qltk.Frame(label=_("Display"), child=vb2)
         frame.set_border_width(6)
-        vb.pack_start(frame, expand=False)
+        vb.pack_start(frame, False, True, 0)
 
         # Text
-        vb2 = gtk.VBox(spacing=6)
-        hb = gtk.HBox(spacing=6)
-        font = gtk.FontButton()
+        vb2 = Gtk.VBox(spacing=6)
+        hb = Gtk.HBox(spacing=6)
+        font = Gtk.FontButton()
         font.set_font_name(self.conf.font)
         font.connect('font-set', set_font)
         lbl = ConfigLabel(_("_Font:"), font)
-        hb.pack_start(lbl, expand=False)
-        hb.pack_start(font)
-        vb2.pack_start(hb, expand=False)
+        hb.pack_start(lbl, False, True, 0)
+        hb.pack_start(font, True, True, 0)
+        vb2.pack_start(hb, False, True, 0)
 
-        hb = gtk.HBox(spacing=3)
-        align = gtk.combo_box_new_text()
+        hb = Gtk.HBox(spacing=3)
+        align = Gtk.ComboBoxText()
         align.append_text(_("Left"))
         align.append_text(_("Center"))
         align.append_text(_("Right"))
         align.set_active(self.conf.align)
         align.connect('changed', change_align)
         lbl = ConfigLabel(_("_Align text:"), align)
-        hb.pack_start(lbl, expand=False)
-        hb.pack_start(align, expand=False)
-        vb2.pack_start(hb, expand=False)
+        hb.pack_start(lbl, False, True, 0)
+        hb.pack_start(align, False, True, 0)
+        vb2.pack_start(hb, False, True, 0)
 
         frame = qltk.Frame(label=_("Text"), child=vb2)
         frame.set_border_width(6)
-        vb.pack_start(frame, expand=False)
+        vb.pack_start(frame, False, True, 0)
 
         # Colors
-        t = gtk.Table(2, 2)
+        t = Gtk.Table(2, 2)
         t.set_col_spacings(6)
         t.set_row_spacings(3)
-        b = gtk.ColorButton(color=gtk.gdk.Color(*map(__floattocol,
-            self.conf.text)))
+        b = Gtk.ColorButton(rgba=Gdk.RGBA(*map(__floattocol, self.conf.text)))
         l = Label(_("_Text:"))
         l.set_mnemonic_widget(b)
         l.set_use_underline(True)
-        t.attach(l, 0, 1, 0, 1, xoptions=gtk.FILL)
+        t.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
         t.attach(b, 1, 2, 0, 1)
         b.connect('color-set', set_text)
-        b = gtk.ColorButton(color=gtk.gdk.Color(*map(__floattocol,
+        b = Gtk.ColorButton(color=Gdk.Color(*map(__floattocol,
             self.conf.fill[0:3])))
         b.set_use_alpha(True)
         b.set_alpha(__floattocol(self.conf.fill[3]))
@@ -476,16 +485,16 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         l = Label(_("_Fill:"))
         l.set_mnemonic_widget(b)
         l.set_use_underline(True)
-        t.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL)
+        t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
         t.attach(b, 1, 2, 1, 2)
 
         f = qltk.Frame(label=_("Colors"), child=t)
         f.set_border_width(6)
-        vb.pack_start(f, expand=False, fill=False)
+        vb.pack_start(f, False, False, 0)
 
         # Effects
-        vb2 = gtk.VBox(spacing=3)
-        hb = gtk.HBox(spacing=6)
+        vb2 = Gtk.VBox(spacing=3)
+        hb = Gtk.HBox(spacing=6)
         toggles = [
             ("_Shadows", self.conf.shadow[0], change_shadow),
             ("_Outline", self.conf.outline[0], change_outline),
@@ -493,30 +502,30 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             ]
 
         for (label, current, callback) in toggles:
-            checkb = gtk.CheckButton(label)
+            checkb = Gtk.CheckButton(label, use_underline=True)
             checkb.set_active(current != -1)
             checkb.connect("toggled", callback)
-            hb.pack_start(checkb)
-        vb2.pack_start(hb)
+            hb.pack_start(checkb, True, True, 0)
+        vb2.pack_start(hb, True, True, 0)
 
-        hb = gtk.HBox(spacing=6)
-        timeout = gtk.SpinButton(
-            gtk.Adjustment(self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
-            0.1, 1)
+        hb = Gtk.HBox(spacing=6)
+        timeout = Gtk.SpinButton(adjustment=
+            Gtk.Adjustment(self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
+            climb_rate=0.1, digits=1)
         timeout.set_numeric(True)
         timeout.connect('value-changed', change_delay)
         l1 = ConfigLabel("_Delay:", timeout)
-        hb.pack_start(l1, expand=False)
-        hb.pack_start(timeout, expand=False)
-        vb2.pack_start(hb, expand=False)
+        hb.pack_start(l1, False, True, 0)
+        hb.pack_start(timeout, False, True, 0)
+        vb2.pack_start(hb, False, True, 0)
 
         frame = qltk.Frame(label=_("Effects"), child=vb2)
         frame.set_border_width(6)
-        vb.pack_start(frame, expand=False)
+        vb.pack_start(frame, False, True, 0)
 
-        string = qltk.Button(_("Ed_it Display"), gtk.STOCK_EDIT)
+        string = qltk.Button(_("Ed_it Display"), Gtk.STOCK_EDIT)
         string.connect('clicked', edit_string)
-        vb.pack_start(string, expand=False)
+        vb.pack_start(string, False, True, 0)
         return vb
 
     class conf(object):
@@ -625,7 +634,7 @@ by <~people>>""")
             return
 
         window = OSDWindow(self.conf, song)
-        window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        window.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         window.connect('button-press-event', self.__buttonpress)
         window.connect('fade-finished', self.__fade_finished)
         self.__current_window = window
@@ -646,7 +655,7 @@ by <~people>>""")
 
     def __fade_finished(self, window, fade_in):
         if fade_in:
-            gobject.timeout_add(self.conf.delay, self.start_fade_out, window)
+            GLib.timeout_add(self.conf.delay, self.start_fade_out, window)
         else:
             window.hide()
             if self.__current_window is window:
@@ -655,4 +664,4 @@ by <~people>>""")
             # the destroy is done immediately.  The compiz animation plugin
             # then sometimes triggers and causes undesirable effects while the
             # popup should already be invisible.
-            gobject.timeout_add(1000, window.destroy)
+            GLib.timeout_add(1000, window.destroy)

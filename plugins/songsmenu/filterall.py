@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.tags import MACHINE_TAGS
@@ -20,36 +20,36 @@ class SelectionWindow(Window):
         self.set_default_size(200, 250)
         self.set_transient_for(parent)
 
-        model = gtk.ListStore(bool, str, str)
+        model = Gtk.ListStore(bool, str, str)
         for key, value in sorted(filters.items()):
             model.append(row=[False, key, value])
 
-        toggle = gtk.CellRendererToggle()
+        toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.__toggeled, model, browser)
-        text = gtk.CellRendererText()
+        text = Gtk.CellRendererText()
 
-        toggle_column = gtk.TreeViewColumn("", toggle, active=0)
-        column = gtk.TreeViewColumn("Tag", text, text=1)
+        toggle_column = Gtk.TreeViewColumn("", toggle, active=0)
+        column = Gtk.TreeViewColumn("Tag", text, text=1)
 
-        view = gtk.TreeView(model)
+        view = Gtk.TreeView(model)
         view.append_column(toggle_column)
         view.append_column(column)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
 
-        buttons = gtk.HButtonBox()
+        buttons = Gtk.HButtonBox()
         buttons.set_spacing(6)
-        buttons.set_layout(gtk.BUTTONBOX_END)
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        buttons.set_layout(Gtk.ButtonBoxStyle.END)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
-        buttons.pack_start(close)
+        buttons.pack_start(close, True, True, 0)
 
-        box = gtk.VBox(spacing=12)
-        box.pack_start(sw)
-        box.pack_start(buttons, expand=False)
+        box = Gtk.VBox(spacing=12)
+        box.pack_start(sw, True, True, 0)
+        box.pack_start(buttons, False, True, 0)
 
         self.add(box)
 

@@ -7,7 +7,7 @@
 
 import os
 
-import gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -15,7 +15,7 @@ from quodlibet import util
 from quodlibet import qltk
 
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow
@@ -23,51 +23,55 @@ from quodlibet.qltk.x import ScrolledWindow
 QUEUE = os.path.join(const.USERDIR, "queue")
 
 
-class QueueExpander(gtk.Expander):
+class QueueExpander(Gtk.Expander):
     def __init__(self, menu, library, player):
         super(QueueExpander, self).__init__()
         sw = ScrolledWindow()
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.queue = PlayQueue(library, player)
         sw.add(self.queue)
-        hb = gtk.HBox(spacing=12)
+        hb = Gtk.HBox(spacing=12)
 
-        hb2 = gtk.HBox(spacing=3)
-        state = gtk.image_new_from_stock(
-            gtk.STOCK_MEDIA_STOP, gtk.ICON_SIZE_MENU)
-        hb2.pack_start(state)
+        hb2 = Gtk.HBox(spacing=3)
+        state = Gtk.Image.new_from_stock(
+            Gtk.STOCK_MEDIA_STOP, Gtk.IconSize.MENU)
+        hb2.pack_start(state, True, True, 0)
 
-        l = gtk.Label(_("_Queue"))
-        hb2.pack_start(l)
-        hb.pack_start(hb2)
+        l = Gtk.Label(label=_("_Queue"))
+        hb2.pack_start(l, True, True, 0)
+        hb.pack_start(hb2, True, True, 0)
         l.set_use_underline(True)
 
-        clear = gtk.image_new_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_MENU)
-        b = gtk.Button()
+        clear = Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU)
+        b = Gtk.Button()
         b.add(clear)
         b.set_tooltip_text(_("Remove all songs from the queue"))
         b.connect('clicked', self.__clear_queue)
         b.hide()
-        b.set_relief(gtk.RELIEF_NONE)
-        hb.pack_start(b, expand=False, fill=False)
+        b.set_relief(Gtk.ReliefStyle.NONE)
+        hb.pack_start(b, False, False, 0)
 
-        l2 = gtk.Label()
-        hb.pack_start(l2)
+        l2 = Gtk.Label()
+        hb.pack_start(l2, True, True, 0)
 
         cb = ConfigCheckButton(
             _("_Random"), "memory", "shufflequeue")
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
         cb.set_active(config.getboolean("memory", "shufflequeue"))
-        hb.pack_start(cb)
+        hb.pack_start(cb, True, True, 0)
 
         self.set_label_widget(hb)
         self.add(sw)
         self.connect_object('notify::expanded', self.__expand, cb, b)
 
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
-        self.drag_dest_set(gtk.DEST_DEFAULT_ALL, targets, gtk.gdk.ACTION_COPY)
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+            ("text/uri-list", 0, DND_URI_LIST)
+        ]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
+        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         self.connect('drag-motion', self.__motion)
         self.connect('drag-data-received', self.__drag_data_received)
 
@@ -85,9 +89,9 @@ class QueueExpander(gtk.Expander):
 
         player.connect('song-started', self.__update_state_icon, state)
         player.connect('paused', self.__update_state_icon_pause,
-                        state, gtk.STOCK_MEDIA_PAUSE)
+                        state, Gtk.STOCK_MEDIA_PAUSE)
         player.connect('unpaused', self.__update_state_icon_pause,
-                        state, gtk.STOCK_MEDIA_PLAY)
+                        state, Gtk.STOCK_MEDIA_PLAY)
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -100,20 +104,20 @@ class QueueExpander(gtk.Expander):
 
     def __update_state_icon(self, player, song, state):
         if self.model.sourced:
-            icon = gtk.STOCK_MEDIA_PLAY
+            icon = Gtk.STOCK_MEDIA_PLAY
         else:
-            icon = gtk.STOCK_MEDIA_STOP
-        state.set_from_stock(icon, gtk.ICON_SIZE_MENU)
+            icon = Gtk.STOCK_MEDIA_STOP
+        state.set_from_stock(icon, Gtk.IconSize.MENU)
 
     def __update_state_icon_pause(self, player, state, icon):
         if self.model.sourced:
-            state.set_from_stock(icon, gtk.ICON_SIZE_MENU)
+            state.set_from_stock(icon, Gtk.IconSize.MENU)
 
     def __clear_queue(self, activator):
         self.model.clear()
 
     def __motion(self, wid, context, x, y, time):
-        context.drag_status(gtk.gdk.ACTION_COPY, time)
+        Gdk.drag_status(context, Gdk.DragAction.COPY, time)
         return True
 
     def __update_count(self, model, path, lab):
@@ -157,13 +161,13 @@ class QueueExpander(gtk.Expander):
 
 class PlayQueue(SongList):
 
-    class CurrentColumn(gtk.TreeViewColumn):
+    class CurrentColumn(Gtk.TreeViewColumn):
         # Match MainSongList column sizes by default.
         header_name = "~current"
 
         def __init__(self):
             super(PlayQueue.CurrentColumn, self).__init__()
-            self.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            self.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
             self.set_fixed_width(24)
 
     def __init__(self, library, player):
@@ -217,11 +221,11 @@ class PlayQueue(SongList):
             library, songs, queue=False, remove=False, delete=False,
             parent=self)
         menu.preseparate()
-        remove = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
         remove.connect('activate', self.__remove)
         menu.prepend(remove)
         menu.show_all()
-        return self.popup_menu(menu, 0, gtk.get_current_event_time())
+        return self.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __remove(self, *args):
         self.remove_selection()

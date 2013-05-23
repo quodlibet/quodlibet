@@ -8,9 +8,7 @@
 
 import os
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import config
 from quodlibet import const
@@ -24,7 +22,8 @@ from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
+from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
@@ -66,7 +65,7 @@ class AlbumTagCompletion(EntryWordCompletion):
         try:
             model = self.__model
         except AttributeError:
-            model = type(self).__model = gtk.ListStore(str)
+            model = type(self).__model = Gtk.ListStore(str)
             self.__refreshmodel()
         self.set_model(model)
         self.set_text_column(0)
@@ -91,45 +90,45 @@ class Preferences(qltk.UniqueWindow):
         self.set_default_size(400, 270)
         self.set_transient_for(qltk.get_top_parent(parent))
 
-        box = gtk.VBox(spacing=6)
+        box = Gtk.VBox(spacing=6)
 
         cb = ConfigCheckButton(
             _("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
         gobject_weak(cb.connect, 'toggled',
                      lambda s: AlbumList.toggle_covers())
-        box.pack_start(cb, expand=False)
+        box.pack_start(cb, False, True, 0)
 
         cb = ConfigCheckButton(
             _("Inline _search includes people"),
             "browsers", "album_substrings")
         cb.set_active(config.getboolean("browsers", "album_substrings"))
-        box.pack_start(cb, expand=False)
+        box.pack_start(cb, False, True, 0)
 
-        vbox = gtk.VBox(spacing=6)
-        label = gtk.Label()
+        vbox = Gtk.VBox(spacing=6)
+        label = Gtk.Label()
         label.set_alignment(0.0, 0.5)
         edit = PatternEditBox(PATTERN)
         edit.text = AlbumList._pattern_text
         gobject_weak(edit.apply.connect, 'clicked', self.__set_pattern, edit)
         gobject_weak(edit.buffer.connect_object, 'changed',
-                     self.__preview_pattern, edit, label, parent=edit)
+            self.__preview_pattern, edit, label, parent=edit)
 
-        vbox.pack_start(label, expand=False)
-        vbox.pack_start(edit)
+        vbox.pack_start(label, False, True, 0)
+        vbox.pack_start(edit, True, True, 0)
         self.__preview_pattern(edit, label)
         f = qltk.Frame(_("Album Display"), child=vbox)
-        box.pack_start(f)
+        box.pack_start(f, True, True, 0)
 
-        main_box = gtk.VBox(spacing=12)
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        main_box = Gtk.VBox(spacing=12)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
-        b = gtk.HButtonBox()
-        b.set_layout(gtk.BUTTONBOX_END)
-        b.pack_start(close)
+        b = Gtk.HButtonBox()
+        b.set_layout(Gtk.ButtonBoxStyle.END)
+        b.pack_start(close, True, True, 0)
 
-        main_box.pack_start(box)
-        main_box.pack_start(b, expand=False)
+        main_box.pack_start(box, True, True, 0)
+        main_box.pack_start(b, False, True, 0)
         self.add(main_box)
 
         close.grab_focus()
@@ -155,8 +154,8 @@ class Preferences(qltk.UniqueWindow):
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
         try:
-            pango.parse_markup(text, u"\u0000")
-        except gobject.GError:
+            Pango.parse_markup(text, -1, u"\u0000")
+        except GLib.GError:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
         else:
@@ -173,7 +172,7 @@ def cmpa(a, b):
     return cmp(a, b)
 
 
-class PreferencesButton(gtk.HBox):
+class PreferencesButton(Gtk.HBox):
     def __init__(self, model):
         super(PreferencesButton, self).__init__()
 
@@ -185,19 +184,20 @@ class PreferencesButton(gtk.HBox):
             (_("_Rating"), self.__compare_rating),
         ]
 
-        menu = gtk.Menu()
+        menu = Gtk.Menu()
 
-        sort_item = gtk.MenuItem(_("Sort _by..."))
-        sort_menu = gtk.Menu()
+        sort_item = Gtk.MenuItem(_("Sort _by..."), use_underline=True)
+        sort_menu = Gtk.Menu()
 
         active = config.getint('browsers', 'album_sort', 1)
 
         item = None
         for i, (label, func) in enumerate(sort_orders):
-            item = gtk.RadioMenuItem(item, label)
+            item = RadioMenuItem(group=item, label=label,
+                                 use_underline=True)
             model.set_sort_func(100 + i, func)
             if i == active:
-                model.set_sort_column_id(100 + i, gtk.SORT_ASCENDING)
+                model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)
                 item.set_active(True)
             gobject_weak(item.connect, "toggled",
                          util.DeferredSignal(self.__sort_toggled_cb),
@@ -207,25 +207,24 @@ class PreferencesButton(gtk.HBox):
         sort_item.set_submenu(sort_menu)
         menu.append(sort_item)
 
-        pref_item = MenuItem(_("_Preferences"), gtk.STOCK_PREFERENCES)
+        pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
         menu.append(pref_item)
         gobject_weak(pref_item.connect_object, "activate", Preferences, self)
 
         menu.show_all()
 
         button = MenuButton(
-            gtk.image_new_from_stock(
-                gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU),
-            arrow=True)
+                SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+                arrow=True)
         button.set_menu(menu)
-        self.pack_start(button)
+        self.pack_start(button, True, True, 0)
 
     def __sort_toggled_cb(self, item, model, num):
         if item.get_active():
             config.set("browsers", "album_sort", str(num))
-            model.set_sort_column_id(100 + num, gtk.SORT_ASCENDING)
+            model.set_sort_column_id(100 + num, Gtk.SortType.ASCENDING)
 
-    def __compare_title(self, model, i1, i2):
+    def __compare_title(self, model, i1, i2, data):
         a1, a2 = model[i1][0], model[i2][0]
         # all albums has to stay at the top
         if (a1 and a2) is None:
@@ -238,7 +237,7 @@ class PreferencesButton(gtk.HBox):
         return (cmpa(a1.sort, a2.sort) or
                 cmp(a1.key, a2.key))
 
-    def __compare_artist(self, model, i1, i2):
+    def __compare_artist(self, model, i1, i2, data):
         a1, a2 = model[i1][0], model[i2][0]
         if (a1 and a2) is None:
             return cmp(a1, a2)
@@ -251,7 +250,7 @@ class PreferencesButton(gtk.HBox):
                 cmpa(a1.sort, a2.sort) or
                 cmp(a1.key, a2.key))
 
-    def __compare_date(self, model, i1, i2):
+    def __compare_date(self, model, i1, i2, data):
         a1, a2 = model[i1][0], model[i2][0]
         if (a1 and a2) is None:
             return cmp(a1, a2)
@@ -263,7 +262,7 @@ class PreferencesButton(gtk.HBox):
                 cmpa(a1.sort, a2.sort) or
                 cmp(a1.key, a2.key))
 
-    def __compare_genre(self, model, i1, i2):
+    def __compare_genre(self, model, i1, i2, data):
         a1, a2 = model[i1][0], model[i2][0]
         if (a1 and a2) is None:
             return cmp(a1, a2)
@@ -277,7 +276,7 @@ class PreferencesButton(gtk.HBox):
                 cmpa(a1.sort, a2.sort) or
                 cmp(a1.key, a2.key))
 
-    def __compare_rating(self, model, i2, i1):
+    def __compare_rating(self, model, i2, i1, data):
         a1, a2 = model[i1][0], model[i2][0]
         if (a1 and a2) is None:
             return cmp(a1, a2)
@@ -294,11 +293,11 @@ class VisibleUpdate(object):
     PRELOAD_COUNT = 35
 
     def enable_row_update(self, view, sw, column):
-        gobject_weak(view.connect_object, 'expose-event',
+        gobject_weak(view.connect_object, 'draw',
                      self.__update_visibility, view)
 
         gobject_weak(sw.get_vadjustment().connect, "value-changed",
-                     self.__stop_update, view)
+                     self.__stop_update, view, parent=view)
 
         self.__pending_paths = []
         self.__scan_timeout = None
@@ -307,7 +306,7 @@ class VisibleUpdate(object):
 
     def disable_row_update(self):
         if self.__scan_timeout:
-            gobject.source_remove(self.__scan_timeout)
+            GLib.source_remove(self.__scan_timeout)
             self.__scan_timeout = None
 
         if self.__pending_paths:
@@ -342,10 +341,10 @@ class VisibleUpdate(object):
                 pass
 
         if self.__scan_timeout:
-            gobject.source_remove(self.__scan_timeout)
+            GLib.source_remove(self.__scan_timeout)
             self.__scan_timeout = None
 
-        self.__scan_timeout = gobject.timeout_add(
+        self.__scan_timeout = GLib.timeout_add(
             50, self.__update_visible_rows, view, self.PRELOAD_COUNT)
 
     def __scan_paths(self):
@@ -376,8 +375,8 @@ class VisibleUpdate(object):
         if not start or not end:
             return
 
-        start = start[0] - preload - 1
-        end = end[0] + preload
+        start = start.get_indices()[0] - preload - 1
+        end = end.get_indices()[0] + preload
 
         vlist = range(end, start, -1)
         top = vlist[:len(vlist) / 2]
@@ -391,6 +390,8 @@ class VisibleUpdate(object):
             if bottom:
                 vlist_new.append(bottom.pop())
         vlist_new = filter(lambda s: s >= 0, vlist_new)
+
+        vlist_new = map(Gtk.TreePath, vlist_new)
 
         visible_paths = []
         for path in vlist_new:
@@ -408,7 +409,7 @@ class VisibleUpdate(object):
         self.__pending_paths = visible_paths
 
 
-class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
+class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
     __model = None
@@ -432,12 +433,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         except EnvironmentError:
             klass._pattern_text = PATTERN
 
-        theme = gtk.icon_theme_get_default()
+        theme = Gtk.IconTheme.get_default()
         cover_size = Album.COVER_SIZE
         try:
             klass.__no_cover = theme.load_icon(
                 "quodlibet-missing-cover", cover_size, 0)
-        except gobject.GError:
+        except GLib.GError:
             pass
         else:
             klass.__no_cover = thumbnails.scale(
@@ -476,7 +477,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     @classmethod
     def _init_model(klass, library):
-        klass.__model = model = gtk.ListStore(object)
+        klass.__model = model = Gtk.ListStore(object)
         klass.__library = library
         library.albums.load()
         klass.__sigs = [
@@ -527,20 +528,20 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
             self._init_model(library)
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)
-        model_sort = gtk.TreeModelSort(self.__model)
+        model_sort = Gtk.TreeModelSort(model=self.__model)
         model_filter = model_sort.filter_new()
 
         self.__bg_filter = background_filter()
         self.__filter = None
         model_filter.set_visible_func(self.__parse_query)
 
-        render = gtk.CellRendererPixbuf()
-        self.__cover_column = column = gtk.TreeViewColumn("covers", render)
+        render = Gtk.CellRendererPixbuf()
+        self.__cover_column = column = Gtk.TreeViewColumn("covers", render)
         column.set_visible(config.getboolean("browsers", "album_covers"))
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_fixed_width(Album.COVER_SIZE + 12)
         render.set_property('height', Album.COVER_SIZE + 8)
 
@@ -560,11 +561,11 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         column.set_cell_data_func(render, cell_data_pb, self.__no_cover)
         view.append_column(column)
 
-        render = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("albums", render)
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        render = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("albums", render)
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
-        def cell_data(column, cell, model, iter):
+        def cell_data(column, cell, model, iter, data):
             album = model[iter][0]
             if album is None:
                 text = "<b>%s</b>" % _("All Albums")
@@ -583,12 +584,12 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
 
-        view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         view.set_rules_hint(True)
-        view.set_search_equal_func(self.__search_func)
+        view.set_search_equal_func(self.__search_func, None)
         view.set_search_column(0)
         view.set_model(model_filter)
-        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
 
         if main:
@@ -599,16 +600,18 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
             view.get_selection().connect, 'changed',
             util.DeferredSignal(self.__update_songs), parent=view)
 
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
         view.drag_source_set(
-            gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         gobject_weak(view.connect, "drag-data-get", self.__drag_data_get)
         gobject_weak(view.connect_object, 'popup-menu',
                      self.__popup, view, library)
 
-        self.accelerators = gtk.AccelGroup()
-        search = SearchBarBox(button=False, completion=AlbumTagCompletion(),
+        self.accelerators = Gtk.AccelGroup()
+        search = SearchBarBox(completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
         gobject_weak(search.connect, 'query-changed', self.__update_filter)
         gobject_weak(search.connect_object,
@@ -616,13 +619,13 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         self.__search = search
 
         prefs = PreferencesButton(model_sort)
-        search.pack_start(prefs, expand=False)
+        search.pack_start(prefs, False, True, 0)
         if main:
-            self.pack_start(Alignment(search, left=3, top=3), expand=False)
+            self.pack_start(Alignment(search, left=3, top=3), False, True, 0)
         else:
-            self.pack_start(search, expand=False)
+            self.pack_start(search, False, True, 0)
 
-        self.pack_start(sw, expand=True)
+        self.pack_start(sw, True, True, 0)
 
         self.connect("destroy", self.__destroy)
 
@@ -642,16 +645,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def __destroy(self, browser):
         self.disable_row_update()
 
-        # https://bugzilla.gnome.org/show_bug.cgi?id=624112
-        # filter model keeps its filter function reference.
-        # at least try to get rid of as much data as possible.
         self.__inhibit()
-        model = self.view.get_model()
         self.view.set_model(None)
-        model.clear_cache()
-        model = model.get_model()
-        model.clear_cache()
-        self.__dict__.clear()
 
         klass = type(browser)
         if not klass.instances():
@@ -680,11 +675,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         self.__uninhibit()
 
-    def __parse_query(self, model, iter):
-        # leaked filter models try to refilter on model changes
-        if not self.__dict__:
-            return
-
+    def __parse_query(self, model, iter, data):
         f, b = self.__filter, self.__bg_filter
         if f is None and b is None:
             return True
@@ -697,7 +688,7 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         else:
             return b(model[iter][0]) and f(model[iter][0])
 
-    def __search_func(self, model, column, key, iter):
+    def __search_func(self, model, column, key, iter, data):
         album = model[iter][0]
         if album is None:
             return True
@@ -722,14 +713,14 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
             num = len(albums)
             button = MenuItem(
                 ngettext("Reload album _cover", "Reload album _covers", num),
-                gtk.STOCK_REFRESH)
+                Gtk.STOCK_REFRESH)
             gobject_weak(button.connect, 'activate',
-                         self.__refresh_album, view)
-            menu.prepend(gtk.SeparatorMenuItem())
+                self.__refresh_album, view)
+            menu.prepend(Gtk.SeparatorMenuItem())
             menu.prepend(button)
 
         menu.show_all()
-        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __refresh_album(self, menuitem, view):
         selection = view.get_selection()
@@ -768,7 +759,8 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         songs = self.__get_selected_songs(view.get_selection())
         if tid == 1:
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
         else:
             sel.set_uris([song("~uri") for song in songs])
 
@@ -884,8 +876,6 @@ class AlbumList(Browser, gtk.VBox, util.InstanceTracker, VisibleUpdate):
         config.set("browsers", "query_text", text)
 
     def __update_songs(self, selection):
-        if not self.__dict__:
-            return
         songs = self.__get_selected_songs(selection, False)
         self.emit('songs-selected', songs, None)
 

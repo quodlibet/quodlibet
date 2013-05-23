@@ -10,10 +10,11 @@
 #    published by the Free Software Foundation.
 #
 
-import gtk
-import gobject
-import pango
-import gst
+from gi.repository import Gtk
+from gi.repository import GObject
+from gi.repository import Pango
+from gi.repository import Gst
+from gi.repository import GLib
 
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -121,13 +122,13 @@ class RGSong(object):
         return self.song("~#length")
 
 
-class ReplayGainPipeline(gobject.GObject):
+class ReplayGainPipeline(GObject.Object):
 
     __gsignals__ = {
         # done(self, album)
-        'done': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+        'done': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         # update(self, album, song)
-        'update': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+        'update': (GObject.SignalFlags.RUN_LAST, None,
                    (object, object,)),
     }
 
@@ -140,35 +141,35 @@ class ReplayGainPipeline(gobject.GObject):
     def _setup_pipe(self):
         # gst pipeline for replay gain analysis:
         # filesrc!decodebin!audioconvert!audioresample!rganalysis!fakesink
-        self.pipe = gst.Pipeline("pipe")
-        self.filesrc = gst.element_factory_make("filesrc", "source")
+        self.pipe = Gst.Pipeline()
+        self.filesrc = Gst.ElementFactory.make("filesrc", "source")
         self.pipe.add(self.filesrc)
 
-        self.decode = gst.element_factory_make("decodebin", "decode")
+        self.decode = Gst.ElementFactory.make("decodebin", "decode")
 
-        def new_decoded_pad(dbin, pad, is_last):
-            pad.link(self.convert.get_pad("sink"))
+        def new_decoded_pad(dbin, pad):
+            pad.link(self.convert.get_static_pad("sink"))
 
         def removed_decoded_pad(dbin, pad):
-            pad.unlink(self.convert.get_pad("sink"))
+            pad.unlink(self.convert.get_static_pad("sink"))
 
-        self.decode.connect("new-decoded-pad", new_decoded_pad)
-        self.decode.connect("removed-decoded-pad", removed_decoded_pad)
+        self.decode.connect("pad-added", new_decoded_pad)
+        self.decode.connect("pad-removed", removed_decoded_pad)
         self.pipe.add(self.decode)
         self.filesrc.link(self.decode)
 
-        self.convert = gst.element_factory_make("audioconvert", "convert")
+        self.convert = Gst.ElementFactory.make("audioconvert", "convert")
         self.pipe.add(self.convert)
 
-        self.resample = gst.element_factory_make("audioresample", "resample")
+        self.resample = Gst.ElementFactory.make("audioresample", "resample")
         self.pipe.add(self.resample)
         self.convert.link(self.resample)
 
-        self.analysis = gst.element_factory_make("rganalysis", "analysis")
+        self.analysis = Gst.ElementFactory.make("rganalysis", "analysis")
         self.pipe.add(self.analysis)
         self.resample.link(self.analysis)
 
-        self.sink = gst.element_factory_make("fakesink", "sink")
+        self.sink = Gst.ElementFactory.make("fakesink", "sink")
         self.pipe.add(self.sink)
         self.analysis.link(self.sink)
 
@@ -180,14 +181,11 @@ class ReplayGainPipeline(gobject.GObject):
         if not self._current:
             return
 
-        try:
-            p = self.pipe.query_position(gst.FORMAT_TIME)[0]
-        except gst.QueryError:
-            pass
-        else:
+        ok, p = self.pipe.query_position(Gst.Format.TIME)
+        if ok:
             length = self._current.length
             try:
-                progress = float(p / gst.SECOND) / length
+                progress = float(p / Gst.SECOND) / length
             except ZeroDivisionError:
                 progress = 0.0
             progress = max(min(progress, 1.0), 0.0)
@@ -205,7 +203,7 @@ class ReplayGainPipeline(gobject.GObject):
 
     def quit(self):
         self.bus.remove_signal_watch()
-        self.pipe.set_state(gst.STATE_NULL)
+        self.pipe.set_state(Gst.State.NULL)
 
     def _next_song(self, first=False):
         if self._current:
@@ -216,7 +214,7 @@ class ReplayGainPipeline(gobject.GObject):
             self._current = None
 
         if not self._songs:
-            self.pipe.set_state(gst.STATE_NULL)
+            self.pipe.set_state(Gst.State.NULL)
             self.emit("done", self._album)
             return
 
@@ -224,32 +222,37 @@ class ReplayGainPipeline(gobject.GObject):
             self.analysis.set_property("num-tracks", len(self._songs))
         else:
             self.analysis.set_locked_state(True)
-            self.pipe.set_state(gst.STATE_NULL)
+            self.pipe.set_state(Gst.State.NULL)
 
         self._current = self._songs.pop(0)
         self.filesrc.set_property("location", self._current.filename)
-        self.pipe.set_state(gst.STATE_PLAYING)
         if not first:
+             # flush, so the element takes new data after EOS
+            pad = self.analysis.get_static_pad("src")
+            pad.send_event(Gst.Event.new_flush_start())
+            pad.send_event(Gst.Event.new_flush_stop(True))
             self.analysis.set_locked_state(False)
+        self.pipe.set_state(Gst.State.PLAYING)
 
     def _bus_message(self, bus, message):
-        if message.type == gst.MESSAGE_TAG:
-            if message.src == self.analysis:
-                tags = message.parse_tag()
-                try:
-                    self._current.gain = tags[gst.TAG_TRACK_GAIN]
-                    self._current.peak = tags[gst.TAG_TRACK_PEAK]
-                except KeyError:
-                    pass
-                try:
-                    self._album.gain = tags[gst.TAG_ALBUM_GAIN]
-                    self._album.peak = tags[gst.TAG_ALBUM_PEAK]
-                except KeyError:
-                    pass
-                self._emit_update()
-        elif message.type == gst.MESSAGE_EOS:
+        if message.type == Gst.MessageType.TAG:
+            tags = message.parse_tag()
+            ok, value = tags.get_double(Gst.TAG_TRACK_GAIN)
+            if ok:
+                self._current.gain = value
+            ok, value = tags.get_double(Gst.TAG_TRACK_PEAK)
+            if ok:
+                self._current.peak = value
+            ok, value = tags.get_double(Gst.TAG_ALBUM_GAIN)
+            if ok:
+                self._album.gain = value
+            ok, value = tags.get_double(Gst.TAG_ALBUM_PEAK)
+            if ok:
+                self._album.peak = value
+            self._emit_update()
+        elif message.type == Gst.MessageType.EOS:
             self._next_song()
-        elif message.type == gst.MESSAGE_ERROR:
+        elif message.type == Gst.MessageType.ERROR:
             gerror, debug = message.parse_error()
             if gerror:
                 print_e(gerror.message)
@@ -258,89 +261,89 @@ class ReplayGainPipeline(gobject.GObject):
             self._next_song()
 
 
-class RGDialog(gtk.Dialog):
+class RGDialog(Gtk.Dialog):
 
     def __init__(self, albums, parent):
         super(RGDialog, self).__init__(
             title=_('ReplayGain Analyzer'), parent=parent,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                     gtk.STOCK_SAVE, gtk.RESPONSE_OK)
+            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
         )
 
         self.set_default_size(500, 350)
         self.set_border_width(6)
 
-        swin = gtk.ScrolledWindow()
-        swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        swin.set_shadow_type(gtk.SHADOW_IN)
+        swin = Gtk.ScrolledWindow()
+        swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        swin.set_shadow_type(Gtk.ShadowType.IN)
 
-        self.vbox.pack_start(swin)
+        self.vbox.pack_start(swin, True, True, 0)
         view = HintedTreeView()
         swin.add(view)
 
-        def icon_cdf(column, cell, model, iter_):
+        def icon_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             if item.error:
-                cell.set_property('stock-id', gtk.STOCK_DIALOG_ERROR)
+                cell.set_property('stock-id', Gtk.STOCK_DIALOG_ERROR)
             else:
                 cell.set_property('stock-id', None)
 
-        column = gtk.TreeViewColumn()
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        icon_render = gtk.CellRendererPixbuf()
-        column.pack_start(icon_render)
+        column = Gtk.TreeViewColumn()
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        icon_render = Gtk.CellRendererPixbuf()
+        column.pack_start(icon_render, True)
         column.set_cell_data_func(icon_render, icon_cdf)
         view.append_column(column)
 
-        def track_cdf(column, cell, model, iter_):
+        def track_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             cell.set_property('text', item.title)
 
-        column = gtk.TreeViewColumn(_("Track"))
+        column = Gtk.TreeViewColumn(_("Track"))
         column.set_expand(True)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        track_render = gtk.CellRendererText()
-        track_render.set_property('ellipsize', pango.ELLIPSIZE_END)
-        column.pack_start(track_render)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        track_render = Gtk.CellRendererText()
+        track_render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        column.pack_start(track_render, True)
         column.set_cell_data_func(track_render, track_cdf)
         view.append_column(column)
 
-        def progress_cdf(column, cell, model, iter_):
+        def progress_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             cell.set_property('value', int(item.progress * 100))
 
-        column = gtk.TreeViewColumn(_("Progress"))
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        progress_render = gtk.CellRendererProgress()
-        column.pack_start(progress_render)
+        column = Gtk.TreeViewColumn(_("Progress"))
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        progress_render = Gtk.CellRendererProgress()
+        column.pack_start(progress_render, True)
         column.set_cell_data_func(progress_render, progress_cdf)
         view.append_column(column)
 
-        def gain_cdf(column, cell, model, iter_):
+        def gain_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
-            if item.gain is None:
+            if item.gain is None or not item.done:
                 cell.set_property('text', "-")
             else:
                 cell.set_property('text', "%.2f db" % item.gain)
 
-        column = gtk.TreeViewColumn(_("Gain"))
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        gain_renderer = gtk.CellRendererText()
-        column.pack_start(gain_renderer)
+        column = Gtk.TreeViewColumn(_("Gain"))
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        gain_renderer = Gtk.CellRendererText()
+        column.pack_start(gain_renderer, True)
         column.set_cell_data_func(gain_renderer, gain_cdf)
         view.append_column(column)
 
-        def peak_cdf(column, cell, model, iter_):
+        def peak_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
-            if item.gain is None:
+            if item.gain is None or not item.done:
                 cell.set_property('text', "-")
             else:
                 cell.set_property('text', "%.2f" % item.peak)
 
-        column = gtk.TreeViewColumn(_("Peak"))
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        peak_renderer = gtk.CellRendererText()
-        column.pack_start(peak_renderer)
+        column = Gtk.TreeViewColumn(_("Peak"))
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        peak_renderer = Gtk.CellRendererText()
+        column.pack_start(peak_renderer, True)
         column.set_cell_data_func(peak_renderer, peak_cdf)
         view.append_column(column)
 
@@ -356,7 +359,7 @@ class RGDialog(gtk.Dialog):
         self._count = len(self._todo)
 
         # fill the view
-        self.model = model = gtk.TreeStore(object)
+        self.model = model = Gtk.TreeStore(object)
         insert = model.insert
         for album in reversed(self._todo):
             base = insert(None, 0, row=[album])
@@ -364,14 +367,14 @@ class RGDialog(gtk.Dialog):
                 insert(base, 0, row=[song])
         view.set_model(model)
 
-        if len(albums) == 1:
+        if len(self._todo) == 1:
             view.expand_all()
 
         self.connect("destroy", self.__destroy)
         self.connect('response', self.__response)
 
     def start_analysis(self):
-        self._timeout = gobject.idle_add(self.__request_update)
+        self._timeout = GLib.idle_add(self.__request_update)
 
         # fill the pipelines
         for p in self.pipes:
@@ -384,9 +387,9 @@ class RGDialog(gtk.Dialog):
             p.start(self._todo.pop(0))
 
     def __response(self, win, response):
-        if response == gtk.RESPONSE_CANCEL:
+        if response == Gtk.ResponseType.CANCEL:
             self.destroy()
-        elif response == gtk.RESPONSE_OK:
+        elif response == Gtk.ResponseType.OK:
             for album in self._done:
                 album.write()
             self.destroy()
@@ -394,7 +397,7 @@ class RGDialog(gtk.Dialog):
     def __destroy(self, *args):
         # shut down any active processing and clean up resources, timeouts
         if self._timeout:
-            gobject.source_remove(self._timeout)
+            GLib.source_remove(self._timeout)
         for p in self.pipes:
             if p in self._sigs:
                 for s in self._sigs.get(p, []):
@@ -425,12 +428,12 @@ class RGDialog(gtk.Dialog):
                 break
 
     def __request_update(self):
-        gobject.source_remove(self._timeout)
+        GLib.source_remove(self._timeout)
         # all done, stop
         if len(self._done) < self._count:
             for p in self.pipes:
                 p.request_update()
-            self._timeout = gobject.timeout_add(400, self.__request_update)
+            self._timeout = GLib.timeout_add(400, self.__request_update)
         return False
 
 
@@ -438,7 +441,7 @@ class ReplayGain(SongsMenuPlugin):
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = 'Replay Gain'
     PLUGIN_DESC = _('Analyzes ReplayGain with gstreamer, grouped by album')
-    PLUGIN_ICON = gtk.STOCK_MEDIA_PLAY
+    PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
 
     def plugin_albums(self, albums):
         win = RGDialog(albums, parent=self.plugin_window)
@@ -452,7 +455,7 @@ class ReplayGain(SongsMenuPlugin):
         self.plugin_finish()
 
 
-if not gst.registry_get_default().find_plugin("replaygain"):
+if not Gst.Registry.get().find_plugin("replaygain"):
     __all__ = []
     del ReplayGain
-    raise gst.PluginNotFoundError("replaygain")
+    raise ImportError("GStreamer replaygain plugin not found")

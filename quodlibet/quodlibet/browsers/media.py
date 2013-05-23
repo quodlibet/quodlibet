@@ -7,8 +7,7 @@
 
 import os
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import config
 from quodlibet import devices
@@ -25,19 +24,19 @@ from quodlibet.qltk.delete import DeleteDialog
 from quodlibet.qltk.x import Alignment, ScrolledWindow
 
 
-class DeviceProperties(gtk.Dialog):
+class DeviceProperties(Gtk.Dialog):
     def __init__(self, parent, device):
         super(DeviceProperties, self).__init__(
             _("Device Properties"), qltk.get_top_parent(parent),
-            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+            buttons=(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
         self.set_default_size(400, -1)
         self.connect('response', self.__close)
 
-        table = gtk.Table()
+        table = Gtk.Table()
         table.set_border_width(8)
         table.set_row_spacings(8)
         table.set_col_spacings(8)
-        self.vbox.pack_start(table, expand=False)
+        self.vbox.pack_start(table, False, True, 0)
 
         props = []
 
@@ -48,32 +47,34 @@ class DeviceProperties(gtk.Dialog):
 
         props.append((None, None, None))
 
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         entry.set_text(device['name'])
         props.append((_("_Name:"), entry, 'name'))
 
         y = 0
         for title, value, key in props + device.Properties():
             if title is None:
-                table.attach(gtk.HSeparator(), 0, 2, y, y + 1)
+                table.attach(Gtk.HSeparator(), 0, 2, y, y + 1)
             else:
-                if key and isinstance(value, gtk.CheckButton):
+                if key and isinstance(value, Gtk.CheckButton):
                     value.set_label(title)
                     value.set_use_underline(True)
                     value.connect('toggled', self.__changed, key, device)
-                    table.attach(value, 0, 2, y, y + 1, xoptions=gtk.FILL)
+                    table.attach(value, 0, 2, y, y + 1,
+                                 xoptions=Gtk.AttachOptions.FILL)
                 else:
-                    label = gtk.Label()
+                    label = Gtk.Label()
                     label.set_markup("<b>%s</b>" % util.escape(title))
                     label.set_alignment(0.0, 0.5)
-                    table.attach(label, 0, 1, y, y + 1, xoptions=gtk.FILL)
-                    if key and isinstance(value, gtk.Widget):
+                    table.attach(label, 0, 1, y, y + 1,
+                                 xoptions=Gtk.AttachOptions.FILL)
+                    if key and isinstance(value, Gtk.Widget):
                         widget = value
                         label.set_mnemonic_widget(widget)
                         label.set_use_underline(True)
                         widget.connect('changed', self.__changed, key, device)
                     else:
-                        widget = gtk.Label(value)
+                        widget = Gtk.Label(label=value)
                         widget.set_use_markup(True)
                         widget.set_selectable(True)
                         widget.set_alignment(0.0, 0.5)
@@ -82,11 +83,11 @@ class DeviceProperties(gtk.Dialog):
         self.show_all()
 
     def __changed(self, widget, key, device):
-        if isinstance(widget, gtk.Entry):
+        if isinstance(widget, Gtk.Entry):
             value = widget.get_text()
-        elif isinstance(widget, gtk.SpinButton):
+        elif isinstance(widget, Gtk.SpinButton):
             value = widget.get_value()
-        elif isinstance(widget, gtk.CheckButton):
+        elif isinstance(widget, Gtk.CheckButton):
             value = widget.get_active()
         else:
             raise NotImplementedError
@@ -98,13 +99,13 @@ class DeviceProperties(gtk.Dialog):
 
 
 # This will be included in SongsMenu
-class Menu(gtk.Menu):
+class Menu(Gtk.Menu):
     def __init__(self, songs, library):
         super(Menu, self).__init__()
         for device in MediaDevices.devices():
-            i = gtk.ImageMenuItem(device['name'])
+            i = Gtk.ImageMenuItem(device['name'])
             i.set_image(
-                gtk.image_new_from_icon_name(device.icon, gtk.ICON_SIZE_MENU))
+                Gtk.Image.new_from_icon_name(device.icon, Gtk.IconSize.MENU))
             i.set_sensitive(device.is_connected())
             i.connect_object(
                 'activate', self.__copy_to_device, device, songs, library)
@@ -121,7 +122,7 @@ class Menu(gtk.Menu):
         browser.dropped(browser.get_toplevel().songlist, songs)
 
 
-class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
+class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
 
     name = _("Media Devices")
@@ -129,7 +130,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
     priority = 25
     replaygain_profiles = ['track']
 
-    __devices = gtk.ListStore(object, str)
+    __devices = Gtk.ListStore(object, str)
     __busy = False
     __last = None
 
@@ -171,86 +172,86 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         # Device list on the left pane
         swin = ScrolledWindow()
-        swin.set_shadow_type(gtk.SHADOW_IN)
-        swin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.pack_start(swin)
+        swin.set_shadow_type(Gtk.ShadowType.IN)
+        swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.pack_start(swin, True, True, 0)
 
         self.__view = view = AllTreeView()
         view.set_model(self.__devices)
         view.set_rules_hint(True)
         view.set_headers_visible(False)
-        view.get_selection().set_mode(gtk.SELECTION_BROWSE)
+        view.get_selection().set_mode(Gtk.SelectionMode.BROWSE)
         view.get_selection().connect_object('changed', self.__refresh, False)
         view.connect('popup-menu', self.__popup_menu, library)
         if main:
             view.connect('row-activated', lambda *a: self.emit("activated"))
         swin.add(view)
 
-        col = gtk.TreeViewColumn("Devices")
+        col = Gtk.TreeViewColumn("Devices")
         view.append_column(col)
 
-        render = gtk.CellRendererPixbuf()
-        col.pack_start(render, expand=False)
+        render = Gtk.CellRendererPixbuf()
+        col.pack_start(render, False)
         col.add_attribute(render, 'icon-name', 1)
 
-        self.__render = render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        self.__render = render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.connect('edited', self.__edited)
-        col.pack_start(render)
+        col.pack_start(render, True)
         col.set_cell_data_func(render, MediaDevices.cell_data)
 
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
         if main:
-            self.pack_start(Alignment(hbox, left=3, bottom=3), expand=False)
+            self.pack_start(Alignment(hbox, left=3, bottom=3), False, True, 0)
         else:
-            self.pack_start(hbox, expand=False)
+            self.pack_start(hbox, False, True, 0)
 
-        self.__refresh_button = refresh = gtk.Button(stock=gtk.STOCK_REFRESH)
+        self.__refresh_button = refresh = Gtk.Button(stock=Gtk.STOCK_REFRESH)
         refresh.connect_object('clicked', self.__refresh, True)
         refresh.set_sensitive(False)
-        hbox.pack_start(refresh)
+        hbox.pack_start(refresh, True, True, 0)
 
-        self.__eject_button = eject = gtk.Button(_("_Eject"))
+        self.__eject_button = eject = Gtk.Button(_("_Eject"))
         eject.set_image(
-            gtk.image_new_from_icon_name("media-eject", gtk.ICON_SIZE_BUTTON))
+            Gtk.Image.new_from_icon_name("media-eject", Gtk.IconSize.BUTTON))
         eject.connect('clicked', self.__eject)
         eject.set_sensitive(False)
-        hbox.pack_start(eject)
+        hbox.pack_start(eject, True, True, 0)
 
         # Device info on the right pane
-        self.__header = table = gtk.Table()
+        self.__header = table = Gtk.Table()
         table.set_col_spacings(8)
 
-        self.__device_icon = icon = gtk.Image()
+        self.__device_icon = icon = Gtk.Image()
         icon.set_size_request(48, 48)
         table.attach(icon, 0, 1, 0, 2, 0)
 
-        self.__device_name = label = gtk.Label()
+        self.__device_name = label = Gtk.Label()
         label.set_alignment(0, 0)
         table.attach(label, 1, 3, 0, 1)
 
-        self.__device_space = label = gtk.Label()
+        self.__device_space = label = Gtk.Label()
         label.set_alignment(0, 0.5)
         table.attach(label, 1, 2, 1, 2)
 
-        self.__progress = progress = gtk.ProgressBar()
+        self.__progress = progress = Gtk.ProgressBar()
         progress.set_size_request(150, -1)
         table.attach(progress, 2, 3, 1, 2, xoptions=0, yoptions=0)
 
-        self.accelerators = gtk.AccelGroup()
-        key, mod = gtk.accelerator_parse('F2')
-        self.accelerators.connect_group(key, mod, 0, self.__rename)
+        self.accelerators = Gtk.AccelGroup()
+        key, mod = Gtk.accelerator_parse('F2')
+        self.accelerators.connect(key, mod, 0, self.__rename)
 
         self.__statusbar = WaitLoadBar()
 
         self.show_all()
 
     def pack(self, songpane):
-        self.__vbox = vbox = gtk.VBox(spacing=6)
-        vbox.pack_start(self.__header, expand=False)
-        vbox.pack_start(songpane)
-        vbox.pack_start(self.__statusbar, expand=False)
+        self.__vbox = vbox = Gtk.VBox(spacing=6)
+        vbox.pack_start(self.__header, False, True, 0)
+        vbox.pack_start(songpane, True, True, 0)
+        vbox.pack_start(self.__statusbar, False, True, 0)
 
         vbox.show()
         self.__header.show_all()
@@ -336,15 +337,15 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         menu.preseparate()
 
-        props = gtk.ImageMenuItem(gtk.STOCK_PROPERTIES)
+        props = Gtk.ImageMenuItem(Gtk.STOCK_PROPERTIES)
         props.connect_object('activate', self.__properties, model[iter][0])
         props.set_sensitive(not self.__busy)
         menu.prepend(props)
 
-        ren = qltk.MenuItem(_("_Rename"), gtk.STOCK_EDIT)
-        keyval, mod = gtk.accelerator_parse("F2")
+        ren = qltk.MenuItem(_("_Rename"), Gtk.STOCK_EDIT)
+        keyval, mod = Gtk.accelerator_parse("F2")
         ren.add_accelerator(
-            'activate', self.accelerators, keyval, mod, gtk.ACCEL_VISIBLE)
+            'activate', self.accelerators, keyval, mod, Gtk.AccelFlags.VISIBLE)
 
         def rename(path):
             self.__render.set_property('editable', True)
@@ -354,21 +355,21 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
         menu.preseparate()
 
-        eject = gtk.ImageMenuItem(_("_Eject"))
+        eject = Gtk.ImageMenuItem(_("_Eject"))
         eject.set_image(
-            gtk.image_new_from_icon_name("media-eject", gtk.ICON_SIZE_MENU))
+            Gtk.Image.new_from_icon_name("media-eject", Gtk.IconSize.MENU))
         eject.set_sensitive(
             not self.__busy and device.eject and device.is_connected())
         eject.connect_object('activate', self.__eject, None)
         menu.prepend(eject)
 
-        refresh = gtk.ImageMenuItem(gtk.STOCK_REFRESH)
+        refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH)
         refresh.set_sensitive(device.is_connected())
         refresh.connect_object('activate', self.__refresh, True)
         menu.prepend(refresh)
 
         menu.show_all()
-        menu.popup(None, None, None, 0, gtk.get_current_event_time())
+        menu.popup(None, None, None, 0, Gtk.get_current_event_time())
         return True
 
     def __properties(self, device):
@@ -404,7 +405,7 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
             device = model[iter][0]
             self.__device_icon.set_from_icon_name(
-                device.icon, gtk.ICON_SIZE_DIALOG)
+                device.icon, Gtk.IconSize.DIALOG)
             self.__set_name(device)
 
             songs = []
@@ -484,8 +485,8 @@ class MediaDevices(gtk.VBox, Browser, util.InstanceTracker):
 
             if len(model) > 0:
                 songlist.scroll_to_cell(model[-1].path)
-            while gtk.events_pending():
-                gtk.main_iteration()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
 
             space, free = device.get_space()
             if free < os.path.getsize(song['~filename']):

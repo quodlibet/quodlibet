@@ -7,7 +7,8 @@
 
 import os
 import time
-import gtk
+
+from gi.repository import Gtk
 
 from quodlibet import const
 from quodlibet import qltk
@@ -102,7 +103,7 @@ class IPodDevice(Device):
     def Properties(self):
         props = []
 
-        gain = gtk.SpinButton()
+        gain = Gtk.SpinButton()
         gain.set_range(-20, 20)
         gain.set_digits(1)
         gain.set_increments(0.1, 1)
@@ -115,7 +116,7 @@ class IPodDevice(Device):
             ['title_version', _("Title includes _version")],
             ['album_part', _("Album includes _disc subtitle")],
         ]:
-            check = gtk.CheckButton()
+            check = Gtk.CheckButton()
             check.set_active(self[key])
             props.append((label, check, key))
 
@@ -283,8 +284,8 @@ class IPodDevice(Device):
         try:
             wlb.set_text("<b>Saving iPod database...</b>")
             # This can take a while, so update the UI first
-            while gtk.events_pending():
-                gtk.main_iteration()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
 
             if not self.__save_db():
                 wlb.set_text(_("Unable to save iPod database"))
@@ -427,9 +428,9 @@ class IPodDevice(Device):
     }
 
 try:
-    import gpod
+    from quodlibet.devices import _gpod as gpod
 except ImportError:
-    print_w(_("Could not import python-gpod, iPod support disabled."))
+    print_w(_("Could not find libgpod, iPod support disabled."))
     devices = []
 else:
     devices = [IPodDevice]

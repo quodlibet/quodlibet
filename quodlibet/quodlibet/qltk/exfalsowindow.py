@@ -7,9 +7,7 @@
 
 import os
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import config
 from quodlibet import const
@@ -33,12 +31,12 @@ from quodlibet.qltk.x import Alignment
 from quodlibet.qltk.window import PersistentWindowMixin
 
 
-class ExFalsoWindow(gtk.Window, PersistentWindowMixin):
+class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
     __gsignals__ = {
-        'changed': (gobject.SIGNAL_RUN_LAST,
-                    gobject.TYPE_NONE, (object,)),
-        'artwork-changed': (gobject.SIGNAL_RUN_LAST,
-                            gobject.TYPE_NONE, (object,))
+        'changed': (GObject.SignalFlags.RUN_LAST,
+                    None, (object,)),
+        'artwork-changed': (GObject.SignalFlags.RUN_LAST,
+                            None, (object,))
     }
 
     pm = SongsMenuPluginHandler()
@@ -55,41 +53,41 @@ class ExFalsoWindow(gtk.Window, PersistentWindowMixin):
 
         self.__library = library
 
-        hp = gtk.HPaned()
+        hp = Gtk.HPaned()
         hp.set_border_width(0)
         hp.set_position(250)
         hp.show()
         self.add(hp)
 
-        vb = gtk.VBox()
+        vb = Gtk.VBox()
 
-        bbox = gtk.HBox(spacing=6)
+        bbox = Gtk.HBox(spacing=6)
 
-        about = gtk.Button()
-        about.add(gtk.image_new_from_stock(
-            gtk.STOCK_ABOUT, gtk.ICON_SIZE_BUTTON))
+        about = Gtk.Button()
+        about.add(Gtk.Image.new_from_stock(
+            Gtk.STOCK_ABOUT, Gtk.IconSize.BUTTON))
         about.connect_object('clicked', self.__show_about, self)
-        bbox.pack_start(about, expand=False)
+        bbox.pack_start(about, False, True, 0)
 
-        prefs = gtk.Button()
-        prefs.add(gtk.image_new_from_stock(
-            gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_BUTTON))
+        prefs = Gtk.Button()
+        prefs.add(Gtk.Image.new_from_stock(
+            Gtk.STOCK_PREFERENCES, Gtk.IconSize.BUTTON))
         prefs.connect_object('clicked', PreferencesWindow, self)
-        bbox.pack_start(prefs, expand=False)
+        bbox.pack_start(prefs, False, True, 0)
 
-        plugins = qltk.Button(_("_Plugins"), gtk.STOCK_EXECUTE)
+        plugins = qltk.Button(_("_Plugins"), Gtk.STOCK_EXECUTE)
         plugins.connect_object('clicked', PluginWindow, self)
-        bbox.pack_start(plugins, expand=False)
+        bbox.pack_start(plugins, False, True, 0)
 
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_alignment(1.0, 0.5)
-        l.set_ellipsize(pango.ELLIPSIZE_END)
-        bbox.pack_start(l)
+        l.set_ellipsize(Pango.EllipsizeMode.END)
+        bbox.pack_start(l, True, True, 0)
 
         fs = FileSelector(dir)
 
-        vb.pack_start(fs)
-        vb.pack_start(Alignment(bbox, border=6), expand=False)
+        vb.pack_start(fs, True, True, 0)
+        vb.pack_start(Alignment(bbox, border=6), False, True, 0)
         vb.show_all()
 
         hp.pack1(vb, resize=True, shrink=False)
@@ -117,9 +115,9 @@ class ExFalsoWindow(gtk.Window, PersistentWindowMixin):
 
         self.get_child().show()
 
-        self.__ag = gtk.AccelGroup()
-        key, mod = gtk.accelerator_parse("<control>Q")
-        self.__ag.connect_group(key, mod, 0, lambda *x: self.destroy())
+        self.__ag = Gtk.AccelGroup()
+        key, mod = Gtk.accelerator_parse("<control>Q")
+        self.__ag.connect(key, mod, 0, lambda *x: self.destroy())
         self.add_accel_group(self.__ag)
 
     def __show_about(self, window):
@@ -133,9 +131,9 @@ class ExFalsoWindow(gtk.Window, PersistentWindowMixin):
     def __pre_selection_changed(self, view, event, fs, nb):
         if self.__save:
             resp = qltk.CancelRevertSave(self).run()
-            if resp == gtk.RESPONSE_YES:
+            if resp == Gtk.ResponseType.YES:
                 self.__save.clicked()
-            elif resp == gtk.RESPONSE_NO:
+            elif resp == Gtk.ResponseType.NO:
                 FileSelector.rescan(fs)
             else:
                 nb.grab_focus()
@@ -150,17 +148,17 @@ class ExFalsoWindow(gtk.Window, PersistentWindowMixin):
         if None not in songs:
             menu = self.pm.Menu(self.__library, self, songs)
             if menu is None:
-                menu = gtk.Menu()
+                menu = Gtk.Menu()
             else:
-                menu.prepend(gtk.SeparatorMenuItem())
+                menu.prepend(Gtk.SeparatorMenuItem())
         else:
-            menu = gtk.Menu()
-        b = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+            menu = Gtk.Menu()
+        b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
         b.connect('activate', self.__delete, filenames, fs)
         menu.prepend(b)
-        menu.connect_object('selection-done', gtk.Menu.destroy, menu)
+        menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
         menu.show_all()
-        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __delete(self, item, files, fs):
         d = DeleteDialog(self, files)
@@ -220,32 +218,32 @@ class PreferencesWindow(qltk.UniqueWindow):
         self.set_resizable(False)
         self.set_transient_for(parent)
 
-        vbox = gtk.VBox(spacing=6)
-        hb = gtk.HBox(spacing=6)
+        vbox = Gtk.VBox(spacing=6)
+        hb = Gtk.HBox(spacing=6)
         e = UndoEntry()
         e.set_text(config.get("editing", "split_on"))
         e.connect('changed', self.__changed, 'editing', 'split_on')
-        l = gtk.Label(_("Split _on:"))
+        l = Gtk.Label(label=_("Split _on:"))
         l.set_use_underline(True)
         l.set_mnemonic_widget(e)
-        hb.pack_start(l, expand=False)
-        hb.pack_start(e)
+        hb.pack_start(l, False, True, 0)
+        hb.pack_start(e, True, True, 0)
         cb = ConfigCheckButton(
             _("Show _programmatic tags"), 'editing', 'alltags')
         cb.set_active(config.getboolean("editing", 'alltags'))
-        vbox.pack_start(hb, expand=False)
-        vbox.pack_start(cb, expand=False)
+        vbox.pack_start(hb, False, True, 0)
+        vbox.pack_start(cb, False, True, 0)
         f = qltk.Frame(_("Tag Editing"), child=vbox)
 
-        close = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect_object('clicked', lambda x: x.destroy(), self)
-        button_box = gtk.HButtonBox()
-        button_box.set_layout(gtk.BUTTONBOX_END)
-        button_box.pack_start(close)
+        button_box = Gtk.HButtonBox()
+        button_box.set_layout(Gtk.ButtonBoxStyle.END)
+        button_box.pack_start(close, True, True, 0)
 
-        main_vbox = gtk.VBox(spacing=12)
-        main_vbox.pack_start(f)
-        main_vbox.pack_start(button_box, expand=False)
+        main_vbox = Gtk.VBox(spacing=12)
+        main_vbox.pack_start(f, True, True, 0)
+        main_vbox.pack_start(button_box, False, True, 0)
         self.add(main_vbox)
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)

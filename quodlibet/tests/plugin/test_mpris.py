@@ -4,7 +4,7 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-import gtk
+from gi.repository import Gtk
 import dbus
 
 from tests import add
@@ -83,7 +83,7 @@ class TMPRIS(PluginTestCase):
 
     def _wait(self):
         while not self._replies:
-            gtk.main_iteration(False)
+            Gtk.main_iteration_do(False)
         return self._replies.pop(0)
 
     def test_main(self):
@@ -91,10 +91,10 @@ class TMPRIS(PluginTestCase):
         piface = "org.mpris.MediaPlayer2"
 
         app.window.hide()
-        self.failIf(app.window.flags() & gtk.VISIBLE)
+        self.failIf(app.window.get_visible())
         self._main_iface().Raise(**args)
         self.failIf(self._wait())
-        self.failUnless(app.window.flags() & gtk.VISIBLE)
+        self.failUnless(app.window.get_visible())
         app.window.hide()
 
         props = {

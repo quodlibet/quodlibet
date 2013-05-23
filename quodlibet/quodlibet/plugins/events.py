@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gobject
+from gi.repository import GObject
 
 from quodlibet import util
 
@@ -42,7 +42,7 @@ class EventPlugin(object):
 
 
 def _map_signals(obj, prefix="plugin_on_", blacklist=tuple()):
-    sigs = list(gobject.signal_list_names(obj))
+    sigs = list(GObject.signal_list_names(obj))
     map(sigs.remove, blacklist)
     sigs = [(s.replace('-', '_'), prefix + s.replace('-', '_')) for s in sigs]
     return sigs

@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from tests import add
 from tests.plugin import PluginTestCase
@@ -23,6 +23,6 @@ class TPrefs(PluginTestCase):
             if hasattr(plugin, "PLUGIN_INSTANCE"):
                 plugin = plugin()
             if hasattr(plugin, "PluginPreferences"):
-                plugin.PluginPreferences(gtk.Window())
+                plugin.PluginPreferences(Gtk.Window())
 
 add(TPrefs)

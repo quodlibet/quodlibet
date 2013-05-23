@@ -7,9 +7,7 @@
 
 import os
 
-import gobject
-import gtk
-import pango
+from gi.repository import Gtk, GLib, Pango, Gdk
 
 from quodlibet import config
 from quodlibet import const
@@ -23,7 +21,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView, BaseView
-from quodlibet.qltk.x import ScrolledWindow, Alignment
+from quodlibet.qltk.x import ScrolledWindow, Alignment, SymbolicIconImage
 from quodlibet.util.collection import Album
 from quodlibet.util.library import background_filter
 from quodlibet.util.thumbnails import scale
@@ -64,7 +62,7 @@ def save_headers(headers):
     config.set("browsers", "collection_headers", headers)
 
 
-class PatternEditor(gtk.HBox):
+class PatternEditor(Gtk.HBox):
 
     PRESETS = [
         [("~people", False)],
@@ -84,24 +82,26 @@ class PatternEditor(gtk.HBox):
         group = None
         for tags in self.PRESETS:
             tied = "~" + "~".join([t[0] for t in tags])
-            group = gtk.RadioButton(group, "_" + util.tag(tied))
+            group = Gtk.RadioButton(group=group, label="_" + util.tag(tied),
+                                    use_underline=True)
             headers[group] = tags
             buttons.append(group)
 
-        group = gtk.RadioButton(group, _("_Custom"))
+        group = Gtk.RadioButton(group=group, label=_("_Custom"),
+                                use_underline=True)
         self.__custom = group
         headers[group] = []
         buttons.append(group)
 
-        button_box = gtk.HBox(spacing=6)
-        self.__model = model = gtk.ListStore(str, bool)
+        button_box = Gtk.HBox(spacing=6)
+        self.__model = model = Gtk.ListStore(str, bool)
 
-        radio_box = gtk.VBox(spacing=6)
+        radio_box = Gtk.VBox(spacing=6)
         for button in buttons:
-            radio_box.pack_start(button, expand=False)
+            radio_box.pack_start(button, False, True, 0)
             button.connect('toggled', self.__toggled, button_box, model)
 
-        self.pack_start(radio_box, expand=False)
+        self.pack_start(radio_box, False, True, 0)
 
         cb = TagsComboBoxEntry(self.COMPLETION)
 
@@ -109,47 +109,47 @@ class PatternEditor(gtk.HBox):
         view.set_reorderable(True)
         view.set_headers_visible(True)
 
-        ctrl_box = gtk.VBox(spacing=6)
+        ctrl_box = Gtk.VBox(spacing=6)
 
-        add = gtk.Button(stock=gtk.STOCK_ADD)
-        ctrl_box.pack_start(add, expand=False)
+        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        ctrl_box.pack_start(add, False, True, 0)
         add.connect('clicked', self.__add, model, cb)
 
-        remove = gtk.Button(stock=gtk.STOCK_REMOVE)
-        ctrl_box.pack_start(remove, expand=False)
+        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        ctrl_box.pack_start(remove, False, True, 0)
         remove.connect('clicked', self.__remove, view)
 
         selection = view.get_selection()
         selection.connect('changed', self.__selection_changed, remove)
         selection.emit('changed')
 
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
 
-        edit_box = gtk.VBox(spacing=6)
-        edit_box.pack_start(cb, expand=False)
-        edit_box.pack_start(sw)
+        edit_box = Gtk.VBox(spacing=6)
+        edit_box.pack_start(cb, False, True, 0)
+        edit_box.pack_start(sw, True, True, 0)
 
-        button_box.pack_start(edit_box)
-        button_box.pack_start(ctrl_box, expand=False)
-        self.pack_start(button_box)
+        button_box.pack_start(edit_box, True, True, 0)
+        button_box.pack_start(ctrl_box, False, True, 0)
+        self.pack_start(button_box, True, True, 0)
 
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         render.set_property("editable", True)
 
         def edited_cb(render, path, text, model):
             model[path][0] = text
         render.connect("edited", edited_cb, model)
 
-        column = gtk.TreeViewColumn(_("Tag"), render, text=0)
+        column = Gtk.TreeViewColumn(_("Tag"), render, text=0)
         column.set_expand(True)
         view.append_column(column)
 
-        toggle = gtk.CellRendererToggle()
+        toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.__toggeled, model)
-        toggle_column = gtk.TreeViewColumn(_("Merge"), toggle, active=1)
+        toggle_column = Gtk.TreeViewColumn(_("Merge"), toggle, active=1)
         view.append_column(toggle_column)
 
     def __toggeled(self, render, path, model):
@@ -209,29 +209,29 @@ class Preferences(qltk.UniqueWindow):
 
         self.set_title(_("Album Collection Preferences") + " - Quod Libet")
 
-        vbox = gtk.VBox(spacing=12)
+        vbox = Gtk.VBox(spacing=12)
 
         editor = PatternEditor()
         editor.headers = get_headers()
 
-        apply = gtk.Button(stock=gtk.STOCK_APPLY)
+        apply = Gtk.Button(stock=Gtk.STOCK_APPLY)
         apply.connect_object("clicked", self.__apply, editor, False)
 
-        cancel = gtk.Button(stock=gtk.STOCK_CANCEL)
+        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         cancel.connect("clicked", lambda x: self.destroy())
 
-        ok = gtk.Button(stock=gtk.STOCK_OK)
+        ok = Gtk.Button(stock=Gtk.STOCK_OK)
         ok.connect_object("clicked", self.__apply, editor, True)
 
-        box = gtk.HButtonBox()
+        box = Gtk.HButtonBox()
         box.set_spacing(6)
-        box.set_layout(gtk.BUTTONBOX_END)
-        box.pack_start(apply)
-        box.pack_start(cancel)
-        box.pack_start(ok)
+        box.set_layout(Gtk.ButtonBoxStyle.END)
+        box.pack_start(apply, True, True, 0)
+        box.pack_start(cancel, True, True, 0)
+        box.pack_start(ok, True, True, 0)
 
-        vbox.pack_start(editor)
-        vbox.pack_start(box, expand=False)
+        vbox.pack_start(editor, True, True, 0)
+        vbox.pack_start(box, False, True, 0)
 
         self.add(vbox)
 
@@ -280,7 +280,9 @@ class StoreUtils(object):
 
         def func(model, path, iter_, result):
             if model[iter_][0] is album:
-                result[0] = path
+                # pygobject bug: treepath only valid in callback,
+                # so make a copy
+                result[0] = path.copy()
                 return True
             return False
 
@@ -318,7 +320,7 @@ class StoreUtils(object):
         if isinstance(obj, basestring):
             markup = util.escape(obj)
         else:
-            tag = util.tag(tags[len(self.get_path(iter_)) - 1])
+            tag = util.tag(tags[len(self.get_path(iter_).get_indices()) - 1])
             if obj is UnknownNode:
                 markup = UNKNOWN_PATTERN % util.escape(tag)
             else:
@@ -334,7 +336,7 @@ class StoreUtils(object):
             return obj
 
 
-class CollectionTreeStore(gtk.TreeStore):
+class CollectionTreeStore(Gtk.TreeStore):
     def __init__(self):
         super(CollectionTreeStore, self).__init__(object)
         self.__tags = []
@@ -465,7 +467,7 @@ class CollectionView(AllTreeView):
 
     def select_path(self, path, unselect=True):
         for i, x in enumerate(path[:-1]):
-            self.expand_row(path[:i + 1], False)
+            self.expand_row(Gtk.TreePath(tuple(path[:i + 1])), False)
         self.scroll_to_cell(path, use_align=True, row_align=0.5)
         selection = self.get_selection()
         if unselect:
@@ -484,7 +486,7 @@ class CollectionView(AllTreeView):
         return albums
 
 
-class CollectionBrowser(Browser, gtk.VBox, util.InstanceTracker):
+class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
     expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
 
@@ -544,17 +546,17 @@ class CollectionBrowser(Browser, gtk.VBox, util.InstanceTracker):
             self._init_model(library)
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = CollectionView()
         view.set_headers_visible(False)
-        model_sort = gtk.TreeModelSort(self.__model)
+        model_sort = Gtk.TreeModelSort(model=self.__model)
         model_filter = model_sort.filter_new()
         self.__filter = None
         self.__bg_filter = background_filter()
         model_filter.set_visible_func(self.__parse_query)
         view.set_model(model_filter)
 
-        def sort(model, i1, i2):
+        def sort(model, i1, i2, data):
             t1, t2 = model[i1][0], model[i2][0]
             if t1 is None or t2 is None:
                 # FIXME: why?
@@ -571,81 +573,82 @@ class CollectionBrowser(Browser, gtk.VBox, util.InstanceTracker):
             a1, a2 = t1, t2
             return (cmp(a1.peoplesort and a1.peoplesort[0],
                         a2.peoplesort and a2.peoplesort[0]) or
-                    cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
-                    cmp((a1.sort, a1.key), (a2.sort, a2.key)))
+                        cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
+                        cmp((a1.sort, a1.key), (a2.sort, a2.key)))
 
         model_sort.set_sort_func(0, sort)
-        model_sort.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        model_sort.set_sort_column_id(0, Gtk.SortType.ASCENDING)
 
-        column = gtk.TreeViewColumn("albums")
+        column = Gtk.TreeViewColumn("albums")
 
-        def cell_data(column, cell, model, iter_):
+        def cell_data(column, cell, model, iter_, data):
             markup = StoreUtils.get_markup(model, self.__model.tags, iter_)
             cell.markup = markup
             cell.set_property('markup', markup)
 
-        def cell_data_pb(column, cell, model, iter_):
+        def cell_data_pb(column, cell, model, iter_, data):
             album = StoreUtils.get_album(model, iter_)
             if album is None:
-                cell.set_property('stock_id', gtk.STOCK_DIRECTORY)
+                cell.set_property('stock_id', Gtk.STOCK_DIRECTORY)
             else:
                 album.scan_cover()
                 if album.cover:
                     cell.set_property('pixbuf', scale(album.cover, (25, 25)))
                 else:
-                    cell.set_property('stock_id', gtk.STOCK_CDROM)
+                    cell.set_property('stock_id', Gtk.STOCK_CDROM)
 
-        imgrender = gtk.CellRendererPixbuf()
-        render = gtk.CellRendererText()
-        render.set_property('ellipsize', pango.ELLIPSIZE_END)
+        imgrender = Gtk.CellRendererPixbuf()
+        render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
         column.pack_start(imgrender, False)
         column.pack_start(render, True)
         column.set_cell_data_func(render, cell_data)
         column.set_cell_data_func(imgrender, cell_data_pb)
         view.append_column(column)
 
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
 
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
 
-        prefs = gtk.Button()
-        prefs.add(gtk.image_new_from_stock(
-            gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_MENU))
+        prefs = Gtk.Button()
+        prefs.add(SymbolicIconImage("emblem-system", Gtk.IconSize.MENU))
         prefs.connect('clicked', Preferences)
 
-        search = SearchBarBox(button=False, completion=AlbumTagCompletion(),
+        search = SearchBarBox(completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
 
         search.connect('query-changed', self.__update_filter)
 
-        hbox.pack_start(search)
-        hbox.pack_start(prefs, expand=False)
+        hbox.pack_start(search, True, True, 0)
+        hbox.pack_start(prefs, False, True, 0)
 
         if main:
-            self.pack_start(Alignment(hbox, left=3, top=3), expand=False)
+            self.pack_start(Alignment(hbox, left=3, top=3), False, True, 0)
         else:
-            self.pack_start(hbox, expand=False)
+            self.pack_start(hbox, False, True, 0)
 
-        self.pack_start(sw, expand=True)
+        self.pack_start(sw, True, True, 0)
 
-        view.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        self.__sig = view.get_selection().connect(
-            'changed', self.__selection_changed)
+        view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
+        self.__sig = view.get_selection().connect('changed',
+            self.__selection_changed)
         view.connect('row-activated', self.__play, main)
         view.connect_object('popup-menu', self.__popup, view, library)
 
-        targets = [("text/x-quodlibet-songs", gtk.TARGET_SAME_APP, 1),
+        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+
         view.drag_source_set(
-            gtk.gdk.BUTTON1_MASK, targets, gtk.gdk.ACTION_COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         view.connect("drag-data-get", self.__drag_data_get)
 
         self.connect("destroy", self.__destroy)
 
         self.show_all()
 
-    def __parse_query(self, model, iter_):
+    def __parse_query(self, model, iter_, data):
         f, b = self.__filter, self.__bg_filter
         if f is None and b is None:
             return True
@@ -684,7 +687,8 @@ class CollectionBrowser(Browser, gtk.VBox, util.InstanceTracker):
         songs = self.__get_selected_songs()
         if tid == 1:
             filenames = [song("~filename") for song in songs]
-            sel.set("text/x-quodlibet-songs", 8, "\x00".join(filenames))
+            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+            sel.set(type_, 8, "\x00".join(filenames))
         else:
             sel.set_uris([song("~uri") for song in songs])
 
@@ -692,7 +696,7 @@ class CollectionBrowser(Browser, gtk.VBox, util.InstanceTracker):
         songs = self.__get_selected_songs(view.get_selection())
         menu = SongsMenu(library, songs, parent=self)
         menu.show_all()
-        return view.popup_menu(menu, 0, gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __play(self, view, path, col, main):
         model = view.get_model()
@@ -720,7 +724,7 @@ class CollectionBrowser(Browser, gtk.VBox, util.InstanceTracker):
             songs = self.__get_selected_songs(False)
             if songs:
                 self.emit('songs-selected', songs, None)
-        gobject.idle_add(idle_emit)
+        GLib.idle_add(idle_emit)
 
     def can_filter_albums(self):
         return True

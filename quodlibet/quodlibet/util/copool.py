@@ -6,7 +6,7 @@
 
 """Manage a pool of routines using Python iterators."""
 
-import gobject
+from gi.repository import GLib
 
 __routines = {}
 __paused = {}
@@ -20,7 +20,7 @@ def __wrap(func, funcid, args, kwargs):
 
 
 def add(func, *args, **kwargs):
-    """Register a routine to run in GObject main loop.
+    """Register a routine to run in GLib main loop.
 
     func should be a function that returns a Python iterator (e.g.
     generator) that provides values until it should stop being called.
@@ -38,13 +38,13 @@ def add(func, *args, **kwargs):
     funcid = kwargs.pop("funcid", func)
     if funcid in __routines or funcid in __paused:
         remove(funcid)
-    priority = kwargs.pop("priority", gobject.PRIORITY_LOW)
+    priority = kwargs.pop("priority", GLib.PRIORITY_LOW)
     timeout = kwargs.pop("timeout", None)
     next = __wrap(func, funcid, args, kwargs).next
     if timeout:
-        src_id = gobject.timeout_add(timeout, next, priority=priority)
+        src_id = GLib.timeout_add(timeout, next, priority=priority)
     else:
-        src_id = gobject.idle_add(next, priority=priority)
+        src_id = GLib.idle_add(next, priority=priority)
     __routines[funcid] = (src_id, next, priority, timeout)
     print_d("Added copool function %r with id %r" % (func, funcid))
 
@@ -52,7 +52,7 @@ def add(func, *args, **kwargs):
 def remove(funcid):
     """Stop a registered routine."""
     if funcid in __routines:
-        gobject.source_remove(__routines[funcid][0])
+        GLib.source_remove(__routines[funcid][0])
         del(__routines[funcid])
     if funcid in __paused:
         del(__paused[funcid])
@@ -78,9 +78,9 @@ def resume(funcid):
         old_src_id, func, priority, timeout = __paused[funcid]
         del(__paused[funcid])
         if timeout:
-            src_id = gobject.timeout_add(timeout, func, priority=priority)
+            src_id = GLib.timeout_add(timeout, func, priority=priority)
         else:
-            src_id = gobject.idle_add(func, priority=priority)
+            src_id = GLib.idle_add(func, priority=priority)
         __routines[funcid] = (src_id, func, priority, timeout)
 
 

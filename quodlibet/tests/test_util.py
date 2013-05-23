@@ -491,8 +491,8 @@ class Tspawn(TestCase):
         self.failUnless(util.spawn(["ls", "."], stdout=True))
 
     def test_invalid(self):
-        import gobject
-        self.failUnlessRaises(gobject.GError, util.spawn, ["not a command"])
+        from gi.repository import GLib
+        self.failUnlessRaises(GLib.GError, util.spawn, ["not a command"])
 
     def test_types(self):
         self.failUnlessRaises(TypeError, util.spawn, [u"ls"])

@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
+from gi.repository import Gtk
 
 from quodlibet.util import tag
 
@@ -16,7 +16,7 @@ class _TagsCombo(object):
 
     def _fill_model(self, can_change):
         self.clear()
-        render = gtk.CellRendererText()
+        render = Gtk.CellRendererText()
         self.pack_start(render, True)
         self.add_attribute(render, 'text', 1)
 
@@ -37,14 +37,14 @@ class _TagsCombo(object):
     tag = property(__tag)
 
 
-class TagsComboBox(_TagsCombo, gtk.ComboBox):
+class TagsComboBox(Gtk.ComboBox, _TagsCombo):
     """A ComboBox containing a list of tags for the user to choose from.
     The tag names are presented both translated and untranslated.
 
     The 'tag' attribute is the currently chosen tag."""
 
     def __init__(self, can_change=None):
-        super(TagsComboBox, self).__init__(gtk.ListStore(str, str))
+        super(TagsComboBox, self).__init__(model=Gtk.ListStore(str, str))
         self._fill_model(can_change)
         self.set_active(0)
 
@@ -53,7 +53,7 @@ class TagsComboBox(_TagsCombo, gtk.ComboBox):
         return self.get_model()[iter][0]
 
 
-class TagsComboBoxEntry(_TagsCombo, gtk.ComboBoxEntry):
+class TagsComboBoxEntry(Gtk.ComboBox, _TagsCombo):
     """A ComboBoxEntry containing a list of tags for the user to choose from.
     The tag names are presented both translated and untranslated in the
     menu, but always untranslated when editing.
@@ -61,12 +61,15 @@ class TagsComboBoxEntry(_TagsCombo, gtk.ComboBoxEntry):
     The 'tag' attribute is the currently chosen tag."""
 
     def __init__(self, can_change=None):
-        super(TagsComboBoxEntry, self).__init__(gtk.ListStore(str, str), 0)
+        super(TagsComboBoxEntry, self).__init__(
+            model=Gtk.ListStore(str, str),
+            entry_text_column=0,
+            has_entry=True)
         self._fill_model(can_change)
 
     def _fill_model(self, can_change):
         super(TagsComboBoxEntry, self)._fill_model(can_change)
-        comp = gtk.EntryCompletion()
+        comp = Gtk.EntryCompletion()
         comp.set_model(self.get_model())
         comp.set_text_column(0)
         self.get_child().set_completion(comp)

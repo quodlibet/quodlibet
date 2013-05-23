@@ -23,8 +23,9 @@ import cPickle as pickle
 import os
 import shutil
 import threading
-import gobject
 from UserDict import DictMixin
+
+from gi.repository import GObject
 
 from quodlibet.formats import MusicFile
 from quodlibet.parse import Query
@@ -35,7 +36,7 @@ from quodlibet import const
 from quodlibet.util.dprint import print_d, print_w
 
 
-class Library(gobject.GObject, DictMixin):
+class Library(GObject.GObject, DictMixin):
     """A Library contains useful objects.
 
     The only required method these objects support is a .key
@@ -47,9 +48,9 @@ class Library(gobject.GObject, DictMixin):
     """
 
     __gsignals__ = {
-        'changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
-        'removed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
-        'added': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (object,)),
+        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        'removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        'added': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     librarian = None

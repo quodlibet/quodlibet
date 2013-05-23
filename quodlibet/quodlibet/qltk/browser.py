@@ -4,8 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import config
 from quodlibet import util
@@ -23,16 +22,17 @@ class LibraryBrowser(Window, PersistentWindowMixin):
         self.enable_window_tracking("browser_" + Kind.__name__)
         self.set_border_width(6)
         self.set_title(Kind.name + " - Quod Libet")
-        self.add(gtk.VBox(spacing=6))
+        self.add(Gtk.VBox(spacing=6))
 
         view = SongList(library, update=True)
+        view.info.connect("changed", self.__set_time)
         self.add_accel_group(view.accelerators)
         self.songlist = view
 
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
 
         self.browser = browser = Kind(library, False)
         if browser.reordered:
@@ -43,20 +43,20 @@ class LibraryBrowser(Window, PersistentWindowMixin):
             self.add_accel_group(browser.accelerators)
 
         self.__container = browser.pack(sw)
-        self.get_child().pack_start(self.__container)
+        self.get_child().pack_start(self.__container, True, True, 0)
 
-        self.__statusbar = gtk.Label()
+        self.__statusbar = Gtk.Label()
         self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
-        self.__statusbar.set_ellipsize(pango.ELLIPSIZE_START)
-        self.get_child().pack_end(self.__statusbar, expand=False)
+        self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
+        self.get_child().pack_end(self.__statusbar, False, True, 0)
 
         browser.connect('songs-selected', self.__browser_cb)
         browser.finalize(False)
         view.connect('popup-menu', self.__menu, library)
         view.connect('drag-data-received', self.__drag_data_recv)
         view.connect('row-activated', self.__enqueue)
-        view.get_selection().connect('changed', self.__set_time)
+
         if browser.headers is not None:
             view.connect('columns-changed', self.__cols_changed, browser)
             self.__cols_changed(view, browser)
@@ -87,7 +87,6 @@ class LibraryBrowser(Window, PersistentWindowMixin):
             bg = background_filter()
             if bg:
                 songs = filter(bg, songs)
-        self.__set_time(songs=songs)
         self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column):
@@ -116,17 +115,12 @@ class LibraryBrowser(Window, PersistentWindowMixin):
         header = col.header_name
         menu = view.Menu(header, self.browser, library)
         if menu is not None:
-            view.popup_menu(menu, 0, gtk.get_current_event_time())
+            view.popup_menu(menu, 0, Gtk.get_current_event_time())
         return True
 
-    def __set_time(self, *args, **kwargs):
-        statusbar = self.__statusbar
-        songs = kwargs.get("songs") or self.songlist.get_selected_songs()
-        if "songs" not in kwargs and len(songs) <= 1:
-            songs = self.songlist.get_songs()
-
+    def __set_time(self, info, songs):
         i = len(songs)
-        length = sum([song.get("~#length", 0) for song in songs])
+        length = sum(song.get("~#length", 0) for song in songs)
         t = self.browser.statusbar(i) % {
             'count': i, 'time': util.format_time_long(length)}
-        statusbar.set_text(t)
+        self.__statusbar.set_text(t)

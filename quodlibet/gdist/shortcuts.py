@@ -40,7 +40,7 @@ class build_shortcuts(Command):
         self.mkpath(basepath)
         for shortcut in self.shortcuts:
             if os.path.exists(shortcut + ".in"):
-                fullpath = os.path.join(basepath, shortcut)
+                fullpath = os.path.join(basepath, os.path.basename(shortcut))
                 self.__check_po()
                 if newer(shortcut + ".in", fullpath):
                     self.spawn(["intltool-merge",
@@ -88,6 +88,7 @@ class install_shortcuts(Command):
         srcpath = os.path.join(self.build_base, 'share', 'applications')
         self.mkpath(basepath)
         for shortcut in self.shortcuts:
+            shortcut = os.path.basename(shortcut)
             fullsrc = os.path.join(srcpath, shortcut)
             fullpath = os.path.join(basepath, shortcut)
             self.copy_file(fullsrc, fullpath)

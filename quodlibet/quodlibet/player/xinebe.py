@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gobject
+from gi.repository import GLib
 
 from quodlibet import config
 from quodlibet.player import PlayerError
@@ -121,11 +121,11 @@ class XinePlaylistPlayer(BasePlayer):
     def _event_listener(self, user_data, event):
         event = event.contents
         if event.type == XINE_EVENT_UI_PLAYBACK_FINISHED:
-            gobject.idle_add(self._playback_finished,
-                priority=gobject.PRIORITY_HIGH)
+            GLib.idle_add(self._playback_finished,
+                priority=GLib.PRIORITY_HIGH)
         elif event.type == XINE_EVENT_UI_SET_TITLE:
-            gobject.idle_add(self._update_metadata,
-                priority=gobject.PRIORITY_HIGH)
+            GLib.idle_add(self._update_metadata,
+                priority=GLib.PRIORITY_HIGH)
         elif event.type == XINE_EVENT_UI_MESSAGE:
             from ctypes import POINTER, cast, string_at, addressof
             msg = cast(event.data, POINTER(xine_ui_message_data_t)).contents
@@ -134,7 +134,7 @@ class XinePlaylistPlayer(BasePlayer):
                     message = string_at(addressof(msg) + msg.explanation)
                 else:
                     message = "xine error %s" % msg.type
-                gobject.idle_add(self._error, message)
+                GLib.idle_add(self._error, message)
         return True
 
     def do_set_property(self, property, v):
@@ -236,7 +236,7 @@ class XinePlaylistPlayer(BasePlayer):
         super(XinePlaylistPlayer, self).setup(playlist, song, seek_pos)
         # xine's declining to seek so soon after startup; try again in 100ms
         if seek_pos:
-            gobject.timeout_add(100, self.seek, seek_pos)
+            GLib.timeout_add(100, self.seek, seek_pos)
 
     @property
     def eq_bands(self):
