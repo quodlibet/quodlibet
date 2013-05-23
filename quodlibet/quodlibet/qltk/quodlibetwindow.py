@@ -444,7 +444,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
              None, None, self.open_chooser),
             ('AddLocation', Gtk.STOCK_ADD, _('_Add a Location...'),
              None, None, self.open_location),
-            ('BrowseLibrary', Gtk.STOCK_FIND, _('_Browse Library'), ""),
+            ('BrowseLibrary', Gtk.STOCK_FIND, _('Open _Browser'), ""),
             ("Preferences", Gtk.STOCK_PREFERENCES, None, None, None,
              self.__preferences),
             ("Plugins", Gtk.STOCK_EXECUTE, _("_Plugins"), None, None,
