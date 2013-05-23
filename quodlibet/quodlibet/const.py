@@ -63,7 +63,7 @@ LIBRARY_SAVE_PERIOD_SECONDS = 15 * 60
 DEFAULT_RATING = 0.5
 
 # entry point for the user guide / wiki
-BRANCH_NAME = "pygobject-port"
+BRANCH_NAME = "default"
 DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/%s"
 DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "default" else "latest"
 ONLINE_HELP = DOCS_BASE_URL + "/guide/index.html"
