@@ -101,6 +101,23 @@ def _gtk_init(icon=None):
 
     from gi.repository import Gtk, GObject, GLib
 
+    # We don't depend on Gst overrides, so make sure it's initialized.
+    try:
+        gi.require_version("Gst", "1.0")
+        from gi.repository import Gst
+    except (ValueError, ImportError):
+        pass
+    else:
+        if not Gst.is_initialized():
+            try:
+                ok, argv = Gst.init_check(sys.argv)
+            except GLib.GError:
+                print_e("Failed to initialize GStreamer")
+                # Uninited Gst segfaults: make sure no one can use it
+                sys.modules["gi.repository.Gst"] = None
+            else:
+                sys.argv = argv
+
     # some code depends on utf-8 default encoding (pygtk used to set it)
     reload(sys)
     sys.setdefaultencoding("utf-8")

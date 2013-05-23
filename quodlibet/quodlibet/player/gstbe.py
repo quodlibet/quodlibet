@@ -14,11 +14,6 @@ except ValueError, e:
 
 from gi.repository import Gtk, Gst, GLib, GstPbutils
 
-import sys
-inited, sys.argv = Gst.init_check(sys.argv)
-if not inited:
-    raise ImportError("GStreamer init failed")
-
 import os
 import threading
 
