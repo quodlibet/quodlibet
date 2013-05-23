@@ -77,7 +77,7 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         if idx >= len(self.remote_album):
             cell.set_property('text', '')
         else:
-            cell.set_property('text', idx + 1)
+            cell.set_property('text', str(idx + 1))
 
     def __title_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
