@@ -121,7 +121,7 @@ class LyricsPane(Gtk.VBox):
             print_w(err.strerror.decode(const.ENCODING, "replace"))
         else:
             start, end = buffer.get_bounds()
-            f.write(buffer.get_text(start, end))
+            f.write(buffer.get_text(start, end, True))
             f.close()
         delete.set_sensitive(True)
         save.set_sensitive(False)
