@@ -403,11 +403,13 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         rows.append((Gtk.Label(label=_("Library path:")), ve))
 
         for (row, (label, entry)) in enumerate(rows):
-            table.attach(label, 0, 1, row, row + 1)
+            label.set_alignment(0.0, 0.5)
+            table.attach(label, 0, 1, row, row + 1,
+                         xoptions=Gtk.AttachOptions.FILL)
             table.attach(entry, 1, 2, row, row + 1)
 
         # Add verify button
-        button = Gtk.Button(_("_Verify settings"))
+        button = Gtk.Button(_("_Verify settings"), use_underline=True)
         button.set_sensitive(cls.server is not None)
         button.connect('clicked', cls.check_settings)
         table.attach(button, 0, 2, row + 1, row + 2)

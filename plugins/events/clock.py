@@ -93,6 +93,7 @@ class Alarm(EventPlugin):
         entries = []
         for i in range(7):
             e = ValidatingEntry(Alarm.is_valid_time)
+            e.set_size_request(100, -1)
             e.set_text(self._times[i])
             e.set_max_length(5)
             e.set_width_chars(6)

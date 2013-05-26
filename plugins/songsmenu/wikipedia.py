@@ -34,9 +34,9 @@ class WikiSearch(object):
         e.set_width_chars(3)
         e.set_text(config.get('plugins', __name__))
         e.connect('changed', self.changed)
-        hb.pack_start(Gtk.Label("Search at http://"), True, True, 0)
+        hb.pack_start(Gtk.Label("Search at http://"), False, True, 0)
         hb.pack_start(e, False, True, 0)
-        hb.pack_start(Gtk.Label(".wikipedia.org"), True, True, 0)
+        hb.pack_start(Gtk.Label(".wikipedia.org"), False, True, 0)
         hb.show_all()
         return hb
     PluginPreferences = classmethod(PluginPreferences)

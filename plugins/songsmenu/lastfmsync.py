@@ -14,7 +14,8 @@ from threading import Thread
 
 from gi.repository import Gtk, GLib
 
-from quodlibet import const, config, util
+from quodlibet import const, config, util, qltk
+from quodlibet.qltk.entry import UndoEntry
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 try:
@@ -270,13 +271,15 @@ class LastFMSync(SongsMenuPlugin):
         def entry_changed(entry):
             config.set('plugins', 'lastfmsync_username', entry.get_text())
 
+        label = Gtk.Label(label=_("_Username:"), use_underline=True)
+        entry = UndoEntry()
+        entry.set_text(config_get('username', ''))
+        entry.connect('changed', entry_changed)
+        label.set_mnemonic_widget(entry)
+
         hbox = Gtk.HBox()
-        hbox.set_spacing(8)
+        hbox.set_spacing(6)
+        hbox.pack_start(label, False, True, 0)
+        hbox.pack_start(entry, True, True, 0)
 
-        hbox.pack_start(Gtk.Label("Last.fm username:"), True, True, 0)
-        ent = Gtk.Entry()
-        ent.set_text(config_get('username', ''))
-        ent.connect('changed', entry_changed)
-        hbox.pack_start(ent, True, True, 0)
-
-        return hbox
+        return qltk.Frame(_("Account"), child=hbox)

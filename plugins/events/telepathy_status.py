@@ -13,6 +13,7 @@ from gi.repository import Gtk
 from quodlibet.parse._pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet import util
+from quodlibet import qltk
 
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
@@ -150,9 +151,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         vb.pack_start(hb, True, True, 0)
 
         # Frame
-        frame = Gtk.Frame(label=_("Status Patterns"))
-        frame.add(vb)
-        vb.set_border_width(9)
+        frame = qltk.Frame(_("Status Patterns"), child=vb)
         outer_vb.pack_start(frame, False, True, 0)
 
         return outer_vb

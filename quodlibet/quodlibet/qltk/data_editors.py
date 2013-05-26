@@ -90,7 +90,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         bbox.pack_start(close, True, True, 0)
         align = Gtk.Alignment(yalign=1.0, xscale=1.0)
         align.add(bbox)
-        vbox.pack_end(align, True, True, 0)
+        vbox.pack_end(align, False, True, 0)
 
         self.get_child().pack_start(vbox, True, True, 0)
         # Initialise
