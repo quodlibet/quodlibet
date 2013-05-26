@@ -6,12 +6,17 @@
 
 from gi.repository import Gtk, Gdk
 
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, gtk_version
 
 
 class _PopupSlider(Gtk.EventBox):
     # Based on the Rhythmbox volume control button; thanks to Colin Walters,
     # Richard Hult, Michael Fulbright, Miguel de Icaza, and Federico Mena.
+
+    # The button used to jump to the pointed value on the scale
+    SET_BUTTON = 2
+    if gtk_version >= (3, 8):
+        SET_BUTTON = 1
 
     def __init__(self, child=None, adj=None, req=None):
         super(_PopupSlider, self).__init__()
@@ -97,8 +102,11 @@ class _PopupSlider(Gtk.EventBox):
         v = hscale.get_value()
         if ev.direction in self.UP:
             v += adj.props.step_increment
-        else:
+        elif ev.direction in self.DOWN:
             v -= adj.props.step_increment
+        else:
+            # newer Gdk.ScrollDirection.SMOOTH
+            return
         v = min(adj.props.upper, max(adj.props.lower, v))
         hscale.set_value(v)
 
@@ -117,6 +125,8 @@ class _PopupSlider(Gtk.EventBox):
         Gdk.pointer_ungrab(event_time)
         Gdk.keyboard_ungrab(event_time)
         window.hide()
+        #gtk3.8 bug: https://bugzilla.gnome.org/show_bug.cgi?id=700185
+        window.unrealize()
 
 
 class HSlider(_PopupSlider):
@@ -124,6 +134,7 @@ class HSlider(_PopupSlider):
     _req = (200, -1)
     _adj = Gtk.Adjustment(0, 0, 0, 3, 15, 0)
     UP = [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]
+    DOWN = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
@@ -137,6 +148,7 @@ class VSlider(_PopupSlider):
     _req = (-1, 170)
     _adj = Gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0)
     UP = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
+    DOWN = [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         return ((x + (w - ww) // 2), y + h + pad)
