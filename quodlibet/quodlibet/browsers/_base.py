@@ -143,32 +143,15 @@ class Browser(Filter):
     # Whether the browser should appear in the Music->Browse menu.
     in_menu = True
 
-    # Packing options. False if the browser should be packed into the
-    # window's VBox with expand=False. A subclass of Paned to automatically
-    # pack the browser into the first and the MainSongList into the second
-    # pane. If you override the pack() method this will not be called.
-    expand = None
-
     # For custom packing, define a function that returns a Widget with the
-    # browser and MainSongList both packed into it. If you need
-    # a custom pack() method, you probably also need a custom unpack()
-    # method.
+    # browser and MainSongList both packed into it.
     def pack(self, songpane):
-        if self.expand is not None:
-            container = self.expand()
-            container.pack1(self, resize=True)
-            container.pack2(songpane, resize=True)
-        else:
-            container = Gtk.VBox(spacing=6)
-            container.pack_start(self, False, True, 0)
-            container.pack_start(songpane, True, True, 0)
-        return container
+        raise NotImplementedError
 
     # Unpack the browser and songlist when switching browsers in the main
     # window. The container will be automatically destroyed afterwards.
     def unpack(self, container, songpane):
-        container.remove(songpane)
-        container.remove(self)
+        raise NotImplementedError
 
     # If true, the global filter will be applied by MainSongList to
     # the songs returned.

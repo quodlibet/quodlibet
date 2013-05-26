@@ -37,6 +37,16 @@ class EmptyBar(Gtk.VBox, Browser):
     priority = 0
     in_menu = False
 
+    def pack(self, songpane):
+        container = Gtk.VBox(spacing=6)
+        container.pack_start(self, False, True, 0)
+        container.pack_start(songpane, True, True, 0)
+        return container
+
+    def unpack(self, container, songpane):
+        container.remove(songpane)
+        container.remove(self)
+
     def __init__(self, library, main):
         super(EmptyBar, self).__init__()
         self._text = ""

@@ -410,7 +410,6 @@ class VisibleUpdate(object):
 
 
 class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
-    expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
     __model = None
     __no_cover = None
@@ -420,6 +419,16 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     name = _("Album List")
     accelerated_name = _("_Album List")
     priority = 4
+
+    def pack(self, songpane):
+        container = qltk.RHPaned()
+        container.pack1(self, True, False)
+        container.pack2(songpane, True, False)
+        return container
+
+    def unpack(self, container, songpane):
+        container.remove(songpane)
+        container.remove(self)
 
     @classmethod
     def init(klass, library):

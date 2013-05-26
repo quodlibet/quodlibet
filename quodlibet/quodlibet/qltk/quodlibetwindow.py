@@ -724,9 +724,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     def __refresh_size(self):
         ssv = self.song_scroller.get_property('visible')
         qex = self.qexpander.get_property('visible')
-        brv = self.browser.expand
 
-        if (not brv and not (ssv or qex)):
+        if not ssv and not qex:
             width, height = self.get_size()
             height = self.size_request().height
             self.resize(width, height)

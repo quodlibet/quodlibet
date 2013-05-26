@@ -32,7 +32,6 @@ from quodlibet.util.uri import URI
 class FileSystem(Browser, Gtk.HBox):
     __gsignals__ = Browser.__gsignals__
 
-    expand = qltk.RHPaned
     __library = None
 
     name = _("File System")
@@ -40,6 +39,16 @@ class FileSystem(Browser, Gtk.HBox):
     priority = 10
 
     TARGET_QL, TARGET_EXT = range(1, 3)
+
+    def pack(self, songpane):
+        container = qltk.RHPaned()
+        container.pack1(self, True, False)
+        container.pack2(songpane, True, False)
+        return container
+
+    def unpack(self, container, songpane):
+        container.remove(songpane)
+        container.remove(self)
 
     @classmethod
     def __added(klass, library, songs):

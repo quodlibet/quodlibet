@@ -139,7 +139,14 @@ class EditableUndo(object):
         self.__uninhibit()
 
 
-class UndoEntry(Gtk.Entry, EditableUndo):
+class Entry(Gtk.Entry):
+    def do_get_preferred_width(self):
+        # 150 min width since GTK+3.2 is way too much
+        minimum, natural = Gtk.Entry.do_get_preferred_width(self)
+        return (30, natural)
+
+
+class UndoEntry(Entry, EditableUndo):
     def __init__(self, *args):
         super(UndoEntry, self).__init__(*args)
         self.set_undo(True)

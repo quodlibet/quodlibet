@@ -218,13 +218,22 @@ class AudioFeeds(Browser, Gtk.VBox):
 
     headers = ("title artist performer ~people album date website language "
                "copyright organization license contact").split()
-    expand = qltk.RHPaned
 
     name = _("Audio Feeds")
     accelerated_name = _("_Audio Feeds")
     priority = 20
 
     __last_folder = const.HOME
+
+    def pack(self, songpane):
+        container = qltk.RHPaned()
+        container.pack1(self, True, False)
+        container.pack2(songpane, True, False)
+        return container
+
+    def unpack(self, container, songpane):
+        container.remove(songpane)
+        container.remove(self)
 
     @staticmethod
     def cell_data(col, render, model, iter, data):

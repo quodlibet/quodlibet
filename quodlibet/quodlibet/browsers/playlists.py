@@ -189,12 +189,21 @@ DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
 class Playlists(Gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
-    expand = qltk.RHPaned
 
     name = _("Playlists")
     accelerated_name = _("_Playlists")
     priority = 2
     replaygain_profiles = ["track"]
+
+    def pack(self, songpane):
+        container = qltk.RHPaned()
+        container.pack1(self, True, False)
+        container.pack2(songpane, True, False)
+        return container
+
+    def unpack(self, container, songpane):
+        container.remove(songpane)
+        container.remove(self)
 
     @classmethod
     def init(klass, library):

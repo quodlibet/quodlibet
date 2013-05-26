@@ -12,8 +12,6 @@ class TBrowser(TestCase):
 
     def test_defaults(self):
         self.failUnless(self.browser.background)
-        self.failIf(self.browser.expand)
-        self.failIf(self.browser.expand)
         self.failIf(self.browser.reordered)
         self.failIf(self.browser.headers)
         self.failUnless(self.browser.dynamic(None))

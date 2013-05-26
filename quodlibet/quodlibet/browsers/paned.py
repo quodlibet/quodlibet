@@ -681,11 +681,15 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
     selections in multiple tag pattern panes (e.g. Genre / People / Album ).
     It presents available values (and track counts) for each pane's tag"""
 
-    expand = qltk.RVPaned
-
     name = _("Paned Browser")
     accelerated_name = _("_Paned Browser")
     priority = 3
+
+    def pack(self, songpane):
+        container = qltk.RVPaned()
+        container.pack1(self, True, False)
+        container.pack2(songpane, True, False)
+        return container
 
     def set_all_panes(klass):
         for browser in klass.instances():

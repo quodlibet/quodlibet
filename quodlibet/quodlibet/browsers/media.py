@@ -212,7 +212,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         refresh.set_sensitive(False)
         hbox.pack_start(refresh, True, True, 0)
 
-        self.__eject_button = eject = Gtk.Button(_("_Eject"))
+        self.__eject_button = eject = Gtk.Button(_("_Eject"),
+                                                 use_underline=True)
         eject.set_image(
             Gtk.Image.new_from_icon_name("media-eject", Gtk.IconSize.BUTTON))
         eject.connect('clicked', self.__eject)
@@ -260,8 +261,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__statusbar.hide()
 
         self.__paned = paned = qltk.RHPaned()
-        paned.pack1(self)
-        paned.pack2(vbox)
+        paned.pack1(self, True, False)
+        paned.pack2(vbox, True, False)
         return paned
 
     def unpack(self, container, songpane):
@@ -355,7 +356,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
         menu.preseparate()
 
-        eject = Gtk.ImageMenuItem(_("_Eject"))
+        eject = Gtk.ImageMenuItem(_("_Eject"), use_underline=True)
         eject.set_image(
             Gtk.Image.new_from_icon_name("media-eject", Gtk.IconSize.MENU))
         eject.set_sensitive(

@@ -487,7 +487,6 @@ class CollectionView(AllTreeView):
 
 
 class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
-    expand = qltk.RHPaned
     __gsignals__ = Browser.__gsignals__
 
     name = _("Album Collection")
@@ -495,6 +494,16 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
     priority = 5
 
     __model = None
+
+    def pack(self, songpane):
+        container = qltk.RHPaned()
+        container.pack1(self, True, False)
+        container.pack2(songpane, True, False)
+        return container
+
+    def unpack(self, container, songpane):
+        container.remove(songpane)
+        container.remove(self)
 
     @classmethod
     def _init_model(klass, library):
