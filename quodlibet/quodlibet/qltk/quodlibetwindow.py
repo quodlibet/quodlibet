@@ -725,7 +725,19 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         ssv = self.song_scroller.get_property('visible')
         qex = self.qexpander.get_property('visible')
 
-        if not ssv and not qex:
+        if ssv or qex:
+            return
+
+        # Handle more later if needed..
+        if not isinstance(self.browser, Gtk.Box):
+            return
+
+        # If a child expands the browser will take the new space
+        for child in self.browser.get_children():
+            if self.browser.query_child_packing(child)[0]:
+                break
+        else:
+            # no expanding child, make the window smaller instead
             width, height = self.get_size()
             height = self.size_request().height
             self.resize(width, height)
