@@ -48,6 +48,8 @@ class ScrolledWindow(Gtk.ScrolledWindow):
 
         value = GObject.Value()
         value.init(GObject.TYPE_BOOLEAN)
+        # default to True: https://bugzilla.gnome.org/show_bug.cgi?id=701058
+        value.set_boolean(True)
         ctx.get_style_property("scrollbars-within-bevel", value)
         scroll_within = value.get_boolean()
         value.unset()
