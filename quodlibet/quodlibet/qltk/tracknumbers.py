@@ -108,9 +108,7 @@ class TrackNumbers(gtk.VBox):
     def __save_files(self, parent, model, library):
         win = WritingWindow(parent, len(model))
         was_changed = []
-        for row in model:
-            song = row[0]
-            track = row[2]
+        for song, track in [(r[0], r[2]) for r in model]:
             if song.get("tracknumber") == track:
                 win.step()
                 continue
