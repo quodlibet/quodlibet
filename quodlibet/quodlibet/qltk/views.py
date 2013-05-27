@@ -121,7 +121,7 @@ class TreeViewHints(Gtk.Window):
             return
         (render_offset, render_width), renderer = pos[-1]
 
-        if self.__current_renderer == renderer:
+        if self.__current_renderer == renderer and self.__current_path == path:
             return
         else:
             self.__undisplay()
@@ -208,9 +208,6 @@ class TreeViewHints(Gtk.Window):
         self.resize(w, h)
         self.move(x, y)
 
-        # Workaround for Gnome Shell. It sometimes ignores move/resize if
-        # we don't call unrealize.
-        self.unrealize()
         self.show()
 
     def __undisplay(self, *args):
