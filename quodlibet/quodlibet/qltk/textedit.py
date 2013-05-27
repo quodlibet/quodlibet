@@ -14,8 +14,10 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.parse import XMLFromPattern
 
 try:
+    import gi
+    gi.require_version("GtkSource", "3.0")
     from gi.repository import GtkSource
-except ImportError:
+except (ValueError, ImportError):
     TextView = Gtk.TextView
     TextBuffer = Gtk.TextBuffer
 else:

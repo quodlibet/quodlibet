@@ -98,6 +98,8 @@ def _gtk_init(icon=None):
     gi.require_version("Gdk", "3.0")
     gi.require_version("GObject", "2.0")
     gi.require_version("Pango", "1.0")
+    gi.require_version("GdkPixbuf", "2.0")
+    gi.require_version("Gio", "2.0")
 
     from gi.repository import Gtk, GObject, GLib
 

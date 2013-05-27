@@ -11,6 +11,9 @@
 
 from collections import namedtuple
 
+import gi
+gi.require_version("PangoCairo", "1.0")
+
 from gi.repository import Gtk, GObject, GLib
 from gi.repository import Gdk, GdkPixbuf
 from gi.repository import Pango, PangoCairo
