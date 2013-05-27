@@ -153,6 +153,7 @@ class TreeViewHints(Gtk.Window):
 
         # Use the renderer padding as label padding so the text offset matches
         render_xpad = renderer.get_property("xpad")
+        label.set_ellipsize(Pango.EllipsizeMode.NONE)
         label.set_padding(render_xpad, 0)
         # size_request makes sure the layout size got updated
         label.size_request()
