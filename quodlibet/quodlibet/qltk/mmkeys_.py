@@ -49,38 +49,6 @@ def init_dbus_mmkeys(window, player):
     return True
 
 
-def init_mmkeys(player):
-    try:
-        import mmkeys
-    except ImportError:
-        return False
-
-    global _keys # keep a reference, or it wont work
-    _keys = keys = mmkeys.MmKeys()
-    signals = {"mm_prev": "prev", "mm_next": "next", "mm_stop": "stop",
-               "mm_playpause": "play"}
-
-    keys_cb = lambda p, x, a: do_action(p, a)
-    for sig, action in signals.items():
-        keys.connect_object(sig, keys_cb, player, action)
-
-    return True
-
-
-def init_keybinder(player):
-    try:
-        import keybinder
-    except ImportError:
-        return False
-
-    signals = {"XF86AudioPrev": "prev", "XF86AudioNext": "next",
-               "XF86AudioStop": "stop", "XF86AudioPlay": "play"}
-    for sig, action in signals.items():
-        keybinder.bind(sig, do_action, player, action)
-
-    return True
-
-
 def init_pyhook(player):
     try:
         import pyHook
@@ -108,14 +76,6 @@ def init(window, player):
 
     if init_dbus_mmkeys(window, player):
         print_d("dbus mmkeys: ok")
-        return
-
-    if init_mmkeys(player):
-        print_d("mmkeys: ok")
-        return
-
-    if init_keybinder(player):
-        print_d("keybinder: ok")
         return
 
     if init_pyhook(player):
