@@ -73,7 +73,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             sw.set_shadow_type(Gtk.ShadowType.IN)
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
             sw.show_all()
-            paned.pack1(sw, shrink=True, resize=True)
+            paned.pack1(sw, shrink=False, resize=True)
 
         # Invisible selections behave a little strangely. So, when
         # handling this selection, there's a lot of if len(model) == 1
