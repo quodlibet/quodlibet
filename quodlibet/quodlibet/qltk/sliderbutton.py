@@ -15,7 +15,7 @@ class _PopupSlider(Gtk.EventBox):
 
     # The button used to jump to the pointed value on the scale
     SET_BUTTON = 2
-    if gtk_version >= (3, 8):
+    if gtk_version >= (3, 6):
         SET_BUTTON = 1
 
     def __init__(self, child=None, adj=None, req=None):
