@@ -2,6 +2,7 @@
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2008, 2011, 2012 Vasiliy Faronov <vfaronov@gmail.com>
+#                           2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2
@@ -27,7 +28,6 @@ from quodlibet.plugins.events import EventPlugin
 
 
 class ViewLyrics(EventPlugin):
-
     """The plugin for viewing lyrics in the main window."""
 
     PLUGIN_ID = 'View Lyrics'
@@ -58,9 +58,6 @@ class ViewLyrics(EventPlugin):
         self.expander.add(self.scrolled_window)
         self.scrolled_window.show()
 
-        # Newer Quod Libet, we can't pack into songpane.
-        # So we pack into the window itself, throwing in some padding.
-        self.expander.set_border_width(6)
         app.window.get_child().pack_start(self.expander, expand=False,
                                       fill=True)
 
