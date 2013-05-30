@@ -12,7 +12,7 @@ extensions = [".spc"]
 
 
 class SPCFile(AudioFile):
-    format = "SPC700 DSP Data"
+    format = "SPC700"
 
     def __init__(self, filename):
         h = open(filename, "rb")

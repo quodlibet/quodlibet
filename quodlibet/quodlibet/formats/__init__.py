@@ -17,10 +17,11 @@ from quodlibet.const import MinVersions
 mimes = set()
 _infos = {}
 modules = []
+names = []
 
 
 def init():
-    global mimes, _infos, modules
+    global mimes, _infos, modules, names
 
     import mutagen
     if mutagen.version < MinVersions.MUTAGEN:
@@ -42,6 +43,7 @@ def init():
         if format.extensions:
             for type_ in format.types:
                 mimes.update(type_.mimes)
+                names.append(type_.format)
             modules.append(name.split(".")[-1])
 
         # Migrate pre-0.16 library, which was using an undocumented "feature".
@@ -51,6 +53,7 @@ def init():
             sys.modules[name.split(".", 1)[1]] = format
 
     modules.sort()
+    names.sort()
 
     if not _infos:
         raise SystemExit("No formats found!")
