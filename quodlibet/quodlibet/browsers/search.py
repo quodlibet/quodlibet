@@ -161,7 +161,7 @@ class SearchBar(EmptyBar):
         if limit:
             prefs = SearchBar.PreferencesButton(sbb)
             sbb.pack_start(prefs, False, True, 0)
-        align = (Alignment(sbb, left=6, right=3, top=3) if main
+        align = (Alignment(sbb, left=3, right=3, top=3) if main
                  else Alignment(sbb))
         self.pack_start(align, False, True, 0)
         self.connect('destroy', self.__destroy)
