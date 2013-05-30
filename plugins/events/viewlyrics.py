@@ -28,7 +28,6 @@ from quodlibet.plugins.events import EventPlugin
 
 
 class ViewLyrics(EventPlugin):
-
     """The plugin for viewing lyrics in the main window."""
 
     PLUGIN_ID = 'View Lyrics'
@@ -59,9 +58,6 @@ class ViewLyrics(EventPlugin):
         self.expander.add(self.scrolled_window)
         self.scrolled_window.show()
 
-        # Newer Quod Libet, we can't pack into songpane.
-        # So we pack into the window itself, throwing in some padding.
-        self.expander.set_border_width(6)
         app.window.get_child().pack_start(self.expander, False, True, 0)
 
         # We don't show the expander here because it will be shown when a song
