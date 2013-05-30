@@ -1,4 +1,5 @@
 from tests import TestCase, add
+from helper import visible
 
 from gi.repository import Gtk
 
@@ -49,13 +50,49 @@ class Button(TestCase):
         self.failUnless(x.Button("foo", Gtk.STOCK_FIND))
 add(Button)
 
-class RHPaned(TestCase):
-    def test_ctr(self): x.RHPaned().destroy()
+
+class RPaned(object):
+    Kind = None
+
+    def test_ctr(self):
+        self.Kind().destroy()
+
+    def test_pre_alloc(self):
+        p = self.Kind()
+        p.set_relative(0.25)
+        self.failUnlessEqual(p.get_relative(), 0.25)
+
+    def test_visible_no_setup(self):
+        p = self.Kind()
+        with visible(p):
+            pass
+
+    def test_visible_pre_setup_children(self):
+        p = self.Kind()
+        p.pack1(Gtk.Button())
+        p.pack2(Gtk.Button())
+        p.set_relative(0.75)
+        self.failUnlessEqual(p.get_relative(), 0.75)
+        with visible(p, width=200, height=200) as p:
+            self.failUnlessAlmostEqual(p.get_relative(), 0.75, 2)
+
+    def test_visible_pre_setup_empty(self):
+        p = self.Kind()
+        p.set_relative(0.75)
+        self.failUnlessEqual(p.get_relative(), 0.75)
+        with visible(p) as p:
+            self.failUnlessEqual(p.get_relative(), 0.75)
+
+
+class RHPaned(TestCase, RPaned):
+    Kind = x.RHPaned
 add(RHPaned)
 
-class RVPaned(TestCase):
-    def test_ctr(self): x.RVPaned().destroy()
+
+class RVPaned(TestCase, RPaned):
+    Kind = x.RVPaned
 add(RVPaned)
+
 
 class TAlignment(TestCase):
     def test_ctr(self):

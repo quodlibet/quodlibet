@@ -194,28 +194,63 @@ def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
     return button
 
 
-class RPaned(object):
+class RPaned(Gtk.Paned):
     """A Paned that supports relative (percentage) width/height setting."""
 
-    def get_relative(self):
-        """Return the relative position of the separator, [0..1]."""
-        if self.get_property('max-position') > 0:
-            return (float(self.get_position()) /
-                    self.get_property('max-position'))
-        else:
-            return 0.5
+    ORIENTATION = None
+
+    def __init__(self, *args, **kwargs):
+        if self.ORIENTATION is not None:
+            kwargs["orientation"] = self.ORIENTATION
+        super(RPaned, self).__init__(*args, **kwargs)
+        # before first alloc: save value in relative and set on the first alloc
+        # after the first alloc: use the normal properties
+        self.__alloced = False
+        self.__relative = None
 
     def set_relative(self, v):
         """Set the relative position of the separator, [0..1]."""
-        return self.set_position(int(v * self.get_property('max-position')))
+
+        if self.__alloced:
+            max_pos = self.get_property('max-position')
+            if not max_pos:
+                # no children
+                self.__relative = v
+                return
+            self.set_position(int(v * self.get_property('max-position')))
+        else:
+            self.__relative = v
+
+    def get_relative(self):
+        """Return the relative position of the separator, [0..1]."""
+
+        if self.__alloced:
+            max_pos = self.get_property('max-position')
+            if not max_pos:
+                # no children
+                return self.__relative
+            return (float(self.get_position()) / max_pos)
+        elif self.__relative is not None:
+            return self.__relative
+        else:
+            # before first alloc and set_relative not called
+            return 0.5
+
+    def do_size_allocate(self, *args):
+        ret = Gtk.HPaned.do_size_allocate(self, *args)
+        if not self.__alloced and self.__relative is not None:
+            self.__alloced = True
+            self.set_relative(self.__relative)
+        self.__alloced = True
+        return ret
 
 
-class RHPaned(RPaned, Gtk.HPaned):
-    pass
+class RHPaned(RPaned):
+    ORIENTATION = Gtk.Orientation.HORIZONTAL
 
 
-class RVPaned(RPaned, Gtk.VPaned):
-    pass
+class RVPaned(RPaned):
+    ORIENTATION = Gtk.Orientation.VERTICAL
 
 
 def ClearButton(entry=None):
