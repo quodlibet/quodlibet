@@ -136,9 +136,17 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         super(GStreamerPlayer, self).__init__()
         self.version_info = "GStreamer: %s" % fver(Gst.version())
         self._librarian = librarian
+        self._pipeline_desc = None
 
     def destroy(self):
         self.__destroy_pipeline()
+
+    @property
+    def name(self):
+        name = "GStreamer"
+        if self._pipeline_desc:
+            name += " (%s)" % self._pipeline_desc
+        return name
 
     def __init_pipeline(self):
         """Creates a gstreamer pipeline with the following elements
@@ -157,7 +165,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             return True
 
         pipeline = config.get("player", "gst_pipeline")
-        pipeline, self.name = GStreamerSink(pipeline)
+        pipeline, self._pipeline_desc = GStreamerSink(pipeline)
         if not pipeline:
             return False
 
