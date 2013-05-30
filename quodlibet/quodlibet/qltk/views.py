@@ -162,6 +162,12 @@ class TreeViewHints(Gtk.Window):
         # layout offset includes the left padding, so add one more
         label_width += render_xpad
 
+        # CellRenderer width is too large if it's the last one in a column.
+        # Use cell_area width as a maximum and limit render_width.
+        max_width = view.get_cell_area(path, col).width
+        if render_width + render_offset > max_width:
+            render_width = max_width - render_offset
+
         # don't display if it doesn't need expansion
         if label_width < render_width:
             return
