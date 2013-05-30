@@ -166,9 +166,6 @@ class TreeViewHints(Gtk.Window):
         if label_width < render_width:
             return
 
-        # the column header height
-        header_height = view.get_bin_window().get_position()[1]
-
         dummy, ox, oy = view.get_window().get_origin()
 
         # save for adjusting passthrough events
@@ -176,7 +173,9 @@ class TreeViewHints(Gtk.Window):
 
         # final window coordinates/size
         x = ox + area.x + render_offset
-        y = oy + header_height + area.y
+        y = oy + area.y
+        x, y = view.convert_bin_window_to_widget_coords(x, y)
+
         w = label_width
         h = area.height
 
