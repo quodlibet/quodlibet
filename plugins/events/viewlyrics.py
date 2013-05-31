@@ -84,7 +84,7 @@ class ViewLyrics(EventPlugin):
 
     def key_press_event_cb(self, widget, event):
         """Handles up/down "key-press-event" in the lyrics view."""
-        adj = self.scrolled_window.get_vadjustment()
+        adj = self.scrolled_window.get_vadjustment().props
         if event.keyval == Gdk.KEY_Up:
             adj.value = max(adj.value - adj.step_increment, adj.lower)
         elif event.keyval == Gdk.KEY_Down:
