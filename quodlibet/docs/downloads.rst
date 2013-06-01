@@ -66,13 +66,11 @@ Repo key::
 
 Stable Repos:
 
-  * `Fedora 16 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_16/>`__
   * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_17/>`__
   * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_18/>`__
 
 Unstable Repo:
 
-  * `Fedora 16 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_16/>`__
   * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_17/>`__
   * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_18/>`__
 
