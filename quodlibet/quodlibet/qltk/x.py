@@ -217,7 +217,7 @@ class RPaned(Gtk.Paned):
                 # no children
                 self.__relative = v
                 return
-            self.set_position(int(v * self.get_property('max-position')))
+            self.set_position(int(v * max_pos))
         else:
             self.__relative = v
 
@@ -241,6 +241,8 @@ class RPaned(Gtk.Paned):
         if not self.__alloced and self.__relative is not None:
             self.__alloced = True
             self.set_relative(self.__relative)
+            # call again so the children get alloced
+            ret = Gtk.HPaned.do_size_allocate(self, *args)
         self.__alloced = True
         return ret
 
