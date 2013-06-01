@@ -20,7 +20,8 @@ class BurnCD(SongsMenuPlugin):
 
     burn_programs = {
         'K3b': ['k3b', '--audiocd'],
-        'Brasero': ['brasero', '--audio']
+        'Brasero': ['brasero', '--audio'],
+        'Xfburn': ['xfburn', '--audio-composition'],
     }
 
     def __init__(self, *args, **kwargs):
