@@ -145,9 +145,9 @@ class TrackNumbers(Gtk.VBox):
         total = total.get_value_as_int()
         for row in model:
             if total:
-                s = "%d/%d" % (row.path[0] + start, total)
+                s = "%d/%d" % (row.path.get_indices()[0] + start, total)
             else:
-                s = str(row.path[0] + start)
+                s = str(row.path.get_indices()[0] + start)
             row[2] = s
         save.set_sensitive(True)
         revert.set_sensitive(True)

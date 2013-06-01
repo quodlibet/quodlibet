@@ -53,7 +53,7 @@ class SortCriterionBox(Gtk.ComboBox):
     def tag(self):
         iter_ = self.get_active_iter()
         row = self.get_model()[iter_]
-        if len(row.path) == 1:
+        if len(row.path.get_indices()) == 1:
             return
         return row[0]
 

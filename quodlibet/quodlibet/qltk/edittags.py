@@ -841,7 +841,8 @@ class EditTags(Gtk.VBox):
             clipboard = Gtk.Clipboard(display, clipboardname)
             for rend in col.get_cell_renderers():
                 if rend.get_property('editable'):
-                    clipboard.request_text(self.__paste, (rend, path[0]))
+                    clipboard.request_text(self.__paste,
+                                           (rend, path.get_indices()[0]))
                     return True
             else:
                 return False
