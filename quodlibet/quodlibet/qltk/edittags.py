@@ -452,12 +452,14 @@ class EditTags(Gtk.VBox):
         bbox2.set_layout(Gtk.ButtonBoxStyle.END)
         revert = (Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
                   if self._REVERT_BUTTON_KEY == self._REVERT_BUTTON_TEXT
-                  else Gtk.Button(label=self._REVERT_BUTTON_TEXT))
+                  else Gtk.Button(label=self._REVERT_BUTTON_TEXT,
+                                  use_underline=True))
         revert.set_sensitive(False)
         # Save button.
         save = (Gtk.Button(stock=Gtk.STOCK_SAVE)
                 if self._SAVE_BUTTON_TEXT == self._SAVE_BUTTON_KEY
-                else Gtk.Button(label=self._SAVE_BUTTON_TEXT))
+                else Gtk.Button(label=self._SAVE_BUTTON_TEXT,
+                                use_underline=True))
         save.set_sensitive(False)
         self.save = save
         bbox2.pack_start(revert, True, True, 0)
