@@ -452,10 +452,10 @@ class BaseView(Gtk.TreeView):
                 if not first:
                     selection.select_path(row.path)
                     continue
+                self.set_cursor(row.path)
                 if scroll:
                     self.scroll_to_cell(row.path, use_align=True,
                                         row_align=0.5)
-                self.set_cursor(row.path)
                 first = False
                 if one:
                     break
