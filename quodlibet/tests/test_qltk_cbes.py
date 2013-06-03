@@ -36,6 +36,27 @@ class TComboBoxEntrySave(TestCase):
             self.failUnlessEqual(row1[1], row2[1])
             self.failUnlessEqual(row1[2], row2[2])
 
+    def test_text_changed_signal(self):
+        called = [0]
+
+        def cb(*args):
+            called[0] += 1
+
+        def get_count():
+            c = called[0]
+            called[0] = 0
+            return c
+
+        self.cbes.connect("text-changed", cb)
+        entry = self.cbes.get_child()
+        entry.set_text("foo")
+        self.failUnlessEqual(get_count(), 1)
+        self.cbes.prepend_text("bar")
+        # in case the model got changed but the entry is still the same
+        # the text-changed signal should not be triggered
+        self.failUnlessEqual(entry.get_text(), "foo")
+        self.failUnlessEqual(get_count(), 0)
+
     def test_shared_model(self):
         self.cbes.prepend_text("a test")
         self.test_equivalence()
