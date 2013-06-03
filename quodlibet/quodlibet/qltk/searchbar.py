@@ -57,7 +57,7 @@ class SearchBarBox(gtk.HBox):
 
         self.connect('destroy', lambda w: w.__remove_timeout())
 
-        self.__sig = combo.connect('changed', self.__text_changed)
+        self.__sig = combo.connect('text-changed', self.__text_changed)
 
         entry.connect('clear', self.__filter_changed)
         entry.connect('backspace', self.__text_changed)

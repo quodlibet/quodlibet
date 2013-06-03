@@ -8,6 +8,7 @@
 import os
 
 import gtk
+import gobject
 import pango
 
 from quodlibet import qltk
@@ -237,6 +238,12 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
     and can save itself to (and load itself from) a filename or file-like."""
 
+    # gets emited if the text entry changes
+    # mainly to filter out model changes that don't have any effect
+    __gsignals__ = {
+        'text-changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    }
+
     __models = {}
     __last = ""
 
@@ -288,7 +295,10 @@ class ComboBoxEntrySave(gtk.ComboBoxEntry):
                 self.set_active(-1)
             else:
                 self.__focus_entry()
-        self.__last = self.get_child().get_text()
+        new = self.get_child().get_text()
+        if new != self.__last:
+            self.emit("text-changed")
+        self.__last = new
 
     def __focus_entry(self):
         self.get_child().grab_focus()
