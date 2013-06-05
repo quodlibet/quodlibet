@@ -1,5 +1,21 @@
-2.5.91 (???)
-------------
+2.9.92 (2013-06-05) - alternatetimelinemetarhyme
+------------------------------------------------
+
+General
+ * Fix the main song list resetting while working with multiple browsers
+ * Fix various widget redraw/positioning/jumping problems
+ * Various fixes regarding GTK+3.6+ (seek slider, tv hints)
+ * Nicer about dialog
+ * Fix one-click ratings [1170]
+ * Fix various crashes with PyGObject3.2 [1172]
+
+Plugins
+ * New GNOME Shell Search Provider plugin [1147]
+ * Support Xfburn in the CD burn plugin [1173]
+ * viewlyrics plugin: Fix key handling [1171]
+ * Fix musicbrainz plugin [1162]
+ * Fix replaygain plugin in Ex Falso [1163]
+ * Fix fingerprint plugin [1174]
 
 2.9.91 (2013-05-13) - welcome to a place where incredibly terrible things can happen to you and your friends for no reason!
 ---------------------------------------------------------------------------------------------------------------------------

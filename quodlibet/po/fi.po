@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-13 11:45+0200\n"
+"POT-Creation-Date: 2013-06-05 19:59+0200\n"
 "PO-Revision-Date: 2007-04-28 16:55+0300\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -18,13 +18,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../exfalso.desktop.in.h:1
+#: ../data/exfalso.desktop.in.h:1
 msgid "Audio tag editor"
 msgstr "Äänitiedostojen tunniste-editori"
 
-#: ../exfalso.desktop.in.h:2
+#: ../data/exfalso.desktop.in.h:2
 msgid "Edit tags in your audio files"
 msgstr "Muokkaa äänitiedostojesi tunnisteita"
+
+#: ../data/quodlibet.desktop.in.h:1
+msgid "Music Player"
+msgstr "Musiikkisoitin"
+
+#: ../data/quodlibet.desktop.in.h:2
+msgid "Listen to, browse, or edit your audio collection"
+msgstr "Kuuntele, selaa tai muokkaa äänikokoelmaasi"
+
+#: ../data/quodlibet.desktop.in.h:3
+#, fuzzy
+msgid "Play/Pause"
+msgstr "Soitin"
+
+#: ../data/quodlibet.desktop.in.h:4
+msgid "Next"
+msgstr ""
+
+#: ../data/quodlibet.desktop.in.h:5
+#, fuzzy
+msgid "Previous"
+msgstr "_Esikatsele"
 
 #: ../exfalso.py:27
 msgid "an audio tag editor"
@@ -230,7 +252,7 @@ msgstr[0] "%d levy"
 msgstr[1] "%d levyä"
 
 #: ../quodlibet/browsers/albums.py:154 ../quodlibet/browsers/albums.py:159
-#: ../quodlibet/qltk/tagsfrompath.py:155 ../quodlibet/qltk/textedit.py:86
+#: ../quodlibet/qltk/tagsfrompath.py:155 ../quodlibet/qltk/textedit.py:88
 #: ../quodlibet/util/__init__.py:690
 msgid "Invalid pattern"
 msgstr "Virheellinen hakukaava"
@@ -240,20 +262,20 @@ msgstr "Virheellinen hakukaava"
 msgid "_Title"
 msgstr "Nimi"
 
-#: ../quodlibet/browsers/albums.py:181 ../quodlibet/qltk/prefs.py:40
+#: ../quodlibet/browsers/albums.py:181 ../quodlibet/qltk/prefs.py:42
 msgid "_Artist"
 msgstr "_Artisti"
 
-#: ../quodlibet/browsers/albums.py:182 ../quodlibet/qltk/prefs.py:45
+#: ../quodlibet/browsers/albums.py:182 ../quodlibet/qltk/prefs.py:47
 msgid "_Date"
 msgstr "_Päivämäärä"
 
-#: ../quodlibet/browsers/albums.py:183 ../quodlibet/qltk/prefs.py:44
+#: ../quodlibet/browsers/albums.py:183 ../quodlibet/qltk/prefs.py:46
 #, fuzzy
 msgid "_Genre"
 msgstr "tyylilaji"
 
-#: ../quodlibet/browsers/albums.py:184 ../quodlibet/qltk/prefs.py:49
+#: ../quodlibet/browsers/albums.py:184 ../quodlibet/qltk/prefs.py:51
 #: ../quodlibet/qltk/ratingsmenu.py:47
 msgid "_Rating"
 msgstr "Ar_vosana"
@@ -268,26 +290,26 @@ msgstr "Järjestys: päivämäärä"
 msgid "_Preferences"
 msgstr "Asetukset"
 
-#: ../quodlibet/browsers/albums.py:420
+#: ../quodlibet/browsers/albums.py:419
 msgid "Album List"
 msgstr "Albumilista"
 
-#: ../quodlibet/browsers/albums.py:421
+#: ../quodlibet/browsers/albums.py:420
 msgid "_Album List"
 msgstr "_Albumilista"
 
-#: ../quodlibet/browsers/albums.py:571
+#: ../quodlibet/browsers/albums.py:580
 msgid "All Albums"
 msgstr "Kaikki albumit"
 
-#: ../quodlibet/browsers/albums.py:572
+#: ../quodlibet/browsers/albums.py:581
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albumi"
 msgstr[1] "%d albumia"
 
-#: ../quodlibet/browsers/albums.py:715
+#: ../quodlibet/browsers/albums.py:724
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -312,34 +334,34 @@ msgstr "Uusi syöte"
 msgid "Enter the location of an audio feed:"
 msgstr "Syötä äänisyötteen sijainti:"
 
-#: ../quodlibet/browsers/audiofeeds.py:223
+#: ../quodlibet/browsers/audiofeeds.py:222
 msgid "Audio Feeds"
 msgstr "Äänisyötteet"
 
-#: ../quodlibet/browsers/audiofeeds.py:224
+#: ../quodlibet/browsers/audiofeeds.py:223
 msgid "_Audio Feeds"
 msgstr "Äänis_yötteet"
 
-#: ../quodlibet/browsers/audiofeeds.py:285
-#: ../quodlibet/browsers/audiofeeds.py:291
+#: ../quodlibet/browsers/audiofeeds.py:294
+#: ../quodlibet/browsers/audiofeeds.py:300
 msgid "_Download..."
 msgstr "_Lataa..."
 
-#: ../quodlibet/browsers/audiofeeds.py:300
+#: ../quodlibet/browsers/audiofeeds.py:309
 msgid "Download Files"
 msgstr "Lataa tiedostoja"
 
-#: ../quodlibet/browsers/audiofeeds.py:321
+#: ../quodlibet/browsers/audiofeeds.py:330
 msgid "Download File"
 msgstr "Lataa tiedosto"
 
-#: ../quodlibet/browsers/audiofeeds.py:413
-#: ../quodlibet/browsers/audiofeeds.py:469
+#: ../quodlibet/browsers/audiofeeds.py:422
+#: ../quodlibet/browsers/audiofeeds.py:478
 msgid "Unable to add feed"
 msgstr "Syötettä ei voitu lisätä"
 
-#: ../quodlibet/browsers/audiofeeds.py:414
-#: ../quodlibet/browsers/audiofeeds.py:470
+#: ../quodlibet/browsers/audiofeeds.py:423
+#: ../quodlibet/browsers/audiofeeds.py:479
 #, python-format
 msgid ""
 "<b>%s</b> could not be added. The server may be down, or the location may "
@@ -348,12 +370,12 @@ msgstr ""
 "Sijainnin <b>%s</b> lisääminen ei onnistunut. Ehkä palvelin ei ole linjoilla "
 "tai sijainti ei ole äänisyöte."
 
-#: ../quodlibet/browsers/audiofeeds.py:486
+#: ../quodlibet/browsers/audiofeeds.py:495
 #, python-format
 msgid "Could not import %s. Audio Feeds browser disabled."
 msgstr ""
 
-#: ../quodlibet/browsers/audiofeeds.py:493
+#: ../quodlibet/browsers/audiofeeds.py:502
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
@@ -365,7 +387,7 @@ msgstr ""
 msgid "Library Browser"
 msgstr "Kirjaston selain"
 
-#: ../quodlibet/browsers/_base.py:238 ../quodlibet/qltk/queue.py:128
+#: ../quodlibet/browsers/_base.py:221 ../quodlibet/qltk/queue.py:128
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -395,41 +417,41 @@ msgstr ""
 msgid "Album Collection Preferences"
 msgstr "Albumilistan asetukset"
 
-#: ../quodlibet/browsers/collection.py:493
+#: ../quodlibet/browsers/collection.py:492
 msgid "Album Collection"
 msgstr ""
 
-#: ../quodlibet/browsers/collection.py:494
+#: ../quodlibet/browsers/collection.py:493
 msgid "Album _Collection"
 msgstr ""
 
-#: ../quodlibet/browsers/filesystem.py:38
+#: ../quodlibet/browsers/filesystem.py:37
 msgid "File System"
 msgstr "Tiedostojärjestelmä"
 
-#: ../quodlibet/browsers/filesystem.py:39
+#: ../quodlibet/browsers/filesystem.py:38
 msgid "_File System"
 msgstr "Tie_dostojärjestelmä"
 
-#: ../quodlibet/browsers/filesystem.py:99 ../quodlibet/browsers/media.py:470
+#: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:471
 #: ../quodlibet/qltk/songlist.py:457
 msgid "Unable to copy songs"
 msgstr "Kappaleiden kopiointi epäonnistui"
 
-#: ../quodlibet/browsers/filesystem.py:100 ../quodlibet/qltk/songlist.py:458
+#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:458
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Valittuja tiedostoja ei voi kopioida toisiin soittolistoihin tai jonoon."
 
-#: ../quodlibet/browsers/filesystem.py:165
+#: ../quodlibet/browsers/filesystem.py:174
 msgid "_Add to Library"
 msgstr "_Lisää kirjastoon"
 
-#: ../quodlibet/browsers/iradio.py:149
+#: ../quodlibet/browsers/iradio.py:167
 msgid "Unsupported file type"
 msgstr "Tiedostomuotoa ei tueta"
 
-#: ../quodlibet/browsers/iradio.py:150
+#: ../quodlibet/browsers/iradio.py:168
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -441,212 +463,212 @@ msgstr ""
 "onnistunut:\n"
 "%s"
 
-#: ../quodlibet/browsers/iradio.py:193 ../quodlibet/browsers/iradio.py:206
-#: ../quodlibet/browsers/iradio.py:697
+#: ../quodlibet/browsers/iradio.py:211 ../quodlibet/browsers/iradio.py:224
+#: ../quodlibet/browsers/iradio.py:715
 msgid "Unable to add station"
 msgstr "Kanavaa ei voitu lisätä"
 
-#: ../quodlibet/browsers/iradio.py:217 ../quodlibet/browsers/iradio.py:406
+#: ../quodlibet/browsers/iradio.py:235 ../quodlibet/browsers/iradio.py:424
 msgid "Internet Radio"
 msgstr "Internetradio"
 
-#: ../quodlibet/browsers/iradio.py:217
+#: ../quodlibet/browsers/iradio.py:235
 #, fuzzy
 msgid "Downloading station list"
 msgstr "Lataa tiedostoja"
 
-#: ../quodlibet/browsers/iradio.py:315
+#: ../quodlibet/browsers/iradio.py:333
 msgid "New Station"
 msgstr "Uusi kanava"
 
-#: ../quodlibet/browsers/iradio.py:316
+#: ../quodlibet/browsers/iradio.py:334
 msgid "Enter the location of an Internet radio station:"
 msgstr "Syötä internetradiokanavan sijainti:"
 
-#: ../quodlibet/browsers/iradio.py:338
+#: ../quodlibet/browsers/iradio.py:356
 msgid "Electronic"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:341
+#: ../quodlibet/browsers/iradio.py:359
 msgid "Hip Hop / Rap"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:342
+#: ../quodlibet/browsers/iradio.py:360
 msgid "Oldies"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:343
+#: ../quodlibet/browsers/iradio.py:361
 msgid "R&B"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:344
+#: ../quodlibet/browsers/iradio.py:362
 msgid "Japanese"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:345
+#: ../quodlibet/browsers/iradio.py:363
 msgid "Indian"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:347
+#: ../quodlibet/browsers/iradio.py:365
 msgid "Religious"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:349
+#: ../quodlibet/browsers/iradio.py:367
 msgid "Charts"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:350
+#: ../quodlibet/browsers/iradio.py:368
 msgid "Turkish"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:351
+#: ../quodlibet/browsers/iradio.py:369
 msgid "Reggae / Dancehall"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:352
+#: ../quodlibet/browsers/iradio.py:370
 #, fuzzy
 msgid "Latin"
 msgstr "arvosana"
 
-#: ../quodlibet/browsers/iradio.py:353
+#: ../quodlibet/browsers/iradio.py:371
 msgid "College Radio"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:354
+#: ../quodlibet/browsers/iradio.py:372
 msgid "Talk / News"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:355
+#: ../quodlibet/browsers/iradio.py:373
 msgid "Ambient"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:356
+#: ../quodlibet/browsers/iradio.py:374
 msgid "Jazz"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:357
+#: ../quodlibet/browsers/iradio.py:375
 msgid "Classical"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:358
+#: ../quodlibet/browsers/iradio.py:376
 msgid "Pop"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:359
+#: ../quodlibet/browsers/iradio.py:377
 msgid "Alternative"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:360
+#: ../quodlibet/browsers/iradio.py:378
 msgid "Metal"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:361
+#: ../quodlibet/browsers/iradio.py:379
 msgid "Country"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:362
+#: ../quodlibet/browsers/iradio.py:380
 msgid "News"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:363
+#: ../quodlibet/browsers/iradio.py:381
 msgid "Schlager"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:364
+#: ../quodlibet/browsers/iradio.py:382
 msgid "Funk"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:365
+#: ../quodlibet/browsers/iradio.py:383
 msgid "Indie"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:366
+#: ../quodlibet/browsers/iradio.py:384
 msgid "Blues"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:367
+#: ../quodlibet/browsers/iradio.py:385
 msgid "Soul"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:368
+#: ../quodlibet/browsers/iradio.py:386
 msgid "Lounge"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:369
+#: ../quodlibet/browsers/iradio.py:387
 msgid "Punk"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:370
+#: ../quodlibet/browsers/iradio.py:388
 msgid "Reggaeton"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:372
+#: ../quodlibet/browsers/iradio.py:390
 msgid "Slavic"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:374
+#: ../quodlibet/browsers/iradio.py:392
 msgid "Greek"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:375
+#: ../quodlibet/browsers/iradio.py:393
 msgid "Gothic"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:376
+#: ../quodlibet/browsers/iradio.py:394
 msgid "Rock"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:407
+#: ../quodlibet/browsers/iradio.py:425
 msgid "_Internet Radio"
 msgstr "I_nternetradio"
 
-#: ../quodlibet/browsers/iradio.py:470
+#: ../quodlibet/browsers/iradio.py:488
 #, fuzzy
 msgid "_New Station..."
 msgstr "_Uusi kanava"
 
-#: ../quodlibet/browsers/iradio.py:473
+#: ../quodlibet/browsers/iradio.py:491
 #, fuzzy
 msgid "_Update Stations"
 msgstr "_Uusi kanava"
 
-#: ../quodlibet/browsers/iradio.py:498
+#: ../quodlibet/browsers/iradio.py:516
 #, fuzzy
 msgid "All Stations"
 msgstr "Uusi kanava"
 
-#: ../quodlibet/browsers/iradio.py:502
+#: ../quodlibet/browsers/iradio.py:520
 msgid "Favorites"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:510
+#: ../quodlibet/browsers/iradio.py:528
 msgid "No Category"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:689
+#: ../quodlibet/browsers/iradio.py:707
 msgid "No stations found"
 msgstr "Kanavia ei löytynyt."
 
-#: ../quodlibet/browsers/iradio.py:690
+#: ../quodlibet/browsers/iradio.py:708
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Internetradiokanavia ei löytynyt sijainnista %s."
 
-#: ../quodlibet/browsers/iradio.py:698
+#: ../quodlibet/browsers/iradio.py:716
 msgid "All stations listed are already in your library."
 msgstr "Kaikki luetellut kanavat ovat jo kirjastossasi."
 
-#: ../quodlibet/browsers/iradio.py:720
+#: ../quodlibet/browsers/iradio.py:738
 #, fuzzy
 msgid "Remove from Favorites"
 msgstr "_Poista Soittolistalta"
 
-#: ../quodlibet/browsers/iradio.py:726
+#: ../quodlibet/browsers/iradio.py:744
 #, fuzzy
 msgid "Add to Favorites"
 msgstr "_Lisää soittolistaan"
 
-#: ../quodlibet/browsers/iradio.py:818
+#: ../quodlibet/browsers/iradio.py:836
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -681,70 +703,70 @@ msgstr "Medialaitteet"
 msgid "_Media Devices"
 msgstr "_Medialaitteet"
 
-#: ../quodlibet/browsers/media.py:215 ../quodlibet/browsers/media.py:358
+#: ../quodlibet/browsers/media.py:215 ../quodlibet/browsers/media.py:359
 msgid "_Eject"
 msgstr "_Irrota laite"
 
-#: ../quodlibet/browsers/media.py:345 ../quodlibet/browsers/playlists.py:527
+#: ../quodlibet/browsers/media.py:346 ../quodlibet/browsers/playlists.py:536
 msgid "_Rename"
 msgstr "_Nimeä"
 
-#: ../quodlibet/browsers/media.py:442
+#: ../quodlibet/browsers/media.py:443
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
 msgstr "<b>%s</b> käytössä, <b>%s</b> vapaana"
 
-#: ../quodlibet/browsers/media.py:459
+#: ../quodlibet/browsers/media.py:460
 #, python-format
 msgid "<b>%s</b> is not connected."
 msgstr "<b>%s</b> ei ole yhdistetty."
 
-#: ../quodlibet/browsers/media.py:476
+#: ../quodlibet/browsers/media.py:477
 #, fuzzy, python-format
 msgid "Copying <b>%(song)s</b>"
 msgstr "Kopioidaan <b>%s</b>"
 
-#: ../quodlibet/browsers/media.py:495 ../quodlibet/browsers/media.py:512
+#: ../quodlibet/browsers/media.py:496 ../quodlibet/browsers/media.py:513
 msgid "Unable to copy song"
 msgstr "Kappaletta ei voi kopioida"
 
-#: ../quodlibet/browsers/media.py:496
+#: ../quodlibet/browsers/media.py:497
 msgid "There is not enough free space for this song."
 msgstr "Kappaleelle ei ole riittävästi tilaa."
 
-#: ../quodlibet/browsers/media.py:509
+#: ../quodlibet/browsers/media.py:510
 #, python-format
 msgid "<b>%s</b> could not be copied."
 msgstr "Kohdetta <b>%s</b> ei voitu kopioida."
 
-#: ../quodlibet/browsers/media.py:529
+#: ../quodlibet/browsers/media.py:530
 msgid "Unable to delete songs"
 msgstr "Kappaleita ei voi poistaa"
 
-#: ../quodlibet/browsers/media.py:539
+#: ../quodlibet/browsers/media.py:540
 #, fuzzy, python-format
 msgid "Deleting <b>%(song)s</b>"
 msgstr "Poistetaan <b>%s</b>"
 
-#: ../quodlibet/browsers/media.py:558
+#: ../quodlibet/browsers/media.py:559
 #, python-format
 msgid "<b>%s</b> could not be deleted."
 msgstr "Kohdetta <b>%s</b> ei voitu poistaa."
 
-#: ../quodlibet/browsers/media.py:562
+#: ../quodlibet/browsers/media.py:563
 msgid "Unable to delete song"
 msgstr "Kappaletta ei voi poistaa"
 
-#: ../quodlibet/browsers/media.py:577
+#: ../quodlibet/browsers/media.py:578
 #, python-format
 msgid "Ejecting <b>%s</b> failed."
 msgstr "Laitteen <b>%s</b> irrottaminen epäonnistui."
 
-#: ../quodlibet/browsers/media.py:580
+#: ../quodlibet/browsers/media.py:581
 msgid "Unable to eject device"
 msgstr "Laitetta ei voi irrottaa"
 
-#: ../quodlibet/browsers/media.py:585
+#: ../quodlibet/browsers/media.py:586
 msgid "No device backend, Media Devices browser disabled."
 msgstr ""
 
@@ -756,15 +778,15 @@ msgstr "Paneeliselaimen asetukset"
 msgid "All"
 msgstr "Kaikki"
 
-#: ../quodlibet/browsers/paned.py:686
+#: ../quodlibet/browsers/paned.py:684
 msgid "Paned Browser"
 msgstr "Paneeliselain"
 
-#: ../quodlibet/browsers/paned.py:687
+#: ../quodlibet/browsers/paned.py:685
 msgid "_Paned Browser"
 msgstr "_Paneeliselain"
 
-#: ../quodlibet/browsers/paned.py:706
+#: ../quodlibet/browsers/paned.py:710
 msgid "Select _All"
 msgstr "Valitse _Kaikki"
 
@@ -803,7 +825,7 @@ msgid "The duplicate songs will be removed from the playlist '%s'."
 msgstr ""
 
 #: ../quodlibet/browsers/playlists.py:140
-#: ../quodlibet/browsers/playlists.py:421 ../quodlibet/util/collection.py:400
+#: ../quodlibet/browsers/playlists.py:430 ../quodlibet/util/collection.py:400
 msgid "New Playlist"
 msgstr "Uusi soittolista"
 
@@ -825,45 +847,45 @@ msgid_plural "%(title)s and %(count)d more"
 msgstr[0] "%(title)s ja %(count)d muuta"
 msgstr[1] "%(title)s ja %(count)d muuta"
 
-#: ../quodlibet/browsers/playlists.py:194
+#: ../quodlibet/browsers/playlists.py:193
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../quodlibet/browsers/playlists.py:195
+#: ../quodlibet/browsers/playlists.py:194
 msgid "_Playlists"
 msgstr "_Soittolistat"
 
-#: ../quodlibet/browsers/playlists.py:260
+#: ../quodlibet/browsers/playlists.py:269
 msgid "_Remove from Playlist"
 msgstr "_Poista Soittolistalta"
 
-#: ../quodlibet/browsers/playlists.py:297
+#: ../quodlibet/browsers/playlists.py:306
 msgid "_Import"
 msgstr "_Tuo"
 
-#: ../quodlibet/browsers/playlists.py:443
-#: ../quodlibet/browsers/playlists.py:581
+#: ../quodlibet/browsers/playlists.py:452
+#: ../quodlibet/browsers/playlists.py:590
 msgid "Unable to import playlist"
 msgstr "Soittolistan tuonti ei onnistu"
 
-#: ../quodlibet/browsers/playlists.py:444
-#: ../quodlibet/browsers/playlists.py:582
+#: ../quodlibet/browsers/playlists.py:453
+#: ../quodlibet/browsers/playlists.py:591
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod Libet voi tuoda vain M3U- ja PLS-muotoisia soittolistoja."
 
-#: ../quodlibet/browsers/playlists.py:495
+#: ../quodlibet/browsers/playlists.py:504
 msgid "Remove Duplicates"
 msgstr ""
 
-#: ../quodlibet/browsers/playlists.py:505 ../quodlibet/qltk/playorder.py:131
+#: ../quodlibet/browsers/playlists.py:514 ../quodlibet/qltk/playorder.py:131
 msgid "_Shuffle"
 msgstr "_Sekoita"
 
-#: ../quodlibet/browsers/playlists.py:561
+#: ../quodlibet/browsers/playlists.py:570
 msgid "Unable to rename playlist"
 msgstr "Soittolistan nimeäminen ei onnistu"
 
-#: ../quodlibet/browsers/playlists.py:570
+#: ../quodlibet/browsers/playlists.py:579
 msgid "Import Playlist"
 msgstr "Tuo soittolista"
 
@@ -875,39 +897,17 @@ msgstr "Sulje selain"
 msgid "_Disable Browser"
 msgstr "S_ulje selain"
 
-#: ../quodlibet/browsers/search.py:110
+#: ../quodlibet/browsers/search.py:120
 msgid "Search Library"
 msgstr "Hae kirjastosta"
 
-#: ../quodlibet/browsers/search.py:111
+#: ../quodlibet/browsers/search.py:121
 msgid "_Search Library"
 msgstr "_Hae kirjastosta"
 
-#: ../quodlibet/browsers/search.py:122
+#: ../quodlibet/browsers/search.py:132
 msgid "_Limit Results"
 msgstr "Tulosten _määrä"
-
-#: ../quodlibet.desktop.in.h:1
-msgid "Music Player"
-msgstr "Musiikkisoitin"
-
-#: ../quodlibet.desktop.in.h:2
-msgid "Listen to, browse, or edit your audio collection"
-msgstr "Kuuntele, selaa tai muokkaa äänikokoelmaasi"
-
-#: ../quodlibet.desktop.in.h:3
-#, fuzzy
-msgid "Play/Pause"
-msgstr "Soitin"
-
-#: ../quodlibet.desktop.in.h:4
-msgid "Next"
-msgstr ""
-
-#: ../quodlibet.desktop.in.h:5
-#, fuzzy
-msgid "Previous"
-msgstr "_Esikatsele"
 
 #: ../quodlibet/devices/_base.py:59
 msgid "Unknown Device"
@@ -964,11 +964,11 @@ msgid "Combine tags with _multiple values"
 msgstr "Yhdistä _moniarvoiset tunnisteet"
 
 #. Column preferences
-#: ../quodlibet/devices/ipod.py:116 ../quodlibet/qltk/prefs.py:107
+#: ../quodlibet/devices/ipod.py:116 ../quodlibet/qltk/prefs.py:109
 msgid "Title includes _version"
 msgstr "Nimi sisältää v_ersion"
 
-#: ../quodlibet/devices/ipod.py:117 ../quodlibet/qltk/prefs.py:111
+#: ../quodlibet/devices/ipod.py:117 ../quodlibet/qltk/prefs.py:113
 #, fuzzy
 msgid "Album includes _disc subtitle"
 msgstr "Albumi sisältää _osan"
@@ -1028,14 +1028,14 @@ msgstr "Korvataanko <b>%s</b>?"
 msgid "Failed reading album art \"%s\""
 msgstr ""
 
-#: ../quodlibet/formats/__init__.py:74
+#: ../quodlibet/formats/__init__.py:77
 #, python-format
 msgid "Error loading %r"
 msgstr ""
 
 #: ../quodlibet/library/libraries.py:618 ../quodlibet/library/libraries.py:628
 #: ../quodlibet/library/libraries.py:669 ../quodlibet/qltk/information.py:276
-#: ../quodlibet/qltk/prefs.py:483 ../quodlibet/util/library.py:49
+#: ../quodlibet/qltk/prefs.py:485 ../quodlibet/util/library.py:49
 msgid "Library"
 msgstr "Kirjasto"
 
@@ -1052,57 +1052,57 @@ msgstr "Luetaan musiikkikirjastoa"
 msgid "Scanning %s"
 msgstr "Luetaan kohdetta %s"
 
-#: ../quodlibet/player/gstbe.py:64
+#: ../quodlibet/player/gstbe.py:59
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:73
+#: ../quodlibet/player/gstbe.py:68
 msgid "_Output pipeline:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:80
+#: ../quodlibet/player/gstbe.py:75
 #, fuzzy, python-format
 msgid "%.1f seconds"
 msgstr "%d sekunti"
 
-#: ../quodlibet/player/gstbe.py:95
+#: ../quodlibet/player/gstbe.py:90
 msgid "_Buffer duration:"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:329
+#: ../quodlibet/player/gstbe.py:332
 #, python-format
 msgid ""
 "No GStreamer element found to handle the following media format: "
 "%(format_details)r"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:406
+#: ../quodlibet/player/gstbe.py:413
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:406
+#: ../quodlibet/player/gstbe.py:413
 msgid "Buffering"
 msgstr ""
 
 #. Backend error; show message and halt playback
-#: ../quodlibet/player/gstbe.py:466
+#: ../quodlibet/player/gstbe.py:473
 msgid "Output Error"
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:467
+#: ../quodlibet/player/gstbe.py:474
 msgid ""
 "GStreamer output pipeline could not be initialized. The pipeline might be "
 "invalid, or the device may be in use. Check the player preferences."
 msgstr ""
 
-#: ../quodlibet/player/gstbe.py:654
+#: ../quodlibet/player/gstbe.py:661
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "Tiedostojen avaaminen ei onnistu"
 
-#: ../quodlibet/player/gstbe.py:655
+#: ../quodlibet/player/gstbe.py:662
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -1359,12 +1359,12 @@ msgstr "VIRHE: Virheellinen argumentti valitsimelle \"%s\""
 msgid "Try %s --help."
 msgstr "VIRHE: Kokeile kirjoittaa %s --help"
 
-#: ../quodlibet/qltk/about.py:28
+#: ../quodlibet/qltk/about.py:32
 #, python-format
 msgid "Supported formats: %s"
 msgstr "Tuetut tiedostomuodot: %s"
 
-#: ../quodlibet/qltk/about.py:30
+#: ../quodlibet/qltk/about.py:35
 #, python-format
 msgid "Audio device: %s"
 msgstr "Äänilaite: %s"
@@ -1403,11 +1403,11 @@ msgstr "Ei aikatietoa"
 msgid "_Value:"
 msgstr "_Arvo:"
 
-#: ../quodlibet/qltk/cbes.py:243
+#: ../quodlibet/qltk/cbes.py:249
 msgid "Saved Values"
 msgstr "Tallennetut arvot"
 
-#: ../quodlibet/qltk/cbes.py:244
+#: ../quodlibet/qltk/cbes.py:250
 msgid "Edit saved values..."
 msgstr "Muokkaa tallennettuja arvoja..."
 
@@ -1440,6 +1440,11 @@ msgstr "_Albumiotsakkeet"
 #: ../quodlibet/qltk/controls.py:255
 msgid "Stop after this song"
 msgstr "Pysäytä tämän kappaleen jälkeen"
+
+#: ../quodlibet/qltk/data_editors.py:338
+#, fuzzy
+msgid "Enter new value"
+msgstr "Suodata tunnisteen arvon perusteella"
 
 #: ../quodlibet/qltk/debugwindow.py:69
 msgid "Error Occurred"
@@ -1621,11 +1626,11 @@ msgstr "Muokkaa tunnisteita"
 msgid "Write"
 msgstr "Kirjoita"
 
-#: ../quodlibet/qltk/edittags.py:597
+#: ../quodlibet/qltk/edittags.py:599
 msgid "Unable to add tag"
 msgstr "Tunnistetta ei voi lisätä"
 
-#: ../quodlibet/qltk/edittags.py:598
+#: ../quodlibet/qltk/edittags.py:600
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -1638,14 +1643,14 @@ msgstr ""
 
 #. Can't remove the old tag.
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:623 ../quodlibet/qltk/edittags.py:779
-#: ../quodlibet/qltk/edittags.py:786 ../quodlibet/qltk/tagsfrompath.py:173
+#: ../quodlibet/qltk/edittags.py:625 ../quodlibet/qltk/edittags.py:781
+#: ../quodlibet/qltk/edittags.py:788 ../quodlibet/qltk/tagsfrompath.py:173
 #: ../quodlibet/util/__init__.py:634 ../quodlibet/util/tags.py:131
 msgid "Invalid tag"
 msgstr "Virheellinen tunniste"
 
-#: ../quodlibet/qltk/edittags.py:624 ../quodlibet/qltk/edittags.py:780
-#: ../quodlibet/qltk/edittags.py:787 ../quodlibet/qltk/tagsfrompath.py:174
+#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
+#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:174
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1656,13 +1661,13 @@ msgstr ""
 "\n"
 "Valitut tiedostot eivät tue tämän tunnisteen muokkaamista."
 
-#: ../quodlibet/qltk/edittags.py:675 ../quodlibet/qltk/tagsfrompath.py:236
-#: ../quodlibet/qltk/tracknumbers.py:118
+#: ../quodlibet/qltk/edittags.py:677 ../quodlibet/qltk/tagsfrompath.py:236
+#: ../quodlibet/qltk/tracknumbers.py:116
 msgid "Tag may not be accurate"
 msgstr "Tunniste saattaa olla epätarkka"
 
-#: ../quodlibet/qltk/edittags.py:676 ../quodlibet/qltk/tagsfrompath.py:237
-#: ../quodlibet/qltk/tracknumbers.py:119
+#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:237
+#: ../quodlibet/qltk/tracknumbers.py:117
 #, python-format
 msgid ""
 "<b>%s</b> changed while the program was running. Saving without refreshing "
@@ -1675,12 +1680,12 @@ msgstr ""
 "\n"
 "Tallennetaanko kappale siitä huolimatta?"
 
-#: ../quodlibet/qltk/edittags.py:734 ../quodlibet/qltk/tracknumbers.py:132
+#: ../quodlibet/qltk/edittags.py:736 ../quodlibet/qltk/tracknumbers.py:130
 msgid "Unable to save song"
 msgstr "Kappaletta ei voi tallentaa"
 
-#: ../quodlibet/qltk/edittags.py:735 ../quodlibet/qltk/tagsfrompath.py:263
-#: ../quodlibet/qltk/tracknumbers.py:133 ../quodlibet/util/songwrapper.py:97
+#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tagsfrompath.py:263
+#: ../quodlibet/qltk/tracknumbers.py:131 ../quodlibet/util/songwrapper.py:97
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -1689,11 +1694,11 @@ msgstr ""
 "Kappaleen <b>%s</b> tallentaminen epäonnistui. Tiedosto saattaa olla vain "
 "luku -muodossa, viallinen, tai sinulla ei ole oikeuksia sen muokkaamiseen."
 
-#: ../quodlibet/qltk/edittags.py:759 ../quodlibet/qltk/edittags.py:797
+#: ../quodlibet/qltk/edittags.py:761 ../quodlibet/qltk/edittags.py:799
 msgid "Invalid value"
 msgstr "Virheellinen arvo"
 
-#: ../quodlibet/qltk/edittags.py:760 ../quodlibet/qltk/edittags.py:798
+#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -1721,15 +1726,15 @@ msgstr[1] "%d kappaletta"
 msgid "Ex Falso Preferences"
 msgstr "Ex Falson Asetukset"
 
-#: ../quodlibet/qltk/exfalsowindow.py:226 ../quodlibet/qltk/prefs.py:411
+#: ../quodlibet/qltk/exfalsowindow.py:226 ../quodlibet/qltk/prefs.py:413
 msgid "Split _on:"
 msgstr "_Erotin:"
 
-#: ../quodlibet/qltk/exfalsowindow.py:232 ../quodlibet/qltk/prefs.py:397
+#: ../quodlibet/qltk/exfalsowindow.py:232 ../quodlibet/qltk/prefs.py:399
 msgid "Show _programmatic tags"
 msgstr "Näytä _ohjelmalliset tunnisteet"
 
-#: ../quodlibet/qltk/exfalsowindow.py:236 ../quodlibet/qltk/prefs.py:458
+#: ../quodlibet/qltk/exfalsowindow.py:236 ../quodlibet/qltk/prefs.py:460
 msgid "Tag Editing"
 msgstr "Tunnisteiden muokkaus"
 
@@ -1977,6 +1982,23 @@ msgstr "Etsitään laulun sanoja..."
 msgid "Unable to download lyrics."
 msgstr "Laulun sanojen lataaminen ei onnistu"
 
+#: ../quodlibet/qltk/maskedbox.py:17
+msgid "Are you sure you want to remove all songs?"
+msgstr ""
+
+#: ../quodlibet/qltk/maskedbox.py:18
+msgid "The selected songs will be removed from the library."
+msgstr ""
+
+#: ../quodlibet/qltk/maskedbox.py:40 ../quodlibet/qltk/maskedbox.py:82
+msgid "Unhide"
+msgstr ""
+
+#: ../quodlibet/qltk/maskedbox.py:65
+#, fuzzy, python-format
+msgid "%(song_count)d songs"
+msgstr "%(count)d kanava"
+
 #: ../quodlibet/qltk/msg.py:55
 msgid "Discard tag changes?"
 msgstr "Hylkää muutokset tunnisteisiin?"
@@ -2066,238 +2088,238 @@ msgstr ""
 msgid "No plugins found."
 msgstr "Liitännäisiä ei löytynyt."
 
-#: ../quodlibet/qltk/prefs.py:36
+#: ../quodlibet/qltk/prefs.py:38
 msgid "_Disc"
 msgstr "_Levy"
 
-#: ../quodlibet/qltk/prefs.py:37
+#: ../quodlibet/qltk/prefs.py:39
 msgid "_Track"
 msgstr "_Raita"
 
-#: ../quodlibet/qltk/prefs.py:38
+#: ../quodlibet/qltk/prefs.py:40
 #, fuzzy
 msgid "Grou_ping"
 msgstr "ryhmittely"
 
-#: ../quodlibet/qltk/prefs.py:41
+#: ../quodlibet/qltk/prefs.py:43
 msgid "Al_bum"
 msgstr "Al_bumi"
 
-#: ../quodlibet/qltk/prefs.py:46
+#: ../quodlibet/qltk/prefs.py:48
 msgid "_Filename"
 msgstr "Tie_dostonimi"
 
-#: ../quodlibet/qltk/prefs.py:48
+#: ../quodlibet/qltk/prefs.py:50
 msgid "_Length"
 msgstr "_Kesto"
 
-#: ../quodlibet/qltk/prefs.py:55
+#: ../quodlibet/qltk/prefs.py:57
 msgid "Song List"
 msgstr "Kappalelista"
 
-#: ../quodlibet/qltk/prefs.py:59
+#: ../quodlibet/qltk/prefs.py:61
 msgid "_Jump to playing song automatically"
 msgstr "_Hyppää soivaan kappaleeseen automaattisesti"
 
-#: ../quodlibet/qltk/prefs.py:61
+#: ../quodlibet/qltk/prefs.py:63
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Kun soitettava kappale vaihtuu, vieritä soittolistaa sen kohdalle"
 
-#: ../quodlibet/qltk/prefs.py:64
+#: ../quodlibet/qltk/prefs.py:66
 msgid "Behavior"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:88
+#: ../quodlibet/qltk/prefs.py:90
 msgid "_Others:"
 msgstr "M_uut:"
 
 #. Stock edit doesn't have ellipsis chars.
-#: ../quodlibet/qltk/prefs.py:93
+#: ../quodlibet/qltk/prefs.py:95
 #, fuzzy
 msgid "_Edit..."
 msgstr "_Muokkaa näkymää..."
 
-#: ../quodlibet/qltk/prefs.py:95
+#: ../quodlibet/qltk/prefs.py:97
 msgid "Add or remove additional column headers"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:103
+#: ../quodlibet/qltk/prefs.py:105
 msgid "Visible Columns"
 msgstr "Näytettävät sarakkeet"
 
-#: ../quodlibet/qltk/prefs.py:109
+#: ../quodlibet/qltk/prefs.py:111
 #, fuzzy
 msgid "Artist includes all _people"
 msgstr "Nimi sisältää v_ersion"
 
-#: ../quodlibet/qltk/prefs.py:113
+#: ../quodlibet/qltk/prefs.py:115
 msgid "Filename includes _folder"
 msgstr "Tiedostonimi sisältää hake_miston"
 
-#: ../quodlibet/qltk/prefs.py:136
+#: ../quodlibet/qltk/prefs.py:138
 #, fuzzy
 msgid "Column Preferences"
 msgstr "Asetukset"
 
-#: ../quodlibet/qltk/prefs.py:142
+#: ../quodlibet/qltk/prefs.py:144
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:196
+#: ../quodlibet/qltk/prefs.py:198
 msgid "Extra Columns"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:205
+#: ../quodlibet/qltk/prefs.py:207
 msgid "Browsers"
 msgstr "Selaimet"
 
-#: ../quodlibet/qltk/prefs.py:210
+#: ../quodlibet/qltk/prefs.py:212
 msgid "_Global filter:"
 msgstr "_Yleissuodatin:"
 
-#: ../quodlibet/qltk/prefs.py:215
+#: ../quodlibet/qltk/prefs.py:217
 msgid "Apply this query in addition to all others"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:221
+#: ../quodlibet/qltk/prefs.py:223
 #, fuzzy
 msgid "Search after _typing"
 msgstr "Pysäytä tämän kappaleen jälkeen"
 
-#: ../quodlibet/qltk/prefs.py:224
+#: ../quodlibet/qltk/prefs.py:226
 msgid "Show search results after the user stops typing."
 msgstr ""
 
 #. Translators: The heading of the preference group, no action
-#: ../quodlibet/qltk/prefs.py:227
+#: ../quodlibet/qltk/prefs.py:229
 #, fuzzy
 msgid "heading|Search"
 msgstr "Hae"
 
-#: ../quodlibet/qltk/prefs.py:232
+#: ../quodlibet/qltk/prefs.py:234
 msgid "Confirm _multiple ratings"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:234
+#: ../quodlibet/qltk/prefs.py:236
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:237
+#: ../quodlibet/qltk/prefs.py:239
 msgid "Enable _one-click ratings"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:239
+#: ../quodlibet/qltk/prefs.py:241
 #, fuzzy
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "Kun soitettava kappale vaihtuu, vieritä soittolistaa sen kohdalle"
 
-#: ../quodlibet/qltk/prefs.py:245 ../quodlibet/qltk/prefs.py:461
+#: ../quodlibet/qltk/prefs.py:247 ../quodlibet/qltk/prefs.py:463
 #, fuzzy
 msgid "Ratings"
 msgstr "Ar_vosana"
 
-#: ../quodlibet/qltk/prefs.py:250
+#: ../quodlibet/qltk/prefs.py:252
 msgid "_Use rounded corners on thumbnails"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:252
+#: ../quodlibet/qltk/prefs.py:254
 msgid ""
 "Round the corners of album artwork thumbnail images. May require restart to "
 "take effect."
 msgstr ""
 
 #. Filename choice algorithm config
-#: ../quodlibet/qltk/prefs.py:257
+#: ../quodlibet/qltk/prefs.py:259
 msgid "Prefer _embedded art"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:261
+#: ../quodlibet/qltk/prefs.py:263
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:266
+#: ../quodlibet/qltk/prefs.py:268
 msgid "_Force image filename:"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:272
+#: ../quodlibet/qltk/prefs.py:274
 msgid "The album art image file to use when forced"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:281
+#: ../quodlibet/qltk/prefs.py:283
 #, fuzzy
 msgid "Album Art"
 msgstr "Albumilista"
 
-#: ../quodlibet/qltk/prefs.py:299
+#: ../quodlibet/qltk/prefs.py:301
 #, fuzzy
 msgid "Playback"
 msgstr "Keskeytä soitto"
 
-#: ../quodlibet/qltk/prefs.py:304
+#: ../quodlibet/qltk/prefs.py:306
 msgid "Output Configuration"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:315
+#: ../quodlibet/qltk/prefs.py:317
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:318
+#: ../quodlibet/qltk/prefs.py:320
 #, fuzzy
 msgid "_Fall-back gain (dB):"
 msgstr "_Äänen vahvistus (dB):"
 
-#: ../quodlibet/qltk/prefs.py:329
+#: ../quodlibet/qltk/prefs.py:331
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:332
+#: ../quodlibet/qltk/prefs.py:334
 #, fuzzy
 msgid "_Pre-amp gain (dB):"
 msgstr "_Äänen vahvistus (dB):"
 
-#: ../quodlibet/qltk/prefs.py:337
+#: ../quodlibet/qltk/prefs.py:339
 #, fuzzy
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "_Replay Gain äänenvoimakkuuden säätö"
 
-#: ../quodlibet/qltk/prefs.py:362
+#: ../quodlibet/qltk/prefs.py:364
 #, fuzzy
 msgid "Replay Gain Volume Adjustment"
 msgstr "_Replay Gain äänenvoimakkuuden säätö"
 
-#: ../quodlibet/qltk/prefs.py:385
+#: ../quodlibet/qltk/prefs.py:387
 #, fuzzy
 msgid "Tags"
 msgstr "Muokkaa tunnisteita"
 
-#: ../quodlibet/qltk/prefs.py:390
+#: ../quodlibet/qltk/prefs.py:392
 #, fuzzy
 msgid "Auto-save tag changes"
 msgstr "Hylkää muutokset tunnisteisiin?"
 
-#: ../quodlibet/qltk/prefs.py:393
+#: ../quodlibet/qltk/prefs.py:395
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:400
+#: ../quodlibet/qltk/prefs.py:402
 msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:409
+#: ../quodlibet/qltk/prefs.py:411
 msgid ""
 "A list of separators to use when splitting tag values. The list is space-"
 "separated"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:428
+#: ../quodlibet/qltk/prefs.py:430
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -2305,44 +2327,49 @@ msgid ""
 "calculation for all albums."
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:434
+#: ../quodlibet/qltk/prefs.py:436
 msgid "_Bayesian averaging amount:"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:442
+#: ../quodlibet/qltk/prefs.py:444
 #, fuzzy
 msgid "Save ratings and play _counts"
 msgstr "Tallenna arvosanat ja soittomäärät"
 
-#: ../quodlibet/qltk/prefs.py:446
+#: ../quodlibet/qltk/prefs.py:448
 msgid "_Email:"
 msgstr "_Sähköposti:"
 
-#: ../quodlibet/qltk/prefs.py:448
+#: ../quodlibet/qltk/prefs.py:450
 msgid "Ratings and play counts will be set for this email address"
 msgstr "Arvosanat ja soittomäärät asetetaan tälle osoitteelle"
 
-#: ../quodlibet/qltk/prefs.py:475
+#: ../quodlibet/qltk/prefs.py:477
 #, fuzzy
 msgid "Updating for new ratings"
 msgstr "_Uusi kanava"
 
-#: ../quodlibet/qltk/prefs.py:485
+#: ../quodlibet/qltk/prefs.py:487
 #, fuzzy
 msgid "_Refresh library on start"
 msgstr "_Virkistä kirjasto"
 
-#: ../quodlibet/qltk/prefs.py:499
+#: ../quodlibet/qltk/prefs.py:501
 #, fuzzy
 msgid "Refresh Library"
 msgstr "_Virkistä kirjasto"
 
-#: ../quodlibet/qltk/prefs.py:507
+#: ../quodlibet/qltk/prefs.py:509
 #, fuzzy
 msgid "Scan Directories"
 msgstr "Käy läpi _hakemistot"
 
-#: ../quodlibet/qltk/prefs.py:516
+#: ../quodlibet/qltk/prefs.py:515
+#, fuzzy
+msgid "Hidden Songs"
+msgstr "Ei kappaleita"
+
+#: ../quodlibet/qltk/prefs.py:524
 #, fuzzy
 msgid "Preferences"
 msgstr "Asetukset"
@@ -2380,7 +2407,7 @@ msgid "Unable to add songs"
 msgstr "Kappaleita ei voi lisätä"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:390
-#: ../quodlibet/qltk/quodlibetwindow.py:839
+#: ../quodlibet/qltk/quodlibetwindow.py:844
 #, python-format
 msgid "<b>%s</b> uses an unsupported protocol."
 msgstr "Kohteen <b>%s</b> käyttämää protokollaa ei tueta."
@@ -2402,8 +2429,9 @@ msgid "_Add a Location..."
 msgstr "Lisää s_ijainti..."
 
 #: ../quodlibet/qltk/quodlibetwindow.py:447
-msgid "_Browse Library"
-msgstr "_Selaa kirjastoa"
+#, fuzzy
+msgid "Open _Browser"
+msgstr "Avaa uusi selain"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:453
 msgid "_Filters"
@@ -2508,34 +2536,34 @@ msgstr ""
 "40 eniten soittamaasi kappaletta (tasapelitilanteissa saatetaan valita "
 "enemmän kuin 40)"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:827
+#: ../quodlibet/qltk/quodlibetwindow.py:832
 msgid "Add a Location"
 msgstr "Lisää sijainti"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:828
+#: ../quodlibet/qltk/quodlibetwindow.py:833
 msgid "Enter the location of an audio file:"
 msgstr "Syötä äänitiedoston sijainti:"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:833
 #: ../quodlibet/qltk/quodlibetwindow.py:838
+#: ../quodlibet/qltk/quodlibetwindow.py:843
 msgid "Unable to add location"
 msgstr "Sijaintia ei voi lisätä"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:834
+#: ../quodlibet/qltk/quodlibetwindow.py:839
 #, python-format
 msgid "<b>%s</b> is not a valid location."
 msgstr "<b>%s</b> ei ole kelvollinen sijainti."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:850
-#: ../quodlibet/qltk/quodlibetwindow.py:857
+#: ../quodlibet/qltk/quodlibetwindow.py:855
+#: ../quodlibet/qltk/quodlibetwindow.py:862
 msgid "Add Music"
 msgstr "Lisää musiikkia"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:851
+#: ../quodlibet/qltk/quodlibetwindow.py:856
 msgid "Watch this folder for new songs"
 msgstr "Tarkkaile tätä kansiota uusien kappaleitten varalta"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:875
+#: ../quodlibet/qltk/quodlibetwindow.py:880
 #, python-format
 msgid ""
 "%s could not be added to your library.\n"
@@ -2544,7 +2572,7 @@ msgstr ""
 "Kohdetta %s ei voitu lisätä kirjastoosi.\n"
 "\n"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:880
+#: ../quodlibet/qltk/quodlibetwindow.py:885
 msgid "Unable to add song"
 msgstr "Kappaletta ei voitu lisätä"
 
@@ -2686,41 +2714,41 @@ msgstr "_Painoarvo"
 msgid "_Filter on %s"
 msgstr "_Suodata sarakkeen \"%s\" perusteella"
 
-#: ../quodlibet/qltk/songlist.py:1008
+#: ../quodlibet/qltk/songlist.py:1012
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Albumiotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:1009
+#: ../quodlibet/qltk/songlist.py:1013
 msgid "_Track Headers"
 msgstr "_Raitaotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:1010
+#: ../quodlibet/qltk/songlist.py:1014
 msgid "_Album Headers"
 msgstr "_Albumiotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:1011
+#: ../quodlibet/qltk/songlist.py:1015
 msgid "_People Headers"
 msgstr "_Tekijäotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:1012
+#: ../quodlibet/qltk/songlist.py:1016
 msgid "_Date Headers"
 msgstr "Ai_kaotsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:1013
+#: ../quodlibet/qltk/songlist.py:1017
 msgid "_File Headers"
 msgstr "Tie_dosto-otsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:1014
+#: ../quodlibet/qltk/songlist.py:1018
 msgid "_Production Headers"
 msgstr "T_uotanto-otsakkeet"
 
-#: ../quodlibet/qltk/songlist.py:1028
+#: ../quodlibet/qltk/songlist.py:1032
 #, fuzzy
 msgid "Custom _Sort..."
 msgstr "_Mukauta otsakkeita..."
 
-#: ../quodlibet/qltk/songlist.py:1033
+#: ../quodlibet/qltk/songlist.py:1037
 msgid "_Customize Headers..."
 msgstr "_Mukauta otsakkeita..."
 
@@ -2841,7 +2869,7 @@ msgstr ""
 msgid "Unable to edit song"
 msgstr "Kappaleen muokkaaminen epäonnistui"
 
-#: ../quodlibet/qltk/textedit.py:87
+#: ../quodlibet/qltk/textedit.py:89
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -2854,7 +2882,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../quodlibet/qltk/textedit.py:103
+#: ../quodlibet/qltk/textedit.py:105
 msgid "Edit Display"
 msgstr "Muokkaa näkymää"
 
@@ -2883,7 +2911,7 @@ msgstr "Raitoja _yhteensä:"
 msgid "Track"
 msgstr "Raita"
 
-#: ../quodlibet/qltk/views.py:539
+#: ../quodlibet/qltk/views.py:542
 #, python-format
 msgid "and %d more..."
 msgstr "ja %d muuta..."
@@ -2904,7 +2932,7 @@ msgstr ""
 msgid "%d of %d"
 msgstr "%d/%d"
 
-#: ../quodlibet/qltk/x.py:222
+#: ../quodlibet/qltk/x.py:261
 msgid "Clear search"
 msgstr "Tyhjennä haku"
 
@@ -3333,6 +3361,9 @@ msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d vuosi"
 msgstr[1] "%d vuotta"
+
+#~ msgid "_Browse Library"
+#~ msgstr "_Selaa kirjastoa"
 
 #~ msgid "No eject command found."
 #~ msgstr "Irrotuskomentoa ei löytynyt."
