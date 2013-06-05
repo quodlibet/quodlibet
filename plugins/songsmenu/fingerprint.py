@@ -1,4 +1,4 @@
-# Copyright 2011 Christoph Reiter
+# Copyright 2011,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -115,7 +115,7 @@ class FingerPrintPipeline(threading.Thread):
         pipe.add(chroma)
         pipe.add(fake2)
 
-        Gst.Elementlink(chroma_src, chroma)
+        Gst.Element.link(chroma_src, chroma)
         Gst.Element.link(chroma, fake2)
         self.__todo.append(chroma)
 
@@ -145,7 +145,7 @@ class FingerPrintPipeline(threading.Thread):
             # (and it's more precise for PUID lookup)
             # In case this fails, we insert the mutagen value later
             # (this only works in active playing state)
-            ok, d = pipe.query_duration(Gst.Format.TIME)[0]
+            ok, d = pipe.query_duration(Gst.Format.TIME)
             if ok:
                 self.__fingerprints["length"] = d / Gst.MSECOND
 
@@ -180,7 +180,11 @@ class FingerPrintPipeline(threading.Thread):
 
         def set_prio(x):
             i, f = x
-            i = {"mad": -1, "ffdec_mp3": -2, "mpg123": -3}.get(f.get_name(), i)
+            i = {
+                "mad": -1,
+                "ffdec_mp3": -2,
+                "mpg123audiodec": -3
+            }.get(f.get_name(), i)
             return (i, f)
 
         return zip(*sorted(map(set_prio, enumerate(factories))))[1]
@@ -191,37 +195,24 @@ class FingerPrintPipeline(threading.Thread):
     def __bus_message(self, bus, message, chroma, ofa):
         error = None
         if message.type == Gst.MessageType.TAG:
-            if message.src == chroma:
-                tags = message.parse_tag()
-                key = "chromaprint-fingerprint"
-                if key in tags.keys():
-                    if chroma in self.__todo:
-                        self.__todo.remove(chroma)
-                    self.__fingerprints["chromaprint"] = tags[key]
-            elif message.src == ofa:
-                tags = message.parse_tag()
-                # https://bugzilla.gnome.org/show_bug.cgi?id=656641
-                # (which promptly got fixed)
-                # Because libofa fails if the first 135 seconds are silent
-                # gst-ofa will emit an empty tag list and then segfault
-                # on EOS. It will also segfault if there is no data flow at
-                # all before EOS, but there is nothing we can do about it
-                # and that shouldn't happen very often.
-                #
-                # As a workaround we mark it done whenever it emits something
-                # and since it should come after chromaprint (chromaprint
-                # defaults to 120, while ofa to 135 seconds) the pipeline
-                # should stop after this.
+            tags = message.parse_tag()
+
+            ok, value = tags.get_string("chromaprint-fingerprint")
+            if ok:
+                if chroma in self.__todo:
+                    self.__todo.remove(chroma)
+                self.__fingerprints["chromaprint"] = value
+
+            ok, value = tags.get_string("ofa-fingerprint")
+            if ok:
                 if ofa in self.__todo:
                     self.__todo.remove(ofa)
-
-                key = "ofa-fingerprint"
-                if key in tags.keys():
-                    self.__fingerprints["ofa"] = tags[key]
+                self.__fingerprints["ofa"] = value
         elif message.type == Gst.MessageType.EOS:
             error = "EOS"
         elif message.type == Gst.MessageType.ERROR:
             error = str(message.parse_error()[0])
+
         if not self.__shutdown and (not self.__todo or error):
             GLib.idle_add(self.__pool._callback, self.__song,
                 self.__fingerprints, error, self)
@@ -774,8 +765,8 @@ class AcoustidSubmit(SongsMenuPlugin):
         key_box.pack_start(entry, True, True, 0)
         key_box.pack_start(button, False, True, 0)
 
-        box.pack_start(Frame(_("Acoustid Web Service", True, True, 0),
-                       child=key_box))
+        box.pack_start(Frame(_("Acoustid Web Service"),
+                       child=key_box), True, True, 0)
 
         # puid lookup section
         puid_box = Gtk.VBox(spacing=6)
@@ -792,7 +783,8 @@ class AcoustidSubmit(SongsMenuPlugin):
         start_value = get_puid_lookup()
         radio = None
         for value, text in options:
-            radio = Gtk.RadioButton(group=radio, label=text)
+            radio = Gtk.RadioButton(group=radio, label=text,
+                                    use_underline=True)
             radio.get_child().set_use_markup(True)
             radio.set_active(value == start_value)
             radio.connect("toggled", config_changed, value)
