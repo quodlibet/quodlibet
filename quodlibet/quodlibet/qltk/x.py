@@ -10,6 +10,7 @@
 from gi.repository import Gtk, GObject, GLib, Gio
 
 from quodlibet import util
+from quodlibet import config
 from quodlibet.qltk import is_accel
 from quodlibet.qltk.window import Window, UniqueWindow
 
@@ -252,6 +253,25 @@ class RHPaned(RPaned):
 
 
 class RVPaned(RPaned):
+    ORIENTATION = Gtk.Orientation.VERTICAL
+
+
+class ConfigRPaned(RPaned):
+    def __init__(self, section, option, default, *args, **kwargs):
+        super(ConfigRPaned, self).__init__(*args, **kwargs)
+        self.set_relative(config.getfloat(section, option, default))
+        self.connect('notify::position', self.__changed, section, option)
+
+    def __changed(self, widget, event, section, option):
+        if self.get_property('position-set'):
+            config.set(section, option, str(self.get_relative()))
+
+
+class ConfigRHPaned(ConfigRPaned):
+    ORIENTATION = Gtk.Orientation.VERTICAL
+
+
+class ConfigRVPaned(ConfigRPaned):
     ORIENTATION = Gtk.Orientation.VERTICAL
 
 

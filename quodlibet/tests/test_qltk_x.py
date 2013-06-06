@@ -4,6 +4,8 @@ from helper import visible
 from gi.repository import Gtk
 
 from quodlibet.qltk import x
+from quodlibet import config
+
 
 class Window(TestCase):
     def test_ctr(self):
@@ -93,6 +95,30 @@ class RVPaned(TestCase, RPaned):
     Kind = x.RVPaned
 add(RVPaned)
 
+
+class TConfigRPaned(TestCase):
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_basic(self):
+        self.failUnless(config.get("memory", "foobar", None) is None)
+
+        p = x.ConfigRVPaned("memory", "foobar", 0.75)
+        p.pack1(Gtk.Button())
+        p.pack2(Gtk.Button())
+
+        with visible(p, width=200, height=200) as p:
+            self.failUnlessAlmostEqual(p.get_relative(), 0.75, 2)
+            p.props.position = 20
+            self.failUnlessAlmostEqual(p.get_relative(), 0.10, 2)
+
+        config_value = config.getfloat("memory", "foobar")
+        self.failUnlessAlmostEqual(config_value, 0.10, 2)
+
+add(TConfigRPaned)
 
 class TAlignment(TestCase):
     def test_ctr(self):

@@ -37,7 +37,7 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import RPaned, Alignment, ScrolledWindow
+from quodlibet.qltk.x import RPaned, ConfigRVPaned, Alignment, ScrolledWindow
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.uri import URI
@@ -258,7 +258,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         main_box.pack_start(Alignment(statusbox, border=3, top=-3),
                             False, True, 0)
 
-        self.songpane = Gtk.VPaned()
+        self.songpane = ConfigRVPaned("memory", "queue_position", 0.75)
         self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
         self.songpane.pack2(self.qexpander, resize=True, shrink=False)
         self.__handle_position = self.songpane.get_property("position")
@@ -635,7 +635,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         sub = container
         if not isinstance(container, RPaned):
             for child in container.get_children():
-                if isinstance(child, RPaned):
+                if isinstance(child, RPaned) and child is not self.songpane:
                     sub = child
 
         # Save position if container is a RPaned
