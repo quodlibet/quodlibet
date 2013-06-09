@@ -397,7 +397,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     @classmethod
     def PluginPreferences(cls, window):
         def key_changed(entry):
-            #print_d("setting to %s" % entry.get_text().strip())
+            cls.key_expression = None
             cls.config_set(cls._CFG_KEY_KEY, entry.get_text().strip())
 
         vb = gtk.VBox(spacing=10)
