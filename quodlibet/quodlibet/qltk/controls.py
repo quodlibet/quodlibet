@@ -22,6 +22,37 @@ SIZE = Gtk.IconSize.LARGE_TOOLBAR
 SUBSIZE = Gtk.IconSize.MENU
 
 
+class TimeLabel(Gtk.Label):
+    """A label for displaying the running time
+
+    It tries to minimize size changes due to unequal character widths
+    with the same number of characters.
+
+    e.g. a time display -> 04:20
+    """
+
+    def __init__(self, time_=0):
+        Gtk.Label.__init__(self)
+        self.__widths = {}  # num-chars -> (max-min-width, max-natural-width)
+        self.set_time(time_)
+
+    def do_get_preferred_width(self):
+        widths = Gtk.Label.do_get_preferred_width(self)
+
+        # If for same number of characters, the needed width was larger,
+        # use that instead of the current one
+        num_chars = len(self.get_text().decode("utf-8"))
+        max_widths = self.__widths.get(num_chars, widths)
+        widths = max(widths[0], max_widths[0]), max(widths[1], max_widths[1])
+        self.__widths[num_chars] = widths
+        return widths
+
+    def set_time(self, time_):
+        """Set the time in seconds"""
+
+        self.set_text(util.format_time(time_))
+
+
 class SeekBar(HSlider):
     __lock = False
     __sig = None
@@ -29,7 +60,7 @@ class SeekBar(HSlider):
 
     def __init__(self, player, library):
         hbox = Gtk.HBox(spacing=3)
-        l = Gtk.Label(label="0:00")
+        l = TimeLabel()
         hbox.pack_start(l, True, True, 0)
         hbox.pack_start(
             Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE),
@@ -142,7 +173,7 @@ class SeekBar(HSlider):
         value = scale.get_value()
         max = scale.get_adjustment().get_upper()
         value -= self.__remaining.get_active() * max
-        timer.set_text(util.format_time(value))
+        timer.set_time(value)
 
     def __song_changed(self, player, song, label, menu):
         if song and song.get("~#length", 0) > 0:
