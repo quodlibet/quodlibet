@@ -572,6 +572,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         render = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn("albums", render)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
         def cell_data(column, cell, model, iter, data):
