@@ -139,7 +139,7 @@ class ListCommand(Command):
             order = map(str.strip, options.columns.split(","))
 
         song = self.load_song(path)
-        tags = list_tags(song, machine=options.all)
+        tags = list_tags(song, machine=options.all, terse=options.terse)
 
         if options.terse:
             print_terse_table(tags, nicks, order)
@@ -645,10 +645,12 @@ def print_terse_table(rows, nicks, order):
     """Print a terse table"""
 
     for row in filter_table(rows, nicks, order):
-        print_(":".join([r.replace(":", r"\:") for r in row]))
+        row = [r.replace("\\", "\\\\") for r in row]
+        row = [r.replace(":", r"\:") for r in row]
+        print_(":".join(row))
 
 
-def list_tags(song, machine=False):
+def list_tags(song, machine=False, terse=False):
     """Return a list of key, value pairs"""
 
     keys = set(song.realkeys())
@@ -658,6 +660,13 @@ def list_tags(song, machine=False):
     tags = []
     for key in sorted(keys):
         for value in song.list(key):
+            if not terse:
+                # QL can't handle multiline values and splits them by \n.
+                # Tags with Windows line endings leave a \r, messing up the
+                # table layout
+                value = value.rstrip("\r")
+                # Normalize tab
+                value = value.replace("\t", " ")
             tags.append((util.tag(key), value, key))
     return tags
 

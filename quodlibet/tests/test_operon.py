@@ -386,6 +386,13 @@ class TOperonList(TOperonBase):
         self.check_true(["list", "-t", "-cdesc,value", self.f], True, False)
         self.check_true(["list", "-t", "-cvalue, desc", self.f], True, False)
         self.check_false(["list", "-t", "-cfoo", self.f], False, True)
+
+    def test_terse_escape(self):
+        self.s["foobar"] = "a:bc\\:"
+        self.s.write()
+        d = self.check_true(["list", "-t", "-cvalue", self.f], True, False)[0]
+        lines = d.splitlines()
+        self.assertTrue("a\\:bc\\\\\\:" in lines)
 add(TOperonList)
 
 
