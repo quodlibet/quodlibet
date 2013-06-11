@@ -132,6 +132,29 @@ def readable(tag):
     else:
         return TAGS.get(tag, (tag,))[0]
 
+
+def sortkey(tag):
+    """Sort key for sorting tag names by importance.
+
+    tags.sort(key=sortkey)
+    """
+
+    # last one -> most important
+    order = [
+        "album",
+        "artist",
+        "title",
+    ]
+
+    try:
+        return (-order.index(tag), tag)
+    except ValueError:
+        if tag in MACHINE_TAGS:
+            return (2, tag)
+        else:
+            return (1, tag)
+
+
 STANDARD_TAGS = [key for key in TAGS if not (TAGS[key][1] or TAGS[key][2])]
 MACHINE_TAGS = [key for key in TAGS if TAGS[key][1]]
 del(key)
