@@ -23,7 +23,7 @@ from quodlibet import const
 from quodlibet import parse
 from quodlibet import util
 from quodlibet.util.dprint import print_, Colorise
-from quodlibet.util.tags import STANDARD_TAGS, MACHINE_TAGS
+from quodlibet.util.tags import STANDARD_TAGS, MACHINE_TAGS, sortkey
 
 
 PROGRAM = os.path.basename(sys.argv[0])
@@ -658,7 +658,7 @@ def list_tags(song, machine=False, terse=False):
         keys.difference_update(MACHINE_TAGS)
 
     tags = []
-    for key in sorted(keys):
+    for key in sorted(keys, key=sortkey):
         for value in song.list(key):
             if not terse:
                 # QL can't handle multiline values and splits them by \n.
