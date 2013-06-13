@@ -153,6 +153,15 @@ class ReplayGainPipeline(GObject.Object):
         def removed_decoded_pad(dbin, pad):
             pad.unlink(self.convert.get_static_pad("sink"))
 
+        def sort_decoders(decode, pad, caps, factories):
+            def set_prio(x):
+                i, f = x
+                i = {"mad": -1, "mpg123audiodec": -2}.get(f.get_name(), i)
+                return (i, f)
+            return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+
+        self.decode.connect("autoplug-sort", sort_decoders)
+
         self.decode.connect("pad-added", new_decoded_pad)
         self.decode.connect("pad-removed", removed_decoded_pad)
         self.pipe.add(self.decode)
