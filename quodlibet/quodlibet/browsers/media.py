@@ -135,7 +135,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
     __last = None
 
     @staticmethod
-    def cell_data(col, render, model, iter):
+    def cell_data(col, render, model, iter, data):
         device = model[iter][0]
         if device.is_connected():
             render.markup = "<b>%s</b>" % util.escape(device['name'])
@@ -229,10 +229,12 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         table.attach(icon, 0, 1, 0, 2, 0)
 
         self.__device_name = label = Gtk.Label()
+        label.set_ellipsize(Pango.EllipsizeMode.END)
         label.set_alignment(0, 0)
         table.attach(label, 1, 3, 0, 1)
 
         self.__device_space = label = Gtk.Label()
+        label.set_ellipsize(Pango.EllipsizeMode.END)
         label.set_alignment(0, 0.5)
         table.attach(label, 1, 2, 1, 2)
 
@@ -338,7 +340,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
         menu.preseparate()
 
-        props = Gtk.ImageMenuItem(Gtk.STOCK_PROPERTIES)
+        props = Gtk.ImageMenuItem(Gtk.STOCK_PROPERTIES, use_stock=True)
         props.connect_object('activate', self.__properties, model[iter][0])
         props.set_sensitive(not self.__busy)
         menu.prepend(props)
@@ -364,14 +366,13 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         eject.connect_object('activate', self.__eject, None)
         menu.prepend(eject)
 
-        refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH)
+        refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH, use_stock=True)
         refresh.set_sensitive(device.is_connected())
         refresh.connect_object('activate', self.__refresh, True)
         menu.prepend(refresh)
 
         menu.show_all()
-        menu.popup(None, None, None, 0, Gtk.get_current_event_time())
-        return True
+        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __properties(self, device):
         DeviceProperties(self, device).run()
@@ -574,7 +575,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         if iter:
             device = model[iter][0]
             status = device.eject()
-            if status is True:
+            if status is not True:
                 msg = _("Ejecting <b>%s</b> failed.") % device['name']
                 if status:
                     msg += "\n\n%s" % status

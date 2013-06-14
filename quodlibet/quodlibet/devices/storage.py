@@ -153,6 +153,10 @@ class StorageDevice(Device):
         self.__save_library()
         return True
 
+    def close(self):
+        if self.__library:
+            self.__library.destroy()
+
     def __load_library(self):
         if self.__library is None:
             self.__library = SongFileLibrary(self.__library_name)

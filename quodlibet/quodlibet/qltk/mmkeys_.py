@@ -49,6 +49,26 @@ def init_dbus_mmkeys(window, player):
     return True
 
 
+def init_keybinder(player):
+    try:
+        import gi
+        gi.require_version("Keybinder", "3.0")
+        from gi.repository import Keybinder
+    except (ValueError, ImportError):
+        return False
+
+    Keybinder.init()
+
+    signals = {"XF86AudioPrev": "prev", "XF86AudioNext": "next",
+               "XF86AudioStop": "stop", "XF86AudioPlay": "play"}
+    for sig, action in signals.items():
+        def bind_cb(*args):
+            do_action(player, action)
+        Keybinder.bind(sig, bind_cb, None)
+
+    return True
+
+
 def init_pyhook(player):
     try:
         import pyHook
@@ -76,6 +96,10 @@ def init(window, player):
 
     if init_dbus_mmkeys(window, player):
         print_d("dbus mmkeys: ok")
+        return
+
+    if init_keybinder(player):
+        print_d("keybinder: ok")
         return
 
     if init_pyhook(player):
