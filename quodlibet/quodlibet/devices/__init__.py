@@ -257,6 +257,9 @@ class DKD(DeviceManager):
             self.emit("added", dev)
 
     def __device_removed(self, path):
+        # only forward removed events if we have handled the device
+        if path not in self.__devices:
+            return
         self.emit("removed", path)
         dev = self.__devices[path]
         dev.close()
