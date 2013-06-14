@@ -41,9 +41,20 @@ class _PopupSlider(Gtk.EventBox):
         frame.add(hscale)
         self.connect('scroll-event', self.__scroll, hscale)
 
+        # forward scroll event to the button
         def foward_scroll(scale, event):
             self.emit('scroll-event', event.copy())
-        self.scale.connect('scroll-event', foward_scroll)
+        window.connect('scroll-event', foward_scroll)
+
+        # ignore scroll events on the scale, the window handles it instead
+        self.scale.connect('scroll-event', lambda *x: True)
+
+        # handle all unhandled button events on the scale
+        # so only events not on the scale hide the window
+        def handle_all(scale, event):
+            return True
+        self.scale.connect_after('button-press-event', handle_all)
+        self.scale.connect_after('button-release-event', handle_all)
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError
