@@ -18,6 +18,12 @@ from ctypes import *
 
 
 try:
+    _glib = CDLL("libglib-2.0.so.0")
+except OSError:
+    raise ImportError("Couldn't find libglib-2.0")
+
+
+try:
     _lib = CDLL("libgpod.so.4")
 except OSError:
     raise ImportError("Couldn't find libgpod")
@@ -51,18 +57,57 @@ gconstpointer = c_void_p
 time_t = c_ulong
 
 
+g_strdup = _glib.g_strdup
+g_strdup.argtypes = [gchar_p]
+g_strdup.restype = gpointer
+
+g_free = _glib.g_free
+g_free.argtypes = [gpointer]
+g_free.restype = None
+
+
+class StructPointerMixin(object):
+    """Access struct fields through the struct pointer"""
+
+    def _get_type(self, name):
+        """Returns the type of the field"""
+
+        for n, type_ in self._fields_:
+            if name == n:
+                return type_
+        else:
+            raise KeyError
+
+    def __getattr__(self, name):
+        if not self:
+            raise AttributeError("NULL pointer access")
+
+        return getattr(self.contents, name)
+
+    def __setattr__(self, name, value):
+        if not self:
+            raise AttributeError("NULL pointer access")
+
+        if not hasattr(self.contents, name):
+            raise AttributeError("Invalid attribute: %r" % name)
+
+        # copy c_char_p values and free old ones
+        type_ = self._get_type(name)
+        if type_ is gchar_p:
+            old_value = getattr(self.contents, name)
+            g_free(old_value)
+            value = g_strdup(value)
+
+        setattr(self.contents, name, value)
+
+
 class GList(Structure):
     pass
 
 
-class GListPtr(POINTER(GList)):
+class GListPtr(POINTER(GList), StructPointerMixin):
     _type_ = GList
 
-    def next(self):
-        return self.contents.next
-
-    def previous(self):
-        return self.contents.previous
 
 GList._fields_ = [
     ("data", gpointer),
@@ -137,12 +182,12 @@ class IpodInfo(Structure):
     ]
 
 
-class IpodInfoPtr(POINTER(IpodInfo)):
+class IpodInfoPtr(POINTER(IpodInfo), StructPointerMixin):
     _type_ = IpodInfo
 
 
-SPL_STRING_MAXLEN = 255
-SPL_DATE_IDENTIFIER = 0x2dae2dae2dae2dae
+ITDB_SPL_STRING_MAXLEN = 255
+ITDB_SPL_DATE_IDENTIFIER = 0x2dae2dae2dae2dae
 
 
 class SPLMatch(Enum):
@@ -300,7 +345,7 @@ class SPLRule(Structure):
     ]
 
 
-class SPLRulePtr(POINTER(SPLRule)):
+class SPLRulePtr(POINTER(SPLRule), StructPointerMixin):
     _type_ = SPLRule
 
 
@@ -327,7 +372,7 @@ class Chapter(Structure):
     ]
 
 
-class ChapterPtr(POINTER(Chapter)):
+class ChapterPtr(POINTER(Chapter), StructPointerMixin):
     _type_ = Chapter
 
 
@@ -344,11 +389,11 @@ class Chapterdata(Structure):
     ]
 
 
-class ChapterdataPtr(POINTER(Chapterdata)):
+class ChapterdataPtr(POINTER(Chapterdata), StructPointerMixin):
     _type_ = Chapterdata
 
 
-RATING_STEP = 20
+ITDB_RATING_STEP = 20
 
 
 class ThumbPtr(c_void_p):
@@ -381,7 +426,7 @@ class Artwork(Structure):
     ]
 
 
-class ArtworkPtr(POINTER(Artwork)):
+class ArtworkPtr(POINTER(Artwork), StructPointerMixin):
     _type_ = Artwork
 
 
@@ -400,7 +445,7 @@ class PhotoDB(Structure):
     ]
 
 
-class PhotoDBPtr(POINTER(PhotoDB)):
+class PhotoDBPtr(POINTER(PhotoDB), StructPointerMixin):
     _type_ = PhotoDB
 
 
@@ -431,7 +476,7 @@ class iTunesDB(Structure):
     ]
 
 
-class iTunesDBPtr(POINTER(iTunesDB)):
+class iTunesDBPtr(POINTER(iTunesDB), StructPointerMixin):
     _type_ = iTunesDB
 
 
@@ -466,7 +511,7 @@ class PhotoAlbum(Structure):
     ]
 
 
-class PhotoAlbumPtr(POINTER(PhotoAlbum)):
+class PhotoAlbumPtr(POINTER(PhotoAlbum), StructPointerMixin):
     _type_ = PhotoAlbum
 
 
@@ -504,7 +549,7 @@ class Playlist(Structure):
     ]
 
 
-class PlaylistPtr(POINTER(Playlist)):
+class PlaylistPtr(POINTER(Playlist), StructPointerMixin):
     _type_ = Playlist
 
 
@@ -684,7 +729,7 @@ class Track(Structure):
     ]
 
 
-class TrackPtr(POINTER(Track)):
+class TrackPtr(POINTER(Track), StructPointerMixin):
     _type_ = Track
 
 
@@ -701,6 +746,7 @@ class GErrorPtrPtr(c_void_p):
 
 
 _functions = [
+    ("itdb_parse", iTunesDBPtr, [gchar_p, GErrorPtrPtr]),
     ("itdb_parse_file", iTunesDBPtr, [gchar_p, GErrorPtrPtr]),
     ("itdb_write", gboolean, [iTunesDBPtr, GErrorPtrPtr]),
     ("itdb_write_file", gboolean, [iTunesDBPtr, gchar_p, GErrorPtrPtr]),
@@ -860,6 +906,18 @@ _functions = [
     ("itdb_init_ipod", gboolean, [gchar_p, gchar_p, gchar_p, GErrorPtrPtr]),
 ]
 
+
+def wrap_pointer_return(func):
+    """If the returned value is a NULL pointer return None instead"""
+
+    def wrapper(*args, **kwargs):
+        ret = func(*args, **kwargs)
+        if not ret:
+            return None
+        return ret
+    return wrapper
+
+
 for name, ret, args in _functions:
     try:
         handle = getattr(_lib, name)
@@ -868,6 +926,11 @@ for name, ret, args in _functions:
         continue
     handle.argtypes = args
     handle.restype = ret
+
+    # validate pointer return values
+    if hasattr(ret, "contents"):
+        handle = wrap_pointer_return(handle)
+
     globals()[name] = handle
 
 
@@ -883,11 +946,12 @@ def sw_get_tracks(itdb_ptr):
         entry = node.contents
         track_ptr = cast(entry.data, TrackPtr)
         tracks.append(track_ptr)
-        node = node.next()
+        node = node.next
     return tracks
 
 
 __all__ = []
 for key in globals().keys():
-    if key.startswith("itdb_") or key.startswith("sw_"):
+    lower = key.lower()
+    if lower.startswith("itdb_") or lower.startswith("sw_"):
         __all__.append(key)
