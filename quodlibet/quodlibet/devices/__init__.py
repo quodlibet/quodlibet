@@ -224,6 +224,7 @@ class DKD(DeviceManager):
         obj = self._system_bus.get_object(interface, path)
         self.__interface = dbus.Interface(obj, interface)
 
+        self.__devices = {}
         self.__interface.connect_to_signal('DeviceAdded', self.__device_added)
         self.__interface.connect_to_signal('DeviceRemoved',
             self.__device_removed)
@@ -252,17 +253,18 @@ class DKD(DeviceManager):
     def __device_added(self, path):
         dev = self.__build_dev(path)
         if dev:
+            self.__devices[path] = dev
             self.emit("added", dev)
 
     def __device_removed(self, path):
         self.emit("removed", path)
+        dev = self.__devices[path]
+        dev.close()
 
     def discover(self):
         paths = self.__interface.EnumerateDevices()
         for path in paths:
-            dev = self.__build_dev(path)
-            if dev:
-                self.emit("added", dev)
+            self.__device_added(path)
 
     def __get_parent_disk_path(self, path):
         prop_if = self.__get_dev_prop_interface(path)

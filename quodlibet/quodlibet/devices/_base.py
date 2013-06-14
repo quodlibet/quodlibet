@@ -139,3 +139,6 @@ class Device(dict):
     # Separators can be added by passing (None, None, None).
     def Properties(self):
         return []
+
+    def close(self):
+        pass
