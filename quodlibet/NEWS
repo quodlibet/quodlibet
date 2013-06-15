@@ -1,67 +1,78 @@
-3.0.0 (2013-06-??) - THE NEMESIS HYPOTHESIS
+3.0.0 (2013-06-15) - THE NEMESIS HYPOTHESIS
 -------------------------------------------
 
 Requirements & Packaging Changes
- - Python 2.6+
- - GTK+ 3 & GIR (instead if 2)
- - GStreamer 1 & GIR (instead of 0.10)
- - PyGObject 3.2 (3.4 highly recommended) (instead of PyGTK)
- - libgpod (instead of python-gpod)
- - libkeybinder-3.0 & GIR (instead of python-keybinder)
-
-General
- - Improved rating visibility [1070] (Nick Boultbee)
- - Filesystem view: DnD directories to external targets (Nick Boultbee)
- - HAL support removed
- - Support GNOME Notification Sources
- - Bayesian averaging for set (album) ratings [1085] (Nick Boultbee)
- - New command line tagger: operon (see `man operon`)
- - Hide songs on not-mounted drives on start without library refresh [984]
- - Preferences UI for managing masked mount points [984]
- - Support all patterns as song list headers [507, 1121] (Nick Boultbee)
- - Fix unwanted refiltering of all open browsers if the search history changes
- - Save/restore queue position
- - Various fixes
-
-Tagging
- - APEv2: Add disc<->discnumber mapping
-
-Plugins
- - New: Custom Commands plugin (Nick Boultbee)
- - New: GNOME Shell Search Provider plugin [1147]
- - ReplayGain plugin: Parallel processing [807]
- - CD burn plugin: Add Xfburn support [1173]
+ * Python 2.6+
+ * GTK+ 3.2+ & GIR (instead of 2.x)
+ * GStreamer 1.0+ & GIR (instead of 0.10)
+ * PyGObject 3.2+ (3.4 highly recommended) (instead of PyGTK)
+ * PyGObject cairo support
+ * libgpod 0.5+ (instead of python-gpod)
+ * libkeybinder-3.0 & GIR (instead of python-keybinder)
+ * HAL support removed
+ * New `operon` script + man page
+ * New .ini file for registering QL as a GNOME Shell Search Provider
 
 Translations
- - New: Czech translation (Honza Hejzl)
- - Russian translation update (Anton Shestakov)
- - Lithuanian translation update [1079] (Naglis Jonaitis)
- - Swedish translation update [1117] (Daniel Nyberg)
- - Update Spanish, Basque and Galician translations (Johám-Luís Miguéns Vila)
- - Greek translation update [1175] (Dimitris Papageorgiou)
+ * New: Czech translation (Honza Hejzl)
+ * Russian translation update (Anton Shestakov)
+ * Lithuanian translation update [1079] (Naglis Jonaitis)
+ * Swedish translation update [1117] (Daniel Nyberg)
+ * Spanish, Basque and Galician translation update (Johám-Luís Miguéns Vila)
+ * Greek translation update [1175] (Dimitris Papageorgiou)
+
+General
+ * Improved rating visibility [1070] (Nick Boultbee)
+ * File system view: DnD directories to external targets (Nick Boultbee)
+ * Support GNOME Notification Sources
+ * Bayesian averaging for set (album) ratings [1085] (Nick Boultbee)
+ * New command line tagger: operon (see `man operon`)
+ * Hide songs on not-mounted drives on start without library refresh [984]
+ * Preferences UI for managing masked mount points [984]
+ * Support all patterns as song list headers [507, 1121] (Nick Boultbee)
+ * Save/restore queue position
+ * Documentation is now Sphinx/reST based and hosted on readthedocs.org
+
+Fixes
+ * Fix unwanted re-filtering of all open browsers if the search history changes
+ * Fix crash when re-adding devices while QL is running [1120]
+ * Remove EF directory mime type again (too many problems with file managers)
+
+Tagging
+ * APEv2: Add disc<->discnumber mapping
+
+Plugins
+ * New: Custom Commands plugin (Nick Boultbee)
+ * New: GNOME Shell Search Provider plugin [1147]
+ * ReplayGain plugin: Parallel processing [807]
+ * CD burn plugin: Add Xfburn support [1173]
 
 Known Regressions
- - GStreamer output device selection is no longer supported.
+ * GStreamer output device selection is no longer supported.
    (GStreamer 1.0 has removed the property probing interface)
- - No multimedia keys support with non-GNOME DEs in some distributions
-   (https://bugzilla.redhat.com/show_bug.cgi?id=963476
-    http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=710254)
- - No Windows build (work in progress)
+ * No multimedia keys support with non-GNOME DEs in some distributions
+   due to missing packaging:
+
+   * https://bugzilla.redhat.com/show_bug.cgi?id=963476
+   * http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=710254
+
+ * Animated On-Screen Display plugin is missing transparency support
+ * No Windows build (work in progress)
 
 
-2.6.0 (2013-06-??) - Someone's attacking us from... space?
+2.6.0 (2013-06-15) - Someone's attacking us from... space?
 ----------------------------------------------------------
 
- 2.6 is the last PyGTK/GTK+2 release of Quod Libet / Ex Falso. It contains
- most of the changes that went into 3.0 and will only receive bugfix
- release from here on out.
+ 2.6 is the last PyGTK/GTK+2 based release of Quod Libet / Ex Falso. It
+ contains most of the changes that went into 3.0 and will only receive
+ bugfix releases from here on out.
 
 Requirements & Packaging
- - Python 2.6+
- - PyGTK 2.16+
+ * Python 2.6+
+ * PyGTK 2.16+
 
 Everything else
- - See 3.0.0 NEWS
+ * See 3.0.0 NEWS with a few exceptions
 
 
 2.9.92 (2013-06-05) - alternatetimelinemetarhyme
