@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 19:59+0200\n"
+"POT-Creation-Date: 2013-06-15 10:35+0200\n"
 "PO-Revision-Date: 2007-04-28 16:55+0300\n"
 "Last-Translator: Jari Rahkonen <jari.rahkonen@pp1.inet.fi>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -298,18 +298,18 @@ msgstr "Albumilista"
 msgid "_Album List"
 msgstr "_Albumilista"
 
-#: ../quodlibet/browsers/albums.py:580
+#: ../quodlibet/browsers/albums.py:581
 msgid "All Albums"
 msgstr "Kaikki albumit"
 
-#: ../quodlibet/browsers/albums.py:581
+#: ../quodlibet/browsers/albums.py:582
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albumi"
 msgstr[1] "%d albumia"
 
-#: ../quodlibet/browsers/albums.py:724
+#: ../quodlibet/browsers/albums.py:725
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -433,7 +433,7 @@ msgstr "Tiedostojärjestelmä"
 msgid "_File System"
 msgstr "Tie_dostojärjestelmä"
 
-#: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:471
+#: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:472
 #: ../quodlibet/qltk/songlist.py:457
 msgid "Unable to copy songs"
 msgstr "Kappaleiden kopiointi epäonnistui"
@@ -703,70 +703,70 @@ msgstr "Medialaitteet"
 msgid "_Media Devices"
 msgstr "_Medialaitteet"
 
-#: ../quodlibet/browsers/media.py:215 ../quodlibet/browsers/media.py:359
+#: ../quodlibet/browsers/media.py:215 ../quodlibet/browsers/media.py:361
 msgid "_Eject"
 msgstr "_Irrota laite"
 
-#: ../quodlibet/browsers/media.py:346 ../quodlibet/browsers/playlists.py:536
+#: ../quodlibet/browsers/media.py:348 ../quodlibet/browsers/playlists.py:536
 msgid "_Rename"
 msgstr "_Nimeä"
 
-#: ../quodlibet/browsers/media.py:443
+#: ../quodlibet/browsers/media.py:444
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
 msgstr "<b>%s</b> käytössä, <b>%s</b> vapaana"
 
-#: ../quodlibet/browsers/media.py:460
+#: ../quodlibet/browsers/media.py:461
 #, python-format
 msgid "<b>%s</b> is not connected."
 msgstr "<b>%s</b> ei ole yhdistetty."
 
-#: ../quodlibet/browsers/media.py:477
+#: ../quodlibet/browsers/media.py:478
 #, fuzzy, python-format
 msgid "Copying <b>%(song)s</b>"
 msgstr "Kopioidaan <b>%s</b>"
 
-#: ../quodlibet/browsers/media.py:496 ../quodlibet/browsers/media.py:513
+#: ../quodlibet/browsers/media.py:497 ../quodlibet/browsers/media.py:514
 msgid "Unable to copy song"
 msgstr "Kappaletta ei voi kopioida"
 
-#: ../quodlibet/browsers/media.py:497
+#: ../quodlibet/browsers/media.py:498
 msgid "There is not enough free space for this song."
 msgstr "Kappaleelle ei ole riittävästi tilaa."
 
-#: ../quodlibet/browsers/media.py:510
+#: ../quodlibet/browsers/media.py:511
 #, python-format
 msgid "<b>%s</b> could not be copied."
 msgstr "Kohdetta <b>%s</b> ei voitu kopioida."
 
-#: ../quodlibet/browsers/media.py:530
+#: ../quodlibet/browsers/media.py:531
 msgid "Unable to delete songs"
 msgstr "Kappaleita ei voi poistaa"
 
-#: ../quodlibet/browsers/media.py:540
+#: ../quodlibet/browsers/media.py:541
 #, fuzzy, python-format
 msgid "Deleting <b>%(song)s</b>"
 msgstr "Poistetaan <b>%s</b>"
 
-#: ../quodlibet/browsers/media.py:559
+#: ../quodlibet/browsers/media.py:560
 #, python-format
 msgid "<b>%s</b> could not be deleted."
 msgstr "Kohdetta <b>%s</b> ei voitu poistaa."
 
-#: ../quodlibet/browsers/media.py:563
+#: ../quodlibet/browsers/media.py:564
 msgid "Unable to delete song"
 msgstr "Kappaletta ei voi poistaa"
 
-#: ../quodlibet/browsers/media.py:578
+#: ../quodlibet/browsers/media.py:579
 #, python-format
 msgid "Ejecting <b>%s</b> failed."
 msgstr "Laitteen <b>%s</b> irrottaminen epäonnistui."
 
-#: ../quodlibet/browsers/media.py:581
+#: ../quodlibet/browsers/media.py:582
 msgid "Unable to eject device"
 msgstr "Laitetta ei voi irrottaa"
 
-#: ../quodlibet/browsers/media.py:586
+#: ../quodlibet/browsers/media.py:587
 msgid "No device backend, Media Devices browser disabled."
 msgstr ""
 
@@ -933,21 +933,21 @@ msgstr ""
 msgid "%s: Could not find %s."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:400
+#: ../quodlibet/devices/__init__.py:405
 #, fuzzy
 msgid "Initializing device backend."
 msgstr "Virheellinen arvo"
 
-#: ../quodlibet/devices/__init__.py:401
+#: ../quodlibet/devices/__init__.py:406
 #, python-format
 msgid "Trying '%s'"
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:420
+#: ../quodlibet/devices/__init__.py:425
 msgid "Couldn't connect to a device backend."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:422
+#: ../quodlibet/devices/__init__.py:427
 msgid "Device backend initialized."
 msgstr ""
 
@@ -1415,29 +1415,29 @@ msgstr "Muokkaa tallennettuja arvoja..."
 msgid "Songs"
 msgstr "Kappaleet"
 
-#: ../quodlibet/qltk/controls.py:48
+#: ../quodlibet/qltk/controls.py:79
 msgid "Display remaining time"
 msgstr "Näytä jäljellä oleva aika"
 
-#: ../quodlibet/qltk/controls.py:54
+#: ../quodlibet/qltk/controls.py:85
 msgid "_Edit Bookmarks..."
 msgstr "_Muokkaa kirjanmerkkejä..."
 
-#: ../quodlibet/qltk/controls.py:210
+#: ../quodlibet/qltk/controls.py:232
 msgid "Auto_matic"
 msgstr ""
 
-#: ../quodlibet/qltk/controls.py:211
+#: ../quodlibet/qltk/controls.py:233
 #, fuzzy
 msgid "_Track Mode"
 msgstr "_Raitaotsakkeet"
 
-#: ../quodlibet/qltk/controls.py:212
+#: ../quodlibet/qltk/controls.py:234
 #, fuzzy
 msgid "_Album Mode"
 msgstr "_Albumiotsakkeet"
 
-#: ../quodlibet/qltk/controls.py:255
+#: ../quodlibet/qltk/controls.py:277
 msgid "Stop after this song"
 msgstr "Pysäytä tämän kappaleen jälkeen"
 
@@ -1832,7 +1832,7 @@ msgid "artist"
 msgstr "artisti"
 
 #: ../quodlibet/qltk/information.py:183 ../quodlibet/qltk/information.py:414
-#: ../quodlibet/qltk/information.py:563 ../quodlibet/util/tags.py:146
+#: ../quodlibet/qltk/information.py:563 ../quodlibet/util/tags.py:169
 msgid "artists"
 msgstr "artistit"
 
@@ -1942,7 +1942,7 @@ msgid_plural "%d songs with no artist"
 msgstr[0] "%d kappale, jonka artisti tuntematon"
 msgstr[1] "%d kappaletta, joiden artisti tuntematon"
 
-#: ../quodlibet/qltk/information.py:582 ../quodlibet/util/tags.py:147
+#: ../quodlibet/qltk/information.py:582 ../quodlibet/util/tags.py:170
 msgid "albums"
 msgstr "albumit"
 
@@ -2932,7 +2932,7 @@ msgstr ""
 msgid "%d of %d"
 msgstr "%d/%d"
 
-#: ../quodlibet/qltk/x.py:261
+#: ../quodlibet/qltk/x.py:281
 msgid "Clear search"
 msgstr "Tyhjennä haku"
 
@@ -3307,55 +3307,55 @@ msgid "file format"
 msgstr "muoto"
 
 #. Other things put here as a canonical translated copy.
-#: ../quodlibet/util/tags.py:141
+#: ../quodlibet/util/tags.py:164
 msgid "lyricists"
 msgstr "sanoittajaa"
 
-#: ../quodlibet/util/tags.py:142
+#: ../quodlibet/util/tags.py:165
 msgid "arrangers"
 msgstr "sovittajaa"
 
-#: ../quodlibet/util/tags.py:143
+#: ../quodlibet/util/tags.py:166
 msgid "composers"
 msgstr "säveltäjää"
 
-#: ../quodlibet/util/tags.py:144
+#: ../quodlibet/util/tags.py:167
 msgid "conductors"
 msgstr "orkesterinjohtajaa"
 
-#: ../quodlibet/util/tags.py:145
+#: ../quodlibet/util/tags.py:168
 msgid "authors"
 msgstr "kirjoittajaa"
 
-#: ../quodlibet/util/tags.py:149
+#: ../quodlibet/util/tags.py:172
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekunti"
 msgstr[1] "%d sekuntia"
 
-#: ../quodlibet/util/tags.py:150
+#: ../quodlibet/util/tags.py:173
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuutti"
 msgstr[1] "%d minuuttia"
 
-#: ../quodlibet/util/tags.py:151
+#: ../quodlibet/util/tags.py:174
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d tunti"
 msgstr[1] "%d tuntia"
 
-#: ../quodlibet/util/tags.py:152
+#: ../quodlibet/util/tags.py:175
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d päivä"
 msgstr[1] "%d päivää"
 
-#: ../quodlibet/util/tags.py:153
+#: ../quodlibet/util/tags.py:176
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"

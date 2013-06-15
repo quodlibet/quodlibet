@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 19:59+0200\n"
+"POT-Creation-Date: 2013-06-15 10:35+0200\n"
 "PO-Revision-Date: 2010-02-15 18:25+0100\n"
 "Last-Translator: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
 "Language-Team: Spanish <LL@li.org>\n"
@@ -303,18 +303,18 @@ msgstr "Lista de álbumes"
 msgid "_Album List"
 msgstr "Lista de á_lbumes"
 
-#: ../quodlibet/browsers/albums.py:580
+#: ../quodlibet/browsers/albums.py:581
 msgid "All Albums"
 msgstr "Todos los álbumes"
 
-#: ../quodlibet/browsers/albums.py:581
+#: ../quodlibet/browsers/albums.py:582
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d álbum"
 msgstr[1] "%d álbumes"
 
-#: ../quodlibet/browsers/albums.py:724
+#: ../quodlibet/browsers/albums.py:725
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -442,7 +442,7 @@ msgstr "Sistema de archvos"
 msgid "_File System"
 msgstr "Sistema de _archivos"
 
-#: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:471
+#: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:472
 #: ../quodlibet/qltk/songlist.py:457
 msgid "Unable to copy songs"
 msgstr "No ha sido posible copiar las canciones"
@@ -714,70 +714,70 @@ msgstr "Dispositivos externos"
 msgid "_Media Devices"
 msgstr "Dispositivos _externos"
 
-#: ../quodlibet/browsers/media.py:215 ../quodlibet/browsers/media.py:359
+#: ../quodlibet/browsers/media.py:215 ../quodlibet/browsers/media.py:361
 msgid "_Eject"
 msgstr "_Expulsar"
 
-#: ../quodlibet/browsers/media.py:346 ../quodlibet/browsers/playlists.py:536
+#: ../quodlibet/browsers/media.py:348 ../quodlibet/browsers/playlists.py:536
 msgid "_Rename"
 msgstr "_Cambiar el nombre"
 
-#: ../quodlibet/browsers/media.py:443
+#: ../quodlibet/browsers/media.py:444
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
 msgstr "<b>%s</b> utilizado, <b>%s</b> disponible"
 
-#: ../quodlibet/browsers/media.py:460
+#: ../quodlibet/browsers/media.py:461
 #, python-format
 msgid "<b>%s</b> is not connected."
 msgstr "<b>%s</b> no está conectado."
 
-#: ../quodlibet/browsers/media.py:477
+#: ../quodlibet/browsers/media.py:478
 #, python-format
 msgid "Copying <b>%(song)s</b>"
 msgstr "Copiando <b>%(song)s</b>"
 
-#: ../quodlibet/browsers/media.py:496 ../quodlibet/browsers/media.py:513
+#: ../quodlibet/browsers/media.py:497 ../quodlibet/browsers/media.py:514
 msgid "Unable to copy song"
 msgstr "No se ha podido copiar la canción"
 
-#: ../quodlibet/browsers/media.py:497
+#: ../quodlibet/browsers/media.py:498
 msgid "There is not enough free space for this song."
 msgstr "No hay espacio libre suficiente para esta canción"
 
-#: ../quodlibet/browsers/media.py:510
+#: ../quodlibet/browsers/media.py:511
 #, python-format
 msgid "<b>%s</b> could not be copied."
 msgstr "No se ha podido copiar <b>%s<b>."
 
-#: ../quodlibet/browsers/media.py:530
+#: ../quodlibet/browsers/media.py:531
 msgid "Unable to delete songs"
 msgstr "No se han podido eliminar las canciones"
 
-#: ../quodlibet/browsers/media.py:540
+#: ../quodlibet/browsers/media.py:541
 #, python-format
 msgid "Deleting <b>%(song)s</b>"
 msgstr "Eliminando <b>%(song)s</b>"
 
-#: ../quodlibet/browsers/media.py:559
+#: ../quodlibet/browsers/media.py:560
 #, python-format
 msgid "<b>%s</b> could not be deleted."
 msgstr "No ha podido eliminarse <b>%s</b>.."
 
-#: ../quodlibet/browsers/media.py:563
+#: ../quodlibet/browsers/media.py:564
 msgid "Unable to delete song"
 msgstr "No se ha podido eliminar la canción"
 
-#: ../quodlibet/browsers/media.py:578
+#: ../quodlibet/browsers/media.py:579
 #, python-format
 msgid "Ejecting <b>%s</b> failed."
 msgstr "Error al expulsar <b>%s</b>."
 
-#: ../quodlibet/browsers/media.py:581
+#: ../quodlibet/browsers/media.py:582
 msgid "Unable to eject device"
 msgstr "No ha sido posible expulsar el dispositivo"
 
-#: ../quodlibet/browsers/media.py:586
+#: ../quodlibet/browsers/media.py:587
 msgid "No device backend, Media Devices browser disabled."
 msgstr ""
 "Sin infraestructura de dispositivos. El navegador de dispositivos ha sido "
@@ -953,20 +953,20 @@ msgstr "%s: no se ha podido encontrar media-player-info"
 msgid "%s: Could not find %s."
 msgstr "%s: no se ha podido encontrar media-player-info"
 
-#: ../quodlibet/devices/__init__.py:400
+#: ../quodlibet/devices/__init__.py:405
 msgid "Initializing device backend."
 msgstr "Activando la infraestructura de dispositivos."
 
-#: ../quodlibet/devices/__init__.py:401
+#: ../quodlibet/devices/__init__.py:406
 #, python-format
 msgid "Trying '%s'"
 msgstr "Intentando '%s'"
 
-#: ../quodlibet/devices/__init__.py:420
+#: ../quodlibet/devices/__init__.py:425
 msgid "Couldn't connect to a device backend."
 msgstr "No se ha podido conectar a una infraestructura de dispositivos"
 
-#: ../quodlibet/devices/__init__.py:422
+#: ../quodlibet/devices/__init__.py:427
 msgid "Device backend initialized."
 msgstr "La infraestructura de dispositivos ha sido iniciada."
 
@@ -1442,29 +1442,29 @@ msgstr "Editar los valores guardados..."
 msgid "Songs"
 msgstr "Canciones"
 
-#: ../quodlibet/qltk/controls.py:48
+#: ../quodlibet/qltk/controls.py:79
 msgid "Display remaining time"
 msgstr "Mostrar el tiempo restante"
 
-#: ../quodlibet/qltk/controls.py:54
+#: ../quodlibet/qltk/controls.py:85
 msgid "_Edit Bookmarks..."
 msgstr "_Editar los marcadores..."
 
-#: ../quodlibet/qltk/controls.py:210
+#: ../quodlibet/qltk/controls.py:232
 msgid "Auto_matic"
 msgstr "Auto_mática"
 
-#: ../quodlibet/qltk/controls.py:211
+#: ../quodlibet/qltk/controls.py:233
 #, fuzzy
 msgid "_Track Mode"
 msgstr "Cabeceras de _fichero"
 
-#: ../quodlibet/qltk/controls.py:212
+#: ../quodlibet/qltk/controls.py:234
 #, fuzzy
 msgid "_Album Mode"
 msgstr "Cabeceras de _álbumes"
 
-#: ../quodlibet/qltk/controls.py:255
+#: ../quodlibet/qltk/controls.py:277
 msgid "Stop after this song"
 msgstr "Parar después de esta canción"
 
@@ -1868,7 +1868,7 @@ msgid "artist"
 msgstr "artista"
 
 #: ../quodlibet/qltk/information.py:183 ../quodlibet/qltk/information.py:414
-#: ../quodlibet/qltk/information.py:563 ../quodlibet/util/tags.py:146
+#: ../quodlibet/qltk/information.py:563 ../quodlibet/util/tags.py:169
 msgid "artists"
 msgstr "artistas"
 
@@ -1978,7 +1978,7 @@ msgid_plural "%d songs with no artist"
 msgstr[0] "%d canción sin artista"
 msgstr[1] "%d canciones sin artista"
 
-#: ../quodlibet/qltk/information.py:582 ../quodlibet/util/tags.py:147
+#: ../quodlibet/qltk/information.py:582 ../quodlibet/util/tags.py:170
 msgid "albums"
 msgstr "álbumes"
 
@@ -3000,7 +3000,7 @@ msgstr ""
 msgid "%d of %d"
 msgstr "%d de %d"
 
-#: ../quodlibet/qltk/x.py:261
+#: ../quodlibet/qltk/x.py:281
 msgid "Clear search"
 msgstr "Borrar la búsqueda"
 
@@ -3368,55 +3368,55 @@ msgid "file format"
 msgstr "formato"
 
 #. Other things put here as a canonical translated copy.
-#: ../quodlibet/util/tags.py:141
+#: ../quodlibet/util/tags.py:164
 msgid "lyricists"
 msgstr "letristas"
 
-#: ../quodlibet/util/tags.py:142
+#: ../quodlibet/util/tags.py:165
 msgid "arrangers"
 msgstr "arreglistas"
 
-#: ../quodlibet/util/tags.py:143
+#: ../quodlibet/util/tags.py:166
 msgid "composers"
 msgstr "compositores/as"
 
-#: ../quodlibet/util/tags.py:144
+#: ../quodlibet/util/tags.py:167
 msgid "conductors"
 msgstr "directores/as"
 
-#: ../quodlibet/util/tags.py:145
+#: ../quodlibet/util/tags.py:168
 msgid "authors"
 msgstr "autores"
 
-#: ../quodlibet/util/tags.py:149
+#: ../quodlibet/util/tags.py:172
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: ../quodlibet/util/tags.py:150
+#: ../quodlibet/util/tags.py:173
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
-#: ../quodlibet/util/tags.py:151
+#: ../quodlibet/util/tags.py:174
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
-#: ../quodlibet/util/tags.py:152
+#: ../quodlibet/util/tags.py:175
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d día"
 msgstr[1] "%d días"
 
-#: ../quodlibet/util/tags.py:153
+#: ../quodlibet/util/tags.py:176
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"

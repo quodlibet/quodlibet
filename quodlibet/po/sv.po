@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 19:59+0200\n"
+"POT-Creation-Date: 2013-06-15 10:35+0200\n"
 "PO-Revision-Date: 2013-02-06 10:39+0100\n"
 "Last-Translator: Daniel Nyberg <p.daniel.nyberg@gmail.com>\n"
 "Language-Team: SWEDISH\n"
@@ -288,18 +288,18 @@ msgstr "Albumlista"
 msgid "_Album List"
 msgstr "_Albumlista"
 
-#: ../quodlibet/browsers/albums.py:580
+#: ../quodlibet/browsers/albums.py:581
 msgid "All Albums"
 msgstr "Alla album"
 
-#: ../quodlibet/browsers/albums.py:581
+#: ../quodlibet/browsers/albums.py:582
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d album"
 
-#: ../quodlibet/browsers/albums.py:724
+#: ../quodlibet/browsers/albums.py:725
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Ladda om omslaget"
@@ -422,7 +422,7 @@ msgstr "Filsystem"
 msgid "_File System"
 msgstr "_Filsystem"
 
-#: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:471
+#: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:472
 #: ../quodlibet/qltk/songlist.py:457
 msgid "Unable to copy songs"
 msgstr "Kunde ej kopiera låtar"
@@ -685,70 +685,70 @@ msgstr "Mediaenheter"
 msgid "_Media Devices"
 msgstr "_Mediaenheter"
 
-#: ../quodlibet/browsers/media.py:215 ../quodlibet/browsers/media.py:359
+#: ../quodlibet/browsers/media.py:215 ../quodlibet/browsers/media.py:361
 msgid "_Eject"
 msgstr "_Mata ut"
 
-#: ../quodlibet/browsers/media.py:346 ../quodlibet/browsers/playlists.py:536
+#: ../quodlibet/browsers/media.py:348 ../quodlibet/browsers/playlists.py:536
 msgid "_Rename"
 msgstr "_Byt namn"
 
-#: ../quodlibet/browsers/media.py:443
+#: ../quodlibet/browsers/media.py:444
 #, python-format
 msgid "<b>%s</b> used, <b>%s</b> available"
 msgstr "<b>%s</b> använt, <b>%s</b> tillgängligt"
 
-#: ../quodlibet/browsers/media.py:460
+#: ../quodlibet/browsers/media.py:461
 #, python-format
 msgid "<b>%s</b> is not connected."
 msgstr "<b>%s</b> is ej ansluten."
 
-#: ../quodlibet/browsers/media.py:477
+#: ../quodlibet/browsers/media.py:478
 #, python-format
 msgid "Copying <b>%(song)s</b>"
 msgstr "Kopierar <b>%(song)s</b>"
 
-#: ../quodlibet/browsers/media.py:496 ../quodlibet/browsers/media.py:513
+#: ../quodlibet/browsers/media.py:497 ../quodlibet/browsers/media.py:514
 msgid "Unable to copy song"
 msgstr "Kunde ej kopiera låt"
 
-#: ../quodlibet/browsers/media.py:497
+#: ../quodlibet/browsers/media.py:498
 msgid "There is not enough free space for this song."
 msgstr "Det finns inte tillräckligt med fritt utrymme för den här sången."
 
-#: ../quodlibet/browsers/media.py:510
+#: ../quodlibet/browsers/media.py:511
 #, python-format
 msgid "<b>%s</b> could not be copied."
 msgstr "<b>%s</b> kunde inte kopieras."
 
-#: ../quodlibet/browsers/media.py:530
+#: ../quodlibet/browsers/media.py:531
 msgid "Unable to delete songs"
 msgstr "Kunde ej ta bort låtar."
 
-#: ../quodlibet/browsers/media.py:540
+#: ../quodlibet/browsers/media.py:541
 #, python-format
 msgid "Deleting <b>%(song)s</b>"
 msgstr "Tar bort <b>%(song)s</b>"
 
-#: ../quodlibet/browsers/media.py:559
+#: ../quodlibet/browsers/media.py:560
 #, python-format
 msgid "<b>%s</b> could not be deleted."
 msgstr "<b>%s</b> kunde inte tas bort."
 
-#: ../quodlibet/browsers/media.py:563
+#: ../quodlibet/browsers/media.py:564
 msgid "Unable to delete song"
 msgstr "Kunde ej ta bort låt"
 
-#: ../quodlibet/browsers/media.py:578
+#: ../quodlibet/browsers/media.py:579
 #, python-format
 msgid "Ejecting <b>%s</b> failed."
 msgstr "Utmatning av <b>%s</b> misslyckades."
 
-#: ../quodlibet/browsers/media.py:581
+#: ../quodlibet/browsers/media.py:582
 msgid "Unable to eject device"
 msgstr "Kunde inte mata ut enhet"
 
-#: ../quodlibet/browsers/media.py:586
+#: ../quodlibet/browsers/media.py:587
 msgid "No device backend, Media Devices browser disabled."
 msgstr "Ingen enhetsdrivrutin. Mediaenheter avaktiverade."
 
@@ -916,20 +916,20 @@ msgstr "%s: Hittar inte 'libudev'."
 msgid "%s: Could not find %s."
 msgstr "%s: Kan inte hitta %s."
 
-#: ../quodlibet/devices/__init__.py:400
+#: ../quodlibet/devices/__init__.py:405
 msgid "Initializing device backend."
 msgstr "Initialiserar enhetsdrivrutin."
 
-#: ../quodlibet/devices/__init__.py:401
+#: ../quodlibet/devices/__init__.py:406
 #, python-format
 msgid "Trying '%s'"
 msgstr "Testar '%s'"
 
-#: ../quodlibet/devices/__init__.py:420
+#: ../quodlibet/devices/__init__.py:425
 msgid "Couldn't connect to a device backend."
 msgstr "Kunde inte ansluta till enhetsdrivrutin."
 
-#: ../quodlibet/devices/__init__.py:422
+#: ../quodlibet/devices/__init__.py:427
 msgid "Device backend initialized."
 msgstr "Enhetsdrivrutin initierad."
 
@@ -1397,27 +1397,27 @@ msgstr "Redigera sparade värden..."
 msgid "Songs"
 msgstr "Låtar"
 
-#: ../quodlibet/qltk/controls.py:48
+#: ../quodlibet/qltk/controls.py:79
 msgid "Display remaining time"
 msgstr "Visa återstående tid"
 
-#: ../quodlibet/qltk/controls.py:54
+#: ../quodlibet/qltk/controls.py:85
 msgid "_Edit Bookmarks..."
 msgstr "_Redigera bokmärken"
 
-#: ../quodlibet/qltk/controls.py:210
+#: ../quodlibet/qltk/controls.py:232
 msgid "Auto_matic"
 msgstr "Auto_matisk"
 
-#: ../quodlibet/qltk/controls.py:211
+#: ../quodlibet/qltk/controls.py:233
 msgid "_Track Mode"
 msgstr "_Spårläge"
 
-#: ../quodlibet/qltk/controls.py:212
+#: ../quodlibet/qltk/controls.py:234
 msgid "_Album Mode"
 msgstr "_Albumläge"
 
-#: ../quodlibet/qltk/controls.py:255
+#: ../quodlibet/qltk/controls.py:277
 msgid "Stop after this song"
 msgstr "Stoppa efter denna låt"
 
@@ -1815,7 +1815,7 @@ msgid "artist"
 msgstr "artist"
 
 #: ../quodlibet/qltk/information.py:183 ../quodlibet/qltk/information.py:414
-#: ../quodlibet/qltk/information.py:563 ../quodlibet/util/tags.py:146
+#: ../quodlibet/qltk/information.py:563 ../quodlibet/util/tags.py:169
 msgid "artists"
 msgstr "artister"
 
@@ -1925,7 +1925,7 @@ msgid_plural "%d songs with no artist"
 msgstr[0] "%d låt utan artist"
 msgstr[1] "%d låtar utan artist"
 
-#: ../quodlibet/qltk/information.py:582 ../quodlibet/util/tags.py:147
+#: ../quodlibet/qltk/information.py:582 ../quodlibet/util/tags.py:170
 msgid "albums"
 msgstr "album"
 
@@ -2892,7 +2892,7 @@ msgstr ""
 msgid "%d of %d"
 msgstr "%d av %d"
 
-#: ../quodlibet/qltk/x.py:261
+#: ../quodlibet/qltk/x.py:281
 msgid "Clear search"
 msgstr "Töm sökning"
 
@@ -3256,55 +3256,55 @@ msgid "file format"
 msgstr "filformat"
 
 #. Other things put here as a canonical translated copy.
-#: ../quodlibet/util/tags.py:141
+#: ../quodlibet/util/tags.py:164
 msgid "lyricists"
 msgstr "lyrister"
 
-#: ../quodlibet/util/tags.py:142
+#: ../quodlibet/util/tags.py:165
 msgid "arrangers"
 msgstr "arrangörer"
 
-#: ../quodlibet/util/tags.py:143
+#: ../quodlibet/util/tags.py:166
 msgid "composers"
 msgstr "kompositörer"
 
-#: ../quodlibet/util/tags.py:144
+#: ../quodlibet/util/tags.py:167
 msgid "conductors"
 msgstr "dirigenter"
 
-#: ../quodlibet/util/tags.py:145
+#: ../quodlibet/util/tags.py:168
 msgid "authors"
 msgstr "författare"
 
-#: ../quodlibet/util/tags.py:149
+#: ../quodlibet/util/tags.py:172
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekund"
 msgstr[1] "%d sekunder"
 
-#: ../quodlibet/util/tags.py:150
+#: ../quodlibet/util/tags.py:173
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minut"
 msgstr[1] "%d minuter"
 
-#: ../quodlibet/util/tags.py:151
+#: ../quodlibet/util/tags.py:174
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d timma"
 msgstr[1] "%d timmar"
 
-#: ../quodlibet/util/tags.py:152
+#: ../quodlibet/util/tags.py:175
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d dag"
 msgstr[1] "%d dagar"
 
-#: ../quodlibet/util/tags.py:153
+#: ../quodlibet/util/tags.py:176
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
