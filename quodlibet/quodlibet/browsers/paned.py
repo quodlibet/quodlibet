@@ -15,15 +15,17 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.browsers.search import SearchBar
+from quodlibet.browsers._base import Browser
 from quodlibet.formats import PEOPLE
 from quodlibet.util.collection import Collection
 from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn
-from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage
+from quodlibet.qltk.searchbar import SearchBarBox
+from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, Alignment
 from quodlibet.util import tag, pattern
 from quodlibet.util.library import background_filter
 
@@ -676,10 +678,12 @@ class Pane(AllTreeView):
         return s
 
 
-class PanedBrowser(SearchBar, util.InstanceTracker):
+class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
     """A Browser enabling "drilling down" of tracks by successive
     selections in multiple tag pattern panes (e.g. Genre / People / Album ).
     It presents available values (and track counts) for each pane's tag"""
+
+    __gsignals__ = Browser.__gsignals__
 
     name = _("Paned Browser")
     accelerated_name = _("_Paned Browser")
@@ -691,24 +695,46 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         container.pack2(songpane, True, False)
         return container
 
+    def unpack(self, container, songpane):
+        container.remove(songpane)
+        container.remove(self)
+
+    @classmethod
     def set_all_panes(klass):
         for browser in klass.instances():
             browser.refresh_panes()
             browser.fill_panes()
-    set_all_panes = classmethod(set_all_panes)
 
     def __init__(self, library, main):
-        super(PanedBrowser, self).__init__(library, main, limit=False)
+        super(PanedBrowser, self).__init__()
 
         self._register_instance()
         self.__main = main
+
+        self._filter = None
+        self._library = library
+        self.commands = {"query": self.__query}
+
+        self.set_spacing(6)
+
+        completion = LibraryTagCompletion(library.librarian)
+        self.accelerators = Gtk.AccelGroup()
+        sbb = SearchBarBox(completion=completion,
+                           accel_group=self.accelerators)
+        sbb.connect('query-changed', self.__text_parse)
+        sbb.connect('focus-out', self.__focus)
+        self._sb_box = sbb
+
+        align = (Alignment(sbb, left=3, right=3, top=3) if main
+                 else Alignment(sbb))
+        self.pack_start(align, False, True, 0)
 
         keyval, mod = Gtk.accelerator_parse("<control>Home")
         s = self.accelerators.connect(keyval, mod, 0, self.__all)
         self.connect_object('destroy',
                             self.accelerators.disconnect_key, keyval, mod)
         select = Gtk.Button(_("Select _All"), use_underline=True)
-        self._sb_box.pack_start(select, False, True, 0)
+        sbb.pack_start(select, False, True, 0)
 
         prefs = Gtk.Button()
         prefs.add(SymbolicIconImage("emblem-system", Gtk.IconSize.MENU))
@@ -716,7 +742,7 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         self.connect_object('destroy', prefs.disconnect, s)
         s = select.connect('clicked', self.__all)
         self.connect_object('destroy', select.disconnect, s)
-        self._sb_box.pack_start(prefs, False, True, 0)
+        sbb.pack_start(prefs, False, True, 0)
 
         for s in [library.connect('changed', self.__changed),
                   library.connect('added', self.__added),
@@ -724,8 +750,34 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
                   ]:
             self.connect_object('destroy', library.disconnect, s)
 
+        self.connect('destroy', self.__destroy)
+
         self.refresh_panes()
         self.show_all()
+
+    def __destroy(self, *args):
+        del self.commands
+        del self._sb_box
+
+    def _get_text(self):
+        return self._sb_box.get_text()
+
+    def _set_text(self, text):
+        self._sb_box.set_text(text)
+
+    def __query(self, text, library, window, player):
+        self.filter_text(text)
+
+    def __focus(self, widget, *args):
+        qltk.get_top_parent(widget).songlist.grab_focus()
+
+    def __text_parse(self, bar, text):
+        self._set_text(text)
+        self.activate()
+
+    def filter_text(self, text):
+        self._set_text(text)
+        self.activate()
 
     def __all(self, *args):
         self.__panes[-1].inhibit()
@@ -763,10 +815,11 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         return True
 
     def activate(self):
-        if self._text is not None and Query.is_parsable(self._text):
+        text = self._get_text()
+        if Query.is_parsable(text):
             star = dict.fromkeys(SongList.star)
             star.update(self.__star)
-            self._filter = Query(self._text, star.keys()).search
+            self._filter = Query(text, star.keys()).search
             songs = filter(self._filter, self._library)
             bg = background_filter()
             if bg:
@@ -787,7 +840,6 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
 
         hbox = Gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
-        hbox.set_size_request(100, 100)
         # Fill in the pane list. The last pane reports back to us.
         self.__panes = [self]
         panes = get_headers()
@@ -831,6 +883,9 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
     def can_filter_tag(self, key):
         return (self.__get_filter_pane(key) is not None)
 
+    def can_filter_text(self):
+        return True
+
     def filter(self, key, values):
         filter_pane = self.__get_filter_pane(key)
 
@@ -855,7 +910,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         return []
 
     def save(self):
-        super(PanedBrowser, self).save()
+        config.set("browsers", "query_text", self._get_text())
+
         selected = []
         for pane in self.__panes:
             values = pane.get_selected()
@@ -873,8 +929,12 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         config.set("browsers", "pane_selection", "\n".join(selected))
 
     def restore(self):
-        super(PanedBrowser, self).restore(activate=False)
-        self._sb_box.set_text(self._text)
+        try:
+            text = config.get("browsers", "query_text")
+        except config.Error:
+            pass
+        else:
+            self._set_text(text)
 
         selected = config.get("browsers", "pane_selection")
         if not selected:
@@ -891,9 +951,8 @@ class PanedBrowser(SearchBar, util.InstanceTracker):
         Pane.set_restore(pane_values)
 
     def finalize(self, restored):
-        super(PanedBrowser, self).finalize(restored)
+        config.set("browsers", "query_text", "")
         if not restored:
-            self._text = ""
             self.fill_panes()
 
     def fill(self, songs):

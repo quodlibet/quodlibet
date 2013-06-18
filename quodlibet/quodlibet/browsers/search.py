@@ -74,16 +74,13 @@ class EmptyBar(Gtk.VBox, Browser):
     def save(self):
         config.set("browsers", "query_text", self._text.encode('utf-8'))
 
-    def restore(self, activate=True):
+    def restore(self):
         try:
             text = config.get("browsers", "query_text")
         except Exception:
             return
 
-        if activate:
-            self.filter_text(text)
-        else:
-            self._text = text
+        self.filter_text(text)
 
     def finalize(self, restore):
         config.set("browsers", "query_text", "")

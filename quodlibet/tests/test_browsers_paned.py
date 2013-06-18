@@ -1,5 +1,7 @@
 from tests import TestCase, add
 
+from gi.repository import Gtk
+
 from quodlibet import config
 
 from quodlibet.browsers.paned import PanedBrowser, PanePattern
@@ -32,25 +34,73 @@ class TPanedBrowser(TestCase):
         library.add(SONGS)
         self.bar = self.Bar(library, False)
 
+        self.last = None
+        self.emit_count = 0
+
+        def selected_cb(browser, songs, *args):
+            self.last = list(songs)
+            self.emit_count += 1
+        self.bar.connect("songs-selected", selected_cb)
+
+    def _wait(self):
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
+    def test_pack(self):
+        to_pack = Gtk.Button()
+        container = self.bar.pack(to_pack)
+        self.bar.unpack(container, to_pack)
+
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
             self.failIf(self.bar.can_filter_tag(key))
         self.failUnless(self.bar.can_filter("artist"))
+        self.failUnless(self.bar.can_filter_text())
+
+    def test_filter_text(self):
+        self.bar.finalize(False)
+        expected = SONGS[1:]
+        self.bar.filter_text("artist=!boris")
+        self._wait()
+        self.failUnlessEqual(self.last, expected)
 
     def test_filter_value(self):
-        self.expected = [SONGS[0]]
+        self.bar.finalize(False)
+        expected = [SONGS[0]]
         self.bar.filter("artist", ["boris"])
+        self._wait()
+        self.failUnlessEqual(self.last, expected)
 
     def test_filter_notvalue(self):
-        self.expected = SONGS[1:3]
+        self.bar.finalize(False)
+        expected = SONGS[1:3]
         self.bar.filter("artist", ["notvalue", "mu", "piman"])
+        self._wait()
+        self.failUnlessEqual(self.last, expected)
+
+    def test_restore(self):
+        config.set("browsers", "query_text", "foo")
+        self.bar.restore()
+        self.failUnlessEqual(self.bar._get_text(), "foo")
+        self.bar.finalize(True)
+        self._wait()
+        self.failUnlessEqual(self.emit_count, 0)
 
     def test_restore_entry_text(self):
         self.bar.filter_text("foobar")
         self.bar.save()
-        self.bar._sb_box.set_text("nope")
+        self.bar._set_text("nope")
         self.bar.restore()
-        self.failUnlessEqual(self.bar._sb_box.get_text(), "foobar")
+        self.failUnlessEqual(self.bar._get_text(), "foobar")
+        self._wait()
+        self.failUnlessEqual(self.emit_count, 1)
+
+    def test_set_all_panes(self):
+        self.bar.finalize(False)
+        self.bar.set_all_panes()
+
+    def test_commands(self):
+        self.failUnless("query" in self.bar.commands)
 
     def tearDown(self):
         self.bar.destroy()
