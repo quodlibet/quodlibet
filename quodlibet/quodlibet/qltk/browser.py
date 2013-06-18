@@ -8,6 +8,7 @@ from gi.repository import Gtk, Pango
 
 from quodlibet import config
 from quodlibet import util
+from quodlibet import qltk
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import Window, RPaned
@@ -68,19 +69,15 @@ class LibraryBrowser(Window, PersistentWindowMixin):
         self.__set_pane_size()
 
     def __set_pane_size(self):
-        sub = self.__container
-        if not isinstance(self.__container, RPaned):
-            for child in self.__container.get_children():
-                if isinstance(child, RPaned):
-                    sub = child
-
-        if isinstance(sub, RPaned):
+        widgets = qltk.find_widgets(self.__container, RPaned)
+        if widgets:
+            paned = widgets[0]
             try:
                 key = "%s_pos" % self.browser.__class__.__name__
                 val = config.getfloat("browsers", key)
             except:
                 val = 0.4
-            sub.set_relative(val)
+            paned.set_relative(val)
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:

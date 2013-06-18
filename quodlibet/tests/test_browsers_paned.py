@@ -99,6 +99,10 @@ class TPanedBrowser(TestCase):
         self.bar.finalize(False)
         self.bar.set_all_panes()
 
+    def test_wide_mode(self):
+        self.bar.set_all_wide_mode(True)
+        self.bar.set_all_wide_mode(False)
+
     def test_commands(self):
         self.failUnless("query" in self.bar.commands)
 

@@ -268,7 +268,7 @@ class ConfigRPaned(RPaned):
 
 
 class ConfigRHPaned(ConfigRPaned):
-    ORIENTATION = Gtk.Orientation.VERTICAL
+    ORIENTATION = Gtk.Orientation.HORIZONTAL
 
 
 class ConfigRVPaned(ConfigRPaned):

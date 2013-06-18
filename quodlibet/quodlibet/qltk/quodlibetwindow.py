@@ -631,15 +631,14 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         container = self.browser.__container = self.browser.pack(self.songpane)
 
-        # Look for a paned if the container is none
-        sub = container
-        if not isinstance(container, RPaned):
-            for child in container.get_children():
-                if isinstance(child, RPaned) and child is not self.songpane:
-                    sub = child
+        # find a paned and save the position
+        paned = None
+        for widget in qltk.find_widgets(container, RPaned):
+            if widget is not self.songpane:
+                paned = widget
+                break
 
-        # Save position if container is a RPaned
-        if isinstance(sub, RPaned):
+        if paned:
             try:
                 key = "%s_pos" % self.browser.__class__.__name__
                 val = config.getfloat("browsers", key)
@@ -647,10 +646,10 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                 val = max(val, 0.1)
             except:
                 val = 0.4
-            sub.connect(
+            paned.connect(
                 'notify::position', self.__browser_configure, self.browser)
 
-            sub.set_relative(val)
+            paned.set_relative(val)
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.volume = player.volume

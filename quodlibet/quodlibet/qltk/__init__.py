@@ -22,6 +22,25 @@ def get_top_parent(widget):
         return None
 
 
+def find_widgets(container, type_):
+    """Given a container, find all children that are a subclass of type_
+    (including itself)
+    """
+
+    assert isinstance(container, Gtk.Container)
+
+    found = []
+
+    if isinstance(container, type_):
+        found.append(container)
+
+    for child in container.get_children():
+        if isinstance(child, Gtk.Container):
+            found.extend(find_widgets(child, type_))
+
+    return found
+
+
 def popup_menu_under_widget(menu, widget, button, time):
     def pos_func(menu, data, widget=widget):
         screen = widget.get_screen()

@@ -182,6 +182,7 @@ def init(*rc_files):
             "panes":
                 "~people	<~year|\<b\>\<i\><~year>\</i\>\</b\> - ><album>",
             "pane_selection": "", # selected pane values
+            "pane_wide_mode": "0", # browser orientation
             "background": "", # "global" filter for SearchBar
             "albums": "", # album list
             "album_sort": "0", # album sorting mode, default is title

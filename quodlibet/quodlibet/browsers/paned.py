@@ -26,8 +26,11 @@ from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, Alignment
+from quodlibet.qltk.x import RPaned, MenuItem
 from quodlibet.util import tag, pattern
 from quodlibet.util.library import background_filter
+from quodlibet.qltk.menubutton import MenuButton
+from quodlibet.qltk.ccb import ConfigCheckMenuItem
 
 
 def get_headers():
@@ -678,6 +681,35 @@ class Pane(AllTreeView):
         return s
 
 
+class PreferencesButton(Gtk.HBox):
+    def __init__(self, browser):
+        super(PreferencesButton, self).__init__()
+
+        self._browser = browser
+
+        self._menu = menu = Gtk.Menu()
+
+        wide_mode = ConfigCheckMenuItem(
+            _("_Wide Mode"), "browsers", "pane_wide_mode", True)
+        wide_mode.connect("toggled", self.__wide_mode_changed)
+        menu.append(wide_mode)
+
+        pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
+        pref_item.connect_object("activate", Preferences, browser)
+        menu.append(pref_item)
+
+        menu.show_all()
+
+        button = MenuButton(
+                SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+                arrow=True)
+        button.set_menu(menu)
+        self.pack_start(button, True, True, 0)
+
+    def __wide_mode_changed(self, menu_item):
+        self._browser.set_all_wide_mode(menu_item.get_active())
+
+
 class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
     """A Browser enabling "drilling down" of tracks by successive
     selections in multiple tag pattern panes (e.g. Genre / People / Album ).
@@ -690,14 +722,19 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
     priority = 3
 
     def pack(self, songpane):
-        container = qltk.RVPaned()
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        container = Gtk.HBox()
+        container.pack_start(self, True, True, 0)
+        self.main_box.pack2(songpane, True, False)
         return container
 
     def unpack(self, container, songpane):
-        container.remove(songpane)
+        self.main_box.remove(songpane)
         container.remove(self)
+
+    @classmethod
+    def set_all_wide_mode(klass, value):
+        for browser in klass.instances():
+            browser.set_wide_mode(value)
 
     @classmethod
     def set_all_panes(klass):
@@ -734,14 +771,11 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         self.connect_object('destroy',
                             self.accelerators.disconnect_key, keyval, mod)
         select = Gtk.Button(_("Select _All"), use_underline=True)
-        sbb.pack_start(select, False, True, 0)
-
-        prefs = Gtk.Button()
-        prefs.add(SymbolicIconImage("emblem-system", Gtk.IconSize.MENU))
-        s = prefs.connect('clicked', Preferences)
-        self.connect_object('destroy', prefs.disconnect, s)
         s = select.connect('clicked', self.__all)
         self.connect_object('destroy', select.disconnect, s)
+        sbb.pack_start(select, False, True, 0)
+
+        prefs = PreferencesButton(self)
         sbb.pack_start(prefs, False, True, 0)
 
         for s in [library.connect('changed', self.__changed),
@@ -752,12 +786,30 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
 
         self.connect('destroy', self.__destroy)
 
+        # contains the panes and the song list
+        self.main_box = RPaned()
+        self.pack_start(self.main_box, True, True, 0)
+
         self.refresh_panes()
+        self.set_wide_mode(config.getboolean("browsers", "pane_wide_mode"))
+
         self.show_all()
 
     def __destroy(self, *args):
         del self.commands
         del self._sb_box
+
+    def set_wide_mode(self, do_wide):
+        hor = Gtk.Orientation.HORIZONTAL
+        ver = Gtk.Orientation.VERTICAL
+        panes = self.main_box.get_child1()
+
+        if do_wide:
+            self.main_box.props.orientation = hor
+            panes.props.orientation = ver
+        else:
+            self.main_box.props.orientation = ver
+            panes.props.orientation = hor
 
     def _get_text(self):
         return self._sb_box.get_text()
@@ -831,11 +883,8 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
             pane.scroll(song)
 
     def refresh_panes(self):
-        try:
-            hbox = self.get_children()[1]
-        except IndexError:
-            pass  # first call
-        else:
+        hbox = self.main_box.get_child1()
+        if hbox:
             hbox.destroy()
 
         hbox = Gtk.HBox(spacing=6)
@@ -858,8 +907,8 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
             sw.add(pane)
             hbox.pack_start(sw, True, True, 0)
 
-        self.pack_start(hbox, True, True, 0)
-        self.show_all()
+        self.main_box.pack1(hbox, True, False)
+        hbox.show_all()
 
         self.__star = {}
         for p in self.__panes:
