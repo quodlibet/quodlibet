@@ -8,7 +8,7 @@ from quodlibet import const
 from quodlibet import config
 
 from quodlibet.formats._audio import AudioFile
-from quodlibet.library import SongFileLibrary
+from quodlibet.library import SongFileLibrary, SongLibrarian
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.remote import FSInterface, FIFOControl
 
@@ -50,6 +50,7 @@ class TFIFOControl(TestCase):
         config.init()
         self.p = NullPlayer()
         self.l = SongFileLibrary()
+        self.l.librarian = SongLibrarian()
         self.w = Gtk.Window()
         self.fifo = FIFOControl(self.l, self.w, self.p)
 
@@ -92,7 +93,11 @@ class TFIFOControl(TestCase):
         #self.__send("filter album=test")
         #self.__send("focus")
         #self.__send("hide-window")
-        #self.__send("open-browser 1")
+        self.__send("open-browser SearchBar")
+        from quodlibet.qltk.browser import LibraryBrowser
+        for window in Gtk.Window.list_toplevels():
+            if isinstance(window, LibraryBrowser):
+                window.destroy()
         #self.__send("order shuffle")
         self.__send("properties")
         #self.__send("queue 1")
