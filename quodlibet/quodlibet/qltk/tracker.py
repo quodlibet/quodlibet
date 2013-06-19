@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -77,6 +78,8 @@ class SongTracker(object):
         timer.connect("tick", self.__timer)
         self.__errors_in_a_row = 0
         self.elapsed = 0
+        self.__to_change = set()
+        self.__change_id = None
         quodlibet.quit_add(1, self.__quit, librarian, player)
 
     def __error(self, player, song, error, librarian):
@@ -92,6 +95,22 @@ class SongTracker(object):
             player.paused = True
         song["~errors"] = newstr + song.get("~errors", "")
 
+    def __changed(self, librarian, song):
+        # try to combine changed events and process them if QL is idle
+        self.__to_change.add(song)
+
+        if self.__change_id is not None:
+            GLib.source_remove(self.__change_id)
+            self.__change_id = None
+
+        def idle_change():
+            librarian.changed(list(self.__to_change))
+            self.__to_change.clear()
+            self.__change_id = None
+
+        self.__change_id = GLib.idle_add(idle_change,
+                                         priority=GLib.PRIORITY_LOW)
+
     def __start(self, librarian, song):
         self.elapsed = 0
         if song is not None:
@@ -101,7 +120,7 @@ class SongTracker(object):
             else:
                 config.set("memory", "song", song["~filename"])
             song["~#laststarted"] = int(time.time())
-            librarian.changed([song])
+            self.__changed(librarian, song)
         else:
             config.set("memory", "song", "")
 
@@ -111,11 +130,11 @@ class SongTracker(object):
         elif self.elapsed > 0.5 * song.get("~#length", 1):
             song["~#lastplayed"] = int(time.time())
             song["~#playcount"] = song.get("~#playcount", 0) + 1
-            librarian.changed([song])
+            self.__changed(librarian, song)
         elif pl.current is not song:
             if "~errors" not in song:
                 song["~#skipcount"] = song.get("~#skipcount", 0) + 1
-            librarian.changed([song])
+            self.__changed(librarian, song)
 
         if not ended and song and "~errors" in song:
             del(song["~errors"])
