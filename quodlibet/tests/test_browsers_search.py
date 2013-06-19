@@ -5,7 +5,8 @@ from gi.repository import Gtk
 import quodlibet.browsers.search
 import quodlibet.config
 
-from quodlibet.browsers.search import EmptyBar, SearchBar
+from quodlibet.browsers.search import SearchBar
+from quodlibet.browsers.empty import EmptyBar
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 

@@ -9,7 +9,7 @@ class TLibraryBrowser(TestCase):
 
     def test_ctr(self):
         from quodlibet.library import SongLibrary
-        from quodlibet.browsers.search import EmptyBar
+        from quodlibet.browsers.empty import EmptyBar
         win = LibraryBrowser(EmptyBar, SongLibrary())
         win.browser.emit("songs-selected", [], False)
         win.songlist.get_selection().emit("changed")

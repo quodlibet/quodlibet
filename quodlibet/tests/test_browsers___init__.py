@@ -6,6 +6,7 @@ browsers.init()
 
 class TBrowsers(TestCase):
     def test_presence(self):
+        self.failUnless(browsers.empty)
         self.failUnless(browsers.search)
         self.failUnless(browsers.paned)
         self.failUnless(browsers.iradio)
@@ -15,13 +16,13 @@ class TBrowsers(TestCase):
         self.failUnless(browsers.filesystem)
 
     def test_get(self):
-        self.failUnless(browsers.get("EmptyBar") is browsers.search.EmptyBar)
+        self.failUnless(browsers.get("EmptyBar") is browsers.empty.EmptyBar)
         self.failUnless(
             browsers.get("FileSystem") is browsers.filesystem.FileSystem)
 
     def test_get_invalid(self):
         self.failUnless(
-            browsers.get("DoesNotExist") is browsers.search.EmptyBar)
+            browsers.get("DoesNotExist") is browsers.empty.EmptyBar)
 
     def test_migrate(self):
         self.failUnless(
