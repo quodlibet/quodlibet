@@ -103,6 +103,7 @@ class EditBookmarksPane(Gtk.VBox):
 
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         model.connect('row-changed', self.__set_bookmarks, library, song)
+        model.connect('row-inserted', self.__set_bookmarks, library, song)
 
         selection = sw.get_child().get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
