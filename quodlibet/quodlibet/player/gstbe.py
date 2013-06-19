@@ -244,6 +244,28 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
         self.bin.set_property("flags", flags)
 
+        # find the (uri)decodebin after setup and use autoplug-sort
+        # to sort elements like decoders
+        def source_setup(*args):
+            def autoplug_sort(decode, pad, caps, factories):
+                def set_prio(x):
+                    i, f = x
+                    i = {
+                        "mad": -1,
+                        "mpg123audiodec": -2
+                    }.get(f.get_name(), i)
+                    return (i, f)
+                return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+
+            for e in iter_to_list(self.bin.iterate_recurse):
+                try:
+                    e.connect("autoplug-sort", autoplug_sort)
+                except TypeError:
+                    pass
+                else:
+                    break
+        self.bin.connect("source-setup", source_setup)
+
         # ReplayGain information gets lost when destroying
         self.volume = self.volume
 
@@ -644,13 +666,6 @@ def init(librarian):
     # Enable error messages by default
     if Gst.debug_get_default_threshold() == Gst.DebugLevel.NONE:
         Gst.debug_set_default_threshold(Gst.DebugLevel.ERROR)
-
-    # the fluendo decoder is twice as slow as mad, but wins
-    # at autoplug because it has the same rank and f < m
-    # -> put it slightly behind mad or leave it if it already is
-    flu, mad = map(Gst.ElementFactory.find, ["flump3dec", "mad"])
-    if flu and mad:
-        flu.set_rank(min(flu.get_rank(), max(mad.get_rank() - 1, 0)))
 
     if Gst.Element.make_from_uri(
         Gst.URIType.SRC,
