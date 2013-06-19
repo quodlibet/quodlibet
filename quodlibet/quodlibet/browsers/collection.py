@@ -466,8 +466,11 @@ class CollectionView(AllTreeView):
             self.select_path(path, unselect)
 
     def select_path(self, path, unselect=True):
-        for i, x in enumerate(path[:-1]):
-            self.expand_row(Gtk.TreePath(tuple(path[:i + 1])), False)
+        path_idx = path
+        if isinstance(path_idx, Gtk.TreePath):
+            path_idx = path_idx.get_indices()
+        for i, x in enumerate(path_idx[:-1]):
+            self.expand_row(Gtk.TreePath(tuple(path_idx[:i + 1])), False)
         self.scroll_to_cell(path, use_align=True, row_align=0.5)
         selection = self.get_selection()
         if unselect:
