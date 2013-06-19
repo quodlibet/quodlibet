@@ -8,6 +8,8 @@ import contextlib
 
 from gi.repository import Gtk
 
+from quodlibet.qltk import find_widgets
+
 
 @contextlib.contextmanager
 def realized(widget):
@@ -23,19 +25,26 @@ def realized(widget):
     else:
         toplevel = widget.get_parent_window()
 
-    if toplevel is None:
-        window = Gtk.Window()
-        window.add(widget)
+    new_window = None
 
+    if toplevel is None:
+        toplevel = Gtk.Window()
+        toplevel.add(widget)
+        new_window = toplevel
+
+    # realize all widgets without showing them
+    for sub in find_widgets(toplevel, Gtk.Widget):
+        sub.realize()
     widget.realize()
     while Gtk.events_pending():
         Gtk.main_iteration()
     assert widget.get_realized()
+    assert toplevel.get_realized()
     yield widget
 
-    if toplevel is None:
-        window.remove(widget)
-        window.destroy()
+    if new_window is not None:
+        new_window.remove(widget)
+        new_window.destroy()
 
     while Gtk.events_pending():
         Gtk.main_iteration()

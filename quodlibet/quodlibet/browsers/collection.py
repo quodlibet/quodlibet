@@ -470,6 +470,7 @@ class CollectionView(AllTreeView):
             self.expand_row(Gtk.TreePath(tuple(path[:i + 1])), False)
         self.scroll_to_cell(path, use_align=True, row_align=0.5)
         selection = self.get_selection()
+        assert selection
         if unselect:
             selection.unselect_all()
             self.set_cursor(path)
@@ -478,6 +479,7 @@ class CollectionView(AllTreeView):
 
     def get_selected_albums(self):
         selection = self.get_selection()
+        assert selection
         model, paths = selection.get_selected_rows()
         model = self.get_model()
         albums = set()
@@ -729,11 +731,9 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         return songs
 
     def __selection_changed(self, selection):
-        def idle_emit():
-            songs = self.__get_selected_songs(False)
-            if songs:
-                self.emit('songs-selected', songs, None)
-        GLib.idle_add(idle_emit)
+        songs = self.__get_selected_songs(False)
+        if songs is not None:
+            GLib.idle_add(self.emit, 'songs-selected', songs, None)
 
     def can_filter_albums(self):
         return True
@@ -746,10 +746,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             self.view.select_album(album, unselect=False)
 
     def unfilter(self):
-        model = self.view.get_model()
-        root = model.get_iter_root()
-        if root:
-            self.view.set_cursor(model[root].path)
+        pass
 
     def activate(self):
         self.view.get_selection().emit('changed')
