@@ -466,6 +466,8 @@ class CollectionView(AllTreeView):
             self.select_path(path, unselect)
 
     def select_path(self, path, unselect=True):
+        if isinstance(path, Gtk.TreePath):
+            path = path.get_indices()
         for i, x in enumerate(path[:-1]):
             self.expand_row(Gtk.TreePath(tuple(path[:i + 1])), False)
         self.scroll_to_cell(path, use_align=True, row_align=0.5)
