@@ -8,6 +8,7 @@ from gi.repository import Gtk
 
 from quodlibet import app
 from quodlibet import qltk
+from quodlibet.qltk.bookmarks import EditBookmarks
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -18,8 +19,8 @@ class Bookmarks(SongsMenuPlugin):
     PLUGIN_ICON = Gtk.STOCK_JUMP_TO
     PLUGIN_VERSION = "0.4"
 
-    def __init__(self, songs):
-        super(Bookmarks, self).__init__(songs)
+    def __init__(self, songs, *args, **kwargs):
+        super(Bookmarks, self).__init__(songs, *args, **kwargs)
         self.__menu = Gtk.Menu()
         self.__menu.connect('map', self.__map, songs)
         self.__menu.connect('unmap', self.__unmap)
@@ -51,9 +52,12 @@ class Bookmarks(SongsMenuPlugin):
 
                 song_menu.append(Gtk.SeparatorMenuItem())
                 i = qltk.MenuItem(_("_Edit Bookmarks..."), Gtk.STOCK_EDIT)
-                i.connect_object('activate',
-                    qltk.bookmarks.EditBookmarks, None, app.library,
-                    fake_player)
+
+                def edit_bookmarks_cb(menu_item):
+                    window = EditBookmarks(self.plugin_window, app.library,
+                                           fake_player)
+                    window.show()
+                i.connect('activate', edit_bookmarks_cb)
                 song_menu.append(i)
 
         if menu.get_active() is None:
