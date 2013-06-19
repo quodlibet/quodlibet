@@ -93,6 +93,7 @@ class TFIFOControl(TestCase):
         #self.__send("filter album=test")
         #self.__send("focus")
         #self.__send("hide-window")
+        self.__send("dump-browsers /dev/null")
         self.__send("open-browser SearchBar")
         from quodlibet.qltk.browser import LibraryBrowser
         for window in Gtk.Window.list_toplevels():

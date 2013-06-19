@@ -43,6 +43,9 @@ OPTIONS
 --next
     Jump to next song
 
+--list-browsers
+    List available browsers
+
 --open-browser=BrowserName
     Open a new browser
 

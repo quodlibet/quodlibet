@@ -255,6 +255,17 @@ class FIFOControl(object):
             else:
                 library.changed([song])
 
+    def _dump_browsers(self, value, library, window, player):
+        try:
+            f = file(value, "w")
+        except EnvironmentError:
+            pass
+        else:
+            for i, browser in enumerate(browsers.browsers):
+                if browser is not browsers.empty.EmptyBar:
+                    f.write("%d. %s\n" % (i, browser.__name__))
+            f.close()
+
     def _set_browser(self, value, library, window, player):
         Kind = browsers.get(value)
         if Kind is not browsers.empty.EmptyBar:

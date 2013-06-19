@@ -317,6 +317,7 @@ def process_arguments():
         ("focus", _("Focus the running player")),
         ("unfilter", _("Remove active browser filters")),
         ("refresh", _("Refresh and rescan library")),
+        ("list-browsers", _("List available browsers")),
         ("print-playlist", _("Print the current playlist")),
         ("print-queue", _("Print the contents of the queue")),
         ("no-plugins", _("Start without plugins")),
@@ -406,6 +407,8 @@ def process_arguments():
             print_fifo("dump-playlist")
         elif command == "print-queue":
             print_fifo("dump-queue")
+        elif command == "list-browsers":
+            print_fifo("dump-browsers")
         elif command == "volume-up":
             control("volume +")
         elif command == "volume-down":
