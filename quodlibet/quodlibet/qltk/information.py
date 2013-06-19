@@ -619,7 +619,7 @@ class Information(Window, PersistentWindowMixin):
         self.__songs = songs
         self.__update(library)
         self.set_transient_for(qltk.get_top_parent(parent))
-        self.show_all()
+        self.get_child().show_all()
 
     def __check_changed(self, library, songs):
         changed = set(songs)

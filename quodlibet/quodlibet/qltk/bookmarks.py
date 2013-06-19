@@ -210,8 +210,7 @@ class EditBookmarks(qltk.Window):
 
         self.get_child().close.connect_object('clicked',
                                               qltk.Window.destroy, self)
-
-        self.show_all()
+        self.get_child().show_all()
 
     def __check_lock(self, library, songs, song, model):
         if song in songs:

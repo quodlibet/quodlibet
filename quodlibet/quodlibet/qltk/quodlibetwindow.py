@@ -910,7 +910,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     def __current_song_info(self, *args):
         song = app.player.song
         if song:
-            Information(self.__library.librarian, [song], self)
+            window = Information(self.__library.librarian, [song], self)
+            window.show()
 
     def __hide_menus(self):
         menus = {'genre': ["/Menu/Filters/FilterGenre",

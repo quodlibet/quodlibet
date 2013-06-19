@@ -96,13 +96,15 @@ class MaskedBox(Gtk.HBox):
 
         self.pack_start(sw, True, True, 0)
         self.pack_start(vbox, False, True, 0)
-        self.show_all()
 
         for path in library.masked_mount_points:
             model.append(row=[path])
 
         if not len(model):
             self.set_sensitive(False)
+
+        for child in self.get_children():
+            child.show_all()
 
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())

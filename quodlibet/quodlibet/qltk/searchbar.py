@@ -76,7 +76,8 @@ class SearchBarBox(Gtk.HBox):
             accel_group.connect(key, mod, 0,
                     lambda *x: entry.mnemonic_activate(True))
 
-        self.show_all()
+        for child in self.get_children():
+            child.show_all()
 
     def __inhibit(self):
         self.__combo.handler_block(self.__sig)

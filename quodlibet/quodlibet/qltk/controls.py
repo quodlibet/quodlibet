@@ -83,8 +83,12 @@ class SeekBar(HSlider):
         m.append(c)
         m.append(Gtk.SeparatorMenuItem())
         i = qltk.MenuItem(_("_Edit Bookmarks..."), Gtk.STOCK_EDIT)
-        i.connect_object(
-            'activate', bookmarks.EditBookmarks, self, library, player)
+
+        def edit_bookmarks_cb(menu_item):
+            window = bookmarks.EditBookmarks(self, library, player)
+            window.show()
+
+        i.connect('activate', edit_bookmarks_cb)
         m.append(i)
         m.show_all()
         self.get_child().connect_object(
@@ -194,8 +198,6 @@ class Volume(Gtk.VolumeButton):
         device.connect('notify::volume', self.__volume_notify)
         self.set_value(config.getfloat("memory", "volume"))
 
-        self.show_all()
-
         replaygain_menu = ReplayGainMenu(device)
         self.connect('popup-menu', self.__popup, replaygain_menu)
         self.connect_object('button-press-event', self.__volume_button_press,
@@ -245,7 +247,7 @@ class ReplayGainMenu(Gtk.Menu):
             item.connect("toggled", self.__changed, player, profile)
             if player.replaygain_profiles[0] == profile:
                 item.set_active(True)
-        self.show_all()
+            item.show()
 
     def __changed(self, item, player, profile):
         if item.get_active():
@@ -344,7 +346,6 @@ class PlayControls(Gtk.VBox):
         player.connect('song-started', self.__song_started, next, play)
         player.connect_object('paused', play.set_active, False)
         player.connect_object('unpaused', play.set_active, True)
-        self.show_all()
 
     def __scroll(self, player, event):
         if event.direction in [Gdk.ScrollDirection.UP,

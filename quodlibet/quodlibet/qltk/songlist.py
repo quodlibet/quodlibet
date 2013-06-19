@@ -915,7 +915,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 songs = [app.player.song]
             else:
                 return
-        Information(librarian, songs, self)
+        window = Information(librarian, songs, self)
+        window.show()
 
     # Build a new filter around our list model, set the headers to their
     # new values.

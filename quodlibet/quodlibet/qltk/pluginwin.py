@@ -68,8 +68,8 @@ class PluginErrorWindow(qltk.UniqueWindow):
         vbox2.pack_start(b, False, True, 0)
         self.add(vbox2)
 
-        self.show_all()
         close.grab_focus()
+        self.get_child().show_all()
 
 
 class PluginWindow(qltk.UniqueWindow):
@@ -357,4 +357,5 @@ class PluginWindow(qltk.UniqueWindow):
         errors.set_sensitive(failures)
 
     def __show_errors(self, activator):
-        PluginErrorWindow(self)
+        window = PluginErrorWindow(self)
+        window.show()

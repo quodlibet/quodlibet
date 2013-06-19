@@ -106,7 +106,7 @@ class _KeyValueEditor(qltk.Window):
         self.connect_object('destroy', Gtk.Menu.destroy, menu)
 
         name.grab_focus()
-        self.show_all()
+        self.get_child().show_all()
 
     def fill_values(self):
         """Responsible for populating self.model (eg with values from disk)"""
@@ -290,7 +290,8 @@ class ComboBoxEntrySave(Gtk.ComboBox):
             if model[iter][2] in ICONS:
                 self.get_child().set_text(self.__last)
                 Kind = ICONS[model[iter][2]]
-                Kind(self, title, validator)
+                win = Kind(self, title, validator)
+                win.show()
                 self.set_active(-1)
             else:
                 self.__focus_entry()

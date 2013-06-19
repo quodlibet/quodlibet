@@ -99,7 +99,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
 
         self.selection.connect('changed', self.__select)
         self.connect('destroy', self.__finish)
-        self.show_all()
+        self.get_child().show_all()
 
     def _find(self, name):
         for row in self.model:

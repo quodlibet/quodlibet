@@ -72,7 +72,11 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         prefs = Gtk.Button()
         prefs.add(Gtk.Image.new_from_stock(
             Gtk.STOCK_PREFERENCES, Gtk.IconSize.BUTTON))
-        prefs.connect_object('clicked', PreferencesWindow, self)
+
+        def prefs_cb(button):
+            window = PreferencesWindow(self)
+            window.show()
+        prefs.connect('clicked', prefs_cb)
         bbox.pack_start(prefs, False, True, 0)
 
         plugins = qltk.Button(_("_Plugins"), Gtk.STOCK_EXECUTE)
@@ -95,7 +99,9 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         nb = qltk.Notebook()
         nb.show()
         for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
-            nb.append_page(Page(self, self.__library))
+            page = Page(self, self.__library)
+            page.show()
+            nb.append_page(page)
         align = Alignment(nb, top=3)
         align.show()
         hp.pack2(align, resize=True, shrink=False)
@@ -247,7 +253,7 @@ class PreferencesWindow(qltk.UniqueWindow):
         self.add(main_vbox)
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)
-        self.show_all()
+        self.get_child().show_all()
 
     def __changed(self, entry, section, name):
         config.set(section, name, entry.get_text())

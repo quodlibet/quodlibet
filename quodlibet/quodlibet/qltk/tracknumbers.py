@@ -96,7 +96,8 @@ class TrackNumbers(Gtk.VBox):
             'changed', self.__class__.__update, self,
             spin_total, model, save, revert)
 
-        self.show_all()
+        for child in self.get_children():
+            child.show_all()
 
     def __row_edited(self, render, path, new, model, preview, save):
         row = model[path]

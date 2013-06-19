@@ -396,6 +396,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             w = PatternEdit(button, AnimOsd.conf.string)
             w.text = self.conf.string
             w.apply.connect_object_after('clicked', set_string, w)
+            w.show()
 
         def set_string(window):
             value = window.text

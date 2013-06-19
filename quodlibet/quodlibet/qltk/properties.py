@@ -50,6 +50,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         if len(songs) > 1:
             pages.append(TrackNumbers(self, library))
         for page in pages:
+            page.show()
             notebook.append_page(page)
         self.set_border_width(12)
 

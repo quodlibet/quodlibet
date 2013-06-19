@@ -20,7 +20,6 @@ class _PopupSlider(Gtk.EventBox):
             button.add(child)
         self.add(button)
         button.connect('clicked', self.__clicked)
-        self.show_all()
 
         window = self.__window = Gtk.Window(Gtk.WindowType.POPUP)
         self.__adj = adj or self._adj
@@ -55,6 +54,8 @@ class _PopupSlider(Gtk.EventBox):
             return True
         self.scale.connect_after('button-press-event', handle_all)
         self.scale.connect_after('button-release-event', handle_all)
+
+        self.get_child().show_all()
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError

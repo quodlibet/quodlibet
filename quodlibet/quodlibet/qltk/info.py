@@ -108,6 +108,7 @@ class SongInfo(Gtk.Label):
         editor = PatternEdit(self, SongInfo._pattern)
         editor.text = self._pattern
         editor.apply.connect_object('clicked', self.__set, editor, player)
+        editor.show()
 
     def __set(self, edit, player):
         self._pattern = edit.text.rstrip()

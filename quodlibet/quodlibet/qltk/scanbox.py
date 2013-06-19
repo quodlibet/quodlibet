@@ -76,12 +76,14 @@ class ScanBox(Gtk.HBox):
 
         self.pack_start(sw, True, True, 0)
         self.pack_start(vbox, False, True, 0)
-        self.show_all()
 
         paths = util.split_scan_dirs(config.get("settings", "scan"))
         paths = map(util.fsdecode, paths)
         for path in paths:
             model.append(row=[path])
+
+        for child in self.get_children():
+            child.show_all()
 
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
