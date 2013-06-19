@@ -88,6 +88,7 @@ def check_wrapper_changed(library, parent, songs):
 
     if needs_write:
         win = WritingWindow(parent, len(needs_write))
+        win.show()
         for song in needs_write:
             try:
                 song._song.write()

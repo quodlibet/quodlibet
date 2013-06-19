@@ -19,7 +19,7 @@ class TExceptionDialog(TestCase):
             try:
                 raise Exception
             except Exception:
-                ExceptionDialog.excepthook(*sys.exc_info())
+                ExceptionDialog.from_except(*sys.exc_info())
                 ExceptionDialog.instance.destroy()
         finally:
             sys.stderr = old

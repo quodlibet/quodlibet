@@ -36,4 +36,4 @@ class LoggingWindow(qltk.Window):
         vbox.pack_start(button_box, False, True, 0)
         self.add(vbox)
 
-        self.show_all()
+        self.get_child().show_all()

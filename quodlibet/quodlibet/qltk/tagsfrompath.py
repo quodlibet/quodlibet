@@ -226,6 +226,7 @@ class TagsFromPath(EditPane):
         model = self.view.get_model()
         add = bool(addreplace.get_active())
         win = WritingWindow(self, len(model))
+        win.show()
 
         was_changed = []
 

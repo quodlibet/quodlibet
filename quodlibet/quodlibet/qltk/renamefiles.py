@@ -123,6 +123,7 @@ class RenameFiles(EditPane):
     def __rename(self, library):
         model = self.view.get_model()
         win = WritingWindow(self, len(model))
+        win.show()
         was_changed = []
         skip_all = False
         self.view.freeze_child_notify()

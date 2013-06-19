@@ -278,8 +278,12 @@ class SongsMenu(Gtk.Menu):
                 key, val = Gtk.accelerator_parse("<alt>Return")
                 b.add_accelerator(
                     'activate', accels, key, val, Gtk.AccelFlags.VISIBLE)
-            b.connect_object(
-                'activate', SongProperties, librarian, songs, parent)
+
+            def song_properties_cb(menu_item):
+                window = SongProperties(librarian, songs, parent)
+                window.show()
+
+            b.connect('activate', song_properties_cb)
             self.append(b)
 
             b = Gtk.ImageMenuItem(Gtk.STOCK_INFO, use_stock=True)
@@ -287,7 +291,11 @@ class SongsMenu(Gtk.Menu):
                 b.add_accelerator('activate', accels, ord('I'),
                                   Gdk.ModifierType.CONTROL_MASK,
                                   Gtk.AccelFlags.VISIBLE)
-            b.connect_object('activate', Information, librarian, songs, parent)
+
+            def information_cb(menu_item):
+                window = Information(librarian, songs, parent)
+                window.show()
+            b.connect('activate', information_cb)
             self.append(b)
 
         self.connect_object('selection-done', Gtk.Menu.destroy, self)

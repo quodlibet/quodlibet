@@ -152,7 +152,9 @@ class PreferencesWindow(qltk.UniqueWindow):
                           aio)
             # Apply on destroy, else config gets mangled
             self.connect('destroy', self.__apply, buttons, tiv, aip, fip, aio)
-            self.show_all()
+
+            for child in self.get_children():
+                child.show_all()
 
         def __apply(self, button, buttons, tiv, aip, fip, aio):
             new_headers = set()
@@ -197,6 +199,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             m = MultiStringEditor(_("Extra Columns"), self.other_cols)
             m.connect('destroy', __closed)
+            m.show()
 
     class Browsers(Gtk.VBox):
         name = "browser"
@@ -283,6 +286,9 @@ class PreferencesWindow(qltk.UniqueWindow):
             f = qltk.Frame(_("Album Art"), child=vb)
             self.pack_start(f, False, True, 0)
 
+            for child in self.get_children():
+                child.show_all()
+
         def __changed_text(self, entry, name):
             config.set('albumart', name, entry.get_text())
 
@@ -366,7 +372,9 @@ class PreferencesWindow(qltk.UniqueWindow):
             c.emit('toggled')
 
             self.pack_start(f, False, True, 0)
-            self.show_all()
+
+            for child in self.get_children():
+                child.show_all()
 
         def __toggled_gain(self, activator, widgets):
             if app.player: # tests
@@ -463,7 +471,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             f = qltk.Frame(_("Ratings"), child=vb2)
             self.pack_start(f, False, True, 0)
 
-            self.show_all()
+            for child in self.get_children():
+                child.show_all()
 
         def __changed(self, entry, section, name):
             config.set(section, name, entry.get_text())
@@ -515,7 +524,8 @@ class PreferencesWindow(qltk.UniqueWindow):
                 f = qltk.Frame(_("Hidden Songs"), child=masked)
                 self.pack_start(f, False, True, 0)
 
-            self.show_all()
+            for child in self.get_children():
+                child.show_all()
 
     def __init__(self, parent):
         if self.is_not_unique():
@@ -543,7 +553,8 @@ class PreferencesWindow(qltk.UniqueWindow):
         self.add(vbox)
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)
-        self.show_all()
+
+        self.get_child().show_all()
 
     def set_page(self, name):
         notebook = self.__notebook

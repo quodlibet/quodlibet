@@ -488,7 +488,9 @@ class EditTags(Gtk.VBox):
         view.connect('key-press-event', self.__view_key_press_event)
         selection.connect('changed', self.__tag_select, remove)
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.show_all()
+
+        for child in self.get_children():
+            child.show_all()
 
     def __view_key_press_event(self, view, event):
         # We can't use a real accelerator to this because it would
@@ -672,6 +674,7 @@ class EditTags(Gtk.VBox):
         was_changed = []
         songs = self.__songinfo.songs
         win = WritingWindow(self, len(songs))
+        win.show()
         for song in songs:
             if not song.valid() and not qltk.ConfirmAction(
                 self, _("Tag may not be accurate"),

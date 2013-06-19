@@ -32,6 +32,7 @@ class IFPUpload(SongsMenuPlugin):
 
         w = qltk.WaitLoadWindow(
             None, len(songs), "Uploading %d/%d", (0, len(songs)))
+        w.show()
 
         for i, song in enumerate(songs):
             if self.__upload(song) or w.step(i, len(songs)):

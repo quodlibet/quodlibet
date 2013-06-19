@@ -210,7 +210,7 @@ class Preferences(qltk.UniqueWindow):
         self.add(vbox)
 
         ok.grab_focus()
-        self.show_all()
+        self.get_child().show_all()
 
     def __apply(self, editor, close):
         if editor.headers != get_headers():
@@ -695,7 +695,11 @@ class PreferencesButton(Gtk.HBox):
         menu.append(wide_mode)
 
         pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
-        pref_item.connect_object("activate", Preferences, browser)
+
+        def preferences_cb(menu_item):
+            window = Preferences(browser)
+            window.show()
+        pref_item.connect("activate", preferences_cb)
         menu.append(pref_item)
 
         menu.show_all()
@@ -723,6 +727,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
 
     def pack(self, songpane):
         container = Gtk.HBox()
+        self.show()
         container.pack_start(self, True, True, 0)
         self.main_box.pack2(songpane, True, False)
         return container
@@ -793,7 +798,8 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         self.refresh_panes()
         self.set_wide_mode(config.getboolean("browsers", "pane_wide_mode"))
 
-        self.show_all()
+        for child in self.get_children():
+            child.show_all()
 
     def __destroy(self, *args):
         del self.commands

@@ -903,7 +903,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 songs = [app.player.song]
             else:
                 return
-        SongProperties(librarian, songs, parent=self)
+        window = SongProperties(librarian, songs, parent=self)
+        window.show()
 
     def __information(self, librarian):
         model, rows = self.get_selection().get_selected_rows()
@@ -1062,7 +1063,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # Prefs has to import SongList, so do this here to avoid
         # a circular import.
         from quodlibet.qltk.prefs import PreferencesWindow
-        PreferencesWindow(self).set_page("songlist")
+        window = PreferencesWindow(self)
+        window.show()
+        window.set_page("songlist")
 
     def __showmenu(self, column, event=None):
         time = Gtk.get_current_event_time()

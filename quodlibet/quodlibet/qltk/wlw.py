@@ -153,7 +153,8 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         while Gtk.events_pending():
             Gtk.main_iteration()
-        self.show_all()
+
+        self.get_child().show_all()
 
     def __recenter(self, parent, event):
         x, y = parent.get_position()
@@ -200,7 +201,8 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
         self.pack_start(self._pause_button, False, True, 0)
         self.pack_start(self._cancel_button, False, True, 0)
 
-        self.show_all()
+        for child in self.get_children():
+            child.show_all()
 
     def step(self, **values):
         ret = super(WaitLoadBar, self).step(**values)

@@ -18,7 +18,7 @@ class ExceptionDialog(Gtk.Window):
     instance = None
 
     @classmethod
-    def excepthook(Kind, *args):
+    def from_except(Kind, *args):
         dump = os.path.join(
             const.USERDIR, time.strftime("Dump_%Y%m%d_%H%M%S.txt"))
         minidump = os.path.join(
@@ -29,6 +29,12 @@ class ExceptionDialog(Gtk.Window):
         if not Kind.running:
             Kind.running = True
             Kind.instance = Kind(*full_args)
+        return Kind.instance
+
+    @classmethod
+    def excepthook(Kind, *args):
+        instance = Kind.from_except(*args)
+        instance.show()
         old_hook(*args)
 
     @classmethod
@@ -108,10 +114,15 @@ class ExceptionDialog(Gtk.Window):
         cancel.connect_object('clicked', Gtk.Window.destroy, self)
         close.connect('clicked', lambda *x: Gtk.main_quit())
 
-        self.show_all()
-        filename = util.unexpand(dump)
-        offset = label.get_text().decode("utf-8").find(filename)
-        label.select_region(offset, offset + len(filename))
+        self.get_child().show_all()
+
+        def first_draw(*args):
+            filename = util.unexpand(dump)
+            offset = label.get_text().decode("utf-8").find(filename)
+            label.select_region(offset, offset + len(filename))
+            self.disconnect(self.__draw_id)
+
+        self.__draw_id = self.connect("draw", first_draw)
 
     def __stack_row_activated(self, view, path, column):
         model = view.get_model()

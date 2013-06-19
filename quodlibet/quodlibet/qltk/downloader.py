@@ -23,6 +23,7 @@ class DownloadWindow(qltk.UniqueWindow):
             # source fileobj, target fileobj, I/O watch callback ID, source uri
             klass.downloads = Gtk.ListStore(object, object, int, object)
         win = DownloadWindow(parent)
+        win.show()
         win._download(source, target)
     download = classmethod(download)
 
@@ -73,7 +74,7 @@ class DownloadWindow(qltk.UniqueWindow):
         self.add(sw)
         self.connect_object(
             'delete-event', DownloadWindow.__delete_event, self)
-        self.show_all()
+        self.get_child().show_all()
 
     def __update(self):
         for row in self.downloads:

@@ -81,7 +81,8 @@ class Preferences(Gtk.VBox):
                 "<album|<album~discnumber~part~tracknumber~title~version>|"
                 "<artist~title~version>>")
 
-        self.show_all()
+        for child in self.get_children():
+            child.show_all()
 
     def __changed_combo(self, combo):
         config.set(
@@ -487,7 +488,8 @@ class TrayIcon(EventPlugin):
     def __properties(self, *args):
         song = app.player.song
         if song:
-            SongProperties(app.librarian, [song])
+            window = SongProperties(app.librarian, [song])
+            window.show()
 
     def __information(self, *args):
         song = app.player.song

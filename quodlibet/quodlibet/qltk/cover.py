@@ -51,7 +51,7 @@ class BigCenteredImage(qltk.Window):
 
         event_box.connect('button-press-event', self.__destroy)
         event_box.connect('key-press-event', self.__destroy)
-        self.show_all()
+        self.get_child().show_all()
 
     def __destroy(self, *args):
         self.destroy()
@@ -170,7 +170,7 @@ class CoverImage(Gtk.EventBox):
         self.add(ResizeImage(resize, size))
         self.connect('button-press-event', self.__show_cover)
         self.set_song(song)
-        self.show_all()
+        self.get_child().show_all()
 
     def set_song(self, song):
         self.__song = song
@@ -222,4 +222,5 @@ class CoverImage(Gtk.EventBox):
         except GLib.GError: # reload in case the image file is gone
             self.refresh()
         else:
+            self.__current_bci.show()
             self.__current_bci.connect('destroy', self.__reset_bci)

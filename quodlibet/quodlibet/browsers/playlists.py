@@ -73,6 +73,7 @@ def __ParsePlaylist(name, plfilename, files, library):
     win = WaitLoadWindow(
         None, len(files),
         _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
+    win.show()
     for i, filename in enumerate(files):
         try:
             uri = URI(filename)
@@ -197,6 +198,7 @@ class Playlists(Gtk.VBox, Browser):
 
     def pack(self, songpane):
         container = qltk.RHPaned()
+        self.show()
         container.pack1(self, True, False)
         container.pack2(songpane, True, False)
         return container
@@ -343,7 +345,8 @@ class Playlists(Gtk.VBox, Browser):
 
         self.connect('key-press-event', self.__key_pressed)
 
-        self.show_all()
+        for child in self.get_children():
+            child.show_all()
 
     def __key_pressed(self, widget, event):
         if qltk.is_accel(event, "Delete"):

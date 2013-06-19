@@ -80,7 +80,11 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         bbox.pack_start(prefs, False, True, 0)
 
         plugins = qltk.Button(_("_Plugins"), Gtk.STOCK_EXECUTE)
-        plugins.connect_object('clicked', PluginWindow, self)
+
+        def plugin_window_cb(button):
+            window = PluginWindow(self)
+            window.show()
+        plugins.connect('clicked', plugin_window_cb)
         bbox.pack_start(plugins, False, True, 0)
 
         l = Gtk.Label()

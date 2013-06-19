@@ -80,7 +80,7 @@ class DeviceProperties(Gtk.Dialog):
                         widget.set_alignment(0.0, 0.5)
                     table.attach(widget, 1, 2, y, y + 1)
             y += 1
-        self.show_all()
+        self.get_child().show_all()
 
     def __changed(self, widget, key, device):
         if isinstance(widget, Gtk.Entry):
@@ -248,7 +248,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
         self.__statusbar = WaitLoadBar()
 
-        self.show_all()
+        for child in self.get_children():
+            child.show_all()
 
     def pack(self, songpane):
         self.__vbox = vbox = Gtk.VBox(spacing=6)
@@ -261,6 +262,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__header.hide()
         self.__statusbar.show_all()
         self.__statusbar.hide()
+        self.show()
 
         self.__paned = paned = qltk.RHPaned()
         paned.pack1(self, True, False)

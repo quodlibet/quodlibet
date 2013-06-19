@@ -102,7 +102,6 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         paned.set_position(175)
         notebook.show()
         paned.show()
-        self.show()
 
     def __remove(self, library, songs, model, selection, sig):
         # If the handler is unblocked, then the selection gets updated

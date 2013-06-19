@@ -202,7 +202,7 @@ class PluginWindow(qltk.UniqueWindow):
         filter.set_visible_func(
             self.__filter, (filter_entry, filter_combo, combo_store))
 
-        self.show_all()
+        self.get_child().show_all()
         filter_entry.grab_focus()
 
         restore_id = config.get("memory", "plugin_selection")

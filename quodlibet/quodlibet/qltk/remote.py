@@ -300,7 +300,8 @@ class FIFOControl(object):
         songs = filter(None, songs)
 
         if songs:
-            SongProperties(library, songs, parent=window)
+            window = SongProperties(library, songs, parent=window)
+            window.show()
 
     def _enqueue(self, value, library, window, player):
         playlist = window.playlist

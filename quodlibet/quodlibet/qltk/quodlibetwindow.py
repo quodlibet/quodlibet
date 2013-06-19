@@ -153,6 +153,9 @@ class TopBar(Gtk.HBox):
                      self.__song_art_changed, library, parent=self)
         self.pack_start(self.image, False, True, 0)
 
+        for child in self.get_children():
+            child.show_all()
+
     def __new_song(self, player, song):
         self.image.set_song(song)
 
@@ -436,6 +439,10 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     def __create_menu(self, player, library):
         ag = Gtk.ActionGroup('QuodLibetWindowActions')
 
+        def logging_cb(*args):
+            window = LoggingWindow(self)
+            window.show()
+
         actions = [
             ('Music', None, _("_Music")),
             ('AddFolders', Gtk.STOCK_ADD, _('_Add a Folder...'),
@@ -471,7 +478,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
             ("OutputLog", Gtk.STOCK_EDIT, _("_Output Log"),
-             None, None, lambda *args: LoggingWindow(self)),
+             None, None, logging_cb),
             ]
 
         if const.DEBUG:
@@ -822,10 +829,12 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
     # Set up the preferences window.
     def __preferences(self, activator):
-        PreferencesWindow(self)
+        window = PreferencesWindow(self)
+        window.show()
 
     def __plugins(self, activator):
-        PluginWindow(self)
+        window = PluginWindow(self)
+        window.show()
 
     def open_location(self, action):
         name = GetStringDialog(self, _("Add a Location"),
@@ -905,12 +914,15 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     def __current_song_prop(self, *args):
         song = app.player.song
         if song:
-            SongProperties(self.__library.librarian, [song], parent=self)
+            librarian = self.__library.librarian
+            window = SongProperties(librarian, [song], parent=self)
+            window.show()
 
     def __current_song_info(self, *args):
         song = app.player.song
         if song:
-            window = Information(self.__library.librarian, [song], self)
+            librarian = self.__library.librarian
+            window = Information(librarian, [song], self)
             window.show()
 
     def __hide_menus(self):

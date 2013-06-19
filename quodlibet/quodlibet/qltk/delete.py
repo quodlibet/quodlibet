@@ -94,6 +94,7 @@ class DeleteDialog(Gtk.Dialog):
             return []
         files = self.__files
         w = WaitLoadWindow(self, len(files), s)
+        w.show()
         removed = []
 
         if resp == 0:

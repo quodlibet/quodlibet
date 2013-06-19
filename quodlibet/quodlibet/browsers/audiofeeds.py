@@ -227,6 +227,7 @@ class AudioFeeds(Browser, Gtk.VBox):
 
     def pack(self, songpane):
         container = qltk.RHPaned()
+        self.show()
         container.pack1(self, True, False)
         container.pack2(songpane, True, False)
         return container
@@ -381,7 +382,9 @@ class AudioFeeds(Browser, Gtk.VBox):
         self.connect_object('destroy', self.__save, view)
 
         self.pack_start(Alignment(new, left=3, bottom=3), False, True, 0)
-        self.show_all()
+
+        for child in self.get_children():
+            child.show_all()
 
     def __drag_motion(self, view, ctx, x, y, time):
         targets = [t.name() for t in ctx.list_targets()]

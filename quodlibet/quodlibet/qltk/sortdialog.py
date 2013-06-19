@@ -132,7 +132,7 @@ class SortDialog(Gtk.Dialog):
 
         self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        self.show_all()
+        self.get_child().show_all()
 
     def run(self):
         resp = super(SortDialog, self).run()

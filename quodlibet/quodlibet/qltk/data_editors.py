@@ -308,7 +308,7 @@ class MultiStringEditor(qltk.UniqueWindow):
 
         # Finish up
         self.add(vbox)
-        self.show_all()
+        self.get_child().show_all()
 
     def __setup_column(self, view):
         def cdf(column, cell, model, iter, data):
