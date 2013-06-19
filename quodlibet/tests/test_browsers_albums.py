@@ -7,6 +7,7 @@
 from gi.repository import Gtk
 
 from tests import TestCase, add
+from helper import realized
 
 from quodlibet import config
 
@@ -36,16 +37,12 @@ class TAlbumBrowser(TestCase):
         library.add(SONGS)
 
         self.bar = AlbumList(library, True)
-        w = Gtk.Window()
-        w.add(self.bar)
-        w.show_all()
-        w.hide()
-        self.w = w
 
         self._id = self.bar.connect("songs-selected", self._selected)
         self._id2 = self.bar.connect("activated", self._activated)
-        self.bar.filter_text("")
-        self._wait()
+        with realized(self.bar):
+            self.bar.filter_text("")
+            self._wait()
         self.songs = []
         self.activated = False
 
@@ -60,40 +57,45 @@ class TAlbumBrowser(TestCase):
             Gtk.main_iteration()
 
     def test_activated(self):
-        view = self.bar.view
-        view.row_activated(Gtk.TreePath((0,)), view.get_column(0))
-        self.failUnless(self.activated)
+        with realized(self.bar):
+            view = self.bar.view
+            view.row_activated(Gtk.TreePath((0,)), view.get_column(0))
+            self.failUnless(self.activated)
 
     def test_can_filter(self):
-        self.failUnless(self.bar.can_filter(None))
-        self.failUnless(self.bar.can_filter("album"))
-        self.failUnless(self.bar.can_filter("foobar"))
-        self.failIf(self.bar.can_filter("~#length"))
-        self.failIf(self.bar.can_filter("title"))
+        with realized(self.bar):
+            self.failUnless(self.bar.can_filter(None))
+            self.failUnless(self.bar.can_filter("album"))
+            self.failUnless(self.bar.can_filter("foobar"))
+            self.failIf(self.bar.can_filter("~#length"))
+            self.failIf(self.bar.can_filter("title"))
 
     def test_set_text(self):
-        self.bar.filter_text("artist=piman")
-        self._wait()
-        self.failUnlessEqual(len(self.songs), 1)
-        self.bar.filter_text("")
-        self._wait()
-        self.failUnlessEqual(set(self.songs), set(SONGS))
+        with realized(self.bar):
+            self.bar.filter_text("artist=piman")
+            self._wait()
+            self.failUnlessEqual(len(self.songs), 1)
+            self.bar.filter_text("")
+            self._wait()
+            self.failUnlessEqual(set(self.songs), set(SONGS))
 
     def test_filter_album(self):
-        self.bar.filter_text("dsagfsag")
-        self._wait()
-        self.failUnlessEqual(len(self.songs), 0)
-        self.bar.filter_text("")
-        self._wait()
-        self.bar.filter("album", ["one", "three"])
-        self._wait()
-        self.failUnlessEqual(len(self.songs), 3)
+        with realized(self.bar):
+            self.bar.filter_text("dsagfsag")
+            self._wait()
+            self.failUnlessEqual(len(self.songs), 0)
+            self.bar.filter_text("")
+            self._wait()
+            self.bar.filter("album", ["one", "three"])
+            self._wait()
+            self.failUnlessEqual(len(self.songs), 3)
 
     def test_filter_artist(self):
-        self.bar.filter("artist", ["piman"])
-        self._wait()
-        self.failUnlessEqual(len(self.songs), 1)
-        self.failUnlessEqual(self.songs[0]("artist"), "piman")
+        with realized(self.bar):
+            self.bar.filter("artist", ["piman"])
+            self._wait()
+            self.failUnlessEqual(len(self.songs), 1)
+            self.failUnlessEqual(self.songs[0]("artist"), "piman")
 
     def test_header(self):
         self.failIf(self.bar.headers)
@@ -107,17 +109,17 @@ class TAlbumBrowser(TestCase):
                              set([SONGS[0].album_key]))
 
     def test_active_filter(self):
-        self.bar.filter("artist", ["piman"])
-        self._wait()
-        self.failUnless(self.bar.active_filter(self.songs[0]))
-        for s in SONGS:
-            if s is not self.songs[0]:
-                self.failIf(self.bar.active_filter(s))
+        with realized(self.bar):
+            self.bar.filter("artist", ["piman"])
+            self._wait()
+            self.failUnless(self.bar.active_filter(self.songs[0]))
+            for s in SONGS:
+                if s is not self.songs[0]:
+                    self.failIf(self.bar.active_filter(s))
 
     def tearDown(self):
         self.bar.disconnect(self._id)
         self.bar.disconnect(self._id2)
-        self.w.destroy()
         config.quit()
 
 add(TAlbumBrowser)
