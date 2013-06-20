@@ -227,6 +227,7 @@ class TPlaylistMux(TestCase):
         self.pl = PlaylistModel()
         self.p = NullPlayer()
         self.mux = PlaylistMux(self.p, self.q, self.pl)
+        self.p.setup(self.mux, None, 0)
         self.failUnless(self.pl.current is None)
 
     def test_only_pl(self):
@@ -334,6 +335,15 @@ class TPlaylistMux(TestCase):
             if value == 10: next = 11
             else: next = 10
             self.failUnlessEqual(self.next(), next)
+
+    def test_sourced(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+        self.mux.go_to(None)
+        self.failUnless(self.pl.sourced)
+        self.q.go_to(1)
+        self.p.next()
+        self.failIf(self.pl.sourced)
 
     def tearDown(self):
         self.p.destroy()
