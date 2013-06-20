@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk, GObject, Gst
 
+from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
@@ -102,3 +103,8 @@ class Pitch(GStreamerPlugin):
         prefs = Preferences()
         gobject_weak(prefs.connect, "changed", lambda *x: cls.queue_update())
         return prefs
+
+
+if not Pitch.setup_element():
+    raise PluginImportException(
+        "GStreamer element 'pitch' missing (gst-plugins-bad)")

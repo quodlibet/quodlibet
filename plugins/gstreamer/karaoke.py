@@ -7,6 +7,7 @@
 
 from gi.repository import Gst, Gtk, GObject
 
+from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
@@ -115,3 +116,8 @@ class Karaoke(GStreamerPlugin):
         prefs = Preferences()
         gobject_weak(prefs.connect, "changed", lambda *x: cls.queue_update())
         return prefs
+
+
+if not Karaoke.setup_element():
+    raise PluginImportException(
+        "GStreamer element 'audiokaraoke' missing (gst-plugins-good)")

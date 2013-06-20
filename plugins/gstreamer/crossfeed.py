@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk, Gst, GObject
 
+from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
@@ -167,3 +168,8 @@ class Crossfeed(GStreamerPlugin):
         prefs = Preferences()
         gobject_weak(prefs.connect, "changed", lambda *x: cls.queue_update())
         return prefs
+
+
+if not Crossfeed.setup_element():
+    raise PluginImportException(
+        "GStreamer element 'crossfeed' missing")

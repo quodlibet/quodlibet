@@ -99,23 +99,27 @@ class GStreamerPluginHandler(object):
         """Setup element and cache it, so we can pass the linked/active
            one to the plugin for live updates"""
         if plugin not in self.__elements:
-            element = plugin.setup_element()
+            element = None
+            # make sure the plugin doesn't take us down
+            try:
+                element = plugin.setup_element()
+            except Exception:
+                util.print_exc()
             if not element:
+                print_w(
+                    _("GStreamer plugin '%(name)s' could not be initialized")
+                    % {"name": plugin.PLUGIN_ID})
                 return
             plugin.update_element(element)
             self.__elements[plugin] = element
         return self.__elements[plugin]
 
     def plugin_handle(self, plugin):
-        try:
-            ok = issubclass(plugin, GStreamerPlugin) and plugin.setup_element()
-        except Exception:
-            util.print_exc()
-            ok = False
+        if not issubclass(plugin, GStreamerPlugin):
+            return False
 
-        if ok:
-            plugin._handler = self
-        return ok
+        plugin._handler = self
+        return True
 
     def plugin_enable(self, plugin, obj):
         self.__plugins.append(plugin)

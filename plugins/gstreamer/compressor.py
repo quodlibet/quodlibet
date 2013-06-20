@@ -7,6 +7,7 @@
 
 from gi.repository import Gst, Gtk, GObject
 
+from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
@@ -121,3 +122,8 @@ class Compressor(GStreamerPlugin):
         prefs = Preferences()
         gobject_weak(prefs.connect, "changed", lambda *x: cls.queue_update())
         return prefs
+
+
+if not Compressor.setup_element():
+    raise PluginImportException(
+        "GStreamer element 'audiodynamic' missing (gst-plugins-good)")
