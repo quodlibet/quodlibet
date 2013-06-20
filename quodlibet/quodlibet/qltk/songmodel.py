@@ -9,6 +9,21 @@ from gi.repository import Gtk, GObject
 from quodlibet.qltk.playorder import ORDERS
 
 
+def check_sourced(func):
+    # Validate sourced flags after each action that could lead to a changed
+    # iter (only ones triggerd by the order, no iter removal!)
+    def wrap(self, *args, **kwargs):
+        res = func(self, *args, **kwargs)
+        if self.q.current is not None:
+            self.q.sourced = True
+            self.pl.sourced = False
+        else:
+            self.q.sourced = False
+            self.pl.sourced = True
+        return res
+    return wrap
+
+
 class PlaylistMux(object):
 
     def __init__(self, player, q, pl):
@@ -31,34 +46,31 @@ class PlaylistMux(object):
 
     current = property(get_current)
 
+    @check_sourced
     def next(self):
         if self.q.is_empty():
             self.pl.next()
-            self.q.sourced = False
-            self.pl.sourced = True
         elif self.q.current is None:
             self.q.next()
-            self.q.sourced = True
-            self.pl.sourced = False
 
+    @check_sourced
     def next_ended(self):
         if self.q.is_empty():
             self.pl.next_ended()
-            self.q.sourced = False
-            self.pl.sourced = True
         elif self.q.current is None:
             self.q.next()
-            self.q.sourced = True
-            self.pl.sourced = False
 
+    @check_sourced
     def previous(self):
         self.pl.previous()
 
+    @check_sourced
     def go_to(self, song, explicit=False):
         print_d("Told to go to %r" % getattr(song, "key", song))
         self.q.go_to(None)
         return self.pl.go_to(song, explicit)
 
+    @check_sourced
     def reset(self):
         self.q.go_to(None)
         self.pl.reset()
@@ -190,9 +202,6 @@ class PlaylistModel(TrackCurrentModel):
             iter_ = song
         elif song is not None:
             iter_ = self.find(song)
-
-        if iter_:
-            self.sourced = True
 
         if explicit:
             self.current_iter = self.order.set_explicit(self, iter_)
