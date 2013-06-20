@@ -71,8 +71,8 @@ class PlaylistExport(SongsMenuPlugin):
         diag_cont = dialog.get_child()
         hbox_path = Gtk.HBox()
         combo_path = Gtk.ComboBoxText()
-        hbox_path.pack_end(combo_path, False, False, padding=6)
-        diag_cont.pack_start(hbox_path, False, False)
+        hbox_path.pack_end(combo_path, False, False, 6)
+        diag_cont.pack_start(hbox_path, False, False, 0)
         diag_cont.show_all()
 
         map(combo_path.append_text, [_("Relative path"), _("Absolute path")])
