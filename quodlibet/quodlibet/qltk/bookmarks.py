@@ -200,20 +200,20 @@ class EditBookmarks(qltk.Window):
         self.set_default_size(350, 250)
         self.set_title(_("Bookmarks") + " - %s" % player.song.comma("title"))
 
-        self.add(EditBookmarksPane(library, player.song, close=True))
+        pane = EditBookmarksPane(library, player.song, close=True)
+        self.add(pane)
 
         s = library.connect('removed', self.__check_lock, player.song)
         self.connect_object('destroy', library.disconnect, s)
 
         position = player.get_position() // 1000
-        self.get_child().time.set_text(util.format_time(position))
-        self.get_child().markname.grab_focus()
+        pane.time.set_text(util.format_time(position))
+        pane.markname.grab_focus()
+        pane.close.connect('clicked', lambda *x: self.destroy())
 
-        self.get_child().close.connect_object('clicked',
-                                              qltk.Window.destroy, self)
         self.get_child().show_all()
 
-    def __check_lock(self, library, songs, song, model):
+    def __check_lock(self, library, songs, song):
         if song in songs:
             for c in self.get_child().get_children()[:-1]:
                 c.set_sensitive(False)
