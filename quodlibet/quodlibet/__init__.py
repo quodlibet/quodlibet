@@ -101,13 +101,19 @@ def _gtk_init(icon=None):
     gi.require_version("GdkPixbuf", "2.0")
     gi.require_version("Gio", "2.0")
 
-    from gi.repository import Gtk, GObject, GLib
+    from gi.repository import Gtk, GObject, GLib, Gdk
 
     # add Gtk.TreePath.__getitem__ for PyGObject 3.2
     try:
         Gtk.TreePath()[0]
     except TypeError:
         Gtk.TreePath.__getitem__ = lambda self, index: list(self)[index]
+
+    # GTK+ 3.4+ constants
+    if not hasattr(Gdk, "BUTTON_PRIMARY"):
+        Gdk.BUTTON_PRIMARY = 1
+        Gdk.BUTTON_MIDDLE = 2
+        Gdk.BUTTON_SECONDARY = 3
 
     # We don't depend on Gst overrides, so make sure it's initialized.
     try:

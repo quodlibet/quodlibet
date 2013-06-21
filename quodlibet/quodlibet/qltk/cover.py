@@ -200,7 +200,8 @@ class CoverImage(Gtk.EventBox):
         if not song:
             return
 
-        if event.button != 1 or event.type != Gdk.EventType.BUTTON_PRESS:
+        if event.button != Gdk.BUTTON_PRIMARY or \
+                event.type != Gdk.EventType.BUTTON_PRESS:
             return
 
         if not self.__file:

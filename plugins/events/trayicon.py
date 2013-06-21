@@ -302,7 +302,8 @@ class TrayIcon(EventPlugin):
             self.__show_window()
 
     def __button_middle(self, widget, event):
-        if event.type == Gdk.EventType.BUTTON_PRESS and event.button == 2:
+        if event.type == Gdk.EventType.BUTTON_PRESS and \
+                event.button == Gdk.BUTTON_MIDDLE:
             if self.__destroy_win32_menu():
                 return
             self.__play_pause()

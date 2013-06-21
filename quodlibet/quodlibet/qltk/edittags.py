@@ -822,7 +822,7 @@ class EditTags(Gtk.VBox):
                 row[TAG] = new_tag
 
     def __button_press(self, view, event):
-        if event.button not in [1, 2]:
+        if event.button not in [Gdk.BUTTON_PRIMARY, Gdk.BUTTON_MIDDLE]:
             return False
         x, y = map(int, [event.x, event.y])
         try:
@@ -830,7 +830,7 @@ class EditTags(Gtk.VBox):
         except TypeError:
             return False
 
-        if event.button == 1 and col is view.get_columns()[0]:
+        if event.button == Gdk.BUTTON_PRIMARY and col is view.get_columns()[0]:
             row = view.get_model()[path]
             row[EDITED] = not row[EDITED]
             if row[EDITED]:
@@ -838,7 +838,8 @@ class EditTags(Gtk.VBox):
                 if idx >= 0:
                     row[VALUE] = row[VALUE][:idx].strip()
             return True
-        elif event.button == 2 and col == view.get_columns()[2]:
+        elif event.button == Gdk.BUTTON_MIDDLE and \
+                col == view.get_columns()[2]:
             display = Gdk.display_manager_get().get_default_display()
             clipboardname = ["PRIMARY", "CLIPBOARD"][sys.platform == "win32"]
             clipboard = Gtk.Clipboard(display, clipboardname)

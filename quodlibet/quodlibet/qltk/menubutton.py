@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import qltk
 
@@ -50,7 +50,7 @@ class MenuButton(Gtk.ToggleButton):
         button.set_active(False)
 
     def __press_cb(self, widget, event):
-        if self.__menu and event.button == 1:
+        if self.__menu and event.button == Gdk.BUTTON_PRIMARY:
             qltk.popup_menu_under_widget(
                 self.__menu, widget, event.button, event.time)
             widget.set_active(True)

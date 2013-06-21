@@ -103,7 +103,7 @@ class SeekBar(HSlider):
         player.connect('seek', self.__seeked)
 
     def __check_menu(self, menu, event, player):
-        if event.button == 3:
+        if event.button == Gdk.BUTTON_SECONDARY:
             return self.__popup_menu(menu, player)
 
     def __popup_menu(self, menu, player, widget=None):
@@ -209,7 +209,7 @@ class Volume(Gtk.VolumeButton):
         return qltk.popup_menu_under_widget(menu, widget, button, time)
 
     def __volume_button_press(self, menu, event):
-        if event.button == 3:
+        if event.button == Gdk.BUTTON_SECONDARY:
             menu.popup(None, None, None, None, event.button, event.time)
             return True
 

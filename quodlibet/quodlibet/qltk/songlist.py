@@ -579,7 +579,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         sd.hide()
 
     def __button_press(self, view, event, librarian):
-        if event.button != 1:
+        if event.button != Gdk.BUTTON_PRIMARY:
             return
         x, y = map(int, [event.x, event.y])
         try:
@@ -1073,7 +1073,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     def __showmenu(self, column, event=None):
         time = Gtk.get_current_event_time()
-        if event is not None and event.button != 3:
+        if event is not None and event.button != Gdk.BUTTON_SECONDARY:
             return
 
         if event:

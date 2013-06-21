@@ -596,7 +596,7 @@ class MultiDragTreeView(BaseView):
         self.__pending_event = None
 
     def __button_press(self, view, event):
-        if event.button == 1:
+        if event.button == Gdk.BUTTON_PRIMARY:
             return self.__block_selection(event)
 
     def __block_selection(self, event):
@@ -644,7 +644,7 @@ class RCMTreeView(BaseView):
         self.connect('button-press-event', self.__button_press)
 
     def __button_press(self, view, event):
-        if event.button == 3:
+        if event.button == Gdk.BUTTON_SECONDARY:
             return self.__check_popup(event)
 
     def __check_popup(self, event):
