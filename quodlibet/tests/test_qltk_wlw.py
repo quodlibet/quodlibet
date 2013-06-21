@@ -16,7 +16,6 @@ class TWaitLoadWindow(TestCase):
     def setUp(self):
         self.parent = self.DummyConnector()
         self.wlw = WaitLoadWindow(self.parent, 5, "a test")
-        self.wlw.hide()
 
     def test_none(self):
         wlw = WaitLoadWindow(None, 5, "a test")
@@ -24,7 +23,9 @@ class TWaitLoadWindow(TestCase):
         wlw.destroy()
 
     def test_connect(self):
-        self.failUnlessEqual(1, self.parent.count)
+        self.failUnlessEqual(2, self.parent.count)
+        self.wlw.destroy()
+        self.failUnlessEqual(0, self.parent.count)
 
     def test_start(self):
         self.failUnlessEqual(0, self.wlw.current)

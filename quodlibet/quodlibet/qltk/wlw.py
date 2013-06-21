@@ -113,23 +113,23 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
 
     def __init__(self, parent, *args):
         """parent: the parent window, or None"""
-
-        super(WaitLoadWindow, self).__init__()
+        Gtk.Window.__init__(self, Gtk.WindowType.POPUP)
+        WaitLoadBase.__init__(self)
         self.setup(*args)
 
         parent = get_top_parent(parent)
         if parent:
             sig = parent.connect('configure-event', self.__recenter)
-            self.connect_object(
-                'destroy', WaitLoadWindow.__disconnect, self, sig, parent)
+            self.connect('destroy', self.__reset_cursor, parent)
+            self.connect('destroy', self.__disconnect, sig, parent)
+            sig_vis = parent.connect(
+                'visibility-notify-event', self.__update_visible)
+            self.connect('destroy', self.__disconnect, sig_vis, parent)
             self.set_transient_for(parent)
             window = parent.get_window()
             if window:
                 window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         self.set_modal(True)
-        self.set_decorated(False)
-        self.set_resizable(False)
-        self.set_focus_on_map(False)
         self.add(Gtk.Frame())
         self.get_child().set_shadow_type(Gtk.ShadowType.OUT)
         vbox = Gtk.VBox(spacing=12)
@@ -151,10 +151,16 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
         self.get_child().add(vbox)
 
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+
+        self.get_child().show_all()
         while Gtk.events_pending():
             Gtk.main_iteration()
 
-        self.get_child().show_all()
+    def __update_visible(self, parent, event):
+        if event.state == Gdk.VisibilityState.FULLY_OBSCURED:
+            self.hide()
+        else:
+            self.show()
 
     def __recenter(self, parent, event):
         x, y = parent.get_position()
@@ -162,10 +168,12 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
         dx2, dy2 = self.get_size()
         self.move(x + dx // 2 - dx2 // 2, y + dy // 2 - dy2 // 2)
 
-    def __disconnect(self, sig, parent):
+    def __disconnect(self, widget, sig, parent):
+        parent.disconnect(sig)
+
+    def __reset_cursor(self, widget, parent):
         if parent.get_window():
             parent.get_window().set_cursor(None)
-        parent.disconnect(sig)
 
 
 class WritingWindow(WaitLoadWindow):
