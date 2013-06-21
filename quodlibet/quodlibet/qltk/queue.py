@@ -221,7 +221,7 @@ class PlayQueue(SongList):
             library, songs, queue=False, remove=False, delete=False,
             parent=self)
         menu.preseparate()
-        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
+        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
         remove.connect('activate', self.__remove)
         menu.prepend(remove)
         menu.show_all()
