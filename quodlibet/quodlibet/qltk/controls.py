@@ -92,7 +92,7 @@ class SeekBar(HSlider):
         m.append(i)
         m.show_all()
         self.get_child().connect_object(
-            'button-press-event', self.__check_menu, m, player)
+            'button-press-event', self.__check_menu, m, player, c)
         self.connect_object('popup-menu', self.__popup_menu, m, player,
                 self.get_child().get_child())
 
@@ -102,9 +102,15 @@ class SeekBar(HSlider):
         player.connect('song-started', self.__song_changed, l, m)
         player.connect('seek', self.__seeked)
 
-    def __check_menu(self, menu, event, player):
+    def __check_menu(self, menu, event, player, remaining_item):
+        if event.type != Gdk.EventType.BUTTON_PRESS:
+            return
+
         if event.button == Gdk.BUTTON_SECONDARY:
             return self.__popup_menu(menu, player)
+        elif event.button == Gdk.BUTTON_MIDDLE:
+            remaining_item.set_active(not remaining_item.get_active())
+            return True
 
     def __popup_menu(self, menu, player, widget=None):
         for child in menu.get_children()[2:-1]:
