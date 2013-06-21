@@ -25,6 +25,7 @@ from quodlibet.qltk.chooser import FolderChooser, FileChooser
 from quodlibet.qltk.controls import PlayControls
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.qltk.bookmarks import EditBookmarks
 from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.logging import LoggingWindow
@@ -304,6 +305,17 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songlist.connect('columns-changed', self.__hide_headers)
         self.songlist.info.connect("changed", self.__set_time)
 
+        self.accelerators = Gtk.AccelGroup()
+        key, mod = Gtk.accelerator_parse("<ctrl>D")
+        self.accelerators.connect(
+            key, mod, 0,
+            lambda *args: self.__add_bookmark(library.librarian, player))
+        key, mod = Gtk.accelerator_parse("<ctrl>B")
+        self.accelerators.connect(
+            key, mod, 0,
+            lambda *args: self.__edit_bookmarks(library.librarian, player))
+        self.add_accel_group(self.accelerators)
+
         lib = library.librarian
         gobject_weak(lib.connect_object, 'changed', self.__song_changed,
                      player, parent=self)
@@ -333,6 +345,20 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.connect("destroy", self.__destroy)
 
         self.enable_window_tracking("quodlibet")
+
+    def __add_bookmark(self, librarian, player):
+        if player.song:
+            position = player.get_position() // 1000
+            bookmarks = player.song.bookmarks
+            new_mark = (position, _("Bookmark Name"))
+            if new_mark not in bookmarks:
+                bookmarks.append(new_mark)
+                player.song.bookmarks = bookmarks
+
+    def __edit_bookmarks(self, librarian, player):
+        if player.song:
+            window = EditBookmarks(self, librarian, player)
+            window.show()
 
     def __key_pressed(self, player, event):
         if not player.song:
