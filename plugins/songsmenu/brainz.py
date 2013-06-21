@@ -214,7 +214,7 @@ class ReleaseEventComboBox(Gtk.HBox):
             return None
 
 
-class QueryThread:
+class QueryThread(object):
     """Daemon thread which does HTTP retries and avoids flooding."""
     def __init__(self):
         self.running = True
@@ -244,7 +244,10 @@ class QueryThread:
                         res = func(*args, **kwargs)
                     except:
                         res = None
-                GLib.idle_add(callback, res)
+                def idle_check(cb, res):
+                    if self.running:
+                        cb(res)
+                GLib.idle_add(idle_check, callback, res)
             time.sleep(1)
 
 
@@ -386,7 +389,7 @@ class SearchWindow(Gtk.Dialog):
         save_button = dialog_get_widget_for_stockid(self, Gtk.STOCK_SAVE)
         save_button.set_sensitive(True)
 
-    def __init__(self, album, cache):
+    def __init__(self, parent, album, cache):
         self.album = album
 
         self._query = ws.Query()
@@ -400,6 +403,7 @@ class SearchWindow(Gtk.Dialog):
                     Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
         self.set_default_size(650, 500)
         self.set_border_width(5)
+        self.set_transient_for(parent)
 
         save_button = dialog_get_widget_for_stockid(self, Gtk.STOCK_SAVE)
         save_button.set_sensitive(False)
@@ -458,7 +462,7 @@ class SearchWindow(Gtk.Dialog):
         self.connect('response', self.__save)
 
         stb.emit('clicked')
-        self.show_all()
+        self.get_child().show_all()
 
 
 class MyBrainz(SongsMenuPlugin):
@@ -471,13 +475,31 @@ class MyBrainz(SongsMenuPlugin):
     cache = {}
 
     def plugin_albums(self, albums):
+        discs_todo = []
         for album in albums:
             discs = {}
             for song in album:
                 discnum = int(song.get('discnumber', '1').split('/')[0])
                 discs.setdefault(discnum, []).append(song)
             for disc in discs.values():
-                SearchWindow(disc, self.cache).run()
+                discs_todo.append(disc)
+
+        if not discs_todo:
+            return
+
+        def win_finished_cb(widget, *args):
+            if discs_todo:
+                start_processing(discs_todo.pop(0))
+            else:
+                self.plugin_finish()
+
+        def start_processing(disc):
+            win = SearchWindow(
+                self.plugin_window, disc, self.cache)
+            win.connect("destroy", win_finished_cb)
+            win.show()
+
+        start_processing(discs_todo.pop(0))
 
     @classmethod
     def PluginPreferences(self, win):
