@@ -339,10 +339,6 @@ class Playlists(Gtk.VBox, Browser):
         s = view.get_model().connect('row-changed', self.__check_current)
         self.connect_object('destroy', view.get_model().disconnect, s)
 
-        self.accelerators = Gtk.AccelGroup()
-        keyval, mod = Gtk.accelerator_parse("F2")
-        self.accelerators.connect(keyval, mod, 0, self.__rename)
-
         self.connect('key-press-event', self.__key_pressed)
 
         for child in self.get_children():
@@ -360,16 +356,16 @@ class Playlists(Gtk.VBox, Browser):
                 playlist.delete()
                 model.get_model().remove(
                     model.convert_iter_to_child_iter(iter))
-
+            return True
+        elif qltk.is_accel(event, "F2"):
+            model, iter = self.__view.get_selection().get_selected()
+            if iter:
+                self.__render.set_property('editable', True)
+                self.__view.set_cursor(model.get_path(iter),
+                                       self.__view.get_columns()[0],
+                                       start_editing=True)
+            return True
         return False
-
-    def __rename(self, group, acceleratable, keyval, modifier):
-        model, iter = self.__view.get_selection().get_selected()
-        if iter:
-            self.__render.set_property('editable', True)
-            self.__view.set_cursor(model.get_path(iter),
-                                   self.__view.get_columns()[0],
-                                   start_editing=True)
 
     def __check_current(self, model, path, iter):
         model, citer = self.__view.get_selection().get_selected()
@@ -537,9 +533,7 @@ class Playlists(Gtk.VBox, Browser):
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
         ren = qltk.MenuItem(_("_Rename"), Gtk.STOCK_EDIT)
-        keyval, mod = Gtk.accelerator_parse("F2")
-        ren.add_accelerator(
-            'activate', self.accelerators, keyval, mod, Gtk.AccelFlags.VISIBLE)
+        qltk.add_fake_accel(ren, "F2")
         ren.connect_object('activate', _rename, model.get_path(itr))
         menu.prepend(ren)
 

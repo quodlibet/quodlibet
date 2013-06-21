@@ -27,7 +27,6 @@ class _KeyValueEditor(qltk.Window):
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
         self.add(Gtk.VBox(spacing=6))
-        self.accels = Gtk.AccelGroup()
 
         t = Gtk.Table(2, 3)
         t.set_row_spacings(3)
@@ -77,9 +76,8 @@ class _KeyValueEditor(qltk.Window):
 
         menu = Gtk.Menu()
         remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
-        keyval, mod = Gtk.accelerator_parse("Delete")
-        remove.add_accelerator(
-            'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
+        remove.connect_object('activate', self.__remove, view)
+        qltk.add_fake_accel(remove, "Delete")
         menu.append(remove)
         menu.show_all()
 
@@ -99,7 +97,6 @@ class _KeyValueEditor(qltk.Window):
             'clicked', self.__add, selection, name, self.value, self.model)
         selection.connect('changed', self.__set_text, name, self.value, rem_b)
         view.connect('popup-menu', self.__popup, menu)
-        remove.connect_object('activate', self.__remove, view)
         rem_b.connect_object('clicked', self.__remove, view)
         close.connect_object('clicked', qltk.Window.destroy, self)
         view.connect('key-press-event', self.__view_key_press)
@@ -113,7 +110,7 @@ class _KeyValueEditor(qltk.Window):
         raise NotImplementedError
 
     def __view_key_press(self, view, event):
-        if event.keyval == Gtk.accelerator_parse("Delete")[0]:
+        if qltk.is_accel(event, "Delete"):
             self.__remove(view)
 
     def __popup(self, view, menu):

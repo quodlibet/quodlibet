@@ -720,8 +720,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
-                         queue=False, accels=songlist.accelerators,
-                         devices=False, parent=self)
+                         queue=False, devices=False, parent=self)
 
         menu.prepend(Gtk.SeparatorMenuItem())
 

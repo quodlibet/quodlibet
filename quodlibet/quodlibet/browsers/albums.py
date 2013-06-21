@@ -19,6 +19,8 @@ from quodlibet.browsers._base import Browser
 from quodlibet.parse import Query, XMLFromPattern
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.completion import EntryWordCompletion
+from quodlibet.qltk.information import Information
+from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
@@ -641,7 +643,24 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         self.enable_row_update(view, sw, self.__cover_column)
 
+        self.connect('key-press-event', self.__key_pressed, library.librarian)
+
         self.show_all()
+
+    def __key_pressed(self, widget, event, librarian):
+        if qltk.is_accel(event, "<ctrl>I"):
+            songs = self.__get_selected_songs()
+            if songs:
+                window = Information(librarian, songs, self)
+                window.show()
+            return True
+        elif qltk.is_accel(event, "<alt>Return"):
+            songs = self.__get_selected_songs()
+            if songs:
+                window = SongProperties(librarian, songs, self)
+                window.show()
+            return True
+        return False
 
     def _row_needs_update(self, row):
         album = row[0]
@@ -761,12 +780,12 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
                 songs.extend(album.songs)
         return songs
 
-    def __get_selected_songs(self, selection, sort=True):
-        albums = self.__get_selected_albums(selection)
+    def __get_selected_songs(self, sort=True):
+        albums = self.__get_selected_albums(self.view.get_selection())
         return self.__get_songs_from_albums(albums, sort)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
-        songs = self.__get_selected_songs(view.get_selection())
+        songs = self.__get_selected_songs()
         if tid == 1:
             filenames = [song("~filename") for song in songs]
             type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
@@ -886,7 +905,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         config.set("browsers", "query_text", text)
 
     def __update_songs(self, selection):
-        songs = self.__get_selected_songs(selection, False)
+        songs = self.__get_selected_songs(sort=False)
         self.emit('songs-selected', songs, None)
 
 browsers = [AlbumList]

@@ -211,9 +211,7 @@ class Browser(Filter):
     # This method returns a Gtk.Menu, probably a SongsMenu. After this
     # menu is returned the SongList may modify it further.
     def Menu(self, songs, songlist, library):
-        menu = SongsMenu(
-            library, songs, delete=True, accels=songlist.accelerators,
-            parent=songlist)
+        menu = SongsMenu(library, songs, delete=True, parent=songlist)
         return menu
 
     def statusbar(self, i):

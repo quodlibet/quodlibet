@@ -379,14 +379,6 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         self.set_search_equal_func(self.__search_func, None)
 
-        self.accelerators = Gtk.AccelGroup()
-        key, mod = Gtk.accelerator_parse("<alt>Return")
-        self.accelerators.connect(
-            key, mod, 0, lambda *args: self.__song_properties(librarian))
-        key, mod = Gtk.accelerator_parse("<control>I")
-        self.accelerators.connect(
-            key, mod, 0, lambda *args: self.__information(librarian))
-
         self.connect('destroy', self.__destroy)
 
     def __destroy(self, *args):
@@ -638,6 +630,18 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             return True
         elif qltk.is_accel(event, "<control>F"):
             self.emit('start-interactive-search')
+            return True
+        elif qltk.is_accel(event, "<alt>Return"):
+            songs = self.get_selected_songs()
+            if songs:
+                window = SongProperties(librarian, songs, parent=self)
+                window.show()
+            return True
+        elif qltk.is_accel(event, "<control>I"):
+            songs = self.get_selected_songs()
+            if songs:
+                window = Information(librarian, songs, self)
+                window.show()
             return True
         return False
 

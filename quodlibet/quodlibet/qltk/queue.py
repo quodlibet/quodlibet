@@ -222,6 +222,7 @@ class PlayQueue(SongList):
             parent=self)
         menu.preseparate()
         remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
+        qltk.add_fake_accel(remove, "Delete")
         remove.connect('activate', self.__remove)
         menu.prepend(remove)
         menu.show_all()

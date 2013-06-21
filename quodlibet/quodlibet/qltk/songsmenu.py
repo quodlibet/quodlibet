@@ -172,8 +172,6 @@ class SongsMenuPluginHandler(object):
 
 
 class SongsMenu(Gtk.Menu):
-    __accels = Gtk.AccelGroup()
-
     plugins = SongsMenuPluginHandler()
 
     @classmethod
@@ -182,7 +180,7 @@ class SongsMenu(Gtk.Menu):
 
     def __init__(self, library, songs, plugins=True, playlists=True,
                  queue=True, devices=True, remove=True, delete=False,
-                 edit=True, accels=None, parent=None):
+                 edit=True, parent=None):
         super(SongsMenu, self).__init__()
 
         # The library may actually be a librarian; if it is, use it,
@@ -230,10 +228,7 @@ class SongsMenu(Gtk.Menu):
         if queue:
             b = qltk.MenuItem(_("Add to _Queue"), Gtk.STOCK_ADD)
             b.connect('activate', self.__enqueue, songs)
-            if accels is not None:
-                key, val = Gtk.accelerator_parse("<ctrl>Return")
-                b.add_accelerator(
-                    'activate', accels, key, val, Gtk.AccelFlags.VISIBLE)
+            qltk.add_fake_accel(b, "<ctrl>Return")
             self.append(b)
             b.set_sensitive(can_add)
 
@@ -274,10 +269,7 @@ class SongsMenu(Gtk.Menu):
 
         if edit:
             b = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
-            if accels is not None:
-                key, val = Gtk.accelerator_parse("<alt>Return")
-                b.add_accelerator(
-                    'activate', accels, key, val, Gtk.AccelFlags.VISIBLE)
+            qltk.add_fake_accel(b, "<alt>Return")
 
             def song_properties_cb(menu_item):
                 window = SongProperties(librarian, songs, parent)
@@ -287,10 +279,7 @@ class SongsMenu(Gtk.Menu):
             self.append(b)
 
             b = Gtk.ImageMenuItem(Gtk.STOCK_INFO, use_stock=True)
-            if accels is not None:
-                b.add_accelerator('activate', accels, ord('I'),
-                                  Gdk.ModifierType.CONTROL_MASK,
-                                  Gtk.AccelFlags.VISIBLE)
+            qltk.add_fake_accel(b, "<ctrl>I")
 
             def information_cb(menu_item):
                 window = Information(librarian, songs, parent)

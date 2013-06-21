@@ -236,7 +236,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
         self.songlist.show_all()
-        self.add_accel_group(self.songlist.accelerators)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.song_scroller = SongListScroller(

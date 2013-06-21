@@ -27,7 +27,6 @@ class LibraryBrowser(Window, PersistentWindowMixin):
 
         view = SongList(library, update=True)
         view.info.connect("changed", self.__set_time)
-        self.add_accel_group(view.accelerators)
         self.songlist = view
 
         sw = Gtk.ScrolledWindow()

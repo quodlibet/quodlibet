@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk, GObject, Gdk, Gio
 
-from quodlibet.qltk.x import is_accel
+from quodlibet.qltk import is_accel, add_fake_accel
 
 
 class EditableUndo(object):
@@ -70,7 +70,9 @@ class EditableUndo(object):
 
     def __popup(self, entry, menu):
         undo = Gtk.ImageMenuItem(Gtk.STOCK_UNDO, use_stock=True)
+        add_fake_accel(undo, "<ctrl>z")
         redo = Gtk.ImageMenuItem(Gtk.STOCK_REDO, use_stock=True)
+        add_fake_accel(redo, "<ctrl><shift>z")
         sep = Gtk.SeparatorMenuItem()
 
         map(Gtk.Widget.show, (sep, redo, undo))

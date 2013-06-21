@@ -67,6 +67,25 @@ def popup_menu_under_widget(menu, widget, button, time):
     return True
 
 
+def add_fake_accel(widget, accel):
+    """Accelerators are only for window menus and global keyboard shortcuts.
+
+    Since we want to use them in context menus as well, to indicate which
+    key events the parent widget knows about, we use a global fake
+    accelgroup without any actions..
+    """
+
+    if not hasattr(add_fake_accel, "_group"):
+        add_fake_accel._group = Gtk.AccelGroup()
+    group = add_fake_accel._group
+
+    key, val = Gtk.accelerator_parse(accel)
+    assert key is not None
+    assert val is not None
+    widget.add_accelerator(
+        'activate', group, key, val, Gtk.AccelFlags.VISIBLE)
+
+
 def is_accel(event, accel):
     """Checks if the given keypress Gdk.Event matches an accelerator string
 

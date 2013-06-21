@@ -289,8 +289,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         GLib.timeout_add(60 * 60 * 1000, klass.__do_check)
 
     def Menu(self, songs, songlist, library):
-        menu = SongsMenu(
-            library, songs, accels=songlist.accelerators, parent=self)
+        menu = SongsMenu(library, songs, parent=self)
         if len(songs) == 1:
             item = qltk.MenuItem(_("_Download..."), Gtk.STOCK_CONNECT)
             item.connect('activate', self.__download, songs[0]("~uri"))

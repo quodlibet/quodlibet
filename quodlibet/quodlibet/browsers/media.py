@@ -282,7 +282,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             delete = False
 
         menu = SongsMenu(library, songs, delete=delete, remove=False,
-                         accels=songlist.accelerators, parent=self)
+                         parent=self)
         return menu
 
     def activate(self):
