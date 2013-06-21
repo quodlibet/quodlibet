@@ -263,6 +263,7 @@ MENU = """<ui>
       <menuitem action='Previous'/>
       <menuitem action='PlayPause'/>
       <menuitem action='Next'/>
+      <menuitem action='StopAfter'/>
       <separator/>
       <menuitem action='AddBookmark'/>
       <menuitem action='EditBookmarks'/>

@@ -512,6 +512,13 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         ag.add_actions(actions)
 
+        act = Gtk.ToggleAction("StopAfter",
+                               _("Stop after this song"), None, "")
+        ag.add_action_with_accel(act, None)
+
+        # access point for the tray icon
+        self.stop_after = act
+
         act = Gtk.Action("AddBookmark", _("Add Bookmark"), None, Gtk.STOCK_ADD)
         act.connect_object('activate', self.__add_bookmark,
                            library.librarian, player)
@@ -712,6 +719,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
     def __song_ended(self, player, song, stopped):
         self.__check_remove_song(player, song)
+        if self.stop_after.get_active():
+            player.paused = True
+            self.stop_after.set_active(False)
 
     def __song_changed(self, player, songs):
         self.__update_title(player)

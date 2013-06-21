@@ -14,7 +14,6 @@ from quodlibet import browsers, config, qltk, util, app
 from quodlibet.parse import Pattern
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.browser import LibraryBrowser
-from quodlibet.qltk.controls import StopAfterMenu
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
@@ -130,7 +129,6 @@ class TrayIcon(EventPlugin):
     __w_sig_map = None
     __w_sig_del = None
     __theme_sig = None
-    __stop_after = None
     __first_map = True
     __pattern = Pattern(
         "<album|<album~discnumber~part~tracknumber~title~version>|"
@@ -162,15 +160,12 @@ class TrayIcon(EventPlugin):
         self.__w_sig_del = app.window.connect('delete-event',
                                               self.__window_delete)
 
-        self.__stop_after = StopAfterMenu(app.player)
-
         self.plugin_on_paused()
         self.plugin_on_song_started(app.player.song)
 
     def disabled(self):
         self.__icon_theme.disconnect(self.__theme_sig)
         self.__icon_theme = None
-        self.__stop_after = None
         app.window.disconnect(self.__w_sig_map)
         app.window.disconnect(self.__w_sig_del)
         self.__icon.set_visible(False)
@@ -390,13 +385,14 @@ class TrayIcon(EventPlugin):
         repeat.connect('toggled',
             lambda s: window.repeat.set_active(s.get_active()))
 
-        def set_safter(widget, stop_after):
-            stop_after.active = widget.get_active()
+        def set_safter(widget, safter_action):
+            safter_action.set_active(widget.get_active())
 
+        safter_action = app.window.stop_after
         safter = Gtk.CheckMenuItem(label=_("Stop _after this song"),
                                    use_underline=True)
-        safter.set_active(self.__stop_after.active)
-        safter.connect('activate', set_safter, self.__stop_after)
+        safter.set_active(safter_action.get_active())
+        safter.connect('toggled', set_safter, safter_action)
 
         def set_order(widget, num):
             window.order.set_active(num)

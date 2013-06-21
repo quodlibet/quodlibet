@@ -261,45 +261,6 @@ class ReplayGainMenu(Gtk.Menu):
         return super(ReplayGainMenu, self).popup(*args)
 
 
-class StopAfterMenu(Gtk.Menu):
-    __menu = None
-
-    def __new__(klass, parent):
-        if klass.__menu is None:
-            return super(StopAfterMenu, klass).__new__(klass)
-        else:
-            return klass.__menu
-
-    def __init__(self, player):
-        if type(self).__menu:
-            return
-        else:
-            type(self).__menu = self
-        super(StopAfterMenu, self).__init__()
-        self.__item = Gtk.CheckMenuItem(_("Stop after this song"))
-        self.__item.set_active(False)
-        self.append(self.__item)
-        player.connect('paused', self.__paused)
-        player.connect_after('song-ended', self.__ended)
-        self.__item.show()
-
-    def __paused(self, player):
-        self.active = False
-
-    def __ended(self, player, song, stopped):
-        if self.active:
-            player.paused = True
-        self.active = False
-
-    def __get_active(self):
-        return self.__item.get_active()
-
-    def __set_active(self, active):
-        return self.__item.set_active(active)
-
-    active = property(__get_active, __set_active)
-
-
 class PlayControls(Gtk.VBox):
     def __init__(self, player, library):
         super(PlayControls, self).__init__(spacing=3)
@@ -315,8 +276,6 @@ class PlayControls(Gtk.VBox):
         play = Gtk.ToggleButton()
         play.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_PLAY, SIZE))
         upper.attach(play, 1, 2, 0, 1)
-
-        safter = StopAfterMenu(player)
 
         next = Gtk.Button()
         next.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_NEXT, SIZE))
@@ -337,11 +296,8 @@ class PlayControls(Gtk.VBox):
 
         prev.connect_object('clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, player)
-        play.connect('button-press-event', self.__play_button_press, safter)
         play.add_events(Gdk.EventMask.SCROLL_MASK)
         play.connect_object('scroll-event', self.__scroll, player)
-        play.connect_object('popup-menu',
-                            self.__popup, safter, play.get_child())
         next.connect_object('clicked', self.__next, player)
         player.connect('song-started', self.__song_started, next, play)
         player.connect_object('paused', play.set_active, False)
@@ -354,18 +310,6 @@ class PlayControls(Gtk.VBox):
         elif event.direction in [Gdk.ScrollDirection.DOWN,
                                  Gdk.ScrollDirection.RIGHT]:
             player.next()
-
-    def __play_button_press(self, activator, event, safter):
-        if event.button == 3:
-            return self.__popup(safter, None, event.button, event.time)
-
-    def __popup(self, safter, widget, button=3, time=None):
-        time = time or Gtk.get_current_event_time()
-        if widget:
-            return qltk.popup_menu_under_widget(safter, widget, button, time)
-        else:
-            safter.popup(None, None, None, None, button, time)
-        return True
 
     def __song_started(self, player, song, next, play):
         play.set_active(not player.paused)
