@@ -305,17 +305,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songlist.connect('columns-changed', self.__hide_headers)
         self.songlist.info.connect("changed", self.__set_time)
 
-        self.accelerators = Gtk.AccelGroup()
-        key, mod = Gtk.accelerator_parse("<ctrl>D")
-        self.accelerators.connect(
-            key, mod, 0,
-            lambda *args: self.__add_bookmark(library.librarian, player))
-        key, mod = Gtk.accelerator_parse("<ctrl>B")
-        self.accelerators.connect(
-            key, mod, 0,
-            lambda *args: self.__edit_bookmarks(library.librarian, player))
-        self.add_accel_group(self.accelerators)
-
         lib = library.librarian
         gobject_weak(lib.connect_object, 'changed', self.__song_changed,
                      player, parent=self)
@@ -524,6 +513,16 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         ag.add_actions(actions)
 
+        act = Gtk.Action("AddBookmark", _("Add Bookmark"), None, Gtk.STOCK_ADD)
+        act.connect_object('activate', self.__add_bookmark,
+                           library.librarian, player)
+        ag.add_action_with_accel(act, "<ctrl>D")
+
+        act = Gtk.Action("EditBookmarks", _("Edit Bookmarks…"), None, "")
+        act.connect_object('activate', self.__edit_bookmarks,
+                           library.librarian, player)
+        ag.add_action_with_accel(act, "<ctrl>B")
+
         act = Gtk.Action("About", None, None, Gtk.STOCK_ABOUT)
         act.connect_object('activate', self.__show_about, player)
         ag.add_action_with_accel(act, None)
@@ -730,7 +729,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     def __song_started(self, player, song):
         self.__update_title(player)
 
-        for wid in ["Jump", "Next", "EditTags", "Information"]:
+        for wid in ["Jump", "Next", "EditTags", "Information",
+                    "EditBookmarks", "AddBookmark"]:
             self.ui.get_widget(
                 '/Menu/Control/' + wid).set_sensitive(bool(song))
         for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
