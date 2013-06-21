@@ -15,7 +15,7 @@ import quodlibet.browsers
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
 from quodlibet.browsers._base import Browser
-from quodlibet.library import SongLibrary, SongLibrarian
+from quodlibet.library import SongFileLibrary, SongLibrarian
 
 
 SONGS = [
@@ -53,7 +53,7 @@ class TBrowserBase(TestCase):
 
     def setUp(self):
         config.init()
-        self.library = library = SongLibrary()
+        self.library = library = SongFileLibrary()
         library.librarian = SongLibrarian()
         library.add(SONGS)
         self.Kind.init(library)
