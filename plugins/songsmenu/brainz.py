@@ -244,6 +244,7 @@ class QueryThread(object):
                         res = func(*args, **kwargs)
                     except:
                         res = None
+
                 def idle_check(cb, res):
                     if self.running:
                         cb(res)
