@@ -739,7 +739,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.__update_title(player)
 
         for wid in ["Jump", "Next", "EditTags", "Information",
-                    "EditBookmarks", "AddBookmark"]:
+                    "EditBookmarks", "AddBookmark", "StopAfter"]:
             self.ui.get_widget(
                 '/Menu/Control/' + wid).set_sensitive(bool(song))
         for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
