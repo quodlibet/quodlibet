@@ -12,7 +12,7 @@ import urllib2
 import urllib
 import itertools
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Pango
 
 from quodlibet import const
 from quodlibet import qltk
@@ -506,6 +506,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         scrolled_window = ScrolledWindow()
         scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
+        view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
         scrolled_window.set_policy(
             Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -545,6 +546,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         column.add_attribute(renderpb, "stock_id", self.STOCK)
 
         render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
         view.append_column(column)
         column.pack_start(render, True)
         column.add_attribute(render, "text", self.NAME)
