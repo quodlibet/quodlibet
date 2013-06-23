@@ -413,10 +413,9 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         # Set monitor to display OSD on if there's more than one
         monitor_cnt = Gdk.Screen.get_default().get_n_monitors()
         if monitor_cnt > 1:
-            monitor = Gtk.SpinButton(
-                Gtk.Adjustment(value=self.conf.monitor, lower=0,
-                upper=monitor_cnt - 1, step_incr=1)
-            )
+            adj = Gtk.Adjustment(value=self.conf.monitor, lower=0,
+                                 upper=monitor_cnt - 1, step_incr=1)
+            monitor = Gtk.SpinButton(adjustment=adj)
             monitor.set_numeric(True)
             monitor.connect('value-changed', change_monitor)
             l2 = ConfigLabel("_Monitor:", monitor)
