@@ -30,7 +30,7 @@ class ThemeSwitcher(EventPlugin):
         label = Gtk.Label(label=_("_Theme:"))
         combo = Gtk.ComboBoxText()
 
-        theme = config.get("plugins", __name__, None)
+        theme = config.get("plugins", self.CONFIG_THEME, None)
 
         combo.append_text(_("Default Theme"))
         themes = self.__get_themes()
