@@ -49,7 +49,7 @@ class TreeViewHints(Gtk.Window):
 
         self.set_app_paintable(True)
         self.set_resizable(False)
-        self.set_name("gtk-tooltips")
+        self.set_name("gtk-tooltip")
         self.set_border_width(1)
         self.connect('leave-notify-event', self.__undisplay)
 
