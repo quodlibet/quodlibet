@@ -32,8 +32,26 @@ To clone the repository::
 |source-logo| Release Tarballs
 ------------------------------
 
-Release tarballs can be downloaded from the Google Code `download page 
-<http://code.google.com/p/quodlibet/downloads/list?q=Type%3DSource>`__.
+========================== ===============================
+Release                    Filename
+========================== ===============================
+Quod Libet 3.0.0           quodlibet-3.0.0.tar.gz_
+Quod Libet Plugins 3.0.0   quodlibet-plugins-3.0.0.tar.gz_
+Quod Libet 2.6.0           quodlibet-2.6.0.tar.gz_
+Quod Libet Plugins 2.6.0   quodlibet-plugins-2.6.0.tar.gz_
+Quod Libet 2.5.1           quodlibet-2.5.1.tar.gz_
+Quod Libet Plugins 2.5.1   quodlibet-plugins-2.5.1.tar.gz_
+========================== ===============================
+
+.. _quodlibet-3.0.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.0.tar.gz
+.. _quodlibet-plugins-3.0.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.0.tar.gz
+.. _quodlibet-2.6.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.0.tar.gz
+.. _quodlibet-plugins-2.6.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.6.0.tar.gz
+.. _quodlibet-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1.tar.gz
+.. _quodlibet-plugins-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.5.1.tar.gz
+
+
+For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
 
 |ubuntu-logo| Ubuntu
 --------------------
@@ -96,7 +114,20 @@ Unstable Repo:
 |windows-logo| Windows
 ----------------------
 
-`Windows Installers <http://code.google.com/p/quodlibet/downloads/list?can=2&q=OpSys%3DWindows>`_
+========================== ==============================
+Release                    Filename
+========================== ==============================
+Quod Libet 2.5.1           quodlibet-2.5.1-installer.exe_
+Quod Libet 2.4.1           quodlibet-2.4.1-installer.exe_
+Quod Libet 2.3.1           quodlibet-2.3.1-installer.exe_
+========================== ==============================
+
+
+.. _quodlibet-2.5.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1-installer.exe
+.. _quodlibet-2.4.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.4.1installer.exe
+.. _quodlibet-2.3.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.3.1-installer.exe
+
+For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
 
 
 |arch-logo| Arch Linux
