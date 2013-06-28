@@ -84,7 +84,7 @@ class SearchBar(Gtk.VBox, Browser):
         prefs = PreferencesButton(sbb)
         sbb.pack_start(prefs, False, True, 0)
 
-        align = (Alignment(sbb, left=3, right=3, top=3) if main
+        align = (Alignment(sbb, left=3, right=3, top=6) if main
                  else Alignment(sbb))
         self.pack_start(align, False, True, 0)
         self.connect('destroy', self.__destroy)

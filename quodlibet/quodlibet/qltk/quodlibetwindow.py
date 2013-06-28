@@ -133,18 +133,29 @@ class SongListScroller(ScrolledWindow):
         config.set("memory", "songlist", str(value))
 
 
-class TopBar(Gtk.HBox):
+class TopBar(Gtk.Toolbar):
     def __init__(self, parent, player, library):
-        super(TopBar, self).__init__(spacing=3)
+        super(TopBar, self).__init__()
 
         # play controls
+        control_item = Gtk.ToolItem()
+        self.insert(control_item, 0)
         t = PlayControls(player, library.librarian)
         self.volume = t.volume
-        self.pack_start(t, False, False, 0)
+        control_item.add(t)
+
+        self.insert(Gtk.SeparatorToolItem(), 1)
+
+        info_item = Gtk.ToolItem()
+        self.insert(info_item, 2)
+        info_item.set_expand(True)
+
+        box = Gtk.Box(spacing=6)
+        info_item.add(Alignment(box, border=3, right=-3))
 
         # song text
         text = SongInfo(library.librarian, player)
-        self.pack_start(Alignment(text, border=3), True, True, 0)
+        box.pack_start(Alignment(text, top=3, bottom=3), True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
@@ -152,10 +163,13 @@ class TopBar(Gtk.HBox):
                      parent=self)
         gobject_weak(parent.connect, 'artwork-changed',
                      self.__song_art_changed, library, parent=self)
-        self.pack_start(self.image, False, True, 0)
+        box.pack_start(self.image, False, True, 0)
 
         for child in self.get_children():
             child.show_all()
+
+        context = self.get_style_context()
+        context.add_class("primary-toolbar")
 
     def __new_song(self, player, song):
         self.image.set_song(song)
@@ -247,10 +261,10 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             player, self.qexpander.model, self.songlist.model)
 
         top_bar = TopBar(self, player, library)
-        top_align = Alignment(top_bar, border=3, bottom=-3)
-        main_box.pack_start(top_align, False, True, 0)
+        main_box.pack_start(top_bar, False, True, 0)
+        self.top_bar = top_bar
 
-        self.__browserbox = Alignment(top=3, bottom=3)
+        self.__browserbox = Alignment(bottom=3)
         main_box.pack_start(self.__browserbox, True, True, 0)
 
         statusbox = StatusBarBox(self.songlist.model, player)

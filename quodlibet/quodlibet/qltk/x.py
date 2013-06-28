@@ -37,6 +37,16 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         dx = x2 - x1
         dy = y2 - y1
 
+        # XXX: ugly, ugly hack
+        # Pretend the main window toolbar is the top of the window.
+        # This removes the top border in case the ScrolledWindow
+        # is drawn right below the toolbar.
+        try:
+            top_alloc = toplevel.top_bar.get_allocation()
+            dy -= top_alloc.y + top_alloc.height
+        except AttributeError:
+            pass
+
         ctx = self.get_style_context()
         border = ctx.get_border(self.get_state_flags())
 
@@ -164,8 +174,9 @@ def Frame(label, child=None):
     return frame
 
 
-def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0):
-    align = Gtk.Alignment(xscale=1.0, yscale=1.0)
+def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0,
+              **kwargs):
+    align = Gtk.Alignment(**kwargs)
     align.set_padding(top + border, bottom + border,
                       left + border, right + border)
     if child:

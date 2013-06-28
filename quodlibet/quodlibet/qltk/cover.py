@@ -68,9 +68,9 @@ def get_no_cover_pixbuf(width, height):
         return thumbnails.scale(no_cover, (width, height))
 
 
-class ResizeImage(Gtk.DrawingArea):
+class ResizeImage(Gtk.Bin):
     def __init__(self, resize=False, size=1):
-        Gtk.DrawingArea.__init__(self)
+        Gtk.Bin.__init__(self)
         self._dirty = True
         self._path = None
         self._pixbuf = None
@@ -163,6 +163,7 @@ class CoverImage(Gtk.EventBox):
 
     def __init__(self, resize=False, size=70, song=None):
         super(CoverImage, self).__init__()
+        self.set_visible_window(False)
         self.__song = None
         self.__file = None
         self.__current_bci = None
