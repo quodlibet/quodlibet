@@ -9,17 +9,15 @@ from gi.repository import Gtk, Gdk
 from quodlibet.qltk import get_top_parent, gtk_version
 
 
-class _PopupSlider(Gtk.EventBox):
+class _PopupSlider(Gtk.Button):
     # Based on the Rhythmbox volume control button; thanks to Colin Walters,
     # Richard Hult, Michael Fulbright, Miguel de Icaza, and Federico Mena.
 
     def __init__(self, child=None, adj=None, req=None):
         super(_PopupSlider, self).__init__()
-        button = Gtk.Button()
         if child:
-            button.add(child)
-        self.add(button)
-        button.connect('clicked', self.__clicked)
+            self.add(child)
+        self.connect('clicked', self.__clicked)
 
         window = self.__window = Gtk.Window(Gtk.WindowType.POPUP)
         self.__adj = adj or self._adj
@@ -55,7 +53,8 @@ class _PopupSlider(Gtk.EventBox):
         self.scale.connect_after('button-press-event', handle_all)
         self.scale.connect_after('button-release-event', handle_all)
 
-        self.get_child().show_all()
+        if child:
+            self.get_child().show_all()
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError
@@ -65,14 +64,15 @@ class _PopupSlider(Gtk.EventBox):
             return
 
         window = self.__window
-        button = self.get_child()
         frame = window.get_child()
 
         frame.show_all()
         window.size_request()
 
         dummy, x, y = self.get_window().get_origin()
-        button_alloc = button.get_allocation()
+        x, y = self.translate_coordinates(self.get_toplevel(), x, y)[:2]
+
+        button_alloc = self.get_allocation()
         w, h = button_alloc.width, button_alloc.height
 
         ww, wh = window.get_size()

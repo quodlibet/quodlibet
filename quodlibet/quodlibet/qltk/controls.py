@@ -62,9 +62,8 @@ class SeekBar(HSlider):
         hbox = Gtk.HBox(spacing=3)
         l = TimeLabel()
         hbox.pack_start(l, True, True, 0)
-        hbox.pack_start(
-            Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE),
-            False, True, 0)
+        arrow = Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
+        hbox.pack_start(arrow, False, True, 0)
         super(SeekBar, self).__init__(hbox)
 
         self.scale.connect('button-press-event', self.__seek_lock)
@@ -91,10 +90,9 @@ class SeekBar(HSlider):
         i.connect('activate', edit_bookmarks_cb)
         m.append(i)
         m.show_all()
-        self.get_child().connect_object(
+        self.connect_object(
             'button-press-event', self.__check_menu, m, player, c)
-        self.connect_object('popup-menu', self.__popup_menu, m, player,
-                self.get_child().get_child())
+        self.connect_object('popup-menu', self.__popup_menu, m, player)
 
         timer = TimeTracker(player)
         timer.connect_object('tick', self.__check_time, player)
@@ -107,12 +105,12 @@ class SeekBar(HSlider):
             return
 
         if event.button == Gdk.BUTTON_SECONDARY:
-            return self.__popup_menu(menu, player)
+            return self.__popup_menu(menu, player, event)
         elif event.button == Gdk.BUTTON_MIDDLE:
             remaining_item.set_active(not remaining_item.get_active())
             return True
 
-    def __popup_menu(self, menu, player, widget=None):
+    def __popup_menu(self, menu, player, event=None):
         for child in menu.get_children()[2:-1]:
             menu.remove(child)
             child.destroy()
@@ -127,12 +125,13 @@ class SeekBar(HSlider):
             items.reverse()
             for i in items:
                 menu.insert(i, 2)
-        time = Gtk.get_current_event_time()
-        if widget:
-            return qltk.popup_menu_under_widget(menu, widget, 3, time)
-        else:
-            menu.popup(None, None, None, None, 3, time)
+
+        if event:
+            menu.popup(None, None, None, None, 3, event.time)
             return True
+        else:
+            time = Gtk.get_current_event_time()
+            return qltk.popup_menu_under_widget(menu, self, 3, time)
 
     def __seeked(self, player, song, ms):
         # If it's not paused, we'll grab it in our next update.
