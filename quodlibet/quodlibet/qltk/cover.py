@@ -210,12 +210,12 @@ class CoverImage(Gtk.EventBox):
 
             SongsMenu.plugins.handle("Download Album art", app.library,
                                      qltk.get_top_parent(self), [song])
-            return
+            return True
 
         if self.__current_bci is not None:
             # We're displaying it; destroy it.
             self.__current_bci.destroy()
-            return
+            return True
 
         try:
             self.__current_bci = BigCenteredImage(
@@ -225,3 +225,5 @@ class CoverImage(Gtk.EventBox):
         else:
             self.__current_bci.show()
             self.__current_bci.connect('destroy', self.__reset_bci)
+
+        return True
