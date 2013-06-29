@@ -25,7 +25,8 @@ class FileListExpander(Gtk.Expander):
 
         paths = (util.fsdecode(util.unexpand(s("~filename"))) for s in songs)
         lab = Gtk.Label("\n".join(paths))
-        lab.set_alignment(0.1, 0.0)
+        lab.set_alignment(0.0, 0.0)
+        lab.set_selectable(True)
         win = Gtk.ScrolledWindow()
         win.add_with_viewport(Alignment(lab, border=6))
         win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
