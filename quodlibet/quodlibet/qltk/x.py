@@ -187,7 +187,12 @@ def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0,
 def MenuItem(label, stock_id):
     """An ImageMenuItem with a custom label and stock image."""
     item = Gtk.ImageMenuItem.new_with_mnemonic(label)
-    item.set_image(Gtk.Image(stock=stock_id, icon_size=Gtk.IconSize.MENU))
+    if Gtk.stock_lookup(stock_id):
+        image = Gtk.Image.new_from_stock(stock_id, Gtk.IconSize.MENU)
+    else:
+        image = Gtk.Image.new_from_icon_name(stock_id, Gtk.IconSize.MENU)
+    image.show()
+    item.set_image(image)
     return item
 
 
@@ -196,11 +201,16 @@ def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
     exactly like a stock button."""
     align = Gtk.Alignment(xscale=0.0, yscale=1.0, xalign=0.5, yalign=0.5)
     hbox = Gtk.HBox(spacing=2)
-    hbox.pack_start(Gtk.Image.new_from_stock(stock_id, size), True, True, 0)
+    if Gtk.stock_lookup(stock_id):
+        image = Gtk.Image.new_from_stock(stock_id, size)
+    else:
+        image = Gtk.Image.new_from_icon_name(stock_id, size)
+    hbox.pack_start(image, True, True, 0)
     label = Gtk.Label(label)
     label.set_use_underline(True)
     hbox.pack_start(label, True, True, 0)
     align.add(hbox)
+    align.show_all()
     button = Gtk.Button()
     button.add(align)
     return button

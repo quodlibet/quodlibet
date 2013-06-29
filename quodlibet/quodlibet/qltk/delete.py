@@ -1,4 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,124 +9,175 @@ import os
 
 from gi.repository import Gtk
 
-from quodlibet import const
-from quodlibet import util
 
+from quodlibet import util
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
-from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
-from quodlibet.qltk.x import Button
+from quodlibet.qltk.x import Button, MenuItem, Alignment
 
 
-class DeleteDialog(Gtk.Dialog):
-    def __init__(self, parent, files, asktrash=True, askonly=False):
-        super(DeleteDialog, self).__init__(
-            _("Delete Files"), get_top_parent(parent))
-        self.set_border_width(6)
-        self.vbox.set_spacing(6)
-        self.action_area.set_border_width(0)
-        self.set_resizable(False)
+class FileListExpander(Gtk.Expander):
+    def __init__(self, songs):
+        super(FileListExpander, self).__init__(label=_("Files:"))
+        self.set_resize_toplevel(True)
 
-        self.__files = files
-
-        if asktrash and trash.can_trash():
-            b = Button(_("_Move to Trash"), Gtk.STOCK_DELETE)
-            self.add_action_widget(b, 0)
-
-        self.__askonly = askonly
-
-        self.add_button(Gtk.STOCK_CANCEL, 1)
-        self.add_button(Gtk.STOCK_DELETE, 2)
-
-        hbox = Gtk.HBox()
-        hbox.set_border_width(6)
-        i = Gtk.Image()
-        i.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.DIALOG)
-        i.set_padding(12, 0)
-        i.set_alignment(0.5, 0.0)
-        hbox.pack_start(i, False, True, 0)
-        vbox = Gtk.VBox(spacing=6)
-
-        base = os.path.basename(files[0])
-        if len(files) == 1:
-            l = _("Permanently delete this file?")
-        else:
-            l = _("Permanently delete these files?")
-        if len(files) == 1:
-            exp = Gtk.Expander(label="%s" % util.fsdecode(base))
-        else:
-            exp = Gtk.Expander(
-                label=ngettext("%(title)s and %(count)d more...",
-                "%(title)s and %(count)d more...", len(files) - 1) %
-                {'title': util.fsdecode(base), 'count': len(files) - 1})
-
-        lab = Gtk.Label()
-        lab.set_markup("<big><b>%s</b></big>" % l)
-        lab.set_alignment(0.0, 0.5)
-        vbox.pack_start(lab, False, True, 0)
-
-        lab = Gtk.Label("\n".join(
-            map(util.fsdecode, map(util.unexpand, files))))
+        paths = (util.fsdecode(util.unexpand(s("~filename"))) for s in songs)
+        lab = Gtk.Label("\n".join(paths))
         lab.set_alignment(0.1, 0.0)
-        exp.add(Gtk.ScrolledWindow())
-        exp.get_child().add_with_viewport(lab)
-        exp.get_child().set_policy(Gtk.PolicyType.AUTOMATIC,
-                                   Gtk.PolicyType.AUTOMATIC)
-        exp.get_child().get_child().set_shadow_type(Gtk.ShadowType.NONE)
-        vbox.pack_start(exp, True, True, 0)
-        hbox.pack_start(vbox, True, True, 0)
-        self.vbox.pack_start(hbox, True, True, 0)
-        self.vbox.show_all()
+        win = Gtk.ScrolledWindow()
+        win.add_with_viewport(Alignment(lab, border=6))
+        win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        win.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        win.set_size_request(-1, 100)
+        self.add(win)
+        win.show_all()
 
-    def run(self):
-        resp = super(DeleteDialog, self).run()
-        if self.__askonly:
-            self.destroy()
-            return resp
 
-        if resp == 1 or resp == Gtk.ResponseType.DELETE_EVENT:
-            return []
-        elif resp == 0:
-            s = _("Moving %(current)d/%(total)d.")
-        elif resp == 2:
-            s = _("Deleting %(current)d/%(total)d.")
+class DeleteDialog(WarningMessage):
+    RESPONSE_DELETE = 1
+
+    def __init__(self, parent, songs):
+        title = ngettext(
+            "Delete %(file_count)d file permanently?",
+            "Delete %(file_count)d files permanently?",
+            len(songs)) % {
+                "file_count": len(songs),
+            }
+
+        description = _("The selected songs will be removed from the "
+            "library and the corresponding files will be deleted from disk.")
+
+        super(DeleteDialog, self).__init__(
+            get_top_parent(parent),
+            title, description,
+            buttons=None)
+
+        area = self.get_message_area()
+        exp = FileListExpander(songs)
+        exp.show()
+        area.pack_start(exp, False, True, 0)
+
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        delete_button = Button(_("_Delete Files"), Gtk.STOCK_DELETE)
+        delete_button.show()
+        self.add_action_widget(delete_button, self.RESPONSE_DELETE)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
+
+
+class TrashDialog(WarningMessage):
+    RESPONSE_TRASH = 1
+
+    def __init__(self, parent, songs):
+        title = ngettext(
+            "Move %(file_count)d file to the trash?",
+            "Move %(file_count)d files to the trash?",
+            len(songs)) % {
+                "file_count": len(songs),
+            }
+
+        description = _("The selected songs will be removed from the "
+            "library and the corresponding files will move to the trash.")
+
+        super(TrashDialog, self).__init__(
+            get_top_parent(parent),
+            title, description,
+            buttons=None)
+
+        area = self.get_message_area()
+        exp = FileListExpander(songs)
+        exp.show()
+        area.pack_start(exp, False, True, 0)
+
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        trash_button = Button(_("_Move to Trash"), "user-trash")
+        trash_button.show()
+        self.add_action_widget(trash_button, self.RESPONSE_TRASH)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
+
+
+def TrashMenuItem():
+    if trash.can_trash():
+        item = MenuItem(_("_Move to Trash"), "user-trash")
+    else:
+        item = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
+    return item
+
+
+def _do_trash_songs(parent, songs, librarian):
+    dialog = TrashDialog(parent, songs)
+    resp = dialog.run()
+    if resp != TrashDialog.RESPONSE_TRASH:
+        return
+
+    window_title = _("Moving %(current)d/%(total)d.")
+
+    w = WaitLoadWindow(parent, len(songs), window_title)
+    w.show()
+
+    ok = []
+    failed = []
+    for song in songs:
+        filename = song("~filename")
+        try:
+            trash.trash(filename)
+        except trash.TrashError:
+            failed.append(song)
         else:
-            return []
-        files = self.__files
-        w = WaitLoadWindow(self, len(files), s)
-        w.show()
-        removed = []
+            ok.append(song)
+        w.step()
+    w.destroy()
 
-        if resp == 0:
-            for filename in files:
-                try:
-                    trash.trash(filename)
-                except trash.TrashError:
-                    fn = util.escape(util.fsdecode(util.unexpand(filename)))
-                    ErrorMessage(self, _("Unable to move to trash"),
-                        (_("Moving <b>%s</b> to the trash failed.") %
-                        fn)).run()
-                    break
-                removed.append(filename)
-                w.step()
+    if failed:
+        ErrorMessage(parent,
+            _("Unable to move to trash"),
+            _("Moving one ore more files to the trash failed.")
+        ).run()
+
+    if ok:
+        librarian.remove(ok)
+
+
+def _do_delete_songs(parent, songs, librarian):
+    dialog = DeleteDialog(parent, songs)
+    resp = dialog.run()
+    if resp != DeleteDialog.RESPONSE_DELETE:
+        return
+
+    window_title = _("Deleting %(current)d/%(total)d.")
+
+    w = WaitLoadWindow(parent, len(songs), window_title)
+    w.show()
+
+    ok = []
+    failed = []
+    for song in songs:
+        filename = song("~filename")
+        try:
+            os.unlink(filename)
+        except EnvironmentError:
+            failed.append(song)
         else:
-            for filename in files:
-                try:
-                    os.unlink(filename)
-                except EnvironmentError, s:
-                    try:
-                        s = unicode(s.strerror, const.ENCODING, 'replace')
-                    except TypeError:
-                        s = unicode(s.strerror[1], const.ENCODING, 'replace')
-                    s = "\n\n" + s
-                    fn = util.escape(util.fsdecode(util.unexpand(filename)))
-                    ErrorMessage(
-                        self, _("Unable to delete file"),
-                        (_("Deleting <b>%s</b> failed.") % fn) + s).run()
-                    break
-                removed.append(filename)
-                w.step()
+            ok.append(song)
+        w.step()
+    w.destroy()
 
-        w.destroy()
-        return removed
+    if failed:
+        ErrorMessage(parent,
+            _("Unable to delete files"),
+            _("Deleting one ore more files failed.")
+        ).run()
+
+    if ok:
+        librarian.remove(ok)
+
+
+def trash_songs(parent, songs, librarian):
+    if not songs:
+        return
+
+    if trash.can_trash():
+        _do_trash_songs(parent, songs, librarian)
+    else:
+        _do_delete_songs(parent, songs, librarian)

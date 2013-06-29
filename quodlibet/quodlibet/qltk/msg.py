@@ -84,4 +84,4 @@ class WarningMessage(Message):
     """Like Message, but uses an warning-indicating picture."""
     def __init__(self, *args, **kwargs):
         super(WarningMessage, self).__init__(
-            Gtk.MessageType.ERROR, *args, **kwargs)
+            Gtk.MessageType.WARNING, *args, **kwargs)

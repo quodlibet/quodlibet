@@ -9,7 +9,7 @@ from gi.repository import Gtk, Gdk
 from quodlibet import qltk
 
 from quodlibet.util import print_exc
-from quodlibet.qltk.delete import DeleteDialog
+from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.plugins import PluginManager
@@ -259,11 +259,13 @@ class SongsMenu(Gtk.Menu):
             self.append(b)
 
         if delete:
-            b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
             if callable(delete):
+                b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
                 b.connect_object('activate', delete, songs)
             else:
-                b.connect('activate', self.__delete, songs, librarian)
+                b = TrashMenuItem()
+                b.connect_object('activate', trash_songs,
+                                 parent, songs, librarian)
                 b.set_sensitive(is_file)
             self.append(b)
 
@@ -309,16 +311,3 @@ class SongsMenu(Gtk.Menu):
         if songs:
             from quodlibet import app
             app.window.playlist.enqueue(songs)
-
-    def __delete(self, item, songs, library):
-        songs = set(songs)
-        files = [song["~filename"] for song in songs]
-        d = DeleteDialog(None, files)
-        removed = dict.fromkeys(d.run())
-        d.destroy()
-        removed = filter(lambda s: s["~filename"] in removed, songs)
-        if removed:
-            try:
-                library.librarian.remove(removed)
-            except AttributeError:
-                library.remove(removed)
