@@ -512,8 +512,9 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         vb2.pack_start(hb, True, True, 0)
 
         hb = Gtk.HBox(spacing=6)
-        timeout = Gtk.SpinButton(adjustment=
-            Gtk.Adjustment(self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
+        timeout = Gtk.SpinButton(
+            adjustment=Gtk.Adjustment(
+                self.conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
             climb_rate=0.1, digits=1)
         timeout.set_numeric(True)
         timeout.connect('value-changed', change_delay)
