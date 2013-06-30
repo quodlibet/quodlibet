@@ -269,6 +269,9 @@ class SongsMenu(Gtk.Menu):
                 b.set_sensitive(is_file)
             self.append(b)
 
+        if remove or delete:
+            self.separate()
+
         if edit:
             b = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
             qltk.add_fake_accel(b, "<alt>Return")
