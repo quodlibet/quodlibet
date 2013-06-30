@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2013 Christoph Reiter
+#           2013 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -48,7 +48,7 @@ class DeleteDialog(WarningMessage):
             }
 
         description = _("The selected songs will be removed from the "
-            "library and the corresponding files will be deleted from disk.")
+                        "library and their files deleted from disk.")
 
         super(DeleteDialog, self).__init__(
             get_top_parent(parent),
@@ -79,7 +79,7 @@ class TrashDialog(WarningMessage):
             }
 
         description = _("The selected songs will be removed from the "
-            "library and the corresponding files will move to the trash.")
+                        "library and their files moved to the trash.")
 
         super(TrashDialog, self).__init__(
             get_top_parent(parent),
@@ -99,11 +99,8 @@ class TrashDialog(WarningMessage):
 
 
 def TrashMenuItem():
-    if trash.can_trash():
-        item = MenuItem(_("_Move to Trash"), "user-trash")
-    else:
-        item = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
-    return item
+    return (MenuItem(_("_Move to Trash"), "user-trash") if trash.can_trash()
+            else Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True))
 
 
 def _do_trash_songs(parent, songs, librarian):
@@ -133,7 +130,7 @@ def _do_trash_songs(parent, songs, librarian):
     if failed:
         ErrorMessage(parent,
             _("Unable to move to trash"),
-            _("Moving one ore more files to the trash failed.")
+            _("Moving one or more files to the trash failed.")
         ).run()
 
     if ok:
@@ -167,7 +164,7 @@ def _do_delete_songs(parent, songs, librarian):
     if failed:
         ErrorMessage(parent,
             _("Unable to delete files"),
-            _("Deleting one ore more files failed.")
+            _("Deleting one or more files failed.")
         ).run()
 
     if ok:
