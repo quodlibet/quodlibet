@@ -246,7 +246,7 @@ class SongsMenu(Gtk.Menu):
                     b.set_submenu(submenu)
                     self.append(b)
 
-        if remove or delete or edit:
+        if remove or delete:
             self.separate()
 
         if remove:
@@ -269,10 +269,8 @@ class SongsMenu(Gtk.Menu):
                 b.set_sensitive(is_file)
             self.append(b)
 
-        if remove or delete:
-            self.separate()
-
         if edit:
+            self.separate()
             b = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
             qltk.add_fake_accel(b, "<alt>Return")
 
