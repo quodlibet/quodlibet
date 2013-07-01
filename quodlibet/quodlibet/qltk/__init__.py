@@ -114,6 +114,11 @@ def is_accel(event, accel):
     return (accel_keyval, accel_mod) == (keyval, event.state & default_mod)
 
 
+def is_wayland():
+    # FIXME: Is there no better way?
+    return Gdk.Display.get_default().get_name() == "Wayland"
+
+
 gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
                Gtk.get_micro_version())
 

@@ -24,18 +24,24 @@ class BigCenteredImage(qltk.Window):
     This might leak memory, but it could just be Python's GC being dumb."""
 
     def __init__(self, title, filename, parent=None):
-        super(BigCenteredImage, self).__init__()
-        self.set_transient_for(qltk.get_top_parent(parent))
-        width = Gdk.Screen.width() / 2
-        height = Gdk.Screen.height() / 2
+        super(BigCenteredImage, self).__init__(type=Gtk.WindowType.POPUP)
+        parent = qltk.get_top_parent(parent)
+
+        self.set_transient_for(parent)
+        if parent and qltk.is_wayland():
+            # no screen size with wayland, the parent window is
+            # the next best thing..
+            width, height = parent.get_size()
+            width = int(width / 1.2)
+            height = int(height / 1.2)
+            self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        else:
+            width = Gdk.Screen.width() / 2
+            height = Gdk.Screen.height() / 2
+            self.set_position(Gtk.WindowPosition.CENTER)
 
         pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
         pixbuf = thumbnails.scale(pixbuf, (width, height), scale_up=False)
-
-        self.set_title(title)
-        self.set_decorated(False)
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_modal(False)
 
         image = Gtk.Image()
         image.set_from_pixbuf(pixbuf)
