@@ -8,8 +8,7 @@
 
 import os
 
-from gi.repository import Gtk
-from gi.repository import Pango
+from gi.repository import Gtk, Gdk, Pango
 
 from quodlibet import const
 from quodlibet import qltk
@@ -23,7 +22,7 @@ from quodlibet.parse import XMLFromPattern
 from quodlibet.qltk.textedit import PatternEdit
 
 
-class SongInfo(Gtk.Label):
+class SongInfo(Gtk.EventBox):
     _pattern = ("""\
 \\<span weight='bold' size='large'\\><title>\\</span\\>\
 <~length| (<~length>)><version|
@@ -42,19 +41,37 @@ class SongInfo(Gtk.Label):
 
     def __init__(self, library, player):
         super(SongInfo, self).__init__()
-        self.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        self.set_selectable(True)
-        self.set_alignment(0.0, 0.0)
+        self.set_visible_window(False)
+        align = Gtk.Alignment(xscale=0.0, xalign=0.0, yscale=0.0, yalign=0.0)
+        label = Gtk.Label()
+        label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
+        label.set_selectable(True)
+        align.add(label)
+        label.set_alignment(0.0, 0.0)
+        self._label = label
         library.connect_object('changed', self.__check_change, player)
         player.connect('song-started', self.__check_started)
 
-        self.connect_object('populate-popup', self.__menu, player, library)
+        label.connect_object('populate-popup', self.__menu, player, library)
+        self.connect('button-press-event', self.__create_menu, player, library)
 
         try:
             self._pattern = file(self.__PATTERN_FILENAME).read().rstrip()
         except EnvironmentError:
             pass
         self._compiled = XMLFromPattern(self._pattern)
+        align.show_all()
+        self.add(align)
+
+    def __create_menu(self, widget, event, player, library):
+        button = event.button
+        if button == Gdk.BUTTON_SECONDARY:
+            menu = Gtk.Menu()
+            menu.attach_to_widget(widget, None)
+            self.__menu(player, menu, library)
+            menu.popup(None, None, None, None, button, event.time)
+            return True
+        return False
 
     def __menu(self, player, menu, library):
         try:
@@ -146,6 +163,6 @@ class SongInfo(Gtk.Label):
         # some radio streams update way too often and updating the label
         # destroys the text selection
         if text not in last:
-            self.set_markup(text)
+            self._label.set_markup(text)
             last.clear()
             last[text] = True
