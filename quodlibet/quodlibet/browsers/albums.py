@@ -228,7 +228,7 @@ class PreferencesButton(Gtk.HBox):
             model.set_sort_column_id(100 + num, Gtk.SortType.ASCENDING)
 
     def __compare_title(self, model, i1, i2, data):
-        a1, a2 = model[i1][0], model[i2][0]
+        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
         # all albums has to stay at the top
         if (a1 and a2) is None:
             return cmp(a1, a2)
@@ -241,7 +241,7 @@ class PreferencesButton(Gtk.HBox):
                 cmp(a1.key, a2.key))
 
     def __compare_artist(self, model, i1, i2, data):
-        a1, a2 = model[i1][0], model[i2][0]
+        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
         if (a1 and a2) is None:
             return cmp(a1, a2)
         if not a1.title:
@@ -254,7 +254,7 @@ class PreferencesButton(Gtk.HBox):
                 cmp(a1.key, a2.key))
 
     def __compare_date(self, model, i1, i2, data):
-        a1, a2 = model[i1][0], model[i2][0]
+        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
         if (a1 and a2) is None:
             return cmp(a1, a2)
         if not a1.title:
@@ -266,7 +266,7 @@ class PreferencesButton(Gtk.HBox):
                 cmp(a1.key, a2.key))
 
     def __compare_genre(self, model, i1, i2, data):
-        a1, a2 = model[i1][0], model[i2][0]
+        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
         if (a1 and a2) is None:
             return cmp(a1, a2)
         if not a1.title:
@@ -280,7 +280,7 @@ class PreferencesButton(Gtk.HBox):
                 cmp(a1.key, a2.key))
 
     def __compare_rating(self, model, i2, i1, data):
-        a1, a2 = model[i1][0], model[i2][0]
+        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
         if (a1 and a2) is None:
             return cmp(a1, a2)
         return (cmpa(a1("~#rating"), a2("~#rating")) or
@@ -557,7 +557,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         render.set_property('height', Album.COVER_SIZE + 8)
 
         def cell_data_pb(column, cell, model, iter, no_cover):
-            album = model[iter][0]
+            album = model.get_value(iter, 0)
             if album is None:
                 pixbuf = None
             elif album.cover:
@@ -578,7 +578,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
         def cell_data(column, cell, model, iter, data):
-            album = model[iter][0]
+            album = model.get_value(iter, 0)
             if album is None:
                 text = "<b>%s</b>" % _("All Albums")
                 text += "\n" + ngettext("%d album", "%d albums",
@@ -706,19 +706,20 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     def __parse_query(self, model, iter, data):
         f, b = self.__filter, self.__bg_filter
+        album = model.get_value(iter, 0)
         if f is None and b is None:
             return True
-        elif model[iter][0] is None:
+        elif album is None:
             return True
         elif b is None:
-            return f(model[iter][0])
+            return f(album)
         elif f is None:
-            return b(model[iter][0])
+            return b(album)
         else:
-            return b(model[iter][0]) and f(model[iter][0])
+            return b(album) and f(album)
 
     def __search_func(self, model, column, key, iter, data):
-        album = model[iter][0]
+        album = model.get_value(iter, 0)
         if album is None:
             return True
         key = key.decode('utf-8').lower()
