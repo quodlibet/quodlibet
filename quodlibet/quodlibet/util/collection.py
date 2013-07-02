@@ -286,6 +286,10 @@ class Album(Collection):
         self.sort = util.human_sort_key(song("albumsort"))
         self.key = song.album_key
 
+    @property
+    def str_key(self):
+        return str(self.key)
+
     def finalize(self):
         """Finalize this album. Call after songs get added or removed"""
         super(Album, self).finalize()

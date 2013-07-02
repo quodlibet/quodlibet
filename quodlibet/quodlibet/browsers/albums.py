@@ -893,17 +893,22 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if Query.is_parsable(text):
             self.__update_filter(entry, text, scroll_up=False, restore=True)
 
-        albums = config.get("browsers", "albums").split("\n")
+        keys = config.get("browsers", "albums").split("\n")
 
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
         # otherwise all albums.
         self.__inhibit()
-        if albums == [""]:
+        if keys == [""]:
             self.view.set_cursor((0,))
         else:
-            select = lambda r: r[0] and r[0].title in albums
-            self.view.select_by_func(select)
+
+            def select_fun(row):
+                album = row[0]
+                if not album:  # all
+                    return False
+                return album.str_key in keys
+            self.view.select_by_func(select_fun)
         self.__uninhibit()
 
     def scroll(self, song):
@@ -913,7 +918,6 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     def __get_config_string(self):
         selection = self.view.get_selection()
-
         model, paths = selection.get_selected_rows()
 
         # All is selected
@@ -923,8 +927,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         # All selected albums
         albums = AlbumFilterModel.get_albums(model, paths)
 
-        # FIXME: title is far from perfect here
-        confval = "\n".join((a.title for a in albums))
+        confval = "\n".join((a.str_key for a in albums))
         # ConfigParser strips a trailing \n so we move it to the front
         if confval and confval[-1] == "\n":
             confval = "\n" + confval[:-1]
