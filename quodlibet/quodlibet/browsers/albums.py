@@ -412,6 +412,82 @@ class VisibleUpdate(object):
         self.__pending_paths = visible_paths
 
 
+class AlbumModel(SingleObjectStore):
+
+    def __init__(self, library):
+        super(AlbumModel, self).__init__()
+        self.__library = library
+
+        albums = library.albums
+        self.__sigs = [
+            albums.connect("added", self._add_albums),
+            albums.connect("removed", self._remove_albums),
+            albums.connect("changed", self._change_albums)
+        ]
+
+        self.append(row=[None])
+        self.append_many(albums.itervalues())
+
+    def refresh_all(self):
+        """Trigger redraws for all rows"""
+
+        for row in self:
+            self.row_changed(row.path, row.iter)
+
+    def destroy(self):
+        library = self.__library
+        for sig in self.__sigs:
+            library.albums.disconnect(sig)
+        self.__library = None
+        self.clear()
+
+    def _add_albums(self, library, added):
+        for album in added:
+            self.append(row=[album])
+
+    def _remove_albums(self, library, removed):
+        removed_albums = removed.copy()
+        for row in self:
+            if row[0] and row[0] in removed_albums:
+                removed_albums.remove(row[0])
+                self.remove(row.iter)
+                if not removed_albums:
+                    break
+
+    def _change_albums(self, library, changed):
+        """Trigger a row redraw for each album that changed"""
+
+        changed_albums = changed.copy()
+        for row in self:
+            if row[0] and row[0] in changed_albums:
+                changed_albums.remove(row[0])
+                self.row_changed(row.path, row.iter)
+                if not changed_albums:
+                    break
+
+
+class AlbumFilterModel(object):
+
+    @staticmethod
+    def get_albums(self, paths):
+        values = [self.get_value(self.get_iter(p), 0) for p in paths]
+        try:
+            values.remove(None)
+        except ValueError:
+            return values
+        else:
+            return [v for v in (row[0] for row in self) if v]
+
+    @staticmethod
+    def contains_all(self, paths):
+        values = (self.get_value(self.get_iter(p), 0) for p in paths)
+        return None in values
+
+    @staticmethod
+    def get_album(self, iter_):
+        return self.get_value(iter_, 0)
+
+
 class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     __gsignals__ = Browser.__gsignals__
     __model = None
@@ -460,11 +536,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     @classmethod
     def _destroy_model(klass):
-        library = klass.__library
-        for sig in klass.__sigs:
-            library.albums.disconnect(sig)
-        klass.__library = None
-        klass.__model.clear()
+        klass.__model.destroy()
         klass.__model = None
 
     @classmethod
@@ -480,8 +552,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             return
         klass._pattern_text = pattern_text
         klass._pattern = XMLFromPattern(pattern_text)
-        for row in klass.__model:
-            klass.__model.row_changed(row.path, row.iter)
+        klass.__model.refresh_all()
         pattern_fn = os.path.join(const.USERDIR, "album_pattern")
         f = file(pattern_fn, "w")
         f.write(pattern_text + "\n")
@@ -489,15 +560,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     @classmethod
     def _init_model(klass, library):
-        klass.__model = model = SingleObjectStore(object)
+        klass.__model = AlbumModel(library)
         klass.__library = library
-        library.albums.load()
-        klass.__sigs = [
-            library.albums.connect("added", klass._add_albums, model),
-            library.albums.connect("removed", klass._remove_albums, model),
-            library.albums.connect("changed", klass._change_albums, model)]
-        model.append(row=[None])
-        model.append_many(library.albums.itervalues())
 
     @classmethod
     def _refresh_albums(klass, albums):
@@ -505,32 +569,6 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         (Only needed for the cover atm) so they redraw as well."""
         if klass.__library:
             klass.__library.albums.refresh(albums)
-
-    @classmethod
-    def _add_albums(klass, library, added, model):
-        for album in added:
-            model.append(row=[album])
-
-    @classmethod
-    def _remove_albums(klass, library, removed, model):
-        removed_albums = removed.copy()
-        for row in model:
-            if row[0] and row[0] in removed_albums:
-                removed_albums.remove(row[0])
-                model.remove(row.iter)
-                if not removed_albums:
-                    break
-
-    @classmethod
-    def _change_albums(klass, library, changed, model):
-        """Trigger a row redraw for each album that changed"""
-        changed_albums = changed.copy()
-        for row in model:
-            if row[0] and row[0] in changed_albums:
-                changed_albums.remove(row[0])
-                model.row_changed(row.path, row.iter)
-                if not changed_albums:
-                    break
 
     def __init__(self, library, main):
         super(AlbumList, self).__init__(spacing=6)
@@ -556,8 +594,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         column.set_fixed_width(Album.COVER_SIZE + 12)
         render.set_property('height', Album.COVER_SIZE + 8)
 
-        def cell_data_pb(column, cell, model, iter, no_cover):
-            album = model.get_value(iter, 0)
+        def cell_data_pb(column, cell, model, iter_, no_cover):
+            album = AlbumFilterModel.get_album(model, iter_)
             if album is None:
                 pixbuf = None
             elif album.cover:
@@ -577,8 +615,9 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
-        def cell_data(column, cell, model, iter, data):
-            album = model.get_value(iter, 0)
+        def cell_data(column, cell, model, iter_, data):
+            album = AlbumFilterModel.get_album(model, iter_)
+
             if album is None:
                 text = "<b>%s</b>" % _("All Albums")
                 text += "\n" + ngettext("%d album", "%d albums",
@@ -704,22 +743,24 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         self.__uninhibit()
 
-    def __parse_query(self, model, iter, data):
+    def __parse_query(self, model, iter_, data):
         f, b = self.__filter, self.__bg_filter
-        album = model.get_value(iter, 0)
+
         if f is None and b is None:
             return True
-        elif album is None:
-            return True
-        elif b is None:
-            return f(album)
-        elif f is None:
-            return b(album)
         else:
-            return b(album) and f(album)
+            album = AlbumFilterModel.get_album(model, iter_)
+            if album is None:
+                return True
+            elif b is None:
+                return f(album)
+            elif f is None:
+                return b(album)
+            else:
+                return b(album) and f(album)
 
-    def __search_func(self, model, column, key, iter, data):
-        album = model.get_value(iter, 0)
+    def __search_func(self, model, column, key, iter_, data):
+        album = AlbumFilterModel.get_album(model, iter_)
         if album is None:
             return True
         key = key.decode('utf-8').lower()
@@ -734,8 +775,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         return True
 
     def __popup(self, view, library):
-        selection = view.get_selection()
-        albums = self.__get_selected_albums(selection)
+        albums = self.__get_selected_albums()
         songs = self.__get_songs_from_albums(albums)
         menu = SongsMenu(library, songs, parent=self)
 
@@ -753,21 +793,15 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __refresh_album(self, menuitem, view):
-        selection = view.get_selection()
-        albums = self.__get_selected_albums(selection)
+        albums = self.__get_selected_albums()
         for album in albums:
             album.scan_cover(True)
         self._refresh_albums(albums)
 
-    def __get_selected_albums(self, selection):
-        if not selection:
-            return []
-        model, rows = selection.get_selected_rows()
-        if not model or not rows:
-            return []
-        if rows and model[rows[0]][0] is None:
-            return [row[0] for row in model if row[0]]
-        return [model[row][0] for row in rows]
+    def __get_selected_albums(self):
+        selection = self.view.get_selection()
+        model, paths = selection.get_selected_rows()
+        return AlbumFilterModel.get_albums(model, paths)
 
     def __get_songs_from_albums(self, albums, sort=True):
         # Sort first by how the albums appear in the model itself,
@@ -782,7 +816,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         return songs
 
     def __get_selected_songs(self, sort=True):
-        albums = self.__get_selected_albums(self.view.get_selection())
+        albums = self.__get_selected_albums()
         return self.__get_songs_from_albums(albums, sort)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
@@ -798,8 +832,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         self.emit("activated")
 
     def active_filter(self, song):
-        selection = self.view.get_selection()
-        for album in self.__get_selected_albums(selection):
+        for album in self.__get_selected_albums():
             if song in album.songs:
                 return True
         return False
@@ -878,19 +911,18 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         select = lambda r: r[0] and r[0].key == album_key
         self.view.select_by_func(select, one=True)
 
-    def __get_config_string(self, selection):
-        if not selection:
-            return ""
-        model, rows = selection.get_selected_rows()
-        if not model or not rows:
-            return ""
+    def __get_config_string(self):
+        selection = self.view.get_selection()
+
+        model, paths = selection.get_selected_rows()
 
         # All is selected
-        if rows and model[rows[0]][0] is None:
+        if AlbumFilterModel.contains_all(model, paths):
             return ""
 
         # All selected albums
-        albums = (model[row][0] for row in rows)
+        albums = AlbumFilterModel.get_albums(model, paths)
+
         # FIXME: title is far from perfect here
         confval = "\n".join((a.title for a in albums))
         # ConfigParser strips a trailing \n so we move it to the front
@@ -899,8 +931,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         return confval
 
     def save(self):
-        selection = self.view.get_selection()
-        conf = self.__get_config_string(selection)
+        conf = self.__get_config_string()
         config.set("browsers", "albums", conf)
         text = self.__search.get_text().encode("utf-8")
         config.set("browsers", "query_text", text)
