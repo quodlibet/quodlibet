@@ -31,6 +31,7 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 from quodlibet.util.collection import Album
+from quodlibet.qltk.models import SingleObjectStore
 
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| (<date>)>
@@ -488,7 +489,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     @classmethod
     def _init_model(klass, library):
-        klass.__model = model = Gtk.ListStore(object)
+        klass.__model = model = SingleObjectStore(object)
         klass.__library = library
         library.albums.load()
         klass.__sigs = [
@@ -496,8 +497,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             library.albums.connect("removed", klass._remove_albums, model),
             library.albums.connect("changed", klass._change_albums, model)]
         model.append(row=[None])
-        for album in library.albums.itervalues():
-            model.append(row=[album])
+        model.append_many(library.albums.itervalues())
 
     @classmethod
     def _refresh_albums(klass, albums):

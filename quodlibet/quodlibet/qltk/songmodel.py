@@ -7,6 +7,7 @@
 from gi.repository import Gtk, GObject
 
 from quodlibet.qltk.playorder import ORDERS
+from quodlibet.qltk.models import SingleObjectStore
 
 
 def check_sourced(func):
@@ -83,7 +84,7 @@ class PlaylistMux(object):
         map(self.q.remove, filter(None, map(self.q.find, songs)))
 
 
-class TrackCurrentModel(Gtk.ListStore):
+class TrackCurrentModel(SingleObjectStore):
     __iter = None
     __old_value = None
 
