@@ -35,14 +35,17 @@ class MenuButton(Gtk.ToggleButton):
 
     def set_menu(self, menu):
         if self.__menu:
+            self.__menu.detach()
             self.__menu.disconnect(self.__menu_sig)
 
         self.__menu = menu
+        menu.attach_to_widget(self, None)
         self.__menu_sig = menu.connect("deactivate",
                                        self.__menu_deactivate_cb, self)
 
     def __destroy(self, *args):
         if self.__menu:
+            self.__menu.detach()
             self.__menu.disconnect(self.__menu_sig)
         self.__menu = None
 
