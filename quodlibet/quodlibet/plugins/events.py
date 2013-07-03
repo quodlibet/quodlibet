@@ -80,7 +80,7 @@ class EventPluginHandler(object):
             sigs = _map_signals(player, blacklist=("notify", "error"))
             for event, handle in sigs:
                 def cb_handler(librarian, *args):
-                    self.__invoke(player, args[-1], *args[:-1])
+                    self.__invoke(librarian, args[-1], *args[:-1])
                 player.connect_object(event, cb_handler, librarian, event)
 
         self.__plugins = {}
