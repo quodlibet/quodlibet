@@ -41,10 +41,28 @@ class EventPlugin(object):
         pass
 
 
-def _map_signals(obj, prefix="plugin_on_", blacklist=tuple()):
-    sigs = list(GObject.signal_list_names(obj))
-    map(sigs.remove, blacklist)
-    sigs = [(s.replace('-', '_'), prefix + s.replace('-', '_')) for s in sigs]
+def list_signal_names(type_):
+    """List of supported signal names for a GType, instance or class"""
+
+    type_ = getattr(type_, "__gtype__", type_)
+
+    names = []
+    if not type_.is_instantiatable() and not type_.is_interface():
+        return names
+    names.extend(GObject.signal_list_names(type_))
+    if type_.parent:
+        names.extend(list_signal_names(type_.parent))
+    for iface in type_.interfaces:
+        names.extend(list_signal_names(iface))
+    return names
+
+
+def _map_signals(obj, prefix="plugin_on_", blacklist=None):
+    sigs = list_signal_names(obj)
+    if blacklist is None:
+        blacklist = []
+    sigs = [s for s in sigs if s not in blacklist]
+    sigs = [(s, prefix + s.replace('-', '_')) for s in sigs]
     return sigs
 
 
@@ -52,14 +70,16 @@ class EventPluginHandler(object):
 
     def __init__(self, librarian=None, player=None):
         if librarian:
-            for event, handle in _map_signals(librarian):
+            sigs = _map_signals(librarian, blacklist=("notify",))
+            for event, handle in sigs:
                 def handler(librarian, *args):
                     self.__invoke(librarian, args[-1], *args[:-1])
                 librarian.connect(event, handler, event)
 
         if librarian and player:
-            for event, handle in _map_signals(player, blacklist=("error",)):
-                def cb_handler(player, *args):
+            sigs = _map_signals(player, blacklist=("notify", "error"))
+            for event, handle in sigs:
+                def cb_handler(librarian, *args):
                     self.__invoke(player, args[-1], *args[:-1])
                 player.connect_object(event, cb_handler, librarian, event)
 
@@ -73,7 +93,8 @@ class EventPluginHandler(object):
             elif isinstance(args[0], list):
                 args[0] = ListWrapper(args[0])
         for plugin in self.__plugins.itervalues():
-            handler = getattr(plugin, 'plugin_on_' + event, None)
+            method_name = 'plugin_on_' + event.replace('-', '_')
+            handler = getattr(plugin, method_name, None)
             if handler is not None:
                 try:
                     handler(*args)
