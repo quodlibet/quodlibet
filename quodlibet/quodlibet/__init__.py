@@ -103,6 +103,15 @@ def _gtk_init(icon=None):
 
     from gi.repository import Gtk, GObject, GLib
 
+    # Make sure PyGObject includes support for foreign cairo structs
+    some_window = Gtk.OffscreenWindow()
+    some_window.show()
+    try:
+        some_window.get_surface()
+    except TypeError:
+        print_e("PyGObject is missing cairo support")
+        exit(1)
+
     # We don't depend on Gst overrides, so make sure it's initialized.
     try:
         gi.require_version("Gst", "1.0")
