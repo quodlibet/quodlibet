@@ -15,8 +15,16 @@ PYGOBJECT_34 = pygobject_version >= (3, 4)
 
 class _ModelMixin(object):
 
-    def get_value(self, iter_, column=0):
-        return super(_ModelMixin, self).get_value(iter_, column)
+    if PYGOBJECT_34:
+        def get_value(self, iter_, column=0):
+            return super(_ModelMixin, self).get_value(iter_, column)
+    else:
+        # PyGObject 3.2 doesn't unbox in some cases...
+        def get_value(self, iter_, column=0):
+            res = super(_ModelMixin, self).get_value(iter_, column)
+            if isinstance(res, GObject.Value):
+                res = res.get_boxed()
+            return res
 
     def get_n_columns(self):
         return 1
