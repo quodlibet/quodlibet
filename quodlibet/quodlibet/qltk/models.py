@@ -6,6 +6,12 @@
 
 from gi.repository import Gtk, GObject
 
+from quodlibet.qltk import pygobject_version
+from quodlibet import util
+
+
+PYGOBJECT_34 = pygobject_version >= (3, 4)
+
 
 class _ModelMixin(object):
 
@@ -51,13 +57,20 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             args = [object]
         super(ObjectStore, self).__init__(*args)
 
+    def _gvalue(self):
         value = GObject.Value()
         value.init(GObject.TYPE_PYOBJECT)
-        self.__value = value
+        return value
+
+    # reusing crashes with 3.2
+    if PYGOBJECT_34:
+        _gvalue = util.cached_property(_gvalue)
+    else:
+        _gvalue = property(_gvalue)
 
     def append(self, row=None):
         if row:
-            value = self.__value
+            value = self._gvalue
             value.set_boxed(row[0])
             return self.insert_with_valuesv(-1, [0], [value])
         else:
@@ -65,7 +78,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
 
     def insert(self, position, row=None):
         if row:
-            value = self.__value
+            value = self._gvalue
             value.set_boxed(row[0])
             return self.insert_with_valuesv(position, [0], [value])
         else:
@@ -74,7 +87,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
     def append_many(self, objects):
         """Append a list of python objects"""
 
-        value = self.__value
+        value = self._gvalue
         insert = self.insert_with_valuesv
         vset = value.set_boxed
         columns = [0]
@@ -88,7 +101,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             self.append_many(objects)
             return
 
-        value = self.__value
+        value = self._gvalue
         insert = self.insert_with_valuesv
         vset = value.set_boxed
         columns = [0]
@@ -101,7 +114,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         treeiter = super(ObjectStore, self).insert_before(sibling)
 
         if row is not None:
-            value = self.__value
+            value = self._gvalue
             value.set_boxed(row[0])
             self.set_value(treeiter, 0, value)
 
