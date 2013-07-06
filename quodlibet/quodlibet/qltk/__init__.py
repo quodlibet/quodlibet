@@ -123,10 +123,13 @@ gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
                Gtk.get_micro_version())
 
 try:
-    # no public way
-    pygobject_version = gi._gobject.pygobject_version
+    pygobject_version = gi.version_info
 except AttributeError:
-    pygobject_version = (-1,)
+    # older gi versions
+    try:
+        pygobject_version = gi._gobject.pygobject_version
+    except AttributeError:
+        pygobject_version = (-1,)
 
 # Legacy plugin/code support.
 from quodlibet.qltk.getstring import GetStringDialog
