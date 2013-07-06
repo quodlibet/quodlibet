@@ -31,7 +31,7 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 from quodlibet.util.collection import Album
-from quodlibet.qltk.models import SingleObjectStore
+from quodlibet.qltk.models import ObjectStore
 
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| (<date>)>
@@ -412,7 +412,7 @@ class VisibleUpdate(object):
         self.__pending_paths = visible_paths
 
 
-class AlbumModel(SingleObjectStore):
+class AlbumModel(ObjectStore):
 
     def __init__(self, library):
         super(AlbumModel, self).__init__()

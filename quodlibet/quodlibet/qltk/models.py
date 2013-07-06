@@ -7,8 +7,40 @@
 from gi.repository import Gtk, GObject
 
 
-class SingleObjectStore(Gtk.ListStore):
-    """Like a ListStore but only supports single column object lists"""
+class _ModelMixin(object):
+
+    def get_value(self, iter_, column=0):
+        return super(_ModelMixin, self).get_value(iter_, column)
+
+    def get_n_columns(self):
+        return 1
+
+    def itervalues(self):
+        """Yields all values"""
+
+        iter_ = self.get_iter_first()
+        getv = self.get_value
+        inext = self.iter_next
+        while iter_:
+            yield getv(iter_)
+            iter_ = inext(iter_)
+
+
+class ObjectModelFilter(_ModelMixin, Gtk.TreeModelFilter):
+    pass
+
+
+class ObjectModelSort(_ModelMixin, Gtk.TreeModelSort):
+    pass
+
+
+class ObjectStore(_ModelMixin, Gtk.ListStore):
+    """Like a ListStore but only supports single column object lists
+
+    Performance related API additions:
+     - append_many(), insert_many()
+     - itervalues()
+    """
 
     def __init__(self, *args):
         if len(args) > 1:
@@ -17,34 +49,32 @@ class SingleObjectStore(Gtk.ListStore):
             raise ValueError
         if not args:
             args = [object]
-        super(SingleObjectStore, self).__init__(*args)
+        super(ObjectStore, self).__init__(*args)
 
-    def get_n_columns(self):
-        return 1
+        value = GObject.Value()
+        value.init(GObject.TYPE_PYOBJECT)
+        self.__value = value
 
     def append(self, row=None):
         if row:
-            value = GObject.Value()
-            value.init(GObject.TYPE_PYOBJECT)
+            value = self.__value
             value.set_boxed(row[0])
             return self.insert_with_valuesv(-1, [0], [value])
         else:
-            return super(SingleObjectStore, self).append(row)
+            return super(ObjectStore, self).append(row)
 
     def insert(self, position, row=None):
         if row:
-            value = GObject.Value()
-            value.init(GObject.TYPE_PYOBJECT)
+            value = self.__value
             value.set_boxed(row[0])
             return self.insert_with_valuesv(position, [0], [value])
         else:
-            return super(SingleObjectStore, self).insert(position, row)
+            return super(ObjectStore, self).insert(position, row)
 
     def append_many(self, objects):
         """Append a list of python objects"""
 
-        value = GObject.Value()
-        value.init(GObject.TYPE_PYOBJECT)
+        value = self.__value
         insert = self.insert_with_valuesv
         vset = value.set_boxed
         columns = [0]
@@ -58,8 +88,7 @@ class SingleObjectStore(Gtk.ListStore):
             self.append_many(objects)
             return
 
-        value = GObject.Value()
-        value.init(GObject.TYPE_PYOBJECT)
+        value = self.__value
         insert = self.insert_with_valuesv
         vset = value.set_boxed
         columns = [0]
@@ -67,3 +96,13 @@ class SingleObjectStore(Gtk.ListStore):
             vset(obj)
             insert(position + i, columns, [value])
         value.unset()
+
+    def insert_before(self, sibling, row=None):
+        treeiter = super(ObjectStore, self).insert_before(sibling)
+
+        if row is not None:
+            value = self.__value
+            value.set_boxed(row[0])
+            self.set_value(treeiter, 0, value)
+
+        return treeiter
