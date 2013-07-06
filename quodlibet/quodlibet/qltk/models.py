@@ -83,6 +83,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         return last
 
     _orig_insert = __get_orig_impl(Gtk.ListStore, "insert")
+    _orig_append = __get_orig_impl(Gtk.ListStore, "append")
     _orig_set_value = __get_orig_impl(Gtk.ListStore, "set_value")
 
     @util.cached_property
@@ -95,7 +96,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         if row:
             value = self._gvalue
             value.set_boxed(row[0])
-            iter_ = self._orig_insert(-1)
+            iter_ = self._orig_append()
             self._orig_set_value(iter_, 0, value)
             return iter_
         else:
@@ -116,6 +117,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
 
         value = self._gvalue
         insert = self._orig_insert
+        append = self._orig_append
         set_value = self._orig_set_value
         set_boxed = value.set_boxed
 
@@ -128,7 +130,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
                 return
         else:
             set_boxed(first)
-            iter_ = insert(-1)
+            iter_ = append()
             set_value(iter_, 0, value)
             yield iter_
 
@@ -141,7 +143,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         else:
             for obj in objects:
                 set_boxed(obj)
-                iter_ = insert(-1)
+                iter_ = append()
                 set_value(iter_, 0, value)
                 yield iter_
 
