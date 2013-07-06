@@ -116,7 +116,6 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         """Append a list of python objects, yield iters"""
 
         value = self._gvalue
-        insert = self._orig_insert
         append = self._orig_append
         set_value = self._orig_set_value
         set_boxed = value.set_boxed
