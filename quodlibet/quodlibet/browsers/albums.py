@@ -31,7 +31,9 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 from quodlibet.util.collection import Album
-from quodlibet.qltk.models import ObjectStore
+from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
+from quodlibet.qltk.models import ObjectModelSort
+
 
 EMPTY = _("Songs not in an album")
 PATTERN = r"""\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| (<date>)>
@@ -466,9 +468,8 @@ class AlbumModel(ObjectStore):
                     break
 
 
-class AlbumFilterModel(object):
+class AlbumModelMixin(object):
 
-    @staticmethod
     def get_albums(self, paths):
         values = [self.get_value(self.get_iter(p), 0) for p in paths]
         try:
@@ -476,16 +477,21 @@ class AlbumFilterModel(object):
         except ValueError:
             return values
         else:
-            return [v for v in (row[0] for row in self) if v]
+            return [v for v in self.itervalues() if v]
 
-    @staticmethod
+    def get_album(self, iter_):
+        return self.get_value(iter_, 0)
+
+
+class AlbumFilterModel(ObjectModelFilter, AlbumModelMixin):
+
     def contains_all(self, paths):
         values = (self.get_value(self.get_iter(p), 0) for p in paths)
         return None in values
 
-    @staticmethod
-    def get_album(self, iter_):
-        return self.get_value(iter_, 0)
+
+class AlbumSortModel(ObjectModelSort, AlbumModelMixin):
+    pass
 
 
 class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
@@ -580,8 +586,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)
-        model_sort = Gtk.TreeModelSort(model=self.__model)
-        model_filter = model_sort.filter_new()
+        model_sort = AlbumSortModel(model=self.__model)
+        model_filter = AlbumFilterModel(child_model=model_sort)
 
         self.__bg_filter = background_filter()
         self.__filter = None
@@ -595,7 +601,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         render.set_property('height', Album.COVER_SIZE + 8)
 
         def cell_data_pb(column, cell, model, iter_, no_cover):
-            album = AlbumFilterModel.get_album(model, iter_)
+            album = model.get_album(iter_)
             if album is None:
                 pixbuf = None
             elif album.cover:
@@ -616,7 +622,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
         def cell_data(column, cell, model, iter_, data):
-            album = AlbumFilterModel.get_album(model, iter_)
+            album = model.get_album(iter_)
 
             if album is None:
                 text = "<b>%s</b>" % _("All Albums")
@@ -749,7 +755,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if f is None and b is None:
             return True
         else:
-            album = AlbumFilterModel.get_album(model, iter_)
+            album = model.get_album(iter_)
             if album is None:
                 return True
             elif b is None:
@@ -760,7 +766,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
                 return b(album) and f(album)
 
     def __search_func(self, model, column, key, iter_, data):
-        album = AlbumFilterModel.get_album(model, iter_)
+        album = model.get_album(iter_)
         if album is None:
             return True
         key = key.decode('utf-8').lower()
@@ -801,7 +807,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def __get_selected_albums(self):
         selection = self.view.get_selection()
         model, paths = selection.get_selected_rows()
-        return AlbumFilterModel.get_albums(model, paths)
+        return model.get_albums(paths)
 
     def __get_songs_from_albums(self, albums, sort=True):
         # Sort first by how the albums appear in the model itself,
@@ -921,11 +927,11 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         model, paths = selection.get_selected_rows()
 
         # All is selected
-        if AlbumFilterModel.contains_all(model, paths):
+        if model.contains_all(paths):
             return ""
 
         # All selected albums
-        albums = AlbumFilterModel.get_albums(model, paths)
+        albums = model.get_albums(paths)
 
         confval = "\n".join((a.str_key for a in albums))
         # ConfigParser strips a trailing \n so we move it to the front
