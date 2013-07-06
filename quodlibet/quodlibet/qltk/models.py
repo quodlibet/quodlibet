@@ -6,25 +6,17 @@
 
 from gi.repository import Gtk, GObject
 
-from quodlibet.qltk import pygobject_version
 from quodlibet import util
-
-
-PYGOBJECT_34 = pygobject_version >= (3, 4)
 
 
 class _ModelMixin(object):
 
-    if PYGOBJECT_34:
-        def get_value(self, iter_, column=0):
-            return super(_ModelMixin, self).get_value(iter_, column)
-    else:
-        # PyGObject 3.2 doesn't unbox in some cases...
-        def get_value(self, iter_, column=0):
-            res = super(_ModelMixin, self).get_value(iter_, column)
-            if isinstance(res, GObject.Value):
-                res = res.get_boxed()
-            return res
+    def get_value(self, iter_, column=0):
+        res = super(_ModelMixin, self).get_value(iter_, column)
+        # PyGObject 3.4 doesn't unbox in some cases...
+        if isinstance(res, GObject.Value):
+            res = res.get_boxed()
+        return res
 
     def get_n_columns(self):
         return 1
@@ -65,20 +57,10 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             args = [object]
         super(ObjectStore, self).__init__(*args)
 
-    def _gvalue(self):
-        value = GObject.Value()
-        value.init(GObject.TYPE_PYOBJECT)
-        return value
-
-    # reusing crashes with 3.2
-    if PYGOBJECT_34:
-        _gvalue = util.cached_property(_gvalue)
-    else:
-        _gvalue = property(_gvalue)
-
     def append(self, row=None):
         if row:
-            value = self._gvalue
+            value = GObject.Value()
+            value.init(GObject.TYPE_PYOBJECT)
             value.set_boxed(row[0])
             return self.insert_with_valuesv(-1, [0], [value])
         else:
@@ -86,43 +68,53 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
 
     def insert(self, position, row=None):
         if row:
-            value = self._gvalue
+            value = GObject.Value()
+            value.init(GObject.TYPE_PYOBJECT)
             value.set_boxed(row[0])
             return self.insert_with_valuesv(position, [0], [value])
         else:
             return super(ObjectStore, self).insert(position, row)
 
+    def iter_append_many(self, objects):
+        """Append a list of python objects, yield iters"""
+
+        insert = self.insert_with_valuesv
+        columns = [0]
+        type_ = GObject.TYPE_PYOBJECT
+        Value = GObject.Value
+        for obj in objects:
+            value = Value()
+            value.init(type_)
+            value.set_boxed(obj)
+            yield insert(-1, columns, [value])
+
     def append_many(self, objects):
         """Append a list of python objects"""
 
-        value = self._gvalue
-        insert = self.insert_with_valuesv
-        vset = value.set_boxed
-        columns = [0]
-        for obj in objects:
-            vset(obj)
-            insert(-1, columns, [value])
-        value.unset()
+        for i in self.iter_append_many(objects):
+            pass
 
     def insert_many(self, position, objects):
         if position == -1 or position > len(self):
             self.append_many(objects)
             return
 
-        value = self._gvalue
         insert = self.insert_with_valuesv
-        vset = value.set_boxed
+        type_ = GObject.TYPE_PYOBJECT
+        Value = GObject.Value
         columns = [0]
         for i, obj in enumerate(objects):
-            vset(obj)
+            value = Value()
+            value.init(type_)
+            value.set_boxed(obj)
             insert(position + i, columns, [value])
-        value.unset()
 
     def insert_before(self, sibling, row=None):
         treeiter = super(ObjectStore, self).insert_before(sibling)
 
         if row is not None:
-            value = self._gvalue
+            value = GObject.Value()
+            value.init(GObject.TYPE_PYOBJECT)
             value.set_boxed(row[0])
             self.set_value(treeiter, 0, value)
 

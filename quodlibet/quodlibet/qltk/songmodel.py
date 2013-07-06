@@ -4,6 +4,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import itertools
+
 from gi.repository import Gtk, GObject
 
 from quodlibet.qltk.playorder import ORDERS
@@ -95,15 +97,8 @@ class TrackCurrentModel(ObjectStore):
 
         print_d("Setting %d songs." % len(songs))
 
-        value = GObject.Value()
-        value.init(GObject.TYPE_PYOBJECT)
-        insert = self.insert_with_valuesv
-        vset = value.set_boxed
         oldsong = self.__old_value
-        columns = [0]
-        for song in reversed(songs):
-            vset(song)
-            iter_ = insert(0, columns, [value])
+        for iter_, song in itertools.izip(self.iter_append_many(songs), songs):
             if song is oldsong:
                 self.__iter = iter_
 
@@ -119,13 +114,7 @@ class TrackCurrentModel(ObjectStore):
         super(TrackCurrentModel, self).clear()
 
     def get(self):
-        songs = []
-
-        def func(model, path, iter_, user_data):
-            songs.append(model.get_value(iter_, 0))
-        self.foreach(func, None)
-
-        return songs
+        return list(self.itervalues())
 
     @property
     def current(self):
