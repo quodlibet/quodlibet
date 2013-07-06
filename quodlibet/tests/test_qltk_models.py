@@ -36,6 +36,34 @@ class TObjectStore(TestCase):
         m.append_many(range(10))
         self.failUnlessEqual([r[0] for r in m], range(10))
 
+    def test_iter_append_many(self):
+        m = ObjectStore()
+        iters = list(m.iter_append_many(range(10)))
+        self.failUnlessEqual([r[0] for r in m], range(10))
+        values = [m.get_value(i) for i in iters]
+        self.failUnlessEqual(values, range(10))
+
+    def test_iter_append_many_iterable_int(self):
+        m = ObjectStore()
+        for x in m.iter_append_many((i for i in xrange(10))):
+            pass
+        self.failUnlessEqual([r[0] for r in m], range(10))
+
+    def test_iter_append_many_iterable_object(self):
+        objects = [object() for i in xrange(10)]
+        m = ObjectStore()
+        for x in m.iter_append_many((i for i in objects)):
+            pass
+        self.failUnlessEqual([r[0] for r in m], objects)
+
+    def test_iter_append_many_empty(self):
+        m = ObjectStore()
+        for x in m.iter_append_many([]):
+            pass
+
+        for x in m.iter_append_many(iter([])):
+            pass
+
     def test_empty_insert(self):
         m = ObjectStore()
         self.failUnless(m.insert(0))
