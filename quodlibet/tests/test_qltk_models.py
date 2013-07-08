@@ -7,7 +7,7 @@
 from tests import TestCase, add
 
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
-from quodlibet.qltk.models import ObjectModelSort
+from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
 
 
 class TObjectStore(TestCase):
@@ -103,6 +103,35 @@ class TObjectStore(TestCase):
         self.failUnlessEqual([2, 1], list(m.itervalues()))
 
 add(TObjectStore)
+
+
+class TObjectTreeStore(TestCase):
+    def test_validate(self):
+        self.failUnlessRaises(ValueError, ObjectTreeStore, int)
+        ObjectTreeStore()
+        ObjectTreeStore(object)
+        self.failUnlessRaises(ValueError, ObjectTreeStore, object, object)
+
+    def test_column_count(self):
+        m = ObjectTreeStore()
+        self.failUnlessEqual(m.get_n_columns(), 1)
+
+    def test_append_int(self):
+        m = ObjectTreeStore()
+        m.append(None, row=[1])
+        self.failUnlessEqual(list(m.itervalues()), [1])
+
+    def test_append_obj(self):
+        m = ObjectTreeStore()
+        obj = object()
+        m.append(None, row=[obj])
+        self.failUnlessEqual(list(m.itervalues()), [obj])
+
+    def test_empty_append(self):
+        m = ObjectStore()
+        self.failUnless(m.append(None))
+
+add(TObjectTreeStore)
 
 
 class TObjectModelFilter(TestCase):

@@ -9,6 +9,25 @@ from gi.repository import Gtk, GObject
 from quodlibet import util
 
 
+def _gets_marshaled_to_pyobject(obj,
+        _types=(long, float, int, basestring, bool, GObject.Object)):
+    """Python objects get automarshalled to GValues which is faster than
+    doing it in python but also has its own mapping, because it doesn't
+    know the column type of the model.
+
+    This returns if the python objects get marshalled to PYOBJECT
+    by the C code.
+
+    The GType logic can be found in 'pyg_type_from_object_strict'
+    in PyGObject.
+    """
+
+    if obj is None:
+        return False
+
+    return not isinstance(obj, _types)
+
+
 class _ModelMixin(object):
 
     def get_value(self, iter_, column=0):
@@ -41,7 +60,42 @@ class ObjectModelSort(_ModelMixin, Gtk.TreeModelSort):
 
 
 class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
-    pass
+    def __init__(self, *args):
+        if len(args) > 1:
+            raise ValueError
+        if args and object not in args and GObject.TYPE_PYOBJECT not in args:
+            raise ValueError
+        if not args:
+            args = [object]
+        super(ObjectTreeStore, self).__init__(*args)
+
+    def __get_orig_impl(cls, name):
+        last = None
+        for c in cls.__mro__:
+            last = getattr(c, name, last)
+        return last
+
+    _orig_append = __get_orig_impl(Gtk.TreeStore, "append")
+    _orig_set_value = __get_orig_impl(Gtk.TreeStore, "set_value")
+
+    @util.cached_property
+    def _gvalue(self):
+        value = GObject.Value()
+        value.init(GObject.TYPE_PYOBJECT)
+        return value
+
+    def append(self, parent, row=None):
+        if row:
+            obj = row[0]
+            if _gets_marshaled_to_pyobject(obj):
+                return self.insert_with_values(parent, 0, [0], row)
+            value = self._gvalue
+            value.set_boxed(obj)
+            iter_ = self._orig_append(parent)
+            self._orig_set_value(iter_, 0, value)
+            return iter_
+        else:
+            return super(ObjectTreeStore, self).append(row)
 
 
 class ObjectStore(_ModelMixin, Gtk.ListStore):
@@ -60,25 +114,6 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         if not args:
             args = [object]
         super(ObjectStore, self).__init__(*args)
-
-    @staticmethod
-    def _gets_marshaled_to_pyobject(obj,
-            _types=(long, float, int, basestring, bool, GObject.Object)):
-        """Python objects get automarshalled to GValues which is faster than
-        doing it in python but also has its own mapping, because it doesn't
-        know the column type of the model.
-
-        This returns if the python objects get marshalled to PYOBJECT
-        by the C code.
-
-        The GType logic can be found in 'pyg_type_from_object_strict'
-        in PyGObject.
-        """
-
-        if obj is None:
-            return False
-
-        return not isinstance(obj, _types)
 
     def __get_orig_impl(cls, name):
         last = None
@@ -138,7 +173,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             yield iter_
 
         # fast path for auto-marshalling
-        if self._gets_marshaled_to_pyobject(first):
+        if _gets_marshaled_to_pyobject(first):
             insert_with_valuesv = self.insert_with_valuesv
             columns = [0]
             for obj in objects:
