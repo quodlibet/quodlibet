@@ -214,7 +214,7 @@ class EditBookmarks(qltk.Window):
 
         self.show_all()
 
-    def __check_lock(self, library, songs, song, model):
+    def __check_lock(self, library, songs, song):
         if song in songs:
             for c in self.get_child().get_children()[:-1]:
                 c.set_sensitive(False)
