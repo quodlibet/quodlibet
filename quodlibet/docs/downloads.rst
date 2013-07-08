@@ -35,16 +35,16 @@ To clone the repository::
 ========================== ===============================
 Release                    Filename
 ========================== ===============================
-Quod Libet 3.0.0           quodlibet-3.0.0.tar.gz_
-Quod Libet Plugins 3.0.0   quodlibet-plugins-3.0.0.tar.gz_
+Quod Libet 3.0.1           quodlibet-3.0.1.tar.gz_
+Quod Libet Plugins 3.0.1   quodlibet-plugins-3.0.1.tar.gz_
 Quod Libet 2.6.0           quodlibet-2.6.0.tar.gz_
 Quod Libet Plugins 2.6.0   quodlibet-plugins-2.6.0.tar.gz_
 Quod Libet 2.5.1           quodlibet-2.5.1.tar.gz_
 Quod Libet Plugins 2.5.1   quodlibet-plugins-2.5.1.tar.gz_
 ========================== ===============================
 
-.. _quodlibet-3.0.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.0.tar.gz
-.. _quodlibet-plugins-3.0.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.0.tar.gz
+.. _quodlibet-3.0.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.1.tar.gz
+.. _quodlibet-plugins-3.0.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.1.tar.gz
 .. _quodlibet-2.6.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.0.tar.gz
 .. _quodlibet-plugins-2.6.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.6.0.tar.gz
 .. _quodlibet-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1.tar.gz
