@@ -79,20 +79,23 @@ class TrackCurrentModel(Gtk.ListStore):
         print_d("Clearing model.")
         self.clear()
         self.__iter = None
+        oldsong = self.__old_value
 
         print_d("Setting %d songs." % len(songs))
 
-        value = GObject.Value()
-        value.init(GObject.TYPE_PYOBJECT)
-        insert = self.insert_with_valuesv
-        vset = value.set_boxed
-        oldsong = self.__old_value
-        columns = [0]
-        for song in reversed(songs):
-            vset(song)
-            iter_ = insert(0, columns, [value])
-            if song is oldsong:
-                self.__iter = iter_
+        no_autoconv = (long, float, int, basestring, bool, GObject.Object)
+        if not songs or songs[0] is None or isinstance(songs[0], no_autoconv):
+            for song in reversed(songs):
+                iter_ = self.insert(0, row=[song])
+                if song is oldsong:
+                    self.__iter = iter_
+        else:
+            insert = self.insert_with_valuesv
+            columns = [0]
+            for song in reversed(songs):
+                iter_ = insert(0, columns, [song])
+                if song is oldsong:
+                    self.__iter = iter_
 
         print_d("Done filling model.")
 
