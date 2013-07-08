@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2010, 2012 Christoph Reiter
+# Copyright 2010, 2012, 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -17,6 +17,8 @@ from quodlibet import util
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers._base import Browser
 from quodlibet.parse import XMLFromPattern, Query
+from quodlibet.qltk.models import ObjectTreeStore, ObjectModelFilter
+from quodlibet.qltk.models import ObjectModelSort
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
@@ -271,10 +273,8 @@ def build_tree(tags, albums, cache=None):
     return tree
 
 
-class StoreUtils(object):
-    """TreeModelFilter can't be subclassed, otherwise this would be a mixin"""
+class CollectionModelMixin(object):
 
-    @staticmethod
     def get_path_for_album(self, album):
         """Returns the path for an album or None"""
 
@@ -290,11 +290,9 @@ class StoreUtils(object):
         self.foreach(func, res)
         return res[0]
 
-    @staticmethod
     def get_albums_for_path(self, path):
-        return StoreUtils.get_albums_for_iter(self, self[path].iter)
+        return self.get_albums_for_iter(self.get_iter(path))
 
-    @staticmethod
     def get_albums_for_iter(self, iter_):
         row = self[iter_]
 
@@ -307,13 +305,11 @@ class StoreUtils(object):
             if isinstance(obj, Album):
                 albums.add(obj)
             else:
-                albums.update(
-                    StoreUtils.get_albums_for_iter(self, child.iter))
+                albums.update(self.get_albums_for_iter(child.iter))
         return albums
 
-    @staticmethod
     def get_markup(self, tags, iter_):
-        obj = self[iter_][0]
+        obj = self.get_value(iter_, 0)
         if isinstance(obj, Album):
             return PAT % obj
 
@@ -326,17 +322,24 @@ class StoreUtils(object):
             else:
                 markup = MULTI_PATTERN % util.escape(tag)
 
-        num = len(StoreUtils.get_albums_for_iter(self, iter_))
+        num = len(self.get_albums_for_iter(iter_))
         return markup + COUNT_PATTERN % num
 
-    @staticmethod
     def get_album(self, iter_):
-        obj = self[iter_][0]
+        obj = self.get_value(iter_, 0)
         if isinstance(obj, Album):
             return obj
 
 
-class CollectionTreeStore(Gtk.TreeStore):
+class CollectionFilterModel(ObjectModelFilter, CollectionModelMixin):
+    pass
+
+
+class CollectionSortModel(ObjectModelSort, CollectionModelMixin):
+    pass
+
+
+class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
     def __init__(self):
         super(CollectionTreeStore, self).__init__(object)
         self.__tags = []
@@ -461,7 +464,8 @@ class CollectionView(AllTreeView):
             view.expand_row(children[0].path, False)
 
     def select_album(self, album, unselect=True):
-        path = StoreUtils.get_path_for_album(self.get_model(), album)
+        model = self.get_model()
+        path = model.get_path_for_album(album)
         if path is not None:
             self.select_path(path, unselect)
 
@@ -484,10 +488,9 @@ class CollectionView(AllTreeView):
         selection = self.get_selection()
         assert selection
         model, paths = selection.get_selected_rows()
-        model = self.get_model()
         albums = set()
         for path in paths:
-            albums.update(StoreUtils.get_albums_for_path(model, path))
+            albums.update(model.get_albums_for_path(path))
         return albums
 
 
@@ -563,8 +566,8 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = CollectionView()
         view.set_headers_visible(False)
-        model_sort = Gtk.TreeModelSort(model=self.__model)
-        model_filter = model_sort.filter_new()
+        model_sort = CollectionSortModel(model=self.__model)
+        model_filter = CollectionFilterModel(child_model=model_sort)
         self.__filter = None
         self.__bg_filter = background_filter()
         model_filter.set_visible_func(self.__parse_query)
@@ -596,12 +599,12 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         column = Gtk.TreeViewColumn("albums")
 
         def cell_data(column, cell, model, iter_, data):
-            markup = StoreUtils.get_markup(model, self.__model.tags, iter_)
+            markup = model.get_markup(self.__model.tags, iter_)
             cell.markup = markup
             cell.set_property('markup', markup)
 
         def cell_data_pb(column, cell, model, iter_, data):
-            album = StoreUtils.get_album(model, iter_)
+            album = model.get_album(iter_)
             if album is None:
                 cell.set_property('stock_id', Gtk.STOCK_DIRECTORY)
             else:
@@ -678,7 +681,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         if isinstance(obj, Album):
             return check_album(obj)
         else:
-            for album in StoreUtils.get_albums_for_iter(model, iter_):
+            for album in model.get_albums_for_iter(iter_):
                 if check_album(album):
                     return True
             return False

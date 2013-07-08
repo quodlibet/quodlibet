@@ -40,6 +40,10 @@ class ObjectModelSort(_ModelMixin, Gtk.TreeModelSort):
     pass
 
 
+class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
+    pass
+
+
 class ObjectStore(_ModelMixin, Gtk.ListStore):
     """Like a ListStore but only supports single column object lists
 

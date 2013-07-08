@@ -85,20 +85,20 @@ class TCollectionAlbums(TestCase):
         a = self.albums.values()
         a.sort(key=lambda x: x.key)
 
-        path = StoreUtils.get_path_for_album(model, a[0])
-        albums = StoreUtils.get_albums_for_path(model, path)
+        path = model.get_path_for_album(a[0])
+        albums = model.get_albums_for_path(path)
         self.failUnless(a[0] in albums)
 
-        albums = StoreUtils.get_albums_for_iter(model, model.get_iter(path))
+        albums = model.get_albums_for_iter(model.get_iter(path))
         self.failUnless(a[0] in albums)
 
-        x = StoreUtils.get_album(model, model.get_iter_first())
+        x = model.get_album(model.get_iter_first())
         self.failIf(x)
-        x = StoreUtils.get_album(model, model.get_iter(path))
+        x = model.get_album(model.get_iter(path))
         self.failUnlessEqual(x, a[0])
 
         for r in model:
-            self.failUnless(StoreUtils.get_markup(model, model.tags, r.iter))
+            self.failUnless(model.get_markup(model.tags, r.iter))
 add(TCollectionAlbums)
 
 
