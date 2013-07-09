@@ -49,6 +49,10 @@ def init_dbus_mmkeys(window, player):
     return True
 
 
+def make_keybinder_cb(player, action):
+    return lambda keystring, user_data: do_action(player, action)
+
+
 def init_keybinder(player):
     try:
         import gi
@@ -62,9 +66,7 @@ def init_keybinder(player):
     signals = {"XF86AudioPrev": "prev", "XF86AudioNext": "next",
                "XF86AudioStop": "stop", "XF86AudioPlay": "play"}
     for sig, action in signals.items():
-        def bind_cb(*args):
-            do_action(player, action)
-        Keybinder.bind(sig, bind_cb, None)
+        Keybinder.bind(sig, make_keybinder_cb(player, action), None)
 
     return True
 
