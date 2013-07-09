@@ -1,5 +1,6 @@
 from tests import TestCase, add
 
+import imp
 import os
 import sys
 import shutil
@@ -13,6 +14,11 @@ class TModuleScanner(TestCase):
 
     def setUp(self):
         self.d = tempfile.mkdtemp("ql-mod")
+        sys.modules["qlfake"] = imp.new_module("qlfake")
+
+    def tearDown(self):
+        del sys.modules["qlfake"]
+        shutil.rmtree(self.d)
 
     def _create_mod(self, name, package=None):
         if package is not None:
@@ -26,28 +32,40 @@ class TModuleScanner(TestCase):
         os.mkdir(base)
         return open(os.path.join(base, "__init__.py"), "wb")
 
-    def tearDown(self):
-        shutil.rmtree(self.d)
-
     def test_importables(self):
         self.failUnlessEqual(list(get_importables(self.d)), [])
         h = self._create_mod("foo.py")
         h.close()
         self.failUnlessEqual(list(get_importables(self.d))[0],
-                             (h.name, [h.name]))
+                             ("foo", h.name, [h.name]))
+
+    def test_importables_ignore_init(self):
+        h = self._create_mod("foo7.py")
+        h.close()
+        self._create_mod("__init__.py").close()
+        self.failUnlessEqual(list(get_importables(self.d))[0],
+                             ("foo7", h.name, [h.name]))
 
     def test_importables_package(self):
-        self.failUnlessEqual(list(get_importables(self.d)), [])
         h = self._create_pkg("foobar")
         self.failUnlessEqual(list(get_importables(self.d))[0],
-                             (os.path.dirname(h.name), [h.name]))
+                             ("foobar", os.path.dirname(h.name), [h.name]))
+        h.close()
+
+    def test_importables_package_deps(self):
+        h = self._create_pkg("foobar3")
+        h2 = self._create_mod("sub.py", "foobar3")
+        self.failUnlessEqual(list(get_importables(self.d))[0],
+                             ("foobar3", os.path.dirname(h.name),
+                              [h.name, h2.name]))
+        h2.close()
         h.close()
 
     def test_load_dir_modules(self):
         h = self._create_mod("x.py")
         h.write("test=42\n")
         h.close()
-        mods = load_dir_modules(self.d, "foo.bar")
+        mods = load_dir_modules(self.d, "qlfake")
         self.failUnlessEqual(len(mods), 1)
         self.failUnlessEqual(mods[0].test, 42)
 
@@ -59,7 +77,7 @@ class TModuleScanner(TestCase):
         os.unlink(h.name)
         self.failUnlessEqual(os.listdir(self.d), ["x1.pyc"])
 
-        mods = load_dir_modules(self.d, "foo.bar")
+        mods = load_dir_modules(self.d, "qlfake")
         self.failUnlessEqual(len(mods), 0)
 
 
@@ -71,9 +89,20 @@ class TModuleScanner(TestCase):
         os.unlink(h.name)
         self.failUnlessEqual(os.listdir(self.d), ["x1.pyc"])
 
-        mods = load_dir_modules(self.d, "foo.bar", load_compiled=True)
+        mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
         self.failUnlessEqual(len(mods), 1)
         self.failUnlessEqual(mods[0].test, 99)
+
+    def test_load_dir_modules_packages(self):
+        h = self._create_pkg("somepkg2")
+        h2 = self._create_mod("sub.py", "somepkg2")
+        h2.write("test=456\n")
+        h2.close()
+        h.write("from .sub import *\nmain=654\n")
+        h.close()
+        mods = load_dir_modules(self.d, "qlfake")
+        self.failUnlessEqual(len(mods), 1)
+        self.failUnlessEqual(mods[0].test, 456)
 
     def test_scanner_add(self):
         self._create_mod("q1.py").close()
@@ -108,5 +137,18 @@ class TModuleScanner(TestCase):
         self.failIf(removed)
         self.failUnlessEqual(len(s.failures), 1)
         self.failUnless("q4" in s.failures)
+
+    def test_scanner_add_package(self):
+        h = self._create_pkg("somepkg")
+        h2 = self._create_mod("sub.py", "somepkg")
+        h2.write("test=123\n")
+        h2.close()
+        h.write("from .sub import *\nmain=321\n")
+        h.close()
+        s = ModuleScanner([self.d])
+        removed, added = s.rescan()
+        self.failUnlessEqual(added, ["somepkg"])
+        self.failUnlessEqual(s.modules["somepkg"].main, 321)
+        self.failUnlessEqual(s.modules["somepkg"].test, 123)
 
 add(TModuleScanner)

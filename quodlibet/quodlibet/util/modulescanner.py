@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012 Christoph Reiter
+# Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -16,25 +16,19 @@ from quodlibet import util
 
 
 def load_dir_modules(path, package, load_compiled=False):
-    """Load all modules in path (non-recursive).
+    """Load all modules and packages in path (recursive).
     Load pyc files if load_compiled is True.
     In case the module is already loaded, doesn't reload it.
     """
 
+    # needed for pickle etc.
+    assert package in sys.modules
+
     try:
-        entries = os.listdir(path)
+        modules = [e[0] for e in get_importables(path, load_compiled)]
     except OSError:
         print_w("%r not found" % path)
         return []
-
-    modules = set()
-    for entry in entries:
-        if entry[:1] == "_":
-            continue
-        if entry.endswith(".py"):
-            modules.add(entry[:-3])
-        elif load_compiled and entry.endswith(".pyc"):
-            modules.add(entry[:-4])
 
     loaded = []
     for name in modules:
@@ -49,21 +43,41 @@ def load_dir_modules(path, package, load_compiled=False):
     return loaded
 
 
-def get_importables(folder):
+def get_importables(folder, include_compiled=False):
     """Searches a folder and its subfolders for modules and packages to import.
-    No subfolders in packages, .pyc, .so supported.
+    No subfolders in packages, .so supported.
 
-    returns a tuple of the import path and a list of possible dependencies
+    The root folder will not be considered a package.
+
+    returns a tuple of the name, import path, list of possible dependencies
     """
 
-    is_ok = lambda f: f.endswith(".py") and not f.startswith("_")
+    def is_ok(f):
+        if f.startswith("_"):
+            return False
+        if f.endswith(".py"):
+            return True
+        elif include_compiled and f.endswith(".pyc"):
+            return True
+        return False
 
-    for root, dirs, names in os.walk(folder):
-        if "__init__.py" in names:
-            yield (root, filter(is_ok, [join(root, name) for name in names]))
+    def is_init(f):
+        if f == "__init__.py":
+            return True
+        elif include_compiled and f == "__init__.pyc":
+            return True
+        return False
+
+    first = True
+    for root, dirs, names in os.walk(folder, topdown=True):
+        is_init
+        if not first and any((is_init(n) for n in names)):
+            yield (basename(root), root,
+                   filter(is_ok, [join(root, name) for name in names]))
         else:
             for name in filter(is_ok, names):
-                yield (join(root, name), [join(root, name)])
+                yield (splitext(name)[0], join(root, name), [join(root, name)])
+        first = False
 
 
 def load_module(name, package, path, reload=False):
@@ -154,9 +168,9 @@ class ModuleScanner(object):
 
         # get what is there atm
         for folder in self.__folders:
-            for path, deps in get_importables(folder):
+            for name, path, deps in get_importables(folder):
                 # take the basename as module key, later modules win
-                info[splitext(basename(path))[0]] = (path, deps)
+                info[name] = (path, deps)
 
         def deps_changed(old_list, new_list):
             if set(old_list) != set(new_list):
