@@ -2,7 +2,8 @@ data/exfalso.desktop.in
 data/quodlibet.desktop.in
 exfalso.py
 operon.py
-quodlibet/browsers/albums.py
+quodlibet/browsers/albums/main.py
+quodlibet/browsers/albums/prefs.py
 quodlibet/browsers/audiofeeds.py
 quodlibet/browsers/_base.py
 quodlibet/browsers/collection.py

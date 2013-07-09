@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2010 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#                     Christoph Reiter, Steven Robertson
+# Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2009-2010 Steven Robertson
+#           2012-2013 Nick Boultbee
+#           2009-2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from __future__ import absolute_import
+
 import os
 
 from gi.repository import Gtk, Pango, Gdk, GLib
+
+from .prefs import Preferences, PATTERN
+from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
 
 from quodlibet import config
 from quodlibet import const
@@ -17,12 +24,10 @@ from quodlibet import util
 
 from quodlibet.browsers._base import Browser
 from quodlibet.parse import Query, XMLFromPattern
-from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
@@ -31,37 +36,10 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 from quodlibet.util.collection import Album
-from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
-from quodlibet.qltk.models import ObjectModelSort
 
 
-EMPTY = _("Songs not in an album")
-PATTERN = r"""\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| (<date>)>
-\<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>
-<~people>""" % EMPTY
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
 ALBUM_QUERIES = os.path.join(const.USERDIR, "lists", "album_queries")
-
-
-class FakeAlbum(dict):
-    def get(self, key, default="", connector=" - "):
-        if key[:1] == "~" and '~' in key[1:]:
-            return connector.join(map(self.get, util.tagsplit(key)))
-        elif key[:2] == "~#" and key[-4:-3] == ":":
-            func = key[-3:]
-            key = key[:-4]
-            return "%s<%s>" % (util.tag(key), func)
-        elif key in self:
-            return self[key]
-        return util.tag(key)
-
-    __call__ = get
-
-    def comma(self, key):
-        value = self.get(key)
-        if isinstance(value, (int, float)):
-            return value
-        return value.replace("\n", ", ")
 
 
 class AlbumTagCompletion(EntryWordCompletion):
@@ -85,89 +63,6 @@ class AlbumTagCompletion(EntryWordCompletion):
                 self.__model.append(row=["#(%s:%s" % (tag, suffix)])
 
 
-class Preferences(qltk.UniqueWindow):
-    def __init__(self, parent):
-        if self.is_not_unique():
-            return
-        super(Preferences, self).__init__()
-        self.set_border_width(12)
-        self.set_title(_("Album List Preferences") + " - Quod Libet")
-        self.set_default_size(400, 270)
-        self.set_transient_for(qltk.get_top_parent(parent))
-
-        box = Gtk.VBox(spacing=6)
-
-        cb = ConfigCheckButton(
-            _("Show album _covers"), "browsers", "album_covers")
-        cb.set_active(config.getboolean("browsers", "album_covers"))
-        gobject_weak(cb.connect, 'toggled',
-                     lambda s: AlbumList.toggle_covers())
-        box.pack_start(cb, False, True, 0)
-
-        cb = ConfigCheckButton(
-            _("Inline _search includes people"),
-            "browsers", "album_substrings")
-        cb.set_active(config.getboolean("browsers", "album_substrings"))
-        box.pack_start(cb, False, True, 0)
-
-        vbox = Gtk.VBox(spacing=6)
-        label = Gtk.Label()
-        label.set_alignment(0.0, 0.5)
-        edit = PatternEditBox(PATTERN)
-        edit.text = AlbumList._pattern_text
-        gobject_weak(edit.apply.connect, 'clicked', self.__set_pattern, edit)
-        gobject_weak(edit.buffer.connect_object, 'changed',
-            self.__preview_pattern, edit, label, parent=edit)
-
-        vbox.pack_start(label, False, True, 0)
-        vbox.pack_start(edit, True, True, 0)
-        self.__preview_pattern(edit, label)
-        f = qltk.Frame(_("Album Display"), child=vbox)
-        box.pack_start(f, True, True, 0)
-
-        main_box = Gtk.VBox(spacing=12)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
-        b = Gtk.HButtonBox()
-        b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.pack_start(close, True, True, 0)
-
-        main_box.pack_start(box, True, True, 0)
-        main_box.pack_start(b, False, True, 0)
-        self.add(main_box)
-
-        close.grab_focus()
-        self.show_all()
-
-    def __set_pattern(self, apply, edit):
-        AlbumList.refresh_pattern(edit.text)
-
-    def __preview_pattern(self, edit, label):
-        people = "\n".join(
-            [util.tag("artist"), util.tag("performer"), util.tag("arranger")])
-        album = FakeAlbum({
-            "date": "2004-10-31",
-            "~length": util.format_time(6319),
-            "~long-length": util.format_time_long(6319),
-            "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
-            "~discs": ngettext("%d disc", "%d discs", 2) % 2,
-            "~people": people})
-
-        try:
-            text = XMLFromPattern(edit.text) % album
-        except:
-            text = _("Invalid pattern")
-            edit.apply.set_sensitive(False)
-        try:
-            Pango.parse_markup(text, -1, u"\u0000")
-        except GLib.GError:
-            text = _("Invalid pattern")
-            edit.apply.set_sensitive(False)
-        else:
-            edit.apply.set_sensitive(True)
-        label.set_markup(text)
-
-
 def cmpa(a, b):
     """Like cmp but treats values that evaluate to false as inf"""
     if not a and b:
@@ -178,7 +73,7 @@ def cmpa(a, b):
 
 
 class PreferencesButton(Gtk.HBox):
-    def __init__(self, model):
+    def __init__(self, browser, model):
         super(PreferencesButton, self).__init__()
 
         sort_orders = [
@@ -214,7 +109,8 @@ class PreferencesButton(Gtk.HBox):
 
         pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
         menu.append(pref_item)
-        gobject_weak(pref_item.connect_object, "activate", Preferences, self)
+        gobject_weak(pref_item.connect_object,
+                     "activate", Preferences, browser)
 
         menu.show_all()
 
@@ -414,86 +310,6 @@ class VisibleUpdate(object):
         self.__pending_paths = visible_paths
 
 
-class AlbumModel(ObjectStore):
-
-    def __init__(self, library):
-        super(AlbumModel, self).__init__()
-        self.__library = library
-
-        albums = library.albums
-        self.__sigs = [
-            albums.connect("added", self._add_albums),
-            albums.connect("removed", self._remove_albums),
-            albums.connect("changed", self._change_albums)
-        ]
-
-        self.append(row=[None])
-        self.append_many(albums.itervalues())
-
-    def refresh_all(self):
-        """Trigger redraws for all rows"""
-
-        for row in self:
-            self.row_changed(row.path, row.iter)
-
-    def destroy(self):
-        library = self.__library
-        for sig in self.__sigs:
-            library.albums.disconnect(sig)
-        self.__library = None
-        self.clear()
-
-    def _add_albums(self, library, added):
-        for album in added:
-            self.append(row=[album])
-
-    def _remove_albums(self, library, removed):
-        removed_albums = removed.copy()
-        for row in self:
-            if row[0] and row[0] in removed_albums:
-                removed_albums.remove(row[0])
-                self.remove(row.iter)
-                if not removed_albums:
-                    break
-
-    def _change_albums(self, library, changed):
-        """Trigger a row redraw for each album that changed"""
-
-        changed_albums = changed.copy()
-        for row in self:
-            if row[0] and row[0] in changed_albums:
-                changed_albums.remove(row[0])
-                self.row_changed(row.path, row.iter)
-                if not changed_albums:
-                    break
-
-
-class AlbumModelMixin(object):
-
-    def get_albums(self, paths):
-        values = [self.get_value(self.get_iter(p), 0) for p in paths]
-        try:
-            values.remove(None)
-        except ValueError:
-            return values
-        else:
-            return [v for v in self.itervalues() if v]
-
-    def get_album(self, iter_):
-        return self.get_value(iter_, 0)
-
-
-class AlbumFilterModel(ObjectModelFilter, AlbumModelMixin):
-
-    def contains_all(self, paths):
-        values = (self.get_value(self.get_iter(p), 0) for p in paths)
-        return None in values
-
-
-class AlbumSortModel(ObjectModelSort, AlbumModelMixin):
-    pass
-
-
 class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     __gsignals__ = Browser.__gsignals__
     __model = None
@@ -559,7 +375,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         klass._pattern_text = pattern_text
         klass._pattern = XMLFromPattern(pattern_text)
         klass.__model.refresh_all()
-        pattern_fn = os.path.join(const.USERDIR, "album_pattern")
+        pattern_fn = PATTERN_FN
         f = file(pattern_fn, "w")
         f.write(pattern_text + "\n")
         f.close()
@@ -675,7 +491,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
                      'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
 
-        prefs = PreferencesButton(model_sort)
+        prefs = PreferencesButton(self, model_sort)
         search.pack_start(prefs, False, True, 0)
         if main:
             self.pack_start(Alignment(search, left=3, top=6), False, True, 0)
@@ -948,5 +764,3 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def __update_songs(self, selection):
         songs = self.__get_selected_songs(sort=False)
         self.emit('songs-selected', songs, None)
-
-browsers = [AlbumList]
