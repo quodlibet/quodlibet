@@ -260,7 +260,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def __refresh(self, button):
         model, rows = self.get_selection().get_selected_rows()
         expanded = set()
-        self.map_expanded_rows(lambda s, iter: expanded.add(model[iter][0]))
+        self.map_expanded_rows(
+            lambda s, iter, data: expanded.add(model[iter][0]), None)
         needs_expanding = []
         for row in rows:
             if self.row_expanded(row):
