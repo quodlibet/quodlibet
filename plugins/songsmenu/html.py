@@ -36,6 +36,27 @@ HTML = '''<?xml version="1.0" encoding="UTF-8"?>
 '''
 
 
+def to_html(songs):
+    cols = config.get_columns()
+
+    cols_s = ""
+    for col in cols:
+        cols_s += '<th>%s</th>' % tag(col)
+
+    songs_s = ""
+    for song in songs:
+        s = '<tr>'
+        for col in cols:
+            col = {"~#rating": "~rating", "~#length": "~length"}.get(
+                col, col)
+            s += '\n<td>%s</td>' % (
+                escape(unicode(song.comma(col))) or '&nbsp;')
+        s += '</tr>'
+        songs_s += s
+
+    return HTML % {'headers': cols_s, 'songs': songs_s}
+
+
 class ExportToHTML(SongsMenuPlugin):
     PLUGIN_ID = "Export to HTML"
     PLUGIN_NAME = _("Export to HTML")
@@ -61,23 +82,5 @@ class ExportToHTML(SongsMenuPlugin):
         fn = chooser.get_filename()
         chooser.destroy()
 
-        cols = config.get("settings", "headers").split()
-
-        cols_s = ""
-        for col in cols:
-            cols_s += '<th>%s</th>' % tag(col)
-
-        songs_s = ""
-        for song in songs:
-            s = '<tr>'
-            for col in cols:
-                col = {"~#rating": "~rating", "~#length": "~length"}.get(
-                    col, col)
-                s += '\n<td>%s</td>' % (
-                    escape(unicode(song.comma(col))) or '&nbsp;')
-            s += '</tr>'
-            songs_s += s
-
-        f = open(fn, 'w')
-        f.write((HTML % {'headers': cols_s, 'songs': songs_s}).encode('utf-8'))
-        f.close()
+        with open(fn, "wb") as f:
+            f.write(to_html(songs).encode("utf-8"))
