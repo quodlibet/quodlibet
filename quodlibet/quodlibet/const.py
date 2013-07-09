@@ -108,6 +108,7 @@ Federico Pelloni
 Felix Krull
 Florian Demmer
 Guillaume Chazarain
+Hans Scholze
 Iñigo Serna
 Jacob Lee
 Jan Arne Petersen
