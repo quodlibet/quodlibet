@@ -55,9 +55,10 @@ class TModuleScanner(TestCase):
     def test_importables_package_deps(self):
         h = self._create_pkg("foobar3")
         h2 = self._create_mod("sub.py", "foobar3")
-        self.failUnlessEqual(list(get_importables(self.d))[0],
-                             ("foobar3", os.path.dirname(h.name),
-                              [h.name, h2.name]))
+        name, path, deps = list(get_importables(self.d))[0]
+        self.failUnlessEqual(name, "foobar3")
+        self.failUnlessEqual(path,  os.path.dirname(h.name))
+        self.failUnlessEqual(set(deps), set([h.name, h2.name]))
         h2.close()
         h.close()
 
