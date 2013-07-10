@@ -92,16 +92,12 @@ class DeviceManager(GObject.GObject):
 
     _system_bus = None
 
-    def __init__(self, interface_name):
+    def __init__(self, bus_name):
         super(DeviceManager, self).__init__()
         self._system_bus = dbus.SystemBus()
 
-        ns = "org.freedesktop.DBus"
-        obj = self._system_bus.get_object(ns, "/org/freedesktop/DBus")
-        interface = dbus.Interface(obj, ns)
-
-        if interface_name not in interface.ListNames():
-            raise LookupError
+        # raises DBusException if no owner is active or can be activated
+        self._system_bus.activate_name_owner(bus_name)
 
     def discover(self):
         """Push out all existing devices"""
