@@ -53,7 +53,7 @@ def _wrap_class(lib, version, base, ptr, prefix, methods):
             func = getattr(lib, prefix + name)
         except AttributeError:
             # don't fail on missing ones, just in case..
-            print_w("missing libudev symbol: %r" % (prefix + name))
+            print_d("missing libudev symbol: %r" % (prefix + name))
             continue
 
         func.argtypes = args
@@ -239,7 +239,6 @@ _register_class(UdevQueue, UdevQueuePtr, "udev_queue_", [
     ("get_seqnum_is_finished", c_int, [UdevQueuePtr, c_long]),
     ("get_seqnum_sequence_is_finished", c_int, [UdevQueuePtr, c_long, c_long]),
     ("get_queued_list_entry", UdevListEntryPtr, [UdevQueuePtr]),
-    ("get_failed_list_entry", UdevListEntryPtr, [UdevQueuePtr]),
     ("get_kernel_seqnum", c_longlong, [UdevQueuePtr]),
     ("get_udev_seqnum", c_longlong, [UdevQueuePtr]),
 ])
