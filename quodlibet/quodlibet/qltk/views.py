@@ -9,7 +9,7 @@ from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_accel
+from quodlibet.qltk import get_top_parent, is_accel, is_wayland
 
 
 class TreeViewHints(Gtk.Window):
@@ -177,8 +177,8 @@ class TreeViewHints(Gtk.Window):
         self.__dx, self.__dy = area.x + render_offset, area.y
 
         # final window coordinates/size
-        x = ox + area.x + render_offset
-        y = oy + area.y
+        x = ox + self.__dx
+        y = oy + self.__dy
         x, y = view.convert_bin_window_to_widget_coords(x, y)
 
         w = label_width
@@ -196,11 +196,6 @@ class TreeViewHints(Gtk.Window):
         # Don't show if the resulting tooltip would be smaller
         # than the visible area (if not all is on the display)
         if w < render_width:
-            return
-
-        # reject if cursor isn't above hint
-        x_root, y_root = map(int, [event.x_root, event.y_root])
-        if not((x <= x_root < x + w) and (y <= y_root < y + h)):
             return
 
         self.__view = view
@@ -727,7 +722,7 @@ class HintedTreeView(BaseView):
 
     def __init__(self, *args):
         super(HintedTreeView, self).__init__(*args)
-        if not config.state('disable_hints'):
+        if not config.state('disable_hints') and not is_wayland():
             try:
                 tvh = HintedTreeView.hints
             except AttributeError:
