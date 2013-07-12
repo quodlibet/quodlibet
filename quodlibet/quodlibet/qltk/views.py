@@ -47,6 +47,7 @@ class TreeViewHints(Gtk.Window):
         context = self.get_style_context()
         context.add_class("tooltip")
 
+        self.set_accept_focus(False)
         self.set_resizable(False)
         self.set_name("gtk-tooltip")
         self.set_border_width(1)
@@ -62,7 +63,6 @@ class TreeViewHints(Gtk.Window):
             view.connect('motion-notify-event', self.__motion),
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
-            view.connect('focus-out-event', self.__undisplay),
             view.connect('unmap', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
         ]
@@ -77,6 +77,7 @@ class TreeViewHints(Gtk.Window):
         # Hide if the active treeview is going away
         if view is self.__view:
             self.__undisplay()
+        self.set_transient_for(None)
 
     def __motion(self, view, event):
         label = self.__label
@@ -184,14 +185,16 @@ class TreeViewHints(Gtk.Window):
         w = label_width
         h = area.height
 
-        # clip on the right if it's bigger than the screen
-        screen_border = 5  # leave some space
-        space_right = Gdk.Screen.width() - x - w - screen_border
-        if space_right < 0:
-            w += space_right
-            label.set_ellipsize(Pango.EllipsizeMode.END)
-        else:
-            label.set_ellipsize(Pango.EllipsizeMode.NONE)
+        if not is_wayland():
+            # clip on the right if it's bigger than the screen
+            screen_border = 5  # leave some space
+            space_right = Gdk.Screen.width() - x - w - screen_border
+
+            if space_right < 0:
+                w += space_right
+                label.set_ellipsize(Pango.EllipsizeMode.END)
+            else:
+                label.set_ellipsize(Pango.EllipsizeMode.NONE)
 
         # Don't show if the resulting tooltip would be smaller
         # than the visible area (if not all is on the display)
@@ -204,6 +207,7 @@ class TreeViewHints(Gtk.Window):
         self.__current_path = path
         self.__current_col = col
 
+        self.set_transient_for(get_top_parent(view))
         self.set_size_request(w, h)
         self.resize(w, h)
         self.move(x, y)
@@ -229,7 +233,8 @@ class TreeViewHints(Gtk.Window):
         if event.type == Gdk.EventType.BUTTON_PRESS:
             # hack: present is overridden to present all windows.
             # bypass to only select one
-            Gtk.Window.present(get_top_parent(self.__view))
+            if not is_wayland():  # present duplicates windows in weston
+                Gtk.Window.present(get_top_parent(self.__view))
 
         type_ = event.type
         real_event = None
@@ -722,7 +727,7 @@ class HintedTreeView(BaseView):
 
     def __init__(self, *args):
         super(HintedTreeView, self).__init__(*args)
-        if not config.state('disable_hints') and not is_wayland():
+        if not config.state('disable_hints'):
             try:
                 tvh = HintedTreeView.hints
             except AttributeError:
