@@ -75,21 +75,14 @@ class APEv2File(AudioFile):
                 key.lower() not in self.IGNORE):
                 del(tag[key])
 
-        # Merge all case differing keys together and titlecase them
-        for key in self.realkeys():
-            value = self[key]
-            key = self.SNART.get(key.lower(), key.lower())
-            if key in self.IGNORE:
+        # Write all tags we have
+        lower = self.as_lowercased()
+        for key in lower.realkeys():
+            new_key = self.SNART.get(key, key)
+            if new_key in self.IGNORE:
                 continue
-            key = self.__titlecase(key)
-            if key in tag:
-                old_val = tag[key]
-                if old_val.kind == mutagen.apev2.TEXT:
-                    tag[key] = list(old_val) + value.split("\n")
-                else:  # FIXME: We overwrite data here.
-                    tag[key] = value.split("\n")
-            else:
-                tag[key] = value.split("\n")
+            new_key = self.__titlecase(new_key)
+            tag[new_key] = lower.list(key)
 
         tag.save(self["~filename"])
         self.sanitize()

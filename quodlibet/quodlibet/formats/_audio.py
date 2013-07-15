@@ -466,6 +466,25 @@ class AudioFile(dict):
         else:
             return self.list(key)
 
+    def as_lowercased(self):
+        """Returns a new AudioFile with all keys lowercased / values merged.
+
+        Useful for tag writing for case insensitive tagging formats like
+        APEv2 or VorbisComment.
+        """
+
+        merged = AudioFile()
+        text = {}
+        for key, value in self.iteritems():
+            lower = key.lower()
+            if key.startswith("~#"):
+                merged[lower] = value
+            else:
+                text.setdefault(lower, []).extend(value.split("\n"))
+        for key, values in text.items():
+            merged[key] = "\n".join(values)
+        return merged
+
     def exists(self):
         """Return true if the file still exists (or we can't tell)."""
 

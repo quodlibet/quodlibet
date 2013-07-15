@@ -36,6 +36,7 @@ class MutagenVCFile(AudioFile):
             self["~#bitrate"] = int(audio.info.bitrate / 1000)
         except AttributeError:
             pass
+        # mutagen keys are lower cased
         for key, value in (audio.tags or {}).items():
             self[key] = "\n".join(value)
         self.__post_read()
@@ -143,12 +144,13 @@ class MutagenVCFile(AudioFile):
         if k is None:
             return super(MutagenVCFile, self).can_change(None)
         else:
+            l = k.lower()
             return (super(MutagenVCFile, self).can_change(k) and
-                    k not in ["rating", "playcount",
+                    l not in ["rating", "playcount",
                               "metadata_block_picture",
                               "coverart", "coverartmime"] and
-                    not k.startswith("rating:") and
-                    not k.startswith("playcount:"))
+                    not l.startswith("rating:") and
+                    not l.startswith("playcount:"))
 
     def __prep_write(self, comments):
         email = config.get("editing", "save_email").strip()
@@ -170,12 +172,14 @@ class MutagenVCFile(AudioFile):
                 comments["playcount:" + email] = str(playcount)
 
     def __prep_write_total(self, comments, main, fallback, single):
+        lower = self.as_lowercased()
+
         for k in [main, fallback, single]:
             if k in comments:
                 del comments[k]
 
-        if single in self:
-            parts = self[single].split("/", 1)
+        if single in lower:
+            parts = lower[single].split("/", 1)
 
             if parts[0]:
                 comments[single] = [parts[0]]
@@ -183,14 +187,14 @@ class MutagenVCFile(AudioFile):
             if len(parts) > 1:
                 comments[main] = [parts[1]]
 
-        if main in self:
-            comments[main] = self.list(main)
+        if main in lower:
+            comments[main] = lower.list(main)
 
-        if fallback in self:
+        if fallback in lower:
             if main in comments:
-                comments[fallback] = self.list(fallback)
+                comments[fallback] = lower.list(fallback)
             else:
-                comments[main] = self.list(fallback)
+                comments[main] = lower.list(fallback)
 
     def write(self):
         audio = self.MutagenType(self["~filename"])
@@ -198,8 +202,10 @@ class MutagenVCFile(AudioFile):
             audio.add_tags()
 
         self.__prep_write(audio.tags)
-        for key in self.realkeys():
-            audio.tags[key] = self.list(key)
+
+        lower = self.as_lowercased()
+        for key in lower.realkeys():
+            audio.tags[key] = lower.list(key)
 
         self.__prep_write_total(audio.tags,
                                 "tracktotal", "totaltracks", "tracknumber")

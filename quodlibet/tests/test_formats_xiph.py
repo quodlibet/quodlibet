@@ -102,6 +102,23 @@ class TVCFile(TestCase):
         for bad in ["rating", "playcount", "rating:foo", "playcount:bar"]:
             self.failIf(self.song.can_change(bad))
 
+    def test_parameter_ci(self):
+        for bad in ["ratinG", "plaYcount", "raTing:foo", "playCount:bar"]:
+            self.failIf(self.song.can_change(bad))
+
+    def test_case_insensitive(self):
+        self.song["foo"] = "1"
+        self.song["FOO"] = "1"
+        self.song.write()
+        self.song.reload()
+        self.failUnlessEqual(self.song.list("foo"), ["1", "1"])
+
+    def test_case_insensitive_total(self):
+        self.song["TRacKNUMBER"] = "1/10"
+        self.song.write()
+        self.song.reload()
+        self.failUnlessEqual(self.song["tracknumber"], "1/10")
+
     def test_dont_save(self):
         config.set("editing", "save_to_songs", "false")
         self.song["~#rating"] = 1.0
