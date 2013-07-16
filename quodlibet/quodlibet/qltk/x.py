@@ -37,6 +37,12 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         dx = x2 - x1
         dy = y2 - y1
 
+        ctx = self.get_style_context()
+        border = ctx.get_border(self.get_state_flags())
+
+        # https://bugzilla.gnome.org/show_bug.cgi?id=694844
+        border.left = border.top = border.right = border.bottom = 1
+
         # XXX: ugly, ugly hack
         # Pretend the main window toolbar is the top of the window.
         # This removes the top border in case the ScrolledWindow
@@ -45,13 +51,9 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             top_alloc = toplevel.top_bar.get_allocation()
             dy -= top_alloc.y + top_alloc.height
         except AttributeError:
-            pass
-
-        ctx = self.get_style_context()
-        border = ctx.get_border(self.get_state_flags())
-
-        # https://bugzilla.gnome.org/show_bug.cgi?id=694844
-        border.left = border.top = border.right = border.bottom = 1
+            # In case the window border is at the top, we expect the menubar
+            # there, so draw the normal border
+            border.top = 0
 
         # Don't remove the border if the border is drawn inside
         # and the scrollbar on that edge is visible
