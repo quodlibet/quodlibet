@@ -41,7 +41,8 @@ class TreeViewHints(Gtk.Window):
             Gdk.EventMask.ENTER_NOTIFY_MASK |
             Gdk.EventMask.LEAVE_NOTIFY_MASK |
             Gdk.EventMask.SCROLL_MASK |
-            Gdk.EventMask.POINTER_MOTION_MASK)
+            Gdk.EventMask.POINTER_MOTION_MASK |
+            Gdk.EventMask.POINTER_MOTION_HINT_MASK)
 
         context = self.get_style_context()
         context.add_class("tooltip")
