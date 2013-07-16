@@ -26,7 +26,10 @@ class PrimaryWarpsRange(Gtk.Range):
     def _warps(self):
         settings = Gtk.Settings.get_default()
         if settings:
-            return settings.get_property("gtk-primary-button-warps-slider")
+            try:
+                return settings.get_property("gtk-primary-button-warps-slider")
+            except TypeError:
+                pass
         return False
 
     def __button_event(self, widget, event):
