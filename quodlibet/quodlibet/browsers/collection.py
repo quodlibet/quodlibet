@@ -31,7 +31,7 @@ from quodlibet.util.thumbnails import scale
 
 EMPTY = _("Songs not in an album")
 ALBUM_PATTERN = r"""
-\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| \<small\>(<date>)\</small\>>
+\<b\><album|<album>|%s>\</b\><date| \<small\>(<date>)\</small\>>
 \<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>""" % EMPTY
 ALBUM_PATTERN = ALBUM_PATTERN.lstrip()
 

@@ -21,7 +21,7 @@ from quodlibet.parse import XMLFromPattern
 
 
 EMPTY = _("Songs not in an album")
-PATTERN = r"""\<b\><album|\<i\><album>\</i\>|%s>\</b\><date| (<date>)>
+PATTERN = r"""\<b\><album|<album>|%s>\</b\><date| (<date>)>
 \<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>
 <~people>""" % EMPTY
 
