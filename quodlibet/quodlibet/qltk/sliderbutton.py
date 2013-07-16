@@ -1,4 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,6 +8,35 @@
 from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk import get_top_parent, gtk_version
+
+
+class PrimaryWarpsRange(Gtk.Range):
+    """A GtkRange which behaves as if gtk-primary-button-warps-slider
+    was always True.
+
+    Adjusts key events depending on the current settings value.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(PrimaryWarpsRange, self).__init__(*args, **kwargs)
+        self.connect("button-press-event", self.__button_event)
+        self.connect("button-release-event", self.__button_event)
+
+    @property
+    def _warps(self):
+        settings = Gtk.Settings.get_default()
+        if settings:
+            return settings.get_property("gtk-primary-button-warps-slider")
+        return False
+
+    def __button_event(self, widget, event):
+        if not self._warps:
+            event.button = event.button % 3 + 1
+        return False
+
+
+class PrimaryWarpsScale(Gtk.Scale, PrimaryWarpsRange):
+    pass
 
 
 class _PopupSlider(Gtk.EventBox):
@@ -31,7 +61,8 @@ class _PopupSlider(Gtk.EventBox):
 
         self.add_events(Gdk.EventMask.SCROLL_MASK)
 
-        hscale = self.Scale(adjustment=self.__adj)
+        hscale = PrimaryWarpsScale(adjustment=self.__adj)
+        hscale.set_orientation(self.ORIENTATION)
         hscale.set_size_request(*(req or self._req))
         window.connect('button-press-event', self.__button)
         window.connect('key-press-event', self.__key)
@@ -136,7 +167,7 @@ class _PopupSlider(Gtk.EventBox):
 
 
 class HSlider(_PopupSlider):
-    Scale = Gtk.HScale
+    ORIENTATION = Gtk.Orientation.HORIZONTAL
     _req = (200, -1)
     _adj = Gtk.Adjustment(0, 0, 0, 3, 15, 0)
     UP = [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]
@@ -150,7 +181,7 @@ class HSlider(_PopupSlider):
 
 
 class VSlider(_PopupSlider):
-    Scale = Gtk.VScale
+    ORIENTATION = Gtk.Orientation.VERTICAL
     _req = (-1, 170)
     _adj = Gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0)
     UP = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
