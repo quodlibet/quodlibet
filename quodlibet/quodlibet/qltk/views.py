@@ -41,8 +41,7 @@ class TreeViewHints(Gtk.Window):
             Gdk.EventMask.ENTER_NOTIFY_MASK |
             Gdk.EventMask.LEAVE_NOTIFY_MASK |
             Gdk.EventMask.SCROLL_MASK |
-            Gdk.EventMask.POINTER_MOTION_MASK |
-            Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+            Gdk.EventMask.POINTER_MOTION_MASK)
 
         context = self.get_style_context()
         context.add_class("tooltip")
@@ -65,6 +64,7 @@ class TreeViewHints(Gtk.Window):
             view.connect('key-press-event', self.__undisplay),
             view.connect('unmap', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
+            view.connect('leave-notify-event', self.__leave_undisplay),
         ]
 
     def disconnect_view(self, view):
@@ -85,12 +85,12 @@ class TreeViewHints(Gtk.Window):
         # trigger over row area, not column headers
         if event.window is not view.get_bin_window():
             self.__undisplay()
-            return
+            return False
 
         # hide if any modifier is active
         if event.get_state() & Gtk.accelerator_get_default_mod_mask():
             self.__undisplay()
-            return
+            return False
 
         # get the cell at the mouse position
         x, y = map(int, [event.x, event.y])
@@ -99,18 +99,18 @@ class TreeViewHints(Gtk.Window):
         except TypeError:
             # no hints where no rows exist
             self.__undisplay()
-            return
+            return False
 
         area = view.get_cell_area(path, col)
         # make sure we are on the same level
         if x < area.x:
             self.__undisplay()
-            return
+            return False
 
         # hide for partial hidden rows at the bottom
         if y > view.get_visible_rect().height:
             self.__undisplay()
-            return
+            return False
 
         # get the renderer at the mouse position and get the xpos/width
         renderers = col.get_cells()
@@ -118,23 +118,23 @@ class TreeViewHints(Gtk.Window):
         pos = filter(lambda ((x, w), r): x < cellx, pos)
         if not pos:
             self.__undisplay()
-            return
+            return False
         (render_offset, render_width), renderer = pos[-1]
 
         if self.__current_renderer == renderer and self.__current_path == path:
-            return
+            return False
         else:
             self.__undisplay()
 
         # only ellipsized text renderers
         if not isinstance(renderer, Gtk.CellRendererText):
-            return
+            return False
         if renderer.get_property('ellipsize') == Pango.EllipsizeMode.NONE:
-            return
+            return False
 
         # don't display if the renderer is in editing mode
         if renderer.props.editing:
-            return
+            return False
 
         # set the cell renderer attributes for the active cell
         model = view.get_model()
@@ -170,7 +170,7 @@ class TreeViewHints(Gtk.Window):
 
         # don't display if it doesn't need expansion
         if label_width < render_width:
-            return
+            return False
 
         dummy, ox, oy = view.get_window().get_origin()
 
@@ -199,7 +199,7 @@ class TreeViewHints(Gtk.Window):
         # Don't show if the resulting tooltip would be smaller
         # than the visible area (if not all is on the display)
         if w < render_width:
-            return
+            return False
 
         self.__view = view
         self.__current_renderer = renderer
@@ -213,6 +213,25 @@ class TreeViewHints(Gtk.Window):
         self.move(x, y)
 
         self.show()
+        return False
+
+    def __leave_undisplay(self, view, event):
+        # We don't get motion-notify events in all cases, so
+        # quickly escaping the view can leave stray tooltips.
+        # leave-notify is triggered when we leave the view but also when we
+        # show the tooltip, so this has to check if the cursor is not on
+        # it to not get in an endless hide/show loop.
+
+        if not self.__view:
+            return False
+
+        device = event.get_device()
+        # see docs: get_window_at_position
+        if device and device.get_device_type() != Gdk.DeviceType.SLAVE:
+            win = device.get_window_at_position()[0]
+            if win and win != self.get_window():
+                self.__undisplay()
+        return False
 
     def __undisplay(self, *args):
         if not self.__view:
