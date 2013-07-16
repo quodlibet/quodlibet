@@ -563,7 +563,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         box.pack_start(search, True, True, 0)
         box.pack_start(button, False, True, 0)
         if main:
-            self.pack_start(Alignment(box, left=3, right=3, top=6),
+            self.pack_start(Alignment(box, left=6, right=6, top=6),
                             True, True, 0)
         else:
             self.pack_start(box, True, True, 0)

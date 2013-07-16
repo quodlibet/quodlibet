@@ -494,7 +494,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         prefs = PreferencesButton(self, model_sort)
         search.pack_start(prefs, False, True, 0)
         if main:
-            self.pack_start(Alignment(search, left=3, top=6), False, True, 0)
+            self.pack_start(Alignment(search, left=6, top=6), False, True, 0)
         else:
             self.pack_start(search, False, True, 0)
 

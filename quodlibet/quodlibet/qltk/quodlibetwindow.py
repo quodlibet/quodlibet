@@ -272,8 +272,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.repeat = statusbox.repeat
         self.statusbar = statusbox.statusbar
 
-        main_box.pack_start(Alignment(statusbox, border=3, top=-3),
-                            False, True, 0)
+        main_box.pack_start(
+            Alignment(statusbox, border=3, top=-3, left=6, right=6),
+            False, True, 0)
 
         self.songpane = ConfigRVPaned("memory", "queue_position", 0.75)
         self.songpane.pack1(self.song_scroller, resize=True, shrink=False)

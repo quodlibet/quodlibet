@@ -767,7 +767,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         sbb.connect('focus-out', self.__focus)
         self._sb_box = sbb
 
-        align = (Alignment(sbb, left=3, right=3, top=6) if main
+        align = (Alignment(sbb, left=6, right=6, top=6) if main
                  else Alignment(sbb))
         self.pack_start(align, False, True, 0)
 
