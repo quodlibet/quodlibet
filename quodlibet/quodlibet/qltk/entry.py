@@ -8,6 +8,7 @@
 from gi.repository import Gtk, GObject, Gdk, Gio
 
 from quodlibet.qltk.x import is_accel
+from quodlibet.qltk.x import SeparatorMenuItem
 
 
 class EditableUndo(object):
@@ -71,7 +72,7 @@ class EditableUndo(object):
     def __popup(self, entry, menu):
         undo = Gtk.ImageMenuItem(Gtk.STOCK_UNDO, use_stock=True)
         redo = Gtk.ImageMenuItem(Gtk.STOCK_REDO, use_stock=True)
-        sep = Gtk.SeparatorMenuItem()
+        sep = SeparatorMenuItem()
 
         map(Gtk.Widget.show, (sep, redo, undo))
 

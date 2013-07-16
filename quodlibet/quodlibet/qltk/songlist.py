@@ -26,6 +26,7 @@ from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, FILESYSTEM_TAGS, AudioFile
 from quodlibet.qltk.sortdialog import SortDialog
+from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import human_sort_key
 
 
@@ -989,7 +990,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         for header in current:
             add_header_toggle(menu, header, True)
 
-        sep = Gtk.SeparatorMenuItem()
+        sep = SeparatorMenuItem()
         sep.show()
         menu.append(sep)
 
@@ -1025,7 +1026,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             for header in sorted(zip(map(util.tag, group), group)):
                 add_header_toggle(submenu, header, header[1] in current_set)
 
-        sep = Gtk.SeparatorMenuItem()
+        sep = SeparatorMenuItem()
         sep.show()
         menu.append(sep)
 

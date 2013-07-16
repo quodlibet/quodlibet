@@ -21,6 +21,7 @@ from quodlibet.qltk.completion import LibraryValueCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.plugins import PluginManager
 
@@ -568,7 +569,7 @@ class EditTags(Gtk.VBox):
                     menu.append(b)
 
             if menu.get_children():
-                menu.append(Gtk.SeparatorMenuItem())
+                menu.append(SeparatorMenuItem())
 
         b = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_REMOVE, None)
         b.connect('activate', self.__remove_tag, view)

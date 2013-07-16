@@ -15,7 +15,7 @@ from quodlibet import util
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.sliderbutton import HSlider
 from quodlibet.qltk.tracker import TimeTracker
-from quodlibet.qltk.x import RadioMenuItem
+from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
 
 
 SIZE = Gtk.IconSize.LARGE_TOOLBAR
@@ -81,7 +81,7 @@ class SeekBar(HSlider):
         c.connect_object('toggled', self.scale.emit, 'value-changed')
         self.__remaining = c
         m.append(c)
-        m.append(Gtk.SeparatorMenuItem())
+        m.append(SeparatorMenuItem())
         i = qltk.MenuItem(_("_Edit Bookmarks..."), Gtk.STOCK_EDIT)
         i.connect_object(
             'activate', bookmarks.EditBookmarks, self, library, player)

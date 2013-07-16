@@ -18,7 +18,7 @@ from quodlibet.qltk.controls import StopAfterMenu
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
-from quodlibet.qltk.x import RadioMenuItem
+from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
 from quodlibet.util.thumbnails import scale, calc_scale_size
 
 
@@ -415,7 +415,7 @@ class TrayIcon(EventPlugin):
         order_sub = Gtk.Menu()
         order_sub.append(repeat)
         order_sub.append(safter)
-        order_sub.append(Gtk.SeparatorMenuItem())
+        order_sub.append(SeparatorMenuItem())
         map(order_sub.append, order_items)
         orders.set_submenu(order_sub)
 
@@ -460,17 +460,17 @@ class TrayIcon(EventPlugin):
         quit.connect('activate', lambda *x: app.quit())
 
         menu.append(playpause)
-        menu.append(Gtk.SeparatorMenuItem())
+        menu.append(SeparatorMenuItem())
         menu.append(previous)
         menu.append(next)
         menu.append(orders)
-        menu.append(Gtk.SeparatorMenuItem())
+        menu.append(SeparatorMenuItem())
         menu.append(browse)
-        menu.append(Gtk.SeparatorMenuItem())
+        menu.append(SeparatorMenuItem())
         menu.append(props)
         menu.append(info)
         menu.append(rating)
-        menu.append(Gtk.SeparatorMenuItem())
+        menu.append(SeparatorMenuItem())
         menu.append(quit)
 
         menu.show_all()

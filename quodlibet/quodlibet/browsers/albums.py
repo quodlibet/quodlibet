@@ -23,7 +23,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
-from quodlibet.qltk.x import SymbolicIconImage
+from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
@@ -726,7 +726,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
                 Gtk.STOCK_REFRESH)
             gobject_weak(button.connect, 'activate',
                 self.__refresh_album, view)
-            menu.prepend(Gtk.SeparatorMenuItem())
+            menu.prepend(SeparatorMenuItem())
             menu.prepend(button)
 
         menu.show_all()
