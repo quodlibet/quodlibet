@@ -12,6 +12,7 @@ from quodlibet.util import print_exc
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
+from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.plugins import PluginManager
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
@@ -193,7 +194,7 @@ class SongsMenu(Gtk.Menu):
                 b = qltk.MenuItem(_("_Plugins"), Gtk.STOCK_EXECUTE)
                 self.append(b)
                 b.set_submenu(submenu)
-                self.append(Gtk.SeparatorMenuItem())
+                self.append(SeparatorMenuItem())
 
         in_lib = True
         can_add = True
@@ -296,13 +297,13 @@ class SongsMenu(Gtk.Menu):
         if not self.get_children():
             return
         elif not isinstance(self.get_children()[-1], Gtk.SeparatorMenuItem):
-            self.append(Gtk.SeparatorMenuItem())
+            self.append(SeparatorMenuItem())
 
     def preseparate(self):
         if not self.get_children():
             return
         elif not isinstance(self.get_children()[0], Gtk.SeparatorMenuItem):
-            self.prepend(Gtk.SeparatorMenuItem())
+            self.prepend(SeparatorMenuItem())
 
     def __remove(self, item, songs, library):
         library.remove(set(songs))

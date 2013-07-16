@@ -26,7 +26,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.qltk.x import ScrolledWindow, Alignment
+from quodlibet.qltk.x import ScrolledWindow, Alignment, SeparatorMenuItem
 from quodlibet.util.uri import URI
 from quodlibet.util.dprint import print_d
 
@@ -150,7 +150,7 @@ class Menu(Gtk.Menu):
         i.connect_object(
             'activate', self.__add_to_playlist, None, songs, parent)
         self.append(i)
-        self.append(Gtk.SeparatorMenuItem())
+        self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
 
         for playlist in Playlists.playlists():
@@ -514,7 +514,7 @@ class Playlists(Gtk.VBox, Browser):
         shuffle .connect_object('activate', _shuffle, model, itr)
         shuffle.set_sensitive(bool(len(model[itr][0])))
         menu.prepend(shuffle)
-        menu.prepend(Gtk.SeparatorMenuItem())
+        menu.prepend(SeparatorMenuItem())
 
         def _remove(model, itr):
             playlist = model[itr][0]

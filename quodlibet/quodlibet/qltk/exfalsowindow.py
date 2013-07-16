@@ -27,7 +27,7 @@ from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
-from quodlibet.qltk.x import Alignment
+from quodlibet.qltk.x import Alignment, SeparatorMenuItem
 from quodlibet.qltk.window import PersistentWindowMixin
 
 
@@ -160,7 +160,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
             if menu is None:
                 menu = Gtk.Menu()
             else:
-                menu.prepend(Gtk.SeparatorMenuItem())
+                menu.prepend(SeparatorMenuItem())
         else:
             menu = Gtk.Menu()
         b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)

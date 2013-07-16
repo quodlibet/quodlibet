@@ -11,6 +11,7 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.parse._pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.cbes import StandaloneEditor
+from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import website
 from quodlibet.util.tags import STANDARD_TAGS, MACHINE_TAGS
 from urllib2 import quote
@@ -130,7 +131,7 @@ class WebsiteSearch(SongsMenuPlugin):
         # Add link to editor
         config = Gtk.MenuItem(_("Configure searches..."))
         config.connect_object('activate', self.edit_patterns, config)
-        submenu.append(Gtk.SeparatorMenuItem())
+        submenu.append(SeparatorMenuItem())
         submenu.append(config)
         if submenu.get_children():
             self.set_submenu(submenu)

@@ -17,6 +17,7 @@ from quodlibet.util.dprint import print_d
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
+from quodlibet.qltk.x import SeparatorMenuItem
 
 from quodlibet.parse import XMLFromPattern
 from quodlibet.qltk.textedit import PatternEdit
@@ -86,13 +87,13 @@ class SongInfo(Gtk.EventBox):
             b.set_sensitive(player.song is not None and player.song.can_add)
             b.set_submenu(submenu)
             b.show_all()
-            sep = Gtk.SeparatorMenuItem()
+            sep = SeparatorMenuItem()
             menu.prepend(sep)
             sep.show()
             menu.prepend(b)
 
         # Issue 298 - Rate current playing song
-        sep = Gtk.SeparatorMenuItem()
+        sep = SeparatorMenuItem()
         menu.prepend(sep)
         sep.show()
         rating = RatingsMenuItem([player.song], library)
@@ -105,7 +106,7 @@ class SongInfo(Gtk.EventBox):
         item.connect_object('activate', self.__edit, player)
         menu.append(item)
 
-        sep = Gtk.SeparatorMenuItem()
+        sep = SeparatorMenuItem()
         menu.append(sep)
         sep.show()
         props = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)

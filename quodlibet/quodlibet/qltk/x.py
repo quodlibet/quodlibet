@@ -324,6 +324,14 @@ def RadioMenuItem(*args, **kwargs):
     return Gtk.RadioMenuItem(*args, **kwargs)
 
 
+def SeparatorMenuItem(*args, **kwargs):
+    # https://bugzilla.gnome.org/show_bug.cgi?id=670575
+    # PyGObject 3.2 always sets a label in __init__
+    if not args and not kwargs:
+        return Gtk.SeparatorMenuItem.new()
+    return Gtk.SeparatorMenuItem(*args, **kwargs)
+
+
 def SymbolicIconImage(name, size, fallbacks=None):
     """Gtk.Image that displays a symbolic version of 'name' and falls
     back to the non-symbolic one.

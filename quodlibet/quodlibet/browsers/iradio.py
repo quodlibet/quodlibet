@@ -33,7 +33,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
-from quodlibet.qltk.x import SymbolicIconImage
+from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
 from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = "http://quodlibet.googlecode.com/files/radiolist.bz2"
@@ -724,7 +724,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
                          queue=False, devices=False, parent=self)
 
-        menu.prepend(Gtk.SeparatorMenuItem())
+        menu.prepend(SeparatorMenuItem())
 
         in_fav = False
         in_all = False

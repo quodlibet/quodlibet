@@ -17,6 +17,7 @@ from quodlibet.parse._pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.data_editors import JSONBasedEditor
+from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk import ErrorMessage
 from quodlibet.util.dprint import print_w, print_d, print_e
 from quodlibet.util.json_data import JSONObject, JSONObjectDict
@@ -172,7 +173,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
             # Add link to editor
         config = Gtk.MenuItem(_("Edit Custom Commands") + "...")
         config.connect_object('activate', self.edit_patterns, config)
-        submenu.append(Gtk.SeparatorMenuItem())
+        submenu.append(SeparatorMenuItem())
         submenu.append(config)
         if submenu.get_children():
             self.set_submenu(submenu)

@@ -9,6 +9,7 @@ from gi.repository import Gtk
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.qltk.bookmarks import EditBookmarks
+from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -50,7 +51,7 @@ class Bookmarks(SongsMenuPlugin):
                 items = qltk.bookmarks.MenuItems(marks, fake_player, True)
                 map(song_menu.append, items)
 
-                song_menu.append(Gtk.SeparatorMenuItem())
+                song_menu.append(SeparatorMenuItem())
                 i = qltk.MenuItem(_("_Edit Bookmarks..."), Gtk.STOCK_EDIT)
 
                 def edit_bookmarks_cb(menu_item):
