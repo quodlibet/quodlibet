@@ -18,6 +18,17 @@ class TPlaylistModel(TestCase):
         do_events()
         self.failUnless(self.pl.current is None)
 
+    def test_current_recover(self):
+        self.pl.set(range(10))
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 0)
+        self.pl.set(range(20, 30))
+        self.failUnless(self.pl.current is None)
+        self.pl.current_iter = self.pl.current_iter
+        self.failUnless(self.pl.current is None)
+        self.pl.set(range(10))
+        self.failUnlessEqual(self.pl.current, 0)
+
     def test_isempty(self):
         self.failIf(self.pl.is_empty())
         self.pl.clear()

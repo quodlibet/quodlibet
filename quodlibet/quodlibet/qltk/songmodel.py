@@ -125,6 +125,8 @@ class TrackCurrentModel(ObjectStore):
         return self.__iter and self.get_path(self.__iter)
 
     def __set_current_iter(self, iter_):
+        if iter_ == self.__iter:
+            return
         # emit a row-changed for the previous and the new iter after it is set
         # so that the currentcolumn icon gets updated on song changes
         for it in filter(None, (self.__iter, iter_)):
