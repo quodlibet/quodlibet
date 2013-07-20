@@ -558,7 +558,11 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             app.window.playlist.enqueue(songs)
 
     def __redraw_current(self, player, song=None):
-        self.model.current_iter = self.model.current_iter
+        model = self.model
+        iter_ = model.current_iter
+        if iter_:
+            path = model.get_path(iter_)
+            model.row_changed(path, iter_)
 
     def __columns_changed(self, *args):
         headers = map(lambda h: h.header_name, self.get_columns())
