@@ -2,6 +2,7 @@ from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.util.path import iscommand
 
 
 class Command(object):
@@ -13,7 +14,7 @@ class Command(object):
         self.type = type
 
     def exists(self):
-        return util.iscommand(self.command.split()[0])
+        return iscommand(self.command.split()[0])
 
     def run(self, songs):
         if self.type == self.FOLDERS:

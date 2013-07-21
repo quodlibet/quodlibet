@@ -18,6 +18,8 @@ from quodlibet.formats._audio import AudioFile
 
 
 # Migrate old layout
+from quodlibet.util.path import get_temp_cover_file
+
 sys.modules["formats.flac"] = sys.modules[__name__]
 sys.modules["formats.oggvorbis"] = sys.modules[__name__]
 
@@ -138,7 +140,7 @@ class MutagenVCFile(AudioFile):
                 del self["~picture"]
             return
 
-        return util.get_temp_cover_file(cover)
+        return get_temp_cover_file(cover)
 
     def can_change(self, k=None):
         if k is None:
@@ -327,7 +329,7 @@ class FLACFile(MutagenVCFile):
             else:
                 pic = covers[0]
 
-            return util.get_temp_cover_file(pic.data)
+            return get_temp_cover_file(pic.data)
 
     def write(self):
         if ID3 is not None:

@@ -10,12 +10,12 @@ import os
 from gi.repository import Gtk
 
 
-from quodlibet import util
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.x import Button, MenuItem, Alignment
+from quodlibet.util.path import fsdecode, unexpand
 
 
 class FileListExpander(Gtk.Expander):
@@ -23,7 +23,7 @@ class FileListExpander(Gtk.Expander):
         super(FileListExpander, self).__init__(label=_("Files:"))
         self.set_resize_toplevel(True)
 
-        paths = (util.fsdecode(util.unexpand(s("~filename"))) for s in songs)
+        paths = (fsdecode(unexpand(s("~filename"))) for s in songs)
         lab = Gtk.Label("\n".join(paths))
         lab.set_alignment(0.0, 0.0)
         lab.set_selectable(True)

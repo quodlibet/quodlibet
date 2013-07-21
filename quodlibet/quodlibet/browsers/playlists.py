@@ -11,7 +11,7 @@ import urllib
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
-from quodlibet import config
+from quodlibet import config, mkdir
 from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
@@ -27,17 +27,18 @@ from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.x import ScrolledWindow, Alignment, SeparatorMenuItem
+from quodlibet.util.path import fsdecode
 from quodlibet.util.uri import URI
 from quodlibet.util.dprint import print_d
 
 
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
 if not os.path.isdir(PLAYLISTS):
-    util.mkdir(PLAYLISTS)
+    mkdir(PLAYLISTS)
 
 
 def ParseM3U(filename, library=None):
-    plname = util.fsdecode(os.path.basename(
+    plname = fsdecode(os.path.basename(
         os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
     for line in file(filename):
@@ -50,7 +51,7 @@ def ParseM3U(filename, library=None):
 
 
 def ParsePLS(filename, name="", library=None):
-    plname = util.fsdecode(os.path.basename(
+    plname = fsdecode(os.path.basename(
         os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
     for line in file(filename):

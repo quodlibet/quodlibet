@@ -9,6 +9,7 @@ from gi.repository import Gtk
 from quodlibet import app
 from quodlibet import const
 from quodlibet import util
+from quodlibet.util.path import unexpand
 
 old_hook = sys.excepthook
 
@@ -81,7 +82,7 @@ class ExceptionDialog(Gtk.Window):
             "file may contain some identifying information about you or your "
             "system, such as a list of recent files played. If this is "
             "unacceptable, send <b>%s</b> instead with a description of what "
-            "you were doing.") % (util.unexpand(dump), util.unexpand(minidump))
+            "you were doing.") % (unexpand(dump), unexpand(minidump))
 
         suggestion = _("Quod Libet may now be unstable. Closing it and "
             "restarting is recommended. Your library will be saved.")
@@ -117,7 +118,7 @@ class ExceptionDialog(Gtk.Window):
         self.get_child().show_all()
 
         def first_draw(*args):
-            filename = util.unexpand(dump)
+            filename = unexpand(dump)
             offset = label.get_text().decode("utf-8").find(filename)
             label.select_region(offset, offset + len(filename))
             self.disconnect(self.__draw_id)
@@ -139,7 +140,7 @@ class ExceptionDialog(Gtk.Window):
         def cdf(column, cell, model, iter, data):
             cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
                 util.escape(model[iter][1]), model[iter][2],
-                util.escape(util.unexpand(model[iter][0]))))
+                util.escape(unexpand(model[iter][0]))))
         render = Gtk.CellRendererText()
         col = Gtk.TreeViewColumn(str(value).replace("_", "__"), render)
         col.set_cell_data_func(render, cdf)

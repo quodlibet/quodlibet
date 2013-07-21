@@ -9,6 +9,7 @@ from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.util.path import iscommand
 
 
 class BurnCD(SongsMenuPlugin):
@@ -29,7 +30,7 @@ class BurnCD(SongsMenuPlugin):
         self.prog_name = None
 
         items = self.burn_programs.items()
-        progs = [(util.iscommand(x[1][0]), x) for x in items]
+        progs = [(iscommand(x[1][0]), x) for x in items]
         progs.sort(reverse=True)
 
         submenu = Gtk.Menu()

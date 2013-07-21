@@ -21,6 +21,7 @@ from quodlibet.const import LIBRARY_SAVE_PERIOD_SECONDS
 
 from quodlibet.library.libraries import SongFileLibrary, SongLibrary
 from quodlibet.library.librarians import SongLibrarian
+from quodlibet.util.path import mtime
 
 
 def init(cache_fn=None):
@@ -59,5 +60,5 @@ def save(force=False):
             except EnvironmentError:
                 pass
             lib.destroy()
-        elif time.time() - util.mtime(filename) > LIBRARY_SAVE_PERIOD_SECONDS:
+        elif time.time() - mtime(filename) > LIBRARY_SAVE_PERIOD_SECONDS:
             threading.Thread(target=lib.save).run()

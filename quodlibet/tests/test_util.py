@@ -1,22 +1,24 @@
+from quodlibet.util.path import *
+from quodlibet.util.string import decode, encode
+from quodlibet.util.string.splitters import *
 from tests import TestCase, add
 
 import sys
 import os
 import re
 
-from quodlibet import util
 from quodlibet.util import format_time_long as f_t_l
 
 class Tmkdir(TestCase):
     def test_exists(self):
-        util.mkdir(".")
+        mkdir(".")
 
     def test_notdirectory(self):
-        self.failUnlessRaises(OSError, util.mkdir, __file__)
+        self.failUnlessRaises(OSError, mkdir, __file__)
 
     def test_manydeep(self):
         self.failUnless(not os.path.isdir("nonext"))
-        util.mkdir("nonext/test/test2/test3")
+        mkdir("nonext/test/test2/test3")
         try:
             self.failUnless(os.path.isdir("nonext/test/test2/test3"))
         finally:
@@ -27,37 +29,37 @@ class Tmkdir(TestCase):
 add(Tmkdir)
 
 class Tiscommand(TestCase):
-    def test_ispartial(self): self.failUnless(util.iscommand("ls"))
-    def test_isfull(self): self.failUnless(util.iscommand("/bin/ls"))
-    def test_notpartial(self): self.failIf(util.iscommand("zzzzzzzzz"))
-    def test_notfull(self): self.failIf(util.iscommand("/bin/zzzzzzzzz"))
-    def test_empty(self): self.failIf(util.iscommand(""))
-    def test_symlink(self): self.failUnless(util.iscommand("pidof"))
-    def test_dir(self): self.failIf(util.iscommand("/bin"))
-    def test_dir_in_path(self): self.failIf(util.iscommand("X11"))
+    def test_ispartial(self): self.failUnless(iscommand("ls"))
+    def test_isfull(self): self.failUnless(iscommand("/bin/ls"))
+    def test_notpartial(self): self.failIf(iscommand("zzzzzzzzz"))
+    def test_notfull(self): self.failIf(iscommand("/bin/zzzzzzzzz"))
+    def test_empty(self): self.failIf(iscommand(""))
+    def test_symlink(self): self.failUnless(iscommand("pidof"))
+    def test_dir(self): self.failIf(iscommand("/bin"))
+    def test_dir_in_path(self): self.failIf(iscommand("X11"))
 add(Tiscommand)
 
 class Tmtime(TestCase):
     def test_equal(self):
-        self.failUnlessEqual(util.mtime("."), os.path.getmtime("."))
+        self.failUnlessEqual(mtime("."), os.path.getmtime("."))
     def test_bad(self):
         self.failIf(os.path.exists("/dev/doesnotexist"))
-        self.failUnlessEqual(util.mtime("/dev/doesnotexist"), 0)
+        self.failUnlessEqual(mtime("/dev/doesnotexist"), 0)
 add(Tmtime)
 
 class Tunexpand(TestCase):
     d = os.path.expanduser("~")
 
     def test_base(self):
-        self.failUnlessEqual(util.unexpand(self.d), "~")
+        self.failUnlessEqual(unexpand(self.d), "~")
     def test_base_trailing(self):
-        self.failUnlessEqual(util.unexpand(self.d + "/"), "~/")
+        self.failUnlessEqual(unexpand(self.d + "/"), "~/")
     def test_noprefix(self):
         self.failUnlessEqual(
-            util.unexpand(self.d + "foobar/"), self.d + "foobar/")
+            unexpand(self.d + "foobar/"), self.d + "foobar/")
     def test_subfile(self):
         self.failUnlessEqual(
-            util.unexpand(os.path.join(self.d, "la/la")), "~/la/la")
+            unexpand(os.path.join(self.d, "la/la")), "~/la/la")
 add(Tunexpand)
 
 class Tformat_rating(TestCase):
@@ -156,19 +158,19 @@ add(Tsplit_scan_dirs)
 
 class Tdecode(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(util.decode(""), "")
+        self.failUnlessEqual(decode(""), "")
     def test_safe(self):
-        self.failUnlessEqual(util.decode("foo!"), "foo!")
+        self.failUnlessEqual(decode("foo!"), "foo!")
     def test_invalid(self):
         self.failUnlessEqual(
-            util.decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
+            decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
 add(Tdecode)
 
 class Tencode(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(util.encode(""), "")
+        self.failUnlessEqual(encode(""), "")
     def test_unicode(self):
-        self.failUnlessEqual(util.encode(u"abcde"), "abcde")
+        self.failUnlessEqual(encode(u"abcde"), "abcde")
 add(Tencode)
 
 class Tcapitalize(TestCase):
@@ -187,29 +189,29 @@ add(Tcapitalize)
 
 class Tsplit_value(TestCase):
     def test_single(self):
-        self.failUnlessEqual(util.split_value("a b"), ["a b"])
+        self.failUnlessEqual(split_value("a b"), ["a b"])
 
     def test_double(self):
-        self.failUnlessEqual(util.split_value("a, b"), ["a", "b"])
+        self.failUnlessEqual(split_value("a, b"), ["a", "b"])
 
     def test_custom_splitter(self):
-        self.failUnlessEqual(util.split_value("a b", [" "]), ["a", "b"])
+        self.failUnlessEqual(split_value("a b", [" "]), ["a", "b"])
 
     def test_two_splitters(self):
         self.failUnlessEqual(
-            util.split_value("a, b and c", [",", "and"]), ["a", "b and c"])
+            split_value("a, b and c", [",", "and"]), ["a", "b and c"])
 
     def test_no_splitters(self):
-        self.failUnlessEqual(util.split_value("a b", []), ["a b"])
+        self.failUnlessEqual(split_value("a b", []), ["a b"])
 
     def test_wordboundry(self):
         self.failUnlessEqual(
-            util.split_value("Andromeda and the Band", ["and"]),
+            split_value("Andromeda and the Band", ["and"]),
             ["Andromeda", "the Band"])
 
     def test_unicode_wordboundry(self):
         val = '\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
-        self.failUnlessEqual(util.split_value(val), val.split("&"))
+        self.failUnlessEqual(split_value(val), val.split("&"))
 add(Tsplit_value)
 
 class Thuman_sort(TestCase):
@@ -302,76 +304,76 @@ add(Tformat_size)
 
 class Tsplit_title(TestCase):
     def test_trailing(self):
-        self.failUnlessEqual(util.split_title("foo ~"), ("foo ~", []))
+        self.failUnlessEqual(split_title("foo ~"), ("foo ~", []))
     def test_prefixed(self):
-        self.failUnlessEqual(util.split_title("~foo "), ("~foo ", []))
+        self.failUnlessEqual(split_title("~foo "), ("~foo ", []))
     def test_prefix_and_trailing(self):
-        self.failUnlessEqual(util.split_title("~foo ~"), ("~foo ~", []))
+        self.failUnlessEqual(split_title("~foo ~"), ("~foo ~", []))
     def test_prefix_and_version(self):
-        self.failUnlessEqual(util.split_title("~foo ~bar~"), ("~foo", ["bar"]))
+        self.failUnlessEqual(split_title("~foo ~bar~"), ("~foo", ["bar"]))
     def test_simple(self):
-        self.failUnlessEqual(util.split_title("foo (baz)"), ("foo", ["baz"]))
+        self.failUnlessEqual(split_title("foo (baz)"), ("foo", ["baz"]))
     def test_two_versions(self):
         self.failUnlessEqual(
-            util.split_title("foo [b, c]"), ("foo", ["b", "c"]))
+            split_title("foo [b, c]"), ("foo", ["b", "c"]))
     def test_custom_splitter(self):
         self.failUnlessEqual(
-            util.split_title("foo [b c]", " "), ("foo", ["b", "c"]))
+            split_title("foo [b c]", " "), ("foo", ["b", "c"]))
 add(Tsplit_title)
 
 class Tsplit_album(TestCase):
     def test_album_looks_like_disc(self):
         self.failUnlessEqual(
-            util.split_album("disk 2"), ("disk 2", None))
+            split_album("disk 2"), ("disk 2", None))
 
     def test_basic_disc(self):
         self.failUnlessEqual(
-            util.split_album("foo disc 1/2"), ("foo", "1/2"))
+            split_album("foo disc 1/2"), ("foo", "1/2"))
 
     def test_looks_like_disc_but_isnt(self):
         self.failUnlessEqual(
-            util.split_album("disc foo disc"), ("disc foo disc", None))
+            split_album("disc foo disc"), ("disc foo disc", None))
 
     def test_disc_album_and_disc(self):
         self.failUnlessEqual(
-            util.split_album("disc foo disc 1"), ("disc foo", "1"))
+            split_album("disc foo disc 1"), ("disc foo", "1"))
 
     def test_weird_disc(self):
         self.failUnlessEqual(
-            util.split_album("foo ~disk 3~"), ("foo", "3"))
+            split_album("foo ~disk 3~"), ("foo", "3"))
 
     def test_weird_not_disc(self):
         self.failUnlessEqual(
-            util.split_album("foo ~crazy 3~"), ("foo ~crazy 3~", None))
+            split_album("foo ~crazy 3~"), ("foo ~crazy 3~", None))
 add(Tsplit_album)
 
 class Tsplit_people(TestCase):
     def test_parened_person(self):
-        self.failUnlessEqual(util.split_people("foo (bar)"), ("foo", ["bar"]))
+        self.failUnlessEqual(split_people("foo (bar)"), ("foo", ["bar"]))
     def test_with_person(self):
         self.failUnlessEqual(
-            util.split_people("foo (With bar)"), ("foo", ["bar"]))
+            split_people("foo (With bar)"), ("foo", ["bar"]))
     def test_with_with_person(self):
         self.failUnlessEqual(
-            util.split_people("foo (with with bar)"), ("foo", ["with bar"]))
+            split_people("foo (with with bar)"), ("foo", ["with bar"]))
     def test_featuring_two_people(self):
         self.failUnlessEqual(
-            util.split_people("foo featuring bar, qx"), ("foo", ["bar", "qx"]))
+            split_people("foo featuring bar, qx"), ("foo", ["bar", "qx"]))
     def test_featuring_person_bracketed(self):
         self.failUnlessEqual(
-            util.split_people("foo (Ft. bar)"), ("foo", ["bar"]))
+            split_people("foo (Ft. bar)"), ("foo", ["bar"]))
         self.failUnlessEqual(
-            util.split_people("foo(feat barman)"), ("foo", ["barman"]))
+            split_people("foo(feat barman)"), ("foo", ["barman"]))
     def test_originally_by(self):
         self.failUnlessEqual(
-            util.split_people("title (originally by artist)"),
+            split_people("title (originally by artist)"),
             ("title", ["artist"]))
         self.failUnlessEqual(
-            util.split_people("title [originally by artist & artist2]"),
+            split_people("title [originally by artist & artist2]"),
             ("title", ["artist", "artist2"]))
     def test_cover(self):
         self.failUnlessEqual(
-            util.split_people("Pyscho Killer [Talking Heads Cover]"),
+            split_people("Pyscho Killer [Talking Heads Cover]"),
             ("Pyscho Killer", ["Talking Heads"]))
 
 
@@ -505,18 +507,18 @@ add(Tspawn)
 class Txdg_dirs(TestCase):
     def test_system_data_dirs(self):
         os.environ["XDG_DATA_DIRS"] = "/xyz"
-        self.failUnlessEqual(util.xdg_get_system_data_dirs()[0], "/xyz")
+        self.failUnlessEqual(xdg_get_system_data_dirs()[0], "/xyz")
         del os.environ["XDG_DATA_DIRS"]
-        dirs = util.xdg_get_system_data_dirs()
+        dirs = xdg_get_system_data_dirs()
         self.failUnlessEqual(dirs[0], "/usr/local/share/")
         self.failUnlessEqual(dirs[1], "/usr/share/")
 
     def test_data_home(self):
         os.environ["XDG_DATA_HOME"] = "/xyz"
-        self.failUnlessEqual(util.xdg_get_data_home(), "/xyz")
+        self.failUnlessEqual(xdg_get_data_home(), "/xyz")
         del os.environ["XDG_DATA_HOME"]
         should = os.path.join(os.path.expanduser("~"), ".local", "share")
-        self.failUnlessEqual(util.xdg_get_data_home(), should)
+        self.failUnlessEqual(xdg_get_data_home(), should)
 add(Txdg_dirs)
 
 class Tpathname2url(TestCase):
@@ -527,7 +529,7 @@ class Tpathname2url(TestCase):
             r"\\xy\z.txt": "xy/z.txt",
             r"C:\a:b\c:d": "/C:/a%3Ab/c%3Ad"
             }
-        p2u = util.pathname2url_win32
+        p2u = pathname2url_win32
         for inp, should in cases.iteritems():
             self.failUnlessEqual(p2u(inp), should)
 add(Tpathname2url)

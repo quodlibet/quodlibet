@@ -7,9 +7,9 @@
 
 from gi.repository import Gtk, Pango
 
-from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.util.path import fsdecode
 
 
 class ConfirmMaskedRemoval(qltk.Message):
@@ -56,7 +56,7 @@ class MaskedBox(Gtk.HBox):
 
         def cdf(column, cell, model, iter, data):
             row = model[iter]
-            cell.set_property('text', util.fsdecode(row[0]))
+            cell.set_property('text', fsdecode(row[0]))
 
         def cdf_count(column, cell, model, iter, data):
             mount = model[iter][0]

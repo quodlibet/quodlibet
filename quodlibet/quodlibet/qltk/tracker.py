@@ -13,8 +13,8 @@ from gi.repository import Gdk, GObject, GLib
 import quodlibet
 from quodlibet import const
 from quodlibet import config
-from quodlibet import util
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.util.string import decode
 
 MAX_ERRORS = 10
 
@@ -84,7 +84,7 @@ class SongTracker(object):
 
     def __error(self, player, song, error, librarian):
         newstr = u"%s: %s\n\n" % (
-            util.decode(time.asctime(), const.ENCODING), error)
+            decode(time.asctime(), const.ENCODING), error)
         self.__errors_in_a_row += 1
         if self.__errors_in_a_row > MAX_ERRORS:
             self.__errors_in_a_row = 0

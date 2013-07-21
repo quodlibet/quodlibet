@@ -1,3 +1,4 @@
+from quodlibet.util.path import mtime
 from tests import TestCase, add
 
 from gi.repository import Gtk, GdkPixbuf
@@ -10,7 +11,7 @@ except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
-from quodlibet.util import mtime
+
 
 class TThumb(TestCase):
     def setUp(s):

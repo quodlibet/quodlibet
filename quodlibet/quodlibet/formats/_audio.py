@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#                2012 Nick Boultbee
+#           2012-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,6 +18,8 @@ import re
 from quodlibet import const
 from quodlibet import util
 from quodlibet import config
+from quodlibet.util.path import mkdir, fsdecode, fsencode, mtime, expanduser
+from quodlibet.util.string import encode
 
 from quodlibet.util.uri import URI
 from quodlibet.util import HashableDict
@@ -110,7 +112,7 @@ class AudioFile(dict):
         elif tag == "artistsort":
             return artist_sort
         elif tag in FILESYSTEM_TAGS:
-            return lambda song: util.fsdecode(song(tag), note=False)
+            return lambda song: fsdecode(song(tag), note=False)
         elif tag.startswith("~#") and "~" not in tag[2:]:
             return lambda song: song(tag)
         return lambda song: human(song(tag))
@@ -414,8 +416,8 @@ class AudioFile(dict):
         filename = self.comma("title").replace('/', '')[:128] + '.lyric'
         sub_dir = ((self.comma("lyricist") or self.comma("artist"))
                   .replace('/', '')[:128])
-        path = os.path.join(util.expanduser("~/.lyrics"), sub_dir, filename)
-        return util.fsencode(path)
+        path = os.path.join(expanduser("~/.lyrics"), sub_dir, filename)
+        return fsencode(path)
 
     def comma(self, key):
         """Get all values of a tag, separated by commas. Synthetic
@@ -494,7 +496,7 @@ class AudioFile(dict):
         """Return true if the file cache is up-to-date (checked via
         mtime), or we can't tell."""
         return (self.get("~#mtime", 0) and
-                self["~#mtime"] == util.mtime(self["~filename"]))
+                self["~#mtime"] == mtime(self["~filename"]))
 
     def mounted(self):
         """Return true if the disk the file is on is mounted, or
@@ -532,7 +534,7 @@ class AudioFile(dict):
         directly; use library.rename instead."""
 
         if os.path.isabs(newname):
-            util.mkdir(os.path.dirname(newname))
+            mkdir(os.path.dirname(newname))
         else:
             newname = os.path.join(self('~dirname'), newname)
         if not os.path.exists(newname):
@@ -562,8 +564,8 @@ class AudioFile(dict):
             else:
                 artist = util.escape("+".join(self("artist").split()))
                 album = util.escape("+".join(self("album").split()))
-                artist = util.encode(artist)
-                album = util.encode(album)
+                artist = encode(artist)
+                album = encode(album)
                 artist = "%22" + ''.join(map(esc, artist)) + "%22"
                 album = "%22" + ''.join(map(esc, album)) + "%22"
                 text += artist + "+" + album
@@ -635,7 +637,7 @@ class AudioFile(dict):
                     if isinstance(v2, str):
                         s.append("%s=%s" % (k, v2))
                     else:
-                        s.append("%s=%s" % (k, util.encode(v2)))
+                        s.append("%s=%s" % (k, encode(v2)))
         for k in (INTERN_NUM_DEFAULT - set(self.keys())):
             s.append("%s=%d" % (k, self.get(k, 0)))
         if "~#rating" not in self:

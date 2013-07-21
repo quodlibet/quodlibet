@@ -1,4 +1,4 @@
-# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Niklas Janlert,
+# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Niklas Janlert,
 #                     Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,9 +7,10 @@
 
 import mutagen.id3
 
-from quodlibet import config, const, print_d, util
+from quodlibet import config, const, print_d
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.massagers import LanguageMassager
+from quodlibet.util.path import get_temp_cover_file
 
 
 def isascii(s):
@@ -432,4 +433,4 @@ class ID3File(AudioFile):
                     break
 
             if cover:
-                return util.get_temp_cover_file(cover.data)
+                return get_temp_cover_file(cover.data)

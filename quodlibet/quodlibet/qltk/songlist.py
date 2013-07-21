@@ -23,6 +23,7 @@ from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
+from quodlibet.util.path import fsdecode, unexpand
 from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, FILESYSTEM_TAGS, AudioFile
 from quodlibet.qltk.sortdialog import SortDialog
@@ -244,7 +245,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             value = model[iter][0].comma(tag)
             if not self._needs_update(value):
                 return
-            cell.set_property('text', util.unexpand(util.fsdecode(value)))
+            cell.set_property('text', unexpand(fsdecode(value)))
 
     class NumericColumn(TextColumn):
         # Any '~#' keys except dates.

@@ -19,6 +19,7 @@ from quodlibet.qltk._editpane import EditPane, FilterCheckButton
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.util.path import fsdecode, fsencode, strip_win32_incompat
 
 
 class SpacesToUnderscores(FilterCheckButton):
@@ -46,7 +47,7 @@ class StripWindowsIncompat(FilterCheckButton):
             self.set_no_show_all(True)
 
     def filter(self, original, filename):
-        return util.strip_win32_incompat(filename)
+        return strip_win32_incompat(filename)
 
 
 class StripDiacriticals(FilterCheckButton):
@@ -147,8 +148,8 @@ class RenameFiles(EditPane):
                       "Possibly the target file already exists, "
                       "or you do not have permission to make the "
                       "new file or remove the old one.") % (
-                    util.escape(util.fsdecode(oldname)),
-                    util.escape(util.fsdecode(newname))),
+                    util.escape(fsdecode(oldname)),
+                    util.escape(fsdecode(newname))),
                     buttons=Gtk.ButtonsType.NONE)
                 msg.add_buttons(*buttons)
                 msg.set_default_response(Gtk.ResponseType.OK)
@@ -191,7 +192,7 @@ class RenameFiles(EditPane):
                 self.combo.write(const.NBP)
 
         orignames = [song["~filename"] for song in songs]
-        newnames = [util.fsdecode(util.fsencode(pattern.format(song)))
+        newnames = [fsdecode(fsencode(pattern.format(song)))
                     for song in songs]
         for f in self.filters:
             if f.active:
@@ -199,7 +200,7 @@ class RenameFiles(EditPane):
 
         model.clear()
         for song, newname in zip(songs, newnames):
-            basename = util.fsdecode(song("~basename"))
+            basename = fsdecode(song("~basename"))
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)
         self.save.set_sensitive(bool(self.combo.get_child().get_text()))

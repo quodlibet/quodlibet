@@ -19,6 +19,10 @@ from quodlibet.formats._audio import AudioFile
 
 
 # Wraps an itdb_track from libgpod in an AudioFile instance
+from quodlibet.util.path import fsdecode, fsencode, mtime, filesize
+from quodlibet.util.string import decode, encode
+
+
 class IPodSong(AudioFile):
     is_file = False
 
@@ -32,12 +36,12 @@ class IPodSong(AudioFile):
             # albumartist since libgpod-0.4.2
             value = getattr(track, key, None)
             if value:
-                self[key] = util.decode(value)
+                self[key] = decode(value)
         # Sort keys (since libgpod-0.5.0)
         for key in ['artist', 'album', 'albumartist']:
             value = getattr(track, 'sort_' + key, None)
             if value:
-                self[key + 'sort'] = util.decode(value)
+                self[key + 'sort'] = decode(value)
         # Numeric keys
         for key in ['bitrate', 'playcount']:
             value = getattr(track, key)
@@ -202,21 +206,21 @@ class IPodDevice(Device):
         title = tag('title')
         if self['title_version'] and song('version'):
             title = " - ".join([title, song('version')])
-        track.title = util.encode(title)
+        track.title = encode(title)
 
         album = tag('album')
         if self['album_part'] and song('discsubtitle'):
             album = " - ".join([album, song('discsubtitle')])
-        track.album = util.encode(album)
+        track.album = encode(album)
 
         # String keys
         for key in ['artist', 'genre', 'grouping', 'composer', 'albumartist']:
             if hasattr(track, key):  # albumartist since libgpod-0.4.2
-                setattr(track, key, util.encode(tag(key)))
+                setattr(track, key, encode(tag(key)))
         # Sort keys (since libgpod-0.5.0)
         for key in ['artist', 'album', 'albumartist']:
             if hasattr(track, 'sort_' + key):
-                setattr(track, 'sort_' + key, util.encode(tag(key + 'sort')))
+                setattr(track, 'sort_' + key, encode(tag(key + 'sort')))
         # Numeric keys
         for key in ['bitrate', 'playcount', 'year']:
             try:
@@ -229,11 +233,11 @@ class IPodDevice(Device):
             'cds': song('~#discs'),
             'rating': min(100, song('~#rating') * 100),
             'time_added': self.__mactime(time.time()),
-            'time_modified': self.__mactime(util.mtime(song('~filename'))),
+            'time_modified': self.__mactime(mtime(song('~filename'))),
             'track_nr': song('~#track'),
             'tracklen': song('~#length') * 1000,
             'tracks': song('~#tracks'),
-            'size': util.size(song('~filename')),
+            'size': filesize(song('~filename')),
             'soundcheck': self.__soundcheck(song),
         }.items():
             try:
@@ -242,7 +246,7 @@ class IPodDevice(Device):
                 continue
 
         track.filetype = song('~format')
-        track.comment = util.encode(util.fsdecode(song('~filename')))
+        track.comment = encode(fsdecode(song('~filename')))
 
         # Associate a cover with the track
         if self['covers']:
@@ -253,7 +257,7 @@ class IPodDevice(Device):
                 # case the cover is a temporary file.
                 self.__covers.append(cover)
                 gpod.itdb_track_set_thumbnails(
-                    track, util.fsencode(cover.name))
+                    track, fsencode(cover.name))
 
         # Add the track to the master playlist
         gpod.itdb_track_add(self.__itdb, track, -1)

@@ -8,7 +8,7 @@
 import time
 import operator
 
-from quodlibet.util import fsdecode
+from quodlibet.util.path import fsdecode
 
 
 class error(ValueError):

@@ -17,6 +17,7 @@ from quodlibet import const
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
 from collections import Iterable, MutableSequence, defaultdict
+from quodlibet.util.path import fsencode, escape_filename, unescape_filename
 
 
 ELPOEP = list(reversed(PEOPLE))
@@ -397,8 +398,8 @@ class Playlist(Collection, Iterable):
 
     __instances = []
 
-    quote = staticmethod(util.escape_filename)
-    unquote = staticmethod(util.unescape_filename)
+    quote = staticmethod(escape_filename)
+    unquote = staticmethod(unescape_filename)
 
     @classmethod
     def new(cls, dir, base=_("New Playlist"), library={}):
@@ -567,7 +568,7 @@ class Playlist(Collection, Iterable):
         with open(os.path.join(self.dir, basename), "w") as f:
             for song in self._list:
                 try:
-                    f.write(util.fsencode(song("~filename")) + "\n")
+                    f.write(fsencode(song("~filename")) + "\n")
                 except TypeError:
                     f.write(song + "\n")
 

@@ -24,6 +24,9 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.plugins import PluginManager
+from quodlibet.util.path import fsdecode
+from quodlibet.util.string import decode
+from quodlibet.util.string.splitters import split_value, split_title, split_people, split_album
 
 
 class AudioFileGroup(dict):
@@ -107,7 +110,7 @@ class AudioFileGroup(dict):
             else:
                 decoded = first[comment]
                 if isinstance(decoded, str):
-                    decoded = util.decode(decoded)
+                    decoded = decode(decoded)
                 if all[comment]:
                     value = self.SharedComment(decoded)
                 else:
@@ -148,12 +151,12 @@ class SplitValues(Gtk.ImageMenuItem):
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
-        self.set_sensitive(len(util.split_value(value, spls)) > 1)
+        self.set_sensitive(len(split_value(value, spls)) > 1)
 
     def activated(self, tag, value):
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
-        return [(tag, v) for v in util.split_value(value, spls)]
+        return [(tag, v) for v in split_value(value, spls)]
 
 
 class SplitDisc(Gtk.ImageMenuItem):
@@ -166,10 +169,10 @@ class SplitDisc(Gtk.ImageMenuItem):
             _("Split Disc out of _Album"), use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
-        self.set_sensitive(util.split_album(value)[1] is not None)
+        self.set_sensitive(split_album(value)[1] is not None)
 
     def activated(self, tag, value):
-        album, disc = util.split_album(value)
+        album, disc = split_album(value)
         return [(tag, album), ("discnumber", disc)]
 
 
@@ -185,12 +188,12 @@ class SplitTitle(Gtk.ImageMenuItem):
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
-        self.set_sensitive(bool(util.split_title(value, spls)[1]))
+        self.set_sensitive(bool(split_title(value, spls)[1]))
 
     def activated(self, tag, value):
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
-        title, versions = util.split_title(value, spls)
+        title, versions = split_title(value, spls)
         return [(tag, title)] + [("version", v) for v in versions]
 
 
@@ -204,12 +207,12 @@ class SplitPerson(Gtk.ImageMenuItem):
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
-        self.set_sensitive(bool(util.split_people(value, spls)[1]))
+        self.set_sensitive(bool(split_people(value, spls)[1]))
 
     def activated(self, tag, value):
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
-        artist, others = util.split_people(value, spls)
+        artist, others = split_people(value, spls)
         return [(tag, artist)] + [(self.needs[0], o) for o in others]
 
 
@@ -656,21 +659,21 @@ class EditTags(Gtk.VBox):
             if row[EDITED] and not (row[DELETED] or row[RENAMED]):
                 if row[ORIGVALUE] is not None:
                     updated.setdefault(row[TAG], [])
-                    updated[row[TAG]].append((util.decode(row[VALUE]),
-                                              util.decode(row[ORIGVALUE])))
+                    updated[row[TAG]].append((decode(row[VALUE]),
+                                              decode(row[ORIGVALUE])))
                 else:
                     added.setdefault(row[TAG], [])
-                    added[row[TAG]].append(util.decode(row[VALUE]))
+                    added[row[TAG]].append(decode(row[VALUE]))
             if row[EDITED] and row[DELETED]:
                 if row[ORIGVALUE] is not None:
                     deleted.setdefault(row[TAG], [])
-                    deleted[row[TAG]].append(util.decode(row[ORIGVALUE]))
+                    deleted[row[TAG]].append(decode(row[ORIGVALUE]))
 
             if row[EDITED] and row[RENAMED] and not row[DELETED]:
                 renamed.setdefault(row[TAG], [])
-                renamed[row[TAG]].append((util.decode(row[ORIGTAG]),
-                                          util.decode(row[VALUE]),
-                                          util.decode(row[ORIGVALUE])))
+                renamed[row[TAG]].append((decode(row[ORIGTAG]),
+                                          decode(row[VALUE]),
+                                          decode(row[ORIGVALUE])))
 
         was_changed = []
         songs = self.__songinfo.songs
@@ -741,7 +744,7 @@ class EditTags(Gtk.VBox):
                         _("Saving <b>%s</b> failed. The file "
                           "may be read-only, corrupted, or you "
                           "do not have permission to edit it.") % (
-                        util.escape(util.fsdecode(
+                        util.escape(fsdecode(
                         song('~basename'))))).run()
                     library.reload(song, changed=was_changed)
                     break

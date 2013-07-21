@@ -12,6 +12,7 @@ from gi.repository import Pango
 from quodlibet import util, config, const
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.util.path import fsdecode, fsencode, unexpand
 
 
 def get_init_select_dir():
@@ -52,7 +53,7 @@ class ScanBox(Gtk.HBox):
 
         def cdf(column, cell, model, iter, data):
             row = model[iter]
-            cell.set_property('text', util.unexpand(row[0]))
+            cell.set_property('text', unexpand(row[0]))
 
         column = Gtk.TreeViewColumn(None, render)
         column.set_cell_data_func(render, cdf)
@@ -78,7 +79,7 @@ class ScanBox(Gtk.HBox):
         self.pack_start(vbox, False, True, 0)
 
         paths = util.split_scan_dirs(config.get("settings", "scan"))
-        paths = map(util.fsdecode, paths)
+        paths = map(fsdecode, paths)
         for path in paths:
             model.append(row=[path])
 
@@ -92,7 +93,7 @@ class ScanBox(Gtk.HBox):
         remove_button.set_sensitive(selection.count_selected_rows())
 
     def __save(self):
-        paths = map(util.fsencode, [r[0] for r in self.model])
+        paths = map(fsencode, [r[0] for r in self.model])
         config.set("settings", "scan", ":".join(paths))
 
     def __remove(self, view):

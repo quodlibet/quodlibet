@@ -12,6 +12,7 @@ from os.path import dirname, basename
 from quodlibet.util.dprint import print_d, print_w
 
 from gi.repository import GObject
+from quodlibet.util.path import xdg_get_system_data_dirs
 
 try:
     import dbus
@@ -328,7 +329,7 @@ class DKD(DeviceManager):
             return None
 
     def __get_mpi_dir(self):
-        for dir in util.xdg_get_system_data_dirs():
+        for dir in xdg_get_system_data_dirs():
             path = os.path.join(dir, "media-player-info")
             if os.path.isdir(path):
                 return path

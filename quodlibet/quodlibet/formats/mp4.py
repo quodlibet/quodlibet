@@ -5,8 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet import util
 from quodlibet.formats._audio import AudioFile
+from quodlibet.util.path import get_temp_cover_file
+from quodlibet.util.string import decode
 
 extensions = ['.mp4', '.m4a', '.m4v']
 
@@ -79,7 +80,7 @@ class MP4File(AudioFile):
                     self[name] = "\n".join(map(unicode, values))
                 elif key.startswith("----"):
                     self[name] = "\n".join(
-                        map(lambda v: util.decode(v).strip("\x00"), values))
+                        map(lambda v: decode(v).strip("\x00"), values))
                 else:
                     self[name] = "\n".join(values)
             elif key == "covr":
@@ -128,7 +129,7 @@ class MP4File(AudioFile):
             return
         else:
             for cover in tag.get("covr", []):
-                fn = util.get_temp_cover_file(cover)
+                fn = get_temp_cover_file(cover)
                 if fn:
                     return fn
 

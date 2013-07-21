@@ -11,9 +11,9 @@ import hashlib as hash
 
 from gi.repository import GdkPixbuf
 
-from quodlibet.util import mtime, fsnative, pathname2url
-from quodlibet.util import xdg_get_cache_home, mkdir
 from quodlibet.const import USERDIR
+from quodlibet.util.path import mtime, mkdir, fsnative, pathname2url, \
+    xdg_get_cache_home
 
 
 def add_border(pixbuf, val, round=False):

@@ -28,6 +28,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
 from quodlibet.util import copool, gobject_weak, sanitize_tags
+from quodlibet.util.string import decode, encode
 from quodlibet.util.uri import URI
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -103,7 +104,7 @@ class IRFile(RemoteFile):
         for tag in ["title", "artist", "~format"]:
             value = self.get(tag)
             if value is not None:
-                lines.append("%s=%s" % (tag, util.encode(value)))
+                lines.append("%s=%s" % (tag, encode(value)))
         return "\n".join(lines)
 
     def can_change(self, k=None):
@@ -302,7 +303,7 @@ def parse_taglist(data):
             station = IRFile(value)
             continue
 
-        value = util.decode(value)
+        value = decode(value)
         san = sanitize_tags({key: value}, stream=True).items()
         if not san:
             continue

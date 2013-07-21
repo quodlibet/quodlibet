@@ -54,6 +54,7 @@ from quodlibet import util, qltk, config, print_w, app
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.parse import Pattern
+from quodlibet.util.path import fsencode, iscommand
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
@@ -551,7 +552,7 @@ class CoverArea(Gtk.VBox):
 
         self.name_combo = Gtk.ComboBoxText()
 
-        self.cmd = qltk.entry.ValidatingEntry(util.iscommand)
+        self.cmd = qltk.entry.ValidatingEntry(iscommand)
 
         #both labels
         label_open = Gtk.Label(label=_('_Program:'))
@@ -660,7 +661,7 @@ class CoverArea(Gtk.VBox):
         filename = self.name_combo.get_active_text()
         # Allow support for filename patterns
         pattern = Pattern(filename)
-        filename = util.fsencode(pattern.format(self.song))
+        filename = fsencode(pattern.format(self.song))
         file_path = os.path.join(self.dirname, filename)
 
         if os.path.exists(file_path) and not qltk.ConfirmAction(None,

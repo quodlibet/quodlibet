@@ -9,10 +9,10 @@ import dbus
 import dbus.service
 from dbus import DBusException
 
-from quodlibet import util
 from quodlibet.util import dbusutils
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
+from quodlibet.util.path import fsdecode
 
 
 class DBusHandler(dbus.service.Object):
@@ -38,7 +38,7 @@ class DBusHandler(dbus.service.Object):
             if not isinstance(value, basestring):
                 value = unicode(value)
             elif isinstance(value, str):
-                value = util.fsdecode(value)
+                value = fsdecode(value)
             dict[key] = dbusutils.dbus_unicode_validate(value)
         if song:
             dict["~uri"] = song("~uri")

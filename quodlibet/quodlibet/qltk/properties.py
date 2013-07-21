@@ -9,7 +9,6 @@
 from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import qltk
-from quodlibet import util
 from quodlibet import config
 
 from quodlibet.qltk.edittags import EditTags
@@ -18,6 +17,7 @@ from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.util.path import fsdecode
 
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
@@ -81,7 +81,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         # checks that "hardcode" the first row being selected.
 
         for song in songs:
-            fbasemodel.append(row=[song, util.fsdecode(song("~basename"))])
+            fbasemodel.append(row=[song, fsdecode(song("~basename"))])
 
         self.connect_object('changed', SongProperties.__set_title, self)
 

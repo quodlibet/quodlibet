@@ -22,6 +22,7 @@ from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.util import copool
 from quodlibet.util.library import scan_libary
+from quodlibet.util.path import mkdir
 
 
 class FSInterface(object):
@@ -70,7 +71,7 @@ class FIFOControl(object):
     def __open(self, *args):
         try:
             if not os.path.exists(const.CONTROL):
-                util.mkdir(const.USERDIR)
+                mkdir(const.USERDIR)
                 os.mkfifo(const.CONTROL, 0600)
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             f = os.fdopen(fifo, "r", 4096)

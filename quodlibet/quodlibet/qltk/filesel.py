@@ -20,6 +20,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.util.path import fsdecode, listdir
 
 
 def search_func(model, column, key, iter, handledirs):
@@ -46,8 +47,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
     def cell_data(column, cell, model, iter, userdata):
         value = model[iter][0]
         if value is not None:
-            cell.set_property('text', util.fsdecode(
-                os.path.basename(value) or value))
+            cell.set_property('text',
+                              fsdecode(os.path.basename(value) or value))
     cell_data = staticmethod(cell_data)
 
     def __init__(self, initial=None, folders=None):
@@ -290,11 +291,11 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 while model.iter_has_child(iter):
                     model.remove(model.iter_children(iter))
                 folder = model[iter][0]
-                for path in util.listdir(folder):
+                for path in listdir(folder):
                     try:
                         if not os.path.isdir(path):
                             continue
-                        for filename in util.listdir(path):
+                        for filename in listdir(path):
                             if os.path.isdir(filename):
                                 niter = model.append(iter, [path])
                                 model.append(niter, ["dummy"])
@@ -316,7 +317,7 @@ class FileSelector(Gtk.VPaned):
     def cell_data(column, cell, model, iter, userdata):
         value = model[iter][0]
         if value is not None:
-            cell.set_property('text', util.fsdecode(os.path.basename(value)))
+            cell.set_property('text', fsdecode(os.path.basename(value)))
     cell_data = staticmethod(cell_data)
 
     __gsignals__ = {
@@ -389,7 +390,7 @@ class FileSelector(Gtk.VPaned):
         dirs = [dmodel[row][0] for row in rows]
         for dir in dirs:
             try:
-                files = filter(self.__filter, util.listdir(dir))
+                files = filter(self.__filter, listdir(dir))
                 for file in sorted(files):
                     filename = os.path.join(dir, file)
                     if (os.access(filename, os.R_OK) and

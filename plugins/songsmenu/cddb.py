@@ -12,8 +12,9 @@ from gi.repository import Gtk
 
 from quodlibet.qltk import ErrorMessage, ConfirmAction, Message
 from quodlibet.const import VERSION
-from quodlibet.util import tag, escape, expanduser
+from quodlibet.util import tag, escape
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.util.path import expanduser
 
 CDDB.proto = 6 # utf8 instead of latin1
 CLIENTINFO = {'client_name': "quodlibet", 'client_version': VERSION}

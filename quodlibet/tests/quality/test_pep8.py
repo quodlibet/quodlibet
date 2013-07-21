@@ -8,10 +8,9 @@ import os
 import glob
 import subprocess
 import unittest
+from quodlibet.util.path import iscommand
 
 from tests import TestCase, add
-
-from quodlibet.util import iscommand
 
 
 class TPEP8(TestCase):

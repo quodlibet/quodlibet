@@ -1,7 +1,7 @@
 import os
 
-import quodlibet.util
 from quodlibet.const import LOGDIR
+from quodlibet.util.path import mkdir
 
 LOGS = {}
 MAX_LOG_SIZE = 1000
@@ -34,7 +34,7 @@ def contents(name):
 
 def dump(path=LOGDIR):
     try:
-        quodlibet.util.mkdir(path)
+        mkdir(path)
         for name in LOGS.keys():
             filename = os.path.join(path, name + ".log")
             fileobj = file(filename, "w")

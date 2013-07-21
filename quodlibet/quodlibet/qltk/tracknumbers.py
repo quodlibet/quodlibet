@@ -12,6 +12,7 @@ from quodlibet import util
 
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.util.path import fsdecode
 
 
 class TrackNumbers(Gtk.VBox):
@@ -119,7 +120,7 @@ class TrackNumbers(Gtk.VBox):
                   "Saving without refreshing your library may "
                   "overwrite other changes to the song.\n\n"
                   "Save this song anyway?") %
-                util.escape(util.fsdecode(song("~basename")))
+                util.escape(fsdecode(song("~basename")))
                 ).run():
                 break
             song["tracknumber"] = track
@@ -132,7 +133,7 @@ class TrackNumbers(Gtk.VBox):
                     _("Saving <b>%s</b> failed. The file may be "
                       "read-only, corrupted, or you do not have "
                       "permission to edit it.") %
-                    util.escape(util.fsdecode(song('~basename')))).run()
+                    util.escape(fsdecode(song('~basename')))).run()
                 library.reload(song, changed=was_changed)
                 break
             was_changed.append(song)
@@ -169,7 +170,7 @@ class TrackNumbers(Gtk.VBox):
         else:
             self.set_sensitive(True)
         for song in songs:
-            basename = util.fsdecode(song("~basename"))
+            basename = fsdecode(song("~basename"))
             model.append(row=[song, basename, song("tracknumber")])
         save.set_sensitive(False)
         revert.set_sensitive(False)

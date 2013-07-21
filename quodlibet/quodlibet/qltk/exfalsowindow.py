@@ -29,6 +29,7 @@ from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Alignment, SeparatorMenuItem
 from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.util.path import mtime
 
 
 class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
@@ -194,7 +195,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
                 pass
             elif filename in self.__library:
                 file = self.__library[filename]
-                if file("~#mtime") + 1. < util.mtime(filename):
+                if file("~#mtime") + 1. < mtime(filename):
                     try:
                         file.reload()
                     except StandardError:

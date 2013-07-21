@@ -4,6 +4,7 @@ from gi.repository import Gtk, GObject
 
 from quodlibet import util
 from quodlibet.plugins.editing import RenameFilesPlugin
+from quodlibet.util.path import iscommand
 
 
 class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
@@ -42,7 +43,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
             return values
 
 
-if not util.iscommand("kakasi"):
+if not iscommand("kakasi"):
     from quodlibet import plugins
     raise plugins.PluginImportException(
         "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi).")

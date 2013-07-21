@@ -41,6 +41,7 @@ from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RPaned, ConfigRVPaned, Alignment, ScrolledWindow
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
+from quodlibet.util.path import fsdecode
 from quodlibet.util.uri import URI
 from quodlibet.util.library import background_filter, scan_libary
 from quodlibet.qltk.window import PersistentWindowMixin
@@ -936,7 +937,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                         from traceback import format_exception_only as feo
                         tb = feo(sys.last_type, sys.last_value)
                         msg = _("%s could not be added to your library.\n\n")
-                        msg %= util.escape(util.fsdecode(
+                        msg %= util.escape(fsdecode(
                             os.path.basename(filename)))
                         msg += util.escape("".join(tb).decode(
                             const.ENCODING, "replace"))

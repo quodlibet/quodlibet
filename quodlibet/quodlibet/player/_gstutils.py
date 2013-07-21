@@ -12,6 +12,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet.plugins import PluginManager
+from quodlibet.util.string import decode
 
 
 def link_many(elements):
@@ -207,7 +208,7 @@ def parse_gstreamer_taglist(tags):
                 if not isinstance(val, unicode):
                     continue
                 split = val.split("=", 1)
-                sub_key = util.decode(split[0])
+                sub_key = decode(split[0])
                 val = split[-1]
                 if sub_key in merged:
                     if val not in merged[sub_key].split("\n"):
@@ -219,7 +220,7 @@ def parse_gstreamer_taglist(tags):
             merged[key] = value
         else:
             if isinstance(value, str):
-                value = util.decode(value)
+                value = decode(value)
 
             if not isinstance(value, unicode) and \
                 not isinstance(value, (int, long, float)):

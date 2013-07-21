@@ -19,6 +19,7 @@ from quodlibet.devices._base import Device
 from quodlibet.library import SongFileLibrary
 from quodlibet.parse import FileFromPattern
 from quodlibet.qltk import ConfirmAction
+from quodlibet.util.path import fsencode, mtime, escape_filename, strip_win32_incompat
 
 CACHE = os.path.join(const.USERDIR, 'cache')
 
@@ -37,7 +38,7 @@ class StorageDevice(Device):
 
     def __init__(self, backend_id, device_id):
         super(StorageDevice, self).__init__(backend_id, device_id)
-        filename = util.escape_filename(device_id)
+        filename = escape_filename(device_id)
         self.__library_path = os.path.join(CACHE, filename)
         self.__library_name = device_id
 
@@ -87,8 +88,8 @@ class StorageDevice(Device):
         if not self.__pattern:
             self.__set_pattern()
 
-        utarget = util.strip_win32_incompat(self.__pattern.format(song))
-        target = util.fsencode(utarget)
+        utarget = strip_win32_incompat(self.__pattern.format(song))
+        target = fsencode(utarget)
         dirname = os.path.dirname(target)
 
         if os.path.exists(target):
@@ -111,12 +112,12 @@ class StorageDevice(Device):
         try:
             if not os.path.isdir(dirname):
                 os.makedirs(dirname)
-            shutil.copyfile(util.fsencode(song['~filename']), target)
+            shutil.copyfile(fsencode(song['~filename']), target)
 
             if self['covers']:
                 coverfile = os.path.join(dirname, 'folder.jpg')
                 cover = song.find_cover()
-                if cover and util.mtime(cover.name) > util.mtime(coverfile):
+                if cover and mtime(cover.name) > mtime(coverfile):
                     image = GdkPixbuf.Pixbuf.new_from_file_at_size(
                         cover.name, 200, 200)
                     image.save(coverfile, 'jpeg')

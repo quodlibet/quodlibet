@@ -19,6 +19,7 @@ from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.x import Window
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util import tag
+from quodlibet.util.path import fsdecode, filesize, unexpand
 
 
 def Label(*args):
@@ -283,11 +284,11 @@ class OneSong(qltk.Notebook):
                 timestr = time.strftime("%c", time.localtime(t))
                 return timestr.decode(const.ENCODING)
 
-        fn = util.fsdecode(util.unexpand(song["~filename"]))
+        fn = fsdecode(unexpand(song["~filename"]))
         length = util.format_time_long(song.get("~#length", 0))
         size = util.format_size(
-            song.get("~#filesize") or util.size(song["~filename"]))
-        mtime = ftime(util.mtime(song["~filename"]))
+            song.get("~#filesize") or filesize(song["~filename"]))
+        mtime = ftime(util.path.mtime(song["~filename"]))
         bitrate = song.get("~#bitrate", 0)
         if bitrate != 0:
             bitrate = _("%d kbps") % int(bitrate)
@@ -589,7 +590,7 @@ class ManySongs(qltk.Notebook):
         for song in songs:
             length += song.get("~#length", 0)
             try:
-                size += util.size(song["~filename"])
+                size += filesize(song["~filename"])
             except EnvironmentError:
                 pass
         table = Gtk.Table(2, 2)

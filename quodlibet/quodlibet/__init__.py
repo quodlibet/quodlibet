@@ -22,6 +22,7 @@ import sys
 import quodlibet.const
 import quodlibet.util
 
+from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet.const import MinVersions, Version
@@ -182,7 +183,7 @@ def _gettext_init():
     except locale.Error:
         pass
 
-    unexpand = quodlibet.util.unexpand
+    unexpand = quodlibet.util.path.unexpand
 
     # Use the locale dir in ../build/share/locale if there is one
     localedir = os.path.dirname(quodlibet.const.BASEDIR)
@@ -282,11 +283,11 @@ def init(library=None, icon=None, title=None, name=None):
     # We already imported this, but Python is dumb and thinks we're rebinding
     # a local when we import it later.
     import quodlibet.util
-    quodlibet.util.mkdir(quodlibet.const.USERDIR)
+    quodlibet.util.path.mkdir(quodlibet.const.USERDIR)
 
     if library:
         print_d("Initializing main library (%s)" % (
-            quodlibet.util.unexpand(library)))
+            quodlibet.util.path.unexpand(library)))
 
     import quodlibet.library
     library = quodlibet.library.init(library)

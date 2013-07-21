@@ -29,13 +29,14 @@ from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import Query
 from quodlibet.plugins import PluginImportException
+from quodlibet.util.path import xdg_get_system_data_dirs
 
 
 def get_gs_provider_files():
     """Return all installed search provider files for Gnome Shell"""
 
     ini_files = []
-    for d in util.xdg_get_system_data_dirs():
+    for d in xdg_get_system_data_dirs():
         path = os.path.join(d, "gnome-shell", "search-providers")
         try:
             for entry in os.listdir(path):

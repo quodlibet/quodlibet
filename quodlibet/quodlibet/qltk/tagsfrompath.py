@@ -18,6 +18,8 @@ from quodlibet import util
 from quodlibet.qltk._editpane import EditPane, FilterCheckButton
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.util.path import fsdecode
+from quodlibet.util.string.splitters import split_value
 
 
 class TagsFromPattern(object):
@@ -62,7 +64,7 @@ class TagsFromPattern(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = util.fsdecode(song['~filename'])
+            song = fsdecode(song['~filename'])
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         sep = os.path.sep
@@ -105,7 +107,7 @@ class SplitTag(FilterCheckButton):
     def filter(self, tag, value):
         spls = config.get("editing", "split_on").decode('utf-8', 'replace')
         spls = spls.split()
-        return "\n".join(util.split_value(value, spls))
+        return "\n".join(split_value(value, spls))
 
 
 class TagsFromPathPluginHandler(EditingPluginHandler):
@@ -201,7 +203,7 @@ class TagsFromPath(EditPane):
             self.view.append_column(col)
 
         for song in songs:
-            basename = util.fsdecode(song("~basename"))
+            basename = fsdecode(song("~basename"))
             row = [song, basename]
             match = pattern.match(song)
             for h in pattern.headers:
@@ -239,7 +241,7 @@ class TagsFromPath(EditPane):
                   "Saving without refreshing your library may "
                   "overwrite other changes to the song.\n\n"
                   "Save this song anyway?") % (
-                util.escape(util.fsdecode(song("~basename"))))
+                util.escape(fsdecode(song("~basename"))))
                 ).run():
                 break
 
@@ -264,7 +266,7 @@ class TagsFromPath(EditPane):
                         _("Saving <b>%s</b> failed. The file "
                           "may be read-only, corrupted, or you "
                           "do not have permission to edit it.") % (
-                        util.escape(util.fsdecode(song('~basename'))))
+                        util.escape(fsdecode(song('~basename'))))
                         ).run()
                     library.reload(song, changed=was_changed)
                     break

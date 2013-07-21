@@ -26,6 +26,7 @@ from quodlibet.qltk.views import AllTreeView, BaseView
 from quodlibet.qltk.x import ScrolledWindow, Alignment, SymbolicIconImage
 from quodlibet.util.collection import Album
 from quodlibet.util.library import background_filter
+from quodlibet.util.path import mkdir
 from quodlibet.util.thumbnails import scale
 
 
@@ -41,7 +42,7 @@ COUNT_PATTERN = " <span size='small' color='#777'>(%s)</span>"
 
 PAT = XMLFromPattern(ALBUM_PATTERN)
 ALBUM_QUERIES = os.path.join(const.USERDIR, "lists", "album_queries")
-util.mkdir(os.path.dirname(ALBUM_QUERIES))
+mkdir(os.path.dirname(ALBUM_QUERIES))
 
 
 def get_headers():

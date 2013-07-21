@@ -13,6 +13,7 @@ from os.path import join, splitext, dirname, basename
 from traceback import format_exception
 
 from quodlibet import util
+from quodlibet.util.path import mtime
 
 
 def load_dir_modules(path, package, load_compiled=False):
@@ -177,7 +178,7 @@ class ModuleScanner(object):
                 return True
             for dep in old_list:
                 old_mtime = self.__deps[dep]
-                if util.mtime(dep) != old_mtime:
+                if mtime(dep) != old_mtime:
                     return True
             return False
 
@@ -226,7 +227,7 @@ class ModuleScanner(object):
                 self.__modules[name] = mod
                 self.__info[name] = info[name]
                 for dep in deps:
-                    self.__deps[dep] = util.mtime(dep)
+                    self.__deps[dep] = mtime(dep)
 
         print_d("Rescanning done: %d added, %d removed, %d error(s)" %
                 (len(added), len(removed), len(self.__failures)))

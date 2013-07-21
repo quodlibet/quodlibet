@@ -34,6 +34,7 @@ from quodlibet.util.collection import Album
 from quodlibet import util
 from quodlibet import const
 from quodlibet.util.dprint import print_d, print_w
+from quodlibet.util.path import fsdecode, expanduser, unexpand
 
 
 class Library(GObject.GObject, DictMixin):
@@ -662,14 +663,14 @@ class FileLibrary(PicklingLibrary):
 
     def scan(self, paths, exclude=[], cofuncid=None):
         added = []
-        exclude = [util.expanduser(path) for path in exclude if path]
+        exclude = [expanduser(path) for path in exclude if path]
         for fullpath in paths:
             print_d("Scanning %r." % fullpath, self)
-            desc = _("Scanning %s") % (util.unexpand(util.fsdecode(fullpath)))
+            desc = _("Scanning %s") % (unexpand(fsdecode(fullpath)))
             with Task(_("Library"), desc) as task:
                 if cofuncid:
                     task.copool(cofuncid)
-                fullpath = util.expanduser(fullpath)
+                fullpath = expanduser(fullpath)
                 if filter(fullpath.startswith, exclude):
                     continue
                 for path, dnames, fnames in os.walk(util.fsnative(fullpath)):

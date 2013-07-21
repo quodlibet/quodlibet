@@ -14,6 +14,8 @@ import re
 
 from quodlibet import util
 from quodlibet.parse._scanner import Scanner
+from quodlibet.util.path import fsdecode, expanduser
+from quodlibet.util.path import strip_win32_incompat_from_path
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -198,7 +200,7 @@ class PatternFormatter(object):
         def comma(self, key):
             value = self.__song.comma(key)
             if isinstance(value, str):
-                value = util.fsdecode(value)
+                value = fsdecode(value)
             elif not isinstance(value, unicode):
                 if isinstance(value, float):
                     value = "%.2f" % value
@@ -355,9 +357,9 @@ class _FileFromPattern(PatternFormatter):
             if not ext == val_ext:
                 value += ext.lower()
             if os.name == "nt":
-                value = util.strip_win32_incompat_from_path(value)
+                value = strip_win32_incompat_from_path(value)
 
-            value = util.expanduser(value)
+            value = expanduser(value)
 
             # Limit each path section to 255 (bytes on linux, chars on win).
             # http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
@@ -367,7 +369,7 @@ class _FileFromPattern(PatternFormatter):
             limit[-1] -= len(util.fsnative(ext))
             elip = lambda (p, l): (len(p) > l and p[:l - 2] + "..") or p
             path = os.sep.join(map(elip, zip(path, limit)))
-            value = util.fsdecode(path) + ext
+            value = fsdecode(path) + ext
 
             if os.sep in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")

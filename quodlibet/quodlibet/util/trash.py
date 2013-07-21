@@ -15,7 +15,7 @@ import time
 from os.path import join, islink, abspath, dirname
 from os.path import isdir, basename, exists, splitext
 
-from quodlibet.util import xdg_get_data_home, find_mount_point
+from quodlibet.util.path import find_mount_point, xdg_get_data_home
 
 
 class TrashError(EnvironmentError):

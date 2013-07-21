@@ -425,7 +425,7 @@ def process_arguments():
             try:
                 filename = URI(arg).filename
             except ValueError:
-                filename = os.path.abspath(util.expanduser(arg))
+                filename = os.path.abspath(util.path.expanduser(arg))
             if os.path.isdir(filename):
                 control("add-directory " + filename)
             else:
