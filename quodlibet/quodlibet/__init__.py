@@ -411,23 +411,22 @@ def _init_signal():
 
 # minimal emulation of gtk.quit_add
 
-_quit_add_list = []
+_quit_funcs = []
 
 
 def quit_add(level, func, *args):
     assert level in (0, 1)
-
-    _quit_add_list.append([level, func, args])
+    _quit_funcs.append([level, func, args])
 
 
 def _quit_before():
-    for level, func, args in _quit_add_list:
+    for level, func, args in _quit_funcs:
         if level != 0:
             func(*args)
 
 
-def _quite_after():
-    for level, func, args in _quit_add_list:
+def _quit_after():
+    for level, func, args in _quit_funcs:
         if level == 0:
             func(*args)
 
@@ -477,4 +476,4 @@ def main(window):
 
     Gtk.main()
 
-    _quite_after()
+    _quit_after()
