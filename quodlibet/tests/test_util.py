@@ -6,7 +6,7 @@ from tests import TestCase, add
 import sys
 import os
 import re
-
+from quodlibet import util
 from quodlibet.util import format_time_long as f_t_l
 
 class Tmkdir(TestCase):
