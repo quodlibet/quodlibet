@@ -8,8 +8,11 @@ syntax: glob
 *.cache
 *.cover
 *.pot
+*.mo
 *.tar.gz
 MANIFEST
+
+po/missing
 
 # Sphinx build files
 _build/*
