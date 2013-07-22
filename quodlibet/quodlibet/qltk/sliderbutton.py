@@ -30,6 +30,25 @@ class _PopupSlider(gtk.EventBox):
         frame.set_shadow_type(gtk.SHADOW_OUT)
 
         hscale = self.Scale(self.__adj)
+
+        def scale_button_event(widget, event):
+            settings = gtk.settings_get_default()
+            if not settings:
+                return False
+
+            try:
+                w = settings.get_property("gtk-primary-button-warps-slider")
+            except TypeError:
+                return False
+
+            if not w:
+                event.button = event.button % 3 + 1
+
+            return False
+
+        hscale.connect("button-press-event", scale_button_event)
+        hscale.connect("button-release-event", scale_button_event)
+
         hscale.set_size_request(*(req or self._req))
         window.connect('button-press-event', self.__button)
         window.connect('key-press-event', self.__key)
