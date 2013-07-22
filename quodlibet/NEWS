@@ -1,3 +1,18 @@
+2.6.2 (2013-07-22) - 256 Pictures of Cool Bugs
+----------------------------------------------
+
+2.6.1 skipped to keep in sync with the 3.0 branch.
+
+General
+ * Device backend: Correctly detect udisks1 if it isn't running [1200]
+ * Fix play button not starting playback if no song is active [863]
+ * Don't forget newly created bookmarks in some cases
+ * Various fixes
+
+Plugins
+ * Fix HTML export plugin
+ * Fix Bookmarks plugin
+
 3.0.0 (2013-06-15) - THE NEMESIS HYPOTHESIS
 -------------------------------------------
 

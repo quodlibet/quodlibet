@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: QuodLibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-15 10:45+0200\n"
+"POT-Creation-Date: 2013-07-22 13:02+0200\n"
 "PO-Revision-Date: 2013-05-02 21:26+0100\n"
 "Last-Translator: ashtophet <galiza.ceive@gmail.com>\n"
 "Language-Team: Basque <librezale@librezale.es>\n"
@@ -900,35 +900,35 @@ msgstr "Gailu ezezaguna"
 msgid "Could not import %s, which is needed for device support."
 msgstr "Ezin da %s inportatu, beharrezkoa da gailu euskarriarentzat."
 
-#: ../quodlibet/devices/__init__.py:143
+#: ../quodlibet/devices/__init__.py:139
 #, python-format
 msgid "%r is not a supported device."
 msgstr "%r ez da onartzen den gailu bat."
 
-#: ../quodlibet/devices/__init__.py:209
+#: ../quodlibet/devices/__init__.py:205
 #, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr "%s: Ezin da libudev aurkitu."
 
-#: ../quodlibet/devices/__init__.py:215
+#: ../quodlibet/devices/__init__.py:211
 #, python-format
 msgid "%s: Could not find %s."
 msgstr "%s: Ezin da %s aurkitu."
 
-#: ../quodlibet/devices/__init__.py:404
+#: ../quodlibet/devices/__init__.py:400
 msgid "Initializing device backend."
 msgstr "Gailu azpiegitura abiarazten."
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 #, python-format
 msgid "Trying '%s'"
 msgstr "'%s' saiatzen"
 
-#: ../quodlibet/devices/__init__.py:424
+#: ../quodlibet/devices/__init__.py:420
 msgid "Couldn't connect to a device backend."
 msgstr "Ezin da gailu azpiegiturarekin konektatu."
 
-#: ../quodlibet/devices/__init__.py:426
+#: ../quodlibet/devices/__init__.py:422
 msgid "Device backend initialized."
 msgstr "Gailu azpiegitura abiarazia."
 
@@ -1368,15 +1368,15 @@ msgstr "E/G"
 msgid "Time"
 msgstr "Denbora"
 
-#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:115
+#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:116
 msgid "Bookmark Name"
 msgstr "Laster-marka izena"
 
-#: ../quodlibet/qltk/bookmarks.py:113
+#: ../quodlibet/qltk/bookmarks.py:114
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:197 ../quodlibet/qltk/information.py:101
+#: ../quodlibet/qltk/bookmarks.py:198 ../quodlibet/qltk/information.py:101
 msgid "Bookmarks"
 msgstr "Laster-markak"
 
@@ -2693,39 +2693,39 @@ msgstr "_Tamaina"
 msgid "_Filter on %s"
 msgstr "_Iragazi %s-ez"
 
-#: ../quodlibet/qltk/songlist.py:916
+#: ../quodlibet/qltk/songlist.py:920
 msgid "All _Headers"
 msgstr "_Goiburu guztiak"
 
-#: ../quodlibet/qltk/songlist.py:917
+#: ../quodlibet/qltk/songlist.py:921
 msgid "_Track Headers"
 msgstr "Pis_ta goiburuak"
 
-#: ../quodlibet/qltk/songlist.py:918
+#: ../quodlibet/qltk/songlist.py:922
 msgid "_Album Headers"
 msgstr "_Album goiburuak"
 
-#: ../quodlibet/qltk/songlist.py:919
+#: ../quodlibet/qltk/songlist.py:923
 msgid "_People Headers"
 msgstr "_Pertsona goiburuak"
 
-#: ../quodlibet/qltk/songlist.py:920
+#: ../quodlibet/qltk/songlist.py:924
 msgid "_Date Headers"
 msgstr "_Data goiburuak"
 
-#: ../quodlibet/qltk/songlist.py:921
+#: ../quodlibet/qltk/songlist.py:925
 msgid "_File Headers"
 msgstr "_fixategi goiburuak"
 
-#: ../quodlibet/qltk/songlist.py:922
+#: ../quodlibet/qltk/songlist.py:926
 msgid "_Production Headers"
 msgstr "P_rodukzio goiburuak"
 
-#: ../quodlibet/qltk/songlist.py:936
+#: ../quodlibet/qltk/songlist.py:940
 msgid "Custom _Sort..."
 msgstr "Ordena pertsonalizatua..."
 
-#: ../quodlibet/qltk/songlist.py:941
+#: ../quodlibet/qltk/songlist.py:945
 msgid "_Customize Headers..."
 msgstr "_Pertsonalizatu goiburuak..."
 

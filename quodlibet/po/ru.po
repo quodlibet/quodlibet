@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-15 10:45+0200\n"
+"POT-Creation-Date: 2013-07-22 13:02+0200\n"
 "PO-Revision-Date: 2012-12-01 14:35+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
@@ -927,35 +927,35 @@ msgid "Could not import %s, which is needed for device support."
 msgstr ""
 "Не удалось импортировать %s, который необходим для поддержки устройств."
 
-#: ../quodlibet/devices/__init__.py:143
+#: ../quodlibet/devices/__init__.py:139
 #, python-format
 msgid "%r is not a supported device."
 msgstr "Устройство «%r» не поддерживается."
 
-#: ../quodlibet/devices/__init__.py:209
+#: ../quodlibet/devices/__init__.py:205
 #, fuzzy, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr "%s: не удалось найти %s."
 
-#: ../quodlibet/devices/__init__.py:215
+#: ../quodlibet/devices/__init__.py:211
 #, python-format
 msgid "%s: Could not find %s."
 msgstr "%s: не удалось найти %s."
 
-#: ../quodlibet/devices/__init__.py:404
+#: ../quodlibet/devices/__init__.py:400
 msgid "Initializing device backend."
 msgstr "Инициализация системы поддержки устройств."
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 #, python-format
 msgid "Trying '%s'"
 msgstr "Проверка «%s»"
 
-#: ../quodlibet/devices/__init__.py:424
+#: ../quodlibet/devices/__init__.py:420
 msgid "Couldn't connect to a device backend."
 msgstr "Не удалось подключиться к системе поддержки устройств."
 
-#: ../quodlibet/devices/__init__.py:426
+#: ../quodlibet/devices/__init__.py:422
 msgid "Device backend initialized."
 msgstr "Система поддержки устройств запущена."
 
@@ -1396,15 +1396,15 @@ msgstr "Н/Д"
 msgid "Time"
 msgstr "Время"
 
-#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:115
+#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:116
 msgid "Bookmark Name"
 msgstr "Имя закладки"
 
-#: ../quodlibet/qltk/bookmarks.py:113
+#: ../quodlibet/qltk/bookmarks.py:114
 msgid "MM:SS"
 msgstr "ММ:СС"
 
-#: ../quodlibet/qltk/bookmarks.py:197 ../quodlibet/qltk/information.py:101
+#: ../quodlibet/qltk/bookmarks.py:198 ../quodlibet/qltk/information.py:101
 msgid "Bookmarks"
 msgstr "Закладки"
 
@@ -2731,39 +2731,39 @@ msgstr "По _оценкам"
 msgid "_Filter on %s"
 msgstr "_Фильтровать по %s"
 
-#: ../quodlibet/qltk/songlist.py:916
+#: ../quodlibet/qltk/songlist.py:920
 msgid "All _Headers"
 msgstr "_Все заголовки"
 
-#: ../quodlibet/qltk/songlist.py:917
+#: ../quodlibet/qltk/songlist.py:921
 msgid "_Track Headers"
 msgstr "Д_орожка"
 
-#: ../quodlibet/qltk/songlist.py:918
+#: ../quodlibet/qltk/songlist.py:922
 msgid "_Album Headers"
 msgstr "_Альбом"
 
-#: ../quodlibet/qltk/songlist.py:919
+#: ../quodlibet/qltk/songlist.py:923
 msgid "_People Headers"
 msgstr "_Люди"
 
-#: ../quodlibet/qltk/songlist.py:920
+#: ../quodlibet/qltk/songlist.py:924
 msgid "_Date Headers"
 msgstr "_Дата"
 
-#: ../quodlibet/qltk/songlist.py:921
+#: ../quodlibet/qltk/songlist.py:925
 msgid "_File Headers"
 msgstr "_Файл"
 
-#: ../quodlibet/qltk/songlist.py:922
+#: ../quodlibet/qltk/songlist.py:926
 msgid "_Production Headers"
 msgstr "_Производство"
 
-#: ../quodlibet/qltk/songlist.py:936
+#: ../quodlibet/qltk/songlist.py:940
 msgid "Custom _Sort..."
 msgstr "_Расширенная сортировка..."
 
-#: ../quodlibet/qltk/songlist.py:941
+#: ../quodlibet/qltk/songlist.py:945
 msgid "_Customize Headers..."
 msgstr "_Настроить заголовки..."
 

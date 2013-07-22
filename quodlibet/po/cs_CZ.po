@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-15 10:45+0200\n"
+"POT-Creation-Date: 2013-07-22 13:02+0200\n"
 "PO-Revision-Date: 2013-04-18 22:07+0100\n"
 "Last-Translator: Honza Hejzl <honza.hejzl@gmail.com>\n"
 "Language-Team: Czech (Czech Republic)\n"
@@ -920,35 +920,35 @@ msgstr "Neznámé zařízení"
 msgid "Could not import %s, which is needed for device support."
 msgstr "Nemohu importovat %s, což je třeba pro podporu zařízení."
 
-#: ../quodlibet/devices/__init__.py:143
+#: ../quodlibet/devices/__init__.py:139
 #, python-format
 msgid "%r is not a supported device."
 msgstr "%r není podporované zařízení."
 
-#: ../quodlibet/devices/__init__.py:209
+#: ../quodlibet/devices/__init__.py:205
 #, fuzzy, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr "%s: %s nelze nalézt."
 
-#: ../quodlibet/devices/__init__.py:215
+#: ../quodlibet/devices/__init__.py:211
 #, python-format
 msgid "%s: Could not find %s."
 msgstr "%s: %s nelze nalézt."
 
-#: ../quodlibet/devices/__init__.py:404
+#: ../quodlibet/devices/__init__.py:400
 msgid "Initializing device backend."
 msgstr "Načítání zařízení."
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 #, python-format
 msgid "Trying '%s'"
 msgstr "Zkoušení '%s'"
 
-#: ../quodlibet/devices/__init__.py:424
+#: ../quodlibet/devices/__init__.py:420
 msgid "Couldn't connect to a device backend."
 msgstr "Nelze se připojit k obslužné aplikaci zařízení."
 
-#: ../quodlibet/devices/__init__.py:426
+#: ../quodlibet/devices/__init__.py:422
 msgid "Device backend initialized."
 msgstr "Zařízení načteno."
 
@@ -1387,15 +1387,15 @@ msgstr "N/A"
 msgid "Time"
 msgstr "Čas"
 
-#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:115
+#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:116
 msgid "Bookmark Name"
 msgstr "Název záložky"
 
-#: ../quodlibet/qltk/bookmarks.py:113
+#: ../quodlibet/qltk/bookmarks.py:114
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:197 ../quodlibet/qltk/information.py:101
+#: ../quodlibet/qltk/bookmarks.py:198 ../quodlibet/qltk/information.py:101
 msgid "Bookmarks"
 msgstr "Záložky"
 
@@ -2713,39 +2713,39 @@ msgstr "_Váha"
 msgid "_Filter on %s"
 msgstr "_Filtr na %s"
 
-#: ../quodlibet/qltk/songlist.py:916
+#: ../quodlibet/qltk/songlist.py:920
 msgid "All _Headers"
 msgstr "Všechny _Hlavičky"
 
-#: ../quodlibet/qltk/songlist.py:917
+#: ../quodlibet/qltk/songlist.py:921
 msgid "_Track Headers"
 msgstr "Hlavičky _Skladeb"
 
-#: ../quodlibet/qltk/songlist.py:918
+#: ../quodlibet/qltk/songlist.py:922
 msgid "_Album Headers"
 msgstr "Hlavičky _Alb"
 
-#: ../quodlibet/qltk/songlist.py:919
+#: ../quodlibet/qltk/songlist.py:923
 msgid "_People Headers"
 msgstr "Hlavičky _Lidí"
 
-#: ../quodlibet/qltk/songlist.py:920
+#: ../quodlibet/qltk/songlist.py:924
 msgid "_Date Headers"
 msgstr "Hlavičky _Dat"
 
-#: ../quodlibet/qltk/songlist.py:921
+#: ../quodlibet/qltk/songlist.py:925
 msgid "_File Headers"
 msgstr "Hlavičky _Souborů"
 
-#: ../quodlibet/qltk/songlist.py:922
+#: ../quodlibet/qltk/songlist.py:926
 msgid "_Production Headers"
 msgstr "Hlavičky _Produkce"
 
-#: ../quodlibet/qltk/songlist.py:936
+#: ../quodlibet/qltk/songlist.py:940
 msgid "Custom _Sort..."
 msgstr "Vlastní _Třídění..."
 
-#: ../quodlibet/qltk/songlist.py:941
+#: ../quodlibet/qltk/songlist.py:945
 msgid "_Customize Headers..."
 msgstr "_Upravit hlavičky..."
 

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-15 10:45+0200\n"
+"POT-Creation-Date: 2013-07-22 13:02+0200\n"
 "PO-Revision-Date: 2013-07-22 12:38+0100\n"
 "Last-Translator: Mugurel Tudor <mugurelu@gnome.ro>\n"
 "Language-Team: Română <gnomero@lists.sourceforge.net>\n"
@@ -932,36 +932,36 @@ msgstr "Dispozitiv necunoscut"
 msgid "Could not import %s, which is needed for device support."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:143
+#: ../quodlibet/devices/__init__.py:139
 #, fuzzy, python-format
 msgid "%r is not a supported device."
 msgstr "E: „%s” nu este un prefix unic."
 
-#: ../quodlibet/devices/__init__.py:209
+#: ../quodlibet/devices/__init__.py:205
 #, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:215
+#: ../quodlibet/devices/__init__.py:211
 #, python-format
 msgid "%s: Could not find %s."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:404
+#: ../quodlibet/devices/__init__.py:400
 #, fuzzy
 msgid "Initializing device backend."
 msgstr "Valoare invalidă"
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 #, python-format
 msgid "Trying '%s'"
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:424
+#: ../quodlibet/devices/__init__.py:420
 msgid "Couldn't connect to a device backend."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:426
+#: ../quodlibet/devices/__init__.py:422
 msgid "Device backend initialized."
 msgstr ""
 
@@ -1403,15 +1403,15 @@ msgstr "N/A"
 msgid "Time"
 msgstr "Timp"
 
-#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:115
+#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:116
 msgid "Bookmark Name"
 msgstr "Nume favorit"
 
-#: ../quodlibet/qltk/bookmarks.py:113
+#: ../quodlibet/qltk/bookmarks.py:114
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:197 ../quodlibet/qltk/information.py:101
+#: ../quodlibet/qltk/bookmarks.py:198 ../quodlibet/qltk/information.py:101
 msgid "Bookmarks"
 msgstr "Favorite"
 
@@ -2748,41 +2748,41 @@ msgstr "_Pondere"
 msgid "_Filter on %s"
 msgstr "_Filtrare după %s"
 
-#: ../quodlibet/qltk/songlist.py:916
+#: ../quodlibet/qltk/songlist.py:920
 #, fuzzy
 msgid "All _Headers"
 msgstr "Coloane _album"
 
-#: ../quodlibet/qltk/songlist.py:917
+#: ../quodlibet/qltk/songlist.py:921
 msgid "_Track Headers"
 msgstr "Coloane _pistă"
 
-#: ../quodlibet/qltk/songlist.py:918
+#: ../quodlibet/qltk/songlist.py:922
 msgid "_Album Headers"
 msgstr "Coloane _album"
 
-#: ../quodlibet/qltk/songlist.py:919
+#: ../quodlibet/qltk/songlist.py:923
 msgid "_People Headers"
 msgstr "Coloane _persoane"
 
-#: ../quodlibet/qltk/songlist.py:920
+#: ../quodlibet/qltk/songlist.py:924
 msgid "_Date Headers"
 msgstr "Coloane _dată"
 
-#: ../quodlibet/qltk/songlist.py:921
+#: ../quodlibet/qltk/songlist.py:925
 msgid "_File Headers"
 msgstr "Coloane _fişier"
 
-#: ../quodlibet/qltk/songlist.py:922
+#: ../quodlibet/qltk/songlist.py:926
 msgid "_Production Headers"
 msgstr "Coloane _producţie"
 
-#: ../quodlibet/qltk/songlist.py:936
+#: ../quodlibet/qltk/songlist.py:940
 #, fuzzy
 msgid "Custom _Sort..."
 msgstr "_Personalizează coloanele..."
 
-#: ../quodlibet/qltk/songlist.py:941
+#: ../quodlibet/qltk/songlist.py:945
 msgid "_Customize Headers..."
 msgstr "_Personalizează coloanele..."
 

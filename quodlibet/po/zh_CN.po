@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-15 10:45+0200\n"
+"POT-Creation-Date: 2013-07-22 13:02+0200\n"
 "PO-Revision-Date: 2013-07-22 12:39+0100\n"
 "Last-Translator: Emfox Zhou <EmfoxZhou@gmail.com>\n"
 "Language-Team: Emfox Zhou <EmfoxZhou@gmail.com>\n"
@@ -921,36 +921,36 @@ msgstr "未知"
 msgid "Could not import %s, which is needed for device support."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:143
+#: ../quodlibet/devices/__init__.py:139
 #, python-format
 msgid "%r is not a supported device."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:209
+#: ../quodlibet/devices/__init__.py:205
 #, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:215
+#: ../quodlibet/devices/__init__.py:211
 #, python-format
 msgid "%s: Could not find %s."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:404
+#: ../quodlibet/devices/__init__.py:400
 #, fuzzy
 msgid "Initializing device backend."
 msgstr "非法的值"
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 #, python-format
 msgid "Trying '%s'"
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:424
+#: ../quodlibet/devices/__init__.py:420
 msgid "Couldn't connect to a device backend."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:426
+#: ../quodlibet/devices/__init__.py:422
 msgid "Device backend initialized."
 msgstr ""
 
@@ -1396,15 +1396,15 @@ msgstr "无"
 msgid "Time"
 msgstr "时间"
 
-#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:115
+#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:116
 msgid "Bookmark Name"
 msgstr "书签名"
 
-#: ../quodlibet/qltk/bookmarks.py:113
+#: ../quodlibet/qltk/bookmarks.py:114
 msgid "MM:SS"
 msgstr ""
 
-#: ../quodlibet/qltk/bookmarks.py:197 ../quodlibet/qltk/information.py:101
+#: ../quodlibet/qltk/bookmarks.py:198 ../quodlibet/qltk/information.py:101
 msgid "Bookmarks"
 msgstr "书签"
 
@@ -2697,43 +2697,43 @@ msgstr "权重(_W)"
 msgid "_Filter on %s"
 msgstr "以 %s 过滤(_F)"
 
-#: ../quodlibet/qltk/songlist.py:916
+#: ../quodlibet/qltk/songlist.py:920
 #, fuzzy
 msgid "All _Headers"
 msgstr "专辑列表(_A)"
 
-#: ../quodlibet/qltk/songlist.py:917
+#: ../quodlibet/qltk/songlist.py:921
 #, fuzzy
 msgid "_Track Headers"
 msgstr "音轨号"
 
-#: ../quodlibet/qltk/songlist.py:918
+#: ../quodlibet/qltk/songlist.py:922
 #, fuzzy
 msgid "_Album Headers"
 msgstr "专辑列表(_A)"
 
-#: ../quodlibet/qltk/songlist.py:919
+#: ../quodlibet/qltk/songlist.py:923
 msgid "_People Headers"
 msgstr ""
 
-#: ../quodlibet/qltk/songlist.py:920
+#: ../quodlibet/qltk/songlist.py:924
 msgid "_Date Headers"
 msgstr ""
 
-#: ../quodlibet/qltk/songlist.py:921
+#: ../quodlibet/qltk/songlist.py:925
 #, fuzzy
 msgid "_File Headers"
 msgstr "过滤器(_F)"
 
-#: ../quodlibet/qltk/songlist.py:922
+#: ../quodlibet/qltk/songlist.py:926
 msgid "_Production Headers"
 msgstr ""
 
-#: ../quodlibet/qltk/songlist.py:936
+#: ../quodlibet/qltk/songlist.py:940
 msgid "Custom _Sort..."
 msgstr ""
 
-#: ../quodlibet/qltk/songlist.py:941
+#: ../quodlibet/qltk/songlist.py:945
 msgid "_Customize Headers..."
 msgstr ""
 

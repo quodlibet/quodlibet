@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.4.-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-15 10:45+0200\n"
+"POT-Creation-Date: 2013-07-22 13:02+0200\n"
 "PO-Revision-Date: 2013-07-22 12:35+0100\n"
 "Last-Translator: \n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -924,35 +924,35 @@ msgstr ""
 "»dbus-python« wird für die Geräteunterstützung benötigt, konnte jedoch nicht "
 "importiert werden."
 
-#: ../quodlibet/devices/__init__.py:143
+#: ../quodlibet/devices/__init__.py:139
 #, python-format
 msgid "%r is not a supported device."
 msgstr "%r ist kein unterstütztes Gerät."
 
-#: ../quodlibet/devices/__init__.py:209
+#: ../quodlibet/devices/__init__.py:205
 #, fuzzy, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr "%s: libudev wurde nicht gefunden."
 
-#: ../quodlibet/devices/__init__.py:215
+#: ../quodlibet/devices/__init__.py:211
 #, fuzzy, python-format
 msgid "%s: Could not find %s."
 msgstr "%s: libudev wurde nicht gefunden."
 
-#: ../quodlibet/devices/__init__.py:404
+#: ../quodlibet/devices/__init__.py:400
 msgid "Initializing device backend."
 msgstr "Initialisiere Geräte-Backend."
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 #, python-format
 msgid "Trying '%s'"
 msgstr "Versuche »%s«"
 
-#: ../quodlibet/devices/__init__.py:424
+#: ../quodlibet/devices/__init__.py:420
 msgid "Couldn't connect to a device backend."
 msgstr "Konnte nicht mit einem Geräte-Backend verbinden."
 
-#: ../quodlibet/devices/__init__.py:426
+#: ../quodlibet/devices/__init__.py:422
 msgid "Device backend initialized."
 msgstr "Geräte-Backend initialisiert."
 
@@ -1401,15 +1401,15 @@ msgstr "k. A."
 msgid "Time"
 msgstr "Zeit"
 
-#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:115
+#: ../quodlibet/qltk/bookmarks.py:81 ../quodlibet/qltk/bookmarks.py:116
 msgid "Bookmark Name"
 msgstr "Lesezeichenname"
 
-#: ../quodlibet/qltk/bookmarks.py:113
+#: ../quodlibet/qltk/bookmarks.py:114
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:197 ../quodlibet/qltk/information.py:101
+#: ../quodlibet/qltk/bookmarks.py:198 ../quodlibet/qltk/information.py:101
 msgid "Bookmarks"
 msgstr "Lesezeichen"
 
@@ -2742,39 +2742,39 @@ msgstr "_Bewertung"
 msgid "_Filter on %s"
 msgstr "Nach %s _filtern"
 
-#: ../quodlibet/qltk/songlist.py:916
+#: ../quodlibet/qltk/songlist.py:920
 msgid "All _Headers"
 msgstr "_Alle Spalten"
 
-#: ../quodlibet/qltk/songlist.py:917
+#: ../quodlibet/qltk/songlist.py:921
 msgid "_Track Headers"
 msgstr "Spalten zu _Titeln"
 
-#: ../quodlibet/qltk/songlist.py:918
+#: ../quodlibet/qltk/songlist.py:922
 msgid "_Album Headers"
 msgstr "Spalten zu _Alben"
 
-#: ../quodlibet/qltk/songlist.py:919
+#: ../quodlibet/qltk/songlist.py:923
 msgid "_People Headers"
 msgstr "Spalten zu _Mitwirkenden"
 
-#: ../quodlibet/qltk/songlist.py:920
+#: ../quodlibet/qltk/songlist.py:924
 msgid "_Date Headers"
 msgstr "Spalten zum _Datum"
 
-#: ../quodlibet/qltk/songlist.py:921
+#: ../quodlibet/qltk/songlist.py:925
 msgid "_File Headers"
 msgstr "Spalten zu _Dateien"
 
-#: ../quodlibet/qltk/songlist.py:922
+#: ../quodlibet/qltk/songlist.py:926
 msgid "_Production Headers"
 msgstr "Spalten zur _Produktion"
 
-#: ../quodlibet/qltk/songlist.py:936
+#: ../quodlibet/qltk/songlist.py:940
 msgid "Custom _Sort..."
 msgstr "Benutzerdefinierte _Sortierung..."
 
-#: ../quodlibet/qltk/songlist.py:941
+#: ../quodlibet/qltk/songlist.py:945
 msgid "_Customize Headers..."
 msgstr "_Spalten anpassen ..."
 
