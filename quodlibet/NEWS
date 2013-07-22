@@ -1,3 +1,35 @@
+3.0.2 (2013-07-22) - LATER, THE OCEANS BOIL AS THE EARTH TURNS TO FIRE
+----------------------------------------------------------------------
+
+General
+ * Device backend: Correctly detect udisks1 if it isn't running [1200]
+ * mmkeys: Really make libkeybinder work again [1203] (Hans Scholze)
+ * Fix play button not starting playback if no song is active [863]
+ * Don't forget newly created bookmarks in some cases
+ * Fix "Refresh" in the file tree browser [1201]
+ * Fix menu separator drawing with PyGObject 3.2 (Ubuntu 12.04)
+ * Various fixes
+
+Plugins
+ * Forward library events to event plugins again
+ * Fix bookmarks plugin, playlist export plugin, HTML export plugin
+ * animosd: Handle multiple monitors (Nick Boultbee)
+
+2.6.2 (2013-07-22) - 256 Pictures of Cool Bugs
+----------------------------------------------
+
+2.6.1 skipped to keep in sync with the 3.0 branch.
+
+General
+ * Device backend: Correctly detect udisks1 if it isn't running [1200]
+ * Fix play button not starting playback if no song is active [863]
+ * Don't forget newly created bookmarks in some cases
+ * Various fixes
+
+Plugins
+ * Fix HTML export plugin
+ * Fix Bookmarks plugin
+
 3.0.1 (2013-07-08) - *gasp*
 ---------------------------
 
