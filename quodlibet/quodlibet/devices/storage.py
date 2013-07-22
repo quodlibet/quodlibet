@@ -19,7 +19,8 @@ from quodlibet.devices._base import Device
 from quodlibet.library import SongFileLibrary
 from quodlibet.parse import FileFromPattern
 from quodlibet.qltk import ConfirmAction
-from quodlibet.util.path import fsencode, mtime, escape_filename, strip_win32_incompat
+from quodlibet.util.path import (fsencode, mtime, escape_filename,
+    strip_win32_incompat)
 
 CACHE = os.path.join(const.USERDIR, 'cache')
 

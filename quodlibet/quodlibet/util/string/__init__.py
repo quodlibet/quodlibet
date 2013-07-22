@@ -1,3 +1,11 @@
+# Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
+#           2011,2013 Nick Boultbee
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+
 def decode(s, charset="utf-8"):
     """Decode a string; if an error occurs, replace characters and append
     a note to the string."""

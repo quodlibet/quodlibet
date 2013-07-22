@@ -16,7 +16,8 @@ import unicodedata
 import subprocess
 import webbrowser
 
-from quodlibet.util.path import fsdecode, fsencode, iscommand, fsnative, expanduser, pathname2url, strip_win32_incompat
+from quodlibet.util.path import (fsdecode, fsencode, iscommand, fsnative,
+    expanduser, pathname2url, strip_win32_incompat)
 from quodlibet.util.string.splitters import split_value, split_numeric
 from quodlibet.util.titlecase import title
 
@@ -281,7 +282,6 @@ def split_scan_dirs(s):
         return filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", s))
     else:
         return filter(None, s.split(":"))
-
 
 
 def capitalize(str):

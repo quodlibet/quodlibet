@@ -26,7 +26,8 @@ from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.plugins import PluginManager
 from quodlibet.util.path import fsdecode
 from quodlibet.util.string import decode
-from quodlibet.util.string.splitters import split_value, split_title, split_people, split_album
+from quodlibet.util.string.splitters import (split_value, split_title,
+    split_people, split_album)
 
 
 class AudioFileGroup(dict):
