@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import glob
+import fnmatch
 from math import log
 import os
 import sys
@@ -91,10 +91,10 @@ class Runner(object):
         result.printErrors()
         return len(result.failures), len(result.errors)
 
-def unit(run=[], filter_func=None, subdir=None, strict=False):
+def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False):
     path = os.path.dirname(__file__)
-    if subdir is not None:
-        path = os.path.join(path, subdir)
+    if subdirs is None:
+        subdirs = []
 
     import quodlibet
     quodlibet._dbus_init()
@@ -109,9 +109,16 @@ def unit(run=[], filter_func=None, subdir=None, strict=False):
             GLib.LogLevelFlags.LEVEL_ERROR |
             GLib.LogLevelFlags.LEVEL_WARNING)
 
-    for name in glob.glob(os.path.join(path, "test_*.py")):
-        parts = filter(None, [__name__, subdir, os.path.basename(name)[:-3]])
-        __import__(".".join(parts), {}, {}, [])
+    if main:
+        for name in os.listdir(path):
+            if fnmatch.fnmatch(name, "test_*.py"):
+                __import__(".".join([__name__, name[:-3]]), {}, {}, [])
+
+    for subdir in subdirs:
+        sub_path = os.path.join(path, subdir)
+        for name in os.listdir(sub_path):
+            if fnmatch.fnmatch(name, "test_*.py"):
+                __import__(".".join([__name__, subdir, name[:-3]]), {}, {}, [])
 
     # create a user dir in /tmp
     user_dir = tempfile.mkdtemp(prefix="QL-TEST-")

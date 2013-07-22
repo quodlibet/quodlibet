@@ -59,18 +59,22 @@ class test_cmd(Command):
         ("to-run=", None, "list of tests to run (default all)"),
         ("suite=", None, "test suite (folder) to run (default 'tests')"),
         ("strict", None, "make glib warnings / errors fatal"),
-        ]
+        ("all", None, "run all suites"),
+    ]
     use_colors = sys.stderr.isatty() and os.name != "nt"
 
     def initialize_options(self):
         self.to_run = []
-        self.suite = "tests"
+        self.suite = None
         self.strict = False
+        self.all = False
 
     def finalize_options(self):
         if self.to_run:
             self.to_run = self.to_run.split(",")
         self.strict = bool(self.strict)
+        self.all = bool(self.all)
+        self.suite = self.suite and str(self.suite)
 
     @classmethod
     def _red(cls, text):
@@ -82,9 +86,22 @@ class test_cmd(Command):
         if "gi" in mods:
             raise SystemExit("E: setup.py shouldn't depend on gi")
 
-        tests = __import__("tests")
-        subdir = (self.suite != "tests" and self.suite) or None
-        failures, errors = tests.unit(self.to_run, subdir=subdir,
+        import tests
+
+        main = False
+        if not self.suite or self.all:
+            main = True
+
+        subdirs = []
+        if self.all:
+            test_path = tests.__path__[0]
+            for entry in os.listdir(test_path):
+                if os.path.isdir(os.path.join(test_path, entry)):
+                    subdirs.append(entry)
+        elif self.suite:
+            subdirs.append(self.suite)
+
+        failures, errors = tests.unit(self.to_run, main=main, subdirs=subdirs,
                                       strict=self.strict)
         if failures or errors:
             raise SystemExit(self._red("%d test failure(s) and "
