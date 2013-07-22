@@ -99,19 +99,3 @@ def split_album(s):
                 return (s, None)
         else:
             return (s, None)
-
-
-def split_numeric(s, limit=10,
-                  reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
-                  join=u" ".join):
-    """Separate numeric values from the string and convert to float, so
-    it can be used for human sorting. Also removes all extra whitespace."""
-    result = reg(s)
-    if not result or not limit:
-        return (join(s.split()),)
-    else:
-        start, end = result.span()
-        return (
-            join(s[:start].split()),
-            float(result.group()),
-            split_numeric(s[end:], limit - 1))

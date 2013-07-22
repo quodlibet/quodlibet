@@ -18,7 +18,7 @@ import webbrowser
 
 from quodlibet.util.path import (fsdecode, fsencode, iscommand, fsnative,
     expanduser, pathname2url, strip_win32_incompat)
-from quodlibet.util.string.splitters import split_value, split_numeric
+from quodlibet.util.string.splitters import split_value
 from quodlibet.util.titlecase import title
 
 from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL, COPYRIGHT
@@ -289,11 +289,27 @@ def capitalize(str):
     return str[:1].upper() + str[1:]
 
 
+def _split_numeric_sortkey(s, limit=10,
+                           reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
+                           join=u" ".join):
+    """Separate numeric values from the string and convert to float, so
+    it can be used for human sorting. Also removes all extra whitespace."""
+    result = reg(s)
+    if not result or not limit:
+        return (join(s.split()),)
+    else:
+        start, end = result.span()
+        return (
+            join(s[:start].split()),
+            float(result.group()),
+            _split_numeric_sortkey(s[end:], limit - 1))
+
+
 def human_sort_key(s, normalize=unicodedata.normalize):
     if not isinstance(s, unicode):
         s = s.decode("utf-8")
     s = normalize("NFD", s.lower())
-    return s and split_numeric(s)
+    return s and _split_numeric_sortkey(s)
 
 
 def website(site):
