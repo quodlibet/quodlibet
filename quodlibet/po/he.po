@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-08 10:39+0200\n"
+"POT-Creation-Date: 2013-07-22 13:10+0200\n"
 "PO-Revision-Date: 2013-07-20 22:34+0100\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
@@ -97,12 +97,12 @@ msgstr ""
 msgid "Description"
 msgstr "תיאור"
 
-#: ../operon.py:133 ../operon.py:464 ../quodlibet/qltk/edittags.py:421
+#: ../operon.py:133 ../operon.py:464 ../quodlibet/qltk/edittags.py:422
 msgid "Value"
 msgstr "ערך"
 
 #: ../operon.py:133 ../operon.py:166 ../quodlibet/browsers/collection.py:146
-#: ../quodlibet/qltk/edittags.py:405
+#: ../quodlibet/qltk/edittags.py:406
 msgid "Tag"
 msgstr "תגית"
 
@@ -419,11 +419,11 @@ msgstr ""
 msgid "Album Collection Preferences"
 msgstr "מאפייני רשימת אלבומים"
 
-#: ../quodlibet/browsers/collection.py:492
+#: ../quodlibet/browsers/collection.py:495
 msgid "Album Collection"
 msgstr ""
 
-#: ../quodlibet/browsers/collection.py:493
+#: ../quodlibet/browsers/collection.py:496
 msgid "Album _Collection"
 msgstr ""
 
@@ -436,11 +436,11 @@ msgid "_File System"
 msgstr "_מערכת קבצים"
 
 #: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:472
-#: ../quodlibet/qltk/songlist.py:457
+#: ../quodlibet/qltk/songlist.py:458
 msgid "Unable to copy songs"
 msgstr "לא ניתן להעתיק את השיר"
 
-#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:458
+#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:459
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "לא ניתן להעביר את השירים שנבחרו לרשימת ניגון או לסדר ההשמעה."
 
@@ -917,36 +917,36 @@ msgstr "התקן לא ידוע"
 msgid "Could not import %s, which is needed for device support."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:144
+#: ../quodlibet/devices/__init__.py:140
 #, python-format
 msgid "%r is not a supported device."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:210
+#: ../quodlibet/devices/__init__.py:206
 #, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:216
+#: ../quodlibet/devices/__init__.py:212
 #, python-format
 msgid "%s: Could not find %s."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 #, fuzzy
 msgid "Initializing device backend."
 msgstr "ערך שגוי"
 
-#: ../quodlibet/devices/__init__.py:406
+#: ../quodlibet/devices/__init__.py:402
 #, python-format
 msgid "Trying '%s'"
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:425
+#: ../quodlibet/devices/__init__.py:421
 msgid "Couldn't connect to a device backend."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:427
+#: ../quodlibet/devices/__init__.py:423
 msgid "Device backend initialized."
 msgstr ""
 
@@ -1379,15 +1379,15 @@ msgstr "לא זמין"
 msgid "Time"
 msgstr "זמן"
 
-#: ../quodlibet/qltk/bookmarks.py:84 ../quodlibet/qltk/bookmarks.py:118
+#: ../quodlibet/qltk/bookmarks.py:84 ../quodlibet/qltk/bookmarks.py:119
 msgid "Bookmark Name"
 msgstr "שם סימניה"
 
-#: ../quodlibet/qltk/bookmarks.py:116
+#: ../quodlibet/qltk/bookmarks.py:117
 msgid "MM:SS"
 msgstr ""
 
-#: ../quodlibet/qltk/bookmarks.py:200 ../quodlibet/qltk/information.py:100
+#: ../quodlibet/qltk/bookmarks.py:201 ../quodlibet/qltk/information.py:100
 msgid "Bookmarks"
 msgstr "סימניות"
 
@@ -1396,7 +1396,7 @@ msgstr "סימניות"
 msgid "No time information"
 msgstr "נתוני זמן חסרים"
 
-#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:267
+#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:268
 msgid "_Value:"
 msgstr "_ערך:"
 
@@ -1408,7 +1408,7 @@ msgstr "ערכים שמורים"
 msgid "Edit saved values..."
 msgstr "ערוך ערכים שמורים"
 
-#: ../quodlibet/qltk/chooser.py:44 ../quodlibet/qltk/filesel.py:334
+#: ../quodlibet/qltk/chooser.py:44 ../quodlibet/qltk/filesel.py:335
 msgid "Songs"
 msgstr "שירים"
 
@@ -1550,83 +1550,83 @@ msgstr "_תצוגה מקדימה"
 msgid "_More options..."
 msgstr "_אפשרויות נוספות..."
 
-#: ../quodlibet/qltk/edittags.py:41 ../quodlibet/qltk/edittags.py:52
+#: ../quodlibet/qltk/edittags.py:42 ../quodlibet/qltk/edittags.py:53
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
 msgstr[0] "חסר לשיר %d"
 msgstr[1] "חסר ל %d שירים"
 
-#: ../quodlibet/qltk/edittags.py:45 ../quodlibet/qltk/edittags.py:49
+#: ../quodlibet/qltk/edittags.py:46 ../quodlibet/qltk/edittags.py:50
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
 msgstr[0] "שונה בשיר %d"
 msgstr[1] "חסר ל %d שירים"
 
-#: ../quodlibet/qltk/edittags.py:145
+#: ../quodlibet/qltk/edittags.py:146
 msgid "Split into _Multiple Values"
 msgstr "פצל ל_ערכים נפרדים"
 
-#: ../quodlibet/qltk/edittags.py:165
+#: ../quodlibet/qltk/edittags.py:166
 msgid "Split Disc out of _Album"
 msgstr "פצל תקליטור מתוך _אלבום"
 
-#: ../quodlibet/qltk/edittags.py:182
+#: ../quodlibet/qltk/edittags.py:183
 msgid "Split _Version out of Title"
 msgstr "פצל _גרסה מתוך שם"
 
-#: ../quodlibet/qltk/edittags.py:217
+#: ../quodlibet/qltk/edittags.py:218
 msgid "Split Arranger out of Ar_tist"
 msgstr "פצל _מעבד מתוך אמן"
 
-#: ../quodlibet/qltk/edittags.py:222
+#: ../quodlibet/qltk/edittags.py:223
 msgid "Split _Performer out of Artist"
 msgstr "פצל מ_בצע מתוך אמן"
 
-#: ../quodlibet/qltk/edittags.py:228
+#: ../quodlibet/qltk/edittags.py:229
 #, fuzzy
 msgid "Split _Performer out of Title"
 msgstr "פצל מ_בצע מתוך אמן"
 
-#: ../quodlibet/qltk/edittags.py:234
+#: ../quodlibet/qltk/edittags.py:235
 #, fuzzy
 msgid "Split _Originalartist out of Title"
 msgstr "פצל _גרסה מתוך שם"
 
-#: ../quodlibet/qltk/edittags.py:241
+#: ../quodlibet/qltk/edittags.py:242
 msgid "Add a Tag"
 msgstr "הוסף תגית"
 
-#: ../quodlibet/qltk/edittags.py:258
+#: ../quodlibet/qltk/edittags.py:259
 msgid "_Tag:"
 msgstr "_תגית:"
 
 #. Translators: translate only to override the text
 #. for the tag "save" button
-#: ../quodlibet/qltk/edittags.py:364
+#: ../quodlibet/qltk/edittags.py:365
 msgid "ql-save"
 msgstr ""
 
 #. Translators: translate only to override the  for the tag "revert" button
-#: ../quodlibet/qltk/edittags.py:366
+#: ../quodlibet/qltk/edittags.py:367
 #, fuzzy
 msgid "ql-revert"
 msgstr "_הסר"
 
-#: ../quodlibet/qltk/edittags.py:375
+#: ../quodlibet/qltk/edittags.py:376
 msgid "Edit Tags"
 msgstr "ערוך תגיות"
 
-#: ../quodlibet/qltk/edittags.py:382
+#: ../quodlibet/qltk/edittags.py:383
 msgid "Write"
 msgstr "שמור"
 
-#: ../quodlibet/qltk/edittags.py:599
+#: ../quodlibet/qltk/edittags.py:600
 msgid "Unable to add tag"
 msgstr "לא ניתן להוסיף תגית"
 
-#: ../quodlibet/qltk/edittags.py:600
+#: ../quodlibet/qltk/edittags.py:601
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -1639,14 +1639,14 @@ msgstr ""
 
 #. Can't remove the old tag.
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:625 ../quodlibet/qltk/edittags.py:781
-#: ../quodlibet/qltk/edittags.py:788 ../quodlibet/qltk/tagsfrompath.py:173
+#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
+#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:173
 #: ../quodlibet/util/__init__.py:634 ../quodlibet/util/tags.py:131
 msgid "Invalid tag"
 msgstr "תגית שגויה"
 
-#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
-#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:174
+#: ../quodlibet/qltk/edittags.py:627 ../quodlibet/qltk/edittags.py:783
+#: ../quodlibet/qltk/edittags.py:790 ../quodlibet/qltk/tagsfrompath.py:174
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1657,12 +1657,12 @@ msgstr ""
 "\n"
 "הקבצים שנבחרו אינם תומכים בעריכת התגית הזו"
 
-#: ../quodlibet/qltk/edittags.py:677 ../quodlibet/qltk/tagsfrompath.py:236
+#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:236
 #: ../quodlibet/qltk/tracknumbers.py:116
 msgid "Tag may not be accurate"
 msgstr "יתכן שהתגית לא תהייה מדוייקת"
 
-#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:237
+#: ../quodlibet/qltk/edittags.py:679 ../quodlibet/qltk/tagsfrompath.py:237
 #: ../quodlibet/qltk/tracknumbers.py:117
 #, python-format
 msgid ""
@@ -1676,11 +1676,11 @@ msgstr ""
 "\n"
 "האם ברצונך לשמור את השיר?"
 
-#: ../quodlibet/qltk/edittags.py:736 ../quodlibet/qltk/tracknumbers.py:130
+#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tracknumbers.py:130
 msgid "Unable to save song"
 msgstr "לא ניתן לשמור שיר"
 
-#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tagsfrompath.py:263
+#: ../quodlibet/qltk/edittags.py:738 ../quodlibet/qltk/tagsfrompath.py:263
 #: ../quodlibet/qltk/tracknumbers.py:131 ../quodlibet/util/songwrapper.py:97
 #, python-format
 msgid ""
@@ -1689,11 +1689,11 @@ msgid ""
 msgstr ""
 "השמירה של <b>%s</b> נכשלה. יתכן שהקובץ אינו קיים או שאין לך הרשאות מתאימות"
 
-#: ../quodlibet/qltk/edittags.py:761 ../quodlibet/qltk/edittags.py:799
+#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
 msgid "Invalid value"
 msgstr "ערך שגוי"
 
-#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
+#: ../quodlibet/qltk/edittags.py:763 ../quodlibet/qltk/edittags.py:801
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -1702,7 +1702,7 @@ msgid ""
 msgstr ""
 
 #: ../quodlibet/qltk/exfalsowindow.py:78
-#: ../quodlibet/qltk/quodlibetwindow.py:450 ../quodlibet/qltk/songsmenu.py:195
+#: ../quodlibet/qltk/quodlibetwindow.py:450 ../quodlibet/qltk/songsmenu.py:196
 msgid "_Plugins"
 msgstr "הר_חבות"
 
@@ -1759,36 +1759,36 @@ msgid "Unable to delete folder"
 msgstr "לא ניתן למחוק תיקיה"
 
 #. Translators: As in "by Artist Name"
-#: ../quodlibet/qltk/info.py:36
+#: ../quodlibet/qltk/info.py:37
 #, python-format
 msgid "by %s"
 msgstr "בביצוע %s"
 
-#: ../quodlibet/qltk/info.py:37 ../quodlibet/qltk/information.py:147
+#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:147
 #: ../quodlibet/qltk/information.py:443
 #, python-format
 msgid "Disc %s"
 msgstr "תקליטור %s"
 
-#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:152
+#: ../quodlibet/qltk/info.py:39 ../quodlibet/qltk/information.py:152
 #, python-format
 msgid "Track %s"
 msgstr "רצועה %s"
 
-#: ../quodlibet/qltk/info.py:68 ../quodlibet/qltk/songsmenu.py:226
+#: ../quodlibet/qltk/info.py:69 ../quodlibet/qltk/songsmenu.py:227
 msgid "_Add to Playlist"
 msgstr "הוסף לרשימת _ניגון"
 
-#: ../quodlibet/qltk/info.py:86
+#: ../quodlibet/qltk/info.py:87
 msgid "_Edit Display..."
 msgstr "תצוגת _עריכה..."
 
-#: ../quodlibet/qltk/info.py:94 ../quodlibet/qltk/quodlibetwindow.py:463
-#: ../quodlibet/qltk/songsmenu.py:276
+#: ../quodlibet/qltk/info.py:95 ../quodlibet/qltk/quodlibetwindow.py:463
+#: ../quodlibet/qltk/songsmenu.py:277
 msgid "Edit _Tags"
 msgstr "ע_רוך תגיות"
 
-#: ../quodlibet/qltk/info.py:135
+#: ../quodlibet/qltk/info.py:136
 msgid "Not playing"
 msgstr "לא מנגן"
 
@@ -1836,7 +1836,7 @@ msgid "performers"
 msgstr "מבצעים"
 
 #: ../quodlibet/qltk/information.py:241 ../quodlibet/qltk/information.py:256
-#: ../quodlibet/qltk/songlist.py:187
+#: ../quodlibet/qltk/songlist.py:188
 msgid "Never"
 msgstr "מעולם לא"
 
@@ -2699,58 +2699,58 @@ msgstr "_גבול:"
 msgid "_Weight"
 msgstr "לפי _דירוג"
 
-#: ../quodlibet/qltk/songlist.py:319
+#: ../quodlibet/qltk/songlist.py:320
 #, python-format
 msgid "_Filter on %s"
 msgstr "_מיין לפי %s"
 
-#: ../quodlibet/qltk/songlist.py:1012
+#: ../quodlibet/qltk/songlist.py:1017
 #, fuzzy
 msgid "All _Headers"
 msgstr "כ_ותרות אלבומים"
 
-#: ../quodlibet/qltk/songlist.py:1013
+#: ../quodlibet/qltk/songlist.py:1018
 msgid "_Track Headers"
 msgstr "_כותרות רצועות"
 
-#: ../quodlibet/qltk/songlist.py:1014
+#: ../quodlibet/qltk/songlist.py:1019
 msgid "_Album Headers"
 msgstr "כ_ותרות אלבומים"
 
-#: ../quodlibet/qltk/songlist.py:1015
+#: ../quodlibet/qltk/songlist.py:1020
 msgid "_People Headers"
 msgstr "כותרות _מבצעים"
 
-#: ../quodlibet/qltk/songlist.py:1016
+#: ../quodlibet/qltk/songlist.py:1021
 msgid "_Date Headers"
 msgstr "כותרות ת_אריך"
 
-#: ../quodlibet/qltk/songlist.py:1017
+#: ../quodlibet/qltk/songlist.py:1022
 msgid "_File Headers"
 msgstr "כו_תרות קבצים"
 
-#: ../quodlibet/qltk/songlist.py:1018
+#: ../quodlibet/qltk/songlist.py:1023
 msgid "_Production Headers"
 msgstr "כות_רות הפקה"
 
-#: ../quodlibet/qltk/songlist.py:1032
+#: ../quodlibet/qltk/songlist.py:1037
 #, fuzzy
 msgid "Custom _Sort..."
 msgstr "כותרות _מותאמות אישית..."
 
-#: ../quodlibet/qltk/songlist.py:1037
+#: ../quodlibet/qltk/songlist.py:1042
 msgid "_Customize Headers..."
 msgstr "כותרות _מותאמות אישית..."
 
-#: ../quodlibet/qltk/songsmenu.py:231
+#: ../quodlibet/qltk/songsmenu.py:232
 msgid "Add to _Queue"
 msgstr "הו_סף לסדר ההשמעה"
 
-#: ../quodlibet/qltk/songsmenu.py:249
+#: ../quodlibet/qltk/songsmenu.py:250
 msgid "_Copy to Device"
 msgstr "ה_עתק להתקן שמע חיצוני"
 
-#: ../quodlibet/qltk/songsmenu.py:258
+#: ../quodlibet/qltk/songsmenu.py:259
 #, fuzzy
 msgid "_Remove from library"
 msgstr "ה_סר מרשימת הניגון"
@@ -2901,7 +2901,7 @@ msgstr "_סך הכל רצועות:"
 msgid "Track"
 msgstr "רצועה"
 
-#: ../quodlibet/qltk/views.py:542
+#: ../quodlibet/qltk/views.py:541
 #, python-format
 msgid "and %d more..."
 msgstr "%d נותרו..."

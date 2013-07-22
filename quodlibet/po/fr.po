@@ -4,16 +4,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-08 10:39+0200\n"
+"POT-Creation-Date: 2013-07-22 13:10+0200\n"
 "PO-Revision-Date: 2013-07-20 22:32+0100\n"
 "Last-Translator: Nick Boultbee <nick.boultbee@googlemail.com>\n"
 "Language-Team: Français\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Poedit 1.5.4\n"
-"Language: fr\n"
 
 #: ../data/exfalso.desktop.in.h:1
 msgid "Audio tag editor"
@@ -94,12 +94,12 @@ msgstr "Trop d'erreurs"
 msgid "Description"
 msgstr "description"
 
-#: ../operon.py:133 ../operon.py:464 ../quodlibet/qltk/edittags.py:421
+#: ../operon.py:133 ../operon.py:464 ../quodlibet/qltk/edittags.py:422
 msgid "Value"
 msgstr "Valeur"
 
 #: ../operon.py:133 ../operon.py:166 ../quodlibet/browsers/collection.py:146
-#: ../quodlibet/qltk/edittags.py:405
+#: ../quodlibet/qltk/edittags.py:406
 msgid "Tag"
 msgstr "Étiquette"
 
@@ -412,11 +412,11 @@ msgstr ""
 msgid "Album Collection Preferences"
 msgstr "Préférences de l'affichage liste d'albums"
 
-#: ../quodlibet/browsers/collection.py:492
+#: ../quodlibet/browsers/collection.py:495
 msgid "Album Collection"
 msgstr ""
 
-#: ../quodlibet/browsers/collection.py:493
+#: ../quodlibet/browsers/collection.py:496
 msgid "Album _Collection"
 msgstr ""
 
@@ -429,11 +429,11 @@ msgid "_File System"
 msgstr "_Système de fichiers"
 
 #: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:472
-#: ../quodlibet/qltk/songlist.py:457
+#: ../quodlibet/qltk/songlist.py:458
 msgid "Unable to copy songs"
 msgstr "Impossible de copier les chansons"
 
-#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:458
+#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:459
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Les fichiers selectionnés ne peuvent pas être copiés vers une autre liste de "
@@ -916,39 +916,39 @@ msgstr "Périphérique inconnu"
 msgid "Could not import %s, which is needed for device support."
 msgstr ""
 
-#: ../quodlibet/devices/__init__.py:144
+#: ../quodlibet/devices/__init__.py:140
 #, fuzzy, python-format
 msgid "%r is not a supported device."
 msgstr "E: '%s' n'est pas un préfixe unique."
 
-#: ../quodlibet/devices/__init__.py:210
+#: ../quodlibet/devices/__init__.py:206
 #, fuzzy, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr "%s: Impossible de trouver %s."
 
-#: ../quodlibet/devices/__init__.py:216
+#: ../quodlibet/devices/__init__.py:212
 #, python-format
 msgid "%s: Could not find %s."
 msgstr "%s: Impossible de trouver %s."
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 #, fuzzy
 msgid "Initializing device backend."
 msgstr "Valeur non valide"
 
-#: ../quodlibet/devices/__init__.py:406
+#: ../quodlibet/devices/__init__.py:402
 #, python-format
 msgid "Trying '%s'"
 msgstr "Tentative avec '%s'"
 
-#: ../quodlibet/devices/__init__.py:425
+#: ../quodlibet/devices/__init__.py:421
 #, fuzzy
 msgid "Couldn't connect to a device backend."
 msgstr ""
 "Impossible de se connecter à un gestionnaire de périphérique, désactivation "
 "du navigateur de Périphériques Multimédias."
 
-#: ../quodlibet/devices/__init__.py:427
+#: ../quodlibet/devices/__init__.py:423
 msgid "Device backend initialized."
 msgstr "Gestionnaire de périphériques initialisé."
 
@@ -1385,15 +1385,15 @@ msgstr "Non disponible"
 msgid "Time"
 msgstr "Temps"
 
-#: ../quodlibet/qltk/bookmarks.py:84 ../quodlibet/qltk/bookmarks.py:118
+#: ../quodlibet/qltk/bookmarks.py:84 ../quodlibet/qltk/bookmarks.py:119
 msgid "Bookmark Name"
 msgstr "Nom du signet"
 
-#: ../quodlibet/qltk/bookmarks.py:116
+#: ../quodlibet/qltk/bookmarks.py:117
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:200 ../quodlibet/qltk/information.py:100
+#: ../quodlibet/qltk/bookmarks.py:201 ../quodlibet/qltk/information.py:100
 msgid "Bookmarks"
 msgstr "Signets"
 
@@ -1402,7 +1402,7 @@ msgstr "Signets"
 msgid "No time information"
 msgstr "Aucun renseignement de durée"
 
-#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:267
+#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:268
 msgid "_Value:"
 msgstr "_Valeur :"
 
@@ -1414,7 +1414,7 @@ msgstr "Entrées sauvegardées"
 msgid "Edit saved values..."
 msgstr "Éditer les entrées sauvegardées..."
 
-#: ../quodlibet/qltk/chooser.py:44 ../quodlibet/qltk/filesel.py:334
+#: ../quodlibet/qltk/chooser.py:44 ../quodlibet/qltk/filesel.py:335
 msgid "Songs"
 msgstr "Chansons"
 
@@ -1567,82 +1567,82 @@ msgstr "A_perçu"
 msgid "_More options..."
 msgstr "_Plus d'options..."
 
-#: ../quodlibet/qltk/edittags.py:41 ../quodlibet/qltk/edittags.py:52
+#: ../quodlibet/qltk/edittags.py:42 ../quodlibet/qltk/edittags.py:53
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
 msgstr[0] "manquant dans %d chanson"
 msgstr[1] "manquant dans %d chansons"
 
-#: ../quodlibet/qltk/edittags.py:45 ../quodlibet/qltk/edittags.py:49
+#: ../quodlibet/qltk/edittags.py:46 ../quodlibet/qltk/edittags.py:50
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
 msgstr[0] "différent parmi %d chanson"
 msgstr[1] "différent dans les %d chansons"
 
-#: ../quodlibet/qltk/edittags.py:145
+#: ../quodlibet/qltk/edittags.py:146
 msgid "Split into _Multiple Values"
 msgstr "Séparer en _plusieurs valeurs"
 
-#: ../quodlibet/qltk/edittags.py:165
+#: ../quodlibet/qltk/edittags.py:166
 msgid "Split Disc out of _Album"
 msgstr "Séparer le disque de l'_album"
 
-#: ../quodlibet/qltk/edittags.py:182
+#: ../quodlibet/qltk/edittags.py:183
 msgid "Split _Version out of Title"
 msgstr "Séparer la _version du titre"
 
-#: ../quodlibet/qltk/edittags.py:217
+#: ../quodlibet/qltk/edittags.py:218
 msgid "Split Arranger out of Ar_tist"
 msgstr "Séparer l'arrangeur de l'ar_tiste"
 
-#: ../quodlibet/qltk/edittags.py:222
+#: ../quodlibet/qltk/edittags.py:223
 msgid "Split _Performer out of Artist"
 msgstr "Séparer l'intér_prète de l'artiste"
 
-#: ../quodlibet/qltk/edittags.py:228
+#: ../quodlibet/qltk/edittags.py:229
 #, fuzzy
 msgid "Split _Performer out of Title"
 msgstr "Séparer l'intér_prète de l'artiste"
 
-#: ../quodlibet/qltk/edittags.py:234
+#: ../quodlibet/qltk/edittags.py:235
 #, fuzzy
 msgid "Split _Originalartist out of Title"
 msgstr "Séparer la _version du titre"
 
-#: ../quodlibet/qltk/edittags.py:241
+#: ../quodlibet/qltk/edittags.py:242
 msgid "Add a Tag"
 msgstr "Ajouter une nouvelle étiquette (\"tag\")"
 
-#: ../quodlibet/qltk/edittags.py:258
+#: ../quodlibet/qltk/edittags.py:259
 msgid "_Tag:"
 msgstr "É_tiquette :"
 
 #. Translators: translate only to override the text
 #. for the tag "save" button
-#: ../quodlibet/qltk/edittags.py:364
+#: ../quodlibet/qltk/edittags.py:365
 msgid "ql-save"
 msgstr "Enregi_strer"
 
 #. Translators: translate only to override the  for the tag "revert" button
-#: ../quodlibet/qltk/edittags.py:366
+#: ../quodlibet/qltk/edittags.py:367
 msgid "ql-revert"
 msgstr ""
 
-#: ../quodlibet/qltk/edittags.py:375
+#: ../quodlibet/qltk/edittags.py:376
 msgid "Edit Tags"
 msgstr "Éditer les étiquettes"
 
-#: ../quodlibet/qltk/edittags.py:382
+#: ../quodlibet/qltk/edittags.py:383
 msgid "Write"
 msgstr "Écrire"
 
-#: ../quodlibet/qltk/edittags.py:599
+#: ../quodlibet/qltk/edittags.py:600
 msgid "Unable to add tag"
 msgstr "Impossible d'ajouter l'étiquette"
 
-#: ../quodlibet/qltk/edittags.py:600
+#: ../quodlibet/qltk/edittags.py:601
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -1656,14 +1656,14 @@ msgstr ""
 
 #. Can't remove the old tag.
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:625 ../quodlibet/qltk/edittags.py:781
-#: ../quodlibet/qltk/edittags.py:788 ../quodlibet/qltk/tagsfrompath.py:173
+#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
+#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:173
 #: ../quodlibet/util/__init__.py:634 ../quodlibet/util/tags.py:131
 msgid "Invalid tag"
 msgstr "Étiquette non valide"
 
-#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
-#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:174
+#: ../quodlibet/qltk/edittags.py:627 ../quodlibet/qltk/edittags.py:783
+#: ../quodlibet/qltk/edittags.py:790 ../quodlibet/qltk/tagsfrompath.py:174
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1675,12 +1675,12 @@ msgstr ""
 "Les fichiers sélectionnés actuellement ne permettent pas l'édition de cette "
 "étiquette."
 
-#: ../quodlibet/qltk/edittags.py:677 ../quodlibet/qltk/tagsfrompath.py:236
+#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:236
 #: ../quodlibet/qltk/tracknumbers.py:116
 msgid "Tag may not be accurate"
 msgstr "L'étiquette peut ne pas être correcte"
 
-#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:237
+#: ../quodlibet/qltk/edittags.py:679 ../quodlibet/qltk/tagsfrompath.py:237
 #: ../quodlibet/qltk/tracknumbers.py:117
 #, python-format
 msgid ""
@@ -1695,11 +1695,11 @@ msgstr ""
 "\n"
 "Sauvegarder tout de même cette étiquette?"
 
-#: ../quodlibet/qltk/edittags.py:736 ../quodlibet/qltk/tracknumbers.py:130
+#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tracknumbers.py:130
 msgid "Unable to save song"
 msgstr "Impossible de sauvegarder la chanson"
 
-#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tagsfrompath.py:263
+#: ../quodlibet/qltk/edittags.py:738 ../quodlibet/qltk/tagsfrompath.py:263
 #: ../quodlibet/qltk/tracknumbers.py:131 ../quodlibet/util/songwrapper.py:97
 #, python-format
 msgid ""
@@ -1709,11 +1709,11 @@ msgstr ""
 "La sauvegarde de <b>%s</b> a échoué. Le fichier peut être en lecture seule, "
 "corrompu, ou vous n'avez pas la permission de l'éditer."
 
-#: ../quodlibet/qltk/edittags.py:761 ../quodlibet/qltk/edittags.py:799
+#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
 msgid "Invalid value"
 msgstr "Valeur non valide"
 
-#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
+#: ../quodlibet/qltk/edittags.py:763 ../quodlibet/qltk/edittags.py:801
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -1725,7 +1725,7 @@ msgstr ""
 "%(error)s"
 
 #: ../quodlibet/qltk/exfalsowindow.py:78
-#: ../quodlibet/qltk/quodlibetwindow.py:450 ../quodlibet/qltk/songsmenu.py:195
+#: ../quodlibet/qltk/quodlibetwindow.py:450 ../quodlibet/qltk/songsmenu.py:196
 msgid "_Plugins"
 msgstr "_Greffons"
 
@@ -1782,36 +1782,36 @@ msgid "Unable to delete folder"
 msgstr "Impossible de supprimer le dossier"
 
 #. Translators: As in "by Artist Name"
-#: ../quodlibet/qltk/info.py:36
+#: ../quodlibet/qltk/info.py:37
 #, python-format
 msgid "by %s"
 msgstr "par %s"
 
-#: ../quodlibet/qltk/info.py:37 ../quodlibet/qltk/information.py:147
+#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:147
 #: ../quodlibet/qltk/information.py:443
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
 
-#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:152
+#: ../quodlibet/qltk/info.py:39 ../quodlibet/qltk/information.py:152
 #, python-format
 msgid "Track %s"
 msgstr "Piste %s"
 
-#: ../quodlibet/qltk/info.py:68 ../quodlibet/qltk/songsmenu.py:226
+#: ../quodlibet/qltk/info.py:69 ../quodlibet/qltk/songsmenu.py:227
 msgid "_Add to Playlist"
 msgstr "_Ajouter à la liste de lecture"
 
-#: ../quodlibet/qltk/info.py:86
+#: ../quodlibet/qltk/info.py:87
 msgid "_Edit Display..."
 msgstr "_Éditer l'affichage des informations..."
 
-#: ../quodlibet/qltk/info.py:94 ../quodlibet/qltk/quodlibetwindow.py:463
-#: ../quodlibet/qltk/songsmenu.py:276
+#: ../quodlibet/qltk/info.py:95 ../quodlibet/qltk/quodlibetwindow.py:463
+#: ../quodlibet/qltk/songsmenu.py:277
 msgid "Edit _Tags"
 msgstr "Éditer les éti_quettes"
 
-#: ../quodlibet/qltk/info.py:135
+#: ../quodlibet/qltk/info.py:136
 msgid "Not playing"
 msgstr "Pas de lecture en cours"
 
@@ -1857,7 +1857,7 @@ msgid "performers"
 msgstr "interprètes"
 
 #: ../quodlibet/qltk/information.py:241 ../quodlibet/qltk/information.py:256
-#: ../quodlibet/qltk/songlist.py:187
+#: ../quodlibet/qltk/songlist.py:188
 msgid "Never"
 msgstr "Jamais"
 
@@ -2720,58 +2720,58 @@ msgstr "_Limite:"
 msgid "_Weight"
 msgstr "_Pondéré"
 
-#: ../quodlibet/qltk/songlist.py:319
+#: ../quodlibet/qltk/songlist.py:320
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtrer sur %s"
 
-#: ../quodlibet/qltk/songlist.py:1012
+#: ../quodlibet/qltk/songlist.py:1017
 #, fuzzy
 msgid "All _Headers"
 msgstr "Colonnes « _Album »"
 
-#: ../quodlibet/qltk/songlist.py:1013
+#: ../quodlibet/qltk/songlist.py:1018
 msgid "_Track Headers"
 msgstr "Colonnes « _Piste »"
 
-#: ../quodlibet/qltk/songlist.py:1014
+#: ../quodlibet/qltk/songlist.py:1019
 msgid "_Album Headers"
 msgstr "Colonnes « _Album »"
 
-#: ../quodlibet/qltk/songlist.py:1015
+#: ../quodlibet/qltk/songlist.py:1020
 msgid "_People Headers"
 msgstr "Colonnes « Ar_tistes »"
 
-#: ../quodlibet/qltk/songlist.py:1016
+#: ../quodlibet/qltk/songlist.py:1021
 msgid "_Date Headers"
 msgstr "Colonnes « _Date »"
 
-#: ../quodlibet/qltk/songlist.py:1017
+#: ../quodlibet/qltk/songlist.py:1022
 msgid "_File Headers"
 msgstr "Colonnes « _Fichier »"
 
-#: ../quodlibet/qltk/songlist.py:1018
+#: ../quodlibet/qltk/songlist.py:1023
 msgid "_Production Headers"
 msgstr "Colonnes « _Production »"
 
-#: ../quodlibet/qltk/songlist.py:1032
+#: ../quodlibet/qltk/songlist.py:1037
 #, fuzzy
 msgid "Custom _Sort..."
 msgstr "_Configurer les colonnes..."
 
-#: ../quodlibet/qltk/songlist.py:1037
+#: ../quodlibet/qltk/songlist.py:1042
 msgid "_Customize Headers..."
 msgstr "_Configurer les colonnes..."
 
-#: ../quodlibet/qltk/songsmenu.py:231
+#: ../quodlibet/qltk/songsmenu.py:232
 msgid "Add to _Queue"
 msgstr "A_jouter à la file"
 
-#: ../quodlibet/qltk/songsmenu.py:249
+#: ../quodlibet/qltk/songsmenu.py:250
 msgid "_Copy to Device"
 msgstr "_Copier sur le périphérique"
 
-#: ../quodlibet/qltk/songsmenu.py:258
+#: ../quodlibet/qltk/songsmenu.py:259
 #, fuzzy
 msgid "_Remove from library"
 msgstr "Supp_rimer de la liste de lecture"
@@ -2921,7 +2921,7 @@ msgstr "Nombre _total de pistes :"
 msgid "Track"
 msgstr "Piste"
 
-#: ../quodlibet/qltk/views.py:542
+#: ../quodlibet/qltk/views.py:541
 #, python-format
 msgid "and %d more..."
 msgstr "et %d de plus..."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-08 10:39+0200\n"
+"POT-Creation-Date: 2013-07-22 13:10+0200\n"
 "PO-Revision-Date: 2013-04-18 22:07+0100\n"
 "Last-Translator: Honza Hejzl <honza.hejzl@gmail.com>\n"
 "Language-Team: Czech (Czech Republic)\n"
@@ -96,12 +96,12 @@ msgstr "Příliš mnoho chyb."
 msgid "Description"
 msgstr "popis"
 
-#: ../operon.py:133 ../operon.py:464 ../quodlibet/qltk/edittags.py:421
+#: ../operon.py:133 ../operon.py:464 ../quodlibet/qltk/edittags.py:422
 msgid "Value"
 msgstr "Hodnota"
 
 #: ../operon.py:133 ../operon.py:166 ../quodlibet/browsers/collection.py:146
-#: ../quodlibet/qltk/edittags.py:405
+#: ../quodlibet/qltk/edittags.py:406
 msgid "Tag"
 msgstr "Tag"
 
@@ -420,11 +420,11 @@ msgstr "sloučit"
 msgid "Album Collection Preferences"
 msgstr "Nastavení sbírky alb"
 
-#: ../quodlibet/browsers/collection.py:492
+#: ../quodlibet/browsers/collection.py:495
 msgid "Album Collection"
 msgstr "Sbírka alb"
 
-#: ../quodlibet/browsers/collection.py:493
+#: ../quodlibet/browsers/collection.py:496
 msgid "Album _Collection"
 msgstr "Sbírka _Alb"
 
@@ -437,11 +437,11 @@ msgid "_File System"
 msgstr "_Systém souborů"
 
 #: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:472
-#: ../quodlibet/qltk/songlist.py:457
+#: ../quodlibet/qltk/songlist.py:458
 msgid "Unable to copy songs"
 msgstr "Nelze kopírovat skladby"
 
-#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:458
+#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:459
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Vybrané soubory nelze zkopírovat do jiných seznamů skladeb nebo do fronty."
@@ -918,35 +918,35 @@ msgstr "Neznámé zařízení"
 msgid "Could not import %s, which is needed for device support."
 msgstr "Nemohu importovat %s, což je třeba pro podporu zařízení."
 
-#: ../quodlibet/devices/__init__.py:144
+#: ../quodlibet/devices/__init__.py:140
 #, python-format
 msgid "%r is not a supported device."
 msgstr "%r není podporované zařízení."
 
-#: ../quodlibet/devices/__init__.py:210
+#: ../quodlibet/devices/__init__.py:206
 #, fuzzy, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr "%s: %s nelze nalézt."
 
-#: ../quodlibet/devices/__init__.py:216
+#: ../quodlibet/devices/__init__.py:212
 #, python-format
 msgid "%s: Could not find %s."
 msgstr "%s: %s nelze nalézt."
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 msgid "Initializing device backend."
 msgstr "Načítání zařízení."
 
-#: ../quodlibet/devices/__init__.py:406
+#: ../quodlibet/devices/__init__.py:402
 #, python-format
 msgid "Trying '%s'"
 msgstr "Zkoušení '%s'"
 
-#: ../quodlibet/devices/__init__.py:425
+#: ../quodlibet/devices/__init__.py:421
 msgid "Couldn't connect to a device backend."
 msgstr "Nelze se připojit k obslužné aplikaci zařízení."
 
-#: ../quodlibet/devices/__init__.py:427
+#: ../quodlibet/devices/__init__.py:423
 msgid "Device backend initialized."
 msgstr "Zařízení načteno."
 
@@ -1379,15 +1379,15 @@ msgstr "N/A"
 msgid "Time"
 msgstr "Čas"
 
-#: ../quodlibet/qltk/bookmarks.py:84 ../quodlibet/qltk/bookmarks.py:118
+#: ../quodlibet/qltk/bookmarks.py:84 ../quodlibet/qltk/bookmarks.py:119
 msgid "Bookmark Name"
 msgstr "Název záložky"
 
-#: ../quodlibet/qltk/bookmarks.py:116
+#: ../quodlibet/qltk/bookmarks.py:117
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:200 ../quodlibet/qltk/information.py:100
+#: ../quodlibet/qltk/bookmarks.py:201 ../quodlibet/qltk/information.py:100
 msgid "Bookmarks"
 msgstr "Záložky"
 
@@ -1396,7 +1396,7 @@ msgstr "Záložky"
 msgid "No time information"
 msgstr "Informace o čase nejsou dostupné"
 
-#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:267
+#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:268
 msgid "_Value:"
 msgstr "_Hodnota:"
 
@@ -1408,7 +1408,7 @@ msgstr "Uložené hodnoty"
 msgid "Edit saved values..."
 msgstr "Upravit uložené hodnoty..."
 
-#: ../quodlibet/qltk/chooser.py:44 ../quodlibet/qltk/filesel.py:334
+#: ../quodlibet/qltk/chooser.py:44 ../quodlibet/qltk/filesel.py:335
 msgid "Songs"
 msgstr "Skladby"
 
@@ -1555,7 +1555,7 @@ msgstr "_Náhled"
 msgid "_More options..."
 msgstr "_Více možností..."
 
-#: ../quodlibet/qltk/edittags.py:41 ../quodlibet/qltk/edittags.py:52
+#: ../quodlibet/qltk/edittags.py:42 ../quodlibet/qltk/edittags.py:53
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
@@ -1563,7 +1563,7 @@ msgstr[0] "chybí u %d skladby"
 msgstr[1] "chybí u %d skladeb"
 msgstr[2] "chybí u %d skladeb"
 
-#: ../quodlibet/qltk/edittags.py:45 ../quodlibet/qltk/edittags.py:49
+#: ../quodlibet/qltk/edittags.py:46 ../quodlibet/qltk/edittags.py:50
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
@@ -1571,66 +1571,66 @@ msgstr[0] "liší se u %d skladby"
 msgstr[1] "liší se u %d skladeb"
 msgstr[2] "liší se u %d skladeb"
 
-#: ../quodlibet/qltk/edittags.py:145
+#: ../quodlibet/qltk/edittags.py:146
 msgid "Split into _Multiple Values"
 msgstr "Rozdělit do _Více položek"
 
-#: ../quodlibet/qltk/edittags.py:165
+#: ../quodlibet/qltk/edittags.py:166
 msgid "Split Disc out of _Album"
 msgstr "Oddělit disk od _Alba"
 
-#: ../quodlibet/qltk/edittags.py:182
+#: ../quodlibet/qltk/edittags.py:183
 msgid "Split _Version out of Title"
 msgstr "Oddělit _Verzi od názvu"
 
-#: ../quodlibet/qltk/edittags.py:217
+#: ../quodlibet/qltk/edittags.py:218
 msgid "Split Arranger out of Ar_tist"
 msgstr "Oddělit aranžmá od Umělce"
 
-#: ../quodlibet/qltk/edittags.py:222
+#: ../quodlibet/qltk/edittags.py:223
 msgid "Split _Performer out of Artist"
 msgstr "Oddělit _Interpreta od umělce"
 
-#: ../quodlibet/qltk/edittags.py:228
+#: ../quodlibet/qltk/edittags.py:229
 msgid "Split _Performer out of Title"
 msgstr "Oddělit _Interpreta od názvu"
 
-#: ../quodlibet/qltk/edittags.py:234
+#: ../quodlibet/qltk/edittags.py:235
 msgid "Split _Originalartist out of Title"
 msgstr "Oddalit _Původního umělce od názvu"
 
-#: ../quodlibet/qltk/edittags.py:241
+#: ../quodlibet/qltk/edittags.py:242
 msgid "Add a Tag"
 msgstr "Přidat tag"
 
-#: ../quodlibet/qltk/edittags.py:258
+#: ../quodlibet/qltk/edittags.py:259
 msgid "_Tag:"
 msgstr "_Tag:"
 
 #. Translators: translate only to override the text
 #. for the tag "save" button
-#: ../quodlibet/qltk/edittags.py:364
+#: ../quodlibet/qltk/edittags.py:365
 msgid "ql-save"
 msgstr ""
 
 #. Translators: translate only to override the  for the tag "revert" button
-#: ../quodlibet/qltk/edittags.py:366
+#: ../quodlibet/qltk/edittags.py:367
 msgid "ql-revert"
 msgstr ""
 
-#: ../quodlibet/qltk/edittags.py:375
+#: ../quodlibet/qltk/edittags.py:376
 msgid "Edit Tags"
 msgstr "Upravit tagy"
 
-#: ../quodlibet/qltk/edittags.py:382
+#: ../quodlibet/qltk/edittags.py:383
 msgid "Write"
 msgstr "Zapsat"
 
-#: ../quodlibet/qltk/edittags.py:599
+#: ../quodlibet/qltk/edittags.py:600
 msgid "Unable to add tag"
 msgstr "Tag nelze přidat"
 
-#: ../quodlibet/qltk/edittags.py:600
+#: ../quodlibet/qltk/edittags.py:601
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -1643,14 +1643,14 @@ msgstr ""
 
 #. Can't remove the old tag.
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:625 ../quodlibet/qltk/edittags.py:781
-#: ../quodlibet/qltk/edittags.py:788 ../quodlibet/qltk/tagsfrompath.py:173
+#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
+#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:173
 #: ../quodlibet/util/__init__.py:634 ../quodlibet/util/tags.py:131
 msgid "Invalid tag"
 msgstr "Neplatný tag"
 
-#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
-#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:174
+#: ../quodlibet/qltk/edittags.py:627 ../quodlibet/qltk/edittags.py:783
+#: ../quodlibet/qltk/edittags.py:790 ../quodlibet/qltk/tagsfrompath.py:174
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1661,12 +1661,12 @@ msgstr ""
 "\n"
 "Vybrané soubory nepodporují označení tímto tagem."
 
-#: ../quodlibet/qltk/edittags.py:677 ../quodlibet/qltk/tagsfrompath.py:236
+#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:236
 #: ../quodlibet/qltk/tracknumbers.py:116
 msgid "Tag may not be accurate"
 msgstr "Tag nemusí být správně"
 
-#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:237
+#: ../quodlibet/qltk/edittags.py:679 ../quodlibet/qltk/tagsfrompath.py:237
 #: ../quodlibet/qltk/tracknumbers.py:117
 #, python-format
 msgid ""
@@ -1680,11 +1680,11 @@ msgstr ""
 "\n"
 "Přesto skladbu uložit?"
 
-#: ../quodlibet/qltk/edittags.py:736 ../quodlibet/qltk/tracknumbers.py:130
+#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tracknumbers.py:130
 msgid "Unable to save song"
 msgstr "Skladbu nelze uložit"
 
-#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tagsfrompath.py:263
+#: ../quodlibet/qltk/edittags.py:738 ../quodlibet/qltk/tagsfrompath.py:263
 #: ../quodlibet/qltk/tracknumbers.py:131 ../quodlibet/util/songwrapper.py:97
 #, python-format
 msgid ""
@@ -1694,11 +1694,11 @@ msgstr ""
 "Ukládání <b>%s</b> selhalo. Soubor může být jen pro čtení, poškozený, nebo "
 "nemáte právo ho měnit."
 
-#: ../quodlibet/qltk/edittags.py:761 ../quodlibet/qltk/edittags.py:799
+#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
 msgid "Invalid value"
 msgstr "Neplatná hodnota"
 
-#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
+#: ../quodlibet/qltk/edittags.py:763 ../quodlibet/qltk/edittags.py:801
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -1710,7 +1710,7 @@ msgstr ""
 "%(error)s"
 
 #: ../quodlibet/qltk/exfalsowindow.py:78
-#: ../quodlibet/qltk/quodlibetwindow.py:450 ../quodlibet/qltk/songsmenu.py:195
+#: ../quodlibet/qltk/quodlibetwindow.py:450 ../quodlibet/qltk/songsmenu.py:196
 msgid "_Plugins"
 msgstr "_Zásuvné moduly"
 
@@ -1768,36 +1768,36 @@ msgid "Unable to delete folder"
 msgstr "Složku nelze smazat"
 
 #. Translators: As in "by Artist Name"
-#: ../quodlibet/qltk/info.py:36
+#: ../quodlibet/qltk/info.py:37
 #, python-format
 msgid "by %s"
 msgstr "podle %s"
 
-#: ../quodlibet/qltk/info.py:37 ../quodlibet/qltk/information.py:147
+#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:147
 #: ../quodlibet/qltk/information.py:443
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
 
-#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:152
+#: ../quodlibet/qltk/info.py:39 ../quodlibet/qltk/information.py:152
 #, python-format
 msgid "Track %s"
 msgstr "Skladba %s"
 
-#: ../quodlibet/qltk/info.py:68 ../quodlibet/qltk/songsmenu.py:226
+#: ../quodlibet/qltk/info.py:69 ../quodlibet/qltk/songsmenu.py:227
 msgid "_Add to Playlist"
 msgstr "_Přidat do seznamu skladeb"
 
-#: ../quodlibet/qltk/info.py:86
+#: ../quodlibet/qltk/info.py:87
 msgid "_Edit Display..."
 msgstr "_Upravit zobrazení..."
 
-#: ../quodlibet/qltk/info.py:94 ../quodlibet/qltk/quodlibetwindow.py:463
-#: ../quodlibet/qltk/songsmenu.py:276
+#: ../quodlibet/qltk/info.py:95 ../quodlibet/qltk/quodlibetwindow.py:463
+#: ../quodlibet/qltk/songsmenu.py:277
 msgid "Edit _Tags"
 msgstr "Editovat _Tagy"
 
-#: ../quodlibet/qltk/info.py:135
+#: ../quodlibet/qltk/info.py:136
 msgid "Not playing"
 msgstr "Nepřehrává se"
 
@@ -1843,7 +1843,7 @@ msgid "performers"
 msgstr "interpreti"
 
 #: ../quodlibet/qltk/information.py:241 ../quodlibet/qltk/information.py:256
-#: ../quodlibet/qltk/songlist.py:187
+#: ../quodlibet/qltk/songlist.py:188
 msgid "Never"
 msgstr "Nikdy"
 
@@ -2696,56 +2696,56 @@ msgstr "_Limit:"
 msgid "_Weight"
 msgstr "_Váha"
 
-#: ../quodlibet/qltk/songlist.py:319
+#: ../quodlibet/qltk/songlist.py:320
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtr na %s"
 
-#: ../quodlibet/qltk/songlist.py:1012
+#: ../quodlibet/qltk/songlist.py:1017
 msgid "All _Headers"
 msgstr "Všechny _Hlavičky"
 
-#: ../quodlibet/qltk/songlist.py:1013
+#: ../quodlibet/qltk/songlist.py:1018
 msgid "_Track Headers"
 msgstr "Hlavičky _Skladeb"
 
-#: ../quodlibet/qltk/songlist.py:1014
+#: ../quodlibet/qltk/songlist.py:1019
 msgid "_Album Headers"
 msgstr "Hlavičky _Alb"
 
-#: ../quodlibet/qltk/songlist.py:1015
+#: ../quodlibet/qltk/songlist.py:1020
 msgid "_People Headers"
 msgstr "Hlavičky _Lidí"
 
-#: ../quodlibet/qltk/songlist.py:1016
+#: ../quodlibet/qltk/songlist.py:1021
 msgid "_Date Headers"
 msgstr "Hlavičky _Dat"
 
-#: ../quodlibet/qltk/songlist.py:1017
+#: ../quodlibet/qltk/songlist.py:1022
 msgid "_File Headers"
 msgstr "Hlavičky _Souborů"
 
-#: ../quodlibet/qltk/songlist.py:1018
+#: ../quodlibet/qltk/songlist.py:1023
 msgid "_Production Headers"
 msgstr "Hlavičky _Produkce"
 
-#: ../quodlibet/qltk/songlist.py:1032
+#: ../quodlibet/qltk/songlist.py:1037
 msgid "Custom _Sort..."
 msgstr "Vlastní _Třídění..."
 
-#: ../quodlibet/qltk/songlist.py:1037
+#: ../quodlibet/qltk/songlist.py:1042
 msgid "_Customize Headers..."
 msgstr "_Upravit hlavičky..."
 
-#: ../quodlibet/qltk/songsmenu.py:231
+#: ../quodlibet/qltk/songsmenu.py:232
 msgid "Add to _Queue"
 msgstr "Přidat do _Fronty"
 
-#: ../quodlibet/qltk/songsmenu.py:249
+#: ../quodlibet/qltk/songsmenu.py:250
 msgid "_Copy to Device"
 msgstr "_Kopírovat do zařízení"
 
-#: ../quodlibet/qltk/songsmenu.py:258
+#: ../quodlibet/qltk/songsmenu.py:259
 msgid "_Remove from library"
 msgstr "_Odstranit ze seznamu"
 
@@ -2887,7 +2887,7 @@ msgstr "_Celkem skladeb:"
 msgid "Track"
 msgstr "Skladba"
 
-#: ../quodlibet/qltk/views.py:542
+#: ../quodlibet/qltk/views.py:541
 #, python-format
 msgid "and %d more..."
 msgstr "a %d více..."

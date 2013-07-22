@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-08 10:39+0200\n"
+"POT-Creation-Date: 2013-07-22 13:10+0200\n"
 "PO-Revision-Date: 2013-07-20 22:30+0100\n"
 "Last-Translator: Daniel Nyberg <p.daniel.nyberg@gmail.com>\n"
 "Language-Team: SWEDISH\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Poedit 1.5.4\n"
-"Language: sv\n"
 
 #: ../data/exfalso.desktop.in.h:1
 msgid "Audio tag editor"
@@ -94,12 +94,12 @@ msgstr "För många argument"
 msgid "Description"
 msgstr "Beskrivning"
 
-#: ../operon.py:133 ../operon.py:464 ../quodlibet/qltk/edittags.py:421
+#: ../operon.py:133 ../operon.py:464 ../quodlibet/qltk/edittags.py:422
 msgid "Value"
 msgstr "Värde"
 
 #: ../operon.py:133 ../operon.py:166 ../quodlibet/browsers/collection.py:146
-#: ../quodlibet/qltk/edittags.py:405
+#: ../quodlibet/qltk/edittags.py:406
 msgid "Tag"
 msgstr "Tagg"
 
@@ -407,11 +407,11 @@ msgstr "Slå samman"
 msgid "Album Collection Preferences"
 msgstr "Inställningar för skivsamling"
 
-#: ../quodlibet/browsers/collection.py:492
+#: ../quodlibet/browsers/collection.py:495
 msgid "Album Collection"
 msgstr "Albumsamling"
 
-#: ../quodlibet/browsers/collection.py:493
+#: ../quodlibet/browsers/collection.py:496
 msgid "Album _Collection"
 msgstr "_Albumsamling"
 
@@ -424,11 +424,11 @@ msgid "_File System"
 msgstr "_Filsystem"
 
 #: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:472
-#: ../quodlibet/qltk/songlist.py:457
+#: ../quodlibet/qltk/songlist.py:458
 msgid "Unable to copy songs"
 msgstr "Kunde ej kopiera låtar"
 
-#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:458
+#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:459
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "De valda filerna kan inte kopieras till andra låtlistor eller till kön."
@@ -902,35 +902,35 @@ msgstr "Okänd enhet"
 msgid "Could not import %s, which is needed for device support."
 msgstr "Kan inte importera %s, som behövs för enhetsstöd."
 
-#: ../quodlibet/devices/__init__.py:144
+#: ../quodlibet/devices/__init__.py:140
 #, python-format
 msgid "%r is not a supported device."
 msgstr "%r stöds inte. "
 
-#: ../quodlibet/devices/__init__.py:210
+#: ../quodlibet/devices/__init__.py:206
 #, python-format
 msgid "%s: Could not find 'libudev'."
 msgstr "%s: Hittar inte 'libudev'."
 
-#: ../quodlibet/devices/__init__.py:216
+#: ../quodlibet/devices/__init__.py:212
 #, python-format
 msgid "%s: Could not find %s."
 msgstr "%s: Kan inte hitta %s."
 
-#: ../quodlibet/devices/__init__.py:405
+#: ../quodlibet/devices/__init__.py:401
 msgid "Initializing device backend."
 msgstr "Initialiserar enhetsdrivrutin."
 
-#: ../quodlibet/devices/__init__.py:406
+#: ../quodlibet/devices/__init__.py:402
 #, python-format
 msgid "Trying '%s'"
 msgstr "Testar '%s'"
 
-#: ../quodlibet/devices/__init__.py:425
+#: ../quodlibet/devices/__init__.py:421
 msgid "Couldn't connect to a device backend."
 msgstr "Kunde inte ansluta till enhetsdrivrutin."
 
-#: ../quodlibet/devices/__init__.py:427
+#: ../quodlibet/devices/__init__.py:423
 msgid "Device backend initialized."
 msgstr "Enhetsdrivrutin initierad."
 
@@ -1365,15 +1365,15 @@ msgstr "N/A"
 msgid "Time"
 msgstr "Tid"
 
-#: ../quodlibet/qltk/bookmarks.py:84 ../quodlibet/qltk/bookmarks.py:118
+#: ../quodlibet/qltk/bookmarks.py:84 ../quodlibet/qltk/bookmarks.py:119
 msgid "Bookmark Name"
 msgstr "Bokmärkesnamn"
 
-#: ../quodlibet/qltk/bookmarks.py:116
+#: ../quodlibet/qltk/bookmarks.py:117
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:200 ../quodlibet/qltk/information.py:100
+#: ../quodlibet/qltk/bookmarks.py:201 ../quodlibet/qltk/information.py:100
 msgid "Bookmarks"
 msgstr "Bokmärken"
 
@@ -1382,7 +1382,7 @@ msgstr "Bokmärken"
 msgid "No time information"
 msgstr "Ingen tidsinformation"
 
-#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:267
+#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:268
 msgid "_Value:"
 msgstr "_Värde:"
 
@@ -1394,7 +1394,7 @@ msgstr "Sparade värden"
 msgid "Edit saved values..."
 msgstr "Redigera sparade värden..."
 
-#: ../quodlibet/qltk/chooser.py:44 ../quodlibet/qltk/filesel.py:334
+#: ../quodlibet/qltk/chooser.py:44 ../quodlibet/qltk/filesel.py:335
 msgid "Songs"
 msgstr "Låtar"
 
@@ -1541,80 +1541,80 @@ msgstr "_Förhandsgranska"
 msgid "_More options..."
 msgstr "_Fler alternativ"
 
-#: ../quodlibet/qltk/edittags.py:41 ../quodlibet/qltk/edittags.py:52
+#: ../quodlibet/qltk/edittags.py:42 ../quodlibet/qltk/edittags.py:53
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
 msgstr[0] "saknas från %d låt"
 msgstr[1] "saknas från %d låtar"
 
-#: ../quodlibet/qltk/edittags.py:45 ../quodlibet/qltk/edittags.py:49
+#: ../quodlibet/qltk/edittags.py:46 ../quodlibet/qltk/edittags.py:50
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
 msgstr[0] "skiljer sig mellan %d låt"
 msgstr[1] "skiljer sig mellan %d låtar"
 
-#: ../quodlibet/qltk/edittags.py:145
+#: ../quodlibet/qltk/edittags.py:146
 msgid "Split into _Multiple Values"
 msgstr "Dela till flera värden"
 
-#: ../quodlibet/qltk/edittags.py:165
+#: ../quodlibet/qltk/edittags.py:166
 msgid "Split Disc out of _Album"
 msgstr "Hämta skiva ur _album"
 
-#: ../quodlibet/qltk/edittags.py:182
+#: ../quodlibet/qltk/edittags.py:183
 msgid "Split _Version out of Title"
 msgstr "Hämta _version ur titel"
 
-#: ../quodlibet/qltk/edittags.py:217
+#: ../quodlibet/qltk/edittags.py:218
 msgid "Split Arranger out of Ar_tist"
 msgstr "Hämta arrangör ur ar_tist"
 
-#: ../quodlibet/qltk/edittags.py:222
+#: ../quodlibet/qltk/edittags.py:223
 msgid "Split _Performer out of Artist"
 msgstr "Hämta _uppträdande ut artist"
 
-#: ../quodlibet/qltk/edittags.py:228
+#: ../quodlibet/qltk/edittags.py:229
 msgid "Split _Performer out of Title"
 msgstr "Hämta _framträdanden från titel"
 
-#: ../quodlibet/qltk/edittags.py:234
+#: ../quodlibet/qltk/edittags.py:235
 msgid "Split _Originalartist out of Title"
 msgstr "Hämta _originalartist från titel"
 
-#: ../quodlibet/qltk/edittags.py:241
+#: ../quodlibet/qltk/edittags.py:242
 msgid "Add a Tag"
 msgstr "Lägg till en tagg"
 
-#: ../quodlibet/qltk/edittags.py:258
+#: ../quodlibet/qltk/edittags.py:259
 msgid "_Tag:"
 msgstr "_Tagg:"
 
 #. Translators: translate only to override the text
 #. for the tag "save" button
-#: ../quodlibet/qltk/edittags.py:364
+#: ../quodlibet/qltk/edittags.py:365
 msgid "ql-save"
 msgstr "ql-save"
 
 #. Translators: translate only to override the  for the tag "revert" button
-#: ../quodlibet/qltk/edittags.py:366
+#: ../quodlibet/qltk/edittags.py:367
 msgid "ql-revert"
 msgstr "ql-revert"
 
-#: ../quodlibet/qltk/edittags.py:375
+#: ../quodlibet/qltk/edittags.py:376
 msgid "Edit Tags"
 msgstr "Redigera taggar"
 
-#: ../quodlibet/qltk/edittags.py:382
+#: ../quodlibet/qltk/edittags.py:383
 msgid "Write"
 msgstr "Skriv"
 
-#: ../quodlibet/qltk/edittags.py:599
+#: ../quodlibet/qltk/edittags.py:600
 msgid "Unable to add tag"
 msgstr "Kunde ej lägga till tagg"
 
-#: ../quodlibet/qltk/edittags.py:600
+#: ../quodlibet/qltk/edittags.py:601
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -1627,14 +1627,14 @@ msgstr ""
 
 #. Can't remove the old tag.
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:625 ../quodlibet/qltk/edittags.py:781
-#: ../quodlibet/qltk/edittags.py:788 ../quodlibet/qltk/tagsfrompath.py:173
+#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
+#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:173
 #: ../quodlibet/util/__init__.py:634 ../quodlibet/util/tags.py:131
 msgid "Invalid tag"
 msgstr "Ogiltig tall"
 
-#: ../quodlibet/qltk/edittags.py:626 ../quodlibet/qltk/edittags.py:782
-#: ../quodlibet/qltk/edittags.py:789 ../quodlibet/qltk/tagsfrompath.py:174
+#: ../quodlibet/qltk/edittags.py:627 ../quodlibet/qltk/edittags.py:783
+#: ../quodlibet/qltk/edittags.py:790 ../quodlibet/qltk/tagsfrompath.py:174
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -1645,12 +1645,12 @@ msgstr ""
 "\n"
 "Den valda filen har ej stöd för att redigera den här taggen."
 
-#: ../quodlibet/qltk/edittags.py:677 ../quodlibet/qltk/tagsfrompath.py:236
+#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:236
 #: ../quodlibet/qltk/tracknumbers.py:116
 msgid "Tag may not be accurate"
 msgstr "Taggen är möjligtvis ej korrekt"
 
-#: ../quodlibet/qltk/edittags.py:678 ../quodlibet/qltk/tagsfrompath.py:237
+#: ../quodlibet/qltk/edittags.py:679 ../quodlibet/qltk/tagsfrompath.py:237
 #: ../quodlibet/qltk/tracknumbers.py:117
 #, python-format
 msgid ""
@@ -1664,11 +1664,11 @@ msgstr ""
 "\n"
 "Spara ändå?"
 
-#: ../quodlibet/qltk/edittags.py:736 ../quodlibet/qltk/tracknumbers.py:130
+#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tracknumbers.py:130
 msgid "Unable to save song"
 msgstr "Kunde ej spara låt"
 
-#: ../quodlibet/qltk/edittags.py:737 ../quodlibet/qltk/tagsfrompath.py:263
+#: ../quodlibet/qltk/edittags.py:738 ../quodlibet/qltk/tagsfrompath.py:263
 #: ../quodlibet/qltk/tracknumbers.py:131 ../quodlibet/util/songwrapper.py:97
 #, python-format
 msgid ""
@@ -1678,11 +1678,11 @@ msgstr ""
 "Sparning av filen <b>%s</b> misslyckades. Filen kan vara skrivskyddad, "
 "korrupt eller så har du inte tillstånd att redigera den."
 
-#: ../quodlibet/qltk/edittags.py:761 ../quodlibet/qltk/edittags.py:799
+#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
 msgid "Invalid value"
 msgstr "Ogiltigt värde"
 
-#: ../quodlibet/qltk/edittags.py:762 ../quodlibet/qltk/edittags.py:800
+#: ../quodlibet/qltk/edittags.py:763 ../quodlibet/qltk/edittags.py:801
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -1694,7 +1694,7 @@ msgstr ""
 "%(error)s"
 
 #: ../quodlibet/qltk/exfalsowindow.py:78
-#: ../quodlibet/qltk/quodlibetwindow.py:450 ../quodlibet/qltk/songsmenu.py:195
+#: ../quodlibet/qltk/quodlibetwindow.py:450 ../quodlibet/qltk/songsmenu.py:196
 msgid "_Plugins"
 msgstr "_Insticksmoduler"
 
@@ -1751,36 +1751,36 @@ msgid "Unable to delete folder"
 msgstr "Kunde ej ta bort mapp"
 
 #. Translators: As in "by Artist Name"
-#: ../quodlibet/qltk/info.py:36
+#: ../quodlibet/qltk/info.py:37
 #, python-format
 msgid "by %s"
 msgstr "av %s"
 
-#: ../quodlibet/qltk/info.py:37 ../quodlibet/qltk/information.py:147
+#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:147
 #: ../quodlibet/qltk/information.py:443
 #, python-format
 msgid "Disc %s"
 msgstr "Skiva %s"
 
-#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:152
+#: ../quodlibet/qltk/info.py:39 ../quodlibet/qltk/information.py:152
 #, python-format
 msgid "Track %s"
 msgstr "Spår %s"
 
-#: ../quodlibet/qltk/info.py:68 ../quodlibet/qltk/songsmenu.py:226
+#: ../quodlibet/qltk/info.py:69 ../quodlibet/qltk/songsmenu.py:227
 msgid "_Add to Playlist"
 msgstr "_Lägg till i spellista"
 
-#: ../quodlibet/qltk/info.py:86
+#: ../quodlibet/qltk/info.py:87
 msgid "_Edit Display..."
 msgstr "_Redigera visning..."
 
-#: ../quodlibet/qltk/info.py:94 ../quodlibet/qltk/quodlibetwindow.py:463
-#: ../quodlibet/qltk/songsmenu.py:276
+#: ../quodlibet/qltk/info.py:95 ../quodlibet/qltk/quodlibetwindow.py:463
+#: ../quodlibet/qltk/songsmenu.py:277
 msgid "Edit _Tags"
 msgstr "Redigera _taggar"
 
-#: ../quodlibet/qltk/info.py:135
+#: ../quodlibet/qltk/info.py:136
 msgid "Not playing"
 msgstr "Spelar ej"
 
@@ -1826,7 +1826,7 @@ msgid "performers"
 msgstr "uppträdande"
 
 #: ../quodlibet/qltk/information.py:241 ../quodlibet/qltk/information.py:256
-#: ../quodlibet/qltk/songlist.py:187
+#: ../quodlibet/qltk/songlist.py:188
 msgid "Never"
 msgstr "Aldrig"
 
@@ -2680,56 +2680,56 @@ msgstr "_Gräns:"
 msgid "_Weight"
 msgstr "_Vikt"
 
-#: ../quodlibet/qltk/songlist.py:319
+#: ../quodlibet/qltk/songlist.py:320
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtrera på %s"
 
-#: ../quodlibet/qltk/songlist.py:1012
+#: ../quodlibet/qltk/songlist.py:1017
 msgid "All _Headers"
 msgstr "Alla _Kolumner"
 
-#: ../quodlibet/qltk/songlist.py:1013
+#: ../quodlibet/qltk/songlist.py:1018
 msgid "_Track Headers"
 msgstr "_Spårkolumner"
 
-#: ../quodlibet/qltk/songlist.py:1014
+#: ../quodlibet/qltk/songlist.py:1019
 msgid "_Album Headers"
 msgstr "_Albumkolumner"
 
-#: ../quodlibet/qltk/songlist.py:1015
+#: ../quodlibet/qltk/songlist.py:1020
 msgid "_People Headers"
 msgstr "_Personkolumner"
 
-#: ../quodlibet/qltk/songlist.py:1016
+#: ../quodlibet/qltk/songlist.py:1021
 msgid "_Date Headers"
 msgstr "_Datumkolumner"
 
-#: ../quodlibet/qltk/songlist.py:1017
+#: ../quodlibet/qltk/songlist.py:1022
 msgid "_File Headers"
 msgstr "_Filkolumner"
 
-#: ../quodlibet/qltk/songlist.py:1018
+#: ../quodlibet/qltk/songlist.py:1023
 msgid "_Production Headers"
 msgstr "_Produktionskolumner"
 
-#: ../quodlibet/qltk/songlist.py:1032
+#: ../quodlibet/qltk/songlist.py:1037
 msgid "Custom _Sort..."
 msgstr "Egen _sortering..."
 
-#: ../quodlibet/qltk/songlist.py:1037
+#: ../quodlibet/qltk/songlist.py:1042
 msgid "_Customize Headers..."
 msgstr "_Kolumninställningar..."
 
-#: ../quodlibet/qltk/songsmenu.py:231
+#: ../quodlibet/qltk/songsmenu.py:232
 msgid "Add to _Queue"
 msgstr "Lägg till i _kö"
 
-#: ../quodlibet/qltk/songsmenu.py:249
+#: ../quodlibet/qltk/songsmenu.py:250
 msgid "_Copy to Device"
 msgstr "_Kopiera till enhet"
 
-#: ../quodlibet/qltk/songsmenu.py:258
+#: ../quodlibet/qltk/songsmenu.py:259
 msgid "_Remove from library"
 msgstr "_Ta bort från bibliotek"
 
@@ -2870,7 +2870,7 @@ msgstr "_Antal spår:"
 msgid "Track"
 msgstr "Spår"
 
-#: ../quodlibet/qltk/views.py:542
+#: ../quodlibet/qltk/views.py:541
 #, python-format
 msgid "and %d more..."
 msgstr "och %d till..."
