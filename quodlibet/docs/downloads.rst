@@ -35,18 +35,18 @@ To clone the repository::
 ========================== ===============================
 Release                    Filename
 ========================== ===============================
-Quod Libet 3.0.1           quodlibet-3.0.1.tar.gz_
-Quod Libet Plugins 3.0.1   quodlibet-plugins-3.0.1.tar.gz_
-Quod Libet 2.6.0           quodlibet-2.6.0.tar.gz_
-Quod Libet Plugins 2.6.0   quodlibet-plugins-2.6.0.tar.gz_
+Quod Libet 3.0.2           quodlibet-3.0.2.tar.gz_
+Quod Libet Plugins 3.0.2   quodlibet-plugins-3.0.2.tar.gz_
+Quod Libet 2.6.2           quodlibet-2.6.2.tar.gz_
+Quod Libet Plugins 2.6.2   quodlibet-plugins-2.6.2.tar.gz_
 Quod Libet 2.5.1           quodlibet-2.5.1.tar.gz_
 Quod Libet Plugins 2.5.1   quodlibet-plugins-2.5.1.tar.gz_
 ========================== ===============================
 
-.. _quodlibet-3.0.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.1.tar.gz
-.. _quodlibet-plugins-3.0.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.1.tar.gz
-.. _quodlibet-2.6.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.0.tar.gz
-.. _quodlibet-plugins-2.6.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.6.0.tar.gz
+.. _quodlibet-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.2.tar.gz
+.. _quodlibet-plugins-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.2.tar.gz
+.. _quodlibet-2.6.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.2.tar.gz
+.. _quodlibet-plugins-2.6.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.6.2.tar.gz
 .. _quodlibet-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1.tar.gz
 .. _quodlibet-plugins-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.5.1.tar.gz
 
@@ -86,11 +86,13 @@ Stable Repos:
 
   * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_17/>`__
   * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_18/>`__
+  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_19/>`__
 
 Unstable Repo:
 
   * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_17/>`__
   * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_18/>`__
+  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_19/>`__
 
 
 |opensuse-logo| openSUSE
