@@ -1,12 +1,11 @@
-from tests import TestCase, add
+from tests import TestCase, add, mkstemp, mkdtemp
 
 import os
-
-from tempfile import mkstemp, mkdtemp
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
+
 
 class TSongsMenuPlugins(TestCase):
 

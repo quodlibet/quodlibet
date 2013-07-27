@@ -6,14 +6,13 @@
 
 import os
 import subprocess
-import tempfile
 import imp
 import shutil
 import contextlib
 import StringIO
 import sys
 
-from tests import TestCase, add, DATA_DIR
+from tests import TestCase, add, DATA_DIR, mkstemp
 
 import quodlibet
 from quodlibet import config
@@ -51,8 +50,8 @@ def call(args=None):
 class TOperonBase(TestCase):
     def setUp(self):
         config.init()
-        self.f = tempfile.mkstemp(".ogg")[1]
-        self.f2 = tempfile.mkstemp(".mp3")[1]
+        self.f = mkstemp(".ogg")[1]
+        self.f2 = mkstemp(".mp3")[1]
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ogg'), self.f)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.f2)
         self.s = MusicFile(self.f)

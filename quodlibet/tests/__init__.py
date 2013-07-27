@@ -13,6 +13,20 @@ suites = []
 
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
+_TEMP_DIR = None
+
+
+def _wrap_tempfile(func):
+    def wrap(*args, **kwargs):
+        if kwargs.get("dir") is None:
+            kwargs["dir"] = _TEMP_DIR
+        return func(*args, **kwargs)
+    return wrap
+
+
+NamedTemporaryFile = _wrap_tempfile(tempfile.NamedTemporaryFile)
+mkdtemp = _wrap_tempfile(tempfile.mkdtemp)
+mkstemp = _wrap_tempfile(tempfile.mkstemp)
 
 
 def add(t):
@@ -97,6 +111,8 @@ class Runner(object):
 def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
          stop_first=False):
 
+    global _TEMP_DIR
+
     path = os.path.dirname(__file__)
     if subdirs is None:
         subdirs = []
@@ -126,7 +142,8 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
                 __import__(".".join([__name__, subdir, name[:-3]]), {}, {}, [])
 
     # create a user dir in /tmp
-    user_dir = tempfile.mkdtemp(prefix="QL-TEST-")
+    _TEMP_DIR = tempfile.mkdtemp(prefix="QL-TEST-")
+    user_dir = tempfile.mkdtemp(prefix="QL-USER-", dir=_TEMP_DIR)
     os.environ['QUODLIBET_USERDIR'] = user_dir
     import quodlibet.const
     reload(quodlibet.const)
@@ -151,8 +168,8 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
     use_suites = filter(filter_func, suites)
     for test in sorted(use_suites, key=repr):
         if (not run
-            or test.__name__ in run
-            or test.__module__[11:] in run):
+                or test.__name__ in run
+                or test.__module__[11:] in run):
             setup_test(test)
             df, de = runner.run(test)
             if stop_first and (df or de):
@@ -163,7 +180,7 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
             quodlibet.config.quit()
 
     try:
-        shutil.rmtree(user_dir)
+        shutil.rmtree(_TEMP_DIR)
     except EnvironmentError:
         pass
 

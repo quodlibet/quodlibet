@@ -1,9 +1,8 @@
-from tests import add, TestCase, DATA_DIR
+from tests import add, TestCase, DATA_DIR, mkstemp
 
 import os
 import sys
 import shutil
-import tempfile
 import base64
 
 from quodlibet import config, const, formats
@@ -142,7 +141,7 @@ class TTotalTagsBase(TestCase):
 
     def setUp(self):
         config.init()
-        self.filename = tempfile.mkstemp(".ogg")[1]
+        self.filename = mkstemp(".ogg")[1]
         shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
 
     def tearDown(self):
@@ -269,7 +268,7 @@ add(TDiscTotal)
 class TFLACFile(TVCFile):
     def setUp(self):
         TVCFile.setUp(self)
-        self.filename = tempfile.mkstemp(".flac")[1]
+        self.filename = mkstemp(".flac")[1]
         shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
         self.song = FLACFile(self.filename)
 
@@ -307,9 +306,12 @@ class TVCCover(TestCase):
     def __get_jpeg(self, size=5):
         from gi.repository import GdkPixbuf
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, size, size)
-        fn = tempfile.NamedTemporaryFile()
-        pb.savev(fn.name, "jpeg", [], [])
-        return fn.read()
+        fd, fn = mkstemp()
+        pb.savev(fn, "jpeg", [], [])
+        with os.fdopen(fd) as h:
+            data = h.read()
+        os.unlink(fn)
+        return data
 
     def test_no_cover(self):
         song = self.QLType(self.filename)
@@ -409,7 +411,7 @@ class TVCCover(TestCase):
 class TVCCoverOgg(TVCCover):
     def setUp(self):
         TVCCover.setUp(self)
-        self.filename = tempfile.mkstemp(".ogg")[1]
+        self.filename = mkstemp(".ogg")[1]
         shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
         self.MutagenType = OggVorbis
         self.QLType = OggFile
@@ -419,7 +421,7 @@ add(TVCCoverOgg)
 class TVCCoverFlac(TVCCover):
     def setUp(self):
         TVCCover.setUp(self)
-        self.filename = tempfile.mkstemp(".flac")[1]
+        self.filename = mkstemp(".flac")[1]
         shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
         self.MutagenType = FLAC
         self.QLType = FLACFile
@@ -429,7 +431,7 @@ add(TVCCoverFlac)
 class TFlacPicture(TestCase):
     def setUp(self):
         config.init()
-        self.filename = tempfile.mkstemp(".flac")[1]
+        self.filename = mkstemp(".flac")[1]
         shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
 
     def test_picture(self):
@@ -454,7 +456,7 @@ add(TFlacPicture)
 class TOggFile(TVCFile):
     def setUp(self):
         TVCFile.setUp(self)
-        self.filename = tempfile.mkstemp(".ogg")[1]
+        self.filename = mkstemp(".ogg")[1]
         shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
         self.song = OggFile(self.filename)
 
@@ -467,7 +469,7 @@ add(TOggFile)
 class TOggOpusFile(TVCFile):
     def setUp(self):
         TVCFile.setUp(self)
-        self.filename = tempfile.mkstemp(".ogg")[1]
+        self.filename = mkstemp(".ogg")[1]
         shutil.copy(os.path.join(DATA_DIR, 'empty.opus'), self.filename)
         self.song = OggOpusFile(self.filename)
 

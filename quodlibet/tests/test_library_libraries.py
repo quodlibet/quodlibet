@@ -5,8 +5,7 @@ import shutil
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 
-from tests import TestCase, add, DATA_DIR
-from tempfile import mkstemp
+from tests import TestCase, add, DATA_DIR, mkstemp
 
 from quodlibet.library.libraries import *
 

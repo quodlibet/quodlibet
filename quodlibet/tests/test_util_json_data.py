@@ -1,7 +1,6 @@
 import json
-from tempfile import NamedTemporaryFile
 from quodlibet.util.json_data import JSONObjectDict, JSONObject
-from tests import TestCase, add
+from tests import TestCase, add, NamedTemporaryFile
 
 
 class TJsonData(TestCase):

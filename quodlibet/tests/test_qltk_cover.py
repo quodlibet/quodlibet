@@ -1,9 +1,8 @@
-import tempfile
 import os
 
 from gi.repository import Gtk, GdkPixbuf, Gdk
 
-from tests import TestCase, add
+from tests import TestCase, add, mkstemp
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.cover import CoverImage, BigCenteredImage, ResizeImage
@@ -11,7 +10,7 @@ from quodlibet.qltk.cover import CoverImage, BigCenteredImage, ResizeImage
 class TCoverImage(TestCase):
     def setUp(self):
         config.init()
-        self.fn = tempfile.mkstemp()[1]
+        self.fn = mkstemp()[1]
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
         pb.savev(self.fn, "png", [], [])
 

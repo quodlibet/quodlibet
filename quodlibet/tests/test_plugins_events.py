@@ -1,9 +1,7 @@
-from tests import TestCase, add
+from tests import TestCase, add, mkstemp, mkdtemp
 
 import os
 import sys
-
-from tempfile import mkstemp, mkdtemp
 
 from quodlibet import player
 from quodlibet.library import SongLibrarian

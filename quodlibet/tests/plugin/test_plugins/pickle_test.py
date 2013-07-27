@@ -6,7 +6,8 @@
 
 import os
 import shelve
-from tempfile import mkstemp
+
+from tests import mkstemp
 
 from quodlibet.plugins.events import EventPlugin
 

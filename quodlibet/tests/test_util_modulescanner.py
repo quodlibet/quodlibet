@@ -1,10 +1,9 @@
-from tests import TestCase, add
+from tests import TestCase, add, mkdtemp
 
 import imp
 import os
 import sys
 import shutil
-import tempfile
 import py_compile
 
 from quodlibet.util.modulescanner import *
@@ -13,7 +12,7 @@ from quodlibet.util.modulescanner import *
 class TModuleScanner(TestCase):
 
     def setUp(self):
-        self.d = tempfile.mkdtemp("ql-mod")
+        self.d = mkdtemp("ql-mod")
         sys.modules["qlfake"] = imp.new_module("qlfake")
 
     def tearDown(self):

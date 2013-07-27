@@ -1,8 +1,7 @@
-import tempfile
 import shutil
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.util.collection import Playlist
-from tests import TestCase, add
+from tests import TestCase, add, mkdtemp
 from random import randint
 from timeit import timeit,default_timer
 from quodlibet import const
@@ -11,7 +10,7 @@ const.DEBUG = True
 
 class TPlaylistPerformance(TestCase):
     def setUp(self):
-        self.temp = tempfile.mkdtemp()
+        self.temp = mkdtemp()
 
     def tearDown(self):
         shutil.rmtree(self.temp)

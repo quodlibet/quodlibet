@@ -1,7 +1,6 @@
-from tests import TestCase, add
+from tests import TestCase, add, mkstemp
 
 import os
-import tempfile
 
 from quodlibet.qltk.cbes import ComboBoxEntrySave, StandaloneEditor
 import quodlibet.config
@@ -12,7 +11,7 @@ class TComboBoxEntrySave(TestCase):
 
     def setUp(self):
         quodlibet.config.init()
-        self.fname = tempfile.mkstemp()[1]
+        self.fname = mkstemp()[1]
         f = file(self.fname, "w")
         f.write(self.memory)
         f.close()
@@ -92,7 +91,7 @@ class TStandaloneEditor(TestCase):
     TEST_KV_DATA = [("Search Foo", "https://foo.com/search?q=<artist>-<title>")]
     def setUp(self):
         quodlibet.config.init()
-        self.fname = tempfile.mkstemp()[1]
+        self.fname = mkstemp()[1]
         f = file(self.fname + ".saved", "w")
         f.write("%s\n%s\n" % (self.TEST_KV_DATA[0][1], self.TEST_KV_DATA[0][0]))
         f.close()

@@ -1,9 +1,8 @@
-import tempfile
 import shutil
 from quodlibet import config
 from quodlibet.const import DEFAULT_RATING
 
-from tests import TestCase, add
+from tests import TestCase, add, mkdtemp
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
@@ -292,8 +291,8 @@ class TPlaylist(TestCase):
     ]
 
     def setUp(self):
-        self.temp = tempfile.mkdtemp()
-        self.temp2 = tempfile.mkdtemp()
+        self.temp = mkdtemp()
+        self.temp2 = mkdtemp()
 
     def tearDown(self):
         shutil.rmtree(self.temp)

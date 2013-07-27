@@ -1,7 +1,6 @@
-from tests import TestCase, add, DATA_DIR
+from tests import TestCase, add, DATA_DIR, mkstemp, mkdtemp
 
 import os
-import tempfile
 import shutil
 
 from quodlibet.browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
@@ -13,9 +12,6 @@ from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 
 
-def makename():
-    return tempfile.mkstemp()[1]
-
 class TParsePlaylist(TestCase):
     def setUp(self):
         quodlibet.config.init()
@@ -24,7 +20,7 @@ class TParsePlaylist(TestCase):
         quodlibet.config.quit()
 
     def test_parse_empty(self):
-        name = makename()
+        name = mkstemp()[1]
         file(name, "w").close()
         pl = self.Parse(name)
         os.unlink(name)
@@ -32,7 +28,7 @@ class TParsePlaylist(TestCase):
         pl.delete()
 
     def test_parse_onesong(self):
-        name = makename()
+        name = mkstemp()[1]
         f = file(name, "w")
         target = self.prefix
         target += os.path.join(DATA_DIR, "silence-44-s.ogg")
@@ -45,7 +41,7 @@ class TParsePlaylist(TestCase):
         list.delete()
 
     def test_parse_onesong_uri(self):
-        name = makename()
+        name = mkstemp()[1]
         target = os.path.join(DATA_DIR, "silence-44-s.ogg")
         from quodlibet.util.uri import URI
         target = URI.frompath(target)
@@ -71,7 +67,7 @@ add(TParsePLS)
 
 class TPlaylist(TestCase):
     def setUp(self):
-        self._dir = tempfile.mkdtemp()
+        self._dir = mkdtemp()
 
     def tearDown(self):
         shutil.rmtree(self._dir)
@@ -144,7 +140,7 @@ class TPlaylistIntegration(TestCase):
         for af in self.SONGS:
             af.sanitize()
         self.lib.add(self.SONGS)
-        self._dir = tempfile.mkdtemp()
+        self._dir = mkdtemp()
         self.pl = Playlist.new(self._dir, "Foobar")
         self.pl.extend(self.SONGS)
 

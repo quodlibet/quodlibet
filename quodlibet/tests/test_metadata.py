@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase, add, mkstemp
 
 import os
 
@@ -6,7 +6,7 @@ from quodlibet import formats
 from quodlibet import config
 
 from shutil import copyfileobj
-from tempfile import mkstemp
+
 
 class TestMetaData(TestCase):
     base = 'tests/data/silence-44-s'
