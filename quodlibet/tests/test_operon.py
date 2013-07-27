@@ -13,7 +13,7 @@ import contextlib
 import StringIO
 import sys
 
-from tests import TestCase, add
+from tests import TestCase, add, DATA_DIR
 
 import quodlibet
 from quodlibet import config
@@ -53,8 +53,8 @@ class TOperonBase(TestCase):
         config.init()
         self.f = tempfile.mkstemp(".ogg")[1]
         self.f2 = tempfile.mkstemp(".mp3")[1]
-        shutil.copy(os.path.join('tests', 'data', 'silence-44-s.ogg'), self.f)
-        shutil.copy(os.path.join('tests', 'data', 'silence-44-s.mp3'), self.f2)
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ogg'), self.f)
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.f2)
         self.s = MusicFile(self.f)
         self.s2 = MusicFile(self.f2)
 

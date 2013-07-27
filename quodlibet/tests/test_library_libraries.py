@@ -5,7 +5,7 @@ import shutil
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 
-from tests import TestCase, add
+from tests import TestCase, add, DATA_DIR
 from tempfile import mkstemp
 
 from quodlibet.library.libraries import *
@@ -402,7 +402,7 @@ class TSongFileLibrary(TSongLibrary):
 
     def __get_file(self):
         fd, filename = mkstemp(".flac")
-        shutil.copy(os.path.join('tests', 'data', 'empty.flac'), filename)
+        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), filename)
         return filename
 
     def test_add_filename(self):

@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase, add, DATA_DIR
 
 import os
 import tempfile
@@ -35,7 +35,7 @@ class TParsePlaylist(TestCase):
         name = makename()
         f = file(name, "w")
         target = self.prefix
-        target += os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg")
+        target += os.path.join(DATA_DIR, "silence-44-s.ogg")
         f.write(target)
         f.close()
         list = self.Parse(name)
@@ -46,7 +46,7 @@ class TParsePlaylist(TestCase):
 
     def test_parse_onesong_uri(self):
         name = makename()
-        target = os.path.join(os.getcwd(), "tests/data/silence-44-s.ogg")
+        target = os.path.join(DATA_DIR, "silence-44-s.ogg")
         from quodlibet.util.uri import URI
         target = URI.frompath(target)
         target = self.prefix + target

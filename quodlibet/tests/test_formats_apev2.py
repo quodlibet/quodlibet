@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase, add, DATA_DIR
 
 import os
 import shutil
@@ -107,13 +107,13 @@ class TAPEv2FileBase(TestCase):
 class TMPCFile(TAPEv2FileBase):
     def setUp(self):
         self.f = tempfile.mkstemp(".mpc")[1]
-        shutil.copy(os.path.join('tests', 'data', 'silence-44-s.mpc'), self.f)
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mpc'), self.f)
         self.s = MPCFile(self.f)
 add(TMPCFile)
 
 class TMAFile(TAPEv2FileBase):
     def setUp(self):
         self.f = tempfile.mkstemp(".ape")[1]
-        shutil.copy(os.path.join('tests', 'data', 'silence-44-s.ape'), self.f)
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ape'), self.f)
         self.s = MonkeysAudioFile(self.f)
 add(TMAFile)

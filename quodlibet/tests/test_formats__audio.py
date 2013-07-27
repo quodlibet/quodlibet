@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase, add, DATA_DIR
 
 import os
 
@@ -27,7 +27,7 @@ bar_2_1 = AudioFile({
     "lyricist": "Foo", "composer": "Foo", "performer": "I have two artists"})
 
 quux = AudioFile({
-    "~filename": "tests/data/asong.ogg",
+    "~filename": os.path.join(DATA_DIR, "asong.ogg"),
     "album": "Quuxly"
     })
 
@@ -68,7 +68,7 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(quux("not a key", "foo"), "foo")
         self.failUnlessEqual(quux("artist"), "")
         self.failUnlessEqual(quux("~basename"), "asong.ogg")
-        self.failUnlessEqual(quux("~dirname"), "tests/data")
+        self.failUnlessEqual(quux("~dirname"), DATA_DIR)
         self.failUnlessEqual(quux("title"), "asong.ogg [Unknown]")
 
         self.failUnlessEqual(bar_1_1("~#disc"), 1)
@@ -171,7 +171,7 @@ class TAudioFile(TestCase):
     def test_rename(self):
         old_fn = quux("~basename")
         new_fn = "anothersong.mp3"
-        dir = os.getcwd() + "/tests/data/"
+        dir = DATA_DIR
         self.failUnless(quux.exists())
         quux.rename(new_fn)
         self.failIf(os.path.exists(dir + old_fn))
@@ -190,7 +190,7 @@ class TAudioFile(TestCase):
     def test_rename_to_existing(self):
         quux.rename(quux("~basename"))
         self.failUnlessRaises(ValueError, quux.rename, "/dev/null")
-        self.failUnlessRaises(ValueError, quux.rename, "silence-44-s.ogg")
+        self.failUnlessRaises(ValueError, quux.rename, os.path.join(DATA_DIR, "silence-44-s.ogg"))
 
     def test_website(self):
         song = AudioFile()

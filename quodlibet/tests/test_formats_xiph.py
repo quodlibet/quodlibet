@@ -1,4 +1,4 @@
-from tests import add, TestCase
+from tests import add, TestCase, DATA_DIR
 
 import os
 import sys
@@ -143,7 +143,7 @@ class TTotalTagsBase(TestCase):
     def setUp(self):
         config.init()
         self.filename = tempfile.mkstemp(".ogg")[1]
-        shutil.copy(os.path.join('tests', 'data', 'empty.ogg'), self.filename)
+        shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
 
     def tearDown(self):
         os.unlink(self.filename)
@@ -270,7 +270,7 @@ class TFLACFile(TVCFile):
     def setUp(self):
         TVCFile.setUp(self)
         self.filename = tempfile.mkstemp(".flac")[1]
-        shutil.copy(os.path.join('tests', 'data', 'empty.flac'), self.filename)
+        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
         self.song = FLACFile(self.filename)
 
     def test_mime(self):
@@ -410,7 +410,7 @@ class TVCCoverOgg(TVCCover):
     def setUp(self):
         TVCCover.setUp(self)
         self.filename = tempfile.mkstemp(".ogg")[1]
-        shutil.copy(os.path.join('tests', 'data', 'empty.ogg'), self.filename)
+        shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
         self.MutagenType = OggVorbis
         self.QLType = OggFile
 add(TVCCoverOgg)
@@ -420,7 +420,7 @@ class TVCCoverFlac(TVCCover):
     def setUp(self):
         TVCCover.setUp(self)
         self.filename = tempfile.mkstemp(".flac")[1]
-        shutil.copy(os.path.join('tests', 'data', 'empty.flac'), self.filename)
+        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
         self.MutagenType = FLAC
         self.QLType = FLACFile
 add(TVCCoverFlac)
@@ -430,7 +430,7 @@ class TFlacPicture(TestCase):
     def setUp(self):
         config.init()
         self.filename = tempfile.mkstemp(".flac")[1]
-        shutil.copy(os.path.join('tests', 'data', 'empty.flac'), self.filename)
+        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
 
     def test_picture(self):
         data = "abc"
@@ -455,7 +455,7 @@ class TOggFile(TVCFile):
     def setUp(self):
         TVCFile.setUp(self)
         self.filename = tempfile.mkstemp(".ogg")[1]
-        shutil.copy(os.path.join('tests', 'data', 'empty.ogg'), self.filename)
+        shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
         self.song = OggFile(self.filename)
 
     def tearDown(self):
@@ -468,7 +468,7 @@ class TOggOpusFile(TVCFile):
     def setUp(self):
         TVCFile.setUp(self)
         self.filename = tempfile.mkstemp(".ogg")[1]
-        shutil.copy(os.path.join('tests', 'data', 'empty.opus'), self.filename)
+        shutil.copy(os.path.join(DATA_DIR, 'empty.opus'), self.filename)
         self.song = OggOpusFile(self.filename)
 
     def test_length(self):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tests import add, TestCase
+from tests import add, TestCase, DATA_DIR
 
 import os
 import shutil
@@ -16,9 +16,9 @@ class TID3File(TestCase):
     def setUp(self):
         config.init()
         self.filename = tempfile.mkstemp(".mp3")[1]
-        shutil.copy(os.path.join('tests', 'data', 'silence-44-s.mp3'), self.filename)
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.filename)
         self.filename2 = tempfile.mkstemp(".mp3")[1]
-        shutil.copy(os.path.join('tests', 'data', 'mutagen-bug.mp3'), self.filename2)
+        shutil.copy(os.path.join(DATA_DIR, 'mutagen-bug.mp3'), self.filename2)
 
     def test_optional_POPM_count(self):
         #http://code.google.com/p/quodlibet/issues/detail?id=364

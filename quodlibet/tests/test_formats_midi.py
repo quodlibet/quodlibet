@@ -6,13 +6,13 @@
 
 import os
 
-from tests import TestCase, add
+from tests import TestCase, add, DATA_DIR
 from quodlibet.formats.midi import MidiFile
 
 
 class TMidiFile(TestCase):
     def setUp(self):
-        self.song = MidiFile(os.path.join('tests', 'data', 'test.mid'))
+        self.song = MidiFile(os.path.join(DATA_DIR, 'test.mid'))
 
     def test_length(self):
         self.failUnlessAlmostEqual(87, self.song("~#length", 0), 0)
@@ -31,7 +31,7 @@ class TMidiFile(TestCase):
         self.failIf(self.song.can_change("album"))
 
     def test_invalid(self):
-        path = os.path.join('tests', 'data', 'empty.xm')
+        path = os.path.join(DATA_DIR, 'empty.xm')
         self.failUnlessRaises(Exception, MidiFile, path)
 
 add(TMidiFile)
