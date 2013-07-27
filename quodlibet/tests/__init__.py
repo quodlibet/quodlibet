@@ -12,6 +12,9 @@ from unittest import TestCase
 suites = []
 
 
+DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
+
+
 def add(t):
     assert issubclass(t, TestCase)
     suites.append(t)
@@ -91,7 +94,9 @@ class Runner(object):
         result.printErrors()
         return len(result.failures), len(result.errors)
 
-def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False):
+def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
+         stop_first=False):
+
     path = os.path.dirname(__file__)
     if subdirs is None:
         subdirs = []
@@ -149,7 +154,9 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False):
             or test.__name__ in run
             or test.__module__[11:] in run):
             setup_test(test)
-            df,de = runner.run(test)
+            df, de = runner.run(test)
+            if stop_first and (df or de):
+                break
             failures += df
             errors += de
             teardown_test(test)
