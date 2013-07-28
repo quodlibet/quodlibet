@@ -151,36 +151,6 @@ class AudioFile(dict):
     def mountpoint(self):
         return self["~mountpoint"]
 
-    def _album_id_values(self, use_artist=False):
-        """Returns a "best attempt" conjunction (=AND) of album identifiers
-
-        Tries the (probably) most specific keys first, then gets less accurate
-        but more verbose (eg artist="foo" AND album="bar").
-
-        if use_artist is True, the track artist will also be used as a key if
-        necessary. This breaks compilations, but does well for overloaded
-        album names (eg "Greatest Hits")
-        """
-        ret = HashableDict()
-        for key in UNIQUE_ALBUM_IDENTIFIERS:
-            val = self.get(key)
-            if val:
-                ret[key] = val
-                break
-        if not ret and "album" in self:
-            # Add helpful identifiers where they exist
-            for key in ["album", "albumartist", "album_grouping_key"]:
-                val = self.get(key)
-                if val:
-                    ret[key] = val
-            if use_artist and "albumartist" not in ret and "artist" in self:
-                ret["artist"] = self.get("artist")
-        return ret
-
-    """Returns a dict of tag:value items that together identify this song's
-    album"""
-    album_id_values = property(_album_id_values)
-
     def __cmp__(self, other):
         if not other:
             return -1
