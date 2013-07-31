@@ -119,15 +119,14 @@ Unstable Repo:
 ========================== ==============================
 Release                    Filename
 ========================== ==============================
+Quod Libet 2.6.2           quodlibet-2.6.2-installer.exe_
 Quod Libet 2.5.1           quodlibet-2.5.1-installer.exe_
 Quod Libet 2.4.1           quodlibet-2.4.1-installer.exe_
-Quod Libet 2.3.1           quodlibet-2.3.1-installer.exe_
 ========================== ==============================
 
-
+.. _quodlibet-2.6.2-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.2-installer.exe
 .. _quodlibet-2.5.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1-installer.exe
 .. _quodlibet-2.4.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.4.1-installer.exe
-.. _quodlibet-2.3.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.3.1-installer.exe
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
 
