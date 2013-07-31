@@ -3,7 +3,6 @@ from tests import TestCase, add, DATA_DIR
 import os
 
 from quodlibet import config
-from quodlibet.util import HashableDict
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 

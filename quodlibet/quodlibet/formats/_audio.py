@@ -22,7 +22,6 @@ from quodlibet.util.path import mkdir, fsdecode, fsencode, mtime, expanduser
 from quodlibet.util.string import encode
 
 from quodlibet.util.uri import URI
-from quodlibet.util import HashableDict
 from quodlibet.util import human_sort_key as human
 from quodlibet.util.dprint import print_d, print_w
 
