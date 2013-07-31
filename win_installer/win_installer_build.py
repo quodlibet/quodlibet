@@ -334,7 +334,7 @@ def do_setup(rev):
     deps = [
     (PythonDep('Python', "2.6.6"),
         MSIInst('Python')),
-    (OnePageDep('setuptools', None, 'http://pypi.python.org/pypi/setuptools',
+    (OnePageDep('setuptools', None, 'http://pypi.python.org/pypi/setuptools/0.9.8',
                 '[^"]*setuptools[^"]*tar.gz[^"#]*'),
         SetuptoolsInst()),
     (SFDep('gnuwin32', 'unrar', None, 'unrar-[1234567890.]*-bin.zip'),
