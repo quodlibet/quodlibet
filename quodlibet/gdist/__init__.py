@@ -28,10 +28,12 @@ from gdist.man import install_man
 from gdist.po import build_mo, install_mo, po_stats, check_pot
 from gdist.icons import build_icon_cache, install_icons
 from gdist.search_provider import install_search_provider
+from gdist.dbus_services import build_dbus_services, install_dbus_services
 
 
 class build(distutils_build):
     """Override the default build with new subcommands."""
+
     sub_commands = distutils_build.sub_commands + [
         ("build_mo",
          lambda self: self.distribution.has_po()),
@@ -39,7 +41,10 @@ class build(distutils_build):
          lambda self: self.distribution.has_shortcuts()),
         ("build_icon_cache",
          lambda self: self.distribution.need_icon_cache()),
-        ]
+        ("build_dbus_services",
+         lambda self: self.distribution.has_dbus_services()),
+    ]
+
 
 class install(distutils_install):
     """Override the default install with new subcommands."""
@@ -51,7 +56,10 @@ class install(distutils_install):
         ("install_icons", lambda self: self.distribution.need_icon_install()),
         ("install_search_provider",
          lambda self: self.distribution.need_search_provider()),
+        ("install_dbus_services",
+         lambda self: self.distribution.has_dbus_services()),
        ]
+
 
 class GDistribution(Distribution):
     """A Distribution with support for GTK+-related options
@@ -63,6 +71,7 @@ class GDistribution(Distribution):
       po_directory -- directory where .po files are contained
       po_package -- package name for translation files
       shortcuts -- list of .desktop files to build/install
+      dbus_services -- list of .service files to build/install
       man_pages -- list of man pages to install
 
     Using the translation features requires intltool.
@@ -75,6 +84,7 @@ class GDistribution(Distribution):
       """
 
     shortcuts = []
+    dbus_services = []
     po_directory = None
     man_pages = []
     po_package = None
@@ -85,8 +95,11 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build_mo", build_mo)
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
         self.cmdclass.setdefault("build_icon_cache", build_icon_cache)
+        self.cmdclass.setdefault("build_dbus_services", build_dbus_services)
         self.cmdclass.setdefault("install_icons", install_icons)
         self.cmdclass.setdefault("install_shortcuts", install_shortcuts)
+        self.cmdclass.setdefault("install_dbus_services",
+                                 install_dbus_services)
         self.cmdclass.setdefault("install_man", install_man)
         self.cmdclass.setdefault("install_mo", install_mo)
         self.cmdclass.setdefault("install_search_provider",
@@ -104,6 +117,9 @@ class GDistribution(Distribution):
 
     def has_man_pages(self):
         return os.name != 'nt' and bool(self.man_pages)
+
+    def has_dbus_services(self):
+        return os.name != 'nt' and bool(self.dbus_services)
 
     def need_icon_cache(self):
         return os.name != 'nt'

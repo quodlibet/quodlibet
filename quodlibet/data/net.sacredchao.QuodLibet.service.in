@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=net.sacredchao.QuodLibet
+Exec=@PREFIX@/bin/quodlibet
