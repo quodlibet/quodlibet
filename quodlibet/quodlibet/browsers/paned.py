@@ -18,7 +18,8 @@ from quodlibet import util
 from quodlibet.browsers._base import Browser
 from quodlibet.formats import PEOPLE
 from quodlibet.util.collection import Collection
-from quodlibet.parse import Query, XMLFromPattern
+from quodlibet.parse import Query, XMLFromMarkupPattern as XMLFromPattern
+from quodlibet.parse import pattern_from_markup
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -259,17 +260,17 @@ class PanePattern(object):
 
     def __init__(self, row_pattern):
         parts = re.split(r"(?<!\\):", row_pattern)
-        parts = map(lambda p: p.replace("\:", ":"), parts)
+        parts = map(lambda p: p.replace(r"\:", ":"), parts)
 
         is_numeric = lambda s: s[:2] == "~#" and "~" not in s[2:]
         is_pattern = lambda s: '<' in s
         f_round = lambda s: (isinstance(s, float) and "%.2f" % s) or s
 
-        disp = (len(parts) >= 2 and parts[1]) or "\<i\>(<~#tracks>)\</i\>"
+        disp = (len(parts) >= 2 and parts[1]) or r"\<i\>(<~#tracks>)\</i\>"
         cat = parts[0]
 
         if is_pattern(cat):
-            title = pattern(cat, esc=True)
+            title = pattern(pattern_from_markup(cat), esc=True)
             try:
                 pc = XMLFromPattern(cat)
             except ValueError:

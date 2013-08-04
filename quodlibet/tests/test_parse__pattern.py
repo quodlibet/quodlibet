@@ -4,7 +4,9 @@ from tests import TestCase, add
 import os
 
 from quodlibet import util
-from quodlibet.parse import FileFromPattern, XMLFromPattern, Pattern
+from quodlibet.parse import (FileFromPattern, XMLFromPattern, Pattern,
+    XMLFromMarkupPattern)
+
 
 class _TPattern(TestCase):
     from quodlibet.formats._audio import AudioFile
@@ -192,6 +194,46 @@ class TXMLFromPattern(_TPattern):
         pat = XMLFromPattern(r'<title|\<b\><title> woo\</b\>>')
         s.assertEquals(pat.format(s.a), '<b>Title5 woo</b>')
 
+
+class TXMLFromMarkupPattern(_TPattern):
+
+    def _test_markup(self, text):
+        from gi.repository import Pango
+        Pango.parse_markup(text, -1, "\x00")
+
+    def test_convenience(s):
+        pat = XMLFromMarkupPattern(r'[b]foo[/b]')
+        s.assertEquals(pat.format(s.a), '<b>foo</b>')
+        s._test_markup(pat.format(s.a))
+
+        pat = XMLFromMarkupPattern('[small ]foo[/small \t]')
+        s.assertEquals(pat.format(s.a), '<small >foo</small \t>')
+        s._test_markup(pat.format(s.a))
+
+    def test_convenience_invalid(s):
+        pat = XMLFromMarkupPattern(r'[b foo="1"]')
+        s.assertEquals(pat.format(s.a), '[b foo="1"]')
+        s._test_markup(pat.format(s.a))
+
+    def test_span(s):
+        pat = XMLFromMarkupPattern(r'[span]foo[/span]')
+        s.assertEquals(pat.format(s.a), '<span>foo</span>')
+        s._test_markup(pat.format(s.a))
+
+        pat = XMLFromMarkupPattern(r'[span  weight="bold"]foo[/span]')
+        s.assertEquals(pat.format(s.a), '<span  weight="bold">foo</span>')
+        s._test_markup(pat.format(s.a))
+
+    def test_escape(s):
+        pat = XMLFromMarkupPattern(r'\[b]')
+        s.assertEquals(pat.format(s.a), '[b]')
+        s._test_markup(pat.format(s.a))
+
+        pat = XMLFromMarkupPattern(r'\\[b]\\[/b]')
+        s.assertEquals(pat.format(s.a), r'\<b>\</b>')
+        s._test_markup(pat.format(s.a))
+
+
 class TRealTags(TestCase):
     def test_empty(self):
         self.failUnlessEqual(Pattern("").tags, set([]))
@@ -234,5 +276,6 @@ class TPatternFormatList(_TPattern):
 add(TPattern)
 add(TFileFromPattern)
 add(TXMLFromPattern)
+add(TXMLFromMarkupPattern)
 add(TRealTags)
 add(TPatternFormatList)

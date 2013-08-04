@@ -19,18 +19,18 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
 
-from quodlibet.parse import XMLFromPattern
+from quodlibet.parse import XMLFromPattern, XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
 
 
 class SongInfo(Gtk.EventBox):
     _pattern = ("""\
-\\<span weight='bold' size='large'\\><title>\\</span\\>\
+[span weight='bold' size='large']<title>[/span]\
 <~length| (<~length>)><version|
-\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|
+[small][b]<version>[/b][/small]><~people|
 %(people)s><album|
-\\<b\\><album>\\</b\\><discnumber| - %(disc)s>\
-<discsubtitle| - \\<b\\><discsubtitle>\\</b\\>><tracknumber| - %(track)s>>"""
+[b]<album>[/b]<discnumber| - %(disc)s>\
+<discsubtitle| - [b]<discsubtitle>[/b]><tracknumber| - %(track)s>>"""
         % {
         # Translators: As in "by Artist Name"
         "people": _("by %s") % "<~people>",
@@ -60,7 +60,7 @@ class SongInfo(Gtk.EventBox):
             self._pattern = file(self.__PATTERN_FILENAME).read().rstrip()
         except EnvironmentError:
             pass
-        self._compiled = XMLFromPattern(self._pattern)
+        self._compiled = XMLFromMarkupPattern(self._pattern)
         align.show_all()
         self.add(align)
 
@@ -145,7 +145,7 @@ class SongInfo(Gtk.EventBox):
             pattern_file = file(os.path.join(const.USERDIR, "songinfo"), "w")
             pattern_file.write(self._pattern + "\n")
             pattern_file.close()
-        self._compiled = XMLFromPattern(self._pattern)
+        self._compiled = XMLFromMarkupPattern(self._pattern)
         self.__update_info(player)
 
     def __check_change(self, player, songs):

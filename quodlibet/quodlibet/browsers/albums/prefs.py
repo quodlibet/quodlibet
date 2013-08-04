@@ -18,12 +18,12 @@ from quodlibet.formats import PEOPLE
 from quodlibet.util import gobject_weak, format_rating
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.textedit import PatternEditBox
-from quodlibet.parse import XMLFromPattern
+from quodlibet.parse import XMLFromMarkupPattern
 
 
 EMPTY = _("Songs not in an album")
-PATTERN = r"""\<b\><album|<album>|%s>\</b\><date| (<date>)>
-\<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>
+PATTERN = """[b]<album|<album>|%s>[/b]<date| (<date>)>
+[small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
 <~people>""" % EMPTY
 
 
@@ -129,7 +129,7 @@ class Preferences(qltk.UniqueWindow):
 
     def __preview_pattern(self, edit, label):
         try:
-            text = XMLFromPattern(edit.text) % _EXAMPLE_ALBUM
+            text = XMLFromMarkupPattern(edit.text) % _EXAMPLE_ALBUM
         except:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)

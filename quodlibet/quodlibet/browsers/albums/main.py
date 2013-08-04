@@ -23,7 +23,7 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.browsers._base import Browser
-from quodlibet.parse import Query, XMLFromPattern
+from quodlibet.parse import Query, XMLFromMarkupPattern
 from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
@@ -354,7 +354,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             klass.__no_cover = thumbnails.scale(
                 klass.__no_cover, (cover_size, cover_size))
 
-        klass._pattern = XMLFromPattern(klass._pattern_text)
+        klass._pattern = XMLFromMarkupPattern(klass._pattern_text)
 
     @classmethod
     def _destroy_model(klass):
@@ -373,7 +373,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if pattern_text == klass._pattern_text:
             return
         klass._pattern_text = pattern_text
-        klass._pattern = XMLFromPattern(pattern_text)
+        klass._pattern = XMLFromMarkupPattern(pattern_text)
         klass.__model.refresh_all()
         pattern_fn = PATTERN_FN
         f = file(pattern_fn, "w")

@@ -392,3 +392,30 @@ def FileFromPattern(string):
 
 def XMLFromPattern(string):
     return Pattern(string, _XMLFromPattern)
+
+
+def pattern_from_markup(string):
+
+    tags = ["b", "big", "i", "s", "sub", "sup", "small", "tt", "u", "span"]
+    pat = "(?:%s)" % "|".join(tags)
+
+    def repl_func(match):
+        orig, pre, body = match.group(0, 1, 2)
+        if len(pre) % 2:
+            return orig
+        return r"%s\<%s\>" % (pre, body)
+
+    string = re.sub(r"(\\*)\[(/?%s\s*)\]" % pat, repl_func, string)
+    string = re.sub(r"(\\*)\[(span\s+.*?)\]", repl_func, string)
+    return string
+
+
+def XMLFromMarkupPattern(string):
+    """Like XMLFromPattern but allows using [] instead of \<\> for
+    pango markup to get rid of all the escaping in the common case.
+
+    To get text like "[b]" escape the first '[' like "\[b]"
+    """
+
+    string = pattern_from_markup(string)
+    return Pattern(string, _XMLFromPattern)
