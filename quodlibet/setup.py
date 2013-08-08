@@ -53,6 +53,28 @@ class clean(gdist_clean):
             if os.path.isdir(path):
                 shutil.rmtree(path)
 
+
+class build_sphinx(Command):
+    description = "build sphinx documentation"
+    user_options = [
+        ("build-dir=", "d", "build directory"),
+    ]
+
+    def initialize_options(self):
+        self.build_dir = None
+
+    def finalize_options(self):
+        self.build_dir = self.build_dir or "build"
+
+    def run(self):
+        DOCS_ROOT = "docs"
+        GUIDE_ROOT = os.path.join(DOCS_ROOT, "guide")
+        TARGET = os.path.join(self.build_dir, "sphinx")
+
+        self.spawn(["sphinx-build", "-b", "html", "-c", DOCS_ROOT,
+                    "-n", GUIDE_ROOT, TARGET])
+
+
 class test_cmd(Command):
     description = "run automated tests"
     user_options = [
@@ -265,6 +287,7 @@ if __name__ == "__main__":
         "coverage": coverage_cmd,
         "build_scripts": build_scripts,
         "sdist_plugins": sdist_plugins,
+        "build_sphinx": build_sphinx,
     }
 
     setup_kwargs = {

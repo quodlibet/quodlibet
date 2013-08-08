@@ -15,7 +15,7 @@ MANIFEST
 po/missing
 
 # Sphinx build files
-_build/*
+_build*/*
 
 # Ignore build files
 build/*
