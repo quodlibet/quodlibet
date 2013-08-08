@@ -57,9 +57,9 @@ from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.util import format_size
+from quodlibet.util import format_size, print_exc
 
-from quodlibet import util, qltk, config, print_w, app
+from quodlibet import util, qltk, print_w, app
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.parse import Pattern
@@ -134,14 +134,14 @@ class BasicHTMLParser(HTMLParser, object):
     def parse_url(self, url, post={}, get={}):
         """Will read the data and parse it into the data variable.
         A tag will be ['tagname', {all attributes}, 'data until the next tag']
-        Only starttags are handled/used."""
+        Only start tags are handled / used."""
 
         self.data = []
 
         text, self.encoding = get_url(url, post, get)
         text = text.decode(self.encoding, 'replace')
 
-        #strip script tags/content. HTMLParser doesn't handle them well
+        # Strip script tags/content. HTMLParser doesn't handle them well
         text = "".join([p.split("script>")[-1] for p in text.split("<script")])
 
         try:
@@ -538,7 +538,6 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
     def __init__(self, parent, song):
         super(CoverArea, self).__init__()
         self.song = song
-        self.connect('destroy', self.__save_config)
 
         self.dirname = song("~dirname")
         self.main_win = parent
@@ -656,10 +655,12 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         # 5 MB image cache size
         self.max_cache_size = 1024 * 1024 * 5
 
-        #for managing fast selection switches of covers..
+        # For managing fast selection switches of covers..
         self.stop_loading = False
         self.loading = False
         self.current_job = 0
+
+        self.connect('destroy', self.__save_config)
 
     def __save(self, *data):
         """Save the cover and spawn the program to edit it if selected"""
@@ -1055,7 +1056,7 @@ class CoverSearch(object):
         self.overall_limit = 7
 
     def add_engine(self, engine, query_replace):
-        """Adds a new search engine, query_replace is the string with witch
+        """Adds a new search engine, query_replace is the string with which
         all special characters get replaced"""
 
         self.engine_list.append((engine, query_replace))
@@ -1084,7 +1085,7 @@ class CoverSearch(object):
             result = engine().start(clean_query, self.overall_limit)
         except Exception:
             print_w("[AlbumArt] %s: %r" % (engine.__name__, query))
-            util.print_exc()
+            print_exc()
 
         self.finished += 1
         #progress is between 0..1
