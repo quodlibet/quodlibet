@@ -14,7 +14,7 @@ from quodlibet.util import thumbnails
 
 
 # TODO: neater way of managing dependency on this particular plugin
-ALBUM_ART_PLUGIN_ID = "Download Album art"
+ALBUM_ART_PLUGIN_ID = "Download Album Art"
 
 
 class BigCenteredImage(qltk.Window):
@@ -208,7 +208,7 @@ class CoverImage(Gtk.EventBox):
             from quodlibet.qltk.songsmenu import SongsMenu
             from quodlibet import app
 
-            SongsMenu.plugins.handle("Download Album art", app.library,
+            SongsMenu.plugins.handle(ALBUM_ART_PLUGIN_ID, app.library,
                                      qltk.get_top_parent(self), [song])
             return True
 
