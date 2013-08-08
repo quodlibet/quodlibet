@@ -94,8 +94,8 @@ class Preferences(qltk.UniqueWindow):
         label.set_alignment(0.0, 0.5)
         label.set_padding(6, 6)
         eb = Gtk.EventBox()
+        eb.get_style_context().add_class("entry")
         eb.add(label)
-        eb.modify_bg(Gtk.StateType.NORMAL, Gdk.Color(58000, 58000, 58000))
 
         edit = PatternEditBox(PATTERN)
         edit.text = browser._pattern_text
