@@ -12,7 +12,6 @@ import mutagen
 
 from quodlibet import config
 from quodlibet import const
-from quodlibet import util
 
 from quodlibet.formats._audio import AudioFile
 

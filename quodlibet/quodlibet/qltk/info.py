@@ -19,7 +19,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
 
-from quodlibet.parse import XMLFromPattern, XMLFromMarkupPattern
+from quodlibet.parse import XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
 
 

@@ -11,6 +11,7 @@ from pyinotify import WatchManager, EventsCodes, ProcessEvent, Notifier,\
         ThreadedNotifier
 from quodlibet import config, print_d
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.util.library import get_scan_dirs
 from quodlibet import app
 from gi.repository import GLib
 import os
@@ -135,7 +136,7 @@ class AutoLibraryUpdate(EventPlugin):
                 self.notifier = Notifier(wm, self.event_handler, timeout=100)
                 GLib.timeout_add(1000, self.unthreaded_callback)
 
-            for path in self.get_library_dirs():
+            for path in get_scan_dirs():
                 print_d('Watching directory %s for %s' % (path, FLAGS))
                 # See https://github.com/seb-m/pyinotify/wiki/
                 # Frequently-Asked-Questions
@@ -161,7 +162,3 @@ class AutoLibraryUpdate(EventPlugin):
         if self.notifier:
             print_d("Stopping inotify watch...")
             self.notifier.stop()
-
-    # find list of directories to scan
-    def get_library_dirs(self):
-        return config.get("settings", "scan").split(":")

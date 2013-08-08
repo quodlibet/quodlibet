@@ -24,7 +24,8 @@ from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import DirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import ScrolledWindow
-from quodlibet.util import copool, split_scan_dirs
+from quodlibet.util import copool
+from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
 from quodlibet.util.uri import URI
 
@@ -71,9 +72,7 @@ class FileSystem(Browser, Gtk.HBox):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
 
-        folders = filter(None, split_scan_dirs(config.get("settings", "scan")))
-
-        dt = DirectoryTree(folders=folders)
+        dt = DirectoryTree(folders=get_scan_dirs())
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP,
                     self.TARGET_QL),
                    ("text/uri-list", 0, self.TARGET_EXT)]

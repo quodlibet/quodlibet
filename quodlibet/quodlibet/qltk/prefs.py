@@ -23,8 +23,9 @@ from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList
 from quodlibet.util import copool
+from quodlibet.util.path import fsnative
 from quodlibet.util.dprint import print_d
-from quodlibet.util.library import emit_signal
+from quodlibet.util.library import emit_signal, get_scan_dirs
 
 
 class PreferencesWindow(qltk.UniqueWindow):
@@ -502,8 +503,9 @@ class PreferencesWindow(qltk.UniqueWindow):
             vb3.pack_start(scan_dirs, True, True, 0)
 
             def refresh_cb(button):
-                paths = util.split_scan_dirs(config.get("settings", "scan"))
+                paths = get_scan_dirs()
                 exclude = config.get("library", "exclude").split(":")
+                exclude = [fsnative(e) for e in exclude]
                 copool.add(app.library.rebuild, paths, False, exclude,
                            cofuncid="library", funcid="library")
 

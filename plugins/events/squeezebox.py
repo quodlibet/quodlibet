@@ -27,6 +27,7 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk.notif import Task
 from quodlibet.util import copool
+from quodlibet.util.library import get_scan_dirs
 
 
 class SqueezeboxServerSettings(dict):
@@ -296,7 +297,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
     # Maintain a singleton; we only support one SB server live in QL
     server = None
-    ql_base_dir = os.path.realpath(config.get("settings", "scan"))
+    ql_base_dir = get_scan_dirs()[0] if get_scan_dirs() else ""
 
     # We want all derived classes to share the config section
     CONFIG_SECTION = "squeezebox"

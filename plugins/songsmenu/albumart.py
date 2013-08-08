@@ -1130,7 +1130,7 @@ def get_size_of_url(url):
 #------------------------------------------------------------------------------
 engines = [
     {
-        'class':  CoverParadiseParser,
+        'class': CoverParadiseParser,
         'url': 'http://www.coverparadise.to/',
         'replace': '*',
         'config_id': 'coverparadise',

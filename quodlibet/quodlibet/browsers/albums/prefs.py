@@ -8,7 +8,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, Gdk, GLib, Pango
+from gi.repository import Gtk, GLib, Pango
 
 from quodlibet import config
 from quodlibet import qltk

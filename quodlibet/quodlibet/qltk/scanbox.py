@@ -13,10 +13,11 @@ from quodlibet import util, config, const
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util.path import fsdecode, fsencode, unexpand
+from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 
 
 def get_init_select_dir():
-    scandirs = util.split_scan_dirs(config.get("settings", "scan"))
+    scandirs = get_scan_dirs()
     if scandirs and os.path.isdir(scandirs[-1]):
         # start with last added directory
         return scandirs[-1]
@@ -78,8 +79,7 @@ class ScanBox(Gtk.HBox):
         self.pack_start(sw, True, True, 0)
         self.pack_start(vbox, False, True, 0)
 
-        paths = util.split_scan_dirs(config.get("settings", "scan"))
-        paths = map(fsdecode, paths)
+        paths = map(fsdecode, get_scan_dirs())
         for path in paths:
             model.append(row=[path])
 
@@ -93,8 +93,7 @@ class ScanBox(Gtk.HBox):
         remove_button.set_sensitive(selection.count_selected_rows())
 
     def __save(self):
-        paths = map(fsencode, [r[0] for r in self.model])
-        config.set("settings", "scan", ":".join(paths))
+        set_scan_dirs([r[0] for r in self.model])
 
     def __remove(self, view):
         view.remove_selection()

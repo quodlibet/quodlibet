@@ -296,6 +296,10 @@ class StatusBar(Gtk.HBox):
         self.show_all()
         self.set_no_show_all(True)
         self.__set_shown('default')
+        self.connect("destroy", self.__destroy)
+
+    def __destroy(self, *args):
+        self.task_controller.parent = None
 
     def __set_shown(self, type):
         if type == 'default':

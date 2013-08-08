@@ -33,7 +33,7 @@ import traceback
 
 from gi.repository import Gtk, Pango, Gdk, GLib
 
-from quodlibet import qltk, const
+from quodlibet import const
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 

@@ -6,7 +6,7 @@
 
 import itertools
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk
 
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.models import ObjectStore

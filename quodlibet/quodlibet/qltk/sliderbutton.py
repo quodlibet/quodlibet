@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk, Gdk
 
-from quodlibet.qltk import get_top_parent, gtk_version
+from quodlibet.qltk import get_top_parent
 
 
 class PrimaryWarpsRange(Gtk.Range):

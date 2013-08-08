@@ -8,7 +8,7 @@
 
 import random
 
-from gi.repository import Gtk, GObject
+from gi.repository import GObject
 
 from quodlibet import app
 from quodlibet import util

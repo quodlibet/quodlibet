@@ -6,7 +6,6 @@ import platform
 
 from gi.repository import Gtk
 
-from quodlibet import app
 from quodlibet import const
 from quodlibet import util
 from quodlibet.util.path import unexpand

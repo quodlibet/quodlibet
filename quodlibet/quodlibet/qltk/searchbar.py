@@ -14,7 +14,6 @@ from quodlibet import const
 
 from quodlibet.parse import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
-from quodlibet.qltk.x import Button
 from quodlibet.util import limit_songs
 
 

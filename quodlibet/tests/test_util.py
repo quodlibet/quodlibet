@@ -1,12 +1,14 @@
 from quodlibet.util.path import *
 from quodlibet.util.string import decode, encode
 from quodlibet.util.string.splitters import *
+from quodlibet.util.library import *
 from tests import TestCase, add
 
 import sys
 import os
 import re
 from quodlibet import util
+from quodlibet import config
 from quodlibet.util import format_time_long as f_t_l
 
 class Tmkdir(TestCase):
@@ -533,3 +535,18 @@ class Tpathname2url(TestCase):
         for inp, should in cases.iteritems():
             self.failUnlessEqual(p2u(inp), should)
 add(Tpathname2url)
+
+
+class Tlibrary(TestCase):
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_basic(self):
+        self.failIf(get_scan_dirs())
+        set_scan_dirs(["foo", "bar", ""])
+        self.failUnlessEqual(get_scan_dirs(), ["foo", "bar"])
+
+add(Tlibrary)

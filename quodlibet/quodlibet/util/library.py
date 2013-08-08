@@ -27,6 +27,15 @@ def background_filter():
         pass
 
 
+def get_scan_dirs():
+    dirs = util.split_scan_dirs(config.get("settings", "scan"))
+    return [util.fsnative(d) for d in dirs if d]
+
+
+def set_scan_dirs(dirs):
+    config.set("settings", "scan", util.fsencode(":".join(dirs)))
+
+
 def scan_libary(library, force):
     """Start the global library rescan
 

@@ -7,7 +7,6 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 
 from gi.repository import Gtk, GObject, Gdk, GLib, Gio
 
@@ -41,7 +40,7 @@ from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RPaned, ConfigRVPaned, Alignment, ScrolledWindow
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
-from quodlibet.util.path import fsdecode
+from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
 from quodlibet.util.library import background_filter, scan_libary
 from quodlibet.qltk.window import PersistentWindowMixin
@@ -238,15 +237,17 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         # create main menubar, load/restore accelerator groups
         self.__library = library
-        self.__create_menu(player, library)
-        self.add_accel_group(self.ui.get_accel_group())
+        ui = self.__create_menu(player, library)
+        accel_group = ui.get_accel_group()
+        self.add_accel_group(accel_group)
 
         accel_fn = os.path.join(const.USERDIR, "accels")
         Gtk.AccelMap.load(accel_fn)
-        accelgroup = Gtk.accel_groups_from_object(self)[0]
-        GObject.Object.connect(accelgroup, 'accel-changed',
-                lambda *args: Gtk.AccelMap.save(accel_fn))
-        main_box.pack_start(self.ui.get_widget("/Menu"), False, True, 0)
+
+        def accel_save_cb(*args):
+            Gtk.AccelMap.save(accel_fn)
+        accel_group.connect_object('accel-changed', accel_save_cb, None)
+        main_box.pack_start(ui.get_widget("/Menu"), False, True, 0)
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
@@ -254,10 +255,10 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.song_scroller = SongListScroller(
-            self.ui.get_widget("/Menu/View/SongList"))
+            ui.get_widget("/Menu/View/SongList"))
         self.song_scroller.add(self.songlist)
         self.qexpander = QueueExpander(
-            self.ui.get_widget("/Menu/View/Queue"), library, player)
+            ui.get_widget("/Menu/View/Queue"), library, player)
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
 
@@ -292,6 +293,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songlist.set_sort_by(None, sort[1:], order=int(sort[0]))
 
         self.browser = None
+        self.ui = ui
 
         main_box.show_all()
 
@@ -312,8 +314,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             config.set("memory", "seek", 0)
             player.setup(self.playlist, song, seek_pos)
         self.__delayed_setup = GLib.idle_add(delayed_song_set)
-        self.showhide_playlist(self.ui.get_widget("/Menu/View/SongList"))
-        self.showhide_playqueue(self.ui.get_widget("/Menu/View/Queue"))
+        self.showhide_playlist(ui.get_widget("/Menu/View/SongList"))
+        self.showhide_playqueue(ui.get_widget("/Menu/View/Queue"))
 
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
@@ -623,26 +625,28 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                           "<menuitem action='OutputLog'/>"
                           "<menuitem action='DebugCauseError'/>")
 
-        self.ui = Gtk.UIManager()
-        self.ui.insert_action_group(ag, -1)
+        ui = Gtk.UIManager()
+        ui.insert_action_group(ag, -1)
         menustr = const.MENU % {"browsers": browsers.BrowseLibrary(),
                                 "views": browsers.ViewBrowser(),
                                 "debug": debug_menu}
-        self.ui.add_ui_from_string(menustr)
+        ui.add_ui_from_string(menustr)
 
         # Cute. So. UIManager lets you attach tooltips, but when they're
         # for menu items, they just get ignored. So here I get to actually
         # attach them.
-        self.ui.get_widget("/Menu/Music/RefreshLibrary").set_tooltip_text(
+        ui.get_widget("/Menu/Music/RefreshLibrary").set_tooltip_text(
                 _("Check for changes in your library"))
 
-        self.ui.get_widget("/Menu/Music/ReloadLibrary").set_tooltip_text(
+        ui.get_widget("/Menu/Music/ReloadLibrary").set_tooltip_text(
                 _("Reload all songs in your library "
                   "(this can take a long time)"))
 
-        self.ui.get_widget("/Menu/Filters/TopRated").set_tooltip_text(
+        ui.get_widget("/Menu/Filters/TopRated").set_tooltip_text(
                 _("The 40 songs you've played most (more than 40 may "
                   "be chosen if there are ties)"))
+
+        return ui
 
     def __show_about(self, player):
         about = AboutQuodLibet(self, player)
@@ -907,52 +911,55 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                     self.__library.add([RemoteFile(name)])
 
     def open_chooser(self, action):
-        if not os.path.exists(self.last_dir):
-            self.last_dir = const.HOME
+        last_dir = self.last_dir
+        if not os.path.exists(last_dir):
+            last_dir = const.HOME
+
+        class MusicFolderChooser(FolderChooser):
+            def __init__(self, parent, init_dir):
+                super(MusicFolderChooser, self).__init__(
+                    parent, _("Add Music"), init_dir)
+
+                cb = Gtk.CheckButton(_("Watch this folder for new songs"))
+                # enable if no folders are being watched
+                cb.set_active(not get_scan_dirs())
+                cb.show()
+                self.set_extra_widget(cb)
+
+            def run(self):
+                fns = super(MusicFolderChooser, self).run()
+                cb = self.get_extra_widget()
+                return fns, cb.get_active()
+
+        class MusicFileChooser(FileChooser):
+            def __init__(self, parent, init_dir):
+                super(MusicFileChooser, self).__init__(
+                    parent, _("Add Music"), formats.filter, init_dir)
 
         if action.get_name() == "AddFolders":
-            chooser = FolderChooser(self, _("Add Music"), self.last_dir)
-            cb = Gtk.CheckButton(_("Watch this folder for new songs"))
-            cb.set_active(not config.get("settings", "scan"))
-            cb.show()
-            chooser.set_extra_widget(cb)
-        else:
-            chooser = FileChooser(
-                self, _("Add Music"), formats.filter, self.last_dir)
-            cb = None
-
-        fns = chooser.run()
-        chooser.destroy()
-        if fns:
-            if action.get_name() == "AddFolders":
+            dialog = MusicFolderChooser(self, last_dir)
+            fns, do_watch = dialog.run()
+            dialog.destroy()
+            if fns:
+                # scane them
                 self.last_dir = fns[0]
                 copool.add(self.__library.scan, fns, funcid="library")
-            else:
-                self.last_dir = os.path.basename(fns[0])
-                for filename in map(os.path.realpath, map(util.fsnative, fns)):
-                    if filename in self.__library:
-                        continue
-                    song = self.__library.add_filename(filename)
-                    if not song:
-                        from traceback import format_exception_only as feo
-                        tb = feo(sys.last_type, sys.last_value)
-                        msg = _("%s could not be added to your library.\n\n")
-                        msg %= util.escape(fsdecode(
-                            os.path.basename(filename)))
-                        msg += util.escape("".join(tb).decode(
-                            const.ENCODING, "replace"))
-                        d = ErrorMessage(self, _("Unable to add song"), msg)
-                        d.label.set_selectable(True)
-                        d.run()
-                        continue
 
-        if cb and cb.get_active():
-            dirs = util.split_scan_dirs(config.get("settings", "scan"))
-            for fn in fns:
-                if fn not in dirs:
-                    dirs.append(fn)
-            dirs = ":".join(dirs)
-            config.set("settings", "scan", dirs)
+                # add them as library scan directory
+                if do_watch:
+                    dirs = get_scan_dirs()
+                    for fn in fns:
+                        if fn not in dirs:
+                            dirs.append(fn)
+                    set_scan_dirs(dirs)
+        else:
+            dialog = MusicFileChooser(self, last_dir)
+            fns = dialog.run()
+            dialog.destroy()
+            if fns:
+                self.last_dir = os.path.dirname(fns[0])
+                for filename in map(os.path.realpath, map(util.fsnative, fns)):
+                    self.__library.add_filename(filename)
 
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
