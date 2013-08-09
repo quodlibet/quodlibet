@@ -953,7 +953,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         self.liststore.clear()
 
-        search = CoverSearch(self.__search_callback)
+        self.search = search = CoverSearch(self.__search_callback)
 
         for eng in engines:
             if self.config_get(CONFIG_ENG_PREFIX + eng['config_id'], True):
@@ -963,6 +963,11 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         # Focus the list
         self.treeview.grab_focus()
+
+        self.connect("destroy", self.__destroy)
+
+    def __destroy(self, *args):
+        self.search.stop()
 
     def set_text(self, text):
         """set the text and move the cursor to the end"""
@@ -1019,7 +1024,13 @@ class CoverSearch(object):
 
     def __init__(self, callback):
         self.engine_list = []
-        self.callback = callback
+        self._stop = False
+
+        def wrap(*args, **kwargs):
+            if not self._stop:
+                return callback(*args, **kwargs)
+
+        self.callback = wrap
         self.finished = 0
         self.overall_limit = 7
 
@@ -1028,6 +1039,11 @@ class CoverSearch(object):
         all special characters get replaced"""
 
         self.engine_list.append((engine, query_replace))
+
+    def stop(self):
+        """After stop the progress callback will no longer be called"""
+
+        self._stop = True
 
     def start(self, query):
         """Start search. The callback function will be called after each of
