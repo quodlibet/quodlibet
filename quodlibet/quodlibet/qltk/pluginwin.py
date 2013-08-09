@@ -255,11 +255,6 @@ class PluginWindow(qltk.UniqueWindow):
         name = util.escape(model[iter][0].PLUGIN_NAME)
         text = "<big><b>%s</b></big>" % name
         try:
-            version = util.escape(model[iter][0].PLUGIN_VERSION)
-            text += " <small>(%s %s)</small>" % (_("Version:"), version)
-        except (TypeError, AttributeError):
-            pass
-        try:
             desc = model[iter][0].PLUGIN_DESC
             text += "<span font='4'>\n\n</span>" + desc
         except (TypeError, AttributeError):
