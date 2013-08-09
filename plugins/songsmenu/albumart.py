@@ -1,48 +1,16 @@
 # -*- coding: utf-8 -*-
-
-# Copyright 2005-2013 By:
-# Eduardo Gonzalez, Niklas Janlert, Christoph Reiter, Antonio Riva,
-# Aymeric Mansoux, Nick Boultbee
+# Copyright 2005 Eduardo Gonzalez <wm.eddie@gmail.com>, Niklas Janlert
+#           2006 Joe Wreschnig
+#           2008 Antonio Riva, Eduardo Gonzalez <wm.eddie@gmail.com>,
+#                Anthony Bretaudeau <wxcover@users.sourceforge.net>,
+#                Jeremy Cantrell <jmcantrell@gmail.com>
+#           2010 Aymeric Mansoux <aymeric@goto10.org>
+#           2008-2013 Christoph Reiter
+#           2011-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
-# August 2013: Nick Boultbee
-# - Tidy plugin and classes: PEP-8, comments, use  dict literals etc.
-# - Convert to using PluginConfigMixin for consistency with newer plugins
-# - Fix plugin ID for consistency
-# - Add basic unit test (elsewhere)
-#
-
-# Sat, 01 Aug 2009 13:19:31 by Christoph Reiter <christoph.reiter@gmx.at>
-# - Fix coverparadise by handling bad HTML better
-# - Use AppEngine webapp proxy (by wm_eddie) for Amazon
-# - Increase search limit to 7 (from 5)
-# - Treeview hints and DND
-# - Some cleanup and version bump -> 0.5.1
-
-# Wed Mar 04 09:11:28 2009 by Christoph Reiter <christoph.reiter@gmx.at>
-# - Nearly complete rewrite
-# - search engines: darktown, coverparadise, amazon (no aws, because
-#    there was no search limit which would cause endless searching for
-#    common terms and loosing a dependency is always good) and discogs
-# - new: open with GIMP, image zooming mode, absolutely no UI freezes,
-#     enable/disable search engines
-# - Bumped version number to 0.5
-
-# Wed May 21 21:16:48 EDT 2008 by <wm.eddie@gmail.com>
-# - Some cleanup
-# - Added to SVN
-# - Bumped version number to 0.41
-
-# Tue 2008-05-13 19:40:12 (+0200) by <wxcover@users.sourceforge.net>
-# - Added walmart, darktown and buy.com cover searching.
-# - Few fixes
-# - Updated version number (0.25 -> 0.4)
-
-# Mon 2008-05-05 14:54:27 (-0400)
-# - Updated for new Amazon API by Jeremy Cantrell <jmcantrell@gmail.com>
 
 import os
 import time
