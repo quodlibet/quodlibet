@@ -7,6 +7,7 @@ User Guide
     overview
     tags/index
     searching
+    stats_rating.rst
     browse/index
     editing_tags
     renaming_files
