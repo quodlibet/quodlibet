@@ -1,4 +1,4 @@
-# Copyright 2011-2012 Nick Boultbee
+# Copyright 2011-2013 Nick Boultbee
 #
 # Inspired in parts by PySqueezeCenter (c) 2010 JingleManSweep
 # SqueezeCenter and SqueezeBox are copyright Logitech
@@ -8,7 +8,6 @@
 # published by the Free Software Foundation
 #
 
-import os.path
 from telnetlib import Telnet
 from threading import Thread
 import socket
@@ -27,6 +26,7 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk.notif import Task
 from quodlibet.util import copool
+from quodlibet.util.dprint import print_d, print_w, print_
 from quodlibet.util.library import get_scan_dirs
 
 
@@ -65,7 +65,7 @@ class SqueezeboxServer(object):
     _debug = False
 
     def __init__(self, hostname="localhost", port=9090, user="", password="",
-        library_dir='', current_player=0, debug=False):
+                 library_dir='', current_player=0, debug=False):
         self._debug = debug
         self.failures = 0
         self.delta = 600    # Default in ms
@@ -303,7 +303,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
     CONFIG_SECTION = "squeezebox"
 
     @classmethod
-    def get_path(cls, song):
+    def get_sb_path(cls, song):
         """Gets a SB path to `song` by simple substitution"""
         path = song('~filename')
         return path.replace(cls.ql_base_dir, cls.server.get_library_dir())
@@ -348,7 +348,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
         else:
             cls.quick_dialog(_("Couldn't connect to %s") % (cls.server,),
-                              Gtk.MessageType.ERROR)
+                             Gtk.MessageType.ERROR)
 
     @classmethod
     def PluginPreferences(cls, parent):
@@ -450,7 +450,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = 'Squeezebox Output'
     PLUGIN_NAME = _('Squeezebox Sync')
     PLUGIN_DESC = _("Make Logitech Squeezebox mirror Quod Libet output, "
-            "provided both read from an identical library")
+                    "provided both read from an identical library")
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
     PLUGIN_VERSION = '0.3'
     server = None
@@ -495,7 +495,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
         if cls._debug:
             print_d("Paused" if app.player.paused else "Not paused")
         if song and cls.server and cls.server.is_connected:
-            path = cls.get_path(song)
+            path = cls.get_sb_path(song)
             print_d("Requesting to play %s..." % path)
             if app.player.paused:
                 cls.server.change_song(path)
@@ -529,7 +529,7 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
                     "playlists, provided both share a directory structure. "
                     "Shares configuration with Squeezebox Sync plugin")
     PLUGIN_ICON = Gtk.STOCK_EDIT
-    PLUGIN_VERSION = '0.2'
+    PLUGIN_VERSION = '0.3'
     TEMP_PLAYLIST = "_quodlibet"
 
     def __add_songs(self, task, songs, name):
@@ -550,7 +550,7 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
                 break
             # Actually do the (slow) call
             worker = Thread(target=self.server.playlist_add,
-                            args=(self.get_path(song),))
+                            args=(self.get_sb_path(song),))
             worker.daemon = True
             worker.start()
             worker.join(timeout=3)
