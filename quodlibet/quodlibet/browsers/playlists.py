@@ -133,7 +133,7 @@ class ConfirmRemoveDuplicatesDialog(qltk.Message):
             Gtk.ButtonsType.NONE)
 
         self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
+                         Gtk.STOCK_REMOVE, Gtk.ResponseType.YES)
 
 
 class GetPlaylistName(GetStringDialog):
@@ -503,7 +503,8 @@ class Playlists(Gtk.VBox, Browser):
 
         de_dupe = Gtk.MenuItem(_("Remove Duplicates"))
         de_dupe.connect_object('activate', _de_duplicate, model, itr)
-        de_dupe.set_sensitive(not model[itr][0].has_duplicates())
+        has_dupes = model[itr][0].has_duplicates()
+        de_dupe.set_sensitive(has_dupes)
         menu.prepend(de_dupe)
 
         def _shuffle(model, itr):

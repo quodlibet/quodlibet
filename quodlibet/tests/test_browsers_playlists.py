@@ -65,48 +65,6 @@ class TParsePLS(TParsePlaylist):
     prefix = "File1="
 add(TParsePLS)
 
-class TPlaylist(TestCase):
-    def setUp(self):
-        self._dir = mkdtemp()
-
-    def tearDown(self):
-        shutil.rmtree(self._dir)
-
-    def test_make(self):
-        p1 = Playlist.new(self._dir, "Does not exist")
-        self.failUnlessEqual(0, len(p1))
-        self.failUnlessEqual(p1.name, "Does not exist")
-        p1.delete()
-
-    def test_rename_working(self):
-        p1 = Playlist.new(self._dir, "Foobar")
-        p1.rename("Foo Quuxly")
-        self.failUnlessEqual(p1.name, "Foo Quuxly")
-        p1.delete()
-
-    def test_rename_nothing(self):
-        p1 = Playlist.new(self._dir, "Foobar")
-        self.failUnlessRaises(ValueError, p1.rename, "")
-        p1.delete()
-
-    def test_rename_dup(self):
-        p1 = Playlist.new(self._dir, "Foobar")
-        p2 = Playlist.new(self._dir, "Crazy")
-        self.failUnlessRaises(ValueError, p2.rename, "Foobar")
-        p1.delete()
-        p2.delete()
-
-    def test_make_dup(self):
-        p1 = Playlist.new(self._dir, "Does not exist")
-        p2 = Playlist.new(self._dir, "Does not exist")
-        self.failUnlessEqual(p1.name, "Does not exist")
-        self.failUnless(p2.name.startswith("Does not exist"))
-        self.failIfEqual(p1.name, p2.name)
-        p1.delete()
-        p2.delete()
-
-add(TPlaylist)
-
 
 class TPlaylistIntegration(TestCase):
     DUPLICATES = 1
