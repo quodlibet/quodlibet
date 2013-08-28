@@ -5,6 +5,7 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from quodlibet import app
 
 from quodlibet.qltk import get_top_parent
 
@@ -48,6 +49,11 @@ class ConfirmAction(Message):
             return True
         else:
             return False
+
+
+def confirm_action(msg):
+    """Ultra-lightweight confirmation dialog"""
+    return ConfirmAction(app.window, _("Are you sure?"), msg).run()
 
 
 class CancelRevertSave(Gtk.MessageDialog):

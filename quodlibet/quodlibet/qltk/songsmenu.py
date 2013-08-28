@@ -1,10 +1,12 @@
 # Copyright 2006 Joe Wreschnig
+#           2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from quodlibet.qltk.msg import confirm_action
 
 from quodlibet import qltk
 
@@ -19,8 +21,10 @@ from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
 
 
 class SongsMenuPluginHandler(object):
-    def __init__(self):
+    def __init__(self, confirmer):
         self.__plugins = []
+        # The method to call for confirmations of risky multi-invocations
+        self.confirm_multiple = confirmer
 
     def Menu(self, library, parent, songs):
         songs = ListWrapper(songs)
@@ -114,6 +118,15 @@ class SongsMenuPluginHandler(object):
                     if ret:
                         return
             if callable(plugin.plugin_song):
+                total = len(songs)
+                if total > plugin.MAX_INVOCATIONS:
+                    msg = ngettext("Are you sure you want to run "
+                                       "the \"%s\" plugin on %d song?",
+                                   "Are you sure you want to run "
+                                       "the \"%s\" plugin on %d songs?",
+                                   total) % (plugin.PLUGIN_ID, total)
+                    if not self.confirm_multiple(msg):
+                        return
                 try:
                     ret = map(plugin.plugin_song, songs)
                 except Exception:
@@ -130,9 +143,17 @@ class SongsMenuPluginHandler(object):
                     if ret:
                         return
 
-            if max(map(callable, (plugin.plugin_single_album,
-                plugin.plugin_album, plugin.plugin_albums))):
+            if plugin.handles_albums:
                 albums = self.__get_albums(songs)
+                total = len(albums)
+                if total > plugin.MAX_INVOCATIONS:
+                    msg = ngettext("Are you sure you want to run "
+                                       "the \"%s\" plugin on %d album?",
+                                   "Are you sure you want to run "
+                                       "the \"%s\" plugin on %d albums?",
+                                   total) % (plugin.PLUGIN_ID, total)
+                    if not self.confirm_multiple(msg):
+                        return
 
             if callable(plugin.plugin_single_album) and len(albums) == 1:
                 try:
@@ -173,7 +194,7 @@ class SongsMenuPluginHandler(object):
 
 
 class SongsMenu(Gtk.Menu):
-    plugins = SongsMenuPluginHandler()
+    plugins = SongsMenuPluginHandler(confirm_action)
 
     @classmethod
     def init_plugins(cls):

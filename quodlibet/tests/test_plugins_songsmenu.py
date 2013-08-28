@@ -1,3 +1,5 @@
+from quodlibet.library import SongLibrary
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from tests import TestCase, add, mkstemp, mkdtemp
 
 import os
@@ -9,15 +11,21 @@ from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 
 class TSongsMenuPlugins(TestCase):
 
+    def _confirmer(self, msg):
+        self.confirmed = True
+
     def setUp(self):
         self.tempdir = mkdtemp()
         self.pm = PluginManager(folders=[self.tempdir])
-        self.handler = SongsMenuPluginHandler()
+        self.confirmed = False
+        self.handler = SongsMenuPluginHandler(self._confirmer)
         self.pm.register_handler(self.handler)
         self.pm.rescan()
         self.assertEquals(self.pm.plugins, [])
+        self.library = SongLibrary('foo')
 
     def tearDown(self):
+        self.library.destroy()
         self.pm.quit()
         for f in os.listdir(self.tempdir):
             os.remove(os.path.join(self.tempdir,f))
@@ -96,4 +104,43 @@ class TSongsMenuPlugins(TestCase):
         self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
         self.handler.Menu(None, None, [AudioFile()])
 
+    def test_handling_songs_without_confirmation(self):
+        self.handler.plugin_enable(FakeSongsMenuPlugin, None)
+        MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
+        songs = [AudioFile({'~filename': "/tmp/%s" % x, 'artist': 'foo'})
+                 for x in range(MAX)]
+        self.handler.handle(FakeSongsMenuPlugin.PLUGIN_ID, self.library,
+                            None, songs)
+        self.failIf(self.confirmed, ("Wasn't expecting a confirmation for %d"
+                                     " invocations" % len(songs)))
+
+    def test_handling_lots_of_songs_with_confirmation(self):
+        self.handler.plugin_enable(FakeSongsMenuPlugin, None)
+        MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
+        songs = [AudioFile({'~filename': "/tmp/%s" % x, 'artist': 'foo'})
+                 for x in range(MAX + 1)]
+        self.handler.handle(FakeSongsMenuPlugin.PLUGIN_ID, self.library,
+                            None, songs)
+        self.failUnless(self.confirmed,
+                        ("Should have confirmed %d invocations (Max=%d)."
+                         % (len(songs), MAX)))
+
+
 add(TSongsMenuPlugins)
+
+
+class FakeSongsMenuPlugin(SongsMenuPlugin):
+    PLUGIN_NAME = "Fake Songs Menu Plugin"
+    PLUGIN_ID = "SongsMunger"
+    MAX_INVOCATIONS = 50
+
+    def __init__(self, songs, library, window):
+        super(FakeSongsMenuPlugin, self).__init__(songs, library, window)
+        self.total = 0
+
+    def plugin_song(self, song):
+        self.total += 1
+        if self.total > self.MAX_INVOCATIONS:
+            raise ValueError, ("Shouldn't have called me on this many songs"
+                               " (%d > %d)" %(self.total,
+                                              self.MAX_INVOCATIONS))

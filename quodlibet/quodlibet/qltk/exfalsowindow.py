@@ -8,6 +8,7 @@
 import os
 
 from gi.repository import Gtk, GObject, Pango
+from quodlibet.qltk.msg import confirm_action
 
 from quodlibet import config
 from quodlibet import const
@@ -40,7 +41,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
                             None, (object,))
     }
 
-    pm = SongsMenuPluginHandler()
+    pm = SongsMenuPluginHandler(confirm_action)
 
     @classmethod
     def init_plugins(cls):

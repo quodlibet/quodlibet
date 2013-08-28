@@ -237,7 +237,10 @@ def init(*rc_files):
             "add": "false",
         },
         "plugins": {
-            "active_plugins": "", # newline separated plugin IDs
+            # newline-separated plugin IDs
+            "active_plugins": "",
+            # Issue 1231: Maximum number of SongsMenu plugins to run at once
+            "default_max_plugin_invocations": 30,
         },
         "editing": {
             "split_on": "/ & ,", # words to split on

@@ -5,6 +5,7 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from quodlibet import config
 
 from quodlibet.util.songwrapper import check_wrapper_changed
 
@@ -60,6 +61,11 @@ class SongsMenuPlugin(Gtk.ImageMenuItem):
 
     __initialized = False
 
+    # An upper limit on how many instances of the plugin should be launched
+    # at once without warning. Heavyweight plugins should override this value
+    # to prevent users killing their performance by opening on many songs.
+    MAX_INVOCATIONS = config.getint("plugins", "default_max_invocations", 30)
+
     def __init__(self, songs, library, window):
         super(SongsMenuPlugin, self).__init__(self.PLUGIN_NAME)
         self.__library = library
@@ -82,6 +88,11 @@ class SongsMenuPlugin(Gtk.ImageMenuItem):
 
     def plugin_handles(self, songs):
         return True
+
+    @property
+    def handles_albums(self):
+        return any(map(callable, [self.plugin_single_album,
+                                  self.plugin_album, self.plugin_albums]))
 
     def plugin_finish(self):
         check_wrapper_changed(self.__library, self.plugin_window, self.__songs)
