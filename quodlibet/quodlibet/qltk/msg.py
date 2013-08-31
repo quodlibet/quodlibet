@@ -65,7 +65,7 @@ class CancelRevertSave(Gtk.MessageDialog):
                 % (title, description))
         parent = get_top_parent(parent)
         super(CancelRevertSave, self).__init__(
-            parent, flags=0, type=Gtk.MessageType.WARNING,
+            parent, flags=0, message_type=Gtk.MessageType.WARNING,
             buttons=Gtk.ButtonsType.NONE)
         self.add_buttons(Gtk.STOCK_SAVE, Gtk.ResponseType.YES,
                          Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
