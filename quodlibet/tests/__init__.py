@@ -8,8 +8,20 @@ import tempfile
 import shutil
 from quodlibet.util.dprint import Colorise
 
-from unittest import TestCase
+from unittest import TestCase as OrigTestCase
 suites = []
+
+
+class TestCase(OrigTestCase):
+
+    # silence deprec warnings about useless renames
+    failUnless = OrigTestCase.assertTrue
+    failIf = OrigTestCase.assertFalse
+    failUnlessEqual = OrigTestCase.assertEqual
+    failUnlessRaises = OrigTestCase.assertRaises
+    failUnlessAlmostEqual = OrigTestCase.assertAlmostEqual
+    failIfEqual = OrigTestCase.assertNotEqual
+    failIfAlmostEqual = OrigTestCase.assertNotAlmostEqual
 
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
