@@ -18,8 +18,6 @@ from quodlibet.qltk.window import Window, UniqueWindow
 class ScrolledWindow(Gtk.ScrolledWindow):
     """Draws a border around all edges that don't touch the parent window"""
 
-    __gsignals__ = {'size-allocate': 'override'}
-
     def do_size_allocate(self, alloc):
         if self.get_shadow_type() == Gtk.ShadowType.NONE:
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
@@ -114,8 +112,6 @@ class Notebook(Gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no
     label is given, the page's 'title' attribute (either a string or
     a widget) is used."""
-
-    __gsignals__ = {'size-allocate': 'override'}
 
     def do_size_allocate(self, alloc):
         ctx = self.get_style_context()
