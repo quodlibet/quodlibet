@@ -9,13 +9,14 @@ import os
 import re
 import sys
 
-from gi.repository import GObject, Gdk, GLib
+from gi.repository import Gdk, GLib
 
 import quodlibet
 from quodlibet import browsers
 from quodlibet import config
 from quodlibet import const
 from quodlibet import util
+from quodlibet import qltk
 from quodlibet.util.uri import URI
 
 from quodlibet.qltk.browser import LibraryBrowser
@@ -75,9 +76,9 @@ class FIFOControl(object):
                 os.mkfifo(const.CONTROL, 0600)
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             f = os.fdopen(fifo, "r", 4096)
-            GObject.io_add_watch(
-                f, GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-                self.__process, *args)
+            qltk.io_add_watch(f, GLib.PRIORITY_DEFAULT,
+                              GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+                              self.__process, *args)
         except (EnvironmentError, AttributeError):
             pass
 

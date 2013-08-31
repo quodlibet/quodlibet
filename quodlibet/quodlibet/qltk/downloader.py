@@ -7,7 +7,7 @@
 import os
 import urllib
 
-from gi.repository import Gtk, GObject, Pango, GLib
+from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import qltk
 from quodlibet import util
@@ -105,8 +105,9 @@ class DownloadWindow(qltk.UniqueWindow):
                 sock = url.fp._sock
                 sock.setblocking(0)
                 self.downloads[iter][0] = sock
-                sig_id = GObject.io_add_watch(
-                    sock, GObject.IO_IN | GObject.IO_ERR | GObject.IO_HUP,
+                sig_id = qltk.io_add_watch(
+                    sock, GLib.PRIORITY_DEFAULT,
+                    GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
                     self.__got_data, self.downloads[iter][1], iter)
                 self.downloads[iter][2] = sig_id
                 started += 1
@@ -141,7 +142,7 @@ class DownloadWindow(qltk.UniqueWindow):
         self.__start_next()
 
     def __got_data(self, src, condition, fileobj, iter):
-        if condition in [GObject.IO_ERR, GObject.IO_HUP]:
+        if condition in [GLib.IO_ERR, GLib.IO_HUP]:
             fileobj.close()
             src.close()
             self.downloads.remove(iter)

@@ -402,10 +402,16 @@ def _init_signal():
             def handler(*args):
                 print_d("GLib signal handler activated.")
                 signal_action()
-            if hasattr(GLib, "unix_signal_add_full"):
+            unix_signal_add = None
+
+            if hasattr(GLib, "unix_signal_add"):
+                unix_signal_add = GLib.unix_signal_add
+            elif hasattr(GLib, "unix_signal_add_full"):
+                unix_signal_add = GLib.unix_signal_add_full
+
+            if unix_signal_add:
                 print_d("Register GLib signal handler: %r" % sig)
-                GLib.unix_signal_add_full(
-                    GLib.PRIORITY_HIGH, sig, handler, None)
+                unix_signal_add(GLib.PRIORITY_HIGH, sig, handler, None)
             else:
                 print_d("Can't install GLib signal handler, too old gi.")
         GLib.idle_add(install_glib_handler, sig, priority=GLib.PRIORITY_HIGH)

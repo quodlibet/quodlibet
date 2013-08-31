@@ -8,6 +8,7 @@
 import gi
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GLib
 
 
 def get_top_parent(widget):
@@ -133,6 +134,16 @@ except AttributeError:
         pygobject_version = gi._gobject.pygobject_version
     except AttributeError:
         pygobject_version = (-1,)
+
+
+def io_add_watch(fd, prio, condition, func, *args, **kwargs):
+    try:
+        return GLib.io_add_watch(fd, prio, condition, func, *args, **kwargs)
+    except TypeError:
+        # older pygi
+        kwargs["priority"] = prio
+        return GLib.io_add_watch(fd, condition, func, *args, **kwargs)
+
 
 # Legacy plugin/code support.
 from quodlibet.qltk.getstring import GetStringDialog
