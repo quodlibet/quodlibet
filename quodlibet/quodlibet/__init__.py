@@ -153,7 +153,9 @@ def _gtk_init(icon=None):
     sys.modules["gobject"] = None
     sys.modules["gnome"] = None
 
-    GObject.threads_init()
+    from quodlibet.qltk import pygobject_version
+    if pygobject_version < (3, 9):
+        GObject.threads_init()
 
     theme = Gtk.IconTheme.get_default()
     theme.append_search_path(quodlibet.const.IMAGEDIR)
@@ -171,8 +173,6 @@ def _dbus_init():
         except ImportError:
             return
     else:
-        from gi.repository import GObject
-        GObject.threads_init()
         threads_init()
         DBusGMainLoop(set_as_default=True)
 
