@@ -266,17 +266,6 @@ def recursive_include(base, sub, ext):
     return paths
 
 
-def recursive_include_py2exe(dir, pre, ext):
-    all = []
-    dir = os.path.join(dir, pre)
-    for path, dirs, files in os.walk(dir):
-        all_path = []
-        for file in files:
-            if file.split('.')[-1] in ext:
-                all_path.append(os.path.join(path, file))
-        if all_path: all.append((path, all_path))
-    return all
-
 if __name__ == "__main__":
     import quodlibet
     from quodlibet import const
@@ -319,79 +308,6 @@ if __name__ == "__main__":
         'man_pages': ["man/quodlibet.1", "man/exfalso.1", "man/operon.1"],
         "search_provider": "data/quodlibet-search-provider.ini",
         }
-    if os.name == 'nt':
-        # (probably) necessary to get the right DLLs pulled in by py2exe
-        import pygst
-        pygst.require('0.10')
-        from os.path import join
 
-        # taken from http://www.py2exe.org/index.cgi/win32com.shell
-        # ModuleFinder can't handle runtime changes to __path__, but win32com uses them
-        try:
-            # py2exe 0.6.4 introduced a replacement modulefinder.
-            # This means we have to add package paths there, not to the built-in
-            # one.  If this new modulefinder gets integrated into Python, then
-            # we might be able to revert this some day.
-            # if this doesn't work, try import modulefinder
-            try:
-                import py2exe.mf as modulefinder
-            except ImportError:
-                import modulefinder
-            import win32com
-            for p in win32com.__path__[1:]:
-                modulefinder.AddPackagePath("win32com", p)
-            for extra in ["win32com.shell"]: #,"win32com.mapi"
-                __import__(extra)
-                m = sys.modules[extra]
-                for p in m.__path__[1:]:
-                    modulefinder.AddPackagePath(extra, p)
-        except ImportError:
-            # no build path setup, no worries.
-            pass
-
-        data_files = [('', ['COPYING'])] +  recursive_include_py2exe(
-            "quodlibet", "images", ("svg", "png", "cache", "theme"))
-
-        for type in ["playorder", "songsmenu", "editing", "events", "gstreamer"]:
-            data_files.append((join('quodlibet', 'plugins', type),
-                glob.glob(join('..', 'plugins', type, '*.py'))))
-
-        setup_kwargs.update({
-            'data_files': data_files,
-            'windows': [
-                {
-                    "script": "quodlibet.py",
-                    "icon_resources": [(0,
-                       join('..', 'win_installer', 'quodlibet.ico'))]
-                },
-                # workaround icon not working under Vista/7
-                # exe resource identifiers get incremented and start at 0.
-                # and 0 doesn't seem to be valid.
-                {
-                    "script": "quodlibet.py",
-                    "icon_resources": [(0,
-                       join('..', 'win_installer', 'quodlibet.ico'))]
-                },
-                {
-                    "script": "exfalso.py",
-                    "icon_resources": [(0,
-                        join('..', 'win_installer', 'exfalso.ico'))]
-                }
-            ],
-            'options': {
-                'py2exe': {
-                    'packages': ('encodings, feedparser, quodlibet, '
-                                 'HTMLParser, gtk, glib, gobject, '
-                                 'musicbrainz2, shelve, json, pyHook'),
-                    'includes': ('cairo, pango, pangocairo, atk, gio, '
-                                 'pygst, gst, quodlibet.player.gstbe, '
-                                 'CDDB'),
-                    'excludes': ('ssl_', 'doctest', 'pdb', 'unittest',
-                                 'difflib', 'inspect'),
-                    'skip_archive': True,
-                    'dist_dir': 'dist\\bin'
-                }
-            }
-        })
     setup(**setup_kwargs)
 
