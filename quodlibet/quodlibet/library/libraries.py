@@ -23,7 +23,6 @@ import cPickle as pickle
 import os
 import shutil
 import threading
-from UserDict import DictMixin
 
 from gi.repository import GObject
 
@@ -31,6 +30,7 @@ from quodlibet.formats import MusicFile
 from quodlibet.parse import Query
 from quodlibet.qltk.notif import Task
 from quodlibet.util.collection import Album
+from quodlibet.util.collections import DictMixin
 from quodlibet import util
 from quodlibet import const
 from quodlibet.util.dprint import print_d, print_w

@@ -6,6 +6,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from __future__ import absolute_import
+
 from gi.repository import GLib
 
 import os
@@ -16,8 +18,9 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
-from collections import Iterable, MutableSequence, defaultdict
+from collections import Iterable
 from quodlibet.util.path import fsencode, escape_filename, unescape_filename
+from .collections import HashedList
 
 
 ELPOEP = list(reversed(PEOPLE))
@@ -316,77 +319,6 @@ class Album(Collection):
 
     def __repr__(self):
         return "Album(%s)" % repr(self.key)
-
-
-class HashedList(MutableSequence):
-    """A list-like collection that can only take hashable items
-    and provides fast membership tests.
-
-    Can handle duplicate entries.
-    """
-
-    def __init__(self, arg=None):
-        self._map = defaultdict(int)
-        if arg is None:
-            self._data = []
-            return
-
-        self._data = list(arg)
-        for item in arg:
-            self._map[item] += 1
-
-    def __setitem__(self, index, item):
-        old_items = self._data[index]
-        if not isinstance(index, slice):
-            old_items = [old_items]
-
-        for old in old_items:
-            self._map[old] -= 1
-            if not self._map[old]:
-                del self._map[old]
-
-        self._data[index] = item
-
-        items = item
-        if not isinstance(index, slice):
-            items = [items]
-
-        for item in items:
-            self._map[item] += 1
-
-    def __getitem__(self, index):
-        return self._data[index]
-
-    def __delitem__(self, index):
-        items = self._data[index]
-        if not isinstance(index, slice):
-            items = [items]
-        for item in items:
-            self._map[item] -= 1
-            if not self._map[item]:
-                del self._map[item]
-        del self._data[index]
-
-    def __len__(self):
-        return len(self._data)
-
-    def insert(self, index, item):
-        self._data.insert(index, item)
-        self._map[item] += 1
-
-    def __contains__(self, item):
-        return item in self._map
-
-    def __iter__(self):
-        for item in self._data:
-            yield item
-
-    def has_duplicates(self):
-        """Returns True if any item is contained more then once"""
-        return len(self._map) != len(self)
-
-    def __repr__(self):
-        return repr(self._data)
 
 
 class Playlist(Collection, Iterable):

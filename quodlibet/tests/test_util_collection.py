@@ -6,7 +6,6 @@ from tests import TestCase, add, mkdtemp
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
-from quodlibet.util.collection import HashedList
 from quodlibet.library.libraries import FileLibrary
 
 
@@ -220,68 +219,6 @@ class TAlbum(TestCase):
         config.quit()
 
 add(TAlbum)
-
-
-class THashedList(TestCase):
-    def test_init(self):
-        l = HashedList([1, 2, 3])
-        self.failUnless(1 in l)
-
-        l = HashedList()
-        self.failIf(1 in l)
-
-    def test_length(self):
-        l = HashedList([1, 2, 3, 3])
-        self.failUnlessEqual(len(l), 4)
-
-    def test_insert(self):
-        l = HashedList([1, 2, 3, 3])
-        l.insert(0, 3)
-        self.failUnlessEqual(len(l), 5)
-
-    def test_delete(self):
-        l = HashedList([2, 2])
-        self.failUnless(2 in l)
-        del l[0]
-        self.failUnless(2 in l)
-        del l[0]
-        self.failIf(2 in l)
-
-    def test_iter(self):
-        l = HashedList([1, 2, 3, 3])
-        new = [a for a in l]
-        self.failUnlessEqual(new, [1, 2, 3, 3])
-
-    def test_del_slice(self):
-        l = HashedList([1, 2, 3, 3])
-        del l[1:3]
-        self.failUnlessEqual(len(l), 2)
-        self.failUnless(1 in l)
-        self.failUnless(3 in l)
-        self.failIf(2 in l)
-
-    def test_set_slice(self):
-        l = HashedList([1, 2, 3, 3])
-        l[:3] = [4]
-        self.failUnless(4 in l)
-        self.failUnless(3 in l)
-        self.failIf(2 in l)
-
-    def test_extend(self):
-        l = HashedList()
-        l.extend([1, 1, 2])
-        self.failUnless(1 in l)
-        self.failUnlessEqual(len(l), 3)
-
-    def test_duplicates(self):
-        l = HashedList()
-        self.failIf(l.has_duplicates())
-        l = HashedList(range(10))
-        self.failIf(l.has_duplicates())
-        l.append(5)
-        self.failUnless(l.has_duplicates())
-
-add(THashedList)
 
 
 class TPlaylist(TestCase):
