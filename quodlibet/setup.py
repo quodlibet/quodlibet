@@ -256,16 +256,15 @@ class coverage_cmd(Command):
         print "#" * 80
 
 
-def recursive_include(dir, pre, ext):
-    all = []
-    old_dir = os.getcwd()
-    os.chdir(dir)
-    for path, dirs, files in os.walk(pre):
-        for file in files:
-            if file.split('.')[-1] in ext:
-                all.append(os.path.join(path, file))
-    os.chdir(old_dir)
-    return all
+def recursive_include(base, sub, ext):
+    paths = []
+    for path, dirs, files in os.walk(os.path.join(base, sub)):
+        for f in files:
+            if f.split('.')[-1] in ext:
+                p = os.path.relpath(os.path.join(path, f), base)
+                paths.append(p)
+    return paths
+
 
 def recursive_include_py2exe(dir, pre, ext):
     all = []
@@ -279,6 +278,7 @@ def recursive_include_py2exe(dir, pre, ext):
     return all
 
 if __name__ == "__main__":
+    import quodlibet
     from quodlibet import const
 
     cmd_classes = {
@@ -289,6 +289,10 @@ if __name__ == "__main__":
         "sdist_plugins": sdist_plugins,
         "build_sphinx": build_sphinx,
     }
+
+    package_path = quodlibet.__path__[0]
+    package_data_paths = recursive_include(
+        package_path, "images", ("svg", "png", "cache", "theme"))
 
     setup_kwargs = {
         'distclass': GDistribution,
@@ -302,8 +306,7 @@ if __name__ == "__main__":
         'maintainer': "Steven Robertson and Christoph Reiter",
         'license': "GNU GPL v2",
         'packages': ["quodlibet"] + map("quodlibet.".__add__, PACKAGES),
-        'package_data': {"quodlibet": recursive_include("quodlibet", "images",
-            ("svg", "png", "cache", "theme"))},
+        'package_data': {"quodlibet": package_data_paths},
         'scripts': ["quodlibet.py", "exfalso.py", "operon.py"],
         'po_directory': "po",
         'po_package': "quodlibet",
