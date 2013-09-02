@@ -58,7 +58,7 @@ class install(distutils_install):
          lambda self: self.distribution.need_search_provider()),
         ("install_dbus_services",
          lambda self: self.distribution.has_dbus_services()),
-       ]
+    ]
 
 
 class GDistribution(Distribution):

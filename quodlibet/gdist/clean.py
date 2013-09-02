@@ -12,6 +12,7 @@ import os
 from distutils.core import Command
 from distutils.command.clean import clean as distutils_clean
 
+
 class clean(distutils_clean, Command):
     """clean up output of 'build' commands
 
@@ -35,7 +36,9 @@ class clean(distutils_clean, Command):
         if self.all:
             if self.po_directory and self.po_package:
                 pot = os.path.join(self.po_directory, self.po_package + ".pot")
-                try: os.unlink(pot)
-                except OSError: pass
+                try:
+                    os.unlink(pot)
+                except OSError:
+                    pass
 
 __all__ = ["clean"]

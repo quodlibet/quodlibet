@@ -50,7 +50,17 @@ class TPEP8(TestCase):
         path = quodlibet.__path__[0]
         path = os.path.join(path, "../")
         files = glob.glob(os.path.join(path, "*.py"))
-        files = filter(lambda p: not p.endswith("setup.py"), files)
+        assert files
+
+        for file_ in files:
+            self._run(file_)
+
+    def test_dist(self):
+        import quodlibet
+        path = quodlibet.__path__[0]
+        path = os.path.join(path, "../gdist")
+        files = glob.glob(os.path.join(path, "*.py"))
+        assert files
 
         for file_ in files:
             self._run(file_)

@@ -78,7 +78,7 @@ class install_dbus_services(Command):
             self.run_command('build_dbus_services')
 
         basepath = os.path.join(self.prefix, 'share', 'dbus-1', 'services')
-        if self.root != None:
+        if self.root is not None:
             basepath = change_root(self.root, basepath)
         self.mkpath(basepath)
 

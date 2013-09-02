@@ -11,6 +11,7 @@ from distutils.dep_util import newer
 from distutils.util import change_root
 from distutils.core import Command
 
+
 class build_shortcuts(Command):
     """Build .desktop files
 
@@ -49,6 +50,7 @@ class build_shortcuts(Command):
             else:
                 self.copy_file(shortcut, os.path.join(basepath, shortcut))
 
+
 class install_shortcuts(Command):
     """Install .desktop files
 
@@ -83,7 +85,7 @@ class install_shortcuts(Command):
         if not self.skip_build:
             self.run_command('build_shortcuts')
         basepath = os.path.join(self.prefix, 'share', 'applications')
-        if self.root != None:
+        if self.root is not None:
             basepath = change_root(self.root, basepath)
         srcpath = os.path.join(self.build_base, 'share', 'applications')
         self.mkpath(basepath)

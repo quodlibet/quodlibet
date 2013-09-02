@@ -20,6 +20,7 @@ from distutils.util import change_root
 from distutils.spawn import find_executable
 from distutils.core import Command
 
+
 class po_stats(Command):
     description = "Show translation statistics"
     user_options = []
@@ -52,10 +53,11 @@ class po_stats(Command):
             stats.append((po, trans, fuzzy, untrans))
 
         stats.sort(key=lambda x: x[1], reverse=True)
-        print "#"*30
+        print "#" * 30
         for po, trans, fuzzy, untrans in stats:
-            all_ = float(trans + fuzzy + untrans)/100
-            print "%5s: %3d%% (+%2d%% fuzzy)" % (po, trans/all_, fuzzy/all_)
+            all_ = float(trans + fuzzy + untrans) / 100
+            print ("%5s: %3d%% (+%2d%% fuzzy)" %
+                   (po, trans / all_, fuzzy / all_))
 
 
 class check_pot(Command):
@@ -133,6 +135,7 @@ class build_mo(Command):
                 self.mkpath(fullpath)
                 self.spawn(["msgfmt", "-o", destpath, po])
 
+
 class install_mo(Command):
     """install message catalog files
 
@@ -164,7 +167,7 @@ class install_mo(Command):
             self.run_command('build_mo')
         src = os.path.join(self.build_base, "share", "locale")
         dest = os.path.join(self.install_base, "share", "locale")
-        if self.root != None:
+        if self.root is not None:
             dest = change_root(self.root, dest)
         self.copy_tree(src, dest)
 
