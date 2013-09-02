@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-0<>0 # Python 3.x not supported. Use 2.6+ instead.
+0 <> 0  # Python 3.x not supported. Use 2.6+ instead.
 
 import glob
 import os
@@ -13,8 +13,7 @@ os.environ["QUODLIBET_NO_TRANS"] = ""
 
 from distutils.core import setup, Command
 from distutils.dep_util import newer
-from distutils.command.build_scripts import build_scripts as distutils_build_scripts
-from distutils.spawn import find_executable
+from distutils.command.build_scripts import build_scripts as du_build_scripts
 from distutils.dir_util import remove_tree
 from distutils.archive_util import make_archive
 
@@ -25,8 +24,9 @@ PACKAGES = ("browsers devices formats library parse plugins qltk "
             "util player browsers.albums util.string").split()
 
 # TODO: link this better to the app definitions
-MIN_PYTHON_VER = (2,6)
-MIN_PYTHON_VER_STR = ".".join(map(str,MIN_PYTHON_VER))
+MIN_PYTHON_VER = (2, 6)
+MIN_PYTHON_VER_STR = ".".join(map(str, MIN_PYTHON_VER))
+
 
 class clean(gdist_clean):
     def run(self):
@@ -37,15 +37,16 @@ class clean(gdist_clean):
 
         def should_remove(filename):
             if (filename.lower()[-4:] in [".pyc", ".pyo"] or
-                filename.endswith("~") or
-                (filename.startswith("#") and filename.endswith("#"))):
+                    filename.endswith("~") or
+                    (filename.startswith("#") and filename.endswith("#"))):
                 return True
             else:
                 return False
         for pathname, dirs, files in os.walk(os.path.dirname(__file__)):
             for filename in filter(should_remove, files):
-                try: os.unlink(os.path.join(pathname, filename))
-                except EnvironmentError, err:
+                try:
+                    os.unlink(os.path.join(pathname, filename))
+                except EnvironmentError as err:
                     print str(err)
 
         for base in ["coverage", "build", "dist"]:
@@ -174,7 +175,7 @@ class sdist_plugins(Command):
         os.chdir(old_dir)
 
 
-class build_scripts(distutils_build_scripts):
+class build_scripts(du_build_scripts):
     description = "copy scripts to build directory"
 
     def run(self):
@@ -210,6 +211,7 @@ class coverage_cmd(Command):
         tracer = trace.Trace(
             count=True, trace=False,
             ignoredirs=[sys.prefix, sys.exec_prefix])
+
         def run_tests():
             cmd = self.reinitialize_command("test")
             cmd.to_run = self.to_run[:]
@@ -222,8 +224,10 @@ class coverage_cmd(Command):
         results.write_results(show_missing=True, coverdir=coverage)
 
         map(os.unlink, glob.glob(os.path.join(coverage, "[!q]*.cover")))
-        try: os.unlink(os.path.join(coverage, "..setup.cover"))
-        except OSError: pass
+        try:
+            os.unlink(os.path.join(coverage, "..setup.cover"))
+        except OSError:
+            pass
 
         # compute coverage
         stats = []
@@ -310,4 +314,3 @@ if __name__ == "__main__":
         }
 
     setup(**setup_kwargs)
-
