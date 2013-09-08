@@ -366,6 +366,14 @@ def _init_debug():
         sys.excepthook = ExceptionDialog.excepthook
     GLib.idle_add(_override_exceptions)
 
+    # faulthandler gives a python stacktrace on segfaults..
+    try:
+        import faulthandler
+    except ImportError:
+        pass
+    else:
+        faulthandler.enable()
+
 
 def _init_signal():
     """Catches certain signals and quits the application once the
