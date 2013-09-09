@@ -104,11 +104,12 @@ def _gtk_init(icon=None):
 
     from gi.repository import Gtk, GObject, GLib, Gdk
 
-    # add Gtk.TreePath.__getitem__ for PyGObject 3.2
+    # add Gtk.TreePath.__getitem__/__len__ for PyGObject 3.2
     try:
         Gtk.TreePath()[0]
     except TypeError:
         Gtk.TreePath.__getitem__ = lambda self, index: list(self)[index]
+        Gtk.TreePath.__len__ = lambda self: self.get_depth()
 
     # GTK+ 3.4+ constants
     if not hasattr(Gdk, "BUTTON_PRIMARY"):
