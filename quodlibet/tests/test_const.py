@@ -17,8 +17,8 @@ class Tconst(TestCase):
     def test_branch_name(self):
         devnull = open(os.devnull, 'w')
         try:
-            subprocess.check_call(["hg", "version"], stdout=devnull)
-        except OSError:
+            subprocess.check_call(["hg", "status"], stdout=devnull)
+        except (OSError, subprocess.CalledProcessError):
             # no active hg repo, skip
             return
 
