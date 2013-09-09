@@ -95,6 +95,12 @@ class TObjectStore(TestCase):
         m.insert_many(0, range(10))
         self.failUnlessEqual(range(10), list(m.itervalues()))
 
+    def test_iterrows(self):
+        m = ObjectStore()
+        m.insert_many(0, range(10))
+        for iter_, value in m.iterrows():
+            self.failUnlessEqual(m.get_value(iter_), value)
+
     def test_insert_before(self):
         m = ObjectStore()
         iter_ = m.append(row=[1])

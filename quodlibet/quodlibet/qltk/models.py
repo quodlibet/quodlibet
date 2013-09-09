@@ -50,6 +50,16 @@ class _ModelMixin(object):
             yield getv(iter_)
             iter_ = inext(iter_)
 
+    def iterrows(self):
+        """Yields (iter, value) tuples"""
+
+        iter_ = self.get_iter_first()
+        getv = self.get_value
+        inext = self.iter_next
+        while iter_:
+            yield iter_, getv(iter_)
+            iter_ = inext(iter_)
+
 
 class ObjectModelFilter(_ModelMixin, Gtk.TreeModelFilter):
     pass

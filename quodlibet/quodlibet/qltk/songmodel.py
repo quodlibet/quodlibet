@@ -79,11 +79,12 @@ class PlaylistMux(object):
         self.pl.reset()
 
     def enqueue(self, songs):
-        for song in songs:
-            self.q.append(row=[song])
+        self.q.append_many(songs)
 
     def unqueue(self, songs):
-        map(self.q.remove, filter(None, map(self.q.find, songs)))
+        q = self.q
+        for iter_ in q.find_all(songs):
+            q.remove(iter_)
 
 
 class TrackCurrentModel(ObjectStore):
@@ -146,7 +147,13 @@ class TrackCurrentModel(ObjectStore):
         return None
 
     def find_all(self, songs):
-        return [row.iter for row in self if row[0] in songs]
+        songs = set(songs)
+        found = []
+        append = found.append
+        for iter_, value in self.iterrows():
+            if value in songs:
+                append(iter_)
+        return found
 
     def __contains__(self, song):
         return bool(self.find(song))

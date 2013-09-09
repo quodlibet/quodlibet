@@ -356,6 +356,15 @@ class TPlaylistMux(TestCase):
         self.p.next()
         self.failIf(self.pl.sourced)
 
+    def test_unqueue(self):
+        self.q.set(range(100))
+        self.mux.unqueue(range(100))
+        self.failIf(len(self.q))
+
+    def test_queue(self):
+        self.mux.enqueue(range(40))
+        self.failUnlessEqual(list(self.q.itervalues()), range(40))
+
     def tearDown(self):
         self.p.destroy()
 add(TPlaylistMux)
