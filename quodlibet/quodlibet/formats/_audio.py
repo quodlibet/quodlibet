@@ -19,6 +19,7 @@ from quodlibet import const
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, fsdecode, fsencode, mtime, expanduser
+from quodlibet.util.path import normalize_path
 from quodlibet.util.string import encode
 
 from quodlibet.util.uri import URI
@@ -559,6 +560,7 @@ class AudioFile(dict):
             raise ValueError("Unknown filename!")
         if self.is_file:
             self["~filename"] = os.path.realpath(self["~filename"])
+            self["~filename"] = normalize_path(self["~filename"])
             # Find mount point (terminating at "/" if necessary)
             head = self["~filename"]
             while "~mountpoint" not in self:

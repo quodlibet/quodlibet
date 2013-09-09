@@ -4,6 +4,7 @@ from quodlibet.util.string.splitters import *
 from quodlibet.util.library import *
 from tests import TestCase, add
 
+import tempfile
 import sys
 import os
 import re
@@ -550,3 +551,39 @@ class Tlibrary(TestCase):
         self.failUnlessEqual(get_scan_dirs(), ["foo", "bar"])
 
 add(Tlibrary)
+
+
+class TNormalizePath(TestCase):
+    def test_darwin(self):
+        from quodlibet.util.path import _normalize_darwin_path
+
+        def norm(p):
+            return _normalize_darwin_path(p, strict=True)
+
+        name = tempfile.mkdtemp()
+        basename = os.path.basename(name)
+        old_cwd = os.getcwd()
+        os.chdir(name)
+        try:
+            self.failUnlessEqual(norm(name), name)
+            self.failUnlessEqual(norm("."), ".")
+            self.failUnlessEqual(norm(".."), "..")
+            t = os.path.join("..", basename)
+            self.failUnlessEqual(norm(t), t)
+            t = os.path.join("/", "bin", "..",  norm(name))
+            self.failUnlessEqual(norm(t), t)
+        finally:
+            os.chdir(old_cwd)
+            os.rmdir(name)
+
+    def test_default(self):
+        from quodlibet.util.path import _normalize_path as norm
+
+        name = tempfile.mkdtemp()
+        try:
+            self.failUnlessEqual(norm(name), name)
+            self.failUnlessEqual(norm(os.path.join(name, "foo", "..")), name)
+        finally:
+            os.rmdir(name)
+
+add(TNormalizePath)

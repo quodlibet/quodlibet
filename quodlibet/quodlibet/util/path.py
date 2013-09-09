@@ -236,3 +236,66 @@ def strip_win32_incompat_from_path(string):
     drive, tail = os.path.splitdrive(string)
     tail = os.sep.join(map(strip_win32_incompat, tail.split(os.sep)))
     return drive + tail
+
+
+def _normalize_darwin_path(filename, strict=False, _cache={}, _statcache={}):
+    """Get a normalized version of the path by calling listdir
+    and comparing the inodes with our file.
+
+    - This should also work on linux, but returns the same as os.path.normpath.
+    - Any errors get ignored and lead to an un-normalized version.
+    - Supports relative and absolute paths (and returns the same).
+    """
+
+    if filename in (".", "..", "/", ""):
+        return filename
+
+    filename = os.path.normpath(filename)
+
+    def _stat(p):
+        assert p.startswith("/")
+
+        if len(_statcache) > 100:
+            _statcache.clear()
+        if p not in _statcache:
+            _statcache[p] = os.lstat(p)
+        return _statcache[p]
+
+    abspath = os.path.abspath(filename)
+    key = (abspath, filename)
+    if key in _cache:
+        return _cache[key]
+    parent = os.path.dirname(abspath)
+
+    try:
+        s1 = _stat(abspath)
+        for entry in os.listdir(parent):
+            entry_path = os.path.join(parent, entry)
+            if not os.path.samestat(s1, _stat(entry_path)):
+                continue
+            dirname = os.path.dirname(filename)
+            norm_dirname = _normalize_darwin_path(dirname)
+            filename = os.path.join(norm_dirname, entry)
+            break
+    except EnvironmentError:
+        if strict:
+            raise
+
+    if len(_cache) > 30:
+        _cache.clear()
+
+    _cache[key] = filename
+    return filename
+
+
+def _normalize_path(filename):
+    """Normalize a path on Windows / Linux"""
+
+    filename = os.path.normpath(filename)
+    return os.path.normcase(filename)
+
+
+if sys.platform == "darwin":
+    normalize_path = _normalize_darwin_path
+else:
+    normalize_path = _normalize_path
