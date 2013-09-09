@@ -29,8 +29,17 @@ class BigCenteredImage(qltk.Window):
         assert parent
         parent = qltk.get_top_parent(parent)
         self.set_transient_for(parent)
-        width, height = parent.get_size()
-        width = height = max(width, height) / 1.3
+
+        if qltk.is_wayland():
+            # no screen size with wayland, the parent window is
+            # the next best thing..
+            width, height = parent.get_size()
+            width = int(width / 1.1)
+            height = int(height / 1.1)
+        else:
+            width = int(Gdk.Screen.width() / 1.75)
+            height = int(Gdk.Screen.height() / 1.75)
+
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
         pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
