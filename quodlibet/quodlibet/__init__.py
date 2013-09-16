@@ -284,7 +284,7 @@ def init(library=None, icon=None, title=None, name=None):
     # We already imported this, but Python is dumb and thinks we're rebinding
     # a local when we import it later.
     import quodlibet.util
-    quodlibet.util.path.mkdir(quodlibet.const.USERDIR)
+    quodlibet.util.path.mkdir(quodlibet.const.USERDIR, 0750)
 
     if library:
         print_d("Initializing main library (%s)" % (
