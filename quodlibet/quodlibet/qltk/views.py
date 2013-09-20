@@ -754,8 +754,8 @@ class TreeViewColumnButton(TreeViewColumn):
         button-press-event and popup-menu"""
 
     __gsignals__ = {
-        'button-press-event': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'popup-menu': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'button-press-event': (GObject.SignalFlags.RUN_LAST, bool, (object,)),
+        'popup-menu': (GObject.SignalFlags.RUN_LAST, bool, ()),
     }
 
     def __init__(self, title="", *args, **kw):
@@ -772,11 +772,10 @@ class TreeViewColumnButton(TreeViewColumn):
             button.connect('popup-menu', self.popup_menu)
 
     def button_press_event(self, widget, event):
-        self.emit('button-press-event', event)
+        return self.emit('button-press-event', event)
 
     def popup_menu(self, widget):
-        self.emit('popup-menu')
-        return True
+        return self.emit('popup-menu')
 
 
 class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):

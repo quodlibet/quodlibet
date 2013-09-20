@@ -1069,9 +1069,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         PreferencesWindow(self).set_page("songlist")
 
     def __showmenu(self, column, event=None):
-        time = Gtk.get_current_event_time()
+        time = event.time if event else Gtk.get_current_event_time()
         if event is not None and event.button != 3:
-            return
+            return False
 
         if event:
             self.__getmenu(column).popup(None, None, None, None,
