@@ -309,6 +309,10 @@ if __name__ == "__main__":
             "data/org.mpris.MediaPlayer2.quodlibet.service",
             "data/org.mpris.quodlibet.service",
         ],
+        'appdata': [
+            "data/quodlibet.appdata.xml",
+            "data/exfalso.appdata.xml",
+        ],
         'man_pages': ["man/quodlibet.1", "man/exfalso.1", "man/operon.1"],
         "search_provider": "data/quodlibet-search-provider.ini",
         }

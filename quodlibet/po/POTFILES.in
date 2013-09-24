@@ -1,4 +1,6 @@
+data/exfalso.appdata.xml.in
 data/exfalso.desktop.in
+data/quodlibet.appdata.xml.in
 data/quodlibet.desktop.in
 exfalso.py
 operon.py

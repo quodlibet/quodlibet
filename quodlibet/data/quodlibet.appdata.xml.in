@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+    <id type="desktop">quodlibet.desktop</id>
+    <licence>CC0</licence>
+    <description>
+    <_p>
+        Quod Libet is a music management program. It provides several
+        different ways to view your audio library, as well as support for
+        Internet radio and audio feeds. It has extremely flexible metadata
+        tag editing and searching capabilities.
+    </_p>
+    <_p>
+        Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3,
+        FLAC, MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA,
+        SPC, MIDI.
+    </_p>
+    </description>
+    <screenshots>
+        <screenshot type="default" width="834" height="670">https://quodlibet.readthedocs.org/en/latest/_images/paned1.png</screenshot>
+        <screenshot width="1236" height="803">https://quodlibet.readthedocs.org/en/latest/_images/queue_2browsers1.png</screenshot>
+    </screenshots>
+    <url type="homepage">http://code.google.com/p/quodlibet/</url>
+    <updatecontact>quod-libet-development@googlegroups.com</updatecontact>
+</application>

@@ -29,6 +29,7 @@ from gdist.po import build_mo, install_mo, po_stats, check_pot
 from gdist.icons import build_icon_cache, install_icons
 from gdist.search_provider import install_search_provider
 from gdist.dbus_services import build_dbus_services, install_dbus_services
+from gdist.appdata import build_appdata, install_appdata
 
 
 class build(distutils_build):
@@ -43,6 +44,8 @@ class build(distutils_build):
          lambda self: self.distribution.need_icon_cache()),
         ("build_dbus_services",
          lambda self: self.distribution.has_dbus_services()),
+        ("build_appdata",
+         lambda self: self.distribution.has_appdata()),
     ]
 
 
@@ -58,6 +61,8 @@ class install(distutils_install):
          lambda self: self.distribution.need_search_provider()),
         ("install_dbus_services",
          lambda self: self.distribution.has_dbus_services()),
+        ("install_appdata",
+         lambda self: self.distribution.has_appdata()),
     ]
 
 
@@ -73,6 +78,7 @@ class GDistribution(Distribution):
       shortcuts -- list of .desktop files to build/install
       dbus_services -- list of .service files to build/install
       man_pages -- list of man pages to install
+      appdata -- list of appdata files to install
 
     Using the translation features requires intltool.
 
@@ -84,6 +90,7 @@ class GDistribution(Distribution):
       """
 
     shortcuts = []
+    appdata = []
     dbus_services = []
     po_directory = None
     man_pages = []
@@ -96,6 +103,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
         self.cmdclass.setdefault("build_icon_cache", build_icon_cache)
         self.cmdclass.setdefault("build_dbus_services", build_dbus_services)
+        self.cmdclass.setdefault("build_appdata", build_appdata)
         self.cmdclass.setdefault("install_icons", install_icons)
         self.cmdclass.setdefault("install_shortcuts", install_shortcuts)
         self.cmdclass.setdefault("install_dbus_services",
@@ -104,6 +112,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("install_mo", install_mo)
         self.cmdclass.setdefault("install_search_provider",
                                  install_search_provider)
+        self.cmdclass.setdefault("install_appdata", install_appdata)
         self.cmdclass.setdefault("build", build)
         self.cmdclass.setdefault("install", install)
         self.cmdclass.setdefault("po_stats", po_stats)
@@ -114,6 +123,9 @@ class GDistribution(Distribution):
 
     def has_shortcuts(self):
         return os.name != 'nt' and bool(self.shortcuts)
+
+    def has_appdata(self):
+        return os.name != 'nt' and bool(self.appdata)
 
     def has_man_pages(self):
         return os.name != 'nt' and bool(self.man_pages)

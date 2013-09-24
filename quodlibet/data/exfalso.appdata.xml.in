@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+    <id type="desktop">exfalso.desktop</id>
+    <licence>CC0</licence>
+    <description>
+    <_p>
+        Ex Falso is a tag editor with the same tag editing interface as
+        Quod Libet. It lets you display and edit any tags you want in the
+        file, for all the file formats it supports.
+    </_p>
+    <_p>
+        Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3,
+        FLAC, MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA,
+        SPC, MIDI.
+    </_p>
+    </description>
+    <screenshots>
+        <screenshot type="default" width="1325" height="674">https://quodlibet.readthedocs.org/en/latest/_images/exfalso.png</screenshot>
+    </screenshots>
+    <url type="homepage">http://code.google.com/p/quodlibet/</url>
+    <updatecontact>quod-libet-development@googlegroups.com</updatecontact>
+</application>
