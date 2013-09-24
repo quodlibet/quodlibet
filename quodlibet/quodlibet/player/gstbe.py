@@ -33,28 +33,10 @@ from quodlibet.qltk.x import Button
 STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
 
 
-class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
-    __gproperties__ = BasePlayer._gproperties_
-    __gsignals__ = BasePlayer._gsignals_
+class GstPlayerPreferences(Gtk.VBox):
+    def __init__(self, player):
+        super(GstPlayerPreferences, self).__init__(spacing=6)
 
-    _paused = True
-    _in_gapless_transition = False
-    _inhibit_play = False
-    _last_position = 0
-
-    _task = None
-
-    bin = None
-    _vol_element = None
-    _use_eq = False
-    _eq_element = None
-
-    __atf_id = None
-    __bus_id = None
-
-    __info_buffer = None
-
-    def PlayerPreferences(self):
         e = UndoEntry()
         e.set_tooltip_text(_("The GStreamer output pipeline used for "
                 "playback, such as 'alsasink device=default'. "
@@ -75,10 +57,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             return _("%.1f seconds") % value
 
         def scale_changed(scale):
-            config.set("player", "gst_buffer", scale.get_value())
-            if self.bin:
-                duration = int(scale.get_value() * 1000) * Gst.MSECOND
-                self.bin.set_property('buffer-duration', duration)
+            duration_msec = int(scale.get_value() * 1000)
+            player._set_buffer_duration(duration_msec)
 
         duration = config.getfloat("player", "gst_buffer")
         scale = Gtk.HScale.new(Gtk.Adjustment(duration, 0.2, 10))
@@ -92,7 +72,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         buffer_label.set_mnemonic_widget(scale)
 
         def rebuild_pipeline(*args):
-            self._rebuild_pipeline()
+            player._rebuild_pipeline()
         apply_button.connect('clicked', rebuild_pipeline)
 
         widgets = [(pipe_label, e, apply_button),
@@ -115,21 +95,40 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             else:
                 table.attach(middle, 1, 3, i, i + 1)
 
-        vbox = Gtk.VBox(spacing=6)
-        vbox.pack_start(table, True, True, 0)
+        self.pack_start(table, True, True, 0)
 
         if const.DEBUG:
             def print_bin(player):
-                if player.bin:
-                    map(print_, bin_debug([player.bin]))
-                else:
-                    print_e("No active pipeline.")
+                player._print_pipeline()
 
             b = Button("Print Pipeline", Gtk.STOCK_DIALOG_INFO)
-            b.connect_object('clicked', print_bin, self)
-            vbox.pack_start(b, True, True, 0)
+            b.connect_object('clicked', print_bin, player)
+            self.pack_start(b, True, True, 0)
 
-        return vbox
+
+class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
+    __gproperties__ = BasePlayer._gproperties_
+    __gsignals__ = BasePlayer._gsignals_
+
+    _paused = True
+    _in_gapless_transition = False
+    _inhibit_play = False
+    _last_position = 0
+
+    _task = None
+
+    bin = None
+    _vol_element = None
+    _use_eq = False
+    _eq_element = None
+
+    __atf_id = None
+    __bus_id = None
+
+    __info_buffer = None
+
+    def PlayerPreferences(self):
+        return GstPlayerPreferences(self)
 
     def __init__(self, librarian=None):
         GStreamerPluginHandler.__init__(self)
@@ -148,19 +147,29 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             name += " (%s)" % self._pipeline_desc
         return name
 
-    def __init_pipeline(self):
-        """Creates a gstreamer pipeline with the following elements
+    def _set_buffer_duration(self, duration):
+        """Set the stream buffer duration in msecs"""
 
-        For newer gstreamer versions:
-            playbin2 -> bin [ <- ghostpad -> queue -> volume -> capsfilter
-                -> equalizer -> audioconvert -> user defined elements
-                -> gconf/autoaudiosink ]
+        config.set("player", "gst_buffer", float(duration) / 1000)
 
-        For older versions:
-            playbin -> bin [ <- ghostpad -> capsfilter -> equalizer
-                -> audioconvert -> user defined elements
-                -> gconf/autoaudiosink ]
+        if self.bin:
+            value = duration * Gst.MSECOND
+            self.bin.set_property('buffer-duration', value)
+
+    def _print_pipeline(self):
+        """Print debug information for the active pipeline to stdout
+        (elements, formats, ...)
         """
+
+        if self.bin:
+            for line in bin_debug([self.bin]):
+                print_(line)
+        else:
+            print_e("No active pipeline.")
+
+    def __init_pipeline(self):
+        """Creates a gstreamer pipeline. Returns True on success."""
+
         if self.bin:
             return True
 
@@ -205,7 +214,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         pipeline = plugin_pipeline + pipeline
 
         bufbin = Gst.Bin()
-        map(bufbin.add, pipeline)
+        for element in pipeline:
+            assert element is not None, pipeline
+            bufbin.add(element)
+
         if len(pipeline) > 1:
             if not link_many(pipeline):
                 print_w("Could not link GStreamer pipeline")
@@ -225,12 +237,15 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         bufbin.add_pad(gpad)
 
         self.bin = Gst.ElementFactory.make('playbin', None)
+        assert self.bin
         self.__atf_id = self.bin.connect('about-to-finish',
             self.__about_to_finish)
-        duration = config.getfloat("player", "gst_buffer")
-        duration = int(duration * 1000) * Gst.MSECOND
-        self.bin.set_property('buffer-duration', duration)
 
+        # set buffer duration
+        duration = config.getfloat("player", "gst_buffer")
+        self._set_buffer_duration(int(duration * 1000))
+
+        # connect playbin to our pluing/volume/eq pipeline
         self.bin.set_property('audio-sink', bufbin)
 
         # by default playbin will render video -> suppress using fakesink
