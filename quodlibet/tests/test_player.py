@@ -42,9 +42,6 @@ class TPlayer(TestCase):
         import __builtin__
         pw = print_w
         __builtin__.__dict__["print_w"] = lambda *x: None
-        # FIXME: idle_add should be removed on destroy, wait here instead
-        while Gtk.events_pending():
-            Gtk.main_iteration()
         self.player.destroy()
         while Gtk.events_pending():
             Gtk.main_iteration()

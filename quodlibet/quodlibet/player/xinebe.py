@@ -56,6 +56,7 @@ class XinePlaylistPlayer(BasePlayer):
         self._event_queue = None
         self._new_stream(driver)
         self._librarian = librarian
+        self._destroyed = False
 
     def _new_stream(self, driver):
         self._audio_port = self._handle.open_audio_driver(driver, None)
@@ -77,6 +78,8 @@ class XinePlaylistPlayer(BasePlayer):
             self._event_listener, None)
 
     def destroy(self):
+        self._destroyed = True
+
         if self._stream:
             xine_close(self._stream)
             xine_dispose(self._stream)
@@ -88,11 +91,17 @@ class XinePlaylistPlayer(BasePlayer):
         super(XinePlaylistPlayer, self).destroy()
 
     def _playback_finished(self):
+        if self._destroyed:
+            return False
+
         self._source.next_ended()
         self._end(False, gapless=True)
         return False
 
     def _update_metadata(self):
+        if self._destroyed:
+            return False
+
         if not self.song or not self.song.multisong:
             return False
         if self.info is self.song:
@@ -191,6 +200,9 @@ class XinePlaylistPlayer(BasePlayer):
     paused = property(lambda s: s._paused, _set_paused)
 
     def _error(self, message):
+        if self._destroyed:
+            return False
+
         self._stop()
         self.emit('error', self.song, message)
         if not self.paused:
