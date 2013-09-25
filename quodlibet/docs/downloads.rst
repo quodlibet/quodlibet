@@ -1,13 +1,14 @@
 .. _Downloads:
 
-.. |ubuntu-logo| image:: http://f.666kb.com/i/c9p32f4lepzuqhs0u.png
-.. |debian-logo| image:: http://f.666kb.com/i/c904azd0y1bh5mkwc.png
-.. |fedora-logo| image:: http://f.666kb.com/i/c9mlwgf9lyihgbkc4.png
-.. |opensuse-logo| image:: http://f.666kb.com/i/c9n4w5fb5l14jwaes.png
-.. |windows-logo| image:: http://f.666kb.com/i/c904cja4hkg41b1ak.png
-.. |source-logo| image:: http://f.666kb.com/i/c904lpl958tadrlu4.png
-.. |hg-logo| image:: http://f.666kb.com/i/cdmhj87a6v5xcdugp.png
-.. |arch-logo| image:: http://f.666kb.com/i/cdmhrzqnwlwvg3f5l.png
+.. |ubuntu-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/ubuntu.png
+.. |debian-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/debian.png
+.. |fedora-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/fedora.png
+.. |opensuse-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/opensuse.png
+.. |windows-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/windows.png
+.. |source-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/source.png
+.. |hg-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/mercurial.png
+.. |arch-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/arch.png
+.. |macosx-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/macosx.png
 
 
 Downloads
@@ -37,16 +38,16 @@ Release                    Filename
 ========================== ===============================
 Quod Libet 3.0.2           quodlibet-3.0.2.tar.gz_
 Quod Libet Plugins 3.0.2   quodlibet-plugins-3.0.2.tar.gz_
-Quod Libet 2.6.2           quodlibet-2.6.2.tar.gz_
-Quod Libet Plugins 2.6.2   quodlibet-plugins-2.6.2.tar.gz_
+Quod Libet 2.6.3           quodlibet-2.6.3.tar.gz_
+Quod Libet Plugins 2.6.3   quodlibet-plugins-2.6.3.tar.gz_
 Quod Libet 2.5.1           quodlibet-2.5.1.tar.gz_
 Quod Libet Plugins 2.5.1   quodlibet-plugins-2.5.1.tar.gz_
 ========================== ===============================
 
 .. _quodlibet-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.2.tar.gz
 .. _quodlibet-plugins-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.2.tar.gz
-.. _quodlibet-2.6.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.2.tar.gz
-.. _quodlibet-plugins-2.6.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.6.2.tar.gz
+.. _quodlibet-2.6.3.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3.tar.gz
+.. _quodlibet-plugins-2.6.3.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.6.3.tar.gz
 .. _quodlibet-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1.tar.gz
 .. _quodlibet-plugins-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.5.1.tar.gz
 
@@ -119,15 +120,14 @@ Unstable Repo:
 ========================== ==============================
 Release                    Filename
 ========================== ==============================
+Quod Libet 2.6.3           quodlibet-2.6.3-installer.exe_
 Quod Libet 2.5.1           quodlibet-2.5.1-installer.exe_
 Quod Libet 2.4.1           quodlibet-2.4.1-installer.exe_
-Quod Libet 2.3.1           quodlibet-2.3.1-installer.exe_
 ========================== ==============================
 
-
+.. _quodlibet-2.6.3-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3-installer.exe
 .. _quodlibet-2.5.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1-installer.exe
 .. _quodlibet-2.4.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.4.1-installer.exe
-.. _quodlibet-2.3.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.3.1-installer.exe
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
 
@@ -174,8 +174,8 @@ To update to the latest version, switch to the QL dir and run::
  $ hg pull --update
  $ ./setup.py build_mo # (only if you need translations)
 
-Mac OS X
---------
+|macosx-logo| Mac OS X
+----------------------
 
 Simple way (using macports)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
