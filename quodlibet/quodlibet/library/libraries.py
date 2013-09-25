@@ -211,17 +211,17 @@ def dump_items(filename, items):
         fileobj.flush()
         os.fsync(fileobj.fileno())
 
-        # No atomic rename on windows
-        if os.name == "nt":
-            try:
-                os.remove(filename)
-            except EnvironmentError:
-                pass
-
+    # No atomic rename on windows
+    if os.name == "nt":
         try:
-            os.rename(temp_filename, filename)
+            os.remove(filename)
         except EnvironmentError:
-            print_w("Couldn't save library to path: %r" % filename)
+            pass
+
+    try:
+        os.rename(temp_filename, filename)
+    except EnvironmentError:
+        print_w("Couldn't save library to path: %r" % filename)
 
 
 def load_items(filename, default=None):
