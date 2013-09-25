@@ -1,3 +1,11 @@
+2.6.3 (2013-09-25) - The one that can't even go naked into space without dying!
+-------------------------------------------------------------------------------
+
+This is a Windows only bug fix release.
+
+Windows:
+ * Fix library saving [1230] (Sebastian Thürrschmidt)
+
 3.0.2 (2013-07-22) - LATER, THE OCEANS BOIL AS THE EARTH TURNS TO FIRE
 ----------------------------------------------------------------------
 
