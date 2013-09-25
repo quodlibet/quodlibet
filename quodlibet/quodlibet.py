@@ -256,7 +256,7 @@ def control(c):
     from quodlibet import const
 
     if not isrunning():
-        quodlibet.exit(_("Quod Libet is not running."))
+        quodlibet.exit(_("Quod Libet is not running."), notify_startup=True)
     else:
         try:
             # This is a total abuse of Python! Hooray!
@@ -273,9 +273,9 @@ def control(c):
             except OSError:
                 pass
             if c != 'focus':
-                raise quodlibet.exit(True)
+                raise quodlibet.exit(True, notify_startup=True)
         else:
-            quodlibet.exit()
+            quodlibet.exit(notify_startup=True)
 
 
 def process_arguments():
@@ -398,7 +398,7 @@ def process_arguments():
             if command in validators and not validators[command](arg):
                 print_e(_("Invalid argument for '%s'.") % command)
                 print_e(_("Try %s --help.") % sys.argv[0])
-                quodlibet.exit(True)
+                quodlibet.exit(True, notify_startup=True)
             else:
                 control(command + " " + arg)
         elif command == "status":
