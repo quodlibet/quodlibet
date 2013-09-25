@@ -138,6 +138,7 @@ Philipp Müller
 Philipp Weis
 Remi Vanicat
 Robert Muth
+Sebastian Thürrschmidt
 Steven Robertson
 Tomasz Miasko
 Tomasz Torcz
