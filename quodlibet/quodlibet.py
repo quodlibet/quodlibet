@@ -123,6 +123,8 @@ def main():
 
     from quodlibet.qltk.songsmenu import SongsMenu
     SongsMenu.init_plugins()
+    from quodlibet.util.cover.manager import cover_plugins
+    cover_plugins.init_plugins()
 
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
     app.window = window = QuodLibetWindow(library, player)

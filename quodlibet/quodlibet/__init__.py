@@ -319,6 +319,7 @@ def init_plugins(no_plugins=False):
                os.path.join(quodlibet.const.BASEDIR, "plugins", "playorder"),
                os.path.join(quodlibet.const.BASEDIR, "plugins", "songsmenu"),
                os.path.join(quodlibet.const.BASEDIR, "plugins", "gstreamer"),
+               os.path.join(quodlibet.const.BASEDIR, "plugins", "covers"),
                os.path.join(quodlibet.const.USERDIR, "plugins")]
     pm = plugins.init(folders, no_plugins)
     pm.rescan()

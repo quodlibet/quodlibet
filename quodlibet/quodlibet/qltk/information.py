@@ -166,11 +166,16 @@ class OneSong(qltk.Notebook):
         w.set_ellipsize(Pango.EllipsizeMode.END)
         hb = Gtk.HBox(spacing=12)
 
-        cover = CoverImage(song=song)
-        if cover:
-            hb.pack_start(cover, False, True, 0)
-        else:
-            cover.destroy()
+        cover = CoverImage()
+        cover.set_property('no-show-all', True)
+        hb.pack_start(cover, False, True, 0)
+
+        def show_cover(cover, success):
+            if success:
+                cover.show()
+            cover.disconnect(signal_id)
+        signal_id = cover.connect('cover-visible', show_cover)
+        cover.set_song(song)
 
         hb.pack_start(w, True, True, 0)
         box.pack_start(Frame(tag("album"), hb), False, False, 0)
@@ -389,11 +394,16 @@ class OneAlbum(qltk.Notebook):
         w.set_markup("\n".join(text))
         hb = Gtk.HBox(spacing=12)
 
-        cover = CoverImage(song=song)
-        if cover:
-            hb.pack_start(cover, False, True, 0)
-        else:
-            cover.destroy()
+        cover = CoverImage()
+        cover.set_property('no-show-all', True)
+        hb.pack_start(cover, False, True, 0)
+
+        def show_cover(cover, success):
+            if success:
+                cover.show()
+            cover.disconnect(signal_id)
+        signal_id = cover.connect('cover-visible', show_cover)
+        cover.set_song(song)
 
         hb.pack_start(w, True, True, 0)
         box.pack_start(hb, False, False, 0)

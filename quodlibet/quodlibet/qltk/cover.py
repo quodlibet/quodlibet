@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna,
-# Christoph Reiter, Nick Boultbee
+# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Christoph Reiter, Nick Boultbee, Simonas Kazlauskas
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GLib, Gdk, GdkPixbuf
+from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
 
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet.util import thumbnails
+from quodlibet.util.cover.manager import cover_plugins
 
 
 # TODO: neater way of managing dependency on this particular plugin
@@ -168,6 +169,13 @@ class ResizeImage(Gtk.Bin):
 
 
 class CoverImage(Gtk.EventBox):
+    __gsignals__ = {
+        # We do not necessarily display cover at the same instant this widget
+        # is created or set_song is called. This signal allows callers know
+        # when the cover is visible for sure. The signal argument tells whether
+        # cover shown is not the fallback image.
+        'cover-visible': (GObject.SignalFlags.RUN_LAST, None, (bool,))
+    }
 
     def __init__(self, resize=False, size=70, song=None):
         super(CoverImage, self).__init__()
@@ -175,20 +183,37 @@ class CoverImage(Gtk.EventBox):
         self.__song = None
         self.__file = None
         self.__current_bci = None
+        self.__cancellable = None
 
         self.add(ResizeImage(resize, size))
         self.connect('button-press-event', self.__show_cover)
         self.set_song(song)
         self.get_child().show_all()
 
+    def set_image(self, _file):
+        if _file is not None and not _file.name:
+            print_w('Got file which is not in the filesystem!')
+        self.__file = _file
+        self.get_child().set_path(_file and _file.name)
+
     def set_song(self, song):
         self.__song = song
+        self.set_image(None)
+        if self.__cancellable:
+            self.__cancellable.cancel()
+        cancellable = self.__cancellable = Gio.Cancellable.new()
+
         if song:
-            self.__file = song.find_cover()
-            self.get_child().set_path(self.__file and self.__file.name)
-        else:
-            self.__file = None
-            self.get_child().set_path(None)
+            def cb(success, result):
+                if success:
+                    try:
+                        self.set_image(result)
+                        self.emit('cover-visible', success)
+                        # If this widget is already 'destroyed', we will get
+                        # following error.
+                    except AttributeError:
+                        pass
+            cover_plugins.acquire_cover(cb, cancellable, song)
 
     def refresh(self):
         self.set_song(self.__song)
