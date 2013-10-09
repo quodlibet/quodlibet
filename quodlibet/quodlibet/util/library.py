@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #     Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -36,10 +36,10 @@ def set_scan_dirs(dirs):
     config.set("settings", "scan", util.fsencode(":".join(dirs)))
 
 
-def scan_libary(library, force):
-    """Start the global library rescan
+def scan_library(library, force):
+    """Start the global library re-scan
 
-    If force is True reload all existing valid items.
+    If `force` is True, reload all existing valid items.
     """
 
     paths = util.split_scan_dirs(config.get("settings", "scan"))

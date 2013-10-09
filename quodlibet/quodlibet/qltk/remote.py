@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+# Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna,
+#           2011-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,13 +8,12 @@
 
 import os
 import re
-import sys
 
 from gi.repository import Gdk, GLib
 
 import quodlibet
 from quodlibet import browsers
-from quodlibet import config
+
 from quodlibet import const
 from quodlibet import util
 from quodlibet import qltk
@@ -21,8 +21,7 @@ from quodlibet.util.uri import URI
 
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
-from quodlibet.util import copool
-from quodlibet.util.library import scan_libary
+from quodlibet.util.library import scan_library
 from quodlibet.util.path import mkdir
 
 
@@ -417,4 +416,4 @@ class FIFOControl(object):
             f.close()
 
     def _refresh(self, library, window, player):
-        scan_libary(library, False)
+        scan_library(library, False)
