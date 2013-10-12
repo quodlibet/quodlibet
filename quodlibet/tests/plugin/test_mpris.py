@@ -41,7 +41,7 @@ class TMPRIS(PluginTestCase):
 
         app.library = library.init()
         app.player = backend.init(app.librarian)
-        app.window = QuodLibetWindow(app.library, app.player)
+        app.window = QuodLibetWindow(app.library, app.player, headless=True)
 
         cls.plugin = cls.plugins["mpris"]
 

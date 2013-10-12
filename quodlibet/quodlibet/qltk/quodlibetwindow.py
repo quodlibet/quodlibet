@@ -225,7 +225,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         'artwork-changed': SIG_PYOBJECT,
     }
 
-    def __init__(self, library, player):
+    def __init__(self, library, player, headless=False):
         super(QuodLibetWindow, self).__init__()
         self.last_dir = const.HOME
 
@@ -342,6 +342,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         self.connect('drag-data-received', self.__drag_data_received)
 
+        if not headless:
+            self.__configure_scan_dirs()
+
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
 
@@ -351,6 +354,17 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.connect("destroy", self.__destroy)
 
         self.enable_window_tracking("quodlibet")
+
+    def __configure_scan_dirs(self):
+        """Get user to configure scan dirs, if none is set up"""
+        if not get_scan_dirs():
+            print_d("Couldn't find any scan dirs")
+            if qltk.ConfirmAction(self, _("Set up library directories?"),
+                   _("You don't have any music library set up. "
+                     "Would you like to do that now?")).run():
+                prefs = PreferencesWindow(self)
+                prefs.set_page("library")
+                prefs.show()
 
     def __add_bookmark(self, librarian, player):
         if player.song:
@@ -941,7 +955,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             fns, do_watch = dialog.run()
             dialog.destroy()
             if fns:
-                # scane them
+                # scan them
                 self.last_dir = fns[0]
                 copool.add(self.__library.scan, fns, funcid="library")
 

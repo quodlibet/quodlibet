@@ -25,7 +25,7 @@ from quodlibet.qltk.songlist import SongList
 from quodlibet.util import copool
 from quodlibet.util.path import fsnative
 from quodlibet.util.dprint import print_d
-from quodlibet.util.library import emit_signal, get_scan_dirs
+from quodlibet.util.library import emit_signal, get_scan_dirs, scan_library
 
 
 class PreferencesWindow(qltk.UniqueWindow):
@@ -503,6 +503,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             vb3.pack_start(scan_dirs, True, True, 0)
 
             def refresh_cb(button):
+                # TODO: remove duplication from util.library.scan_library() ?
                 paths = get_scan_dirs()
                 exclude = config.get("library", "exclude").split(":")
                 exclude = [fsnative(e) for e in exclude]
@@ -533,6 +534,7 @@ class PreferencesWindow(qltk.UniqueWindow):
         if self.is_not_unique():
             return
         super(PreferencesWindow, self).__init__()
+        self.current_scan_dirs = get_scan_dirs()
         self.set_title(_("Preferences") + " - Quod Libet")
         self.set_border_width(12)
         self.set_resizable(False)
@@ -566,3 +568,5 @@ class PreferencesWindow(qltk.UniqueWindow):
 
     def __destroy(self):
         config.write(const.CONFIG)
+        if self.current_scan_dirs != get_scan_dirs():
+            scan_library(app.library, force=False)
