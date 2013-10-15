@@ -18,6 +18,7 @@ from quodlibet.qltk.views import AllTreeView
 class DownloadWindow(qltk.UniqueWindow):
     downloads = None
 
+    @classmethod
     def download(klass, source, target, parent=None):
         if klass.downloads is None:
             # source fileobj, target fileobj, I/O watch callback ID, source uri
@@ -25,7 +26,6 @@ class DownloadWindow(qltk.UniqueWindow):
         win = DownloadWindow(parent)
         win.show()
         win._download(source, target)
-    download = classmethod(download)
 
     def __init__(self, parent=None):
         if self.is_not_unique():
@@ -49,7 +49,7 @@ class DownloadWindow(qltk.UniqueWindow):
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_expand(True)
 
-        def cell_data_name(column, cell, model, iter):
+        def cell_data_name(column, cell, model, iter, data):
             cell.set_property('text', model[iter][1].name)
         column.set_cell_data_func(render, cell_data_name)
         view.append_column(column)
@@ -58,7 +58,7 @@ class DownloadWindow(qltk.UniqueWindow):
         column = Gtk.TreeViewColumn(_("Size"), render)
         column.set_sizing(Gtk.TreeViewColumnSizing.GROW_ONLY)
 
-        def cell_data_size(column, cell, model, iter):
+        def cell_data_size(column, cell, model, iter, data):
             if model[iter][2] == 0:
                 size = _("Queued")
             else:
@@ -96,7 +96,7 @@ class DownloadWindow(qltk.UniqueWindow):
 
     def __start_next(self):
         started = len(filter(lambda row: row[2] != 0, self.downloads))
-        iter = self.downloads.get_iter_root()
+        iter = self.downloads.get_iter_first()
         while iter is not None:
             if started >= 2:
                 break
