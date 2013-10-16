@@ -310,7 +310,7 @@ class PluginManager(object):
 
             self.__enabled.discard(plugin.id)
 
-            instance = plugin.get_instance()
+            instance = plugin.instance
             if instance and hasattr(instance, "disabled"):
                 try:
                     instance.disabled()
