@@ -14,19 +14,15 @@ something more powerful?
 Combining Searches and Negation
 -------------------------------
 
-You can combine search terms using ``&`` ("and") and ``|`` ("or"):
+You can combine search terms using ``&`` ("and") and ``|`` ("or").
 
-If you want to listen to Electronic music but no Ambient:
-
-::
+If you want to listen to Electronic music but no Ambient::
 
     &(electro, !ambient)
 
 Or you want to get all songs by `Neutral Milk Hotel
 <http://en.wikipedia.org/wiki/Neutral_Milk_Hotel>`_ including the solo
-performances of `Jeff Mangum <http://en.wikipedia.org/wiki/Jeff_Mangum>`_:
-
-::
+performances of `Jeff Mangum <http://en.wikipedia.org/wiki/Jeff_Mangum>`_::
 
     |(mangum, neutral milk)
 
@@ -57,26 +53,7 @@ The search terms can't use quotes (``"``), slashes (``/``), hashes (``#``),
 pipes (``|``), ampersands (``&``), or bangs (``!``); these characters have
 special meanings for advanced searches.
 
-If you want an exact match, use quotes::
-
-    artist = "a girl called eddy"
-
-If you need to put a ``"`` inside the quotes, you can put a ``\`` before it::
-
-    version = "12\" mix"
-
-..
-
-    ''That's great, until I want to hear all my songs by
-    `BoA <http://www.avexnet.or.jp/boa/>`__, and not the ones by
-    `Boa <http://www.boaweb.co.uk/>`__. ``artist = "boa"`` gives me both!''
-
-You can put a ``c`` after the last " to make the search case-sensitive::
-
-    artist = "BoA"c
-    artist = "Boa"c
-
-You can also search :ref:`internal tags <InternalTags>`, e.g.
+You can also search :ref:internal tags <InternalTags>, e.g.
 
  * ``~format = Ogg Vorbis``
  * ``~dirname=Greatest Hits`` - search for all songs in Greatest Hits folders.
@@ -86,32 +63,42 @@ It's also possible to search in multiple tags at once:
  * ``*artist, performer = "Boa"c``
 
 
-Combining Searches
-------------------
+Exact Matching
+--------------
 
- ''That's cool, but I want something cooler.''
+If you want an exact match, use quotes::
 
-Like before you can combine searches using ``&`` ("and") and ``|`` ("or");
-either grouping entire searches, or just the tag values. Although the
-examples below use simple keywords, you can also use exact matches or
-regular expressions.
+    artist = "a girl called eddy"
 
-::
+If you need to put a ``"`` inside the quotes, you can put a ``\`` before it::
+
+    version = "12\" mix"
+
+You can put a ``c`` after the last " to make the search case-sensitive::
+
+    artist = "BoA"c
+    artist = "Boa"c
+
+Combining Tag Searches
+----------------------
+
+As with free-text searches, you can combine searches using ``&`` ("and") and
+``|``  ("or"); either grouping entire searches, or just the tag values.
+Although the examples below use simple keywords, you can also use exact
+matches or regular expressions::
 
     artist = |(Townshend, Who)
     &(artist = Lindsay Smith, album = Vat)
 
-The first one will find anything by `The Who <http://www.thewho.net/>`_ or
-guitarist `Pete Townshend <http://www.petetownshend.co.uk/>`_'s later work.
-The second one will only give you the songs that match both, so you'll find
+The first finds anything by `The Who <http://www.thewho.net/>`_ or
+guitarist `Pete Townshend <http://www.petetownshend.co.uk/>`_ .
+The second gives the songs that match both, so you'll find
 songs `Lindsay Smith <http://www.lindsay-smith.com/>`_'s `Tales From The
 Fruitbat Vat <http://www.cdbaby.com/cd/lindsaysmith>`_, but not her other
 albums.
 
-You can also pick out all the songs that ''don't'' match the terms you give,
-using ``!``.
-
-::
+You can also pick out all the songs that *don't* match the terms you give,
+using ``!``::
 
     genre = !Audiobook
 
@@ -121,41 +108,38 @@ is probably a good idea when playing your whole library on shuffle.
 Numeric Searches
 ----------------
 
-    ''That's pretty cool, but ``year = |("2001", "2002", "2003", "2004",
-    "2005", "2006")`` is pretty unwieldy. And what about everything before
-    2001?''
+Using ``#``, you can search your library using numeric values. Quod Libet
+keeps some internal numeric values including ``track``, ``disc``, ``rating``,
+``length`` etc. See :ref:`numeric-tags` for
+full details.
 
-Using ``#``, you can search your library for numeric values. Quod Libet
-keeps some internal numeric values - ``track``, ``disc``, ``rating``,
-``length``, ``playcount``, ``skipcount``, ``added`` (time added to the
-library), ``mtime`` (time last modified), ``lastplayed``, and
-``laststarted``.
+With these tags you can then use typical binary operators like ``=``, ``<``,
+ ``>``, ``<=``, ``>=``.
 
  * ``#(skipcount > 100)`` could find really unpopular songs, or
  * ``#(track > 50)`` to figure out who makes really insane albums
 
-Times like `added` are stored in seconds, which is pretty cumbersome to search
-on. Instead, you can search with semi-English, like
+You can also use chained comparisons:
+ * ``#(10 > track > 100)`` to find all two-digit tracks.
 
- * ``#(added < 1 day)``
+Times like ``added`` are stored in seconds, which is pretty cumbersome to
+search on. Instead, you can search with semi-English,
+like:
+
+ * ``#(added < 1 day)`` for very recently added tracks
 
 to find songs added in the last day (if you think that that's backwards,
 mentally add 'ago' when you read it). Quod Libet knows about seconds,
 minutes, hours, days, months (30 days), and years (365 days), kB
 (Kilobyte), MB (Megabyte), GB (Gigabyte). You can also use ''HH:MM''
-notation, like
+notation, like:
 
- * ``#(2:00 < length < 3:00)``
+ * ``#(2:00 < length < 3:00)`` for songs between two and three minutes long.
 
-to find songs between two and three minutes.
+Besides the values QL provides, any tag value that's a number (e.g. ``year``)
+in your files can be searched like this with the ``#`` prefix.
 
-Besides the values QL provides, any tag value that's a number in your files
-can be searched like this. So the solution to the original problem is
-
- * ``#(year > 2000)`` and
- * ``#(year <= 2000)``
-
-Of course, you can combine these with other kinds of searches.
+Of course, you can combine numeric with other kinds of searches.
 
  * ``&(genre = classical, #(lastplayed > 3 days))``
  * ``&(artist = "Rush", #(year <= 1996))``
@@ -176,15 +160,15 @@ surprisingly powerful if you're a playlist user.
    *not* in any playlist
 
 
-Real Ultimate Power: Regular Expressions
-----------------------------------------
+Regular Expressions
+-------------------
 
 Quod Libet also supports searching your library using ''regular
 expressions'', a common way of finding text for Unix applications. Regular
 expressions look like regular searches, except they use / instead of ", and
-some punctuation has special meaning. For more information about regular
-expressions, there are many good tutorials on the web, such as `Kars
-Meyboom's <http://analyser.oli.tudelft.nl/regex/index.html.en>`_.
+some punctuation has special meaning. There are many good tutorials on the
+web, and useful online regex testers (such as `Regex Pal <http://regexpal
+.com/>`_)
 
 Some examples:
 
