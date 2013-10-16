@@ -343,7 +343,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.connect('drag-data-received', self.__drag_data_received)
 
         if not headless:
-            self.__configure_scan_dirs()
+            GLib.idle_add(self.__configure_scan_dirs, library)
 
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
@@ -355,9 +355,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         self.enable_window_tracking("quodlibet")
 
-    def __configure_scan_dirs(self):
+    def __configure_scan_dirs(self, library):
         """Get user to configure scan dirs, if none is set up"""
-        if not get_scan_dirs():
+        if not get_scan_dirs() and not len(library):
             print_d("Couldn't find any scan dirs")
             if qltk.ConfirmAction(self, _("Set up library directories?"),
                    _("You don't have any music library set up. "
