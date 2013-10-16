@@ -19,7 +19,7 @@ class TMediaServer(PluginTestCase):
     @classmethod
     def setUpClass(cls):
         app.library = library.init()
-        cls.plugin = cls.plugins["mediaserver"]
+        cls.plugin = cls.plugins["mediaserver"].cls
 
     def setUp(self):
         self.m = self.plugin()

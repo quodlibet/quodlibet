@@ -32,14 +32,14 @@ class EditingPluginHandler(GObject.GObject):
         return list(self.__plugins)
 
     def plugin_handle(self, plugin):
-        return issubclass(plugin, self.Kind)
+        return issubclass(plugin.cls, self.Kind)
 
-    def plugin_enable(self, plugin, obj):
-        self.__plugins.append(plugin)
+    def plugin_enable(self, plugin):
+        self.__plugins.append(plugin.cls)
         self.emit("changed")
 
     def plugin_disable(self, plugin):
-        self.__plugins.remove(plugin)
+        self.__plugins.remove(plugin.cls)
         self.emit("changed")
 
 

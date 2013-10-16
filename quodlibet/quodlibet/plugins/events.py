@@ -110,10 +110,10 @@ class EventPluginHandler(object):
             check_wrapper_changed(librarian, app.window, songs)
 
     def plugin_handle(self, plugin):
-        return issubclass(plugin, EventPlugin)
+        return issubclass(plugin.cls, EventPlugin)
 
-    def plugin_enable(self, plugin, obj):
-        self.__plugins[plugin] = obj
+    def plugin_enable(self, plugin):
+        self.__plugins[plugin.cls] = plugin.get_instance()
 
     def plugin_disable(self, plugin):
-        self.__plugins.pop(plugin)
+        self.__plugins.pop(plugin.cls)

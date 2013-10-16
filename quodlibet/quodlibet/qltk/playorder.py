@@ -210,21 +210,22 @@ class PlayOrder(Gtk.ComboBoxText):
 
     def plugin_handle(self, plugin):
         from quodlibet.plugins.playorder import PlayOrderPlugin
-        return issubclass(plugin, PlayOrderPlugin)
+        return issubclass(plugin.cls, PlayOrderPlugin)
 
-    def plugin_enable(self, plugin, obj):
-        if plugin.name is None:
-            plugin.name = plugin.PLUGIN_ID
-        if plugin.display_name is None:
-            plugin.display_name = plugin.PLUGIN_NAME
-        if plugin.accelerated_name is None:
-            plugin.accelerated_name = plugin.display_name
+    def plugin_enable(self, plugin):
+        plugin_cls = plugin.cls
+        if plugin_cls.name is None:
+            plugin_cls.name = plugin.name
+        if plugin_cls.display_name is None:
+            plugin_cls.display_name = plugin.name
+        if plugin_cls.accelerated_name is None:
+            plugin_cls.accelerated_name = plugin_cls.display_name
 
-        self.__plugins.append(plugin)
+        self.__plugins.append(plugin_cls)
         self.refresh()
 
     def plugin_disable(self, plugin):
-        self.__plugins.remove(plugin)
+        self.__plugins.remove(plugin.cls)
 
         # Don't safe changes from plugin changes
         # so that disables on shutdown don't change the config.

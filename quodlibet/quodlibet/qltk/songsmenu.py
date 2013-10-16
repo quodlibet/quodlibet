@@ -184,13 +184,13 @@ class SongsMenuPluginHandler(object):
             check_wrapper_changed(library, parent, filter(None, songs))
 
     def plugin_handle(self, plugin):
-        return issubclass(plugin, SongsMenuPlugin)
+        return issubclass(plugin.cls, SongsMenuPlugin)
 
-    def plugin_enable(self, plugin, obj):
-        self.__plugins.append(plugin)
+    def plugin_enable(self, plugin):
+        self.__plugins.append(plugin.cls)
 
     def plugin_disable(self, plugin):
-        self.__plugins.remove(plugin)
+        self.__plugins.remove(plugin.cls)
 
 
 class SongsMenu(Gtk.Menu):

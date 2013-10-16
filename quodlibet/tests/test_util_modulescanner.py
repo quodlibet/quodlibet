@@ -148,7 +148,7 @@ class TModuleScanner(TestCase):
         s = ModuleScanner([self.d])
         removed, added = s.rescan()
         self.failUnlessEqual(added, ["somepkg"])
-        self.failUnlessEqual(s.modules["somepkg"].main, 321)
-        self.failUnlessEqual(s.modules["somepkg"].test, 123)
+        self.failUnlessEqual(s.modules["somepkg"].module.main, 321)
+        self.failUnlessEqual(s.modules["somepkg"].module.test, 123)
 
 add(TModuleScanner)

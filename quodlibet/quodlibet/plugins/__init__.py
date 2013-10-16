@@ -92,6 +92,76 @@ def list_plugins(module):
     return ok
 
 
+class PluginModule(object):
+
+    def __init__(self, name, plugins):
+        self.name = name
+        self.plugins = plugins
+
+
+class Plugin(object):
+
+    def __init__(self, plugin_cls):
+        self.cls = plugin_cls
+        self.handlers = []
+        self.instance = None
+
+    def __repr__(self):
+        return "<%s id=%r name=%r desc=%r>" % (
+            self.id, self.name, self.description or "")
+
+    @property
+    def id(self):
+        return self.cls.PLUGIN_ID
+
+    @property
+    def name(self):
+        return self.cls.PLUGIN_NAME
+
+    @property
+    def description(self):
+        return getattr(self.cls, "PLUGIN_DESC", None)
+
+    @property
+    def tags(self):
+        tags = getattr(self.cls, "PLUGIN_TAGS", [])
+        if isinstance(tags, basestring):
+            tags = [tags]
+        return tags
+
+    @property
+    def icon(self):
+        return getattr(self.cls, "PLUGIN_ICON", None)
+
+    def get_instance(self):
+        """A singleton"""
+
+        if not getattr(self.cls, "PLUGIN_INSTANCE", False):
+            return
+
+        if self.instance is None:
+            try:
+                obj = self.cls()
+            except:
+                util.print_exc()
+                return
+            self.instance = obj
+
+        return self.instance
+
+
+class PluginHandler(object):
+
+    def plugin_handle(self, plugin):
+        raise NotImplementedError
+
+    def plugin_enable(self, plugin):
+        raise NotImplementedError
+
+    def plugin_disable(self, plugin):
+        raise NotImplementedError
+
+
 class PluginManager(object):
     """
     The manager takes care of plugin loading/reloading. Interested plugin
@@ -101,13 +171,12 @@ class PluginManager(object):
     Plugins get exposed when at least one handler shows interest
     in them (by returning True in the handle method).
 
-    Plugins need to define PLUGIN_ID, PLUGIN_NAME attributes to get loaded.
-
+    Plugins have to be a class which defines PLUGIN_ID, PLUGIN_NAME.
     Plugins that have a true PLUGIN_INSTANCE attribute get instantiated on
     enable and the enabled/disabled methods get called.
 
     If plugin handlers want a plugin instance, they have to call
-    get_instance to get a singleton.
+    Plugin.get_instance() to get a singleton.
 
     handlers need to implement the following methods:
 
@@ -115,9 +184,8 @@ class PluginManager(object):
             Needs to return True if the handler should be called
             whenever the plugin's enabled status changes.
 
-        handler.plugin_enable(plugin, instance)
+        handler.plugin_enable(plugin)
             Gets called if the plugin gets enabled.
-            2nd parameter is an instance of the plugin or None
 
         handler.plugin_disable(plugin)
             Gets called if the plugin gets disabled.
@@ -140,11 +208,8 @@ class PluginManager(object):
             folders = []
 
         self.__scanner = ModuleScanner(folders)
-        self.__modules = {}     # name: module
-        self.__plugins = {}     # module: [plugin, ..]
-        self.__handlers = {}    # plugins: [handler, ..]
-        self.__instance = {}    # plugin: instance
-        self.__list = []        # handler list
+        self.__modules = {}     # name: PluginModule
+        self.__handlers = []    # handler list
         self.__enabled = set()  # (possibly) enabled plugin IDs
 
         self.__restore()
@@ -155,7 +220,6 @@ class PluginManager(object):
         print_d("Rescanning..")
 
         removed, added = self.__scanner.rescan()
-        modules = self.__scanner.modules
 
         # remember IDs of enabled plugin that get reloaded, so we can enable
         # them again
@@ -164,9 +228,9 @@ class PluginManager(object):
             if name not in added:
                 continue
             mod = self.__modules[name]
-            for plugin in self.__plugins[mod]:
+            for plugin in mod.plugins:
                 if self.enabled(plugin):
-                    reload_ids.append(plugin.PLUGIN_ID)
+                    reload_ids.append(plugin.id)
 
         for name in removed:
             # share the namespace with ModuleScanner for now
@@ -176,8 +240,8 @@ class PluginManager(object):
         self.__enabled.update(reload_ids)
 
         for name in added:
-            module = modules[name]
-            self.__add_module(name, module)
+            new_module = self.__scanner.modules[name]
+            self.__add_module(name, new_module.module)
 
         print_d("Rescanning done.")
 
@@ -186,43 +250,37 @@ class PluginManager(object):
         return self.__scanner.modules.itervalues()
 
     @property
+    def _plugins(self):
+        """All registered plugins"""
+
+        plugins = []
+        for module in self.__modules.itervalues():
+            for plugin in module.plugins:
+                plugins.append(plugin)
+        return plugins
+
+    @property
     def plugins(self):
-        """Returns a list of plugin classes or instances"""
+        """Returns a list of plugins with active handlers"""
 
-        items = self.__handlers.items()
-        return [self.get_instance(p) or p for (p, h) in items if h]
-
-    def get_instance(self, plugin):
-        """"Returns a possibly shared instance of the plugin class"""
-
-        if not getattr(plugin, "PLUGIN_INSTANCE", False):
-            return
-
-        if plugin not in self.__instance:
-            try:
-                obj = plugin()
-            except:
-                util.print_exc()
-                return
-            self.__instance[plugin] = obj
-        return self.__instance[plugin]
+        return [p for p in self._plugins if p.handlers]
 
     def register_handler(self, handler):
         print_d("Registering handler: %r" % type(handler).__name__)
-        self.__list.append(handler)
-        for plugins in self.__plugins.itervalues():
-            for plugin in plugins:
-                if not handler.plugin_handle(plugin):
-                    continue
-                if self.__handlers.get(plugin):
-                    self.__handlers[plugin].append(handler)
-                    if self.enabled(plugin):
-                        obj = self.get_instance(plugin)
-                        handler.plugin_enable(plugin, obj)
-                else:
-                    self.__handlers[plugin] = [handler]
-                    if self.enabled(plugin):
-                        self.enable(plugin, True, force=True)
+
+        self.__handlers.append(handler)
+
+        for plugin in self._plugins:
+            if not handler.plugin_handle(plugin):
+                continue
+            if plugin.handlers:
+                plugin.handlers.append(handler)
+                if self.enabled(plugin):
+                    handler.plugin_enable(plugin)
+            else:
+                plugin.handlers.append(handler)
+                if self.enabled(plugin):
+                    self.enable(plugin, True, force=True)
 
     def save(self):
         print_d("Saving plugins: %d active" % len(self.__enabled))
@@ -231,47 +289,50 @@ class PluginManager(object):
                    "\n".join(self.__enabled))
 
     def enabled(self, plugin):
-        """Returns if the plugin is enabled. Also takes an instance."""
+        """Returns if the plugin is enabled."""
 
-        if type(plugin) in self.__handlers:
-            plugin = type(plugin)
+        if not plugin.handlers:
+            return False
 
-        return plugin.PLUGIN_ID in self.__enabled
+        return plugin.id in self.__enabled
 
     def enable(self, plugin, status, force=False):
-        """Enable or disable a plugin. Also takes an instance."""
-
-        if type(plugin) in self.__handlers:
-            plugin = type(plugin)
+        """Enable or disable a plugin."""
 
         if not force and self.enabled(plugin) == bool(status):
             return
 
         if not status:
-            print_d("Disable %r" % plugin.PLUGIN_ID)
-            for handler in self.__handlers[plugin]:
+            print_d("Disable %r" % plugin.id)
+            for handler in plugin.handlers:
                 handler.plugin_disable(plugin)
-            self.__enabled.discard(plugin.PLUGIN_ID)
-            instance = self.__instance.get(plugin)
+
+            self.__enabled.discard(plugin.id)
+
+            instance = plugin.get_instance()
             if instance and hasattr(instance, "disabled"):
                 try:
                     instance.disabled()
                 except Exception:
                     util.print_exc()
         else:
-            print_d("Enable %r" % plugin.PLUGIN_ID)
-            obj = self.get_instance(plugin)
+            print_d("Enable %r" % plugin.id)
+            obj = plugin.get_instance()
             if obj and hasattr(obj, "enabled"):
                 try:
                     obj.enabled()
                 except Exception:
                     util.print_exc()
-            for handler in self.__handlers[plugin]:
-                handler.plugin_enable(plugin, obj)
-            self.__enabled.add(plugin.PLUGIN_ID)
+            for handler in plugin.handlers:
+                handler.plugin_enable(plugin)
+            self.__enabled.add(plugin.id)
 
     @property
     def failures(self):
+        """Like ModuleScanner.failures but filters some errors based on
+        information given by the PluginImportException
+        """
+
         errors = {}
         for (name, (exc, text)) in self.__scanner.failures.iteritems():
             if isinstance(exc, PluginImportException):
@@ -284,30 +345,28 @@ class PluginManager(object):
 
     def quit(self):
         """Disable plugins and tell all handlers to clean up"""
+
         for name in self.__modules.keys():
             self.__remove_module(name)
 
     def __remove_module(self, name):
-        module = self.__modules.pop(name)
-        plugins = self.__plugins.pop(module)
-
-        for plugin in plugins:
-            if self.__handlers.get(plugin):
+        plugin_module = self.__modules.pop(name)
+        for plugin in plugin_module.plugins:
+            if plugin.handlers:
                 self.enable(plugin, False)
-            self.__handlers.pop(plugin, None)
 
     def __add_module(self, name, module):
-        self.__modules[name] = module
-        plugins = list_plugins(module)
-        self.__plugins[module] = plugins
+        plugins = [Plugin(cls) for cls in list_plugins(module)]
+        plugin_mod = PluginModule(name, plugins)
+        self.__modules[name] = plugin_mod
 
         for plugin in plugins:
             handlers = []
-            for handler in self.__list:
+            for handler in self.__handlers:
                 if handler.plugin_handle(plugin):
                     handlers.append(handler)
             if handlers:
-                self.__handlers[plugin] = handlers
+                plugin.handlers = handlers
                 if self.enabled(plugin):
                     self.enable(plugin, True, force=True)
 
@@ -318,9 +377,11 @@ class PluginManager(object):
 
         self.__enabled.update(active)
         print_d("Restoring plugins: %d" % len(self.__enabled))
-        for plugin, handlers in self.__handlers.iteritems():
+
+        for plugin in self._plugins:
             if self.enabled(plugin):
                 self.enable(plugin, True, force=True)
+
 
 PM = PluginManager
 

@@ -16,7 +16,7 @@ class TTitlecase(PluginTestCase):
     def setUp(self):
         globals().update(vars(self.modules["Title Case"]))
         config.init()
-        self.plugin = self.plugins["Title Case"]
+        self.plugin = self.plugins["Title Case"].cls
 
     def test_no_all_caps(self):
         self.plugin.config_set("allow_all_caps", True)

@@ -42,7 +42,7 @@ class TRandomAlbum(PluginTestCase):
 
 
     def setUp(self):
-        self.plugin = self.plugins["Random Album Playback"]()
+        self.plugin = self.plugins["Random Album Playback"].cls()
         self.albums = [A1, A2, A3]
 
     def get_winner(self, albums):

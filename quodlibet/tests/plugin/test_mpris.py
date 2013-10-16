@@ -43,7 +43,7 @@ class TMPRIS(PluginTestCase):
         app.player = backend.init(app.librarian)
         app.window = QuodLibetWindow(app.library, app.player, headless=True)
 
-        cls.plugin = cls.plugins["mpris"]
+        cls.plugin = cls.plugins["mpris"].cls
 
     def setUp(self):
         app.window.songlist.set_songs([A1, A2])

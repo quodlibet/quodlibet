@@ -116,22 +116,22 @@ class GStreamerPluginHandler(object):
         return self.__elements[plugin]
 
     def plugin_handle(self, plugin):
-        if not issubclass(plugin, GStreamerPlugin):
+        if not issubclass(plugin.cls, GStreamerPlugin):
             return False
 
-        plugin._handler = self
+        plugin.cls._handler = self
         return True
 
-    def plugin_enable(self, plugin, obj):
-        self.__plugins.append(plugin)
+    def plugin_enable(self, plugin):
+        self.__plugins.append(plugin.cls)
         self._rebuild_pipeline()
 
     def plugin_disable(self, plugin):
         try:
-            self.__elements.pop(plugin)
+            self.__elements.pop(plugin.cls)
         except KeyError:
             pass
-        self.__plugins.remove(plugin)
+        self.__plugins.remove(plugin.cls)
         self._rebuild_pipeline()
 
     def _remove_plugin_elements(self):

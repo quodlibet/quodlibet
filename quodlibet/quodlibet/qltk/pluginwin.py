@@ -15,6 +15,8 @@ from quodlibet import util
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.entry import ClearEntry
+from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
+
 
 TAG, ALL, NO, DIS, EN, SEP = range(6)
 
@@ -88,8 +90,8 @@ class PluginWindow(qltk.UniqueWindow):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         tv = HintedTreeView()
-        model = Gtk.ListStore(object, object)
-        filter = model.filter_new()
+        model = ObjectStore()
+        filter = ObjectModelFilter(child_model=model)
 
         tv.set_model(filter)
         tv.set_rules_hint(True)
@@ -116,8 +118,10 @@ class PluginWindow(qltk.UniqueWindow):
         render = Gtk.CellRendererToggle()
 
         def cell_data(col, render, model, iter, data):
-            row = model[iter]
-            render.set_active(row[1].enabled(row[0]))
+            plugin = model[iter][0]
+            pm = PluginManager.instance
+            render.set_active(pm.enabled(plugin))
+
         render.connect('toggled', self.__toggled, filter)
         column = Gtk.TreeViewColumn("enabled", render)
         column.set_cell_data_func(render, cell_data)
@@ -126,11 +130,13 @@ class PluginWindow(qltk.UniqueWindow):
         render = Gtk.CellRendererPixbuf()
 
         def cell_data2(col, render, model, iter, data):
-            icon = getattr(model[iter][0], 'PLUGIN_ICON', Gtk.STOCK_EXECUTE)
+            plugin = model[iter][0]
+            icon = plugin.icon or Gtk.STOCK_EXECUTE
             if Gtk.stock_lookup(icon):
                 render.set_property('stock-id', icon)
             else:
                 render.set_property('icon-name', icon)
+
         column = Gtk.TreeViewColumn("image", render)
         column.set_cell_data_func(render, cell_data2)
         tv.append_column(column)
@@ -141,7 +147,8 @@ class PluginWindow(qltk.UniqueWindow):
         column = Gtk.TreeViewColumn("name", render)
 
         def cell_data3(col, render, model, iter, data):
-            render.set_property('text', model[iter][0].PLUGIN_NAME)
+            render.set_property('text', model[iter][0].name)
+
         column.set_cell_data_func(render, cell_data3)
         column.set_expand(True)
         tv.append_column(column)
@@ -208,25 +215,25 @@ class PluginWindow(qltk.UniqueWindow):
         restore_id = config.get("memory", "plugin_selection")
 
         def restore_sel(row):
-            return row[0].PLUGIN_ID == restore_id
+            return row[0].id == restore_id
+
         if not tv.select_by_func(restore_sel, one=True) and tv.get_model():
             tv.set_cursor((0,))
 
     def __filter(self, model, iter, widgets):
-        row = model[iter]
-        plugin = row[0]
+        plugin = model.get_value(iter)
+        pm = PluginManager.instance
 
-        if not plugin or not row[1]:
+        if not plugin:
             return False
 
         entry, combo, model = widgets
-        plugin_tags = getattr(plugin, "PLUGIN_TAGS", ())
-        if isinstance(plugin_tags, basestring):
-            plugin_tags = [plugin_tags]
+
+        plugin_tags = plugin.tags
 
         iter = combo.get_active_iter()
         if iter:
-            enabled = row[1].enabled(plugin)
+            enabled = pm.enabled(plugin)
             tag = model[iter][0]
             flag = model[iter][1]
             if flag == NO and plugin_tags or \
@@ -236,8 +243,8 @@ class PluginWindow(qltk.UniqueWindow):
                 return False
 
         filter = entry.get_text().lower()
-        if not filter or filter in plugin.PLUGIN_NAME.lower() or \
-                filter in getattr(plugin, "PLUGIN_DESC", "").lower():
+        if not filter or filter in plugin.name.lower() or \
+                filter in (plugin.description or "").lower():
             return True
         return False
 
@@ -250,25 +257,31 @@ class PluginWindow(qltk.UniqueWindow):
             label.set_markup("")
             return
 
-        config.set("memory", "plugin_selection", model[iter][0].PLUGIN_ID)
+        plugin = model.get_value(iter)
 
-        name = util.escape(model[iter][0].PLUGIN_NAME)
+        config.set("memory", "plugin_selection", plugin.id)
+
+        name = util.escape(plugin.name)
         text = "<big><b>%s</b></big>" % name
-        try:
-            desc = model[iter][0].PLUGIN_DESC
-            text += "<span font='4'>\n\n</span>" + desc
-        except (TypeError, AttributeError):
-            pass
-
+        if plugin.description:
+            text += "<span font='4'>\n\n</span>"
+            text += util.escape(plugin.description)
         label.set_markup(text)
 
     def __preferences(self, selection, frame):
-        model, iter = selection.get_selected()
         if frame.get_child():
             frame.get_child().destroy()
-        if iter and hasattr(model[iter][0], 'PluginPreferences'):
+
+        model, iter = selection.get_selected()
+        if not iter:
+            return
+
+        plugin = model.get_value(iter)
+        instance_or_cls = plugin.get_instance() or plugin.cls
+
+        if iter and hasattr(instance_or_cls, 'PluginPreferences'):
             try:
-                prefs = model[iter][0].PluginPreferences(self)
+                prefs = instance_or_cls.PluginPreferences(self)
             except:
                 util.print_exc()
                 frame.hide()
@@ -291,46 +304,42 @@ class PluginWindow(qltk.UniqueWindow):
         path = fmodel.convert_path_to_child_path(Gtk.TreePath(fpath))
         model = fmodel.get_model()
 
+        pm = PluginManager.instance
         row = model[path]
-        pm = row[1]
-        pm.enable(row[0], render.get_active())
+        plugin = row[0]
+
+        pm.enable(plugin, render.get_active())
         pm.save()
+
         model.row_changed(row.path, row.iter)
 
     def __refresh(self, activator, view, desc, errors, combo, combo_store):
         fmodel, fiter = view.get_selection().get_selected()
         model = fmodel.get_model()
 
+        # get the ID of the selected plugin
         selected = None
         if fiter:
             iter = fmodel.convert_iter_to_child_iter(fiter)
-            selected = model[iter][0].PLUGIN_ID
+            plugin = model.get_value(iter)
+            selected = plugin.id
 
-        plugins = []
-        failures = False
         model.clear()
 
         pm = PluginManager.instance
         pm.rescan()
-        for plugin in pm.plugins:
-            plugins.append((plugin.PLUGIN_NAME, plugin, pm))
-        failures = failures or bool(pm.failures)
 
         tags = []
         no_tags = False
 
-        plugins.sort()
-        for plugin in plugins:
-            it = model.append(row=plugin[1:])
-            if plugin[1].PLUGIN_ID is selected:
+        for plugin in sorted(pm.plugins, key=lambda x: x.name):
+            it = model.append(row=[plugin])
+            if plugin.id is selected:
                 ok, fit = fmodel.convert_child_iter_to_iter(it)
                 view.get_selection().select_iter(fit)
-            plugin_tags = getattr(plugin[1], "PLUGIN_TAGS", ())
-            if isinstance(plugin_tags, basestring):
-                plugin_tags = [plugin_tags]
-            if not plugin_tags:
+            if not plugin.tags:
                 no_tags = True
-            tags.extend(plugin_tags)
+            tags.extend(plugin.tags)
         tags = list(set(tags))
 
         active = max(combo.get_active(), 0)
@@ -347,9 +356,9 @@ class PluginWindow(qltk.UniqueWindow):
                 combo_store.append([_("No category"), NO])
         combo.set_active(active)
 
-        if not plugins:
+        if not len(model):
             desc.set_text(_("No plugins found."))
-        errors.set_sensitive(failures)
+        errors.set_sensitive(bool(pm.failures))
 
     def __show_errors(self, activator):
         window = PluginErrorWindow(self)

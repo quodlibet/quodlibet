@@ -42,7 +42,7 @@ class TPluginsSongsMenu(PluginTestCase):
     def test_init(self):
         for id_, plugin in self.plugins.iteritems():
             if self.h.plugin_handle(plugin):
-                self.h.plugin_enable(plugin, None)
+                self.h.plugin_enable(plugin)
                 self.h.handle(id_, None, None, [])
                 self.h.plugin_disable(plugin)
 

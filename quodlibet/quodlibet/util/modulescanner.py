@@ -115,6 +115,31 @@ def load_module(name, package, path, reload=False):
     return mod
 
 
+class Module(object):
+
+    def __init__(self, name, module, deps, path):
+        self.name = name
+        self.module = module
+        self.path = path
+
+        self.deps = {}
+        for dep in deps:
+            self.deps[dep] = mtime(dep)
+
+    def has_changed(self, dep_paths):
+        if set(self.deps.keys()) != set(dep_paths):
+            return True
+
+        for path, old_mtime in self.deps.iteritems():
+            if mtime(path) != old_mtime:
+                return True
+
+        return False
+
+    def __repr__(self):
+        return "<%s name=%r>" % (type(self).__name__, self.name)
+
+
 class ModuleScanner(object):
     """
     Handles plugin modules. Takes a list of directories and searches
@@ -123,36 +148,26 @@ class ModuleScanner(object):
     There is only one global namespace for modules using the module name
     as key.
 
-    rescan() - Update the module list. Returns added/removed modules
+    rescan() - Update the module list. Returns added/removed module names
     failures - A dict of Name: (Exception, Text) for all modules that failed
     modules - A dict of Name: Module for all successfully loaded modules
 
     """
     def __init__(self, folders):
         self.__folders = folders
-
-        self.__modules = {}     # name: module
-        self.__info = {}       # name: (path, deps)
-        self.__deps = {}        # dep: mtime of last check
-        self.__failures = {}    # name: exception
-
-    def __remove_module(self, name):
-        del self.__modules[name]
-        path, deps = self.__info[name]
-        for dep in deps:
-            del self.__deps[dep]
-        del self.__info[name]
-        if name in self.__failures:
-            del self.__failures[name]
+        self.__modules = {}  # name: module
+        self.__failures = {}  # name: exception
 
     @property
     def failures(self):
         """A name: exception dict for all modules that failed to load"""
+
         return self.__failures
 
     @property
     def modules(self):
         """A name: module dict of all loaded modules"""
+
         return self.__modules
 
     def rescan(self):
@@ -173,15 +188,6 @@ class ModuleScanner(object):
                 # take the basename as module key, later modules win
                 info[name] = (path, deps)
 
-        def deps_changed(old_list, new_list):
-            if set(old_list) != set(new_list):
-                return True
-            for dep in old_list:
-                old_mtime = self.__deps[dep]
-                if mtime(dep) != old_mtime:
-                    return True
-            return False
-
         # python can not unload a module, so we can only add new ones
         # or reload if the path is the same and mtime changed,
         # but we can still pretend we removed something
@@ -191,15 +197,19 @@ class ModuleScanner(object):
 
         # remove those that are gone and changed ones
         for name, mod in self.__modules.items():
+            # not here anymore, remove
             if name not in info:
-                self.__remove_module(name)
+                del self.__modules[name]
                 removed.append(name)
                 continue
-            path, deps = self.__info[name]
+
+            # check if any dependency has changed
             path, new_deps = info[name]
-            if deps_changed(deps, new_deps):
-                self.__remove_module(name)
+            if mod.has_changed(new_deps):
+                del self.__modules[name]
                 removed.append(name)
+
+        self.__failures.clear()
 
         # add new ones
         for (name, (path, deps)) in info.iteritems():
@@ -224,10 +234,7 @@ class ModuleScanner(object):
                 self.__failures[name] = (err, text)
             else:
                 added.append(name)
-                self.__modules[name] = mod
-                self.__info[name] = info[name]
-                for dep in deps:
-                    self.__deps[dep] = mtime(dep)
+                self.__modules[name] = Module(name, mod, deps, path)
 
         print_d("Rescanning done: %d added, %d removed, %d error(s)" %
                 (len(added), len(removed), len(self.__failures)))

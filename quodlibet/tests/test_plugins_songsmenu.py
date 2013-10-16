@@ -5,7 +5,7 @@ from tests import TestCase, add, mkstemp, mkdtemp
 import os
 
 from quodlibet.formats._audio import AudioFile
-from quodlibet.plugins import PluginManager
+from quodlibet.plugins import PluginManager, Plugin
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 
 
@@ -105,22 +105,22 @@ class TSongsMenuPlugins(TestCase):
         self.handler.Menu(None, None, [AudioFile()])
 
     def test_handling_songs_without_confirmation(self):
-        self.handler.plugin_enable(FakeSongsMenuPlugin, None)
+        plugin = Plugin(FakeSongsMenuPlugin)
+        self.handler.plugin_enable(plugin)
         MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
         songs = [AudioFile({'~filename': "/tmp/%s" % x, 'artist': 'foo'})
                  for x in range(MAX)]
-        self.handler.handle(FakeSongsMenuPlugin.PLUGIN_ID, self.library,
-                            None, songs)
+        self.handler.handle(plugin.id, self.library, None, songs)
         self.failIf(self.confirmed, ("Wasn't expecting a confirmation for %d"
                                      " invocations" % len(songs)))
 
     def test_handling_lots_of_songs_with_confirmation(self):
-        self.handler.plugin_enable(FakeSongsMenuPlugin, None)
+        plugin = Plugin(FakeSongsMenuPlugin)
+        self.handler.plugin_enable(plugin)
         MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
         songs = [AudioFile({'~filename': "/tmp/%s" % x, 'artist': 'foo'})
                  for x in range(MAX + 1)]
-        self.handler.handle(FakeSongsMenuPlugin.PLUGIN_ID, self.library,
-                            None, songs)
+        self.handler.handle(plugin.id, self.library, None, songs)
         self.failUnless(self.confirmed,
                         ("Should have confirmed %d invocations (Max=%d)."
                          % (len(songs), MAX)))

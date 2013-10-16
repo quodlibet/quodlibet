@@ -49,7 +49,7 @@ class TEventPlugins(TestCase):
         file.close()
 
     def _get_calls(self, plugin):
-        mod = sys.modules[type(plugin).__module__]
+        mod = sys.modules[plugin.cls.__module__]
         return mod.log
 
     def test_found(self):
