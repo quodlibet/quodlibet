@@ -15,11 +15,8 @@ from quodlibet import util
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.sliderbutton import HSlider
 from quodlibet.qltk.tracker import TimeTracker
-from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
-
-
-SIZE = Gtk.IconSize.LARGE_TOOLBAR
-SUBSIZE = Gtk.IconSize.MENU
+from quodlibet.qltk.x import (RadioMenuItem, SeparatorMenuItem,
+                              SymbolicIconImage)
 
 
 class TimeLabel(Gtk.Label):
@@ -193,9 +190,8 @@ class SeekBar(HSlider):
 
 class Volume(Gtk.VolumeButton):
     def __init__(self, device):
-        super(Volume, self).__init__()
+        super(Volume, self).__init__(size=Gtk.IconSize.MENU, use_symbolic=True)
 
-        self.props.size = SUBSIZE
         self.set_relief(Gtk.ReliefStyle.NORMAL)
         self.set_adjustment(Gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0))
 
@@ -275,16 +271,19 @@ class PlayControls(Gtk.VBox):
         upper.set_col_spacings(3)
 
         prev = Gtk.Button()
-        prev.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_PREVIOUS, SIZE))
+        prev.add(SymbolicIconImage("media-skip-backward",
+                                   Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(prev, 0, 1, 0, 1)
 
         play = Gtk.ToggleButton()
-        play.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_PLAY, SIZE))
+        play.add(SymbolicIconImage("media-playback-start",
+                                   Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(play, 1, 2, 0, 1)
 
-        next = Gtk.Button()
-        next.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_NEXT, SIZE))
-        upper.attach(next, 2, 3, 0, 1)
+        next_ = Gtk.Button()
+        next_.add(SymbolicIconImage("media-skip-forward",
+                                    Gtk.IconSize.LARGE_TOOLBAR))
+        upper.attach(next_, 2, 3, 0, 1)
 
         lower = Gtk.Table(rows=1, columns=3, homogeneous=True)
         lower.set_row_spacings(3)
@@ -303,8 +302,8 @@ class PlayControls(Gtk.VBox):
         play.connect('toggled', self.__playpause, player)
         play.add_events(Gdk.EventMask.SCROLL_MASK)
         play.connect_object('scroll-event', self.__scroll, player)
-        next.connect_object('clicked', self.__next, player)
-        player.connect('song-started', self.__song_started, next, play)
+        next_.connect_object('clicked', self.__next, player)
+        player.connect('song-started', self.__song_started, next_, play)
         player.connect_object('paused', play.set_active, False)
         player.connect_object('unpaused', play.set_active, True)
 
