@@ -55,6 +55,7 @@ Song Collections / Albums
 All other tags return a list of values retrieved from all songs, without 
 duplicates, sorted by their number of appearance.
 
+.. _numeric-tags:
 
 Numeric Tags
 ------------
