@@ -464,9 +464,13 @@ class BaseView(Gtk.TreeView):
 
         Returns True if the selection was changed."""
 
+        model = self.get_model()
+        if not model:
+            return False
+
         selection = self.get_selection()
         first = True
-        for row in self.get_model():
+        for row in model:
             if func(row):
                 if not first:
                     selection.select_path(row.path)

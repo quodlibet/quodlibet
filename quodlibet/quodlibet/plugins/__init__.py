@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012 Christoph Reiter, Nick Boultbee
+# Copyright 2012 Nick Boultbee
+#           2012, 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -94,9 +95,10 @@ def list_plugins(module):
 
 class PluginModule(object):
 
-    def __init__(self, name, plugins):
+    def __init__(self, name, module):
         self.name = name
-        self.plugins = plugins
+        self.module = module
+        self.plugins = [Plugin(cls) for cls in list_plugins(module)]
 
 
 class Plugin(object):
@@ -107,8 +109,7 @@ class Plugin(object):
         self.instance = None
 
     def __repr__(self):
-        return "<%s id=%r name=%r desc=%r>" % (
-            self.id, self.name, self.description or "")
+        return "<%s id=%r name=%r>" % (type(self).__name__, self.id, self.name)
 
     @property
     def id(self):
@@ -329,18 +330,18 @@ class PluginManager(object):
 
     @property
     def failures(self):
-        """Like ModuleScanner.failures but filters some errors based on
-        information given by the PluginImportException
-        """
+        """module name: list of error message text lines"""
 
         errors = {}
-        for (name, (exc, text)) in self.__scanner.failures.iteritems():
-            if isinstance(exc, PluginImportException):
-                if not exc.should_show():
+        for name, error in self.__scanner.failures.iteritems():
+            exception = error.exception
+            if isinstance(exception, PluginImportException):
+                if not exception.should_show():
                     continue
-                errors[name] = [exc.desc]
+                errors[name] = [exception.desc]
             else:
-                errors[name] = text
+                errors[name] = error.traceback
+
         return errors
 
     def quit(self):
@@ -356,11 +357,10 @@ class PluginManager(object):
                 self.enable(plugin, False)
 
     def __add_module(self, name, module):
-        plugins = [Plugin(cls) for cls in list_plugins(module)]
-        plugin_mod = PluginModule(name, plugins)
+        plugin_mod = PluginModule(name, module)
         self.__modules[name] = plugin_mod
 
-        for plugin in plugins:
+        for plugin in plugin_mod.plugins:
             handlers = []
             for handler in self.__handlers:
                 if handler.plugin_handle(plugin):

@@ -140,6 +140,14 @@ class Module(object):
         return "<%s name=%r>" % (type(self).__name__, self.name)
 
 
+class ModuleImportError(object):
+
+    def __init__(self, name, exception, traceback):
+        self.name = name
+        self.exception = exception
+        self.traceback = traceback
+
+
 class ModuleScanner(object):
     """
     Handles plugin modules. Takes a list of directories and searches
@@ -231,7 +239,7 @@ class ModuleScanner(object):
 
             except Exception, err:
                 text = format_exception(*sys.exc_info())
-                self.__failures[name] = (err, text)
+                self.__failures[name] = ModuleImportError(name, err, text)
             else:
                 added.append(name)
                 self.__modules[name] = Module(name, mod, deps, path)
