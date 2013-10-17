@@ -24,7 +24,7 @@ except ImportError:
 from quodlibet import const
 from quodlibet import util
 from quodlibet.devices import _udev as udev
-from quodlibet.util.modulescanner import load_dir_modules
+from quodlibet.util.importhelper import load_dir_modules
 
 devices = []
 

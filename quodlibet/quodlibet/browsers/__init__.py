@@ -9,7 +9,7 @@
 import os
 
 from quodlibet import const
-from quodlibet.util.modulescanner import load_dir_modules
+from quodlibet.util.importhelper import load_dir_modules
 from quodlibet.browsers._base import Browser
 
 

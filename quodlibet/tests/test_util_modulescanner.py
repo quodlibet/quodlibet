@@ -7,6 +7,7 @@ import shutil
 import py_compile
 
 from quodlibet.util.modulescanner import *
+from quodlibet.util.importhelper import *
 
 
 class TModuleScanner(TestCase):
