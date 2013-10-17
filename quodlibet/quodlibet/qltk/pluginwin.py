@@ -303,12 +303,21 @@ class PluginWindow(qltk.UniqueWindow):
         sw.set_size_request(250, -1)
 
         bbox = Gtk.HBox(homogeneous=True, spacing=12)
+
         errors = qltk.Button(_("Show _Errors"), Gtk.STOCK_DIALOG_WARNING)
         errors.set_focus_on_click(False)
+        errors.connect('clicked', self.__show_errors)
         bbox.pack_start(errors, True, True, 0)
-        refresh = Gtk.Button(stock=Gtk.STOCK_REFRESH)
-        refresh.set_focus_on_click(False)
-        bbox.pack_start(refresh, True, True, 0)
+
+        pref_box = PluginPreferencesContainer()
+
+        if const.DEBUG:
+            refresh = Gtk.Button(stock=Gtk.STOCK_REFRESH)
+            refresh.set_focus_on_click(False)
+            refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
+                            filter_combo)
+            bbox.pack_start(refresh, True, True, 0)
+
         vbox.pack_start(fb, False, True, 0)
         vbox.pack_start(sw, True, True, 0)
         vbox.pack_start(bbox, False, True, 0)
@@ -322,9 +331,9 @@ class PluginWindow(qltk.UniqueWindow):
         bb.pack_start(close, True, True, 0)
         bb_align.add(bb)
 
-        pref_box = PluginPreferencesContainer()
         selection = tv.get_selection()
         selection.connect('changed', self.__selection_changed, pref_box)
+        selection.emit('changed')
 
         right_box = Gtk.VBox(spacing=12)
         right_box.pack_start(pref_box, True, True, 0)
@@ -333,11 +342,8 @@ class PluginWindow(qltk.UniqueWindow):
         hbox.pack_start(right_box, True, True, 0)
 
         self.add(hbox)
-        refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
-                        filter_combo)
-        errors.connect('clicked', self.__show_errors)
-        tv.get_selection().emit('changed')
-        refresh.clicked()
+
+        self.__refill(tv, pref_box, errors, filter_combo)
 
         self.connect('destroy', self.__destroy)
         filter_model.set_visible_func(
@@ -397,9 +403,8 @@ class PluginWindow(qltk.UniqueWindow):
         riter = model.convert_iter_to_child_iter(iter_)
         rmodel.row_changed(rmodel.get_path(riter), riter)
 
-    def __refresh(self, activator, view, prefs, errors, combo):
+    def __refill(self, view, prefs, errors, combo):
         pm = PluginManager.instance
-        pm.rescan()
 
         # refill plugin list
         view.refill(pm.plugins)
@@ -418,6 +423,12 @@ class PluginWindow(qltk.UniqueWindow):
             prefs.set_no_plugins()
 
         errors.set_sensitive(bool(pm.failures))
+
+    def __refresh(self, activator, view, prefs, errors, combo):
+        pm = PluginManager.instance
+        pm.rescan()
+
+        self.__refill(view, prefs, errors, combo)
 
     def __show_errors(self, activator):
         pm = PluginManager.instance
