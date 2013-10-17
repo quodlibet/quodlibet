@@ -15,6 +15,7 @@ from quodlibet import util
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.entry import ClearEntry
+from quodlibet.qltk.x import Alignment
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 
 
@@ -272,7 +273,7 @@ class PluginWindow(qltk.UniqueWindow):
         self.set_default_size(655, 404)
         self.set_transient_for(parent)
 
-        hbox = Gtk.HBox(spacing=12)
+        paned = Gtk.Paned()
         vbox = Gtk.VBox(spacing=6)
 
         sw = Gtk.ScrolledWindow()
@@ -300,7 +301,7 @@ class PluginWindow(qltk.UniqueWindow):
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.set_size_request(250, -1)
+        sw.set_size_request(200, -1)
 
         bbox = Gtk.HBox(homogeneous=True, spacing=12)
 
@@ -321,7 +322,7 @@ class PluginWindow(qltk.UniqueWindow):
         vbox.pack_start(fb, False, True, 0)
         vbox.pack_start(sw, True, True, 0)
         vbox.pack_start(bbox, False, True, 0)
-        hbox.pack_start(vbox, False, True, 0)
+        paned.pack1(vbox, True, False)
 
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
@@ -339,9 +340,10 @@ class PluginWindow(qltk.UniqueWindow):
         right_box.pack_start(pref_box, True, True, 0)
         right_box.pack_start(bb_align, True, True, 0)
 
-        hbox.pack_start(right_box, True, True, 0)
+        paned.pack2(Alignment(right_box, left=6), True, False)
+        paned.set_position(250)
 
-        self.add(hbox)
+        self.add(paned)
 
         self.__refill(tv, pref_box, errors, filter_combo)
 
