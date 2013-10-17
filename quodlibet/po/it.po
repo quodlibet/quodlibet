@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-08 10:39+0200\n"
-"PO-Revision-Date: 2013-07-20 22:34+0100\n"
+"PO-Revision-Date: 2013-10-17 12:18+0100\n"
 "Last-Translator: Luca Baraldi <luca.baraldi+quodlibet@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -2900,7 +2900,7 @@ msgstr "Troppo errori"
 #: ../quodlibet/qltk/tracker.py:89
 #, python-format
 msgid "Stopping playback because there were %d errors in a row."
-msgstr "Riproduzione fermata poiché vi sono stati %d errori in una riga."
+msgstr "Riproduzione arrestata poiché vi sono stati %d errori consecutivi."
 
 #: ../quodlibet/qltk/tracknumbers.py:20
 msgid "Track Numbers"
