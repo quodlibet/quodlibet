@@ -143,6 +143,10 @@ def _gtk_init(icon=None):
             else:
                 sys.argv = argv
 
+                # https://bugzilla.gnome.org/show_bug.cgi?id=710447
+                import threading
+                threading.Thread(target=lambda: None).start()
+
     # some code depends on utf-8 default encoding (pygtk used to set it)
     reload(sys)
     sys.setdefaultencoding("utf-8")
