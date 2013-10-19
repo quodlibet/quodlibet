@@ -22,7 +22,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 if not Gst.ElementFactory.find("chromaprint"):
     from quodlibet import plugins
-    raise plugins.PluginImportException("Couldn't find gst-chromaprint.")
+    raise plugins.MissingGstreamerElementPluginException("chromaprint")
 
 
 def get_num_threads():

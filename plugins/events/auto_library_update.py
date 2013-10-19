@@ -1,15 +1,23 @@
 # Automatic library update plugin
 #
 # (c) 2009 Joe Higton
-#     2011, 2012 Nick Boultbee
+#     2011 - 2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from pyinotify import WatchManager, EventsCodes, ProcessEvent, Notifier,\
-        ThreadedNotifier
-from quodlibet import config, print_d
+try:
+    from pyinotify import WatchManager, EventsCodes, ProcessEvent
+    from pyinotify import Notifier, ThreadedNotifier
+except ImportError as e:
+    from quodlibet import plugins
+    raise (plugins.MissingGstreamerElementPluginException("pyinotify")
+           if hasattr(plugins, "MissingPluginDependencyException")
+           else e)
+
+
+from quodlibet import print_d
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.library import get_scan_dirs
 from quodlibet import app

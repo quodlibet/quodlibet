@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012 Nick Boultbee
-#           2012, 2013 Christoph Reiter
+# Copyright 2012 - 2013 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -51,6 +50,23 @@ class PluginImportException(Exception):
                 return True
             return False
         return True
+
+
+class MissingModulePluginException(PluginImportException):
+    """Consistent Exception for reporting missing modules for plugins"""
+    def __init__(self, module_name):
+        msg = _("Couldn't find module '{module}'. Perhaps you need to "
+                "install the package?".format(module=module_name))
+        super(MissingModulePluginException, self).__init__(msg)
+
+
+class MissingGstreamerElementPluginException(PluginImportException):
+    """Consistent Exception for reporting missing Gstreamer elements for
+    plugins"""
+    def __init__(self, element_name):
+        msg = _("Couldn't find GStreamer element '{element}'."
+                .format(element=element_name))
+        super(MissingGstreamerElementPluginException, self).__init__(msg)
 
 
 def migrate_old_config():

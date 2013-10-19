@@ -14,10 +14,10 @@ try:
     from zeitgeist.datamodel import Event, Subject
     from zeitgeist.datamodel import Interpretation, Manifestation
     __builtin__.__dict__.update(old_builtin)
-except ImportError:
-    from quodlibet.plugins import PluginImportException
-    raise PluginImportException(
-        _("Couldn't find 'zeitgeist' (Event logging service)."))
+except ImportError as e:
+    from quodlibet import plugins
+    raise (plugins.MissingModulePluginException("zeitgeist") if
+           hasattr(plugins, "MissingModulePluginException") else e)
 
 from quodlibet.plugins.events import EventPlugin
 

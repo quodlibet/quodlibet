@@ -17,12 +17,10 @@ from gi.repository import Gtk, GObject, Pango, GLib
 try:
     from musicbrainz2 import webservice as ws
     from musicbrainz2.utils import extractUuid
-except ImportError:
+except ImportError as e:
     from quodlibet import plugins
-    if not hasattr(plugins, "PluginImportException"):
-        raise
-    raise plugins.PluginImportException(
-        "Couldn't find python-musicbrainz2.")
+    raise (plugins.MissingModulePluginException("musicbrainz2") if
+           hasattr(plugins, "MissingModulePluginException") else e)
 
 from quodlibet import config, util
 from quodlibet.qltk.ccb import ConfigCheckButton

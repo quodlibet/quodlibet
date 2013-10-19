@@ -1,13 +1,19 @@
 # Copyright 2005 Michael Urman
+#           2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+try:
+    import CDDB
+except ImportError as e:
+    from quodlibet import plugins
+    raise (plugins.MissingModulePluginException("cddb") if
+           hasattr(plugins, "MissingModulePluginException") else e)
+
 import os
 from os import path
-
-import CDDB
 from gi.repository import Gtk
 
 from quodlibet.qltk import ErrorMessage, ConfirmAction, Message

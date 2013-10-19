@@ -28,7 +28,7 @@ class PluginErrorWindow(qltk.UniqueWindow):
         self.set_title(_("Plugin Errors") + " - Quod Libet")
         self.set_border_width(12)
         self.set_transient_for(parent)
-        self.set_default_size(420, 250)
+        self.set_default_size(520, 300)
 
         scrolledwin = Gtk.ScrolledWindow()
         vbox = Gtk.VBox(spacing=6)
@@ -51,6 +51,7 @@ class PluginErrorWindow(qltk.UniqueWindow):
             failure.set_alignment(0, 0)
             failure.set_padding(12, 6)
             failure.set_selectable(True)
+            failure.set_line_wrap(True)
 
             vbox.pack_start(expander, False, True, 0)
             expander.add(failure)
