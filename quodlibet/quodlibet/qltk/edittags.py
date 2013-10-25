@@ -863,9 +863,9 @@ class EditTags(Gtk.VBox):
             songs = self.__songinfo.songs
 
         self.__songinfo = songinfo = AudioFileGroup(songs)
-        view.set_model(None)
-        model.clear()
-        view.set_model(model)
+
+        with view.without_model() as model:
+            model.clear()
 
         keys = sorted(songinfo.realkeys())
 

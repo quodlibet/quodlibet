@@ -749,7 +749,6 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def set_model(self, model):
         super(SongList, self).set_model(model)
         self.model = model
-        self.set_search_column(0)
 
     def get_songs(self):
         try:
@@ -838,13 +837,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         else:
             self.set_sort_by(None, refresh=False)
 
-        # Doing set_model(None) resets the sort indicator, so we need to
-        # remember it before doing that.
-        sorts = map(Gtk.TreeViewColumn.get_sort_indicator, self.get_columns())
-        self.set_model(None)
-        model.set(songs)
-        self.set_model(model)
-        map(Gtk.TreeViewColumn.set_sort_indicator, self.get_columns(), sorts)
+        with self.without_model() as model:
+            model.set(songs)
 
         # the song selection has queued a change now, cancel that and
         # pass the songs manually

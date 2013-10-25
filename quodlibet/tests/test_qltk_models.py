@@ -108,6 +108,14 @@ class TObjectStore(TestCase):
         self.failUnlessEqual(m.get_value(new_iter, 0), 2)
         self.failUnlessEqual([2, 1], list(m.itervalues()))
 
+    def test_is_empty(self):
+        m = ObjectStore()
+        self.assertTrue(m.is_empty())
+        iter_ = m.append(row=[1])
+        self.assertFalse(m.is_empty())
+        m.remove(iter_)
+        self.assertTrue(m.is_empty())
+
 add(TObjectStore)
 
 

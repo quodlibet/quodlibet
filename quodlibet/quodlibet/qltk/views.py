@@ -5,6 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import contextlib
+
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
 
@@ -533,6 +535,26 @@ class BaseView(Gtk.TreeView):
             selection.select_iter(iters[-1])
         elif len(model):
             selection.select_path(model[-1].path)
+
+    @contextlib.contextmanager
+    def without_model(self):
+        """Conext manager which removes the model from the view
+        and adds it back afterwards.
+
+        Tries to preserve all state that gets reset on a model change.
+        """
+
+        old_model = self.get_model()
+        search_column = self.get_search_column()
+        sorts = [column.get_sort_indicator() for column in self.get_columns()]
+        self.set_model(None)
+
+        yield old_model
+
+        self.set_model(old_model)
+        self.set_search_column(search_column)
+        for column, value in zip(self.get_columns(), sorts):
+            column.set_sort_indicator(value)
 
 
 class DragIconTreeView(BaseView):

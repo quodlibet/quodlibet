@@ -60,6 +60,9 @@ class _ModelMixin(object):
             yield iter_, getv(iter_)
             iter_ = inext(iter_)
 
+    def is_empty(self):
+        return not self.get_iter_first()
+
 
 class ObjectModelFilter(_ModelMixin, Gtk.TreeModelFilter):
     pass

@@ -77,6 +77,8 @@ def visible(widget, width=None, height=None):
     assert widget.get_visible()
     assert window.get_visible()
     yield widget
+    while Gtk.events_pending():
+        Gtk.main_iteration()
     window.hide()
 
     if toplevel is None:

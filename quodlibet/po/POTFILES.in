@@ -14,7 +14,9 @@ quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
 quodlibet/browsers/iradio.py
 quodlibet/browsers/media.py
-quodlibet/browsers/paned.py
+quodlibet/browsers/paned/main.py
+quodlibet/browsers/paned/models.py
+quodlibet/browsers/paned/prefs.py
 quodlibet/browsers/playlists.py
 quodlibet/browsers/search.py
 quodlibet/devices/_base.py
