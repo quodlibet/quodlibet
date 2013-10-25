@@ -230,15 +230,23 @@ class PatternFormatter(object):
 
     def format_list(self, song):
         """Returns a set of formatted patterns with all tag combinations:
-        <performer>-bla returns [performer1-bla, performer2-bla]"""
+        <performer>-bla returns [performer1-bla, performer2-bla]
+
+        The returned set will never be empty (e.g. for an empty pattern).
+        """
+
         vals = [""]
         for val in self.__list_func(self.SongProxy(song, self._format)):
-            if type(val) == list:
+            if not val:
+                continue
+            if isinstance(val, list):
                 vals = [r + part for part in val for r in vals]
             else:
                 vals = [r + val for r in vals]
+
         if self._post:
-            return set([self._post(v, song) for v in vals])
+            vals = (self._post(v, song) for v in vals)
+
         return set(vals)
 
     __mod__ = format

@@ -461,8 +461,8 @@ class TPaneModel(TestCase):
         m = PaneModel(conf)
         m.add_songs(SONGS)
 
-        self.assertEqual(m.list("artist"), set(["boris", "mu", "piman", ""]))
-        self.assertEqual(set(m.list("foo")), set(['nope', 'bar', 'quux', '']))
+        self.assertEqual(m.list("artist"), set(["boris", "mu", "piman"]))
+        self.assertEqual(set(m.list("foo")), set(['nope', 'bar', 'quux']))
 
     def test_get_keys(self):
         conf = PaneConfig("artist")

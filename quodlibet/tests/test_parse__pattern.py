@@ -273,6 +273,13 @@ class TPatternFormatList(_TPattern):
         pat = Pattern('<artist|<artist|<artist>.|<performer>>>')
         s.failUnlessEqual(pat.format_list(s.d), set(['foo.', 'bar.']))
 
+    def test_missing_value(self):
+        pat = Pattern('<genre> - <artist>')
+        self.assertEqual(pat.format_list(self.a), set([" - Artist"]))
+
+        pat = Pattern('')
+        self.assertEqual(pat.format_list(self.a), set([""]))
+
 add(TPattern)
 add(TFileFromPattern)
 add(TXMLFromPattern)
