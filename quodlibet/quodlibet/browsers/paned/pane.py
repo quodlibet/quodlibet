@@ -10,6 +10,7 @@ from gi.repository import Gtk, Pango, Gdk
 
 from quodlibet.qltk.views import AllTreeView, TreeViewColumn
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk import is_accel
 
 from .models import PaneModel
 from .util import PaneConfig
@@ -87,6 +88,15 @@ class Pane(AllTreeView):
                              Gdk.DragAction.COPY)
         self.connect("drag-data-get", self.__drag_data_get)
         self.connect("destroy", self.__destroy)
+
+        self.connect("key-press-event", self.__key_pressed)
+
+    def __key_pressed(self, view, event):
+        # if ctrl+a is pressed, intercept and select the All entry instead
+        if is_accel(event, "<ctrl>a"):
+            self.set_selected([])
+            return True
+        return False
 
     def __repr__(self):
         return "<%s config=%r>" % (type(self).__name__, self.config)
