@@ -28,6 +28,7 @@ from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import Button
+from quodlibet.qltk.ccb import ConfigCheckButton
 
 
 STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
@@ -75,6 +76,14 @@ class GstPlayerPreferences(Gtk.VBox):
             player._rebuild_pipeline()
         apply_button.connect('clicked', rebuild_pipeline)
 
+        gapless_button = ConfigCheckButton(
+            _('Disable _gapless playback'),
+            "player", "gst_disable_gapless", populate=True)
+        gapless_button.set_alignment(0.0, 0.5)
+        gapless_button.set_tooltip_text(
+            _("Disabling gapless playback can avoid track changing problems "
+              "with some GStreamer versions."))
+
         widgets = [(pipe_label, e, apply_button),
                    (buffer_label, scale, None),
         ]
@@ -94,6 +103,8 @@ class GstPlayerPreferences(Gtk.VBox):
                              Gtk.AttachOptions.SHRINK)
             else:
                 table.attach(middle, 1, 3, i, i + 1)
+
+        table.attach(gapless_button, 0, 3, 2, 3)
 
         self.pack_start(table, True, True, 0)
 
@@ -387,6 +398,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def __about_to_finish(self, pipeline):
         print_d("About to finish")
+
+        if config.getboolean("player", "gst_disable_gapless"):
+            print_d("Gapless disabled")
+            return
+
         # this can trigger twice, see issue 987
         if self._in_gapless_transition:
             return
