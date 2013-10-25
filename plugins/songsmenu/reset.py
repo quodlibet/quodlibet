@@ -39,6 +39,7 @@ class ResetRating(SongsMenuPlugin):
     @classmethod
     def PluginPreferences(klass, window):
         vb2 = Gtk.VBox(spacing=3)
+
         hb = Gtk.HBox(spacing=3)
         lab = Gtk.Label(label=_("Default r_ating:"))
         lab.set_use_underline(True)
@@ -46,7 +47,7 @@ class ResetRating(SongsMenuPlugin):
 
         def draw_rating(column, cell, model, it, data):
             i = model[it][0]
-            text = "%0.2f\t%s" % (i, util.format_rating(i))
+            text = "%0.2f %s" % (i, util.format_rating(i))
             cell.set_property('text', text)
 
         def default_rating_changed(combo, model):
@@ -70,6 +71,50 @@ class ResetRating(SongsMenuPlugin):
         combo.connect('changed', default_rating_changed, model)
         hb.pack_start(combo, False, True, 0)
         lab.set_mnemonic_widget(combo)
+        default_combo = combo
+
+        def refresh_default_combo():
+            i = default_combo.get_active()
+            m = default_combo.get_model()
+            default_combo.set_model(None)
+            default_combo.set_model(m)
+            default_combo.set_active(i)
+
+        vb2.pack_start(hb, True, True, 0)
+
+        hb = Gtk.HBox(spacing=3)
+        lab = Gtk.Label(label=_("_Maximum rating:"))
+        lab.set_use_underline(True)
+        hb.pack_start(lab, False, True, 0)
+
+        model = Gtk.ListStore(int)
+        combo = Gtk.ComboBox(model=model)
+        cell = Gtk.CellRendererText()
+        combo.pack_start(cell, True)
+        for i in [2, 4, 6, 8, 10]:
+            it = model.append(row=[i])
+            if 1.0 / i == util.RATING_PRECISION:
+                combo.set_active_iter(it)
+
+        def draw_max_rating(column, cell, model, it, data):
+            i = model[it][0]
+            text = "%d %s" % (i, util.RATING_SYMBOL * i)
+            cell.set_property('text', text)
+
+        def max_rating_changed(combo, model):
+            it = combo.get_active_iter()
+            if it is None:
+                return
+            max_rating = model[it][0]
+            config.set("settings", "rating", max_rating)
+            util.RATING_PRECISION = 1.0 / max_rating
+            refresh_default_combo()
+
+        combo.set_cell_data_func(cell, draw_max_rating, None)
+        combo.connect('changed', max_rating_changed, model)
+        hb.pack_start(combo, False, True, 0)
+        lab.set_mnemonic_widget(combo)
+
         vb2.pack_start(hb, True, True, 0)
 
         return vb2
