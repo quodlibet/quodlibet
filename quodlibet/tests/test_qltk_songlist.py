@@ -36,6 +36,10 @@ class TSongList(TestCase):
         self.songlist.set_sort_by(self.songlist.get_columns()[-1], tag="three")
         self.failUnlessEqual(self.songlist.get_sort_by(), ("three", True))
 
+    def test_inline_search_state(self):
+        self.assertEqual(self.songlist.get_search_column(), 0)
+        self.assertTrue(self.songlist.get_enable_search())
+
     def tearDown(self):
         self.songlist.destroy()
         quodlibet.config.quit()

@@ -749,6 +749,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def set_model(self, model):
         super(SongList, self).set_model(model)
         self.model = model
+        self.set_search_column(0)
 
     def get_songs(self):
         try:
