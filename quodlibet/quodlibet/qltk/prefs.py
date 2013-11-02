@@ -419,11 +419,23 @@ class PreferencesWindow(qltk.UniqueWindow):
             e.set_tooltip_text(
                     _("A list of separators to use when splitting tag values. "
                       "The list is space-separated"))
+
+            def do_revert_split(button, section, option):
+                config.reset(section, option)
+                e.set_text(config.get(section, option))
+
+            split_revert = Gtk.Button()
+            split_revert.add(Gtk.Image.new_from_stock(
+                Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
+            split_revert.connect(
+                "clicked", do_revert_split, "editing", "split_on")
+
             l = Gtk.Label(label=_("Split _on:"))
             l.set_use_underline(True)
             l.set_mnemonic_widget(e)
             hb.pack_start(l, False, True, 0)
             hb.pack_start(e, True, True, 0)
+            hb.pack_start(split_revert, False, True, 0)
             vbox.pack_start(hb, False, True, 0)
 
             vb2 = Gtk.VBox(spacing=6)
