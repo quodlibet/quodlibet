@@ -14,6 +14,7 @@ from quodlibet import const
 
 from quodlibet.parse import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
+from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.util import limit_songs
 
 
@@ -102,11 +103,19 @@ class SearchBarBox(Gtk.HBox):
         self.__filter_changed()
 
     def __menu(self, entry, menu):
-        self.show_menu(menu)
+        from quodlibet.qltk.x import SeparatorMenuItem
 
-    def show_menu(self, menu):
-        """Overwrite this method for providing a menu"""
-        pass
+        sep = SeparatorMenuItem()
+        sep.show()
+        menu.prepend(sep)
+
+        cb = ConfigCheckMenuItem(
+            _("Search after _typing"), 'settings', 'eager_search',
+            populate=True)
+        cb.set_tooltip_text(
+            _("Show search results after the user stops typing."))
+        cb.show()
+        menu.prepend(cb)
 
     def __mnemonic_activate(self, label, group_cycling):
         widget = label.get_mnemonic_widget()

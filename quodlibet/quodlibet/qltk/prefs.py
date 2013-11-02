@@ -224,11 +224,6 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(e, True, True, 0)
             vb.pack_start(hb, False, True, 0)
 
-            c = ConfigCheckButton(_("Search after _typing"),
-                                  'settings', 'eager_search', populate=True)
-            c.set_tooltip_text(
-                    _("Show search results after the user stops typing."))
-            vb.pack_start(c, False, True, 0)
             # Translators: The heading of the preference group, no action
             f = qltk.Frame(Q_("heading|Search"), child=vb)
             self.pack_start(f, False, True, 0)
