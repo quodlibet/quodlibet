@@ -299,8 +299,10 @@ def _split_numeric_sortkey(s, limit=10,
         return (join(s.split()),)
     else:
         start, end = result.span()
-        return (join(s[:start].split()), float(result.group()),) + \
-               _split_numeric_sortkey(s[end:], limit - 1)
+        return (
+            join(s[:start].split()),
+            float(result.group()),
+            _split_numeric_sortkey(s[end:], limit - 1))
 
 
 def human_sort_key(s, normalize=unicodedata.normalize):
