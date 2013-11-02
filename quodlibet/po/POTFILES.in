@@ -77,6 +77,7 @@ quodlibet/qltk/views.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
 quodlibet/util/collection.py
+quodlibet/util/cover/built_in.py
 quodlibet/util/dprint.py
 quodlibet/util/__init__.py
 quodlibet/util/library.py
