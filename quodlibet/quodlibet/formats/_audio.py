@@ -15,6 +15,8 @@ import shutil
 import time
 import re
 
+from ._image import ImageContainer
+
 from quodlibet import const
 from quodlibet import util
 from quodlibet import config
@@ -58,7 +60,7 @@ FILESYSTEM_TAGS = "~filename ~basename ~dirname".split()
 UNIQUE_ALBUM_IDENTIFIERS = ["musicbrainz_albumid", "labelid"]
 
 
-class AudioFile(dict):
+class AudioFile(dict, ImageContainer):
     """An audio file. It looks like a dict, but implements synthetic
     and tied tags via __call__ rather than __getitem__. This means
     __getitem__, get, and so on can be used for efficiency.
@@ -692,14 +694,16 @@ class AudioFile(dict):
     def find_cover(self):
         """Return a file-like containing cover image data, or None if
         no cover is available."""
+
         if not self.is_file:
             return
 
         # If preferred, check for picture stored in the metadata...
         if (config.getboolean("albumart", "prefer_embedded") and
-                "~picture" in self):
+                self.has_images):
             print_d("Preferring embedded art for %s" % self("~filename"))
-            return self.get_format_cover()
+            image = self.get_primary_image()
+            return image.file if image else None
 
         base = self('~dirname')
         images = []
@@ -771,9 +775,10 @@ class AudioFile(dict):
             except IOError:
                 print_w(_("Failed reading album art \"%s\"") % path)
 
-        if "~picture" in self:
+        if self.has_images:
             # Otherwise, we might have a picture stored in the metadata...
-            return self.get_format_cover()
+            image = self.get_primary_image()
+            return image.file if image else None
 
         return None
 

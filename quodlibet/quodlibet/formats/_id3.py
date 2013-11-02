@@ -9,6 +9,7 @@ import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet.formats._audio import AudioFile
+from quodlibet.formats._image import EmbeddedImage, APICType
 from quodlibet.util.massagers import LanguageMassager
 from quodlibet.util.path import get_temp_cover_file
 
@@ -120,7 +121,7 @@ class ID3File(AudioFile):
 
         for frame in tag.values():
             if frame.FrameID == "APIC" and len(frame.data):
-                self["~picture"] = "y"
+                self.has_images = True
                 continue
             elif frame.FrameID == "TCON":
                 self["genre"] = "\n".join(frame.genres)
@@ -419,18 +420,59 @@ class ID3File(AudioFile):
         tag.save(self["~filename"])
         self.sanitize()
 
-    def get_format_cover(self):
+    can_change_images = True
+
+    def clear_images(self):
+        """Delete all embedded images"""
+
         try:
             tag = mutagen.id3.ID3(self["~filename"])
         except Exception:
             return
-        else:
-            cover = None
-            for frame in tag.getall("APIC"):
-                cover = cover or frame
-                if frame.type == 3:
-                    cover = frame
-                    break
 
-            if cover:
-                return get_temp_cover_file(cover.data)
+        tag.delall("APIC")
+        tag.save()
+
+        self.has_images = False
+
+    def get_primary_image(self):
+        """Returns the primary embedded image"""
+
+        try:
+            tag = mutagen.id3.ID3(self["~filename"])
+        except Exception:
+            return
+
+        # get the APIC frame with type == 3 (cover) or the first one
+        cover = None
+        for frame in tag.getall("APIC"):
+            cover = cover or frame
+            if frame.type == APICType.COVER_FRONT:
+                cover = frame
+                break
+
+        if cover:
+            f = get_temp_cover_file(cover.data)
+            return EmbeddedImage(cover.mime, -1, -1, -1, f)
+
+    def set_image(self, image):
+        """Replaces all embedded images by the passed image"""
+
+        try:
+            tag = mutagen.id3.ID3(self["~filename"])
+        except Exception:
+            return
+
+        try:
+            data = image.file.read()
+        except EnvironmentError:
+            return
+
+        tag.delall("APIC")
+        frame = mutagen.id3.APIC(
+            encoding=3, mime=image.mime_type, type=APICType.COVER_FRONT,
+            desc=u"", data=data)
+        tag.add(frame)
+        tag.save()
+
+        self.has_images = True

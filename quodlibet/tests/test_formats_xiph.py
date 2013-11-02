@@ -4,9 +4,11 @@ import os
 import sys
 import shutil
 import base64
+import StringIO
 
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
+from quodlibet.formats._image import EmbeddedImage
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -313,10 +315,14 @@ class TVCCover(TestCase):
         os.unlink(fn)
         return data
 
+    def test_can_change_images(self):
+        song = self.QLType(self.filename)
+        self.assertTrue(song.can_change_images)
+
     def test_no_cover(self):
         song = self.QLType(self.filename)
         self.failIf(song("~picture"))
-        self.failIf(song.find_cover())
+        self.failIf(song.get_primary_image())
 
     def test_handle_old_coverart(self):
         data = self.__get_jpeg()
@@ -331,7 +337,7 @@ class TVCCover(TestCase):
         self.failIf(song("coverartmime"))
         song.write()
 
-        fn = song.find_cover()
+        fn = song.get_primary_image().file
         cov_data = fn.read()
         self.failUnlessEqual(data,cov_data)
 
@@ -348,7 +354,7 @@ class TVCCover(TestCase):
         song = self.QLType(self.filename)
         self.failUnlessEqual(song("~picture"), "y")
         self.failIf(song("coverart"))
-        self.failIf(song.find_cover())
+        self.failIf(song.get_primary_image())
         self.failIf(song("~picture"))
         song.write()
 
@@ -373,7 +379,7 @@ class TVCCover(TestCase):
         song = self.QLType(self.filename)
         self.failUnlessEqual(song("~picture"), "y")
 
-        fn = song.find_cover()
+        fn = song.get_primary_image().file
         self.failUnlessEqual(pic.data, fn.read())
         song.write()
 
@@ -384,7 +390,7 @@ class TVCCover(TestCase):
         song.save()
 
         song = self.QLType(self.filename)
-        fn = song.find_cover()
+        fn = song.get_primary_image().file
         self.failUnlessEqual(pic2.data, fn.read())
 
     def test_handle_invalid_picture_block(self):
@@ -396,12 +402,34 @@ class TVCCover(TestCase):
         song = self.QLType(self.filename)
         self.failUnlessEqual(song("~picture"), "y")
         self.failIf(song("metadata_block_picture"))
-        self.failIf(song.find_cover())
+        self.failIf(song.get_primary_image())
         self.failIf(song("~picture"))
         song.write()
 
         song = self.MutagenType(self.filename)
         self.failUnlessEqual(song["metadata_block_picture"][0], crap)
+
+    def test_set_image(self):
+        data = self.__get_jpeg()
+        song = self.MutagenType(self.filename)
+        song["coverart"] = base64.b64encode(data)
+        song["coverartmime"] = "image/jpeg"
+        song.save()
+
+        fileobj = StringIO.StringIO("foo")
+        image = EmbeddedImage("image/jpeg", 10, 10, 8, fileobj)
+
+        song = self.QLType(self.filename)
+        self.assertTrue(song.has_images)
+        self.assertTrue(song.get_primary_image())
+        self.assertTrue(song.has_images)
+        song.set_image(image)
+        self.assertTrue(song.has_images)
+        self.assertEqual(song.get_primary_image().width, 10)
+
+        song = self.MutagenType(self.filename)
+        self.assertTrue("coverart" not in song)
+        self.assertTrue("coverartmime" not in song)
 
     def tearDown(self):
         os.unlink(self.filename)
@@ -434,7 +462,7 @@ class TFlacPicture(TestCase):
         self.filename = mkstemp(".flac")[1]
         shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
 
-    def test_picture(self):
+    def test_get_image(self):
         data = "abc"
         song = FLAC(self.filename)
         pic = Picture()
@@ -444,12 +472,37 @@ class TFlacPicture(TestCase):
 
         song = FLACFile(self.filename)
         self.failUnless(song("~picture"))
-        fn = song.find_cover()
+        fn = song.get_primary_image().file
         self.failUnlessEqual(fn.read(), pic.data)
+
+    def test_clear_images(self):
+        data = "abc"
+        song = FLAC(self.filename)
+        pic = Picture()
+        pic.data = data
+        song.add_picture(pic)
+        song.save()
+
+        song = FLACFile(self.filename)
+        self.assertTrue(song.get_primary_image())
+        song.clear_images()
+        song.clear_images()
+        song = FLACFile(self.filename)
+        self.assertFalse(song.get_primary_image())
+
+    def test_set_image(self):
+        fileobj = StringIO.StringIO("foo")
+        image = EmbeddedImage("image/jpeg", 10, 10, 8, fileobj)
+
+        song = FLACFile(self.filename)
+        self.assertFalse(song.get_primary_image())
+        song.set_image(image)
+        self.assertEqual(song.get_primary_image().width, 10)
 
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
+
 add(TFlacPicture)
 
 

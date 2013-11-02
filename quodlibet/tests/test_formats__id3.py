@@ -4,12 +4,83 @@ from tests import add, TestCase, DATA_DIR, mkstemp
 
 import os
 import shutil
+import StringIO
 
 from quodlibet import config, const
+from quodlibet.formats._image import EmbeddedImage
 from quodlibet.formats.mp3 import MP3File
 from quodlibet.formats._id3 import ID3hack
 
 import mutagen
+
+
+class TID3Images(TestCase):
+
+    def setUp(self):
+        self.filename = mkstemp(".mp3")[1]
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.filename)
+
+    def tearDown(self):
+        os.remove(self.filename)
+
+    def test_can_change_images(self):
+        self.failUnless(MP3File(self.filename).can_change_images)
+
+    def test_get_primary_image(self):
+        self.failIf(MP3File(self.filename).has_images)
+
+        f = mutagen.File(self.filename)
+        apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=4,
+                                desc="foo", data="bar")
+        f.tags.add(apic)
+        f.save()
+
+        song = MP3File(self.filename)
+        self.failUnless(song.has_images)
+        image = song.get_primary_image()
+        self.assertEqual(image.mime_type, "image/jpeg")
+        fn = image.file
+        self.failUnlessEqual(fn.read(), "bar")
+
+        apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=3,
+                                desc="xx", data="bar2")
+        f.tags.add(apic)
+        f.save()
+
+        song = MP3File(self.filename)
+        self.failUnless(song.has_images)
+        image = song.get_primary_image()
+        self.failUnlessEqual(image.file.read(), "bar2")
+
+    def test_clear_images(self):
+        f = mutagen.File(self.filename)
+        apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=4,
+                                desc="foo", data="bar")
+        f.tags.add(apic)
+        f.save()
+
+        song = MP3File(self.filename)
+        self.failUnless(song.has_images)
+        song.clear_images()
+
+        song = MP3File(self.filename)
+        self.assertFalse(song.has_images)
+
+    def test_set_image(self):
+        fileobj = StringIO.StringIO("foo")
+        image = EmbeddedImage("image/jpeg", 10, 10, 8, fileobj)
+
+        song = MP3File(self.filename)
+        self.failIf(song.has_images)
+        song.set_image(image)
+        self.assertTrue(song.has_images)
+
+        song = MP3File(self.filename)
+        self.assertTrue(song.has_images)
+        self.assertEqual(song.get_primary_image().mime_type, "image/jpeg")
+
+add(TID3Images)
+
 
 class TID3File(TestCase):
     def setUp(self):
@@ -138,30 +209,6 @@ class TID3File(TestCase):
         f.tags.add(mutagen.id3.TLEN(encoding=0, text=['x']))
         f.save()
         self.failUnless(MP3File(self.filename)("~#length") > 0)
-
-    def test_load_apic(self):
-        self.failIf(MP3File(self.filename)("~picture"))
-
-        f = mutagen.File(self.filename)
-        apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=4,
-                                desc="foo", data="bar")
-        f.tags.add(apic)
-        f.save()
-
-        song = MP3File(self.filename)
-        self.failUnless(song("~picture"))
-        fn = song.get_format_cover()
-        self.failUnlessEqual(fn.read(), "bar")
-
-        apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=3,
-                                desc="xx", data="bar2")
-        f.tags.add(apic)
-        f.save()
-
-        song = MP3File(self.filename)
-        self.failUnless(song("~picture"))
-        fn = song.get_format_cover()
-        self.failUnlessEqual(fn.read(), "bar2")
 
     def test_load_tcon(self):
         # check if the mutagen preprocessing is used
@@ -483,7 +530,7 @@ class TID3File(TestCase):
         f.delete()
         f.save()
         song = MP3File(self.filename)
-        song.get_format_cover()
+        song.get_primary_image()
         song.write()
 
     def test_distrust_latin1(self):

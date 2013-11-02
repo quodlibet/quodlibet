@@ -72,12 +72,14 @@ class SongsMenuPlugin(Gtk.ImageMenuItem):
         self.__songs = songs
         self.plugin_window = window
         self.__initialized = True
-        try:
-            i = Gtk.Image.new_from_stock(self.PLUGIN_ICON, Gtk.IconSize.MENU)
-        except AttributeError:
-            pass
+
+        icon = getattr(self, "PLUGIN_ICON", Gtk.STOCK_EXECUTE)
+        if Gtk.stock_lookup(icon):
+            image = Gtk.Image.new_from_stock(icon, Gtk.IconSize.MENU)
         else:
-            self.set_image(i)
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU)
+        self.set_image(image)
+
         self.set_sensitive(bool(self.plugin_handles(songs)))
 
     @property

@@ -1,10 +1,11 @@
-from tests import TestCase, add, DATA_DIR
+from tests import TestCase, add, DATA_DIR, mkstemp
 
 import os
 
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
+
 
 bar_1_1 = AudioFile({
     "~filename": "/fakepath/1",

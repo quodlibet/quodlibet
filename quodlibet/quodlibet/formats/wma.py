@@ -6,8 +6,9 @@
 
 import struct
 
-from quodlibet import util
+from quodlibet.util.path import get_temp_cover_file
 from quodlibet.formats._audio import AudioFile
+from quodlibet.formats._image import EmbeddedImage, APICType
 
 extensions = [".wma"]
 try:
@@ -69,7 +70,7 @@ class WMAFile(AudioFile):
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         for name, values in audio.tags.items():
             if name == "WM/Picture":
-                self["~picture"] = "y"
+                self.has_images = True
             try:
                 name = self.__translate[name]
             except KeyError:
@@ -97,20 +98,64 @@ class WMAFile(AudioFile):
     def can_change(self, key=None):
         OK = self.__rtranslate.keys()
         if key is None:
-            return super(WMAFile, self).can_change(key)
+            return OK
         else:
             return super(WMAFile, self).can_change(key) and (key in OK)
 
-    def get_format_cover(self):
+    def get_primary_image(self):
+        """Returns the primary embedded image or None"""
+
         try:
             tag = mutagen.asf.ASF(self["~filename"])
         except Exception:
             return
-        else:
-            for image in tag.get("WM/Picture", []):
-                (mime, data, type) = unpack_image(image.value)
-                if type == 3:  # Only cover images
-                    return util.get_temp_cover_file(data)
+
+        for image in tag.get("WM/Picture", []):
+            try:
+                (mime, desc, data, type_) = unpack_image(image.value)
+            except ValueError:
+                continue
+            if type_ == APICType.COVER_FRONT:  # Only cover images
+                f = get_temp_cover_file(data)
+                return EmbeddedImage(mime, -1, -1, -1, f)
+
+    can_change_images = True
+
+    def clear_images(self):
+        """Delete all embedded images"""
+
+        try:
+            tag = mutagen.asf.ASF(self["~filename"])
+        except Exception:
+            return
+
+        tag.pop("WM/Picture", None)
+        tag.save()
+
+        self.has_images = False
+
+    def set_image(self, image):
+        """Replaces all embedded images by the passed image"""
+
+        try:
+            tag = mutagen.asf.ASF(self["~filename"])
+        except Exception:
+            return
+
+        try:
+            imagedata = image.file.read()
+        except EnvironmentError:
+            return
+
+        # thumbnail gets used in WMP..
+        data = pack_image(image.mime_type, u"thumbnail",
+                          imagedata, APICType.COVER_FRONT)
+
+        value = mutagen.asf.ASFValue(data, mutagen.asf.BYTEARRAY)
+        tag["WM/Picture"] = [value]
+        tag.save()
+
+        self.has_images = True
 
 
 def unpack_image(data):
@@ -125,20 +170,52 @@ def unpack_image(data):
     Description, null terminated UTF-16-LE string
     The image data in the given length
     """
-    (type, size) = struct.unpack_from("<bi", data)
-    pos = 5
+
+    try:
+        (type_, size) = struct.unpack_from("<bi", data)
+    except struct.error as e:
+        raise ValueError(e)
+    data = data[5:]
+
     mime = ""
-    while data[pos:pos + 2] != "\x00\x00":
-        mime += data[pos:pos + 2]
-        pos += 2
-    pos += 2
+    while data:
+        char, data = data[:2], data[2:]
+        if char == "\x00\x00":
+            break
+        mime += char
+    else:
+        raise ValueError("mime: missing data")
+
+    mime = mime.decode("utf-16-le")
+
     description = ""
-    while data[pos:pos + 2] != "\x00\x00":
-        description += data[pos:pos + 2]
-        pos += 2
-    pos += 2
-    image_data = data[pos:pos + size]
-    return (mime.decode("utf-16-le"), image_data, type)
+    while data:
+        char, data = data[:2], data[2:]
+        if char == "\x00\x00":
+            break
+        description += char
+    else:
+        raise ValueError("desc: missing data")
+
+    description = description.decode("utf-16-le")
+
+    if size != len(data):
+        raise ValueError("image data size mismatch")
+
+    return (mime, description, data, type_)
+
+
+def pack_image(mime, description, imagedata, type_):
+    assert APICType.is_valid(type_)
+
+    size = len(imagedata)
+    data = struct.pack("<bi", type_, size)
+    data += mime.encode("utf-16-le") + "\x00\x00"
+    data += description.encode("utf-16-le") + "\x00\x00"
+    data += imagedata
+
+    return data
+
 
 info = WMAFile
 types = [WMAFile]

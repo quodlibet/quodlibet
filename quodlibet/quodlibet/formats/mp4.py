@@ -6,13 +6,15 @@
 # published by the Free Software Foundation
 
 from quodlibet.formats._audio import AudioFile
+from quodlibet.formats._image import EmbeddedImage, APICType
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
+
 
 extensions = ['.mp4', '.m4a', '.m4v']
 
 try:
-    from mutagen.mp4 import MP4
+    from mutagen.mp4 import MP4, MP4Cover
 except ImportError:
     extensions = []
 
@@ -84,7 +86,7 @@ class MP4File(AudioFile):
                 else:
                     self[name] = "\n".join(values)
             elif key == "covr":
-                self["~picture"] = "y"
+                self.has_images = True
         self.sanitize(filename)
 
     def write(self):
@@ -122,16 +124,64 @@ class MP4File(AudioFile):
         else:
             return super(MP4File, self).can_change(key) and (key in OK)
 
-    def get_format_cover(self):
+    def get_primary_image(self):
         try:
             tag = MP4(self["~filename"])
         except Exception:
             return
+
+        for cover in tag.get("covr", []):
+
+            if cover.imageformat == MP4Cover.FORMAT_JPEG:
+                mime = "image/jpeg"
+            elif cover.imageformat == MP4Cover.FORMAT_PNG:
+                mime = "image/png"
+            else:
+                mime = "image/"
+
+            f = get_temp_cover_file(cover)
+            return EmbeddedImage(mime, -1, -1, -1, f)
+
+    can_change_images = True
+
+    def clear_images(self):
+        """Delete all embedded images"""
+
+        try:
+            tag = MP4(self["~filename"])
+        except Exception:
+            return
+
+        tag.pop("covr", None)
+        tag.save()
+
+        self.has_images = False
+
+    def set_image(self, image):
+        """Replaces all embedded images by the passed image"""
+
+        if image.mime_type == "image/jpeg":
+            image_format = MP4Cover.FORMAT_JPEG
+        elif image.mime_type == "image/png":
+            image_format = MP4Cover.FORMAT_PNG
         else:
-            for cover in tag.get("covr", []):
-                fn = get_temp_cover_file(cover)
-                if fn:
-                    return fn
+            return
+
+        try:
+            tag = MP4(self["~filename"])
+        except Exception:
+            return
+
+        try:
+            data = image.file.read()
+        except EnvironmentError:
+            return
+
+        cover = MP4Cover(data, image_format)
+        tag["covr"] = [cover]
+        tag.save()
+
+        self.has_images = True
 
 info = MP4File
 types = [MP4File]

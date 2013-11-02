@@ -9,16 +9,16 @@ import sys
 import base64
 
 import mutagen
+from mutagen.flac import Picture
 
 from quodlibet import config
 from quodlibet import const
-
+from quodlibet.util.path import get_temp_cover_file
 from quodlibet.formats._audio import AudioFile
+from quodlibet.formats._image import EmbeddedImage, APICType
 
 
 # Migrate old layout
-from quodlibet.util.path import get_temp_cover_file
-
 sys.modules["formats.flac"] = sys.modules[__name__]
 sys.modules["formats.oggvorbis"] = sys.modules[__name__]
 
@@ -26,6 +26,8 @@ sys.modules["formats.oggvorbis"] = sys.modules[__name__]
 class MutagenVCFile(AudioFile):
     format = "Unknown Mutagen + vorbiscomment"
     MutagenType = None
+
+    can_change_images = True
 
     def __init__(self, filename, audio=None):
         # If we're done a type probe, use the results of that to avoid
@@ -89,11 +91,11 @@ class MutagenVCFile(AudioFile):
                     del(self[key])
 
         if "metadata_block_picture" in self:
-            self["~picture"] = "y"
+            self.has_images = True
             del(self["metadata_block_picture"])
 
         if "coverart" in self:
-            self["~picture"] = "y"
+            self.has_images = True
             del(self["coverart"])
 
         if "coverartmime" in self:
@@ -102,10 +104,10 @@ class MutagenVCFile(AudioFile):
         self.__post_read_total("tracktotal", "totaltracks", "tracknumber")
         self.__post_read_total("disctotal", "totaldiscs", "discnumber")
 
-    def get_format_cover(self):
-        try:
-            from mutagen.flac import Picture
-        except ImportError:
+    def get_primary_image(self):
+        """Returns the primary embedded image"""
+
+        if not self.has_images:
             return
 
         try:
@@ -114,7 +116,7 @@ class MutagenVCFile(AudioFile):
             return None
 
         pictures = []
-        for data in audio.tags.get("metadata_block_picture", []):
+        for data in audio.get("metadata_block_picture", []):
             try:
                 pictures.append(Picture(base64.b64decode(data)))
             except TypeError:
@@ -122,24 +124,71 @@ class MutagenVCFile(AudioFile):
 
         cover = None
         for pic in pictures:
-            if pic.type == 3:
-                cover = pic.data
+            if pic.type == APICType.COVER_FRONT:
+                cover = pic
                 break
-            cover = cover or pic.data
+            cover = cover or pic
+
+        if cover:
+            f = get_temp_cover_file(cover.data)
+            return EmbeddedImage(
+                cover.mime, cover.width, cover.height, cover.depth, f)
+
+        cover = audio.get("coverart")
+        try:
+            cover = cover and base64.b64decode(cover[0])
+        except TypeError:
+            cover = None
 
         if not cover:
-            cover = audio.tags.get("coverart")
-            try:
-                cover = cover and base64.b64decode(cover[0])
-            except TypeError:
-                cover = None
-
-        if not cover:
-            if "~picture" in self:
-                del self["~picture"]
+            self.has_images = False
             return
 
-        return get_temp_cover_file(cover)
+        mime = audio.get("coverartmime", "image/")
+        f = get_temp_cover_file(cover)
+        return EmbeddedImage(mime, -1, -1, -1, f)
+
+    def clear_images(self):
+        """Delete all embedded images"""
+
+        if not self.has_images:
+            return
+
+        try:
+            audio = self.MutagenType(self["~filename"])
+        except EnvironmentError:
+            return
+
+        audio.pop("metadata_block_picture", None)
+        audio.pop("coverart", None)
+        audio.pop("coverartmime", None)
+        audio.save()
+
+        self.has_images = False
+
+    def set_image(self, image):
+        """Replaces all embedded images by the passed image"""
+
+        try:
+            audio = self.MutagenType(self["~filename"])
+            data = image.file.read()
+        except EnvironmentError:
+            return
+
+        pic = Picture()
+        pic.data = data
+        pic.type = APICType.COVER_FRONT
+        pic.mime = image.mime_type
+        pic.width = image.width
+        pic.height = image.height
+        pic.depth = image.color_depth
+
+        audio.pop("coverart", None)
+        audio.pop("coverartmime", None)
+        audio["metadata_block_picture"] = base64.b64encode(pic.write())
+        audio.save()
+
+        self.has_images = True
 
     def can_change(self, k=None):
         if k is None:
@@ -309,26 +358,67 @@ class FLACFile(MutagenVCFile):
             audio = FLAC(filename)
         super(FLACFile, self).__init__(filename, audio)
         if audio.pictures:
-            self["~picture"] = "y"
+            self.has_images = True
 
-    def get_format_cover(self):
+    def get_primary_image(self):
+        """Returns the primary embedded image"""
+
         try:
             tag = FLAC(self["~filename"])
         except EnvironmentError:
             return None
-        else:
-            covers = tag.pictures
-            if not covers:
-                return super(FLACFile, self).get_format_cover()
 
-            for cover in covers:
-                if cover.type == 3:
-                    pic = cover
-                    break
-            else:
-                pic = covers[0]
+        covers = tag.pictures
+        if not covers:
+            return super(FLACFile, self).get_primary_image()
 
-            return get_temp_cover_file(pic.data)
+        covers.sort(key=lambda c: APICType.sort_key(c.type))
+        cover = covers[-1]
+
+        fileobj = get_temp_cover_file(cover.data)
+        return EmbeddedImage(
+            cover.mime, cover.width, cover.height, cover.depth, fileobj)
+
+    def clear_images(self):
+        """Delete all embedded images"""
+
+        try:
+            tag = FLAC(self["~filename"])
+        except EnvironmentError:
+            return
+
+        tag.clear_pictures()
+        tag.save()
+
+        # clear vcomment tags
+        super(FLACFile, self).clear_images()
+
+        self.has_images = False
+
+    def set_image(self, image):
+        """Replaces all embedded images by the passed image"""
+
+        try:
+            tag = FLAC(self["~filename"])
+            data = image.file.read()
+        except EnvironmentError:
+            return
+
+        pic = Picture()
+        pic.data = data
+        pic.type = APICType.COVER_FRONT
+        pic.mime = image.mime_type
+        pic.width = image.width
+        pic.height = image.height
+        pic.depth = image.color_depth
+
+        tag.add_picture(pic)
+        tag.save()
+
+        # clear vcomment tags
+        super(FLACFile, self).clear_images()
+
+        self.has_images = True
 
     def write(self):
         if ID3 is not None:
