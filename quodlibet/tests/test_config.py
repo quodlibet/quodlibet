@@ -14,6 +14,13 @@ class Tconfig(TestCase):
         self.failUnlessEqual(config.get("foo", "bar"), "1")
         self.failUnlessEqual(config.getint("foo", "bar"), 1)
 
+    def test_reset(self):
+        orig = config.get("player", "backend")
+        config.set("player", "backend", "foo")
+        self.assertEqual(config.get("player", "backend"), "foo")
+        config.reset("player", "backend")
+        self.assertEqual(config.get("player", "backend"), orig)
+
     def test_get(self):
         config.set("foo", "int", "1")
         config.set("foo", "float", "1.25")
