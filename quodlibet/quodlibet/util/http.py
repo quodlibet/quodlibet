@@ -124,7 +124,7 @@ class HTTPRequest(GObject.Object):
         must be already sent, therefore this function will be usually called
         from the 'sent' signal handler.
 
-        With completion of data receival HTTPRequest lifetime is ended and
+        On completion of data receipt, HTTPRequest lifetime is ended and
         inner resources are cleaned up (except persistent connections that are
         part of session, not request).
 

@@ -31,7 +31,8 @@ class ImageContainer(object):
 
     @property
     def can_change_images(self):
-        """Wether clear/set_images are implemented"""
+        """Return True IFF `clear_images()` and `set_images()` are
+        implemented"""
 
         return False
 
