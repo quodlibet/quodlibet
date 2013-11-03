@@ -157,8 +157,9 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         model, rows = selection.get_selected_rows()
         filenames = sorted([os.path.realpath(model[row][0]) for row in rows])
         songs = map(self.__library.get, filenames)
-        if None not in songs:
-            menu = self.pm.Menu(self.__library, self, songs)
+
+        if songs.count(None) != len(songs):
+            menu = self.pm.Menu(self.__library, self, filter(None, songs))
             if menu is None:
                 menu = Gtk.Menu()
             else:
