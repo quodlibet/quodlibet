@@ -21,6 +21,9 @@ class CoverPluginHandler(object):
         PluginManager.instance.register_handler(self)
 
     def plugin_handle(self, plugin):
+        # disable for now
+        return False
+
         if not issubclass(plugin.cls, CoverSourcePlugin):
             return False
 
