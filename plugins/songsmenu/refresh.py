@@ -14,8 +14,8 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class RefreshSongs(SongsMenuPlugin):
     PLUGIN_ID = "refresh-songs"
     PLUGIN_NAME = _("Refresh Songs")
-    PLUGIN_DESC = _("Checks for file changes and reloads/removes"
-                    "the songs if needed")
+    PLUGIN_DESC = _("Checks for file changes and reloads / removes "
+                    "the songs if needed.")
     PLUGIN_ICON = 'gtk-refresh'
 
     def plugin_songs(self, songs):
