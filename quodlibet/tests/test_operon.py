@@ -416,3 +416,64 @@ class TOperonTags(TOperonBase):
         self.check_true(["tags", "-t", "-ctag, desc"], True, False)
         self.check_false(["tags", "-t", "-cfoo"], False, True)
 add(TOperonTags)
+
+
+class TOperonImageExtract(TOperonBase):
+    # [--dry-run] [--primary] [-d <destination>] <file> [<files>]
+
+    def setUp(self):
+        super(TOperonImageExtract, self).setUp()
+
+        self.fcover = mkstemp(".wma")[1]
+        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.cover = MusicFile(self.fcover)
+
+    def tearDown(self):
+        os.unlink(self.fcover)
+
+        super(TOperonImageExtract, self).tearDown()
+
+    def test_misc(self):
+        self.check_true(["image-extract", "-h"], True, False)
+        self.check_true(["image-extract", self.f], False, False)
+        self.check_true(["image-extract", self.f, self.f2], False, False)
+        self.check_false(["image-extract"], False, True)
+
+    def test_extract_all(self):
+        target_dir = os.path.dirname(self.fcover)
+        self.check_true(["image-extract", "-d", target_dir, self.fcover],
+                        False, False)
+
+        self.assertEqual(len(self.cover.get_images()), 1)
+        image = self.cover.get_primary_image()
+
+        name = os.path.splitext(os.path.basename(self.fcover))[0]
+
+        expected = "%s-00.%s" % (name, image.extensions[0])
+        expected_path = os.path.join(target_dir, expected)
+
+        self.assertTrue(os.path.exists(expected_path))
+
+        with open(expected_path, "rb") as h:
+            self.assertEqual(h.read(), image.file.read())
+
+    def test_extract_primary(self):
+        target_dir = os.path.dirname(self.fcover)
+        self.check_true(
+            ["image-extract", "-d", target_dir, "--primary", self.fcover],
+            False, False)
+
+        self.assertEqual(len(self.cover.get_images()), 1)
+        image = self.cover.get_primary_image()
+
+        name = os.path.splitext(os.path.basename(self.fcover))[0]
+
+        expected = "%s.%s" % (name, image.extensions[0])
+        expected_path = os.path.join(target_dir, expected)
+
+        self.assertTrue(os.path.exists(expected_path))
+
+        with open(expected_path, "rb") as h:
+            self.assertEqual(h.read(), image.file.read())
+
+add(TOperonImageExtract)

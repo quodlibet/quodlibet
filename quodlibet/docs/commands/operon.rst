@@ -46,6 +46,11 @@ Show file metadata
 |   *info*        List file information
 |   *print*       Print tags based on the given pattern
 
+Edit Embedded Images
+--------------------
+
+|   *image-extract*    Extract embedded images
+
 Miscellaneous
 -------------
 
@@ -231,6 +236,30 @@ operon print [-h] [-p <pattern>] <file>...
 
 Example:
     operon print -p "<album> - <artist>" a.ogg
+
+
+EDIT EMBEDDED IMAGES
+====================
+
+image-extract
+-------------
+
+Extract all embedded images to the current working directory or the specified
+destination directory.
+
+operon image-extract [-h] [--dry-run] [--primary] [-d <destination>] <file>...
+
+-h | --help
+    Display help and exit
+
+--dry-run
+    Print the found images and resulting file paths but don't save them
+
+--primary
+    Only extract the primary images for each file
+
+-d | --destination <destination>
+    Save all images to the specified destination
 
 COMMANDS
 ========

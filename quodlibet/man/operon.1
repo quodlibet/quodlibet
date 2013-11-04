@@ -47,7 +47,7 @@ Display help and exit
 .B \-\-version
 Print the program version
 .TP
-.B \-v,  \-\-verbose
+.B \-v\fP,\fB  \-\-verbose
 Verbose mode
 .UNINDENT
 .SH COMMAND-OVERVIEW
@@ -66,6 +66,11 @@ Verbose mode
 \fIlist\fP        List tags
 \fIinfo\fP        List file information
 \fIprint\fP       Print tags based on the given pattern
+.fi
+.sp
+.SS Edit Embedded Images
+.nf
+\fIimage\-extract\fP    Extract embedded images
 .fi
 .sp
 .SS Miscellaneous
@@ -165,10 +170,10 @@ operon clear date song.ogg
 .UNINDENT
 .SS copy
 .sp
-Copy all tags from the file \fI<source>\fP to \fI<dest>\fP. All tags in \fB<dest>\fP
+Copy all tags from the file \fI<source>\fP to \fI<dest>\fP\&. All tags in \fB<dest>\fP
 will be preserved. In case the destination format doesn\(aqt support setting a
 tag from source, no tags will be copied. To ignore tags that aren\(aqt
-supported by the destination format pass \fI\-\-ignore\-errors\fP.
+supported by the destination format pass \fI\-\-ignore\-errors\fP\&.
 .sp
 operon copy [\-h] [\-\-dry\-run] [\-\-ignore\-errors] <source> <dest>
 .INDENT 0.0
@@ -265,6 +270,31 @@ Use a custom pattern
 .TP
 .B Example:
 operon print \-p "<album> \- <artist>" a.ogg
+.UNINDENT
+.SH EDIT EMBEDDED IMAGES
+.SS image\-extract
+.sp
+Extract all embedded images to the current working directory or the specified
+destination directory.
+.sp
+operon image\-extract [\-h] [\-\-dry\-run] [\-\-primary] [\-d <destination>] <file>...
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-dry\-run
+Print the found images and resulting file paths but don\(aqt save them
+.TP
+.B \-\-primary
+Only extract the primary images for each file
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-d | \-\-destination <destination>
+Save all images to the specified destination
 .UNINDENT
 .SH COMMANDS
 .SS help

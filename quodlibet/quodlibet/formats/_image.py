@@ -14,6 +14,15 @@ class ImageContainer(object):
 
         return
 
+    def get_images(self):
+        """Returns an unordered list of embedded images"""
+
+        # fall back to the single implementation
+        image = self.get_primary_image()
+        if image:
+            return [image]
+        return []
+
     @property
     def has_images(self):
         """Fast way to check for images, might be False if the file
@@ -63,6 +72,17 @@ class EmbeddedImage(object):
         return "<%s mime_type=%r width=%d height=%d file=%r>" % (
             type(self).__name__, self.mime_type, self.width, self.height,
             self.file)
+
+    @property
+    def extensions(self):
+        """A possibly empty list of extensions e.g. ["jpeg", jpg"]"""
+
+        from gi.repository import GdkPixbuf
+
+        for format_ in GdkPixbuf.Pixbuf.get_formats():
+            if self.mime_type in format_.get_mime_types():
+                return format_.get_extensions()
+        return []
 
     @classmethod
     def from_path(cls, path):

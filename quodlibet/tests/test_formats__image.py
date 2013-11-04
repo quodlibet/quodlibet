@@ -84,6 +84,10 @@ class TEmbeddedImages(TestCase):
         image = EmbeddedImage.from_path(self.filename + "nope")
         self.assertFalse(image)
 
+    def test_get_extensions(self):
+        image = EmbeddedImage.from_path(self.filename)
+        self.assertTrue("png" in image.extensions)
+
     def test_from_path_empty(self):
         empty = mkstemp()[1]
         try:

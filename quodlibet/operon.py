@@ -15,6 +15,7 @@ import sys
 import os
 import string
 import re
+import shutil
 from optparse import OptionParser
 
 from quodlibet.formats import MusicFile
@@ -485,12 +486,70 @@ class InfoCommand(Command):
 
 class ImageExtractCommand(Command):
     NAME = "image-extract"
-    DESCRIPTION = _("Extract embedded images")
-    USAGE = "<file> [<dest-name>]"
+    DESCRIPTION = _("Extract embedded images to "
+                    "<destination>/<filename>-<index>.(jpeg|png|..)")
+    USAGE = "[--dry-run] [--primary] [-d <destination>] <file> [<files>]"
+
+    def _add_options(self, p):
+        p.add_option("--dry-run", action="store_true",
+                     help="don't save images")
+        p.add_option("--primary", action="store_true",
+                     help="only extract the primary image")
+        p.add_option("-d", "--destination", action="store", type="string",
+                     help=_("Path to where the images will be saved to "
+                            "(defaults to the working directory)"))
 
     def _execute(self, options, args):
         if len(args) < 1:
             raise CommandError(_("Not enough arguments"))
+
+        # dry run implies verbose
+        if options.dry_run:
+            self.verbose = True
+
+        paths = args
+        for path in paths:
+            song = self.load_song(path)
+
+            # get the primary one or all of them
+            if options.primary:
+                image = song.get_primary_image()
+                images = [image] if image else []
+            else:
+                images = song.get_images()
+
+            self.log("Images for %r: %r" % (path, images))
+
+            if not images:
+                continue
+
+            # get the basename from the song without the extension
+            basename = os.path.basename(path)
+            name = os.path.splitext(basename)[0]
+
+            # at least two places, but same length for all images
+            number_pattern = "%%0%dd" % (max(2, len(images) - 1))
+
+            for i, image in enumerate(images):
+                # get a appropriate file extension or use fallback
+                extensions = image.extensions
+                ext = extensions[0] if extensions else ".image"
+
+                if options.primary:
+                    # mysong.mp3 -> mysong.jpeg
+                    filename = "%s.%s" % (name, ext)
+                else:
+                    # mysong.mp3 -> mysong-00.jpeg
+                    pattern = "%s-" + number_pattern + ".%s"
+                    filename = pattern % (name, i, ext)
+
+                if options.destination is not None:
+                    filename = os.path.join(options.destination, filename)
+
+                self.log("Saving image %r" % filename)
+                if not options.dry_run:
+                    with open(filename, "wb") as h:
+                        shutil.copyfileobj(image.file, h)
 
 
 class RenameCommand(Command):
@@ -764,11 +823,12 @@ def run(argv=sys.argv):
 
 COMMANDS.extend([ListCommand, DumpCommand, CopyCommand,
             SetCommand, RemoveCommand, AddCommand, PrintCommand,
-            HelpCommand, ClearCommand, InfoCommand, TagsCommand])
+            HelpCommand, ClearCommand, InfoCommand, TagsCommand,
+            ImageExtractCommand])
 COMMANDS.sort(key=lambda c: c.NAME)
 
 # TODO
-# EditCommand, ImageExtractCommand, FillCommand, RenameCommand
+# EditCommand, FillCommand, RenameCommand
 # FillTracknumberCommand, LoadCommand
 
 if __name__ == "__main__":
