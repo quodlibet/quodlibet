@@ -307,8 +307,9 @@ if __name__ == "__main__":
         'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
         'dbus_services': [
             "data/net.sacredchao.QuodLibet.service",
-            "data/org.mpris.MediaPlayer2.quodlibet.service",
-            "data/org.mpris.quodlibet.service",
+            # http://code.google.com/p/quodlibet/issues/detail?id=1268
+            #"data/org.mpris.MediaPlayer2.quodlibet.service",
+            #"data/org.mpris.quodlibet.service",
         ],
         'appdata': [
             "data/quodlibet.appdata.xml",
