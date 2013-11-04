@@ -18,3 +18,5 @@ if release.endswith(".-1"):
 exclude_patterns = ['_build']
 html_theme = "haiku"
 html_title = "%s (%s)" % (project, version)
+
+RTD_NEW_THEME = True
