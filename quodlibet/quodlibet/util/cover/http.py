@@ -30,7 +30,7 @@ class HTTPDownloadMixin(object):
             try:
                 ostr = cover_file.replace_finish(task)
                 request.provide_target(ostr)
-                request.connect('receive-failure', lambda *x: ostr.close(None))
+                request.connect('receive-failure', self._receive_fail, target)
                 request.receive()
             except GLib.GError:
                 request.cancel()
@@ -41,6 +41,16 @@ class HTTPDownloadMixin(object):
     def _download_received(self, request, ostream):
         ostream.close(None)
         self.emit('fetch-success', self.cover)
+
+    def _receive_fail(self, request, exception, gfile):
+        def deleted(gfile, task, data):
+            try:
+                gfile.delete_finish(task)
+            except GLib.GError:
+                print_w('Could not clean up cover which failed to download')
+        ostream = request.ostream
+        ostream.close(None)
+        gfile.delete_async(GLib.PRIORITY_DEFAULT, None, deleted, None)
 
     def _download_failure(self, request, exception):
         self.fail(exception.message or ' '.join(exception.args))
