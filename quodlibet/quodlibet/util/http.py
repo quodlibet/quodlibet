@@ -7,19 +7,20 @@
 import json
 
 from gi.repository import Soup, Gio, GLib, GObject
+if not hasattr(Gio.MemoryOutputStream, 'new_resizable'):
+    raise ImportError(
+        'GLib and gobject-introspection libraries are too old. GLib since 2.' +
+        '36 and gobject-introspection since 1.36 ' + 'are known to work fine.')
 
 from quodlibet.const import VERSION, WEBSITE
 
 
-session = Soup.Session.new()
-ua_string = "Quodlibet/{0} (+{1})".format(VERSION, WEBSITE)
-session.set_properties(user_agent=ua_string, timeout=15)
-
 PARAM_READWRITECONSTRUCT = GObject.PARAM_CONSTRUCT_ONLY \
                          | GObject.PARAM_READWRITE
+SoupStatus = Soup.Status if hasattr(Soup, 'Status') else Soup.KnownStatusCode
 
 
-class HTTPRequest(GObject.Object):
+class DefaultHTTPRequest(GObject.Object):
     """
     Class encapsulating a single HTTP request. These are meant to be sent
     and received only once. Behaviour is undefined otherwise.
@@ -48,8 +49,9 @@ class HTTPRequest(GObject.Object):
         if message is None:
             raise ValueError('Message may not be None')
 
-        super(HTTPRequest, self).__init__(message=message,
-                                          cancellable=Gio.Cancellable.new())
+        inner_cancellable = Gio.Cancellable.new()
+        super(DefaultHTTPRequest, self).__init__(message=message,
+                                                 cancellable=inner_cancellable)
         if cancellable is not None:
             cancellable.connect(lambda *x: self.cancel(), None)
 
@@ -64,10 +66,6 @@ class HTTPRequest(GObject.Object):
         """
         Send the request and receive HTTP headers. Some of the body might
         get downloaded too.
-
-        Will return True if the request was actually sent. In the case of
-        False one is to assume no activity from this specific instance of
-        HTTPRequest.
         """
         print_d('Sending request to {0}'.format(self._uri))
         session.send_async(self.message, self.cancellable, self._sent, None)
@@ -116,7 +114,7 @@ class HTTPRequest(GObject.Object):
                     pass
                 self.istream.close(None)
         else:
-            session.cancel_message(self.message, Soup.Status.CANCELLED)
+            session.cancel_message(self.message, SoupStatus.CANCELLED)
 
     def receive(self):
         """
@@ -132,13 +130,13 @@ class HTTPRequest(GObject.Object):
         Be sure to clean up resources you've allocated yourself (e.g. close
         GOutputStreams, delete files on failure et cetera).
         """
-        if self._receive_started:
-            raise RuntimeError('Can receive only once')
-        self._receive_started = True
         if not self.istream:
             raise RuntimeError('Cannot receive unsent request')
         if not self.ostream:
             raise RuntimeError('Cannot receive request without output stream')
+        if self._receive_started:
+            raise RuntimeError('Can receive only once')
+        self._receive_started = True
 
         def spliced(ostream, task, data):
             try:
@@ -157,6 +155,61 @@ class HTTPRequest(GObject.Object):
         flags = Gio.OutputStreamSpliceFlags.NONE
         self.ostream.splice_async(self.istream, flags, GLib.PRIORITY_DEFAULT,
                                   self.cancellable, spliced, None)
+
+
+class FallbackHTTPRequest(DefaultHTTPRequest):
+    """
+    Fallback code which does not use Gio.InputStream based APIs which are
+    not available before libsoup 2.44 introspection.
+
+    To be used with Soup.SessionAsync instead of regular Soup.Session.
+
+    Unlike DefaultHTTPRequest, keeps downloaded content in memory until
+    the request is completed. Also it keeps downloading the content even if
+    receive function is not called (it does, however, stop if the request is
+    cancelled).
+    """
+    _is_done = False
+
+    def send(self):
+        print_d('Sending request to {0}'.format(self._uri))
+        self.message.get_property('response-body').set_accumulate(False)
+        session.queue_message(self.message, lambda *x: None, None)
+        self.message.connect('got-headers', self._sent)
+        self.message.connect('finished', self._finished)
+
+    def _sent(self, message):
+        if self.cancellable.is_cancelled():
+            return self.emit('send-failure', Exception('Cancelled'))
+        if 300 <= message.get_property('status-code') < 400:
+            return # redirection, wait for another emission of got-headers
+        self.istream = Gio.MemoryInputStream.new()
+        self.message.connect('got-chunk', self._chunk)
+        print_d('Sent request to {0}'.format(self._uri))
+        self.emit('sent', self.message)
+
+    def _chunk(self, message, buffer):
+        self.istream.add_bytes(buffer.get_as_bytes())
+
+    def _finished(self, *args):
+        self._is_done = True
+        self.notify('istream')
+
+    def receive(self):
+        def do_receive(*args):
+            self.disconnect(istr_id)
+            super(FallbackHTTPRequest, self).receive()
+        istr_id = 0
+        if not self._is_done and self.istream:
+            istr_id = self.connect('notify::istream', do_receive)
+        else:
+            do_receive()
+
+    def cancel(self):
+        if self.cancellable.is_cancelled():
+            return False
+        session.cancel_message(self.message, SoupStatus.CANCELLED)
+        super(FallbackHTTPRequest, self).cancel()
 
 
 def download(message, cancellable, callback, data, try_decode=False):
@@ -188,3 +241,16 @@ def download_json(message, cancellable, callback, data):
         except ValueError:
             callback(message, None, data)
     download(message, cancellable, cb, None, True)
+
+
+if hasattr(Soup.Session, 'send_finish'):
+    # We're using Soup >= 2.44
+    session = Soup.Session.new()
+    HTTPRequest = DefaultHTTPRequest
+else:
+    print_w('Using fallback HTTPRequest implementation. libsoup is too old')
+    session = Soup.SessionAsync.new()
+    HTTPRequest = FallbackHTTPRequest
+
+ua_string = "Quodlibet/{0} (+{1})".format(VERSION, WEBSITE)
+session.set_properties(user_agent=ua_string, timeout=15)
