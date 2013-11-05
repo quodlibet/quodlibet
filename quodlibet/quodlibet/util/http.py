@@ -9,8 +9,8 @@ import json
 from gi.repository import Soup, Gio, GLib, GObject
 if not hasattr(Gio.MemoryOutputStream, 'new_resizable'):
     raise ImportError(
-        'GLib and gobject-introspection libraries are too old. GLib since 2.' +
-        '36 and gobject-introspection since 1.36 ' + 'are known to work fine.')
+        'GLib and gobject-introspection libraries are too old. GLib since ' +
+        '2.36 and gobject-introspection since 1.36 are known to work fine.')
 
 from quodlibet.const import VERSION, WEBSITE
 
