@@ -1,14 +1,32 @@
 .. _Downloads:
 
 .. |ubuntu-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/ubuntu.png
+   :height: 16
+   :width: 16
 .. |debian-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/debian.png
+   :height: 16
+   :width: 16
 .. |fedora-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/fedora.png
+   :height: 16
+   :width: 16
 .. |opensuse-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/opensuse.png
+   :height: 16
+   :width: 16
 .. |windows-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/windows.png
+   :height: 16
+   :width: 16
 .. |source-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/source.png
+   :height: 16
+   :width: 16
 .. |hg-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/mercurial.png
+   :height: 16
+   :width: 16
 .. |arch-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/arch.png
+   :height: 16
+   :width: 16
 .. |macosx-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/macosx.png
+   :height: 16
+   :width: 16
 
 
 Downloads
