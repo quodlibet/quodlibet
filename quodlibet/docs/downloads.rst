@@ -195,41 +195,6 @@ To update to the latest version, switch to the QL dir and run::
 |macosx-logo| Mac OS X
 ----------------------
 
-Simple way (using macports)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 ::
 
     sudo port install quodlibet
-
-Hard way (using jhbuild)
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-There is no real Mac port available at the moment but it is possible to get
-Quod Libet running under Mac OS X using jhbuild.
-
-The following steps show roughly what is needed.
-
-  * Get OS X running. It is possible to run it in VirtualBox.
-  * If you're using VBox install the
-    `sound driver <http://forums.virtualbox.org/viewtopic.php?f=4&t=30843>`_.
-  * Install XCode
-    (check the OS X requirements.. you might need an older version)
-  * Install git.
-  * Get `jhbuild <http://sourceforge.net/apps/trac/gtk-osx/wiki/WikiStart>`_
-    running.
-  * Add ``~/.local/bin`` to ``PATH``
-  * ``jhbuild bootstrap``
-  * ``jhbuild build meta-gtk-osx-bootstrap``
-  * ``jhbuild build meta-gtk-osx-core``
-  * ``jhbuild build pygtk``
-  * Build/install mutagen.
-  * There is currently no pygst available in jhbuild, but you can patch in
-    the experimental `NSSound backend
-    <http://code.google.com/p/quodlibet/issues/detail?id=509>`_.
-  * Change QL config to macbe backend.
-  * ``jhbuild shell``
-  * ``python quodlibet.py``
-  * The quartz theme is not really usable, so you might want to:
-    * ``jhbuild build meta-gtk-osx-themes``
-    * copy clealooks gtkrc to .gtkrc-2.0
