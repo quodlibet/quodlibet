@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#                     Steven Robertson, Nick Boultbee
+# Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
+#                     Steven Robertson
+#           2011-2013 Nick Boultbee
 #           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -16,7 +17,7 @@ from quodlibet import util
 from quodlibet import app
 
 from quodlibet.parse import Query
-from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.ccb import ConfigCheckButton as CCB
 from quodlibet.qltk.data_editors import MultiStringEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.scanbox import ScanBox
@@ -59,10 +60,10 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             # Behaviour
             vbox = Gtk.VBox(spacing=6)
-            c = ConfigCheckButton(_("_Jump to playing song automatically"),
-                                  'settings', 'jump', populate=True)
-            c.set_tooltip_text(_("When the playing song changes, "
-                                 "scroll to it in the song list"))
+            c = CCB(_("_Jump to playing song automatically"),
+                    'settings', 'jump', populate=True,
+                    tooltip=_("When the playing song changes, "
+                              "scroll to it in the song list"))
             vbox.pack_start(c, False, True, 0)
             frame = qltk.Frame(_("Behavior"), child=vbox)
             self.pack_start(frame, False, True, 0)
@@ -230,15 +231,15 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             # Ratings
             vb = Gtk.VBox(spacing=6)
-            c1 = ConfigCheckButton(_("Confirm _multiple ratings"),
-                    'browsers', 'rating_confirm_multiple', populate=True)
-            c1.set_tooltip_text(_("Ask for confirmation before changing the "
-                                  "rating of multiple songs at once"))
+            c1 = CCB(_("Confirm _multiple ratings"),
+                     'browsers', 'rating_confirm_multiple', populate=True,
+                     tooltip=_("Ask for confirmation before changing the "
+                               "rating of multiple songs at once"))
 
-            c2 = ConfigCheckButton(_("Enable _one-click ratings"),
-                                   'browsers', 'rating_click', populate=True)
-            c2.set_tooltip_text(_("Enable rating by clicking on the rating "
-                                  "column in the song list"))
+            c2 = CCB(_("Enable _one-click ratings"),
+                     'browsers', 'rating_click', populate=True,
+                     tooltip=_("Enable rating by clicking on the rating "
+                               "column in the song list"))
 
             vbox = Gtk.VBox(spacing=6)
             vbox.pack_start(c1, False, True, 0)
@@ -248,24 +249,24 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             # Album Art
             vb = Gtk.VBox(spacing=6)
-            c = ConfigCheckButton(_("_Use rounded corners on thumbnails"),
-                                  'albumart', 'round', populate=True)
-            c.set_tooltip_text(_("Round the corners of album artwork "
-                    "thumbnail images. May require restart to take effect."))
+            c = CCB(_("_Use rounded corners on thumbnails"),
+                    'albumart', 'round', populate=True,
+                    tooltip=_("Round the corners of album artwork thumbnail "
+                              "images. May require restart to take effect."))
             vb.pack_start(c, False, True, 0)
 
             # Filename choice algorithm config
-            cb = ConfigCheckButton(_("Prefer _embedded art"),
-                                   'albumart', 'prefer_embedded',
-                                   populate=True)
-            cb.set_tooltip_text(
-                _("Choose to use artwork embedded in the audio "
-                  "(where available) over other sources"))
+            cb = CCB(_("Prefer _embedded art"),
+                     'albumart', 'prefer_embedded', populate=True,
+                     tooltip=_("Choose to use artwork embedded in the audio "
+                               "(where available) over other sources"))
             vb.pack_start(cb, False, True, 0)
 
             hb = Gtk.HBox(spacing=3)
-            cb = ConfigCheckButton(_("_Force image filename:"),
-                                   'albumart', 'force_filename', populate=True)
+            cb = CCB(_("_Fixed image filename:"),
+                     'albumart', 'force_filename', populate=True,
+                     tooltip=_("The single image filename to use if "
+                               "selected"))
             hb.pack_start(cb, False, True, 0)
 
             entry = UndoEntry()
@@ -338,8 +339,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             pre_label.set_mnemonic_widget(pre_spin)
 
             widgets = [pre_label, pre_spin, fb_label, fb_spin]
-            c = ConfigCheckButton(_("_Enable Replay Gain volume adjustment"),
-                                    "player", "replaygain", populate=True)
+            c = CCB(_("_Enable Replay Gain volume adjustment"),
+                    "player", "replaygain", populate=True)
             c.connect('toggled', self.__toggled_gain, widgets)
 
             # packing
@@ -393,18 +394,17 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             vbox = Gtk.VBox(spacing=6)
 
-            cb = ConfigCheckButton(_("Auto-save tag changes"),
-                                   'editing', 'auto_save_changes',
-                                   populate=True)
-            cb.set_tooltip_text(_("Save changes to tags without confirmation "
-                                  "when editing multiple files"))
+            cb = CCB(_("Auto-save tag changes"), 'editing',
+                     'auto_save_changes', populate=True,
+                     tooltip=_("Save changes to tags without confirmation when"
+                               " editing multiple files")
+                     )
             vbox.pack_start(cb, False, True, 0)
 
-            cb = ConfigCheckButton(_("Show _programmatic tags"),
-                                   'editing', 'alltags', populate=True)
-            cb.set_tooltip_text(
-                    _("Access all tags, including machine-generated ones "
-                      "e.g. MusicBrainz or Replay Gain tags"))
+            cb = CCB(_("Show _programmatic tags"),
+                     'editing', 'alltags', populate=True,
+                     tooltip=_("Access all tags, including machine-generated "
+                               "ones e.g. MusicBrainz or Replay Gain tags"))
             vbox.pack_start(cb, False, True, 0)
 
             hb = Gtk.HBox(spacing=6)
@@ -457,7 +457,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(bayes_spin, False, True, 0)
             vb2.pack_start(hb, True, True, 0)
 
-            cb = ConfigCheckButton(_("Save ratings and play _counts"),
+            cb = CCB(_("Save ratings and play _counts"),
                                    "editing", "save_to_songs", populate=True)
             vb2.pack_start(cb, True, True, 0)
             hb = Gtk.HBox(spacing=6)
@@ -501,9 +501,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.set_border_width(12)
             self.title = _("Library")
 
-            cb = ConfigCheckButton(_("_Refresh library on start"),
-                                   "library", "refresh_on_start",
-                                   populate=True)
+            cb = CCB(_("_Refresh library on start"),
+                     "library", "refresh_on_start", populate=True)
             scan_dirs = ScanBox()
 
             vb3 = Gtk.VBox(spacing=6)
