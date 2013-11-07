@@ -71,6 +71,7 @@ Verbose mode
 .SS Edit Embedded Images
 .nf
 \fIimage\-extract\fP    Extract embedded images
+\fIimage\-set\fP        Set embedded image
 .fi
 .sp
 .SS Miscellaneous
@@ -295,6 +296,23 @@ Only extract the primary images for each file
 .TP
 .B \-d | \-\-destination <destination>
 Save all images to the specified destination
+.TP
+.B Example:
+operon image\-extract asong.mp3 anotherone.ogg
+.UNINDENT
+.SS image\-set
+.sp
+Set the provided image as primary embedded image and remove all other
+embedded images.
+.sp
+operon image\-set <image\-file> <file>...
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.TP
+.B Example:
+operon image\-set cover.jpg song.mp3
 .UNINDENT
 .SH COMMANDS
 .SS help

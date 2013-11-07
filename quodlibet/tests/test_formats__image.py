@@ -84,6 +84,11 @@ class TEmbeddedImages(TestCase):
         image = EmbeddedImage.from_path(self.filename + "nope")
         self.assertFalse(image)
 
+    def test_not_an_image(self):
+        path = os.path.join(DATA_DIR, 'test-2.wma')
+        image = EmbeddedImage.from_path(path)
+        self.assertFalse(image)
+
     def test_get_extensions(self):
         image = EmbeddedImage.from_path(self.filename)
         self.assertTrue("png" in image.extensions)

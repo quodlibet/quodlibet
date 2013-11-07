@@ -50,6 +50,7 @@ Edit Embedded Images
 --------------------
 
 |   *image-extract*    Extract embedded images
+|   *image-set*        Set embedded image
 
 Miscellaneous
 -------------
@@ -260,6 +261,23 @@ operon image-extract [-h] [--dry-run] [--primary] [-d <destination>] <file>...
 
 -d | --destination <destination>
     Save all images to the specified destination
+
+Example:
+    operon image-extract asong.mp3 anotherone.ogg
+
+image-set
+---------
+
+Set the provided image as primary embedded image and remove all other
+embedded images.
+
+operon image-set <image-file> <file>...
+
+-h | --help
+    Display help and exit
+
+Example:
+    operon image-set cover.jpg song.mp3
 
 COMMANDS
 ========

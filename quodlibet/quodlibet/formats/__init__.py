@@ -90,3 +90,4 @@ def filter(filename):
     return False
 
 from quodlibet.formats._audio import USEFUL_TAGS, MACHINE_TAGS, PEOPLE
+from quodlibet.formats._image import EmbeddedImage

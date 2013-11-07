@@ -477,3 +477,45 @@ class TOperonImageExtract(TOperonBase):
             self.assertEqual(h.read(), image.file.read())
 
 add(TOperonImageExtract)
+
+
+class TOperonImageSet(TOperonBase):
+    # <image-file> <file> [<files>]
+
+    def setUp(self):
+        super(TOperonImageSet, self).setUp()
+        from gi.repository import GdkPixbuf
+
+        self.filename = mkstemp(".png")[1]
+        wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
+        wide.savev(self.filename, "png", [], [])
+
+        self.fcover = mkstemp(".wma")[1]
+        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.cover = MusicFile(self.fcover)
+
+    def tearDown(self):
+        os.unlink(self.fcover)
+        os.unlink(self.filename)
+        super(TOperonImageSet, self).tearDown()
+
+    def test_misc(self):
+        self.check_true(["image-set", "-h"], True, False)
+        self.check_false(["image-set", self.fcover], False, True)
+        self.check_false(["image-set"], False, True)
+        self.check_false(["image-set", self.filename], False, True)
+
+    def test_set(self):
+        self.check_true(["image-set", self.filename, self.fcover],
+                        False, False)
+        self.check_true(["-v", "image-set", self.filename, self.fcover],
+                        False, True)
+
+        self.cover.reload()
+        images = self.cover.get_images()
+        self.assertEqual(len(images), 1)
+
+        with open(self.filename, "rb") as h:
+            self.assertEqual(h.read(), images[0].file.read())
+
+add(TOperonImageSet)

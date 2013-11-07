@@ -18,7 +18,7 @@ import re
 import shutil
 from optparse import OptionParser
 
-from quodlibet.formats import MusicFile
+from quodlibet.formats import MusicFile, EmbeddedImage
 from quodlibet import config
 from quodlibet import const
 from quodlibet import parse
@@ -484,6 +484,28 @@ class InfoCommand(Command):
             print_terse_table(tags, nicks, order)
 
 
+class ImageSetCommand(Command):
+    NAME = "image-set"
+    DESCRIPTION = _("Set the provided image as primary embedded image and "
+                    "remove all other embedded images")
+    USAGE = "<image-file> <file> [<files>]"
+
+    def _execute(self, options, args):
+        if len(args) < 2:
+            raise CommandError(_("Not enough arguments"))
+
+        image_path = args[0]
+        paths = args[1:]
+
+        image = EmbeddedImage.from_path(image_path)
+        if not image:
+            raise CommandError(_("Failed to load image file: %r") % image_path)
+
+        songs = [self.load_song(p) for p in paths]
+        for song in songs:
+            song.set_image(image)
+
+
 class ImageExtractCommand(Command):
     NAME = "image-extract"
     DESCRIPTION = _("Extract embedded images to "
@@ -824,7 +846,7 @@ def run(argv=sys.argv):
 COMMANDS.extend([ListCommand, DumpCommand, CopyCommand,
             SetCommand, RemoveCommand, AddCommand, PrintCommand,
             HelpCommand, ClearCommand, InfoCommand, TagsCommand,
-            ImageExtractCommand])
+            ImageExtractCommand, ImageSetCommand])
 COMMANDS.sort(key=lambda c: c.NAME)
 
 # TODO

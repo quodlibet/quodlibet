@@ -112,7 +112,7 @@ class EmbeddedImage(object):
                         loader.write(data)
                     else:
                         break
-        except EnvironmentError:
+        except (EnvironmentError, GLib.GError):
             return
         finally:
             try:
