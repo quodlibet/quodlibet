@@ -8,6 +8,7 @@
 import mutagen.id3
 
 from quodlibet import config, const, print_d
+from quodlibet import util
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import EmbeddedImage, APICType
 from quodlibet.util.massagers import LanguageMassager
@@ -105,13 +106,6 @@ class ID3File(AudioFile):
         u"BARCODE": "barcode",
         }
     PAM_XXXT = dict([(v, k) for k, v in TXXX_MAP.iteritems()])
-
-    CODECS = ["utf-8"]
-    try:
-        CODECS.extend(config.get("editing", "id3encoding").strip().split())
-    except:
-        pass  # Uninitialized config...
-    CODECS.append("iso-8859-1")
 
     Kind = None
 
@@ -252,6 +246,14 @@ class ID3File(AudioFile):
                 return
             self["replaygain_%s_gain" % k] = "%+f dB" % frame.gain
             self["replaygain_%s_peak" % k] = str(frame.peak)
+
+    @util.cached_property
+    def CODECS(self):
+        codecs = ["utf-8"]
+        codecs_conf = config.get("editing", "id3encoding")
+        codecs.extend(codecs_conf.strip().split())
+        codecs.append("iso-8859-1")
+        return codecs
 
     def __distrust_latin1(self, text, encoding):
         assert isinstance(text, unicode)

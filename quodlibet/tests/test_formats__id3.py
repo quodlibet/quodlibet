@@ -17,11 +17,13 @@ import mutagen
 class TID3Images(TestCase):
 
     def setUp(self):
+        config.init()
         self.filename = mkstemp(".mp3")[1]
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.filename)
 
     def tearDown(self):
         os.remove(self.filename)
+        config.quit()
 
     def test_can_change_images(self):
         self.failUnless(MP3File(self.filename).can_change_images)
