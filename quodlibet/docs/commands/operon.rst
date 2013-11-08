@@ -17,7 +17,7 @@ SYNOPSIS
 OPTIONS
 =======
 
--h | --help
+-h, --help
     Display help and exit
 
 --version
@@ -69,7 +69,7 @@ Add a new tag ``<tag>`` with the value ``<value>`` to all files.
 
 operon add [-h] <tag> <value> <file>...
 
--h | --help
+-h, --help
     Display help and exit
 
 Example:
@@ -83,13 +83,13 @@ the regular expression ``<pattern>`` from all files.
 
 operon remove [-h] [--dry-run] <tag> (-e <pattern> | <value>) <file>...
 
--h | --help
+-h, --help
     Display help and exit
 
 --dry-run
     Print the results without changing any files
 
--e | --regexp <regexp>
+-e, --regexp <regexp>
     Remove all tag values that match the given regular expression
 
 Example:
@@ -102,7 +102,7 @@ Replace all values of the tag ``<tag>`` by ``<value>`` in all files.
 
 operon set [-h] [--dry-run] <tag> <value> <file>...
 
--h | --help
+-h, --help
     Display help and exit
 
 --dry-run
@@ -119,16 +119,16 @@ from all files. If `--all` is specified, all known tags will be removed.
 
 operon clear [-h] [--dry-run] (-a | -e <pattern> | <tag>) <file>...
 
--h | --help
+-h, --help
     Display help and exit
 
 --dry-run
     Print the results without changing any files
 
--a | --all
+-a, --all
     Remove all tags
 
--e | --regexp <regexp>
+-e, --regexp <regexp>
     Remove all tags that match the given regular expression
 
 Example:
@@ -148,7 +148,7 @@ supported by the destination format pass *--ignore-errors*.
 
 operon copy [-h] [--dry-run] [--ignore-errors] <source> <dest>
 
--h | --help
+-h, --help
     Display help and exit
 
 --dry-run
@@ -169,7 +169,7 @@ the data.
 
 operon dump [-h] <src-file>
 
--h | --help
+-h, --help
     Display help and exit
 
 Example:
@@ -185,16 +185,16 @@ Lists all tags, values and a description of each tag in a table.
 
 operon list [-h] [-a] [-t] [-c <c1>,<c2>...] <file>
 
--h | --help
+-h, --help
     Display help and exit
 
--a | --all
+-a, --all
     Also list programmatic tags
 
--t | --terse
+-t, --terse
     Output is terse and suitable for script processing
 
--c | --columns <name>,...
+-c, --columns <name>,...
     Defines which columns should be printed and in which order
 
 Example:
@@ -209,13 +209,13 @@ Lists non-tag metadata like length, size and format.
 
 operon info [-h] [-t] [-c <c1>,<c2>...] <file>
 
--h | --help
+-h, --help
     Display help and exit
 
--t | --terse
+-t, --terse
     Output is terse and suitable for script processing
 
--c | --columns <name>,...
+-c, --columns <name>,...
     Defines which columns should be printed and in which order
 
 Example:
@@ -230,10 +230,10 @@ pattern format)
 
 operon print [-h] [-p <pattern>] <file>...
 
--h | --help
+-h, --help
     Display help and exit
 
--p | --pattern <pattern>
+-p, --pattern <pattern>
     Use a custom pattern
 
 Example:
@@ -251,7 +251,7 @@ destination directory.
 
 operon image-extract [-h] [--dry-run] [--primary] [-d <destination>] <file>...
 
--h | --help
+-h, --help
     Display help and exit
 
 --dry-run
@@ -260,7 +260,7 @@ operon image-extract [-h] [--dry-run] [--primary] [-d <destination>] <file>...
 --primary
     Only extract the primary images for each file
 
--d | --destination <destination>
+-d, --destination <destination>
     Save all images to the specified destination
 
 Example:
@@ -274,7 +274,7 @@ embedded images.
 
 operon image-set <image-file> <file>...
 
--h | --help
+-h, --help
     Display help and exit
 
 Example:
@@ -288,7 +288,7 @@ Remove all embedded images from all specified files.
 operon image-clear <file>...
 
 
--h | --help
+-h, --help
     Display help and exit
 
 Example:

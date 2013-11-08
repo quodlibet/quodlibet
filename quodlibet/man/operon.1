@@ -39,10 +39,8 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .SH OPTIONS
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-version
 Print the program version
@@ -89,8 +87,10 @@ Add a new tag \fB<tag>\fP with the value \fB<value>\fP to all files.
 operon add [\-h] <tag> <value> <file>...
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
+.UNINDENT
+.INDENT 0.0
 .TP
 .B Example:
 operon add artist \(aqThe Beatles\(aq song1.ogg song2.ogg
@@ -103,18 +103,16 @@ the regular expression \fB<pattern>\fP from all files.
 operon remove [\-h] [\-\-dry\-run] <tag> (\-e <pattern> | <value>) <file>...
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-dry\-run
 Print the results without changing any files
+.TP
+.BI \-e\fP,\fB  \-\-regexp \ <regexp>
+Remove all tag values that match the given regular expression
 .UNINDENT
 .INDENT 0.0
-.TP
-.B \-e | \-\-regexp <regexp>
-Remove all tag values that match the given regular expression
 .TP
 .B Example:
 operon remove artist \(aqThe Beatles\(aq song.ogg
@@ -126,10 +124,8 @@ Replace all values of the tag \fB<tag>\fP by \fB<value>\fP in all files.
 operon set [\-h] [\-\-dry\-run] <tag> <value> <file>...
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-dry\-run
 Print the results without changing any files
@@ -147,21 +143,19 @@ from all files. If \fI\-\-all\fP is specified, all known tags will be removed.
 operon clear [\-h] [\-\-dry\-run] (\-a | \-e <pattern> | <tag>) <file>...
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-dry\-run
 Print the results without changing any files
-.UNINDENT
-.INDENT 0.0
 .TP
-.B \-a | \-\-all
+.B \-a\fP,\fB  \-\-all
 Remove all tags
 .TP
-.B \-e | \-\-regexp <regexp>
+.BI \-e\fP,\fB  \-\-regexp \ <regexp>
 Remove all tags that match the given regular expression
+.UNINDENT
+.INDENT 0.0
 .TP
 .B Example:
 operon clear \-a song.ogg
@@ -180,10 +174,8 @@ supported by the destination format pass \fI\-\-ignore\-errors\fP\&.
 operon copy [\-h] [\-\-dry\-run] [\-\-ignore\-errors] <source> <dest>
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-dry\-run
 Print the results without changing any files
@@ -205,8 +197,10 @@ the data.
 operon dump [\-h] <src\-file>
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
+.UNINDENT
+.INDENT 0.0
 .TP
 .B Example:
 operon dump song.flac > backup.tags
@@ -219,16 +213,18 @@ Lists all tags, values and a description of each tag in a table.
 operon list [\-h] [\-a] [\-t] [\-c <c1>,<c2>...] <file>
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
 .TP
-.B \-a | \-\-all
+.B \-a\fP,\fB  \-\-all
 Also list programmatic tags
 .TP
-.B \-t | \-\-terse
+.B \-t\fP,\fB  \-\-terse
 Output is terse and suitable for script processing
+.UNINDENT
+.INDENT 0.0
 .TP
-.B \-c | \-\-columns <name>,...
+.B \-c, \-\-columns <name>,...
 Defines which columns should be printed and in which order
 .TP
 .B Example:
@@ -243,13 +239,15 @@ Lists non\-tag metadata like length, size and format.
 operon info [\-h] [\-t] [\-c <c1>,<c2>...] <file>
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
 .TP
-.B \-t | \-\-terse
+.B \-t\fP,\fB  \-\-terse
 Output is terse and suitable for script processing
+.UNINDENT
+.INDENT 0.0
 .TP
-.B \-c | \-\-columns <name>,...
+.B \-c, \-\-columns <name>,...
 Defines which columns should be printed and in which order
 .TP
 .B Example:
@@ -264,11 +262,13 @@ pattern format)
 operon print [\-h] [\-p <pattern>] <file>...
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
 .TP
-.B \-p | \-\-pattern <pattern>
+.BI \-p\fP,\fB  \-\-pattern \ <pattern>
 Use a custom pattern
+.UNINDENT
+.INDENT 0.0
 .TP
 .B Example:
 operon print \-p "<album> \- <artist>" a.ogg
@@ -282,21 +282,19 @@ destination directory.
 operon image\-extract [\-h] [\-\-dry\-run] [\-\-primary] [\-d <destination>] <file>...
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-dry\-run
 Print the found images and resulting file paths but don\(aqt save them
 .TP
 .B \-\-primary
 Only extract the primary images for each file
+.TP
+.BI \-d\fP,\fB  \-\-destination \ <destination>
+Save all images to the specified destination
 .UNINDENT
 .INDENT 0.0
-.TP
-.B \-d | \-\-destination <destination>
-Save all images to the specified destination
 .TP
 .B Example:
 operon image\-extract asong.mp3 anotherone.ogg
@@ -309,8 +307,10 @@ embedded images.
 operon image\-set <image\-file> <file>...
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
+.UNINDENT
+.INDENT 0.0
 .TP
 .B Example:
 operon image\-set cover.jpg song.mp3
@@ -322,8 +322,10 @@ Remove all embedded images from all specified files.
 operon image\-clear <file>...
 .INDENT 0.0
 .TP
-.B \-h | \-\-help
+.B \-h\fP,\fB  \-\-help
 Display help and exit
+.UNINDENT
+.INDENT 0.0
 .TP
 .B Example:
 operon image\-clear song.mp3
