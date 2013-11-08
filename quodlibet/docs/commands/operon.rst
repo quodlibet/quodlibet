@@ -51,6 +51,7 @@ Edit Embedded Images
 
 |   *image-extract*    Extract embedded images
 |   *image-set*        Set embedded image
+|   *image-clear*      Remove embedded images
 
 Miscellaneous
 -------------
@@ -278,6 +279,21 @@ operon image-set <image-file> <file>...
 
 Example:
     operon image-set cover.jpg song.mp3
+
+image-clear
+-----------
+
+Remove all embedded images from all specified files.
+
+operon image-clear <file>...
+
+
+-h | --help
+    Display help and exit
+
+Example:
+    operon image-clear song.mp3
+
 
 COMMANDS
 ========

@@ -506,6 +506,21 @@ class ImageSetCommand(Command):
             song.set_image(image)
 
 
+class ImageClearCommand(Command):
+    NAME = "image-clear"
+    DESCRIPTION = _("Remove all embedded images")
+    USAGE = "<file> [<files>]"
+
+    def _execute(self, options, args):
+        if len(args) < 1:
+            raise CommandError(_("Not enough arguments"))
+
+        paths = args
+        songs = [self.load_song(p) for p in paths]
+        for song in songs:
+            song.clear_images()
+
+
 class ImageExtractCommand(Command):
     NAME = "image-extract"
     DESCRIPTION = _("Extract embedded images to "
@@ -846,7 +861,7 @@ def run(argv=sys.argv):
 COMMANDS.extend([ListCommand, DumpCommand, CopyCommand,
             SetCommand, RemoveCommand, AddCommand, PrintCommand,
             HelpCommand, ClearCommand, InfoCommand, TagsCommand,
-            ImageExtractCommand, ImageSetCommand])
+            ImageExtractCommand, ImageSetCommand, ImageClearCommand])
 COMMANDS.sort(key=lambda c: c.NAME)
 
 # TODO

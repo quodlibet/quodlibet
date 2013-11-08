@@ -72,6 +72,7 @@ Verbose mode
 .nf
 \fIimage\-extract\fP    Extract embedded images
 \fIimage\-set\fP        Set embedded image
+\fIimage\-clear\fP      Remove embedded images
 .fi
 .sp
 .SS Miscellaneous
@@ -313,6 +314,19 @@ Display help and exit
 .TP
 .B Example:
 operon image\-set cover.jpg song.mp3
+.UNINDENT
+.SS image\-clear
+.sp
+Remove all embedded images from all specified files.
+.sp
+operon image\-clear <file>...
+.INDENT 0.0
+.TP
+.B \-h | \-\-help
+Display help and exit
+.TP
+.B Example:
+operon image\-clear song.mp3
 .UNINDENT
 .SH COMMANDS
 .SS help

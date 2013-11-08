@@ -519,3 +519,34 @@ class TOperonImageSet(TOperonBase):
             self.assertEqual(h.read(), images[0].file.read())
 
 add(TOperonImageSet)
+
+
+class TOperonImageClear(TOperonBase):
+    # <image-file> <file> [<files>]
+
+    def setUp(self):
+        super(TOperonImageClear, self).setUp()
+        self.fcover = mkstemp(".wma")[1]
+        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.cover = MusicFile(self.fcover)
+
+    def tearDown(self):
+        os.unlink(self.fcover)
+        super(TOperonImageClear, self).tearDown()
+
+    def test_misc(self):
+        self.check_true(["image-clear", "-h"], True, False)
+        self.check_true(["image-clear", self.fcover], False, False)
+        self.check_false(["image-clear"], False, True)
+
+    def test_clear(self):
+        images = self.cover.get_images()
+        self.assertEqual(len(images), 1)
+
+        self.check_true(["image-clear", self.fcover], False, False)
+
+        self.cover.reload()
+        images = self.cover.get_images()
+        self.assertEqual(len(images), 0)
+
+add(TOperonImageClear)
