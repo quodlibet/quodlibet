@@ -135,14 +135,16 @@ Unstable Repo:
 |windows-logo| Windows
 ----------------------
 
-========================== ==============================
-Release                    Filename
-========================== ==============================
-Quod Libet 2.6.3           quodlibet-2.6.3-installer.exe_
-Quod Libet 2.5.1           quodlibet-2.5.1-installer.exe_
-Quod Libet 2.4.1           quodlibet-2.4.1-installer.exe_
-========================== ==============================
+=========================== ==============================
+Release                     Filename
+=========================== ==============================
+Quod Libet 2.6.3            quodlibet-2.6.3-installer.exe_
+Quod Libet 2.6.3 (portable) quodlibet-2.6.3-portable.exe_
+Quod Libet 2.5.1            quodlibet-2.5.1-installer.exe_
+Quod Libet 2.4.1            quodlibet-2.4.1-installer.exe_
+=========================== ==============================
 
+.. _quodlibet-2.6.3-portable.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3-portable.exe
 .. _quodlibet-2.6.3-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3-installer.exe
 .. _quodlibet-2.5.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1-installer.exe
 .. _quodlibet-2.4.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.4.1-installer.exe
