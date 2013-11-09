@@ -13,9 +13,13 @@ from quodlibet.plugins.cover import CoverSourcePlugin
 
 
 class CoverPluginHandler(object):
-    def __init__(self):
+    def __init__(self, use_built_in=True):
         self.providers = set()
-        self.built_in = set([built_in.EmbedCover, built_in.FilesystemCover])
+        if use_built_in:
+            self.built_in = set([built_in.EmbedCover,
+                                 built_in.FilesystemCover])
+        else:
+            self.built_in = set()
 
     def init_plugins(self):
         PluginManager.instance.register_handler(self)
@@ -53,7 +57,7 @@ class CoverPluginHandler(object):
             print_d('Successfully got cover from {0}'.format(name))
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
-            if not cancellable.is_cancelled():
+            if not cancellable or not cancellable.is_cancelled():
                 callback(True, result)
 
         def failure(source, msg):
@@ -61,7 +65,7 @@ class CoverPluginHandler(object):
             print_d("Didn't get cover from {0}: {1}".format(name, msg))
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
-            if not cancellable.is_cancelled():
+            if not cancellable or not cancellable.is_cancelled():
                 run()
 
         def run():
@@ -79,7 +83,8 @@ class CoverPluginHandler(object):
                 provider.connect('fetch-success', success)
                 provider.connect('fetch-failure', failure)
                 provider.fetch_cover()
-        run()
+        if not cancellable or not cancellable.is_cancelled():
+            run()
 
     def acquire_cover_sync(self, song):
         """
