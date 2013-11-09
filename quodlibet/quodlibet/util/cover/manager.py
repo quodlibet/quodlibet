@@ -21,18 +21,15 @@ class CoverPluginHandler(object):
         PluginManager.instance.register_handler(self)
 
     def plugin_handle(self, plugin):
-        # disable for now
-        return False
+        return issubclass(plugin.cls, CoverSourcePlugin)
 
-        if not issubclass(plugin.cls, CoverSourcePlugin):
-            return False
-
-        plugin._hander = self
+    def plugin_enable(self, plugin):
         self.providers.add(plugin)
         print_d("Registered {0} cover source".format(plugin.cls.__name__))
-        # We do not want plugin to be exposed and managed by PluginManager.
-        # We just use all available sources instead.
-        return False
+
+    def plugin_disable(self, plugin):
+        self.providers.remove(plugin)
+        print_d("Unregistered {0} cover source".format(plugin.cls.__name__))
 
     @property
     def sources(self):
