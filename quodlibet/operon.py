@@ -502,6 +502,16 @@ class ImageSetCommand(Command):
             raise CommandError(_("Failed to load image file: %r") % image_path)
 
         songs = [self.load_song(p) for p in paths]
+
+        for song in songs:
+            if not song.can_change_images:
+                raise CommandError(
+                    _("Image editing not supported for %(file_name)s "
+                      "(%(file_format)s)") % {
+                      "file_name": song("~filename"),
+                      "file_format": song("~format")
+                    })
+
         for song in songs:
             song.set_image(image)
 
@@ -517,6 +527,16 @@ class ImageClearCommand(Command):
 
         paths = args
         songs = [self.load_song(p) for p in paths]
+
+        for song in songs:
+            if not song.can_change_images:
+                raise CommandError(
+                    _("Image editing not supported for %(file_name)s "
+                      "(%(file_format)s)") % {
+                      "file_name": song("~filename"),
+                      "file_format": song("~format")
+                    })
+
         for song in songs:
             song.clear_images()
 

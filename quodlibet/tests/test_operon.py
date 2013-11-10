@@ -505,6 +505,12 @@ class TOperonImageSet(TOperonBase):
         self.check_false(["image-set"], False, True)
         self.check_false(["image-set", self.filename], False, True)
 
+    def test_not_supported(self):
+        path = os.path.join(DATA_DIR, 'test.mid')
+        out, err = self.check_false(
+            ["image-set", self.filename, path], False, True)
+        self.assertTrue("supported" in err)
+
     def test_set(self):
         self.check_true(["image-set", self.filename, self.fcover],
                         False, False)
@@ -538,6 +544,11 @@ class TOperonImageClear(TOperonBase):
         self.check_true(["image-clear", "-h"], True, False)
         self.check_true(["image-clear", self.fcover], False, False)
         self.check_false(["image-clear"], False, True)
+
+    def test_not_supported(self):
+        path = os.path.join(DATA_DIR, 'test.mid')
+        out, err = self.check_false(["image-clear", path], False, True)
+        self.assertTrue("supported" in err)
 
     def test_clear(self):
         images = self.cover.get_images()
