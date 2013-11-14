@@ -60,8 +60,6 @@ LOGDIR = os.path.join(USERDIR, "logs")
 # Don't bother saving the library more often than this
 LIBRARY_SAVE_PERIOD_SECONDS = 15 * 60
 
-DEFAULT_RATING = 0.5
-
 # entry point for the user guide / wiki
 BRANCH_NAME = "default"
 DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/%s"

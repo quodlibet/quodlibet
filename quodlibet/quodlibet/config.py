@@ -194,18 +194,28 @@ INITIAL = {
     # Kind of a dumping ground right now, should probably be
     # cleaned out later.
     "settings": {
-        "scan": "", # scan directories, :-separated
-        "jump": "true", # scroll song list on current song change
-        "default_rating": "0.5", # initial rating of new song
-        "ratings": "4", # maximum rating value
+        # scan directories, :-separated
+        "scan": "",
+
+        # scroll song list on current song change
+        "jump": "true",
+
+        # Unrated songs are given this value
+        "default_rating": "0.5",
+
+        # Rating scale i.e. maximum number of symbols
+        "ratings": "4",
+
         # (0 = disabled i.e. arithmetic mean)
         "bayesian_rating_factor": "0.0",
+
         # rating symbol (black star)
         "rating_symbol_full": "\xe2\x98\x85",
+
         # rating symbol (hollow star)
         "rating_symbol_blank": "\xe2\x98\x86",
 
-        # probably belong in memory
+        # probably belongs in memory
         "repeat": "false",
 
         # Now deprecated: space-separated headers column
@@ -343,3 +353,89 @@ def set_columns(vals, force=False):
         __songlist_columns = vals
     else:
         print_d("No change in columns to write")
+
+
+def cached_config():
+    pass
+
+
+class RatingsPrefs(object):
+    """
+    Models Ratings settings as configured by the user, with caching.
+    """
+    def __init__(self):
+        self.__number = self.__default = None
+        self.__full_symbol = self.__blank_symbol = None
+
+    @property
+    def precision(self):
+        """Returns the smallest ratings delta currently configured"""
+        return 1.0 / self.number
+
+    @property
+    def number(self):
+        if self.__number is None:
+            self.__number = getint("settings", "ratings")
+        return self.__number
+
+    @number.setter
+    def number(self, i):
+        """The (maximum) integer number of ratings icons configured"""
+        self.__number = self.__save("ratings", int(i))
+
+    @property
+    def default(self):
+        """The current default floating-point rating"""
+        if self.__default is None:
+            self.__default = getfloat("settings", "default_rating")
+        return self.__default
+
+    @default.setter
+    def default(self, f):
+        self.__default = self.__save("default_rating", float(f))
+
+    @property
+    def full_symbol(self):
+        """The symbol to use for a full (active) rating"""
+        if self.__full_symbol is None:
+            self.__full_symbol = self.__get_symbol("full")
+        return self.__full_symbol
+
+    @full_symbol.setter
+    def full_symbol(self, s):
+        self.__full_symbol = self.__save("rating_symbol_full", s)
+
+    @property
+    def blank_symbol(self):
+        """The symbol to use for a blank (inactive) rating, if needed"""
+        if self.__blank_symbol is None:
+            self.__blank_symbol = self.__get_symbol("blank")
+        return self.__blank_symbol
+
+    @blank_symbol.setter
+    def blank_symbol(self, s):
+        self.__blank_symbol = self.__save("rating_symbol_blank", s)
+
+    @property
+    def all(self):
+        """Returns all the possible ratings currently available"""
+        return [float(i) / self.number for i in range(0, self.number + 1)]
+
+    @staticmethod
+    def __save(key, value):
+        set("settings", key, value)
+        return value
+
+    @staticmethod
+    def __get_symbol(variant="full"):
+        return get("settings", "rating_symbol_%s" % variant).decode("utf-8")
+
+
+class HardCodedRatingsPrefs(RatingsPrefs):
+    number = int(INITIAL["settings"]["ratings"])
+    default = float(INITIAL["settings"]["default_rating"])
+    blank_symbol = INITIAL["settings"]["rating_symbol_blank"].decode("utf-8")
+    full_symbol = INITIAL["settings"]["rating_symbol_full"].decode("utf-8")
+
+# Need an instance just for imports to work
+RATINGS = RatingsPrefs()

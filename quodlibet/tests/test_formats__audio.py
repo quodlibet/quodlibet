@@ -6,7 +6,6 @@ from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
-
 bar_1_1 = AudioFile({
     "~filename": "/fakepath/1",
     "title": "A song",
@@ -33,8 +32,10 @@ quux = AudioFile({
 
 num_call = AudioFile({"custom": "0.3"})
 
+
 class TAudioFile(TestCase):
     def setUp(self):
+        config.RATINGS = config.HardCodedRatingsPrefs()
         file(quux["~filename"], "w")
 
     def test_sort(self):
@@ -174,7 +175,8 @@ class TAudioFile(TestCase):
         dir = DATA_DIR
         self.failUnless(quux.exists())
         quux.rename(new_fn)
-        self.failIf(os.path.exists(dir + old_fn))
+        self.failIf(os.path.exists(dir + old_fn),
+                    "%s already exists" % (dir + old_fn))
         self.failUnless(quux.exists())
         quux.rename(old_fn)
         self.failIf(os.path.exists(dir + new_fn))

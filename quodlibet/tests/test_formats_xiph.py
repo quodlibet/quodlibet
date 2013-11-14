@@ -1,3 +1,4 @@
+from quodlibet.config import RATINGS
 from tests import add, TestCase, DATA_DIR, mkstemp
 
 import os
@@ -50,11 +51,11 @@ class TVCFile(TestCase):
         config.set("editing", "save_email", "foo@bar.org")
         self.song["~#rating"] = 0.2
         self.song.write()
-        self.song["~#rating"] = const.DEFAULT_RATING
+        self.song["~#rating"] = RATINGS.default
         self.song.write()
         song = type(self.song)(self.filename)
         config.set("editing", "save_email", const.EMAIL)
-        self.failUnlessEqual(song("~#rating"), const.DEFAULT_RATING)
+        self.failUnlessEqual(song("~#rating"), RATINGS.default)
 
     def test_new_email_rating(self):
         config.set("editing", "save_email", "foo@bar.org")
@@ -78,7 +79,7 @@ class TVCFile(TestCase):
         self.song.write()
         config.set("editing", "save_email", const.EMAIL)
         song = type(self.song)(self.filename)
-        self.failUnlessEqual(song("~#rating"), const.DEFAULT_RATING)
+        self.failUnlessEqual(song("~#rating"), RATINGS.default)
 
         song.write()
         config.set("editing", "save_email", "foo@bar.org")
@@ -90,7 +91,7 @@ class TVCFile(TestCase):
         self.song["~#rating"] = "invalid"
         self.song.write()
         song = type(self.song)(self.filename)
-        self.failUnlessEqual(song("~#rating"), const.DEFAULT_RATING)
+        self.failUnlessEqual(song("~#rating"), RATINGS.default)
 
     def test_huge_playcount(self):
         count = 1000000000000000L
@@ -126,7 +127,7 @@ class TVCFile(TestCase):
         self.song.write()
         song = type(self.song)(self.filename)
         config.set("editing", "save_to_songs", "true")
-        self.failUnlessEqual(song("~#rating"), const.DEFAULT_RATING)
+        self.failUnlessEqual(song("~#rating"), RATINGS.default)
 
     def test_can_change(self):
         self.failUnless(self.song.can_change())

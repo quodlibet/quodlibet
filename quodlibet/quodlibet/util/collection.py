@@ -15,7 +15,6 @@ import random
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet import const
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
 from collections import Iterable
@@ -35,7 +34,7 @@ def avg(nums):
 def bayesian_average(nums, c=None, m=None):
     """Returns the Bayesian average of an iterable of numbers,
     with parameters defaulting to config specific to ~#rating."""
-    m = m or const.DEFAULT_RATING
+    m = m or config.RATINGS.default
     c = c or config.getfloat("settings", "bayesian_rating_factor", 0.0)
     ret = float(m * c + sum(nums)) / (c + len(nums))
     return ret

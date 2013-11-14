@@ -13,6 +13,7 @@ from mutagen.flac import Picture
 
 from quodlibet import config
 from quodlibet import const
+from quodlibet.config import RATINGS
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import EmbeddedImage, APICType
@@ -215,7 +216,7 @@ class MutagenVCFile(AudioFile):
         if config.getboolean("editing", "save_to_songs"):
             email = email or const.EMAIL
             rating = self("~#rating")
-            if rating != const.DEFAULT_RATING:
+            if rating != RATINGS.default:
                 comments["rating:" + email] = str(rating)
             playcount = self.get("~#playcount", 0)
             if playcount != 0:

@@ -1,5 +1,6 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
+#      2011-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -216,7 +217,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # Render ~#rating directly (simplifies filtering, saves
         # a function call).
         def _cdf(self, column, cell, model, iter, tag):
-                value = model[iter][0].get("~#rating", const.DEFAULT_RATING)
+                value = model[iter][0].get("~#rating", config.RATINGS.default)
                 if not self._needs_update(value):
                     return
                 cell.set_property('text', util.format_rating(value))
@@ -597,23 +598,23 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             song = view.get_model()[path][0]
             l = Gtk.Label()
             l.show()
-            l.set_text(util.format_rating(util.RATING_PRECISION, blank=False))
+            l.set_text(config.RATINGS.full_symbol)
             width = l.get_preferred_size()[1].width
             l.destroy()
             if not width:
                 return False
-
+            precision = config.RATINGS.precision
             count = int(float(cellx - 5) / width) + 1
-            rating = max(0.0, min(1.0, count * util.RATING_PRECISION))
-            if (rating <= util.RATING_PRECISION and
-                    song("~#rating") == util.RATING_PRECISION):
+            rating = max(0.0, min(1.0, count * precision))
+            if (rating <= precision and
+                    song("~#rating") == precision):
                 rating = 0
             self.__set_rating(rating, [song], librarian)
 
     def __set_rating(self, value, songs, librarian):
         count = len(songs)
         if (count > 1 and
-            config.getboolean("browsers", "rating_confirm_multiple")):
+                config.getboolean("browsers", "rating_confirm_multiple")):
             dialog = ConfirmRateMultipleDialog(self, count, value)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
@@ -623,7 +624,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     def __key_press(self, songlist, event, librarian):
         if event.string in ['0', '1', '2', '3', '4']:
-            rating = min(1.0, int(event.string) * util.RATING_PRECISION)
+            rating = min(1.0, int(event.string) * config.RATINGS.precision)
             self.__set_rating(rating, self.get_selected_songs(), librarian)
             return True
         elif qltk.is_accel(event, "<ctrl>Return") or \

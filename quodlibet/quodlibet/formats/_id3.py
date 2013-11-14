@@ -9,6 +9,7 @@ import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet import util
+from quodlibet.config import RATINGS
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import EmbeddedImage, APICType
 from quodlibet.util.massagers import LanguageMassager
@@ -410,7 +411,7 @@ class ID3File(AudioFile):
                 tag.add(f)
 
         if (config.getboolean("editing", "save_to_songs") and
-                (self("~#rating") != const.DEFAULT_RATING or
+                (self("~#rating") != RATINGS.default or
                  self.get("~#playcount", 0) != 0)):
             email = config.get("editing", "save_email").strip()
             email = email or const.EMAIL

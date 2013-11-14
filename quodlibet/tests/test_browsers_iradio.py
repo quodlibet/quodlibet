@@ -6,6 +6,8 @@ from quodlibet.browsers.iradio import InternetRadio, IRFile
 from quodlibet.player.nullbe import NullPlayer
 import quodlibet.config
 
+quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
+
 class TInternetRadio(TestCase):
     def setUp(self):
         quodlibet.config.init()

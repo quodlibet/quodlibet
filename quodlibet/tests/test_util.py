@@ -1,3 +1,4 @@
+from quodlibet.config import HardCodedRatingsPrefs
 from quodlibet.util.path import *
 from quodlibet.util.string import decode, encode
 from quodlibet.util.string.splitters import *
@@ -11,6 +12,7 @@ import re
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util import format_time_long as f_t_l
+
 
 class Tmkdir(TestCase):
     def test_exists(self):
@@ -31,6 +33,7 @@ class Tmkdir(TestCase):
             os.rmdir("nonext")
 add(Tmkdir)
 
+
 class Tiscommand(TestCase):
     def test_ispartial(self): self.failUnless(iscommand("ls"))
     def test_isfull(self): self.failUnless(iscommand("/bin/ls"))
@@ -42,6 +45,7 @@ class Tiscommand(TestCase):
     def test_dir_in_path(self): self.failIf(iscommand("X11"))
 add(Tiscommand)
 
+
 class Tmtime(TestCase):
     def test_equal(self):
         self.failUnlessEqual(mtime("."), os.path.getmtime("."))
@@ -49,6 +53,7 @@ class Tmtime(TestCase):
         self.failIf(os.path.exists("/dev/doesnotexist"))
         self.failUnlessEqual(mtime("/dev/doesnotexist"), 0)
 add(Tmtime)
+
 
 class Tunexpand(TestCase):
     d = os.path.expanduser("~")
@@ -65,24 +70,27 @@ class Tunexpand(TestCase):
             unexpand(os.path.join(self.d, "la/la")), "~/la/la")
 add(Tunexpand)
 
+
 class Tformat_rating(TestCase):
+    def setUp(self):
+        self.r = config.RATINGS = HardCodedRatingsPrefs()
+
     def test_empty(self):
         self.failUnlessEqual(util.format_rating(0, blank=False), "")
 
     def test_full(self):
         self.failUnlessEqual(
             len(util.format_rating(1, blank=False)),
-            int(1/util.RATING_PRECISION))
+            int(1/self.r.precision))
 
     def test_rating_length(self):
-        util.RATING_PRECISION = 4
-        for i in range(0, int(1/util.RATING_PRECISION+1)):
+        config.RATINGS.number = 4
+        for i in range(0, int(1 / self.r.precision + 1)):
             self.failUnlessEqual(
-                i, len(util.format_rating(i * util.RATING_PRECISION,
-                                          blank=False)))
+                i, len(util.format_rating(i * self.r.precision, blank=False)))
 
     def test_bogus(self):
-        max_length = int(1 / util.RATING_PRECISION)
+        max_length = int(1 / self.r.precision)
         self.failUnlessEqual(len(util.format_rating(2**32-1, blank=False)),
                              max_length)
         self.failUnlessEqual(len(util.format_rating(-4.2, blank=False)), 0)
@@ -90,17 +98,17 @@ class Tformat_rating(TestCase):
     def test_blank_lengths(self):
         """Check that there are no unsuspected edge-cases
         for various rating precisions"""
-        for util.RATING_PRECISION in [0.1, 0.2, 0.25, 1/3.0, 0.5]:
-            steps = int(1/util.RATING_PRECISION)
+        for self.r.number in [1, 5, 4, 3, 2]:
+            steps = self.r.number
             self.failUnlessEqual(len(util.format_rating(1)), steps)
             self.failUnlessEqual(len(util.format_rating(0)), steps)
             self.failUnlessEqual(len(util.format_rating(0.5)), steps)
             self.failUnlessEqual(len(util.format_rating(1/3.0)), steps)
 
     def test_blank_values(self):
-        util.RATING_PRECISION = 0.2
-        util.BLANK_RATING_SYMBOL = "0"
-        util.RATING_SYMBOL = "1"
+        self.r.number = 5
+        self.r.blank_symbol = "0"
+        self.r.full_symbol = "1"
         # Easy ones first
         self.failUnlessEqual(util.format_rating(0.0), "00000")
         self.failUnlessEqual(util.format_rating(0.2), "10000")
@@ -118,6 +126,7 @@ class Tformat_rating(TestCase):
 
 add(Tformat_rating)
 
+
 class Tescape(TestCase):
     def test_empty(self):
         self.failUnlessEqual(util.escape(""), "")
@@ -129,10 +138,12 @@ class Tescape(TestCase):
             self.failUnlessEqual(s, util.unescape(esc))
 add(Tescape)
 
+
 class Tunescape(Tescape):
     def test_empty(self):
         self.failUnlessEqual(util.unescape(""), "")
 add(Tunescape)
+
 
 class Tre_esc(TestCase):
     def test_empty(self):
@@ -149,6 +160,7 @@ class Tre_esc(TestCase):
             re.escape("*quux#argh?woo"), r"\*quux\#argh\?woo")
 add(Tre_esc)
 
+
 class Tsplit_scan_dirs(TestCase):
     def test_basic(self):
         if sys.platform == "win32":
@@ -158,6 +170,7 @@ class Tsplit_scan_dirs(TestCase):
             res = util.split_scan_dirs(":/home/user/Music:/opt/party:")
             self.assertEquals(res, ["/home/user/Music", "/opt/party"])
 add(Tsplit_scan_dirs)
+
 
 class Tdecode(TestCase):
     def test_empty(self):
@@ -169,12 +182,14 @@ class Tdecode(TestCase):
             decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
 add(Tdecode)
 
+
 class Tencode(TestCase):
     def test_empty(self):
         self.failUnlessEqual(encode(""), "")
     def test_unicode(self):
         self.failUnlessEqual(encode(u"abcde"), "abcde")
 add(Tencode)
+
 
 class Tcapitalize(TestCase):
     def test_empty(self):
@@ -189,6 +204,7 @@ class Tcapitalize(TestCase):
     def test_nonalphabet(self):
         self.failUnlessEqual(util.capitalize("!aa B"), "!aa B")
 add(Tcapitalize)
+
 
 class Tsplit_value(TestCase):
     def test_single(self):
@@ -216,6 +232,7 @@ class Tsplit_value(TestCase):
         val = '\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
         self.failUnlessEqual(split_value(val), val.split("&"))
 add(Tsplit_value)
+
 
 class Thuman_sort(TestCase):
     def smaller(self, x, y):
@@ -246,6 +263,7 @@ class Thuman_sort(TestCase):
 
 add(Thuman_sort)
 
+
 class Tformat_time(TestCase):
     def test_seconds(self):
         self.failUnlessEqual(util.format_time(0), "0:00")
@@ -262,6 +280,7 @@ class Tformat_time(TestCase):
     def test_negative(self):
         self.failUnlessEqual(util.format_time(-124), "-2:04")
 add(Tformat_time)
+
 
 class Tparse_time(TestCase):
     def test_invalid(self):
@@ -284,6 +303,7 @@ class Tparse_time(TestCase):
         self.failUnlessEqual(util.parse_time("-2:04"), -124)
 add(Tparse_time)
 
+
 class Tformat_size(TestCase):
     def t_dict(self, d):
         map(self.failUnlessEqual, map(util.format_size, d.keys()), d.values())
@@ -305,6 +325,7 @@ class Tformat_size(TestCase):
                       1024*1024*10240: "10.0 GB", 1024*1024*15360: "15.0 GB"})
 add(Tformat_size)
 
+
 class Tsplit_title(TestCase):
     def test_trailing(self):
         self.failUnlessEqual(split_title("foo ~"), ("foo ~", []))
@@ -323,6 +344,7 @@ class Tsplit_title(TestCase):
         self.failUnlessEqual(
             split_title("foo [b c]", " "), ("foo", ["b", "c"]))
 add(Tsplit_title)
+
 
 class Tsplit_album(TestCase):
     def test_album_looks_like_disc(self):
@@ -349,6 +371,7 @@ class Tsplit_album(TestCase):
         self.failUnlessEqual(
             split_album("foo ~crazy 3~"), ("foo ~crazy 3~", None))
 add(Tsplit_album)
+
 
 class Tsplit_people(TestCase):
     def test_parened_person(self):
@@ -379,9 +402,8 @@ class Tsplit_people(TestCase):
             split_people("Pyscho Killer [Talking Heads Cover]"),
             ("Pyscho Killer", ["Talking Heads"]))
 
-
-
 add(Tsplit_people)
+
 
 class Ttag(TestCase):
     def test_empty(self):
@@ -411,6 +433,7 @@ class Ttag(TestCase):
         self.failUnlessEqual(util.tag("labelid", False), "label ID")
 add(Ttag)
 
+
 class Ttagsplit(TestCase):
     def test_single_tag(self):
         self.failUnlessEqual(util.tagsplit("foo"), ["foo"])
@@ -430,6 +453,7 @@ class Ttagsplit(TestCase):
         self.failUnlessEqual(
             util.tagsplit("~~people~album"), ["~people", "album"])
 add(Ttagsplit)
+
 
 class Tpattern(TestCase):
     def test_empty(self):
@@ -455,6 +479,7 @@ class Tpattern(TestCase):
         util.pattern("<d\\")
 
 add(Tpattern)
+
 
 class Tformat_time_long(TestCase):
     def test_second(s):
@@ -491,6 +516,7 @@ class Tformat_time_long(TestCase):
         s.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
 add(Tformat_time_long)
 
+
 class Tspawn(TestCase):
     def test_simple(self):
         self.failUnless(util.spawn(["ls", "."], stdout=True))
@@ -506,6 +532,7 @@ class Tspawn(TestCase):
         fileobj = util.spawn(["echo", "'$1'", '"$2"', ">3"], stdout=True)
         self.failUnlessEqual(fileobj.read().split(), ["'$1'", '"$2"', ">3"])
 add(Tspawn)
+
 
 class Txdg_dirs(TestCase):
     def test_system_data_dirs(self):
@@ -523,6 +550,7 @@ class Txdg_dirs(TestCase):
         should = os.path.join(os.path.expanduser("~"), ".local", "share")
         self.failUnlessEqual(xdg_get_data_home(), should)
 add(Txdg_dirs)
+
 
 class Tpathname2url(TestCase):
     def test_win(self):

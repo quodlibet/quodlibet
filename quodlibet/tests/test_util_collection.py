@@ -1,6 +1,5 @@
 import shutil
 from quodlibet import config
-from quodlibet.const import DEFAULT_RATING
 
 from tests import TestCase, add, mkdtemp
 from quodlibet.formats._audio import AudioFile as Fakesong
@@ -8,6 +7,7 @@ from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
 from quodlibet.library.libraries import FileLibrary
 
+config.RATINGS = config.HardCodedRatingsPrefs()
 
 NUMERIC_SONGS = [
     Fakesong({"~filename": "fake1.mp3",
@@ -146,7 +146,7 @@ class TAlbum(TestCase):
         config.set("settings", "bayesian_rating_factor", float(c))
         s.failUnlessEqual(
             config.getfloat("settings", "bayesian_rating_factor"), float(c))
-        expected = avg(c * [DEFAULT_RATING] + [r1, r2])
+        expected = avg(c * [config.RATINGS.default] + [r1, r2])
         s.failUnlessEqual(album("~#rating:bav"), expected)
         s.failUnlessEqual(album("~#rating"), expected)
 

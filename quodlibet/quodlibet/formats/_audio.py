@@ -235,7 +235,7 @@ class AudioFile(dict, ImageContainer):
                 else:
                     return util.format_time(length)
             elif key == "#rating":
-                return dict.get(self, "~" + key, const.DEFAULT_RATING)
+                return dict.get(self, "~" + key, config.RATINGS.default)
             elif key == "rating":
                 return util.format_rating(self("~#rating"))
             elif key == "people":

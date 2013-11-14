@@ -15,6 +15,7 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
+from quodlibet.config import RatingsPrefs, RATINGS
 
 from quodlibet.parse import Query
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB
@@ -386,55 +387,99 @@ class PreferencesWindow(qltk.UniqueWindow):
     class Tagging(Gtk.VBox):
         name = "tagging"
 
-        def __init__(self):
-            super(PreferencesWindow.Tagging, self).__init__(spacing=12)
-            self.set_border_width(12)
-            self.title = _("Tags")
-            self._songs = []
+        def ratings_vbox(self):
+            """Returns a new VBox containing all ratings widgets"""
+            vb = Gtk.VBox(spacing=6)
 
-            vbox = Gtk.VBox(spacing=6)
+            # Default Rating
+            model = Gtk.ListStore(float)
+            default_combo = Gtk.ComboBox(model=model)
+            default_lab = Gtk.Label(label=_("_Default rating:"))
+            default_lab.set_use_underline(True)
+            default_lab.set_alignment(0, 0.5)
 
-            cb = CCB(_("Auto-save tag changes"), 'editing',
-                     'auto_save_changes', populate=True,
-                     tooltip=_("Save changes to tags without confirmation when"
-                               " editing multiple files")
-                     )
-            vbox.pack_start(cb, False, True, 0)
+            def draw_rating(column, cell, model, it, data):
+                num = model[it][0]
+                text = "%0.2f: %s" % (num, util.format_rating(num))
+                cell.set_property('text', text)
 
-            cb = CCB(_("Show _programmatic tags"),
-                     'editing', 'alltags', populate=True,
-                     tooltip=_("Access all tags, including machine-generated "
-                               "ones e.g. MusicBrainz or Replay Gain tags"))
-            vbox.pack_start(cb, False, True, 0)
+            def default_rating_changed(combo, model):
+                it = combo.get_active_iter()
+                if it is None:
+                    return
+                RATINGS.default = model[it][0]
 
-            hb = Gtk.HBox(spacing=6)
-            e = UndoEntry()
-            e.set_text(config.get("editing", "split_on"))
-            e.connect('changed', self.__changed, 'editing', 'split_on')
-            e.set_tooltip_text(
-                    _("A list of separators to use when splitting tag values. "
-                      "The list is space-separated"))
+            def populate_default_rating_model(combo, num):
+                model = combo.get_model()
+                model.clear()
+                deltas = []
+                default = RATINGS.default
+                precision = RATINGS.precision
+                for i in range(0, num + 1):
+                    r = i * precision
+                    model.append(row=[r])
+                    deltas.append((abs(default - r), i))
+                active = sorted(deltas)[0][1]
+                print_d("Choosing #%d (%.2f), closest to current %.2f"
+                        % (active, precision * active, default))
+                combo.set_active(active)
 
-            def do_revert_split(button, section, option):
-                config.reset(section, option)
-                e.set_text(config.get(section, option))
 
-            split_revert = Gtk.Button()
-            split_revert.add(Gtk.Image.new_from_stock(
-                Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
-            split_revert.connect(
-                "clicked", do_revert_split, "editing", "split_on")
+            cell = Gtk.CellRendererText()
+            default_combo.pack_start(cell, True)
+            default_combo.set_cell_data_func(cell, draw_rating, None)
+            default_combo.connect('changed', default_rating_changed, model)
+            default_lab.set_mnemonic_widget(default_combo)
 
-            l = Gtk.Label(label=_("Split _on:"))
-            l.set_use_underline(True)
-            l.set_mnemonic_widget(e)
-            hb.pack_start(l, False, True, 0)
-            hb.pack_start(e, True, True, 0)
-            hb.pack_start(split_revert, False, True, 0)
-            vbox.pack_start(hb, False, True, 0)
+            def refresh_default_combo(num):
+                populate_default_rating_model(default_combo, num)
 
-            vb2 = Gtk.VBox(spacing=6)
+            # Rating Scale
+            model = Gtk.ListStore(int)
+            scale_combo = Gtk.ComboBox(model=model)
+            scale_lab = Gtk.Label(label=_("Rating _Scale:"))
+            scale_lab.set_use_underline(True)
+            scale_lab.set_mnemonic_widget(scale_combo)
 
+            cell = Gtk.CellRendererText()
+            scale_combo.pack_start(cell, False)
+            num = RATINGS.number
+            for i in [1, 2, 3, 4, 5, 6, 8, 10]:
+                it = model.append(row=[i])
+                if i == num:
+                    scale_combo.set_active_iter(it)
+
+            def draw_rating_scale(column, cell, model, it, data):
+                num_stars = model[it][0]
+                text = "%d: %s" % (num_stars, RATINGS.full_symbol * num_stars)
+                cell.set_property('text', text)
+
+            def rating_scale_changed(combo, model):
+                it = combo.get_active_iter()
+                if it is None:
+                    return
+                RATINGS.number = num = model[it][0]
+                refresh_default_combo(num)
+
+            refresh_default_combo(RATINGS.number)
+            scale_combo.set_cell_data_func(cell, draw_rating_scale, None)
+            scale_combo.connect('changed', rating_scale_changed, model)
+
+            default_align = Gtk.Alignment(xalign=0, xscale=0)
+            default_align.add(default_lab)
+            default_combo_align = Gtk.Alignment(xalign=0, xscale=0)
+            default_combo_align.add(default_combo)
+            scale_align = Gtk.Alignment(xalign=0, xscale=0)
+            scale_align.add(scale_lab)
+
+            grid = Gtk.Grid(column_spacing=6, row_spacing=6)
+            grid.add(scale_align)
+            grid.add(scale_combo)
+            grid.attach(default_align, 0, 1, 1, 1)
+            grid.attach(default_combo_align, 1, 1, 1, 1)
+            vb.pack_start(grid, False, False, 6)
+
+            # Bayesian Factor
             bayesian_factor = config.getfloat("settings",
                                               "bayesian_rating_factor", 0.0)
             adj = Gtk.Adjustment(bayesian_factor, 0.0, 10.0, 0.5, 0.5, 0.0)
@@ -448,18 +493,18 @@ class PreferencesWindow(qltk.UniqueWindow):
                   "albums with few tracks will have less extreme ratings. "
                   "Changing this value triggers a re-calculation for all "
                   "albums."))
-
             bayes_label = Gtk.Label(label=_("_Bayesian averaging amount:"))
             bayes_label.set_use_underline(True)
             bayes_label.set_mnemonic_widget(bayes_spin)
+
+            # Save Ratings
             hb = Gtk.HBox(spacing=6)
             hb.pack_start(bayes_label, False, True, 0)
             hb.pack_start(bayes_spin, False, True, 0)
-            vb2.pack_start(hb, True, True, 0)
-
+            vb.pack_start(hb, True, True, 0)
             cb = CCB(_("Save ratings and play _counts"),
-                                   "editing", "save_to_songs", populate=True)
-            vb2.pack_start(cb, True, True, 0)
+                     "editing", "save_to_songs", populate=True)
+            vb.pack_start(cb, True, True, 0)
             hb = Gtk.HBox(spacing=6)
             lab = Gtk.Label(label=_("_Email:"))
             entry = UndoEntry()
@@ -471,12 +516,59 @@ class PreferencesWindow(qltk.UniqueWindow):
             hb.pack_start(entry, True, True, 0)
             lab.set_mnemonic_widget(entry)
             lab.set_use_underline(True)
-            vb2.pack_start(hb, True, True, 0)
+            vb.pack_start(hb, True, True, 0)
 
-            f = qltk.Frame(_("Tag Editing"), child=vbox)
+            return vb
+
+        def tag_editing_vbox(self):
+            """Returns a new VBox containing all tag editing widgets"""
+            vbox = Gtk.VBox(spacing=6)
+            cb = CCB(_("Auto-save tag changes"), 'editing',
+                     'auto_save_changes', populate=True,
+                     tooltip=_("Save changes to tags without confirmation "
+                               "when editing multiple files"))
+            vbox.pack_start(cb, False, True, 0)
+            cb = CCB(_("Show _programmatic tags"),
+                     'editing', 'alltags', populate=True,
+                     tooltip=_("Access all tags, including machine-generated "
+                               "ones e.g. MusicBrainz or Replay Gain tags"))
+            vbox.pack_start(cb, False, True, 0)
+            hb = Gtk.HBox(spacing=6)
+            e = UndoEntry()
+            e.set_text(config.get("editing", "split_on"))
+            e.connect('changed', self.__changed, 'editing', 'split_on')
+            e.set_tooltip_text(
+                _("A list of separators to use when splitting tag values. "
+                  "The list is space-separated"))
+
+            def do_revert_split(button, section, option):
+                config.reset(section, option)
+                e.set_text(config.get(section, option))
+
+            split_revert = Gtk.Button()
+            split_revert.add(Gtk.Image.new_from_stock(
+                             Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
+            split_revert.connect("clicked", do_revert_split, "editing",
+                                 "split_on")
+            l = Gtk.Label(label=_("Split _on:"))
+            l.set_use_underline(True)
+            l.set_mnemonic_widget(e)
+            hb.pack_start(l, False, True, 0)
+            hb.pack_start(e, True, True, 0)
+            hb.pack_start(split_revert, False, True, 0)
+            vbox.pack_start(hb, False, True, 0)
+            return vbox
+
+        def __init__(self):
+            super(PreferencesWindow.Tagging, self).__init__(spacing=12)
+            self.set_border_width(12)
+            self.title = _("Tags")
+            self._songs = []
+
+            f = qltk.Frame(_("Tag Editing"), child=(self.tag_editing_vbox()))
             self.pack_start(f, False, True, 0)
 
-            f = qltk.Frame(_("Ratings"), child=vb2)
+            f = qltk.Frame(_("Ratings"), child=self.ratings_vbox())
             self.pack_start(f, False, True, 0)
 
             for child in self.get_children():

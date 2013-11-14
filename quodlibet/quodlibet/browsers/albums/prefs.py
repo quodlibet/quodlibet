@@ -50,19 +50,20 @@ class FakeAlbum(dict):
 PEOPLE
 _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
                          util.tag("composer"), util.tag("arranger"), ])
-_EXAMPLE_ALBUM = FakeAlbum({
-    "date": "2010-10-31",
-    "~length": util.format_time(6319),
-    "~long-length": util.format_time_long(6319),
-    "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
-    "~discs": ngettext("%d disc", "%d discs", 2) % 2,
-    "~#rating": 0.75,
-    "~rating": format_rating(0.75),
-    "album": _("An Example Album"),
-    "~people": _SOME_PEOPLE + "..."})
 
 
 class Preferences(qltk.UniqueWindow):
+
+    _EXAMPLE_ALBUM = FakeAlbum({
+        "date": "2010-10-31",
+        "~length": util.format_time(6319),
+        "~long-length": util.format_time_long(6319),
+        "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
+        "~discs": ngettext("%d disc", "%d discs", 2) % 2,
+        "~#rating": 0.75,
+        "album": _("An Example Album"),
+        "~people": _SOME_PEOPLE + "..."})
+
     def __init__(self, browser):
         if self.is_not_unique():
             return
@@ -71,6 +72,8 @@ class Preferences(qltk.UniqueWindow):
         self.set_title(_("Album List Preferences") + " - Quod Libet")
         self.set_default_size(420, 380)
         self.set_transient_for(qltk.get_top_parent(browser))
+        # Do this config-driven setup at instance-time
+        self._EXAMPLE_ALBUM["~rating"] = format_rating(0.75)
 
         box = Gtk.VBox(spacing=6)
         vbox = Gtk.VBox(spacing=6)
@@ -129,7 +132,7 @@ class Preferences(qltk.UniqueWindow):
 
     def __preview_pattern(self, edit, label):
         try:
-            text = XMLFromMarkupPattern(edit.text) % _EXAMPLE_ALBUM
+            text = XMLFromMarkupPattern(edit.text) % self._EXAMPLE_ALBUM
         except:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)

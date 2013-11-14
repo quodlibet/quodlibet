@@ -64,34 +64,6 @@ def main():
 
     from quodlibet.qltk.songlist import SongList
 
-    try:
-        ratings = config.getint("settings", "ratings")
-    except (ValueError, TypeError):
-        pass
-    else:
-        util.RATING_PRECISION = 1.0 / ratings
-
-    try:
-        default_rating = config.getfloat("settings", "default_rating")
-    except (ValueError, TypeError):
-        pass
-    else:
-        const.DEFAULT_RATING = default_rating
-
-    try:
-        symbol = config.get("settings", "rating_symbol_full").decode("utf-8")
-    except UnicodeDecodeError:
-        pass
-    else:
-        util.RATING_SYMBOL = symbol
-
-    try:
-        symbol = config.get("settings", "rating_symbol_blank").decode("utf-8")
-    except UnicodeDecodeError:
-        pass
-    else:
-        util.RATING_SYMBOL_BLANK = symbol
-
     from quodlibet.util.collection import Album
     try:
         cover_size = config.getint("browsers", "cover_size")

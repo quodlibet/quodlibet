@@ -22,6 +22,7 @@ from quodlibet.util.string.splitters import split_value
 from quodlibet.util.titlecase import title
 
 from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL, COPYRIGHT
+from quodlibet import config
 from quodlibet.util.dprint import print_d, print_
 
 
@@ -199,18 +200,15 @@ def parse_time(timestr, err=(ValueError, re.error)):
     except err:
         return 0
 
-RATING_PRECISION = 0.25
-RATING_SYMBOL = u'\u2605'
-BLANK_RATING_SYMBOL = u'\u2606'
-
 
 def format_rating(value, blank=True):
     """Turn a number into a sequence of rating symbols."""
-    steps = int(1 / RATING_PRECISION)
+    prefs = config.RATINGS
+    steps = prefs.number
     value = max(min(value, 1.0), 0)
     ons = int(round(steps * value))
     offs = (steps - ons) if blank else 0
-    return RATING_SYMBOL * ons + BLANK_RATING_SYMBOL * offs
+    return prefs.full_symbol * ons + prefs.blank_symbol * offs
 
 
 def format_size(size):

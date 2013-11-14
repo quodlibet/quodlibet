@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
+#           2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,6 +12,7 @@ import sys
 from gi.repository import Gtk, Pango, Gdk, GdkPixbuf, GLib
 
 from quodlibet import browsers, config, qltk, util, app
+from quodlibet.config import RATINGS
 from quodlibet.parse import Pattern
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.browser import LibraryBrowser
@@ -435,9 +437,6 @@ class TrayIcon(EventPlugin):
         info = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_INFO, None)
         info.connect('activate', self.__information)
 
-        rating = Gtk.MenuItem(label=_("_Rating"), use_underline=True)
-        rating_sub = Gtk.Menu()
-
         def set_rating(value):
             song = player.song
             if song is None:
@@ -446,12 +445,12 @@ class TrayIcon(EventPlugin):
                 song["~#rating"] = value
                 app.librarian.changed([song])
 
-        for i in range(0, int(1.0 / util.RATING_PRECISION) + 1):
-            j = i * util.RATING_PRECISION
-            item = Gtk.MenuItem("%0.2f\t%s" % (j, util.format_rating(j)))
-            item.connect_object('activate', set_rating, j)
+        rating = Gtk.MenuItem(label=_("_Rating"), use_underline=True)
+        rating_sub = Gtk.Menu()
+        for r in RATINGS.all:
+            item = Gtk.MenuItem("%0.2f\t%s" % (rating, util.format_rating(r)))
+            item.connect_object('activate', set_rating, r)
             rating_sub.append(item)
-
         rating.set_submenu(rating_sub)
 
         quit = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_QUIT, None)
