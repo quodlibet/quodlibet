@@ -71,12 +71,14 @@ class TGstreamerTagList(TestCase):
         Gst.DateTime = date
 
         l["foo"] = u"äöü"
-        self.failUnless(isinstance(parse_gstreamer_taglist(l)["foo"], unicode))
-        self.failUnlessEqual(parse_gstreamer_taglist(l)["foo"], u"äöü")
+        parsed = parse_gstreamer_taglist(l)
+        self.assertTrue(isinstance(parsed["foo"], unicode))
+        self.assertTrue(u"äöü" in parsed["foo"].split("\n"))
 
         l["foo"] = u"äöü".encode("utf-8")
-        self.failUnless(isinstance(parse_gstreamer_taglist(l)["foo"], unicode))
-        self.failUnlessEqual(parse_gstreamer_taglist(l)["foo"], u"äöü")
+        parsed = parse_gstreamer_taglist(l)
+        self.assertTrue(isinstance(parsed["foo"], unicode))
+        self.assertTrue(u"äöü" in parsed["foo"].split("\n"))
 
         l["bar"] = 1.2
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 1.2)

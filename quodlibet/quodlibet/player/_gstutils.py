@@ -211,7 +211,10 @@ def parse_gstreamer_taglist(tags):
                 sub_key = decode(split[0])
                 val = split[-1]
                 if sub_key in merged:
-                    if val not in merged[sub_key].split("\n"):
+                    sub_val = merged[sub_key]
+                    if not isinstance(sub_val, unicode):
+                        continue
+                    if val not in sub_val.split("\n"):
                         merged[sub_key] += "\n" + val
                 else:
                     merged[sub_key] = val
@@ -219,14 +222,20 @@ def parse_gstreamer_taglist(tags):
             value = value.to_iso8601_string()
             merged[key] = value
         else:
+            if isinstance(value, (int, long, float)):
+                merged[key] = value
+                continue
+
             if isinstance(value, str):
                 value = decode(value)
 
-            if not isinstance(value, unicode) and \
-                not isinstance(value, (int, long, float)):
+            if not isinstance(value, unicode):
                 value = unicode(value)
 
-            merged[key] = value
+            if key in merged:
+                merged[key] += "\n" + value
+            else:
+                merged[key] = value
 
     return merged
 
