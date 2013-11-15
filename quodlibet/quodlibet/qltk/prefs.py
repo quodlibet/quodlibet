@@ -424,7 +424,6 @@ class PreferencesWindow(qltk.UniqueWindow):
                         % (active, precision * active, default))
                 combo.set_active(active)
 
-
             cell = Gtk.CellRendererText()
             default_combo.pack_start(cell, True)
             default_combo.set_cell_data_func(cell, draw_rating, None)
