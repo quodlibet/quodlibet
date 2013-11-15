@@ -93,6 +93,9 @@ def main():
     if hasattr(player, "init_plugins"):
         player.init_plugins()
 
+    from quodlibet.qltk import unity
+    unity.init("quodlibet.desktop", player)
+
     from quodlibet.qltk.songsmenu import SongsMenu
     SongsMenu.init_plugins()
     from quodlibet.util.cover.manager import cover_plugins

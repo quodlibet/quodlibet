@@ -661,3 +661,24 @@ def limit_songs(songs, max, weight_by_ratings=False):
         else:
             random.shuffle(songs)
         return songs[:max]
+
+
+def gi_require_versions(name, versions):
+    """Like gi.require_version, but will take a list of versions.
+
+    Returns the required version or raises ValueError.
+    """
+
+    assert versions
+
+    import gi
+
+    for version in versions:
+        try:
+            gi.require_version(name, version)
+        except ValueError as e:
+            pass
+        else:
+            return version
+    else:
+        raise e
