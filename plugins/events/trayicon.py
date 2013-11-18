@@ -148,11 +148,11 @@ class TrayIcon(EventPlugin):
             self.__theme_changed)
 
         self.__icon.connect('size-changed', self.__size_changed)
-        #no size-changed under win32
+        # No size-changed under win32
         if sys.platform == "win32":
             self.__size = 16
 
-        self.__icon.connect('popup-menu', self.__button_right)
+        self.__icon.connect('popup-menu', self._popup_menu)
         self.__icon.connect('activate', self.__button_left)
 
         self.__icon.connect('scroll-event', self.__scroll)
@@ -184,7 +184,7 @@ class TrayIcon(EventPlugin):
         return p
 
     def __get_paused_pixbuf(self, size, diff):
-        """Returns a pixbuf for a paused icon frokm the current theme.
+        """Returns a pixbuf for a paused icon from the current theme.
         The returned pixbuf can have a size of size->size+diff"""
 
         names = ('media-playback-pause', Gtk.STOCK_MEDIA_PAUSE)
@@ -217,8 +217,8 @@ class TrayIcon(EventPlugin):
                 util.print_exc()
                 return
 
-        #we need to fill the whole height that is given to us, or
-        #the KDE panel will emit size-changed until we reach 0
+        # We need to fill the whole height that is given to us, or
+        # the KDE panel will emit size-changed until we reach 0
         w, h = self.__pixbuf.get_width(), self.__pixbuf.get_height()
         if h < self.__size:
             bg = GdkPixbuf.Pixbuf(
@@ -243,9 +243,9 @@ class TrayIcon(EventPlugin):
                 wo, ho = overlay.get_width(), overlay.get_height()
 
                 overlay.composite(base, w - wo - pad, h - ho - pad,
-                    wo, ho, w - wo - pad, h - ho - pad,
-                    1, 1,
-                    GdkPixbuf.InterpType.BILINEAR, 255)
+                                  wo, ho, w - wo - pad, h - ho - pad,
+                                  1, 1,
+                                  GdkPixbuf.InterpType.BILINEAR, 255)
 
             self.__pixbuf_paused = base
 
@@ -282,7 +282,7 @@ class TrayIcon(EventPlugin):
 
         config.set("plugins", "icon_window_visible", "true")
 
-        #only restore window state on start
+        # Only restore window state on start
         if not visible and self.__first_map:
             self.__hide_window()
 
@@ -363,7 +363,7 @@ class TrayIcon(EventPlugin):
             self.__menu = None
             return True
 
-    def __button_right(self, icon, button, time):
+    def _popup_menu(self, icon, button, time):
         if self.__destroy_win32_menu():
             return
         self.__menu = menu = Gtk.Menu()
@@ -448,7 +448,7 @@ class TrayIcon(EventPlugin):
         rating = Gtk.MenuItem(label=_("_Rating"), use_underline=True)
         rating_sub = Gtk.Menu()
         for r in RATINGS.all:
-            item = Gtk.MenuItem("%0.2f\t%s" % (rating, util.format_rating(r)))
+            item = Gtk.MenuItem("%0.2f\t%s" % (r, util.format_rating(r)))
             item.connect_object('activate', set_rating, r)
             rating_sub.append(item)
         rating.set_submenu(rating_sub)
@@ -476,7 +476,7 @@ class TrayIcon(EventPlugin):
             menu.popup(None, None, None, button, time, self.__icon)
         else:
             menu.popup(None, None, Gtk.StatusIcon.position_menu, self.__icon,
-                button, time)
+                       button, time)
 
     plugin_on_paused = __update_icon
     plugin_on_unpaused = __update_icon
