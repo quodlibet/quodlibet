@@ -122,7 +122,7 @@ class Preferences(Gtk.VBox):
 
 
 class TrayIcon(EventPlugin):
-    __icon = None
+    _icon = None
     __pixbuf = None
     __pixbuf_paused = None
     __icon_theme = None
@@ -142,21 +142,21 @@ class TrayIcon(EventPlugin):
     PLUGIN_VERSION = "2.0"
 
     def enabled(self):
-        self.__icon = Gtk.StatusIcon()
+        self._icon = Gtk.StatusIcon()
         self.__icon_theme = Gtk.IconTheme.get_default()
         self.__theme_sig = self.__icon_theme.connect('changed',
             self.__theme_changed)
 
-        self.__icon.connect('size-changed', self.__size_changed)
+        self._icon.connect('size-changed', self.__size_changed)
         # No size-changed under win32
         if sys.platform == "win32":
             self.__size = 16
 
-        self.__icon.connect('popup-menu', self._popup_menu)
-        self.__icon.connect('activate', self.__button_left)
+        self._icon.connect('popup-menu', self._popup_menu)
+        self._icon.connect('activate', self.__button_left)
 
-        self.__icon.connect('scroll-event', self.__scroll)
-        self.__icon.connect('button-press-event', self.__button_middle)
+        self._icon.connect('scroll-event', self.__scroll)
+        self._icon.connect('button-press-event', self.__button_middle)
 
         self.__w_sig_map = app.window.connect('map', self.__window_map)
         self.__w_sig_del = app.window.connect('delete-event',
@@ -170,12 +170,12 @@ class TrayIcon(EventPlugin):
         self.__icon_theme = None
         app.window.disconnect(self.__w_sig_map)
         app.window.disconnect(self.__w_sig_del)
-        self.__icon.set_visible(False)
+        self._icon.set_visible(False)
         try:
-            self.__icon.destroy()
+            self._icon.destroy()
         except AttributeError:
             pass
-        self.__icon = None
+        self._icon = None
         self.__show_window()
 
     def PluginPreferences(self, parent):
@@ -254,7 +254,7 @@ class TrayIcon(EventPlugin):
         else:
             new_pixbuf = self.__pixbuf
 
-        self.__icon.set_from_pixbuf(new_pixbuf)
+        self._icon.set_from_pixbuf(new_pixbuf)
 
     def __theme_changed(self, theme, *args):
         self.__pixbuf = None
@@ -271,7 +271,7 @@ class TrayIcon(EventPlugin):
         return True
 
     def __prefs_destroy(self, *args):
-        if self.__icon:
+        if self._icon:
             self.plugin_on_song_started(app.player.song)
 
     def __window_delete(self, win, event):
@@ -341,7 +341,7 @@ class TrayIcon(EventPlugin):
                 player.volume -= 0.05
 
     def plugin_on_song_started(self, song):
-        if not self.__icon:
+        if not self._icon:
             return
 
         if song:
@@ -354,7 +354,7 @@ class TrayIcon(EventPlugin):
         else:
             tooltip = _("Not playing")
 
-        self.__icon.set_tooltip_markup(util.escape(tooltip))
+        self._icon.set_tooltip_markup(util.escape(tooltip))
 
     def __destroy_win32_menu(self):
         """Returns True if current action should only hide the menu"""
@@ -473,9 +473,9 @@ class TrayIcon(EventPlugin):
         menu.show_all()
 
         if sys.platform == "win32":
-            menu.popup(None, None, None, button, time, self.__icon)
+            menu.popup(None, None, None, button, time, self._icon)
         else:
-            menu.popup(None, None, Gtk.StatusIcon.position_menu, self.__icon,
+            menu.popup(None, None, Gtk.StatusIcon.position_menu, self._icon,
                        button, time)
 
     plugin_on_paused = __update_icon
