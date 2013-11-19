@@ -101,7 +101,7 @@ Repo key::
 |fedora-logo| Fedora
 --------------------
 
-Stable Repos:
+Stable Repo:
 
   * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_17/>`__
   * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_18/>`__
@@ -117,11 +117,12 @@ Unstable Repo:
 |opensuse-logo| openSUSE
 ------------------------
 
-Stable Repos:
+Stable Repo:
 
   * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.1/>`__
   * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.2/>`__
   * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.3/>`__
+  * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`__
 
 Unstable Repo:
@@ -129,6 +130,7 @@ Unstable Repo:
   * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.1/>`__
   * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.2/>`__
   * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.3/>`__
+  * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
 
 
