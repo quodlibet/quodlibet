@@ -545,7 +545,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         ag.add_actions(actions)
 
         act = Gtk.ToggleAction("StopAfter",
-                               _("Stop after this song"), None, "")
+                               _("Stop After This Song"), None, "")
         ag.add_action_with_accel(act, "<shift>space")
 
         # access point for the tray icon
