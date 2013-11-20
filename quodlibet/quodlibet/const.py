@@ -258,6 +258,7 @@ MENU = """<ui>
       <menuitem action='RandomArtist'/>
       <menuitem action='RandomAlbum'/>
       <separator/>
+      <menuitem action='All'/>
       <menuitem action='PlayedRecently'/>
       <menuitem action='AddedRecently'/>
       <menuitem action='TopRated'/>

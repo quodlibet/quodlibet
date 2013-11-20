@@ -511,6 +511,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
              "", None, self.__filter_menu_actions),
             ("TopRated", Gtk.STOCK_FIND, _("_Top 40"),
              "", None, self.__filter_menu_actions),
+            ("All", Gtk.STOCK_FIND, _("All _Songs"),
+             "", None, self.__filter_menu_actions),
 
             ("Control", None, _("_Control")),
             ("EditTags", Gtk.STOCK_PROPERTIES, _("Edit _Tags"), "", None,
@@ -892,6 +894,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                 self.__make_query("#(playcount > %d)" % (songs[0] - 1))
             else:
                 self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
+        elif name == "All":
+            self.browser.unfilter()
 
     def __rebuild(self, activator, force):
         scan_library(self.__library, force)
@@ -1007,7 +1011,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                  None: ["/Menu/Filters/PlayedRecently",
                         "/Menu/Filters/AddedRecently",
                         "/Menu/Filters/TopRated",
-                        "/Menu/Filters/TopRated"]}
+                        "/Menu/Filters/All"]}
         for key, widgets in menus.items():
             c = self.browser.can_filter(key)
             for widget in widgets:

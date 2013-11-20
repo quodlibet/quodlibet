@@ -268,7 +268,12 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
             pane.set_selected([None], True)
 
     def unfilter(self):
-        self.filter("", "")
+        self._panes[-1].inhibit()
+        for pane in self._panes:
+            pane.set_selected(None, True)
+        self._panes[-1].uninhibit()
+        self._set_text("")
+        self.activate()
 
     def list(self, key):
         filter_pane = self.__get_filter_pane(key)
