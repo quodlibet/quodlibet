@@ -248,8 +248,10 @@ def format_time(time):
 
 def format_time_long(time):
     """Turn a time value in seconds into x hours, x minutes, etc."""
+
     if time < 1:
         return _("No time information")
+
     cutoffs = [
         (60, "%d seconds", "%d second"),
         (60, "%d minutes", "%d minute"),
