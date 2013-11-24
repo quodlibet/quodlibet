@@ -58,9 +58,6 @@ PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
 
 FILESYSTEM_TAGS = "~filename ~basename ~dirname".split()
 
-# tags that should alone identify an album, ordered by descending preference
-UNIQUE_ALBUM_IDENTIFIERS = ["musicbrainz_albumid", "labelid"]
-
 
 class AudioFile(dict, ImageContainer):
     """An audio file. It looks like a dict, but implements synthetic
