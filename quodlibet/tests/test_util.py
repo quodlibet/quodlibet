@@ -531,6 +531,12 @@ class Tformat_time_long(TestCase):
     def test_drop_zero(s):
         s.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
 
+    def test_limit_zero(s):
+        s.assertEquals(f_t_l(1, limit=0), _("1 second"))
+
+    def test_limit(s):
+        s.assertEquals(len(f_t_l(2**31).split(", ")), 2)
+
 add(Tformat_time_long)
 
 

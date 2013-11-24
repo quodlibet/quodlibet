@@ -246,8 +246,12 @@ def format_time(time):
         return "%s%d:%02d" % (prefix, time // 60, time % 60)
 
 
-def format_time_long(time):
-    """Turn a time value in seconds into x hours, x minutes, etc."""
+def format_time_long(time, limit=2):
+    """Turn a time value in seconds into x hours, x minutes, etc.
+
+    `limit` limits the count of units used, so the result will be <= time.
+    0 means no limit.
+    """
 
     if time < 1:
         return _("No time information")
@@ -259,6 +263,7 @@ def format_time_long(time):
         (365, "%d days", "%d day"),
         (None, "%d years", "%d year"),
     ]
+
     time_str = []
     for divisor, plural, single in cutoffs:
         if time < 1:
@@ -270,8 +275,10 @@ def format_time_long(time):
         if unit:
             time_str.append(ngettext(single, plural, unit) % unit)
     time_str.reverse()
-    if len(time_str) > 2:
-        time_str.pop()
+
+    if limit:
+        time_str = time_str[:limit]
+
     return ", ".join(time_str)
 
 
