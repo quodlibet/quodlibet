@@ -1,32 +1,60 @@
 Audio Backends
 ==============
 
-Quod Libet currently supports GStreamer and Xine as an audio backend. The 
-default backend can be changed in ``~/.quodlibet/config`` by setting the 
-``backend`` option (gstbe=GStreamer, xinebe=Xine, nullbe=no backend)
+Quod Libet currently supports GStreamer and Xine as an audio backend. The
+default backend can be changed in ``~/.quodlibet/config`` by setting the
+``backend`` option (``gstbe`` = GStreamer, ``xinebe`` = Xine, ``nullbe`` =
+no backend). Make sure Quod Libet isn't running while you edit the file.
 
-There is also a experimental `Mac OS X NSSound backend (macbe) 
-<http://code.google.com/p/quodlibet/issues/detail?id=509>`_ available in 
+There is also an experimental `Mac OS X NSSound backend (macbe)
+<http://code.google.com/p/quodlibet/issues/detail?id=509>`_ available in
 the issue tracker.
 
 
-GStreamer
----------
+GStreamer Backend
+-----------------
 
-Quod Libet tries  to  read  your GConf  GStreamer  configuration,  but  if  
-that fails it falls back to autoaudiosink (which uses pulsesink, alsasink 
-or directaudiosink on Windows)
+Custom Pipelines
+^^^^^^^^^^^^^^^^
 
-You can change the default pipeline under `Preferences > Player`.
+It's possible to attach a custom GStreamer pipeline to the player backend
+under *Music* → *Preferences* → *Playback* → *Output Pipeline*. The
+pipeline syntax is equivalent to what is used in the *gst-launch* utility.
+See ``man gst-launch`` for further information and examples.
 
-It will automatically add the default sink in case it is missing.
+In case the custom pipline doesn't contain an audio sink, Quod Libet
+will add a default one for you.
 
-Output Device
-^^^^^^^^^^^^^
 
-If you want QL to output to a different device you have to pass the device 
-option to the sink. In case of alsa you can get a list of available devices 
-by executing::
+Debugging Pipelines
+^^^^^^^^^^^^^^^^^^^
+
+In case you are interested in which GStreamer elements and audio formats
+are used in the current pipeline, start Quod Libet in debug mode
+(``quodlibet --debug``), go to *Music* → *Preferences* → *Playback* and
+press the *Print Playback* button. It will print the whole pipeline used
+for the current active song to *stdout*.
+
+For debugging GStreamer related issues see the official GStreamer docs:
+`Running and debugging GStreamer Applications
+<http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-
+running.html>`__
+
+
+Gapless Playback
+^^^^^^^^^^^^^^^^
+
+Gstreamer supports gapless playback for all common formats except MP3. See
+the following bug report for more information:
+https://bugzilla.gnome.org/show_bug.cgi?id=620323
+
+
+Selecting an Output Device
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you want QL to output to a different device you have to pass the device
+option to the sink by setting a custom pipeline. In case of alsa you can get
+a list of available devices by executing::
 
     python -c 'import gst; sink = gst.element_factory_make("alsasink");sink.probe_property_name("device"); print "\n".join(sink.probe_get_values_name("device"))'
 
@@ -55,22 +83,12 @@ and the pipeline should look like::
     pulsesink device=alsa_output.pci-0000_00_1b.0.analog-stereo
 
 
-To see the created GStreamer pipeline start quodlibet with the ``--debug`` 
-parameter, go to *Preferences* > *Player* and press the *Print pipeline* 
-button. All used elements/data formats will be printed to stdout.
+Xine Backend
+------------
 
-RTP Streaming
-^^^^^^^^^^^^^
+The Xine backend needs either xine-lib 1.1.x or xine-lib 1.2.x. Since most
+distributions make QL only depend on GStreamer, you might have to install
+xine-lib manually (*libxine1*, *lixine2* in Debian/Ubuntu).
 
-Set the pipeline to::
-
-    audioconvert ! rtpL16pay! udpsink host=224.1.1.1 auto-multicast=true port=5000
-
-
-And somewhere else::
-
-    gst-launch-0.10 udpsrc multicast-group=224.1.1.1 auto-multicast=true \
-            port=5000 do-timestamp=true \
-        caps="application/x-rtp,media=audio,clock-rate=44100,payload=96,encoding-name=L16,encoding-params=2" ! \
-        rtpL16depay ! decodebin2 ! autoaudiosink
-
+To enable the backend, set the ``backend`` option in the ``config`` file to
+``"xinebe"`` while QL isn't running.
