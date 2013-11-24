@@ -35,8 +35,8 @@ Downloads
 |hg-logo| Source
 ----------------
 
-Quod Libet uses `Mercurial <http://mercurial.selenic.com/>`_ for source 
-control and is hosted on `Google Code <https://code.google.com/>`_ as well 
+Quod Libet uses `Mercurial <http://mercurial.selenic.com/>`_ for source
+control and is hosted on `Google Code <https://code.google.com/>`_ as well
 as `Bitbucket <https://bitbucket.org/>`__:
 
  * https://code.google.com/p/quodlibet
@@ -84,6 +84,19 @@ Unstable PPA::
 
     $ sudo add-apt-repository ppa:lazka/dumpingplace
 
+.. note::
+
+    Quod Libet 3.x supports **Ubuntu 12.04**, but needs some updated
+    dependencies that you'll need to install separately:
+
+    * The `GStreamer Developer PPA
+      <https://launchpad.net/~gstreamer-developers/+archive/ppa?field.series_
+      filter=precise>`__ for GStreamer 1.0.
+    * *(optional)* Ubuntu 12.10 packages of both `gir1.2-keybinder-3.0
+      <http://packages.ubuntu.com/quantal/gir1.2-keybinder-3.0>`__ and
+      `libkeybinder-3.0-0
+      <http://packages.ubuntu.com/quantal/libkeybinder-3.0-0>`__ for
+      multimedia key support under non GNOME environments.
 
 |debian-logo| Debian
 --------------------
