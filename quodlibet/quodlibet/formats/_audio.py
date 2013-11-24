@@ -94,6 +94,7 @@ class AudioFile(dict, ImageContainer):
     @util.cached_property
     def album_key(self):
         return (human(self("albumsort", "")),
+                human(self("albumartistsort", "")),
                 self.get("album_grouping_key") or self.get("labelid") or
                 self.get("musicbrainz_albumid") or "")
 
