@@ -24,6 +24,7 @@ class RadioAdMute(EventPlugin):
             "PhotonVPS.com",
             "Get Digitally Imported Premium",
             "More of the show after these messages",
+            "Choose premium for the best audio experience",
             ]
 
     RE_SPAM = ["Sponsored Message\s+\([0-9]+\)",
