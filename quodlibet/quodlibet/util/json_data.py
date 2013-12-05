@@ -1,4 +1,4 @@
-# Copyright 2012 Nick Boultbee
+# Copyright 2012-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -14,6 +14,10 @@ class JSONObject(object):
     that can be edited and persisted as JSON.
     """
 
+    # Override this to specify a set of field names, or a map of field: doc
+    # Must include "name" if specified.
+    FIELDS = {}
+
     @classmethod
     def _should_store(cls, field_name):
         """Decides if a field should be stored"""
@@ -24,18 +28,21 @@ class JSONObject(object):
             raise ValueError("%s objects must be named" % type(self).__name__)
         self.name = str(name)
 
-    def _data(self, fields=None):
+    @property
+    def data(self):
         """A list of tuples of the persisted key:values in this class"""
-        if fields:
-            return [(k, self.__getattribute__(k)) for k in fields]
+        if self.FIELDS:
+            return [(k, self.__getattribute__(k) if hasattr(self, k) else None)
+                    for k in self.FIELDS]
         else:
             print_d("No order specified for class %s" % type(self).__name__)
             return dict([(k, v) for k, v in self.__dict__.items()
                          if self._should_store(k)])
 
-    @property
-    def data(self):
-        return self._data()
+    def field_description(self, name):
+        """Returns the description of field `name` if available, else None"""
+        if isinstance(self.FIELDS, dict):
+            return self.FIELDS.get(name, None)
 
     @property
     def json(self):
@@ -59,21 +66,17 @@ class JSONObjectDict(dict):
     @classmethod
     def from_json(cls, ItemKind, json_str):
         """
-        Factory method to building from an input string,
+        Factory method for building from an input string,
         a JSON map of {item_name1: {key:value, key2:value2...}, item_name2:...}
         """
-        print_d("Constructing %s containing %s"
-                % (cls.__name__, ItemKind.__name__))
         new = cls(ItemKind)
 
         try:
             data = json.loads(json_str)
         except ValueError:
-            print_d("Broken JSON: %s" % json_str)
+            print_w("Broken JSON: %s" % json_str)
         else:
             for name, blob in data.items():
-                print_d("Loading %s '%s' with data %s"
-                        % (ItemKind.__name__, name, blob))
                 try:
                     new[name] = ItemKind(**blob)
                 except TypeError as e:
@@ -104,21 +107,19 @@ class JSONObjectDict(dict):
 
     def save(self, filename=None):
         """
-        Takes a list of `EditableData` objects and returns
+        Takes a list of `JSONObject` objects and returns
         the data serialised as a JSON string,
-        also writing to file `filename` if specified.
+        also writing (prettily) to file `filename` if specified.
         """
         print_d("Saving %d %s(s) to JSON.." % (len(self), self.Item.__name__))
         try:
             obj_dict = dict([(o.name, dict(o.data)) for o in self.values()])
         except AttributeError:
             raise
-            obj_dict = {}
-        json_str = json.dumps(obj_dict)
+        json_str = json.dumps(obj_dict, indent=4)
         if filename:
             try:
                 with open(filename, "w") as f:
-                    print_d("Writing this to %s: %s" % (filename, json_str))
                     f.write(json_str)
             except IOError as e:
                 print_w("Couldn't write JSON for %s object(s) (%s)"

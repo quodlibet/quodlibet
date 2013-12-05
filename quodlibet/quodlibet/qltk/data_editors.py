@@ -67,7 +67,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
 
         # Add context menu
         menu = Gtk.Menu()
-        rem = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
+        rem = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_REMOVE, None)
         keyval, mod = Gtk.accelerator_parse("Delete")
         rem.add_accelerator(
             'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
@@ -171,7 +171,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             elif isinstance(val, int):
                 widget.set_value(int(val))
             elif isinstance(val, basestring):
-                widget.set_text(val)
+                widget.set_text(val or "")
 
     def __build_input_frame(self):
         t = Gtk.Table(2, 3)
@@ -186,6 +186,9 @@ class JSONBasedEditor(qltk.UniqueWindow):
             l = Gtk.Label(label=field_name + ":")
             entry = self._new_widget(key, val)
             entry.set_sensitive(False)
+            tip = empty.field_description(key)
+            if tip:
+                entry.set_tooltip_text(tip)
             # Store these away in a map for later access
             self.input_entries[key] = entry
             l.set_mnemonic_widget(entry)

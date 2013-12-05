@@ -7,6 +7,11 @@ class TJsonData(TestCase):
 
     class WibbleData(JSONObject):
         """Test subclass"""
+
+        FIELDS = {"name": "name",
+                  "pattern": "pattern for stuff",
+                  "wibble":  "wobble"}
+
         def __init__(self, name=None, pattern=None, wibble=False):
             JSONObject.__init__(self, name)
             self.pattern = pattern
@@ -24,6 +29,11 @@ class TJsonData(TestCase):
         self.failUnlessEqual({"name": "blah"}, blah.data)
         self.failUnlessEqual("{\"name\": \"blah\"}", blah.json)
 
+    def test_field_description(self):
+        blah = self.WibbleData('blah')
+        self.failUnlessEqual(blah.field_description('wibble'), 'wobble')
+        self.failIf(blah.field_description('not_here'))
+
     def test_nameless_construction(self):
         try:
             self.failIf(JSONObject())
@@ -35,8 +45,8 @@ class TJsonData(TestCase):
     def test_subclass(self):
         blah = self.WibbleData('blah')
         self.failUnlessEqual(blah.name, 'blah')
-        exp = {"name": "blah", "pattern":None, "wibble": False}
-        self.failUnlessEqual(exp, blah.data)
+        exp = {"name": "blah", "pattern": None, "wibble": False}
+        self.failUnlessEqual(exp, dict(blah.data))
         self.failUnlessEqual(json.dumps(exp), blah.json)
 
     def test_from_invalid_json(self):
