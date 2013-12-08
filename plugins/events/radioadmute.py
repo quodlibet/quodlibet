@@ -25,6 +25,7 @@ class RadioAdMute(EventPlugin):
             "Get Digitally Imported Premium",
             "More of the show after these messages",
             "Choose premium for the best audio experience",
+            "www.di.fm/jobs",
             ]
 
     RE_SPAM = ["Sponsored Message\s+\([0-9]+\)",
