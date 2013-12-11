@@ -78,6 +78,7 @@ class SongsMenuPlugin(Gtk.ImageMenuItem):
             image = Gtk.Image.new_from_stock(icon, Gtk.IconSize.MENU)
         else:
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU)
+        self.set_always_show_image(True)
         self.set_image(image)
 
         self.set_sensitive(bool(self.plugin_handles(songs)))

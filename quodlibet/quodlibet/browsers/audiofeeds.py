@@ -27,7 +27,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import ScrolledWindow, Alignment
+from quodlibet.qltk.x import ScrolledWindow, Alignment, Button
 
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
@@ -361,7 +361,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         swin.add(view)
         self.pack_start(swin, True, True, 0)
 
-        new = Gtk.Button(stock=Gtk.STOCK_NEW)
+        new = Button(_("_New"), Gtk.STOCK_ADD, Gtk.IconSize.MENU)
         new.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)

@@ -184,7 +184,9 @@ def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0,
 
 def MenuItem(label, stock_id):
     """An ImageMenuItem with a custom label and stock image."""
+
     item = Gtk.ImageMenuItem.new_with_mnemonic(label)
+    item.set_always_show_image(True)
     if Gtk.stock_lookup(stock_id):
         image = Gtk.Image.new_from_stock(stock_id, Gtk.IconSize.MENU)
     else:
@@ -197,6 +199,7 @@ def MenuItem(label, stock_id):
 def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
     """A Button with a custom label and stock image. It should pack
     exactly like a stock button."""
+
     align = Gtk.Alignment(xscale=0.0, yscale=1.0, xalign=0.5, yalign=0.5)
     hbox = Gtk.HBox(spacing=2)
     if Gtk.stock_lookup(stock_id):

@@ -21,7 +21,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.wlw import WaitLoadBar
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.delete import DeleteDialog
-from quodlibet.qltk.x import Alignment, ScrolledWindow
+from quodlibet.qltk.x import Alignment, ScrolledWindow, Button
 
 
 class DeviceProperties(Gtk.Dialog):
@@ -207,15 +207,16 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         else:
             self.pack_start(hbox, False, True, 0)
 
-        self.__refresh_button = refresh = Gtk.Button(stock=Gtk.STOCK_REFRESH)
+        # refresh button
+        refresh = Button(_("_Refresh"), Gtk.STOCK_REFRESH, Gtk.IconSize.MENU)
+        self.__refresh_button = refresh
         refresh.connect_object('clicked', self.__refresh, True)
         refresh.set_sensitive(False)
         hbox.pack_start(refresh, True, True, 0)
 
-        self.__eject_button = eject = Gtk.Button(_("_Eject"),
-                                                 use_underline=True)
-        eject.set_image(
-            Gtk.Image.new_from_icon_name("media-eject", Gtk.IconSize.BUTTON))
+        # eject button
+        eject = Button(_("_Eject"), "media-eject", Gtk.IconSize.MENU)
+        self.__eject_button = eject
         eject.connect('clicked', self.__eject)
         eject.set_sensitive(False)
         hbox.pack_start(eject, True, True, 0)

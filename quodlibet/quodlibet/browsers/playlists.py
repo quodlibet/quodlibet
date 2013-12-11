@@ -304,9 +304,10 @@ class Playlists(Gtk.VBox, Browser):
         swin.add(view)
         self.pack_start(swin, True, True, 0)
 
-        newpl = Gtk.Button(stock=Gtk.STOCK_NEW)
+        newpl = qltk.Button(_("_New"), Gtk.STOCK_NEW, Gtk.IconSize.MENU)
         newpl.connect('clicked', self.__new_playlist)
-        importpl = qltk.Button(_("_Import"), Gtk.STOCK_ADD)
+
+        importpl = qltk.Button(_("_Import"), Gtk.STOCK_ADD, Gtk.IconSize.MENU)
         importpl.connect('clicked', self.__import, library)
         hb = Gtk.HBox(spacing=6)
         hb.set_homogeneous(True)
