@@ -18,13 +18,22 @@ class TPEP8(TestCase):
     # drop them once 1.4 is common enough
     # E261: at least two spaces before inline comment
     # W603: we use <> to check for py3k atm..
-    IGNORE_ERROROS = "E12,E261,W603"
+    IGNORE_ERROROS = ["E12", "E261", "W603"]
     PACKAGES = ("util library parse browsers devices formats "
                 "plugins qltk player").split()
 
-    def _run(self, path):
-        subprocess.check_call(
-            ["pep8", "--ignore=" + self.IGNORE_ERROROS, path])
+    def _run(self, path, ignore=None):
+        if ignore is None:
+            ignore = []
+        ignore += self.IGNORE_ERROROS
+
+        p = subprocess.Popen(
+            ["pep8", "--ignore=" + ",".join(ignore), path],
+            stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        if p.wait() != 0:
+            o, e = p.communicate()
+            raise Exception("\n" + o)
 
     def test_packages(self):
         for package in self.PACKAGES:
