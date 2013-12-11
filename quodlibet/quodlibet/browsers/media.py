@@ -533,8 +533,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         if not self.__check_device(device, _("Unable to delete songs")):
             return False
 
-        song_titles = [s('~artist~title') for s in songs]
-        if DeleteDialog(self, song_titles, False, True).run() != 2:
+        if DeleteDialog(self, songs).run() != DeleteDialog.RESPONSE_DELETE:
             return False
 
         self.__busy = True

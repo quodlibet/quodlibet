@@ -18,7 +18,7 @@ from quodlibet import util
 
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.delete import DeleteDialog
+from quodlibet.qltk.delete import trash_songs
 from quodlibet.qltk.edittags import EditTags
 from quodlibet.qltk.filesel import FileSelector
 from quodlibet.qltk.pluginwin import PluginWindow
@@ -167,18 +167,14 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         else:
             menu = Gtk.Menu()
         b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
-        b.connect('activate', self.__delete, filenames, fs)
+        b.connect('activate', self.__delete, songs, fs)
         menu.prepend(b)
         menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
-    def __delete(self, item, files, fs):
-        d = DeleteDialog(self, files)
-        removed = d.run()
-        d.destroy()
-        removed = filter(None, map(self.__library.get, removed))
-        self.__library.remove(removed)
+    def __delete(self, item, songs, fs):
+        trash_songs(self, songs, self.__library.librarian)
         fs.rescan()
 
     def __changed(self, selector, selection, label):
