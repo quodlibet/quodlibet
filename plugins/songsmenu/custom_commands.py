@@ -30,19 +30,19 @@ class Command(JSONObject):
     """
 
     FIELDS = {
-        "name":      _("The name of this command"),
-        "command":   _("The shell command syntax to run"),
+        "name": _("The name of this command"),
+        "command": _("The shell command syntax to run"),
         "parameter": _("If specified, a parameter whose occurrences in "
                        "the command will be substituted with a "
                        "user-supplied value, e.g. by using 'PARAM' "
                        "all instances of '{PARAM}' in your command will "
                        "have the value prompted for when run"),
-        "pattern":   _("The QL pattern, e.g. <~filename>, to use to compute "
-                       "a value for the command"),
-        "unique":    _("If set, this will remove duplicate computed values "
-                       "of the pattern"),
-        "max_args":  _("The maximum number of argument to pass to the "
-                       "command at one time (like xargs)")}
+        "pattern": _("The QL pattern, e.g. <~filename>, to use to compute "
+                     "a value for the command"),
+        "unique": _("If set, this will remove duplicate computed values "
+                    "of the pattern"),
+        "max_args": _("The maximum number of argument to pass to the "
+                      "command at one time (like xargs)")}
 
     def __init__(self, name=None, command=None, pattern="<~filename>",
                  unique=False, parameter=None, max_args=10000,
