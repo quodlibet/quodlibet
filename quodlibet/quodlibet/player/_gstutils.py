@@ -4,6 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import collections
 
 from gi.repository import Gtk, GLib, Gst
@@ -57,8 +58,13 @@ def GStreamerSink(pipeline):
 
     Returns the pipeline's description and a list of disconnected elements."""
 
+    if os.name == "nt":
+        default_sink = "directsoundsink"
+    else:
+        default_sink = "autoaudiosink"
+
     if not pipeline and not Gst.ElementFactory.find('gconfaudiosink'):
-        pipeline = "autoaudiosink"
+        pipeline = default_sink
     elif not pipeline or pipeline == "gconf":
         pipeline = "gconfaudiosink profile=music"
 
@@ -67,11 +73,11 @@ def GStreamerSink(pipeline):
     except GLib.GError:
         print_w(_("Invalid GStreamer output pipeline, trying default."))
         try:
-            pipe = [Gst.parse_launch("autoaudiosink")]
+            pipe = [Gst.parse_launch(default_sink)]
         except GLib.GError:
             pipe = None
         else:
-            pipeline = "autoaudiosink"
+            pipeline = default_sink
 
     if pipe:
         # In case the last element is linkable with a fakesink
