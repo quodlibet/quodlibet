@@ -8,6 +8,7 @@ import operator
 
 from gi.repository import Gtk, Pango, Gdk
 
+from quodlibet import qltk
 from quodlibet.qltk.views import AllTreeView, TreeViewColumn
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk import is_accel
@@ -151,9 +152,7 @@ class Pane(AllTreeView):
         songs = self.__get_selected_songs(sort=True)
 
         if tid == self.TARGET_INFO_QL:
-            filenames = (song("~filename") for song in songs)
-            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-            sel.set(type_, 8, "\x00".join(filenames))
+            qltk.selection_set_songs(sel, songs)
         else:
             sel.set_uris([song("~uri") for song in songs])
 

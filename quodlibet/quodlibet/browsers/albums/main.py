@@ -644,9 +644,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs()
         if tid == 1:
-            filenames = [song("~filename") for song in songs]
-            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-            sel.set(type_, 8, "\x00".join(filenames))
+            qltk.selection_set_songs(sel, songs)
         else:
             sel.set_uris([song("~uri") for song in songs])
 

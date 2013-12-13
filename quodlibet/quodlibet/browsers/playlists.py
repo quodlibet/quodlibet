@@ -403,7 +403,7 @@ class Playlists(Gtk.VBox, Browser):
         view.emit_stop_by_name('drag-data-received')
         model = view.get_model()
         if tid == DND_QL:
-            filenames = sel.get_data().split("\x00")
+            filenames = qltk.selection_get_filenames(sel)
             songs = filter(None, map(library.get, filenames))
             if not songs:
                 Gtk.drag_finish(ctx, False, False, etime)
@@ -460,9 +460,7 @@ class Playlists(Gtk.VBox, Browser):
         for iter in filter(lambda i: i, iters):
             songs += list(model[iter][0])
         if tid == 0:
-            filenames = [song("~filename") for song in songs]
-            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-            sel.set(type_, 8, "\x00".join(filenames))
+            qltk.selection_set_songs(sel, songs)
         else:
             sel.set_uris([song("~uri") for song in songs])
 

@@ -454,9 +454,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                       "song lists or the queue.")).run()
                 Gdk.drag_abort(ctx, etime)
                 return
-            filenames = [song("~filename") for song in songs]
-            type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-            sel.set(type_, 8, "\x00".join(filenames))
+
+            qltk.selection_set_songs(sel, songs)
             if ctx.get_actions() & Gdk.DragAction.MOVE:
                 self.__drag_iters = map(model.get_iter, paths)
             else:
@@ -476,7 +475,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
         model = view.get_model()
         if info == DND_QL:
-            filenames = sel.get_data().split("\x00")
+            filenames = qltk.selection_get_filenames(sel)
             move = (Gtk.drag_get_source_widget(ctx) == view)
         elif info == DND_URI_LIST:
             def to_filename(s):

@@ -5,10 +5,41 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import sys
+
 import gi
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
+
+
+def selection_set_songs(selection_data, songs):
+    """Stores filenames of the passed songs in a Gtk.SelectionData"""
+
+    filenames = []
+    for filename in (song["~filename"] for song in songs):
+        if isinstance(filename, unicode):
+            # win32
+            filename = filename.encode("utf-8")
+        filenames.append(filename)
+
+    type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
+    selection_data.set(type_, 8, "\x00".join(filenames))
+
+
+def selection_get_filenames(selection_data):
+    """Extracts the filenames of songs set with selection_set_songs()
+    from a Gtk.SelectionData.
+    """
+
+    data_type = selection_data.get_data_type()
+    assert data_type.name() == "text/x-quodlibet-songs"
+
+    items = selection_data.get_data().split("\x00")
+    if sys.platform == "win32":
+        return [item.decode("utf-8") for item in items]
+    else:
+        return items
 
 
 def get_top_parent(widget):
