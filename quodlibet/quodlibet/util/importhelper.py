@@ -29,6 +29,10 @@ def load_dir_modules(path, package, load_compiled=False):
         print_w("%r not found" % path)
         return []
 
+    # get_importables can yield py and pyc for the same module
+    # and we want to load it only once
+    modules = set(modules)
+
     loaded = []
     for name in modules:
         try:

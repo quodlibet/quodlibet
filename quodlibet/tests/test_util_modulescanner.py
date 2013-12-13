@@ -81,7 +81,6 @@ class TModuleScanner(TestCase):
         mods = load_dir_modules(self.d, "qlfake")
         self.failUnlessEqual(len(mods), 0)
 
-
     def test_load_dir_modules_compiled(self):
         h = self._create_mod("x1.py")
         h.write("test=99\n")
@@ -89,6 +88,17 @@ class TModuleScanner(TestCase):
         py_compile.compile(h.name)
         os.unlink(h.name)
         self.failUnlessEqual(os.listdir(self.d), ["x1.pyc"])
+
+        mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
+        self.failUnlessEqual(len(mods), 1)
+        self.failUnlessEqual(mods[0].test, 99)
+
+    def test_load_dir_modules_both(self):
+        h = self._create_mod("x1.py")
+        h.write("test=99\n")
+        h.close()
+        py_compile.compile(h.name)
+        self.failUnlessEqual(set(os.listdir(self.d)), set(["x1.pyc", "x1.py"]))
 
         mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
         self.failUnlessEqual(len(mods), 1)
