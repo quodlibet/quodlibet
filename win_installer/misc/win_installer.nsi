@@ -1,5 +1,5 @@
 ;Quod Libet / Ex Falso Windows installer script
-;Modified by Steven Robertson
+;Modified by Steven Robertson, Christoph Reiter
 ;Based on the NSIS Modern User Interface Start Menu Folder Example Script
 ;Written by Joost Verburg
 
@@ -53,7 +53,7 @@
 ;Pages
 
   !insertmacro MULTIUSER_PAGE_INSTALLMODE
-  !insertmacro MUI_PAGE_LICENSE "..\quodlibet\COPYING"
+  !insertmacro MUI_PAGE_LICENSE "ql_temp\quodlibet\COPYING"
   !insertmacro MUI_PAGE_DIRECTORY
   
   ;Start Menu Folder Page Configuration
@@ -137,7 +137,7 @@ Section "Dummy Section" SecDummy
 
   SetOutPath "$INSTDIR"
 
-  File /r "..\quodlibet\dist\*.*" 
+  File /r "ql_temp\quodlibet\dist\*.*" 
 
   ;Old installer wrote the path to HKCU only, delete it
   DeleteRegKey HKCU "Software\Quod Libet"
@@ -169,11 +169,35 @@ SectionEnd
 
 Function .onInit
   !insertmacro MULTIUSER_INIT
+
   ;Read the install dir and set it
   ReadRegStr $instdir_temp SHCTX "${INSTDIR_KEY}" "${INSTDIR_SUBKEY}"
   StrCmp $instdir_temp "" skip 0
     StrCpy $INSTDIR $instdir_temp
   skip:
+
+  ; try to un-install existing installations first
+  IfFileExists "$INSTDIR" do_uninst do_continue
+    do_uninst:
+        ; instdir exists
+        IfFileExists "$INSTDIR\uninstall.exe" exec_uninst rm_instdir
+        exec_uninst:
+            ; uninstall.exe exists, execute it and
+            ; if it returns success proceede, otherwise abort the installer
+            ; (uninstall aborted by user for example)
+            ExecWait '"$INSTDIR\uninstall.exe" _?=$INSTDIR' $R1
+            ; uninstall suceeded, since the uninstall.exe is still there
+            ; goto rm_instdir as well
+            StrCmp $R1 0 rm_instdir
+            ; uninstall failed
+            Abort
+        rm_instdir:
+            ; either the uninstaller was sucessfull or
+            ; the uninstaller.exe wasn't found
+            RMDir /r "$INSTDIR"
+    do_continue:
+        ; the instdir shouldn't exist from here on
+
 FunctionEnd
 
 ;--------------------------------

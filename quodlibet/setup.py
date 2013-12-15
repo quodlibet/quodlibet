@@ -377,7 +377,8 @@ if __name__ == "__main__":
                 {
                     "script": "quodlibet.py",
                     "icon_resources": [(0,
-                       os.path.join('..', 'win_installer', 'quodlibet.ico'))]
+                       os.path.join('..', 'win_installer', 'misc',
+                                    'quodlibet.ico'))]
                 },
                 # workaround icon not working under Vista/7
                 # exe resource identifiers get incremented and start at 0.
@@ -385,12 +386,14 @@ if __name__ == "__main__":
                 {
                     "script": "quodlibet.py",
                     "icon_resources": [(0,
-                       os.path.join('..', 'win_installer', 'quodlibet.ico'))]
+                       os.path.join('..', 'win_installer', 'misc',
+                                    'quodlibet.ico'))]
                 },
                 {
                     "script": "exfalso.py",
                     "icon_resources": [(0,
-                        os.path.join('..', 'win_installer', 'exfalso.ico'))]
+                        os.path.join('..', 'win_installer', 'misc',
+                                     'exfalso.ico'))]
                 }
             ],
             'options': {
@@ -399,7 +402,7 @@ if __name__ == "__main__":
                                  'HTMLParser, cairo, musicbrainz2, shelve, '
                                  'json, gi'),
                     'skip_archive': True,
-                    'dist_dir': 'dist\\bin'
+                    'dist_dir': os.path.join('dist', 'bin')
                 }
             }
         })

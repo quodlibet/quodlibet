@@ -28,3 +28,7 @@ build/*
 
 # And IDEA
 .idea/*
+
+# Windows Installer
+win_installer/_bin
+win_installer/_build_env

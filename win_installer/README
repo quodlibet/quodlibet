@@ -1,0 +1,18 @@
+====================
+QL Windows Installer
+====================
+
+Requirements:
+
+* 7zip
+* wine (tested with 1.6.1)
+* QL build deps
+* wget
+* mercurial
+
+How To
+------
+
+* Run build_installer.sh
+* _bin will be created which contains installers of various dependencies
+* _build_env will be created which will contain the installer once finished
