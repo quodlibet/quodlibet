@@ -30,7 +30,7 @@ from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Alignment, SeparatorMenuItem
 from quodlibet.qltk.window import PersistentWindowMixin
-from quodlibet.util.path import mtime
+from quodlibet.util.path import mtime, normalize_path
 
 
 class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
@@ -155,7 +155,8 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         view.grab_focus()
         selection = view.get_selection()
         model, rows = selection.get_selected_rows()
-        filenames = sorted([os.path.realpath(model[row][0]) for row in rows])
+        filenames = [model[row][0] for row in rows]
+        filenames = map(normalize_path, map(os.path.realpath, filenames))
         songs = map(self.__library.get, filenames)
 
         if songs.count(None) != len(songs):
