@@ -133,7 +133,7 @@ class TModuleScanner(TestCase):
         s.rescan()
         os.remove(h.name)
         try:
-            os.remove(h.name + ".pyc")
+            os.remove(h.name + "c")
         except OSError:
             pass
         removed, added = s.rescan()
