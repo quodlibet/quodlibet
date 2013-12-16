@@ -134,7 +134,7 @@ class GDistribution(Distribution):
         return os.name != 'nt' and bool(self.dbus_services)
 
     def need_icon_cache(self):
-        return os.name != 'nt'
+        return True
 
     def need_icon_install(self):
         return os.name != 'nt'

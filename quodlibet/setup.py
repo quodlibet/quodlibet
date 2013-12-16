@@ -362,11 +362,6 @@ if __name__ == "__main__":
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
             "quodlibet", "images", ("svg", "png", "cache", "theme"))
 
-        ptypes = ["playorder", "songsmenu", "editing", "events", "gstreamer"]
-        for type_ in ptypes:
-            data_files.append((os.path.join('quodlibet', 'plugins', type_),
-                glob.glob(os.path.join('..', 'plugins', type_, '*.py'))))
-
         # py2exe trips over -1 when trying to write version info in the exe
         if setup_kwargs["version"].endswith(".-1"):
             setup_kwargs["version"] = setup_kwargs["version"][:-3]

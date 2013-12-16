@@ -31,6 +31,10 @@ else
     wget -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
     wget -c http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
 
+    pip install --download=. mutagen==1.22
+    pip install --download=. feedparser==5.1.3
+    pip install --download=. python-musicbrainz2==0.7.4
+
     # check again
     sha256sum -c "$MISC"/filehashes.txt || exit
 fi
@@ -49,6 +53,10 @@ QL_TEMP="$BUILD_ENV"/ql_temp
 # set up wine cfg
 export WINEARCH=win32
 export WINEPREFIX="$BUILD_ENV"/wine_env
+
+# try to limit the effect on the host system when installing with wine.
+# desktop links still get installed. :/
+export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 
 # create a fresh build env and link the binaries in
 rm -Rf "$BUILD_ENV"
@@ -94,6 +102,10 @@ cp -RT "$PYGI"/rtvc9/GnuTLS/gnome "$DEPS"
 cp -RT "$PYGI"/rtvc9/Soup/gnome "$DEPS"
 cp -RT "$PYGI"/rtvc9/GSTPluginsExtra/gnome "$DEPS"
 
+# create the icon theme caches
+wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/hicolor
+wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/HighContrast
+
 # now install python etc.
 msiexec /a bin/python-2.7.6.msi /qb
 wine bin/nsis-2.46-setup.exe /S
@@ -112,6 +124,8 @@ wine wineconsole --backend=curses build.bat
 
 QL_DEST="$QL_TEMP"/quodlibet/dist
 QL_BIN="$QL_DEST"/bin
+
+# python dlls
 cp "$PYDIR"/python27.dll "$QL_BIN"
 cp "$PYDIR"/msvcr90.dll "$QL_BIN"
 cp "$PYDIR"/Microsoft.VC90.CRT.manifest "$QL_BIN"
@@ -127,6 +141,34 @@ GTK_SETTINGS="$QL_DEST"/etc/gtk-3.0/settings.ini
 echo "[Settings]" > "$GTK_SETTINGS"
 echo "gtk-theme-name = Adwaita" >> "$GTK_SETTINGS"
 
+# remove translatins we don't support
+QL_LOCALE="$QL_TEMP"/quodlibet/build/share/locale
+MAIN_LOCALE="$QL_DEST"/share/locale
+python "$MISC"/prune_translations.py "$QL_LOCALE" "$MAIN_LOCALE"
+
+# copy the translations
+cp -RT "$QL_LOCALE" "$MAIN_LOCALE"
+
+# copy plugins; byte compile them; remove leftover *.py files
+cp -RT "$QL_TEMP"/plugins "$QL_BIN"/quodlibet/plugins
+wine "$PYDIR"/python.exe -m compileall $(winepath -w "$QL_BIN"/quodlibet/plugins)
+find "$QL_DEST" -name "*.py" | xargs -I {} rm -v "{}"
+
+# remove some large gstreamer plugins..
+GST_LIBS="$QL_DEST"/lib/gstreamer-1.0
+rm "$GST_LIBS"/libgstflite.dll # Flite speech synthesizer plugin
+rm "$GST_LIBS"/libgstopencv.dll # OpenCV Plugins
+rm "$GST_LIBS"/libgstx264.dll # H264 plugins
+rm "$GST_LIBS"/libgstcacasink.dll # Colored ASCII Art video sink
+rm "$GST_LIBS"/libgstschro.dll # Schroedinger plugin
+rm "$GST_LIBS"/libgstjack.dll # Jack sink/source
+rm "$GST_LIBS"/libgstpulse.dll # Pulse sink
+rm "$GST_LIBS"/libgstvpx.dll # VP8
+
+# and some other stuff we don't need
+rm -R "$QL_DEST"/share/gst-plugins-bad
+
+# now package everything up
 cd "$BUILD_ENV"
 wine wineconsole --backend=curses package.bat
 
