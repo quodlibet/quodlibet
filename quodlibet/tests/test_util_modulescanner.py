@@ -132,6 +132,10 @@ class TModuleScanner(TestCase):
         s = ModuleScanner([self.d])
         s.rescan()
         os.remove(h.name)
+        try:
+            os.remove(h.name + ".pyc")
+        except OSError:
+            pass
         removed, added = s.rescan()
         self.failIf(added)
         self.failUnlessEqual(removed, ["q3"])
