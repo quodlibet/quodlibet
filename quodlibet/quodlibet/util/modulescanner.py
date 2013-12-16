@@ -92,7 +92,7 @@ class ModuleScanner(object):
 
         # get what is there atm
         for folder in self.__folders:
-            for name, path, deps in get_importables(folder):
+            for name, path, deps in get_importables(folder, True):
                 # take the basename as module key, later modules win
                 info[name] = (path, deps)
 
