@@ -11,7 +11,8 @@ class TComboBoxEntrySave(TestCase):
 
     def setUp(self):
         quodlibet.config.init()
-        self.fname = mkstemp()[1]
+        h, self.fname = mkstemp()
+        os.close(h)
         f = file(self.fname, "w")
         f.write(self.memory)
         f.close()
@@ -91,7 +92,8 @@ class TStandaloneEditor(TestCase):
     TEST_KV_DATA = [("Search Foo", "https://foo.com/search?q=<artist>-<title>")]
     def setUp(self):
         quodlibet.config.init()
-        self.fname = mkstemp()[1]
+        h, self.fname = mkstemp()
+        os.close(h)
         f = file(self.fname + ".saved", "w")
         f.write("%s\n%s\n" % (self.TEST_KV_DATA[0][1], self.TEST_KV_DATA[0][0]))
         f.close()

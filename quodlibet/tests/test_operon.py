@@ -34,8 +34,10 @@ def call(args=None):
 class TOperonBase(TestCase):
     def setUp(self):
         config.init()
-        self.f = mkstemp(".ogg")[1]
-        self.f2 = mkstemp(".mp3")[1]
+        fd, self.f = mkstemp(".ogg")
+        os.close(fd)
+        fd, self.f2 = mkstemp(".mp3")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ogg'), self.f)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.f2)
         self.s = MusicFile(self.f)
@@ -408,7 +410,8 @@ class TOperonImageExtract(TOperonBase):
     def setUp(self):
         super(TOperonImageExtract, self).setUp()
 
-        self.fcover = mkstemp(".wma")[1]
+        h, self.fcover = mkstemp(".wma")
+        os.close(h)
         shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
         self.cover = MusicFile(self.fcover)
 
@@ -470,11 +473,13 @@ class TOperonImageSet(TOperonBase):
         super(TOperonImageSet, self).setUp()
         from gi.repository import GdkPixbuf
 
-        self.filename = mkstemp(".png")[1]
+        h, self.filename = mkstemp(".png")
+        os.close(h)
         wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
         wide.savev(self.filename, "png", [], [])
 
-        self.fcover = mkstemp(".wma")[1]
+        h, self.fcover = mkstemp(".wma")
+        os.close(h)
         shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
         self.cover = MusicFile(self.fcover)
 
@@ -516,7 +521,8 @@ class TOperonImageClear(TOperonBase):
 
     def setUp(self):
         super(TOperonImageClear, self).setUp()
-        self.fcover = mkstemp(".wma")[1]
+        fd, self.fcover = mkstemp(".wma")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
         self.cover = MusicFile(self.fcover)
 

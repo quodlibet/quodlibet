@@ -60,7 +60,8 @@ class TEmbeddedImages(TestCase):
     def setUp(self):
         from gi.repository import GdkPixbuf
 
-        self.filename = mkstemp()[1]
+        h, self.filename = mkstemp()
+        os.close(h)
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
         pb.savev(self.filename, "png", [], [])
 
@@ -94,7 +95,8 @@ class TEmbeddedImages(TestCase):
         self.assertTrue("png" in image.extensions)
 
     def test_from_path_empty(self):
-        empty = mkstemp()[1]
+        h, empty = mkstemp()
+        os.close(h)
         try:
             image = EmbeddedImage.from_path(empty)
             self.assertFalse(image)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import contextlib
 
 from gi.repository import Gst
@@ -36,7 +37,10 @@ class TGStreamerSink(TestCase):
             obj, name = Sink("notarealsink")
         __builtin__.__dict__["print_w"] = pw
         self.failUnless(obj)
-        self.failUnlessEqual(name, "autoaudiosink")
+        if os.name == "nt":
+            self.failUnlessEqual(name, "directsoundsink")
+        else:
+            self.failUnlessEqual(name, "autoaudiosink")
 
     def test_append_sink(self):
         obj, name = Sink("volume")

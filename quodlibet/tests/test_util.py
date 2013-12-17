@@ -11,7 +11,11 @@ import os
 import re
 from quodlibet import util
 from quodlibet import config
+from quodlibet import const
 from quodlibet.util import format_time_long as f_t_l
+
+
+is_win = os.name == "nt"
 
 
 class Tmkdir(TestCase):
@@ -56,18 +60,28 @@ add(Tmtime)
 
 
 class Tunexpand(TestCase):
-    d = os.path.expanduser("~")
+    d = expanduser("~")
+    u = unexpand(d)
 
     def test_base(self):
-        self.failUnlessEqual(unexpand(self.d), "~")
+        path = unexpand(self.d)
+        if is_win:
+            self.failUnlessEqual(path, "%USERPROFILE%")
+        else:
+            self.failUnlessEqual(path, "~")
+
     def test_base_trailing(self):
-        self.failUnlessEqual(unexpand(self.d + "/"), "~/")
+        path = unexpand(self.d + os.path.sep)
+        self.failUnlessEqual(path, self.u + os.path.sep)
+
     def test_noprefix(self):
-        self.failUnlessEqual(
-            unexpand(self.d + "foobar/"), self.d + "foobar/")
+        path = unexpand(self.d + "foobar" + os.path.sep)
+        self.failUnlessEqual(path, self.d + "foobar" + os.path.sep)
+
     def test_subfile(self):
-        self.failUnlessEqual(
-            unexpand(os.path.join(self.d, "la/la")), "~/la/la")
+        path = unexpand(os.path.join(self.d, "la", "la"))
+        self.failUnlessEqual(path, os.path.join(self.u, "la", "la"))
+
 add(Tunexpand)
 
 
@@ -541,7 +555,10 @@ add(Tformat_time_long)
 
 
 class Tspawn(TestCase):
+
     def test_simple(self):
+        if is_win:
+            return
         self.failUnless(util.spawn(["ls", "."], stdout=True))
 
     def test_invalid(self):
@@ -549,9 +566,13 @@ class Tspawn(TestCase):
         self.failUnlessRaises(GLib.GError, util.spawn, ["not a command"])
 
     def test_types(self):
+        if is_win:
+            return
         self.failUnlessRaises(TypeError, util.spawn, [u"ls"])
 
     def test_get_output(self):
+        if is_win:
+            return
         fileobj = util.spawn(["echo", "'$1'", '"$2"', ">3"], stdout=True)
         self.failUnlessEqual(fileobj.read().split(), ["'$1'", '"$2"', ">3"])
 add(Tspawn)
@@ -606,6 +627,9 @@ add(Tlibrary)
 
 class TNormalizePath(TestCase):
     def test_darwin(self):
+        if is_win:
+            return
+
         from quodlibet.util.path import _normalize_darwin_path
 
         def norm(p):

@@ -20,7 +20,8 @@ class TParsePlaylist(TestCase):
         quodlibet.config.quit()
 
     def test_parse_empty(self):
-        name = mkstemp()[1]
+        h, name = mkstemp()
+        os.close(h)
         file(name, "w").close()
         pl = self.Parse(name)
         os.unlink(name)
@@ -28,7 +29,8 @@ class TParsePlaylist(TestCase):
         pl.delete()
 
     def test_parse_onesong(self):
-        name = mkstemp()[1]
+        h, name = mkstemp()
+        os.close(h)
         f = file(name, "w")
         target = self.prefix
         target += os.path.join(DATA_DIR, "silence-44-s.ogg")
@@ -41,7 +43,8 @@ class TParsePlaylist(TestCase):
         list.delete()
 
     def test_parse_onesong_uri(self):
-        name = mkstemp()[1]
+        h, name = mkstemp()
+        os.close(h)
         target = os.path.join(DATA_DIR, "silence-44-s.ogg")
         from quodlibet.util.uri import URI
         target = URI.frompath(target)

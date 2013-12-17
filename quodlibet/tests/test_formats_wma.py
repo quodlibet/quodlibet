@@ -18,11 +18,13 @@ from quodlibet.formats._image import APICType, EmbeddedImage
 class TWMAFile(TestCase):
 
     def setUp(self):
-        self.f = mkstemp(".wma")[1]
+        fd, self.f = mkstemp(".wma")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'test.wma'), self.f)
         self.song = WMAFile(self.f)
 
-        self.f2 = mkstemp(".wma")[1]
+        fd, self.f2 = mkstemp(".wma")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.f2)
         self.song2 = WMAFile(self.f2)
 

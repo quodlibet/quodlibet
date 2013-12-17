@@ -18,7 +18,8 @@ import mutagen.mp4
 class TMP4File(TestCase):
 
     def setUp(self):
-        self.f = mkstemp(".m4a")[1]
+        fd, self.f = mkstemp(".m4a")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'test.m4a'), self.f)
         self.song = MP4File(self.f)
 

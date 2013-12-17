@@ -238,8 +238,8 @@ class TPicklingMixin(TestCase):
 
     def test_save_load(self):
         fd, filename = mkstemp()
+        os.close(fd)
         try:
-            os.close(fd)
             self.library.add(Frange(30))
             self.library.save(filename)
 
@@ -401,6 +401,7 @@ class TSongFileLibrary(TSongLibrary):
 
     def __get_file(self):
         fd, filename = mkstemp(".flac")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), filename)
         return filename
 

@@ -123,5 +123,5 @@ class JSONObjectDict(dict):
                     f.write(json_str)
             except IOError as e:
                 print_w("Couldn't write JSON for %s object(s) (%s)"
-                        % (self.cls.__name__, e))
+                        % (type(self).__name__, e))
         return json_str

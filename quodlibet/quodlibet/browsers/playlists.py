@@ -41,12 +41,15 @@ def ParseM3U(filename, library=None):
     plname = fsdecode(os.path.basename(
         os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
-    for line in file(filename):
+
+    h = file(filename)
+    for line in h:
         line = line.strip()
         if line.startswith("#"):
             continue
         else:
             filenames.append(line)
+    h.close()
     return __ParsePlaylist(plname, filename, filenames, library)
 
 
@@ -54,7 +57,8 @@ def ParsePLS(filename, name="", library=None):
     plname = fsdecode(os.path.basename(
         os.path.splitext(filename)[0])).encode('utf-8')
     filenames = []
-    for line in file(filename):
+    h = file(filename)
+    for line in h:
         line = line.strip()
         if not line.lower().startswith("file"):
             continue
@@ -65,6 +69,7 @@ def ParsePLS(filename, name="", library=None):
                 pass
             else:
                 filenames.append(line)
+    h.close()
     return __ParsePlaylist(plname, filename, filenames, library)
 
 

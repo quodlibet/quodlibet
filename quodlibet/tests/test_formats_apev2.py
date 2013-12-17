@@ -105,14 +105,16 @@ class TAPEv2FileBase(TestCase):
 
 class TMPCFile(TAPEv2FileBase):
     def setUp(self):
-        self.f = mkstemp(".mpc")[1]
+        fd, self.f = mkstemp(".mpc")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mpc'), self.f)
         self.s = MPCFile(self.f)
 add(TMPCFile)
 
 class TMAFile(TAPEv2FileBase):
     def setUp(self):
-        self.f = mkstemp(".ape")[1]
+        fd, self.f = mkstemp(".ape")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ape'), self.f)
         self.s = MonkeysAudioFile(self.f)
 add(TMAFile)

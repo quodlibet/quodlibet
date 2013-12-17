@@ -18,7 +18,8 @@ class TID3Images(TestCase):
 
     def setUp(self):
         config.init()
-        self.filename = mkstemp(".mp3")[1]
+        fd, self.filename = mkstemp(".mp3")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.filename)
 
     def tearDown(self):
@@ -87,9 +88,11 @@ add(TID3Images)
 class TID3File(TestCase):
     def setUp(self):
         config.init()
-        self.filename = mkstemp(".mp3")[1]
+        fd, self.filename = mkstemp(".mp3")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.filename)
-        self.filename2 = mkstemp(".mp3")[1]
+        fd, self.filename2 = mkstemp(".mp3")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'mutagen-bug.mp3'), self.filename2)
 
     def test_optional_POPM_count(self):

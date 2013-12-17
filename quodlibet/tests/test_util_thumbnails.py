@@ -11,6 +11,7 @@ except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
+from quodlibet.util.path import expanduser, pathname2url
 
 
 class TThumb(TestCase):
@@ -45,13 +46,10 @@ class TThumb(TestCase):
         s.failUnlessEqual((thumb.get_width(), thumb.get_height()), (50, 3))
 
         #test the thumbnail filename
-        uri = "file://" + urllib.pathname2url(s.filename)
+        uri = "file://" + pathname2url(s.filename)
         name = hash.md5(uri).hexdigest() + ".png"
-        path = os.path.expanduser("~/.thumbnails")
-        # newer spec
-        new_path = os.path.expanduser("~/.cache/thumbnails")
-        if os.path.exists(new_path):
-            path = new_path
+        
+        path = thumbnails.get_thumbnail_folder()
         path = os.path.join(path, "normal", name)
 
         s.failUnless(os.path.isfile(path))
@@ -65,6 +63,7 @@ class TThumb(TestCase):
         s.failUnlessEqual(meta_uri, uri)
 
         #check rights
-        s.failUnlessEqual(os.stat(path).st_mode, 33152)
+        if os.name != "nt":
+            s.failUnlessEqual(os.stat(path).st_mode, 33152)
 
 add(TThumb)

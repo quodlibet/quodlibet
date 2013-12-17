@@ -10,7 +10,8 @@ from quodlibet.qltk.cover import CoverImage, BigCenteredImage, ResizeImage
 class TCoverImage(TestCase):
     def setUp(self):
         config.init()
-        self.fn = mkstemp()[1]
+        fd, self.fn = mkstemp()
+        os.close(fd)
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
         pb.savev(self.fn, "png", [], [])
 
