@@ -9,6 +9,7 @@ Requirements:
 * QL build deps
 * wget
 * mercurial
+* 1.5GB free space
 
 How To
 ------
@@ -16,3 +17,11 @@ How To
 * Run build_installer.sh
 * _bin will be created which contains installers of various dependencies
 * _build_env will be created which will contain the installer once finished
+
+
+SDK Environment
+---------------
+
+After running build_installer.sh, _build_env/quodlibet-win-sdk contains
+a development environment including all dependencies, a repository clone
+and the needed launchers.

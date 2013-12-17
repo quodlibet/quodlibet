@@ -53,6 +53,7 @@ QL_TEMP="$BUILD_ENV"/ql_temp
 # set up wine cfg
 export WINEARCH=win32
 export WINEPREFIX="$BUILD_ENV"/wine_env
+export WINEDEBUG=-all
 
 # try to limit the effect on the host system when installing with wine.
 # desktop links still get installed. :/
@@ -171,6 +172,32 @@ rm -R "$QL_DEST"/share/gst-plugins-bad
 # now package everything up
 cd "$BUILD_ENV"
 wine wineconsole --backend=curses package.bat
+
+###############################################
+# Now the SDK
+SDK="$BUILD_ENV"/quodlibet-win-sdk
+mkdir "$SDK"
+
+# launchers, README
+cp "$MISC"/exfalso.bat "$SDK"
+cp "$MISC"/quodlibet.bat "$SDK"
+cp "$MISC"/wine.sh "$SDK"
+cp "$MISC"/README.txt "$SDK"
+
+# bin deps
+cp -R "$DEPS" "$SDK"
+cp -R "$PYDIR" "$SDK"
+mv "$SDK"/Python27 "$SDK"/python
+
+# clone again
+QL_SDK="$SDK"/quodlibet
+hg clone "$QL_REPO" "$QL_SDK"
+
+# link in the plugins
+QL_SDK_CONFIG="$SDK"/_ql_config
+mkdir "$QL_SDK_CONFIG"
+cd "$QL_SDK_CONFIG"
+ln -s ../quodlibet/plugins
 
 # done, hurray!
 echo "DONE!"
