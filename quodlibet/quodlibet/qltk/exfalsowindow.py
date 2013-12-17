@@ -20,7 +20,7 @@ from quodlibet.plugins import PluginManager
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.qltk.edittags import EditTags
-from quodlibet.qltk.filesel import FileSelector
+from quodlibet.qltk.filesel import MainFileSelector, FileSelector
 from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.renamefiles import RenameFiles
 from quodlibet.qltk.tagsfrompath import TagsFromPath
@@ -94,7 +94,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         l.set_ellipsize(Pango.EllipsizeMode.END)
         bbox.pack_start(l, True, True, 0)
 
-        fs = FileSelector(dir)
+        fs = MainFileSelector(dir)
 
         vb.pack_start(fs, True, True, 0)
         vb.pack_start(Alignment(bbox, border=6), False, True, 0)
@@ -152,21 +152,22 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
                 return True # cancel or closed
 
     def __popup_menu(self, view, fs):
-        view.grab_focus()
-        selection = view.get_selection()
-        model, rows = selection.get_selected_rows()
-        filenames = [model[row][0] for row in rows]
-        filenames = map(normalize_path, map(os.path.realpath, filenames))
-        songs = map(self.__library.get, filenames)
 
-        if songs.count(None) != len(songs):
-            menu = self.pm.Menu(self.__library, self, filter(None, songs))
+        # get all songs for the selection
+        filenames = fs.get_selected_paths()
+        filenames = map(normalize_path, map(os.path.realpath, filenames))
+        maybe_songs = [self.__library.get(f) for f in filenames]
+        songs = [s for s in maybe_songs if s]
+
+        if songs:
+            menu = self.pm.Menu(self.__library, self, songs)
             if menu is None:
                 menu = Gtk.Menu()
             else:
                 menu.prepend(SeparatorMenuItem())
         else:
             menu = Gtk.Menu()
+
         b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
         b.connect('activate', self.__delete, songs, fs)
         menu.prepend(b)

@@ -64,8 +64,10 @@ def fsencode(s, note=False):
 
 if sys.platform == "win32":
     fsnative = fsdecode  # Decode a filename on windows
+    is_fsnative = lambda s: isinstance(s, unicode)
 else:
     fsnative = fsencode  # Encode it on other platforms
+    is_fsnative = lambda s: isinstance(s, str)
 
 
 def iscommand(s):

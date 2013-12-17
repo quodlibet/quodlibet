@@ -20,11 +20,13 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
+
 from quodlibet.util.path import fsdecode, listdir
 
 
-def search_func(model, column, key, iter, handledirs):
-    check = model.get_value(iter, 0)
+def search_func(model, column, key, iter_, handledirs):
+    check = model.get_value(iter_, 0)
     if check is None:
         return True
     elif not handledirs or os.sep not in key:
@@ -43,16 +45,102 @@ def filesel_filter(filename):
     return False
 
 
+def _get_win_favorites():
+    """Returns a list of paths for commonly used directories.
+
+    e.g. My Music, Desktop etc.
+    """
+
+    assert os.name == "nt"
+
+    folders = []
+
+    try:
+        from win32com.shell import shell, shellcon
+        import pywintypes
+    except ImportError:
+        return folders
+
+    ids = [shellcon.CSIDL_DESKTOP, shellcon.CSIDL_PERSONAL,
+           shellcon.CSIDL_MYMUSIC]
+
+    for id_ in ids:
+        try:
+            path = shell.SHGetFolderPath(0, id_, 0, 0)
+        except pywintypes.com_error:
+            continue
+        folders.append(path)
+
+    return folders
+
+
+def get_favorites():
+    """A list of paths of commonly used folders (Desktop,..)
+
+    Paths don't have to exist.
+    """
+
+    if os.name == "nt":
+        return _get_win_favorites()
+    else:
+        return [const.HOME, "/"]
+
+
+def _get_win_drives():
+    """Returns a list of paths for all available drives e.g. ['C:\\']"""
+
+    assert os.name == "nt"
+    drives = [letter + ":\\" for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ"]
+    return [d for d in drives if os.path.isdir(d)]
+
+
+def get_drives():
+    """A list of accessible drives"""
+
+    if os.name == "nt":
+        return _get_win_drives()
+    else:
+        return []
+
+
+def get_gtk_bookmarks():
+    """A list of paths from the GTK+ bookmarks.
+
+    The paths don't have to exist.
+    """
+
+    path = os.path.join(const.HOME, ".gtk-bookmarks")
+    folders = []
+    try:
+        with open(path, "rb") as f:
+            for line in f.readlines():
+                parts = line.split()
+                if not parts:
+                    continue
+                folder_url = parts[0]
+                folders.append(urlparse.urlsplit(folder_url)[2])
+    except EnvironmentError:
+        pass
+
+    return folders
+
+
 class DirectoryTree(RCMTreeView, MultiDragTreeView):
-    def cell_data(column, cell, model, iter, userdata):
-        value = model[iter][0]
-        if value is not None:
-            cell.set_property('text',
-                              fsdecode(os.path.basename(value) or value))
-    cell_data = staticmethod(cell_data)
+    """A tree view showing multiple folder hierarchies"""
 
     def __init__(self, initial=None, folders=None):
-        super(DirectoryTree, self).__init__(Gtk.TreeStore(str))
+        """
+        initial -- the path to select/scroll to
+        folders -- a list of paths to show in the tree view, None
+                   will result in a separator.
+        """
+
+        model = ObjectTreeStore()
+        super(DirectoryTree, self).__init__(model)
+
+        if initial is not None:
+            initial = util.fsnative(initial)
+
         column = TreeViewColumn(_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
@@ -60,76 +148,32 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         column.pack_start(render, True)
-        column.set_cell_data_func(render, self.cell_data)
 
-        column.add_attribute(render, "text", 0)
+        def cell_data(column, cell, model, iter_, userdata):
+            value = model.get_value(iter_)
+            if value is not None:
+                text = fsdecode(os.path.basename(value) or value)
+                cell.set_property('text', text)
+
+        column.set_cell_data_func(render, cell_data)
+
         self.append_column(column)
         self.set_search_equal_func(search_func, True)
 
         if folders is None:
             folders = []
 
-        if os.name == "nt":
-            try:
-                from win32com.shell import shell, shellcon as con
-                import pywintypes
-            except ImportError:
-                pass
-            else:
-                if folders:
-                    folders.append(None)
-
-                try:
-                    desktop = shell.SHGetFolderPath(0, con.CSIDL_DESKTOP, 0, 0)
-                except pywintypes.com_error:
-                    pass
-                else:
-                    folders.append(desktop)
-
-                folders.append(const.HOME)
-
-                try:
-                    music = shell.SHGetFolderPath(0, con.CSIDL_MYMUSIC, 0, 0)
-                except pywintypes.com_error:
-                    pass
-                else:
-                    folders.append(music)
-
-            if folders:
-                folders.append(None)
-            drives = [letter + ":\\" for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ"]
-            map(folders.append, filter(os.path.isdir, drives))
-        else:
-            if folders:
-                folders.append(None)
-            folders.extend([const.HOME, "/"])
-
-        # Read in the GTK bookmarks list; gjc says this is the right way
-        try:
-            f = file(os.path.join(const.HOME, ".gtk-bookmarks"))
-        except EnvironmentError:
-            pass
-        else:
-            folders.append(None)
-            for line in (l for l in f.readlines() if l.strip()):
-                folder_url = line.split()[0]
-                folders.append(urlparse.urlsplit(folder_url)[2])
-
-        def is_folder(filename):
-            return filename is None or os.path.isdir(filename)
-        folders = filter(is_folder, folders)
-        if folders[-1] is None:
-            folders.pop()
-
         for path in folders:
-            niter = self.get_model().append(None, [path])
+            niter = model.append(None, [path])
             if path is not None:
-                self.get_model().append(niter, ["dummy"])
+                model.append(niter, ["dummy"])
+
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.connect(
-            'test-expand-row', DirectoryTree.__expanded, self.get_model())
+            'test-expand-row', DirectoryTree.__expanded, model)
+
         self.set_row_separator_func(
-            lambda model, iter, data: model[iter][0] is None, None)
+            lambda model, iter_, data: model.get_value(iter_) is None, None)
 
         if initial:
             self.go_to(initial)
@@ -150,9 +194,21 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         menu.show_all()
         self.connect_object('popup-menu', self.__popup_menu, menu)
 
-    def go_to(self, initial):
+    def get_selected_paths(self):
+        """A list of fs paths"""
+
+        selection = self.get_selection()
+        model, paths = selection.get_selected_rows()
+        return [model[p][0] for p in paths]
+
+    def go_to(self, path_to_go):
+        # FIXME: this works on the FS instead of the model
+        # and expects fixed initial folders
+
+        path_to_go = util.fsnative(path_to_go)
+
         path = []
-        head, tail = os.path.split(initial)
+        head, tail = os.path.split(path_to_go)
         while os.path.join(head, tail) != const.HOME and tail != '':
             if tail:
                 def isvisibledir(t):
@@ -161,8 +217,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                             os.access(joined, os.X_OK) and
                             os.path.isdir(joined))
                 try:
-                    dirs = filter(isvisibledir,
-                                  sorted(os.listdir(util.fsnative(head))))
+                    dirs = filter(isvisibledir, sorted(os.listdir(head)))
                 except OSError:
                     break
                 try:
@@ -171,89 +226,107 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                     break
             head, tail = os.path.split(head)
 
-        if initial.startswith(const.HOME):
+        if path_to_go.startswith(const.HOME):
             path.insert(0, 0)
         else:
             path.insert(0, 1)
+
         for i in range(len(path)):
             self.expand_row(Gtk.TreePath(tuple(path[:i + 1])), False)
-        self.get_selection().select_path(tuple(path))
-        self.scroll_to_cell(tuple(path))
+
+        tree_path = Gtk.TreePath(tuple(path))
+        self.get_selection().select_path(tree_path)
+        try:
+            self.get_model().get_iter(tree_path)
+        except ValueError:
+            pass
+        else:
+            self.scroll_to_cell(tree_path)
 
     def __popup_menu(self, menu):
-        try:
-            model, (path,) = self.get_selection().get_selected_rows()
-        except ValueError:
+        model, paths = self.get_selection().get_selected_rows()
+        if len(paths) != 1:
             return True
+
+        path = paths[0]
         directory = model[path][0]
         delete = menu.get_children()[1]
         try:
-            delete.set_sensitive(
-                len(os.listdir(util.fsnative(directory))) == 0)
+            delete.set_sensitive(len(os.listdir(directory)) == 0)
         except OSError, err:
             if err.errno == errno.ENOENT:
                 model.remove(model.get_iter(path))
-        else:
-            selection = self.get_selection()
-            selection.unselect_all()
-            selection.select_path(path)
-            return self.popup_menu(menu, 0, Gtk.get_current_event_time())
+            return False
+
+        selection = self.get_selection()
+        selection.unselect_all()
+        selection.select_path(path)
+        return self.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __mkdir(self, button):
-        model, rows = self.get_selection().get_selected_rows()
-        if len(rows) != 1:
+        model, paths = self.get_selection().get_selected_rows()
+        if len(paths) != 1:
             return
 
-        row = rows[0]
-        directory = model[row][0]
-        dir = GetStringDialog(
+        path = paths[0]
+        directory = model[path][0]
+
+        dir_ = GetStringDialog(
             None, _("New Folder"), _("Enter a name for the new folder:")).run()
 
-        if dir:
-            dir = util.fsnative(dir.decode('utf-8'))
-            fullpath = os.path.realpath(os.path.join(directory, dir))
-            try:
-                os.makedirs(fullpath)
-            except EnvironmentError, err:
-                error = "<b>%s</b>: %s" % (err.filename, err.strerror)
-                qltk.ErrorMessage(
-                    None, _("Unable to create folder"), error).run()
-            else:
-                self.emit('test-expand-row', model.get_iter(row), row)
-                self.expand_row(row, False)
+        if not dir_:
+            return
+
+        dir_ = util.fsnative(dir_.decode('utf-8'))
+        fullpath = os.path.realpath(os.path.join(directory, dir_))
+
+        try:
+            os.makedirs(fullpath)
+        except EnvironmentError, err:
+            error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+            qltk.ErrorMessage(
+                None, _("Unable to create folder"), error).run()
+            return
+
+        self.emit('test-expand-row', model.get_iter(path), path)
+        self.expand_row(path, False)
 
     def __rmdir(self, button):
-        model, rows = self.get_selection().get_selected_rows()
-        if len(rows) != 1:
+        model, paths = self.get_selection().get_selected_rows()
+        if len(paths) != 1:
             return
-        directory = model[rows[0]][0]
+
+        directory = model[paths[0]][0]
         try:
             os.rmdir(directory)
         except EnvironmentError, err:
             error = "<b>%s</b>: %s" % (err.filename, err.strerror)
             qltk.ErrorMessage(
                 None, _("Unable to delete folder"), error).run()
-        else:
-            prow = rows[0][:-1]
-            expanded = self.row_expanded(prow)
-            self.emit('test-expand-row', model.get_iter(prow), prow)
-            if expanded:
-                self.expand_row(prow, False)
+            return
+
+        ppath = Gtk.TreePath(paths[0][:-1])
+        expanded = self.row_expanded(ppath)
+        self.emit('test-expand-row', model.get_iter(ppath), ppath)
+        if expanded:
+            self.expand_row(ppath, False)
 
     def __expand(self, button):
         selection = self.get_selection()
-        model, rows = selection.get_selected_rows()
-        for row in rows:
-            it = model.get_iter(row)
-            self.expand_row(row, False)
-            last = self.__select_children(it, model, selection)
-            selection.select_range(row, last)
+        model, paths = selection.get_selected_rows()
 
-    def __select_children(self, iter, model, selection):
-        nchildren = model.iter_n_children(iter)
-        last = model.get_path(iter)
+        for path in paths:
+            iter_ = model.get_iter(path)
+            self.expand_row(path, False)
+            last = self.__select_children(iter_, model, selection)
+            selection.select_range(path, last)
+
+    def __select_children(self, iter_, model, selection):
+        nchildren = model.iter_n_children(iter_)
+        last = model.get_path(iter_)
+
         for i in xrange(nchildren):
-            child = model.iter_nth_child(iter, i)
+            child = model.iter_nth_child(iter_, i)
             self.expand_row(model.get_path(child), False)
             last = self.__select_children(child, model, selection)
         return last
@@ -314,11 +387,9 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
 
 class FileSelector(Gtk.VPaned):
-    def cell_data(column, cell, model, iter, userdata):
-        value = model[iter][0]
-        if value is not None:
-            cell.set_property('text', fsdecode(os.path.basename(value)))
-    cell_data = staticmethod(cell_data)
+    """A file selector widget consisting of a folder tree
+    and a file list below.
+    """
 
     __gsignals__ = {
         'changed': (GObject.SignalFlags.RUN_LAST, None,
@@ -326,13 +397,25 @@ class FileSelector(Gtk.VPaned):
     }
 
     def __init__(self, initial=None, filter=filesel_filter, folders=None):
+        """
+        initial -- a path to a file which should be shown initially
+        filter -- a function which filters paths shown in the file list
+        folders -- list of shown folders in the directory tree
+        """
+
         super(FileSelector, self).__init__()
         self.__filter = filter
+
+        if initial is not None:
+            initial = util.fsnative(initial)
 
         if initial and os.path.isfile(initial):
             initial = os.path.dirname(initial)
         dirlist = DirectoryTree(initial, folders=folders)
-        filelist = AllTreeView(Gtk.ListStore(str))
+
+        model = ObjectStore()
+        filelist = AllTreeView(model)
+
         column = TreeViewColumn(_("Songs"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
@@ -341,8 +424,13 @@ class FileSelector(Gtk.VPaned):
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         column.pack_start(render, True)
-        column.set_cell_data_func(render, self.cell_data)
-        column.add_attribute(render, "text", 0)
+
+        def cell_data(column, cell, model, iter_, userdata):
+            value = model.get_value(iter_)
+            cell.set_property('text', fsdecode(os.path.basename(value)))
+
+        column.set_cell_data_func(render, cell_data)
+
         filelist.append_column(column)
         filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -352,7 +440,7 @@ class FileSelector(Gtk.VPaned):
             'changed', self.__changed)
 
         dirlist.get_selection().connect(
-            'changed', self.__fill, filelist)
+            'changed', self.__dir_selection_changed, filelist)
         dirlist.get_selection().emit('changed')
 
         def select_all_files(view, path, col, fileselection):
@@ -373,34 +461,116 @@ class FileSelector(Gtk.VPaned):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack2(sw, resize=True)
 
-    def rescan(self, *args):
-        self.get_child1().get_child().get_selection().emit('changed')
+    def get_selected_paths(self):
+        """A list of fs paths"""
+
+        filelist = self.get_child2().get_child()
+        selection = filelist.get_selection()
+        model, paths = selection.get_selected_rows()
+        return [model[p][0] for p in paths]
+
+    def rescan(self):
+        """Refill the file list for the current directory selection"""
+
+        dirlist = self.get_child1().get_child()
+        filelist = self.get_child2().get_child()
+
+        dir_selection = dirlist.get_selection()
+        self.__dir_selection_changed(dir_selection, filelist)
 
     def __changed(self, selection):
+        # forward file list selection changed signals
         self.emit('changed', selection)
 
-    def __fill(self, selection, filelist):
+    def __dir_selection_changed(self, selection, filelist):
+        # dir selection changed, refill the file list
+
         fselect = filelist.get_selection()
         fselect.handler_block(self.__sig)
         fmodel, frows = fselect.get_selected_rows()
         selected = [fmodel[row][0] for row in frows]
+
         fmodel = filelist.get_model()
         fmodel.clear()
         dmodel, rows = selection.get_selected_rows()
         dirs = [dmodel[row][0] for row in rows]
-        for dir in dirs:
+        for dir_ in dirs:
             try:
-                files = filter(self.__filter, listdir(dir))
-                for file in sorted(files):
-                    filename = os.path.join(dir, file)
+                files = filter(self.__filter, listdir(dir_))
+                for file_ in sorted(files):
+                    filename = os.path.join(dir_, file_)
                     if (os.access(filename, os.R_OK) and
                             not os.path.isdir(filename)):
                         fmodel.append([filename])
             except OSError:
                 pass
 
-        for row in fmodel:
-            if row[0] in selected:
+        for filename in fmodel.itervalues():
+            if filename in selected:
                 fselect.select_path(row.path)
+
         fselect.handler_unblock(self.__sig)
         fselect.emit('changed')
+
+
+def _get_main_folders():
+
+    def filter_exists(paths):
+        return [p for p in paths if os.path.isdir(p)]
+
+    folders = []
+
+    favs = filter_exists(get_favorites())
+    if favs:
+        folders += favs
+
+    drives = filter_exists(get_drives())
+    if drives:
+        folders += [None] + drives
+
+    bookmarks = filter_exists(get_gtk_bookmarks())
+    if bookmarks:
+        folders += [None] + bookmarks
+
+    return folders
+
+
+class MainFileSelector(FileSelector):
+    """The main file selector used in EF.
+
+    Shows a useful list of directories in the directory tree.
+    """
+
+    def __init__(self, initial=None):
+        folders = _get_main_folders()
+        super(MainFileSelector, self).__init__(
+            initial, self._filesel_filter, folders=folders)
+
+    @staticmethod
+    def _filesel_filter(filename):
+        IMAGES = [".jpg", ".png", ".jpeg"]
+        if formats.filter(filename):
+            return True
+        else:
+            for ext in IMAGES:
+                if filename.lower().endswith(ext):
+                    return True
+        return False
+
+
+class MainDirectoryTree(DirectoryTree):
+    """The main directory tree used in QL.
+
+    Shows a useful list of directories.
+    """
+
+    def __init__(self, initial=None, folders=None):
+        if folders is None:
+            folders = []
+
+        main = _get_main_folders()
+        if folders and main:
+            folders += [None] + main
+
+        super(MainDirectoryTree, self).__init__(
+            initial=initial, folders=folders)
