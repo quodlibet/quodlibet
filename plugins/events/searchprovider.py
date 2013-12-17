@@ -20,6 +20,10 @@ Version=2
 
 import os
 
+if os.name == "nt":
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
+
 import dbus
 import dbus.service
 

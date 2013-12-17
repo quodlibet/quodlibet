@@ -4,6 +4,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+
+if os.name == "nt":
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
+
 import time
 
 try:

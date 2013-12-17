@@ -12,6 +12,12 @@
 # note. As for the license, GPLv2 is the only choice anyway, as it calls
 # Quod Libet code, which is GPLv2 as well, so I thought it safe to add this.
 
+import os
+
+if os.name == "nt":
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
+
 import re
 import tempfile
 

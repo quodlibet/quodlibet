@@ -32,8 +32,8 @@ try:
     from quodlibet.plugins.events import EventPlugin
 
     if not sys.platform.startswith("darwin"):
-        from quodlibet.plugins import PluginImportException
-        raise PluginImportException("wrong platform", ["darwin"])
+        from quodlibet.plugins import PluginNotSupportedError
+        raise PluginNotSupportedError
 
 except ImportError:
     # When executing the event tap process, we may not be able to import

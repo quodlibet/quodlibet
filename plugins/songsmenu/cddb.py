@@ -5,6 +5,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+
+if os.name == "nt":
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
+
 try:
     import CDDB
 except ImportError as e:
@@ -12,7 +18,6 @@ except ImportError as e:
     raise (plugins.MissingModulePluginException("cddb") if
            hasattr(plugins, "MissingModulePluginException") else e)
 
-import os
 from os import path
 from gi.repository import Gtk
 

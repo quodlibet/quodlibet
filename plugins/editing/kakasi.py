@@ -1,5 +1,9 @@
 import os
 
+if os.name == "nt":
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
+
 from gi.repository import Gtk, GObject
 
 from quodlibet import util

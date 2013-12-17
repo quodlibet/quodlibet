@@ -33,23 +33,25 @@ def quit():
 
 class PluginImportException(Exception):
     desc = ""
-    platforms = None
 
-    def __init__(self, desc, platforms=None):
-        """platforms is a list of platform names where this error should be
-        shown. In case it is None it will always be shown."""
-        super(PluginImportException, self).__init__()
+    def __init__(self, desc, *args, **kwargs):
+        super(PluginImportException, self).__init__(desc)
         self.desc = desc
-        self.platforms = platforms
 
     def should_show(self):
-        """If the error should be shown on the current platform"""
-        if self.platforms is not None:
-            sw = lambda x: sys.platform.startswith(x)
-            if sum(map(sw, self.platforms)):
-                return True
-            return False
+        """If the error description should be shown to the user"""
+
         return True
+
+
+class PluginNotSupportedError(PluginImportException):
+    """To hide the plugin (e.g. on Windows)"""
+
+    def __init__(self):
+        super(PluginNotSupportedError, self).__init__("not supported")
+
+    def should_show(self):
+        return False
 
 
 class MissingModulePluginException(PluginImportException):
