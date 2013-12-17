@@ -128,8 +128,6 @@ QL_BIN="$QL_DEST"/bin
 
 # python dlls
 cp "$PYDIR"/python27.dll "$QL_BIN"
-cp "$PYDIR"/msvcr90.dll "$QL_BIN"
-cp "$PYDIR"/Microsoft.VC90.CRT.manifest "$QL_BIN"
 
 # copy deps
 cp "$DEPS"/*.dll "$QL_BIN"
