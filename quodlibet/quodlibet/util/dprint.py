@@ -15,6 +15,10 @@ import quodlibet.util.logging
 from quodlibet.const import ENCODING
 
 
+def _is_py2exe():
+    return os.name == 'nt' and hasattr(sys, "frozen")
+
+
 def _format_print(string, prefix=""):
     """Inserts the given prefix at the beginning of each line"""
     if prefix:
@@ -118,7 +122,7 @@ def _strip_color(text, reg=re.compile("(\x1b\[\d{1,2}m|\\x1b\[0m)")):
 
 
 def _print(string, frm="utf-8", output=sys.stdout, strip_color=True):
-    if os.name == 'nt':
+    if _is_py2exe():
         return
 
     if output:
