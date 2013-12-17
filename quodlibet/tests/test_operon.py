@@ -8,30 +8,14 @@ import os
 import subprocess
 import imp
 import shutil
-import contextlib
-import StringIO
 import sys
 
 from tests import TestCase, add, DATA_DIR, mkstemp
+from helper import capture_output
 
 import quodlibet
 from quodlibet import config
 from quodlibet.formats import MusicFile
-
-
-@contextlib.contextmanager
-def capture_output():
-    err = StringIO.StringIO()
-    out = StringIO.StringIO()
-    old_err = sys.stderr
-    old_out = sys.stdout
-    sys.stderr = err
-    sys.stdout = out
-
-    yield (out, err)
-
-    sys.stderr = old_err
-    sys.stdout = old_out
 
 
 def call(args=None):

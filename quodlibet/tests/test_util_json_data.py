@@ -1,6 +1,7 @@
 import json
 from quodlibet.util.json_data import JSONObjectDict, JSONObject
 from tests import TestCase, add, NamedTemporaryFile
+from helper import capture_output
 
 
 class TJsonData(TestCase):
@@ -51,11 +52,12 @@ class TJsonData(TestCase):
 
     def test_from_invalid_json(self):
         # Invalid JSON
-        jd = JSONObjectDict.from_json(JSONObject, '{"foo":{}')
-        self.failIf(jd)
-        # Valid but unexpected Command field
-        self.failIf(JSONObjectDict.from_json(JSONObject,
-            '{"bar":{"name":"bar", "invalid":"foo"}'))
+        with capture_output():
+            jd = JSONObjectDict.from_json(JSONObject, '{"foo":{}')
+            self.failIf(jd)
+            # Valid but unexpected Command field
+            self.failIf(JSONObjectDict.from_json(JSONObject,
+                '{"bar":{"name":"bar", "invalid":"foo"}'))
 
     def test_subclass_from_json(self):
         coms = JSONObjectDict.from_json(self.WibbleData, self.WIBBLE_JSON_STR)

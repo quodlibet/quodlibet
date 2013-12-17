@@ -5,6 +5,8 @@
 # published by the Free Software Foundation
 
 import contextlib
+import StringIO
+import sys
 
 from gi.repository import Gtk
 
@@ -87,3 +89,18 @@ def visible(widget, width=None, height=None):
 
     while Gtk.events_pending():
         Gtk.main_iteration()
+
+
+@contextlib.contextmanager
+def capture_output():
+    err = StringIO.StringIO()
+    out = StringIO.StringIO()
+    old_err = sys.stderr
+    old_out = sys.stdout
+    sys.stderr = err
+    sys.stdout = out
+
+    yield (out, err)
+
+    sys.stderr = old_err
+    sys.stdout = old_out
