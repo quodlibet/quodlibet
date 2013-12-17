@@ -7,10 +7,14 @@
 
 from tests import TestCase, add
 
-import dbus
-from quodlibet.util.dbusutils import apply_signature, list_spec_properties
-from quodlibet.util.dbusutils import filter_property_spec, DBusProperty
-from quodlibet.util.dbusutils import dbus_unicode_validate
+try:
+    import dbus
+except ImportError:
+    dbus = None
+else:
+    from quodlibet.util.dbusutils import apply_signature, list_spec_properties
+    from quodlibet.util.dbusutils import filter_property_spec, DBusProperty
+    from quodlibet.util.dbusutils import dbus_unicode_validate
 
 
 ANN1 = """
@@ -117,4 +121,5 @@ class TDbusUtils(TestCase):
         self.failUnlessEqual(x.get_value("a1", "XXX"), "a2")
         self.failUnlessEqual(x.get_value("a1", "Position"), "a1")
 
-add(TDbusUtils)
+if dbus:
+    add(TDbusUtils)

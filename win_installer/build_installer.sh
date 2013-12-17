@@ -179,6 +179,7 @@ mkdir "$SDK"
 # launchers, README
 cp "$MISC"/exfalso.bat "$SDK"
 cp "$MISC"/quodlibet.bat "$SDK"
+cp "$MISC"/test.bat "$SDK"
 cp "$MISC"/wine.sh "$SDK"
 cp "$MISC"/README.txt "$SDK"
 
