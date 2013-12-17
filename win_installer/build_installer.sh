@@ -191,6 +191,8 @@ mv "$SDK"/Python27 "$SDK"/python
 # clone again
 QL_SDK="$SDK"/quodlibet
 hg clone "$QL_REPO" "$QL_SDK"
+# copy the remote
+cp -f "$QL_REPO"/.hg/hgrc "$QL_SDK"/.hg/
 
 # link in the plugins
 QL_SDK_CONFIG="$SDK"/_ql_config
