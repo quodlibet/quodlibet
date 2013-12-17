@@ -221,7 +221,7 @@ class TrayIcon(EventPlugin):
         # the KDE panel will emit size-changed until we reach 0
         w, h = self.__pixbuf.get_width(), self.__pixbuf.get_height()
         if h < self.__size:
-            bg = GdkPixbuf.Pixbuf(
+            bg = GdkPixbuf.Pixbuf.new(
                 GdkPixbuf.Colorspace.RGB, True, 8, w, self.__size)
             bg.fill(0)
             self.__pixbuf.copy_area(0, 0, w, h, bg, 0, (self.__size - h) / 2)
@@ -472,11 +472,13 @@ class TrayIcon(EventPlugin):
 
         menu.show_all()
 
-        if sys.platform == "win32":
-            menu.popup(None, None, None, button, time, self._icon)
+        if sys.platform != "win32":
+            pos_func = Gtk.StatusIcon.position_menu
+            pos_arg = self._icon
         else:
-            menu.popup(None, None, Gtk.StatusIcon.position_menu, self._icon,
-                       button, time)
+            pos_func = pos_arg = None
+
+        menu.popup(None, None, pos_func, pos_arg, button, time)
 
     plugin_on_paused = __update_icon
     plugin_on_unpaused = __update_icon
