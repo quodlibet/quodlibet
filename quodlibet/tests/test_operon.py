@@ -44,7 +44,6 @@ class TOperonBase(TestCase):
         self.s2 = MusicFile(self.f2)
 
     def tearDown(self):
-        print self
         os.unlink(self.f)
         os.unlink(self.f2)
         config.quit()
@@ -112,11 +111,15 @@ class TOperonAdd(TOperonBase):
         self.check_false(["add", "playcount", "bar", self.f], False, True)
 
     def test_permissions(self):
-        os.chmod(self.f, 0000)
-        self.check_false(["add", "foo", "bar", self.f, self.f],
-                         False, True)
-        os.chmod(self.f, 0444)
-        self.check_false(["add", "foo", "bar", self.f, self.f], False, True)
+        try:
+            os.chmod(self.f, 0000)
+            self.check_false(["add", "foo", "bar", self.f, self.f],
+                             False, True)
+            os.chmod(self.f, 0444)
+            self.check_false(["add", "foo", "bar", self.f, self.f],
+                             False, True)
+        finally:
+            os.chmod(self.f, 0666)
 add(TOperonAdd)
 
 
