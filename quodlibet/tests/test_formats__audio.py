@@ -407,8 +407,9 @@ class TAudioFile(TestCase):
         f = AudioFile({"~filename": "/\x87\x12.mp3", "title": "linux"})
         self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
 
-        f = AudioFile({"~filename": u"/\xf6\xe4.mp3", "title": "win"})
-        self.failUnlessEqual(f("~uri"), "file:///%C3%B6%C3%A4.mp3")
+        if os.name == "nt":
+            f = AudioFile({"~filename": u"/\xf6\xe4.mp3", "title": "win"})
+            self.failUnlessEqual(f("~uri"), "file:///%C3%B6%C3%A4.mp3")
 
     def tearDown(self):
         os.unlink(quux["~filename"])

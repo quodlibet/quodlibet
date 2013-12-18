@@ -39,14 +39,22 @@ add(Tmkdir)
 
 
 class Tiscommand(TestCase):
-    def test_ispartial(self): self.failUnless(iscommand("ls"))
-    def test_isfull(self): self.failUnless(iscommand("/bin/ls"))
-    def test_notpartial(self): self.failIf(iscommand("zzzzzzzzz"))
-    def test_notfull(self): self.failIf(iscommand("/bin/zzzzzzzzz"))
-    def test_empty(self): self.failIf(iscommand(""))
-    def test_symlink(self): self.failUnless(iscommand("pidof"))
-    def test_dir(self): self.failIf(iscommand("/bin"))
-    def test_dir_in_path(self): self.failIf(iscommand("X11"))
+
+    def test_unix(self):
+        if is_win:
+            return
+
+        self.failUnless(iscommand("ls"))
+        self.failUnless(iscommand("/bin/ls"))
+        self.failUnless(iscommand("pidof"))
+
+    def test_both(self):
+        self.failIf(iscommand("zzzzzzzzz"))
+        self.failIf(iscommand("/bin/zzzzzzzzz"))
+        self.failIf(iscommand(""))
+        self.failIf(iscommand("/bin"))
+        self.failIf(iscommand("X11"))
+
 add(Tiscommand)
 
 
@@ -579,7 +587,11 @@ add(Tspawn)
 
 
 class Txdg_dirs(TestCase):
-    def test_system_data_dirs(self):
+
+    def test_system_data_dirs_posix(self):
+        if is_win:
+            return
+
         os.environ["XDG_DATA_DIRS"] = "/xyz"
         self.failUnlessEqual(xdg_get_system_data_dirs()[0], "/xyz")
         del os.environ["XDG_DATA_DIRS"]
@@ -588,11 +600,20 @@ class Txdg_dirs(TestCase):
         self.failUnlessEqual(dirs[1], "/usr/share/")
 
     def test_data_home(self):
+        if is_win:
+            return
+
         os.environ["XDG_DATA_HOME"] = "/xyz"
         self.failUnlessEqual(xdg_get_data_home(), "/xyz")
         del os.environ["XDG_DATA_HOME"]
         should = os.path.join(os.path.expanduser("~"), ".local", "share")
         self.failUnlessEqual(xdg_get_data_home(), should)
+
+    def test_on_windows(self):
+        self.assertTrue(xdg_get_system_data_dirs())
+        self.assertTrue(xdg_get_cache_home())
+        self.assertTrue(xdg_get_data_home())
+
 add(Txdg_dirs)
 
 
@@ -619,8 +640,12 @@ class Tlibrary(TestCase):
 
     def test_basic(self):
         self.failIf(get_scan_dirs())
-        set_scan_dirs(["foo", "bar", ""])
-        self.failUnlessEqual(get_scan_dirs(), ["foo", "bar"])
+        if os.name == "nt":
+            set_scan_dirs(["C:\\foo", "D:\\bar", ""])
+            self.failUnlessEqual(get_scan_dirs(), ["C:\\foo", "D:\\bar"])
+        else:
+            set_scan_dirs(["foo", "bar", ""])
+            self.failUnlessEqual(get_scan_dirs(), ["foo", "bar"])
 
 add(Tlibrary)
 

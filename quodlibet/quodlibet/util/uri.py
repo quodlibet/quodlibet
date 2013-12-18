@@ -14,6 +14,7 @@ from urllib import url2pathname, quote_plus, unquote_plus
 from urlparse import urlparse, urlunparse
 
 from quodlibet.util import pathname2url
+from quodlibet import util
 
 
 class URI(str):
@@ -56,9 +57,7 @@ class URI(str):
     @classmethod
     def frompath(klass, value):
         """Construct a URI from an unescaped filename."""
-        # windows unicode path chars may break pathname2url; encode in UTF-8
-        if isinstance(value, unicode):
-            value = value.encode("UTF-8")
+
         return klass("file://" + pathname2url(value), escaped=True)
 
     @property
@@ -106,7 +105,7 @@ class URI(str):
         elif self.netloc:
             raise ValueError("only local files have filenames")
         else:
-            return url2pathname(self.path)
+            return util.fsnative(url2pathname(self.path))
 
     @property
     def is_filename(self):

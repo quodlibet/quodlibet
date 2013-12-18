@@ -168,6 +168,11 @@ def pathname2url_win32(path):
     # stdlib version raises IOError for more than one ':' which can appear
     # using a virtual box shared folder and it inserts /// at the beginning
     # but it should be /.
+
+    # windows paths should be unicode
+    if isinstance(path, unicode):
+        path = path.encode("utf-8")
+
     quote = urllib.quote
     if path[1:2] != ":" or path[:1] == "\\":
         if path[:2] == "\\\\":
@@ -184,6 +189,11 @@ else:
 
 def xdg_get_system_data_dirs():
     """http://standards.freedesktop.org/basedir-spec/latest/"""
+
+    if os.name == "nt":
+        from gi.repository import GLib
+        return map(fsnative, GLib.get_system_data_dirs())
+
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
         return map(os.path.abspath, data_dirs.split(":"))
@@ -192,6 +202,11 @@ def xdg_get_system_data_dirs():
 
 
 def xdg_get_cache_home():
+
+    if os.name == "nt":
+        from gi.repository import GLib
+        return fsnative(GLib.get_user_cache_dir())
+
     data_home = os.getenv("XDG_CACHE_HOME")
     if data_home:
         return os.path.abspath(data_home)
@@ -200,6 +215,10 @@ def xdg_get_cache_home():
 
 
 def xdg_get_data_home():
+    if os.name == "nt":
+        from gi.repository import GLib
+        return fsnative(GLib.get_user_data_dir())
+
     data_home = os.getenv("XDG_DATA_HOME")
     if data_home:
         return os.path.abspath(data_home)

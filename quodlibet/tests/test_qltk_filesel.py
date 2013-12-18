@@ -12,7 +12,10 @@ import quodlibet.config
 
 class TDirectoryTree(TestCase):
 
-    ROOTS = [const.HOME, "/"]
+    if os.name == "nt":
+        ROOTS = [const.HOME, "C:\\"]
+    else:
+        ROOTS = [const.HOME, "/"]
 
     def setUp(self):
         quodlibet.config.init()
@@ -21,7 +24,11 @@ class TDirectoryTree(TestCase):
         quodlibet.config.quit()
 
     def test_initial(self):
-        for path in ["/", "/home", const.HOME, "/usr/bin"]:
+        paths = ["/", const.HOME, "/usr/bin"]
+        if os.name == "nt":
+            paths = ["C:\\", const.HOME]
+
+        for path in paths:
             dirlist = DirectoryTree(path, folders=self.ROOTS)
             model, rows = dirlist.get_selection().get_selected_rows()
             selected = [model[row][0] for row in rows]

@@ -119,7 +119,7 @@ class JSONObjectDict(dict):
         json_str = json.dumps(obj_dict, indent=4)
         if filename:
             try:
-                with open(filename, "w") as f:
+                with open(filename, "wb") as f:
                     f.write(json_str)
             except IOError as e:
                 print_w("Couldn't write JSON for %s object(s) (%s)"

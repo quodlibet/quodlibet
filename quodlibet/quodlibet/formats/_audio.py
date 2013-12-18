@@ -467,7 +467,7 @@ class AudioFile(dict, ImageContainer):
     def valid(self):
         """Return true if the file cache is up-to-date (checked via
         mtime), or we can't tell."""
-        return (self.get("~#mtime", 0) and
+        return (bool(self.get("~#mtime", 0)) and
                 self["~#mtime"] == mtime(self["~filename"]))
 
     def mounted(self):
@@ -509,10 +509,12 @@ class AudioFile(dict, ImageContainer):
             mkdir(os.path.dirname(newname))
         else:
             newname = os.path.join(self('~dirname'), newname)
+
         if not os.path.exists(newname):
             shutil.move(self['~filename'], newname)
         elif os.path.realpath(newname) != self['~filename']:
             raise ValueError
+
         self.sanitize(newname)
 
     def website(self):

@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase, add, mkstemp
 
 import os
 
@@ -17,11 +17,14 @@ class TSongWrapper(TestCase):
     pwrap = SongWrapper(psong)
 
     def setUp(self):
+        fd, self.filename = mkstemp()
+        os.close(fd)
         config.init()
         self.wrap = SongWrapper(AudioFile(
-            {"title": "woo", "~filename": "/dev/null"}))
+            {"title": "woo", "~filename": self.filename}))
 
     def tearDown(self):
+        os.unlink(self.filename)
         config.quit()
 
     def test_slots(self):
@@ -89,7 +92,7 @@ class TSongWrapper(TestCase):
     def test_mtime(self):
         self.wrap._song.sanitize()
         self.failUnless(self.wrap.valid())
-        self.wrap["~#mtime"] = os.path.getmtime("/dev/null") - 2
+        self.wrap["~#mtime"] = os.path.getmtime(self.filename) - 2
         self.wrap._updated = False
         self.failIf(self.wrap.valid())
 

@@ -44,6 +44,7 @@ class TOperonBase(TestCase):
         self.s2 = MusicFile(self.f2)
 
     def tearDown(self):
+        print self
         os.unlink(self.f)
         os.unlink(self.f2)
         config.quit()

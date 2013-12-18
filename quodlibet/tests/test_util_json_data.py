@@ -1,6 +1,8 @@
 import json
+import os
+
 from quodlibet.util.json_data import JSONObjectDict, JSONObject
-from tests import TestCase, add, NamedTemporaryFile
+from tests import TestCase, add, mkstemp
 from helper import capture_output
 
 
@@ -66,11 +68,16 @@ class TJsonData(TestCase):
 
     def test_save_all(self):
         data = JSONObjectDict.from_json(self.WibbleData, self.WIBBLE_JSON_STR)
-        with NamedTemporaryFile(suffix=".json") as f:
-            ret = data.save(f.name)
-            jstr = f.read()
+        fd, filename = mkstemp(suffix=".json")
+        os.close(fd)
+        try:
+            ret = data.save(filename)
+            with open(filename, "rb") as f:
+                jstr = f.read()
             # Check we also return the string as documented...
             self.failUnlessEqual(jstr, ret)
+        finally:
+            os.unlink(filename)
 
         # Check we have the right number of items
         self.failUnlessEqual(len(json.loads(jstr)), len(data))
