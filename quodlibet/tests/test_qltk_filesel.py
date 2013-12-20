@@ -85,6 +85,15 @@ class TFileSelector(TestCase):
         self.selection.select_all()
         self.failUnless(self.expected is None)
 
+    def test_select_rescan(self):
+        all_ = ["/dev/null", "/dev/zero"]
+        self.expected = all_
+        self.selection.select_all()
+        files = self.fs.get_selected_paths()
+        self.expected = all_
+        self.fs.rescan()
+        self.assertEqual(files, self.fs.get_selected_paths())
+
     def test_main(self):
         MainFileSelector()
 

@@ -505,9 +505,9 @@ class FileSelector(Gtk.VPaned):
             except OSError:
                 pass
 
-        for filename in fmodel.itervalues():
+        for iter_, filename in fmodel.iterrows():
             if filename in selected:
-                fselect.select_path(row.path)
+                fselect.select_iter(iter_)
 
         fselect.handler_unblock(self.__sig)
         fselect.emit('changed')

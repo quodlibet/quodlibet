@@ -112,7 +112,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         align.show()
         hp.pack2(align, resize=True, shrink=False)
         fs.connect('changed', self.__changed, l)
-        s = self.__library.connect_object('changed', FileSelector.rescan, fs)
+        s = self.__library.connect('changed', lambda *x: fs.rescan())
         self.connect_object('destroy', self.__library.disconnect, s)
         self.__save = None
         self.connect_object('changed', self.set_pending, None)
@@ -146,7 +146,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
             if resp == Gtk.ResponseType.YES:
                 self.__save.clicked()
             elif resp == Gtk.ResponseType.NO:
-                FileSelector.rescan(fs)
+                fs.rescan()
             else:
                 nb.grab_focus()
                 return True # cancel or closed
