@@ -562,6 +562,12 @@ class TID3File(TestCase):
 
         self.failUnlessEqual(MP3File(self.filename)("artist"), x)
 
+    def test_handled_txxx_encoding(self):
+        song = MP3File(self.filename)
+        song['albumartistsort'] = u'Dvo\u0159\xe1k, Anton\xedn'
+        song["replaygain_track_peak"] = u'Dvo\u0159\xe1k, Anton\xedn'
+        song.write()
+
     def tearDown(self):
         os.unlink(self.filename2)
         os.unlink(self.filename)

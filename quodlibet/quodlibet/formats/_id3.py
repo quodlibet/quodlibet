@@ -374,7 +374,9 @@ class ID3File(AudioFile):
                 pass
             # Add new ones
             if k in self:
-                tag.add(mutagen.id3.TXXX(encoding=0, text=self[k].split("\n"),
+                value = self[k]
+                tag.add(mutagen.id3.TXXX(encoding=encoding_for(value),
+                                         text=value.split("\n"),
                                          desc=k))
 
         # we shouldn't delete all, but we use unknown ones as fallback, so make
@@ -406,7 +408,9 @@ class ID3File(AudioFile):
                 pass
         for key in self.PAM_XXXT:
             if key in self:
-                f = mutagen.id3.TXXX(encoding=0, text=self[key].split("\n"),
+                value = self[key]
+                f = mutagen.id3.TXXX(encoding=encoding_for(value),
+                                     text=value.split("\n"),
                                      desc=self.PAM_XXXT[key])
                 tag.add(f)
 
