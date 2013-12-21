@@ -139,6 +139,7 @@ Robert Muth
 Sebastian Thürrschmidt
 Simonas Kazlauskas
 Steven Robertson
+Thomas Vogt
 Tobias Wolf
 Tomasz Miasko
 Tomasz Torcz
