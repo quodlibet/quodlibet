@@ -90,7 +90,7 @@ class OSDWindow(Gtk.Window):
         layout.set_spacing(Pango.SCALE * 7)
         layout.set_font_description(Pango.FontDescription(conf.font))
         try:
-            layout.set_markup(parse.XMLFromPattern(conf.string) % song)
+            layout.set_markup(parse.XMLFromMarkupPattern(conf.string) % song)
         except parse.error:
             layout.set_markup("")
         layout.set_width(Pango.SCALE * textwidth)
@@ -414,7 +414,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             show_preview()
 
         def edit_pattern(button):
-            w = PatternEdit(button, AnimOsd.Conf.string)
+            w = PatternEdit(button, AnimOsd.ConfDef.string)
             w.set_default_size(520, 260)
             w.text = self.Conf.string
             w.apply.connect_object_after('clicked', set_string, w)
@@ -565,7 +565,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         vb.pack_start(build_buttons_widget(), False, True, 0)
         return vb
 
-    class Conf(object):
+    class ConfDef(object):
         # position of window 0--1 horizontal
         pos_x = 0.5
         # position of window 0--1 vertical
@@ -599,11 +599,13 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         # color,alpha or (-1.0,0.0,0.0,0.5) - borders the whole OSD
         bcolor = (0.0, 0.0, 0.0, 0.2)
         # song information to use - like in main window
-        string = (r"<album|\<b\><album>\</b\><discnumber| - Disc "
-r"""<discnumber>><part| - \<b\><part>\</b\>><tracknumber| - <tracknumber>>
->\<span weight='bold' size='large'\><title>\</span\> - <~length><version|
-\<small\>\<i\><version>\</i\>\</small\>><~people|"
+        string = (r"<album|[b]<album>[/b]<discnumber| - Disc "
+"""<discnumber>><part| - [b]<part>[/b]><tracknumber| - <tracknumber>>
+>[span weight='bold' size='large']<title>[/span] - <~length><version|
+[small][i]<version>[/i][/small]><~people|
 by <~people>>""")
+
+    Conf = ConfDef()
 
     def __init__(self):
         self.__current_window = None
