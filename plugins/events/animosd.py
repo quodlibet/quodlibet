@@ -49,11 +49,8 @@ class OSDWindow(Gtk.Window):
         self.titleinfo_surface = None
 
         screen = self.get_screen()
-        # FIXME: GIPORT
-        """cmap = screen.get_rgba_colormap()
-        if cmap is None:
-            cmap = screen.get_rgb_colormap()
-        self.set_colormap(cmap)"""
+        rgba = Gdk.Screen.get_rgba_visual(screen)
+        self.set_visual(rgba)
 
         self.conf = conf
         self.iteration_source = None
@@ -184,9 +181,19 @@ class OSDWindow(Gtk.Window):
         do_shadow = (self.conf.shadow[0] != -1.0)
         do_outline = (self.conf.outline[0] != -1.0)
 
-        cr.set_operator(cairo.OPERATOR_CLEAR)
-        cr.rectangle(0, 0, *self.get_size())
-        cr.fill()
+        self.set_name("osd_bubble")
+        style_provider = Gtk.CssProvider()
+        css = """
+            #osd_bubble {
+                background-color:rgba(0,0,0,0);
+            }
+        """
+        style_provider.load_from_data(css.encode("utf8"))
+        style_context = self.get_style_context()
+        style_context.add_provider(
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
 
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(*self.conf.fill)
@@ -314,6 +321,11 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             #print_d("Writing config: %s=%s" % (name, string))
             self.config_set("%s" % name, string)
 
+        def show_preview(tmp_x=None, tmp_y=None):
+            #FIXME: What if app.player.song == None?
+            preview_song = app.player.song
+            self.plugin_single_song(preview_song)
+
         class ConfigLabel(Gtk.Label):
             def __init__(self, text, widget):
                 super(ConfigLabel, self).__init__(text)
@@ -326,7 +338,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
                         (color.red, color.green, color.blue, 0.0))
             self.conf.text = tuple(color)
             cfg_set_tuple("text", self.conf.text)
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def set_fill(button):
             color = button.get_color()
@@ -334,13 +346,13 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
                 button.get_alpha()))
             self.conf.fill = tuple(color)
             cfg_set_tuple("fill", self.conf.fill)
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def set_font(button):
             font = button.get_font_name()
             self.config_set("font", font)
             self.conf.font = font
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def change_delay(button):
             value = int(button.get_value() * 1000)
@@ -352,19 +364,19 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             value = int(button.get_value())
             self.config_set("monitor", str(value))
             self.conf.monitor = value
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def change_position(button):
             value = button.get_active() / 2.0
             self.config_set("pos_y", str(value))
             self.conf.pos_y = value
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def change_align(button):
             value = button.get_active()
             self.config_set("align", str(value))
             self.conf.align = value
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def change_shadow(button):
             if button.get_active():
@@ -372,7 +384,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             else:
                 self.conf.shadow = (-1.0, 0.0, 0.0, 0.0)
             cfg_set_tuple("shadow", self.conf.shadow)
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def change_outline(button):
             if button.get_active():
@@ -382,7 +394,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             else:
                 self.conf.outline = (-1.0, 0.0, 0.0)
             cfg_set_tuple("outline", self.conf.outline)
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def change_rounded(button):
             if button.get_active():
@@ -390,7 +402,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             else:
                 self.conf.corners = 0
             self.config_set("corners", str(self.conf.corners))
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         def edit_string(button):
             w = PatternEdit(button, AnimOsd.conf.string)
@@ -402,7 +414,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             value = window.text
             self.config_set("string", value)
             self.conf.string = value
-            self.plugin_single_song(app.player.song)
+            show_preview()
 
         # Main VBox to return
         vb = Gtk.VBox(spacing=6)
@@ -526,6 +538,10 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         frame = qltk.Frame(label=_("Effects"), child=vb2)
         frame.set_border_width(6)
         vb.pack_start(frame, False, True, 0)
+
+        string = Gtk.Button(_("Preview Display"))
+        string.connect("button-press-event", show_preview)
+        vb.pack_start(string, False, True, 0)
 
         string = qltk.Button(_("Ed_it Display"), Gtk.STOCK_EDIT)
         string.connect('clicked', edit_string)
