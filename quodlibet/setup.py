@@ -389,7 +389,13 @@ if __name__ == "__main__":
                     "icon_resources": [(0,
                         os.path.join('..', 'win_installer', 'misc',
                                      'exfalso.ico'))]
-                }
+                },
+                {
+                    "script": "operon.py",
+                    "icon_resources": [(0,
+                        os.path.join('..', 'win_installer', 'misc',
+                                     'quodlibet.ico'))]
+                },
             ],
             'options': {
                 'py2exe': {

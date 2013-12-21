@@ -169,7 +169,7 @@ rm -R "$QL_DEST"/share/gst-plugins-bad
 
 # now package everything up
 cd "$BUILD_ENV"
-wine wineconsole --backend=curses package.bat
+#wine wineconsole --backend=curses package.bat
 
 ###############################################
 # Now the SDK
@@ -177,9 +177,7 @@ SDK="$BUILD_ENV"/quodlibet-win-sdk
 mkdir "$SDK"
 
 # launchers, README
-cp "$MISC"/exfalso.bat "$SDK"
-cp "$MISC"/quodlibet.bat "$SDK"
-cp "$MISC"/test.bat "$SDK"
+cp "$MISC"/env.bat "$SDK"
 cp "$MISC"/wine.sh "$SDK"
 cp "$MISC"/README.txt "$SDK"
 
