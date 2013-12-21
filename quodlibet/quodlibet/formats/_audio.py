@@ -756,3 +756,12 @@ class AudioFile(dict, ImageContainer):
            marks = song.bookmarks
            marks.append(...)
            song.bookmarks = marks""")
+
+
+# Looks like the real thing.
+DUMMY_SONG = AudioFile({
+    '~#length': 234, '~filename': '/dev/null',
+    'artist': 'The Artist', 'album': 'An Example Album',
+    'title': 'First Track', 'tracknumber': 1,
+    'date': '2010-12-31',
+})
