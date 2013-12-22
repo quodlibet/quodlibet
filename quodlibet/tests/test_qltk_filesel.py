@@ -50,7 +50,11 @@ class TDirectoryTree(TestCase):
         dirlist.destroy()
 
     def test_main(self):
-        MainDirectoryTree(folders=["/"])
+        main = MainDirectoryTree(folders=["/"])
+        self.assertTrue(len(main.get_model()))
+
+        main = MainDirectoryTree()
+        self.assertTrue(len(main.get_model()))
 
 add(TDirectoryTree)
 

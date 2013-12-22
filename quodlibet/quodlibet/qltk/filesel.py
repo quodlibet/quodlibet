@@ -525,12 +525,16 @@ def _get_main_folders():
         folders += favs
 
     drives = filter_exists(get_drives())
+    if folders and drives:
+        folders += [None]
     if drives:
-        folders += [None] + drives
+        folders += drives
 
     bookmarks = filter_exists(get_gtk_bookmarks())
+    if folders and bookmarks:
+        folders += [None]
     if bookmarks:
-        folders += [None] + bookmarks
+        folders += bookmarks
 
     return folders
 
@@ -570,7 +574,9 @@ class MainDirectoryTree(DirectoryTree):
 
         main = _get_main_folders()
         if folders and main:
-            folders += [None] + main
+            folders += [None]
+        if main:
+            folders += main
 
         super(MainDirectoryTree, self).__init__(
             initial=initial, folders=folders)
