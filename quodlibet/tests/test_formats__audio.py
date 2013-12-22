@@ -191,7 +191,8 @@ class TAudioFile(TestCase):
 
     def test_rename_to_existing(self):
         quux.rename(quux("~basename"))
-        self.failUnlessRaises(ValueError, quux.rename, "/dev/null")
+        if os.name != "nt":
+            self.failUnlessRaises(ValueError, quux.rename, "/dev/null")
         self.failUnlessRaises(ValueError, quux.rename, os.path.join(DATA_DIR, "silence-44-s.ogg"))
 
     def test_website(self):

@@ -140,6 +140,9 @@ class TOperonPrint(TOperonBase):
         self.failUnlessEqual(o.splitlines(), ["Silence", "Silence"])
 
     def test_permissions(self):
+        # doesn't prevent reading under wine..
+        if os.name == "nt":
+            return
         os.chmod(self.f, 0000)
         self.check_false(["print", "-p", "<title>", self.f],
                          False, True)

@@ -19,7 +19,8 @@ from quodlibet.qltk._editpane import EditPane, FilterCheckButton
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.util.path import fsdecode, fsencode, strip_win32_incompat
+from quodlibet.util.path import fsdecode, fsencode
+from quodlibet.util.path import strip_win32_incompat_from_path
 
 
 class SpacesToUnderscores(FilterCheckButton):
@@ -47,7 +48,7 @@ class StripWindowsIncompat(FilterCheckButton):
             self.set_no_show_all(True)
 
     def filter(self, original, filename):
-        return strip_win32_incompat(filename)
+        return strip_win32_incompat_from_path(filename)
 
 
 class StripDiacriticals(FilterCheckButton):

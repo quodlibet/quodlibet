@@ -64,7 +64,12 @@ class TagsFromPattern(object):
 
     def match(self, song):
         if isinstance(song, dict):
-            song = fsdecode(song['~filename'])
+            filename = song['~filename']
+            drive, tail = os.path.splitdrive(filename)
+            song = fsdecode(tail)
+        else:
+            song = os.path.splitdrive(song)[-1]
+
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         sep = os.path.sep

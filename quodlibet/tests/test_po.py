@@ -3,21 +3,30 @@ from tests import TestCase, add
 import os
 import glob
 
+from quodlibet.util.path import iscommand
+
+
 class PO(TestCase):
     def test_pos(self):
+        if not iscommand("msgfmt"):
+            return
+
         self.failIf(os.system("msgfmt -c po/%s.po > /dev/null" % self.lang))
-        try: os.unlink("messages.mo")
-        except OSError: pass
+        try:
+            os.unlink("messages.mo")
+        except OSError:
+            pass
 
     def test_gtranslator_blows_goats(self):
-        for line in file("po/%s.po" % self.lang):
-            if line.strip().startswith("#"): continue
+        for line in open("po/%s.po" % self.lang, "rb"):
+            if line.strip().startswith("#"):
+                continue
             self.failIf("\xc2\xb7" in line,
                         "Broken GTranslator copy/paste in %s:\n%s" % (
                 self.lang, line))
 
     def test_gtk_stock_items(self):
-        for line in file("po/%s.po" % self.lang):
+        for line in open("po/%s.po" % self.lang, "rb"):
             if line.strip().startswith('msgstr "gtk-'):
                 parts = line.strip().split()
                 value = parts[1].strip('"')[4:]

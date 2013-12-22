@@ -24,6 +24,9 @@ class TURI(TestCase):
         self.assertTrue(is_fsnative(uri.filename))
         self.assertEqual(uri.filename, win_path)
 
+    def test_raise_windows_path(self):
+        self.assertRaises(ValueError, URI, u"C:\\Some\\path")
+
     def test_type(s):
         s.failUnless(isinstance(s.http_uri, URI))
         s.failUnless(isinstance(s.http_uri, basestring))

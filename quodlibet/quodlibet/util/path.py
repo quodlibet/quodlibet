@@ -239,16 +239,17 @@ def get_temp_cover_file(data):
 
 
 def strip_win32_incompat(string, BAD='\:*?;"<>|'):
-    """Strip Win32-incompatible characters.
+    """Strip Win32-incompatible characters from a Windows or Unix path."""
 
-    This only works correctly on Unicode strings.
-    """
-    new = u"".join(map(lambda s: (s in BAD and "_") or s, string))
+    if os.name == "nt":
+        BAD += "/"
+
+    new = "".join(map(lambda s: (s in BAD and "_") or s, string))
     parts = new.split(os.sep)
 
     def fix_end(string):
         return re.sub(r'[\. ]$', "_", string)
-    return unicode(os.sep).join(map(fix_end, parts))
+    return os.sep.join(map(fix_end, parts))
 
 
 def strip_win32_incompat_from_path(string):

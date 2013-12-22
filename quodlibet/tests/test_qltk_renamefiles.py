@@ -1,3 +1,5 @@
+import os
+
 from tests import TestCase, add
 
 from quodlibet.qltk.renamefiles import SpacesToUnderscores, StripWindowsIncompat
@@ -10,7 +12,7 @@ class TFilter(TestCase):
     def test_empty(self):
         v = self.c.filter("", u"")
         self.failUnlessEqual(v, "")
-        self.failUnless(isinstance(v, unicode))
+
     def test_safe(self):
         self.failUnlessEqual(self.c.filter("", u"safe"), "safe")
 
@@ -23,11 +25,21 @@ add(TSpacesToUnderscores)
 class TStripWindowsIncompat(TFilter):
     Kind = StripWindowsIncompat
     def test_conv(self):
-        self.failUnlessEqual(self.c.filter("", 'foo\\:*?;"<>|'), "foo_________")
+        if os.name == "nt":
+            self.failUnlessEqual(
+                self.c.filter("", 'foo\\:*?;"<>|/'), "foo\\_________")
+        else:
+            self.failUnlessEqual(
+                self.c.filter("", 'foo\\:*?;"<>|/'), "foo_________/")
 
     def test_ends_with_dots_or_spaces(self):
         self.failUnlessEqual(self.c.filter("", 'foo. . '), "foo. ._")
-        self.failUnlessEqual(self.c.filter("", 'foo. /bar .'), "foo._/bar _")
+        if os.name == "nt":
+            self.failUnlessEqual(
+                self.c.filter("", 'foo. \\bar .'), "foo._\\bar _")
+        else:
+            self.failUnlessEqual(
+                self.c.filter("", 'foo. /bar .'), "foo._/bar _")
 add(TStripWindowsIncompat)
 
 class TStripDiacriticals(TFilter):
