@@ -121,7 +121,7 @@ cp -R "$PYGI"/binding/py2.7/gi "$SITEPACKAGES"
 cp "$PYGI"/binding/py2.7/*.pyd "$SITEPACKAGES"
 
 # now run py2exe etc.
-wine wineconsole --backend=curses build.bat
+wine cmd /c build.bat
 
 QL_DEST="$QL_TEMP"/quodlibet/dist
 QL_BIN="$QL_DEST"/bin
@@ -169,7 +169,7 @@ rm -R "$QL_DEST"/share/gst-plugins-bad
 
 # now package everything up
 cd "$BUILD_ENV"
-#wine wineconsole --backend=curses package.bat
+wine cmd /c package.bat
 
 ###############################################
 # Now the SDK
