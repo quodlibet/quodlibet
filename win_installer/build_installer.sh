@@ -164,11 +164,24 @@ python "$MISC"/prune_translations.py "$QL_LOCALE" "$MAIN_LOCALE"
 
 # copy the translations
 cp -RT "$QL_LOCALE" "$MAIN_LOCALE"
+# remove the gtk30-properties domain -> not visible to the user
+find "$MAIN_LOCALE" -name "gtk30-properties.mo" -exec rm {} \;
 
 # copy plugins; byte compile them; remove leftover *.py files
 cp -RT "$QL_TEMP"/plugins "$QL_BIN"/quodlibet/plugins
 wine "$PYDIR"/python.exe -m compileall $(winepath -w "$QL_BIN"/quodlibet/plugins)
 find "$QL_DEST" -name "*.py" | xargs -I {} rm -v "{}"
+
+# remove gtk themes except HighContrast/Adwaita/Default
+GTK_THEMES="$QL_DEST"/share/themes
+rm -Rf "$GTK_THEMES"/DeLorean
+rm -Rf "$GTK_THEMES"/Emacs
+rm -Rf "$GTK_THEMES"/Evolve
+rm -Rf "$GTK_THEMES"/Greybird
+
+# remove ladspa, frei0r
+rm -Rf "$QL_DEST"/lib/frei0r-1
+rm -Rf "$QL_DEST"/lib/ladspa-1
 
 # remove some large gstreamer plugins..
 GST_LIBS="$QL_DEST"/lib/gstreamer-1.0
