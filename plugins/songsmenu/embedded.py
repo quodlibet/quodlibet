@@ -16,7 +16,7 @@ class EditEmbedded(SongsMenuPlugin):
     PLUGIN_ID = "embedded_edit"
     PLUGIN_NAME = _("Edit Embedded Images")
     PLUGIN_DESC = _("Remove or replace embedded images")
-    PLUGIN_ICON = "image-x-generic"
+    PLUGIN_ICON = Gtk.STOCK_EDIT
 
     def __init__(self, songs, *args, **kwargs):
         super(EditEmbedded, self).__init__(songs, *args, **kwargs)
