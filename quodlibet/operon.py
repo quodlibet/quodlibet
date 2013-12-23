@@ -543,8 +543,11 @@ class ImageClearCommand(Command):
 
 class ImageExtractCommand(Command):
     NAME = "image-extract"
-    DESCRIPTION = _("Extract embedded images to "
-                    "<destination>/<filename>-<index>.(jpeg|png|..)")
+    DESCRIPTION = (
+        _("Extract embedded images to %(filepath)s") % {
+            "filepath": "<destination>/<filename>-<index>.(jpeg|png|..)"
+        }
+    )
     USAGE = "[--dry-run] [--primary] [-d <destination>] <file> [<files>]"
 
     def _add_options(self, p):
