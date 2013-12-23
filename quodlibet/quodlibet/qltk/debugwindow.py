@@ -77,7 +77,7 @@ class ExceptionDialog(Gtk.Window):
         desc = _("An exception has occured in Quod Libet. A dump file "
             "has been saved to <b >%s</b> that will help us debug the crash. "
             "Please file a new issue at http://code.google.com/p/quodlibet/"
-            "issues /list and attach this file or include its contents. This "
+            "issues/list and attach this file or include its contents. This "
             "file may contain some identifying information about you or your "
             "system, such as a list of recent files played. If this is "
             "unacceptable, send <b>%s</b> instead with a description of what "
