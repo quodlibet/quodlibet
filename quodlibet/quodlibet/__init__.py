@@ -204,7 +204,8 @@ def _gettext_init():
         langs = filter(None, map(locale.windows_locale.get,
             [k32.GetUserDefaultLCID(), k32.GetSystemDefaultLCID()]))
         os.environ.setdefault('LANG', ":".join(langs))
-        localedir = "..\\share\\locale"
+        localedir = os.path.join(
+            quodlibet.const.BASEDIR, "..", "..", "share", "locale")
 
     try:
         t = gettext.translation("quodlibet", localedir,
