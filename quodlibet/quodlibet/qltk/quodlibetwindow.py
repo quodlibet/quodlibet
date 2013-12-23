@@ -529,12 +529,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
              None, None, logging_cb),
             ]
 
-        if const.DEBUG:
-            def cause_error(*args):
-                raise Exception
-            actions.append(("DebugCauseError", Gtk.STOCK_DIALOG_ERROR,
-                            _("_Cause an Error"), None, None, cause_error))
-
         actions.append(("Previous", Gtk.STOCK_MEDIA_PREVIOUS, None,
                         "<control>comma", None, self.__previous_song))
 
@@ -638,8 +632,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         debug_menu = ""
         if const.DEBUG:
             debug_menu = ("<separator/>"
-                          "<menuitem action='OutputLog'/>"
-                          "<menuitem action='DebugCauseError'/>")
+                          "<menuitem action='OutputLog'/>")
 
         ui = Gtk.UIManager()
         ui.insert_action_group(ag, -1)
