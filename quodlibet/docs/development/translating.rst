@@ -1,7 +1,7 @@
 .. _Translating:
 
-Translating
-===========
+Translation Guide
+=================
 
 If you're fluent in a language other than English, and have some spare
 time, you can help us translate Quod Libet. Translation is a continuous
@@ -94,6 +94,14 @@ test your work.
 Translation FAQ
 ---------------
 
+What do these things in strings mean?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* ``command|tag``: see `Translation Context`_
+* ``This is %s``, ``an %(foobat)s example``, ``for {translators}, {0}``:
+  see `String Formatting`_
+
+
 Why are some strings not translatable?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -107,6 +115,28 @@ variable set::
     QUODLIBET_TEST_TRANS=xx ./quodlibet.py
 
 which will append and prepend "xx" to all translatable strings.
+
+
+String Formatting
+^^^^^^^^^^^^^^^^^
+
+Some strings include replacement tokens like ``%s`` or ``{foobar}``. These 
+mark places where text gets replaces at runtime, so they should be carried 
+over to the translation without changing their content.
+
+Some examples showing the strings to translate and the resulting strings 
+where the tokens have been replaced:
+
+* ``Hello %s`` -> ``Hello Lou``
+* ``The number %d`` -> ``The number 42``
+* ``Hello %(name)s`` -> ``Hello Lou``
+* ``Hello {name}`` -> ``Hello Lou``
+* ``Hello {0}`` -> ``Hello Lou``
+* ``Hello {0.name}`` -> ``Hello Lou``
+* ``Hello {}`` -> ``Hello Lou``
+
+In the case of ``Hello %(name)s``, a possible German translation and text 
+displayed to the user would be ``Hallo %(name)s`` and ``Hallo Lou``.
 
 
 Translation Context
