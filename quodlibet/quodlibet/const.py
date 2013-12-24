@@ -234,60 +234,60 @@ DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ)
 MENU = """<ui>
   <menubar name='Menu'>
     <menu action='Music'>
-      <menuitem action='AddFolders'/>
-      <menuitem action='AddFiles'/>
-      <menuitem action='AddLocation'/>
+      <menuitem action='AddFolders' always-show-image='true'/>
+      <menuitem action='AddFiles' always-show-image='true'/>
+      <menuitem action='AddLocation' always-show-image='true'/>
       <separator/>
-      <menu action='BrowseLibrary'>
+      <menu action='BrowseLibrary' always-show-image='true'>
       %(browsers)s
       </menu>
       <separator/>
-      <menuitem action='Preferences'/>
-      <menuitem action='Plugins'/>
+      <menuitem action='Preferences' always-show-image='true'/>
+      <menuitem action='Plugins' always-show-image='true'/>
       <separator/>
-      <menuitem action='RefreshLibrary'/>
-      <menuitem action='ReloadLibrary'/>
+      <menuitem action='RefreshLibrary' always-show-image='true'/>
+      <menuitem action='ReloadLibrary' always-show-image='true'/>
       <separator/>
-      <menuitem action='Quit'/>
+      <menuitem action='Quit' always-show-image='true'/>
     </menu>
     <menu action='Filters'>
-      <menuitem action='FilterGenre'/>
-      <menuitem action='FilterArtist'/>
-      <menuitem action='FilterAlbum'/>
+      <menuitem action='FilterGenre' always-show-image='true'/>
+      <menuitem action='FilterArtist' always-show-image='true'/>
+      <menuitem action='FilterAlbum' always-show-image='true'/>
       <separator/>
-      <menuitem action='RandomGenre'/>
-      <menuitem action='RandomArtist'/>
-      <menuitem action='RandomAlbum'/>
+      <menuitem action='RandomGenre' always-show-image='true'/>
+      <menuitem action='RandomArtist' always-show-image='true'/>
+      <menuitem action='RandomAlbum' always-show-image='true'/>
       <separator/>
-      <menuitem action='All'/>
-      <menuitem action='PlayedRecently'/>
-      <menuitem action='AddedRecently'/>
-      <menuitem action='TopRated'/>
+      <menuitem action='All' always-show-image='true'/>
+      <menuitem action='PlayedRecently' always-show-image='true'/>
+      <menuitem action='AddedRecently' always-show-image='true'/>
+      <menuitem action='TopRated' always-show-image='true'/>
     </menu>
     <menu action='Control'>
-      <menuitem action='Previous'/>
-      <menuitem action='PlayPause'/>
-      <menuitem action='Next'/>
-      <menuitem action='StopAfter'/>
+      <menuitem action='Previous' always-show-image='true'/>
+      <menuitem action='PlayPause' always-show-image='true'/>
+      <menuitem action='Next' always-show-image='true'/>
+      <menuitem action='StopAfter' always-show-image='true'/>
       <separator/>
-      <menuitem action='AddBookmark'/>
-      <menuitem action='EditBookmarks'/>
+      <menuitem action='AddBookmark' always-show-image='true'/>
+      <menuitem action='EditBookmarks' always-show-image='true'/>
       <separator/>
-      <menuitem action='EditTags'/>
-      <menuitem action='Information'/>
+      <menuitem action='EditTags' always-show-image='true'/>
+      <menuitem action='Information' always-show-image='true'/>
       <separator/>
-      <menuitem action='Jump'/>
+      <menuitem action='Jump' always-show-image='true'/>
     </menu>
     <menu action='View'>
-      <menuitem action='SongList'/>
-      <menuitem action='Queue'/>
+      <menuitem action='SongList' always-show-image='true'/>
+      <menuitem action='Queue' always-show-image='true'/>
       <separator/>
       %(views)s
     </menu>
     <menu action='Help'>
-      <menuitem action='OnlineHelp'/>
-      <menuitem action='SearchHelp'/>
-      <menuitem action='About'/>
+      <menuitem action='OnlineHelp' always-show-image='true'/>
+      <menuitem action='SearchHelp' always-show-image='true'/>
+      <menuitem action='About' always-show-image='true'/>
       %(debug)s
     </menu>
   </menubar>

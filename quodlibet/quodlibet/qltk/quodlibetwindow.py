@@ -631,8 +631,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         debug_menu = ""
         if const.DEBUG:
-            debug_menu = ("<separator/>"
-                          "<menuitem action='OutputLog'/>")
+            debug_menu = (
+                "<separator/>"
+                "<menuitem action='OutputLog' always-show-image='true'/>")
 
         ui = Gtk.UIManager()
         ui.insert_action_group(ag, -1)
