@@ -18,6 +18,7 @@ class TFilter(TestCase):
     def test_empty(self):
         v = self.c.filter("", u"")
         self.failUnlessEqual(v, "")
+        self.failUnless(isinstance(v, unicode))
 
     def test_safe(self):
         self.failUnlessEqual(self.c.filter("", u"safe"), "safe")
@@ -37,19 +38,22 @@ class TStripWindowsIncompat(TFilter):
     def test_conv(self):
         if os.name == "nt":
             self.failUnlessEqual(
-                self.c.filter("", 'foo\\:*?;"<>|/'), "foo\\_________")
+                self.c.filter("", u'foo\\:*?;"<>|/'), "foo\\_________")
         else:
             self.failUnlessEqual(
-                self.c.filter("", 'foo\\:*?;"<>|/'), "foo_________/")
+                self.c.filter("", u'foo\\:*?;"<>|/'), "foo_________/")
+
+    def test_type(self):
+        self.assertTrue(isinstance(self.c.filter("", u""), unicode))
 
     def test_ends_with_dots_or_spaces(self):
-        self.failUnlessEqual(self.c.filter("", 'foo. . '), "foo. ._")
+        self.failUnlessEqual(self.c.filter("", u'foo. . '), "foo. ._")
         if os.name == "nt":
             self.failUnlessEqual(
-                self.c.filter("", 'foo. \\bar .'), "foo._\\bar _")
+                self.c.filter("", u'foo. \\bar .'), "foo._\\bar _")
         else:
             self.failUnlessEqual(
-                self.c.filter("", 'foo. /bar .'), "foo._/bar _")
+                self.c.filter("", u'foo. /bar .'), "foo._/bar _")
 add(TStripWindowsIncompat)
 
 

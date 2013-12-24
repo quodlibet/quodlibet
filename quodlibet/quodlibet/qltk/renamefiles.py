@@ -48,7 +48,8 @@ class StripWindowsIncompat(FilterCheckButton):
             self.set_no_show_all(True)
 
     def filter(self, original, filename):
-        return strip_win32_incompat_from_path(filename)
+        assert isinstance(filename, unicode)
+        return fsdecode(strip_win32_incompat_from_path(fsencode(filename)))
 
 
 class StripDiacriticals(FilterCheckButton):
