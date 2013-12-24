@@ -9,7 +9,7 @@ import os
 import tempfile
 import hashlib as hash
 
-from gi.repository import GdkPixbuf
+from gi.repository import GdkPixbuf, GLib
 
 from quodlibet.const import USERDIR
 from quodlibet.util.path import mtime, mkdir, fsnative, pathname2url, \
@@ -110,6 +110,31 @@ def get_thumbnail_folder():
 
     mkdir(thumb_folder, 0700)
     return thumb_folder
+
+
+def get_thumbnail_from_file(fileobj, boundary):
+    """Like get_thumbnail() but works with files that can't be reopened.
+
+    This is needed on Windows where NamedTemporaryFile can't be reopened.
+
+    Can raise GLib.GError and return None.
+    """
+
+    assert fileobj
+
+    try:
+        return get_thumbnail(fileobj.name, boundary)
+    except GLib.GError:
+        try:
+            loader = GdkPixbuf.PixbufLoader()
+            loader.write(fileobj.read())
+            loader.close()
+            fileobj.seek(0, 0)
+            pixbuf = loader.get_pixbuf()
+        except EnvironmentError:
+            pass
+        else:
+            return scale(pixbuf, boundary)
 
 
 def get_thumbnail(path, boundary):

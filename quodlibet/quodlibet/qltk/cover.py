@@ -18,13 +18,34 @@ from quodlibet.util.cover.manager import cover_plugins
 ALBUM_ART_PLUGIN_ID = "Download Album Art"
 
 
+def pixbuf_from_file(fileobj, boundary):
+    """Returns a pixbuf with the maximum size defined by boundary.
+
+    Can raise GLib.GError and return None
+    """
+
+    try:
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(fileobj.name)
+    except GLib.GError:
+        try:
+            loader = GdkPixbuf.PixbufLoader()
+            loader.write(fileobj.read())
+            loader.close()
+            fileobj.seek(0, 0)
+            pixbuf = loader.get_pixbuf()
+        except EnvironmentError:
+            return
+
+    return thumbnails.scale(pixbuf, boundary, scale_up=False)
+
+
 class BigCenteredImage(qltk.Window):
     """Load an image and display it, scaling down to 1/2 the screen's
     dimensions if necessary.
 
     This might leak memory, but it could just be Python's GC being dumb."""
 
-    def __init__(self, title, filename, parent):
+    def __init__(self, title, fileobj, parent):
         super(BigCenteredImage, self).__init__(type=Gtk.WindowType.POPUP)
 
         assert parent
@@ -43,8 +64,16 @@ class BigCenteredImage(qltk.Window):
 
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
-        pixbuf = thumbnails.scale(pixbuf, (width, height), scale_up=False)
+        pixbuf = None
+        try:
+            pixbuf = pixbuf_from_file(fileobj, (256, 256))
+        except GLib.GError:
+            pass
+
+        # failed to load, abort
+        if not pixbuf:
+            self.destroy()
+            return
 
         image = Gtk.Image()
         image.set_from_pixbuf(pixbuf)
@@ -82,15 +111,21 @@ class ResizeImage(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self._dirty = True
         self._path = None
+        self._file = None
         self._pixbuf = None
         self._no_cover = None
         self._size = size
         self._resize = resize
 
-    def set_path(self, path):
+    def set_file(self, fileobj):
+        path = fileobj and fileobj.name
+
+        # XXX: Don't reload if the file path is the same.
+        # Could prevent updates if fileobj.name isn't defined
         if self._path == path:
             return
 
+        self._file = fileobj
         self._path = path
         self._dirty = True
         self.queue_resize()
@@ -98,19 +133,20 @@ class ResizeImage(Gtk.Bin):
     def _get_pixbuf(self):
         if not self._dirty:
             return self._pixbuf
-
         self._dirty = False
 
-        if self._path is None:
-            self._pixbuf = get_no_cover_pixbuf(256, 256)
-            return self._pixbuf
+        self._pixbuf = None
+        if self._file:
+            try:
+                self._pixbuf = thumbnails.get_thumbnail_from_file(
+                    self._file, (256, 256))
+            except GLib.GError:
+                pass
 
-        try:
-            self._pixbuf = thumbnails.get_thumbnail(self._path, (256, 256))
-        except GLib.GError:
-            pass
-        else:
-            return self._pixbuf
+        if not self._pixbuf:
+            self._pixbuf = get_no_cover_pixbuf(256, 256)
+
+        return self._pixbuf
 
     def _get_size(self, max_width, max_height):
         pixbuf = self._get_pixbuf()
@@ -194,7 +230,7 @@ class CoverImage(Gtk.EventBox):
         if _file is not None and not _file.name:
             print_w('Got file which is not in the filesystem!')
         self.__file = _file
-        self.get_child().set_path(_file and _file.name)
+        self.get_child().set_file(_file)
 
     def set_song(self, song):
         self.__song = song
@@ -253,7 +289,7 @@ class CoverImage(Gtk.EventBox):
 
         try:
             self.__current_bci = BigCenteredImage(
-                song.comma("album"), self.__file.name, parent=self)
+                song.comma("album"), self.__file, parent=self)
         except GLib.GError: # reload in case the image file is gone
             self.refresh()
         else:

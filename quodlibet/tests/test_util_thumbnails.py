@@ -1,5 +1,5 @@
 from quodlibet.util.path import mtime
-from tests import TestCase, add
+from tests import TestCase, add, NamedTemporaryFile
 
 from gi.repository import Gtk, GdkPixbuf
 
@@ -40,6 +40,22 @@ class TThumb(TestCase):
 
         ns = thumbnails.scale(s.small, (500, 300), scale_up=False)
         s.failUnlessEqual((ns.get_width(), ns.get_height()), (10, 20))
+
+    def test_thumb_from_file(self):
+        with open(self.filename, "rb") as h:
+            thumb = thumbnails.get_thumbnail_from_file(h, (50, 60))
+            self.assertTrue(thumb)
+
+    def test_thumb_from_file_temp(self):
+        fn = NamedTemporaryFile()
+        with open(self.filename, "rb") as h:
+            fn.write(h.read())
+        fn.flush()
+        fn.seek(0, 0)
+
+        thumb = thumbnails.get_thumbnail_from_file(fn, (50, 60))
+        self.assertTrue(thumb)
+        fn.close()
 
     def test_thumb(s):
         thumb = thumbnails.get_thumbnail(s.filename, (50, 60))

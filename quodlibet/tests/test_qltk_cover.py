@@ -30,13 +30,13 @@ class TCoverImage(TestCase):
 
     def test_big_window(self):
         parent = Gtk.Window()
-        w = BigCenteredImage("foobar", self.fn, parent)
+        w = BigCenteredImage("foobar", open(self.fn, "rb"), parent)
         w.destroy()
 
     def test_resize(self):
         w = ResizeImage(False)
-        w.set_path(self.fn)
-        w.set_path(None)
+        w.set_file(open(self.fn, "rb"))
+        w.set_file(None)
         w.destroy()
 
 add(TCoverImage)
