@@ -124,6 +124,28 @@ class MP4File(AudioFile):
         else:
             return super(MP4File, self).can_change(key) and (key in OK)
 
+    def get_images(self):
+        images = []
+
+        try:
+            tag = MP4(self["~filename"])
+        except Exception:
+            return []
+
+        for cover in tag.get("covr", []):
+
+            if cover.imageformat == MP4Cover.FORMAT_JPEG:
+                mime = "image/jpeg"
+            elif cover.imageformat == MP4Cover.FORMAT_PNG:
+                mime = "image/png"
+            else:
+                mime = "image/"
+
+            f = get_temp_cover_file(cover)
+            images.append(EmbeddedImage(f, mime))
+
+        return images
+
     def get_primary_image(self):
         try:
             tag = MP4(self["~filename"])
@@ -140,7 +162,7 @@ class MP4File(AudioFile):
                 mime = "image/"
 
             f = get_temp_cover_file(cover)
-            return EmbeddedImage(mime, -1, -1, -1, f)
+            return EmbeddedImage(f, mime)
 
     can_change_images = True
 

@@ -102,6 +102,25 @@ class WMAFile(AudioFile):
         else:
             return super(WMAFile, self).can_change(key) and (key in OK)
 
+    def get_images(self):
+        images = []
+
+        try:
+            tag = mutagen.asf.ASF(self["~filename"])
+        except Exception:
+            return images
+
+        for image in tag.get("WM/Picture", []):
+            try:
+                (mime, desc, data, type_) = unpack_image(image.value)
+            except ValueError:
+                continue
+            f = get_temp_cover_file(data)
+            images.append(EmbeddedImage(f, mime, type_=type_))
+
+        images.sort(key=lambda c: c.sort_key)
+        return images
+
     def get_primary_image(self):
         """Returns the primary embedded image or None"""
 
@@ -117,7 +136,7 @@ class WMAFile(AudioFile):
                 continue
             if type_ == APICType.COVER_FRONT:  # Only cover images
                 f = get_temp_cover_file(data)
-                return EmbeddedImage(mime, -1, -1, -1, f)
+                return EmbeddedImage(f, mime, type_=type_)
 
     can_change_images = True
 

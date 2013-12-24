@@ -56,6 +56,10 @@ class TMP4File(TestCase):
         self.assertTrue(image)
         self.assertEqual(image.mime_type, "image/png")
 
+    def test_get_images(self):
+        images = self.song.get_images()
+        self.assertTrue(images and len(images) == 2)
+
     def test_get_image_non(self):
         tag = mutagen.mp4.MP4(self.f)
         tag.pop("covr", None)
@@ -77,7 +81,7 @@ class TMP4File(TestCase):
     def test_set_image(self):
         self.assertTrue(self.song.has_images)
         fileobj = StringIO.StringIO("foo")
-        image = EmbeddedImage("image/jpeg", 10, 10, 8, fileobj)
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.song.set_image(image)
         image = self.song.get_primary_image()
         self.assertTrue(image)

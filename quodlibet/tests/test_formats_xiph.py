@@ -422,7 +422,7 @@ class TVCCover(TestCase):
         song.save()
 
         fileobj = StringIO.StringIO("foo")
-        image = EmbeddedImage("image/jpeg", 10, 10, 8, fileobj)
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = self.QLType(self.filename)
         self.assertTrue(song.has_images)
@@ -500,7 +500,7 @@ class TFlacPicture(TestCase):
 
     def test_set_image(self):
         fileobj = StringIO.StringIO("foo")
-        image = EmbeddedImage("image/jpeg", 10, 10, 8, fileobj)
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = FLACFile(self.filename)
         self.assertFalse(song.get_primary_image())

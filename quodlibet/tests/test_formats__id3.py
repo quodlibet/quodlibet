@@ -55,6 +55,12 @@ class TID3Images(TestCase):
         image = song.get_primary_image()
         self.failUnlessEqual(image.file.read(), "bar2")
 
+        # get_images()
+        images = song.get_images()
+        self.assertTrue(images and len(images) == 2)
+        self.assertEqual(images[0].type, 3)
+        self.assertEqual(images[1].type, 4)
+
     def test_clear_images(self):
         f = mutagen.File(self.filename)
         apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=4,
@@ -71,7 +77,7 @@ class TID3Images(TestCase):
 
     def test_set_image(self):
         fileobj = StringIO.StringIO("foo")
-        image = EmbeddedImage("image/jpeg", 10, 10, 8, fileobj)
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = MP3File(self.filename)
         self.failIf(song.has_images)

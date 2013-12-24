@@ -15,7 +15,7 @@ class ImageContainer(object):
         return
 
     def get_images(self):
-        """Returns an unordered list of embedded images"""
+        """Returns a list of embedded images, primary first"""
 
         # fall back to the single implementation
         image = self.get_primary_image()
@@ -51,9 +51,93 @@ class ImageContainer(object):
         raise NotImplementedError
 
     def set_image(self, image):
-        """Replaces all embedded images by the passed image"""
+        """Replaces all embedded images by the passed image.
+
+        The image type recorded in the file will be APICType.COVER_FRONT,
+        disregarding image.type.
+        """
 
         raise NotImplementedError
+
+
+class APICType(object):
+    """Enumeration of image types defined by the ID3 standard but also reused
+    in WMA/FLAC/VorbisComment
+    """
+
+    # Other
+    OTHER = 0
+    # 32x32 pixels 'file icon' (PNG only)
+    FILE_ICON = 1
+    # Other file icon
+    OTHER_FILE_ICON = 2
+    # Cover (front)
+    COVER_FRONT = 3
+    # Cover (back)
+    COVER_BACK = 4
+    # Leaflet page
+    LEAFLET_PAGE = 5
+    # Media (e.g. label side of CD)
+    MEDIA = 6
+    # Lead artist/lead performer/soloist
+    LEAD_ARTIST = 7
+    # Artist/performer
+    ARTIST = 8
+    # Conductor
+    CONDUCTOR = 9
+    # Band/Orchestra
+    BAND = 10
+    # Composer
+    COMPOSER = 11
+    # Lyricist/text writer
+    LYRISCIST = 12
+    # Recording Location
+    RECORDING_LOCATION = 13
+    # During recording
+    DURING_RECORDING = 14
+    # During performance
+    DURING_PERFORMANCE = 15
+    # Movie/video screen capture
+    SCREEN_CAPTURE = 16
+    # A bright coloured fish
+    FISH = 17
+    # Illustration
+    ILLUSTRATION = 18
+    # Band/artist logotype
+    BAND_LOGOTYPE = 19
+    # Publisher/Studio logotype
+    PUBLISHER_LOGOTYPE = 20
+
+    @classmethod
+    def to_string(cls, value):
+        for k, v in cls.__dict__.items():
+            if v == value:
+                return k
+        return ""
+
+    @classmethod
+    def is_valid(cls, value):
+        return cls.OTHER <= value <= cls.PUBLISHER_LOGOTYPE
+
+    @classmethod
+    def sort_key(cls, value):
+        """Sorts picture types, most important picture is the lowest.
+        Important is defined as most representative of an album release, ymmv.
+        """
+
+        # index value -> important
+        important = [
+            cls.LEAFLET_PAGE, cls.MEDIA,
+            cls.COVER_BACK, cls.COVER_FRONT
+        ]
+
+        try:
+            return -important.index(value)
+        except ValueError:
+            if value < cls.COVER_FRONT:
+                return 100 - value
+            else:
+                return value
 
 
 class EmbeddedImage(object):
@@ -61,17 +145,23 @@ class EmbeddedImage(object):
     for FLAC and ID3 images.
     """
 
-    def __init__(self, mime_type, width, height, color_depth, fileobj):
+    def __init__(self, fileobj, mime_type, width=-1, height=-1, color_depth=-1,
+                 type_=APICType.OTHER):
         self.mime_type = mime_type
         self.width = width
         self.height = height
         self.color_depth = color_depth
         self.file = fileobj
+        self.type = type_
 
     def __repr__(self):
-        return "<%s mime_type=%r width=%d height=%d file=%r>" % (
+        return "<%s mime_type=%r width=%d height=%d type=%s file=%r>" % (
             type(self).__name__, self.mime_type, self.width, self.height,
-            self.file)
+            APICType.to_string(self.type), self.file)
+
+    @property
+    def sort_key(self):
+        return APICType.sort_key(self.type)
 
     @property
     def extensions(self):
@@ -134,79 +224,6 @@ class EmbeddedImage(object):
         mime_type = mime_types and mime_types[0] or ""
 
         try:
-            return cls(mime_type, width, height, color_depth, open(path, "rb"))
+            return cls(open(path, "rb"), mime_type, width, height, color_depth)
         except EnvironmentError:
             return
-
-
-class APICType(object):
-    """Enumeration of image types defined by the ID3 standard but also reused
-    in WMA/FLAC/VorbisComment
-    """
-
-    # Other
-    OTHER = 0
-    # 32x32 pixels 'file icon' (PNG only)
-    FILE_ICON = 1
-    # Other file icon
-    OTHER_FILE_ICON = 2
-    # Cover (front)
-    COVER_FRONT = 3
-    # Cover (back)
-    COVER_BACK = 4
-    # Leaflet page
-    LEAFLET_PAGE = 5
-    # Media (e.g. label side of CD)
-    MEDIA = 6
-    # Lead artist/lead performer/soloist
-    LEAD_ARTIST = 7
-    # Artist/performer
-    ARTIST = 8
-    # Conductor
-    CONDUCTOR = 9
-    # Band/Orchestra
-    BAND = 10
-    # Composer
-    COMPOSER = 11
-    # Lyricist/text writer
-    LYRISCIST = 12
-    # Recording Location
-    RECORDING_LOCATION = 13
-    # During recording
-    DURING_RECORDING = 14
-    # During performance
-    DURING_PERFORMANCE = 15
-    # Movie/video screen capture
-    SCREEN_CAPTURE = 16
-    # A bright coloured fish
-    FISH = 17
-    # Illustration
-    ILLUSTRATION = 18
-    # Band/artist logotype
-    BAND_LOGOTYPE = 19
-    # Publisher/Studio logotype
-    PUBLISHER_LOGOTYPE = 20
-
-    @classmethod
-    def is_valid(cls, value):
-        return cls.OTHER <= value <= cls.PUBLISHER_LOGOTYPE
-
-    @classmethod
-    def sort_key(cls, value):
-        """Sorts picture types, most important picture is the highest.
-        Important is defined as most representative of an album release, ymmv.
-        """
-
-        # index value -> important
-        important = [
-            cls.LEAFLET_PAGE, cls.MEDIA,
-            cls.COVER_BACK, cls.COVER_FRONT
-        ]
-
-        try:
-            return important.index(value)
-        except ValueError:
-            if value < cls.COVER_FRONT:
-                return value - 100
-            else:
-                return -value

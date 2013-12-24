@@ -57,6 +57,15 @@ class TWMAFile(TestCase):
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, WMAFile, path)
 
+    def test_get_images(self):
+        tag = asf.ASF(self.f2)
+        tag["WM/Picture"] = [tag["WM/Picture"][0], tag["WM/Picture"][0]]
+        tag.save()
+        self.song2.reload()
+
+        images = self.song2.get_images()
+        self.assertTrue(images and len(images) == 2)
+
     def test_get_image(self):
         self.assertFalse(self.song.get_primary_image())
 
@@ -115,7 +124,7 @@ class TWMAFile(TestCase):
 
     def test_set_image(self):
         fileobj = StringIO.StringIO("foo")
-        image = EmbeddedImage("image/jpeg", 10, 10, 8, fileobj)
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.assertFalse(self.song.has_images)
         self.song.set_image(image)
         self.assertTrue(self.song.has_images)

@@ -133,7 +133,8 @@ class MutagenVCFile(AudioFile):
         if cover:
             f = get_temp_cover_file(cover.data)
             return EmbeddedImage(
-                cover.mime, cover.width, cover.height, cover.depth, f)
+                f, cover.mime, cover.width, cover.height, cover.depth,
+                cover.type)
 
         cover = audio.get("coverart")
         try:
@@ -147,7 +148,7 @@ class MutagenVCFile(AudioFile):
 
         mime = audio.get("coverartmime", "image/")
         f = get_temp_cover_file(cover)
-        return EmbeddedImage(mime, -1, -1, -1, f)
+        return EmbeddedImage(f, mime)
 
     def clear_images(self):
         """Delete all embedded images"""
@@ -374,11 +375,12 @@ class FLACFile(MutagenVCFile):
             return super(FLACFile, self).get_primary_image()
 
         covers.sort(key=lambda c: APICType.sort_key(c.type))
-        cover = covers[-1]
+        cover = covers[0]
 
         fileobj = get_temp_cover_file(cover.data)
         return EmbeddedImage(
-            cover.mime, cover.width, cover.height, cover.depth, fileobj)
+            fileobj, cover.mime, cover.width, cover.height, cover.depth,
+            cover.type)
 
     def clear_images(self):
         """Delete all embedded images"""

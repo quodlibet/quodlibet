@@ -442,6 +442,23 @@ class ID3File(AudioFile):
 
         self.has_images = False
 
+    def get_images(self):
+        """Returns a list of embedded images"""
+
+        images = []
+
+        try:
+            tag = mutagen.id3.ID3(self["~filename"])
+        except Exception:
+            return images
+
+        for frame in tag.getall("APIC"):
+            f = get_temp_cover_file(frame.data)
+            images.append(EmbeddedImage(f, frame.mime, type_=frame.type))
+
+        images.sort(key=lambda c: c.sort_key)
+        return images
+
     def get_primary_image(self):
         """Returns the primary embedded image"""
 
@@ -460,7 +477,7 @@ class ID3File(AudioFile):
 
         if cover:
             f = get_temp_cover_file(cover.data)
-            return EmbeddedImage(cover.mime, -1, -1, -1, f)
+            return EmbeddedImage(f, cover.mime, type_=cover.type)
 
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""

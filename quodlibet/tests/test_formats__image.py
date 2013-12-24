@@ -23,7 +23,7 @@ class TAPICType(TestCase):
             APICType.ARTIST, APICType.PUBLISHER_LOGOTYPE
         ]
 
-        values.sort(key=APICType.sort_key)
+        values.sort(key=APICType.sort_key, reverse=True)
 
         wanted = [
             APICType.OTHER, APICType.FILE_ICON, APICType.PUBLISHER_LOGOTYPE,
