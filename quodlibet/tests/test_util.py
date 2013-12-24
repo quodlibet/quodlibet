@@ -61,6 +61,7 @@ add(Tiscommand)
 class Tmtime(TestCase):
     def test_equal(self):
         self.failUnlessEqual(mtime("."), os.path.getmtime("."))
+
     def test_bad(self):
         self.failIf(os.path.exists("/dev/doesnotexist"))
         self.failUnlessEqual(mtime("/dev/doesnotexist"), 0)
@@ -103,7 +104,7 @@ class Tformat_rating(TestCase):
     def test_full(self):
         self.failUnlessEqual(
             len(util.format_rating(1, blank=False)),
-            int(1/self.r.precision))
+            int(1 / self.r.precision))
 
     def test_rating_length(self):
         config.RATINGS.number = 4
@@ -113,7 +114,7 @@ class Tformat_rating(TestCase):
 
     def test_bogus(self):
         max_length = int(1 / self.r.precision)
-        self.failUnlessEqual(len(util.format_rating(2**32-1, blank=False)),
+        self.failUnlessEqual(len(util.format_rating(2 ** 32 - 1, blank=False)),
                              max_length)
         self.failUnlessEqual(len(util.format_rating(-4.2, blank=False)), 0)
 
@@ -125,7 +126,7 @@ class Tformat_rating(TestCase):
             self.failUnlessEqual(len(util.format_rating(1)), steps)
             self.failUnlessEqual(len(util.format_rating(0)), steps)
             self.failUnlessEqual(len(util.format_rating(0.5)), steps)
-            self.failUnlessEqual(len(util.format_rating(1/3.0)), steps)
+            self.failUnlessEqual(len(util.format_rating(1 / 3.0)), steps)
 
     def test_blank_values(self):
         self.r.number = 5
@@ -197,8 +198,10 @@ add(Tsplit_scan_dirs)
 class Tdecode(TestCase):
     def test_empty(self):
         self.failUnlessEqual(decode(""), "")
+
     def test_safe(self):
         self.failUnlessEqual(decode("foo!"), "foo!")
+
     def test_invalid(self):
         self.failUnlessEqual(
             decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
@@ -208,6 +211,7 @@ add(Tdecode)
 class Tencode(TestCase):
     def test_empty(self):
         self.failUnlessEqual(encode(""), "")
+
     def test_unicode(self):
         self.failUnlessEqual(encode(u"abcde"), "abcde")
 add(Tencode)
@@ -293,11 +297,12 @@ class Tformat_time(TestCase):
 
     def test_minutes(self):
         self.failUnlessEqual(util.format_time(60), "1:00")
-        self.failUnlessEqual(util.format_time(60*59+59), "59:59")
+        self.failUnlessEqual(util.format_time(60 * 59 + 59), "59:59")
 
     def test_hourss(self):
-        self.failUnlessEqual(util.format_time(60*60), "1:00:00")
-        self.failUnlessEqual(util.format_time(60*60+60*59+59), "1:59:59")
+        self.failUnlessEqual(util.format_time(60 * 60), "1:00:00")
+        self.failUnlessEqual(
+            util.format_time(60 * 60 + 60 * 59 + 59), "1:59:59")
 
     def test_negative(self):
         self.failUnlessEqual(util.format_time(-124), "-2:04")
@@ -318,7 +323,7 @@ class Tparse_time(TestCase):
         # The values are the ones tested for Tformat_time, so we know they
         # will be formatted correctly. They're also representative of
         # all the major patterns.
-        for i in [0, 59, 60, 60*59+59, 60*60, 60*60+60*59+59]:
+        for i in [0, 59, 60, 60 * 59 + 59, 60 * 60, 60 * 60 + 60 * 59 + 59]:
             self.failUnlessEqual(util.parse_time(util.format_time(i)), i)
 
     def test_negative(self):
@@ -331,37 +336,56 @@ class Tformat_size(TestCase):
         map(self.failUnlessEqual, map(util.format_size, d.keys()), d.values())
 
     def test_bytes(self):
-        self.t_dict({ 0: "0 B", 1: "1 B", 1023: "1023 B" })
+        self.t_dict({0: "0 B", 1: "1 B", 1023: "1023 B"})
 
     def test_kbytes(self):
-        self.t_dict({ 1024: "1.00 KB", 1536: "1.50 KB",
-                      10240: "10 KB", 15360: "15 KB" })
+        self.t_dict({
+            1024: "1.00 KB",
+            1536: "1.50 KB",
+            10240: "10 KB",
+            15360: "15 KB"
+        })
 
     def test_mbytes(self):
-        self.t_dict({ 1024*1024: "1.00 MB", 1024*1536: "1.50 MB",
-                      1024*10240: "10.0 MB", 1024*15360: "15.0 MB",
-                      123456*1024: "121 MB", 765432*1024: "747 MB"})
+        self.t_dict({
+            1024 * 1024: "1.00 MB",
+            1024 * 1536: "1.50 MB",
+            1024 * 10240: "10.0 MB",
+            1024 * 15360: "15.0 MB",
+            123456 * 1024: "121 MB",
+            765432 * 1024: "747 MB"})
 
     def test_gbytes(self):
-        self.t_dict({ 1024*1024*1024: "1.0 GB", 1024*1024*1536: "1.5 GB",
-                      1024*1024*10240: "10.0 GB", 1024*1024*15360: "15.0 GB"})
+        self.t_dict({
+            1024 * 1024 * 1024: "1.0 GB",
+            1024 * 1024 * 1536: "1.5 GB",
+            1024 * 1024 * 10240: "10.0 GB",
+            1024 * 1024 * 15360: "15.0 GB"
+        })
 add(Tformat_size)
 
 
 class Tsplit_title(TestCase):
+
     def test_trailing(self):
         self.failUnlessEqual(split_title("foo ~"), ("foo ~", []))
+
     def test_prefixed(self):
         self.failUnlessEqual(split_title("~foo "), ("~foo ", []))
+
     def test_prefix_and_trailing(self):
         self.failUnlessEqual(split_title("~foo ~"), ("~foo ~", []))
+
     def test_prefix_and_version(self):
         self.failUnlessEqual(split_title("~foo ~bar~"), ("~foo", ["bar"]))
+
     def test_simple(self):
         self.failUnlessEqual(split_title("foo (baz)"), ("foo", ["baz"]))
+
     def test_two_versions(self):
         self.failUnlessEqual(
             split_title("foo [b, c]"), ("foo", ["b", "c"]))
+
     def test_custom_splitter(self):
         self.failUnlessEqual(
             split_title("foo [b c]", " "), ("foo", ["b", "c"]))
@@ -396,22 +420,28 @@ add(Tsplit_album)
 
 
 class Tsplit_people(TestCase):
+
     def test_parened_person(self):
         self.failUnlessEqual(split_people("foo (bar)"), ("foo", ["bar"]))
+
     def test_with_person(self):
         self.failUnlessEqual(
             split_people("foo (With bar)"), ("foo", ["bar"]))
+
     def test_with_with_person(self):
         self.failUnlessEqual(
             split_people("foo (with with bar)"), ("foo", ["with bar"]))
+
     def test_featuring_two_people(self):
         self.failUnlessEqual(
             split_people("foo featuring bar, qx"), ("foo", ["bar", "qx"]))
+
     def test_featuring_person_bracketed(self):
         self.failUnlessEqual(
             split_people("foo (Ft. bar)"), ("foo", ["bar"]))
         self.failUnlessEqual(
             split_people("foo(feat barman)"), ("foo", ["barman"]))
+
     def test_originally_by(self):
         self.failUnlessEqual(
             split_people("title (originally by artist)"),
@@ -419,6 +449,7 @@ class Tsplit_people(TestCase):
         self.failUnlessEqual(
             split_people("title [originally by artist & artist2]"),
             ("title", ["artist", "artist2"]))
+
     def test_cover(self):
         self.failUnlessEqual(
             split_people("Pyscho Killer [Talking Heads Cover]"),
@@ -457,20 +488,28 @@ add(Ttag)
 
 
 class Ttagsplit(TestCase):
+
     def test_single_tag(self):
         self.failUnlessEqual(util.tagsplit("foo"), ["foo"])
+
     def test_synth_tag(self):
         self.failUnlessEqual(util.tagsplit("~foo"), ["~foo"])
+
     def test_two_tags(self):
         self.failUnlessEqual(util.tagsplit("foo~bar"), ["foo", "bar"])
+
     def test_two_prefix(self):
         self.failUnlessEqual(util.tagsplit("~foo~bar"), ["foo", "bar"])
+
     def test_synth(self):
         self.failUnlessEqual(util.tagsplit("~foo~~bar"), ["foo", "~bar"])
+
     def test_numeric(self):
         self.failUnlessEqual(util.tagsplit("~#bar"), ["~#bar"])
+
     def test_two_numeric(self):
         self.failUnlessEqual(util.tagsplit("~#foo~~#bar"), ["~#foo", "~#bar"])
+
     def test_two_synth_start(self):
         self.failUnlessEqual(
             util.tagsplit("~~people~album"), ["~people", "album"])
@@ -478,24 +517,33 @@ add(Ttagsplit)
 
 
 class Tpattern(TestCase):
+
     def test_empty(self):
         self.failUnlessEqual(util.pattern(""), "")
+
     def test_basic(self):
         self.failUnlessEqual(util.pattern("<title>"), "Title")
+
     def test_basic_nocap(self):
         self.failUnlessEqual(util.pattern("<title>", False), "title")
+
     def test_internal(self):
         self.failUnlessEqual(util.pattern("<~plays>"), "Plays")
+
     def test_tied(self):
         self.failUnlessEqual(util.pattern("<~title~album>"), "Title - Album")
+
     def test_unknown(self):
         self.failUnlessEqual(util.pattern("<foobarbaz>"), "Foobarbaz")
+
     def test_condition(self):
         self.failUnlessEqual(util.pattern("<~year|<~year> - <album>|<album>>"),
                              "Year - Album")
+
     def test_escape(self):
         self.failUnlessEqual(util.pattern("\<i\><&>\</i\>", esc=True),
                             "<i>&amp;</i>")
+
     def test_invalid(self):
         self.failUnlessEqual(util.pattern("<date"), "")
         util.pattern("<d\\")
@@ -557,7 +605,7 @@ class Tformat_time_long(TestCase):
         s.assertEquals(f_t_l(1, limit=0), _("1 second"))
 
     def test_limit(s):
-        s.assertEquals(len(f_t_l(2**31).split(", ")), 2)
+        s.assertEquals(len(f_t_l(2 ** 31).split(", ")), 2)
 
 add(Tformat_time_long)
 
@@ -620,7 +668,7 @@ add(Txdg_dirs)
 class Tpathname2url(TestCase):
     def test_win(self):
         cases = {
-            r"c:\abc\def" : "/c:/abc/def",
+            r"c:\abc\def": "/c:/abc/def",
             r"C:\a b\c.txt": "/C:/a%20b/c.txt",
             r"\\xy\z.txt": "xy/z.txt",
             r"C:\a:b\c:d": "/C:/a%3Ab/c%3Ad"
@@ -670,7 +718,7 @@ class TNormalizePath(TestCase):
             self.failUnlessEqual(norm(".."), "..")
             t = os.path.join("..", basename)
             self.failUnlessEqual(norm(t), t)
-            t = os.path.join("/", "bin", "..",  norm(name))
+            t = os.path.join("/", "bin", "..", norm(name))
             self.failUnlessEqual(norm(t), t)
         finally:
             os.chdir(old_cwd)

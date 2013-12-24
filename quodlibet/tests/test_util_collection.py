@@ -326,7 +326,8 @@ class TPlaylist(TestCase):
         try:
             pl.index(Fakesong({}))
             s.fail()
-        except ValueError: pass
+        except ValueError:
+            pass
         pl.delete()
 
     def test_internal_tags(s):

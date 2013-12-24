@@ -9,6 +9,7 @@ from tests import TestCase, add
 
 from quodlibet.util.fmps import *
 
+
 class TFmps(TestCase):
     def setUp(self):
         pass
@@ -109,7 +110,7 @@ class TFmps(TestCase):
         a = RatingUser()
         x = [1, 0]
         y = x[:]
-        a.set_all("x",x)
+        a.set_all("x", x)
         self.failUnlessEqual(x, y)
 
     def test_int(self):
@@ -222,13 +223,13 @@ class TFmps(TestCase):
         a = RatingAlgorithm("a::b::0;;a::c::1.0;;a::b::0.25")
         self.failUnlessEqual(a.keys(), ["a"])
         self.failUnlessEqual(a.get_all("a"), {"b": [0, 0.25], "c": [1]})
-        self.failUnlessEqual(a.get_all("a", "c"),[1])
+        self.failUnlessEqual(a.get_all("a", "c"), [1])
 
     def test_rating_algo_2(self):
         a = RatingAlgorithm("a::b::0;;a::c::1.0;;a::b::0.25")
         a.remove_all("a", "c")
         self.failUnlessEqual(a.keys(), ["a"])
-        self.failUnlessEqual(a.get_all("a"), {"b": [0,0.25]})
+        self.failUnlessEqual(a.get_all("a"), {"b": [0, 0.25]})
         a.remove_all("a")
         self.failUnlessEqual(a.keys(), [])
         self.failUnlessEqual(a.to_data(), "")

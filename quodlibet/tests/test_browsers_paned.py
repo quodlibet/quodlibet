@@ -510,7 +510,7 @@ class TPaneModel(TestCase):
 
         m.add_songs([UNKNOWN_ARTIST])
         self._verify_model(m)
-        self.assertTrue(m.matches([len(m)-1], UNKNOWN_ARTIST))
+        self.assertTrue(m.matches([len(m) - 1], UNKNOWN_ARTIST))
 
 add(TPaneModel)
 

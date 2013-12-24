@@ -3,12 +3,14 @@ from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.util.collection import Playlist
 from tests import TestCase, add, mkdtemp
 from random import randint
-from timeit import timeit,default_timer
+from timeit import timeit, default_timer
 from quodlibet import const
 
 const.DEBUG = True
 
+
 class TPlaylistPerformance(TestCase):
+
     def setUp(self):
         self.temp = mkdtemp()
 
@@ -20,7 +22,8 @@ class TPlaylistPerformance(TestCase):
 
         Initial tests indicate that:
         For 100,000 songs with 20 Playlists (each of 1000 songs):
-        -> The cache is ~= 6MB in size, delivers a 250x speed increase once warm
+        -> The cache is ~= 6MB in size, delivers a 250x speed increase
+           once warm
 
         For 10,000 songs with 20 Playlists (each of 100 songs):
         -> The cache is ~= 770 KB in size, 6.4x speed increase once warm
@@ -46,23 +49,24 @@ class TPlaylistPerformance(TestCase):
 
         def setup():
             for i in xrange(NUM_PLAYLISTS):
-                pls.append(Playlist(s.temp, "List %d" % (i+1)))
+                pls.append(Playlist(s.temp, "List %d" % (i + 1)))
             for i in xrange(NUM_SONGS):
-                a = ARTISTS[randint(0,2)]
+                a = ARTISTS[randint(0, 2)]
                 t = "Song %d" % i
-                data = {"title": t, "artist":a, "~#tracknumber": i % 20,
+                data = {"title": t, "artist": a, "~#tracknumber": i % 20,
                         "~filename": "%s.mp3" % t,
-                        "~#filesize":randint(1000000,100000000)}
+                        "~#filesize": randint(1000000, 100000000)}
                 song = Fakesong(data)
                 library.append(song)
                 if not (i % SONGS_TO_PLAYLIST_SIZE_RATIO):
                     song["~included"] = "yes"
                     for j in range(PLAYLISTS_PER_PLAYLISTED_SONG):
-                        pls[(i+j) % NUM_PLAYLISTS].append(song)
+                        pls[(i + j) % NUM_PLAYLISTS].append(song)
 
         print_d("\nSetting up %d songs and %d playlists... " % (
             NUM_SONGS, NUM_PLAYLISTS))
-        print_d("took %.1f ms" % (timeit(setup, "pass", default_timer, 1)*1000.0))
+        print_d("took %.1f ms" % (
+            timeit(setup, "pass", default_timer, 1) * 1000.0))
 
         def get_playlists():
             for song in library:
@@ -81,9 +85,9 @@ class TPlaylistPerformance(TestCase):
         print_d("Timing cached get_playlists_featuring()...")
         cold = timeit(get_playlists, "pass", default_timer, 1)
         # And now it's warmed up...
-        print_w("cold: averages %.1f ms" % (cold* 1000.0))
-        warm = timeit(get_playlists, "pass", default_timer, REPEATS -1)
+        print_w("cold: averages %.1f ms" % (cold * 1000.0))
+        warm = timeit(get_playlists, "pass", default_timer, REPEATS - 1)
         print_w("warm: averages %.1f ms (speedup = %.1f X)"
-              % (warm * 1000.0 / (REPEATS-1), cold/warm))
+              % (warm * 1000.0 / (REPEATS - 1), cold / warm))
 
 add(TPlaylistPerformance)

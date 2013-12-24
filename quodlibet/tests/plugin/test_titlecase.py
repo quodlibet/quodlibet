@@ -12,6 +12,7 @@ from quodlibet import config, util
 
 humanise = None
 
+
 class TTitlecase(PluginTestCase):
     def setUp(self):
         globals().update(vars(self.modules["Title Case"]))
@@ -36,7 +37,10 @@ class TTitlecase(PluginTestCase):
         return humanise(value)
 
     def test_english_human_title_case(s):
-        """Checks human humanise casing, assuming that it defaults to enabled"""
+        """Checks human humanise casing,
+        assuming that it defaults to enabled
+        """
+
         s.assertEquals(u"System of a Down",
                 s.title(u"System Of A Down"))
         s.assertEquals(u"The Man with the Golden Gun",

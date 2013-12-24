@@ -7,6 +7,7 @@ from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.cover import CoverImage, BigCenteredImage, ResizeImage
 
+
 class TCoverImage(TestCase):
     def setUp(self):
         config.init()
@@ -21,7 +22,7 @@ class TCoverImage(TestCase):
 
     def test_set_song(self):
         c = CoverImage()
-        c.set_song(AudioFile({"~filename":"woo"}))
+        c.set_song(AudioFile({"~filename": "woo"}))
         event = Gdk.Event.new(Gdk.EventType.BUTTON_PRESS)
         event.type.button = 1
         c.emit("button-press-event", event)

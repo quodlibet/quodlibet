@@ -7,9 +7,11 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
 from quodlibet.qltk.playorder import ORDERS, Order
 
+
 def do_events():
     while Gtk.events_pending():
         Gtk.main_iteration()
+
 
 class TPlaylistModel(TestCase):
     def setUp(self):
@@ -52,6 +54,7 @@ class TPlaylistModel(TestCase):
 
     def test_find(self):
         self.failUnlessEqual(self.pl[self.pl.find(8)][0], 8)
+
     def test_find_not_there(self):
         self.failUnless(self.pl.find(22) is None)
 
@@ -89,9 +92,11 @@ class TPlaylistModel(TestCase):
     def test_next_repeat(self):
         self.pl.repeat = True
         self.pl.go_to(3)
-        for i in range(9): self.pl.next()
+        for i in range(9):
+            self.pl.next()
         self.assertEqual(self.pl.current, 2)
-        for i in range(12): self.pl.next()
+        for i in range(12):
+            self.pl.next()
         self.assertEqual(self.pl.current, 4)
 
     def test_shuffle(self):
@@ -176,11 +181,13 @@ class TPlaylistModel(TestCase):
             self.failUnlessEqual(self.pl.current, 1)
 
     def test_go_to(self):
+
         class SetOrder(Order):
             # most orders don't change iter here,
             # so make sure this gets handled right
             def set_explicit(self, playlist, iter):
                 return playlist.iter_next(iter)
+
             def set_implicit(self, playlist, iter):
                 return playlist.iter_next(playlist.iter_next(iter))
 
@@ -231,6 +238,7 @@ class TPlaylistModel(TestCase):
     def shutDown(self):
         self.pl.destroy()
 add(TPlaylistModel)
+
 
 class TPlaylistMux(TestCase):
     def setUp(self):
@@ -343,8 +351,10 @@ class TPlaylistMux(TestCase):
             value = self.next()
             self.failUnless(
                 value in [10, 11], "got %r, expected 10 or 11" % value)
-            if value == 10: next = 11
-            else: next = 10
+            if value == 10:
+                next = 11
+            else:
+                next = 10
             self.failUnlessEqual(self.next(), next)
 
     def test_sourced(self):

@@ -17,6 +17,7 @@ for name, module in ms.modules.iteritems():
         plugins[plugin.PLUGIN_ID] = Plugin(plugin)
         modules[plugin.PLUGIN_ID] = module.module
 
+
 class PluginTestCase(TestCase):
     """Base class for all plugin tests"""
     plugins = plugins

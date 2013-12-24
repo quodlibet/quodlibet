@@ -4,6 +4,7 @@ from tests import TestCase, add
 from quodlibet import browsers
 browsers.init()
 
+
 class TBrowsers(TestCase):
     def test_presence(self):
         self.failUnless(browsers.empty)

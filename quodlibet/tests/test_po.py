@@ -33,8 +33,9 @@ class PO(TestCase):
                 self.failIf(value and value not in [
                     'media-next', 'media-previous', 'media-play',
                     'media-pause'],
-                            "Invalid stock translation in %s\n%s" %(
+                            "Invalid stock translation in %s\n%s" % (
                     self.lang, line))
+
 
 for fn in glob.glob("po/*.po"):
     lang = fn[3:-3]

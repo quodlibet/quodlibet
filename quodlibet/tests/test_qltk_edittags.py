@@ -10,9 +10,11 @@ from quodlibet.qltk.edittags import *
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
+
 class TEditTags(TestCase):
     def setUp(self):
         quodlibet.config.init()
+
     def tearDown(self):
         quodlibet.config.quit()
 

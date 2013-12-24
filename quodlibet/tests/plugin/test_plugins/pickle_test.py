@@ -11,8 +11,10 @@ from tests import mkstemp
 
 from quodlibet.plugins.events import EventPlugin
 
+
 class PickleMe(object):
     pass
+
 
 class PickleTestPlugin(EventPlugin):
     PLUGIN_ID = "pickle_test"

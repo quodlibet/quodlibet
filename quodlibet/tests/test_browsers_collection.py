@@ -14,7 +14,8 @@ from quodlibet.library import SongLibrary
 
 SONGS = [
     AudioFile({"album": "one", "artist": "piman", "~filename": "/dev/null"}),
-    AudioFile({"album": "two", "artist": "mu\nboris", "~filename": "/dev/zero"}),
+    AudioFile({"album": "two", "artist": "mu\nboris",
+               "~filename": "/dev/zero"}),
     AudioFile({"album": "three", "artist": "boris", "~filename": "/bin/ls"}),
     AudioFile({"album": "three", "artist": "boris", "~filename": "/bin/ls2"}),
     AudioFile({"album": "four", "~filename": "/bin/ls3"}),

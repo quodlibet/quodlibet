@@ -149,5 +149,4 @@ class TRatingsPrefs(TestCase):
     def tearDown(self):
         config.quit()
 
-
 add(TRatingsPrefs)

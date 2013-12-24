@@ -9,7 +9,9 @@ from tests import TestCase, add
 
 from quodlibet.util import title
 
+
 class Ttitle(TestCase):
+
     def test_basics(s):
         s.assertEquals(u"Mama's Boy", title(u"mama's boy"))
         s.assertEquals(u"The A-Sides", title(u"the a-sides"))
@@ -49,7 +51,6 @@ class Ttitle(TestCase):
         s.assertEquals(u"\"Mad-Dog\" Mike",
                  title(u"\"mad-dog\" mike"))
 
-
     def test_unicode(s):
         s.assertEquals(u"Fooäbar",
                  title(u"fooäbar"))
@@ -62,7 +63,6 @@ class Ttitle(TestCase):
         # Not a real word - there is none with this character at the beginning
         # but still Python doesn't capitalize the es-zed properly.
         # s.assertEquals(u"SSbahn", title(u"ßbahn"))
-
 
     # Old tests, somewhat redundant with the above, but you can never have
     # too many tests...

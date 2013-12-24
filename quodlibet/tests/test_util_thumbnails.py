@@ -16,9 +16,12 @@ from quodlibet.util.path import expanduser, pathname2url
 
 class TThumb(TestCase):
     def setUp(s):
-        s.wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
-        s.high = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
-        s.small = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
+        s.wide = GdkPixbuf.Pixbuf.new(
+            GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
+        s.high = GdkPixbuf.Pixbuf.new(
+            GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
+        s.small = GdkPixbuf.Pixbuf.new(
+            GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
         s.filename = os.path.join(os.getcwd(), "test_thumbnail.png")
         s.wide.savev(s.filename, "png", [], [])
 
@@ -48,7 +51,7 @@ class TThumb(TestCase):
         #test the thumbnail filename
         uri = "file://" + pathname2url(s.filename)
         name = hash.md5(uri).hexdigest() + ".png"
-        
+
         path = thumbnails.get_thumbnail_folder()
         path = os.path.join(path, "normal", name)
 

@@ -4,15 +4,24 @@ from gi.repository import Gtk
 
 from quodlibet.qltk.wlw import WaitLoadWindow
 
+
 class TWaitLoadWindow(TestCase):
+
     class DummyConnector(Gtk.Window):
         count = 0
-        def connect(self, *args): self.count += 1
-        def disconnect(self, *args): self.count -= 1
+
+        def connect(self, *args):
+            self.count += 1
+
+        def disconnect(self, *args):
+            self.count -= 1
+
         class Eater:
-            def set_cursor(*args): pass
+            def set_cursor(*args):
+                pass
+
         window = Eater()
-    
+
     def setUp(self):
         self.parent = self.DummyConnector()
         self.wlw = WaitLoadWindow(self.parent, 5, "a test")

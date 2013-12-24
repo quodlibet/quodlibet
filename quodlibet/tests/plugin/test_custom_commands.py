@@ -14,6 +14,7 @@ from tests.plugin import PluginTestCase
 
 CustomCommands = Command = None
 
+
 class TCustomCommands(PluginTestCase):
     """Test CustomCommands plugin and associated classes"""
 

@@ -2,6 +2,7 @@ from tests import TestCase, add
 
 from quodlibet.formats import USEFUL_TAGS
 
+
 class TagsCombo(TestCase):
     def setUp(self):
         self.all = self.Kind()
@@ -25,9 +26,11 @@ class TagsCombo(TestCase):
         self.all.destroy()
         self.some.destroy()
 
+
 class TTagsComboBox(TagsCombo):
     from quodlibet.qltk.tagscombobox import TagsComboBox as Kind
 add(TTagsComboBox)
+
 
 class TTagsComboBoxEntry(TagsCombo):
     from quodlibet.qltk.tagscombobox import TagsComboBoxEntry as Kind

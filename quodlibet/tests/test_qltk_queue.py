@@ -7,6 +7,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
+
 class TQueueExpander(TestCase):
     def setUp(self):
         quodlibet.config.init()

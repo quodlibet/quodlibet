@@ -3,6 +3,7 @@ from tests import TestCase, add
 from quodlibet.qltk.downloader import DownloadWindow
 import quodlibet.config
 
+
 class TDownloadWindow(TestCase):
     def setUp(self):
         quodlibet.config.init()

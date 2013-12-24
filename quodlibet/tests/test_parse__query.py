@@ -3,6 +3,7 @@ from tests import TestCase, add
 
 from quodlibet.parse import Query
 
+
 class TQuery_is_valid(TestCase):
     def test_re(self):
         self.failUnless(Query.is_valid('t = /an re/'))
@@ -11,12 +12,14 @@ class TQuery_is_valid(TestCase):
         self.failIf(Query.is_valid('t = /an/re/'))
         self.failUnless(Query.is_valid('t = /aaa/lsic'))
         self.failIf(Query.is_valid('t = /aaa/icslx'))
+
     def test_str(self):
         self.failUnless(Query.is_valid('t = "a str"'))
         self.failUnless(Query.is_valid('t = "a str"c'))
         self.failUnless(Query.is_valid('t = "a\\"str"'))
         # there's no equivalent failure for strings since 'str"' would be
         # read as a set of modifiers
+
     def test_tag(self):
         self.failUnless(Query.is_valid('t = tag'))
         self.failUnless(Query.is_valid('t = !tag'))
@@ -97,16 +100,17 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
 add(TQuery_is_valid)
 
+
 class TQuery(TestCase):
     from quodlibet.formats._audio import AudioFile as AF
 
     def setUp(self):
         self.s1 = self.AF(
-            { "album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
-              "version": "cake mix", "~filename": "/dir1/foobar.ogg" })
+            {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
+             "version": "cake mix", "~filename": "/dir1/foobar.ogg"})
         self.s2 = self.AF(
-            { "album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
-              "~filename": "/dir2/something.mp3", "tracknumber": "12/15" })
+            {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
+             "~filename": "/dir2/something.mp3", "tracknumber": "12/15"})
 
         self.s3 = self.AF(
             {"artist": "piman\nmu",
@@ -285,6 +289,7 @@ class TQuery(TestCase):
         self.failUnless(Query(u"filename=öä").search(self.s3))
 
 add(TQuery)
+
 
 class TQuery_is_valid_color(TestCase):
     def test_red(self):

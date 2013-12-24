@@ -64,7 +64,7 @@ class TestMetaData(TestCase):
 
     def test_genre(self): # unusual special handling for mp3s
         self._test_tag('genre', [u'Pop', u'Rock\nClassical', u'Big Bird',
-             u'\u30a2\u30cb\u30e1\u30b5\u30f3\u30c8\u30e9',])
+             u'\u30a2\u30cb\u30e1\u30b5\u30f3\u30c8\u30e9'])
 
     def test_odd_performer(self):
         values = [u"A Person", u"Another"]
@@ -86,10 +86,15 @@ for ext in formats._infos.keys():
 
         extra_tests = {}
         for tag in tags:
-            if tag in ['artist', 'date', 'genre']: continue
-            def test_tag(self, tag=tag): self._test_tag(tag, [u'a'])
+            if tag in ['artist', 'date', 'genre']:
+                continue
+
+            def test_tag(self, tag=tag):
+                self._test_tag(tag, [u'a'])
             extra_tests['test_tag_' + tag] = test_tag
-            def test_tags(self, tag=tag): self._test_tag(tag, [u'b\nc'])
+
+            def test_tags(self, tag=tag):
+                self._test_tag(tag, [u'b\nc'])
             extra_tests['test_tags_' + tag] = test_tags
 
         testcase = type('MetaData' + ext, (TestMetaData,), extra_tests)

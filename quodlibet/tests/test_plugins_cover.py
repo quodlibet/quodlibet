@@ -10,6 +10,7 @@ from quodlibet.util.cover.manager import CoverPluginHandler
 
 DUMMY_COVER = io.StringIO()
 
+
 class DummyCoverSource1(CoverSourcePlugin):
     @staticmethod
     def priority():
@@ -19,6 +20,7 @@ class DummyCoverSource1(CoverSourcePlugin):
     def cover(self):
         DummyCoverSource1.cover_call = True
         return None
+
 
 class DummyCoverSource2(CoverSourcePlugin):
     @staticmethod
@@ -33,6 +35,7 @@ class DummyCoverSource2(CoverSourcePlugin):
     def fetch_cover(self):
         DummyCoverSource2.fetch_call = True
         return self.emit('fetch-success', self.cover)
+
 
 class DummyCoverSource3(CoverSourcePlugin):
     @staticmethod
@@ -51,6 +54,7 @@ class DummyCoverSource3(CoverSourcePlugin):
 dummy_sources = [Plugin(s) for s in
     [DummyCoverSource1, DummyCoverSource2, DummyCoverSource3]
 ]
+
 
 class TCoverManager(TestCase):
     built_in_count = 2
@@ -108,6 +112,7 @@ class TCoverManager(TestCase):
         manager.plugin_enable(dummy_sources[0])
         found = []
         result = []
+
         def done(_found, _result):
             found.append(_found)
             result.append(_result)
@@ -140,6 +145,7 @@ class TCoverManager(TestCase):
             manager.plugin_enable(source)
             source.cls.cover_call = False
             source.cls.fetch_call = False
+
         def done(_found, _result):
             found.append(_found)
             result.append(_result)

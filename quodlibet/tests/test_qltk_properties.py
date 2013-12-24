@@ -7,12 +7,23 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.library import SongLibrary
 from quodlibet import config
 
+
 class DummyPlugins(object):
-    def rescan(self): pass
-    def find_subclasses(self, *args): return []
-    def TagsFromPathPlugins(self): return []
-    def RenamePlugins(self): return []
-    def EditTagsPlugins(self): return []
+    def rescan(self):
+        pass
+
+    def find_subclasses(self, *args):
+        return []
+
+    def TagsFromPathPlugins(self):
+        return []
+
+    def RenamePlugins(self):
+        return []
+
+    def EditTagsPlugins(self):
+        return []
+
 
 class TSongProperties(TestCase):
     af1 = AudioFile({"title": "woo"})
@@ -35,18 +46,23 @@ class TSongProperties(TestCase):
         self.test_twosong()
         self.window.hide()
         self.library.emit('changed', [self.af2])
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def test_removed(self):
         self.test_twosong()
         self.window.hide()
         self.library.emit('removed', [self.af2])
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def tearDown(self):
-        try: self.window.destroy()
-        except AttributeError: pass
-        else: del(self.window)
+        try:
+            self.window.destroy()
+        except AttributeError:
+            pass
+        else:
+            del(self.window)
         self.library.destroy()
         del(SongProperties.plugins)
         config.quit()

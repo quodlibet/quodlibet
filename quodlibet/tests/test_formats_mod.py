@@ -4,6 +4,7 @@ import os
 
 from quodlibet.formats.mod import ModFile, extensions
 
+
 class TModFile(TestCase):
     def setUp(self):
         self.song = ModFile(os.path.join(DATA_DIR, 'empty.xm'))

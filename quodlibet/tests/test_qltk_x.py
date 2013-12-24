@@ -12,6 +12,7 @@ class Window(TestCase):
         x.Window().destroy()
 add(Window)
 
+
 class Notebook(TestCase):
     def test_widget_str(self):
         n = x.Notebook()
@@ -36,18 +37,21 @@ class Notebook(TestCase):
         n.destroy()
 add(Notebook)
 
+
 class Frame(TestCase):
     def test_label(self):
         self.failUnlessEqual(
             x.Frame("foo").get_label_widget().get_text(), "foo")
 add(Frame)
 
+
 class MenuItem(TestCase):
     def test_ctr(self):
         self.failUnless(x.MenuItem("foo", Gtk.STOCK_FIND))
 add(MenuItem)
 
-class Button(TestCase):    
+
+class Button(TestCase):
     def test_ctr(self):
         self.failUnless(x.Button("foo", Gtk.STOCK_FIND))
 add(Button)
@@ -120,6 +124,7 @@ class TConfigRPaned(TestCase):
 
 add(TConfigRPaned)
 
+
 class TAlignment(TestCase):
     def test_ctr(self):
         button = Gtk.Button()
@@ -128,6 +133,7 @@ class TAlignment(TestCase):
         self.failUnless(a.get_child() is button)
         a.destroy()
 add(TAlignment)
+
 
 class TScrolledWindow(TestCase):
     def test_ctr(self):

@@ -110,7 +110,7 @@ class TPlayer(TestCase):
     def test_equalizer(self):
         self.player.eq_bands
         self.player.eq_values
-        self.player.eq_values = [1,2,3,4]
+        self.player.eq_values = [1, 2, 3, 4]
         self.player.next()
 
 

@@ -34,22 +34,29 @@ class TURI(TestCase):
     # bad constructor tests
     def test_empty(s):
         s.failUnlessRaises(ValueError, URI, "")
+
     def test_no_scheme(s):
         s.failUnlessRaises(ValueError, URI, "foobar/?quux")
+
     def test_no_loc_or_path(s):
         s.failUnlessRaises(ValueError, URI, "http://")
 
     # good constructor tests
     def test_scheme(s):
         s.failUnlessEqual(s.http_uri.scheme, "http")
+
     def test_netlocl(s):
         s.failUnlessEqual(s.http_uri.netloc, "www.example.com")
+
     def test_path(s):
         s.failUnlessEqual(s.http_uri.path, "/~piman")
+
     def test_params(s):
         s.failUnless(s.http_uri.params, "woo")
+
     def test_query(s):
         s.failUnlessEqual(s.http_uri.query, "bar=quux")
+
     def test_fragment(s):
         s.failUnlessEqual(s.http_uri.fragment, "whee")
 

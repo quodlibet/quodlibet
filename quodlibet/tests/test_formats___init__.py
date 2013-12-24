@@ -9,6 +9,7 @@ import sys
 from tests import TestCase, add
 from quodlibet import formats
 
+
 class TFormats(TestCase):
     def test_presence(self):
         self.failUnless(formats.midi)

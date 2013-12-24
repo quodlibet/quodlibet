@@ -19,20 +19,25 @@ else:
 
 ANN1 = """
 <property name="Position" type="s" access="read">
-<annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+<annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
+value="false"/>
 </property>
 <property name="MinimumRate" type="s" access="read"/>
 """
 
 ANN2 = """
-<annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+<annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
+value="false"/>
 <property name="Foobar" type="s" access="read">
-<annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="invalidates"/>
+<annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
+value="invalidates"/>
 </property>
 <property name="XXX" type="s" access="read"/>
 """
 
+
 class TDbusUtils(TestCase):
+
     def test_prop_sig(self):
         value = apply_signature(2, "u")
         self.failUnless(isinstance(value, dbus.UInt32))
@@ -94,12 +99,16 @@ class TDbusUtils(TestCase):
                              u"X\ufffdX")
 
     def test_property_mixin(self):
+
         class X(DBusProperty):
-            SUPPORTS_MULTIPLE_OBJECT_PATHS=False
+            SUPPORTS_MULTIPLE_OBJECT_PATHS = False
+
             def set_introspection(self, *args):
                 pass
+
             def get_property(self, interface, name):
                 return interface
+
             def set_property(self, interface, name, value):
                 pass
 

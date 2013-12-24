@@ -54,6 +54,12 @@ class TPEP8(TestCase):
         path = os.path.join(path, "../../plugins")
         self._run(path)
 
+    def test_tests(self):
+        import quodlibet
+        path = quodlibet.__path__[0]
+        path = os.path.join(path, "../tests")
+        self._run(path, ignore=["W601"])
+
     def test_scripts(self):
         import quodlibet
         path = quodlibet.__path__[0]

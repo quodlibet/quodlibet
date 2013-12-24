@@ -132,6 +132,7 @@ class TVCFile(TestCase):
     def test_can_change(self):
         self.failUnless(self.song.can_change())
 
+
 class TTotalTagsBase(TestCase):
     """Test conversation between the tracknumber/totaltracks/tracktotal
     format and the tracknumber="x/y" format.
@@ -310,7 +311,8 @@ class TVCCover(TestCase):
 
     def __get_jpeg(self, size=5):
         from gi.repository import GdkPixbuf
-        pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, size, size)
+        pb = GdkPixbuf.Pixbuf.new(
+            GdkPixbuf.Colorspace.RGB, False, 8, size, size)
         fd, fn = mkstemp()
         pb.savev(fn, "jpeg", [], [])
         with os.fdopen(fd) as h:
@@ -342,7 +344,7 @@ class TVCCover(TestCase):
 
         fn = song.get_primary_image().file
         cov_data = fn.read()
-        self.failUnlessEqual(data,cov_data)
+        self.failUnlessEqual(data, cov_data)
 
         song = self.MutagenType(self.filename)
         self.failUnlessEqual(base64.b64decode(song["coverart"][0]), data)
@@ -373,7 +375,7 @@ class TVCCover(TestCase):
         pic2 = Picture()
         pic2.data = self.__get_jpeg(size=6)
         pic2.type = 4
-        b64pic_other= base64.b64encode(pic2.write())
+        b64pic_other = base64.b64encode(pic2.write())
 
         song = self.MutagenType(self.filename)
         song["metadata_block_picture"] = [b64pic_other, b64pic_cover]
@@ -544,4 +546,3 @@ class TOggOpusFile(TVCFile):
 
 if OggOpus:
     add(TOggOpusFile)
-

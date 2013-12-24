@@ -36,8 +36,10 @@ SONGS = [AudioFile({
                 "labelid": "12345-6",
                 "~filename": "/dev/sh"})]
 
+
 class TEmptyBar(TestCase):
     Bar = EmptyBar
+
     def setUp(self):
         quodlibet.config.init()
         quodlibet.browsers.search.library = SongLibrary()
@@ -54,7 +56,8 @@ class TEmptyBar(TestCase):
         self.expected = None
 
     def _do(self):
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.failUnless(self.expected is None)
 
     def test_can_filter(self):
@@ -113,6 +116,7 @@ class TEmptyBar(TestCase):
         quodlibet.browsers.search.library.destroy()
         quodlibet.config.quit()
 add(TEmptyBar)
+
 
 class TSearchBar(TEmptyBar):
     Bar = SearchBar

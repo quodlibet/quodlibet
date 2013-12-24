@@ -111,6 +111,7 @@ class Result(unittest.TestResult):
             self.out.write(self.MINOR_SEPARATOR + "\n")
             self.out.write("%s\n" % err)
 
+
 class Runner(object):
 
     def run(self, test):
@@ -119,6 +120,7 @@ class Runner(object):
         suite(result)
         result.printErrors()
         return len(result.failures), len(result.errors)
+
 
 def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
          stop_first=False):

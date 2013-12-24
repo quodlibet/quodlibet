@@ -8,6 +8,7 @@ import quodlibet.config
 
 quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
 
+
 class TInternetRadio(TestCase):
     def setUp(self):
         quodlibet.config.init()

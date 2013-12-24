@@ -5,15 +5,17 @@ from quodlibet.library import SongLibrary
 from quodlibet.qltk.songsmenu import SongsMenu
 import quodlibet.player
 
+
 class TSongsMenu(TestCase):
     def setUp(self):
         self.library = SongLibrary()
         backend = quodlibet.player.init("nullbe")
         self.device = backend.init(self.library)
-        
+
         self.songs = [AudioFile({"title": x}) for x in
                       ["song1", "song2", "song3"]]
-        for song in self.songs: song.sanitize(song["title"])
+        for song in self.songs:
+            song.sanitize(song["title"])
 
     def test_empty(self):
         self.menu = SongsMenu(self.library, self.songs, plugins=False,
@@ -94,7 +96,10 @@ class TSongsMenu(TestCase):
     def tearDown(self):
         self.device.destroy()
         self.library.destroy()
-        try: self.menu.destroy()
-        except AttributeError: pass
-        else: del(self.menu)
+        try:
+            self.menu.destroy()
+        except AttributeError:
+            pass
+        else:
+            del(self.menu)
 add(TSongsMenu)

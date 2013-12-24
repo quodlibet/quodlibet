@@ -3,6 +3,7 @@ from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn
 import quodlibet.config
 from gi.repository import Gtk
 
+
 class THintedTreeView(TestCase):
     def setUp(self):
         quodlibet.config.init()
@@ -15,6 +16,7 @@ class THintedTreeView(TestCase):
         self.c.destroy()
         quodlibet.config.quit()
 add(THintedTreeView)
+
 
 class TBaseView(TestCase):
     def setUp(self):

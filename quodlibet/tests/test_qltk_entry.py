@@ -4,6 +4,7 @@ from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.parse import Query
 import quodlibet.config
 
+
 class TValidatingEntry(TestCase):
     def setUp(self):
         quodlibet.config.init()
@@ -22,6 +23,7 @@ class TValidatingEntry(TestCase):
         self.entry.destroy()
         quodlibet.config.quit()
 add(TValidatingEntry)
+
 
 class TUndoEntry(TestCase):
     def setUp(self):

@@ -4,6 +4,7 @@ from gi.repository import Gtk
 
 from quodlibet.util import copool
 
+
 class Tcopool(TestCase):
     def setUp(self):
         while Gtk.events_pending():

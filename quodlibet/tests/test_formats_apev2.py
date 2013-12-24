@@ -10,6 +10,7 @@ from mutagen.apev2 import BINARY, APEValue
 from quodlibet.formats.monkeysaudio import MonkeysAudioFile
 from quodlibet.formats.mpc import MPCFile
 
+
 class TAPEv2FileBase(TestCase):
     def setUp(self):
         raise NotImplementedError
@@ -103,6 +104,7 @@ class TAPEv2FileBase(TestCase):
     def tearDown(self):
         os.unlink(self.f)
 
+
 class TMPCFile(TAPEv2FileBase):
     def setUp(self):
         fd, self.f = mkstemp(".mpc")
@@ -110,6 +112,7 @@ class TMPCFile(TAPEv2FileBase):
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mpc'), self.f)
         self.s = MPCFile(self.f)
 add(TMPCFile)
+
 
 class TMAFile(TAPEv2FileBase):
     def setUp(self):

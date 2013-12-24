@@ -40,8 +40,10 @@ class TFSInterface(TestCase):
 
     def tearDown(self):
         self.p.destroy()
-        try: os.unlink(const.CURRENT)
-        except EnvironmentError: pass
+        try:
+            os.unlink(const.CURRENT)
+        except EnvironmentError:
+            pass
 add(TFSInterface)
 
 

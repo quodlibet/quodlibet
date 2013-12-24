@@ -33,13 +33,14 @@ A3S3 = AudioFile(
 A3 = Album(A3S1)
 A3.songs = set([A3S1, A3S2, A3S3])
 
-for song in [A1S1, A1S2, A2S1, A2S2, A3S1, A3S2, A3S3]: song["length"] = 100
+for song in [A1S1, A1S2, A2S1, A2S2, A3S1, A3S2, A3S3]:
+    song["length"] = 100
+
 
 class TRandomAlbum(PluginTestCase):
     """Some basic tests for the random album plugin algorithm"""
     WEIGHTS = {'rating': 0, 'added': 0, 'laststarted': 0, 'lastplayed': 0,
                'length': 0, 'skipcount': 0, 'playcount': 0}
-
 
     def setUp(self):
         self.plugin = self.plugins["Random Album Playback"].cls()
@@ -50,7 +51,6 @@ class TRandomAlbum(PluginTestCase):
         scores = self.plugin._score(albums)
         print_d("Scores: %s" % scores)
         return max(scores)[1]
-
 
     def test_score_rating(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()

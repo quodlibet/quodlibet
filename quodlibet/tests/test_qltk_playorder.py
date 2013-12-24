@@ -4,6 +4,7 @@ from quodlibet.qltk.playorder import PlayOrder
 import quodlibet.config
 import quodlibet.plugins
 
+
 class TPlayOrder(TestCase):
     def setUp(self):
         self.order = -1
@@ -29,7 +30,8 @@ class TPlayOrder(TestCase):
         self.failUnless(self.replaygain_profiles[2], ["track"])
 
     def test_get_name(self):
-        for i, name in enumerate(["inorder","shuffle","weighted","onesong"]):
+        orders = ["inorder", "shuffle", "weighted", "onesong"]
+        for i, name in enumerate(orders):
             self.win.set_active(name)
             self.failUnlessEqual(
                 self.win.get_active_name().lower(), name.lower())

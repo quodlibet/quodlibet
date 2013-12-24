@@ -7,6 +7,7 @@ from quodlibet.library import SongLibrary
 from quodlibet.qltk.completion import EntryWordCompletion, LibraryTagCompletion
 from quodlibet.qltk.completion import LibraryValueCompletion
 
+
 class TEntryWordCompletion(TestCase):
     def test_ctr(self):
         w = EntryWordCompletion()
@@ -17,6 +18,7 @@ class TEntryWordCompletion(TestCase):
         e.destroy()
 add(TEntryWordCompletion)
 
+
 class TLibraryTagCompletion(TestCase):
     def test_ctr(self):
         w = LibraryTagCompletion(SongLibrary())
@@ -26,6 +28,7 @@ class TLibraryTagCompletion(TestCase):
         self.failUnlessEqual(e.get_completion(), w)
         e.destroy()
 add(TLibraryTagCompletion)
+
 
 class TLibraryValueCompletion(TestCase):
     def setUp(self):

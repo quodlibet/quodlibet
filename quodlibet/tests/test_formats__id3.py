@@ -99,7 +99,8 @@ class TID3File(TestCase):
         #http://code.google.com/p/quodlibet/issues/detail?id=364
         f = mutagen.File(self.filename)
         f.tags.add(mutagen.id3.POPM(const.EMAIL, 42))
-        try: f.save()
+        try:
+            f.save()
         except TypeError:
             #http://code.google.com/p/mutagen/issues/detail?id=33
             pass
@@ -126,8 +127,9 @@ class TID3File(TestCase):
         f = mutagen.File(self.filename)
         try:
             lang = u'free-text'
-            f.tags.add(mutagen.id3.TXXX(encoding=3, desc=u'QuodLibet::language',
-                                        text=lang))
+            f.tags.add(
+                mutagen.id3.TXXX(encoding=3, desc=u'QuodLibet::language',
+                                 text=lang))
             f.save()
             self.assertEquals(MP3File(self.filename)['language'], lang)
         finally:
@@ -157,9 +159,11 @@ class TID3File(TestCase):
         finally:
             f.delete()
 
-
     def test_write_lang_freetext(self):
-        """Tests that if you don't use an ISO 639-2 code, TXXX gets populated"""
+        """Tests that if you don't use an ISO 639-2 code,
+        TXXX gets populated
+        """
+
         af = MP3File(self.filename)
         for val in ["free-text", "foo", "de", "en"]:
             af["language"] = val

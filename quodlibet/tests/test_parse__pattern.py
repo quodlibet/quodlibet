@@ -12,16 +12,16 @@ class _TPattern(TestCase):
     from quodlibet.formats._audio import AudioFile
 
     def setUp(self):
-        s1 = { 'tracknumber': '5/6', 'artist':'Artist', 'title':'Title5',
-               '~filename':'/path/to/a.mp3', 'xmltest': "<&>"}
-        s2 = { 'tracknumber': '6', 'artist':'Artist', 'title':'Title6',
-               '~filename': '/path/to/b.ogg', 'discnumber':'2',
-               'unislash': u"foo\uff0fbar" }
-        s3 = { 'title': 'test/subdir', 'genre':'/\n/',
-               '~filename':'/one/more/a.flac', 'version': 'Instrumental'}
-        s4 = { 'performer': 'a\nb', 'artist': 'foo\nbar'}
-        s5 = { 'tracknumber': '7/1234','artist':'Artist', 'title':'Title7',
-               '~filename':'/path/to/e.mp3'}
+        s1 = {'tracknumber': '5/6', 'artist': 'Artist', 'title': 'Title5',
+              '~filename': '/path/to/a.mp3', 'xmltest': "<&>"}
+        s2 = {'tracknumber': '6', 'artist': 'Artist', 'title': 'Title6',
+              '~filename': '/path/to/b.ogg', 'discnumber': '2',
+              'unislash': u"foo\uff0fbar"}
+        s3 = {'title': 'test/subdir', 'genre': '/\n/',
+              '~filename': '/one/more/a.flac', 'version': 'Instrumental'}
+        s4 = {'performer': 'a\nb', 'artist': 'foo\nbar'}
+        s5 = {'tracknumber': '7/1234', 'artist': 'Artist', 'title': 'Title7',
+              '~filename': '/path/to/e.mp3'}
 
         if os.name == "nt":
             s1["filename"] = u"C:\\path\\to\\a.mp3"
@@ -35,6 +35,7 @@ class _TPattern(TestCase):
         self.c = self.AudioFile(s3)
         self.d = self.AudioFile(s4)
         self.e = self.AudioFile(s5)
+
 
 class TPattern(_TPattern):
     from quodlibet.formats._audio import AudioFile
@@ -119,6 +120,7 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(song),
             "5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8'))
 
+
 class TFileFromPattern(_TPattern):
     def test_escape_slash(s):
         fpat = FileFromPattern('<~filename>')
@@ -186,7 +188,7 @@ class TFileFromPattern(_TPattern):
             FileFromPattern('/<a>/<b>')
 
     def test_ext_case_preservation(s):
-        x = s.AudioFile({ '~filename':'/tmp/Xx.Flac', 'title':'Xx' })
+        x = s.AudioFile({'~filename': '/tmp/Xx.Flac', 'title': 'Xx'})
         # If pattern has a particular ext, preserve case of ext
         p1 = FileFromPattern('<~basename>')
         s.assertEquals(p1.format(x), 'Xx.Flac')
@@ -203,19 +205,20 @@ class TFileFromPattern(_TPattern):
 
     def test_long_filename(s):
         if os.name == "nt":
-            a = s.AudioFile({"title": "x"*300, "~filename": u"C:\\f.mp3"})
+            a = s.AudioFile({"title": "x" * 300, "~filename": u"C:\\f.mp3"})
             path = FileFromPattern(u'C:\\foobar\\ä<title>\\<title>').format(a)
             s.failUnlessEqual(len(util.fsnative(path)),
                               3 + 6 + 1 + 255 + 1 + 255)
             path = FileFromPattern(u'äüö<title><title>').format(a)
             s.failUnlessEqual(len(util.fsnative(path)), 255)
         else:
-            a = s.AudioFile({"title": "x"*300, "~filename": "/f.mp3"})
+            a = s.AudioFile({"title": "x" * 300, "~filename": "/f.mp3"})
             path = FileFromPattern(u'/foobar/ä<title>/<title>').format(a)
             s.failUnlessEqual(len(util.fsnative(path)),
                               1 + 6 + 1 + 255 + 1 + 255)
             path = FileFromPattern(u'äüö<title><title>').format(a)
             s.failUnlessEqual(len(util.fsnative(path)), 255)
+
 
 class TXMLFromPattern(_TPattern):
     def test_markup_passthrough(s):
@@ -275,9 +278,11 @@ class TXMLFromMarkupPattern(_TPattern):
 class TRealTags(TestCase):
     def test_empty(self):
         self.failUnlessEqual(Pattern("").tags, set([]))
+
     def test_both(self):
         pat = "<foo|<~bar~fuu> - <fa>|<bar>>"
         self.failUnlessEqual(Pattern(pat).tags, set(["bar", "fuu", "fa"]))
+
 
 class TPatternFormatList(_TPattern):
     def test_same(s):

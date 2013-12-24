@@ -4,6 +4,7 @@ from quodlibet.qltk.exfalsowindow import ExFalsoWindow
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
+
 class TExFalsoWindow(TestCase):
     def setUp(self):
         quodlibet.config.init()

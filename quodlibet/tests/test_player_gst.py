@@ -49,6 +49,7 @@ class TGStreamerSink(TestCase):
 
 add(TGStreamerSink)
 
+
 class TGstreamerTagList(TestCase):
     def test_parse(self):
         # gst.TagList can't be filled using pyGtk... so use a dict instead
@@ -61,7 +62,6 @@ class TGstreamerTagList(TestCase):
         self.failUnless("foo" in parse_gstreamer_taglist(l))
         self.failUnless("bar" in parse_gstreamer_taglist(l))
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], "foo\nfoo2")
-
 
         # date is abstract, so define our own
         # (might work with pygobject now)

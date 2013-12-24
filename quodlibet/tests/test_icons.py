@@ -9,6 +9,7 @@ from gi.repository import Gtk
 from tests import TestCase, add
 from quodlibet import const
 
+
 class TIconTheme(TestCase):
     def test_icon_theme(self):
         theme = Gtk.IconTheme.get_default()

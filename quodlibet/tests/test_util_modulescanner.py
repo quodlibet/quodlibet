@@ -57,7 +57,7 @@ class TModuleScanner(TestCase):
         h2 = self._create_mod("sub.py", "foobar3")
         name, path, deps = list(get_importables(self.d))[0]
         self.failUnlessEqual(name, "foobar3")
-        self.failUnlessEqual(path,  os.path.dirname(h.name))
+        self.failUnlessEqual(path, os.path.dirname(h.name))
         self.failUnlessEqual(set(deps), set([h.name, h2.name]))
         h2.close()
         h.close()

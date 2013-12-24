@@ -8,6 +8,7 @@ import quodlibet.config
 class TSongList(TestCase):
     HEADERS = ["acolumn", "~#lastplayed", "~foo~bar", "~#rating",
                "~#length", "~dirname", "~#track"]
+
     def setUp(self):
         quodlibet.config.init()
         self.songlist = SongList(SongLibrary())

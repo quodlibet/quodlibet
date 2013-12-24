@@ -13,7 +13,7 @@ class TJsonData(TestCase):
 
         FIELDS = {"name": "name",
                   "pattern": "pattern for stuff",
-                  "wibble":  "wobble"}
+                  "wibble": "wobble"}
 
         def __init__(self, name=None, pattern=None, wibble=False):
             JSONObject.__init__(self, name)

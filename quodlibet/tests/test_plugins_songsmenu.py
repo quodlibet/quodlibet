@@ -28,25 +28,31 @@ class TSongsMenuPlugins(TestCase):
         self.library.destroy()
         self.pm.quit()
         for f in os.listdir(self.tempdir):
-            os.remove(os.path.join(self.tempdir,f))
+            os.remove(os.path.join(self.tempdir, f))
         os.rmdir(self.tempdir)
 
-    def create_plugin(self, id= '', name='', desc='', icon='', funcs=None, mod=False):
+    def create_plugin(self, id='', name='', desc='', icon='',
+                      funcs=None, mod=False):
         fd, fn = mkstemp(suffix='.py', text=True, dir=self.tempdir)
         file = os.fdopen(fd, 'w')
 
         if mod:
             indent = ''
         else:
-            file.write("from quodlibet.plugins.songsmenu import SongsMenuPlugin\n")
+            file.write(
+                "from quodlibet.plugins.songsmenu import SongsMenuPlugin\n")
             file.write("class %s(SongsMenuPlugin):\n" % name)
             indent = '    '
             file.write("%spass\n" % indent)
 
-        if name: file.write("%sPLUGIN_ID = %r\n" % (indent, name))
-        if name: file.write("%sPLUGIN_NAME = %r\n" % (indent, name))
-        if desc: file.write("%sPLUGIN_DESC = %r\n" % (indent, desc))
-        if icon: file.write("%sPLUGIN_ICON = %r\n" % (indent, icon))
+        if name:
+            file.write("%sPLUGIN_ID = %r\n" % (indent, name))
+        if name:
+            file.write("%sPLUGIN_NAME = %r\n" % (indent, name))
+        if desc:
+            file.write("%sPLUGIN_DESC = %r\n" % (indent, desc))
+        if icon:
+            file.write("%sPLUGIN_ICON = %r\n" % (indent, icon))
         for f in (funcs or []):
             if f in ["__init__"]:
                 file.write("%sdef %s(*args): pass\n" % (indent, f))
@@ -141,6 +147,6 @@ class FakeSongsMenuPlugin(SongsMenuPlugin):
     def plugin_song(self, song):
         self.total += 1
         if self.total > self.MAX_INVOCATIONS:
-            raise ValueError, ("Shouldn't have called me on this many songs"
-                               " (%d > %d)" %(self.total,
-                                              self.MAX_INVOCATIONS))
+            raise ValueError("Shouldn't have called me on this many songs"
+                             " (%d > %d)" % (self.total,
+                                             self.MAX_INVOCATIONS))

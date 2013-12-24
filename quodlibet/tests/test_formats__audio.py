@@ -17,7 +17,7 @@ bar_1_2 = AudioFile({
     "discnumber": "1", "tracknumber": "2/3",
     "artist": "Lali-ho!", "album": "Bar",
     "date": "2004-12-12", "originaldate": "2005-01-01",
-    "~#filesize": 1024**2})
+    "~#filesize": 1024 ** 2})
 bar_2_1 = AudioFile({
     "~filename": "does not/exist",
     "title": "more songs",
@@ -86,7 +86,7 @@ class TAudioFile(TestCase):
 
     def test_filesize(self):
         self.failUnlessEqual(bar_1_2("~filesize"), "1.00 MB")
-        self.failUnlessEqual(bar_1_2("~#filesize"), 1024**2)
+        self.failUnlessEqual(bar_1_2("~#filesize"), 1024 ** 2)
 
     def test_originalyear(self):
         self.failUnlessEqual(bar_1_2("~originalyear"), "2005")
@@ -103,8 +103,10 @@ class TAudioFile(TestCase):
         for song in [quux, bar_1_1, bar_2_1]:
             self.failUnlessEqual(song("~~people"), song("~people"))
             self.failUnlessEqual(song("~title~people"), song("title"))
-            self.failUnlessEqual(song("~title~~people"), song("~title~artist"))
-            self.failUnlessEqual(song("~title~~#tracks"), song("~title~~#tracks"))
+            self.failUnlessEqual(
+                song("~title~~people"), song("~title~artist"))
+            self.failUnlessEqual(
+                song("~title~~#tracks"), song("~title~~#tracks"))
 
     def test_call_numeric(self):
         self.failUnlessAlmostEqual(num_call("~#custom"), 0.3)
@@ -193,7 +195,8 @@ class TAudioFile(TestCase):
         quux.rename(quux("~basename"))
         if os.name != "nt":
             self.failUnlessRaises(ValueError, quux.rename, "/dev/null")
-        self.failUnlessRaises(ValueError, quux.rename, os.path.join(DATA_DIR, "silence-44-s.ogg"))
+        self.failUnlessRaises(ValueError, quux.rename,
+                              os.path.join(DATA_DIR, "silence-44-s.ogg"))
 
     def test_website(self):
         song = AudioFile()
@@ -206,7 +209,8 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(song.website(), "foo")
 
         song = AudioFile({"artist": "Artist", "album": "Album"})
-        for value in song.values(): self.failUnless(value in song.website())
+        for value in song.values():
+            self.failUnless(value in song.website())
         song["labelid"] = "QL-12345"
         self.failIf(song["artist"] in song.website())
         self.failUnless(song["labelid"] in song.website())
@@ -248,7 +252,8 @@ class TAudioFile(TestCase):
         self.failUnless(set(dump.split("\n")) == set(n.to_dump().split("\n")))
 
     def test_to_dump_long(self):
-        b = AudioFile(bar_1_1); b["~#length"] = 200000000000L
+        b = AudioFile(bar_1_1)
+        b["~#length"] = 200000000000L
         dump = b.to_dump()
         num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
         self.failUnlessEqual(dump.count("\n"), num + 2)
@@ -326,9 +331,11 @@ class TAudioFile(TestCase):
     def test_set_bookmarks_invalid_value(self):
         self.failUnlessRaises(
             ValueError, setattr, AudioFile(), 'bookmarks', "huh?")
+
     def test_set_bookmarks_invalid_time(self):
         self.failUnlessRaises(
             TypeError, setattr, AudioFile(), 'bookmarks', [("notint", "!")])
+
     def test_set_bookmarks_unrealistic_time(self):
         self.failUnlessRaises(
             ValueError, setattr, AudioFile(), 'bookmarks', [(-1, "!")])
@@ -416,6 +423,7 @@ class TAudioFile(TestCase):
         os.unlink(quux["~filename"])
 add(TAudioFile)
 
+
 class Treplay_gain(TestCase):
 
     # -6dB is approximately equal to half magnitude
@@ -486,11 +494,13 @@ class Treplay_gain(TestCase):
             album_rg = self.song("~#%s" % key)
             try:
                 val = float(album_rg)
-            except ValueError: self.fail("Invalid %s returned: %s" %
-                                         (key,album_rg))
-            self.failUnlessAlmostEqual(val, exp, places=5,
-                                 msg="%s should be %s not %s" % (key,exp,val))
+            except ValueError:
+                self.fail("Invalid %s returned: %s" % (key, album_rg))
+            self.failUnlessAlmostEqual(
+                val, exp, places=5,
+                msg="%s should be %s not %s" % (key, exp, val))
 add(Treplay_gain)
+
 
 # Special test case for find_cover since it has to create/remove
 # various files.
@@ -501,7 +511,8 @@ class Tfind_cover(TestCase):
         self.files = [self.full_path("12345.jpg"),
                       self.full_path("nothing.jpg")
                       ]
-        for f in self.files: file(f, "w").close()
+        for f in self.files:
+            file(f, "w").close()
 
     def full_path(self, path):
         return os.path.join(self.dir, path)
@@ -547,7 +558,7 @@ class Tfind_cover(TestCase):
                 self.failUnlessEqual(f, self.full_path("Quuxly - back.jpg"))
 
     def test_embedded_special_cover_words(self):
-        """Tests that words incidentally containing embedded "special" words 
+        """Tests that words incidentally containing embedded "special" words
         album keywords (e.g. cover, disc, back) don't trigger
         See Issue 818"""
 
@@ -569,10 +580,10 @@ class Tfind_cover(TestCase):
             cover = song.find_cover()
             if cover:
                 actual = os.path.abspath(cover.name)
-                self.failUnlessEqual(actual, f,
-                                     "\"%s\" should trump \"%s\"" % (f, actual))
+                self.failUnlessEqual(
+                    actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
             else:
-                self.failUnless(f, self.full_path('back.jpg'));
+                self.failUnless(f, self.full_path('back.jpg'))
 
     def tearDown(self):
         map(os.unlink, self.files)

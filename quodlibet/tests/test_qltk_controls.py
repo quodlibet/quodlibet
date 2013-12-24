@@ -12,6 +12,7 @@ from quodlibet.library import SongLibrary
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet import config
 
+
 class TControls(TestCase):
     def setUp(self):
         config.init()

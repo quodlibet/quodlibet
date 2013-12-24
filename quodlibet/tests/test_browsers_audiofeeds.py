@@ -5,6 +5,7 @@ from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
+
 class TAudioFeeds(TestCase):
     def setUp(self):
         quodlibet.config.init()

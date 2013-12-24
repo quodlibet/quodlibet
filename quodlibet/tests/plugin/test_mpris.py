@@ -32,6 +32,7 @@ A2 = AudioFile(
          '~filename': '/foo'})
 A2.sanitize()
 
+
 class TMPRIS(PluginTestCase):
     @classmethod
     def setUpClass(cls):
@@ -73,7 +74,6 @@ class TMPRIS(PluginTestCase):
         obj = bus.get_object("org.mpris.quodlibet", "/org/mpris/MediaPlayer2")
         return dbus.Interface(obj,
                               dbus_interface="org.mpris.MediaPlayer2.Player")
-
 
     def _reply(self, *args):
         self._replies.append(args)

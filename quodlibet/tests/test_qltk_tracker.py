@@ -7,6 +7,7 @@ from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.tracker import SongTracker
 from quodlibet.library import SongLibrary
 
+
 class TSongTracker(TestCase):
     def setUp(self):
         self.p = NullPlayer()
@@ -21,7 +22,8 @@ class TSongTracker(TestCase):
         self.current = None
 
     def do(self):
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def test_play(self):
         import time
@@ -64,4 +66,3 @@ class TSongTracker(TestCase):
         self.w.destroy()
 
 add(TSongTracker)
-

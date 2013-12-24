@@ -3,7 +3,8 @@ from tests import TestCase, add, DATA_DIR, mkstemp, mkdtemp
 import os
 import shutil
 
-from quodlibet.browsers.playlists import ParseM3U, ParsePLS, Playlist, Playlists
+from quodlibet.browsers.playlists import (ParseM3U, ParsePLS, Playlist,
+    Playlists)
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
 import quodlibet.config
@@ -58,10 +59,12 @@ class TParsePlaylist(TestCase):
         self.failUnlessEqual(list[0]("title"), "Silence")
         list.delete()
 
+
 class TParseM3U(TParsePlaylist):
     Parse = staticmethod(ParseM3U)
     prefix = ""
 add(TParseM3U)
+
 
 class TParsePLS(TParsePlaylist):
     Parse = staticmethod(ParsePLS)
@@ -131,7 +134,7 @@ class TPlaylistIntegration(TestCase):
         self.pl.extend([self.SONG, self.SONG])
         self.failUnlessEqual(len(self.pl), 7)
         self.pl.remove_songs([self.SONG], self.lib, False)
-        self.failUnlessEqual(len(self.pl), 7-2-2)
+        self.failUnlessEqual(len(self.pl), 7 - 2 - 2)
 
     def test_remove_duplicated_song_leave_dupes(self):
         self.pl.remove_songs([self.SONGS[1]], self.lib, True)

@@ -3,39 +3,51 @@ from tests import TestCase, add
 import os
 
 from quodlibet.qltk.tagsfrompath import TagsFromPattern
-from quodlibet.qltk.tagsfrompath import TitleCase, SplitTag, UnderscoresToSpaces
+from quodlibet.qltk.tagsfrompath import (TitleCase, SplitTag,
+    UnderscoresToSpaces)
 import quodlibet.config
+
 
 class FilterTestCase(TestCase):
     def setUp(self):
         quodlibet.config.init()
         self.c = self.Kind()
+
     def tearDown(self):
         self.c.destroy()
         quodlibet.config.quit()
 
+
 class TTitleCase(FilterTestCase):
     Kind = TitleCase
+
     def test_simple(self):
         self.failUnlessEqual(self.c.filter("title", "foo bar"), "Foo Bar")
+
     def test_apostrophe(self):
         self.failUnlessEqual(self.c.filter("title", "IT's"), "IT's")
 
 add(TTitleCase)
 
+
 class TSplitTag(FilterTestCase):
     Kind = SplitTag
+
     def test_simple(self):
         self.failUnlessEqual(self.c.filter("title", "foo & bar"), "foo\nbar")
 add(TSplitTag)
 
+
 class TUnderscoresToSpaces(FilterTestCase):
     Kind = UnderscoresToSpaces
+
     def test_simple(self):
         self.failUnlessEqual(self.c.filter("titke", "foo_bar"), "foo bar")
 add(TUnderscoresToSpaces)
 
+
 class TTagsFromPattern(TestCase):
+
     def setUp(self):
         if os.name == "nt":
             self.f1 = 'C:\\path\\Artist\\Album\\01 - Title.mp3'
@@ -55,7 +67,7 @@ class TTagsFromPattern(TestCase):
     def test_songtypes(self):
         from quodlibet import formats
         pat = TagsFromPattern('<tracknumber>. <title>')
-        tracktitle = {'tracknumber': '01', 'title': 'Title' }
+        tracktitle = {'tracknumber': '01', 'title': 'Title'}
         for ext, kind in formats._infos.iteritems():
             f = formats._audio.AudioFile()
             if not isinstance(kind, type):
@@ -73,16 +85,16 @@ class TTagsFromPattern(TestCase):
         else:
             pat = TagsFromPattern('<path>/<~>/<~>/<tracknumber> - <title>')
         self.failUnlessEqual(len(pat.headers), 3)
-        song = pat.match({"~filename":self.f1})
+        song = pat.match({"~filename": self.f1})
         self.failUnlessEqual(song.get("path"), "path")
         self.failUnlessEqual(song.get("title"), "Title")
         self.failIf(song.get("album"))
         self.failIf(song.get("artist"))
 
     def test_dict(self):
-        tracktitle = {'tracknumber': '01', 'title': 'Title' }
+        tracktitle = {'tracknumber': '01', 'title': 'Title'}
         pat = TagsFromPattern('<tracknumber> - <title>')
-        self.assertEquals(pat.match({"~filename":self.f1}), tracktitle)
+        self.assertEquals(pat.match({"~filename": self.f1}), tracktitle)
 
     def test_nongreedy(self):
         pat = TagsFromPattern('<artist> - <title>')
@@ -99,8 +111,8 @@ class TTagsFromPattern(TestCase):
         self.assertEquals(pat.match(self.b2), self.nomatch)
 
     def test_tracktitle(self):
-        tracktitle = {'tracknumber': '01', 'title': 'Title' }
-        btracktitle = {'tracknumber': '01', 'title': 'Artist - Title' }
+        tracktitle = {'tracknumber': '01', 'title': 'Title'}
+        btracktitle = {'tracknumber': '01', 'title': 'Artist - Title'}
         pat = TagsFromPattern('<tracknumber> - <title>')
         self.assertEquals(pat.match(self.f1), tracktitle)
         self.assertEquals(pat.match(self.f2), self.nomatch)
@@ -110,9 +122,9 @@ class TTagsFromPattern(TestCase):
 
     def test_path(self):
         albumtracktitle = {'tracknumber': '01', 'title': 'Title',
-                           'album': 'Album' }
+                           'album': 'Album'}
         balbumtracktitle = {'tracknumber': '01', 'title': 'Artist - Title',
-                            'album': 'path' }
+                            'album': 'path'}
         if os.name == "nt":
             pat = TagsFromPattern('<album>\\<tracknumber> - <title>')
         else:
@@ -125,7 +137,7 @@ class TTagsFromPattern(TestCase):
 
     def test_all(self):
         all = {'tracknumber': '01', 'title': 'Title',
-               'album': 'Album', 'artist': 'Artist' }
+               'album': 'Album', 'artist': 'Artist'}
         if os.name == "nt":
             pat = TagsFromPattern('<artist>\\<album>\\<tracknumber> - <title>')
         else:
@@ -137,8 +149,8 @@ class TTagsFromPattern(TestCase):
         self.assertEquals(pat.match(self.b2), self.nomatch)
 
     def test_post(self):
-        btracktitle = {'tracknumber': '01', 'title': 'Titl' }
-        vbtracktitle = {'tracknumber': '01', 'title': 'Artist - Titl' }
+        btracktitle = {'tracknumber': '01', 'title': 'Titl'}
+        vbtracktitle = {'tracknumber': '01', 'title': 'Artist - Titl'}
         pat = TagsFromPattern('<tracknumber> - <title>e')
         self.assertEquals(pat.match(self.f1), btracktitle)
         self.assertEquals(pat.match(self.f2), self.nomatch)

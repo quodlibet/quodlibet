@@ -6,6 +6,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 
 class _ClipboadTestClass(GetStringDialog):
     _OK = True
+
     def _verify_clipboard(self, text):
         if self._OK:
             return text
@@ -19,7 +20,7 @@ class TGetStringDialog(TestCase):
     def test_getstring(self):
         ret = self.gsd1.run(text="foobar", test=True)
         self.failUnlessEqual(ret, "foobar")
-    
+
     def test_clipboard(self):
         clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         clipboard.set_text("42", -1)

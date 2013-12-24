@@ -2,6 +2,7 @@ from tests import TestCase, add
 
 from quodlibet.parse._match import map_numeric_op, ParseError
 
+
 class TNumericOp(TestCase):
     TIME = 424242
 

@@ -24,7 +24,7 @@ class TMP4File(TestCase):
         self.song = MP4File(self.f)
 
     def tearDown(self):
-         os.unlink(self.f)
+        os.unlink(self.f)
 
     def test_basic(self):
         self.song["title"] = u"SomeTestValue"

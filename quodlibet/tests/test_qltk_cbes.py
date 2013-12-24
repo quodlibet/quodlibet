@@ -5,6 +5,7 @@ import os
 from quodlibet.qltk.cbes import ComboBoxEntrySave, StandaloneEditor
 import quodlibet.config
 
+
 class TComboBoxEntrySave(TestCase):
     memory = "pattern 1\npattern 2\n"
     saved = "pattern text\npattern name\n"
@@ -88,14 +89,18 @@ class TComboBoxEntrySave(TestCase):
         os.unlink(self.fname + ".saved")
         quodlibet.config.quit()
 
+
 class TStandaloneEditor(TestCase):
-    TEST_KV_DATA = [("Search Foo", "https://foo.com/search?q=<artist>-<title>")]
+    TEST_KV_DATA = [
+        ("Search Foo", "https://foo.com/search?q=<artist>-<title>")]
+
     def setUp(self):
         quodlibet.config.init()
         h, self.fname = mkstemp()
         os.close(h)
         f = file(self.fname + ".saved", "w")
-        f.write("%s\n%s\n" % (self.TEST_KV_DATA[0][1], self.TEST_KV_DATA[0][0]))
+        f.write(
+            "%s\n%s\n" % (self.TEST_KV_DATA[0][1], self.TEST_KV_DATA[0][0]))
         f.close()
         self.sae = StandaloneEditor(self.fname, "test", None, None)
 

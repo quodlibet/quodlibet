@@ -8,6 +8,7 @@ import quodlibet.config
 
 class TFolderChooser(TestCase):
     Kind = FolderChooser
+
     def setUp(self):
         quodlibet.config.init()
 

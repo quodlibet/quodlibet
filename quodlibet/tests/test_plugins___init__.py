@@ -6,6 +6,7 @@ from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 
+
 class TSongWrapper(TestCase):
 
     psong = AudioFile({
@@ -13,7 +14,7 @@ class TSongWrapper(TestCase):
         "title": "more songs",
         "discnumber": "2/2", "tracknumber": "1",
         "artist": "Foo\nI have two artists", "album": "Bar",
-        "~bookmark": "2:10 A bookmark" })
+        "~bookmark": "2:10 A bookmark"})
     pwrap = SongWrapper(psong)
 
     def setUp(self):
@@ -28,7 +29,8 @@ class TSongWrapper(TestCase):
         config.quit()
 
     def test_slots(self):
-        def breakme(): self.wrap.woo = 1
+        def breakme():
+            self.wrap.woo = 1
         self.failUnlessRaises(AttributeError, breakme)
 
     def test_cmp(self):
@@ -63,7 +65,7 @@ class TSongWrapper(TestCase):
         self.failUnless(self.wrap._needs_write)
 
     def test_realkeys(self):
-        self.failUnlessEqual( self.pwrap.realkeys(), self.psong.realkeys())
+        self.failUnlessEqual(self.pwrap.realkeys(), self.psong.realkeys())
 
     def test_website(self):
         self.failUnlessEqual(self.pwrap.website(), self.psong.website())
@@ -122,6 +124,7 @@ class TSongWrapper(TestCase):
 
 add(TSongWrapper)
 
+
 class TListWrapper(TestCase):
     def test_empty(self):
         wrapped = ListWrapper([])
@@ -137,5 +140,3 @@ class TListWrapper(TestCase):
         self.failUnless(len(wrapped) == 2)
         self.failUnlessEqual(wrapped, [None, None])
 add(TListWrapper)
-
-

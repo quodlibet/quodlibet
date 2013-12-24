@@ -29,8 +29,8 @@ class TWMAFile(TestCase):
         self.song2 = WMAFile(self.f2)
 
     def tearDown(self):
-         os.unlink(self.f)
-         os.unlink(self.f2)
+        os.unlink(self.f)
+        os.unlink(self.f2)
 
     def test_basic(self):
         self.song["title"] = u"SomeTestValue"
@@ -78,7 +78,7 @@ class TWMAFile(TestCase):
         self.assertFalse(image)
 
     def test_unpack_image_min(self):
-        data = "\x03" + "\x00" *4 + "\x00" * 4
+        data = "\x03" + "\x00" * 4 + "\x00" * 4
         mime, desc, data, type_ = unpack_image(data)
         self.assertEqual(mime, u"")
         self.assertEqual(desc, u"")

@@ -9,18 +9,23 @@ from tests import TestCase, add, DATA_DIR, mkstemp
 
 from quodlibet.library.libraries import *
 
+
 class Fake(int):
     def __init__(self, _):
         self.key = int(self)
 
+
 def Frange(*args):
     return map(Fake, range(*args))
+
 
 class FakeSong(Fake):
     def list(self, tag):
         # Turn tag_values into a less-than query, for testing.
-        if tag <= self: return []
-        else: return [int(self)]
+        if tag <= self:
+            return []
+        else:
+            return [int(self)]
 
     def rename(self, newname):
         self.key = newname
@@ -40,6 +45,7 @@ class AlbumSong(AudioFile):
             self["album"] = album
         self["labelid"] = self["album"]
 
+
 class FakeSongFile(FakeSong):
     _valid = True
     _exists = True
@@ -53,8 +59,10 @@ class FakeSongFile(FakeSong):
         return self._exists
 
     def reload(self):
-        if self._exists: self._valid = True
-        else: raise IOError("doesn't exist")
+        if self._exists:
+            self._valid = True
+        else:
+            raise IOError("doesn't exist")
 
     def mounted(self):
         return self._mounted
@@ -64,11 +72,14 @@ class FakeSongFile(FakeSong):
 def FSFrange(*args):
     return map(FakeSongFile, range(*args))
 
+
 def FSrange(*args):
     return map(FakeSong, range(*args))
 
+
 def ASrange(*args):
     return map(AlbumSong, range(*args))
+
 
 class TLibrary(TestCase):
     Fake = Fake
@@ -109,18 +120,21 @@ class TLibrary(TestCase):
     def test_changed(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(5))
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.failUnlessEqual(self.changed, self.Frange(5))
 
     def test_changed_not_present(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(2, 20, 3))
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.failUnlessEqual(self.changed, [2, 5, 8])
 
     def test_changed_none_present(self):
         self.library.changed(self.Frange(5))
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
 
     def test___iter__(self):
         self.library.add(self.Frange(10))
@@ -215,7 +229,6 @@ class TLibrary(TestCase):
 add(TLibrary)
 
 
-
 class TPicklingMixin(TestCase):
 
     class PicklingMockLibrary(PicklingMixin, Library):
@@ -228,7 +241,8 @@ class TPicklingMixin(TestCase):
             self.items = self._contents.items
 
         def add(self, items):
-            for item in items: self._contents[item.key] = item
+            for item in items:
+                self._contents[item.key] = item
 
     Library = PicklingMockLibrary
     Frange = staticmethod(Frange)
@@ -270,7 +284,8 @@ class TSongLibrary(TLibrary):
         song = FakeSong(10)
         self.library.add([song])
         self.library.rename(song, 20)
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.failUnless(song in self.changed)
         self.failUnless(song in self.library)
         self.failUnless(song.key in self.library)
@@ -376,7 +391,9 @@ class TSongFileLibrary(TSongLibrary):
             print_exc = util.print_exc
             util.print_exc = lambda *args, **kwargs: None
             new = self.Fake(100)
-            def error(): raise IOError
+
+            def error():
+                raise IOError
             new.reload = error
             new._valid = False
             changed, removed = self.library._load_item(new)
@@ -485,7 +502,7 @@ class TAlbumLibrary(TestCase):
         self.failUnlessEqual(self.library[key].key, key)
 
     def test_keys(self):
-        self.failUnless(len(self.library.keys()),3)
+        self.failUnless(len(self.library.keys()), 3)
 
     def test_has_key(self):
         key = self.underlying.get("file_1.mp3").album_key

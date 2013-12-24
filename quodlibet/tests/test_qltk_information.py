@@ -5,10 +5,12 @@ from quodlibet.library import SongLibrary
 from quodlibet.qltk.information import Information
 import quodlibet.config
 
+
 def AF(*args, **kwargs):
     a = AudioFile(*args, **kwargs)
     a.sanitize()
     return a
+
 
 class TInformation(TestCase):
     def setUp(self):

@@ -23,6 +23,7 @@ SONGS = [
     ]
 SONGS.sort()
 
+
 class TAlbumBrowser(TestCase):
 
     def setUp(self):

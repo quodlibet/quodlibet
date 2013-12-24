@@ -6,6 +6,7 @@ from quodlibet.library.libraries import Library, SongFileLibrary
 from quodlibet.library.librarians import Librarian
 from tests.test_library_libraries import Fake, Frange, FakeSong, FSrange
 
+
 class TLibrarian(TestCase):
     Fake = Fake
     Frange = staticmethod(Frange)
@@ -86,7 +87,8 @@ class TLibrarian(TestCase):
         self.lib1.add(self.Frange(12))
         self.lib2.add(self.Frange(12, 24))
         self.librarian.changed(self.Frange(6, 18))
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.failUnlessEqual(sorted(self.changed), self.Frange(6, 18))
         self.failUnlessEqual(self.changed_1, self.Frange(6, 12))
         self.failUnlessEqual(self.changed_2, self.Frange(12, 18))
@@ -145,7 +147,8 @@ class TSongLibrarian(TLibrarian):
         self.lib1.add([new])
         self.lib2.add([new])
         self.librarian.rename(new, 20)
-        while Gtk.events_pending(): Gtk.main_iteration()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
         self.failUnlessEqual(new.key, 20)
         self.failUnless(new in self.lib1)
         self.failUnless(new in self.lib2)
