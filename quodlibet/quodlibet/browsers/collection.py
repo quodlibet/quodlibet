@@ -604,14 +604,26 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             cell.markup = markup
             cell.set_property('markup', markup)
 
+        def get_scaled_cover(album):
+            # XXX: Cache this somewhere else
+            cover = None
+            if not hasattr(album, "_scaled_cover"):
+                album.scan_cover()
+                if album.cover:
+                    cover = scale(album.cover, (25, 25))
+                    album._scaled_cover = cover
+            else:
+                cover = album._scaled_cover
+            return cover
+
         def cell_data_pb(column, cell, model, iter_, data):
             album = model.get_album(iter_)
             if album is None:
                 cell.set_property('stock_id', Gtk.STOCK_DIRECTORY)
             else:
-                album.scan_cover()
-                if album.cover:
-                    cell.set_property('pixbuf', scale(album.cover, (25, 25)))
+                cover = get_scaled_cover(album)
+                if cover:
+                    cell.set_property('pixbuf', cover)
                 else:
                     cell.set_property('stock_id', Gtk.STOCK_CDROM)
 
