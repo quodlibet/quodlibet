@@ -28,7 +28,7 @@ from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
-from quodlibet.qltk.x import Alignment, SeparatorMenuItem
+from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util.path import mtime, normalize_path
 
@@ -50,12 +50,12 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
     def __init__(self, library, dir=None):
         super(ExFalsoWindow, self).__init__()
         self.set_title("Ex Falso")
-        self.set_default_size(650, 475)
+        self.set_default_size(750, 475)
         self.enable_window_tracking("exfalso")
 
         self.__library = library
 
-        hp = Gtk.HPaned()
+        hp = ConfigRHPaned("memory", "exfalso_paned_position", 1.0)
         hp.set_border_width(0)
         hp.set_position(250)
         hp.show()
