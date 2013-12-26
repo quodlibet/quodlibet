@@ -64,7 +64,23 @@ def _get_win_favorites():
         if path is not None:
             folders.append(path)
 
-    return folders
+    # try to extract the favorites listed in explorer and add them
+    # if not already present
+    links = windows.get_links_dir()
+    if links is not None:
+        for entry in os.listdir(links):
+            if entry.endswith(".lnk"):
+                target = windows.get_link_target(os.path.join(links, entry))
+                if target is not None:
+                    folders.append(target)
+
+    # remove duplicated entries
+    filtered = []
+    for path in folders:
+        if path not in filtered:
+            filtered.append(path)
+
+    return filtered
 
 
 def get_favorites():

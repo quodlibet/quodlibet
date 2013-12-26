@@ -79,8 +79,8 @@ def get_link_target(path):
         pass
 
 
-def get_link_dir():
-    """Get the path to the Link directory (%USERPROFILE%\\Links) or None"""
+def get_links_dir():
+    """Get the path to the Links directory (%USERPROFILE%\\Links) or None"""
 
     kfm = pythoncom.CoCreateInstance(shell.CLSID_KnownFolderManager, None,
         pythoncom.CLSCTX_INPROC_SERVER, shell.IID_IKnownFolderManager)

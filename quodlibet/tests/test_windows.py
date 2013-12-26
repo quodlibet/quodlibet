@@ -29,7 +29,7 @@ class TWindows(TestCase):
         d = windows.get_profile_dir()
         self.assertTrue(d is None or isinstance(d, unicode))
 
-        d = windows.get_link_dir()
+        d = windows.get_links_dir()
         self.assertTrue(d is None or isinstance(d, unicode))
 
     def test_get_link_target(self):
