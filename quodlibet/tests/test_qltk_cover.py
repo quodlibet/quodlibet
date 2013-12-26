@@ -5,7 +5,8 @@ from gi.repository import Gtk, GdkPixbuf, Gdk
 from tests import TestCase, add, mkstemp
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
-from quodlibet.qltk.cover import CoverImage, BigCenteredImage, ResizeImage
+from quodlibet.qltk.cover import (CoverImage, BigCenteredImage, ResizeImage,
+    get_no_cover_pixbuf)
 
 
 class TCoverImage(TestCase):
@@ -38,5 +39,15 @@ class TCoverImage(TestCase):
         w.set_file(open(self.fn, "rb"))
         w.set_file(None)
         w.destroy()
+
+    def test_no_cover(self):
+        pb = get_no_cover_pixbuf(5, 10)
+        self.assertEqual(pb.get_width(), 5)
+        self.assertEqual(pb.get_height(), 5)
+
+        pb = get_no_cover_pixbuf(10, 5)
+        self.assertEqual(pb.get_width(), 5)
+        self.assertEqual(pb.get_height(), 5)
+
 
 add(TCoverImage)

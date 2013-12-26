@@ -36,6 +36,7 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 from quodlibet.util.collection import Album
+from quodlibet.qltk.cover import get_no_cover_pixbuf
 
 
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
@@ -343,17 +344,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         except EnvironmentError:
             klass._pattern_text = PATTERN
 
-        theme = Gtk.IconTheme.get_default()
         cover_size = Album.COVER_SIZE
-        try:
-            klass.__no_cover = theme.load_icon(
-                "quodlibet-missing-cover", cover_size, 0)
-        except GLib.GError:
-            pass
-        else:
-            klass.__no_cover = thumbnails.scale(
-                klass.__no_cover, (cover_size, cover_size))
-
+        klass.__no_cover = get_no_cover_pixbuf(cover_size, cover_size)
         klass._pattern = XMLFromMarkupPattern(klass._pattern_text)
 
     @classmethod

@@ -96,14 +96,21 @@ class BigCenteredImage(qltk.Window):
 
 
 def get_no_cover_pixbuf(width, height):
+    """A no cover pixbux at max width x height"""
+
+    # win32 workaround: https://bugzilla.gnome.org/show_bug.cgi?id=721062
+
     size = max(width, height)
     theme = Gtk.IconTheme.get_default()
+    icon_info = theme.lookup_icon("quodlibet-missing-cover", size, 0)
+    if icon_info is None:
+        return
+
+    filename = icon_info.get_filename()
     try:
-        no_cover = theme.load_icon("quodlibet-missing-cover", size, 0)
+        return GdkPixbuf.Pixbuf.new_from_file_at_size(filename, width, height)
     except GLib.GError:
         return
-    else:
-        return thumbnails.scale(no_cover, (width, height))
 
 
 class ResizeImage(Gtk.Bin):
