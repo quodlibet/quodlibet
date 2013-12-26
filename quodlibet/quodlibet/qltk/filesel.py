@@ -15,6 +15,7 @@ from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import windows
 
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
@@ -55,21 +56,13 @@ def _get_win_favorites():
 
     folders = []
 
-    try:
-        from win32com.shell import shell, shellcon
-        import pywintypes
-    except ImportError:
-        return folders
+    funcs = [windows.get_desktop_dir, windows.get_personal_dir,
+             windows.get_music_dir]
 
-    ids = [shellcon.CSIDL_DESKTOP, shellcon.CSIDL_PERSONAL,
-           shellcon.CSIDL_MYMUSIC]
-
-    for id_ in ids:
-        try:
-            path = shell.SHGetFolderPath(0, id_, 0, 0)
-        except pywintypes.com_error:
-            continue
-        folders.append(path)
+    for func in funcs:
+        path = func()
+        if path is not None:
+            folders.append(path)
 
     return folders
 

@@ -13,6 +13,7 @@ import tempfile
 import urllib
 from quodlibet.const import FSCODING as fscoding
 from quodlibet.util.string import decode, encode
+from quodlibet import windows
 
 """
 Path related functions like open, os.listdir have different behavior on win32
@@ -27,9 +28,6 @@ Path related functions like open, os.listdir have different behavior on win32
   And that's why QL is using unicode paths on win and encoded paths
   everywhere else.
 """
-
-if os.name == "nt":
-    from win32com.shell import shellcon, shell
 
 
 def mkdir(dir, *args):
@@ -137,9 +135,11 @@ def unescape_filename(s):
 
 def expanduser(filename):
     """needed because expanduser does not return wide character paths
-    on windows even if a unicode path gets passed."""
+    on windows even if a unicode path gets passed.
+    """
+
     if os.name == "nt":
-        profile = shell.SHGetFolderPath(0, shellcon.CSIDL_PROFILE, 0, 0)
+        profile = windows.get_profile_dir() or u""
         if filename == "~":
             return profile
         if filename.startswith(u"~" + os.path.sep):
