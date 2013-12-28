@@ -66,7 +66,7 @@ class BigCenteredImage(qltk.Window):
 
         pixbuf = None
         try:
-            pixbuf = pixbuf_from_file(fileobj, (256, 256))
+            pixbuf = pixbuf_from_file(fileobj, (width, height))
         except GLib.GError:
             pass
 
