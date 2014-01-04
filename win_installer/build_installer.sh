@@ -169,7 +169,7 @@ find "$MAIN_LOCALE" -name "gtk30-properties.mo" -exec rm {} \;
 
 # copy plugins; byte compile them; remove leftover *.py files
 cp -RT "$QL_TEMP"/plugins "$QL_BIN"/quodlibet/plugins
-wine "$PYDIR"/python.exe -m compileall $(winepath -w "$QL_BIN"/quodlibet/plugins)
+wine "$PYDIR"/python.exe -m compileall $(wine winepath -w "$QL_BIN"/quodlibet/plugins)
 find "$QL_DEST" -name "*.py" | xargs -I {} rm -v "{}"
 
 # remove gtk themes except HighContrast/Adwaita/Default
