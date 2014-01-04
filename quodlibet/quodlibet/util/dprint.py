@@ -79,12 +79,9 @@ def extract_caller_info():
             return info
 
 
-def _print(string, frm="utf-8", output=None, strip_color=True):
+def _print(string, output, frm="utf-8", strip_color=True, end=os.linesep):
     if _is_py2exe() and not _is_py2exe_console():
         return
-
-    if output is None:
-        output = sys.stdout
 
     can_have_color = True
     if strip_color and not output.isatty():
@@ -100,17 +97,17 @@ def _print(string, frm="utf-8", output=None, strip_color=True):
         if can_have_color:
             clicolor.print_color(string, output)
         else:
-            print >>output, string
+            output.write(string)
+        output.write(end)
     except IOError:
         pass
 
 
-def print_(string, output=None):
+def print_(string, output=None, end=os.linesep):
     if output is None:
         output = sys.stdout
-    string = _format_print(string)
-    quodlibet.util.logging.log(clicolor.strip_color(string))
-    _print(string, output=output)
+
+    _print(string, output, end=end)
 
 
 def print_d(string, context=""):
@@ -136,7 +133,7 @@ def print_d(string, context=""):
     string = _format_print(string, Colorise.green(prefix))
 
     if output is not None:
-        _print(string, output=output)
+        _print(string, output)
 
     # Translators: Name of the debug tab in the Output Log window
     quodlibet.util.logging.log(clicolor.strip_color(string), _("Debug"))
@@ -149,7 +146,7 @@ def print_w(string):
     prefix = _("W: ")
 
     string = _format_print(string, Colorise.red(prefix))
-    _print(string, output=sys.stderr)
+    _print(string, sys.stderr)
 
     # Translators: Name of the warnings tab in the Output Log window
     quodlibet.util.logging.log(clicolor.strip_color(string), _("Warnings"))
@@ -162,7 +159,7 @@ def print_e(string, context=None):
     prefix = _("E: ")
 
     string = _format_print(string, Colorise.red(prefix))
-    _print(string, output=sys.stderr)
+    _print(string, sys.stderr)
 
     # Translators: Name of the warnings tab in the Output Log window
     quodlibet.util.logging.log(clicolor.strip_color(string), _("Errors"))

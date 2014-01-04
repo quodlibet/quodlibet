@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 import ctypes
-import os
 import re
 import sys
 
@@ -164,7 +163,7 @@ class WinColor(object):
 def print_color_default(text, output):
     assert isinstance(text, str)
 
-    print >>output, text
+    output.write(text)
 
 
 def print_color_win(text, output):
@@ -206,7 +205,6 @@ def print_color_win(text, output):
             SetConsoleTextAttribute(h, mapping[part] | bg)
         elif not _ANSI_ESC_RE.match(part):
             output.write(part)
-    output.write(os.linesep)
 
 
 try:

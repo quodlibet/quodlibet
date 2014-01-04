@@ -6,7 +6,7 @@ import sys
 import unittest
 import tempfile
 import shutil
-from quodlibet.util.dprint import Colorise
+from quodlibet.util.dprint import Colorise, print_
 
 from unittest import TestCase as OrigTestCase
 suites = []
@@ -47,69 +47,51 @@ def add(t):
 
 
 class Result(unittest.TestResult):
-    TOTAL_WIDTH = 90
+    TOTAL_WIDTH = 80
     TEST_RESULTS_WIDTH = 50
     TEST_NAME_WIDTH = TOTAL_WIDTH - TEST_RESULTS_WIDTH - 3
     MAJOR_SEPARATOR = '=' * TOTAL_WIDTH
     MINOR_SEPARATOR = '-' * TOTAL_WIDTH
-    USE_COLORS = True
-
-    def _markup(self, call, text):
-        try:
-            return call(text) if self.use_colors or False else text
-        except AttributeError:
-            return text
-
-    def bold(self, text):
-        return self._markup(Colorise.bold, text)
-
-    def red(self, text):
-        return self._markup(Colorise.red, text)
-
-    def green(self, text):
-        return self._markup(Colorise.green, text)
 
     CHAR_SUCCESS, CHAR_ERROR, CHAR_FAILURE = '+', 'E', 'F'
 
     def __init__(self, test_name, num_tests, out=sys.stdout):
         super(Result, self).__init__()
         self.out = out
-        self.use_colors = (self.USE_COLORS and self.out.isatty()
-                           and os.name != 'nt')
         if hasattr(out, "flush"):
             out.flush()
-        pref = '%s (%d): ' % (self.bold(test_name), num_tests)
+        pref = '%s (%d): ' % (Colorise.bold(test_name), num_tests)
         line = pref + " " * (self.TEST_NAME_WIDTH - len(test_name)
                              - 6 - int(num_tests and log(num_tests, 10) or 0))
-        out.write(line)
+        print_(line, end="")
 
     def addSuccess(self, test):
         unittest.TestResult.addSuccess(self, test)
-        self.out.write(self.green(self.CHAR_SUCCESS))
+        print_(Colorise.green(self.CHAR_SUCCESS), end="")
 
     def addError(self, test, err):
         unittest.TestResult.addError(self, test, err)
-        self.out.write(self.red(self.CHAR_ERROR))
+        print_(Colorise.red(self.CHAR_ERROR), end="")
 
     def addFailure(self, test, err):
         unittest.TestResult.addFailure(self, test, err)
-        self.out.write(self.red(self.CHAR_FAILURE))
+        print_(Colorise.red(self.CHAR_FAILURE), end="")
 
     def printErrors(self):
         succ = self.testsRun - (len(self.errors) + len(self.failures))
-        v = self.bold("%3d" % succ)
-        cv = self.green(v) if succ == self.testsRun else self.red(v)
+        v = Colorise.bold("%3d" % succ)
+        cv = Colorise.green(v) if succ == self.testsRun else Colorise.red(v)
         count = self.TEST_RESULTS_WIDTH - self.testsRun
-        self.out.write((" " * count) + cv + "\n")
+        print_((" " * count) + cv)
         self.printErrorList('ERROR', self.errors)
         self.printErrorList('FAIL', self.failures)
 
     def printErrorList(self, flavour, errors):
         for test, err in errors:
-            self.out.write(self.MAJOR_SEPARATOR + "\n")
-            self.out.write(self.red("%s: %s\n" % (flavour, str(test))))
-            self.out.write(self.MINOR_SEPARATOR + "\n")
-            self.out.write("%s\n" % err)
+            print_(self.MAJOR_SEPARATOR)
+            print_(self.red("%s: %s" % (flavour, str(test))))
+            print_(self.MINOR_SEPARATOR)
+            print_("%s" % err)
 
 
 class Runner(object):
