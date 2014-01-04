@@ -1,4 +1,4 @@
-# Copyright 2011 Christoph Reiter
+# Copyright 2011,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,10 +13,18 @@ import quodlibet.const
 import quodlibet.util.logging
 
 from quodlibet.const import ENCODING
+from quodlibet.util.clicolor import Colorise
+from quodlibet.util import clicolor
 
 
 def _is_py2exe():
     return os.name == 'nt' and hasattr(sys, "frozen")
+
+
+def _is_py2exe_console():
+    """If True, stdout/stderr can be used"""
+
+    return sys.frozen == "console_exe"
 
 
 def _format_print(string, prefix=""):
@@ -71,79 +79,37 @@ def extract_caller_info():
             return info
 
 
-class Colorise(object):
-    @classmethod
-    def __reset(cls, text):
-        return text + '\033[0m'
-
-    @classmethod
-    def magenta(cls, text):
-        return cls.__reset('\033[95m' + text)
-
-    @classmethod
-    def blue(cls, text):
-        return cls.__reset('\033[94m' + text)
-
-    @classmethod
-    def cyan(cls, text):
-        return cls.__reset('\033[96m' + text)
-
-    @classmethod
-    def white(cls, text):
-        return cls.__reset('\033[97m' + text)
-
-    @classmethod
-    def yellow(cls, text):
-        return cls.__reset('\033[93m' + text)
-
-    @classmethod
-    def green(cls, text):
-        return cls.__reset('\033[92m' + text)
-
-    @classmethod
-    def red(cls, text):
-        return cls.__reset('\033[91m' + text)
-
-    @classmethod
-    def black(cls, text):
-        return cls.__reset('\033[90m' + text)
-
-    @classmethod
-    def bold(cls, text):
-        return cls.__reset('\033[1m' + text)
-
-    @classmethod
-    def gray(cls, text):
-        return cls.__reset('\033[2m' + text)
-
-
-def _strip_color(text, reg=re.compile("(\x1b\[\d{1,2}m|\\x1b\[0m)")):
-    return reg.sub("", text)
-
-
-def _print(string, frm="utf-8", output=sys.stdout, strip_color=True):
-    if _is_py2exe():
+def _print(string, frm="utf-8", output=None, strip_color=True):
+    if _is_py2exe() and not _is_py2exe_console():
         return
 
-    if output:
-        if strip_color and not output.isatty():
-            string = _strip_color(string)
+    if output is None:
+        output = sys.stdout
 
-        if isinstance(string, unicode):
-            string = string.encode(ENCODING, "replace")
+    can_have_color = True
+    if strip_color and not output.isatty():
+        string = clicolor.strip_color(string)
+        can_have_color = False
+
+    if isinstance(string, unicode):
+        string = string.encode(ENCODING, "replace")
+    else:
+        string = string.decode(frm).encode(ENCODING, "replace")
+
+    try:
+        if can_have_color:
+            clicolor.print_color(string, output)
         else:
-            string = string.decode(frm).encode(ENCODING, "replace")
-        try:
             print >>output, string
-        except IOError:
-            pass
+    except IOError:
+        pass
 
 
 def print_(string, output=None):
     if output is None:
         output = sys.stdout
     string = _format_print(string)
-    quodlibet.util.logging.log(_strip_color(string))
+    quodlibet.util.logging.log(clicolor.strip_color(string))
     _print(string, output=output)
 
 
@@ -169,10 +135,11 @@ def print_d(string, context=""):
                              Colorise.blue(context), string)
     string = _format_print(string, Colorise.green(prefix))
 
-    _print(string, output=output)
+    if output is not None:
+        _print(string, output=output)
 
     # Translators: Name of the debug tab in the Output Log window
-    quodlibet.util.logging.log(_strip_color(string), _("Debug"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), _("Debug"))
 
 
 def print_w(string):
@@ -185,7 +152,7 @@ def print_w(string):
     _print(string, output=sys.stderr)
 
     # Translators: Name of the warnings tab in the Output Log window
-    quodlibet.util.logging.log(_strip_color(string), _("Warnings"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), _("Warnings"))
 
 
 def print_e(string, context=None):
@@ -198,4 +165,4 @@ def print_e(string, context=None):
     _print(string, output=sys.stderr)
 
     # Translators: Name of the warnings tab in the Output Log window
-    quodlibet.util.logging.log(_strip_color(string), _("Errors"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), _("Errors"))

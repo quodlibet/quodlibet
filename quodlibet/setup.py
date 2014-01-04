@@ -390,6 +390,8 @@ if __name__ == "__main__":
                         os.path.join('..', 'win_installer', 'misc',
                                      'exfalso.ico'))]
                 },
+            ],
+            'console': [
                 {
                     "script": "operon.py",
                     "icon_resources": [(0,

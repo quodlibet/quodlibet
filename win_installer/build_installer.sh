@@ -130,7 +130,7 @@ echo "gtk-theme-name = Adwaita" >> "$GTK_SETTINGS"
 echo "gtk-fallback-icon-theme = gnome" >> "$GTK_SETTINGS"
 
 # now install python etc.
-msiexec /a bin/python-2.7.6.msi /qb
+wine msiexec /a bin/python-2.7.6.msi /qb
 wine bin/nsis-2.46-setup.exe /S
 
 PYDIR="$WINEPREFIX"/drive_c/Python27
