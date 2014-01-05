@@ -33,16 +33,122 @@ from .prefs import GstPlayerPreferences
 STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
 
 
+class BufferingWrapper(object):
+    """A wrapper for a Gst.Element (usually GstPlayBin) which pauses the
+    elmement in case buffering is needed, but hides the fact that it does.
+
+    Probably not perfect...
+
+    You have to call destroy() before it gets gc'd
+    """
+
+    def __init__(self, bin_, player):
+        """
+        bin_ -- the GstPlaybin instance to wrap
+        player -- the GStreamerPlayer instance used
+                  for aborting the buffer process
+        """
+
+        self.bin = bin_
+        self._wanted_state = None
+        self._task = None
+        self._inhibit_play = False
+        self._player = player
+
+        bus = self.bin.get_bus()
+        bus.add_signal_watch()
+        self.__bus_id = bus.connect('message', self.__message)
+
+    def __message(self, bus, message):
+        if message.type == Gst.MessageType.BUFFERING:
+            percent = message.parse_buffering()
+            self.__update_buffering(percent)
+
+    def __getattr__(self, name):
+        return getattr(self.bin, name)
+
+    def __update_buffering(self, percent):
+        """Call this with buffer percent values from the bus"""
+
+        if self._task:
+            self._task.update(percent / 100.0)
+
+        self.__set_inhibit_play(percent < 100)
+
+    def __set_inhibit_play(self, inhibit):
+        """Change the inhibit state"""
+
+        if inhibit == self._inhibit_play:
+            return
+        self._inhibit_play = inhibit
+
+        # task management
+        if inhibit:
+            if not self._task:
+                def stop_buf(*args):
+                    self._player.paused = True
+
+                self._task = Task(_("Stream"), _("Buffering"), stop=stop_buf)
+        elif self._task:
+            self._task.finish()
+            self._task = None
+
+        # state management
+        if inhibit:
+            # save the current state
+            status, state, pending = self.bin.get_state(
+                timeout=STATE_CHANGE_TIMEOUT)
+            if status == Gst.StateChangeReturn.SUCCESS and \
+                    state == Gst.State.PLAYING:
+                self._wanted_state = state
+            else:
+                # no idea, at least don't play
+                self._wanted_state = Gst.State.PAUSED
+
+            self.bin.set_state(Gst.State.PAUSED)
+        else:
+            # restore the old state
+            self.bin.set_state(self._wanted_state)
+            self._wanted_state = None
+
+    def set_state(self, state):
+        if self._inhibit_play:
+            # PLAYING, PAUSED change the state for after buffering is finished,
+            # everything else aborts buffering
+            if state not in (Gst.State.PLAYING, Gst.State.PAUSED):
+                # abort
+                self.__set_inhibit_play(False)
+                self.bin.set_state(state)
+                return
+            self._wanted_state = state
+        else:
+            self.bin.set_state(state)
+
+    def get_state(self, *args, **kwargs):
+        # get_state also is a barrier (seek/positioning),
+        # so call every time but ignore the result in the inhibit case
+        res = self.bin.get_state(*args, **kwargs)
+        if self._inhibit_play:
+            return self._wanted_state
+        return res
+
+    def destroy(self):
+        if self.__bus_id:
+            bus = self.bin.get_bus()
+            bus.disconnect(self.__bus_id)
+            bus.remove_signal_watch()
+            self.__bus_id = None
+
+        self.__set_inhibit_play(False)
+
+
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     __gproperties__ = BasePlayer._gproperties_
     __gsignals__ = BasePlayer._gsignals_
 
     _paused = True
     _in_gapless_transition = False
-    _inhibit_play = False
     _last_position = 0
-
-    _task = None
 
     bin = None
     _vol_element = None
@@ -165,6 +271,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self.bin = Gst.ElementFactory.make('playbin', None)
         assert self.bin
+        self.bin = BufferingWrapper(self.bin, self)
         self.__atf_id = self.bin.connect('about-to-finish',
             self.__about_to_finish)
 
@@ -236,14 +343,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if self.bin:
             self.bin.set_state(Gst.State.NULL)
             self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
+            # BufferingWrapper cleanup
+            self.bin.destroy()
             self.bin = None
 
-        if self._task:
-            self._task.finish()
-            self._task = None
-
         self._in_gapless_transition = False
-        self._inhibit_play = False
         self._last_position = 0
 
         self._vol_element = None
@@ -276,9 +380,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             err, debug = message.parse_error()
             err = str(err).decode(const.ENCODING, 'replace')
             self._error(err)
-        elif message.type == Gst.MessageType.BUFFERING:
-            percent = message.parse_buffering()
-            self.__buffering(percent)
         elif message.type == Gst.MessageType.STREAM_START:
             if self._in_gapless_transition:
                 print_d("Stream changed")
@@ -371,35 +472,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 self._last_position = p
         return p
 
-    def __buffering(self, percent):
-        def stop_buf(*args):
-            self.paused = True
-
-        if percent < 100:
-            if self._task:
-                self._task.update(percent / 100.0)
-            else:
-                self._task = Task(_("Stream"), _("Buffering"), stop=stop_buf)
-        elif self._task:
-            self._task.finish()
-            self._task = None
-
-        self._set_inhibit_play(percent < 100)
-
-    def _set_inhibit_play(self, inhibit):
-        """Set the inhibit play flag.  If set, this will pause the pipeline
-        without giving the appearance of being paused to the outside.  This
-        is for internal uses of pausing, such as for waiting while the buffer
-        is being filled for network streams."""
-        if inhibit == self._inhibit_play:
-            return
-
-        self._inhibit_play = inhibit
-        if inhibit:
-            self.bin.set_state(Gst.State.PAUSED)
-        elif not self.paused:
-            self.bin.set_state(Gst.State.PLAYING)
-
     def _set_paused(self, paused):
         if paused == self._paused:
             return
@@ -431,9 +503,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                         self.__destroy_pipeline()
         else:
             if self.bin:
-                # don't start while we are buffering
-                if not self._inhibit_play:
-                    self.bin.set_state(Gst.State.PLAYING)
+                self.bin.set_state(Gst.State.PLAYING)
             else:
                 if self.__init_pipeline():
                     self.bin.set_state(Gst.State.PLAYING)
