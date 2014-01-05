@@ -8,7 +8,7 @@ from gi.repository import Gtk
 
 from quodlibet import const
 from quodlibet import util
-from quodlibet.util.path import unexpand
+from quodlibet.util.path import unexpand, mkdir
 
 old_hook = sys.excepthook
 
@@ -17,12 +17,17 @@ class ExceptionDialog(Gtk.Window):
     running = False
     instance = None
 
+    DUMPDIR = os.path.join(const.USERDIR, "dumps")
+
     @classmethod
     def from_except(Kind, *args):
+        mkdir(Kind.DUMPDIR)
+
         dump = os.path.join(
-            const.USERDIR, time.strftime("Dump_%Y%m%d_%H%M%S.txt"))
+            Kind.DUMPDIR, time.strftime("Dump_%Y%m%d_%H%M%S.txt"))
         minidump = os.path.join(
-            const.USERDIR, time.strftime("MiniDump_%Y%m%d_%H%M%S.txt"))
+            Kind.DUMPDIR, time.strftime("MiniDump_%Y%m%d_%H%M%S.txt"))
+
         full_args = list(args) + [dump, minidump]
         Kind.__dump(*full_args)
         # Don't get in a recursive exception handler loop.
