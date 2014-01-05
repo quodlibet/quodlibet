@@ -89,7 +89,7 @@ class Result(unittest.TestResult):
     def printErrorList(self, flavour, errors):
         for test, err in errors:
             print_(self.MAJOR_SEPARATOR)
-            print_(self.red("%s: %s" % (flavour, str(test))))
+            print_(Colorise.red("%s: %s" % (flavour, str(test))))
             print_(self.MINOR_SEPARATOR)
             print_("%s" % err)
 
