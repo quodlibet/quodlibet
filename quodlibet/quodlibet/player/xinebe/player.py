@@ -9,7 +9,9 @@ from gi.repository import GLib
 from quodlibet import config
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
-from quodlibet.player._xine import *
+
+from . import cdefs
+from .cdefs import *
 
 
 class XineHandle(object):
@@ -256,11 +258,10 @@ class XinePlaylistPlayer(BasePlayer):
         return [30, 60, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
 
     def update_eq_values(self):
-        from quodlibet.player import _xine as _xine_module
         bands = self.eq_bands
         need_eq = any(self._eq_values)
         for band, val in enumerate(self._eq_values):
-            param = getattr(_xine_module, 'XINE_PARAM_EQ_%dHZ' % bands[band])
+            param = getattr(cdefs, 'XINE_PARAM_EQ_%dHZ' % bands[band])
             # between 1..200; 100 is the default gain; 0 means no EQ filter
             # only negative gain seems to work
             val = (int(val * 100 / 24.0) + 100) or 1

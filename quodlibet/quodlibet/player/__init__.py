@@ -5,6 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import const
+from quodlibet import util
+
 
 class PlayerError(Exception):
     def __init__(self, short_desc, long_desc):
@@ -25,6 +28,9 @@ def init(backend_name):
     try:
         backend = __import__(modulename, {}, {}, "quodlibet.player")
     except ImportError:
+        if const.DEBUG:
+            util.print_exc()
+
         raise PlayerError(
             _("Invalid audio backend"),
             _("The audio backend %r is not installed.") % backend_name)

@@ -8,8 +8,8 @@ from gi.repository import Gst
 import unittest
 from tests import TestCase, add
 
-from quodlibet.player.gstbe import GStreamerSink as Sink
-from quodlibet.player.gstbe import parse_gstreamer_taglist
+from quodlibet.player.gstbe.util import GStreamerSink as Sink
+from quodlibet.player.gstbe.util import parse_gstreamer_taglist
 from quodlibet.util import sanitize_tags
 
 

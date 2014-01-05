@@ -13,6 +13,7 @@ syntax: glob
 MANIFEST
 
 po/missing
+po/notexist
 
 # Sphinx build files
 _build*/*

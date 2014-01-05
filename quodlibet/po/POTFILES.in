@@ -28,10 +28,11 @@ quodlibet/formats/__init__.py
 quodlibet/__init__.py
 quodlibet/library/__init__.py
 quodlibet/library/libraries.py
-quodlibet/player/gstbe.py
-quodlibet/player/_gstutils.py
+quodlibet/player/gstbe/player.py
+quodlibet/player/gstbe/plugins.py
+quodlibet/player/gstbe/prefs.py
 quodlibet/player/__init__.py
-quodlibet/player/xinebe.py
+quodlibet/player/xinebe/player.py
 quodlibet/plugins/__init__.py
 quodlibet.py
 quodlibet/qltk/about.py
@@ -87,3 +88,4 @@ quodlibet/util/massagers.py
 quodlibet/util/songwrapper.py
 quodlibet/util/string/__init__.py
 quodlibet/util/tags.py
+tests/__init__.py
