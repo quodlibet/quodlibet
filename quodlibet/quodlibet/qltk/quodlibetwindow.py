@@ -123,7 +123,7 @@ class MainSongList(SongList):
 class SongListScroller(ScrolledWindow):
     def __init__(self, menu):
         super(SongListScroller, self).__init__()
-        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.IN)
         self.connect_object('notify::visible', self.__visibility, menu)
 

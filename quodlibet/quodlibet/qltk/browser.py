@@ -32,7 +32,7 @@ class LibraryBrowser(Window, PersistentWindowMixin):
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         self.browser = browser = Kind(library, False)
         if browser.reordered:

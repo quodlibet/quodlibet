@@ -27,7 +27,7 @@ class QueueExpander(Gtk.Expander):
     def __init__(self, menu, library, player):
         super(QueueExpander, self).__init__()
         sw = ScrolledWindow()
-        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.queue = PlayQueue(library, player)
         sw.add(self.queue)
