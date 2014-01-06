@@ -470,6 +470,10 @@ class FileSelector(Gtk.VPaned):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack2(sw, resize=True)
 
+    def go_to(self, *args, **kwargs):
+        dirlist = self.get_child1().get_child()
+        dirlist.go_to(*args, **kwargs)
+
     def get_selected_paths(self):
         """A list of fs paths"""
 

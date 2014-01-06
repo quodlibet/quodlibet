@@ -94,7 +94,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         l.set_ellipsize(Pango.EllipsizeMode.END)
         bbox.pack_start(l, True, True, 0)
 
-        fs = MainFileSelector(dir)
+        fs = MainFileSelector()
 
         vb.pack_start(fs, True, True, 0)
         vb.pack_start(Alignment(bbox, border=6), False, True, 0)
@@ -112,6 +112,8 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         align.show()
         hp.pack2(align, resize=True, shrink=False)
         fs.connect('changed', self.__changed, l)
+        if dir:
+            fs.go_to(dir)
         s = self.__library.connect('changed', lambda *x: fs.rescan())
         self.connect_object('destroy', self.__library.disconnect, s)
         self.__save = None
