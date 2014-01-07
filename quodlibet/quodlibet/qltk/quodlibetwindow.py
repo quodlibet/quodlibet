@@ -10,6 +10,8 @@ import os
 
 from gi.repository import Gtk, GObject, Gdk, GLib, Gio
 
+import quodlibet
+
 from quodlibet import browsers
 from quodlibet import config
 from quodlibet import const
@@ -357,7 +359,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
     def __configure_scan_dirs(self, library):
         """Get user to configure scan dirs, if none is set up"""
-        if not get_scan_dirs() and not len(library):
+        if not get_scan_dirs() and not len(library) and \
+                quodlibet.is_first_session("quodlibet"):
             print_d("Couldn't find any scan dirs")
             if qltk.ConfirmAction(self, _("Set up library directories?"),
                    _("You don't have any music library set up. "

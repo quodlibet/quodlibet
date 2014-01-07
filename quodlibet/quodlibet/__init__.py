@@ -289,6 +289,9 @@ def init(library=None, icon=None, title=None, name=None):
         # Issue 736 - set after main loop has started (gtk seems to reset it)
         GLib.idle_add(set_process_title, title)
 
+        # so is_first_session() returns False next time
+        quit_add(0, finish_first_session, title)
+
     if name:
         GLib.set_application_name(name)
 
@@ -368,6 +371,35 @@ def enable_periodic_save(save_library):
     copool.add(periodic_library_save, timeout=timeout)
 
 
+def is_first_session(app_name):
+    """Returns True if the current session is the first one to e.g.
+    show a wizard/setup dialog etc.
+
+    Will return True after each upgrade as well.
+
+    app_name: e.g. 'quodlibet'
+    """
+
+    from quodlibet import config
+    from quodlibet import const
+
+    value = config.get("memory", "%s_last_active_version" % app_name, "")
+
+    if value != const.VERSION:
+        return True
+
+    return False
+
+
+def finish_first_session(app_name):
+    """Call on shutdown so that is_first_session() works"""
+
+    from quodlibet import config
+    from quodlibet import const
+
+    config.set("memory", "%s_last_active_version" % app_name, const.VERSION)
+
+
 def _init_debug():
     from gi.repository import GLib
     from quodlibet.qltk.debugwindow import ExceptionDialog
@@ -443,6 +475,8 @@ _quit_funcs = []
 
 
 def quit_add(level, func, *args):
+    """level==0 -> after, level !=0 -> before"""
+
     assert level in (0, 1)
     _quit_funcs.append([level, func, args])
 
