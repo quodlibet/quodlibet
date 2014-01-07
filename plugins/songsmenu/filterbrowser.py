@@ -26,5 +26,5 @@ class FilterBrowser(SongsMenuPlugin):
         for song in songs:
             values.extend(song.list(tag))
 
-        browser = LibraryBrowser(browsers.get("SearchBar"), app.library)
+        browser = LibraryBrowser.open(browsers.get("SearchBar"), app.library)
         browser.browser.filter(tag, set(values))

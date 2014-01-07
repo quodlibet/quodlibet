@@ -481,6 +481,11 @@ def main(window):
         GLib.timeout_add(4 * 1000, Gtk.main_quit,
                          priority=GLib.PRIORITY_HIGH)
 
+        # See which browser windows are open and save their names
+        # so we can restore them on start
+        from quodlibet.qltk.browser import LibraryBrowser
+        LibraryBrowser.save()
+
         # destroy all open windows so they hide immediately on close:
         # destroying all top level windows doesn't work (weird errors),
         # so we hide them all and only destroy our tracked instances

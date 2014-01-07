@@ -626,7 +626,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
             act = Gtk.Action(action, label, None, None)
-            act.connect_object('activate', LibraryBrowser, Kind, library)
+            act.connect_object('activate', LibraryBrowser.open, Kind, library)
             ag.add_action_with_accel(act, None)
 
         debug_menu = ""

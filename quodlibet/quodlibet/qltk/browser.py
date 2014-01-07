@@ -9,6 +9,7 @@ from gi.repository import Gtk, Pango
 from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
+from quodlibet import browsers
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import Window, RPaned
@@ -16,11 +17,40 @@ from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util.library import background_filter
 
 
-class LibraryBrowser(Window, PersistentWindowMixin):
+class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
+
+    @classmethod
+    def open(cls, Kind, library):
+        browser = cls(Kind, library)
+        browser.show()
+
+    @classmethod
+    def save(cls):
+        """See which browser windows are open and save their names
+        so we can restore them on start.
+        """
+
+        names = []
+        for browser in cls.instances:
+            names.append(browser.name)
+        config.set("memory", "open_browsers", "\n".join(names))
+
+    @classmethod
+    def restore(cls, library):
+        """restore saved browser windows"""
+
+        value = config.get("memory", "open_browsers", "")
+        for name in value.split():
+            kind = browsers.get(name)
+            cls.open(kind, library)
+
     def __init__(self, Kind, library):
         super(LibraryBrowser, self).__init__(dialog=False)
+        self._register_instance()
+        self.name = Kind.__name__
+
         self.set_default_size(600, 400)
-        self.enable_window_tracking("browser_" + Kind.__name__)
+        self.enable_window_tracking("browser_" + self.name)
         self.set_border_width(6)
         self.set_title(Kind.name + " - Quod Libet")
         self.add(Gtk.VBox(spacing=6))
@@ -64,7 +94,6 @@ class LibraryBrowser(Window, PersistentWindowMixin):
         for c in self.get_child().get_children():
             c.show()
         self.get_child().show()
-        self.show()
         self.__set_pane_size()
 
     def __set_pane_size(self):

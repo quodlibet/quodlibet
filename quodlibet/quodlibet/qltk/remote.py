@@ -277,7 +277,7 @@ class FIFOControl(object):
     def _open_browser(self, value, library, window, player):
         Kind = browsers.get(value)
         if Kind is not browsers.empty.EmptyBar:
-            LibraryBrowser(Kind, library)
+            LibraryBrowser.open(Kind, library)
         else:
             print_w(_("Unknown browser %r.") % value)
 

@@ -129,6 +129,10 @@ def main():
     if play:
         player.paused = False
 
+    # restore browser windows
+    from quodlibet.qltk.browser import LibraryBrowser
+    LibraryBrowser.restore(library)
+
     quodlibet.main(window)
 
     print_d("Shutting down player device %r." % player.version_info)

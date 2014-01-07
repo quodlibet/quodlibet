@@ -116,7 +116,7 @@ class Menu(Gtk.Menu):
         if len(MediaDevices.instances()) > 0:
             browser = MediaDevices.instances()[0]
         else:
-            win = LibraryBrowser(MediaDevices, library)
+            win = LibraryBrowser.open(MediaDevices, library)
             browser = win.browser
         browser.select(device)
         browser.dropped(browser.get_toplevel().songlist, songs)
