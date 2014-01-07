@@ -10,12 +10,13 @@ class Tcopool(TestCase):
         while Gtk.events_pending():
             Gtk.main_iteration()
         self.buffer = None
+        self.go = True
 
     def tearDown(self):
         copool.remove_all()
 
     def __set_buffer(self):
-        while True:
+        while self.go:
             self.buffer = True
             yield None
 
@@ -69,6 +70,7 @@ class Tcopool(TestCase):
         Gtk.main_iteration_do(False)
         self.assertEquals(self.buffer, None)
         copool.resume("test")
+        copool.resume("test")
         Gtk.main_iteration_do(False)
         Gtk.main_iteration_do(False)
         self.assertEquals(self.buffer, True)
@@ -96,5 +98,20 @@ class Tcopool(TestCase):
         Gtk.main_iteration_do(False)
         Gtk.main_iteration_do(False)
         self.failIf(self.buffer)
+
+    def test_step(self):
+        copool.add(self.__set_buffer, funcid="test")
+        copool.pause("test")
+        self.assertTrue(copool.step("test"))
+        self.go = False
+        self.assertFalse(copool.step("test"))
+        self.assertRaises(ValueError, copool.step, "test")
+
+    def test_timeout(self):
+        copool.add(self.__set_buffer, funcid="test", timeout=100)
+        copool.pause("test")
+        copool.resume("test")
+        copool.remove("test")
+        self.assertRaises(ValueError, copool.step, "test")
 
 add(Tcopool)
