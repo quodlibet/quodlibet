@@ -34,6 +34,9 @@ VERSION = str(VERSION_TUPLE)
 PROCESS_TITLE_QL = "quodlibet"
 PROCESS_TITLE_EF = "exfalso"
 
+BASEDIR = os.path.dirname(os.path.realpath(__file__))
+IMAGEDIR = os.path.join(BASEDIR, "images")
+
 # expanduser doesn't work with unicode on win...
 if os.name == "nt":
     HOME = windows.get_personal_dir()
@@ -48,6 +51,13 @@ else:
         USERDIR = os.path.join(USERDIR, "Quod Libet")
     else:
         USERDIR = os.path.join(HOME, ".quodlibet")
+
+# XXX: Exec conf.py in this directory, used to override const globals
+# e.g. for setting USERDIR for the Windows portable version
+try:
+    execfile(os.path.join(BASEDIR, "conf.py"))
+except IOError:
+    pass
 
 CONTROL = os.path.join(USERDIR, "control")
 CONFIG = os.path.join(USERDIR, "config")
@@ -76,9 +86,6 @@ EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
-
-BASEDIR = os.path.dirname(os.path.realpath(__file__))
-IMAGEDIR = os.path.join(BASEDIR, "images")
 
 AUTHORS = sorted("""\
 Alexandre Passos

@@ -30,6 +30,7 @@ else
     wget -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
     wget -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
     wget -c http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
+    wget -c http://downloads.sourceforge.net/sevenzip/7z920.msi
 
     pip install --download=. mutagen==1.22
     pip install --download=. feedparser==5.1.3
@@ -71,6 +72,7 @@ cd "$QL_TEMP"
 hg up "$HG_TAG"
 cd "quodlibet"
 python setup.py build_mo
+QL_VERSION=$(python -c "import quodlibet.const;print quodlibet.const.VERSION,")
 
 # link the batch file and nsis file in
 cd "$BUILD_ENV"
@@ -131,9 +133,11 @@ echo "gtk-fallback-icon-theme = gnome" >> "$GTK_SETTINGS"
 
 # now install python etc.
 wine msiexec /a bin/python-2.7.6.msi /qb
+wine msiexec /a bin/7z920.msi /qb
 wine bin/nsis-2.46-setup.exe /S
 
 PYDIR="$WINEPREFIX"/drive_c/Python27
+SZIPDIR="$WINEPREFIX/drive_c/Program Files/7-Zip/"
 
 # install the python packages
 SITEPACKAGES="$PYDIR"/Lib/site-packages
@@ -200,16 +204,42 @@ rm -R "$QL_DEST"/share/gst-plugins-bad
 # now package everything up
 cd "$BUILD_ENV"
 wine cmd /c package.bat
+mv "quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION-installer.exe"
+
+###############################################
+# Portable version
+
+PORTABLE="$BUILD_ENV/quodlibet-$QL_VERSION-portable"
+mkdir "$PORTABLE"
+
+cp "$MISC"/quodlibet.lnk "$PORTABLE"
+cp "$MISC"/exfalso.lnk "$PORTABLE"
+cp "$MISC"/README-PORTABLE.txt "$PORTABLE"/README.txt
+mkdir "$PORTABLE"/config
+PORTABLE_DATA="$PORTABLE"/data
+mkdir "$PORTABLE_DATA"
+cp -RT "$QL_DEST" "$PORTABLE_DATA"
+PORTABLE_CONF_PY="$PORTABLE_DATA"/bin/quodlibet/conf.py
+
+echo 'import os;' \
+    'USERDIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), ' \
+    '"..", "..", "..", "config")' >> "$PORTABLE_CONF_PY"
+
+wine "$SZIPDIR"/7z.exe a portable-temp.7z "$PORTABLE"
+cat "$SZIPDIR"/7z.sfx portable-temp.7z > "quodlibet-$QL_VERSION-portable.exe"
+rm portable-temp.7z
+mv "quodlibet-$QL_VERSION-portable.exe" "$DIR"
 
 ###############################################
 # Now the SDK
+
 SDK="$BUILD_ENV"/quodlibet-win-sdk
 mkdir "$SDK"
 
 # launchers, README
 cp "$MISC"/env.bat "$SDK"
 cp "$MISC"/wine.sh "$SDK"
-cp "$MISC"/README.txt "$SDK"
+cp "$MISC"/README-SDK.txt "$SDK"/README.txt
 
 # bin deps
 cp -R "$DEPS" "$SDK"

@@ -16,7 +16,10 @@ How To
 
 * Run build_installer.sh
 * _bin will be created which contains installers of various dependencies
-* _build_env will be created which will contain the installer once finished
+* _build_env will be created which contains all files created during the
+  build process.
+* After the build is finished, quodlibet-$VERSION-installer.exe and
+  quodlibet-$VERSION-portable.exe will be placed in this directory.
 
 
 SDK Environment
