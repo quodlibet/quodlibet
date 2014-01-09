@@ -1,15 +1,16 @@
 # Copyright 2011 Christoph Reiter
+#           2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from quodlibet import util
-from quodlibet.plugins import PluginManager
+from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.gstelement import GStreamerPlugin
 
 
-class GStreamerPluginHandler(object):
+class GStreamerPluginHandler(PluginHandler):
     def init_plugins(self):
         PluginManager.instance.register_handler(self)
 

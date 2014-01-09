@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#           2013 Nick Boultbee
+#      2013-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -15,12 +15,12 @@ from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.plugins import PluginManager
+from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
 
 
-class SongsMenuPluginHandler(object):
+class SongsMenuPluginHandler(PluginHandler):
     def __init__(self, confirmer):
         self.__plugins = []
         # The method to call for confirmations of risky multi-invocations

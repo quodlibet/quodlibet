@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012 - 2013 Christoph Reiter, Nick Boultbee
+# Copyright 2012 - 2014 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -170,14 +170,19 @@ class Plugin(object):
 
 
 class PluginHandler(object):
+    """A plugin handler can choose to handle plugins, as well as control
+    their enabled state."""
 
     def plugin_handle(self, plugin):
+        """Returns `True` IFF this handler can handle `plugin`"""
         raise NotImplementedError
 
     def plugin_enable(self, plugin):
+        """Called to enable / register `plugin`"""
         raise NotImplementedError
 
     def plugin_disable(self, plugin):
+        """Called to disable / de-register `plugin`"""
         raise NotImplementedError
 
 

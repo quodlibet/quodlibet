@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman, Joe Wreschnig
+#           2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,6 +9,7 @@
 from gi.repository import GObject
 
 from quodlibet import util
+from quodlibet.plugins import PluginHandler
 
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 from quodlibet.util.songwrapper import check_wrapper_changed
@@ -66,7 +68,7 @@ def _map_signals(obj, prefix="plugin_on_", blacklist=None):
     return sigs
 
 
-class EventPluginHandler(object):
+class EventPluginHandler(PluginHandler):
 
     def __init__(self, librarian=None, player=None):
         if librarian:
