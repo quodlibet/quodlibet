@@ -14,5 +14,6 @@ include gdist/*.py
 include data/*.desktop.in
 include data/*.ini
 include data/*.service.in
+include data/*.appdata.xml.in
 include MANIFEST.in
 recursive-include docs conf.py Makefile *.rst *.png
