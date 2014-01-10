@@ -60,25 +60,6 @@ class po_stats(Command):
                    (po, trans / all_, fuzzy / all_))
 
 
-class check_pot(Command):
-    description = "check for missing files in POTFILES.in"
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        self.po_directory = self.distribution.po_directory
-        self.po_package = self.distribution.po_package
-
-    def run(self):
-        oldpath = os.getcwd()
-        os.chdir(self.po_directory)
-        self.spawn(["intltool-update", "--maintain",
-                    "--gettext-package", self.po_package])
-        os.chdir(oldpath)
-
-
 class build_mo(Command):
     """build message catalog files
 
@@ -171,4 +152,4 @@ class install_mo(Command):
             dest = change_root(self.root, dest)
         self.copy_tree(src, dest)
 
-__all__ = ["build_mo", "install_mo", "po_stats", "check_pot"]
+__all__ = ["build_mo", "install_mo", "po_stats"]

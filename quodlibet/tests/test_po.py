@@ -2,8 +2,35 @@ from tests import TestCase, add
 
 import os
 import glob
+import subprocess
 
+import quodlibet
 from quodlibet.util.path import iscommand
+
+
+PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
+
+
+class TPOTFILESIN(TestCase):
+
+    def test_missing(self):
+        if not iscommand("intltool-update"):
+            return
+
+        old_cd = os.getcwd()
+        try:
+            os.chdir(PODIR)
+            result = subprocess.check_output(
+                ["intltool-update", "--maintain",
+                 "--gettext-package", "quodlibet"],
+                 stderr=subprocess.STDOUT)
+        finally:
+            os.chdir(old_cd)
+
+        if result:
+            raise Exception(result)
+
+add(TPOTFILESIN)
 
 
 class PO(TestCase):
@@ -18,7 +45,7 @@ class PO(TestCase):
             pass
 
     def test_gtranslator_blows_goats(self):
-        for line in open("po/%s.po" % self.lang, "rb"):
+        for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):
             if line.strip().startswith("#"):
                 continue
             self.failIf("\xc2\xb7" in line,
@@ -26,7 +53,7 @@ class PO(TestCase):
                 self.lang, line))
 
     def test_gtk_stock_items(self):
-        for line in open("po/%s.po" % self.lang, "rb"):
+        for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):
             if line.strip().startswith('msgstr "gtk-'):
                 parts = line.strip().split()
                 value = parts[1].strip('"')[4:]
@@ -37,8 +64,8 @@ class PO(TestCase):
                     self.lang, line))
 
 
-for fn in glob.glob("po/*.po"):
-    lang = fn[3:-3]
+for fn in glob.glob(os.path.join(PODIR, "*.po")):
+    lang = os.path.basename(fn)[:-3]
     testcase = type('PO.' + lang, (PO,), {})
     testcase.lang = lang
     add(testcase)
