@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2007 Ronny Haryanto <ronny at haryan.to>
-#           2011,2012 Christoph Reiter <christoph.reiter@gmx.at>
+#           2011,2012 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2010 Felix Krull <f_krull@gmx.de>
-#               2011-2013 Christoph Reiter <christoph.reiter@gmx.at>
+#               2011-2013 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
