@@ -20,10 +20,6 @@ from distutils.archive_util import make_archive
 from gdist import GDistribution
 from gdist.clean import clean as gdist_clean
 
-PACKAGES = ("browsers devices formats library parse plugins qltk util player "
-            "browsers.albums browsers.paned browsers.playlists "
-            "util.string util.cover "
-            "player.gstbe player.xinebe").split()
 
 # TODO: link this better to the app definitions
 MIN_PYTHON_VER = (2, 6)
@@ -294,6 +290,15 @@ if __name__ == "__main__":
     import quodlibet
     from quodlibet import const
 
+    # find all packages
+    package_path = quodlibet.__path__[0]
+    packages = []
+    for root, dirnames, filenames in os.walk(package_path):
+        if "__init__.py" in filenames:
+            relpath = os.path.relpath(root, os.path.dirname(package_path))
+            package_name = relpath.replace(os.sep, ".")
+            packages.append(package_name)
+
     cmd_classes = {
         'clean': clean,
         "test": test_cmd,
@@ -318,7 +323,7 @@ if __name__ == "__main__":
         'author_email': "quod-libet-development@googlegroups.com",
         'maintainer': "Steven Robertson and Christoph Reiter",
         'license': "GNU GPL v2",
-        'packages': ["quodlibet"] + map("quodlibet.".__add__, PACKAGES),
+        'packages': packages,
         'package_data': {"quodlibet": package_data_paths},
         'scripts': ["quodlibet.py", "exfalso.py", "operon.py"],
         'po_directory': "po",
