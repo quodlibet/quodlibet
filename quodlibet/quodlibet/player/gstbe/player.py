@@ -195,7 +195,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         """
 
         if self.bin:
-            for line in bin_debug([self.bin]):
+            # self.bin is just a wrapper, so get the real one
+            for line in bin_debug([self.bin.bin]):
                 print_(line)
         else:
             print_e("No active pipeline.")
