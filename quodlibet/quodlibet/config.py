@@ -1,145 +1,20 @@
-# Copyright 2004-2011 Joe Wreschnig, Christoph Reiter
+# Copyright 2004-2008 Joe Wreschnig
 #           2009-2013 Nick Boultbee
+#           2011-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-# Simple proxy to a Python ConfigParser.
-# TODO: refactor method names for PEP-8
-
 from StringIO import StringIO
 import csv
-
 import os
 
 import const
-from quodlibet.util.dprint import print_d, print_w
-
-# We don't need/want variable interpolation.
-from ConfigParser import RawConfigParser as ConfigParser, Error
+from quodlibet.util.config import Config, Error
 
 
-# In newer RawConfigParser it is possible to replace the internal dict. The
-# implementation only uses items() for writing, so replace with a dict that
-# returns them sorted. This makes it easier to look up entries in the file.
-class _sorted_dict(dict):
-    def items(self):
-        return sorted(super(_sorted_dict, self).items())
-
-try:
-    _config = ConfigParser(dict_type=_sorted_dict)
-except TypeError:
-    _config = ConfigParser()
-options = _config.options
-
-
-def get(*args):
-    if len(args) == 3:
-        try:
-            return _config.get(*args[:2])
-        except Error:
-            return args[-1]
-    return _config.get(*args)
-
-
-def getboolean(*args):
-    if len(args) == 3:
-        if not isinstance(args[-1], bool):
-            raise ValueError
-        try:
-            return _config.getboolean(*args[:2])
-        # ValueError if the value found in the config file
-        # does not match any string representation -> so catch it too
-        except (ValueError, Error):
-            return args[-1]
-    return _config.getboolean(*args)
-
-
-def getint(*args):
-    if len(args) == 3:
-        if not isinstance(args[-1], int):
-            raise ValueError
-        try:
-            return _config.getint(*args[:2])
-        except Error:
-            return args[-1]
-    return _config.getint(*args)
-
-
-def getfloat(*args):
-    if len(args) == 3:
-        if not isinstance(args[-1], float):
-            raise ValueError
-        try:
-            return _config.getfloat(*args[:2])
-        except Error:
-            return args[-1]
-    return _config.getfloat(*args)
-
-
-def getstringlist(*args):
-    """Gets a list of strings, using CSV to parse and delimit"""
-    if len(args) == 3:
-        if not isinstance(args[-1], list):
-            raise ValueError
-        try:
-            value = _config.get(*args[:2])
-        except Error:
-            return args[-1]
-    else:
-        value = _config.get(*args)
-    parser = csv.reader([value])
-    vals = [v.decode('utf-8') for v in parser.next()]
-    print_d("%s.%s = %s" % (args + (vals,)))
-    return vals
-
-
-def setstringlist(section, option, values):
-    """Sets a config item to a list of quoted strings, using CSV"""
-    sw = StringIO()
-    values = [unicode(v).encode('utf-8') for v in values]
-    writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(values)
-    _config.set(section, option, sw.getvalue())
-
-
-# RawConfigParser only allows string values but doesn't scream if they are not
-# (and it only fails before the first config save..)
-def set(section, option, value):
-    if not isinstance(value, str):
-        value = str(value)
-    _config.set(section, option, value)
-
-
-def setdefault(section, option, default):
-    if not _config.has_option(section, option):
-        set(section, option, default)
-
-
-def write(filename):
-    if isinstance(filename, basestring):
-        if not os.path.isdir(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename))
-        f = file(filename, "w")
-    else:
-        f = filename
-    _config.write(f)
-    f.close()
-
-
-def save(filename):
-    print_d("Writing config...")
-    try:
-        write(filename)
-    except EnvironmentError:
-        print_w("Unable to write config.")
-
-
-def quit():
-    for section in _config.sections():
-        _config.remove_section(section)
-
+# this defines the initial and default values
 INITIAL = {
     # User-defined tag name -> human name mappings
     "header_maps": {
@@ -267,17 +142,28 @@ INITIAL = {
 }
 
 
-def reset(section, option):
-    """Reset the value to the initial state"""
+# global instance
+_config = Config()
 
-    value = INITIAL[section][option]
-    set(section, option, value)
+options = _config.options
+get = _config.get
+getboolean = _config.getboolean
+getint = _config.getint
+getfloat = _config.getfloat
+getstringlist = _config.getstringlist
+setstringlist = _config.setstringlist
+set = _config.set
+setdefault = _config.setdefault
+write = _config.write
+reset = _config.reset
+add_section = _config.add_section
 
 
-def init(*rc_files):
-    if len(_config.sections()):
-        raise ValueError("config initialized twice without quitting: %r"
-                         % _config.sections())
+def init(filename=None, initial=None):
+    if not _config.is_empty():
+        raise ValueError(
+            "config initialized twice without quitting: %r"
+            % _config.sections())
 
     # <=2.2.1 QL created the user folder in the profile folder
     # but it should be in the appdata folder, so move it.
@@ -288,12 +174,16 @@ def init(*rc_files):
             import shutil
             shutil.move(old_dir, new_dir)
 
-    for section, values in INITIAL.iteritems():
+    if initial is None:
+        initial = INITIAL
+
+    for section, values in initial.iteritems():
         _config.add_section(section)
         for key, value in values.iteritems():
-            _config.set(section, key, value)
+            _config.set_inital(section, key, value)
 
-    _config.read(rc_files)
+    if filename is not None:
+        _config.read(filename)
 
     # revision 94d389a710f1
     from_ = ("settings", "round")
@@ -302,13 +192,21 @@ def init(*rc_files):
         _config.remove_option(*from_)
 
 
+def save(filename):
+    print_d("Writing config...")
+    try:
+        _config.write(filename)
+    except EnvironmentError:
+        print_w("Unable to write config.")
+
+
+def quit():
+    _config.clear()
+
+
 def state(arg):
     return _config.getboolean("settings", arg)
 
-
-def add_section(section):
-    if not _config.has_section(section):
-        _config.add_section(section)
 
 # Cache
 __songlist_columns = None
