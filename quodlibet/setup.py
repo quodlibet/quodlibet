@@ -286,6 +286,11 @@ def recursive_include_py2exe(dir_, pre, ext):
 
 
 if __name__ == "__main__":
+    # distutils depends on setup.py beeing executed from the same dir.
+    # Most of our custom commands work either way, but this makes
+    # it work in all cases.
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
     import quodlibet
     from quodlibet import const
 
