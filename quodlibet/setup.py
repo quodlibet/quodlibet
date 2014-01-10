@@ -20,9 +20,10 @@ from distutils.archive_util import make_archive
 from gdist import GDistribution
 from gdist.clean import clean as gdist_clean
 
-PACKAGES = ("browsers devices formats library parse plugins qltk "
-            "util player browsers.albums browsers.paned util.string "
-            "util.cover player.gstbe player.xinebe").split()
+PACKAGES = ("browsers devices formats library parse plugins qltk util player "
+            "browsers.albums browsers.paned browsers.playlists "
+            "util.string util.cover "
+            "player.gstbe player.xinebe").split()
 
 # TODO: link this better to the app definitions
 MIN_PYTHON_VER = (2, 6)
