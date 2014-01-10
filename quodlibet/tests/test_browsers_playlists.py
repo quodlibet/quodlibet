@@ -1,10 +1,11 @@
+from quodlibet.browsers.playlists.util import parse_m3u, parse_pls
+from quodlibet.util.collection import Playlist
 from tests import TestCase, add, DATA_DIR, mkstemp, mkdtemp
 
 import os
 import shutil
 
-from quodlibet.browsers.playlists import (ParseM3U, ParsePLS, Playlist,
-    Playlists)
+from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
 import quodlibet.config
@@ -61,13 +62,13 @@ class TParsePlaylist(TestCase):
 
 
 class TParseM3U(TParsePlaylist):
-    Parse = staticmethod(ParseM3U)
+    Parse = staticmethod(parse_m3u)
     prefix = ""
 add(TParseM3U)
 
 
 class TParsePLS(TParsePlaylist):
-    Parse = staticmethod(ParsePLS)
+    Parse = staticmethod(parse_pls)
     prefix = "File1="
 add(TParsePLS)
 
@@ -148,7 +149,7 @@ class TPlaylists(TestCase):
     def setUp(self):
         quodlibet.config.init()
         self.library = SongLibrary()
-        self.bar = Playlists(SongLibrary(), NullPlayer())
+        self.bar = PlaylistsBrowser(SongLibrary(), NullPlayer())
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:

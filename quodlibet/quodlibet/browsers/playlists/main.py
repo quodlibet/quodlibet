@@ -1,152 +1,28 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
-#           2012 Nick Boultbee
+#    2012 - 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import urllib
-
 from gi.repository import Gtk, GLib, Pango, Gdk
-
-from quodlibet import config, mkdir
-from quodlibet import const
-from quodlibet import formats
-from quodlibet import qltk
-from quodlibet import util
-
 from tempfile import NamedTemporaryFile
 
+from util import *
+
+from quodlibet import config
+from quodlibet import const
+from quodlibet import qltk
+from quodlibet import util
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.collection import Playlist
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.qltk.wlw import WaitLoadWindow
-from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.x import ScrolledWindow, Alignment, SeparatorMenuItem
-from quodlibet.util.path import fsdecode
-from quodlibet.util.uri import URI
 from quodlibet.util.dprint import print_d
-
-
-PLAYLISTS = os.path.join(const.USERDIR, "playlists")
-if not os.path.isdir(PLAYLISTS):
-    mkdir(PLAYLISTS)
-
-
-def ParseM3U(filename, library=None):
-    plname = fsdecode(os.path.basename(
-        os.path.splitext(filename)[0])).encode('utf-8')
-    filenames = []
-
-    h = file(filename)
-    for line in h:
-        line = line.strip()
-        if line.startswith("#"):
-            continue
-        else:
-            filenames.append(line)
-    h.close()
-    return __ParsePlaylist(plname, filename, filenames, library)
-
-
-def ParsePLS(filename, name="", library=None):
-    plname = fsdecode(os.path.basename(
-        os.path.splitext(filename)[0])).encode('utf-8')
-    filenames = []
-    h = file(filename)
-    for line in h:
-        line = line.strip()
-        if not line.lower().startswith("file"):
-            continue
-        else:
-            try:
-                line = line[line.index("=") + 1:].strip()
-            except ValueError:
-                pass
-            else:
-                filenames.append(line)
-    h.close()
-    return __ParsePlaylist(plname, filename, filenames, library)
-
-
-def __ParsePlaylist(name, plfilename, files, library):
-    playlist = Playlist.new(PLAYLISTS, name, library=library)
-    songs = []
-    win = WaitLoadWindow(
-        None, len(files),
-        _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
-    win.show()
-    for i, filename in enumerate(files):
-        try:
-            uri = URI(filename)
-        except ValueError:
-            # Plain filename.
-            filename = os.path.realpath(os.path.join(
-                os.path.dirname(plfilename), filename))
-            if library and filename in library:
-                songs.append(library[filename])
-            else:
-                songs.append(formats.MusicFile(filename))
-        else:
-            if uri.scheme == "file":
-                # URI-encoded local filename.
-                filename = os.path.realpath(os.path.join(
-                    os.path.dirname(plfilename), uri.filename))
-                if library and filename in library:
-                    songs.append(library[filename])
-                else:
-                    songs.append(formats.MusicFile(filename))
-            else:
-                # Who knows! Hand it off to GStreamer.
-                songs.append(formats.remote.RemoteFile(uri))
-        if win.step():
-            break
-    win.destroy()
-    playlist.extend(filter(None, songs))
-    return playlist
-
-
-class ConfirmRemovePlaylistDialog(qltk.Message):
-    def __init__(self, parent, playlist):
-        title = (_("Are you sure you want to delete the playlist '%s'?")
-                 % playlist.name)
-        description = (_("All information about the selected playlist "
-                         "will be deleted and can not be restored."))
-
-        super(ConfirmRemovePlaylistDialog, self).__init__(
-            Gtk.MessageType.WARNING, parent, title, description,
-            Gtk.ButtonsType.NONE)
-
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
-
-
-class ConfirmRemoveDuplicatesDialog(qltk.Message):
-    def __init__(self, parent, playlist, count):
-        title = ngettext("Are you sure you want to remove %d duplicate song?",
-                         "Are you sure you want to remove %d duplicate songs?",
-                         count) % count
-        description = (_("The duplicate songs will be removed "
-                         "from the playlist '%s'.") % playlist.name)
-
-        super(ConfirmRemoveDuplicatesDialog, self).__init__(
-            Gtk.MessageType.WARNING, parent, title, description,
-            Gtk.ButtonsType.NONE)
-
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_REMOVE, Gtk.ResponseType.YES)
-
-
-class GetPlaylistName(GetStringDialog):
-    def __init__(self, parent):
-        super(GetPlaylistName, self).__init__(
-            parent, _("New Playlist"),
-            _("Enter a name for the new playlist:"),
-            okbutton=Gtk.STOCK_ADD)
 
 
 class Menu(Gtk.Menu):
@@ -159,7 +35,7 @@ class Menu(Gtk.Menu):
         self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
 
-        for playlist in Playlists.playlists():
+        for playlist in PlaylistsBrowser.playlists():
             name = playlist.name
             i = Gtk.CheckMenuItem(name)
             some, all = playlist.has_songs(songs)
@@ -187,14 +63,14 @@ class Menu(Gtk.Menu):
                 return
             playlist = Playlist.new(PLAYLISTS, title)
         playlist.extend(songs)
-        Playlists.changed(playlist)
+        PlaylistsBrowser.changed(playlist)
     __add_to_playlist = staticmethod(__add_to_playlist)
 
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
 
-class Playlists(Gtk.VBox, Browser):
+class PlaylistsBrowser(Gtk.VBox, Browser):
     __gsignals__ = Browser.__gsignals__
 
     name = _("Playlists")
@@ -248,21 +124,21 @@ class Playlists(Gtk.VBox, Browser):
     def __removed(klass, library, songs):
         for playlist in klass.playlists():
             if playlist.remove_songs(songs, library):
-                Playlists.changed(playlist)
+                PlaylistsBrowser.changed(playlist)
 
     @classmethod
     def __added(klass, library, songs):
         filenames = set([song("~filename") for song in songs])
         for playlist in klass.playlists():
             if playlist.add_songs(filenames, library):
-                Playlists.changed(playlist)
+                PlaylistsBrowser.changed(playlist)
 
     @classmethod
     def __changed(klass, library, songs):
         for playlist in klass.playlists():
             for song in songs:
                 if song in playlist.songs:
-                    Playlists.changed(playlist, refresh=False)
+                    PlaylistsBrowser.changed(playlist, refresh=False)
                     break
 
     @staticmethod
@@ -271,7 +147,7 @@ class Playlists(Gtk.VBox, Browser):
         render.set_property('markup', render.markup)
 
     def Menu(self, songs, songlist, library):
-        menu = super(Playlists, self).Menu(songs, songlist, library)
+        menu = super(PlaylistsBrowser, self).Menu(songs, songlist, library)
         model, rows = songlist.get_selection().get_selected_rows()
         iters = map(model.get_iter, rows)
         i = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
@@ -285,7 +161,7 @@ class Playlists(Gtk.VBox, Browser):
     __lists.set_default_sort_func(lambda m, a, b, data: cmp(m[a][0], m[b][0]))
 
     def __init__(self, library, main):
-        super(Playlists, self).__init__(spacing=6)
+        super(PlaylistsBrowser, self).__init__(spacing=6)
         self.__main = main
         self.__view = view = RCMHintedTreeView()
         self.__view.set_enable_search(True)
@@ -298,7 +174,7 @@ class Playlists(Gtk.VBox, Browser):
         render.connect('editing-started', self.__start_editing)
         render.connect('edited', self.__edited)
         col = Gtk.TreeViewColumn("Playlists", render)
-        col.set_cell_data_func(render, Playlists.cell_data)
+        col.set_cell_data_func(render, PlaylistsBrowser.cell_data)
         view.append_column(col)
         view.set_model(self.__lists)
         view.set_rules_hint(True)
@@ -400,7 +276,7 @@ class Playlists(Gtk.VBox, Browser):
             playlist = model[iter][0]
             playlist.clear()
             playlist.extend([row[0] for row in smodel])
-            Playlists.changed(playlist)
+            PlaylistsBrowser.changed(playlist)
             self.activate()
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime, library):
@@ -421,7 +297,7 @@ class Playlists(Gtk.VBox, Browser):
             else:
                 playlist = model[path][0]
                 playlist.extend(songs)
-            Playlists.changed(playlist)
+            PlaylistsBrowser.changed(playlist)
             Gtk.drag_finish(ctx, True, False, etime)
         else:
             if tid == DND_URI_LIST:
@@ -441,15 +317,15 @@ class Playlists(Gtk.VBox, Browser):
                 f.write(sock.read())
                 f.flush()
                 if uri.lower().endswith('.pls'):
-                    playlist = ParsePLS(f.name, library=library)
+                    playlist = parse_pls(f.name, library=library)
                 elif uri.lower().endswith('.m3u'):
-                    playlist = ParseM3U(f.name, library=library)
+                    playlist = parse_m3u(f.name, library=library)
                 else:
                     raise IOError
                 library.add_filename(playlist)
                 if name:
                     playlist.rename(name)
-                Playlists.changed(playlist)
+                PlaylistsBrowser.changed(playlist)
                 Gtk.drag_finish(ctx, True, False, etime)
             except IOError:
                 Gtk.drag_finish(ctx, False, False, etime)
@@ -502,7 +378,7 @@ class Playlists(Gtk.VBox, Browser):
             dialog = ConfirmRemoveDuplicatesDialog(self, playlist, len(dupes))
             if dialog.run() == Gtk.ResponseType.YES:
                 playlist.remove_songs(dupes, library, True)
-                Playlists.changed(playlist)
+                PlaylistsBrowser.changed(playlist)
                 self.activate()
 
         de_dupe = Gtk.MenuItem(_("Remove Duplicates"))
@@ -584,9 +460,9 @@ class Playlists(Gtk.VBox, Browser):
         chooser.destroy()
         for filename in files:
             if filename.endswith(".m3u"):
-                playlist = ParseM3U(filename, library=library)
+                playlist = parse_m3u(filename, library=library)
             elif filename.endswith(".pls"):
-                playlist = ParsePLS(filename, library=library)
+                playlist = parse_pls(filename, library=library)
             else:
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
@@ -594,7 +470,7 @@ class Playlists(Gtk.VBox, Browser):
                     _("Quod Libet can only import playlists in the M3U "
                       "and PLS formats.")).run()
                 return
-            Playlists.changed(playlist)
+            PlaylistsBrowser.changed(playlist)
             library.add(playlist)
 
     def restore(self):
@@ -615,6 +491,4 @@ class Playlists(Gtk.VBox, Browser):
             playlist = Playlist.fromsongs(PLAYLISTS, songs)
             GLib.idle_add(self.__select_playlist, playlist)
         if playlist:
-            Playlists.changed(playlist, refresh=False)
-
-browsers = [Playlists]
+            PlaylistsBrowser.changed(playlist, refresh=False)

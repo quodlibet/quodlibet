@@ -121,7 +121,7 @@ class TBrowserBase(TestCase):
 # create a new test class for each browser
 for browser in quodlibet.browsers.browsers:
     cls = TBrowserBase
-    name = cls.__name__ + browser.__name__
+    name = "TB" + browser.__name__
     new_test = type(name, (TBrowserBase,), {})
     new_test.Kind = browser
     add(new_test)

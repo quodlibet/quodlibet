@@ -239,9 +239,9 @@ class SongsMenu(Gtk.Menu):
             # some kind of inversion of control here.
             from quodlibet import browsers
             try:
-                submenu = browsers.playlists.Menu(songs, parent)
-            except AttributeError:
-                pass
+                submenu = browsers.playlists.main.Menu(songs, parent)
+            except AttributeError as e:
+                print_w("Couldn't get Playlists menu: %s" % e)
             else:
                 b = qltk.MenuItem(_("_Add to Playlist"), Gtk.STOCK_ADD)
                 b.set_sensitive(can_add)
