@@ -78,7 +78,7 @@ SEARCH_HELP = DOCS_BASE_URL + "/guide/searching.html"
 # about dialog, --version etc.
 WEBSITE = "http://code.google.com/p/quodlibet"
 COPYRIGHT = """\
-Copyright © 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+Copyright © 2004-2014 Joe Wreschnig, Michael Urman, Iñigo Serna,
 Steven Robertson, Christoph Reiter, Nick Boultbee, ..."""
 
 # Email used as default for reading/saving per-user data in tags, etc.
