@@ -5,9 +5,11 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 
 if os.name == "nt":
     from win32com.shell import shellcon, shell
+    import win32profile
     import pywintypes
     import pythoncom
 
@@ -34,9 +36,21 @@ def _get_path(folder, default=False, create=False):
     folder |= CSIDL_FLAG_DONT_UNEXPAND
 
     try:
-        return shell.SHGetFolderPath(0, folder, 0, flags)
+        # returns either unicode or ascii str, depending on the env
+        path = shell.SHGetFolderPath(0, folder, 0, flags)
     except pywintypes.com_error:
-        pass
+        return
+
+    if not isinstance(path, unicode):
+        path = path.decode("ascii")
+
+    return path
+
+
+def get_environ():
+    """Like os.environ, but with unicode support"""
+
+    return win32profile.GetEnvironmentStrings()
 
 
 def get_personal_dir(**kwargs):

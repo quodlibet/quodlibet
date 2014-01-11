@@ -358,6 +358,7 @@ if __name__ == "__main__":
                 import py2exe.mf as modulefinder
             except ImportError:
                 import modulefinder
+
             import win32com
             for p in win32com.__path__[1:]:
                 modulefinder.AddPackagePath("win32com", p)

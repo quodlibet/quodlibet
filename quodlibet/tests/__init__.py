@@ -7,6 +7,7 @@ import unittest
 import tempfile
 import shutil
 from quodlibet.util.dprint import Colorise, print_
+from quodlibet.util.path import fsnative
 
 from unittest import TestCase as OrigTestCase
 suites = []
@@ -37,8 +38,15 @@ def _wrap_tempfile(func):
 
 
 NamedTemporaryFile = _wrap_tempfile(tempfile.NamedTemporaryFile)
-mkdtemp = _wrap_tempfile(tempfile.mkdtemp)
-mkstemp = _wrap_tempfile(tempfile.mkstemp)
+
+
+def mkdtemp(*args, **kwargs):
+    return fsnative(_wrap_tempfile(tempfile.mkdtemp)(*args, **kwargs))
+
+
+def mkstemp(*args, **kwargs):
+    fd, filename = _wrap_tempfile(tempfile.mkstemp)(*args, **kwargs)
+    return (fd, fsnative(filename))
 
 
 def add(t):
@@ -91,7 +99,10 @@ class Result(unittest.TestResult):
             print_(self.MAJOR_SEPARATOR)
             print_(Colorise.red("%s: %s" % (flavour, str(test))))
             print_(self.MINOR_SEPARATOR)
-            print_("%s" % err)
+            # tracebacks can contain encoded paths, not sure
+            # what the right fix is here, so use repr
+            for line in err.splitlines():
+                print_(repr(line)[1:-1])
 
 
 class Runner(object):

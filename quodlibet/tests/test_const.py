@@ -10,6 +10,7 @@ import subprocess
 from tests import TestCase, add
 
 from quodlibet import const
+from quodlibet.util.path import is_fsnative
 
 
 class Tconst(TestCase):
@@ -27,5 +28,11 @@ class Tconst(TestCase):
         self.failIf(p.returncode)
 
         self.failUnlessEqual(branch, const.BRANCH_NAME)
+
+    def test_path_types(self):
+        self.assertTrue(is_fsnative(const.USERDIR))
+        self.assertTrue(is_fsnative(const.HOME))
+        self.assertTrue(is_fsnative(const.IMAGEDIR))
+        self.assertTrue(is_fsnative(const.BASEDIR))
 
 add(Tconst)

@@ -34,28 +34,32 @@ VERSION = str(VERSION_TUPLE)
 PROCESS_TITLE_QL = "quodlibet"
 PROCESS_TITLE_EF = "exfalso"
 
-BASEDIR = os.path.dirname(os.path.realpath(__file__))
-IMAGEDIR = os.path.join(BASEDIR, "images")
-
-# expanduser doesn't work with unicode on win...
 if os.name == "nt":
+    file_path = __file__.decode(sys.getfilesystemencoding())
+    BASEDIR = os.path.dirname(os.path.realpath(file_path))
     HOME = windows.get_personal_dir()
+    USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
+    environ = windows.get_environ()
 else:
+    BASEDIR = os.path.dirname(os.path.realpath(__file__))
     HOME = os.path.expanduser("~")
+    USERDIR = os.path.join(HOME, ".quodlibet")
+    environ = os.environ
 
-if 'QUODLIBET_USERDIR' in os.environ:
-    USERDIR = os.environ['QUODLIBET_USERDIR']
-else:
-    if os.name == "nt":
-        USERDIR = windows.get_appdate_dir()
-        USERDIR = os.path.join(USERDIR, "Quod Libet")
-    else:
-        USERDIR = os.path.join(HOME, ".quodlibet")
+if 'QUODLIBET_USERDIR' in environ:
+    USERDIR = environ['QUODLIBET_USERDIR']
+
+IMAGEDIR = os.path.join(BASEDIR, "images")
 
 # XXX: Exec conf.py in this directory, used to override const globals
 # e.g. for setting USERDIR for the Windows portable version
+# Note: execfile doesn't handle unicode paths on windows, so encode.
+# (this doesn't use the old win api in case of str compared to os.*)
+_CONF_PATH = os.path.join(BASEDIR, "conf.py")
+if os.name == "nt":
+    _CONF_PATH = _CONF_PATH.encode(sys.getfilesystemencoding())
 try:
-    execfile(os.path.join(BASEDIR, "conf.py"))
+    execfile(_CONF_PATH)
 except IOError:
     pass
 
@@ -82,7 +86,7 @@ Copyright © 2004-2014 Joe Wreschnig, Michael Urman, Iñigo Serna,
 Steven Robertson, Christoph Reiter, Nick Boultbee, ..."""
 
 # Email used as default for reading/saving per-user data in tags, etc.
-EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
+EMAIL = environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
@@ -234,7 +238,7 @@ NBP_EXAMPLES = """\
 /path/<artist> - <album>/<tracknumber>. <title>
 /path/<artist>/<album>/<tracknumber> - <title>"""
 
-DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ)
+DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in environ)
 
 MENU = """<ui>
   <menubar name='Menu'>
@@ -310,11 +314,11 @@ else:
         ENCODING = "utf-8"
 
 # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
-if "G_FILENAME_ENCODING" in os.environ:
-    FSCODING = os.environ["G_FILENAME_ENCODING"].split(",")[0]
+if "G_FILENAME_ENCODING" in environ:
+    FSCODING = environ["G_FILENAME_ENCODING"].split(",")[0]
     if FSCODING == "@locale":
         FSCODING = ENCODING
-elif "G_BROKEN_FILENAMES" in os.environ:
+elif "G_BROKEN_FILENAMES" in environ:
     FSCODING = ENCODING
 else:
     FSCODING = "utf-8"
