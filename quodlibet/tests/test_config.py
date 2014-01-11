@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
 from quodlibet.config import RatingsPrefs
-from tests import TestCase, add
+from tests import TestCase, add, mkstemp
+from helper import capture_output
 
 from quodlibet import config
 
@@ -9,6 +11,29 @@ class Tconfig(TestCase):
     def setUp(self):
         config.init()
         config.add_section("foo")
+
+    def test_read_garbage_file(self):
+        config.quit()
+
+        garbage = "\xf1=\xab\xac"
+
+        fd, filename = mkstemp()
+        os.close(fd)
+        with open(filename, "wb") as f:
+            f.write(garbage)
+
+        with capture_output() as (stdout, stderr):
+            config.init(filename)
+        self.assertTrue(stderr.getvalue())
+        self.assertTrue(config.options("player"))
+
+        invalid_filename = filename + ".not-valid"
+        self.assertTrue(os.path.exists(invalid_filename))
+        with open(invalid_filename, "rb") as f:
+            self.assertEqual(f.read(), garbage)
+
+        os.remove(filename)
+        os.remove(invalid_filename)
 
     def test_set(self):
         config.set("foo", "bar", 1)

@@ -12,13 +12,6 @@ These classes are the most basic library classes. As such they are the
 least useful but most content-agnostic.
 """
 
-# Windows doesn't have fcntl, just don't lock for now
-try:
-    import fcntl
-    fcntl
-except ImportError:
-    fcntl = None
-
 import cPickle as pickle
 import os
 import shutil
@@ -34,7 +27,7 @@ from quodlibet.util.collections import DictMixin
 from quodlibet import util
 from quodlibet import const
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import fsdecode, expanduser, unexpand
+from quodlibet.util.path import fsdecode, expanduser, unexpand, mkdir
 
 
 class Library(GObject.GObject, DictMixin):
@@ -188,18 +181,15 @@ class Library(GObject.GObject, DictMixin):
 
 
 def dump_items(filename, items):
-    """Pickle items to disk"""
+    """Pickle items to disk.
+
+    Doesn't handle exceptions.
+    """
 
     dirname = os.path.dirname(filename)
-    if not os.path.isdir(dirname):
-        os.makedirs(dirname)
+    mkdir(dirname)
 
-    temp_filename = filename + ".tmp"
-
-    with open(temp_filename, "wb") as fileobj:
-        if fcntl is not None:
-            fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
-
+    with util.atomic_save(filename, ".tmp", "wb") as fileobj:
         # While protocol 2 is usually faster it uses __setitem__
         # for unpickle and we override it to clear the sort cache.
         # This roundtrip makes it much slower, so we use protocol 1
@@ -208,24 +198,12 @@ def dump_items(filename, items):
         # see: http://bugs.python.org/issue826897
         pickle.dump(items, fileobj, 1)
 
-        fileobj.flush()
-        os.fsync(fileobj.fileno())
-
-    # No atomic rename on windows
-    if os.name == "nt":
-        try:
-            os.remove(filename)
-        except EnvironmentError:
-            pass
-
-    try:
-        os.rename(temp_filename, filename)
-    except EnvironmentError:
-        print_w("Couldn't save library to path: %r" % filename)
-
 
 def load_items(filename, default=None):
-    """Load items from disk"""
+    """Load items from disk.
+
+    In case of an error returns default or an empty list.
+    """
 
     if default is None:
         default = []
@@ -240,8 +218,11 @@ def load_items(filename, default=None):
     # pickle makes 1000 read syscalls for 6000 songs
     # read the file into memory so that there are less
     # context switches. saves 40% CPU time..
-    with fp:
+    try:
         data = fp.read()
+    except IOError:
+        fp.close()
+        return default
 
     try:
         items = pickle.loads(data)
@@ -294,8 +275,12 @@ class PicklingMixin(object):
         with self._save_lock:
             print_d("Saving contents to %r." % filename, self)
 
-            dump_items(filename, self.get_content())
-            self.dirty = False
+            try:
+                dump_items(filename, self.get_content())
+            except EnvironmentError:
+                print_w("Couldn't save library to path: %r" % filename)
+            else:
+                self.dirty = False
 
 
 class PicklingLibrary(Library, PicklingMixin):

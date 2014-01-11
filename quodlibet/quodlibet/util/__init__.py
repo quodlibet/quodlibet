@@ -15,14 +15,21 @@ import urlparse
 import unicodedata
 import subprocess
 import webbrowser
+import contextlib
+
+# Windows doesn't have fcntl, just don't lock for now
+try:
+    import fcntl
+    fcntl
+except ImportError:
+    fcntl = None
 
 from quodlibet.util.path import (fsdecode, fsencode, iscommand, fsnative,
-    expanduser, pathname2url, strip_win32_incompat)
+    expanduser, pathname2url, strip_win32_incompat, is_fsnative)
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util.titlecase import title
 
 from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL, COPYRIGHT
-from quodlibet import config
 from quodlibet.util.dprint import print_d, print_
 
 
@@ -203,6 +210,9 @@ def parse_time(timestr, err=(ValueError, re.error)):
 
 def format_rating(value, blank=True):
     """Turn a number into a sequence of rating symbols."""
+
+    from quodlibet import config
+
     prefs = config.RATINGS
     steps = prefs.number
     value = max(min(value, 1.0), 0)
@@ -691,3 +701,44 @@ def gi_require_versions(name, versions):
             return version
     else:
         raise e
+
+
+@contextlib.contextmanager
+def atomic_save(filename, suffix, mode):
+    """Try to replace the content of a file in the safest way possible.
+
+    * filename+suffix will be created during the process.
+    * On UNIX this operation is atomic, on Windows it is not.
+
+    with atomic_save("config.cfg", ".tmp", "wb") as f:
+        f.write(data)
+
+    Can raise.
+    """
+
+    assert is_fsnative(filename)
+
+    temp_filename = filename + suffix
+    fileobj = open(temp_filename, "wb")
+    try:
+        if fcntl is not None:
+            fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
+
+        yield fileobj
+
+        fileobj.flush()
+        os.fsync(fileobj.fileno())
+
+        # No atomic rename on windows
+        if os.name == "nt":
+            fileobj.close()
+            try:
+                os.remove(filename)
+            except EnvironmentError:
+                pass
+
+        os.rename(temp_filename, filename)
+    finally:
+        if fcntl is not None:
+            fcntl.flock(fileobj.fileno(), fcntl.LOCK_UN)
+        fileobj.close()

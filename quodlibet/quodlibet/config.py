@@ -9,6 +9,7 @@
 from StringIO import StringIO
 import csv
 import os
+import shutil
 
 import const
 from quodlibet.util.config import Config, Error
@@ -171,7 +172,6 @@ def init(filename=None, initial=None):
         old_dir = os.path.join(os.path.expanduser("~"), ".quodlibet")
         new_dir = const.USERDIR
         if not os.path.isdir(new_dir) and os.path.isdir(old_dir):
-            import shutil
             shutil.move(old_dir, new_dir)
 
     if initial is None:
@@ -183,7 +183,16 @@ def init(filename=None, initial=None):
             _config.set_inital(section, key, value)
 
     if filename is not None:
-        _config.read(filename)
+        try:
+            _config.read(filename)
+        except (Error, EnvironmentError):
+            print_w("Reading config file %r failed." % filename)
+
+            # move the broken file out of the way
+            try:
+                shutil.copy(filename, filename + ".not-valid")
+            except EnvironmentError:
+                pass
 
     # revision 94d389a710f1
     from_ = ("settings", "round")

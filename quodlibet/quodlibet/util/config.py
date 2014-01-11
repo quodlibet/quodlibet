@@ -15,6 +15,9 @@ import csv
 # We don't need/want variable interpolation.
 from ConfigParser import RawConfigParser as ConfigParser, Error
 
+from quodlibet.util import atomic_save
+from quodlibet.util.path import is_fsnative, mkdir
+
 
 # In newer RawConfigParser it is possible to replace the internal dict. The
 # implementation only uses items() for writing, so replace with a dict that
@@ -134,16 +137,17 @@ class Config(object):
             self._config.set(section, option, default)
 
     def write(self, filename):
-        # FIXME: atomic save needed here
+        """Write config to filename.
 
-        if isinstance(filename, basestring):
-            if not os.path.isdir(os.path.dirname(filename)):
-                os.makedirs(os.path.dirname(filename))
-            f = file(filename, "w")
-        else:
-            f = filename
-        self._config.write(f)
-        f.close()
+        Can raise.
+        """
+
+        assert is_fsnative(filename)
+
+        mkdir(os.path.dirname(filename))
+
+        with atomic_save(filename, ".tmp", "wb") as fileobj:
+            self._config.write(fileobj)
 
     def clear(self):
         """Remove all sections and initial values"""

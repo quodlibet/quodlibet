@@ -93,6 +93,12 @@ def visible(widget, width=None, height=None):
 
 @contextlib.contextmanager
 def capture_output():
+    """
+    with capture_output as (stdout, stderr):
+        some_action()
+    print stdout.getvalue(), stderr.getvalue()
+    """
+
     err = StringIO.StringIO()
     out = StringIO.StringIO()
     old_err = sys.stderr
@@ -100,7 +106,8 @@ def capture_output():
     sys.stderr = err
     sys.stdout = out
 
-    yield (out, err)
-
-    sys.stderr = old_err
-    sys.stdout = old_out
+    try:
+        yield (out, err)
+    finally:
+        sys.stderr = old_err
+        sys.stdout = old_out

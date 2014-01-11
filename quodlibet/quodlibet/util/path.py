@@ -9,6 +9,7 @@
 import os
 import re
 import sys
+import errno
 import tempfile
 import urllib
 from quodlibet.const import FSCODING as fscoding
@@ -30,12 +31,16 @@ Path related functions like open, os.listdir have different behavior on win32
 """
 
 
-def mkdir(dir, *args):
+def mkdir(dir_, *args):
     """Make a directory, including all its parent directories. This does not
     raise an exception if the directory already exists (and is a
     directory)."""
-    if not os.path.isdir(dir):
-        os.makedirs(dir, *args)
+
+    try:
+        os.makedirs(dir_, *args)
+    except OSError as e:
+        if e.errno != errno.EEXIST or not os.path.isdir(dir_):
+            raise
 
 
 def fsdecode(s, note=True):

@@ -3,7 +3,7 @@ from quodlibet.util.path import *
 from quodlibet.util.string import decode, encode
 from quodlibet.util.string.splitters import *
 from quodlibet.util.library import *
-from tests import TestCase, add
+from tests import TestCase, add, mkstemp
 
 import tempfile
 import sys
@@ -735,3 +735,24 @@ class TNormalizePath(TestCase):
             os.rmdir(name)
 
 add(TNormalizePath)
+
+
+class Tatomic_save(TestCase):
+
+    def test_basic(self):
+        fd, filename = mkstemp(".cfg")
+        os.close(fd)
+
+        with open(filename, "wb") as fobj:
+            fobj.write("nope")
+        with open(filename + ".tmp", "wb") as fobj:
+            fobj.write("temp_nope")
+
+        with util.atomic_save(filename, ".tmp", "wb") as fobj:
+            fobj.write("foo")
+
+        with open(filename, "rb") as fobj:
+            self.assertEqual(fobj.read(), "foo")
+        self.assertFalse(os.path.exists(filename + ".tmp"))
+
+add(Tatomic_save)
