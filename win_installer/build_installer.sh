@@ -219,11 +219,7 @@ mkdir "$PORTABLE"/config
 PORTABLE_DATA="$PORTABLE"/data
 mkdir "$PORTABLE_DATA"
 cp -RT "$QL_DEST" "$PORTABLE_DATA"
-PORTABLE_CONF_PY="$PORTABLE_DATA"/bin/quodlibet/conf.py
-
-echo 'import os;' \
-    'USERDIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), ' \
-    '"..", "..", "..", "config")' >> "$PORTABLE_CONF_PY"
+cp "$MISC"/conf.py "$PORTABLE_DATA"/bin/quodlibet/
 
 wine "$SZIPDIR"/7z.exe a portable-temp.7z "$PORTABLE"
 cat "$SZIPDIR"/7z.sfx portable-temp.7z > "quodlibet-$QL_VERSION-portable.exe"
