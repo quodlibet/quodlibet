@@ -1,9 +1,6 @@
-all: exfalso.1 quodlibet.1 operon.1
+MANDIR=../../data
 
-setup:
-	mkdir -p _man
+all: $(MANDIR)/exfalso.1 $(MANDIR)/quodlibet.1 $(MANDIR)/operon.1
 
-%.1:%.rst setup
-	rst2man $< > _man/$@
-
-.PHONY: setup
+$(MANDIR)/%.1:%.rst
+	rst2man $< > $@

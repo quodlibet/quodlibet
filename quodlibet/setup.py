@@ -339,7 +339,11 @@ if __name__ == "__main__":
             "data/quodlibet.appdata.xml",
             "data/exfalso.appdata.xml",
         ],
-        'man_pages': ["man/quodlibet.1", "man/exfalso.1", "man/operon.1"],
+        'man_pages': [
+            "data/quodlibet.1",
+            "data/exfalso.1",
+            "data/operon.1",
+        ],
         "search_provider": "data/quodlibet-search-provider.ini",
         }
 
