@@ -443,7 +443,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         else:
             if dirs:
                 copool.add(
-                    self.__library.scan, dirs, self.__status.bar.progress,
+                    self.__library.scan, dirs,
                     cofuncid="library", funcid="library")
 
     def __songlist_drag_data_recv(self, view, *args):
