@@ -134,6 +134,23 @@ class test_cmd(Command):
                              % (failures, errors)))
 
 
+class quality_cmd(Command):
+    description = "Run pep8/pyflakes tests"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        cmd = self.reinitialize_command("test")
+        cmd.suite = "quality"
+        cmd.ensure_finalized()
+        cmd.run()
+
+
 class sdist_plugins(Command):
     description = "Build a source distribution of all plugins"
     user_options = []
@@ -302,6 +319,7 @@ if __name__ == "__main__":
     cmd_classes = {
         'clean': clean,
         "test": test_cmd,
+        "quality": quality_cmd,
         "coverage": coverage_cmd,
         "build_scripts": build_scripts,
         "sdist_plugins": sdist_plugins,
