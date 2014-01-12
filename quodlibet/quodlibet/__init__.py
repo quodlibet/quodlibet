@@ -188,24 +188,28 @@ def _gettext_init():
     except locale.Error:
         pass
 
-    unexpand = quodlibet.util.path.unexpand
-
-    # Use the locale dir in ../build/share/locale if there is one
-    localedir = os.path.dirname(quodlibet.const.BASEDIR)
-    localedir = os.path.join(localedir, "build", "share", "locale")
-    if os.path.isdir(localedir):
-        print_d("Using local localedir: %r" % unexpand(localedir))
-        gettext.bindtextdomain("quodlibet", localedir)
-
-    localedir = gettext.bindtextdomain("quodlibet")
     if os.name == "nt":
         import ctypes
         k32 = ctypes.windll.kernel32
         langs = filter(None, map(locale.windows_locale.get,
-            [k32.GetUserDefaultLCID(), k32.GetSystemDefaultLCID()]))
+                                 [k32.GetUserDefaultUILanguage(),
+                                  k32.GetSystemDefaultUILanguage()]))
         os.environ.setdefault('LANG', ":".join(langs))
+
+    # Use the locale dir in ../build/share/locale if there is one
+    localedir = os.path.dirname(quodlibet.const.BASEDIR)
+    localedir = os.path.join(localedir, "build", "share", "locale")
+    if not os.path.isdir(localedir) and os.name == "nt":
+        # py2exe case
         localedir = os.path.join(
             quodlibet.const.BASEDIR, "..", "..", "share", "locale")
+
+    unexpand = quodlibet.util.path.unexpand
+
+    if os.path.isdir(localedir):
+        print_d("Using local localedir: %r" % unexpand(localedir))
+    else:
+        localedir = gettext.bindtextdomain("quodlibet")
 
     try:
         t = gettext.translation("quodlibet", localedir,
