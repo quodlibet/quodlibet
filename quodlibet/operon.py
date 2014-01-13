@@ -13,6 +13,13 @@
 
 import sys
 import os
+
+if sys.version_info[0] != 2:
+    try:
+        os.execvp("python2", ["python"] + sys.argv)
+    except OSError:
+        pass
+
 import string
 import re
 import shutil
@@ -869,7 +876,7 @@ def run(argv=sys.argv):
             cmd = command(options)
             try:
                 cmd.execute(argv[offset + 1:])
-            except CommandError, e:
+            except CommandError as e:
                 print_("%s: %s" % (command.NAME, e), sys.stderr)
                 return 1
             break

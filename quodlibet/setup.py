@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
-0 <> 0  # Python 3.x not supported. Use 2.6+ instead.
+import sys
+import os
+
+if sys.version_info[0] != 2:
+    try:
+        os.execvp("python2", ["python"] + sys.argv)
+    except OSError:
+        pass
 
 import glob
-import os
 import shutil
-import sys
 import subprocess
 
 # disable translations
@@ -45,7 +50,7 @@ class clean(gdist_clean):
                 try:
                     os.unlink(os.path.join(pathname, filename))
                 except EnvironmentError as err:
-                    print str(err)
+                    print(str(err))
 
         for base in ["coverage", "build", "dist"]:
             path = os.path.join(os.path.dirname(__file__), base)
@@ -258,21 +263,21 @@ class coverage_cmd(Command):
             percent = 100.0 * (total_lines - bad_lines) / float(total_lines)
             stats.append((percent, filename, total_lines, bad_lines))
         stats.sort(reverse=True)
-        print "#" * 80
-        print "COVERAGE"
-        print "#" * 80
+        print("#" * 80)
+        print("COVERAGE")
+        print("#" * 80)
         total_sum = 0
         bad_sum = 0
         for s in stats:
             p, f, t, b = s
             total_sum += t
             bad_sum += b
-            print "%6.2f%% %s" % (p, os.path.basename(f))
-        print "-" * 80
-        print "Coverage data written to", coverage, "(%d/%d, %0.2f%%)" % (
+            print("%6.2f%% %s" % (p, os.path.basename(f)))
+        print("-" * 80)
+        print("Coverage data written to", coverage, "(%d/%d, %0.2f%%)" % (
             total_sum - bad_sum, total_sum,
-            100.0 * (total_sum - bad_sum) / float(total_sum))
-        print "#" * 80
+            100.0 * (total_sum - bad_sum) / float(total_sum)))
+        print("#" * 80)
 
 
 def recursive_include(base, sub, ext):

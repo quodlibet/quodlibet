@@ -9,9 +9,15 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-0 <> 0 # Python 3.x not supported! Use 2.6+ instead.
-
+import sys
 import os
+
+if sys.version_info[0] != 2:
+    try:
+        os.execvp("python2", ["python"] + sys.argv)
+    except OSError:
+        pass
+
 import signal
 import sys
 import tempfile
@@ -51,7 +57,7 @@ def main():
     for backend in [config.get("player", "backend"), "nullbe"]:
         try:
             player = quodlibet.init_backend(backend, app.librarian)
-        except PlayerError, error:
+        except PlayerError as error:
             print_e("%s. %s" % (error.short_desc, error.long_desc))
         else:
             break
@@ -155,7 +161,7 @@ def print_fifo(command):
         try:
             os.unlink(filename)
             # mkfifo fails if the file exists, so this is safe.
-            os.mkfifo(filename, 0600)
+            os.mkfifo(filename, 0o600)
 
             signal.signal(signal.SIGALRM, lambda: "" + 2)
             signal.alarm(1)
