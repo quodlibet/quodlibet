@@ -27,6 +27,8 @@ from quodlibet.util.i18n import GlibTranslations
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet.const import MinVersions, Version
 
+PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
+               "gstreamer", "covers"]
 
 class Application(object):
     """A main application class for controlling the application as a whole
@@ -322,13 +324,10 @@ def init_plugins(no_plugins=False):
     print_d("Starting plugin manager")
 
     from quodlibet import plugins
-    folders = [os.path.join(quodlibet.const.BASEDIR, "plugins", "editing"),
-               os.path.join(quodlibet.const.BASEDIR, "plugins", "events"),
-               os.path.join(quodlibet.const.BASEDIR, "plugins", "playorder"),
-               os.path.join(quodlibet.const.BASEDIR, "plugins", "songsmenu"),
-               os.path.join(quodlibet.const.BASEDIR, "plugins", "gstreamer"),
-               os.path.join(quodlibet.const.BASEDIR, "plugins", "covers"),
-               os.path.join(quodlibet.const.USERDIR, "plugins")]
+    folders = [os.path.join(quodlibet.const.BASEDIR, "plugins", kind)
+               for kind in PLUGIN_DIRS]
+    folders.append(os.path.join(quodlibet.const.USERDIR,  "plugins"))
+    print_d("Scanning folders: %s" % folders)
     pm = plugins.init(folders, no_plugins)
     pm.rescan()
 

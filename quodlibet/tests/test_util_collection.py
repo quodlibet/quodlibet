@@ -402,16 +402,16 @@ class TPlaylist(TestCase):
     def test_duplicates_single_item(self):
         pl = Playlist(self.temp, "playlist")
         pl.append(self.TWO_SONGS[0])
-        self.failIf(pl.has_duplicates())
+        self.failIf(pl.has_duplicates)
         pl.append(self.TWO_SONGS[0])
-        self.failUnless(pl.has_duplicates())
+        self.failUnless(pl.has_duplicates)
 
     def test_duplicates(self):
         pl = Playlist(self.temp, "playlist")
         pl.extend(self.TWO_SONGS)
         pl.extend(self.TWO_SONGS)
         self.failUnlessEqual(len(pl), 4)
-        self.failUnless(pl.has_duplicates(),
+        self.failUnless(pl.has_duplicates,
                         ("Playlist has un-detected duplicates: %s "
                          % "\n".join([str(s) for s in pl._list])))
 

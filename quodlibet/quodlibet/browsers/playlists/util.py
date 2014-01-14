@@ -37,22 +37,6 @@ class ConfirmRemovePlaylistDialog(qltk.Message):
                          Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
 
 
-class ConfirmRemoveDuplicatesDialog(qltk.Message):
-    def __init__(self, parent, playlist, count):
-        title = ngettext("Are you sure you want to remove %d duplicate song?",
-                         "Are you sure you want to remove %d duplicate songs?",
-                         count) % count
-        description = (_("The duplicate songs will be removed "
-                         "from the playlist '%s'.") % playlist.name)
-
-        super(ConfirmRemoveDuplicatesDialog, self).__init__(
-            Gtk.MessageType.WARNING, parent, title, description,
-            Gtk.ButtonsType.NONE)
-
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_REMOVE, Gtk.ResponseType.YES)
-
-
 class GetPlaylistName(GetStringDialog):
     def __init__(self, parent):
         super(GetPlaylistName, self).__init__(

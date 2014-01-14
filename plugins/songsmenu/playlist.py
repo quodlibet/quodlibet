@@ -13,6 +13,7 @@ from gi.repository import Gtk
 
 from quodlibet import util, qltk
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.const import HOME as lastfolder
 
 
@@ -38,21 +39,27 @@ else:
         return os.path.join(*rel_list)
 
 
-class PlaylistExport(SongsMenuPlugin):
+class PlaylistExport(PlaylistPlugin):
     PLUGIN_ID = 'Playlist Export'
     PLUGIN_NAME = _('Playlist Export')
-    PLUGIN_DESC = _('Export songs to M3U or PLS playlists.')
+    PLUGIN_DESC = _('Export a playlist to M3U or PLS format.')
     PLUGIN_ICON = 'gtk-save'
-    PLUGIN_VERSION = '0.1'
+    PLUGIN_VERSION = '0.2'
 
-    def plugin_songs(self, songs):
-        global lastfolder
+    lastfolder = None
+
+    def plugin_single_playlist(self, playlist):
+        return self.__save_playlist(playlist.songs, playlist.name)
+
+    def __save_playlist(self, songs, name=None):
         dialog = Gtk.FileChooserDialog(self.PLUGIN_NAME,
             None,
             Gtk.FileChooserAction.SAVE,
             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-            Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+             Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
         dialog.set_default_response(Gtk.ResponseType.OK)
+        if name:
+            dialog.set_current_name(name)
 
         ffilter = Gtk.FileFilter()
         ffilter.set_name("m3u")
@@ -75,7 +82,8 @@ class PlaylistExport(SongsMenuPlugin):
         diag_cont.pack_start(hbox_path, False, False, 0)
         diag_cont.show_all()
 
-        map(combo_path.append_text, [_("Relative path"), _("Absolute path")])
+        map(combo_path.append_text, [_("Use relative paths"),
+                                     _("Use absolute paths")])
         combo_path.set_active(0)
 
         response = dialog.run()
@@ -105,7 +113,7 @@ class PlaylistExport(SongsMenuPlugin):
             elif file_format == "pls":
                 self.__pls_export(file_path, files)
 
-            lastfolder = dir_path
+            self.lastfolder = dir_path
 
         dialog.destroy()
 

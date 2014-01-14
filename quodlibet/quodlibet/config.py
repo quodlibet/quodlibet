@@ -14,6 +14,8 @@ import shutil
 import const
 from quodlibet.util.config import Config, Error
 
+# Some plugins can be enabled on first install
+AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
 
 # this defines the initial and default values
 INITIAL = {
@@ -120,7 +122,7 @@ INITIAL = {
     },
     "plugins": {
         # newline-separated plugin IDs
-        "active_plugins": "",
+        "active_plugins": "\n".join(AUTO_ENABLED_PLUGINS),
         # Issue 1231: Maximum number of SongsMenu plugins to run at once
         "default_max_plugin_invocations": 30,
     },

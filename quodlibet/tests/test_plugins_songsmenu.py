@@ -55,7 +55,9 @@ class TSongsMenuPlugins(TestCase):
             file.write("%sPLUGIN_ICON = %r\n" % (indent, icon))
         for f in (funcs or []):
             if f in ["__init__"]:
-                file.write("%sdef %s(*args): pass\n" % (indent, f))
+                file.write("%sdef %s(self, *args): super(%s, self).__init__("
+                           "*args); raise Exception(\"as expected\")\n"
+                           % (indent, f, name))
             else:
                 file.write("%sdef %s(*args): return args\n" % (indent, f))
         file.flush()

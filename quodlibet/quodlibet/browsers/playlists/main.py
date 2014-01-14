@@ -9,6 +9,7 @@
 import urllib
 from gi.repository import Gtk, GLib, Pango, Gdk
 from tempfile import NamedTemporaryFile
+from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 
 from util import *
 
@@ -353,50 +354,14 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
                 view.get_selection().select_iter(row.iter)
 
     def __popup_menu(self, view, library):
-        # TODO: Consider allowing plugins to expose themselves in playlist
         model, itr = view.get_selection().get_selected()
         if itr is None:
             return
         songs = list(model[itr][0])
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
-        menu = SongsMenu(
-            library, songs, playlists=False, remove=False, parent=self)
+        menu = SongsMenu(library, songs,
+                         playlists=False, remove=False, parent=self)
         menu.preseparate()
-
-        def _de_duplicate(model, itr):
-            playlist = model[itr][0]
-            unique = set()
-            dupes = list()
-            for s in songs:
-                if s in unique:
-                    dupes.append(s)
-                else:
-                    unique.add(s)
-            if len(dupes) < 1:
-                print_d("No duplicates in this playlist")
-                return
-            dialog = ConfirmRemoveDuplicatesDialog(self, playlist, len(dupes))
-            if dialog.run() == Gtk.ResponseType.YES:
-                playlist.remove_songs(dupes, library, True)
-                PlaylistsBrowser.changed(playlist)
-                self.activate()
-
-        de_dupe = Gtk.MenuItem(_("Remove Duplicates"))
-        de_dupe.connect_object('activate', _de_duplicate, model, itr)
-        has_dupes = model[itr][0].has_duplicates()
-        de_dupe.set_sensitive(has_dupes)
-        menu.prepend(de_dupe)
-
-        def _shuffle(model, itr):
-            playlist = model[itr][0]
-            playlist.shuffle()
-            self.activate()
-
-        shuffle = Gtk.MenuItem(_("_Shuffle"), use_underline=True)
-        shuffle .connect_object('activate', _shuffle, model, itr)
-        shuffle.set_sensitive(bool(len(model[itr][0])))
-        menu.prepend(shuffle)
-        menu.prepend(SeparatorMenuItem())
 
         def _remove(model, itr):
             playlist = model[itr][0]
@@ -419,10 +384,13 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         ren.connect_object('activate', _rename, model.get_path(itr))
         menu.prepend(ren)
 
+        playlist = model[itr][0]
+        PLAYLIST_HANDLER.populate_menu(menu, library, self, [playlist])
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def activate(self, widget=None, resort=True):
+        print_d("activated...")
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
         songs = filter(lambda s: isinstance(s, AudioFile), songs)

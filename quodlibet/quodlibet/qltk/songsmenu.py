@@ -21,6 +21,7 @@ from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
 
 
 class SongsMenuPluginHandler(PluginHandler):
+
     def __init__(self, confirmer):
         self.__plugins = []
         # The method to call for confirmations of risky multi-invocations
@@ -53,7 +54,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     items.append(Kind(songs, library, parent))
                 except:
-                    print_e("Couldn't initalise song plugin %s. Stack trace:"
+                    print_e("Couldn't initialise song plugin %s. Stack trace:"
                             % Kind)
                     print_exc()
         items = filter(lambda i: i.initialized, items)

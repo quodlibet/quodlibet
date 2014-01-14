@@ -1,16 +1,17 @@
 # Copyright 2006 Joe Wreschnig
+#      2013-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
-from quodlibet import config
+from quodlibet.plugins.gui import MenuItemPlugin
 
 from quodlibet.util.songwrapper import check_wrapper_changed
 
 
-class SongsMenuPlugin(Gtk.ImageMenuItem):
+class SongsMenuPlugin(MenuItemPlugin):
     """Plugins of this type are subclasses of Gtk.ImageMenuItem.
     They will be added, in alphabetical order, to the "Plugins" menu
     that appears when songs or lists of songs are right-clicked.
@@ -43,11 +44,6 @@ class SongsMenuPlugin(Gtk.ImageMenuItem):
     the sensitivity of the menu entry:
         self.plugin_handles(songs)
 
-    When these functions are called, the self.plugin_window will be
-    available. This is the Gtk.Window the plugin was invoked from. This
-    provides access to two important widgets, self.plugin_window.browser
-    and self.plugin_window.songlist.
-
     All of this is managed by the constructor for SongsMenuPlugin, so
     make sure it gets called if you override it (you shouldn't have to).
     """
@@ -61,33 +57,12 @@ class SongsMenuPlugin(Gtk.ImageMenuItem):
 
     __initialized = False
 
-    # An upper limit on how many instances of the plugin should be launched
-    # at once without warning. Heavyweight plugins should override this value
-    # to prevent users killing their performance by opening on many songs.
-    MAX_INVOCATIONS = config.getint("plugins", "default_max_invocations", 30)
-
     def __init__(self, songs, library, window):
-        super(SongsMenuPlugin, self).__init__(self.PLUGIN_NAME)
+        super(SongsMenuPlugin, self).__init__(window)
         self.__library = library
         self.__songs = songs
-        self.plugin_window = window
-        self.__initialized = True
-
-        icon = getattr(self, "PLUGIN_ICON", Gtk.STOCK_EXECUTE)
-        if Gtk.stock_lookup(icon):
-            image = Gtk.Image.new_from_stock(icon, Gtk.IconSize.MENU)
-        else:
-            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU)
-        self.set_always_show_image(True)
-        self.set_image(image)
 
         self.set_sensitive(bool(self.plugin_handles(songs)))
-
-    @property
-    def initialized(self):
-        # If the GObject __init__ method is bypassed, it can cause segfaults.
-        # This explicitly prevents a bad plugin from taking down the app.
-        return self.__initialized
 
     def plugin_handles(self, songs):
         return True

@@ -516,6 +516,7 @@ class Playlist(Collection, Iterable):
                " / %s" %
                util.format_size(total_size) if total_size > 0 else "")
 
+    @property
     def has_duplicates(self):
         """Returns True if there are any duplicated files in this playlist"""
         return self._list.has_duplicates()

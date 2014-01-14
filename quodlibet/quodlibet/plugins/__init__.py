@@ -5,8 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import sys
-
 from quodlibet import config
 from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
@@ -290,6 +288,12 @@ class PluginManager(object):
         return [p for p in self._plugins if p.handlers]
 
     def register_handler(self, handler):
+        """
+        Registers a handler, attaching it to any current plugins it
+        advertises that it can handle
+
+        `handler` should probably be a `PluginHandler`
+        """
         print_d("Registering handler: %r" % type(handler).__name__)
 
         self.__handlers.append(handler)
