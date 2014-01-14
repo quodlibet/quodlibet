@@ -390,7 +390,6 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def activate(self, widget=None, resort=True):
-        print_d("activated...")
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
         songs = filter(lambda s: isinstance(s, AudioFile), songs)

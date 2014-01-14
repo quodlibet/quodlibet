@@ -1,4 +1,5 @@
 # Copyright 2009 Christoph Reiter
+#           2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -6,6 +7,8 @@
 #
 # The Unofficial M3U and PLS Specification (Winamp):
 # http://forums.winamp.com/showthread.php?threadid=65772
+#
+# TODO: Support PlaylistPlugin, somehow
 
 import os
 
@@ -39,17 +42,20 @@ else:
         return os.path.join(*rel_list)
 
 
-class PlaylistExport(PlaylistPlugin):
+class PlaylistExport(SongsMenuPlugin):
     PLUGIN_ID = 'Playlist Export'
     PLUGIN_NAME = _('Playlist Export')
-    PLUGIN_DESC = _('Export a playlist to M3U or PLS format.')
+    PLUGIN_DESC = _('Export songs to a M3U or PLS playlist.')
     PLUGIN_ICON = 'gtk-save'
     PLUGIN_VERSION = '0.2'
 
     lastfolder = None
 
-    def plugin_single_playlist(self, playlist):
-        return self.__save_playlist(playlist.songs, playlist.name)
+    # def plugin_single_playlist(self, playlist):
+    #     return self.__save_playlist(playlist.songs, playlist.name)
+
+    def plugin_songs(self, songs):
+        self.__save_playlist(songs)
 
     def __save_playlist(self, songs, name=None):
         dialog = Gtk.FileChooserDialog(self.PLUGIN_NAME,
