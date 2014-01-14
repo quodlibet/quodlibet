@@ -7,6 +7,7 @@ import os
 from quodlibet.formats._audio import AudioFile
 from quodlibet.plugins import PluginManager, Plugin
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
+from tests.helper import capture_output
 
 
 class TSongsMenuPlugins(TestCase):
@@ -105,7 +106,8 @@ class TSongsMenuPlugins(TestCase):
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
-        menu = self.handler.Menu(None, None, [AudioFile()])
+        with capture_output():
+            menu = self.handler.Menu(None, None, [AudioFile()])
         self.failIf(menu and menu.get_children())
 
     def test_Menu(self):

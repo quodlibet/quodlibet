@@ -10,6 +10,7 @@ from quodlibet.plugins.playlist import PlaylistPlugin, PlaylistPluginHandler
 from quodlibet.util.collection import Playlist
 from tests import TestCase, add, mkstemp, mkdtemp
 from quodlibet.plugins import PluginManager, Plugin
+from tests.helper import capture_output
 
 MAX_PLAYLISTS = 50
 TEST_PLAYLIST = Playlist("/tmp", "foo")
@@ -128,12 +129,14 @@ class TPlaylistPlugins(TestCase):
     def test_ignores_broken_plugin(self):
         self.create_plugin(name="Broken", desc="Desc",
                            funcs=["__init__", "plugin_playlist"])
+
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
         menu = Gtk.Menu()
-        self.handler.populate_menu(menu, None, self.mock_browser,
-                                   [TEST_PLAYLIST])
+        with capture_output():
+            self.handler.populate_menu(menu, None, self.mock_browser,
+                                       [TEST_PLAYLIST])
         self.failUnlessEqual(len(menu.get_children()), 0,
                              msg="Shouldn't have enabled a broken plugin")
 
