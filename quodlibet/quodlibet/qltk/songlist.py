@@ -131,7 +131,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             return True
 
         def _cdf(self, column, cell, model, iter, tag):
-            text = model[iter][0].comma(tag)
+            text = model.get_value(iter).comma(tag)
             if not self._needs_update(text):
                 return
             cell.set_property('text', text)
@@ -183,7 +183,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     class DateColumn(TextColumn):
         # The '~#' keys that are dates.
         def _cdf(self, column, cell, model, iter, tag):
-            stamp = model[iter][0](tag)
+            stamp = model.get_value(iter)(tag)
             if not self._needs_update(stamp):
                 return
             if not stamp:
@@ -217,7 +217,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # Render ~#rating directly (simplifies filtering, saves
         # a function call).
         def _cdf(self, column, cell, model, iter, tag):
-                value = model[iter][0].get("~#rating", config.RATINGS.default)
+                value = model.get_value(iter).get(
+                    "~#rating", config.RATINGS.default)
                 if not self._needs_update(value):
                     return
                 cell.set_property('text', util.format_rating(value))
@@ -234,7 +235,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # Optimize for non-synthesized keys by grabbing them directly.
         # Used for any tag without a '~' except 'title'.
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].get(tag, "")
+            value = model.get_value(iter).get(tag, "")
             if not self._needs_update(value):
                 return
             cell.set_property('text', value.replace("\n", ", "))
@@ -243,7 +244,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         # Contains text in the filesystem encoding, so needs to be
         # decoded safely (and also more slowly).
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].comma(tag)
+            value = model.get_value(iter).comma(tag)
             if not self._needs_update(value):
                 return
             cell.set_property('text', unexpand(fsdecode(value)))
@@ -251,7 +252,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     class NumericColumn(TextColumn):
         # Any '~#' keys except dates.
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].comma(tag)
+            value = model.get_value(iter).comma(tag)
             if not self._needs_update(value):
                 return
             text = unicode(value)
@@ -265,7 +266,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     class LengthColumn(NumericColumn):
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].get("~#length", 0)
+            value = model.get_value(iter).get("~#length", 0)
             if not self._needs_update(value):
                 return
             text = util.format_time(value)
@@ -277,7 +278,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     class FilesizeColumn(NumericColumn):
         def _cdf(self, column, cell, model, iter, tag):
-            value = model[iter][0].get("~#filesize", 0)
+            value = model.get_value(iter).get("~#filesize", 0)
             if not self._needs_update(value):
                 return
             text = util.format_size(value)
@@ -392,7 +393,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
-            value = model.get_value(iter, 0)(column.header_name)
+            value = model.get_value(iter)(column.header_name)
             if not isinstance(value, basestring):
                 continue
             elif key in value.lower() or key in value:
@@ -849,7 +850,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         songs = []
 
         def func(model, path, iter_, user_data):
-            songs.append(model.get_value(iter_, 0))
+            songs.append(model.get_value(iter_))
         selection = self.get_selection()
         selection.selected_foreach(func, None)
         return songs
