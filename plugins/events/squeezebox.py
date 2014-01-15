@@ -1,4 +1,4 @@
-# Copyright 2011-2013 Nick Boultbee
+# Copyright 2011-2014 Nick Boultbee
 #
 # Inspired in parts by PySqueezeCenter (c) 2010 JingleManSweep
 # SqueezeCenter and SqueezeBox are copyright Logitech
@@ -90,7 +90,7 @@ class SqueezeboxServer(object):
                 if result != (6 * '*'):
                     raise SqueezeboxException(
                         "Couldn't log in to squeezebox: response was '%s'"
-                         % result)
+                        % result)
                 self.is_connected = True
                 self.failures = 0
                 print_d("Connected to Squeezebox Server! %s" % self)
@@ -118,7 +118,7 @@ class SqueezeboxServer(object):
             if not want_reply:
                 return None
             raw_response = self.telnet.read_until("\n").strip()
-        except socket.error, e:
+        except socket.error as e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
@@ -200,9 +200,9 @@ class SqueezeboxServer(object):
         self.player_request("playlist clear", False)
 
     def playlist_resume(self, name, resume, wipe=False):
-        self.player_request("playlist resume %s noplay:%d wipePlaylist:%d" %
-                            (urllib.quote(name), int(not resume), int(wipe)),
-                           want_reply=False)
+        cmd = ("playlist resume %s noplay:%d wipePlaylist:%d"
+               % (urllib.quote(name), int(not resume), int(wipe)))
+        self.player_request(cmd, want_reply=False)
 
     def change_song(self, path):
         """Queue up a song"""
@@ -258,7 +258,7 @@ class GetPlayerDialog(Gtk.Dialog):
         title = _("Choose Squeezebox player")
         super(GetPlayerDialog, self).__init__(title, parent)
         self.set_border_width(6)
-        self.set_has_separator(False)
+        #self.set_has_separator(False)
         self.set_resizable(False)
         self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                          Gtk.STOCK_OK, Gtk.ResponseType.OK)
@@ -302,7 +302,9 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
     # Maintain a singleton; we only support one SB server live in QL
     server = None
-    ql_base_dir = get_scan_dirs()[0] if get_scan_dirs() else ""
+    ql_base_dir = (os.path.realpath(get_scan_dirs()[0])
+                   if get_scan_dirs() else "")
+    print_d("Using QL library dir of %s" % ql_base_dir)
 
     # We want all derived classes to share the config section
     CONFIG_SECTION = "squeezebox"
@@ -344,7 +346,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
                 ret = dialog.run() or 0
             else:
                 cls.quick_dialog("Squeezebox OK. Using the only player (%s)."
-                                  % cls.server.players[0])
+                                 % cls.server.players[0])
             cls.set_player(ret)
             # TODO: verify sanity of SB library path
 
@@ -447,7 +449,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
                 print_d(
                     "Squeezebox server version: %s. Current player: #%d (%s)."
                     % (ver, cur, cls.server.get_players()[cur]["name"]))
-        except (IndexError, KeyError), e:
+        except (IndexError, KeyError, SqueezeboxException) as e:
             print_d("Couldn't get player info (%s)." % e)
 
 
@@ -575,7 +577,8 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
         """Tell the copool to stop (adding songs)"""
         self.__cancel = True
 
-    def __get_playlist_name(self):
+    @staticmethod
+    def __get_playlist_name():
         dialog = qltk.GetStringDialog(None,
             _("Export selection to Squeezebox playlist"),
             _("Playlist name (will overwrite existing)"),
@@ -594,7 +597,8 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
             ).run()
         else:
             name = self.__get_playlist_name()
-            task = Task("Squeezebox", _("Export to Squeezebox playlist"),
-                        stop=self.__cancel_add)
-            copool.add(self.__add_songs, task, songs, name,
-                       funcid="squeezebox-playlist-save")
+            if name:
+                task = Task("Squeezebox", _("Export to Squeezebox playlist"),
+                            stop=self.__cancel_add)
+                copool.add(self.__add_songs, task, songs, name,
+                           funcid="squeezebox-playlist-save")
