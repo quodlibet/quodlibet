@@ -99,6 +99,17 @@ class Tcopool(TestCase):
         Gtk.main_iteration_do(False)
         self.failIf(self.buffer)
 
+    def test_pause_all(self):
+        copool.add(self.__set_buffer, funcid="test")
+        Gtk.main_iteration_do(False)
+        Gtk.main_iteration_do(False)
+        self.failUnless(self.buffer)
+        copool.pause_all()
+        self.buffer = None
+        Gtk.main_iteration_do(False)
+        Gtk.main_iteration_do(False)
+        self.failIf(self.buffer)
+
     def test_step(self):
         copool.add(self.__set_buffer, funcid="test")
         copool.pause("test")

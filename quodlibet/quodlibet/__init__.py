@@ -509,7 +509,7 @@ def main(window):
         # stop all copools
         print_d("Quit GTK: Stop all copools")
         from quodlibet.util import copool
-        copool.remove_all()
+        copool.pause_all()
 
         # events that add new events to the main loop (like copool)
         # can block the shutdown, so force stop after some time.

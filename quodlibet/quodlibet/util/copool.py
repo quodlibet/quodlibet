@@ -120,6 +120,12 @@ class CoPool(object):
         routine.pause()
         print_d("Paused copool function id %r" % funcid)
 
+    def pause_all(self):
+        """Temporarily pause all registered routines."""
+
+        for funcid in self.__routines.keys():
+            self.pause(funcid)
+
     def resume(self, funcid):
         """Resume a paused routine."""
 
@@ -140,6 +146,7 @@ _copool = CoPool()
 
 add = _copool.add
 pause = _copool.pause
+pause_all = _copool.pause_all
 remove = _copool.remove
 remove_all = _copool.remove_all
 resume = _copool.resume
