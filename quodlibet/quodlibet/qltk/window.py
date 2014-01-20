@@ -1,4 +1,4 @@
-# Copyright 2012 Christoph Reiter
+# Copyright 2012,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,7 +7,7 @@
 from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, is_wayland
 
 
 class Window(Gtk.Window):
@@ -97,9 +97,10 @@ class PersistentWindowMixin(object):
         self.__restore_window_state()
 
     def __restore_window_state(self):
+        if not is_wayland():
+            self.__restore_state()
+            self.__restore_position()
         self.__restore_size()
-        self.__restore_state()
-        self.__restore_position()
 
     def __conf(self, name):
         if name == "size":
@@ -127,7 +128,7 @@ class PersistentWindowMixin(object):
         screen = self.get_screen()
         x = min(x, screen.get_width())
         y = min(y, screen.get_height())
-        if x >= 0 and y >= 0:
+        if x >= 1 and y >= 1:
             self.resize(x, y)
 
     def __save_size(self, window, event):
