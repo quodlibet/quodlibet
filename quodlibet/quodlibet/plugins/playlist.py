@@ -187,4 +187,3 @@ class PlaylistPluginHandler(PluginHandler):
 
 # Single instance
 PLAYLIST_HANDLER = PlaylistPluginHandler(confirm_action)
-

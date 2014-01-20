@@ -30,6 +30,7 @@ from quodlibet.const import MinVersions, Version
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers"]
 
+
 class Application(object):
     """A main application class for controlling the application as a whole
     and accessing sub-modules.
@@ -326,7 +327,7 @@ def init_plugins(no_plugins=False):
     from quodlibet import plugins
     folders = [os.path.join(quodlibet.const.BASEDIR, "plugins", kind)
                for kind in PLUGIN_DIRS]
-    folders.append(os.path.join(quodlibet.const.USERDIR,  "plugins"))
+    folders.append(os.path.join(quodlibet.const.USERDIR, "plugins"))
     print_d("Scanning folders: %s" % folders)
     pm = plugins.init(folders, no_plugins)
     pm.rescan()

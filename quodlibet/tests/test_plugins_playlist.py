@@ -36,7 +36,6 @@ class TPlaylistPlugins(TestCase):
         def is_toplevel(self):
             return True
 
-
     def _confirmer(self, msg):
         self.confirmed = True
 
