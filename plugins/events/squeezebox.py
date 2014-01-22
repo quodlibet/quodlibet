@@ -26,7 +26,7 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk.notif import Task
@@ -529,14 +529,14 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
             pass
 
 
-class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
+class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Export to Squeezebox Playlist"
-    PLUGIN_NAME = _("Export to Squeezebox Playlist")
-    PLUGIN_DESC = _("Dynamically export songs to Logitech Squeezebox "
-                    "playlists, provided both share a directory structure. "
+    PLUGIN_NAME = _("Export to Squeezebox...")
+    PLUGIN_DESC = _("Dynamically export a playlist to Logitech Squeezebox "
+                    "playlist, provided both share a directory structure. "
                     "Shares configuration with Squeezebox Sync plugin")
-    PLUGIN_ICON = Gtk.STOCK_EDIT
-    PLUGIN_VERSION = '0.3'
+    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_VERSION = '0.4'
     TEMP_PLAYLIST = "_quodlibet"
 
     def __add_songs(self, task, songs, name):
@@ -578,15 +578,15 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
         self.__cancel = True
 
     @staticmethod
-    def __get_playlist_name():
+    def __get_playlist_name(name="Quod Libet playlist"):
         dialog = qltk.GetStringDialog(None,
-            _("Export selection to Squeezebox playlist"),
+            _("Export playlist to Squeezebox"),
             _("Playlist name (will overwrite existing)"),
             okbutton=Gtk.STOCK_SAVE)
-        name = dialog.run(text="Quod Libet playlist")
+        name = dialog.run(text=name)
         return name
 
-    def plugin_songs(self, songs):
+    def plugin_playlist(self, playlist):
         self.init_server()
         if not self.server.is_connected:
             qltk.ErrorMessage(
@@ -596,9 +596,9 @@ class SqueezeboxPlaylistPlugin(SongsMenuPlugin, SqueezeboxPluginMixin):
                 self.server.config
             ).run()
         else:
-            name = self.__get_playlist_name()
+            name = self.__get_playlist_name(name=playlist.name)
             if name:
                 task = Task("Squeezebox", _("Export to Squeezebox playlist"),
                             stop=self.__cancel_add)
-                copool.add(self.__add_songs, task, songs, name,
+                copool.add(self.__add_songs, task, playlist.songs, name,
                            funcid="squeezebox-playlist-save")
