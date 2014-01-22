@@ -19,6 +19,10 @@ browsers = []
 def init():
     global browsers
 
+    # ignore double init (for the test suite)
+    if browsers:
+        return
+
     this_dir = os.path.dirname(__file__)
     load_pyc = os.name == 'nt'
     modules = load_dir_modules(this_dir,

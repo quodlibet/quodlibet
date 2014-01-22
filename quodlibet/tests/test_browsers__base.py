@@ -10,8 +10,7 @@ from gi.repository import Gtk
 from tests import TestCase, AbstractTestCase
 from helper import realized
 
-import quodlibet.browsers
-
+from quodlibet import browsers
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
 from quodlibet.browsers._base import Browser
@@ -117,8 +116,10 @@ class TBrowserBase(AbstractTestCase):
         with realized(self.b):
             self.b.unfilter()
 
+
+browsers.init()
 # create a new test class for each browser
-for browser in quodlibet.browsers.browsers:
+for browser in browsers.browsers:
     cls = TBrowserBase
     name = "TB" + browser.__name__
     new_test = type(name, (TBrowserBase,), {})
