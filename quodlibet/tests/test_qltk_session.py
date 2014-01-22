@@ -6,7 +6,7 @@
 
 import sys
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk import session
 
@@ -14,5 +14,3 @@ from quodlibet.qltk import session
 class TSession(TestCase):
     def test_session(self):
         session.init("quodlibet")
-
-add(TSession)

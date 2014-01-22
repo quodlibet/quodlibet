@@ -1,4 +1,4 @@
-from tests import add, TestCase
+from tests import TestCase
 
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.parse import Query
@@ -22,7 +22,6 @@ class TValidatingEntry(TestCase):
     def tearDown(self):
         self.entry.destroy()
         quodlibet.config.quit()
-add(TValidatingEntry)
 
 
 class TUndoEntry(TestCase):
@@ -132,4 +131,3 @@ class TUndoEntry(TestCase):
 
     def tearDown(self):
         self.entry.destroy()
-add(TUndoEntry)

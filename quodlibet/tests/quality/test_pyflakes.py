@@ -15,7 +15,7 @@ try:
 except ImportError:
     pyflakes = None
 
-from tests import TestCase, add
+from tests import TestCase, skip
 
 
 class FakeStream(object):
@@ -70,7 +70,5 @@ class TPyFlakes(TestCase):
         self.__check_path(path)
 
 
-if pyflakes:
-    add(TPyFlakes)
-else:
-    print_w("pyflakes not found")
+if not pyflakes:
+    TPyFlakes = skip(TPyFlakes, "pyflakes not found")

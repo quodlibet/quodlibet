@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.exfalsowindow import ExFalsoWindow
 from quodlibet.library import SongLibrary
@@ -16,4 +16,3 @@ class TExFalsoWindow(TestCase):
     def tearDown(self):
         self.ef.destroy()
         quodlibet.config.quit()
-add(TExFalsoWindow)

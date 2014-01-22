@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.browsers.audiofeeds import AudioFeeds
 from quodlibet.player.nullbe import NullPlayer
@@ -20,4 +20,3 @@ class TAudioFeeds(TestCase):
         self.bar.destroy()
         self.library.destroy()
         quodlibet.config.quit()
-add(TAudioFeeds)

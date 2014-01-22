@@ -7,7 +7,6 @@
 from gi.repository import Gtk
 import dbus
 
-from tests import add
 from tests.plugin import PluginTestCase
 
 from quodlibet.formats._audio import AudioFile
@@ -215,5 +214,3 @@ class TMPRIS(PluginTestCase):
     def tearDownClass(cls):
         app.window.destroy()
         config.quit()
-
-add(TMPRIS)

@@ -3,7 +3,7 @@ from quodlibet.util.path import *
 from quodlibet.util.string import decode, encode
 from quodlibet.util.string.splitters import *
 from quodlibet.util.library import *
-from tests import TestCase, add, mkstemp
+from tests import TestCase, mkstemp
 
 import tempfile
 import sys
@@ -35,7 +35,6 @@ class Tmkdir(TestCase):
             os.rmdir("nonext/test/test2")
             os.rmdir("nonext/test")
             os.rmdir("nonext")
-add(Tmkdir)
 
 
 class Tiscommand(TestCase):
@@ -55,8 +54,6 @@ class Tiscommand(TestCase):
         self.failIf(iscommand("/bin"))
         self.failIf(iscommand("X11"))
 
-add(Tiscommand)
-
 
 class Tmtime(TestCase):
     def test_equal(self):
@@ -65,7 +62,6 @@ class Tmtime(TestCase):
     def test_bad(self):
         self.failIf(os.path.exists("/dev/doesnotexist"))
         self.failUnlessEqual(mtime("/dev/doesnotexist"), 0)
-add(Tmtime)
 
 
 class Tunexpand(TestCase):
@@ -90,8 +86,6 @@ class Tunexpand(TestCase):
     def test_subfile(self):
         path = unexpand(os.path.join(self.d, "la", "la"))
         self.failUnlessEqual(path, os.path.join(self.u, "la", "la"))
-
-add(Tunexpand)
 
 
 class Tformat_rating(TestCase):
@@ -147,8 +141,6 @@ class Tformat_rating(TestCase):
         self.failUnlessEqual(util.format_rating(3.0), "11111")
         self.failUnlessEqual(util.format_rating(-0.5), "00000")
 
-add(Tformat_rating)
-
 
 class Tescape(TestCase):
     def test_empty(self):
@@ -159,13 +151,11 @@ class Tescape(TestCase):
             esc = util.escape(s)
             self.failIfEqual(s, esc)
             self.failUnlessEqual(s, util.unescape(esc))
-add(Tescape)
 
 
 class Tunescape(Tescape):
     def test_empty(self):
         self.failUnlessEqual(util.unescape(""), "")
-add(Tunescape)
 
 
 class Tre_esc(TestCase):
@@ -181,7 +171,6 @@ class Tre_esc(TestCase):
     def test_many_unsafe(self):
         self.failUnlessEqual(
             re.escape("*quux#argh?woo"), r"\*quux\#argh\?woo")
-add(Tre_esc)
 
 
 class Tsplit_scan_dirs(TestCase):
@@ -192,7 +181,6 @@ class Tsplit_scan_dirs(TestCase):
         else:
             res = util.split_scan_dirs(":/home/user/Music:/opt/party:")
             self.assertEquals(res, ["/home/user/Music", "/opt/party"])
-add(Tsplit_scan_dirs)
 
 
 class Tdecode(TestCase):
@@ -205,7 +193,6 @@ class Tdecode(TestCase):
     def test_invalid(self):
         self.failUnlessEqual(
             decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
-add(Tdecode)
 
 
 class Tencode(TestCase):
@@ -214,7 +201,6 @@ class Tencode(TestCase):
 
     def test_unicode(self):
         self.failUnlessEqual(encode(u"abcde"), "abcde")
-add(Tencode)
 
 
 class Tcapitalize(TestCase):
@@ -229,7 +215,6 @@ class Tcapitalize(TestCase):
 
     def test_nonalphabet(self):
         self.failUnlessEqual(util.capitalize("!aa B"), "!aa B")
-add(Tcapitalize)
 
 
 class Tsplit_value(TestCase):
@@ -257,7 +242,6 @@ class Tsplit_value(TestCase):
     def test_unicode_wordboundry(self):
         val = '\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
         self.failUnlessEqual(split_value(val), val.split("&"))
-add(Tsplit_value)
 
 
 class Thuman_sort(TestCase):
@@ -287,9 +271,6 @@ class Thuman_sort(TestCase):
         self.failUnlessEqual(64.0 in util.human_sort_key(u"64. 8"), True)
 
 
-add(Thuman_sort)
-
-
 class Tformat_time(TestCase):
     def test_seconds(self):
         self.failUnlessEqual(util.format_time(0), "0:00")
@@ -306,7 +287,6 @@ class Tformat_time(TestCase):
 
     def test_negative(self):
         self.failUnlessEqual(util.format_time(-124), "-2:04")
-add(Tformat_time)
 
 
 class Tparse_time(TestCase):
@@ -328,7 +308,6 @@ class Tparse_time(TestCase):
 
     def test_negative(self):
         self.failUnlessEqual(util.parse_time("-2:04"), -124)
-add(Tparse_time)
 
 
 class Tformat_size(TestCase):
@@ -362,7 +341,6 @@ class Tformat_size(TestCase):
             1024 * 1024 * 10240: "10.0 GB",
             1024 * 1024 * 15360: "15.0 GB"
         })
-add(Tformat_size)
 
 
 class Tsplit_title(TestCase):
@@ -389,7 +367,6 @@ class Tsplit_title(TestCase):
     def test_custom_splitter(self):
         self.failUnlessEqual(
             split_title("foo [b c]", " "), ("foo", ["b", "c"]))
-add(Tsplit_title)
 
 
 class Tsplit_album(TestCase):
@@ -416,7 +393,6 @@ class Tsplit_album(TestCase):
     def test_weird_not_disc(self):
         self.failUnlessEqual(
             split_album("foo ~crazy 3~"), ("foo ~crazy 3~", None))
-add(Tsplit_album)
 
 
 class Tsplit_people(TestCase):
@@ -455,8 +431,6 @@ class Tsplit_people(TestCase):
             split_people("Pyscho Killer [Talking Heads Cover]"),
             ("Pyscho Killer", ["Talking Heads"]))
 
-add(Tsplit_people)
-
 
 class Ttag(TestCase):
     def test_empty(self):
@@ -484,7 +458,6 @@ class Ttag(TestCase):
     def test_precap_handling(self):
         self.failUnlessEqual(util.tag("labelid"), "Label ID")
         self.failUnlessEqual(util.tag("labelid", False), "label ID")
-add(Ttag)
 
 
 class Ttagsplit(TestCase):
@@ -513,7 +486,6 @@ class Ttagsplit(TestCase):
     def test_two_synth_start(self):
         self.failUnlessEqual(
             util.tagsplit("~~people~album"), ["~people", "album"])
-add(Ttagsplit)
 
 
 class Tpattern(TestCase):
@@ -547,8 +519,6 @@ class Tpattern(TestCase):
     def test_invalid(self):
         self.failUnlessEqual(util.pattern("<date"), "")
         util.pattern("<d\\")
-
-add(Tpattern)
 
 
 class Tformat_time_long(TestCase):
@@ -607,8 +577,6 @@ class Tformat_time_long(TestCase):
     def test_limit(s):
         s.assertEquals(len(f_t_l(2 ** 31).split(", ")), 2)
 
-add(Tformat_time_long)
-
 
 class Tspawn(TestCase):
 
@@ -631,7 +599,6 @@ class Tspawn(TestCase):
             return
         fileobj = util.spawn(["echo", "'$1'", '"$2"', ">3"], stdout=True)
         self.failUnlessEqual(fileobj.read().split(), ["'$1'", '"$2"', ">3"])
-add(Tspawn)
 
 
 class Txdg_dirs(TestCase):
@@ -662,8 +629,6 @@ class Txdg_dirs(TestCase):
         self.assertTrue(xdg_get_cache_home())
         self.assertTrue(xdg_get_data_home())
 
-add(Txdg_dirs)
-
 
 class Tpathname2url(TestCase):
     def test_win(self):
@@ -676,7 +641,6 @@ class Tpathname2url(TestCase):
         p2u = pathname2url_win32
         for inp, should in cases.iteritems():
             self.failUnlessEqual(p2u(inp), should)
-add(Tpathname2url)
 
 
 class Tlibrary(TestCase):
@@ -694,8 +658,6 @@ class Tlibrary(TestCase):
         else:
             set_scan_dirs(["foo", "bar", ""])
             self.failUnlessEqual(get_scan_dirs(), ["foo", "bar"])
-
-add(Tlibrary)
 
 
 class TNormalizePath(TestCase):
@@ -734,8 +696,6 @@ class TNormalizePath(TestCase):
         finally:
             os.rmdir(name)
 
-add(TNormalizePath)
-
 
 class Tatomic_save(TestCase):
 
@@ -754,5 +714,3 @@ class Tatomic_save(TestCase):
         with open(filename, "rb") as fobj:
             self.assertEqual(fobj.read(), "foo")
         self.assertFalse(os.path.exists(filename + ".tmp"))
-
-add(Tatomic_save)

@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.textedit import TextEditBox, TextEdit
 
@@ -19,13 +19,11 @@ class TTextEditBox(TestCase):
 
     def tearDown(self):
         self.box.destroy()
-add(TTextEditBox)
 
 
 class TTextEdit(TTextEditBox):
     def setUp(self):
         self.box = TextEdit(None)
-add(TTextEdit)
 
 
 class TTextEditBox2(TestCase):
@@ -38,10 +36,8 @@ class TTextEditBox2(TestCase):
 
     def tearDown(self):
         self.foobar.destroy()
-add(TTextEditBox2)
 
 
 class TTextEdit2(TTextEditBox2):
     def setUp(self):
         self.foobar = TextEdit(None, "foobar")
-add(TTextEdit2)

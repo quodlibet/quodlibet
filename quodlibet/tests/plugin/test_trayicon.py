@@ -6,7 +6,6 @@
 
 from gi.repository import Gtk, Gdk
 from quodlibet import config
-from tests import add
 from tests.plugin import PluginTestCase
 
 
@@ -36,5 +35,3 @@ class TTrayIcon(PluginTestCase):
         self.plugin._popup_menu(self.plugin._icon, Gdk.BUTTON_SECONDARY,
                                 Gtk.get_current_event_time())
         self.plugin.disabled()
-
-add(TTrayIcon)

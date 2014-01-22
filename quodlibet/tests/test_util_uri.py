@@ -1,6 +1,6 @@
 import os
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.util.uri import URI
 from quodlibet.util.path import is_fsnative
@@ -88,5 +88,3 @@ class TURI(TestCase):
         expected = os.path.sep + os.path.join("home", "piman")
         s.failUnlessEqual(s.extra_uri.filename, expected)
         s.assertTrue(is_fsnative(s.extra_uri.filename))
-
-add(TURI)

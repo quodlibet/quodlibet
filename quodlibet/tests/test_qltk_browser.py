@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.browser import LibraryBrowser
 import quodlibet.config
@@ -18,5 +18,3 @@ class TLibraryBrowser(TestCase):
 
     def tearDown(self):
         quodlibet.config.quit()
-
-add(TLibraryBrowser)

@@ -2,7 +2,7 @@ import io
 
 from gi.repository import Gtk
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.plugins import Plugin
 from quodlibet.plugins.cover import CoverSourcePlugin
@@ -180,5 +180,3 @@ class TCoverManager(TestCase):
 
     def tearDown(self):
         pass
-
-add(TCoverManager)

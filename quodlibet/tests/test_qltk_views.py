@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn
 import quodlibet.config
 from gi.repository import Gtk
@@ -15,7 +15,6 @@ class THintedTreeView(TestCase):
     def tearDown(self):
         self.c.destroy()
         quodlibet.config.quit()
-add(THintedTreeView)
 
 
 class TBaseView(TestCase):
@@ -63,4 +62,3 @@ class TBaseView(TestCase):
 
     def tearDown(self):
         self.c.destroy()
-add(TBaseView)

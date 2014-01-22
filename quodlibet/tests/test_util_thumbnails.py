@@ -1,5 +1,5 @@
 from quodlibet.util.path import mtime
-from tests import TestCase, add, NamedTemporaryFile
+from tests import TestCase, NamedTemporaryFile
 
 from gi.repository import Gtk, GdkPixbuf
 
@@ -84,5 +84,3 @@ class TThumb(TestCase):
         #check rights
         if os.name != "nt":
             s.failUnlessEqual(os.stat(path).st_mode, 33152)
-
-add(TThumb)

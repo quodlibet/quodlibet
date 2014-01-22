@@ -1,4 +1,4 @@
-from tests import TestCase, add, mkstemp, mkdtemp
+from tests import TestCase, mkstemp, mkdtemp
 
 import os
 import sys
@@ -76,5 +76,3 @@ class TEventPlugins(TestCase):
         self.lib.emit("changed", [None])
         self.failUnlessEqual([("plugin_on_changed", ([None],))],
                              self._get_calls(plugin))
-
-add(TEventPlugins)

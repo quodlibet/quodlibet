@@ -6,7 +6,7 @@
 
 import sys
 
-from tests import TestCase, add
+from tests import TestCase
 from quodlibet import formats
 
 
@@ -31,4 +31,3 @@ class TFormats(TestCase):
 
         self.failUnless(formats.xiph is sys.modules["formats.flac"])
         self.failUnless(formats.xiph is sys.modules["formats.oggvorbis"])
-add(TFormats)

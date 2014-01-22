@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 import os
 
@@ -27,15 +27,12 @@ class TTitleCase(FilterTestCase):
     def test_apostrophe(self):
         self.failUnlessEqual(self.c.filter("title", "IT's"), "IT's")
 
-add(TTitleCase)
-
 
 class TSplitTag(FilterTestCase):
     Kind = SplitTag
 
     def test_simple(self):
         self.failUnlessEqual(self.c.filter("title", "foo & bar"), "foo\nbar")
-add(TSplitTag)
 
 
 class TUnderscoresToSpaces(FilterTestCase):
@@ -43,7 +40,6 @@ class TUnderscoresToSpaces(FilterTestCase):
 
     def test_simple(self):
         self.failUnlessEqual(self.c.filter("titke", "foo_bar"), "foo bar")
-add(TUnderscoresToSpaces)
 
 
 class TTagsFromPattern(TestCase):
@@ -174,4 +170,3 @@ class TTagsFromPattern(TestCase):
             dict(discnumber='13', tracknumber='18', title='T18'))
         self.assertEquals(pat.match('24. T4.ogg'),
             dict(discnumber='2', tracknumber='4', title='T4'))
-add(TTagsFromPattern)

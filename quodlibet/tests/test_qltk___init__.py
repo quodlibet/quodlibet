@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk, Gdk
 from gi.overrides import keysyms
@@ -45,5 +45,3 @@ class TQltk(TestCase):
         qltk.popup_menu_under_widget(m, l, 1, 0)
         w.destroy()
         m.destroy()
-
-add(TQltk)

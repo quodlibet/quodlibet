@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -66,4 +66,3 @@ class TSongProperties(TestCase):
         self.library.destroy()
         del(SongProperties.plugins)
         config.quit()
-add(TSongProperties)

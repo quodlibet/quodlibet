@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.library import SongLibrary
 from quodlibet.qltk.songlist import SongList
@@ -44,4 +44,3 @@ class TSongList(TestCase):
     def tearDown(self):
         self.songlist.destroy()
         quodlibet.config.quit()
-add(TSongList)

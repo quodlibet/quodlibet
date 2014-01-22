@@ -1,6 +1,6 @@
 from quodlibet.library import SongLibrary
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from tests import TestCase, add, mkstemp, mkdtemp
+from tests import TestCase, mkstemp, mkdtemp
 
 import os
 
@@ -134,9 +134,6 @@ class TSongsMenuPlugins(TestCase):
         self.failUnless(self.confirmed,
                         ("Should have confirmed %d invocations (Max=%d)."
                          % (len(songs), MAX)))
-
-
-add(TSongsMenuPlugins)
 
 
 class FakeSongsMenuPlugin(SongsMenuPlugin):

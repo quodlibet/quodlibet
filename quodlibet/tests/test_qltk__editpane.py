@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk._editpane import FilterCheckButton
 
@@ -51,4 +51,3 @@ class TFilterCheckButton(TestCase):
     def tearDown(self):
         for cb in [self.fcb1, self.fcb2, self.fcb3, self.fcb4, self.fcb5]:
             cb.destroy()
-add(TFilterCheckButton)

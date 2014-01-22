@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gdk
 
-from tests import TestCase, add
+from tests import TestCase
 from quodlibet.qltk.getstring import GetStringDialog
 
 
@@ -30,4 +30,3 @@ class TGetStringDialog(TestCase):
     def tearDown(self):
         self.gsd1.destroy()
         self.gsd2.destroy()
-add(TGetStringDialog)

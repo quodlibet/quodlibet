@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet import config
 from quodlibet.qltk.maskedbox import MaskedBox
@@ -15,5 +15,3 @@ class TMaskedBox(TestCase):
     def test(self):
         lib = SongFileLibrary()
         MaskedBox(lib).destroy()
-
-add(TMaskedBox)

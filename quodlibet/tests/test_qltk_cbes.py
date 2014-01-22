@@ -1,4 +1,4 @@
-from tests import TestCase, add, mkstemp
+from tests import TestCase, mkstemp
 
 import os
 
@@ -135,6 +135,3 @@ class TStandaloneEditor(TestCase):
         except OSError:
             pass
         quodlibet.config.quit()
-
-add(TComboBoxEntrySave)
-add(TStandaloneEditor)

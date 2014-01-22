@@ -7,7 +7,6 @@
 from gi.repository import Gtk
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-from tests import add
 from tests.plugin import PluginTestCase
 from quodlibet import config
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
@@ -64,5 +63,3 @@ class TPluginsSongsMenu(PluginTestCase):
                 self.failIf(hasattr(plugin, "plugin_single_album") and not ha)
                 self.failIf(hasattr(plugin, "plugin_plugin_album") and not ha)
                 self.failIf(hasattr(plugin, "plugin_albums") and not ha)
-
-add(TPluginsSongsMenu)

@@ -1,7 +1,7 @@
 import shutil
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.util.collection import Playlist
-from tests import TestCase, add, mkdtemp
+from tests import TestCase, mkdtemp
 from random import randint
 from timeit import timeit, default_timer
 from quodlibet import const
@@ -89,5 +89,3 @@ class TPlaylistPerformance(TestCase):
         warm = timeit(get_playlists, "pass", default_timer, REPEATS - 1)
         print_w("warm: averages %.1f ms (speedup = %.1f X)"
               % (warm * 1000.0 / (REPEATS - 1), cold / warm))
-
-add(TPlaylistPerformance)

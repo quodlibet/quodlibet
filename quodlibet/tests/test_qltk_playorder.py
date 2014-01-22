@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.playorder import PlayOrder
 import quodlibet.config
@@ -40,5 +40,3 @@ class TPlayOrder(TestCase):
         self.win.destroy()
         quodlibet.plugins.quit()
         quodlibet.config.quit()
-
-add(TPlayOrder)

@@ -8,7 +8,7 @@ from quodlibet.browsers import Browser
 from quodlibet.library import SongLibrary
 from quodlibet.plugins.playlist import PlaylistPlugin, PlaylistPluginHandler
 from quodlibet.util.collection import Playlist
-from tests import TestCase, add, mkstemp, mkdtemp
+from tests import TestCase, mkstemp, mkdtemp
 from quodlibet.plugins import PluginManager, Plugin
 from tests.helper import capture_output
 
@@ -169,9 +169,6 @@ class TPlaylistPlugins(TestCase):
         self.failUnless(self.confirmed,
                         ("Should have confirmed %d invocations (Max=%d)."
                          % (len(playlists), MAX_PLAYLISTS)))
-
-
-add(TPlaylistPlugins)
 
 
 class FakePlaylistPlugin(PlaylistPlugin):

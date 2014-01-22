@@ -8,7 +8,7 @@ import os
 import shutil
 import StringIO
 
-from tests import TestCase, add, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, mkstemp
 from quodlibet.formats.mp4 import MP4File
 from quodlibet.formats._image import EmbeddedImage
 
@@ -90,5 +90,3 @@ class TMP4File(TestCase):
 
     def test_can_change_images(self):
         self.assertTrue(self.song.can_change_images)
-
-add(TMP4File)

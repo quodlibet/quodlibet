@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase, AbstractTestCase
 
 import os
 import glob
@@ -30,10 +30,8 @@ class TPOTFILESIN(TestCase):
         if result:
             raise Exception(result)
 
-add(TPOTFILESIN)
 
-
-class PO(TestCase):
+class PO(AbstractTestCase):
     def test_pos(self):
         if not iscommand("msgfmt"):
             return
@@ -68,4 +66,4 @@ for fn in glob.glob(os.path.join(PODIR, "*.po")):
     lang = os.path.basename(fn)[:-3]
     testcase = type('PO.' + lang, (PO,), {})
     testcase.lang = lang
-    add(testcase)
+    globals()['PO.' + lang] = testcase

@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 
-from tests import TestCase, add
+from tests import TestCase
 from quodlibet.library import SongLibrarian
 from quodlibet.library.libraries import Library, SongFileLibrary
 from quodlibet.library.librarians import Librarian
@@ -157,4 +157,3 @@ class TSongLibrarian(TLibrarian):
         self.failUnlessEqual(self.changed_1, [new])
         self.failUnlessEqual(self.changed_2, [new])
         self.failUnless(new in self.changed)
-add(TSongLibrarian)

@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.notif import Task, TaskController
 
@@ -41,5 +41,3 @@ class TTaskController(TestCase):
         t2.finish()
         self.assertEquals(self.c.desc, "desc3")
         self.assertEquals(self.c.frac, None)
-
-add(TTaskController)

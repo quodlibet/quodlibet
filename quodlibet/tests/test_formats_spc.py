@@ -6,7 +6,7 @@
 
 import os
 
-from tests import TestCase, add, DATA_DIR
+from tests import TestCase, DATA_DIR
 from quodlibet.formats.spc import SPCFile
 
 
@@ -38,5 +38,3 @@ class TSPCFile(TestCase):
         path = os.path.join(DATA_DIR, 'empty.xm')
         self.failUnless(os.path.exists(path))
         self.failUnlessRaises(Exception, SPCFile, path)
-
-add(TSPCFile)

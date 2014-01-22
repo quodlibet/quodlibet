@@ -10,7 +10,7 @@ import subprocess
 import unittest
 from quodlibet.util.path import iscommand
 
-from tests import TestCase, add
+from tests import TestCase, skip
 
 
 class TPEP8(TestCase):
@@ -80,7 +80,5 @@ class TPEP8(TestCase):
         for file_ in files:
             self._run(file_)
 
-if iscommand("pep8"):
-    add(TPEP8)
-else:
-    print_w("pep8 not found")
+if not iscommand("pep8"):
+    TPEP8 = skip(TPEP8, "pep8 not found")

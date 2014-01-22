@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.info import SongInfo
@@ -14,4 +14,3 @@ class TSongInfo(TestCase):
 
     def tearDown(self):
         self.info.destroy()
-add(TSongInfo)

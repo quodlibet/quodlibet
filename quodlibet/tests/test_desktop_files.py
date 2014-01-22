@@ -7,14 +7,14 @@
 import os
 import subprocess
 
-from tests import TestCase, add, mkstemp
+from tests import TestCase, AbstractTestCase, mkstemp
 
 
 QLDATA_DIR = os.path.join(os.path.dirname(
     os.path.dirname(os.path.realpath(__file__))), "data")
 
 
-class _TDesktopFile(TestCase):
+class _TDesktopFile(AbstractTestCase):
     PATH = None
 
     def test_filename(self):
@@ -54,10 +54,6 @@ class _TDesktopFile(TestCase):
 class TQLDesktopFile(_TDesktopFile):
     PATH = os.path.join(QLDATA_DIR, "quodlibet.desktop.in")
 
-add(TQLDesktopFile)
-
 
 class TEFDesktopFile(_TDesktopFile):
     PATH = os.path.join(QLDATA_DIR, "exfalso.desktop.in")
-
-add(TEFDesktopFile)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tests import add, TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, mkstemp
 
 import os
 import shutil
@@ -87,8 +87,6 @@ class TID3Images(TestCase):
         song = MP3File(self.filename)
         self.assertTrue(song.has_images)
         self.assertEqual(song.get_primary_image().mime_type, "image/jpeg")
-
-add(TID3Images)
 
 
 class TID3File(TestCase):
@@ -582,5 +580,3 @@ class TID3File(TestCase):
         os.unlink(self.filename2)
         os.unlink(self.filename)
         config.quit()
-
-add(TID3File)

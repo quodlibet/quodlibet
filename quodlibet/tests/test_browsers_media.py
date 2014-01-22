@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet import config
 from quodlibet.browsers.media import *
@@ -31,5 +31,3 @@ class TMediaBrowser(TestCase):
         fake = FakeDevice({"name": "Foo"})
 
         DeviceProperties(None, fake).destroy()
-
-add(TMediaBrowser)

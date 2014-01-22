@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet import config
 
@@ -38,8 +38,6 @@ class TCollectionPreferences(TestCase):
     def test_pref_dialog(self):
         d = PatternEditor()
         d.destroy()
-
-add(TCollectionPreferences)
 
 
 class TCollectionAlbums(TestCase):
@@ -99,7 +97,6 @@ class TCollectionAlbums(TestCase):
 
         for r in model:
             self.failUnless(model.get_markup(model.tags, r.iter))
-add(TCollectionAlbums)
 
 
 class TCollectionBrowser(TestCase):
@@ -114,5 +111,3 @@ class TCollectionBrowser(TestCase):
         library = SongLibrary()
         x = CollectionBrowser(library, False)
         x.destroy()
-
-add(TCollectionBrowser)

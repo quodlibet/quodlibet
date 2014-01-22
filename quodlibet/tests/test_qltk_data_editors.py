@@ -1,5 +1,5 @@
 from quodlibet import config
-from tests import TestCase, add
+from tests import TestCase
 from quodlibet.qltk.data_editors import MultiStringEditor
 
 
@@ -22,5 +22,3 @@ class TMultiStringEditor(TestCase):
 
     def tearDown(self):
         config.quit()
-
-add(TMultiStringEditor)

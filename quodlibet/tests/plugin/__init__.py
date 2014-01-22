@@ -1,4 +1,4 @@
-from tests import TestCase
+from tests import AbstractTestCase
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin
 import sys
@@ -18,7 +18,7 @@ for name, module in ms.modules.iteritems():
         modules[plugin.PLUGIN_ID] = module.module
 
 
-class PluginTestCase(TestCase):
+class PluginTestCase(AbstractTestCase):
     """Base class for all plugin tests"""
     plugins = plugins
     modules = modules

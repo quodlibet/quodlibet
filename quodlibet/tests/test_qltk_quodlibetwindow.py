@@ -5,7 +5,7 @@
 # published by the Free Software Foundation
 
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
 from quodlibet import library
@@ -25,5 +25,3 @@ class TQuodLibetWindow(TestCase):
         pl = player.init("nullbe").init(lib.librarian)
         window = QuodLibetWindow(lib, pl, headless=True)
         window.destroy()
-
-add(TQuodLibetWindow)

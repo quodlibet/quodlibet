@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -237,7 +237,6 @@ class TPlaylistModel(TestCase):
 
     def shutDown(self):
         self.pl.destroy()
-add(TPlaylistModel)
 
 
 class TPlaylistMux(TestCase):
@@ -377,4 +376,3 @@ class TPlaylistMux(TestCase):
 
     def tearDown(self):
         self.p.destroy()
-add(TPlaylistMux)

@@ -6,7 +6,7 @@
 
 import sys
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.debugwindow import ExceptionDialog
 
@@ -23,5 +23,3 @@ class TExceptionDialog(TestCase):
                 ExceptionDialog.instance.destroy()
         finally:
             sys.stderr = old
-
-add(TExceptionDialog)

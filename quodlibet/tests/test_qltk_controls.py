@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.controls import PlayControls, ReplayGainMenu, SeekBar
 from quodlibet.qltk.controls import Volume
@@ -37,5 +37,3 @@ class TControls(TestCase):
     def test_volume(self):
         w = Volume(self.p)
         w.destroy()
-
-add(TControls)

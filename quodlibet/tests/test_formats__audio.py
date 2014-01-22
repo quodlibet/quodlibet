@@ -1,4 +1,4 @@
-from tests import TestCase, add, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, mkstemp
 
 import os
 
@@ -421,7 +421,6 @@ class TAudioFile(TestCase):
 
     def tearDown(self):
         os.unlink(quux["~filename"])
-add(TAudioFile)
 
 
 class Treplay_gain(TestCase):
@@ -499,7 +498,6 @@ class Treplay_gain(TestCase):
             self.failUnlessAlmostEqual(
                 val, exp, places=5,
                 msg="%s should be %s not %s" % (key, exp, val))
-add(Treplay_gain)
 
 
 # Special test case for find_cover since it has to create/remove
@@ -588,4 +586,3 @@ class Tfind_cover(TestCase):
     def tearDown(self):
         map(os.unlink, self.files)
         config.quit()
-add(Tfind_cover)

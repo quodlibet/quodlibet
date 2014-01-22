@@ -1,4 +1,4 @@
-from tests import TestCase, add, mkstemp
+from tests import TestCase, mkstemp, AbstractTestCase
 
 import os
 
@@ -8,7 +8,7 @@ from quodlibet import config
 from shutil import copyfileobj
 
 
-class TestMetaData(TestCase):
+class TestMetaData(AbstractTestCase):
     base = 'tests/data/silence-44-s'
 
     def setUp(self):
@@ -97,6 +97,7 @@ for ext in formats._infos.keys():
                 self._test_tag(tag, [u'b\nc'])
             extra_tests['test_tags_' + tag] = test_tags
 
-        testcase = type('MetaData' + ext, (TestMetaData,), extra_tests)
+        name = 'MetaData' + ext
+        testcase = type(name, (TestMetaData,), extra_tests)
         testcase.ext = ext
-        add(testcase)
+        globals()[name] = testcase

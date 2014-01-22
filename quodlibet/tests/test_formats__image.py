@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, mkstemp
 
 import os
 
@@ -32,8 +32,6 @@ class TAPICType(TestCase):
 
         self.assertEqual(values, wanted)
 
-add(TAPICType)
-
 
 class TImageContainer(TestCase):
 
@@ -52,7 +50,6 @@ class TImageContainer(TestCase):
 
     def test_default_can_change(self):
         self.assertFalse(self.a.can_change_images)
-add(TImageContainer)
 
 
 class TEmbeddedImages(TestCase):
@@ -102,4 +99,3 @@ class TEmbeddedImages(TestCase):
             self.assertFalse(image)
         finally:
             os.remove(empty)
-add(TEmbeddedImages)

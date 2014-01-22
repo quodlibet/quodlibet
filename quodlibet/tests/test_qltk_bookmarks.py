@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.bookmarks import EditBookmarks, MenuItems
 from quodlibet.player.nullbe import NullPlayer
@@ -32,5 +32,3 @@ class TBookmarks(TestCase):
 
     def test_menu_items(self):
         MenuItems(self.player.song.bookmarks, self.player, False)
-
-add(TBookmarks)

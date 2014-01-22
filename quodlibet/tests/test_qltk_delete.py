@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.delete import DeleteDialog, TrashDialog
@@ -27,5 +27,3 @@ class TDeleteDialog(TestCase):
         w = Gtk.Window()
         dialog = TrashDialog(w, [SONG])
         dialog.destroy()
-
-add(TDeleteDialog)

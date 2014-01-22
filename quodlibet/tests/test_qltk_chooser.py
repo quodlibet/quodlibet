@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -26,7 +26,6 @@ class TFolderChooser(TestCase):
         while Gtk.events_pending():
             Gtk.main_iteration()
         f.destroy()
-add(TFolderChooser)
 
 
 class TFileChooser(TFolderChooser):
@@ -38,5 +37,3 @@ class TFileChooser(TFolderChooser):
         while Gtk.events_pending():
             Gtk.main_iteration()
         x.destroy()
-
-add(TFileChooser)

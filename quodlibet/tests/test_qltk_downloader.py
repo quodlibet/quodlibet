@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.downloader import DownloadWindow
 import quodlibet.config
@@ -15,4 +15,3 @@ class TDownloadWindow(TestCase):
     def tearDown(self):
         self.win.destroy()
         quodlibet.config.quit()
-add(TDownloadWindow)

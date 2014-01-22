@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 import quodlibet.util.massagers
 
@@ -90,5 +90,3 @@ class TMassagers(TestCase):
             self.failUnless(code in mas.options,
                 "'%s' should be in languages options" % code)
         self.failIf("" in mas.options)
-
-add(TMassagers)

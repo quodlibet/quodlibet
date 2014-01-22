@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.util import tags
 
@@ -16,5 +16,3 @@ class TTagsSortkey(TestCase):
         t.sort(key=tags.sortkey)
         expected = ["title", "artist", "album", "part", "musicbrainz_trackid"]
         self.failUnlessEqual(t, expected)
-
-add(TTagsSortkey)

@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -16,7 +16,6 @@ class TEntryWordCompletion(TestCase):
         self.failUnlessEqual(w.get_entry(), e)
         self.failUnlessEqual(e.get_completion(), w)
         e.destroy()
-add(TEntryWordCompletion)
 
 
 class TLibraryTagCompletion(TestCase):
@@ -27,7 +26,6 @@ class TLibraryTagCompletion(TestCase):
         self.failUnlessEqual(w.get_entry(), e)
         self.failUnlessEqual(e.get_completion(), w)
         e.destroy()
-add(TLibraryTagCompletion)
 
 
 class TLibraryValueCompletion(TestCase):
@@ -44,4 +42,3 @@ class TLibraryValueCompletion(TestCase):
         self.failUnlessEqual(w.get_entry(), e)
         self.failUnlessEqual(e.get_completion(), w)
         e.destroy()
-add(TLibraryValueCompletion)

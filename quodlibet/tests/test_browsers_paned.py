@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 from helper import realized
 
 from gi.repository import Gtk
@@ -152,8 +152,6 @@ class TPanedBrowser(TestCase):
         self.bar.destroy()
         config.quit()
 
-add(TPanedBrowser)
-
 
 class TPaneConfig(TestCase):
     def test_tag(self):
@@ -206,8 +204,6 @@ class TPaneConfig(TestCase):
         self.failUnlessEqual(set(p.format_display(ALBUM).split(", ")),
                              set(["one", "two", "three", "four", "xxx"]))
 
-add(TPaneConfig)
-
 
 class TPaneEntry(TestCase):
 
@@ -249,8 +245,6 @@ class TPaneEntry(TestCase):
         entry = SongsEntry("key", SONGS)
         conf = PaneConfig("<title>")
         self.assertEqual(entry.get_text(conf), (True, "key"))
-
-add(TPaneEntry)
 
 
 class TPane(TestCase):
@@ -319,8 +313,6 @@ class TPane(TestCase):
         self.pane.fill(SONGS)
         self.assertEqual(self.pane.get_selected(), keys)
 
-add(TPane)
-
 
 class TMultiPane(TestCase):
 
@@ -360,8 +352,6 @@ class TMultiPane(TestCase):
         del self.p1
         del self.p2
         config.quit()
-
-add(TMultiPane)
 
 
 class TPaneModel(TestCase):
@@ -512,8 +502,6 @@ class TPaneModel(TestCase):
         self._verify_model(m)
         self.assertTrue(m.matches([len(m) - 1], UNKNOWN_ARTIST))
 
-add(TPaneModel)
-
 
 class TPanedPreferences(TestCase):
 
@@ -534,5 +522,3 @@ class TPanedPreferences(TestCase):
 
     def test_dialog(self):
         Preferences(None).destroy()
-
-add(TPanedPreferences)

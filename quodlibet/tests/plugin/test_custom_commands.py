@@ -8,7 +8,6 @@ from quodlibet.qltk.data_editors import JSONBasedEditor
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet import config
 
-from tests import add
 from tests.plugin import PluginTestCase
 
 
@@ -31,5 +30,3 @@ class TCustomCommands(PluginTestCase):
         ed = JSONBasedEditor(Command, self.commands, None, "title")
         ed.show_now()
         ed.destroy()
-
-add(TCustomCommands)

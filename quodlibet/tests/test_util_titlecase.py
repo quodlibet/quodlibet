@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.util import title
 
@@ -87,5 +87,3 @@ class Ttitle(TestCase):
 
     def test_apostrophe(self):
         self.failUnlessEqual(title("it's"), "It's")
-
-add(Ttitle)

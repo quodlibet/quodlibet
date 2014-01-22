@@ -1,4 +1,4 @@
-from tests import TestCase, add, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, mkstemp, AbstractTestCase
 
 import os
 import shutil
@@ -11,7 +11,7 @@ from quodlibet.formats.monkeysaudio import MonkeysAudioFile
 from quodlibet.formats.mpc import MPCFile
 
 
-class TAPEv2FileBase(TestCase):
+class TAPEv2FileBase(AbstractTestCase):
     def setUp(self):
         raise NotImplementedError
 
@@ -111,7 +111,6 @@ class TMPCFile(TAPEv2FileBase):
         os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mpc'), self.f)
         self.s = MPCFile(self.f)
-add(TMPCFile)
 
 
 class TMAFile(TAPEv2FileBase):
@@ -120,4 +119,3 @@ class TMAFile(TAPEv2FileBase):
         os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ape'), self.f)
         self.s = MonkeysAudioFile(self.f)
-add(TMAFile)

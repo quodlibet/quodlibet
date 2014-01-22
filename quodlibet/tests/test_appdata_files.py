@@ -7,14 +7,14 @@
 import os
 import subprocess
 
-from tests import TestCase, add, mkstemp
+from tests import TestCase, AbstractTestCase, mkstemp
 
 
 QLDATA_DIR = os.path.join(os.path.dirname(
     os.path.dirname(os.path.realpath(__file__))), "data")
 
 
-class _TAppDataFile(TestCase):
+class _TAppDataFile(AbstractTestCase):
     PATH = None
 
     def test_filename(self):
@@ -52,10 +52,6 @@ class _TAppDataFile(TestCase):
 class TQLAppDataFile(_TAppDataFile):
     PATH = os.path.join(QLDATA_DIR, "quodlibet.appdata.xml.in")
 
-add(TQLAppDataFile)
-
 
 class TEFAppDataFile(_TAppDataFile):
     PATH = os.path.join(QLDATA_DIR, "exfalso.appdata.xml.in")
-
-add(TEFAppDataFile)

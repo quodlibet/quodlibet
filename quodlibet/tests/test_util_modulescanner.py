@@ -1,4 +1,4 @@
-from tests import TestCase, add, mkdtemp
+from tests import TestCase, mkdtemp
 
 import imp
 import os
@@ -165,5 +165,3 @@ class TModuleScanner(TestCase):
         self.failUnlessEqual(added, ["somepkg"])
         self.failUnlessEqual(s.modules["somepkg"].module.main, 321)
         self.failUnlessEqual(s.modules["somepkg"].module.test, 123)
-
-add(TModuleScanner)

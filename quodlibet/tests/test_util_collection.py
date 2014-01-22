@@ -2,7 +2,7 @@ import shutil
 import os
 from quodlibet import config
 
-from tests import TestCase, add, mkdtemp
+from tests import TestCase, mkdtemp
 from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
@@ -219,8 +219,6 @@ class TAlbum(TestCase):
     def tearDown(self):
         config.quit()
 
-add(TAlbum)
-
 
 class TPlaylist(TestCase):
     TWO_SONGS = [
@@ -414,6 +412,3 @@ class TPlaylist(TestCase):
         self.failUnless(pl.has_duplicates,
                         ("Playlist has un-detected duplicates: %s "
                          % "\n".join([str(s) for s in pl._list])))
-
-
-add(TPlaylist)

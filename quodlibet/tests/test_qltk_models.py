@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
@@ -116,8 +116,6 @@ class TObjectStore(TestCase):
         m.remove(iter_)
         self.assertTrue(m.is_empty())
 
-add(TObjectStore)
-
 
 class TObjectTreeStore(TestCase):
     def test_validate(self):
@@ -145,8 +143,6 @@ class TObjectTreeStore(TestCase):
         m = ObjectStore()
         self.failUnless(m.append(None))
 
-add(TObjectTreeStore)
-
 
 class TObjectModelFilter(TestCase):
     def test_iter_values(self):
@@ -168,8 +164,6 @@ class TObjectModelFilter(TestCase):
         f.set_visible_func(filter_func)
         f.refilter()
         self.failUnlessEqual(range(0, 10, 2), list(f.itervalues()))
-
-add(TObjectModelFilter)
 
 
 class TObjectModelSort(TestCase):
@@ -193,5 +187,3 @@ class TObjectModelSort(TestCase):
 
         self.failUnlessEqual(sorted(range(10), reverse=True),
                              list(f.itervalues()))
-
-add(TObjectModelSort)

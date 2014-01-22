@@ -6,7 +6,7 @@
 
 from gi.repository import Gtk
 
-from tests import TestCase, add
+from tests import TestCase
 from quodlibet import const
 
 
@@ -21,5 +21,3 @@ class TIconTheme(TestCase):
             "quodlibet", "exfalso", "quodlibet-missing-cover",
             "media-eject", "multimedia-player-ipod", "user-trash"]:
             self.failUnless(theme.has_icon(i))
-
-add(TIconTheme)

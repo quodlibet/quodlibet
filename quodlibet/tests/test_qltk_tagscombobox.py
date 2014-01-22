@@ -1,9 +1,9 @@
-from tests import TestCase, add
+from tests import TestCase, AbstractTestCase
 
 from quodlibet.formats import USEFUL_TAGS
 
 
-class TagsCombo(TestCase):
+class TagsCombo(AbstractTestCase):
     def setUp(self):
         self.all = self.Kind()
         self.some = self.Kind(["artist", "album", "~people", "foobar"])
@@ -29,7 +29,6 @@ class TagsCombo(TestCase):
 
 class TTagsComboBox(TagsCombo):
     from quodlibet.qltk.tagscombobox import TagsComboBox as Kind
-add(TTagsComboBox)
 
 
 class TTagsComboBoxEntry(TagsCombo):
@@ -38,4 +37,3 @@ class TTagsComboBoxEntry(TagsCombo):
     def test_custom(self):
         self.all.get_child().set_text("a new tag")
         self.failUnlessEqual(self.all.tag, "a new tag")
-add(TTagsComboBoxEntry)

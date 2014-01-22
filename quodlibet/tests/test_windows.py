@@ -6,7 +6,7 @@
 
 import os
 
-from tests import TestCase, add, DATA_DIR
+from tests import TestCase, DATA_DIR, skip
 
 from quodlibet import windows
 
@@ -39,5 +39,5 @@ class TWindows(TestCase):
         self.assertTrue(isinstance(d, unicode))
 
 
-if os.name == "nt":
-    add(TWindows)
+if os.name != "nt":
+    TWindows = skip(TWindows, "Wrong platform")

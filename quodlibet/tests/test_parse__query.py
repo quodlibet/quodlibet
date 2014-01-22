@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.parse import Query
 
@@ -98,7 +98,6 @@ class TQuery_is_valid(TestCase):
 
     def test_nesting(self):
         self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
-add(TQuery_is_valid)
 
 
 class TQuery(TestCase):
@@ -288,8 +287,6 @@ class TQuery(TestCase):
         self.failUnless(Query(u"filename=foü.ogg").search(self.s3))
         self.failUnless(Query(u"filename=öä").search(self.s3))
 
-add(TQuery)
-
 
 class TQuery_is_valid_color(TestCase):
     def test_red(self):
@@ -303,4 +300,3 @@ class TQuery_is_valid_color(TestCase):
     def test_green(self):
         for p in ["a = /b/", "&(a = b, c = d)", "/abc/", "!x", "!&(abc, def)"]:
             self.failUnlessEqual(True, Query.is_valid_color(p))
-add(TQuery_is_valid_color)

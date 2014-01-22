@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 from helper import visible
 
 from gi.repository import Gtk
@@ -10,7 +10,6 @@ from quodlibet import config
 class Window(TestCase):
     def test_ctr(self):
         x.Window().destroy()
-add(Window)
 
 
 class Notebook(TestCase):
@@ -35,26 +34,22 @@ class Notebook(TestCase):
         self.failUnlessRaises(TypeError, n.append_page, w)
         w.destroy()
         n.destroy()
-add(Notebook)
 
 
 class Frame(TestCase):
     def test_label(self):
         self.failUnlessEqual(
             x.Frame("foo").get_label_widget().get_text(), "foo")
-add(Frame)
 
 
 class MenuItem(TestCase):
     def test_ctr(self):
         self.failUnless(x.MenuItem("foo", Gtk.STOCK_FIND))
-add(MenuItem)
 
 
 class Button(TestCase):
     def test_ctr(self):
         self.failUnless(x.Button("foo", Gtk.STOCK_FIND))
-add(Button)
 
 
 class RPaned(object):
@@ -92,12 +87,10 @@ class RPaned(object):
 
 class RHPaned(TestCase, RPaned):
     Kind = x.RHPaned
-add(RHPaned)
 
 
 class RVPaned(TestCase, RPaned):
     Kind = x.RVPaned
-add(RVPaned)
 
 
 class TConfigRPaned(TestCase):
@@ -122,8 +115,6 @@ class TConfigRPaned(TestCase):
         config_value = config.getfloat("memory", "foobar")
         self.failUnlessAlmostEqual(config_value, 0.10, 2)
 
-add(TConfigRPaned)
-
 
 class TAlignment(TestCase):
     def test_ctr(self):
@@ -132,11 +123,9 @@ class TAlignment(TestCase):
         self.failUnlessEqual(a.get_padding(), (7, 0, 4, 6))
         self.failUnless(a.get_child() is button)
         a.destroy()
-add(TAlignment)
 
 
 class TScrolledWindow(TestCase):
     def test_ctr(self):
         w = x.ScrolledWindow()
         w.destroy()
-add(TScrolledWindow)

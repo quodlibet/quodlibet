@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.util.fmps import *
 
@@ -291,5 +291,3 @@ class TFmps(TestCase):
         a = AlbumsCompilations(a.to_data())
         a = AlbumsCompilations(a.to_data())
         self.failUnlessEqual(a.get_all("a", "b"), ["c"])
-
-add(TFmps)

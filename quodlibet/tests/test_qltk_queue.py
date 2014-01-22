@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -20,4 +20,3 @@ class TQueueExpander(TestCase):
     def tearDown(self):
         self.queue.destroy()
         quodlibet.config.quit()
-add(TQueueExpander)

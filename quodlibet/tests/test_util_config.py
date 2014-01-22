@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from tests import TestCase, add, mkstemp
+from tests import TestCase, mkstemp
 
 from quodlibet.util.config import Config, Error
 
@@ -116,5 +116,3 @@ class TConfig(TestCase):
         vals = [" ", "  ", " \t ", " \n \n"]
         conf.setstringlist("foo", "bar", vals)
         self.failUnlessEqual(conf.getstringlist("foo", "bar"), vals)
-
-add(TConfig)

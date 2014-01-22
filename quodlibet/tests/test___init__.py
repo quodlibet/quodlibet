@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 import quodlibet
 from quodlibet import config
@@ -25,5 +25,3 @@ class TQuodlibet(TestCase):
         self.assertTrue(quodlibet.is_first_session("quodlibet"))
         quodlibet.finish_first_session("quodlibet")
         self.assertFalse(quodlibet.is_first_session("quodlibet"))
-
-add(TQuodlibet)

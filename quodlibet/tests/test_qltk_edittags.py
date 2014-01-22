@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.edittags import *
 from quodlibet.library import SongLibrary
@@ -27,5 +27,3 @@ class TEditTags(TestCase):
     def test_addtag_dialog(self):
         lib = SongLibrary()
         AddTagDialog(None, ["artist"], lib).destroy()
-
-add(TEditTags)

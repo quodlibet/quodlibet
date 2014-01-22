@@ -4,7 +4,6 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-from tests import add
 from tests.plugin import PluginTestCase
 
 from quodlibet import config
@@ -38,5 +37,3 @@ class THTMLExport(PluginTestCase):
 
     def tearDown(self):
         config.quit()
-
-add(THTMLExport)

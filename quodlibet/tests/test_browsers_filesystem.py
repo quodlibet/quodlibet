@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.browsers.filesystem import FileSystem
 from quodlibet.player.nullbe import NullPlayer
@@ -19,4 +19,3 @@ class TFileSystem(TestCase):
     def tearDown(self):
         self.bar.destroy()
         quodlibet.config.quit()
-add(TFileSystem)

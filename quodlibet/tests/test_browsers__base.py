@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk
 
-from tests import TestCase, add
+from tests import TestCase, AbstractTestCase
 from helper import realized
 
 import quodlibet.browsers
@@ -45,10 +45,9 @@ class TBrowser(TestCase):
 
     def tearDown(self):
         self.browser = None
-add(TBrowser)
 
 
-class TBrowserBase(TestCase):
+class TBrowserBase(AbstractTestCase):
     Kind = None
 
     def setUp(self):
@@ -124,4 +123,4 @@ for browser in quodlibet.browsers.browsers:
     name = "TB" + browser.__name__
     new_test = type(name, (TBrowserBase,), {})
     new_test.Kind = browser
-    add(new_test)
+    globals()[name] = new_test

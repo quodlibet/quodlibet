@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import fnmatch
+import inspect
 from math import log
 import os
 import sys
@@ -10,7 +11,6 @@ from quodlibet.util.dprint import Colorise, print_
 from quodlibet.util.path import fsnative
 
 from unittest import TestCase as OrigTestCase
-suites = []
 
 
 class TestCase(OrigTestCase):
@@ -23,6 +23,24 @@ class TestCase(OrigTestCase):
     failUnlessAlmostEqual = OrigTestCase.assertAlmostEqual
     failIfEqual = OrigTestCase.assertNotEqual
     failIfAlmostEqual = OrigTestCase.assertNotAlmostEqual
+
+
+class AbstractTestCase(TestCase):
+    """If a class is a direct subclass of this one it gets skipped"""
+
+
+skipped = []
+skipped_reason = {}
+
+
+def skip(cls, reason=None):
+    assert inspect.isclass(cls)
+
+    skipped.append(cls)
+    if reason:
+        skipped_reason[cls] = reason
+
+    return cls
 
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
@@ -47,11 +65,6 @@ def mkdtemp(*args, **kwargs):
 def mkstemp(*args, **kwargs):
     fd, filename = _wrap_tempfile(tempfile.mkstemp)(*args, **kwargs)
     return (fd, fsnative(filename))
-
-
-def add(t):
-    assert issubclass(t, TestCase)
-    suites.append(t)
 
 
 class Result(unittest.TestResult):
@@ -137,16 +150,48 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
             GLib.LogLevelFlags.LEVEL_ERROR |
             GLib.LogLevelFlags.LEVEL_WARNING)
 
+    suites = []
+    abstract = []
+
+    def discover_tests(mod):
+        for k in vars(mod):
+            value = getattr(mod, k)
+
+            if value not in (TestCase, AbstractTestCase) and \
+                    inspect.isclass(value) and issubclass(value, TestCase):
+                if AbstractTestCase in value.__bases__:
+                    abstract.append(value)
+                elif value not in skipped:
+                    suites.append(value)
+
     if main:
         for name in os.listdir(path):
             if fnmatch.fnmatch(name, "test_*.py"):
-                __import__(".".join([__name__, name[:-3]]), {}, {}, [])
+                mod = __import__(".".join([__name__, name[:-3]]), {}, {}, [])
+                discover_tests(getattr(mod, name[:-3]))
 
     for subdir in subdirs:
         sub_path = os.path.join(path, subdir)
         for name in os.listdir(sub_path):
             if fnmatch.fnmatch(name, "test_*.py"):
-                __import__(".".join([__name__, subdir, name[:-3]]), {}, {}, [])
+                mod = __import__(
+                    ".".join([__name__, subdir, name[:-3]]), {}, {}, [])
+                discover_tests(getattr(getattr(mod, subdir), name[:-3]))
+
+    # check if each abstract class is actually used (also by skipped ones)
+    unused_abstract = set(abstract)
+    for case in suites:
+        unused_abstract -= set(case.__mro__)
+    for case in skipped:
+        unused_abstract -= set(case.__mro__)
+    if unused_abstract:
+        raise Exception("The following abstract test cases have no "
+                        "implementation: %r" % list(unused_abstract))
+
+    for case in skipped:
+        name = "%s.%s" % (case.__module__, case.__name__)
+        reason = skipped_reason.get(case, "??")
+        print_w("Skipped test: %s (%s)" % (name, reason))
 
     # create a user dir in /tmp
     _TEMP_DIR = tempfile.mkdtemp(prefix="QL-TEST-")

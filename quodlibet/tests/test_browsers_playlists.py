@@ -1,6 +1,6 @@
 from quodlibet.browsers.playlists.util import parse_m3u, parse_pls
 from quodlibet.util.collection import Playlist
-from tests import TestCase, add, DATA_DIR, mkstemp, mkdtemp
+from tests import TestCase, AbstractTestCase, DATA_DIR, mkstemp, mkdtemp
 
 import os
 import shutil
@@ -14,7 +14,7 @@ from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 
 
-class TParsePlaylist(TestCase):
+class TParsePlaylist(AbstractTestCase):
     def setUp(self):
         quodlibet.config.init()
 
@@ -64,13 +64,11 @@ class TParsePlaylist(TestCase):
 class TParseM3U(TParsePlaylist):
     Parse = staticmethod(parse_m3u)
     prefix = ""
-add(TParseM3U)
 
 
 class TParsePLS(TParsePlaylist):
     Parse = staticmethod(parse_pls)
     prefix = "File1="
-add(TParsePLS)
 
 
 class TPlaylistIntegration(TestCase):
@@ -142,9 +140,6 @@ class TPlaylistIntegration(TestCase):
         self.failUnlessEqual(len(self.pl), len(self.SONGS) - 1)
 
 
-add(TPlaylistIntegration)
-
-
 class TPlaylists(TestCase):
     def setUp(self):
         quodlibet.config.init()
@@ -159,4 +154,3 @@ class TPlaylists(TestCase):
         self.bar.destroy()
         self.library.destroy()
         quodlibet.config.quit()
-add(TPlaylists)

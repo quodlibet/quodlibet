@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.parse._match import map_numeric_op, ParseError
 
@@ -83,5 +83,3 @@ class TNumericOp(TestCase):
         o, v = map_numeric_op("playcount", "<=", "5")
         self.failUnless(o(5, v))
         self.failIf(o(5.01, v))
-
-add(TNumericOp)

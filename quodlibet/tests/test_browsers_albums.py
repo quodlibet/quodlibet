@@ -6,7 +6,7 @@
 
 from gi.repository import Gtk
 
-from tests import TestCase, add
+from tests import TestCase
 from helper import realized
 
 from quodlibet import config
@@ -122,5 +122,3 @@ class TAlbumBrowser(TestCase):
         self.bar.disconnect(self._id)
         self.bar.disconnect(self._id2)
         config.quit()
-
-add(TAlbumBrowser)

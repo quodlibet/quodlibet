@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase, add
+from tests import TestCase, AbstractTestCase
 
 import os
 
@@ -8,7 +8,7 @@ from quodlibet.parse import (FileFromPattern, XMLFromPattern, Pattern,
     XMLFromMarkupPattern)
 
 
-class _TPattern(TestCase):
+class _TPattern(AbstractTestCase):
     from quodlibet.formats._audio import AudioFile
 
     def setUp(self):
@@ -322,10 +322,3 @@ class TPatternFormatList(_TPattern):
 
         pat = Pattern('')
         self.assertEqual(pat.format_list(self.a), set([""]))
-
-add(TPattern)
-add(TFileFromPattern)
-add(TXMLFromPattern)
-add(TXMLFromMarkupPattern)
-add(TRealTags)
-add(TPatternFormatList)

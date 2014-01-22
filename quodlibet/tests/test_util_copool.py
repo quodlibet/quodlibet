@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -124,5 +124,3 @@ class Tcopool(TestCase):
         copool.resume("test")
         copool.remove("test")
         self.assertRaises(ValueError, copool.step, "test")
-
-add(Tcopool)

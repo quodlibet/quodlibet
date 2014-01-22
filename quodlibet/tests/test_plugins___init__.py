@@ -1,4 +1,4 @@
-from tests import TestCase, add, mkstemp
+from tests import TestCase, mkstemp
 
 import os
 
@@ -122,8 +122,6 @@ class TSongWrapper(TestCase):
         self.failUnlessEqual(self.psong["~bookmark"], "0:43 another mark")
         self.failUnlessEqual(self.psong.bookmarks, self.pwrap.bookmarks)
 
-add(TSongWrapper)
-
 
 class TListWrapper(TestCase):
     def test_empty(self):
@@ -139,4 +137,3 @@ class TListWrapper(TestCase):
         wrapped = ListWrapper([None, None])
         self.failUnless(len(wrapped) == 2)
         self.failUnlessEqual(wrapped, [None, None])
-add(TListWrapper)

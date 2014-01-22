@@ -1,5 +1,5 @@
 from quodlibet.config import RATINGS
-from tests import add, TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, skip, mkstemp, AbstractTestCase
 
 import os
 import sys
@@ -30,10 +30,8 @@ class TXiphPickle(TestCase):
         mod = sys.modules["formats.oggvorbis"]
         self.failUnless(mod.OggFile is OggFile)
 
-add(TXiphPickle)
 
-
-class TVCFile(TestCase):
+class TVCFile(AbstractTestCase):
     # Mixin to test Vorbis writing features
 
     def setUp(self):
@@ -133,7 +131,7 @@ class TVCFile(TestCase):
         self.failUnless(self.song.can_change())
 
 
-class TTotalTagsBase(TestCase):
+class TTotalTagsBase(AbstractTestCase):
     """Test conversation between the tracknumber/totaltracks/tracktotal
     format and the tracknumber="x/y" format.
 
@@ -260,14 +258,12 @@ class TTrackTotal(TTotalTagsBase):
     MAIN = "tracktotal"
     FALLBACK = "totaltracks"
     SINGLE = "tracknumber"
-add(TTrackTotal)
 
 
 class TDiscTotal(TTotalTagsBase):
     MAIN = "disctotal"
     FALLBACK = "totaldiscs"
     SINGLE = "discnumber"
-add(TDiscTotal)
 
 
 class TFLACFile(TVCFile):
@@ -302,10 +298,9 @@ class TFLACFile(TVCFile):
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
-add(TFLACFile)
 
 
-class TVCCover(TestCase):
+class TVCCover(AbstractTestCase):
     def setUp(self):
         config.init()
 
@@ -449,7 +444,6 @@ class TVCCoverOgg(TVCCover):
         shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
         self.MutagenType = OggVorbis
         self.QLType = OggFile
-add(TVCCoverOgg)
 
 
 class TVCCoverFlac(TVCCover):
@@ -460,7 +454,6 @@ class TVCCoverFlac(TVCCover):
         shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
         self.MutagenType = FLAC
         self.QLType = FLACFile
-add(TVCCoverFlac)
 
 
 class TFlacPicture(TestCase):
@@ -511,8 +504,6 @@ class TFlacPicture(TestCase):
         os.unlink(self.filename)
         config.quit()
 
-add(TFlacPicture)
-
 
 class TOggFile(TVCFile):
     def setUp(self):
@@ -525,7 +516,6 @@ class TOggFile(TVCFile):
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
-add(TOggFile)
 
 
 class TOggOpusFile(TVCFile):
@@ -544,5 +534,5 @@ class TOggOpusFile(TVCFile):
         os.unlink(self.filename)
         config.quit()
 
-if OggOpus:
-    add(TOggOpusFile)
+if not OggOpus:
+    TOggOpusFile = skip(TOggOpusFile, "Ogg Opus mutagen support missing")

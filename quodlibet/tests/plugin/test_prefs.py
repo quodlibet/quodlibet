@@ -6,7 +6,6 @@
 
 from gi.repository import Gtk
 
-from tests import add
 from tests.plugin import PluginTestCase
 from quodlibet import config
 
@@ -24,5 +23,3 @@ class TPrefs(PluginTestCase):
                 plugin = plugin()
             if hasattr(plugin, "PluginPreferences"):
                 plugin.PluginPreferences(Gtk.Window())
-
-add(TPrefs)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from quodlibet.config import RatingsPrefs
-from tests import TestCase, add, mkstemp
+from tests import TestCase, mkstemp
 from helper import capture_output
 
 from quodlibet import config
@@ -64,8 +64,6 @@ class Tconfig(TestCase):
     def tearDown(self):
         config.quit()
 
-add(Tconfig)
-
 
 class TRatingsPrefs(TestCase):
     initial_number = int(config.INITIAL["settings"]["ratings"])
@@ -105,5 +103,3 @@ class TRatingsPrefs(TestCase):
 
     def tearDown(self):
         config.quit()
-
-add(TRatingsPrefs)

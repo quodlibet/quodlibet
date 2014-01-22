@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 import os
 import sys
@@ -56,8 +56,6 @@ class TDirectoryTree(TestCase):
         main = MainDirectoryTree()
         self.assertTrue(len(main.get_model()))
 
-add(TDirectoryTree)
-
 
 class TFileSelector(TestCase):
 
@@ -100,5 +98,3 @@ class TFileSelector(TestCase):
 
     def test_main(self):
         MainFileSelector()
-
-add(TFileSelector)

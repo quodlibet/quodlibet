@@ -1,4 +1,4 @@
-from tests import TestCase, add, DATA_DIR
+from tests import TestCase, skip, DATA_DIR
 
 import os
 
@@ -15,7 +15,5 @@ class TModFile(TestCase):
     def test_title(self):
         self.failUnlessEqual("test song", self.song["title"])
 
-if extensions:
-    add(TModFile)
-else:
-    print "WARNING: Skipping ModFile tests. Install ModPlug."
+if not extensions:
+    TModFile = skip(TModFile, "ModPlug missing")

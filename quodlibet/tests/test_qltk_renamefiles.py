@@ -1,6 +1,6 @@
 import os
 
-from tests import TestCase, add
+from tests import TestCase, AbstractTestCase
 
 from quodlibet.qltk.renamefiles import (SpacesToUnderscores,
     StripWindowsIncompat)
@@ -8,7 +8,7 @@ from quodlibet.qltk.renamefiles import StripDiacriticals, StripNonASCII
 from quodlibet.qltk.renamefiles import Lowercase
 
 
-class TFilter(TestCase):
+class TFilter(AbstractTestCase):
     def setUp(self):
         self.c = self.Kind()
 
@@ -29,7 +29,6 @@ class TSpacesToUnderscores(TFilter):
 
     def test_conv(self):
         self.failUnlessEqual(self.c.filter("", "foo bar "), "foo_bar_")
-add(TSpacesToUnderscores)
 
 
 class TStripWindowsIncompat(TFilter):
@@ -54,7 +53,6 @@ class TStripWindowsIncompat(TFilter):
         else:
             self.failUnlessEqual(
                 self.c.filter("", u'foo. /bar .'), "foo._/bar _")
-add(TStripWindowsIncompat)
 
 
 class TStripDiacriticals(TFilter):
@@ -62,7 +60,6 @@ class TStripDiacriticals(TFilter):
 
     def test_conv(self):
         self.failUnlessEqual(self.c.filter("", u"\u00c1 test"), "A test")
-add(TStripDiacriticals)
 
 
 class TStripNonASCII(TFilter):
@@ -71,7 +68,6 @@ class TStripNonASCII(TFilter):
     def test_conv(self):
         self.failUnlessEqual(
             self.c.filter("", u"foo \u00c1 \u1234"), "foo _ _")
-add(TStripNonASCII)
 
 
 class TLowercase(TFilter):
@@ -82,4 +78,3 @@ class TLowercase(TFilter):
             self.c.filter("", u"foobar baz"), "foobar baz")
         self.failUnlessEqual(
             self.c.filter("", u"Foobar.BAZ"), "foobar.baz")
-add(TLowercase)

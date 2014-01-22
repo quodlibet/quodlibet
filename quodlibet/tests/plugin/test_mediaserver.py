@@ -8,7 +8,6 @@ from gi.repository import Gtk
 
 import dbus
 
-from tests import add
 from tests.plugin import PluginTestCase
 
 from quodlibet import library
@@ -66,6 +65,3 @@ class TMediaServer(PluginTestCase):
         self.failIf(
             bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
         del self.m
-
-
-add(TMediaServer)

@@ -4,7 +4,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import add
 from tests.plugin import PluginTestCase
 
 
@@ -14,5 +13,3 @@ class TTestPlugins(PluginTestCase):
         instance = plugin()
         instance.enabled()
         instance.disabled()
-
-add(TTestPlugins)

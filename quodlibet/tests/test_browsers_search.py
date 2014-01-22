@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -115,9 +115,7 @@ class TEmptyBar(TestCase):
         self.bar.destroy()
         quodlibet.browsers.search.library.destroy()
         quodlibet.config.quit()
-add(TEmptyBar)
 
 
 class TSearchBar(TEmptyBar):
     Bar = SearchBar
-add(TSearchBar)

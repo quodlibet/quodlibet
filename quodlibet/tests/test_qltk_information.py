@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary
@@ -42,4 +42,3 @@ class TInformation(TestCase):
     def tearDown(self):
         self.library.destroy()
         quodlibet.config.quit()
-add(TInformation)

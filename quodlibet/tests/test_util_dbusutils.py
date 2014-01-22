@@ -5,7 +5,7 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-from tests import TestCase, add
+from tests import TestCase, skip
 
 try:
     import dbus
@@ -130,5 +130,5 @@ class TDbusUtils(TestCase):
         self.failUnlessEqual(x.get_value("a1", "XXX"), "a2")
         self.failUnlessEqual(x.get_value("a1", "Position"), "a1")
 
-if dbus:
-    add(TDbusUtils)
+if not dbus:
+    TDbusUtils = skip(TDbusUtils, "dbus missing")

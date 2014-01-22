@@ -1,9 +1,9 @@
-from tests import TestCase, add
+from tests import TestCase, AbstractTestCase
 
 from quodlibet.qltk.msg import *
 
 
-class _TMessage(TestCase):
+class _TMessage(AbstractTestCase):
     def setUp(self):
         self.win = self.Kind(None, "title", "description")
 
@@ -16,17 +16,14 @@ class _TMessage(TestCase):
 
 class TWarningMessage(_TMessage):
     Kind = WarningMessage
-add(TWarningMessage)
 
 
 class TErrorMessage(_TMessage):
     Kind = ErrorMessage
-add(TErrorMessage)
 
 
 class TConfirmAction(_TMessage):
     Kind = ConfirmAction
-add(TConfirmAction)
 
 
 class TCancelRevertSave(TestCase):
@@ -38,4 +35,3 @@ class TCancelRevertSave(TestCase):
 
     def tearDown(self):
         self.win.destroy()
-add(TCancelRevertSave)

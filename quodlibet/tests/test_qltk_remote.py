@@ -1,4 +1,4 @@
-from tests import add, TestCase
+from tests import TestCase
 
 import os
 import unittest
@@ -44,7 +44,6 @@ class TFSInterface(TestCase):
             os.unlink(const.CURRENT)
         except EnvironmentError:
             pass
-add(TFSInterface)
 
 
 class TFIFOControl(TestCase):
@@ -115,5 +114,3 @@ class TFIFOControl(TestCase):
         #self.__send("status /dev/null")
         #self.__send("toggle-window")
         #self.__send("unqueue /dev/null")
-
-add(TFIFOControl)

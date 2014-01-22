@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -16,4 +16,3 @@ class TMmKeys(TestCase):
 
     def tearDown(self):
         self.win.destroy()
-add(TMmKeys)

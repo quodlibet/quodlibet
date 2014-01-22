@@ -10,7 +10,7 @@ import StringIO
 
 from mutagen import asf
 
-from tests import TestCase, add, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, mkstemp
 from quodlibet.formats.wma import WMAFile, unpack_image, pack_image
 from quodlibet.formats._image import APICType, EmbeddedImage
 
@@ -135,5 +135,3 @@ class TWMAFile(TestCase):
 
     def test_can_change_images(self):
         self.assertTrue(self.song.can_change_images)
-
-add(TWMAFile)

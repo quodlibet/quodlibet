@@ -1,6 +1,5 @@
 from quodlibet.util.collection import Album
 from quodlibet.formats._audio import AudioFile
-from tests import add
 from tests.plugin import PluginTestCase
 from quodlibet.util.dprint import print_d
 
@@ -87,5 +86,3 @@ class TRandomAlbum(PluginTestCase):
         weights['length'] = 0.5
         # A1 is #1 for Rating, #2 for lastplayed, #2 or 3 length
         self.failUnlessEqual(A1, self.get_winner(self.albums))
-
-add(TRandomAlbum)

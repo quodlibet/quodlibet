@@ -7,7 +7,6 @@
 from gi.repository import Gtk
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.cover import ALBUM_ART_PLUGIN_ID
-from tests import add
 from tests.plugin import PluginTestCase
 
 from quodlibet import library, config
@@ -44,5 +43,3 @@ class TAlbumArt(PluginTestCase):
     def testCoverArea(self):
         win = CoverArea(None, self.songs[0])
         win.destroy()
-
-add(TAlbumArt)

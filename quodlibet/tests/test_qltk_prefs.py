@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet import config
@@ -18,4 +18,3 @@ class TPreferencesWindow(TestCase):
     def tearDown(self):
         self.win.destroy()
         config.quit()
-add(TPreferencesWindow)

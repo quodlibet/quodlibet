@@ -2,7 +2,7 @@ import json
 import os
 
 from quodlibet.util.json_data import JSONObjectDict, JSONObject
-from tests import TestCase, add, mkstemp
+from tests import TestCase, mkstemp
 from helper import capture_output
 
 
@@ -94,5 +94,3 @@ class TJsonData(TestCase):
         self.failUnlessEqual(len(data), len(lst))
         self.failUnless("baz man!" in data)
         self.failUnlessEqual(baz_man, data["baz man!"])
-
-add(TJsonData)

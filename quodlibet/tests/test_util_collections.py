@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 from quodlibet.util.collections import HashedList, DictProxy
 
 
@@ -93,8 +93,6 @@ class TDictMixin(TestCase):
         self.failUnlessEqual(self.fdict, self.rdict)
         self.failUnlessEqual(self.rdict, self.fdict)
 
-add(TDictMixin)
-
 
 class THashedList(TestCase):
     def test_init(self):
@@ -154,5 +152,3 @@ class THashedList(TestCase):
         self.failIf(l.has_duplicates())
         l.append(5)
         self.failUnless(l.has_duplicates())
-
-add(THashedList)

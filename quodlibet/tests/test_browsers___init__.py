@@ -1,5 +1,5 @@
 import sys
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet import browsers
 browsers.init()
@@ -30,4 +30,3 @@ class TBrowsers(TestCase):
             sys.modules["browsers.audiofeeds"] is browsers.audiofeeds)
         self.failUnless(
             sys.modules["browsers.iradio"] is browsers.iradio)
-add(TBrowsers)

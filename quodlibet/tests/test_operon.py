@@ -10,7 +10,7 @@ import imp
 import shutil
 import sys
 
-from tests import TestCase, add, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, mkstemp
 from helper import capture_output
 
 import quodlibet
@@ -83,7 +83,6 @@ class TOperonMain(TOperonBase):
         self.check_true(["-v", "help", "help"], True, False)
         self.check_false(["--foobar", "help", "help"], False, True)
         self.check_true(["--version"], True, False)
-add(TOperonMain)
 
 
 class TOperonAdd(TOperonBase):
@@ -120,7 +119,6 @@ class TOperonAdd(TOperonBase):
                              False, True)
         finally:
             os.chmod(self.f, 0666)
-add(TOperonAdd)
 
 
 class TOperonPrint(TOperonBase):
@@ -146,7 +144,6 @@ class TOperonPrint(TOperonBase):
         os.chmod(self.f, 0000)
         self.check_false(["print", "-p", "<title>", self.f],
                          False, True)
-add(TOperonPrint)
 
 
 class TOperonRemove(TOperonBase):
@@ -193,8 +190,6 @@ class TOperonRemove(TOperonBase):
         self.s.reload()
         self.failIf(self.s.list("test"))
 
-add(TOperonRemove)
-
 
 class TOperonClear(TOperonBase):
     # [--dry-run] [-a | -e <pattern> | <tag>] <file> [<files>]
@@ -240,7 +235,6 @@ class TOperonClear(TOperonBase):
         self.check(["clear", "artist", self.f], True, output=False)
         self.s.reload()
         self.failUnlessEqual(len(self.s.realkeys()), old_len - 1)
-add(TOperonClear)
 
 
 class TOperonSet(TOperonBase):
@@ -269,7 +263,6 @@ class TOperonSet(TOperonBase):
         self.check_true(["set", "artist", "foobar", self.f], False, False)
         self.s.reload()
         self.failUnlessEqual(self.s["artist"], "foobar")
-add(TOperonSet)
 
 
 class TOperonDump(TOperonBase):
@@ -284,7 +277,6 @@ class TOperonDump(TOperonBase):
         o, e = self.check_true(["dump", self.f], True, False)
         internal = filter(lambda x: x.startswith("~"), o.splitlines())
         self.failIf(internal)
-add(TOperonDump)
 
 
 class TOperonCopy(TOperonBase):
@@ -326,7 +318,6 @@ class TOperonCopy(TOperonBase):
         self.check_true(["copy", "--dry-run", self.f, self.f2], False, True)
         self.s2.reload()
         self.failIf(self.s2.realkeys())
-add(TOperonCopy)
 
 
 class TOperonInfo(TOperonBase):
@@ -352,7 +343,6 @@ class TOperonInfo(TOperonBase):
         self.check_true(["info", "-t", "-cdesc,value", self.f], True, False)
         self.check_true(["info", "-t", "-cvalue, desc", self.f], True, False)
         self.check_false(["info", "-t", "-cfoo", self.f], False, True)
-add(TOperonInfo)
 
 
 class TOperonList(TOperonBase):
@@ -385,7 +375,6 @@ class TOperonList(TOperonBase):
         d = self.check_true(["list", "-t", "-cvalue", self.f], True, False)[0]
         lines = d.splitlines()
         self.assertTrue("a\\:bc\\\\\\:" in lines)
-add(TOperonList)
 
 
 class TOperonTags(TOperonBase):
@@ -408,7 +397,6 @@ class TOperonTags(TOperonBase):
         self.check_true(["tags", "-t", "-cdesc,tag"], True, False)
         self.check_true(["tags", "-t", "-ctag, desc"], True, False)
         self.check_false(["tags", "-t", "-cfoo"], False, True)
-add(TOperonTags)
 
 
 class TOperonImageExtract(TOperonBase):
@@ -470,8 +458,6 @@ class TOperonImageExtract(TOperonBase):
         with open(expected_path, "rb") as h:
             self.assertEqual(h.read(), image.file.read())
 
-add(TOperonImageExtract)
-
 
 class TOperonImageSet(TOperonBase):
     # <image-file> <file> [<files>]
@@ -520,8 +506,6 @@ class TOperonImageSet(TOperonBase):
         with open(self.filename, "rb") as h:
             self.assertEqual(h.read(), images[0].file.read())
 
-add(TOperonImageSet)
-
 
 class TOperonImageClear(TOperonBase):
     # <image-file> <file> [<files>]
@@ -556,5 +540,3 @@ class TOperonImageClear(TOperonBase):
         self.cover.reload()
         images = self.cover.get_images()
         self.assertEqual(len(images), 0)
-
-add(TOperonImageClear)

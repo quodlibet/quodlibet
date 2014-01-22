@@ -5,7 +5,7 @@ import shutil
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 
-from tests import TestCase, add, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR, mkstemp
 
 from quodlibet.library.libraries import *
 
@@ -226,7 +226,6 @@ class TLibrary(TestCase):
 
     def tearDown(self):
         self.library.destroy()
-add(TLibrary)
 
 
 class TPicklingMixin(TestCase):
@@ -263,7 +262,6 @@ class TPicklingMixin(TestCase):
                 sorted(self.library.items()), sorted(library.items()))
         finally:
             os.unlink(filename)
-add(TPicklingMixin)
 
 
 class TSongLibrary(TLibrary):
@@ -297,7 +295,6 @@ class TSongLibrary(TLibrary):
         self.failUnlessEqual(sorted(self.library.tag_values(10)), range(10))
         self.failUnlessEqual(sorted(self.library.tag_values(0)), [])
         self.failIf(self.changed or self.added or self.removed)
-add(TSongLibrary)
 
 
 class TFileLibrary(TLibrary):
@@ -357,8 +354,6 @@ class TFileLibrary(TLibrary):
         new._mounted = True
         self.library._load_init([new])
         self.failUnlessEqual(self.library.values(), [new])
-
-add(TFileLibrary)
 
 
 class TSongFileLibrary(TSongLibrary):
@@ -454,8 +449,6 @@ class TSongFileLibrary(TSongLibrary):
         finally:
             config.quit()
 
-add(TSongFileLibrary)
-
 
 class TAlbumLibrary(TestCase):
     Fake = FakeSong
@@ -545,8 +538,6 @@ class TAlbumLibrary(TestCase):
         # It shouldn't implement FileLibrary etc
         self.failIf(getattr(self.library, "filename", None))
 
-add(TAlbumLibrary)
-
 
 class TAlbumLibrarySignals(TestCase):
     def setUp(self):
@@ -603,5 +594,3 @@ class TAlbumLibrarySignals(TestCase):
         for s in self._sigs:
             self.lib.disconnect(s)
         self.lib.destroy()
-
-add(TAlbumLibrarySignals)

@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet import config
 from quodlibet.qltk.ccb import ConfigCheckButton, ConfigCheckMenuItem
@@ -37,8 +37,6 @@ class TConfigCheckButton(TestCase):
             Gtk.main_iteration()
         self.failIf(c.get_active())
 
-add(TConfigCheckButton)
-
 
 class TConfigCheckMenuItem(TestCase):
     def setUp(self):
@@ -70,5 +68,3 @@ class TConfigCheckMenuItem(TestCase):
         while Gtk.events_pending():
             Gtk.main_iteration()
         self.failIf(c.get_active())
-
-add(TConfigCheckMenuItem)

@@ -6,7 +6,7 @@
 
 import os
 
-from tests import TestCase, add, DATA_DIR
+from tests import TestCase, DATA_DIR
 from quodlibet.formats.midi import MidiFile
 
 
@@ -33,5 +33,3 @@ class TMidiFile(TestCase):
     def test_invalid(self):
         path = os.path.join(DATA_DIR, 'empty.xm')
         self.failUnlessRaises(Exception, MidiFile, path)
-
-add(TMidiFile)

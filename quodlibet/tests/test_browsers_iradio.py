@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.library import SongLibrary
 from quodlibet.formats._audio import AudioFile
@@ -21,7 +21,6 @@ class TInternetRadio(TestCase):
     def tearDown(self):
         self.bar.destroy()
         quodlibet.config.quit()
-add(TInternetRadio)
 
 
 class TIRFile(TestCase):
@@ -84,5 +83,3 @@ class TIRFile(TestCase):
         new.from_dump(dump)
         self.assertTrue("title" not in new)
         self.assertTrue("artist" not in new)
-
-add(TIRFile)

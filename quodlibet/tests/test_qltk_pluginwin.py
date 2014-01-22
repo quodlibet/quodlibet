@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 from tests.helper import realized
 
 from quodlibet import plugins
@@ -71,5 +71,3 @@ class TPluginWindow(TestCase):
     def tearDown(self):
         plugins.quit()
         config.quit()
-
-add(TPluginWindow)

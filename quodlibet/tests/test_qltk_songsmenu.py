@@ -1,4 +1,4 @@
-from tests import TestCase, add
+from tests import TestCase
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary
@@ -102,4 +102,3 @@ class TSongsMenu(TestCase):
             pass
         else:
             del(self.menu)
-add(TSongsMenu)
