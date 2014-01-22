@@ -37,7 +37,7 @@ class _TAppDataFile(TestCase):
 
         # pass to desktop-file-validate
         try:
-            output = subprocess.check_output(
+            subprocess.check_output(
                 ["appdata-validate", "--nonet", name],
                 stderr=subprocess.STDOUT)
         except OSError:
