@@ -714,3 +714,16 @@ class Tatomic_save(TestCase):
         with open(filename, "rb") as fobj:
             self.assertEqual(fobj.read(), "foo")
         self.assertFalse(os.path.exists(filename + ".tmp"))
+
+
+class Tescape_filename(TestCase):
+
+    def test_str(self):
+        result = escape_filename("\x00\x01")
+        self.assertEqual(result, "%00%01")
+        self.assertTrue(is_fsnative(result))
+
+    def test_unicode(self):
+        result = escape_filename(u'abc\xe4')
+        self.assertEqual(result, "abc%C3%A4")
+        self.assertTrue(is_fsnative(result))

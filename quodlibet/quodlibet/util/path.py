@@ -125,10 +125,15 @@ def filesize(filename):
 
 
 def escape_filename(s):
-    """Escape a string in a manner suitable for a filename."""
+    """Escape a string in a manner suitable for a filename.
+
+    Takes unicode or str and returns a fsnative path.
+    """
+
     if isinstance(s, unicode):
         s = s.encode("utf-8")
-    return urllib.quote(s, safe="").decode("utf-8")
+
+    return fsnative(urllib.quote(s, safe=""))
 
 
 def unescape_filename(s):
