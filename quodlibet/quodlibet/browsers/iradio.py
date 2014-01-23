@@ -37,7 +37,8 @@ from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
 from quodlibet.qltk.menubutton import MenuButton
 
-STATION_LIST_URL = "http://quodlibet.googlecode.com/files/radiolist.bz2"
+STATION_LIST_URL = \
+    "http://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
 STATIONS_FAV = os.path.join(const.USERDIR, "stations")
 STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
 
