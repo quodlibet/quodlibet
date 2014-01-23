@@ -9,11 +9,23 @@ import StringIO
 
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
-from quodlibet.formats._image import EmbeddedImage
+from quodlibet.formats._image import EmbeddedImage, APICType
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
 from mutagen.oggvorbis import OggVorbis
+
+
+def _get_jpeg(size=5):
+    from gi.repository import GdkPixbuf
+    pb = GdkPixbuf.Pixbuf.new(
+        GdkPixbuf.Colorspace.RGB, False, 8, size, size)
+    fd, fn = mkstemp()
+    pb.savev(fn, "jpeg", [], [])
+    with os.fdopen(fd) as h:
+        data = h.read()
+    os.unlink(fn)
+    return data
 
 
 class TXiphPickle(TestCase):
@@ -304,17 +316,6 @@ class TVCCover(AbstractTestCase):
     def setUp(self):
         config.init()
 
-    def __get_jpeg(self, size=5):
-        from gi.repository import GdkPixbuf
-        pb = GdkPixbuf.Pixbuf.new(
-            GdkPixbuf.Colorspace.RGB, False, 8, size, size)
-        fd, fn = mkstemp()
-        pb.savev(fn, "jpeg", [], [])
-        with os.fdopen(fd) as h:
-            data = h.read()
-        os.unlink(fn)
-        return data
-
     def test_can_change_images(self):
         song = self.QLType(self.filename)
         self.assertTrue(song.can_change_images)
@@ -324,8 +325,34 @@ class TVCCover(AbstractTestCase):
         self.failIf(song("~picture"))
         self.failIf(song.get_primary_image())
 
+    def test_get_images(self):
+        # coverart + coverartmime
+        data = _get_jpeg()
+        song = self.MutagenType(self.filename)
+        song["coverart"] = base64.b64encode(data)
+        song["coverartmime"] = "image/jpeg"
+        song.save()
+
+        song = self.QLType(self.filename)
+        self.assertEqual(len(song.get_images()), 1)
+        self.assertEqual(song.get_images()[0].mime_type, "image/jpeg")
+
+        # metadata_block_picture
+        pic = Picture()
+        pic.data = _get_jpeg()
+        pic.type = APICType.COVER_FRONT
+        b64pic_cover = base64.b64encode(pic.write())
+
+        song = self.MutagenType(self.filename)
+        song["metadata_block_picture"] = [b64pic_cover]
+        song.save()
+
+        song = self.QLType(self.filename)
+        self.assertEqual(len(song.get_images()), 2)
+        self.assertEqual(song.get_images()[0].type, APICType.COVER_FRONT)
+
     def test_handle_old_coverart(self):
-        data = self.__get_jpeg()
+        data = _get_jpeg()
         song = self.MutagenType(self.filename)
         song["coverart"] = base64.b64encode(data)
         song["coverartmime"] = "image/jpeg"
@@ -337,6 +364,7 @@ class TVCCover(AbstractTestCase):
         self.failIf(song("coverartmime"))
         song.write()
 
+        self.assertEqual(song.get_primary_image().mime_type, "image/jpeg")
         fn = song.get_primary_image().file
         cov_data = fn.read()
         self.failUnlessEqual(data, cov_data)
@@ -363,13 +391,13 @@ class TVCCover(AbstractTestCase):
 
     def test_handle_picture_block(self):
         pic = Picture()
-        pic.data = self.__get_jpeg()
-        pic.type = 3
+        pic.data = _get_jpeg()
+        pic.type = APICType.COVER_FRONT
         b64pic_cover = base64.b64encode(pic.write())
 
         pic2 = Picture()
-        pic2.data = self.__get_jpeg(size=6)
-        pic2.type = 4
+        pic2.data = _get_jpeg(size=6)
+        pic2.type = APICType.COVER_BACK
         b64pic_other = base64.b64encode(pic2.write())
 
         song = self.MutagenType(self.filename)
@@ -410,7 +438,7 @@ class TVCCover(AbstractTestCase):
         self.failUnlessEqual(song["metadata_block_picture"][0], crap)
 
     def test_set_image(self):
-        data = self.__get_jpeg()
+        data = _get_jpeg()
         song = self.MutagenType(self.filename)
         song["coverart"] = base64.b64encode(data)
         song["coverartmime"] = "image/jpeg"
@@ -462,6 +490,33 @@ class TFlacPicture(TestCase):
         h, self.filename = mkstemp(".flac")
         os.close(h)
         shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
+
+    def test_get_images(self):
+        pic = Picture()
+        pic.data = _get_jpeg()
+        pic.type = APICType.COVER_FRONT
+        b64pic_cover = base64.b64encode(pic.write())
+
+        # metadata_block_picture
+        song = FLAC(self.filename)
+        song["metadata_block_picture"] = [b64pic_cover]
+        song.save()
+
+        song = FLACFile(self.filename)
+        self.assertEqual(len(song.get_images()), 1)
+        self.assertEqual(song.get_images()[0].type, APICType.COVER_FRONT)
+
+        # flac Picture
+        song = FLAC(self.filename)
+        pic = Picture()
+        pic.data = _get_jpeg()
+        pic.type = APICType.COVER_BACK
+        song.add_picture(pic)
+        song.save()
+
+        song = FLACFile(self.filename)
+        self.assertEqual(len(song.get_images()), 2)
+        self.assertEqual(song.get_images()[-1].type, APICType.COVER_BACK)
 
     def test_get_image(self):
         data = "abc"

@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2013 Christoph Reiter
+#           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -105,11 +105,44 @@ class MutagenVCFile(AudioFile):
         self.__post_read_total("tracktotal", "totaltracks", "tracknumber")
         self.__post_read_total("disctotal", "totaldiscs", "discnumber")
 
+    def get_images(self):
+        try:
+            audio = self.MutagenType(self["~filename"])
+        except EnvironmentError:
+            return []
+
+        # metadata_block_picture
+        images = []
+        for data in audio.get("metadata_block_picture", []):
+            try:
+                cover = Picture(base64.b64decode(data))
+            except TypeError:
+                continue
+
+            f = get_temp_cover_file(cover.data)
+            images.append(EmbeddedImage(
+                f, cover.mime, cover.width, cover.height, cover.depth,
+                cover.type))
+
+        # coverart + coverartmime
+        cover = audio.get("coverart")
+        try:
+            cover = cover and base64.b64decode(cover[0])
+        except TypeError:
+            cover = None
+
+        if cover:
+            mime = audio.get("coverartmime")
+            mime = (mime and mime[0]) or "image/"
+            f = get_temp_cover_file(cover)
+            images.append(EmbeddedImage(f, mime))
+
+        images.sort(key=lambda c: c.sort_key)
+
+        return images
+
     def get_primary_image(self):
         """Returns the primary embedded image"""
-
-        if not self.has_images:
-            return
 
         try:
             audio = self.MutagenType(self["~filename"])
@@ -146,7 +179,8 @@ class MutagenVCFile(AudioFile):
             self.has_images = False
             return
 
-        mime = audio.get("coverartmime", "image/")
+        mime = audio.get("coverartmime")
+        mime = (mime and mime[0]) or "image/"
         f = get_temp_cover_file(cover)
         return EmbeddedImage(f, mime)
 
@@ -361,6 +395,24 @@ class FLACFile(MutagenVCFile):
         super(FLACFile, self).__init__(filename, audio)
         if audio.pictures:
             self.has_images = True
+
+    def get_images(self):
+        images = super(FLACFile, self).get_images()
+
+        try:
+            tag = FLAC(self["~filename"])
+        except EnvironmentError:
+            return images
+
+        for cover in tag.pictures:
+            fileobj = get_temp_cover_file(cover.data)
+            images.append(EmbeddedImage(
+                fileobj, cover.mime, cover.width, cover.height, cover.depth,
+                cover.type))
+
+        images.sort(key=lambda c: c.sort_key)
+
+        return images
 
     def get_primary_image(self):
         """Returns the primary embedded image"""
