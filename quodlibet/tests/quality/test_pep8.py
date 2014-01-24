@@ -17,8 +17,7 @@ class TPEP8(TestCase):
     # E12x popped up in pep8 1.4 compared to 1.2..
     # drop them once 1.4 is common enough
     # E261: at least two spaces before inline comment
-    # W603: we use <> to check for py3k atm..
-    IGNORE_ERROROS = ["E12", "E261", "W603"]
+    IGNORE_ERROROS = ["E12", "E261"]
     PACKAGES = ("util library parse browsers devices formats "
                 "plugins qltk player").split()
 
@@ -31,54 +30,63 @@ class TPEP8(TestCase):
             ["pep8", "--ignore=" + ",".join(ignore), path],
             stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
-        if p.wait() != 0:
-            o, e = p.communicate()
-            raise Exception("\n" + o)
+        class Future(object):
 
-    def test_packages(self):
+            def __init__(self, p):
+                self.p = p
+
+            def result(self):
+                if self.p.wait() != 0:
+                    return self.p.communicate()
+
+        return Future(p)
+
+    def test_all(self):
+        futures = []
+
+        # packages
         for package in self.PACKAGES:
             name = "quodlibet." + package
             mod = getattr(__import__(name), package)
-            self._run(mod.__path__[0])
+            futures.append(self._run(mod.__path__[0]))
 
-    def test_main_package(self):
+        # main_package
         import quodlibet
         path = quodlibet.__path__[0]
         files = glob.glob(os.path.join(path, "*.py"))
         for file_ in files:
-            self._run(file_)
+            futures.append(self._run(file_))
 
-    def test_plugins(self):
-        import quodlibet
-        path = quodlibet.__path__[0]
-        path = os.path.join(path, "../../plugins")
-        self._run(path)
+        # plugins
+        futures.append(self._run(os.path.join(path, "../../plugins")))
 
-    def test_tests(self):
-        import quodlibet
-        path = quodlibet.__path__[0]
-        path = os.path.join(path, "../tests")
-        self._run(path, ignore=["W601"])
+        # tests
+        futures.append(
+            self._run(os.path.join(path, "../tests"), ignore=["W601"]))
 
-    def test_scripts(self):
-        import quodlibet
-        path = quodlibet.__path__[0]
-        path = os.path.join(path, "../")
-        files = glob.glob(os.path.join(path, "*.py"))
+        # scripts
+        scripts = glob.glob(os.path.join(os.path.join(path, "../"), "*.py"))
+        assert scripts
+        for script in scripts:
+            futures.append(self._run(script))
+
+        # dist
+        files = glob.glob(os.path.join(os.path.join(path, "../gdist"), "*.py"))
         assert files
-
         for file_ in files:
-            self._run(file_)
+            futures.append(self._run(file_))
 
-    def test_dist(self):
-        import quodlibet
-        path = quodlibet.__path__[0]
-        path = os.path.join(path, "../gdist")
-        files = glob.glob(os.path.join(path, "*.py"))
-        assert files
+        # join and print results
+        errors = []
+        for f in futures:
+            res = f.result()
+            if res is not None:
+                stdout, stderr = res
+                errors.append(stdout)
 
-        for file_ in files:
-            self._run(file_)
+        if errors:
+            raise Exception("\n".join(errors))
+
 
 if not iscommand("pep8"):
     TPEP8 = skip(TPEP8, "pep8 not found")
