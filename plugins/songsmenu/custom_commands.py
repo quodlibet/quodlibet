@@ -166,8 +166,10 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         try:
             with open(filename) as f:
                 coms = JSONObjectDict.from_json(Command, f.read())
-        except (IOError, ValueError), e:
-            print_w("Couldn't open saved commands (%s)" % e)
+        except IOError:
+            pass
+        except ValueError as e:
+            print_w("Couldn't parse saved commands (%s)" % e)
 
         # Failing all else...
         if not coms:
