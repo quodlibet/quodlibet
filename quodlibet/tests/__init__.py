@@ -133,6 +133,17 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
 
     global _TEMP_DIR
 
+    # Ideally nothing should touch the FS on import, but we do atm..
+    # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
+    for key in sys.modules.keys():
+        if key.startswith('quodlibet'):
+            del(sys.modules[key])
+
+    # create a user dir in /tmp
+    _TEMP_DIR = tempfile.mkdtemp(prefix="QL-TEST-")
+    user_dir = tempfile.mkdtemp(prefix="QL-USER-", dir=_TEMP_DIR)
+    os.environ['QUODLIBET_USERDIR'] = user_dir
+
     path = os.path.dirname(__file__)
     if subdirs is None:
         subdirs = []
@@ -192,13 +203,6 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
         name = "%s.%s" % (case.__module__, case.__name__)
         reason = skipped_reason.get(case, "??")
         print_w("Skipped test: %s (%s)" % (name, reason))
-
-    # create a user dir in /tmp
-    _TEMP_DIR = tempfile.mkdtemp(prefix="QL-TEST-")
-    user_dir = tempfile.mkdtemp(prefix="QL-USER-", dir=_TEMP_DIR)
-    os.environ['QUODLIBET_USERDIR'] = user_dir
-    import quodlibet.const
-    reload(quodlibet.const)
 
     import quodlibet.config
 
