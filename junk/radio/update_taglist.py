@@ -31,6 +31,7 @@ def get_listener_peak(uri):
         return -1
     except Exception:
         traceback.print_exc()
+        return -1
     else:
         return stream_info.peak
 
