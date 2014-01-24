@@ -6,31 +6,33 @@
 # published by the Free Software Foundation
 
 import multiprocessing
+import traceback
 import cPickle as pickle
 import random
 import urllib2
 import re
 
+from util import parse_shoutcast1, ParseError
 
-PROCESSES = 100 # 30 is about 1 gig RAM on 64bit
-TIMEOUT = 3 # seconds
+
+PROCESSES = 100  # 30 is about 1 gig RAM on 64bit
+TIMEOUT = 3  # seconds
+
+INPUT_URIS = "uris_clean.txt"
+OUTPUT_NAME = "radiolist"
 
 
 def get_listener_peak(uri):
     """Returns the listener peak number from shoutcast servers or -1"""
 
     try:
-        request = urllib2.Request(uri, None, {'User-agent': 'Mozilla/4.0'})
-        sock = urllib2.urlopen(request, None, TIMEOUT)
-        data = sock.read(30 * 1024)
-
-        p = re.compile(r'<.*?>')
-        data = p.sub(' ', data).split()
-        listener_peak = int(data[data.index("Peak:") + 1])
-    except Exception:
+        stream_info = parse_shoutcast1(uri)
+    except ParseError:
         return -1
+    except Exception:
+        traceback.print_exc()
     else:
-        return listener_peak
+        return stream_info.peak
 
 
 def get_tags(uri):
@@ -72,7 +74,8 @@ def get_tags(uri):
                     v = v.encode("utf-8")
                 else:
                     v = str(v)
-                if not k.endswith("bitrate") and k in tags and v not in tags[k]:
+                if not k.endswith("bitrate") and k in tags and \
+                        v not in tags[k]:
                     tags[k].append(v)
                 else:
                     tags[k] = [v]
@@ -80,7 +83,8 @@ def get_tags(uri):
                 if "nominal-bitrate" in tags:
                     tags["bitrate"] = tags["nominal-bitrate"]
                 done(player, bus)
-        elif message.type == gst.MESSAGE_ERROR or message.type == gst.MESSAGE_EOS:
+        elif message.type == gst.MESSAGE_ERROR or \
+                message.type == gst.MESSAGE_EOS:
             done(player, bus)
         elif message.type == gst.MESSAGE_BUFFERING:
             percent = message.parse_buffering()
@@ -93,8 +97,10 @@ def get_tags(uri):
     player.set_property("uri", uri)
     player.set_state(gst.STATE_PLAYING)
 
-    try: ml.run()
-    except: pass
+    try:
+        ml.run()
+    except:
+        pass
 
     if tags:
         try:
@@ -132,7 +138,7 @@ def get_all_tags(uris):
 
 
 def dump_taglist(out_fn, in_fn, cache="tag_cache.pickle", tags_whitelist=[],
-        val_blacklist=[], tags_needed=[]):
+                 val_blacklist=[], tags_needed=[]):
     """Writes all tags to a file in the following format:
 
     uri=http://bla.com
@@ -175,11 +181,12 @@ def dump_taglist(out_fn, in_fn, cache="tag_cache.pickle", tags_whitelist=[],
 
     print "Writing taglist..."
     print written, " stations"
-    open(out_fn, "wb").write("\n".join(out))
+    with open(out_fn, "wb") as h:
+        h.write("\n".join(out))
 
 
 def update_tag_cache(fn, tags_needed=[], failed_fn="uris_failed.txt",
-        cache="tag_cache.pickle"):
+                     cache="tag_cache.pickle"):
 
     print "Updating tag cache..."
 
@@ -199,8 +206,10 @@ def update_tag_cache(fn, tags_needed=[], failed_fn="uris_failed.txt",
             done.add(key)
 
     # also don't check failed (to allow multiple partial runs)
-    try: done |= set(open(failed_fn, "rb").read().splitlines())
-    except IOError: pass
+    try:
+        done |= set(open(failed_fn, "rb").read().splitlines())
+    except IOError:
+        pass
 
     uris = list(uris - done)
 
@@ -213,31 +222,35 @@ def update_tag_cache(fn, tags_needed=[], failed_fn="uris_failed.txt",
             result[uri] = tags
 
     # append the failed ones
-    open(failed_fn, "ab").write("\n".join(set(failed)))
+    with open(failed_fn, "ab") as h:
+        h.write("\n".join(set(failed)))
 
     # and update the cache
     print "Writing tag cache..."
-    pickle.dump(result, open(cache, "wb"))
+    with open(cache, "wb") as h:
+        pickle.dump(result, h)
 
 
-INPUT_URIS = "uris_clean.txt"
-OUTPUT_NAME = "radiolist"
+def main(in_path, out_path):
+    # tags that get written to the final list
+    tags = ["organization", "location", "genre", "channel-mode",
+            "audio-codec", "bitrate", "~listenerpeak"]
 
-# tags that get written to the final list
-tags = ["organization", "location", "genre", "channel-mode",
-        "audio-codec", "bitrate", "~listenerpeak"]
+    # blacklisted values
+    vbl = ["http://www.shoutcast.com", "http://localhost/", "Default genre",
+           "None", "http://", "Unnamed Server", "Unspecified", "N/A"]
 
-# blacklisted values
-vbl = ["http://www.shoutcast.com", "http://localhost/", "Default genre",
-    "None", "http://", "Unnamed Server", "Unspecified", "N/A"]
+    # tags needed for station to be written to the final list
+    needed = ["organization", "audio-codec", "bitrate"]
 
-# tags needed for station to be written to the final list
-needed = ["organization", "audio-codec", "bitrate"]
+    # check all missing stations
+    update_tag_cache(in_path, tags_needed=needed)
 
-# check all missing stations
-update_tag_cache(INPUT_URIS, tags_needed=needed)
+    # write out the taglist
+    dump_taglist(out_path, in_path,
+                 tags_whitelist=tags, val_blacklist=vbl,
+                 tags_needed=needed)
 
-# write out the taglist
-dump_taglist(OUTPUT_NAME, INPUT_URIS,
-             tags_whitelist=tags, val_blacklist=vbl,
-             tags_needed=needed)
+
+if __name__ == "__main__":
+    main(INPUT_URIS, OUTPUT_NAME)

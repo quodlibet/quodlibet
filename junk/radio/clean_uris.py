@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright 2011 Christoph Reiter
+# Copyright 2011,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,10 +9,14 @@ import multiprocessing
 import re
 import urlparse
 import time
+import socket
 
 
 PROCESSES = 300
 TIMEOUT = 30
+
+URIS_IN = "uris.txt"
+URIS_OUT = "uris_clean.txt"
 
 
 def fix_uri(uri):
@@ -40,9 +44,8 @@ def filter_uri(uri):
     return True
 
 
-def reverse_lookup(uri):
-    import socket
-    socket.setdefaulttimeout(TIMEOUT)
+def reverse_lookup(uri, timeout=TIMEOUT):
+    socket.setdefaulttimeout(timeout)
 
     old_uri = uri
 
@@ -77,9 +80,8 @@ def reverse_lookup(uri):
     return old_uri, uri
 
 
-def lookup(uri):
-    import socket
-    socket.setdefaulttimeout(TIMEOUT)
+def lookup(uri, timeout=TIMEOUT):
+    socket.setdefaulttimeout(timeout)
 
     try:
         hostname = urlparse.urlsplit(uri).hostname
@@ -113,9 +115,11 @@ def filter_ip(uri):
 
 
 def validate_uri(uri):
-    try: urlparse.urlsplit(uri)
-    except ValueError: return False
-    else: return True
+    try:
+        urlparse.urlsplit(uri)
+    except ValueError:
+        return False
+    return True
 
 
 def uri_has_num(uri):
@@ -126,96 +130,99 @@ def uri_has_num(uri):
     return False
 
 
-###############################################################################
+def main(in_path, out_path, num_processes):
+    with open(in_path, "rb") as h:
+        uris = filter(None, set(h.read().splitlines()))
+        uris = filter(validate_uri, uris)
 
+    clean = []
+    ips = []
 
-uris = filter(None, set(open("uris.txt", "rb").read().splitlines()))
-uris = filter(validate_uri, uris)
-
-clean = []
-ips = []
-
-# get all uris with an IP addr as hostname
-for uri in uris:
-    if filter_ip(uri):
-        ips.append(uri)
-    else:
-        clean.append(uri)
-
-print "ips: ", len(ips), " nonip: ", len(clean)
-
-###############################################################################
-# Look up the IPs of hostnames that look like the IP is encoded in them somehow
-# if that is the case for any of the returne IPs, use the first returned IP
-###############################################################################
-
-# get all uris that have a number in them
-check_ip = filter(uri_has_num, clean)
-
-pool = multiprocessing.Pool(PROCESSES)
-try:
-    for i, (uri, addrs) in enumerate(pool.imap_unordered(lookup, check_ip)):
-        print "%d/%d " % (i+1, len(check_ip))
-
-        if not addrs:
-            continue
-
-        not_found = 0
-        for addr in addrs:
-            for num in addr.split('.'):
-                if num not in uri:
-                    not_found += 1
-                    break
-
-        if not_found == len(addrs):
-            continue
-
-        p = urlparse.urlsplit(uri)
-        port, hostname = p.port, p.hostname
-
-        l = list(p)
-        l[1] = addrs[0] + ((port is not None and (":" + str(port))) or "")
-        new_uri = urlparse.urlunsplit(l)
-
-        print uri, " -> ", new_uri
-
-        clean.remove(uri)
-        clean.append(new_uri)
-except Exception, e:
-    pool.terminate()
-    print e
-    raise SystemExit
-
-###############################################################################
-# Reverse lookup, if the hostname doesn't include the IP,
-# use it instead of the IP
-###############################################################################
-
-pool = multiprocessing.Pool(PROCESSES)
-try:
-    for i, (ip_uri, uri) in enumerate(pool.imap_unordered(reverse_lookup, ips)):
-        print "%d/%d " % (i+1, len(ips))
-
-        if uri == ip_uri:
-            clean.append(uri)
-            continue
-
-        hostname = urlparse.urlsplit(ip_uri).hostname
-        for num in hostname.split('.'):
-            if num not in uri:
-                print ip_uri + " -> " + uri
-                clean.append(uri)
-                break
+    # get all uris with an IP addr as hostname
+    for uri in uris:
+        if filter_ip(uri):
+            ips.append(uri)
         else:
-            # all ip parts are in the uri, better use the IP only
-            # example: http://127.0.0.1.someserver.com/
-            try: clean.remove(uri)
-            except ValueError: pass
-            clean.append(ip_uri)
+            clean.append(uri)
 
-finally:
-    pool.terminate()
-    print "write uris_clean.txt"
-    f = open("uris_clean.txt", "wb")
-    f.write("\n".join(sorted(filter(filter_uri, map(fix_uri, set(clean))))))
-    f.close()
+    print "ips: ", len(ips), " nonip: ", len(clean)
+
+    # Look up the IPs of hostnames that look like the IP is encoded in
+    # them somehow if that is the case for any of the returne IPs, use
+    # the first returned IP
+
+    # get all uris that have a number in them
+    check_ip = filter(uri_has_num, clean)
+
+    pool = multiprocessing.Pool(num_processes)
+    try:
+        pfunc = lookup
+        for i, (uri, addrs) in enumerate(pool.imap_unordered(pfunc, check_ip)):
+            print "%d/%d " % (i+1, len(check_ip))
+
+            if not addrs:
+                continue
+
+            not_found = 0
+            for addr in addrs:
+                for num in addr.split('.'):
+                    if num not in uri:
+                        not_found += 1
+                        break
+
+            if not_found == len(addrs):
+                continue
+
+            p = urlparse.urlsplit(uri)
+            port, hostname = p.port, p.hostname
+
+            l = list(p)
+            l[1] = addrs[0] + ((port is not None and (":" + str(port))) or "")
+            new_uri = urlparse.urlunsplit(l)
+
+            print uri, " -> ", new_uri
+
+            clean.remove(uri)
+            clean.append(new_uri)
+    finally:
+        pool.terminate()
+        pool.join()
+
+    # Reverse lookup, if the hostname doesn't include the IP,
+    # use it instead of the IP
+    pool = multiprocessing.Pool(num_processes)
+    try:
+        pfunc = reverse_lookup
+        for i, (ip_uri, uri) in enumerate(pool.imap_unordered(pfunc, ips)):
+            print "%d/%d " % (i+1, len(ips))
+
+            if uri == ip_uri:
+                clean.append(uri)
+                continue
+
+            hostname = urlparse.urlsplit(ip_uri).hostname
+            for num in hostname.split('.'):
+                if num not in uri:
+                    print ip_uri + " -> " + uri
+                    clean.append(uri)
+                    break
+            else:
+                # all ip parts are in the uri, better use the IP only
+                # example: http://127.0.0.1.someserver.com/
+                try:
+                    clean.remove(uri)
+                except ValueError:
+                    pass
+                clean.append(ip_uri)
+
+    finally:
+        pool.terminate()
+        pool.join()
+        print "write %s" % URIS_OUT
+        with open(out_path, "wb") as f:
+            lines = sorted(filter(filter_uri, map(fix_uri, set(clean))))
+            f.write("\n".join(lines))
+
+
+if __name__ == "__main__":
+    main(URIS_IN, URIS_OUT, PROCESSES)

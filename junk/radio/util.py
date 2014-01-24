@@ -28,7 +28,7 @@ def parse_shoutcast1(url):
     root = scheme + "://" + netloc
 
     shoutcast1_status = root + "/7.html"
-    headers = {'User-Agent': 'Mozilla'}
+    headers = {'User-Agent': 'Mozilla/4.0'}
     try:
         r = requests.get(shoutcast1_status, headers=headers)
     except RequestException:
@@ -36,12 +36,15 @@ def parse_shoutcast1(url):
     if r.status_code != 200:
         raise ParseError
 
-    soup = BeautifulSoup(r.text)
+    soup = BeautifulSoup(r.content)
     body = soup.find("body")
     if not body:
         raise ParseError
 
     status_line = body.string
+    if status_line is None:
+        raise ParseError
+
     try:
         current, status, peak, max_, unique, bitrate, songtitle = \
             status_line.split(",", 6)
@@ -66,7 +69,7 @@ def parse_shoutcast2(url):
         raise ParseError
 
     stream_ids = []
-    soup = BeautifulSoup(r.text)
+    soup = BeautifulSoup(r.content)
     for link in soup.findAll("a"):
         if link["href"].startswith("index.html?sid="):
             stream_ids.append(int(link["href"].split("=")[-1]))
@@ -109,7 +112,7 @@ def parse_icecast(url):
         raise ParseError
 
     streams = []
-    soup = BeautifulSoup(r.text)
+    soup = BeautifulSoup(r.content)
     for c in soup.findAll(lambda t: t.get("class", "") == "newscontent"):
         stream = root + "/" + c.find("h3").string.split("/", 1)[-1]
         if not stream:
