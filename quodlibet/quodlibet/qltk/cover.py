@@ -281,7 +281,7 @@ class CoverImage(Gtk.EventBox):
                 event.type != Gdk.EventType.BUTTON_PRESS:
             return
 
-        if not self.__file:
+        if not self.__file and song.is_file:
             from quodlibet.qltk.songsmenu import SongsMenu
             from quodlibet import app
 
@@ -293,6 +293,9 @@ class CoverImage(Gtk.EventBox):
             # We're displaying it; destroy it.
             self.__current_bci.destroy()
             return True
+
+        if not self.__file:
+           return False
 
         try:
             self.__current_bci = BigCenteredImage(
