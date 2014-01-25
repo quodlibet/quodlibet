@@ -295,7 +295,7 @@ class CoverImage(Gtk.EventBox):
             return True
 
         if not self.__file:
-           return False
+            return False
 
         try:
             self.__current_bci = BigCenteredImage(

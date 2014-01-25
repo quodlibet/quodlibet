@@ -609,7 +609,6 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
         stations = filter(filter_stations, stations)
 
-
         stations = dict(((s.key, s) for s in stations))
         # don't add ones that are in the fav list
         for fav in self.__fav_stations.iterkeys():
