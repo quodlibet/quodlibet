@@ -117,11 +117,12 @@ class CoverSourcePlugin(GObject.Object):
         Start searching for cover art from a source.
 
         After search is completed the `search-complete` event must be emitted
-        regardless of search outcome with a list of (score, uri) tuples as
-        an argument. If search was unsuccessful, empty list should be used.
+        regardless of search outcome with a list of dictionaries containing
+        `album`, `artist` and `cover` keys as an argument. If search was
+        unsuccessful, empty list should be returned.
 
-        Score in the tuple might be used when ordering covers and has
-        no other significance.
+        By convention better quality and more accurate covers are expected to
+        appear first in the list.
         """
         self.emit('search-complete', [])
 

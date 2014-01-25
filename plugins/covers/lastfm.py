@@ -61,9 +61,14 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
             print_d('Album data is not available')
             return self.emit('search-complete', [])
         covers = dict((i['size'], i['#text']) for i in album['image'])
-        covers = [(100, covers.get('mega')), (90, covers.get('extralarge'))]
-        filtered = list(filter(lambda x: x[1] is not None, covers))
-        self.emit('search-complete', filtered)
+        result = []
+        for ck in ('mega', 'extralarge',):
+            if covers.get(ck):
+                result.append({'artist': album['artist'],
+                               'album': album['name'],
+                               'cover': covers[ck]
+                               })
+        self.emit('search-complete', result)
 
     def fetch_cover(self):
         if not self.url:
@@ -72,7 +77,7 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
         def search_complete(self, res):
             self.disconnect(sci)
             if res:
-                self.download(Soup.Message.new('GET', res[0][1]))
+                self.download(Soup.Message.new('GET', res[0]['cover']))
             else:
                 return self.fail('No cover was found')
         sci = self.connect('search-complete', search_complete)

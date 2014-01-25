@@ -9,7 +9,6 @@ from os import path
 from gi.repository import Soup, Gio, GLib
 
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
-from quodlibet.util.http import download_json
 from quodlibet.util.cover.http import HTTPDownloadMixin
 
 
@@ -32,34 +31,14 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
     def mbid(self):
         return self.song.get('musicbrainz_albumid', None)
 
+    @property
     def url(self, front=True):
         if not self.mbid:
             return None
         mbid = Soup.URI.encode(self.mbid, None)
-        if front:
-            return 'http://coverartarchive.org/release/{0}/front'.format(mbid)
-        else:
-            return 'http://coverartarchive.org/release/{0}'.format(mbid)
+        return 'http://coverartarchive.org/release/{0}/front'.format(mbid)
 
     def fetch_cover(self):
         if not self.mbid:
             return self.fail('MBID is required to fetch the cover')
-        self.download(Soup.Message.new('GET', self.url()))
-
-    def search(self):
-        def album_data(msg, json, data=None):
-            if not json:
-                print_d('Server did not return valid JSON')
-                return self.emit('search-complete', [])
-            images = json.get('images', [])
-            fronts = filter(lambda x: x.get('front', False), images)
-            result = []
-            for front in fronts:
-                result.append((100, front['image']))
-                result.append((90, front['thumbnails']['large']))
-                result.append((80, front['thumbnails']['small']))
-            self.emit('search-complete', result)
-        if not self.mbid:
-            return self.emit('search-complete', [])
-        msg = Soup.Message.new('GET', self.url(False))
-        download_json(msg, self.cancellable, album_data, None)
+        self.download(Soup.Message.new('GET', self.url))
