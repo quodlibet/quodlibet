@@ -323,12 +323,6 @@ def parse_taglist(data):
     return stations
 
 
-def sort_stations(station):
-    bitrate = station("~#bitrate", 96)
-    listeners = int(station("~listenerpeak", 20))
-    return (listeners >= 20, bitrate, listeners)
-
-
 class AddNewStation(GetStringDialog):
     def __init__(self, parent):
         super(AddNewStation, self).__init__(
@@ -596,16 +590,27 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
             print_w("Loading remote station list failed.")
             return
 
-        # take the best 4000
-        stations.sort(key=sort_stations, reverse=True)
-        stations = stations[:4000]
+        # filter stations
+        all_ = [self.filters.query(k) for k in self.filters.keys()]
+        assert all_
+        anycat_filter = reduce(lambda x, y: x | y, all_)
 
-        # remove the tags only used for ranking
-        for s in stations:
-            s.pop("~listenerpeak", None)
+        def filter_stations(station):
+            aac = "AAC" in station("~format")
+            bitrate = station("~#bitrate", 64)
+            # remove it on the way..
+            peak = int(station.pop("~listenerpeak", 0))
+
+            if peak < 30:
+                return False
+            if (aac and bitrate < 55) or (not aac and bitrate < 70):
+                return False
+            return anycat_filter.search(station)
+
+        stations = filter(filter_stations, stations)
+
 
         stations = dict(((s.key, s) for s in stations))
-
         # don't add ones that are in the fav list
         for fav in self.__fav_stations.iterkeys():
             stations.pop(fav, None)
