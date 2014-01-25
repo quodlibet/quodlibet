@@ -5,33 +5,53 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+import collections
 import urlparse
 from collections import namedtuple
 import xml.etree.ElementTree as ET
+import cPickle as pickle
+import socket
 
 import requests
 from requests import RequestException
 from BeautifulSoup import BeautifulSoup
+from gi.repository import Gst
+
+
+CACHE = "cache.pickle"
+FAILED = "failed.txt"
+LISTENERPEAK = "~listenerpeak"
+LISTENERCURRENT = "~listenercurrent"
+URILIST = "uris_clean.txt"
 
 
 class ParseError(Exception):
     pass
 
 
-Stream = namedtuple("Stream", "stream, current, peak, bitrate")
+Stream = namedtuple("Stream", "stream, current, peak")
 
 
-def parse_shoutcast1(url):
+def get_root(uri):
+    scheme, netloc, path, query, fragment = urlparse.urlsplit(uri)
+    return scheme + "://" + netloc
+
+
+def parse_shoutcast1(url, timeout=5):
     """A Shoutcast object of raises ParseError"""
 
-    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
-    root = scheme + "://" + netloc
+    root = get_root(url)
 
     shoutcast1_status = root + "/7.html"
     headers = {'User-Agent': 'Mozilla/4.0'}
     try:
-        r = requests.get(shoutcast1_status, headers=headers)
-    except RequestException:
+        r = requests.get(
+            shoutcast1_status, headers=headers, timeout=timeout, stream=True)
+        if "text" not in r.headers.get("content-type", ""):
+            raise ParseError
+        r.content
+    except (RequestException, socket.timeout):
         raise ParseError
     if r.status_code != 200:
         raise ParseError
@@ -51,19 +71,27 @@ def parse_shoutcast1(url):
     except ValueError:
         raise ParseError
 
-    return Stream(root, current, peak, bitrate)
+    try:
+        peak = str(int(peak))
+        current = str(int(current))
+    except ValueError:
+        raise ParseError
+
+    return Stream(root, current, peak)
 
 
-def parse_shoutcast2(url):
+def parse_shoutcast2(url, timeout=5):
     """A list of Shoutcast objects or raises ParseError"""
 
-    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
-    root = scheme + "://" + netloc
+    root = get_root(url)
 
     # find all streams
     try:
-        r = requests.get(root + "/index.html")
-    except RequestException:
+        r = requests.get(root + "/index.html", timeout=timeout, stream=True)
+        if "text" not in r.headers.get("content-type", ""):
+            raise ParseError
+        r.content
+    except (RequestException, socket.timeout):
         raise ParseError
     if r.status_code != 200:
         raise ParseError
@@ -71,42 +99,51 @@ def parse_shoutcast2(url):
     stream_ids = []
     soup = BeautifulSoup(r.content)
     for link in soup.findAll("a"):
-        if link["href"].startswith("index.html?sid="):
+        if link.get("href", "").startswith("index.html?sid="):
             stream_ids.append(int(link["href"].split("=")[-1]))
+
+    if not stream_ids:
+        raise ParseError
 
     def get_stream(root, index):
         status = root + "/stats?sid=%d" % index
         try:
-            r = requests.get(status)
-        except RequestException:
+            r = requests.get(status, timeout=timeout)
+        except (RequestException, socket.timeout):
             raise ParseError
         if r.status_code != 200:
             raise ParseError
 
         entries = {}
-        elm = ET.fromstring(r.content)
+        try:
+            elm = ET.fromstring(r.content)
+        except ET.ParseError:
+            raise ParseError
         for e in elm:
             entries[e.tag.lower()] = e.text
 
         stream = root + entries["streampath"]
         current = entries["currentlisteners"]
         peak = entries["peaklisteners"]
-        bitrate = entries["bitrate"]
 
-        return Stream(stream, current, peak, bitrate)
+        peak = str(int(peak))
+        current = str(int(current))
+        return Stream(stream, current, peak)
 
     return [get_stream(root, i) for i in stream_ids]
 
 
-def parse_icecast(url):
+def parse_icecast(url, timeout=5):
     """A list of Shoutcast objects or raises ParseError"""
 
-    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
-    root = scheme + "://" + netloc
+    root = get_root(url)
 
     try:
-        r = requests.get(root + "/status.xsl")
-    except RequestException:
+        r = requests.get(root + "/status.xsl", timeout=timeout, stream=True)
+        if "text" not in r.headers.get("content-type", ""):
+            raise ParseError
+        r.content
+    except (RequestException, socket.timeout):
         raise ParseError
     if r.status_code != 200:
         raise ParseError
@@ -114,27 +151,103 @@ def parse_icecast(url):
     streams = []
     soup = BeautifulSoup(r.content)
     for c in soup.findAll(lambda t: t.get("class", "") == "newscontent"):
-        stream = root + "/" + c.find("h3").string.split("/", 1)[-1]
-        if not stream:
+        pl_link = c.find("a")
+        if not pl_link:
             raise ParseError
+        mount_point = pl_link.get("href", "").rsplit(".", 1)[0]
+        if not mount_point:
+            raise ParseError
+        stream = root + mount_point
 
         bitrate = current = peak = "0"
         table = c.findAll("table")[-1]
         for row in table.findAll("tr"):
             to_text = lambda tag: "".join(tag.findAll(text=True))
-            desc, value = [to_text(td) for td in row.findAll("td")]
+            tds = row.findAll("td")
+            if len(tds) != 2:
+                raise ParseError
+            desc, value = [to_text(td) for td in tds]
             if "Peak Listeners" in desc:
-                peak = value
-            elif "Bitrate" in desc:
-                bitrate = value
+                peak = str(int(value))
             elif "Current Listeners" in desc:
-                current = value
-        streams.append(Stream(stream, current, peak, bitrate))
+                current = str(int(value))
+        streams.append(Stream(stream, current, peak))
 
     return streams
 
 
+class TagListWrapper(collections.Mapping):
+    def __init__(self, taglist, merge=False):
+        self._list = taglist
+        self._merge = merge
+
+    def __len__(self):
+        return self._list.n_tags()
+
+    def __iter__(self):
+        for i in xrange(len(self)):
+            yield self._list.nth_tag_name(i)
+
+    def __getitem__(self, key):
+        if not Gst.tag_exists(key):
+            raise KeyError
+
+        values = []
+        index = 0
+        while 1:
+            value = self._list.get_value_index(key, index)
+            if value is None:
+                break
+            values.append(value)
+            index += 1
+
+        if not values:
+            raise KeyError
+
+        if self._merge:
+            try:
+                return " - ".join(values)
+            except TypeError:
+                return values[0]
+
+        return values
+
+
+def get_cache(path=CACHE):
+    print "Load cache", 
+    try:
+        res = pickle.loads(open(path, "rb").read())
+    except(IOError, EOFError):
+        res = {}
+    print "%d entries" % len(res)
+    return res
+
+
+def set_cache(result, path=CACHE):
+    print "Save cache", "%d entries" % len(result)
+
+    tmp = path + ".tmp"
+    with open(tmp, "wb") as h:
+        h.write(pickle.dumps(result))
+        os.fsync(h.fileno())
+        os.rename(tmp, path)
+
+
+def get_failed(path=FAILED):
+    try:
+        with open(path, "rb") as h:
+            return set(filter(None, h.read().splitlines()))
+    except IOError:
+        return set()
+
+
+def set_failed(failed_uris, path=FAILED):
+    with open(path, "wb") as h:
+        h.write("\n".join(sorted(set(failed_uris))))
+
+
 if __name__ == "__main__":
+    print parse_icecast("http://stream2.streamq.net:8000/")
     print parse_shoutcast1("http://radioszerver.hu:8300")
     print parse_shoutcast2("http://radio-soundparty.eu:8850/index.html")
     print parse_icecast("http://pub1.sky.fm/")
