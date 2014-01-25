@@ -46,20 +46,34 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
         else:
             return None   # Not enough data
 
-    def fetch_cover(self):
+    def search(self):
         if not self.url:
-            return self.fail('Not enough data to get cover from LastFM')
+            return self.emit('search-complete', [])
         msg = Soup.Message.new('GET', self.url)
         download_json(msg, self.cancellable, self.album_data, None)
 
     def album_data(self, message, json, data=None):
         if not json:
-            return self.fail('Server did not return valid JSON')
+            print_d('Server did not return valid JSON')
+            return self.emit('search-complete', [])
         album = json.get('album', {})
         if not album:
-            return self.fail('Album data is not available')
+            print_d('Album data is not available')
+            return self.emit('search-complete', [])
         covers = dict((i['size'], i['#text']) for i in album['image'])
-        cover = covers.get('mega', covers.get('extralarge', None))
-        if not cover:
-            return self.fail('Satisfactory cover is not available')
-        self.download(Soup.Message.new('GET', cover))
+        covers = [(100, covers.get('mega')), (90, covers.get('extralarge'))]
+        filtered = list(filter(lambda x: x[1] is not None, covers))
+        self.emit('search-complete', filtered)
+
+    def fetch_cover(self):
+        if not self.url:
+            return self.fail('Not enough data to get cover from LastFM')
+
+        def search_complete(self, res):
+            self.disconnect(sci)
+            if res:
+                self.download(Soup.Message.new('GET', res[0][1]))
+            else:
+                return self.fail('No cover was found')
+        sci = self.connect('search-complete', search_complete)
+        self.search()

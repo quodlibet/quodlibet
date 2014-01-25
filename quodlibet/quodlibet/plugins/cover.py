@@ -27,7 +27,8 @@ class CoverSourcePlugin(GObject.Object):
 
     __gsignals__ = {
         'fetch-success': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,))
+        'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        'search-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
 
     def __init__(self, song, cancellable=None):
@@ -110,6 +111,19 @@ class CoverSourcePlugin(GObject.Object):
             return open(cp, 'rb') if cp and path.isfile(cp) else None
         except IOError:
             print_w('Failed reading album art "%s"'.format(path))
+
+    def search(self):
+        """
+        Start searching for cover art from a source.
+
+        After search is completed the `search-complete` event must be emitted
+        regardless of search outcome with a list of (score, uri) tuples as
+        an argument. If search was unsuccessful, empty list should be used.
+
+        Score in the tuple might be used when ordering covers and has
+        no other significance.
+        """
+        self.emit('search-complete', [])
 
     def fetch_cover(self):
         """
