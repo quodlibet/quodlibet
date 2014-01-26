@@ -408,6 +408,22 @@ class GenreFilter(object):
         return self.GENRES[key][0]
 
 
+class CloseButton(Gtk.Button):
+    """Reimplementation of 3.10 close button for InfoBar."""
+
+    def __init__(self):
+        image = Gtk.Image(visible=True, can_focus=False,
+                          icon_name="window-close-symbolic")
+
+        super(CloseButton, self).__init__(
+            visible=False, can_focus=True, image=image,
+            relief=Gtk.ReliefStyle.NONE, valign=Gtk.Align.CENTER)
+
+        ctx = self.get_style_context()
+        ctx.add_class("raised")
+        ctx.add_class("close")
+
+
 class QuestionBar(Gtk.InfoBar):
     """A widget which suggest to download the radio list if
     no radio stations are present.
@@ -420,7 +436,6 @@ class QuestionBar(Gtk.InfoBar):
 
     def __init__(self):
         super(QuestionBar, self).__init__()
-        self.set_show_close_button(True)
         self.connect("response", self.__response)
         self.set_message_type(Gtk.MessageType.QUESTION)
 
@@ -432,6 +447,18 @@ class QuestionBar(Gtk.InfoBar):
         content.add(label)
 
         self.add_button(_("_Load Stations"), self.RESPONSE_LOAD)
+
+        try:
+            self.set_show_close_button(True)
+        except AttributeError:
+            # < gtk3.10
+            action = self.get_action_area()
+            close_button = CloseButton()
+            close_button.show()
+            self.add_action_widget(close_button, Gtk.ResponseType.CLOSE)
+            # FIXME: doesn't seem to have any effect
+            action.set_child_packing(
+                close_button, False, True, 2, Gtk.PackType.START)
 
     def __response(self, bar, response_id):
         if response_id == Gtk.ResponseType.CLOSE:
