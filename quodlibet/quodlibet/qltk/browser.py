@@ -31,7 +31,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         """
 
         names = []
-        for browser in cls.instances:
+        for browser in cls.instances():
             names.append(browser.name)
         config.set("memory", "open_browsers", "\n".join(names))
 

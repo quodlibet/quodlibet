@@ -66,7 +66,7 @@ class Application(object):
     def show(self):
         from quodlibet.qltk import Window
         self.window.show()
-        for window in Window.instances:
+        for window in Window.windows:
             window.show()
 
     def present(self):
@@ -74,13 +74,13 @@ class Application(object):
         from quodlibet.qltk import Window
         self.window.deiconify()
         self.window.present()
-        for window in Window.instances:
+        for window in Window.windows:
             window.deiconify()
             window.present()
 
     def hide(self):
         from quodlibet.qltk import Window
-        for window in Window.instances:
+        for window in Window.windows:
             window.hide()
         self.window.hide()
 
@@ -530,7 +530,7 @@ def main(window):
         # (browser windows, tag editors, pref window etc.)
         from quodlibet.qltk import Window
         map(Gtk.Window.hide, Gtk.Window.list_toplevels())
-        map(Gtk.Window.destroy, Window.instances)
+        map(Gtk.Window.destroy, Window.windows)
 
         print_d("Quit GTK: Process pending events...")
         while Gtk.events_pending():

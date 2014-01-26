@@ -13,12 +13,12 @@ from quodlibet.qltk import get_top_parent, is_wayland
 class Window(Gtk.Window):
     """Base window class the keeps track of all window instances.
 
-    All active instances can be accessed through Window.instances.
+    All active instances can be accessed through Window.windows.
     By defining dialog=True as a kwarg binds Escape to close, otherwise
     ^W will close the window.
     """
 
-    instances = []
+    windows = []
 
     __gsignals__ = {
         "close-accel": (GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION,
@@ -28,7 +28,7 @@ class Window(Gtk.Window):
     def __init__(self, *args, **kwargs):
         dialog = kwargs.pop("dialog", True)
         super(Window, self).__init__(*args, **kwargs)
-        type(self).instances.append(self)
+        type(self).windows.append(self)
         self.__accels = Gtk.AccelGroup()
         if dialog:
             self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
@@ -41,7 +41,7 @@ class Window(Gtk.Window):
         else:
             esc, mod = Gtk.accelerator_parse("Escape")
             self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
-        self.connect_object('destroy', type(self).instances.remove, self)
+        self.connect_object('destroy', type(self).windows.remove, self)
 
     def set_transient_for(self, parent):
         """Set a parent for the window.
