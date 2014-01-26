@@ -310,6 +310,10 @@ def parse_taglist(data):
             continue
 
         key, value = san[0]
+        if key == "~listenerpeak":
+            key = "~#listenerpeak"
+            value = int(value)
+
         if isinstance(value, str):
             value = value.decode("utf-8")
             if value not in station.list(key):
@@ -478,7 +482,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
     accelerated_name = _("_Internet Radio")
     priority = 16
     headers = "title artist ~people grouping genre website ~format " \
-        "channel-mode ~listenerpeak".split()
+        "channel-mode".split()
 
     TYPE, STOCK, KEY, NAME = range(4)
     TYPE_FILTER, TYPE_ALL, TYPE_FAV, TYPE_SEP, TYPE_NOCAT = range(5)
@@ -668,25 +672,41 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
             print_w("Loading remote station list failed.")
             return
 
-        # filter stations
+        # filter stations based on quality, listenercount
+        def filter_stations(station):
+            peak = station.get("~#listenerpeak", 0)
+            if peak < 10:
+                return False
+            aac = "AAC" in station("~format")
+            bitrate = station("~#bitrate", 50)
+            if (aac and bitrate < 40) or (not aac and bitrate < 60):
+                return False
+            return True
+        stations = filter(filter_stations, stations)
+
+        # group them based on the title
+        groups = {}
+        for s in stations:
+            key = s("~title~artist")
+            groups.setdefault(key, []).append(s)
+
+        # keep at most 2 URLs for each group
+        stations = []
+        for key, sub in groups.iteritems():
+            sub.sort(key=lambda s: s.get("~#listenerpeak", 0), reverse=True)
+            stations.extend(sub[:2])
+
+        # only keep the ones in at least one category
         all_ = [self.filters.query(k) for k in self.filters.keys()]
         assert all_
         anycat_filter = reduce(lambda x, y: x | y, all_)
+        stations = filter(anycat_filter.search, stations)
 
-        def filter_stations(station):
-            aac = "AAC" in station("~format")
-            bitrate = station("~#bitrate", 64)
-            # remove it on the way..
-            peak = int(station.pop("~listenerpeak", 0))
+        # remove listenerpeak
+        for s in stations:
+            s.pop("~#listenerpeak", None)
 
-            if peak < 30:
-                return False
-            if (aac and bitrate < 55) or (not aac and bitrate < 70):
-                return False
-            return anycat_filter.search(station)
-
-        stations = filter(filter_stations, stations)
-
+        # update the libraries
         stations = dict(((s.key, s) for s in stations))
         # don't add ones that are in the fav list
         for fav in self.__fav_stations.iterkeys():
