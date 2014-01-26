@@ -134,13 +134,12 @@ class QueryParser(object):
         self.match(EOF)
 
         def insert_tags(p):
-            # pack all values in tags
+            # traverse and fill in tags where needed
             if isinstance(p, match.Inter):
-                return match.Inter([match.Tag(star, v) for v in p.res])
+                return match.Inter([insert_tags(v) for v in p.res])
             elif isinstance(p, match.Union):
-                return match.Union([match.Tag(star, v) for v in p.res])
+                return match.Union([insert_tags(v) for v in p.res])
             elif isinstance(p, match.Neg):
-                # we want Neg to negate the whole query, not the value
                 return match.Neg(insert_tags(p.res))
             else:
                 return match.Tag(star, p)
@@ -298,6 +297,7 @@ def Query(string, star=STAR):
         "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
         "!foo" -> !star1,star2=foo
         "&(foo, bar)" -> &(star1,star2=foo, star1,star2=bar)
+        "&(foo, !bar)" -> &(star1,star2=foo, !star1,star2=bar)
         "|(foo, bar)" -> |(star1,star2=foo, star1,star2=bar)
         "!&(foo, bar)" -> !&(star1,star2=foo, star1,star2=bar)
         "!(foo, bar)" -> !star1,star2=(foo, bar)

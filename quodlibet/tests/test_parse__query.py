@@ -231,6 +231,12 @@ class TQuery(TestCase):
         self.failUnless(Query(" !!!&(xyz, zyx)").search(self.s1))
         self.failIf(Query("!man").search(self.s1))
 
+        self.failUnless(Query("&(tests,piman)").search(self.s1))
+        self.failUnless(Query("&(tests,!nope)").search(self.s1))
+        self.failIf(Query("&(tests,!!nope)").search(self.s1))
+        self.failIf(Query("&(tests,!piman)").search(self.s1))
+        self.failUnless(Query("&(tests,|(foo,&(pi,!nope)))").search(self.s1))
+
     def test_dumb_search_regexp(self):
         self.failUnless(Query("/(x|H)ate/").search(self.s1))
         self.failUnless(Query("'PiMan'").search(self.s1))
