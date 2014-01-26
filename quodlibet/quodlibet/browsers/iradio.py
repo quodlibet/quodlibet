@@ -627,7 +627,6 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
         def qbar_response(infobar, response_id):
             if response_id == infobar.RESPONSE_LOAD:
-                infobar.hide()
                 self.__update()
 
         self.qbar = QuestionBar()
@@ -664,6 +663,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         box.remove(songpane)
 
     def __update(self, *args):
+        self.qbar.hide()
         copool.add(download_taglist, self.__update_done,
                    cofuncid="radio-load", funcid="radio-load")
 
