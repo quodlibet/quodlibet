@@ -408,6 +408,36 @@ class GenreFilter(object):
         return self.GENRES[key][0]
 
 
+class QuestionBar(Gtk.InfoBar):
+    """A widget which suggest to download the radio list if
+    no radio stations are present.
+
+    Connect to Gtk.InfoBar::response and check for RESPONSE_LOAD
+    as response id.
+    """
+
+    RESPONSE_LOAD = 1
+
+    def __init__(self):
+        super(QuestionBar, self).__init__()
+        self.set_show_close_button(True)
+        self.connect("response", self.__response)
+        self.set_message_type(Gtk.MessageType.QUESTION)
+
+        label = Gtk.Label(
+            _("Would you like to load a list of popular radio stations?"))
+        label.set_line_wrap(True)
+        label.show()
+        content = self.get_content_area()
+        content.add(label)
+
+        self.add_button(_("_Load Stations"), self.RESPONSE_LOAD)
+
+    def __response(self, bar, response_id):
+        if response_id == Gtk.ResponseType.CLOSE:
+            bar.hide()
+
+
 class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
     __gsignals__ = Browser.__gsignals__
 
@@ -564,14 +594,34 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
             self.pack_start(box, True, True, 0)
         self.__filter_list = scrolled_window
 
+        def qbar_response(infobar, response_id):
+            if response_id == infobar.RESPONSE_LOAD:
+                infobar.hide()
+                self.__update()
+
+        self.qbar = QuestionBar()
+        self.qbar.connect("response", qbar_response)
+        if self._is_library_empty():
+            self.qbar.show()
+
         self.show_all()
+
+    def _is_library_empty(self):
+        return not len(self.__stations) and not len(self.__fav_stations)
 
     def pack(self, songpane):
         container = Gtk.VBox(spacing=6)
+
         pane = qltk.RHPaned()
         pane.pack1(self.__filter_list, resize=False, shrink=False)
         pane.show_all()
-        pane.pack2(songpane, resize=True, shrink=False)
+
+        songbox = Gtk.VBox(spacing=6)
+        songbox.pack_start(songpane, True, True, 0)
+        songbox.pack_start(self.qbar, False, True, 0)
+        songbox.show()
+
+        pane.pack2(songbox, resize=True, shrink=False)
         container.pack_start(self, False, True, 0)
         container.pack_start(pane, True, True, 0)
         return container
@@ -579,7 +629,8 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
     def unpack(self, container, songpane):
         container.remove(self)
         pane = container.get_children()[0]
-        pane.remove(songpane)
+        box = pane.get_children()[1]
+        box.remove(songpane)
 
     def __update(self, *args):
         copool.add(download_taglist, self.__update_done,

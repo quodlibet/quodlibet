@@ -1,12 +1,21 @@
 from tests import TestCase
 
+from gi.repository import Gtk
+
 from quodlibet.library import SongLibrary
 from quodlibet.formats._audio import AudioFile
-from quodlibet.browsers.iradio import InternetRadio, IRFile
+from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar
 from quodlibet.player.nullbe import NullPlayer
 import quodlibet.config
 
 quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
+
+
+class TQuestionBar(TestCase):
+
+    def test_main(self):
+        b = QuestionBar()
+        self.assertFalse(b.get_visible())
 
 
 class TInternetRadio(TestCase):
