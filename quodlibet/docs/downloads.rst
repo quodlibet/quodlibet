@@ -116,15 +116,15 @@ Repo key::
 
 Stable Repo:
 
-  * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_17/>`__
   * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_18/>`__
   * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_19/>`__
+  * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_20/>`__
 
 Unstable Repo:
 
-  * `Fedora 17 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_17/>`__
   * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_18/>`__
   * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_19/>`__
+  * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_20/>`__
 
 
 |opensuse-logo| openSUSE
