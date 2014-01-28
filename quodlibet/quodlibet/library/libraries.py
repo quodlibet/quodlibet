@@ -161,13 +161,13 @@ class Library(GObject.GObject, DictMixin):
     def add(self, items):
         """Add items. This causes an 'added' signal.
 
-        Return the list of items actually added, filtering out items
+        Return the sequence of items actually added, filtering out items
         already in the library.
         """
 
         items = set(item for item in items if item not in self)
         if not items:
-            return
+            return items
 
         print_d("Adding %d items." % len(items), self)
         for item in items:
@@ -178,9 +178,14 @@ class Library(GObject.GObject, DictMixin):
         return items
 
     def remove(self, items):
-        """Remove items. This causes a 'removed' signal."""
+        """Remove items. This causes a 'removed' signal.
+
+        Return the sequence of items actually removed.
+        """
+
+        items = set(item for item in items if item in self)
         if not items:
-            return
+            return items
 
         print_d("Removing %d items." % len(items), self)
         for item in items:
@@ -188,6 +193,7 @@ class Library(GObject.GObject, DictMixin):
 
         self.dirty = True
         self.emit('removed', items)
+        return items
 
 
 def dump_items(filename, items):

@@ -103,7 +103,7 @@ class Librarian(GObject.GObject):
     def remove(self, items):
         """Remove items from all libraries."""
         for library in self.libraries.itervalues():
-            library.remove(filter(library.__contains__, items))
+            library.remove(items)
 
     def __contains__(self, item):
         """Check if a key or item is in the library."""

@@ -105,7 +105,7 @@ class TLibrary(TestCase):
 
     def test_remove(self):
         self.library.add(self.Frange(10))
-        self.library.remove(self.Frange(3, 6))
+        self.assertTrue(self.library.remove(self.Frange(3, 6)))
         self.failUnlessEqual(self.removed, self.Frange(3, 6))
 
         # Neither the objects nor their keys should be present.
@@ -115,7 +115,7 @@ class TLibrary(TestCase):
         self.failUnless(6 in self.library)
 
     def test_remove_when_not_present(self):
-        self.failUnlessRaises(KeyError, self.library.remove, [self.Fake(12)])
+        self.assertFalse(self.library.remove([self.Fake(12)]))
 
     def test_changed(self):
         self.library.add(self.Frange(10))
