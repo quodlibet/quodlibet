@@ -141,12 +141,25 @@ class TrackCurrentModel(ObjectStore):
     current_iter = property(__get_current_iter, __set_current_iter)
 
     def find(self, song):
-        for row in self:
-            if row[0] == song:
-                return row.iter
-        return None
+        """Returns the iter to the first occurrence of song in the model
+        or None
+        """
+
+        # fast path
+        if self.current == song:
+            return self.current_iter
+
+        # search the rest
+        for iter_, value in self.iterrows():
+            if value == song:
+                return iter_
+        return
 
     def find_all(self, songs):
+        """Returns a list of iters for all occurrences of all songs.
+        (since a song can be in the model multiple times)
+        """
+
         songs = set(songs)
         found = []
         append = found.append
@@ -157,9 +170,6 @@ class TrackCurrentModel(ObjectStore):
 
     def __contains__(self, song):
         return bool(self.find(song))
-
-    def is_empty(self):
-        return not len(self)
 
 
 class PlaylistModel(TrackCurrentModel):

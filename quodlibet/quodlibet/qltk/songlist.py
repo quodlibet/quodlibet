@@ -857,11 +857,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.
-        Warning: This makes the row-changed signal useless."""
-        #pygtk 2.12: prevent invalid ranges or GTK asserts
-        if not self.get_realized() or \
-                self.get_path_at_pos(0, 0) is None:
-            return
+        Warning: This makes the row-changed signal useless.
+        """
+
         vrange = self.get_visible_range()
         if vrange is None:
             return

@@ -745,7 +745,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     def __check_remove_song(self, player, song):
         if song is None:
             return
-        if not self.browser.dynamic(song):
+        active_filter = self.browser.active_filter
+        if active_filter and not active_filter(song):
             iter = self.songlist.model.find(song)
             if iter:
                 self.songlist.remove_iters([iter])
@@ -757,9 +758,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             self.stop_after.set_active(False)
 
     def __song_changed(self, player, songs):
-        self.__update_title(player)
-        for song in songs:
-            self.__check_remove_song(player, song)
+        if player.info in songs:
+            self.__update_title(player)
 
     def __update_title(self, player):
         song = player.info

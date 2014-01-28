@@ -64,6 +64,13 @@ class TPlaylistModel(TestCase):
         for i, v in zip(iters, to_find):
             self.failUnlessEqual(self.pl[i][0], v)
 
+    def test_find_all_duplicates(self):
+        # ignore duplicates in parameters
+        self.assertTrue(len(self.pl.find_all([1, 1])), 1)
+        # but find duplicates
+        self.pl.set([1, 1])
+        self.assertTrue(len(self.pl.find_all([1])), 2)
+
     def test_find_all_some_missing(self):
         to_find = [1, 4, 18, 5, 8, 9, -1]
         iters = self.pl.find_all(to_find)
