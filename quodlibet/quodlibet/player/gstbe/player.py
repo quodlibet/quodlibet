@@ -169,6 +169,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.version_info = "GStreamer: %s" % fver(Gst.version())
         self._librarian = librarian
         self._pipeline_desc = None
+        librarian.connect("changed", self.__songs_changed)
+
+    def __songs_changed(self, librarian, songs):
+        # replaygain values might have changed, recalc volume
+        if self.song and self.song in songs:
+            self.volume = self.volume
 
     def destroy(self):
         self.__destroy_pipeline()
