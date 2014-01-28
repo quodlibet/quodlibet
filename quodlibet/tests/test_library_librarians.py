@@ -157,3 +157,11 @@ class TSongLibrarian(TLibrarian):
         self.failUnlessEqual(self.changed_1, [new])
         self.failUnlessEqual(self.changed_2, [new])
         self.failUnless(new in self.changed)
+
+    def test_rename_changed(self):
+        new = self.Fake(10)
+        self.lib1.add([new])
+        changed = set()
+        self.librarian.rename(new, 20, changed=changed)
+        self.assertEqual(len(changed), 1)
+        self.assertTrue(new in changed)

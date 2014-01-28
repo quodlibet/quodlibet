@@ -1,5 +1,6 @@
 # Copyright 2006 Joe Wreschnig
 #           2012 Nick Boultbee
+#           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -77,8 +78,9 @@ class Librarian(GObject.GObject):
 
     def changed(self, items):
         """Triage the items and inform their real libraries."""
+
         for library in self.libraries.itervalues():
-            in_library = filter(library.__contains__, items)
+            in_library = set(item for item in items if item in library)
             if in_library:
                 library._changed(in_library)
 
@@ -145,7 +147,8 @@ class SongLibrarian(Librarian):
     def rename(self, song, newname, changed=None):
         """Rename the song in all libraries it belongs to.
 
-        The 'changed' signal will fire for any library the song is in.
+        The 'changed' signal will fire for any library the song is in
+        except if a set() is passed as changed.
         """
         # This needs to poke around inside the library directly.  If
         # it uses add/remove to handle the songs it fires incorrect
@@ -165,10 +168,10 @@ class SongLibrarian(Librarian):
         for library in re_add:
             library._contents[song.key] = song
             if changed is None:
-                library._changed([song])
+                library._changed(set([song]))
             else:
                 print_d("Delaying changed signal for %r." % library, self)
-                changed.append(song)
+                changed.add(song)
 
     def reload(self, item, changed=None, removed=None):
         """Reload a song."""
@@ -190,8 +193,8 @@ class SongLibrarian(Librarian):
         was_changed, was_removed = library._load_item(item)
         if was_removed:
             for library in re_add:
-                library.emit('removed', [item])
+                library.emit('removed', set([item]))
         elif was_changed:
             for library in re_add:
                 library._contents[item.key] = item
-                library.emit('changed', [item])
+                library.emit('changed', set([item]))

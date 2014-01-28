@@ -676,7 +676,7 @@ class EditTags(Gtk.VBox):
                                           decode(row[VALUE]),
                                           decode(row[ORIGVALUE])))
 
-        was_changed = []
+        was_changed = set()
         songs = self.__songinfo.songs
         win = WritingWindow(self, len(songs))
         win.show()
@@ -749,7 +749,7 @@ class EditTags(Gtk.VBox):
                         song('~basename'))))).run()
                     library.reload(song, changed=was_changed)
                     break
-                was_changed.append(song)
+                was_changed.add(song)
 
             if win.step():
                 break

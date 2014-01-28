@@ -129,7 +129,7 @@ class TLibrary(TestCase):
         self.library.changed(self.Frange(2, 20, 3))
         while Gtk.events_pending():
             Gtk.main_iteration()
-        self.failUnlessEqual(self.changed, [2, 5, 8])
+        self.failUnlessEqual(set(self.changed), set([2, 5, 8]))
 
     def test_changed_none_present(self):
         self.library.changed(self.Frange(5))
@@ -288,6 +288,14 @@ class TSongLibrary(TLibrary):
         self.failUnless(song in self.library)
         self.failUnless(song.key in self.library)
         self.failUnlessEqual(song.key, 20)
+
+    def test_rename_changed(self):
+        song = FakeSong(10)
+        self.library.add([song])
+        changed = set()
+        self.library.rename(song, 20, changed=changed)
+        self.assertEqual(len(changed), 1)
+        self.assertTrue(song in changed)
 
     def test_tag_values(self):
         self.library.add(self.Frange(30))

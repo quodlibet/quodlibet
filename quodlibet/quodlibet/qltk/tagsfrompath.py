@@ -235,7 +235,7 @@ class TagsFromPath(EditPane):
         win = WritingWindow(self, len(model))
         win.show()
 
-        was_changed = []
+        was_changed = set()
 
         for row in (model or []):
             song = row[0]
@@ -275,7 +275,7 @@ class TagsFromPath(EditPane):
                         ).run()
                     library.reload(song, changed=was_changed)
                     break
-                was_changed.append(song)
+                was_changed.add(song)
 
             if win.step():
                 break

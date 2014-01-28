@@ -1,6 +1,6 @@
 # Copyright 2006 Joe Wreschnig
 #           2013 Nick Boultbee
-#           2013 Christoph Reiter
+#           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -36,6 +36,12 @@ class Library(GObject.GObject, DictMixin):
     The only required method these objects support is a .key
     attribute, but specific types of libraries may require more
     advanced interfaces.
+
+    Every method which takes a sequence of items expects items to
+    implement __iter__, __len__ and __contains__.
+
+    Likewise the signals emit sequences which implement
+    __iter__, __len__ and __contains__ e.g. set(), list() or tuple().
 
     WARNING: The library implements the dict interface with the exception
     that iterating over it yields values and not keys.
@@ -74,19 +80,22 @@ class Library(GObject.GObject, DictMixin):
         the librarian, this library's changed signal may not fire, but
         another's might.
         """
+
         if not items:
             return
         if self.librarian and self in self.librarian.libraries.itervalues():
             print_d("Changing %d items via librarian." % len(items), self)
             self.librarian.changed(items)
         else:
-            items = filter(self.__contains__, items)
+            items = set(item for item in items if item in self)
             if not items:
                 return
             print_d("Changing %d items directly." % len(items), self)
             self._changed(items)
 
     def _changed(self, items):
+        assert isinstance(items, set)
+
         # Called by the changed method and Librarians.
         if not items:
             return
@@ -155,7 +164,8 @@ class Library(GObject.GObject, DictMixin):
         Return the list of items actually added, filtering out items
         already in the library.
         """
-        items = filter(lambda item: item not in self, items)
+
+        items = set(item for item in items if item not in self)
         if not items:
             return
 
@@ -453,7 +463,8 @@ class SongLibrary(PicklingLibrary):
         This requires a special method because it can change the
         song's key.
 
-        The 'changed' signal may fire for this library.
+        The 'changed' signal may fire for this library or the changed
+        song is added to the passed changed set().
 
         If the song exists in multiple libraries you cannot use this
         method. Instead, use the librarian.
@@ -464,9 +475,9 @@ class SongLibrary(PicklingLibrary):
         self._contents[song.key] = song
         if changed is not None:
             print_d("%s: Delaying changed signal." % (type(self).__name__,))
-            changed.append(song)
+            changed.add(song)
         else:
-            self.changed([song])
+            self.changed(set([song]))
 
     def query(self, text, sort=None, star=Query.STAR):
         """Query the library and return matching songs."""
@@ -568,21 +579,21 @@ class FileLibrary(PicklingLibrary):
     def reload(self, item, changed=None, removed=None):
         """Reload a song, possibly noting its status.
 
-        If lists are given, it assumes the caller will handle signals,
-        and only updates the lists. Otherwise, it handles signals
+        If sets are given, it assumes the caller will handle signals,
+        and only updates the sets. Otherwise, it handles signals
         itself. It *always* handles library contents, so do not
-        try to remove (again) a song that appears in the removed list.
+        try to remove (again) a song that appears in the removed set.
         """
         was_changed, was_removed = self._load_item(item, force=True)
         if was_changed and changed is not None:
-            changed.append(item)
+            changed.add(item)
         elif was_removed and removed is not None:
-            removed.append(item)
+            removed.add(item)
         elif changed is None and removed is None:
             if was_changed:
-                self.changed([item])
+                self.changed(set([item]))
             elif was_removed:
-                self.emit('removed', [item])
+                self.emit('removed', set([item]))
 
     def rebuild(self, paths, force=False, exclude=[], cofuncid=None):
         """Reload or remove songs if they have changed or been deleted.
@@ -614,7 +625,7 @@ class FileLibrary(PicklingLibrary):
         task = Task(_("Library"), _("Scanning library"))
         if cofuncid:
             task.copool(cofuncid)
-        changed, removed = [], []
+        changed, removed = set(), set()
         for i, (key, item) in task.list(enumerate(sorted(self.items()))):
             if key in self._contents and force or not item.valid():
                 self.reload(item, changed, removed)
@@ -623,10 +634,10 @@ class FileLibrary(PicklingLibrary):
             # interactive and doesn't get bogged down in updates.
             if len(changed) > 100:
                 self.emit('changed', changed)
-                changed = []
+                changed = set()
             if len(removed) > 100:
                 self.emit('removed', removed)
-                removed = []
+                removed = set()
             if len(changed) > 5 or i % 100 == 0:
                 yield True
         print_d("Removing %d, changing %d." % (len(removed), len(changed)),

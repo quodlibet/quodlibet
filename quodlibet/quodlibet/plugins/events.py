@@ -92,7 +92,7 @@ class EventPluginHandler(PluginHandler):
         if args and args[0]:
             if isinstance(args[0], dict):
                 args[0] = SongWrapper(args[0])
-            elif isinstance(args[0], list):
+            elif isinstance(args[0], (set, list)):
                 args[0] = ListWrapper(args[0])
         for plugin in self.__plugins.itervalues():
             method_name = 'plugin_on_' + event.replace('-', '_')
@@ -106,7 +106,7 @@ class EventPluginHandler(PluginHandler):
         if event not in ["removed", "changed"] and args:
             from quodlibet import app
             songs = args[0]
-            if not isinstance(songs, list):
+            if not isinstance(songs, (set, list)):
                 songs = [songs]
             songs = filter(None, songs)
             check_wrapper_changed(librarian, app.window, songs)

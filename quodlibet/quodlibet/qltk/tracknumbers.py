@@ -109,7 +109,7 @@ class TrackNumbers(Gtk.VBox):
 
     def __save_files(self, parent, model, library):
         win = WritingWindow(parent, len(model))
-        was_changed = []
+        was_changed = set()
         for song, track in [(r[0], r[2]) for r in model]:
             if song.get("tracknumber") == track:
                 win.step()
@@ -136,7 +136,7 @@ class TrackNumbers(Gtk.VBox):
                     util.escape(fsdecode(song('~basename')))).run()
                 library.reload(song, changed=was_changed)
                 break
-            was_changed.append(song)
+            was_changed.add(song)
             if win.step():
                 break
         library.changed(was_changed)
