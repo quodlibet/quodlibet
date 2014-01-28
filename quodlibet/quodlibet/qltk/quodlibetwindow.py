@@ -335,7 +335,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             ('unpaused', self.__update_paused, False),
         ]
         for sig in player_sigs:
-            gobject_weak(player.connect, *sig, **{"parent": self})
+            # connect after to let SongTracker update stats
+            gobject_weak(player.connect_after, *sig, **{"parent": self})
 
         targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
@@ -742,17 +743,15 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         menu.set_label(text)
         menu.set_use_underline(True)
 
-    def __check_remove_song(self, player, song):
-        if song is None:
-            return
-        active_filter = self.browser.active_filter
-        if active_filter and not active_filter(song):
-            iter = self.songlist.model.find(song)
-            if iter:
-                self.songlist.remove_iters([iter])
-
     def __song_ended(self, player, song, stopped):
-        self.__check_remove_song(player, song)
+        # check if the song should be removed base on the
+        # active filter of the current browser
+        active_filter = self.browser.active_filter
+        if song and active_filter and not active_filter(song):
+            iter_ = self.songlist.model.find(song)
+            if iter_:
+                self.songlist.remove_iters([iter_])
+
         if self.stop_after.get_active():
             player.paused = True
             self.stop_after.set_active(False)
