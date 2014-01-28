@@ -4,7 +4,7 @@ from tests import TestCase
 from quodlibet.library import SongLibrarian
 from quodlibet.library.libraries import Library, SongFileLibrary
 from quodlibet.library.librarians import Librarian
-from tests.test_library_libraries import Fake, Frange, FakeSong, FSrange
+from tests.test_library_libraries import Fake, Frange, FakeSongFile, FSrange
 
 
 class TLibrarian(TestCase):
@@ -128,7 +128,7 @@ class TLibrarian(TestCase):
 
 
 class TSongLibrarian(TLibrarian):
-    Fake = FakeSong
+    Fake = FakeSongFile
     Frange = staticmethod(FSrange)
     Library = SongFileLibrary
     Librarian = SongLibrarian
@@ -165,3 +165,13 @@ class TSongLibrarian(TLibrarian):
         self.librarian.rename(new, 20, changed=changed)
         self.assertEqual(len(changed), 1)
         self.assertTrue(new in changed)
+
+    def test_reload(self):
+        new = self.Fake(10)
+        self.lib1.add([new])
+        changed = set()
+        removed = set()
+
+        self.librarian.reload(new, changed=changed, removed=removed)
+        self.assertTrue(new in changed)
+        self.assertFalse(removed)

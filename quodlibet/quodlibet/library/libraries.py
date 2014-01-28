@@ -590,16 +590,20 @@ class FileLibrary(PicklingLibrary):
         itself. It *always* handles library contents, so do not
         try to remove (again) a song that appears in the removed set.
         """
+
         was_changed, was_removed = self._load_item(item, force=True)
-        if was_changed and changed is not None:
-            changed.add(item)
-        elif was_removed and removed is not None:
-            removed.add(item)
-        elif changed is None and removed is None:
-            if was_changed:
-                self.changed(set([item]))
-            elif was_removed:
+        assert not (was_changed and was_removed)
+
+        if was_changed:
+            if changed is None:
+                self.emit('changed', set([item]))
+            else:
+                changed.add(item)
+        elif was_removed:
+            if removed is None:
                 self.emit('removed', set([item]))
+            else:
+                removed.add(item)
 
     def rebuild(self, paths, force=False, exclude=[], cofuncid=None):
         """Reload or remove songs if they have changed or been deleted.

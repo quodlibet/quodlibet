@@ -363,6 +363,15 @@ class TFileLibrary(TLibrary):
         self.library._load_init([new])
         self.failUnlessEqual(self.library.values(), [new])
 
+    def test_reload(self):
+        new = self.Fake(200)
+        self.library.add([new])
+        changed = set()
+        removed = set()
+        self.library.reload(new, changed=changed, removed=removed)
+        self.assertTrue(new in changed)
+        self.assertFalse(removed)
+
 
 class TSongFileLibrary(TSongLibrary):
     Fake = FakeSongFile

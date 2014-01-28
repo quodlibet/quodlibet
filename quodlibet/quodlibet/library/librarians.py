@@ -174,8 +174,15 @@ class SongLibrarian(Librarian):
                 changed.add(song)
 
     def reload(self, item, changed=None, removed=None):
-        """Reload a song."""
-        re_add = []
+        """Reload a song (for all libraries), possibly noting its status.
+
+        If sets are given, it assumes the caller will handle signals,
+        and only updates the sets. Otherwise, it handles signals
+        itself. It *always* handles library contents, so do not
+        try to remove (again) a song that appears in the removed set.
+        """
+
+        had_item = []
         print_d("Reloading %r" % item.key, self)
         for library in self.libraries.itervalues():
             try:
@@ -183,18 +190,29 @@ class SongLibrarian(Librarian):
             except KeyError:
                 pass
             else:
-                re_add.append(library)
+                had_item.append(library)
         try:
-            library = re_add[0]
+            library = had_item[0]
         except IndexError:
             return
+
         # Rely on the first library in the list to do the actual
         # load, then just inform the other libraries what happened.
-        was_changed, was_removed = library._load_item(item)
+        was_changed, was_removed = library._load_item(item, force=True)
+        assert not (was_changed and was_removed)
+
         if was_removed:
-            for library in re_add:
-                library.emit('removed', set([item]))
+            if removed is None:
+                for library in had_item:
+                    library.emit('removed', set([item]))
+            else:
+                removed.add(item)
         elif was_changed:
-            for library in re_add:
+            for library in had_item:
                 library._contents[item.key] = item
-                library.emit('changed', set([item]))
+
+            if changed is None:
+                for library in had_item:
+                    library.emit('changed', set([item]))
+            else:
+                changed.add(item)
