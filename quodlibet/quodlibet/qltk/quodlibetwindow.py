@@ -329,14 +329,17 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                      player, parent=self)
 
         player_sigs = [
-            ('song-ended', self.__song_ended),
             ('song-started', self.__song_started),
             ('paused', self.__update_paused, True),
             ('unpaused', self.__update_paused, False),
         ]
         for sig in player_sigs:
-            # connect after to let SongTracker update stats
-            gobject_weak(player.connect_after, *sig, **{"parent": self})
+            gobject_weak(player.connect, *sig, **{"parent": self})
+
+        # connect after to let SongTracker update stats
+        player_sigs.append(
+            gobject_weak(player.connect_after, "song-ended",
+                         self.__song_ended, parent=self))
 
         targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
