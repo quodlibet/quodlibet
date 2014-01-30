@@ -88,8 +88,8 @@ class PlaylistExport(SongsMenuPlugin):
         diag_cont.pack_start(hbox_path, False, False, 0)
         diag_cont.show_all()
 
-        map(combo_path.append_text, [_("Use relative paths"),
-                                     _("Use absolute paths")])
+        for option_text in [_("Use relative paths"), _("Use absolute paths")]:
+            combo_path.append_text(option_text)
         combo_path.set_active(0)
 
         response = dialog.run()

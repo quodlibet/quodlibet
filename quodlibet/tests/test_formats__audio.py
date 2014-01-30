@@ -584,5 +584,6 @@ class Tfind_cover(TestCase):
                 self.failUnless(f, self.full_path('back.jpg'))
 
     def tearDown(self):
-        map(os.unlink, self.files)
+        for f in self.files:
+            os.unlink(f)
         config.quit()

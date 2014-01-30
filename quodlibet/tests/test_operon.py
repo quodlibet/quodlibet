@@ -290,7 +290,8 @@ class TOperonCopy(TOperonBase):
         self.check_true(["-v", "copy", self.f, self.f2], False, True)
 
     def test_simple(self):
-        map(self.s2.__delitem__, self.s2.realkeys())
+        for key in self.s2.realkeys():
+            del self.s2[key]
         self.s2.write()
         self.s2.reload()
         self.failIf(self.s2.realkeys())
@@ -312,7 +313,8 @@ class TOperonCopy(TOperonBase):
         self.failUnlessEqual(len(self.s2.list("genre")), 2)
 
     def test_dry_run(self):
-        map(self.s2.__delitem__, self.s2.realkeys())
+        for key in self.s2.realkeys():
+            del self.s2[key]
         self.s2.write()
         self.s2.reload()
         self.check_true(["copy", "--dry-run", self.f, self.f2], False, True)

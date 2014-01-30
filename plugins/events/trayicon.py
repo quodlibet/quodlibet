@@ -416,7 +416,8 @@ class TrayIcon(EventPlugin):
         order_sub.append(repeat)
         order_sub.append(safter)
         order_sub.append(SeparatorMenuItem())
-        map(order_sub.append, order_items)
+        for item in order_items:
+            order_sub.append(item)
         orders.set_submenu(order_sub)
 
         browse = qltk.MenuItem(_("_Browse Library"), Gtk.STOCK_FIND)

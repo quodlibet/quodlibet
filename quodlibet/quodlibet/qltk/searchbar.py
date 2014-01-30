@@ -197,7 +197,9 @@ class LimitSearchBarBox(SearchBarBox):
             self.__weight = Gtk.CheckButton(_("_Weight"), use_underline=True)
             self.__weight.connect("toggled", self.__changed)
             self.pack_start(self.__weight, True, True, 0)
-            map(lambda w: w.show(), self.get_children())
+
+            for child in self.get_children():
+                child.show()
 
         def __changed(self, *args):
             self.emit("changed")

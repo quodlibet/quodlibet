@@ -49,7 +49,8 @@ class Bookmarks(SongsMenuPlugin):
                 menu.append(song_item)
 
                 items = qltk.bookmarks.MenuItems(marks, fake_player, True)
-                map(song_menu.append, items)
+                for item in items:
+                    song_menu.append(item)
 
                 song_menu.append(SeparatorMenuItem())
                 i = qltk.MenuItem(_("_Edit Bookmarks..."), Gtk.STOCK_EDIT)
@@ -69,7 +70,8 @@ class Bookmarks(SongsMenuPlugin):
         menu.show_all()
 
     def __unmap(self, menu):
-        map(self.__menu.remove, self.__menu.get_children())
+        for child in self.__menu.get_children():
+            self.__menu.remove(child)
 
     def plugin_songs(self, songs):
         pass

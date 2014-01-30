@@ -48,7 +48,8 @@ class DictMixin(object):
     iteritems = lambda s: iter(s.items())
 
     def clear(self):
-        map(self.__delitem__, self.keys())
+        for key in self.keys():
+            del self[key]
 
     def pop(self, key, *args):
         if len(args) > 1:
@@ -76,7 +77,8 @@ class DictMixin(object):
             other = {}
 
         try:
-            map(self.__setitem__, other.keys(), other.values())
+            for key, value in other.items():
+                self[key] = value
         except AttributeError:
             for key, value in other:
                 self[key] = value

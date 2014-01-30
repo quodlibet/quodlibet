@@ -88,7 +88,8 @@ class SongsMenuPluginHandler(PluginHandler):
             albums[key].append(song)
 
         albums = albums.values()
-        map(list.sort, albums)
+        for album in albums:
+            album.sort()
         return albums
 
     def handle(self, plugin_id, library, parent, songs):

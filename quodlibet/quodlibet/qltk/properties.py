@@ -121,7 +121,8 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             if row[0] in songs:
                 to_remove.append(row.iter)
                 changed = changed or (row.path in rows)
-        map(model.remove, to_remove)
+        for iter_ in to_remove:
+            model.remove(iter_)
         selection.handler_unblock(sig)
         if changed:
             selection.emit('changed')

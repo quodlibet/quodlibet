@@ -172,9 +172,10 @@ class EditBookmarksPane(Gtk.VBox):
         remove.set_sensitive(bool(selection.get_selected_rows()[1]))
 
     def __remove(self, remove, selection, library, song):
-        model, rows = selection.get_selected_rows()
+        model, paths = selection.get_selected_rows()
         if model:
-            map(model.remove, map(model.get_iter, rows))
+            for path in paths:
+                model.remove(model.get_iter(path))
             self.__set_bookmarks(model, None, None, library, song)
 
     def __set_bookmarks(self, model, a, b, library, song):

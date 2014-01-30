@@ -42,7 +42,8 @@ class TimeTracker(GObject.GObject):
         ]
 
     def destroy(self):
-        map(self.__player.disconnect, self.__sigs)
+        for signal_id in self.__sigs:
+            self.__player.disconnect(signal_id)
         self.__source_remove()
 
     def __source_remove(self):

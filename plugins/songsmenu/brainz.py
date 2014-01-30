@@ -35,7 +35,8 @@ def get_artist(album):
     for tag in ["albumartist", "artist", "performer"]:
         names = set()
         for song in album:
-            map(names.add, filter(lambda n: n, song.get(tag, "").split("\n")))
+            for single in filter(None, song.get(tag, "").split("\n")):
+                names.add(single)
         if len(names) == 1:
             return names.pop()
         elif len(names) > 1:
@@ -95,7 +96,8 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         self.album = album
         self.remote_album = []
         self.model = Gtk.ListStore(object)
-        map(self.model.append, zip(album))
+        for song in album:
+            self.model.append([song])
 
         super(ResultTreeView, self).__init__(self.model)
         self.set_headers_clickable(True)

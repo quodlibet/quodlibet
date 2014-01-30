@@ -529,8 +529,11 @@ def main(window):
         # so we hide them all and only destroy our tracked instances
         # (browser windows, tag editors, pref window etc.)
         from quodlibet.qltk import Window
-        map(Gtk.Window.hide, Gtk.Window.list_toplevels())
-        map(Gtk.Window.destroy, Window.windows)
+        for toplevel in Gtk.Window.list_toplevels():
+            toplevel.hide()
+
+        for window in Window.windows:
+            window.destroy()
 
         print_d("Quit GTK: Process pending events...")
         while Gtk.events_pending():

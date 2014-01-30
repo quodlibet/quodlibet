@@ -59,7 +59,8 @@ class Librarian(GObject.GObject):
         # Libraries get unregistered at the discretion of the
         # librarian, not the libraries.
         del(self.libraries[name])
-        map(library.disconnect, self.__signals[library])
+        for signal_id in self.__signals[library]:
+            library.disconnect(signal_id)
         del(self.__signals[library])
 
     # FIXME: We can be smarter about this -- queue a list of items

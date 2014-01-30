@@ -451,7 +451,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             del self.__reverse[song]
 
     def destroy(self):
-        map(self.__library.disconnect, self.__sigs)
+        for signal_id in self.__sigs:
+            self.__library.disconnect(signal_id)
 
     def get_dummy(self, song, prefix):
         self.__song.set_song(song, prefix)
@@ -534,7 +535,8 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         return "Albums/" + str(id(album))
 
     def destroy(self):
-        map(self.__library.disconnect, self.__sigs)
+        for signal_id in self.__sigs:
+            self.__library.disconnect(signal_id)
 
     def __get_albums_property(self, interface, name):
         if interface == MediaContainer.IFACE:

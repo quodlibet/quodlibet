@@ -243,7 +243,9 @@ class coverage_cmd(Command):
         coverage = os.path.join(os.path.dirname(__file__), "coverage")
         results.write_results(show_missing=True, coverdir=coverage)
 
-        map(os.unlink, glob.glob(os.path.join(coverage, "[!q]*.cover")))
+        for path in glob.glob(os.path.join(coverage, "[!q]*.cover")):
+            os.unlink(path)
+
         try:
             os.unlink(os.path.join(coverage, "..setup.cover"))
         except OSError:

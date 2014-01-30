@@ -273,7 +273,8 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
     def __remove(self, iters, smodel):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
-            map(smodel.remove, iters)
+            for iter_remove in iters:
+                smodel.remove(iter_remove)
             playlist = model[iter][0]
             playlist.clear()
             playlist.extend([row[0] for row in smodel])

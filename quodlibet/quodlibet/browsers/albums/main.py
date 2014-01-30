@@ -358,7 +358,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         on = config.getboolean("browsers", "album_covers")
         for albumlist in klass.instances():
             albumlist.__cover_column.set_visible(on)
-            map(lambda x: x.queue_resize(), albumlist.view.get_columns())
+            for column in albumlist.view.get_columns():
+                column.queue_resize()
 
     @classmethod
     def refresh_pattern(klass, pattern_text):

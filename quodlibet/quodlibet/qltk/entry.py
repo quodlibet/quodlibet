@@ -76,7 +76,8 @@ class EditableUndo(object):
         add_fake_accel(redo, "<ctrl><shift>z")
         sep = SeparatorMenuItem()
 
-        map(Gtk.Widget.show, (sep, redo, undo))
+        for widget in [sep, redo, undo]:
+            widget.show()
 
         undo.connect('activate', lambda *x: self.undo())
         redo.connect('activate', lambda *x: self.redo())
@@ -84,7 +85,8 @@ class EditableUndo(object):
         undo.set_sensitive(self.can_undo())
         redo.set_sensitive(self.can_redo())
 
-        map(menu.prepend, (sep, redo, undo))
+        for item in [sep, redo, undo]:
+            menu.prepend(item)
 
     def __all(self):
         text = self.get_chars(0, -1).decode("utf-8")

@@ -35,10 +35,12 @@ class AutoMasking(EventPlugin):
                 self.__monitor.connect('mount-removed', self.__unmounted),
                 ]
         else:
-            map(self.__monitor.handler_unblock, self.__sigs)
+            for signal_id in self.__sigs:
+                self.__monitor.handler_unblock(signal_id)
 
     def disabled(self):
-        map(self.__monitor.handler_block, self.__sigs)
+        for signal_id in self.__sigs:
+            self.__monitor.handler_unblock(signal_id)
 
     def __mounted(self, monitor, mount):
         path = mount.get_default_location().get_path()

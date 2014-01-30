@@ -218,9 +218,11 @@ class PlaylistModel(TrackCurrentModel):
 
     def set(self, songs):
         self.order.reset(self)
-        map(self.handler_block, self.__sigs)
+        for signal_id in self.__sigs:
+            self.handler_block(signal_id)
         super(PlaylistModel, self).set(songs)
-        map(self.handler_unblock, self.__sigs)
+        for signal_id in self.__sigs:
+            self.handler_unblock(signal_id)
 
     def reset(self):
         self.go_to(None)

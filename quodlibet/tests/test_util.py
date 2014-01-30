@@ -312,7 +312,8 @@ class Tparse_time(TestCase):
 
 class Tformat_size(TestCase):
     def t_dict(self, d):
-        map(self.failUnlessEqual, map(util.format_size, d.keys()), d.values())
+        for key, value in d.items():
+            self.failUnlessEqual(util.format_size(key), value)
 
     def test_bytes(self):
         self.t_dict({0: "0 B", 1: "1 B", 1023: "1023 B"})

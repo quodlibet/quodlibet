@@ -388,7 +388,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __destroy(self, *args):
         self.info.destroy()
         self.handler_block(self.__csig)
-        map(self.remove_column, self.get_columns())
+        for column in self.get_columns():
+            self.remove_column(column)
         self.handler_unblock(self.__csig)
 
     def __search_func(self, model, column, key, iter, *args):
@@ -932,7 +933,8 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         self.handler_block(self.__csig)
 
         old_sort = self.is_sorted() and self.get_sort_by()
-        map(self.remove_column, self.get_columns())
+        for column in self.get_columns():
+            self.remove_column(column)
 
         if self.CurrentColumn is not None:
             self.append_column(self.CurrentColumn())
