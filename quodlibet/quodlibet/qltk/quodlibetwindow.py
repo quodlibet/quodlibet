@@ -218,6 +218,90 @@ class StatusBarBox(Gtk.HBox):
         model.repeat = button.get_active()
 
 
+class AppMenu(object):
+    """Implements a app menu proxy mirroring some main menu items
+    to a new menu and exporting it on the session bus.
+
+    Activation gets proxied back to the main menu actions.
+    """
+
+    def __init__(self, window, action_group):
+        window.realize()
+
+        self._bus = None
+        self._ag_id = None
+        self._am_id = None
+        window.connect("destroy", self._unexport)
+
+        if window.get_realized():
+            self._export(window, action_group)
+        else:
+            self._id = window.connect("realize", self._realized, action_group)
+
+    def _realized(self, window, ag):
+        window.disconnect(self._id)
+        self._export(window, ag)
+
+    def _export(self, window, gtk_group):
+        actions = [
+            ["Preferences", "Plugins"],
+            ["OnlineHelp", "About", "Quit"],
+        ]
+
+        # build the new menu
+        menu = Gio.Menu()
+        action_names = []
+        for group in actions:
+            section = Gio.Menu()
+            for name in group:
+                action = gtk_group.get_action(name)
+                assert action
+                label = action.get_label()
+                section.append(label, "app." + name)
+                action_names.append(name)
+            menu.append_section(None, section)
+        menu.freeze()
+
+        # proxy activate to the old group
+        def callback(action, data):
+            name = action.get_name()
+            gtk_action = gtk_group.get_action(name)
+            gtk_action.activate()
+
+        action_group = Gio.SimpleActionGroup()
+        for name in action_names:
+            action = Gio.SimpleAction.new(name, None)
+            action_group.insert(action)
+            action.connect("activate", callback)
+
+        # export on the bus
+        ag_object_path = "/net/sacredchao/QuodLibet"
+        am_object_path = "/net/sacredchao/QuodLibet/menus/appmenu"
+        app_id = "net.sacredchao.QuodLibet"
+
+        try:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            self._ag_id = bus.export_action_group(ag_object_path, action_group)
+            self._am_id = bus.export_menu_model(am_object_path, menu)
+        except GLib.GError as e:
+            print_w("Registering appmenu failed: %r" % e)
+            return
+
+        self._bus = bus
+
+        win = window.get_window()
+        win.set_utf8_property("_GTK_UNIQUE_BUS_NAME", bus.get_unique_name())
+        win.set_utf8_property("_GTK_APPLICATION_ID", app_id)
+        win.set_utf8_property("_GTK_APPLICATION_OBJECT_PATH", ag_object_path)
+        win.set_utf8_property("_GTK_APP_MENU_OBJECT_PATH", am_object_path)
+
+    def _unexport(self, window):
+        if self._bus:
+            self._bus.unexport_action_group(self._ag_id)
+            self._bus.unexport_menu_model(self._am_id)
+            self._bus = None
+
+
 DND_URI_LIST, = range(1)
 
 
@@ -242,6 +326,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         ui = self.__create_menu(player, library)
         accel_group = ui.get_accel_group()
         self.add_accel_group(accel_group)
+
+        # dbus app menu
+        AppMenu(self, ui.get_action_groups()[0])
 
         accel_fn = os.path.join(const.USERDIR, "accels")
         Gtk.AccelMap.load(accel_fn)
