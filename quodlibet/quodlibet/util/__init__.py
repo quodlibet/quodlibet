@@ -496,21 +496,38 @@ class DeferredSignal(object):
     widget.connect('signal', DeferredSignal(func), user_arg)
     """
 
-    __slots__ = ['func', 'dirty']
+    def __init__(self, func, timeout=None):
+        """timeout in milliseconds"""
 
-    def __init__(self, func):
         self.func = func
         self.dirty = False
+        self.args = None
+
+        from gi.repository import GLib
+        if timeout is None:
+            self.do_idle_add = GLib.idle_add
+        else:
+            self.do_idle_add = lambda f: GLib.timeout_add(timeout, f)
+
+    def destroy(self):
+        """Abort any queued up up signal calls"""
+
+        if self.dirty:
+            from gi.repository import GLib
+            GLib.source_remove(self._id)
+            self.dirty = False
+            self.args = None
 
     def __call__(self, *args):
+        self.args = args
         if not self.dirty:
             self.dirty = True
-            from gi.repository import GLib
-            GLib.idle_add(self._wrap, *args)
+            self._id = self.do_idle_add(self._wrap)
 
-    def _wrap(self, *args):
-        self.func(*args)
+    def _wrap(self):
+        self.func(*self.args)
         self.dirty = False
+        self.args = None
 
 
 def gobject_weak(fun, *args, **kwargs):
