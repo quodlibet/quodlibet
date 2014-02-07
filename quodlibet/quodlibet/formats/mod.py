@@ -14,7 +14,7 @@ extensions = [
     '.mtm', '.okt', '.s3m', '.stm', '.ult', '.gdm', '.xm']
 
 
-for so_version in ("libmodplug.so.1", "libmodplug.so.0"):
+for so_version in ("libmodplug.so.1", "libmodplug.so.0", "libmodplug-1.dll"):
     try:
         _modplug = ctypes.cdll.LoadLibrary(so_version)
     except OSError:
@@ -41,7 +41,7 @@ class ModFile(AudioFile):
     format = "MOD/XM/IT"
 
     def __init__(self, filename):
-        data = file(filename).read()
+        data = open(filename, "rb").read()
         f = _modplug.ModPlug_Load(data, len(data))
         if not f:
             raise IOError("%r not a valid MOD file" % filename)
