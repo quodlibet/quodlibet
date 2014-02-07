@@ -52,14 +52,16 @@ NSIS_SCRIPT="$MISC"/win_installer.nsi
 BUILD_ENV="$DIR"/_build_env
 QL_TEMP="$BUILD_ENV"/ql_temp
 
-# set up wine cfg
+# set up wine environ
 export WINEARCH=win32
 export WINEPREFIX="$BUILD_ENV"/wine_env
 export WINEDEBUG=-all
-
 # try to limit the effect on the host system when installing with wine.
-# desktop links still get installed. :/
-export WINEDLLOVERRIDES="winemenubuilder.exe=d"
+export HOME="$BUILD_ENV"/home
+export XDG_DATA_HOME="$HOME"/.local/share
+export XDG_CONFIG_HOME="$HOME"/.config
+export XDG_CACHE_HOME="$HOME"/.cache
+export DISPLAY=be_quiet_damnit
 
 # create a fresh build env and link the binaries in
 rm -Rf "$BUILD_ENV"
