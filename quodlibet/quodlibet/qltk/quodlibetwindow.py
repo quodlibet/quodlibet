@@ -290,6 +290,11 @@ class AppMenu(object):
         self._bus = bus
 
         win = window.get_window()
+        if not hasattr(win, "set_utf8_property"):
+            # not a GdkX11.X11Window
+            print_w("Registering appmenu failed: X11 only")
+            return
+
         win.set_utf8_property("_GTK_UNIQUE_BUS_NAME", bus.get_unique_name())
         win.set_utf8_property("_GTK_APPLICATION_ID", app_id)
         win.set_utf8_property("_GTK_APPLICATION_OBJECT_PATH", ag_object_path)
