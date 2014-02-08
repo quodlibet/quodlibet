@@ -130,6 +130,9 @@ class Notebook(Gtk.Notebook):
         dx = x2 - x1
         dy = y2 - y1
 
+        # all 0 since gtk+ 3.12..
+        border.left = border.top = border.right = border.bottom = 1
+
         width, height = toplevel.get_size()
         if alloc.y + alloc.height + dy == height:
             alloc.height += border.bottom
