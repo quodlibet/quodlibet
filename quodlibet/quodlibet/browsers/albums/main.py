@@ -262,6 +262,8 @@ class VisibleUpdate(object):
                 yield True
 
     def __update_visible_rows(self, view, preload):
+        self.__scan_timeout = None
+
         vrange = view.get_visible_range()
         if vrange is None:
             return
