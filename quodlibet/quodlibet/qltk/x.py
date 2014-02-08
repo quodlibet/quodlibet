@@ -46,12 +46,22 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         # This removes the top border in case the ScrolledWindow
         # is drawn right below the toolbar.
         try:
-            top_alloc = toplevel.top_bar.get_allocation()
-            dy -= top_alloc.y + top_alloc.height
-        except AttributeError:
+            top_bar = toplevel.top_bar
+            if not isinstance(top_bar, Gtk.Widget):
+                raise TypeError
+        except (AttributeError, TypeError):
             # In case the window border is at the top, we expect the menubar
             # there, so draw the normal border
             border.top = 0
+        else:
+            top_alloc = top_bar.get_allocation()
+            top_ctx = top_bar.get_style_context()
+            b = top_ctx.get_border(top_bar.get_state_flags())
+            # only if the toolbar has a border we hide our own.
+            # seems to work, even tough it doesn't for getting the
+            # Notebook/ScrolledWindow border :/
+            if b.bottom:
+                dy -= top_alloc.y + top_alloc.height
 
         # Don't remove the border if the border is drawn inside
         # and the scrollbar on that edge is visible
