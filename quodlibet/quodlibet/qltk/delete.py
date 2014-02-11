@@ -53,7 +53,7 @@ class DeleteDialog(WarningMessage):
         super(DeleteDialog, self).__init__(
             get_top_parent(parent),
             title, description,
-            buttons=None)
+            buttons=Gtk.ButtonsType.NONE)
 
         area = self.get_message_area()
         exp = FileListExpander(songs)
@@ -84,7 +84,7 @@ class TrashDialog(WarningMessage):
         super(TrashDialog, self).__init__(
             get_top_parent(parent),
             title, description,
-            buttons=None)
+            buttons=Gtk.ButtonsType.NONE)
 
         area = self.get_message_area()
         exp = FileListExpander(songs)
