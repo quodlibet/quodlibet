@@ -3,13 +3,20 @@
 import os
 import contextlib
 
-from gi.repository import Gst
+try:
+    from gi.repository import Gst
+except ImportError:
+    Gst = None
 
 import unittest
-from tests import TestCase
+from tests import TestCase, skipUnless
 
-from quodlibet.player.gstbe.util import GStreamerSink as Sink
-from quodlibet.player.gstbe.util import parse_gstreamer_taglist
+try:
+    from quodlibet.player.gstbe.util import GStreamerSink as Sink
+    from quodlibet.player.gstbe.util import parse_gstreamer_taglist
+except ImportError:
+    pass
+
 from quodlibet.util import sanitize_tags
 
 
@@ -21,6 +28,7 @@ def ignore_gst_errors():
     Gst.debug_set_default_threshold(old)
 
 
+@skipUnless(Gst, "GStreamer missing")
 class TGStreamerSink(TestCase):
     def test_simple(self):
         sinks = ["gconfaudiosink", "alsasink"]
@@ -48,6 +56,7 @@ class TGStreamerSink(TestCase):
         self.failUnlessEqual(name.split("!")[-1].strip(), Sink("")[1])
 
 
+@skipUnless(Gst, "GStreamer missing")
 class TGstreamerTagList(TestCase):
     def test_parse(self):
         # gst.TagList can't be filled using pyGtk... so use a dict instead

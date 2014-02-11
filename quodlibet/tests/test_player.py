@@ -6,7 +6,7 @@
 
 from gi.repository import Gtk
 
-from tests import TestCase, skip, AbstractTestCase
+from tests import TestCase, skipUnless, AbstractTestCase
 
 from quodlibet import player
 from quodlibet import library
@@ -160,6 +160,14 @@ class TNullPlayer(TPlayer):
         self.assertFalse(self.player.can_play_uri("fake://"))
 
 
+has_xine = True
+try:
+    player.init("xinebe")
+except player.PlayerError:
+    has_xine = False
+
+
+@skipUnless(has_xine, "couldn't load/test xinebe")
 class TXinePlayer(TPlayer):
     NAME = "xinebe"
 
@@ -168,12 +176,15 @@ class TXinePlayer(TPlayer):
         self.assertTrue(self.player.can_play_uri("file://"))
         self.assertFalse(self.player.can_play_uri("fake://"))
 
+
+has_gstbe = True
 try:
-    player.init(TXinePlayer.NAME)
+    player.init("gstbe")
 except player.PlayerError:
-    TXinePlayer = skip(TXinePlayer, "couldn't load/test xinebe")
+    has_gstbe = False
 
 
+@skipUnless(has_gstbe, "couldn't load/test gstbe")
 class TGstPlayer(TPlayer):
     NAME = "gstbe"
 
@@ -181,12 +192,6 @@ class TGstPlayer(TPlayer):
         self.assertFalse(self.player.can_play_uri(""))
         self.assertTrue(self.player.can_play_uri("file://"))
         self.assertFalse(self.player.can_play_uri("fake://"))
-
-
-try:
-    player.init(TGstPlayer.NAME)
-except player.PlayerError:
-    TGstPlayer = skip(TGstPlayer, "couldn't load/test gstbe")
 
 
 class TVolume(TestCase):

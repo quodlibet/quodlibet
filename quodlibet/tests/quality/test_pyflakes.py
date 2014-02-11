@@ -15,7 +15,7 @@ try:
 except ImportError:
     pyflakes = None
 
-from tests import TestCase, skip
+from tests import TestCase, skipUnless
 
 
 class FakeStream(object):
@@ -42,6 +42,7 @@ class FakeStream(object):
             raise Exception("\n".join(self.lines))
 
 
+@skipUnless(pyflakes, "pyflakes not found")
 class TPyFlakes(TestCase):
 
     def __check_path(self, path):
@@ -68,7 +69,3 @@ class TPyFlakes(TestCase):
         path = quodlibet.__path__[0]
         path = os.path.join(path, "../../plugins")
         self.__check_path(path)
-
-
-if not pyflakes:
-    TPyFlakes = skip(TPyFlakes, "pyflakes not found")

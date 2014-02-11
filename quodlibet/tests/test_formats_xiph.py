@@ -1,5 +1,5 @@
 from quodlibet.config import RATINGS
-from tests import TestCase, DATA_DIR, skip, mkstemp, AbstractTestCase
+from tests import TestCase, DATA_DIR, skipUnless, mkstemp, AbstractTestCase
 
 import os
 import sys
@@ -573,6 +573,7 @@ class TOggFile(TVCFile):
         config.quit()
 
 
+@skipUnless(OggOpus, "Ogg Opus mutagen support missing")
 class TOggOpusFile(TVCFile):
     def setUp(self):
         TVCFile.setUp(self)
@@ -588,6 +589,3 @@ class TOggOpusFile(TVCFile):
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
-
-if not OggOpus:
-    TOggOpusFile = skip(TOggOpusFile, "Ogg Opus mutagen support missing")

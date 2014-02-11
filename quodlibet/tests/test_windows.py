@@ -6,11 +6,12 @@
 
 import os
 
-from tests import TestCase, DATA_DIR, skip
+from tests import TestCase, DATA_DIR, skipUnless
 
 from quodlibet import windows
 
 
+@skipUnless(os.name == "nt", "Wrong platform")
 class TWindows(TestCase):
 
     def test_dir_funcs(self):
@@ -37,7 +38,3 @@ class TWindows(TestCase):
         d = windows.get_link_target(path)
         self.assertEqual(d, u"C:\Windows\explorer.exe")
         self.assertTrue(isinstance(d, unicode))
-
-
-if os.name != "nt":
-    TWindows = skip(TWindows, "Wrong platform")

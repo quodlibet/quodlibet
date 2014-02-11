@@ -5,7 +5,7 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-from tests import TestCase, skip
+from tests import TestCase, skipUnless
 
 try:
     import dbus
@@ -36,6 +36,7 @@ value="invalidates"/>
 """
 
 
+@skipUnless(dbus, "dbus missing")
 class TDbusUtils(TestCase):
 
     def test_prop_sig(self):
@@ -129,6 +130,3 @@ class TDbusUtils(TestCase):
         self.failUnlessEqual(x.get_value("a2", "XXX"), "a2")
         self.failUnlessEqual(x.get_value("a1", "XXX"), "a2")
         self.failUnlessEqual(x.get_value("a1", "Position"), "a1")
-
-if not dbus:
-    TDbusUtils = skip(TDbusUtils, "dbus missing")

@@ -43,6 +43,18 @@ def skip(cls, reason=None):
     return cls
 
 
+def skipUnless(value, reason=None):
+    def dec(cls):
+        if value:
+            return cls
+        return skip(cls, reason=reason)
+    return dec
+
+
+def skipIf(value, *args, **kwargs):
+    return skipUnless(not value, *args, **kwargs)
+
+
 DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
 _TEMP_DIR = None
 

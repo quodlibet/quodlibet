@@ -1,10 +1,11 @@
-from tests import TestCase, skip, DATA_DIR
+from tests import TestCase, skipUnless, DATA_DIR
 
 import os
 
 from quodlibet.formats.mod import ModFile, extensions
 
 
+@skipUnless(extensions, "ModPlug missing")
 class TModFile(TestCase):
     def setUp(self):
         self.song = ModFile(os.path.join(DATA_DIR, 'empty.xm'))
@@ -14,6 +15,3 @@ class TModFile(TestCase):
 
     def test_title(self):
         self.failUnlessEqual("test song", self.song["title"])
-
-if not extensions:
-    TModFile = skip(TModFile, "ModPlug missing")

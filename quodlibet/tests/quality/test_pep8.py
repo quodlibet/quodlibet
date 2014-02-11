@@ -10,9 +10,10 @@ import subprocess
 import unittest
 from quodlibet.util.path import iscommand
 
-from tests import TestCase, skip
+from tests import TestCase, skipUnless
 
 
+@skipUnless(iscommand("pep8"), "pep8 not found")
 class TPEP8(TestCase):
     # E12x popped up in pep8 1.4 compared to 1.2..
     # drop them once 1.4 is common enough
@@ -86,7 +87,3 @@ class TPEP8(TestCase):
 
         if errors:
             raise Exception("\n".join(errors))
-
-
-if not iscommand("pep8"):
-    TPEP8 = skip(TPEP8, "pep8 not found")
