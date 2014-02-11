@@ -20,8 +20,9 @@ class MenuButton(Gtk.ToggleButton):
         bbox = Gtk.HBox(spacing=3)
         bbox.pack_start(widget, True, True, 0)
         if arrow:
-            bbox.pack_start(Gtk.Arrow(Gtk.ArrowType.DOWN, Gtk.ShadowType.IN),
-                            True, True, 0)
+            bbox.pack_start(
+                Gtk.Arrow.new(Gtk.ArrowType.DOWN, Gtk.ShadowType.IN),
+                True, True, 0)
 
         self.add(bbox)
 

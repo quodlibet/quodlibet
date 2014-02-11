@@ -305,7 +305,7 @@ class SongsMenu(Gtk.Menu):
             b.connect('activate', song_properties_cb)
             self.append(b)
 
-            b = Gtk.ImageMenuItem(Gtk.STOCK_INFO, use_stock=True)
+            b = Gtk.ImageMenuItem(label=Gtk.STOCK_INFO, use_stock=True)
             qltk.add_fake_accel(b, "<ctrl>I")
 
             def information_cb(menu_item):

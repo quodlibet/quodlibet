@@ -37,7 +37,7 @@ class ScanBox(Gtk.HBox):
         view.set_tooltip_text(_("Songs in the listed folders will be added "
                                 "to the library during a library refresh"))
         menu = Gtk.Menu()
-        remove_item = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
+        remove_item = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
         menu.append(remove_item)
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)

@@ -173,7 +173,7 @@ class _PopupSlider(Gtk.Button):
 class HSlider(_PopupSlider):
     ORIENTATION = Gtk.Orientation.HORIZONTAL
     _req = (200, -1)
-    _adj = Gtk.Adjustment(0, 0, 0, 3, 15, 0)
+    _adj = Gtk.Adjustment.new(0, 0, 0, 3, 15, 0)
     UP = [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]
     DOWN = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
 
@@ -187,7 +187,7 @@ class HSlider(_PopupSlider):
 class VSlider(_PopupSlider):
     ORIENTATION = Gtk.Orientation.VERTICAL
     _req = (-1, 170)
-    _adj = Gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0)
+    _adj = Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0)
     UP = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
     DOWN = [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]
 

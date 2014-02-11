@@ -220,7 +220,7 @@ def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
     else:
         image = Gtk.Image.new_from_icon_name(stock_id, size)
     hbox.pack_start(image, True, True, 0)
-    label = Gtk.Label(label)
+    label = Gtk.Label(label=label)
     label.set_use_underline(True)
     hbox.pack_start(label, True, True, 0)
     align.add(hbox)

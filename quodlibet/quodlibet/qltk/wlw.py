@@ -43,8 +43,8 @@ class WaitLoadBase(object):
         if self.count > limit or self.count == 0:
             # Add stop/pause buttons. count = 0 means an indefinite
             # number of steps.
-            self._cancel_button = Gtk.Button(stock=Gtk.STOCK_STOP)
-            self._pause_button = Gtk.ToggleButton(Gtk.STOCK_MEDIA_PAUSE)
+            self._cancel_button = Gtk.Button.new_from_stock(Gtk.STOCK_STOP)
+            self._pause_button = Gtk.ToggleButton(label=Gtk.STOCK_MEDIA_PAUSE)
             self._pause_button.set_use_stock(True)
             self._cancel_button.connect('clicked', self.__cancel_clicked)
             self._pause_button.connect('clicked', self.__pause_clicked)

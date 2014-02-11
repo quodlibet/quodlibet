@@ -29,7 +29,7 @@ from quodlibet.util.dprint import print_d
 class Menu(Gtk.Menu):
     def __init__(self, songs, parent=None):
         super(Menu, self).__init__()
-        i = Gtk.MenuItem(_("_New Playlist"), use_underline=True)
+        i = Gtk.MenuItem(label=_("_New Playlist"), use_underline=True)
         i.connect_object(
             'activate', self.__add_to_playlist, None, songs, parent)
         self.append(i)

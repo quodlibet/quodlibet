@@ -65,10 +65,10 @@ class RatingsMenuItem(Gtk.MenuItem):
         submenu = Gtk.Menu()
         self.set_submenu(submenu)
         for i in RATINGS.all:
-            itm = Gtk.MenuItem("%0.2f\t%s" % (i, util.format_rating(i)))
+            itm = Gtk.MenuItem(label="%0.2f\t%s" % (i, util.format_rating(i)))
             submenu.append(itm)
             itm.connect_object('activate', self.set_rating, i, songs, library)
-        reset = Gtk.MenuItem(_("_Remove rating"), use_underline=True)
+        reset = Gtk.MenuItem(label=_("_Remove rating"), use_underline=True)
         reset.connect_object('activate', self.remove_rating, songs, library)
         submenu.append(SeparatorMenuItem())
         submenu.append(reset)

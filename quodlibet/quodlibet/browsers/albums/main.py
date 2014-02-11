@@ -87,7 +87,7 @@ class PreferencesButton(Gtk.HBox):
 
         menu = Gtk.Menu()
 
-        sort_item = Gtk.MenuItem(_("Sort _by..."), use_underline=True)
+        sort_item = Gtk.MenuItem(label=_("Sort _by..."), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint('browsers', 'album_sort', 1)

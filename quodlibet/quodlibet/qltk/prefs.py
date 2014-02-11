@@ -72,13 +72,12 @@ class PreferencesWindow(qltk.UniqueWindow):
             # Columns
             vbox = Gtk.VBox(spacing=12)
             buttons = {}
-            table = Gtk.Table(3, 3)
-            table.set_homogeneous(True)
+            table = Gtk.Table.new(3, 3, True)
             cols = config.get_columns(refresh=True)
 
             for i, (k, t) in enumerate(self.PREDEFINED_TAGS):
                 x, y = i % 3, i / 3
-                buttons[k] = Gtk.CheckButton(t, use_underline=True)
+                buttons[k] = Gtk.CheckButton(label=t, use_underline=True)
                 if k in cols:
                     buttons[k].set_active(True)
                     cols.remove(k)
@@ -95,7 +94,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.others = others = UndoEntry()
             others.set_sensitive(False)
             # Stock edit doesn't have ellipsis chars.
-            edit_button = Gtk.Button(_("_Edit..."), use_underline=True)
+            edit_button = Gtk.Button(label=_("_Edit..."), use_underline=True)
             edit_button.connect("clicked", self.__config_cols)
             edit_button.set_tooltip_text(_("Add or remove additional column "
                                            "headers"))
@@ -109,13 +108,13 @@ class PreferencesWindow(qltk.UniqueWindow):
             self.pack_start(frame, False, True, 0)
 
             # Column preferences
-            tiv = Gtk.CheckButton(_("Title includes _version"),
+            tiv = Gtk.CheckButton(label=_("Title includes _version"),
                                   use_underline=True)
-            aio = Gtk.CheckButton(_("Artist includes all _people"),
+            aio = Gtk.CheckButton(label=_("Artist includes all _people"),
                                   use_underline=True)
-            aip = Gtk.CheckButton(_("Album includes _disc subtitle"),
+            aip = Gtk.CheckButton(label=_("Album includes _disc subtitle"),
                                   use_underline=True)
-            fip = Gtk.CheckButton(_("Filename includes _folder"),
+            fip = Gtk.CheckButton(label=_("Filename includes _folder"),
                                   use_underline=True)
             self._toggle_data = [
                 (tiv, "title", "~title~version"),
@@ -132,8 +131,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             # Update text once to exclude ticked columns, munged or not
             others.set_text(", ".join(cols))
-            t = Gtk.Table(2, 2)
-            t.set_homogeneous(True)
+            t = Gtk.Table.new(2, 2, True)
             t.attach(tiv, 0, 1, 0, 1)
             t.attach(aip, 0, 1, 1, 2)
             t.attach(aio, 1, 2, 0, 1)
@@ -312,7 +310,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             # replaygain
             fallback_gain = config.getfloat("player", "fallback_gain", 0.0)
-            adj = Gtk.Adjustment(fallback_gain, -12.0, 12.0, 0.5, 0.5, 0.0)
+            adj = Gtk.Adjustment.new(fallback_gain, -12.0, 12.0, 0.5, 0.5, 0.0)
             fb_spin = Gtk.SpinButton(adjustment=adj)
             fb_spin.set_digits(1)
             fb_spin.connect('changed', self.__changed,
@@ -326,7 +324,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             fb_label.set_mnemonic_widget(fb_spin)
 
             pre_amp_gain = config.getfloat("player", "pre_amp_gain", 0.0)
-            adj = Gtk.Adjustment(pre_amp_gain, -6, 6, 0.5, 0.5, 0.0)
+            adj = Gtk.Adjustment.new(pre_amp_gain, -6, 6, 0.5, 0.5, 0.0)
             adj.connect('value-changed', self.__changed,
                         'player', 'pre_amp_gain')
             pre_spin = Gtk.SpinButton(adjustment=adj)
@@ -345,7 +343,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             c.connect('toggled', self.__toggled_gain, widgets)
 
             # packing
-            table = Gtk.Table(3, 2)
+            table = Gtk.Table.new(3, 2, False)
             table.set_col_spacings(6)
             table.set_row_spacings(6)
 
@@ -481,7 +479,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             # Bayesian Factor
             bayesian_factor = config.getfloat("settings",
                                               "bayesian_rating_factor", 0.0)
-            adj = Gtk.Adjustment(bayesian_factor, 0.0, 10.0, 0.5, 0.5, 0.0)
+            adj = Gtk.Adjustment.new(bayesian_factor, 0.0, 10.0, 0.5, 0.5, 0.0)
             bayes_spin = Gtk.SpinButton(adjustment=adj)
             bayes_spin.set_digits(1)
             bayes_spin.connect('changed', self.__changed_and_signal_library,

@@ -27,7 +27,7 @@ class TreeViewHints(Gtk.Window):
         'override')
 
     def __init__(self):
-        super(TreeViewHints, self).__init__(Gtk.WindowType.POPUP)
+        super(TreeViewHints, self).__init__(type=Gtk.WindowType.POPUP)
         self.__label = label = Gtk.Label()
         label.set_alignment(0, 0.5)
         label.show()
@@ -684,8 +684,8 @@ class MultiDragTreeView(BaseView):
 class RCMTreeView(BaseView):
     """Emits popup-menu when a row is right-clicked on."""
 
-    def __init__(self, *args):
-        super(RCMTreeView, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(RCMTreeView, self).__init__(*args, **kwargs)
         self.connect('button-press-event', self.__button_press)
 
     def __button_press(self, view, event):
@@ -771,8 +771,8 @@ class HintedTreeView(BaseView):
     """A TreeView that pops up a tooltip when you hover over a cell that
     contains ellipsized text."""
 
-    def __init__(self, *args):
-        super(HintedTreeView, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(HintedTreeView, self).__init__(*args, **kwargs)
         if not config.state('disable_hints'):
             try:
                 tvh = HintedTreeView.hints

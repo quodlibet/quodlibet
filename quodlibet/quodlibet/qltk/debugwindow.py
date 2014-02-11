@@ -91,7 +91,7 @@ class ExceptionDialog(Gtk.Window):
         suggestion = _("Quod Libet may now be unstable. Closing it and "
             "restarting is recommended. Your library will be saved.")
 
-        label = Gtk.Label(desc + "\n\n" + suggestion)
+        label = Gtk.Label(label=desc + "\n\n" + suggestion)
 
         label.set_selectable(True)
         label.set_use_markup(True)
