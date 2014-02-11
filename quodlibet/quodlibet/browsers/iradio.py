@@ -443,8 +443,8 @@ class QuestionBar(Gtk.InfoBar):
         self.connect("response", self.__response)
         self.set_message_type(Gtk.MessageType.QUESTION)
 
-        label = Gtk.Label(label=
-            _("Would you like to load a list of popular radio stations?"))
+        label = Gtk.Label(label=_(
+            "Would you like to load a list of popular radio stations?"))
         label.set_line_wrap(True)
         label.show()
         content = self.get_content_area()
