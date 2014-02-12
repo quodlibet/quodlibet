@@ -86,7 +86,7 @@ ln -s "$INST_ICON"
 
 # extract the gi binaries
 PYGI="$BUILD_ENV"/pygi
-7z x -o"$PYGI" -y bin/pygi-aio-3.10.2-win32_rev17-setup.exe > /dev/null
+7z x -o"$PYGI" -y bin/pygi-aio-3.10.2-win32_rev18-setup.exe > /dev/null
 cd "$PYGI"/rtvc9/
 find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;
 cd "$PYGI"/binding/py2.7
