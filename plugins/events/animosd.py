@@ -49,8 +49,9 @@ class OSDWindow(Gtk.Window):
         self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
 
         screen = self.get_screen()
-        rgba = Gdk.Screen.get_rgba_visual(screen)
-        self.set_visual(rgba)
+        rgba = screen.get_rgba_visual()
+        if rgba is not None:
+            self.set_visual(rgba)
 
         self.conf = conf
         self.iteration_source = None
