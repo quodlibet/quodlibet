@@ -48,10 +48,6 @@ class OSDWindow(Gtk.Window):
         Gtk.Window.__init__(self, Gtk.WindowType.POPUP)
         self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
 
-        # for non-composite operation
-        self.background_pixbuf = None
-        self.titleinfo_surface = None
-
         screen = self.get_screen()
         rgba = Gdk.Screen.get_rgba_visual(screen)
         self.set_visual(rgba)
@@ -121,47 +117,43 @@ class OSDWindow(Gtk.Window):
         self.move(winx + mgeo.x, winy + mgeo.y)
 
     def do_draw(self, cr):
-        self.draw_title_info(cr)
-        return
-
-        # FIXME: GIPORT
         if self.is_composited():
-            # the simple case
             self.draw_title_info(cr)
-            return
-
-        # manual transparency rendering follows
-        back_pbuf = self.background_pixbuf
-        title_surface = self.titleinfo_surface
-        walloc = self.get_allocation()
-        wpos = self.get_position()
-
-        if back_pbuf is None and 0:
-            root = self.get_screen().get_root_window()
-            back_pbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                             False, 8,
-                                             walloc.width, walloc.height)
-            back_pbuf.get_from_drawable(root, root.get_colormap(),
-                                        wpos[0], wpos[1],
-                                        0, 0, walloc.width, walloc.height)
-            self.background_pixbuf = back_pbuf
-
-        if title_surface is None:
-            title_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                               walloc.width, walloc.height)
-            titlecr = Gdk.cairo_create(self.get_window())
-            titlecr.set_source_surface(title_surface)
-            self.draw_title_info(titlecr)
-
-        cr.set_operator(cairo.OPERATOR_SOURCE)
-        if back_pbuf is not None:
-            cr.set_source_pixbuf(back_pbuf, 0, 0)
         else:
-            cr.set_source_rgb(0.3, 0.3, 0.3)
-        cr.paint()
-        cr.set_operator(cairo.OPERATOR_OVER)
-        cr.set_source_surface(title_surface, 0, 0)
-        cr.paint_with_alpha(self.get_opacity())
+            # manual transparency rendering follows
+            walloc = self.get_allocation()
+            wpos = self.get_position()
+
+            if not getattr(self, "_bg_sf", None):
+                # copy the root surface into a temp image surface
+                root_win = self.get_root_window()
+                bg_sf = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+                                           walloc.width, walloc.height)
+                pb = Gdk.pixbuf_get_from_window(
+                    root_win, wpos[0], wpos[1], walloc.width, walloc.height)
+                bg_cr = cairo.Context(bg_sf)
+                Gdk.cairo_set_source_pixbuf(bg_cr, pb, 0, 0)
+                bg_cr.paint()
+                self._bg_sf = bg_sf
+
+            if not getattr(self, "_fg_sf", None):
+                # draw the window content in another temp surface
+                fg_sf = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+                                           walloc.width, walloc.height)
+                fg_cr = cairo.Context(fg_sf)
+                fg_cr.set_source_surface(fg_sf)
+                self.draw_title_info(fg_cr)
+                self._fg_sf = fg_sf
+
+            # first draw the background so we have 'transparancy'
+            cr.set_operator(cairo.OPERATOR_SOURCE)
+            cr.set_source_surface(self._bg_sf)
+            cr.paint()
+
+            # then draw the window content with the right opacity
+            cr.set_operator(cairo.OPERATOR_OVER)
+            cr.set_source_surface(self._fg_sf)
+            cr.paint_with_alpha(self.get_opacity())
 
     @staticmethod
     def rounded_rectangle(cr, x, y, radius, width, height):
@@ -187,6 +179,7 @@ class OSDWindow(Gtk.Window):
             cr.rectangle(x, y, width, height)
 
     def draw_title_info(self, cr):
+        cr.save()
         do_shadow = (self.conf.shadow[0] != -1.0)
         do_outline = (self.conf.outline[0] != -1.0)
 
@@ -275,6 +268,7 @@ class OSDWindow(Gtk.Window):
         cr.set_source_rgb(*self.conf.text[:3])
         cr.move_to(textx, texty)
         PangoCairo.show_layout(cr, self.title_layout)
+        cr.restore()
 
     def fade_in(self):
         self.do_fade_inout(True)
