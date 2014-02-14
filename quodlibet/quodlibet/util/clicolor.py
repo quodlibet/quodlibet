@@ -134,15 +134,20 @@ def _init_windll():
 
     global GetStdHandle, SetConsoleTextAttribute, GetConsoleScreenBufferInfo
 
-    GetStdHandle = windll.Kernel32.GetStdHandle
+    # LoadLibrary compared to getattr gets an uncached handle.
+    # Needed to make this modules reloadable, since setting argtypes twice
+    # with different Structure instances breaks ctypes somehow..
+    k32 = windll.LoadLibrary("Kernel32")
+
+    GetStdHandle = k32.GetStdHandle
     GetStdHandle.argtypes = [DWORD]
     GetStdHandle.restype = HANDLE
 
-    SetConsoleTextAttribute = windll.Kernel32.SetConsoleTextAttribute
+    SetConsoleTextAttribute = k32.SetConsoleTextAttribute
     SetConsoleTextAttribute.argtypes = [HANDLE, WORD]
     SetConsoleTextAttribute.restype = BOOL
 
-    GetConsoleScreenBufferInfo = windll.Kernel32.GetConsoleScreenBufferInfo
+    GetConsoleScreenBufferInfo = k32.GetConsoleScreenBufferInfo
     GetConsoleScreenBufferInfo.argtypes = [
         HANDLE, ctypes.POINTER(PCONSOLE_SCREEN_BUFFER_INFO)]
     GetConsoleScreenBufferInfo.restype = BOOL
