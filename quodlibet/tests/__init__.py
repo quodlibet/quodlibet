@@ -212,6 +212,9 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
                         "implementation: %r" % list(unused_abstract))
 
     for case in skipped:
+        # don't warn for tests we won't run anyway
+        if run and case not in run:
+            continue
         name = "%s.%s" % (case.__module__, case.__name__)
         reason = skipped_reason.get(case, "??")
         print_w("Skipped test: %s (%s)" % (name, reason))
