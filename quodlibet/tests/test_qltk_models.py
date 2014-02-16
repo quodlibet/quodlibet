@@ -95,11 +95,19 @@ class TObjectStore(TestCase):
         m.insert_many(0, range(10))
         self.failUnlessEqual(range(10), list(m.itervalues()))
 
+    def test_itervalues_empty(self):
+        m = ObjectStore()
+        self.assertEqual(list(m.itervalues()), [])
+
     def test_iterrows(self):
         m = ObjectStore()
         m.insert_many(0, range(10))
         for iter_, value in m.iterrows():
             self.failUnlessEqual(m.get_value(iter_), value)
+
+    def test_iterrows_empty(self):
+        m = ObjectStore()
+        self.assertEqual(list(m.iterrows()), [])
 
     def test_insert_before(self):
         m = ObjectStore()
@@ -142,6 +150,26 @@ class TObjectTreeStore(TestCase):
     def test_empty_append(self):
         m = ObjectStore()
         self.failUnless(m.append(None))
+
+    def test_itervalues(self):
+        m = ObjectTreeStore()
+        obj = object()
+        obj2 = object()
+        it = m.append(None, row=[obj])
+        m.append(it, row=[obj2])
+
+        self.assertEqual(list(m.itervalues(None)), [obj])
+        self.assertEqual(list(m.itervalues(it)), [obj2])
+
+    def test_iterrows(self):
+        m = ObjectTreeStore()
+        obj = object()
+        obj2 = object()
+        it = m.append(None, row=[obj])
+        m.append(it, row=[obj2])
+
+        self.assertEqual(list(m.iterrows(None))[0][1], obj)
+        self.assertEqual(list(m.iterrows(it))[0][1], obj2)
 
 
 class TObjectModelFilter(TestCase):

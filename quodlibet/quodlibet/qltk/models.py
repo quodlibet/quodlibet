@@ -40,20 +40,20 @@ class _ModelMixin(object):
     def get_n_columns(self):
         return 1
 
-    def itervalues(self):
+    def itervalues(self, iter_=None):
         """Yields all values"""
 
-        iter_ = self.get_iter_first()
+        iter_ = self.iter_children(iter_)
         getv = self.get_value
         inext = self.iter_next
         while iter_:
             yield getv(iter_)
             iter_ = inext(iter_)
 
-    def iterrows(self):
+    def iterrows(self, iter_=None):
         """Yields (iter, value) tuples"""
 
-        iter_ = self.get_iter_first()
+        iter_ = self.iter_children(iter_)
         getv = self.get_value
         inext = self.iter_next
         while iter_:
