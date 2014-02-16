@@ -36,12 +36,15 @@ class TDirectoryTree(TestCase):
             self.failUnlessEqual([path], selected)
 
     def test_bad_initial(self):
+        invalid = os.path.join("bin", "file", "does", "not", "exist")
         for path in self.ROOTS:
-            newpath = os.path.join(path, "bin/file/does/not/exist")
+            newpath = os.path.join(path, invalid)
             dirlist = DirectoryTree(newpath, folders=self.ROOTS)
             selected = dirlist.get_selected_paths()
             dirlist.destroy()
-            self.failUnlessEqual([path], selected)
+            # select the last valid parent directory
+            self.assertEqual(len(selected), 1)
+            self.assertTrue(selected[0].startswith(path))
 
     def test_bad_go_to(self):
         newpath = "/woooooo/bar/fun/broken"
@@ -59,42 +62,52 @@ class TDirectoryTree(TestCase):
 
 class TFileSelector(TestCase):
 
-    ROOTS = [const.HOME, "/"]
+    if os.name == "nt":
+        ROOTS = [const.HOME, u"C:\\"]
+        INITIAL = u"C:\\"
+        # XXX: create a testing file hierarchy in tmp instead
+        PATHS = [os.path.join(INITIAL, p) for p in os.listdir(INITIAL)[:2]]
+    else:
+        ROOTS = [const.HOME, "/"]
+        INITIAL = "/dev"
+        PATHS = ["/dev/null", "/dev/zero"]
 
     def setUp(self):
         quodlibet.config.init()
         self.fs = FileSelector(
-            initial="/dev", filter=(lambda s: s in ["/dev/null", "/dev/zero"]),
+            initial=self.INITIAL, filter=(lambda s: s in self.PATHS),
             folders=self.ROOTS)
-        self.fs.connect('changed', self.changed)
-        self.expected = []
+        self.fs.connect('changed', self._changed)
+        self.files = None
         self.fs.rescan()
 
     def tearDown(self):
         self.fs.destroy()
         quodlibet.config.quit()
 
-    def changed(self, fs, selection):
+    def _changed(self, fs, selection):
         self.selection = selection
-        files = fs.get_selected_paths()
-        files.sort()
-        self.expected.sort()
-        self.assertEqual(files, self.expected)
-        self.expected = None
+        self.files = fs.get_selected_paths()
+        self.files.sort()
 
     def test_select(self):
-        self.expected = ["/dev/null", "/dev/zero"]
+        expected = self.PATHS
+        expected.sort()
+
         self.selection.select_all()
-        self.failUnless(self.expected is None)
+        self.assertEqual(self.files, expected)
 
     def test_select_rescan(self):
-        all_ = ["/dev/null", "/dev/zero"]
-        self.expected = all_
+        expected = self.PATHS
+        expected.sort()
+
         self.selection.select_all()
-        files = self.fs.get_selected_paths()
-        self.expected = all_
+        self.assertEqual(self.files, expected)
+
+        files_prev = self.fs.get_selected_paths()
         self.fs.rescan()
-        self.assertEqual(files, self.fs.get_selected_paths())
+        self.assertEqual(self.files, expected)
+        self.assertEqual(self.files, files_prev)
 
     def test_main(self):
         MainFileSelector()

@@ -211,46 +211,53 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         return [model[p][0] for p in paths]
 
     def go_to(self, path_to_go):
-        # FIXME: this works on the FS instead of the model
-        # and expects fixed initial folders
+        # FIXME: be stricter here..
+        # assert util.is_fsnative(path_to_go)
 
         path_to_go = util.fsnative(path_to_go)
+        model = self.get_model()
 
-        path = []
-        head, tail = os.path.split(path_to_go)
-        while os.path.join(head, tail) != const.HOME and tail != '':
-            if tail:
-                def isvisibledir(t):
-                    joined = os.path.join(head, t)
-                    return (not t.startswith(".") and
-                            os.access(joined, os.X_OK) and
-                            os.path.isdir(joined))
-                try:
-                    dirs = filter(isvisibledir, sorted(os.listdir(head)))
-                except OSError:
+        # Find the top level row which has the largest common
+        # path with the path we want to go to
+        roots = dict([(p, i) for (i, p) in model.iterrows(None)])
+        head, tail = path_to_go, util.fsnative("")
+        to_find = []
+        while head and head not in roots:
+            new_head, tail = os.path.split(head)
+            # this can happen for invalid paths on Windows
+            if head == new_head:
+                break
+            head = new_head
+            to_find.append(tail)
+        if head not in roots:
+            return
+        start_iter = roots[head]
+
+        # expand until we find the right directory or the last valid one
+        # and select/scroll to it
+        def search(view, model, iter_, to_find):
+            tree_path = model.get_path(iter_)
+
+            # we are where we want, select and scroll
+            if not to_find:
+                view.set_cursor(tree_path)
+                view.scroll_to_cell(tree_path)
+                return
+
+            # expand the row
+            view.expand_row(tree_path, False)
+
+            next_ = to_find.pop(-1)
+            for sub_iter, path in model.iterrows(iter_):
+                if os.path.basename(path) == next_:
+                    search(view, model, sub_iter, to_find)
                     break
-                try:
-                    path.insert(0, dirs.index(tail))
-                except ValueError:
-                    break
-            head, tail = os.path.split(head)
+            else:
+                # we haven't found the right sub folder, select the parent
+                # and stop
+                search(view, model, iter_, [])
 
-        if path_to_go.startswith(const.HOME):
-            path.insert(0, 0)
-        else:
-            path.insert(0, 1)
-
-        for i in range(len(path)):
-            self.expand_row(Gtk.TreePath(tuple(path[:i + 1])), False)
-
-        tree_path = Gtk.TreePath(tuple(path))
-        self.get_selection().select_path(tree_path)
-        try:
-            self.get_model().get_iter(tree_path)
-        except ValueError:
-            pass
-        else:
-            self.scroll_to_cell(tree_path)
+        search(self, model, start_iter, to_find)
 
     def __popup_menu(self, menu):
         model, paths = self.get_selection().get_selected_rows()
