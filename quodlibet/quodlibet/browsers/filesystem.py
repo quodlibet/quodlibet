@@ -28,6 +28,7 @@ from quodlibet.util import copool
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
 from quodlibet.util.uri import URI
+from quodlibet.util.path import normalize_path
 
 
 class FileSystem(Browser, Gtk.HBox):
@@ -139,19 +140,31 @@ class FileSystem(Browser, Gtk.HBox):
             self.__select_paths(paths)
 
     def __select_paths(self, paths):
-        def select(model, path, iter, (paths, first)):
-            if model[iter][0] in paths:
+        # AudioFile uses normalized paths, DirectoryTree doesn't
+
+        paths = map(normalize_path, paths)
+
+        def select(model, path, iter_, (paths, first)):
+            value = model.get_value(iter_)
+            if value is None:
+                return not bool(paths)
+            value = normalize_path(value)
+
+            if value in paths:
                 self.get_child().get_selection().select_path(path)
-                paths.remove(model[iter][0])
+                paths.remove(value)
                 if not first:
                     self.get_child().set_cursor(path)
                     # copy treepath, gets invalid after the callback
                     first.append(path.copy())
             else:
                 for fpath in paths:
-                    if model[path][0] and fpath.startswith(model[path][0]):
+                    if fpath.startswith(value):
                         self.get_child().expand_row(path, False)
             return not bool(paths)
+
+        # XXX: We expect all paths we want in DirectoryTree to be
+        # expanded once before
         first = []
         self.get_child().get_model().foreach(select, (paths, first))
         if first:

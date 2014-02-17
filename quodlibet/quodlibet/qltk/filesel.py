@@ -214,6 +214,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         # FIXME: be stricter here..
         # assert util.is_fsnative(path_to_go)
 
+        # FIXME: what about non-normalized paths?
+
         path_to_go = util.fsnative(path_to_go)
         model = self.get_model()
 
