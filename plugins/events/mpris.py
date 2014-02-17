@@ -63,8 +63,13 @@ class MPRIS(EventPlugin):
     def enabled(self):
         self.__sig = app.window.connect('delete-event', self.__window_delete)
 
-        self.objects = [MPRIS1Root(), MPRIS1DummyTracklist(),
-                        MPRIS1Player(), MPRIS2()]
+        self.objects = []
+        for service in [MPRIS1Root, MPRIS1DummyTracklist,
+                        MPRIS1Player, MPRIS2]:
+            try:
+                self.objects.append(service())
+            except dbus.DBusException:
+                pass
 
         # Needed for sound menu support in some older Ubuntu versions
         if indicate:

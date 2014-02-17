@@ -30,9 +30,12 @@ class DBusMMKey(GObject.GObject):
     @classmethod
     def is_active(cls):
         """If the gsd plugin is active atm"""
-        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
-        # FIXME: check if the media-keys plugin is active
-        return bus.name_has_owner(cls.DBUS_NAME)
+        try:
+            bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+            # FIXME: check if the media-keys plugin is active
+            return bus.name_has_owner(cls.DBUS_NAME)
+        except dbus.DBusException:
+            return False
 
     def __init__(self, window, name):
         super(DBusMMKey, self).__init__()

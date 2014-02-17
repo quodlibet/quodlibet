@@ -251,6 +251,7 @@ class Notify(EventPlugin):
     __image_fp = None
     __interface = None
     __action_sig = None
+    __watch = None
 
     def enabled(self):
         self.__enabled = True
@@ -276,10 +277,13 @@ class Notify(EventPlugin):
 
     def __enable_watch(self):
         """Enable events for dbus name owner change"""
-        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
-        # This also triggers for existing name owners
-        self.__watch = bus.watch_name_owner(self.DBUS_NAME,
-                                            self.__owner_changed)
+        try:
+            bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+            # This also triggers for existing name owners
+            self.__watch = bus.watch_name_owner(self.DBUS_NAME,
+                                                self.__owner_changed)
+        except dbus.DBusException:
+            pass
 
     def __disable_watch(self):
         """Disable name owner change events"""

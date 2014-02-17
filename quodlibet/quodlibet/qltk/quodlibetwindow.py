@@ -284,7 +284,7 @@ class AppMenu(object):
             self._ag_id = bus.export_action_group(ag_object_path, action_group)
             self._am_id = bus.export_menu_model(am_object_path, menu)
         except GLib.GError as e:
-            print_w("Registering appmenu failed: %r" % e)
+            print_d("Registering appmenu failed: %r" % e)
             return
 
         self._bus = bus
@@ -292,7 +292,7 @@ class AppMenu(object):
         win = window.get_window()
         if not hasattr(win, "set_utf8_property"):
             # not a GdkX11.X11Window
-            print_w("Registering appmenu failed: X11 only")
+            print_d("Registering appmenu failed: X11 only")
             return
 
         win.set_utf8_property("_GTK_UNIQUE_BUS_NAME", bus.get_unique_name())

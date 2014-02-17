@@ -37,6 +37,12 @@ class MediaServer(EventPlugin):
     PLUGIN_VERSION = "0.1"
 
     def enabled(self):
+        try:
+            dbus.SessionBus()
+        except dbus.DBusException:
+            self.objects = []
+            return
+
         entry = EntryObject()
         albums = AlbumsObject(entry, app.library)
         song = SongObject(app.library, [albums])

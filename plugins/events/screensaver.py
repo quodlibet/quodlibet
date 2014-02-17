@@ -31,6 +31,7 @@ class ScreensaverPause(EventPlugin):
     __was_paused = False
     __interface = None
     __active = False
+    __watch = None
 
     def __screensaver_changed(self, active):
         # Gnome-Shell fires ActiveChanged even if it doesn't change
@@ -64,10 +65,14 @@ class ScreensaverPause(EventPlugin):
             self.__interface = iface
 
     def enabled(self):
-        bus = dbus.SessionBus()
-        self.__watch = bus.watch_name_owner(self.DBUS_NAME,
-                                            self.__owner_changed)
+        try:
+            bus = dbus.SessionBus()
+            self.__watch = bus.watch_name_owner(self.DBUS_NAME,
+                                                self.__owner_changed)
+        except dbus.DBusException:
+            pass
 
     def disabled(self):
-        self.__watch.cancel()
+        if self.__watch:
+            self.__watch.cancel()
         self.__remove_interface()
