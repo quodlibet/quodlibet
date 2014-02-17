@@ -1,4 +1,4 @@
-from tests import TestCase
+from tests import TestCase, mkdtemp
 
 import os
 import sys
@@ -62,18 +62,18 @@ class TDirectoryTree(TestCase):
 
 class TFileSelector(TestCase):
 
-    if os.name == "nt":
-        ROOTS = [const.HOME, u"C:\\"]
-        INITIAL = u"C:\\"
-        # XXX: create a testing file hierarchy in tmp instead
-        PATHS = [os.path.join(INITIAL, p) for p in os.listdir(INITIAL)[:2]]
-    else:
-        ROOTS = [const.HOME, "/"]
-        INITIAL = "/dev"
-        PATHS = ["/dev/null", "/dev/zero"]
-
     def setUp(self):
         quodlibet.config.init()
+        self.ROOTS = [mkdtemp(), mkdtemp()]
+        self.INITIAL = self.ROOTS[0]
+        self.PATHS = [
+            os.path.join(self.ROOTS[0], "a"),
+            os.path.join(self.ROOTS[0], "b"),
+        ]
+
+        for path in self.PATHS:
+            open(path, "wb").close()
+
         self.fs = FileSelector(
             initial=self.INITIAL, filter=(lambda s: s in self.PATHS),
             folders=self.ROOTS)
@@ -84,6 +84,11 @@ class TFileSelector(TestCase):
     def tearDown(self):
         self.fs.destroy()
         quodlibet.config.quit()
+
+        for file_ in self.PATHS:
+            os.unlink(file_)
+        for dir_ in self.ROOTS:
+            os.rmdir(dir_)
 
     def _changed(self, fs, selection):
         self.selection = selection
