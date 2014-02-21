@@ -83,4 +83,4 @@ The following (fairly standard) tags are used for volume adjustment:
   * ``replaygain_album_gain``
   * ``replaygain_album_peak``
 
-See ReplayGain section for further details.
+See the :ref:`Replay Gain <replaygain>` section for further details.

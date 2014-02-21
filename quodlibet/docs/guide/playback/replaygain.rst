@@ -1,3 +1,5 @@
+.. _replaygain:
+
 Replay Gain
 ===========
 
