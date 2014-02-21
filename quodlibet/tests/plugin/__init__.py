@@ -1,4 +1,4 @@
-from tests import AbstractTestCase
+from tests import AbstractTestCase, skipUnless
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin
 import sys

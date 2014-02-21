@@ -4,12 +4,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests.plugin import PluginTestCase
 from quodlibet.formats._audio import AudioFile
+from . import PluginTestCase, modules, skipUnless
 
-brainz = None
+brainz = modules.get("MusicBrainz lookup", None)
 
 
+@skipUnless(brainz, "brainz plugin not loaded")
 class TBrainz(PluginTestCase):
     """Test CustomCommands plugin and associated classes"""
 
