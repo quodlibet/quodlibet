@@ -255,7 +255,6 @@ MENU = """<ui>
       <menuitem action='Plugins' always-show-image='true'/>
       <separator/>
       <menuitem action='RefreshLibrary' always-show-image='true'/>
-      <menuitem action='ReloadLibrary' always-show-image='true'/>
       <separator/>
       <menuitem action='Quit' always-show-image='true'/>
     </menu>

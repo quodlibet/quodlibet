@@ -598,21 +598,28 @@ class PreferencesWindow(qltk.UniqueWindow):
             vb3.pack_start(scan_dirs, True, True, 0)
 
             def refresh_cb(button):
-                # TODO: remove duplication from util.library.scan_library() ?
-                paths = get_scan_dirs()
-                exclude = config.get("library", "exclude").split(":")
-                exclude = [fsnative(e) for e in exclude]
-                copool.add(app.library.rebuild, paths, False, exclude,
-                           cofuncid="library", funcid="library")
+                scan_library(app.library, force=False)
 
-            refresh = qltk.Button(_("Refresh Library"), Gtk.STOCK_REFRESH)
+            refresh = qltk.Button(_("Re_fresh Library"), Gtk.STOCK_REFRESH)
             refresh.connect("clicked", refresh_cb)
+            refresh.set_tooltip_text(_("Check for changes in your library"))
 
-            hb = Gtk.HBox(spacing=6)
-            hb.pack_start(cb, True, True, 0)
-            hb.pack_start(refresh, False, True, 0)
+            def reload_cb(button):
+                scan_library(app.library, force=True)
 
-            vb3.pack_start(hb, False, True, 0)
+            reload_ = qltk.Button(_("Re_load Library"), Gtk.STOCK_REFRESH)
+            reload_.connect("clicked", reload_cb)
+            reload_.set_tooltip_text(
+                _("Reload all songs in your library. "
+                  "(this can take a long time)"))
+
+            grid = Gtk.Grid(column_spacing=6, row_spacing=6)
+            cb.props.hexpand = True
+            grid.attach(cb, 0, 0, 1, 1)
+            grid.attach(refresh, 1, 0, 1, 1)
+            grid.attach(reload_, 1, 1, 1, 1)
+
+            vb3.pack_start(grid, False, True, 0)
             f = qltk.Frame(_("Scan Directories"), child=vb3)
             self.pack_start(f, False, True, 0)
 

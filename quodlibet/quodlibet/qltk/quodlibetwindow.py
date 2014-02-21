@@ -245,6 +245,7 @@ class AppMenu(object):
     def _export(self, window, gtk_group):
         actions = [
             ["Preferences", "Plugins"],
+            ["RefreshLibrary"],
             ["OnlineHelp", "About", "Quit"],
         ]
 
@@ -674,10 +675,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             "RefreshLibrary", _("Re_fresh Library"), None, Gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, False)
         ag.add_action_with_accel(act, None)
-        act = Gtk.Action(
-            "ReloadLibrary", _("Re_load Library"), None, Gtk.STOCK_REFRESH)
-        act.connect('activate', self.__rebuild, True)
-        ag.add_action_with_accel(act, None)
 
         for tag_, lab in [
             ("genre", _("Filter on _Genre")),
@@ -748,10 +745,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         # attach them.
         ui.get_widget("/Menu/Music/RefreshLibrary").set_tooltip_text(
                 _("Check for changes in your library"))
-
-        ui.get_widget("/Menu/Music/ReloadLibrary").set_tooltip_text(
-                _("Reload all songs in your library "
-                  "(this can take a long time)"))
 
         ui.get_widget("/Menu/Filters/TopRated").set_tooltip_text(
                 _("The 40 songs you've played most (more than 40 may "
