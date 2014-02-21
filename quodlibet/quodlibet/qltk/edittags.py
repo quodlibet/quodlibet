@@ -845,10 +845,13 @@ class EditTags(Gtk.VBox):
             return True
         elif event.button == Gdk.BUTTON_MIDDLE and \
                 col == view.get_columns()[2]:
-            display = Gdk.display_manager_get().get_default_display()
-            clipboardname = ["PRIMARY", "CLIPBOARD"][sys.platform == "win32"]
-            clipboard = Gtk.Clipboard(display, clipboardname)
-            for rend in col.get_cell_renderers():
+            display = Gdk.DisplayManager.get().get_default_display()
+            selection = Gdk.SELECTION_PRIMARY
+            if sys.platform == "win32":
+                selection = Gdk.SELECTION_CLIPBOARD
+
+            clipboard = Gtk.Clipboard.get_for_display(display, selection)
+            for rend in col.get_cells():
                 if rend.get_property('editable'):
                     clipboard.request_text(self.__paste,
                                            (rend, path.get_indices()[0]))
