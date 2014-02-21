@@ -45,9 +45,10 @@ Album Identification
 
 Quod Libet uses various tags to define what songs are in the same album. 
 
-First of all ``album`` (or ``albumsort`` if present) will be used. In case two 
-albums have the same name the following tags will be used (ascending 
-priority): ``musicbrainz_albumid``, ``labelid``, ``album_grouping_key``.
+For songs to be in the same album, both ``album`` and ``albumartist`` 
+(since 3.1.0) have to be the same. In addition the first non-empty value of 
+the following tags have to match (checked in this order): 
+``musicbrainz_albumid``, ``labelid``, ``album_grouping_key``.
 
 
 Common scenarios
