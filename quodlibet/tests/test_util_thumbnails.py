@@ -11,7 +11,7 @@ except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
-from quodlibet.util.path import expanduser, pathname2url
+from quodlibet.util.path import expanduser, pathname2url, is_fsnative
 
 
 class TThumb(TestCase):
@@ -27,6 +27,21 @@ class TThumb(TestCase):
 
     def tearDown(s):
         os.remove(s.filename)
+
+    def test_calc_scale_size(self):
+        self.assertRaises(ValueError,
+                          thumbnails.calc_scale_size, (1, 1), (1, 0))
+        res = thumbnails.calc_scale_size((100, 100), (500, 100))
+        self.assertEqual(res, (100, 20))
+
+    def test_add_border(self):
+        res = thumbnails.add_border(self.small, 10)
+        self.assertEqual(res.get_width(), 10 + 2)
+        self.assertEqual(res.get_height(), 20 + 2)
+
+    def test_get_thumbnail_folder(self):
+        path = thumbnails.get_thumbnail_folder()
+        self.assertTrue(is_fsnative(path))
 
     def test_scale(s):
         nw = thumbnails.scale(s.wide, (50, 30))
@@ -55,6 +70,17 @@ class TThumb(TestCase):
 
         thumb = thumbnails.get_thumbnail_from_file(fn, (50, 60))
         self.assertTrue(thumb)
+        fn.close()
+
+    def test_thumb_from_file_temp_partial(self):
+        fn = NamedTemporaryFile()
+        with open(self.filename, "rb") as h:
+            fn.write(h.read(10))
+        fn.flush()
+        fn.seek(0, 0)
+
+        thumb = thumbnails.get_thumbnail_from_file(fn, (50, 60))
+        self.assertTrue(thumb is None)
         fn.close()
 
     def test_thumb(s):

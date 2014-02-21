@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2009 Christoph Reiter
+# Copyright 2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,7 +7,7 @@
 
 import os
 import tempfile
-import hashlib as hash
+import hashlib
 
 from gi.repository import GdkPixbuf, GLib
 
@@ -18,7 +18,15 @@ from quodlibet.util.path import mtime, mkdir, fsnative, pathname2url, \
 
 def add_border(pixbuf, val, round=False):
     """Add a 1px border to the pixbuf and round of the edges if needed.
-    val is the border brightness from 0 to 255"""
+    val is the border brightness from 0 to 255.
+
+    The resulting pixbuf will be 2px higher and wider.
+
+    Can not fail.
+    """
+
+    if not 0 <= val <= 255:
+        raise ValueError
 
     c = (val << 24) | (val << 16) | (val << 8) | 0xFF
 
@@ -60,10 +68,18 @@ def add_border(pixbuf, val, round=False):
 
 def calc_scale_size(boundary, size, scale_up=True):
     """Returns the biggest possible size to fit into the boundary,
-    respecting the aspect ratio."""
+    respecting the aspect ratio.
+
+    If `scale_up` is True the result can be larger than size.
+
+    All sizes have to be > 0.
+    """
 
     bwidth, bheight = boundary
     iwidth, iheight = size
+
+    if bwidth <= 0 or bheight <= 0 or iwidth <= 0 or iheight <= 0:
+        raise ValueError
 
     scale_w, scale_h = iwidth, iheight
 
@@ -83,7 +99,15 @@ def calc_scale_size(boundary, size, scale_up=True):
 
 def scale(pixbuf, boundary, scale_up=True, force_copy=False):
     """Scale a pixbuf so it fits into the boundary.
-    (preserves image aspect ratio)"""
+    (preserves image aspect ratio)
+
+    If `scale_up` is True, the resulting pixbuf can be larger than
+    the original one.
+
+    If `force_copy` is False the resulting pixbuf might be the passed one.
+
+    Can not fail.
+    """
 
     size = pixbuf.get_width(), pixbuf.get_height()
 
@@ -98,7 +122,10 @@ def scale(pixbuf, boundary, scale_up=True, force_copy=False):
 
 
 def get_thumbnail_folder():
-    """Returns a path to an existing folder"""
+    """Returns a path to the thumbnail folder.
+
+    The returned path might not exist.
+    """
 
     if os.name == "nt":
         thumb_folder = os.path.join(USERDIR, "thumbnails")
@@ -108,7 +135,11 @@ def get_thumbnail_folder():
         if os.path.exists(cache_folder) or not os.path.exists(thumb_folder):
             thumb_folder = cache_folder
 
-    mkdir(thumb_folder, 0700)
+    try:
+        mkdir(thumb_folder, 0700)
+    except OSError:
+        pass
+
     return thumb_folder
 
 
@@ -117,7 +148,7 @@ def get_thumbnail_from_file(fileobj, boundary):
 
     This is needed on Windows where NamedTemporaryFile can't be reopened.
 
-    Can raise GLib.GError and return None.
+    Can raise GLib.GError or return None.
     """
 
     assert fileobj
@@ -130,18 +161,25 @@ def get_thumbnail_from_file(fileobj, boundary):
             loader.write(fileobj.read())
             loader.close()
             fileobj.seek(0, 0)
+            # can return None in case of partial data
             pixbuf = loader.get_pixbuf()
         except EnvironmentError:
             pass
         else:
-            return scale(pixbuf, boundary)
+            if pixbuf is not None:
+                return scale(pixbuf, boundary)
 
 
 def get_thumbnail(path, boundary):
-    """Get a thumbnail of an image. Will create/use a thumbnail in
-    the user's thumbnail directory if possible. Follows the
-    Free Desktop specification.
-    http://specifications.freedesktop.org/thumbnail-spec/"""
+    """Get a thumbnail pixbuf of an image at `path`.
+
+    Will create/use a thumbnail in the user's thumbnail directory if possible.
+    Follows the Free Desktop specification:
+
+    http://specifications.freedesktop.org/thumbnail-spec/
+
+    Can raise GLib.GError.
+    """
 
     width, height = boundary
 
@@ -160,13 +198,16 @@ def get_thumbnail(path, boundary):
 
     thumb_folder = get_thumbnail_folder()
     cache_dir = os.path.join(thumb_folder, size_name)
-    mkdir(cache_dir, 0700)
+    try:
+        mkdir(cache_dir, 0700)
+    except OSError:
+        return GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height)
 
-    bytes = path
+    bytes_ = path
     if isinstance(path, unicode):
-        bytes = path.encode("utf-8")
-    uri = "file://" + pathname2url(bytes)
-    thumb_name = hash.md5(uri).hexdigest() + ".png"
+        bytes_ = path.encode("utf-8")
+    uri = "file://" + pathname2url(bytes_)
+    thumb_name = hashlib.md5(uri).hexdigest() + ".png"
 
     thumb_path = os.path.join(cache_dir, thumb_name)
 
@@ -197,6 +238,9 @@ def get_thumbnail(path, boundary):
 
         pb = scale(pb, (thumb_size, thumb_size))
         pb.savev(thumb_path, "png", options.keys(), options.values())
-        os.chmod(thumb_path, 0600)
+        try:
+            os.chmod(thumb_path, 0600)
+        except OSError:
+            pass
 
     return scale(pb, boundary)
