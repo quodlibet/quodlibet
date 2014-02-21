@@ -46,8 +46,20 @@ def get_artist(album):
 
 def get_trackcount(album):
     """Returns the track count, hammered into submission."""
-    return max(max(map(lambda t: max(map(int,
-        t.get('tracknumber', '0').split('/'))), album)), len(album)) # (;))
+
+    parts = []
+    for song in album:
+        parts.extend(song.get("tracknumber", "0").split("/"))
+
+    max_count = len(album)
+    for part in parts:
+        try:
+            tracks = int(part)
+        except ValueError:
+            continue
+        max_count = max(max_count, tracks)
+
+    return max_count
 
 
 def config_get(key, default=''):
