@@ -42,8 +42,9 @@ def scan_library(library, force):
     If `force` is True, reload all existing valid items.
     """
 
-    paths = util.split_scan_dirs(config.get("settings", "scan"))
-    exclude = config.get("library", "exclude").split(":")
+    paths = get_scan_dirs()
+    exclude = util.split_scan_dirs(config.get("library", "exclude"))
+    exclude = [util.fsnative(e) for e in exclude]
     copool.add(library.rebuild, paths, force, exclude,
                cofuncid="library", funcid="library")
 
