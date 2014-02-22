@@ -227,59 +227,31 @@ class coverage_cmd(Command):
             if key.startswith('quodlibet'):
                 del(sys.modules[key])
 
-        import trace
-        tracer = trace.Trace(
-            count=True, trace=False,
-            ignoredirs=[sys.prefix, sys.exec_prefix])
-
-        def run_tests():
-            cmd = self.reinitialize_command("test")
-            cmd.to_run = self.to_run[:]
-            cmd.ensure_finalized()
-            cmd.run()
-        tracer.runfunc(run_tests)
-        results = tracer.results()
-
-        coverage = os.path.join(os.path.dirname(__file__), "coverage")
-        results.write_results(show_missing=True, coverdir=coverage)
-
-        for path in glob.glob(os.path.join(coverage, "[!q]*.cover")):
-            os.unlink(path)
-
         try:
-            os.unlink(os.path.join(coverage, "..setup.cover"))
-        except OSError:
-            pass
+            from coverage import coverage
+        except ImportError:
+            print("Missing 'coverage' module. See "
+                  "https://pypi.python.org/pypi/coverage or try "
+                  "`apt-get install python-coverage`")
+            return
 
-        # compute coverage
-        stats = []
-        cov_files = []
-        for filename in glob.glob(os.path.join(coverage, "*.cover")):
-            cov_files.append(filename)
-            lines = file(filename, "rU").readlines()
-            lines = filter(None, map(str.strip, lines))
-            total_lines = len(lines)
-            if not total_lines:
-                continue
-            bad_lines = len([l for l in lines if l.startswith(">>>>>>")])
-            percent = 100.0 * (total_lines - bad_lines) / float(total_lines)
-            stats.append((percent, filename, total_lines, bad_lines))
-        stats.sort(reverse=True)
-        print("#" * 80)
-        print("COVERAGE")
-        print("#" * 80)
-        total_sum = 0
-        bad_sum = 0
-        for s in stats:
-            p, f, t, b = s
-            total_sum += t
-            bad_sum += b
-            print("%6.2f%% %s" % (p, os.path.basename(f)))
-        print("-" * 80)
-        print("Coverage data written to", coverage, "(%d/%d, %0.2f%%)" % (
-            total_sum - bad_sum, total_sum,
-            100.0 * (total_sum - bad_sum) / float(total_sum)))
-        print("#" * 80)
+        cov = coverage()
+        cov.start()
+
+        cmd = self.reinitialize_command("test")
+        cmd.to_run = self.to_run[:]
+        cmd.ensure_finalized()
+        cmd.run()
+
+        dest = os.path.join(os.getcwd(), "coverage")
+
+        cov.stop()
+        cov.html_report(
+            directory=dest,
+            ignore_errors=True,
+            include=["quodlibet*"])
+
+        print("Coverage summary: file://%s/index.html" % dest)
 
 
 def recursive_include(base, sub, ext):
