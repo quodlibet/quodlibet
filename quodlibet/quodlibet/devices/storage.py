@@ -121,7 +121,7 @@ class StorageDevice(Device):
                 if cover and mtime(cover.name) > mtime(coverfile):
                     image = GdkPixbuf.Pixbuf.new_from_file_at_size(
                         cover.name, 200, 200)
-                    image.save(coverfile, 'jpeg')
+                    image.savev(coverfile, "jpeg", [], [])
 
             song = copy.deepcopy(song)
             song.sanitize(target)
