@@ -16,5 +16,14 @@ class TLibraryBrowser(TestCase):
         win.songlist.get_selection().emit("changed")
         win.destroy()
 
+    def test_open(self):
+        from quodlibet.browsers.empty import EmptyBar
+        from quodlibet.library import SongLibrary
+
+        widget = LibraryBrowser.open(EmptyBar, SongLibrary())
+        self.assertTrue(widget)
+        self.assertTrue(widget.get_visible())
+        widget.destroy()
+
     def tearDown(self):
         quodlibet.config.quit()

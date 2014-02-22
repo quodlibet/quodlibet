@@ -21,8 +21,11 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
 
     @classmethod
     def open(cls, Kind, library):
+        """Creates and shows a new browser instance"""
+
         browser = cls(Kind, library)
         browser.show()
+        return browser
 
     @classmethod
     def save(cls):
