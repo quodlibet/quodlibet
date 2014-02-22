@@ -66,7 +66,6 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_website(const.WEBSITE)
         self.set_copyright(const.COPYRIGHT + "\n" +
                            "<%s>" % const.SUPPORT_EMAIL)
-        self.get_child().show_all()
 
 
 class AboutQuodLibet(AboutDialog):
