@@ -120,6 +120,13 @@ def _gtk_init(icon=None):
         Gdk.BUTTON_MIDDLE = 2
         Gdk.BUTTON_SECONDARY = 3
 
+    # Force menu/button image related settings. We might show too many atm
+    # but this makes sure we don't miss cases where we forgot to force them
+    # per widget.
+    settings = Gtk.Settings.get_default()
+    settings.set_property("gtk-button-images", True)
+    settings.set_property("gtk-menu-images", True)
+
     # Make sure PyGObject includes support for foreign cairo structs
     some_window = Gtk.OffscreenWindow()
     some_window.show()
