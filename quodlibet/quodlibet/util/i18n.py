@@ -37,7 +37,21 @@ class GlibTranslations(gettext.GNUTranslations):
         else:
             return msgstr
 
+    def ugettext(self, message):
+        # force unicode here since __contains__ (used in gettext) ignores
+        # our changed defaultencoding for coercion, so utf-8 encoded strings
+        # fail at lookup.
+        message = unicode(message)
+        return gettext.GNUTranslations.ugettext(self, message)
+
+    def ungettext(self, msgid1, msgid2, n):
+        # see ugettext
+        msgid1 = unicode(msgid1)
+        msgid2 = unicode(msgid2)
+        return gettext.GNUTranslations.ungettext(self, msgid1, msgid2, n)
+
     def uqgettext(self, msgid):
+        msgid = unicode(msgid)
         msgstr = self.ugettext(msgid)
         if msgstr == msgid:
             try:
