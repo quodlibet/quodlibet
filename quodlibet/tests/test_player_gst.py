@@ -14,10 +14,12 @@ from tests import TestCase, skipUnless
 try:
     from quodlibet.player.gstbe.util import GStreamerSink as Sink
     from quodlibet.player.gstbe.util import parse_gstreamer_taglist
+    from quodlibet.player.gstbe.prefs import GstPlayerPreferences
 except ImportError:
     pass
 
 from quodlibet.util import sanitize_tags
+from quodlibet import config
 
 
 @contextlib.contextmanager
@@ -26,6 +28,20 @@ def ignore_gst_errors():
     Gst.debug_set_default_threshold(Gst.DebugLevel.NONE)
     yield
     Gst.debug_set_default_threshold(old)
+
+
+@skipUnless(Gst, "GStreamer missing")
+class TGstPlayerPrefs(TestCase):
+
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_main(self):
+        widget = GstPlayerPreferences(None, True)
+        widget.destroy()
 
 
 @skipUnless(Gst, "GStreamer missing")

@@ -1,5 +1,5 @@
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
-#           2011-2013 Christoph Reiter
+#           2011-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,7 +7,6 @@
 
 from gi.repository import Gtk
 
-from quodlibet import const
 from quodlibet import config
 
 from quodlibet.qltk.ccb import ConfigCheckButton
@@ -16,7 +15,7 @@ from quodlibet.qltk.x import Button
 
 
 class GstPlayerPreferences(Gtk.VBox):
-    def __init__(self, player):
+    def __init__(self, player, debug=False):
         super(GstPlayerPreferences, self).__init__(spacing=6)
 
         e = UndoEntry()
@@ -89,7 +88,7 @@ class GstPlayerPreferences(Gtk.VBox):
 
         self.pack_start(table, True, True, 0)
 
-        if const.DEBUG:
+        if debug:
             def print_bin(player):
                 player._print_pipeline()
 

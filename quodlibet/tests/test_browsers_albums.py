@@ -12,6 +12,7 @@ from helper import realized
 from quodlibet import config
 
 from quodlibet.browsers.albums import AlbumList
+from quodlibet.browsers.albums.prefs import Preferences, FakeAlbum
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 
@@ -22,6 +23,43 @@ SONGS = [
     AudioFile({"album": "three", "artist": "boris", "~filename": "/bin/ls2"}),
     ]
 SONGS.sort()
+
+
+class TAlbumPrefs(TestCase):
+
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_main(self):
+
+        class Browser(Gtk.Box):
+            _pattern_text = ""
+
+        widget = Preferences(Browser())
+        widget.destroy()
+
+
+class TFakeAlbum(TestCase):
+
+    def test_call(self):
+        self.assertEqual(FakeAlbum()("title"), "Title")
+        self.assertEqual(FakeAlbum()("~title~artist"), "Title - Artist")
+        self.assertEqual(FakeAlbum(title="foo")("title"), "foo")
+        self.assertEqual(FakeAlbum(title="f")("~title~artist"), "f - Artist")
+        self.assertEqual(FakeAlbum()("~#rating"), "Rating")
+        self.assertEqual(FakeAlbum({"~#rating": 0.5})("~#rating"), 0.5)
+        self.assertEqual(FakeAlbum()("~#rating:max"), "Rating<max>")
+
+    def test_get(self):
+        self.assertEqual(FakeAlbum().get("title"), "Title")
+
+    def test_comma(self):
+        self.assertEqual(FakeAlbum().comma("title"), "Title")
+        self.assertEqual(FakeAlbum({"~#rating": 0.5}).comma("~#rating"), 0.5)
+        self.assertEqual(FakeAlbum(title="a\nb").comma("title"), "a, b")
 
 
 class TAlbumBrowser(TestCase):

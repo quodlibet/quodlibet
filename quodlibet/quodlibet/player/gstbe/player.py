@@ -1,5 +1,5 @@
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
-#           2011-2013 Christoph Reiter
+#           2011-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -161,7 +161,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     __info_buffer = None
 
     def PlayerPreferences(self):
-        return GstPlayerPreferences(self)
+        return GstPlayerPreferences(self, const.DEBUG)
 
     def __init__(self, librarian=None):
         GStreamerPluginHandler.__init__(self)
