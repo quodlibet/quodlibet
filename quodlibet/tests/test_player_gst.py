@@ -2,13 +2,17 @@
 
 import contextlib
 
-from gi.repository import Gst
+try:
+    from gi.repository import Gst
+except ImportError:
+    Gst = None
 
 import unittest
 from tests import TestCase, add
 
-from quodlibet.player.gstbe import GStreamerSink as Sink
-from quodlibet.player.gstbe import parse_gstreamer_taglist
+if Gst:
+    from quodlibet.player.gstbe import GStreamerSink as Sink
+    from quodlibet.player.gstbe import parse_gstreamer_taglist
 from quodlibet.util import sanitize_tags
 
 
@@ -43,7 +47,8 @@ class TGStreamerSink(TestCase):
         self.failUnless(obj)
         self.failUnlessEqual(name.split("!")[-1].strip(), Sink("")[1])
 
-add(TGStreamerSink)
+if Gst:
+    add(TGStreamerSink)
 
 class TGstreamerTagList(TestCase):
     def test_parse(self):
@@ -166,4 +171,5 @@ class TGstreamerTagList(TestCase):
         # parse_gstreamer_taglist should only return unicode
         self.failIf(sanitize_tags({"foo": "bar"}))
 
-add(TGstreamerTagList)
+if Gst:
+    add(TGstreamerTagList)
