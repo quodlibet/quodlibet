@@ -5,7 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-source _base.sh
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+source "$DIR"/_base.sh
 
 build_all;
 
