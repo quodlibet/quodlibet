@@ -33,6 +33,7 @@ build/*
 # Windows Installer
 win_installer/_bin
 win_installer/_build_env
+win_installer/_sdk
 win_installer/*.exe
 
 # coverage.py html report

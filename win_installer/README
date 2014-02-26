@@ -25,6 +25,5 @@ How To
 SDK Environment
 ---------------
 
-After running build_installer.sh, _build_env/quodlibet-win-sdk contains
-a development environment including all dependencies, a repository clone
-and the needed launchers.
+After running build_sdk.sh, ./_sdk contains a development environment
+including all dependencies and the needed launchers.

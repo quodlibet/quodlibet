@@ -9,5 +9,4 @@ source _base.sh
 
 build_all;
 
-package_installer;
-package_portable_installer;
+setup_sdk;
