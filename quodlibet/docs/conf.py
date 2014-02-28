@@ -21,7 +21,8 @@ html_title = "%s (%s)" % (project, version)
 
 RTD_NEW_THEME = True
 
-if const.BRANCH_NAME != "default":
+# on a stable branch which isn't a release
+if const.BRANCH_NAME != "default" and const.VERSION_TUPLE[-1] == -1:
     rst_prolog = """
 
 .. note::
