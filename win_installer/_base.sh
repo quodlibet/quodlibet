@@ -251,9 +251,8 @@ function package_portable_installer {
     cp "$MISC"/conf.py "$PORTABLE_DATA"/bin/quodlibet/
 
     wine "$SZIPDIR"/7z.exe a "$BUILD_ENV"/portable-temp.7z "$PORTABLE"
-    cat "$SZIPDIR"/7z.sfx "$BUILD_ENV"/portable-temp.7z > "quodlibet-$QL_VERSION-portable.exe"
+    cat "$SZIPDIR"/7z.sfx "$BUILD_ENV"/portable-temp.7z > "$DIR/quodlibet-$QL_VERSION-portable.exe"
     rm "$BUILD_ENV"/portable-temp.7z
-    mv "quodlibet-$QL_VERSION-portable.exe" "$DIR"
 }
 
 function setup_sdk {
