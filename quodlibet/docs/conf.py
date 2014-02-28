@@ -20,3 +20,13 @@ html_theme = "haiku"
 html_title = "%s (%s)" % (project, version)
 
 RTD_NEW_THEME = True
+
+# on a stable branch which isn't a release
+if const.BRANCH_NAME != "default" and const.VERSION_TUPLE[-1] == -1:
+    rst_prolog = """
+
+.. note::
+    There exists a newer version of this page and the content below may be 
+    outdated. See %s for the latest documentation.
+
+""" % (const.DOCS_LATEST)
