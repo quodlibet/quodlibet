@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-22 23:53+0100\n"
+"POT-Creation-Date: 2014-02-28 21:19+0100\n"
 "PO-Revision-Date: 2014-02-22 21:19+0200\n"
 "Last-Translator: Dimitris Papageorgiou <dipap@gmx.com>\n"
 "Language-Team: Greek\n"
@@ -1142,7 +1142,7 @@ msgstr ""
 msgid "GStreamer plugin '%(name)s' could not be initialized"
 msgstr "Το πρόσθετο '%(name)s' του Gstreamer δεν ήταν δυνατό να αρχικοποιηθεί"
 
-#: ../quodlibet/player/gstbe/prefs.py:23
+#: ../quodlibet/player/gstbe/prefs.py:22
 msgid ""
 "The GStreamer output pipeline used for playback, such as 'alsasink "
 "device=default'. Leave blank for default pipeline."
@@ -1150,24 +1150,24 @@ msgstr ""
 "Η διασωλήνωση εξόδου του GStreamer που χρησιμοποιείται για αναπαραγωγή, π.χ. "
 "'alsasink device=default'. Αφήστε το κενό για χρήση της προεπιλεγμένης τιμής."
 
-#: ../quodlibet/player/gstbe/prefs.py:32
+#: ../quodlibet/player/gstbe/prefs.py:31
 msgid "_Output pipeline:"
 msgstr "_Διασωλήνωση εξόδου:"
 
-#: ../quodlibet/player/gstbe/prefs.py:39
+#: ../quodlibet/player/gstbe/prefs.py:38
 #, python-format
 msgid "%.1f seconds"
 msgstr "%.1f δευτερόλεπτα"
 
-#: ../quodlibet/player/gstbe/prefs.py:52
+#: ../quodlibet/player/gstbe/prefs.py:51
 msgid "_Buffer duration:"
 msgstr "Διάρκεια _Buffer:"
 
-#: ../quodlibet/player/gstbe/prefs.py:61
+#: ../quodlibet/player/gstbe/prefs.py:60
 msgid "Disable _gapless playback"
 msgstr "Απενεργοποίηση αναπαραγωγής χωρίς κενά (_gapless)"
 
-#: ../quodlibet/player/gstbe/prefs.py:65
+#: ../quodlibet/player/gstbe/prefs.py:64
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
 "GStreamer versions."
