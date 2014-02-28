@@ -19,7 +19,8 @@ exclude_patterns = ['_build']
 html_theme = "haiku"
 html_title = "%s (%s)" % (project, version)
 
-if const.BRANCH_NAME != "default":
+# on a stable branch which isn't a release
+if const.BRANCH_NAME != "default" and const.VERSION_TUPLE[-1] == -1:
     rst_prolog = """
 
 .. note::
