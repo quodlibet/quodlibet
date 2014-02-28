@@ -18,3 +18,12 @@ if release.endswith(".-1"):
 exclude_patterns = ['_build']
 html_theme = "haiku"
 html_title = "%s (%s)" % (project, version)
+
+if const.BRANCH_NAME != "default":
+    rst_prolog = """
+
+.. note::
+    There exists a newer version of this page and the content below may be 
+    outdated. See %s for the latest documentation.
+
+""" % (const.DOCS_LATEST)
