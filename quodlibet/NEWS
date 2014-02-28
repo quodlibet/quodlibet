@@ -120,8 +120,8 @@ Everything else
  * See 3.0.0 NEWS with a few exceptions
 
 
-2.9.92 (2013-06-05) - alternatetimelinemetarhyme
-------------------------------------------------
+2.9.92 [beta] (2013-06-05) - alternatetimelinemetarhyme
+-------------------------------------------------------
 
 General
  * Fix the main song list resetting while working with multiple browsers
@@ -139,8 +139,8 @@ Plugins
  * Fix replaygain plugin in Ex Falso [1163]
  * Fix fingerprint plugin [1174]
 
-2.9.91 (2013-05-13) - welcome to a place where incredibly terrible things can happen to you and your friends for no reason!
----------------------------------------------------------------------------------------------------------------------------
+2.9.91 [beta] (2013-05-13) - welcome to a place where incredibly terrible things can happen to you and your friends for no reason!
+----------------------------------------------------------------------------------------------------------------------------------
 
 General
  * Spanish, Basque and Galician translation updates (Johám-Luís Miguéns Vila)
@@ -160,8 +160,8 @@ Plugins
  * Fix theme switcher plugin
  * Fix GStreamer mono plugin
 
-2.9.82 (2013-05-02) - One day Marty McFly got bit by a werewolf!
-----------------------------------------------------------------
+2.9.82 [alpha] (2013-05-02) - One day Marty McFly got bit by a werewolf!
+------------------------------------------------------------------------
 
 PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 2 release:
  * Fix lyricsview plugin (Nick Boultbee)
@@ -170,8 +170,8 @@ PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 2 release:
  * Fix crash when playing a song while editing its tags.
  * gstbe: Increase operation timeouts (for spinning up disks etc.)
 
-2.9.81 (2013-04-27) - Because my hypothesis is: it's rad
---------------------------------------------------------
+2.9.81 [alpha] (2013-04-27) - Because my hypothesis is: it's rad
+----------------------------------------------------------------
 
 PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 1 release
 
@@ -195,8 +195,8 @@ PyGObject/Gtk+3.0/Gstreamer1.0 Port - Alpha 1 release
  * Russian translation update (Anton Shestakov) [1072]
  * Lithuanian translation update (Naglis Jonaitis)[1079]
 
-2.4.91 (2012-11-23) - hello and thank you for installing an internet!
----------------------------------------------------------------------
+2.4.91 [beta] (2012-11-23) - hello and thank you for installing an internet!
+----------------------------------------------------------------------------
 
 News for packagers
  * setup.py will install png and svg icons into hicolor and a png icon into
@@ -347,8 +347,8 @@ Windows
    * Python 2.5 / PyGTK 2.12 compatibility
    * Restore saved play order [891]
 
-2.3.91/92 (2012-01-16) - Players only love you when they're playing
--------------------------------------------------------------------
+2.3.91/92 [beta] (2012-01-16) - Players only love you when they're playing
+--------------------------------------------------------------------------
 
  * Fixes:
 
@@ -529,8 +529,8 @@ Windows
     * Some small translation updates (Anton Shestakov)
     * Update of the 2.2.99 news entry
 
-2.2.99 (2011-03-13) - I can imagine that one day there could be aperson who would read that
---------------------------------------------------------------------------------------------
+2.2.99 [beta] (2011-03-13) - I can imagine that one day there could be aperson who would read that
+--------------------------------------------------------------------------------------------------
 
     * Quod Libet now needs Python >=2.5
     * Drag and drop in paned browser
@@ -669,8 +669,8 @@ Windows
    * Galician, Spanish (Johám-Luís Miguéns Vila).
    * French (Bastien Gorissen).
 
-2.1.98 (2010-01-04) - How are you going to convince people to use it?
----------------------------------------------------------------------
+2.1.98 [beta] (2010-01-04) - How are you going to convince people to use it?
+----------------------------------------------------------------------------
 
  * Christoph Reiter is now a maintainer.
  * The GStreamer backend is now gapless [49].
@@ -708,8 +708,8 @@ Windows
 
  * Many bug fixes and performance improvements.
 
-2.1 - My God, Utahraptor, that's THE PERFECT SOLUTION.
-------------------------------------------------------
+2.1 (2009-07-04) - My God, Utahraptor, that's THE PERFECT SOLUTION.
+-------------------------------------------------------------------
 
  * Bug fixes:
 
@@ -726,15 +726,15 @@ Windows
  * URIs supported for --play-file and --enqueue [17]
  * Many minor fixes and enhancements.
 
-2.0 - Once upon a time there was a radical guy!
------------------------------------------------
+2.0 (2008-09-14) - Once upon a time there was a radical guy!
+------------------------------------------------------------
 
  * Make Escape a synonym for Ctrl+W in QLTK Windows. (I#8)
  * Actually fix playlist error.
  * Fix Xine backend "Stop" behavior.
 
-1.999 - It has been a memorable day
------------------------------------
+1.999 [beta] (2008-09-09) - It has been a memorable day
+-------------------------------------------------------
 
  * Fix playlist error when loading songs.
  * Unlock device when "stop" mmkey is pressed. (Javier Kohen, I#6)
@@ -742,8 +742,8 @@ Windows
  * Updated Galician and Spanish translations. (Johám-Luís Miguéns Vila)
  * Make requirements consistent across all documentation.
 
-1.99 - It is impossible to know if my dream came true
------------------------------------------------------
+1.99 [beta] (2008-09-08) - It is impossible to know if my dream came true
+-------------------------------------------------------------------------
 
  * New distutils-based build/test/install system.
  * Multiple audio backend support.
@@ -764,8 +764,8 @@ Windows
  * default_rating configuration option. (Robert Muth)
  * Many bug fixes and performance improvements.
 
-1.0 - Yeah they just showed up one day -- staring.
---------------------------------------------------
+1.0 (2007-05-05) - Yeah they just showed up one day -- staring.
+---------------------------------------------------------------
 
  * Use Mutagen for ASF/WMA and MP4 support.
  * Add IsPlaying and GetPosition to the D-Bus API. (Mickael Royer)
@@ -787,8 +787,8 @@ Windows
    * Dutch. (Hans van Dok)
    * Japanese. (Yasushi Iwata)
 
-0.24 - One wonders if our conversation today would be an appropriate epitaph.
------------------------------------------------------------------------------
+0.24 (2006-11-19) - One wonders if our conversation today would be an appropriate epitaph.
+------------------------------------------------------------------------------------------
 
  * Media device (iPod and UMS so far) support. (Markus Koller)
  * Delete removes songs from the queue. (sciyoshi)
@@ -811,8 +811,8 @@ Windows
    * French, by Guillaume Ayoub.
    * German, by Rüdiger Arp.
 
-0.23.1 - UNPOPULAR LIFE GOALS
------------------------------
+0.23.1 (2006-08-28) - UNPOPULAR LIFE GOALS
+------------------------------------------
 
  * Multivalued tag renaming.
  * Fix crash when ~/.gtk-bookmarks is not present.
@@ -820,8 +820,8 @@ Windows
  * Parse "performer:role" tags and offer a ~performers synthetic tag.
  * Updated Swedish translation, by Erik Christiansson.
 
-0.23 - THE NARRATIVE OF LIFE.
------------------------------
+0.23 (2006-08-14) - THE NARRATIVE OF LIFE.
+------------------------------------------
 
  * Bug Fixes:
 
@@ -857,8 +857,8 @@ Windows
    * Hungarian, by SZERVÁC Attila.
    * Swedish, by Fredrik Olofsson.
 
-0.22 - Man, forget television, books, films, short films, to a lesser extent plays and other theatre, and the remaining popular media!
---------------------------------------------------------------------------------------------------------------------------------------
+0.22 (2006-07-06) - Man, forget television, books, films, short films, to a lesser extent plays and other theatre, and the remaining popular media!
+---------------------------------------------------------------------------------------------------------------------------------------------------
 
  * The tray icon is now an optional plugin.
  * A D-BUS interface is available. (thanks to Federico Pelloni)
@@ -880,13 +880,13 @@ Windows
    * Hungarian, by SZERVÁC Attila.
    * Korean, by Byung-Hee HWANG and ChangBom Yoon.
 
-0.21.1 - Dude! It's not like you can't just make your own!
-----------------------------------------------------------
+0.21.1 (2006-07-02) - Dude! It's not like you can't just make your own!
+-----------------------------------------------------------------------
 
  * MP3s with POPM can be loaded again (Thanks, Hans van Dok)
 
-0.21 - Faith, AND the possibility of weaponized kissing??
----------------------------------------------------------
+0.21 (2006-06-10) - Faith, AND the possibility of weaponized kissing??
+----------------------------------------------------------------------
 
  * Bug Fixes:
 
@@ -925,13 +925,13 @@ Windows
    * Lithuanian, by Jonas Slivka.
    * Dutch, by Hans van Dok.
 
-0.20.1 - Thanks for the eye-opener, dinosaur zombies!
------------------------------------------------------
+0.20.1 (2006-05-02) - Thanks for the eye-opener, dinosaur zombies!
+------------------------------------------------------------------
 
  * Vorbis/FLAC tag editing works again.
 
-0.20 - Feelings are boring. Kissing is awesome!
------------------------------------------------
+0.20 (2006-05-01) - Feelings are boring. Kissing is awesome!
+------------------------------------------------------------
 
  * Bug Fixes:
 
@@ -970,8 +970,8 @@ Windows
    * Hebrew, by Roee Haimovich.
    * Portuguese, by Alexandre Passos.
 
-0.19.1 - It's our secret! Our secret IDENTITY!
-----------------------------------------------
+0.19.1 (2006-04-04) - It's our secret! Our secret IDENTITY!
+-----------------------------------------------------------
 
  * Work around broken Fedora/Mandrive GNOME bindings.
  * Fix global plugin directory scanning.
@@ -979,8 +979,8 @@ Windows
  * Updated Italian translation, by Filippo Pappalardo.
  * Updated Korean translation, by Byung-Hee HWANG and ChangBom Yoon.
 
-0.19 - i'm really thirsty you guys
-----------------------------------
+0.19 (2006-04-01) - i'm really thirsty you guys
+-----------------------------------------------
 
  * Simple X session management.
  * Require Mutagen 1.0; drops Pymad.
@@ -1029,8 +1029,8 @@ Windows
    * Lithuanian, by Jonas Slivka.
    * Hebrew, by Roee Haimovich.
 
-0.18 - "Babies Sporting Monocles"?
-----------------------------------
+0.18 (2006-03-03) - "Babies Sporting Monocles"?
+-----------------------------------------------
 
  * MP4 iTunes metadata can be written.
  * Alt+s switches between search entry and song list.
@@ -1075,14 +1075,14 @@ Windows
    * Russian, by Sergey Fedoseev.
    * French, by Joshua Kwan.
 
-0.17.1 - I'd like to have some nightmares, please!
---------------------------------------------------
+0.17.1 (2006-01-19) - I'd like to have some nightmares, please!
+---------------------------------------------------------------
 
  * Updated German translation, by Rüdiger Arp.
  * Updated Russian translation, by Sergey Fedoseev.
 
-0.17 - the grizzly icing on the prospector cake!
-------------------------------------------------
+0.17 (2006-01-18) - the grizzly icing on the prospector cake!
+-------------------------------------------------------------
 
  * Lyrics plugin merged into Information dialog.
  * "Edit Tags" now correctly removes all copies of multiple values,
@@ -1105,8 +1105,8 @@ Windows
    * French, by Joshua Kwan.
    * Polish, by Tomasz Torcz.
 
-0.16 - would it make a difference if it never really came up often?
--------------------------------------------------------------------
+0.16 (2005-12-19) - would it make a difference if it never really came up often?
+--------------------------------------------------------------------------------
 
  * Context menu plugins can make themselves insensitive.
  * More command-line and FIFO options.
@@ -1147,8 +1147,8 @@ Windows
    * German, by Rüdiger Arp.
    * Hebrew, by Roee Haimovich.
 
-0.15 - Maybe I will.
---------------------
+0.15 (2005-11-14) - Maybe I will.
+---------------------------------
 
  * An 'artist' tag can be stored in the library for MODs.
  * 'All Albums' remains on the album list after a search.
@@ -1186,8 +1186,8 @@ Windows
 
    * Spanish and Portuguese, by Johám-Luís Miguéns Vila.
 
-0.14 - I'm almost certain!
---------------------------
+0.14 (2005-10-22) - I'm almost certain!
+---------------------------------------
 
  * Internet radio / Shoutcast browser.
  * Album List separates albums with different labelids.
@@ -1210,14 +1210,14 @@ Windows
 
  * Many bug fixes.
 
-0.13.1 - People will fall for this for sure!
---------------------------------------------
+0.13.1 (2005-09-15) - People will fall for this for sure!
+---------------------------------------------------------
 
  * Fix playlist creation.
  * Unplay when no song is playing.
 
-0.13 - So, um... let's- fletcherize?
-------------------------------------
+0.13 (2005-09-11) - So, um... let's- fletcherize?
+-------------------------------------------------
 
  * The GStreamer backend is cleaned up, and is now the only backend.
    This results in lower background CPU usage and many fixes to
@@ -1241,8 +1241,8 @@ Windows
  * Updated Dutch translation by Hans van Dok.
  * Updated Hebrew translation by Roee Haimovich.
 
-0.12 - focus ENTIRELY on the sexy bits.
----------------------------------------
+0.12 (2005-07-31) - focus ENTIRELY on the sexy bits.
+----------------------------------------------------
 
  * New Mutagen ID3 reader/writer.
  * Experimental GStreamer backend.
@@ -1265,8 +1265,8 @@ Windows
 
  * The usual round of interface tweaks and bug fixes.
 
-0.11 - spicy burnsauce with a side of ZING!
--------------------------------------------
+0.11 (2005-05-10) - spicy burnsauce with a side of ZING!
+--------------------------------------------------------
 
  * Plugins (either appearing in the right-click menu, or triggered on a
    player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins.
@@ -1283,13 +1283,13 @@ Windows
  * Partial French translation, thanks to Joshua Kwan.
  * OSD moved to a plugin.
 
-0.10.1 - What if I said I'm not really kidding?
------------------------------------------------
+0.10.1 (2005-04-04) - What if I said I'm not really kidding?
+------------------------------------------------------------
 
  * The main window stays hidden when the song changes.
 
-0.10 - As it turns out, my life is NOT THAT INTERESTING!
---------------------------------------------------------
+0.10 (2005-04-02) - As it turns out, my life is NOT THAT INTERESTING!
+---------------------------------------------------------------------
 
  * --seek supports +/- prefix to seek relative to the current position.
  * Added Ex Falso, a tag editor based on QL (without audio playback).
@@ -1308,8 +1308,8 @@ Windows
  * No more dependency on Glade.
  * A new icon and website.
 
-0.9 - I don't want any trouble, cephalopods!
---------------------------------------------
+0.9 (2005-03-04) - I don't want any trouble, cephalopods!
+---------------------------------------------------------
 
  * Major updates to the Properties dialog:
 
@@ -1329,13 +1329,13 @@ Windows
  * PMP support was removed.
  * Updated German translation (thanks, Bastian!)
 
-0.8.1 - Our story takes a sudden dive...
-----------------------------------------
+0.8.1 (2005-02-06) - Our story takes a sudden dive...
+-----------------------------------------------------
 
  * Fix a crash when encoding information is not available.
 
-0.8 - I make jokes about whomever I please!
--------------------------------------------
+0.8 (2005-02-04) - I make jokes about whomever I please!
+--------------------------------------------------------
 
  * New/reloaded libraries take 20% less disk space.
  * Double-clicking an album cover displays it in a larger window.
@@ -1350,8 +1350,8 @@ Windows
  * Polish translation, thanks to Michal Nowikowski.
  * German translation, thanks to Bastian Kleineidam.
 
-0.7 - I'm going to ho-ho-hoard all these nuts!
-----------------------------------------------
+0.7 (2004-12-18) - I'm going to ho-ho-hoard all these nuts!
+------------------------------------------------------------
 
  * Default to proper 'alsa09' driver (rather than 'alsa').
  * "Random Foo" searches are now anchored with ^...$.
@@ -1367,8 +1367,8 @@ Windows
  * Configurable menu accelerators when gtk-can-change-accels is set.
  * Delete songs (or move them to the trash) from the player.
 
-0.6 - People laugh at typos in heaven?!
----------------------------------------
+0.6 (204-12-02) - People laugh at typos in heaven?!
+---------------------------------------------------
 
  * Many new filtering options (top 40, not played in X days).
  * Mass-set track numbers.
@@ -1382,8 +1382,8 @@ Windows
  * Seeking in FLACs.
  * Bug fixes (including at least one crash).
 
-0.5 - Everything's fine, CEPT YOU GOT NO LEGS!
-----------------------------------------------
+0.5 (2004-11-18) - Everything's fine, CEPT YOU GOT NO LEGS!
+-----------------------------------------------------------
 
  * The ao audio backend is back; see the "AUDIO BACKENDS" section in the
    manual page for instructions on using it. This should let ALSA users
@@ -1399,8 +1399,8 @@ Windows
  * Many bug fixes; please reload your library. You can now reload your
    library from the "Music" menu.
 
-0.4 - The Power of Language
----------------------------
+0.4 (2004-11-09) - The Power of Language
+----------------------------------------
 
  * Many bug fixes, primarily due to unit testing.
  * Tweaks to cover detection to pick 'frontcover' over 'backcover'.
@@ -1415,15 +1415,15 @@ Windows
  * Infrastructure is in place for i18n/l10n, but I'm totally new to
    this, so I could've done something horribly wrong.
 
-0.3
----
+0.3 (2004-11-01)
+----------------
 
  * Handle mono MP3s correctly.
  * Crash less, especially when editing tags.
  * Many smaller bug fixes.
 
-0.2
----
+0.2 (2004-10-30)
+----------------
 
  * Song properties dialog, featuring mass tag editing/addition/removal.
  * Build/installation scripts.
@@ -1435,7 +1435,7 @@ Windows
  * FLAC support. Writing to FLAC tags could be *very* buggy, so if you
    value your tags, please back them up.
 
-0.1
----
+0.1 (2004-10-30)
+----------------
 
  * Initial release.
