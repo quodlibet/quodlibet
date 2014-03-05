@@ -5,12 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-###############################################################################
-
-HG_TAG="default"
-
-###############################################################################
-
 trap 'exit 1' SIGINT;
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
@@ -82,10 +76,18 @@ function init_build_env {
     ln -s "$INST_ICON" "$BUILD_ENV"
 }
 
+# Argument 1: the hg tag
 function clone_repo {
+
+    if [ -z "$1" ]
+    then
+        echo "missing arg"
+        exit 1
+    fi
+
     # clone repo, create translations
     hg clone "$QL_REPO" "$QL_TEMP"
-    (cd "$QL_TEMP" && hg up "$HG_TAG")
+    (cd "$QL_TEMP" && hg up "$1") || exit 1
     QL_VERSION=$(cd "$QL_TEMP"/quodlibet && python -c "import quodlibet.const;print quodlibet.const.VERSION,")
 }
 
@@ -279,12 +281,17 @@ function setup_sdk {
 
 ################################################
 
+# Argument 1: hg tag, defaults to "default"
 function build_all {
+    local HG_TAG=${1:-"default"}
+
+    echo "Building for hg tag '$HG_TAG'"
+
     download_and_verify;
 
     init_wine;
     init_build_env;
-    clone_repo;
+    clone_repo "$HG_TAG";
     extract_deps;
 
     setup_deps;
