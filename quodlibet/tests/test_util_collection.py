@@ -116,6 +116,21 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.get("~#rating"), 0.3)
         s.failUnlessEqual(album.get("~#originalyear"), 2002)
 
+    def test_numeric_comma(self):
+        songs = [Fakesong({
+            "~#added": long(1),
+            "~#rating": 0.5,
+            "~#bitrate": 42,
+            "~#length": 1,
+        })]
+
+        album = Album(songs[0])
+        album.songs = set(songs)
+
+        self.assertEqual(album.comma("~#added"), 1)
+        self.assertEqual(album.comma("~#rating"), 0.5)
+        self.assertEqual(album.comma("~#bitrate"), 42)
+
     def test_single_rating(s):
         songs = [Fakesong({"~#rating": 0.75})]
         album = Album(songs[0])
