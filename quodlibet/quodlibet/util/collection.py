@@ -114,7 +114,7 @@ class Collection(object):
 
     def comma(self, key):
         value = self.get(key)
-        return (value if isinstance(value, (int, float))
+        return (value if isinstance(value, (int, float, long))
                 else value.replace("\n", ", "))
 
     def list(self, key):
