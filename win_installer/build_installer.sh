@@ -9,7 +9,7 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 source "$DIR"/_base.sh
 
-build_all;
+build_all "$1";
 
 package_installer;
 package_portable_installer;

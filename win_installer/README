@@ -14,7 +14,7 @@ Requirements:
 How To
 ------
 
-* Run build_installer.sh
+* Run "build_installer.sh $VERSION"
 * _bin will be created which contains installers of various dependencies
 * _build_env will be created which contains all files created during the
   build process.
