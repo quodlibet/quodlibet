@@ -170,9 +170,18 @@ For old releases see the `full file listing <https://bitbucket.org/lazka/quodlib
 |arch-logo| Arch Linux
 ----------------------
 
+Stable:
+
 ::
 
     $ pacman -S quodlibet
+
+
+Unstable:
+
+
+See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in 
+the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
 
 
 .. _RunFromSource:
