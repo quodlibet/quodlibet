@@ -32,6 +32,8 @@
 Downloads
 =========
 
+.. _source:
+
 |hg-logo| Source
 ----------------
 
@@ -47,6 +49,7 @@ To clone the repository::
     hg clone https://code.google.com/p/quodlibet
     hg clone https://bitbucket.org/lazka/quodlibet
 
+.. _tarballs:
 
 |source-logo| Release Tarballs
 ------------------------------
@@ -71,6 +74,8 @@ Quod Libet Plugins 2.5.1   quodlibet-plugins-2.5.1.tar.gz_
 
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
+
+.. _ubuntu:
 
 |ubuntu-logo| Ubuntu
 --------------------
@@ -98,6 +103,8 @@ Unstable PPA::
       <http://packages.ubuntu.com/quantal/libkeybinder-3.0-0>`__ for
       multimedia key support under non GNOME environments.
 
+.. _debian:
+
 |debian-logo| Debian
 --------------------
 
@@ -110,6 +117,7 @@ Repo key::
 
     $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
 
+.. _fedora:
 
 |fedora-logo| Fedora
 --------------------
@@ -126,6 +134,7 @@ Unstable Repo:
   * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_19/>`__
   * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_20/>`__
 
+.. _opensuse:
 
 |opensuse-logo| openSUSE
 ------------------------
@@ -146,6 +155,7 @@ Unstable Repo:
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
 
+.. _windows:
 
 |windows-logo| Windows
 ----------------------
@@ -166,6 +176,7 @@ Quod Libet 2.4.1            quodlibet-2.4.1-installer.exe_
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
 
+.. _arch:
 
 |arch-logo| Arch Linux
 ----------------------
