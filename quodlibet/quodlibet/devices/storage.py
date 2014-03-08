@@ -70,7 +70,7 @@ class StorageDevice(Device):
         self.__load_library()
 
         wlb.setup()
-        next = self.__library.rebuild([self.mountpoint], wlb).next
+        next = self.__library.rebuild([self.mountpoint]).next
         while True:
             if wlb.quit:
                 wlb.hide()
