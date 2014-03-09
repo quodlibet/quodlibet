@@ -31,6 +31,8 @@ class Pane(AllTreeView):
         self.__next = next_
         self.__restore_values = None
 
+        self.__no_fill = 0
+
         column = TreeViewColumn(self.config.title)
         column.set_use_markup(True)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
@@ -184,14 +186,16 @@ class Pane(AllTreeView):
         return model.matches(paths, song)
 
     def inhibit(self):
-        """Inhibit selection change events"""
+        """Inhibit selection change events and song propagation"""
 
+        self.__no_fill += 1
         self.get_selection().handler_block(self.__sig)
 
     def uninhibit(self):
-        """Uninhibit selection change events"""
+        """Uninhibit selection change events and song propagation"""
 
         self.get_selection().handler_unblock(self.__sig)
+        self.__no_fill -= 1
 
     def fill(self, songs):
         # Restore the selection
@@ -214,7 +218,7 @@ class Pane(AllTreeView):
         self.set_selected(selected, jump=True)
         self.uninhibit()
 
-        if self.__next:
+        if self.__next and self.__no_fill == 0:
             self.__next.fill(self.__get_selected_songs())
 
     def scroll(self, song):
