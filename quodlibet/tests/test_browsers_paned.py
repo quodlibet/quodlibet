@@ -330,6 +330,12 @@ class TMultiPane(TestCase):
         self.last = songs
         self.count += 1
 
+    def test_inhibit(self):
+        self.p2.inhibit()
+        self.p1.fill(SONGS)
+        self.p2.uninhibit()
+        self.assertEqual(self.count, 0)
+
     def test_pipe_through(self):
         self.p1.fill(SONGS)
         self.assertEqual(self.last, set(SONGS))
