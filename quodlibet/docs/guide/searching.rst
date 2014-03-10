@@ -108,16 +108,18 @@ is probably a good idea when playing your whole library on shuffle.
 Numeric Searches
 ----------------
 
-Using ``#``, you can search your library using numeric values. Quod Libet
-keeps some internal numeric values including ``track``, ``disc``, ``rating``,
-``length`` etc. See :ref:`numeric-tags` for
-full details.
+Using ``#``, you can search your library using numeric values. Quod Libet 
+keeps some internal numeric values including ``track``, ``disc``, 
+``rating``, ``length`` etc. See :ref:`numeric-tags` for full details. You 
+can also search any other tag as long as the values have a number format 
+like ``1234`` or ``-42.42``, for example ``year`` or ``bpm``.
 
-With these tags you can then use typical binary operators like ``=``, ``<``,
- ``>``, ``<=``, ``>=``.
+For comparisons you can then use typical binary operators like ``=``, 
+``<``, ``>``, ``<=``, ``>=`` and ``!=``.
 
  * ``#(skipcount > 100)`` could find really unpopular songs, or
- * ``#(track > 50)`` to figure out who makes really insane albums
+ * ``#(track > 50)`` to figure out who makes really insane albums, or
+ * ``#(bpm > 160)`` to find really fast songs
 
 You can also use chained comparisons:
  * ``#(10 > track > 100)`` to find all two-digit tracks.
@@ -135,9 +137,6 @@ minutes, hours, days, months (30 days), and years (365 days), kB
 notation, like:
 
  * ``#(2:00 < length < 3:00)`` for songs between two and three minutes long.
-
-Besides the values QL provides, any tag value that's a number (e.g. ``year``)
-in your files can be searched like this with the ``#`` prefix.
 
 Of course, you can combine numeric with other kinds of searches.
 
