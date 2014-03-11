@@ -139,7 +139,8 @@ def main():
 
     # restore browser windows
     from quodlibet.qltk.browser import LibraryBrowser
-    LibraryBrowser.restore(library)
+    from gi.repository import GLib
+    GLib.idle_add(LibraryBrowser.restore, library, priority=GLib.PRIORITY_HIGH)
 
     quodlibet.main(window)
 
