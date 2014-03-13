@@ -154,7 +154,7 @@ class TOperonPrint(TOperonBase):
         # an error status
         o, e = self.check_false(["print", self.f3, self.f2], True, True)
         self.assertTrue("Quod Libet Test Data" in o)
-        self.assertTrue(self.f3 in e)
+        self.assertTrue(os.path.basename(self.f3) in e)
 
     def test_permissions(self):
         # doesn't prevent reading under wine..
