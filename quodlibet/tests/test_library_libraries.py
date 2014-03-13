@@ -6,6 +6,7 @@ from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 
 from tests import TestCase, DATA_DIR, mkstemp
+from helper import capture_output
 
 from quodlibet.library.libraries import *
 
@@ -458,7 +459,8 @@ class TSongFileLibrary(TSongLibrary):
             self.failUnlessEqual(2, len(self.library))
             os.unlink(filename)
 
-            ret = self.library.add_filename("")
+            with capture_output():
+                ret = self.library.add_filename("")
             self.failIf(ret)
             self.failUnlessEqual(len(self.added), 2)
             self.failUnlessEqual(2, len(self.library))
