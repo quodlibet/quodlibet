@@ -1,4 +1,5 @@
 from tests import TestCase
+from helper import capture_output
 
 import os
 import unittest
@@ -86,7 +87,8 @@ class TFIFOControl(TestCase):
 
     def test_misc(self):
         #self.__send("add-directory /dev/null")
-        self.__send("add-file /dev/null")
+        with capture_output():
+            self.__send("add-file /dev/null")
         #self.__send("dump-playlist /dev/null")
         #self.__send("dump_queue /dev/null")
         #self.__send("enqueue /dev/null")

@@ -61,33 +61,32 @@ def init():
 init()
 
 
-def MusicFile(filename):
-    for ext in _infos.keys():
-        if filename.lower().endswith(ext):
-            try:
-                return _infos[ext](filename)
-            except:
-                print_w(_("Error loading %r") % filename)
-                if const.DEBUG:
-                    util.print_exc()
-                return None
-    else:
-        return None
-
-
 _extensions = tuple(_infos.keys())
 
 
-def supported(song):
-    return song.key.lower().endswith(_extensions)
+def MusicFile(filename):
+    """Returns a AudioFile instance or None"""
+
+    lower = filename.lower()
+    for ext in _extensions:
+        if lower.endswith(ext):
+            try:
+                return _infos[ext](filename)
+            except:
+                print_w("Error loading %r" % filename)
+                if const.DEBUG:
+                    util.print_exc()
+                return
+    else:
+        print_w("Unknown file extension %r" % filename)
+        return
 
 
 def filter(filename):
-    lower = filename.lower()
-    for ext in _infos.keys():
-        if lower.endswith(ext):
-            return True
-    return False
+    """Returns true if the file extension is supported"""
+
+    return filename.lower().endswith(_extensions)
+
 
 from quodlibet.formats._audio import USEFUL_TAGS, MACHINE_TAGS, PEOPLE
 from quodlibet.formats._audio import DUMMY_SONG

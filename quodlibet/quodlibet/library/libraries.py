@@ -26,6 +26,7 @@ from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
 from quodlibet import util
 from quodlibet import const
+from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import fsdecode, expanduser, unexpand, mkdir
 
@@ -686,6 +687,9 @@ class FileLibrary(PicklingLibrary):
                             continue
                         if fullfilename not in self._contents:
                             fullfilename = os.path.realpath(fullfilename)
+                            # skip unknown file extensions
+                            if not formats.filter(fullfilename):
+                                continue
                             if filter(fullfilename.startswith, exclude):
                                 continue
                             if fullfilename not in self._contents:

@@ -5,12 +5,22 @@
 # published by the Free Software Foundation
 
 import sys
+import os
 
-from tests import TestCase
+from tests import TestCase, DATA_DIR
+from helper import capture_output
+
 from quodlibet import formats
+from quodlibet import config
 
 
 class TFormats(TestCase):
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
     def test_presence(self):
         self.failUnless(formats.midi)
         self.failUnless(formats.mod)
@@ -31,3 +41,24 @@ class TFormats(TestCase):
 
         self.failUnless(formats.xiph is sys.modules["formats.flac"])
         self.failUnless(formats.xiph is sys.modules["formats.oggvorbis"])
+
+    def test_filter(self):
+        self.assertTrue(formats.filter("foo.mp3"))
+        self.assertFalse(formats.filter("foo.doc"))
+        self.assertFalse(formats.filter("foomp3"))
+
+    def test_music_file(self):
+        path = os.path.join(DATA_DIR, 'silence-44-s.mp3')
+        self.assertTrue(formats.MusicFile(path))
+
+        # non existing
+        with capture_output() as (stdout, stderr):
+            song = formats.MusicFile(os.path.join(DATA_DIR, "nope.mp3"))
+            self.assertFalse(song)
+            self.assertTrue("Error" in stderr.getvalue())
+
+        # unknown extension
+        with capture_output() as (stdout, stderr):
+            song = formats.MusicFile(os.path.join(DATA_DIR, "nope.xxx"))
+            self.assertFalse(song)
+            self.assertTrue("extension" in stderr.getvalue())
