@@ -690,8 +690,15 @@ class PrintCommand(Command):
             raise CommandError("Invalid pattern: %r" % pattern)
 
         paths = args
+        error = False
         for path in paths:
-            print_(pattern % self.load_song(path))
+            try:
+                print_(pattern % self.load_song(path))
+            except CommandError:
+                error = True
+
+        if error:
+            raise CommandError("One or more files failed to load.")
 
 
 class HelpCommand(Command):

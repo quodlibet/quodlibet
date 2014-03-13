@@ -38,6 +38,9 @@ class TOperonBase(TestCase):
         os.close(fd)
         fd, self.f2 = mkstemp(".mp3")
         os.close(fd)
+        fd, self.f3 = mkstemp(".mp3")
+        os.write(fd, "garbage")
+        os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ogg'), self.f)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.f2)
         self.s = MusicFile(self.f)
@@ -46,12 +49,17 @@ class TOperonBase(TestCase):
     def tearDown(self):
         os.unlink(self.f)
         os.unlink(self.f2)
+        os.unlink(self.f3)
         config.quit()
 
     def check_true(self, args, so, se, **kwargs):
+        """Assert success status code"""
+
         return self._check(args, True, so, se, **kwargs)
 
     def check_false(self, args, so, se, **kwargs):
+        """Assert error status code"""
+
         return self._check(args, False, so, se, **kwargs)
 
     def _check(self, args, success, so, se):
@@ -136,6 +144,17 @@ class TOperonPrint(TOperonBase):
         o, e = self.check_true(["print", "-p", "<title>", self.f, self.f],
                                True, False)
         self.failUnlessEqual(o.splitlines(), ["Silence", "Silence"])
+
+    def test_print_invalid(self):
+        # passing a song which can't be loaded results in fail
+        self.check_false(["print", self.f3], False, True)
+
+        # in case some fail and some don't, print the error messages for
+        # the failed ones, the patterns for the working ones and return
+        # an error status
+        o, e = self.check_false(["print", self.f3, self.f2], True, True)
+        self.assertTrue("Quod Libet Test Data" in o)
+        self.assertTrue(self.f3 in e)
 
     def test_permissions(self):
         # doesn't prevent reading under wine..
