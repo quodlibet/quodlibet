@@ -1,6 +1,7 @@
-from tests import TestCase, AbstractTestCase
+from tests import TestCase, AbstractTestCase, skipIf
 
 from quodlibet.formats import USEFUL_TAGS
+from quodlibet.qltk import is_wayland
 
 
 class TagsCombo(AbstractTestCase):
@@ -27,10 +28,12 @@ class TagsCombo(AbstractTestCase):
         self.some.destroy()
 
 
+@skipIf(is_wayland(), "crashes..")
 class TTagsComboBox(TagsCombo):
     from quodlibet.qltk.tagscombobox import TagsComboBox as Kind
 
 
+@skipIf(is_wayland(), "crashes..")
 class TTagsComboBoxEntry(TagsCombo):
     from quodlibet.qltk.tagscombobox import TagsComboBoxEntry as Kind
 

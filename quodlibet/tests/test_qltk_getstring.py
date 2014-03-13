@@ -1,7 +1,8 @@
 from gi.repository import Gtk, Gdk
 
-from tests import TestCase
+from tests import TestCase, skipIf
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.qltk import is_wayland
 
 
 class _ClipboadTestClass(GetStringDialog):
@@ -12,6 +13,7 @@ class _ClipboadTestClass(GetStringDialog):
             return text
 
 
+@skipIf(is_wayland(), "blocks under wayland for some reason")
 class TGetStringDialog(TestCase):
     def setUp(self):
         self.gsd1 = GetStringDialog(None, "title", "enter a string")
