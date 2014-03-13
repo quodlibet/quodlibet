@@ -173,23 +173,23 @@ class CDDBLookup(SongsMenuPlugin):
 
         if stat in (200, 211):
             xcode = 'utf8:utf8'
-            dlg = Gtk.Dialog(_('Select an album'))
+            dlg = Gtk.Dialog(title=_('Select an album'))
             dlg.set_border_width(6)
-            dlg.set_has_separator(False)
             dlg.set_resizable(False)
-            dlg.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
+            dlg.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+            dlg.add_buttons(Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
             dlg.vbox.set_spacing(6)
-            dlg.set_default_response(Gtk.ResponseType.OK)
+            dlg.set_default_response(Gtk.ResponseType.CANCEL)
             model = Gtk.ListStore(str, str, str, str, str, str)
             for disc in discs:
                 model.append(
                     [disc[s] for s in ('title', 'category', 'disc_id')] * 2)
-            box = Gtk.ComboBox(model)
+            box = Gtk.ComboBox(model=model)
             box.set_active(0)
             for i in range(3):
                 crt = Gtk.CellRendererText()
-                box.pack_start(crt, True, True, 0)
-                box.set_attributes(crt, text=i)
+                box.pack_start(crt, True)
+                box.add_attribute(crt, "text", i)
             discinfo = Gtk.Label()
             crosscode = Gtk.ListStore(str)
             crosscode.append(['utf8:utf8'])
@@ -197,7 +197,8 @@ class CDDBLookup(SongsMenuPlugin):
             crosscode.append(['latin1:cp1251'])
             crosscode.append(['latin1:sjis'])
             crosscode.append(['latin1:euc-jp'])
-            cbo = Gtk.ComboBoxEntry(crosscode, column=0)
+            cbo = Gtk.ComboBox(
+                model=crosscode, entry_text_column=0, has_entry=True)
             cbo.set_active(0)
 
             def update_discinfo(combo):
@@ -225,7 +226,7 @@ class CDDBLookup(SongsMenuPlugin):
             box.connect('changed', update_discinfo)
             update_discinfo(box)
             dlg.vbox.pack_start(Gtk.Label(
-                _("Select the album you wish to retrieve.", True, True, 0)))
+                _("Select the album you wish to retrieve.")), True, True, 0)
             dlg.vbox.pack_start(box, True, True, 0)
             dlg.vbox.pack_start(discinfo, True, True, 0)
             dlg.vbox.pack_start(cbo, True, True, 0)
