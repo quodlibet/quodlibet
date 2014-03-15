@@ -32,7 +32,7 @@ Debugging Pipelines
 In case you are interested in which GStreamer elements and audio formats
 are used in the current pipeline, start Quod Libet in debug mode
 (``quodlibet --debug``), go to *Music* → *Preferences* → *Playback* and
-press the *Print Playback* button. It will print the whole pipeline used
+press the *Print Pipeline* button. It will print the whole pipeline used
 for the current active song to *stdout*.
 
 For debugging GStreamer related issues see the official GStreamer docs:
