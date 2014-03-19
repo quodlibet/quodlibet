@@ -9,6 +9,7 @@ import os.path
 import re
 
 from quodlibet.plugins.cover import CoverSourcePlugin
+from quodlibet.util.path import fsdecode
 from quodlibet import config
 
 
@@ -97,24 +98,25 @@ class FilesystemCover(CoverSourcePlugin):
                             fns.append((entry, sub_entry))
 
             for sub, fn in fns:
+                dec_lfn = fsdecode(fn, False).lower()
+
                 score = 0
-                lfn = fn.lower()
                 # check for the album label number
                 labelid = self.song.get("labelid", "").lower()
-                if labelid and labelid in lfn:
+                if labelid and labelid in dec_lfn:
                     score += 20
 
                 # Track-related keywords
                 keywords = [k.lower().strip() for k in [self.song("artist"),
                             self.song("albumartist"), self.song("album")]
                             if len(k) > 1]
-                score += 2 * sum(map(lfn.__contains__, keywords))
+                score += 2 * sum(map(dec_lfn.__contains__, keywords))
 
                 # Generic keywords
-                score += 3 * sum(r.search(lfn) is not None
+                score += 3 * sum(r.search(dec_lfn) is not None
                                  for r in self.cover_positive_regexes)
 
-                negs = sum(r.search(lfn) is not None
+                negs = sum(r.search(dec_lfn) is not None
                            for r in self.cover_negative_regexes)
                 score -= 2 * negs
                 #print("[%s - %s]: Album art \"%s\" scores %d (%s neg)." % (
