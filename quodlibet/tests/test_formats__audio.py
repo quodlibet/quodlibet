@@ -27,7 +27,7 @@ bar_2_1 = AudioFile({
 
 quux = AudioFile({
     "~filename": os.path.join(DATA_DIR, "asong.ogg"),
-    "album": "Quuxly"
+    "album": u"Quuxly"
     })
 
 num_call = AudioFile({"custom": "0.3"})
@@ -536,6 +536,17 @@ class Tfind_cover(TestCase):
             self.files.append(f)
             self.failUnlessEqual(os.path.abspath(quux.find_cover().name), f)
         self.test_labelid() # labelid must work with other files present
+
+    def test_file_encoding(self):
+        if os.name == "nt":
+            return
+
+        f = self.full_path("\xff\xff\xff\xff - cover.jpg")
+        file(f, "w").close()
+        self.files.append(f)
+        self.assertTrue(isinstance(quux("album"), unicode))
+        h = quux.find_cover()
+        self.assertEqual(h.name, f)
 
     def test_intelligent(self):
         song = quux
