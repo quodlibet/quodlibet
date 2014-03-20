@@ -480,7 +480,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             bayesian_factor = config.getfloat("settings",
                                               "bayesian_rating_factor", 0.0)
             adj = Gtk.Adjustment.new(bayesian_factor, 0.0, 10.0, 0.5, 0.5, 0.0)
-            bayes_spin = Gtk.SpinButton(adjustment=adj)
+            bayes_spin = Gtk.SpinButton(adjustment=adj, numeric=True)
             bayes_spin.set_digits(1)
             bayes_spin.connect('changed', self.__changed_and_signal_library,
                                'settings', 'bayesian_rating_factor')
@@ -575,7 +575,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             config.set(section, name, entry.get_text())
 
         def __changed_and_signal_library(self, entry, section, name):
-            self.__changed(entry, section, name)
+            config.set(section, name, str(entry.get_value()))
             print_d("Signalling \"changed\" to entire library. Hold tight...")
             # Cache over clicks
             self._songs = self._songs or app.library.values()
