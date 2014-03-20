@@ -406,7 +406,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         def delayed_song_set():
             self.__delayed_setup = None
             song = library.get(config.get("memory", "song"))
-            seek_pos = config.getint("memory", "seek")
+            seek_pos = config.getint("memory", "seek", 0)
             config.set("memory", "seek", 0)
             player.setup(self.playlist, song, seek_pos)
         self.__delayed_setup = GLib.idle_add(delayed_song_set)
