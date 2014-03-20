@@ -2,7 +2,7 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
 #           2012-2013 Nick Boultbee
-#           2009-2013 Christoph Reiter
+#           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -73,6 +73,71 @@ def cmpa(a, b):
     return cmp(a, b)
 
 
+def compare_title(a1, a2):
+    # all albums has to stay at the top
+    if (a1 and a2) is None:
+        return cmp(a1, a2)
+    # move album without a title to the bottom
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+    return (cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
+
+
+def compare_artist(a1, a2):
+    if (a1 and a2) is None:
+        return cmp(a1, a2)
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+    return (cmpa(a1.peoplesort, a2.peoplesort) or
+            cmpa(a1.date, a2.date) or
+            cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
+
+
+def compare_date(a1, a2):
+    if (a1 and a2) is None:
+        return cmp(a1, a2)
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+    return (cmpa(a1.date, a2.date) or
+            cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
+
+
+def compare_genre(a1, a2):
+    if (a1 and a2) is None:
+        return cmp(a1, a2)
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+    return (cmpa(a1.genre, a2.genre) or
+            cmpa(a1.peoplesort, a2.peoplesort) or
+            cmpa(a1.date, a2.date) or
+            cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
+
+
+def compare_rating(a1, a2):
+    if (a1 and a2) is None:
+        return cmp(a1, a2)
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+    return (-cmp(a1("~#rating"), a2("~#rating")) or
+            cmpa(a1.date, a2.date) or
+            cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
+
+
 class PreferencesButton(Gtk.HBox):
     def __init__(self, browser, model):
         super(PreferencesButton, self).__init__()
@@ -127,65 +192,24 @@ class PreferencesButton(Gtk.HBox):
             model.set_sort_column_id(100 + num, Gtk.SortType.ASCENDING)
 
     def __compare_title(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
-        # all albums has to stay at the top
-        if (a1 and a2) is None:
-            return cmp(a1, a2)
-        # move album without a title to the bottom
-        if not a1.title:
-            return 1
-        if not a2.title:
-            return -1
-        return (cmpa(a1.sort, a2.sort) or
-                cmp(a1.key, a2.key))
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_title(a1, a2)
 
     def __compare_artist(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
-        if (a1 and a2) is None:
-            return cmp(a1, a2)
-        if not a1.title:
-            return 1
-        if not a2.title:
-            return -1
-        return (cmpa(a1.peoplesort, a2.peoplesort) or
-                cmpa(a1.date, a2.date) or
-                cmpa(a1.sort, a2.sort) or
-                cmp(a1.key, a2.key))
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_artist(a1, a2)
 
     def __compare_date(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
-        if (a1 and a2) is None:
-            return cmp(a1, a2)
-        if not a1.title:
-            return 1
-        if not a2.title:
-            return -1
-        return (cmpa(a1.date, a2.date) or
-                cmpa(a1.sort, a2.sort) or
-                cmp(a1.key, a2.key))
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_date(a1, a2)
 
     def __compare_genre(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
-        if (a1 and a2) is None:
-            return cmp(a1, a2)
-        if not a1.title:
-            return 1
-        if not a2.title:
-            return -1
-        return (cmpa(a1.genre, a2.genre) or
-                cmpa(a1.peoplesort, a2.peoplesort) or
-                cmpa(a1.date, a2.date) or
-                cmpa(a1.sort, a2.sort) or
-                cmp(a1.key, a2.key))
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_genre(a1, a2)
 
-    def __compare_rating(self, model, i2, i1, data):
-        a1, a2 = model.get_value(i1, 0), model.get_value(i2, 0)
-        if (a1 and a2) is None:
-            return cmp(a1, a2)
-        return (cmpa(a1("~#rating"), a2("~#rating")) or
-                cmpa(a1.date, a2.date) or
-                cmpa(a1.sort, a2.sort) or
-                cmp(a1.key, a2.key))
+    def __compare_rating(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_rating(a1, a2)
 
 
 class VisibleUpdate(object):

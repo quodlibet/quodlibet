@@ -28,6 +28,7 @@ PATTERN = """[b]<album|<album>|%s>[/b]<date| (<date>)>
 
 
 class FakeAlbum(dict):
+
     def get(self, key, default="", connector=" - "):
         if key[:1] == "~" and '~' in key[1:]:
             return connector.join(map(self.get, util.tagsplit(key)))
