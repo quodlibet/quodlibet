@@ -1,4 +1,4 @@
-# Copyright 2012 Christoph Reiter
+# Copyright 2012,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,8 +13,11 @@ from quodlibet import config
 
 from quodlibet.browsers.albums import AlbumList
 from quodlibet.browsers.albums.prefs import Preferences, FakeAlbum
+from quodlibet.browsers.albums.main import (compare_title, compare_artist,
+    compare_genre, compare_rating, compare_date)
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
+from quodlibet.util.collection import Album
 
 SONGS = [
     AudioFile({"album": "one", "artist": "piman", "~filename": "/dev/null"}),
@@ -40,6 +43,61 @@ class TAlbumPrefs(TestCase):
 
         widget = Preferences(Browser())
         widget.destroy()
+
+
+class TAlbumSort(TestCase):
+
+    def _get_album(self, dict_):
+        song = AudioFile(dict_)
+        album = Album(song)
+        album.songs.add(song)
+        return album
+
+    def assertOrder(self, func, list_):
+        # sort twice for full line coverage of the compare function
+        reversed_ = list(sorted(list_, cmp=func, reverse=True))
+        sorted_ = list(sorted(list_, cmp=func))
+        self.assertEqual(reversed_[::-1], sorted_)
+        self.assertEqual(list_, sorted_)
+
+    def test_sort_title(self):
+        a = self._get_album({"album": "a"})
+        b = self._get_album({"album": "b"})
+        n = self._get_album({"album": ""})
+
+        self.assertOrder(compare_title, [None, a, b, n])
+
+    def test_sort_artist(self):
+        a = self._get_album({"album": "b", "artist": "x"})
+        b = self._get_album({"album": "a", "artist": "y"})
+        c = self._get_album({"album": "a", "artist": ""})
+        n = self._get_album({"album": ""})
+
+        self.assertOrder(compare_artist, [None, a, b, c, n])
+
+    def test_sort_genre(self):
+        a = self._get_album({"album": "b", "genre": "x"})
+        b = self._get_album({"album": "a", "genre": "y"})
+        c = self._get_album({"album": "a", "genre": ""})
+        n = self._get_album({"album": ""})
+
+        self.assertOrder(compare_genre, [None, a, b, c, n])
+
+    def test_sort_date(self):
+        a = self._get_album({"album": "b", "date": "1970"})
+        b = self._get_album({"album": "a", "date": "2038"})
+        c = self._get_album({"album": "a", "date": ""})
+        n = self._get_album({"album": ""})
+
+        self.assertOrder(compare_date, [None, a, b, c, n])
+
+    def test_sort_rating(self):
+        a = self._get_album({"album": "b", "~#rating": 0.5})
+        b = self._get_album({"album": "a", "~#rating": 0.25})
+        c = self._get_album({"album": "x", "~#rating": 0.0})
+        n = self._get_album({"album": "", "~#rating": 0.25})
+
+        self.assertOrder(compare_rating, [None, a, b, c, n])
 
 
 class TFakeAlbum(TestCase):
