@@ -101,7 +101,10 @@ class BasePlayer(GObject.GObject, Equalizer):
     volume = property(lambda s: s._volume, _set_volume)
 
     def setup(self, source, song, seek_pos):
-        """Connect to a PlaylistModel, and load a song."""
+        """Connect to a PlaylistModel, and load a song.
+
+        seek_pos in millisecs
+        """
 
         self._source = source
         self.go_to(song)
