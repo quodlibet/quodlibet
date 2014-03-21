@@ -210,6 +210,7 @@ class FileSystem(Browser, Gtk.HBox):
                 for file in filter(formats.filter,
                                    sorted(os.listdir(util.fsnative(dir)))):
                     fn = os.path.realpath(os.path.join(dir, file))
+                    fn = normalize_path(fn)
                     if fn in self.__glibrary:
                         songs.append(self.__glibrary[fn])
                     elif fn not in self.__library:
