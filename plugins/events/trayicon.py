@@ -158,7 +158,7 @@ class TrayIcon(EventPlugin):
         self._icon.connect('scroll-event', self.__scroll)
         self._icon.connect('button-press-event', self.__button_middle)
 
-        self.__w_sig_map = app.window.connect('map', self.__window_map)
+        self.__w_sig_map = app.window.connect('map-event', self.__window_map)
         self.__w_sig_del = app.window.connect('delete-event',
                                               self.__window_delete)
 
@@ -277,7 +277,7 @@ class TrayIcon(EventPlugin):
     def __window_delete(self, win, event):
         return self.__hide_window()
 
-    def __window_map(self, win):
+    def __window_map(self, win, *args):
         visible = config.getboolean("plugins", "icon_window_visible", False)
 
         config.set("plugins", "icon_window_visible", "true")
