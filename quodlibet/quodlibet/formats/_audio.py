@@ -45,9 +45,9 @@ TAG_TO_SORT = {
     "artist": "artistsort",
     "album": "albumsort",
     "albumartist": "albumartistsort",
-    "performersort": "performersort",
-    "~performerssort": "~performerssort"
-    }
+    "performer": "performersort",
+    "~performers": "~performerssort"
+}
 
 INTERN_NUM_DEFAULT = frozenset("~#lastplayed ~#laststarted ~#playcount "
     "~#skipcount ~#length ~#bitrate ~#filesize".split())
