@@ -418,10 +418,9 @@ class AudioFile(dict, ImageContainer):
                 return []
             else:
                 return v.split("\n")
-        elif key in self:
-            return self[key].split("\n")
         else:
-            return []
+            v = self.get(key)
+            return [] if v is None else v.split("\n")
 
     def list_separate(self, key, connector=" - "):
         """Similar to list, but will return a list of all combinations

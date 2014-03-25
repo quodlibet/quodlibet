@@ -40,6 +40,7 @@ class TIRFile(TestCase):
         self.s["website"] = "abc"
         self.assertEqual(self.s.get("artist"), "abc")
         self.assertEqual(self.s("artist"), "abc")
+        self.assertEqual(self.s.list("artist"), ["abc"])
 
     def test_organisation(self):
         self.s["organization"] = "foo"
