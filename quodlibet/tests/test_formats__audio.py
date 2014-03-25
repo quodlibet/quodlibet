@@ -230,12 +230,31 @@ class TAudioFile(TestCase):
     def test_performers(self):
         q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),
                        ("performer", "C")])
-        self.failUnless("A (Vocals)" in q.list("~performers"))
-        self.failUnless("B (Guitar)" in q.list("~performers"))
-        self.failUnless("C" in q.list("~performers"))
-        self.failUnless("A (Vocals)" in q.list("~people"))
-        self.failUnless("B (Guitar)" in q.list("~people"))
-        self.failUnlessEqual(len(q.list("~performers")), 3)
+        self.failUnlessEqual(set(q.list("~performers")), set(["A", "B", "C"]))
+        self.failUnlessEqual(set(q.list("~performers:roles")),
+                             set(["A (Vocals)", "B (Guitar)", "C"]))
+
+    def test_people(self):
+        q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),
+                       ("performer", "C"), ("arranger", "A"),
+                       ("albumartist", "B"), ("artist", "C")])
+        self.failUnlessEqual(q.list("~people"), ["B", "C", "A"])
+        self.failUnlessEqual(q.list("~people:roles"),
+                             ["B (Guitar)", "C", "A (Arrangement, Vocals)"])
+
+    def test_peoplesort(self):
+        q = AudioFile([("performer:vocals", "The A"),
+                       ("performersort:vocals", "A, The"),
+                       ("performer:guitar", "The B"),
+                       ("performersort:guitar", "B, The"),
+                       ("performer", "The C"),
+                       ("performersort", "C, The"),
+                       ("albumartist", "The B"),
+                       ("albumartistsort", "B, The")])
+        self.failUnlessEqual(q.list("~peoplesort"),
+                             ["B, The", "C, The", "A, The"])
+        self.failUnlessEqual(q.list("~peoplesort:roles"),
+                             ["B, The (Guitar)", "C, The", "A, The (Vocals)"])
 
     def test_to_dump(self):
         dump = bar_1_1.to_dump()

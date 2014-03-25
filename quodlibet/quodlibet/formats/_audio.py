@@ -14,6 +14,7 @@ import os
 import shutil
 import time
 import re
+import collections
 
 from ._image import ImageContainer
 
@@ -40,6 +41,13 @@ MIGRATE = frozenset(("~#playcount ~#laststarted ~#lastplayed ~#added "
 
 PEOPLE = ("albumartist artist author composer ~performers originalartist "
           "lyricist arranger conductor").split()
+
+TAG_ROLES = {
+    "composer": _("Composition"),
+    "lyricist": _("Lyrics"),
+    "arranger": _("Arrangement"),
+    "conductor": _("Conducting")
+}
 
 TAG_TO_SORT = {
     "artist": "artistsort",
@@ -236,59 +244,31 @@ class AudioFile(dict, ImageContainer):
                 return dict.get(self, "~" + key, config.RATINGS.default)
             elif key == "rating":
                 return util.format_rating(self("~#rating"))
-            elif key == "people":
-                join = "\n".join
-                people = filter(None, map(self.__call__, PEOPLE))
-                if not people:
-                    return default
-                people = join(people).split("\n")
-                index = people.index
-                return join([person for (i, person) in enumerate(people)
-                        if index(person) == i])
-            elif key == "peoplesort":
-                join = "\n".join
-                people = filter(None, map(self.__call__, PEOPLE_SORT))
-                people = join(people).split("\n")
-                index = people.index
-                return (join([person for (i, person) in enumerate(people)
-                              if index(person) == i]) or
-                        self("~people", default, connector))
-            elif key == "performers" or key == "performer":
-                performers = {}
-                for key in self.keys():
-                    if key.startswith("performer:"):
-                        role = key.split(":", 1)[1]
-                        for value in self.list(key):
-                            try:
-                                performers[str(value)]
-                            except:
-                                performers[str(value)] = []
-                            performers[str(value)].append(util.title(role))
-                values = []
-                if len(performers) > 0:
-                    for performer in performers:
-                        roles = ''
-                        i = 0
-                        for role in performers[performer]:
-                            if i > 0:
-                                roles += ', '
-                            roles += role
-                            i += 1
-                        values.append("%s (%s)" % (performer, roles))
-                values.extend(self.list("performer"))
-                if not values:
-                    return default
-                return "\n".join(values)
-            elif key == "performerssort" or key == "performersort":
-                values = []
-                for key in self.keys():
-                    if key.startswith("performersort:"):
-                        role = key.split(":", 1)[1]
-                        for value in self.list(key):
-                            values.append("%s (%s)" % (value, role))
-                values.extend(self.list("performersort"))
-                return ("\n".join(values) or
-                        self("~performers", default, connector))
+            elif key == "people" or key == "people:roles":
+                return (self._role_call(key, PEOPLE, "performer", True)
+                        or default)
+            elif key == "peoplesort" or key == "peoplesort:roles":
+                # Ignores non-sort tags if there are any sort tags (e.g. just
+                # returns "B" for {artist=A, performersort=B}).
+                # TODO: figure out the "correct" behavior for mixed sort tags
+                return (self._role_call(key, PEOPLE_SORT, "performersort",
+                                        True)
+                        or self("~" + key.replace("sort", ""),
+                                default, connector))
+            elif (key == "performers" or key == "performer" or
+                    key == "performers:roles" or key == "performer:roles"):
+                return (self._role_call(key,
+                                        prefixed("performer", self.keys()),
+                                        "performer")
+                        or default)
+            elif (key == "performerssort" or key == "performersort" or
+                  key == "performerssort:roles" or
+                  key == "performersort:roles"):
+                return (self._role_call(key,
+                                        prefixed("performersort", self.keys()),
+                                        "performersort")
+                        or self("~" + key.replace("sort", ""), default,
+                                connector))
             elif key == "basename":
                 return os.path.basename(self["~filename"]) or self["~filename"]
             elif key == "dirname":
@@ -380,6 +360,42 @@ class AudioFile(dict, ImageContainer):
             except KeyError:
                 key = SORT_TO_TAG[key]
         return dict.get(self, key, default)
+
+    def _roles(self, tag):
+        """Returns a defaultdict of name => [role, ...]."""
+        roles = collections.defaultdict(list)
+        for key in self.keys():
+            if key.startswith(tag + ":"):
+                role = util.title(key[1 + len(tag):])
+                for name in self.list(key):
+                    roles[name].append(role)
+        for name in self.list(tag):
+            roles[name]
+        return roles
+
+    def _role_call(self, key, sub_keys, role_tag, use_pseudo_roles=False):
+        """Used to implement __call__ for a synthetic key with role support."""
+        names = []
+        names_seen = set()
+        for sub_key in sub_keys:
+            for value in self.list(sub_key):
+                if value not in names_seen:
+                    names_seen.add(value)
+                    names.append(value)
+
+        not_role_tag = lambda t: t != role_tag and t != '~' + role_tag
+        if key.endswith(":roles"):
+            roles = self._roles(role_tag)
+            if use_pseudo_roles:
+                for tag in filter(not_role_tag, sub_keys):
+                    for name in self.list(tag):
+                        if tag in TAG_ROLES:
+                            roles[name].append(TAG_ROLES[tag])
+                        else:
+                            roles[name]
+            return "\n".join(role_desc(n, roles[n]) for n in names)
+        else:
+            return "\n".join(names)
 
     @property
     def lyric_filename(self):
@@ -764,3 +780,11 @@ DUMMY_SONG = AudioFile({
     'title': 'First Track', 'tracknumber': 1,
     'date': '2010-12-31',
 })
+
+
+def role_desc(name, roles):
+    return name if not roles else "%s (%s)" % (name, ", ".join(sorted(roles)))
+
+
+def prefixed(prefix, strings):
+    return filter(lambda s: s == prefix or s.startswith(prefix + ":"), strings)
