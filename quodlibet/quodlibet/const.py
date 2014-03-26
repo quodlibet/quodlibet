@@ -144,6 +144,7 @@ Niklas Janlert
 Nikolai Prokoschenko
 Philipp Müller
 Philipp Weis
+Quincy John Hamilton
 Remi Vanicat
 Robert Muth
 Sebastian Thürrschmidt
