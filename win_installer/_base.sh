@@ -113,11 +113,11 @@ function extract_deps {
     cp -RT "$PYGI"/rtvc9/JPEG/gnome "$DEPS"
     cp -RT "$PYGI"/rtvc9/WebP/gnome "$DEPS"
 
-    cp -RT "$PYGI"/rtvc9/GDK/gnome "$DEPS"
+    cp -RT "$PYGI"/rtvc9/GDKOld/gnome "$DEPS"
     cp -RT "$PYGI"/rtvc9/GDKPixbuf/gnome "$DEPS"
     cp -RT "$PYGI"/rtvc9/ATK/gnome "$DEPS"
     cp -RT "$PYGI"/rtvc9/Pango/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/GTK/gnome "$DEPS"
+    cp -RT "$PYGI"/rtvc9/GTKold/gnome "$DEPS"
 
     cp -RT "$PYGI"/rtvc9/Gstreamer/gnome "$DEPS"
 
