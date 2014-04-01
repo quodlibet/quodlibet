@@ -754,7 +754,7 @@ class AudioFile(dict, ImageContainer):
     def __set_bookmarks(self, marks):
         result = []
         for time_, mark in marks:
-            if time < 0:
+            if time_ < 0:
                 raise ValueError("mark times must be positive")
             result.append(u"%s %s" % (util.format_time(time_), mark))
         result = u"\n".join(result)
