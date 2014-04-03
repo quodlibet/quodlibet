@@ -4,13 +4,14 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk,Pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import qltk
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
 from quodlibet.qltk import SeparatorMenuItem
 from quodlibet.util.collection import Playlist
+
 
 class PlaylistMenu(Gtk.Menu):
     def __init__(self, songs, parent=None):
@@ -47,7 +48,6 @@ class PlaylistMenu(Gtk.Menu):
         else:
             playlist.extend(songs)
         PlaylistsBrowser.changed(playlist)
-
 
     @staticmethod
     def __add_to_new_playlist(songs, parent):
