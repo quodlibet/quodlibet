@@ -333,7 +333,7 @@ class Playlist(Collection, Iterable):
     unquote = staticmethod(unescape_filename)
 
     @classmethod
-    def new(cls, dir, base=_("New Playlist"), library={}):
+    def new(cls, dir, base=_("New Playlist"), library=None):
         if not (dir and os.path.realpath(dir)):
             raise ValueError("Invalid playlist directory '%s'" % (dir,))
         p = Playlist(dir, "", library)
@@ -350,7 +350,7 @@ class Playlist(Collection, Iterable):
         return p
 
     @classmethod
-    def fromsongs(cls, dir, songs, library={}):
+    def fromsongs(cls, dir, songs, library=None):
         if len(songs) == 1:
             title = songs[0].comma("title")
         else:
@@ -457,7 +457,7 @@ class Playlist(Collection, Iterable):
         changed = False
         for song in songs:
             # TODO: document the "library.masked" business
-            if self.library.masked(song):
+            if self.library is not None and self.library.masked(song):
                 while True:
                     try:
                         self._list[self.index(song)] = song("~filename")

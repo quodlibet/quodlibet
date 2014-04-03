@@ -139,6 +139,13 @@ class TPlaylistIntegration(TestCase):
         self.pl.remove_songs([self.SONGS[1]], True)
         self.failUnlessEqual(len(self.pl), len(self.SONGS) - 1)
 
+    def test_remove_no_lib(self):
+        pl = Playlist.new(self._dir, "Foobar")
+        pl.extend(self.SONGS)
+        self.assertTrue(len(pl))
+        pl.remove_songs(self.SONGS, False)
+        self.assertFalse(len(pl))
+
 
 class TPlaylists(TestCase):
     def setUp(self):
