@@ -11,30 +11,43 @@ events.
 
 At the moment the following plugin classes exist:
 
-**Event plugins:**
+Event plugins
+^^^^^^^^^^^^^
 
   * Are instantiated as long as they are enabled or QL is running. They get notified when songs start, get added etc.
   * Example: Last.fm scrobbler that watches what you play and sends the information to last.fm.
 
-**Tag Editing plugins:**
+Tag Editing plugins
+^^^^^^^^^^^^^^^^^^^
 
   * Can extend many parts of the tag editor.
   * Example: Title case your tags.
 
-**GStreamer plugins:**
+GStreamer plugins
+^^^^^^^^^^^^^^^^^
 
   * Can inject elements into the GStreamer pipeline and configure them on the fly.
   * Example: Tempo adjustment to play music/audio books faster.
 
-**Play order plugins:**
+Play order plugins
+^^^^^^^^^^^^^^^^^^
 
   * Can decide which song to play next or what happens if you select one. 
   * Example: Follow cursor, which plays the selected song next.
 
-**Song menu plugins:**
+Songs menu plugins
+^^^^^^^^^^^^^^^^^^
 
   * Can be accessed through the play list context menu and get passed all selected songs.
   * Example: Album art search, to search album art for all selected songs.
+
+Playlist plugins
+^^^^^^^^^^^^^^^^
+
+  * Similar to Songs Menu plugin, and in fact derived on the same base class
+  * Can be accessed through the playlist context menu in the :ref:`Playlist Browser <Playlists>`
+  * Example: remove duplicate songs from a playlist.
+
 
 .. note::
 
@@ -45,7 +58,7 @@ At the moment the following plugin classes exist:
 
 
 Let's make a new plugin!
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 First we start with a minimal event plugin::
 
@@ -148,6 +161,6 @@ we restore the volume.
 
 .. note:: 
 
-    The easies way to get started is to look for `existing plugins 
+    The easiest way to get started is to look for `existing plugins
     <http://code.google.com/p/quodlibet/source/browse/#hg%2Fplugins>`_ that do 
     something similar to what you want.
