@@ -104,7 +104,7 @@ class TPlaylistIntegration(TestCase):
             af.sanitize()
         self.lib.add(self.SONGS)
         self._dir = mkdtemp()
-        self.pl = Playlist.new(self._dir, "Foobar")
+        self.pl = Playlist.new(self._dir, "Foobar", self.lib)
         self.pl.extend(self.SONGS)
 
     def tearDown(self):
@@ -121,22 +121,22 @@ class TPlaylistIntegration(TestCase):
         self.failUnlessEqual(len(self.pl), len(self.SONGS))
 
         # Remove an unduplicated song
-        self.pl.remove_songs([self.SONGS[0]], self.lib)
+        self.pl.remove_songs([self.SONGS[0]])
         self.failUnlessEqual(len(self.pl), len(self.SONGS) - 1)
 
     def test_remove_duplicated_song(self):
         self.failUnlessEqual(self.SONGS[1], self.SONGS[4])
-        self.pl.remove_songs([self.SONGS[1]], self.lib)
+        self.pl.remove_songs([self.SONGS[1]])
         self.failUnlessEqual(len(self.pl), len(self.SONGS) - 2)
 
     def test_remove_multi_duplicated_song(self):
         self.pl.extend([self.SONG, self.SONG])
         self.failUnlessEqual(len(self.pl), 7)
-        self.pl.remove_songs([self.SONG], self.lib, False)
+        self.pl.remove_songs([self.SONG], False)
         self.failUnlessEqual(len(self.pl), 7 - 2 - 2)
 
     def test_remove_duplicated_song_leave_dupes(self):
-        self.pl.remove_songs([self.SONGS[1]], self.lib, True)
+        self.pl.remove_songs([self.SONGS[1]], True)
         self.failUnlessEqual(len(self.pl), len(self.SONGS) - 1)
 
 

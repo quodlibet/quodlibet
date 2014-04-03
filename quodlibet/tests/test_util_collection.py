@@ -287,16 +287,16 @@ class TPlaylist(TestCase):
             # FIXME: masking isn't properly implemented on Windows
             return
         # playlists can contain songs and paths for masked handling..
-        pl = Playlist(self.temp, "playlist")
+        lib = FileLibrary("foobar")
+        pl = Playlist(self.temp, "playlist", lib)
         song = Fakesong({"date": "2038", "~filename": "/fake"})
         song.sanitize()
-        lib = FileLibrary("foobar")
         lib.add([song])
 
         # mask and update
         lib.mask("/")
         pl.append(song)
-        pl.remove_songs([song], lib)
+        pl.remove_songs([song])
         self.failUnless("/fake" in pl)
 
         pl.extend(self.TWO_SONGS)

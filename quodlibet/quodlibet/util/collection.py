@@ -336,7 +336,7 @@ class Playlist(Collection, Iterable):
     def new(cls, dir, base=_("New Playlist"), library={}):
         if not (dir and os.path.realpath(dir)):
             raise ValueError("Invalid playlist directory '%s'" % (dir,))
-        p = Playlist(dir, "", library=library)
+        p = Playlist(dir, "", library)
         i = 0
         try:
             p.rename(base)
@@ -360,7 +360,7 @@ class Playlist(Collection, Iterable):
                 len(songs) - 1) % (
                     {'title': songs[0].comma("title"),
                      'count': len(songs) - 1})
-        playlist = cls.new(dir, title, library=library)
+        playlist = cls.new(dir, title, library)
         playlist.extend(songs)
         return playlist
 
@@ -411,6 +411,7 @@ class Playlist(Collection, Iterable):
 
         self.name = name
         self.dir = dir
+        self.library = library
         self._list = HashedList()
         basename = self.quote(name)
         try:
@@ -449,14 +450,14 @@ class Playlist(Collection, Iterable):
                 changed = True
         return changed
 
-    def remove_songs(self, songs, library, leave_dupes=False):
+    def remove_songs(self, songs, leave_dupes=False):
         """Removes `songs` from this playlist if they are there,
          removing only the first reference if `leave_dupes` is True
         """
         changed = False
         for song in songs:
             # TODO: document the "library.masked" business
-            if library.masked(song):
+            if self.library.masked(song):
                 while True:
                     try:
                         self._list[self.index(song)] = song("~filename")

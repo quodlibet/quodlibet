@@ -239,13 +239,13 @@ class SongsMenu(Gtk.Menu):
 
             # FIXME: Two things are now importing browsers, so we need
             # some kind of inversion of control here.
-            from quodlibet import browsers
+            from quodlibet.browsers.playlists.menu import PlaylistMenu
             try:
-                submenu = browsers.playlists.main.Menu(songs, parent)
+                submenu = PlaylistMenu(songs, parent)
             except AttributeError as e:
                 print_w("Couldn't get Playlists menu: %s" % e)
             else:
-                b = qltk.MenuItem(_("_Add to Playlist"), Gtk.STOCK_ADD)
+                b = qltk.MenuItem(_("Play_lists"), Gtk.STOCK_ADD)
                 b.set_sensitive(can_add)
                 b.set_submenu(submenu)
                 self.append(b)

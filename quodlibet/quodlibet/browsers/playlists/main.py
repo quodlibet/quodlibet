@@ -22,50 +22,7 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.util.collection import Playlist
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.qltk.x import ScrolledWindow, Alignment, SeparatorMenuItem
-from quodlibet.util.dprint import print_d
-
-
-class Menu(Gtk.Menu):
-    def __init__(self, songs, parent=None):
-        super(Menu, self).__init__()
-        i = Gtk.MenuItem(label=_("_New Playlist"), use_underline=True)
-        i.connect_object(
-            'activate', self.__add_to_playlist, None, songs, parent)
-        self.append(i)
-        self.append(SeparatorMenuItem())
-        self.set_size_request(int(i.size_request().width * 2), -1)
-
-        for playlist in PlaylistsBrowser.playlists():
-            name = playlist.name
-            i = Gtk.CheckMenuItem(name)
-            some, all = playlist.has_songs(songs)
-            i.set_active(some)
-            i.set_inconsistent(some and not all)
-            i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
-            i.connect_object(
-                'activate', self.__add_to_playlist, playlist, songs, parent)
-            self.append(i)
-
-    def __add_to_playlist(playlist, songs, parent):
-        if playlist is None:
-            if len(songs) == 1:
-                title = songs[0].comma("title")
-            else:
-                title = ngettext(
-                    "%(title)s and %(count)d more",
-                    "%(title)s and %(count)d more",
-                    len(songs) - 1) % {
-                        'title': songs[0].comma("title"),
-                        'count': len(songs) - 1
-                    }
-            title = GetPlaylistName(qltk.get_top_parent(parent)).run(title)
-            if title is None:
-                return
-            playlist = Playlist.new(PLAYLISTS, title)
-        playlist.extend(songs)
-        PlaylistsBrowser.changed(playlist)
-    __add_to_playlist = staticmethod(__add_to_playlist)
+from quodlibet.qltk.x import ScrolledWindow, Alignment
 
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
@@ -124,7 +81,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
     @classmethod
     def __removed(klass, library, songs):
         for playlist in klass.playlists():
-            if playlist.remove_songs(songs, library):
+            if playlist.remove_songs(songs):
                 PlaylistsBrowser.changed(playlist)
 
     @classmethod

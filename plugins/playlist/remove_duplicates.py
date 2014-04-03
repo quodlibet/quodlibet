@@ -38,7 +38,7 @@ class RemoveDuplicates(PlaylistPlugin):
             return
         dialog = ConfirmRemoveDuplicatesDialog(self, playlist, len(dupes))
         if dialog.run() == Gtk.ResponseType.YES:
-            playlist.remove_songs(dupes, self._library, True)
+            playlist.remove_songs(dupes, True)
             return True
         return False
 
