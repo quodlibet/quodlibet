@@ -274,14 +274,16 @@ def map_numeric_op(tag, op, value, time_=None):
 
     # get the biggest float/int
     max_val = ""
-    for i in xrange(1, len(value) + 1):
+    for i in xrange(len(value) + 1, 1, -1):
+        part = value[:i]
         try:
-            float(value[:i])
-            max_val = value[:i]
+            float(part)
         except ValueError:
+            pass
+        else:
+            max_val = part
             break
-
-    if not max_val:
+    else:
         raise ParseError("No numeric value %r" % value)
 
     unit = value[len(max_val):].strip()
