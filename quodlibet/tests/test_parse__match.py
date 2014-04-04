@@ -56,9 +56,10 @@ class TNumericOp(TestCase):
         self.failUnless(o((3600 * 10) + (5 * 60) + 10, v))
 
     def test_float(self):
-        o, v = map_numeric_op("rating", ">", "0.5")
-        self.failUnless(o(0.6, v))
-        self.failIf(o(0.5, v))
+        for variant in ["0.5", ".5", "+.5", "+.5e0"]:
+            o, v = map_numeric_op("rating", ">", variant)
+            self.failUnless(o(0.6, v))
+            self.failIf(o(0.5, v))
 
     def test_size(self):
         o, v = map_numeric_op("filesize", ">", "10MB")
