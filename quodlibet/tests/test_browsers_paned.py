@@ -117,6 +117,11 @@ class TPanedBrowser(TestCase):
         self._wait()
         self.failUnlessEqual(self.emit_count, 0)
 
+    def test_numeric_config_search(self):
+        config.set("browsers", "panes", "~#track")
+        self.bar.refresh_panes()
+        self.bar.filter_text("foobar")
+
     def test_restore_entry_text(self):
         self.bar.filter_text("foobar")
         self.bar.save()

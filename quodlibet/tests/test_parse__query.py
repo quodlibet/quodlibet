@@ -293,6 +293,9 @@ class TQuery(TestCase):
         self.failUnless(Query(u"filename=foü.ogg").search(self.s3))
         self.failUnless(Query(u"filename=öä").search(self.s3))
 
+    def test_star_numeric(self):
+        self.assertRaises(ValueError, Query, u"foobar", star=["~#mtime"])
+
 
 class TQuery_is_valid_color(TestCase):
     def test_red(self):
