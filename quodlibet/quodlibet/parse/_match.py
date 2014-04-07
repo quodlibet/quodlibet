@@ -165,6 +165,8 @@ class Tag(object):
         names = [Tag.ABBRS.get(n.lower(), n.lower()) for n in names]
         for name in names:
             if name[:1] == "~":
+                if name.startswith("~#"):
+                    raise ValueError("numeric tags not supported")
                 if name in FS_KEYS:
                     self.__fs.append(name)
                 else:

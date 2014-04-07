@@ -232,7 +232,8 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
 
         self.__star = {}
         for p in self._panes:
-            self.__star.update(dict.fromkeys(p.tags))
+            tags = [t for t in p.tags if not t.startswith("~#")]
+            self.__star.update(dict.fromkeys(tags))
 
         self.set_wide_mode(config.getboolean("browsers", "pane_wide_mode"))
 
