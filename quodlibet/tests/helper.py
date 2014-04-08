@@ -8,9 +8,55 @@ import contextlib
 import StringIO
 import sys
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk import find_widgets
+
+
+def _send_key_event(widget, **kwargs):
+    """Returns True if the event was handled"""
+
+    assert widget.get_realized()
+    assert widget.get_visible()
+
+    ev = Gdk.Event()
+    ev.any.window = widget.get_window()
+
+    for key, value in kwargs.items():
+        setattr(ev.key, key, value)
+
+    ev.type = Gdk.EventType.KEY_PRESS
+    handled = widget.event(ev)
+    ev.type = Gdk.EventType.KEY_RELEASE
+    handled |= widget.event(ev)
+    return handled
+
+
+def send_key_click(widget, accel, recursive=False):
+    """Send a key press and release event to a widget or
+    to all widgets in the hierarchy if recursive is True.
+
+    The widget has to be visible for this to work, so this is needed:
+
+    with visible(widget):
+        send_key_click(widget, "<ctrl>a")
+
+    Returns how often the event was handled.
+    """
+
+    key, mods = Gtk.accelerator_parse(accel)
+    assert key is not None
+    assert mods is not None
+
+    assert isinstance(widget, Gtk.Widget)
+    handled = _send_key_event(widget, state=mods, keyval=key)
+
+    if recursive:
+        if isinstance(widget, Gtk.Container):
+            for child in widget.get_children():
+                handled += send_key_click(child, accel, recursive)
+
+    return handled
 
 
 @contextlib.contextmanager
