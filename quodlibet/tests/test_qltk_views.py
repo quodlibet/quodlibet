@@ -3,6 +3,8 @@ from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn
 import quodlibet.config
 from gi.repository import Gtk
 
+from helper import send_key_click, visible
+
 
 class THintedTreeView(TestCase):
     def setUp(self):
@@ -33,6 +35,11 @@ class TBaseView(TestCase):
 
         self.c.remove_paths([self.m[0].path])
         self.failIf(len(self.m))
+
+    def test_key_events(self):
+        with visible(self.c):
+            send_key_click(self.c, "<ctrl>Right")
+            send_key_click(self.c, "<ctrl>Left")
 
     def test_select_func(self):
         self.m.append(row=["foo"])
