@@ -115,31 +115,28 @@ def realized(widget):
         do_something(view)
     """
 
-    if isinstance(widget, Gtk.Window):
-        toplevel = widget
+    own_window = False
+    toplevel = widget.get_toplevel()
+    if not isinstance(toplevel, Gtk.Window):
+        window = Gtk.Window()
+        window.add(widget)
+        own_window = True
     else:
-        toplevel = widget.get_parent_window()
-
-    new_window = None
-
-    if toplevel is None:
-        toplevel = Gtk.Window()
-        toplevel.add(widget)
-        new_window = toplevel
+        window = toplevel
 
     # realize all widgets without showing them
-    for sub in find_widgets(toplevel, Gtk.Widget):
+    for sub in find_widgets(window, Gtk.Widget):
         sub.realize()
     widget.realize()
     while Gtk.events_pending():
         Gtk.main_iteration()
     assert widget.get_realized()
-    assert toplevel.get_realized()
+    assert window.get_realized()
     yield widget
 
-    if new_window is not None:
-        new_window.remove(widget)
-        new_window.destroy()
+    if own_window:
+        window.remove(widget)
+        window.destroy()
 
     while Gtk.events_pending():
         Gtk.main_iteration()
@@ -147,21 +144,21 @@ def realized(widget):
 
 @contextlib.contextmanager
 def visible(widget, width=None, height=None):
-    """Makes sure the widget is realized.
+    """Makes sure the widget is visible.
 
     view = Gtk.TreeView()
     with visible(view):
         do_something(view)
     """
 
-    if isinstance(widget, Gtk.Window):
-        toplevel = widget
-    else:
-        toplevel = widget.get_parent_window()
-
-    if toplevel is None:
+    own_window = False
+    toplevel = widget.get_toplevel()
+    if not isinstance(toplevel, Gtk.Window):
         window = Gtk.Window()
         window.add(widget)
+        own_window = True
+    else:
+        window = toplevel
 
     if width is not None and height is not None:
         window.resize(width, height)
@@ -176,7 +173,7 @@ def visible(widget, width=None, height=None):
         Gtk.main_iteration()
     window.hide()
 
-    if toplevel is None:
+    if own_window:
         window.remove(widget)
         window.destroy()
 
