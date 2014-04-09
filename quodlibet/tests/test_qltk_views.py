@@ -137,6 +137,8 @@ class TBaseView(TestCase):
 
         # realized now, so the first path
         with realized(self.c):
+            x, y = self.c.convert_bin_window_to_widget_coords(0, 0)
+
             self.c.unset_rows_drag_dest()
             self.c.set_drag_dest(x, y, into_only=False)
             path, pos = self.c.get_drag_dest_row()
