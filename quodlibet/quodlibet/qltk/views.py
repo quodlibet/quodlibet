@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import contextlib
+from cStringIO import StringIO
 
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
@@ -331,7 +332,10 @@ class DragScroll(object):
             if self.__scroll_length < 2000 * ref:
                 self.__scroll_length += abs(dist)
 
-            self.scroll_to_point(-1, y + dist)
+            try:
+                self.scroll_to_point(-1, y + dist)
+            except OverflowError:
+                pass
             self.set_drag_dest(wx, wy)
             # we have to re-add the timeout.. otherwise they could add up
             # because scroll can last longer than 50ms
@@ -369,7 +373,7 @@ class DragScroll(object):
         end = visible_rect.height + start
 
         # Get the font height as size reference
-        reference = self.create_pango_layout("").get_pixel_size()[1]
+        reference = max(self.create_pango_layout("").get_pixel_size()[1], 1)
 
         # If the drag is in the scroll area, adjust the speed
         scroll_offset = int(reference * 3)
@@ -377,7 +381,12 @@ class DragScroll(object):
         in_lower_scroll = (y > end - scroll_offset)
 
         # thanks TI200
-        accel = lambda x: int(1.1 ** (x * 12 / reference)) - (x / reference)
+        def accel(x):
+            try:
+                return int(1.1 ** (x * 12 / reference)) - (x / reference)
+            except ValueError:
+                return 0
+
         if in_lower_scroll:
             diff = accel(y - end + scroll_offset)
         elif in_upper_scroll:
@@ -557,6 +566,31 @@ class BaseView(Gtk.TreeView):
             column.set_sort_indicator(value)
 
 
+def _get_surface_size(surface):
+    """Returns (width, height) of a surface or None."""
+
+    # X11
+    try:
+        return surface.get_width(), surface.get_height()
+    except AttributeError:
+        pass
+
+    # Everything else: pycairo doesn't expose get_image() so we have
+    # do it the ugly way through png
+    fobj = StringIO()
+    try:
+        surface.write_to_png(fobj)
+        fobj.seek(0, 0)
+        image_surface = cairo.ImageSurface.create_from_png(fobj)
+    except EnvironmentError:
+        return
+    else:
+        try:
+            return image_surface.get_width(), image_surface.get_height()
+        except AttributeError:
+            pass
+
+
 class DragIconTreeView(BaseView):
     """TreeView that sets the selected rows as drag icons
 
@@ -593,8 +627,11 @@ class DragIconTreeView(BaseView):
         if not icons:
             return
 
-        width = max([s.get_width() for s in icons])
-        height = sum([s.get_height() for s in icons])
+        sizes = [_get_surface_size(s) for s in icons]
+        if None in sizes:
+            return
+        width = max([s[0] for s in sizes])
+        height = sum([s[1] for s in sizes])
 
         layout = None
         if len(paths) > max_rows:
@@ -617,10 +654,8 @@ class DragIconTreeView(BaseView):
 
         # render rows
         count_y = 0
-        for icon in icons:
+        for icon, (icon_width, icon_height) in zip(icons, sizes):
             ctx.save()
-            icon_width = icon.get_width()
-            icon_height = icon.get_height()
             ctx.set_source_surface(icon, 2, count_y + 2)
             ctx.rectangle(2, count_y + 2, icon_width - 4, icon_height - 4)
             ctx.clip()
