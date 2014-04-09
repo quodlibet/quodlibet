@@ -568,23 +568,37 @@ class DragIconTreeView(BaseView):
         self.connect('drag-begin', self.__begin)
 
     def __begin(self, view, drag_ctx):
-        model, paths = self.get_selection().get_selected_rows()
+        model, paths = view.get_selection().get_selected_rows()
+        surface = self.create_multi_row_drag_icon(paths, max_rows=3)
+        if surface is not None:
+            Gtk.drag_set_icon_surface(drag_ctx, surface)
+
+    def create_multi_row_drag_icon(self, paths, max_rows):
+        """Similar to create_row_drag_icon() but creates a drag icon
+        for multiple paths or None.
+
+        The resulting surface will draw max_rows rows and point out
+        if there are more rows selected.
+        """
+
         if not paths:
             return
 
-        MAX = 3
+        if len(paths) == 1:
+            return self.create_row_drag_icon(paths[0])
 
-        icons = map(self.create_row_drag_icon, paths[:MAX])
-        if len(icons) == 1:
-            Gtk.drag_set_icon_surface(drag_ctx, icons[0])
+        # create_row_drag_icon can return None
+        icons = [self.create_row_drag_icon(p) for p in paths[:max_rows]]
+        icons = [i for i in icons if i is not None]
+        if not icons:
             return
 
         width = max([s.get_width() for s in icons])
         height = sum([s.get_height() for s in icons])
 
         layout = None
-        if len(paths) > MAX:
-            more = _("and %d more...") % (len(paths) - MAX)
+        if len(paths) > max_rows:
+            more = _("and %d more...") % (len(paths) - max_rows)
             more = "<i>%s</i>" % more
             layout = self.create_pango_layout("")
             layout.set_markup(more)
@@ -623,7 +637,7 @@ class DragIconTreeView(BaseView):
         Gtk.render_line(style_ctx, ctx, width - 1, height - 1, width - 1, 0)
         Gtk.render_line(style_ctx, ctx, width - 1, 0, 0, 0)
 
-        Gtk.drag_set_icon_surface(drag_ctx, surface)
+        return surface
 
 
 class MultiDragTreeView(BaseView):

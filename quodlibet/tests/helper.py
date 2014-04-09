@@ -13,7 +13,7 @@ from gi.repository import Gtk, Gdk
 from quodlibet.qltk import find_widgets
 
 
-def _send_key_event(widget, **kwargs):
+def _send_key_click_event(widget, **kwargs):
     """Returns True if the event was handled"""
 
     assert widget.get_realized()
@@ -23,11 +23,12 @@ def _send_key_event(widget, **kwargs):
     ev.any.window = widget.get_window()
 
     for key, value in kwargs.items():
+        assert hasattr(ev.key, key)
         setattr(ev.key, key, value)
 
-    ev.type = Gdk.EventType.KEY_PRESS
+    ev.any.type = Gdk.EventType.KEY_PRESS
     handled = widget.event(ev)
-    ev.type = Gdk.EventType.KEY_RELEASE
+    ev.any.type = Gdk.EventType.KEY_RELEASE
     handled |= widget.event(ev)
     return handled
 
@@ -49,12 +50,58 @@ def send_key_click(widget, accel, recursive=False):
     assert mods is not None
 
     assert isinstance(widget, Gtk.Widget)
-    handled = _send_key_event(widget, state=mods, keyval=key)
+    handled = _send_key_click_event(widget, state=mods, keyval=key)
 
     if recursive:
         if isinstance(widget, Gtk.Container):
             for child in widget.get_children():
                 handled += send_key_click(child, accel, recursive)
+
+    return handled
+
+
+def _send_button_click_event(widget, **kwargs):
+    """Returns True if the event was handled"""
+
+    assert widget.get_realized()
+    assert widget.get_visible()
+
+    ev = Gdk.Event()
+    window = widget.get_window()
+    ev.any.window = window
+
+    ev.button.x = window.get_width() / 2.0
+    ev.button.y = window.get_height() / 2.0
+
+    for key, value in kwargs.items():
+        assert hasattr(ev.button, key)
+        setattr(ev.button, key, value)
+
+    ev.any.type = Gdk.EventType.BUTTON_PRESS
+    handled = widget.event(ev)
+    ev.any.type = Gdk.EventType.BUTTON_RELEASE
+    handled |= widget.event(ev)
+    return handled
+
+
+def send_button_click(widget, button, ctrl=False, shift=False,
+                      recursive=False):
+    """See send_key_click_event"""
+
+    state = Gdk.ModifierType(0)
+    if ctrl:
+        state |= Gdk.ModifierType.CONTROL_MASK
+    if shift:
+        state |= Gdk.ModifierType.SHIFT_MASK
+
+    assert isinstance(widget, Gtk.Widget)
+    handled = _send_button_click_event(widget, button=button, state=state)
+
+    if recursive:
+        if isinstance(widget, Gtk.Container):
+            for child in widget.get_children():
+                handled += send_button_click(
+                    child, button, ctrl, shift, recursive)
 
     return handled
 
