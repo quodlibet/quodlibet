@@ -320,9 +320,13 @@ def _normalize_darwin_path(filename, strict=False, _cache={}, _statcache={}):
     return filename
 
 
-def _normalize_path(filename):
-    """Normalize a path on Windows / Linux"""
-
+def _normalize_path(filename, canonicalise=False):
+    """Normalize a path on Windows / Linux
+    If `canonicalise` is True, dereference symlinks etc
+    by calling `os.path.realpath`
+    """
+    if canonicalise:
+        filename = os.path.realpath(filename)
     filename = os.path.normpath(filename)
     return os.path.normcase(filename)
 

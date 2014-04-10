@@ -527,7 +527,7 @@ class AudioFile(dict, ImageContainer):
 
         if not os.path.exists(newname):
             shutil.move(self['~filename'], newname)
-        elif normalize_path(os.path.realpath(newname)) != self['~filename']:
+        elif normalize_path(newname, canonicalise=True) != self['~filename']:
             raise ValueError
 
         self.sanitize(newname)

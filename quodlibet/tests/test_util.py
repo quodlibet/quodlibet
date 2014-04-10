@@ -1,3 +1,4 @@
+import uuid
 from quodlibet.config import HardCodedRatingsPrefs
 from quodlibet.util.path import *
 from quodlibet.util.string import decode, encode
@@ -11,7 +12,6 @@ import os
 import re
 from quodlibet import util
 from quodlibet import config
-from quodlibet import const
 from quodlibet.util import format_time_long as f_t_l
 
 
@@ -696,6 +696,30 @@ class TNormalizePath(TestCase):
             self.failUnlessEqual(norm(os.path.join(name, "foo", "..")), name)
         finally:
             os.rmdir(name)
+
+    def test_canonicalise(self):
+        from quodlibet.util.path import _normalize_path as norm
+
+        f, path = tempfile.mkstemp()
+        link = None
+        if not is_win:
+            link = str(uuid.uuid4())
+            os.symlink(path, link)
+        try:
+            self.failUnlessEqual(norm(path, canonicalise=True), path)
+            self.failUnlessEqual(norm(os.path.join(path, "foo", ".."), True),
+                                 path)
+            if link:
+                self.failUnlessEqual(norm(link, True), path)
+                # A symlink shouldn't be resolved unless asked for
+                self.failIfEqual(norm(link, False), path)
+                # And the other behaviour should also work
+                unnormalised_path = os.path.join(link, "foo", "..")
+                self.failUnlessEqual(norm(unnormalised_path, True), path)
+        finally:
+            if link:
+                os.remove(link)
+            os.remove(path)
 
 
 class Tatomic_save(TestCase):

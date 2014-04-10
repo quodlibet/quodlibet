@@ -156,8 +156,8 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
     def __popup_menu(self, view, fs):
 
         # get all songs for the selection
-        filenames = fs.get_selected_paths()
-        filenames = map(normalize_path, map(os.path.realpath, filenames))
+        filenames = [normalize_path(f, canonicalise=True)
+                     for f in fs.get_selected_paths()]
         maybe_songs = [self.__library.get(f) for f in filenames]
         songs = [s for s in maybe_songs if s]
 
