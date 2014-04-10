@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-28 21:19+0100\n"
+"POT-Creation-Date: 2014-04-10 09:21+0200\n"
 "PO-Revision-Date: 2013-07-20 22:35+0100\n"
 "Last-Translator: Yasushi Iwata <yasusii@lowlife.jp>\n"
 "Language-Team: Japanese\n"
@@ -241,69 +241,69 @@ msgstr ""
 msgid "Print tags based on the given pattern"
 msgstr ""
 
-#: ../operon.py:699
+#: ../operon.py:706
 #, fuzzy
 msgid "Display help information"
 msgstr "基本的な使い方を表示"
 
-#: ../operon.py:727
+#: ../operon.py:734
 #, fuzzy, python-format
 msgid "'%s' is not a valid column name (%s)."
 msgstr "指定された場所 <b>%s</b> にアクセスできません。"
 
-#: ../quodlibet/browsers/albums/main.py:81
+#: ../quodlibet/browsers/albums/main.py:146
 #, fuzzy
 msgid "_Title"
 msgstr "タイトル"
 
-#: ../quodlibet/browsers/albums/main.py:82 ../quodlibet/qltk/prefs.py:45
+#: ../quodlibet/browsers/albums/main.py:147 ../quodlibet/qltk/prefs.py:45
 msgid "_Artist"
 msgstr "アーティスト(_A)"
 
-#: ../quodlibet/browsers/albums/main.py:83 ../quodlibet/qltk/prefs.py:50
+#: ../quodlibet/browsers/albums/main.py:148 ../quodlibet/qltk/prefs.py:50
 msgid "_Date"
 msgstr "日付(_D)"
 
-#: ../quodlibet/browsers/albums/main.py:84 ../quodlibet/qltk/prefs.py:49
+#: ../quodlibet/browsers/albums/main.py:149 ../quodlibet/qltk/prefs.py:49
 #, fuzzy
 msgid "_Genre"
 msgstr "ジャンル"
 
-#: ../quodlibet/browsers/albums/main.py:85 ../quodlibet/qltk/prefs.py:54
+#: ../quodlibet/browsers/albums/main.py:150 ../quodlibet/qltk/prefs.py:54
 #: ../quodlibet/qltk/ratingsmenu.py:63
 msgid "_Rating"
 msgstr "レイティング(_R)"
 
-#: ../quodlibet/browsers/albums/main.py:90
+#: ../quodlibet/browsers/albums/main.py:155
 #, fuzzy
 msgid "Sort _by..."
 msgstr "日付で並び換え"
 
-#: ../quodlibet/browsers/albums/main.py:111
+#: ../quodlibet/browsers/albums/main.py:176
 #: ../quodlibet/browsers/paned/prefs.py:155
 #, fuzzy
 msgid "_Preferences"
 msgstr "設定"
 
-#: ../quodlibet/browsers/albums/main.py:323
+#: ../quodlibet/browsers/albums/main.py:347
 msgid "Album List"
 msgstr "アルバムリスト"
 
-#: ../quodlibet/browsers/albums/main.py:324
+#: ../quodlibet/browsers/albums/main.py:348
 msgid "_Album List"
 msgstr "アルバムリスト(_A)"
 
-#: ../quodlibet/browsers/albums/main.py:439
+#: ../quodlibet/browsers/albums/main.py:463
 msgid "All Albums"
 msgstr "全てのアルバム"
 
-#: ../quodlibet/browsers/albums/main.py:440
+#: ../quodlibet/browsers/albums/main.py:464
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%dアルバム"
 
-#: ../quodlibet/browsers/albums/main.py:602
+#: ../quodlibet/browsers/albums/main.py:626
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -314,48 +314,48 @@ msgstr[0] "アルバムのカバーを表示する(_c)"
 msgid "Songs not in an album"
 msgstr "どのアルバムにも属さない曲"
 
-#: ../quodlibet/browsers/albums/prefs.py:61
+#: ../quodlibet/browsers/albums/prefs.py:62
 #: ../quodlibet/qltk/information.py:374 ../quodlibet/util/collection.py:233
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%dトラック"
 
-#: ../quodlibet/browsers/albums/prefs.py:62
+#: ../quodlibet/browsers/albums/prefs.py:63
 #: ../quodlibet/qltk/information.py:372 ../quodlibet/util/collection.py:237
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
 msgstr[0] "%dディスク"
 
-#: ../quodlibet/browsers/albums/prefs.py:64
+#: ../quodlibet/browsers/albums/prefs.py:65
 #, fuzzy
 msgid "An Example Album"
 msgstr "全てのアルバム"
 
-#: ../quodlibet/browsers/albums/prefs.py:72
+#: ../quodlibet/browsers/albums/prefs.py:73
 msgid "Album List Preferences"
 msgstr "アルバムリストの設定"
 
-#: ../quodlibet/browsers/albums/prefs.py:81
+#: ../quodlibet/browsers/albums/prefs.py:82
 msgid "Show album _covers"
 msgstr "アルバムのカバーを表示する(_c)"
 
-#: ../quodlibet/browsers/albums/prefs.py:88
+#: ../quodlibet/browsers/albums/prefs.py:89
 msgid "Inline _search includes people"
 msgstr ""
 
-#: ../quodlibet/browsers/albums/prefs.py:92
+#: ../quodlibet/browsers/albums/prefs.py:93
 #, fuzzy
 msgid "Options"
 msgstr "場所"
 
-#: ../quodlibet/browsers/albums/prefs.py:113
+#: ../quodlibet/browsers/albums/prefs.py:114
 msgid "Album Display"
 msgstr "アルバムの表示"
 
-#: ../quodlibet/browsers/albums/prefs.py:137
-#: ../quodlibet/browsers/albums/prefs.py:142
+#: ../quodlibet/browsers/albums/prefs.py:138
+#: ../quodlibet/browsers/albums/prefs.py:143
 #: ../quodlibet/qltk/tagsfrompath.py:162 ../quodlibet/qltk/textedit.py:88
 #: ../quodlibet/util/__init__.py:436
 msgid "Invalid pattern"
@@ -522,11 +522,11 @@ msgstr ""
 "%s"
 
 #: ../quodlibet/browsers/iradio.py:213 ../quodlibet/browsers/iradio.py:226
-#: ../quodlibet/browsers/iradio.py:820
+#: ../quodlibet/browsers/iradio.py:825
 msgid "Unable to add station"
 msgstr "ラジオ局を追加できません"
 
-#: ../quodlibet/browsers/iradio.py:237 ../quodlibet/browsers/iradio.py:481
+#: ../quodlibet/browsers/iradio.py:237 ../quodlibet/browsers/iradio.py:486
 msgid "Internet Radio"
 msgstr "インターネットラジオ"
 
@@ -676,66 +676,66 @@ msgstr ""
 msgid "Rock"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:447
+#: ../quodlibet/browsers/iradio.py:448
 msgid "Would you like to load a list of popular radio stations?"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:453
+#: ../quodlibet/browsers/iradio.py:454
 #, fuzzy
 msgid "_Load Stations"
 msgstr "新規ラジオ局(_N)"
 
-#: ../quodlibet/browsers/iradio.py:482
+#: ../quodlibet/browsers/iradio.py:487
 msgid "_Internet Radio"
 msgstr "インターネットラジオ(_I)"
 
-#: ../quodlibet/browsers/iradio.py:545
+#: ../quodlibet/browsers/iradio.py:550
 #, fuzzy
 msgid "_New Station..."
 msgstr "新規ラジオ局(_N)"
 
-#: ../quodlibet/browsers/iradio.py:548
+#: ../quodlibet/browsers/iradio.py:553
 #, fuzzy
 msgid "_Update Stations"
 msgstr "新規ラジオ局(_N)"
 
-#: ../quodlibet/browsers/iradio.py:573
+#: ../quodlibet/browsers/iradio.py:578
 #, fuzzy
 msgid "All Stations"
 msgstr "新規ラジオ局"
 
-#: ../quodlibet/browsers/iradio.py:577
+#: ../quodlibet/browsers/iradio.py:582
 msgid "Favorites"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:585
+#: ../quodlibet/browsers/iradio.py:590
 msgid "No Category"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:812
+#: ../quodlibet/browsers/iradio.py:817
 msgid "No stations found"
 msgstr "ラジオ局が見つかりません"
 
-#: ../quodlibet/browsers/iradio.py:813
+#: ../quodlibet/browsers/iradio.py:818
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "%sにインターネットラジオ局が見つかりません。"
 
-#: ../quodlibet/browsers/iradio.py:821
+#: ../quodlibet/browsers/iradio.py:826
 msgid "All stations listed are already in your library."
 msgstr "一覧にあるラジオ局は全てライブラリに登録されています。"
 
-#: ../quodlibet/browsers/iradio.py:842
+#: ../quodlibet/browsers/iradio.py:847
 #, fuzzy
 msgid "Remove from Favorites"
 msgstr "プレイリストから削除(_R)"
 
-#: ../quodlibet/browsers/iradio.py:848
+#: ../quodlibet/browsers/iradio.py:853
 #, fuzzy
 msgid "Add to Favorites"
 msgstr "プレイリストへ追加(_A)"
 
-#: ../quodlibet/browsers/iradio.py:940
+#: ../quodlibet/browsers/iradio.py:945
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -1088,28 +1088,23 @@ msgstr "同名のファイルが存在します"
 msgid "Overwrite <b>%s</b>?"
 msgstr "<b>%s</b>を上書きしますか？"
 
-#: ../quodlibet/formats/__init__.py:70
-#, python-format
-msgid "Error loading %r"
-msgstr ""
-
-#: ../quodlibet/library/libraries.py:625 ../quodlibet/library/libraries.py:635
-#: ../quodlibet/library/libraries.py:676 ../quodlibet/qltk/information.py:282
+#: ../quodlibet/library/libraries.py:626 ../quodlibet/library/libraries.py:636
+#: ../quodlibet/library/libraries.py:677 ../quodlibet/qltk/information.py:282
 #: ../quodlibet/qltk/prefs.py:591 ../quodlibet/util/library.py:59
 msgid "Library"
 msgstr "ライブラリ"
 
-#: ../quodlibet/library/libraries.py:625
+#: ../quodlibet/library/libraries.py:626
 #, fuzzy
 msgid "Checking mount points"
 msgstr "マウントポイントを確認中"
 
-#: ../quodlibet/library/libraries.py:635
+#: ../quodlibet/library/libraries.py:636
 #, fuzzy
 msgid "Scanning library"
 msgstr "ソングライブラリ読み込み中"
 
-#: ../quodlibet/library/libraries.py:675
+#: ../quodlibet/library/libraries.py:676
 #, fuzzy, python-format
 msgid "Scanning %s"
 msgstr "%sをチェックしています"
@@ -1222,223 +1217,223 @@ msgstr ""
 msgid "Quod Libet is already running."
 msgstr "Quod Libet は既に起動しています。"
 
-#: ../quodlibet.py:204
+#: ../quodlibet.py:205
 msgid "No song is currently playing."
 msgstr "現在再生中の曲はありません。"
 
-#: ../quodlibet.py:248
+#: ../quodlibet.py:249
 msgid "Quod Libet is not running."
 msgstr "Quod Libetが起動していません。"
 
-#: ../quodlibet.py:259
+#: ../quodlibet.py:260
 #, python-format
 msgid "Unable to write to %s. Removing it."
 msgstr "%sに書き込みできないため、削除します。"
 
-#: ../quodlibet.py:285
+#: ../quodlibet.py:286
 msgid "a music library and player"
 msgstr "ミュージックライブラリ/プレイヤー"
 
-#: ../quodlibet.py:286
+#: ../quodlibet.py:287
 #, fuzzy
 msgid "[option]"
 msgstr "場所"
 
-#: ../quodlibet.py:288
+#: ../quodlibet.py:289
 msgid "Print the playing song and exit"
 msgstr "再生中の曲名を表示して終了"
 
-#: ../quodlibet.py:289
+#: ../quodlibet.py:290
 msgid "Begin playing immediately"
 msgstr "直ちに再生開始"
 
-#: ../quodlibet.py:292
+#: ../quodlibet.py:293
 msgid "Jump to next song"
 msgstr "次の曲へジャンプ"
 
-#: ../quodlibet.py:294
+#: ../quodlibet.py:295
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
 
-#: ../quodlibet.py:295
+#: ../quodlibet.py:296
 msgid "Jump to previous song"
 msgstr "前の曲へジャンプ"
 
-#: ../quodlibet.py:296
+#: ../quodlibet.py:297
 msgid "Start playback"
 msgstr "再生開始"
 
-#: ../quodlibet.py:297
+#: ../quodlibet.py:298
 msgid "Pause playback"
 msgstr "一時停止"
 
-#: ../quodlibet.py:298
+#: ../quodlibet.py:299
 msgid "Toggle play/pause mode"
 msgstr "再生/一時停止の切替"
 
-#: ../quodlibet.py:299
+#: ../quodlibet.py:300
 #, fuzzy
 msgid "Stop playback"
 msgstr "再生開始"
 
-#: ../quodlibet.py:300
+#: ../quodlibet.py:301
 msgid "Turn up volume"
 msgstr "音量を上げる"
 
-#: ../quodlibet.py:301
+#: ../quodlibet.py:302
 msgid "Turn down volume"
 msgstr "音量を下げる"
 
-#: ../quodlibet.py:302
+#: ../quodlibet.py:303
 msgid "Print player status"
 msgstr "プレイヤーの状態を表示"
 
-#: ../quodlibet.py:303
+#: ../quodlibet.py:304
 msgid "Hide main window"
 msgstr "メインウィンドウを隠す"
 
-#: ../quodlibet.py:304
+#: ../quodlibet.py:305
 msgid "Show main window"
 msgstr "メインウィンドウを表示する"
 
-#: ../quodlibet.py:305
+#: ../quodlibet.py:306
 msgid "Toggle main window visibility"
 msgstr "メインウィンドウの表示/非表示切り替え"
 
-#: ../quodlibet.py:306
+#: ../quodlibet.py:307
 msgid "Focus the running player"
 msgstr "起動中のプレイヤーにフォーカス"
 
-#: ../quodlibet.py:307
+#: ../quodlibet.py:308
 msgid "Remove active browser filters"
 msgstr "アクティブなフィルタを削除"
 
-#: ../quodlibet.py:308
+#: ../quodlibet.py:309
 #, fuzzy
 msgid "Refresh and rescan library"
 msgstr "ライブラリの再表示(_f)"
 
-#: ../quodlibet.py:309
+#: ../quodlibet.py:310
 #, fuzzy
 msgid "List available browsers"
 msgstr "ブラウザの無効化"
 
-#: ../quodlibet.py:310
+#: ../quodlibet.py:311
 msgid "Print the current playlist"
 msgstr "現在のプレイリストを表示"
 
-#: ../quodlibet.py:311
+#: ../quodlibet.py:312
 msgid "Print the contents of the queue"
 msgstr "キューの内容を表示"
 
-#: ../quodlibet.py:312
+#: ../quodlibet.py:313
 msgid "Start without plugins"
 msgstr ""
 
-#: ../quodlibet.py:313
+#: ../quodlibet.py:314
 msgid "Exit Quod Libet"
 msgstr "Quod Libetの終了"
 
-#: ../quodlibet.py:318
+#: ../quodlibet.py:319
 msgid "Seek within the playing song"
 msgstr "再生中の曲をシーク"
 
-#: ../quodlibet.py:318
+#: ../quodlibet.py:319
 msgid "[+|-][HH:]MM:SS"
 msgstr ""
 
-#: ../quodlibet.py:319
+#: ../quodlibet.py:320
 msgid "Set or toggle the playback order"
 msgstr "再生順のセットまたは切替"
 
-#: ../quodlibet.py:321
+#: ../quodlibet.py:322
 msgid "Turn repeat off, on, or toggle it"
 msgstr "リピートのオン/オフまたは切替"
 
-#: ../quodlibet.py:322
+#: ../quodlibet.py:323
 msgid "Set the volume"
 msgstr "音量のセット"
 
-#: ../quodlibet.py:323
+#: ../quodlibet.py:324
 msgid "Search your audio library"
 msgstr "オーディオライブラリの検索"
 
-#: ../quodlibet.py:323 ../quodlibet.py:333 ../quodlibet.py:337
-#: ../quodlibet.py:339
+#: ../quodlibet.py:324 ../quodlibet.py:334 ../quodlibet.py:338
+#: ../quodlibet.py:340
 msgid "query"
 msgstr ""
 
-#: ../quodlibet.py:324
+#: ../quodlibet.py:325
 msgid "Play a file"
 msgstr "ファイルの再生"
 
-#: ../quodlibet.py:324 ../quodlibet.py:333 ../quodlibet.py:339
+#: ../quodlibet.py:325 ../quodlibet.py:334 ../quodlibet.py:340
 msgid "command|filename"
 msgstr ""
 
-#: ../quodlibet.py:325
+#: ../quodlibet.py:326
 msgid "Rate the playing song"
 msgstr "再生中の曲をレイティング"
 
-#: ../quodlibet.py:326
+#: ../quodlibet.py:327
 msgid "Set the current browser"
 msgstr "現在のブラウザをセット"
 
-#: ../quodlibet.py:327
+#: ../quodlibet.py:328
 msgid "Open a new browser"
 msgstr "新しいブラウザを開く"
 
-#: ../quodlibet.py:328
+#: ../quodlibet.py:329
 msgid "Show or hide the queue"
 msgstr "キューの表示/非表示"
 
-#: ../quodlibet.py:329
+#: ../quodlibet.py:330
 msgid "Show or hide the main song list"
 msgstr "メインソングリストの表示/非表示"
 
-#: ../quodlibet.py:330
+#: ../quodlibet.py:331
 msgid "Filter on a random value"
 msgstr "ランダムな値でフィルタリング"
 
-#: ../quodlibet.py:330
+#: ../quodlibet.py:331
 msgid "command|tag"
 msgstr ""
 
-#: ../quodlibet.py:331
+#: ../quodlibet.py:332
 msgid "Filter on a tag value"
 msgstr "タグの値でフィルタリング"
 
-#: ../quodlibet.py:331
+#: ../quodlibet.py:332
 msgid "tag=value"
 msgstr ""
 
-#: ../quodlibet.py:332
+#: ../quodlibet.py:333
 msgid "Enqueue a file or query"
 msgstr "ファイルまたはクエリの内容をキューに入れる"
 
-#: ../quodlibet.py:334
+#: ../quodlibet.py:335
 msgid "Enqueue comma-separated files"
 msgstr ""
 
-#: ../quodlibet.py:335 ../quodlibet/util/tags.py:98
+#: ../quodlibet.py:336 ../quodlibet/util/tags.py:98
 msgid "filename"
 msgstr "ファイル名"
 
-#: ../quodlibet.py:336
+#: ../quodlibet.py:337
 msgid "Print filenames of results of query to stdout"
 msgstr ""
 
-#: ../quodlibet.py:338
+#: ../quodlibet.py:339
 #, fuzzy
 msgid "Unqueue a file or query"
 msgstr "ファイルまたはクエリの内容をキューから削除"
 
-#: ../quodlibet.py:388
+#: ../quodlibet.py:389
 #, fuzzy, python-format
 msgid "Invalid argument for '%s'."
 msgstr "E: 不正な引数'%s'が指定されました。"
 
-#: ../quodlibet.py:389 ../quodlibet/util/__init__.py:159
+#: ../quodlibet.py:390 ../quodlibet/util/__init__.py:159
 #, fuzzy, python-format
 msgid "Try %s --help."
 msgstr "E: %s --help を試してみてください。"
@@ -3069,7 +3064,7 @@ msgstr ""
 msgid "Previous"
 msgstr "プレビュー(_P)"
 
-#: ../quodlibet/qltk/views.py:587
+#: ../quodlibet/qltk/views.py:638
 #, python-format
 msgid "and %d more..."
 msgstr ""
@@ -3099,20 +3094,20 @@ msgstr "検索条件をクリア"
 msgid "A playlist named %s already exists."
 msgstr "プレイリスト%sは既に存在します。"
 
-#: ../quodlibet/util/cover/built_in.py:17
+#: ../quodlibet/util/cover/built_in.py:18
 msgid "Embed cover"
 msgstr ""
 
-#: ../quodlibet/util/cover/built_in.py:18
+#: ../quodlibet/util/cover/built_in.py:19
 msgid "Use covers embed into audio files"
 msgstr ""
 
-#: ../quodlibet/util/cover/built_in.py:37
+#: ../quodlibet/util/cover/built_in.py:38
 #, fuzzy
 msgid "Filesystem cover"
 msgstr "ファイルシステム"
 
-#: ../quodlibet/util/cover/built_in.py:38
+#: ../quodlibet/util/cover/built_in.py:39
 msgid ""
 "Use commonly named images found in common directories alongside the song"
 msgstr ""

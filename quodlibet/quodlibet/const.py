@@ -28,7 +28,7 @@ class MinVersions(object):
     PYTHON = Version(2, 6)
     MUTAGEN = Version(1, 14)
 
-VERSION_TUPLE = Version(3, 0, 91, -1)
+VERSION_TUPLE = Version(3, 1, 0)
 VERSION = str(VERSION_TUPLE)
 
 PROCESS_TITLE_QL = "quodlibet"
