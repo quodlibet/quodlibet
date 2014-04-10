@@ -57,6 +57,8 @@ To clone the repository::
 ========================== ===============================
 Release                    Filename
 ========================== ===============================
+Quod Libet 3.1.0           quodlibet-3.1.0.tar.gz_
+Quod Libet Plugins 3.1.0   quodlibet-plugins-3.1.0.tar.gz_
 Quod Libet 3.0.2           quodlibet-3.0.2.tar.gz_
 Quod Libet Plugins 3.0.2   quodlibet-plugins-3.0.2.tar.gz_
 Quod Libet 2.6.3           quodlibet-2.6.3.tar.gz_
@@ -65,6 +67,8 @@ Quod Libet 2.5.1           quodlibet-2.5.1.tar.gz_
 Quod Libet Plugins 2.5.1   quodlibet-plugins-2.5.1.tar.gz_
 ========================== ===============================
 
+.. _quodlibet-3.1.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.1.0.tar.gz
+.. _quodlibet-plugins-3.1.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.1.0.tar.gz
 .. _quodlibet-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.2.tar.gz
 .. _quodlibet-plugins-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.2.tar.gz
 .. _quodlibet-2.6.3.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3.tar.gz
@@ -163,12 +167,16 @@ Unstable Repo:
 =========================== ==============================
 Release                     Filename
 =========================== ==============================
+Quod Libet 3.1.0            quodlibet-3.1.0-installer.exe_
+Quod Libet 3.1.0 (portable) quodlibet-3.1.0-portable.exe_
 Quod Libet 2.6.3            quodlibet-2.6.3-installer.exe_
 Quod Libet 2.6.3 (portable) quodlibet-2.6.3-portable.exe_
 Quod Libet 2.5.1            quodlibet-2.5.1-installer.exe_
 Quod Libet 2.4.1            quodlibet-2.4.1-installer.exe_
 =========================== ==============================
 
+.. _quodlibet-3.1.0-portable.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.1.0-portable.exe
+.. _quodlibet-3.1.0-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.1.0-installer.exe
 .. _quodlibet-2.6.3-portable.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3-portable.exe
 .. _quodlibet-2.6.3-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3-installer.exe
 .. _quodlibet-2.5.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1-installer.exe
