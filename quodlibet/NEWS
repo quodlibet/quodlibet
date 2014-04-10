@@ -1,3 +1,82 @@
+3.1.0 (2014-04-10) - Olden times, man! NEVER LIVE THERE.
+--------------------------------------------------------
+
+* Windows is supported again. And it should be in better shape than with 2.6
+  in many aspects. Embedded images work now, newer GStreamer with more
+  codecs, operon is included etc. The file browser and EF now show the
+  favorite folders from the Windows Explorer. The installer will
+  now uninstall any existing installation first and as with 2.6.3 there
+  is a portable version available.
+
+  There is still an unsolved problem regarding miss-placed context menus
+  with multiple monitors [1319].
+
+  Thanks goes to Bakhtiar Hasmanan for providing a working PyGObject stack.
+
+* Initial Wayland support is here (only tested under weston). This was mostly
+  fixing weird usage of GTK+ that just happened to work under X11 and not
+  using the screen size for calculations since there is no real screen under
+  Wayland.
+
+* Piotr Drąg, Rüdiger Arp, Diego Beraldin and Dimitris Papageorgiou worked
+  on improving the translations.
+
+* Nick Boultbee worked on a plugin system for playlist plugins and moved
+  the duplication/shuffle actions to it. He also moved the rating
+  configuration from the plugin into the core.
+
+* Simonas Kazlauskas worked on a plugin system for cover art sources currently
+  supporting last.fm and musicbrainz (exposed as two plugins). If active it
+  will fetch covers in case no local cover is found. In the future we might
+  implement the album art downloader on top of that.
+
+* Thomas Vogt made transparency work again with GTK+3 in the OSD plugin.
+  (fake transparency now also works again, which was the last known
+  regression from the PyGObject port)
+
+* operon gained new commands (image-extract, image-set, image-clear) for
+  manipulating and extracting embedded images for all formats supporting
+  embedded images in QL (id3, ogg, flac, wma, mp4). See the manpage [0]
+  for examples. There is also a QL plugin which allows removing all
+  embedded images and embed the active one. This should get better
+  integrated into the tag editor at some point.
+
+* Display patterns now support specifying the markup using square brackets to
+  not need escaping in the common case. "\<b\><artist>\</b\>" can now be
+  written as "[b]<artist>[/b]" (the old way still works).
+
+* In the radio browser the radio list now contains icecast and shoutcast2
+  stations in addition to shoutcast1 ones and only one additional mirror is
+  included for each station. QL now shows ~4100 stations of ~30000 we know
+  about. Use "Update stations" to get the new list.
+
+Other changes:
+
+* QL now remembers additional open browsers and reopens them on start.
+* The main tool bar is better integrated with GTK+ themes.
+* We use symbolic icons in many places.
+* Added a simple GNOME app menu.
+* 'albumartist' is now used for album identification.
+* <shift>space enables "stop after the current song".
+* Warning before opening too many plugin windows (Nick Boultbee) [1231]
+* New --unqueue-all command [1234]
+
+Fixes:
+
+* Config gets saved atomically and handle a corrupted one [1042]
+* editing:id3encoding option was ignored [1290]
+* album browser: Fix sorting by rating [1352]
+* search: Fix results for "&(foo, !bar)" [1327]
+* Various crashes caused by code not being ported to PyGObject properly.
+
+Dependencies & Packaging:
+
+* No dependency changes compared to 3.0
+* We now install appdata.xml files
+* We now install a dbus service file
+* ``setup.py build_sphinx`` builds the html user guide
+
+
 3.0.91 [beta] (2014-02-28) - You'd have to be in space for that to work.
 ------------------------------------------------------------------------
 
