@@ -690,7 +690,7 @@ class TNormalizePath(TestCase):
     def test_default(self):
         from quodlibet.util.path import _normalize_path as norm
 
-        name = tempfile.mkdtemp()
+        name = norm(tempfile.mkdtemp())
         try:
             self.failUnlessEqual(norm(name), name)
             self.failUnlessEqual(norm(os.path.join(name, "foo", "..")), name)
@@ -701,6 +701,9 @@ class TNormalizePath(TestCase):
         from quodlibet.util.path import _normalize_path as norm
 
         f, path = tempfile.mkstemp()
+        os.close(f)
+        path = norm(path)
+
         link = None
         if not is_win:
             link = str(uuid.uuid4())
