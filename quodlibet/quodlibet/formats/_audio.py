@@ -578,8 +578,8 @@ class AudioFile(dict, ImageContainer):
         elif "~filename" not in self:
             raise ValueError("Unknown filename!")
         if self.is_file:
-            self["~filename"] = os.path.realpath(self["~filename"])
-            self["~filename"] = normalize_path(self["~filename"])
+            self["~filename"] = normalize_path(
+                self["~filename"], canonicalise=True)
             # Find mount point (terminating at "/" if necessary)
             head = self["~filename"]
             while "~mountpoint" not in self:
