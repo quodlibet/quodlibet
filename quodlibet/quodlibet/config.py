@@ -204,6 +204,8 @@ def init(filename=None, initial=None):
 
 
 def save(filename):
+    """Writes the active config to filename, ignoring all possible errors"""
+
     print_d("Writing config...")
     try:
         _config.write(filename)
@@ -212,6 +214,8 @@ def save(filename):
 
 
 def quit():
+    """Clears the active config"""
+
     _config.clear()
 
 

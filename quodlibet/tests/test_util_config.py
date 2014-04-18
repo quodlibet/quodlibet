@@ -116,3 +116,9 @@ class TConfig(TestCase):
         vals = [" ", "  ", " \t ", " \n \n"]
         conf.setstringlist("foo", "bar", vals)
         self.failUnlessEqual(conf.getstringlist("foo", "bar"), vals)
+
+    def test_stringlist_invalid_encoding(self):
+        conf = Config()
+        conf.add_section("foo")
+        conf.set("foo", "bar", "\xff\xff\xff\xff\xff\xff")
+        self.assertRaises(Error, conf.getstringlist, "foo", "bar")
