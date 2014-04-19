@@ -1002,13 +1002,13 @@ class RatingColumn(TextColumn):
     # Render ~#rating directly (simplifies filtering, saves
     # a function call).
     def _cdf(self, column, cell, model, iter, tag):
-            value = model.get_value(iter).get(
-                "~#rating", config.RATINGS.default)
-            if not self._needs_update(value):
-                return
-            cell.set_property('text', util.format_rating(value))
-            # No need to update layout, we know this width at
-            # at startup.
+        value = model.get_value(iter).get(
+            "~#rating", config.RATINGS.default)
+        if not self._needs_update(value):
+            return
+        cell.set_property('text', util.format_rating(value))
+        # No need to update layout, we know this width at
+        # at startup.
 
     def __init__(self):
         super(RatingColumn, self).__init__("~#rating")
