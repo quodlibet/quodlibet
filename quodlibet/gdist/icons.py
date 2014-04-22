@@ -61,6 +61,10 @@ class install_icons(Command):
                                    ('root', 'root'),
                                    ('install_base', 'prefix'))
 
+    def get_outputs(self):
+        # FIXME
+        return []
+
     def run(self):
         # install into hicolor icon theme
         basepath = os.path.join(self.prefix, 'share', 'icons', 'hicolor')

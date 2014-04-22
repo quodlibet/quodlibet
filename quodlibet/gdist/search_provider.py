@@ -28,6 +28,10 @@ class install_search_provider(Command):
 
         self.search_provider = self.distribution.search_provider
 
+    def get_outputs(self):
+        # FIXME
+        return []
+
     def run(self):
         basepath = os.path.join(
             self.prefix, 'share', 'gnome-shell', 'search-providers')

@@ -144,6 +144,10 @@ class install_mo(Command):
             ('install_base', 'install_base'),
             ('skip_build', 'skip_build'))
 
+    def get_outputs(self):
+        # FIXME
+        return []
+
     def run(self):
         if not self.skip_build:
             self.run_command('build_mo')
