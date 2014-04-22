@@ -54,7 +54,7 @@ class install_icons(Command):
     prefix = None
 
     def initialize_options(self):
-        pass
+        self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('install',
@@ -62,8 +62,7 @@ class install_icons(Command):
                                    ('install_base', 'prefix'))
 
     def get_outputs(self):
-        # FIXME
-        return []
+        return self.outfiles
 
     def run(self):
         # install into hicolor icon theme
@@ -75,11 +74,13 @@ class install_icons(Command):
 
         scalable = os.path.join(local, "scalable", "apps")
         scalable_dst = os.path.join(basepath, "scalable", "apps")
-        self.copy_tree(scalable, scalable_dst)
+        out = self.copy_tree(scalable, scalable_dst)
+        self.outfiles.extend(out)
 
         png = os.path.join(local, "64x64", "apps")
         png_dst = os.path.join(basepath, "64x64", "apps")
-        self.copy_tree(png, png_dst)
+        out = self.copy_tree(png, png_dst)
+        self.outfiles.extend(out)
 
         # this fails during packaging.. so ignore the outcome
         update_icon_cache(basepath)
@@ -89,4 +90,5 @@ class install_icons(Command):
         if self.root is not None:
             basepath = change_root(self.root, basepath)
 
-        self.copy_tree(png, basepath)
+        out = self.copy_tree(png, basepath)
+        self.outfiles.extend(out)

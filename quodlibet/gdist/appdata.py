@@ -66,7 +66,7 @@ class install_appdata(Command):
     root = None
 
     def initialize_options(self):
-        pass
+        self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_base', 'build_base'))
@@ -80,8 +80,7 @@ class install_appdata(Command):
             'build_appdata', ('appdata', 'appdata'))
 
     def get_outputs(self):
-        # FIXME
-        return []
+        return self.outfiles
 
     def run(self):
         if not self.skip_build:
@@ -92,12 +91,14 @@ class install_appdata(Command):
             basepath = change_root(self.root, basepath)
 
         srcpath = os.path.join(self.build_base, 'share', 'appdata')
-        self.mkpath(basepath)
+        out = self.mkpath(basepath)
+        self.outfiles.extend(out or [])
         for appdata in self.appdata:
             appdata = os.path.basename(appdata)
             fullsrc = os.path.join(srcpath, appdata)
             fullpath = os.path.join(basepath, appdata)
-            self.copy_file(fullsrc, fullpath)
+            (out, _) = self.copy_file(fullsrc, fullpath)
+            self.outfiles.append(out)
 
 
 __all__ = ["build_appdata", "install_appdata"]
