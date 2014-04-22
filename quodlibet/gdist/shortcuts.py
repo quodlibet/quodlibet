@@ -81,6 +81,10 @@ class install_shortcuts(Command):
         self.set_undefined_options(
             'build_shortcuts', ('shortcuts', 'shortcuts'))
 
+    def get_outputs(self):
+        # FIXME
+        return []
+
     def run(self):
         if not self.skip_build:
             self.run_command('build_shortcuts')

@@ -79,6 +79,10 @@ class install_appdata(Command):
         self.set_undefined_options(
             'build_appdata', ('appdata', 'appdata'))
 
+    def get_outputs(self):
+        # FIXME
+        return []
+
     def run(self):
         if not self.skip_build:
             self.run_command('build_appdata')

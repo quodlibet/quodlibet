@@ -40,6 +40,10 @@ class install_man(Command):
             if not man_page[-1].isdigit():
                 raise SystemExit("%r has no section" % man_page)
 
+    def get_outputs(self):
+        # FIXME
+        return []
+
     def run(self):
         basepath = os.path.join(self.prefix, 'share', 'man')
         if self.root is not None:

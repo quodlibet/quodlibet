@@ -73,6 +73,10 @@ class install_dbus_services(Command):
             'build_dbus_services',
             ('dbus_services', 'dbus_services'))
 
+    def get_outputs(self):
+        # FIXME
+        return []
+
     def run(self):
         if not self.skip_build:
             self.run_command('build_dbus_services')
