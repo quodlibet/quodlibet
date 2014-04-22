@@ -57,6 +57,7 @@ class install_dbus_services(Command):
         self.dbus_services = None
         self.build_base = None
         self.root = None
+        self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options(
@@ -74,8 +75,7 @@ class install_dbus_services(Command):
             ('dbus_services', 'dbus_services'))
 
     def get_outputs(self):
-        # FIXME
-        return []
+        return self.outfiles
 
     def run(self):
         if not self.skip_build:
@@ -84,14 +84,16 @@ class install_dbus_services(Command):
         basepath = os.path.join(self.prefix, 'share', 'dbus-1', 'services')
         if self.root is not None:
             basepath = change_root(self.root, basepath)
-        self.mkpath(basepath)
+        out = self.mkpath(basepath)
+        self.outfiles.extend(out or [])
 
         srcpath = os.path.join(self.build_base, 'share', 'dbus-1', 'services')
         for service in self.dbus_services:
             service_name = os.path.basename(service)
             fullsrc = os.path.join(srcpath, service_name)
             fullpath = os.path.join(basepath, service_name)
-            self.copy_file(fullsrc, fullpath)
+            (out, _) = self.copy_file(fullsrc, fullpath)
+            self.outfiles.append(out)
             _replace(fullpath, "@PREFIX@", self.prefix)
 
 

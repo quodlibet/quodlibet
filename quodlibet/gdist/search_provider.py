@@ -19,7 +19,7 @@ class install_search_provider(Command):
     search_provider = None
 
     def initialize_options(self):
-        pass
+        self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('install',
@@ -29,8 +29,7 @@ class install_search_provider(Command):
         self.search_provider = self.distribution.search_provider
 
     def get_outputs(self):
-        # FIXME
-        return []
+        return self.outfiles
 
     def run(self):
         basepath = os.path.join(
@@ -38,5 +37,7 @@ class install_search_provider(Command):
         if self.root is not None:
             basepath = change_root(self.root, basepath)
 
-        self.mkpath(basepath)
-        self.copy_file(self.search_provider, basepath)
+        out = self.mkpath(basepath)
+        self.outfiles.extend(out or [])
+        (out, _) = self.copy_file(self.search_provider, basepath)
+        self.outfiles.append(out)
