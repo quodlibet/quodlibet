@@ -947,6 +947,7 @@ class TextColumn(qltk.views.TreeViewColumnButton):
         if width is None:
             self.set_expand(True)
         else:
+            self.set_min_width(self._cell_width("00"))
             self.set_fixed_width(width)
         self.set_resizable(True)
         self.set_sort_indicator(False)
