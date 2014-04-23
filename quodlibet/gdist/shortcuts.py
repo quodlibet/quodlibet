@@ -66,7 +66,7 @@ class install_shortcuts(Command):
     root = None
 
     def initialize_options(self):
-        pass
+        self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_base', 'build_base'))
@@ -79,6 +79,9 @@ class install_shortcuts(Command):
         self.set_undefined_options(
             'build_shortcuts', ('shortcuts', 'shortcuts'))
 
+    def get_outputs(self):
+        return self.outfiles
+
     def run(self):
         if not self.skip_build:
             self.run_command('build_shortcuts')
@@ -87,9 +90,13 @@ class install_shortcuts(Command):
             basepath = change_root(self.root, basepath)
         srcpath = os.path.join(self.build_base, 'share', 'applications')
         self.mkpath(basepath)
+        out = self.mkpath(basepath)
+        self.outfiles.extend(out or [])
         for shortcut in self.shortcuts:
             fullsrc = os.path.join(srcpath, shortcut)
             fullpath = os.path.join(basepath, shortcut)
             self.copy_file(fullsrc, fullpath)
+            (out, _) = self.copy_file(fullsrc, fullpath)
+            self.outfiles.append(out)
 
 __all__ = ["build_shortcuts", "install_shortcuts"]

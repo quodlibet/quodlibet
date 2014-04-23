@@ -149,7 +149,7 @@ class install_mo(Command):
     root = None
 
     def initialize_options(self):
-        pass
+        self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_base', 'build_base'))
@@ -159,6 +159,9 @@ class install_mo(Command):
             ('install_base', 'install_base'),
             ('skip_build', 'skip_build'))
 
+    def get_outputs(self):
+        return self.outfiles
+
     def run(self):
         if not self.skip_build:
             self.run_command('build_mo')
@@ -166,6 +169,7 @@ class install_mo(Command):
         dest = os.path.join(self.install_base, "share", "locale")
         if self.root != None:
             dest = change_root(self.root, dest)
-        self.copy_tree(src, dest)
+        out = self.copy_tree(src, dest)
+        self.outfiles.extend(out)
 
 __all__ = ["build_mo", "install_mo", "po_stats", "check_pot"]

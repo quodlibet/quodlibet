@@ -29,7 +29,7 @@ class install_man(Command):
     root = None
 
     def initialize_options(self):
-        pass
+        self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('install', ('root', 'root'), ('install_base', 'prefix'))
@@ -38,15 +38,21 @@ class install_man(Command):
             if not man_page[-1].isdigit():
                 raise SystemExit("%r has no section" % man_page)
 
+    def get_outputs(self):
+        return self.outfiles
+
     def run(self):
         basepath = os.path.join(self.prefix, 'share', 'man')
         if self.root != None:
           basepath = change_root(self.root, basepath)
-        self.mkpath(basepath)
+        out = self.mkpath(basepath)
+        self.outfiles.extend(out or [])
         for man_page in self.man_pages:
             manpath = os.path.join(basepath, "man" + man_page[-1])
-            self.mkpath(manpath)
+            out = self.mkpath(manpath)
+            self.outfiles.extend(out or [])
             fullpath = os.path.join(manpath, os.path.basename(man_page))
-            self.copy_file(man_page, fullpath)
+            (out, _) = self.copy_file(man_page, fullpath)
+            self.outfiles.append(out)
 
 __all__ = ["install_man"]
