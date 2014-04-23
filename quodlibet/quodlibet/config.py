@@ -49,6 +49,7 @@ INITIAL = {
         "sortby": "0album", # <reversed?>tagname, song list sort
         "order": "inorder",
         "plugin_selection": "", # selected plugin in manager
+        "column_widths": "", # column widths in c1,w1,c2,w2... format
     },
     "browsers": {
         "query_text": "", # none/search bar text

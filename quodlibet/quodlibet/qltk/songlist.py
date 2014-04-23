@@ -479,6 +479,13 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         SongList.set_all_column_headers(headers)
         SongList.headers = headers
 
+    def __column_width_changed(self, *args):
+        widths = []
+        for c in self.get_columns():
+            if c.get_fixed_width() >= 0:
+                widths.extend((c.header_name, str(c.get_fixed_width())))
+        config.setstringlist("memory", "column_widths", widths)
+
     @classmethod
     def set_all_column_headers(cls, headers):
         config.set_columns(headers)
@@ -751,30 +758,37 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         if self.CurrentColumn is not None:
             self.append_column(self.CurrentColumn())
 
-        for i, t in enumerate(headers):
+        cws = config.getstringlist("memory", "column_widths")
+        column_widths = {}
+        for i in range(0, len(cws), 2):
+            column_widths[cws[i]] = int(cws[i + 1])
+
+        for t in headers:
+            w = column_widths.get(t)
             if t in ["tracknumber", "discnumber", "language"]:
-                column = TextColumn(t)
+                column = TextColumn(t, w)
             elif t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
-                column = DateColumn(t)
+                column = DateColumn(t, w)
             elif t in ["~length", "~#length"]:
-                column = LengthColumn()
+                column = LengthColumn(w)
             elif t == "~#filesize":
-                column = FilesizeColumn()
+                column = FilesizeColumn(w)
             elif t in ["~rating", "~#rating"]:
-                column = RatingColumn()
+                column = RatingColumn(w)
             elif t.startswith("~#"):
-                column = NumericColumn(t)
+                column = NumericColumn(t, w)
             elif t in FILESYSTEM_TAGS:
-                column = FSColumn(t)
+                column = FSColumn(t, w)
             elif t.startswith("<"):
-                column = PatternColumn(t)
+                column = PatternColumn(t, w)
             elif "~" not in t and t != "title":
-                column = NonSynthTextColumn(t)
+                column = NonSynthTextColumn(t, w)
             else:
-                column = WideTextColumn(t)
+                column = WideTextColumn(t, w)
             column.connect('clicked', self.set_sort_by)
             column.connect('button-press-event', self.__showmenu)
             column.connect('popup-menu', self.__showmenu)
+            column.connect('notify::width', self.__column_width_changed)
             column.set_reorderable(True)
             self.append_column(column)
 
@@ -917,38 +931,12 @@ class TextColumn(qltk.views.TreeViewColumnButton):
         if not self._needs_update(text):
             return
         cell.set_property('text', text)
-        self._update_layout(text, cell)
 
-    def _delayed_update(self):
-        max_width = -1
-        width = self.get_fixed_width()
-        for text, pad, cell_pad in self._text:
-            self._label.set_text(text, -1)
-            new_width = self._label.get_pixel_size()[0] + pad + cell_pad
-            if new_width > max_width:
-                max_width = new_width
-        if width < max_width:
-            self.set_fixed_width(max_width)
-            tv = self.get_tree_view()
-            if tv:
-                tv.columns_autosize()
-        self._text.clear()
-        self._timeout = None
-        return False
+    def _cell_width(self, text, pad=12):
+        self._label.set_text(text, -1)
+        return self._label.get_pixel_size()[0] + pad
 
-    def _update_layout(self, text, cell=None, pad=12, force=False):
-        if not self.get_resizable():
-            cell_pad = (cell and cell.get_property('xpad')) or 0
-            self._text.add((text, pad, cell_pad))
-            if force:
-                self._delayed_update()
-            if self._timeout is not None:
-                GLib.source_remove(self._timeout)
-                self._timeout = None
-            self._timeout = GLib.idle_add(self._delayed_update,
-                priority=GLib.PRIORITY_LOW)
-
-    def __init__(self, t):
+    def __init__(self, t, width=None):
         self._render = Gtk.CellRendererText()
         title = util.tag(t)
         super(TextColumn, self).__init__(title, self._render)
@@ -956,11 +944,15 @@ class TextColumn(qltk.views.TreeViewColumnButton):
         self.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         self.set_visible(True)
         self.set_clickable(True)
+        if width is None:
+            self.set_expand(True)
+        else:
+            self.set_fixed_width(width)
+        self.set_resizable(True)
         self.set_sort_indicator(False)
         self.set_cell_data_func(self._render, self._cdf, t)
         self._text = set()
         self._timeout = None
-        self._update_layout(title, force=True)
 
 
 class DateColumn(TextColumn):
@@ -984,18 +976,22 @@ class DateColumn(TextColumn):
             stamp = time.localtime(stamp)
             text = time.strftime(format, stamp).decode(const.ENCODING)
             cell.set_property('text', text)
-        self._update_layout(cell.get_property('text'), cell)
+
+    def __init__(self, tag, width=None):
+        super(DateColumn, self).__init__(tag, width)
+        if width is None:
+            self.set_expand(False)
+            today = datetime.datetime.now().date()
+            text = today.strftime('%x').decode(const.ENCODING)
+            self.set_fixed_width(self._cell_width(text))
 
 
 class WideTextColumn(TextColumn):
     # Resizable and ellipsized at the end. Used for any key with
     # a '~' in it, and 'title'.
-    def __init__(self, tag):
-        super(WideTextColumn, self).__init__(tag)
+    def __init__(self, tag, width):
+        super(WideTextColumn, self).__init__(tag, width)
         self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        self.set_expand(True)
-        self.set_resizable(True)
-        self.set_fixed_width(1)
 
 
 class RatingColumn(TextColumn):
@@ -1010,11 +1006,11 @@ class RatingColumn(TextColumn):
         # No need to update layout, we know this width at
         # at startup.
 
-    def __init__(self):
-        super(RatingColumn, self).__init__("~#rating")
-        self.set_resizable(False)
-        self.set_expand(False)
-        self._update_layout(util.format_rating(1.0), force=True)
+    def __init__(self, width):
+        super(RatingColumn, self).__init__("~#rating", width)
+        if width is None:
+            self.set_expand(False)
+            self.set_fixed_width(self._cell_width(util.format_rating(1.0)))
 
 
 class NonSynthTextColumn(WideTextColumn):
@@ -1045,10 +1041,12 @@ class NumericColumn(TextColumn):
             return
         text = unicode(value)
         cell.set_property('text', text)
-        self._update_layout(text, cell)
 
-    def __init__(self, tag):
-        super(NumericColumn, self).__init__(tag)
+    def __init__(self, tag, width):
+        super(NumericColumn, self).__init__(tag, width)
+        if width is None:
+            self.set_expand(False)
+            self.set_fixed_width(self._cell_width('9999'))
         self._render.set_property('xalign', 1.0)
         self.set_alignment(1.0)
 
@@ -1060,10 +1058,9 @@ class LengthColumn(NumericColumn):
             return
         text = util.format_time(value)
         cell.set_property('text', text)
-        self._update_layout(text, cell)
 
-    def __init__(self):
-        super(LengthColumn, self).__init__("~#length")
+    def __init__(self, width):
+        super(LengthColumn, self).__init__("~#length", width)
 
 
 class FilesizeColumn(NumericColumn):
@@ -1073,10 +1070,9 @@ class FilesizeColumn(NumericColumn):
             return
         text = util.format_size(value)
         cell.set_property('text', text)
-        self._update_layout(text, cell)
 
-    def __init__(self):
-        super(FilesizeColumn, self).__init__("~#filesize")
+    def __init__(self, width):
+        super(FilesizeColumn, self).__init__("~#filesize", width)
 
 
 class PatternColumn(WideTextColumn):
@@ -1089,8 +1085,8 @@ class PatternColumn(WideTextColumn):
             return
         cell.set_property('text', value)
 
-    def __init__(self, pattern):
-        super(PatternColumn, self).__init__(util.pattern(pattern))
+    def __init__(self, pattern, width):
+        super(PatternColumn, self).__init__(util.pattern(pattern), width)
         self.header_name = pattern
         self._pattern = None
         try:
