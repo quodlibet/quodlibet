@@ -46,60 +46,64 @@ from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.qltk.songlistcolumns import SongListColumn
+
+
+class CurrentColumn(SongListColumn):
+    """Displays the current song indicator, either a play or pause icon."""
+
+    def __init__(self):
+        super(CurrentColumn, self).__init__("~current")
+        self._render = Gtk.CellRendererPixbuf()
+        self.pack_start(self._render, True)
+        self._render.set_property('xalign', 0.5)
+
+        self.set_fixed_width(24)
+        self.set_expand(False)
+        self.set_cell_data_func(self._render, self._cdf)
+
+    def _format_title(self, tag):
+        return u""
+
+    def _cdf(self, column, cell, model, iter_, user_data):
+        PLAY = "media-playback-start"
+        PAUSE = "media-playback-pause"
+        STOP = "media-playback-stop"
+        ERROR = "dialog-error"
+
+        row = model[iter_]
+        song = row[0]
+
+        if row.path == model.current_path:
+            if model.sourced:
+                name = [PLAY, PAUSE][app.player.paused]
+            else:
+                name = STOP
+        elif song("~errors"):
+            name = ERROR
+        else:
+            name = None
+
+        if not self._needs_update(name):
+            return
+
+        if name is not None:
+            gicon = Gio.ThemedIcon.new_from_names(
+                [name + "-symbolic", name])
+        else:
+            gicon = None
+
+        cell.set_property('gicon', gicon)
 
 
 class MainSongList(SongList):
     # The SongList that represents the current playlist.
 
-    class CurrentColumn(Gtk.TreeViewColumn):
-        # Displays the current song indicator, either a play or pause icon.
-        header_name = "~current"
-        __last_name = None
-
-        def _cdf(self, column, cell, model, iter, data):
-            PLAY = "media-playback-start"
-            PAUSE = "media-playback-pause"
-            STOP = "media-playback-stop"
-            ERROR = "dialog-error"
-
-            row = model[iter]
-            song = row[0]
-
-            if row.path == model.current_path:
-                if model.sourced:
-                    name = [PLAY, PAUSE][app.player.paused]
-                else:
-                    name = STOP
-            elif song("~errors"):
-                name = ERROR
-            else:
-                name = None
-
-            if self.__last_name == name:
-                return
-            self.__last_name = name
-
-            if name is not None:
-                gicon = Gio.ThemedIcon.new_from_names(
-                    [name + "-symbolic", name])
-            else:
-                gicon = None
-
-            cell.set_property('gicon', gicon)
-
-        def __init__(self):
-            self._render = Gtk.CellRendererPixbuf()
-            self._render.set_property('xalign', 0.5)
-            super(MainSongList.CurrentColumn, self).__init__("", self._render)
-            self.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-            self.set_fixed_width(24)
-            self.set_cell_data_func(self._render, self._cdf)
-            self.header_name = "~current"
-
     _activated = False
 
     def __init__(self, library, player):
         super(MainSongList, self).__init__(library, player, update=True)
+        self.set_first_column_type(CurrentColumn)
 
         self.connect_object('row-activated', self.__select_song, player)
 

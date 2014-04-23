@@ -18,8 +18,8 @@ quodlibet/browsers/paned/main.py
 quodlibet/browsers/paned/models.py
 quodlibet/browsers/paned/prefs.py
 quodlibet/browsers/playlists/main.py
-quodlibet/browsers/playlists/util.py
 quodlibet/browsers/playlists/menu.py
+quodlibet/browsers/playlists/util.py
 quodlibet/browsers/search.py
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
@@ -69,6 +69,7 @@ quodlibet/qltk/remote.py
 quodlibet/qltk/renamefiles.py
 quodlibet/qltk/scanbox.py
 quodlibet/qltk/searchbar.py
+quodlibet/qltk/songlistcolumns.py
 quodlibet/qltk/songlist.py
 quodlibet/qltk/songsmenu.py
 quodlibet/qltk/sortdialog.py
