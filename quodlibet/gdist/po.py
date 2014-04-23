@@ -42,6 +42,7 @@ class po_stats(Command):
             p = Popen(["msgfmt", "--statistics", po], stdout=PIPE, stderr=PIPE)
             output = p.communicate()[1]
             res.append((language, output))
+            del p
 
         stats = []
         for po, r in res:
