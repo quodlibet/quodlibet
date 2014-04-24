@@ -477,9 +477,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __column_width_changed(self, *args):
         widths = []
         for c in self.get_columns():
-            width = c.get_width()
-            if width > 0:
-                widths.extend((c.header_name, str(width)))
+            if c.get_expand():
+                continue
+            widths.extend((c.header_name, str(c.get_width())))
         config.setstringlist("memory", "column_widths", widths)
 
     @classmethod
@@ -770,9 +770,11 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         for t in headers:
             column = create_songlist_column(t)
-            if t in column_widths and column.get_resizable():
-                column.set_fixed_width(column_widths[t])
-                column.set_expand(True)
+            if column.get_resizable():
+                if t in column_widths:
+                    column.set_fixed_width(column_widths[t])
+                else:
+                    column.set_expand(True)
 
             column.connect('clicked', self.set_sort_by)
             column.connect('button-press-event', self.__showmenu)
@@ -791,6 +793,28 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __getmenu(self, column):
         menu = Gtk.Menu()
         menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
+
+        item = Gtk.CheckMenuItem(label=_("_Expand"), use_underline=True)
+        item.set_active(column.get_expand())
+        item.set_sensitive(column.get_resizable())
+
+        def set_expand_cb(item, column):
+            do_expand = item.get_active()
+            if not do_expand:
+                # in case we unexpand, get the current width and set it
+                # so the column doesn't give up all its space
+                # to the left over expanded columns
+                column.set_fixed_width(column.get_width())
+            column.set_expand(do_expand)
+            self.columns_autosize()
+
+        item.connect('activate', set_expand_cb, column)
+        item.show()
+        menu.append(item)
+
+        sep = SeparatorMenuItem()
+        sep.show()
+        menu.append(sep)
 
         current = SongList.headers[:]
         current_set = set(current)

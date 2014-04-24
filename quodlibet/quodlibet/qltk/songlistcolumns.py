@@ -135,7 +135,6 @@ class WideTextColumn(TextColumn):
     def __init__(self, *args, **kwargs):
         super(WideTextColumn, self).__init__(*args, **kwargs)
         self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        self.set_expand(True)
         self.set_resizable(True)
         self.set_min_width(self._cell_width("000"))
 
@@ -286,6 +285,7 @@ class LengthColumn(NumericColumn):
     def __init__(self):
         super(LengthColumn, self).__init__("~#length")
         self.set_fixed_width(self._cell_width(util.format_time(142)))
+        self.set_expand(False)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#length", 0)
