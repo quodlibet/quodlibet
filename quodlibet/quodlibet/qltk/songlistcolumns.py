@@ -92,12 +92,15 @@ class TextColumn(SongListColumn):
 
         self.set_clickable(True)
 
-    def _cell_width(self, text, pad=14):
+    def _cell_width(self, text, pad=8):
         """Returns the column width needed for the passed text"""
 
         cell_pad = self._render.get_property('xpad')
+        return self._text_width(text) + pad + cell_pad
+
+    def _text_width(self, text):
         self.__label.set_text(text, -1)
-        return self.__label.get_pixel_size()[0] + pad + cell_pad
+        return self.__label.get_pixel_size()[0]
 
     def _cdf(self, column, cell, model, iter_, user_data):
         """CellRenderer cell_data_func"""
@@ -224,13 +227,20 @@ class NumericColumn(TextColumn):
         super(NumericColumn, self).__init__(*args, **kwargs)
         self._render.set_property('xalign', 1.0)
         self.set_alignment(1.0)
-        self.set_fixed_width(self._cell_width("12"))
+        self.__min_width = self._get_min_width()
+        self.set_fixed_width(self.__min_width)
 
         self.set_expand(False)
         self.set_resizable(False)
 
+        self._single_char_width = self._text_width("0")
         self._texts = {}
         self._timeout = None
+
+    def _get_min_width(self):
+        """Give the initial and minimum width. override if needed"""
+
+        return self._cell_width("123")
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).comma(self.header_name)
@@ -261,13 +271,14 @@ class NumericColumn(TextColumn):
             elif isinstance(value, basestring):
                 self._texts[key] = self._cell_width(value)
 
-        # resize if too small or way too big
+        # resize if too small or way too big and above the minimum
         width = self.get_width()
         max_width = max(self._texts.values() or [width])
         if width < max_width:
             self.set_fixed_width(max_width)
             self.set_min_width(max_width)
-        elif width - max_width > 5:
+        elif (width - max_width >= self._single_char_width and
+                max_width >= self.__min_width):
             self.set_fixed_width(max_width)
             self.set_max_width(max_width)
 
@@ -284,8 +295,9 @@ class LengthColumn(NumericColumn):
 
     def __init__(self):
         super(LengthColumn, self).__init__("~#length")
-        self.set_fixed_width(self._cell_width(util.format_time(142)))
-        self.set_expand(False)
+
+    def _get_min_width(self):
+        return self._cell_width(util.format_time(60 * 10))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#length", 0)
@@ -300,6 +312,9 @@ class FilesizeColumn(NumericColumn):
 
     def __init__(self):
         super(FilesizeColumn, self).__init__("~#filesize")
+
+    def _get_min_width(self):
+        return self._cell_width(util.format_size(0))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#filesize", 0)
