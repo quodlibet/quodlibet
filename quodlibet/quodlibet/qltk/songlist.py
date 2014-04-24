@@ -475,6 +475,12 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         SongList.headers = headers
 
     def __column_width_changed(self, *args):
+        # make sure non resizable columns stay non expanding.
+        # gtk likes to change them sometimes
+        for c in self.get_columns():
+            if not c.get_resizable() and c.get_expand():
+                c.set_expand(False)
+
         widths = []
         for c in self.get_columns():
             if c.get_expand():
@@ -805,6 +811,10 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 # so the column doesn't give up all its space
                 # to the left over expanded columns
                 column.set_fixed_width(column.get_width())
+            else:
+                # in case we expand this seems to trigger a re-distribution
+                # between all expanded columns
+                column.set_fixed_width(-1)
             column.set_expand(do_expand)
             self.columns_autosize()
 
