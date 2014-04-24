@@ -90,9 +90,7 @@ class TextColumn(SongListColumn):
         self.pack_start(self._render, True)
         self.set_cell_data_func(self._render, self._cdf)
 
-        self.set_resizable(True)
         self.set_clickable(True)
-        self.set_min_width(self._cell_width("000"))
 
     def _cell_width(self, text, pad=14):
         """Returns the column width needed for the passed text"""
@@ -119,6 +117,7 @@ class RatingColumn(TextColumn):
         self.set_resizable(False)
         width = self._cell_width(util.format_rating(1.0))
         self.set_fixed_width(width)
+        self.set_min_width(width)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get(
@@ -137,6 +136,8 @@ class WideTextColumn(TextColumn):
         super(WideTextColumn, self).__init__(*args, **kwargs)
         self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
         self.set_expand(True)
+        self.set_resizable(True)
+        self.set_min_width(self._cell_width("000"))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         text = model.get_value(iter_).comma(self.header_name)
@@ -276,7 +277,7 @@ class NumericColumn(TextColumn):
         if self._timeout is not None:
             GLib.source_remove(self._timeout)
             self._timeout = None
-        self._timeout = GLib.timeout_add(25, self._delayed_recalc,
+        self._timeout = GLib.idle_add(self._delayed_recalc,
             priority=GLib.PRIORITY_LOW)
 
 
@@ -284,7 +285,7 @@ class LengthColumn(NumericColumn):
 
     def __init__(self):
         super(LengthColumn, self).__init__("~#length")
-        self.set_fixed_width(self._cell_width(""))
+        self.set_fixed_width(self._cell_width(util.format_time(142)))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#length", 0)
