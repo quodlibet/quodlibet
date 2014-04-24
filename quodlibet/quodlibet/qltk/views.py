@@ -838,6 +838,22 @@ class TreeViewColumn(Gtk.TreeViewColumn):
         label.show()
         self.set_widget(label)
 
+        # the button gets created once the widget gets realized
+        self._button = None
+        label.__realize = label.connect('realize', self.__realized)
+        self._tooltip_text = None
+
+    def __realized(self, widget):
+        widget.disconnect(widget.__realize)
+        self._button = widget.get_ancestor(Gtk.Button)
+        self.set_tooltip_text(self._tooltip_text)
+
+    def set_tooltip_text(self, text):
+        if self._button:
+            self._button.set_tooltip_text(text)
+        else:
+            self._tooltip_text = text
+
     def set_use_markup(self, value):
         widget = self.get_widget()
         if isinstance(widget, Gtk.Label):

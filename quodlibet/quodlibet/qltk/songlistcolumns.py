@@ -53,6 +53,7 @@ class SongListColumn(TreeViewColumnButton):
 
         title = self._format_title(tag)
         super(SongListColumn, self).__init__(title)
+        self.set_tooltip_text(title)
         self.header_name = tag
 
         self.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
