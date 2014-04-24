@@ -8,8 +8,9 @@
 
 import time
 import datetime
+from collections import deque
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import util
 from quodlibet import config
@@ -23,9 +24,7 @@ from quodlibet.formats._audio import FILESYSTEM_TAGS
 def create_songlist_column(t):
     """Returns a SongListColumn instance for the given tag"""
 
-    if t in ["tracknumber", "discnumber", "language"]:
-        return SimpleTextColumn(t)
-    elif t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
+    if t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
         return DateColumn(t)
     elif t in ["~length", "~#length"]:
         return LengthColumn()
@@ -65,14 +64,6 @@ class SongListColumn(TreeViewColumnButton):
 
         return util.tag(tag)
 
-    def set_width(self, width):
-        """Set the initial width.
-
-        If None is passed the column will try to set a reasonable default
-        """
-
-        pass
-
     def _needs_update(self, value):
         """Call to check if the last passed value was the same.
 
@@ -102,16 +93,12 @@ class TextColumn(SongListColumn):
         self.set_clickable(True)
         self.set_min_width(self._cell_width("000"))
 
-    def _cell_width(self, text, pad=12):
+    def _cell_width(self, text, pad=14):
         """Returns the column width needed for the passed text"""
 
         cell_pad = self._render.get_property('xpad')
         self.__label.set_text(text, -1)
         return self.__label.get_pixel_size()[0] + pad + cell_pad
-
-    def set_width(self, width):
-        if width is not None:
-            self.set_fixed_width(width)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         """CellRenderer cell_data_func"""
@@ -119,7 +106,36 @@ class TextColumn(SongListColumn):
         raise NotImplementedError
 
 
-class SimpleTextColumn(TextColumn):
+class RatingColumn(TextColumn):
+    """Render ~#rating directly
+
+    (simplifies filtering, saves a function call).
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(RatingColumn, self).__init__("~#rating", *args, **kwargs)
+        self.set_expand(False)
+        self.set_resizable(False)
+        width = self._cell_width(util.format_rating(1.0))
+        self.set_fixed_width(width)
+
+    def _cdf(self, column, cell, model, iter_, user_data):
+        value = model.get_value(iter_).get(
+            "~#rating", config.RATINGS.default)
+        if not self._needs_update(value):
+            return
+        cell.set_property('text', util.format_rating(value))
+
+
+class WideTextColumn(TextColumn):
+    """Resizable and ellipsized at the end. Used for any key with
+    a '~' in it, and 'title'.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(WideTextColumn, self).__init__(*args, **kwargs)
+        self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        self.set_expand(True)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         text = model.get_value(iter_).comma(self.header_name)
@@ -128,16 +144,8 @@ class SimpleTextColumn(TextColumn):
         cell.set_property('text', text)
 
 
-class DateColumn(TextColumn):
+class DateColumn(WideTextColumn):
     """The '~#' keys that are dates."""
-
-    def set_width(self, width):
-        if width is None:
-            today = datetime.datetime.now().date()
-            text = today.strftime('%x').decode(const.ENCODING)
-            width = self._cell_width(text)
-
-        self.set_fixed_width(width)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         stamp = model.get_value(iter_)(self.header_name)
@@ -159,38 +167,6 @@ class DateColumn(TextColumn):
             stamp = time.localtime(stamp)
             text = time.strftime(format_, stamp).decode(const.ENCODING)
             cell.set_property('text', text)
-
-
-class RatingColumn(TextColumn):
-    """Render ~#rating directly
-
-    (simplifies filtering, saves a function call).
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(RatingColumn, self).__init__("~#rating", *args, **kwargs)
-        width = self._cell_width(util.format_rating(1.0))
-        self.set_min_width(width)
-
-    def set_width(self, width):
-        pass
-
-    def _cdf(self, column, cell, model, iter_, user_data):
-        value = model.get_value(iter_).get(
-            "~#rating", config.RATINGS.default)
-        if not self._needs_update(value):
-            return
-        cell.set_property('text', util.format_rating(value))
-
-
-class WideTextColumn(SimpleTextColumn):
-    """Resizable and ellipsized at the end. Used for any key with
-    a '~' in it, and 'title'.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(WideTextColumn, self).__init__(*args, **kwargs)
-        self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
 
 class NonSynthTextColumn(WideTextColumn):
@@ -247,11 +223,13 @@ class NumericColumn(TextColumn):
         super(NumericColumn, self).__init__(*args, **kwargs)
         self._render.set_property('xalign', 1.0)
         self.set_alignment(1.0)
+        self.set_fixed_width(self._cell_width("12"))
 
-    def set_width(self, width):
-        if width is None:
-            width = self._cell_width('9999')
-        self.set_fixed_width(width)
+        self.set_expand(False)
+        self.set_resizable(False)
+
+        self._texts = {}
+        self._timeout = None
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).comma(self.header_name)
@@ -259,12 +237,53 @@ class NumericColumn(TextColumn):
             return
         text = unicode(value)
         cell.set_property('text', text)
+        self._recalc_width(model.get_path(iter_), text)
+
+    def _delayed_recalc(self):
+        self._timeout = None
+
+        tv = self.get_tree_view()
+        if not tv:
+            return
+        range_ = tv.get_visible_range()
+        if not range_:
+            return
+
+        start, end = range_
+        start = start[0]
+        end = end[0]
+
+        # compute the cell width for all drawn cells in range +/- 3
+        for key, value in self._texts.items():
+            if not (start - 3) <= key <= (end + 3):
+                del self._texts[key]
+            elif isinstance(value, basestring):
+                self._texts[key] = self._cell_width(value)
+
+        # resize if too small or way too big
+        width = self.get_width()
+        max_width = max(self._texts.values() or [width])
+        if width < max_width:
+            self.set_fixed_width(max_width)
+            self.set_min_width(max_width)
+        elif width - max_width > 5:
+            self.set_fixed_width(max_width)
+            self.set_max_width(max_width)
+
+    def _recalc_width(self, path, text):
+        self._texts[path[0]] = text
+        if self._timeout is not None:
+            GLib.source_remove(self._timeout)
+            self._timeout = None
+        self._timeout = GLib.timeout_add(25, self._delayed_recalc,
+            priority=GLib.PRIORITY_LOW)
 
 
 class LengthColumn(NumericColumn):
 
     def __init__(self):
         super(LengthColumn, self).__init__("~#length")
+        self.set_fixed_width(self._cell_width(""))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#length", 0)
@@ -272,6 +291,7 @@ class LengthColumn(NumericColumn):
             return
         text = util.format_time(value)
         cell.set_property('text', text)
+        self._recalc_width(model.get_path(iter_), text)
 
 
 class FilesizeColumn(NumericColumn):
@@ -285,3 +305,4 @@ class FilesizeColumn(NumericColumn):
             return
         text = util.format_size(value)
         cell.set_property('text', text)
+        self._recalc_width(model.get_path(iter_), text)

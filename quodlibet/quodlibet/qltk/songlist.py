@@ -477,8 +477,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
     def __column_width_changed(self, *args):
         widths = []
         for c in self.get_columns():
-            if c.get_fixed_width() >= 0:
-                widths.extend((c.header_name, str(c.get_fixed_width())))
+            width = c.get_width()
+            if width > 0:
+                widths.extend((c.header_name, str(width)))
         config.setstringlist("memory", "column_widths", widths)
 
     @classmethod
@@ -769,8 +770,9 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
 
         for t in headers:
             column = create_songlist_column(t)
-            width = column_widths.get(t)
-            column.set_width(width)
+            if t in column_widths and column.get_resizable():
+                column.set_fixed_width(column_widths[t])
+                column.set_expand(True)
 
             column.connect('clicked', self.set_sort_by)
             column.connect('button-press-event', self.__showmenu)
@@ -779,6 +781,7 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
             column.set_reorderable(True)
             self.append_column(column)
 
+        self.columns_autosize()
         if old_sort:
             header, order = old_sort
             self.set_sort_by(None, header, order, False)
