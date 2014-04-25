@@ -482,11 +482,14 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
                 c.set_expand(False)
 
         widths = []
+        expands = []
         for c in self.get_columns():
-            if c.get_expand():
+            if not c.get_resizable():
                 continue
-            widths.extend((c.header_name, str(c.get_width())))
+            widths.extend((c.header_name, str(c.get_fixed_width())))
+            expands.extend((c.header_name, str(int(c.get_expand()))))
         config.setstringlist("memory", "column_widths", widths)
+        config.setstringlist("memory", "column_expands", expands)
 
     @classmethod
     def set_all_column_headers(cls, headers):
@@ -774,13 +777,18 @@ class SongList(AllTreeView, DragScroll, util.InstanceTracker):
         for i in range(0, len(cws), 2):
             column_widths[cws[i]] = int(cws[i + 1])
 
+        ce = config.getstringlist("memory", "column_expands")
+        column_expands = {}
+        for i in range(0, len(ce), 2):
+            column_expands[ce[i]] = int(ce[i + 1])
+
         for t in headers:
             column = create_songlist_column(t)
             if column.get_resizable():
                 if t in column_widths:
                     column.set_fixed_width(column_widths[t])
-                else:
-                    column.set_expand(True)
+                if t in column_expands:
+                    column.set_expand(column_expands[t])
 
             column.connect('clicked', self.set_sort_by)
             column.connect('button-press-event', self.__showmenu)

@@ -50,6 +50,7 @@ INITIAL = {
         "order": "inorder",
         "plugin_selection": "", # selected plugin in manager
         "column_widths": "", # column widths in c1,w1,c2,w2... format
+        "column_expands": "",
     },
     "browsers": {
         "query_text": "", # none/search bar text
