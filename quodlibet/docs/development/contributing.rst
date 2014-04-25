@@ -17,7 +17,7 @@ if you use a newer version, reverting to an older version could lead to
 errors and data loss. So always backup your :ref:`config 
 files<ConfigFiles>` if you plan to downgrade at a later point.
 
-You can find find development packages in the :ref:`download section
+You can find development packages in the :ref:`download section
 <Downloads>` .
 
 
