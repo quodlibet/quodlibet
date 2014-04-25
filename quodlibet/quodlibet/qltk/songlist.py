@@ -797,6 +797,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                     column.set_fixed_width(column_widths[t])
                 if t in column_expands:
                     column.set_expand(column_expands[t])
+                else:
+                    column.set_expand(True)
 
             column.connect('clicked', self.set_sort_by)
             column.connect('button-press-event', self.__showmenu)
