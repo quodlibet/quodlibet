@@ -818,28 +818,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu = Gtk.Menu()
         menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
 
-        item = Gtk.CheckMenuItem(label=_("_Expand"), use_underline=True)
-        item.set_active(column.get_expand())
-        item.set_sensitive(column.get_resizable())
-
-        def set_expand_cb(item, column):
-            do_expand = item.get_active()
-            if not do_expand:
-                # in case we unexpand, get the current width and set it
-                # so the column doesn't give up all its space
-                # to the left over expanded columns
-                column.set_fixed_width(column.get_width())
-            else:
-                # in case we expand this seems to trigger a re-distribution
-                # between all expanded columns
-                column.set_fixed_width(-1)
-            column.set_expand(do_expand)
-            self.columns_autosize()
-
-        item.connect('activate', set_expand_cb, column)
-        item.show()
-        menu.append(item)
-
         sep = SeparatorMenuItem()
         sep.show()
         menu.append(sep)
@@ -914,6 +892,28 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         custom.show()
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)
+
+        item = Gtk.CheckMenuItem(label=_("_Expand"), use_underline=True)
+        item.set_active(column.get_expand())
+        item.set_sensitive(column.get_resizable())
+
+        def set_expand_cb(item, column):
+            do_expand = item.get_active()
+            if not do_expand:
+                # in case we unexpand, get the current width and set it
+                # so the column doesn't give up all its space
+                # to the left over expanded columns
+                column.set_fixed_width(column.get_width())
+            else:
+                # in case we expand this seems to trigger a re-distribution
+                # between all expanded columns
+                column.set_fixed_width(-1)
+            column.set_expand(do_expand)
+            self.columns_autosize()
+
+        item.connect('activate', set_expand_cb, column)
+        item.show()
+        menu.append(item)
 
         return menu
 
