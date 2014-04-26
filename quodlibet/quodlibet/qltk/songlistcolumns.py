@@ -318,7 +318,7 @@ class FilesizeColumn(NumericColumn):
 
     def _get_min_width(self):
         # e.g "2.22 MB"
-        return self._cell_width(util.format_size(2.22 * 1024**2))
+        return self._cell_width(util.format_size(2.22 * (1024 ** 2)))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#filesize", 0)
