@@ -850,7 +850,8 @@ class TreeViewColumn(Gtk.TreeViewColumn):
 
     def set_tooltip_text(self, text):
         if self._button:
-            self._button.set_tooltip_text(text)
+            # gtk3.4: set_tooltip_text didn't allow None
+            self._button.props.tooltip_text = text
         else:
             self._tooltip_text = text
 
