@@ -1,6 +1,6 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
-#      2011-2013 Nick Boultbee
+#      2011-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -240,7 +240,9 @@ class NumericColumn(TextColumn):
     def _get_min_width(self):
         """Give the initial and minimum width. override if needed"""
 
-        return self._cell_width("123")
+        # Best efforts for the general minimum width case
+        # Allows well for >=1000 Kbps, -12.34 dB RG values, "Length" etc
+        return self._cell_width("-22.22")
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).comma(self.header_name)
@@ -297,7 +299,8 @@ class LengthColumn(NumericColumn):
         super(LengthColumn, self).__init__("~#length")
 
     def _get_min_width(self):
-        return self._cell_width(util.format_time(60 * 10))
+        # 1:22:22, allows entire albums as files (< 75mins)
+        return self._cell_width(util.format_time(60 * 82 + 22))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#length", 0)
@@ -314,7 +317,8 @@ class FilesizeColumn(NumericColumn):
         super(FilesizeColumn, self).__init__("~#filesize")
 
     def _get_min_width(self):
-        return self._cell_width(util.format_size(0))
+        # e.g "2.22 MB"
+        return self._cell_width(util.format_size(2.22 * 1024**2))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#filesize", 0)
