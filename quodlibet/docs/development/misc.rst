@@ -26,7 +26,7 @@ Useful Specifications
 
     * Code:
           * `PEP-8, style guidelines for Python code <http://www.python.org/dev/peps/pep-0008/>`_
-          * `GNOME Human Interface Guidelines <http://developer.gnome.org/projects/gup/hig/2.0/>`_
+          * `GNOME Human Interface Guidelines <http://developer.gnome.org/hig-book/>`_
     * File Formats:
           * `APEv2 tag specification <http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification>`_
           * `MP3/ID3 <http://www.id3.org/>`_:
