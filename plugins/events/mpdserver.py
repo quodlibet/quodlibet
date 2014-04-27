@@ -4,7 +4,6 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-import os
 import re
 import shlex
 import socket
@@ -15,87 +14,19 @@ from quodlibet.plugins.events import EventPlugin
 from gi.repository import Gtk, Gio, GLib
 
 
-def pack_list(data):
-    l = []
-    for k, v in data:
-        l.append("%s: %s\n" % (k, v))
-    return "".join(l)
-
-
-def handle_line(line):
-    try:
-        command, args = parse_command(line)
-    except ParseError:
-        return "ACK [42@0] {unknown} couldn't parse command %r\n" % line
-
-    if command == "play":
-        app.player.paused = False
-        return "OK\n"
-
-    if command == "pause":
-        app.player.paused = True
-        return "OK\n"
-
-    if command == "next":
-        app.player.next()
-        return "OK\n"
-
-    if command == "previous":
-        app.player.previous()
-        return "OK\n"
-
-    if command == "setvol":
-        if args:
-            try:
-                volume = int(args[0]) / 100.0
-            except ValueError:
-                pass
-            else:
-                app.player.volume = volume
-        return "OK\n"
-
-    if command == "idle":
-        return None
-
-    if command == "status":
-        data = pack_list([
-            ['repeat', 0],
-            ['random', 0],
-            ['single', 0],
-            ['consume', 0],
-            ['playlist', 0],
-            ['playlistlength', 0],
-            ['xfade', 0],
-            ['state', "stop" if app.player.paused else "play"],
-            ["song", 0],
-            ["songid", 0],
-            ["time", "0"],
-            ["volume", int(app.player.volume * 100)],
-        ])
-
-        return data + "OK\n"
-    elif command == "currentsong":
-        data = pack_list([
-            ["file", "/dev/null"],
-            ['Artist', "artist"],
-            ['Title', "title"],
-            ['Album', "album"],
-            ['Track', "track"],
-            ['Genre', "genre"],
-            ['Pos', "1"],
-            ['Id', "42"],
-        ])
-
-        return data + "OK\n"
-    elif command == "count":
-        data = pack_list([
-            ["songs", "0"],
-            ['playtime', "0"],
-        ])
-
-        return data + "OK\n"
-    else:
-        return "OK\n"
+class AckError(object):
+    NOT_LIST = 1
+    ARG = 2
+    PASSWORD = 3
+    PERMISSION = 4
+    UNKNOWN = 5
+    NO_EXIST = 50
+    PLAYLIST_MAX = 51
+    SYSTEM = 52
+    PLAYLIST_LOAD = 53
+    UPDATE_ALREADY = 54
+    PLAYER_SYNC = 55
+    EXIST = 56
 
 
 class ParseError(Exception):
@@ -141,25 +72,140 @@ def parse_command(line):
     return command, dec_args
 
 
-class BaseConnection(object):
+class BaseTCPServer(object):
 
-    connections = []
-    """all open connections"""
+    def __init__(self, port, connection_class):
+        """port -- IP port
+        connection_class -- BaseTCPConnection subclass
+        """
 
-    def __init__(self, sock):
+        self._connections = []
+
+        service = Gio.SocketService.new()
+        service.add_inet_port(port, None) # FIXME: can raise
+        service.connect("incoming", self._incoming_connection_cb)
+        self._sock_service = service
+        self.connection_class = connection_class
+
+    def start(self):
+        """Start accepting connections"""
+
+        self._sock_service.start()
+
+    def stop(self):
+        """Stop accepting connections and close all existing connections"""
+
+        if self._sock_service.is_active():
+            self._sock_service.stop()
+
+        for conn in list(self._connections):
+            conn.close()
+
+        assert not self._connections, self._connections
+
+    def _remove_connection(self, conn):
+        """Called by the connection class on close"""
+
+        self._connections.remove(conn)
+        del conn._gio_connection
+
+    def _incoming_connection_cb(self, service, connection, *args):
+        fd = connection.get_socket().get_fd()
+        sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
+        sock.setblocking(0)
+
+        tcp_conn = self.connection_class(self, sock)
+        self._connections.append(tcp_conn)
+        # XXX: set unneeded `connection` to keep the reference
+        tcp_conn._gio_connection = connection
+        tcp_conn.handle_init(self)
+
+
+class BaseTCPConnection(object):
+    """Abstract base class for TCP connections.
+
+    Subclasses need to implement the handle_*() can_*() methods.
+    """
+
+    def __init__(self, server, sock):
+        self._server = server
+        self._sock = sock
+
         self._in_id = None
         self._out_id = None
-        self.sock = sock
-        self.connections.append(self)
         self._closed = False
 
-    @classmethod
-    def close_all(cls):
-        for conn in cls.connections:
-            conn.close()
-        del cls.connections[:]
+    def start_read(self):
+        """Start to read and call handle_read() if data is available.
+
+        Only call once.
+        """
+
+        assert self._in_id is None
+
+        def can_read_cb(sock, flags, *args):
+            if flags & (GLib.IOCondition.HUP | GLib.IOCondition.ERR):
+                self.close()
+                return False
+
+            if flags & GLib.IOCondition.IN:
+                data = sock.recv(4096)
+                # FIXME: handle eagain etc.
+                if not data:
+                    self.close()
+                    return False
+
+                self.handle_read(data)
+                self.start_write()
+
+            return True
+
+        self._in_id = GLib.io_add_watch(
+            self._sock, GLib.PRIORITY_DEFAULT,
+            GLib.IOCondition.IN | GLib.IOCondition.ERR | GLib.IOCondition.HUP,
+            can_read_cb)
+
+    def start_write(self):
+        """Trigger at least one call to handle_write() if can_write is True.
+
+        Used to start writing to a client not triggered by a client request.
+        """
+
+        write_buffer = bytearray()
+
+        def can_write_cb(sock, flags, *args):
+            if flags & (GLib.IOCondition.HUP | GLib.IOCondition.ERR):
+                self.close()
+                return False
+
+            if flags & GLib.IOCondition.OUT:
+                if self.can_write():
+                    write_buffer.extend(self.handle_write())
+                if not write_buffer:
+                    self._out_id = None
+                    return False
+
+                result = sock.send(write_buffer)
+                # FIXME: handle error
+                del write_buffer[:result]
+
+            return True
+
+        if self._out_id is None:
+            self._out_id = GLib.io_add_watch(
+                self._sock, GLib.PRIORITY_DEFAULT,
+                GLib.IOCondition.OUT | GLib.IOCondition.ERR |
+                GLib.IOCondition.HUP,
+                can_write_cb)
 
     def close(self):
+        """Close this connection. Can be called multiple times.
+
+        handle_close() will be called last.
+        """
+
+        if self._closed:
+            return
         self._closed = True
 
         if self._in_id is not None:
@@ -169,59 +215,336 @@ class BaseConnection(object):
             GLib.source_remove(self._out_id)
             self._out_id = None
 
-        if self._closed:
-            return
         self.handle_close()
-        self.connections.remove(self)
-        self.sock.close()
+        self._server._remove_connection(self)
+        self._sock.close()
 
     def handle_init(self, server):
+        """Called first, gets passed the BaseServer instance"""
+
         raise NotImplementedError
 
     def handle_read(self, data):
+        """Called if new data was read"""
+
         raise NotImplementedError
 
     def handle_write(self):
+        """Called if new data can be written, should return the data"""
+
         raise NotImplementedError
 
     def can_write(self):
+        """Should return True if handle_write() can return data"""
+
         raise NotImplementedError
 
     def handle_close(self):
+        """Called last when the connection gets closed"""
+
         raise NotImplementedError
 
 
-class MPDServer(object):
-    """not much"""
+class MPDService(object):
+    """This is the actual shared MPD service which the clients talk to"""
 
-    version = (0, 12)
+    version = (0, 17)
+
+    def play(self):
+        app.player.paused = False
+
+    def pause(self):
+        app.player.paused = True
+
+    def stop(self):
+        app.player.stop()
+
+    def next(self):
+        app.player.next()
+
+    def previous(self):
+        app.player.previous()
+
+    def setvol(self, value):
+        """value: 0..100"""
+
+        app.player.volume = value / 100.0
+
+    def repeat(self, value):
+        app.window.repeat.set_active(value)
+
+    def status(self):
+        status = [
+            ("volume", int(app.player.volume * 100)),
+            ("repeat", int(app.window.repeat.get_active())),
+            ("random", 0),
+            ("single", 0),
+            ("consume", 0),
+            ("playlist", 1),
+            ("playlistlength", 1),
+            ("state", "stop" if app.player.paused else "play"),
+            ("song", 1),
+            ("songid", 1),
+            ("nextsong", 1),
+            ("nextsongid", 1),
+            ("time", int(app.player.get_position() / 1000)),
+            ("elapsed", int(app.player.get_position())),
+        ]
+
+        return status
+
+    def currentsong(self):
+        song = app.player.info
+        if song is None:
+            return None
+
+        stats = [
+            ("file", song["~filename"]),
+            ("Time", song("~#length")),
+            ("Artist", song.comma("artist")),
+            ("Title", song.comma("title")),
+            ("Album", song.comma("album")),
+        ]
+
+        return stats
 
 
-class MPDConnection(BaseConnection):
+class MPDServer(BaseTCPServer):
+
+    def __init__(self, port):
+        super(MPDServer, self).__init__(port, MPDConnection)
+        self.service = MPDService()
+
+
+class MPDConnection(BaseTCPConnection):
+
+    #  ------------ connection interface  ------------
 
     def handle_init(self, server):
-        str_version = ".".join(map(str, server.version))
-        self.buf = bytearray("OK MPD %s\n" % str_version)
+        service = server.service
+        self.service = service
+
+        str_version = ".".join(map(str, service.version))
+        self._buf = bytearray("OK MPD %s\n" % str_version)
+        self._read_buf = bytearray()
+
+        # begin - command processing state
+        self._use_command_list = False
+        # everything below is only valid if _use_command_list is True
+        self._command_list_ok = False
+        self._command_list_error = False
+        self._index = None
+        self._command_list = []
+        self._command = None
+        # end - command processing state
+
+        self.start_write()
+        self.start_read()
 
     def handle_read(self, data):
-        # FIXME: everything
-        try:
-            resp = handle_line(data.splitlines()[0])
-        except ParseError:
+        self._feed_data(data)
+
+        line = self._get_next_line()
+        if line is None:
             return
-        if resp is not None:
-            self.buf.extend(resp)
+
+        try:
+            cmd, args = parse_command(line)
+        except ParseError:
+            # TODO: not sure what to do here re command lists
+            return
+
+        self._handle_command(cmd, args)
 
     def handle_write(self):
-        data = self.buf[:]
-        del self.buf[:]
+        data = self._buf[:]
+        del self._buf[:]
         return data
 
     def can_write(self):
-        return bool(self.buf)
+        return bool(self._buf)
 
     def handle_close(self):
+        del self.service
+
+    #  ------------ rest ------------
+
+    def _feed_data(self, new_data):
+        """Feed new data into the read buffer"""
+
+        self._read_buf.extend(new_data)
+
+    def _get_next_line(self):
+        """Returns the next line from the read buffer or None"""
+
+        try:
+            index = self._read_buf.index("\n")
+        except ValueError:
+            return None, []
+
+        line = bytes(self._read_buf[:index])
+        del self._read_buf[:index + 1]
+        return line
+
+    def _write_line(self, line):
+        """Writes a line to the client"""
+
+        assert isinstance(line, unicode)
+
+        self._buf.extend(line.encode("utf-8", errors="replace") + "\n")
+
+    def _ok(self):
+        self._write_line(u"OK")
+
+    def _error(self, msg=None, code=AckError.UNKNOWN):
+        self._command_list_error = True
+
+        error = []
+        error.append(u"ACK [%d" % code)
+        if self._use_command_list:
+            assert self._index is not None
+            error.append(u"@%d" % self._index)
+        assert self._command is not None
+        error.append("u] {%s}" % self._command)
+        if msg is not None:
+            error.append(u" %s" % msg)
+        self._write_line(u"".join(error))
+
+    def _handle_command(self, command, args):
+        self._command = command
+
+        if command == u"command_list_end":
+            if not self._use_command_list:
+                self._error(u"list_end without begin")
+                return
+
+            self._command_list_error = False
+            for i, (cmd, args) in enumerate(self._command_list):
+                self._index = i
+                self._exec_command(cmd, args)
+                if self._command_list_error:
+                    break
+                elif self._command_list_ok:
+                    self._write_line(U"list_OK")
+
+            if not self._command_list_error:
+                self._ok()
+
+            self._use_command_list = False
+            del self._command_list[:]
+            return
+
+        if command in (u"command_list_begin", u"command_list_ok_begin"):
+            if self._use_command_list:
+                self._use_command_list = False
+                self._error(u"begin without end")
+            else:
+                self._use_command_list = True
+                if command == u"command_list_ok_begin":
+                    self._command_list_ok = True
+                else:
+                    self._command_list_ok = False
+                self._command_list_error = False
+                assert not self._command_list
+            return
+
+        if self._use_command_list:
+            self._command_list.append((command, args))
+        else:
+            self._exec_command(command, args)
+
+    def _exec_command(self, command, args):
+        try:
+            cmd_method = getattr(self, u"_cmd_" + command)
+        except AttributeError:
+            # Unhandled command, default to OK for now..
+            self._ok()
+            return
+
+        self._command = command
+        cmd_method(args)
+
+    def _cmd_idle(self, args):
+        # TODO: register for events
         pass
+
+    def _cmd_close(self, args):
+        self.close()
+
+    def _cmd_play(self, args):
+        self.service.play()
+        self._ok()
+
+    def _cmd_pause(self, args):
+        self.service.pause()
+        self._ok()
+
+    def _cmd_stop(self, args):
+        self.service.stop()
+        self._ok()
+
+    def _cmd_next(self, args):
+        self.service.next()
+        self._ok()
+
+    def _cmd_previous(self, args):
+        self.service.previous()
+        self._ok()
+
+    def _cmd_repeat(self, args):
+        if not args:
+            self._error("missing arg")
+            return
+
+        try:
+            value = int(args[0])
+            if value not in (0, 1):
+                raise ValueError
+        except ValueError:
+            self._error("invalid arg")
+        else:
+            self.service.repeat(value)
+            self._ok()
+
+    def _cmd_setvol(self, args):
+        if not args:
+            self._error("missing arg")
+            return
+
+        try:
+            value = int(args[0])
+        except ValueError:
+            self._error("invalid arg")
+        else:
+            self.service.setvol(value)
+            self._ok()
+
+    def _cmd_ping(self, args):
+        self._ok()
+
+    def _cmd_status(self, args):
+        status = self.service.status()
+        for k, v in status:
+            self._write_line(u"%s: %s" % (k, v))
+        self._ok()
+
+    def _cmd_currentsong(self, args):
+        stats = self.service.currentsong()
+        if stats is None:
+            self._ok()
+            return
+
+        for k, v in stats:
+            self._write_line(u"%s: %s" % (k, v))
+        self._ok()
+
+    def _cmd_count(self, args):
+        self._write_line(u"songs: 0")
+        self._write_line(u"playtime: 0")
+        self._ok()
+
+    def _cmd_plchanges(self, args):
+        self._cmd_currentsong(args)
 
 
 class MPDServerPlugin(EventPlugin):
@@ -233,79 +556,9 @@ class MPDServerPlugin(EventPlugin):
     PORT = 6600
 
     def enabled(self):
-        self.server = MPDServer()
-        service = Gio.SocketService.new()
-        service.add_inet_port(self.PORT, None) # FIXME: can raise
-        service.connect("incoming", self._incoming_connection_cb)
-        self.service = service
-        service.start()
+        self.server = MPDServer(self.PORT)
+        self.server.start()
 
     def disabled(self):
-        if self.service.is_active():
-            self.service.stop()
-        del self.service
-
-        BaseConnection.close_all()
+        self.server.stop()
         del self.server
-
-    def _incoming_connection_cb(self, service, connection, *args):
-        fd = connection.get_socket().get_fd()
-        sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
-        sock.setblocking(0)
-
-        mpd = MPDConnection(sock)
-        mpd.handle_init(self.server)
-
-        write_buffer = bytearray()
-
-        def can_write_cb(sock, flags, *args):
-            if flags & (GLib.IOCondition.HUP | GLib.IOCondition.ERR):
-                mpd.close()
-                return False
-
-            if flags & GLib.IOCondition.OUT:
-                if mpd.can_write():
-                    write_buffer.extend(mpd.handle_write())
-                if not write_buffer:
-                    mpd._out_id = None
-                    return False
-
-                result = sock.send(write_buffer)
-                # FIXME: handle error
-                del write_buffer[:result]
-
-            return True
-
-        def can_read_cb(sock, flags, *args):
-            if flags & (GLib.IOCondition.HUP | GLib.IOCondition.ERR):
-                mpd.close()
-                return False
-
-            if flags & GLib.IOCondition.IN:
-                data = sock.recv(4096)
-                # FIXME: handle eagain etc.
-                if not data:
-                    mpd.close()
-                    return False
-
-                mpd.handle_read(data)
-
-                if mpd._out_id is None and mpd.can_write():
-                    mpd._out_id = GLib.io_add_watch(
-                        sock, 0,
-                        GLib.IOCondition.OUT | GLib.IOCondition.ERR |
-                            GLib.IOCondition.HUP,
-                        can_write_cb)
-
-            return True
-
-        # pass unneeded `connection` to keep the reference
-        mpd._in_id = GLib.io_add_watch(
-            sock, 0,
-            GLib.IOCondition.IN | GLib.IOCondition.ERR | GLib.IOCondition.HUP,
-            can_read_cb, connection)
-
-        mpd._out_id = GLib.io_add_watch(
-            sock, 0,
-            GLib.IOCondition.OUT | GLib.IOCondition.ERR | GLib.IOCondition.HUP,
-            can_write_cb)
