@@ -14,6 +14,9 @@ from quodlibet.plugins.events import EventPlugin
 from gi.repository import Gtk, Gio, GLib
 
 
+DEBUG = False
+
+
 class AckError(object):
     NOT_LIST = 1
     ARG = 2
@@ -135,6 +138,10 @@ class BaseTCPConnection(object):
         self._out_id = None
         self._closed = False
 
+    def log(self, msg):
+        if DEBUG:
+            print_d("[%d] %s" % (self._sock.fileno(), msg))
+
     def start_read(self):
         """Start to read and call handle_read() if data is available.
 
@@ -248,10 +255,16 @@ class BaseTCPConnection(object):
 class MPDService(object):
     """This is the actual shared MPD service which the clients talk to"""
 
-    version = (0, 17)
+    version = (0, 12)
+
+    def __init__(self):
+        self._id = 0
 
     def play(self):
-        app.player.paused = False
+        if not app.player.song:
+            app.player.reset()
+        else:
+            app.player.paused = False
 
     def pause(self):
         app.player.paused = True
@@ -261,9 +274,28 @@ class MPDService(object):
 
     def next(self):
         app.player.next()
+        self._id += 1
 
     def previous(self):
         app.player.previous()
+        self._id += 1
+
+    def seek(self, songpos, time_):
+        """time_ in seconds"""
+
+        app.player.seek(time_ * 1000)
+
+    def seekid(self, songid, time_):
+        """time_ in seconds"""
+
+        app.player.seek(time_ * 1000)
+
+    def seekcur(self, value, relative):
+        if relative:
+            pos = app.player.get_position()
+            app.player.seek(pos + value)
+        else:
+            app.player.seek(value)
 
     def setvol(self, value):
         """value: 0..100"""
@@ -273,22 +305,46 @@ class MPDService(object):
     def repeat(self, value):
         app.window.repeat.set_active(value)
 
+    def stats(self):
+        stats = [
+            ("artists", 1),
+            ("albums", 1),
+            ("songs", 1),
+            ("uptime", 1),
+            ("playtime", 1),
+            ("db_playtime", 1),
+            ("db_update", 1252868674),
+        ]
+
+        return stats
+
     def status(self):
+        info = app.player.info
+
+        if info:
+            if app.player.paused:
+                state = "pause"
+            else:
+                state = "play"
+        else:
+            state = "stop"
+
         status = [
             ("volume", int(app.player.volume * 100)),
             ("repeat", int(app.window.repeat.get_active())),
             ("random", 0),
             ("single", 0),
             ("consume", 0),
-            ("playlist", 1),
-            ("playlistlength", 1),
-            ("state", "stop" if app.player.paused else "play"),
-            ("song", 1),
-            ("songid", 1),
-            ("nextsong", 1),
-            ("nextsongid", 1),
-            ("time", int(app.player.get_position() / 1000)),
-            ("elapsed", int(app.player.get_position())),
+            ("playlist", 0),
+            ("playlistlength", 0),
+            ("state", state),
+            ("song", self._id),
+            ("songid", self._id),
+            ("nextsong", self._id + 1),
+            ("nextsongid", self._id + 1),
+            ("time", "%d:%d" % (
+                int(app.player.get_position() / 1000),
+                info and info("~#length") or 0)),
         ]
 
         return status
@@ -304,6 +360,8 @@ class MPDService(object):
             ("Artist", song.comma("artist")),
             ("Title", song.comma("title")),
             ("Album", song.comma("album")),
+            ("Pos", self._id),
+            ("Id", self._id),
         ]
 
         return stats
@@ -314,6 +372,14 @@ class MPDServer(BaseTCPServer):
     def __init__(self, port):
         super(MPDServer, self).__init__(port, MPDConnection)
         self.service = MPDService()
+
+
+class MPDRequestError(Exception):
+
+    def __init__(self, msg, code=AckError.UNKNOWN, index=None):
+        self.msg = msg
+        self.code = code
+        self.index = index
 
 
 class MPDConnection(BaseTCPConnection):
@@ -332,8 +398,6 @@ class MPDConnection(BaseTCPConnection):
         self._use_command_list = False
         # everything below is only valid if _use_command_list is True
         self._command_list_ok = False
-        self._command_list_error = False
-        self._index = None
         self._command_list = []
         self._command = None
         # end - command processing state
@@ -348,13 +412,20 @@ class MPDConnection(BaseTCPConnection):
         if line is None:
             return
 
+        self.log(repr(line))
+
         try:
             cmd, args = parse_command(line)
         except ParseError:
             # TODO: not sure what to do here re command lists
             return
 
-        self._handle_command(cmd, args)
+        try:
+            self._handle_command(cmd, args)
+        except MPDRequestError as e:
+            self._error(e.msg, e.code, e.index)
+            self._use_command_list = False
+            del self._command_list[:]
 
     def handle_write(self):
         data = self._buf[:]
@@ -396,14 +467,11 @@ class MPDConnection(BaseTCPConnection):
     def _ok(self):
         self._write_line(u"OK")
 
-    def _error(self, msg=None, code=AckError.UNKNOWN):
-        self._command_list_error = True
-
+    def _error(self, msg, code, index):
         error = []
         error.append(u"ACK [%d" % code)
-        if self._use_command_list:
-            assert self._index is not None
-            error.append(u"@%d" % self._index)
+        if index is not None:
+            error.append(u"@%d" % index)
         assert self._command is not None
         error.append("u] {%s}" % self._command)
         if msg is not None:
@@ -418,34 +486,28 @@ class MPDConnection(BaseTCPConnection):
                 self._error(u"list_end without begin")
                 return
 
-            self._command_list_error = False
             for i, (cmd, args) in enumerate(self._command_list):
-                self._index = i
-                self._exec_command(cmd, args)
-                if self._command_list_error:
-                    break
-                elif self._command_list_ok:
+                try:
+                    self._exec_command(cmd, args)
+                except MPDRequestError as e:
+                    # reraise with index
+                    raise MPDRequestError(e.msg, e.code, i)
+
+                if self._command_list_ok:
                     self._write_line(U"list_OK")
 
-            if not self._command_list_error:
-                self._ok()
-
+            self._ok()
             self._use_command_list = False
             del self._command_list[:]
             return
 
         if command in (u"command_list_begin", u"command_list_ok_begin"):
             if self._use_command_list:
-                self._use_command_list = False
-                self._error(u"begin without end")
-            else:
-                self._use_command_list = True
-                if command == u"command_list_ok_begin":
-                    self._command_list_ok = True
-                else:
-                    self._command_list_ok = False
-                self._command_list_error = False
-                assert not self._command_list
+                raise MPDRequestError(u"begin without end")
+
+            self._use_command_list = True
+            self._command_list_ok = command == u"command_list_ok_begin"
+            assert not self._command_list
             return
 
         if self._use_command_list:
@@ -454,6 +516,8 @@ class MPDConnection(BaseTCPConnection):
             self._exec_command(command, args)
 
     def _exec_command(self, command, args):
+        self._command = command
+
         try:
             cmd_method = getattr(self, u"_cmd_" + command)
         except AttributeError:
@@ -461,7 +525,6 @@ class MPDConnection(BaseTCPConnection):
             self._ok()
             return
 
-        self._command = command
         cmd_method(args)
 
     def _cmd_idle(self, args):
@@ -493,37 +556,41 @@ class MPDConnection(BaseTCPConnection):
 
     def _cmd_repeat(self, args):
         if not args:
-            self._error("missing arg")
-            return
+            raise MPDRequestError("missing arg")
 
         try:
             value = int(args[0])
             if value not in (0, 1):
                 raise ValueError
         except ValueError:
-            self._error("invalid arg")
-        else:
-            self.service.repeat(value)
-            self._ok()
+            raise MPDRequestError("invalid arg")
+
+        self.service.repeat(value)
+        self._ok()
 
     def _cmd_setvol(self, args):
         if not args:
-            self._error("missing arg")
-            return
+            raise MPDRequestError("missing arg")
 
         try:
             value = int(args[0])
         except ValueError:
-            self._error("invalid arg")
-        else:
-            self.service.setvol(value)
-            self._ok()
+            raise MPDRequestError("invalid arg")
+
+        self.service.setvol(value)
+        self._ok()
 
     def _cmd_ping(self, args):
         self._ok()
 
     def _cmd_status(self, args):
         status = self.service.status()
+        for k, v in status:
+            self._write_line(u"%s: %s" % (k, v))
+        self._ok()
+
+    def _cmd_stats(self, args):
+        status = self.service.stats()
         for k, v in status:
             self._write_line(u"%s: %s" % (k, v))
         self._ok()
@@ -545,6 +612,56 @@ class MPDConnection(BaseTCPConnection):
 
     def _cmd_plchanges(self, args):
         self._cmd_currentsong(args)
+
+    def _cmd_listallinfo(self, args):
+        self._cmd_currentsong(args)
+
+    def _cmd_seek(self, args):
+        if len(args) != 2:
+            raise MPDRequestError("wrong arg count")
+
+        songpos, time_ = args
+
+        try:
+            songpos = int(songpos)
+            time_ = int(time_)
+        except ValueError:
+            raise MPDRequestError("arg not a number")
+
+        self.service.seek(songpos, time_)
+        self._ok()
+
+    def _cmd_seekid(self, args):
+        if len(args) != 2:
+            raise MPDRequestError("wrong arg count")
+
+        songid, time_ = args
+
+        try:
+            songid = int(songid)
+            time_ = int(time_)
+        except ValueError:
+            raise MPDRequestError("arg not a number")
+
+        self.service.seekid(songid, time_)
+        self._ok()
+
+    def _cmd_seekcur(self, args):
+        if len(args) != 1:
+            raise MPDRequestError("wrong arg count")
+
+        relative = False
+        time_ = args[0]
+        if time_.startswith(("+", "-")):
+            relative = True
+
+        try:
+            time_ = int(time_)
+        except ValueError:
+            raise MPDRequestError("arg not a number")
+
+        self.service.seekid(time_, relative)
+        self._ok()
 
 
 class MPDServerPlugin(EventPlugin):
