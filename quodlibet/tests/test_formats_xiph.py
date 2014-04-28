@@ -437,6 +437,15 @@ class TVCCover(AbstractTestCase):
         song = self.MutagenType(self.filename)
         self.failUnlessEqual(song["metadata_block_picture"][0], crap)
 
+    def test_handle_invalid_flac_picture(self):
+        crap = ".-a,a.f,afa-,.-"
+        song = self.MutagenType(self.filename)
+        song["metadata_block_picture"] = base64.b64encode(crap)
+        song.save()
+        song = self.QLType(self.filename)
+        self.failIf(song.get_primary_image())
+        self.failIf(song.get_images())
+
     def test_set_image(self):
         data = _get_jpeg()
         song = self.MutagenType(self.filename)

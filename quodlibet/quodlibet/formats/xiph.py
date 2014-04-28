@@ -9,7 +9,7 @@ import sys
 import base64
 
 import mutagen
-from mutagen.flac import Picture
+from mutagen.flac import Picture, error as FLACError
 
 from quodlibet import config
 from quodlibet import const
@@ -116,7 +116,7 @@ class MutagenVCFile(AudioFile):
         for data in audio.get("metadata_block_picture", []):
             try:
                 cover = Picture(base64.b64decode(data))
-            except TypeError:
+            except (TypeError, FLACError):
                 continue
 
             f = get_temp_cover_file(cover.data)
@@ -153,7 +153,7 @@ class MutagenVCFile(AudioFile):
         for data in audio.get("metadata_block_picture", []):
             try:
                 pictures.append(Picture(base64.b64decode(data)))
-            except TypeError:
+            except (TypeError, FLACError):
                 pass
 
         cover = None
