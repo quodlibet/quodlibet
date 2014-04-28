@@ -6,7 +6,7 @@
 
 from gi.repository import Gtk, GObject
 
-from quodlibet import util
+from quodlibet.qltk import pygobject_version
 
 
 def _gets_marshaled_to_pyobject(obj,
@@ -63,6 +63,28 @@ class _ModelMixin(object):
     def is_empty(self):
         return not self.get_iter_first()
 
+    if pygobject_version >= (3, 12):
+        _value = GObject.Value()
+        _value.init(GObject.TYPE_PYOBJECT)
+
+        def _get_marshalable(self, obj, _value=_value):
+            if _gets_marshaled_to_pyobject(obj):
+                return obj
+            _value.set_boxed(obj)
+            return _value
+
+        del _value
+    else:
+        # https://bugzilla.gnome.org/show_bug.cgi?id=703662
+
+        def _get_marshalable(self, obj):
+            if _gets_marshaled_to_pyobject(obj):
+                return obj
+            value = GObject.Value()
+            value.init(GObject.TYPE_PYOBJECT)
+            value.set_boxed(obj)
+            return value
+
 
 class ObjectModelFilter(_ModelMixin, Gtk.TreeModelFilter):
     pass
@@ -82,16 +104,9 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
             args = [object]
         super(ObjectTreeStore, self).__init__(*args)
 
-    @util.cached_property
-    def _gvalue(self):
-        value = GObject.Value()
-        value.init(GObject.TYPE_PYOBJECT)
-        return value
-
     def append(self, parent, row=None):
         if row:
-            value = self._gvalue
-            value.set_boxed(row[0])
+            value = self._get_marshalable(row[0])
             return self.insert_with_values(parent, 0, [0], [value])
         else:
             return super(ObjectTreeStore, self).append(row)
@@ -114,24 +129,16 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             args = [object]
         super(ObjectStore, self).__init__(*args)
 
-    @util.cached_property
-    def _gvalue(self):
-        value = GObject.Value()
-        value.init(GObject.TYPE_PYOBJECT)
-        return value
-
     def append(self, row=None):
         if row:
-            value = self._gvalue
-            value.set_boxed(row[0])
+            value = self._get_marshalable(row[0])
             return self.insert_with_valuesv(-1, [0], [value])
         else:
             return super(ObjectStore, self).append(row)
 
     def insert(self, position, row=None):
         if row:
-            value = self._gvalue
-            value.set_boxed(row[0])
+            value = self._get_marshalable(row[0])
             return self.insert_with_valuesv(position, [0], [value])
         else:
             return super(ObjectStore, self).insert(position)
@@ -139,9 +146,8 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
     def iter_append_many(self, objects):
         """Append a list of python objects, yield iters"""
 
-        value = self._gvalue
-        set_boxed = value.set_boxed
         insert_with_valuesv = self.insert_with_valuesv
+        get_marshalable = self._get_marshalable
         columns = [0]
 
         try:
@@ -152,7 +158,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             except IndexError:
                 return
         else:
-            set_boxed(first)
+            value = get_marshalable(first)
             yield insert_with_valuesv(-1, columns, [value])
 
         # fast path for auto-marshalling
@@ -161,7 +167,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
                 yield insert_with_valuesv(-1, columns, [obj])
         else:
             for obj in objects:
-                set_boxed(obj)
+                value = get_marshalable(obj)
                 yield insert_with_valuesv(-1, columns, [value])
 
     def append_many(self, objects):
@@ -175,19 +181,17 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             self.append_many(objects)
             return
 
-        value = self._gvalue
-        set_boxed = value.set_boxed
         insert_with_valuesv = self.insert_with_valuesv
+        get_marshalable = self._get_marshalable
         columns = [0]
 
         for i, obj in enumerate(objects):
-            set_boxed(obj)
+            value = get_marshalable(obj)
             insert_with_valuesv(position + i, columns, [value])
 
     def insert_before(self, sibling, row=None):
         if row is not None:
-            value = self._gvalue
-            value.set_boxed(row[0])
+            value = self._get_marshalable(row[0])
             position = self.get_path(sibling)[0]
             return self.insert_with_valuesv(position, [0], [value])
 
@@ -195,8 +199,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
 
     def insert_after(self, sibling, row=None):
         if row is not None:
-            value = self._gvalue
-            value.set_boxed(row[0])
+            value = self._get_marshalable(row[0])
             position = self.get_path(sibling)[0] + 1
             return self.insert_with_valuesv(position, [0], [value])
 
