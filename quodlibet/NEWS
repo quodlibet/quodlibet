@@ -1,3 +1,11 @@
+3.1.1 (2014-04-28) - I've shown that you're dealing with an Alpha here, baby, not some weak Beta!
+-------------------------------------------------------------------------------------------------
+
+* Fix a crash with GTK+ 3.12 [1384]
+* Handle invalid flac picture blocks [1385]
+* Fix "setup.py install --record" [1373]
+
+
 3.1.0 (2014-04-10) - Olden times, man! NEVER LIVE THERE.
 --------------------------------------------------------
 
