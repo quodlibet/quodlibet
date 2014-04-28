@@ -32,6 +32,49 @@ class AckError(object):
     EXIST = 56
 
 
+TAG_MAPPING = [
+    ("Artist", "artist"),
+    ("ArtistSort", "artistsort"),
+    ("Album", "album"),
+    ("AlbumArtist", "albumartist"),
+    ("AlbumArtistSort", "albumartistsort"),
+    ("Title", "title"),
+    ("Track", "~#track"),
+    ("Name", ""),
+    ("Genre", "genre"),
+    ("Date", "~year"),
+    ("Composer", "composer"),
+    ("Performer", "performer"),
+    ("Comment", "commend"),
+    ("Disc", "~#disc"),
+    ("MUSICBRAINZ_ARTISTID", "musicbrainz_artistid"),
+    ("MUSICBRAINZ_ALBUMID", "musicbrainz_albumid"),
+    ("MUSICBRAINZ_ALBUMARTISTID", "musicbrainz_albumartistid"),
+    ("MUSICBRAINZ_TRACKID", "musicbrainz_trackid"),
+]
+
+
+def format_tags(song):
+    """Gives a tag list message for a song"""
+
+    lines = []
+    for mpd_key, ql_key in TAG_MAPPING:
+        if not ql_key:
+            continue
+
+        if ql_key.startswith("~#"):
+            value = song(ql_key, None)
+            if value is not None:
+                value = str(value)
+        else:
+            value = song.comma(ql_key) or None
+
+        if value is not None:
+            lines.append(u"%s: %s" % (mpd_key, value))
+
+    return u"\n".join(lines)
+
+
 class ParseError(Exception):
     pass
 
@@ -354,17 +397,14 @@ class MPDService(object):
         if song is None:
             return None
 
-        stats = [
-            ("file", song["~filename"]),
-            ("Time", song("~#length")),
-            ("Artist", song.comma("artist")),
-            ("Title", song.comma("title")),
-            ("Album", song.comma("album")),
-            ("Pos", self._id),
-            ("Id", self._id),
-        ]
+        parts = []
+        parts.append(u"file: %s" % song("~uri"))
+        parts.append(format_tags(song))
+        parts.append(u"Pos: %d" % self._id)
+        parts.append(u"Id: %d" % self._id)
+        # TODO: modified time
 
-        return stats
+        return u"\n".join(parts)
 
 
 class MPDServer(BaseTCPServer):
@@ -597,12 +637,8 @@ class MPDConnection(BaseTCPConnection):
 
     def _cmd_currentsong(self, args):
         stats = self.service.currentsong()
-        if stats is None:
-            self._ok()
-            return
-
-        for k, v in stats:
-            self._write_line(u"%s: %s" % (k, v))
+        if stats is not None:
+            self._write_line(stats)
         self._ok()
 
     def _cmd_count(self, args):
