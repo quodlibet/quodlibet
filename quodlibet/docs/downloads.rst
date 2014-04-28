@@ -32,6 +32,8 @@
 Downloads
 =========
 
+.. _source:
+
 |hg-logo| Source
 ----------------
 
@@ -47,6 +49,7 @@ To clone the repository::
     hg clone https://code.google.com/p/quodlibet
     hg clone https://bitbucket.org/lazka/quodlibet
 
+.. _tarballs:
 
 |source-logo| Release Tarballs
 ------------------------------
@@ -54,23 +57,24 @@ To clone the repository::
 ========================== ===============================
 Release                    Filename
 ========================== ===============================
+Quod Libet 3.1.1           quodlibet-3.1.1.tar.gz_
+Quod Libet Plugins 3.1.1   quodlibet-plugins-3.1.1.tar.gz_
 Quod Libet 3.0.2           quodlibet-3.0.2.tar.gz_
 Quod Libet Plugins 3.0.2   quodlibet-plugins-3.0.2.tar.gz_
 Quod Libet 2.6.3           quodlibet-2.6.3.tar.gz_
 Quod Libet Plugins 2.6.3   quodlibet-plugins-2.6.3.tar.gz_
-Quod Libet 2.5.1           quodlibet-2.5.1.tar.gz_
-Quod Libet Plugins 2.5.1   quodlibet-plugins-2.5.1.tar.gz_
 ========================== ===============================
 
+.. _quodlibet-3.1.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.1.1.tar.gz
+.. _quodlibet-plugins-3.1.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.1.1.tar.gz
 .. _quodlibet-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.2.tar.gz
 .. _quodlibet-plugins-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.2.tar.gz
 .. _quodlibet-2.6.3.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3.tar.gz
 .. _quodlibet-plugins-2.6.3.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.6.3.tar.gz
-.. _quodlibet-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1.tar.gz
-.. _quodlibet-plugins-2.5.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.5.1.tar.gz
-
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
+
+.. _ubuntu:
 
 |ubuntu-logo| Ubuntu
 --------------------
@@ -98,6 +102,8 @@ Unstable PPA::
       <http://packages.ubuntu.com/quantal/libkeybinder-3.0-0>`__ for
       multimedia key support under non GNOME environments.
 
+.. _debian:
+
 |debian-logo| Debian
 --------------------
 
@@ -110,42 +116,39 @@ Repo key::
 
     $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
 
+.. _fedora:
 
 |fedora-logo| Fedora
 --------------------
 
 Stable Repo:
 
-  * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_18/>`__
   * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_19/>`__
   * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_20/>`__
 
 Unstable Repo:
 
-  * `Fedora 18 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_18/>`__
   * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_19/>`__
   * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_20/>`__
 
+.. _opensuse:
 
 |opensuse-logo| openSUSE
 ------------------------
 
 Stable Repo:
 
-  * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.1/>`__
-  * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.2/>`__
   * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.3/>`__
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`__
 
 Unstable Repo:
 
-  * `openSUSE 12.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.1/>`__
-  * `openSUSE 12.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.2/>`__
   * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.3/>`__
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
 
+.. _windows:
 
 |windows-logo| Windows
 ----------------------
@@ -153,26 +156,36 @@ Unstable Repo:
 =========================== ==============================
 Release                     Filename
 =========================== ==============================
+Quod Libet 3.1.1            quodlibet-3.1.1-installer.exe_
+Quod Libet 3.1.1 (portable) quodlibet-3.1.1-portable.exe_
 Quod Libet 2.6.3            quodlibet-2.6.3-installer.exe_
 Quod Libet 2.6.3 (portable) quodlibet-2.6.3-portable.exe_
-Quod Libet 2.5.1            quodlibet-2.5.1-installer.exe_
-Quod Libet 2.4.1            quodlibet-2.4.1-installer.exe_
 =========================== ==============================
 
+.. _quodlibet-3.1.1-portable.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.1.1-portable.exe
+.. _quodlibet-3.1.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.1.1-installer.exe
 .. _quodlibet-2.6.3-portable.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3-portable.exe
 .. _quodlibet-2.6.3-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3-installer.exe
-.. _quodlibet-2.5.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.5.1-installer.exe
-.. _quodlibet-2.4.1-installer.exe: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.4.1-installer.exe
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
 
+.. _arch:
 
 |arch-logo| Arch Linux
 ----------------------
 
+Stable:
+
 ::
 
     $ pacman -S quodlibet
+
+
+Unstable:
+
+
+See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in 
+the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
 
 
 .. _RunFromSource:
