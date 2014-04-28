@@ -33,24 +33,24 @@ class AckError(object):
 
 
 TAG_MAPPING = [
-    ("Artist", "artist"),
-    ("ArtistSort", "artistsort"),
-    ("Album", "album"),
-    ("AlbumArtist", "albumartist"),
-    ("AlbumArtistSort", "albumartistsort"),
-    ("Title", "title"),
-    ("Track", "~#track"),
-    ("Name", ""),
-    ("Genre", "genre"),
-    ("Date", "~year"),
-    ("Composer", "composer"),
-    ("Performer", "performer"),
-    ("Comment", "commend"),
-    ("Disc", "~#disc"),
-    ("MUSICBRAINZ_ARTISTID", "musicbrainz_artistid"),
-    ("MUSICBRAINZ_ALBUMID", "musicbrainz_albumid"),
-    ("MUSICBRAINZ_ALBUMARTISTID", "musicbrainz_albumartistid"),
-    ("MUSICBRAINZ_TRACKID", "musicbrainz_trackid"),
+    (u"Artist", "artist"),
+    (u"ArtistSort", "artistsort"),
+    (u"Album", "album"),
+    (u"AlbumArtist", "albumartist"),
+    (u"AlbumArtistSort", "albumartistsort"),
+    (u"Title", "title"),
+    (u"Track", "~#track"),
+    (u"Name", ""),
+    (u"Genre", "genre"),
+    (u"Date", "~year"),
+    (u"Composer", "composer"),
+    (u"Performer", "performer"),
+    (u"Comment", "commend"),
+    (u"Disc", "~#disc"),
+    (u"MUSICBRAINZ_ARTISTID", "musicbrainz_artistid"),
+    (u"MUSICBRAINZ_ALBUMID", "musicbrainz_albumid"),
+    (u"MUSICBRAINZ_ALBUMARTISTID", "musicbrainz_albumartistid"),
+    (u"MUSICBRAINZ_TRACKID", "musicbrainz_trackid"),
 ]
 
 
@@ -298,16 +298,17 @@ class BaseTCPConnection(object):
 class MPDService(object):
     """This is the actual shared MPD service which the clients talk to"""
 
-    version = (0, 12)
-
-    def __init__(self):
-        self._id = 0
+    version = (0, 17, 0)
 
     def play(self):
         if not app.player.song:
             app.player.reset()
         else:
             app.player.paused = False
+
+    def playid(self, songid):
+        # -1 is any
+        self.play()
 
     def pause(self):
         app.player.paused = True
@@ -317,11 +318,9 @@ class MPDService(object):
 
     def next(self):
         app.player.next()
-        self._id += 1
 
     def previous(self):
         app.player.previous()
-        self._id += 1
 
     def seek(self, songpos, time_):
         """time_ in seconds"""
@@ -379,12 +378,12 @@ class MPDService(object):
             ("single", 0),
             ("consume", 0),
             ("playlist", 0),
-            ("playlistlength", 0),
+            ("playlistlength", int(bool(app.player.info))),
             ("state", state),
-            ("song", self._id),
-            ("songid", self._id),
-            ("nextsong", self._id + 1),
-            ("nextsongid", self._id + 1),
+            ("song", 0),
+            ("songid", 0),
+            ("nextsong", 0),
+            ("nextsongid", 0),
             ("time", "%d:%d" % (
                 int(app.player.get_position() / 1000),
                 info and info("~#length") or 0)),
@@ -400,10 +399,41 @@ class MPDService(object):
         parts = []
         parts.append(u"file: %s" % song("~uri"))
         parts.append(format_tags(song))
-        parts.append(u"Pos: %d" % self._id)
-        parts.append(u"Id: %d" % self._id)
+        parts.append(u"Pos: %d" % 0)
+        parts.append(u"Id: %d" % 0)
         # TODO: modified time
 
+        return u"\n".join(parts)
+
+    def playlistinfo(self, start, end):
+        song = app.player.info
+        if song is None:
+            return None
+
+        if start > 1:
+            return None
+
+        parts = []
+        parts.append(format_tags(song))
+        parts.append(u"Pos: %d" % 0)
+        parts.append(u"Id: %d" % 0)
+        return u"\n".join(parts)
+
+    def playlistid(self, songid=None):
+        # XXX
+        return
+
+        if songid is None:
+            return self.playlistinfo(0, 1)
+
+        song = app.player.info
+        if song is None:
+            return None
+
+        parts = []
+        parts.append(format_tags(song))
+        parts.append(u"Pos: %d" % 1)
+        parts.append(u"Id: %d" % 1)
         return u"\n".join(parts)
 
 
@@ -578,6 +608,18 @@ class MPDConnection(BaseTCPConnection):
         self.service.play()
         self._ok()
 
+    def _cmd_playid(self, args):
+        if not args:
+            raise MPDRequestError("missing arg")
+
+        try:
+            songid = int(args[0])
+        except ValueError:
+            raise MPDRequestError("invalid arg")
+
+        self.service.playid(songid)
+        self._ok()
+
     def _cmd_pause(self, args):
         self.service.pause()
         self._ok()
@@ -697,6 +739,76 @@ class MPDConnection(BaseTCPConnection):
             raise MPDRequestError("arg not a number")
 
         self.service.seekid(time_, relative)
+        self._ok()
+
+    def _cmd_outputs(self, args):
+        self._write_line(u"outputid: 0")
+        self._write_line(u"outputname: dummy")
+        self._write_line(u"outputenabled: 1")
+        self._ok()
+
+    def _cmd_commands(self, args):
+        for attr in dir(self):
+            if attr.startswith("_cmd_"):
+                self._write_line(unicode(attr[5:]))
+        self._ok()
+
+    def _cmd_tagtypes(self, args):
+        for mpd_key, ql_key in TAG_MAPPING:
+            if ql_key:
+                self._write_line(mpd_key)
+        self._ok()
+
+    def _cmd_lsinfo(self, args):
+        if len(args) != 1:
+            raise MPDRequestError("wrong arg count")
+
+        if args == u"/":
+            self._cmd_listplaylists([])
+            return
+
+        self._ok()
+
+    def _cmd_listplaylists(self, args):
+        self._ok()
+
+    def _cmd_playlistinfo(self, args):
+        if len(args) != 1:
+            raise MPDRequestError("wrong arg count")
+
+        try:
+            values = [int(v) for v in args[0].split(":")]
+        except ValueError:
+            raise MPDRequestError("arg not a number")
+
+        if len(values) == 1:
+            start = values[0]
+            end = start + 1
+        elif len(values) == 2:
+            start, end = values
+        else:
+            raise MPDRequestError("not a valid range")
+
+        result = self.service.playlistinfo(start, end)
+        if result is not None:
+            self._write_line(result)
+        self._ok()
+
+    def _cmd_playlistid(self, args):
+        if len(args) > 1:
+            raise MPDRequestError("wrong arg count")
+
+        if len(args) == 1:
+            try:
+                songid = int(args[0])
+            except ValueError:
+                raise MPDRequestError("arg not a number")
+        else:
+            songid = None
+
+        result = self.service.playlistid(songid)
+        if result is not None:
+            self._write_line(result)
         self._ok()
 
 
