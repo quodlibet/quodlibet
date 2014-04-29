@@ -118,7 +118,7 @@ def realized(widget):
     own_window = False
     toplevel = widget.get_toplevel()
     if not isinstance(toplevel, Gtk.Window):
-        window = Gtk.Window()
+        window = Gtk.Window(type=Gtk.WindowType.POPUP)
         window.add(widget)
         own_window = True
     else:
@@ -154,7 +154,7 @@ def visible(widget, width=None, height=None):
     own_window = False
     toplevel = widget.get_toplevel()
     if not isinstance(toplevel, Gtk.Window):
-        window = Gtk.Window()
+        window = Gtk.Window(type=Gtk.WindowType.POPUP)
         window.add(widget)
         own_window = True
     else:
