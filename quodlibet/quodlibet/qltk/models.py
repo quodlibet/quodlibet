@@ -30,6 +30,12 @@ def _gets_marshaled_to_pyobject(obj,
 
 class _ModelMixin(object):
 
+    ATOMIC = True
+    """Guard against unintentional non-atomic row inserts.
+
+    Set to False if you know what you're doing.
+    """
+
     def get_value(self, iter_, column=0):
         res = super(_ModelMixin, self).get_value(iter_, column)
         # PyGObject 3.4 doesn't unbox in some cases...
@@ -105,11 +111,47 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
         super(ObjectTreeStore, self).__init__(*args)
 
     def append(self, parent, row=None):
-        if row:
+        if row is not None:
             value = self._get_marshalable(row[0])
             return self.insert_with_values(parent, -1, [0], [value])
         else:
-            return super(ObjectTreeStore, self).append(row)
+            assert not self.ATOMIC
+            return super(ObjectTreeStore, self).append(parent)
+
+    def insert(self, parent, position, row=None):
+        if row is not None:
+            value = self._get_marshalable(row[0])
+            return self.insert_with_values(parent, position, [0], [value])
+        else:
+            assert not self.ATOMIC
+            return super(ObjectTreeStore, self).insert(parent, position)
+
+    def prepend(self, parent, row=None):
+        return self.insert(parent, 0, row)
+
+    def insert_before(self, parent, sibling, row=None):
+        if row is not None:
+            value = self._get_marshalable(row[0])
+            if sibling is None:
+                position = -1
+            else:
+                position = self.get_path(sibling)[-1]
+            return self.insert_with_values(parent, position, [0], [value])
+
+        assert not self.ATOMIC
+        return super(ObjectTreeStore, self).insert_before(parent, sibling)
+
+    def insert_after(self, parent, sibling, row=None):
+        if row is not None:
+            value = self._get_marshalable(row[0])
+            if sibling is None:
+                position = 0
+            else:
+                position = self.get_path(sibling)[-1] + 1
+            return self.insert_with_values(parent, position, [0], [value])
+
+        assert not self.ATOMIC
+        return super(ObjectTreeStore, self).insert_after(parent, sibling)
 
 
 class ObjectStore(_ModelMixin, Gtk.ListStore):
@@ -134,6 +176,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             value = self._get_marshalable(row[0])
             return self.insert_with_valuesv(-1, [0], [value])
         else:
+            assert not self.ATOMIC
             return super(ObjectStore, self).append(row)
 
     def insert(self, position, row=None):
@@ -141,6 +184,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             value = self._get_marshalable(row[0])
             return self.insert_with_valuesv(position, [0], [value])
         else:
+            assert not self.ATOMIC
             return super(ObjectStore, self).insert(position)
 
     def iter_append_many(self, objects):
@@ -192,15 +236,26 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
     def insert_before(self, sibling, row=None):
         if row is not None:
             value = self._get_marshalable(row[0])
-            position = self.get_path(sibling)[0]
+            if sibling is None:
+                position = -1
+            else:
+                position = self.get_path(sibling)[0]
             return self.insert_with_valuesv(position, [0], [value])
 
+        assert not self.ATOMIC
         return super(ObjectStore, self).insert_before(sibling)
 
     def insert_after(self, sibling, row=None):
         if row is not None:
             value = self._get_marshalable(row[0])
-            position = self.get_path(sibling)[0] + 1
+            if sibling is None:
+                position = 0
+            else:
+                position = self.get_path(sibling)[0] + 1
             return self.insert_with_valuesv(position, [0], [value])
 
-        return super(ObjectStore, self).insert_after(sibling)
+        assert not self.ATOMIC
+        return super(ObjectStore, self).insert_after(sibling, row)
+
+    def prepend(self, row=None):
+        return self.insert(0, row)
