@@ -4,32 +4,90 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase
+from tests import TestCase, AbstractTestCase
+
+from gi.repository import Gtk
 
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
 
 
-class TObjectStore(TestCase):
+class _TObjectStore(AbstractTestCase):
+
+    Store = None
+
+    def test_append(self):
+        m = self.Store()
+        for i in range(10):
+            m.append(row=[i])
+        self.failUnlessEqual([r[0] for r in m], range(10))
+
+    def test_column_count(self):
+        m = self.Store()
+        self.failUnlessEqual(m.get_n_columns(), 1)
+
+    def test_insert(self):
+        m = self.Store()
+        for i in reversed(range(10)):
+            m.insert(0, row=[i])
+        self.failUnlessEqual([r[0] for r in m], range(10))
+
+    def test_prepend(self):
+        m = self.Store()
+        for i in reversed(range(10)):
+            m.prepend(row=[i])
+        self.failUnlessEqual([r[0] for r in m], range(10))
+
+    def test_insert_before(self):
+        m = self.Store()
+        iter_ = m.append(row=[1])
+        new_iter = m.insert_before(iter_, [2])
+        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
+        self.failUnlessEqual([2, 1], [r[0] for r in m])
+
+    def test_insert_before_noiter(self):
+        m = self.Store()
+        m.append(row=[1])
+        m.insert_before(None, [2])
+        self.failUnlessEqual([r[0] for r in m], [1, 2])
+
+    def test_insert_after(self):
+        m = self.Store()
+        iter_ = m.append(row=[1])
+        new_iter = m.insert_after(iter_, [2])
+        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
+        self.failUnlessEqual([1, 2], [r[0] for r in m])
+
+    def test_insert_after_noiter(self):
+        m = self.Store()
+        m.append(row=[1])
+        m.insert_after(None, [2])
+        self.failUnlessEqual([r[0] for r in m], [2, 1])
+
+    def test_allow_nonatomic(self):
+        m = self.Store()
+        m.ATOMIC = False
+        self.failUnless(m.insert(0))
+        self.failUnless(m.prepend())
+        self.failUnless(m.append())
+        self.failUnless(m.insert_before(None))
+        self.failUnless(m.insert_after(None))
+
+
+class TOrigObjectStore(_TObjectStore):
+
+    Store = lambda *x: Gtk.ListStore(object)
+
+
+class TObjectStore(_TObjectStore):
+
+    Store = ObjectStore
+
     def test_validate(self):
         self.failUnlessRaises(ValueError, ObjectStore, int)
         ObjectStore()
         ObjectStore(object)
         self.failUnlessRaises(ValueError, ObjectStore, object, object)
-
-    def test_column_count(self):
-        m = ObjectStore()
-        self.failUnlessEqual(m.get_n_columns(), 1)
-
-    def test_empty_append(self):
-        m = ObjectStore()
-        self.failUnless(m.append())
-
-    def test_append(self):
-        m = ObjectStore()
-        for i in range(10):
-            m.append(row=[i])
-        self.failUnlessEqual([r[0] for r in m], range(10))
 
     def test_append_many(self):
         m = ObjectStore()
@@ -63,16 +121,6 @@ class TObjectStore(TestCase):
 
         for x in m.iter_append_many(iter([])):
             pass
-
-    def test_empty_insert(self):
-        m = ObjectStore()
-        self.failUnless(m.insert(0))
-
-    def test_insert(self):
-        m = ObjectStore()
-        for i in reversed(range(10)):
-            m.insert(0, row=[i])
-        self.failUnlessEqual([r[0] for r in m], range(10))
 
     def test_insert_many(self):
         m = ObjectStore()
@@ -109,13 +157,6 @@ class TObjectStore(TestCase):
         m = ObjectStore()
         self.assertEqual(list(m.iterrows()), [])
 
-    def test_insert_before(self):
-        m = ObjectStore()
-        iter_ = m.append(row=[1])
-        new_iter = m.insert_before(iter_, [2])
-        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
-        self.failUnlessEqual([2, 1], list(m.itervalues()))
-
     def test_is_empty(self):
         m = ObjectStore()
         self.assertTrue(m.is_empty())
@@ -124,34 +165,129 @@ class TObjectStore(TestCase):
         m.remove(iter_)
         self.assertTrue(m.is_empty())
 
+    def test_nonatomic(self):
+        m = ObjectStore()
+        self.assertRaises(AssertionError, m.append)
+        self.assertRaises(AssertionError, m.insert, 0)
+        self.assertRaises(AssertionError, m.prepend)
+        self.assertRaises(AssertionError, m.insert_before, None)
+        self.assertRaises(AssertionError, m.insert_after, None)
 
-class TObjectTreeStore(TestCase):
+    def test_signal_count(self):
+        m = ObjectStore()
+
+        def handler(model, path, iter_, result):
+            result[0] += 1
+
+        inserted = [0]
+        m.connect("row-inserted", handler, inserted)
+        changed = [0]
+        m.connect("row-changed", handler, changed)
+
+        m.append([1])
+        m.prepend([8])
+        m.insert(0, [1])
+        m.insert_before(None, [1])
+        m.insert_after(None, [1])
+        m.insert_many(0, [1, 2, 3])
+        m.append_many([1, 2, 3])
+        list(m.iter_append_many([1, 2, 3]))
+        list(m.iter_append_many(xrange(3)))
+
+        self.assertEqual(changed[0], 0)
+        self.assertEqual(inserted[0], len(m))
+
+
+class _TObjectTreeStore(AbstractTestCase):
+
+    Store = None
+
+    def test_column_count(self):
+        m = self.Store()
+        self.failUnlessEqual(m.get_n_columns(), 1)
+
+    def test_append_int(self):
+        m = self.Store()
+        m.append(None, row=[1])
+        m.append(None, row=[2])
+        self.failUnlessEqual([r[0] for r in m], [1, 2])
+
+    def test_append_obj(self):
+        m = self.Store()
+        obj = object()
+        obj2 = object()
+        m.append(None, row=[obj])
+        m.append(None, row=[obj2])
+        self.failUnlessEqual([r[0] for r in m], [obj, obj2])
+
+    def test_insert_after(self):
+        m = self.Store()
+        iter_ = m.append(None, row=[1])
+        new_iter = m.insert_after(None, iter_, [2])
+        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
+        self.failUnlessEqual([1, 2], [r[0] for r in m])
+
+    def test_insert_after_noroot(self):
+        m = self.Store()
+        iter_ = m.append(None, row=[1])
+        iter2_ = m.append(iter_, row=[2])
+        new_iter = m.insert_after(iter_, iter2_, [3])
+        self.failUnlessEqual(m.get_value(new_iter, 0), 3)
+        self.failUnlessEqual([1], [r[0] for r in m])
+        self.failUnlessEqual([2, 3], list(r[0] for r in m[0].iterchildren()))
+
+    def test_insert_after_noiter(self):
+        m = self.Store()
+        m.append(None, row=[1])
+        m.insert_after(None, None, [2])
+        self.failUnlessEqual([r[0] for r in m], [2, 1])
+
+    def test_insert_before(self):
+        m = self.Store()
+        iter_ = m.append(None, row=[1])
+        new_iter = m.insert_before(None, iter_, [2])
+        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
+        self.failUnlessEqual([2, 1], [r[0] for r in m])
+
+    def test_insert_before_noroot(self):
+        m = self.Store()
+        iter_ = m.append(None, row=[1])
+        iter2_ = m.append(iter_, row=[2])
+        new_iter = m.insert_before(iter_, iter2_, [3])
+        self.failUnlessEqual(m.get_value(new_iter, 0), 3)
+        self.failUnlessEqual([1], [r[0] for r in m])
+        self.failUnlessEqual([3, 2], list(r[0] for r in m[0].iterchildren()))
+
+    def test_insert_before_noiter(self):
+        m = self.Store()
+        m.append(None, row=[1])
+        m.insert_before(None, None, [2])
+        self.failUnlessEqual([r[0] for r in m], [1, 2])
+
+    def test_allow_nonatomic(self):
+        m = self.Store()
+        m.ATOMIC = False
+        self.failUnless(m.insert(None, 0))
+        self.failUnless(m.prepend(None))
+        self.failUnless(m.append(None))
+        self.failUnless(m.insert_before(None, None))
+        self.failUnless(m.insert_after(None, None))
+
+
+class TOrigTreeStore(_TObjectTreeStore):
+
+    Store = lambda *x: Gtk.TreeStore(object)
+
+
+class TObjectTreeStore(_TObjectTreeStore):
+
+    Store = ObjectTreeStore
+
     def test_validate(self):
         self.failUnlessRaises(ValueError, ObjectTreeStore, int)
         ObjectTreeStore()
         ObjectTreeStore(object)
         self.failUnlessRaises(ValueError, ObjectTreeStore, object, object)
-
-    def test_column_count(self):
-        m = ObjectTreeStore()
-        self.failUnlessEqual(m.get_n_columns(), 1)
-
-    def test_append_int(self):
-        m = ObjectTreeStore()
-        m.append(None, row=[1])
-        self.failUnlessEqual(list(m.itervalues()), [1])
-
-    def test_append_obj(self):
-        m = ObjectTreeStore()
-        obj = object()
-        obj2 = object()
-        m.append(None, row=[obj])
-        m.append(None, row=[obj2])
-        self.failUnlessEqual(list(m.itervalues()), [obj, obj2])
-
-    def test_empty_append(self):
-        m = ObjectStore()
-        self.failUnless(m.append(None))
 
     def test_itervalues(self):
         m = ObjectTreeStore()
@@ -173,8 +309,37 @@ class TObjectTreeStore(TestCase):
         self.assertEqual(list(m.iterrows(None))[0][1], obj)
         self.assertEqual(list(m.iterrows(it))[0][1], obj2)
 
+    def test_nonatomic(self):
+        m = ObjectTreeStore()
+        self.assertRaises(AssertionError, m.append, None)
+        self.assertRaises(AssertionError, m.insert, None, 0)
+        self.assertRaises(AssertionError, m.prepend, None)
+        self.assertRaises(AssertionError, m.insert_before, None, None)
+        self.assertRaises(AssertionError, m.insert_after, None, None)
+
+    def test_signal_count(self):
+        m = ObjectTreeStore()
+
+        def handler(model, path, iter_, result):
+            result[0] += 1
+
+        inserted = [0]
+        m.connect("row-inserted", handler, inserted)
+        changed = [0]
+        m.connect("row-changed", handler, changed)
+
+        m.append(None, [1])
+        m.insert(None, 0, [1])
+        m.prepend(None, [1])
+        m.insert_before(None, None, [1])
+        m.insert_after(None, None, [1])
+
+        self.assertEqual(changed[0], 0)
+        self.assertEqual(inserted[0], len(m))
+
 
 class TObjectModelFilter(TestCase):
+
     def test_iter_values(self):
         m = ObjectStore()
         f = ObjectModelFilter(child_model=m)
@@ -197,6 +362,7 @@ class TObjectModelFilter(TestCase):
 
 
 class TObjectModelSort(TestCase):
+
     def test_iter_values(self):
         m = ObjectStore()
         f = ObjectModelSort(model=m)
