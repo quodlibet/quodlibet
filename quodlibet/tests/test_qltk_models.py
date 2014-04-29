@@ -144,8 +144,10 @@ class TObjectTreeStore(TestCase):
     def test_append_obj(self):
         m = ObjectTreeStore()
         obj = object()
+        obj2 = object()
         m.append(None, row=[obj])
-        self.failUnlessEqual(list(m.itervalues()), [obj])
+        m.append(None, row=[obj2])
+        self.failUnlessEqual(list(m.itervalues()), [obj, obj2])
 
     def test_empty_append(self):
         m = ObjectStore()
