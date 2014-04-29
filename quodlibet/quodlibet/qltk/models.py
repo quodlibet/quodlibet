@@ -107,7 +107,7 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
     def append(self, parent, row=None):
         if row:
             value = self._get_marshalable(row[0])
-            return self.insert_with_values(parent, 0, [0], [value])
+            return self.insert_with_values(parent, -1, [0], [value])
         else:
             return super(ObjectTreeStore, self).append(row)
 
