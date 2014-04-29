@@ -24,6 +24,7 @@ from distutils.archive_util import make_archive
 
 from gdist import GDistribution
 from gdist.clean import clean as gdist_clean
+from distutils.command.sdist import sdist as distutils_sdist
 
 
 # TODO: link this better to the app definitions
@@ -154,6 +155,47 @@ class quality_cmd(Command):
         cmd.suite = "quality"
         cmd.ensure_finalized()
         cmd.run()
+
+
+class sdist(distutils_sdist):
+
+    def _check_manifest(self):
+        # make sure MANIFEST.in includes all tracked files
+        if subprocess.call(["hg", "status"],
+                           stdout=subprocess.PIPE,
+                           stderr=subprocess.PIPE) == 0:
+            # contains the packaged files after run() is finished
+            included_files = self.filelist.files
+
+            process = subprocess.Popen(["hg", "locate"],
+                                       stdout=subprocess.PIPE)
+            out, err = process.communicate()
+            assert process.returncode == 0
+
+            tracked_files = []
+            for path in out.splitlines():
+                if not path.startswith("quodlibet" + os.sep):
+                    continue
+                path = path.split(os.sep, 1)[-1]
+                tracked_files.append(path)
+
+            diff = set(tracked_files) ^ set(included_files)
+            if diff:
+                print("#" * 80)
+                print("WARNING: MANFIFEST.in doesn't include all "
+                      "tracked files or includes non-tracked files")
+                for path in sorted(diff):
+                    print(path)
+
+    def run(self):
+        result = distutils_sdist.run(self)
+
+        try:
+            self._check_manifest()
+        except EnvironmentError:
+            pass
+
+        return result
 
 
 class sdist_plugins(Command):
@@ -297,6 +339,7 @@ if __name__ == "__main__":
 
     cmd_classes = {
         'clean': clean,
+        "sdist": sdist,
         "test": test_cmd,
         "quality": quality_cmd,
         "coverage": coverage_cmd,
