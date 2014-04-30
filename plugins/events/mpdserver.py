@@ -7,6 +7,7 @@
 import re
 import shlex
 import socket
+import errno
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
@@ -118,6 +119,10 @@ def parse_command(line):
     return command, dec_args
 
 
+class ServerError(Exception):
+    pass
+
+
 class BaseTCPServer(object):
 
     def __init__(self, port, connection_class):
@@ -126,20 +131,35 @@ class BaseTCPServer(object):
         """
 
         self._connections = []
-
-        service = Gio.SocketService.new()
-        service.add_inet_port(port, None) # FIXME: can raise
-        service.connect("incoming", self._incoming_connection_cb)
-        self._sock_service = service
-        self.connection_class = connection_class
+        self._port = port
+        self._connection_class = connection_class
+        self._sock_service = None
 
     def start(self):
-        """Start accepting connections"""
+        """Start accepting connections.
 
-        self._sock_service.start()
+        May raise ServerError.
+        """
+
+        assert not self._sock_service
+
+        service = Gio.SocketService.new()
+        try:
+            service.add_inet_port(self._port, None)
+        except GLib.GError as e:
+            raise ServerError(e)
+        service.connect("incoming", self._incoming_connection_cb)
+        service.start()
+        self._sock_service = service
 
     def stop(self):
-        """Stop accepting connections and close all existing connections"""
+        """Stop accepting connections and close all existing connections.
+
+        Can be called multiple times.
+        """
+
+        if not self._sock_service:
+            return
 
         if self._sock_service.is_active():
             self._sock_service.stop()
@@ -160,7 +180,7 @@ class BaseTCPServer(object):
         sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(0)
 
-        tcp_conn = self.connection_class(self, sock)
+        tcp_conn = self._connection_class(self, sock)
         self._connections.append(tcp_conn)
         # XXX: set unneeded `connection` to keep the reference
         tcp_conn._gio_connection = connection
@@ -199,8 +219,19 @@ class BaseTCPConnection(object):
                 return False
 
             if flags & GLib.IOCondition.IN:
-                data = sock.recv(4096)
-                # FIXME: handle eagain etc.
+                while True:
+                    try:
+                        data = sock.recv(4096)
+                    except (IOError, OSError) as e:
+                        if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
+                            return True
+                        elif e.errno == errno.EINTR:
+                            continue
+                        else:
+                            self.close()
+                            return False
+                    break
+
                 if not data:
                     self.close()
                     return False
@@ -235,8 +266,19 @@ class BaseTCPConnection(object):
                     self._out_id = None
                     return False
 
-                result = sock.send(write_buffer)
-                # FIXME: handle error
+                while True:
+                    try:
+                        result = sock.send(write_buffer)
+                    except (IOError, OSError) as e:
+                        if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
+                            return True
+                        elif e.errno == errno.EINTR:
+                            continue
+                        else:
+                            self.close()
+                            return False
+                    break
+
                 del write_buffer[:result]
 
             return True
@@ -822,7 +864,10 @@ class MPDServerPlugin(EventPlugin):
 
     def enabled(self):
         self.server = MPDServer(self.PORT)
-        self.server.start()
+        try:
+            self.server.start()
+        except ServerError as e:
+            print_w(str(e))
 
     def disabled(self):
         self.server.stop()
