@@ -108,6 +108,7 @@ class TEmptyBar(TestCase):
         self.expected = list(sorted(SONGS))
         self._do()
         self.bar.restore()
+        self.bar.activate()
         self.expected = [SONGS[0]]
         self._do()
 

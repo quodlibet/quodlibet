@@ -69,7 +69,7 @@ class EmptyBar(Gtk.VBox, Browser):
         except Exception:
             return
 
-        self.filter_text(text)
+        self._text = text
 
     def finalize(self, restore):
         config.set("browsers", "query_text", "")

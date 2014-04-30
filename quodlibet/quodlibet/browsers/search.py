@@ -138,7 +138,7 @@ class SearchBar(Gtk.VBox, Browser):
         except config.Error:
             return
 
-        self.filter_text(text)
+        self._set_text(text)
 
     def finalize(self, restore):
         config.set("browsers", "query_text", "")
