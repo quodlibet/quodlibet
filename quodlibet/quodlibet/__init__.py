@@ -18,6 +18,7 @@ import locale
 import os
 import re
 import sys
+import warnings
 
 import quodlibet.const
 import quodlibet.util
@@ -135,6 +136,9 @@ def _gtk_init(icon=None):
     except TypeError:
         print_e("PyGObject is missing cairo support")
         exit(1)
+
+    # https://bugzilla.gnome.org/show_bug.cgi?id=708676
+    warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
 
     # We don't depend on Gst overrides, so make sure it's initialized.
     try:
