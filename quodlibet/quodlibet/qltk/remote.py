@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #           2011-2013 Nick Boultbee
+#           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,7 +11,7 @@ import os
 import re
 import errno
 
-from gi.repository import Gdk, GLib
+from gi.repository import GLib
 
 import quodlibet
 from quodlibet import browsers
@@ -31,7 +32,6 @@ class FSInterface(object):
     def __init__(self, player):
         player.connect('song-started', self.__started)
         player.connect('song-ended', self.__ended)
-        quodlibet.quit_add(1, self.destroy)
 
     def destroy(self):
         try:
@@ -56,41 +56,40 @@ class FSInterface(object):
             pass
 
 
-class FIFOControl(object):
-    """A FIFO to control the player/library from."""
+class _FIFO(object):
+    """Creates and reads from a FIFO"""
 
-    def __init__(self, library, window, player):
-        self.__open(library, window, player)
-        quodlibet.quit_add(1, self.destroy)
+    def __init__(self):
+        self.__open(None)
+
+    def handle_data(self, data):
+        """Gets called with new read data"""
+
+        raise NotImplementedError
 
     def destroy(self):
+        if self._id is not None:
+            GLib.source_remove(self._id)
+
         try:
             os.unlink(const.CONTROL)
         except EnvironmentError:
             pass
 
     def __open(self, *args):
+        self._id = None
         try:
             if not os.path.exists(const.CONTROL):
                 mkdir(const.USERDIR)
                 os.mkfifo(const.CONTROL, 0600)
             fifo = os.open(const.CONTROL, os.O_NONBLOCK)
             f = os.fdopen(fifo, "r", 4096)
-            qltk.io_add_watch(f, GLib.PRIORITY_DEFAULT,
-                              GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-                              self.__process, *args)
+            self._id = qltk.io_add_watch(
+                f, GLib.PRIORITY_DEFAULT,
+                GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+                self.__process, *args)
         except (EnvironmentError, AttributeError):
             pass
-
-    def __getitem__(self, key):
-        key = key.replace("-", "_")
-        if key.startswith("_"):
-            raise ValueError
-        else:
-            try:
-                return getattr(self, "_" + key)
-            except AttributeError:
-                raise KeyError(key)
 
     def __process(self, source, condition, *args):
         if condition in (GLib.IO_ERR, GLib.IO_HUP):
@@ -114,324 +113,473 @@ class FIFOControl(object):
             self.__open(*args)
             return False
 
-        commands = data.rstrip("\n").splitlines()
-        for command in commands:
-            try:
-                try:
-                    cmd, arg = command.split(' ', 1)
-                except ValueError:
-                    self[command](*args)
-                else:
-                    print_d("Running %r with params %r " % (cmd, arg))
-                    self[cmd](arg, *args)
-            except KeyError:
-                commands = args[1].browser.commands
-                try:
-                    try:
-                        cmd, arg = command.split(' ', 1)
-                    except ValueError:
-                        commands[command](*args)
-                    else:
-                        commands[cmd](arg, *args)
-                except:
-                    print_w(_("Invalid command %r received.") % command)
-            except:
-                util.print_exc()
+        try:
+            self.handle_data(data)
+        except:
+            util.print_exc()
+
         return True
 
-    def _previous(self, library, window, player):
-        player.previous()
 
-    def _force_previous(self, library, window, player):
-        player.previous(True)
+class FIFOCommandError(Exception):
+    pass
 
-    def _next(self, library, window, player):
-        player.next()
 
-    def _pause(self, library, window, player):
-        player.paused = True
+class FIFOControl(_FIFO):
+    """A FIFO to control the player/library from."""
 
-    def _play(self, library, window, player):
-        if player.song:
-            player.paused = False
+    _commands = {}
 
-    def _play_pause(self, library, window, player):
-        if player.song is None:
-            player.reset()
-        else:
-            player.paused ^= True
+    def __init__(self, app):
+        super(FIFOControl, self).__init__()
+        self.app = app
 
-    def _stop(self, library, window, player):
-        player.stop()
+    def handle_data(self, data):
+        commands = data.rstrip("\n").splitlines()
+        app = self.app
 
-    def _focus(self, library, window, player):
-        from quodlibet import app
-        app.present()
+        for command in commands:
+            # only one arg supported atm
+            parts = command.split(" ", 1)
+            cmd = parts[0]
+            args = parts[1:]
 
-    def _volume(self, value, library, window, player):
-        if value[0] in ('+', '-'):
-            if len(value) > 1:
-                try:
-                    change = (int(value[1:]) / 100.0)
-                except ValueError:
-                    return
-            else:
-                change = 0.05
-            if value[0] == '-':
-                change = -change
-            volume = player.volume + change
-        else:
             try:
-                volume = (int(value) / 100.0)
+                self.run(app, cmd, *args)
+            except FIFOCommandError as e:
+                print_e(str(e))
+                continue
+            except:
+                util.print_exc()
+                continue
+
+    @classmethod
+    def run(cls, app, name, *args):
+        """Execute the command `name` passing args
+
+        May raise FIFOCommandError
+        """
+
+        if name not in cls._commands:
+            # browser commands
+            commands = app.browser.commands
+            if name in commands:
+                if not args:
+                    raise FIFOCommandError("Missing argument for %r" % name)
+                cmd = commands[name]
+                cmd(args[0], app.library, app.window, app.player)
+                return
+            else:
+                raise FIFOCommandError("Unknown command %r" % name)
+
+        cmd, argcount, optcount = cls._commands[name]
+        if len(args) < argcount:
+            raise FIFOCommandError("Not enough arguments for %r" % name)
+        if len(args) > argcount + optcount:
+            raise FIFOCommandError("Too many arguments for %r" % name)
+
+        print_d("Running %r with params %r " % (cmd, args))
+
+        try:
+            cmd(app, *args)
+        except FIFOCommandError as e:
+            raise FIFOCommandError("%s: %s" % (name, str(e)))
+
+    @classmethod
+    def command(cls, name, args=0, optional=0):
+        """Register a new command function"""
+
+        def wrap(func):
+            cls._commands[name] = (func, args, optional)
+            return func
+        return wrap
+
+
+@FIFOControl.command("previous")
+def _previous(app):
+    app.player.previous()
+
+
+@FIFOControl.command("force-previous")
+def _force_previous(app):
+    app.player.previous(True)
+
+
+@FIFOControl.command("next")
+def _next(app):
+    app.player.next()
+
+
+@FIFOControl.command("pause")
+def _pause(app):
+    app.player.paused = True
+
+
+@FIFOControl.command("play")
+def _play(app):
+    player = app.player
+    if player.song:
+        player.paused = False
+
+
+@FIFOControl.command("play-pause")
+def _play_pause(app):
+    player = app.player
+    if player.song is None:
+        player.reset()
+    else:
+        player.paused ^= True
+
+
+@FIFOControl.command("stop")
+def _stop(app):
+    app.player.stop()
+
+
+@FIFOControl.command("focus")
+def _focus(app):
+    app.present()
+
+
+@FIFOControl.command("volume", args=1)
+def _volume(app, value):
+    if not value:
+        raise FIFOCommandError("invalid arg")
+
+    if value[0] in ('+', '-'):
+        if len(value) > 1:
+            try:
+                change = (int(value[1:]) / 100.0)
             except ValueError:
                 return
-        player.volume = min(1.0, max(0.0, volume))
-
-    def _order(self, value, library, window, player):
-        order = window.order
+        else:
+            change = 0.05
+        if value[0] == '-':
+            change = -change
+        volume = app.player.volume + change
+    else:
         try:
-            order.set_active(
-                ["inorder", "shuffle", "weighted", "onesong"].index(value))
+            volume = (int(value) / 100.0)
         except ValueError:
-            try:
-                order.set_active(int(value))
-            except (ValueError, TypeError):
-                if value in ["t", "toggle"]:
-                    order.set_active(not order.get_active())
+            return
+    app.player.volume = min(1.0, max(0.0, volume))
 
-    def _repeat(self, value, library, window, player):
-        repeat = window.repeat
-        if value in ["0", "off"]:
-            repeat.set_active(False)
-        elif value in ["1", "on"]:
-            repeat.set_active(True)
-        elif value in ["t", "toggle"]:
-            repeat.set_active(not repeat.get_active())
 
-    def _seek(self, time, library, window, player):
-        seek_to = player.get_position()
-        if time[0] == "+":
-            seek_to += util.parse_time(time[1:]) * 1000
-        elif time[0] == "-":
-            seek_to -= util.parse_time(time[1:]) * 1000
+@FIFOControl.command("order", args=1)
+def _order(app, value):
+    order = app.window.order
+
+    try:
+        order.set_active(
+            ["inorder", "shuffle", "weighted", "onesong"].index(value))
+    except ValueError:
+        try:
+            order.set_active(int(value))
+        except (ValueError, TypeError):
+            if value in ["t", "toggle"]:
+                order.set_active(not order.get_active())
+
+
+@FIFOControl.command("repeat", args=1)
+def _repeat(app, value):
+    repeat = app.window.repeat
+    if value in ["0", "off"]:
+        repeat.set_active(False)
+    elif value in ["1", "on"]:
+        repeat.set_active(True)
+    elif value in ["t", "toggle"]:
+        repeat.set_active(not repeat.get_active())
+
+
+@FIFOControl.command("seek", args=1)
+def _seek(app, time):
+    player = app.player
+    if not player.song:
+        return
+    seek_to = player.get_position()
+    if time[0] == "+":
+        seek_to += util.parse_time(time[1:]) * 1000
+    elif time[0] == "-":
+        seek_to -= util.parse_time(time[1:]) * 1000
+    else:
+        seek_to = util.parse_time(time) * 1000
+    seek_to = min(player.song.get("~#length", 0) * 1000 - 1,
+                  max(0, seek_to))
+    player.seek(seek_to)
+
+
+@FIFOControl.command("add-file", args=1)
+def _add_file(app, value):
+    filename = os.path.realpath(value)
+    song = app.library.add_filename(filename)
+    if song:
+        playlist = app.window.playlist
+        if song not in playlist.pl:
+            queue = playlist.q
+            queue.insert_before(queue.get_iter_first(), row=[song])
+            app.player.next()
         else:
-            seek_to = util.parse_time(time) * 1000
-        seek_to = min(player.song.get("~#length", 0) * 1000 - 1,
-                      max(0, seek_to))
-        player.seek(seek_to)
+            app.player.go_to(app.library[filename])
+            app.player.paused = False
 
-    def _add_file(self, value, library, window, player):
-        filename = os.path.realpath(value)
-        song = library.add_filename(filename)
-        if song:
-            if song not in window.playlist.pl:
-                queue = window.playlist.q
-                queue.insert_before(queue.get_iter_first(), row=[song])
-                player.next()
-            else:
-                player.go_to(library[filename])
-                player.paused = False
 
-    def _add_directory(self, value, library, window, player):
-        filename = os.path.normpath(os.path.realpath(value))
-        for added in library.scan([filename]):
-            pass
-        if window.browser.can_filter_text():
-            window.browser.filter_text(
-                "filename = /^%s/c" % re.escape(filename))
-        else:
-            basepath = filename + "/"
-            songs = [song for (fn, song) in library.iteritems()
-                     if fn.startswith(basepath)]
-            songs.sort(reverse=True)
-            queue = window.playlist.q
-            for song in songs:
-                queue.insert_before(queue.get_iter_first(), row=[song])
-        player.next()
+@FIFOControl.command("add-directory", args=1)
+def _add_directory(app, value):
+    player = app.player
+    window = app.window
+    library = app.library
+    filename = os.path.normpath(os.path.realpath(value))
+    for added in library.scan([filename]):
+        pass
+    if app.browser.can_filter_text():
+        app.browser.filter_text(
+            "filename = /^%s/c" % re.escape(filename))
+    else:
+        basepath = filename + "/"
+        songs = [song for (fn, song) in library.iteritems()
+                 if fn.startswith(basepath)]
+        songs.sort(reverse=True)
+        queue = window.playlist.q
+        for song in songs:
+            queue.insert_before(queue.get_iter_first(), row=[song])
+    player.next()
 
-    def _toggle_window(self, library, window, player):
-        from quodlibet import app
-        if window.get_property('visible'):
-            app.hide()
-        else:
-            app.show()
 
-    def _hide_window(self, library, window, player):
-        from quodlibet import app
+@FIFOControl.command("toggle-window")
+def _toggle_window(app):
+    if app.window.get_property('visible'):
         app.hide()
-
-    def _show_window(self, library, window, player):
-        from quodlibet import app
+    else:
         app.show()
 
-    def _set_rating(self, value, library, window, player):
-        song = player.song
-        if song:
-            try:
-                song["~#rating"] = max(0.0, min(1.0, float(value)))
-            except (ValueError, TypeError):
-                pass
-            else:
-                library.changed([song])
 
-    def _dump_browsers(self, value, library, window, player):
-        try:
-            f = file(value, "w")
-        except EnvironmentError:
-            pass
-        else:
-            for i, browser in enumerate(browsers.browsers):
-                if browser is not browsers.empty.EmptyBar:
-                    f.write("%d. %s\n" % (i, browser.__name__))
-            f.close()
+@FIFOControl.command("hide-window")
+def _hide_window(app):
+    app.hide()
 
-    def _set_browser(self, value, library, window, player):
-        Kind = browsers.get(value)
-        if Kind is not browsers.empty.EmptyBar:
-            window.select_browser(None, value, library, player)
-        else:
-            print_w(_("Unknown browser %r.") % value)
 
-    def _open_browser(self, value, library, window, player):
-        Kind = browsers.get(value)
-        if Kind is not browsers.empty.EmptyBar:
-            LibraryBrowser.open(Kind, library)
-        else:
-            print_w(_("Unknown browser %r.") % value)
+@FIFOControl.command("show-window")
+def _show_window(app):
+    app.show()
 
-    def _random(self, tag, library, window, player):
-        if window.browser.can_filter(tag):
-            window.browser.filter_random(tag)
 
-    def _filter(self, value, library, window, player):
+@FIFOControl.command("set-rating", args=1)
+def _set_rating(app, value):
+    song = app.player.song
+    if not song:
+        return
+
+    try:
+        song["~#rating"] = max(0.0, min(1.0, float(value)))
+    except (ValueError, TypeError):
+        pass
+    else:
+        app.library.changed([song])
+
+
+@FIFOControl.command("dump-browsers", args=1)
+def _dump_browsers(app, value):
+    try:
+        f = file(value, "w")
+    except EnvironmentError:
+        pass
+    else:
+        for i, browser in enumerate(browsers.browsers):
+            if browser is not browsers.empty.EmptyBar:
+                f.write("%d. %s\n" % (i, browser.__name__))
+        f.close()
+
+
+@FIFOControl.command("set-browser", args=1)
+def _set_browser(app, value):
+    Kind = browsers.get(value)
+    if Kind is not browsers.empty.EmptyBar:
+        app.window.select_browser(None, value, app.library, app.player)
+    else:
+        raise FIFOCommandError("Unknown browser %r" % value)
+
+
+@FIFOControl.command("open-browser", args=1)
+def _open_browser(app, value):
+    Kind = browsers.get(value)
+    if Kind is not browsers.empty.EmptyBar:
+        LibraryBrowser.open(Kind, app.library)
+    else:
+        raise FIFOCommandError("Unknown browser %r" % value)
+
+
+@FIFOControl.command("random", args=1)
+def _random(app, tag):
+    if app.browser.can_filter(tag):
+        app.browser.filter_random(tag)
+
+
+@FIFOControl.command("filter", args=1)
+def _filter(app, value):
+    try:
         tag, values = value.split('=', 1)
         values = [v.decode("utf-8", "replace") for v in values.split("\x00")]
-        if window.browser.can_filter(tag) and values:
-            window.browser.filter(tag, values)
+    except ValueError:
+        raise FIFOCommandError("invalid argument")
+    if app.browser.can_filter(tag) and values:
+        app.browser.filter(tag, values)
 
-    def _unfilter(self, library, window, player):
-        window.browser.unfilter()
 
-    def _properties(self, value, library, window, player=None):
-        if player is None:
-            # no value given, use the current song; slide arguments
-            # to the right.
-            value, library, window, player = None, value, library, window
+@FIFOControl.command("unfilter")
+def _unfilter(app):
+    app.browser.unfilter()
 
-        if value:
-            if value in library:
-                songs = [library[value]]
-            else:
-                songs = library.query(value)
-        else:
-            songs = [player.song]
-        songs = filter(None, songs)
 
-        if songs:
-            window = SongProperties(library, songs, parent=window)
-            window.show()
+@FIFOControl.command("properties", optional=1)
+def _properties(app, value=None):
+    library = app.library
+    player = app.player
+    window = app.window
 
-    def _enqueue(self, value, library, window, player):
-        playlist = window.playlist
-        if value in library:
-            songs = [library[value]]
-        elif os.path.isfile(value):
-            songs = [library.add_filename(os.path.realpath(value))]
-        else:
-            songs = library.query(value)
-        songs.sort()
-        playlist.enqueue(songs)
-
-    def _enqueue_files(self, value, library, window, player):
-        '''Enqueues comma-separated filenames or song names
-
-            See Issue 716
-        '''
-        songs = []
-        for param in value.split(","):
-            try:
-                song_path = URI(param).filename
-            except ValueError:
-                song_path = param
-            if song_path in library:
-                songs.append(library[song_path])
-            elif os.path.isfile(song_path):
-                songs.append(library.add_filename(os.path.realpath(value)))
-        if songs:
-            window.playlist.enqueue(songs)
-
-    def _unqueue(self, value, library, window, player):
-        playlist = window.playlist
+    if value:
         if value in library:
             songs = [library[value]]
         else:
             songs = library.query(value)
-        playlist.unqueue(songs)
+    else:
+        songs = [player.song]
+    songs = filter(None, songs)
 
-    def _quit(self, library, window, player):
-        from quodlibet import app
-        app.quit()
+    if songs:
+        window = SongProperties(library, songs, parent=window)
+        window.show()
 
-    def _status(self, value, library, window, player):
+
+@FIFOControl.command("enqueue", args=1)
+def _enqueue(app, value):
+    playlist = app.window.playlist
+    library = app.library
+    if value in library:
+        songs = [library[value]]
+    elif os.path.isfile(value):
+        songs = [library.add_filename(os.path.realpath(value))]
+    else:
+        songs = library.query(value)
+    songs.sort()
+    playlist.enqueue(songs)
+
+
+@FIFOControl.command("enqueue-files", args=1)
+def _enqueue_files(app, value):
+    """Enqueues comma-separated filenames or song names."""
+
+    library = app.library
+    window = app.window
+    songs = []
+    for param in value.split(","):
         try:
-            f = file(value, "w")
-        except EnvironmentError:
-            pass
-        else:
-            if player.paused:
-                strings = ["paused"]
-            else:
-                strings = ["playing"]
-            strings.append(type(window.browser).__name__)
-            strings.append("%0.3f" % player.volume)
-            strings.append(window.order.get_active_name())
-            strings.append((window.repeat.get_active() and "on") or "off")
-            progress = 0
-            if player.info:
-                length = player.info.get("~#length", 0)
-                if length:
-                    progress = player.get_position() / (length * 1000.0)
-            strings.append("%0.3f" % progress)
-            f.write(" ".join(strings) + "\n")
-            try:
-                f.write(window.browser.status + "\n")
-            except AttributeError:
-                pass
-            f.close()
+            song_path = URI(param).filename
+        except ValueError:
+            song_path = param
+        if song_path in library:
+            songs.append(library[song_path])
+        elif os.path.isfile(song_path):
+            songs.append(library.add_filename(os.path.realpath(value)))
+    if songs:
+        window.playlist.enqueue(songs)
 
-    def _song_list(self, value, library, window, player):
-        if value.startswith("t"):
-            value = not window.song_scroller.get_property('visible')
-        else:
-            value = value not in ['0', 'off', 'false']
-        window.song_scroller.set_property('visible', value)
 
-    def _queue(self, value, library, window, player):
-        if value.startswith("t"):
-            value = not window.qexpander.get_property('visible')
-        else:
-            value = value not in ['0', 'off', 'false']
-        window.qexpander.set_property('visible', value)
+@FIFOControl.command("unqueue", args=1)
+def _unqueue(app, value):
+    window = app.window
+    library = app.library
+    playlist = window.playlist
+    if value in library:
+        songs = [library[value]]
+    else:
+        songs = library.query(value)
+    playlist.unqueue(songs)
 
-    def _dump_playlist(self, value, library, window, player):
+
+@FIFOControl.command("quit")
+def _quit(app):
+    app.quit()
+
+
+@FIFOControl.command("status", args=1)
+def _status(app, value):
+    player = app.player
+    window = app.window
+
+    try:
+        f = file(value, "w")
+    except EnvironmentError:
+        pass
+    else:
+        if player.paused:
+            strings = ["paused"]
+        else:
+            strings = ["playing"]
+        strings.append(type(app.browser).__name__)
+        strings.append("%0.3f" % player.volume)
+        strings.append(window.order.get_active_name())
+        strings.append((window.repeat.get_active() and "on") or "off")
+        progress = 0
+        if player.info:
+            length = player.info.get("~#length", 0)
+            if length:
+                progress = player.get_position() / (length * 1000.0)
+        strings.append("%0.3f" % progress)
+        f.write(" ".join(strings) + "\n")
         try:
-            f = file(value, "w")
-        except EnvironmentError:
+            f.write(app.browser.status + "\n")
+        except AttributeError:
             pass
-        else:
-            for song in window.playlist.pl.get():
-                f.write(song("~uri") + "\n")
-            f.close()
+        f.close()
 
-    def _dump_queue(self, value, library, window, player):
-        try:
-            f = file(value, "w")
-        except EnvironmentError:
-            pass
-        else:
-            for song in window.playlist.q.get():
-                f.write(song("~uri") + "\n")
-            f.close()
 
-    def _refresh(self, library, window, player):
-        scan_library(library, False)
+@FIFOControl.command("song-list", args=1)
+def _song_list(app, value):
+    window = app.window
+    if value.startswith("t"):
+        value = not window.song_scroller.get_property('visible')
+    else:
+        value = value not in ['0', 'off', 'false']
+    window.song_scroller.set_property('visible', value)
+
+
+@FIFOControl.command("queue", args=1)
+def _queue(app, value):
+    window = app.window
+    if value.startswith("t"):
+        value = not window.qexpander.get_property('visible')
+    else:
+        value = value not in ['0', 'off', 'false']
+    window.qexpander.set_property('visible', value)
+
+
+@FIFOControl.command("dump-playlist", args=1)
+def _dump_playlist(app, value):
+    window = app.window
+
+    try:
+        f = file(value, "w")
+    except EnvironmentError:
+        pass
+    else:
+        for song in window.playlist.pl.get():
+            f.write(song("~uri") + "\n")
+        f.close()
+
+
+@FIFOControl.command("dump-queue", args=1)
+def _dump_queue(app, value):
+    window = app.window
+    try:
+        f = file(value, "w")
+    except EnvironmentError:
+        pass
+    else:
+        for song in window.playlist.q.get():
+            f.write(song("~uri") + "\n")
+        f.close()
+
+
+@FIFOControl.command("refresh")
+def _refresh(app):
+    scan_library(app.library, False)

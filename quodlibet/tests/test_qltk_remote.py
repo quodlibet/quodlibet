@@ -7,10 +7,12 @@ from gi.repository import Gtk
 
 from quodlibet import const
 from quodlibet import config
+from quodlibet import Application
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongFileLibrary, SongLibrarian
 from quodlibet.player.nullbe import NullPlayer
+from quodlibet.browsers.empty import EmptyBar
 from quodlibet.qltk.remote import FSInterface, FIFOControl
 
 
@@ -50,17 +52,21 @@ class TFSInterface(TestCase):
 class TFIFOControl(TestCase):
     def setUp(self):
         config.init()
-        self.p = NullPlayer()
-        self.l = SongFileLibrary()
-        self.l.librarian = SongLibrarian()
-        self.w = Gtk.Window()
-        self.fifo = FIFOControl(self.l, self.w, self.p)
+
+        class App(Application):
+            browser = None
+
+        app = App()
+        app.player = NullPlayer()
+        app.library = SongFileLibrary()
+        app.library.librarian = SongLibrarian()
+        app.browser = EmptyBar(app.library, True)
+        app.window = Gtk.OffscreenWindow()
+
+        self.fifo = FIFOControl(app)
 
     def tearDown(self):
         self.fifo.destroy()
-        self.p.destroy()
-        self.l.destroy()
-        self.w.destroy()
         config.quit()
 
     def __send(self, command):
@@ -72,18 +78,19 @@ class TFIFOControl(TestCase):
 
     def test_player(self):
         self.__send("previous")
-        self.__send("force_previous")
+        self.__send("force-previous")
         self.__send("next")
         self.__send("pause")
         self.__send("play-pause")
+        self.__send("play")
         self.__send("stop")
         self.__send("volume +1000")
         self.__send("volume 40")
         self.__send("volume -10")
 
-        #self.__send("seek -10")
-        #self.__send("seek +10")
-        #self.__send("seek 0")
+        self.__send("seek -10")
+        self.__send("seek +10")
+        self.__send("seek 0")
 
     def test_misc(self):
         #self.__send("add-directory /dev/null")
@@ -93,9 +100,9 @@ class TFIFOControl(TestCase):
         #self.__send("dump_queue /dev/null")
         #self.__send("enqueue /dev/null")
         self.__send("enqueue-files /dev/null")
-        #self.__send("filter album=test")
-        #self.__send("focus")
-        #self.__send("hide-window")
+        self.__send("filter album=test")
+        self.__send("focus")
+        self.__send("hide-window")
         self.__send("dump-browsers /dev/null")
         self.__send("open-browser SearchBar")
         from quodlibet.qltk.browser import LibraryBrowser
@@ -111,8 +118,8 @@ class TFIFOControl(TestCase):
         #self.__send("repeat 0")
         #self.__send("set-browser 1")
         self.__send("set-rating 0.5")
-        #self.__send("show-window")
+        self.__send("show-window")
         #self.__send("song-list 1")
         #self.__send("status /dev/null")
-        #self.__send("toggle-window")
+        self.__send("toggle-window")
         #self.__send("unqueue /dev/null")

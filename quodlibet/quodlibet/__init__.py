@@ -53,6 +53,10 @@ class Application(object):
     def librarian(self):
         return self.library.librarian
 
+    @property
+    def browser(self):
+        return self.window.browser
+
     def quit(self):
         from gi.repository import GLib
 

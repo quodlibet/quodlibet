@@ -124,8 +124,12 @@ def main():
         DBusHandler = lambda player, library: None
 
     mmkeys.init(window, player)
-    FSInterface(player)
-    FIFOControl(library, window, player)
+    fsiface = FSInterface(player)
+    quodlibet.quit_add(1, fsiface.destroy)
+
+    fifoctrl = FIFOControl(app)
+    quodlibet.quit_add(1, fifoctrl.destroy)
+
     DBusHandler(player, library)
     SongTracker(library.librarian, player, window.playlist)
 
