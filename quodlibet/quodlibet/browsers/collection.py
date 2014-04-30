@@ -678,6 +678,12 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
 
         self.show_all()
 
+    def __inhibit(self):
+        self.view.get_selection().handler_block(self.__sig)
+
+    def __uninhibit(self):
+        self.view.get_selection().handler_unblock(self.__sig)
+
     def __parse_query(self, model, iter_, data):
         f, b = self.__filter, self.__bg_filter
         if f is None and b is None:
@@ -771,12 +777,15 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
     def restore(self):
         paths = config.get("browsers", "collection", "").split("\t")
         paths = [tuple(map(int, path.split())) for path in paths]
+        self.__inhibit()
         if paths:
             if not paths[0]:
+                self.__uninhibit()
                 return
             self.view.select_path(paths[0], unselect=True)
         for path in paths[1:]:
             self.view.select_path(path, unselect=False)
+        self.__uninhibit()
 
     def scroll(self, song):
         album = self.__albums.get(song.album_key)
