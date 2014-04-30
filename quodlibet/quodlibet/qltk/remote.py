@@ -8,6 +8,7 @@
 
 import os
 import re
+import errno
 
 from gi.repository import Gdk, GLib
 
@@ -96,7 +97,24 @@ class FIFOControl(object):
             self.__open(*args)
             return False
 
-        commands = source.read().rstrip("\n").splitlines()
+        while True:
+            try:
+                data = source.read()
+            except (IOError, OSError) as e:
+                if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
+                    return True
+                elif e.errno == errno.EINTR:
+                    continue
+                else:
+                    self.__open(*args)
+                    return False
+            break
+
+        if not data:
+            self.__open(*args)
+            return False
+
+        commands = data.rstrip("\n").splitlines()
         for command in commands:
             try:
                 try:
