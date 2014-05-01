@@ -190,6 +190,10 @@ class FSColumn(WideTextColumn):
     decoded safely (and also more slowly).
     """
 
+    def __init__(self, *args, **kwargs):
+        super(FSColumn, self).__init__(*args, **kwargs)
+        self._render.set_property('ellipsize', Pango.EllipsizeMode.MIDDLE)
+
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).comma(self.header_name)
         if not self._needs_update(value):
