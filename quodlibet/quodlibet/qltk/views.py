@@ -19,6 +19,11 @@ class TreeViewHints(Gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
     columns, and in the future, tooltips."""
 
+    class _MinLabel(Gtk.Label):
+
+        def do_get_preferred_width(*args):
+            return (0, Gtk.Label.do_get_preferred_width(*args)[0])
+
     # input_shape_combine_region does not work under Windows, we have
     # to pass all events to the treeview. In case it does work, this handlers
     # will never be called.
@@ -29,10 +34,15 @@ class TreeViewHints(Gtk.Window):
 
     def __init__(self):
         super(TreeViewHints, self).__init__(type=Gtk.WindowType.POPUP)
-        self.__label = label = Gtk.Label()
+        self.__clabel = Gtk.Label()
+        self.__clabel.show()
+        self.__clabel.set_alignment(0, 0.5)
+        self.__clabel.set_ellipsize(Pango.EllipsizeMode.NONE)
+
+        self.__label = label = self._MinLabel()
         label.set_alignment(0, 0.5)
-        label.show()
         label.set_ellipsize(Pango.EllipsizeMode.NONE)
+        label.show()
         self.add(label)
 
         self.add_events(
@@ -58,6 +68,7 @@ class TreeViewHints(Gtk.Window):
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
+        self.__current_left = False
         self.__current_renderer = None
         self.__view = None
 
@@ -85,6 +96,7 @@ class TreeViewHints(Gtk.Window):
 
     def __motion(self, view, event):
         label = self.__label
+        clabel = self.__clabel
 
         # trigger over row area, not column headers
         if event.window is not view.get_bin_window():
@@ -105,9 +117,9 @@ class TreeViewHints(Gtk.Window):
             self.__undisplay()
             return False
 
-        area = view.get_cell_area(path, col)
+        col_area = view.get_cell_area(path, col)
         # make sure we are on the same level
-        if x < area.x:
+        if x < col_area.x:
             self.__undisplay()
             return False
 
@@ -125,16 +137,26 @@ class TreeViewHints(Gtk.Window):
             return False
         (render_offset, render_width), renderer = pos[-1]
 
-        if self.__current_renderer == renderer and self.__current_path == path:
-            return False
-        else:
-            self.__undisplay()
-
         # only ellipsized text renderers
         if not isinstance(renderer, Gtk.CellRendererText):
             return False
-        if renderer.get_property('ellipsize') == Pango.EllipsizeMode.NONE:
+        ellipsize = renderer.get_property('ellipsize')
+        if ellipsize == Pango.EllipsizeMode.END:
+            expand_left = False
+        elif ellipsize == Pango.EllipsizeMode.MIDDLE:
+            # depending on where the cursor is
+            expand_left = x > col_area.x + render_offset + render_width / 2
+        elif ellipsize == Pango.EllipsizeMode.START:
+            expand_left = True
+        else:
             return False
+
+        if self.__current_renderer == renderer and \
+                self.__current_path == path and \
+                self.__current_left == expand_left:
+            return False
+        else:
+            self.__undisplay()
 
         # don't display if the renderer is in editing mode
         if renderer.props.editing:
@@ -148,27 +170,27 @@ class TreeViewHints(Gtk.Window):
         # to be saved on the python side, so we can copy it to the label
         markup = getattr(renderer, "markup", None)
         if markup is None:
-            label.set_text(renderer.get_property('text'))
+            text = renderer.get_property('text')
+            set_text = lambda l: l.set_text(text)
         else:
             # markup can also be column index
             if isinstance(markup, int):
                 markup = model[path][markup]
-            label.set_markup(markup)
+            set_text = lambda l: l.set_markup(markup)
 
         # Use the renderer padding as label padding so the text offset matches
         render_xpad = renderer.get_property("xpad")
-        label.set_ellipsize(Pango.EllipsizeMode.NONE)
         label.set_padding(render_xpad, 0)
-        # size_request makes sure the layout size got updated
-        label.size_request()
-        label_width = label.get_layout().get_pixel_size()[0]
-        label_width += label.get_layout_offsets()[0] or 0
+        set_text(clabel)
+        clabel.set_padding(render_xpad, 0)
+        label_width = clabel.get_layout().get_pixel_size()[0]
+        label_width += clabel.get_layout_offsets()[0] or 0
         # layout offset includes the left padding, so add one more
         label_width += render_xpad
 
         # CellRenderer width is too large if it's the last one in a column.
         # Use cell_area width as a maximum and limit render_width.
-        max_width = view.get_cell_area(path, col).width
+        max_width = col_area.width
         if render_width + render_offset > max_width:
             render_width = max_width - render_offset
 
@@ -179,7 +201,12 @@ class TreeViewHints(Gtk.Window):
         dummy, ox, oy = view.get_window().get_origin()
 
         # save for adjusting passthrough events
-        self.__dx, self.__dy = area.x + render_offset, area.y
+        self.__dx, self.__dy = col_area.x + render_offset, col_area.y
+        if expand_left:
+            # shift to the left
+            # FIXME: ellipsize start produces a space at the end depending
+            # on the text. I don't know how to compute it..
+            self.__dx -= (label_width - render_width)
 
         # final window coordinates/size
         x = ox + self.__dx
@@ -187,18 +214,31 @@ class TreeViewHints(Gtk.Window):
         x, y = view.convert_bin_window_to_widget_coords(x, y)
 
         w = label_width
-        h = area.height
+        h = col_area.height
 
         if not is_wayland():
-            # clip on the right if it's bigger than the screen
+            # clip if it's bigger than the screen
             screen_border = 5  # leave some space
-            space_right = Gdk.Screen.width() - x - w - screen_border
 
-            if space_right < 0:
-                w += space_right
-                label.set_ellipsize(Pango.EllipsizeMode.END)
+            if not expand_left:
+                space_right = Gdk.Screen.width() - x - w - screen_border
+
+                if space_right < 0:
+                    w += space_right
+                    label.set_ellipsize(Pango.EllipsizeMode.END)
+                else:
+                    label.set_ellipsize(Pango.EllipsizeMode.NONE)
             else:
-                label.set_ellipsize(Pango.EllipsizeMode.NONE)
+                space_left = x - screen_border
+                if space_left < 0:
+                    x -= space_left
+                    self.__dx -= space_left
+                    w += space_left
+                    label.set_ellipsize(Pango.EllipsizeMode.START)
+                else:
+                    label.set_ellipsize(Pango.EllipsizeMode.NONE)
+        else:
+            label.set_ellipsize(Pango.EllipsizeMode.NONE)
 
         # Don't show if the resulting tooltip would be smaller
         # than the visible area (if not all is on the display)
@@ -210,8 +250,10 @@ class TreeViewHints(Gtk.Window):
         self.__edit_id = renderer.connect('editing-started', self.__undisplay)
         self.__current_path = path
         self.__current_col = col
+        self.__current_left = expand_left
 
         self.set_transient_for(get_top_parent(view))
+        set_text(label)
         self.set_size_request(w, h)
         self.resize(w, h)
         self.move(x, y)
