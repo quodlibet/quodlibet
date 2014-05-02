@@ -274,9 +274,14 @@ class TreeViewHints(Gtk.Window):
         self.set_transient_for(get_top_parent(view))
         set_text(label)
         self.set_size_request(w, h)
-        self.move(x, y)
-        self.resize(w, h)
-        self.show()
+
+        window = self.get_window()
+        if self.get_visible() and window:
+            window.move_resize(x, y, w, h)
+        else:
+            self.move(x, y)
+            self.resize(w, h)
+            self.show()
 
         return False
 
