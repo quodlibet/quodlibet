@@ -73,7 +73,6 @@ class TreeViewHints(Gtk.Window):
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
-        self.__current_left = False
         self.__current_renderer = None
         self.__view = None
         self.__hide_id = None
@@ -148,6 +147,9 @@ class TreeViewHints(Gtk.Window):
             return False
         (render_offset, render_width), renderer = pos[-1]
 
+        if self.__current_renderer == renderer and self.__current_path == path:
+            return False
+
         # only ellipsized text renderers
         if not isinstance(renderer, Gtk.CellRendererText):
             self.__undisplay()
@@ -163,11 +165,6 @@ class TreeViewHints(Gtk.Window):
             expand_left = True
         else:
             self.__undisplay()
-            return False
-
-        if self.__current_renderer == renderer and \
-                self.__current_path == path and \
-                self.__current_left == expand_left:
             return False
 
         # don't display if the renderer is in editing mode
@@ -265,7 +262,6 @@ class TreeViewHints(Gtk.Window):
         self.__edit_id = renderer.connect('editing-started', self.__undisplay)
         self.__current_path = path
         self.__current_col = col
-        self.__current_left = expand_left
 
         if self.__hide_id:
             GLib.source_remove(self.__hide_id)
