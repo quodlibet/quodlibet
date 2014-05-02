@@ -926,19 +926,11 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         from an event like song-started.
         """
 
-        def jump_to(song, select=True):
-            model = self.songlist.model
-            if song == model.current:
-                path = model.current_path
-            else:
-                iter = model.find(song)
-                if iter is None:
-                    return
-                path = model[iter].path
-
-            self.songlist.scroll_to_cell(path, use_align=True, row_align=0.5)
-            if select:
-                self.songlist.set_cursor(path)
+        def idle_jump_to(song, select):
+            ok = self.songlist.jump_to_song(song, select=select)
+            if ok:
+                self.songlist.grab_focus()
+            return False
 
         song = app.player.song
         model = self.songlist.model
@@ -947,15 +939,17 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         if song is None:
             return
 
-        # model.find because the source could be the queue
-        if song == model.current or (model.find(song) and explicit):
-            jump_to(song, select=explicit)
+        ok = self.songlist.jump_to_song(song, select=explicit)
+        if ok:
+            self.songlist.grab_focus()
         elif explicit:
-            self.browser.scroll(app.player.song)
+            # if we can't find it and the user requested it, try harder
+            self.browser.scroll(song)
             # We need to wait until the browser has finished
             # scrolling/filling and the songlist is ready.
             # Not perfect, but works for now.
-            GLib.idle_add(jump_to, song, priority=GLib.PRIORITY_LOW)
+            GLib.idle_add(
+                idle_jump_to, song, explicit, priority=GLib.PRIORITY_LOW)
 
     def __next_song(self, *args):
         app.player.next()

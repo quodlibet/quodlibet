@@ -679,6 +679,31 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         # pass the songs manually
         self.info._update_songs(songs)
 
+    def jump_to_song(self, song, select=False):
+        """Scrolls to and selects the given song if in the list.
+
+        Returns True if the song was found.
+        """
+
+        model = self.get_model()
+        if not model:
+            return False
+
+        # fast path
+        if song == model.current:
+            path = model.current_path
+        else:
+            iter_ = model.find(song)
+            if iter_ is None:
+                return False
+            path = model.get_path(iter_)
+
+        self.scroll_to_cell(path, use_align=True, row_align=0.5)
+        if select:
+            self.set_cursor(path)
+
+        return True
+
     def get_selected_songs(self):
         songs = []
 
