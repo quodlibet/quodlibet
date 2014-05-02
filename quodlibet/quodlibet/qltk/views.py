@@ -76,6 +76,7 @@ class TreeViewHints(Gtk.Window):
         self.__current_left = False
         self.__current_renderer = None
         self.__view = None
+        self.__hide_id = None
 
     def connect_view(self, view):
         self.__handlers[view] = [
@@ -98,6 +99,11 @@ class TreeViewHints(Gtk.Window):
         if view is self.__view:
             self.__undisplay()
         self.set_transient_for(None)
+
+        if self.__hide_id:
+            GLib.source_remove(self.__hide_id)
+            self.__hide_id = None
+            self.hide()
 
     def __motion(self, view, event):
         label = self.__label
@@ -144,7 +150,9 @@ class TreeViewHints(Gtk.Window):
 
         # only ellipsized text renderers
         if not isinstance(renderer, Gtk.CellRendererText):
+            self.__undisplay()
             return False
+
         ellipsize = renderer.get_property('ellipsize')
         if ellipsize == Pango.EllipsizeMode.END:
             expand_left = False
@@ -154,17 +162,17 @@ class TreeViewHints(Gtk.Window):
         elif ellipsize == Pango.EllipsizeMode.START:
             expand_left = True
         else:
+            self.__undisplay()
             return False
 
         if self.__current_renderer == renderer and \
                 self.__current_path == path and \
                 self.__current_left == expand_left:
             return False
-        else:
-            self.__undisplay()
 
         # don't display if the renderer is in editing mode
         if renderer.props.editing:
+            self.__undisplay()
             return False
 
         # set the cell renderer attributes for the active cell
@@ -201,6 +209,7 @@ class TreeViewHints(Gtk.Window):
 
         # don't display if it doesn't need expansion
         if label_width < render_width:
+            self.__undisplay()
             return False
 
         dummy, ox, oy = view.get_window().get_origin()
@@ -248,6 +257,7 @@ class TreeViewHints(Gtk.Window):
         # Don't show if the resulting tooltip would be smaller
         # than the visible area (if not all is on the display)
         if w < render_width:
+            self.__undisplay()
             return False
 
         self.__view = view
@@ -257,13 +267,17 @@ class TreeViewHints(Gtk.Window):
         self.__current_col = col
         self.__current_left = expand_left
 
+        if self.__hide_id:
+            GLib.source_remove(self.__hide_id)
+            self.__hide_id = None
+
         self.set_transient_for(get_top_parent(view))
         set_text(label)
         self.set_size_request(w, h)
-        self.resize(w, h)
         self.move(x, y)
-
+        self.resize(w, h)
         self.show()
+
         return False
 
     def __leave_undisplay(self, view, event):
@@ -293,7 +307,16 @@ class TreeViewHints(Gtk.Window):
         self.__current_renderer = self.__edit_id = None
         self.__current_path = self.__current_col = None
         self.__view = None
-        self.hide()
+
+        def hide():
+            self.__hide_id = None
+            self.hide()
+            return False
+
+        # Work around Gnome Shell redraw bugs: it doesn't like
+        # multiple hide()/show(), so we try to reduce calls to hide
+        # by aborting it if the pointer is on a new cell shortly after.
+        self.__hide_id = GLib.timeout_add(20, hide)
 
     def __event(self, event):
         if not self.__view:
