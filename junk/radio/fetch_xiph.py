@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify

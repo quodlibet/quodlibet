@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
