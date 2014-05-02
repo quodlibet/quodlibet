@@ -39,6 +39,11 @@ class TreeViewHints(Gtk.Window):
         self.__clabel.set_alignment(0, 0.5)
         self.__clabel.set_ellipsize(Pango.EllipsizeMode.NONE)
 
+        screen = self.get_screen()
+        rgba = screen.get_rgba_visual()
+        if rgba is not None:
+            self.set_visual(rgba)
+
         self.__label = label = self._MinLabel()
         label.set_alignment(0, 0.5)
         label.set_ellipsize(Pango.EllipsizeMode.NONE)
