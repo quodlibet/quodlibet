@@ -818,10 +818,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu = Gtk.Menu()
         menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
 
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.append(sep)
-
         current = SongList.headers[:]
         current_set = set(current)
 
@@ -910,6 +906,10 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 column.set_fixed_width(-1)
             column.set_expand(do_expand)
             self.columns_autosize()
+
+        sep = SeparatorMenuItem()
+        sep.show()
+        menu.append(sep)
 
         item.connect('activate', set_expand_cb, column)
         item.show()
