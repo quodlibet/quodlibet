@@ -7,6 +7,7 @@
 from gi.repository import Gtk
 
 from quodlibet.plugins.events import EventPlugin
+from quodlibet import app
 
 from .main import MPDServer
 from .tcpserver import ServerError
@@ -21,7 +22,7 @@ class MPDServerPlugin(EventPlugin):
     PORT = 6600
 
     def enabled(self):
-        self.server = MPDServer(self.PORT)
+        self.server = MPDServer(app, self.PORT)
         try:
             self.server.start()
         except ServerError as e:

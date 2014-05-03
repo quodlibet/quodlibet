@@ -7,7 +7,8 @@
 import re
 import shlex
 
-from quodlibet import app
+from gi.repository import GLib, GObject
+
 from quodlibet import const
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
@@ -113,14 +114,105 @@ def parse_command(line):
     return command, dec_args
 
 
+
+class PlayerOptions(GObject.Object):
+    """Provides a simplified interface for playback options.
+
+    This should probably go into the core.
+    """
+
+    __gsignals__ = {
+        'random-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        'repeat-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+    }
+
+    def __init__(self, app):
+        super(PlayerOptions, self).__init__()
+
+        self._repeat = app.window.repeat
+        self._rid = self._repeat.connect(
+            "toggled", lambda *x: self.emit("repeat-changed"))
+
+        self._order = app.window.order
+        self._oid = self._order.connect(
+            "changed", lambda *x: self.emit("random-changed"))
+
+    def destroy(self):
+        super(PlayerOptions, self).destroy()
+        self._repeat.disconnect(self._rid)
+        del self._repeat
+        self._order.disconnect(self._oid)
+        del self._order
+
+    def get_random(self):
+        return self._order.get_active_name() == "shuffle"
+
+    def set_random(self, value):
+        if value:
+            self._order.set_active("shuffle")
+        else:
+            self._order.set_active("inorder")
+
+    def get_repeat(self):
+        return self._repeat.get_active()
+
+    def set_repeat(self, value):
+        self._repeat.set_active(value)
+
+
 class MPDService(object):
     """This is the actual shared MPD service which the clients talk to"""
 
     version = (0, 17, 0)
 
-    def __init__(self):
+    def __init__(self, app):
+        self._app = app
         self._connections = set()
         self._idle_subscriptions = {}
+        self._pl_ver = 0
+
+        self._options = PlayerOptions(app)
+
+        def options_changed(*args):
+            self.emit_changed("options")
+
+        self._options.connect("random-changed", options_changed)
+        self._options.connect("repeat-changed", options_changed)
+
+        self._player_sigs = []
+
+        def volume_changed(*args):
+            self.emit_changed("mixer")
+
+        id_ = app.player.connect("notify::volume", volume_changed)
+        self._player_sigs.append(id_)
+
+        def player_changed(*args):
+            self.emit_changed("player")
+
+        id_ = app.player.connect("paused", player_changed)
+        self._player_sigs.append(id_)
+        id_ = app.player.connect("unpaused", player_changed)
+        self._player_sigs.append(id_)
+        id_ = app.player.connect("seek", player_changed)
+        self._player_sigs.append(id_)
+
+    def _get_id(self):
+        info = self._app.player.info
+        if info is None:
+            return
+        return id(info)
+
+    def _change_playlist(self):
+        self._pl_ver += 1
+        self.emit_changed("playlist")
+
+    def destroy(self):
+        for id_ in self._player_sigs:
+            self._app.player.disconnect(id_)
+        self._options.destroy()
+        del self._app
+        del self._options
 
     def add_connection(self, connection):
         self._connections.add(connection)
@@ -139,70 +231,68 @@ class MPDService(object):
         for conn, subs in self._idle_subscriptions.iteritems():
             if not subs or subsystem in subs:
                 conn.write_line(u"changed: %s" % subsystem)
-        conn.ok()
-        conn.start_write()
+                conn.ok()
+                conn.start_write()
 
     def play(self):
-        if not app.player.song:
-            app.player.reset()
+        if not self._app.player.song:
+            self._app.player.reset()
+            self._change_playlist()
         else:
-            app.player.paused = False
-        self.emit_changed("player")
+            self._app.player.paused = False
 
     def playid(self, songid):
         # -1 is any
         self.play()
-        self.emit_changed("player")
 
     def pause(self):
-        app.player.paused = True
-        self.emit_changed("player")
+        self._app.player.paused = True
 
     def stop(self):
-        app.player.stop()
-        self.emit_changed("player")
+        self._app.player.stop()
 
     def next(self):
-        app.player.next()
+        self._app.player.next()
+        self._change_playlist()
 
     def previous(self):
-        app.player.previous()
+        self._app.player.previous()
+        self._change_playlist()
 
     def seek(self, songpos, time_):
         """time_ in seconds"""
 
-        app.player.seek(time_ * 1000)
-        self.emit_changed("player")
+        self._app.player.seek(time_ * 1000)
 
     def seekid(self, songid, time_):
         """time_ in seconds"""
 
-        app.player.seek(time_ * 1000)
-        self.emit_changed("player")
+        self._app.player.seek(time_ * 1000)
 
     def seekcur(self, value, relative):
         if relative:
-            pos = app.player.get_position()
-            app.player.seek(pos + value)
+            pos = self._app.player.get_position()
+            self._app.player.seek(pos + value)
         else:
-            app.player.seek(value)
-        self.emit_changed("player")
+            self._app.player.seek(value)
 
     def setvol(self, value):
         """value: 0..100"""
 
-        app.player.volume = value / 100.0
-        self.emit_changed("mixer")
+        self._app.player.volume = value / 100.0
 
     def repeat(self, value):
-        app.window.repeat.set_active(value)
-        self.emit_changed("options")
+        self._options.set_repeat(value)
+
+    def random(self, value):
+        self._options.set_random(value)
 
     def stats(self):
+        has_song = int(bool(self._app.player.info))
         stats = [
-            ("artists", 1),
-            ("albums", 1),
-            ("songs", 1),
+            ("artists", has_song),
+            ("albums", has_song),
+            ("songs", has_song),
             ("uptime", 1),
             ("playtime", 1),
             ("db_playtime", 1),
@@ -212,11 +302,13 @@ class MPDService(object):
         return stats
 
     def status(self):
+        app = self._app
         info = app.player.info
 
         if info:
             if app.player.paused:
-                state = "pause"
+                # XXX: should be pause, MPDroid doesn't like it
+                state = "stop"
             else:
                 state = "play"
         else:
@@ -224,40 +316,45 @@ class MPDService(object):
 
         status = [
             ("volume", int(app.player.volume * 100)),
-            ("repeat", int(app.window.repeat.get_active())),
-            ("random", 0),
+            ("repeat", int(self._options.get_repeat())),
+            ("random", int(self._options.get_random())),
             ("single", 0),
             ("consume", 0),
-            ("playlist", 0),
+            ("playlist", self._pl_ver),
             ("playlistlength", int(bool(app.player.info))),
             ("state", state),
-            ("song", 0),
-            ("songid", 0),
-            ("nextsong", 0),
-            ("nextsongid", 0),
-            ("time", "%d:%d" % (
-                int(app.player.get_position() / 1000),
-                info and info("~#length") or 0)),
         ]
+
+        if info:
+            total_time = int(info("~#length"))
+            elapsed_time = int(app.player.get_position() / 1000)
+            elapsed_exact = "%1.3f" % (app.player.get_position() / 1000.0)
+
+            status.extend([
+                ("song", 0),
+                ("songid", self._get_id()),
+                ("time", "%d:%d" % (elapsed_time, total_time)),
+                ("elapsed", elapsed_exact),
+            ])
 
         return status
 
     def currentsong(self):
-        song = app.player.info
+        song = self._app.player.info
         if song is None:
             return None
 
         parts = []
-        parts.append(u"file: %s" % song("~uri"))
+        parts.append(u"file: file://%s" % song("~basename"))
         parts.append(format_tags(song))
         parts.append(u"Pos: %d" % 0)
-        parts.append(u"Id: %d" % 0)
+        parts.append(u"Id: %d" % self._get_id())
         # TODO: modified time
 
         return u"\n".join(parts)
 
     def playlistinfo(self, start, end):
-        song = app.player.info
+        song = self._app.player.info
         if song is None:
             return None
 
@@ -267,32 +364,22 @@ class MPDService(object):
         parts = []
         parts.append(format_tags(song))
         parts.append(u"Pos: %d" % 0)
-        parts.append(u"Id: %d" % 0)
+        parts.append(u"Id: %d" % self._get_id())
         return u"\n".join(parts)
 
     def playlistid(self, songid=None):
-        # XXX
-        return
-
-        if songid is None:
-            return self.playlistinfo(0, 1)
-
-        song = app.player.info
-        if song is None:
-            return None
-
-        parts = []
-        parts.append(format_tags(song))
-        parts.append(u"Pos: %d" % 1)
-        parts.append(u"Id: %d" % 1)
-        return u"\n".join(parts)
+        return self.playlistinfo(0, 1)
 
 
 class MPDServer(BaseTCPServer):
 
-    def __init__(self, port):
+    def __init__(self, app, port):
         super(MPDServer, self).__init__(port, MPDConnection, const.DEBUG)
-        self.service = MPDService()
+        self.service = MPDService(app)
+
+    def close(self):
+        super(MPDServer, self).close()
+        self.service.destroy()
 
     def log(self, msg):
         print_d(msg)
@@ -521,7 +608,7 @@ def _cmd_idle(conn, service, args):
 
 
 @MPDConnection.Command("noidle")
-def _cmd_idle(conn, service, args):
+def _cmd_noidle(conn, service, args):
     service.unregister_idle(conn)
 
 
@@ -567,6 +654,14 @@ def _cmd_repeat(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
     service.repeat(value)
+
+
+@MPDConnection.Command("random")
+def _cmd_random(conn, service, args):
+    _verify_length(args, 1)
+    value = _parse_bool(args[0])
+    service.random(value)
+
 
 
 @MPDConnection.Command("setvol")
