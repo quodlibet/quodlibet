@@ -14,7 +14,7 @@ class TMPDServer(PluginTestCase):
         self.mod = self.modules["mpd_server"]
 
     def test_parse_command(self):
-        parse = self.mod.parse_command
+        parse = self.mod.main.parse_command
 
         self.assertEqual(parse("foo bar"), ("foo", ["bar"]))
         self.assertEqual(parse("foo\tbar"), ("foo", ["bar"]))
@@ -27,7 +27,7 @@ class TMPDServer(PluginTestCase):
             parse("foo \xc3\xb6\xc3\xa4\xc3\xbc"), ("foo", [u"\xf6\xe4\xfc"]))
 
     def test_format_tags(self):
-        format_tags = self.mod.format_tags
+        format_tags = self.mod.main.format_tags
 
         def getline(key, value):
             song = AudioFile({"~filename": "/dev/null"})

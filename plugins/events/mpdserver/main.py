@@ -352,7 +352,7 @@ class MPDConnection(BaseTCPConnection):
         del self._read_buf[:index + 1]
         return line
 
-    def _write_line(self, line):
+    def write_line(self, line):
         """Writes a line to the client"""
 
         assert isinstance(line, unicode)
@@ -360,7 +360,7 @@ class MPDConnection(BaseTCPConnection):
         self._buf.extend(line.encode("utf-8", errors="replace") + "\n")
 
     def _ok(self):
-        self._write_line(u"OK")
+        self.write_line(u"OK")
 
     def _error(self, msg, code, index):
         error = []
@@ -371,7 +371,7 @@ class MPDConnection(BaseTCPConnection):
         error.append("u] {%s}" % self._command)
         if msg is not None:
             error.append(u" %s" % msg)
-        self._write_line(u"".join(error))
+        self.write_line(u"".join(error))
 
     def _handle_command(self, command, args):
         self._command = command
@@ -389,7 +389,7 @@ class MPDConnection(BaseTCPConnection):
                     raise MPDRequestError(e.msg, e.code, i)
 
                 if self._command_list_ok:
-                    self._write_line(U"list_OK")
+                    self.write_line(U"list_OK")
 
             self._ok()
             self._use_command_list = False
@@ -413,225 +413,237 @@ class MPDConnection(BaseTCPConnection):
     def _exec_command(self, command, args):
         self._command = command
 
-        try:
-            cmd_method = getattr(self, u"_cmd_" + command)
-        except AttributeError:
+        if command not in self._commands:
             # Unhandled command, default to OK for now..
             self._ok()
             return
 
-        cmd_method(args)
+        cmd, do_ack = self._commands[command]
+        cmd(self, self.service, args)
+        if do_ack:
+            self._ok()
 
-    def _cmd_idle(self, args):
-        # TODO: register for events
-        pass
+    _commands = {}
 
-    def _cmd_close(self, args):
-        self.close()
+    @classmethod
+    def Command(cls, name, ack=True):
 
-    def _cmd_play(self, args):
-        self.service.play()
-        self._ok()
+        def wrap(func):
+            assert name not in cls._commands, name
+            cls._commands[name] = (func, ack)
+            return func
 
-    def _cmd_playid(self, args):
-        if not args:
-            raise MPDRequestError("missing arg")
+        return wrap
 
-        try:
-            songid = int(args[0])
-        except ValueError:
-            raise MPDRequestError("invalid arg")
+    @classmethod
+    def list_commands(cls):
+        """A list of supported commands"""
 
-        self.service.playid(songid)
-        self._ok()
+        return cls._commands.keys()
 
-    def _cmd_pause(self, args):
-        self.service.pause()
-        self._ok()
 
-    def _cmd_stop(self, args):
-        self.service.stop()
-        self._ok()
+def _verify_length(args, length):
+    if not len(args) < length:
+        raise MPDRequestError("Wrong arg count")
 
-    def _cmd_next(self, args):
-        self.service.next()
-        self._ok()
 
-    def _cmd_previous(self, args):
-        self.service.previous()
-        self._ok()
+def _parse_int(arg):
+    try:
+        return int(arg)
+    except ValueError:
+        raise MPDRequestError("invalid arg")
 
-    def _cmd_repeat(self, args):
-        if not args:
-            raise MPDRequestError("missing arg")
 
-        try:
-            value = int(args[0])
-            if value not in (0, 1):
-                raise ValueError
-        except ValueError:
-            raise MPDRequestError("invalid arg")
+def _parse_bool(arg):
+    try:
+        value = int(arg)
+        if value not in (0, 1):
+            raise ValueError
+    except ValueError:
+        raise MPDRequestError("invalid arg")
+    else:
+        return bool(value)
 
-        self.service.repeat(value)
-        self._ok()
 
-    def _cmd_setvol(self, args):
-        if not args:
-            raise MPDRequestError("missing arg")
+def _parse_range(arg):
+    try:
+        values = [int(v) for v in arg.split(":")]
+    except ValueError:
+        raise MPDRequestError("arg in range not a number")
 
-        try:
-            value = int(args[0])
-        except ValueError:
-            raise MPDRequestError("invalid arg")
+    if len(values) == 1:
+        return (values[0], values[0] + 1)
+    elif len(values) == 2:
+        return values
+    else:
+        raise MPDRequestError("invalid range")
 
-        self.service.setvol(value)
-        self._ok()
 
-    def _cmd_ping(self, args):
-        self._ok()
+@MPDConnection.Command("idle", ack=False)
+def _cmd_idle(conn, service, args):
+    # TODO: register for events
+    pass
 
-    def _cmd_status(self, args):
-        status = self.service.status()
-        for k, v in status:
-            self._write_line(u"%s: %s" % (k, v))
-        self._ok()
 
-    def _cmd_stats(self, args):
-        status = self.service.stats()
-        for k, v in status:
-            self._write_line(u"%s: %s" % (k, v))
-        self._ok()
+@MPDConnection.Command("close", ack=False)
+def _cmd_close(conn, service, args):
+    conn.close()
 
-    def _cmd_currentsong(self, args):
-        stats = self.service.currentsong()
-        if stats is not None:
-            self._write_line(stats)
-        self._ok()
 
-    def _cmd_count(self, args):
-        self._write_line(u"songs: 0")
-        self._write_line(u"playtime: 0")
-        self._ok()
+@MPDConnection.Command("play")
+def _cmd_play(conn, service, args):
+    service.play()
 
-    def _cmd_plchanges(self, args):
-        self._cmd_currentsong(args)
 
-    def _cmd_listallinfo(self, args):
-        self._cmd_currentsong(args)
+@MPDConnection.Command("playid")
+def _cmd_playid(conn, service, args):
+    _verify_length(args, 1)
+    songid = _parse_int(args[0])
+    service.playid(songid)
 
-    def _cmd_seek(self, args):
-        if len(args) != 2:
-            raise MPDRequestError("wrong arg count")
 
-        songpos, time_ = args
+@MPDConnection.Command("pause")
+def _cmd_pause(conn, service, args):
+    service.pause()
 
-        try:
-            songpos = int(songpos)
-            time_ = int(time_)
-        except ValueError:
-            raise MPDRequestError("arg not a number")
 
-        self.service.seek(songpos, time_)
-        self._ok()
+@MPDConnection.Command("stop")
+def _cmd_stop(conn, service, args):
+    service.stop()
 
-    def _cmd_seekid(self, args):
-        if len(args) != 2:
-            raise MPDRequestError("wrong arg count")
 
-        songid, time_ = args
+@MPDConnection.Command("next")
+def _cmd_next(conn, service, args):
+    service.next()
 
-        try:
-            songid = int(songid)
-            time_ = int(time_)
-        except ValueError:
-            raise MPDRequestError("arg not a number")
 
-        self.service.seekid(songid, time_)
-        self._ok()
+@MPDConnection.Command("previous")
+def _cmd_previous(conn, service, args):
+    service.previous()
 
-    def _cmd_seekcur(self, args):
-        if len(args) != 1:
-            raise MPDRequestError("wrong arg count")
 
-        relative = False
-        time_ = args[0]
-        if time_.startswith(("+", "-")):
-            relative = True
+@MPDConnection.Command("repeat")
+def _cmd_repeat(conn, service, args):
+    _verify_length(args, 1)
+    value = _parse_bool(args[0])
+    service.repeat(value)
 
-        try:
-            time_ = int(time_)
-        except ValueError:
-            raise MPDRequestError("arg not a number")
 
-        self.service.seekid(time_, relative)
-        self._ok()
+@MPDConnection.Command("setvol")
+def _cmd_setvol(conn, service, args):
+    _verify_length(args, 1)
+    value = _parse_int(args[0])
+    service.setvol(value)
 
-    def _cmd_outputs(self, args):
-        self._write_line(u"outputid: 0")
-        self._write_line(u"outputname: dummy")
-        self._write_line(u"outputenabled: 1")
-        self._ok()
 
-    def _cmd_commands(self, args):
-        for attr in dir(self):
-            if attr.startswith("_cmd_"):
-                self._write_line(unicode(attr[5:]))
-        self._ok()
+@MPDConnection.Command("status")
+def _cmd_status(conn, service, args):
+    status = service.status()
+    for k, v in status:
+        conn.write_line(u"%s: %s" % (k, v))
 
-    def _cmd_tagtypes(self, args):
-        for mpd_key, ql_key in TAG_MAPPING:
-            if ql_key:
-                self._write_line(mpd_key)
-        self._ok()
 
-    def _cmd_lsinfo(self, args):
-        if len(args) != 1:
-            raise MPDRequestError("wrong arg count")
+@MPDConnection.Command("stats")
+def _cmd_stats(conn, service, args):
+    status = service.stats()
+    for k, v in status:
+        conn.write_line(u"%s: %s" % (k, v))
 
-        if args == u"/":
-            self._cmd_listplaylists([])
-            return
 
-        self._ok()
+@MPDConnection.Command("currentsong")
+def _cmd_currentsong(conn, service, args):
+    stats = service.currentsong()
+    if stats is not None:
+        conn.write_line(stats)
 
-    def _cmd_listplaylists(self, args):
-        self._ok()
 
-    def _cmd_playlistinfo(self, args):
-        if len(args) != 1:
-            raise MPDRequestError("wrong arg count")
+@MPDConnection.Command("count")
+def _cmd_count(conn, service, args):
+    conn.write_line(u"songs: 0")
+    conn.write_line(u"playtime: 0")
 
-        try:
-            values = [int(v) for v in args[0].split(":")]
-        except ValueError:
-            raise MPDRequestError("arg not a number")
 
-        if len(values) == 1:
-            start = values[0]
-            end = start + 1
-        elif len(values) == 2:
-            start, end = values
-        else:
-            raise MPDRequestError("not a valid range")
+@MPDConnection.Command("plchanges")
+def _cmd_plchanges(*args):
+    _cmd_currentsong(*args)
 
-        result = self.service.playlistinfo(start, end)
-        if result is not None:
-            self._write_line(result)
-        self._ok()
 
-    def _cmd_playlistid(self, args):
-        if len(args) > 1:
-            raise MPDRequestError("wrong arg count")
+@MPDConnection.Command("listallinfo")
+def _cmd_listallinfo(*args):
+    _cmd_currentsong(*args)
 
-        if len(args) == 1:
-            try:
-                songid = int(args[0])
-            except ValueError:
-                raise MPDRequestError("arg not a number")
-        else:
-            songid = None
 
-        result = self.service.playlistid(songid)
-        if result is not None:
-            self._write_line(result)
-        self._ok()
+@MPDConnection.Command("seek")
+def _cmd_seek(conn, service, args):
+    _verify_length(args, 2)
+    songpos = _parse_int(args[0])
+    time_ = _parse_int(args[1])
+    service.seek(songpos, time_)
+
+
+@MPDConnection.Command("seekid")
+def _cmd_seekid(conn, service, args):
+    _verify_length(args, 2)
+    songid = _parse_int(args[0])
+    time_ = _parse_int(args[1])
+    service.seekid(songid, time_)
+
+
+@MPDConnection.Command("seekcur")
+def _cmd_seekcur(conn, service, args):
+    _verify_length(args, 1)
+
+    relative = False
+    time_ = args[0]
+    if time_.startswith(("+", "-")):
+        relative = True
+
+    try:
+        time_ = int(time_)
+    except ValueError:
+        raise MPDRequestError("arg not a number")
+
+    service.seekid(time_, relative)
+
+
+@MPDConnection.Command("outputs")
+def _cmd_outputs(conn, service, args):
+    conn.write_line(u"outputid: 0")
+    conn.write_line(u"outputname: dummy")
+    conn.write_line(u"outputenabled: 1")
+
+
+@MPDConnection.Command("commands")
+def _cmd_commands(conn, service, args):
+    for name in conn.list_commands():
+        conn.write_line(unicode(name))
+
+
+@MPDConnection.Command("tagtypes")
+def _cmd_tagtypes(conn, service, args):
+    for mpd_key, ql_key in TAG_MAPPING:
+        if ql_key:
+            conn.write_line(mpd_key)
+
+
+@MPDConnection.Command("lsinfo")
+def _cmd_lsinfo(conn, service, args):
+    _verify_length(args, 1)
+
+
+@MPDConnection.Command("playlistinfo")
+def _cmd_playlistinfo(conn, service, args):
+    _verify_length(args, 1)
+    start, end = _parse_range(args[0])
+    result = service.playlistinfo(start, end)
+    if result is not None:
+        conn.write_line(result)
+
+
+@MPDConnection.Command("playlistid")
+def _cmd_playlistid(conn, service, args):
+    _verify_length(args, 1)
+    songid = _parse_int(args[0])
+    result = service.playlistid(songid)
+    if result is not None:
+        conn.write_line(result)
