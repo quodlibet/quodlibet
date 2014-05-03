@@ -68,11 +68,24 @@ class BaseTCPServer(object):
 
         assert not self._connections, self._connections
 
+    def handle_init(self):
+        """Gets called if a new connection starts and there was none before"""
+
+        pass
+
+    def handle_idle(self):
+        """Gets called once the last connection closes"""
+
+        pass
+
     def _remove_connection(self, conn):
         """Called by the connection class on close"""
 
         self._connections.remove(conn)
         del conn._gio_connection
+
+        if not self._connections:
+            self.handle_idle()
 
     def _incoming_connection_cb(self, service, connection, *args):
         try:
@@ -91,6 +104,8 @@ class BaseTCPServer(object):
         if self._debug:
             self.log(msg)
 
+        if not self._connections:
+            self.handle_init()
         tcp_conn = self._connection_class(self, sock)
         self._connections.append(tcp_conn)
         # XXX: set unneeded `connection` to keep the reference

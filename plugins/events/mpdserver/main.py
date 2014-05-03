@@ -138,7 +138,6 @@ class PlayerOptions(GObject.Object):
             "changed", lambda *x: self.emit("random-changed"))
 
     def destroy(self):
-        super(PlayerOptions, self).destroy()
         self._repeat.disconnect(self._rid)
         del self._repeat
         self._order.disconnect(self._oid)
@@ -374,12 +373,17 @@ class MPDService(object):
 class MPDServer(BaseTCPServer):
 
     def __init__(self, app, port):
+        self._app = app
         super(MPDServer, self).__init__(port, MPDConnection, const.DEBUG)
-        self.service = MPDService(app)
 
-    def close(self):
-        super(MPDServer, self).close()
+    def handle_init(self):
+        print_d("Creating the MPD service")
+        self.service = MPDService(self._app)
+
+    def handle_idle(self):
+        print_d("Destroying the MPD service")
         self.service.destroy()
+        del self.service
 
     def log(self, msg):
         print_d(msg)
