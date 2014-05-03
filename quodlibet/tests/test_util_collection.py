@@ -23,6 +23,7 @@ NUMERIC_SONGS = [
               "~#length": 1, "~#added": 3, "~#lastplayed": 43,
               "~#bitrate": 60, "date": "33", "~#rating": 0.5})
 ]
+AMAZING_SONG = Fakesong({"~#length": 123, "~#rating": 1.0})
 
 
 class TAlbum(TestCase):
@@ -380,6 +381,50 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl.get("~#rating"), 0.3)
         s.failUnlessEqual(pl.get("~#originalyear"), 2002)
         pl.delete()
+
+    def test_updating_aggregates_extend(s):
+        pl = Playlist(s.temp, "playlist")
+        pl.extend(NUMERIC_SONGS)
+        old_length = pl.get("~#length")
+        old_size = pl.get("~#filesize")
+
+        # Double the playlist
+        pl.extend(NUMERIC_SONGS)
+
+        new_length = pl.get("~#length")
+        new_size = pl.get("~#filesize")
+        s.failUnless(new_length > old_length,
+                     msg="Ooops, %d <= %d" % (new_length, old_length))
+
+        s.failUnless(new_size > old_size,
+                     msg="Ooops, %d <= %d" % (new_size, old_size))
+
+    def test_updating_aggregates_append(s):
+        pl = Playlist(s.temp, "playlist")
+        pl.extend(NUMERIC_SONGS)
+        old_rating = pl.get("~#rating")
+
+        pl.append(AMAZING_SONG)
+
+        new_rating = pl.get("~#filesize")
+        s.failUnless(new_rating > old_rating)
+
+    def test_updating_aggregates_clear(s):
+        pl = Playlist(s.temp, "playlist")
+        pl.extend(NUMERIC_SONGS)
+        s.failUnless(pl.get("~#length"))
+
+        pl.clear()
+        s.failIf(pl.get("~#length"))
+
+    def test_updating_aggregates_remove_songs(s):
+        pl = Playlist(s.temp, "playlist")
+        pl.extend(NUMERIC_SONGS)
+        s.failUnless(pl.get("~#length"))
+
+        pl.remove_songs(NUMERIC_SONGS)
+        s.failIf(pl.get("~#length"))
+
 
     def test_listlike(s):
         pl = Playlist(s.temp, "playlist")

@@ -165,7 +165,8 @@ class Collection(object):
                 w = lambda s: s("~#bitrate", 0) * s("~#length", 0)
                 return sum(w(song) for song in self.songs) / length
             else:
-                # Unknown key. AudioFile will try to cast the values to int,
+                # Standard or unknown numeric key.
+                # AudioFile will try to cast the values to int,
                 # default to avg
                 func = NUM_DEFAULT_FUNCS.get(key, "avg")
 
@@ -223,10 +224,8 @@ class Collection(object):
                 return None if length is None else util.format_time(length)
             elif key == "long-length":
                 length = self.__get_value("~#length")
-                if length is None:
-                    return None
-                else:
-                    return util.format_time_long(length)
+                return (None if length is None
+                        else util.format_time_long(length))
             elif key == "tracks":
                 tracks = self.__get_value("~#tracks")
                 return (None if tracks is None else
@@ -376,12 +375,16 @@ class Playlist(Collection, Iterable):
     # List-like methods, for compatibilty with original Playlist class.
     def extend(self, songs):
         self._list.extend(songs)
+        self.finalize()
 
     def append(self, song):
-        return self._list.append(song)
+        ret = self._list.append(song)
+        self.finalize()
+        return ret
 
     def clear(self):
         del self._list[:]
+        self.finalize()
 
     def __iter__(self):
         return iter(self._list)
@@ -397,6 +400,7 @@ class Playlist(Collection, Iterable):
 
     def __setitem__(self, key, value):
         self._list[key] = value
+        self.finalize()
 
     @property
     def songs(self):
@@ -473,6 +477,8 @@ class Playlist(Collection, Iterable):
                         break
                 else:
                     changed = True
+        if changed:
+            self.finalize()
         return changed
 
     def has_songs(self, songs):
