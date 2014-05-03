@@ -933,7 +933,6 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             return False
 
         song = app.player.song
-        model = self.songlist.model
 
         # We are not playing a song
         if song is None:
