@@ -118,21 +118,49 @@ class MPDService(object):
 
     version = (0, 17, 0)
 
+    def __init__(self):
+        self._connections = set()
+        self._idle_subscriptions = {}
+
+    def add_connection(self, connection):
+        self._connections.add(connection)
+
+    def remove_connection(self, connection):
+        self._idle_subscriptions.pop(connection, None)
+        self._connections.remove(connection)
+
+    def register_idle(self, connection, subsystems):
+        self._idle_subscriptions[connection] = subsystems
+
+    def unregister_idle(self, connection):
+        del self._idle_subscriptions[connection]
+
+    def emit_changed(self, subsystem):
+        for conn, subs in self._idle_subscriptions.iteritems():
+            if not subs or subsystem in subs:
+                conn.write_line(u"changed: %s" % subsystem)
+        conn.ok()
+        conn.start_write()
+
     def play(self):
         if not app.player.song:
             app.player.reset()
         else:
             app.player.paused = False
+        self.emit_changed("player")
 
     def playid(self, songid):
         # -1 is any
         self.play()
+        self.emit_changed("player")
 
     def pause(self):
         app.player.paused = True
+        self.emit_changed("player")
 
     def stop(self):
         app.player.stop()
+        self.emit_changed("player")
 
     def next(self):
         app.player.next()
@@ -144,11 +172,13 @@ class MPDService(object):
         """time_ in seconds"""
 
         app.player.seek(time_ * 1000)
+        self.emit_changed("player")
 
     def seekid(self, songid, time_):
         """time_ in seconds"""
 
         app.player.seek(time_ * 1000)
+        self.emit_changed("player")
 
     def seekcur(self, value, relative):
         if relative:
@@ -156,14 +186,17 @@ class MPDService(object):
             app.player.seek(pos + value)
         else:
             app.player.seek(value)
+        self.emit_changed("player")
 
     def setvol(self, value):
         """value: 0..100"""
 
         app.player.volume = value / 100.0
+        self.emit_changed("mixer")
 
     def repeat(self, value):
         app.window.repeat.set_active(value)
+        self.emit_changed("options")
 
     def stats(self):
         stats = [
@@ -280,6 +313,7 @@ class MPDConnection(BaseTCPConnection):
     def handle_init(self, server):
         service = server.service
         self.service = service
+        service.add_connection(self)
 
         str_version = ".".join(map(str, service.version))
         self._buf = bytearray("OK MPD %s\n" % str_version)
@@ -327,6 +361,8 @@ class MPDConnection(BaseTCPConnection):
         return bool(self._buf)
 
     def handle_close(self):
+        self.log("connection closed")
+        self.service.remove_connection(self)
         del self.service
 
     #  ------------ rest ------------
@@ -359,7 +395,7 @@ class MPDConnection(BaseTCPConnection):
 
         self._buf.extend(line.encode("utf-8", errors="replace") + "\n")
 
-    def _ok(self):
+    def ok(self):
         self.write_line(u"OK")
 
     def _error(self, msg, code, index):
@@ -391,7 +427,7 @@ class MPDConnection(BaseTCPConnection):
                 if self._command_list_ok:
                     self.write_line(U"list_OK")
 
-            self._ok()
+            self.ok()
             self._use_command_list = False
             del self._command_list[:]
             return
@@ -415,13 +451,13 @@ class MPDConnection(BaseTCPConnection):
 
         if command not in self._commands:
             # Unhandled command, default to OK for now..
-            self._ok()
+            self.ok()
             return
 
         cmd, do_ack = self._commands[command]
         cmd(self, self.service, args)
         if do_ack:
-            self._ok()
+            self.ok()
 
     _commands = {}
 
@@ -443,7 +479,7 @@ class MPDConnection(BaseTCPConnection):
 
 
 def _verify_length(args, length):
-    if not len(args) < length:
+    if not len(args) <= length:
         raise MPDRequestError("Wrong arg count")
 
 
@@ -481,8 +517,12 @@ def _parse_range(arg):
 
 @MPDConnection.Command("idle", ack=False)
 def _cmd_idle(conn, service, args):
-    # TODO: register for events
-    pass
+    service.register_idle(conn, args)
+
+
+@MPDConnection.Command("noidle")
+def _cmd_idle(conn, service, args):
+    service.unregister_idle(conn)
 
 
 @MPDConnection.Command("close", ack=False)
