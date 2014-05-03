@@ -12,16 +12,13 @@ import errno
 from gi.repository import Gio, GLib
 
 
-DEBUG = False
-
-
 class ServerError(Exception):
     pass
 
 
 class BaseTCPServer(object):
 
-    def __init__(self, port, connection_class):
+    def __init__(self, port, connection_class, debug=False):
         """port -- IP port
         connection_class -- BaseTCPConnection subclass
         """
@@ -30,6 +27,12 @@ class BaseTCPServer(object):
         self._port = port
         self._connection_class = connection_class
         self._sock_service = None
+        self._debug = debug
+
+    def log(self, msg):
+        """Override for logging"""
+
+        pass
 
     def start(self):
         """Start accepting connections.
@@ -72,9 +75,21 @@ class BaseTCPServer(object):
         del conn._gio_connection
 
     def _incoming_connection_cb(self, service, connection, *args):
+        try:
+            addr = connection.get_remote_address()
+        except GLib.GError:
+            addr_string = "?.?.?.?"
+        else:
+            addr_string = addr.get_address().to_string()
+
         fd = connection.get_socket().get_fd()
         sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(0)
+
+        msg = "New connection from %s at socket %d" % (
+            addr_string, sock.fileno())
+        if self._debug:
+            self.log(msg)
 
         tcp_conn = self._connection_class(self, sock)
         self._connections.append(tcp_conn)
@@ -97,9 +112,9 @@ class BaseTCPConnection(object):
         self._out_id = None
         self._closed = False
 
-    def log(self, msg):
-        if DEBUG:
-            print_d("[%d] %s" % (self._sock.fileno(), msg))
+    @property
+    def name(self):
+        return str(self._sock.fileno())
 
     def start_read(self):
         """Start to read and call handle_read() if data is available.

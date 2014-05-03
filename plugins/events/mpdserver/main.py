@@ -8,6 +8,7 @@ import re
 import shlex
 
 from quodlibet import app
+from quodlibet import const
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
 
@@ -110,9 +111,6 @@ def parse_command(line):
         dec_args.append(arg)
 
     return command, dec_args
-
-
-
 
 
 class MPDService(object):
@@ -260,8 +258,11 @@ class MPDService(object):
 class MPDServer(BaseTCPServer):
 
     def __init__(self, port):
-        super(MPDServer, self).__init__(port, MPDConnection)
+        super(MPDServer, self).__init__(port, MPDConnection, const.DEBUG)
         self.service = MPDService()
+
+    def log(self, msg):
+        print_d(msg)
 
 
 class MPDRequestError(Exception):
@@ -329,6 +330,10 @@ class MPDConnection(BaseTCPConnection):
         del self.service
 
     #  ------------ rest ------------
+
+    def log(self, msg):
+        if const.DEBUG:
+            print_d("[%s] %s" % (self.name, msg))
 
     def _feed_data(self, new_data):
         """Feed new data into the read buffer"""
