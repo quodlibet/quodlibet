@@ -170,6 +170,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._librarian = librarian
         self._pipeline_desc = None
         librarian.connect("changed", self.__songs_changed)
+        self._active_seeks = []
 
     def __songs_changed(self, librarian, songs):
         # replaygain values might have changed, recalc volume
@@ -356,6 +357,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self._in_gapless_transition = False
         self._last_position = 0
+        self._active_seeks = []
 
         self._vol_element = None
         self._eq_element = None
@@ -391,6 +393,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             if self._in_gapless_transition:
                 print_d("Stream changed")
                 self._end(False)
+        elif message.type == Gst.MessageType.ASYNC_DONE:
+            if self._active_seeks:
+                song, pos = self._active_seeks.pop(0)
+                if song is self.song:
+                    self.emit("seek", song, pos)
         elif message.type == Gst.MessageType.ELEMENT:
             message_name = message.get_structure().get_name()
 
@@ -469,6 +476,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def get_position(self):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
+
         p = self._last_position
         if self.song and self.bin:
             ok, p = self.bin.query_position(Gst.Format.TIME)
@@ -556,8 +564,15 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 1.0, Gst.Format.TIME, Gst.SeekFlags.FLUSH,
                 Gst.SeekType.SET, gst_time, Gst.SeekType.NONE, 0)
             if self.bin.send_event(event):
+                # to get a good estimate for when get_position fails
                 self._last_position = pos
-                self.emit('seek', self.song, pos)
+                # For cases where we get the position directly after
+                # a seek and the seek is not done, GStreamer returns
+                # a valid 0 position. To prevent this we try to emit seek only
+                # after it is done. Every flushing seek will trigger
+                # an async_done message on the bus, so we queue the seek
+                # event here and emit in the bus message callback.
+                self._active_seeks.append((self.song, pos))
 
     def _end(self, stopped):
         print_d("End song")
