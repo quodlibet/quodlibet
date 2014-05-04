@@ -425,7 +425,6 @@ class TPlaylist(TestCase):
         pl.remove_songs(NUMERIC_SONGS)
         s.failIf(pl.get("~#length"))
 
-
     def test_listlike(s):
         pl = Playlist(s.temp, "playlist")
         pl.extend(NUMERIC_SONGS)
