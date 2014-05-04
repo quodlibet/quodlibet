@@ -35,14 +35,16 @@ TAG_MAPPING = [
     (u"AlbumArtist", "albumartist"),
     (u"AlbumArtistSort", "albumartistsort"),
     (u"Title", "title"),
-    (u"Track", "~#track"),
+    (u"Track", "tracknumber"),
     (u"Name", ""),
     (u"Genre", "genre"),
     (u"Date", "~year"),
     (u"Composer", "composer"),
     (u"Performer", "performer"),
     (u"Comment", "commend"),
-    (u"Disc", "~#disc"),
+    (u"Disc", "discnumber"),
+    (u"Time", "~#length"),
+    (u"Name", "~basename"),
     (u"MUSICBRAINZ_ARTISTID", "musicbrainz_artistid"),
     (u"MUSICBRAINZ_ALBUMID", "musicbrainz_albumid"),
     (u"MUSICBRAINZ_ALBUMARTISTID", "musicbrainz_albumartistid"),
@@ -114,7 +116,6 @@ def parse_command(line):
     return command, dec_args
 
 
-
 class PlayerOptions(GObject.Object):
     """Provides a simplified interface for playback options.
 
@@ -124,6 +125,7 @@ class PlayerOptions(GObject.Object):
     __gsignals__ = {
         'random-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
         'repeat-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        'single-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
     }
 
     def __init__(self, app):
@@ -133,15 +135,28 @@ class PlayerOptions(GObject.Object):
         self._rid = self._repeat.connect(
             "toggled", lambda *x: self.emit("repeat-changed"))
 
+        def order_changed(*args):
+            self.emit("random-changed")
+            self.emit("single-changed")
+
         self._order = app.window.order
-        self._oid = self._order.connect(
-            "changed", lambda *x: self.emit("random-changed"))
+        self._oid = self._order.connect("changed", order_changed)
 
     def destroy(self):
         self._repeat.disconnect(self._rid)
         del self._repeat
         self._order.disconnect(self._oid)
         del self._order
+
+    def set_single(self, value):
+        is_single = self.get_single()
+        if value and not is_single:
+            self._order.set_active("onesong")
+        elif not value and is_single:
+            self._order.set_active("inorder")
+
+    def get_single(self):
+        return self._order.get_active_name() == "onesong"
 
     def get_random(self):
         return self._order.get_active_name() == "shuffle"
@@ -177,6 +192,7 @@ class MPDService(object):
 
         self._options.connect("random-changed", options_changed)
         self._options.connect("repeat-changed", options_changed)
+        self._options.connect("single-changed", options_changed)
 
         self._player_sigs = []
 
@@ -196,15 +212,18 @@ class MPDService(object):
         id_ = app.player.connect("seek", player_changed)
         self._player_sigs.append(id_)
 
-    def _get_id(self):
-        info = self._app.player.info
-        if info is None:
-            return
-        return id(info)
+        def playlist_changed(*args):
+            self._pl_ver += 1
+            self.emit_changed("playlist")
 
-    def _change_playlist(self):
-        self._pl_ver += 1
-        self.emit_changed("playlist")
+        id_ = app.player.connect("song-started", playlist_changed)
+        self._player_sigs.append(id_)
+
+    def _get_id(self, info):
+        # XXX: we need a unique 31 bit ID, but don't have one.
+        # Given that the heap is continuous and each object is >16 bytes
+        # this should work
+        return (id(info) & 0xFFFFFFFF) >> 1
 
     def destroy(self):
         for id_ in self._player_sigs:
@@ -236,12 +255,10 @@ class MPDService(object):
     def play(self):
         if not self._app.player.song:
             self._app.player.reset()
-            self._change_playlist()
         else:
             self._app.player.paused = False
 
     def playid(self, songid):
-        # -1 is any
         self.play()
 
     def pause(self):
@@ -252,11 +269,9 @@ class MPDService(object):
 
     def next(self):
         self._app.player.next()
-        self._change_playlist()
 
     def previous(self):
         self._app.player.previous()
-        self._change_playlist()
 
     def seek(self, songpos, time_):
         """time_ in seconds"""
@@ -285,6 +300,9 @@ class MPDService(object):
 
     def random(self, value):
         self._options.set_random(value)
+
+    def single(self, value):
+        self._options.set_single(value)
 
     def stats(self):
         has_song = int(bool(self._app.player.info))
@@ -317,7 +335,7 @@ class MPDService(object):
             ("volume", int(app.player.volume * 100)),
             ("repeat", int(self._options.get_repeat())),
             ("random", int(self._options.get_random())),
-            ("single", 0),
+            ("single", int(self._options.get_single())),
             ("consume", 0),
             ("playlist", self._pl_ver),
             ("playlistlength", int(bool(app.player.info))),
@@ -328,46 +346,41 @@ class MPDService(object):
             total_time = int(info("~#length"))
             elapsed_time = int(app.player.get_position() / 1000)
             elapsed_exact = "%1.3f" % (app.player.get_position() / 1000.0)
-
             status.extend([
                 ("song", 0),
-                ("songid", self._get_id()),
+                ("songid", self._get_id(info)),
                 ("time", "%d:%d" % (elapsed_time, total_time)),
                 ("elapsed", elapsed_exact),
+                ("bitrate", info("~#bitrate")),
             ])
 
         return status
 
     def currentsong(self):
-        song = self._app.player.info
-        if song is None:
+        info = self._app.player.info
+        if info is None:
             return None
 
         parts = []
-        parts.append(u"file: file://%s" % song("~basename"))
-        parts.append(format_tags(song))
+        parts.append(u"file: %s" % info("~filename"))
+        parts.append(format_tags(info))
         parts.append(u"Pos: %d" % 0)
-        parts.append(u"Id: %d" % self._get_id())
-        # TODO: modified time
+        parts.append(u"Id: %d" % self._get_id(info))
 
         return u"\n".join(parts)
 
     def playlistinfo(self, start, end):
-        song = self._app.player.info
-        if song is None:
-            return None
-
         if start > 1:
             return None
 
-        parts = []
-        parts.append(format_tags(song))
-        parts.append(u"Pos: %d" % 0)
-        parts.append(u"Id: %d" % self._get_id())
-        return u"\n".join(parts)
+        return self.currentsong()
 
     def playlistid(self, songid=None):
-        return self.playlistinfo(0, 1)
+        return self.currentsong()
+
+    def plchanges(self, version):
+        if version != self._pl_ver:
+            return self.currentsong()
 
 
 class MPDServer(BaseTCPServer):
@@ -530,10 +543,12 @@ class MPDConnection(BaseTCPConnection):
             self._use_command_list = True
             self._command_list_ok = command == u"command_list_ok_begin"
             assert not self._command_list
+            self.ok()
             return
 
         if self._use_command_list:
             self._command_list.append((command, args))
+            self.ok()
         else:
             self._exec_command(command, args)
 
@@ -541,6 +556,7 @@ class MPDConnection(BaseTCPConnection):
         self._command = command
 
         if command not in self._commands:
+            print_w("Unhandled command %r, sending OK." % command)
             # Unhandled command, default to OK for now..
             self.ok()
             return
@@ -570,7 +586,7 @@ class MPDConnection(BaseTCPConnection):
 
 
 def _verify_length(args, length):
-    if not len(args) <= length:
+    if not len(args) >= length:
         raise MPDRequestError("Wrong arg count")
 
 
@@ -667,6 +683,12 @@ def _cmd_random(conn, service, args):
     service.random(value)
 
 
+@MPDConnection.Command("single")
+def _cmd_random(conn, service, args):
+    _verify_length(args, 1)
+    value = _parse_bool(args[0])
+    service.single(value)
+
 
 @MPDConnection.Command("setvol")
 def _cmd_setvol(conn, service, args):
@@ -703,8 +725,12 @@ def _cmd_count(conn, service, args):
 
 
 @MPDConnection.Command("plchanges")
-def _cmd_plchanges(*args):
-    _cmd_currentsong(*args)
+def _cmd_plchanges(conn, service, args):
+    _verify_length(args, 1)
+    version = _parse_int(args[0])
+    changes = service.plchanges(version)
+    if changes is not None:
+        conn.write_line(changes)
 
 
 @MPDConnection.Command("listallinfo")
@@ -781,8 +807,10 @@ def _cmd_playlistinfo(conn, service, args):
 
 @MPDConnection.Command("playlistid")
 def _cmd_playlistid(conn, service, args):
-    _verify_length(args, 1)
-    songid = _parse_int(args[0])
+    if args:
+        songid = _parse_int(args[0])
+    else:
+        songid = None
     result = service.playlistid(songid)
     if result is not None:
         conn.write_line(result)

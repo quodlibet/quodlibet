@@ -46,6 +46,6 @@ class TMPDServer(PluginTestCase):
         self.assertEqual(getline("artist", "foo"), "Artist: foo")
         self.assertEqual(getline("genre", "foo\nbar"), "Genre: foo, bar")
         self.assertEqual(getline("artistsort", "foo"), "ArtistSort: foo")
-        self.assertEqual(getline("tracknumber", "2/3"), "Track: 2")
-        self.assertEqual(getline("discnumber", "2/3"), "Disc: 2")
+        self.assertEqual(getline("tracknumber", "2/3"), "Track: 2/3")
+        self.assertEqual(getline("discnumber", "2/3"), "Disc: 2/3")
         self.assertEqual(getline("date", "2009-03-04"), "Date: 2009")
