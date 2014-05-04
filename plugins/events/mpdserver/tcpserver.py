@@ -47,7 +47,7 @@ class BaseTCPServer(object):
             service.add_inet_port(self._port, None)
         except GLib.GError as e:
             raise ServerError(e)
-        service.connect("incoming", self._incoming_connection_cb)
+        self._id = service.connect("incoming", self._incoming_connection_cb)
         service.start()
         self._sock_service = service
 
@@ -60,8 +60,10 @@ class BaseTCPServer(object):
         if not self._sock_service:
             return
 
+        self._sock_service.disconnect(self._id)
         if self._sock_service.is_active():
             self._sock_service.stop()
+        self._sock_service = None
 
         for conn in list(self._connections):
             conn.close()
