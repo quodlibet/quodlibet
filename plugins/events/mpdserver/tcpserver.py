@@ -11,6 +11,8 @@ import errno
 
 from gi.repository import Gio, GLib
 
+from quodlibet.qltk import io_add_watch
+
 
 class ServerError(Exception):
     pass
@@ -169,7 +171,7 @@ class BaseTCPConnection(object):
 
             return True
 
-        self._in_id = GLib.io_add_watch(
+        self._in_id = io_add_watch(
             self._sock, GLib.PRIORITY_DEFAULT,
             GLib.IOCondition.IN | GLib.IOCondition.ERR | GLib.IOCondition.HUP,
             can_read_cb)
@@ -212,7 +214,7 @@ class BaseTCPConnection(object):
             return True
 
         if self._out_id is None:
-            self._out_id = GLib.io_add_watch(
+            self._out_id = io_add_watch(
                 self._sock, GLib.PRIORITY_DEFAULT,
                 GLib.IOCondition.OUT | GLib.IOCondition.ERR |
                 GLib.IOCondition.HUP,
