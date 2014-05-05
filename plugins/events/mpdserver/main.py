@@ -248,7 +248,9 @@ class MPDService(object):
     def emit_changed(self, subsystem):
         for conn, subs in self._idle_subscriptions.iteritems():
             if not subs or subsystem in subs:
-                conn.write_line(u"changed: %s" % subsystem)
+                line = u"changed: %s" % subsystem
+                conn.log(u"<- " + line)
+                conn.write_line(line)
                 conn.ok()
                 conn.start_write()
 
@@ -441,7 +443,7 @@ class MPDConnection(BaseTCPConnection):
         if line is None:
             return
 
-        self.log(repr(line))
+        self.log(u"-> " + repr(line))
 
         try:
             cmd, args = parse_command(line)
