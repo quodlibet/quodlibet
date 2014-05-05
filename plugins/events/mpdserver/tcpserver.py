@@ -141,7 +141,7 @@ class BaseTCPConnection(object):
         Only call once.
         """
 
-        assert self._in_id is None
+        assert self._in_id is None and not self._closed
 
         def can_read_cb(sock, flags, *args):
             if flags & (GLib.IOCondition.HUP | GLib.IOCondition.ERR):
@@ -167,7 +167,9 @@ class BaseTCPConnection(object):
                     return False
 
                 self.handle_read(data)
-                self.start_write()
+                # the implementation could close in handle_read()
+                if not self._closed:
+                    self.start_write()
 
             return True
 
@@ -181,6 +183,8 @@ class BaseTCPConnection(object):
 
         Used to start writing to a client not triggered by a client request.
         """
+
+        assert not self._closed
 
         write_buffer = bytearray()
 

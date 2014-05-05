@@ -169,6 +169,13 @@ except AttributeError:
 
 def io_add_watch(fd, prio, condition, func, *args, **kwargs):
     try:
+        # The new gir bindings don't fail with an invalid fd,
+        # and we can't do the same with the static ones (return a valid
+        # source ID..) so fail with newer pygobject as well.
+        if isinstance(fd, int) and fd < 0:
+            raise ValueError("invalid fd")
+        elif hasattr(fd, "fileno") and fd.fileno() < 0:
+            raise ValueError("invalid fd")
         return GLib.io_add_watch(fd, prio, condition, func, *args, **kwargs)
     except TypeError:
         # older pygi
