@@ -23,7 +23,7 @@ String Tags
  * ``~uri``: The full URI of the song
  * ``~year``: The release year, derived from the ``date`` tag
  * ``~originalyear``: The original year, derived from the ``originaldate`` tag
- * ``~playlist``: Playlist names of which the song is part of
+ * ``~playlists``: Comma-separated playlist names in which the song is included
  * ``~filesize``: Human formatted size (e.g. *4.5 MB*)
 
 
@@ -98,3 +98,5 @@ default.
  * ``sum``: Returns the summation of all values (``~#length``, ``~#playcount``, ``~#skipcount``)
  * ``min``: Returns the smallest value (``~#year``)
  * ``max``: Returns the largest value (``~#added``, ``~#lastplayed``, ``~#laststarted``, ``~#mtime``)
+ * ``bav``: Returns the `Bayesian average <http://en.wikipedia .org/wiki/Bayesian_average>`_ value (``~#rating``)
+            Being most appropriate for ratings, it is adjusted globally under the preferences for ratings.
