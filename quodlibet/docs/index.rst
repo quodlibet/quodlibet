@@ -29,6 +29,7 @@ Table of Contents
 
 .. toctree::
     :maxdepth: 1
+    :titlesonly:
 
     screenshots
     changelog
