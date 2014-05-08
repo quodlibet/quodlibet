@@ -242,7 +242,9 @@ class PreferencesWindow(qltk.UniqueWindow):
         hb.pack_start(l, False, True, 0)
         hb.pack_start(e, True, True, 0)
         cb = ConfigCheckButton(
-            _("Show _programmatic tags"), 'editing', 'alltags')
+            _("Show _programmatic tags"), 'editing', 'alltags',
+            tooltip=_("Access all tags, including machine-generated "
+                      "ones e.g. MusicBrainz or Replay Gain tags"))
         cb.set_active(config.getboolean("editing", 'alltags'))
         vbox.pack_start(hb, False, True, 0)
         vbox.pack_start(cb, False, True, 0)
