@@ -120,6 +120,7 @@ Hans Scholze
 Iñigo Serna
 Jacob Lee
 Jan Arne Petersen
+Jan Path
 Javier Kohen
 Joe Higton
 Joe Wreschnig
