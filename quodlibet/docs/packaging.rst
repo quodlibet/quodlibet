@@ -109,7 +109,7 @@ Plugin Dependencies
 All plugin dependencies are optional and will only prevent the corresponding 
 plugin from loading.
 
-**notification-deamon** (or any other implementation of the dbus spec):
+**notification-daemon** (or any other implementation of the dbus spec):
 
     * For the notification plugin
 
