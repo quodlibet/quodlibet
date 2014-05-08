@@ -18,7 +18,7 @@ history, or pull a copy using the
 
 If you have a recent GTK+ version installed and don't need translations you
 can simply run QL directly from source without building/installing.
-All you need are the :ref:`Requirements`. Since QL does not
+All you need are the :ref:`dependencies<Dependencies>`. Since QL does not
 depend on recent versions of them, the ones shipping with your
 distribution should work.
 

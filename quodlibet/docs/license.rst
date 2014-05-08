@@ -1,3 +1,5 @@
+.. _license:
+
 License & Contributors
 ======================
 
@@ -9,6 +11,11 @@ entirely under the terms of the GNU GPL version 2. Alternate licensing
 terms (such as GNU GPL "version 2 or later", or the GNU LGPL) may be 
 available for certain files or modules; see the files for details.
 
+One exception are some images under ``quodlibet/images``. See the ``README`` 
+there for details.
+
+All contributors/translators are listed under "quodlibet/const.py".
+For the specific copyright holders see the header comments in each file.
 
 Contributors
 ------------

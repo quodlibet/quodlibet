@@ -31,12 +31,14 @@ Table of Contents
     :maxdepth: 1
 
     screenshots
-    downloads
-    requirements
-    features
     changelog
+    downloads
+    features
+
     guide/index
+    packaging
     development/index
+
     commands/index
     license
     contact

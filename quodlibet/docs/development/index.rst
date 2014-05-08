@@ -13,7 +13,7 @@ Quod Libet uses `GTK+ <http://www.gtk.org/>`_, because GTK+ makes it easy
 to create clean, simple standards compliant user interfaces.  Quod Libet
 uses `Python <http://www.python.org/>`_, because Python makes it easy to
 create clean, simple functional and object-oriented software. Various other
-packages and libraries add to this - see :ref:`Requirements`.
+packages and libraries add to this - see :ref:`Dependencies`.
 
 Using the `Mutagen <http://code.google.com/p/mutagen/>`_ tagging library
 keeps the rest of Quod Libet as simple as possible and ensures every
