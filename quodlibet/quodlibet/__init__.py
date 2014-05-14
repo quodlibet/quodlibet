@@ -340,7 +340,7 @@ def init_plugins(no_plugins=False):
     print_d("Starting plugin manager")
 
     from quodlibet import plugins
-    folders = [os.path.join(quodlibet.const.BASEDIR, "plugins", kind)
+    folders = [os.path.join(quodlibet.const.BASEDIR, "ext", kind)
                for kind in PLUGIN_DIRS]
     folders.append(os.path.join(quodlibet.const.USERDIR, "plugins"))
     print_d("Scanning folders: %s" % folders)

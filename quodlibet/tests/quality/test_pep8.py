@@ -58,9 +58,6 @@ class TPEP8(TestCase):
         for file_ in files:
             futures.append(self._run(file_))
 
-        # plugins
-        futures.append(self._run(os.path.join(path, "../../plugins")))
-
         # tests
         futures.append(
             self._run(os.path.join(path, "../tests"), ignore=["W601"]))

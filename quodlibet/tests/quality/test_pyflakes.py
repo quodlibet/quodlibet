@@ -63,9 +63,3 @@ class TPyFlakes(TestCase):
         path = quodlibet.__path__[0]
         path = os.path.dirname(path)
         self.__check_path(path)
-
-    def test_plugins(self):
-        import quodlibet
-        path = quodlibet.__path__[0]
-        path = os.path.join(path, "../../plugins")
-        self.__check_path(path)
