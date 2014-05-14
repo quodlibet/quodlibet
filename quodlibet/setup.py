@@ -350,7 +350,7 @@ if __name__ == "__main__":
 
     package_path = quodlibet.__path__[0]
     package_data_paths = recursive_include(
-        package_path, "images", ("svg", "png", "cache", "theme"))
+        package_path, "images", ("svg", "png", "theme"))
 
     setup_kwargs = {
         'distclass': GDistribution,
