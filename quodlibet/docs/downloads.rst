@@ -196,17 +196,8 @@ the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
 Install mercurial and check out the source::
 
     $ hg clone https://code.google.com/p/quodlibet/
-    $ cd quodlibet
+    $ cd quodlibet/quodlibet
 
-QL/EF expects the plugins to be in "~/.quodlibet/plugins" so
-create a symlink::
-
-    $ mkdir ~/.quodlibet
-    $ ln -s $(readlink -f plugins) ~/.quodlibet/plugins
-
-Now switch to the real QL folder::
-
-    $ cd quodlibet
 
 If you want translations, you have to create the gettext translation files::
 
