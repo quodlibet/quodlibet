@@ -9,7 +9,6 @@ if sys.version_info[0] != 2:
     except OSError:
         pass
 
-import glob
 import shutil
 import subprocess
 
@@ -19,8 +18,6 @@ os.environ["QUODLIBET_NO_TRANS"] = ""
 from distutils.core import setup, Command
 from distutils.dep_util import newer
 from distutils.command.build_scripts import build_scripts as du_build_scripts
-from distutils.dir_util import remove_tree
-from distutils.archive_util import make_archive
 
 from gdist import GDistribution
 from gdist.clean import clean as gdist_clean
@@ -198,45 +195,6 @@ class sdist(distutils_sdist):
         return result
 
 
-class sdist_plugins(Command):
-    description = "Build a source distribution of all plugins"
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        old_dir = os.getcwd()
-        os.chdir("..")
-
-        process = subprocess.Popen(["hg", "locate", "-I", "plugins"],
-                                   stdout=subprocess.PIPE)
-        out, err = process.communicate()
-        assert process.returncode == 0
-
-        files = out.splitlines()
-
-        from quodlibet import const
-        dest_name = "quodlibet-plugins-" + const.VERSION
-
-        for f in files:
-            parts = f.split(os.path.sep)
-            target = os.path.join(dest_name, *parts[1:])
-            self.mkpath(os.path.dirname(target))
-            self.copy_file(f, target)
-
-        archive_name = make_archive(dest_name, "gztar", base_dir=dest_name)
-        remove_tree(dest_name)
-        dist_dir = os.path.join("quodlibet", "dist")
-        self.mkpath(dist_dir)
-        self.move_file(archive_name, dist_dir)
-
-        os.chdir(old_dir)
-
-
 class build_scripts(du_build_scripts):
     description = "copy scripts to build directory"
 
@@ -344,7 +302,6 @@ if __name__ == "__main__":
         "quality": quality_cmd,
         "coverage": coverage_cmd,
         "build_scripts": build_scripts,
-        "sdist_plugins": sdist_plugins,
         "build_sphinx": build_sphinx,
     }
 
