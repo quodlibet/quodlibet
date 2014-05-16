@@ -202,11 +202,6 @@ function build_quodlibet {
     # remove the gtk30-properties domain -> not visible to the user
     find "$MAIN_LOCALE" -name "gtk30-properties.mo" -exec rm {} \;
 
-    # copy plugins; byte compile them; remove leftover *.py files
-    cp -RT "$QL_TEMP"/plugins "$QL_BIN"/quodlibet/plugins
-    wine "$PYDIR"/python.exe -m compileall $(wine winepath -w "$QL_BIN"/quodlibet/plugins)
-    find "$QL_DEST" -name "*.py" | xargs -I {} rm -v "{}"
-
     # remove gtk themes except HighContrast/Adwaita/Default
     GTK_THEMES="$QL_DEST"/share/themes
     rm -Rf "$GTK_THEMES"/DeLorean
