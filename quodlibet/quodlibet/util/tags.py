@@ -69,11 +69,14 @@ TAGS = dict([
     T("performerssort", _("performers (sort)")),
 
     # http://musicbrainz.org/doc/MusicBrainzTag
-
-    MT("musicbrainz_trackid", _("MusicBrainz track ID")),
+    # Note: picard has changed musicbrainz_trackid to mean release track.
+    # We can't do that because of existing libraries, so use a new
+    # musicbrainz_releastrackid instead.
+    MT("musicbrainz_trackid", _("MusicBrainz recording ID")),
+    MT("musicbrainz_releasetrackid", _("MusicBrainz release track ID")),
     MT("musicbrainz_albumid", _("MusicBrainz release ID")),
     MT("musicbrainz_artistid", _("Musicbrainz artist ID")),
-    MT("musicbrainz_albumartistid", _("MusicBrainz album artist ID")),
+    MT("musicbrainz_albumartistid", _("MusicBrainz release artist ID")),
     MT("musicbrainz_trmid", _("MusicBrainz TRM ID")),
     MT("musicip_puid", _("MusicIP PUID")),
     MT("musicbrainz_albumstatus", _("MusicBrainz album status")),
