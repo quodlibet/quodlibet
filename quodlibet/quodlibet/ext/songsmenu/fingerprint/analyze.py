@@ -5,12 +5,21 @@
 # published by the Free Software Foundation
 
 import threading
+import multiprocessing
 
 from gi.repository import Gst, GLib, GObject
 
 
+class FingerPrintResult(object):
+
+    def __init__(self, song, chromaprint, length):
+        self.song = song
+        self.chromaprint = chromaprint
+        self.length = length
+
+
 class FingerPrintPipeline(threading.Thread):
-    def __init__(self, pool, song, ofa):
+    def __init__(self, pool, song):
         super(FingerPrintPipeline, self).__init__()
         self.daemon = True
 
@@ -18,7 +27,6 @@ class FingerPrintPipeline(threading.Thread):
         self.__song = song
         self.__cv = threading.Condition()
         self.__shutdown = False
-        self.__ofa = ofa
         self.__fingerprints = {}
         self.__todo = []
 
@@ -57,31 +65,6 @@ class FingerPrintPipeline(threading.Thread):
 
         chroma_src = resample
 
-        use_ofa = self.__ofa and Gst.ElementFactory.find("ofa")
-
-        if use_ofa:
-            # create a tee and one queue for chroma
-            tee = Gst.ElementFactory.make("tee", None)
-            chroma_queue = Gst.ElementFactory.make("queue", None)
-            pipe.add(tee)
-            pipe.add(chroma_queue)
-            Gst.Element.link(resample, tee)
-            Gst.Element.link(tee, chroma_queue)
-
-            chroma_src = chroma_queue
-
-            ofa_queue = Gst.ElementFactory.make("queue", None)
-            ofa = Gst.ElementFactory.make("ofa", None)
-            fake = Gst.ElementFactory.make("fakesink", None)
-            pipe.add(ofa_queue)
-            pipe.add(ofa)
-            pipe.add(fake)
-
-            Gst.Element.link(tee, ofa_queue)
-            Gst.Element.link(ofa_queue, ofa)
-            Gst.Element.link(ofa, fake)
-            self.__todo.append(ofa)
-
         chroma = Gst.ElementFactory.make("chromaprint", None)
         fake2 = Gst.ElementFactory.make("fakesink", None)
         pipe.add(chroma)
@@ -97,8 +80,7 @@ class FingerPrintPipeline(threading.Thread):
         bus = pipe.get_bus()
         bus.add_signal_watch()
         bus.enable_sync_message_emission()
-        bus.connect("sync-message", self.__bus_message, chroma,
-                    use_ofa and ofa)
+        bus.connect("sync-message", self.__bus_message, chroma)
 
         # get it started
         self.__cv.acquire()
@@ -115,11 +97,13 @@ class FingerPrintPipeline(threading.Thread):
         elif not self.__shutdown:
             # GStreamer probably knows song durations better than we do.
             # (and it's more precise for PUID lookup)
-            # In case this fails, we insert the mutagen value later
+            # In case this fails, we insert the mutagen value
             # (this only works in active playing state)
             ok, d = pipe.query_duration(Gst.Format.TIME)
             if ok:
                 self.__fingerprints["length"] = d / Gst.MSECOND
+            else:
+                self.__fingerprints["length"] = self.__song("~#length") * 1000
 
             self.__cv.wait()
         self.__cv.release()
@@ -164,7 +148,7 @@ class FingerPrintPipeline(threading.Thread):
     def __new_decoded_pad(self, convert, pad, *args):
         pad.link(convert.get_static_pad("sink"))
 
-    def __bus_message(self, bus, message, chroma, ofa):
+    def __bus_message(self, bus, message, chroma):
         error = None
         if message.type == Gst.MessageType.TAG:
             tags = message.parse_tag()
@@ -174,12 +158,6 @@ class FingerPrintPipeline(threading.Thread):
                 if chroma in self.__todo:
                     self.__todo.remove(chroma)
                 self.__fingerprints["chromaprint"] = value
-
-            ok, value = tags.get_string("ofa-fingerprint")
-            if ok:
-                if ofa in self.__todo:
-                    self.__todo.remove(ofa)
-                self.__fingerprints["ofa"] = value
         elif message.type == Gst.MessageType.EOS:
             error = "EOS"
         elif message.type == Gst.MessageType.ERROR:
@@ -196,28 +174,33 @@ class FingerPrintPipeline(threading.Thread):
 
 class FingerPrintThreadPool(GObject.GObject):
     __gsignals__ = {
+        # FingerPrintResult
         "fingerprint-done": (
-            GObject.SignalFlags.RUN_LAST, None, (object, object)),
+            GObject.SignalFlags.RUN_LAST, None, (object,)),
+        # AudioFile
         "fingerprint-started": (
             GObject.SignalFlags.RUN_LAST, None, (object,)),
+        # AudioFile, str
         "fingerprint-error": (
             GObject.SignalFlags.RUN_LAST, None, (object, object)),
         }
 
-    def __init__(self, max_workers):
+    def __init__(self, max_workers=None):
         super(FingerPrintThreadPool, self).__init__()
         self.__threads = []
         self.__queued = []
+        if max_workers is None:
+            max_workers = int(multiprocessing.cpu_count() * 1.5)
         self.__max_workers = max_workers
         self.__stopped = False
 
-    def push(self, song, ofa=False):
+    def push(self, song):
         self.__stopped = False
         if len(self.__threads) < self.__max_workers:
-            self.__threads.append(FingerPrintPipeline(self, song, ofa))
+            self.__threads.append(FingerPrintPipeline(self, song))
             self.emit("fingerprint-started", song)
         else:
-            self.__queued.append((song, ofa))
+            self.__queued.append(song)
 
     def stop(self):
         self.__stopped = True
@@ -233,10 +216,12 @@ class FingerPrintThreadPool(GObject.GObject):
         if self.__stopped:
             return
         if not error:
-            self.emit("fingerprint-done", song, result)
+            chromaprint = result.get("chromaprint")
+            res = FingerPrintResult(song, chromaprint, result["length"])
+            self.emit("fingerprint-done", res)
         else:
             self.emit("fingerprint-error", song, error)
         if self.__queued:
-            song, ofa = self.__queued.pop(0)
-            self.__threads.append(FingerPrintPipeline(self, song, ofa))
+            song = self.__queued.pop(0)
+            self.__threads.append(FingerPrintPipeline(self, song))
             self.emit("fingerprint-started", song)

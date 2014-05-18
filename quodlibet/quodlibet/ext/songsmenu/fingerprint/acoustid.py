@@ -13,40 +13,45 @@ from xml.dom.minidom import parseString
 
 from gi.repository import GLib
 
-from quodlibet import config
+from .util import get_api_key, GateKeeper
 
 
-def get_api_key():
-    return config.get("plugins", "fingerprint_acoustid_api_key", "")
+APP_KEY = "C6IduH7D"
+gatekeeper = GateKeeper(requests_per_sec=3)
 
 
 class AcoustidSubmissionThread(threading.Thread):
-    INTERVAL = 1500
     URL = "http://api.acoustid.org/v2/submit"
-    APP_KEY = "C6IduH7D"
-    SONGS_PER_SUBMISSION = 50 # be gentle :)
+    SONGS_PER_SUBMISSION = 50
 
-    def __init__(self, fingerprints, invalid, progress_cb, callback):
+    def __init__(self, results, progress_cb, done_cb):
         super(AcoustidSubmissionThread, self).__init__()
-        self.__callback = callback
-        self.__fingerprints = fingerprints
-        self.__invalid = invalid
+        self.__callback = done_cb
+        self.__results = results
         self.__stopped = False
         self.__progress_cb = progress_cb
-        self.__sem = threading.Semaphore()
         self.__done = 0
         self.start()
 
+    def __idle(self, func, *args, **kwargs):
+        def delayed():
+            if self.__stopped:
+                return
+            func(*args, **kwargs)
+
+        GLib.idle_add(delayed)
+
     def __send(self, urldata):
-        self.__sem.acquire()
         if self.__stopped:
             return
+
+        gatekeeper.wait()
 
         self.__done += len(urldata)
 
         basedata = urllib.urlencode({
             "format": "xml",
-            "client": self.APP_KEY,
+            "client": APP_KEY,
             "user": get_api_key(),
         })
 
@@ -84,25 +89,19 @@ class AcoustidSubmissionThread(threading.Thread):
             print_w("[fingerprint] Submission failed: " + error)
 
         # emit progress
-        GLib.idle_add(self.__progress_cb,
-                float(self.__done) / len(self.__fingerprints))
+        self.__idle(self.__progress_cb,
+                float(self.__done) / len(self.__results))
 
     def run(self):
-        self.__sem.release()
-        GLib.timeout_add(self.INTERVAL, self.__inc_sem)
-
         urldata = []
-        for i, (song, data) in enumerate(self.__fingerprints.iteritems()):
-            if song in self.__invalid:
-                continue
-
+        for i, result in enumerate(self.__results):
+            song = result.song
             track = {
-                "duration": int(round(data["length"] / 1000)),
-                "fingerprint": data["chromaprint"],
+                "duration": int(round(result.length / 1000.0)),
+                "fingerprint": result.chromaprint,
                 "bitrate": song("~#bitrate"),
                 "fileformat": song("~format"),
                 "mbid": song("musicbrainz_trackid"),
-                "puid": data.get("puid", "") or song("puid"),
                 "artist": song.list("artist"),
                 "album": song("album"),
                 "albumartist": song("albumartist"),
@@ -137,16 +136,7 @@ class AcoustidSubmissionThread(threading.Thread):
         if urldata:
             self.__send(urldata)
 
-        GLib.idle_add(self.__callback, self)
-
-        # stop sem increment
-        self.__stopped = True
-
-    def __inc_sem(self):
-        self.__sem.release()
-        # repeat increment until stopped
-        return not self.__stopped
+        self.__idle(self.__callback)
 
     def stop(self):
         self.__stopped = True
-        self.__sem.release()
