@@ -21,6 +21,26 @@ from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
+class AcoustidSearch(SongsMenuPlugin):
+    PLUGIN_ID = "AcoustidSearch"
+    PLUGIN_NAME = _("Acoustic Fingerprint Lookup")
+    PLUGIN_DESC = _("Lookup song metadata through acoustic fingerprinting")
+    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_VERSION = "0.1"
+
+    def plugin_songs(self, songs):
+        from .search import SearchWindow
+
+        window = SearchWindow(songs, title=self.PLUGIN_NAME)
+        window.show()
+
+        # plugin_done checks for metadata changes and opens the write dialog
+        window.connect("destroy", self.__plugin_done)
+
+    def __plugin_done(self, *args):
+        self.plugin_finish()
+
+
 class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_ID = "AcoustidSubmit"
     PLUGIN_NAME = _("Submit Acoustic Fingerprints")
