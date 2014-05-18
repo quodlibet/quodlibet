@@ -80,7 +80,8 @@ quodlibet/ext/songsmenu/duplicates.py
 quodlibet/ext/songsmenu/embedded.py
 quodlibet/ext/songsmenu/filterall.py
 quodlibet/ext/songsmenu/filterbrowser.py
-quodlibet/ext/songsmenu/fingerprint.py
+quodlibet/ext/songsmenu/fingerprint/__init__.py
+quodlibet/ext/songsmenu/fingerprint/submit.py
 quodlibet/ext/songsmenu/forcewrite.py
 quodlibet/ext/songsmenu/html.py
 quodlibet/ext/songsmenu/ifp.py
