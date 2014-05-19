@@ -30,34 +30,36 @@ class TAcoustidLookup(PluginTestCase):
     def test_parse_response_1(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, tags = parse(
-            ACOUSTID_RESPONSE, musicbrainz=False)[0]
+        release, score, src, asrc, tags = parse(
+            ACOUSTID_RESPONSE)[0]
         self.assertEqual(release, "14bb7304-b763-456b-a438-7bab619d41e3")
+        self.assertEqual(src, 100)
+        self.assertEqual(asrc, 300)
 
         self.assertEqual(tags["title"], u'Merkw\xfcrdig/Unangenehm')
         self.assertEqual(tags["artist"], u'Kinderzimmer Productions')
         self.assertEqual(tags["date"], u'2002-01')
         self.assertEqual(tags["tracknumber"], u'7/15')
         self.assertEqual(tags["discnumber"], u'1/1')
-        self.assertTrue("musicbrainz_albumid" not in tags)
+        self.assertTrue("musicbrainz_albumid" in tags)
 
     def test_parse_response_2(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, tags = parse(
-            ACOUSTID_RESPONSE, musicbrainz=False)[1]
+        release, score, src, asrc, tags = parse(
+            ACOUSTID_RESPONSE)[1]
         self.assertEqual(release, "ed90bff9-ab41-4669-8d44-13c78e678507")
         self.assertEqual(tags["albumartist"], u"Kinderzimmer Productions")
         self.assertEqual(tags["album"], u'Wir sind da wo oben ist')
-        self.assertTrue("musicbrainz_albumid" not in tags)
+        self.assertTrue("musicbrainz_albumid" in tags)
 
     def test_parse_response_2_mb(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, tags = parse(
-            ACOUSTID_RESPONSE, musicbrainz=True)[1]
+        release, score, src, asrc, tags = parse(
+            ACOUSTID_RESPONSE)[1]
         self.assertTrue("musicbrainz_albumid" in tags)
-        self.assertEqual(src, 99)
+        self.assertEqual(src, 200)
         self.assertEqual(
             tags["musicbrainz_trackid"],
             "bc970841-b7d9-415a-b7e2-645b1d263cc3")
@@ -68,7 +70,7 @@ class TAcoustidLookup(PluginTestCase):
 
 ACOUSTID_RESPONSE = {
 u'results': [{u'id': u'f176baca-a4f7-4f39-906b-43136d9b3815',
-u'recordings': [{u'sources': 99,
+u'recordings': [{u'sources': 100,
 u'artists': [{u'id': u'ad728059-6823-4f98-a283-0dac3fb79a91',
 u'name': u'Kinderzimmer Productions'}],
 u'duration': 272,
@@ -93,7 +95,7 @@ u'year': 2002}}],
 u'title': u'Spex CD #15',
 u'track_count': 15}],
 u'title': u'Merkw\xfcrdig/Unangenehm'},
-{u'sources': 99, u'artists': [{u'id': u'ad728059-6823-4f98-a283-0dac3fb79a91',
+{u'sources': 200, u'artists': [{u'id': u'ad728059-6823-4f98-a283-0dac3fb79a91',
 u'joinphrase': u' feat. ',
 u'name': u'Kinderzimmer Productions'},
 {u'id': u'bf02bc50-251d-4a47-b5f9-ca462038ae8a',

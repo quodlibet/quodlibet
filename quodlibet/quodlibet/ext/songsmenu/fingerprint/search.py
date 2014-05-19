@@ -10,11 +10,13 @@ from gi.repository import Gtk, Pango, Gdk
 
 from .analyze import FingerPrintThreadPool
 from .acoustid import AcoustidLookupThread
+from .util import get_write_mb_tags
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.x import Button
 from quodlibet import util
+from quodlibet.qltk.ccb import ConfigCheckButton
 
 
 class Status(object):
@@ -48,11 +50,35 @@ class SearchEntry(object):
         self.status = Status.QUEUED
         self.result = None
         self.active_release = 0
-        self.write = True
+        self._write = True
+
+    def toggle_write(self):
+        if self.status == Status.DONE and self.release:
+            self._write ^= True
 
     @property
     def can_write(self):
-        return self.status == Status.DONE and self.release and self.write
+        return self.status == Status.DONE and self.release and self._write
+
+    def apply_tags(self, write_musicbrainz=True, write_album=True):
+        """Add the tags of the active release to the song"""
+
+        non_album_tags = [
+            "artist",
+            "title",
+            "musicbrainz_trackid",
+            "musicbrainz_artistid"
+        ]
+
+        if not self.can_write:
+            return
+
+        for key, value in self.release.tags.items():
+            if not write_musicbrainz and key.startswith("musicbrainz_"):
+                continue
+            if not write_album and key not in non_album_tags:
+                continue
+            self.song[key] = value
 
     @property
     def releases(self):
@@ -126,6 +152,7 @@ class ResultView(AllTreeView):
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         # Translators: album release ID
         column = Gtk.TreeViewColumn(_("Release"), render)
+        self._release_column = column
 
         def cell_data(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -160,6 +187,8 @@ class ResultView(AllTreeView):
             column.set_resizable(True)
             column.set_expand(True)
             self.append_column(column)
+            if tag == "tracknumber":
+                self._track_column = column
 
     def __button_press(self, view, event, edit_column):
         x, y = map(int, [event.x, event.y])
@@ -174,13 +203,23 @@ class ResultView(AllTreeView):
             model = view.get_model()
             row = model[path]
             entry = row[0]
-            entry.write ^= 1
+            entry.toggle_write()
             model.row_changed(row.path, row.iter)
             return True
+
+        return False
+
+    def set_album_visible(self, value):
+        self._release_column.set_visible(value)
+        self._track_column.set_visible(value)
 
     def get_release_id(self, release):
         return self._release_ids.setdefault(
             release.id, len(self._release_ids) + 1)
+
+
+def score_release(release):
+    return (float(release.sources) / release.all_sources) * release.score
 
 
 class SearchWindow(Window):
@@ -197,7 +236,7 @@ class SearchWindow(Window):
         sw.set_shadow_type(Gtk.ShadowType.IN)
 
         model = ObjectStore()
-        view = ResultView()
+        self.view = view = ResultView()
         view.set_model(model)
         self.model = model
 
@@ -228,29 +267,51 @@ class SearchWindow(Window):
         bbox.pack_start(save, True, True, 0)
         bbox.pack_start(cancel, True, True, 0)
 
-        outer_box.pack_start(sw, True, True, 0)
-        outer_box.pack_start(bbox, False, True, 0)
+        inner_box = Gtk.VBox(spacing=6)
+        inner_box.pack_start(sw, True, True, 0)
+
+        ccb = ConfigCheckButton(
+            _("Write MusicBrainz tags"),
+            "plugins", "fingerprint_write_mb_tags", populate=True)
+        inner_box.pack_start(ccb, False, True, 0)
+
+        outer_box.pack_start(inner_box, True, True, 0)
+
+        bottom_box = Gtk.HBox(spacing=6)
+        mode_button = Gtk.ToggleButton(label=_("Album Mode"))
+        mode_button.set_tooltip_text(
+            _("Write album related tags and try to "
+              "reduce the number of different album releases"))
+        mode_button.set_active(True)
+        mode_button.connect("toggled", self.__mode_toggle)
+        bottom_box.pack_start(mode_button, False, True, 0)
+        bottom_box.pack_start(bbox, True, True, 0)
+
+        outer_box.pack_start(bottom_box, False, True, 0)
 
         outer_box.show_all()
         self.add(outer_box)
 
+        self.__album_mode = True
         self._release_counts = {}
         self.__done = 0
 
         self.connect("destroy", self.__destroy)
+
+    def __mode_toggle(self, button):
+        self.__album_mode = button.get_active()
+        self.view.set_album_visible(self.__album_mode)
+        self.__update_active_releases()
 
     def __destroy(self, *args):
         self.pool.stop()
         self._thread.stop()
 
     def __on_save(self, *args):
+        write_mb = get_write_mb_tags()
+        write_album = self.__album_mode
         for row in self.model:
-            entry = row[0]
-            if not entry.write:
-                continue
-            if entry.status != Status.DONE or not entry.release:
-                continue
-            entry.song.update(entry.release.tags)
+            row[0].apply_tags(write_mb, write_album)
             # the plugin wrapper will handle the rest
 
         self.destroy()
@@ -270,12 +331,14 @@ class SearchWindow(Window):
     def __update_active_releases(self):
         """Go through all songs and recalculate the best release"""
 
-        def sort_key(release):
+        def sort_key(r):
             # good if there are many other songs that could be in the
             # same release and this release is likely as well.
             # Also sort by id to have a winner in case of a tie.
-            return ((self._release_counts[release.id] - release.score) *
-                    release.score, release.id)
+            score = score_release(r)
+            if self.__album_mode:
+                score = (self._release_counts[r.id], score)
+            return (score, r.id)
 
         for row in self.model:
             entry = row[0]
@@ -296,7 +359,7 @@ class SearchWindow(Window):
             # score
             for release in lresult.releases:
                 id_ = release.id
-                score = release.score
+                score = score_release(release)
                 if id_ in self._release_counts:
                     self._release_counts[id_] += score
                 else:

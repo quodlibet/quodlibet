@@ -16,7 +16,7 @@ from xml.dom.minidom import parseString
 
 from gi.repository import GLib
 
-from .util import get_api_key, GateKeeper, get_write_mb_tags
+from .util import get_api_key, GateKeeper
 
 
 APP_KEY = "C6IduH7D"
@@ -156,10 +156,11 @@ class LookupResult(object):
         return self.fresult.song
 
 
-Release = collections.namedtuple("Release", ["id", "score", "sources", "tags"])
+Release = collections.namedtuple(
+    "Release", ["id", "score", "sources", "all_sources", "tags"])
 
 
-def parse_acoustid_response(json_data, musicbrainz=True):
+def parse_acoustid_response(json_data):
     """Get all possible tag combinations including the release ID and score.
 
     The idea is that for multiple songs the variant for each wins where
@@ -174,8 +175,11 @@ def parse_acoustid_response(json_data, musicbrainz=True):
     releases = []
     for res in json_data.get("results", []):
         score = res["score"]
+        all_sources = 0
+        recordings = []
         for rec in res.get("recordings", []):
             sources = rec["sources"]
+            all_sources += sources
             title = rec.get("title", "")
             rec_id = rec["id"]
             artists = [a["name"] for a in rec.get("artists", [])]
@@ -239,11 +243,14 @@ def parse_acoustid_response(json_data, musicbrainz=True):
                 # not that useful, ignore for now
                 del mb["musicbrainz_releasetrackid"]
 
-                if musicbrainz:
-                    tags.update(mb)
+                tags.update(mb)
 
                 tags = dict((k, v) for (k, v) in tags.items() if v)
-                releases.append(Release(id_, score, sources, tags))
+                recordings.append([id_, score, sources, 0, tags])
+
+        for rec in recordings:
+            rec[3] = all_sources
+            releases.append(Release(*rec))
 
     return releases
 
@@ -306,8 +313,7 @@ class AcoustidLookupThread(threading.Thread):
                 error = str(e)
             else:
                 if data["status"] == "ok":
-                    mb = get_write_mb_tags()
-                    releases = parse_acoustid_response(data, musicbrainz=mb)
+                    releases = parse_acoustid_response(data)
 
         # TODO: propagate error
         error = error
