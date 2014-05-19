@@ -6,7 +6,7 @@
 
 from contextlib import contextmanager
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, Gdk
 
 from .analyze import FingerPrintThreadPool
 from .acoustid import AcoustidLookupThread
@@ -48,6 +48,11 @@ class SearchEntry(object):
         self.status = Status.QUEUED
         self.result = None
         self.active_release = 0
+        self.write = True
+
+    @property
+    def can_write(self):
+        return self.status == Status.DONE and self.release and self.write
 
     @property
     def releases(self):
@@ -70,6 +75,26 @@ class ResultView(AllTreeView):
         super(ResultView, self).__init__()
 
         self._release_ids = {}
+
+        render = Gtk.CellRendererPixbuf()
+        column = Gtk.TreeViewColumn(_("Write"), render)
+
+        style = self.get_style()
+        pixbufs = []
+        for state in [Gtk.StateType.INSENSITIVE, Gtk.StateType.NORMAL]:
+            pb = style.lookup_icon_set(Gtk.STOCK_EDIT).render_icon(
+                style, Gtk.TextDirection.NONE, state, Gtk.IconSize.MENU,
+                self, None)
+            pixbufs.append(pb)
+
+        def cell_data(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property('pixbuf', pixbufs[entry.can_write])
+
+        column.set_cell_data_func(render, cell_data)
+        self.append_column(column)
+
+        self.connect('button-press-event', self.__button_press, column)
 
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
@@ -136,6 +161,23 @@ class ResultView(AllTreeView):
             column.set_expand(True)
             self.append_column(column)
 
+    def __button_press(self, view, event, edit_column):
+        x, y = map(int, [event.x, event.y])
+        try:
+            path, col, cellx, celly = view.get_path_at_pos(x, y)
+        except TypeError:
+            return False
+
+        if event.button == Gdk.BUTTON_PRIMARY and \
+                event.type == Gdk.EventType.BUTTON_PRESS and \
+                col == edit_column:
+            model = view.get_model()
+            row = model[path]
+            entry = row[0]
+            entry.write ^= 1
+            model.row_changed(row.path, row.iter)
+            return True
+
     def get_release_id(self, release):
         return self._release_ids.setdefault(
             release.id, len(self._release_ids) + 1)
@@ -145,7 +187,7 @@ class SearchWindow(Window):
 
     def __init__(self, songs, title=None):
         super(SearchWindow, self).__init__(
-            default_width=900, default_height=400, border_width=12,
+            default_width=800, default_height=400, border_width=12,
             title=title)
 
         self._thread = AcoustidLookupThread(self.__lookup_cb)
@@ -204,6 +246,8 @@ class SearchWindow(Window):
     def __on_save(self, *args):
         for row in self.model:
             entry = row[0]
+            if not entry.write:
+                continue
             if entry.status != Status.DONE or not entry.release:
                 continue
             entry.song.update(entry.release.tags)
