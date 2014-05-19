@@ -11,6 +11,9 @@ try:
     Gst
 except ImportError:
     Gst = None
+else:
+    if not Gst.ElementFactory.find("chromaprint"):
+        Gst = None
 
 from tests.plugin import PluginTestCase
 from tests import skipUnless
