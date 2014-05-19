@@ -16,6 +16,11 @@ def get_api_key():
     return config.get("plugins", "fingerprint_acoustid_api_key", "")
 
 
+def get_write_mb_tags():
+
+    return config.getboolean("plugins", "fingerprint_write_mb_tags", True)
+
+
 class GateKeeper(object):
 
     def __init__(self, requests_per_sec):

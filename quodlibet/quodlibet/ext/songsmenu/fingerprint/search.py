@@ -101,7 +101,6 @@ class ResultView(AllTreeView):
         column.set_cell_data_func(render, cell_data)
         self.append_column(column)
 
-
 class SearchWindow(Window):
 
     def __init__(self, songs, title=None):
@@ -189,7 +188,7 @@ class SearchWindow(Window):
         def sort_key(release):
             # good if there are many other songs that could be in the
             # same release and this release is likely as well
-            return self._release_counts[release.id] * release.score
+            return (self._release_counts[release.id] * release.score)
 
         for row in self.model:
             entry = row[0]
@@ -210,10 +209,11 @@ class SearchWindow(Window):
             # score
             for release in lresult.releases:
                 id_ = release.id
+                score = release.score
                 if id_ in self._release_counts:
-                    self._release_counts[id_] += release.score
+                    self._release_counts[id_] += score
                 else:
-                    self._release_counts[id_] = release.score
+                    self._release_counts[id_] = score
 
             # update display
             if lresult.releases:

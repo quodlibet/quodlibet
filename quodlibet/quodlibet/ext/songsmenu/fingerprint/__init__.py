@@ -11,7 +11,7 @@ if not Gst.ElementFactory.find("chromaprint"):
     raise plugins.MissingGstreamerElementPluginException("chromaprint")
 
 from .submit import FingerprintDialog
-from .util import get_api_key
+from .util import get_api_key, get_write_mb_tags
 
 from quodlibet import config
 from quodlibet import util
@@ -19,6 +19,7 @@ from quodlibet.qltk import Button, Frame
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.ccb import ConfigCheckButton
 
 
 class AcoustidSearch(SongsMenuPlugin):
@@ -36,6 +37,19 @@ class AcoustidSearch(SongsMenuPlugin):
 
         # plugin_done checks for metadata changes and opens the write dialog
         window.connect("destroy", self.__plugin_done)
+
+    @classmethod
+    def PluginPreferences(self, win):
+        vb = Gtk.VBox()
+        vb.set_spacing(8)
+
+        ccb = ConfigCheckButton(
+            _("Write _standard MusicBrainz tags"),
+            "plugins", "fingerprint_write_mb_tags")
+        ccb.set_active(get_write_mb_tags())
+        vb.pack_start(ccb, True, True, 0)
+
+        return vb
 
     def __plugin_done(self, *args):
         self.plugin_finish()

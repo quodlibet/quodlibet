@@ -16,7 +16,7 @@ from xml.dom.minidom import parseString
 
 from gi.repository import GLib
 
-from .util import get_api_key, GateKeeper
+from .util import get_api_key, GateKeeper, get_write_mb_tags
 
 
 APP_KEY = "C6IduH7D"
@@ -156,50 +156,94 @@ class LookupResult(object):
         return self.fresult.song
 
 
-Release = collections.namedtuple("Release", ["id", "score", "tags"])
+Release = collections.namedtuple("Release", ["id", "score", "sources", "tags"])
 
 
-def parse_acoustid_response(json_data):
+def parse_acoustid_response(json_data, musicbrainz=True):
     """Get all possible tag combinations including the release ID and score.
 
     The idea is that for multiple songs the variant for each wins where
     the release ID is present for more songs and if equal
     (one song for example) the score wins.
 
-    Needs meta=releases+recordings+compress+tracks responses.
+    Needs meta=releases+recordings+tracks responses.
     """
 
-    releases = []
+    VARIOUS_ARTISTS_ARTISTID = "89ad4ac3-39f7-470e-963a-56509c546377"
 
+    releases = []
     for res in json_data.get("results", []):
         score = res["score"]
         for rec in res.get("recordings", []):
+            sources = rec["sources"]
             title = rec.get("title", "")
+            rec_id = rec["id"]
             artists = [a["name"] for a in rec.get("artists", [])]
+            artist_ids = [a["id"] for a in rec.get("artists", [])]
+
             for release in rec.get("releases", []):
+                # release
                 id_ = release["id"]
                 date = release.get("date", {})
+                album = release.get("title", "")
+                album_id = release["id"]
                 parts = [date.get(k) for k in ["year", "month", "day"]]
                 date = "-".join([u"%02d" % p for p in parts if p is not None])
 
-                discs = release["medium_count"]
+                albumartists = []
+                albumartist_ids = []
+                for artist in release.get("artists", []):
+                    if artist["id"] != VARIOUS_ARTISTS_ARTISTID:
+                        albumartists.append(artist["name"])
+                        albumartist_ids.append(artist["id"])
+                discs = release.get("medium_count", 0)
+
+                # meadium
                 medium = release["mediums"][0]
-                disc = medium["position"]
-                tracks = medium["track_count"]
-                track = medium["tracks"][0]["position"]
-                album = release.get("title", "")
+                disc = medium.get("position", 0)
+                tracks = medium.get("track_count", 0)
+
+                # track
+                track_info = medium["tracks"][0]
+                track_id = track_info["id"]
+                track = track_info.get("position", 0)
+
+                if disc and discs:
+                    discnumber = u"%d/%d" % (disc, discs)
+                else:
+                    discnumber = u""
+
+                if track and tracks:
+                    tracknumber = u"%d/%d" % (track, tracks)
+                else:
+                    tracknumber = u""
 
                 tags = {
                     "title": title,
                     "artist": "\n".join(artists),
+                    "albumartist": "\n".join(albumartists),
                     "date": date,
-                    "discnumber": u"%d/%d" % (disc, discs),
-                    "tracknumber": u"%d/%d" % (track, tracks),
+                    "discnumber": discnumber,
+                    "tracknumber": tracknumber,
                     "album": album,
                 }
 
+                mb = {
+                    "musicbrainz_releasetrackid": track_id,
+                    "musicbrainz_trackid": rec_id,
+                    "musicbrainz_albumid": album_id,
+                    "musicbrainz_albumartistid": "\n".join(albumartist_ids),
+                    "musicbrainz_artistid": "\n".join(artist_ids),
+                }
+
+                # not that useful, ignore for now
+                del mb["musicbrainz_releasetrackid"]
+
+                if musicbrainz:
+                    tags.update(mb)
+
                 tags = dict((k, v) for (k, v) in tags.items() if v)
-                releases.append(Release(id_, score, tags))
+                releases.append(Release(id_, score, sources, tags))
 
     return releases
 
@@ -236,8 +280,7 @@ class AcoustidLookupThread(threading.Thread):
             "fingerprint": result.chromaprint,
         })
 
-        urldata = "&".join(
-            [basedata, "meta=releases+recordings+compress+tracks"])
+        urldata = "&".join([basedata, "meta=releases+recordings+tracks+sources"])
         obj = StringIO.StringIO()
         gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
         urldata = obj.getvalue()
@@ -263,7 +306,8 @@ class AcoustidLookupThread(threading.Thread):
                 error = str(e)
             else:
                 if data["status"] == "ok":
-                    releases = parse_acoustid_response(data)
+                    mb = get_write_mb_tags()
+                    releases = parse_acoustid_response(data, musicbrainz=mb)
 
         # TODO: propagate error
         error = error
