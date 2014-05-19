@@ -14,6 +14,7 @@ from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.x import Button
+from quodlibet import util
 
 
 class Status(object):
@@ -22,6 +23,7 @@ class Status(object):
     LOOKUP = 2
     DONE = 3
     ERROR = 4
+    UNKNOWN = 5
 
     @classmethod
     def to_string(cls, value):
@@ -35,6 +37,8 @@ class Status(object):
             return _("Done")
         elif value == cls.ERROR:
             return _("Error")
+        elif value == cls.UNKNOWN:
+            return _("Unknown")
 
 
 class SearchEntry(object):
@@ -65,18 +69,23 @@ class ResultView(AllTreeView):
     def __init__(self):
         super(ResultView, self).__init__()
 
+        self._release_ids = {}
+
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.MIDDLE)
-        column = Gtk.TreeViewColumn(_("File"), render)
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        column = Gtk.TreeViewColumn(util.tag("~basename"), render)
 
         def cell_data(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
             cell.set_property('text', entry.song("~basename"))
 
         column.set_cell_data_func(render, cell_data)
+        column.set_resizable(True)
+        column.set_expand(False)
         self.append_column(column)
 
         render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
         column = Gtk.TreeViewColumn(_("Status"), render)
 
         def cell_data(column, cell, model, iter_, data):
@@ -84,11 +93,14 @@ class ResultView(AllTreeView):
             cell.set_property('text', Status.to_string(entry.status))
 
         column.set_cell_data_func(render, cell_data)
+        column.set_resizable(False)
+        column.set_expand(False)
         self.append_column(column)
 
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column = Gtk.TreeViewColumn(_("Release ID"), render)
+        # Translators: album release ID
+        column = Gtk.TreeViewColumn(_("Release"), render)
 
         def cell_data(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -96,21 +108,50 @@ class ResultView(AllTreeView):
             if not release:
                 cell.set_property("text", "-")
             else:
-                cell.set_property("text", release.id)
+                id_ = self.get_release_id(release)
+                cell.set_property("text", str(id_))
 
         column.set_cell_data_func(render, cell_data)
+        column.set_resizable(False)
+        column.set_expand(False)
         self.append_column(column)
+
+        for tag in ["tracknumber", "artist", "title"]:
+            render = Gtk.CellRendererText()
+            render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            column = Gtk.TreeViewColumn(util.tag(tag), render)
+
+            def cell_data(column, cell, model, iter_, data, tag=tag):
+                entry = model.get_value(iter_)
+                release = entry.release
+                if not release:
+                    cell.set_property("text", "-")
+                else:
+                    value = release.tags.get(tag, "-")
+                    value = ", ".join(value.split("\n"))
+                    cell.set_property("text", value)
+
+            column.set_cell_data_func(render, cell_data)
+            column.set_resizable(True)
+            column.set_expand(True)
+            self.append_column(column)
+
+    def get_release_id(self, release):
+        return self._release_ids.setdefault(
+            release.id, len(self._release_ids) + 1)
+
 
 class SearchWindow(Window):
 
     def __init__(self, songs, title=None):
         super(SearchWindow, self).__init__(
-            default_width=500, default_height=400, border_width=12,
+            default_width=900, default_height=400, border_width=12,
             title=title)
 
         self._thread = AcoustidLookupThread(self.__lookup_cb)
 
         sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
 
         model = ObjectStore()
@@ -220,6 +261,8 @@ class SearchWindow(Window):
             # update display
             if lresult.releases:
                 self.__update_active_releases()
+            else:
+                entry.status = Status.UNKNOWN
 
         self.__inc_done()
 
