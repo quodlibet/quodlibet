@@ -33,12 +33,12 @@ class TAcoustidLookup(PluginTestCase):
     def test_parse_response_1(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, asrc, mc, tags = parse(
-            ACOUSTID_RESPONSE)[0]
-        self.assertEqual(release, "14bb7304-b763-456b-a438-7bab619d41e3")
-        self.assertEqual(src, 1)
-        self.assertEqual(asrc, 7)
+        release = parse(ACOUSTID_RESPONSE)[0]
+        self.assertEqual(release.id, "14bb7304-b763-456b-a438-7bab619d41e3")
+        self.assertEqual(release.sources, 1)
+        self.assertEqual(release.all_sources, 7)
 
+        tags = release.tags
         self.assertEqual(tags["title"], u'Merkw\xfcrdig/Unangenehm')
         self.assertEqual(tags["artist"], u'Kinderzimmer Productions')
         self.assertEqual(tags["date"], u'2002-01')
@@ -49,9 +49,9 @@ class TAcoustidLookup(PluginTestCase):
     def test_parse_response_2(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, asrc, mc, tags = parse(
-            ACOUSTID_RESPONSE)[1]
-        self.assertEqual(release, "ed90bff9-ab41-4669-8d44-13c78e678507")
+        release = parse(ACOUSTID_RESPONSE)[1]
+        self.assertEqual(release.id, "ed90bff9-ab41-4669-8d44-13c78e678507")
+        tags = release.tags
         self.assertEqual(tags["albumartist"], u"Kinderzimmer Productions")
         self.assertEqual(tags["album"], u'Wir sind da wo oben ist')
         self.assertTrue("musicbrainz_albumid" in tags)
@@ -59,12 +59,11 @@ class TAcoustidLookup(PluginTestCase):
     def test_parse_response_2_mb(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, asrc, mc, tags = parse(
-            ACOUSTID_RESPONSE)[1]
-        self.assertTrue("musicbrainz_albumid" in tags)
-        self.assertEqual(src, 6)
+        release= parse(ACOUSTID_RESPONSE)[1]
+        self.assertTrue("musicbrainz_albumid" in release.tags)
+        self.assertEqual(release.sources, 6)
         self.assertEqual(
-            tags["musicbrainz_trackid"],
+            release.tags["musicbrainz_trackid"],
             "bc970841-b7d9-415a-b7e2-645b1d263cc3")
 
     def test_plugin_prefs(self):
