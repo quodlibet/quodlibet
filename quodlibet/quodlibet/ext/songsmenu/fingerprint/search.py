@@ -187,8 +187,10 @@ class SearchWindow(Window):
 
         def sort_key(release):
             # good if there are many other songs that could be in the
-            # same release and this release is likely as well
-            return (self._release_counts[release.id] * release.score)
+            # same release and this release is likely as well.
+            # Also sort by id to have a winner in case of a tie.
+            return ((self._release_counts[release.id] - release.score) *
+                    release.score, release.id)
 
         for row in self.model:
             entry = row[0]
