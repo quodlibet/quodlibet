@@ -33,7 +33,7 @@ class TAcoustidLookup(PluginTestCase):
     def test_parse_response_1(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, asrc, tags = parse(
+        release, score, src, asrc, mc, tags = parse(
             ACOUSTID_RESPONSE)[0]
         self.assertEqual(release, "14bb7304-b763-456b-a438-7bab619d41e3")
         self.assertEqual(src, 1)
@@ -49,7 +49,7 @@ class TAcoustidLookup(PluginTestCase):
     def test_parse_response_2(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, asrc, tags = parse(
+        release, score, src, asrc, mc, tags = parse(
             ACOUSTID_RESPONSE)[1]
         self.assertEqual(release, "ed90bff9-ab41-4669-8d44-13c78e678507")
         self.assertEqual(tags["albumartist"], u"Kinderzimmer Productions")
@@ -59,7 +59,7 @@ class TAcoustidLookup(PluginTestCase):
     def test_parse_response_2_mb(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release, score, src, asrc, tags = parse(
+        release, score, src, asrc, mc, tags = parse(
             ACOUSTID_RESPONSE)[1]
         self.assertTrue("musicbrainz_albumid" in tags)
         self.assertEqual(src, 6)

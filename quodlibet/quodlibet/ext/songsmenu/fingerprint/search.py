@@ -359,7 +359,10 @@ class SearchWindow(Window):
             # score
             for release in lresult.releases:
                 id_ = release.id
-                score = score_release(release)
+                # to prevent favoring releases which are a superset of
+                # the release we actually want (say 8 CD box containing
+                # every song of an artist), try to reduce the medium count.
+                score = score_release(release) / release.medium_count
                 if id_ in self._release_counts:
                     self._release_counts[id_] += score
                 else:

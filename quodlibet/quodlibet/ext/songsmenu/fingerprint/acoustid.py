@@ -157,7 +157,8 @@ class LookupResult(object):
 
 
 Release = collections.namedtuple(
-    "Release", ["id", "score", "sources", "all_sources", "tags"])
+    "Release", ["id", "score", "sources", "all_sources",
+                "medium_count", "tags"])
 
 
 def parse_acoustid_response(json_data):
@@ -199,12 +200,12 @@ def parse_acoustid_response(json_data):
                     if artist["id"] != VARIOUS_ARTISTS_ARTISTID:
                         albumartists.append(artist["name"])
                         albumartist_ids.append(artist["id"])
-                discs = release.get("medium_count", 0)
+                discs = release.get("medium_count", 1)
 
                 # meadium
                 medium = release["mediums"][0]
                 disc = medium.get("position", 0)
-                tracks = medium.get("track_count", 0)
+                tracks = medium.get("track_count", 1)
 
                 # track
                 track_info = medium["tracks"][0]
@@ -246,7 +247,7 @@ def parse_acoustid_response(json_data):
                 tags.update(mb)
 
                 tags = dict((k, v) for (k, v) in tags.items() if v)
-                recordings.append([id_, score, sources, 0, tags])
+                recordings.append([id_, score, sources, 0, discs, tags])
 
         for rec in recordings:
             rec[3] = all_sources
