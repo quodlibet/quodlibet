@@ -180,7 +180,6 @@ def parse_acoustid_response(json_data):
         for rec in res.get("recordings", []):
             sources = rec["sources"]
             all_sources += sources
-            title = rec.get("title", "")
             rec_id = rec["id"]
             artists = [a["name"] for a in rec.get("artists", [])]
             artist_ids = [a["id"] for a in rec.get("artists", [])]
@@ -211,6 +210,7 @@ def parse_acoustid_response(json_data):
                 track_info = medium["tracks"][0]
                 track_id = track_info["id"]
                 track = track_info.get("position", 0)
+                title = track_info.get("title", "")
 
                 if disc and discs:
                     discnumber = u"%d/%d" % (disc, discs)
