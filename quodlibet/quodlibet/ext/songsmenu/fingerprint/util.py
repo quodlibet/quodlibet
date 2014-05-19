@@ -18,7 +18,7 @@ def get_api_key():
 
 def get_write_mb_tags():
 
-    return config.getboolean("plugins", "fingerprint_write_mb_tags", True)
+    return config.getboolean("plugins", "fingerprint_write_mb_tags", False)
 
 
 class GateKeeper(object):
