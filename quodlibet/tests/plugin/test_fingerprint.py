@@ -4,14 +4,20 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-import json
-
 from gi.repository import Gtk
 
+try:
+    from gi.repository import Gst
+    Gst
+except ImportError:
+    Gst = None
+
 from tests.plugin import PluginTestCase
+from tests import skipUnless
 from quodlibet import config
 
 
+@skipUnless(Gst)
 class TAcoustidLookup(PluginTestCase):
 
     def setUp(self):
