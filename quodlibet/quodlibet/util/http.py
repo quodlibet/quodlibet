@@ -248,7 +248,7 @@ if hasattr(Soup.Session, 'send_finish'):
     session = Soup.Session.new()
     HTTPRequest = DefaultHTTPRequest
 else:
-    print_w('Using fallback HTTPRequest implementation. libsoup is too old')
+    print_d('Using fallback HTTPRequest implementation. libsoup is too old')
     session = Soup.SessionAsync.new()
     HTTPRequest = FallbackHTTPRequest
 
