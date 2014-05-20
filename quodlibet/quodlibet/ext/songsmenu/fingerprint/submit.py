@@ -9,7 +9,7 @@ from gi.repository import Gtk, Pango, GLib
 from quodlibet.qltk import Button, Window
 
 from .acoustid import AcoustidSubmissionThread
-from .analyze import FingerPrintThreadPool
+from .analyze import FingerPrintPool
 
 
 def get_stats(results):
@@ -75,7 +75,7 @@ class FingerprintDialog(Window):
 
         self.__update_stats()
 
-        pool = FingerPrintThreadPool()
+        pool = FingerPrintPool()
 
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)

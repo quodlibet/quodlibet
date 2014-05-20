@@ -8,7 +8,7 @@ from contextlib import contextmanager
 
 from gi.repository import Gtk, Pango, Gdk
 
-from .analyze import FingerPrintThreadPool
+from .analyze import FingerPrintPool
 from .acoustid import AcoustidLookupThread
 from .util import get_write_mb_tags
 from quodlibet.qltk.models import ObjectStore
@@ -247,7 +247,7 @@ class SearchWindow(Window):
 
         sw.add(view)
 
-        self.pool = pool = FingerPrintThreadPool()
+        self.pool = pool = FingerPrintPool()
         pool.connect('fingerprint-done', self.__fp_done_cb)
         pool.connect('fingerprint-error', self.__fp_error_cb)
         pool.connect('fingerprint-started', self.__fp_started_cb)

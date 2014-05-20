@@ -4,6 +4,9 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
+import os
+import time
+
 from gi.repository import Gtk
 
 try:
@@ -12,15 +15,72 @@ try:
 except ImportError:
     Gst = None
 else:
-    if not Gst.ElementFactory.find("chromaprint"):
-        Gst = None
+    chromaprint = Gst.ElementFactory.find("chromaprint")
+    vorbisdec = Gst.ElementFactory.find("vorbisdec")
+
 
 from tests.plugin import PluginTestCase
-from tests import skipUnless
+from tests import skipUnless, DATA_DIR
 from quodlibet import config
+from quodlibet.formats import MusicFile
 
 
-@skipUnless(Gst)
+@skipUnless(Gst and chromaprint and vorbisdec)
+class TFingerprint(PluginTestCase):
+
+    TIMEOUT = 1.0
+
+    def setUp(self):
+        config.init()
+        self.mod = self.modules["AcoustidSearch"]
+
+    def tearDown(self):
+        config.quit()
+
+        self.mod
+
+    def test_analyze_silence(self):
+        pipeline = self.mod.analyze.FingerPrintPipeline()
+        song = MusicFile(os.path.join(DATA_DIR, "silence-44-s.ogg"))
+        done = []
+
+        def callback(self, *args):
+            done.extend(args)
+        pipeline.start(song, callback)
+        t = time.time()
+        while not done and time.time() - t < self.TIMEOUT:
+            Gtk.main_iteration_do(False)
+        self.assertTrue(done)
+        s, result, error = done
+        # silence doesn't produce a fingerprint
+        self.assertTrue(error)
+        self.assertFalse(result)
+        self.assertTrue(song is s)
+
+    def test_analyze_pool(self):
+        pool = self.mod.analyze.FingerPrintPool()
+        song = MusicFile(os.path.join(DATA_DIR, "silence-44-s.ogg"))
+
+        events = []
+
+        def handler(*args):
+            events.append(args)
+
+        pool.connect_object("fingerprint-started", handler, "start")
+        pool.connect_object("fingerprint-done", handler, "done")
+        pool.connect_object("fingerprint-error", handler, "error")
+        pool.push(song)
+
+        t = time.time()
+        while len(events) < 2 and time.time() - t < self.TIMEOUT:
+            Gtk.main_iteration_do(False)
+
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[0][0], "start")
+        self.assertEqual(events[1][0], "error")
+
+
+@skipUnless(Gst and chromaprint)
 class TAcoustidLookup(PluginTestCase):
 
     def setUp(self):
@@ -59,7 +119,7 @@ class TAcoustidLookup(PluginTestCase):
     def test_parse_response_2_mb(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
-        release= parse(ACOUSTID_RESPONSE)[1]
+        release = parse(ACOUSTID_RESPONSE)[1]
         self.assertTrue("musicbrainz_albumid" in release.tags)
         self.assertEqual(release.sources, 6)
         self.assertEqual(

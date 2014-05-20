@@ -100,7 +100,7 @@ class AcoustidSubmissionThread(threading.Thread):
         for i, result in enumerate(self.__results):
             song = result.song
             track = {
-                "duration": int(round(result.length / 1000.0)),
+                "duration": int(round(result.length)),
                 "fingerprint": result.chromaprint,
                 "bitrate": song("~#bitrate"),
                 "fileformat": song("~format"),
@@ -284,7 +284,7 @@ class AcoustidLookupThread(threading.Thread):
         basedata = urllib.urlencode({
             "format": "json",
             "client": APP_KEY,
-            "duration": int(round(result.length / 1000.0)),
+            "duration": int(round(result.length)),
             "fingerprint": result.chromaprint,
         })
 

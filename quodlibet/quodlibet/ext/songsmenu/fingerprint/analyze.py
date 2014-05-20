@@ -1,13 +1,12 @@
-# Copyright 2011,2013 Christoph Reiter
+# Copyright 2011,2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import threading
 import multiprocessing
 
-from gi.repository import Gst, GLib, GObject
+from gi.repository import Gst, GObject
 
 
 class FingerPrintResult(object):
@@ -15,29 +14,29 @@ class FingerPrintResult(object):
     def __init__(self, song, chromaprint, length):
         self.song = song
         self.chromaprint = chromaprint
+        # in seconds
         self.length = length
 
 
-class FingerPrintPipeline(threading.Thread):
-    def __init__(self, pool, song):
+class FingerPrintPipeline(object):
+
+    def __init__(self):
         super(FingerPrintPipeline, self).__init__()
-        self.daemon = True
+        self._song = None
+        self._setup_pipe()
 
-        self.__pool = pool
-        self.__song = song
-        self.__cv = threading.Condition()
-        self.__shutdown = False
-        self.__fingerprints = {}
-        self.__todo = []
+    def _finish(self, result, error):
+        song = self._song
+        callback = self._callback
+        self.stop()
+        callback(self, song, result, error)
 
-        self.start()
-
-    def run(self):
+    def _setup_pipe(self):
         # pipeline
-        pipe = Gst.Pipeline()
+        self._pipe = pipe = Gst.Pipeline()
 
         # decode part
-        filesrc = Gst.ElementFactory.make("filesrc", None)
+        self._filesrc = filesrc = Gst.ElementFactory.make("filesrc", None)
         pipe.add(filesrc)
 
         decode = Gst.ElementFactory.make("decodebin", None)
@@ -59,120 +58,105 @@ class FingerPrintPipeline(threading.Thread):
         if ffdec_mp3:
             ffdec_mp3.set_rank(Gst.Rank.MARGINAL)
 
-        # decodebin creates pad, we link it
-        decode.connect_object("pad-added", self.__new_decoded_pad, convert)
-        decode.connect("autoplug-sort", self.__sort_decoders)
+        def new_decoded_pad(convert, pad, *args):
+            pad.link(convert.get_static_pad("sink"))
 
-        chroma_src = resample
+        # decodebin creates pad, we link it
+        decode.connect_object("pad-added", new_decoded_pad, convert)
+
+        def sort_decoders(decode, pad, caps, factories):
+            # mad is the default decoder with GST_RANK_SECONDARY
+            # flump3dec also is GST_RANK_SECONDARY, is slower than mad,
+            # but wins because of its name, ffdec_mp3 is faster but had some
+            # stability problems (which all seem resolved by now and we call
+            # this >= 0.10.31 anyway). Finally there is mpg123
+            # (http://gst.homeunix.net/) which is even faster but not in the
+            # GStreamer core (FIXME: re-evaluate if it gets merged)
+            #
+            # Example (atom CPU) 248 sec song:
+            #   mpg123: 3.5s / ffdec_mp3: 5.5s / mad: 7.2s / flump3dec: 13.3s
+
+            def set_prio(x):
+                i, f = x
+                i = {
+                    "mad": -1,
+                    "ffdec_mp3": -2,
+                    "mpg123audiodec": -3
+                }.get(f.get_name(), i)
+                return (i, f)
+
+            return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+
+        decode.connect("autoplug-sort", sort_decoders)
 
         chroma = Gst.ElementFactory.make("chromaprint", None)
-        fake2 = Gst.ElementFactory.make("fakesink", None)
+        fake = Gst.ElementFactory.make("fakesink", None)
         pipe.add(chroma)
-        pipe.add(fake2)
+        pipe.add(fake)
 
-        Gst.Element.link(chroma_src, chroma)
-        Gst.Element.link(chroma, fake2)
-        self.__todo.append(chroma)
-
-        filesrc.set_property("location", self.__song["~filename"])
+        Gst.Element.link(resample, chroma)
+        Gst.Element.link(chroma, fake)
 
         # bus
-        bus = pipe.get_bus()
+        self._bus = bus = pipe.get_bus()
         bus.add_signal_watch()
-        bus.enable_sync_message_emission()
-        bus.connect("sync-message", self.__bus_message, chroma)
+        bus.connect("message", self._bus_message)
 
-        # get it started
-        self.__cv.acquire()
-        pipe.set_state(Gst.State.PLAYING)
+    def start(self, song, callback):
+        """Start processing a new song"""
 
-        result = pipe.get_state(timeout=Gst.SECOND / 2)[0]
-        if result == Gst.StateChangeReturn.FAILURE:
-            # something failed, error message kicks in before, so check
-            # for shutdown
-            if not self.__shutdown:
-                self.__shutdown = True
-                GLib.idle_add(self.__pool._callback, self.__song,
-                    None, "Error", self)
-        elif not self.__shutdown:
-            # GStreamer probably knows song durations better than we do.
-            # (and it's more precise for PUID lookup)
-            # In case this fails, we insert the mutagen value
-            # (this only works in active playing state)
-            ok, d = pipe.query_duration(Gst.Format.TIME)
-            if ok:
-                self.__fingerprints["length"] = d / Gst.MSECOND
-            else:
-                self.__fingerprints["length"] = self.__song("~#length") * 1000
+        assert self.is_idle()
 
-            self.__cv.wait()
-        self.__cv.release()
+        self._song = song
+        self._callback = callback
 
-        # clean up
-        bus.remove_signal_watch()
-        pipe.set_state(Gst.State.NULL)
+        # use mutagen one, but replace if gstreamer gives us a duration
+        self._length = song("~#length")
 
-        # we need to make sure the state change has finished, before
-        # we can return and hand it over to the python GC
-        pipe.get_state(timeout=Gst.SECOND / 2)
+        self._filesrc.set_property("location", song["~filename"])
+        self._bus.add_signal_watch()
+        self._pipe.set_state(Gst.State.PLAYING)
 
     def stop(self):
-        self.__shutdown = True
-        self.__cv.acquire()
-        self.__cv.notify()
-        self.__cv.release()
+        """Abort processing. Can be called multiple times"""
 
-    def __sort_decoders(self, decode, pad, caps, factories):
-        # mad is the default decoder with GST_RANK_SECONDARY
-        # flump3dec also is GST_RANK_SECONDARY, is slower than mad,
-        # but wins because of its name, ffdec_mp3 is faster but had some
-        # stability problems (which all seem resolved by now and we call
-        # this >= 0.10.31 anyway). Finally there is mpg123
-        # (http://gst.homeunix.net/) which is even faster but not in the
-        # GStreamer core (FIXME: re-evaluate if it gets merged)
-        #
-        # Example (atom CPU) 248 sec song:
-        #   mpg123: 3.5s / ffdec_mp3: 5.5s / mad: 7.2s / flump3dec: 13.3s
+        if not self._song:
+            return
+        self._bus.remove_signal_watch()
+        self._pipe.set_state(Gst.State.NULL)
+        self._song = None
+        self._callback = None
 
-        def set_prio(x):
-            i, f = x
-            i = {
-                "mad": -1,
-                "ffdec_mp3": -2,
-                "mpg123audiodec": -3
-            }.get(f.get_name(), i)
-            return (i, f)
+    def is_idle(self):
+        """If start() can be called"""
 
-        return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+        return not self._song
 
-    def __new_decoded_pad(self, convert, pad, *args):
-        pad.link(convert.get_static_pad("sink"))
-
-    def __bus_message(self, bus, message, chroma):
+    def _bus_message(self, bus, message):
         error = None
         if message.type == Gst.MessageType.TAG:
             tags = message.parse_tag()
 
             ok, value = tags.get_string("chromaprint-fingerprint")
             if ok:
-                if chroma in self.__todo:
-                    self.__todo.remove(chroma)
-                self.__fingerprints["chromaprint"] = value
+                res = FingerPrintResult(self._song, value, self._length)
+                self._finish(res, None)
+        elif message.type == Gst.MessageType.ASYNC_DONE:
+            # GStreamer probably knows song durations better than we do.
+            ok, d = self._pipe.query_duration(Gst.Format.TIME)
+            if ok:
+                self._length = float(d) / Gst.SECOND
         elif message.type == Gst.MessageType.EOS:
-            error = "EOS"
+            error = "EOS but no fingerprint"
         elif message.type == Gst.MessageType.ERROR:
             error = str(message.parse_error()[0])
 
-        if not self.__shutdown and (not self.__todo or error):
-            GLib.idle_add(self.__pool._callback, self.__song,
-                self.__fingerprints, error, self)
-            self.__shutdown = True
-            self.__cv.acquire()
-            self.__cv.notify()
-            self.__cv.release()
+        if error:
+            self._finish(None, error)
 
 
-class FingerPrintThreadPool(GObject.GObject):
+class FingerPrintPool(GObject.GObject):
+
     __gsignals__ = {
         # FingerPrintResult
         "fingerprint-done": (
@@ -186,42 +170,72 @@ class FingerPrintThreadPool(GObject.GObject):
         }
 
     def __init__(self, max_workers=None):
-        super(FingerPrintThreadPool, self).__init__()
-        self.__threads = []
-        self.__queued = []
+        super(FingerPrintPool, self).__init__()
+
         if max_workers is None:
             max_workers = int(multiprocessing.cpu_count() * 1.5)
-        self.__max_workers = max_workers
-        self.__stopped = False
+        self._max_workers = max_workers
+
+        self._idle = set()
+        self._workers = set()
+        self._queue = []
+
+    def _get_worker(self):
+        """An idle FingerPrintPipeline or None"""
+
+        for worker in self._workers:
+            if worker in self._idle:
+                self._idle.discard(worker)
+                break
+        else:
+            worker = None
+            if len(self._workers) < self._max_workers:
+                worker = FingerPrintPipeline()
+                self._workers.add(worker)
+
+        if worker:
+            assert worker.is_idle()
+
+        return worker
+
+    def _start_song(self, worker, song):
+        assert worker.is_idle()
+        worker.start(song, self._callback)
+        self.emit("fingerprint-started", song)
 
     def push(self, song):
-        self.__stopped = False
-        if len(self.__threads) < self.__max_workers:
-            self.__threads.append(FingerPrintPipeline(self, song))
-            self.emit("fingerprint-started", song)
+        """Add a new song to the queue"""
+
+        worker = self._get_worker()
+        if worker:
+            self._start_song(worker, song)
         else:
-            self.__queued.append(song)
+            self._queue.append(song)
 
     def stop(self):
-        self.__stopped = True
-        for thread in self.__threads:
-            thread.stop()
-        for thread in self.__threads:
-            thread.join()
+        """Stop everything.
 
-    def _callback(self, song, result, error, thread):
-        # make sure everythin is gone before starting new ones.
-        thread.join()
-        self.__threads.remove(thread)
-        if self.__stopped:
-            return
-        if not error:
-            chromaprint = result.get("chromaprint")
-            res = FingerPrintResult(song, chromaprint, result["length"])
-            self.emit("fingerprint-done", res)
+        callback will not be called after this.
+        Can be called multiple times.
+        """
+
+        for worker in self._workers:
+            worker.stop()
+        self._workers.clear()
+        self._idle.clear()
+
+    def _callback(self, worker, song, result, error):
+        self._idle.add(worker)
+        if result:
+            self.emit("fingerprint-done", result)
         else:
             self.emit("fingerprint-error", song, error)
-        if self.__queued:
-            song = self.__queued.pop(0)
-            self.__threads.append(FingerPrintPipeline(self, song))
-            self.emit("fingerprint-started", song)
+
+        if self._queue:
+            song = self._queue.pop(0)
+            worker = self._get_worker()
+            assert worker
+            self._start_song(worker, song)
+        elif len(self._idle) == len(self._workers):
+            # all done, all idle, kill em
+            self.stop()
