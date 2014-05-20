@@ -371,6 +371,10 @@ class SearchWindow(Window):
             # update display
             if lresult.releases:
                 self.__update_active_releases()
+            elif lresult.error:
+                entry.status = Status.ERROR
+                # we don't expose in the UI, so at least print it
+                print_w(lresult.error)
             else:
                 entry.status = Status.UNKNOWN
 
@@ -382,6 +386,7 @@ class SearchWindow(Window):
             entry.status = Status.LOOKUP
 
     def __fp_error_cb(self, pool, song, error_msg):
+        print_w(error_msg)
         with self.__update_row(song) as entry:
             entry.status = Status.ERROR
         self.__inc_done()

@@ -147,9 +147,10 @@ class AcoustidSubmissionThread(threading.Thread):
 
 class LookupResult(object):
 
-    def __init__(self, fresult, releases):
+    def __init__(self, fresult, releases, error):
         self.fresult = fresult
         self.releases = releases
+        self.error = error
 
     @property
     def song(self):
@@ -316,9 +317,7 @@ class AcoustidLookupThread(threading.Thread):
                 if data["status"] == "ok":
                     releases = parse_acoustid_response(data)
 
-        # TODO: propagate error
-        error = error
-        return LookupResult(result, releases)
+        return LookupResult(result, releases, error)
 
     def run(self):
         while 1:
