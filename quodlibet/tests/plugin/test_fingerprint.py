@@ -103,7 +103,7 @@ class TAcoustidLookup(PluginTestCase):
         self.assertEqual(tags["artist"], u'Kinderzimmer Productions')
         self.assertEqual(tags["date"], u'2002-01')
         self.assertEqual(tags["tracknumber"], u'7/15')
-        self.assertEqual(tags["discnumber"], u'1/1')
+        self.assertTrue("discnumber" not in tags)
         self.assertTrue("musicbrainz_albumid" in tags)
 
     def test_parse_response_2(self):

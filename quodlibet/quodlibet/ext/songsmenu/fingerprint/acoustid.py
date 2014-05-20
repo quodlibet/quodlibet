@@ -214,12 +214,12 @@ def parse_acoustid_response(json_data):
                 track = track_info.get("position", 0)
                 title = track_info.get("title", "")
 
-                if disc and discs:
+                if disc and discs > 1:
                     discnumber = u"%d/%d" % (disc, discs)
                 else:
                     discnumber = u""
 
-                if track and tracks:
+                if track and tracks > 1:
                     tracknumber = u"%d/%d" % (track, tracks)
                 else:
                     tracknumber = u""
