@@ -15,7 +15,8 @@ from quodlibet import const
 from quodlibet.parse import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.util import limit_songs
+from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.util import limit_songs, DeferredSignal
 
 
 class SearchBarBox(Gtk.HBox):
@@ -46,14 +47,14 @@ class SearchBarBox(Gtk.HBox):
                 validator=Query.is_valid_color, title=_("Saved Searches"),
                 edit_title=_("Edit saved searches..."))
 
-        self.__refill_id = None
+        self.__deferred_changed = DeferredSignal(
+            self.__filter_changed, timeout=self.timeout, owner=self)
+
         self.__combo = combo
         entry = combo.get_child()
         self.__entry = entry
         if completion:
             entry.set_completion(completion)
-
-        self.connect('destroy', lambda w: w.__remove_timeout())
 
         self.__sig = combo.connect('text-changed', self.__text_changed)
 
@@ -79,15 +80,10 @@ class SearchBarBox(Gtk.HBox):
         for child in self.get_children():
             child.show_all()
 
-    def __inhibit(self):
-        self.__combo.handler_block(self.__sig)
-
-    def __uninhibit(self):
-        self.__combo.handler_unblock(self.__sig)
-
     def set_text(self, text):
-        # remove the timeout
-        self.__remove_timeout()
+        """Set the text without firing any signals"""
+
+        self.__deferred_changed.abort()
 
         # deactivate all signals and change the entry text
         self.__inhibit()
@@ -95,16 +91,24 @@ class SearchBarBox(Gtk.HBox):
         self.__uninhibit()
 
     def get_text(self):
+        """Get the active text as unicode"""
+
         return self.__entry.get_text().decode("utf-8")
 
     def changed(self):
         """Triggers a filter-changed signal if the current text
-        is a parsable query"""
+        is a parsable query
+        """
+
         self.__filter_changed()
 
-    def __menu(self, entry, menu):
-        from quodlibet.qltk.x import SeparatorMenuItem
+    def __inhibit(self):
+        self.__combo.handler_block(self.__sig)
 
+    def __uninhibit(self):
+        self.__combo.handler_unblock(self.__sig)
+
+    def __menu(self, entry, menu):
         sep = SeparatorMenuItem()
         sep.show()
         menu.prepend(sep)
@@ -128,7 +132,7 @@ class SearchBarBox(Gtk.HBox):
         if args and not config.getboolean('settings', 'eager_search'):
             return
 
-        text = entry.get_text().decode('utf-8').strip()
+        text = self.get_text().strip()
         if text and Query.is_parsable(text):
             # Adding the active text to the model triggers a changed signal
             # (get_active is no longer -1), so inhibit
@@ -137,18 +141,11 @@ class SearchBarBox(Gtk.HBox):
             self.__combo.write()
             self.__uninhibit()
 
-    def __remove_timeout(self):
-        if self.__refill_id is not None:
-            GLib.source_remove(self.__refill_id)
-            self.__refill_id = None
-
     def __filter_changed(self, *args):
-        self.__remove_timeout()
-
-        text = self.__entry.get_text().decode('utf-8')
+        self.__deferred_changed.abort()
+        text = self.get_text()
         if Query.is_parsable(text):
-            self.__refill_id = GLib.idle_add(
-                self.emit, 'query-changed', text)
+            GLib.idle_add(self.emit, 'query-changed', text)
 
     def __text_changed(self, *args):
         # the combobox has an active entry selected -> no timeout
@@ -161,14 +158,7 @@ class SearchBarBox(Gtk.HBox):
         if not config.getboolean('settings', 'eager_search'):
             return
 
-        # remove the timeout
-        self.__remove_timeout()
-
-        # parse and new timeout
-        text = self.__entry.get_text().decode('utf-8')
-        if Query.is_parsable(text):
-            self.__refill_id = GLib.timeout_add(
-                    self.timeout, self.__filter_changed)
+        self.__deferred_changed()
 
 
 class LimitSearchBarBox(SearchBarBox):

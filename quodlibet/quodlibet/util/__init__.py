@@ -489,19 +489,30 @@ class DeferredSignal(object):
     priority and prevents multiple calls from being inserted in the
     mainloop at a time, greatly improving responsiveness in some places.
 
+    When the target function will finally be called the arguments passed
+    are the last arguments passed to DeferredSignal.
+
+    If `owner` is given, it will not call the target after the owner is
+    destroyed.
+
     Example usage:
 
     def func(widget, user_arg):
         pass
-    widget.connect('signal', DeferredSignal(func), user_arg)
+    widget.connect('signal', DeferredSignal(func, owner=widget), user_arg)
     """
 
-    def __init__(self, func, timeout=None):
+    def __init__(self, func, timeout=None, owner=None):
         """timeout in milliseconds"""
 
         self.func = func
         self.dirty = False
         self.args = None
+
+        if owner:
+            def destroy_cb(owner):
+                self.abort()
+            owner.connect("destroy", destroy_cb)
 
         from gi.repository import GLib
         if timeout is None:
@@ -509,8 +520,11 @@ class DeferredSignal(object):
         else:
             self.do_idle_add = lambda f: GLib.timeout_add(timeout, f)
 
-    def destroy(self):
-        """Abort any queued up up signal calls"""
+    def abort(self):
+        """Abort any queued up calls.
+
+        Can still be reused afterwards.
+        """
 
         if self.dirty:
             from gi.repository import GLib
@@ -528,6 +542,7 @@ class DeferredSignal(object):
         self.func(*self.args)
         self.dirty = False
         self.args = None
+        return False
 
 
 def gobject_weak(fun, *args, **kwargs):
