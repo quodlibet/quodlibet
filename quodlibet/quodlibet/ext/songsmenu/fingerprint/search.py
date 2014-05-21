@@ -197,13 +197,17 @@ class ResultView(AllTreeView):
             column.set_resizable(True)
             if column.get_min_width() < 50:
                 column.set_min_width(50)
-
+        self.set_fixed_height_mode(True)
 
     def __button_press(self, view, event, edit_column):
         x, y = map(int, [event.x, event.y])
         try:
             path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError:
+            return False
+
+        # header clicks go to the first cell otherwise
+        if event.window is not view.get_bin_window():
             return False
 
         if event.button == Gdk.BUTTON_PRIMARY and \
