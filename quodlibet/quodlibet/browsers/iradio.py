@@ -624,10 +624,11 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         box.pack_start(search, True, True, 0)
         box.pack_start(button, False, True, 0)
         if main:
-            self.pack_start(Alignment(box, left=6, right=6, top=6),
-                            True, True, 0)
+            self._searchbox = Alignment(box, left=0, right=6)
         else:
-            self.pack_start(box, True, True, 0)
+            self._searchbox = box
+        self._searchbox.show_all()
+
         self.__filter_list = scrolled_window
 
         def qbar_response(infobar, response_id):
@@ -652,6 +653,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         pane.show_all()
 
         songbox = Gtk.VBox(spacing=6)
+        songbox.pack_start(self._searchbox, False, True, 0)
         songbox.pack_start(songpane, True, True, 0)
         songbox.pack_start(self.qbar, False, True, 0)
         songbox.show()
