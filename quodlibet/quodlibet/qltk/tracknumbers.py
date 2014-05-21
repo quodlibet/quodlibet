@@ -70,7 +70,7 @@ class TrackNumbers(Gtk.VBox):
         self.pack_start(w, True, True, 0)
 
         bbox = Gtk.HButtonBox()
-        bbox.set_spacing(12)
+        bbox.set_spacing(6)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         save = Gtk.Button(stock=Gtk.STOCK_SAVE)
         save.connect_object(

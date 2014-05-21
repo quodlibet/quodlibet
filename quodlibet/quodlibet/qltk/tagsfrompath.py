@@ -18,6 +18,7 @@ from quodlibet import util
 from quodlibet.qltk._editpane import EditPane, FilterCheckButton
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.util.path import fsdecode
 from quodlibet.util.string.splitters import split_value
 
@@ -194,8 +195,7 @@ class TagsFromPath(EditPane):
         for col in self.view.get_columns():
             self.view.remove_column(col)
 
-        col = Gtk.TreeViewColumn(_('File'), Gtk.CellRendererText(),
-                                 text=1)
+        col = TreeViewColumn(_('File'), Gtk.CellRendererText(), text=1)
         col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(col)
         for i, header in enumerate(pattern.headers):

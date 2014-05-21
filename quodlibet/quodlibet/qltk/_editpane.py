@@ -79,7 +79,7 @@ class EditPane(Gtk.VBox):
     def __init__(self, cbes_filename, cbes_defaults):
         super(EditPane, self).__init__(spacing=6)
         self.set_border_width(12)
-        hbox = Gtk.HBox(spacing=12)
+        hbox = Gtk.HBox(spacing=6)
         self.combo = ComboBoxEntrySave(cbes_filename, cbes_defaults,
             title=_("Path Patterns"),
             edit_title=_("Edit saved patterns..."))
