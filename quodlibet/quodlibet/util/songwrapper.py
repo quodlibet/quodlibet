@@ -64,6 +64,11 @@ class SongWrapper(object):
     def __call__(self, *args):
         return self._song(*args)
 
+    def pop(self, *args):
+        self._updated = True
+        self._needs_write = True
+        return self._song.pop(*args)
+
     def update(self, other):
         self._updated = True
         self._needs_write = True

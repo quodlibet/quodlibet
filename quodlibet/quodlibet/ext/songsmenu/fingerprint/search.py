@@ -73,12 +73,19 @@ class SearchEntry(object):
         if not self.can_write:
             return
 
+        # To reduce chaotic results with half tagged albums, delete
+        # all tags for which we could have written values, but don't
+        # or the value would be empty
         for key, value in self.release.tags.items():
             if not write_musicbrainz and key.startswith("musicbrainz_"):
-                continue
+                value = u""
             if not write_album and key not in non_album_tags:
-                continue
-            self.song[key] = value
+                value = u""
+
+            if not value:
+                self.song.pop(key, None)
+            else:
+                self.song[key] = value
 
     @property
     def releases(self):

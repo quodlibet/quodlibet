@@ -246,8 +246,6 @@ def parse_acoustid_response(json_data):
                 del mb["musicbrainz_releasetrackid"]
 
                 tags.update(mb)
-
-                tags = dict((k, v) for (k, v) in tags.items() if v)
                 recordings.append([id_, score, sources, 0, discs, tags])
 
         for rec in recordings:

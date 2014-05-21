@@ -50,6 +50,11 @@ class TSongWrapper(TestCase):
         self.wrap["~woo"] = "bar"
         self.failIf(self.wrap._needs_write)
 
+    def test_pop(self):
+        self.failIf(self.wrap._needs_write)
+        self.wrap.pop("artist", None)
+        self.failUnless(self.wrap._needs_write)
+
     def test_getitem(self):
         self.failUnlessEqual(self.wrap["title"], "woo")
 
