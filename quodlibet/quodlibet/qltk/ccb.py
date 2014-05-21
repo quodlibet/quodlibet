@@ -16,11 +16,12 @@ class ConfigCheckButton(Gtk.CheckButton):
 
     It is initialised to the current config value if `populate` is set True."""
 
-    def __init__(self, label, section, option, populate=False, tooltip=None):
+    def __init__(self, label, section, option, populate=False, tooltip=None,
+                 default=True):
         super(ConfigCheckButton, self).__init__(label=label,
                                                 use_underline=True)
         if populate:
-            self.set_active(config.getboolean(section, option))
+            self.set_active(config.getboolean(section, option, default))
         if tooltip:
             self.set_tooltip_text(tooltip)
         self.connect('toggled', ConfigCheckButton.__toggled, section, option)
@@ -35,11 +36,11 @@ class ConfigCheckMenuItem(Gtk.CheckMenuItem):
 
     It is initialised to the current config value if `populate` is set True."""
 
-    def __init__(self, label, section, option, populate=False):
+    def __init__(self, label, section, option, populate=False, default=False):
         super(ConfigCheckMenuItem, self).__init__(
             label=label, use_underline=True)
         if populate:
-            self.set_active(config.getboolean(section, option))
+            self.set_active(config.getboolean(section, option, default))
         self.connect('toggled', ConfigCheckMenuItem.__toggled, section, option)
 
     def __toggled(self, section, option):

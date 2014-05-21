@@ -10,7 +10,7 @@ from gi.repository import Gtk, Pango, Gdk
 
 from .analyze import FingerPrintPool
 from .acoustid import AcoustidLookupThread
-from .util import get_write_mb_tags
+from .util import get_write_mb_tags, get_group_by_dir
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.window import Window
@@ -118,6 +118,8 @@ class ResultView(AllTreeView):
             cell.set_property('pixbuf', pixbufs[entry.can_write])
 
         column.set_cell_data_func(render, cell_data)
+        column.set_expand(False)
+        column.set_min_width(60)
         self.append_column(column)
 
         self.connect('button-press-event', self.__button_press, column)
@@ -131,8 +133,7 @@ class ResultView(AllTreeView):
             cell.set_property('text', entry.song("~basename"))
 
         column.set_cell_data_func(render, cell_data)
-        column.set_resizable(True)
-        column.set_expand(False)
+        column.set_expand(True)
         self.append_column(column)
 
         render = Gtk.CellRendererText()
@@ -144,8 +145,8 @@ class ResultView(AllTreeView):
             cell.set_property('text', Status.to_string(entry.status))
 
         column.set_cell_data_func(render, cell_data)
-        column.set_resizable(False)
         column.set_expand(False)
+        column.set_fixed_width(100)
         self.append_column(column)
 
         render = Gtk.CellRendererText()
@@ -164,7 +165,6 @@ class ResultView(AllTreeView):
                 cell.set_property("text", str(id_))
 
         column.set_cell_data_func(render, cell_data)
-        column.set_resizable(False)
         column.set_expand(False)
         self.append_column(column)
 
@@ -184,11 +184,20 @@ class ResultView(AllTreeView):
                     cell.set_property("text", value)
 
             column.set_cell_data_func(render, cell_data)
-            column.set_resizable(True)
-            column.set_expand(True)
             self.append_column(column)
             if tag == "tracknumber":
                 self._track_column = column
+                column.set_expand(False)
+                column.set_fixed_width(80)
+            else:
+                column.set_expand(True)
+
+        for column in self.get_columns():
+            column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+            column.set_resizable(True)
+            if column.get_min_width() < 50:
+                column.set_min_width(50)
+
 
     def __button_press(self, view, event, edit_column):
         x, y = map(int, [event.x, event.y])
@@ -272,12 +281,20 @@ class SearchWindow(Window):
 
         ccb = ConfigCheckButton(
             _("Write MusicBrainz tags"),
-            "plugins", "fingerprint_write_mb_tags", populate=True)
+            "plugins", "fingerprint_write_mb_tags")
+        ccb.set_active(get_write_mb_tags())
         inner_box.pack_start(ccb, False, True, 0)
+
+        ccb = ConfigCheckButton(
+            _("Group by directory"),
+            "plugins", "fingerprint_group_by_dir")
+        ccb.set_active(get_group_by_dir())
+        ccb.connect("toggled", self.__group_toggled)
+        self._group_ccb = ccb
 
         outer_box.pack_start(inner_box, True, True, 0)
 
-        bottom_box = Gtk.HBox(spacing=6)
+        bottom_box = Gtk.HBox(spacing=12)
         mode_button = Gtk.ToggleButton(label=_("Album Mode"))
         mode_button.set_tooltip_text(
             _("Write album related tags and try to "
@@ -285,6 +302,7 @@ class SearchWindow(Window):
         mode_button.set_active(True)
         mode_button.connect("toggled", self.__mode_toggle)
         bottom_box.pack_start(mode_button, False, True, 0)
+        bottom_box.pack_start(self._group_ccb, False, True, 0)
         bottom_box.pack_start(bbox, True, True, 0)
 
         outer_box.pack_start(bottom_box, False, True, 0)
@@ -293,13 +311,20 @@ class SearchWindow(Window):
         self.add(outer_box)
 
         self.__album_mode = True
-        self._release_counts = {}
+        self.__group_by_dir = True
+        self._release_scores = {}
+        self._directory_scores = {}
         self.__done = 0
 
         self.connect("destroy", self.__destroy)
 
+    def __group_toggled(self, button):
+        self.__group_by_dir = button.get_active()
+        self.__update_active_releases()
+
     def __mode_toggle(self, button):
         self.__album_mode = button.get_active()
+        self._group_ccb.set_sensitive(self.__album_mode)
         self.view.set_album_visible(self.__album_mode)
         self.__update_active_releases()
 
@@ -331,13 +356,18 @@ class SearchWindow(Window):
     def __update_active_releases(self):
         """Go through all songs and recalculate the best release"""
 
-        def sort_key(r):
+        def sort_key(entry, r):
             # good if there are many other songs that could be in the
             # same release and this release is likely as well.
             # Also sort by id to have a winner in case of a tie.
             score = score_release(r)
             if self.__album_mode:
-                score = (self._release_counts[r.id], score)
+                if self.__group_by_dir:
+                    song = entry.song
+                    scores = self._directory_scores[song("~dirname")]
+                else:
+                    scores = self._release_scores
+                score = (scores[r.id], score)
             return (score, r.id)
 
         for row in self.model:
@@ -345,7 +375,8 @@ class SearchWindow(Window):
             if not entry.releases:
                 continue
             active_release = entry.active_release
-            best_release = sorted(entry.releases, key=sort_key)[-1]
+            best_release = sorted(
+                entry.releases, key=lambda r: sort_key(entry, r))[-1]
             entry.active_release = entry.releases.index(best_release)
             if entry.active_release != active_release:
                 self.model.row_changed(row.path, row.iter)
@@ -363,10 +394,14 @@ class SearchWindow(Window):
                 # the release we actually want (say 8 CD box containing
                 # every song of an artist), try to reduce the medium count.
                 score = score_release(release) / release.medium_count
-                if id_ in self._release_counts:
-                    self._release_counts[id_] += score
-                else:
-                    self._release_counts[id_] = score
+                self._release_scores.setdefault(id_, 0)
+                self._release_scores[id_] += score
+
+                # do the same again but group by directory
+                dir_ = lresult.song("~dirname")
+                release_scores = self._directory_scores.setdefault(dir_, {})
+                release_scores.setdefault(id_, 0)
+                release_scores[id_] += score
 
             # update display
             if lresult.releases:

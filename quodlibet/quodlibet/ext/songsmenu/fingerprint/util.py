@@ -17,8 +17,11 @@ def get_api_key():
 
 
 def get_write_mb_tags():
-
     return config.getboolean("plugins", "fingerprint_write_mb_tags", False)
+
+
+def get_group_by_dir():
+    return config.getboolean("plugins", "fingerprint_group_by_dir", True)
 
 
 class GateKeeper(object):

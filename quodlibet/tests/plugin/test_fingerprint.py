@@ -126,9 +126,6 @@ class TAcoustidLookup(PluginTestCase):
             release.tags["musicbrainz_trackid"],
             "bc970841-b7d9-415a-b7e2-645b1d263cc3")
 
-    def test_plugin_prefs(self):
-        self.mod.AcoustidSearch.PluginPreferences(Gtk.Window())
-
 
 ACOUSTID_RESPONSE = {
 u'status': u'ok', u'results': [{u'recordings': [{u'releases':
