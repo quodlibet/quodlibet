@@ -126,7 +126,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
     def __drag_data_recv(self, view, *args):
         if callable(self.browser.reordered):
             self.browser.reordered(view)
-        view.set_sort_by(None, refresh=False)
+        view.clear_sort()
 
     def __cols_changed(self, view, browser):
         for header in view.get_columns():

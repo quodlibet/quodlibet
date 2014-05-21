@@ -32,9 +32,9 @@ class TSongList(TestCase):
         for key, order in [("one", True),
                            ("two", False),
                            ("three", False)]:
-            self.songlist.set_sort_by(None, tag=key, order=order)
+            self.songlist.set_sort_by(key, order=order)
             self.failUnlessEqual(self.songlist.get_sort_by(), (key, order))
-        self.songlist.set_sort_by(self.songlist.get_columns()[-1], tag="three")
+        self.songlist.set_sort_by(self.songlist.get_columns()[-1].header_name)
         self.failUnlessEqual(self.songlist.get_sort_by(), ("three", True))
 
     def test_inline_search_state(self):

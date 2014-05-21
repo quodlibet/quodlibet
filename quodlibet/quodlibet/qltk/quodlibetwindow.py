@@ -389,7 +389,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songpane.connect('notify', self.__moved_pane_handle)
 
         sort = config.get('memory', 'sortby')
-        self.songlist.set_sort_by(None, sort[1:], order=int(sort[0]))
+        self.songlist.set_sort_by(sort[1:], order=int(sort[0]))
 
         self.browser = None
         self.ui = ui
@@ -552,7 +552,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered):
             self.browser.reordered(view)
-        self.songlist.set_sort_by(None, refresh=False)
+        self.songlist.clear_sort()
 
     def __save_browser(self, *args):
         print_d("Saving active browser state")
