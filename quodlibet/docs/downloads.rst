@@ -79,28 +79,14 @@ For old releases see the `full file listing <https://bitbucket.org/lazka/quodlib
 |ubuntu-logo| Ubuntu
 --------------------
 
-Stable PPA::
+Stable PPA (12.04+)::
 
     $ sudo add-apt-repository ppa:lazka/ppa
 
 
-Unstable PPA::
+Unstable PPA (12.04+)::
 
     $ sudo add-apt-repository ppa:lazka/dumpingplace
-
-.. note::
-
-    Quod Libet 3.x supports **Ubuntu 12.04**, but needs some updated
-    dependencies that you'll need to install separately:
-
-    * The `GStreamer Developer PPA
-      <https://launchpad.net/~gstreamer-developers/+archive/ppa?field.series_
-      filter=precise>`__ for GStreamer 1.0.
-    * *(optional)* Ubuntu 12.10 packages of both `gir1.2-keybinder-3.0
-      <http://packages.ubuntu.com/quantal/gir1.2-keybinder-3.0>`__ and
-      `libkeybinder-3.0-0
-      <http://packages.ubuntu.com/quantal/libkeybinder-3.0-0>`__ for
-      multimedia key support under non GNOME environments.
 
 .. _debian:
 
