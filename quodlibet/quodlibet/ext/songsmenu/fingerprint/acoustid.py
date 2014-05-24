@@ -26,6 +26,7 @@ gatekeeper = GateKeeper(requests_per_sec=3)
 class AcoustidSubmissionThread(threading.Thread):
     URL = "http://api.acoustid.org/v2/submit"
     SONGS_PER_SUBMISSION = 50
+    TIMEOUT = 10.0
 
     def __init__(self, results, progress_cb, done_cb):
         super(AcoustidSubmissionThread, self).__init__()
@@ -71,11 +72,9 @@ class AcoustidSubmissionThread(threading.Thread):
 
         error = None
         try:
-            response = urllib2.urlopen(req)
-        except urllib2.HTTPError, e:
-            error = "urllib error, code: " + str(e.code)
-        except:
-            error = "urllib error"
+            response = urllib2.urlopen(req, timeout=self.TIMEOUT)
+        except urllib2.URLError as e:
+            error = "urllib error: " + str(e)
         else:
             xml = response.read()
             try:
@@ -257,6 +256,7 @@ def parse_acoustid_response(json_data):
 
 class AcoustidLookupThread(threading.Thread):
     URL = "http://api.acoustid.org/v2/lookup"
+    TIMEOUT = 10.0
 
     def __init__(self, progress_cb):
         super(AcoustidLookupThread, self).__init__()
@@ -301,11 +301,9 @@ class AcoustidLookupThread(threading.Thread):
         releases = []
         error = ""
         try:
-            response = urllib2.urlopen(req)
-        except urllib2.HTTPError as e:
-            error = "urllib error, code: " + str(e.code)
-        except:
-            error = "urllib error"
+            response = urllib2.urlopen(req, timeout=self.TIMEOUT)
+        except urllib2.URLError as e:
+            error = "urllib error: " + str(e)
         else:
             try:
                 data = json.loads(response.read())
