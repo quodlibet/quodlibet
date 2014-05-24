@@ -7,7 +7,7 @@
 import re
 import shlex
 
-from gi.repository import GLib, GObject
+from gi.repository import GObject
 
 from quodlibet import const
 from .tcpserver import BaseTCPServer, BaseTCPConnection
@@ -686,7 +686,7 @@ def _cmd_random(conn, service, args):
 
 
 @MPDConnection.Command("single")
-def _cmd_random(conn, service, args):
+def _cmd_single(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
     service.single(value)

@@ -49,6 +49,8 @@ class BaseTCPServer(object):
             service.add_inet_port(self._port, None)
         except GLib.GError as e:
             raise ServerError(e)
+        except OverflowError as e:
+            raise ServerError("port: %s" % e)
         self._id = service.connect("incoming", self._incoming_connection_cb)
         service.start()
         self._sock_service = service
