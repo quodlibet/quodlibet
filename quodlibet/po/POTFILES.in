@@ -144,7 +144,6 @@ quodlibet/qltk/searchbar.py
 quodlibet/qltk/songlistcolumns.py
 quodlibet/qltk/songlist.py
 quodlibet/qltk/songsmenu.py
-quodlibet/qltk/sortdialog.py
 quodlibet/qltk/tagsfrompath.py
 quodlibet/qltk/textedit.py
 quodlibet/qltk/tracker.py

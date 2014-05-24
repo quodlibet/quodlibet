@@ -22,7 +22,6 @@ from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
-from quodlibet.qltk.sortdialog import SortDialog
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import human_sort_key
 from quodlibet.qltk.songlistcolumns import create_songlist_column
@@ -543,34 +542,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         browser.filter_on(songs, header)
 
-    def __custom_sort(self, *args):
-        sd = SortDialog(qltk.get_top_parent(self))
-        if sd.run() == Gtk.ResponseType.OK:
-            # sort_keys yields a list of pairs (sort header, order)
-            headers = sd.sort_key
-            if not headers:
-                return
-
-            # from this, we have to construct a comparison function for sort
-            def _get_key(song, tag):
-                if tag.startswith("~#") and "~" not in tag[2:]:
-                    return song(tag)
-                return human_sort_key(song(tag))
-
-            def comparer(x, y):
-                for (h, o) in headers:
-                    c = cmp(_get_key(x, h), _get_key(y, h))
-                    if c == 0:
-                        continue
-                    if o != Gtk.SortType.ASCENDING:
-                        c *= -1
-                    return c
-                return 0
-            songs = self.get_songs()
-            songs.sort(cmp=comparer)
-            self.set_songs(songs, sorted=True)
-        sd.hide()
-
     def __button_press(self, view, event, librarian):
         if event.button != Gdk.BUTTON_PRIMARY:
             return
@@ -1024,11 +995,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         sep = SeparatorMenuItem()
         sep.show()
         menu.append(sep)
-
-        b = Gtk.MenuItem(_("Custom _Sort..."), use_underline=True)
-        menu.append(b)
-        b.show()
-        b.connect('activate', self.__custom_sort)
 
         custom = Gtk.MenuItem(_("_Customize Headers..."), use_underline=True)
         custom.show()
