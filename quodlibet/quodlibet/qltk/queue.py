@@ -75,7 +75,6 @@ class QueueExpander(Gtk.Expander):
         self.connect('drag-motion', self.__motion)
         self.connect('drag-data-received', self.__drag_data_received)
 
-        self.model = self.queue.model
         self.show_all()
 
         self.queue.model.connect_after('row-inserted',
@@ -101,6 +100,10 @@ class QueueExpander(Gtk.Expander):
                 label.unmap()
                 label.map()
         self.connect("map", hack)
+
+    @property
+    def model(self):
+        return self.queue.model
 
     def __update_state_icon(self, player, song, state):
         if self.model.sourced:
@@ -161,6 +164,8 @@ class QueueExpander(Gtk.Expander):
 
 class PlayQueue(SongList):
 
+    sortable = False
+
     class CurrentColumn(Gtk.TreeViewColumn):
         # Match MainSongList column sizes by default.
         header_name = "~current"
@@ -173,7 +178,6 @@ class PlayQueue(SongList):
     def __init__(self, library, player):
         super(PlayQueue, self).__init__(library, player)
         self.set_size_request(-1, 120)
-        self.model = self.get_model()
         self.connect('row-activated', self.__go_to, player)
 
         self.connect_object('popup-menu', self.__popup, library)
@@ -230,9 +234,3 @@ class PlayQueue(SongList):
 
     def __remove(self, *args):
         self.remove_selection()
-
-    def set_sort_by(self, *args):
-        pass
-
-    def get_sort_by(self, *args):
-        return "", False

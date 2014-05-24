@@ -114,16 +114,19 @@ class MainSongList(SongList):
         s = player.connect_after('song-started', reset_activated)
         self.connect_object('destroy', player.disconnect, s)
 
+        self.connect("orders-changed", self.__orders_changed)
+
+    def __orders_changed(self, *args):
+        l = []
+        for tag, reverse in self.get_sort_orders():
+            l.append("%d%s" % (int(reverse), tag))
+        config.setstringlist('memory', 'sortby', l)
+
     def __select_song(self, player, indices, col):
         self._activated = True
         iter = self.model.get_iter(indices)
         if player.go_to(iter, True):
             player.paused = False
-
-    def set_sort_by(self, *args, **kwargs):
-        super(MainSongList, self).set_sort_by(*args, **kwargs)
-        tag, reverse = self.get_sort_by()
-        config.set('memory', 'sortby', "%d%s" % (int(reverse), tag))
 
 
 class SongListScroller(ScrolledWindow):
@@ -388,8 +391,14 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.qexpander.connect('draw', self.__qex_size_allocate)
         self.songpane.connect('notify', self.__moved_pane_handle)
 
-        sort = config.get('memory', 'sortby')
-        self.songlist.set_sort_by(sort[1:], order=int(sort[0]))
+        try:
+            orders = []
+            for e in config.getstringlist('memory', 'sortby', []):
+                orders.append((e[1:], int(e[0])))
+        except ValueError:
+            pass
+        else:
+            self.songlist.set_sort_orders(orders)
 
         self.browser = None
         self.ui = ui
