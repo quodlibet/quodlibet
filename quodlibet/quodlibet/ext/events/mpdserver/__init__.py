@@ -86,8 +86,9 @@ class MPDServerPlugin(EventPlugin):
             except ValueError as e:
                 print_w(str(e))
             else:
-                set_port_num(port_num)
-                self._refresh()
+                if get_port_num() != port_num:
+                    set_port_num(port_num)
+                    self._refresh()
 
         entry.connect_after("activate", port_activate)
         entry.connect_after("focus-out-event", port_activate)
