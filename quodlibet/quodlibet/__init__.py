@@ -23,6 +23,7 @@ import warnings
 import quodlibet.const
 import quodlibet.util
 
+from quodlibet.util import load_library
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
@@ -249,11 +250,10 @@ def set_process_title(title):
         return
 
     try:
-        import ctypes
-        libc = ctypes.CDLL('libc.so.6')
+        libc = load_library(["libc.so.6", "c"])[0]
         # 15 = PR_SET_NAME, apparently
         libc.prctl(15, title, 0, 0, 0)
-    except:
+    except (OSError, AttributeError):
         print_d("Couldn't find module libc.so.6 (ctypes). "
                 "Not setting process title.")
 

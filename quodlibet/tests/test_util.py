@@ -4,7 +4,7 @@ from quodlibet.util.path import *
 from quodlibet.util.string import decode, encode
 from quodlibet.util.string.splitters import *
 from quodlibet.util.library import *
-from tests import TestCase, mkstemp
+from tests import TestCase, mkstemp, skipIf
 
 import tempfile
 import sys
@@ -755,3 +755,22 @@ class Tescape_filename(TestCase):
         result = escape_filename(u'abc\xe4')
         self.assertEqual(result, "abc%C3%A4")
         self.assertTrue(is_fsnative(result))
+
+
+@skipIf(is_win)
+class Tload_library(TestCase):
+
+    def test_libc(self):
+        lib, name = util.load_library(["c"])
+        self.assertEqual(name, "c")
+
+        lib2, name = util.load_library(["c"])
+        self.assertTrue(lib is lib2)
+
+        lib3, name = util.load_library(["c"], shared=False)
+        self.assertTrue(lib2 is not lib3)
+
+    def test_glib(self):
+        lib, name = util.load_library(["libglib-2.0.so.0"])
+        self.assertEqual(name, "libglib-2.0.so.0")
+        self.assertTrue(lib)

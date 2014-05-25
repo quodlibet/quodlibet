@@ -7,33 +7,30 @@
 import os
 import ctypes
 
+from quodlibet.util import load_library
 from quodlibet.formats._audio import AudioFile
 
 extensions = [
     '.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med', '.mod', '.mt2',
     '.mtm', '.okt', '.s3m', '.stm', '.ult', '.gdm', '.xm']
 
-
-for so_version in ("libmodplug.so.1", "libmodplug.so.0", "libmodplug-1.dll"):
-    try:
-        _modplug = ctypes.cdll.LoadLibrary(so_version)
-    except OSError:
-        continue
-    else:
-        _modplug.ModPlug_GetName.argtypes = [ctypes.c_void_p]
-        _modplug.ModPlug_GetName.restype = ctypes.c_char_p
-
-        _modplug.ModPlug_Load.argtypes = [ctypes.c_void_p, ctypes.c_int]
-        _modplug.ModPlug_Load.restype = ctypes.c_void_p
-
-        _modplug.ModPlug_GetLength.argtypes = [ctypes.c_void_p]
-        _modplug.ModPlug_GetLength.restype = ctypes.c_int
-
-        _modplug.ModPlug_Unload.argtypes = [ctypes.c_void_p]
-        _modplug.ModPlug_Unload.restype = None
-        break
-else:
+try:
+    _modplug = load_library(
+        ["libmodplug.so.1", "libmodplug.so.0", "libmodplug-1.dll"])[0]
+except OSError:
     extensions = []
+else:
+    _modplug.ModPlug_GetName.argtypes = [ctypes.c_void_p]
+    _modplug.ModPlug_GetName.restype = ctypes.c_char_p
+
+    _modplug.ModPlug_Load.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    _modplug.ModPlug_Load.restype = ctypes.c_void_p
+
+    _modplug.ModPlug_GetLength.argtypes = [ctypes.c_void_p]
+    _modplug.ModPlug_GetLength.restype = ctypes.c_int
+
+    _modplug.ModPlug_Unload.argtypes = [ctypes.c_void_p]
+    _modplug.ModPlug_Unload.restype = None
 
 
 class ModFile(AudioFile):

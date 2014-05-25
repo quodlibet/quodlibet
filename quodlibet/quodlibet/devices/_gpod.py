@@ -14,17 +14,18 @@ These are needed since the original bindings depend on pygtk which breaks
 in combination with pygobject.
 """
 
+from quodlibet.util import load_library
 from ctypes import *
 
 
 try:
-    _glib = CDLL("libglib-2.0.so.0")
+    _glib = load_library(["libglib-2.0.so.0", "libglib-2.0.so", "glib-2.0"])[0]
 except OSError:
     raise ImportError("Couldn't find libglib-2.0")
 
 
 try:
-    _lib = CDLL("libgpod.so.4")
+    _lib = load_library(["libgpod.so.4"])[0]
 except OSError:
     raise ImportError("Couldn't find libgpod")
 

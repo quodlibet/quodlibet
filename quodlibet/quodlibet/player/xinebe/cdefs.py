@@ -7,15 +7,17 @@
 import sys
 import ctypes
 
-_version = 2
+from quodlibet.util import load_library
+
 try:
-    _libxine = ctypes.cdll.LoadLibrary('libxine.so.2')
-except (ImportError, OSError):
+    _libxine, name = load_library(["libxine.so.2", "libxine.so.1"])
+except OSError as e:
+    raise ImportError(e)
+
+if name.endswith("2"):
+    _version = 2
+else:
     _version = 1
-    try:
-        _libxine = ctypes.cdll.LoadLibrary('libxine.so.1')
-    except (ImportError, OSError), e:
-        raise ImportError(e)
 
 
 class xine_event_t(ctypes.Structure):

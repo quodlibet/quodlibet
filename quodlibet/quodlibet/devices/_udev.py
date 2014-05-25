@@ -12,8 +12,9 @@
 # The first API incompatible change (version bump) was introduced in 183
 # http://cgit.freedesktop.org/systemd/systemd/commit/?id=20bbd54f603994a3
 
+from quodlibet.util import load_library
 
-from ctypes import POINTER, Structure, cdll
+from ctypes import POINTER, Structure
 from ctypes import c_longlong, c_int, c_char_p, c_void_p, c_long, c_char
 
 
@@ -27,11 +28,10 @@ def init():
 
     global _classes
 
-    try:
-        udevlib = cdll.LoadLibrary("libudev.so.1")
+    udevlib, name = load_library(["libudev.so.1", "libudev.so.0"])
+    if name.endswith("1"):
         version = 1
-    except OSError:
-        udevlib = cdll.LoadLibrary("libudev.so.0")
+    else:
         version = 0
 
     for info in _classes:
