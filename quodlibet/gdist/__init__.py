@@ -52,6 +52,11 @@ class build(distutils_build):
 class install(distutils_install):
     """Override the default install with new subcommands."""
 
+    user_options = distutils_install.user_options + [
+        ("mandir=", None, "destination directory for man pages. "
+                          "Defaults to $PREFIX/share/man"),
+    ]
+
     sub_commands = distutils_install.sub_commands + [
         ("install_shortcuts", lambda self: self.distribution.has_shortcuts()),
         ("install_man", lambda self: self.distribution.has_man_pages()),
@@ -64,6 +69,10 @@ class install(distutils_install):
         ("install_appdata",
          lambda self: self.distribution.has_appdata()),
     ]
+
+    def initialize_options(self):
+        distutils_install.initialize_options(self)
+        self.mandir = None
 
 
 class GDistribution(Distribution):

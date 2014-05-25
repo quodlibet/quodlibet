@@ -19,22 +19,31 @@ from distutils.core import Command
 class install_man(Command):
     """install man pages
 
-    Install man pages into $prefix/share/man/manN.
+    Install man pages into $prefix/share/man/manN
+    or into $mandir/manN by using setup.py install --mandir=$mandir
     """
 
     description = "install man pages"
     user_options = []
 
-    man_pages = None
-    prefix = None
-    root = None
-
     def initialize_options(self):
+        self.man_pages = None
+        self.mandir = None
+        self.prefix = None
+        self.root = None
         self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options(
-            'install', ('root', 'root'), ('install_base', 'prefix'))
+            'install',
+            ('root', 'root'),
+            ('install_base', 'prefix'),
+            ('mandir', 'mandir'),
+        )
+
+        if self.mandir is None:
+            self.mandir = os.path.join(self.prefix, 'share', 'man')
+
         self.man_pages = self.distribution.man_pages
         for man_page in self.man_pages:
             if not man_page[-1].isdigit():
@@ -44,7 +53,7 @@ class install_man(Command):
         return self.outfiles
 
     def run(self):
-        basepath = os.path.join(self.prefix, 'share', 'man')
+        basepath = self.mandir
         if self.root is not None:
             basepath = change_root(self.root, basepath)
         out = self.mkpath(basepath)
