@@ -1,9 +1,11 @@
-# Copyright 2012 Christoph Reiter, Nick Boultbee
+# Copyright 2012 Nick Boultbee
+#           2012,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import subprocess
 
 from gi.repository import Gtk
@@ -22,6 +24,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.uri import URI
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.util.dprint import print_d
+from quodlibet.util.path import is_fsnative, normalize_path
 
 
 def get_startup_id():
@@ -92,18 +95,61 @@ def browse_folders_xdg_open(songs):
             raise EnvironmentError
 
 
-# http://support.microsoft.com/kb/152457
-def browse_folders_win_explorer(songs):
-    dirs = list(set([s("~dirname") for s in songs]))
-    for dir_ in dirs:
-        # FIXME: returns always 1 under XP, but if the
-        # executable isn't found it will raise OSError anyway
-        subprocess.call(["Explorer", "/root,", dir_])
+def show_files_win32(path, files):
+    """Takes a path to a directory and a list of filenames in that directory
+    to display.
+    """
+
+    assert os.name == "nt"
+
+    import pywintypes
+    from win32com.shell import shell
+
+    assert is_fsnative(path)
+    assert all(is_fsnative(f) for f in files)
+
+    normalized_files = map(normalize_path, files)
+
+    try:
+        folder_pidl = shell.SHILCreateFromPath(path, 0)[0]
+        desktop = shell.SHGetDesktopFolder()
+        shell_folder = desktop.BindToObject(
+            folder_pidl, None, shell.IID_IShellFolder)
+        items = []
+        for item in shell_folder:
+            name = desktop.GetDisplayNameOf(item, 0)
+            if normalize_path(name) in normalized_files:
+                items.append(item)
+        shell.SHOpenFolderAndSelectItems(folder_pidl, items, 0)
+    except pywintypes.com_error:
+        return
+
+
+def group_files(file_paths):
+    """Groups a sequence of absolute file paths into their dirname and a
+    list of entry names.
+
+    The entry order is the same as with the passed in paths.
+    """
+
+    dirs = {}
+    for p in file_paths:
+        assert os.path.isabs(p)
+        dirname = os.path.dirname(p)
+        basename = os.path.basename(p)
+        dirs.setdefault(dirname, []).append(basename)
+    return dirs
 
 
 def browse_files_win_explorer(songs):
-    for song in songs:
-        subprocess.call(["Explorer", "/select,", song("~filename")])
+    file_paths = [song("~filename") for song in songs]
+    for path, names in group_files(file_paths).items():
+        show_files_win32(path, names)
+
+
+def browse_folders_win_explorer(songs):
+    # as an added bonus, this also selects the files in the folders
+    browse_files_win_explorer(songs)
 
 
 class HandlingMixin(object):
