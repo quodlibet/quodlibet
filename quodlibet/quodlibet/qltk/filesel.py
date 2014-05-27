@@ -24,6 +24,7 @@ from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 
 from quodlibet.util.path import fsdecode, listdir
+from quodlibet.util.uri import URI
 
 
 def search_func(model, column, key, iter_, handledirs):
@@ -203,6 +204,14 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         menu.show_all()
         self.connect_object('popup-menu', self.__popup_menu, menu)
 
+        # Allow to drag and drop files from outside
+        targets = [
+            ("text/uri-list", 0, 42)
+        ]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
+        self.connect('drag-data-received', self.__drag_data_received)
+
     def get_selected_paths(self):
         """A list of fs paths"""
 
@@ -260,6 +269,20 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
                 search(view, model, iter_, [])
 
         search(self, model, start_iter, to_find)
+
+    def __drag_data_received(self, widget, drag_ctx, x, y, data, info, time):
+        if info == 42:
+            uris = data.get_uris()
+            if uris:
+                try:
+                    filename = URI(uris[0]).filename
+                except ValueError:
+                    pass
+                else:
+                    self.go_to(filename)
+                    Gtk.drag_finish(drag_ctx, True, False, time)
+                    return
+        Gtk.drag_finish(drag_ctx, False, False, time)
 
     def __popup_menu(self, menu):
         model, paths = self.get_selection().get_selected_rows()
