@@ -89,6 +89,13 @@ function clone_repo {
     hg clone "$QL_REPO" "$QL_TEMP"
     (cd "$QL_TEMP" && hg up "$1") || exit 1
     QL_VERSION=$(cd "$QL_TEMP"/quodlibet && python -c "import quodlibet.const;print quodlibet.const.VERSION,")
+
+    if [ "$1" = "default" ]
+    then
+        local HG_REV=$(hg id -n | sed 's/[+]//g')
+        local HG_HASH=$(hg id -i | sed 's/[+]//g')
+        QL_VERSION="$QL_VERSION-rev$HG_REV-$HG_HASH"
+    fi
 }
 
 function extract_deps {
