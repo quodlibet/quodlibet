@@ -37,9 +37,15 @@ class AlbumModel(ObjectStore):
         self.__library = None
         self.clear()
 
+    def _update_all(self):
+        if not self.is_empty():
+            row = self[0]
+            self.row_changed(row.path, row.iter)
+
     def _add_albums(self, library, added):
         for album in added:
             self.append(row=[album])
+        self._update_all()
 
     def _remove_albums(self, library, removed):
         removed_albums = removed.copy()
@@ -49,6 +55,7 @@ class AlbumModel(ObjectStore):
                 self.remove(row.iter)
                 if not removed_albums:
                     break
+        self._update_all()
 
     def _change_albums(self, library, changed):
         """Trigger a row redraw for each album that changed"""
