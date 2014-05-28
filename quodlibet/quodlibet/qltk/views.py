@@ -29,7 +29,8 @@ class TreeViewHints(Gtk.Window):
     # will never be called.
     __gsignals__ = dict.fromkeys(
         ['button-press-event', 'button-release-event',
-         'motion-notify-event', 'scroll-event'],
+         'motion-notify-event', 'scroll-event',
+         'enter-notify-event', 'leave-notify-event'],
         'override')
 
     def __init__(self):
@@ -59,8 +60,7 @@ class TreeViewHints(Gtk.Window):
             Gdk.EventMask.ENTER_NOTIFY_MASK |
             Gdk.EventMask.LEAVE_NOTIFY_MASK |
             Gdk.EventMask.SCROLL_MASK |
-            Gdk.EventMask.POINTER_MOTION_MASK |
-            Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+            Gdk.EventMask.POINTER_MOTION_MASK)
 
         context = self.get_style_context()
         context.add_class("tooltip")
@@ -80,11 +80,11 @@ class TreeViewHints(Gtk.Window):
     def connect_view(self, view):
         self.__handlers[view] = [
             view.connect('motion-notify-event', self.__motion),
+            view.connect('leave-notify-event', self.__motion),
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
             view.connect('unmap', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
-            view.connect('leave-notify-event', self.__leave_undisplay),
         ]
 
     def disconnect_view(self, view):
@@ -281,24 +281,6 @@ class TreeViewHints(Gtk.Window):
 
         return False
 
-    def __leave_undisplay(self, view, event):
-        # We don't get motion-notify events in all cases, so
-        # quickly escaping the view can leave stray tooltips.
-        # leave-notify is triggered when we leave the view but also when we
-        # show the tooltip, so this has to check if the cursor is not on
-        # it to not get in an endless hide/show loop.
-
-        if not self.__view:
-            return False
-
-        device = event.get_device()
-        # see docs: get_window_at_position
-        if device and device.get_device_type() != Gdk.DeviceType.SLAVE:
-            win = device.get_window_at_position()[0]
-            if win and win != self.get_window():
-                self.__undisplay()
-        return False
-
     def __undisplay(self, *args):
         if not self.__view:
             return
@@ -330,6 +312,21 @@ class TreeViewHints(Gtk.Window):
             if not is_wayland():  # present duplicates windows in weston
                 Gtk.Window.present(get_top_parent(self.__view))
 
+        def translate_enter_leave_event(event):
+            # enter/leave events have different x/y values as motion events
+            # so it makes sense to push them to the underlying view as
+            # additional motion events.
+            # Warning: this may result in motion events outside of the
+            # view window.. ?
+            new_event = Gdk.Event()
+            new_event.type = Gdk.EventType.MOTION_NOTIFY
+            struct = new_event.motion
+            for attr in ["x", "y", "x_root", "y_root", "time", "window",
+                         "state", "send_event"]:
+                setattr(struct, attr, getattr(event.crossing, attr))
+            struct.device = Gtk.get_current_event_device()
+            return new_event
+
         type_ = event.type
         real_event = None
         if type_ == Gdk.EventType.BUTTON_PRESS:
@@ -337,6 +334,12 @@ class TreeViewHints(Gtk.Window):
         elif type_ == Gdk.EventType.BUTTON_RELEASE:
             real_event = event.button
         elif type_ == Gdk.EventType.MOTION_NOTIFY:
+            real_event = event.motion
+        elif type_ == Gdk.EventType.ENTER_NOTIFY:
+            event = translate_enter_leave_event(event)
+            real_event = event.motion
+        elif type_ == Gdk.EventType.LEAVE_NOTIFY:
+            event = translate_enter_leave_event(event)
             real_event = event.motion
 
         if real_event:
@@ -358,6 +361,12 @@ class TreeViewHints(Gtk.Window):
         return self.__event(event)
 
     def do_motion_notify_event(self, event):
+        return self.__event(event)
+
+    def do_enter_notify_event(self, event):
+        return self.__event(event)
+
+    def do_leave_notify_event(self, event):
         return self.__event(event)
 
     def do_scroll_event(self, event):
