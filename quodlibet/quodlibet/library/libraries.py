@@ -16,6 +16,7 @@ import cPickle as pickle
 import os
 import shutil
 import threading
+import time
 
 from gi.repository import GObject
 
@@ -671,6 +672,21 @@ class FileLibrary(PicklingLibrary):
     def scan(self, paths, exclude=[], cofuncid=None):
         added = []
         exclude = [expanduser(path) for path in exclude if path]
+
+        def need_yield(last_yield=[0]):
+            current = time.time()
+            if abs(current - last_yield[0]) > 0.015:
+                last_yield[0] = current
+                return True
+            return False
+
+        def need_added(last_added=[0]):
+            current = time.time()
+            if abs(current - last_added[0]) > 1.0:
+                last_added[0] = current
+                return True
+            return False
+
         for fullpath in paths:
             print_d("Scanning %r." % fullpath, self)
             desc = _("Scanning %s") % (unexpand(fsdecode(fullpath)))
@@ -696,16 +712,18 @@ class FileLibrary(PicklingLibrary):
                                 item = self.add_filename(fullfilename, False)
                                 if item is not None:
                                     added.append(item)
-                                    if len(added) > 20:
+                                    if len(added) > 100 or need_added():
                                         self.add(added)
                                         added = []
                                         task.pulse()
-                                        yield True
-                    if added:
-                        self.add(added)
-                        added = []
-                        task.pulse()
-                        yield True
+                                        yield
+                                if added and need_yield():
+                                    yield
+                if added:
+                    self.add(added)
+                    added = []
+                    task.pulse()
+                    yield True
 
     def get_content(self):
         """Return visible and masked items"""
