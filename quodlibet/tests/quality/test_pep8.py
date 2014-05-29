@@ -19,8 +19,6 @@ class TPEP8(TestCase):
     # drop them once 1.4 is common enough
     # E261: at least two spaces before inline comment
     IGNORE_ERROROS = ["E12", "E261"]
-    PACKAGES = ("util library parse browsers devices formats "
-                "plugins qltk player").split()
 
     def _run(self, path, ignore=None):
         if ignore is None:
@@ -45,18 +43,18 @@ class TPEP8(TestCase):
     def test_all(self):
         futures = []
 
-        # packages
-        for package in self.PACKAGES:
-            name = "quodlibet." + package
-            mod = getattr(__import__(name), package)
-            futures.append(self._run(mod.__path__[0]))
-
         # main_package
         import quodlibet
         path = quodlibet.__path__[0]
         files = glob.glob(os.path.join(path, "*.py"))
         for file_ in files:
             futures.append(self._run(file_))
+
+        # packages
+        for entry in os.listdir(path):
+            sub = os.path.join(path, entry)
+            if os.path.isdir(sub):
+                futures.append(self._run(sub))
 
         # tests
         futures.append(
