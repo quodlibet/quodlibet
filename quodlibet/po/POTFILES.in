@@ -25,6 +25,9 @@ quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
 quodlibet/devices/ipod.py
 quodlibet/devices/storage.py
+quodlibet/ext/_shared/squeezebox/base.py
+quodlibet/ext/_shared/squeezebox/server.py
+quodlibet/ext/_shared/squeezebox/util.py
 quodlibet/ext/covers/lastfm.py
 quodlibet/ext/covers/musicbrainz.py
 quodlibet/ext/editing/iconv.py
@@ -50,7 +53,7 @@ quodlibet/ext/events/radioadmute.py
 quodlibet/ext/events/randomalbum.py
 quodlibet/ext/events/screensaver.py
 quodlibet/ext/events/searchprovider.py
-quodlibet/ext/events/squeezebox.py
+quodlibet/ext/events/squeezebox_sync.py
 quodlibet/ext/events/telepathy_status.py
 quodlibet/ext/events/themeswitcher.py
 quodlibet/ext/events/trayicon.py
@@ -62,6 +65,7 @@ quodlibet/ext/gstreamer/crossfeed.py
 quodlibet/ext/gstreamer/karaoke.py
 quodlibet/ext/gstreamer/mono.py
 quodlibet/ext/gstreamer/pitch.py
+quodlibet/ext/playlist/export_to_squeezebox.py
 quodlibet/ext/playlist/remove_duplicates.py
 quodlibet/ext/playlist/shuffle.py
 quodlibet/ext/playorder/follow.py

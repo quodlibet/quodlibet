@@ -1,8 +1,5 @@
 from tests import TestCase, mkdtemp
 
-import imp
-import os
-import sys
 import shutil
 import py_compile
 
@@ -125,6 +122,14 @@ class TModuleScanner(TestCase):
         self.failUnlessEqual(set(added), set(["q1", "q2"]))
         self.failUnlessEqual(len(s.modules), 2)
         self.failUnlessEqual(len(s.failures), 0)
+
+    def test_unimportable_package(self):
+        self._create_pkg("_foobar").close()
+        s = ModuleScanner([self.d])
+        self.failIf(s.modules)
+        removed, added = s.rescan()
+        self.failIf(added)
+        self.failIf(removed)
 
     def test_scanner_remove(self):
         h = self._create_mod("q3.py")

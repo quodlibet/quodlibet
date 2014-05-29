@@ -72,8 +72,10 @@ def get_importables(folder, include_compiled=False):
         return False
 
     first = True
-    for root, dirs, names in os.walk(folder, topdown=True):
-        is_init
+    for root, dirs, names in os.walk(folder):
+        # Ignore packages like "_shared"
+        if basename(root).startswith("_"):
+            continue
         if not first and any((is_init(n) for n in names)):
             yield (basename(root), root,
                    filter(is_ok, [join(root, name) for name in names]))
