@@ -287,7 +287,8 @@ class AcoustidLookupThread(threading.Thread):
             "fingerprint": result.chromaprint,
         })
 
-        urldata = "&".join([basedata, "meta=releases+recordings+tracks+sources"])
+        urldata = "&".join(
+            [basedata, "meta=releases+recordings+tracks+sources"])
         obj = StringIO.StringIO()
         gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
         urldata = obj.getvalue()

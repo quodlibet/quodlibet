@@ -125,14 +125,17 @@ class MPDServerPlugin(EventPlugin):
         clients = Gtk.Label()
         clients.set_padding(6, 6)
         clients.set_markup(_(u"""\
-\u2022 <a href="https://play.google.com/store/apps/details?id=com.namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
+\u2022 <a href="https://play.google.com/store/apps/details?id=com.\
+namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
 
 </small>\u2022 <a href="http://sonata.berlios.de/">Sonata 1.6</a> (Linux)\
 """))
         clients.set_alignment(0, 0)
 
-        box.pack_start(qltk.Frame(_("Connection"), child=table), False, True, 0)
-        box.pack_start(qltk.Frame(_("Tested Clients"), child=clients), True, True, 0)
+        box.pack_start(
+            qltk.Frame(_("Connection"), child=table), False, True, 0)
+        box.pack_start(
+            qltk.Frame(_("Tested Clients"), child=clients), True, True, 0)
         return box
 
     def _refresh(self):
