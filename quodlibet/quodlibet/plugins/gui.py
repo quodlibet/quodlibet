@@ -19,7 +19,7 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
     MAX_INVOCATIONS = config.getint("plugins", "default_max_invocations", 30)
 
     def __init__(self, window):
-        super(Gtk.ImageMenuItem, self).__init__(self.PLUGIN_NAME)
+        super(Gtk.ImageMenuItem, self).__init__(label=self.PLUGIN_NAME)
         self.plugin_window = window
         self.__set_icon()
         self.__initialized = True

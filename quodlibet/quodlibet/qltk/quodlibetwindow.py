@@ -598,7 +598,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
                 self.songpane.set_property("position", p_max)
 
     def __create_menu(self, player, library):
-        ag = Gtk.ActionGroup('QuodLibetWindowActions')
+        ag = Gtk.ActionGroup.new('QuodLibetWindowActions')
 
         def logging_cb(*args):
             window = LoggingWindow(self)
@@ -655,36 +655,38 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
 
         ag.add_actions(actions)
 
-        act = Gtk.ToggleAction("StopAfter",
-                               _("Stop After This Song"), None, "")
+        act = Gtk.ToggleAction.new("StopAfter",
+                                   _("Stop After This Song"), None, "")
         ag.add_action_with_accel(act, "<shift>space")
 
         # access point for the tray icon
         self.stop_after = act
 
-        act = Gtk.Action("AddBookmark", _("Add Bookmark"), None, Gtk.STOCK_ADD)
+        act = Gtk.Action.new(
+            "AddBookmark", _("Add Bookmark"), None, Gtk.STOCK_ADD)
         act.connect_object('activate', self.__add_bookmark,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>D")
 
-        act = Gtk.Action("EditBookmarks", _(u"Edit Bookmarks…"), None, "")
+        act = Gtk.Action.new("EditBookmarks", _(u"Edit Bookmarks…"), None, "")
         act.connect_object('activate', self.__edit_bookmarks,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>B")
 
-        act = Gtk.Action("About", None, None, Gtk.STOCK_ABOUT)
+        act = Gtk.Action.new("About", None, None, Gtk.STOCK_ABOUT)
         act.connect_object('activate', self.__show_about, player)
         ag.add_action_with_accel(act, None)
 
-        act = Gtk.Action("OnlineHelp", _("Online Help"), None, Gtk.STOCK_HELP)
+        act = Gtk.Action.new(
+            "OnlineHelp", _("Online Help"), None, Gtk.STOCK_HELP)
         act.connect_object('activate', util.website, const.ONLINE_HELP)
         ag.add_action_with_accel(act, "F1")
 
-        act = Gtk.Action("SearchHelp", _("Search Help"), None, "")
+        act = Gtk.Action.new("SearchHelp", _("Search Help"), None, "")
         act.connect_object('activate', util.website, const.SEARCH_HELP)
         ag.add_action_with_accel(act, None)
 
-        act = Gtk.Action(
+        act = Gtk.Action.new(
             "RefreshLibrary", _("Re_fresh Library"), None, Gtk.STOCK_REFRESH)
         act.connect('activate', self.__rebuild, False)
         ag.add_action_with_accel(act, None)
@@ -693,7 +695,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             ("genre", _("Filter on _Genre")),
             ("artist", _("Filter on _Artist")),
             ("album", _("Filter on Al_bum"))]:
-            act = Gtk.Action(
+            act = Gtk.Action.new(
                 "Filter%s" % util.capitalize(tag_), lab, None, Gtk.STOCK_INDEX)
             act.connect_object('activate',
                                self.__filter_on, tag_, None, player)
@@ -703,8 +705,8 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             ("genre", "G", _("Random _Genre")),
             ("artist", "T", _("Random _Artist")),
             ("album", "M", _("Random Al_bum"))]:
-            act = Gtk.Action("Random%s" % util.capitalize(tag_), label,
-                             None, Gtk.STOCK_DIALOG_QUESTION)
+            act = Gtk.Action.new("Random%s" % util.capitalize(tag_), label,
+                                 None, Gtk.STOCK_DIALOG_QUESTION)
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<control>" + accel)
 

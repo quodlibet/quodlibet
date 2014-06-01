@@ -164,7 +164,7 @@ class Notebook(Gtk.Notebook):
                 raise TypeError("no page.title and no label given")
 
         if not isinstance(label, Gtk.Widget):
-            label = Gtk.Label(label)
+            label = Gtk.Label(label=label)
         super(Notebook, self).append_page(page, label)
 
 

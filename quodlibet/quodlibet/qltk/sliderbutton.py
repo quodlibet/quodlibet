@@ -52,7 +52,7 @@ class _PopupSlider(Gtk.Button):
             self.add(child)
         self.connect('clicked', self.__clicked)
 
-        window = self.__window = Gtk.Window(Gtk.WindowType.POPUP)
+        window = self.__window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.__adj = adj or self._adj
 
         frame = Gtk.Frame()

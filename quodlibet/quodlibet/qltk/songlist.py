@@ -945,7 +945,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         current = zip(map(tag_title, current), current)
 
         def add_header_toggle(menu, (header, tag), active, column=column):
-            item = Gtk.CheckMenuItem(header)
+            item = Gtk.CheckMenuItem(label=header)
             item.tag = tag
             item.set_active(active)
             item.connect('activate', self.__toggle_header_item, column)
@@ -984,7 +984,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             (_("_File Headers"), fileinfo),
             (_("_Production Headers"), copyinfo),
         ]:
-            item = Gtk.MenuItem(name, use_underline=True)
+            item = Gtk.MenuItem(label=name, use_underline=True)
             item.show()
             menu.append(item)
             submenu = Gtk.Menu()
@@ -996,7 +996,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         sep.show()
         menu.append(sep)
 
-        custom = Gtk.MenuItem(_("_Customize Headers..."), use_underline=True)
+        custom = Gtk.MenuItem(
+            label=_("_Customize Headers..."), use_underline=True)
         custom.show()
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)

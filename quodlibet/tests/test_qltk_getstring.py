@@ -16,8 +16,9 @@ class _ClipboadTestClass(GetStringDialog):
 @skipIf(is_wayland(), "blocks under wayland for some reason")
 class TGetStringDialog(TestCase):
     def setUp(self):
-        self.gsd1 = GetStringDialog(None, "title", "enter a string")
-        self.gsd2 = _ClipboadTestClass(None, "title", "enter a string")
+        parent = Gtk.Window()
+        self.gsd1 = GetStringDialog(parent, "title", "enter a string")
+        self.gsd2 = _ClipboadTestClass(parent, "title", "enter a string")
 
     def test_getstring(self):
         ret = self.gsd1.run(text="foobar", test=True)

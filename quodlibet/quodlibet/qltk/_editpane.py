@@ -90,7 +90,7 @@ class EditPane(Gtk.VBox):
         self.combo.get_child().connect('changed', self._changed)
 
         model = Gtk.ListStore(object, str, str)
-        self.view = Gtk.TreeView(model)
+        self.view = Gtk.TreeView(model=model)
 
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)

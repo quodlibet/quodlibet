@@ -59,7 +59,7 @@ class SeekBar(HSlider):
         hbox = Gtk.HBox(spacing=3)
         l = TimeLabel()
         hbox.pack_start(l, True, True, 0)
-        arrow = Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
+        arrow = Gtk.Arrow.new(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
         hbox.pack_start(arrow, False, True, 0)
         super(SeekBar, self).__init__(hbox)
 
@@ -193,7 +193,7 @@ class Volume(Gtk.VolumeButton):
         super(Volume, self).__init__(size=Gtk.IconSize.MENU, use_symbolic=True)
 
         self.set_relief(Gtk.ReliefStyle.NORMAL)
-        self.set_adjustment(Gtk.Adjustment(0, 0, 1, 0.05, 0.1, 0))
+        self.set_adjustment(Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0))
 
         self.connect('value-changed', self.__volume_changed, device)
         device.connect('notify::volume', self.__volume_notify)
@@ -266,7 +266,7 @@ class PlayControls(Gtk.VBox):
     def __init__(self, player, library):
         super(PlayControls, self).__init__(spacing=3)
 
-        upper = Gtk.Table(rows=1, columns=3, homogeneous=True)
+        upper = Gtk.Table(n_rows=1, n_columns=3, homogeneous=True)
         upper.set_row_spacings(3)
         upper.set_col_spacings(3)
 
@@ -285,7 +285,7 @@ class PlayControls(Gtk.VBox):
                                     Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(next_, 2, 3, 0, 1)
 
-        lower = Gtk.Table(rows=1, columns=3, homogeneous=True)
+        lower = Gtk.Table(n_rows=1, n_columns=3, homogeneous=True)
         lower.set_row_spacings(3)
         lower.set_col_spacings(3)
 

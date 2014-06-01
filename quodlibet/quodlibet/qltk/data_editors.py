@@ -265,7 +265,7 @@ class MultiStringEditor(qltk.UniqueWindow):
         self.__fill_values()
 
         # Main view
-        view = self.view = HintedTreeView(self.model)
+        view = self.view = HintedTreeView(model=self.model)
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
 
@@ -280,7 +280,7 @@ class MultiStringEditor(qltk.UniqueWindow):
 
         # Context menu
         menu = Gtk.Menu()
-        remove_item = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
+        remove_item = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE)
         menu.append(remove_item)
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)

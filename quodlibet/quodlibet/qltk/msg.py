@@ -20,9 +20,8 @@ class Message(Gtk.MessageDialog):
         text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
                 % (title, description))
         super(Message, self).__init__(
-            parent,
-            Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-            kind, buttons)
+            transient_for=parent, modal=True, destroy_with_parent=True,
+            message_type=kind, buttons=buttons)
         self.set_markup(text)
 
     def run(self, destroy=True):
@@ -65,7 +64,8 @@ class CancelRevertSave(Gtk.MessageDialog):
                 % (title, description))
         parent = get_top_parent(parent)
         super(CancelRevertSave, self).__init__(
-            parent=parent, flags=0, message_type=Gtk.MessageType.WARNING,
+            transient_for=parent, flags=0,
+            message_type=Gtk.MessageType.WARNING,
             buttons=Gtk.ButtonsType.NONE)
         self.add_buttons(Gtk.STOCK_SAVE, Gtk.ResponseType.YES,
                          Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,

@@ -32,7 +32,7 @@ class FileListExpander(Gtk.Expander):
         self.set_resize_toplevel(True)
 
         paths = [fsdecode(unexpand(p)) for p in paths]
-        lab = Gtk.Label("\n".join(paths))
+        lab = Gtk.Label(label="\n".join(paths))
         lab.set_alignment(0.0, 0.0)
         lab.set_selectable(True)
         win = Gtk.ScrolledWindow()

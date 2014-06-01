@@ -27,8 +27,10 @@ from quodlibet.qltk.x import Alignment, ScrolledWindow, Button
 class DeviceProperties(Gtk.Dialog):
     def __init__(self, parent, device):
         super(DeviceProperties, self).__init__(
-            _("Device Properties"), qltk.get_top_parent(parent),
-            buttons=(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
+            title=_("Device Properties"),
+            transient_for=qltk.get_top_parent(parent))
+
+        self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         self.set_default_size(400, -1)
         self.connect('response', self.__close)
 

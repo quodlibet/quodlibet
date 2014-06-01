@@ -56,7 +56,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
 
         fbasemodel = Gtk.ListStore(object, str)
         fmodel = Gtk.TreeModelSort(model=fbasemodel)
-        fview = HintedTreeView(fmodel)
+        fview = HintedTreeView(model=fmodel)
         fview.connect('button-press-event', self.__pre_selection_changed)
         fview.set_rules_hint(True)
         selection = fview.get_selection()

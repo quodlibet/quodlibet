@@ -28,7 +28,7 @@ class _KeyValueEditor(qltk.Window):
 
         self.add(Gtk.VBox(spacing=6))
 
-        t = Gtk.Table(2, 3)
+        t = Gtk.Table(n_rows=2, n_columns=3)
         t.set_row_spacings(3)
         t.set_col_spacing(0, 3)
         t.set_col_spacing(1, 12)
@@ -58,7 +58,7 @@ class _KeyValueEditor(qltk.Window):
         self.model = Gtk.ListStore(str, str)
         self.fill_values()
 
-        view = RCMHintedTreeView(self.model)
+        view = RCMHintedTreeView(model=self.model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
         view.set_rules_hint(True)
@@ -75,7 +75,7 @@ class _KeyValueEditor(qltk.Window):
         self.get_child().pack_start(sw, True, True, 0)
 
         menu = Gtk.Menu()
-        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
+        remove = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
         remove.connect_object('activate', self.__remove, view)
         qltk.add_fake_accel(remove, "Delete")
         menu.append(remove)

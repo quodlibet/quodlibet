@@ -15,9 +15,10 @@ class FolderChooser(Gtk.FileChooserDialog):
     def __init__(self, parent, title, initial_dir=None,
                  action=Gtk.FileChooserAction.SELECT_FOLDER):
         super(FolderChooser, self).__init__(
-            title=title, parent=get_top_parent(parent), action=action,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+            title=title, transient_for=get_top_parent(parent), action=action)
+
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        self.add_button(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         if initial_dir:
             self.set_current_folder(initial_dir)
         self.set_local_only(True)

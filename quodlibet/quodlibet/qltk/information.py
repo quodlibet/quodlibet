@@ -22,8 +22,8 @@ from quodlibet.util import tag
 from quodlibet.util.path import fsdecode, filesize, unexpand
 
 
-def Label(*args):
-    l = Gtk.Label(*args)
+def Label(label=None):
+    l = Gtk.Label(label=label)
     l.set_selectable(True)
     l.set_alignment(0, 0)
     return l
@@ -75,7 +75,7 @@ class ErrorPane(Gtk.VBox):
 
 class NoSongs(Gtk.Label):
     def __init__(self):
-        super(NoSongs, self).__init__(_("No songs are selected."))
+        super(NoSongs, self).__init__(label=_("No songs are selected."))
         self.title = _("No Songs")
 
 
@@ -263,7 +263,7 @@ class OneSong(qltk.Notebook):
         added = ftime(song.get("~#added", 0))
         rating = song("~rating")
 
-        t = Gtk.Table(5, 2)
+        t = Gtk.Table(n_rows=5, n_columns=2)
         t.set_col_spacings(6)
         t.set_homogeneous(False)
         table = [(_("added"), added),
@@ -300,7 +300,7 @@ class OneSong(qltk.Notebook):
         else:
             bitrate = False
 
-        t = Gtk.Table(4, 2)
+        t = Gtk.Table(n_rows=4, n_columns=2)
         t.set_col_spacings(6)
         t.set_homogeneous(False)
         table = [(_("length"), length),
@@ -518,7 +518,7 @@ class OneArtist(qltk.Notebook):
         box.pack_start(Frame(_("Selected Discography"), l), False, False, 0)
 
         covers = [ac for ac in covers if bool(ac[1])]
-        t = Gtk.Table(4, (len(covers) // 4) + 1)
+        t = Gtk.Table(n_rows=4, n_columns=(len(covers) // 4) + 1)
         t.set_col_spacings(12)
         t.set_row_spacings(12)
         added = set()
@@ -603,7 +603,7 @@ class ManySongs(qltk.Notebook):
                 size += filesize(song["~filename"])
             except EnvironmentError:
                 pass
-        table = Gtk.Table(2, 2)
+        table = Gtk.Table(n_rows=2, n_columns=2)
         table.set_col_spacings(6)
         table.attach(Label(_("Total length:")), 0, 1, 0, 1,
                      xoptions=Gtk.AttachOptions.FILL)

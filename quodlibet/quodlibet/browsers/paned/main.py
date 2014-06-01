@@ -90,7 +90,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         s = self.accelerators.connect(keyval, mod, 0, self.__select_all)
         self.connect_object('destroy',
                             self.accelerators.disconnect_key, keyval, mod)
-        select = Gtk.Button(_("Select _All"), use_underline=True)
+        select = Gtk.Button(label=_("Select _All"), use_underline=True)
         s = select.connect('clicked', self.__select_all)
         self.connect_object('destroy', select.disconnect, s)
         sbb.pack_start(select, False, True, 0)

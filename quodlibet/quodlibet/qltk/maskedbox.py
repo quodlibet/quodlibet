@@ -31,7 +31,7 @@ class MaskedBox(Gtk.HBox):
         super(MaskedBox, self).__init__(spacing=6)
 
         self.model = model = Gtk.ListStore(object)
-        view = RCMHintedTreeView(model)
+        view = RCMHintedTreeView(model=model)
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
         self.view = view
@@ -41,7 +41,7 @@ class MaskedBox(Gtk.HBox):
         unhide_item.connect_object('activate', self.__unhide, view, library)
         menu.append(unhide_item)
 
-        remove_item = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
+        remove_item = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
         remove_item.connect_object('activate', self.__remove, view, library)
         menu.append(remove_item)
 

@@ -62,7 +62,7 @@ class SearchBar(Gtk.VBox, Browser):
         container.remove(self)
 
     def __init__(self, library, main):
-        super(SearchBar, self).__init__(library, main)
+        super(SearchBar, self).__init__()
         self.set_spacing(6)
 
         self._filter = None

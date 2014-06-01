@@ -15,7 +15,8 @@ class GetStringDialog(Gtk.Dialog):
     _WIDTH = 300
 
     def __init__(self, parent, title, text, okbutton=Gtk.STOCK_OPEN):
-        super(GetStringDialog, self).__init__(title, parent)
+        super(GetStringDialog, self).__init__(
+            title=title, transient_for=parent)
 
         self.set_border_width(6)
         self.set_default_size(width=self._WIDTH, height=0)

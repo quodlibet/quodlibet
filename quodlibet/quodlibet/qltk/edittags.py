@@ -147,7 +147,7 @@ class SplitValues(Gtk.ImageMenuItem):
 
     def __init__(self, tag, value):
         super(SplitValues, self).__init__(
-            _("Split into _Multiple Values"), use_underline=True)
+            label=_("Split into _Multiple Values"), use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
@@ -167,7 +167,7 @@ class SplitDisc(Gtk.ImageMenuItem):
 
     def __init__(self, tag, value):
         super(SplitDisc, self).__init__(
-            _("Split Disc out of _Album"), use_underline=True)
+            label=_("Split Disc out of _Album"), use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         self.set_sensitive(split_album(value)[1] is not None)
@@ -184,7 +184,7 @@ class SplitTitle(Gtk.ImageMenuItem):
 
     def __init__(self, tag, value):
         super(SplitTitle, self).__init__(
-            _("Split _Version out of Title"), use_underline=True)
+            label=_("Split _Version out of Title"), use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
@@ -203,7 +203,7 @@ class SplitPerson(Gtk.ImageMenuItem):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super(SplitPerson, self).__init__(self.title, use_underline=True)
+        super(SplitPerson, self).__init__(label=self.title, use_underline=True)
         self.set_image(Gtk.Image.new_from_stock(
             Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
@@ -243,14 +243,14 @@ class AddTagDialog(Gtk.Dialog):
 
     def __init__(self, parent, can_change, library):
         super(AddTagDialog, self).__init__(
-            _("Add a Tag"), qltk.get_top_parent(parent))
+            title=_("Add a Tag"), transient_for=qltk.get_top_parent(parent))
         self.set_border_width(6)
         self.set_resizable(False)
         self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         add = self.add_button(Gtk.STOCK_ADD, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
-        table = Gtk.Table(2, 2)
+        table = Gtk.Table(n_rows=2, n_columns=2)
         table.set_row_spacings(12)
         table.set_col_spacings(6)
         table.set_border_width(6)
@@ -381,7 +381,7 @@ class EditTags(Gtk.VBox):
         self.set_border_width(12)
 
         model = Gtk.ListStore(str, str, bool, bool, bool, str, bool, str)
-        view = RCMHintedTreeView(model)
+        view = RCMHintedTreeView(model=model)
         selection = view.get_selection()
         render = Gtk.CellRendererPixbuf()
         column = TreeViewColumn(_("Write"), render)

@@ -41,7 +41,7 @@ class THintedTreeView(TestCase):
 class TBaseView(TestCase):
     def setUp(self):
         self.m = Gtk.ListStore(str)
-        self.c = BaseView(self.m)
+        self.c = BaseView(model=self.m)
 
     def test_remove(self):
         self.m.append(row=["foo"])

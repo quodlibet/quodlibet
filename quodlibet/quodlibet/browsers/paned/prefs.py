@@ -58,7 +58,7 @@ class PatternEditor(Gtk.VBox):
 
         cb = TagsComboBoxEntry(self.COMPLETION)
 
-        view = BaseView(model)
+        view = BaseView(model=model)
         view.set_reorderable(True)
         view.set_headers_visible(False)
 

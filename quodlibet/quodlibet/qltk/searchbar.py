@@ -184,7 +184,8 @@ class LimitSearchBarBox(SearchBarBox):
             label.set_use_underline(True)
             self.pack_start(limit, True, True, 0)
 
-            self.__weight = Gtk.CheckButton(_("_Weight"), use_underline=True)
+            self.__weight = Gtk.CheckButton(
+                label=_("_Weight"), use_underline=True)
             self.__weight.connect("toggled", self.__changed)
             self.pack_start(self.__weight, True, True, 0)
 

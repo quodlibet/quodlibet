@@ -49,7 +49,7 @@ class TrackNumbers(Gtk.VBox):
         hbox2.pack_start(preview, False, True, 0)
 
         model = Gtk.ListStore(object, str, str)
-        view = HintedTreeView(model)
+        view = HintedTreeView(model=model)
 
         self.pack_start(hbox2, False, True, 0)
 

@@ -455,7 +455,7 @@ class FileSelector(Gtk.VPaned):
         dirlist = DirectoryTree(initial, folders=folders)
 
         model = ObjectStore()
-        filelist = AllTreeView(model)
+        filelist = AllTreeView(model=model)
 
         column = TreeViewColumn(_("Songs"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)

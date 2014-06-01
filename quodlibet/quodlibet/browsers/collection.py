@@ -108,7 +108,7 @@ class PatternEditor(Gtk.HBox):
 
         cb = TagsComboBoxEntry(self.COMPLETION)
 
-        view = BaseView(model)
+        view = BaseView(model=model)
         view.set_reorderable(True)
         view.set_headers_visible(True)
 
@@ -454,8 +454,8 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
 
 
 class CollectionView(AllTreeView):
-    def __init__(self, *args, **kwargs):
-        super(CollectionView, self).__init__(*args, **kwargs)
+    def __init__(self):
+        super(CollectionView, self).__init__()
         self.connect_after("row-expanded", self.__expand_helper)
 
     def __expand_helper(self, view, iter, path):

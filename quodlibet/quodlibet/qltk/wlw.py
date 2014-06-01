@@ -113,7 +113,7 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
 
     def __init__(self, parent, *args):
         """parent: the parent window, or None"""
-        Gtk.Window.__init__(self, Gtk.WindowType.POPUP)
+        Gtk.Window.__init__(self, type=Gtk.WindowType.POPUP)
         WaitLoadBase.__init__(self)
         self.setup(*args)
 

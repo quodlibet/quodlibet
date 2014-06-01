@@ -31,7 +31,7 @@ class ScanBox(Gtk.HBox):
         super(ScanBox, self).__init__(spacing=6)
 
         self.model = model = Gtk.ListStore(str)
-        view = RCMHintedTreeView(model)
+        view = RCMHintedTreeView(model=model)
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
         view.set_tooltip_text(_("Songs in the listed folders will be added "

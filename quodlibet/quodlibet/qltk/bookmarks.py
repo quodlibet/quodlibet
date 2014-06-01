@@ -16,7 +16,7 @@ from quodlibet.qltk.views import RCMHintedTreeView
 
 
 def MenuItems(marks, player, seekable):
-    sizes = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+    sizes = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
     items = []
     if not marks or marks[0][0] != 0:
         # Translators: Refers to the beginning of the playing song.
@@ -64,7 +64,7 @@ class EditBookmarksPane(Gtk.VBox):
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.add(RCMHintedTreeView(model))
+        sw.add(RCMHintedTreeView(model=model))
 
         render = Gtk.CellRendererText()
 
@@ -119,7 +119,7 @@ class EditBookmarksPane(Gtk.VBox):
         name.set_text(_("Bookmark Name"))
 
         menu = Gtk.Menu()
-        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
+        remove = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
         remove.connect('activate', self.__remove, selection, library, song)
         keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(
