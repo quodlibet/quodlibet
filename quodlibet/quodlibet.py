@@ -36,10 +36,10 @@ def main():
         control('focus')
 
     import quodlibet
-    quodlibet._init_signal()
+    from quodlibet import app
+    quodlibet._init_signal(app.quit)
 
     import quodlibet.player
-    from quodlibet import app
     from quodlibet import config
     from quodlibet import browsers
     from quodlibet import const

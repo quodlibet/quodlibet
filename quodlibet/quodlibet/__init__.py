@@ -439,30 +439,33 @@ def _init_debug():
         faulthandler.enable()
 
 
-def _init_signal():
-    """Catches certain signals and quits the application once the
-    mainloop has started."""
+def _init_signal(signal_action):
+    """Catches signals which should exit the program and calls `signal_action`
+    after the main loop has started, even if the signal occurred before the
+    main loop has started.
+    """
 
     import os
 
     if os.name == "nt":
         return
 
-    def signal_action():
-        app.quit()
-
     import signal
     import gi
     gi.require_version("GLib", "2.0")
     from gi.repository import GLib
 
-    SIGS = [getattr(signal, s, None) for s in "SIGINT SIGTERM SIGHUP".split()]
-    for sig in filter(None, SIGS):
+    for sig_name in ["SIGINT", "SIGTERM", "SIGHUP"]:
+        sig = getattr(signal, sig_name, None)
+        if sig is None:
+            continue
+
         # Before the mainloop starts we catch signals in python
         # directly and idle_add the app.quit
         def idle_handler(*args):
             print_d("Python signal handler activated.")
             GLib.idle_add(signal_action, priority=GLib.PRIORITY_HIGH)
+
         print_d("Register Python signal handler: %r" % sig)
         signal.signal(sig, idle_handler)
 
@@ -474,8 +477,9 @@ def _init_signal():
             def handler(*args):
                 print_d("GLib signal handler activated.")
                 signal_action()
-            unix_signal_add = None
 
+            # older pygobject
+            unix_signal_add = None
             if hasattr(GLib, "unix_signal_add"):
                 unix_signal_add = GLib.unix_signal_add
             elif hasattr(GLib, "unix_signal_add_full"):
@@ -486,6 +490,7 @@ def _init_signal():
                 unix_signal_add(GLib.PRIORITY_HIGH, sig, handler, None)
             else:
                 print_d("Can't install GLib signal handler, too old gi.")
+
         GLib.idle_add(install_glib_handler, sig, priority=GLib.PRIORITY_HIGH)
 
 # minimal emulation of gtk.quit_add

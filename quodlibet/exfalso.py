@@ -24,7 +24,7 @@ from quodlibet import config
 
 
 def main():
-    quodlibet._init_signal()
+    quodlibet._init_signal(app.quit)
 
     opts = util.OptionParser(
         "Ex Falso", const.VERSION,
