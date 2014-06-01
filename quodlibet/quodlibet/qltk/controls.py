@@ -270,17 +270,17 @@ class PlayControls(Gtk.VBox):
         upper.set_row_spacings(3)
         upper.set_col_spacings(3)
 
-        prev = Gtk.Button()
+        prev = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
         prev.add(SymbolicIconImage("media-skip-backward",
                                    Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(prev, 0, 1, 0, 1)
 
-        play = Gtk.ToggleButton()
+        play = Gtk.ToggleButton(relief=Gtk.ReliefStyle.NONE)
         play.add(SymbolicIconImage("media-playback-start",
                                    Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(play, 1, 2, 0, 1)
 
-        next_ = Gtk.Button()
+        next_ = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
         next_.add(SymbolicIconImage("media-skip-forward",
                                     Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(next_, 2, 3, 0, 1)
@@ -290,9 +290,11 @@ class PlayControls(Gtk.VBox):
         lower.set_col_spacings(3)
 
         self.volume = Volume(player)
+        self.volume.set_relief(Gtk.ReliefStyle.NONE)
         lower.attach(self.volume, 0, 1, 0, 1)
 
         seekbar = SeekBar(player, library)
+        seekbar.set_relief(Gtk.ReliefStyle.NONE)
         lower.attach(seekbar, 1, 3, 0, 1)
 
         self.pack_start(upper, False, True, 0)
