@@ -14,6 +14,7 @@ from tests import TestCase, skipUnless
 try:
     from quodlibet.player.gstbe.util import GStreamerSink as Sink
     from quodlibet.player.gstbe.util import parse_gstreamer_taglist
+    from quodlibet.player.gstbe.util import find_audio_sink
     from quodlibet.player.gstbe.prefs import GstPlayerPreferences
 except ImportError:
     pass
@@ -64,7 +65,7 @@ class TGStreamerSink(TestCase):
         if os.name == "nt":
             self.failUnlessEqual(name, "directsoundsink")
         else:
-            self.failUnlessEqual(name, "autoaudiosink")
+            self.failUnlessEqual(name, find_audio_sink()[1])
 
     def test_append_sink(self):
         obj, name = Sink("volume")

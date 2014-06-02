@@ -45,49 +45,69 @@ def iter_to_list(func):
     return objects
 
 
-def GStreamerSink(pipeline):
-    """Try to create a GStreamer pipeline:
-    * Try making the pipeline (defaulting to gconfaudiosink or
-      autoaudiosink on Windows).
-    * If it fails, fall back to autoaudiosink.
-    * If that fails, return None
+def find_audio_sink():
+    """Get the best audio sink available.
 
-    Returns the pipeline's description and a list of disconnected elements."""
+    Returns (element or None, description).
+    """
 
     if os.name == "nt":
-        default_sink = "directsoundsink"
+        sinks = [
+            "directsoundsink",
+            "autoaudiosink",
+        ]
     else:
-        default_sink = "autoaudiosink"
+        sinks = [
+            "autoaudiosink",  # plugins-good
+            "pulsesink",  # plugins-good
+            "alsasink",  # plugins-base
+        ]
 
-    if not pipeline and not Gst.ElementFactory.find('gconfaudiosink'):
-        pipeline = default_sink
-    elif not pipeline or pipeline == "gconf":
-        pipeline = "gconfaudiosink profile=music"
+    for name in sinks:
+        element = Gst.ElementFactory.make(name, None)
+        if element is not None:
+            return (element, name)
+    else:
+        return (None, "")
 
-    try:
-        pipe = [Gst.parse_launch(element) for element in pipeline.split('!')]
-    except GLib.GError:
-        print_w(_("Invalid GStreamer output pipeline, trying default."))
+
+def GStreamerSink(pipeline_desc):
+    """Returns a list of unlinked gstreamer elements ending with an audio sink
+    and a textual description of the pipeline.
+
+    `pipeline_desc` can be gst-launch syntax for multiple elements
+    with or without an audiosink.
+
+    In case of an error the returned list will be None instead.
+    """
+
+    pipe = None
+    if pipeline_desc:
         try:
-            pipe = [Gst.parse_launch(default_sink)]
+            pipe = [Gst.parse_launch(e) for e in pipeline_desc.split('!')]
         except GLib.GError:
-            pipe = None
-        else:
-            pipeline = default_sink
+            print_w(_("Invalid GStreamer output pipeline, trying default."))
 
     if pipe:
         # In case the last element is linkable with a fakesink
-        # it is not an audiosink, so we append the default pipeline
+        # it is not an audiosink, so we append the default one
         fake = Gst.ElementFactory.make('fakesink', None)
         if link_many([pipe[-1], fake]):
             unlink_many([pipe[-1], fake])
-            default, default_text = GStreamerSink("")
-            if default:
-                return pipe + default, pipeline + " ! " + default_text
+            default_elm, default_desc = find_audio_sink()
+            if default_elm:
+                pipe += [default_elm]
+                pipeline_desc += " ! " + default_desc
+            else:
+                pipe = None
     else:
+        elm, pipeline_desc = find_audio_sink()
+        pipe = [elm]
+
+    if not pipe:
         print_w(_("Could not create default GStreamer pipeline."))
 
-    return pipe, pipeline
+    return pipe, pipeline_desc
 
 
 class TagListWrapper(collections.Mapping):

@@ -110,6 +110,7 @@ quodlibet/library/libraries.py
 quodlibet/player/gstbe/player.py
 quodlibet/player/gstbe/plugins.py
 quodlibet/player/gstbe/prefs.py
+quodlibet/player/gstbe/util.py
 quodlibet/player/__init__.py
 quodlibet/player/xinebe/player.py
 quodlibet/plugins/__init__.py
