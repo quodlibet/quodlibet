@@ -19,6 +19,7 @@ try:
 except ImportError:
     pass
 
+from quodlibet.player import PlayerError
 from quodlibet.util import sanitize_tags
 from quodlibet import config
 
@@ -54,13 +55,12 @@ class TGStreamerSink(TestCase):
             self.failUnless(obj)
             self.failUnlessEqual(name, n)
 
-    def test_fallback(self):
-        import __builtin__
-        pw = print_w
-        __builtin__.__dict__["print_w"] = lambda *x: None
+    def test_invalid(self):
         with ignore_gst_errors():
-            obj, name = Sink("notarealsink")
-        __builtin__.__dict__["print_w"] = pw
+            self.assertRaises(PlayerError, Sink, "notarealsink")
+
+    def test_fallback(self):
+        obj, name = Sink("")
         self.failUnless(obj)
         if os.name == "nt":
             self.failUnlessEqual(name, "directsoundsink")

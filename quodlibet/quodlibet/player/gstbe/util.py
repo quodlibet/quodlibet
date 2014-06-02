@@ -10,6 +10,7 @@ import collections
 from gi.repository import GLib, Gst
 
 from quodlibet.util.string import decode
+from quodlibet.player import PlayerError
 
 
 def link_many(elements):
@@ -48,7 +49,7 @@ def iter_to_list(func):
 def find_audio_sink():
     """Get the best audio sink available.
 
-    Returns (element or None, description).
+    Returns (element, description) or raises PlayerError.
     """
 
     if os.name == "nt":
@@ -68,7 +69,7 @@ def find_audio_sink():
         if element is not None:
             return (element, name)
     else:
-        return (None, "")
+        raise PlayerError(_("No GStreamer audio sink found"))
 
 
 def GStreamerSink(pipeline_desc):
@@ -78,15 +79,16 @@ def GStreamerSink(pipeline_desc):
     `pipeline_desc` can be gst-launch syntax for multiple elements
     with or without an audiosink.
 
-    In case of an error the returned list will be None instead.
+    In case of an error, raises PlayerError
     """
 
     pipe = None
     if pipeline_desc:
         try:
             pipe = [Gst.parse_launch(e) for e in pipeline_desc.split('!')]
-        except GLib.GError:
-            print_w(_("Invalid GStreamer output pipeline, trying default."))
+        except GLib.GError as e:
+            message = e.message.decode("utf-8")
+            raise PlayerError(_("Invalid GStreamer output pipeline"), message)
 
     if pipe:
         # In case the last element is linkable with a fakesink
@@ -95,17 +97,11 @@ def GStreamerSink(pipeline_desc):
         if link_many([pipe[-1], fake]):
             unlink_many([pipe[-1], fake])
             default_elm, default_desc = find_audio_sink()
-            if default_elm:
-                pipe += [default_elm]
-                pipeline_desc += " ! " + default_desc
-            else:
-                pipe = None
+            pipe += [default_elm]
+            pipeline_desc += " ! " + default_desc
     else:
         elm, pipeline_desc = find_audio_sink()
         pipe = [elm]
-
-    if not pipe:
-        print_w(_("Could not create default GStreamer pipeline."))
 
     return pipe, pipeline_desc
 

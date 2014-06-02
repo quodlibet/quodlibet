@@ -215,8 +215,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             return True
 
         pipeline = config.get("player", "gst_pipeline")
-        pipeline, self._pipeline_desc = GStreamerSink(pipeline)
-        if not pipeline:
+        try:
+            pipeline, self._pipeline_desc = GStreamerSink(pipeline)
+        except PlayerError as e:
+            self._error(e)
             return False
 
         if self._use_eq and Gst.ElementFactory.find('equalizer-10bands'):
@@ -259,10 +261,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             assert element is not None, pipeline
             bufbin.add(element)
 
+        PIPELINE_ERROR = PlayerError(_("Could not create GStreamer pipeline"))
+
         if len(pipeline) > 1:
             if not link_many(pipeline):
-                print_w("Could not link GStreamer pipeline")
-                self.__destroy_pipeline()
+                print_w("Linking the GStreamer pipeline failed")
+                self._error(PIPELINE_ERROR)
                 return False
 
         # Test to ensure output pipeline can preroll
@@ -270,7 +274,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         result, state, pending = bufbin.get_state(timeout=STATE_CHANGE_TIMEOUT)
         if result == Gst.StateChangeReturn.FAILURE:
             bufbin.set_state(Gst.State.NULL)
-            self.__destroy_pipeline()
+            print_w("Prerolling the GStreamer pipeline failed")
+            self._error(PIPELINE_ERROR)
             return False
 
         # Make the sink of the first element the sink of the bin
@@ -279,6 +284,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self.bin = Gst.ElementFactory.make('playbin', None)
         assert self.bin
+
+        bus = self.bin.get_bus()
+        bus.add_signal_watch()
+        self.__bus_id = bus.connect('message', self.__message, self._librarian)
+
         self.bin = BufferingWrapper(self.bin, self)
         self.__atf_id = self.bin.connect('about-to-finish',
             self.__about_to_finish)
@@ -325,10 +335,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # ReplayGain information gets lost when destroying
         self.volume = self.volume
-
-        bus = self.bin.get_bus()
-        bus.add_signal_watch()
-        self.__bus_id = bus.connect('message', self.__message, self._librarian)
 
         if self.song:
             self.bin.set_property('uri', self.song("~uri"))
@@ -386,9 +392,18 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         elif message.type == Gst.MessageType.TAG:
             self.__tag(message.parse_tag(), librarian)
         elif message.type == Gst.MessageType.ERROR:
-            err, debug = message.parse_error()
-            err = str(err).decode(const.ENCODING, 'replace')
-            self._error(err)
+            gerror, debug_info = message.parse_error()
+            message = u""
+            if gerror:
+                message = gerror.message.decode("utf-8").rstrip(".")
+            details = None
+            if debug_info:
+                # strip the first line, not user friendly
+                debug_info = "\n".join(debug_info.splitlines()[1:])
+                # can contain paths, so not sure if utf-8 in all cases
+                details = debug_info.decode("utf-8", errors="replace")
+            self._error(PlayerError(message, details))
+
         elif message.type == Gst.MessageType.STREAM_START:
             if self._in_gapless_transition:
                 print_d("Stream changed")
@@ -402,30 +417,38 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             message_name = message.get_structure().get_name()
 
             if message_name == "missing-plugin":
-                self.stop()
-                details = \
-                    GstPbutils.missing_plugin_message_get_installer_detail(
-                        message)
-                if details is not None:
-                    message = (_(
-                        "No GStreamer element found to handle the following "
-                        "media format: %(format_details)r") %
-                        {"format_details": details})
-                    print_w(message)
-
-                    context = GstPbutils.InstallPluginsContext.new()
-
-                    # TODO: track success
-                    def install_done_cb(*args):
-                        Gst.update_registry()
-                    res = GstPbutils.install_plugins_async(
-                        [details], context, install_done_cb, None)
-                    print_d("Gstreamer plugin install result: %r" % res)
-                    if res in (GstPbutils.InstallPluginsReturn.HELPER_MISSING,
-                            GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE):
-                        self._error(message)
+                self.__handle_missing_plugin(message)
 
         return True
+
+    def __handle_missing_plugin(self, message):
+        get_installer_detail = \
+            GstPbutils.missing_plugin_message_get_installer_detail
+        get_description = GstPbutils.missing_plugin_message_get_description
+
+        details = get_installer_detail(message)
+        if details is None:
+            return
+
+        self.stop()
+
+        format_desc = get_description(message)
+        title = _(u"No GStreamer element found to handle media format")
+        details = _(u"Media format: %(format-description)s") % {
+            "format-description": format_desc.decode("utf-8")}
+
+        # TODO: track success
+        def install_done_cb(*args):
+            Gst.update_registry()
+
+        context = GstPbutils.InstallPluginsContext.new()
+        res = GstPbutils.install_plugins_async(
+            [details], context, install_done_cb, None)
+        print_d("Gstreamer plugin install result: %r" % res)
+
+        if res in (GstPbutils.InstallPluginsReturn.HELPER_MISSING,
+                GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE):
+            self._error(PlayerError(title, details))
 
     def __about_to_finish(self, pipeline):
         print_d("About to finish")
@@ -522,15 +545,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             else:
                 if self.__init_pipeline():
                     self.bin.set_state(Gst.State.PLAYING)
-                else:
-                    # Backend error; show message and halt playback
-                    ErrorMessage(None, _("Output Error"),
-                        _("GStreamer output pipeline could not be "
-                          "initialized. The pipeline might be invalid, "
-                          "or the device may be in use. Check the "
-                          "player preferences.")).run()
-                    self.emit((paused and 'paused') or 'unpaused')
-                    self._paused = paused = True
 
         self.emit((paused and 'paused') or 'unpaused')
 
@@ -538,12 +552,22 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         return self._paused
     paused = property(_get_paused, _set_paused)
 
-    def _error(self, message):
+    def _error(self, player_error):
+        """Destroy the pipeline and set the error state.
+
+        The passed PlayerError will be emitted through the 'error' signal.
+        """
+
+        # prevent recursive errors
+        if self.error:
+            return
+
         self.__destroy_pipeline()
         self.error = True
         self.paused = True
-        print_w(message)
-        self.emit('error', self.song, message)
+
+        print_w(unicode(player_error))
+        self.emit('error', self.song, player_error)
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
@@ -607,8 +631,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 # entire pipeline and recreate it each time we're not in
                 # a gapless transition.
                 self.__destroy_pipeline()
-                if not self.__init_pipeline():
-                    self.paused = True
+                self.__init_pipeline()
             if self.bin:
                 if self.paused:
                     self.bin.set_state(Gst.State.PAUSED)
@@ -718,4 +741,4 @@ def init(librarian):
         raise PlayerError(
             _("Unable to open input files"),
             _("GStreamer has no element to handle reading files. Check "
-                "your GStreamer installation settings."))
+              "your GStreamer installation settings."))

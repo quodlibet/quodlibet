@@ -315,6 +315,19 @@ class AppMenu(object):
             self._bus = None
 
 
+class PlaybackErrorDialog(ErrorMessage):
+
+    def __init__(self, parent, player_error):
+        short = util.escape(player_error.short_desc)
+        long_ = util.escape(player_error.long_desc or "")
+        description = "<b>%s</b>" % short
+        if long_:
+            description += "\n\n%s" % long_
+
+        super(PlaybackErrorDialog, self).__init__(
+            parent, _("Playback Error"), description)
+
+
 DND_URI_LIST, = range(1)
 
 
@@ -435,10 +448,12 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         gobject_weak(lib.connect_object, 'changed', self.__song_changed,
                      player, parent=self)
 
+        self._playback_error_dialog = None
         player_sigs = [
             ('song-started', self.__song_started),
             ('paused', self.__update_paused, True),
             ('unpaused', self.__update_paused, False),
+            ('error', self.__player_error),
         ]
         for sig in player_sigs:
             gobject_weak(player.connect, *sig, **{"parent": self})
@@ -467,6 +482,15 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.connect("destroy", self.__destroy)
 
         self.enable_window_tracking("quodlibet")
+
+    def __player_error(self, player, song, player_error):
+        # it's modal, but mmkeys etc. can still trigger new ones
+        if self._playback_error_dialog:
+            self._playback_error_dialog.destroy()
+        dialog = PlaybackErrorDialog(self, player_error)
+        self._playback_error_dialog = dialog
+        dialog.run()
+        self._playback_error_dialog = None
 
     def __configure_scan_dirs(self, library):
         """Get user to configure scan dirs, if none is set up"""

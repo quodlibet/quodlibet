@@ -78,8 +78,9 @@ class BasePlayer(GObject.GObject, Equalizer):
         (GObject.SignalFlags.RUN_LAST, None, (object, int)),
         'paused': (GObject.SignalFlags.RUN_LAST, None, ()),
         'unpaused': (GObject.SignalFlags.RUN_LAST, None, ()),
-        'error': (GObject.SignalFlags.RUN_LAST, None, (object, str)),
-        }
+        # (song, PlayerError)
+        'error': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+    }
 
     _gproperties_ = {
         'volume': (float, 'player volume', 'the volume of the player',
