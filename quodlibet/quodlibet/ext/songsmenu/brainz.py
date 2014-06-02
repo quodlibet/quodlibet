@@ -488,21 +488,12 @@ class MyBrainz(SongsMenuPlugin):
     cache = {}
 
     def plugin_albums(self, albums):
-        discs_todo = []
-        for album in albums:
-            discs = {}
-            for song in album:
-                discnum = int(song.get('discnumber', '1').split('/')[0])
-                discs.setdefault(discnum, []).append(song)
-            for disc in discs.values():
-                discs_todo.append(disc)
-
-        if not discs_todo:
+        if not albums:
             return
 
         def win_finished_cb(widget, *args):
-            if discs_todo:
-                start_processing(discs_todo.pop(0))
+            if albums:
+                start_processing(albums.pop(0))
             else:
                 self.plugin_finish()
 
@@ -512,7 +503,7 @@ class MyBrainz(SongsMenuPlugin):
             win.connect("destroy", win_finished_cb)
             win.show()
 
-        start_processing(discs_todo.pop(0))
+        start_processing(albums.pop(0))
 
     @classmethod
     def PluginPreferences(self, win):
