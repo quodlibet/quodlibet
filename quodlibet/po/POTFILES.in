@@ -77,7 +77,6 @@ quodlibet/ext/songsmenu/ape2id3.py
 quodlibet/ext/songsmenu/bookmarks.py
 quodlibet/ext/songsmenu/browsefolders.py
 quodlibet/ext/songsmenu/cddb.py
-quodlibet/ext/songsmenu/clearerrors.py
 quodlibet/ext/songsmenu/console.py
 quodlibet/ext/songsmenu/custom_commands.py
 quodlibet/ext/songsmenu/duplicates.py

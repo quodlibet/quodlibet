@@ -11,7 +11,6 @@ String Tags
 -----------
 
  * ``~basename``: The last component of the full path name
- * ``~errors``: A list of errors that have occured trying to play this file
  * ``~dirname``: Everything but the last component of the file path name
  * ``~filename``: The full path name
  * ``~format``: The file format

@@ -72,15 +72,15 @@ class CurrentColumn(SongListColumn):
         ERROR = "dialog-error"
 
         row = model[iter_]
-        song = row[0]
 
         if row.path == model.current_path:
-            if model.sourced:
-                name = [PLAY, PAUSE][app.player.paused]
+            player = app.player
+            if player.error:
+                name = ERROR
+            elif model.sourced:
+                name = [PLAY, PAUSE][player.paused]
             else:
                 name = STOP
-        elif song("~errors"):
-            name = ERROR
         else:
             name = None
 

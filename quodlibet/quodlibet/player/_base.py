@@ -59,6 +59,10 @@ class BasePlayer(GObject.GObject, Equalizer):
     info = None
     volume = None
 
+    # if the current song couldn't be played because of an error
+    # gets reset automatically after 'song-ended' gets emitted
+    error = False
+
     # Replay Gain profiles are a list of values to be tried in order;
     # Four things can set them: rg menu, browser, play order, and a default.
     replaygain_profiles = [None, None, None, ["none"]]

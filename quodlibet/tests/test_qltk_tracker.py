@@ -48,11 +48,10 @@ class TSongTracker(TestCase):
 
     def test_error(self):
         self.current = self.p.song = self.s1
-        self.p.error('Test error')
+        self.p._error('Test error')
         self.do()
         self.assertEquals(self.s1["~#playcount"], 0)
         self.assertEquals(self.s1["~#skipcount"], 0)
-        self.assertEquals(self.s1["~errors"].endswith('Test error\n\n'), True)
         self.failUnless(self.s1["~#lastplayed"], 10)
 
     def test_restart(self):

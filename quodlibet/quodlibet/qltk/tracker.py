@@ -16,8 +16,6 @@ from quodlibet import config
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.util.string import decode
 
-MAX_ERRORS = 10
-
 
 class TimeTracker(GObject.GObject):
     """Emits tick every second (with up to one second jitter) as long
@@ -72,29 +70,14 @@ class TimeTracker(GObject.GObject):
 
 class SongTracker(object):
     def __init__(self, librarian, player, pl):
-        player.connect_object('song-ended', self.__end, librarian, pl)
-        player.connect_object('song-started', self.__start, librarian)
-        player.connect('error', self.__error, librarian)
+        player.connect('song-ended', self.__end, librarian, pl)
+        player.connect('song-started', self.__start, librarian)
         timer = TimeTracker(player)
         timer.connect("tick", self.__timer)
-        self.__errors_in_a_row = 0
         self.elapsed = 0
         self.__to_change = set()
         self.__change_id = None
         quodlibet.quit_add(1, self.__quit, librarian, player)
-
-    def __error(self, player, song, error, librarian):
-        newstr = u"%s: %s\n\n" % (
-            decode(time.asctime(), const.ENCODING), error)
-        self.__errors_in_a_row += 1
-        if self.__errors_in_a_row > MAX_ERRORS:
-            self.__errors_in_a_row = 0
-            ErrorMessage(None, _("Too Many Errors"),
-                         _("Stopping playback because there were %d errors "
-                           "in a row.") % MAX_ERRORS).run()
-            player.go_to(None)
-            player.paused = True
-        song["~errors"] = newstr + song.get("~errors", "")
 
     def __changed(self, librarian, song):
         # try to combine changed events and process them if QL is idle
@@ -112,7 +95,7 @@ class SongTracker(object):
         self.__change_id = GLib.idle_add(idle_change,
                                          priority=GLib.PRIORITY_LOW)
 
-    def __start(self, librarian, song):
+    def __start(self, player, song, librarian):
         self.elapsed = 0
         if song is not None:
             if song.multisong:
@@ -125,7 +108,7 @@ class SongTracker(object):
         else:
             config.set("memory", "song", "")
 
-    def __end(self, librarian, song, ended, pl):
+    def __end(self, player, song, ended, librarian, pl):
         if song is None or song.multisong:
             return
         elif self.elapsed > 0.5 * song.get("~#length", 1):
@@ -133,13 +116,9 @@ class SongTracker(object):
             song["~#playcount"] = song.get("~#playcount", 0) + 1
             self.__changed(librarian, song)
         elif pl.current is not song:
-            if "~errors" not in song:
+            if not player.error:
                 song["~#skipcount"] = song.get("~#skipcount", 0) + 1
-            self.__changed(librarian, song)
-
-        if not ended and song and "~errors" in song:
-            del(song["~errors"])
-            self.__errors_in_a_row = 0
+                self.__changed(librarian, song)
 
     def __quit(self, librarian, player):
         config.set("memory", "seek", player.get_position())

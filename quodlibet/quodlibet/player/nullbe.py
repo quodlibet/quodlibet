@@ -45,10 +45,9 @@ class NullPlayer(BasePlayer):
         else:
             raise AttributeError
 
-    def error(self, message):
+    def _error(self, message):
+        self.paused = True
         self.emit('error', self.song, message)
-        if not self.paused:
-            self.next()
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""

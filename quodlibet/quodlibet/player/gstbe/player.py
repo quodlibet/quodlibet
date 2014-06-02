@@ -539,10 +539,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     paused = property(_get_paused, _set_paused)
 
     def _error(self, message):
+        self.__destroy_pipeline()
+        self.error = True
+        self.paused = True
         print_w(message)
         self.emit('error', self.song, message)
-        if not self.paused:
-            self.next()
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
@@ -590,6 +591,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if song is not info:
             self.emit('song-ended', info, stopped)
         self.emit('song-ended', song, stopped)
+
+        # reset error state
+        self.error = False
 
         # Then, set up the next song.
         self.song = self.info = self._source.current

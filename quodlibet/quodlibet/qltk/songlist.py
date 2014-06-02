@@ -367,8 +367,11 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         for sig in sigs:
             self.connect_object('destroy', librarian.disconnect, sig)
         if player:
-            sigs = [player.connect('paused', self.__redraw_current),
-                    player.connect('unpaused', self.__redraw_current)]
+            sigs = [
+                player.connect('paused', lambda *x: self.__redraw_current()),
+                player.connect('unpaused', lambda *x: self.__redraw_current()),
+                player.connect('error', lambda *x: self.__redraw_current()),
+            ]
             for sig in sigs:
                 self.connect_object('destroy', player.disconnect, sig)
 
@@ -615,7 +618,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             from quodlibet import app
             app.window.playlist.enqueue(songs)
 
-    def __redraw_current(self, player, song=None):
+    def __redraw_current(self):
         model = self.get_model()
         iter_ = model.current_iter
         if iter_:

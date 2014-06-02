@@ -205,10 +205,9 @@ class XinePlaylistPlayer(BasePlayer):
         if self._destroyed:
             return False
 
-        self._stop()
+        self.error = True
+        self.paused = True
         self.emit('error', self.song, message)
-        if not self.paused:
-            self.next()
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
@@ -226,6 +225,9 @@ class XinePlaylistPlayer(BasePlayer):
         song = self.song
         self.song = self.info = None
         self.emit('song-ended', song, stopped)
+
+        # reset error state
+        self.error = False
 
         # Then, set up the next song.
         self.song = self.info = self._source.current
