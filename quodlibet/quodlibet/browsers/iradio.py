@@ -566,8 +566,10 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
         # treeview
         scrolled_window = ScrolledWindow()
+        scrolled_window.show()
         scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
+        view.show()
         view.set_headers_visible(False)
         scrolled_window.set_policy(
             Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -629,8 +631,6 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
             self._searchbox = box
         self._searchbox.show_all()
 
-        self.__filter_list = scrolled_window
-
         def qbar_response(infobar, response_id):
             if response_id == infobar.RESPONSE_LOAD:
                 self.__update()
@@ -640,34 +640,32 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         if self._is_library_empty():
             self.qbar.show()
 
-        self.show_all()
+        pane = qltk.RHPaned()
+        pane.show()
+        pane.pack1(scrolled_window, resize=False, shrink=False)
+        songbox = Gtk.VBox(spacing=6)
+        songbox.pack_start(self._searchbox, False, True, 0)
+        self._songpane_container = Gtk.VBox()
+        self._songpane_container.show()
+        songbox.pack_start(self._songpane_container, True, True, 0)
+        songbox.pack_start(self.qbar, False, True, 0)
+        songbox.show()
+        pane.pack2(songbox, resize=True, shrink=False)
+        self.pack_start(pane, True, True, 0)
+        self.show()
 
     def _is_library_empty(self):
         return not len(self.__stations) and not len(self.__fav_stations)
 
     def pack(self, songpane):
-        container = Gtk.VBox(spacing=6)
-
-        pane = qltk.RHPaned()
-        pane.pack1(self.__filter_list, resize=False, shrink=False)
-        pane.show_all()
-
-        songbox = Gtk.VBox(spacing=6)
-        songbox.pack_start(self._searchbox, False, True, 0)
-        songbox.pack_start(songpane, True, True, 0)
-        songbox.pack_start(self.qbar, False, True, 0)
-        songbox.show()
-
-        pane.pack2(songbox, resize=True, shrink=False)
-        container.pack_start(self, False, True, 0)
-        container.pack_start(pane, True, True, 0)
+        container = Gtk.VBox()
+        container.add(self)
+        self._songpane_container.add(songpane)
         return container
 
     def unpack(self, container, songpane):
+        self._songpane_container.remove(songpane)
         container.remove(self)
-        pane = container.get_children()[0]
-        box = pane.get_children()[1]
-        box.remove(songpane)
 
     def __update(self, *args):
         self.qbar.hide()
