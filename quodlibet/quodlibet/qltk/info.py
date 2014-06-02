@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2011-2013 Nick Boultbee
+#           2011-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -12,8 +12,7 @@ from gi.repository import Gtk, Gdk, Pango
 
 from quodlibet import const
 from quodlibet import qltk
-from quodlibet import browsers
-from quodlibet.util.dprint import print_d
+from quodlibet.util.dprint import print_w
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
@@ -78,12 +77,13 @@ class SongInfo(Gtk.EventBox):
         try:
             # Get a real sub-menu, unless there's no song, in which case an
             # empty one looks more consistent than None
-            submenu = (browsers.playlists.Menu([player.song], self)
+            from quodlibet.browsers.playlists.menu import PlaylistMenu
+            submenu = (PlaylistMenu([player.song], self)
                        if player.song else Gtk.Menu())
         except AttributeError, e:
-            print_d(e)
+            print_w("Couldn't create songsmenu (%s)" % e)
         else:
-            b = qltk.MenuItem(_("_Add to Playlist"), Gtk.STOCK_ADD)
+            b = qltk.MenuItem(_("Play_lists"), Gtk.STOCK_ADD)
             b.set_sensitive(player.song is not None and player.song.can_add)
             b.set_submenu(submenu)
             b.show_all()
