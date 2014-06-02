@@ -17,6 +17,7 @@ from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.util.path import fsdecode
 
 
@@ -52,7 +53,6 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         for page in pages:
             page.show()
             notebook.append_page(page)
-        self.set_border_width(12)
 
         fbasemodel = Gtk.ListStore(object, str)
         fmodel = Gtk.TreeModelSort(model=fbasemodel)
@@ -67,9 +67,10 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             render = Gtk.CellRendererText()
             c1 = Gtk.TreeViewColumn(_('File'), render, text=1)
             render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            render.set_property('xpad', 3)
             c1.set_sort_column_id(1)
             fview.append_column(c1)
-            sw = Gtk.ScrolledWindow()
+            sw = ScrolledWindow()
             sw.add(fview)
             sw.set_shadow_type(Gtk.ShadowType.IN)
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
