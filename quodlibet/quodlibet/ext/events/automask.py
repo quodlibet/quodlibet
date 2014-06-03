@@ -1,4 +1,5 @@
 # Copyright 2006 Joe Wreschnig
+#           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -21,7 +22,7 @@ class AutoMasking(EventPlugin):
     PLUGIN_ID = "automask"
     PLUGIN_NAME = _("Automatic Masking")
     PLUGIN_DESC = _("Automatically mask and unmask drives when they "
-                    "are unmounted or mounted, using GNOME-VFS.")
+                    "are unmounted or mounted.")
     PLUGIN_VERSION = "0.1"
 
     __sigs = None
@@ -44,8 +45,10 @@ class AutoMasking(EventPlugin):
 
     def __mounted(self, monitor, mount):
         path = mount.get_default_location().get_path()
-        app.library.unmask(os.path.normpath(path))
+        if path is not None:
+            app.library.unmask(os.path.normpath(path))
 
     def __unmounted(self, monitor, mount):
         path = mount.get_default_location().get_path()
-        app.library.mask(os.path.normpath(path))
+        if path is not None:
+            app.library.mask(os.path.normpath(path))
