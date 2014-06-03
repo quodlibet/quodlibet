@@ -25,6 +25,9 @@ class PlayerError(Exception):
         return self.short_desc + (
             u"\n" + self.long_desc if self.long_desc else u"")
 
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+
     def __repr__(self):
         return "%s(%r, %r)" % (
             type(self).__name__, repr(self.short_desc), repr(self.long_desc))

@@ -453,10 +453,14 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             ('song-started', self.__song_started),
             ('paused', self.__update_paused, True),
             ('unpaused', self.__update_paused, False),
-            ('error', self.__player_error),
         ]
         for sig in player_sigs:
             gobject_weak(player.connect, *sig, **{"parent": self})
+
+        # make sure we redraw all error indicators before opening
+        # a dialog (blocking the main loop), so connect after default handlers
+        gobject_weak(player.connect_after, 'error',
+                     self.__player_error, **{"parent": self})
 
         # connect after to let SongTracker update stats
         player_sigs.append(

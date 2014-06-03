@@ -673,6 +673,11 @@ by <~people>>""")
         window.show()
         window.fade_in()
 
+    def plugin_on_error(self, song, error):
+        if self.__current_window is not None:
+            self.__current_window.destroy()
+            self.__current_window = None
+
     @staticmethod
     def start_fade_out(window):
         window.fade_out()

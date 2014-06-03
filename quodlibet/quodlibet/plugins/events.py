@@ -30,6 +30,7 @@ class EventPlugin(object):
         obj.plugin_on_paused()
         obj.plugin_on_unpaused()
         obj.plugin_on_seek(song, msec)
+        obj.plugin_on_error(song, error)
     """
 
     PLUGIN_INSTANCE = True
@@ -79,7 +80,7 @@ class EventPluginHandler(PluginHandler):
                 librarian.connect(event, handler, event)
 
         if librarian and player:
-            sigs = _map_signals(player, blacklist=("notify", "error"))
+            sigs = _map_signals(player, blacklist=("notify",))
             for event, handle in sigs:
                 def cb_handler(librarian, *args):
                     self.__invoke(librarian, args[-1], *args[:-1])
