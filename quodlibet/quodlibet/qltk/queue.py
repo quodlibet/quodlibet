@@ -7,7 +7,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Gio
 
 from quodlibet import config
 from quodlibet import const
@@ -18,9 +18,39 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
-from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage
 
 QUEUE = os.path.join(const.USERDIR, "queue")
+
+
+class PlaybackStatusIcon(Gtk.Box):
+    """A widget showing a play/pause/stop symbolic icon"""
+
+    def __init__(self):
+        super(PlaybackStatusIcon, self).__init__()
+        self._icons = {}
+
+    def _set(self, name):
+        if name not in self._icons:
+            image = SymbolicIconImage(name, Gtk.IconSize.MENU)
+            self._icons[name] = image
+            image.show()
+        else:
+            image = self._icons[name]
+
+        children = self.get_children()
+        if children:
+            self.remove(children[0])
+        self.add(image)
+
+    def play(self):
+        self._set("media-playback-start")
+
+    def stop(self):
+        self._set("media-playback-stop")
+
+    def pause(self):
+        self._set("media-playback-pause")
 
 
 class QueueExpander(Gtk.Expander):
@@ -34,9 +64,10 @@ class QueueExpander(Gtk.Expander):
         hb = Gtk.HBox(spacing=12)
 
         hb2 = Gtk.HBox(spacing=3)
-        state = Gtk.Image.new_from_stock(
-            Gtk.STOCK_MEDIA_STOP, Gtk.IconSize.MENU)
-        hb2.pack_start(state, True, True, 0)
+        state_icon = PlaybackStatusIcon()
+        state_icon.stop()
+        state_icon.show()
+        hb2.pack_start(state_icon, True, True, 0)
 
         l = Gtk.Label(label=_("_Queue"))
         hb2.pack_start(l, True, True, 0)
@@ -86,11 +117,11 @@ class QueueExpander(Gtk.Expander):
         self.connect_object('notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, l2)
 
-        player.connect('song-started', self.__update_state_icon, state)
+        player.connect('song-started', self.__update_state_icon, state_icon)
         player.connect('paused', self.__update_state_icon_pause,
-                        state, Gtk.STOCK_MEDIA_PAUSE)
+                        state_icon, True)
         player.connect('unpaused', self.__update_state_icon_pause,
-                        state, Gtk.STOCK_MEDIA_PLAY)
+                        state_icon, False)
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -105,16 +136,20 @@ class QueueExpander(Gtk.Expander):
     def model(self):
         return self.queue.model
 
-    def __update_state_icon(self, player, song, state):
+    def __update_state_icon(self, player, song, state_icon):
         if self.model.sourced:
-            icon = Gtk.STOCK_MEDIA_PLAY
+            state_icon.play()
         else:
-            icon = Gtk.STOCK_MEDIA_STOP
-        state.set_from_stock(icon, Gtk.IconSize.MENU)
+            state_icon.stop()
 
-    def __update_state_icon_pause(self, player, state, icon):
+    def __update_state_icon_pause(self, player, state_icon, paused):
         if self.model.sourced:
-            state.set_from_stock(icon, Gtk.IconSize.MENU)
+            if paused:
+                state_icon.pause()
+            else:
+                state_icon.play()
+        else:
+            state_icon.stop()
 
     def __clear_queue(self, activator):
         self.model.clear()
