@@ -7,7 +7,7 @@
 
 from tests import TestCase
 
-from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
+from quodlibet.qltk.quodlibetwindow import QuodLibetWindow, PlaybackErrorDialog
 from quodlibet import library
 from quodlibet import player
 from quodlibet import config
@@ -25,3 +25,7 @@ class TQuodLibetWindow(TestCase):
         pl = player.init("nullbe").init(lib.librarian)
         window = QuodLibetWindow(lib, pl, headless=True)
         window.destroy()
+
+    def test_playback_error_dialog(self):
+        error = player.PlayerError(u'\xf6\xe4\xfc', u'\xf6\xe4\xfc')
+        PlaybackErrorDialog(None, error)

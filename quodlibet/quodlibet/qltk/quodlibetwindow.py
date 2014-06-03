@@ -318,11 +318,11 @@ class AppMenu(object):
 class PlaybackErrorDialog(ErrorMessage):
 
     def __init__(self, parent, player_error):
-        short = util.escape(player_error.short_desc)
-        long_ = util.escape(player_error.long_desc or "")
-        description = "<b>%s</b>" % short
-        if long_:
-            description += "\n\n%s" % long_
+        add_full_stop = lambda s: s and (s.rstrip(".") + ".")
+        description = add_full_stop(util.escape(player_error.short_desc))
+        details = add_full_stop(util.escape(player_error.long_desc or ""))
+        if details:
+            description += " " + details
 
         super(PlaybackErrorDialog, self).__init__(
             parent, _("Playback Error"), description)
