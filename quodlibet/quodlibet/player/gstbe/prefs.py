@@ -20,8 +20,10 @@ class GstPlayerPreferences(Gtk.VBox):
 
         e = UndoEntry()
         e.set_tooltip_text(_("The GStreamer output pipeline used for "
-                "playback, such as 'alsasink device=default'. "
-                "Leave blank for default pipeline."))
+                "playback. Leave blank for the default pipeline. "
+                "In case the pipeline contains a sink, "
+                "it will be used instead of the default one."))
+
         e.set_text(config.get('player', 'gst_pipeline'))
 
         def changed(entry):
