@@ -63,6 +63,9 @@ class SeekBar(HSlider):
         hbox.pack_start(arrow, False, True, 0)
         super(SeekBar, self).__init__(hbox)
 
+        self._slider_label = TimeLabel()
+        self.set_slider_widget(self._slider_label)
+
         self.scale.connect('button-press-event', self.__seek_lock)
         self.scale.connect('button-release-event', self.__seek_unlock, player)
         self.scale.connect('key-press-event', self.__seek_lock)
@@ -168,19 +171,29 @@ class SeekBar(HSlider):
 
     def __update_time(self, scale, timer):
         value = scale.get_value()
-        max = scale.get_adjustment().get_upper()
-        value -= self.__remaining.get_active() * max
+        max_ = scale.get_adjustment().get_upper()
+        remaining = value - max_
+        if self.__remaining.get_active():
+            remaining, value = value, remaining
         timer.set_time(value)
+        self._slider_label.set_time(remaining)
 
     def __song_changed(self, player, song, label, menu):
-        if song and song.get("~#length", 0) > 0:
-            self.scale.set_range(0, song["~#length"])
-            self.scale.set_value(0)
+
+        if song and song("~#length") > 0:
+            self.scale.set_range(0, song("~#length"))
+            slider_width = song("~#length")
             self.__seekable = True
         else:
             self.scale.set_range(0, 1)
-            self.scale.set_value(0)
+            slider_width = 0
             self.__seekable = False
+
+        self.scale.set_value(0)
+
+        slider_width = min(max(slider_width, 170), 400)
+        self.scale.set_size_request(slider_width, -1)
+
         for child in menu.get_children()[2:-1]:
             menu.remove(child)
             child.destroy()

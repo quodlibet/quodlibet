@@ -8,6 +8,7 @@
 from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk import get_top_parent
+from quodlibet.qltk.x import Alignment
 
 
 class PrimaryWarpsRange(Gtk.Range):
@@ -69,7 +70,9 @@ class _PopupSlider(Gtk.Button):
         hscale.set_draw_value(False)
         self.scale = hscale
         window.add(frame)
-        frame.add(hscale)
+        self._box = Gtk.HBox()
+        self._box.add(hscale)
+        frame.add(self._box)
         self.connect('scroll-event', self.__scroll, hscale)
 
         # forward scroll event to the button
@@ -89,6 +92,9 @@ class _PopupSlider(Gtk.Button):
 
         if child:
             self.get_child().show_all()
+
+    def set_slider_widget(self, widget):
+        self._box.add(Alignment(widget, left=3, right=3))
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError
