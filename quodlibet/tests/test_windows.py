@@ -11,7 +11,7 @@ from tests import TestCase, DATA_DIR, skipUnless
 from quodlibet import windows
 
 
-@skipUnless(os.name == "nt", "Wrong platform")
+@skipUnless(os.name == "nt", "Wrong platform", warn=False)
 class TWindows(TestCase):
 
     def test_dir_funcs(self):

@@ -31,23 +31,26 @@ class AbstractTestCase(TestCase):
 
 skipped = []
 skipped_reason = {}
+skipped_warn = set()
 
 
-def skip(cls, reason=None):
+def skip(cls, reason=None, warn=True):
     assert inspect.isclass(cls)
 
     skipped.append(cls)
     if reason:
         skipped_reason[cls] = reason
+    if warn:
+        skipped_warn.add(cls)
 
     return cls
 
 
-def skipUnless(value, reason=None):
+def skipUnless(value, *args, **kwargs):
     def dec(cls):
         if value:
             return cls
-        return skip(cls, reason=reason)
+        return skip(cls, *args, **kwargs)
     return dec
 
 
@@ -217,7 +220,8 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
             continue
         name = "%s.%s" % (case.__module__, case.__name__)
         reason = skipped_reason.get(case, "??")
-        print_w("Skipped test: %s (%s)" % (name, reason))
+        if case in skipped_warn:
+            print_w("Skipped test: %s (%s)" % (name, reason))
 
     import quodlibet.config
 
