@@ -192,7 +192,7 @@ class SeekBar(HSlider):
         self.scale.set_value(0)
 
         slider_width = min(max(slider_width, 170), 400)
-        self.scale.set_size_request(slider_width, -1)
+        self.set_slider_length(slider_width)
 
         for child in menu.get_children()[2:-1]:
             menu.remove(child)

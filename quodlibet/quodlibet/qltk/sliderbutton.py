@@ -47,7 +47,7 @@ class _PopupSlider(Gtk.Button):
     # Based on the Rhythmbox volume control button; thanks to Colin Walters,
     # Richard Hult, Michael Fulbright, Miguel de Icaza, and Federico Mena.
 
-    def __init__(self, child=None, adj=None, req=None):
+    def __init__(self, child=None, adj=None):
         super(_PopupSlider, self).__init__()
         if child:
             self.add(child)
@@ -64,13 +64,12 @@ class _PopupSlider(Gtk.Button):
 
         hscale = PrimaryWarpsScale(adjustment=self.__adj)
         hscale.set_orientation(self.ORIENTATION)
-        hscale.set_size_request(*(req or self._req))
         window.connect('button-press-event', self.__button)
         window.connect('key-press-event', self.__key)
         hscale.set_draw_value(False)
         self.scale = hscale
         window.add(frame)
-        self._box = Gtk.HBox()
+        self._box = Gtk.Box(orientation=self.ORIENTATION)
         self._box.add(hscale)
         frame.add(self._box)
         self.connect('scroll-event', self.__scroll, hscale)
@@ -90,11 +89,23 @@ class _PopupSlider(Gtk.Button):
         self.scale.connect_after('button-press-event', handle_all)
         self.scale.connect_after('button-release-event', handle_all)
 
+        self.set_slider_length(200)
+
         if child:
             self.get_child().show_all()
 
+    def set_slider_length(self, length):
+        if self.ORIENTATION == Gtk.Orientation.HORIZONTAL:
+            self.scale.set_size_request(length, -1)
+        else:
+            self.scale.set_size_request(-1, length)
+
+        # force a window resize..
+        self.__window.resize(1, 1)
+
     def set_slider_widget(self, widget):
-        self._box.add(Alignment(widget, left=3, right=3))
+        self._box.pack_start(
+            Alignment(widget, left=3, right=3), False, True, 0)
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError
@@ -178,7 +189,6 @@ class _PopupSlider(Gtk.Button):
 
 class HSlider(_PopupSlider):
     ORIENTATION = Gtk.Orientation.HORIZONTAL
-    _req = (200, -1)
     _adj = Gtk.Adjustment.new(0, 0, 0, 3, 15, 0)
     UP = [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]
     DOWN = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
@@ -192,7 +202,6 @@ class HSlider(_PopupSlider):
 
 class VSlider(_PopupSlider):
     ORIENTATION = Gtk.Orientation.VERTICAL
-    _req = (-1, 170)
     _adj = Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0)
     UP = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
     DOWN = [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]
