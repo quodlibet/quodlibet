@@ -142,6 +142,19 @@ def _gtk_init(icon=None):
         print_e("PyGObject is missing cairo support")
         exit(1)
 
+    # CSS overrides
+    style_provider = Gtk.CssProvider()
+    style_provider.load_from_data("""
+        * {
+            -GtkPaned-handle-size: 6;
+        }
+    """)
+    Gtk.StyleContext.add_provider_for_screen(
+        Gdk.Screen.get_default(),
+        style_provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+    )
+
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
 

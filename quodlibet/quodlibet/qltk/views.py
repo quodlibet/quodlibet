@@ -64,6 +64,7 @@ class TreeViewHints(Gtk.Window):
 
         context = self.get_style_context()
         context.add_class("tooltip")
+        context.add_class("ql-tooltip")
 
         self.set_accept_focus(False)
         self.set_resizable(False)
@@ -78,6 +79,28 @@ class TreeViewHints(Gtk.Window):
         self.__hide_id = None
 
     def connect_view(self, view):
+
+        # don't depend on padding set by theme, we need the text coordinates
+        # to match in all cases
+        self._style_provider = style_provider = Gtk.CssProvider()
+        style_provider.load_from_data("""
+            .ql-tooltip * {
+                border-width: 0px;
+                padding: 0px;
+            }
+            .ql-tooltip {
+                padding: 0px;
+            }
+        """)
+
+        # somehow this doesn't apply if we set it on the window, only
+        # if set for the screen. gets reverted again in disconnect_view()
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
         self.__handlers[view] = [
             view.connect('motion-notify-event', self.__motion),
             view.connect('leave-notify-event', self.__motion),
@@ -103,6 +126,9 @@ class TreeViewHints(Gtk.Window):
             GLib.source_remove(self.__hide_id)
             self.__hide_id = None
             self.hide()
+
+        Gtk.StyleContext.remove_provider_for_screen(
+            Gdk.Screen.get_default(), self._style_provider)
 
     def __motion(self, view, event):
         label = self.__label
