@@ -427,6 +427,22 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.songpane.pack2(self.qexpander, resize=True, shrink=False)
         self.__handle_position = self.songpane.get_property("position")
 
+        def songpane_button_press_cb(pane, event):
+            """If we start to drag the pane handle while the
+            queue expander is unexpanded, expand it and move the handle
+            to the bottom, so we can 'drag' the queue out
+            """
+
+            if event.window != pane.get_handle_window():
+                return False
+
+            if not self.qexpander.get_expanded():
+                self.qexpander.set_expanded(True)
+                pane.set_relative(1.0)
+            return False
+
+        self.songpane.connect("button-press-event", songpane_button_press_cb)
+
         self.song_scroller.connect('notify::visible', self.__show_or)
         self.qexpander.connect('notify::visible', self.__show_or)
         self.qexpander.connect('notify::expanded', self.__expand_or)

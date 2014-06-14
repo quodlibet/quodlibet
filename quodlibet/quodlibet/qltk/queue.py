@@ -18,7 +18,8 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
-from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage
+from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
+    SmallImageButton
 
 QUEUE = os.path.join(const.USERDIR, "queue")
 
@@ -61,38 +62,49 @@ class QueueExpander(Gtk.Expander):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.queue = PlayQueue(library, player)
         sw.add(self.queue)
-        hb = Gtk.HBox(spacing=12)
+
+        outer = Gtk.HBox(spacing=12)
+
+        left = Gtk.HBox(spacing=12)
 
         hb2 = Gtk.HBox(spacing=3)
         state_icon = PlaybackStatusIcon()
         state_icon.stop()
         state_icon.show()
         hb2.pack_start(state_icon, True, True, 0)
+        name_label = Gtk.Label(label=_("_Queue"), use_underline=True)
+        hb2.pack_start(name_label, True, True, 0)
+        left.pack_start(hb2, False, True, 0)
 
-        l = Gtk.Label(label=_("_Queue"))
-        hb2.pack_start(l, True, True, 0)
-        hb.pack_start(hb2, True, True, 0)
-        l.set_use_underline(True)
-
-        clear = Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU)
-        b = Gtk.Button()
-        b.add(clear)
+        b = SmallImageButton(
+            image=Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
         b.set_tooltip_text(_("Remove all songs from the queue"))
         b.connect('clicked', self.__clear_queue)
         b.hide()
         b.set_relief(Gtk.ReliefStyle.NONE)
-        hb.pack_start(b, False, False, 0)
+        left.pack_start(b, False, False, 0)
 
-        l2 = Gtk.Label()
-        hb.pack_start(l2, True, True, 0)
+        count_label = Gtk.Label()
+        left.pack_start(count_label, False, True, 0)
+
+        outer.pack_start(left, True, True, 0)
+
+        close_button = SmallImageButton(
+            image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE)
+
+        close_button.connect("clicked", lambda *x: self.hide())
+
+        outer.pack_start(close_button, False, False, 6)
+        self.set_label_fill(True)
 
         cb = ConfigCheckButton(
             _("_Random"), "memory", "shufflequeue")
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
         cb.set_active(config.getboolean("memory", "shufflequeue"))
-        hb.pack_start(cb, True, True, 0)
+        left.pack_start(cb, False, True, 0)
 
-        self.set_label_widget(hb)
+        self.set_label_widget(outer)
         self.add(sw)
         self.connect_object('notify::expanded', self.__expand, cb, b)
 
@@ -109,13 +121,13 @@ class QueueExpander(Gtk.Expander):
         self.show_all()
 
         self.queue.model.connect_after('row-inserted',
-            util.DeferredSignal(self.__check_expand), l2)
+            util.DeferredSignal(self.__check_expand), count_label)
         self.queue.model.connect_after('row-deleted',
-            util.DeferredSignal(self.__update_count), l2)
+            util.DeferredSignal(self.__update_count), count_label)
         cb.hide()
 
         self.connect_object('notify::visible', self.__visible, cb, menu, b)
-        self.__update_count(self.model, None, l2)
+        self.__update_count(self.model, None, count_label)
 
         player.connect('song-started', self.__update_state_icon, state_icon)
         player.connect('paused', self.__update_state_icon_pause,
