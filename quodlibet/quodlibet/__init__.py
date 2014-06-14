@@ -145,8 +145,11 @@ def _gtk_init(icon=None):
     # CSS overrides
     style_provider = Gtk.CssProvider()
     style_provider.load_from_data("""
-        * {
+        /* Make GtkPaned look like in <=3.12, we depend on the spacing */
+        GtkPaned {
             -GtkPaned-handle-size: 6;
+            background-image: none;
+            margin: 0;
         }
     """)
     Gtk.StyleContext.add_provider_for_screen(
