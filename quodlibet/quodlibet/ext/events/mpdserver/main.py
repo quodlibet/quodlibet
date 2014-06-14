@@ -151,21 +151,18 @@ class PlayerOptions(GObject.Object):
     def set_single(self, value):
         is_single = self.get_single()
         if value and not is_single:
-            self._order.set_active("onesong")
+            self._order.set_active_by_name("onesong")
         elif not value and is_single:
-            self._order.set_active("inorder")
+            self._order.set_active_by_name("inorder")
 
     def get_single(self):
         return self._order.get_active_name() == "onesong"
 
     def get_random(self):
-        return self._order.get_active_name() == "shuffle"
+        return self._order.get_shuffle()
 
     def set_random(self, value):
-        if value:
-            self._order.set_active("shuffle")
-        else:
-            self._order.set_active("inorder")
+        self._order.set_shuffle(value)
 
     def get_repeat(self):
         return self._repeat.get_active()

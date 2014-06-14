@@ -397,20 +397,25 @@ class TrayIcon(EventPlugin):
         safter.set_active(safter_action.get_active())
         safter.connect('toggled', set_safter, safter_action)
 
-        def set_order(widget, num):
-            window.order.set_active(num)
+        def set_order(widget, order):
+            name = order.name
+            try:
+                window.order.set_active_by_name(name)
+            except ValueError:
+                pass
 
         order_items = []
         item = None
-        for i, Kind in enumerate(ORDERS):
+        active_order = window.order.get_active()
+        for Kind in ORDERS:
             item = RadioMenuItem(
                     group=item,
                     label=Kind.accelerated_name,
                     use_underline=True)
             order_items.append(item)
-            item.connect('toggled', set_order, i)
-
-        order_items[window.order.get_active()].set_active(True)
+            if Kind is active_order:
+                item.set_active(True)
+            item.connect('toggled', set_order, Kind)
 
         order_sub = Gtk.Menu()
         order_sub.append(repeat)

@@ -6,10 +6,11 @@
 
 import random
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 
 from quodlibet import config
-from quodlibet.plugins import PluginManager
+from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
+from quodlibet.plugins import PluginManager, PluginHandler
 
 
 class Order(object):
@@ -17,6 +18,7 @@ class Order(object):
     display_name = _("Unknown")
     accelerated_name = _("_Unknown")
     replaygain_profiles = ["track"]
+    is_shuffle = False
     priority = 100
 
     def __init__(self, playlist):
@@ -129,6 +131,7 @@ class OrderShuffle(OrderRemembered):
     name = "shuffle"
     display_name = _("Shuffle")
     accelerated_name = _("_Shuffle")
+    is_shuffle = True
     priority = 1
 
     def next(self, playlist, iter):
@@ -148,9 +151,10 @@ class OrderShuffle(OrderRemembered):
 
 
 class OrderWeighted(OrderRemembered):
-    name = "Weighted"
+    name = "weighted"
     display_name = _("Weighted")
     accelerated_name = _("_Weighted")
+    is_shuffle = True
     priority = 2
 
     def next(self, playlist, iter):
@@ -190,23 +194,209 @@ def set_orders(orders):
 set_orders([])
 
 
-class PlayOrder(Gtk.ComboBoxText):
+class ShuffleButton(Gtk.Box):
+    """A shuffle toggle button + a menu button.
+
+    In case the shuffle button gets toggled, 'toggled' gets emitted.
+    """
+
+    __gsignals__ = {
+        'toggled': (GObject.SignalFlags.RUN_LAST, None, ()),
+    }
+
+    def __init__(self, arrow_down=False):
+        """arrow_down -- the direction of the menu and arrow icon"""
+
+        super(ShuffleButton, self).__init__()
+
+        context = self.get_style_context()
+        context.add_class(Gtk.STYLE_CLASS_LINKED)
+
+        # padding=0 style
+        style_provider = Gtk.CssProvider()
+        css = """
+            * {
+                padding: 0px;
+            }
+        """
+        style_provider.load_from_data(css)
+
+        # shuffle button
+        b = Gtk.ToggleButton(image=SymbolicIconImage(
+            "media-playlist-shuffle", Gtk.IconSize.SMALL_TOOLBAR))
+        b.show_all()
+        b.set_size_request(26, 26)
+        style_context = b.get_style_context()
+        style_context.add_provider(
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+        self.pack_start(b, True, True, 0)
+
+        def forward_signal(*args):
+            self.emit("toggled")
+
+        b.connect("toggled", forward_signal)
+        self._toggle_button = b
+
+        # arrow
+        from quodlibet.qltk.menubutton import MenuButton
+        b = MenuButton(arrow=True, down=arrow_down)
+        b.show_all()
+        b.set_size_request(20, 26)
+        style_context = b.get_style_context()
+        style_context.add_provider(
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+        self.pack_start(b, True, True, 0)
+        self._menu_button = b
+
+    def set_active(self, value):
+        """Set if shuffle is active"""
+
+        self._toggle_button.set_active(value)
+
+    def get_active(self):
+        """Get if shuffle is active"""
+
+        return self._toggle_button.get_active()
+
+    def set_menu(self, menu):
+        """Replace the current menu with a new one"""
+
+        self._menu_button.set_menu(menu)
+
+
+class PlayOrder(Gtk.Box, PluginHandler):
+    """A play order selection widget.
+
+    Whenever something changes the 'changed' signal gets emitted.
+
+    TODO: split up in UI and management part
+    """
+
+    __gsignals__ = {
+        'changed': (GObject.SignalFlags.RUN_LAST, None, ()),
+    }
+
     def __init__(self, model, player):
         super(PlayOrder, self).__init__()
 
-        cell = self.get_cells()[0]
-        cell.props.xpad = 1
-        cell.props.ypad = 0
+        self._model = model
+        self._player = player
+        self._plugins = []
+        self._inhibit_save = False
 
-        self.__plugins = []
+        self._shuffle = shuffle = ShuffleButton()
+        self.pack_start(shuffle, True, True, 0)
+
         if PluginManager.instance:
             PluginManager.instance.register_handler(self)
 
-        self.refresh()
-        self.__sig = self.connect_object(
-            'changed', self.__changed_order, model, player)
-        self.set_active(config.get("memory", "order"))
+        self._set_order(
+            self._get_order(config.getboolean("memory", "shuffle")))
+        shuffle.connect("toggled", self._random_toggle)
+
+    def set_shuffle(self, value):
+        """Set shuffle, will change the order accordingly"""
+
+        self._shuffle.set_active(value)
+
+    def get_shuffle(self):
+        """If the active order is a shuffle based one"""
+
+        return self._shuffle.get_active()
+
+    def set_active_by_name(self, name):
+        """Set the active play order via the order name.
+
+        Raises ValueError if not found.
+        """
+
+        for order in ORDERS:
+            if order.name == name:
+                self._set_order(order)
+                return
+        raise ValueError("order %r not available" % name)
+
+    def set_active_by_index(self, index):
+        """Set by index number in global order list.
+
+        Raises IndexError
+        """
+
+        self._set_order(ORDERS[index])
+
+    def get_active(self):
+        """Get the active order"""
+
+        return self._get_order(self.get_shuffle())
+
+    def get_active_name(self):
+        """Get the identifier name for the active play order"""
+
+        return self.get_active().name
+
+    def _get_order(self, shuffle):
+        """Get the active order for shuffle/inorder mode"""
+
+        first_matching = None
+        if shuffle:
+            name = config.get("memory", "order_shuffle")
+        else:
+            name = config.get("memory", "order")
+        for order in ORDERS:
+            if order.is_shuffle == shuffle:
+                first_matching = first_matching or order
+                if order.name == name:
+                    return order
+        return first_matching
+
+    def _set_order(self, order_cls):
+        """Set shuffle and order based on the passed class"""
+
+        self._model.order = order_cls(self._model)
+        is_shuffle = order_cls.is_shuffle
+
+        if not self._inhibit_save:
+            config.set("memory", "shuffle", is_shuffle)
+            if is_shuffle:
+                config.set("memory", "order_shuffle", order_cls.name)
+            else:
+                config.set("memory", "order", order_cls.name)
+        self.set_shuffle(is_shuffle)
+        self._refresh_menu()
+
+        self._player.replaygain_profiles[2] = order_cls.replaygain_profiles
+        self._player.volume = self._player.volume
         self.emit("changed")
+
+    def _refresh_menu(self):
+        is_shuffle = self._shuffle.get_active()
+
+        def toggled_cb(item, order):
+            if item.get_active():
+                self._set_order(order)
+
+        active_order = self._get_order(is_shuffle)
+
+        menu = Gtk.Menu()
+        group = None
+        for order in ORDERS:
+            if order.is_shuffle == is_shuffle:
+                group = RadioMenuItem(
+                    label=order.accelerated_name,
+                    use_underline=True,
+                    group=group)
+                group.set_active(order == active_order)
+                group.connect("toggled", toggled_cb, order)
+                menu.append(group)
+        menu.show_all()
+        self._shuffle.set_menu(menu)
+
+    def _random_toggle(self, button):
+        self._set_order(self._get_order(button.get_active()))
 
     def plugin_handle(self, plugin):
         from quodlibet.plugins.playorder import PlayOrderPlugin
@@ -221,56 +411,17 @@ class PlayOrder(Gtk.ComboBoxText):
         if plugin_cls.accelerated_name is None:
             plugin_cls.accelerated_name = plugin_cls.display_name
 
-        self.__plugins.append(plugin_cls)
-        self.refresh()
+        self._plugins.append(plugin_cls)
+        set_orders(self._plugins)
+        self._refresh_menu()
 
     def plugin_disable(self, plugin):
-        self.__plugins.remove(plugin.cls)
+        order = plugin.cls
+        self._plugins.remove(order)
+        set_orders(self._plugins)
 
         # Don't safe changes from plugin changes
         # so that disables on shutdown don't change the config.
-        if self.__sig:
-            self.handler_block(self.__sig)
-            self.refresh()
-            self.handler_unblock(self.__sig)
-        else:
-            self.refresh()
-
-    def refresh(self):
-        name = self.get_active_name()
-        self.get_model().clear()
-        set_orders(self.__plugins)
-        for order in ORDERS:
-            self.append_text(order.display_name)
-        if name:
-            self.set_active(name)
-        else:
-            self.set_active(ORDERS[0]).name
-
-    def set_active(self, value):
-        try:
-            value = ORDERS.index(value)
-        except ValueError:
-            if isinstance(value, str):
-                for i, Order in enumerate(ORDERS):
-                    if Order.name.lower() == value.lower():
-                        value = i
-                        break
-        try:
-            value = int(value)
-        except ValueError:
-            value = 0
-        super(PlayOrder, self).set_active(value)
-
-    def get_active_name(self):
-        try:
-            return ORDERS[self.get_active()].name
-        except IndexError:
-            return ORDERS[0].name
-
-    def __changed_order(self, model, player):
-        Order = ORDERS[self.get_active()]
-        model.order = Order(model)
-        config.set("memory", "order", Order.name)
-        player.replaygain_profiles[2] = Order.replaygain_profiles
-        player.volume = player.volume
+        self._inhibit_save = True
+        self._set_order(self._get_order(self.get_shuffle()))
+        self._inhibit_save = False

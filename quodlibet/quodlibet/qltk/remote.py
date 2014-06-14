@@ -269,15 +269,17 @@ def _volume(app, value):
 def _order(app, value):
     order = app.window.order
 
+    if value in ["t", "toggle"]:
+        order.set_shuffle(not order.get_shuffle())
+        return
+
     try:
-        order.set_active(
-            ["inorder", "shuffle", "weighted", "onesong"].index(value))
+        order.set_active_by_name(value.lower())
     except ValueError:
         try:
-            order.set_active(int(value))
-        except (ValueError, TypeError):
-            if value in ["t", "toggle"]:
-                order.set_active(not order.get_active())
+            order.set_active_by_index(int(value))
+        except (ValueError, IndexError):
+            pass
 
 
 @FIFOControl.command("repeat", args=1)

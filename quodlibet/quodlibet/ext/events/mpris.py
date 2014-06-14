@@ -183,11 +183,7 @@ class MPRIS1DummyTracklist(MPRISObject):
     @dbus.service.method(IFACE, in_signature="b")
     def SetRandom(self, shuffle):
         window = app.window
-        shuffle_on = window.order.get_active_name() == "shuffle"
-        if shuffle_on and not shuffle:
-            window.order.set_active("inorder")
-        elif not shuffle_on and shuffle:
-            window.order.set_active("shuffle")
+        window.order.set_shuffle(shuffle)
 
 
 class MPRIS1Player(MPRISObject):
@@ -294,9 +290,8 @@ class MPRIS1Player(MPRISObject):
     def __get_status(self):
         window = app.window
         play = (not app.player.info and 2) or int(app.player.paused)
-        shuffle = (window.order.get_active_name() != "inorder")
-        repeat_one = (window.order.get_active_name() == "onesong" and
-            window.repeat.get_active())
+        shuffle = window.order.get_shuffle()
+        repeat_one = window.order.get_active_name() == "onesong"
         repeat_all = int(window.repeat.get_active())
 
         return (play, shuffle, repeat_one, repeat_all)
@@ -652,19 +647,16 @@ value="false"/>
             if name == "LoopStatus":
                 if value == "Playlist":
                     window.repeat.set_active(True)
-                    window.order.set_active("inorder")
+                    window.order.set_active_by_name("inorder")
                 elif value == "Track":
                     window.repeat.set_active(True)
-                    window.order.set_active("onesong")
+                    window.order.set_active_by_name("onesong")
                 elif value == "None":
                     window.repeat.set_active(False)
             elif name == "Rate":
                 pass
             elif name == "Shuffle":
-                if value:
-                    window.order.set_active("shuffle")
-                else:
-                    window.order.set_active("inorder")
+                window.order.set_shuffle(value)
             elif name == "Volume":
                 player.volume = value
 
@@ -712,7 +704,7 @@ value="false"/>
             elif name == "Rate":
                 return 1.0
             elif name == "Shuffle":
-                return (window.order.get_active_name() == "shuffle")
+                return window.order.get_shuffle()
             elif name == "Metadata":
                 return self.__get_metadata()
             elif name == "Volume":

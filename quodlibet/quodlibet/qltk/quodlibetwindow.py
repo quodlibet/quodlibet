@@ -40,6 +40,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RPaned, ConfigRVPaned, Alignment, ScrolledWindow
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
@@ -196,27 +197,55 @@ class TopBar(Gtk.Toolbar):
             library.albums.refresh(refresh_albums)
 
 
+class ReapeatButton(Gtk.ToggleButton):
+
+    def __init__(self):
+        super(ReapeatButton, self).__init__(
+            image=SymbolicIconImage(
+                "media-playlist-repeat", Gtk.IconSize.SMALL_TOOLBAR))
+
+        style_provider = Gtk.CssProvider()
+        css = """
+            #ql-repeat-button {
+                padding: 0px;
+            }
+        """
+        style_provider.load_from_data(css)
+
+        self.set_name("ql-repeat-button")
+        self.set_size_request(26, 26)
+
+        style_context = self.get_style_context()
+        style_context.add_provider(
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
+        self.set_tooltip_text(_("Restart the playlist when finished"))
+
+        self.bind_config("settings", "repeat")
+
+    def bind_config(self, section, option):
+        self.set_active(config.getboolean(section, option))
+
+        def toggled_cb(*args):
+            config.set(section, option, self.get_active())
+
+        self.connect('toggled', toggled_cb)
+
+
 class StatusBarBox(Gtk.HBox):
+
     def __init__(self, model, player):
-        super(StatusBarBox, self).__init__(spacing=12)
+        super(StatusBarBox, self).__init__(spacing=6)
 
         self.order = order = PlayOrder(model, player)
+        self.pack_start(order, False, True, 0)
 
-        hb = Gtk.HBox(spacing=6)
-        label = Gtk.Label(label=_("_Order:"))
-        label.set_mnemonic_widget(order)
-        label.set_use_underline(True)
-        hb.pack_start(label, True, True, 0)
-        hb.pack_start(order, True, True, 0)
-        self.pack_start(hb, False, True, 0)
-
-        self.repeat = repeat = qltk.ccb.ConfigCheckButton(
-            _("_Repeat"), "settings", "repeat")
-        repeat.set_tooltip_text(_("Restart the playlist when finished"))
+        self.repeat = repeat = ReapeatButton()
         self.pack_start(repeat, False, True, 0)
-
         repeat.connect('toggled', self.__repeat, model)
-        repeat.set_active(config.getboolean('settings', 'repeat'))
+        model.repeat = repeat.get_active()
 
         self.statusbar = StatusBar(TaskController.default_instance)
         self.pack_start(self.statusbar, True, True, 0)
@@ -390,7 +419,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.statusbar = statusbox.statusbar
 
         main_box.pack_start(
-            Alignment(statusbox, border=3, top=-3, left=6, right=6),
+            Alignment(statusbox, border=3, top=-3, right=6),
             False, True, 0)
 
         self.songpane = ConfigRVPaned("memory", "queue_position", 0.75)

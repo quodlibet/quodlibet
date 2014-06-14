@@ -310,6 +310,26 @@ class ConfigRVPaned(ConfigRPaned):
     ORIENTATION = Gtk.Orientation.VERTICAL
 
 
+class SmallImageButton(Gtk.Button):
+    """A button for images with less padding"""
+
+    def __init__(self, **kwargs):
+        super(SmallImageButton, self).__init__(**kwargs)
+
+        self.set_size_request(26, 26)
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data("""
+            * {
+                padding: 0px;
+            }
+        """)
+        style_context = self.get_style_context()
+        style_context.add_provider(
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
+
 def ClearButton(entry=None):
     clear = Gtk.Button()
     clear.add(Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))

@@ -73,7 +73,8 @@ def find_widgets(container, type_):
     return found
 
 
-def popup_menu_under_widget(menu, widget, button, time):
+def _popup_menu_at_widget(menu, widget, button, time, under):
+
     def pos_func(menu, data, widget=widget):
         screen = widget.get_screen()
         ref = get_top_parent(widget)
@@ -87,16 +88,34 @@ def popup_menu_under_widget(menu, widget, button, time):
         screen_height = screen.get_height()
         menu.realize()
         ma = menu.get_allocation()
-        menu_y = y + dy + wa.height
-        if menu_y + ma.height > screen_height and y + dy - ma.height > 0:
-            menu_y = y + dy - ma.height
+
+        menu_y_under = y + dy + wa.height
+        menu_y_above = y + dy - ma.height
+        if under:
+            menu_y = menu_y_under
+            if menu_y + ma.height > screen_height and menu_y_above > 0:
+                menu_y = menu_y_above
+        else:
+            menu_y = menu_y_above
+            if menu_y < 0 and menu_y_under + ma.height < screen_height:
+                menu_y = menu_y_under
+
         if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
             menu_x = min(x + dx, screen_width - ma.width)
         else:
             menu_x = max(0, x + dx - ma.width + wa.width)
+
         return (menu_x, menu_y, True) # x, y, move_within_screen
     menu.popup(None, None, pos_func, None, button, time)
     return True
+
+
+def popup_menu_under_widget(menu, widget, button, time):
+    return _popup_menu_at_widget(menu, widget, button, time, True)
+
+
+def popup_menu_above_widget(menu, widget, button, time):
+    return _popup_menu_at_widget(menu, widget, button, time, False)
 
 
 def add_fake_accel(widget, accel):

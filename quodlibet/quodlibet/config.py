@@ -48,6 +48,8 @@ INITIAL = {
         "shufflequeue": "false", # on or off
         "sortby": "0album", # <reversed?>tagname, song list sort
         "order": "inorder",
+        "order_shuffle": "shuffle",
+        "shuffle": "false",
         "plugin_selection": "", # selected plugin in manager
         "column_widths": "", # column widths in c1,w1,c2,w2... format
         "column_expands": "",
