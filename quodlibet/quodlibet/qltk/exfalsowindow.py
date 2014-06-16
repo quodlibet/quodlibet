@@ -103,6 +103,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         hp.pack1(vb, resize=True, shrink=False)
 
         nb = qltk.Notebook()
+        nb.props.scrollable = True
         nb.show()
         for Page in [EditTags, TagsFromPath, RenameFiles, TrackNumbers]:
             page = Page(self, self.__library)

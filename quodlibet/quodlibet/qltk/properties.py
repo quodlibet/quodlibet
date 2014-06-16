@@ -45,6 +45,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
 
         paned = Gtk.HPaned()
         notebook = qltk.Notebook()
+        notebook.props.scrollable = True
         pages = []
         pages.extend([Ctr(self, library) for Ctr in
                       [EditTags, TagsFromPath, RenameFiles]])
