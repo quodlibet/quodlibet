@@ -282,10 +282,11 @@ class StatusBar(Gtk.HBox):
         self.task_controller.parent = self
 
         self.default_label = Gtk.Label(selectable=True)
-        self.default_label.set_alignment(1.0, 0.5)
         self.default_label.set_text(_("No time information"))
         self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.pack_start(self.default_label, True, True, 0)
+        self.pack_start(
+            Gtk.Alignment(xalign=1.0, xscale=0, child=self.default_label),
+            True, True, 0)
         self.task_widget = TaskWidget(task_controller)
         self.pack_start(self.task_widget, True, True, 0)
         # The history button will eventually hold the full list of running
