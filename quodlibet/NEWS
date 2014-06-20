@@ -1,3 +1,9 @@
+3.1.2 (2014-06-20) - Dang it
+----------------------------
+
+* Fix 3.1.1 regression causing folders in the file browser to show up in reverse order [1390]
+
+
 3.1.1 (2014-04-28) - I've shown that you're dealing with an Alpha here, baby, not some weak Beta!
 -------------------------------------------------------------------------------------------------
 
