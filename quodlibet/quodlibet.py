@@ -12,7 +12,7 @@
 
 import sys
 import os
-from quodlibet.cli import process_arguments, isrunning, control
+from quodlibet.cli import process_arguments, is_running, control
 from quodlibet.util.dprint import print_d, print_
 
 if sys.version_info[0] != 2:
@@ -31,7 +31,7 @@ def main():
     process_arguments()
 
     from quodlibet import const
-    if isrunning() and not const.DEBUG:
+    if is_running() and not const.DEBUG:
         print_(_("Quod Libet is already running."))
         control('focus')
 

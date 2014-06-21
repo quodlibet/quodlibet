@@ -72,9 +72,11 @@ def print_query(query):
 
     import quodlibet
     import quodlibet.library
-    from quodlibet import const
+    from quodlibet import const, config
 
     print_d("Querying library for %r" % query)
+    if "rating" in query:
+        config.init(const.CONFIG)
 
     library = quodlibet.library.init(const.LIBRARY)
     songs = library.query(query)
@@ -82,13 +84,13 @@ def print_query(query):
     quodlibet.exit()
 
 
-def isrunning():
+def is_running():
     from quodlibet import const
 
     # http://code.google.com/p/quodlibet/issues/detail?id=1131
     # FIXME: There is a race where control() creates a new file
-    # instead of writing to the fifo, confusing the next QL instance.
-    # Remove non-fifos here for now.
+    # instead of writing to the FIFO, confusing the next QL instance.
+    # Remove non-FIFOs here for now.
     try:
         if not stat.S_ISFIFO(os.stat(const.CONTROL).st_mode):
             print_d("%r not a FIFO. Remove it." % const.CONTROL)
@@ -102,7 +104,7 @@ def control(c):
     import quodlibet
     from quodlibet import const
 
-    if not isrunning():
+    if not is_running():
         quodlibet.exit(_("Quod Libet is not running."), notify_startup=True)
     else:
         try:
