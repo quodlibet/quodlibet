@@ -183,6 +183,7 @@ class Collection(object):
             return None
         elif key[:1] == "~":
             key = key[1:]
+            numkey = key.split(":")[0]
             keys = {"people": {}, "peoplesort": {}}
             if key in keys:
                 people = keys["people"]
@@ -219,33 +220,33 @@ class Collection(object):
                     self.__used.append(other)
                     self.__cache[other] = "\n".join(values)
                 return ret
-            elif key == "length":
-                length = self.__get_value("~#length")
+            elif numkey == "length":
+                length = self.__get_value("~#" + key)
                 return None if length is None else util.format_time(length)
-            elif key == "long-length":
-                length = self.__get_value("~#length")
+            elif numkey == "long-length":
+                length = self.__get_value("~#" + key[5:])
                 return (None if length is None
                         else util.format_time_long(length))
-            elif key == "tracks":
-                tracks = self.__get_value("~#tracks")
+            elif numkey == "tracks":
+                tracks = self.__get_value("~#" + key)
                 return (None if tracks is None else
                         ngettext("%d track", "%d tracks", tracks) % tracks)
-            elif key == "discs":
-                discs = self.__get_value("~#discs")
+            elif numkey == "discs":
+                discs = self.__get_value("~#" + key)
                 if discs > 1:
                     return ngettext("%d disc", "%d discs", discs) % discs
                 else:
                     # TODO: check this is correct for discs == 1
                     return None
-            elif key == "rating":
-                rating = self.__get_value("~#rating")
+            elif numkey == "rating":
+                rating = self.__get_value("~#" + key)
                 if rating is None:
                     return None
                 return util.format_rating(rating)
             elif key == "cover":
                 return ((self.cover != type(self).cover) and "y") or None
-            elif key == "filesize":
-                size = self.__get_value("~#filesize")
+            elif numkey == "filesize":
+                size = self.__get_value("~#" + key)
                 return None if size is None else util.format_size(size)
             key = "~" + key
 

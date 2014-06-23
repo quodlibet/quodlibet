@@ -7,6 +7,7 @@ from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
 from quodlibet.library.libraries import FileLibrary
+from quodlibet.util import format_rating
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
@@ -21,7 +22,8 @@ NUMERIC_SONGS = [
               "originaldate": "2002-01-01", "~#filesize": 202}),
     Fakesong({"~filename": "fake3.mp3",
               "~#length": 1, "~#added": 3, "~#lastplayed": 43,
-              "~#bitrate": 60, "date": "33", "~#rating": 0.5})
+              "~#bitrate": 60, "date": "33", "~#rating": 0.5,
+              "tracknumber": "4/6", "discnumber": "1/2"})
 ]
 AMAZING_SONG = Fakesong({"~#length": 123, "~#rating": 1.0})
 
@@ -131,6 +133,19 @@ class TAlbum(TestCase):
         self.assertEqual(album.comma("~#added"), 1)
         self.assertEqual(album.comma("~#rating"), 0.5)
         self.assertEqual(album.comma("~#bitrate"), 42)
+
+    def test_numeric_funcs_text(self):
+        songs = NUMERIC_SONGS
+        album = Album(songs[0])
+        album.songs = set(songs)
+
+        self.assertEqual(album("~length:sum"), "0:12")
+        self.assertEqual(album("~length:min"), "0:01")
+        self.assertEqual(album("~long-length:min"), "1 second")
+        self.assertEqual(album("~tracks:min"), "6 tracks")
+        self.assertEqual(album("~discs:min"), "2 discs")
+        self.assertEqual(album("~rating:min"), format_rating(0.1))
+        self.assertEqual(album("~filesize:min"), "0 B")
 
     def test_single_rating(s):
         songs = [Fakesong({"~#rating": 0.75})]

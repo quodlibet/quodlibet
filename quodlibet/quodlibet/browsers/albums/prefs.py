@@ -32,7 +32,7 @@ class FakeAlbum(dict):
     def get(self, key, default="", connector=" - "):
         if key[:1] == "~" and '~' in key[1:]:
             return connector.join(map(self.get, util.tagsplit(key)))
-        elif key[:2] == "~#" and key[-4:-3] == ":":
+        elif key[:1] == "~" and key[-4:-3] == ":":
             func = key[-3:]
             key = key[:-4]
             return "%s<%s>" % (util.tag(key), func)
