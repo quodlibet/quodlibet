@@ -44,12 +44,16 @@ class FakeStream(object):
 
 class TPyFlakes(TestCase):
 
-    def __check_path(self, path):
+    def __check_path(self, path, bl=None):
+        if bl is None:
+            bl = []
         old_stdout = sys.stdout
         stream = FakeStream()
         try:
             sys.stdout = stream
             for dirpath, dirnames, filenames in os.walk(path):
+                if os.path.relpath(dirpath, path) in bl:
+                    continue
                 for filename in filenames:
                     if filename.endswith('.py'):
                         pyflakes.checkPath(os.path.join(dirpath, filename))
@@ -61,7 +65,7 @@ class TPyFlakes(TestCase):
         import quodlibet
         path = quodlibet.__path__[0]
         path = os.path.dirname(path)
-        self.__check_path(path)
+        self.__check_path(path, bl=["build"])
 
     def test_plugins(self):
         import quodlibet
