@@ -12,7 +12,7 @@ from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_accel, is_wayland
+from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version
 
 
 class TreeViewHints(Gtk.Window):
@@ -69,7 +69,8 @@ class TreeViewHints(Gtk.Window):
         self.set_accept_focus(False)
         self.set_resizable(False)
         self.set_name("gtk-tooltip")
-        self.set_border_width(1)
+        if gtk_version < (3, 13):
+            self.set_border_width(1)
         self.connect('leave-notify-event', self.__undisplay)
 
         self.__handlers = {}
