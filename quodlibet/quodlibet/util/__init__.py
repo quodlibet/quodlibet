@@ -294,15 +294,6 @@ def format_time_long(time, limit=2):
     return ", ".join(time_str)
 
 
-def split_scan_dirs(s):
-    """Split the value of the "scan" setting, accounting for drive letters on
-    win32."""
-    if sys.platform == "win32":
-        return filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", s))
-    else:
-        return filter(None, s.split(":"))
-
-
 def capitalize(str):
     """Capitalize a string, not affecting any character after the first."""
     return str[:1].upper() + str[1:]

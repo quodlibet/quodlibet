@@ -6,6 +6,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import re
+import sys
+
 from quodlibet import app
 from quodlibet import config
 from quodlibet import util
@@ -15,6 +18,7 @@ from quodlibet.util import copool
 
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
+from quodlibet.util.string import split_escape
 
 
 def background_filter():
@@ -27,13 +31,25 @@ def background_filter():
         pass
 
 
+def split_scan_dirs(s):
+    """Split the value of the "scan" setting, accounting for drive letters on
+    win32."""
+    if sys.platform == "win32":
+        return filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", s))
+    else:
+        # See Issue 1413 - allow escaped colons
+        return filter(None, split_escape(s, ":"))
+
+
 def get_scan_dirs():
-    dirs = util.split_scan_dirs(config.get("settings", "scan"))
+    dirs = split_scan_dirs(config.get("settings", "scan"))
     return [util.fsnative(d) for d in dirs if d]
 
 
 def set_scan_dirs(dirs):
-    config.set("settings", "scan", util.fsencode(":".join(dirs)))
+    safe_dirs = (dirs if sys.platform == "win32"
+                 else [d.replace(':', '\:') for d in dirs])
+    config.set("settings", "scan", util.fsencode(":".join(safe_dirs)))
 
 
 def scan_library(library, force):
@@ -43,7 +59,7 @@ def scan_library(library, force):
     """
 
     paths = get_scan_dirs()
-    exclude = util.split_scan_dirs(config.get("library", "exclude"))
+    exclude = split_scan_dirs(config.get("library", "exclude"))
     exclude = [util.fsnative(e) for e in exclude]
     copool.add(library.rebuild, paths, force, exclude,
                cofuncid="library", funcid="library")
