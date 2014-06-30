@@ -1,7 +1,7 @@
 import uuid
 from quodlibet.config import HardCodedRatingsPrefs
 from quodlibet.util.path import *
-from quodlibet.util.string import decode, encode
+from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.string.splitters import *
 from quodlibet.util.library import *
 from tests import TestCase, mkstemp, skipIf
@@ -764,3 +764,61 @@ class Tload_library(TestCase):
         lib, name = util.load_library(["libglib-2.0.so.0"])
         self.assertEqual(name, "libglib-2.0.so.0")
         self.assertTrue(lib)
+
+
+class Tsplit_escape(TestCase):
+
+    def test_split_escape(self):
+        # from mutagen
+
+        inout = [
+            (("", ":"), [""]),
+            ((":", ":"), ["", ""]),
+            ((":", ":", 0), [":"]),
+            ((":b:c:", ":", 0), [":b:c:"]),
+            ((":b:c:", ":", 1), ["", "b:c:"]),
+            ((":b:c:", ":", 2), ["", "b", "c:"]),
+            ((":b:c:", ":", 3), ["", "b", "c", ""]),
+            (("a\\:b:c", ":"), ["a:b", "c"]),
+            (("a\\\\:b:c", ":"), ["a\\", "b", "c"]),
+            (("a\\\\\\:b:c\\:", ":"), ["a\\:b", "c:"]),
+            (("\\", ":"), [""]),
+            (("\\\\", ":"), ["\\"]),
+            (("\\\\a\\b", ":"), ["\\a\\b"]),
+        ]
+
+        for inargs, out in inout:
+            self.assertEqual(split_escape(*inargs), out)
+
+    def test_types(self):
+        parts = split_escape("\xff:\xff", ":")
+        self.assertEqual(parts, ["\xff", "\xff"])
+        self.assertTrue(isinstance(parts[0], bytes))
+
+        parts = split_escape(u"a:b", u":")
+        self.assertEqual(parts, [u"a", u"b"])
+        self.assertTrue(all(isinstance(p, unicode) for p in parts))
+
+        parts = split_escape(u"", u":")
+        self.assertEqual(parts, [u""])
+        self.assertTrue(all(isinstance(p, unicode) for p in parts))
+
+        parts = split_escape(u":", u":")
+        self.assertEqual(parts, [u"", u""])
+        self.assertTrue(all(isinstance(p, unicode) for p in parts))
+
+    def test_join_escape_types(self):
+        self.assertEqual(join_escape([], ":"), "")
+        self.assertTrue(isinstance(join_escape([], ":"), bytes))
+        self.assertTrue(isinstance(join_escape([], u":"), unicode))
+        self.assertEqual(join_escape(["\xff", "\xff"], ":"), "\xff:\xff")
+        self.assertEqual(join_escape([u'\xe4', u'\xe4'], ":"), u'\xe4:\xe4')
+
+    def test_join_escape(self):
+        self.assertEqual(join_escape([":"], ":"), "\\:")
+        self.assertEqual(join_escape(["\\:", ":"], ":"), "\\\\\\::\\:")
+
+    def test_roundtrip(self):
+        values = ["\\:", ":"]
+        joined = join_escape(values, ":")
+        self.assertEqual(split_escape(joined, ":"), values)

@@ -24,19 +24,27 @@ def encode(s, charset="utf-8"):
         return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
 
 
-def split_escape(string, sep, maxsplit=None, escape_char=u"\\"):
-    """Like unicode.split but allows for the separator to be escaped
-       Borrowed from Mutagen's mid3v2
+def split_escape(string, sep, maxsplit=None, escape_char="\\"):
+    """Like unicode/str.split but allows for the separator to be escaped
+
+    If passed unicode/str will only return list of unicode/str.
+
+    Borrowed from Mutagen's mid3v2
     """
 
     assert len(sep) == 1
     assert len(escape_char) == 1
 
+    # don't allow auto decoding of 'string'
+    if isinstance(string, bytes):
+        assert not isinstance(sep, unicode)
+
     if maxsplit is None:
         maxsplit = len(string)
 
+    empty = type(string)("")
     result = []
-    current = u""
+    current = empty
     escaped = False
     for char in string:
         if escaped:
@@ -49,8 +57,32 @@ def split_escape(string, sep, maxsplit=None, escape_char=u"\\"):
                 escaped = True
             elif char == sep and len(result) < maxsplit:
                 result.append(current)
-                current = u""
+                current = empty
             else:
                 current += char
     result.append(current)
     return result
+
+
+def join_escape(values, sep, escape_char="\\"):
+    """Join str/unicode so that it can be split with split_escape.
+
+    In case values is empty, the result has the type of `sep`.
+    otherwise it has the type of values.
+
+    Be aware that split_escape(join_escape([])) will result in [''].
+    """
+
+    assert len(sep) == 1
+    assert len(escape_char) == 1
+
+    # don't allow auto decoding of 'values'
+    if values and isinstance(values[0], bytes):
+        assert not isinstance(sep, unicode)
+
+    escaped = []
+    for value in values:
+        value = value.replace(escape_char, escape_char + escape_char)
+        value = value.replace(sep, escape_char + sep)
+        escaped.append(value)
+    return sep.join(escaped)

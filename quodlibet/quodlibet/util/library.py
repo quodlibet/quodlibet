@@ -18,7 +18,7 @@ from quodlibet.util import copool
 
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
-from quodlibet.util.string import split_escape
+from quodlibet.util.string import split_escape, join_escape
 
 
 def background_filter():
@@ -47,9 +47,11 @@ def get_scan_dirs():
 
 
 def set_scan_dirs(dirs):
-    safe_dirs = (dirs if sys.platform == "win32"
-                 else [d.replace(':', '\:') for d in dirs])
-    config.set("settings", "scan", util.fsencode(":".join(safe_dirs)))
+    if sys.platform == "win32":
+        joined = ":".join(dirs)
+    else:
+        joined = join_escape(dirs, ":")
+    config.set("settings", "scan", util.fsencode(joined))
 
 
 def scan_library(library, force):
