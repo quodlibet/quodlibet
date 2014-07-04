@@ -89,7 +89,15 @@ class PersistentWindowMixin(object):
         self.__size_suffix = size_suffix
         self.connect('configure-event', self.__save_size)
         self.connect('window-state-event', self.__window_state_changed)
+        self.connect('notify::visible', self.__visible_changed)
         self.__restore_window_state()
+
+    def __visible_changed(self, *args):
+        if not self.get_visible():
+            # https://bugzilla.gnome.org/show_bug.cgi?id=731287
+            # if we restore after hide, mutter will remember for the next show
+            # hurray!
+            self.__restore_window_state()
 
     def __restore_window_state(self):
         if not is_wayland():
