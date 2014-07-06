@@ -434,11 +434,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         format_desc = get_description(message)
         title = _(u"No GStreamer element found to handle media format")
-        details = _(u"Media format: %(format-description)s") % {
+        error_details = _(u"Media format: %(format-description)s") % {
             "format-description": format_desc.decode("utf-8")}
 
-        # TODO: track success
-        def install_done_cb(*args):
+        def install_done_cb(plugins_return, *args):
+            print_d("Gstreamer plugin install return: %r" % plugins_return)
             Gst.update_registry()
 
         context = GstPbutils.InstallPluginsContext.new()
@@ -448,7 +448,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if res in (GstPbutils.InstallPluginsReturn.HELPER_MISSING,
                 GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE):
-            self._error(PlayerError(title, details))
+            self._error(PlayerError(title, error_details))
 
     def __about_to_finish(self, pipeline):
         print_d("About to finish")
