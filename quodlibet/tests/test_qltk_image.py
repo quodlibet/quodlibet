@@ -12,7 +12,7 @@ def _has_gi_attr(obj, name):
     # work around using 3.10 gir with 3.8 gtk on windows...
     try:
         getattr(obj, name)
-    except (AttributeError, Glib.GError):
+    except (AttributeError, GLib.GError):
         return False
     return True
 
