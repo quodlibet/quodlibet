@@ -2,10 +2,19 @@ from tests import TestCase
 from helper import visible
 
 import cairo
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf, GLib
 
 from quodlibet.qltk.image import *
 from quodlibet import config
+
+
+def _has_gi_attr(obj, name):
+    # work around using 3.10 gir with 3.8 gtk on windows...
+    try:
+        getattr(obj, name)
+    except (AttributeError, Glib.GError):
+        return False
+    return True
 
 
 class TImageUtils(TestCase):
@@ -32,7 +41,7 @@ class TImageUtils(TestCase):
     def test_set_image_from_pbosf(self):
         image = Gtk.Image()
 
-        if hasattr(Gtk.Image, "new_from_surface"):
+        if _has_gi_attr(Gtk.Image, "new_from_surface"):
             sf = cairo.ImageSurface(cairo.FORMAT_RGB24, 10, 10)
             set_image_from_pbosf(image, sf)
             self.assertTrue(image.props.surface)
