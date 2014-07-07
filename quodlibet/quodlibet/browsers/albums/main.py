@@ -37,6 +37,8 @@ from quodlibet.util import copool, gobject_weak, thumbnails
 from quodlibet.util.library import background_filter
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
+from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
+    pbosf_get_property_name)
 
 
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
@@ -340,7 +342,6 @@ class VisibleUpdate(object):
 class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     __gsignals__ = Browser.__gsignals__
     __model = None
-    __no_cover = None
     __last_render = None
     __last_render_pb = None
 
@@ -370,8 +371,6 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         except EnvironmentError:
             klass._pattern_text = PATTERN
 
-        cover_size = Album.COVER_SIZE
-        klass.__no_cover = get_no_cover_pixbuf(cover_size, cover_size)
         klass._pattern = XMLFromMarkupPattern(klass._pattern_text)
 
     @classmethod
@@ -411,6 +410,15 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if klass.__library:
             klass.__library.albums.refresh(albums)
 
+    @util.cached_property
+    def _no_cover(self):
+        """Returns a cairo surface of pixbuf representing a missing cover"""
+
+        cover_size = Album.COVER_SIZE
+        scale_factor = get_scale_factor(self)
+        pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
+        return get_pbosf_for_pixbuf(self, pb)
+
     def __init__(self, library, main):
         super(AlbumList, self).__init__(spacing=6)
         self._register_instance()
@@ -440,15 +448,16 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             if album is None:
                 pixbuf = None
             elif album.cover:
-                pixbuf = album.cover
+                pixbuf = get_pbosf_for_pixbuf(self, album.cover)
             else:
                 pixbuf = no_cover
             if self.__last_render_pb == pixbuf:
                 return
             self.__last_render_pb = pixbuf
-            cell.set_property('pixbuf', pixbuf)
+            prop_name = pbosf_get_property_name(pixbuf)
+            cell.set_property(prop_name, pixbuf)
 
-        column.set_cell_data_func(render, cell_data_pb, self.__no_cover)
+        column.set_cell_data_func(render, cell_data_pb, self._no_cover)
         view.append_column(column)
 
         render = Gtk.CellRendererText()
@@ -548,7 +557,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     def _update_row(self, row):
         album = row[0]
-        album.scan_cover()
+        scale_factor = get_scale_factor(self)
+        album.scan_cover(scale_factor=scale_factor)
         self._refresh_albums([album])
 
     def __destroy(self, browser):

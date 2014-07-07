@@ -299,7 +299,7 @@ class Album(Collection):
         self.__dict__.pop("peoplesort", None)
         self.__dict__.pop("genre", None)
 
-    def scan_cover(self, force=False):
+    def scan_cover(self, force=False, scale_factor=1):
         if (self.scanned and not force) or not self.songs:
             return
         self.scanned = True
@@ -308,7 +308,8 @@ class Album(Collection):
         cover = song.find_cover()
 
         if cover is not None:
-            s = self.COVER_SIZE
+            s = self.COVER_SIZE * scale_factor
+
             try:
                 round = config.getboolean("albumart", "round")
                 self.cover = thumbnails.get_thumbnail(cover.name, (s, s))

@@ -11,32 +11,13 @@ from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet.util import thumbnails
+from quodlibet.qltk.image import (get_scale_factor, pixbuf_from_file,
+    set_image_from_pbosf, get_pbosf_for_pixbuf, pbosf_render)
 from quodlibet.util.cover.manager import cover_plugins
 
 
 # TODO: neater way of managing dependency on this particular plugin
 ALBUM_ART_PLUGIN_ID = "Download Album Art"
-
-
-def pixbuf_from_file(fileobj, boundary):
-    """Returns a pixbuf with the maximum size defined by boundary.
-
-    Can raise GLib.GError and return None
-    """
-
-    try:
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file(fileobj.name)
-    except GLib.GError:
-        try:
-            loader = GdkPixbuf.PixbufLoader()
-            loader.write(fileobj.read())
-            loader.close()
-            fileobj.seek(0, 0)
-            pixbuf = loader.get_pixbuf()
-        except EnvironmentError:
-            return
-
-    return thumbnails.scale(pixbuf, boundary, scale_up=False)
 
 
 class BigCenteredImage(qltk.Window):
@@ -64,9 +45,11 @@ class BigCenteredImage(qltk.Window):
 
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
+        scale_factor = get_scale_factor(self)
+
         pixbuf = None
         try:
-            pixbuf = pixbuf_from_file(fileobj, (width, height))
+            pixbuf = pixbuf_from_file(fileobj, (width, height), scale_factor)
         except GLib.GError:
             pass
 
@@ -76,7 +59,7 @@ class BigCenteredImage(qltk.Window):
             return
 
         image = Gtk.Image()
-        image.set_from_pixbuf(pixbuf)
+        set_image_from_pbosf(image, get_pbosf_for_pixbuf(self, pixbuf))
 
         event_box = Gtk.EventBox()
         event_box.add(image)
@@ -95,10 +78,13 @@ class BigCenteredImage(qltk.Window):
         self.destroy()
 
 
-def get_no_cover_pixbuf(width, height):
+def get_no_cover_pixbuf(width, height, scale_factor=1):
     """A no cover pixbux at max width x height"""
 
     # win32 workaround: https://bugzilla.gnome.org/show_bug.cgi?id=721062
+
+    width *= scale_factor
+    height *= scale_factor
 
     size = max(width, height)
     theme = Gtk.IconTheme.get_default()
@@ -142,16 +128,18 @@ class ResizeImage(Gtk.Bin):
             return self._pixbuf
         self._dirty = False
 
+        max_size = 256 * get_scale_factor(self)
+
         self._pixbuf = None
         if self._file:
             try:
                 self._pixbuf = thumbnails.get_thumbnail_from_file(
-                    self._file, (256, 256))
+                    self._file, (max_size, max_size))
             except GLib.GError:
                 pass
 
         if not self._pixbuf:
-            self._pixbuf = get_no_cover_pixbuf(256, 256)
+            self._pixbuf = get_no_cover_pixbuf(max_size, max_size)
 
         return self._pixbuf
 
@@ -198,6 +186,12 @@ class ResizeImage(Gtk.Bin):
 
         alloc = self.get_allocation()
         width, height = alloc.width, alloc.height
+
+        scale_factor = get_scale_factor(self)
+
+        width *= scale_factor
+        height *= scale_factor
+
         if self._path:
             if width < 2 or height < 2:
                 return
@@ -208,7 +202,9 @@ class ResizeImage(Gtk.Bin):
             pixbuf = thumbnails.scale(pixbuf, (width, height))
 
         style_context = self.get_style_context()
-        Gtk.render_icon(style_context, cairo_context, pixbuf, 0, 0)
+
+        pbosf = get_pbosf_for_pixbuf(self, pixbuf)
+        pbosf_render(style_context, cairo_context, pbosf, 0, 0)
 
 
 class CoverImage(Gtk.EventBox):

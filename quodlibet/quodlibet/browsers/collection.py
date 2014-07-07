@@ -23,6 +23,8 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import AllTreeView, BaseView
+from quodlibet.qltk.image import (get_scale_factor, get_pbosf_for_pixbuf,
+    pbosf_get_property_name)
 from quodlibet.qltk.x import ScrolledWindow, Alignment, SymbolicIconImage
 from quodlibet.util.collection import Album
 from quodlibet.util.library import background_filter
@@ -608,9 +610,11 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             # XXX: Cache this somewhere else
             cover = None
             if not hasattr(album, "_scaled_cover"):
-                album.scan_cover()
+                scale_factor = get_scale_factor(self)
+                album.scan_cover(scale_factor=scale_factor)
                 if album.cover:
-                    cover = scale(album.cover, (25, 25))
+                    s = 25 * scale_factor
+                    cover = scale(album.cover, (s, s))
                     album._scaled_cover = cover
             else:
                 cover = album._scaled_cover
@@ -623,7 +627,9 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             else:
                 cover = get_scaled_cover(album)
                 if cover:
-                    cell.set_property('pixbuf', cover)
+                    pbosf = get_pbosf_for_pixbuf(self, cover)
+                    prop_name = pbosf_get_property_name(pbosf)
+                    cell.set_property(prop_name, pbosf)
                 else:
                     cell.set_property('stock_id', Gtk.STOCK_CDROM)
 
