@@ -55,7 +55,7 @@ class CurrentColumn(SongListColumn):
 
     def __init__(self):
         super(CurrentColumn, self).__init__("~current")
-        self._render = Gtk.CellRendererPixbuf()
+        self._render = Gtk.CellRendererPixbuf(follow_state=True)
         self.pack_start(self._render, True)
         self._render.set_property('xalign', 0.5)
 
