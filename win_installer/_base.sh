@@ -31,7 +31,7 @@ function download_and_verify {
         wget -P "$BIN" -c http://mercurial.selenic.com/release/windows/mercurial-2.8.1-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.10.2-win32_rev18-setup.exe
+        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.12.2-win32_rev5-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
@@ -102,10 +102,11 @@ function extract_deps {
     # extract the gi binaries
     PYGI="$BUILD_ENV"/pygi
     echo "extract pygi-aio..."
-    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.10.2-win32_rev18-setup.exe > /dev/null
+    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.12.2-win32_rev5-setup.exe > /dev/null
     echo "done"
     echo "extract packages..."
     (cd "$PYGI"/rtvc9/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
+    (cd "$PYGI"/noarch/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
     (cd "$PYGI"/binding/py2.7 && 7z x -y py2.7.7z > /dev/null)
     echo "done"
 
@@ -113,31 +114,36 @@ function extract_deps {
     DEPS="$BUILD_ENV"/deps
     mkdir "$DEPS"
 
-    cp "$PYGI"/binding/py2.7/gnome/*.dll "$DEPS"
+    mv "$PYGI"/noarch/GTKold/ "$PYGI"/noarch/GTKOld/
 
-    cp -RT "$PYGI"/rtvc9/Base/gnome "$DEPS"
+    for name in rtvc9 noarch; do
+        cp -RT "$PYGI"/"$name"/Base/gnome "$DEPS"
 
-    cp -RT "$PYGI"/rtvc9/JPEG/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/WebP/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/JPEG/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/WebP/gnome "$DEPS"
 
-    cp -RT "$PYGI"/rtvc9/GDKOld/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/GDKPixbuf/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/ATK/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/Pango/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/GTKold/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GDKOld/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GDKPixbuf/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/ATK/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Pango/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GTKOld/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Harfbuzz/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Openraw/gnome "$DEPS"
 
-    cp -RT "$PYGI"/rtvc9/Gstreamer/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Gstreamer/gnome "$DEPS"
 
-    cp -RT "$PYGI"/rtvc9/Orc/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/GnuTLS/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/Soup/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/SQLite/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/GSTPlugins/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Orc/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GnuTLS/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Aerial/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Soup/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Jack/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/SQLite/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GSTPlugins/gnome "$DEPS"
 
-    cp -RT "$PYGI"/rtvc9/OpenJPEG/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/Nice/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/Curl/gnome "$DEPS"
-    cp -RT "$PYGI"/rtvc9/GSTPluginsExtra/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/OpenJPEG/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Curl/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GSTPluginsExtra/gnome "$DEPS"
+    done
 }
 
 function setup_deps {
@@ -145,6 +151,9 @@ function setup_deps {
     wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/gnome
     wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/hicolor
     wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/HighContrast
+
+    echo "compile glib schemas"
+    wine "$DEPS"/glib-compile-schemas.exe "$DEPS"/share/glib-2.0/schemas
 
     echo "set GTK+ settings"
     local GTK_SETTINGS="$DEPS"/etc/gtk-3.0/settings.ini
