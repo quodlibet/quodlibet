@@ -621,7 +621,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         box.pack_start(search, True, True, 0)
         box.pack_start(button, False, True, 0)
         if main:
-            self._searchbox = Alignment(box, left=0, right=6)
+            self._searchbox = Alignment(box, left=0, right=6, top=6)
         else:
             self._searchbox = box
         self._searchbox.show_all()
