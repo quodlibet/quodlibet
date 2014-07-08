@@ -44,3 +44,16 @@ class TImageUtils(TestCase):
         newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, 10, 10)
         set_image_from_pbosf(image, newpb)
         self.assertTrue(image.props.pixbuf)
+
+    def test_set_renderer_from_pbosf(self):
+        cell = Gtk.CellRendererPixbuf()
+
+        if hasattr(Gtk.Image, "new_from_surface"):
+            sf = cairo.ImageSurface(cairo.FORMAT_RGB24, 10, 10)
+            set_renderer_from_pbosf(cell, sf)
+
+        rgb = GdkPixbuf.Colorspace.RGB
+        newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, 10, 10)
+        set_renderer_from_pbosf(cell, newpb)
+
+        set_renderer_from_pbosf(cell, None)

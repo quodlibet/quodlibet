@@ -58,6 +58,13 @@ def pbosf_get_property_name(pbosf):
         return "surface"
 
 
+def set_renderer_from_pbosf(renderer, pbosf):
+    """Set a Gtk.CellRendererPixbuf given a PixbufOrSurface or None"""
+
+    name = pbosf_get_property_name(pbosf)
+    renderer.set_property(name, pbosf)
+
+
 def set_image_from_pbosf(image, pbosf):
     """Sets a Gtk.Image given a PixbufOrSurface"""
 

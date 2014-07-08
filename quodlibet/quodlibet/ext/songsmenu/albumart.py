@@ -29,9 +29,13 @@ from quodlibet.util import format_size, print_exc
 
 from quodlibet import util, qltk, print_w, app
 from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
+    get_pbosf_for_pixbuf, set_image_from_pbosf)
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.parse import Pattern
 from quodlibet.util.path import fsencode, iscommand
+from quodlibet.util import thumbnails
+
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
@@ -669,52 +673,33 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
     def __update(self, loader, *data):
         """Update the picture while it's loading"""
+
         if self.stop_loading:
             return
         pixbuf = loader.get_pixbuf()
-        GLib.idle_add(self.image.set_from_pixbuf, pixbuf)
+
+        def idle_set():
+            set_image_from_pbosf(self.image, pixbuf)
+
+        GLib.idle_add(idle_set)
 
     def __scale_pixbuf(self, *data):
         if not self.current_pixbuf:
             return
         pixbuf = self.current_pixbuf
 
-        if self.window_fit.get_active():
-            pb_width = pixbuf.get_width()
-            pb_height = pixbuf.get_height()
-
+        if not self.window_fit.get_active():
+            pbosf = pixbuf
+        else:
             alloc = self.scrolled.get_allocation()
             width = alloc.width
             height = alloc.height
+            scale_factor = get_scale_factor(self)
+            boundary = (width * scale_factor, height * scale_factor)
+            pixbuf = thumbnails.scale(pixbuf, boundary, scale_up=False)
+            pbosf = get_pbosf_for_pixbuf(self, pixbuf)
 
-            if pb_width > width or pb_height > height:
-                pb_ratio = float(pb_width) / pb_height
-                win_ratio = float(width) / height
-
-                if pb_ratio > win_ratio:
-                    scale_w = width
-                    scale_h = int(width / pb_ratio)
-                else:
-                    scale_w = int(height * pb_ratio)
-                    scale_h = height
-
-                # The size is wrong if the window is about to close
-                if scale_w <= 0 or scale_h <= 0:
-                    return
-
-                thr = threading.Thread(
-                    target=self.__scale_async,
-                    args=(pixbuf, scale_w, scale_h))
-                thr.setDaemon(True)
-                thr.start()
-            else:
-                self.image.set_from_pixbuf(pixbuf)
-        else:
-            self.image.set_from_pixbuf(pixbuf)
-
-    def __scale_async(self, pixbuf, w, h):
-            pixbuf = pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
-            GLib.idle_add(self.image.set_from_pixbuf, pixbuf)
+        set_image_from_pbosf(self.image, pbosf)
 
     def __close(self, loader, *data):
         if self.stop_loading:
@@ -816,6 +801,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     """The main window including the search list"""
 
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
+    THUMB_SIZE = 48
 
     def __init__(self, songs):
         super(AlbumArtWindow, self).__init__()
@@ -830,7 +816,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         image = CoverArea(self, songs[0])
 
-        self.liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, object)
+        self.liststore = Gtk.ListStore(object, object)
         self.treeview = treeview = AllTreeView(self.liststore)
         self.treeview.set_headers_visible(False)
         self.treeview.set_rules_hint(True)
@@ -851,13 +837,18 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn('Thumb')
         img_col.pack_start(rend_pix, False)
-        img_col.add_attribute(rend_pix, 'pixbuf', 0)
+
+        def cell_data_pb(column, cell, model, iter_, *args):
+            pbosf = model[iter_][0]
+            set_renderer_from_pbosf(cell, pbosf)
+
+        img_col.set_cell_data_func(rend_pix, cell_data_pb, None)
         treeview.append_column(img_col)
 
         rend_pix.set_property('xpad', 2)
         rend_pix.set_property('ypad', 2)
-        rend_pix.set_property('width', 56)
-        rend_pix.set_property('height', 56)
+        rend_pix.set_property('width', self.THUMB_SIZE + 4 + 2)
+        rend_pix.set_property('height', self.THUMB_SIZE + 4 + 2)
 
         def escape_data(data):
             for rep in ('\n', '\t', '\r', '\v'):
@@ -989,15 +980,11 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             pbloader.write(get_url(cover['thumbnail'])[0])
             pbloader.close()
 
-            size = 48
-
+            size = self.THUMB_SIZE * get_scale_factor(self)
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
-
-            thumb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
-                                         size + 2, size + 2)
-            thumb.fill(0x000000ff)
-            pixbuf.copy_area(0, 0, size, size, thumb, 1, 1)
+            pixbuf = thumbnails.add_border(pixbuf, 80, round=True)
+            thumb = get_pbosf_for_pixbuf(self, pixbuf)
         except (GLib.GError, IOError):
             pass
         else:

@@ -38,7 +38,7 @@ from quodlibet.util.library import background_filter
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
-    pbosf_get_property_name)
+    pbosf_get_property_name, set_renderer_from_pbosf)
 
 
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
@@ -454,8 +454,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             if self.__last_render_pb == pixbuf:
                 return
             self.__last_render_pb = pixbuf
-            prop_name = pbosf_get_property_name(pixbuf)
-            cell.set_property(prop_name, pixbuf)
+            set_renderer_from_pbosf(cell, pixbuf)
 
         column.set_cell_data_func(render, cell_data_pb, self._no_cover)
         view.append_column(column)
