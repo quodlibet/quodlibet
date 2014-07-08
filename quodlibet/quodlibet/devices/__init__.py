@@ -190,36 +190,34 @@ def get_device_from_path(udev_ctx, path):
     return attrs
 
 
-class DKD(DeviceManager):
-    __interface = None
-    __udev = None
+class UDisks1Manager(DeviceManager):
 
-    def __init__(self, dkd_name):
-        self.__bus = ".".join(dkd_name)
-        self.__path = "/".join(dkd_name)
-        super(DKD, self).__init__("org.freedesktop.%s" % self.__bus)
+    def __init__(self):
+        bus_name = "org.freedesktop.UDisks"
+        interface = "org.freedesktop.UDisks"
+        path = "/org/freedesktop/UDisks"
+
+        super(UDisks1Manager, self).__init__(bus_name)
 
         error = False
 
         try:
             udev.init()
         except OSError:
-            print_w(_("%s: Could not find 'libudev'.") % self.__bus)
+            print_w(_("%s: Could not find 'libudev'.") % "UDisks")
             error = True
         else:
             self.__udev = udev.Udev.new()
 
         if self.__get_mpi_dir() is None:
             print_w(_("%s: Could not find %s.")
-                    % (self.__bus, "media-player-info"))
+                    % ("UDisks", "media-player-info"))
             error = True
 
         if error:
             raise LookupError
 
-        interface = "org.freedesktop.%s" % self.__bus
-        path = "/org/freedesktop/%s" % self.__path
-        obj = self._system_bus.get_object(interface, path)
+        obj = self._system_bus.get_object(bus_name, path)
         self.__interface = dbus.Interface(obj, interface)
 
         self.__devices = {}
@@ -228,20 +226,21 @@ class DKD(DeviceManager):
             self.__device_removed)
 
     def __get_dev_prop_interface(self, path):
-        interface = "org.freedesktop.%s" % self.__bus
-        obj = self._system_bus.get_object(interface, path)
+        bus_name = "org.freedesktop.UDisks"
+        obj = self._system_bus.get_object(bus_name, path)
         return dbus.Interface(obj, "org.freedesktop.DBus.Properties")
 
     def __get_dev_interface(self, path):
-        interface = "org.freedesktop.%s" % self.__bus
-        obj = self._system_bus.get_object(interface, path)
-        return dbus.Interface(obj, "org.freedesktop.%s.Device" % self.__bus)
+        bus_name = "org.freedesktop.UDisks"
+        obj = self._system_bus.get_object(bus_name, path)
+        return dbus.Interface(obj, "org.freedesktop.UDisks.Device")
 
     def __get_dev_property(self, interface, property):
         return interface.Get("org.freedesktop.DBus.Properties", property)
 
     def __get_device_id(self, path):
         """A unique device id"""
+
         prop_if = self.__get_dev_prop_interface(path)
         dev_id = self.__get_dev_property(prop_if, 'device-file-by-id')[0]
         dev_id = basename(dev_id)
@@ -402,19 +401,10 @@ def init():
     print_d(_("Initializing device backend."))
     try_text = _("Trying '%s'")
 
-    #DKD maintainers will change the naming of dbus, app stuff
-    #in january 2010 or so (already changed in trunk), so try both
     if device_manager is None:
-        print_d(try_text % "DeviceKit Disks")
+        print_d(try_text % "UDisks1")
         try:
-            device_manager = DKD(("DeviceKit", "Disks"))
-        except (LookupError, dbus.DBusException):
-            pass
-
-    if device_manager is None:
-        print_d(try_text % "UDisks")
-        try:
-            device_manager = DKD(("UDisks",))
+            device_manager = UDisks1Manager()
         except (LookupError, dbus.DBusException):
             pass
 
