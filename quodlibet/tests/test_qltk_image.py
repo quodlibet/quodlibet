@@ -8,15 +8,6 @@ from quodlibet.qltk.image import *
 from quodlibet import config
 
 
-def _has_gi_attr(obj, name):
-    # work around using 3.10 gir with 3.8 gtk on windows...
-    try:
-        getattr(obj, name)
-    except (AttributeError, GLib.GError):
-        return False
-    return True
-
-
 class TImageUtils(TestCase):
 
     def test_scale_factor(self):
@@ -38,10 +29,13 @@ class TImageUtils(TestCase):
         newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, 10, 10)
         self.assertEqual(pbosf_get_property_name(newpb), "pixbuf")
 
+        # We pass None to clear an image, fall back to pixbuf in this case
+        self.assertEqual(pbosf_get_property_name(None), "pixbuf")
+
     def test_set_image_from_pbosf(self):
         image = Gtk.Image()
 
-        if _has_gi_attr(Gtk.Image, "new_from_surface"):
+        if hasattr(Gtk.Image, "new_from_surface"):
             sf = cairo.ImageSurface(cairo.FORMAT_RGB24, 10, 10)
             set_image_from_pbosf(image, sf)
             self.assertTrue(image.props.surface)

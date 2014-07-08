@@ -24,19 +24,10 @@ from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
 from quodlibet.util import thumbnails
 
 
-def _has_gi_attr(obj, name):
-    # work around using 3.10 gir with 3.8 gtk on windows...
-    try:
-        getattr(obj, name)
-    except (AttributeError, GLib.GError):
-        return False
-    return True
-
-
 def get_scale_factor(widget):
     """Returns the scale factor for a Gtk.Widget"""
 
-    if _has_gi_attr(widget, "get_scale_factor"):
+    if hasattr(widget, "get_scale_factor"):
         return widget.get_scale_factor()
     else:
         return 1
@@ -47,7 +38,7 @@ def get_pbosf_for_pixbuf(widget, pixbuf):
     let's call it PixbufOrSurface..
     """
 
-    if _has_gi_attr(Gdk, "cairo_surface_create_from_pixbuf"):
+    if hasattr(Gdk, "cairo_surface_create_from_pixbuf"):
         scale_factor = widget.get_scale_factor()
         # Don't create a surface if we don't have to
         if scale_factor == 1:
@@ -61,7 +52,7 @@ def get_pbosf_for_pixbuf(widget, pixbuf):
 def pbosf_get_property_name(pbosf):
     """Gives the property name to use for the PixbufOrSurface."""
 
-    if isinstance(pbosf, GdkPixbuf.Pixbuf):
+    if pbosf is None or isinstance(pbosf, GdkPixbuf.Pixbuf):
         return "pixbuf"
     else:
         return "surface"
