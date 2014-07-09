@@ -137,11 +137,15 @@ def add_fake_accel(widget, accel):
         'activate', group, key, val, Gtk.AccelFlags.VISIBLE)
 
 
-def is_accel(event, accel):
-    """Checks if the given keypress Gdk.Event matches an accelerator string
+def is_accel(event, *accels):
+    """Checks if the given keypress Gdk.Event matches
+    any of accelerator strings.
 
     example: is_accel(event, "<shift><ctrl>z")
     """
+
+    assert accels
+
     if event.type != Gdk.EventType.KEY_PRESS:
         return False
 
@@ -152,17 +156,22 @@ def is_accel(event, accel):
         keyval = ord(chr(keyval).lower())
 
     default_mod = Gtk.accelerator_get_default_mod_mask()
-    accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
 
-    # If the accel contains non default modifiers matching will never work and
-    # since no one should use them, complain
-    non_default = accel_mod & ~default_mod
-    if non_default:
-        print_w("Accelerator '%s' contains a non default modifier '%s'." %
-            (accel, Gtk.accelerator_name(0, non_default) or ""))
+    for accel in accels:
+        accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
 
-    # Remove everything except default modifiers and compare
-    return (accel_keyval, accel_mod) == (keyval, event.state & default_mod)
+        # If the accel contains non default modifiers matching will
+        # never work and since no one should use them, complain
+        non_default = accel_mod & ~default_mod
+        if non_default:
+            print_w("Accelerator '%s' contains a non default modifier '%s'." %
+                (accel, Gtk.accelerator_name(0, non_default) or ""))
+
+        # Remove everything except default modifiers and compare
+        if (accel_keyval, accel_mod) == (keyval, event.state & default_mod):
+            return True
+
+    return False
 
 
 def is_wayland():

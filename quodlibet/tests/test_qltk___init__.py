@@ -36,6 +36,13 @@ class TQltk(TestCase):
         e.state = Gdk.ModifierType.CONTROL_MASK
         self.failUnless(qltk.is_accel(e, "<ctrl>Return"))
 
+        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+        e.keyval = keysyms.Return
+        e.state = Gdk.ModifierType.CONTROL_MASK
+        self.failUnless(qltk.is_accel(e, "a", "<ctrl>Return"))
+        self.failUnless(qltk.is_accel(e, "<ctrl>Return", "b"))
+        self.failIf(qltk.is_accel(e, "a", "b"))
+
     def test_popup_menu_under_widget(self):
         w = Gtk.Window()
         l = Gtk.Label()

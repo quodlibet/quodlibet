@@ -587,12 +587,14 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         librarian.changed(songs)
 
     def __key_press(self, songlist, event, librarian):
-        if event.string in ['0', '1', '2', '3', '4']:
-            rating = min(1.0, int(event.string) * config.RATINGS.precision)
+        rating_accels = [
+            "<ctrl>%d" % i for i in range(min(10, config.RATINGS.number + 1))]
+
+        if qltk.is_accel(event, *rating_accels):
+            rating = int(chr(event.keyval)) * config.RATINGS.precision
             self.__set_rating(rating, self.get_selected_songs(), librarian)
             return True
-        elif qltk.is_accel(event, "<ctrl>Return") or \
-            qltk.is_accel(event, "<ctrl>KP_Enter"):
+        elif qltk.is_accel(event, "<ctrl>Return", "<ctrl>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
         elif qltk.is_accel(event, "<control>F"):
