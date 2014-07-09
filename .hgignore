@@ -17,6 +17,7 @@ po/notexist
 
 # Sphinx build files
 _build*/*
+_rtd_theme*
 
 # Ignore build files
 build/*
