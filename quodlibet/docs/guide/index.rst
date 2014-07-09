@@ -12,6 +12,7 @@ User Guide
     editing_tags
     renaming_files
     playback/index
+    shortcuts
     interacting
     config_files
     faq
