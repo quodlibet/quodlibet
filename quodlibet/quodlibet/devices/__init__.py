@@ -572,16 +572,16 @@ def init():
     try_text = _("Trying '%s'")
 
     if device_manager is None:
-        print_d(try_text % "UDisks1")
+        print_d(try_text % "UDisks2")
         try:
-            device_manager = UDisks1Manager()
+            device_manager = UDisks2Manager()
         except (LookupError, dbus.DBusException):
             pass
 
     if device_manager is None:
-        print_d(try_text % "UDisks2")
+        print_d(try_text % "UDisks1")
         try:
-            device_manager = UDisks2Manager()
+            device_manager = UDisks1Manager()
         except (LookupError, dbus.DBusException):
             pass
 
