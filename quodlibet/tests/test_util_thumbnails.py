@@ -35,9 +35,18 @@ class TThumb(TestCase):
         self.assertEqual(res, (100, 20))
 
     def test_add_border(self):
-        res = thumbnails.add_border(self.small, 10)
-        self.assertEqual(res.get_width(), 10 + 2)
-        self.assertEqual(res.get_height(), 20 + 2)
+        w, h = self.small.get_width(), self.small.get_height()
+        res = thumbnails.add_border(self.small, 42, round=False)
+        self.assertEqual(res.get_width(), w + 2)
+        self.assertEqual(res.get_height(), h + 2)
+
+        res = thumbnails.add_border(self.small, 42, round=True)
+        self.assertEqual(res.get_width(), w + 2)
+        self.assertEqual(res.get_height(), h + 2)
+
+        res = thumbnails.add_border(self.small, 42, width=2)
+        self.assertEqual(res.get_width(), w + 4)
+        self.assertEqual(res.get_height(), h + 4)
 
     def test_get_thumbnail_folder(self):
         path = thumbnails.get_thumbnail_folder()

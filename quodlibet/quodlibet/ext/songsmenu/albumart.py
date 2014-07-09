@@ -497,7 +497,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     """The main window including the search list"""
 
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
-    THUMB_SIZE = 48
+    THUMB_SIZE = 50
 
     def __init__(self, songs):
         super(AlbumArtWindow, self).__init__()
@@ -543,8 +543,9 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         rend_pix.set_property('xpad', 2)
         rend_pix.set_property('ypad', 2)
-        rend_pix.set_property('width', self.THUMB_SIZE + 4 + 2)
-        rend_pix.set_property('height', self.THUMB_SIZE + 4 + 2)
+        border_width = get_scale_factor(self) * 2
+        rend_pix.set_property('width', self.THUMB_SIZE + 4 + border_width)
+        rend_pix.set_property('height', self.THUMB_SIZE + 4 + border_width)
 
         def escape_data(data):
             for rep in ('\n', '\t', '\r', '\v'):
@@ -676,10 +677,12 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             pbloader.write(get_url(cover['thumbnail'])[0])
             pbloader.close()
 
-            size = self.THUMB_SIZE * get_scale_factor(self)
+            scale_factor = get_scale_factor(self)
+            size = self.THUMB_SIZE * scale_factor - scale_factor * 2
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
-            pixbuf = thumbnails.add_border(pixbuf, 80, round=True)
+            pixbuf = thumbnails.add_border(
+                pixbuf, 80, round=True, width=scale_factor)
             thumb = get_pbosf_for_pixbuf(self, pixbuf)
         except (GLib.GError, IOError):
             pass

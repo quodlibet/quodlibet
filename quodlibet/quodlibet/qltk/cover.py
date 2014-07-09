@@ -196,8 +196,10 @@ class ResizeImage(Gtk.Bin):
             if width < 2 or height < 2:
                 return
             round_thumbs = config.getboolean("albumart", "round")
-            pixbuf = thumbnails.scale(pixbuf, (width - 2, height - 2))
-            pixbuf = thumbnails.add_border(pixbuf, 80, round_thumbs)
+            pixbuf = thumbnails.scale(
+                pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor))
+            pixbuf = thumbnails.add_border(
+                pixbuf, 80, round=round_thumbs, width=scale_factor)
         else:
             pixbuf = thumbnails.scale(pixbuf, (width, height))
 

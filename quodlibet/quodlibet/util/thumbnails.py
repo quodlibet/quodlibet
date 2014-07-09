@@ -16,15 +16,23 @@ from quodlibet.util.path import mtime, mkdir, fsnative, pathname2url, \
     xdg_get_cache_home
 
 
-def add_border(pixbuf, val, round=False):
+def add_border(pixbuf, val, round=False, width=1):
     """Add a 1px border to the pixbuf and round of the edges if needed.
     val is the border brightness from 0 to 255.
 
-    The resulting pixbuf will be 2px higher and wider.
+    The resulting pixbuf will be width * 2px higher and wider.
 
     Can not fail.
     """
 
+    # XXX: borders don't overlap in all places
+    # .. port to cairo?
+    for i in range(width):
+        pixbuf = _add_border(pixbuf, val, round)
+    return pixbuf
+
+
+def _add_border(pixbuf, val, round=False):
     if not 0 <= val <= 255:
         raise ValueError
 
