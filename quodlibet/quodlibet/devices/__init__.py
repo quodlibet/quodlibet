@@ -190,6 +190,217 @@ def get_device_from_path(udev_ctx, path):
     return attrs
 
 
+def dbus_barray_to_str(array):
+    return b"".join(map(bytes, array)).rstrip(b"\x00")
+
+
+class UDisks2Manager(DeviceManager):
+
+    BUS_NAME = "org.freedesktop.UDisks2"
+    BLOCK_IFACE = "org.freedesktop.UDisks2.Block"
+    FS_IFACE = "org.freedesktop.UDisks2.Filesystem"
+    DRIVE_IFACE = "org.freedesktop.UDisks2.Drive"
+    PROP_IFACE = "org.freedesktop.DBus.Properties"
+    OBJMAN_IFACE = "org.freedesktop.DBus.ObjectManager"
+
+    def __init__(self):
+        super(UDisks2Manager, self).__init__(self.BUS_NAME)
+
+        error = False
+
+        try:
+            udev.init()
+        except OSError:
+            print_w(_("%s: Could not find 'libudev'.") % "UDisks2")
+            error = True
+        else:
+            self._udev = udev.Udev.new()
+
+        if get_mpi_dir() is None:
+            print_w(_("%s: Could not find %s.")
+                    % ("UDisks2", "media-player-info"))
+            error = True
+
+        if error:
+            raise LookupError
+
+        # object path -> properties
+        self._drives = {}
+        self._fs = {}
+        self._blocks = {}
+
+        # object paths -> devices (block/fs) we emitted
+        self._devices = {}
+
+        obj = self._system_bus.get_object(
+            self.BUS_NAME, "/org/freedesktop/UDisks2")
+        self._interface = dbus.Interface(obj, self.OBJMAN_IFACE)
+        self._interface.connect_to_signal(
+            'InterfacesAdded', self._interface_added)
+        self._interface.connect_to_signal(
+            'InterfacesRemoved', self._interface_removed)
+
+    def _try_build_device(self, object_path, block, fs):
+        """Returns a Device instance or None.
+
+        None if it wasn't a media player etc..
+        """
+
+        dev_path = dbus_barray_to_str(block["Device"])
+
+        media_player_id = get_media_player_id(self._udev, dev_path)
+        if not media_player_id:
+            return
+        protocols = get_media_player_protocols(media_player_id)
+
+        drive = self._drives.get(block["Drive"])
+        if not drive:
+            return
+
+        device_id = drive["Id"]
+
+        dev = self.create_device(object_path, device_id, protocols)
+        icon_name = block["HintIconName"]
+        if icon_name:
+            dev.icon = icon_name
+        return dev
+
+    def discover(self):
+        objects = self._interface.GetManagedObjects()
+        for object_path, interfaces_and_properties in objects.iteritems():
+            self._interface_added(object_path, interfaces_and_properties)
+
+    def get_name(self, path):
+        block = self._blocks[path]
+        drive = self._drives.get(block["Drive"])
+        return " - ".join([drive["Vendor"], drive["Model"]])
+
+    def get_mountpoint(self, path):
+        # the mointpoint gets filed with a delay, so fetch over dbus each time
+        # the get the correct value
+        obj = self._system_bus.get_object(self.BUS_NAME, path)
+        interface = dbus.Interface(obj, self.PROP_IFACE)
+        try:
+            array = interface.Get(self.FS_IFACE, "MountPoints")
+        except dbus.DBusException:
+            paths = []
+        else:
+            paths = [dbus_barray_to_str(v) for v in array]
+
+        if paths:
+            return paths[0]
+        return ""
+
+    def get_block_device(self, path):
+        block = self._blocks[path]
+        return dbus_barray_to_str(block["Device"])
+
+    def eject(self, path):
+        # first try to unmount
+        obj = self._system_bus.get_object(self.BUS_NAME, path)
+        interface = dbus.Interface(obj, self.FS_IFACE)
+        try:
+            interface.Unmount({})
+        except dbus.DBusException:
+            pass
+
+        # then eject..
+        # XXX: this only works if no other FS is mounted..
+        block = self._blocks[path]
+        obj = self._system_bus.get_object(self.BUS_NAME, block["Drive"])
+        interface = dbus.Interface(obj, self.DRIVE_IFACE)
+        try:
+            interface.Eject({})
+        except dbus.DBusException:
+            return False
+        return True
+
+    def _interface_added(self, object_path, iap):
+        if self.DRIVE_IFACE in iap:
+            self._drives[object_path] = iap[self.DRIVE_IFACE]
+        if self.FS_IFACE in iap:
+            self._fs[object_path] = iap[self.FS_IFACE]
+        if self.BLOCK_IFACE in iap:
+            self._blocks[object_path] = iap[self.BLOCK_IFACE]
+
+        # we are finished with this one, ignore
+        if object_path in self._devices:
+            return
+
+        # we need the block and fs interface to create a device
+        if object_path in self._fs and object_path in self._blocks:
+            block = self._blocks[object_path]
+            fs = self._fs[object_path]
+            dev = self._try_build_device(object_path, block, fs)
+            if dev:
+                self._devices[object_path] = dev
+                self.emit("added", dev)
+
+    def _interface_removed(self, object_path, interfaces):
+        if self.FS_IFACE in interfaces or self.BLOCK_IFACE in interfaces:
+            # if any of our needed interfaces goes away, remove the device
+            if object_path in self._devices:
+                self.emit("removed", object_path)
+                dev = self._devices[object_path]
+                dev.close()
+                del self._devices[object_path]
+
+        if self.DRIVE_IFACE in interfaces:
+            del self._drives[object_path]
+        if self.FS_IFACE in interfaces:
+            del self._fs[object_path]
+        if self.BLOCK_IFACE in interfaces:
+            del self._blocks[object_path]
+
+
+def get_media_player_id(udev_ctx, dev_path):
+    """Get the ID_MEDIA_PLAYER key for a specific device path e.g. /dev/sdc
+
+    Returns the str ID or None.
+    """
+
+    try:
+        dev = get_device_from_path(udev_ctx, dev_path)
+    except Exception:
+        print_w("Failed to retrieve udev properties for %r" % dev_path)
+        util.print_exc()
+        return
+
+    try:
+        return dev["ID_MEDIA_PLAYER"]
+    except KeyError:
+        return
+
+
+def get_mpi_dir():
+    """Path to the media-player-info directory or None"""
+
+    for dir_ in xdg_get_system_data_dirs():
+        mpi_path = os.path.join(dir_, "media-player-info")
+        if os.path.isdir(mpi_path):
+            return mpi_path
+
+
+def get_media_player_protocols(media_player_id):
+    """Gives a list of supported protocols"""
+
+    # get the path to the mpi files
+    mpi_path = get_mpi_dir()
+    if not mpi_path:
+        return []
+
+    file_path = os.path.join(mpi_path, media_player_id + ".mpi")
+    parser = ConfigParser.SafeConfigParser()
+    if parser.read(file_path):
+        try:
+            prots = parser.get("Device", "AccessProtocol")
+        except ConfigParser.Error:
+            return []
+        else:
+            return prots.split(";")
+    return []
+
+
 class UDisks1Manager(DeviceManager):
 
     def __init__(self):
@@ -209,7 +420,7 @@ class UDisks1Manager(DeviceManager):
         else:
             self.__udev = udev.Udev.new()
 
-        if self.__get_mpi_dir() is None:
+        if get_mpi_dir() is None:
             print_w(_("%s: Could not find %s.")
                     % ("UDisks", "media-player-info"))
             error = True
@@ -260,6 +471,7 @@ class UDisks1Manager(DeviceManager):
         self.emit("removed", path)
         dev = self.__devices[path]
         dev.close()
+        del self.__devices[path]
 
     def discover(self):
         paths = self.__interface.EnumerateDevices()
@@ -311,39 +523,6 @@ class UDisks1Manager(DeviceManager):
         prop_if = self.__get_dev_prop_interface(path)
         return str(self.__get_dev_property(prop_if, 'device-file'))
 
-    def __get_media_player_id(self, devpath):
-        """DKD is for high-level device stuff. The info if the device is
-        a media player and what protocol/formats it supports can only
-        be retrieved through libudev"""
-        try:
-            dev = get_device_from_path(self.__udev, devpath)
-        except Exception:
-            print_w("Failed to retrieve udev properties for %r" % devpath)
-            util.print_exc()
-            return
-
-        try:
-            return dev["ID_MEDIA_PLAYER"]
-        except KeyError:
-            return None
-
-    def __get_mpi_dir(self):
-        for dir in xdg_get_system_data_dirs():
-            path = os.path.join(dir, "media-player-info")
-            if os.path.isdir(path):
-                return path
-
-    def __get_mpi_file(self, dir, mplayer_id):
-        """Returns a SafeConfigParser instance of the mpi file or None.
-        MPI files are INI like files usually located in
-        /usr/local/media-player-info/*.mpi"""
-        f = os.path.join(dir, mplayer_id + ".mpi")
-        if os.path.isfile(f):
-            parser = ConfigParser.SafeConfigParser()
-            read = parser.read(f)
-            if read:
-                return parser
-
     def __build_dev(self, path):
         """Return the right device instance by determining the
         supported AccessProtocol"""
@@ -365,24 +544,15 @@ class UDisks1Manager(DeviceManager):
                 int(prop_get(prop_if, 'partition-type'), 16) == 0:
             return
 
-        #ask libudev if the device is a media player
+        # ask libudev if the device is a media player
+        # and get supported protocols if any
         devpath = self.get_block_device(path)
-        mplayer_id = self.__get_media_player_id(devpath)
-        if mplayer_id is None:
+        media_player_id = get_media_player_id(self.__udev, devpath)
+        if not media_player_id:
             return
+        protocols = get_media_player_protocols(media_player_id)
 
-        #look up the supported protocols in the mpi files
-        protocols = []
-        mpi_dir = self.__get_mpi_dir()
-        config = self.__get_mpi_file(mpi_dir, mplayer_id)
-        if config is not None:
-            try:
-                prots = config.get("Device", "AccessProtocol")
-            except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
-                pass
-            else:
-                protocols = prots.split(";")
-
+        # unique id
         device_id = self.__get_device_id(path)
 
         dev = self.create_device(path, device_id, protocols)
@@ -405,6 +575,13 @@ def init():
         print_d(try_text % "UDisks1")
         try:
             device_manager = UDisks1Manager()
+        except (LookupError, dbus.DBusException):
+            pass
+
+    if device_manager is None:
+        print_d(try_text % "UDisks2")
+        try:
+            device_manager = UDisks2Manager()
         except (LookupError, dbus.DBusException):
             pass
 
