@@ -174,6 +174,18 @@ def is_accel(event, *accels):
     return False
 
 
+def add_css(widget, css):
+    """Add css for the widget, overriding the theme.
+
+    Can raise GLib.GError in case the css is invalid
+    """
+
+    provider = Gtk.CssProvider()
+    provider.load_from_data(css)
+    context = widget.get_style_context()
+    context.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+
 def is_wayland():
     # FIXME: Is there no better way?
     display = Gdk.Display.get_default()

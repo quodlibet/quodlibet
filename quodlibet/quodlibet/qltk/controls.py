@@ -306,6 +306,15 @@ class PlayControls(Gtk.VBox):
         self.volume.set_relief(Gtk.ReliefStyle.NONE)
         lower.attach(self.volume, 0, 1, 0, 1)
 
+        # XXX: Adwaita defines a different padding for GtkVolumeButton
+        # We force it to 0 here, which works because the other (normal) buttons
+        # in the grid set the width/height
+        qltk.add_css(self.volume, """
+            .button {
+                padding: 0px;
+            }
+        """)
+
         seekbar = SeekBar(player, library)
         seekbar.set_relief(Gtk.ReliefStyle.NONE)
         lower.attach(seekbar, 1, 3, 0, 1)
