@@ -33,20 +33,23 @@ def do_action(player, action):
 
 def init_dbus_mmkeys(window, player):
     try:
-        from quodlibet.qltk.dbusmmkey import DBusMMKey
+        from quodlibet.qltk.dbusmmkey import GnomeDBusMMKey, MateDBusMMKey
     except ImportError: # no dbus
         return False
 
-    if not DBusMMKey.is_active():
-        return False
+    for Kind in [GnomeDBusMMKey, MateDBusMMKey]:
+        if not Kind.is_active():
+            continue
 
-    sigs = {"Next": "next", "Previous": "prev", "Play": "play",
-            "Pause": "pause", "Next": "next", "Stop": "stop"}
+        sigs = {"Next": "next", "Previous": "prev", "Play": "play",
+                "Pause": "pause", "Next": "next", "Stop": "stop"}
 
-    keys = DBusMMKey(window, "quodlibet")
-    keys.connect_object("action", lambda p, a: do_action(p, sigs[a]), player)
+        keys = Kind(window, "quodlibet")
+        keys.connect_object(
+            "action", lambda p, a: do_action(p, sigs[a]), player)
+        return True
 
-    return True
+    return False
 
 
 def make_keybinder_cb(player, action):

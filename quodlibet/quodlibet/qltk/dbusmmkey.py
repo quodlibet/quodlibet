@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2007 Ronny Haryanto <ronny at haryan.to>
-#           2011,2012 Christoph Reiter <reiter.christoph@gmail.com>
+#           2011,2012,2014 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -12,20 +12,23 @@ import dbus
 from gi.repository import GObject
 
 
-class DBusMMKey(GObject.GObject):
+class GnomeDBusMMKey(GObject.GObject):
     DBUS_NAME = "org.gnome.SettingsDaemon"
 
     # Work around the gnome-settings-daemon dbus interface
     # changing between 2.20 and 2.22 by connecting to both
     # the old and new object.
-    DBUS_IFACES = [{"path": "/org/gnome/SettingsDaemon",
-                   "interface": "org.gnome.SettingsDaemon"},
-                  {"path": "/org/gnome/SettingsDaemon/MediaKeys",
-                   "interface": "org.gnome.SettingsDaemon.MediaKeys"}]
+    DBUS_IFACES = [{
+        "path": "/org/gnome/SettingsDaemon",
+        "interface": "org.gnome.SettingsDaemon"
+    }, {
+        "path": "/org/gnome/SettingsDaemon/MediaKeys",
+        "interface": "org.gnome.SettingsDaemon.MediaKeys"
+    }]
 
     __gsignals__ = {
         'action': (GObject.SignalFlags.RUN_LAST, None, (str,)),
-        }
+    }
 
     @classmethod
     def is_active(cls):
@@ -38,7 +41,7 @@ class DBusMMKey(GObject.GObject):
             return False
 
     def __init__(self, window, name):
-        super(DBusMMKey, self).__init__()
+        super(GnomeDBusMMKey, self).__init__()
         self.__interface = None
         self.__watch = None
         self.__grab_time = -1
@@ -154,3 +157,15 @@ class DBusMMKey(GObject.GObject):
     def __focus_event(self, window, param):
         if window.get_property(param.name):
             self.__grab()
+
+
+class MateDBusMMKey(GnomeDBusMMKey):
+    DBUS_NAME = "org.mate.SettingsDaemon"
+
+    DBUS_IFACES = [{
+        "path": "/org/mate/SettingsDaemon",
+        "interface": "org.mate.SettingsDaemon"
+    }, {
+        "path": "/org/mate/SettingsDaemon/MediaKeys",
+        "interface": "org.mate.SettingsDaemon.MediaKeys"
+    }]
