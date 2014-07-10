@@ -8,7 +8,7 @@ quodlibet/browsers/albums/main.py
 quodlibet/browsers/albums/prefs.py
 quodlibet/browsers/audiofeeds.py
 quodlibet/browsers/_base.py
-quodlibet/browsers/collection/__init__.py
+quodlibet/browsers/collection/main.py
 quodlibet/browsers/collection/models.py
 quodlibet/browsers/collection/prefs.py
 quodlibet/browsers/empty.py
