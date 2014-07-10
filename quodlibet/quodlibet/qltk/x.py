@@ -11,7 +11,7 @@ from gi.repository import Gtk, GObject, GLib, Gio
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.qltk import is_accel
+from quodlibet.qltk import is_accel, add_css
 from quodlibet.qltk.window import Window, UniqueWindow
 
 
@@ -317,17 +317,11 @@ class SmallImageButton(Gtk.Button):
         super(SmallImageButton, self).__init__(**kwargs)
 
         self.set_size_request(26, 26)
-        style_provider = Gtk.CssProvider()
-        style_provider.load_from_data("""
+        add_css(self, """
             * {
                 padding: 0px;
             }
         """)
-        style_context = self.get_style_context()
-        style_context.add_provider(
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
 
 
 def ClearButton(entry=None):

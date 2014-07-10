@@ -185,18 +185,11 @@ class OSDWindow(Gtk.Window):
         do_outline = (self.conf.outline[0] != -1.0)
 
         self.set_name("osd_bubble")
-        style_provider = Gtk.CssProvider()
-        css = """
+        qltk.add_css(self, """
             #osd_bubble {
                 background-color:rgba(0,0,0,0);
             }
-        """
-        style_provider.load_from_data(css.encode("utf8"))
-        style_context = self.get_style_context()
-        style_context.add_provider(
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+        """)
 
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(*self.conf.fill)

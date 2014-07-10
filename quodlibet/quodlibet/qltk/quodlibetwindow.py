@@ -204,22 +204,13 @@ class ReapeatButton(Gtk.ToggleButton):
             image=SymbolicIconImage(
                 "media-playlist-repeat", Gtk.IconSize.SMALL_TOOLBAR))
 
-        style_provider = Gtk.CssProvider()
-        css = """
+        self.set_name("ql-repeat-button")
+        qltk.add_css(self, """
             #ql-repeat-button {
                 padding: 0px;
             }
-        """
-        style_provider.load_from_data(css)
-
-        self.set_name("ql-repeat-button")
+        """)
         self.set_size_request(26, 26)
-
-        style_context = self.get_style_context()
-        style_context.add_provider(
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
 
         self.set_tooltip_text(_("Restart the playlist when finished"))
 

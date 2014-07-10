@@ -9,6 +9,7 @@ import random
 from gi.repository import Gtk, GObject
 
 from quodlibet import config
+from quodlibet import qltk
 from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
 from quodlibet.plugins import PluginManager, PluginHandler
 
@@ -212,25 +213,16 @@ class ShuffleButton(Gtk.Box):
         context = self.get_style_context()
         context.add_class(Gtk.STYLE_CLASS_LINKED)
 
-        # padding=0 style
-        style_provider = Gtk.CssProvider()
-        css = """
-            * {
-                padding: 0px;
-            }
-        """
-        style_provider.load_from_data(css)
-
         # shuffle button
         b = Gtk.ToggleButton(image=SymbolicIconImage(
             "media-playlist-shuffle", Gtk.IconSize.SMALL_TOOLBAR))
         b.show_all()
+        qltk.add_css(b, """
+            * {
+                padding: 0px;
+            }
+        """)
         b.set_size_request(26, 26)
-        style_context = b.get_style_context()
-        style_context.add_provider(
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
         self.pack_start(b, True, True, 0)
 
         def forward_signal(*args):
@@ -244,11 +236,11 @@ class ShuffleButton(Gtk.Box):
         b = MenuButton(arrow=True, down=arrow_down)
         b.show_all()
         b.set_size_request(20, 26)
-        style_context = b.get_style_context()
-        style_context.add_provider(
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+        qltk.add_css(b, """
+            * {
+                padding: 0px;
+            }
+        """)
         self.pack_start(b, True, True, 0)
         self._menu_button = b
 
