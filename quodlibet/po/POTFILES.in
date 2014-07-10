@@ -8,7 +8,9 @@ quodlibet/browsers/albums/main.py
 quodlibet/browsers/albums/prefs.py
 quodlibet/browsers/audiofeeds.py
 quodlibet/browsers/_base.py
-quodlibet/browsers/collection.py
+quodlibet/browsers/collection/__init__.py
+quodlibet/browsers/collection/models.py
+quodlibet/browsers/collection/prefs.py
 quodlibet/browsers/empty.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
@@ -21,6 +23,7 @@ quodlibet/browsers/playlists/main.py
 quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/util.py
 quodlibet/browsers/search.py
+quodlibet/cli.py
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
 quodlibet/devices/ipod.py
@@ -104,7 +107,6 @@ quodlibet/ext/songsmenu/wikipedia.py
 quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
-quodlibet/cli.py
 quodlibet/library/__init__.py
 quodlibet/library/libraries.py
 quodlibet/player/gstbe/player.py

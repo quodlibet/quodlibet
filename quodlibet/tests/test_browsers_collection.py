@@ -9,6 +9,8 @@ from tests import TestCase
 from quodlibet import config
 
 from quodlibet.browsers.collection import *
+from quodlibet.browsers.collection.models import *
+from quodlibet.browsers.collection.prefs import *
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary
 
