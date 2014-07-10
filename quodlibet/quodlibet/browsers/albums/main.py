@@ -42,7 +42,6 @@ from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
 
 
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
-ALBUM_QUERIES = os.path.join(const.USERDIR, "lists", "album_queries")
 
 
 class AlbumTagCompletion(EntryWordCompletion):
