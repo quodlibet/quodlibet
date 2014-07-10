@@ -297,19 +297,28 @@ class CollectionModelMixin(object):
         return self.get_albums_for_iter(self.get_iter(path))
 
     def get_albums_for_iter(self, iter_):
-        row = self[iter_]
+        obj = self.get_value(iter_)
 
-        if isinstance(row[0], Album):
-            return set([row[0]])
+        if isinstance(obj, Album):
+            return set([obj])
 
         albums = set()
-        for child in row.iterchildren():
-            obj = child[0]
-            if isinstance(obj, Album):
-                albums.add(obj)
+        for child_iter, value in self.iterrows(iter_):
+            if isinstance(value, Album):
+                albums.add(value)
             else:
-                albums.update(self.get_albums_for_iter(child.iter))
+                albums.update(self.get_albums_for_iter(child_iter))
         return albums
+
+    def iter_albums(self, iter_):
+        """Yields all albums below iter_"""
+
+        for child_iter, value in self.iterrows(iter_):
+            if isinstance(value, Album):
+                yield value
+            else:
+                for album in self.iter_albums(child_iter):
+                    yield album
 
     def get_markup(self, tags, iter_):
         obj = self.get_value(iter_, 0)
@@ -702,11 +711,11 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
                 return b(obj)
             return f(obj) and b(obj)
 
-        obj = model[iter_][0]
+        obj = model.get_value(iter_)
         if isinstance(obj, Album):
             return check_album(obj)
         else:
-            for album in model.get_albums_for_iter(iter_):
+            for album in model.iter_albums(iter_):
                 if check_album(album):
                     return True
             return False

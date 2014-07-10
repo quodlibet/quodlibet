@@ -98,6 +98,9 @@ class TCollectionAlbums(TestCase):
         for r in model:
             self.failUnless(model.get_markup(model.tags, r.iter))
 
+        x = list(model.iter_albums(None))
+        self.assertEqual(set(x), set(a))
+
 
 class TCollectionBrowser(TestCase):
 
