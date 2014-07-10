@@ -127,7 +127,7 @@ class SearchBar(Gtk.VBox, Browser):
             GLib.idle_add(self.emit, 'songs-selected', songs, None)
 
     def __text_parse(self, bar, text):
-        self.filter_text(text)
+        self.activate()
 
     def save(self):
         config.set("browsers", "query_text", self._get_text())

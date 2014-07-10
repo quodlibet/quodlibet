@@ -144,7 +144,6 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         qltk.get_top_parent(widget).songlist.grab_focus()
 
     def __text_parse(self, bar, text):
-        self._set_text(text)
         self.activate()
 
     def filter_text(self, text):
