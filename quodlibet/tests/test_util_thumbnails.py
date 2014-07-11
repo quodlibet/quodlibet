@@ -11,7 +11,7 @@ except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
-from quodlibet.util.path import expanduser, pathname2url, is_fsnative
+from quodlibet.util.path import expanduser, pathname2url, is_fsnative, getcwd
 
 
 class TThumb(TestCase):
@@ -22,7 +22,7 @@ class TThumb(TestCase):
             GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
         s.small = GdkPixbuf.Pixbuf.new(
             GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
-        s.filename = os.path.join(os.getcwd(), "test_thumbnail.png")
+        s.filename = os.path.join(getcwd(), "test_thumbnail.png")
         s.wide.savev(s.filename, "png", [], [])
 
     def tearDown(self):

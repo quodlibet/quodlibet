@@ -108,6 +108,12 @@ def listdir(path, hidden=False):
             if filt(basename)]
 
 
+if os.name == "nt":
+    getcwd = os.getcwdu
+else:
+    getcwd = os.getcwd
+
+
 def mtime(filename):
     """Return the mtime of a file, or 0 if an error occurs."""
     try:

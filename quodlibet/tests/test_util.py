@@ -37,6 +37,12 @@ class Tmkdir(TestCase):
             os.rmdir("nonext")
 
 
+class Tgetcwd(TestCase):
+
+    def test_Tgetcwd(self):
+        self.assertTrue(is_fsnative(getcwd()))
+
+
 class Tiscommand(TestCase):
 
     def test_unix(self):
