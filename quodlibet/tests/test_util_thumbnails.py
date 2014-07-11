@@ -25,8 +25,14 @@ class TThumb(TestCase):
         s.filename = os.path.join(os.getcwd(), "test_thumbnail.png")
         s.wide.savev(s.filename, "png", [], [])
 
-    def tearDown(s):
-        os.remove(s.filename)
+    def tearDown(self):
+        p1 = thumbnails.get_cache_info(self.filename, (10, 10))[0]
+        p2 = thumbnails.get_cache_info(self.filename, (1000, 1000))[0]
+        for path in [p1, p2, self.filename]:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
 
     def test_calc_scale_size(self):
         self.assertRaises(ValueError,
@@ -91,6 +97,23 @@ class TThumb(TestCase):
         thumb = thumbnails.get_thumbnail_from_file(fn, (50, 60))
         self.assertTrue(thumb is None)
         fn.close()
+
+    def test_get_cache_info(self):
+        p, s = thumbnails.get_cache_info(self.filename, (20, 20))
+        self.assertEqual(s, 128)
+        self.assertTrue((os.sep + "normal" + os.sep) in p)
+
+        p, s = thumbnails.get_cache_info(self.filename, (20, 300))
+        self.assertEqual(s, 256)
+        self.assertTrue((os.sep + "large" + os.sep) in p)
+
+    def test_recreate_broken_cache_file(self):
+        thumb = thumbnails.get_thumbnail(self.filename, (50, 60))
+        self.assertTrue(thumb)
+        path, size = thumbnails.get_cache_info(self.filename, (50, 60))
+        open(path, "wb").close()
+        thumb = thumbnails.get_thumbnail(self.filename, (50, 60))
+        self.assertTrue(thumb)
 
     def test_thumb(s):
         thumb = thumbnails.get_thumbnail(s.filename, (50, 60))

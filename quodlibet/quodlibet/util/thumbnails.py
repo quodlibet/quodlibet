@@ -13,7 +13,7 @@ from gi.repository import GdkPixbuf, GLib
 
 from quodlibet.const import USERDIR
 from quodlibet.util.path import mtime, mkdir, fsnative, pathname2url, \
-    xdg_get_cache_home
+    xdg_get_cache_home, is_fsnative
 
 
 def add_border(pixbuf, val, round=False, width=1):
@@ -143,12 +143,35 @@ def get_thumbnail_folder():
         if os.path.exists(cache_folder) or not os.path.exists(thumb_folder):
             thumb_folder = cache_folder
 
-    try:
-        mkdir(thumb_folder, 0700)
-    except OSError:
-        pass
-
     return thumb_folder
+
+
+def get_cache_info(path, boundary):
+    """For an image at `path` return (cache_path, thumb_size)
+
+    cache_path points to a potential cache file
+    thumb size is either 128 or 256
+    """
+
+    assert is_fsnative(path)
+
+    width, height = boundary
+
+    if width <= 128 and height <= 128:
+        size_name = "normal"
+        thumb_size = 128
+    else:
+        size_name = "large"
+        thumb_size = 256
+
+    thumb_folder = get_thumbnail_folder()
+    cache_dir = os.path.join(thumb_folder, size_name)
+
+    uri = "file://" + pathname2url(path)
+    thumb_name = hashlib.md5(uri).hexdigest() + ".png"
+    thumb_path = os.path.join(cache_dir, thumb_name)
+
+    return (thumb_path, thumb_size)
 
 
 def get_thumbnail_from_file(fileobj, boundary):
@@ -197,33 +220,27 @@ def get_thumbnail(path, boundary):
             width > 256 or height > 256 or mtime(path) == 0:
         return GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height)
 
-    if width <= 128 and height <= 128:
-        size_name = "normal"
-        thumb_size = 128
-    else:
-        size_name = "large"
-        thumb_size = 256
-
-    thumb_folder = get_thumbnail_folder()
-    cache_dir = os.path.join(thumb_folder, size_name)
+    thumb_path, thumb_size = get_cache_info(path, boundary)
+    cache_dir = os.path.dirname(thumb_path)
     try:
         mkdir(cache_dir, 0700)
     except OSError:
         return GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height)
 
-    bytes_ = path
-    if isinstance(path, unicode):
-        bytes_ = path.encode("utf-8")
-    uri = "file://" + pathname2url(bytes_)
-    thumb_name = hashlib.md5(uri).hexdigest() + ".png"
-
-    thumb_path = os.path.join(cache_dir, thumb_name)
-
     pb = meta_mtime = None
     if os.path.exists(thumb_path):
-        pb = GdkPixbuf.Pixbuf.new_from_file(thumb_path)
-        meta_mtime = pb.get_option("tEXt::Thumb::MTime")
-        meta_mtime = meta_mtime and int(meta_mtime)
+        try:
+            pb = GdkPixbuf.Pixbuf.new_from_file(thumb_path)
+        except GLib.GError:
+            # in case it fails to load, we recreate it
+            pass
+        else:
+            meta_mtime = pb.get_option("tEXt::Thumb::MTime")
+            if meta_mtime:
+                try:
+                    meta_mtime = int(meta_mtime)
+                except ValueError:
+                    pass
 
     if not pb or meta_mtime != int(mtime(path)):
         pb = GdkPixbuf.Pixbuf.new_from_file(path)
@@ -233,13 +250,14 @@ def get_thumbnail(path, boundary):
             return scale(pb, boundary)
 
         info = GdkPixbuf.Pixbuf.get_file_info(path)[0]
+        uri = "file://" + pathname2url(path)
         mime = info.get_mime_types()[0]
         options = {
             "tEXt::Thumb::Image::Width": str(pb.get_width()),
             "tEXt::Thumb::Image::Height": str(pb.get_height()),
             "tEXt::Thumb::URI": uri,
             "tEXt::Thumb::MTime": str(int(mtime(path))),
-            "tEXt::Thumb::Size": str(os.path.getsize(fsnative(path))),
+            "tEXt::Thumb::Size": str(os.path.getsize(path)),
             "tEXt::Thumb::Mimetype": mime,
             "tEXt::Software": "QuodLibet"
         }
