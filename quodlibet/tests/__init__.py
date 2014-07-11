@@ -8,7 +8,7 @@ import unittest
 import tempfile
 import shutil
 from quodlibet.util.dprint import Colorise, print_
-from quodlibet.util.path import fsnative
+from quodlibet.util.path import fsnative, is_fsnative
 
 from unittest import TestCase as OrigTestCase
 
@@ -65,6 +65,7 @@ _TEMP_DIR = None
 def _wrap_tempfile(func):
     def wrap(*args, **kwargs):
         if kwargs.get("dir") is None:
+            assert is_fsnative(_TEMP_DIR)
             kwargs["dir"] = _TEMP_DIR
         return func(*args, **kwargs)
     return wrap
@@ -74,12 +75,15 @@ NamedTemporaryFile = _wrap_tempfile(tempfile.NamedTemporaryFile)
 
 
 def mkdtemp(*args, **kwargs):
-    return fsnative(_wrap_tempfile(tempfile.mkdtemp)(*args, **kwargs))
+    path = _wrap_tempfile(tempfile.mkdtemp)(*args, **kwargs)
+    assert is_fsnative(path)
+    return path
 
 
 def mkstemp(*args, **kwargs):
     fd, filename = _wrap_tempfile(tempfile.mkstemp)(*args, **kwargs)
-    return (fd, fsnative(filename))
+    assert is_fsnative(filename)
+    return (fd, filename)
 
 
 class Result(unittest.TestResult):
@@ -155,8 +159,8 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
             del(sys.modules[key])
 
     # create a user dir in /tmp
-    _TEMP_DIR = tempfile.mkdtemp(prefix="QL-TEST-")
-    user_dir = tempfile.mkdtemp(prefix="QL-USER-", dir=_TEMP_DIR)
+    _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative("QL-TEST-"))
+    user_dir = tempfile.mkdtemp(prefix=fsnative("QL-USER-"), dir=_TEMP_DIR)
     os.environ['QUODLIBET_USERDIR'] = user_dir
 
     path = os.path.dirname(__file__)
