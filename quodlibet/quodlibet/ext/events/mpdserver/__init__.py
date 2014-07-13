@@ -17,6 +17,7 @@ from quodlibet.qltk.entry import UndoEntry
 
 from .main import MPDServer
 from .tcpserver import ServerError
+from .avahi import AvahiService, AvahiError
 
 
 def fill_ip(entry):
@@ -54,10 +55,6 @@ class MPDServerPlugin(EventPlugin):
     PLUGIN_DESC = _("Control Quod Libet remotely using a MPD Client. "
         "Streaming, playlist and library management are not supported.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-
-    PORT = 6600
-
-    _server = None
 
     def PluginPreferences(self, parent):
         table = Gtk.Table(2, 3)
@@ -141,10 +138,11 @@ namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
     def _refresh(self):
         # only restart if it was running
         if self._server:
-            self.disabled()
-            self.enabled()
+            self._disable_server()
+            self._enable_server()
+            self._update_avahi()
 
-    def enabled(self):
+    def _enable_server(self):
         port_num = get_port_num()
         print_d("Starting MPD server on port %d" % port_num)
         self._server = MPDServer(app, port_num)
@@ -153,6 +151,26 @@ namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
         except ServerError as e:
             print_w(str(e))
 
-    def disabled(self):
+    def _disable_server(self):
+        print_d("Stopping MPD server")
         self._server.stop()
         self._server = None
+
+    def _update_avahi(self):
+        assert self._avahi
+
+        port_num = get_port_num()
+        try:
+            self._avahi.register("quodlibet", port_num, "_mpd._tcp")
+        except AvahiError as e:
+            print_w(str(e))
+
+    def enabled(self):
+        self._enable_server()
+        self._avahi = AvahiService()
+        self._update_avahi()
+
+    def disabled(self):
+        self._avahi.unregister()
+        self._avahi = None
+        self._disable_server()
