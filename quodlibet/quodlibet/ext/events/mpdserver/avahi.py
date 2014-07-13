@@ -243,7 +243,6 @@ class AvahiService(object):
             return
         self._last_server_state = state
 
-        print id(self), state, args
         if state == AvahiServerState.RUNNING:
             self._add_service()
         elif state in (AvahiServerState.COLLISION,
