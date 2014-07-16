@@ -16,10 +16,14 @@ class TCovers(PluginTestCase):
         song = AudioFile({"musicbrainz_albumid": u"foobar"})
         song2 = AudioFile()
 
-        cls = self.plugins["lastfm-cover"].cls
-        self.assertTrue(is_fsnative(cls(song).cover_path))
-        self.assertTrue(is_fsnative(cls(song2).cover_path))
+        # missing Soup
+        if "lastfm-cover" in self.plugins:
+            cls = self.plugins["lastfm-cover"].cls
+            self.assertTrue(is_fsnative(cls(song).cover_path))
+            self.assertTrue(is_fsnative(cls(song2).cover_path))
 
-        cls = self.plugins["musicbrainz-cover"].cls
-        self.assertTrue(is_fsnative(cls(song).cover_path))
-        self.assertTrue(is_fsnative(cls(song2).cover_path))
+        # missing Soup
+        if "musicbrainz-cover" in self.plugins:
+            cls = self.plugins["musicbrainz-cover"].cls
+            self.assertTrue(is_fsnative(cls(song).cover_path))
+            self.assertTrue(is_fsnative(cls(song2).cover_path))
