@@ -188,6 +188,9 @@ class AvahiService(object):
 
         try:
             group = self._group
+            # XXX: http://markmail.org/message/b5d5wa2tdcplxpk2
+            # It's "documented" that Reset() shouldn't be called in this case
+            # but it doesn't work otherwise...
             group.Reset()
             flags = AvahiPublishFlags.UPDATE
 
