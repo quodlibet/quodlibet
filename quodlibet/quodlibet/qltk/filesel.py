@@ -169,6 +169,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
 
         self.append_column(column)
         self.set_search_equal_func(search_func, True)
+        self.set_search_column(0)
 
         if folders is None:
             folders = []
@@ -476,6 +477,7 @@ class FileSelector(Gtk.VPaned):
         filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         filelist.set_search_equal_func(search_func, False)
+        filelist.set_search_column(0)
 
         self.__sig = filelist.get_selection().connect(
             'changed', self.__changed)
