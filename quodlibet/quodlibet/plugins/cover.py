@@ -10,6 +10,8 @@ from hashlib import sha1
 
 from gi.repository import GObject, GLib
 
+from quodlibet.util.path import fsnative, escape_filename
+
 
 class CoverSourcePlugin(GObject.Object):
     """
@@ -83,7 +85,7 @@ class CoverSourcePlugin(GObject.Object):
         key = sha1()
         # Should be fine as long as the same interpreter is used.
         key.update(repr(self.song.album_key))
-        return key.hexdigest()
+        return escape_filename(key.hexdigest())
 
     @property
     def cover_path(self):
@@ -94,7 +96,6 @@ class CoverSourcePlugin(GObject.Object):
 
         It doesn't necessarily mean the cover is actually at the returned
         location neither that it will be stored there at any later time.
-
         """
         return path.join(self.cover_directory, self.cover_filename)
 
@@ -150,6 +151,7 @@ class CoverSourcePlugin(GObject.Object):
 
 
 cover_dir = path.join(GLib.get_user_cache_dir(), 'quodlibet', 'covers')
+cover_dir = fsnative(cover_dir)
 try:
     makedirs(cover_dir)
 except OSError:

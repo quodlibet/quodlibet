@@ -185,7 +185,9 @@ def get_thumbnail_from_file(fileobj, boundary):
     assert fileobj
 
     try:
-        return get_thumbnail(fileobj.name, boundary)
+        path = fileobj.name
+        assert is_fsnative(path), path
+        return get_thumbnail(path, boundary)
     except GLib.GError:
         try:
             loader = GdkPixbuf.PixbufLoader()

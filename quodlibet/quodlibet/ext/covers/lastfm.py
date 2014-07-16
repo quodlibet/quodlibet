@@ -12,6 +12,7 @@ from gi.repository import Soup, GLib
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.http import download_json
 from quodlibet.util.cover.http import HTTPDownloadMixin
+from quodlibet.util.path import escape_filename
 
 
 class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
@@ -29,7 +30,7 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
         mbid = self.song.get('musicbrainz_albumid', None)
         # It is beneficial to use mbid for cover names.
         if mbid:
-            return path.join(cover_dir, mbid)
+            return path.join(cover_dir, escape_filename(mbid))
         else:
             return super(LastFMCover, self).cover_path
 

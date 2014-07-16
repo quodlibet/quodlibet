@@ -71,6 +71,19 @@ if sys.platform == "win32":
 else:
     fsnative = fsencode  # Encode it on other platforms
     is_fsnative = lambda s: isinstance(s, str)
+"""fsnative(utf-8 or unicode) -> path
+
+Takes a utf-8 encoded bytes or unicode and returns a 'native' path.
+Use for:
+
+* Converting a hard coded ascii/utf-8 path to the right type:
+
+    os.listdir(fsnative(".")) -> list of fsnative
+
+* Convert glib paths to the right type (utf-8 bytes on Windows):
+
+    fsnative(GLib.get_user_cache_dir()) -> fsnative path
+"""
 
 
 def iscommand(s):
