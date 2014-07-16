@@ -256,6 +256,7 @@ def parse_acoustid_response(json_data):
 
 class AcoustidLookupThread(threading.Thread):
     URL = "http://api.acoustid.org/v2/lookup"
+    MAX_SONGS_PER_SUBMISSION = 5
     TIMEOUT = 10.0
 
     def __init__(self, progress_cb):
@@ -278,17 +279,24 @@ class AcoustidLookupThread(threading.Thread):
 
         GLib.idle_add(delayed)
 
-    def __process(self, result):
-
-        basedata = urllib.urlencode({
+    def __process(self, results):
+        req_data = []
+        req_data.append(urllib.urlencode({
             "format": "json",
             "client": APP_KEY,
-            "duration": int(round(result.length)),
-            "fingerprint": result.chromaprint,
-        })
+            "batch": "1",
+        }))
 
-        urldata = "&".join(
-            [basedata, "meta=releases+recordings+tracks+sources"])
+        for i, result in enumerate(results):
+            postfix = ".%d" % i
+            req_data.append(urllib.urlencode({
+                "duration" + postfix: str(int(round(result.length))),
+                "fingerprint" + postfix: result.chromaprint,
+            }))
+
+        req_data.append("meta=releases+recordings+tracks+sources")
+
+        urldata = "&".join(req_data)
         obj = StringIO.StringIO()
         gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
         urldata = obj.getvalue()
@@ -299,7 +307,7 @@ class AcoustidLookupThread(threading.Thread):
         }
         req = urllib2.Request(self.URL, urldata, headers)
 
-        releases = []
+        releases = {}
         error = ""
         try:
             response = urllib2.urlopen(req, timeout=self.TIMEOUT)
@@ -307,23 +315,40 @@ class AcoustidLookupThread(threading.Thread):
             error = "urllib error: " + str(e)
         else:
             try:
-                data = json.loads(response.read())
+                data = response.read()
+                data = json.loads(data)
             except ValueError as e:
                 error = str(e)
             else:
                 if data["status"] == "ok":
-                    releases = parse_acoustid_response(data)
+                    for result_data in data.get("fingerprints", []):
+                        if "index" not in result_data:
+                            continue
+                        index = result_data["index"]
+                        releases[index] = parse_acoustid_response(result_data)
 
-        return LookupResult(result, releases, error)
+        for i, result in enumerate(results):
+            yield LookupResult(result, releases.get(str(i), []), error)
 
     def run(self):
         while 1:
             gatekeeper.wait()
-            result = self.__queue.get()
+            results = []
+            results.append(self.__queue.get())
+            while len(results) < self.MAX_SONGS_PER_SUBMISSION:
+                # wait a bit to reduce overall request count.
+                timeout = 0.5 / len(results)
+                try:
+                    results.append(self.__queue.get(timeout=timeout))
+                except Queue.Empty:
+                    break
+
             if self.__stopped:
                 return
-            self.__idle(self.__progress_cb, self.__process(result))
-            self.__queue.task_done()
+
+            for lookup_result in self.__process(results):
+                self.__idle(self.__progress_cb, lookup_result)
+                self.__queue.task_done()
 
     def stop(self):
         self.__stopped = True
