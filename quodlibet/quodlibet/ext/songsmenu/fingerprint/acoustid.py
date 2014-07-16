@@ -9,6 +9,7 @@ import collections
 import threading
 import urllib
 import urllib2
+import socket
 import Queue
 import StringIO
 import gzip
@@ -73,7 +74,7 @@ class AcoustidSubmissionThread(threading.Thread):
         error = None
         try:
             response = urllib2.urlopen(req, timeout=self.TIMEOUT)
-        except urllib2.URLError as e:
+        except (urllib2.URLError, socket.timeout) as e:
             error = "urllib error: " + str(e)
         else:
             xml = response.read()
@@ -311,7 +312,7 @@ class AcoustidLookupThread(threading.Thread):
         error = ""
         try:
             response = urllib2.urlopen(req, timeout=self.TIMEOUT)
-        except urllib2.URLError as e:
+        except (urllib2.URLError, socket.timeout) as e:
             error = "urllib error: " + str(e)
         else:
             try:
