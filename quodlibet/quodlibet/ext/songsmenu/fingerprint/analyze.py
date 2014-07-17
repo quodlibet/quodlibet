@@ -144,6 +144,7 @@ class FingerPrintPipeline(object):
         self._dec.disconnect(self._dec_id)
         self._dec.disconnect(self._dec_id2)
         self._dec = None
+        self._filesrc = None
         self._bus = None
         self._pipe = None
 
