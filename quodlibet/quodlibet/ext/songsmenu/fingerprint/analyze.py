@@ -50,14 +50,6 @@ class FingerPrintPipeline(object):
         pipe.add(resample)
         Gst.Element.link(convert, resample)
 
-        # ffdec_mp3 got disabled in gstreamer
-        # (for a reason they don't remember), reenable it..
-        # http://cgit.freedesktop.org/gstreamer/gst-ffmpeg/commit/
-        # ?id=2de5aaf22d6762450857d644e815d858bc0cce65
-        ffdec_mp3 = Gst.ElementFactory.find("ffdec_mp3")
-        if ffdec_mp3:
-            ffdec_mp3.set_rank(Gst.Rank.MARGINAL)
-
         def new_decoded_pad(convert, pad, *args):
             pad.link(convert.get_static_pad("sink"))
 
@@ -72,14 +64,6 @@ class FingerPrintPipeline(object):
             "pad-removed", removed_decoded_pad, convert)
 
         def sort_decoders(decode, pad, caps, factories):
-            # mad is the default decoder with GST_RANK_SECONDARY
-            # flump3dec also is GST_RANK_SECONDARY, is slower than mad,
-            # but wins because of its name, ffdec_mp3 is faster but had some
-            # stability problems (which all seem resolved by now and we call
-            # this >= 0.10.31 anyway). Finally there is mpg123
-            # (http://gst.homeunix.net/) which is even faster but not in the
-            # GStreamer core (FIXME: re-evaluate if it gets merged)
-            #
             # Example (atom CPU) 248 sec song:
             #   mpg123: 3.5s / ffdec_mp3: 5.5s / mad: 7.2s / flump3dec: 13.3s
 
@@ -87,8 +71,10 @@ class FingerPrintPipeline(object):
                 i, f = x
                 i = {
                     "mad": -1,
-                    "ffdec_mp3": -2,
-                    "mpg123audiodec": -3
+                    "avdec_mp3": -2,
+                    "avdec_mp3float": -3,
+                    "mpegaudioparse": -4,
+                    "mpg123audiodec": -5,
                 }.get(f.get_name(), i)
                 return (i, f)
 
