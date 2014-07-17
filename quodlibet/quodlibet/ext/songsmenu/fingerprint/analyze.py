@@ -28,7 +28,7 @@ class FingerPrintPipeline(object):
     def _finish(self, result, error):
         song = self._song
         callback = self._callback
-        self.stop()
+        self._reset()
         callback(self, song, result, error)
 
     def _setup_pipe(self):
@@ -62,7 +62,9 @@ class FingerPrintPipeline(object):
             pad.link(convert.get_static_pad("sink"))
 
         # decodebin creates pad, we link it
-        decode.connect_object("pad-added", new_decoded_pad, convert)
+        self._dec = decode
+        self._dec_id = decode.connect_object(
+            "pad-added", new_decoded_pad, convert)
 
         def sort_decoders(decode, pad, caps, factories):
             # mad is the default decoder with GST_RANK_SECONDARY
@@ -87,7 +89,7 @@ class FingerPrintPipeline(object):
 
             return zip(*sorted(map(set_prio, enumerate(factories))))[1]
 
-        decode.connect("autoplug-sort", sort_decoders)
+        self._dec_id2 = decode.connect("autoplug-sort", sort_decoders)
 
         chroma = Gst.ElementFactory.make("chromaprint", None)
         fake = Gst.ElementFactory.make("fakesink", None)
@@ -100,7 +102,7 @@ class FingerPrintPipeline(object):
         # bus
         self._bus = bus = pipe.get_bus()
         bus.add_signal_watch()
-        bus.connect("message", self._bus_message)
+        self._bus_id = bus.connect("message", self._bus_message)
 
     def start(self, song, callback):
         """Start processing a new song"""
@@ -117,15 +119,33 @@ class FingerPrintPipeline(object):
         self._bus.add_signal_watch()
         self._pipe.set_state(Gst.State.PLAYING)
 
-    def stop(self):
-        """Abort processing. Can be called multiple times"""
+    def _reset(self):
+        """Reset, so start() can be called again"""
 
-        if not self._song:
+        if self.is_idle():
             return
+
         self._bus.remove_signal_watch()
         self._pipe.set_state(Gst.State.NULL)
         self._song = None
         self._callback = None
+
+    def stop(self):
+        """Abort processing. Can be called multiple times.
+        After this returns the pipeline isn't usable any more.
+        """
+
+        self._reset()
+
+        if not self._pipe:
+            return
+
+        self._bus.disconnect(self._bus_id)
+        self._dec.disconnect(self._dec_id)
+        self._dec.disconnect(self._dec_id2)
+        self._dec = None
+        self._bus = None
+        self._pipe = None
 
     def is_idle(self):
         """If start() can be called"""
