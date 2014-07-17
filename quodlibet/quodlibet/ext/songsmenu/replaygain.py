@@ -434,6 +434,7 @@ class RGDialog(Gtk.Dialog):
 
     def __request_update(self):
         GLib.source_remove(self._timeout)
+        self._timeout = None
         # all done, stop
         if len(self._done) < self._count:
             for p in self.pipes:
