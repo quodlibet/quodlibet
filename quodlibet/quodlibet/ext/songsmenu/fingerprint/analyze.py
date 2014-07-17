@@ -61,10 +61,15 @@ class FingerPrintPipeline(object):
         def new_decoded_pad(convert, pad, *args):
             pad.link(convert.get_static_pad("sink"))
 
+        def removed_decoded_pad(convert, pad):
+            pad.unlink(convert.get_static_pad("sink"))
+
         # decodebin creates pad, we link it
         self._dec = decode
         self._dec_id = decode.connect_object(
             "pad-added", new_decoded_pad, convert)
+        self._dec_id2 = decode.connect_object(
+            "pad-removed", removed_decoded_pad, convert)
 
         def sort_decoders(decode, pad, caps, factories):
             # mad is the default decoder with GST_RANK_SECONDARY
@@ -89,7 +94,7 @@ class FingerPrintPipeline(object):
 
             return zip(*sorted(map(set_prio, enumerate(factories))))[1]
 
-        self._dec_id2 = decode.connect("autoplug-sort", sort_decoders)
+        self._dec_id3 = decode.connect("autoplug-sort", sort_decoders)
 
         chroma = Gst.ElementFactory.make("chromaprint", None)
         fake = Gst.ElementFactory.make("fakesink", None)
@@ -143,6 +148,7 @@ class FingerPrintPipeline(object):
         self._bus.disconnect(self._bus_id)
         self._dec.disconnect(self._dec_id)
         self._dec.disconnect(self._dec_id2)
+        self._dec.disconnect(self._dec_id3)
         self._dec = None
         self._filesrc = None
         self._bus = None
