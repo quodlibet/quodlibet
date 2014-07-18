@@ -260,8 +260,11 @@ class MPDService(object):
     def playid(self, songid):
         self.play()
 
-    def pause(self):
-        self._app.player.paused = True
+    def pause(self, value=None):
+        if value is None:
+            self._app.player.paused = not self._app.player.paused
+        else:
+            self._app.player.paused = value
 
     def stop(self):
         self._app.player.stop()
@@ -323,8 +326,7 @@ class MPDService(object):
 
         if info:
             if app.player.paused:
-                # XXX: should be pause, MPDroid doesn't like it
-                state = "stop"
+                state = "pause"
             else:
                 state = "play"
         else:
@@ -338,6 +340,7 @@ class MPDService(object):
             ("consume", 0),
             ("playlist", self._pl_ver),
             ("playlistlength", int(bool(app.player.info))),
+            ("mixrampdb", 0.0),
             ("state", state),
         ]
 
@@ -348,10 +351,14 @@ class MPDService(object):
             status.extend([
                 ("song", 0),
                 ("songid", self._get_id(info)),
-                ("time", "%d:%d" % (elapsed_time, total_time)),
-                ("elapsed", elapsed_exact),
-                ("bitrate", info("~#bitrate")),
             ])
+
+            if state != "stop":
+                status.extend([
+                    ("time", "%d:%d" % (elapsed_time, total_time)),
+                    ("elapsed", elapsed_exact),
+                    ("bitrate", info("~#bitrate")),
+                ])
 
         return status
 
@@ -368,8 +375,8 @@ class MPDService(object):
 
         return u"\n".join(parts)
 
-    def playlistinfo(self, start, end):
-        if start > 1:
+    def playlistinfo(self, start=None, end=None):
+        if start is not None and start > 1:
             return None
 
         return self.currentsong()
@@ -626,6 +633,11 @@ def _cmd_idle(conn, service, args):
     service.register_idle(conn, args)
 
 
+@MPDConnection.Command("ping")
+def _cmd_ping(conn, service, args):
+    return
+
+
 @MPDConnection.Command("noidle")
 def _cmd_noidle(conn, service, args):
     service.unregister_idle(conn)
@@ -650,7 +662,11 @@ def _cmd_playid(conn, service, args):
 
 @MPDConnection.Command("pause")
 def _cmd_pause(conn, service, args):
-    service.pause()
+    value = None
+    if args:
+        _verify_length(args, 1)
+        value = _parse_bool(args[0])
+    service.pause(value)
 
 
 @MPDConnection.Command("stop")
@@ -797,9 +813,12 @@ def _cmd_lsinfo(conn, service, args):
 
 @MPDConnection.Command("playlistinfo")
 def _cmd_playlistinfo(conn, service, args):
-    _verify_length(args, 1)
-    start, end = _parse_range(args[0])
-    result = service.playlistinfo(start, end)
+    if args:
+        _verify_length(args, 1)
+        start, end = _parse_range(args[0])
+        result = service.playlistinfo(start, end)
+    else:
+        result = service.playlistinfo()
     if result is not None:
         conn.write_line(result)
 
