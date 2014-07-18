@@ -142,6 +142,7 @@ function extract_deps {
 
         cp -RT "$PYGI"/"$name"/OpenJPEG/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Curl/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/IDN/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GSTPluginsExtra/gnome "$DEPS"
     done
 }
