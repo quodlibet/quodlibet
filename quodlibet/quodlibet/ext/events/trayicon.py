@@ -210,9 +210,12 @@ class TrayIcon(EventPlugin):
             return
 
         if not self.__pixbuf:
+            flags = 0
+            if sys.platform == "win32":
+                flags = Gtk.IconLookupFlags.FORCE_SIZE
             try:
                 self.__pixbuf = self.__icon_theme.load_icon(
-                    "quodlibet", self.__size, 0)
+                    "quodlibet", self.__size, flags)
             except GLib.GError:
                 util.print_exc()
                 return
