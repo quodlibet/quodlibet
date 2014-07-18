@@ -21,8 +21,8 @@ from ._image import ImageContainer
 from quodlibet import const
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, fsdecode, fsencode, mtime, expanduser
-from quodlibet.util.path import normalize_path
+from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser
+from quodlibet.util.path import normalize_path, fsnative, escape_filename
 from quodlibet.util.string import encode
 
 from quodlibet.util.uri import URI
@@ -400,12 +400,23 @@ class AudioFile(dict, ImageContainer):
     @property
     def lyric_filename(self):
         """Returns the (potential) lyrics filename for this file"""
-        # TODO: Use better filesystem sanitisation for lyrics file path.
+
         filename = self.comma("title").replace('/', '')[:128] + '.lyric'
         sub_dir = ((self.comma("lyricist") or self.comma("artist"))
                   .replace('/', '')[:128])
-        path = os.path.join(expanduser("~/.lyrics"), sub_dir, filename)
-        return fsencode(path)
+
+        if os.name == "nt":
+            # this was added at a later point. only use escape_filename here
+            # to keep the linux case the same as before
+            filename = escape_filename(filename)
+            sub_dir = escape_filename(sub_dir)
+        else:
+            filename = fsnative(filename)
+            sub_dir = fsnative(sub_dir)
+
+        path = os.path.join(
+            expanduser(fsnative(u"~/.lyrics")), sub_dir, filename)
+        return path
 
     def comma(self, key):
         """Get all values of a tag, separated by commas. Synthetic

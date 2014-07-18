@@ -9,11 +9,13 @@
 #  * Coerce a URI to Unicode (via an encoding for the path and
 #    Punycode for the domain) and back.
 
+import os
 import re
 from urllib import url2pathname, quote_plus, unquote_plus
 from urlparse import urlparse, urlunparse
 
 from quodlibet.util import pathname2url
+from quodlibet.util.path import fsdecode
 from quodlibet import util
 
 
@@ -76,6 +78,7 @@ class URI(str):
     @property
     def path(self):
         """URI path (e.g. '/~user')"""
+
         return urlparse(self)[2]
 
     @property
@@ -108,7 +111,10 @@ class URI(str):
         elif self.netloc:
             raise ValueError("only local files have filenames")
         else:
-            return util.fsnative(url2pathname(self.path))
+            if os.name == "nt":
+                return fsdecode(url2pathname(self.path))
+            else:
+                return url2pathname(self.path)
 
     @property
     def is_filename(self):

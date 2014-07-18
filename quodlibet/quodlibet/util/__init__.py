@@ -26,8 +26,8 @@ try:
 except ImportError:
     fcntl = None
 
-from quodlibet.util.path import (fsdecode, fsencode, iscommand, fsnative,
-    expanduser, pathname2url, strip_win32_incompat, is_fsnative)
+from quodlibet.util.path import (fsdecode, iscommand, fsnative,
+    expanduser, pathname2url, is_fsnative)
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util.titlecase import title
 

@@ -45,6 +45,7 @@ from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
+from quodlibet.util.path import glib2fsnative
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.qltk.songlistcolumns import SongListColumn
@@ -1117,6 +1118,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             fns, do_watch = dialog.run()
             dialog.destroy()
             if fns:
+                fns = map(glib2fsnative, fns)
                 # scan them
                 self.last_dir = fns[0]
                 copool.add(self.__library.scan, fns, funcid="library")
@@ -1133,8 +1135,9 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
             fns = dialog.run()
             dialog.destroy()
             if fns:
+                fns = map(glib2fsnative, fns)
                 self.last_dir = os.path.dirname(fns[0])
-                for filename in map(os.path.realpath, map(util.fsnative, fns)):
+                for filename in map(os.path.realpath, fns):
                     self.__library.add_filename(filename)
 
     def __songs_popup_menu(self, songlist):

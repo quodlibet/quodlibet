@@ -193,7 +193,7 @@ class ExFalsoWindow(Gtk.Window, PersistentWindowMixin):
         label.set_text(ngettext("%d song", "%d songs", count) % count)
 
         for row in rows:
-            filename = util.fsnative(model[row][0])
+            filename = model[row][0]
             if not os.path.exists(filename):
                 pass
             elif filename in self.__library:

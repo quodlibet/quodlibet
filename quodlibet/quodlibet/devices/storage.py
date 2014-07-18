@@ -19,8 +19,8 @@ from quodlibet.devices._base import Device
 from quodlibet.library import SongFileLibrary
 from quodlibet.parse import FileFromPattern
 from quodlibet.qltk import ConfirmAction
-from quodlibet.util.path import (fsencode, mtime, escape_filename,
-    strip_win32_incompat)
+from quodlibet.util.path import (fsdecode, mtime, escape_filename,
+    strip_win32_incompat_from_path)
 
 CACHE = os.path.join(const.USERDIR, 'cache')
 
@@ -89,8 +89,8 @@ class StorageDevice(Device):
         if not self.__pattern:
             self.__set_pattern()
 
-        utarget = strip_win32_incompat(self.__pattern.format(song))
-        target = fsencode(utarget)
+        target = strip_win32_incompat_from_path(self.__pattern.format(song))
+        utarget = fsdecode(target)
         dirname = os.path.dirname(target)
 
         if os.path.exists(target):
@@ -113,7 +113,7 @@ class StorageDevice(Device):
         try:
             if not os.path.isdir(dirname):
                 os.makedirs(dirname)
-            shutil.copyfile(fsencode(song['~filename']), target)
+            shutil.copyfile(song['~filename'], target)
 
             if self['covers']:
                 coverfile = os.path.join(dirname, 'folder.jpg')

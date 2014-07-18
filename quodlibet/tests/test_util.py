@@ -650,8 +650,8 @@ class Tlibrary(TestCase):
     def test_basic(self):
         self.failIf(get_scan_dirs())
         if os.name == "nt":
-            set_scan_dirs(["C:\\foo", "D:\\bar", ""])
-            self.failUnlessEqual(get_scan_dirs(), ["C:\\foo", "D:\\bar"])
+            set_scan_dirs([u"C:\\foo", u"D:\\bar", ""])
+            self.failUnlessEqual(get_scan_dirs(), [u"C:\\foo", u"D:\\bar"])
         else:
             set_scan_dirs(["foo", "bar", ""])
             self.failUnlessEqual(get_scan_dirs(), ["foo", "bar"])
@@ -770,6 +770,43 @@ class Tload_library(TestCase):
         lib, name = util.load_library(["libglib-2.0.so.0"])
         self.assertEqual(name, "libglib-2.0.so.0")
         self.assertTrue(lib)
+
+
+class Tstrip_win32_incompat_from_path(TestCase):
+
+    def test_types(self):
+        v = strip_win32_incompat_from_path("")
+        self.assertTrue(isinstance(v, bytes))
+        v = strip_win32_incompat_from_path("foo")
+        self.assertTrue(isinstance(v, bytes))
+
+        v = strip_win32_incompat_from_path(u"")
+        self.assertTrue(isinstance(v, unicode))
+        v = strip_win32_incompat_from_path(u"foo")
+        self.assertTrue(isinstance(v, unicode))
+
+    def test_basic(self):
+        if is_win:
+            v = strip_win32_incompat_from_path(u"C:\\foo\\<>/a")
+            self.assertEqual(v, u"C:\\foo\\___a")
+        else:
+            v = strip_win32_incompat_from_path("/foo/<>a")
+            self.assertEqual(v, "/foo/__a")
+
+
+class TPathHandling(TestCase):
+
+    def test_main(self):
+        v = fsnative(u"foo")
+        self.assertTrue(is_fsnative(v))
+
+        v2 = glib2fsnative(fsnative2glib(v))
+        self.assertTrue(is_fsnative(v2))
+        self.assertEqual(v, v2)
+
+        v3 = bytes2fsnative(fsnative2bytes(v))
+        self.assertTrue(is_fsnative(v3))
+        self.assertEqual(v, v3)
 
 
 class Tsplit_escape(TestCase):

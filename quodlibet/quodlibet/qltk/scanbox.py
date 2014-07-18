@@ -12,7 +12,7 @@ from gi.repository import Pango
 from quodlibet import util, config, const
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.util.path import fsdecode, fsencode, unexpand
+from quodlibet.util.path import fsdecode, unexpand
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 
 

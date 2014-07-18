@@ -3,6 +3,7 @@ from tests import TestCase, DATA_DIR, mkstemp
 import os
 
 from quodlibet import config
+from quodlibet.util.path import is_fsnative
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
@@ -214,6 +215,14 @@ class TAudioFile(TestCase):
         song["labelid"] = "QL-12345"
         self.failIf(song["artist"] in song.website())
         self.failUnless(song["labelid"] in song.website())
+
+    def test_lyric_filename(self):
+        song = AudioFile()
+        song["title"] = u"Title"
+        song["artist"] = u"Artist"
+        self.assertTrue(is_fsnative(song.lyric_filename))
+        song["lyricist"] = u"Lyricist"
+        self.assertTrue(is_fsnative(song.lyric_filename))
 
     def test_sanitize(self):
         q = AudioFile(quux)

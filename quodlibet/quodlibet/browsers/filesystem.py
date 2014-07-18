@@ -208,7 +208,7 @@ class FileSystem(Browser, Gtk.HBox):
         for dir in dirs:
             try:
                 for file in filter(formats.filter,
-                                   sorted(os.listdir(util.fsnative(dir)))):
+                                   sorted(os.listdir(dir))):
                     raw_path = os.path.join(dir, file)
                     fn = normalize_path(raw_path, canonicalise=True)
                     if fn in self.__glibrary:

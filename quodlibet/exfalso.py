@@ -21,6 +21,7 @@ from quodlibet import app
 from quodlibet import util
 from quodlibet import const
 from quodlibet import config
+from quodlibet.util.path import fsdecode
 
 
 def main():
@@ -30,6 +31,7 @@ def main():
         "Ex Falso", const.VERSION,
         _("an audio tag editor"), "[%s]" % _("directory"))
 
+    # FIXME: support unicode on Windows, sys.argv isn't good enough
     sys.argv.append(os.path.abspath("."))
     opts, args = opts.parse()
     args[0] = os.path.realpath(args[0])
@@ -44,7 +46,10 @@ def main():
     pm.rescan()
 
     from quodlibet.qltk.exfalsowindow import ExFalsoWindow
-    app.window = ExFalsoWindow(app.library, args[0])
+    dir_ = args[0]
+    if os.name == "nt":
+        dir_ = fsdecode(dir_)
+    app.window = ExFalsoWindow(app.library, dir_)
     app.window.init_plugins()
 
     from quodlibet.qltk import session

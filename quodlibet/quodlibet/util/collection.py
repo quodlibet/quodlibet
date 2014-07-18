@@ -18,7 +18,8 @@ from quodlibet import config
 from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.util import thumbnails
 from collections import Iterable
-from quodlibet.util.path import fsencode, escape_filename, unescape_filename
+from quodlibet.util.path import escape_filename, unescape_filename
+from quodlibet.util.path import bytes2fsnative, is_fsnative, fsnative2bytes
 from .collections import HashedList
 
 
@@ -335,10 +336,13 @@ class Playlist(Collection, Iterable):
     unquote = staticmethod(unescape_filename)
 
     @classmethod
-    def new(cls, dir, base=_("New Playlist"), library=None):
-        if not (dir and os.path.realpath(dir)):
-            raise ValueError("Invalid playlist directory '%s'" % (dir,))
-        p = Playlist(dir, "", library)
+    def new(cls, dir_, base=_("New Playlist"), library=None):
+        assert is_fsnative(dir_)
+
+        if not (dir_ and os.path.realpath(dir_)):
+            raise ValueError("Invalid playlist directory %r" % (dir_,))
+
+        p = Playlist(dir_, "", library)
         i = 0
         try:
             p.rename(base)
@@ -352,7 +356,9 @@ class Playlist(Collection, Iterable):
         return p
 
     @classmethod
-    def fromsongs(cls, dir, songs, library=None):
+    def fromsongs(cls, dir_, songs, library=None):
+        assert is_fsnative(dir_)
+
         if len(songs) == 1:
             title = songs[0].comma("title")
         else:
@@ -362,13 +368,15 @@ class Playlist(Collection, Iterable):
                 len(songs) - 1) % (
                     {'title': songs[0].comma("title"),
                      'count': len(songs) - 1})
-        playlist = cls.new(dir, title, library)
+
+        playlist = cls.new(dir_, title, library)
         playlist.extend(songs)
         return playlist
 
     @classmethod
     def playlists_featuring(cls, song):
         """Returns the list of playlists in which this song appears"""
+
         playlists = []
         for instance in cls.__instances:
             if song in instance._list:
@@ -420,17 +428,27 @@ class Playlist(Collection, Iterable):
         self.dir = dir
         self.library = library
         self._list = HashedList()
-        basename = self.quote(name)
         try:
-            for line in file(os.path.join(self.dir, basename), "r"):
-                line = util.fsnative(line.rstrip())
-                if line in library:
-                    self._list.append(library[line])
-                elif library and library.masked(line):
-                    self._list.append(line)
+            with open(self.filename, "rb") as h:
+                for line in h:
+                    assert library is not None
+                    try:
+                        line = bytes2fsnative(line.rstrip())
+                    except ValueError:
+                        # decoding failed
+                        continue
+                    if line in library:
+                        self._list.append(library[line])
+                    elif library and library.masked(line):
+                        self._list.append(line)
         except IOError:
             if self.name:
                 self.write()
+
+    @property
+    def filename(self):
+        basename = self.quote(self.name)
+        return os.path.join(self.dir, basename)
 
     def rename(self, newname):
         if isinstance(newname, unicode):
@@ -443,7 +461,7 @@ class Playlist(Collection, Iterable):
                 _("A playlist named %s already exists.") % newname)
         else:
             try:
-                os.unlink(os.path.join(self.dir, self.quote(self.name)))
+                os.unlink(self.filename)
             except EnvironmentError:
                 pass
             self.name = newname
@@ -498,20 +516,19 @@ class Playlist(Collection, Iterable):
     def delete(self):
         self.clear()
         try:
-            os.unlink(os.path.join(self.dir, self.quote(self.name)))
+            os.unlink(self.filename)
         except EnvironmentError:
             pass
         if self in self.__instances:
             self.__instances.remove(self)
 
     def write(self):
-        basename = self.quote(self.name)
-        with open(os.path.join(self.dir, basename), "w") as f:
+        with open(self.filename, "wb") as f:
             for song in self._list:
-                try:
-                    f.write(fsencode(song("~filename")) + "\n")
-                except TypeError:
-                    f.write(song + "\n")
+                if isinstance(song, basestring):
+                    f.write(fsnative2bytes(song) + "\n")
+                else:
+                    f.write(fsnative2bytes(song("~filename")) + "\n")
 
     def format(self):
         """Return a markup representation of information for this playlist"""

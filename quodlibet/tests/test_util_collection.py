@@ -7,20 +7,20 @@ from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
 from quodlibet.library.libraries import FileLibrary
-from quodlibet.util import format_rating
+from quodlibet.util import format_rating, fsnative
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
 NUMERIC_SONGS = [
-    Fakesong({"~filename": "fake1.mp3",
+    Fakesong({"~filename": fsnative(u"fake1-\xf0.mp3"),
               "~#length": 4, "~#added": 5, "~#lastplayed": 1,
               "~#bitrate": 200, "date": "100", "~#rating": 0.1,
               "originaldate": "2004-01-01", "~#filesize": 101}),
-    Fakesong({"~filename": "fake2.mp3",
+    Fakesong({"~filename": fsnative(u"fake2.mp3"),
               "~#length": 7, "~#added": 7, "~#lastplayed": 88,
               "~#bitrate": 220, "date": "99", "~#rating": 0.3,
               "originaldate": "2002-01-01", "~#filesize": 202}),
-    Fakesong({"~filename": "fake3.mp3",
+    Fakesong({"~filename": fsnative(u"fake3.mp3"),
               "~#length": 1, "~#added": 3, "~#lastplayed": 43,
               "~#bitrate": 60, "date": "33", "~#rating": 0.5,
               "tracknumber": "4/6", "discnumber": "1/2"})
@@ -305,7 +305,7 @@ class TPlaylist(TestCase):
         # playlists can contain songs and paths for masked handling..
         lib = FileLibrary("foobar")
         pl = Playlist(self.temp, "playlist", lib)
-        song = Fakesong({"date": "2038", "~filename": "/fake"})
+        song = Fakesong({"date": "2038", "~filename": fsnative(u"/fake")})
         song.sanitize()
         lib.add([song])
 
@@ -396,6 +396,26 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl.get("~#rating"), 0.3)
         s.failUnlessEqual(pl.get("~#originalyear"), 2002)
         pl.delete()
+
+    def test_write(self):
+        pl = Playlist(self.temp, "playlist")
+        pl.extend(NUMERIC_SONGS)
+        pl.extend([fsnative(u"xf0xf0")])
+        pl.write()
+
+        with open(pl.filename, "rb") as h:
+            self.assertEqual(len(h.read().splitlines()),
+                             len(NUMERIC_SONGS) + 1)
+
+    def test_read(self):
+        pl = Playlist(self.temp, "playlist")
+        pl.extend(NUMERIC_SONGS)
+        pl.write()
+
+        lib = FileLibrary("foobar")
+        lib.add(NUMERIC_SONGS)
+        pl = Playlist(self.temp, "playlist", lib)
+        self.assertEqual(len(pl), len(NUMERIC_SONGS))
 
     def test_updating_aggregates_extend(s):
         pl = Playlist(s.temp, "playlist")

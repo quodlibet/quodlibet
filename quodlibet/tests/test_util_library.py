@@ -7,17 +7,18 @@
 import sys
 from quodlibet import config
 from quodlibet.util.library import split_scan_dirs, set_scan_dirs
+from quodlibet.util.path import fsnative
 
 from tests import TestCase
 
 ON_WINDOWS = sys.platform == "win32"
 
-STANDARD_PATH = "/home/user/Music"
-OTHER_PATH = "/opt/party"
-GVFS_PATH = "/run/user/12345/gvfs/smb-share"\
-            ":server=12.23.34.45,share=/foo/bar/baz/path"
-GVFS_PATH_ESCAPED = "/run/user/12345/gvfs/smb-share"\
-                    "\:server=12.23.34.45,share=/foo/bar/baz/path"
+STANDARD_PATH = fsnative(u"/home/user/Music")
+OTHER_PATH = fsnative(u"/opt/party")
+GVFS_PATH = fsnative(u"/run/user/12345/gvfs/smb-share"
+                      ":server=12.23.34.45,share=/foo/bar/baz/path")
+GVFS_PATH_ESCAPED = fsnative(u"/run/user/12345/gvfs/smb-share"
+                              "\:server=12.23.34.45,share=/foo/bar/baz/path")
 
 
 class Tsplit_scan_dirs(TestCase):

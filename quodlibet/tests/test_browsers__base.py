@@ -99,8 +99,10 @@ class TBrowserBase(AbstractTestCase):
 
     def test_filter_text(self):
         with realized(self.b):
-            self.b.filter("foo", ["bar"])
-            self.b.filter("(((((##!!!!))),", ["(((((##!!!!))),"])
+            if self.b.can_filter_tag("foo"):
+                self.b.filter("foo", ["bar"])
+            if self.b.can_filter_tag("(((((##!!!!))),"):
+                self.b.filter("(((((##!!!!))),", ["(((((##!!!!))),"])
             if self.b.can_filter_text():
                 self.b.filter_text("foo")
                 self.b.filter_text("(((((##!!!!))),,,==")

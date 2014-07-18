@@ -87,8 +87,12 @@ def get_link_target(path):
 
     try:
         link.QueryInterface(pythoncom.IID_IPersistFile).Load(path)
-        # Not sure what encoding this returns
-        return fsnative(link.GetPath(0)[0])
+        path = link.GetPath(0)[0]
+        # Returns bytes, not sure which encoding..
+        try:
+            return path.decode("utf-8")
+        except ValueError:
+            pass
     except pywintypes.com_error:
         pass
 
@@ -101,6 +105,7 @@ def get_links_dir():
 
     try:
         libs_folder = kfm.GetFolder(shell.FOLDERID_Links)
+        # returns unicode
         return libs_folder.GetPath()
     except pywintypes.com_error:
         pass

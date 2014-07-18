@@ -4,8 +4,9 @@ import os
 import sys
 sys.modules['dircache'] = os # cheat the dircache effects
 
-from quodlibet.qltk.filesel import DirectoryTree, FileSelector
+from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives
 from quodlibet.qltk.filesel import MainDirectoryTree, MainFileSelector
+from quodlibet.util.path import fsnative, is_fsnative
 from quodlibet import const
 import quodlibet.config
 
@@ -13,7 +14,7 @@ import quodlibet.config
 class TDirectoryTree(TestCase):
 
     if os.name == "nt":
-        ROOTS = [const.HOME, "C:\\"]
+        ROOTS = [const.HOME, u"C:\\"]
     else:
         ROOTS = [const.HOME, "/"]
 
@@ -26,7 +27,7 @@ class TDirectoryTree(TestCase):
     def test_initial(self):
         paths = ["/", const.HOME, "/usr/bin"]
         if os.name == "nt":
-            paths = ["C:\\", const.HOME]
+            paths = [u"C:\\", const.HOME]
 
         for path in paths:
             dirlist = DirectoryTree(path, folders=self.ROOTS)
@@ -47,17 +48,24 @@ class TDirectoryTree(TestCase):
             self.assertTrue(selected[0].startswith(path))
 
     def test_bad_go_to(self):
-        newpath = "/woooooo/bar/fun/broken"
-        dirlist = DirectoryTree("/", folders=self.ROOTS)
+        newpath = fsnative(u"/woooooo/bar/fun/broken")
+        dirlist = DirectoryTree(fsnative(u"/"), folders=self.ROOTS)
         dirlist.go_to(newpath)
         dirlist.destroy()
 
     def test_main(self):
-        main = MainDirectoryTree(folders=["/"])
+        folders = ["/"]
+        if os.name == "nt":
+            folders = [u"C:\\"]
+        main = MainDirectoryTree(folders=folders)
         self.assertTrue(len(main.get_model()))
 
         main = MainDirectoryTree()
         self.assertTrue(len(main.get_model()))
+
+    def test_get_drives(self):
+        for path in get_drives():
+            self.assertTrue(is_fsnative(path))
 
 
 class TFileSelector(TestCase):

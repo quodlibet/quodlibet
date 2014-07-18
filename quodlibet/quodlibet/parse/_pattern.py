@@ -14,7 +14,7 @@ import re
 
 from quodlibet import util
 from quodlibet.parse._scanner import Scanner
-from quodlibet.util.path import fsdecode, expanduser
+from quodlibet.util.path import fsdecode, expanduser, fsnative, sep
 from quodlibet.util.path import strip_win32_incompat_from_path
 
 # Token types.
@@ -223,7 +223,7 @@ class PatternFormatter(object):
             return values
 
     def format(self, song):
-        value = "".join(self.__func(self.SongProxy(song, self._format)))
+        value = u"".join(self.__func(self.SongProxy(song, self._format)))
         if self._post:
             return self._post(value, song)
         return value
@@ -235,7 +235,7 @@ class PatternFormatter(object):
         The returned set will never be empty (e.g. for an empty pattern).
         """
 
-        vals = [""]
+        vals = [u""]
         for val in self.__list_func(self.SongProxy(song, self._format)):
             if not val:
                 continue
@@ -352,19 +352,23 @@ class _FileFromPattern(PatternFormatter):
 
     def _format(self, key, value):
         value = _number(key, value)
-        value = value.replace(os.sep, "_")
+        value = value.replace(sep, "_")
         value = value.replace(u"\uff0f", "_")
         value = value.strip()
         return value
 
     def _post(self, value, song):
         if value:
+            assert isinstance(value, unicode)
+            value = fsnative(value)
+
             fn = song.get("~filename", ".")
             ext = fn[fn.rfind("."):].lower()
             val_ext = value[-len(ext):].lower()
             if not ext == val_ext:
                 value += ext.lower()
             if os.name == "nt":
+                assert isinstance(value, unicode)
                 value = strip_win32_incompat_from_path(value)
 
             value = expanduser(value)
@@ -372,14 +376,14 @@ class _FileFromPattern(PatternFormatter):
             # Limit each path section to 255 (bytes on linux, chars on win).
             # http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
             path, ext = os.path.splitext(value)
-            path = map(util.fsnative, path.split(os.sep))
+            path = path.split(sep)
             limit = [255] * len(path)
-            limit[-1] -= len(util.fsnative(ext))
+            limit[-1] -= len(ext)
             elip = lambda (p, l): (len(p) > l and p[:l - 2] + "..") or p
-            path = os.sep.join(map(elip, zip(path, limit)))
-            value = fsdecode(path) + ext
+            path = sep.join(map(elip, zip(path, limit)))
+            value = path + ext
 
-            if os.sep in value and not os.path.isabs(value):
+            if sep in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")
         return value
 
@@ -390,6 +394,8 @@ class _XMLFromPattern(PatternFormatter):
 
 
 def FileFromPattern(string):
+    """format() and format_list() will return paths and not unicode"""
+
     # On Windows, users may use backslashes in patterns as path separators.
     # Since Windows filenames can't use '<>|' anyway, preserving backslash
     # escapes is unnecessary, so we just replace them blindly.

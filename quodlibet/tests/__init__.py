@@ -159,8 +159,8 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
             del(sys.modules[key])
 
     # create a user dir in /tmp
-    _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative("QL-TEST-"))
-    user_dir = tempfile.mkdtemp(prefix=fsnative("QL-USER-"), dir=_TEMP_DIR)
+    _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
+    user_dir = tempfile.mkdtemp(prefix=fsnative(u"QL-USER-"), dir=_TEMP_DIR)
     os.environ['QUODLIBET_USERDIR'] = user_dir
 
     path = os.path.dirname(__file__)

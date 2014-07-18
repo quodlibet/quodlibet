@@ -315,15 +315,18 @@ else:
     except LookupError:
         ENCODING = "utf-8"
 
-# http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
-if "G_FILENAME_ENCODING" in environ:
-    FSCODING = environ["G_FILENAME_ENCODING"].split(",")[0]
-    if FSCODING == "@locale":
-        FSCODING = ENCODING
-elif "G_BROKEN_FILENAMES" in environ:
-    FSCODING = ENCODING
-else:
+if os.name == "nt":
     FSCODING = "utf-8"
+else:
+    # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
+    if "G_FILENAME_ENCODING" in environ:
+        FSCODING = environ["G_FILENAME_ENCODING"].split(",")[0]
+        if FSCODING == "@locale":
+            FSCODING = ENCODING
+    elif "G_BROKEN_FILENAMES" in environ:
+        FSCODING = ENCODING
+    else:
+        FSCODING = "utf-8"
 
 del(os)
 del(locale)

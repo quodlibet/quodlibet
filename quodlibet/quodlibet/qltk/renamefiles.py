@@ -19,7 +19,7 @@ from quodlibet.qltk._editpane import EditPane, FilterCheckButton
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.util.path import fsdecode, fsencode
+from quodlibet.util.path import fsdecode, fsnative
 from quodlibet.util.path import strip_win32_incompat_from_path
 
 
@@ -48,8 +48,7 @@ class StripWindowsIncompat(FilterCheckButton):
             self.set_no_show_all(True)
 
     def filter(self, original, filename):
-        assert isinstance(filename, unicode)
-        return fsdecode(strip_win32_incompat_from_path(fsencode(filename)))
+        return strip_win32_incompat_from_path(filename)
 
 
 class StripDiacriticals(FilterCheckButton):
@@ -59,8 +58,9 @@ class StripDiacriticals(FilterCheckButton):
     _order = 1.2
 
     def filter(self, original, filename):
-        return filter(lambda s: not unicodedata.combining(s),
-                      unicodedata.normalize('NFKD', filename))
+        filename = fsdecode(filename)
+        return fsnative(filter(lambda s: not unicodedata.combining(s),
+                               unicodedata.normalize('NFKD', filename)))
 
 
 class StripNonASCII(FilterCheckButton):
@@ -70,7 +70,9 @@ class StripNonASCII(FilterCheckButton):
     _order = 1.3
 
     def filter(self, original, filename):
-        return u"".join(map(lambda s: (s <= "~" and s) or u"_", filename))
+        filename = fsdecode(filename)
+        return fsnative(
+            u"".join(map(lambda s: (s <= "~" and s) or u"_", filename)))
 
 
 class Lowercase(FilterCheckButton):
@@ -131,6 +133,7 @@ class RenameFiles(EditPane):
         skip_all = False
         self.view.freeze_child_notify()
 
+        # FIXME: encoding/decoding mess
         rows = [(row[0], row[1], row[2].decode('utf-8')) for row in model]
         for song, oldname, newname in rows:
             try:
@@ -194,8 +197,7 @@ class RenameFiles(EditPane):
                 self.combo.write(const.NBP)
 
         orignames = [song["~filename"] for song in songs]
-        newnames = [fsdecode(fsencode(pattern.format(song)))
-                    for song in songs]
+        newnames = [pattern.format(song) for song in songs]
         for f in self.filters:
             if f.active:
                 newnames = f.filter_list(orignames, newnames)
@@ -203,6 +205,7 @@ class RenameFiles(EditPane):
         model.clear()
         for song, newname in zip(songs, newnames):
             basename = fsdecode(song("~basename"))
+            newname = fsdecode(newname)
             model.append(row=[song, basename, newname])
         self.preview.set_sensitive(False)
         self.save.set_sensitive(bool(self.combo.get_child().get_text()))

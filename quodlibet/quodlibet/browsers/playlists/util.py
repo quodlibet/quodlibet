@@ -10,7 +10,7 @@ from quodlibet import formats, qltk
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util.collection import Playlist
-from quodlibet.util.path import mkdir, fsdecode
+from quodlibet.util.path import mkdir, fsdecode, is_fsnative
 from quodlibet import const
 
 
@@ -18,6 +18,7 @@ from quodlibet import const
 from quodlibet.util.uri import URI
 
 PLAYLISTS = os.path.join(const.USERDIR, "playlists")
+assert is_fsnative(PLAYLISTS)
 if not os.path.isdir(PLAYLISTS):
     mkdir(PLAYLISTS)
 

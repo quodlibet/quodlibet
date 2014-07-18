@@ -4,6 +4,7 @@ from tests import TestCase, AbstractTestCase
 import os
 
 from quodlibet import util
+from quodlibet.util.path import is_fsnative
 from quodlibet.parse import (FileFromPattern, XMLFromPattern, Pattern,
     XMLFromMarkupPattern)
 
@@ -207,17 +208,19 @@ class TFileFromPattern(_TPattern):
         if os.name == "nt":
             a = s.AudioFile({"title": "x" * 300, "~filename": u"C:\\f.mp3"})
             path = FileFromPattern(u'C:\\foobar\\ä<title>\\<title>').format(a)
-            s.failUnlessEqual(len(util.fsnative(path)),
-                              3 + 6 + 1 + 255 + 1 + 255)
+            assert is_fsnative(path)
+            s.failUnlessEqual(len(path), 3 + 6 + 1 + 255 + 1 + 255)
             path = FileFromPattern(u'äüö<title><title>').format(a)
-            s.failUnlessEqual(len(util.fsnative(path)), 255)
+            assert is_fsnative(path)
+            s.failUnlessEqual(len(path), 255)
         else:
             a = s.AudioFile({"title": "x" * 300, "~filename": "/f.mp3"})
             path = FileFromPattern(u'/foobar/ä<title>/<title>').format(a)
-            s.failUnlessEqual(len(util.fsnative(path)),
-                              1 + 6 + 1 + 255 + 1 + 255)
+            assert is_fsnative(path)
+            s.failUnlessEqual(len(path), 1 + 6 + 1 + 255 + 1 + 255)
             path = FileFromPattern(u'äüö<title><title>').format(a)
-            s.failUnlessEqual(len(util.fsnative(path)), 255)
+            assert is_fsnative(path)
+            s.failUnlessEqual(len(path), 255)
 
 
 class TXMLFromPattern(_TPattern):

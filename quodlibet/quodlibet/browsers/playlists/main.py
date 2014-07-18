@@ -11,8 +11,6 @@ from gi.repository import Gtk, GLib, Pango, Gdk
 from tempfile import NamedTemporaryFile
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 
-from util import *
-
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
@@ -23,6 +21,8 @@ from quodlibet.util.collection import Playlist
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Alignment
+
+from .util import *
 
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
@@ -50,7 +50,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
     @classmethod
     def init(klass, library):
         model = klass.__lists.get_model()
-        for playlist in os.listdir(util.fsnative(PLAYLISTS)):
+        for playlist in os.listdir(PLAYLISTS):
             try:
                 playlist = Playlist(PLAYLISTS, Playlist.unquote(playlist),
                                     library=library)

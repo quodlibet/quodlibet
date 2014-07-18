@@ -12,7 +12,7 @@ import sys
 import errno
 import tempfile
 import urllib
-from quodlibet.const import FSCODING as fscoding
+from quodlibet.const import FSCODING
 from quodlibet.util.string import decode, encode
 from quodlibet import windows
 
@@ -44,46 +44,87 @@ def mkdir(dir_, *args):
 
 
 def fsdecode(s, note=True):
-    """Decoding a string according to the filesystem encoding.
-    note specifies whether a note should be appended if decoding failed."""
+    """Takes a native path and returns unicode for displaying it.
+
+    Can not fail and can't be reversed.
+    """
+
     if isinstance(s, unicode):
         return s
     elif note:
-        return decode(s, fscoding)
+        return decode(s, FSCODING)
     else:
-        return s.decode(fscoding, 'replace')
+        return s.decode(FSCODING, 'replace')
 
 
-def fsencode(s, note=False):
-    """Encode a string according to the filesystem encoding.
-    note specifies whether a note should be appended if encoding failed."""
-    if isinstance(s, str):
-        return s
-    elif note:
-        return encode(s, fscoding)
-    else:
-        return s.encode(fscoding, 'replace')
+"""
+There exist 3 types of paths:
+
+ * Python: bytes on Linux, unicode on Windows
+ * GLib: bytes on Linux, utf-8 bytes on Windows
+ * Serialized for the config: same as GLib
+"""
 
 
 if sys.platform == "win32":
-    fsnative = fsdecode  # Decode a filename on windows
-    is_fsnative = lambda s: isinstance(s, unicode)
+    # We use FSCODING to save paths in files for example,
+    # so this should never change on Windows (like in glib)
+    assert FSCODING == "utf-8"
+
+    def is_fsnative(path):
+        """If path is a native path"""
+
+        return isinstance(path, unicode)
+
+    def fsnative(path):
+        """unicode -> native path"""
+
+        assert isinstance(path, unicode)
+        return path
+
+    def glib2fsnative(path):
+        """glib path -> native path"""
+
+        assert isinstance(path, bytes)
+        return path.decode("utf-8")
+
+    def fsnative2glib(path):
+        """native path -> glib path"""
+
+        assert isinstance(path, unicode)
+        return path.encode("utf-8")
+
+    fsnative2bytes = fsnative2glib
+    """native path -> bytes
+
+    Can never fail.
+    """
+
+    bytes2fsnative = glib2fsnative
+    """bytes -> native path
+
+    Warning: This can fail (raise ValueError) only on Windows,
+    if the input wasn't produced by fsnative2bytes.
+    """
 else:
-    fsnative = fsencode  # Encode it on other platforms
-    is_fsnative = lambda s: isinstance(s, str)
-"""fsnative(utf-8 or unicode) -> path
+    def is_fsnative(path):
+        return isinstance(path, bytes)
 
-Takes a utf-8 encoded bytes or unicode and returns a 'native' path.
-Use for:
+    def fsnative(path):
+        assert isinstance(path, unicode)
+        return path.encode(FSCODING, 'replace')
 
-* Converting a hard coded ascii/utf-8 path to the right type:
+    def glib2fsnative(path):
+        assert isinstance(path, bytes)
+        return path
 
-    os.listdir(fsnative(".")) -> list of fsnative
+    def fsnative2glib(path):
+        assert isinstance(path, bytes)
+        return path
 
-* Convert glib paths to the right type (utf-8 bytes on Windows):
+    fsnative2bytes = fsnative2glib
 
-    fsnative(GLib.get_user_cache_dir()) -> fsnative path
-"""
+    bytes2fsnative = glib2fsnative
 
 
 def iscommand(s):
@@ -107,7 +148,9 @@ def listdir(path, hidden=False):
 
     If hidden is false, Unix-style hidden files are not returned.
     """
-    path = fsnative(path)
+
+    assert is_fsnative(path)
+
     if hidden:
         filt = None
     else:
@@ -123,8 +166,12 @@ def listdir(path, hidden=False):
 
 if os.name == "nt":
     getcwd = os.getcwdu
+    sep = os.sep.decode("ascii")
+    pathsep = os.pathsep.decode("ascii")
 else:
     getcwd = os.getcwd
+    sep = os.sep
+    pathsep = os.pathsep
 
 
 def mtime(filename):
@@ -152,7 +199,7 @@ def escape_filename(s):
     if isinstance(s, unicode):
         s = s.encode("utf-8")
 
-    return fsnative(urllib.quote(s, safe=""))
+    return fsnative(urllib.quote(s, safe="").decode("utf-8"))
 
 
 def unescape_filename(s):
@@ -221,7 +268,10 @@ def xdg_get_system_data_dirs():
 
     if os.name == "nt":
         from gi.repository import GLib
-        return map(fsnative, GLib.get_system_data_dirs())
+        dirs = []
+        for dir_ in GLib.get_system_data_dirs():
+            dirs.append(glib2fsnative(dir_))
+        return dirs
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
@@ -231,10 +281,9 @@ def xdg_get_system_data_dirs():
 
 
 def xdg_get_cache_home():
-
     if os.name == "nt":
         from gi.repository import GLib
-        return fsnative(GLib.get_user_cache_dir())
+        return glib2fsnative(GLib.get_user_cache_dir())
 
     data_home = os.getenv("XDG_CACHE_HOME")
     if data_home:
@@ -246,7 +295,7 @@ def xdg_get_cache_home():
 def xdg_get_data_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return fsnative(GLib.get_user_data_dir())
+        return glib2fsnative(GLib.get_user_data_dir())
 
     data_home = os.getenv("XDG_DATA_HOME")
     if data_home:
@@ -267,11 +316,14 @@ def get_temp_cover_file(data):
         return fn
 
 
-def strip_win32_incompat(string, BAD='\:*?;"<>|'):
+def _strip_win32_incompat(string, BAD='\:*?;"<>|'):
     """Strip Win32-incompatible characters from a Windows or Unix path."""
 
     if os.name == "nt":
         BAD += "/"
+
+    if not string:
+        return string
 
     new = "".join(map(lambda s: (s in BAD and "_") or s, string))
     parts = new.split(os.sep)
@@ -284,8 +336,9 @@ def strip_win32_incompat(string, BAD='\:*?;"<>|'):
 def strip_win32_incompat_from_path(string):
     """Strip Win32-incompatible chars from a path, ignoring os.sep
     and the drive part"""
+
     drive, tail = os.path.splitdrive(string)
-    tail = os.sep.join(map(strip_win32_incompat, tail.split(os.sep)))
+    tail = os.sep.join(map(_strip_win32_incompat, tail.split(os.sep)))
     return drive + tail
 
 

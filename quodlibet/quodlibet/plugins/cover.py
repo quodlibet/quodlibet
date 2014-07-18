@@ -10,7 +10,7 @@ from hashlib import sha1
 
 from gi.repository import GObject, GLib
 
-from quodlibet.util.path import fsnative, escape_filename
+from quodlibet.util.path import escape_filename, xdg_get_cache_home
 
 
 class CoverSourcePlugin(GObject.Object):
@@ -150,8 +150,8 @@ class CoverSourcePlugin(GObject.Object):
         self.emit('fetch-failure', message)
 
 
-cover_dir = path.join(GLib.get_user_cache_dir(), 'quodlibet', 'covers')
-cover_dir = fsnative(cover_dir)
+cover_dir = path.join(xdg_get_cache_home(), 'quodlibet', 'covers')
+
 try:
     makedirs(cover_dir)
 except OSError:

@@ -32,8 +32,8 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
     get_pbosf_for_pixbuf, set_image_from_pbosf)
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.parse import Pattern
-from quodlibet.util.path import fsencode, iscommand
+from quodlibet.parse import FileFromPattern
+from quodlibet.util.path import iscommand
 from quodlibet.util import thumbnails
 
 
@@ -335,8 +335,8 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         filename = self.name_combo.get_active_text()
         # Allow support for filename patterns
-        pattern = Pattern(filename)
-        filename = fsencode(pattern.format(self.song))
+        pattern = FileFromPattern(filename.decode("utf-8"))
+        filename = pattern.format(self.song)
         file_path = os.path.join(self.dirname, filename)
 
         msg = (_('The file <b>%s</b> already exists.\n\nOverwrite?')

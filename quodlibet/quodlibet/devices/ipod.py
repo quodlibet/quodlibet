@@ -19,7 +19,7 @@ from quodlibet.formats._audio import AudioFile
 
 
 # Wraps an itdb_track from libgpod in an AudioFile instance
-from quodlibet.util.path import fsdecode, fsencode, mtime, filesize
+from quodlibet.util.path import fsdecode, mtime, filesize, fsnative2glib
 from quodlibet.util.string import decode, encode
 
 
@@ -245,7 +245,7 @@ class IPodDevice(Device):
             except ValueError:
                 continue
 
-        track.filetype = song('~format')
+        track.filetype = encode(song('~format'))
         track.comment = encode(fsdecode(song('~filename')))
 
         # Associate a cover with the track
@@ -257,7 +257,7 @@ class IPodDevice(Device):
                 # case the cover is a temporary file.
                 self.__covers.append(cover)
                 gpod.itdb_track_set_thumbnails(
-                    track, fsencode(cover.name))
+                    track, fsnative2glib(cover.name))
 
         # Add the track to the master playlist
         gpod.itdb_track_add(self.__itdb, track, -1)

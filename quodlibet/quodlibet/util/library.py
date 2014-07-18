@@ -11,7 +11,6 @@ import sys
 
 from quodlibet import app
 from quodlibet import config
-from quodlibet import util
 from quodlibet.qltk.notif import Task
 from quodlibet.util.dprint import print_d
 from quodlibet.util import copool
@@ -19,6 +18,7 @@ from quodlibet.util import copool
 from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.util.string import split_escape, join_escape
+from quodlibet.util.path import bytes2fsnative, fsnative2bytes, fsnative
 
 
 def background_filter():
@@ -43,15 +43,15 @@ def split_scan_dirs(s):
 
 def get_scan_dirs():
     dirs = split_scan_dirs(config.get("settings", "scan"))
-    return [util.fsnative(d) for d in dirs if d]
+    return [bytes2fsnative(d) for d in dirs if d]
 
 
 def set_scan_dirs(dirs):
     if sys.platform == "win32":
-        joined = ":".join(dirs)
+        joined = fsnative(u":").join(dirs)
     else:
-        joined = join_escape(dirs, ":")
-    config.set("settings", "scan", util.fsencode(joined))
+        joined = join_escape(dirs, fsnative(u":"))
+    config.set("settings", "scan", fsnative2bytes(joined))
 
 
 def scan_library(library, force):
@@ -62,7 +62,7 @@ def scan_library(library, force):
 
     paths = get_scan_dirs()
     exclude = split_scan_dirs(config.get("library", "exclude"))
-    exclude = [util.fsnative(e) for e in exclude]
+    exclude = [bytes2fsnative(e) for e in exclude]
     copool.add(library.rebuild, paths, force, exclude,
                cofuncid="library", funcid="library")
 

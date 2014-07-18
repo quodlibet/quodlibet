@@ -23,7 +23,7 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 
-from quodlibet.util.path import fsdecode, listdir
+from quodlibet.util.path import fsdecode, listdir, is_fsnative, glib2fsnative
 from quodlibet.util.uri import URI
 
 
@@ -100,7 +100,7 @@ def _get_win_drives():
     """Returns a list of paths for all available drives e.g. ['C:\\']"""
 
     assert os.name == "nt"
-    drives = [letter + ":\\" for letter in "CDEFGHIJKLMNOPQRSTUVWXYZ"]
+    drives = [letter + u":\\" for letter in u"CDEFGHIJKLMNOPQRSTUVWXYZ"]
     return [d for d in drives if os.path.isdir(d)]
 
 
@@ -118,6 +118,9 @@ def get_gtk_bookmarks():
 
     The paths don't have to exist.
     """
+
+    if os.name == "nt":
+        return []
 
     path = os.path.join(const.HOME, ".gtk-bookmarks")
     folders = []
@@ -149,7 +152,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         super(DirectoryTree, self).__init__(model=model)
 
         if initial is not None:
-            initial = util.fsnative(initial)
+            assert is_fsnative(initial)
 
         column = TreeViewColumn(_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -177,6 +180,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         for path in folders:
             niter = model.append(None, [path])
             if path is not None:
+                assert is_fsnative(path)
                 model.append(niter, ["dummy"])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -221,18 +225,15 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         return [model[p][0] for p in paths]
 
     def go_to(self, path_to_go):
-        # FIXME: be stricter here..
-        # assert util.is_fsnative(path_to_go)
+        assert util.is_fsnative(path_to_go)
 
         # FIXME: what about non-normalized paths?
-
-        path_to_go = util.fsnative(path_to_go)
         model = self.get_model()
 
         # Find the top level row which has the largest common
         # path with the path we want to go to
         roots = dict([(p, i) for (i, p) in model.iterrows(None)])
-        head, tail = path_to_go, util.fsnative("")
+        head, tail = path_to_go, util.fsnative(u"")
         to_find = []
         while head and head not in roots:
             new_head, tail = os.path.split(head)
@@ -319,7 +320,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         if not dir_:
             return
 
-        dir_ = util.fsnative(dir_.decode('utf-8'))
+        dir_ = glib2fsnative(dir_)
         fullpath = os.path.realpath(os.path.join(directory, dir_))
 
         try:
@@ -449,7 +450,7 @@ class FileSelector(Gtk.VPaned):
         self.__filter = filter
 
         if initial is not None:
-            initial = util.fsnative(initial)
+            assert is_fsnative(initial)
 
         if initial and os.path.isfile(initial):
             initial = os.path.dirname(initial)

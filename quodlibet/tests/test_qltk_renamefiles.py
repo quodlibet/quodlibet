@@ -6,6 +6,7 @@ from quodlibet.qltk.renamefiles import (SpacesToUnderscores,
     StripWindowsIncompat)
 from quodlibet.qltk.renamefiles import StripDiacriticals, StripNonASCII
 from quodlibet.qltk.renamefiles import Lowercase
+from quodlibet.util.path import fsnative, is_fsnative
 
 
 class TFilter(AbstractTestCase):
@@ -16,12 +17,15 @@ class TFilter(AbstractTestCase):
         self.c.destroy()
 
     def test_empty(self):
-        v = self.c.filter("", u"")
-        self.failUnlessEqual(v, "")
-        self.failUnless(isinstance(v, unicode))
+        empty = fsnative(u"")
+        v = self.c.filter(empty, empty)
+        self.failUnlessEqual(v, empty)
+        self.failUnless(is_fsnative(v))
 
     def test_safe(self):
-        self.failUnlessEqual(self.c.filter("", u"safe"), "safe")
+        empty = fsnative(u"")
+        safe = fsnative(u"safe")
+        self.failUnlessEqual(self.c.filter(empty, safe), safe)
 
 
 class TSpacesToUnderscores(TFilter):
@@ -37,44 +41,63 @@ class TStripWindowsIncompat(TFilter):
     def test_conv(self):
         if os.name == "nt":
             self.failUnlessEqual(
-                self.c.filter("", u'foo\\:*?;"<>|/'), "foo\\_________")
+                self.c.filter(u"", u'foo\\:*?;"<>|/'), u"foo\\_________")
         else:
             self.failUnlessEqual(
-                self.c.filter("", u'foo\\:*?;"<>|/'), "foo_________/")
+                self.c.filter("", 'foo\\:*?;"<>|/'), "foo_________/")
 
     def test_type(self):
-        self.assertTrue(isinstance(self.c.filter("", u""), unicode))
+        empty = fsnative(u"")
+        self.assertTrue(is_fsnative(self.c.filter(empty, empty)))
 
     def test_ends_with_dots_or_spaces(self):
-        self.failUnlessEqual(self.c.filter("", u'foo. . '), "foo. ._")
+        empty = fsnative(u"")
+        v = self.c.filter(empty, fsnative(u'foo. . '))
+        self.failUnlessEqual(v, fsnative(u"foo. ._"))
+        self.assertTrue(is_fsnative(v))
+
         if os.name == "nt":
             self.failUnlessEqual(
-                self.c.filter("", u'foo. \\bar .'), "foo._\\bar _")
+                self.c.filter(empty, u'foo. \\bar .'), u"foo._\\bar _")
         else:
             self.failUnlessEqual(
-                self.c.filter("", u'foo. /bar .'), "foo._/bar _")
+                self.c.filter(empty, u'foo. /bar .'), "foo._/bar _")
 
 
 class TStripDiacriticals(TFilter):
     Kind = StripDiacriticals
 
     def test_conv(self):
-        self.failUnlessEqual(self.c.filter("", u"\u00c1 test"), "A test")
+        empty = fsnative(u"")
+        test = fsnative(u"\u00c1 test")
+        out = fsnative(u"A test")
+        v = self.c.filter(empty, test)
+        self.failUnlessEqual(v, out)
+        self.failUnless(is_fsnative(v))
 
 
 class TStripNonASCII(TFilter):
     Kind = StripNonASCII
 
     def test_conv(self):
-        self.failUnlessEqual(
-            self.c.filter("", u"foo \u00c1 \u1234"), "foo _ _")
+        empty = fsnative(u"")
+        in_ = fsnative(u"foo \u00c1 \u1234")
+        out = fsnative(u"foo _ _")
+        v = self.c.filter(empty, in_)
+        self.failUnlessEqual(v, out)
+        self.failUnless(is_fsnative(v))
 
 
 class TLowercase(TFilter):
     Kind = Lowercase
 
     def test_conv(self):
-        self.failUnlessEqual(
-            self.c.filter("", u"foobar baz"), "foobar baz")
-        self.failUnlessEqual(
-            self.c.filter("", u"Foobar.BAZ"), "foobar.baz")
+        empty = fsnative(u"")
+
+        v = self.c.filter(empty, fsnative(u"foobar baz"))
+        self.failUnlessEqual(v, fsnative(u"foobar baz"))
+        self.failUnless(is_fsnative(v))
+
+        v = self.c.filter(empty, fsnative(u"Foobar.BAZ"))
+        self.failUnlessEqual(v, fsnative(u"foobar.baz"))
+        self.failUnless(is_fsnative(v))
