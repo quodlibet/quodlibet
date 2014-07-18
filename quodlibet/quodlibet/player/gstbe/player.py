@@ -502,6 +502,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         p = self._last_position
         if self.song and self.bin:
+            # While we are actively seeking return the last wanted position.
+            # query_position() returns 0 while in this state
+            if self._active_seeks:
+                return self._active_seeks[-1][1]
+
             ok, p = self.bin.query_position(Gst.Format.TIME)
             if ok:
                 p //= Gst.MSECOND
