@@ -3,7 +3,7 @@ from tests import TestCase, DATA_DIR, mkstemp
 import os
 
 from quodlibet import config
-from quodlibet.util.path import is_fsnative
+from quodlibet.util.path import is_fsnative, fsnative
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
@@ -218,6 +218,8 @@ class TAudioFile(TestCase):
 
     def test_lyric_filename(self):
         song = AudioFile()
+        song["~filename"] = fsnative(u"filename")
+        self.assertTrue(is_fsnative(song.lyric_filename))
         song["title"] = u"Title"
         song["artist"] = u"Artist"
         self.assertTrue(is_fsnative(song.lyric_filename))

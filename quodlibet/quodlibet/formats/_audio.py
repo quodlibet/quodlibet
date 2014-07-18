@@ -401,9 +401,9 @@ class AudioFile(dict, ImageContainer):
     def lyric_filename(self):
         """Returns the (potential) lyrics filename for this file"""
 
-        filename = self.comma("title").replace('/', '')[:128] + '.lyric'
+        filename = self.comma("title").replace(u'/', u'')[:128] + u'.lyric'
         sub_dir = ((self.comma("lyricist") or self.comma("artist"))
-                  .replace('/', '')[:128])
+                  .replace(u'/', u'')[:128])
 
         if os.name == "nt":
             # this was added at a later point. only use escape_filename here
