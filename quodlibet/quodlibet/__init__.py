@@ -462,16 +462,16 @@ def _init_signal(signal_action):
     """
 
     import os
-
-    if os.name == "nt":
-        return
-
     import signal
     import gi
     gi.require_version("GLib", "2.0")
     from gi.repository import GLib
 
-    for sig_name in ["SIGINT", "SIGTERM", "SIGHUP"]:
+    sig_names = ["SIGINT", "SIGTERM", "SIGHUP"]
+    if os.name == "nt":
+        sig_names = ["SIGINT", "SIGTERM"]
+
+    for sig_name in sig_names:
         sig = getattr(signal, sig_name, None)
         if sig is None:
             continue
@@ -484,6 +484,9 @@ def _init_signal(signal_action):
 
         print_d("Register Python signal handler: %r" % sig)
         signal.signal(sig, idle_handler)
+
+        if os.name == "nt":
+            continue
 
         # After the mainloop has started the python handler
         # blocks if no mainloop is active (for whatever reason).
