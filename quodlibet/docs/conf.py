@@ -16,7 +16,7 @@ version = ".".join(const.VERSION.rsplit(".")[:2])
 release = const.VERSION
 if release.endswith(".-1"):
     release = release[:-3]
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', '_rtd_theme_repo', 'README.rst']
 html_theme = "haiku"
 html_title = "%s (%s)" % (project, version)
 bug_url_template = "http://code.google.com/p/quodlibet/issues/detail?id=%s"
