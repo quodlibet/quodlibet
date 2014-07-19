@@ -323,12 +323,11 @@ class UDisks2Manager(DeviceManager):
         if self.BLOCK_IFACE in iap:
             self._blocks[object_path] = iap[self.BLOCK_IFACE]
 
-        # we are finished with this one, ignore
-        if object_path in self._devices:
-            return
-
         # we need the block and fs interface to create a device
-        if object_path in self._fs and object_path in self._blocks:
+        for object_path in (set(self._fs.keys()) & set(self._blocks.keys())):
+            # we are finished with this one, ignore
+            if object_path in self._devices:
+                continue
             block = self._blocks[object_path]
             fs = self._fs[object_path]
             dev = self._try_build_device(object_path, block, fs)
