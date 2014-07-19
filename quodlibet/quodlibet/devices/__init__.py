@@ -246,16 +246,16 @@ class UDisks2Manager(DeviceManager):
         None if it wasn't a media player etc..
         """
 
+        drive = self._drives.get(block["Drive"])
+        if not drive:
+            return
+
         dev_path = dbus_barray_to_str(block["Device"])
 
         media_player_id = get_media_player_id(self._udev, dev_path)
         if not media_player_id:
             return
         protocols = get_media_player_protocols(media_player_id)
-
-        drive = self._drives.get(block["Drive"])
-        if not drive:
-            return
 
         device_id = drive["Id"]
 
@@ -268,7 +268,8 @@ class UDisks2Manager(DeviceManager):
     def discover(self):
         objects = self._interface.GetManagedObjects()
         for object_path, interfaces_and_properties in objects.iteritems():
-            self._interface_added(object_path, interfaces_and_properties)
+            self._update_interfaces(object_path, interfaces_and_properties)
+        self._check_interfaces()
 
     def get_name(self, path):
         block = self._blocks[path]
@@ -315,7 +316,7 @@ class UDisks2Manager(DeviceManager):
             return False
         return True
 
-    def _interface_added(self, object_path, iap):
+    def _update_interfaces(self, object_path, iap):
         if self.DRIVE_IFACE in iap:
             self._drives[object_path] = iap[self.DRIVE_IFACE]
         if self.FS_IFACE in iap:
@@ -323,6 +324,7 @@ class UDisks2Manager(DeviceManager):
         if self.BLOCK_IFACE in iap:
             self._blocks[object_path] = iap[self.BLOCK_IFACE]
 
+    def _check_interfaces(self):
         # we need the block and fs interface to create a device
         for object_path in (set(self._fs.keys()) & set(self._blocks.keys())):
             # we are finished with this one, ignore
@@ -334,6 +336,10 @@ class UDisks2Manager(DeviceManager):
             if dev:
                 self._devices[object_path] = dev
                 self.emit("added", dev)
+
+    def _interface_added(self, object_path, iap):
+        self._update_interfaces(object_path, iap)
+        self._check_interfaces()
 
     def _interface_removed(self, object_path, interfaces):
         if self.FS_IFACE in interfaces or self.BLOCK_IFACE in interfaces:
