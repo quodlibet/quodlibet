@@ -388,6 +388,15 @@ class MPDService(object):
         if version != self._pl_ver:
             return self.currentsong()
 
+    def plchangesposid(self, version):
+        info = self._app.player.info
+        if version != self._pl_ver and info:
+            parts = []
+            parts.append(u"file: %s" % info("~filename"))
+            parts.append(u"Pos: %d" % 0)
+            parts.append(u"Id: %d" % self._get_id(info))
+            return u"\n".join(parts)
+
 
 class MPDServer(BaseTCPServer):
 
@@ -443,24 +452,25 @@ class MPDConnection(BaseTCPConnection):
     def handle_read(self, data):
         self._feed_data(data)
 
-        line = self._get_next_line()
-        if line is None:
-            return
+        while 1:
+            line = self._get_next_line()
+            if line is None:
+                break
 
-        self.log(u"-> " + repr(line))
+            self.log(u"-> " + repr(line))
 
-        try:
-            cmd, args = parse_command(line)
-        except ParseError:
-            # TODO: not sure what to do here re command lists
-            return
+            try:
+                cmd, args = parse_command(line)
+            except ParseError:
+                # TODO: not sure what to do here re command lists
+                continue
 
-        try:
-            self._handle_command(cmd, args)
-        except MPDRequestError as e:
-            self._error(e.msg, e.code, e.index)
-            self._use_command_list = False
-            del self._command_list[:]
+            try:
+                self._handle_command(cmd, args)
+            except MPDRequestError as e:
+                self._error(e.msg, e.code, e.index)
+                self._use_command_list = False
+                del self._command_list[:]
 
     def handle_write(self):
         data = self._buf[:]
@@ -492,7 +502,7 @@ class MPDConnection(BaseTCPConnection):
         try:
             index = self._read_buf.index("\n")
         except ValueError:
-            return None, []
+            return None
 
         line = bytes(self._read_buf[:index])
         del self._read_buf[:index + 1]
@@ -534,9 +544,6 @@ class MPDConnection(BaseTCPConnection):
                     # reraise with index
                     raise MPDRequestError(e.msg, e.code, i)
 
-                if self._command_list_ok:
-                    self.write_line(U"list_OK")
-
             self.ok()
             self._use_command_list = False
             del self._command_list[:]
@@ -549,27 +556,34 @@ class MPDConnection(BaseTCPConnection):
             self._use_command_list = True
             self._command_list_ok = command == u"command_list_ok_begin"
             assert not self._command_list
-            self.ok()
             return
 
         if self._use_command_list:
             self._command_list.append((command, args))
-            self.ok()
         else:
             self._exec_command(command, args)
 
-    def _exec_command(self, command, args):
+    def _exec_command(self, command, args, no_ack=False):
         self._command = command
 
         if command not in self._commands:
             print_w("Unhandled command %r, sending OK." % command)
+            command = "ping"
+
             # Unhandled command, default to OK for now..
-            self.ok()
+            if not self._use_command_list:
+                self.ok()
+            elif self._command_list_ok:
+                self.write_line(u"list_OK")
             return
 
         cmd, do_ack = self._commands[command]
         cmd(self, self.service, args)
-        if do_ack:
+
+        if self._use_command_list:
+            if self._command_list_ok:
+                self.write_line(u"list_OK")
+        elif do_ack:
             self.ok()
 
     _commands = {}
@@ -744,6 +758,15 @@ def _cmd_plchanges(conn, service, args):
     _verify_length(args, 1)
     version = _parse_int(args[0])
     changes = service.plchanges(version)
+    if changes is not None:
+        conn.write_line(changes)
+
+
+@MPDConnection.Command("plchangesposid")
+def _cmd_plchangesposid(conn, service, args):
+    _verify_length(args, 1)
+    version = _parse_int(args[0])
+    changes = service.plchangesposid(version)
     if changes is not None:
         conn.write_line(changes)
 
