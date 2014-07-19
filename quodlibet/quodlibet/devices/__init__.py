@@ -259,7 +259,7 @@ class UDisks2Manager(DeviceManager):
 
         device_id = drive["Id"]
 
-        dev = self.create_device(object_path, device_id, protocols)
+        dev = self.create_device(object_path, unicode(device_id), protocols)
         icon_name = block["HintIconName"]
         if icon_name:
             dev.icon = icon_name
@@ -340,7 +340,7 @@ class UDisks2Manager(DeviceManager):
         if self.FS_IFACE in interfaces or self.BLOCK_IFACE in interfaces:
             # if any of our needed interfaces goes away, remove the device
             if object_path in self._devices:
-                self.emit("removed", object_path)
+                self.emit("removed", unicode(object_path))
                 dev = self._devices[object_path]
                 dev.close()
                 del self._devices[object_path]

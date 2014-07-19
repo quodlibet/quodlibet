@@ -158,6 +158,7 @@ class StorageDevice(Device):
     def close(self):
         if self.__library:
             self.__library.destroy()
+            self.__library = None
 
     def __load_library(self):
         if self.__library is None:
