@@ -734,7 +734,10 @@ class AudioFile(dict, ImageContainer):
                     scale = 1.0 / peak  # don't clip
                 return min(15, scale)
         else:
-            return min(15, 10. ** ((fallback_gain + pre_amp_gain) / 20))
+            scale =  10. ** ((fallback_gain + pre_amp_gain) / 20)
+            if scale > 1:
+                scale = 1.0  # don't clip
+            return min(15, scale)
 
     def write(self):
         """Write metadata back to the file."""
