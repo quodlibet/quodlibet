@@ -16,7 +16,7 @@ include data/*.service.in
 include data/*.appdata.xml.in
 include data/*.1
 include MANIFEST.in
-recursive-include docs conf.py Makefile *.rst *.png
+recursive-include docs *.py Makefile *.rst *.png
 prune docs/_build_guide
 prune docs/_build_all
 prune docs/_rtd_theme*

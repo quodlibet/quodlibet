@@ -3,10 +3,11 @@
 import os
 import sys
 
+sys.path.insert(0, ".")
 sys.path.insert(0, os.path.abspath('../'))
 from quodlibet import const
 
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'ext']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'Ex Falso / Quod Libet'
@@ -18,6 +19,7 @@ if release.endswith(".-1"):
 exclude_patterns = ['_build']
 html_theme = "haiku"
 html_title = "%s (%s)" % (project, version)
+bug_url_template = "http://code.google.com/p/quodlibet/issues/detail?id=%s"
 
 RTD_NEW_THEME = True
 

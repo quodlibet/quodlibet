@@ -1,15 +1,15 @@
 3.1.2 (2014-06-20) - Dang it
 ----------------------------
 
-* Fix 3.1.1 regression causing folders in the file browser to show up in reverse order [1390]
+* Fix 3.1.1 regression causing folders in the file browser to show up in reverse order :bug:`1390`
 
 
 3.1.1 (2014-04-28) - I've shown that you're dealing with an Alpha here, baby, not some weak Beta!
 -------------------------------------------------------------------------------------------------
 
-* Fix a crash with GTK+ 3.12 [1384]
-* Handle invalid flac picture blocks [1385]
-* Fix "setup.py install --record" [1373]
+* Fix a crash with GTK+ 3.12 :bug:`1384`
+* Handle invalid flac picture blocks :bug:`1385`
+* Fix "setup.py install --record" :bug:`1373`
 
 
 3.1.0 (2014-04-10) - Olden times, man! NEVER LIVE THERE.
@@ -23,7 +23,7 @@
   is a portable version available.
 
   There is still an unsolved problem regarding miss-placed context menus
-  with multiple monitors [1319].
+  with multiple monitors :bug:`1319`.
 
   Thanks goes to Bakhtiar Hasmanan for providing a working PyGObject stack.
 
@@ -72,15 +72,15 @@ Other changes:
 * Added a simple GNOME app menu.
 * 'albumartist' is now used for album identification.
 * <shift>space enables "stop after the current song".
-* Warning before opening too many plugin windows (Nick Boultbee) [1231]
-* New --unqueue-all command [1234]
+* Warning before opening too many plugin windows (Nick Boultbee) :bug:`1231`
+* New --unqueue-all command :bug:`1234`
 
 Fixes:
 
-* Config gets saved atomically and handle a corrupted one [1042]
-* editing:id3encoding option was ignored [1290]
-* album browser: Fix sorting by rating [1352]
-* search: Fix results for "&(foo, !bar)" [1327]
+* Config gets saved atomically and handle a corrupted one :bug:`1042`
+* editing:id3encoding option was ignored :bug:`1290`
+* album browser: Fix sorting by rating :bug:`1352`
+* search: Fix results for "&(foo, !bar)" :bug:`1327`
 * Various crashes caused by code not being ported to PyGObject properly.
 
 Dependencies & Packaging:
