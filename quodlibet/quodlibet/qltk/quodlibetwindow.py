@@ -162,11 +162,12 @@ class TopBar(Gtk.Toolbar):
         info_item.set_expand(True)
 
         box = Gtk.Box(spacing=6)
-        info_item.add(Alignment(box, border=3, right=-3))
+        info_item.add(box)
+        qltk.add_css(self, "GtkToolbar {padding: 4px;}")
 
         # song text
         text = SongInfo(library.librarian, player)
-        box.pack_start(Alignment(text, top=3, bottom=3), True, True, 0)
+        box.pack_start(Alignment(text, top=6, bottom=3), True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
@@ -411,7 +412,7 @@ class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
         self.statusbar = statusbox.statusbar
 
         main_box.pack_start(
-            Alignment(statusbox, border=3, top=-3, right=6),
+            Alignment(statusbox, border=3, top=-3, right=3),
             False, True, 0)
 
         self.songpane = ConfigRVPaned("memory", "queue_position", 0.75)
