@@ -809,6 +809,16 @@ class TPathHandling(TestCase):
         self.assertEqual(v, v3)
 
 
+class Tget_temp_cover_file(TestCase):
+
+    def test_main(self):
+        fobj = get_temp_cover_file(b"foobar")
+        try:
+            self.assertTrue(is_fsnative(fobj.name))
+        finally:
+            fobj.close()
+
+
 class Tsplit_escape(TestCase):
 
     def test_split_escape(self):

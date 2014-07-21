@@ -11,6 +11,7 @@ from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet.util import thumbnails
+from quodlibet.util.path import is_fsnative
 from quodlibet.qltk.image import (get_scale_factor, pixbuf_from_file,
     set_image_from_pbosf, get_pbosf_for_pixbuf, pbosf_render)
 from quodlibet.util.cover.manager import cover_plugins
@@ -111,7 +112,11 @@ class ResizeImage(Gtk.Bin):
         self._resize = resize
 
     def set_file(self, fileobj):
-        path = fileobj and fileobj.name
+        if fileobj is None:
+            path = None
+        else:
+            path = fileobj.name
+            assert is_fsnative(path)
 
         # XXX: Don't reload if the file path is the same.
         # Could prevent updates if fileobj.name isn't defined

@@ -306,7 +306,8 @@ def xdg_get_data_home():
 
 def get_temp_cover_file(data):
     try:
-        fn = tempfile.NamedTemporaryFile()
+        # pass fsnative so that mkstemp() uses unicode on Windows
+        fn = tempfile.NamedTemporaryFile(prefix=fsnative(u"tmp"))
         fn.write(data)
         fn.flush()
         fn.seek(0, 0)
