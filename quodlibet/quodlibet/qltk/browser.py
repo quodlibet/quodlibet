@@ -45,7 +45,8 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         value = config.get("memory", "open_browsers", "")
         for name in value.split():
             kind = browsers.get(name)
-            cls.open(kind, library)
+            browser = cls(kind, library)
+            browser.show_maybe()
 
     def __init__(self, Kind, library):
         super(LibraryBrowser, self).__init__(dialog=False)

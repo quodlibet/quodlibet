@@ -71,15 +71,12 @@ class Application(object):
 
     def show(self):
         from quodlibet.qltk import Window
-        self.window.show()
         for window in Window.windows:
             window.show()
 
     def present(self):
         # deiconify is needed if the window is on another workspace
         from quodlibet.qltk import Window
-        self.window.deiconify()
-        self.window.present()
         for window in Window.windows:
             window.deiconify()
             window.present()
@@ -88,7 +85,6 @@ class Application(object):
         from quodlibet.qltk import Window
         for window in Window.windows:
             window.hide()
-        self.window.hide()
 
 app = Application()
 
@@ -585,7 +581,7 @@ def main(window):
         print_d("Quit GTK: done.")
 
     window.connect('destroy', quit_gtk)
-    window.show()
+    window.show_maybe()
 
     Gtk.main()
 

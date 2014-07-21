@@ -19,6 +19,7 @@ from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
+from quodlibet.qltk.window import Window
 from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
 from quodlibet.util.thumbnails import scale
 
@@ -229,17 +230,20 @@ class TrayIcon(EventPlugin):
         self._icon.connect('scroll-event', self.__scroll)
         self._icon.connect('button-press-event', self.__button_middle)
 
-        self.__w_sig_map = app.window.connect('map-event', self.__window_map)
+        self.__w_sig_show = app.window.connect('show', self.__window_show)
         self.__w_sig_del = app.window.connect('delete-event',
                                               self.__window_delete)
 
         self.plugin_on_paused()
         self.plugin_on_song_started(app.player.song)
 
+        if not config.getboolean("plugins", "icon_window_visible", True):
+            Window.prevent_inital_show(True)
+
     def disabled(self):
         self.__icon_theme.disconnect(self.__theme_sig)
         self.__icon_theme = None
-        app.window.disconnect(self.__w_sig_map)
+        app.window.disconnect(self.__w_sig_show)
         app.window.disconnect(self.__w_sig_del)
         self._icon.set_visible(False)
         try:
@@ -310,17 +314,10 @@ class TrayIcon(EventPlugin):
     def __window_delete(self, win, event):
         return self.__hide_window()
 
-    def __window_map(self, win, *args):
-        visible = config.getboolean("plugins", "icon_window_visible", False)
-
+    def __window_show(self, win, *args):
         config.set("plugins", "icon_window_visible", "true")
 
-        # Only restore window state on start
-        if not visible and self.__first_map:
-            self.__hide_window()
-
     def __hide_window(self):
-        self.__first_map = False
         app.hide()
         config.set("plugins", "icon_window_visible", "false")
         return True

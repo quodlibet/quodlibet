@@ -23,3 +23,12 @@ class TWindows(TestCase):
         self.assertTrue(SomeWindow.windows)
         other.destroy()
         self.assertFalse(SomeWindow.windows)
+
+    def test_show_maybe(self):
+        Window.prevent_inital_show(True)
+        w = Window()
+        w.show_maybe()
+        self.assertFalse(w.get_visible())
+        Window.prevent_inital_show(False)
+        w.show_maybe()
+        self.assertTrue(w.get_visible())

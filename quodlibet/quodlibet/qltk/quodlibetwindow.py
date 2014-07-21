@@ -47,7 +47,7 @@ from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
 from quodlibet.util.path import glib2fsnative
 from quodlibet.util.library import background_filter, scan_library
-from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.qltk.songlistcolumns import SongListColumn
 
 
@@ -353,14 +353,14 @@ class PlaybackErrorDialog(ErrorMessage):
 DND_URI_LIST, = range(1)
 
 
-class QuodLibetWindow(Gtk.Window, PersistentWindowMixin):
+class QuodLibetWindow(Window, PersistentWindowMixin):
     SIG_PYOBJECT = (GObject.SignalFlags.RUN_LAST, None, (object,))
     __gsignals__ = {
         'artwork-changed': SIG_PYOBJECT,
     }
 
     def __init__(self, library, player, headless=False):
-        super(QuodLibetWindow, self).__init__()
+        super(QuodLibetWindow, self).__init__(dialog=False)
         self.last_dir = const.HOME
 
         self.__update_title(player)

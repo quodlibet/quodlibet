@@ -19,6 +19,7 @@ class Window(Gtk.Window):
     """
 
     windows = []
+    _preven_inital_show = False
 
     __gsignals__ = {
         "close-accel": (GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION,
@@ -68,6 +69,18 @@ class Window(Gtk.Window):
             return
         if not self.emit('delete-event', Gdk.Event.new(Gdk.EventType.DELETE)):
             self.destroy()
+
+    @classmethod
+    def prevent_inital_show(cls, value):
+        cls._preven_inital_show = bool(value)
+
+    def show_maybe(self):
+        """Show the window, except if prevent_inital_show() was called and
+        this is the first time
+        """
+
+        if not self._preven_inital_show:
+            self.show()
 
 
 class PersistentWindowMixin(object):
