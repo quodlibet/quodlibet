@@ -20,7 +20,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
-from quodlibet.util.thumbnails import scale, calc_scale_size
+from quodlibet.util.thumbnails import scale
 
 
 class Preferences(Gtk.VBox):
@@ -121,6 +121,77 @@ class Preferences(Gtk.VBox):
         config.set("plugins", "icon_tooltip", entry.get_text())
 
 
+def get_paused_pixbuf(boundary, diff):
+    """Returns a pixbuf for a paused icon from the current theme.
+    The returned pixbuf can have a size of size->size+diff
+
+    size needs to be > 0
+    """
+
+    size = min(boundary)
+
+    if size <= 0:
+        raise ValueError("size has to be > 0")
+
+    if diff < 0:
+        raise ValueError("diff has to be >= 0")
+
+    names = ('media-playback-pause', Gtk.STOCK_MEDIA_PAUSE)
+    theme = Gtk.IconTheme.get_default()
+
+    # Get the suggested icon
+    info = theme.choose_icon(names, size, Gtk.IconLookupFlags.USE_BUILTIN)
+    if not info:
+        return
+
+    try:
+        pixbuf = info.load_icon()
+    except GLib.GError:
+        pass
+    else:
+        # In case it is too big, rescale
+        pb_size = min(pixbuf.get_height(), pixbuf.get_width())
+        if abs(pb_size - size) > diff:
+            return scale(pixbuf, boundary)
+        return pixbuf
+
+
+def new_with_paused_emblem(icon_pixbuf):
+    """Returns a new pixbuf with a pause emblem in the right bottom corner
+
+    (success, new pixbuf)
+    """
+
+    padding = 1.0 / 15.0
+    size = 5.0 / 8.0
+
+    base = icon_pixbuf.copy()
+    w, h = base.get_width(), base.get_height()
+    hpad = int(h * padding)
+    wpad = int(w * padding)
+
+    # get the sqare area where we can place the icon
+    hn = int((w - wpad) * size)
+    wn = int((h - hpad) * size)
+    if hn <= 0 or wn <= 0:
+        return False, base
+
+    # get a pixbuf with roughly the size we want
+    overlay = get_paused_pixbuf((hn, wn), min(hn, wn) / 5)
+    if not overlay:
+        return False, base
+
+    wo, ho = overlay.get_width(), overlay.get_height()
+    # we expect below that the icon fits into the icon including padding
+    wo = min(w - wpad, wo)
+    ho = min(h - hpad, ho)
+    overlay.composite(base, w - wo - wpad, h - ho - hpad,
+                      wo, ho, w - wo - wpad, h - ho - hpad,
+                      1.0, 1.0, GdkPixbuf.InterpType.BILINEAR, 255)
+
+    return True, base
+
+
 class TrayIcon(EventPlugin):
     _icon = None
     __pixbuf = None
@@ -183,28 +254,6 @@ class TrayIcon(EventPlugin):
         p.connect('destroy', self.__prefs_destroy)
         return p
 
-    def __get_paused_pixbuf(self, size, diff):
-        """Returns a pixbuf for a paused icon from the current theme.
-        The returned pixbuf can have a size of size->size+diff"""
-
-        names = ('media-playback-pause', Gtk.STOCK_MEDIA_PAUSE)
-        theme = Gtk.IconTheme.get_default()
-
-        # Get the suggested icon
-        info = theme.choose_icon(names, size, Gtk.IconLookupFlags.USE_BUILTIN)
-        if not info:
-            return
-
-        try:
-            pixbuf = info.load_icon()
-        except GLib.GError:
-            pass
-        else:
-            # In case it is too big, rescale
-            if pixbuf.get_height() - size > diff:
-                return scale(pixbuf, (size,) * 2)
-            return pixbuf
-
     def __update_icon(self):
         if self.__size <= 0:
             return
@@ -231,26 +280,7 @@ class TrayIcon(EventPlugin):
             self.__pixbuf = bg
 
         if app.player.paused and not self.__pixbuf_paused:
-            base = self.__pixbuf.copy()
-            w, h = base.get_width(), base.get_height()
-            pad = h / 15
-
-            # get the area where we can place the icon
-            wn, hn = calc_scale_size((w - pad, 5 * (h - pad) / 8), (1, 1))
-
-            # get a pixbuf with roughly the size we want
-            diff = (h - hn - pad) / 3
-            overlay = self.__get_paused_pixbuf(hn, diff)
-
-            if overlay:
-                wo, ho = overlay.get_width(), overlay.get_height()
-
-                overlay.composite(base, w - wo - pad, h - ho - pad,
-                                  wo, ho, w - wo - pad, h - ho - pad,
-                                  1, 1,
-                                  GdkPixbuf.InterpType.BILINEAR, 255)
-
-            self.__pixbuf_paused = base
+            self.__pixbuf_paused = new_with_paused_emblem(self.__pixbuf)[1]
 
         if app.player.paused:
             new_pixbuf = self.__pixbuf_paused
