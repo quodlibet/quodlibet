@@ -163,11 +163,11 @@ class TopBar(Gtk.Toolbar):
 
         box = Gtk.Box(spacing=6)
         info_item.add(box)
-        qltk.add_css(self, "GtkToolbar {padding: 4px;}")
+        qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
         # song text
         text = SongInfo(library.librarian, player)
-        box.pack_start(Alignment(text, top=6, bottom=3), True, True, 0)
+        box.pack_start(Alignment(text, border=3), True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
@@ -175,7 +175,11 @@ class TopBar(Gtk.Toolbar):
                      parent=self)
         gobject_weak(parent.connect, 'artwork-changed',
                      self.__song_art_changed, library, parent=self)
-        box.pack_start(self.image, False, True, 0)
+
+        # CoverImage doesn't behave in a Alignment, so wrap it
+        coverbox = Gtk.Box()
+        coverbox.pack_start(self.image, True, True, 0)
+        box.pack_start(Alignment(coverbox, border=2), False, True, 0)
 
         for child in self.get_children():
             child.show_all()
