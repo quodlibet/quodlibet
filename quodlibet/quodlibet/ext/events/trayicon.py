@@ -237,10 +237,31 @@ class TrayIcon(EventPlugin):
         self.plugin_on_paused()
         self.plugin_on_song_started(app.player.song)
 
+        # If after the main loop is idle and 3 seconds have passed
+        # the tray icon isn't embedded, assume it wont be and unhide
+        # all windows, so QL isn't 'lost'..
+
+        def add_timeout():
+            def check_embedded():
+                is_embedded = self._icon.is_embedded()
+                main_window_shown = app.window.get_visible()
+                if not is_embedded and not main_window_shown:
+                    app.present()
+                self.__emb_sig = None
+                return False
+
+            self.__emb_sig = GLib.timeout_add(3000, check_embedded)
+            return False
+
+        self.__emb_sig = GLib.idle_add(add_timeout)
+
         if not config.getboolean("plugins", "icon_window_visible", True):
             Window.prevent_inital_show(True)
 
     def disabled(self):
+        if self.__emb_sig:
+            GLib.source_remove(self.__emb_sig)
+            self.__emb_sig = None
         self.__icon_theme.disconnect(self.__theme_sig)
         self.__icon_theme = None
         app.window.disconnect(self.__w_sig_show)
