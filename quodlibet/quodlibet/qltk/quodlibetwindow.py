@@ -313,6 +313,15 @@ class AppMenu(object):
         am_object_path = "/net/sacredchao/QuodLibet/menus/appmenu"
         app_id = "net.sacredchao.QuodLibet"
 
+        win = window.get_window()
+        if not hasattr(win, "set_utf8_property"):
+            # not a GdkX11.X11Window
+            print_d("Registering appmenu failed: X11 only")
+            return
+
+        # FIXME: this doesn't fail on Windows but takes for ages.
+        # Maybe remove some deps to make it fail fast?
+        # We don't need dbus anyway there.
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             self._ag_id = bus.export_action_group(ag_object_path, action_group)
@@ -322,12 +331,6 @@ class AppMenu(object):
             return
 
         self._bus = bus
-
-        win = window.get_window()
-        if not hasattr(win, "set_utf8_property"):
-            # not a GdkX11.X11Window
-            print_d("Registering appmenu failed: X11 only")
-            return
 
         win.set_utf8_property("_GTK_UNIQUE_BUS_NAME", bus.get_unique_name())
         win.set_utf8_property("_GTK_APPLICATION_ID", app_id)
