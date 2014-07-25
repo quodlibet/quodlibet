@@ -153,6 +153,18 @@ Section "Dummy Section" SecDummy
   WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" \
     "$\"$INSTDIR\uninstall.exe$\" /$MultiUser.InstallMode /S"
 
+  ; Folder association for Ex Falso
+  ; Context menu for folders
+  WriteRegStr HKCR  "Directory\shell\quodlibet" "Icon" "$INSTDIR\bin\exfalso.exe"
+  WriteRegStr HKCR  "Directory\shell\quodlibet" "MUIVerb" "Ex Falso"
+  WriteRegStr HKCR  "Directory\shell\quodlibet\command" "" "$INSTDIR\bin\exfalso.exe $\"%1$\""
+  ; Context menu by shift+right clicking on explorer background
+  WriteRegStr HKCR  "Directory\Background\shell\quodlibet" "Icon" "$INSTDIR\bin\exfalso.exe"
+  WriteRegStr HKCR  "Directory\Background\shell\quodlibet" "MUIVerb" "Ex Falso"
+  ; Extended hides it if shift isn't pressed, like the cmd entry
+  WriteRegStr HKCR  "Directory\Background\shell\quodlibet" "Extended" ""
+  WriteRegStr HKCR  "Directory\Background\shell\quodlibet\command" "" "$INSTDIR\bin\exfalso.exe $\"%V$\""
+
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\uninstall.exe"
   
@@ -214,6 +226,12 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\$StartMenuFolder\Quod Libet.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Ex Falso.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
+
+  ; Remove folder association
+  DeleteRegKey HKCR "Directory\shell\quodlibet\command"
+  DeleteRegKey HKCR "Directory\shell\quodlibet"
+  DeleteRegKey HKCR "Directory\Background\shell\quodlibet\command"
+  DeleteRegKey HKCR "Directory\Background\shell\quodlibet"
 
   ;Old installer wrote the path to HKCU only, delete it
   DeleteRegKey HKCU "Software\Quod Libet"
