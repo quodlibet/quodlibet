@@ -9,6 +9,28 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 source "$DIR"/_base.sh
 
+# Argument 1: hg tag, defaults to "default"
+function build_all {
+    local HG_TAG=${1:-"default"}
+
+    echo "Building for hg tag '$HG_TAG'"
+
+    download_and_verify;
+
+    init_wine;
+    init_build_env;
+    clone_repo "$HG_TAG";
+    extract_deps;
+
+    setup_deps;
+    install_python;
+    install_7zip;
+    install_nsis;
+
+    cleanup;
+    build_quodlibet;
+}
+
 build_all "$1";
 
 package_installer;

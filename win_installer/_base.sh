@@ -14,6 +14,7 @@ MISC="$DIR"/misc
 BIN="$DIR"/_bin
 QL_REPO="$DIR"/..
 BUILD_BAT="$MISC"/build.bat
+BUILD_SDK_BAT="$MISC"/build_sdk.bat
 PACKAGE_BAT="$MISC"/package.bat
 INST_ICON="$MISC"/quodlibet.ico
 NSIS_SCRIPT="$MISC"/win_installer.nsi
@@ -71,6 +72,7 @@ function init_build_env {
 
     # link the batch file and nsis file in
     ln -s "$BUILD_BAT" "$BUILD_ENV"
+    ln -s "$BUILD_SDK_BAT" "$BUILD_ENV"
     ln -s "$PACKAGE_BAT" "$BUILD_ENV"
     ln -s "$NSIS_SCRIPT" "$BUILD_ENV"
     ln -s "$INST_ICON" "$BUILD_ENV"
@@ -273,6 +275,8 @@ function setup_sdk {
     SDK="$BUILD_ENV"/quodlibet-win-sdk
     mkdir "$SDK"
 
+    (cd "$BUILD_ENV" && wine cmd /c build_sdk.bat)
+
     # launchers, README
     ln -s "$MISC"/env.bat "$SDK"
     ln -s "$MISC"/test.bat "$SDK"
@@ -285,34 +289,14 @@ function setup_sdk {
     ln -s "$PYDIR" "$SDK"/python
 
     # ql
-    ln -s "$QL_REPO" "$SDK"/quodlibet
+    ln -s "$QL_REPO"/quodlibet "$SDK"/quodlibet
 
     # link to base dir
     ln -s "$SDK" "$DIR"/_sdk
 }
 
-################################################
 
-# Argument 1: hg tag, defaults to "default"
-function build_all {
-    local HG_TAG=${1:-"default"}
-
-    echo "Building for hg tag '$HG_TAG'"
-
-    download_and_verify;
-
-    init_wine;
-    init_build_env;
-    clone_repo "$HG_TAG";
-    extract_deps;
-
-    setup_deps;
-    install_python;
-    install_7zip;
-    install_nsis;
-
+function cleanup {
     # no longer needed, save disk space
     rm -Rf "$PYGI"
-
-    build_quodlibet;
 }
