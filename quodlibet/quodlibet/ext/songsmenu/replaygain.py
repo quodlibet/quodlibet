@@ -232,7 +232,7 @@ class ReplayGainPipeline(GObject.Object):
         self._current = self._songs.pop(0)
         self.filesrc.set_property("location", self._current.filename)
         if not first:
-             # flush, so the element takes new data after EOS
+            # flush, so the element takes new data after EOS
             pad = self.analysis.get_static_pad("src")
             pad.send_event(Gst.Event.new_flush_start())
             pad.send_event(Gst.Event.new_flush_stop(True))
