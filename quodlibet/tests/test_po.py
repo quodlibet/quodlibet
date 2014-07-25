@@ -23,7 +23,7 @@ class TPOTFILESIN(TestCase):
             result = subprocess.check_output(
                 ["intltool-update", "--maintain",
                  "--gettext-package", "quodlibet"],
-                 stderr=subprocess.STDOUT)
+                stderr=subprocess.STDOUT)
         finally:
             os.chdir(old_cd)
 

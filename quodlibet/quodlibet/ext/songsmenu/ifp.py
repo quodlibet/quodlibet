@@ -24,9 +24,9 @@ class IFPUpload(SongsMenuPlugin):
             qltk.ErrorMessage(
                 None, "No iFP device found",
                 "Unable to contact your iFP device. Check "
-                 "that the device is powered on and plugged "
-                 "in, and that you have ifp-line "
-                 "(http://ifp-driver.sf.net) installed.").run()
+                "that the device is powered on and plugged "
+                "in, and that you have ifp-line "
+                "(http://ifp-driver.sf.net) installed.").run()
             return True
         self.__madedir = []
 
