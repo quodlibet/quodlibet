@@ -8,6 +8,7 @@ import os
 
 from tests import TestCase, DATA_DIR, skipUnless
 
+from quodlibet.util.path import normalize_path
 from quodlibet import windows
 
 
@@ -36,5 +37,6 @@ class TWindows(TestCase):
     def test_get_link_target(self):
         path = os.path.join(DATA_DIR, "test.lnk")
         d = windows.get_link_target(path)
-        self.assertEqual(d, u"C:\Windows\explorer.exe")
+        self.assertEqual(
+            normalize_path(d), normalize_path(u"C:\Windows\explorer.exe"))
         self.assertTrue(isinstance(d, unicode))
