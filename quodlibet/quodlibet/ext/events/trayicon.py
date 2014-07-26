@@ -274,6 +274,12 @@ class TrayIcon(EventPlugin):
         self._icon = None
         self.__show_window()
 
+    def __user_can_unhide(self):
+        """Return if the user has the possibility to show the Window somehow"""
+
+        # Either if it's embedded, or if we are waiting for the embedded check
+        return bool(self._icon.is_embedded() or self.__emb_sig)
+
     def PluginPreferences(self, parent):
         p = Preferences(self)
         p.connect('destroy', self.__prefs_destroy)
@@ -339,7 +345,10 @@ class TrayIcon(EventPlugin):
             self.plugin_on_song_started(app.player.song)
 
     def __window_delete(self, win, event):
-        return self.__hide_window()
+        if self.__user_can_unhide():
+            self.__hide_window()
+            return True
+        return False
 
     def __window_show(self, win, *args):
         config.set("plugins", "icon_window_visible", "true")
@@ -347,7 +356,6 @@ class TrayIcon(EventPlugin):
     def __hide_window(self):
         app.hide()
         config.set("plugins", "icon_window_visible", "false")
-        return True
 
     def __show_window(self):
         app.present()
