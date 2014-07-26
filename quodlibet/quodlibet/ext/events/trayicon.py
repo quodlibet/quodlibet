@@ -319,14 +319,20 @@ class TrayIcon(EventPlugin):
         self.__pixbuf_paused = None
         self.__update_icon()
 
-    def __size_changed(self, icon, size, *args):
+    def __size_changed(self, icon, req_size, *args):
+        # https://bugzilla.gnome.org/show_bug.cgi?id=733647
+        # Workaround: if size < 16, create a 16px pixbuf anyway and return that
+        # we didn't set the right size
+
+        size = max(req_size, 16)
         if size != self.__size:
             self.__pixbuf = None
             self.__pixbuf_paused = None
 
             self.__size = size
             self.__update_icon()
-        return True
+
+        return size == req_size and self.__pixbuf is not None
 
     def __prefs_destroy(self, *args):
         if self._icon:
