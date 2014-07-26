@@ -97,8 +97,12 @@ def get_link_target(path):
 def get_links_dir():
     """Get the path to the Links directory (%USERPROFILE%\\Links) or None"""
 
-    kfm = pythoncom.CoCreateInstance(shell.CLSID_KnownFolderManager, None,
-        pythoncom.CLSCTX_INPROC_SERVER, shell.IID_IKnownFolderManager)
+    try:
+        kfm = pythoncom.CoCreateInstance(shell.CLSID_KnownFolderManager, None,
+            pythoncom.CLSCTX_INPROC_SERVER, shell.IID_IKnownFolderManager)
+    except pywintypes.com_error:
+        # WinXP for example
+        return
 
     try:
         libs_folder = kfm.GetFolder(shell.FOLDERID_Links)
