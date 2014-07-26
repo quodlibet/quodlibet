@@ -8,6 +8,7 @@ from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_wayland
+from quodlibet.util import DeferredSignal
 
 
 class Window(Gtk.Window):
@@ -100,7 +101,9 @@ class PersistentWindowMixin(object):
         self.__state = 0
         self.__name = config_prefix
         self.__size_suffix = size_suffix
-        self.connect('configure-event', self.__save_size)
+        self.__save_size_deferred = DeferredSignal(
+            self.__do_save_size, timeout=50, owner=self)
+        self.connect('configure-event', self.__configure_event)
         self.connect('window-state-event', self.__window_state_changed)
         self.connect('notify::visible', self.__visible_changed)
         self.__restore_window_state()
@@ -147,11 +150,22 @@ class PersistentWindowMixin(object):
         if x >= 1 and y >= 1:
             self.resize(x, y)
 
-    def __save_size(self, window, event):
+    def __configure_event(self, window, event):
+        # xfwm4 resized the window before it maximizes it, which leads
+        # to QL remembering the wrong size. Work around that by waiting
+        # until configure-event settles down, at which point the maximized
+        # state should be set
+        # WARNING: we can't keep the event, because PyGObject doesn't
+        # keep it alive; so extract width/height before returning here.
+
+        self.__save_size_deferred(event.width, event.height)
+        return False
+
+    def __do_save_size(self, width, height):
         if self.__state & Gdk.WindowState.MAXIMIZED:
             return
 
-        value = "%d %d" % (event.width, event.height)
+        value = "%d %d" % (width, height)
         config.set("memory", self.__conf("size"), value)
         if self.get_property("visible"):
             pos_value = '%s %s' % self.get_position()
