@@ -378,7 +378,7 @@ class TreeViewHints(Gtk.Window):
         # nobody else should tie to any TreeViewHints events ever.
         event.any.window = self.__view.get_bin_window()
 
-        event.put()
+        self.__view.event(event)
 
         return True
 
