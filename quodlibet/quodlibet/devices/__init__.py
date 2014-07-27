@@ -126,6 +126,9 @@ class DeviceManager(GObject.GObject):
         the device serial (so it's unique) and maybe the model name."""
         device = None
 
+        print_d("Creating device %r supporting protocols: %r" % (
+            device_id, protocols))
+
         for prots in (protocols, ['storage']):
             klass = get_by_protocols(prots)
             if klass is None:
@@ -248,12 +251,15 @@ class UDisks2Manager(DeviceManager):
 
         drive = self._drives.get(block["Drive"])
         if not drive:
+            # I think this shouldn't happen, but check anyway
             return
 
         dev_path = dbus_barray_to_str(block["Device"])
+        print_d("Found device: %r" % dev_path)
 
         media_player_id = get_media_player_id(self._udev, dev_path)
         if not media_player_id:
+            print_d("%r not a media player" % dev_path)
             return
         protocols = get_media_player_protocols(media_player_id)
 
