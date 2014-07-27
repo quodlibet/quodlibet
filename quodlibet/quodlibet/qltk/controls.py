@@ -182,7 +182,7 @@ class SeekBar(HSlider):
 
         if song and song("~#length") > 0:
             self.scale.set_range(0, song("~#length"))
-            slider_width = int(song("~#length") / 1.5) + 40
+            slider_width = int(song("~#length") / 1.5) + 80
             self.__seekable = True
         else:
             self.scale.set_range(0, 1)
