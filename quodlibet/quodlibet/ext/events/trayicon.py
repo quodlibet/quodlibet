@@ -220,10 +220,8 @@ class TrayIcon(EventPlugin):
             self.__theme_changed)
 
         self._icon.connect('size-changed', self.__size_changed)
-        # No size-changed under win32
-        if sys.platform == "win32":
-            self.__size = 16
-
+        self._icon.connect("notify::embedded", self.__embedded_changed)
+        self.__embedded_changed(self._icon)
         self._icon.connect('popup-menu', self._popup_menu)
         self._icon.connect('activate', self.__button_left)
 
@@ -233,9 +231,6 @@ class TrayIcon(EventPlugin):
         self.__w_sig_show = app.window.connect('show', self.__window_show)
         self.__w_sig_del = app.window.connect('delete-event',
                                               self.__window_delete)
-
-        self.plugin_on_paused()
-        self.plugin_on_song_started(app.player.song)
 
         # If after the main loop is idle and 3 seconds have passed
         # the tray icon isn't embedded, assume it wont be and unhide
@@ -258,6 +253,11 @@ class TrayIcon(EventPlugin):
         if not config.getboolean("plugins", "icon_window_visible", True):
             Window.prevent_inital_show(True)
 
+    def __embedded_changed(self, icon, *args):
+        if icon.get_property("embedded"):
+            size = icon.get_size()
+            self.__size_changed(icon, size)
+
     def disabled(self):
         if self.__emb_sig:
             GLib.source_remove(self.__emb_sig)
@@ -267,10 +267,6 @@ class TrayIcon(EventPlugin):
         app.window.disconnect(self.__w_sig_show)
         app.window.disconnect(self.__w_sig_del)
         self._icon.set_visible(False)
-        try:
-            self._icon.destroy()
-        except AttributeError:
-            pass
         self._icon = None
         self.__show_window()
 
