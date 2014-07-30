@@ -1,5 +1,6 @@
 from quodlibet.util.collection import Album
 from quodlibet.formats._audio import AudioFile
+from quodlibet import config
 from tests.plugin import PluginTestCase
 from quodlibet.util.dprint import print_d
 
@@ -42,8 +43,12 @@ class TRandomAlbum(PluginTestCase):
                'length': 0, 'skipcount': 0, 'playcount': 0}
 
     def setUp(self):
+        config.init()
         self.plugin = self.plugins["Random Album Playback"].cls()
         self.albums = [A1, A2, A3]
+
+    def tearDown(self):
+        config.quit()
 
     def get_winner(self, albums):
         print_d("Weights: %s " % self.plugin.weights)
