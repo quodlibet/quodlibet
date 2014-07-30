@@ -37,7 +37,7 @@ from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
-from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RPaned, ConfigRVPaned, Alignment, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
@@ -1232,9 +1232,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             headers.remove('~current')
         except ValueError:
             pass
-        if len(headers) == len(config.get_columns()):
+        if len(headers) == len(get_columns()):
             # Not an addition or removal (handled separately)
-            config.set_columns(headers)
+            set_columns(headers)
             SongList.headers = headers
 
     def __make_query(self, query):

@@ -69,7 +69,7 @@ def main():
 
     browsers.init()
 
-    from quodlibet.qltk.songlist import SongList
+    from quodlibet.qltk.songlist import SongList, get_columns
 
     from quodlibet.util.collection import Album
     try:
@@ -80,7 +80,7 @@ def main():
         if cover_size > 0:
             Album.COVER_SIZE = cover_size
 
-    headers = config.get_columns()
+    headers = get_columns()
     SongList.set_all_column_headers(headers)
 
     for opt in config.options("header_maps"):

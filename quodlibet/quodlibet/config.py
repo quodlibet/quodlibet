@@ -216,40 +216,6 @@ def state(arg):
     return _config.getboolean("settings", arg)
 
 
-def get_columns():
-    """Gets the list of songlist column headings"""
-
-    if has_option("settings", "columns"):
-        return getstringlist("settings", "columns", const.DEFAULT_COLUMNS)
-    else:
-        # migrate old settings
-        try:
-            columns = get("settings", "headers").split()
-        except Error:
-            return const.DEFAULT_COLUMNS
-        else:
-            _config.remove_option("settings", "headers")
-            set_columns(columns)
-            setstringlist("settings", "columns", columns)
-            return columns
-
-
-def set_columns(vals):
-    """Persists the settings for songlist headings held in `vals`"""
-
-    setstringlist("settings", "columns", vals)
-
-
-@register_upgrade_function
-def _migrate_rating_column(config, old, new):
-    if old < 0:
-        columns = get_columns()[:]
-        for i, c in enumerate(columns):
-            if c == "~#rating":
-                columns[i] = "~rating"
-        set_columns(columns)
-
-
 class RatingsPrefs(object):
     """
     Models Ratings settings as configured by the user, with caching.

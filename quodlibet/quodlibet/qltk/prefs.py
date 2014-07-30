@@ -24,7 +24,7 @@ from quodlibet.qltk.data_editors import MultiStringEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
-from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal, get_scan_dirs, scan_library
@@ -73,7 +73,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             vbox = Gtk.VBox(spacing=12)
             buttons = {}
             table = Gtk.Table.new(3, 3, True)
-            cols = config.get_columns()
+            cols = get_columns()
 
             for i, (k, t) in enumerate(self.PREDEFINED_TAGS):
                 x, y = i % 3, i / 3
@@ -168,7 +168,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             on_to_off = dict((on, off) for (w, off, on) in self._toggle_data)
             result = []
-            cur_cols = config.get_columns()
+            cur_cols = get_columns()
             for h in cur_cols:
                 if h in new_headers:
                     result.append(h)

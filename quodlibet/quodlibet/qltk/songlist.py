@@ -11,6 +11,7 @@ from gi.repository import Gtk, GLib, Gdk, GObject
 
 from quodlibet import app
 from quodlibet import config
+from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
@@ -105,6 +106,42 @@ class SongInfoSelection(GObject.Object):
         else:
             self.__emit_info_selection()
         self.__count = count
+
+
+def get_columns():
+    """Gets the list of songlist column headings"""
+
+    if config.has_option("settings", "columns"):
+        return config.getstringlist(
+            "settings", "columns", const.DEFAULT_COLUMNS)
+    else:
+        # migrate old settings
+        try:
+            columns = config.get("settings", "headers").split()
+        except config.Error:
+            return const.DEFAULT_COLUMNS
+        else:
+            config.remove_option("settings", "headers")
+            set_columns(columns)
+            config.setstringlist("settings", "columns", columns)
+            return columns
+
+
+@config.register_upgrade_function
+def _migrate_rating_column(config, old, new):
+    if old < 0:
+        # https://code.google.com/p/quodlibet/issues/detail?id=1381
+        columns = get_columns()[:]
+        for i, c in enumerate(columns):
+            if c == "~#rating":
+                columns[i] = "~rating"
+        set_columns(columns)
+
+
+def set_columns(vals):
+    """Persists the settings for songlist headings held in `vals`"""
+
+    config.setstringlist("settings", "columns", vals)
 
 
 def get_sort_tag(tag):
@@ -652,7 +689,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
     @classmethod
     def set_all_column_headers(cls, headers):
-        config.set_columns(headers)
+        set_columns(headers)
         try:
             headers.remove("~current")
         except ValueError:
