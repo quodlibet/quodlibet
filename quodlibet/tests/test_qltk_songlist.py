@@ -1,9 +1,9 @@
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
-from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.songlist import SongList, set_columns, get_columns
 from quodlibet.formats._audio import AudioFile
-import quodlibet.config
+from quodlibet import config
 
 
 class TSongList(TestCase):
@@ -11,7 +11,7 @@ class TSongList(TestCase):
                "~#length", "~dirname", "~#track"]
 
     def setUp(self):
-        quodlibet.config.init()
+        config.init()
         self.songlist = SongList(SongLibrary())
 
         self.orders_changed = 0
@@ -139,6 +139,28 @@ class TSongList(TestCase):
         sel.select_all()
         self.assertTrue(self.songlist.Menu("foo", browser, library))
 
+    def test_get_columns_migrates(self):
+        self.failIf(config.get("settings", "headers", None))
+        self.failIf(config.get("settings", "columns", None))
+
+        headers = "~album ~#replaygain_track_gain foobar"
+        config.set("settings", "headers", headers)
+        columns = get_columns()
+        self.failUnlessEqual(columns, ["~album", "~#replaygain_track_gain",
+                                       "foobar"])
+        self.failIf(config.get("settings", "headers", None))
+
+    def test_get_set_columns(self):
+        self.failIf(config.get("settings", "headers", None))
+        self.failIf(config.get("settings", "columns", None))
+        columns = ["first", "won't", "two words", "4"]
+        set_columns(columns)
+        self.failUnlessEqual(columns, get_columns())
+        columns += ["~~another~one"]
+        set_columns(columns)
+        self.failUnlessEqual(columns, get_columns())
+        self.failIf(config.get("settings", "headers", None))
+
     def tearDown(self):
         self.songlist.destroy()
-        quodlibet.config.quit()
+        config.quit()
