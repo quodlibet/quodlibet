@@ -73,7 +73,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             vbox = Gtk.VBox(spacing=12)
             buttons = {}
             table = Gtk.Table.new(3, 3, True)
-            cols = config.get_columns(refresh=True)
+            cols = config.get_columns()
 
             for i, (k, t) in enumerate(self.PREDEFINED_TAGS):
                 x, y = i % 3, i / 3
@@ -168,7 +168,7 @@ class PreferencesWindow(qltk.UniqueWindow):
 
             on_to_off = dict((on, off) for (w, off, on) in self._toggle_data)
             result = []
-            cur_cols = config.get_columns(refresh=True)
+            cur_cols = config.get_columns()
             for h in cur_cols:
                 if h in new_headers:
                     result.append(h)
