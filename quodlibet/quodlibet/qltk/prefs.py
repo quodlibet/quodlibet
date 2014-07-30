@@ -2,7 +2,8 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
 #           2011-2013 Nick Boultbee
-#           2013 Christoph Reiter
+#           2013      Christoph Reiter
+#           2014      Jan Path
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -50,7 +51,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             ("~basename", _("_Filename")),
 
             ("~#length", _("_Length")),
-            ("~#rating", _("_Rating")),
+            ("~rating", _("_Rating")),
             ("~#filesize", util.tag("~#filesize"))]
 
         def __init__(self):

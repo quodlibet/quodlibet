@@ -150,7 +150,7 @@ INITIAL = {
 
 
 # global instance
-_config = Config()
+_config = Config(version=0)
 
 options = _config.options
 get = _config.get
@@ -164,6 +164,7 @@ setdefault = _config.setdefault
 write = _config.write
 reset = _config.reset
 add_section = _config.add_section
+register_upgrade_function = _config.register_upgrade_function
 
 
 def init(filename=None, initial=None):
@@ -270,6 +271,16 @@ def set_columns(vals, force=False):
         __songlist_columns = vals
     else:
         print_d("No change in columns to write")
+
+
+@register_upgrade_function
+def _migrate_rating_column(config, old, new):
+    if old < 0:
+        columns = get_columns()[:]
+        for i, c in enumerate(columns):
+            if c == "~#rating":
+                columns[i] = "~rating"
+        set_columns(columns)
 
 
 def cached_config():

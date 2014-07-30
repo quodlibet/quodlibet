@@ -1,6 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #      2011-2013 Nick Boultbee
+#           2014 Jan Path
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -555,7 +556,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return True
         if event.window != self.get_bin_window():
             return False
-        if col.header_name == "~#rating":
+        if col.header_name == "~rating":
             if not config.getboolean("browsers", "rating_click"):
                 return
 
@@ -572,7 +573,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             rating = max(0.0, min(1.0, count * precision))
             if (rating <= precision and
                     song("~#rating") == precision):
-                rating = 0
+                rating = 0.0
             self.__set_rating(rating, [song], librarian)
 
     def __set_rating(self, value, songs, librarian):
@@ -966,7 +967,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu.append(sep)
 
         trackinfo = """title genre ~title~version ~#track
-            ~#playcount ~#skipcount ~#rating ~#length""".split()
+            ~#playcount ~#skipcount ~rating ~#length""".split()
         peopleinfo = """artist ~people performer arranger author composer
             conductor lyricist originalartist""".split()
         albuminfo = """album ~album~discsubtitle labelid ~#disc ~#discs

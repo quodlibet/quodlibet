@@ -20,7 +20,7 @@ class TSongListColumns(TestCase):
         view = Gtk.TreeView()
         model = ObjectStore()
         view.set_model(model)
-        song = AudioFile({"~filename": "/dev/null"})
+        song = AudioFile({"~filename": "/dev/null", "~#rating": 0.6666})
         song.update(kwargs)
         model.append(row=[song])
         view.append_column(column)
@@ -29,6 +29,10 @@ class TSongListColumns(TestCase):
 
         with visible(view):
             view.columns_autosize()
+
+        text = column.get_cells()[0].get_property("text")
+        self.assertIsNot(text, None)
+        return text
 
     def test_date(self):
         column = create_songlist_column("~#added")
@@ -48,7 +52,12 @@ class TSongListColumns(TestCase):
 
     def test_rating(self):
         column = create_songlist_column("~rating")
-        self._render_column(column)
+        text = self._render_column(column)
+        self.assertNotEqual(text, "0.67")
+
+        column = create_songlist_column("~#rating")
+        text = self._render_column(column)
+        self.assertEqual(text, "0.67")
 
     def test_bitrate(self):
         column = create_songlist_column("~#bitrate")

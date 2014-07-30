@@ -1,6 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #      2011-2014 Nick Boultbee
+#           2014 Jan Path
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -30,7 +31,7 @@ def create_songlist_column(t):
         return LengthColumn()
     elif t == "~#filesize":
         return FilesizeColumn()
-    elif t in ["~rating", "~#rating"]:
+    elif t in ["~rating"]:
         return RatingColumn()
     elif t.startswith("~#"):
         return NumericColumn(t)
@@ -109,13 +110,13 @@ class TextColumn(SongListColumn):
 
 
 class RatingColumn(TextColumn):
-    """Render ~#rating directly
+    """Render ~rating directly
 
     (simplifies filtering, saves a function call).
     """
 
     def __init__(self, *args, **kwargs):
-        super(RatingColumn, self).__init__("~#rating", *args, **kwargs)
+        super(RatingColumn, self).__init__("~rating", *args, **kwargs)
         self.set_expand(False)
         self.set_resizable(False)
         width = self._cell_width(util.format_rating(1.0))
@@ -252,7 +253,12 @@ class NumericColumn(TextColumn):
         value = model.get_value(iter_).comma(self.header_name)
         if not self._needs_update(value):
             return
-        text = unicode(value)
+
+        if isinstance(value, float):
+            text = u"%.2f" % round(value, 2)
+        else:
+            text = unicode(value)
+
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)
 
