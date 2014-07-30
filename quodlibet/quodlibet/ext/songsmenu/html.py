@@ -8,12 +8,12 @@ from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet.util import tag, escape
-from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.songlist import get_columns
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-HTML = '''<?xml version="1.0" encoding="UTF-8"?>
-<html>
+HTML = '''<html>
 <head><title>Quod Libet Playlist</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
  <style type="text/css">
   table {table-collapse:collapse; border-spacing:0; width: 100%%}
   td {border: 0; padding:7px}
@@ -38,7 +38,7 @@ HTML = '''<?xml version="1.0" encoding="UTF-8"?>
 
 
 def to_html(songs):
-    cols = SongList.headers
+    cols = get_columns()
 
     cols_s = ""
     for col in cols:
