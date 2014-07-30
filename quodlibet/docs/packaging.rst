@@ -64,44 +64,34 @@ Optional Runtime Dependencies
 -----------------------------
 
 **gnome-symbolic-icon-theme**:
-
     * For symbolic icons; QL will fall back to colored ones if needed.
 
 **dbus-python**:
-
     * Enables the DBus interface
     * Multimedia key support under GNOME
 
 **pyhook** (Windows only):
-
     * Multimedia key support under Windows
 
 **libkeybinder-3.0** + **typelib**:
-
     * Multimedia key support under non Gnome setups
 
 **libgpod4** (the shared library, no Python bindings):
-
     * iPod support
 
 **libgtksourceview-3** + **typelib**:
-
     * Undo/Redo support for multiline text fields
 
 **media-player-info**:
-
     * For detection of DAPs
 
 **udisks** or **udisks2**:
-
     * For detection of DAPs
 
 **python-feedparser**:
-
     * For the feed browser
 
 **libmodplug1**:
-
     * For MOD support
 
 
@@ -112,27 +102,21 @@ All plugin dependencies are optional and will only prevent the corresponding
 plugin from loading.
 
 **notification-daemon** (or any other implementation of the dbus spec):
-
     * For the notification plugin
 
 **python-musicbrainz2**:
-
     * For the musicbrainz plugin
 
 **GStreamer Plugins Good**:
-
     * For the replaygain plugin
 
 **GStreamer Plugins Bad**:
-
     * For the acoustid plugin
 
 **python-cddb**:
-
     * For the CDDB plugin
 
 **python-dbus**:
-
     * "Browse Folders"
     * Screensaver plugins
     * uPnP server
@@ -142,15 +126,12 @@ plugin from loading.
     * ...
 
 **rygel**:
-
     * The uPnP media server
 
 **Zeitgeist Python bindings**:
-
     * For the zeitgeist plugin
 
 **pynotify**:
-
     * For the auto library update plugin
 
 
