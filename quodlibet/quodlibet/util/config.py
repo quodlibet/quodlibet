@@ -30,11 +30,60 @@ class _sorted_dict(dict):
 class Config(object):
     """A wrapper around RawConfigParser"""
 
-    def __init__(self):
-        """Use read() to read in an existing config file"""
+    def __init__(self, version=None):
+        """Use read() to read in an existing config file.
+
+        version should be an int starting with 0 that gets incremented if you
+        want to register a new upgrade function. If None, upgrade is disabled.
+        """
 
         self._config = ConfigParser(dict_type=_sorted_dict)
+        self._version = version
+        self._loaded_version = None
+        self._upgrade_funcs = []
         self._initial = {}
+
+    def _do_upgrade(self, func):
+        assert self._loaded_version is not None
+        assert self._version is not None
+
+        old_version = self._loaded_version
+        new_version = self._version
+        if old_version != new_version:
+            print_d("Config upgrade: %d->%d (%r)" % (
+                old_version, new_version, func))
+            func(self, old_version, new_version)
+
+    def get_version(self):
+        """Get the version of the loaded config file (for testing only)
+
+        Raises Error if no file was loaded or versioning is disabled.
+        """
+
+        if self._version is None:
+            raise Error("Versioning disabled")
+
+        if self._loaded_version is None:
+            raise Error("No file loaded")
+
+        return self._loaded_version
+
+    def register_upgrade_function(self, function):
+        """Register an upgrade function that gets called at each read()
+        if the current config version and the loaded version don't match.
+
+        Can also be registered after read was called.
+
+        function(config, old_version: int, new_version: int) -> None
+        """
+
+        if self._version is None:
+            raise Error("Versioning disabled")
+
+        self._upgrade_funcs.append(function)
+        # after read(), so upgrade now
+        if self._loaded_version is not None:
+            self._do_upgrade(function)
 
     def set_inital(self, section, option, value):
         """Set an initial value for an option.
@@ -188,8 +237,16 @@ class Config(object):
 
         mkdir(os.path.dirname(filename))
 
-        with atomic_save(filename, ".tmp", "wb") as fileobj:
-            self._config.write(fileobj)
+        # temporary set the new version for saving
+        if self._version is not None:
+            self.add_section("__config__")
+            self.set("__config__", "version", self._version)
+        try:
+            with atomic_save(filename, ".tmp", "wb") as fileobj:
+                self._config.write(fileobj)
+        finally:
+            if self._loaded_version is not None:
+                self.set("__config__", "version", self._loaded_version)
 
     def clear(self):
         """Remove all sections and initial values"""
@@ -211,6 +268,11 @@ class Config(object):
         """
 
         self._config.read(filename)
+
+        if self._version is not None:
+            self._loaded_version = self.getint("__config__", "version", -1)
+            for func in self._upgrade_funcs:
+                self._do_upgrade(func)
 
     def sections(self):
         """Return a list of the sections available"""
