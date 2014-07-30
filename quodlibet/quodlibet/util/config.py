@@ -84,6 +84,7 @@ class Config(object):
         # after read(), so upgrade now
         if self._loaded_version is not None:
             self._do_upgrade(function)
+        return function
 
     def set_inital(self, section, option, value):
         """Set an initial value for an option.
