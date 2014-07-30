@@ -173,14 +173,6 @@ def init(filename=None, initial=None):
             "config initialized twice without quitting: %r"
             % _config.sections())
 
-    # <=2.2.1 QL created the user folder in the profile folder
-    # but it should be in the appdata folder, so move it.
-    if os.name == "nt":
-        old_dir = os.path.join(os.path.expanduser("~"), ".quodlibet")
-        new_dir = const.USERDIR
-        if not os.path.isdir(new_dir) and os.path.isdir(old_dir):
-            shutil.move(old_dir, new_dir)
-
     if initial is None:
         initial = INITIAL
 
@@ -200,12 +192,6 @@ def init(filename=None, initial=None):
                 shutil.copy(filename, filename + ".not-valid")
             except EnvironmentError:
                 pass
-
-    # revision 94d389a710f1
-    from_ = ("settings", "round")
-    if _config.has_option(*from_):
-        _config.set("albumart", "round", _config.get(*from_))
-        _config.remove_option(*from_)
 
 
 def save(filename):
