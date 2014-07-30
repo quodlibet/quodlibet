@@ -31,7 +31,7 @@ INITIAL = {
         "gst_pipeline": "",
         "gst_buffer": "1.5", # stream buffer duration in seconds
         "gst_device": "",
-        "gst_disable_gapless": "true",
+        "gst_disable_gapless": "false",
     },
     "library": {
         "exclude": "",
