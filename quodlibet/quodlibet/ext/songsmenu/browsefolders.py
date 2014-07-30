@@ -60,7 +60,6 @@ def browse_folders_fdo(songs):
 
         # open each folder and select the first file we have selected
         for dirname, sub_songs in group_songs(songs).items():
-            print sub_songs[0]("~uri"), get_startup_id()
             bus_iface.ShowItems([sub_songs[0]("~uri")], get_startup_id())
     except dbus.DBusException as e:
         raise BrowseError(e)
