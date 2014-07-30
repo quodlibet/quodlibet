@@ -4,6 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import contextlib
 import StringIO
 import sys
@@ -201,3 +202,23 @@ def capture_output():
     finally:
         sys.stderr = old_err
         sys.stdout = old_out
+
+
+@contextlib.contextmanager
+def temp_filename(*args, **kwargs):
+    """Creates an empty file and removes it when done.
+
+        with temp_filename() as filename:
+            with open(filename) as h:
+                h.write("foo")
+            do_stuff(filename)
+    """
+
+    from tests import mkstemp
+
+    fd, filename = mkstemp(*args, **kwargs)
+    os.close(fd)
+
+    yield filename
+
+    os.remove(filename)
