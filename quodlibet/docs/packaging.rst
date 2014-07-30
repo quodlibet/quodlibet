@@ -5,7 +5,7 @@ Packaging Guide
 
 This page is directed at distributions, packagers and developers.
 
-Please :ref:`contact us <Contact>` if there is anything unclear / out of date / 
+Please :ref:`contact us <Contact>` if there is anything unclear / out of date /
 missing.
 
 For license & copyright information see :ref:`license`
@@ -32,7 +32,7 @@ Non-Optional Runtime Dependencies
 
 The following software is needed to start Ex Falso or Quod Libet.
 
-* **Python** (>= 2.6)
+* **Python** (2.7)
 * **PyGObject** including **cairo support** (>= 3.2)
 * **pycairo**
 * **mutagen** (>= 1.14)
@@ -44,13 +44,15 @@ For playback support in Quod Libet one of the following two is needed:
 GStreamer
 ^^^^^^^^^
 
-* **GStreamer** (>= 1.0) + **typelibs**
-* **GStreamer Plugins Good**
+Required:
+    * **GStreamer** (>= 1.0) + **typelibs**
+    * **GStreamer Plugins Base**: Vorbis, Alsa, ...
 
-Particular audio formats depend on various *GStreamer* decoding elements, as 
-well as other Python modules. GStreamer splits their downloads into *''good''*, 
-*''bad''*, *''ugly''*, and *''ffmpeg/av''* packages, each of which contains 
-elements; you probably want them all.
+Optional but recommended:
+    * **GStreamer Plugins Good**: Pulseaudio, FLAC, Jack, ...
+    * **GStreamer Plugins Ugly**: MP3 (mad), ...
+    * **GStreamer Plugins Bad**: MP3 (mpg123), MP4, Opus, ...
+    * **GStreamer libav/ffmpeg**: WMA, ...
 
 Xine
 ^^^^
@@ -90,7 +92,7 @@ Optional Runtime Dependencies
 
     * For detection of DAPs
 
-**udisks** (not udisks2):
+**udisks** or **udisks2**:
 
     * For detection of DAPs
 
@@ -106,7 +108,7 @@ Optional Runtime Dependencies
 Plugin Dependencies
 -------------------
 
-All plugin dependencies are optional and will only prevent the corresponding 
+All plugin dependencies are optional and will only prevent the corresponding
 plugin from loading.
 
 **notification-daemon** (or any other implementation of the dbus spec):
@@ -116,6 +118,10 @@ plugin from loading.
 **python-musicbrainz2**:
 
     * For the musicbrainz plugin
+
+**GStreamer Plugins Good**:
+
+    * For the replaygain plugin
 
 **GStreamer Plugins Bad**:
 
@@ -151,21 +157,35 @@ plugin from loading.
 Build Dependencies
 ------------------
 
-* **Python** 2.6+ (stdlib only)
+* **Python** 2.7 (stdlib only)
 * **intltool** for translations.
 * The **gtk-update-icon-cache** executable for creating the
   fallback icon theme cache.
 
-For user documentation ``setup.py build_sphinx`` can be used to create the 
-HTML user guide and put it in the build directory in the ``sphinx`` 
-subdirectory. This is not part of the default build process and requires 
+For user documentation ``setup.py build_sphinx`` can be used to create the
+HTML user guide and put it in the build directory in the ``sphinx``
+subdirectory. This is not part of the default build process and requires
 **sphinx**.
 
 
 Changes
 -------
 
-3.1.x
-^^^^^
+3.0 → 3.1
+^^^^^^^^^
 
-    No changes compared to 3.0
+* **No changes** compared to 3.0
+
+3.1 → 3.2
+^^^^^^^^^
+
+* **Plugins got merged** into Quod Libet. This means the quodlibet-plugins
+  tarball is gone and plugins will be installed by ``setup.py install``. For
+  distros that used to include the plugins in the main package this means all
+  plugin related packaging code can simply be removed. For distros that
+  offered separate packages the installation can be split by packaging
+  ``quodlibet/ext`` in a separate package. Quod Libet can run without it.
+
+* **UDisks2** is supported, in addition to UDisks1
+
+* **Python 2.7** required instead of 2.6 (might still work, but not tested)
