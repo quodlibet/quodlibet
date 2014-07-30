@@ -164,6 +164,8 @@ setdefault = _config.setdefault
 write = _config.write
 reset = _config.reset
 add_section = _config.add_section
+has_option = _config.has_option
+remove_option = _config.remove_option
 register_upgrade_function = _config.register_upgrade_function
 
 
@@ -214,49 +216,28 @@ def state(arg):
     return _config.getboolean("settings", arg)
 
 
-# Cache
-__songlist_columns = None
+def get_columns():
+    """Gets the list of songlist column headings"""
 
-
-def get_columns(refresh=False):
-    """
-    Gets the list of songlist column headings, caching unless `refresh` is True
-
-    This migrates from old to new format if necessary.
-    """
-    global __songlist_columns
-    if not refresh and __songlist_columns:
-        return __songlist_columns
-    try:
-        __songlist_columns = [str(s).lower()
-                              for s in getstringlist("settings", "columns")]
-        return __songlist_columns
-    except Error:
+    if has_option("settings", "columns"):
+        return getstringlist("settings", "columns", const.DEFAULT_COLUMNS)
+    else:
+        # migrate old settings
         try:
-            __songlist_columns = columns = get("settings", "headers").split()
+            columns = get("settings", "headers").split()
         except Error:
             return const.DEFAULT_COLUMNS
         else:
-            print_d("Migrating from settings.headers to settings.columns...")
-            setstringlist("settings", "columns", columns)
-            print_d("Removing settings.headers...")
             _config.remove_option("settings", "headers")
+            set_columns(columns)
+            setstringlist("settings", "columns", columns)
             return columns
 
 
-def set_columns(vals, force=False):
-    """
-    Persists the settings for songlist headings held in `vals`
-    Will override the cache if `force` is True
-    """
-    global __songlist_columns
-    if vals != __songlist_columns or force:
-        print_d("Writing: %r" % vals)
-        vals = [str(col).lower() for col in vals]
-        setstringlist("settings", "columns", vals)
-        __songlist_columns = vals
-    else:
-        print_d("No change in columns to write")
+def set_columns(vals):
+    """Persists the settings for songlist headings held in `vals`"""
+
+    setstringlist("settings", "columns", vals)
 
 
 @register_upgrade_function
@@ -267,10 +248,6 @@ def _migrate_rating_column(config, old, new):
             if c == "~#rating":
                 columns[i] = "~rating"
         set_columns(columns)
-
-
-def cached_config():
-    pass
 
 
 class RatingsPrefs(object):
