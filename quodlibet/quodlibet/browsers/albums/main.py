@@ -361,12 +361,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     @classmethod
     def init(klass, library):
         try:
-            text = file(PATTERN_FN).read().rstrip()
-            #Migrate <=2.2 pattern.
-            #This breaks people, title.. so remove it someday.
-            text = text.replace("<people", "<~people")
-            text = text.replace("<title", "<album")
-            klass._pattern_text = text
+            klass._pattern_text = file(PATTERN_FN).read().rstrip()
         except EnvironmentError:
             klass._pattern_text = PATTERN
 
