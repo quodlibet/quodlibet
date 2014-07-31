@@ -38,6 +38,13 @@ class TPlayer(AbstractTestCase):
         source.set(FILES)
         self.player.setup(source, None, 0)
 
+        self.signals = {}
+
+        def handler(type_, *args):
+            self.signals.setdefault(type_, []).append(args)
+        self.player.connect_object("unpaused", handler, "unpaused")
+        self.player.connect_object("paused", handler, "paused")
+
     def tearDown(self):
         import __builtin__
         pw = print_w
@@ -46,6 +53,7 @@ class TPlayer(AbstractTestCase):
         while Gtk.events_pending():
             Gtk.main_iteration()
         __builtin__.__dict__["print_w"] = pw
+        del self.signals
         config.quit()
 
     def test_song_start(self):
@@ -112,6 +120,15 @@ class TPlayer(AbstractTestCase):
         self.player.eq_values
         self.player.eq_values = [1, 2, 3, 4]
         self.player.next()
+
+    def test_unpause_while_no_song(self):
+        self.assertTrue(self.player.paused)
+        self.player.go_to(None)
+        self.player.paused = False
+        self.player.next()
+        self.assertTrue(set(self.signals.keys()), set(["unpaused"]))
+        self.player.go_to(None)
+        self.assertTrue(set(self.signals.keys()), set(["unpaused", "paused"]))
 
 
 class TNullPlayer(TPlayer):
