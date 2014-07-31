@@ -268,9 +268,10 @@ class Config(object):
         Can raise EnvironmentError, Error.
         """
 
-        self._config.read(filename)
+        parsed_filenames = self._config.read(filename)
 
-        if self._version is not None:
+        # don't upgrade if we just created a new config
+        if parsed_filenames and self._version is not None:
             self._loaded_version = self.getint("__config__", "version", -1)
             for func in self._upgrade_funcs:
                 self._do_upgrade(func)
