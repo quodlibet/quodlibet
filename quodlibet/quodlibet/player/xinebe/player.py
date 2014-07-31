@@ -248,6 +248,8 @@ class XinePlaylistPlayer(BasePlayer):
             if self._paused:
                 self._pause()
             else:
+                if song is None:
+                    self.emit("unpaused")
                 self._play()
             if gapless and self._supports_gapless:
                 xine_set_param(self._stream, XINE_PARAM_GAPLESS_SWITCH, 0)

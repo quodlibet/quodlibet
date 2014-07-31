@@ -71,6 +71,9 @@ class NullPlayer(BasePlayer):
         if self.song is None:
             self.paused = True
 
+        if not self.paused and song is None:
+            self.emit("unpaused")
+
         self._position = 0
 
     def can_play_uri(self, uri):

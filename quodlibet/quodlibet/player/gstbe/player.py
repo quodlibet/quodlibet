@@ -641,6 +641,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 if self.paused:
                     self.bin.set_state(Gst.State.PAUSED)
                 else:
+                    # something unpaused while no song was active
+                    if song is None:
+                        self.emit("unpaused")
                     self.bin.set_state(Gst.State.PLAYING)
         else:
             self.__destroy_pipeline()
