@@ -174,3 +174,15 @@ class TConfig(TestCase):
             # but if we load again, it does
             conf.read(filename)
             self.assertEqual(conf.get_version(), 42)
+
+    def test_upgrade_first_read(self):
+        # don't run upgrade funcs if there is no config file yet
+        with temp_filename() as filename:
+            pass
+
+        conf = Config(version=41)
+
+        def func(*args):
+            self.assertTrue(False)
+        conf.register_upgrade_function(func)
+        conf.read(filename)
