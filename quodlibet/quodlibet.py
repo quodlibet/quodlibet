@@ -23,12 +23,9 @@ if sys.version_info[0] != 2:
 
 import sys
 
-play = False
-no_plugins = False
-
 
 def main():
-    process_arguments()
+    startup_actions = process_arguments()
 
     from quodlibet import const
     if is_running() and not const.DEBUG:
@@ -95,7 +92,7 @@ def main():
             Kind.headers.extend(in_all)
         Kind.init(library)
 
-    pm = quodlibet.init_plugins(no_plugins)
+    pm = quodlibet.init_plugins("no-plugins" in startup_actions)
 
     if hasattr(player, "init_plugins"):
         player.init_plugins()
@@ -139,7 +136,7 @@ def main():
 
     quodlibet.enable_periodic_save(save_library=True)
 
-    if play:
+    if "start-playing" in startup_actions:
         player.paused = False
 
     # restore browser windows
