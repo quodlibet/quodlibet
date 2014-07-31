@@ -133,6 +133,7 @@ def process_arguments():
     from quodlibet import util
     from quodlibet import const
 
+    actions = []
     controls = ["next", "previous", "play", "pause", "play-pause", "stop",
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
@@ -287,8 +288,8 @@ def process_arguments():
         elif command == "print-query":
             print_query(arg)
         elif command == "start-playing":
-            global play
-            play = True
+            actions.append(command)
         elif command == "no-plugins":
-            global no_plugins
-            no_plugins = True
+            actions.append(command)
+
+    return actions
