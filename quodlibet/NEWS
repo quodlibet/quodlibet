@@ -1,3 +1,65 @@
+3.2.0 (2014-08-01) - WHAT KIND OF GOD MADE IT SO LIONS HUG BACK TOO HARD
+------------------------------------------------------------------------
+
+Tags:
+ * ~people and ~performer don't show roles anymore, which makes them more
+   useful in the paned browser for example. Instead ~people:roles and
+   ~performer:roles will include roles and merge roles like "Artist (Role1,
+   Role2)". Furthermore composer, lyricist, arranger and conductor will be
+   merged with performer roles in ~people:roles. so "performer:role1=Foo,
+   composer=Foo" will result in "Foo (Role1, Composition)". (qjh)
+ * ~#rating in the song list is now a numeric column, ~rating shows the stars
+   (Jan Path) :bug:`1381`
+
+UI:
+ * HiDPI support (start with GDK_SCALE=2, needs cairo trunk)
+ * Various display fixes for GTK+ 3.13 and non-Adwaita based themes
+ * Seek slider width scales with song length to some extend
+ * Seek slider shows remaining time
+ * Play order plugins are now split in random/non-random and
+   the UI was replaced by a toggle button + menu. :bug:`1411`
+ * Removing of songs from a playlist through the context menu (Nick Boultbee)
+ * Song list columns now remember their width/state (qjh)
+ * Song list columns provide an option to toggle if they expand.
+ * The multi sort dialog is gone, instead it's now possible to sort
+   by multiple tags by holding down ctrl and clicking on multiple columns.
+
+Plugins:
+ * New MPD Server plugin to remote control QL, e.g. through MPDroid :bug:`1377`
+ * New acoustid.org fingerprint tagger (basic functionality, but works)
+ * "Show File" merged into "Browse Folders", it will now try to
+   select the files if the interfaces allows it.
+ * Exact rating plugin (Jan Path) :bug:`1383`
+
+Player:
+ * Improved GStreamer error reporting.
+ * Error recording is gone, since it was just annoying. :bug:`1400`
+
+Windows:
+ * Fix slow startup :bug:`1389`
+ * Windows Explorer folder context menu entry for Ex Falso
+
+Misc:
+ * Keyboard shortcuts are now documented:
+   https://quodlibet.readthedocs.org/en/latest/guide/shortcuts.html
+
+Developers:
+ * Due to the inclusion of the plugins into the core, the symlink from
+ ~/.quodlibet/plugins is no longer needed.
+
+Fixes:
+ * Fix tray icon crashing or not showing under Gnome Shell 3.12 :bug:`1429`
+
+Packaging:
+ * UDisks2 supported, in addition to UDisks1
+ * Plugins are now included in the main tarball and will be installed by
+   setup.py, the quodlibet-plugins tarball is gone. (Load path switched from
+   quodlibet/plugins to quodlibet/ext for system wide plugins, loading from
+   ~/.quodlibet/plugins is the same) :bug:`1396`
+ * For BSDs: setup.py has a new "--mandir" to select the man page location
+ * Packaging guide: https://quodlibet.readthedocs.org/en/latest/packaging.html
+
+
 3.1.91 [beta] (2014-07-22) - Pumps, powerheads, lights and filters!
 -------------------------------------------------------------------
 
