@@ -40,3 +40,19 @@ class TWindows(TestCase):
         self.assertEqual(
             normalize_path(d), normalize_path(u"C:\Windows\explorer.exe"))
         self.assertTrue(isinstance(d, unicode))
+
+    def test_environ(self):
+        env = windows.WindowsEnviron()
+        len_ = len(env)
+        env[u"FOO"] = u"bar"
+        self.assertEqual(len(env), len_ + 1)
+        self.assertEqual(env.get(u"FOO"), u"bar")
+        self.assertTrue("FOO" in repr(env))
+        self.assertEqual(len(list(env)), len(env))
+        del env[u"FOO"]
+
+    def test_environ_ascii(self):
+        env = windows.WindowsEnviron()
+        env["FOO"] = u"bar"
+        env["FOO"]
+        del env["FOO"]

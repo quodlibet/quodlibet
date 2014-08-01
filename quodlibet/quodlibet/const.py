@@ -39,7 +39,7 @@ if os.name == "nt":
     BASEDIR = os.path.dirname(os.path.realpath(file_path))
     HOME = windows.get_personal_dir()
     USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
-    environ = windows.get_environ()
+    environ = windows.WindowsEnviron()
 else:
     BASEDIR = os.path.dirname(os.path.realpath(__file__))
     HOME = os.path.expanduser("~")
