@@ -6,7 +6,7 @@
 #                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2013 Nick Boultbee
+#           2011-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -19,20 +19,20 @@ import gzip
 
 import urllib
 import urllib2
-from HTMLParser import HTMLParser, HTMLParseError
 from cStringIO import StringIO
 from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
+from quodlibet.parse._pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util import format_size, print_exc
+from quodlibet.util.dprint import print_d
 
 from quodlibet import util, qltk, print_w, app
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
     get_pbosf_for_pixbuf, set_image_from_pbosf)
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.parse import FileFromPattern
 from quodlibet.util.path import iscommand
 from quodlibet.util import thumbnails
 
@@ -333,10 +333,12 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
     def __save(self, *data):
         """Save the cover and spawn the program to edit it if selected"""
 
-        filename = self.name_combo.get_active_text()
-        # Allow support for filename patterns
-        pattern = FileFromPattern(filename.decode("utf-8"))
+        save_format = self.name_combo.get_active_text()
+        # Allow use of patterns in creating cover filenames
+        pattern = ArbitraryExtensionFileFromPattern(
+            save_format.decode("utf-8"))
         filename = pattern.format(self.song)
+        print_d("Using '%s' as filename based on %s" % (filename, save_format))
         file_path = os.path.join(self.dirname, filename)
 
         msg = (_('The file <b>%s</b> already exists.\n\nOverwrite?')
