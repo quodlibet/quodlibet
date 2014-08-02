@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012-2013 Nick Boultbee
+# Copyright 2012-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -22,6 +22,8 @@ from quodlibet.qltk import ErrorMessage, GetStringDialog
 from quodlibet.util.dprint import print_w, print_d, print_e
 from quodlibet.util.json_data import JSONObject, JSONObjectDict
 
+Field = JSONObject.Field
+
 
 class Command(JSONObject):
     """
@@ -30,19 +32,29 @@ class Command(JSONObject):
     """
 
     FIELDS = {
-        "name": _("The name of this command"),
-        "command": _("The shell command syntax to run"),
-        "parameter": _("If specified, a parameter whose occurrences in "
-                       "the command will be substituted with a "
-                       "user-supplied value, e.g. by using 'PARAM' "
-                       "all instances of '{PARAM}' in your command will "
-                       "have the value prompted for when run"),
-        "pattern": _("The QL pattern, e.g. <~filename>, to use to compute "
-                     "a value for the command"),
-        "unique": _("If set, this will remove duplicate computed values "
-                    "of the pattern"),
-        "max_args": _("The maximum number of argument to pass to the "
-                      "command at one time (like xargs)")}
+        "name": Field(_("name"), _("The name of this command")),
+
+        "command": Field(_("command"), _("The shell command syntax to run")),
+
+        "parameter": Field(_("parameter"),
+                           _("If specified, a parameter whose occurrences in "
+                             "the command will be substituted with a "
+                             "user-supplied value, e.g. by using 'PARAM' "
+                             "all instances of '{PARAM}' in your command will "
+                             "have the value prompted for when run")),
+
+        "pattern": Field(_("pattern"),
+                         _("The QL pattern, e.g. <~filename>, to use to "
+                           "compute a value for the command")),
+
+        "unique": Field(_("unique"),
+                        _("If set, this will remove duplicate computed values "
+                          "of the pattern")),
+
+        "max_args": Field(_("max args"),
+                          _("The maximum number of argument to pass to the "
+                            "command at one time (like xargs)")),
+    }
 
     def __init__(self, name=None, command=None, pattern="<~filename>",
                  unique=False, parameter=None, max_args=10000,
@@ -97,16 +109,16 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _("Custom Commands")
     PLUGIN_DESC = _("Runs custom commands (in batches if required) on songs "
                     "using any of their tags.")
-    PLUGIN_VERSION = '1.1'
+    PLUGIN_VERSION = '1.2'
 
     _TUPLE_DEF = "\s*\('([^']*)'%s\)" % ("(?:,\s*'([^']*)')?" * 5)
     _TUPLE_REGEX = re.compile(_TUPLE_DEF)
 
     # Here are some starters...
     DEFAULT_COMS = [
-        Command("Compress files", "file-roller -d", "<~filename>"),
+        Command("Compress files", "file-roller -d"),
 
-        Command("K3B", "k3b --audiocd", "<~filename>"),
+        Command("K3B", "k3b --audiocd"),
 
         Command("Browse folders (Thunar)", "thunar", "<~dirname>", unique=True,
                 max_args=50, warn_threshold=20),
@@ -118,12 +130,11 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
                         "<~people| by <~people>>"
                     "<album|, from <album><discnumber| : disk <discnumber>>"
                     "<~length| (<~length>)>",
-                unique=False,
                 max_args=1,
                 warn_threshold=10),
 
-        Command("Fix MP3 VBR with mp3val", "mp3val -f", "<~filename>",
-                unique=True, max_args=1),
+        Command("Fix MP3 VBR with mp3val", "mp3val -f", unique=True,
+                max_args=1),
     ]
     COMS_FILE = os.path.join(USERDIR, 'lists', 'customcommands.json')
 
@@ -152,7 +163,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
 
         button = qltk.Button(_("Edit Custom Commands") + "...", Gtk.STOCK_EDIT)
         button.set_tooltip_markup(util.escape(_("Supports QL patterns\neg "
-                                                "<tt>stat <~filename></tt>")))
+                                                "<tt><~artist~title></tt>")))
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, True, True, 0)
         hb.show_all()
@@ -190,14 +201,20 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
             item.connect_object('activate', self.__set_pat, name)
             submenu.append(item)
             # Add link to editor
-        config = Gtk.MenuItem(_("Edit Custom Commands") + "...")
-        config.connect_object('activate', self.edit_patterns, config)
-        submenu.append(SeparatorMenuItem())
-        submenu.append(config)
+
+        self.add_edit_item(submenu)
         if submenu.get_children():
             self.set_submenu(submenu)
         else:
             self.set_sensitive(False)
+
+    @classmethod
+    def add_edit_item(cls, submenu):
+        config = Gtk.MenuItem(_("Edit Custom Commands") + "...")
+        config.connect_object('activate', cls.edit_patterns, config)
+        config.set_sensitive(not JSONBasedEditor.is_not_unique())
+        submenu.append(SeparatorMenuItem())
+        submenu.append(config)
 
     def plugin_songs(self, songs):
         # Check this is a launch, not a configure

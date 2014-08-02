@@ -5,15 +5,18 @@ from quodlibet.util.json_data import JSONObjectDict, JSONObject
 from tests import TestCase, mkstemp
 from helper import capture_output
 
+Field = JSONObject.Field
+
 
 class TJsonData(TestCase):
 
     class WibbleData(JSONObject):
         """Test subclass"""
 
-        FIELDS = {"name": "name",
-                  "pattern": "pattern for stuff",
-                  "wibble": "wobble"}
+        FIELDS = {"name": Field("h name", "name"),
+                  "pattern": Field("h pattern", "pattern for stuff"),
+                  "wibble": Field("h wibble", "wobble"),
+        }
 
         def __init__(self, name=None, pattern=None, wibble=False):
             JSONObject.__init__(self, name)
@@ -32,10 +35,11 @@ class TJsonData(TestCase):
         self.failUnlessEqual({"name": "blah"}, blah.data)
         self.failUnlessEqual("{\"name\": \"blah\"}", blah.json)
 
-    def test_field_description(self):
+    def test_field(self):
         blah = self.WibbleData('blah')
-        self.failUnlessEqual(blah.field_description('wibble'), 'wobble')
-        self.failIf(blah.field_description('not_here'))
+        self.failUnlessEqual(blah.field('wibble').doc, 'wobble')
+        self.failIf(blah.field('not_here').doc)
+        self.failUnlessEqual(blah.field("pattern").human_name, "h pattern")
 
     def test_nameless_construction(self):
         try:

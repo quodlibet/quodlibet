@@ -1,4 +1,4 @@
-# Copyright 2012-2013 Nick Boultbee
+# Copyright 2012-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -26,11 +26,13 @@ class JSONBasedEditor(qltk.UniqueWindow):
     _HEIGHT = 400
 
     def __init__(self, Prototype, values, filename, title):
+        if self.is_not_unique():
+            return
+        super(JSONBasedEditor, self).__init__()
         self.Prototype = Prototype
         self.current = None
         self.filename = filename
         self.input_entries = {}
-        super(JSONBasedEditor, self).__init__()
         self.set_border_width(12)
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
@@ -95,7 +97,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.get_child().pack_start(vbox, True, True, 0)
         # Initialise
         self.selection = view.get_selection()
-        model, iter = self.selection.get_selected()
+        model, _ = self.selection.get_selected()
 
         self.selection.connect('changed', self.__select)
         self.connect('destroy', self.__finish)
@@ -180,15 +182,14 @@ class JSONBasedEditor(qltk.UniqueWindow):
         t.set_col_spacing(1, 12)
 
         empty = self.Prototype("empty")
-        i = 0
         for i, (key, val) in enumerate(empty.data):
-            field_name = key and key.replace("_", " ").title() or "(unknown)"
+            field = empty.field(key)
+            field_name = self.get_field_name(field, key)
             l = Gtk.Label(label=field_name + ":")
             entry = self._new_widget(key, val)
             entry.set_sensitive(False)
-            tip = empty.field_description(key)
-            if tip:
-                entry.set_tooltip_text(tip)
+            if field.doc:
+                entry.set_tooltip_text(field.doc)
             # Store these away in a map for later access
             self.input_entries[key] = entry
             l.set_mnemonic_widget(entry)
@@ -199,6 +200,12 @@ class JSONBasedEditor(qltk.UniqueWindow):
         frame = qltk.Frame(label=self.Prototype.__name__, child=t)
         self.input_entries["name"].grab_focus()
         return frame
+
+    @staticmethod
+    def get_field_name(field, key):
+        field_name = (field.human_name
+                      or (key and key.replace("_", " ")))
+        return field_name and field_name.title() or _("(unknown)")
 
     def _fill_values(self, data):
         if not data:

@@ -7,7 +7,7 @@
 
 from __future__ import absolute_import
 
-from collections import MutableSequence, defaultdict
+from collections import MutableSequence, defaultdict, namedtuple
 
 
 class DictMixin(object):

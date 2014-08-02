@@ -5,6 +5,7 @@
 # published by the Free Software Foundation
 
 import json
+from collections import namedtuple
 from quodlibet.util.dprint import print_d, print_w
 
 
@@ -14,8 +15,13 @@ class JSONObject(object):
     that can be edited and persisted as JSON.
     """
 
-    # Override this to specify a set of field names, or a map of field: doc
-    # Must include "name" if specified.
+    # The format for JSONObject.
+    Field = namedtuple('Field', ['human_name', 'doc'])
+    EMPTY_FIELD = Field(None, None)
+
+    # Override this to specify a set of field names,
+    # or a dict of field: FieldData
+    # Must include "name" if dict is specified.
     FIELDS = {}
 
     @classmethod
@@ -39,10 +45,11 @@ class JSONObject(object):
             return dict([(k, v) for k, v in self.__dict__.items()
                          if self._should_store(k)])
 
-    def field_description(self, name):
-        """Returns the description of field `name` if available, else None"""
+    def field(self, name):
+        """Returns the Field metadata of field `name` if available,
+        or an null / empty one"""
         if isinstance(self.FIELDS, dict):
-            return self.FIELDS.get(name, None)
+            return self.FIELDS.get(name, self.EMPTY_FIELD)
 
     @property
     def json(self):

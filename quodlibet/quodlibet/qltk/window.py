@@ -1,4 +1,5 @@
 # Copyright 2012,2014 Christoph Reiter
+#                2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -205,8 +206,7 @@ class UniqueWindow(Window):
 
     @classmethod
     def is_not_unique(klass):
-        if klass.__window:
-            return True
+        return bool(klass.__window)
 
     def __init__(self, *args, **kwargs):
         if type(self).__window:
