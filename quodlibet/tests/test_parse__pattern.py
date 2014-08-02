@@ -156,7 +156,7 @@ class _TFileFromPattern(_TPattern):
     def test_backslash_conversion_win32(s):
         if os.name == 'nt':
             pat = s._create(r'Z:\<artist>\<title>')
-            s.assertEquals(pat.format(s.a), 'Z:\Artist\Title5.mp3')
+            s.assertTrue(pat.format(s.a).startswith('Z:\Artist\Title5'))
 
     def test_raw_slash_preservation(s):
         if os.name == "nt":
@@ -233,9 +233,15 @@ class TArbitraryExtensionFileFromPattern(_TFileFromPattern):
 
     def test_number_dot_title_dot(s):
         pat = s._create('<tracknumber>. <title>.')
-        s.assertEquals(pat.format(s.a), '05. Title5.')
-        s.assertEquals(pat.format(s.b), '06. Title6.')
-        s.assertEquals(pat.format(s.c), '. test_subdir.')
+        if os.name == 'nt':
+            # Can't have Windows names ending with dot
+            s.assertEquals(pat.format(s.a), '05. Title5_')
+            s.assertEquals(pat.format(s.b), '06. Title6_')
+            s.assertEquals(pat.format(s.c), '. test_subdir_')
+        else:
+            s.assertEquals(pat.format(s.a), '05. Title5.')
+            s.assertEquals(pat.format(s.b), '06. Title6.')
+            s.assertEquals(pat.format(s.c), '. test_subdir.')
 
     def test_tracknumber_decimals(s):
         pat = s._create('<tracknumber>. <title>')
