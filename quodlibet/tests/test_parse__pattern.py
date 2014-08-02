@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+from quodlibet.parse._pattern import ArbitraryExtensionFileFromPattern
 from tests import TestCase, AbstractTestCase
 
 import os
 
-from quodlibet import util
 from quodlibet.util.path import is_fsnative
 from quodlibet.parse import (FileFromPattern, XMLFromPattern, Pattern,
     XMLFromMarkupPattern)
@@ -23,6 +23,8 @@ class _TPattern(AbstractTestCase):
         s4 = {'performer': 'a\nb', 'artist': 'foo\nbar'}
         s5 = {'tracknumber': '7/1234', 'artist': 'Artist', 'title': 'Title7',
               '~filename': '/path/to/e.mp3'}
+        s6 = {'artist': 'Foo', 'albumartist': 'foo.bar', 'album': 'Best Of',
+              '~filename': '/path/to/f.mp3', 'title': 'The.Final.Word'}
 
         if os.name == "nt":
             s1["filename"] = u"C:\\path\\to\\a.mp3"
@@ -30,12 +32,14 @@ class _TPattern(AbstractTestCase):
             s3["filename"] = u"C:\\one\\more\\a.flac"
             s4["filename"] = u"C:\\path\\to\\a.mp3"
             s5["filename"] = u"C:\\path\\to\\a.mp3"
+            s6["filename"] = u"C:\\path\\to\\f.mp3"
 
         self.a = self.AudioFile(s1)
         self.b = self.AudioFile(s2)
         self.c = self.AudioFile(s3)
         self.d = self.AudioFile(s4)
         self.e = self.AudioFile(s5)
+        self.f = self.AudioFile(s6)
 
 
 class TPattern(_TPattern):
@@ -122,22 +126,54 @@ class TPattern(_TPattern):
             "5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8'))
 
 
-class TFileFromPattern(_TPattern):
+class _TFileFromPattern(_TPattern):
+    def _create(self, string):
+        return FileFromPattern(string)
+
     def test_escape_slash(s):
-        fpat = FileFromPattern('<~filename>')
+        fpat = s._create('<~filename>')
         pat = Pattern('<~filename>')
-        wpat = FileFromPattern(r'\\<artist>\\ "<title>')
-        s.assertEquals(fpat.format(s.a), "_path_to_a.mp3")
-        s.assertEquals(pat.format(s.a), "/path/to/a.mp3")
+        wpat = s._create(r'\\<artist>\\ "<title>')
+        s.assertTrue(fpat.format(s.a).startswith("_path_to_a.mp3"))
+        s.assertTrue(pat.format(s.a).startswith("/path/to/a"))
         if os.name != "nt":
-            s.assertEquals(wpat.format(s.a), "\\Artist\\ \"Title5.mp3")
+            s.assertTrue(wpat.format(s.a).startswith("\\Artist\\ \"Title5"))
         else:
             # FIXME..
             pass
 
+    def test_directory_rooting(s):
+        if os.name == "nt":
+            s.assertRaises(ValueError, FileFromPattern, 'a\\<b>')
+            s.assertRaises(ValueError, FileFromPattern, '<a>\\<b>')
+            s._create('C:\\<a>\\<b>')
+
+        else:
+            s.assertRaises(ValueError, FileFromPattern, 'a/<b>')
+            s.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
+            s._create('/<a>/<b>')
+
+    def test_backslash_conversion_win32(s):
+        if os.name == 'nt':
+            pat = s._create(r'Z:\<artist>\<title>')
+            s.assertEquals(pat.format(s.a), 'Z:\Artist\Title5.mp3')
+
+    def test_raw_slash_preservation(s):
+        if os.name == "nt":
+            pat = s._create('C:\\a\\b\\<genre>')
+            s.assertTrue(pat.format(s.a).startswith('C:\\a\\b\\'))
+            s.assertTrue(pat.format(s.b).startswith('C:\\a\\b\\'))
+            s.assertTrue(pat.format(s.c).startswith('C:\\a\\b\\_, _'))
+
+        else:
+            pat = s._create('/a/b/<genre>')
+            s.assertTrue(pat.format(s.a).startswith('/a/b/'))
+            s.assertTrue(pat.format(s.b).startswith('/a/b/'))
+            s.assertTrue(pat.format(s.c).startswith('/a/b/_, _'))
+
     def test_specialcase_anti_ext(s):
-        p1 = FileFromPattern('<~filename>')
-        p2 = FileFromPattern('<~dirname>_<~basename>')
+        p1 = s._create('<~filename>')
+        p2 = s._create('<~dirname>_<~basename>')
         s.assertEquals(p1.format(s.a), p2.format(s.a))
         s.assertEquals(p1.format(s.a), '_path_to_a.mp3')
         s.assertEquals(p1.format(s.b), p2.format(s.b))
@@ -145,82 +181,76 @@ class TFileFromPattern(_TPattern):
         s.assertEquals(p1.format(s.c), p2.format(s.c))
         s.assertEquals(p1.format(s.c), '_one_more_a.flac')
 
+    def test_long_filename(s):
+        if os.name == "nt":
+            a = s.AudioFile({"title": "x" * 300, "~filename": u"C:\\f.mp3"})
+            path = s._create(u'C:\\foobar\\ä<title>\\<title>').format(a)
+            assert is_fsnative(path)
+            s.failUnlessEqual(len(path), 3 + 6 + 1 + 255 + 1 + 255)
+            path = s._create(u'äüö<title><title>').format(a)
+            assert is_fsnative(path)
+            s.failUnlessEqual(len(path), 255)
+        else:
+            a = s.AudioFile({"title": "x" * 300, "~filename": "/f.mp3"})
+            path = s._create(u'/foobar/ä<title>/<title>').format(a)
+            assert is_fsnative(path)
+            s.failUnlessEqual(len(path), 1 + 6 + 1 + 255 + 1 + 255)
+            path = s._create(u'äüö<title><title>').format(a)
+            assert is_fsnative(path)
+            s.failUnlessEqual(len(path), 255)
+
+
+class TFileFromPattern(_TFileFromPattern):
+    def _create(self, string):
+        return FileFromPattern(string)
+
     def test_number_dot_title_dot(s):
-        pat = FileFromPattern('<tracknumber>. <title>.')
+        pat = s._create('<tracknumber>. <title>.')
         s.assertEquals(pat.format(s.a), '05. Title5..mp3')
         s.assertEquals(pat.format(s.b), '06. Title6..ogg')
         s.assertEquals(pat.format(s.c), '. test_subdir..flac')
 
     def test_tracknumber_decimals(s):
-        pat = FileFromPattern('<tracknumber>. <title>')
+        pat = s._create('<tracknumber>. <title>')
         s.assertEquals(pat.format(s.a), '05. Title5.mp3')
         s.assertEquals(pat.format(s.e), '0007. Title7.mp3')
-
-    def test_raw_slash_preservation(s):
-        if os.name == "nt":
-            pat = FileFromPattern('C:\\a\\b\\<genre>')
-            s.assertEquals(pat.format(s.a), 'C:\\a\\b\\.mp3')
-            s.assertEquals(pat.format(s.b), 'C:\\a\\b\\.ogg')
-            s.assertEquals(pat.format(s.c), 'C:\\a\\b\\_, _.flac')
-
-        else:
-            pat = FileFromPattern('/a/b/<genre>')
-            s.assertEquals(pat.format(s.a), '/a/b/.mp3')
-            s.assertEquals(pat.format(s.b), '/a/b/.ogg')
-            s.assertEquals(pat.format(s.c), '/a/b/_, _.flac')
-
-    def test_unicode_slash_removal(s):
-        if os.name == "nt":
-            pat = FileFromPattern(u'C:\\a\\b\\<unislash>')
-            s.assertEquals(pat.format(s.b), 'C:\\a\\b\\foo_bar.ogg')
-        else:
-            pat = FileFromPattern(u'/a/b/<unislash>')
-            s.assertEquals(pat.format(s.b), '/a/b/foo_bar.ogg')
-
-    def test_directory_rooting(s):
-        if os.name == "nt":
-            s.assertRaises(ValueError, FileFromPattern, 'a\\<b>')
-            s.assertRaises(ValueError, FileFromPattern, '<a>\\<b>')
-            FileFromPattern('C:\\<a>\\<b>')
-
-        else:
-            s.assertRaises(ValueError, FileFromPattern, 'a/<b>')
-            s.assertRaises(ValueError, FileFromPattern, '<a>/<b>')
-            FileFromPattern('/<a>/<b>')
 
     def test_ext_case_preservation(s):
         x = s.AudioFile({'~filename': '/tmp/Xx.Flac', 'title': 'Xx'})
         # If pattern has a particular ext, preserve case of ext
-        p1 = FileFromPattern('<~basename>')
+        p1 = s._create('<~basename>')
         s.assertEquals(p1.format(x), 'Xx.Flac')
-        p2 = FileFromPattern('<title>.FLAC')
+        p2 = s._create('<title>.FLAC')
         s.assertEquals(p2.format(x), 'Xx.FLAC')
         # If pattern doesn't have a particular ext, lowercase ext
-        p3 = FileFromPattern('<title>')
+        p3 = s._create('<title>')
         s.assertEquals(p3.format(x), 'Xx.flac')
 
-    def test_backslash_conversion_win32(s):
-        if os.name == 'nt':
-            pat = FileFromPattern(r'Z:\<artist>\<title>')
-            s.assertEquals(pat.format(s.a), 'Z:\Artist\Title5.mp3')
 
-    def test_long_filename(s):
-        if os.name == "nt":
-            a = s.AudioFile({"title": "x" * 300, "~filename": u"C:\\f.mp3"})
-            path = FileFromPattern(u'C:\\foobar\\ä<title>\\<title>').format(a)
-            assert is_fsnative(path)
-            s.failUnlessEqual(len(path), 3 + 6 + 1 + 255 + 1 + 255)
-            path = FileFromPattern(u'äüö<title><title>').format(a)
-            assert is_fsnative(path)
-            s.failUnlessEqual(len(path), 255)
-        else:
-            a = s.AudioFile({"title": "x" * 300, "~filename": "/f.mp3"})
-            path = FileFromPattern(u'/foobar/ä<title>/<title>').format(a)
-            assert is_fsnative(path)
-            s.failUnlessEqual(len(path), 1 + 6 + 1 + 255 + 1 + 255)
-            path = FileFromPattern(u'äüö<title><title>').format(a)
-            assert is_fsnative(path)
-            s.failUnlessEqual(len(path), 255)
+class TArbitraryExtensionFileFromPattern(_TFileFromPattern):
+    def _create(self, string):
+        return ArbitraryExtensionFileFromPattern(string)
+
+    def test_number_dot_title_dot(s):
+        pat = s._create('<tracknumber>. <title>.')
+        s.assertEquals(pat.format(s.a), '05. Title5.')
+        s.assertEquals(pat.format(s.b), '06. Title6.')
+        s.assertEquals(pat.format(s.c), '. test_subdir.')
+
+    def test_tracknumber_decimals(s):
+        pat = s._create('<tracknumber>. <title>')
+        s.assertEquals(pat.format(s.a), '05. Title5')
+        s.assertEquals(pat.format(s.e), '0007. Title7')
+
+    def test_constant_albumart_example(s):
+        pat = s._create("folder.jpg")
+        s.assertEquals(pat.format(s.a), 'folder.jpg')
+
+    def test_extra_dots(s):
+        pat = s._create("<artist~album>.png")
+        s.assertEquals(pat.format(s.f), 'Foo - Best Of.png')
+        pat = s._create("<albumartist~title>.png")
+        s.assertEquals(pat.format(s.f), 'foo.bar - The.Final.Word.png')
 
 
 class TXMLFromPattern(_TPattern):

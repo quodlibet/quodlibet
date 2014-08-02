@@ -1,5 +1,6 @@
 # Copyright 2004-2010 Joe Wreschnig, Michael Urman
 # Copyright 2010,2013 Christoph Reiter
+# Copyright 2013,2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -357,16 +358,18 @@ class _FileFromPattern(PatternFormatter):
         value = value.strip()
         return value
 
-    def _post(self, value, song):
+    def _post(self, value, song, keep_extension=True):
         if value:
             assert isinstance(value, unicode)
             value = fsnative(value)
 
-            fn = song.get("~filename", ".")
-            ext = fn[fn.rfind("."):].lower()
-            val_ext = value[-len(ext):].lower()
-            if not ext == val_ext:
-                value += ext.lower()
+            if keep_extension:
+                fn = song.get("~filename", ".")
+                ext = fn[fn.rfind("."):].lower()
+                val_ext = value[-len(ext):].lower()
+                if not ext == val_ext:
+                    value += ext.lower()
+
             if os.name == "nt":
                 assert isinstance(value, unicode)
                 value = strip_win32_incompat_from_path(value)
@@ -388,20 +391,32 @@ class _FileFromPattern(PatternFormatter):
         return value
 
 
+class _ArbitraryExtensionFileFromPattern(_FileFromPattern):
+    """Allows filename-like output with extensions different from the song."""
+
+    def _post(self, value, song):
+        super_object = super(_ArbitraryExtensionFileFromPattern, self)
+        return super_object._post(value, song, False)
+
+
 class _XMLFromPattern(PatternFormatter):
     def _format(self, key, value):
         return util.escape(value)
 
 
-def FileFromPattern(string):
-    """format() and format_list() will return paths and not unicode"""
+def replace_nt_seps(string):
+    """On Windows, users may use backslashes in patterns as path separators.
+       Since Windows filenames can't use '<>|' anyway, preserving backslash
+       escapes is unnecessary, so we just replace them blindly."""
+    return string.replace("\\", r"\\") if os.name == 'nt' else string
 
-    # On Windows, users may use backslashes in patterns as path separators.
-    # Since Windows filenames can't use '<>|' anyway, preserving backslash
-    # escapes is unnecessary, so we just replace them blindly.
-    if os.name == 'nt':
-        string = string.replace("\\", r"\\")
-    return Pattern(string, _FileFromPattern)
+
+def FileFromPattern(string):
+    return Pattern(replace_nt_seps(string), _FileFromPattern)
+
+
+def ArbitraryExtensionFileFromPattern(string):
+    return Pattern(replace_nt_seps(string), _ArbitraryExtensionFileFromPattern)
 
 
 def XMLFromPattern(string):
