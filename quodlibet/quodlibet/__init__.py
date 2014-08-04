@@ -157,6 +157,10 @@ def _gtk_init(icon=None):
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
 
+    # We don't want python-gst, it changes API..
+    assert "gi.overrides.Gst" not in sys.modules
+    sys.modules["gi.overrides.Gst"] = None
+
     # We don't depend on Gst overrides, so make sure it's initialized.
     try:
         gi.require_version("Gst", "1.0")
