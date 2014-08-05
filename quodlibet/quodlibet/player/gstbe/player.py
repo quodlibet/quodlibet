@@ -418,8 +418,17 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
             if message_name == "missing-plugin":
                 self.__handle_missing_plugin(message)
-
-        return True
+        elif message.type == Gst.MessageType.CLOCK_LOST:
+            print_d("Clock lost")
+            self.bin.set_state(Gst.State.PAUSED)
+            self.bin.set_state(Gst.State.PLAYING)
+        elif message.type == Gst.MessageType.LATENCY:
+            print_d("Recalculate latency")
+            self.bin.recalculate_latency()
+        elif message.type == Gst.MessageType.REQUEST_STATE:
+            state = message.parse_request_state()
+            print_d("State requested: %s" % Gst.Element.state_get_name(state))
+            self.bin.set_state(state)
 
     def __handle_missing_plugin(self, message):
         get_installer_detail = \
