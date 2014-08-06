@@ -32,6 +32,16 @@
 Downloads
 =========
 
+================ ========================================== ================================================
+**Linux:**       |ubuntu-logo| :ref:`Ubuntu <ubuntu>`       |debian-logo| :ref:`Debian <ubuntu>`
+   \             |fedora-logo| :ref:`Fedora <fedora>`       |opensuse-logo| :ref:`openSUSE <opensuse>`
+   \             |arch-logo| :ref:`Arch Linux <arch>`
+**Windows:**     |windows-logo| :ref:`Windows <windows>`
+**Development:** |hg-logo| :ref:`Source <source>`           |source-logo| :ref:`Release Tarballs <tarballs>`
+================ ========================================== ================================================
+
+----
+
 .. _source:
 
 |hg-logo| Source
@@ -123,15 +133,23 @@ Repo key::
 |fedora-logo| Fedora
 --------------------
 
-Stable Repo:
+Stable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-stable>`__):
 
-  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_19/>`__
-  * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_20/>`__
+  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_19/home:lazka0:ql-stable.repo>`__
+  * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_20/home:lazka0:ql-stable.repo>`__
 
-Unstable Repo:
+Unstable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-unstable>`__):
 
-  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_19/>`__
-  * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_20/>`__
+  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_19/home:lazka0:ql-unstable.repo>`__
+  * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_20/home:lazka0:ql-unstable.repo>`__
+
+Unstable Repo (`COPR <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/>`__):
+
+  * `Fedora 19 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-19/lazka-quodlibet-unstable-fedora-19.repo>`__
+  * `Fedora 20 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-20/lazka-quodlibet-unstable-fedora-20.repo>`__
+  * `Fedora Rawhide <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-rawhide/lazka-quodlibet-unstable-fedora-rawhide.repo>`__
+  * `RHEL 7 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/epel-7/lazka-quodlibet-unstable-epel-7.repo>`__
+
 
 .. _opensuse:
 
