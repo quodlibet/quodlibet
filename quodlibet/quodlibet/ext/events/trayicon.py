@@ -259,6 +259,9 @@ class TrayIcon(EventPlugin):
             self.__size_changed(icon, size)
 
     def disabled(self):
+        if self.__menu:
+            self.__menu.destroy()
+            self.__menu = None
         if self.__emb_sig:
             GLib.source_remove(self.__emb_sig)
             self.__emb_sig = None

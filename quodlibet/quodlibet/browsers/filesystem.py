@@ -58,6 +58,9 @@ class FileSystem(Browser, Gtk.HBox):
 
     @classmethod
     def init(klass, library):
+        if klass.__library is not None:
+            return
+
         klass.__glibrary = library
         klass.__library = SongFileLibrary("filesystem")
         library.connect('added', klass.__remove_because_added)

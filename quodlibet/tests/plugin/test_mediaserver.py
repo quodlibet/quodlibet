@@ -10,14 +10,16 @@ import dbus
 
 from tests.plugin import PluginTestCase
 
-from quodlibet import library
+from quodlibet.library.libraries import SongFileLibrary
+from quodlibet.library.librarians import SongLibrarian
 from quodlibet import app
 
 
 class TMediaServer(PluginTestCase):
     @classmethod
     def setUpClass(cls):
-        app.library = library.init()
+        app.library = SongFileLibrary()
+        app.library.librarian = SongLibrarian()
         cls.plugin = cls.plugins["mediaserver"].cls
 
     def setUp(self):

@@ -15,16 +15,13 @@ class TTrayIcon(PluginTestCase):
     Currently just covers the standard code paths without any real testing.
     """
 
-    @classmethod
-    def setUpClass(cls):
-        config.init()
-
-    @classmethod
-    def tearDownClass(cls):
-        config.quit()
-
     def setUp(self):
+        config.init()
         self.plugin = self.plugins["Tray Icon"].cls()
+
+    def tearDown(self):
+        config.quit()
+        del self.plugin
 
     def test_enable_disable(self):
         self.plugin.enabled()

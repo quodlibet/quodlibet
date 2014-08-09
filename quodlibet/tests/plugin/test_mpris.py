@@ -11,6 +11,8 @@ from tests.plugin import PluginTestCase
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
+from quodlibet.library.libraries import SongFileLibrary
+from quodlibet.library.librarians import SongLibrarian
 from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
 from quodlibet import library
 from quodlibet import browsers
@@ -38,12 +40,19 @@ class TMPRIS(PluginTestCase):
         config.init()
         browsers.init()
         backend = player.init("nullbe")
-
-        app.library = library.init()
+        app.library = SongFileLibrary()
+        app.library.librarian = SongLibrarian()
         app.player = backend.init(app.librarian)
         app.window = QuodLibetWindow(app.library, app.player, headless=True)
 
         cls.plugin = cls.plugins["mpris"].cls
+
+    @classmethod
+    def tearDownClass(cls):
+        app.window.destroy()
+        app.library.destroy()
+        app.player.destroy()
+        config.quit()
 
     def setUp(self):
         app.window.songlist.set_songs([A1, A2])
@@ -51,6 +60,14 @@ class TMPRIS(PluginTestCase):
         self.m = self.plugin()
         self.m.enabled()
         self._replies = []
+
+    def tearDown(self):
+        bus = dbus.SessionBus()
+        self.failUnless(
+            bus.name_has_owner("org.mpris.quodlibet"))
+        self.m.disabled()
+        self.failIf(bus.name_has_owner("org.mpris.quodlibet"))
+        del self.m
 
     def test_name_owner(self):
         bus = dbus.SessionBus()
@@ -201,16 +218,3 @@ class TMPRIS(PluginTestCase):
         resp = self._wait()[0]
         self.failUnlessEqual(resp["xesam:album"], u'greatness2\ufffd')
         self.failUnlessEqual(resp["xesam:artist"], [u'fooman\ufffd'])
-
-    def tearDown(self):
-        bus = dbus.SessionBus()
-        self.failUnless(
-            bus.name_has_owner("org.mpris.quodlibet"))
-        self.m.disabled()
-        self.failIf(bus.name_has_owner("org.mpris.quodlibet"))
-        del self.m
-
-    @classmethod
-    def tearDownClass(cls):
-        app.window.destroy()
-        config.quit()

@@ -200,6 +200,10 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
                 mod = __import__(".".join([__name__, name[:-3]]), {}, {}, [])
                 discover_tests(getattr(mod, name[:-3]))
 
+    if main:
+        # include plugin tests by default
+        subdirs = (subdirs or []) + ["plugin"]
+
     for subdir in subdirs:
         sub_path = os.path.join(path, subdir)
         for name in os.listdir(sub_path):
