@@ -4,9 +4,14 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-from gi.repository import Gtk
-import dbus
+try:
+    import dbus
+except ImportError:
+    dbus = None
 
+from gi.repository import Gtk
+
+from tests import skipUnless
 from tests.plugin import PluginTestCase
 
 from quodlibet.formats._audio import AudioFile
@@ -34,6 +39,7 @@ A2 = AudioFile(
 A2.sanitize()
 
 
+@skipUnless(dbus, "no dbus")
 class TMPRIS(PluginTestCase):
     @classmethod
     def setUpClass(cls):
