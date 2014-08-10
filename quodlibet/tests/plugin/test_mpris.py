@@ -12,13 +12,10 @@ except ImportError:
 from gi.repository import Gtk
 
 from tests import skipUnless
-from tests.plugin import PluginTestCase
+from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
-from quodlibet.library.libraries import SongFileLibrary
-from quodlibet.library.librarians import SongLibrarian
-from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
 from quodlibet import library
 from quodlibet import browsers
 from quodlibet import player
@@ -41,26 +38,13 @@ A2.sanitize()
 
 @skipUnless(dbus, "no dbus")
 class TMPRIS(PluginTestCase):
-    @classmethod
-    def setUpClass(cls):
-        config.init()
-        browsers.init()
-        backend = player.init("nullbe")
-        app.library = SongFileLibrary()
-        app.library.librarian = SongLibrarian()
-        app.player = backend.init(app.librarian)
-        app.window = QuodLibetWindow(app.library, app.player, headless=True)
-
-        cls.plugin = cls.plugins["mpris"].cls
-
-    @classmethod
-    def tearDownClass(cls):
-        app.window.destroy()
-        app.library.destroy()
-        app.player.destroy()
-        config.quit()
 
     def setUp(self):
+        self.plugin = self.plugins["mpris"].cls
+
+        config.init()
+        init_fake_app()
+
         app.window.songlist.set_songs([A1, A2])
         app.player.go_to(None)
         self.m = self.plugin()
@@ -73,6 +57,9 @@ class TMPRIS(PluginTestCase):
             bus.name_has_owner("org.mpris.quodlibet"))
         self.m.disabled()
         self.failIf(bus.name_has_owner("org.mpris.quodlibet"))
+
+        destroy_fake_app()
+        config.quit()
         del self.m
 
     def test_name_owner(self):
@@ -182,6 +169,8 @@ class TMPRIS(PluginTestCase):
 
         self._prop().Get(piface, "Metadata", **args)
         resp = self._wait()[0]
+        self.failIfEqual(resp["mpris:trackid"],
+                         "/net/sacredchao/QuodLibet/NoTrack")
 
         # mpris stuff
         self.failIf(resp["mpris:trackid"].startswith("/org/mpris/"))

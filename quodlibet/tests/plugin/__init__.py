@@ -28,6 +28,33 @@ for name, module in ms.modules.iteritems():
         modules[plugin.PLUGIN_ID] = module.module
 
 
+def init_fake_app():
+    from quodlibet import app
+
+    from quodlibet import browsers
+    from quodlibet.player.nullbe import NullPlayer
+    from quodlibet.library.libraries import SongFileLibrary
+    from quodlibet.library.librarians import SongLibrarian
+    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
+
+    browsers.init()
+    app.player = NullPlayer()
+    app.library = SongFileLibrary()
+    app.library.librarian = SongLibrarian()
+    app.window = QuodLibetWindow(app.library, app.player, headless=True)
+
+
+def destroy_fake_app():
+    from quodlibet import app
+
+    app.window.destroy()
+    app.library.destroy()
+    app.library.librarian.destroy()
+    app.player.destroy()
+
+    app.window = app.library = app.player = None
+
+
 class PluginTestCase(AbstractTestCase):
     """Base class for all plugin tests"""
     plugins = plugins

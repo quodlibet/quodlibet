@@ -12,22 +12,19 @@ except ImportError:
     dbus = None
 
 from tests import skipUnless
-from tests.plugin import PluginTestCase
+from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 
-from quodlibet.library.libraries import SongFileLibrary
-from quodlibet.library.librarians import SongLibrarian
-from quodlibet import app
+from quodlibet import config
 
 
 @skipUnless(dbus, "no python-dbus")
 class TMediaServer(PluginTestCase):
-    @classmethod
-    def setUpClass(cls):
-        app.library = SongFileLibrary()
-        app.library.librarian = SongLibrarian()
-        cls.plugin = cls.plugins["mediaserver"].cls
 
     def setUp(self):
+        config.init()
+        init_fake_app()
+
+        self.plugin = self.plugins["mediaserver"].cls
         self.m = self.plugin()
         self.m.enabled()
         self._replies = []
@@ -35,6 +32,18 @@ class TMediaServer(PluginTestCase):
             "reply_handler": self._reply,
             "error_handler": self._error
         }
+
+    def tearDown(self):
+        bus = dbus.SessionBus()
+        self.failUnless(
+            bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
+        self.m.disabled()
+        self.failIf(
+            bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
+        del self.m
+
+        destroy_fake_app()
+        config.quit()
 
     def _reply(self, *args):
         self._replies.append(args)
@@ -63,12 +72,3 @@ class TMediaServer(PluginTestCase):
         bus = dbus.SessionBus()
         self.failUnless(
             bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
-
-    def tearDown(self):
-        bus = dbus.SessionBus()
-        self.failUnless(
-            bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
-        self.m.disabled()
-        self.failIf(
-            bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
-        del self.m

@@ -463,9 +463,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         main_box.show_all()
 
+        restore_browser = not headless
         try:
             self.select_browser(
-                self, config.get("memory", "browser"), library, player, True)
+                self, config.get("memory", "browser"), library, player,
+                restore_browser)
         except:
             config.set("memory", "browser", browsers.name(0))
             config.save(const.CONFIG)
@@ -480,7 +482,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             seek_pos = config.getint("memory", "seek", 0)
             config.set("memory", "seek", 0)
             player.setup(self.playlist, song, seek_pos)
-        self.__delayed_setup = GLib.idle_add(delayed_song_set)
+
+        self.__delayed_setup = None
+        if not headless:
+            self.__delayed_setup = GLib.idle_add(delayed_song_set)
         self.showhide_playlist(ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(ui.get_widget("/Menu/View/Queue"))
 

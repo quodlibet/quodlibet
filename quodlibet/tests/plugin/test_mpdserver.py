@@ -4,10 +4,14 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
+import os
+
 from quodlibet.formats._audio import AudioFile
 from tests.plugin import PluginTestCase
+from tests import skipIf
 
 
+@skipIf(os.name == "nt", "mpd server not supported under Windows")
 class TMPDServer(PluginTestCase):
 
     def setUp(self):

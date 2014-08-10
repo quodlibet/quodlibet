@@ -6,7 +6,7 @@
 
 from gi.repository import Gtk, Gdk, GdkPixbuf
 from quodlibet import config
-from tests.plugin import PluginTestCase
+from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 
 
 class TTrayIcon(PluginTestCase):
@@ -17,9 +17,11 @@ class TTrayIcon(PluginTestCase):
 
     def setUp(self):
         config.init()
+        init_fake_app()
         self.plugin = self.plugins["Tray Icon"].cls()
 
     def tearDown(self):
+        destroy_fake_app()
         config.quit()
         del self.plugin
 
