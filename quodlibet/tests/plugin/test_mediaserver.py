@@ -6,8 +6,12 @@
 
 from gi.repository import Gtk
 
-import dbus
+try:
+    import dbus
+except ImportError:
+    dbus = None
 
+from tests import skipUnless
 from tests.plugin import PluginTestCase
 
 from quodlibet.library.libraries import SongFileLibrary
@@ -15,6 +19,7 @@ from quodlibet.library.librarians import SongLibrarian
 from quodlibet import app
 
 
+@skipUnless(dbus, "no python-dbus")
 class TMediaServer(PluginTestCase):
     @classmethod
     def setUpClass(cls):
