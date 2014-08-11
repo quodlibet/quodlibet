@@ -12,14 +12,14 @@ from tests.helper import capture_output
 
 class TSongsMenuPlugins(TestCase):
 
-    def _confirmer(self, msg):
+    def _confirmer(self, *args):
         self.confirmed = True
 
     def setUp(self):
         self.tempdir = mkdtemp()
         self.pm = PluginManager(folders=[self.tempdir])
         self.confirmed = False
-        self.handler = SongsMenuPluginHandler(self._confirmer)
+        self.handler = SongsMenuPluginHandler(self._confirmer, self._confirmer)
         self.pm.register_handler(self.handler)
         self.pm.rescan()
         self.assertEquals(self.pm.plugins, [])

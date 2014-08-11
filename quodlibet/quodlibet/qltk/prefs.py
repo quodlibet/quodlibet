@@ -350,10 +350,10 @@ class PreferencesWindow(qltk.UniqueWindow):
             table.attach(c, 0, 2, 0, 1)
             fb_label.set_alignment(0, 0.5)
             table.attach(fb_label, 0, 1, 1, 2,
-                         xoptions=0)
+                         xoptions=Gtk.AttachOptions.FILL)
             pre_label.set_alignment(0, 0.5)
             table.attach(pre_label, 0, 1, 2, 3,
-                         xoptions=0)
+                         xoptions=Gtk.AttachOptions.FILL)
 
             fb_align = Gtk.Alignment.new(0, 0.5, 0, 1)
             fb_align.add(fb_spin)
@@ -611,7 +611,7 @@ class PreferencesWindow(qltk.UniqueWindow):
             reload_.connect("clicked", reload_cb)
             reload_.set_tooltip_text(
                 _("Reload all songs in your library. "
-                  "(this can take a long time)"))
+                  "This can take a long time."))
 
             grid = Gtk.Grid(column_spacing=6, row_spacing=6)
             cb.props.hexpand = True

@@ -17,7 +17,7 @@ class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
     PLUGIN_NAME = _("Follow Cursor")
     PLUGIN_ICON = "gtk-jump-to"
     PLUGIN_VERSION = "1"
-    PLUGIN_DESC = ("Playback follows your selection.")
+    PLUGIN_DESC = _("Playback follows your selection.")
 
     __last_path = None
 

@@ -24,7 +24,8 @@ class ExactRating(SongsMenuPlugin):
             input_string = GetStringDialog(
                 self.plugin_window,
                 self.PLUGIN_NAME,
-                _("Please give your desired rating on a scale from 0 to 1"),
+                _("Please give your desired rating on a scale "
+                  "from 0.0 to 1.0"),
                 Gtk.STOCK_APPLY
             ).run()
 

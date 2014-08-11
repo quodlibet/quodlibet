@@ -59,11 +59,11 @@ class EditEmbedded(SongsMenuPlugin):
         self.plugin_finish()
 
     def __map(self, menu, songs):
-        remove_item = MenuItem(_("_Remove image(s)"), "edit-delete")
+        remove_item = MenuItem(_("_Remove all images"), "edit-delete")
         remove_item.connect('activate', self.__remove_images, songs)
         menu.append(remove_item)
 
-        set_item = MenuItem(_("_Embed current image(s)"), "edit-paste")
+        set_item = MenuItem(_("_Embed current image"), "edit-paste")
         set_item.connect('activate', self.__set_image, songs)
         menu.append(set_item)
 

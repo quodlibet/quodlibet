@@ -32,9 +32,12 @@ class WikiSearch(object):
         hb.set_border_width(6)
         e = Gtk.Entry(max_length=2)
         e.set_width_chars(3)
+        e.set_max_width_chars(3)
         e.set_text(config.get('plugins', __name__))
         e.connect('changed', self.changed)
-        hb.pack_start(Gtk.Label("Search at http://"), False, True, 0)
+        hb.pack_start(
+            Gtk.Label(_("Search at %(website)s") % {"website": "http://"}),
+            False, True, 0)
         hb.pack_start(e, False, True, 0)
         hb.pack_start(Gtk.Label(".wikipedia.org"), False, True, 0)
         hb.show_all()

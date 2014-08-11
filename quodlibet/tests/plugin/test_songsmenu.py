@@ -27,7 +27,7 @@ for song in SONGS:
 class TPluginsSongsMenu(PluginTestCase):
     def setUp(self):
         config.init()
-        self.h = SongsMenuPluginHandler(lambda msg: True)
+        self.h = SongsMenuPluginHandler()
         library = SongLibrary()
         library.librarian = SongLibrarian()
         self.lib = library

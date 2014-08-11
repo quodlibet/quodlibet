@@ -31,6 +31,8 @@ class Command(JSONObject):
     Serialises as JSON for some editability
     """
 
+    NAME = _("Command")
+
     FIELDS = {
         "name": Field(_("name"), _("The name of this command")),
 

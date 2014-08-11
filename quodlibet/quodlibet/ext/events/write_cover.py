@@ -58,7 +58,7 @@ class PictureSaver(EventPlugin):
 
         hb = Gtk.HBox(spacing=6)
         hb.set_border_width(6)
-        hb.pack_start(Gtk.Label(_("File:")), True, True, 0)
+        hb.pack_start(Gtk.Label(_("File:")), False, True, 0)
         e = Gtk.Entry()
         e.set_text(config.get("plugins", __name__))
         e.connect('changed', changed)

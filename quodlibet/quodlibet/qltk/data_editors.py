@@ -32,6 +32,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.Prototype = Prototype
         self.current = None
         self.filename = filename
+        self.name = Prototype.NAME or Prototype.__name__
         self.input_entries = {}
         self.set_border_width(12)
         self.set_title(title)
@@ -109,7 +110,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 return row[0]
 
     def _new_item(self, button):
-        current_name = name = "New %s" % self.Prototype.__name__
+        current_name = name = _("New %s") % self.name
         n = 2
         while True:
             if self._find(current_name):
@@ -197,7 +198,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             l.set_alignment(0.0, 0.5)
             t.attach(l, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             t.attach(entry, 1, 2, i, i + 1)
-        frame = qltk.Frame(label=self.Prototype.__name__, child=t)
+        frame = qltk.Frame(label=self.name, child=t)
         self.input_entries["name"].grab_focus()
         return frame
 

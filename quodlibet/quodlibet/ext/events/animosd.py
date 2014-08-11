@@ -511,9 +511,9 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             vb2 = Gtk.VBox(spacing=3)
             hb = Gtk.HBox(spacing=6)
             toggles = [
-                ("_Shadows", self.Conf.shadow[0], change_shadow),
-                ("_Outline", self.Conf.outline[0], change_outline),
-                ("Rou_nded Corners", self.Conf.corners - 1, change_rounded)]
+                (_("_Shadows"), self.Conf.shadow[0], change_shadow),
+                (_("_Outline"), self.Conf.outline[0], change_outline),
+                (_("Rou_nded Corners"), self.Conf.corners - 1, change_rounded)]
 
             for (label, current, callback) in toggles:
                 checkb = Gtk.CheckButton(label, use_underline=True)
@@ -529,7 +529,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
                 climb_rate=0.1, digits=1)
             timeout.set_numeric(True)
             timeout.connect('value-changed', change_delay)
-            l1 = ConfigLabel("_Delay:", timeout)
+            l1 = ConfigLabel(_("_Delay:"), timeout)
             hb.pack_start(l1, False, True, 0)
             hb.pack_start(timeout, False, True, 0)
             vb2.pack_start(hb, False, True, 0)

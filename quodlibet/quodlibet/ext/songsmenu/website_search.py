@@ -31,7 +31,11 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_ICON = Gtk.STOCK_OPEN
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
-    PLUGIN_DESC = _("Searches your choice of website using any song tags.")
+    PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
+                    "Supports patterns e.g. %(pattern-example)s") % {
+                        "pattern-example":
+                            "http://google.com?q=<~artist~title>"
+                    }
     PLUGIN_VERSION = '0.3'
 
     # Here are some starters...
@@ -101,8 +105,6 @@ class WebsiteSearch(SongsMenuPlugin):
         hb.set_border_width(0)
 
         button = qltk.Button(_("Edit search URLs"), Gtk.STOCK_EDIT)
-        button.set_tooltip_markup(_("Supports QL patterns\neg "
-                "<tt>http://google.com?q=&lt;artist~title&gt;</tt>"))
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, True, True, 0)
         hb.show_all()

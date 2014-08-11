@@ -600,8 +600,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         hpaned = Gtk.HPaned()
         hpaned.set_border_width(widget_space)
-        hpaned.pack1(left_vbox)
-        hpaned.pack2(image)
+        hpaned.pack1(left_vbox, shrink=False)
+        hpaned.pack2(image, shrink=False)
         hpaned.set_position(275)
 
         self.add(hpaned)

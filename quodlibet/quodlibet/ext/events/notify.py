@@ -190,7 +190,7 @@ class PreferencesWidget(Gtk.VBox):
             set_conf_value("show_notifications", "all")
 
         focus_check = Gtk.CheckButton(_("Only when the main window is not "
-                                        "_focused"))
+                                        "_focused"), use_underline=True)
         focus_check.set_active(get_conf_bool("show_only_when_unfocused"))
         focus_check.connect("toggled", self.on_checkbutton_toggled,
                             "show_only_when_unfocused")

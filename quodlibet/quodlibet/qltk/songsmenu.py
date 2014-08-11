@@ -6,26 +6,93 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
-from quodlibet.qltk.msg import confirm_action
 
 from quodlibet import qltk
 
 from quodlibet.util import print_exc
+from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
-from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.qltk.x import SeparatorMenuItem, Button
+from quodlibet.qltk import get_top_parent
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
 
 
+class ConfirmMultiSongInvoke(WarningMessage):
+    """Dialog to confirm invoking a plugin with X songs in case X is high"""
+
+    RESPONSE_INVOKE = 1
+
+    def __init__(self, parent, plugin_name, count):
+        title = ngettext("Run the plugin \"%s\" on %d song?",
+                         "Run the plugin \"%s\" on %d songs?",
+                         count) % (plugin_name, count)
+
+        super(ConfirmMultiSongInvoke, self).__init__(
+            get_top_parent(parent),
+            title, "",
+            buttons=Gtk.ButtonsType.NONE)
+
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        delete_button = Button(_("_Run Plugin"), Gtk.STOCK_EXECUTE)
+        delete_button.show()
+        self.add_action_widget(delete_button, self.RESPONSE_INVOKE)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
+
+    @classmethod
+    def confirm(cls, parent, plugin_name, count):
+        """Returns if the action was confirmed"""
+
+        resp = cls(parent, plugin_name, count).run()
+        return resp == cls.RESPONSE_INVOKE
+
+
+class ConfirmMultiAlbumInvoke(WarningMessage):
+    """Dialog to confirm invoking a plugin with X albums in case X is high"""
+
+    RESPONSE_INVOKE = 1
+
+    def __init__(self, parent, plugin_name, count):
+        title = ngettext("Run the plugin \"%s\" on %d album?",
+                         "Run the plugin \"%s\" on %d albums?",
+                         count) % (plugin_name, count)
+
+        super(ConfirmMultiAlbumInvoke, self).__init__(
+            get_top_parent(parent),
+            title, "",
+            buttons=Gtk.ButtonsType.NONE)
+
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        delete_button = Button(_("_Run Plugin"), Gtk.STOCK_EXECUTE)
+        delete_button.show()
+        self.add_action_widget(delete_button, self.RESPONSE_INVOKE)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
+
+    @classmethod
+    def confirm(cls, parent, plugin_name, count):
+        """Returns if the action was confirmed"""
+
+        resp = cls(parent, plugin_name, count).run()
+        return resp == cls.RESPONSE_INVOKE
+
+
 class SongsMenuPluginHandler(PluginHandler):
 
-    def __init__(self, confirmer):
+    def __init__(self, song_confirmer=None, album_confirmer=None):
+        """custom confirmers for testing"""
+
         self.__plugins = []
-        # The method to call for confirmations of risky multi-invocations
-        self.confirm_multiple = confirmer
+
+        self._confirm_multiple_songs = ConfirmMultiSongInvoke.confirm
+        if song_confirmer is not None:
+            self._confirm_multiple_songs = song_confirmer
+
+        self._confirm_multiple_albums = ConfirmMultiAlbumInvoke.confirm
+        if album_confirmer is not None:
+            self._confirm_multiple_albums = album_confirmer
 
     def Menu(self, library, parent, songs):
         songs = ListWrapper(songs)
@@ -122,13 +189,10 @@ class SongsMenuPluginHandler(PluginHandler):
             if callable(plugin.plugin_song):
                 total = len(songs)
                 if total > plugin.MAX_INVOCATIONS:
-                    msg = ngettext("Are you sure you want to run "
-                                       "the \"%s\" plugin on %d song?",
-                                   "Are you sure you want to run "
-                                       "the \"%s\" plugin on %d songs?",
-                                   total) % (plugin.PLUGIN_ID, total)
-                    if not self.confirm_multiple(msg):
+                    if not self._confirm_multiple_songs(
+                            parent, plugin.PLUGIN_NAME, total):
                         return
+
                 try:
                     ret = map(plugin.plugin_song, songs)
                 except Exception:
@@ -149,12 +213,8 @@ class SongsMenuPluginHandler(PluginHandler):
                 albums = self.__get_albums(songs)
                 total = len(albums)
                 if total > plugin.MAX_INVOCATIONS:
-                    msg = ngettext("Are you sure you want to run "
-                                       "the \"%s\" plugin on %d album?",
-                                   "Are you sure you want to run "
-                                       "the \"%s\" plugin on %d albums?",
-                                   total) % (plugin.PLUGIN_ID, total)
-                    if not self.confirm_multiple(msg):
+                    if not self._confirm_multiple_albums(
+                            parent, plugin.PLUGIN_NAME, total):
                         return
 
             if callable(plugin.plugin_single_album) and len(albums) == 1:
@@ -196,7 +256,7 @@ class SongsMenuPluginHandler(PluginHandler):
 
 
 class SongsMenu(Gtk.Menu):
-    plugins = SongsMenuPluginHandler(confirm_action)
+    plugins = SongsMenuPluginHandler()
 
     @classmethod
     def init_plugins(cls):

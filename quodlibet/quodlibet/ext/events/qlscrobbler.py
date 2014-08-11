@@ -473,7 +473,10 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         service_combo = Gtk.ComboBoxText()
         table.attach(service_combo, 1, 2, row, row + 1)
         cur_service = self.config_get('service')
-        for idx, serv in enumerate(sorted(SERVICES.keys()) + ["Other..."]):
+
+        # Translators: Other service
+        other_label = _("Other...")
+        for idx, serv in enumerate(sorted(SERVICES.keys()) + [other_label]):
             service_combo.append_text(serv)
             if cur_service == serv:
                 service_combo.set_active(idx)

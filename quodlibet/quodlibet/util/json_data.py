@@ -15,6 +15,8 @@ class JSONObject(object):
     that can be edited and persisted as JSON.
     """
 
+    NAME = ""
+
     # The format for JSONObject.
     Field = namedtuple('Field', ['human_name', 'doc'])
     EMPTY_FIELD = Field(None, None)

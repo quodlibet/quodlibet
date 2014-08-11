@@ -34,6 +34,8 @@ class Message(Gtk.MessageDialog):
 class ConfirmAction(Message):
     """A message dialog that asks a yes/no question."""
 
+    # FIXME: Kill this, bad UX!
+
     def __init__(self, *args, **kwargs):
         kwargs["buttons"] = Gtk.ButtonsType.YES_NO
         super(ConfirmAction, self).__init__(
@@ -48,11 +50,6 @@ class ConfirmAction(Message):
             return True
         else:
             return False
-
-
-def confirm_action(msg):
-    """Ultra-lightweight confirmation dialog"""
-    return ConfirmAction(app.window, _("Are you sure?"), msg).run()
 
 
 class CancelRevertSave(Gtk.MessageDialog):

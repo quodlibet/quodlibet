@@ -354,7 +354,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
             b = qltk.MenuItem(
-                _("_Filter on %s") % util.tag(t, True), Gtk.STOCK_INDEX)
+                _("Filter on _%s") % util.tag(t, True), Gtk.STOCK_INDEX)
             b.connect_object('activate', self.__filter_on, t, songs, browser)
             return b
 
@@ -1045,7 +1045,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)
 
-        item = Gtk.CheckMenuItem(label=_("_Expand"), use_underline=True)
+        item = Gtk.CheckMenuItem(label=_("_Expand Column"), use_underline=True)
         item.set_active(column.get_expand())
         item.set_sensitive(column.get_resizable())
 

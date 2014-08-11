@@ -61,8 +61,8 @@ class MaskedBox(Gtk.HBox):
         def cdf_count(column, cell, model, iter, data):
             mount = model[iter][0]
             song_count = len(library.get_masked(mount))
-            cell.set_property('text',
-                _("%(song_count)d songs") % {"song_count": song_count})
+            text = ngettext("%d song", "%d songs", song_count) % song_count
+            cell.set_property('text', text)
 
         column = Gtk.TreeViewColumn(None)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)

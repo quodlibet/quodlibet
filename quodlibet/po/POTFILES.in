@@ -116,6 +116,7 @@ quodlibet/player/gstbe/util.py
 quodlibet/player/__init__.py
 quodlibet/player/xinebe/player.py
 quodlibet/plugins/__init__.py
+quodlibet/plugins/playlist.py
 quodlibet.py
 quodlibet/qltk/about.py
 quodlibet/qltk/bookmarks.py
@@ -170,4 +171,3 @@ quodlibet/util/massagers.py
 quodlibet/util/songwrapper.py
 quodlibet/util/string/__init__.py
 quodlibet/util/tags.py
-tests/__init__.py
