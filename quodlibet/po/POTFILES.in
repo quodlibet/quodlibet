@@ -43,6 +43,7 @@ quodlibet/ext/events/equalizer.py
 quodlibet/ext/events/gajim_status.py
 quodlibet/ext/events/inhibit.py
 quodlibet/ext/events/iradiolog.py
+quodlibet/ext/events/jep118.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris.py
@@ -78,6 +79,7 @@ quodlibet/ext/_shared/squeezebox/util.py
 quodlibet/ext/songsmenu/albumart.py
 quodlibet/ext/songsmenu/ape2id3.py
 quodlibet/ext/songsmenu/bookmarks.py
+quodlibet/ext/songsmenu/brainz.py
 quodlibet/ext/songsmenu/browsefolders.py
 quodlibet/ext/songsmenu/cddb.py
 quodlibet/ext/songsmenu/console.py
