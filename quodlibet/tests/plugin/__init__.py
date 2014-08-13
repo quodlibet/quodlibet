@@ -25,7 +25,8 @@ ms.rescan()
 
 # make sure plugins only raise expected errors
 for name, err in ms.failures.items():
-    assert issubclass(type(err.exception), PluginImportException)
+    assert issubclass(
+        type(err.exception), (PluginImportException, ImportError))
 
 plugins = {}
 modules = {}
