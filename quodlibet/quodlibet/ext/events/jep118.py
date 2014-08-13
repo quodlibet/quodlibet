@@ -23,8 +23,8 @@ format = """\
 
 class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
-    PLUGIN_NAME = "JEP-118"
-    PLUGIN_DESC = "Output a Jabber User Tunes file to ~/.quodlibet/jabber"
+    PLUGIN_NAME = _("JEP-118")
+    PLUGIN_DESC = _("Output a Jabber User Tunes file to ~/.quodlibet/jabber")
     PLUGIN_ICON = 'gtk-save'
     PLUGIN_VERSION = "0.13"
 

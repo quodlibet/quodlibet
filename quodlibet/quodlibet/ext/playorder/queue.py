@@ -15,8 +15,8 @@ class QueueOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
     PLUGIN_NAME = _("Queue Only")
     PLUGIN_ICON = "gtk-media-next"
     PLUGIN_VERSION = "1"
-    PLUGIN_DESC = ("Only songs in the queue will be played. Double-click on "
-                   "any song to enqueue it.")
+    PLUGIN_DESC = _("Only songs in the queue will be played. Double-click on "
+                    "any song to enqueue it.")
 
     def next(self, playlist, iter):
         return None

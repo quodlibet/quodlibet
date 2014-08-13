@@ -18,7 +18,7 @@ from quodlibet.plugins.events import EventPlugin
 class ThemeSwitcher(EventPlugin):
     PLUGIN_ID = "Theme Switcher"
     PLUGIN_NAME = _("Theme Switcher")
-    PLUGIN_DESC = ("Change the active GTK+ theme.")
+    PLUGIN_DESC = _("Change the active GTK+ theme.")
 
     __enabled = False
 

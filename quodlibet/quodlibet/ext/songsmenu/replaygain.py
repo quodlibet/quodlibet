@@ -445,7 +445,7 @@ class RGDialog(Gtk.Dialog):
 
 class ReplayGain(SongsMenuPlugin):
     PLUGIN_ID = 'ReplayGain'
-    PLUGIN_NAME = 'Replay Gain'
+    PLUGIN_NAME = _('Replay Gain')
     PLUGIN_DESC = _('Analyzes ReplayGain with gstreamer, grouped by album')
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
 

@@ -222,8 +222,8 @@ class LastFMSyncWindow(Gtk.Dialog):
 class LastFMSync(SongsMenuPlugin):
     PLUGIN_ID = "Last.fm Sync"
     PLUGIN_NAME = _("Last.fm Sync")
-    PLUGIN_DESC = ("Update your library's statistics from your "
-                   "Last.fm profile.")
+    PLUGIN_DESC = _("Update your library's statistics from your "
+                    "Last.fm profile.")
     PLUGIN_ICON = 'gtk-refresh'
     PLUGIN_VERSION = '0.1'
 

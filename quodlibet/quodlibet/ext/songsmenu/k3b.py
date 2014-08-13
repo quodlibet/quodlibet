@@ -15,7 +15,7 @@ from quodlibet.util.path import iscommand
 class BurnCD(SongsMenuPlugin):
     PLUGIN_ID = 'Burn CD'
     PLUGIN_NAME = _('Burn CD')
-    PLUGIN_DESC = 'Burn CDs with K3b or Brasero.'
+    PLUGIN_DESC = _('Burn CDs with K3b or Brasero.')
     PLUGIN_ICON = 'gtk-cdrom'
     PLUGIN_VERSION = '0.2'
 

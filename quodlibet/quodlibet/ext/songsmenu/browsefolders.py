@@ -154,7 +154,7 @@ def browse_folders_win_explorer(songs):
 class BrowseFolders(SongsMenuPlugin):
     PLUGIN_ID = 'Browse Folders'
     PLUGIN_NAME = _('Browse Folders')
-    PLUGIN_DESC = "View the songs' folders in a file manager"
+    PLUGIN_DESC = _("View the songs' folders in a file manager")
     PLUGIN_ICON = Gtk.STOCK_OPEN
     PLUGIN_VERSION = '1.1'
 

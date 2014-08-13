@@ -14,8 +14,8 @@ class RadioAdMute(EventPlugin):
     PLUGIN_ID = "radio_ad_mute"
     PLUGIN_NAME = _("Mute radio ads")
     PLUGIN_VERSION = "0.1"
-    PLUGIN_DESC = ("Mute while radio advertisements are playing.\n"
-                   "Stations: di.fm")
+    PLUGIN_DESC = _("Mute while radio advertisements are playing.\n"
+                    "Stations: di.fm")
 
     SPAM = ["www.webex.co.uk",
             "di.fm/premium",

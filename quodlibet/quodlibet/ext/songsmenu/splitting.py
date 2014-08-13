@@ -12,8 +12,8 @@ class SplitTags(SongsMenuPlugin):
     PLUGIN_ID = "Split Tags"
     PLUGIN_NAME = _("Split Tags")
     PLUGIN_HINT = "Split out version and disc number"
-    PLUGIN_DESC = ("Split the disc number from the album and the version "
-                   "from the title at the same time.")
+    PLUGIN_DESC = _("Split the disc number from the album and the version "
+                    "from the title at the same time.")
     PLUGIN_ICON = 'gtk-find-and-replace'
     PLUGIN_VERSION = "0.13"
 
