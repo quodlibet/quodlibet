@@ -1,8 +1,20 @@
 from tests import TestCase
+from helper import visible
 
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry
 from quodlibet.parse import Query
 import quodlibet.config
+
+
+class TEntry(TestCase):
+
+    def test_set_max_width_chars(self):
+        with visible(Entry()) as e:
+            e.set_max_width_chars(4)
+            nat1 = e.get_preferred_width()[1]
+            e.set_max_width_chars(40)
+            nat2 = e.get_preferred_width()[1]
+            self.assertTrue(nat1 < nat2)
 
 
 class TValidatingEntry(TestCase):

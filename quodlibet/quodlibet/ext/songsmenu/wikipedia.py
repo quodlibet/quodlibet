@@ -10,6 +10,7 @@ from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet.util import website
+from quodlibet.qltk.entry import Entry
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 WIKI_URL = "http://%s.wikipedia.org/wiki/"
@@ -35,8 +36,9 @@ class WikiSearch(object):
     def PluginPreferences(self, parent):
         hb = Gtk.HBox(spacing=3)
         hb.set_border_width(6)
-        e = Gtk.Entry(max_length=2)
+        e = Entry(max_length=2)
         e.set_width_chars(3)
+        e.set_max_width_chars(3)
         e.set_text(get_lang())
         e.connect('changed', self.changed)
         hb.pack_start(

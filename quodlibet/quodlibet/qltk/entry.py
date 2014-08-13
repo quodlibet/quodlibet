@@ -5,7 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject, Gdk, Gio
+import math
+
+from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
 from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem
@@ -145,10 +147,44 @@ class EditableUndo(object):
 
 
 class Entry(Gtk.Entry):
+
+    def __init__(self, *args, **kwargs):
+        super(Entry, self).__init__(*args, **kwargs)
+        self._max_width_chars = -1
+
+        # the default is way too much
+        self.set_width_chars(5)
+
+    def set_max_width_chars(self, value):
+        """Works with GTK+ <3.12"""
+
+        self._max_width_chars = value
+        self.queue_resize()
+
     def do_get_preferred_width(self):
-        # 150 min width since GTK+3.2 is way too much
         minimum, natural = Gtk.Entry.do_get_preferred_width(self)
-        return (30, natural)
+
+        if self._max_width_chars >= 0:
+            # based on gtkentry.c
+            style_context = self.get_style_context()
+            border = style_context.get_border(Gtk.StateFlags.NORMAL)
+            padding = style_context.get_padding(Gtk.StateFlags.NORMAL)
+            pango_context = self.get_pango_context()
+
+            metrics = pango_context.get_metrics(
+                pango_context.get_font_description(),
+                pango_context.get_language())
+
+            char_width = metrics.get_approximate_char_width()
+            digit_width = metrics.get_approximate_digit_width()
+            char_pixels = int(math.ceil(
+                float(max(char_width, digit_width)) / Pango.SCALE))
+
+            space = border.left + border.right + padding.left + padding.right
+            nat_width = self._max_width_chars * char_pixels + space
+            natural = max(nat_width, minimum)
+
+        return (minimum, natural)
 
 
 class UndoEntry(Entry, EditableUndo):
