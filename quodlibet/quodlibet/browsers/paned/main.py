@@ -70,7 +70,6 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
 
         self._filter = None
         self._library = library
-        self.commands = {"query": self.__query}
 
         self.set_spacing(6)
 
@@ -116,7 +115,6 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
             child.show_all()
 
     def __destroy(self, *args):
-        del self.commands
         del self._sb_box
 
     def set_wide_mode(self, do_wide):
@@ -136,9 +134,6 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
 
     def _set_text(self, text):
         self._sb_box.set_text(text)
-
-    def __query(self, text, library, window, player):
-        self.filter_text(text)
 
     def __focus(self, widget, *args):
         qltk.get_top_parent(widget).songlist.grab_focus()

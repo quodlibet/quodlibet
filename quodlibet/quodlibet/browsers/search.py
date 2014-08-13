@@ -67,7 +67,6 @@ class SearchBar(Gtk.VBox, Browser):
 
         self._filter = None
         self._library = library
-        self.commands = {"query": self.__query}
 
         completion = LibraryTagCompletion(library.librarian)
         self.accelerators = Gtk.AccelGroup()
@@ -98,10 +97,6 @@ class SearchBar(Gtk.VBox, Browser):
 
     def __destroy(self, *args):
         self._sb_box = None
-        del self.commands
-
-    def __query(self, text, library, window, player):
-        self.filter_text(text)
 
     def __focus(self, widget, *args):
         qltk.get_top_parent(widget).songlist.grab_focus()

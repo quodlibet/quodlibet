@@ -884,6 +884,15 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
         return filter_
 
+    def can_filter_text(self):
+        return True
+
+    def filter_text(self, text):
+        self.__searchbar.set_text(text)
+        if Query.is_parsable(text):
+            self.__filter_changed(self.__searchbar, text)
+            self.activate()
+
     def activate(self):
         filter_ = self.__get_filter()
         libs = self.__get_selected_libraries()

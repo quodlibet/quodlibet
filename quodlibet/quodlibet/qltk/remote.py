@@ -427,6 +427,12 @@ def _filter(app, value):
         app.browser.filter(tag, values)
 
 
+@FIFOControl.command("query", args=1)
+def _query(app, value):
+    if app.browser.can_filter_text():
+        app.browser.filter_text(value.decode("utf-8", "replace"))
+
+
 @FIFOControl.command("unfilter")
 def _unfilter(app):
     app.browser.unfilter()

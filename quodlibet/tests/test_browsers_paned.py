@@ -150,9 +150,6 @@ class TPanedBrowser(TestCase):
         self.bar.set_all_wide_mode(True)
         self.bar.set_all_wide_mode(False)
 
-    def test_commands(self):
-        self.failUnless("query" in self.bar.commands)
-
     def tearDown(self):
         self.bar.destroy()
         config.quit()

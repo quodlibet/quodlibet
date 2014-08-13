@@ -101,6 +101,7 @@ class TFIFOControl(TestCase):
         #self.__send("enqueue /dev/null")
         self.__send("enqueue-files /dev/null")
         self.__send("filter album=test")
+        self.__send("query '/foobar/'")
         self.__send("focus")
         self.__send("hide-window")
         self.__send("dump-browsers /dev/null")

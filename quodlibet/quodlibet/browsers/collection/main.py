@@ -232,6 +232,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
                               accel_group=self.accelerators)
 
         search.connect('query-changed', self.__update_filter)
+        self.__search = search
 
         hbox.pack_start(search, True, True, 0)
         hbox.pack_start(prefs, False, True, 0)
@@ -350,6 +351,15 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             self.view.select_album(albums[0], unselect=True)
         for album in albums[1:]:
             self.view.select_album(album, unselect=False)
+
+    def can_filter_text(self):
+        return True
+
+    def filter_text(self, text):
+        self.__search.set_text(text)
+        if Query.is_parsable(text):
+            self.__update_filter(self.__search, text)
+            self.activate()
 
     def unfilter(self):
         pass

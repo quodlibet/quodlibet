@@ -24,8 +24,8 @@ class TInternetRadio(TestCase):
         self.bar = InternetRadio(SongLibrary(), NullPlayer())
 
     def test_can_filter(self):
-        for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.failIf(self.bar.can_filter(key))
+        self.assertTrue(self.bar.can_filter("foo"))
+        self.assertTrue(self.bar.can_filter_text())
 
     def tearDown(self):
         self.bar.destroy()

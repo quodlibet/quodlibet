@@ -41,11 +41,6 @@ class EmptyBar(Gtk.VBox, Browser):
         self._text = ""
         self._filter = None
         self._library = library
-        self.commands = {"query": self.__query}
-        self.connect('destroy', self.__destroy)
-
-    def __destroy(self, *args):
-        del self.commands
 
     def active_filter(self, song):
         if self._filter is not None:
@@ -56,9 +51,6 @@ class EmptyBar(Gtk.VBox, Browser):
     def filter_text(self, text):
         self._text = text
         self.activate()
-
-    def __query(self, text, library, window, player):
-        self.filter_text(text)
 
     def save(self):
         config.set("browsers", "query_text", self._text.encode('utf-8'))
