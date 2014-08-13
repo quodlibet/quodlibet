@@ -1,6 +1,6 @@
 from tests import AbstractTestCase, skipUnless
 from quodlibet.util.modulescanner import ModuleScanner
-from quodlibet.plugins import list_plugins, Plugin
+from quodlibet.plugins import list_plugins, Plugin, PluginImportException
 import quodlibet
 import sys
 import os
@@ -11,6 +11,8 @@ PLUGIN_DIRS = []
 
 root = os.path.join(quodlibet.__path__[0], "ext")
 for entry in os.listdir(root):
+    if entry.startswith("_"):
+        continue
     path = os.path.join(root, entry)
     if not os.path.isdir(path):
         continue
@@ -20,6 +22,11 @@ PLUGIN_DIRS.append(os.path.join(os.path.dirname(__file__), "test_plugins"))
 
 ms = ModuleScanner(PLUGIN_DIRS)
 ms.rescan()
+
+# make sure plugins only raise expected errors
+for name, err in ms.failures.items():
+    assert issubclass(type(err.exception), PluginImportException)
+
 plugins = {}
 modules = {}
 for name, module in ms.modules.iteritems():

@@ -24,18 +24,21 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
     # Maintain a singleton; we only support one SB server live in QL
     server = None
-    ql_base_dir = (os.path.realpath(get_scan_dirs()[0])
-                   if get_scan_dirs() else "")
-    print_d("Using QL library dir of %s" % ql_base_dir)
 
     # We want all derived classes to share the config section
     CONFIG_SECTION = "squeezebox"
 
     @classmethod
+    def _get_ql_base_dir(cls):
+        dirs = get_scan_dirs()
+        return os.path.realpath(dirs[0]) if dirs else ""
+
+    @classmethod
     def get_sb_path(cls, song):
         """Gets a SB path to `song` by simple substitution"""
         path = song('~filename')
-        return path.replace(cls.ql_base_dir, cls.server.get_library_dir())
+        return path.replace(
+            cls._get_ql_base_dir(), cls.server.get_library_dir())
 
     @classmethod
     def post_reconnect(cls):
@@ -162,7 +165,8 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
             port=cls.config_get("server_port", 9090),
             user=cls.config_get("server_user", ""),
             password=cls.config_get("server_password", ""),
-            library_dir=cls.config_get("server_library_dir", cls.ql_base_dir),
+            library_dir=cls.config_get(
+                "server_library_dir", cls._get_ql_base_dir()),
             current_player=cur,
             debug=cls.config_get_bool("debug", False))
         try:

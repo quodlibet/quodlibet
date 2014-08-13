@@ -13,11 +13,14 @@ from quodlibet import config
 from quodlibet.const import USERDIR
 from quodlibet.plugins.events import EventPlugin
 
-try:
-    config.get("plugins", __name__)
-except:
+
+def get_path():
     out = os.path.join(USERDIR, "current.cover")
-    config.set("plugins", __name__, out)
+    return config.get("plugins", __name__, out)
+
+
+def set_path(value):
+    config.set("plugins", __name__, value)
 
 
 class PictureSaver(EventPlugin):
@@ -28,7 +31,7 @@ class PictureSaver(EventPlugin):
     PLUGIN_VERSION = "0.21"
 
     def plugin_on_song_started(self, song):
-        outfile = config.get("plugins", __name__)
+        outfile = get_path()
         if song is None:
             try:
                 os.unlink(outfile)
@@ -50,17 +53,17 @@ class PictureSaver(EventPlugin):
         def changed(entry):
             fn = entry.get_text()
             try:
-                shutil.move(config.get("plugins", __name__), fn)
+                shutil.move(get_path(), fn)
             except EnvironmentError:
                 pass
             else:
-                config.set("plugins", __name__, fn)
+                set_path(fn)
 
         hb = Gtk.HBox(spacing=6)
         hb.set_border_width(6)
         hb.pack_start(Gtk.Label(_("File:")), False, True, 0)
         e = Gtk.Entry()
-        e.set_text(config.get("plugins", __name__))
+        e.set_text(get_path())
         e.connect('changed', changed)
         hb.pack_start(e, True, True, 0)
         return hb

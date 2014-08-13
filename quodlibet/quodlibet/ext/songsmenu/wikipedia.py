@@ -13,27 +13,32 @@ from quodlibet.util import website
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 WIKI_URL = "http://%s.wikipedia.org/wiki/"
-try:
-    config.get("plugins", __name__)
-except:
-    config.set("plugins", __name__, "en")
+
+
+def get_lang():
+    return config.get("plugins", __name__, "en")
+
+
+def set_lang(value):
+    config.set("plugins", __name__, value)
 
 
 class WikiSearch(object):
     PLUGIN_ICON = Gtk.STOCK_OPEN
     PLUGIN_VERSION = '0.14'
 
+    @classmethod
     def changed(self, e):
-        config.set("plugins", __name__, e.get_text())
-    changed = classmethod(changed)
+        set_lang(e.get_text())
 
+    @classmethod
     def PluginPreferences(self, parent):
         hb = Gtk.HBox(spacing=3)
         hb.set_border_width(6)
         e = Gtk.Entry(max_length=2)
         e.set_width_chars(3)
         e.set_max_width_chars(3)
-        e.set_text(config.get('plugins', __name__))
+        e.set_text(get_lang())
         e.connect('changed', self.changed)
         hb.pack_start(
             Gtk.Label(_("Search at %(website)s") % {"website": "http://"}),
@@ -42,13 +47,12 @@ class WikiSearch(object):
         hb.pack_start(Gtk.Label(".wikipedia.org"), False, True, 0)
         hb.show_all()
         return hb
-    PluginPreferences = classmethod(PluginPreferences)
 
     def plugin_songs(self, songs):
         l = dict.fromkeys([song(self.k) for song in songs]).keys()
         for a in l:
             a = quote(str(a).title().replace(' ', '_'))
-            website(WIKI_URL % config.get('plugins', __name__) + a)
+            website(WIKI_URL % get_lang() + a)
 
 
 class WikiArtist(WikiSearch, SongsMenuPlugin):
