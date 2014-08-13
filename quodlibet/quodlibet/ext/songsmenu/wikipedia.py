@@ -37,7 +37,6 @@ class WikiSearch(object):
         hb.set_border_width(6)
         e = Gtk.Entry(max_length=2)
         e.set_width_chars(3)
-        e.set_max_width_chars(3)
         e.set_text(get_lang())
         e.connect('changed', self.changed)
         hb.pack_start(
