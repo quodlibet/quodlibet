@@ -35,7 +35,7 @@ class PlaylistMux(object):
         player.connect('song-started', self.__check_q)
 
     def __check_q(self, player, song):
-        if song is not None:
+        if song is not None and self.q.sourced:
             iter = self.q.find(song)
             if iter:
                 self.q.remove(iter)

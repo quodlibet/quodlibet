@@ -1192,10 +1192,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 self.ui.get_widget(widget).set_property('visible', c)
 
     def __browser_activate(self, browser):
-        model = self.songlist.get_model()
-        model.reset()
-        if app.player.go_to(model.get_iter_first(), True):
-            app.player.paused = False
+        app.player.reset()
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:
