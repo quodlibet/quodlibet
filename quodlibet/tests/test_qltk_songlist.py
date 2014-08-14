@@ -1,3 +1,5 @@
+from gi.repository import Gtk
+
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
@@ -103,6 +105,46 @@ class TSongList(TestCase):
     def test_set_songs(self):
         self.songlist.set_songs([], sorted=True)
         self.songlist.set_songs([], sorted=False)
+        self.songlist.set_songs([], scroll_select=True)
+        self.songlist.set_songs([], scroll_select=False)
+        self.songlist.set_songs([], scroll=True)
+        self.songlist.set_songs([], scroll=False)
+
+    def test_set_songs_restore_select(self):
+        song = AudioFile({"~filename": "/dev/null"})
+        self.songlist.add_songs([song])
+        sel = self.songlist.get_selection()
+        sel.select_path(Gtk.TreePath.new_first())
+
+        self.songlist.set_songs([song], scroll_select=True)
+        self.assertEqual(self.songlist.get_selected_songs(), [song])
+
+        song2 = AudioFile({"~filename": "/dev/null"})
+        self.songlist.set_songs([song2], scroll_select=True)
+        self.assertEqual(self.songlist.get_selected_songs(), [])
+
+    def test_set_songs_no_restore_select(self):
+        song = AudioFile({"~filename": "/dev/null"})
+        self.songlist.add_songs([song])
+        model = self.songlist.get_model()
+        model.go_to(song)
+        self.assertIs(model.current, song)
+        # only restore if there was a selected one
+        self.songlist.set_songs([song], scroll_select=True)
+        self.assertEqual(self.songlist.get_selected_songs(), [])
+
+    def test_get_selected_songs(self):
+        song = AudioFile({"~filename": "/dev/null"})
+        self.songlist.add_songs([song])
+        sel = self.songlist.get_selection()
+
+        sel.select_path(Gtk.TreePath.new_first())
+        self.assertEqual(self.songlist.get_selected_songs(), [song])
+        self.assertEqual(self.songlist.get_first_selected_song(), song)
+
+        sel.unselect_all()
+        self.assertEqual(self.songlist.get_selected_songs(), [])
+        self.assertIs(self.songlist.get_first_selected_song(), None)
 
     def test_add_songs(self):
         song = AudioFile({"~filename": "/dev/null"})

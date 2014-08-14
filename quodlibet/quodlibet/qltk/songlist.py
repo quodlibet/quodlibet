@@ -487,7 +487,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             if reversed_:
                 # python sort is faster if presorted
                 songs.reverse()
-            self.set_songs(songs)
+            self.set_songs(songs, scroll_select=True)
 
         self.emit("orders-changed")
 
@@ -760,7 +760,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         model = self.get_model()
         if not len(model):
-            self.set_songs(songs)
+            self.set_songs(songs, scroll=False)
             return
 
         if not self.is_sorted():
@@ -776,14 +776,20 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         for index, song in sorted(zip(map(old_songs.index, songs), songs)):
             model.insert(index, row=[song])
 
-    def set_songs(self, songs, sorted=False):
+    def set_songs(self, songs, sorted=False, scroll=True, scroll_select=False):
         """Fill the song list.
 
         If sorted is True, the passed songs will not be sorted and
         all sort indicators will be removed.
+
+        If scroll is True the list will scroll to the current song.
+
+        If scroll_select is True restore the selection of the first
+        selected song and scroll to. Falls back to the current song.
         """
 
         model = self.get_model()
+        assert model is not None
 
         if not sorted:
             # make sure some sorting is set and visible
@@ -795,8 +801,31 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         else:
             self.clear_sort()
 
+        restore_song = None
+        if scroll_select:
+            restore_song = self.get_first_selected_song()
+
         with self.without_model() as model:
             model.set(songs)
+
+        # scroll to the first selected or current song and restore
+        # selection for the first selected item if there was one
+        if scroll or scroll_select:
+            if restore_song is not None and restore_song is not model.current:
+                try:
+                    index = songs.index(restore_song)
+                except ValueError:
+                    path = model.current_path
+                else:
+                    path = Gtk.TreePath.new()
+                    path.append_index(index)
+            else:
+                path = model.current_path
+
+            if path is not None:
+                if restore_song is not None:
+                    self.set_cursor(path)
+                self.scroll_to_cell(path, use_align=True, row_align=0.5)
 
         # the song selection has queued a change now, cancel that and
         # pass the songs manually
@@ -826,6 +855,14 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             self.set_cursor(path)
 
         return True
+
+    def get_first_selected_song(self):
+        """The first selected song in the list or None"""
+
+        selection = self.get_selection()
+        model, paths = selection.get_selected_rows()
+        if paths:
+            return model.get_value(model.get_iter(paths[0]))
 
     def get_selected_songs(self):
         """Returns a list of selected songs"""
