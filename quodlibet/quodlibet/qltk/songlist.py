@@ -127,17 +127,6 @@ def get_columns():
             return columns
 
 
-@config.register_upgrade_function
-def _migrate_rating_column(config, old, new):
-    if old < 0:
-        # https://code.google.com/p/quodlibet/issues/detail?id=1381
-        columns = get_columns()[:]
-        for i, c in enumerate(columns):
-            if c == "~#rating":
-                columns[i] = "~rating"
-        set_columns(columns)
-
-
 def set_columns(vals):
     """Persists the settings for songlist headings held in `vals`"""
 
@@ -1111,3 +1100,14 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         widget = column.get_widget()
         return qltk.popup_menu_under_widget(self.__getmenu(column),
                 widget, 3, time)
+
+
+@config.register_upgrade_function
+def _migrate_rating_column(config, old, new):
+    if old < 0:
+        # https://code.google.com/p/quodlibet/issues/detail?id=1381
+        columns = get_columns()[:]
+        for i, c in enumerate(columns):
+            if c == "~#rating":
+                columns[i] = "~rating"
+        set_columns(columns)
