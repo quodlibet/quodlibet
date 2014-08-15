@@ -1,12 +1,20 @@
 import io
+import os
+import shutil
 
 from gi.repository import Gtk
+from gi.repository import GdkPixbuf
 
-from tests import TestCase
+from tests import TestCase, mkdtemp, mkstemp, DATA_DIR
 
+from quodlibet import config
 from quodlibet.plugins import Plugin
+from quodlibet.formats.mp3 import MP3File
+from quodlibet.formats._audio import AudioFile
+from quodlibet.formats._image import EmbeddedImage
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.cover.manager import CoverPluginHandler
+from quodlibet.util.path import path_equal
 
 DUMMY_COVER = io.StringIO()
 
@@ -93,17 +101,19 @@ class TCoverManager(TestCase):
             self.assertSequenceEqual(ps, sorted(ps, reverse=True))
 
     def test_acquire_cover_sync(self):
+        song = AudioFile({"~filename": "/dev/null"})
+
         manager = CoverPluginHandler(use_built_in=False)
         for source in dummy_sources:
             manager.plugin_handle(source)
         manager.plugin_enable(dummy_sources[0])
-        self.assertIs(manager.acquire_cover_sync(None), None)
+        self.assertIs(manager.acquire_cover_sync(song), None)
         manager.plugin_enable(dummy_sources[1])
-        self.assertIs(manager.acquire_cover_sync(None), DUMMY_COVER)
+        self.assertIs(manager.acquire_cover_sync(song), DUMMY_COVER)
         manager.plugin_enable(dummy_sources[2])
-        self.assertIs(manager.acquire_cover_sync(None), DUMMY_COVER)
+        self.assertIs(manager.acquire_cover_sync(song), DUMMY_COVER)
         manager.plugin_disable(dummy_sources[1])
-        self.assertIs(manager.acquire_cover_sync(None), None)
+        self.assertIs(manager.acquire_cover_sync(song), None)
 
     def test_acquire_cover(self):
         manager = CoverPluginHandler(use_built_in=False)
@@ -180,3 +190,82 @@ class TCoverManager(TestCase):
 
     def tearDown(self):
         pass
+
+
+class TCoverManagerBuiltin(TestCase):
+
+    def setUp(self):
+        config.init()
+
+        self.main = mkdtemp()
+
+        self.dir1 = mkdtemp(dir=self.main)
+        self.dir2 = mkdtemp(dir=self.main)
+
+        h, self.cover1 = mkstemp(".png", dir=self.main)
+        os.close(h)
+        pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 10)
+        pb.savev(self.cover1, "png", [], [])
+
+        h, self.cover2 = mkstemp(".png", dir=self.main)
+        os.close(h)
+        pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 20, 20)
+        pb.savev(self.cover2, "png", [], [])
+
+        fd, self.file1 = mkstemp(".mp3", dir=self.main)
+        os.close(fd)
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.file1)
+
+        fd, self.file2 = mkstemp(".mp3", dir=self.main)
+        os.close(fd)
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.file2)
+
+        self.manager = CoverPluginHandler()
+
+    def test_get_primary_image(self):
+        self.assertFalse(MP3File(self.file1).has_images)
+        self.assertFalse(MP3File(self.file1).has_images)
+
+    def test_manager(self):
+        self.assertEqual(len(list(self.manager.sources)), 2)
+
+    def test_main(self):
+        # embedd one cover, move one to the other dir
+        MP3File(self.file1).set_image(EmbeddedImage.from_path(self.cover1))
+        os.unlink(self.cover1)
+        dest = os.path.join(self.dir2, "cover.png")
+        shutil.move(self.cover2, dest)
+        self.cover2 = dest
+
+        # move one audio file in each dir
+        shutil.move(self.file1, self.dir1)
+        self.file1 = os.path.join(self.dir1, os.path.basename(self.file1))
+        shutil.move(self.file2, self.dir2)
+        self.file2 = os.path.join(self.dir2, os.path.basename(self.file2))
+
+        song1 = MP3File(self.file1)
+        song2 = MP3File(self.file2)
+
+        def is_embedded(fileobj):
+            return not path_equal(fileobj.name, self.cover2)
+
+        # each should find a cover
+        self.assertTrue(is_embedded(self.manager.get_cover(song1)))
+        self.assertTrue(not is_embedded(self.manager.get_cover(song2)))
+
+        # both settings should search both songs before giving up
+        config.set("albumart", "prefer_embedded", True)
+        self.assertTrue(
+            is_embedded(self.manager.get_cover_many([song1, song2])))
+        self.assertTrue(
+            is_embedded(self.manager.get_cover_many([song2, song1])))
+
+        config.set("albumart", "prefer_embedded", False)
+        self.assertTrue(
+            not is_embedded(self.manager.get_cover_many([song1, song2])))
+        self.assertTrue(
+            not is_embedded(self.manager.get_cover_many([song2, song1])))
+
+    def tearDown(self):
+        shutil.rmtree(self.main)
+        config.quit()

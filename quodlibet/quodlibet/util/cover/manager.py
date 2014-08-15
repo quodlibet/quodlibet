@@ -8,6 +8,7 @@
 
 from itertools import chain
 
+from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
 from quodlibet.plugins.cover import CoverSourcePlugin
@@ -87,16 +88,62 @@ class CoverPluginHandler(PluginHandler):
         if not cancellable or not cancellable.is_cancelled():
             run()
 
-    def acquire_cover_sync(self, song):
+    def acquire_cover_sync(self, song, embedded=True, external=True):
+        """Gets *cached* cover synchronously.
+
+        As CoverSource fetching functionality is asynchronous it is only
+        possible to check for already fetched cover.
         """
-        Gets *cached* cover synchronously. As CoverSource fetching
-        functionality is asynchronous it is only possible to check for already
-        fetched cover.
-        """
+
+        return self.acquire_cover_sync_many([song], embedded, external)
+
+    def acquire_cover_sync_many(self, songs, embedded=True, external=True):
+        """Same as acquire_cover_sync but returns a cover for multiple
+        images"""
+
         for plugin in self.sources:
-            cover = plugin(song).cover
-            if cover:
-                return cover
+            if not embedded and plugin.embedded:
+                continue
+            if not external and not plugin.embedded:
+                continue
+
+            groups = {}
+            for song in songs:
+                groups.setdefault(plugin.group_by(song), []).append(song)
+
+            # sort both groups and songs by key, so we always get
+            # the same result for the same set of songs
+            for key, group in sorted(groups.items()):
+                song = sorted(group, key=lambda s: s.key)[0]
+                cover = plugin(song).cover
+                if cover:
+                    return cover
+
+    def get_cover(self, song):
+        """Returns a cover file object for one song or None.
+
+        Compared to acquire_cover_sync() this respects the prefer_embedded
+        setting.
+        """
+
+        return self.get_cover_many([song])
+
+    def get_cover_many(self, songs):
+        """Returns a cover file object for many songs or None.
+
+        Returns the first found image for a group of songs
+        and respects the prefer_embedded setting. It tries to return the
+        same cover for the same set of songs.
+        """
+
+        prefer_embedded = config.getboolean(
+            "albumart", "prefer_embedded", False)
+
+        get = self.acquire_cover_sync_many
+        if prefer_embedded:
+            return get(songs, True, False) or get(songs, False, True)
+        else:
+            return get(songs, False, True) or get(songs, True, False)
 
 
 cover_plugins = CoverPluginHandler()

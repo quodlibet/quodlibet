@@ -21,6 +21,10 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_DESC = _("Use LastFM database to fetch covers")
     PLUGIN_VERSION = "1.0"
 
+    @classmethod
+    def group_by(cls, song):
+        return song.album_key
+
     @staticmethod
     def priority():
         return 0.33  # No cover size guarantee, accurate

@@ -20,6 +20,7 @@ from quodlibet.util import thumbnails
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.path import bytes2fsnative, is_fsnative, fsnative2bytes
+from quodlibet.util.cover.manager import cover_plugins
 from .collections import HashedList
 
 
@@ -305,8 +306,7 @@ class Album(Collection):
             return
         self.scanned = True
 
-        song = iter(self.songs).next()
-        cover = song.find_cover()
+        cover = cover_plugins.get_cover_many(self.songs)
 
         if cover is not None:
             s = self.COVER_SIZE * scale_factor - scale_factor * 2

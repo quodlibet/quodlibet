@@ -19,12 +19,16 @@ class EmbedCover(CoverSourcePlugin):
     PLUGIN_DESC = _("Use covers embed into audio files")
     PLUGIN_VERSION = "1.0"
 
+    embedded = True
+
+    @classmethod
+    def group_by(cls, song):
+        # one group per song
+        return song.key
+
     @staticmethod
     def priority():
-        if config.getboolean("albumart", "prefer_embedded", False):
-            return 0.99
-        else:
-            return 0.7001
+        return 0.7001
 
     @property
     def cover(self):
@@ -52,6 +56,11 @@ class FilesystemCover(CoverSourcePlugin):
     cover_negative_regexes = frozenset(
         map(lambda s: re.compile(r'(\b|_|)' + s + r'(\b|_)'),
             ["back", "inlay", "inset", "inside"]))
+
+    @classmethod
+    def group_by(cls, song):
+        # in the common case this means we only search once per album
+        return (song('~dirname'), song.album_key)
 
     @staticmethod
     def priority():

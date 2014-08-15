@@ -408,3 +408,7 @@ if sys.platform == "darwin":
     normalize_path = _normalize_darwin_path
 else:
     normalize_path = _normalize_path
+
+
+def path_equal(p1, p2, canonicalise=False):
+    return normalize_path(p1, canonicalise) == normalize_path(p2, canonicalise)

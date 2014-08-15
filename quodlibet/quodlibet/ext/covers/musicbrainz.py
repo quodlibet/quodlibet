@@ -19,6 +19,10 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_DESC = _("Download covers from musicbrainz's cover art archive")
     PLUGIN_VERSION = "1.0"
 
+    @classmethod
+    def group_by(cls, song):
+        return song.get('musicbrainz_albumid', None)
+
     @staticmethod
     def priority():
         # It's a pretty good source

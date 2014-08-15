@@ -33,10 +33,26 @@ class CoverSourcePlugin(GObject.Object):
         'search-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
 
+    embedded = False
+    """Whether the source is an embedded one"""
+
     def __init__(self, song, cancellable=None):
         self.song = song
         self.cancellable = cancellable
         super(CoverSourcePlugin, self).__init__()
+
+    @classmethod
+    def group_by(cls, song):
+        """Returns a hashable for a song, for grouping songs in groups where
+        only one song per group needs to be searched.
+
+        Grouping might reduce the chance of finding covers in exchange
+        for performance.
+
+        This default implementation gives one group for all songs.
+        """
+
+        return
 
     @staticmethod
     def priority():
@@ -51,9 +67,7 @@ class CoverSourcePlugin(GObject.Object):
 
         There's a table of value ranges sources should respect:
 
-        * (0.9, 1.0] - user's preferred methods (set by configuration; example:
-                       preferring embed cover art);
-        * (0.7, 0.9] - local covers;
+        * (0.7, 1.0] - local covers;
         * (0.4, 0.7] - accurate (> 99%) source of high quality (>= 200x200)
                        covers;
         * (0.2, 0.4] - accurate (> 99%) source of low quality (< 200x200)
