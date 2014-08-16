@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-01 17:57+0200\n"
+"POT-Creation-Date: 2014-08-16 20:11+0200\n"
 "PO-Revision-Date: 2013-07-20 22:33+0100\n"
 "Last-Translator: Hans van Dok <dok@xs4all.nl>\n"
 "Language-Team: Nederlands <en@li.org>\n"
@@ -501,11 +501,11 @@ msgid "_File System"
 msgstr "_Bestandssysteem"
 
 #: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:477
-#: ../quodlibet/qltk/songlist.py:240
+#: ../quodlibet/qltk/songlist.py:229
 msgid "Unable to copy songs"
 msgstr "Niet in staat om songs te kopiëren"
 
-#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:241
+#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:230
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "De geselecteerde bestanden kunnen niet worden gekopiëerd naar andere "
@@ -1310,7 +1310,7 @@ msgid "_Remove unused covers and directories"
 msgstr "_Verwijder ongebruikte covers en mappen"
 
 #: ../quodlibet/devices/storage.py:98
-#: ../quodlibet/ext/songsmenu/albumart.py:345
+#: ../quodlibet/ext/songsmenu/albumart.py:347
 #: ../quodlibet/ext/songsmenu/playlist.py:108
 msgid "File exists"
 msgstr "Bestand bestaat"
@@ -2452,7 +2452,7 @@ msgstr ""
 msgid "File_name:"
 msgstr "Bestandsnaam"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:342
+#: ../quodlibet/ext/songsmenu/albumart.py:344
 #: ../quodlibet/ext/songsmenu/playlist.py:109
 #, python-format
 msgid ""
@@ -2461,66 +2461,66 @@ msgid ""
 "Overwrite?"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:353
+#: ../quodlibet/ext/songsmenu/albumart.py:355
 msgid "Saving failed"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:354
+#: ../quodlibet/ext/songsmenu/albumart.py:356
 #, fuzzy, python-format
 msgid "Unable to save \"%s\"."
 msgstr "Niet in staat om song op te slaan"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:452
+#: ../quodlibet/ext/songsmenu/albumart.py:454
 #, python-format
 msgid "[albumart] HTTP Error: %s"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:509
+#: ../quodlibet/ext/songsmenu/albumart.py:511
 #, fuzzy
 msgid "Album Art Downloader"
 msgstr "Albumlijst"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:561
+#: ../quodlibet/ext/songsmenu/albumart.py:563
 #, python-format
 msgid ""
 "\n"
 "<small>from <i>%s</i></small>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:563
+#: ../quodlibet/ext/songsmenu/albumart.py:565
 #, python-format
 msgid ""
 "\n"
 "Resolution: <i>%s</i>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:565
+#: ../quodlibet/ext/songsmenu/albumart.py:567
 #, python-format
 msgid ""
 "\n"
 "Size: <i>%s</i>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:639
+#: ../quodlibet/ext/songsmenu/albumart.py:641
 #, fuzzy
 msgid "Searching..."
 msgstr "Zoekt naar tekst..."
 
-#: ../quodlibet/ext/songsmenu/albumart.py:702
+#: ../quodlibet/ext/songsmenu/albumart.py:704
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:39
 msgid "Done"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:816
+#: ../quodlibet/ext/songsmenu/albumart.py:818
 #, fuzzy
 msgid "Download Album Art"
 msgstr "Albumlijst"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:817
+#: ../quodlibet/ext/songsmenu/albumart.py:819
 msgid "Download album covers from various websites"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:827
+#: ../quodlibet/ext/songsmenu/albumart.py:829
 msgid "Sources"
 msgstr ""
 
@@ -4646,45 +4646,45 @@ msgstr "_Limiet:"
 msgid "_Weight"
 msgstr "_Gewogen"
 
-#: ../quodlibet/qltk/songlist.py:357
+#: ../quodlibet/qltk/songlist.py:346
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filter op %s"
 
-#: ../quodlibet/qltk/songlist.py:1022
+#: ../quodlibet/qltk/songlist.py:1011
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Albumheaders"
 
-#: ../quodlibet/qltk/songlist.py:1023
+#: ../quodlibet/qltk/songlist.py:1012
 msgid "_Track Headers"
 msgstr "_Trackheaders"
 
-#: ../quodlibet/qltk/songlist.py:1024
+#: ../quodlibet/qltk/songlist.py:1013
 msgid "_Album Headers"
 msgstr "_Albumheaders"
 
-#: ../quodlibet/qltk/songlist.py:1025
+#: ../quodlibet/qltk/songlist.py:1014
 msgid "_People Headers"
 msgstr "_Mensenheaders"
 
-#: ../quodlibet/qltk/songlist.py:1026
+#: ../quodlibet/qltk/songlist.py:1015
 msgid "_Date Headers"
 msgstr "_Datumheaders"
 
-#: ../quodlibet/qltk/songlist.py:1027
+#: ../quodlibet/qltk/songlist.py:1016
 msgid "_File Headers"
 msgstr "_Bestandsheaders"
 
-#: ../quodlibet/qltk/songlist.py:1028
+#: ../quodlibet/qltk/songlist.py:1017
 msgid "_Production Headers"
 msgstr "_Productieheaders"
 
-#: ../quodlibet/qltk/songlist.py:1043
+#: ../quodlibet/qltk/songlist.py:1032
 msgid "_Customize Headers..."
 msgstr "_Pas Headers Aan"
 
-#: ../quodlibet/qltk/songlist.py:1048
+#: ../quodlibet/qltk/songlist.py:1037
 msgid "_Expand"
 msgstr ""
 

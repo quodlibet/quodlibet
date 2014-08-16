@@ -1,3 +1,15 @@
+3.2.1 (2014-08-16) - BAKE HIM AWAY, TOYS
+----------------------------------------
+
+Fixes
+ * Fix Ex Falso not starting in some cases. :bug:`1448`
+ * Album art download plugin: Fix image file extension (Nick Boultbee)
+   :bug:`1435`
+
+Translations
+ * Russian translation update (Anton Shestakov) :bug:`1441`
+
+
 3.2.0 (2014-08-01) - WHAT KIND OF GOD MADE IT SO LIONS HUG BACK TOO HARD
 ------------------------------------------------------------------------
 

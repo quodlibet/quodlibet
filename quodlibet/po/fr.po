@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-01 17:57+0200\n"
+"POT-Creation-Date: 2014-08-16 20:11+0200\n"
 "PO-Revision-Date: 2013-07-20 22:32+0100\n"
 "Last-Translator: Nick Boultbee <nick.boultbee@googlemail.com>\n"
 "Language-Team: Français\n"
@@ -495,11 +495,11 @@ msgid "_File System"
 msgstr "_Système de fichiers"
 
 #: ../quodlibet/browsers/filesystem.py:108 ../quodlibet/browsers/media.py:477
-#: ../quodlibet/qltk/songlist.py:240
+#: ../quodlibet/qltk/songlist.py:229
 msgid "Unable to copy songs"
 msgstr "Impossible de copier les chansons"
 
-#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:241
+#: ../quodlibet/browsers/filesystem.py:109 ../quodlibet/qltk/songlist.py:230
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Les fichiers selectionnés ne peuvent pas être copiés vers une autre liste de "
@@ -1311,7 +1311,7 @@ msgid "_Remove unused covers and directories"
 msgstr "Enleve_r les jaquettes et les dossiers inutilisés"
 
 #: ../quodlibet/devices/storage.py:98
-#: ../quodlibet/ext/songsmenu/albumart.py:345
+#: ../quodlibet/ext/songsmenu/albumart.py:347
 #: ../quodlibet/ext/songsmenu/playlist.py:108
 msgid "File exists"
 msgstr "Le fichier existe"
@@ -2459,7 +2459,7 @@ msgstr ""
 msgid "File_name:"
 msgstr "Nom de fichier"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:342
+#: ../quodlibet/ext/songsmenu/albumart.py:344
 #: ../quodlibet/ext/songsmenu/playlist.py:109
 #, python-format
 msgid ""
@@ -2468,66 +2468,66 @@ msgid ""
 "Overwrite?"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:353
+#: ../quodlibet/ext/songsmenu/albumart.py:355
 msgid "Saving failed"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:354
+#: ../quodlibet/ext/songsmenu/albumart.py:356
 #, fuzzy, python-format
 msgid "Unable to save \"%s\"."
 msgstr "Impossible de sauvegarder la chanson"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:452
+#: ../quodlibet/ext/songsmenu/albumart.py:454
 #, python-format
 msgid "[albumart] HTTP Error: %s"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:509
+#: ../quodlibet/ext/songsmenu/albumart.py:511
 #, fuzzy
 msgid "Album Art Downloader"
 msgstr "Jaquettes d'Album"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:561
+#: ../quodlibet/ext/songsmenu/albumart.py:563
 #, python-format
 msgid ""
 "\n"
 "<small>from <i>%s</i></small>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:563
+#: ../quodlibet/ext/songsmenu/albumart.py:565
 #, python-format
 msgid ""
 "\n"
 "Resolution: <i>%s</i>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:565
+#: ../quodlibet/ext/songsmenu/albumart.py:567
 #, python-format
 msgid ""
 "\n"
 "Size: <i>%s</i>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:639
+#: ../quodlibet/ext/songsmenu/albumart.py:641
 #, fuzzy
 msgid "Searching..."
 msgstr "Recherche de paroles..."
 
-#: ../quodlibet/ext/songsmenu/albumart.py:702
+#: ../quodlibet/ext/songsmenu/albumart.py:704
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:39
 msgid "Done"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:816
+#: ../quodlibet/ext/songsmenu/albumart.py:818
 #, fuzzy
 msgid "Download Album Art"
 msgstr "Jaquettes d'Album"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:817
+#: ../quodlibet/ext/songsmenu/albumart.py:819
 msgid "Download album covers from various websites"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:827
+#: ../quodlibet/ext/songsmenu/albumart.py:829
 msgid "Sources"
 msgstr ""
 
@@ -4675,45 +4675,45 @@ msgstr "_Limite:"
 msgid "_Weight"
 msgstr "_Pondéré"
 
-#: ../quodlibet/qltk/songlist.py:357
+#: ../quodlibet/qltk/songlist.py:346
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtrer sur %s"
 
-#: ../quodlibet/qltk/songlist.py:1022
+#: ../quodlibet/qltk/songlist.py:1011
 #, fuzzy
 msgid "All _Headers"
 msgstr "Colonnes « _Album »"
 
-#: ../quodlibet/qltk/songlist.py:1023
+#: ../quodlibet/qltk/songlist.py:1012
 msgid "_Track Headers"
 msgstr "Colonnes « _Piste »"
 
-#: ../quodlibet/qltk/songlist.py:1024
+#: ../quodlibet/qltk/songlist.py:1013
 msgid "_Album Headers"
 msgstr "Colonnes « _Album »"
 
-#: ../quodlibet/qltk/songlist.py:1025
+#: ../quodlibet/qltk/songlist.py:1014
 msgid "_People Headers"
 msgstr "Colonnes « Ar_tistes »"
 
-#: ../quodlibet/qltk/songlist.py:1026
+#: ../quodlibet/qltk/songlist.py:1015
 msgid "_Date Headers"
 msgstr "Colonnes « _Date »"
 
-#: ../quodlibet/qltk/songlist.py:1027
+#: ../quodlibet/qltk/songlist.py:1016
 msgid "_File Headers"
 msgstr "Colonnes « _Fichier »"
 
-#: ../quodlibet/qltk/songlist.py:1028
+#: ../quodlibet/qltk/songlist.py:1017
 msgid "_Production Headers"
 msgstr "Colonnes « _Production »"
 
-#: ../quodlibet/qltk/songlist.py:1043
+#: ../quodlibet/qltk/songlist.py:1032
 msgid "_Customize Headers..."
 msgstr "_Configurer les colonnes..."
 
-#: ../quodlibet/qltk/songlist.py:1048
+#: ../quodlibet/qltk/songlist.py:1037
 msgid "_Expand"
 msgstr ""
 
