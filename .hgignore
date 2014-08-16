@@ -20,7 +20,8 @@ _build*/*
 _rtd_theme*
 
 # Ignore build files
-build/*
+quodlibet/build/*
+quodlibet/dist/*
 
 # Ignore Eclipse files
 .buildpath
@@ -38,4 +39,4 @@ win_installer/_sdk
 win_installer/*.exe
 
 # coverage.py html report
-coverage/*
+quodlibet/coverage/*
