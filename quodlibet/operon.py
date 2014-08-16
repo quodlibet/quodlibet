@@ -13,13 +13,6 @@
 
 import sys
 import os
-
-if sys.version_info[0] != 2:
-    try:
-        os.execvp("python2", ["python"] + sys.argv)
-    except OSError:
-        pass
-
 import string
 import re
 import shutil

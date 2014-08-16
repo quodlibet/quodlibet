@@ -15,14 +15,6 @@ import os
 from quodlibet.cli import process_arguments, is_running, control
 from quodlibet.util.dprint import print_d, print_
 
-if sys.version_info[0] != 2:
-    try:
-        os.execvp("python2", ["python"] + sys.argv)
-    except OSError:
-        pass
-
-import sys
-
 
 def main():
     startup_actions = process_arguments()

@@ -10,12 +10,6 @@
 import os
 import sys
 
-if sys.version_info[0] != 2:
-    try:
-        os.execvp("python2", ["python"] + sys.argv)
-    except OSError:
-        pass
-
 import quodlibet
 from quodlibet import app
 from quodlibet import util
