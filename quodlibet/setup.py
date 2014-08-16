@@ -11,17 +11,19 @@ if sys.version_info[0] != 2:
 
 import shutil
 import subprocess
+import tarfile
 
 # disable translations
 os.environ["QUODLIBET_NO_TRANS"] = ""
 
 from distutils.core import setup, Command
 from distutils.dep_util import newer
+from distutils import dir_util
 from distutils.command.build_scripts import build_scripts as du_build_scripts
 
 from gdist import GDistribution
 from gdist.clean import clean as gdist_clean
-from distutils.command.sdist import sdist as distutils_sdist
+from distutils.command.sdist import sdist
 
 
 # TODO: link this better to the app definitions
@@ -154,15 +156,19 @@ class quality_cmd(Command):
         cmd.run()
 
 
-class sdist(distutils_sdist):
+class distcheck(sdist):
+    description = "run tests on a fresh sdist"
 
     def _check_manifest(self):
+        assert self.get_archive_files()
+
         # make sure MANIFEST.in includes all tracked files
         if subprocess.call(["hg", "status"],
                            stdout=subprocess.PIPE,
                            stderr=subprocess.PIPE) == 0:
             # contains the packaged files after run() is finished
             included_files = self.filelist.files
+            assert included_files
 
             process = subprocess.Popen(["hg", "locate"],
                                        stdout=subprocess.PIPE)
@@ -183,16 +189,37 @@ class sdist(distutils_sdist):
                       "tracked files or includes non-tracked files")
                 for path in sorted(diff):
                     print(path)
+                raise AssertionError
+
+    def _check_dist(self):
+        assert self.get_archive_files()
+
+        distcheck_dir = os.path.join(self.dist_dir, "distcheck")
+        if os.path.exists(distcheck_dir):
+            dir_util.remove_tree(distcheck_dir)
+        self.mkpath(distcheck_dir)
+
+        archive = self.get_archive_files()[0]
+        tfile = tarfile.open(archive, "r:gz")
+        tfile.extractall(distcheck_dir)
+        tfile.close()
+
+        name = self.distribution.get_fullname()
+        extract_dir = os.path.join(distcheck_dir, name)
+
+        old_pwd = os.getcwd()
+        os.chdir(extract_dir)
+        self.spawn([sys.executable, "setup.py", "test"])
+        self.spawn([sys.executable, "setup.py", "build"])
+        self.spawn([sys.executable, "setup.py", "build_sphinx"])
+        self.spawn([sys.executable, "setup.py", "install",
+                    "--prefix", "../prefix", "--record", "../log.txt"])
+        os.chdir(old_pwd)
 
     def run(self):
-        result = distutils_sdist.run(self)
-
-        try:
-            self._check_manifest()
-        except EnvironmentError:
-            pass
-
-        return result
+        sdist.run(self)
+        self._check_manifest()
+        self._check_dist()
 
 
 class build_scripts(du_build_scripts):
@@ -297,7 +324,7 @@ if __name__ == "__main__":
 
     cmd_classes = {
         'clean': clean,
-        "sdist": sdist,
+        "distcheck": distcheck,
         "test": test_cmd,
         "quality": quality_cmd,
         "coverage": coverage_cmd,
