@@ -942,8 +942,8 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
             # in case nothing matches, select all
             path = (0,)
 
-        self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
         self.view.set_cursor(path)
+        self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
 
     def statusbar(self, i):
         return ngettext("%(count)d station", "%(count)d stations", i)

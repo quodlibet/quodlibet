@@ -839,9 +839,9 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 return False
             path = model.get_path(iter_)
 
-        self.scroll_to_cell(path, use_align=True, row_align=0.5)
         if select:
             self.set_cursor(path)
+        self.scroll_to_cell(path, use_align=True, row_align=0.5)
 
         return True
 
