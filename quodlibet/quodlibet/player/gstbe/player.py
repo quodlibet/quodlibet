@@ -129,7 +129,8 @@ class BufferingWrapper(object):
         # so call every time but ignore the result in the inhibit case
         res = self.bin.get_state(*args, **kwargs)
         if self._inhibit_play:
-            return self._wanted_state
+            return (Gst.StateChangeReturn.SUCCESS,
+                    self._wanted_state, Gst.State.VOID_PENDING)
         return res
 
     def destroy(self):
