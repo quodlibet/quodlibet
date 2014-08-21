@@ -13,7 +13,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import website
-from quodlibet.util.tags import STANDARD_TAGS, MACHINE_TAGS
+from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 from urllib2 import quote
 
 import ConfigParser
@@ -150,7 +150,7 @@ class WebsiteSearch(SongsMenuPlugin):
                 # Generate a sanitised AudioFile; allow through most tags
                 subs = AudioFile()
                 for k, v in song.items():
-                    if k in (STANDARD_TAGS + MACHINE_TAGS):
+                    if k in (USER_TAGS + MACHINE_TAGS):
                         try:
                             subs[k] = quote(unicode(v).encode('utf-8'))
                         # Dodgy unicode problems

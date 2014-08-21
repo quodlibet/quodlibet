@@ -1,6 +1,6 @@
 from tests import TestCase, AbstractTestCase, skipIf
 
-from quodlibet.formats import USEFUL_TAGS
+from quodlibet.formats import USER_TAGS
 from quodlibet.qltk import is_wayland
 
 
@@ -17,7 +17,7 @@ class TagsCombo(AbstractTestCase):
         self.failUnlessEqual(self.some.tag, "foobar")
 
     def test_all(self):
-        tags = list(USEFUL_TAGS)
+        tags = list(USER_TAGS)
         tags.sort()
         for i, value in enumerate(tags):
             self.all.set_active(i)

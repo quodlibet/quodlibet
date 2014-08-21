@@ -269,15 +269,15 @@ def format_time_long(time, limit=2):
         return _("No time information")
 
     cutoffs = [
-        (60, "%d seconds", "%d second"),
-        (60, "%d minutes", "%d minute"),
-        (24, "%d hours", "%d hour"),
-        (365, "%d days", "%d day"),
-        (None, "%d years", "%d year"),
+        (60, lambda n: ngettext("%d second", "%d seconds", n)),
+        (60, lambda n: ngettext("%d minute", "%d minutes", n)),
+        (24, lambda n: ngettext("%d hour", "%d hours", n)),
+        (365, lambda n: ngettext("%d day", "%d days", n)),
+        (None, lambda n: ngettext("%d year", "%d years", n)),
     ]
 
     time_str = []
-    for divisor, plural, single in cutoffs:
+    for divisor, gettext_partial in cutoffs:
         if time < 1:
             break
         if divisor is None:
@@ -285,7 +285,7 @@ def format_time_long(time, limit=2):
         else:
             time, unit = divmod(time, divisor)
         if unit:
-            time_str.append(ngettext(single, plural, unit) % unit)
+            time_str.append(gettext_partial(unit) % unit)
     time_str.reverse()
 
     if limit:

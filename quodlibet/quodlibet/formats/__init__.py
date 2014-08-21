@@ -88,6 +88,6 @@ def filter(filename):
     return filename.lower().endswith(_extensions)
 
 
-from quodlibet.formats._audio import USEFUL_TAGS, MACHINE_TAGS, PEOPLE
+from quodlibet.formats._audio import USER_TAGS, MACHINE_TAGS, PEOPLE
 from quodlibet.formats._audio import DUMMY_SONG
 from quodlibet.formats._image import EmbeddedImage

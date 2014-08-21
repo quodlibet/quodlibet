@@ -6,13 +6,21 @@
 
 from tests import TestCase
 
-from quodlibet.util import tags
+from quodlibet.util.tags import sortkey, readable
 
 
-class TTagsSortkey(TestCase):
+class TTags(TestCase):
 
     def test_basic(self):
         t = ["album", "title", "artist", "part", "musicbrainz_trackid"]
-        t.sort(key=tags.sortkey)
+        t.sort(key=sortkey)
         expected = ["title", "artist", "album", "part", "musicbrainz_trackid"]
         self.failUnlessEqual(t, expected)
+
+    def test_readable(self):
+        self.assertEqual(readable("artistsort"), "artist (sort)")
+        self.assertEqual(readable("~people:roles"), "people (roles)")
+        self.assertEqual(readable("~peoplesort:roles"), "people (sort, roles)")
+        self.assertEqual(readable("artist", plural=True), "artists")
+        self.assertEqual(readable("artistsort", plural=True), "artists (sort)")
+        self.assertEqual(readable("~"), "Invalid tag")

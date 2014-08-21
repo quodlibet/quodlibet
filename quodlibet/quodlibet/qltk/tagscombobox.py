@@ -12,7 +12,7 @@ import quodlibet.formats
 
 
 class _TagsCombo(object):
-    __tags = sorted(quodlibet.formats.USEFUL_TAGS)
+    __tags = sorted(quodlibet.formats.USER_TAGS)
 
     def _fill_model(self, can_change):
         self.clear()

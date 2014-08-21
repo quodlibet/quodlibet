@@ -26,45 +26,34 @@ from quodlibet.util.path import normalize_path, fsnative, escape_filename
 from quodlibet.util.string import encode
 
 from quodlibet.util.uri import URI
-from quodlibet.util import human_sort_key as human
+from quodlibet.util import human_sort_key as human, capitalize
 from quodlibet.util.dprint import print_d, print_w
 
 from quodlibet.util.cover.manager import cover_plugins
-
-# Used by __init__.py
-from quodlibet.util.tags import STANDARD_TAGS as USEFUL_TAGS
-from quodlibet.util.tags import MACHINE_TAGS
+from quodlibet.util.tags import MACHINE_TAGS, USER_TAGS, TAG_ROLES, TAG_TO_SORT
 
 
-MIGRATE = frozenset(("~#playcount ~#laststarted ~#lastplayed ~#added "
-           "~#skipcount ~#rating ~bookmark").split())
+MIGRATE = set(["~#playcount", "~#laststarted", "~#lastplayed", "~#added",
+               "~#skipcount", "~#rating", "~bookmark"])
+"""These get migrated if a song gets reloaded"""
 
-PEOPLE = ("albumartist artist author composer ~performers originalartist "
-          "lyricist arranger conductor").split()
+PEOPLE = ["albumartist", "artist", "author", "composer", "~performers",
+          "originalartist", "lyricist", "arranger", "conductor"]
+"""Sources of the ~people tag, most important first"""
 
-TAG_ROLES = {
-    "composer": _("Composition"),
-    "lyricist": _("Lyrics"),
-    "arranger": _("Arrangement"),
-    "conductor": _("Conducting")
-}
+INTERN_NUM_DEFAULT = set(
+    ["~#lastplayed", "~#laststarted", "~#playcount",
+     "~#skipcount", "~#length", "~#bitrate", "~#filesize"])
+"""Default to 0"""
 
-TAG_TO_SORT = {
-    "artist": "artistsort",
-    "album": "albumsort",
-    "albumartist": "albumartistsort",
-    "performer": "performersort",
-    "~performers": "~performerssort"
-}
-
-INTERN_NUM_DEFAULT = frozenset("~#lastplayed ~#laststarted ~#playcount "
-    "~#skipcount ~#length ~#bitrate ~#filesize".split())
+FILESYSTEM_TAGS = set(["~filename", "~basename", "~dirname"])
+"""Values are bytes in Linux instead of unicode"""
 
 SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])
+"""Reverse map, so sort tags can fall back to the normal ones"""
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
-
-FILESYSTEM_TAGS = "~filename ~basename ~dirname".split()
+"""Sources for ~peoplesort, most important first"""
 
 
 class AudioFile(dict, ImageContainer):
@@ -390,7 +379,7 @@ class AudioFile(dict, ImageContainer):
                 for tag in filter(not_role_tag, sub_keys):
                     for name in self.list(tag):
                         if tag in TAG_ROLES:
-                            roles[name].append(TAG_ROLES[tag])
+                            roles[name].append(capitalize(TAG_ROLES[tag]))
                         else:
                             roles[name]
             return "\n".join(role_desc(n, roles[n]) for n in names)

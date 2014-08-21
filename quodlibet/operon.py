@@ -24,7 +24,7 @@ from quodlibet import const
 from quodlibet import parse
 from quodlibet import util
 from quodlibet.util.dprint import print_, Colorise
-from quodlibet.util.tags import STANDARD_TAGS, MACHINE_TAGS, sortkey
+from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey
 
 
 PROGRAM = os.path.basename(sys.argv[0])
@@ -173,7 +173,7 @@ class TagsCommand(Command):
             order = map(str.strip, options.columns.split(","))
 
         tags = []
-        for key in STANDARD_TAGS:
+        for key in USER_TAGS:
             tags.append((key, util.tag(key)))
         tags.sort()
 

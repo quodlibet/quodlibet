@@ -19,6 +19,7 @@ from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.x import Window
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util import tag
+from quodlibet.util.tags import readable
 from quodlibet.util.path import fsdecode, filesize, unexpand
 
 
@@ -163,20 +164,15 @@ class OneSong(qltk.Notebook):
             vb.pack_start(l, False, True, 0)
         else:
             title = tag("~people")
-        for names, tag_ in [
-            ("performers", "performer"),
-            ("lyricists", "lyricist"),
-            ("arrangers", "arranger"),
-            ("composers", "composer"),
-            ("conductors", "conductor"),
-            ("authors", "author")]:
+        for tag_ in ["performer", "lyricist", "arranger", "composer",
+                     "conductor", "author"]:
             if tag_ in song:
                 l = Label(song[tag_])
                 l.set_ellipsize(Pango.EllipsizeMode.END)
                 if len(song.list(tag_)) == 1:
                     name = tag(tag_)
                 else:
-                    name = _(names)
+                    name = readable(tag_, plural=True)
                 vb.pack_start(Frame(util.capitalize(name), l), False, False, 0)
         performers = {}
         for tag_ in song:
