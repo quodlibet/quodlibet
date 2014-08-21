@@ -139,7 +139,7 @@ Build Dependencies
 ------------------
 
 * **Python** 2.7 (stdlib only)
-* **intltool** for translations.
+* **gettext** and **intltool** for translations.
 * The **gtk-update-icon-cache** executable for creating the
   fallback icon theme cache.
 
@@ -148,6 +148,12 @@ HTML user guide and put it in the build directory in the ``sphinx``
 subdirectory. This is not part of the default build process and requires
 **sphinx**.
 
+In case you build from a release tarball (beta included) you can get rid of
+the **intltool** dependency by passing ``--skip-po-update`` to build.
+
+::
+
+    ./setup.py build --skip-po-update install
 
 Changes
 -------
@@ -170,3 +176,8 @@ Changes
 * **UDisks2** is supported, in addition to UDisks1
 
 * **Python 2.7** required instead of 2.6 (might still work, but not tested)
+
+3.2 → 3.3
+^^^^^^^^^
+
+* New ``--skip-po-update`` option for the build command.
