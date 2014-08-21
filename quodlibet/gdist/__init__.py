@@ -25,7 +25,7 @@ from distutils.command.install import install as distutils_install
 
 from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
-from gdist.po import build_mo, install_mo, po_stats
+from gdist.po import build_mo, install_mo, po_stats, update_po
 from gdist.icons import build_icon_cache, install_icons
 from gdist.search_provider import install_search_provider
 from gdist.dbus_services import build_dbus_services, install_dbus_services
@@ -34,6 +34,10 @@ from gdist.appdata import build_appdata, install_appdata
 
 class build(distutils_build):
     """Override the default build with new subcommands."""
+
+    user_options = distutils_build.user_options + [
+        ("skip-po-update", None, "Don't update pot/po files"),
+    ]
 
     sub_commands = distutils_build.sub_commands + [
         ("build_mo",
@@ -47,6 +51,14 @@ class build(distutils_build):
         ("build_appdata",
          lambda self: self.distribution.has_appdata()),
     ]
+
+    def initialize_options(self):
+        distutils_build.initialize_options(self)
+        self.skip_po_update = False
+
+    def finalize_options(self):
+        distutils_build.finalize_options(self)
+        self.skip_po_update = bool(self.skip_po_update)
 
 
 class install(distutils_install):
@@ -125,6 +137,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build", build)
         self.cmdclass.setdefault("install", install)
         self.cmdclass.setdefault("po_stats", po_stats)
+        self.cmdclass.setdefault("update_po", update_po)
 
     def has_po(self):
         return os.name != 'nt' and bool(self.po_directory)
