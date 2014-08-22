@@ -81,7 +81,7 @@ class LastFMSyncCache(object):
             # charts if it's been more than a day since the last poll
             now = time.time()
             if not self.lastupdated or self.lastupdated + (24 * 60 * 60) < now:
-                prog("Updating chart list.", 0)
+                prog(_("Updating chart list."), 0)
                 resp = apicall('user.getweeklychartlist', user=self.username)
                 charts = resp['weeklychartlist']['chart']
                 for chart in charts:

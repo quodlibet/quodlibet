@@ -88,11 +88,11 @@ class Preferences(Gtk.VBox):
             scale.set_value(get_cfg(key))
 
         def format_perc(scale, value):
-            return "%d %%" % (value * 100)
+            return _("%d %%") % (value * 100)
         scales["level"].connect('format-value', format_perc)
 
         def format_hertz(scale, value):
-            return "%d Hz" % value
+            return _("%d Hz") % value
         scales["band"].connect('format-value', format_hertz)
         scales["width"].connect('format-value', format_hertz)
 

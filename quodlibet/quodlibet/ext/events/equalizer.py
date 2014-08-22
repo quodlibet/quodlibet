@@ -124,8 +124,12 @@ class Equalizer(EventPlugin):
             vb.pack_start(l, False, True, 0)
             return vb
 
-        bands = [(band >= 1000 and ('%.1f kHz' % (band / 1000.))
-                  or ('%d Hz' % band)) for band in app.player.eq_bands]
+        def format_hertz(band):
+            if band >= 1000:
+                return _('%.1f kHz') % (band / 1000.)
+            return _('%d Hz') % band
+
+        bands = [format_hertz(band) for band in app.player.eq_bands]
         levels = get_config() + [0.] * len(bands)
 
         table = Gtk.Table(rows=len(bands), columns=3)
@@ -154,7 +158,7 @@ class Equalizer(EventPlugin):
             hs = Gtk.HScale(adjustment=adj)
             hs.set_draw_value(True)
             hs.set_value_pos(Gtk.PositionType.RIGHT)
-            hs.connect('format-value', lambda s, v: '%.1f dB' % v)
+            hs.connect('format-value', lambda s, v: _('%.1f dB') % v)
             table.attach(hs, 2, 3, i, i + 1)
         vb.pack_start(table, True, True, 0)
 
