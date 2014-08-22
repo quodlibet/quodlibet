@@ -92,7 +92,7 @@ class WaitLoadBase(object):
         if self.count:
             t = (time.time() - self._start_time) / self.current
             remaining = math.ceil((self.count - self.current) * t)
-            values.setdefault("remaining", util.format_time(remaining))
+            values.setdefault("remaining", util.format_time_display(remaining))
         self._label.set_markup(self._text % values)
 
         while not self.quit and (self.paused or Gtk.events_pending()):

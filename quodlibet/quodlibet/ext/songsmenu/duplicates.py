@@ -161,7 +161,7 @@ class DuplicatesTreeModel(Gtk.TreeStore):
         return x
     TAG_MAP = [
         ("artist", i), ("title", i), ("album", i),
-        ("~#length", lambda s: util.format_time(int(s))),
+        ("~#length", lambda s: util.format_time_display(int(s))),
         ("~#filesize", lambda s: util.format_size(int(s))), ("~#bitrate", i),
         ("~filename", i)]
     # Now make a dict. This seems clunky.

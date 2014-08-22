@@ -178,7 +178,7 @@ class QueueExpander(Gtk.Expander):
             text = ngettext("%(count)d song (%(time)s)",
                             "%(count)d songs (%(time)s)",
                             len(model)) % {
-                "count": len(model), "time": util.format_time(time)}
+                "count": len(model), "time": util.format_time_display(time)}
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):

@@ -57,7 +57,7 @@ class Preferences(qltk.UniqueWindow):
 
     _EXAMPLE_ALBUM = FakeAlbum({
         "date": "2010-10-31",
-        "~length": util.format_time(6319),
+        "~length": util.format_time_display(6319),
         "~long-length": util.format_time_long(6319),
         "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
         "~discs": ngettext("%d disc", "%d discs", 2) % 2,

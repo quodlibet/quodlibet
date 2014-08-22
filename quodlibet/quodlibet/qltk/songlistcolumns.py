@@ -310,13 +310,13 @@ class LengthColumn(NumericColumn):
 
     def _get_min_width(self):
         # 1:22:22, allows entire albums as files (< 75mins)
-        return self._cell_width(util.format_time(60 * 82 + 22))
+        return self._cell_width(util.format_time_display(60 * 82 + 22))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         value = model.get_value(iter_).get("~#length", 0)
         if not self._needs_update(value):
             return
-        text = util.format_time(value)
+        text = util.format_time_display(value)
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)
 

@@ -228,7 +228,7 @@ class AudioFile(dict, ImageContainer):
                 if length is None:
                     return default
                 else:
-                    return util.format_time(length)
+                    return util.format_time_display(length)
             elif key == "#rating":
                 return dict.get(self, "~" + key, config.RATINGS.default)
             elif key == "rating":

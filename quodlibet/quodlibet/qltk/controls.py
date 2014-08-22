@@ -47,7 +47,7 @@ class TimeLabel(Gtk.Label):
     def set_time(self, time_):
         """Set the time in seconds"""
 
-        self.set_text(util.format_time(time_))
+        self.set_text(util.format_time_display(time_))
 
 
 class SeekBar(HSlider):

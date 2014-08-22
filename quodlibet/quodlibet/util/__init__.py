@@ -244,6 +244,7 @@ def format_size(size):
 
 def format_time(time):
     """Turn a time value in seconds into hh:mm:ss or mm:ss."""
+
     if time < 0:
         time = abs(time)
         prefix = "-"
@@ -256,6 +257,12 @@ def format_time(time):
     else:
         # time, in minutes:seconds
         return "%s%d:%02d" % (prefix, time // 60, time % 60)
+
+
+def format_time_display(time):
+    """Like format_time, but will use RATIO instead of a colon to separate"""
+
+    return format_time(time).replace(":", u"\u2236")
 
 
 def format_time_long(time, limit=2):
