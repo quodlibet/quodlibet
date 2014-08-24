@@ -278,7 +278,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         if self.name_combo.get_active() < 0:
             self.name_combo.set_active(0)
 
-        table = Gtk.Table(rows=2, columns=2, homogeneous=False)
+        table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
         table.set_row_spacing(0, 5)
         table.set_row_spacing(1, 5)
         table.set_col_spacing(0, 5)
@@ -515,7 +515,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         image = CoverArea(self, songs[0])
 
         self.liststore = Gtk.ListStore(object, object)
-        self.treeview = treeview = AllTreeView(self.liststore)
+        self.treeview = treeview = AllTreeView(model=self.liststore)
         self.treeview.set_headers_visible(False)
         self.treeview.set_rules_hint(True)
 
@@ -588,13 +588,13 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         widget_space = 5
 
-        search_hbox = Gtk.HBox(False, widget_space)
+        search_hbox = Gtk.HBox(spacing=widget_space)
         search_hbox.pack_start(self.search_field, True, True, 0)
         search_hbox.pack_start(self.search_button, False, True, 0)
 
         self.progress = Gtk.ProgressBar()
 
-        left_vbox = Gtk.VBox(False, widget_space)
+        left_vbox = Gtk.VBox(spacing=widget_space)
         left_vbox.pack_start(search_hbox, False, True, 0)
         left_vbox.pack_start(sw_list, True, True, 0)
 
@@ -823,7 +823,7 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, window):
-        table = Gtk.Table(len(engines), 2)
+        table = Gtk.Table(n_rows=len(engines), n_columns=2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         frame = qltk.Frame(_("Sources"), child=table)
@@ -835,7 +835,7 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
                 True)
             table.attach(check, 0, 1, i, i + 1)
 
-            button = Gtk.Button(eng['url'])
+            button = Gtk.Button(label=eng['url'])
             button.connect('clicked', lambda s: util.website(s.get_label()))
             table.attach(button, 1, 2, i, i + 1,
                          xoptions=Gtk.AttachOptions.FILL |

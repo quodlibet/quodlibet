@@ -88,7 +88,7 @@ class Alarm(EventPlugin):
             return True
 
     def PluginPreferences(self, parent):
-        t = Gtk.Table(2, 7)
+        t = Gtk.Table(n_rows=2, n_columns=7)
         t.set_col_spacings(6)
         entries = []
         for i in range(7):
@@ -98,7 +98,7 @@ class Alarm(EventPlugin):
             e.set_max_length(5)
             e.set_width_chars(6)
             day = Gtk.Label(
-                time.strftime("_%A:", (2000, 1, 1, 0, 0, 0, i, 1, 0)))
+                label=time.strftime("_%A:", (2000, 1, 1, 0, 0, 0, i, 1, 0)))
             day.set_mnemonic_widget(e)
             day.set_use_underline(True)
             day.set_alignment(0.0, 0.5)

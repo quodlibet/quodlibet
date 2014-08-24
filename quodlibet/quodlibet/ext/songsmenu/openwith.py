@@ -44,7 +44,7 @@ class SendTo(SongsMenuPlugin):
         self.command = None
         submenu = Gtk.Menu()
         for command in self.commands:
-            item = Gtk.MenuItem(command.title)
+            item = Gtk.MenuItem(label=command.title)
             if not command.exists():
                 item.set_sensitive(False)
             else:

@@ -127,11 +127,11 @@ class WebsiteSearch(SongsMenuPlugin):
         submenu = Gtk.Menu()
         self._get_saved_searches()
         for name, url_pat in self._url_pats:
-            item = Gtk.MenuItem(name)
+            item = Gtk.MenuItem(label=name)
             item.connect_object('activate', self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        config = Gtk.MenuItem(_("Configure searches..."))
+        config = Gtk.MenuItem(label=_("Configure searches..."))
         config.connect_object('activate', self.edit_patterns, config)
         submenu.append(SeparatorMenuItem())
         submenu.append(config)

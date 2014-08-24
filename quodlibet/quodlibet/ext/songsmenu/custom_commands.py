@@ -199,7 +199,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         submenu = Gtk.Menu()
         self.commands = self._get_saved_searches()
         for (name, c) in self.commands.items():
-            item = Gtk.MenuItem(name)
+            item = Gtk.MenuItem(label=name)
             item.connect_object('activate', self.__set_pat, name)
             submenu.append(item)
             # Add link to editor
@@ -212,7 +212,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def add_edit_item(cls, submenu):
-        config = Gtk.MenuItem(_("Edit Custom Commands") + "...")
+        config = Gtk.MenuItem(label=_("Edit Custom Commands") + "...")
         config.connect_object('activate', cls.edit_patterns, config)
         config.set_sensitive(not JSONBasedEditor.is_not_unique())
         submenu.append(SeparatorMenuItem())

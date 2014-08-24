@@ -49,7 +49,7 @@ class Preferences(Gtk.VBox):
     def __init__(self):
         super(Preferences, self).__init__(spacing=12)
 
-        table = Gtk.Table(3, 2)
+        table = Gtk.Table(n_rows=3, n_columns=2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -70,7 +70,8 @@ class Preferences(Gtk.VBox):
             self.emit("changed")
 
         for idx, key in enumerate(["tempo", "rate", "pitch"]):
-            scale = Gtk.HScale(adjustment=Gtk.Adjustment(0, 0.1, 3, 0.1, 1))
+            scale = Gtk.HScale(
+                adjustment=Gtk.Adjustment.new(0, 0.1, 3, 0.1, 1, 0))
             scale.set_digits(2)
             scale.add_mark(1.0, Gtk.PositionType.BOTTOM, None)
             labels[key].set_mnemonic_widget(scale)

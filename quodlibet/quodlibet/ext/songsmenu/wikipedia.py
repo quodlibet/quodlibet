@@ -42,10 +42,11 @@ class WikiSearch(object):
         e.set_text(get_lang())
         e.connect('changed', self.changed)
         hb.pack_start(
-            Gtk.Label(_("Search at %(website)s") % {"website": "http://"}),
+            Gtk.Label(label=_("Search at %(website)s") % {
+                "website": "http://"}),
             False, True, 0)
         hb.pack_start(e, False, True, 0)
-        hb.pack_start(Gtk.Label(".wikipedia.org"), False, True, 0)
+        hb.pack_start(Gtk.Label(label=".wikipedia.org"), False, True, 0)
         hb.show_all()
         return hb
 

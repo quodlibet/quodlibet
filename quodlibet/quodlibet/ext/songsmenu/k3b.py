@@ -35,7 +35,7 @@ class BurnCD(SongsMenuPlugin):
 
         submenu = Gtk.Menu()
         for (is_cmd, (name, (cmd, arg))) in progs:
-            item = Gtk.MenuItem(name)
+            item = Gtk.MenuItem(label=name)
             if not is_cmd:
                 item.set_sensitive(False)
             else:

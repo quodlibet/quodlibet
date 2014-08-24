@@ -47,7 +47,7 @@ class Preferences(Gtk.VBox):
     def __init__(self):
         super(Preferences, self).__init__(spacing=12)
 
-        table = Gtk.Table(2, 2)
+        table = Gtk.Table(n_rows=2, n_columns=2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -65,7 +65,7 @@ class Preferences(Gtk.VBox):
                          Gtk.AttachOptions.SHRINK)
 
         threshold_scale = Gtk.HScale(
-            adjustment=Gtk.Adjustment(0, 0, 1, 0.01, 0.1))
+            adjustment=Gtk.Adjustment.new(0, 0, 1, 0.01, 0.1, 0))
         threshold_scale.set_digits(2)
         labels["threshold"].set_mnemonic_widget(threshold_scale)
         threshold_scale.set_value_pos(Gtk.PositionType.RIGHT)
@@ -82,7 +82,8 @@ class Preferences(Gtk.VBox):
         threshold_scale.connect('value-changed', threshold_changed)
         threshold_scale.set_value(get_cfg("threshold"))
 
-        ratio_scale = Gtk.HScale(adjustment=Gtk.Adjustment(0, 0, 1, 0.01, 0.1))
+        ratio_scale = Gtk.HScale(
+            adjustment=Gtk.Adjustment.new(0, 0, 1, 0.01, 0.1, 0))
         ratio_scale.set_digits(2)
         labels["ratio"].set_mnemonic_widget(ratio_scale)
         ratio_scale.set_value_pos(Gtk.PositionType.RIGHT)

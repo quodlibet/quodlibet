@@ -47,7 +47,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self._fill_values(values)
 
         # The browser for existing data
-        self.view = view = RCMHintedTreeView(self.model)
+        self.view = view = RCMHintedTreeView(model=self.model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
         view.set_rules_hint(True)
@@ -131,7 +131,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             callback = self.__toggled_widget
             signal = "toggled"
         elif isinstance(val, int):
-            adj = Gtk.Adjustment(0, 0, 10000, 1, 10, 0)
+            adj = Gtk.Adjustment.new(0, 0, 10000, 1, 10, 0)
             entry = Gtk.SpinButton(adjustment=adj)
             entry.set_numeric(True)
             callback = self.__changed_numeric_widget
@@ -177,7 +177,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 widget.set_text(val or "")
 
     def __build_input_frame(self):
-        t = Gtk.Table(2, 3)
+        t = Gtk.Table(n_rows=2, n_columns=3)
         t.set_row_spacings(6)
         t.set_col_spacing(0, 3)
         t.set_col_spacing(1, 12)

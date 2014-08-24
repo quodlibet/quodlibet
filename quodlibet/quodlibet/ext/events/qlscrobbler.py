@@ -454,14 +454,15 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         box = Gtk.VBox(spacing=12)
 
         # first frame
-        table = Gtk.Table(5, 2)
+        table = Gtk.Table(n_rows=5, n_columns=2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
         labels = []
         label_names = [_("_Service:"), _("_URL:"), _("User_name:"),
             _("_Password:")]
-        for idx, label in enumerate(map(Gtk.Label, label_names)):
+        for idx, name in enumerate(label_names):
+            label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
             table.attach(label, 0, 1, idx, idx + 1,
@@ -520,7 +521,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         box.pack_start(qltk.Frame(_("Account"), child=table), True, True, 0)
 
         # second frame
-        table = Gtk.Table(4, 2)
+        table = Gtk.Table(n_rows=4, n_columns=2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -528,7 +529,8 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
             _("Exclude _filter:")]
 
         labels = []
-        for idx, label in enumerate(map(Gtk.Label, label_names)):
+        for idx, name in enumerate(label_names):
+            label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
             table.attach(label, 0, 1, idx, idx + 1,

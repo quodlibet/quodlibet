@@ -68,7 +68,7 @@ class PreferencesWidget(Gtk.VBox):
         self.plugin_instance = plugin_instance
 
         # notification text settings
-        table = Gtk.Table(2, 3)
+        table = Gtk.Table(n_rows=2, n_columns=3)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -189,8 +189,9 @@ class PreferencesWidget(Gtk.VBox):
             all_radio.set_active(True)
             set_conf_value("show_notifications", "all")
 
-        focus_check = Gtk.CheckButton(_("Only when the main window is not "
-                                        "_focused"), use_underline=True)
+        focus_check = Gtk.CheckButton(
+            label=_("Only when the main window is not _focused"),
+            use_underline=True)
         focus_check.set_active(get_conf_bool("show_only_when_unfocused"))
         focus_check.connect("toggled", self.on_checkbutton_toggled,
                             "show_only_when_unfocused")

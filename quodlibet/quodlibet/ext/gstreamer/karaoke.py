@@ -45,7 +45,7 @@ class Preferences(Gtk.VBox):
     def __init__(self):
         super(Preferences, self).__init__(spacing=12)
 
-        table = Gtk.Table(3, 2)
+        table = Gtk.Table(n_rows=3, n_columns=2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -76,7 +76,7 @@ class Preferences(Gtk.VBox):
             step = steps[idx]
             page = pages[idx]
             scale = Gtk.HScale(
-                adjustment=Gtk.Adjustment(0, 0, max_value, step, page))
+                adjustment=Gtk.Adjustment.new(0, 0, max_value, step, page, 0))
             scales[key] = scale
             if step < 0.1:
                 scale.set_digits(2)

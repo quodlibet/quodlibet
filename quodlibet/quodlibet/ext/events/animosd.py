@@ -455,7 +455,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         vb.pack_start(frame, False, True, 0)
 
         def build_text_widget():
-            t = Gtk.Table(2, 2)
+            t = Gtk.Table(n_rows=2, n_columns=2)
             t.set_col_spacings(6)
             t.set_row_spacings(3)
 
@@ -483,7 +483,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         vb.pack_start(frame, False, True, 0)
 
         def build_colors_widget():
-            t = Gtk.Table(2, 2)
+            t = Gtk.Table(n_rows=2, n_columns=2)
             t.set_col_spacings(6)
             t.set_row_spacings(3)
             b = Gtk.ColorButton(
@@ -516,7 +516,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
                 (_("Rou_nded Corners"), self.Conf.corners - 1, change_rounded)]
 
             for (label, current, callback) in toggles:
-                checkb = Gtk.CheckButton(label, use_underline=True)
+                checkb = Gtk.CheckButton(label=label, use_underline=True)
                 checkb.set_active(current != -1)
                 checkb.connect("toggled", callback)
                 hb.pack_start(checkb, True, True, 0)
@@ -524,7 +524,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
 
             hb = Gtk.HBox(spacing=6)
             timeout = Gtk.SpinButton(
-                adjustment=Gtk.Adjustment(
+                adjustment=Gtk.Adjustment.new(
                     self.Conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
                 climb_rate=0.1, digits=1)
             timeout.set_numeric(True)
@@ -545,7 +545,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
                                       Gtk.STOCK_EDIT)
             edit_button.connect('clicked', edit_pattern)
             hb.pack_start(edit_button, False, True, 0)
-            preview_button = Gtk.Button(_("Preview"))
+            preview_button = Gtk.Button(label=_("Preview"))
             preview_button.connect("button-press-event", on_button_pressed)
             hb.pack_start(preview_button, False, True, 0)
             return hb

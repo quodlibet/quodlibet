@@ -103,7 +103,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         cfg_frame.add(cfg_frame_align)
 
         # Tabulate all settings for neatness
-        table = Gtk.Table(3, 2)
+        table = Gtk.Table(n_rows=3, n_columns=2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         rows = []
@@ -142,7 +142,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
             table.attach(entry, 1, 2, row, row + 1)
 
         # Add verify button
-        button = Gtk.Button(_("_Verify settings"), use_underline=True)
+        button = Gtk.Button(label=_("_Verify settings"), use_underline=True)
         button.set_sensitive(cls.server is not None)
         button.connect('clicked', cls.check_settings)
         table.attach(button, 0, 2, row + 1, row + 2)

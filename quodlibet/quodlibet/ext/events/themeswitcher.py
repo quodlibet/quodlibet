@@ -4,6 +4,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import warnings
 import os
 
 from gi.repository import Gtk
@@ -72,8 +73,12 @@ class ThemeSwitcher(EventPlugin):
         self.__set_theme(name)
 
     def __get_themes(self):
-        theme_dirs = [Gtk.rc_get_theme_dir(),
-                      os.path.join(const.HOME, ".themes")]
+        # deprecated, but there is no public replacement
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            theme_dir = Gtk.rc_get_theme_dir()
+
+        theme_dirs = [theme_dir, os.path.join(const.HOME, ".themes")]
 
         themes = set()
         for theme_dir in theme_dirs:

@@ -69,12 +69,12 @@ class RandomAlbum(EventPlugin):
                     str(int(self.use_weights)))
 
         vbox = Gtk.VBox(spacing=12)
-        table = Gtk.Table(len(self.keys) + 1, 3)
+        table = Gtk.Table(n_rows=len(self.keys) + 1, n_columns=3)
         table.set_border_width(3)
 
         hbox = Gtk.HBox(spacing=6)
         spin = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment(self.delay, 0, 3600, 1, 10))
+            adjustment=Gtk.Adjustment.new(self.delay, 0, 3600, 1, 10, 0))
         spin.connect("value-changed", delay_changed_cb)
         hbox.pack_start(spin, False, True, 0)
         lbl = Gtk.Label(label=_("seconds before starting next album"))
@@ -83,7 +83,7 @@ class RandomAlbum(EventPlugin):
 
         frame = Gtk.Frame(label=_("Weights"))
 
-        check = Gtk.CheckButton(_("Play some albums more than others"))
+        check = Gtk.CheckButton(label=_("Play some albums more than others"))
         vbox.pack_start(check, False, True, 0)
         # Toggle both frame and contained table; frame doesn't always work?
         check.connect("toggled", toggled_cb, [frame, table])
@@ -95,7 +95,8 @@ class RandomAlbum(EventPlugin):
 
         # Less label
         less_lbl = Gtk.Label()
-        arr = Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.OUT)
+        arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.LEFT,
+                        shadow_type=Gtk.ShadowType.OUT)
         less_lbl.set_markup("<i>%s</i>" % util.escape(_("avoid")))
         less_lbl.set_alignment(0, 0)
         hb = Gtk.HBox(spacing=0)
@@ -105,7 +106,8 @@ class RandomAlbum(EventPlugin):
                      xoptions=Gtk.AttachOptions.FILL)
         # More label
         more_lbl = Gtk.Label()
-        arr = Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.OUT)
+        arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.RIGHT,
+                        shadow_type=Gtk.ShadowType.OUT)
         more_lbl.set_markup("<i>%s</i>" % util.escape(_("prefer")))
         more_lbl.set_alignment(1, 0)
         hb = Gtk.HBox(spacing=0)
@@ -120,7 +122,7 @@ class RandomAlbum(EventPlugin):
             table.attach(lbl, 0, 1, idx + 1, idx + 2,
                          xoptions=Gtk.AttachOptions.FILL,
                          xpadding=3, ypadding=3)
-            adj = Gtk.Adjustment(lower=-1.0, upper=1.0, step_incr=0.1)
+            adj = Gtk.Adjustment(lower=-1.0, upper=1.0, step_increment=0.1)
             hscale = Gtk.HScale(adjustment=adj)
             hscale.set_value(self.weights[key])
             hscale.set_draw_value(False)

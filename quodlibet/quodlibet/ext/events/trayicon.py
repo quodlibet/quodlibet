@@ -45,7 +45,7 @@ class Preferences(Gtk.VBox):
                         True, True, 0)
 
         box = Gtk.VBox(spacing=12)
-        table = Gtk.Table(2, 4)
+        table = Gtk.Table(n_rows=2, n_columns=4)
         table.set_row_spacings(6)
         table.set_col_spacings(12)
 
@@ -53,7 +53,7 @@ class Preferences(Gtk.VBox):
         for i, tag in enumerate([
                 "genre", "artist", "album", "discnumber", "part",
                 "tracknumber", "title", "version"]):
-            cb = Gtk.CheckButton(util.tag(tag))
+            cb = Gtk.CheckButton(label=util.tag(tag))
             cb.tag = tag
             cbs.append(cb)
             table.attach(cb, i % 3, i % 3 + 1, i // 3, i // 3 + 1)
@@ -519,7 +519,7 @@ class TrayIcon(EventPlugin):
         rating = Gtk.MenuItem(label=_("_Rating"), use_underline=True)
         rating_sub = Gtk.Menu()
         for r in RATINGS.all:
-            item = Gtk.MenuItem("%0.2f\t%s" % (r, util.format_rating(r)))
+            item = Gtk.MenuItem(label="%0.2f\t%s" % (r, util.format_rating(r)))
             item.connect_object('activate', set_rating, r)
             rating_sub.append(item)
         rating.set_submenu(rating_sub)

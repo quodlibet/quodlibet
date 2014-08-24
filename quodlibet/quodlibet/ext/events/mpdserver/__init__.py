@@ -64,7 +64,7 @@ class MPDServerPlugin(EventPlugin):
     PLUGIN_ICON = Gtk.STOCK_CONNECT
 
     def PluginPreferences(self, parent):
-        table = Gtk.Table(2, 3)
+        table = Gtk.Table(n_rows=2, n_columns=3)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
