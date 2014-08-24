@@ -161,7 +161,7 @@ class Crossfeed(GStreamerPlugin):
 
     @classmethod
     def setup_element(cls):
-        return Gst.ElementFactory.make('crossfeed', cls.PLUGIN_ID)
+        return Gst.ElementFactory.make('bs2b', cls.PLUGIN_ID)
 
     @classmethod
     def update_element(cls, element):
@@ -176,4 +176,4 @@ class Crossfeed(GStreamerPlugin):
 
 
 if not Crossfeed.setup_element():
-    raise plugins.MissingGstreamerElementPluginException("crossfeed")
+    raise plugins.MissingGstreamerElementPluginException("bs2b")
