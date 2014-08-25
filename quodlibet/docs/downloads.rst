@@ -51,8 +51,8 @@ Quod Libet uses `Mercurial <http://mercurial.selenic.com/>`_ for source
 control and is hosted on `Google Code <https://code.google.com/>`_ as well
 as `Bitbucket <https://bitbucket.org/>`__:
 
- * https://code.google.com/p/quodlibet
- * https://bitbucket.org/lazka/quodlibet
+ * https://code.google.com/p/quodlibet (primary)
+ * https://bitbucket.org/lazka/quodlibet (mirror)
 
 To clone the repository::
 
@@ -104,6 +104,11 @@ Stable PPA (12.04+)::
 Unstable PPA (12.04+)::
 
     $ sudo add-apt-repository ppa:lazka/dumpingplace
+
+
+.. note::
+
+    While Ubuntu 12.04 is supported, drag and drop does not work.
 
 
 .. note::
@@ -237,8 +242,13 @@ To update to the latest version, switch to the QL dir and run::
  $ hg pull --update
  $ ./setup.py build_mo # (only if you need translations)
 
+
 |macosx-logo| Mac OS X
 ----------------------
+
+.. note::
+
+    Mac OS X is not officially supported and 100% untested.
 
 ::
 
