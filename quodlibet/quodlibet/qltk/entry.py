@@ -241,9 +241,9 @@ class ValidatingEntryMixin(object):
 
     def set_validate(self, validator=None):
         if validator:
-            self.connect_object('changed', self.__color, validator)
+            self.connect('changed', self.__color, validator)
 
-    def __color(self, validator):
+    def __color(self, widget, validator):
         value = validator(self.get_text())
         if value is True:
             color = self.VALID

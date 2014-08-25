@@ -107,14 +107,14 @@ class MainSongList(SongList):
         super(MainSongList, self).__init__(library, player, update=True)
         self.set_first_column_type(CurrentColumn)
 
-        self.connect_object('row-activated', self.__select_song, player)
+        self.connect('row-activated', self.__select_song, player)
 
         # ugly.. so the main window knows if the next song-started
         # comes from an row-activated or anything else.
         def reset_activated(*args):
             self._activated = False
-        s = player.connect_after('song-started', reset_activated)
-        self.connect_object('destroy', player.disconnect, s)
+        gobject_weak(player.connect_after, 'song-started', reset_activated,
+                     parent=self)
 
         self.connect("orders-changed", self.__orders_changed)
 
@@ -124,7 +124,7 @@ class MainSongList(SongList):
             l.append("%d%s" % (int(reverse), tag))
         config.setstringlist('memory', 'sortby', l)
 
-    def __select_song(self, player, indices, col):
+    def __select_song(self, widget, indices, col, player):
         self._activated = True
         iter = self.model.get_iter(indices)
         if player.go_to(iter, True):
@@ -136,9 +136,9 @@ class SongListScroller(ScrolledWindow):
         super(SongListScroller, self).__init__()
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.IN)
-        self.connect_object('notify::visible', self.__visibility, menu)
+        self.connect('notify::visible', self.__visibility, menu)
 
-    def __visibility(self, menu, event):
+    def __visibility(self, widget, event, menu):
         value = self.get_property('visible')
         menu.set_active(value)
         config.set("memory", "songlist", str(value))
@@ -390,7 +390,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         def accel_save_cb(*args):
             Gtk.AccelMap.save(accel_fn)
-        accel_group.connect_object('accel-changed', accel_save_cb, None)
+
+        # Gtk.AccelGroup.connect shadows gobject connect
+        GObject.Object.connect(accel_group, 'accel-changed', accel_save_cb)
         main_box.pack_start(ui.get_widget("/Menu"), False, True, 0)
 
         # get the playlist up before other stuff
@@ -495,7 +497,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.songlist.info.connect("changed", self.__set_time)
 
         lib = library.librarian
-        gobject_weak(lib.connect_object, 'changed', self.__song_changed,
+        gobject_weak(lib.connect, 'changed', self.__song_changed,
                      player, parent=self)
 
         self._playback_error_dialog = None
@@ -530,7 +532,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
 
-        self.connect_object("key-press-event", self.__key_pressed, player)
+        self.connect("key-press-event", self.__key_pressed, player)
 
         self.connect("delete-event", self.__save_browser)
         self.connect("destroy", self.__destroy)
@@ -572,7 +574,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             window = EditBookmarks(self, librarian, player)
             window.show()
 
-    def __key_pressed(self, player, event):
+    def __key_pressed(self, widget, event, player):
         if not player.song:
             return
 
@@ -757,11 +759,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         act = Gtk.Action.new(
             "OnlineHelp", _("Online Help"), None, Gtk.STOCK_HELP)
-        act.connect_object('activate', util.website, const.ONLINE_HELP)
+
+        def website_handler(*args):
+            util.website(const.ONLINE_HELP)
+
+        act.connect('activate', website_handler)
         ag.add_action_with_accel(act, "F1")
 
         act = Gtk.Action.new("SearchHelp", _("Search Help"), None, "")
-        act.connect_object('activate', util.website, const.SEARCH_HELP)
+
+        def search_help_handler(*args):
+            util.website(const.SEARCH_HELP)
+
+        act.connect('activate', search_help_handler)
         ag.add_action_with_accel(act, None)
 
         act = Gtk.Action.new(
@@ -775,8 +785,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             ("album", _("Filter on Al_bum"))]:
             act = Gtk.Action.new(
                 "Filter%s" % util.capitalize(tag_), lab, None, Gtk.STOCK_INDEX)
-            act.connect_object('activate',
-                               self.__filter_on, tag_, None, player)
+            act.connect('activate', self.__filter_on, tag_, None, player)
             ag.add_action_with_accel(act, None)
 
         for (tag_, accel, label) in [
@@ -817,7 +826,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
             act = Gtk.Action.new(action, label, None, None)
-            act.connect_object('activate', LibraryBrowser.open, Kind, library)
+
+            def browser_activate(*args):
+                LibraryBrowser.open(Kind, library)
+
+            act.connect('activate', browser_activate)
             ag.add_action_with_accel(act, None)
 
         debug_menu = ""
@@ -939,7 +952,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             player.paused = True
             self.stop_after.set_active(False)
 
-    def __song_changed(self, player, songs):
+    def __song_changed(self, library, songs, player):
         if player.info in songs:
             self.__update_title(player)
 
@@ -1201,7 +1214,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 songs = filter(bg, songs)
         self.songlist.set_songs(songs, sorted)
 
-    def __filter_on(self, header, songs, player):
+    def __filter_on(self, action, header, songs, player):
         browser = self.browser
 
         if not browser:

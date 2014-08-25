@@ -131,12 +131,14 @@ def _gtk_init(icon=None):
     # some day... but not now
     warnings.filterwarnings(
         'ignore', '.*Stock items are deprecated.*', Warning)
+    warnings.filterwarnings(
+        'ignore', '.*:use-stock.*', Warning)
 
     settings = Gtk.Settings.get_default()
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         settings.set_property("gtk-button-images", True)
-    settings.set_property("gtk-menu-images", True)
+        settings.set_property("gtk-menu-images", True)
 
     # Make sure PyGObject includes support for foreign cairo structs
     some_window = Gtk.OffscreenWindow()

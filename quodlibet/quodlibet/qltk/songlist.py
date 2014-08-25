@@ -344,7 +344,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             # selected column (a translated tag name).
             b = qltk.MenuItem(
                 _("_Filter on %s") % util.tag(t, True), Gtk.STOCK_INDEX)
-            b.connect_object('activate', self.__filter_on, t, songs, browser)
+            b.connect('activate', self.__filter_on, t, songs, browser)
             return b
 
         header = util.tagsplit(header)[0]
@@ -382,13 +382,11 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
         sigs = []
-        # The player needs to be called first so it can ge the next song
-        # in case the current one gets deleted and the order gets reset.
-        if player:
-            s = librarian.connect_object('removed', map, player.remove)
-            sigs.append(s)
-        sigs.extend([librarian.connect('changed', self.__song_updated),
-                librarian.connect('removed', self.__song_removed)])
+
+        sigs.extend([
+            librarian.connect('changed', self.__song_updated),
+            librarian.connect('removed', self.__song_removed, player),
+        ])
         if update:
             sigs.append(librarian.connect('added', self.__song_added))
         for sig in sigs:
@@ -559,7 +557,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         else:
             return True
 
-    def __filter_on(self, header, songs, browser):
+    def __filter_on(self, widget, header, songs, browser):
         if not browser:
             return
 
@@ -885,7 +883,14 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if callable(filter_):
             self.add_songs(filter(filter_, songs))
 
-    def __song_removed(self, librarian, songs):
+    def __song_removed(self, librarian, songs, player):
+        # The player needs to be called first so it can ge the next song
+        # in case the current one gets deleted and the order gets reset.
+
+        if player:
+            for song in songs:
+                player.remove(song)
+
         # The selected songs are removed from the library and should
         # be removed from the view.
 

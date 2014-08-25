@@ -66,9 +66,9 @@ class TFingerprint(PluginTestCase):
         def handler(*args):
             events.append(args)
 
-        pool.connect_object("fingerprint-started", handler, "start")
-        pool.connect_object("fingerprint-done", handler, "done")
-        pool.connect_object("fingerprint-error", handler, "error")
+        pool.connect("fingerprint-started", handler, "start")
+        pool.connect("fingerprint-done", handler, "done")
+        pool.connect("fingerprint-error", handler, "error")
         pool.push(song)
 
         t = time.time()
@@ -76,8 +76,8 @@ class TFingerprint(PluginTestCase):
             Gtk.main_iteration_do(False)
 
         self.assertEqual(len(events), 2)
-        self.assertEqual(events[0][0], "start")
-        self.assertEqual(events[1][0], "error")
+        self.assertEqual(events[0][-1], "start")
+        self.assertEqual(events[1][-1], "error")
 
 
 @skipUnless(Gst and chromaprint)
