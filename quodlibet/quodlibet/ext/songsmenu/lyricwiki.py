@@ -7,6 +7,8 @@
 import urllib
 from xml.dom import minidom
 
+import gi
+gi.require_version("WebKit", "3.0")
 from gi.repository import WebKit, Gtk
 
 from quodlibet import app
