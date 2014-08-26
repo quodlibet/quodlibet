@@ -124,10 +124,15 @@ class RatingColumn(TextColumn):
         self.set_min_width(width)
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        value = model.get_value(iter_).get(
-            "~#rating", config.RATINGS.default)
-        if not self._needs_update(value):
+        song = model.get_value(iter_)
+        rating = song.get("~#rating")
+        default = config.RATINGS.default
+
+        if not self._needs_update((rating, default)):
             return
+
+        cell.set_sensitive(rating is not None)
+        value = rating if rating is not None else default
         cell.set_property('text', util.format_rating(value))
 
 
