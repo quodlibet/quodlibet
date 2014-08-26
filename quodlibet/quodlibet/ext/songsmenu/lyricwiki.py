@@ -4,11 +4,16 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import sys
 import urllib
 from xml.dom import minidom
 
 import gi
-gi.require_version("WebKit", "3.0")
+try:
+    gi.require_version("WebKit", "3.0")
+except ValueError as e:
+    raise ImportError, e, sys.exc_info()[2]
+
 from gi.repository import WebKit, Gtk
 
 from quodlibet import app
