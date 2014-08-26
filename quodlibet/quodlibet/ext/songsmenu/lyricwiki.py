@@ -8,11 +8,13 @@ import sys
 import urllib
 from xml.dom import minidom
 
+from quodlibet.plugins import PluginImportException
+
 import gi
 try:
     gi.require_version("WebKit", "3.0")
 except ValueError as e:
-    raise ImportError, e, sys.exc_info()[2]
+    raise PluginImportException("GObject Introspection: " + str(e))
 
 from gi.repository import WebKit, Gtk
 
