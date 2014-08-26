@@ -24,6 +24,7 @@ from quodlibet.qltk.data_editors import MultiStringEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
+from quodlibet.qltk.window import Window
 from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
@@ -406,6 +407,9 @@ class PreferencesWindow(qltk.UniqueWindow):
                 if it is None:
                     return
                 RATINGS.default = model[it][0]
+                # XXX... redraw cell renderers
+                for window in Window.windows:
+                    window.queue_draw()
 
             def populate_default_rating_model(combo, num):
                 model = combo.get_model()
