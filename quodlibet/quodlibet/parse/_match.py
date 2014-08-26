@@ -305,6 +305,8 @@ def map_numeric_op(tag, op, value, time_=None):
             value *= 24 * 60 * 60
         elif part == "week":
             value *= 7 * 24 * 60 * 60
+        elif part == "month":
+            value *= 30 * 24 * 60 * 60
         elif part == "year":
             value *= 365 * 24 * 60 * 60
         elif unit:

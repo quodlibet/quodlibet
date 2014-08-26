@@ -33,6 +33,9 @@ class TNumericOp(TestCase):
         t = map_numeric_op("mtime", ">", "3.0 weeks ago", time_=self.TIME)[1]
         self.failUnlessEqual(t, self.TIME - (3600 * 24 * 7 * 3))
 
+        t = map_numeric_op("mtime", ">", "3 months ago", time_=self.TIME)[1]
+        self.failUnlessEqual(t, self.TIME - (3600 * 24 * 30 * 3))
+
         t = map_numeric_op("mtime", ">", "1 year ago", time_=self.TIME)[1]
         self.failUnlessEqual(t, self.TIME - (3600 * 24 * 365))
 
