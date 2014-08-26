@@ -29,7 +29,7 @@ class SelectionWindow(Window):
         text = Gtk.CellRendererText()
 
         toggle_column = Gtk.TreeViewColumn("", toggle, active=0)
-        column = Gtk.TreeViewColumn("Tag", text, text=1)
+        column = Gtk.TreeViewColumn(_("Tag"), text, text=1)
 
         view = Gtk.TreeView(model)
         view.append_column(toggle_column)
