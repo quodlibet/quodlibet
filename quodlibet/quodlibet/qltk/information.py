@@ -228,22 +228,25 @@ class OneSong(qltk.Notebook):
             lastplayed = _("Never")
         added = ftime(song.get("~#added", 0))
         rating = song("~rating")
+        has_rating = "~#rating" in song
 
         t = Gtk.Table(n_rows=5, n_columns=2)
         t.set_col_spacings(6)
         t.set_homogeneous(False)
-        table = [(_("added"), added),
-                 (_("last played"), lastplayed),
-                 (_("plays"), playcount),
-                 (_("skips"), skipcount),
-                 (_("rating"), rating)]
+        table = [(_("added"), added, True),
+                 (_("last played"), lastplayed, True),
+                 (_("plays"), playcount, True),
+                 (_("skips"), skipcount, True),
+                 (_("rating"), rating, has_rating)]
 
-        for i, (l, r) in enumerate(table):
+        for i, (l, r, s) in enumerate(table):
             l = "<b>%s</b>" % util.capitalize(util.escape(l) + ":")
             lab = Label()
             lab.set_markup(l)
             t.attach(lab, 0, 1, i + 1, i + 2, xoptions=Gtk.AttachOptions.FILL)
-            t.attach(Label(r), 1, 2, i + 1, i + 2)
+            label = Label(r)
+            label.set_sensitive(s)
+            t.attach(label, 1, 2, i + 1, i + 2)
 
         box.pack_start(Frame(_("Library"), t), False, False, 0)
 
