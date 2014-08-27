@@ -827,10 +827,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             label = Kind.accelerated_name
             act = Gtk.Action.new(action, label, None, None)
 
-            def browser_activate(*args):
+            def browser_activate(action, Kind):
                 LibraryBrowser.open(Kind, library)
 
-            act.connect('activate', browser_activate)
+            act.connect('activate', browser_activate, Kind)
             ag.add_action_with_accel(act, None)
 
         debug_menu = ""
