@@ -197,10 +197,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         try:
             first = next(objects)
         except TypeError:
-            try:
-                first = objects[0]
-            except IndexError:
-                return
+            first = next(iter(objects))
         else:
             value = get_marshalable(first)
             yield insert_with_valuesv(-1, columns, [value])

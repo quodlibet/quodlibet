@@ -94,6 +94,12 @@ class TObjectStore(_TObjectStore):
         m.append_many(range(10))
         self.failUnlessEqual([r[0] for r in m], range(10))
 
+    def test_append_many_set(self):
+        m = ObjectStore()
+        m.append_many(set())
+        m.append_many(set(range(10)))
+        self.failUnlessEqual(set([r[0] for r in m]), set(range(10)))
+
     def test_iter_append_many(self):
         m = ObjectStore()
         iters = list(m.iter_append_many(range(10)))
