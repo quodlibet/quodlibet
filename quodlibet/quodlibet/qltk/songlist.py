@@ -365,10 +365,11 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu.show_all()
         return menu
 
-    def __init__(self, library, player=None, update=False):
+    def __init__(self, library, player=None, update=False,
+                 model_cls=PlaylistModel):
         super(SongList, self).__init__()
         self._register_instance(SongList)
-        self.set_model(PlaylistModel())
+        self.set_model(model_cls())
         self.info = SongInfoSelection(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)

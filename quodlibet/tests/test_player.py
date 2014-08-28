@@ -19,10 +19,13 @@ from quodlibet.qltk.controls import Volume
 
 FILES = [
     AudioFile({"~filename": "/foo/bar1", "title": "1"}),
-    AudioFile({"~filename": "/foo/bar2", "title": "2"})
+    AudioFile({"~filename": "/foo/bar2", "title": "2"}),
+    AudioFile({"~filename": "/foo/bar3", "title": "3"}),
 ]
 for file_ in FILES:
     file_.sanitize()
+
+UNKNOWN_FILE = FILES.pop(-1)
 
 
 class TPlayer(AbstractTestCase):
@@ -106,6 +109,14 @@ class TPlayer(AbstractTestCase):
         self.assertTrue(self.player.paused)
         self.player.go_to(FILES[0], explicit=True)
         self.assertEqual(self.player.song, FILES[0])
+
+    def test_goto_unknown(self):
+        self.assertTrue(self.player.paused)
+        self.player.go_to(UNKNOWN_FILE, True)
+        self.assertIs(self.player.song, UNKNOWN_FILE)
+        self.assertTrue(self.player.paused)
+        self.player.go_to(None)
+        self.assertIs(self.player.song, None)
 
     def test_reset(self):
         self.player.go_to(None)

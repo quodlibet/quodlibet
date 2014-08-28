@@ -8,6 +8,8 @@
 
 from gi.repository import GObject
 
+from quodlibet.formats._audio import AudioFile
+
 
 class Equalizer(object):
     _eq_values = []
@@ -105,6 +107,13 @@ class BasePlayer(GObject.GObject, Equalizer):
         self.props.volume = min(1.0, max(0.0, v))
     volume = property(lambda s: s._volume, _set_volume)
 
+    def _end(self, stopped, next_song=None):
+        """Start playing the current song from the source or
+        next_song if it isn't None.
+        """
+
+        raise NotImplementedError
+
     def setup(self, source, song, seek_pos):
         """Connect to a PlaylistModel, and load a song.
 
@@ -175,16 +184,28 @@ class BasePlayer(GObject.GObject, Equalizer):
         if self.song:
             self.paused = False
 
-    def go_to(self, song, explicit=False):
-        """Activate the song in the playlist and play it.
-        explicit if the action comes from the user
+    def go_to(self, song_or_iter, explicit=False):
+        """Activate the song or iter in the playlist if possible and play it.
+
+        Explicit if the action comes from the user.
+
+        Returns True if there is an active song after the call returns.
         """
 
-        print_d("Going to %r" % getattr(song, "key", song))
-        res = self._source.go_to(song, explicit)
-        if explicit and not res:
-            return False
-        self._end(True)
+        print_d("Going to %r" % getattr(song_or_iter, "key", song_or_iter))
+
+        if self._source.go_to(song_or_iter, explicit):
+            self._end(True)
+        else:
+            if isinstance(song_or_iter, AudioFile):
+                self._end(True, song_or_iter)
+            else:
+                # FIXME: this is for the queue only plugin. the play order
+                # should return if it has handled set() itself instead
+                if explicit:
+                    return
+                self._end(True)
+
         return self.song is not None
 
     def can_play_uri(self, uri):

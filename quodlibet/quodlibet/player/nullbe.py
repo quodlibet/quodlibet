@@ -56,7 +56,7 @@ class NullPlayer(BasePlayer):
             self.emit('seek', self.song, pos)
         self._position = pos
 
-    def _end(self, stopped):
+    def _end(self, stopped, next_song=None):
         # We need to set self.song to None before calling our signal
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
@@ -64,8 +64,10 @@ class NullPlayer(BasePlayer):
         self.song = self.info = None
         self.emit('song-ended', song, stopped)
 
+        current = self._source.current if next_song is None else next_song
+
         # Then, set up the next song.
-        self.song = self.info = self._source.current
+        self.song = self.info = current
         self.emit('song-started', self.song)
 
         if self.song is None:

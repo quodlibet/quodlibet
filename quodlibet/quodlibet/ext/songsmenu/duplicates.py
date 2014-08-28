@@ -69,8 +69,6 @@ class DuplicateSongsView(RCMHintedTreeView):
             songs = self.get_selected_songs()
             if songs and player.go_to(songs[0], True):
                 player.paused = False
-            else:
-                print_w("Sorry, can't play song outside current list.")
 
     def _removed(self, library, songs):
         model = self.get_model()

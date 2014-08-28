@@ -31,6 +31,14 @@ class TPlaylistModel(TestCase):
         self.pl.set(range(10))
         self.failUnlessEqual(self.pl.current, 0)
 
+    def test_current_recover_unknown(self):
+        self.pl.set([1, 2, 3, 4])
+        self.assertIs(self.pl.go_to(5), None)
+        self.pl.set([1, 2, 3, 4, 5])
+        self.assertEqual(self.pl.current, 5)
+        self.assertIsNot(self.pl.go_to(4), None)
+        self.assertEqual(self.pl.current, 4)
+
     def test_isempty(self):
         self.failIf(self.pl.is_empty())
         self.pl.clear()

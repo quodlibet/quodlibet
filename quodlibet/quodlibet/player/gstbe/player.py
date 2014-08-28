@@ -614,7 +614,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 # event here and emit in the bus message callback.
                 self._active_seeks.append((self.song, pos))
 
-    def _end(self, stopped):
+    def _end(self, stopped, next_song=None):
         print_d("End song")
         song, info = self.song, self.info
 
@@ -634,8 +634,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # reset error state
         self.error = False
 
+        current = self._source.current if next_song is None else next_song
+
         # Then, set up the next song.
-        self.song = self.info = self._source.current
+        self.song = self.info = current
         self.emit('song-started', self.song)
 
         print_d("Next song")

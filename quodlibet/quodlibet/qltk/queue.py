@@ -17,6 +17,7 @@ from quodlibet import qltk
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
     SmallImageButton
@@ -209,6 +210,10 @@ class QueueExpander(Gtk.Expander):
         clear.set_property('visible', self.get_expanded())
 
 
+class QueueModel(PlaylistModel):
+    """Own class for debugging"""
+
+
 class PlayQueue(SongList):
 
     sortable = False
@@ -223,7 +228,7 @@ class PlayQueue(SongList):
             self.set_fixed_width(24)
 
     def __init__(self, library, player):
-        super(PlayQueue, self).__init__(library, player)
+        super(PlayQueue, self).__init__(library, player, model_cls=QueueModel)
         self.set_size_request(-1, 120)
         self.connect('row-activated', self.__go_to, player)
 

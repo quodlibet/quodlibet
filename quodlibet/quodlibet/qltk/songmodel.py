@@ -89,7 +89,9 @@ class PlaylistMux(object):
 
 class TrackCurrentModel(ObjectStore):
     __iter = None
-    __old_value = None
+
+    last_current = None
+    """The last valid current song"""
 
     def set(self, songs):
         print_d("Clearing model.")
@@ -98,7 +100,7 @@ class TrackCurrentModel(ObjectStore):
 
         print_d("Setting %d songs." % len(songs))
 
-        oldsong = self.__old_value
+        oldsong = self.last_current
         for iter_, song in itertools.izip(self.iter_append_many(songs), songs):
             if song is oldsong:
                 self.__iter = iter_
@@ -133,7 +135,7 @@ class TrackCurrentModel(ObjectStore):
         for it in filter(None, (self.__iter, iter_)):
             self.row_changed(self.get_path(it), it)
         self.__iter = iter_
-        self.__old_value = self.current
+        self.last_current = self.current
 
     def __get_current_iter(self):
         return self.__iter
@@ -200,14 +202,21 @@ class PlaylistModel(TrackCurrentModel):
         iter_ = self.current_iter
         self.current_iter = self.order.previous_explicit(self, iter_)
 
-    def go_to(self, song, explicit=False):
-        print_d("Told to go to %r" % getattr(song, "key", song))
+    def go_to(self, song_or_iter, explicit=False):
+        """Go to a song or an iter or None"""
+
+        print_d("Told to go to %r" % getattr(song_or_iter, "key",
+                                             song_or_iter))
 
         iter_ = None
-        if isinstance(song, Gtk.TreeIter):
-            iter_ = song
-        elif song is not None:
-            iter_ = self.find(song)
+        if isinstance(song_or_iter, Gtk.TreeIter):
+            iter_ = song_or_iter
+        elif song_or_iter is not None:
+            # We were told to go to a song that was valid but couldn't find it.
+            # Set it as last current so it gets set current when we find it in
+            # the future.
+            self.last_current = song_or_iter
+            iter_ = self.find(song_or_iter)
 
         if explicit:
             self.current_iter = self.order.set_explicit(self, iter_)
