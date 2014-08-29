@@ -405,8 +405,8 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         e = UndoEntry()
         e.set_text(cls.get_key_expression())
         e.connect("changed", key_changed)
-        e.set_tooltip_markup("Accepts QL tag expressions like "
-                "<tt>~artist~title</tt> or <tt>musicbrainz_track_id</tt>")
+        e.set_tooltip_markup(_("Accepts QL tag expressions like "
+                "<tt>~artist~title</tt> or <tt>musicbrainz_track_id</tt>"))
         lbl = Gtk.Label(label=_("_Group duplicates by:"))
         lbl.set_mnemonic_widget(e)
         lbl.set_use_underline(True)

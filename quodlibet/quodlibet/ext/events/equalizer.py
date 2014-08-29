@@ -120,7 +120,8 @@ class Equalizer(EventPlugin):
         vb = Gtk.VBox(spacing=6)
         if not self.player_has_eq:
             l = Gtk.Label()
-            l.set_markup('The current backend does not support equalization.')
+            l.set_markup(
+                _('The current backend does not support equalization.'))
             vb.pack_start(l, False, True, 0)
             return vb
 

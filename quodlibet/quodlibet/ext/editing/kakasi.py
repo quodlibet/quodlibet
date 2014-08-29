@@ -50,4 +50,4 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
 if not iscommand("kakasi"):
     from quodlibet import plugins
     raise plugins.PluginImportException(
-        "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi).")
+        _("Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."))
