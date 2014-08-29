@@ -411,7 +411,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         lbl.set_mnemonic_widget(e)
         lbl.set_use_underline(True)
         hbox.pack_start(lbl, False, True, 0)
-        hbox.pack_start(e, False, True, 0)
+        hbox.pack_start(e, True, True, 0)
         frame = qltk.Frame(label=_("Duplicate Key"), child=hbox)
         vb.pack_start(frame, True, True, 0)
 
