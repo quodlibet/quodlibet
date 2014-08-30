@@ -141,17 +141,18 @@ class GajimStatusMessage(EventPlugin):
         accounts = Gtk.Entry()
         accounts.set_text(join(self.accounts))
         accounts.connect('changed', self.accounts_changed)
-        accounts.set_tooltip_text("List accounts, separated by spaces, for "
-                             "changing status message. If none are specified, "
-                             "status message of all accounts will be changed.")
+        accounts.set_tooltip_text(
+            _("List accounts, separated by spaces, for "
+              "changing status message. If none are specified, "
+              "status message of all accounts will be changed."))
         accounts_box.pack_start(Gtk.Label(label="Accounts:"), True, True, 0)
         accounts_box.pack_start(accounts, True, True, 0)
 
         c = Gtk.CheckButton(label="Add '[paused]'")
         c.set_active(self.paused)
         c.connect('toggled', self.paused_changed)
-        c.set_tooltip_text("If checked, '[paused]' will be added to "
-                           "status message on pause.")
+        c.set_tooltip_text(_("If checked, '[paused]' will be added to "
+                             "status message on pause."))
 
         table = Gtk.Table()
         self.list = []
@@ -174,8 +175,8 @@ class GajimStatusMessage(EventPlugin):
         vb.pack_start(pattern_box, True, True, 0)
         vb.pack_start(accounts_box, True, True, 0)
         vb.pack_start(c, True, True, 0)
-        vb.pack_start(Frame(label="Statuses for which status message\n"
-                                  "will be changed"), True, True, 0)
+        vb.pack_start(Frame(label=_("Statuses for which status message\n"
+                                    "will be changed")), True, True, 0)
         vb.pack_start(table, True, True, 0)
 
         return vb

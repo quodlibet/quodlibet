@@ -160,9 +160,9 @@ class QLSubmitQueue(PluginConfigMixin):
         url = self.config_get_url()
         if not user or not passw or not url:
             if self.queue and not self.broken:
-                self.quick_dialog("Please visit the Plugins window to set "
+                self.quick_dialog(_("Please visit the Plugins window to set "
                               "QLScrobbler up. Until then, songs will not be "
-                              "submitted.", Gtk.MessageType.INFO)
+                              "submitted."), Gtk.MessageType.INFO)
                 self.broken = True
         elif (self.username, self.password,
                 self.base_url) != (user, passw, url):
@@ -238,13 +238,13 @@ class QLSubmitQueue(PluginConfigMixin):
         except (IOError, HTTPException):
             if show_dialog:
                 self.quick_dialog(
-                    "Could not contact service '%s'." %
+                    _("Could not contact service '%s'.") %
                     util.escape(self.base_url), Gtk.MessageType.ERROR)
             else:
                 print_d("Could not contact service. Queueing submissions.")
             return False
         except ValueError:
-            self.quick_dialog("Authentication failed: invalid URL.",
+            self.quick_dialog(_("Authentication failed: invalid URL."),
                 Gtk.MessageType.ERROR)
             self.broken = True
             return False
@@ -261,17 +261,17 @@ class QLSubmitQueue(PluginConfigMixin):
                 self.session_id, self.nowplaying_url, self.submit_url))
             return True
         elif status == "BADAUTH":
-            self.quick_dialog("Authentication failed: Invalid username '%s' "
-                            "or bad password." % util.escape(self.username),
+            self.quick_dialog(_("Authentication failed: Invalid username '%s' "
+                            "or bad password.") % util.escape(self.username),
                             Gtk.MessageType.ERROR)
             self.broken = True
         elif status == "BANNED":
-            self.quick_dialog("Client is banned. Contact the author.",
+            self.quick_dialog(_("Client is banned. Contact the author."),
                               Gtk.MessageType.ERROR)
             self.broken = True
         elif status == "BADTIME":
-            self.quick_dialog("Wrong system time. Submissions may fail until "
-                              "it is corrected.", Gtk.MessageType.ERROR)
+            self.quick_dialog(_("Wrong system time. Submissions may fail "
+                            "until it is corrected."), Gtk.MessageType.ERROR)
         else:  # "FAILED"
             self.quick_dialog(status, Gtk.MessageType.ERROR)
         self.changed()
@@ -448,7 +448,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
             queue.changed()
             status = queue.send_handshake(show_dialog=True)
             if status:
-                queue.quick_dialog("Authentication successful.",
+                queue.quick_dialog(_("Authentication successful."),
                     Gtk.MessageType.INFO)
 
         box = Gtk.VBox(spacing=12)

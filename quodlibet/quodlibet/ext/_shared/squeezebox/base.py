@@ -70,8 +70,9 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
                                          cls.server.current_player)
                 ret = dialog.run() or 0
             else:
-                cls.quick_dialog("Squeezebox OK. Using the only player (%s)."
-                                 % cls.server.players[0])
+                cls.quick_dialog(
+                    _("Squeezebox OK. Using the only player (%s).")
+                    % cls.server.players[0])
             cls.set_player(ret)
             # TODO: verify sanity of SB library path
 
