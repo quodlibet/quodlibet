@@ -37,6 +37,7 @@ Edit Tags
 |   *set*         Set a tag and remove existing values
 |   *clear*       Remove tags
 |   *copy*        Copy tags from one file to another
+|   *edit*        Edit tags in a text editor
 |   *dump*        Print all tags to stdout
 
 Show file metadata
@@ -159,6 +160,24 @@ operon copy [-h] [--dry-run] [--ignore-errors] <source> <dest>
 
 Example:
     operon copy song.flac song.ogg
+
+edit
+----
+
+Shows all tags in a text editor and will apply any changes made to the text to
+the tags. *operon* will use the editor specified in the VISUAL or EDITOR
+environment variables and if those are not set fall back to 'nano'.
+
+operon edit [-h] [--dry-run] <file>
+
+-h, --help
+    Display help and exit
+
+--dry-run
+    Print the results without changing any files
+
+Example:
+    VISUAL=vi operon edit song.flac
 
 dump
 ----

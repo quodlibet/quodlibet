@@ -341,6 +341,70 @@ class TOperonCopy(TOperonBase):
         self.failIf(self.s2.realkeys())
 
 
+class TOperonEdit(TOperonBase):
+    # [--dry-run] <file>
+
+    def test_misc(self):
+        self.check_false(["edit"], False, True)
+        self.check_true(["edit", "-h"], True, False)
+        self.check_false(["edit", "foo", "bar"], False, True)
+
+    def test_nonexist_editor(self):
+        editor = "/this/path/does/not/exist/hopefully"
+        os.environ["VISUAL"] = editor
+        e = self.check_false(["edit", self.f], False, True)[1]
+        self.assertTrue(editor in e)
+
+    def test_no_edit(self):
+        if os.name == "nt":
+            return
+
+        os.environ["VISUAL"] = "touch"
+        realitems = lambda s: [(k, s[k]) for k in s.realkeys()]
+        old_items = realitems(self.s)
+        self.check_true(["edit", self.f], False, False)
+        self.s.reload()
+        self.assertEqual(sorted(old_items), sorted(realitems(self.s)))
+
+    def test_mtime(self):
+        if os.name == "nt":
+            return
+
+        os.environ["VISUAL"] = "true"
+        self.check_false(["edit", self.f], False, True)
+        os.environ["VISUAL"] = "false"
+        self.check_false(["edit", self.f], False, True)
+
+    def test_dry_run(self):
+        if os.name == "nt":
+            return
+
+        realitems = lambda s: [(k, s[k]) for k in s.realkeys()]
+
+        os.environ["VISUAL"] = "truncate -s 0"
+        old_items = realitems(self.s)
+        e = self.check_true(["edit", "--dry-run", self.f], False, True)[1]
+
+        # log all removals
+        for key in self.s.realkeys():
+            self.assertTrue(key in e)
+
+        # nothing should have changed
+        self.s.reload()
+        self.assertEqual(sorted(old_items), sorted(realitems(self.s)))
+
+    def test_remove_all(self):
+        if os.name == "nt":
+            return
+
+        os.environ["VISUAL"] = "truncate -s 0"
+        self.check_true(["edit", self.f], False, False)
+
+        # all should be gone
+        self.s.reload()
+        self.assertFalse(self.s.realkeys())
+
+
 class TOperonInfo(TOperonBase):
     # [-t] [-c <c1>,<c2>...] <file>
 

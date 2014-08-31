@@ -15,7 +15,10 @@ import sys
 import os
 import string
 import re
+import shlex
 import shutil
+import tempfile
+import subprocess
 from optparse import OptionParser
 
 from quodlibet.formats import MusicFile, EmbeddedImage
@@ -23,6 +26,7 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import parse
 from quodlibet import util
+from quodlibet.util.path import mtime, fsdecode
 from quodlibet.util.dprint import print_, Colorise
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey
 
@@ -261,8 +265,10 @@ class CopyCommand(Command):
 
 class EditCommand(Command):
     NAME = "edit"
-    DESCRIPTION = _("Edit tags in an editor")
-    USAGE = "[--dry-run] <file> [<files>]"
+    DESCRIPTION = _("Edit tags in a text editor")
+    USAGE = "[--dry-run] <file>"
+
+    # TODO: support editing multiple files
 
     def _add_options(self, p):
         p.add_option("--dry-run", action="store_true",
@@ -271,6 +277,114 @@ class EditCommand(Command):
     def _execute(self, options, args):
         if len(args) < 1:
             raise CommandError(_("Not enough arguments"))
+        elif len(args) > 1:
+            raise CommandError(_("Too many arguments"))
+
+        song = self.load_song(args[0])
+
+        # to text
+        lines = []
+        for key in sorted(song.realkeys(), key=sortkey):
+            for value in song.list(key):
+                lines.append("%s=%s" % (key, value.encode("utf-8")))
+
+        lines += [
+            "",
+            "#" * 80,
+            "# Lines that are empty or start with '#' will be ignored",
+            "# File: %r" % fsdecode(song("~filename")).encode("utf-8"),
+        ]
+        dump = "\n".join(lines)
+
+        # write to tmp file
+        fd, path = tempfile.mkstemp(suffix=".txt")
+        try:
+            try:
+                os.write(fd, dump)
+            finally:
+                os.close(fd)
+
+            if "VISUAL" in os.environ:
+                editor = os.environ["VISUAL"]
+                self.log("Using %r from VISUAL env var." % editor)
+            elif "EDITOR" in os.environ:
+                editor = os.environ["EDITOR"]
+                self.log(
+                    "VISUAL not set. Using %r from EDITOR env var." % editor)
+            else:
+                editor = "nano"
+                self.log("VISUAL/EDITOR not set, falling back to 'nano'.")
+
+            # to support VISUAL="geany -i"
+            try:
+                editor_args = shlex.split(editor)
+            except ValueError:
+                # well, no idea
+                editor_args = [editor]
+
+            # only parse the result if the editor returns 0 and the mtime has
+            # changed
+            old_mtime = mtime(path)
+
+            try:
+                subprocess.check_call(editor_args + [path])
+            except subprocess.CalledProcessError as e:
+                self.log(unicode(e))
+                raise CommandError(_("Editing aborted"))
+            except OSError as e:
+                self.log(unicode(e))
+                raise CommandError(
+                    _("Starting text editor '%(editor-name)s' failed.") % {
+                        "editor-name": editor})
+
+            was_changed = mtime(path) != old_mtime
+            if not was_changed:
+                raise CommandError(_("No changes detected"))
+
+            with open(path, "rb") as h:
+                data = h.read().decode("utf-8")
+
+        finally:
+            os.unlink(path)
+
+        # parse
+        tags = {}
+        for line in data.splitlines():
+            if not line.strip() or line.startswith(u"#"):
+                continue
+            try:
+                key, value = line.split(u"=", 1)
+            except ValueError:
+                continue
+
+            tags.setdefault(key, []).append(value)
+
+        if options.dry_run:
+            self.verbose = True
+
+        # apply changes, sort to always have the same output
+        for key in sorted(song.realkeys(), key=sortkey):
+            new = tags.pop(key, [])
+            old = song.list(key)
+            for value in old:
+                if value not in new:
+                    self.log("Remove %s=%s" % (key, value))
+                    song.remove(key, value)
+            for value in new:
+                if value not in old:
+                    self.log("Add %s=%s" % (key, value))
+                    song.add(key, value)
+
+        for key, values in tags.iteritems():
+            if not song.can_change(key):
+                raise CommandError(
+                    "Can't change key '%(key-name)s'." % {"key-name": key})
+            for value in values:
+                self.log("Add %s=%s" % (key, value))
+                song.add(key, value)
+
+        if not options.dry_run:
+            self.save_songs([song])
 
 
 class SetCommand(Command):
@@ -877,11 +991,11 @@ def run(argv=sys.argv):
             try:
                 cmd.execute(argv[offset + 1:])
             except CommandError as e:
-                print_("%s: %s" % (command.NAME, e), sys.stderr)
+                print_(u"%s: %s" % (command.NAME, e), sys.stderr)
                 return 1
             break
     else:
-        print_("Unknown command '%s'. See '%s help'." % (arg, PROGRAM),
+        print_(u"Unknown command '%s'. See '%s help'." % (arg, PROGRAM),
                sys.stderr)
         return 1
 
@@ -891,11 +1005,12 @@ def run(argv=sys.argv):
 COMMANDS.extend([ListCommand, DumpCommand, CopyCommand,
             SetCommand, RemoveCommand, AddCommand, PrintCommand,
             HelpCommand, ClearCommand, InfoCommand, TagsCommand,
-            ImageExtractCommand, ImageSetCommand, ImageClearCommand])
+            ImageExtractCommand, ImageSetCommand, ImageClearCommand,
+            EditCommand])
 COMMANDS.sort(key=lambda c: c.NAME)
 
 # TODO
-# EditCommand, FillCommand, RenameCommand
+# FillCommand, RenameCommand
 # FillTracknumberCommand, LoadCommand
 
 if __name__ == "__main__":
