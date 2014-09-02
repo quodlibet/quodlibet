@@ -896,30 +896,43 @@ class RCMTreeView(BaseView):
 
     def __popup_position(self, menu, *args):
         path, col = self.get_cursor()
-        if col is None:
-            col = self.get_column(0)
 
         # get a rectangle describing the cell render area (assume 3 px pad)
         rect = self.get_cell_area(path, col)
-        rect.x += 3
-        rect.width -= 6
-        rect.y += 3
-        rect.height -= 6
-        dummy, dx, dy = self.get_window().get_origin()
-        dy += self.get_bin_window().get_position()[1]
+        padding = 3
+        rect.x += padding
+        rect.width = max(rect.width - padding * 2, 0)
+        rect.y += padding
+        rect.height = max(rect.height - padding * 2, 0)
 
-        # fit menu to screen, aligned per text direction
-        screen_width = Gdk.Screen.width()
-        screen_height = Gdk.Screen.height()
+        x, y = self.get_window().get_origin()[1:]
+        x, y = self.convert_bin_window_to_widget_coords(x + rect.x, y + rect.y)
+
         menu.realize()
         ma = menu.get_allocation()
-        menu_y = rect.y + rect.height + dy
-        if menu_y + ma.height > screen_height and rect.y + dy - ma.height > 0:
-            menu_y = rect.y + dy - ma.height
-        if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
-            menu_x = min(rect.x + dx, screen_width - ma.width)
+        menu_y = rect.height + y
+        if self.get_direction() == Gtk.TextDirection.LTR:
+            menu_x = x
         else:
-            menu_x = max(0, rect.x + dx - ma.width + rect.width)
+            menu_x = x - ma.width + rect.width
+
+        # on X11/win32 we can use the screen size
+        if not is_wayland():
+
+            # fit menu to screen, aligned per text direction
+            screen = self.get_screen()
+            screen_width = screen.get_width()
+            screen_height = screen.get_height()
+
+            # show above row if no space below and enough above
+            if menu_y + ma.height > screen_height and y - ma.height > 0:
+                menu_y = y - ma.height
+
+            # make sure it's not outside of the screen
+            if self.get_direction() == Gtk.TextDirection.LTR:
+                menu_x = max(0, min(menu_x, screen_width - ma.width))
+            else:
+                menu_x = min(max(0, menu_x), screen_width)
 
         return (menu_x, menu_y, True)  # x, y, move_within_screen
 
