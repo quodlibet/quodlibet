@@ -466,63 +466,6 @@ def _init_debug():
         faulthandler.enable()
 
 
-def _init_signal(signal_action):
-    """Catches signals which should exit the program and calls `signal_action`
-    after the main loop has started, even if the signal occurred before the
-    main loop has started.
-    """
-
-    import os
-    import signal
-    import gi
-    gi.require_version("GLib", "2.0")
-    from gi.repository import GLib
-
-    sig_names = ["SIGINT", "SIGTERM", "SIGHUP"]
-    if os.name == "nt":
-        sig_names = ["SIGINT", "SIGTERM"]
-
-    for sig_name in sig_names:
-        sig = getattr(signal, sig_name, None)
-        if sig is None:
-            continue
-
-        # Before the mainloop starts we catch signals in python
-        # directly and idle_add the app.quit
-        def idle_handler(*args):
-            print_d("Python signal handler activated.")
-            GLib.idle_add(signal_action, priority=GLib.PRIORITY_HIGH)
-
-        print_d("Register Python signal handler: %r" % sig)
-        signal.signal(sig, idle_handler)
-
-        if os.name == "nt":
-            continue
-
-        # After the mainloop has started the python handler
-        # blocks if no mainloop is active (for whatever reason).
-        # Override the python handler with the GLib one, which works here.
-        def install_glib_handler(sig):
-
-            def handler(*args):
-                print_d("GLib signal handler activated.")
-                signal_action()
-
-            # older pygobject
-            unix_signal_add = None
-            if hasattr(GLib, "unix_signal_add"):
-                unix_signal_add = GLib.unix_signal_add
-            elif hasattr(GLib, "unix_signal_add_full"):
-                unix_signal_add = GLib.unix_signal_add_full
-
-            if unix_signal_add:
-                print_d("Register GLib signal handler: %r" % sig)
-                unix_signal_add(GLib.PRIORITY_HIGH, sig, handler, None)
-            else:
-                print_d("Can't install GLib signal handler, too old gi.")
-
-        GLib.idle_add(install_glib_handler, sig, priority=GLib.PRIORITY_HIGH)
-
 # minimal emulation of gtk.quit_add
 
 _quit_funcs = []

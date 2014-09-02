@@ -19,7 +19,8 @@ from quodlibet.util.path import fsdecode
 
 
 def main():
-    quodlibet._init_signal(app.quit)
+    from quodlibet.qltk import add_signal_watch
+    add_signal_watch(app.quit)
 
     opts = util.OptionParser(
         "Ex Falso", const.VERSION,

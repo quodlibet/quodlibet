@@ -5,7 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import sys
+import signal
 
 import gi
 from gi.repository import Gtk
@@ -221,6 +223,76 @@ def io_add_watch(fd, prio, condition, func, *args, **kwargs):
         # older pygi
         kwargs["priority"] = prio
         return GLib.io_add_watch(fd, condition, func, *args, **kwargs)
+
+
+def add_signal_watch(signal_action):
+    """Catches signals which should exit the program and calls `signal_action`
+    after the main loop has started, even if the signal occurred before the
+    main loop has started.
+    """
+
+    sig_names = ["SIGINT", "SIGTERM", "SIGHUP"]
+    if os.name == "nt":
+        sig_names = ["SIGINT", "SIGTERM"]
+
+    signals = {}
+    for name in sig_names:
+        id_ = getattr(signal, name, None)
+        if id_ is None:
+            continue
+        signals[id_] = name
+
+    # in case Python catches a signal, wake up the mainloop.
+    # this makes signal handling work with older pygobject/glib (Ubuntu 12.04)
+    # no idea why..
+    rfd, wfd = os.pipe()
+
+    def wakeup_notify(source, condition):
+        # just read and do nothing so we can keep the watch around
+        if condition == GLib.IO_IN:
+            try:
+                os.read(rfd, 1)
+            except EnvironmentError:
+                pass
+            return True
+        else:
+            return False
+
+    signal.set_wakeup_fd(wfd)
+    io_add_watch(rfd, GLib.PRIORITY_HIGH,
+                 GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+                 wakeup_notify)
+
+    # set a python handler for each signal, used before the mainloop
+    for signum, name in signals.items():
+        # Before the mainloop starts we catch signals in python
+        # directly and idle_add the app.quit
+        def idle_handler(signum, frame):
+            print_d("Python signal handler activated: %s" % signals[signum])
+            GLib.idle_add(signal_action, priority=GLib.PRIORITY_HIGH)
+
+        print_d("Register Python signal handler: %r" % name)
+        signal.signal(signum, idle_handler)
+
+    # also try to use the official glib handling if available,
+    # can't hurt I guess
+    unix_signal_add = None
+    if hasattr(GLib, "unix_signal_add"):
+        unix_signal_add = GLib.unix_signal_add
+    elif hasattr(GLib, "unix_signal_add_full"):
+        unix_signal_add = GLib.unix_signal_add_full
+    else:
+        print_d("Can't install GLib signal handler, too old gi or wrong OS")
+        return
+
+    for signum, name in signals.items():
+
+        def handler(signum):
+            print_d("GLib signal handler activated: %s" % signals[signum])
+            signal_action()
+
+        print_d("Register GLib signal handler: %r" % name)
+        unix_signal_add(GLib.PRIORITY_HIGH, signum, handler, signum)
 
 
 # Legacy plugin/code support.

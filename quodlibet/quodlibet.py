@@ -26,7 +26,8 @@ def main():
 
     import quodlibet
     from quodlibet import app
-    quodlibet._init_signal(app.quit)
+    from quodlibet.qltk import add_signal_watch
+    add_signal_watch(app.quit)
 
     import quodlibet.player
     from quodlibet import config
