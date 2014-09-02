@@ -1,6 +1,8 @@
 from tests import TestCase
 
+from quodlibet.formats import DUMMY_SONG
 from quodlibet.qltk._editpane import FilterCheckButton
+from quodlibet.qltk._editpane import OverwriteWarning, WriteFailedError
 
 
 class FCB(FilterCheckButton):
@@ -51,3 +53,12 @@ class TFilterCheckButton(TestCase):
     def tearDown(self):
         for cb in [self.fcb1, self.fcb2, self.fcb3, self.fcb4, self.fcb5]:
             cb.destroy()
+
+
+class TEditDialogs(TestCase):
+
+    def test_overwrite(self):
+        OverwriteWarning(None, DUMMY_SONG).destroy()
+
+    def test_write_failed(self):
+        WriteFailedError(None, DUMMY_SONG).destroy()

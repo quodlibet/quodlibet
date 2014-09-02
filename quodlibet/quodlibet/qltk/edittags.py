@@ -22,10 +22,10 @@ from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk._editpane import EditingPluginHandler
+from quodlibet.qltk._editpane import EditingPluginHandler, OverwriteWarning
+from quodlibet.qltk._editpane import WriteFailedError
 from quodlibet.plugins import PluginManager
 from quodlibet.util.tags import USER_TAGS
-from quodlibet.util.path import fsdecode
 from quodlibet.util.string import decode
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
@@ -681,16 +681,15 @@ class EditTags(Gtk.VBox):
         songs = self.__songinfo.songs
         win = WritingWindow(self, len(songs))
         win.show()
+        all_done = False
         for song in songs:
-            if not song.valid() and not qltk.ConfirmAction(
-                self, _("Tag may not be accurate"),
-                _("<b>%s</b> changed while the program was running. "
-                  "Saving without refreshing your library may "
-                  "overwrite other changes to the song.\n\n"
-                  "Save this song anyway?") % util.escape(fsdecode(
-                song("~basename")))
-                ).run():
-                break
+            if not song.valid():
+                win.hide()
+                dialog = OverwriteWarning(self, song)
+                resp = dialog.run()
+                win.show()
+                if resp != OverwriteWarning.RESPONSE_SAVE:
+                    break
 
             changed = False
             for key, values in updated.iteritems():
@@ -741,24 +740,20 @@ class EditTags(Gtk.VBox):
                     song.write()
                 except:
                     util.print_exc()
-                    qltk.ErrorMessage(
-                        self, _("Unable to save song"),
-                        _("Saving <b>%s</b> failed. The file "
-                          "may be read-only, corrupted, or you "
-                          "do not have permission to edit it.") % (
-                        util.escape(fsdecode(
-                        song('~basename'))))).run()
+                    WriteFailedError(self, song).run()
                     library.reload(song, changed=was_changed)
                     break
                 was_changed.add(song)
 
             if win.step():
                 break
+        else:
+            all_done = True
 
         win.destroy()
         library.changed(was_changed)
         for b in [save, revert]:
-            b.set_sensitive(False)
+            b.set_sensitive(not all_done)
 
     def __edit_tag(self, renderer, path, new_value, model):
         new_value = ', '.join(new_value.splitlines())

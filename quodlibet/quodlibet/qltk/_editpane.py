@@ -16,6 +16,45 @@ from quodlibet import qltk
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.msg import WarningMessage, ErrorMessage
+from quodlibet.qltk.x import Button
+from quodlibet.util.path import fsdecode
+
+
+class OverwriteWarning(WarningMessage):
+
+    RESPONSE_SAVE = 1
+
+    def __init__(self, parent, song):
+        title = _("Tag may not be accurate")
+
+        fn_format = "<b>%s</b>" % util.escape(fsdecode(song("~basename")))
+        description = _("%(file-name)s changed while the program was running. "
+            "Saving without refreshing your library may "
+            "overwrite other changes to the song.") % {"file-name": fn_format}
+
+        super(OverwriteWarning, self).__init__(
+            parent, title, description, buttons=Gtk.ButtonsType.NONE)
+
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        save_button = Button(_("_Save"), "document-save")
+        save_button.show()
+        self.add_action_widget(save_button, self.RESPONSE_SAVE)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
+
+
+class WriteFailedError(ErrorMessage):
+
+    def __init__(self, parent, song):
+        title = _("Unable to save song")
+
+        fn_format = "<b>%s</b>" % util.escape(fsdecode(song("~basename")))
+        description = _("Saving %(file-name)s failed. The file may be "
+            "read-only, corrupted, or you do not have "
+            "permission to edit it.") % {"file-name": fn_format}
+
+        super(WriteFailedError, self).__init__(
+            parent, title, description)
 
 
 class EditingPluginHandler(GObject.GObject, PluginHandler):

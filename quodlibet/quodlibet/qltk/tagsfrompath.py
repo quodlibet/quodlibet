@@ -16,7 +16,8 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.qltk._editpane import EditPane, FilterCheckButton
-from quodlibet.qltk._editpane import EditingPluginHandler
+from quodlibet.qltk._editpane import EditingPluginHandler, OverwriteWarning
+from quodlibet.qltk._editpane import WriteFailedError
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.util.path import fsdecode
@@ -237,18 +238,17 @@ class TagsFromPath(EditPane):
 
         was_changed = set()
 
+        all_done = False
         for row in (model or []):
             song = row[0]
             changed = False
-            if not song.valid() and not qltk.ConfirmAction(
-                self, _("Tag may not be accurate"),
-                _("<b>%s</b> changed while the program was running. "
-                  "Saving without refreshing your library may "
-                  "overwrite other changes to the song.\n\n"
-                  "Save this song anyway?") % (
-                util.escape(fsdecode(song("~basename"))))
-                ).run():
-                break
+            if not song.valid():
+                win.hide()
+                dialog = OverwriteWarning(self, song)
+                resp = dialog.run()
+                win.show()
+                if resp != OverwriteWarning.RESPONSE_SAVE:
+                    break
 
             for i, h in enumerate(pattern.headers):
                 if row[i + 2]:
@@ -266,23 +266,20 @@ class TagsFromPath(EditPane):
                 try:
                     song.write()
                 except:
-                    qltk.ErrorMessage(
-                        self, _("Unable to edit song"),
-                        _("Saving <b>%s</b> failed. The file "
-                          "may be read-only, corrupted, or you "
-                          "do not have permission to edit it.") % (
-                        util.escape(fsdecode(song('~basename'))))
-                        ).run()
+                    util.print_exc()
+                    WriteFailedError(self, song).run()
                     library.reload(song, changed=was_changed)
                     break
                 was_changed.add(song)
 
             if win.step():
                 break
+        else:
+            all_done = True
 
         win.destroy()
         library.changed(was_changed)
-        self.save.set_sensitive(False)
+        self.save.set_sensitive(not all_done)
 
     def __row_edited(self, renderer, path, new, model, colnum):
         row = model[path]

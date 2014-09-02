@@ -10,6 +10,7 @@ from gi.repository import Gtk
 from quodlibet import qltk
 from quodlibet import util
 
+from quodlibet.qltk._editpane import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util.path import fsdecode
@@ -73,9 +74,11 @@ class TrackNumbers(Gtk.VBox):
         bbox.set_spacing(6)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        self.save = save
         save.connect_object(
             'clicked', self.__save_files, prop, model, library)
         revert = Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
+        self.revert = revert
         bbox.pack_start(revert, True, True, 0)
         bbox.pack_start(save, True, True, 0)
         self.pack_start(bbox, False, True, 0)
@@ -110,37 +113,36 @@ class TrackNumbers(Gtk.VBox):
     def __save_files(self, parent, model, library):
         win = WritingWindow(parent, len(model))
         was_changed = set()
+        all_done = False
         for song, track in [(r[0], r[2]) for r in model]:
             if song.get("tracknumber") == track:
                 win.step()
                 continue
-            if not song.valid() and not qltk.ConfirmAction(
-                win, _("Tag may not be accurate"),
-                _("<b>%s</b> changed while the program was running. "
-                  "Saving without refreshing your library may "
-                  "overwrite other changes to the song.\n\n"
-                  "Save this song anyway?") %
-                util.escape(fsdecode(song("~basename")))
-                ).run():
-                break
+            if not song.valid():
+                win.hide()
+                dialog = OverwriteWarning(self, song)
+                resp = dialog.run()
+                win.show()
+                if resp != OverwriteWarning.RESPONSE_SAVE:
+                    break
             song["tracknumber"] = track
             try:
                 song.write()
             except:
                 util.print_exc()
-                qltk.ErrorMessage(
-                    win, _("Unable to save song"),
-                    _("Saving <b>%s</b> failed. The file may be "
-                      "read-only, corrupted, or you do not have "
-                      "permission to edit it.") %
-                    util.escape(fsdecode(song('~basename')))).run()
+                WriteFailedError(self, song).run()
                 library.reload(song, changed=was_changed)
                 break
             was_changed.add(song)
             if win.step():
                 break
+        else:
+            all_done = True
+
         library.changed(was_changed)
         win.destroy()
+        self.save.set_sensitive(not all_done)
+        self.revert.set_sensitive(not all_done)
 
     def __preview_tracks(self, ctx, start, total, model, save, revert):
         start = start.get_value_as_int()
