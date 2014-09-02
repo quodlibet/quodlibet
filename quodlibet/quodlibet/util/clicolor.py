@@ -130,8 +130,6 @@ GetConsoleScreenBufferInfo = None
 
 
 def _init_windll():
-    from ctypes import windll
-
     global GetStdHandle, SetConsoleTextAttribute, GetConsoleScreenBufferInfo
 
     # LoadLibrary compared to getattr gets an uncached handle.

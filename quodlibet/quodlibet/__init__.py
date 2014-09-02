@@ -250,8 +250,6 @@ def _gettext_init():
         localedir = os.path.join(
             quodlibet.const.BASEDIR, "..", "..", "share", "locale")
 
-    unexpand = quodlibet.util.path.unexpand
-
     if os.path.isdir(localedir):
         print_d("Using local localedir: %r" % unexpand(localedir))
     else:

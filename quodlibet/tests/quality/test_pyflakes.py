@@ -20,10 +20,10 @@ from tests import TestCase, skipUnless
 
 class FakeStream(object):
     # skip these, can be false positives
-    BL = ["imported but unused",
-          "redefinition of unused",
-          "unable to detect undefined names",
-          "redefinition of function"]
+    BL = [
+        "imported but unused",
+        "unable to detect undefined names",
+    ]
 
     def __init__(self):
         self.lines = []

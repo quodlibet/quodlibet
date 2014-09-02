@@ -527,7 +527,7 @@ class TAlbumLibrary(TestCase):
     def test_items(self):
         self.failUnlessEqual(len(self.library.items()), 3)
 
-    def test_items(self):
+    def test_items_2(self):
         albums = self.library.values()
         self.failUnlessEqual(len(albums), 3)
         songs = self.underlying._contents.values()
