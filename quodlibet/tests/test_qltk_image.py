@@ -1,11 +1,11 @@
 from tests import TestCase
-from helper import visible
 
 import cairo
-from gi.repository import Gtk, GdkPixbuf, GLib
+from gi.repository import Gtk, GdkPixbuf
 
-from quodlibet.qltk.image import *
-from quodlibet import config
+from quodlibet.qltk.image import set_renderer_from_pbosf, \
+    set_image_from_pbosf, get_scale_factor, pbosf_get_property_name, \
+    get_pbosf_for_pixbuf
 
 
 class TImageUtils(TestCase):

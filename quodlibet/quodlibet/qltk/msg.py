@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
-from quodlibet import app
 
 from quodlibet.qltk import get_top_parent
 

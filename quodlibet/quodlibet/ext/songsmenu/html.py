@@ -6,7 +6,6 @@
 
 from gi.repository import Gtk
 
-from quodlibet import config
 from quodlibet.util import tag, escape
 from quodlibet.qltk.songlist import get_columns
 from quodlibet.plugins.songsmenu import SongsMenuPlugin

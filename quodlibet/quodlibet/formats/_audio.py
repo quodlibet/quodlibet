@@ -13,7 +13,6 @@
 import os
 import shutil
 import time
-import re
 import collections
 
 from ._image import ImageContainer
@@ -27,10 +26,9 @@ from quodlibet.util.string import encode
 
 from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
-from quodlibet.util.dprint import print_d, print_w
 
 from quodlibet.util.cover.manager import cover_plugins
-from quodlibet.util.tags import MACHINE_TAGS, USER_TAGS, TAG_ROLES, TAG_TO_SORT
+from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 
 
 MIGRATE = set(["~#playcount", "~#laststarted", "~#lastplayed", "~#added",

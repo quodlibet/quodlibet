@@ -12,8 +12,8 @@ from quodlibet import qltk
 from quodlibet import browsers
 
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import Window, RPaned
-from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.qltk.x import RPaned
+from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util.library import background_filter
 
 

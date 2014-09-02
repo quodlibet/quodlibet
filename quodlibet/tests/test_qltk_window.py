@@ -6,6 +6,9 @@ from quodlibet.util import InstanceTracker
 
 class TWindows(TestCase):
 
+    def test_ctr(self):
+        Window().destroy()
+
     def test_instance_tracking(self):
 
         class SomeWindow(Window, InstanceTracker):

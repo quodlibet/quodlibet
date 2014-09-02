@@ -11,8 +11,7 @@ from gi.repository import Gtk, GObject, GLib, Gio
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.qltk import is_accel, add_css
-from quodlibet.qltk.window import Window, UniqueWindow
+from quodlibet.qltk import add_css
 
 
 class ScrolledWindow(Gtk.ScrolledWindow):

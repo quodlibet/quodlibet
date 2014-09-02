@@ -5,7 +5,9 @@
 # published by the Free Software Foundation
 
 from quodlibet.formats._audio import AudioFile
-from . import PluginTestCase, modules, skipUnless
+
+from tests import skipUnless
+from . import PluginTestCase, modules
 
 brainz = modules.get("MusicBrainz lookup", None)
 

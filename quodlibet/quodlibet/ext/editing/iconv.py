@@ -10,7 +10,7 @@ import locale
 
 from gi.repository import Gtk
 
-from quodlibet import util
+from quodlibet.const import FSCODING
 from quodlibet.plugins.editing import EditTagsPlugin
 
 ENCODINGS = """\
@@ -20,10 +20,10 @@ iso2022_kr iso8859_2 iso8859_3 iso8859_4 iso8859_5 iso8859_6 iso8859_7
 iso8859_8 iso8859_9 iso8859_10 iso8859_13 iso8859_14 iso8859_15 johab
 koi8_r koi8_u ptcp154 shift_jis utf_16_be utf_16_le""".split()
 
-if util.fscoding not in ENCODINGS + ["utf-8", "latin1"]:
-    ENCODINGS.append(util.fscoding)
+if FSCODING not in ENCODINGS + ["utf-8", "latin1"]:
+    ENCODINGS.append(FSCODING)
 if locale.getpreferredencoding() not in ENCODINGS + ["utf-8", "latin1"]:
-    ENCODINGS.append(util.fscoding)
+    ENCODINGS.append(FSCODING)
 
 
 class Iconv(EditTagsPlugin):

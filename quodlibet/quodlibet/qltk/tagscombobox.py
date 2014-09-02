@@ -7,12 +7,11 @@
 from gi.repository import Gtk
 
 from quodlibet.util import tag
-
-import quodlibet.formats
+from quodlibet.util.tags import USER_TAGS
 
 
 class _TagsCombo(object):
-    __tags = sorted(quodlibet.formats.USER_TAGS)
+    __tags = sorted(USER_TAGS)
 
     def _fill_model(self, can_change):
         self.clear()

@@ -7,11 +7,6 @@ from quodlibet.qltk import x
 from quodlibet import config
 
 
-class Window(TestCase):
-    def test_ctr(self):
-        x.Window().destroy()
-
-
 class Notebook(TestCase):
     def test_widget_str(self):
         n = x.Notebook()

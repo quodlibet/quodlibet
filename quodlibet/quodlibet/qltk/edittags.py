@@ -24,6 +24,7 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk._editpane import EditingPluginHandler
 from quodlibet.plugins import PluginManager
+from quodlibet.util.tags import USER_TAGS
 from quodlibet.util.path import fsdecode
 from quodlibet.util.string import decode
 from quodlibet.util.string.splitters import (split_value, split_title,
@@ -686,7 +687,7 @@ class EditTags(Gtk.VBox):
                 _("<b>%s</b> changed while the program was running. "
                   "Saving without refreshing your library may "
                   "overwrite other changes to the song.\n\n"
-                  "Save this song anyway?") % util.escape(util.fsdecode(
+                  "Save this song anyway?") % util.escape(fsdecode(
                 song("~basename")))
                 ).run():
                 break
@@ -923,7 +924,7 @@ class EditTags(Gtk.VBox):
             if not editable.get_completion():
                 tags = self.__songinfo.can_change()
                 if tags is True:
-                    from quodlibet.formats import USER_TAGS as tags
+                    tags = USER_TAGS
                 completion = qltk.EntryCompletion(tags)
                 editable.set_completion(completion)
         except AttributeError:

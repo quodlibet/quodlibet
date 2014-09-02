@@ -7,7 +7,7 @@ from quodlibet import config
 
 from quodlibet.browsers.paned import PanedBrowser
 from quodlibet.browsers.paned.util import PaneConfig
-from quodlibet.browsers.paned.util import get_headers, save_headers
+from quodlibet.browsers.paned.util import get_headers
 from quodlibet.browsers.paned.models import AllEntry, UnknownEntry, SongsEntry
 from quodlibet.browsers.paned.models import PaneModel
 from quodlibet.browsers.paned.prefs import PatternEditor, Preferences

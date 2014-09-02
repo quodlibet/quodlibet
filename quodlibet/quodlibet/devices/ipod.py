@@ -12,7 +12,6 @@ from gi.repository import Gtk
 
 from quodlibet import const
 from quodlibet import qltk
-from quodlibet import util
 
 from quodlibet.devices._base import Device
 from quodlibet.formats._audio import AudioFile

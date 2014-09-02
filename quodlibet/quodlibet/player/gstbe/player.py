@@ -22,7 +22,6 @@ from quodlibet import config
 from quodlibet.util import fver, sanitize_tags
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
-from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.notif import Task
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,

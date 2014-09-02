@@ -8,7 +8,7 @@
 from gi.repository import Gtk
 
 from quodlibet import config
-from quodlibet.qltk import GetStringDialog
+from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 

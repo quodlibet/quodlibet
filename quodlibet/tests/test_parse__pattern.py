@@ -11,6 +11,7 @@ from quodlibet.parse import (FileFromPattern, XMLFromPattern, Pattern,
 
 class _TPattern(AbstractTestCase):
     from quodlibet.formats._audio import AudioFile
+    AudioFile
 
     def setUp(self):
         s1 = {'tracknumber': '5/6', 'artist': 'Artist', 'title': 'Title5',
@@ -44,6 +45,7 @@ class _TPattern(AbstractTestCase):
 
 class TPattern(_TPattern):
     from quodlibet.formats._audio import AudioFile
+    AudioFile
 
     def test_conditional_number_dot_title(s):
         pat = Pattern('<tracknumber|<tracknumber>. ><title>')

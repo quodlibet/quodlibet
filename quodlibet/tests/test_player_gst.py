@@ -8,7 +8,6 @@ try:
 except ImportError:
     Gst = None
 
-import unittest
 from tests import TestCase, skipUnless
 
 try:

@@ -5,17 +5,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-
-import os
-
 from gi.repository import Gtk
 
-from quodlibet import const
 from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
 
-from quodlibet.util.path import mkdir
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import BaseView
 

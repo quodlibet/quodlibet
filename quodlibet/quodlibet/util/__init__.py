@@ -26,12 +26,10 @@ try:
 except ImportError:
     fcntl = None
 
-from quodlibet.util.path import (fsdecode, iscommand, fsnative,
-    expanduser, pathname2url, is_fsnative)
-from quodlibet.util.string.splitters import split_value
+from quodlibet.util.path import iscommand, is_fsnative
 from quodlibet.util.titlecase import title
 
-from quodlibet.const import FSCODING as fscoding, SUPPORT_EMAIL, COPYRIGHT
+from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_
 
 

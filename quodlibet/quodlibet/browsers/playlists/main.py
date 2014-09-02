@@ -14,7 +14,6 @@ from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
-from quodlibet import util
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.collection import Playlist

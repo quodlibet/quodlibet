@@ -8,7 +8,7 @@
 from os import path, makedirs
 from hashlib import sha1
 
-from gi.repository import GObject, GLib
+from gi.repository import GObject
 
 from quodlibet.util.path import escape_filename, xdg_get_cache_home
 

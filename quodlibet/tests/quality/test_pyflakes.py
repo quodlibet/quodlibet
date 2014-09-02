@@ -5,10 +5,7 @@
 # published by the Free Software Foundation
 
 import os
-import glob
 import sys
-import subprocess
-import unittest
 
 try:
     from pyflakes.scripts import pyflakes
@@ -21,7 +18,6 @@ from tests import TestCase, skipUnless
 class FakeStream(object):
     # skip these, can be false positives
     BL = [
-        "imported but unused",
         "unable to detect undefined names",
     ]
 

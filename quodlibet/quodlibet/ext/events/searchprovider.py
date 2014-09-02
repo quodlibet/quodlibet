@@ -28,7 +28,6 @@ import dbus
 import dbus.service
 
 from quodlibet import app
-from quodlibet import util
 from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import Query

@@ -16,7 +16,7 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
-from quodlibet.config import RatingsPrefs, RATINGS
+from quodlibet.config import RATINGS
 
 from quodlibet.parse import Query
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB

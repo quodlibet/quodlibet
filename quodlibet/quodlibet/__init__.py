@@ -96,6 +96,7 @@ def _gtk_init(icon=None):
         # not sure if this is available under Windows
         gi.require_version("GdkX11", "3.0")
         from gi.repository import GdkX11
+        GdkX11
     except (ValueError, ImportError):
         pass
 
@@ -221,6 +222,7 @@ def _dbus_init():
     except ImportError:
         try:
             import dbus.glib
+            dbus.glib
         except ImportError:
             return
     else:
@@ -345,7 +347,7 @@ def init(library=None, icon=None, title=None, name=None):
     # We already imported this, but Python is dumb and thinks we're rebinding
     # a local when we import it later.
     import quodlibet.util
-    quodlibet.util.path.mkdir(quodlibet.const.USERDIR, 0750)
+    mkdir(quodlibet.const.USERDIR, 0750)
 
     if library:
         print_d("Initializing main library (%s)" % (

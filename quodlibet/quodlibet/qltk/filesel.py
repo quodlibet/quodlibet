@@ -14,7 +14,6 @@ from gi.repository import Gtk, GObject, Gdk
 from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
-from quodlibet import util
 from quodlibet import windows
 
 from quodlibet.qltk.getstring import GetStringDialog
@@ -23,7 +22,8 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 
-from quodlibet.util.path import fsdecode, listdir, is_fsnative, glib2fsnative
+from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
+    glib2fsnative, fsnative
 from quodlibet.util.uri import URI
 
 
@@ -225,7 +225,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         return [model[p][0] for p in paths]
 
     def go_to(self, path_to_go):
-        assert util.is_fsnative(path_to_go)
+        assert is_fsnative(path_to_go)
 
         # FIXME: what about non-normalized paths?
         model = self.get_model()
@@ -233,7 +233,7 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         # Find the top level row which has the largest common
         # path with the path we want to go to
         roots = dict([(p, i) for (i, p) in model.iterrows(None)])
-        head, tail = path_to_go, util.fsnative(u"")
+        head, tail = path_to_go, fsnative(u"")
         to_find = []
         while head and head not in roots:
             new_head, tail = os.path.split(head)

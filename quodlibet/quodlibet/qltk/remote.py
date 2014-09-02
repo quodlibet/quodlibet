@@ -13,7 +13,6 @@ import errno
 
 from gi.repository import GLib
 
-import quodlibet
 from quodlibet import browsers
 
 from quodlibet import const

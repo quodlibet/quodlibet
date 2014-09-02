@@ -16,7 +16,6 @@ from gi.repository import Gtk
 
 from quodlibet import util, qltk
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.const import HOME as lastfolder
 
 

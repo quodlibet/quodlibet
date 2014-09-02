@@ -1,6 +1,6 @@
 import os
 
-from tests import TestCase, AbstractTestCase
+from tests import AbstractTestCase
 
 from quodlibet.qltk.renamefiles import (SpacesToUnderscores,
     StripWindowsIncompat)

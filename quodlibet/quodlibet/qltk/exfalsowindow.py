@@ -13,13 +13,12 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
-from quodlibet import util
 
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.delete import trash_files, TrashMenuItem
 from quodlibet.qltk.edittags import EditTags
-from quodlibet.qltk.filesel import MainFileSelector, FileSelector
+from quodlibet.qltk.filesel import MainFileSelector
 from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.renamefiles import RenameFiles
 from quodlibet.qltk.tagsfrompath import TagsFromPath

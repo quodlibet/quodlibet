@@ -9,6 +9,7 @@ from gi.repository import Gtk
 
 from quodlibet import formats, config, print_d
 from quodlibet.util import copool, massagers
+from quodlibet.util.tags import MACHINE_TAGS
 
 
 class EntryWordCompletion(Gtk.EntryCompletion):
@@ -95,7 +96,7 @@ class LibraryTagCompletion(EntryWordCompletion):
         tags = klass.__tags
         for song in songs:
             for tag in song.keys():
-                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS
+                if not (tag.startswith("~#") or tag in MACHINE_TAGS
                         or tag in tags):
                     klass.__tags.add(tag)
                     model.append([tag])
@@ -111,7 +112,7 @@ class LibraryTagCompletion(EntryWordCompletion):
         songs = list(library)
         for count, song in enumerate(songs):
             for tag in song.keys():
-                if not (tag.startswith("~#") or tag in formats.MACHINE_TAGS):
+                if not (tag.startswith("~#") or tag in MACHINE_TAGS):
                     tags.add(tag)
 
             if count % 500 == 0 or count + 1 == len(songs):
@@ -154,7 +155,7 @@ class LibraryValueCompletion(Gtk.EntryCompletion):
         elif tag is None:
             return
         elif tag in ("bpm date discnumber isrc originaldate recordingdate "
-                     "tracknumber title").split() + formats.MACHINE_TAGS:
+                     "tracknumber title").split() + MACHINE_TAGS:
             return
         elif tag in formats.PEOPLE:
             tag = "~people"

@@ -6,7 +6,6 @@ if os.name == "nt":
 
 from gi.repository import Gtk, GObject
 
-from quodlibet import util
 from quodlibet.plugins.editing import RenameFilesPlugin
 from quodlibet.util.path import iscommand
 

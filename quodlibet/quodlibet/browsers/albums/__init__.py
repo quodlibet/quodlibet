@@ -9,4 +9,5 @@ from __future__ import absolute_import
 from .main import AlbumList, AlbumTagCompletion
 
 
+AlbumTagCompletion
 browsers = [AlbumList]

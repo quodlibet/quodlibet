@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import EmbeddedImage, APICType
+from quodlibet.formats._image import EmbeddedImage
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
 

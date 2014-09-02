@@ -16,9 +16,6 @@ from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
-from quodlibet import library
-from quodlibet import browsers
-from quodlibet import player
 from quodlibet import app
 
 

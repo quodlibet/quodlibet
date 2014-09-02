@@ -7,7 +7,6 @@
 import sys
 import time
 import os
-import re
 
 import quodlibet.const
 import quodlibet.util.logging

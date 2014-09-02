@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 from os import path
-from gi.repository import Soup, Gio, GLib
+from gi.repository import Soup
 
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.cover.http import HTTPDownloadMixin

@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 from quodlibet.plugins.playlist import PlaylistPlugin
-from gi.repository import Gtk
 
 
 class Shuffle(PlaylistPlugin):

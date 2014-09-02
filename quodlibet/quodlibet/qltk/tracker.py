@@ -8,13 +8,11 @@
 
 import time
 
-from gi.repository import Gdk, GObject, GLib
+from gi.repository import GObject, GLib
 
 import quodlibet
-from quodlibet import const
+
 from quodlibet import config
-from quodlibet.qltk.msg import ErrorMessage
-from quodlibet.util.string import decode
 
 
 class TimeTracker(GObject.GObject):

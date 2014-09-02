@@ -6,10 +6,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
 import os
+
+from gi.repository import Gtk
 from gi.repository import Pango
-from quodlibet import util, config, const
+
+from quodlibet import const
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util.path import fsdecode, unexpand

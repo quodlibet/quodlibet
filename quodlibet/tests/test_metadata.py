@@ -1,4 +1,4 @@
-from tests import TestCase, mkstemp, AbstractTestCase
+from tests import mkstemp, AbstractTestCase
 
 import os
 

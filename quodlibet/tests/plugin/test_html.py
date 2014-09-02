@@ -7,7 +7,6 @@
 from tests.plugin import PluginTestCase
 
 from quodlibet import config
-from quodlibet import util
 from quodlibet.formats._audio import AudioFile
 
 

@@ -1,4 +1,4 @@
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR
 
 import os
 

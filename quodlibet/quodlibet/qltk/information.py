@@ -16,8 +16,7 @@ from quodlibet import util
 from quodlibet.qltk.bookmarks import EditBookmarksPane
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.lyrics import LyricsPane
-from quodlibet.qltk.x import Window
-from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util import tag
 from quodlibet.util.tags import readable
 from quodlibet.util.path import fsdecode, filesize, unexpand

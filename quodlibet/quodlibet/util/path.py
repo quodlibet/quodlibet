@@ -13,7 +13,7 @@ import errno
 import tempfile
 import urllib
 from quodlibet.const import FSCODING
-from quodlibet.util.string import decode, encode
+from quodlibet.util.string import decode
 from quodlibet import windows
 
 """

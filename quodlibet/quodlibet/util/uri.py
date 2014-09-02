@@ -14,9 +14,7 @@ import re
 from urllib import url2pathname, quote_plus, unquote_plus
 from urlparse import urlparse, urlunparse
 
-from quodlibet.util import pathname2url
-from quodlibet.util.path import fsdecode
-from quodlibet import util
+from quodlibet.util.path import fsdecode, pathname2url
 
 
 class URI(str):

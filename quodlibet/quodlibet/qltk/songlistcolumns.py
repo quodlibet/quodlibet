@@ -9,7 +9,6 @@
 
 import time
 import datetime
-from collections import deque
 
 from gi.repository import Gtk, Pango, GLib
 

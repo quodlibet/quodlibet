@@ -5,10 +5,8 @@
 # published by the Free Software Foundation
 
 import os
-import subprocess
 import imp
 import shutil
-import sys
 
 from tests import TestCase, DATA_DIR, mkstemp
 from helper import capture_output

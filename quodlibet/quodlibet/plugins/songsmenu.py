@@ -5,7 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
 from quodlibet.plugins.gui import MenuItemPlugin
 
 from quodlibet.util.songwrapper import check_wrapper_changed

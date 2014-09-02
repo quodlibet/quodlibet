@@ -1,17 +1,17 @@
 from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import GdkPixbuf
 
 import os
-import urllib
+
 try:
     import hashlib as hash
 except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
-from quodlibet.util.path import expanduser, pathname2url, is_fsnative, getcwd
+from quodlibet.util.path import pathname2url, is_fsnative, getcwd
 
 
 class TThumb(TestCase):

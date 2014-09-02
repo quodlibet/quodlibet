@@ -25,7 +25,6 @@ from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.util import human_sort_key
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 
 

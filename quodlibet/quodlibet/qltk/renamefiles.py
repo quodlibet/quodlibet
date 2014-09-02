@@ -137,7 +137,7 @@ class RenameFiles(EditPane):
         rows = [(row[0], row[1], row[2].decode('utf-8')) for row in model]
         for song, oldname, newname in rows:
             try:
-                newname = util.fsnative(newname)
+                newname = fsnative(newname)
                 library.rename(song, newname, changed=was_changed)
             except StandardError:
                 util.print_exc()

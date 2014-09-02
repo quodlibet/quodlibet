@@ -18,7 +18,8 @@ from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.data_editors import JSONBasedEditor
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import ErrorMessage, GetStringDialog
+from quodlibet.qltk import ErrorMessage
+from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util.dprint import print_w, print_d, print_e
 from quodlibet.util.json_data import JSONObject, JSONObjectDict
 

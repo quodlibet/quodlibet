@@ -102,6 +102,7 @@ class TQuery_is_valid(TestCase):
 
 class TQuery(TestCase):
     from quodlibet.formats._audio import AudioFile as AF
+    AF
 
     def setUp(self):
         self.s1 = self.AF(

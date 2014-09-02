@@ -7,7 +7,6 @@ from quodlibet.util.library import *
 from tests import TestCase, mkstemp, skipIf
 
 import tempfile
-import sys
 import os
 import re
 from quodlibet import util
@@ -211,33 +210,6 @@ class Tcapitalize(TestCase):
 
     def test_nonalphabet(self):
         self.failUnlessEqual(util.capitalize("!aa B"), "!aa B")
-
-
-class Tsplit_value(TestCase):
-    def test_single(self):
-        self.failUnlessEqual(split_value("a b"), ["a b"])
-
-    def test_double(self):
-        self.failUnlessEqual(split_value("a, b"), ["a", "b"])
-
-    def test_custom_splitter(self):
-        self.failUnlessEqual(split_value("a b", [" "]), ["a", "b"])
-
-    def test_two_splitters(self):
-        self.failUnlessEqual(
-            split_value("a, b and c", [",", "and"]), ["a", "b and c"])
-
-    def test_no_splitters(self):
-        self.failUnlessEqual(split_value("a b", []), ["a b"])
-
-    def test_wordboundry(self):
-        self.failUnlessEqual(
-            split_value("Andromeda and the Band", ["and"]),
-            ["Andromeda", "the Band"])
-
-    def test_unicode_wordboundry(self):
-        val = '\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
-        self.failUnlessEqual(split_value(val), val.split("&"))
 
 
 class Thuman_sort(TestCase):
@@ -625,19 +597,6 @@ class Txdg_dirs(TestCase):
         self.assertTrue(xdg_get_system_data_dirs())
         self.assertTrue(xdg_get_cache_home())
         self.assertTrue(xdg_get_data_home())
-
-
-class Tpathname2url(TestCase):
-    def test_win(self):
-        cases = {
-            r"c:\abc\def": "/c:/abc/def",
-            r"C:\a b\c.txt": "/C:/a%20b/c.txt",
-            r"\\xy\z.txt": "xy/z.txt",
-            r"C:\a:b\c:d": "/C:/a%3Ab/c%3Ad"
-            }
-        p2u = pathname2url_win32
-        for inp, should in cases.iteritems():
-            self.failUnlessEqual(p2u(inp), should)
 
 
 class Tlibrary(TestCase):

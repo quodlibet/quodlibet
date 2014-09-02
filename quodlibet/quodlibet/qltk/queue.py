@@ -7,7 +7,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import Gtk, Gdk
 
 from quodlibet import config
 from quodlibet import const

@@ -1,9 +1,10 @@
-from tests import AbstractTestCase, skipUnless
+import os
+
+import quodlibet
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
-import quodlibet
-import sys
-import os
+
+from tests import AbstractTestCase
 
 
 # Nasty hack to allow importing of plugins...

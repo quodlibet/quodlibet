@@ -1,4 +1,4 @@
-from tests import TestCase, DATA_DIR, mkstemp, AbstractTestCase
+from tests import DATA_DIR, mkstemp, AbstractTestCase
 
 import os
 import shutil

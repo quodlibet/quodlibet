@@ -10,8 +10,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-import sys
 import os
+
 from quodlibet.cli import process_arguments, is_running, control
 from quodlibet.util.dprint import print_d, print_
 

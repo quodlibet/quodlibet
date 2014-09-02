@@ -5,7 +5,6 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 import collections
 import ctypes
 
@@ -72,8 +71,6 @@ def get_link_target(path):
     """Takes a path to a .lnk file and returns a path the .lnk file
     is targeting or None.
     """
-
-    from quodlibet.util.path import fsnative
 
     link = pythoncom.CoCreateInstance(
         shell.CLSID_ShellLink, None,

@@ -18,7 +18,7 @@ import unicodedata
 from gi.repository import Gtk, Pango
 
 from quodlibet import app
-from quodlibet import print_d, print_w, util, qltk
+from quodlibet import print_d, util, qltk
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.ccb import ConfigCheckButton

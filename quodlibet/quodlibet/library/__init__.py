@@ -15,7 +15,7 @@ also be queried in various ways.
 import time
 import threading
 
-from quodlibet import util, print_d
+from quodlibet import print_d
 import quodlibet.formats as formats
 from quodlibet.const import LIBRARY_SAVE_PERIOD_SECONDS
 

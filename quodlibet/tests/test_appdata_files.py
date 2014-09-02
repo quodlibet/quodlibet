@@ -7,7 +7,7 @@
 import os
 import subprocess
 
-from tests import TestCase, AbstractTestCase, mkstemp
+from tests import AbstractTestCase, mkstemp
 
 
 QLDATA_DIR = os.path.join(os.path.dirname(

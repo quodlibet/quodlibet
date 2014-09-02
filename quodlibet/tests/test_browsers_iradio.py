@@ -1,7 +1,5 @@
 from tests import TestCase
 
-from gi.repository import Gtk
-
 from quodlibet.library import SongLibrary
 from quodlibet.formats._audio import AudioFile
 from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar

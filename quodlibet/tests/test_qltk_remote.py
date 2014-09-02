@@ -2,7 +2,7 @@ from tests import TestCase
 from helper import capture_output
 
 import os
-import unittest
+
 from gi.repository import Gtk
 
 from quodlibet import const

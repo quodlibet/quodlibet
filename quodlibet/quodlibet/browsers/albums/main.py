@@ -33,12 +33,12 @@ from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.util import copool, gobject_weak, thumbnails
+from quodlibet.util import copool, gobject_weak
 from quodlibet.util.library import background_filter
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
-    pbosf_get_property_name, set_renderer_from_pbosf)
+    set_renderer_from_pbosf)
 
 
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")

@@ -7,7 +7,8 @@ from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
 from quodlibet.library.libraries import FileLibrary
-from quodlibet.util import format_rating, fsnative
+from quodlibet.util import format_rating
+from quodlibet.util.path import fsnative
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
