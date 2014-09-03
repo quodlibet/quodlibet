@@ -15,6 +15,8 @@ import os
 from gi.repository import Gtk
 
 from quodlibet import util, qltk
+from quodlibet.util.path import glib2fsnative
+from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.const import HOME as lastfolder
 
@@ -94,7 +96,7 @@ class PlaylistExport(SongsMenuPlugin):
         response = dialog.run()
 
         if response == Gtk.ResponseType.OK:
-            file_path = dialog.get_filename()
+            file_path = glib2fsnative(dialog.get_filename())
             dir_path = os.path.dirname(file_path)
 
             file_format = dialog.get_filter().get_name()
@@ -102,13 +104,10 @@ class PlaylistExport(SongsMenuPlugin):
             if not file_path.endswith(extension):
                 file_path += extension
 
-            if os.path.exists(file_path) and not qltk.ConfirmAction(
-                None,
-                _('File exists'),
-                _('The file <b>%s</b> already exists.\n\nOverwrite?') %
-                util.escape(file_path)).run():
-                dialog.destroy()
-                return
+            if os.path.exists(file_path):
+                resp = ConfirmFileReplace(self.plugin_window, file_path).run()
+                if resp != ConfirmFileReplace.RESPONSE_REPLACE:
+                    return
 
             relative = combo_path.get_active() == 0
 

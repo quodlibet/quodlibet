@@ -21,7 +21,7 @@ except ImportError as e:
 from os import path
 from gi.repository import Gtk
 
-from quodlibet.qltk import ErrorMessage, ConfirmAction, Message
+from quodlibet.qltk import ErrorMessage
 from quodlibet.const import VERSION
 from quodlibet.util import tag, escape
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -29,13 +29,6 @@ from quodlibet.util.path import expanduser
 
 CDDB.proto = 6 # utf8 instead of latin1
 CLIENTINFO = {'client_name': "quodlibet", 'client_version': VERSION}
-
-
-class AskAction(ConfirmAction):
-    """A message dialog that asks a yes/no question."""
-    def __init__(self, *args, **kwargs):
-        kwargs["buttons"] = Gtk.ButtonsType.YES_NO
-        Message.__init__(self, Gtk.MessageType.QUESTION, *args, **kwargs)
 
 
 def sumdigits(n):

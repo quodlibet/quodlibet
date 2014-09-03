@@ -11,8 +11,9 @@ import time
 from gi.repository import Gtk
 
 from quodlibet import const
-from quodlibet import qltk
 
+from quodlibet.qltk.msg import WarningMessage
+from quodlibet.qltk.x import Button
 from quodlibet.devices._base import Device
 from quodlibet.formats._audio import AudioFile
 
@@ -20,6 +21,25 @@ from quodlibet.formats._audio import AudioFile
 # Wraps an itdb_track from libgpod in an AudioFile instance
 from quodlibet.util.path import fsdecode, mtime, filesize, fsnative2glib
 from quodlibet.util.string import decode, encode
+
+
+class ConfirmDBCreate(WarningMessage):
+
+    RESPONSE_CREATE = 1
+
+    def __init__(self, parent):
+        title = _("Uninitialized iPod")
+        description = _(
+            "Do you want to create an empty database on this iPod?")
+
+        super(ConfirmDBCreate, self).__init__(
+            parent, title, description, buttons=Gtk.ButtonsType.NONE)
+
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        save_button = Button(_("_Create Database"), "system-run")
+        save_button.show()
+        self.add_action_widget(save_button, self.RESPONSE_CREATE)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
 class IPodSong(AudioFile):
@@ -303,11 +323,11 @@ class IPodDevice(Device):
             return self.__itdb
 
         self.__itdb = gpod.itdb_parse(self.mountpoint, None)
-        if not self.__itdb and self.is_connected() and qltk.ConfirmAction(
-            None, _("Uninitialized iPod"),
-            _("Do you want to create an empty database on this iPod?")
-            ).run():
-            self.__itdb = self.__create_db()
+        if not self.__itdb and self.is_connected():
+            dialog = ConfirmDBCreate(None)
+            resp = dialog.run()
+            if resp == ConfirmDBCreate.RESPONSE_CREATE:
+                self.__itdb = self.__create_db()
 
         return self.__itdb
 

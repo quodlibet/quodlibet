@@ -6,7 +6,10 @@
 
 from gi.repository import Gtk
 
+from quodlibet import util
 from quodlibet.qltk import get_top_parent
+from quodlibet.qltk.x import Button
+from quodlibet.util.path import fsdecode
 
 
 class Message(Gtk.MessageDialog):
@@ -28,27 +31,6 @@ class Message(Gtk.MessageDialog):
         if destroy:
             self.destroy()
         return resp
-
-
-class ConfirmAction(Message):
-    """A message dialog that asks a yes/no question."""
-
-    # FIXME: Kill this, bad UX!
-
-    def __init__(self, *args, **kwargs):
-        kwargs["buttons"] = Gtk.ButtonsType.YES_NO
-        super(ConfirmAction, self).__init__(
-            Gtk.MessageType.WARNING, *args, **kwargs)
-
-    def run(self, destroy=True):
-        """Returns True if yes was clicked, False otherwise."""
-        resp = super(Message, self).run()
-        if destroy:
-            self.destroy()
-        if resp == Gtk.ResponseType.YES:
-            return True
-        else:
-            return False
 
 
 class CancelRevertSave(Gtk.MessageDialog):
@@ -87,3 +69,22 @@ class WarningMessage(Message):
     def __init__(self, *args, **kwargs):
         super(WarningMessage, self).__init__(
             Gtk.MessageType.WARNING, *args, **kwargs)
+
+
+class ConfirmFileReplace(WarningMessage):
+
+    RESPONSE_REPLACE = 1
+
+    def __init__(self, parent, path):
+        title = _("File exists")
+        fn_format = "<b>%s</b>" % util.escape(fsdecode(path))
+        description = "Replace %(file-name)s?" % {"file-name": fn_format}
+
+        super(ConfirmFileReplace, self).__init__(
+            parent, title, description, buttons=Gtk.ButtonsType.NONE)
+
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        save_button = Button(_("_Replace File"), "document-save")
+        save_button.show()
+        self.add_action_widget(save_button, self.RESPONSE_REPLACE)
+        self.set_default_response(Gtk.ResponseType.CANCEL)

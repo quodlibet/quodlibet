@@ -30,7 +30,7 @@ from quodlibet.qltk.bookmarks import EditBookmarks
 from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.logging import LoggingWindow
-from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.playorder import PlayOrder
 from quodlibet.qltk.pluginwin import PluginWindow
@@ -40,7 +40,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RPaned, ConfigRVPaned, Alignment, ScrolledWindow
-from quodlibet.qltk.x import SymbolicIconImage
+from quodlibet.qltk.x import SymbolicIconImage, Button
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
@@ -357,6 +357,27 @@ class PlaybackErrorDialog(ErrorMessage):
             parent, _("Playback Error"), description)
 
 
+class ConfirmLibDirSetup(WarningMessage):
+
+    RESPONSE_SETUP = 1
+
+    def __init__(self, parent):
+        title = _("Set up library directories?")
+        description = _("You don't have any music library set up. "
+                        "Would you like to do that now?")
+
+        super(ConfirmLibDirSetup, self).__init__(
+            parent, title, description, buttons=Gtk.ButtonsType.NONE)
+
+        cancel_button = Button(_("_Not Now"), Gtk.STOCK_CANCEL)
+        cancel_button.show()
+        self.add_action_widget(cancel_button, Gtk.ResponseType.CANCEL)
+        save_button = Gtk.Button(label=_("_Set Up"), use_underline=True)
+        save_button.show()
+        self.add_action_widget(save_button, self.RESPONSE_SETUP)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
+
+
 DND_URI_LIST, = range(1)
 
 
@@ -553,9 +574,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         if not get_scan_dirs() and not len(library) and \
                 quodlibet.is_first_session("quodlibet"):
             print_d("Couldn't find any scan dirs")
-            if qltk.ConfirmAction(self, _("Set up library directories?"),
-                   _("You don't have any music library set up. "
-                     "Would you like to do that now?")).run():
+
+            resp = ConfirmLibDirSetup(self).run()
+            if resp == ConfirmLibDirSetup.RESPONSE_SETUP:
                 prefs = PreferencesWindow(self)
                 prefs.set_page("library")
                 prefs.show()

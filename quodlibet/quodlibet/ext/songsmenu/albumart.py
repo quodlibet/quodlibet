@@ -29,6 +29,7 @@ from quodlibet.util import format_size, print_exc
 from quodlibet.util.dprint import print_d
 
 from quodlibet import util, qltk, print_w, app
+from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
     get_pbosf_for_pixbuf, set_image_from_pbosf)
@@ -341,11 +342,10 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         print_d("Using '%s' as filename based on %s" % (filename, save_format))
         file_path = os.path.join(self.dirname, filename)
 
-        msg = (_('The file <b>%s</b> already exists.\n\nOverwrite?')
-                % util.escape(filename))
-        if (os.path.exists(file_path)
-                and not qltk.ConfirmAction(None, _('File exists'), msg).run()):
-            return
+        if os.path.exists(file_path):
+            resp = ConfirmFileReplace(self, file_path).run()
+            if resp != ConfirmFileReplace.RESPONSE_REPLACE:
+                return
 
         try:
             f = open(file_path, 'wb')

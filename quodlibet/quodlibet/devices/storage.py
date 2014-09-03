@@ -12,13 +12,12 @@ from glob import glob
 
 from gi.repository import Gtk, GLib, GdkPixbuf
 
-from quodlibet import util
 from quodlibet import const
 
 from quodlibet.devices._base import Device
 from quodlibet.library import SongFileLibrary
 from quodlibet.parse import FileFromPattern
-from quodlibet.qltk import ConfirmAction
+from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.util.path import (fsdecode, mtime, escape_filename,
     strip_win32_incompat_from_path)
 
@@ -94,10 +93,9 @@ class StorageDevice(Device):
         dirname = os.path.dirname(target)
 
         if os.path.exists(target):
-            if ConfirmAction(
-                songlist, _("File exists"),
-                _("Overwrite <b>%s</b>?") % util.escape(utarget)
-                ).run():
+            dialog = ConfirmFileReplace(songlist, target)
+            resp = dialog.run()
+            if resp == ConfirmFileReplace.RESPONSE_REPLACE:
                 try:
                     # Remove the current song
                     self.__library.remove([self.__library[target]])
