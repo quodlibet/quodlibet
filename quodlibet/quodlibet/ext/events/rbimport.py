@@ -13,7 +13,7 @@ from quodlibet import app
 from quodlibet import util
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.util.uri import URI
-from quodlibet.util.path import expanduser
+from quodlibet.util.path import expanduser, normalize_path
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -53,28 +53,42 @@ class RBDBContentHandler(ContentHandler):
                 if not p_uri.is_filename:
                     return
 
-                self._process_song(p_uri.filename, current)
+                self._process_song(normalize_path(p_uri.filename), current)
 
     def _process_song(self, path, stats):
         song = self._library.get(path, None)
         if not song:
             return
 
-        mapping = {
-            "rating": "~#rating",
-            "play-count": "~#playcount",
-            "last-played": "~#lastplayed"
-        }
-
         has_changed = False
-        for src, dst in mapping.items():
-            if src in stats:
-                try:
-                    value = int(stats[src])
-                except ValueError:
-                    pass
-                else:
-                    song[dst] = value
+
+        if "rating" in stats:
+            try:
+                value = int(stats["rating"]) / 5.0
+            except ValueError:
+                pass
+            else:
+                song["~#rating"] = value
+                has_changed = True
+
+        if "play-count" in stats:
+            try:
+                value = int(stats["play-count"])
+            except ValueError:
+                pass
+            else:
+                # we could sum them, but that would break on multiple imports
+                song["~#playcount"] = value
+                has_changed = True
+
+        if "last-played" in stats:
+            try:
+                value = int(stats["last-played"])
+            except ValueError:
+                pass
+            else:
+                if value > song("~#lastplayed", 0):
+                    song["~#lastplayed"] = value
                     has_changed = True
 
         if has_changed:
