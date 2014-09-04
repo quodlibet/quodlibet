@@ -52,6 +52,7 @@ quodlibet/ext/events/osxmmkey.py
 quodlibet/ext/events/qlscrobbler.py
 quodlibet/ext/events/radioadmute.py
 quodlibet/ext/events/randomalbum.py
+quodlibet/ext/events/rbimport.py
 quodlibet/ext/events/screensaver.py
 quodlibet/ext/events/searchprovider.py
 quodlibet/ext/events/squeezebox_sync.py
