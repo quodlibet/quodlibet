@@ -462,6 +462,15 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def __about_to_finish(self, pipeline):
         print_d("About to finish")
 
+        # Chained oggs falsely trigger a gapless transition.
+        # At least for radio streams we can safely ignore it because
+        # transitions don't occur there.
+        # https://code.google.com/p/quodlibet/issues/detail?id=1454
+        # https://bugzilla.gnome.org/show_bug.cgi?id=695474
+        if self.song.multisong:
+            print_d("multisong: ignore about to finish")
+            return
+
         if config.getboolean("player", "gst_disable_gapless"):
             print_d("Gapless disabled")
             return
