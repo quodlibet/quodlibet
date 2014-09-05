@@ -40,13 +40,13 @@ class TrackRepeatOrder(PlayOrderPlugin,
         vb = Gtk.VBox(spacing=10)
         vb.set_border_width(10)
         hbox = Gtk.HBox(spacing=6)
+        lbl = Gtk.Label(label=_("Number of times to play each song"))
+        hbox.pack_start(lbl, False, True, 0)
         val = cls.config_get("play_each", cls.PLAY_EACH_DEFAULT)
         spin = Gtk.SpinButton(
             adjustment=Gtk.Adjustment.new(float(val), 2, 20, 1, 10, 0))
         spin.connect("value-changed", plays_changed)
         hbox.pack_start(spin, False, True, 0)
-        lbl = Gtk.Label(label=_("Number of times to play each song"))
-        hbox.pack_start(lbl, False, True, 0)
         vb.pack_start(hbox, True, True, 0)
         vb.show_all()
         return vb
