@@ -45,7 +45,7 @@ class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_ID = "AcoustidSubmit"
     PLUGIN_NAME = _("Submit Acoustic Fingerprints")
     PLUGIN_DESC = _("Generates acoustic fingerprints using chromaprint "
-        " and submits them to 'acoustid.org'")
+        "and submits them to 'acoustid.org'")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.1"
 
