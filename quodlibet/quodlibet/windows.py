@@ -87,9 +87,9 @@ def get_link_target(path):
 
     try:
         link.QueryInterface(pythoncom.IID_IPersistFile).Load(path)
-        # FIXME: this only supports the old ascii API..
+        # FIXME: this only supports the old non-unicode API..
         path = link.GetPath(0)[0]
-        return path.decode("ascii")
+        return path.decode("latin-1")
     except pywintypes.com_error:
         pass
 
