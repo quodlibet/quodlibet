@@ -41,6 +41,13 @@ class TWindows(TestCase):
             normalize_path(d), normalize_path(u"C:\Windows\explorer.exe"))
         self.assertTrue(isinstance(d, unicode))
 
+    def test_get_link_target_latin1(self):
+        path = os.path.join(DATA_DIR, "test2.lnk")
+        d = windows.get_link_target(path)
+        # the second char is only not in latin-1
+        self.assertEqual(os.path.basename(d), u"\xe1??.txt")
+        self.assertTrue(isinstance(d, unicode))
+
     def test_environ(self):
         env = windows.WindowsEnviron()
         len_ = len(env)
