@@ -278,6 +278,28 @@ class Tparse_time(TestCase):
         self.failUnlessEqual(util.parse_time("-2:04"), -124)
 
 
+class Tdate_key(TestCase):
+
+    def test_compare(self):
+        date_key = util.date_key
+        self.assertTrue(date_key("2004") == date_key("2004-01-01"))
+        self.assertTrue(date_key("2004") == date_key("2004-01"))
+        self.assertTrue(date_key("2004") < date_key("2004-01-02"))
+        self.assertTrue(date_key("2099-02-02") < date_key("2099-03-30"))
+
+        self.assertTrue(date_key("2004-01-foo") == date_key("2004-01"))
+
+    def test_validate(self):
+        validate = util.validate_query_date
+
+        for valid in ["2004", "2005-01", "3000-3-4"]:
+            self.assertTrue(validate(valid))
+
+        for invalid in ["", "-", "3000-", "9-0", "8-1-0", "1-13-1", "1-1-32",
+                        "1-1-1-1-1", "a", "1-a", "1-1-a"]:
+            self.assertFalse(validate(invalid))
+
+
 class Tformat_size(TestCase):
     def t_dict(self, d):
         for key, value in d.items():

@@ -267,6 +267,11 @@ class AudioFile(dict, ImageContainer):
                     return URI.frompath(self["~filename"])
             elif key == "format":
                 return self.get("~format", self.format)
+            elif key == "#date":
+                date = self.get("date")
+                if date is None:
+                    return default
+                return util.date_key(date)
             elif key == "year":
                 return self.get("date", default)[:4]
             elif key == "#year":

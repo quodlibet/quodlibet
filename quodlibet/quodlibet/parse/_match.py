@@ -9,6 +9,7 @@ import time
 import operator
 
 from quodlibet.util.path import fsdecode
+from quodlibet.util import date_key, validate_query_date
 
 
 class error(ValueError):
@@ -250,6 +251,11 @@ def map_numeric_op(tag, op, value, time_=None):
     op = op_fun
 
     value = value.lower().strip()
+
+    if tag == "date":
+        if not validate_query_date(value):
+            raise ParseError("Invalid date %r" % value)
+        return (op, date_key(value))
 
     if tag in TIME_KEYS:
         if value == "now":

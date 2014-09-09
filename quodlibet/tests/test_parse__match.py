@@ -1,6 +1,7 @@
 from tests import TestCase
 
 from quodlibet.parse._match import map_numeric_op, ParseError
+from quodlibet.util import date_key
 
 
 class TNumericOp(TestCase):
@@ -57,6 +58,16 @@ class TNumericOp(TestCase):
 
         o, v = map_numeric_op("length", "=", "10:5:10")
         self.failUnless(o((3600 * 10) + (5 * 60) + 10, v))
+
+    def test_date(self):
+        o, v = map_numeric_op("date", ">", "2004")
+        self.failUnless(o(date_key("2004-01-02"), v))
+
+        o, v = map_numeric_op("date", "=", "2005")
+        self.failUnless(o(date_key("2005"), v))
+
+        self.failUnlessRaises(
+            ParseError, map_numeric_op, "date", ">", "2001-foo")
 
     def test_float(self):
         for variant in ["0.5", ".5", "+.5", "+.5e0"]:

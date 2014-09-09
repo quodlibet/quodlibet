@@ -208,6 +208,65 @@ def parse_time(timestr, err=(ValueError, re.error)):
         return 0
 
 
+def validate_query_date(datestr):
+    """Validates a user provided date that can be compared using date_key().
+
+    Returns True id the date is valid.
+    """
+
+    parts = datestr.split("-")
+    if len(parts) > 3:
+        return False
+
+    if len(parts) > 2:
+        try:
+            v = int(parts[2])
+        except ValueError:
+            return False
+        else:
+            if not 1 <= v <= 31:
+                return False
+
+    if len(parts) > 1:
+        try:
+            v = int(parts[1])
+        except ValueError:
+            return False
+        else:
+            if not 1 <= v <= 12:
+                return False
+
+    try:
+        int(parts[0])
+    except ValueError:
+        return False
+
+    return True
+
+
+def date_key(datestr):
+    """Parse a date format y-m-d and returns an undefined integer that
+    can only be used to compare dates.
+
+    In case the date string is invalid the returned value is undefined.
+    """
+
+    # this basically does "2001-02-03" -> 20010203
+
+    default = [0, 1, 1]
+    parts = datestr.split("-")
+    parts += default[len(parts):]
+
+    value = 0
+    for d, p, m in zip(default, parts, (10000, 100, 1)):
+        try:
+            value += int(p) * m
+        except ValueError:
+            # so that "2003-01-" is equal to "2003-01" ..
+            value += d * m
+    return value
+
+
 def format_rating(value, blank=True):
     """Turn a number into a sequence of rating symbols."""
 
