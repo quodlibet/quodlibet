@@ -1,7 +1,7 @@
 from tests import TestCase
 
 from quodlibet.parse._match import map_numeric_op, ParseError
-from quodlibet.util import date_key
+from quodlibet.util import date_key, parse_date
 
 
 class TNumericOp(TestCase):
@@ -9,7 +9,7 @@ class TNumericOp(TestCase):
 
     def test_time_op(self):
         # lastplayed less than 10 seconds ago
-        o, v = map_numeric_op("lastplayed", "<", "10", time_=self.TIME)
+        o, v = map_numeric_op("lastplayed", "<", "10 seconds", time_=self.TIME)
         self.failUnless(o(self.TIME - 5, v))
 
         # laststarted more than 1 day ago
@@ -20,6 +20,17 @@ class TNumericOp(TestCase):
         o, v = map_numeric_op("added", "<", "4:30", time_=self.TIME)
         self.failUnless(o(self.TIME - (4 * 60 + 15), v))
         self.failIf(o(self.TIME - (4 * 60 + 35), v))
+
+        # don't allow time keys with raw numbers
+        self.assertRaises(ParseError, map_numeric_op, "added", "<", "42")
+
+    def test_date_op(self):
+        o, v = map_numeric_op("lastplayed", "=", "2004")
+        self.assertTrue(o(parse_date("2004"), v))
+        o, v = map_numeric_op("lastplayed", "<", "2004")
+        self.assertTrue(o(parse_date("2003"), v))
+        o, v = map_numeric_op("lastplayed", ">", "2004")
+        self.assertFalse(o(parse_date("2003"), v))
 
     def test_time_unit(self):
         t = map_numeric_op("mtime", "=", "now", time_=self.TIME)[1]

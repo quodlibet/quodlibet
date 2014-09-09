@@ -267,6 +267,22 @@ def date_key(datestr):
     return value
 
 
+def parse_date(datestr):
+    """Parses yyyy-mm-dd date format and returns unix time.
+
+    Raises ValueError in case the input couldn't be parsed.
+    """
+
+    import time
+
+    try:
+        frmt = ["%Y", "%Y-%m", "%Y-%m-%d"][datestr.count("-")]
+    except IndexError:
+        raise ValueError
+
+    return time.mktime(time.strptime(datestr, frmt))
+
+
 def format_rating(value, blank=True):
     """Turn a number into a sequence of rating symbols."""
 

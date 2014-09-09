@@ -9,6 +9,7 @@ from tests import TestCase, mkstemp, skipIf
 import tempfile
 import os
 import re
+import time
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util import format_time_long as f_t_l
@@ -276,6 +277,25 @@ class Tparse_time(TestCase):
 
     def test_negative(self):
         self.failUnlessEqual(util.parse_time("-2:04"), -124)
+
+
+class Tparse_date(TestCase):
+
+    def test_invalid(self):
+        self.assertRaises(ValueError, util.parse_date, "not a date")
+        self.assertRaises(ValueError, util.parse_date, "0")
+        self.assertRaises(ValueError, util.parse_date, "2000-13")
+        self.assertRaises(ValueError, util.parse_date, "2000-01-32")
+        self.assertRaises(ValueError, util.parse_date, "2000-01-0")
+        self.assertRaises(ValueError, util.parse_date, "2000-0-01")
+
+    def test_valid(self):
+        ref = time.mktime(time.strptime("2004", "%Y"))
+        self.assertEqual(util.parse_date("2004"), ref)
+        self.assertEqual(util.parse_date("2004-01-01"), ref)
+        self.assertEqual(util.parse_date("2004-1-1"), ref)
+        self.assertTrue(
+            util.parse_date("2004-01-01") < util.parse_date("2004-01-02"))
 
 
 class Tdate_key(TestCase):

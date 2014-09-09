@@ -9,7 +9,7 @@ import time
 import operator
 
 from quodlibet.util.path import fsdecode
-from quodlibet.util import date_key, validate_query_date
+from quodlibet.util import date_key, validate_query_date, parse_date
 
 
 class error(ValueError):
@@ -232,23 +232,21 @@ def map_numeric_op(tag, op, value, time_=None):
 
     """
 
-    if tag in TIME_KEYS:
-        if op == ">":
-            op = "<"
-        elif op == "<":
-            op = ">"
-        elif op == "<=":
-            op = ">="
-        elif op == ">=":
-            op = "<="
+    operators = {
+        "<": operator.lt,
+        "<=": operator.le,
+        ">": operator.gt,
+        ">=": operator.ge,
+        "=": operator.eq,
+        "!=": operator.ne,
+    }
 
-    op_fun = {"<": operator.lt, "<=": operator.le,
-              ">": operator.gt, ">=": operator.ge,
-              "=": operator.eq, "!=": operator.ne}.get(op, None)
-
-    if op_fun is None:
+    if op not in operators:
         raise ParseError("Unknown operator %s" % op)
-    op = op_fun
+
+    inv_op = op.replace(">", "<") if op[0] == ">" else op.replace("<", ">")
+    inv_op = operators[inv_op]
+    op = operators[op]
 
     value = value.lower().strip()
 
@@ -258,12 +256,19 @@ def map_numeric_op(tag, op, value, time_=None):
         return (op, date_key(value))
 
     if tag in TIME_KEYS:
+        try:
+            value = parse_date(value)
+        except ValueError:
+            pass
+        else:
+            return (op, value)
+
         if value == "now":
             value = (time_ or time.time())
-            return (op, value)
+            return (inv_op, value)
         if value == "today":
             value = (time_ or time.time()) - 24 * 60 * 60
-            return (op, value)
+            return (inv_op, value)
 
     # check for time formats: "5:30"
     # TODO: handle "5:30 ago"
@@ -272,13 +277,15 @@ def map_numeric_op(tag, op, value, time_=None):
     except ValueError:
         pass
     else:
-        value = 0
-        for t in hms:
-            value *= 60
-            value += t
-        if tag in TIME_KEYS:
-            value = (time_ or time.time()) - value
-        return (op, value)
+        if len(hms) > 1:
+            value = 0
+            for t in hms:
+                value *= 60
+                value += t
+            if tag in TIME_KEYS:
+                value = (time_ or time.time()) - value
+                return (inv_op, value)
+            return (op, value)
 
     # get the biggest float/int
     max_val = ""
@@ -302,8 +309,10 @@ def map_numeric_op(tag, op, value, time_=None):
         value = float(max_val)
 
     if tag in TIME_KEYS:
-        part = unit.split()[0].rstrip("s")
-        if part == "minute":
+        part = (unit.split() or [""])[0].rstrip("s")
+        if part.startswith("second"):
+            value = value
+        elif part == "minute":
             value *= 60
         elif part == "hour":
             value *= 60 * 60
@@ -317,8 +326,15 @@ def map_numeric_op(tag, op, value, time_=None):
             value *= 365 * 24 * 60 * 60
         elif unit:
             raise ParseError("No time unit: %r" % unit)
+        else:
+            # don't allow raw seconds since epoch. It's not that usefull
+            # and overlaps with the date parsing
+            # (10 would be 10 seconds, 1970 would be 0)
+            raise ParseError("No valid time format")
         value = int((time_ or time.time()) - value)
-    elif tag in SIZE_KEYS:
+        return (inv_op, value)
+
+    if tag in SIZE_KEYS:
         if unit.startswith("g"):
             value *= 1024 ** 3
         elif unit.startswith("m"):
