@@ -250,15 +250,15 @@ To update to the latest version, switch to the QL dir and run::
 
     Mac OS X is not officially supported. Having said that, some users have had success as below
     
-You can use `MacPorts https://www.macports.org/`_ to install:
+You can use `MacPorts <https://www.macports.org/>`_ to install:
 
 ::
 
     sudo port install quodlibet
 
-Alternatively, others report it is possible to run the Windows version on `OS X WINE http://wiki.winehq.org/MacOSX`_.
+Alternatively, others report it is possible to run the Windows version on `OS X WINE <http://wiki.winehq.org/MacOSX>`_.
 
 .. note::
 
-If you would like to help port Quod Libet to OS X, please :ref:`contact the development team<Contact>`.
+If you would like to help port Quod Libet to OS X, please :ref:`contact the development team <Contact>`.
 
