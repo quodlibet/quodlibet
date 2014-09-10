@@ -695,8 +695,11 @@ class TNormalizePath(TestCase):
             os.rmdir(name)
 
     def test_canonicalise(self):
-        from quodlibet.util.path import _normalize_path as norm
+        from quodlibet.util.path import _normalize_path, _normalize_darwin_path
+        self._test_canonicalise(_normalize_path)
+        self._test_canonicalise(_normalize_darwin_path)
 
+    def _test_canonicalise(self, norm):
         f, path = tempfile.mkstemp()
         os.close(f)
         path = norm(path)

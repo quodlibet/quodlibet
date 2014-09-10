@@ -343,7 +343,8 @@ def strip_win32_incompat_from_path(string):
     return drive + tail
 
 
-def _normalize_darwin_path(filename, strict=False, _cache={}, _statcache={}):
+def _normalize_darwin_path(filename, canonicalise=False, strict=False,
+                           _cache={}, _statcache={}):
     """Get a normalized version of the path by calling listdir
     and comparing the inodes with our file.
 
@@ -351,6 +352,9 @@ def _normalize_darwin_path(filename, strict=False, _cache={}, _statcache={}):
     - Any errors get ignored and lead to an un-normalized version.
     - Supports relative and absolute paths (and returns the same).
     """
+
+    if canonicalise:
+        filename = os.path.realpath(filename)
 
     if filename in (".", "..", "/", ""):
         return filename
