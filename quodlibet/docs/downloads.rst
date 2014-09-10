@@ -258,7 +258,6 @@ You can use `MacPorts https://www.macports.org/`_ to install:
 
 Alternatively, others report it is possible to run the Windows version on `OS X WINE http://wiki.winehq.org/MacOSX`_.
 
-.. note::
 
-If you would like to help port Quod Libet to OS X, please :ref:`contact the development team<Contact>`.
+If you would like to help port Quod Libet to OS X, please :ref:`contact us <Contact>` to discuss.
 
