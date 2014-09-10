@@ -697,7 +697,8 @@ class TNormalizePath(TestCase):
     def test_canonicalise(self):
         from quodlibet.util.path import _normalize_path, _normalize_darwin_path
         self._test_canonicalise(_normalize_path)
-        self._test_canonicalise(_normalize_darwin_path)
+        if not is_win:
+            self._test_canonicalise(_normalize_darwin_path)
 
     def _test_canonicalise(self, norm):
         f, path = tempfile.mkstemp()
