@@ -27,7 +27,9 @@ class Tconst(TestCase):
         branch = p.communicate()[0].strip()
         self.failIf(p.returncode)
 
-        self.failUnlessEqual(branch, const.BRANCH_NAME)
+        # only check for stable/dev branches, no feature branches
+        if branch == "default" or branch.startswith("quodlibet"):
+            self.failUnlessEqual(branch, const.BRANCH_NAME)
 
     def test_path_types(self):
         self.assertTrue(is_fsnative(const.USERDIR))
