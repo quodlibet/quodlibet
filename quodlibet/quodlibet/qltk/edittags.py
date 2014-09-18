@@ -12,7 +12,6 @@ from gi.repository import Gtk, Pango, Gdk
 from quodlibet import qltk
 
 from quodlibet import config
-from quodlibet import formats
 from quodlibet import util
 
 from quodlibet.util import massagers
@@ -25,7 +24,7 @@ from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk._editpane import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editpane import WriteFailedError
 from quodlibet.plugins import PluginManager
-from quodlibet.util.tags import USER_TAGS
+from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 from quodlibet.util.string import decode
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
@@ -869,7 +868,7 @@ class EditTags(Gtk.VBox):
         keys = sorted(songinfo.realkeys())
 
         if not config.getboolean("editing", "alltags"):
-            keys = filter(lambda k: k not in formats.MACHINE_TAGS, keys)
+            keys = filter(lambda k: k not in MACHINE_TAGS, keys)
 
         # reverse order here so insertion puts them in proper order.
         for tag in ['album', 'artist', 'title']:
