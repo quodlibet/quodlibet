@@ -30,6 +30,7 @@ Of course, right now it does none of these things.
 from gi.repository import Gtk, GLib, Pango
 
 from quodlibet.util import copool
+from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton
 
 SIZE = Gtk.IconSize.MENU
 
@@ -239,11 +240,11 @@ class TaskWidget(Gtk.HBox):
         self.progress = Gtk.ProgressBar()
         self.progress.set_size_request(100, -1)
         self.pack_start(self.progress, True, True, 0)
-        self.pause = Gtk.ToggleButton()
+        self.pause = SmallImageToggleButton()
         self.pause.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_PAUSE, SIZE))
         self.pause.connect('toggled', self.__pause_toggled)
         self.pack_start(self.pause, False, True, 0)
-        self.stop = Gtk.Button()
+        self.stop = SmallImageButton()
         self.stop.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_STOP, SIZE))
         self.stop.connect('clicked', self.__stop_clicked)
         self.pack_start(self.stop, False, True, 0)
