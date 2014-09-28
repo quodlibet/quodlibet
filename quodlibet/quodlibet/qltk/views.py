@@ -217,7 +217,16 @@ class TreeViewHints(Gtk.Window):
 
         # Use the renderer padding as label padding so the text offset matches
         render_xpad = renderer.get_property("xpad")
-        label.set_padding(render_xpad, 0)
+
+        # the renderer xpad is not enough for the tooltip, especially with
+        # rounded corners the label gets nearly clipped.
+        MIN_HINT_X_PAD = 4
+        if render_xpad < MIN_HINT_X_PAD:
+            extra_xpad = MIN_HINT_X_PAD - render_xpad
+        else:
+            extra_xpad = 0
+
+        label.set_padding(render_xpad + extra_xpad, 0)
         set_text(clabel)
         clabel.set_padding(render_xpad, 0)
         label_width = clabel.get_layout().get_pixel_size()[0]
@@ -241,6 +250,7 @@ class TreeViewHints(Gtk.Window):
 
         # save for adjusting passthrough events
         self.__dx, self.__dy = col_area.x + render_offset, bg_area.y
+        self.__dx -= extra_xpad
         if expand_left:
             # shift to the left
             # FIXME: ellipsize start produces a space at the end depending
@@ -252,7 +262,7 @@ class TreeViewHints(Gtk.Window):
         y = oy + self.__dy
         x, y = view.convert_bin_window_to_widget_coords(x, y)
 
-        w = label_width
+        w = label_width + extra_xpad * 2
         h = bg_area.height
 
         if not is_wayland():
