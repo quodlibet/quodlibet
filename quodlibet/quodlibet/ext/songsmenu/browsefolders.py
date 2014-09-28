@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 import subprocess
 
 from gi.repository import Gtk
@@ -151,6 +152,18 @@ def browse_folders_win_explorer(songs):
             raise BrowseError
 
 
+def browse_folders_finder(songs):
+    if sys.platform != "darwin":
+        raise BrowseError("OS X only")
+
+    try:
+        for dir_ in group_songs(songs).keys():
+            if subprocess.call(["open", "-R", dir_]) != 0:
+                raise EnvironmentError("open error return status")
+    except EnvironmentError as e:
+        raise BrowseError(e)
+
+
 class BrowseFolders(SongsMenuPlugin):
     PLUGIN_ID = 'Browse Folders'
     PLUGIN_NAME = _('Browse Folders')
@@ -160,7 +173,7 @@ class BrowseFolders(SongsMenuPlugin):
 
     _HANDLERS = [browse_folders_fdo, browse_folders_thunar,
                  browse_folders_xdg_open, browse_folders_gnome_open,
-                 browse_folders_win_explorer]
+                 browse_folders_win_explorer, browse_folders_finder]
 
     def plugin_songs(self, songs):
         songs = [s for s in songs if s.is_file]
