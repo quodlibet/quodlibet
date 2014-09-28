@@ -334,10 +334,16 @@ class TreeViewHints(Gtk.Window):
             self.hide()
             return False
 
-        # Work around Gnome Shell redraw bugs: it doesn't like
-        # multiple hide()/show(), so we try to reduce calls to hide
-        # by aborting it if the pointer is on a new cell shortly after.
-        self.__hide_id = GLib.timeout_add(20, hide)
+        if gtk_version < (3, 13):
+            # https://bugzilla.gnome.org/show_bug.cgi?id=731055
+            # Work around Gnome Shell redraw bugs: it doesn't like
+            # multiple hide()/show(), so we try to reduce calls to hide
+            # by aborting it if the pointer is on a new cell shortly after.
+            self.__hide_id = GLib.timeout_add(20, hide)
+        else:
+            # mutter3.12 and gtk3.14 are a bit broken together, so it's safe
+            # to assume we have a fixed mutter release..
+            hide()
 
     def __event(self, event):
         if not self.__view:
