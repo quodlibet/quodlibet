@@ -13,8 +13,9 @@
 # Quod Libet code, which is GPLv2 as well, so I thought it safe to add this.
 
 import os
+import sys
 
-if os.name == "nt":
+if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
