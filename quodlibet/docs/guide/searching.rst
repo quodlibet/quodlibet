@@ -122,7 +122,7 @@ For comparisons you can then use typical binary operators like ``=``,
  * ``#(bpm > 160)`` to find really fast songs
 
 You can also use chained comparisons:
- * ``#(10 > track > 100)`` to find all two-digit tracks.
+ * ``#(10 <= track < 100)`` to find all two-digit tracks.
 
 Times like ``added`` are stored in seconds, which is pretty cumbersome to
 search on. Instead, you can search with semi-English,
