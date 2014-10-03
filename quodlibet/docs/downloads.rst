@@ -196,7 +196,7 @@ Quod Libet 2.6.3 (portable) quodlibet-2.6.3-portable.exe_
 .. _quodlibet-2.6.3-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-2.6.3-portable.exe
 .. _quodlibet-2.6.3-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-2.6.3-installer.exe
 
-For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
+For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet/downloads/>`__.
 
 .. _arch:
 
