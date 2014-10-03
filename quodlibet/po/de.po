@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 3.0.-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-16 20:11+0200\n"
+"POT-Creation-Date: 2014-10-03 11:30+0200\n"
 "PO-Revision-Date: 2014-01-05 18:16+0100\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -3220,28 +3220,28 @@ msgstr "Stream"
 msgid "Buffering"
 msgstr "Puffer wird gefüllt"
 
-#: ../quodlibet/player/gstbe/player.py:264
+#: ../quodlibet/player/gstbe/player.py:265
 #, fuzzy
 msgid "Could not create GStreamer pipeline"
 msgstr "GStreamer-Standard-Pipeline konnte nicht angelegt werden"
 
-#: ../quodlibet/player/gstbe/player.py:436
+#: ../quodlibet/player/gstbe/player.py:437
 #, fuzzy
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Es wurde kein GStreamer-Element für das folgende Medienformat gefunden: "
 "%(format_details)r"
 
-#: ../quodlibet/player/gstbe/player.py:437
+#: ../quodlibet/player/gstbe/player.py:438
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:750
+#: ../quodlibet/player/gstbe/player.py:760
 msgid "Unable to open input files"
 msgstr "Die Eingabedateien konnten nicht geöffnet werden"
 
-#: ../quodlibet/player/gstbe/player.py:751
+#: ../quodlibet/player/gstbe/player.py:761
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -4850,7 +4850,7 @@ msgstr "Abspielen/Stoppen"
 msgid "Previous"
 msgstr "Vorheriger"
 
-#: ../quodlibet/qltk/views.py:746
+#: ../quodlibet/qltk/views.py:762
 #, python-format
 msgid "and %d more..."
 msgstr "und %d weitere..."

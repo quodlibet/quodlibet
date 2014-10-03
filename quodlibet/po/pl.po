@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-16 20:11+0200\n"
+"POT-Creation-Date: 2014-10-03 11:30+0200\n"
 "PO-Revision-Date: 2013-08-03 18:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
@@ -3195,28 +3195,28 @@ msgstr "Strumień"
 msgid "Buffering"
 msgstr "Buforowanie"
 
-#: ../quodlibet/player/gstbe/player.py:264
+#: ../quodlibet/player/gstbe/player.py:265
 #, fuzzy
 msgid "Could not create GStreamer pipeline"
 msgstr "Nie można utworzyć domyślnego potoku biblioteki GStreamer."
 
-#: ../quodlibet/player/gstbe/player.py:436
+#: ../quodlibet/player/gstbe/player.py:437
 #, fuzzy
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Nie odnaleziono elementu biblioteki GStreamer do obsługi następującego "
 "formatu multimediów: %(format_details)r"
 
-#: ../quodlibet/player/gstbe/player.py:437
+#: ../quodlibet/player/gstbe/player.py:438
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:750
+#: ../quodlibet/player/gstbe/player.py:760
 msgid "Unable to open input files"
 msgstr "Nie można otworzyć plików wejściowych"
 
-#: ../quodlibet/player/gstbe/player.py:751
+#: ../quodlibet/player/gstbe/player.py:761
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -4823,7 +4823,7 @@ msgstr "Odtwórz/wstrzymaj"
 msgid "Previous"
 msgstr "Poprzednia"
 
-#: ../quodlibet/qltk/views.py:746
+#: ../quodlibet/qltk/views.py:762
 #, python-format
 msgid "and %d more..."
 msgstr "i %d więcej..."

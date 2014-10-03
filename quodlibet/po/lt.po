@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-16 20:11+0200\n"
+"POT-Creation-Date: 2014-10-03 11:30+0200\n"
 "PO-Revision-Date: 2012-12-07 17:22+0300\n"
 "Last-Translator: Naglis Jonaitis <njonaitis@gmail.com>\n"
 "Language-Team: Lithuanian (http://www.transifex.net/projects/p/quodlibet/"
@@ -3209,25 +3209,25 @@ msgstr "Srautas"
 msgid "Buffering"
 msgstr "Buferizuojama"
 
-#: ../quodlibet/player/gstbe/player.py:264
+#: ../quodlibet/player/gstbe/player.py:265
 #, fuzzy
 msgid "Could not create GStreamer pipeline"
 msgstr "Nepavyko sukurti GStreamer išvesties."
 
-#: ../quodlibet/player/gstbe/player.py:436
+#: ../quodlibet/player/gstbe/player.py:437
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:437
+#: ../quodlibet/player/gstbe/player.py:438
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:750
+#: ../quodlibet/player/gstbe/player.py:760
 msgid "Unable to open input files"
 msgstr "Negalima atverti įvesties failų"
 
-#: ../quodlibet/player/gstbe/player.py:751
+#: ../quodlibet/player/gstbe/player.py:761
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -4838,7 +4838,7 @@ msgstr "Groti/Pristabdyti"
 msgid "Previous"
 msgstr "Ankstesnė"
 
-#: ../quodlibet/qltk/views.py:746
+#: ../quodlibet/qltk/views.py:762
 #, python-format
 msgid "and %d more..."
 msgstr "ir %d daugiau..."

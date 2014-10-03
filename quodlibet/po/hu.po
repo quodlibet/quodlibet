@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-16 20:11+0200\n"
+"POT-Creation-Date: 2014-10-03 11:30+0200\n"
 "PO-Revision-Date: 2013-07-20 22:35+0100\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: hu\n"
@@ -3173,25 +3173,25 @@ msgstr ""
 msgid "Buffering"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:264
+#: ../quodlibet/player/gstbe/player.py:265
 msgid "Could not create GStreamer pipeline"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:436
+#: ../quodlibet/player/gstbe/player.py:437
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:437
+#: ../quodlibet/player/gstbe/player.py:438
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:750
+#: ../quodlibet/player/gstbe/player.py:760
 #, fuzzy
 msgid "Unable to open input files"
 msgstr "Fájlok megnyitása sikertelen"
 
-#: ../quodlibet/player/gstbe/player.py:751
+#: ../quodlibet/player/gstbe/player.py:761
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -4764,7 +4764,7 @@ msgstr "Lejátszó"
 msgid "Previous"
 msgstr "Előnézet"
 
-#: ../quodlibet/qltk/views.py:746
+#: ../quodlibet/qltk/views.py:762
 #, python-format
 msgid "and %d more..."
 msgstr "és még %d..."

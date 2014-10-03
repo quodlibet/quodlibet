@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-16 20:11+0200\n"
+"POT-Creation-Date: 2014-10-03 11:30+0200\n"
 "PO-Revision-Date: 2013-07-20 22:30+0100\n"
 "Last-Translator: Daniel Nyberg <p.daniel.nyberg@gmail.com>\n"
 "Language-Team: SWEDISH\n"
@@ -3190,25 +3190,25 @@ msgstr "Ström"
 msgid "Buffering"
 msgstr "Buffrar"
 
-#: ../quodlibet/player/gstbe/player.py:264
+#: ../quodlibet/player/gstbe/player.py:265
 #, fuzzy
 msgid "Could not create GStreamer pipeline"
 msgstr "Kunde inte skapa förvald GStreamer pipeline."
 
-#: ../quodlibet/player/gstbe/player.py:436
+#: ../quodlibet/player/gstbe/player.py:437
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:437
+#: ../quodlibet/player/gstbe/player.py:438
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:750
+#: ../quodlibet/player/gstbe/player.py:760
 msgid "Unable to open input files"
 msgstr "Kunde ej öppna infiler"
 
-#: ../quodlibet/player/gstbe/player.py:751
+#: ../quodlibet/player/gstbe/player.py:761
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -4804,7 +4804,7 @@ msgstr "Spela upp/pausera"
 msgid "Previous"
 msgstr "Föregående"
 
-#: ../quodlibet/qltk/views.py:746
+#: ../quodlibet/qltk/views.py:762
 #, python-format
 msgid "and %d more..."
 msgstr "och %d till..."

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-11 17:21+0900\n"
+"POT-Creation-Date: 2014-10-03 11:30+0200\n"
 "PO-Revision-Date: 2014-09-08 23:41+0900\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
@@ -3198,11 +3198,11 @@ msgstr "Не найден элемент GStreamer для обработки ф�
 msgid "Media format: %(format-description)s"
 msgstr "Формат мультимедиа: %(format-description)s"
 
-#: ../quodlibet/player/gstbe/player.py:751
+#: ../quodlibet/player/gstbe/player.py:760
 msgid "Unable to open input files"
 msgstr "Не удалось открыть входные файлы"
 
-#: ../quodlibet/player/gstbe/player.py:752
+#: ../quodlibet/player/gstbe/player.py:761
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -4789,7 +4789,7 @@ msgstr "Воспроизведение/Пауза"
 msgid "Previous"
 msgstr "Предыдущая композиция"
 
-#: ../quodlibet/qltk/views.py:746
+#: ../quodlibet/qltk/views.py:762
 #, python-format
 msgid "and %d more..."
 msgstr "и ещё %d..."

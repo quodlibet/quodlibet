@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-16 20:11+0200\n"
+"POT-Creation-Date: 2014-10-03 11:30+0200\n"
 "PO-Revision-Date: 2014-02-22 21:19+0200\n"
 "Last-Translator: Dimitris Papageorgiou <dipap@gmx.com>\n"
 "Language-Team: Greek\n"
@@ -3192,28 +3192,28 @@ msgstr "Ροή"
 msgid "Buffering"
 msgstr "Buffering"
 
-#: ../quodlibet/player/gstbe/player.py:264
+#: ../quodlibet/player/gstbe/player.py:265
 #, fuzzy
 msgid "Could not create GStreamer pipeline"
 msgstr "Αδυναμία δημιουργίας προεπιλεγμένης διασωλήνωσης GStreamer."
 
-#: ../quodlibet/player/gstbe/player.py:436
+#: ../quodlibet/player/gstbe/player.py:437
 #, fuzzy
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Δεν βρέθηκε στοιχείο GStreamer ικανό να χειριστεί το ακόλουθο είδος: "
 "%(format_details)r"
 
-#: ../quodlibet/player/gstbe/player.py:437
+#: ../quodlibet/player/gstbe/player.py:438
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:750
+#: ../quodlibet/player/gstbe/player.py:760
 msgid "Unable to open input files"
 msgstr "Αδυναμία ανοίγματος αρχείων"
 
-#: ../quodlibet/player/gstbe/player.py:751
+#: ../quodlibet/player/gstbe/player.py:761
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -4807,7 +4807,7 @@ msgstr "Αναπαραγωγή/Παύση"
 msgid "Previous"
 msgstr "Προηγούμενο"
 
-#: ../quodlibet/qltk/views.py:746
+#: ../quodlibet/qltk/views.py:762
 #, python-format
 msgid "and %d more..."
 msgstr "και %d ακόμη..."
