@@ -1,3 +1,16 @@
+3.2.2 (2014-10-03) - ENJOY, THERE'S NO GOING BACK
+-------------------------------------------------
+
+Fixes
+ * Fix a crash when seeking streams in some cases :bug:`1450`
+ * Fix a crash in case Windows Explorer favourites link to a non ASCII path :bug:`1464`
+ * Fix playback stopping when playing chained ogg streams :bug:`1454`
+ * Fix context menus not showing sometimes with GTK+3.14.1
+
+Translations
+ * Russian translation update (Anton Shestakov)
+
+
 3.2.1 (2014-08-16) - BAKE HIM AWAY, TOYS
 ----------------------------------------
 
