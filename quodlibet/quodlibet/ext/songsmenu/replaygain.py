@@ -15,6 +15,7 @@ from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import Gst
 from gi.repository import GLib
+from quodlibet.browsers.collection.models import EMPTY
 
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -64,6 +65,9 @@ class RGAlbum(object):
     def title(self):
         if not self.songs:
             return ""
+        # It's ok - any() + generator is short-cut-logic-friendly
+        if not any(rgs.song("album") for rgs in self.songs):
+            return "(%s)" % EMPTY
         return self.songs[0].song.comma('~artist~album')
 
     @property
