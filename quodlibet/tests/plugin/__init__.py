@@ -4,8 +4,10 @@ import quodlibet
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
 
-from tests import AbstractTestCase
+from tests import AbstractTestCase, init_fake_app, destroy_fake_app
 
+
+init_fake_app, destroy_fake_app
 
 # Nasty hack to allow importing of plugins...
 PLUGIN_DIRS = []
@@ -35,33 +37,6 @@ for name, module in ms.modules.iteritems():
     for plugin in list_plugins(module.module):
         plugins[plugin.PLUGIN_ID] = Plugin(plugin)
         modules[plugin.PLUGIN_ID] = module.module
-
-
-def init_fake_app():
-    from quodlibet import app
-
-    from quodlibet import browsers
-    from quodlibet.player.nullbe import NullPlayer
-    from quodlibet.library.libraries import SongFileLibrary
-    from quodlibet.library.librarians import SongLibrarian
-    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
-
-    browsers.init()
-    app.player = NullPlayer()
-    app.library = SongFileLibrary()
-    app.library.librarian = SongLibrarian()
-    app.window = QuodLibetWindow(app.library, app.player, headless=True)
-
-
-def destroy_fake_app():
-    from quodlibet import app
-
-    app.window.destroy()
-    app.library.destroy()
-    app.library.librarian.destroy()
-    app.player.destroy()
-
-    app.window = app.library = app.player = None
 
 
 class PluginTestCase(AbstractTestCase):
