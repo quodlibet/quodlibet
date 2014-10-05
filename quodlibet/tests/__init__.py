@@ -7,6 +7,7 @@ import sys
 import unittest
 import tempfile
 import shutil
+import subprocess
 from quodlibet.util.dprint import Colorise, print_
 from quodlibet.util.path import fsnative, is_fsnative
 
@@ -192,6 +193,16 @@ def unit(*args, **kwargs):
     os.environ.pop("XDG_DATA_HOME", None)
     os.environ.pop("XDG_CACHE_HOME", None)
 
+    bus = None
+    if os.name != "nt":
+        try:
+            out = subprocess.check_output(["dbus-launch"])
+        except (subprocess.CalledProcessError, OSError):
+            pass
+        else:
+            bus = dict([l.split("=", 1) for l in out.splitlines()])
+            os.environ.update(bus)
+
     try:
         return _run_tests(*args, **kwargs)
     finally:
@@ -199,6 +210,13 @@ def unit(*args, **kwargs):
             shutil.rmtree(_TEMP_DIR)
         except EnvironmentError:
             pass
+
+        if bus:
+            try:
+                subprocess.check_call(
+                    ["kill", "-9", bus["DBUS_SESSION_BUS_PID"]])
+            except (subprocess.CalledProcessError, OSError):
+                pass
 
 
 def _run_tests(run=[], filter_func=None, main=False, subdirs=None,
