@@ -147,16 +147,9 @@ class Runner(object):
         return len(result.failures), len(result.errors)
 
 
-def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
-         stop_first=False):
+def unit(*args, **kwargs):
 
     global _TEMP_DIR
-
-    # Ideally nothing should touch the FS on import, but we do atm..
-    # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
-    for key in sys.modules.keys():
-        if key.startswith('quodlibet'):
-            del(sys.modules[key])
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
@@ -171,6 +164,24 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
     os.environ["HOME"] = home_dir
     os.environ.pop("XDG_DATA_HOME", None)
     os.environ.pop("XDG_CACHE_HOME", None)
+
+    try:
+        return _run_tests(*args, **kwargs)
+    finally:
+        try:
+            shutil.rmtree(_TEMP_DIR)
+        except EnvironmentError:
+            pass
+
+
+def _run_tests(run=[], filter_func=None, main=False, subdirs=None,
+               strict=False, stop_first=False):
+
+    # Ideally nothing should touch the FS on import, but we do atm..
+    # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
+    for key in sys.modules.keys():
+        if key.startswith('quodlibet'):
+            del(sys.modules[key])
 
     path = os.path.dirname(__file__)
     if subdirs is None:
@@ -255,10 +266,5 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
             failures += df
             errors += de
             quodlibet.config.quit()
-
-    try:
-        shutil.rmtree(_TEMP_DIR)
-    except EnvironmentError:
-        pass
 
     return failures, errors
