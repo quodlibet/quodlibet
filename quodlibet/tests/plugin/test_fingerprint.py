@@ -28,7 +28,7 @@ from quodlibet.formats import MusicFile
 @skipUnless(Gst and chromaprint and vorbisdec)
 class TFingerprint(PluginTestCase):
 
-    TIMEOUT = 5.0
+    TIMEOUT = 20.0
 
     def setUp(self):
         config.init()
