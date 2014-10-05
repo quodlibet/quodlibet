@@ -357,7 +357,7 @@ class TOperonEdit(TOperonBase):
         if os.name == "nt":
             return
 
-        os.environ["VISUAL"] = "touch"
+        os.environ["VISUAL"] = "touch -t 197001010101"
         realitems = lambda s: [(k, s[k]) for k in s.realkeys()]
         old_items = realitems(self.s)
         self.check_true(["edit", self.f], False, False)
