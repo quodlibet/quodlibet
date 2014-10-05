@@ -226,6 +226,12 @@ class Browser(Filter):
         def dropped(self, songlist, songs): ... return True
     """
 
+    def key_pressed(self, event):
+        """Gets called with a key pressed event from the song list.
+        Should return True if the key was handled.
+        """
+        return False
+
     accelerators = None
     """An AccelGroup that is added to / removed from the window where
     the browser is.

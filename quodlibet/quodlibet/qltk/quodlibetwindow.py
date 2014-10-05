@@ -419,6 +419,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
         self.songlist.show_all()
+        self.songlist.connect("key-press-event", self.__songlist_key_press)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
         self.song_scroller = SongListScroller(
@@ -658,6 +659,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 copool.add(
                     self.__library.scan, dirs,
                     cofuncid="library", funcid="library")
+
+    def __songlist_key_press(self, songlist, event):
+        return self.browser.key_pressed(event)
 
     def __songlist_drag_data_recv(self, view, *args):
         if callable(self.browser.reordered):
