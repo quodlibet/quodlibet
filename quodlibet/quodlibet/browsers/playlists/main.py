@@ -105,14 +105,19 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
 
     def Menu(self, songs, songlist, library):
         menu = super(PlaylistsBrowser, self).Menu(songs, songlist, library)
-        model, rows = songlist.get_selection().get_selected_rows()
-        iters = map(model.get_iter, rows)
+        model, iters = self.__get_selected_songs(songlist)
         i = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
+        qltk.add_fake_accel(i, "Delete")
         i.connect_object('activate', self.__remove, iters, model)
         i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
         menu.preseparate()
         menu.prepend(i)
         return menu
+
+    def __get_selected_songs(self, songlist):
+        model, rows = songlist.get_selection().get_selected_rows()
+        iters = map(model.get_iter, rows)
+        return model, iters
 
     __lists = Gtk.TreeModelSort(model=Gtk.ListStore(object))
     __lists.set_default_sort_func(lambda m, a, b, data: cmp(m[a][0], m[b][0]))
@@ -127,6 +132,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
             lambda model, col, key, iter, data:
             not model[iter][col].name.lower().startswith(key.lower()), None)
         self.__render = render = Gtk.CellRendererText()
+        self.accelerators = Gtk.AccelGroup()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.connect('editing-started', self.__start_editing)
         render.connect('edited', self.__edited)
@@ -180,9 +186,22 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         self.connect_object('destroy', view.get_model().disconnect, s)
 
         self.connect('key-press-event', self.__key_pressed)
+        self.__add_songlist_keys()
 
         for child in self.get_children():
             child.show_all()
+
+    def __add_songlist_keys(self):
+        keyval, mod = Gtk.accelerator_parse("Delete")
+        self.accelerators.connect(keyval, mod, 0,
+                                  self.__handle_songlist_delete)
+        self.connect_object('destroy',
+                            self.accelerators.disconnect_key, keyval, mod)
+
+    def __handle_songlist_delete(self, *args):
+        songlist = qltk.get_top_parent(self).songlist
+        model, iters = self.__get_selected_songs(songlist)
+        self.__remove(iters, model)
 
     def __key_pressed(self, widget, event):
         if qltk.is_accel(event, "Delete"):
@@ -232,6 +251,8 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
             for iter_remove in iters:
                 smodel.remove(iter_remove)
             playlist = model[iter][0]
+            # Calling playlist.remove_songs(songs) won't remove the right ones
+            # if there are duplicates
             playlist.clear()
             playlist.extend([row[0] for row in smodel])
             PlaylistsBrowser.changed(playlist)
