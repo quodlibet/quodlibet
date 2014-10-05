@@ -194,7 +194,7 @@ def unit(*args, **kwargs):
     os.environ.pop("XDG_CACHE_HOME", None)
 
     bus = None
-    if os.name != "nt":
+    if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in os.environ:
         try:
             out = subprocess.check_output(["dbus-launch"])
         except (subprocess.CalledProcessError, OSError):
