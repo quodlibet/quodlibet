@@ -18,15 +18,16 @@ from quodlibet.util.library import background_filter
 
 class Filter(object):
 
-    # A callable that returns True if the passed song should be in the
-    # song list, False if not and None if no filter is active.
-    # Used for adding new songs to the song list or
-    # dynamic playlist removal when a song ends.
-    # def active_filter(self, song): ...
     active_filter = None
+    """A callable that returns True if the passed song should be in the
+    song list, False if not and None if no filter is active.
+    Used for adding new songs to the song list or
+    dynamic playlist removal when a song ends.
+        def active_filter(self, song): ...
+    """
 
-    # Deprecated: use active_filter instead
     def dynamic(self, song):
+        """Deprecated: use active_filter instead"""
         if callable(self.active_filter):
             ret = self.active_filter(song)
             if ret is not None:
@@ -34,36 +35,41 @@ class Filter(object):
         return True
 
     def can_filter_tag(self, key):
+        """If key can be passed to filter()"""
         return False
 
     def can_filter_text(self):
+        """If filter_text() can be used"""
         return False
 
     def filter_text(self, text):
+        """Set a text query"""
         raise NotImplementedError
 
     def can_filter_albums(self):
+        """If filter_albums() can be used"""
         return False
 
-    #Do filtering base on a list of album keys
     def filter_albums(self, values):
+        """Do filtering base on a list of album keys"""
         raise NotImplementedError
 
-    # Return a list of unique album keys (song.album_key)
     def list_albums(self):
+        """Return a list of unique album keys (song.album_key)"""
         albums = app.library.albums
         albums.load()
         return [a.key for a in albums]
 
-    # Actually do the filtering (with a union of values).
     def filter(self, key, values):
+        """Actually do the filtering (with a union of values)."""
         # for backward compatibility
         if self.can_filter_text():
             self.filter_text(util.build_filter_query(key, values))
 
-    # Return a list of unique values for the given tag. This needs to be
-    # here since not all browsers pull from the default library.
     def list(self, tag):
+        """Return a list of unique values for the given tag. This needs to be
+        here since not all browsers pull from the default library.
+        """
         library = app.library
         bg = background_filter()
         if bg:
@@ -74,18 +80,18 @@ class Filter(object):
             return list(tags)
         return library.tag_values(tag)
 
-    # Reset all filters and display the whole library.
     def unfilter(self):
+        """Reset all filters and display the whole library."""
         pass
 
-    # Decides whether "filter on foo" menu entries are available.
     def can_filter(self, key):
+        """If key can be passed to filter_on() or filter_random()"""
         c = self.can_filter_text()
         c = c or (key == "album" and self.can_filter_albums())
         return c or (key is not None and self.can_filter_tag(key))
 
-    # Do filtering in the best way the browser can handle
     def filter_on(self, songs, key):
+        """Do filtering in the best way the browser can handle"""
         if key == "album" and self.can_filter_albums():
             values = set()
             values.update([s.album_key for s in songs])
@@ -105,6 +111,7 @@ class Filter(object):
                 self.filter_text(query)
 
     def filter_random(self, key):
+        """Select one random value for the given key"""
         if key == "album" and self.can_filter_albums():
             albums = self.list_albums()
             if albums:
@@ -122,10 +129,12 @@ class Filter(object):
                 self.filter_text(query)
 
 
-# Browers are how the audio library is presented to the user; they
-# create the list of songs that MainSongList is filled with, and pass
-# them back via a callback function.
 class Browser(Filter):
+    """Browers are how the audio library is presented to the user; they
+    create the list of songs that MainSongList is filled with, and pass
+    them back via a callback function.
+    """
+
     # Unfortunately, GObjects do not play with Python multiple inheritance.
     # So, we need to reasssign this in every subclass.
     __gsignals__ = {
@@ -134,83 +143,98 @@ class Browser(Filter):
         'activated': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
-    # The browser's name, without an accelerator.
     name = _("Library Browser")
-    # The name, with an accelerator.
+    """The browser's name, without an accelerator."""
+
     accelerated_name = _("Library Browser")
-    # Priority in the menu list (0 is first, higher numbers come later)
+    """The name, with an accelerator."""
+
     priority = 100
-    # Whether the browser should appear in the Music->Browse menu.
+    """Priority in the menu list (0 is first, higher numbers come later)"""
+
     in_menu = True
+    """Whether the browser should appear in the Music->Browse menu."""
 
-    # For custom packing, define a function that returns a Widget with the
-    # browser and MainSongList both packed into it.
     def pack(self, songpane):
+        """For custom packing, define a function that returns a Widget with the
+        browser and MainSongList both packed into it.
+        """
         raise NotImplementedError
 
-    # Unpack the browser and songlist when switching browsers in the main
-    # window. The container will be automatically destroyed afterwards.
     def unpack(self, container, songpane):
+        """Unpack the browser and songlist when switching browsers in the main
+        window. The container will be automatically destroyed afterwards.
+        """
         raise NotImplementedError
 
-    # If true, the global filter will be applied by MainSongList to
-    # the songs returned.
     background = True
+    """If true, the global filter will be applied by MainSongList to
+    the songs returned.
+    """
 
-    # A list of column headers to display; None means all are okay.
     headers = None
+    """A list of column headers to display; None means all are okay."""
 
-    # Per-browser remote commands.
     commands = {}
+    """Per-browser remote commands."""
 
-    # Called after library and MainWindow initialization, before the
-    # GTK main loop starts.
     @classmethod
     def init(klass, library):
+        """Called after library and MainWindow initialization, before the
+        GTK main loop starts.
+        """
         pass
 
-    # Save/restore selected songlist. Browsers should save whatever
-    # they need to recreate the criteria for the current song list (not
-    # the list itself). restore is called at startup if the browser
-    # is the first loaded.
     def save(self):
+        """Save the selected songlist. Browsers should save whatever
+        they need to recreate the criteria for the current song list (not
+        the list itself).
+        """
         raise NotImplementedError
 
     def restore(self):
+        """Restore the selected songlist. restore is called at startup if the
+        browser is the first loaded.
+        """
         raise NotImplementedError
 
-    # Called after restore/activate or after the browser is loaded.
-    # restored is True if restore was called.
     def finalize(self, restored):
+        """Called after restore/activate or after the browser is loaded.
+        restored is True if restore was called."""
         pass
 
-    # Scroll to something related to the given song.
     def scroll(self, song):
+        """Scroll to something related to the given song."""
         pass
 
-    # Do whatever is needed to emit songs-selected again.
     def activate(self):
+        """Do whatever is needed to emit songs-selected again."""
         raise NotImplementedError
 
-    # Called when the song list is reordered. If it's not callable
-    # but true, no call is made but the song list is still reorderable.
-    # def reordered(self, songlist): ...
     reordered = None
+    """Called when the song list is reordered. If it's not callable
+    but true, no call is made but the song list is still reorderable.
+        def reordered(self, songlist): ...
+    """
 
-    # Called with the SongList and a list of songs when songs are dropped
-    # but the song list does not support reordering. Adding the songs to
-    # the list is the browser's responsibility. This function should
-    # return True if the drop was successful.
-    # def dropped(self, songlist, songs): ... return True
     dropped = None
+    """Called with the SongList and a list of songs when songs are dropped
+    but the song list does not support reordering. Adding the songs to
+    the list is the browser's responsibility. This function should
+    return True if the drop was successful.
 
-    # An AccelGroup that is added to / removed from the window where
-    # the browser is.
+        def dropped(self, songlist, songs): ... return True
+    """
+
     accelerators = None
+    """An AccelGroup that is added to / removed from the window where
+    the browser is.
+    """
 
-    # This method returns a Gtk.Menu, probably a SongsMenu. After this
-    # menu is returned the SongList may modify it further.
     def Menu(self, songs, songlist, library):
+        """This method returns a Gtk.Menu, probably a SongsMenu. After this
+        menu is returned the SongList may modify it further.
+        """
         menu = SongsMenu(library, songs, delete=True, parent=songlist)
         return menu
 
@@ -218,5 +242,5 @@ class Browser(Filter):
         return ngettext(
             "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", i)
 
-    # Replay Gain profiles for this browser.
     replaygain_profiles = None
+    """Replay Gain profiles for this browser."""
