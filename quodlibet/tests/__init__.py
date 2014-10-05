@@ -158,10 +158,19 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
         if key.startswith('quodlibet'):
             del(sys.modules[key])
 
-    # create a user dir in /tmp
+    # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
-    user_dir = tempfile.mkdtemp(prefix=fsnative(u"QL-USER-"), dir=_TEMP_DIR)
-    os.environ['QUODLIBET_USERDIR'] = user_dir
+
+    # needed for dbus/dconf
+    runtime_dir = tempfile.mkdtemp(prefix=fsnative(u"RUNTIME-"), dir=_TEMP_DIR)
+    os.chmod(runtime_dir, 0700)
+    os.environ["XDG_RUNTIME_DIR"] = runtime_dir
+
+    # set HOME and remove all XDG vars that default to it if not set
+    home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
+    os.environ["HOME"] = home_dir
+    os.environ.pop("XDG_DATA_HOME", None)
+    os.environ.pop("XDG_CACHE_HOME", None)
 
     path = os.path.dirname(__file__)
     if subdirs is None:
