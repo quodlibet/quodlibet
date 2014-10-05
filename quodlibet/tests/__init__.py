@@ -242,19 +242,6 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
 
     import quodlibet.config
 
-    # emulate python2.7 behavior
-    def setup_test(test):
-        if hasattr(TestCase, "setUpClass"):
-            return
-        if hasattr(test, "setUpClass"):
-            test.setUpClass()
-
-    def teardown_test(test):
-        if hasattr(TestCase, "setUpClass"):
-            return
-        if hasattr(test, "tearDownClass"):
-            test.tearDownClass()
-
     runner = Runner()
     failures = errors = 0
     use_suites = filter(filter_func, suites)
@@ -262,13 +249,11 @@ def unit(run=[], filter_func=None, main=False, subdirs=None, strict=False,
         if (not run
                 or test.__name__ in run
                 or test.__module__[11:] in run):
-            setup_test(test)
             df, de = runner.run(test)
             if stop_first and (df or de):
                 break
             failures += df
             errors += de
-            teardown_test(test)
             quodlibet.config.quit()
 
     try:

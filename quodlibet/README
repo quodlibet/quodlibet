@@ -41,7 +41,7 @@ Installation Requirements
 Runtime Requirements
 --------------------
 
-* Python >= 2.6
+* Python >= 2.7
 * PyGObject >= 3.2
 * GTK+ >= 3.0
 * GStreamer >= 1.0 or xine-lib 1.x
