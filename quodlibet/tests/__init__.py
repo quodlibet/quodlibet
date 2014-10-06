@@ -123,9 +123,10 @@ class Result(unittest.TestResult):
 
     CHAR_SUCCESS, CHAR_ERROR, CHAR_FAILURE = '+', 'E', 'F'
 
-    def __init__(self, test_name, num_tests, out=sys.stdout):
+    def __init__(self, test_name, num_tests, out=sys.stdout, failfast=False):
         super(Result, self).__init__()
         self.out = out
+        self.failfast = failfast
         if hasattr(out, "flush"):
             out.flush()
         pref = '%s (%d): ' % (Colorise.bold(test_name), num_tests)
@@ -167,9 +168,9 @@ class Result(unittest.TestResult):
 
 class Runner(object):
 
-    def run(self, test):
+    def run(self, test, failfast=False):
         suite = unittest.makeSuite(test)
-        result = Result(test.__name__, len(suite._tests))
+        result = Result(test.__name__, len(suite._tests), failfast=failfast)
         suite(result)
         result.printErrors()
         return len(result.failures), len(result.errors)
@@ -305,7 +306,7 @@ def _run_tests(run=[], filter_func=None, main=False, subdirs=None,
         if (not run
                 or test.__name__ in run
                 or test.__module__[11:] in run):
-            df, de = runner.run(test)
+            df, de = runner.run(test, failfast=stop_first)
             if stop_first and (df or de):
                 break
             failures += df
