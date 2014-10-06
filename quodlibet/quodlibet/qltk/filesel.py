@@ -9,7 +9,7 @@ import os
 import urlparse
 import errno
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, Gio
 
 from quodlibet import const
 from quodlibet import formats
@@ -119,7 +119,12 @@ def get_drives():
     if os.name == "nt":
         return _get_win_drives()
     else:
-        return []
+        paths = []
+        for mount in Gio.VolumeMonitor.get().get_mounts():
+            path = mount.get_root().get_path()
+            if path is not None:
+                paths.append(glib2fsnative(path))
+        return paths
 
 
 def get_gtk_bookmarks():
