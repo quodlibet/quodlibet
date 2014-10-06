@@ -538,7 +538,22 @@ def main(window):
 
         print_d("Quit GTK: done.")
 
+    def will_terminate(_):
+    	"""
+    	Terminate hook: 
+    	must kill the osxmmkeys plugin's process 
+    	"""
+    	from quodlibet.plugins import PluginManager
+        PluginManager.instance.quit()
+
     window.connect('destroy', quit_gtk)
+    # START MAC OS X STUFF
+    if window.macapp is not None:
+        #window.macapp.connect('NSApplicationBlockTermination', quit_gtk)
+        window.macapp.connect('NSApplicationWillTerminate', will_terminate)
+        window.macapp.ready()
+    # END MAC OS X STUFF
+    
     window.show_maybe()
 
     Gtk.main()
