@@ -112,6 +112,7 @@ David Schneider
 Decklin Foster
 Eduardo Gonzalez
 Erich Schubert
+Eric Le Lay
 Federico Pelloni
 Felix Krull
 Florian Demmer
