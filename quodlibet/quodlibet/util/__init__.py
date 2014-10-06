@@ -405,7 +405,7 @@ def human_sort_key(s, normalize=unicodedata.normalize):
 def website(site):
     """Open the given URL in the user's default browser"""
 
-    if os.name == "nt":
+    if os.name == "nt" or sys.platform == "darwin":
         return webbrowser.open(site)
 
     # all commands here return immediately
