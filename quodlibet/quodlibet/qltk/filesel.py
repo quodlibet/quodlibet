@@ -93,7 +93,7 @@ def get_favorites():
     if os.name == "nt":
         return _get_win_favorites()
     else:
-        paths = ["/", const.HOME]
+        paths = [const.HOME]
 
         xfg_user_dirs = xdg_get_user_dirs()
         for key in ["XDG_DESKTOP_DIR", "XDG_DOWNLOAD_DIR", "XDG_MUSIC_DIR"]:
@@ -124,6 +124,7 @@ def get_drives():
             path = mount.get_root().get_path()
             if path is not None:
                 paths.append(glib2fsnative(path))
+        paths.append("/")
         return paths
 
 
