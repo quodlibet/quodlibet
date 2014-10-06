@@ -635,10 +635,30 @@ class Txdg_dirs(TestCase):
         should = os.path.join(os.path.expanduser("~"), ".local", "share")
         self.failUnlessEqual(xdg_get_data_home(), should)
 
+    def test_get_user_dirs(self):
+        xdg_get_user_dirs()
+
+    def test_parse_xdg_user_dirs(self):
+        data = '# foo\nBLA="$HOME/blah"\n'
+        vars_ = parse_xdg_user_dirs(data)
+        self.assertTrue("BLA" in vars_)
+        expected = os.path.join(os.environ.get("HOME", ""), "blah")
+        self.assertEqual(vars_["BLA"], expected)
+
+        vars_ = parse_xdg_user_dirs('BLA="$HOME/"')
+        self.assertTrue("BLA" in vars_)
+        self.assertEqual(vars_["BLA"], os.environ.get("HOME", ""))
+
+        # some invalid
+        self.assertFalse(parse_xdg_user_dirs("foo"))
+        self.assertFalse(parse_xdg_user_dirs("foo=foo bar"))
+        self.assertFalse(parse_xdg_user_dirs("foo='foo"))
+
     def test_on_windows(self):
         self.assertTrue(xdg_get_system_data_dirs())
         self.assertTrue(xdg_get_cache_home())
         self.assertTrue(xdg_get_data_home())
+        self.assertTrue(xdg_get_config_home())
 
 
 class Tlibrary(TestCase):

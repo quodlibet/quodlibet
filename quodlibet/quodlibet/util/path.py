@@ -11,6 +11,7 @@ import re
 import sys
 import errno
 import tempfile
+import shlex
 import urllib
 from quodlibet.const import FSCODING
 from quodlibet.util.string import decode
@@ -302,6 +303,57 @@ def xdg_get_data_home():
         return os.path.abspath(data_home)
     else:
         return os.path.join(os.path.expanduser("~"), ".local", "share")
+
+
+def xdg_get_config_home():
+    if os.name == "nt":
+        from gi.repository import GLib
+        return glib2fsnative(GLib.get_user_config_dir())
+
+    data_home = os.getenv("XDG_CONFIG_HOME")
+    if data_home:
+        return os.path.abspath(data_home)
+    else:
+        return os.path.join(os.path.expanduser("~"), ".config")
+
+
+def parse_xdg_user_dirs(data):
+    """Parses xdg-user-dirs and returns a dict of keys and paths.
+
+    The paths depend on the content of os.environ while calling this function.
+    See http://www.freedesktop.org/wiki/Software/xdg-user-dirs/
+
+    Can't fail (but might return garbage).
+    """
+    paths = {}
+
+    for line in data.splitlines():
+        if line.startswith("#"):
+            continue
+        parts = line.split("=", 1)
+        if len(parts) <= 1:
+            continue
+        key = parts[0]
+        try:
+            values = shlex.split(parts[1])
+        except ValueError:
+            continue
+        if len(values) != 1:
+            continue
+        paths[key] = os.path.normpath(
+            os.path.expandvars(bytes2fsnative(values[0])))
+
+    return paths
+
+
+def xdg_get_user_dirs():
+    """Returns a dict of xdg keys to paths. The paths don't have to exist."""
+    config_home = xdg_get_config_home()
+    try:
+        with open(os.path.join(config_home, "user-dirs.dirs"), "rb") as h:
+            return parse_xdg_user_dirs(h.read())
+    except EnvironmentError:
+        return {}
 
 
 def get_temp_cover_file(data):

@@ -23,7 +23,7 @@ from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 
 from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
-    glib2fsnative, fsnative
+    glib2fsnative, fsnative, xdg_get_user_dirs
 from quodlibet.util.uri import URI
 
 
@@ -93,7 +93,16 @@ def get_favorites():
     if os.name == "nt":
         return _get_win_favorites()
     else:
-        return [const.HOME, "/"]
+        paths = ["/", const.HOME]
+
+        xfg_user_dirs = xdg_get_user_dirs()
+        for key in ["XDG_DESKTOP_DIR", "XDG_DOWNLOAD_DIR", "XDG_MUSIC_DIR"]:
+            if key in xfg_user_dirs:
+                path = xfg_user_dirs[key]
+                if path not in paths:
+                    paths.append(path)
+
+        return paths
 
 
 def _get_win_drives():
