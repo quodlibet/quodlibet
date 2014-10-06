@@ -274,6 +274,9 @@ def add_signal_watch(signal_action):
         print_d("Register Python signal handler: %r" % name)
         signal.signal(signum, idle_handler)
 
+    if os.name == "nt":
+        return
+
     # also try to use the official glib handling if available,
     # can't hurt I guess
     unix_signal_add = None
