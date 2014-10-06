@@ -72,7 +72,7 @@ else:
 
 import os
 import signal
-from AppKit import NSKeyUp, NSSystemDefined, NSEvent
+from AppKit import NSKeyUp, NSSystemDefined, NSEvent, NSApp
 import Quartz
 
 
@@ -92,8 +92,11 @@ class MacKeyEventsTap(object):
             data = keyEvent.data1()
             keyCode = (data & 0xFFFF0000) >> 16
             keyState = (data & 0xFF00) >> 8
-            if keyState == NSKeyUp and keyCode in self._keyControls:
-                self.sendControl(self._keyControls[keyCode])
+            if keyCode in self._keyControls:
+                if keyState == NSKeyUp:
+                    self.sendControl(self._keyControls[keyCode])
+                return None # swallow the event, so iTunes doesn't launch
+        return event
 
     def sendControl(self, control):
         # Send our control message to QL.
@@ -117,7 +120,7 @@ class MacKeyEventsTap(object):
         tap = Quartz.CGEventTapCreate(
             Quartz.kCGSessionEventTap, # Session level is enough for our needs
             Quartz.kCGHeadInsertEventTap, # Insert wherever, we do not filter
-            Quartz.kCGEventTapOptionListenOnly, # Listening is enough
+            Quartz.kCGEventTapOptionDefault, # Active, to swallow the play/pause event is enough
             # NSSystemDefined for media keys
             Quartz.CGEventMaskBit(NSSystemDefined),
             tapHandler.eventTap,
@@ -132,8 +135,12 @@ class MacKeyEventsTap(object):
         )
         # Enable the tap
         Quartz.CGEventTapEnable(tap, True)
+        # hide the 2nd QuodLibet application icon in Dock
+        # (doesn't work on 10.6 but works on 10.9)
+        NSApp.setActivationPolicy_(2)
         # and run! This won't return until we exit or are terminated.
-        Quartz.CFRunLoopRun()
+        # calling NSApp.run() makes the application icon stop jumping in the Dock
+        NSApp.run()
 
 
 if __name__ == '__main__':
