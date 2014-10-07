@@ -557,7 +557,7 @@ def main(window):
         return True
 
     # START MAC OS X STUFF
-    if window.macapp is not None:
+    if 0 and window.macapp is not None:
         window.macapp.connect(
             'NSApplicationBlockTermination', block_termination)
         window.macapp.connect('NSApplicationWillTerminate', will_terminate)
