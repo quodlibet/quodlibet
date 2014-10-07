@@ -313,9 +313,10 @@ class Album(Collection):
 
             try:
                 round = config.getboolean("albumart", "round")
-                self.cover = thumbnails.get_thumbnail(cover.name, (s, s))
-                self.cover = thumbnails.add_border(
-                    self.cover, 30, round=round, width=scale_factor)
+                thumb = thumbnails.get_thumbnail_from_file(cover, (s, s))
+                if thumb:
+                    self.cover = thumbnails.add_border(
+                        thumb, 30, round=round, width=scale_factor)
             except GLib.GError:
                 return
 
