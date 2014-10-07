@@ -541,16 +541,14 @@ def main(window):
     window.connect('destroy', quit_gtk)
 
     def will_terminate(_):
-    	"""
-    	Terminate hook (called even on force quit): 
-    	must kill the osxmmkeys plugin's process 
-    	"""
-    	from quodlibet.plugins import PluginManager
+        """Terminate hook (called even on force quit):
+        must kill the osxmmkeys plugin's process
+        """
+        from quodlibet.plugins import PluginManager
         PluginManager.instance.quit()
 
     def block_termination(_):
-        """
-        Block termination hook (called on Cmd-Q):
+        """Block termination hook (called on Cmd-Q):
         calling app.quit() synchronously doesn't work,
         so we return True to block termination (the application will not quit
         now) but schedule a call to app.quit() (the application will quit soon)
@@ -560,11 +558,12 @@ def main(window):
 
     # START MAC OS X STUFF
     if window.macapp is not None:
-        window.macapp.connect('NSApplicationBlockTermination', block_termination)
+        window.macapp.connect(
+            'NSApplicationBlockTermination', block_termination)
         window.macapp.connect('NSApplicationWillTerminate', will_terminate)
         window.macapp.ready()
     # END MAC OS X STUFF
-    
+
     window.show_maybe()
 
     Gtk.main()

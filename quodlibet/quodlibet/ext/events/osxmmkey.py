@@ -120,7 +120,8 @@ class MacKeyEventsTap(object):
         tap = Quartz.CGEventTapCreate(
             Quartz.kCGSessionEventTap, # Session level is enough for our needs
             Quartz.kCGHeadInsertEventTap, # Insert wherever, we do not filter
-            Quartz.kCGEventTapOptionDefault, # Active, to swallow the play/pause event is enough
+            # Active, to swallow the play/pause event is enough
+            Quartz.kCGEventTapOptionDefault,
             # NSSystemDefined for media keys
             Quartz.CGEventMaskBit(NSSystemDefined),
             tapHandler.eventTap,
@@ -139,7 +140,8 @@ class MacKeyEventsTap(object):
         # (doesn't work on 10.6 but works on 10.9)
         NSApp.setActivationPolicy_(2)
         # and run! This won't return until we exit or are terminated.
-        # calling NSApp.run() makes the application icon stop jumping in the Dock
+        # calling NSApp.run() makes the application icon stop
+        # jumping in the Dock
         NSApp.run()
 
 
