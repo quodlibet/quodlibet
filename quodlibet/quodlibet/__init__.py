@@ -108,7 +108,7 @@ def _gtk_init(icon=None):
     gi.require_version("GdkPixbuf", "2.0")
     gi.require_version("Gio", "2.0")
 
-    from gi.repository import Gtk, GObject, GLib, Gdk
+    from gi.repository import Gtk, GObject, GLib, Gdk, GdkPixbuf
 
     # add Gtk.TreePath.__getitem__/__len__ for PyGObject 3.2
     try:
@@ -122,6 +122,14 @@ def _gtk_init(icon=None):
         Gdk.BUTTON_PRIMARY = 1
         Gdk.BUTTON_MIDDLE = 2
         Gdk.BUTTON_SECONDARY = 3
+
+    # On windows the default variants only do ANSI paths, so replace them.
+    # In some typelibs they are replaced by default, in some don't..
+    if os.name == "nt":
+        for name in ["new_from_file_at_scale", "new_from_file_at_size",
+                     "new_from_file"]:
+            cls = GdkPixbuf.Pixbuf
+            setattr(cls, name, getattr(cls, name + "_utf8", name))
 
     # Force menu/button image related settings. We might show too many atm
     # but this makes sure we don't miss cases where we forgot to force them
