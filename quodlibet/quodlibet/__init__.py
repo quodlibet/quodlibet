@@ -555,8 +555,7 @@ def main(window):
         so we return True to block termination (the application will not quit
         now) but schedule a call to app.quit() (the application will quit soon)
         """
-        from gi.repository import GObject
-        GObject.idle_add(app.quit)
+        app.quit()
         return True
 
     # START MAC OS X STUFF
