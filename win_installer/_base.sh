@@ -40,7 +40,7 @@ function download_and_verify {
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
         wget -P "$BIN" -c http://ftp.musicbrainz.org/pub/musicbrainz/python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz
 
-        pip install --download="$BIN" mutagen==1.22
+        pip install --download="$BIN" mutagen==1.25
         pip install --download="$BIN" feedparser==5.1.3
 
         # check again
