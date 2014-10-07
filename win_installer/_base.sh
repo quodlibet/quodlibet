@@ -116,8 +116,6 @@ function extract_deps {
     DEPS="$BUILD_ENV"/deps
     mkdir "$DEPS"
 
-    mv "$PYGI"/noarch/GTKold/ "$PYGI"/noarch/GTKOld/
-
     for name in rtvc9 noarch; do
         cp -RT "$PYGI"/"$name"/Base/gnome "$DEPS"
 
@@ -143,6 +141,7 @@ function extract_deps {
         cp -RT "$PYGI"/"$name"/GSTPlugins/gnome "$DEPS"
 
         cp -RT "$PYGI"/"$name"/OpenJPEG/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/OpenEXR/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Curl/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/IDN/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GSTPluginsExtra/gnome "$DEPS"
@@ -151,7 +150,7 @@ function extract_deps {
 
 function setup_deps {
     echo "create the icon theme caches"
-    wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/gnome
+    wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/Adwaita
     wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/hicolor
     wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/HighContrast
 
@@ -162,7 +161,7 @@ function setup_deps {
     local GTK_SETTINGS="$DEPS"/etc/gtk-3.0/settings.ini
     echo "[Settings]" > "$GTK_SETTINGS"
     echo "gtk-theme-name = Adwaita" >> "$GTK_SETTINGS"
-    echo "gtk-fallback-icon-theme = gnome" >> "$GTK_SETTINGS"
+    echo "gtk-fallback-icon-theme = Adwaita" >> "$GTK_SETTINGS"
     echo "gtk-xft-antialias = 1" >> "$GTK_SETTINGS"
     echo "gtk-xft-dpi = 98304" >> "$GTK_SETTINGS"
     echo "gtk-xft-hinting = 1" >> "$GTK_SETTINGS"

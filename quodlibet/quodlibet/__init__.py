@@ -166,6 +166,20 @@ def _gtk_init(icon=None):
         Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
     )
 
+    if os.name == "nt":
+        # somehow borders are missing under Windows & Gtk+3.14
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data("""
+            .menu {
+                border: 1px solid @borders;
+            }
+        """)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
 
