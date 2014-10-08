@@ -414,7 +414,31 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         # Gtk.AccelGroup.connect shadows gobject connect
         GObject.Object.connect(accel_group, 'accel-changed', accel_save_cb)
-        main_box.pack_start(ui.get_widget("/Menu"), False, True, 0)
+
+        # BEGIN MAC OS X STUFF
+        self.macapp = None
+        if Gdk.Display.get_default().__class__.__name__ == "gtk.gdk.QuartzDisplay":
+            try:
+                from gi.repository import GtkosxApplication as gtkosx
+                self.macapp = gtkosx.Application()
+            except ImportError:
+                print_d("importing GtkosxApplication failed, no native menus")
+
+        if self.macapp is not None:
+            menu = ui.get_widget("/Menu")
+            menu.hide()
+            self.macapp.set_menu_bar(menu)
+            # Reparent some items to the "Application" menu
+            item = ui.get_widget('/Menu/Help/About')
+            self.macapp.insert_app_menu_item(item, 0)
+            self.macapp.insert_app_menu_item(Gtk.SeparatorMenuItem(), 1)
+            item = ui.get_widget('/Menu/Music/Preferences')
+            self.macapp.insert_app_menu_item(item, 2)
+            quit_item = ui.get_widget('/Menu/Music/Quit')
+            quit_item.hide()
+        # END MAC OS X STUFF
+        else:
+            main_box.pack_start(ui.get_widget("/Menu"), False, True, 0)
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
