@@ -108,7 +108,7 @@ def _gtk_init(icon=None):
     gi.require_version("GdkPixbuf", "2.0")
     gi.require_version("Gio", "2.0")
 
-    from gi.repository import Gtk, GObject, GLib, Gdk
+    from gi.repository import Gtk, GObject, GLib, Gdk, GdkPixbuf
 
     # add Gtk.TreePath.__getitem__/__len__ for PyGObject 3.2
     try:
@@ -122,6 +122,14 @@ def _gtk_init(icon=None):
         Gdk.BUTTON_PRIMARY = 1
         Gdk.BUTTON_MIDDLE = 2
         Gdk.BUTTON_SECONDARY = 3
+
+    # On windows the default variants only do ANSI paths, so replace them.
+    # In some typelibs they are replaced by default, in some don't..
+    if os.name == "nt":
+        for name in ["new_from_file_at_scale", "new_from_file_at_size",
+                     "new_from_file"]:
+            cls = GdkPixbuf.Pixbuf
+            setattr(cls, name, getattr(cls, name + "_utf8", name))
 
     # Force menu/button image related settings. We might show too many atm
     # but this makes sure we don't miss cases where we forgot to force them
@@ -140,6 +148,7 @@ def _gtk_init(icon=None):
         warnings.simplefilter("ignore")
         settings.set_property("gtk-button-images", True)
         settings.set_property("gtk-menu-images", True)
+        settings.set_property("gtk-primary-button-warps-slider", True)
 
     # Make sure PyGObject includes support for foreign cairo structs
     some_window = Gtk.OffscreenWindow()
@@ -165,6 +174,20 @@ def _gtk_init(icon=None):
         style_provider,
         Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
     )
+
+    if os.name == "nt":
+        # somehow borders are missing under Windows & Gtk+3.14
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data("""
+            .menu {
+                border: 1px solid @borders;
+            }
+        """)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
@@ -565,7 +588,7 @@ def main(window):
         window.macapp.connect('NSApplicationWillTerminate', will_terminate)
         window.macapp.ready()
     # END MAC OS X STUFF
-    
+
     window.show_maybe()
 
     Gtk.main()

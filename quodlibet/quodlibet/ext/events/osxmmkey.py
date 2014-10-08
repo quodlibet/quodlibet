@@ -102,7 +102,8 @@ class MacKeyEventsTap(object):
         self._tap = Quartz.CGEventTapCreate(
             Quartz.kCGSessionEventTap, # Session level is enough for our needs
             Quartz.kCGHeadInsertEventTap, # Insert wherever, we do not filter
-            Quartz.kCGEventTapOptionDefault, # Active, to swallow the play/pause event is enough
+            # Active, to swallow the play/pause event is enough
+            Quartz.kCGEventTapOptionDefault,
             # NSSystemDefined for media keys
             Quartz.CGEventMaskBit(NSSystemDefined),
             self.eventTap,

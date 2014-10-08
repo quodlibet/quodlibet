@@ -37,6 +37,7 @@ Downloads
    \             |fedora-logo| :ref:`Fedora <fedora>`       |opensuse-logo| :ref:`openSUSE <opensuse>`
    \             |arch-logo| :ref:`Arch Linux <arch>`
 **Windows:**     |windows-logo| :ref:`Windows <windows>`
+**Mac OS X:**    |macosx-logo| :ref:`Mac OS X <macosx>`
 **Development:** |hg-logo| :ref:`Source <source>`           |source-logo| :ref:`Release Tarballs <tarballs>`
 ================ ========================================== ================================================
 
@@ -173,6 +174,26 @@ Unstable Repo:
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
 
+
+.. _arch:
+
+|arch-logo| Arch Linux
+----------------------
+
+Stable:
+
+::
+
+    $ pacman -S quodlibet
+
+
+Unstable:
+
+
+See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in 
+the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
+
+
 .. _windows:
 
 |windows-logo| Windows
@@ -198,23 +219,18 @@ Quod Libet 2.6.3 (portable) quodlibet-2.6.3-portable.exe_
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet/downloads/>`__.
 
-.. _arch:
 
-|arch-logo| Arch Linux
+.. _macosx:
+
+|macosx-logo| Mac OS X
 ----------------------
 
-Stable:
+.. note::
 
-::
+    Mac OS X support is still experimental; please report any issue you 
+    encounter.
 
-    $ pacman -S quodlibet
-
-
-Unstable:
-
-
-See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in 
-the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
+Newest bundle (OSX 10.6 - 10.9 x86_64): http://kerik-sf.users.sourceforge.net/quodlibet-osx-bundle/
 
 
 .. _RunFromSource:
@@ -241,24 +257,3 @@ To update to the latest version, switch to the QL dir and run::
 
  $ hg pull --update
  $ ./setup.py build_mo # (only if you need translations)
-
-
-|macosx-logo| Mac OS X
-----------------------
-
-.. note::
-
-    Mac OS X is not officially supported. Having said that, some users have had success as below
-    
-You can use `MacPorts <https://www.macports.org/>`_ to install:
-
-::
-
-    sudo port install quodlibet
-
-Alternatively, others report it is possible to run the Windows version on `OS X WINE <http://wiki.winehq.org/MacOSX>`_.
-
-.. note::
-
-If you would like to help port Quod Libet to OS X, please :ref:`contact the development team <Contact>`.
-

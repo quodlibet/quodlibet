@@ -32,7 +32,7 @@ function download_and_verify {
         wget -P "$BIN" -c http://mercurial.selenic.com/release/windows/mercurial-2.8.1-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.12.2-win32_rev5-setup.exe
+        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0-win32_rev1-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
@@ -40,7 +40,7 @@ function download_and_verify {
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
         wget -P "$BIN" -c http://ftp.musicbrainz.org/pub/musicbrainz/python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz
 
-        pip install --download="$BIN" mutagen==1.22
+        pip install --download="$BIN" mutagen==1.25
         pip install --download="$BIN" feedparser==5.1.3
 
         # check again
@@ -104,7 +104,7 @@ function extract_deps {
     # extract the gi binaries
     PYGI="$BUILD_ENV"/pygi
     echo "extract pygi-aio..."
-    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.12.2-win32_rev5-setup.exe > /dev/null
+    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0-win32_rev1-setup.exe > /dev/null
     echo "done"
     echo "extract packages..."
     (cd "$PYGI"/rtvc9/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
@@ -116,19 +116,17 @@ function extract_deps {
     DEPS="$BUILD_ENV"/deps
     mkdir "$DEPS"
 
-    mv "$PYGI"/noarch/GTKold/ "$PYGI"/noarch/GTKOld/
-
     for name in rtvc9 noarch; do
         cp -RT "$PYGI"/"$name"/Base/gnome "$DEPS"
 
         cp -RT "$PYGI"/"$name"/JPEG/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/WebP/gnome "$DEPS"
 
-        cp -RT "$PYGI"/"$name"/GDKOld/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GDK/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GDKPixbuf/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/ATK/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Pango/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/GTKOld/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GTK/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Harfbuzz/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Openraw/gnome "$DEPS"
 
@@ -143,6 +141,7 @@ function extract_deps {
         cp -RT "$PYGI"/"$name"/GSTPlugins/gnome "$DEPS"
 
         cp -RT "$PYGI"/"$name"/OpenJPEG/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/OpenEXR/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Curl/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/IDN/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GSTPluginsExtra/gnome "$DEPS"
@@ -151,7 +150,7 @@ function extract_deps {
 
 function setup_deps {
     echo "create the icon theme caches"
-    wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/gnome
+    wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/Adwaita
     wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/hicolor
     wine "$DEPS"/gtk-update-icon-cache.exe "$DEPS"/share/icons/HighContrast
 
@@ -162,7 +161,7 @@ function setup_deps {
     local GTK_SETTINGS="$DEPS"/etc/gtk-3.0/settings.ini
     echo "[Settings]" > "$GTK_SETTINGS"
     echo "gtk-theme-name = Adwaita" >> "$GTK_SETTINGS"
-    echo "gtk-fallback-icon-theme = gnome" >> "$GTK_SETTINGS"
+    echo "gtk-fallback-icon-theme = Adwaita" >> "$GTK_SETTINGS"
     echo "gtk-xft-antialias = 1" >> "$GTK_SETTINGS"
     echo "gtk-xft-dpi = 98304" >> "$GTK_SETTINGS"
     echo "gtk-xft-hinting = 1" >> "$GTK_SETTINGS"
