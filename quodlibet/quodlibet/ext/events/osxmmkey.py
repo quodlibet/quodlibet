@@ -80,6 +80,7 @@ class MacKeyEventsTap(object):
     def eventTap(self, proxy, type_, event, refcon):
         if type_ < 0 or type_ > 0x7fffffff:
             print("E: evenTrap disabled by timeout or user input")
+            Quartz.CGEventTapEnable(self._tap, True)
             return event
         # Convert the Quartz CGEvent into something more useful
         keyEvent = NSEvent.eventWithCGEvent_(event)
