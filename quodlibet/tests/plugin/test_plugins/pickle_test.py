@@ -28,4 +28,3 @@ class PickleTestPlugin(EventPlugin):
         s = shelve.open(filename)
         s["foobar"] = PickleMe()
         s.close()
-        os.unlink(filename)
