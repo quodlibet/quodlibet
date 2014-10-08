@@ -5,6 +5,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 import imp
 import shutil
 
@@ -62,7 +63,7 @@ class TOperonBase(TestCase):
 
     def _check(self, args, success, so, se):
         s, o, e = call(args)
-        self.failUnlessEqual(s == 0, success, msg=repr(s))
+        self.failUnlessEqual(s == 0, success, msg=repr((s, o, e)))
         self.failUnlessEqual(bool(o), so, msg=repr(o))
         self.failUnlessEqual(bool(e), se, msg=repr(e))
         return o, e
@@ -374,7 +375,7 @@ class TOperonEdit(TOperonBase):
         self.check_false(["edit", self.f], False, True)
 
     def test_dry_run(self):
-        if os.name == "nt":
+        if os.name == "nt" or sys.platform == "darwin":
             return
 
         realitems = lambda s: [(k, s[k]) for k in s.realkeys()]
@@ -392,7 +393,7 @@ class TOperonEdit(TOperonBase):
         self.assertEqual(sorted(old_items), sorted(realitems(self.s)))
 
     def test_remove_all(self):
-        if os.name == "nt":
+        if os.name == "nt" or sys.platform == "darwin":
             return
 
         os.environ["VISUAL"] = "truncate -s 0"

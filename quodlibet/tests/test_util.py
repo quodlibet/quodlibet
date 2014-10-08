@@ -8,6 +8,7 @@ from tests import TestCase, mkstemp, skipIf
 
 import tempfile
 import os
+import sys
 import re
 import time
 from quodlibet import util
@@ -792,8 +793,12 @@ class Tload_library(TestCase):
         self.assertTrue(lib2 is not lib3)
 
     def test_glib(self):
-        lib, name = util.load_library(["libglib-2.0.so.0"])
-        self.assertEqual(name, "libglib-2.0.so.0")
+        if sys.platform == "darwin":
+            fn = "libglib-2.0.0.dylib"
+        else:
+            fn = "libglib-2.0.so.0"
+        lib, name = util.load_library([fn])
+        self.assertEqual(name, fn)
         self.assertTrue(lib)
 
 

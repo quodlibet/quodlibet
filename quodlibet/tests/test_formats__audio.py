@@ -3,7 +3,7 @@ from tests import TestCase, DATA_DIR
 import os
 
 from quodlibet import config
-from quodlibet.util.path import is_fsnative, fsnative
+from quodlibet.util.path import is_fsnative, fsnative, normalize_path
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
@@ -587,7 +587,7 @@ class Tfind_cover(TestCase):
         self.files.append(f)
         self.assertTrue(isinstance(quux("album"), unicode))
         h = quux.find_cover()
-        self.assertEqual(h.name, f)
+        self.assertEqual(h.name, normalize_path(f))
 
     def test_intelligent(self):
         song = quux
