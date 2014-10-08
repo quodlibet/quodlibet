@@ -148,6 +148,7 @@ def _gtk_init(icon=None):
         warnings.simplefilter("ignore")
         settings.set_property("gtk-button-images", True)
         settings.set_property("gtk-menu-images", True)
+        settings.set_property("gtk-primary-button-warps-slider", True)
 
     # Make sure PyGObject includes support for foreign cairo structs
     some_window = Gtk.OffscreenWindow()
