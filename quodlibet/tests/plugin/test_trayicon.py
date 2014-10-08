@@ -4,11 +4,15 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
+import sys
+
 from gi.repository import Gtk, Gdk, GdkPixbuf
 from quodlibet import config
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
+from tests import skipIf
 
 
+@skipIf(sys.platform == "darwin", "segfaults..")
 class TTrayIcon(PluginTestCase):
     """
     Basic tests for `TrayIcon`
