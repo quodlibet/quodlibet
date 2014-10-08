@@ -190,6 +190,27 @@ def _gtk_init(icon=None):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
 
+    if sys.platform == "darwin":
+        # fix duplicated shadows for popups with Gtk+3.14
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data("""
+            GtkWindow {
+                box-shadow: none;
+            }
+            .tooltip {
+                border-radius: 0;
+                padding: 0;
+            }
+            .tooltip.background {
+                background-clip: border-box;
+            }
+            """)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
 
