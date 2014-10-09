@@ -7,6 +7,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 
 from gi.repository import Gtk, GObject, Gdk, GLib, Gio
 
@@ -417,7 +418,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         # BEGIN MAC OS X STUFF
         self.macapp = None
-        if Gdk.Display.get_default().__class__.__name__ == "gtk.gdk.QuartzDisplay":
+        if sys.platform == "darwin":
             try:
                 from gi.repository import GtkosxApplication as gtkosx
                 self.macapp = gtkosx.Application()

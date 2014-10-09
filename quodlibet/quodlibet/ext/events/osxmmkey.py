@@ -25,7 +25,9 @@
 # intercept them to control QL and prevent iTunes to get them.
 import sys
 
-from quodlibet import const
+from AppKit import NSKeyUp, NSSystemDefined, NSEvent
+import Quartz
+
 from quodlibet.plugins.events import EventPlugin
 
 if not sys.platform.startswith("darwin"):
@@ -33,6 +35,7 @@ if not sys.platform.startswith("darwin"):
     raise PluginNotSupportedError
 
 __all__ = ['OSXMMKey']
+
 
 class OSXMMKey(EventPlugin):
     PLUGIN_ID = "OSXMMKey"
@@ -55,17 +58,10 @@ class OSXMMKey(EventPlugin):
             self.__eventsapp.stopEventsCapture()
             self.__eventsapp = None
 
-
 #
 # Quartz event tap, listens for media key events and translates these to
 # control messages for quodlibet.
-#
 
-
-import os
-import signal
-from AppKit import NSKeyUp, NSSystemDefined, NSEvent, NSApp
-import Quartz
 
 class MacKeyEventsTap(object):
     def __init__(self):
@@ -95,7 +91,7 @@ class MacKeyEventsTap(object):
         return event
 
     def sendControl(self, control):
-        # invoke control directly, so we don't have to wait until 
+        # invoke control directly, so we don't have to wait until
         # the application shows to apply
         control()
 
@@ -111,7 +107,8 @@ class MacKeyEventsTap(object):
             None
         )
         # Create a runloop source and add it to the current loop
-        self._runLoopSource = Quartz.CFMachPortCreateRunLoopSource(None, self._tap, 0)
+        self._runLoopSource = Quartz.CFMachPortCreateRunLoopSource(
+            None, self._tap, 0)
         Quartz.CFRunLoopAddSource(
             Quartz.CFRunLoopGetMain(),
             self._runLoopSource,
@@ -133,7 +130,7 @@ class MacKeyEventsTap(object):
         self._runLoopSource = None
 
     def play_pause(self):
-    	from quodlibet import app
+        from quodlibet import app
         if not app.player.song:
             app.player.reset()
         else:
@@ -146,4 +143,3 @@ class MacKeyEventsTap(object):
     def next(self):
         from quodlibet import app
         app.player.next()
-
