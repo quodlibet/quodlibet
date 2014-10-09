@@ -106,7 +106,7 @@ def main():
     from quodlibet.plugins.events import EventPluginHandler
     pm.register_handler(EventPluginHandler(library.librarian, player))
 
-    from quodlibet.qltk import mmkeys_ as mmkeys
+    from quodlibet.mmkeys import MMKeysHandler
     from quodlibet.qltk.remote import FSInterface, FIFOControl
     from quodlibet.qltk.tracker import SongTracker
     try:
@@ -114,7 +114,7 @@ def main():
     except ImportError:
         DBusHandler = lambda player, library: None
 
-    mmkeys.init(window, player)
+    mmkeys_handler = MMKeysHandler(window, player)
     fsiface = FSInterface(player)
     quodlibet.quit_add(1, fsiface.destroy)
 
@@ -138,6 +138,8 @@ def main():
     GLib.idle_add(LibraryBrowser.restore, library, priority=GLib.PRIORITY_HIGH)
 
     quodlibet.main(window)
+
+    mmkeys_handler.quit()
 
     print_d("Shutting down player device %r." % player.version_info)
     player.destroy()
