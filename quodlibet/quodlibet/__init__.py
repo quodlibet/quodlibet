@@ -148,7 +148,7 @@ def _gtk_init(icon=None):
         warnings.simplefilter("ignore")
         settings.set_property("gtk-button-images", True)
         settings.set_property("gtk-menu-images", True)
-    if settings.find_property("gtk-primary-button-warps-slider"):
+    if hasattr(settings.props, "gtk_primary_button_warps_slider"):
         settings.set_property("gtk-primary-button-warps-slider", True)
 
     # Make sure PyGObject includes support for foreign cairo structs
