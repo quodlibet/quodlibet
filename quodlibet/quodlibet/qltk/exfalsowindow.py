@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 
 from gi.repository import Gtk, GObject, Pango
 
@@ -50,6 +51,14 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         self.set_title("Ex Falso")
         self.set_default_size(750, 475)
         self.enable_window_tracking("exfalso")
+
+        self.macapp = None
+        if sys.platform == "darwin":
+            try:
+                from gi.repository import GtkosxApplication as gtkosx
+                self.macapp = gtkosx.Application()
+            except ImportError:
+                print_d("importing GtkosxApplication failed, no native menus")
 
         self.__library = library
 

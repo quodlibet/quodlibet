@@ -591,6 +591,7 @@ def main(window):
             """Terminate hook (called even on force quit):
             must stop the osxmmkeys plugin's event tap
             """
+            print_d("osx: will terminate")
             from quodlibet.plugins import PluginManager
             PluginManager.instance.quit()
 
@@ -600,6 +601,7 @@ def main(window):
             (the application will not quit now) but schedule a call to
             app.quit() (the application will quit soon)
             """
+            print_d("osx: block termination")
             app.quit()
             return True
 
