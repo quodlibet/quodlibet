@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012 Martijn Pieters <mj@zopatista.com>
+# Copyright 2014 Eric Le Lay elelay.fr:dev
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -20,48 +21,39 @@
 # This plugin also requires that 'access for assistive devices' is enabled, see
 # the Universal Access preference pane in the OS X System Prefences.
 #
-# We run a separate process (not a fork!) so we can run a Quartz event loop
-# without having to bother with making that work with the GTK event loop.
-# There we register a Quartz event tap to listen for the multimedia keys and
-# control QL through it's const.CONTROL pipe.
-
-import subprocess
+# We register a Quartz event tap to listen for the multimedia keys and
+# intercept them to control QL and prevent iTunes to get them.
 import sys
-try:
-    from quodlibet import const
-    from quodlibet.plugins.events import EventPlugin
 
-    if not sys.platform.startswith("darwin"):
-        from quodlibet.plugins import PluginNotSupportedError
-        raise PluginNotSupportedError
+from quodlibet import const
+from quodlibet.plugins.events import EventPlugin
 
-except ImportError:
-    # When executing the event tap process, we may not be able to import
-    # quodlibet libraries, which is fine.
-    pass
-else:
-    __all__ = ['OSXMMKey']
+if not sys.platform.startswith("darwin"):
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
 
-    class OSXMMKey(EventPlugin):
-        PLUGIN_ID = "OSXMMKey"
-        PLUGIN_NAME = _("Mac OS X Multimedia Keys")
-        PLUGIN_DESC = _("Enable Mac OS X Multimedia Shortcut Keys.\n\n"
-            "Requires the PyObjC bindings (with both the Cocoa and Quartz "
-            "framework bridges), and that access for assistive devices "
-            "is enabled (see the Universal Access preference pane).")
-        PLUGIN_VERSION = "0.1"
+__all__ = ['OSXMMKey']
 
-        __eventsapp = None
+class OSXMMKey(EventPlugin):
+    PLUGIN_ID = "OSXMMKey"
+    PLUGIN_NAME = _("Mac OS X Multimedia Keys")
+    PLUGIN_DESC = _("Enable Mac OS X Multimedia Shortcut Keys.\n\n"
+        "Requires the PyObjC bindings (with both the Cocoa and Quartz "
+        "framework bridges), and that access for assistive devices "
+        "is enabled (see the Universal Access preference pane).")
+    PLUGIN_VERSION = "0.1"
 
-        def enabled(self):
-            # Start the event capturing process
-            self.__eventsapp = subprocess.Popen(
-                (sys.executable, __file__, const.CONTROL))
+    __eventstap = None
 
-        def disabled(self):
-            if self.__eventsapp is not None:
-                self.__eventsapp.kill()
-                self.__eventsapp = None
+    def enabled(self):
+        # Start the event capturing process
+        self.__eventsapp = MacKeyEventsTap()
+        self.__eventsapp.runEventsCapture()
+
+    def disabled(self):
+        if self.__eventsapp is not None:
+            self.__eventsapp.stopEventsCapture()
+            self.__eventsapp = None
 
 
 #
@@ -75,17 +67,21 @@ import signal
 from AppKit import NSKeyUp, NSSystemDefined, NSEvent, NSApp
 import Quartz
 
-
 class MacKeyEventsTap(object):
-    def __init__(self, controlPath):
+    def __init__(self):
         self._keyControls = {
-            16: 'play-pause',
-            19: 'next',
-            20: 'previous',
+            16: self.play_pause,
+            19: self.next,
+            20: self.previous,
         }
-        self.controlPath = controlPath
+        self._tap = None
+        self._runLoopSource = None
 
     def eventTap(self, proxy, type_, event, refcon):
+        if type_ < 0 or type_ > 0x7fffffff:
+            print("E: evenTrap disabled by timeout or user input")
+            Quartz.CGEventTapEnable(self._tap, True)
+            return event
         # Convert the Quartz CGEvent into something more useful
         keyEvent = NSEvent.eventWithCGEvent_(event)
         if keyEvent.subtype() is 8: # subtype 8 is media keys
@@ -99,52 +95,55 @@ class MacKeyEventsTap(object):
         return event
 
     def sendControl(self, control):
-        # Send our control message to QL.
-        if not os.path.exists(self.controlPath):
-            sys.exit()
-        try:
-            # This is a total abuse of Python! Hooray!
-            # Totally copied from the quodlibet command line handler too..
-            signal.signal(signal.SIGALRM, lambda: "" + 2)
-            signal.alarm(1)
-            f = file(self.controlPath, "w")
-            signal.signal(signal.SIGALRM, signal.SIG_IGN)
-            f.write(control)
-            f.close()
-        except (OSError, IOError, TypeError):
-            sys.exit()
+        # invoke control directly, so we don't have to wait until 
+        # the application shows to apply
+        control()
 
-    @classmethod
-    def runEventsCapture(cls, controlPath):
-        tapHandler = cls(controlPath)
-        tap = Quartz.CGEventTapCreate(
+    def runEventsCapture(self):
+        self._tap = Quartz.CGEventTapCreate(
             Quartz.kCGSessionEventTap, # Session level is enough for our needs
             Quartz.kCGHeadInsertEventTap, # Insert wherever, we do not filter
             # Active, to swallow the play/pause event is enough
             Quartz.kCGEventTapOptionDefault,
             # NSSystemDefined for media keys
             Quartz.CGEventMaskBit(NSSystemDefined),
-            tapHandler.eventTap,
+            self.eventTap,
             None
         )
         # Create a runloop source and add it to the current loop
-        runLoopSource = Quartz.CFMachPortCreateRunLoopSource(None, tap, 0)
+        self._runLoopSource = Quartz.CFMachPortCreateRunLoopSource(None, self._tap, 0)
         Quartz.CFRunLoopAddSource(
-            Quartz.CFRunLoopGetCurrent(),
-            runLoopSource,
+            Quartz.CFRunLoopGetMain(),
+            self._runLoopSource,
             Quartz.kCFRunLoopDefaultMode
         )
         # Enable the tap
-        Quartz.CGEventTapEnable(tap, True)
-        # hide the 2nd QuodLibet application icon in Dock
-        # (doesn't work on 10.6 but works on 10.9)
-        NSApp.setActivationPolicy_(2)
-        # and run! This won't return until we exit or are terminated.
-        # calling NSApp.run() makes the application icon stop
-        # jumping in the Dock
-        NSApp.run()
+        Quartz.CGEventTapEnable(self._tap, True)
 
+    def stopEventsCapture(self):
+        # Disable the tap
+        Quartz.CGEventTapEnable(self._tap, False)
+        self._tap = None
+        # remove the runloop source
+        Quartz.CFRunLoopRemoveSource(
+            Quartz.CFRunLoopGetMain(),
+            self._runLoopSource,
+            Quartz.kCFRunLoopDefaultMode
+        )
+        self._runLoopSource = None
 
-if __name__ == '__main__':
-    # In the subprocess, capture media key events
-    MacKeyEventsTap.runEventsCapture(sys.argv[1])
+    def play_pause(self):
+    	from quodlibet import app
+        if not app.player.song:
+            app.player.reset()
+        else:
+            app.player.paused = not app.player.paused
+
+    def previous(self):
+        from quodlibet import app
+        app.player.previous()
+
+    def next(self):
+        from quodlibet import app
+        app.player.next()
+
