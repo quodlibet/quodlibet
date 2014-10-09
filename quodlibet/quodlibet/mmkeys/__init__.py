@@ -30,6 +30,13 @@ def iter_backends():
     else:
         yield PyHookBackend
 
+    try:
+        from .osx import OSXBackend
+    except ImportError:
+        pass
+    else:
+        yield OSXBackend
+
 
 def find_active_backend():
     print_d("Trying to find a mmkeys backend")

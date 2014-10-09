@@ -9,10 +9,6 @@
 # osxmmkey - Mac OS X Media Keys support
 # --------------------------------------
 #
-# The osxmmkey plugin adds support for media keys under mac; when enabled the
-# standard play, next and previous buttons control quodlibet the way you'd
-# expect.
-#
 # Requires the PyObjC, with the Cocoa and Quartz bindings to be installed.
 # Under macports, that's the `py27-pyobjc`, `py27-pyobjc-cocoa`
 # and`py27-pyobjc-quartz` ports, or equivalents for the python version used by
@@ -23,77 +19,58 @@
 #
 # We register a Quartz event tap to listen for the multimedia keys and
 # intercept them to control QL and prevent iTunes to get them.
-import sys
+
 
 from AppKit import NSKeyUp, NSSystemDefined, NSEvent
 import Quartz
 
-from quodlibet.plugins.events import EventPlugin
-
-if not sys.platform.startswith("darwin"):
-    from quodlibet.plugins import PluginNotSupportedError
-    raise PluginNotSupportedError
-
-__all__ = ['OSXMMKey']
+from ._base import MMKeysBackend, MMKeysAction
 
 
-class OSXMMKey(EventPlugin):
-    PLUGIN_ID = "OSXMMKey"
-    PLUGIN_NAME = _("Mac OS X Multimedia Keys")
-    PLUGIN_DESC = _("Enable Mac OS X Multimedia Shortcut Keys.\n\n"
-        "Requires the PyObjC bindings (with both the Cocoa and Quartz "
-        "framework bridges), and that access for assistive devices "
-        "is enabled (see the Universal Access preference pane).")
-    PLUGIN_VERSION = "0.1"
+class OSXBackend(MMKeysBackend):
 
-    __eventstap = None
-
-    def enabled(self):
-        # Start the event capturing process
-        self.__eventsapp = MacKeyEventsTap()
+    def __init__(self, name, callback):
+        self.__eventsapp = MacKeyEventsTap(callback)
         self.__eventsapp.runEventsCapture()
 
-    def disabled(self):
+    def cancel(self):
         if self.__eventsapp is not None:
             self.__eventsapp.stopEventsCapture()
             self.__eventsapp = None
 
-#
-# Quartz event tap, listens for media key events and translates these to
-# control messages for quodlibet.
-
 
 class MacKeyEventsTap(object):
-    def __init__(self):
-        self._keyControls = {
-            16: self.play_pause,
-            19: self.next,
-            20: self.previous,
-        }
+    # Quartz event tap, listens for media key events and translates these to
+    # control messages for quodlibet.
+
+    _EVENTS = {
+        16: MMKeysAction.PLAYPAUSE,
+        19: MMKeysAction.NEXT,
+        20: MMKeysAction.PREVIOUS,
+    }
+
+    def __init__(self, callback):
         self._tap = None
         self._runLoopSource = None
+        self._callback = callback
 
-    def eventTap(self, proxy, type_, event, refcon):
+    def _eventTap(self, proxy, type_, event, refcon):
         if type_ < 0 or type_ > 0x7fffffff:
-            print("E: evenTrap disabled by timeout or user input")
+            print_w("evenTrap disabled by timeout or user input")
             Quartz.CGEventTapEnable(self._tap, True)
             return event
+
         # Convert the Quartz CGEvent into something more useful
         keyEvent = NSEvent.eventWithCGEvent_(event)
         if keyEvent.subtype() is 8: # subtype 8 is media keys
             data = keyEvent.data1()
             keyCode = (data & 0xFFFF0000) >> 16
             keyState = (data & 0xFF00) >> 8
-            if keyCode in self._keyControls:
+            if keyCode in self._EVENTS:
                 if keyState == NSKeyUp:
-                    self.sendControl(self._keyControls[keyCode])
+                    self._callback(self._EVENTS[keyCode])
                 return None # swallow the event, so iTunes doesn't launch
         return event
-
-    def sendControl(self, control):
-        # invoke control directly, so we don't have to wait until
-        # the application shows to apply
-        control()
 
     def runEventsCapture(self):
         self._tap = Quartz.CGEventTapCreate(
@@ -103,9 +80,10 @@ class MacKeyEventsTap(object):
             Quartz.kCGEventTapOptionDefault,
             # NSSystemDefined for media keys
             Quartz.CGEventMaskBit(NSSystemDefined),
-            self.eventTap,
+            self._eventTap,
             None
         )
+
         # Create a runloop source and add it to the current loop
         self._runLoopSource = Quartz.CFMachPortCreateRunLoopSource(
             None, self._tap, 0)
@@ -114,6 +92,7 @@ class MacKeyEventsTap(object):
             self._runLoopSource,
             Quartz.kCFRunLoopDefaultMode
         )
+
         # Enable the tap
         Quartz.CGEventTapEnable(self._tap, True)
 
@@ -121,6 +100,7 @@ class MacKeyEventsTap(object):
         # Disable the tap
         Quartz.CGEventTapEnable(self._tap, False)
         self._tap = None
+
         # remove the runloop source
         Quartz.CFRunLoopRemoveSource(
             Quartz.CFRunLoopGetMain(),
@@ -128,18 +108,3 @@ class MacKeyEventsTap(object):
             Quartz.kCFRunLoopDefaultMode
         )
         self._runLoopSource = None
-
-    def play_pause(self):
-        from quodlibet import app
-        if not app.player.song:
-            app.player.reset()
-        else:
-            app.player.paused = not app.player.paused
-
-    def previous(self):
-        from quodlibet import app
-        app.player.previous()
-
-    def next(self):
-        from quodlibet import app
-        app.player.next()

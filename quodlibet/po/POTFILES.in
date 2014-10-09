@@ -48,7 +48,6 @@ quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris.py
 quodlibet/ext/events/notify.py
-quodlibet/ext/events/osxmmkey.py
 quodlibet/ext/events/qlscrobbler.py
 quodlibet/ext/events/radioadmute.py
 quodlibet/ext/events/randomalbum.py
