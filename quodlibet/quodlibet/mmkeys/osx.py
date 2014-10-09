@@ -46,7 +46,7 @@ class MacKeyEventsTap(object):
     _EVENTS = {
         16: MMKeysAction.PLAYPAUSE,
         19: MMKeysAction.NEXT,
-        20: MMKeysAction.PREVIOUS,
+        20: MMKeysAction.PREV,
     }
 
     def __init__(self, callback):
