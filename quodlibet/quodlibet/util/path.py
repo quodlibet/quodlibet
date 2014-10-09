@@ -11,11 +11,18 @@ import re
 import sys
 import errno
 import tempfile
+import codecs
 import shlex
 import urllib
 from quodlibet.const import FSCODING
 from quodlibet.util.string import decode
 from quodlibet import windows
+
+try:
+    from Foundation import NSString
+except ImportError:
+    NSString = None
+
 
 """
 Path related functions like open, os.listdir have different behavior on win32
@@ -395,58 +402,18 @@ def strip_win32_incompat_from_path(string):
     return drive + tail
 
 
-def _normalize_darwin_path(filename, canonicalise=False, strict=False,
-                           _cache={}, _statcache={}):
-    """Get a normalized version of the path by calling listdir
-    and comparing the inodes with our file.
-
-    - This should also work on linux, but returns the same as os.path.normpath.
-    - Any errors get ignored and lead to an un-normalized version.
-    - Supports relative and absolute paths (and returns the same).
-    """
+def _normalize_darwin_path(filename, canonicalise=False):
 
     if canonicalise:
         filename = os.path.realpath(filename)
-
-    if filename in (".", "..", "/", ""):
-        return filename
-
     filename = os.path.normpath(filename)
 
-    def _stat(p):
-        assert p.startswith("/")
-
-        if len(_statcache) > 100:
-            _statcache.clear()
-        if p not in _statcache:
-            _statcache[p] = os.lstat(p)
-        return _statcache[p]
-
-    abspath = os.path.abspath(filename)
-    key = (abspath, filename)
-    if key in _cache:
-        return _cache[key]
-    parent = os.path.dirname(abspath)
+    decoded = filename.decode("utf-8", "quodlibet-osx-path-decode")
 
     try:
-        s1 = _stat(abspath)
-        for entry in os.listdir(parent):
-            entry_path = os.path.join(parent, entry)
-            if not os.path.samestat(s1, _stat(entry_path)):
-                continue
-            dirname = os.path.dirname(filename)
-            norm_dirname = _normalize_darwin_path(dirname)
-            filename = os.path.join(norm_dirname, entry)
-            break
-    except EnvironmentError:
-        if strict:
-            raise
-
-    if len(_cache) > 30:
-        _cache.clear()
-
-    _cache[key] = filename
-    return filename
+        return NSString.fileSystemRepresentation(decoded)
+    except ValueError:
+        return filename
 
 
 def _normalize_path(filename, canonicalise=False):
@@ -460,7 +427,15 @@ def _normalize_path(filename, canonicalise=False):
     return os.path.normcase(filename)
 
 
-if sys.platform == "darwin":
+if sys.platform == "darwin" and NSString is not None:
+
+    def _osx_path_decode_error_handler(error):
+        bytes_ = bytearray(error.object[error.start:error.end])
+        return (u"".join(map("%%%X".__mod__, bytes_)), error.end)
+
+    codecs.register_error(
+        "quodlibet-osx-path-decode", _osx_path_decode_error_handler)
+
     normalize_path = _normalize_darwin_path
 else:
     normalize_path = _normalize_path

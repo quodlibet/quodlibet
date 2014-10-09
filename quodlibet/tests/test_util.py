@@ -680,30 +680,6 @@ class Tlibrary(TestCase):
 
 
 class TNormalizePath(TestCase):
-    def test_darwin(self):
-        if is_win:
-            return
-
-        from quodlibet.util.path import _normalize_darwin_path
-
-        def norm(p):
-            return _normalize_darwin_path(p, strict=True)
-
-        name = tempfile.mkdtemp()
-        basename = os.path.basename(name)
-        old_cwd = os.getcwd()
-        os.chdir(name)
-        try:
-            self.failUnlessEqual(norm(name), name)
-            self.failUnlessEqual(norm("."), ".")
-            self.failUnlessEqual(norm(".."), "..")
-            t = os.path.join("..", basename)
-            self.failUnlessEqual(norm(t), t)
-            t = os.path.join("/", "bin", "..", norm(name))
-            self.failUnlessEqual(norm(t), t)
-        finally:
-            os.chdir(old_cwd)
-            os.rmdir(name)
 
     def test_default(self):
         from quodlibet.util.path import _normalize_path as norm
@@ -718,7 +694,7 @@ class TNormalizePath(TestCase):
     def test_canonicalise(self):
         from quodlibet.util.path import _normalize_path, _normalize_darwin_path
         self._test_canonicalise(_normalize_path)
-        if not is_win:
+        if sys.platform == "darwin":
             self._test_canonicalise(_normalize_darwin_path)
 
     def _test_canonicalise(self, norm):
