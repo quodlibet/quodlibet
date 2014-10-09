@@ -585,31 +585,28 @@ def main(window):
 
     window.connect('destroy', quit_gtk)
 
-    # START MAC OS X STUFF
-    if getattr(window, "macapp", None) is not None:
-        def will_terminate(_):
-            """Terminate hook (called even on force quit):
-            must stop the osxmmkeys plugin's event tap
-            """
-            print_d("osx: will terminate")
-            from quodlibet.plugins import PluginManager
-            PluginManager.instance.quit()
+    if sys.platform == "darwin":
+        try:
+            from gi.repository import GtkosxApplication
+            osx_app = GtkosxApplication.Application()
+        except ImportError:
+            print_d("importing GtkosxApplication failed, no native menus")
+        else:
+            def block_termination(_):
+                """ Block termination hook (called on Cmd-Q): calling
+                app.quit() synchronously doesn't work, so we return True to
+                block termination (the application will not quit now) but
+                schedule a call to app.quit() (the application will quit soon)
+                """
 
-        def block_termination(_):
-            """ Block termination hook (called on Cmd-Q): calling app.quit()
-            synchronously doesn't work, so we return True to block termination
-            (the application will not quit now) but schedule a call to
-            app.quit() (the application will quit soon)
-            """
-            print_d("osx: block termination")
-            app.quit()
-            return True
+                print_d("osx: block termination")
+                app.quit()
+                return True
 
-        window.macapp.connect(
-            'NSApplicationBlockTermination', block_termination)
-        window.macapp.connect('NSApplicationWillTerminate', will_terminate)
-        window.macapp.ready()
-    # END MAC OS X STUFF
+            window.set_as_osx_window(osx_app)
+            osx_app.connect(
+                'NSApplicationBlockTermination', block_termination)
+            osx_app.ready()
 
     window.show_maybe()
 

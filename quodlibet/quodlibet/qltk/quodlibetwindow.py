@@ -7,7 +7,6 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 
 from gi.repository import Gtk, GObject, Gdk, GLib, Gio
 
@@ -416,30 +415,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         # Gtk.AccelGroup.connect shadows gobject connect
         GObject.Object.connect(accel_group, 'accel-changed', accel_save_cb)
 
-        # BEGIN MAC OS X STUFF
-        self.macapp = None
-        if sys.platform == "darwin":
-            try:
-                from gi.repository import GtkosxApplication as gtkosx
-                self.macapp = gtkosx.Application()
-            except ImportError:
-                print_d("importing GtkosxApplication failed, no native menus")
-
-        if self.macapp is not None:
-            menu = ui.get_widget("/Menu")
-            menu.hide()
-            self.macapp.set_menu_bar(menu)
-            # Reparent some items to the "Application" menu
-            item = ui.get_widget('/Menu/Help/About')
-            self.macapp.insert_app_menu_item(item, 0)
-            self.macapp.insert_app_menu_item(Gtk.SeparatorMenuItem(), 1)
-            item = ui.get_widget('/Menu/Music/Preferences')
-            self.macapp.insert_app_menu_item(item, 2)
-            quit_item = ui.get_widget('/Menu/Music/Quit')
-            quit_item.hide()
-        # END MAC OS X STUFF
-        else:
-            main_box.pack_start(ui.get_widget("/Menu"), False, True, 0)
+        main_box.pack_start(ui.get_widget("/Menu"), False, True, 0)
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
@@ -585,6 +561,21 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.connect("destroy", self.__destroy)
 
         self.enable_window_tracking("quodlibet")
+
+    def set_as_osx_window(self, osx_app):
+        assert osx_app
+
+        menu = self.ui.get_widget("/Menu")
+        menu.hide()
+        osx_app.set_menu_bar(menu)
+        # Reparent some items to the "Application" menu
+        item = self.ui.get_widget('/Menu/Help/About')
+        osx_app.insert_app_menu_item(item, 0)
+        osx_app.insert_app_menu_item(Gtk.SeparatorMenuItem(), 1)
+        item = self.ui.get_widget('/Menu/Music/Preferences')
+        osx_app.insert_app_menu_item(item, 2)
+        quit_item = self.ui.get_widget('/Menu/Music/Quit')
+        quit_item.hide()
 
     def __player_error(self, player, song, player_error):
         # it's modal, but mmkeys etc. can still trigger new ones
