@@ -2,6 +2,7 @@ from tests import TestCase
 
 from gi.repository import Gtk
 
+from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.tracker import SongTracker
@@ -10,6 +11,7 @@ from quodlibet.library import SongLibrary
 
 class TSongTracker(TestCase):
     def setUp(self):
+        config.init()
         self.p = NullPlayer()
         self.w = SongLibrary()
         self.s1 = AudioFile(
@@ -63,3 +65,4 @@ class TSongTracker(TestCase):
 
     def tearDown(self):
         self.w.destroy()
+        config.quit()

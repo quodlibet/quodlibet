@@ -10,8 +10,6 @@ import time
 
 from gi.repository import GObject, GLib
 
-import quodlibet
-
 from quodlibet import config
 
 
@@ -75,7 +73,6 @@ class SongTracker(object):
         self.elapsed = 0
         self.__to_change = set()
         self.__change_id = None
-        quodlibet.quit_add(1, self.__quit, librarian, player)
 
     def __changed(self, librarian, song):
         # try to combine changed events and process them if QL is idle
@@ -107,20 +104,22 @@ class SongTracker(object):
             config.set("memory", "song", "")
 
     def __end(self, player, song, ended, librarian, pl):
-        if song is None or song.multisong:
-            return
-        elif self.elapsed > 0.5 * song.get("~#length", 1):
-            song["~#lastplayed"] = int(time.time())
-            song["~#playcount"] = song.get("~#playcount", 0) + 1
-            self.__changed(librarian, song)
-        elif pl.current is not song:
-            if not player.error:
-                song["~#skipcount"] = song.get("~#skipcount", 0) + 1
-                self.__changed(librarian, song)
+        if song is not None and not song.multisong:
+            if ended:
+                config.set("memory", "seek", player.get_position())
+            else:
+                config.set("memory", "seek", 0)
 
-    def __quit(self, librarian, player):
-        config.set("memory", "seek", player.get_position())
-        return 0
+            if self.elapsed > 0.5 * song.get("~#length", 1):
+                song["~#lastplayed"] = int(time.time())
+                song["~#playcount"] = song.get("~#playcount", 0) + 1
+                self.__changed(librarian, song)
+            elif pl.current is not song:
+                if not player.error:
+                    song["~#skipcount"] = song.get("~#skipcount", 0) + 1
+                    self.__changed(librarian, song)
+        else:
+            config.set("memory", "seek", 0)
 
     def __timer(self, timer):
         self.elapsed += 1
