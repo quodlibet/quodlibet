@@ -383,9 +383,6 @@ def init(library=None, icon=None, title=None, name=None):
         # Issue 736 - set after main loop has started (gtk seems to reset it)
         GLib.idle_add(set_process_title, title)
 
-        # so is_first_session() returns False next time
-        quit_add(0, finish_first_session, title)
-
     if name:
         GLib.set_application_name(name)
 
@@ -511,36 +508,12 @@ def _init_debug():
         faulthandler.enable()
 
 
-# minimal emulation of gtk.quit_add
-
-_quit_funcs = []
-
-
-def quit_add(level, func, *args):
-    """level==0 -> after, level !=0 -> before"""
-
-    assert level in (0, 1)
-    _quit_funcs.append([level, func, args])
-
-
-def _quit_before():
-    for level, func, args in _quit_funcs:
-        if level != 0:
-            func(*args)
-
-
-def _quit_after():
-    for level, func, args in _quit_funcs:
-        if level == 0:
-            func(*args)
-
-
 def main(window):
     print_d("Entering quodlibet.main")
     from gi.repository import Gtk
 
     def quit_gtk(m):
-        _quit_before()
+
         # disable plugins
         import quodlibet.plugins
         quodlibet.plugins.quit()
@@ -613,5 +586,3 @@ def main(window):
     window.show_maybe()
 
     Gtk.main()
-
-    _quit_after()

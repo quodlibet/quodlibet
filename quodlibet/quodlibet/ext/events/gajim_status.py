@@ -17,7 +17,6 @@ from string import join
 from gi.repository import Gtk
 import dbus
 
-import quodlibet
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.parse import Pattern
 from quodlibet.qltk import Frame
@@ -61,12 +60,11 @@ class GajimStatusMessage(EventPlugin):
             self.pattern = '<artist> - <title>'
             config.set('plugins', self.c_pattern, self.pattern)
 
-        quodlibet.quit_add(0, self.quit)
-
+    def enabled(self):
         self.interface = None
         self.current = ''
 
-    def quit(self):
+    def disabled(self):
         if self.current != '':
             self.change_status(self.accounts, '')
 

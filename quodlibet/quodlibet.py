@@ -116,10 +116,7 @@ def main():
 
     mmkeys_handler = MMKeysHandler(window, player)
     fsiface = FSInterface(player)
-    quodlibet.quit_add(1, fsiface.destroy)
-
     fifoctrl = FIFOControl(app)
-    quodlibet.quit_add(1, fifoctrl.destroy)
 
     DBusHandler(player, library)
     SongTracker(library.librarian, player, window.playlist)
@@ -139,7 +136,10 @@ def main():
 
     quodlibet.main(window)
 
+    quodlibet.finish_first_session(const.PROCESS_TITLE_QL)
     mmkeys_handler.quit()
+    fifoctrl.destroy()
+    fsiface.destroy()
 
     print_d("Shutting down player device %r." % player.version_info)
     player.destroy()

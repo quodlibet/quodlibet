@@ -69,6 +69,7 @@ class _FIFO(object):
     def destroy(self):
         if self._id is not None:
             GLib.source_remove(self._id)
+            self._id = None
 
         try:
             os.unlink(const.CONTROL)

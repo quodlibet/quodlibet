@@ -55,6 +55,7 @@ def main():
     quodlibet.enable_periodic_save(save_library=False)
     quodlibet.main(app.window)
 
+    quodlibet.finish_first_session(const.PROCESS_TITLE_EF)
     config.save(const.CONFIG)
 
     print_d("Finished shutdown.")
