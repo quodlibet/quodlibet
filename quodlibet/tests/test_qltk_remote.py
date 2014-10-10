@@ -12,6 +12,7 @@ from quodlibet import Application
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongFileLibrary, SongLibrarian
 from quodlibet.player.nullbe import NullPlayer
+from quodlibet.qltk.songlist import PlaylistModel
 from quodlibet.browsers.empty import EmptyBar
 from quodlibet.qltk.remote import FSInterface, FIFOControl
 
@@ -58,6 +59,7 @@ class TFIFOControl(TestCase):
 
         app = App()
         app.player = NullPlayer()
+        app.player.setup(PlaylistModel(), None, 0)
         app.library = SongFileLibrary()
         app.library.librarian = SongLibrarian()
         app.browser = EmptyBar(app.library, True)

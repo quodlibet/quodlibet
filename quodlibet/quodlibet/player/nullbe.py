@@ -6,7 +6,6 @@
 
 from quodlibet.player._base import BasePlayer
 from quodlibet.player import PlayerError
-from quodlibet.qltk.songlist import PlaylistModel
 
 
 class NullPlayer(BasePlayer):
@@ -18,8 +17,11 @@ class NullPlayer(BasePlayer):
     def __init__(self, sinkname="", librarian=None):
         super(NullPlayer, self).__init__()
         self._set_paused(True)
-        self._source = PlaylistModel()
+        self._source = None
         self._position = 0
+
+    def _destroy(self):
+        pass
 
     def get_position(self):
         """Return the current playback position in milliseconds,

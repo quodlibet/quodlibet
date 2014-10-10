@@ -70,6 +70,7 @@ class BasePlayer(GObject.GObject, Equalizer):
     replaygain_profiles = [None, None, None, ["none"]]
     _volume = 1.0
     _paused = True
+    _source = None
 
     _gsignals_ = {
         'song-started':
@@ -95,7 +96,12 @@ class BasePlayer(GObject.GObject, Equalizer):
     def destroy(self):
         """Free resources"""
 
+        if self.song is not self.info:
+            self.emit("song-ended", self.info, True)
+        self.emit("song-ended", self.song, True)
         self._source = None
+
+        self._destroy()
 
     def do_get_property(self, property):
         if property.name == 'volume':
@@ -106,6 +112,11 @@ class BasePlayer(GObject.GObject, Equalizer):
     def _set_volume(self, v):
         self.props.volume = min(1.0, max(0.0, v))
     volume = property(lambda s: s._volume, _set_volume)
+
+    def _destroy(self):
+        """Clean up"""
+
+        raise NotImplementedError
 
     def _end(self, stopped, next_song=None):
         """Start playing the current song from the source or
@@ -120,8 +131,11 @@ class BasePlayer(GObject.GObject, Equalizer):
         seek_pos in millisecs
         """
 
+        assert source is not None
+        if self._source is None:
+            self.emit("song-started", song)
         self._source = source
-        self.go_to(song)
+        self.go_to(song, explicit=True)
         if seek_pos:
             self.seek(seek_pos)
 

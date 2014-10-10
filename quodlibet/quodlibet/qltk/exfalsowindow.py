@@ -157,7 +157,6 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
                 return True # cancel or closed
 
     def __popup_menu(self, view, fs):
-
         # get all songs for the selection
         filenames = [normalize_path(f, canonicalise=True)
                      for f in fs.get_selected_paths()]

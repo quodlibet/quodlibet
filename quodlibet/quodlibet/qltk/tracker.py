@@ -120,7 +120,6 @@ class SongTracker(object):
 
     def __quit(self, librarian, player):
         config.set("memory", "seek", player.get_position())
-        player.emit('song-ended', player.song, True)
         return 0
 
     def __timer(self, timer):

@@ -507,7 +507,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             song = library.get(config.get("memory", "song"))
             seek_pos = config.getint("memory", "seek", 0)
             config.set("memory", "seek", 0)
-            player.setup(self.playlist, song, seek_pos)
+            if song is not None:
+                player.setup(self.playlist, song, seek_pos)
 
         self.__delayed_setup = None
         if not headless:

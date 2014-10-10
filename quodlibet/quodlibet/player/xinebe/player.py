@@ -81,7 +81,7 @@ class XinePlaylistPlayer(BasePlayer):
         xine_event_create_listener_thread(self._event_queue,
             self._event_listener, None)
 
-    def destroy(self):
+    def _destroy(self):
         self._destroyed = True
 
         if self._stream:
@@ -92,7 +92,6 @@ class XinePlaylistPlayer(BasePlayer):
         if self._audio_port:
             self._handle.close_audio_driver(self._audio_port)
         self._handle.exit()
-        super(XinePlaylistPlayer, self).destroy()
 
     def _playback_finished(self):
         if self._destroyed:

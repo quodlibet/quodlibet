@@ -37,6 +37,8 @@ def main():
                                  name="Ex Falso",
                                  title=const.PROCESS_TITLE_EF)
     app.player = quodlibet.init_backend("nullbe", app.librarian)
+    from quodlibet.qltk.songlist import PlaylistModel
+    app.player.setup(PlaylistModel(), None, 0)
     pm = quodlibet.init_plugins()
     pm.rescan()
 

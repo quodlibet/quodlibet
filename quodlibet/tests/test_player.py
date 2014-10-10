@@ -4,8 +4,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
-
 from tests import TestCase, skipUnless, AbstractTestCase
 
 from quodlibet import player
@@ -39,6 +37,15 @@ class TPlayer(AbstractTestCase):
         self.player = module.init(lib.librarian)
         source = PlaylistModel()
         source.set(FILES)
+
+        self.events = []
+
+        def start_end_handler(player, song, *args):
+            self.events.append((args[-1], song))
+
+        self.player.connect("song-started", start_end_handler, "started")
+        self.player.connect("song-ended", start_end_handler, "ended")
+
         self.player.setup(source, None, 0)
 
         self.signals = {}
@@ -48,14 +55,22 @@ class TPlayer(AbstractTestCase):
         self.player.connect_object("unpaused", handler, "unpaused")
         self.player.connect_object("paused", handler, "paused")
 
+    def _check_events(self):
+        # make sure song-started and song-ended match up
+        stack = []
+        old = self.events[:]
+        for type_, song in self.events:
+            if type_ == "started":
+                stack.append(song)
+            elif type_ == "ended":
+                self.assertTrue(stack.pop(-1) is song, msg=old)
+        self.assertFalse(stack, msg=old)
+
     def tearDown(self):
-        import __builtin__
-        pw = print_w
-        __builtin__.__dict__["print_w"] = lambda *x: None
         self.player.destroy()
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-        __builtin__.__dict__["print_w"] = pw
+
+        self._check_events()
+        del self.events
         del self.signals
         config.quit()
 

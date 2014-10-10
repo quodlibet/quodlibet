@@ -177,7 +177,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if self.song and self.song in songs:
             self.volume = self.volume
 
-    def destroy(self):
+    def _destroy(self):
         self.__destroy_pipeline()
 
     @property
