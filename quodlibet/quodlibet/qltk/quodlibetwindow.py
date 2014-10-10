@@ -391,6 +391,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         super(QuodLibetWindow, self).__init__(dialog=False)
         self.last_dir = const.HOME
 
+        self.__destroyed = False
         self.__update_title(player)
         self.set_default_size(550, 450)
 
@@ -692,6 +693,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             pass
 
     def destroy(self, *args):
+        if self.__destroyed:
+            return
+        self.__destroyed = True
         self.__save_browser()
         super(QuodLibetWindow, self).destroy()
 

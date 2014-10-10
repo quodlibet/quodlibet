@@ -62,7 +62,7 @@ class Application(object):
         from gi.repository import GLib
 
         def idle_quit():
-            if self.window and not self.window.in_destruction():
+            if self.window:
                 self.window.destroy()
 
         # so this can be called from a signal handler and before
