@@ -250,8 +250,9 @@ class TrayIcon(EventPlugin):
 
         self.__emb_sig = GLib.idle_add(add_timeout)
 
-        if not config.getboolean("plugins", "icon_window_visible", True):
-            Window.prevent_inital_show(True)
+        if sys.platform != "darwin":
+            if not config.getboolean("plugins", "icon_window_visible", True):
+                Window.prevent_inital_show(True)
 
     def __embedded_changed(self, icon, *args):
         if icon.get_property("embedded"):
@@ -275,6 +276,9 @@ class TrayIcon(EventPlugin):
 
     def __user_can_unhide(self):
         """Return if the user has the possibility to show the Window somehow"""
+
+        if sys.platform == "darwin":
+            return False
 
         # Either if it's embedded, or if we are waiting for the embedded check
         return bool(self._icon.is_embedded() or self.__emb_sig)
@@ -422,7 +426,7 @@ class TrayIcon(EventPlugin):
 
     def __destroy_win32_menu(self):
         """Returns True if current action should only hide the menu"""
-        if sys.platform == "win32" and self.__menu:
+        if sys.platform in ("win32", "darwin") and self.__menu:
             self.__menu.destroy()
             self.__menu = None
             return True
@@ -543,11 +547,11 @@ class TrayIcon(EventPlugin):
 
         menu.show_all()
 
-        if sys.platform != "win32":
+        if sys.platform in ("win32", "darwin"):
+            pos_func = pos_arg = None
+        else:
             pos_func = Gtk.StatusIcon.position_menu
             pos_arg = self._icon
-        else:
-            pos_func = pos_arg = None
 
         menu.popup(None, None, pos_func, pos_arg, button, time)
 
