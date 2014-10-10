@@ -600,7 +600,9 @@ def main(window):
                 """
 
                 print_d("osx: block termination")
-                app.quit()
+                # FIXME: figure out why idle_add is needed here
+                from gi.repository import GLib
+                GLib.idle_add(app.quit)
                 return True
 
             window.set_as_osx_window(osx_app)
