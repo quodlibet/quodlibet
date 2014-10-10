@@ -4,13 +4,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from ._base import MMKeysAction
+from ._base import MMKeysAction, MMKeysImportError
 
 
 def iter_backends():
     try:
         from .gnome import GnomeBackend, MateBackend
-    except ImportError:
+    except MMKeysImportError:
         pass
     else:
         yield GnomeBackend
@@ -18,21 +18,21 @@ def iter_backends():
 
     try:
         from .keybinder import KeybinderBackend
-    except ImportError:
+    except MMKeysImportError:
         pass
     else:
         yield KeybinderBackend
 
     try:
         from .pyhook import PyHookBackend
-    except ImportError:
+    except MMKeysImportError:
         pass
     else:
         yield PyHookBackend
 
     try:
         from .osx import OSXBackend
-    except ImportError:
+    except MMKeysImportError:
         pass
     else:
         yield OSXBackend

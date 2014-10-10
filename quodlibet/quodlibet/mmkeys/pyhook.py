@@ -4,10 +4,14 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import pyHook
 from gi.repository import GLib
 
-from ._base import MMKeysBackend, MMKeysAction
+from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
+
+try:
+    import pyHook
+except ImportError:
+    raise MMKeysImportError
 
 
 class PyHookBackend(MMKeysBackend):

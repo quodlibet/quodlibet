@@ -4,16 +4,19 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
+
 import gi
 
 try:
     gi.require_version("Keybinder", "3.0")
-except ValueError as e:
-    raise ImportError(e)
+except ValueError:
+    raise MMKeysImportError
 
-from gi.repository import Keybinder
-
-from ._base import MMKeysBackend, MMKeysAction
+try:
+    from gi.repository import Keybinder
+except ImportError:
+    raise MMKeysImportError
 
 
 Keybinder.init()

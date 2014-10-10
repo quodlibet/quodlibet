@@ -22,12 +22,15 @@
 
 import threading
 
-from AppKit import NSKeyUp, NSSystemDefined, NSEvent
-import Quartz
-
 from gi.repository import GLib
 
-from ._base import MMKeysBackend, MMKeysAction
+from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
+
+try:
+    from AppKit import NSKeyUp, NSSystemDefined, NSEvent
+    import Quartz
+except ImportError:
+    raise MMKeysImportError
 
 
 class OSXBackend(MMKeysBackend):

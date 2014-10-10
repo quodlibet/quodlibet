@@ -5,6 +5,10 @@
 # published by the Free Software Foundation
 
 
+class MMKeysImportError(ImportError):
+    pass
+
+
 class MMKeysAction(object):
     PLAY = "play"
     STOP = "stop"

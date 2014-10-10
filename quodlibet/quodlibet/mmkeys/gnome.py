@@ -6,9 +6,12 @@
 
 import time
 
-import dbus
+from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
 
-from ._base import MMKeysBackend, MMKeysAction
+try:
+    import dbus
+except ImportError:
+    raise MMKeysImportError
 
 
 class GnomeBackend(MMKeysBackend):
