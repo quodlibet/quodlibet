@@ -559,6 +559,9 @@ def main(window):
     window.connect('destroy', quit_gtk)
 
     if sys.platform == "darwin":
+        from AppKit import NSObject, NSApplication
+        import  objc
+
         try:
             from gi.repository import GtkosxApplication
             osx_app = GtkosxApplication.Application()
@@ -582,6 +585,23 @@ def main(window):
             osx_app.connect(
                 'NSApplicationBlockTermination', block_termination)
             osx_app.ready()
+
+        # Instead of quitting when the main window gets closed just hide it.
+        # If the dock icon gets clicked we get
+        # applicationShouldHandleReopen_hasVisibleWindows_ and show everything.
+        class Delegate(NSObject):
+
+            @objc.signature('B@:#B')
+            def applicationShouldHandleReopen_hasVisibleWindows_(
+                    self, ns_app, flag):
+                app.present()
+                return True
+
+        shared_app = NSApplication.sharedApplication()
+        delegate = Delegate.alloc().init()
+        shared_app.setDelegate_(delegate)
+        window.connect(
+            "delete-event", lambda window, event: window.hide() or True)
 
     window.show_maybe()
 
