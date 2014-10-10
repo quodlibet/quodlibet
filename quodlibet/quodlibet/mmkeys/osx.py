@@ -164,4 +164,3 @@ class MacKeyEventsTap(threading.Thread):
         # stop the loop
         Quartz.CFRunLoopStop(self._loop)
         self._loop = None
-
