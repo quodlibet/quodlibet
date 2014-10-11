@@ -508,6 +508,52 @@ def _init_debug():
         faulthandler.enable()
 
 
+def _init_osx(window):
+    from AppKit import NSObject, NSApplication
+    import objc
+
+    try:
+        from gi.repository import GtkosxApplication
+        osx_app = GtkosxApplication.Application()
+    except ImportError:
+        print_d("importing GtkosxApplication failed, no native menus")
+    else:
+        def block_termination(_):
+            """ Block termination hook (called on Cmd-Q): calling
+            app.quit() synchronously doesn't work, so we return True to
+            block termination (the application will not quit now) but
+            schedule a call to app.quit() (the application will quit soon)
+            """
+
+            print_d("osx: block termination")
+            # FIXME: figure out why idle_add is needed here
+            from gi.repository import GLib
+            GLib.idle_add(app.quit)
+            return True
+
+        window.set_as_osx_window(osx_app)
+        osx_app.connect(
+            'NSApplicationBlockTermination', block_termination)
+        osx_app.ready()
+
+    # Instead of quitting when the main window gets closed just hide it.
+    # If the dock icon gets clicked we get
+    # applicationShouldHandleReopen_hasVisibleWindows_ and show everything.
+    class Delegate(NSObject):
+
+        @objc.signature('B@:#B')
+        def applicationShouldHandleReopen_hasVisibleWindows_(
+                self, ns_app, flag):
+            app.present()
+            return True
+
+    shared_app = NSApplication.sharedApplication()
+    delegate = Delegate.alloc().init()
+    shared_app.setDelegate_(delegate)
+    window.connect(
+        "delete-event", lambda window, event: window.hide() or True)
+
+
 def main(window):
     print_d("Entering quodlibet.main")
     from gi.repository import Gtk
@@ -559,49 +605,7 @@ def main(window):
     window.connect('destroy', quit_gtk)
 
     if sys.platform == "darwin":
-        from AppKit import NSObject, NSApplication
-        import objc
-
-        try:
-            from gi.repository import GtkosxApplication
-            osx_app = GtkosxApplication.Application()
-        except ImportError:
-            print_d("importing GtkosxApplication failed, no native menus")
-        else:
-            def block_termination(_):
-                """ Block termination hook (called on Cmd-Q): calling
-                app.quit() synchronously doesn't work, so we return True to
-                block termination (the application will not quit now) but
-                schedule a call to app.quit() (the application will quit soon)
-                """
-
-                print_d("osx: block termination")
-                # FIXME: figure out why idle_add is needed here
-                from gi.repository import GLib
-                GLib.idle_add(app.quit)
-                return True
-
-            window.set_as_osx_window(osx_app)
-            osx_app.connect(
-                'NSApplicationBlockTermination', block_termination)
-            osx_app.ready()
-
-        # Instead of quitting when the main window gets closed just hide it.
-        # If the dock icon gets clicked we get
-        # applicationShouldHandleReopen_hasVisibleWindows_ and show everything.
-        class Delegate(NSObject):
-
-            @objc.signature('B@:#B')
-            def applicationShouldHandleReopen_hasVisibleWindows_(
-                    self, ns_app, flag):
-                app.present()
-                return True
-
-        shared_app = NSApplication.sharedApplication()
-        delegate = Delegate.alloc().init()
-        shared_app.setDelegate_(delegate)
-        window.connect(
-            "delete-event", lambda window, event: window.hide() or True)
+        _init_osx(window)
 
     window.show_maybe()
 
