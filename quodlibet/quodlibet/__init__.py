@@ -522,9 +522,7 @@ def _init_osx(window):
 
         def applicationShouldTerminate_(self, sender):
             print_d("osx: block termination")
-            # FIXME: figure out why idle_add is needed here
-            from gi.repository import GLib
-            GLib.idle_add(app.quit)
+            app.quit()
             return False
 
     shared_app = NSApplication.sharedApplication()
