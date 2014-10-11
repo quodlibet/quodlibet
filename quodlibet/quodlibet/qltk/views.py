@@ -73,16 +73,30 @@ class TreeViewHints(Gtk.Window):
         if gtk_version < (3, 13):
             self.set_border_width(1)
 
-        # leave notify seems a bit broken under osx and triggers too often
-        # leading to blinking (tested Gtk+3.14).
-        if sys.platform != "darwin":
-            self.connect('leave-notify-event', self.__undisplay)
+        self.connect(
+                   'leave-notify-event', self.__filter_notify, self.__undisplay)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
         self.__current_renderer = None
         self.__view = None
         self.__hide_id = None
+
+    def __filter_notify(self, widget, event, func=None):
+        # On OSX we get bogus notify events (move and leave) so filter them out
+        if sys.platform == "darwin":
+            alloc = widget.get_allocation()
+            minx = alloc.x
+            maxx = minx + alloc.width
+            miny = alloc.y
+            maxy = miny + alloc.height
+            if not minx <= event.x <= maxx or not miny <= event.y <= maxy:
+                return True
+
+        if func:
+            return func(widget, event)
+        else:
+            return False
 
     def connect_view(self, view):
 
@@ -109,17 +123,12 @@ class TreeViewHints(Gtk.Window):
 
         self.__handlers[view] = [
             view.connect('motion-notify-event', self.__motion),
+            view.connect('leave-notify-event', self.__motion),
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
             view.connect('unmap', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
         ]
-
-        # see above
-        if sys.platform != "darwin":
-            self.__handlers[view].append(
-                view.connect('leave-notify-event', self.__motion),
-            )
 
     def disconnect_view(self, view):
         try:
@@ -144,6 +153,9 @@ class TreeViewHints(Gtk.Window):
     def __motion(self, view, event):
         label = self.__label
         clabel = self.__clabel
+
+        if self.__filter_notify(view, event):
+            return True
 
         # trigger over row area, not column headers
         if event.window is not view.get_bin_window():
