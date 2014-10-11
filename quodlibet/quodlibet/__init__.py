@@ -549,6 +549,7 @@ def _init_osx(window):
 
     shared_app = NSApplication.sharedApplication()
     delegate = Delegate.alloc().init()
+    delegate.retain()
     shared_app.setDelegate_(delegate)
     window.connect(
         "delete-event", lambda window, event: window.hide() or True)
