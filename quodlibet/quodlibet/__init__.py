@@ -518,22 +518,7 @@ def _init_osx(window):
     except ImportError:
         print_d("importing GtkosxApplication failed, no native menus")
     else:
-        def block_termination(_):
-            """ Block termination hook (called on Cmd-Q): calling
-            app.quit() synchronously doesn't work, so we return True to
-            block termination (the application will not quit now) but
-            schedule a call to app.quit() (the application will quit soon)
-            """
-
-            print_d("osx: block termination")
-            # FIXME: figure out why idle_add is needed here
-            from gi.repository import GLib
-            GLib.idle_add(app.quit)
-            return True
-
         window.set_as_osx_window(osx_app)
-        osx_app.connect(
-            'NSApplicationBlockTermination', block_termination)
         osx_app.ready()
 
     # Instead of quitting when the main window gets closed just hide it.
@@ -544,8 +529,16 @@ def _init_osx(window):
         @objc.signature('B@:#B')
         def applicationShouldHandleReopen_hasVisibleWindows_(
                 self, ns_app, flag):
+            print_d("osx: handle reopen")
             app.present()
             return True
+
+        def applicationShouldTerminate_(self, sender):
+            print_d("osx: block termination")
+            # FIXME: figure out why idle_add is needed here
+            from gi.repository import GLib
+            GLib.idle_add(app.quit)
+            return False
 
     shared_app = NSApplication.sharedApplication()
     delegate = Delegate.alloc().init()
