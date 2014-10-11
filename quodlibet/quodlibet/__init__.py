@@ -560,7 +560,7 @@ def main(window):
 
     if sys.platform == "darwin":
         from AppKit import NSObject, NSApplication
-        import  objc
+        import objc
 
         try:
             from gi.repository import GtkosxApplication
