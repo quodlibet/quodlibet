@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import sys
 import contextlib
 from cStringIO import StringIO
 
@@ -71,7 +72,11 @@ class TreeViewHints(Gtk.Window):
         self.set_name("gtk-tooltip")
         if gtk_version < (3, 13):
             self.set_border_width(1)
-        self.connect('leave-notify-event', self.__undisplay)
+
+        # leave notify seems a bit broken under osx and triggers too often
+        # leading to blinking (tested Gtk+3.14).
+        if sys.platform != "darwin":
+            self.connect('leave-notify-event', self.__undisplay)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
@@ -104,12 +109,17 @@ class TreeViewHints(Gtk.Window):
 
         self.__handlers[view] = [
             view.connect('motion-notify-event', self.__motion),
-            view.connect('leave-notify-event', self.__motion),
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
             view.connect('unmap', self.__undisplay),
             view.connect('destroy', self.disconnect_view),
         ]
+
+        # see above
+        if sys.platform != "darwin":
+            self.__handlers[view].append(
+                view.connect('leave-notify-event', self.__motion),
+            )
 
     def disconnect_view(self, view):
         try:
