@@ -74,7 +74,7 @@ class TreeViewHints(Gtk.Window):
             self.set_border_width(1)
 
         self.connect(
-                   'leave-notify-event', self.__filter_notify, self.__undisplay)
+            'leave-notify-event', self.__filter_notify, self.__undisplay)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
