@@ -121,7 +121,7 @@ class GnomeBackend(MMKeysBackend):
         elif not self.__interface:
             # new owner, get a new interface object and
             # resend the last grab event
-            self.__grab(update=False)
+            self.grab(update=False)
 
     def __key_pressed(self, application, action):
         if application != self.__name:
