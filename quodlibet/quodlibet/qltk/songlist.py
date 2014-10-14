@@ -1134,14 +1134,15 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if event is not None and event.button != Gdk.BUTTON_SECONDARY:
             return False
 
+        menu = self.__getmenu(column)
+        menu.attach_to_widget(self, None)
+
         if event:
-            self.__getmenu(column).popup(None, None, None, None,
-                                         event.button, time)
+            menu.popup(None, None, None, None, event.button, time)
             return True
 
         widget = column.get_widget()
-        return qltk.popup_menu_under_widget(self.__getmenu(column),
-                widget, 3, time)
+        return qltk.popup_menu_under_widget(menu, widget, 3, time)
 
 
 @config.register_upgrade_function

@@ -929,6 +929,7 @@ class RCMTreeView(BaseView):
         else:
             pos_func = None
 
+        menu.attach_to_widget(self, None)
         menu.popup(None, None, pos_func, None, button, time)
         return True
 

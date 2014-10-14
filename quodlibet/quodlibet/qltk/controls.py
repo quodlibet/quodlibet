@@ -90,6 +90,7 @@ class SeekBar(HSlider):
         i.connect('activate', edit_bookmarks_cb)
         m.append(i)
         m.show_all()
+        m.attach_to_widget(self, None)
         self.connect_object(
             'button-press-event', self.__check_menu, m, player, c)
         self.connect_object('popup-menu', self.__popup_menu, m, player)
@@ -213,6 +214,7 @@ class Volume(Gtk.VolumeButton):
         self.set_value(config.getfloat("memory", "volume"))
 
         replaygain_menu = ReplayGainMenu(device)
+        replaygain_menu.attach_to_widget(self, None)
         self.connect('popup-menu', self.__popup, replaygain_menu)
         self.connect_object('button-press-event', self.__volume_button_press,
                             replaygain_menu)
