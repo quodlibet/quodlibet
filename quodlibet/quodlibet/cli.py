@@ -5,16 +5,19 @@
 # published by the Free Software Foundation
 
 import os
-import stat
 import tempfile
-import signal
 import sys
-from quodlibet.util.dprint import print_, print_d, print_w, print_e
+from quodlibet.util.dprint import print_, print_d, print_e
 
 
 def print_fifo(command):
     import quodlibet
+
+    if os.name == "nt":
+        quodlibet.exit("Sorry, not yet implemented under Windows")
+
     from quodlibet import const
+    from quodlibet.remote import Remote
 
     if not os.path.exists(const.CURRENT):
         quodlibet.exit("not-running")
@@ -25,12 +28,8 @@ def print_fifo(command):
             # mkfifo fails if the file exists, so this is safe.
             os.mkfifo(filename, 0o600)
 
-            signal.signal(signal.SIGALRM, lambda: "" + 2)
-            signal.alarm(1)
-            f = file(const.CONTROL, "w")
-            signal.signal(signal.SIGALRM, signal.SIG_IGN)
-            f.write(command + " " + filename)
-            f.close()
+            if not Remote.send_message(command + " " + filename):
+                raise TypeError
 
             f = file(filename, "r")
             sys.stdout.write(f.read())
@@ -85,46 +84,27 @@ def print_query(query):
 
 
 def is_running():
-    from quodlibet import const
+    """If there is another instance running"""
 
-    # http://code.google.com/p/quodlibet/issues/detail?id=1131
-    # FIXME: There is a race where control() creates a new file
-    # instead of writing to the FIFO, confusing the next QL instance.
-    # Remove non-FIFOs here for now.
-    try:
-        if not stat.S_ISFIFO(os.stat(const.CONTROL).st_mode):
-            print_d("%r not a FIFO. Remove it." % const.CONTROL)
-            os.remove(const.CONTROL)
-    except OSError:
-        pass
-    return os.path.exists(const.CONTROL)
+    from quodlibet.remote import Remote
+
+    return Remote.remote_exists()
 
 
-def control(c):
+def control(command):
+    """Sends command to the existing instance if possible and exits.
+
+    Does not return.
+    """
+
     import quodlibet
-    from quodlibet import const
+    from quodlibet.remote import Remote
 
     if not is_running():
         quodlibet.exit(_("Quod Libet is not running."), notify_startup=True)
     else:
-        try:
-            # This is a total abuse of Python! Hooray!
-            signal.signal(signal.SIGALRM, lambda: "" + 2)
-            signal.alarm(1)
-            f = file(const.CONTROL, "w")
-            signal.signal(signal.SIGALRM, signal.SIG_IGN)
-            f.write(c)
-            f.close()
-        except (OSError, IOError, TypeError):
-            print_w(_("Unable to write to %s. Removing it.") % const.CONTROL)
-            try:
-                os.unlink(const.CONTROL)
-            except OSError:
-                pass
-            if c != 'focus':
-                raise quodlibet.exit(True, notify_startup=True)
-        else:
-            quodlibet.exit(notify_startup=True)
+        ok = Remote.send_message(command)
+        quodlibet.exit(0 if ok else 1, notify_startup=True)
 
 
 def process_arguments():

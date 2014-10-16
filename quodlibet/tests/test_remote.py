@@ -5,52 +5,18 @@ import os
 
 from gi.repository import Gtk
 
-from quodlibet import const
 from quodlibet import config
 from quodlibet import Application
 
-from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongFileLibrary, SongLibrarian
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.songlist import PlaylistModel
 from quodlibet.browsers.empty import EmptyBar
-from quodlibet.qltk.remote import FSInterface, FIFOControl
+from quodlibet.remote import Remote
+from quodlibet.commands import registry
 
 
-class TFSInterface(TestCase):
-    def setUp(self):
-        self.p = NullPlayer()
-        self.fs = FSInterface(self.p)
-
-    def do(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
-    def test_init(self):
-        self.do()
-        self.failIf(os.path.exists(const.CURRENT))
-
-    def test_start(self):
-        self.p.emit('song_started', AudioFile({"woo": "bar", "~#length": 10}))
-        self.do()
-        self.failUnless("woo=bar\n" in file(const.CURRENT).read())
-
-    def test_song_ended(self):
-        self.p.emit('song-started', AudioFile({"woo": "bar", "~#length": 10}))
-        self.do()
-        self.p.emit('song-ended', {}, False)
-        self.do()
-        self.failIf(os.path.exists(const.CURRENT))
-
-    def tearDown(self):
-        self.p.destroy()
-        try:
-            os.unlink(const.CURRENT)
-        except EnvironmentError:
-            pass
-
-
-class TFIFOControl(TestCase):
+class TRemoteControl(TestCase):
     def setUp(self):
         config.init()
 
@@ -65,16 +31,15 @@ class TFIFOControl(TestCase):
         app.browser = EmptyBar(app.library, True)
         app.window = Gtk.OffscreenWindow()
 
-        self.fifo = FIFOControl(app)
+        self.fifo = Remote(app, registry)
+        self.fifo.start()
 
     def tearDown(self):
-        self.fifo.destroy()
+        self.fifo.stop()
         config.quit()
 
     def __send(self, command):
-        f = open(const.CONTROL, "wb")
-        f.write(command)
-        f.close()
+        self.assertTrue(Remote.send_message(command), msg=command)
         while Gtk.events_pending():
             Gtk.main_iteration()
 
@@ -95,6 +60,9 @@ class TFIFOControl(TestCase):
         self.__send("seek 0")
 
     def test_misc(self):
+        if os.name == "nt":
+            return
+
         #self.__send("add-directory /dev/null")
         with capture_output():
             self.__send("add-file /dev/null")

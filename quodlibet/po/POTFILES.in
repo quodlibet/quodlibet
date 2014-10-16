@@ -149,7 +149,6 @@ quodlibet/qltk/properties.py
 quodlibet/qltk/queue.py
 quodlibet/qltk/quodlibetwindow.py
 quodlibet/qltk/ratingsmenu.py
-quodlibet/qltk/remote.py
 quodlibet/qltk/renamefiles.py
 quodlibet/qltk/scanbox.py
 quodlibet/qltk/searchbar.py

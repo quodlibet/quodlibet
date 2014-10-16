@@ -107,8 +107,9 @@ def main():
     pm.register_handler(EventPluginHandler(library.librarian, player))
 
     from quodlibet.mmkeys import MMKeysHandler
-    from quodlibet.qltk.remote import FSInterface, FIFOControl
-    from quodlibet.qltk.tracker import SongTracker
+    from quodlibet.remote import Remote
+    from quodlibet.commands import registry as cmd_registry
+    from quodlibet.qltk.tracker import SongTracker, FSInterface
     try:
         from quodlibet.qltk.dbus_ import DBusHandler
     except ImportError:
@@ -116,7 +117,8 @@ def main():
 
     mmkeys_handler = MMKeysHandler(window, player)
     fsiface = FSInterface(player)
-    fifoctrl = FIFOControl(app)
+    remote = Remote(app, cmd_registry)
+    remote.start()
 
     DBusHandler(player, library)
     SongTracker(library.librarian, player, window.playlist)
@@ -138,7 +140,7 @@ def main():
 
     quodlibet.finish_first_session(const.PROCESS_TITLE_QL)
     mmkeys_handler.quit()
-    fifoctrl.destroy()
+    remote.stop()
     fsiface.destroy()
 
     print_d("Shutting down player device %r." % player.version_info)

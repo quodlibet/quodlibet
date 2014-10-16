@@ -6,11 +6,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import time
 
 from gi.repository import GObject, GLib
 
 from quodlibet import config
+from quodlibet import const
 
 
 class TimeTracker(GObject.GObject):
@@ -123,3 +125,33 @@ class SongTracker(object):
 
     def __timer(self, timer):
         self.elapsed += 1
+
+
+class FSInterface(object):
+    """Provides a file in ~/.quodlibet to indicate what song is playing."""
+
+    def __init__(self, player):
+        player.connect('song-started', self.__started)
+        player.connect('song-ended', self.__ended)
+
+    def destroy(self):
+        try:
+            os.unlink(const.CURRENT)
+        except EnvironmentError:
+            pass
+
+    def __started(self, player, song):
+        if song:
+            try:
+                f = file(const.CURRENT, "w")
+            except EnvironmentError:
+                pass
+            else:
+                f.write(song.to_dump())
+                f.close()
+
+    def __ended(self, player, song, stopped):
+        try:
+            os.unlink(const.CURRENT)
+        except EnvironmentError:
+            pass
