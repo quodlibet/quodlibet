@@ -9,7 +9,7 @@ import os
 import urlparse
 import errno
 
-from gi.repository import Gtk, GObject, Gdk, Gio
+from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
 from quodlibet import const
 from quodlibet import formats
@@ -17,7 +17,8 @@ from quodlibet import qltk
 from quodlibet import windows
 
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.qltk.views import AllTreeView, RCMTreeView, MultiDragTreeView
+from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, \
+    MultiDragTreeView
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
@@ -153,7 +154,7 @@ def get_gtk_bookmarks():
     return folders
 
 
-class DirectoryTree(RCMTreeView, MultiDragTreeView):
+class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
     """A tree view showing multiple folder hierarchies"""
 
     def __init__(self, initial=None, folders=None):
@@ -175,6 +176,8 @@ class DirectoryTree(RCMTreeView, MultiDragTreeView):
         render.set_property('stock_id', Gtk.STOCK_DIRECTORY)
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
+        if self.supports_hints():
+            render.set_property('ellipsize', Pango.EllipsizeMode.END)
         column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
@@ -481,6 +484,8 @@ class FileSelector(Gtk.VPaned):
         render.props.xpad = 3
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
+        if filelist.supports_hints():
+            render.set_property('ellipsize', Pango.EllipsizeMode.END)
         column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):

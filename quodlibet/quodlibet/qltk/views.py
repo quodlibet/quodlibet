@@ -982,12 +982,19 @@ class HintedTreeView(BaseView):
 
     def __init__(self, *args, **kwargs):
         super(HintedTreeView, self).__init__(*args, **kwargs)
-        if not config.state('disable_hints'):
+        if self.supports_hints():
             try:
                 tvh = HintedTreeView.hints
             except AttributeError:
                 tvh = HintedTreeView.hints = TreeViewHints()
             tvh.connect_view(self)
+
+    def supports_hints(self):
+        """If the treeview hints support is enabled. Can be used to
+        display scroll bars instead for example.
+        """
+
+        return not config.state('disable_hints')
 
 
 class TreeViewColumn(Gtk.TreeViewColumn):

@@ -212,7 +212,8 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
 
         imgrender = Gtk.CellRendererPixbuf()
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        if view.supports_hints():
+            render.set_property('ellipsize', Pango.EllipsizeMode.END)
         column.pack_start(imgrender, False)
         column.pack_start(render, True)
         column.set_cell_data_func(render, cell_data)

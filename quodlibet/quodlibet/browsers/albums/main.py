@@ -456,7 +456,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         render = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn("albums", render)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        if view.supports_hints():
+            render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
         def cell_data(column, cell, model, iter_, data):
             album = model.get_album(iter_)
@@ -483,7 +484,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         view.set_search_equal_func(self.__search_func, None)
         view.set_search_column(0)
         view.set_model(model_filter)
-        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
 
         if main:
