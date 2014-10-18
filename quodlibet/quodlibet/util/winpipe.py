@@ -55,13 +55,9 @@ class NamedPipeServer(threading.Thread):
 
         super(NamedPipeServer, self).__init__()
         self._event = threading.Event()
-        self._handle = None
-        self._name = name
+        self._filename = self._get_filename(name)
         self._callback = callback
-
-    @property
-    def filename(self):
-        return self._get_filename(self._name)
+        self._stopped = False
 
     @classmethod
     def _get_filename(cls, name):
@@ -69,7 +65,7 @@ class NamedPipeServer(threading.Thread):
 
     def _process(self, data):
         def idle_process(data):
-            if self._callback is not None:
+            if not self._stopped:
                 self._callback(data)
             return False
 
@@ -87,7 +83,7 @@ class NamedPipeServer(threading.Thread):
         timeout_ms = 50
 
         handle = win32pipe.CreateNamedPipe(
-            self.filename,
+            self._filename,
             win32pipe.PIPE_ACCESS_INBOUND,
             (win32pipe.PIPE_TYPE_BYTE | win32pipe.PIPE_READMODE_BYTE |
              win32pipe.PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS),
@@ -98,10 +94,10 @@ class NamedPipeServer(threading.Thread):
             None)
 
         if handle == win32file.INVALID_HANDLE_VALUE:
-            self._handle = None
+            self._stopped = True
+            self._event.set()
             return
 
-        self._handle = handle
         self._event.set()
 
         while 1:
@@ -119,15 +115,17 @@ class NamedPipeServer(threading.Thread):
 
                 win32pipe.DisconnectNamedPipe(handle)
             except pywintypes.error:
-                # on stop() for example
+                # better not loop forever..
                 break
             finally:
+                if self._stopped:
+                    break
                 if data:
                     self._process(bytes(data))
 
         try:
             win32file.CloseHandle(handle)
-        except pywintypes.error:
+        except pywintypes.error as e:
             pass
 
     def stop(self):
@@ -136,15 +134,16 @@ class NamedPipeServer(threading.Thread):
         """
 
         self._event.wait()
-        if self._handle is None:
+        if self._stopped:
             return
+
+        self._stopped = True
         try:
-            win32pipe.DisconnectNamedPipe(self._handle)
-        except pywintypes.error:
+            with open(self._filename, "wb") as h:
+                h.write("stop!")
+        except EnvironmentError:
             pass
-        try:
-            win32file.CloseHandle(self._handle)
-        except pywintypes.error:
-            pass
-        self._handle = None
+
         self._callback = None
+
+        self.join()
