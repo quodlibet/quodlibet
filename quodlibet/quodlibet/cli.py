@@ -5,50 +5,12 @@
 # published by the Free Software Foundation
 
 import os
-import tempfile
 import sys
 from quodlibet.util.dprint import print_, print_d, print_e
-
-
-def print_fifo(command):
-    import quodlibet
-
-    if os.name == "nt":
-        quodlibet.exit("Sorry, not yet implemented under Windows")
-
-    from quodlibet import const
-    from quodlibet.remote import Remote
-
-    if not os.path.exists(const.CURRENT):
-        quodlibet.exit("not-running")
-    else:
-        fd, filename = tempfile.mkstemp()
-        try:
-            os.unlink(filename)
-            # mkfifo fails if the file exists, so this is safe.
-            os.mkfifo(filename, 0o600)
-
-            if not Remote.send_message(command + " " + filename):
-                raise TypeError
-
-            f = file(filename, "r")
-            sys.stdout.write(f.read())
-            try:
-                os.unlink(filename)
-            except EnvironmentError:
-                pass
-            f.close()
-            quodlibet.exit()
-        except TypeError:
-            try:
-                os.unlink(filename)
-            except EnvironmentError:
-                pass
-            quodlibet.exit("not-running")
+from quodlibet.remote import Remote, RemoteError
 
 
 def print_playing(fstring="<artist~album~tracknumber~title>"):
-    import quodlibet
     from quodlibet.formats._audio import AudioFile
     from quodlibet.parse import Pattern
     from quodlibet import const
@@ -58,10 +20,10 @@ def print_playing(fstring="<artist~album~tracknumber~title>"):
         song = AudioFile()
         song.from_dump(text)
         print_(Pattern(fstring).format(song))
-        quodlibet.exit()
+        exit_()
     except (OSError, IOError):
         print_(_("No song is currently playing."))
-        quodlibet.exit(True)
+        exit_(True)
 
 
 def print_query(query):
@@ -69,7 +31,6 @@ def print_query(query):
        See Issue 716
     """
 
-    import quodlibet
     import quodlibet.library
     from quodlibet import const, config
 
@@ -80,13 +41,24 @@ def print_query(query):
     library = quodlibet.library.init(const.LIBRARY)
     songs = library.query(query)
     sys.stdout.write("\n".join([song("~filename") for song in songs]) + "\n")
-    quodlibet.exit()
+    exit_()
+
+
+def exit_(status=None, notify_startup=False):
+    """Call this to abort the startup before any mainloop starts.
+
+    notify_startup needs to be true if QL could potentially have been
+    called from the desktop file.
+    """
+
+    if notify_startup:
+        from gi.repository import Gdk
+        Gdk.notify_startup_complete()
+    raise SystemExit(status)
 
 
 def is_running():
     """If there is another instance running"""
-
-    from quodlibet.remote import Remote
 
     return Remote.remote_exists()
 
@@ -97,18 +69,31 @@ def control(command):
     Does not return.
     """
 
-    import quodlibet
-    from quodlibet.remote import Remote
-
     if not is_running():
-        quodlibet.exit(_("Quod Libet is not running."), notify_startup=True)
+        exit_(_("Quod Libet is not running."), notify_startup=True)
     else:
-        ok = Remote.send_message(command)
-        quodlibet.exit(0 if ok else 1, notify_startup=True)
+        try:
+            Remote.send_message(command)
+        except RemoteError as e:
+            exit_(str(e), notify_startup=True)
+        else:
+            exit_(notify_startup=True)
+
+
+def print_fifo(command):
+    if not is_running():
+        exit_(_("Quod Libet is not running."))
+
+    try:
+        response = Remote.send_message_reply(command)
+    except RemoteError as e:
+        exit_(str(e))
+    else:
+        print_(response, end="")
+        exit_()
 
 
 def process_arguments():
-    import quodlibet
     from quodlibet.util.uri import URI
     from quodlibet import util
     from quodlibet import const
@@ -228,7 +213,7 @@ def process_arguments():
             if command in validators and not validators[command](arg):
                 print_e(_("Invalid argument for '%s'.") % command)
                 print_e(_("Try %s --help.") % sys.argv[0])
-                quodlibet.exit(True, notify_startup=True)
+                exit_(True, notify_startup=True)
             else:
                 control(command + " " + arg)
         elif command == "status":

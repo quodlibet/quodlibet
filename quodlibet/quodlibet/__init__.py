@@ -356,19 +356,6 @@ _python_init()
 _gettext_init()
 
 
-def exit(status=None, notify_startup=False):
-    """Call this to abort the startup before any mainloop starts.
-
-    notify_startup needs to be true if QL could potentially have been
-    called from the desktop file.
-    """
-
-    if notify_startup:
-        from gi.repository import Gdk
-        Gdk.notify_startup_complete()
-    raise SystemExit(status)
-
-
 def init(library=None, icon=None, title=None, name=None):
     print_d("Entering quodlibet.init")
 

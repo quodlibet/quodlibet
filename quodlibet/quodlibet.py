@@ -10,6 +10,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
+import sys
+
 import os
 
 from quodlibet.cli import process_arguments, is_running, control
@@ -17,7 +19,11 @@ from quodlibet.util.dprint import print_d, print_
 
 
 def main():
-    startup_actions = process_arguments()
+    try:
+        startup_actions = process_arguments()
+    finally:
+        # we want basic commands not to import gtk (doubles process time)
+        assert "gi.repository.Gtk" not in sys.modules
 
     from quodlibet import const
     if is_running() and not const.DEBUG:

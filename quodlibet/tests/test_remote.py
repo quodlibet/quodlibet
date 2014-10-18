@@ -39,7 +39,7 @@ class TRemoteControl(TestCase):
         config.quit()
 
     def __send(self, command):
-        self.assertTrue(Remote.send_message(command), msg=command)
+        Remote.send_message(command)
         while Gtk.events_pending():
             Gtk.main_iteration()
 

@@ -9,10 +9,10 @@ import os
 import errno
 import signal
 import stat
+import tempfile
 
 from gi.repository import GLib
 
-from quodlibet import qltk
 from quodlibet.util.path import mkdir
 
 
@@ -34,6 +34,28 @@ def write_fifo(fifo_path, data):
         except OSError:
             pass
         raise EnvironmentError("Couldn't write to fifo %r" % fifo_path)
+
+
+def write_fifo_reply(fifo_path, data):
+    """Writes the data to the fifo and returns a response
+    or raises EnvironmentError.
+    """
+
+    fd, filename = tempfile.mkstemp()
+    try:
+        os.unlink(filename)
+        # mkfifo fails if the file exists, so this is safe.
+        os.mkfifo(filename, 0o600)
+
+        write_fifo(fifo_path, data + " " + filename)
+
+        with open(filename, "rb") as h:
+            return h.read()
+    finally:
+        try:
+            os.unlink(filename)
+        except EnvironmentError:
+            pass
 
 
 def fifo_exists(fifo_path):
@@ -71,6 +93,8 @@ class FIFO(object):
             pass
 
     def _open(self, *args):
+        from quodlibet import qltk
+
         self._id = None
         try:
             if not os.path.exists(self._path):

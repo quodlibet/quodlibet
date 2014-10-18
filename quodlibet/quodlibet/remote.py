@@ -15,6 +15,10 @@ except ImportError:
     winpipe = None
 
 
+class RemoteError(Exception):
+    pass
+
+
 class RemoteBase(object):
     """A thing for communicating with existing instances of ourself."""
 
@@ -33,7 +37,18 @@ class RemoteBase(object):
     def send_message(cls, message):
         """Send data to the existing instance if possible.
 
-        Returns True if the message was send, otherwise False.
+        Raises RemoteError in case the message couldn't be send.
+        """
+
+        raise NotImplemented
+
+    @classmethod
+    def send_message_reply(cls, message):
+        """Send data to the existing instance if possible and returns
+        a response.
+
+        Raises RemoteError in case the message couldn't be send or
+        there was no response.
         """
 
         raise NotImplemented
@@ -63,12 +78,15 @@ class QuodLibetWinRemote(RemoteBase):
         return winpipe.pipe_exists(cls._NAME)
 
     @classmethod
-    def send_message(cls, message):
+    def send_message(cls, message, reply=False):
         try:
             winpipe.write_pipe(cls._NAME, message)
-        except EnvironmentError:
-            return False
-        return True
+        except EnvironmentError as e:
+            raise RemoteError(e)
+
+    @classmethod
+    def send_message_reply(cls, message):
+        raise RemoteError("not implemented")
 
     def start(self):
         self._server.start()
@@ -95,12 +113,18 @@ class QuodLibetUnixRemote(RemoteBase):
         return fifo.fifo_exists(cls._PATH)
 
     @classmethod
-    def send_message(cls, message):
+    def send_message(cls, message, reply=False):
         try:
             fifo.write_fifo(cls._PATH, message)
-        except EnvironmentError:
-            return False
-        return True
+        except EnvironmentError as e:
+            raise RemoteError(e)
+
+    @classmethod
+    def send_message_reply(cls, message):
+        try:
+            return fifo.write_fifo_reply(cls._PATH, message)
+        except EnvironmentError as e:
+            raise RemoteError(e)
 
     def start(self):
         self._fifo.open()
