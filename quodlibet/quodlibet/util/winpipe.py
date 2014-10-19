@@ -125,7 +125,7 @@ class NamedPipeServer(threading.Thread):
 
         try:
             win32file.CloseHandle(handle)
-        except pywintypes.error as e:
+        except pywintypes.error:
             pass
 
     def stop(self):
