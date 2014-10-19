@@ -20,10 +20,11 @@ from quodlibet.util.dprint import print_d, print_
 
 def main():
     try:
+        # we want basic commands not to import gtk (doubles process time)
+        sys.modules["gi.repository.Gtk"] = None
         startup_actions = process_arguments()
     finally:
-        # we want basic commands not to import gtk (doubles process time)
-        assert "gi.repository.Gtk" not in sys.modules
+        del sys.modules["gi.repository.Gtk"]
 
     from quodlibet import const
     if is_running() and not const.DEBUG:

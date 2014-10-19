@@ -27,7 +27,6 @@ from quodlibet.util.string import encode
 from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
 
-from quodlibet.util.cover.manager import cover_plugins
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 
 
@@ -700,6 +699,9 @@ class AudioFile(dict, ImageContainer):
     def find_cover(self):
         """Return a file-like containing cover image data, or None if
         no cover is available."""
+
+        from quodlibet.util.cover.manager import cover_plugins
+
         return cover_plugins.get_cover(self)
 
     def replay_gain(self, profiles, pre_amp_gain=0, fallback_gain=0):
