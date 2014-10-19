@@ -46,6 +46,24 @@ class Window(Gtk.Window):
             self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
         self.connect_object('destroy', type(self).windows.remove, self)
 
+    def present(self):
+        """A version of present that also works if not called from an event
+        handler (there is no active input event).
+        See https://bugzilla.gnome.org/show_bug.cgi?id=688830
+        """
+
+        try:
+            from gi.repository import GdkX11
+        except ImportError:
+            super(Window, self).present()
+        else:
+            window = self.get_window()
+            if window:
+                timestamp = GdkX11.x11_get_server_time(window)
+                self.present_with_time(timestamp)
+            else:
+                super(Window, self).present()
+
     def set_transient_for(self, parent):
         """Set a parent for the window.
 
