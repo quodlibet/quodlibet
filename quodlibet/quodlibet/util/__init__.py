@@ -883,6 +883,12 @@ def load_library(names, shared=True):
     raise OSError("\n".join(errors))
 
 
+def is_main_thread():
+    """If the calling thread is the main one"""
+
+    return threading.current_thread().name == "MainThread"
+
+
 class MainRunnerError(Exception):
     pass
 
@@ -956,7 +962,9 @@ class MainRunner(object):
         with self._lock:
             if self._aborted:
                 raise self._error
-            if GLib.MainContext.default().is_owner():
+            # XXX: ideally this should be GLib.MainContext.default().is_owner()
+            # but that's not available in older pygobject
+            if is_main_thread():
                 kwargs.pop("priority", None)
                 self._run(func, *args, **kwargs)
             else:
