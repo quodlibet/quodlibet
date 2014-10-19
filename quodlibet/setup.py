@@ -399,48 +399,50 @@ if __name__ == "__main__":
         if setup_kwargs["version"].endswith(".-1"):
             setup_kwargs["version"] = setup_kwargs["version"][:-3]
 
+        CMD_SUFFIX = "-cmd"
+        GUI_TOOLS = ["quodlibet", "exfalso"]
+
+        for gui_name in GUI_TOOLS:
+            setup_kwargs.setdefault("windows", []).append({
+                "script": "%s.py" % gui_name,
+                "icon_resources": [(1,
+                   os.path.join('..', 'win_installer', 'misc',
+                                '%s.ico' % gui_name))],
+            })
+
+            # add a cmd version that supports stdout but opens a console
+            setup_kwargs.setdefault("console", []).append({
+                "script": "%s%s.py" % (gui_name, CMD_SUFFIX),
+                "icon_resources": [(1,
+                   os.path.join('..', 'win_installer', 'misc',
+                                '%s.ico' % gui_name))],
+            })
+            setup_kwargs["scripts"].append("%s%s.py" % (gui_name, CMD_SUFFIX))
+
+        for cli_name in ["operon"]:
+            setup_kwargs.setdefault("console", []).append({
+                "script": "%s.py" % cli_name,
+            })
+
         setup_kwargs.update({
             'data_files': data_files,
-            'windows': [
-                {
-                    "script": "quodlibet.py",
-                    "icon_resources": [(0,
-                       os.path.join('..', 'win_installer', 'misc',
-                                    'quodlibet.ico'))]
-                },
-                # workaround icon not working under Vista/7
-                # exe resource identifiers get incremented and start at 0.
-                # and 0 doesn't seem to be valid.
-                {
-                    "script": "quodlibet.py",
-                    "icon_resources": [(0,
-                       os.path.join('..', 'win_installer', 'misc',
-                                    'quodlibet.ico'))]
-                },
-                {
-                    "script": "exfalso.py",
-                    "icon_resources": [(0,
-                        os.path.join('..', 'win_installer', 'misc',
-                                     'exfalso.ico'))]
-                },
-            ],
-            'console': [
-                {
-                    "script": "operon.py",
-                    "icon_resources": [(0,
-                        os.path.join('..', 'win_installer', 'misc',
-                                     'quodlibet.ico'))]
-                },
-            ],
             'options': {
                 'py2exe': {
                     'packages': ('encodings, feedparser, quodlibet, '
                                  'HTMLParser, cairo, musicbrainz2, shelve, '
                                  'json, gi'),
                     'skip_archive': True,
-                    'dist_dir': os.path.join('dist', 'bin')
+                    'dist_dir': os.path.join('dist', 'bin'),
                 }
             }
         })
 
-    setup(**setup_kwargs)
+        for name in GUI_TOOLS:
+            shutil.copy("%s.py" % name, "%s%s.py" % (name, CMD_SUFFIX))
+        try:
+            setup(**setup_kwargs)
+        finally:
+            for name in GUI_TOOLS:
+                os.unlink("%s%s.py" % (name, CMD_SUFFIX))
+    else:
+        setup(**setup_kwargs)
