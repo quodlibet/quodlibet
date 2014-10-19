@@ -14,12 +14,11 @@ except ValueError, e:
 
 from gi.repository import Gst, GLib, GstPbutils
 
-import threading
-
 from quodlibet import const
 from quodlibet import config
+from quodlibet import util
 
-from quodlibet.util import fver, sanitize_tags
+from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
@@ -171,6 +170,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._pipeline_desc = None
         librarian.connect("changed", self.__songs_changed)
         self._active_seeks = []
+        self._runner = MainRunner()
 
     def __songs_changed(self, librarian, songs):
         # replaygain values might have changed, recalc volume
@@ -178,6 +178,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.volume = self.volume
 
     def _destroy(self):
+        self._runner.abort()
         self.__destroy_pipeline()
 
     @property
@@ -480,15 +481,16 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             return
         self._in_gapless_transition = True
 
-        def change_in_main_loop(event, source):
+        def change_in_main_loop(source):
+            print_d("Select next song in mainloop..")
             source.next_ended()
-            event.set()
+            print_d("..done.")
 
-        # push in the main loop and wait for it to finish
-        event = threading.Event()
-        GLib.idle_add(change_in_main_loop, event, self._source,
-                         priority=GLib.PRIORITY_HIGH)
-        event.wait()
+        try:
+            self._runner.call(change_in_main_loop, self._source,
+                              priority=GLib.PRIORITY_HIGH)
+        except MainRunnerError:
+            util.print_exc()
 
         song = self._source.current
         bin = self.bin

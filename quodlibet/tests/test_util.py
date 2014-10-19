@@ -9,6 +9,7 @@ from tests import TestCase, mkstemp, skipIf
 import tempfile
 import os
 import sys
+import threading
 import re
 import time
 from quodlibet import util
@@ -881,3 +882,92 @@ class Tsplit_escape(TestCase):
         values = ["\\:", ":"]
         joined = join_escape(values, ":")
         self.assertEqual(split_escape(joined, ":"), values)
+
+
+class TMainRunner(TestCase):
+
+    def test_abort_before_call(self):
+        runner = util.MainRunner()
+
+        def worker():
+            self.assertRaises(util.MainRunnerError, runner.call, lambda: None)
+
+        thread = threading.Thread(target=worker)
+        runner.abort()
+        thread.start()
+        thread.join()
+
+    def test_call_exception(self):
+        from gi.repository import GLib
+
+        runner = util.MainRunner()
+        loop = GLib.MainLoop()
+
+        def func():
+            raise KeyError
+
+        def worker():
+            try:
+                self.assertRaises(util.MainRunnerError, runner.call, func)
+            finally:
+                loop.quit()
+
+        thread = threading.Thread(target=worker)
+        thread.start()
+        loop.run()
+        runner.abort()
+        thread.join()
+
+    def test_from_main_loop(self):
+        from gi.repository import GLib
+
+        runner = util.MainRunner()
+        loop = GLib.MainLoop()
+
+        def in_main_loop():
+            try:
+                self.assertRaises(
+                    util.MainRunnerError, runner.call, lambda: None, foo=0)
+                self.assertEqual(
+                    runner.call(lambda i: i + 1, 42, priority=0), 43)
+                self.assertEqual(runner.call(lambda i: i - 1, 42), 41)
+            finally:
+                loop.quit()
+
+        GLib.idle_add(in_main_loop)
+        loop.run()
+
+    def test_ok(self):
+        from gi.repository import GLib
+
+        runner = util.MainRunner()
+        loop = GLib.MainLoop()
+
+        def func(i):
+            self.assertTrue(loop.get_context().is_owner())
+            return i + 1
+
+        def worker():
+            try:
+                self.assertEqual(runner.call(func, 42), 43)
+            finally:
+                loop.quit()
+
+        thread = threading.Thread(target=worker)
+        thread.start()
+
+        loop.run()
+        thread.join()
+        runner.abort()
+
+    def test_multi_abort(self):
+        runner = util.MainRunner()
+        runner.abort()
+        runner.abort()
+
+        def worker():
+            self.assertRaises(util.MainRunnerError, runner.call, lambda: None)
+
+        thread = threading.Thread(target=worker)
+        thread.start()
+        thread.join()

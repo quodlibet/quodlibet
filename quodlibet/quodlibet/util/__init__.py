@@ -15,6 +15,7 @@ import sys
 import traceback
 import urlparse
 import unicodedata
+import threading
 import subprocess
 import webbrowser
 import contextlib
@@ -880,3 +881,88 @@ def load_library(names, shared=True):
             errors.append(str(e))
 
     raise OSError("\n".join(errors))
+
+
+class MainRunnerError(Exception):
+    pass
+
+
+class MainRunner(object):
+    """Schedule a function call in the main loop from a
+    worker thread and wait for the result.
+
+    Make sure to call abort() before the main loop gets destroyed, otherwise
+    the worker thread may block forever in call().
+    """
+
+    def __init__(self):
+        self._id = None
+        self._lock = threading.Lock()
+        self._cond = threading.Condition(self._lock)
+        self._return = None
+        self._error = None
+        self._aborted = False
+
+    def _run(self, func, *args, **kwargs):
+        self._error = None
+        try:
+            self._return = func(*args, **kwargs)
+        except Exception as e:
+            self._error = MainRunnerError(e)
+
+    def _idle_run(self, func, *args, **kwargs):
+        with self._lock:
+            try:
+                self._run(func, *args, **kwargs)
+            finally:
+                self._id = None
+                self._cond.notify()
+                return False
+
+    def abort(self):
+        """After this call returns no function will be executed anymore
+        and a currently blocking call will fail with.
+
+        Can be called multiple times and can not fail.
+        call() will always fail after this was called.
+        """
+
+        from gi.repository import GLib
+
+        with self._lock:
+            if self._aborted:
+                return
+            if self._id is not None:
+                GLib.source_remove(self._id)
+                self._id = None
+            self._aborted = True
+            self._error = MainRunnerError("aborted")
+            self._cond.notify()
+
+    def call(self, func, *args, **kwargs):
+        """Runs the function in the main loop and blocks until
+        it is finshed or abort() was called. In case this is called
+        from the main loop the function gets executed immediately.
+
+        The priority kwargs defines the event source priority and will
+        not be passed to func.
+
+        Can raise MainRunnerError in case the function raises an exception
+        or abort() was called before or during this call.
+        """
+
+        from gi.repository import GLib
+
+        with self._lock:
+            if self._aborted:
+                raise self._error
+            if GLib.MainContext.default().is_owner():
+                kwargs.pop("priority", None)
+                self._run(func, *args, **kwargs)
+            else:
+                assert self._id is None
+                self._id = GLib.idle_add(self._idle_run, func, *args, **kwargs)
+                self._cond.wait()
+            if self._error is not None:
+                raise self._error
+            return self._return
