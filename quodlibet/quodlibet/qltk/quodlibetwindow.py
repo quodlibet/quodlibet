@@ -559,7 +559,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         self.connect("key-press-event", self.__key_pressed, player)
 
-        self.connect("delete-event", self.__save_browser)
         self.connect("destroy", self.__destroy)
 
         self.enable_window_tracking("quodlibet")
@@ -686,20 +685,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             self.browser.reordered(view)
         self.songlist.clear_sort()
 
-    def __save_browser(self, *args):
-        print_d("Saving active browser state")
-        try:
-            self.browser.save()
-        except NotImplementedError:
-            pass
-
-    def destroy(self, *args):
-        if self.__destroyed:
-            return
-        self.__destroyed = True
-        self.__save_browser()
-        super(QuodLibetWindow, self).destroy()
-
     def __show_or(self, widget, prop):
         ssv = self.song_scroller.get_property('visible')
         qxv = self.qexpander.get_property('visible')
@@ -743,7 +728,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
              self.__preferences),
             ("Plugins", Gtk.STOCK_EXECUTE, _("_Plugins"), None, None,
              self.__plugins),
-            ("Quit", Gtk.STOCK_QUIT, None, None, None, self.destroy),
+            ("Quit", Gtk.STOCK_QUIT, None, None, None,
+             lambda *x: self.destroy()),
             ('Filters', None, _("_Filters")),
 
             ("PlayedRecently", Gtk.STOCK_FIND, _("Recently _Played"),

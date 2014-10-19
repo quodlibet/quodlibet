@@ -535,27 +535,22 @@ def _init_osx(window):
         "delete-event", lambda window, event: window.hide() or True)
 
 
-def main(window):
+def main(window, before_quit=None):
     print_d("Entering quodlibet.main")
     from gi.repository import Gtk
 
-    def quit_gtk(m):
+    def quit_gtk(window):
+
+        if before_quit is not None:
+            before_quit()
 
         # disable plugins
         import quodlibet.plugins
         quodlibet.plugins.quit()
 
-        # stop all copools
-        print_d("Quit GTK: Stop all copools")
+        # for debug: this will list active copools
         from quodlibet.util import copool
         copool.pause_all()
-
-        # events that add new events to the main loop (like copool)
-        # can block the shutdown, so force stop after some time.
-        # gtk.main_iteration will return True if quit gets called here
-        from gi.repository import GLib
-        GLib.timeout_add(4 * 1000, Gtk.main_quit,
-                         priority=GLib.PRIORITY_HIGH)
 
         # See which browser windows are open and save their names
         # so we can restore them on start
@@ -573,13 +568,7 @@ def main(window):
         for window in Window.windows:
             window.destroy()
 
-        print_d("Quit GTK: Process pending events...")
-        while Gtk.events_pending():
-            if Gtk.main_iteration_do(False):
-                print_d("Quit GTK: Timeout occurred, force quit.")
-                break
-        else:
-            Gtk.main_quit()
+        Gtk.main_quit()
 
         print_d("Quit GTK: done.")
 
@@ -591,3 +580,4 @@ def main(window):
     window.show_maybe()
 
     Gtk.main()
+    print_d("Gtk.main() done.")

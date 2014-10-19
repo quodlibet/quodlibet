@@ -143,7 +143,14 @@ def main():
     from gi.repository import GLib
     GLib.idle_add(LibraryBrowser.restore, library, priority=GLib.PRIORITY_HIGH)
 
-    quodlibet.main(window)
+    def before_quit():
+        print_d("Saving active browser state")
+        try:
+            app.browser.save()
+        except NotImplementedError:
+            pass
+
+    quodlibet.main(window, before_quit=before_quit)
 
     quodlibet.finish_first_session(const.PROCESS_TITLE_QL)
     mmkeys_handler.quit()
