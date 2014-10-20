@@ -127,7 +127,7 @@ Unstable PPA (12.04+)::
 
 Unstable Repo::
 
-    deb http://www.student.tugraz.at/christoph.reiter/debian/ quodlibet-unstable/
+    deb http://lazka.github.io quodlibet-unstable/
 
 
 Repo key::
