@@ -371,11 +371,16 @@ class TrayIcon(EventPlugin):
         else:
             self.__show_window()
 
-    def __button_middle(self, widget, event):
+    def __button_middle(self, widget, event, _last_timestamp=[0]):
         if event.type == Gdk.EventType.BUTTON_PRESS and \
                 event.button == Gdk.BUTTON_MIDDLE:
             if self.__destroy_win32_menu():
                 return
+            # work around gnome shell (3.14) bug, it sends middle clicks twice
+            # with the same timestamp, so ignore the second event
+            if event.time == _last_timestamp[0]:
+                return
+            _last_timestamp[0] = event.time
             self.__play_pause()
 
     def __play_pause(self, *args):
