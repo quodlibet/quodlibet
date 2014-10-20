@@ -33,7 +33,7 @@ Downloads
 =========
 
 ================ ========================================== ================================================
-**Linux:**       |ubuntu-logo| :ref:`Ubuntu <ubuntu>`       |debian-logo| :ref:`Debian <ubuntu>`
+**Linux:**       |ubuntu-logo| :ref:`Ubuntu <ubuntu>`       |debian-logo| :ref:`Debian <debian>`
    \             |fedora-logo| :ref:`Fedora <fedora>`       |opensuse-logo| :ref:`openSUSE <opensuse>`
    \             |arch-logo| :ref:`Arch Linux <arch>`
 **Windows:**     |windows-logo| :ref:`Windows <windows>`
