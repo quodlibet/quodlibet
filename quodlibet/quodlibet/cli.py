@@ -58,23 +58,28 @@ def exit_(status=None, notify_startup=False):
 
 
 def is_running():
-    """If there is another instance running"""
+    """If maybe is another instance running"""
 
     return Remote.remote_exists()
 
 
-def control(command):
+def control(command, ignore_error=False):
     """Sends command to the existing instance if possible and exits.
 
-    Does not return.
+    Does not return except if ignore_error is True and sending
+    the command failed.
     """
 
     if not is_running():
+        if ignore_error:
+            return
         exit_(_("Quod Libet is not running."), notify_startup=True)
     else:
         try:
             Remote.send_message(command)
         except RemoteError as e:
+            if ignore_error:
+                return
             exit_(str(e), notify_startup=True)
         else:
             exit_(notify_startup=True)

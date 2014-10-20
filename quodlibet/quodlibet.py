@@ -14,8 +14,8 @@ import sys
 
 import os
 
-from quodlibet.cli import process_arguments, is_running, control
-from quodlibet.util.dprint import print_d, print_
+from quodlibet.cli import process_arguments, control
+from quodlibet.util.dprint import print_d
 
 
 def main():
@@ -23,13 +23,12 @@ def main():
         # we want basic commands not to import gtk (doubles process time)
         sys.modules["gi.repository.Gtk"] = None
         startup_actions = process_arguments()
+
+        # this will exit if it succeeds
+        control('focus', ignore_error=True)
+
     finally:
         del sys.modules["gi.repository.Gtk"]
-
-    from quodlibet import const
-    if is_running() and not const.DEBUG:
-        print_(_("Quod Libet is already running."))
-        control('focus')
 
     import quodlibet
     from quodlibet import app
