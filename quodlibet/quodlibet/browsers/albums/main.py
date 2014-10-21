@@ -436,6 +436,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_fixed_width(Album.COVER_SIZE + 10)
         render.set_property('height', Album.COVER_SIZE + 6)
+        render.set_property('width', Album.COVER_SIZE + 6)
 
         def cell_data_pb(column, cell, model, iter_, no_cover):
             album = model.get_album(iter_)
