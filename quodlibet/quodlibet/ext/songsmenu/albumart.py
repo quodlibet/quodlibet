@@ -30,6 +30,7 @@ from quodlibet.util.dprint import print_d
 
 from quodlibet import util, qltk, print_w, app
 from quodlibet.qltk.msg import ConfirmFileReplace
+from quodlibet.qltk.x import Paned
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
     get_pbosf_for_pixbuf, set_image_from_pbosf)
@@ -598,7 +599,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         left_vbox.pack_start(search_hbox, False, True, 0)
         left_vbox.pack_start(sw_list, True, True, 0)
 
-        hpaned = Gtk.HPaned()
+        hpaned = Paned()
         hpaned.set_border_width(widget_space)
         hpaned.pack1(left_vbox, shrink=False)
         hpaned.pack2(image, shrink=False)

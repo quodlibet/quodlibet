@@ -229,7 +229,35 @@ def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
     return button
 
 
-class RPaned(Gtk.Paned):
+class Paned(Gtk.Paned):
+
+    def __init__(self, *args, **kwargs):
+        super(Paned, self).__init__(*args, **kwargs)
+        self.ensure_wide_handle()
+
+    def ensure_wide_handle(self):
+        if hasattr(self.props, "wide_handle"):
+            # gtk 3.16
+            self.props.wide_handle = True
+            add_css(self, """
+                GtkPaned {
+                    border-width: 0;
+                }
+            """)
+            return
+
+        # gtk 3.14
+        add_css(self, """
+            GtkPaned {
+                -GtkPaned-handle-size: 6;
+                background-image: none;
+                margin: 0;
+                border-width: 0;
+            }
+        """)
+
+
+class RPaned(Paned):
     """A Paned that supports relative (percentage) width/height setting."""
 
     ORIENTATION = None

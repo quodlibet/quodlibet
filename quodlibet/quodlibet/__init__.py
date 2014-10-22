@@ -161,21 +161,6 @@ def _gtk_init(icon=None):
         exit(1)
 
     # CSS overrides
-    style_provider = Gtk.CssProvider()
-    style_provider.load_from_data("""
-        /* Make GtkPaned look like in <=3.12, we depend on the spacing */
-        GtkPaned {
-            -GtkPaned-handle-size: 6;
-            background-image: none;
-            margin: 0;
-        }
-    """)
-    Gtk.StyleContext.add_provider_for_screen(
-        Gdk.Screen.get_default(),
-        style_provider,
-        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-    )
-
     if os.name == "nt":
         # somehow borders are missing under Windows & Gtk+3.14
         style_provider = Gtk.CssProvider()

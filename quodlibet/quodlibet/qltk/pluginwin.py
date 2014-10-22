@@ -15,7 +15,7 @@ from quodlibet import util
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.entry import ClearEntry
-from quodlibet.qltk.x import Alignment
+from quodlibet.qltk.x import Alignment, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 
 
@@ -274,7 +274,7 @@ class PluginWindow(qltk.UniqueWindow):
         self.set_default_size(655, 404)
         self.set_transient_for(parent)
 
-        paned = Gtk.Paned()
+        paned = Paned()
         vbox = Gtk.VBox(spacing=6)
 
         sw = Gtk.ScrolledWindow()

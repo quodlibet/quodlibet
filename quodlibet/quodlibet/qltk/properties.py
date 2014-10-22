@@ -17,7 +17,7 @@ from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
-from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.util.path import fsdecode
 
 
@@ -43,7 +43,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         self.auto_save_on_change = config.getboolean(
                 'editing', 'auto_save_changes', False)
 
-        paned = Gtk.HPaned()
+        paned = Paned()
         notebook = qltk.Notebook()
         notebook.props.scrollable = True
         pages = []

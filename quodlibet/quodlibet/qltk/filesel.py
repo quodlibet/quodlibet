@@ -20,7 +20,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, \
     MultiDragTreeView
 from quodlibet.qltk.views import TreeViewColumn
-from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 
 from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
@@ -447,7 +447,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                 window.set_cursor(None)
 
 
-class FileSelector(Gtk.VPaned):
+class FileSelector(Paned):
     """A file selector widget consisting of a folder tree
     and a file list below.
     """
@@ -464,7 +464,8 @@ class FileSelector(Gtk.VPaned):
         folders -- list of shown folders in the directory tree
         """
 
-        super(FileSelector, self).__init__()
+        super(FileSelector, self).__init__(
+            orientation=Gtk.Orientation.VERTICAL)
         self.__filter = filter
 
         if initial is not None:
