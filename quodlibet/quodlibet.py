@@ -28,7 +28,7 @@ def main():
         control('focus', ignore_error=True)
 
     finally:
-        del sys.modules["gi.repository.Gtk"]
+        sys.modules.pop("gi.repository.Gtk", None)
 
     import quodlibet
     from quodlibet import app

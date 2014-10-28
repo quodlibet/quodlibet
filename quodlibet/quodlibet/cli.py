@@ -256,6 +256,10 @@ def process_arguments():
             except IndexError:
                 print_playing()
         elif command == "print-query":
+            # TODO: move this command to remote.py
+            # XXX: for now we need to remove the gtk import check because
+            # this is the only command really needing it
+            sys.modules.pop("gi.repository.Gtk", None)
             print_query(arg)
         elif command == "start-playing":
             actions.append(command)
