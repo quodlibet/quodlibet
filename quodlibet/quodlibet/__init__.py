@@ -92,6 +92,10 @@ app = Application()
 def _gtk_init(icon=None):
     import gi
 
+    # make sure GdkX11 doesn't get used under Windows
+    if os.name == "nt":
+        sys.modules["gi.repository.GdkX11"] = None
+
     try:
         # not sure if this is available under Windows
         gi.require_version("GdkX11", "3.0")
