@@ -21,6 +21,7 @@ from quodlibet.util.dprint import print_d
 def main():
     try:
         # we want basic commands not to import gtk (doubles process time)
+        assert "gi.repository.Gtk" not in sys.modules
         sys.modules["gi.repository.Gtk"] = None
         startup_actions = process_arguments()
 

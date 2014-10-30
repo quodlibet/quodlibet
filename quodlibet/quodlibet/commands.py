@@ -9,11 +9,13 @@
 
 import os
 import re
+from cStringIO import StringIO
 
 from quodlibet import browsers
 
 from quodlibet import util
 from quodlibet.util.uri import URI
+from quodlibet.util.path import fsnative
 
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
@@ -44,15 +46,15 @@ class CommandRegistry(object):
         Can not fail.
         """
 
-        print_d("command: %r" % line)
-
         # only one arg supported atm
         parts = line.split(" ", 1)
-        cmd = parts[0]
+        command = parts[0]
         args = parts[1:]
 
+        print_d("command: %s(*%r)" % (command, args))
+
         try:
-            self.run(app, cmd, *args)
+            return self.run(app, command, *args)
         except CommandError as e:
             print_e(str(e))
         except:
@@ -71,8 +73,7 @@ class CommandRegistry(object):
                 if not args:
                     raise CommandError("Missing argument for %r" % name)
                 cmd = commands[name]
-                cmd(args[0], app.library, app.window, app.player)
-                return
+                return cmd(args[0], app.library, app.window, app.player)
             else:
                 raise CommandError("Unknown command %r" % name)
 
@@ -85,7 +86,7 @@ class CommandRegistry(object):
         print_d("Running %r with params %r " % (cmd, args))
 
         try:
-            cmd(app, *args)
+            return cmd(app, *args)
         except CommandError as e:
             raise CommandError("%s: %s" % (name, str(e)))
 
@@ -277,17 +278,13 @@ def _set_rating(app, value):
         app.library.changed([song])
 
 
-@registry.register("dump-browsers", args=1)
-def _dump_browsers(app, value):
-    try:
-        f = file(value, "w")
-    except EnvironmentError:
-        pass
-    else:
-        for i, browser in enumerate(browsers.browsers):
-            if browser is not browsers.empty.EmptyBar:
-                f.write("%d. %s\n" % (i, browser.__name__))
-        f.close()
+@registry.register("dump-browsers")
+def _dump_browsers(app):
+    f = StringIO()
+    for i, browser in enumerate(browsers.browsers):
+        if browser is not browsers.empty.EmptyBar:
+            f.write("%d. %s\n" % (i, browser.__name__))
+    return f.getvalue()
 
 
 @registry.register("set-browser", args=1)
@@ -407,36 +404,32 @@ def _quit(app):
     app.quit()
 
 
-@registry.register("status", args=1)
-def _status(app, value):
+@registry.register("status")
+def _status(app):
     player = app.player
     window = app.window
+    f = StringIO()
 
-    try:
-        f = file(value, "w")
-    except EnvironmentError:
-        pass
+    if player.paused:
+        strings = ["paused"]
     else:
-        if player.paused:
-            strings = ["paused"]
-        else:
-            strings = ["playing"]
-        strings.append(type(app.browser).__name__)
-        strings.append("%0.3f" % player.volume)
-        strings.append(window.order.get_active_name())
-        strings.append((window.repeat.get_active() and "on") or "off")
-        progress = 0
-        if player.info:
-            length = player.info.get("~#length", 0)
-            if length:
-                progress = player.get_position() / (length * 1000.0)
-        strings.append("%0.3f" % progress)
-        f.write(" ".join(strings) + "\n")
-        try:
-            f.write(app.browser.status + "\n")
-        except AttributeError:
-            pass
-        f.close()
+        strings = ["playing"]
+    strings.append(type(app.browser).__name__)
+    strings.append("%0.3f" % player.volume)
+    strings.append(window.order.get_active_name())
+    strings.append((window.repeat.get_active() and "on") or "off")
+    progress = 0
+    if player.info:
+        length = player.info.get("~#length", 0)
+        if length:
+            progress = player.get_position() / (length * 1000.0)
+    strings.append("%0.3f" % progress)
+    f.write(" ".join(strings) + "\n")
+    try:
+        f.write(app.browser.status + "\n")
+    except AttributeError:
+        pass
+    return f.getvalue()
 
 
 @registry.register("song-list", args=1)
@@ -459,33 +452,47 @@ def _queue(app, value):
     window.qexpander.set_property('visible', value)
 
 
-@registry.register("dump-playlist", args=1)
-def _dump_playlist(app, value):
+@registry.register("dump-playlist")
+def _dump_playlist(app):
     window = app.window
-
-    try:
-        f = file(value, "w")
-    except EnvironmentError:
-        pass
-    else:
-        for song in window.playlist.pl.get():
-            f.write(song("~uri") + "\n")
-        f.close()
+    f = StringIO()
+    for song in window.playlist.pl.get():
+        f.write(song("~uri") + "\n")
+    return f.getvalue()
 
 
-@registry.register("dump-queue", args=1)
-def _dump_queue(app, value):
+@registry.register("dump-queue")
+def _dump_queue(app):
     window = app.window
-    try:
-        f = file(value, "w")
-    except EnvironmentError:
-        pass
-    else:
-        for song in window.playlist.q.get():
-            f.write(song("~uri") + "\n")
-        f.close()
+    f = StringIO()
+    for song in window.playlist.q.get():
+        f.write(song("~uri") + "\n")
+    return f.getvalue()
 
 
 @registry.register("refresh")
 def _refresh(app):
     scan_library(app.library, False)
+
+
+@registry.register("print-query", args=1)
+def _print_query(app, query):
+    """Queries library, dumping filenames of matches to stdout
+    See Issue 716
+    """
+
+    songs = app.library.query(query)
+    return "\n".join([song("~filename") for song in songs]) + "\n"
+
+
+@registry.register("print-playing", optional=1)
+def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
+    from quodlibet.formats._audio import AudioFile
+    from quodlibet.parse import Pattern
+
+    song = app.player.song
+    if song is None:
+        song = AudioFile({"~filename": fsnative(u"/")})
+        song.sanitize()
+
+    return Pattern(fstring).format(song) + "\n"

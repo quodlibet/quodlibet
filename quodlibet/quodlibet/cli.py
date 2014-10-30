@@ -6,42 +6,8 @@
 
 import os
 import sys
-from quodlibet.util.dprint import print_, print_d, print_e
+from quodlibet.util.dprint import print_, print_e
 from quodlibet.remote import Remote, RemoteError
-
-
-def print_playing(fstring="<artist~album~tracknumber~title>"):
-    from quodlibet.formats._audio import AudioFile
-    from quodlibet.parse import Pattern
-    from quodlibet import const
-
-    try:
-        text = open(const.CURRENT, "rb").read()
-        song = AudioFile()
-        song.from_dump(text)
-        print_(Pattern(fstring).format(song))
-        exit_()
-    except (OSError, IOError):
-        print_(_("No song is currently playing."))
-        exit_(True)
-
-
-def print_query(query):
-    """Queries library, dumping filenames of matches to stdout
-       See Issue 716
-    """
-
-    import quodlibet.library
-    from quodlibet import const, config
-
-    print_d("Querying library for %r" % query)
-    if "rating" in query:
-        config.init(const.CONFIG)
-
-    library = quodlibet.library.init(const.LIBRARY)
-    songs = library.query(query)
-    sys.stdout.write("\n".join([song("~filename") for song in songs]) + "\n")
-    exit_()
 
 
 def exit_(status=None, notify_startup=False):
@@ -63,8 +29,10 @@ def is_running():
     return Remote.remote_exists()
 
 
-def control(command, ignore_error=False):
+def control(command, arg=None, ignore_error=False):
     """Sends command to the existing instance if possible and exits.
+
+    Will print any response it gets to stdout.
 
     Does not return except if ignore_error is True and sending
     the command failed.
@@ -74,28 +42,22 @@ def control(command, ignore_error=False):
         if ignore_error:
             return
         exit_(_("Quod Libet is not running."), notify_startup=True)
-    else:
-        try:
-            Remote.send_message(command)
-        except RemoteError as e:
-            if ignore_error:
-                return
-            exit_(str(e), notify_startup=True)
-        else:
-            exit_(notify_startup=True)
+        return
 
-
-def print_fifo(command):
-    if not is_running():
-        exit_(_("Quod Libet is not running."))
+    message = command
+    if arg is not None:
+        message += " " + arg
 
     try:
-        response = Remote.send_message_reply(command)
+        response = Remote.send_message(message)
     except RemoteError as e:
-        exit_(str(e))
+        if ignore_error:
+            return
+        exit_(str(e), notify_startup=True)
     else:
-        print_(response, end="")
-        exit_()
+        if response is not None:
+            print_(response, end="")
+        exit_(notify_startup=True)
 
 
 def process_arguments():
@@ -220,15 +182,15 @@ def process_arguments():
                 print_e(_("Try %s --help.") % sys.argv[0])
                 exit_(True, notify_startup=True)
             else:
-                control(command + " " + arg)
+                control(command, arg)
         elif command == "status":
-            print_fifo("status")
+            control("status")
         elif command == "print-playlist":
-            print_fifo("dump-playlist")
+            control("dump-playlist")
         elif command == "print-queue":
-            print_fifo("dump-queue")
+            control("dump-queue")
         elif command == "list-browsers":
-            print_fifo("dump-browsers")
+            control("dump-browsers")
         elif command == "volume-up":
             control("volume +")
         elif command == "volume-down":
@@ -238,29 +200,25 @@ def process_arguments():
                 filename = URI(arg).filename
             except ValueError:
                 filename = arg
-            control(command + " " + filename)
+            control(command, filename)
         elif command == "enqueue-files":
-            control(command + " " + arg)
+            control(command, arg)
         elif command == "play-file":
             try:
                 filename = URI(arg).filename
             except ValueError:
                 filename = os.path.abspath(util.path.expanduser(arg))
             if os.path.isdir(filename):
-                control("add-directory " + filename)
+                control("add-directory", filename)
             else:
-                control("add-file " + filename)
+                control("add-file", filename)
         elif command == "print-playing":
             try:
-                print_playing(args[0])
+                control("print-playing", args[0])
             except IndexError:
-                print_playing()
+                control("print-playing")
         elif command == "print-query":
-            # TODO: move this command to remote.py
-            # XXX: for now we need to remove the gtk import check because
-            # this is the only command really needing it
-            sys.modules.pop("gi.repository.Gtk", None)
-            print_query(arg)
+            control(command, arg)
         elif command == "start-playing":
             actions.append(command)
         elif command == "no-plugins":

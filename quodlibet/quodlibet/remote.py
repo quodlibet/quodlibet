@@ -35,15 +35,6 @@ class RemoteBase(object):
 
     @classmethod
     def send_message(cls, message):
-        """Send data to the existing instance if possible.
-
-        Raises RemoteError in case the message couldn't be send.
-        """
-
-        raise NotImplemented
-
-    @classmethod
-    def send_message_reply(cls, message):
         """Send data to the existing instance if possible and returns
         a response.
 
@@ -78,15 +69,11 @@ class QuodLibetWinRemote(RemoteBase):
         return winpipe.pipe_exists(cls._NAME)
 
     @classmethod
-    def send_message(cls, message, reply=False):
+    def send_message(cls, message):
         try:
             winpipe.write_pipe(cls._NAME, message)
         except EnvironmentError as e:
             raise RemoteError(e)
-
-    @classmethod
-    def send_message_reply(cls, message):
-        raise RemoteError("not implemented")
 
     def start(self):
         self._server.start()
@@ -95,8 +82,7 @@ class QuodLibetWinRemote(RemoteBase):
         self._server.stop()
 
     def _callback(self, data):
-        for line in data.splitlines():
-            self._cmd_registry.handle_line(self._app, line)
+        self._cmd_registry.handle_line(self._app, data)
 
 
 class QuodLibetUnixRemote(RemoteBase):
@@ -113,16 +99,9 @@ class QuodLibetUnixRemote(RemoteBase):
         return fifo.fifo_exists(cls._PATH)
 
     @classmethod
-    def send_message(cls, message, reply=False):
+    def send_message(cls, message):
         try:
-            fifo.write_fifo(cls._PATH, message)
-        except EnvironmentError as e:
-            raise RemoteError(e)
-
-    @classmethod
-    def send_message_reply(cls, message):
-        try:
-            return fifo.write_fifo_reply(cls._PATH, message)
+            return fifo.write_fifo(cls._PATH, message)
         except EnvironmentError as e:
             raise RemoteError(e)
 
@@ -133,8 +112,17 @@ class QuodLibetUnixRemote(RemoteBase):
         self._fifo.destroy()
 
     def _callback(self, data):
-        for line in data.splitlines():
-            self._cmd_registry.handle_line(self._app, line)
+        try:
+            data, path = fifo.split_message(data)
+        except ValueError:
+            # in case someones writes to the fifo the path part is missing
+            # so call the command and throw away the response
+            self._cmd_registry.handle_line(self._app, data)
+        else:
+            with open(path, "wb") as h:
+                response = self._cmd_registry.handle_line(self._app, data)
+                if response is not None:
+                    h.write(response)
 
 
 if os.name == "nt":

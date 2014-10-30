@@ -16,7 +16,7 @@ from gi.repository import GLib
 from quodlibet.util.path import mkdir
 
 
-def write_fifo(fifo_path, data):
+def _write_fifo(fifo_path, data):
     """Writes the data to the fifo or raises EnvironmentError"""
 
     try:
@@ -36,7 +36,16 @@ def write_fifo(fifo_path, data):
         raise EnvironmentError("Couldn't write to fifo %r" % fifo_path)
 
 
-def write_fifo_reply(fifo_path, data):
+def split_message(message):
+    """Removes the path for the response fifo from the message"""
+
+    parts = message.rsplit("\x00", 1)
+    if len(parts) != 2:
+        raise ValueError("invalid message")
+    return parts
+
+
+def write_fifo(fifo_path, data):
     """Writes the data to the fifo and returns a response
     or raises EnvironmentError.
     """
@@ -47,10 +56,16 @@ def write_fifo_reply(fifo_path, data):
         # mkfifo fails if the file exists, so this is safe.
         os.mkfifo(filename, 0o600)
 
-        write_fifo(fifo_path, data + " " + filename)
+        _write_fifo(fifo_path, data + "\x00" + filename)
 
-        with open(filename, "rb") as h:
-            return h.read()
+        try:
+            signal.signal(signal.SIGALRM, lambda: "" + 2)
+            signal.alarm(1)
+            with open(filename, "rb") as h:
+                signal.signal(signal.SIGALRM, signal.SIG_IGN)
+                return h.read()
+        except TypeError:
+            raise EnvironmentError("timeout")
     finally:
         try:
             os.unlink(filename)
