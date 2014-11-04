@@ -71,8 +71,6 @@ class AudioFile(dict, ImageContainer):
     can_add = True
     # Is a real file
     is_file = True
-    # Multiple tags for the same tag possible
-    multiple_values = True
 
     format = "Unknown Audio File"
     mimes = []
@@ -491,6 +489,13 @@ class AudioFile(dict, ImageContainer):
         """Return true if the disk the file is on is mounted, or
         the file is not on a disk."""
         return os.path.ismount(self.get("~mountpoint", "/"))
+
+    def can_multiple_values(self, key=None):
+        """If no arguments are given, return a list of tags that can
+        have multiple values, or True if 'any' tags can.
+        """
+
+        return True
 
     def can_change(self, k=None):
         """See if this file supports changing the given tag. This may

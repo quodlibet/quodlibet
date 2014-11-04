@@ -217,7 +217,7 @@ class TagsFromPath(EditPane):
                 for f in self.filters:
                     if f.active:
                         text = f.filter(h, text)
-                if not song.multiple_values:
+                if not song.can_multiple_values(h):
                     text = u", ".join(text.split("\n"))
                 row.append(text)
             model.append(row=row)
@@ -253,7 +253,8 @@ class TagsFromPath(EditPane):
             for i, h in enumerate(pattern.headers):
                 if row[i + 2]:
                     text = row[i + 2].decode("utf-8")
-                    if not add or h not in song or not song.multiple_values:
+                    can_multiple = song.can_multiple_values(h)
+                    if not add or h not in song or not can_multiple:
                         song[h] = text
                         changed = True
                     else:

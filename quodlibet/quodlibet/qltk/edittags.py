@@ -84,7 +84,6 @@ class AudioFileGroup(dict):
         return filter(lambda s: s and "~" not in s and "=" not in s, self)
 
     is_file = True
-    multiple_values = True
 
     def __init__(self, songs):
         keys = {}
@@ -92,14 +91,24 @@ class AudioFileGroup(dict):
         all = {}
         total = len(songs)
         self.songs = songs
+        can_multi = True
 
         for song in songs:
             self.is_file &= song.is_file
-            self.multiple_values &= song.multiple_values
+
             for comment, val in song.iteritems():
                 keys[comment] = keys.get(comment, 0) + 1
                 first.setdefault(comment, val)
                 all[comment] = all.get(comment, True) and first[comment] == val
+
+            song_can_multi = song.can_multiple_values()
+            if song_can_multi is not True:
+                if can_multi is True:
+                    can_multi = set(song_can_multi)
+                else:
+                    can_multi.intersection_update(song_can_multi)
+
+        self._can_multi = can_multi
 
         # collect comment representations
         for comment, count in keys.iteritems():
@@ -121,6 +130,18 @@ class AudioFileGroup(dict):
             value.missing = total - count
 
             self[comment] = value
+
+    def can_multiple_values(self, key=None):
+        """If no arguments passed returns a set of tags that have multi
+        value support for all contained songs. If key is given returns
+        if all songs support multi value tags for that key.
+        """
+
+        if key is None:
+            return self._can_multi
+        if self._can_multi is True:
+            return True
+        return key in self._can_multi
 
     def can_change(self, k=None):
         if k is None:
@@ -602,11 +623,12 @@ class EditTags(Gtk.VBox):
             bool(rows and min([model[row][CANEDIT] for row in rows])))
 
     def __add_new_tag(self, model, tag, value):
-        if (tag in self.__songinfo and not self.__songinfo.multiple_values):
+        if (tag in self.__songinfo and not
+                self.__songinfo.can_multiple_values(tag)):
             title = _("Unable to add tag")
             msg = _("Unable to add <b>%s</b>\n\nThe files currently"
-                    " selected do not support multiple values."
-                    ) % util.escape(tag)
+                    " selected do not support multiple values for <b>%s</b>."
+                    ) % (util.escape(tag), util.escape(tag))
             qltk.ErrorMessage(self, title, msg).run()
             return
 

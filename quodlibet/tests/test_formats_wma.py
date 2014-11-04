@@ -38,6 +38,13 @@ class TWMAFile(TestCase):
         self.song.reload()
         self.assertEqual(self.song("title"), u"SomeTestValue")
 
+    def test_multi(self):
+        self.song["genre"] = u"Rock\nPop"
+        self.song.write()
+        self.song.reload()
+        # XXX: mutagen doesn't preserve order.. fix it!
+        self.assertEqual(set(self.song.list("genre")), set([u"Rock", u"Pop"]))
+
     def test_length(self):
         self.assertEqual(self.song("~#length"), 3)
 
@@ -135,3 +142,7 @@ class TWMAFile(TestCase):
 
     def test_can_change_images(self):
         self.assertTrue(self.song.can_change_images)
+
+    def test_can_multiple_values(self):
+        self.assertTrue("artist" in self.song.can_multiple_values())
+        self.assertTrue(self.song.can_multiple_values("genre"))

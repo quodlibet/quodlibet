@@ -18,7 +18,6 @@ except ImportError:
 
 
 class WMAFile(AudioFile):
-    multiple_values = False
     mimes = ["audio/x-ms-wma", "audio/x-ms-wmv", "video/x-ms-asf",
              "audio/x-wma", "video/x-wmv"]
     format = "Windows Media Audio"
@@ -63,6 +62,33 @@ class WMAFile(AudioFile):
     }
     __rtranslate = dict([(v, k) for k, v in __translate.iteritems()])
 
+    # http://msdn.microsoft.com/en-us/library/dd743065.aspx
+    # note: not all names here are used by QL
+    __multi_value_attr = set([
+        "Author",
+        "WM/AlbumArtist",
+        "WM/AlbumCoverURL",
+        "WM/Category",
+        "WM/Composer",
+        "WM/Conductor",
+        "WM/Director",
+        "WM/Genre",
+        "WM/GenreID",
+        "WM/Language",
+        "WM/Lyrics_Synchronised",
+        "WM/Mood",
+        "WM/Picture",
+        "WM/Producer",
+        "WM/PromotionURL",
+        "WM/UserWebURL",
+        "WM/Writer",
+    ])
+
+    __multi_value_keys = set()
+    for k, v in __translate.iteritems():
+        if k in __multi_value_attr:
+            __multi_value_keys.add(v)
+
     def __init__(self, filename, audio=None):
         if audio is None:
             audio = mutagen.asf.ASF(filename)
@@ -94,6 +120,11 @@ class WMAFile(AudioFile):
             audio.tags[name] = self.list(key)
         audio.save()
         self.sanitize()
+
+    def can_multiple_values(self, key=None):
+        if key is None:
+            return self.__multi_value_keys
+        return key in self.__multi_value_keys
 
     def can_change(self, key=None):
         OK = self.__rtranslate.keys()

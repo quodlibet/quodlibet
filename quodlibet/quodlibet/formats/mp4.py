@@ -20,7 +20,6 @@ except ImportError:
 
 
 class MP4File(AudioFile):
-    multiple_values = False
     format = "MPEG-4 AAC"
     mimes = ["audio/mp4", "audio/x-m4a", "audio/mpeg4", "audio/aac"]
 
@@ -116,6 +115,11 @@ class MP4File(AudioFile):
             audio["disk"] = [(disc, discs)]
         audio.save()
         self.sanitize()
+
+    def can_multiple_values(self, key=None):
+        if key is None:
+            return []
+        return False
 
     def can_change(self, key=None):
         OK = self.__rtranslate.keys() + self.__rtupletranslate.keys()

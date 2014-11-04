@@ -90,3 +90,7 @@ class TMP4File(TestCase):
 
     def test_can_change_images(self):
         self.assertTrue(self.song.can_change_images)
+
+    def test_can_multiple_values(self):
+        self.assertEqual(self.song.can_multiple_values(), [])
+        self.assertFalse(self.song.can_multiple_values("artist"))

@@ -172,6 +172,10 @@ class TAudioFile(TestCase):
         os.chmod(quux["~filename"], 0644)
         self.failUnless(quux.can_change("foo bar"))
 
+    def test_can_multiple_values(self):
+        self.assertEqual(quux.can_multiple_values(), True)
+        self.assertTrue(quux.can_multiple_values("artist"))
+
     def test_rename(self):
         old_fn = quux("~basename")
         new_fn = "anothersong.mp3"
