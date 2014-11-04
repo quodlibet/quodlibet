@@ -127,7 +127,7 @@ Unstable PPA (12.04+)::
 
 Unstable Repo::
 
-    deb http://lazka.github.io quodlibet-unstable/
+    deb http://lazka.github.io/ql-debian/ quodlibet-unstable/
 
 
 Repo key::
