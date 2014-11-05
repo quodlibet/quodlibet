@@ -447,7 +447,6 @@ class EditTags(Gtk.VBox):
         def cell_data_tag(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
             cell.set_property("text", entry.tag)
-            cell.set_property("editable", entry.canedit)
             cell.set_property("strikethrough", entry.deleted)
 
         column.set_cell_data_func(render, cell_data_tag)
@@ -840,13 +839,6 @@ class EditTags(Gtk.VBox):
         entry = model[path][0]
         if new_tag == entry.tag:
             return
-        elif not self.__songinfo.can_change(entry.tag):
-            # Can't remove the old tag.
-            title = _("Invalid tag")
-            msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
-                    " selected do not support editing this tag."
-                    ) % util.escape(entry.tag)
-            qltk.ErrorMessage(self, title, msg).run()
         elif not self.__songinfo.can_change(new_tag):
             # Can't add the new tag.
             title = _("Invalid tag")
