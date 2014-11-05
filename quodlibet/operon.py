@@ -29,6 +29,7 @@ from quodlibet import util
 from quodlibet.util.path import mtime, fsdecode
 from quodlibet.util.dprint import print_, Colorise
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey
+from quodlibet.util.tagsfrompath import TagsFromPattern
 
 
 PROGRAM = os.path.basename(sys.argv[0])
@@ -753,8 +754,50 @@ class FillCommand(Command):
                      help="show changes, don't apply them")
 
     def _execute(self, options, args):
-        if len(args) < 1:
+        if len(args) < 2:
             raise CommandError("Not enough arguments")
+
+        pattern_text = args[0]
+        self.log("Using pattern: %r" % pattern_text)
+        paths = args[1:]
+
+        pattern = TagsFromPattern(pattern_text)
+
+        songs = []
+        for path in paths:
+            song = self.load_song(path)
+            for header in pattern.headers:
+                if not song.can_change(header):
+                    raise CommandError(_("Can not set %r") % header)
+            songs.append(song)
+
+        if options.dry_run:
+            self.__preview(pattern, songs)
+        else:
+            self.__apply(pattern, songs)
+
+    def __apply(self, pattern, songs):
+        for song in songs:
+            match = pattern.match(song)
+            self.log("%r: %r" % (song("~basename"), match))
+            for header in pattern.headers:
+                value = match[header]
+                song[header] = value
+
+        self.save_songs(songs)
+
+    def __preview(self, pattern, songs):
+        rows = []
+        for song in songs:
+            match = pattern.match(song)
+            row = [fsdecode(song("~basename"))]
+            for header in pattern.headers:
+                row.append(match[header])
+            rows.append(row)
+
+        headers = [_("File")] + pattern.headers
+        nicks = ["file"] + pattern.headers
+        print_table(rows, headers, nicks, nicks)
 
 
 class FillTracknumberCommand(Command):
@@ -1009,11 +1052,11 @@ COMMANDS.extend([ListCommand, DumpCommand, CopyCommand,
             SetCommand, RemoveCommand, AddCommand, PrintCommand,
             HelpCommand, ClearCommand, InfoCommand, TagsCommand,
             ImageExtractCommand, ImageSetCommand, ImageClearCommand,
-            EditCommand])
+            EditCommand, FillCommand])
 COMMANDS.sort(key=lambda c: c.NAME)
 
 # TODO
-# FillCommand, RenameCommand
+# RenameCommand
 # FillTracknumberCommand, LoadCommand
 
 if __name__ == "__main__":

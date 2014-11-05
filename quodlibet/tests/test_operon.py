@@ -624,3 +624,26 @@ class TOperonImageClear(TOperonBase):
         self.cover.reload()
         images = self.cover.get_images()
         self.assertEqual(len(images), 0)
+
+
+class TOperonFill(TOperonBase):
+    # [--dry-run] <pattern> <file> [<files>]
+
+    def test_misc(self):
+        self.check_true(["fill", "-h"], True, False)
+        self.check_false(["fill", self.f], False, True)
+        self.check_true(["fill", "foo", self.f2], False, False)
+        self.check_true(["fill", "foo", self.f, self.f2], False, False)
+
+    def test_apply(self):
+        basename = self.s("~basename")
+        self.check_true(["fill", "<title>", self.f], False, False)
+        self.s.reload()
+        self.assertEqual(self.s("title"), os.path.splitext(basename)[0])
+
+    def test_preview(self):
+        o, e = self.check_true(
+            ["fill", "--dry-run", "<title>", self.f], True, False)
+
+        self.assertTrue("title" in o)
+        self.assertTrue(self.s("~basename") in o)
