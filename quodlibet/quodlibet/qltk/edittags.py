@@ -468,6 +468,7 @@ class EditTags(Gtk.VBox):
 
         def cell_data_value(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
+            cell.markup = entry.value
             cell.set_property("markup", entry.value)
             cell.set_property("editable", entry.canedit)
             cell.set_property("strikethrough", entry.deleted)
