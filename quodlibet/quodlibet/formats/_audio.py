@@ -601,7 +601,7 @@ class AudioFile(dict, ImageContainer):
                 if os.path.ismount(head):
                     self["~mountpoint"] = head
         else:
-            self["~mountpoint"] = "/"
+            self["~mountpoint"] = fsnative(u"/")
 
         # Fill in necessary values.
         self.setdefault("~#added", int(time.time()))

@@ -5,6 +5,7 @@
 # published by the Free Software Foundation
 
 from quodlibet.formats._audio import AudioFile
+from quodlibet.util.path import fsnative
 from quodlibet.util.uri import URI
 
 extensions = []
@@ -17,9 +18,8 @@ class RemoteFile(AudioFile):
     format = "Remote File"
 
     def __init__(self, uri):
-        self["~uri"] = self["~filename"] = str(URI(uri))
-        self["~mountpoint"] = ""
-        self.sanitize(uri)
+        self["~uri"] = str(URI(uri))
+        self.sanitize(fsnative(unicode(self["~uri"])))
 
     def rename(self, newname):
         pass
