@@ -852,6 +852,8 @@ class EditTags(Gtk.VBox):
                 if not entry.value.is_special():
                     entry.value = Comment(text)
 
+            entry.canedit = True
+
             model.row_changed(path, model.get_iter(path))
 
     def __button_press(self, view, event):
