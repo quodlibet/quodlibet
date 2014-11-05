@@ -636,8 +636,8 @@ class EditTags(Gtk.VBox):
         remove.set_sensitive(bool(rows))
 
     def __add_new_tag(self, model, tag, value):
-        if (tag in self.__songinfo and not
-                self.__songinfo.can_multiple_values(tag)):
+        iters = [i for (i, v) in model.iterrows() if v.tag == tag]
+        if iters and not self.__songinfo.can_multiple_values(tag):
             title = _("Unable to add tag")
             msg = _("Unable to add <b>%s</b>\n\nThe files currently"
                     " selected do not support multiple values for <b>%s</b>."
@@ -645,7 +645,6 @@ class EditTags(Gtk.VBox):
             qltk.ErrorMessage(self, title, msg).run()
             return
 
-        iters = [i for (i, v) in model.iterrows() if v.tag == tag]
         entry = ListEntry(tag, Comment(value))
 
         if len(iters):
