@@ -147,18 +147,14 @@ class AudioFileGroup(dict):
 
         if key is None:
             return self._can_multi
-        if self._can_multi is True:
-            return True
-        return key in self._can_multi
+        return all(song.can_multiple_values(key) for song in self.songs)
 
     def can_change(self, key=None):
         """See can_multiple_values()"""
 
         if key is None:
             return self._can_change
-        if self._can_change is True:
-            return True
-        return key in self._can_change
+        return all(song.can_change(key) for song in self.songs)
 
 
 class SplitValues(Gtk.ImageMenuItem):
