@@ -58,6 +58,7 @@ Verbose mode
 \fIcopy\fP        Copy tags from one file to another
 \fIedit\fP        Edit tags in a text editor
 \fIdump\fP        Print all tags to stdout
+\fIfill\fP        Fill tags based on the file path
 .fi
 .sp
 .SS Show file metadata
@@ -225,6 +226,24 @@ Display help and exit
 .TP
 .B Example:
 operon dump song.flac > backup.tags
+.UNINDENT
+.SS fill
+.sp
+Fill tags based one file paths and a given pattern.
+.sp
+operon fill [\-h] [\-\-dry\-run] <pattern> <file>...
+.INDENT 0.0
+.TP
+.B \-h\fP,\fB  \-\-help
+show this help message and exit
+.TP
+.B \-\-dry\-run
+show changes, don\(aqt apply them
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Example:
+operon fill \-\-dry\-run "<tracknumber>. <title>" "01. Was Ist Ist.flac"
 .UNINDENT
 .SH SHOW FILE METADATA
 .SS list

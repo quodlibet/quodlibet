@@ -39,6 +39,7 @@ Edit Tags
 |   *copy*        Copy tags from one file to another
 |   *edit*        Edit tags in a text editor
 |   *dump*        Print all tags to stdout
+|   *fill*        Fill tags based on the file path
 
 Show file metadata
 ------------------
@@ -193,6 +194,24 @@ operon dump [-h] <src-file>
 
 Example:
     operon dump song.flac > backup.tags
+
+fill
+----
+
+Fill tags based one file paths and a given pattern.
+
+operon fill [-h] [--dry-run] <pattern> <file>...
+
+-h, --help
+    show this help message and exit
+
+--dry-run
+    show changes, don't apply them
+
+
+Example:
+    operon fill --dry-run "<tracknumber>. <title>" "01. Was Ist Ist.flac"
+
 
 SHOW FILE METADATA
 ==================
