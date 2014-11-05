@@ -20,6 +20,7 @@ from quodlibet.qltk._editpane import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editpane import WriteFailedError
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.views import TreeViewColumn
+from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.path import fsdecode
 from quodlibet.util.string.splitters import split_value
 
@@ -122,6 +123,23 @@ class TagsFromPathPluginHandler(EditingPluginHandler):
     Kind = TagsFromPathPlugin
 
 
+class ListEntry(object):
+
+    def __init__(self, song):
+        self.song = song
+        self.matches = {}
+
+    def get_match(self, key):
+        return self.matches.get(key, u"")
+
+    def replace_match(self, key, value):
+        self.matches[key] = value
+
+    @property
+    def name(self):
+        return fsdecode(self.song("~basename"))
+
+
 class TagsFromPath(EditPane):
     title = _("Tags From Path")
     FILTERS = [UnderscoresToSpaces, TitleCase, SplitTag]
@@ -151,7 +169,7 @@ class TagsFromPath(EditPane):
 
     def __preview(self, songs):
         if songs is None:
-            songs = [row[0] for row in (self.view.get_model() or [])]
+            songs = [row[0].song for row in (self.view.get_model() or [])]
 
         if songs:
             pattern_text = self.combo.get_child().get_text().decode("utf-8")
@@ -191,26 +209,37 @@ class TagsFromPath(EditPane):
             pattern = TagsFromPattern("")
 
         self.view.set_model(None)
-        model = Gtk.ListStore(
-            object, str, *([str] * len(pattern.headers)))
+        model = ObjectStore()
         for col in self.view.get_columns():
             self.view.remove_column(col)
 
-        col = TreeViewColumn(_('File'), Gtk.CellRendererText(), text=1)
+        render = Gtk.CellRendererText()
+        col = TreeViewColumn(_('File'), render)
         col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+
+        def cell_data_file(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property("text", entry.name)
+
+        col.set_cell_data_func(render, cell_data_file)
+
+        def cell_data_header(column, cell, model, iter_, header):
+            entry = model.get_value(iter_)
+            cell.set_property("text", entry.get_match(header))
+
         self.view.append_column(col)
         for i, header in enumerate(pattern.headers):
             render = Gtk.CellRendererText()
             render.set_property('editable', True)
-            render.connect('edited', self.__row_edited, model, i + 2)
+            render.connect('edited', self.__row_edited, model, header)
             escaped_title = header.replace("_", "__")
-            col = Gtk.TreeViewColumn(escaped_title, render, text=i + 2)
+            col = Gtk.TreeViewColumn(escaped_title, render)
             col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+            col.set_cell_data_func(render, cell_data_header, header)
             self.view.append_column(col)
 
         for song in songs:
-            basename = fsdecode(song("~basename"))
-            row = [song, basename]
+            entry = ListEntry(song)
             match = pattern.match(song)
             for h in pattern.headers:
                 text = match.get(h, '')
@@ -219,8 +248,8 @@ class TagsFromPath(EditPane):
                         text = f.filter(h, text)
                 if not song.can_multiple_values(h):
                     text = u", ".join(text.split("\n"))
-                row.append(text)
-            model.append(row=row)
+                entry.matches[h] = text
+            model.append([entry])
 
         # save for last to potentially save time
         if songs:
@@ -239,8 +268,8 @@ class TagsFromPath(EditPane):
         was_changed = set()
 
         all_done = False
-        for row in (model or []):
-            song = row[0]
+        for entry in ((model and model.itervalues()) or []):
+            song = entry.song
             changed = False
             if not song.valid():
                 win.hide()
@@ -251,8 +280,8 @@ class TagsFromPath(EditPane):
                     break
 
             for i, h in enumerate(pattern.headers):
-                if row[i + 2]:
-                    text = row[i + 2].decode("utf-8")
+                text = entry.get_match(h)
+                if text:
                     can_multiple = song.can_multiple_values(h)
                     if not add or h not in song or not can_multiple:
                         song[h] = text
@@ -282,8 +311,10 @@ class TagsFromPath(EditPane):
         library.changed(was_changed)
         self.save.set_sensitive(not all_done)
 
-    def __row_edited(self, renderer, path, new, model, colnum):
-        row = model[path]
-        if row[colnum] != new:
-            row[colnum] = new
+    def __row_edited(self, renderer, path, new, model, header):
+        entry = model[path][0]
+        new = new.decode("utf-8")
+        if entry.get_match(header) != new:
+            entry.replace_match(header, new)
             self.preview.set_sensitive(True)
+            self.save.set_sensitive(True)
