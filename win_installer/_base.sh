@@ -32,7 +32,7 @@ function download_and_verify {
         wget -P "$BIN" -c http://mercurial.selenic.com/release/windows/mercurial-2.8.1-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0-win32_rev1-setup.exe
+        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev2-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
@@ -104,19 +104,19 @@ function extract_deps {
     # extract the gi binaries
     PYGI="$BUILD_ENV"/pygi
     echo "extract pygi-aio..."
-    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0-win32_rev1-setup.exe > /dev/null
+    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0_rev2-setup.exe > /dev/null
     echo "done"
     echo "extract packages..."
-    (cd "$PYGI"/rtvc9/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
+    (cd "$PYGI"/rtvc9-32/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
     (cd "$PYGI"/noarch/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
-    (cd "$PYGI"/binding/py2.7 && 7z x -y py2.7.7z > /dev/null)
+    (cd "$PYGI"/binding/py2.7-32 && 7z x -y py2.7-32.7z > /dev/null)
     echo "done"
 
     # prepare our binary deps
     DEPS="$BUILD_ENV"/deps
     mkdir "$DEPS"
 
-    for name in rtvc9 noarch; do
+    for name in rtvc9-32 noarch; do
         cp -RT "$PYGI"/"$name"/Base/gnome "$DEPS"
 
         cp -RT "$PYGI"/"$name"/JPEG/gnome "$DEPS"
@@ -178,9 +178,9 @@ function install_python {
 
     # install the python packages
     local SITEPACKAGES="$PYDIR"/Lib/site-packages
-    cp -R "$PYGI"/binding/py2.7/cairo "$SITEPACKAGES"
-    cp -R "$PYGI"/binding/py2.7/gi "$SITEPACKAGES"
-    cp "$PYGI"/binding/py2.7/*.pyd "$SITEPACKAGES"
+    cp -R "$PYGI"/binding/py2.7-32/cairo "$SITEPACKAGES"
+    cp -R "$PYGI"/binding/py2.7-32/gi "$SITEPACKAGES"
+    cp "$PYGI"/binding/py2.7-32/*.pyd "$SITEPACKAGES"
 }
 
 function install_7zip {
