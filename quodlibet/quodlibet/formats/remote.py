@@ -4,6 +4,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.path import fsnative
 from quodlibet.util.uri import URI
@@ -20,6 +22,14 @@ class RemoteFile(AudioFile):
     def __init__(self, uri):
         self["~uri"] = str(URI(uri))
         self.sanitize(fsnative(unicode(self["~uri"])))
+
+    if os.name == "nt":
+        # we used to save them with the wrong type
+        def __getitem__(self, key):
+            value = super(RemoteFile, self).__getitem__(key)
+            if key in ("~filename", "~mountpoint"):
+                value = unicode(value)
+            return value
 
     def rename(self, newname):
         pass
