@@ -89,6 +89,22 @@ class TObjectStore(_TObjectStore):
         ObjectStore(object)
         self.failUnlessRaises(ValueError, ObjectStore, object, object)
 
+    def test_iter_path_changed(self):
+        m = ObjectStore()
+
+        def handler(model, path, iter_, result):
+            result[0] += 1
+
+        result = [0]
+        m.connect("row-changed", handler, result)
+        m.append([object()])
+
+        iter_ = m.get_iter_first()
+        m.iter_changed(iter_)
+        self.assertEqual(result[0], 1)
+        m.path_changed(m.get_path(iter_))
+        self.assertEqual(result[0], 2)
+
     def test_append_many(self):
         m = ObjectStore()
         m.append_many(range(10))
@@ -294,6 +310,22 @@ class TObjectTreeStore(_TObjectTreeStore):
         ObjectTreeStore()
         ObjectTreeStore(object)
         self.failUnlessRaises(ValueError, ObjectTreeStore, object, object)
+
+    def test_iter_path_changed(self):
+        m = ObjectTreeStore()
+
+        def handler(model, path, iter_, result):
+            result[0] += 1
+
+        result = [0]
+        m.connect("row-changed", handler, result)
+        m.append(None, [object()])
+
+        iter_ = m.get_iter_first()
+        m.iter_changed(iter_)
+        self.assertEqual(result[0], 1)
+        m.path_changed(m.get_path(iter_))
+        self.assertEqual(result[0], 2)
 
     def test_itervalues(self):
         m = ObjectTreeStore()

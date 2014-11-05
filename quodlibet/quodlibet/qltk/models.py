@@ -46,6 +46,16 @@ class _ModelMixin(object):
     def get_n_columns(self):
         return 1
 
+    def iter_changed(self, iter_):
+        """Like row_changed(), but only needs a Gtk.TreeIter"""
+
+        self.row_changed(self.get_path(iter_), iter_)
+
+    def path_changed(self, path):
+        """Like row_changed(), but only needs a Gtk.TreePath"""
+
+        self.row_changed(path, self.get_iter(path))
+
     def itervalues(self, iter_=None):
         """Yields all values"""
 
