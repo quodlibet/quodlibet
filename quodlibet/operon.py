@@ -92,7 +92,10 @@ class Command(object):
         self.log("Saving songs...")
 
         for song in songs:
-            song.write()
+            try:
+                song.write()
+            except Exception as e:
+                raise CommandError(e)
 
     def _execute(self, options, args):
         """Override to execute something"""

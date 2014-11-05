@@ -499,18 +499,17 @@ class AudioFile(dict, ImageContainer):
 
     def can_change(self, k=None):
         """See if this file supports changing the given tag. This may
-        be a limitation of the file type, or the file may not be
-        writable.
+        be a limitation of the file type or QL's design.
+
+        The writing code should handle all kinds of keys, so this is
+        just a suggestion.
 
         If no arguments are given, return a list of tags that can be
         changed, or True if 'any' tags can be changed (specific tags
         should be checked before adding)."""
 
         if k is None:
-            if os.access(self["~filename"], os.W_OK):
-                return True
-            else:
-                return []
+            return True
 
         try:
             if isinstance(k, unicode):
@@ -520,8 +519,13 @@ class AudioFile(dict, ImageContainer):
         except UnicodeError:
             return False
 
-        return (k and "=" not in k and "~" not in k
-                and os.access(self["~filename"], os.W_OK))
+        if not k or "=" in k or "~" in k:
+            return False
+
+        return True
+
+    def is_writable(self):
+        return os.access(self["~filename"], os.W_OK)
 
     def rename(self, newname):
         """Rename a file. Errors are not handled. This shouldn't be used

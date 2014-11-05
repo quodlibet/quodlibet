@@ -165,12 +165,14 @@ class TAudioFile(TestCase):
         self.failIf(quux.can_change("=foobar"))
         self.failIf(quux.can_change("foo=bar"))
         self.failIf(quux.can_change(""))
+        self.failUnless(quux.can_change("foo bar"))
 
-        self.failUnless(quux.can_change("foo bar"))
+    def test_is_writable(self):
+        self.assertTrue(quux.is_writable())
         os.chmod(quux["~filename"], 0444)
-        self.failIf(quux.can_change("foo bar"))
+        self.assertFalse(quux.is_writable())
         os.chmod(quux["~filename"], 0644)
-        self.failUnless(quux.can_change("foo bar"))
+        self.assertTrue(quux.is_writable())
 
     def test_can_multiple_values(self):
         self.assertEqual(quux.can_multiple_values(), True)
