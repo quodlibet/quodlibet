@@ -431,7 +431,7 @@ class EditTags(Gtk.VBox):
 
         def cdf_write(col, rend, model, iter_, *args):
             entry = model.get_value(iter_)
-            if entry.canedit:
+            if entry.canedit or entry.deleted:
                 rend.set_property('stock-id', None)
                 rend.set_property('pixbuf',
                     pixbufs[2 * entry.edited + entry.deleted])
@@ -644,6 +644,7 @@ class EditTags(Gtk.VBox):
         # be dismissed; see #473.
         for c in menu.get_children():
             c.set_sensitive(can_change and c.get_property('sensitive'))
+        b.set_sensitive(True)
         menu.connect('selection-done', lambda m: m.destroy())
 
         # XXX: Keep reference
@@ -652,8 +653,7 @@ class EditTags(Gtk.VBox):
 
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()
-        remove.set_sensitive(
-            bool(rows and min([model[row][0].canedit for row in rows])))
+        remove.set_sensitive(bool(rows))
 
     def __add_new_tag(self, model, tag, value):
         if (tag in self.__songinfo and not
@@ -768,7 +768,7 @@ class EditTags(Gtk.VBox):
             for key, values in deleted.iteritems():
                 for value in values:
                     value = util.unescape(value)
-                    if song.can_change(key) and key in song:
+                    if key in song:
                         song.remove(key, value)
                         changed = True
             save_rename = []
