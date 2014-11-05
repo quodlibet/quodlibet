@@ -568,8 +568,8 @@ class EditTags(Gtk.VBox):
             rend.emit('edited', path, text.strip())
 
     def __menu_activate(self, activator, view):
-        model, (iter_,) = view.get_selection().get_selected_rows()
-        entry = model.get_value(iter_)
+        model, (path,) = view.get_selection().get_selected_rows()
+        entry = model[path][0]
 
         tag = entry.tag
         value = util.unescape(entry.value.decode('utf-8'))
@@ -581,7 +581,7 @@ class EditTags(Gtk.VBox):
                     replaced = True
                     entry.value = util.escape(aval)
                     entry.edited = True
-                    model.row_changed(model.get_path(iter_), iter_)
+                    model.path_changed(path)
                 else:
                     self.__add_new_tag(model, atag, aval)
         elif vals:
@@ -589,7 +589,7 @@ class EditTags(Gtk.VBox):
 
         if not replaced:
             entry.edited = entry.deleted = True
-            model.row_changed(model.get_path(iter_), iter_)
+            model.path_changed(path)
 
     def __popup_menu(self, view, parent):
         menu = Gtk.Menu()
