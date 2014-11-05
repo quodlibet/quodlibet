@@ -52,6 +52,11 @@ class TAudioFile(TestCase):
         self.failIf("~filename" in quux.realkeys())
         self.failUnless("album" in quux.realkeys())
 
+    def test_iterrealitems(self):
+        self.assertEqual(
+            list(quux.iterrealitems()),
+            [('album', u'Quuxly')])
+
     def test_trackdisc(self):
         self.failUnlessEqual(bar_1_1("~#track"), 1)
         self.failUnlessEqual(bar_1_1("~#disc"), 1)

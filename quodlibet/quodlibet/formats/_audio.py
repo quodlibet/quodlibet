@@ -187,6 +187,9 @@ class AudioFile(dict, ImageContainer):
 
         return filter(lambda s: s[:1] != "~", self.keys())
 
+    def iterrealitems(self):
+        return ((k, v) for (k, v) in self.iteritems() if k[:1] != "~")
+
     def __call__(self, key, default=u"", connector=" - "):
         """Return a key, synthesizing it if necessary. A default value
         may be given (like dict.get); the default default is an empty
