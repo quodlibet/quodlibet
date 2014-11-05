@@ -429,7 +429,7 @@ class EditTags(Gtk.VBox):
                                  Gtk.StateType.NORMAL)
                    for stock in (Gtk.STOCK_EDIT, Gtk.STOCK_DELETE)]
 
-        def cdf_write(col, rend, model, iter_, (write, delete)):
+        def cdf_write(col, rend, model, iter_, *args):
             entry = model.get_value(iter_)
             if entry.canedit:
                 rend.set_property('stock-id', None)
@@ -437,7 +437,7 @@ class EditTags(Gtk.VBox):
                     pixbufs[2 * entry.edited + entry.deleted])
             else:
                 rend.set_property('stock-id', Gtk.STOCK_DIALOG_AUTHENTICATION)
-        column.set_cell_data_func(render, cdf_write, (2, 4))
+        column.set_cell_data_func(render, cdf_write)
         view.append_column(column)
 
         render = Gtk.CellRendererText()
@@ -705,7 +705,8 @@ class EditTags(Gtk.VBox):
         for row in rows:
             entry = row[0]
             if entry.origvalue is not None:
-                entry.edited = row.deleted = True
+                entry.edited = entry.deleted = True
+                model.row_changed(row.path, row.iter)
             else:
                 model.remove(row.iter)
 
