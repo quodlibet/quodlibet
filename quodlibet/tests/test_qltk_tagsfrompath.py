@@ -1,8 +1,5 @@
 from tests import TestCase
 
-import os
-
-from quodlibet.qltk.tagsfrompath import TagsFromPattern
 from quodlibet.qltk.tagsfrompath import (TitleCase, SplitTag,
     UnderscoresToSpaces)
 import quodlibet.config

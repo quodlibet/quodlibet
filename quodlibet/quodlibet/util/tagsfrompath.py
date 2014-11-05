@@ -7,14 +7,12 @@
 
 import os
 import re
-from quodlibet.util.path import fsdecode
+from quodlibet.util.path import fsdecode, is_fsnative
 
 
 class TagsFromPattern(object):
-    def __init__(self, pattern):
-        self.compile(pattern)
 
-    def compile(self, pattern):
+    def __init__(self, pattern):
         self.headers = []
         self.slashes = len(pattern) - len(pattern.replace(os.path.sep, '')) + 1
         self.pattern = None
@@ -51,17 +49,19 @@ class TagsFromPattern(object):
         self.pattern = re.compile(''.join(pieces))
 
     def match(self, song):
-        if isinstance(song, dict):
-            filename = song['~filename']
-            drive, tail = os.path.splitdrive(filename)
-            song = fsdecode(tail)
-        else:
-            song = os.path.splitdrive(song)[-1]
+        return self.match_path(song["~filename"])
+
+    def match_path(self, path):
+        assert is_fsnative(path)
+
+        tail = os.path.splitdrive(path)[-1]
 
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         sep = os.path.sep
-        matchon = sep + sep.join(song.split(sep)[-self.slashes:])
+        matchon = sep + sep.join(tail.split(sep)[-self.slashes:])
+        # work on unicode
+        matchon = fsdecode(matchon, note=False)
         match = self.pattern.search(matchon)
 
         # dicts for all!
