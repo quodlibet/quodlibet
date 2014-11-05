@@ -13,7 +13,19 @@ from quodlibet import util
 from quodlibet.qltk._editpane import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.path import fsdecode
+
+
+class Entry(object):
+
+    def __init__(self, song):
+        self.song = song
+        self.tracknumber = song("tracknumber")
+
+    @property
+    def name(self):
+        return fsdecode(self.song("~basename"))
 
 
 class TrackNumbers(Gtk.VBox):
@@ -49,19 +61,33 @@ class TrackNumbers(Gtk.VBox):
         hbox2.pack_start(hbox_total, True, False, 0)
         hbox2.pack_start(preview, False, True, 0)
 
-        model = Gtk.ListStore(object, str, str)
+        model = ObjectStore()
         view = HintedTreeView(model=model)
 
         self.pack_start(hbox2, False, True, 0)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(_('File'), render, text=1)
+        column = TreeViewColumn(_('File'), render)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+
+        def cell_data_file(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property("text", entry.name)
+
+        column.set_cell_data_func(render, cell_data_file)
+
         view.append_column(column)
         render = Gtk.CellRendererText()
         render.set_property('editable', True)
-        column = TreeViewColumn(_('Track'), render, text=2)
+        column = TreeViewColumn(_('Track'), render)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+
+        def cell_data_track(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property("text", entry.tracknumber)
+
+        column.set_cell_data_func(render, cell_data_track)
+
         view.append_column(column)
         view.set_reorderable(True)
         w = Gtk.ScrolledWindow()
@@ -105,8 +131,9 @@ class TrackNumbers(Gtk.VBox):
 
     def __row_edited(self, render, path, new, model, preview, save):
         row = model[path]
-        if row[2] != new:
-            row[2] = new
+        entry = row[0]
+        if entry.tracknumber != new:
+            entry.tracknumber = new
             preview.set_sensitive(True)
             save.set_sensitive(True)
 
@@ -114,7 +141,8 @@ class TrackNumbers(Gtk.VBox):
         win = WritingWindow(parent, len(model))
         was_changed = set()
         all_done = False
-        for song, track in [(r[0], r[2]) for r in model]:
+        for entry in model.itervalues():
+            song, track = entry.song, entry.tracknumber
             if song.get("tracknumber") == track:
                 win.step()
                 continue
@@ -149,30 +177,37 @@ class TrackNumbers(Gtk.VBox):
         total = total.get_value_as_int()
         for row in model:
             if total:
-                s = "%d/%d" % (row.path.get_indices()[0] + start, total)
+                s = u"%d/%d" % (row.path.get_indices()[0] + start, total)
             else:
-                s = str(row.path.get_indices()[0] + start)
-            row[2] = s
+                s = unicode(row.path.get_indices()[0] + start)
+            entry = row[0]
+            entry.tracknumber = s
+            model.row_changed(row.path, row.iter)
+
         save.set_sensitive(True)
         revert.set_sensitive(True)
 
     def __update(self, songs, total, model, save, revert):
         if songs is None:
-            songs = [row[0] for row in model]
+            songs = [e.song for e in model.itervalues()]
         else:
             songs = list(songs)
+
         songs.sort(
             key=lambda song: (song("~#track"), song("~basename"), song))
+
         model.clear()
         total.set_value(len(songs))
+
         for song in songs:
             if not song.can_change("tracknumber"):
                 self.set_sensitive(False)
                 break
         else:
             self.set_sensitive(True)
+
         for song in songs:
-            basename = fsdecode(song("~basename"))
-            model.append(row=[song, basename, song("tracknumber")])
+            model.append([Entry(song)])
+
         save.set_sensitive(False)
         revert.set_sensitive(False)
