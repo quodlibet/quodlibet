@@ -865,9 +865,12 @@ class EditTags(Gtk.VBox):
             model = view.get_model()
             row = model[path]
             entry = row[0]
-            entry.edited = not entry.edited
-            if entry.edited and entry.value.shared:
-                entry.value.complete = True
+            # In case we have a (partially) shared value, write it
+            # to all songs. For unshared/incomplete do nothing
+            if entry.value.shared:
+                entry.edited = not entry.edited
+                if entry.edited:
+                    entry.value.complete = True
             model.row_changed(row.path, row.iter)
             return Gdk.EVENT_STOP
         elif event.button == Gdk.BUTTON_MIDDLE and \
