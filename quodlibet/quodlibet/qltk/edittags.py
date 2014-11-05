@@ -20,6 +20,7 @@ from quodlibet.qltk.completion import LibraryValueCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk._editpane import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editpane import WriteFailedError
@@ -355,8 +356,6 @@ class AddTagDialog(Gtk.Dialog):
         self.__tag.grab_focus()
         return super(AddTagDialog, self).run()
 
-TAG, VALUE, EDITED, CANEDIT, DELETED, ORIGVALUE, RENAMED, ORIGTAG = range(8)
-
 
 def is_special(string):
     return string.endswith("</i>")
@@ -382,6 +381,21 @@ class EditTagsPluginHandler(EditingPluginHandler):
     Kind = EditTagsPlugin
 
 
+class ListEntry(object):
+    tag = None
+    value = None
+    edited = True
+    canedit = True
+    deleted = False
+    origvalue = None
+    renamed = False
+    origtag = None
+
+    def __init__(self, tag, value):
+        self.tag = tag
+        self.value = value
+
+
 class EditTags(Gtk.VBox):
     _SAVE_BUTTON_KEY = 'ql-save'
     _REVERT_BUTTON_KEY = 'ql-revert'
@@ -401,7 +415,7 @@ class EditTags(Gtk.VBox):
         self.title = _("Edit Tags")
         self.set_border_width(12)
 
-        model = Gtk.ListStore(str, str, bool, bool, bool, str, bool, str)
+        model = ObjectStore()
         view = RCMHintedTreeView(model=model)
         selection = view.get_selection()
         render = Gtk.CellRendererPixbuf()
@@ -415,20 +429,28 @@ class EditTags(Gtk.VBox):
                                  Gtk.StateType.NORMAL)
                    for stock in (Gtk.STOCK_EDIT, Gtk.STOCK_DELETE)]
 
-        def cdf_write(col, rend, model, iter, (write, delete)):
-            row = model[iter]
-            if row[CANEDIT]:
+        def cdf_write(col, rend, model, iter_, (write, delete)):
+            entry = model.get_value(iter_)
+            if entry.canedit:
                 rend.set_property('stock-id', None)
                 rend.set_property('pixbuf',
-                    pixbufs[2 * row[EDITED] + row[DELETED]])
+                    pixbufs[2 * entry.edited + entry.deleted])
             else:
                 rend.set_property('stock-id', Gtk.STOCK_DIALOG_AUTHENTICATION)
         column.set_cell_data_func(render, cdf_write, (2, 4))
         view.append_column(column)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(
-            _('Tag'), render, text=0, editable=3, strikethrough=4)
+        column = TreeViewColumn(_('Tag'), render)
+
+        def cell_data_tag(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property("text", entry.tag)
+            cell.set_property("editable", entry.canedit)
+            cell.set_property("strikethrough", entry.deleted)
+
+        column.set_cell_data_func(render, cell_data_tag)
+
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render.set_property('editable', True)
         render.connect('edited', self.__edit_tag_name, model)
@@ -442,9 +464,16 @@ class EditTags(Gtk.VBox):
         render.connect('edited', self.__edit_tag, model)
         render.connect(
             'editing-started', self.__value_editing_started, model, library)
-        render.markup = 1
-        column = TreeViewColumn(
-            _('Value'), render, markup=1, editable=3, strikethrough=4)
+        column = TreeViewColumn(_('Value'), render)
+
+        def cell_data_value(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property("markup", entry.value)
+            cell.set_property("editable", entry.canedit)
+            cell.set_property("strikethrough", entry.deleted)
+
+        column.set_cell_data_func(render, cell_data_value)
+
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         view.append_column(column)
 
@@ -539,31 +568,35 @@ class EditTags(Gtk.VBox):
             rend.emit('edited', path, text.strip())
 
     def __menu_activate(self, activator, view):
-        model, (iter,) = view.get_selection().get_selected_rows()
-        row = model[iter]
-        tag = row[TAG]
-        value = util.unescape(row[VALUE].decode('utf-8'))
+        model, (iter_,) = view.get_selection().get_selected_rows()
+        entry = model.get_value(iter_)
+
+        tag = entry.tag
+        value = util.unescape(entry.value.decode('utf-8'))
         vals = activator.activated(tag, value)
         replaced = False
         if vals and (len(vals) != 1 or vals[0][1] != value):
             for atag, aval in vals:
                 if atag == tag and not replaced:
                     replaced = True
-                    row[VALUE] = util.escape(aval)
-                    row[EDITED] = True
+                    entry.value = util.escape(aval)
+                    entry.edited = True
+                    model.row_changed(model.get_path(iter_), iter_)
                 else:
                     self.__add_new_tag(model, atag, aval)
         elif vals:
             replaced = True
+
         if not replaced:
-            row[EDITED] = row[DELETED] = True
+            entry.edited = entry.deleted = True
+            model.row_changed(model.get_path(iter_), iter_)
 
     def __popup_menu(self, view, parent):
         menu = Gtk.Menu()
 
         view.ensure_popup_selection()
         model, rows = view.get_selection().get_selected_rows()
-        can_change = min([model[path][CANEDIT] for path in rows])
+        can_change = min([model[path][0].canedit for path in rows])
 
         items = [SplitDisc, SplitTitle, SplitPerformer, SplitArranger,
                  SplitValues, SplitPerformerFromTitle,
@@ -573,17 +606,18 @@ class EditTags(Gtk.VBox):
 
         if len(rows) == 1:
             row = model[rows[0]]
+            entry = row[0]
 
-            value = row[VALUE].decode('utf-8')
+            value = entry.value.decode('utf-8')
             text = util.unescape(value)
             multi = (value.split("<")[0] != value)
 
             for Item in items:
-                if Item.tags and row[TAG] not in Item.tags:
+                if Item.tags and entry.tag not in Item.tags:
                     continue
 
                 try:
-                    b = Item(row[TAG], text)
+                    b = Item(entry.tag, text)
                 except:
                     util.print_exc()
                 else:
@@ -620,7 +654,7 @@ class EditTags(Gtk.VBox):
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()
         remove.set_sensitive(
-            bool(rows and min([model[row][CANEDIT] for row in rows])))
+            bool(rows and min([model[row][0].canedit for row in rows])))
 
     def __add_new_tag(self, model, tag, value):
         if (tag in self.__songinfo and not
@@ -632,12 +666,13 @@ class EditTags(Gtk.VBox):
             qltk.ErrorMessage(self, title, msg).run()
             return
 
-        iters = [row.iter for row in model if row[TAG] == tag]
-        row = [tag, util.escape(value), True, True, False, None, False, None]
+        iters = [i for (i, v) in model.iterrows() if v.tag == tag]
+        entry = ListEntry(tag, util.escape(value))
+
         if len(iters):
-            model.insert_after(iters[-1], row=row)
+            model.insert_after(iters[-1], row=[entry])
         else:
-            model.append(row=row)
+            model.append(row=[entry])
 
     def __add_tag(self, activator, model, library):
         add = AddTagDialog(self, self.__songinfo.can_change(), library)
@@ -668,8 +703,9 @@ class EditTags(Gtk.VBox):
         # rows (= iters) before we start.
         rows = [model[path] for path in paths]
         for row in rows:
-            if row[ORIGVALUE] is not None:
-                row[EDITED] = row[DELETED] = True
+            entry = row[0]
+            if entry.origvalue is not None:
+                entry.edited = row.deleted = True
             else:
                 model.remove(row.iter)
 
@@ -679,24 +715,25 @@ class EditTags(Gtk.VBox):
         added = {}
         renamed = {}
         for row in model:
-            if row[EDITED] and not (row[DELETED] or row[RENAMED]):
-                if row[ORIGVALUE] is not None:
-                    updated.setdefault(row[TAG], [])
-                    updated[row[TAG]].append((decode(row[VALUE]),
-                                              decode(row[ORIGVALUE])))
+            entry = row[0]
+            if entry.edited and not (entry.deleted or entry.renamed):
+                if entry.origvalue is not None:
+                    updated.setdefault(entry.tag, [])
+                    updated[entry.tag].append((decode(entry.value),
+                                               decode(entry.origvalue)))
                 else:
-                    added.setdefault(row[TAG], [])
-                    added[row[TAG]].append(decode(row[VALUE]))
-            if row[EDITED] and row[DELETED]:
-                if row[ORIGVALUE] is not None:
-                    deleted.setdefault(row[TAG], [])
-                    deleted[row[TAG]].append(decode(row[ORIGVALUE]))
+                    added.setdefault(entry.tag, [])
+                    added[entry.tag].append(decode(entry.value))
+            if entry.edited and entry.deleted:
+                if entry.origvalue is not None:
+                    deleted.setdefault(entry.tag, [])
+                    deleted[entry.tag].append(decode(entry.origvalue))
 
-            if row[EDITED] and row[RENAMED] and not row[DELETED]:
-                renamed.setdefault(row[TAG], [])
-                renamed[row[TAG]].append((decode(row[ORIGTAG]),
-                                          decode(row[VALUE]),
-                                          decode(row[ORIGVALUE])))
+            if entry.edited and entry.renamed and not entry.deleted:
+                renamed.setdefault(entry.tag, [])
+                renamed[entry.tag].append((decode(entry.origtag),
+                                           decode(entry.value),
+                                           decode(entry.origvalue)))
 
         was_changed = set()
         songs = self.__songinfo.songs
@@ -778,9 +815,9 @@ class EditTags(Gtk.VBox):
 
     def __edit_tag(self, renderer, path, new_value, model):
         new_value = ', '.join(new_value.splitlines())
-        row = model[path]
-        if row[TAG] in massagers.tags:
-            fmt = massagers.tags[row[TAG]]
+        entry = model[path][0]
+        if entry.tag in massagers.tags:
+            fmt = massagers.tags[entry.tag]
             if not fmt.is_valid(new_value):
                 qltk.WarningMessage(
                     self, _("Invalid value"),
@@ -789,24 +826,25 @@ class EditTags(Gtk.VBox):
                 return
             else:
                 new_value = fmt.validate(new_value)
-        tag = self.__songinfo.get(row[TAG], None)
-        if row[VALUE].split('<')[0] != new_value or (
+        tag = self.__songinfo.get(entry.tag, None)
+        if entry.value.split('<')[0] != new_value or (
                 tag and tag.shared and not tag.complete):
-            row[VALUE] = util.escape(new_value)
-            row[EDITED] = True
-            row[DELETED] = False
+            entry.value = util.escape(new_value)
+            entry.edited = True
+            entry.deleted = False
+            model.row_changed(path, model.get_iter(path))
 
     def __edit_tag_name(self, renderer, path, new_tag, model):
         new_tag = ' '.join(new_tag.splitlines()).lower()
-        row = model[path]
-        if new_tag == row[TAG]:
+        entry = model[path][0]
+        if new_tag == entry.tag:
             return
-        elif not self.__songinfo.can_change(row[TAG]):
+        elif not self.__songinfo.can_change(entry.tag):
             # Can't remove the old tag.
             title = _("Invalid tag")
             msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
                     " selected do not support editing this tag."
-                    ) % util.escape(row[TAG])
+                    ) % util.escape(entry.tag)
             qltk.ErrorMessage(self, title, msg).run()
         elif not self.__songinfo.can_change(new_tag):
             # Can't add the new tag.
@@ -818,30 +856,31 @@ class EditTags(Gtk.VBox):
         else:
             if new_tag in massagers.tags:
                 fmt = massagers.tags[new_tag]
-                v = util.unescape(row[VALUE])
+                v = util.unescape(entry.value)
                 if not fmt.is_valid(v):
                     qltk.WarningMessage(
                         self, _("Invalid value"),
                         _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
-                        "value": row[VALUE], "error": fmt.error}).run()
+                        "value": entry.value, "error": fmt.error}).run()
                     return
                 value = fmt.validate(v)
             else:
-                value = row[VALUE]
+                value = entry.value
                 value = util.unescape(value)
 
-            if row[ORIGVALUE] is None:
+            if entry.origvalue is None:
                 # The tag hasn't been saved yet, so we can just update
                 # the name in the model, and the value, since it
                 # may have been re-validated.
-                row[TAG] = new_tag
-                row[VALUE] = value
+                entry.tag = new_tag
+                entry.value = value
             else:
                 # The tag has been saved, so delete the old tag and
                 # add a new one with the old (or sanitized) value.
-                row[RENAMED] = row[EDITED] = True
-                row[ORIGTAG] = row[TAG]
-                row[TAG] = new_tag
+                entry.renamed = entry.edited = True
+                entry.origtag = entry.tag
+                entry.tag = new_tag
+            model.row_changed(path, model.get_iter(path))
 
     def __button_press(self, view, event):
         if event.button not in [Gdk.BUTTON_PRIMARY, Gdk.BUTTON_MIDDLE]:
@@ -853,12 +892,15 @@ class EditTags(Gtk.VBox):
             return False
 
         if event.button == Gdk.BUTTON_PRIMARY and col is view.get_columns()[0]:
-            row = view.get_model()[path]
-            row[EDITED] = not row[EDITED]
-            if row[EDITED]:
-                idx = row[VALUE].find('<i>')
+            model = view.get_model()
+            row = model[path]
+            entry = row[0]
+            entry.edited = not entry.edited
+            if entry.edited:
+                idx = entry.value.find('<i>')
                 if idx >= 0:
-                    row[VALUE] = row[VALUE][:idx].strip()
+                    entry.value = entry.value[:idx].strip()
+            model.row_changed(row.path, row.iter)
             return True
         elif event.button == Gdk.BUTTON_MIDDLE and \
                 col == view.get_columns()[2]:
@@ -903,21 +945,27 @@ class EditTags(Gtk.VBox):
 
         for tag in keys:
             # Handle with care.
-            orig_value = songinfo[tag].split("\n")
             value = songinfo[tag].safenicestr()
-            edited = False
-            edit = songinfo.can_change(tag)
-            deleted = False
-            renamed = False
-            newtag = ""
+            canedit = songinfo.can_change(tag)
             if value[0:1] == "<": # "different etc."
-                model.append(row=[tag, value, edited, edit, deleted,
-                                  "\n".join(orig_value), renamed,
-                                  newtag])
+                entry = ListEntry(tag, value)
+                entry.origvalue = songinfo[tag]
+                entry.edited = False
+                entry.canedit = canedit
+                entry.deleted = False
+                entry.renamed = False
+                entry.origtag = ""
+                model.append(row=[entry])
             else:
-                for i, v in enumerate(value.split("\n")):
-                    model.append(row=[tag, v, edited, edit, deleted,
-                                      orig_value[i], renamed, newtag])
+                for v, o in zip(value.split("\n"), songinfo[tag].split("\n")):
+                    entry = ListEntry(tag, v)
+                    entry.origvalue = o
+                    entry.edited = False
+                    entry.canedit = canedit
+                    entry.deleted = False
+                    entry.renamed = False
+                    entry.origtag = ""
+                    model.append(row=[entry])
 
         buttonbox.set_sensitive(bool(songinfo.can_change()))
         for b in buttons:
@@ -927,13 +975,15 @@ class EditTags(Gtk.VBox):
     def __value_editing_started(self, render, editable, path, model, library):
         try:
             if not editable.get_completion():
-                tag = model[path][TAG]
+                tag = model[path][0].tag
                 completion = LibraryValueCompletion(tag, library)
                 editable.set_completion(completion)
         except AttributeError:
             pass
+
         if isinstance(editable, Gtk.Entry):
-            editable.set_text(util.unescape(model[path][VALUE].split('<')[0]))
+            editable.set_text(
+                util.unescape(model[path][0].value.split('<')[0]))
 
     def __tag_editing_started(self, render, editable, path, model, library):
         try:
