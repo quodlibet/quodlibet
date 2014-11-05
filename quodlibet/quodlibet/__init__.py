@@ -127,6 +127,10 @@ def _gtk_init(icon=None):
         Gdk.BUTTON_MIDDLE = 2
         Gdk.BUTTON_SECONDARY = 3
 
+    if not hasattr(Gdk, "EVENT_PROPAGATE"):
+        Gdk.EVENT_PROPAGATE = 0
+        Gdk.EVENT_STOP = 1
+
     # On windows the default variants only do ANSI paths, so replace them.
     # In some typelibs they are replaced by default, in some don't..
     if os.name == "nt":

@@ -548,15 +548,14 @@ class EditTags(Gtk.VBox):
             child.show_all()
 
     def __view_key_press_event(self, view, event):
-        # We can't use a real accelerator to this because it would
-        # interfere with typeahead and row editing.
-        ctrl = event.get_state() & Gdk.ModifierType.CONTROL_MASK
-        keyval_name = Gdk.keyval_name(event.keyval)
-        if event.keyval == Gtk.accelerator_parse("Delete")[0]:
+        if qltk.is_accel(event, "Delete"):
             self.__remove_tag(view, view)
-        elif ctrl and keyval_name == 's':
+            return Gdk.EVENT_STOP
+        elif qltk.is_accel(event, "<ctrl>s"):
             # Issue 697: allow Ctrl-s to save.
             self.save.emit('clicked')
+            return Gdk.EVENT_STOP
+        return Gdk.EVENT_PROPAGATE
 
     def __enable_save(self, *args):
         buttons = args[-1]
