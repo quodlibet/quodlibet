@@ -32,8 +32,9 @@ class TEditTags(TestCase):
 
 class GroupSong(AudioFile):
 
-    def __init__(self, can_multiple):
+    def __init__(self, can_multiple=True, can_change=True):
         self._can_multiple = can_multiple
+        self._can_change = can_change
 
     def can_multiple_values(self, key=None):
         if key is None:
@@ -41,6 +42,13 @@ class GroupSong(AudioFile):
         if self._can_multiple is True:
             return True
         return key in self._can_multiple
+
+    def can_change(self, key=None):
+        if key is None:
+            return self._can_change
+        if self._can_change is True:
+            return True
+        return key in self._can_change
 
 
 class TAudioFileGroup(TestCase):
@@ -59,3 +67,16 @@ class TAudioFileGroup(TestCase):
         self.assertEqual(group.can_multiple_values(), set(["ha"]))
         self.assertFalse(group.can_multiple_values("foo"))
         self.assertTrue(group.can_multiple_values("ha"))
+
+    def test_can_change(self):
+        group = AudioFileGroup(
+            [GroupSong(can_change=True), GroupSong(can_change=True)])
+        self.assertTrue(group.can_change() is True)
+        self.assertTrue(group.can_change("foo") is True)
+
+        group = AudioFileGroup(
+            [GroupSong(can_change=["foo", "ha"]),
+             GroupSong(can_change=["ha"])])
+        self.assertEqual(group.can_change(), set(["ha"]))
+        self.assertFalse(group.can_change("foo"))
+        self.assertTrue(group.can_change("ha"))

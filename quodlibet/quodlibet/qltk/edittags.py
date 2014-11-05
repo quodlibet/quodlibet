@@ -93,6 +93,7 @@ class AudioFileGroup(dict):
         total = len(songs)
         self.songs = songs
         can_multi = True
+        can_change = True
 
         for song in songs:
             self.is_file &= song.is_file
@@ -109,7 +110,15 @@ class AudioFileGroup(dict):
                 else:
                     can_multi.intersection_update(song_can_multi)
 
+            song_can_change = song.can_change()
+            if song_can_change is not True:
+                if can_change is True:
+                    can_change = set(song_can_change)
+                else:
+                    can_change.intersection_update(song_can_change)
+
         self._can_multi = can_multi
+        self._can_change = can_change
 
         # collect comment representations
         for comment, count in keys.iteritems():
@@ -144,22 +153,14 @@ class AudioFileGroup(dict):
             return True
         return key in self._can_multi
 
-    def can_change(self, k=None):
-        if k is None:
-            can = True
-            for song in self.songs:
-                cantoo = song.can_change()
-                if can is True:
-                    can = cantoo
-                elif cantoo is True:
-                    pass
-                else:
-                    can = set(can) | set(cantoo)
-        else:
-            if not self.songs:
-                return False
-            can = min([song.can_change(k) for song in self.songs])
-        return can
+    def can_change(self, key=None):
+        """See can_multiple_values()"""
+
+        if key is None:
+            return self._can_change
+        if self._can_change is True:
+            return True
+        return key in self._can_change
 
 
 class SplitValues(Gtk.ImageMenuItem):
