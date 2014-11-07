@@ -1,3 +1,53 @@
+3.3.0 (2014-??-??) - ??
+-----------------------
+
+General:
+ * Support --query with all browsers that have a search entry. :bug:`1437`
+ * Songlist: Scroll to playing song when replacing the list.
+   Scroll to first selected song and restore selection for it on re-sort.
+   :bug:`568`
+ * Consider all songs in an album for finding (embedded) album art.
+   :bug:`924`
+ * Support 'month' (30 days) in time queries. :bug:`706`
+ * Support playing a song that is not in the song list. :bug:`1358`
+ * Support numeric date search e.g. #(2004-01 < date < 2004-05). :bug:`1455`
+ * Playlists browser: make delete key remove the selected songs from
+   the current playlist :bug:`1481` (Nick Boultbee)
+ * File tree: Show XDG desktop/downloads/music folders if available
+ * File tree: List mountpoints on linux
+
+Fixes:
+ * Update for theming changes in gtk3.15
+ * Fix seek slider not working with newer gtk+ and some themes :bug:`1477`
+
+Tagger:
+ * WMA: support multiple values for producer, conductor, artist, lyricist,
+   albumartist, composer, genre and mood.
+ * Allow removing and renaming from tag names which not all selected
+   formats support.
+
+Plugins:
+ * New simple lyricwiki plugin using a webview
+ * New Rhythmbox import plugin. :bug:`1463`
+
+Operon:
+ * new 'edit' command which lets one edit tags with a text editor
+   (``VISUAL=vi operon edit song.flac``) :bug:`1084`
+ * new fill command
+   (``operon fill --dry-run "<tracknumber>. <title>" *.flac``)
+
+OSX:
+ * Multimedia key support (Eric Le Lay)
+ * Global menu support / OSX integration. (Eric Le Lay)
+ * Various fixes / improvements
+
+Windows:
+ * Fix loading cover art from non-ansi paths
+ * Starting QL will now focus the first instance if one exists
+ * quodlibet.exe now passes command arguments to the running instance
+  (quodlibet.exe --next) :bug:`635`
+
+
 3.2.2 (2014-10-03) - ENJOY, THERE'S NO GOING BACK
 -------------------------------------------------
 
