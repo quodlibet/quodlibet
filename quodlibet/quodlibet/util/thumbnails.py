@@ -8,8 +8,10 @@
 import os
 import tempfile
 import hashlib
+import cairo
+import math
 
-from gi.repository import GdkPixbuf, GLib
+from gi.repository import Gdk, GdkPixbuf, GLib
 
 from quodlibet.const import USERDIR
 from quodlibet.util.path import mtime, mkdir, pathname2url, \
@@ -17,61 +19,39 @@ from quodlibet.util.path import mtime, mkdir, pathname2url, \
 
 
 def add_border(pixbuf, val, round=False, width=1):
-    """Add a 1px border to the pixbuf and round of the edges if needed.
+    """Add a border to the pixbuf and round of the edges.
     val is the border brightness from 0 to 255.
-
     The resulting pixbuf will be width * 2px higher and wider.
 
     Can not fail.
     """
 
-    # XXX: borders don't overlap in all places
-    # .. port to cairo?
-    for i in range(width):
-        pixbuf = _add_border(pixbuf, val, round)
-    return pixbuf
-
-
-def _add_border(pixbuf, val, round=False):
-    if not 0 <= val <= 255:
-        raise ValueError
-
-    c = (val << 24) | (val << 16) | (val << 8) | 0xFF
-
     w, h = pixbuf.get_width(), pixbuf.get_height()
-    rgb = GdkPixbuf.Colorspace.RGB
-    newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, w + 2, h + 2)
-    newpb.fill(c)
-    pixbuf.copy_area(0, 0, w, h, newpb, 1, 1)
+    w += width * 2
+    h += width * 2
+    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
+    ctx = cairo.Context(surface)
 
-    if round:
-        m = (c & 0xFFFFFF00) | 0xDD
-        p = (c & 0xFFFFFF00) | 0xBB
-        o = (c & 0xFFFFFF00) | 0x70
-        n = (c & 0xFFFFFF00) | 0x40
-        l = -1
-        e = -2
+    pi = math.pi
+    r = 5 if round else 0
 
-        mask = (
-            (0, 0, n, p),
-            (0, o, m, l),
-            (n, m, e, e),
-            (p, l, e, e)
-        )
+    ctx.new_path()
+    ctx.arc(w - r, r, r, -pi / 2, 0)
+    ctx.arc(w - r, h - r, r, 0, pi / 2)
+    ctx.arc(r, h - r, r, pi / 2, pi)
+    ctx.arc(r, r, r, pi, pi * 3 / 2)
+    ctx.close_path()
 
-        overlay = GdkPixbuf.Pixbuf.new(rgb, True, 8, 1, 1)
-        overlay.fill(m)
+    Gdk.cairo_set_source_pixbuf(ctx, pixbuf, width, width)
+    ctx.clip_preserve()
+    ctx.paint()
 
-        for y, row in enumerate(mask):
-            for x, pix in enumerate(row):
-                for xn, yn in [(x, y), (w + 1 - x, y), (w + 1 - x, h + 1 - y),
-                               (x, h + 1 - y)]:
-                    if pix == l:
-                        overlay.composite(newpb, xn, yn, 1, 1, 0, 0, 1, 1,
-                                          GdkPixbuf.InterpType.NEAREST, 70)
-                    elif pix != e:
-                        newpb.new_subpixbuf(xn, yn, 1, 1).fill(pix)
-    return newpb
+    val = val / 255.0
+    ctx.set_source_rgb(val, val, val)
+    ctx.set_line_width(width * 2)
+    ctx.stroke()
+
+    return Gdk.pixbuf_get_from_surface(surface, 0, 0, w, h)
 
 
 def calc_scale_size(boundary, size, scale_up=True):
