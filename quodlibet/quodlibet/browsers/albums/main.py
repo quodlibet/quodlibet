@@ -35,6 +35,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.library import background_filter
+from quodlibet.util import thumbnails
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
@@ -434,21 +435,34 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         self.__cover_column = column = Gtk.TreeViewColumn("covers", render)
         column.set_visible(config.getboolean("browsers", "album_covers"))
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column.set_fixed_width(Album.COVER_SIZE + 10)
-        render.set_property('height', Album.COVER_SIZE + 6)
-        render.set_property('width', Album.COVER_SIZE + 6)
+        column.set_fixed_width(Album.COVER_SIZE + 12)
+        render.set_property('height', Album.COVER_SIZE + 8)
+        render.set_property('width', Album.COVER_SIZE + 8)
 
         def cell_data_pb(column, cell, model, iter_, no_cover):
             album = model.get_album(iter_)
+            round_ = config.getboolean("albumart", "round")
+            needs_border = False
+
             if album is None:
                 pixbuf = None
             elif album.cover:
-                pixbuf = get_pbosf_for_pixbuf(self, album.cover)
+                pixbuf = album.cover
+                needs_border = True
             else:
                 pixbuf = no_cover
-            if self.__last_render_pb == pixbuf:
+
+            cache_key = (pixbuf, round_)
+            if self.__last_render_pb == cache_key:
                 return
-            self.__last_render_pb = pixbuf
+            self.__last_render_pb = cache_key
+
+            if needs_border:
+                scale_factor = get_scale_factor(self)
+                pixbuf = thumbnails.add_border(
+                    pixbuf, 30, round=round_, width=scale_factor)
+                pixbuf = get_pbosf_for_pixbuf(self, pixbuf)
+
             set_renderer_from_pbosf(cell, pixbuf)
 
         column.set_cell_data_func(render, cell_data_pb, self._no_cover)

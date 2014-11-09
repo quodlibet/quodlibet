@@ -268,7 +268,7 @@ class Album(Collection):
     """Like a `Collection` but adds cover scanning, some attributes for sorting
     and uses a set for the songs."""
 
-    COVER_SIZE = 50
+    COVER_SIZE = 48
 
     cover = None
     scanned = False
@@ -309,14 +309,9 @@ class Album(Collection):
         cover = cover_plugins.get_cover_many(self.songs)
 
         if cover is not None:
-            s = self.COVER_SIZE * scale_factor - scale_factor * 2
-
+            s = self.COVER_SIZE * scale_factor
             try:
-                round = config.getboolean("albumart", "round")
-                thumb = thumbnails.get_thumbnail_from_file(cover, (s, s))
-                if thumb:
-                    self.cover = thumbnails.add_border(
-                        thumb, 30, round=round, width=scale_factor)
+                self.cover = thumbnails.get_thumbnail_from_file(cover, (s, s))
             except GLib.GError:
                 return
 

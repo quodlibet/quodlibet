@@ -20,11 +20,11 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (get_scale_factor, get_pbosf_for_pixbuf,
-    pbosf_get_property_name)
+    set_renderer_from_pbosf)
 from quodlibet.qltk.x import ScrolledWindow, Alignment, SymbolicIconImage
 from quodlibet.util.collection import Album
+from quodlibet.util import thumbnails
 from quodlibet.util.library import background_filter
-
 from quodlibet.util.thumbnails import scale
 
 from .models import (CollectionTreeStore, CollectionSortModel,
@@ -204,9 +204,12 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             else:
                 cover = get_scaled_cover(album)
                 if cover:
+                    round_ = config.getboolean("albumart", "round")
+                    scale_factor = get_scale_factor(self)
+                    cover = thumbnails.add_border(
+                        cover, 30, round=round_, width=scale_factor)
                     pbosf = get_pbosf_for_pixbuf(self, cover)
-                    prop_name = pbosf_get_property_name(pbosf)
-                    cell.set_property(prop_name, pbosf)
+                    set_renderer_from_pbosf(cell, pbosf)
                 else:
                     cell.set_property('stock_id', Gtk.STOCK_CDROM)
 

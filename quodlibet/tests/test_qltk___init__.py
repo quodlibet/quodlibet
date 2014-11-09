@@ -53,3 +53,9 @@ class TQltk(TestCase):
         qltk.popup_menu_under_widget(m, l, 1, 0)
         w.destroy()
         m.destroy()
+
+    def test_redraw_all(self):
+        w = Gtk.Window()
+        w.realize()
+        qltk.redraw_all_toplevels()
+        qltk.redraw_all_toplevels(w)

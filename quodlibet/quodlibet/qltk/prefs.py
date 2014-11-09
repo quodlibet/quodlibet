@@ -24,7 +24,6 @@ from quodlibet.qltk.data_editors import MultiStringEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
-from quodlibet.qltk.window import Window
 from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
@@ -252,7 +251,8 @@ class PreferencesWindow(qltk.UniqueWindow):
             c = CCB(_("_Use rounded corners on thumbnails"),
                     'albumart', 'round', populate=True,
                     tooltip=_("Round the corners of album artwork thumbnail "
-                              "images. May require restart to take effect."))
+                              "images."))
+            c.connect('toggled', self.__toggle_round_corners)
             vb.pack_start(c, False, True, 0)
 
             # Filename choice algorithm config
@@ -288,6 +288,9 @@ class PreferencesWindow(qltk.UniqueWindow):
 
         def __changed_text(self, entry, name):
             config.set('albumart', name, entry.get_text())
+
+        def __toggle_round_corners(self, *args):
+            qltk.redraw_all_toplevels(self)
 
         def __toggled_force_filename(self, cb, fn_entry):
             fn_entry.set_sensitive(cb.get_active())
@@ -407,9 +410,7 @@ class PreferencesWindow(qltk.UniqueWindow):
                 if it is None:
                     return
                 RATINGS.default = model[it][0]
-                # XXX... redraw cell renderers
-                for window in Window.windows:
-                    window.queue_draw()
+                qltk.redraw_all_toplevels(self)
 
             def populate_default_rating_model(combo, num):
                 model = combo.get_model()
