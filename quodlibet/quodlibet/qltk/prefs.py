@@ -530,11 +530,6 @@ class PreferencesWindow(qltk.UniqueWindow):
                      tooltip=_("Save changes to tags without confirmation "
                                "when editing multiple files"))
             vbox.pack_start(cb, False, True, 0)
-            cb = CCB(_("Show _programmatic tags"),
-                     'editing', 'alltags', populate=True,
-                     tooltip=_("Access all tags, including machine-generated "
-                               "ones e.g. MusicBrainz or Replay Gain tags"))
-            vbox.pack_start(cb, False, True, 0)
             hb = Gtk.HBox(spacing=6)
             e = UndoEntry()
             e.set_text(config.get("editing", "split_on"))

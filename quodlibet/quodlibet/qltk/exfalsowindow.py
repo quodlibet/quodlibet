@@ -15,7 +15,6 @@ from quodlibet import formats
 from quodlibet import qltk
 
 from quodlibet.plugins import PluginManager
-from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.delete import trash_files, TrashMenuItem
 from quodlibet.qltk.edittags import EditTags
 from quodlibet.qltk.filesel import MainFileSelector
@@ -243,13 +242,7 @@ class PreferencesWindow(qltk.UniqueWindow):
         l.set_mnemonic_widget(e)
         hb.pack_start(l, False, True, 0)
         hb.pack_start(e, True, True, 0)
-        cb = ConfigCheckButton(
-            _("Show _programmatic tags"), 'editing', 'alltags',
-            tooltip=_("Access all tags, including machine-generated "
-                      "ones e.g. MusicBrainz or Replay Gain tags"))
-        cb.set_active(config.getboolean("editing", 'alltags'))
         vbox.pack_start(hb, False, True, 0)
-        vbox.pack_start(cb, False, True, 0)
         f = qltk.Frame(_("Tag Editing"), child=vbox)
 
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)

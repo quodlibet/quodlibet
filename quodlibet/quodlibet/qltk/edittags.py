@@ -21,6 +21,7 @@ from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.models import ObjectStore
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
@@ -462,6 +463,13 @@ class EditTags(Gtk.VBox):
         sw.add(view)
         self.pack_start(sw, True, True, 0)
 
+        cb = ConfigCheckButton(
+            _("Show _programmatic tags"), 'editing', 'alltags', populate=True,
+            tooltip=_("Access all tags, including machine-generated "
+                      "ones e.g. MusicBrainz or Replay Gain tags"))
+        cb.connect('toggled', self.__all_tags_toggled)
+        self.pack_start(cb, False, True, 0)
+
         # Add and Remove [tags] buttons
         buttonbox = Gtk.HBox(spacing=18)
         bbox1 = Gtk.HButtonBox()
@@ -523,8 +531,13 @@ class EditTags(Gtk.VBox):
         selection.connect('changed', self.__tag_select, remove)
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 
+        self._parent = parent
+
         for child in self.get_children():
             child.show_all()
+
+    def __all_tags_toggled(self, *args):
+        self._parent.emit("changed", None)
 
     def __view_key_press_event(self, view, event):
         if qltk.is_accel(event, "Delete"):
@@ -894,27 +907,28 @@ class EditTags(Gtk.VBox):
     def __update(self, songs, view, buttonbox, model, add, buttons):
         if songs is None:
             songs = self.__songinfo.songs
-
-        self.__songinfo = songinfo = AudioFileGroup(songs)
-
-        with view.without_model() as model:
-            model.clear()
+        else:
+            self.__songinfo = AudioFileGroup(songs)
+        songinfo = self.__songinfo
 
         keys = songinfo.keys()
         if not config.getboolean("editing", "alltags"):
             keys = filter(lambda k: k not in MACHINE_TAGS, keys)
 
-        for tag in sorted(keys, key=tagsortkey):
-            canedit = songinfo.can_change(tag)
-            for value in songinfo[tag]:
-                entry = ListEntry(tag, value)
-                entry.origvalue = value
-                entry.edited = False
-                entry.canedit = canedit
-                entry.deleted = False
-                entry.renamed = False
-                entry.origtag = ""
-                model.append(row=[entry])
+        with view.without_model() as model:
+            model.clear()
+
+            for tag in sorted(keys, key=tagsortkey):
+                canedit = songinfo.can_change(tag)
+                for value in songinfo[tag]:
+                    entry = ListEntry(tag, value)
+                    entry.origvalue = value
+                    entry.edited = False
+                    entry.canedit = canedit
+                    entry.deleted = False
+                    entry.renamed = False
+                    entry.origtag = ""
+                    model.append(row=[entry])
 
         buttonbox.set_sensitive(bool(songinfo.can_change()))
         for b in buttons:
