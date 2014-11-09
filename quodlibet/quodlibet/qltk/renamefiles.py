@@ -90,6 +90,19 @@ class RenameFilesPluginHandler(EditingPluginHandler):
     Kind = RenameFilesPlugin
 
 
+class Entry(object):
+
+    def __init__(self, song):
+        self.song = song
+
+    new_name = None
+    """new name as unicode or None if not set"""
+
+    @property
+    def name(self):
+        return fsdecode(self.song("~basename"))
+
+
 class RenameFiles(EditPane):
     title = _("Rename Files")
     FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
@@ -100,14 +113,27 @@ class RenameFiles(EditPane):
         super(RenameFiles, self).__init__(
             const.NBP, const.NBP_EXAMPLES.split("\n"))
 
-        column = TreeViewColumn(
-            _('File'), Gtk.CellRendererText(), text=1)
+        render = Gtk.CellRendererText()
+        column = TreeViewColumn(_('File'), render)
+
+        def cell_data_file(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property("text", entry.name)
+
+        column.set_cell_data_func(render, cell_data_file)
+
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(column)
+
         render = Gtk.CellRendererText()
         render.set_property('editable', True)
+        column = TreeViewColumn(_('New Name'), render)
 
-        column = TreeViewColumn(_('New Name'), render, text=2)
+        def cell_data_new_name(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property("text", entry.new_name or u"")
+        column.set_cell_data_func(render, cell_data_new_name)
+
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(column)
 
@@ -119,9 +145,11 @@ class RenameFiles(EditPane):
         render.connect('edited', self.__row_edited)
 
     def __row_edited(self, renderer, path, new):
-        row = self.view.get_model()[path]
-        if row[2] != new:
-            row[2] = new
+        model = self.view.get_model()
+        entry = model[path][0]
+        new = new.decode("utf-8")
+        if entry.new_name != new:
+            entry.new_name = new
             self.preview.set_sensitive(True)
             self.save.set_sensitive(True)
 
@@ -133,13 +161,16 @@ class RenameFiles(EditPane):
         skip_all = False
         self.view.freeze_child_notify()
 
-        # FIXME: encoding/decoding mess
-        rows = [(row[0], row[1], row[2].decode('utf-8')) for row in model]
-        for song, oldname, newname in rows:
+        for entry in model.itervalues():
+            song = entry.song
+            new_name = entry.new_name
+            old_name = entry.name
+            if new_name is None:
+                continue
+
             try:
-                newname = fsnative(newname)
-                library.rename(song, newname, changed=was_changed)
-            except StandardError:
+                library.rename(song, fsnative(new_name), changed=was_changed)
+            except Exception:
                 util.print_exc()
                 if skip_all:
                     continue
@@ -153,8 +184,8 @@ class RenameFiles(EditPane):
                       "Possibly the target file already exists, "
                       "or you do not have permission to make the "
                       "new file or remove the old one.") % (
-                    util.escape(fsdecode(oldname)),
-                    util.escape(fsdecode(newname))),
+                    util.escape(old_name),
+                    util.escape(new_name)),
                     buttons=Gtk.ButtonsType.NONE)
                 msg.add_buttons(*buttons)
                 msg.set_default_response(Gtk.ResponseType.OK)
@@ -177,11 +208,12 @@ class RenameFiles(EditPane):
     def __preview(self, songs):
         model = self.view.get_model()
         if songs is None:
-            songs = [row[0] for row in model]
-        pattern = self.combo.get_child().get_text().decode("utf-8")
+            songs = [e.song for e in model.itervalues()]
+
+        pattern_text = self.combo.get_child().get_text().decode("utf-8")
 
         try:
-            pattern = FileFromPattern(pattern)
+            pattern = FileFromPattern(pattern_text)
         except ValueError:
             qltk.ErrorMessage(
                 self, _("Path is not absolute"),
@@ -192,10 +224,11 @@ class RenameFiles(EditPane):
                 util.escape(pattern))).run()
             return
         else:
-            if self.combo.get_child().get_text():
-                self.combo.prepend_text(self.combo.get_child().get_text())
+            if pattern:
+                self.combo.prepend_text(pattern_text)
                 self.combo.write(const.NBP)
 
+        # native paths
         orignames = [song["~filename"] for song in songs]
         newnames = [pattern.format(song) for song in songs]
         for f in self.filters:
@@ -204,11 +237,12 @@ class RenameFiles(EditPane):
 
         model.clear()
         for song, newname in zip(songs, newnames):
-            basename = fsdecode(song("~basename"))
-            newname = fsdecode(newname)
-            model.append(row=[song, basename, newname])
+            entry = Entry(song)
+            entry.new_name = fsdecode(newname)
+            model.append(row=[entry])
+
         self.preview.set_sensitive(False)
-        self.save.set_sensitive(bool(self.combo.get_child().get_text()))
+        self.save.set_sensitive(bool(pattern_text))
         for song in songs:
             if not song.is_file:
                 self.set_sensitive(False)

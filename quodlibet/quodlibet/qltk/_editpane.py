@@ -18,6 +18,7 @@ from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.qltk.x import Button
+from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.path import fsdecode
 
 
@@ -128,7 +129,7 @@ class EditPane(Gtk.VBox):
         self.pack_start(hbox, False, True, 0)
         self.combo.get_child().connect('changed', self._changed)
 
-        model = Gtk.ListStore(object, str, str)
+        model = ObjectStore()
         self.view = Gtk.TreeView(model=model)
 
         sw = Gtk.ScrolledWindow()
