@@ -22,8 +22,8 @@ from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk._editpane import EditingPluginHandler, OverwriteWarning
-from quodlibet.qltk._editpane import WriteFailedError
+from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
+from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.plugins import PluginManager
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,

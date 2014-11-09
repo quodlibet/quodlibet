@@ -131,7 +131,7 @@ quodlibet/qltk/data_editors.py
 quodlibet/qltk/debugwindow.py
 quodlibet/qltk/delete.py
 quodlibet/qltk/downloader.py
-quodlibet/qltk/_editpane.py
+quodlibet/qltk/_editutils.py
 quodlibet/qltk/edittags.py
 quodlibet/qltk/exfalsowindow.py
 quodlibet/qltk/filesel.py

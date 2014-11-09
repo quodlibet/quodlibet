@@ -14,10 +14,13 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
+from quodlibet.plugins import PluginManager
 from quodlibet.parse import FileFromPattern
-from quodlibet.qltk._editpane import EditPane, FilterCheckButton
-from quodlibet.qltk._editpane import EditingPluginHandler
+from quodlibet.qltk._editutils import FilterPluginBox, FilterCheckButton
+from quodlibet.qltk._editutils import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
+from quodlibet.qltk.cbes import ComboBoxEntrySave
+from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util.path import fsdecode, fsnative
 from quodlibet.util.path import strip_win32_incompat_from_path
@@ -103,15 +106,58 @@ class Entry(object):
         return fsdecode(self.song("~basename"))
 
 
-class RenameFiles(EditPane):
+class RenameFiles(Gtk.VBox):
     title = _("Rename Files")
     FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
                StripNonASCII, Lowercase]
     handler = RenameFilesPluginHandler()
 
+    @classmethod
+    def init_plugins(cls):
+        PluginManager.instance.register_handler(cls.handler)
+
     def __init__(self, parent, library):
-        super(RenameFiles, self).__init__(
-            const.NBP, const.NBP_EXAMPLES.split("\n"))
+        super(RenameFiles, self).__init__(spacing=6)
+        self.set_border_width(12)
+
+        hbox = Gtk.HBox(spacing=6)
+        cbes_defaults = const.NBP_EXAMPLES.split("\n")
+        self.combo = ComboBoxEntrySave(const.NBP, cbes_defaults,
+            title=_("Path Patterns"),
+            edit_title=_("Edit saved patterns..."))
+        self.combo.show_all()
+        hbox.pack_start(self.combo, True, True, 0)
+        self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
+        self.preview.show()
+        hbox.pack_start(self.preview, False, True, 0)
+        self.pack_start(hbox, False, True, 0)
+        self.combo.get_child().connect('changed', self._changed)
+
+        model = ObjectStore()
+        self.view = Gtk.TreeView(model=model)
+        self.view.show()
+
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.add(self.view)
+        self.pack_start(sw, True, True, 0)
+
+        self.pack_start(Gtk.VBox(), False, True, 0)
+
+        filter_box = FilterPluginBox(self.handler, self.FILTERS)
+        filter_box.connect("preview", self.__filter_preview)
+        filter_box.connect("changed", self.__filter_changed)
+        self.filter_box = filter_box
+        self.pack_start(filter_box, False, True, 0)
+
+        # Save button
+        self.save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        self.save.show()
+        bbox = Gtk.HButtonBox()
+        bbox.set_layout(Gtk.ButtonBoxStyle.END)
+        bbox.pack_start(self.save, True, True, 0)
+        self.pack_start(bbox, False, True, 0)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(_('File'), render)
@@ -143,6 +189,19 @@ class RenameFiles(EditPane):
         self.save.connect_object('clicked', self.__rename, library)
 
         render.connect('edited', self.__row_edited)
+
+        for child in self.get_children():
+            child.show()
+
+    def __filter_preview(self, *args):
+        Gtk.Button.clicked(self.preview)
+
+    def __filter_changed(self, *args):
+        self._changed(self.combo.get_child())
+
+    def _changed(self, entry):
+        self.save.set_sensitive(False)
+        self.preview.set_sensitive(bool(entry.get_text()))
 
     def __row_edited(self, renderer, path, new):
         model = self.view.get_model()
@@ -231,7 +290,7 @@ class RenameFiles(EditPane):
         # native paths
         orignames = [song["~filename"] for song in songs]
         newnames = [pattern.format(song) for song in songs]
-        for f in self.filters:
+        for f in self.filter_box.filters:
             if f.active:
                 newnames = f.filter_list(orignames, newnames)
 

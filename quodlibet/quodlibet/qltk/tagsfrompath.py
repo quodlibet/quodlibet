@@ -14,11 +14,13 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.qltk._editpane import EditPane, FilterCheckButton
-from quodlibet.qltk._editpane import EditingPluginHandler, OverwriteWarning
-from quodlibet.qltk._editpane import WriteFailedError
+from quodlibet.plugins import PluginManager
+from quodlibet.qltk._editutils import FilterPluginBox, FilterCheckButton
+from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
+from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.views import TreeViewColumn
+from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.path import fsdecode
 from quodlibet.util.tagsfrompath import TagsFromPattern
@@ -79,16 +81,43 @@ class ListEntry(object):
         return fsdecode(self.song("~basename"))
 
 
-class TagsFromPath(EditPane):
+class TagsFromPath(Gtk.VBox):
     title = _("Tags From Path")
     FILTERS = [UnderscoresToSpaces, TitleCase, SplitTag]
     handler = TagsFromPathPluginHandler()
 
-    def __init__(self, parent, library):
-        super(TagsFromPath, self).__init__(
-            const.TBP, const.TBP_EXAMPLES.split("\n"))
+    @classmethod
+    def init_plugins(cls):
+        PluginManager.instance.register_handler(cls.handler)
 
-        vbox = self.get_children()[2]
+    def __init__(self, parent, library):
+        super(TagsFromPath, self).__init__(spacing=6)
+
+        self.set_border_width(12)
+        hbox = Gtk.HBox(spacing=6)
+        cbes_defaults = const.TBP_EXAMPLES.split("\n")
+        self.combo = ComboBoxEntrySave(const.TBP, cbes_defaults,
+            title=_("Path Patterns"),
+            edit_title=_("Edit saved patterns..."))
+        self.combo.show_all()
+        hbox.pack_start(self.combo, True, True, 0)
+        self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
+        self.preview.show()
+        hbox.pack_start(self.preview, False, True, 0)
+        self.pack_start(hbox, False, True, 0)
+        self.combo.get_child().connect('changed', self._changed)
+
+        model = ObjectStore()
+        self.view = Gtk.TreeView(model=model)
+        self.view.show()
+
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.add(self.view)
+        self.pack_start(sw, True, True, 0)
+
+        vbox = Gtk.VBox()
         addreplace = Gtk.ComboBoxText()
         addreplace.append_text(_("Tags replace existing ones"))
         addreplace.append_text(_("Tags are added to existing ones"))
@@ -96,12 +125,40 @@ class TagsFromPath(EditPane):
         addreplace.connect('changed', self.__add_changed)
         vbox.pack_start(addreplace, True, True, 0)
         addreplace.show()
+        self.pack_start(vbox, False, True, 0)
+
+        filter_box = FilterPluginBox(self.handler, self.FILTERS)
+        filter_box.connect("preview", self.__filter_preview)
+        filter_box.connect("changed", self.__filter_changed)
+        self.filter_box = filter_box
+        self.pack_start(filter_box, False, True, 0)
+
+        # Save button
+        self.save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        self.save.show()
+        bbox = Gtk.HButtonBox()
+        bbox.set_layout(Gtk.ButtonBoxStyle.END)
+        bbox.pack_start(self.save, True, True, 0)
+        self.pack_start(bbox, False, True, 0)
 
         self.preview.connect_object('clicked', self.__preview, None)
         parent.connect_object('changed', self.__class__.__preview, self)
 
         # Save changes
         self.save.connect_object('clicked', self.__save, addreplace, library)
+
+        for child in self.get_children():
+            child.show()
+
+    def __filter_preview(self, *args):
+        Gtk.Button.clicked(self.preview)
+
+    def __filter_changed(self, *args):
+        self._changed(self.combo.get_child())
+
+    def _changed(self, entry):
+        self.save.set_sensitive(False)
+        self.preview.set_sensitive(bool(entry.get_text()))
 
     def __add_changed(self, combo):
         config.set("tagsfrompath", "add", str(bool(combo.get_active())))
@@ -182,7 +239,7 @@ class TagsFromPath(EditPane):
             match = pattern.match(song)
             for h in pattern.headers:
                 text = match.get(h, '')
-                for f in self.filters:
+                for f in self.filter_box.filters:
                     if f.active:
                         text = f.filter(h, text)
                 if not song.can_multiple_values(h):

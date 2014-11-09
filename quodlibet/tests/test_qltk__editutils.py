@@ -1,8 +1,8 @@
 from tests import TestCase
 
 from quodlibet.formats import DUMMY_SONG
-from quodlibet.qltk._editpane import FilterCheckButton
-from quodlibet.qltk._editpane import OverwriteWarning, WriteFailedError
+from quodlibet.qltk._editutils import FilterCheckButton, \
+    OverwriteWarning, WriteFailedError, FilterPluginBox, EditingPluginHandler
 
 
 class FCB(FilterCheckButton):
@@ -62,3 +62,11 @@ class TEditDialogs(TestCase):
 
     def test_write_failed(self):
         WriteFailedError(None, DUMMY_SONG).destroy()
+
+
+class TFilterPluginBox(TestCase):
+
+    def test_main(self):
+        handler = EditingPluginHandler()
+        x = FilterPluginBox(handler)
+        self.assertEqual(x.filters, [])

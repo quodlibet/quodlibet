@@ -11,14 +11,11 @@ from gi.repository import Gtk, GObject
 
 from quodlibet import config
 from quodlibet import util
-from quodlibet import qltk
 
-from quodlibet.plugins import PluginManager, PluginHandler
-from quodlibet.qltk.cbes import ComboBoxEntrySave
+from quodlibet.plugins import PluginHandler
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.qltk.x import Button
-from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.path import fsdecode
 
 
@@ -78,10 +75,13 @@ class EditingPluginHandler(GObject.GObject, PluginHandler):
 
     def plugin_enable(self, plugin):
         self.__plugins.append(plugin.cls)
-        self.emit("changed")
+        self.changed()
 
     def plugin_disable(self, plugin):
         self.__plugins.remove(plugin.cls)
+        self.changed()
+
+    def changed(self):
         self.emit("changed")
 
 
@@ -111,81 +111,62 @@ class FilterCheckButton(ConfigCheckButton):
             (other._order, type(other).__name__)
 
 
-class EditPane(Gtk.VBox):
-    @classmethod
-    def init_plugins(cls):
-        PluginManager.instance.register_handler(cls.handler)
+class FilterPluginBox(Gtk.VBox):
 
-    def __init__(self, cbes_filename, cbes_defaults):
-        super(EditPane, self).__init__(spacing=6)
-        self.set_border_width(12)
-        hbox = Gtk.HBox(spacing=6)
-        self.combo = ComboBoxEntrySave(cbes_filename, cbes_defaults,
-            title=_("Path Patterns"),
-            edit_title=_("Edit saved patterns..."))
-        hbox.pack_start(self.combo, True, True, 0)
-        self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
-        hbox.pack_start(self.preview, False, True, 0)
-        self.pack_start(hbox, False, True, 0)
-        self.combo.get_child().connect('changed', self._changed)
+    __gsignals__ = {
+        # the list should be updated
+        "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
+        # the preview button should be made sensitive
+        "preview": (GObject.SignalFlags.RUN_LAST, None, ()),
+    }
 
-        model = ObjectStore()
-        self.view = Gtk.TreeView(model=model)
+    def __init__(self, plugin_handler, filter_types=None):
+        super(FilterPluginBox, self).__init__()
 
-        sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(self.view)
-        self.pack_start(sw, True, True, 0)
+        # static filters
+        if filter_types is None:
+            filter_types = []
 
-        filters = [Kind() for Kind in self.FILTERS]
+        filters = [Kind() for Kind in filter_types]
         filters.sort()
-        vbox = Gtk.VBox()
         for f in filters:
-            vbox.pack_start(f, True, True, 0)
-        self.pack_start(vbox, False, True, 0)
+            self.pack_start(f, True, True, 0)
+        self.__filters = filters
 
+        # plugins
+        self.__plugins = []
         hb = Gtk.HBox()
         expander = Gtk.Expander(label=_("_More options..."))
         expander.set_use_underline(True)
-        adj = Gtk.Alignment(yalign=1.0, xscale=1.0)
-        adj.add(expander)
-        hb.pack_start(adj, True, True, 0)
-
-        # Save button
-        self.save = Gtk.Button(stock=Gtk.STOCK_SAVE)
-        bbox = Gtk.HButtonBox()
-        bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.pack_start(self.save, True, True, 0)
-        hb.pack_start(bbox, False, True, 0)
+        hb.pack_start(expander, True, True, 0)
         self.pack_start(hb, False, True, 0)
 
         for filt in filters:
-            filt.connect_object('preview', Gtk.Button.clicked, self.preview)
+            filt.connect('preview', lambda *x: self.emit("preview"))
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
         vbox = Gtk.VBox()
 
-        self.__filters = filters
-        self.__plugins = []
-
-        self.handler.connect("changed", self.__refresh_plugins, vbox, expander)
+        plugin_handler.connect(
+            "changed", self.__refresh_plugins, vbox, expander)
 
         sw.add_with_viewport(vbox)
         self.pack_start(sw, False, True, 0)
 
+        sw.set_no_show_all(True)
         expander.connect("notify::expanded", self.__notify_expanded, sw)
         expander.set_expanded(False)
 
-        self.show_all()
-        self.handler.emit("changed")
+        for child in self.get_children():
+            child.show()
+
+        plugin_handler.changed()
         sw.hide()
 
-    @property
-    def filters(self):
-        return self.__filters + self.__plugins
+    def __notify_expanded(self, expander, event, vbox):
+        vbox.set_property('visible', expander.get_property('expanded'))
 
     def __refresh_plugins(self, handler, vbox, expander):
         instances = []
@@ -209,32 +190,28 @@ class EditPane(Gtk.VBox):
             except:
                 util.print_exc()
                 f.destroy()
-            else:
+                continue
+
+            try:
+                f.connect('preview', lambda *x: self.emit('preview'))
+            except:
                 try:
-                    f.connect_object(
-                        'preview', Gtk.Button.clicked, self.preview)
+                    f.connect('changed', lambda *x: self.emit('changed'))
                 except:
-                    try:
-                        f.connect_object(
-                            'changed', self._changed, self.combo.get_child())
-                    except:
-                        util.print_exc()
-                    else:
-                        self.__plugins.append(f)
-                else:
-                    self.__plugins.append(f)
+                    util.print_exc()
+                    continue
+
+            self.__plugins.append(f)
+
         vbox.show_all()
 
         # Don't display the expander if there aren't any plugins.
-        if not vbox.get_children():
+        if not self.__plugins:
             expander.set_expanded(False)
             expander.hide()
         else:
             expander.show()
 
-    def __notify_expanded(self, expander, event, vbox):
-        vbox.set_property('visible', expander.get_property('expanded'))
-
-    def _changed(self, entry):
-        self.save.set_sensitive(False)
-        self.preview.set_sensitive(bool(entry.get_text()))
+    @property
+    def filters(self):
+        return self.__filters + self.__plugins

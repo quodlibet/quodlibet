@@ -10,7 +10,7 @@ from gi.repository import Gtk
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.qltk._editpane import OverwriteWarning, WriteFailedError
+from quodlibet.qltk._editutils import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.models import ObjectStore
