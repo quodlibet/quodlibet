@@ -205,9 +205,8 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
                 cover = get_scaled_cover(album)
                 if cover:
                     round_ = config.getboolean("albumart", "round")
-                    scale_factor = get_scale_factor(self)
-                    cover = thumbnails.add_border(
-                        cover, 30, round=round_, width=scale_factor)
+                    cover = thumbnails.add_border_widget(
+                        cover, view, cell, round=round_)
                     pbosf = get_pbosf_for_pixbuf(self, cover)
                     set_renderer_from_pbosf(cell, pbosf)
                 else:

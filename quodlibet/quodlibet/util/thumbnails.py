@@ -18,9 +18,27 @@ from quodlibet.util.path import mtime, mkdir, pathname2url, \
     xdg_get_cache_home, is_fsnative
 
 
-def add_border(pixbuf, val, round=False, width=1):
+def add_border_widget(pixbuf, widget, cell=None, round=False):
+    """Like add_border() but uses the widget to get a border color and a
+    border width.
+    """
+
+    from quodlibet.qltk.image import get_scale_factor
+
+    context = widget.get_style_context()
+    if cell is not None:
+        state = cell.get_state(widget, 0)
+    else:
+        state = widget.get_state_flags()
+    color = context.get_color(state)
+    scale_factor = get_scale_factor(widget)
+
+    return add_border(pixbuf, color, round=round, width=scale_factor)
+
+
+def add_border(pixbuf, color, round=False, width=1):
     """Add a border to the pixbuf and round of the edges.
-    val is the border brightness from 0 to 255.
+    color is a Gdk.RGBA
     The resulting pixbuf will be width * 2px higher and wider.
 
     Can not fail.
@@ -45,8 +63,7 @@ def add_border(pixbuf, val, round=False, width=1):
     ctx.clip_preserve()
     ctx.paint()
 
-    val = val / 255.0
-    ctx.set_source_rgb(val, val, val)
+    ctx.set_source_rgba(color.red, color.green, color.blue, color.alpha)
     ctx.set_line_width(width * 2)
     ctx.stroke()
 

@@ -1,7 +1,7 @@
 from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile
 
-from gi.repository import GdkPixbuf
+from gi.repository import GdkPixbuf, Gdk, Gtk
 
 import os
 
@@ -41,18 +41,25 @@ class TThumb(TestCase):
         self.assertEqual(res, (100, 20))
 
     def test_add_border(self):
+        color = Gdk.RGBA()
         w, h = self.small.get_width(), self.small.get_height()
-        res = thumbnails.add_border(self.small, 42, round=False)
+        res = thumbnails.add_border(self.small, color, round=False)
         self.assertEqual(res.get_width(), w + 2)
         self.assertEqual(res.get_height(), h + 2)
 
-        res = thumbnails.add_border(self.small, 42, round=True)
+        res = thumbnails.add_border(self.small, color, round=True)
         self.assertEqual(res.get_width(), w + 2)
         self.assertEqual(res.get_height(), h + 2)
 
-        res = thumbnails.add_border(self.small, 42, width=2)
+        res = thumbnails.add_border(self.small, color, width=2)
         self.assertEqual(res.get_width(), w + 4)
         self.assertEqual(res.get_height(), h + 4)
+
+    def test_add_border_widget(self):
+        widget = Gtk.Button()
+        cell = Gtk.CellRendererText()
+        thumbnails.add_border_widget(self.small, widget, cell, True)
+        thumbnails.add_border_widget(self.small, widget, None, True)
 
     def test_get_thumbnail_folder(self):
         path = thumbnails.get_thumbnail_folder()

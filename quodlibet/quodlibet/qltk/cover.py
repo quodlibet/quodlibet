@@ -203,8 +203,8 @@ class ResizeImage(Gtk.Bin):
             round_thumbs = config.getboolean("albumart", "round")
             pixbuf = thumbnails.scale(
                 pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor))
-            pixbuf = thumbnails.add_border(
-                pixbuf, 80, round=round_thumbs, width=scale_factor)
+            pixbuf = thumbnails.add_border_widget(
+                pixbuf, self, None, round_thumbs)
         else:
             pixbuf = thumbnails.scale(pixbuf, (width, height))
 

@@ -441,28 +441,23 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         def cell_data_pb(column, cell, model, iter_, no_cover):
             album = model.get_album(iter_)
-            round_ = config.getboolean("albumart", "round")
-            needs_border = False
 
             if album is None:
                 pixbuf = None
             elif album.cover:
                 pixbuf = album.cover
-                needs_border = True
+                round_ = config.getboolean("albumart", "round")
+                pixbuf = thumbnails.add_border_widget(
+                    pixbuf, self.view, cell, round_)
+                pixbuf = get_pbosf_for_pixbuf(self, pixbuf)
+                # don't cache, too much state has an effect on the result
+                self.__last_render_pb = None
             else:
                 pixbuf = no_cover
 
-            cache_key = (pixbuf, round_)
-            if self.__last_render_pb == cache_key:
+            if self.__last_render_pb == pixbuf:
                 return
-            self.__last_render_pb = cache_key
-
-            if needs_border:
-                scale_factor = get_scale_factor(self)
-                pixbuf = thumbnails.add_border(
-                    pixbuf, 30, round=round_, width=scale_factor)
-                pixbuf = get_pbosf_for_pixbuf(self, pixbuf)
-
+            self.__last_render_pb = pixbuf
             set_renderer_from_pbosf(cell, pixbuf)
 
         column.set_cell_data_func(render, cell_data_pb, self._no_cover)
