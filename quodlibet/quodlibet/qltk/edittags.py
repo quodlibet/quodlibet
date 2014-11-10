@@ -88,6 +88,17 @@ class Comment(object):
             return '<i>(%s)</i>' % util.escape(self._paren())
 
 
+def get_default_tags():
+    """Returns a list of tags that should be displayed even if not present
+    in the file.
+    """
+
+    text = config.get("editing", "default_tags").strip()
+    if not text:
+        return []
+    return text.split(",")
+
+
 class AudioFileGroup(dict):
 
     def __init__(self, songs):
@@ -363,7 +374,7 @@ class ListEntry(object):
 
     tag = None
     value = None
-    edited = True
+    edited = False
     canedit = True
     deleted = False
     origvalue = None
@@ -655,6 +666,7 @@ class EditTags(Gtk.VBox):
             return
 
         entry = ListEntry(tag, Comment(value))
+        entry.edited = True
 
         if len(iters):
             model.insert_after(iters[-1], row=[entry])
@@ -912,14 +924,27 @@ class EditTags(Gtk.VBox):
         songinfo = self.__songinfo
 
         keys = songinfo.keys()
+        keys = set(keys + get_default_tags())
+
         if not config.getboolean("editing", "alltags"):
             keys = filter(lambda k: k not in MACHINE_TAGS, keys)
+
+        if not songs:
+            keys = []
 
         with view.without_model() as model:
             model.clear()
 
             for tag in sorted(keys, key=tagsortkey):
                 canedit = songinfo.can_change(tag)
+
+                # default tags
+                if tag not in songinfo:
+                    entry = ListEntry(tag, Comment(u""))
+                    entry.canedit = canedit
+                    model.append(row=[entry])
+                    continue
+
                 for value in songinfo[tag]:
                     entry = ListEntry(tag, value)
                     entry.origvalue = value

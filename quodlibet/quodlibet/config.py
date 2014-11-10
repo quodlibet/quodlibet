@@ -135,7 +135,8 @@ INITIAL = {
         "save_email": const.EMAIL,
         "alltags": "true", # show all tags, or just "human-readable" ones
         # Skip dialog to save or revert changes
-        "auto_save_changes": "false"
+        "auto_save_changes": "false",
+        "default_tags": "", # e.g. "title,artist"
     },
     "albumart": {
         "round": "true", # use rounded corners for artwork thumbnails
