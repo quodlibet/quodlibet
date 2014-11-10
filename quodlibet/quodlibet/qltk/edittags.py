@@ -924,7 +924,15 @@ class EditTags(Gtk.VBox):
         songinfo = self.__songinfo
 
         keys = songinfo.keys()
-        keys = set(keys + get_default_tags())
+        default_tags = get_default_tags()
+        keys = set(keys + default_tags)
+
+        def custom_sort(key):
+            try:
+                prio = default_tags.index(key)
+            except ValueError:
+                prio = len(default_tags)
+            return (prio, tagsortkey(key))
 
         if not config.getboolean("editing", "alltags"):
             keys = filter(lambda k: k not in MACHINE_TAGS, keys)
@@ -935,7 +943,7 @@ class EditTags(Gtk.VBox):
         with view.without_model() as model:
             model.clear()
 
-            for tag in sorted(keys, key=tagsortkey):
+            for tag in sorted(keys, key=custom_sort):
                 canedit = songinfo.can_change(tag)
 
                 # default tags
