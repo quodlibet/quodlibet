@@ -100,8 +100,9 @@ def get_default_tags():
 
 
 class AudioFileGroup(dict):
+    """Values are a list of Comment instances"""
 
-    def __init__(self, songs):
+    def __init__(self, songs, real_keys_only=True):
         keys = {}
         first = {}
         all = {}
@@ -114,7 +115,12 @@ class AudioFileGroup(dict):
         for song in songs:
             self.is_file &= song.is_file
 
-            for comment, val in song.iterrealitems():
+            if real_keys_only:
+                iter_func = song.iterrealitems
+            else:
+                iter_func = song.iteritems
+
+            for comment, val in iter_func():
                 keys[comment] = keys.get(comment, 0) + 1
                 first.setdefault(comment, val)
                 all[comment] = all.get(comment, True) and first[comment] == val
@@ -137,19 +143,19 @@ class AudioFileGroup(dict):
         self._can_change = can_change
 
         # collect comment representations
-        for comment, count in keys.iteritems():
-            first_value = first[comment]
-            shared = all[comment]
+        for tag, count in keys.iteritems():
+            first_value = first[tag]
+            if not isinstance(first_value, basestring):
+                first_value = unicode(first_value)
+            shared = all[tag]
             complete = count == total
-            # FIXME: split up multi value tags earlier, e.g. if all
-            # share one value but the second one is different
             if shared and complete:
                 values = first_value.split("\n")
             else:
                 values = [first_value]
             for v in values:
-                self.setdefault(comment, []).append(
-                    Comment(v, count, total, all[comment]))
+                self.setdefault(tag, []).append(
+                    Comment(v, count, total, shared))
 
     def can_multiple_values(self, key=None):
         """If no arguments passed returns a set of tags that have multi

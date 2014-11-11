@@ -171,7 +171,10 @@ class DuplicatesTreeModel(Gtk.TreeStore):
     def group_value(cls, group, tag):
         """Gets a formatted aggregated value/dummy for a set of tag values"""
         try:
-            group_val = group[tag].safenicestr()
+            vals = []
+            for comment in group[tag]:
+                vals.append(comment.get_markup())
+            group_val = "\n".join(vals)
         except KeyError:
             return ""
         else:
@@ -210,7 +213,7 @@ class DuplicatesTreeModel(Gtk.TreeStore):
 
     def add_group(self, key, songs):
         """Adds a new group, returning the row created"""
-        group = AudioFileGroup(songs)
+        group = AudioFileGroup(songs, real_keys_only=False)
         # Add the group first.
         parent = self.append(None,
             [key] +
