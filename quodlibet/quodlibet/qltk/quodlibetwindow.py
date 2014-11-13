@@ -489,6 +489,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         main_box.show_all()
 
+        # set at least the playlist. the song should be restored
+        # after the browser emits the song list
+        player.setup(self.playlist, None, 0)
+        self.__first_browser_set = True
+
         restore_browser = not headless
         try:
             self.select_browser(
@@ -499,20 +504,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             config.save(const.CONFIG)
             raise
 
-        # set at least the playlist before the mainloop starts..
-        player.setup(self.playlist, None, 0)
-
-        def delayed_song_set():
-            self.__delayed_setup = None
-            song = library.get(config.get("memory", "song"))
-            seek_pos = config.getint("memory", "seek", 0)
-            config.set("memory", "seek", 0)
-            if song is not None:
-                player.setup(self.playlist, song, seek_pos)
-
-        self.__delayed_setup = None
-        if not headless:
-            self.__delayed_setup = GLib.idle_add(delayed_song_set)
         self.showhide_playlist(ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(ui.get_widget("/Menu/View/Queue"))
 
@@ -632,8 +623,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             return True
 
     def __destroy(self, *args):
-        if self.__delayed_setup:
-            GLib.source_remove(self.__delayed_setup)
         # The tray icon plugin tries to unhide QL because it gets disabled
         # on Ql exit. The window should stay hidden after destroy.
         self.show = lambda: None
@@ -914,7 +903,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             container.destroy()
             self.browser.destroy()
         self.browser = Browser(library, True)
-        self.browser.connect('songs-selected', self.__browser_cb)
+        self.browser.connect('songs-selected',
+            self.__browser_cb, library, player)
         self.browser.connect('activated', self.__browser_activate)
         if restore:
             self.browser.restore()
@@ -1239,12 +1229,25 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
     def __browser_activate(self, browser):
         app.player.reset()
 
-    def __browser_cb(self, browser, songs, sorted):
+    def __browser_cb(self, browser, songs, sorted, library, player):
         if browser.background:
             bg = background_filter()
             if bg:
                 songs = filter(bg, songs)
         self.songlist.set_songs(songs, sorted)
+
+        # After the first time the browser activates, which should always
+        # happen if we start up and restore, restore the playing song.
+        # Because the browser has send us songs we can be sure it has
+        # registered all its libraries.
+        if self.__first_browser_set:
+            self.__first_browser_set = False
+
+            song = library.librarian.get(config.get("memory", "song"))
+            seek_pos = config.getint("memory", "seek", 0)
+            config.set("memory", "seek", 0)
+            if song is not None:
+                player.setup(self.playlist, song, seek_pos)
 
     def __filter_on(self, action, header, songs, player):
         browser = self.browser
