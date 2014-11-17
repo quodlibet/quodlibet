@@ -7,7 +7,7 @@
 import os
 
 from quodlibet.formats._audio import AudioFile
-from quodlibet.util.path import fsnative
+from quodlibet.util.path import fsnative, is_fsnative
 from quodlibet.util.uri import URI
 
 extensions = []
@@ -23,13 +23,16 @@ class RemoteFile(AudioFile):
         self["~uri"] = str(URI(uri))
         self.sanitize(fsnative(unicode(self["~uri"])))
 
-    if os.name == "nt":
+    def __getitem__(self, key):
         # we used to save them with the wrong type
-        def __getitem__(self, key):
-            value = super(RemoteFile, self).__getitem__(key)
-            if key in ("~filename", "~mountpoint"):
+        value = super(RemoteFile, self).__getitem__(key)
+        if key in ("~filename", "~mountpoint") and not is_fsnative(value):
+            if os.name == "nt":
                 value = unicode(value)
-            return value
+            else:
+                value = value.encode("utf-8")
+
+        return value
 
     def rename(self, newname):
         pass

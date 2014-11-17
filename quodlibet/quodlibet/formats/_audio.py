@@ -20,7 +20,7 @@ from ._image import ImageContainer
 from quodlibet import const
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser
+from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, is_fsnative
 from quodlibet.util.path import normalize_path, fsnative, escape_filename
 from quodlibet.util.string import encode
 
@@ -591,6 +591,9 @@ class AudioFile(dict, ImageContainer):
             self["~filename"] = filename
         elif "~filename" not in self:
             raise ValueError("Unknown filename!")
+
+        assert is_fsnative(self["~filename"])
+
         if self.is_file:
             self["~filename"] = normalize_path(
                 self["~filename"], canonicalise=True)

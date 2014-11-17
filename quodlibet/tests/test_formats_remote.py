@@ -16,3 +16,10 @@ class TRemoteFile(TestCase):
         f = RemoteFile("http://example.com")
         self.assertTrue(is_fsnative(f["~mountpoint"]))
         self.assertTrue(is_fsnative(f["~filename"]))
+
+    def test_fix_old_types(self):
+        f = RemoteFile("http://example.com")
+        f["~filename"] = b"foo"
+        self.assertTrue(is_fsnative(f["~filename"]))
+        f["~filename"] = u"foo"
+        self.assertTrue(is_fsnative(f["~filename"]))
