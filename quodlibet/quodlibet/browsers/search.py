@@ -61,7 +61,7 @@ class SearchBar(Gtk.VBox, Browser):
         container.remove(songpane)
         container.remove(self)
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(SearchBar, self).__init__()
         self.set_spacing(6)
 
@@ -83,8 +83,7 @@ class SearchBar(Gtk.VBox, Browser):
         prefs = PreferencesButton(sbb)
         sbb.pack_start(prefs, False, True, 0)
 
-        align = (Alignment(sbb, left=6, right=6, top=6) if main
-                 else Alignment(sbb))
+        align = Alignment(sbb, left=6, right=6, top=6)
         self.pack_start(align, False, True, 0)
         self.connect('destroy', self.__destroy)
         self.show_all()

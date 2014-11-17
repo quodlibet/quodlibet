@@ -414,7 +414,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
         return get_pbosf_for_pixbuf(self, pb)
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(AlbumList, self).__init__(spacing=6)
         self._register_instance()
         if self.__model is None:
@@ -497,9 +497,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
 
-        if main:
-            gobject_weak(view.connect, 'row-activated',
-                         self.__play_selection)
+        gobject_weak(view.connect, 'row-activated', self.__play_selection)
 
         self.__sig = gobject_weak(
             view.get_selection().connect, 'changed',
@@ -525,11 +523,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         prefs = PreferencesButton(self, model_sort)
         search.pack_start(prefs, False, True, 0)
-        if main:
-            self.pack_start(Alignment(search, left=6, top=6), False, True, 0)
-        else:
-            self.pack_start(search, False, True, 0)
-
+        self.pack_start(Alignment(search, left=6, top=6), False, True, 0)
         self.pack_start(sw, True, True, 0)
 
         self.connect("destroy", self.__destroy)

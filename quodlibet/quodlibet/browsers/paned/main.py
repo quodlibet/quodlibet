@@ -62,11 +62,9 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
             browser.refresh_panes()
             browser.fill_panes()
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(PanedBrowser, self).__init__()
         self._register_instance()
-
-        self.__main = main
 
         self._filter = None
         self._library = library
@@ -81,8 +79,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         sbb.connect('focus-out', self.__focus)
         self._sb_box = sbb
 
-        align = (Alignment(sbb, left=6, right=6, top=6) if main
-                 else Alignment(sbb))
+        align = Alignment(sbb, left=6, right=6, top=6)
         self.pack_start(align, False, True, 0)
 
         keyval, mod = Gtk.accelerator_parse("<control>Home")
@@ -212,9 +209,8 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         self._panes.pop()  # remove self
 
         for pane in self._panes:
-            if self.__main:
-                pane.connect('row-activated',
-                             lambda *x: self.emit("activated"))
+            pane.connect('row-activated',
+                         lambda *x: self.emit("activated"))
             sw = ScrolledWindow()
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
             sw.set_shadow_type(Gtk.ShadowType.IN)

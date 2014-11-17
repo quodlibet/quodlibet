@@ -133,7 +133,7 @@ class TAlbumBrowser(TestCase):
             af.sanitize()
         library.add(SONGS)
 
-        self.bar = AlbumList(library, True)
+        self.bar = AlbumList(library)
 
         self._id = self.bar.connect("songs-selected", self._selected)
         self._id2 = self.bar.connect("activated", self._activated)

@@ -55,7 +55,7 @@ class TBrowserBase(AbstractTestCase):
         library.librarian = SongLibrarian()
         library.add(SONGS)
         self.Kind.init(library)
-        self.b = self.Kind(library, True)
+        self.b = self.Kind(library)
 
     def tearDown(self):
         self.b.destroy()

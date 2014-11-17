@@ -21,7 +21,7 @@ class TMediaBrowser(TestCase):
 
     def test_init(self):
         library = SongLibrary()
-        MediaDevices(library, False).destroy()
+        MediaDevices(library).destroy()
 
     def test_property(self):
         class FakeDevice(dict):

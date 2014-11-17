@@ -343,7 +343,7 @@ class AudioFeeds(Browser, Gtk.VBox):
                 DownloadWindow.download(source, target, self)
         chooser.destroy()
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(AudioFeeds, self).__init__(spacing=6)
 
         self.__view = view = AllTreeView()

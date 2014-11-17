@@ -166,7 +166,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                 klass.__devices.remove(row.iter)
                 break
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(MediaDevices, self).__init__(spacing=6)
         self._register_instance()
 
@@ -185,8 +185,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         view.get_selection().set_mode(Gtk.SelectionMode.BROWSE)
         view.get_selection().connect_object('changed', self.__refresh, False)
         view.connect('popup-menu', self.__popup_menu, library)
-        if main:
-            view.connect('row-activated', lambda *a: self.emit("activated"))
+        view.connect('row-activated', lambda *a: self.emit("activated"))
         swin.add(view)
 
         col = Gtk.TreeViewColumn("Devices")
@@ -204,10 +203,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
         hbox = Gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
-        if main:
-            self.pack_start(Alignment(hbox, left=3, bottom=3), False, True, 0)
-        else:
-            self.pack_start(hbox, False, True, 0)
+        self.pack_start(Alignment(hbox, left=3, bottom=3), False, True, 0)
 
         # refresh button
         refresh = Button(_("_Refresh"), Gtk.STOCK_REFRESH, Gtk.IconSize.MENU)

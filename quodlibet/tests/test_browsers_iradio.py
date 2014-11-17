@@ -3,7 +3,6 @@ from tests import TestCase
 from quodlibet.library import SongLibrary
 from quodlibet.formats._audio import AudioFile
 from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar
-from quodlibet.player.nullbe import NullPlayer
 import quodlibet.config
 
 quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
@@ -19,7 +18,7 @@ class TQuestionBar(TestCase):
 class TInternetRadio(TestCase):
     def setUp(self):
         quodlibet.config.init()
-        self.bar = InternetRadio(SongLibrary(), NullPlayer())
+        self.bar = InternetRadio(SongLibrary())
 
     def test_can_filter(self):
         self.assertTrue(self.bar.can_filter("foo"))

@@ -136,7 +136,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
     def _change_albums(klass, library, changed, model):
         model.change_albums(changed)
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(CollectionBrowser, self).__init__(spacing=6)
         self._register_instance()
         if self.__model is None:
@@ -240,17 +240,13 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         hbox.pack_start(search, True, True, 0)
         hbox.pack_start(prefs, False, True, 0)
 
-        if main:
-            self.pack_start(Alignment(hbox, left=6, top=6), False, True, 0)
-        else:
-            self.pack_start(hbox, False, True, 0)
-
+        self.pack_start(Alignment(hbox, left=6, top=6), False, True, 0)
         self.pack_start(sw, True, True, 0)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__sig = view.get_selection().connect('changed',
             self.__selection_changed)
-        view.connect('row-activated', self.__play, main)
+        view.connect('row-activated', self.__play)
         view.connect_object('popup-menu', self.__popup, view, library)
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
@@ -319,9 +315,9 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
-    def __play(self, view, path, col, main):
+    def __play(self, view, path, col):
         model = view.get_model()
-        if main and isinstance(model[path][0], Album):
+        if isinstance(model[path][0], Album):
             self.emit("activated")
         else:
             if view.row_expanded(path):

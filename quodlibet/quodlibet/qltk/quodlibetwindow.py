@@ -902,7 +902,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 self.remove_accel_group(self.browser.accelerators)
             container.destroy()
             self.browser.destroy()
-        self.browser = Browser(library, True)
+        self.browser = Browser(library)
         self.browser.connect('songs-selected',
             self.__browser_cb, library, player)
         self.browser.connect('activated', self.__browser_activate)

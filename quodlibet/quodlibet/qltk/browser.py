@@ -12,7 +12,7 @@ from quodlibet import qltk
 from quodlibet import browsers
 
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import RPaned
+from quodlibet.qltk.x import RPaned, ScrolledWindow
 from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util.library import background_filter
 
@@ -55,20 +55,19 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
 
         self.set_default_size(600, 400)
         self.enable_window_tracking("browser_" + self.name)
-        self.set_border_width(6)
         self.set_title(Kind.name + " - Quod Libet")
-        self.add(Gtk.VBox(spacing=6))
+        self.add(Gtk.VBox())
 
         view = SongList(library, update=True)
         view.info.connect("changed", self.__set_time)
         self.songlist = view
 
-        sw = Gtk.ScrolledWindow()
+        sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        self.browser = browser = Kind(library, False)
+        self.browser = browser = Kind(library)
         if browser.reordered:
             view.enable_drop()
         elif browser.dropped:
@@ -82,6 +81,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.__statusbar = Gtk.Label()
         self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
+        self.__statusbar.set_padding(6, 3)
         self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
         self.get_child().pack_end(self.__statusbar, False, True, 0)
 

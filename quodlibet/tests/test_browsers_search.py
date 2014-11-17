@@ -47,7 +47,7 @@ class TEmptyBar(TestCase):
         for af in SONGS:
             af.sanitize()
         quodlibet.browsers.search.library.add(SONGS)
-        self.bar = self.Bar(quodlibet.browsers.search.library, False)
+        self.bar = self.Bar(quodlibet.browsers.search.library)
         self.bar.connect('songs-selected', self._expected)
 
     def _expected(self, bar, songs, sort):

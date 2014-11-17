@@ -526,7 +526,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         if not self.instances():
             self._destroy()
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(InternetRadio, self).__init__(spacing=12)
 
         if not self.instances():
@@ -620,10 +620,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         box = Gtk.HBox(spacing=6)
         box.pack_start(search, True, True, 0)
         box.pack_start(button, False, True, 0)
-        if main:
-            self._searchbox = Alignment(box, left=0, right=6, top=6)
-        else:
-            self._searchbox = box
+        self._searchbox = Alignment(box, left=0, right=6, top=6)
         self._searchbox.show_all()
 
         def qbar_response(infobar, response_id):

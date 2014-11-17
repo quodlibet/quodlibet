@@ -1,7 +1,6 @@
 from tests import TestCase
 
 from quodlibet.browsers.audiofeeds import AudioFeeds
-from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
@@ -10,7 +9,7 @@ class TAudioFeeds(TestCase):
     def setUp(self):
         quodlibet.config.init()
         self.library = SongLibrary()
-        self.bar = AudioFeeds(self.library, NullPlayer('fakesink'))
+        self.bar = AudioFeeds(self.library)
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:

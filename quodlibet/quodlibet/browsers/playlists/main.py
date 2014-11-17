@@ -122,9 +122,8 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
     __lists = Gtk.TreeModelSort(model=Gtk.ListStore(object))
     __lists.set_default_sort_func(lambda m, a, b, data: cmp(m[a][0], m[b][0]))
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(PlaylistsBrowser, self).__init__(spacing=6)
-        self.__main = main
         self.__view = view = RCMHintedTreeView()
         self.__view.set_enable_search(True)
         self.__view.set_search_column(0)
@@ -175,10 +174,9 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         view.connect('drag-data-get', self.__drag_data_get)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
-        if main:
-            view.connect('row-activated', lambda *x: self.emit("activated"))
-        else:
-            render.set_property('editable', True)
+
+        view.connect('row-activated', lambda *x: self.emit("activated"))
+
         view.get_selection().connect('changed', self.activate)
 
         s = view.get_model().connect('row-changed', self.__check_current)
@@ -392,7 +390,6 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         else:
             row = self.__lists[path]
             self.__lists.row_changed(row.path, row.iter)
-        render.set_property('editable', not self.__main)
 
     def __import(self, activator, library):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")

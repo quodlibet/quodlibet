@@ -36,7 +36,7 @@ class EmptyBar(Gtk.VBox, Browser):
         container.remove(songpane)
         container.remove(self)
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(EmptyBar, self).__init__()
         self._text = ""
         self._filter = None

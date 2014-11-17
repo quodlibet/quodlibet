@@ -69,7 +69,7 @@ class FileSystem(Browser, Gtk.HBox):
         songs = filter(klass.__library.__contains__, songs)
         klass.__library.remove(songs)
 
-    def __init__(self, library, main):
+    def __init__(self, library):
         super(FileSystem, self).__init__()
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -88,8 +88,7 @@ class FileSystem(Browser, Gtk.HBox):
         sel = dt.get_selection()
         sel.unselect_all()
         sel.connect_object('changed', copool.add, self.__songs_selected, dt)
-        if main:
-            dt.connect('row-activated', lambda *a: self.emit("activated"))
+        dt.connect('row-activated', lambda *a: self.emit("activated"))
         sw.add(dt)
         self.pack_start(sw, True, True, 0)
 

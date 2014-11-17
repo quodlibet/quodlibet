@@ -55,7 +55,7 @@ class TPanedBrowser(TestCase):
         for af in SONGS:
             af.sanitize()
         library.add(SONGS)
-        self.bar = self.Bar(library, False)
+        self.bar = self.Bar(library)
 
         self.last = None
         self.emit_count = 0

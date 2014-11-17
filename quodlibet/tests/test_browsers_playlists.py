@@ -6,7 +6,6 @@ import os
 import shutil
 
 from quodlibet.browsers.playlists import PlaylistsBrowser
-from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
 import quodlibet.config
 from quodlibet.formats._audio import AudioFile
@@ -151,7 +150,7 @@ class TPlaylists(TestCase):
     def setUp(self):
         quodlibet.config.init()
         self.library = SongLibrary()
-        self.bar = PlaylistsBrowser(SongLibrary(), NullPlayer())
+        self.bar = PlaylistsBrowser(SongLibrary())
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
