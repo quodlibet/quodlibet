@@ -36,7 +36,8 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
     replaygain_profiles = ["track"]
 
     def pack(self, songpane):
-        container = qltk.RHPaned()
+        container = qltk.ConfigRHPaned(
+            "browsers", "playlistsbrowser_pos", 0.4)
         self.show()
         container.pack1(self, True, False)
         container.pack2(songpane, True, False)

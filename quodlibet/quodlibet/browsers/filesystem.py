@@ -42,7 +42,7 @@ class FileSystem(Browser, Gtk.HBox):
     TARGET_QL, TARGET_EXT = range(1, 3)
 
     def pack(self, songpane):
-        container = qltk.RHPaned()
+        container = qltk.ConfigRHPaned("browsers", "filesystem_pos", 0.4)
         container.pack1(self, True, False)
         container.pack2(songpane, True, False)
         return container

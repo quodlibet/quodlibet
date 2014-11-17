@@ -39,7 +39,7 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import RPaned, ConfigRVPaned, Alignment, ScrolledWindow
+from quodlibet.qltk.x import ConfigRVPaned, Alignment, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage, Button
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
@@ -884,11 +884,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         about.run()
         about.destroy()
 
-    def __browser_configure(self, paned, event, browser):
-        if paned.get_property('position-set'):
-            key = "%s_pos" % browser.__class__.__name__
-            config.set("browsers", key, str(paned.get_relative()))
-
     def select_browser(self, activator, current, library, player,
                        restore=False):
         if isinstance(current, Gtk.RadioAction):
@@ -920,26 +915,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             self.add_accel_group(self.browser.accelerators)
 
         container = self.browser.__container = self.browser.pack(self.songpane)
-
-        # find a paned and save the position
-        paned = None
-        for widget in qltk.find_widgets(container, RPaned):
-            if widget is not self.songpane:
-                paned = widget
-                break
-
-        if paned:
-            try:
-                key = "%s_pos" % self.browser.__class__.__name__
-                val = config.getfloat("browsers", key)
-                # Use a minimum restore size
-                val = max(val, 0.1)
-            except:
-                val = 0.4
-            paned.connect(
-                'notify::position', self.__browser_configure, self.browser)
-
-            paned.set_relative(val)
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.volume = player.volume

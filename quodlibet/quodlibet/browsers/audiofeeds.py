@@ -226,7 +226,7 @@ class AudioFeeds(Browser, Gtk.VBox):
     __last_folder = const.HOME
 
     def pack(self, songpane):
-        container = qltk.RHPaned()
+        container = qltk.ConfigRHPaned("browsers", "audiofeeds_pos", 0.4)
         self.show()
         container.pack1(self, True, False)
         container.pack2(songpane, True, False)

@@ -20,7 +20,7 @@ from quodlibet.parse import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
-from quodlibet.qltk.x import ScrolledWindow, Alignment, RPaned
+from quodlibet.qltk.x import ScrolledWindow, Alignment
 from quodlibet.util.library import background_filter
 
 from .prefs import PreferencesButton
@@ -103,7 +103,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         self.connect('destroy', self.__destroy)
 
         # contains the panes and the song list
-        self.main_box = RPaned()
+        self.main_box = qltk.ConfigRPaned("browsers", "panedbrowser_pos", 0.4)
         self.pack_start(self.main_box, True, True, 0)
 
         self.refresh_panes()

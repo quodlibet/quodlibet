@@ -350,7 +350,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     priority = 4
 
     def pack(self, songpane):
-        container = qltk.RHPaned()
+        container = qltk.ConfigRHPaned("browsers", "albumlist_pos", 0.4)
         container.pack1(self, True, False)
         container.pack2(songpane, True, False)
         return container

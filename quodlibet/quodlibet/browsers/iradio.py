@@ -632,7 +632,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         if self._is_library_empty():
             self.qbar.show()
 
-        pane = qltk.RHPaned()
+        pane = qltk.ConfigRHPaned("browsers", "internetradio_pos", 0.4)
         pane.show()
         pane.pack1(scrolled_window, resize=False, shrink=False)
         songbox = Gtk.VBox(spacing=6)
