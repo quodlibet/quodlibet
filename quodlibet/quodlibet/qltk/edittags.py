@@ -413,6 +413,7 @@ class EditTags(Gtk.VBox):
 
         model = ObjectStore()
         view = RCMHintedTreeView(model=model)
+        self._view = view
         selection = view.get_selection()
         render = Gtk.CellRendererPixbuf()
         column = TreeViewColumn(_("Write"), render)
@@ -494,6 +495,7 @@ class EditTags(Gtk.VBox):
         bbox1.set_layout(Gtk.ButtonBoxStyle.START)
         add = Gtk.Button(stock=Gtk.STOCK_ADD)
         add.set_focus_on_click(False)
+        self._add = add
         add.connect('clicked', self.__add_tag, model, library)
         bbox1.pack_start(add, True, True, 0)
         # Remove button
@@ -501,6 +503,7 @@ class EditTags(Gtk.VBox):
         remove.set_focus_on_click(False)
         remove.connect('clicked', self.__remove_tag, view)
         remove.set_sensitive(False)
+        self._remove = remove
 
         bbox1.pack_start(remove, True, True, 0)
 
@@ -513,6 +516,7 @@ class EditTags(Gtk.VBox):
                   if self._REVERT_BUTTON_KEY == self._REVERT_BUTTON_TEXT
                   else Gtk.Button(label=self._REVERT_BUTTON_TEXT,
                                   use_underline=True))
+        self._revert = revert
         revert.set_sensitive(False)
         # Save button.
         save = (Gtk.Button(stock=Gtk.STOCK_SAVE)
@@ -520,20 +524,17 @@ class EditTags(Gtk.VBox):
                 else Gtk.Button(label=self._SAVE_BUTTON_TEXT,
                                 use_underline=True))
         save.set_sensitive(False)
-        self.save = save
+        self._save = save
         bbox2.pack_start(revert, True, True, 0)
         bbox2.pack_start(save, True, True, 0)
 
         buttonbox.pack_start(bbox1, True, True, 0)
         buttonbox.pack_start(bbox2, True, True, 0)
         self.pack_start(buttonbox, False, True, 0)
+        self._buttonbox = buttonbox
 
-        UPDATE_ARGS = [
-            view, buttonbox, model, add, [save, revert, remove]]
-        parent.connect_object(
-            'changed', self.__class__.__update, self, *UPDATE_ARGS)
-        revert.connect_object(
-            'clicked', self.__update, None, *UPDATE_ARGS)
+        parent.connect('changed', self.__parent_changed)
+        revert.connect('clicked', lambda *x: self._update())
         revert.connect_object('clicked', parent.set_pending, None)
 
         save.connect('clicked', self.__save_files, revert, model, library)
@@ -554,7 +555,7 @@ class EditTags(Gtk.VBox):
             child.show_all()
 
     def __all_tags_toggled(self, *args):
-        self._parent.emit("changed", None)
+        self._update()
 
     def __view_key_press_event(self, view, event):
         if qltk.is_accel(event, "Delete"):
@@ -562,7 +563,7 @@ class EditTags(Gtk.VBox):
             return Gdk.EVENT_STOP
         elif qltk.is_accel(event, "<ctrl>s"):
             # Issue 697: allow Ctrl-s to save.
-            self.save.emit('clicked')
+            self._save.emit('clicked')
             return Gdk.EVENT_STOP
         return Gdk.EVENT_PROPAGATE
 
@@ -922,7 +923,7 @@ class EditTags(Gtk.VBox):
         else:
             return Gdk.EVENT_PROPAGATE
 
-    def __update(self, songs, view, buttonbox, model, add, buttons):
+    def _update(self, songs=None):
         if songs is None:
             songs = self.__songinfo.songs
         else:
@@ -946,7 +947,7 @@ class EditTags(Gtk.VBox):
         if not songs:
             keys = []
 
-        with view.without_model() as model:
+        with self._view.without_model() as model:
             model.clear()
 
             for tag in sorted(keys, key=custom_sort):
@@ -969,10 +970,15 @@ class EditTags(Gtk.VBox):
                     entry.origtag = ""
                     model.append(row=[entry])
 
-        buttonbox.set_sensitive(bool(songinfo.can_change()))
-        for b in buttons:
-            b.set_sensitive(False)
-        add.set_sensitive(bool(songs))
+        self._buttonbox.set_sensitive(bool(songinfo.can_change()))
+        self._revert.set_sensitive(False)
+        self._remove.set_sensitive(False)
+        self._save.set_sensitive(False)
+        self._add.set_sensitive(bool(songs))
+        self._parent.set_pending(None)
+
+    def __parent_changed(self, parent, songs):
+        self._update(songs)
 
     def __value_editing_started(self, render, editable, path, model, library):
         if not editable.get_completion():
