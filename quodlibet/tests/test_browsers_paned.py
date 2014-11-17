@@ -15,24 +15,25 @@ from quodlibet.browsers.paned.prefs import PreferencesButton
 from quodlibet.browsers.paned.pane import Pane
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.collection import Collection
+from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 
 SONGS = [
     AudioFile({
         "title": "three", "artist": "boris", "genre": "Rock",
-        "~filename": "/bin/ls", "foo": "bar"}),
+        "~filename": fsnative(u"/bin/ls"), "foo": "bar"}),
     AudioFile({
         "title": "two", "artist": "mu", "genre": "Rock",
-        "~filename": "/dev/zero", "foo": "bar"}),
+        "~filename": fsnative(u"/dev/zero"), "foo": "bar"}),
     AudioFile({
         "title": "four", "artist": "piman", "genre": "J-Pop",
-        "~filename": "/dev/null", "foo": "bar\nquux"}),
+        "~filename": fsnative(u"/dev/null"), "foo": "bar\nquux"}),
     AudioFile({
         "title": "one", "artist": "piman", "genre": "J-Pop",
-        "~filename": "/bin/foo", "foo": "bar\nnope"}),
+        "~filename": fsnative(u"/bin/foo"), "foo": "bar\nnope"}),
     AudioFile({
-        "title": "xxx", "~filename": "/bin/bar", "foo": "bar"}),
+        "title": "xxx", "~filename": fsnative(u"/bin/bar"), "foo": "bar"}),
 ]
 SONGS.sort()
 

@@ -17,14 +17,31 @@ from quodlibet.browsers.albums.main import (compare_title, compare_artist,
     compare_genre, compare_rating, compare_date)
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
+from quodlibet.util.path import fsnative
 from quodlibet.util.collection import Album
 
 SONGS = [
-    AudioFile({"album": "one", "artist": "piman", "~filename": "/dev/null"}),
-    AudioFile({"album": "two", "artist": "mu", "~filename": "/dev/zero"}),
-    AudioFile({"album": "three", "artist": "boris", "~filename": "/bin/ls"}),
-    AudioFile({"album": "three", "artist": "boris", "~filename": "/bin/ls2"}),
-    ]
+    AudioFile({
+        "album": "one",
+        "artist": "piman",
+        "~filename": fsnative(u"/dev/null"),
+    }),
+    AudioFile({
+        "album": "two",
+        "artist": "mu",
+        "~filename": fsnative(u"/dev/zero"),
+    }),
+    AudioFile({
+        "album": "three",
+        "artist": "boris",
+        "~filename": fsnative(u"/bin/ls"),
+    }),
+    AudioFile({
+        "album": "three",
+        "artist": "boris",
+        "~filename": fsnative(u"/bin/ls2"),
+    }),
+]
 SONGS.sort()
 
 

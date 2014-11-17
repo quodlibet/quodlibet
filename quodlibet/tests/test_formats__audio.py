@@ -8,19 +8,19 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
 bar_1_1 = AudioFile({
-    "~filename": "/fakepath/1",
+    "~filename": fsnative(u"/fakepath/1"),
     "title": "A song",
     "discnumber": "1/2", "tracknumber": "1/3",
     "artist": "Foo", "album": "Bar"})
 bar_1_2 = AudioFile({
-    "~filename": "/fakepath/2",
+    "~filename": fsnative(u"/fakepath/2"),
     "title": "Perhaps another",
     "discnumber": "1", "tracknumber": "2/3",
     "artist": "Lali-ho!", "album": "Bar",
     "date": "2004-12-12", "originaldate": "2005-01-01",
     "~#filesize": 1024 ** 2})
 bar_2_1 = AudioFile({
-    "~filename": "does not/exist",
+    "~filename": fsnative(u"does not/exist"),
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
     "artist": "Foo\nI have two artists", "album": "Bar",
@@ -185,7 +185,7 @@ class TAudioFile(TestCase):
 
     def test_rename(self):
         old_fn = quux("~basename")
-        new_fn = "anothersong.mp3"
+        new_fn = fsnative(u"anothersong.mp3")
         dir = DATA_DIR
         self.failUnless(quux.exists())
         quux.rename(new_fn)
@@ -197,7 +197,7 @@ class TAudioFile(TestCase):
         self.failUnless(quux.exists())
 
         # move out of parent dir and back
-        quux.rename("/tmp/more_test_data")
+        quux.rename(fsnative(u"/tmp/more_test_data"))
         self.failIf(os.path.exists(dir + old_fn))
         self.failUnless(quux.exists())
         quux.rename(dir + old_fn)
@@ -206,7 +206,8 @@ class TAudioFile(TestCase):
     def test_rename_to_existing(self):
         quux.rename(quux("~basename"))
         if os.name != "nt":
-            self.failUnlessRaises(ValueError, quux.rename, "/dev/null")
+            self.failUnlessRaises(
+                ValueError, quux.rename, fsnative(u"/dev/null"))
         self.failUnlessRaises(ValueError, quux.rename,
                               os.path.join(DATA_DIR, "silence-44-s.ogg"))
 
@@ -244,7 +245,7 @@ class TAudioFile(TestCase):
         b.pop('~filename')
         self.failUnlessRaises(ValueError, b.sanitize)
         n = AudioFile({"artist": u"foo\0bar", "title": u"baz\0",
-                        "~filename": "whatever"})
+                        "~filename": fsnative(u"whatever")})
         n.sanitize()
         self.failUnlessEqual(n["artist"], "foo\nbar")
         self.failUnlessEqual(n["title"], "baz")
@@ -394,7 +395,7 @@ class TAudioFile(TestCase):
             ]
         for tags, expected in album_key_tests:
             afile = AudioFile(**tags)
-            afile.sanitize('/dir/fn')
+            afile.sanitize(fsnative(u'/dir/fn'))
             self.failUnlessEqual(afile.album_key, expected)
 
     def test_eq_ne(self):
@@ -404,15 +405,16 @@ class TAudioFile(TestCase):
     def test_invalid_fs_encoding(self):
         # issue 798
         a = AudioFile()
-        a["~filename"] = "/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg" # latin 1 encoded
-        a.sort_by_func("~filename")(a)
-        a.sort_by_func("~basename")(a)
-
-        # windows
-        a["~filename"] = "/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1")
-        a.sort_by_func("~filename")(a)
-        a.sort_by_func("~basename")(a)
-        a.sort_by_func("~dirname")(a)
+        if os.name != "nt":
+            a["~filename"] = "/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg" # latin 1 encoded
+            a.sort_by_func("~filename")(a)
+            a.sort_by_func("~basename")(a)
+        else:
+            # windows
+            a["~filename"] = "/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1")
+            a.sort_by_func("~filename")(a)
+            a.sort_by_func("~basename")(a)
+            a.sort_by_func("~dirname")(a)
 
     def test_sort_cache(self):
         copy = AudioFile(bar_1_1)
@@ -453,12 +455,12 @@ class TAudioFile(TestCase):
         # On linux we take the byte stream and escape it.
         # see g_filename_to_uri
 
-        f = AudioFile({"~filename": "/\x87\x12.mp3", "title": "linux"})
-        self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
-
         if os.name == "nt":
             f = AudioFile({"~filename": u"/\xf6\xe4.mp3", "title": "win"})
             self.failUnlessEqual(f("~uri"), "file:///%C3%B6%C3%A4.mp3")
+        else:
+            f = AudioFile({"~filename": "/\x87\x12.mp3", "title": "linux"})
+            self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
 
     def tearDown(self):
         os.unlink(quux["~filename"])
@@ -624,7 +626,7 @@ class Tfind_cover(TestCase):
         See Issue 818"""
 
         song = AudioFile({
-            "~filename": "tests/data/asong.ogg",
+            "~filename": fsnative(u"tests/data/asong.ogg"),
             "album": "foobar",
             "title": "Ode to Baz",
             "artist": "Q-Man",

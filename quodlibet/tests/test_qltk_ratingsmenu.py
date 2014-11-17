@@ -7,6 +7,7 @@
 from tests import TestCase
 from quodlibet import config
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
+from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.formats._audio import AudioFile
 
@@ -22,7 +23,7 @@ class TRatingsMenuItem(TestCase):
     def test_menuitem(self):
         library = SongLibrary()
         library.librarian = SongLibrarian()
-        a = AudioFile({"~filename": "/foo"})
+        a = AudioFile({"~filename": fsnative(u"/foo")})
         a.sanitize()
         x = RatingsMenuItem([a], library)
         x.set_rating(0, [a], library)

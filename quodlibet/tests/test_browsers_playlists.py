@@ -9,6 +9,7 @@ from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary
 import quodlibet.config
 from quodlibet.formats._audio import AudioFile
+from quodlibet.util.path import fsnative, fsnative2glib
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 
@@ -32,11 +33,10 @@ class TParsePlaylist(AbstractTestCase):
     def test_parse_onesong(self):
         h, name = mkstemp()
         os.close(h)
-        f = file(name, "w")
-        target = self.prefix
-        target += os.path.join(DATA_DIR, "silence-44-s.ogg")
-        f.write(target)
-        f.close()
+        with open(name, "wb") as f:
+            target = self.prefix
+            target += fsnative2glib(os.path.join(DATA_DIR, "silence-44-s.ogg"))
+            f.write(target)
         list = self.Parse(name)
         os.unlink(name)
         self.failUnlessEqual(len(list), 1)
@@ -75,23 +75,23 @@ class TPlaylistIntegration(TestCase):
     SONG = AudioFile({
                 "title": "two",
                 "artist": "mu",
-                "~filename": "/dev/zero"})
+                "~filename": fsnative(u"/dev/zero")})
     SONGS = [
         AudioFile({
                 "title": "one",
                 "artist": "piman",
-                "~filename": "/dev/null"}),
+                "~filename": fsnative(u"/dev/null")}),
         SONG,
         AudioFile({
                 "title": "three",
                 "artist": "boris",
-                "~filename": "/bin/ls"}),
+                "~filename": fsnative(u"/bin/ls")}),
         AudioFile({
                 "title": "four",
                 "artist": "random",
                 "album": "don't stop",
                 "labelid": "65432-1",
-                "~filename": "/dev/random"}),
+                "~filename": fsnative(u"/dev/random")}),
         SONG,
         ]
 

@@ -11,13 +11,26 @@ from tests.plugin import PluginTestCase
 from quodlibet import config
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.formats._audio import AudioFile
+from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 SONGS = [
-    AudioFile({"title": "one", "artist": "piman", "~filename": "/dev/null"}),
-    AudioFile({"title": "two", "artist": "mu", "~filename": "/dev/zero"}),
-    AudioFile({"title": "three", "artist": "boris", "~filename": "/bin/ls"})
-    ]
+    AudioFile({
+        "title": "one",
+        "artist": "piman",
+        "~filename": fsnative(u"/dev/null"),
+    }),
+    AudioFile({
+        "title": "two",
+        "artist": "mu",
+        "~filename": fsnative(u"/dev/zero"),
+    }),
+    AudioFile({
+        "title": "three",
+        "artist": "boris",
+        "~filename": fsnative(u"/bin/ls"),
+    }),
+]
 SONGS.sort()
 
 for song in SONGS:

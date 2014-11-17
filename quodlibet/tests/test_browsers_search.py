@@ -8,33 +8,34 @@ import quodlibet.config
 from quodlibet.browsers.search import SearchBar
 from quodlibet.browsers.empty import EmptyBar
 from quodlibet.formats._audio import AudioFile
+from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 # Don't sort yet, album_key makes it complicated...
 SONGS = [AudioFile({
                 "title": "one",
                 "artist": "piman",
-                "~filename": "/dev/null"}),
+                "~filename": fsnative(u"/dev/null")}),
          AudioFile({
                 "title": "two",
                 "artist": "mu",
-                "~filename": "/dev/zero"}),
+                "~filename": fsnative(u"/dev/zero")}),
          AudioFile({
                 "title": "three",
                 "artist": "boris",
-                "~filename": "/bin/ls"}),
+                "~filename": fsnative(u"/bin/ls")}),
          AudioFile({
                 "title": "four",
                 "artist": "random",
                 "album": "don't stop",
                 "labelid": "65432-1",
-                "~filename": "/dev/random"}),
+                "~filename": fsnative(u"/dev/random")}),
          AudioFile({
                 "title": "five",
                 "artist": "shell",
                 "album": "don't stop",
                 "labelid": "12345-6",
-                "~filename": "/dev/sh"})]
+                "~filename": fsnative(u"/dev/sh")})]
 
 
 class TEmptyBar(TestCase):

@@ -60,6 +60,9 @@ def skipIf(value, *args, **kwargs):
 
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
+if os.name == "nt":
+    DATA_DIR = DATA_DIR.decode("ascii")
+assert is_fsnative(DATA_DIR)
 _TEMP_DIR = None
 
 

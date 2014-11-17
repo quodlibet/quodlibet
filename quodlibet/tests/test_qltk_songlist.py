@@ -3,6 +3,7 @@ from gi.repository import Gtk
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
+from quodlibet.util.path import fsnative
 from quodlibet.qltk.songlist import SongList, set_columns, get_columns
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
@@ -166,7 +167,7 @@ class TSongList(TestCase):
         from quodlibet import browsers
         from quodlibet.library import SongLibrary, SongLibrarian
 
-        song = AudioFile({"~filename": "/dev/null"})
+        song = AudioFile({"~filename": fsnative(u"/dev/null")})
         song.sanitize()
         self.songlist.set_songs([song])
 

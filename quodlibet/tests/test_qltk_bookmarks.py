@@ -8,6 +8,7 @@ from tests import TestCase
 
 from quodlibet.qltk.bookmarks import EditBookmarks, MenuItems
 from quodlibet.player.nullbe import NullPlayer
+from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
@@ -19,7 +20,7 @@ class TBookmarks(TestCase):
         player = NullPlayer()
         song = AudioFile()
         song.bookmarks = [(10, "bla")]
-        song.sanitize("/")
+        song.sanitize(fsnative(u"/"))
         player.song = song
         self.player = player
 

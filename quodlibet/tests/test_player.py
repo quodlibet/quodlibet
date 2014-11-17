@@ -9,6 +9,7 @@ from tests import TestCase, skipUnless, AbstractTestCase
 from quodlibet import player
 from quodlibet import library
 from quodlibet import config
+from quodlibet.util.path import fsnative
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel
@@ -16,9 +17,9 @@ from quodlibet.qltk.controls import Volume
 
 
 FILES = [
-    AudioFile({"~filename": "/foo/bar1", "title": "1"}),
-    AudioFile({"~filename": "/foo/bar2", "title": "2"}),
-    AudioFile({"~filename": "/foo/bar3", "title": "3"}),
+    AudioFile({"~filename": fsnative(u"/foo/bar1"), "title": "1"}),
+    AudioFile({"~filename": fsnative(u"/foo/bar2"), "title": "2"}),
+    AudioFile({"~filename": fsnative(u"/foo/bar3"), "title": "3"}),
 ]
 for file_ in FILES:
     file_.sanitize()

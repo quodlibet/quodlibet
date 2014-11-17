@@ -48,23 +48,24 @@ class GetPlaylistName(GetStringDialog):
 
 def parse_m3u(filename, library=None):
     plname = fsdecode(os.path.basename(
-        os.path.splitext(filename)[0])).encode('utf-8')
+        os.path.splitext(filename)[0]))
+
     filenames = []
 
-    h = file(filename)
-    for line in h:
-        line = line.strip()
-        if line.startswith("#"):
-            continue
-        else:
-            filenames.append(line)
-    h.close()
+    with open(filename, "rb") as h:
+        for line in h:
+            line = line.strip()
+            if line.startswith("#"):
+                continue
+            else:
+                filenames.append(line)
     return __parse_playlist(plname, filename, filenames, library)
 
 
 def parse_pls(filename, name="", library=None):
     plname = fsdecode(os.path.basename(
-        os.path.splitext(filename)[0])).encode('utf-8')
+        os.path.splitext(filename)[0]))
+
     filenames = []
     h = file(filename)
     for line in h:
@@ -93,6 +94,8 @@ def __parse_playlist(name, plfilename, files, library):
         try:
             uri = URI(filename)
         except ValueError:
+            if os.name == "nt":
+                filename = filename.decode("utf-8", "replace")
             # Plain filename.
             filename = os.path.realpath(os.path.join(
                 os.path.dirname(plfilename), filename))
