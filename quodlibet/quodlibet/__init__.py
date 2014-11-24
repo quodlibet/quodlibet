@@ -160,11 +160,12 @@ def _gtk_init(icon=None):
         settings.set_property("gtk-primary-button-warps-slider", True)
 
     # Make sure PyGObject includes support for foreign cairo structs
-    some_window = Gtk.OffscreenWindow()
-    some_window.show()
     try:
-        some_window.get_surface()
-    except TypeError:
+        gi.require_foreign("cairo")
+    except AttributeError:
+        # older pygobject
+        pass
+    except ImportError:
         print_e("PyGObject is missing cairo support")
         exit(1)
 
