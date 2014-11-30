@@ -26,7 +26,7 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned
-from quodlibet.qltk.window import PersistentWindowMixin, Window
+from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
 from quodlibet.util.path import mtime, normalize_path
 
 
@@ -222,7 +222,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         self.emit('changed', files)
 
 
-class PreferencesWindow(qltk.UniqueWindow):
+class PreferencesWindow(UniqueWindow):
     def __init__(self, parent):
         if self.is_not_unique():
             return
@@ -253,7 +253,8 @@ class PreferencesWindow(qltk.UniqueWindow):
 
         main_vbox = Gtk.VBox(spacing=12)
         main_vbox.pack_start(f, True, True, 0)
-        main_vbox.pack_start(button_box, False, True, 0)
+        if not self.use_header_bar():
+            main_vbox.pack_start(button_box, False, True, 0)
         self.add(main_vbox)
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)

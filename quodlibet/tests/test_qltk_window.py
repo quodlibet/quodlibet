@@ -35,3 +35,12 @@ class TWindows(TestCase):
         Window.prevent_inital_show(False)
         w.show_maybe()
         self.assertTrue(w.get_visible())
+
+    def test_use_header_bar(self):
+        w = Window(title="foo")
+        w.use_header_bar()
+        self.assertEqual(w.get_title(), "foo")
+
+        w = Window()
+        w.use_header_bar()
+        self.assertEqual(w.get_title(), None)

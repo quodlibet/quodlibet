@@ -46,6 +46,31 @@ class Window(Gtk.Window):
             self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
         self.connect_object('destroy', type(self).windows.remove, self)
 
+    def use_header_bar(self):
+        """Try to use a headerbar, returns the widget or None in case
+        GTK+ is too old or headerbars are disabled (under xfce for example)
+
+        Warning: window sizing is broken with this
+        https://bugzilla.gnome.org/show_bug.cgi?id=740922
+        """
+
+        settings = Gtk.Settings.get_default()
+        if not settings:
+            return False
+        if not hasattr(settings.props, "gtk_dialogs_use_header"):
+            return False
+        if not settings.get_property("gtk-dialogs-use-header"):
+            return False
+
+        header_bar = Gtk.HeaderBar()
+        header_bar.set_show_close_button(True)
+        header_bar.show()
+        old_title = self.get_title()
+        self.set_titlebar(header_bar)
+        if old_title is not None:
+            self.set_title(old_title)
+        return header_bar
+
     def present(self):
         """A version of present that also works if not called from an event
         handler (there is no active input event).
@@ -198,17 +223,18 @@ class PersistentWindowMixin(object):
         config.set("memory", self.__conf("maximized"), maximized)
 
 
-class UniqueWindow(Window):
-    """A wrapper for the window class to get a one instance per class window.
+class _Unique(object):
+    """A mixin for the window class to get a one instance per class window.
     The is_not_unique method will return True if the window
-    is already there."""
+    is already there.
+    """
 
     __window = None
 
     def __new__(klass, *args, **kwargs):
         window = klass.__window
         if window is None:
-            return super(UniqueWindow, klass).__new__(klass, *args, **kwargs)
+            return super(_Unique, klass).__new__(klass, *args, **kwargs)
         #Look for widgets in the args, if there is one and it has
         #a new top level window, reparent and reposition the window.
         widgets = filter(lambda x: isinstance(x, Gtk.Widget), args)
@@ -231,8 +257,12 @@ class UniqueWindow(Window):
             return
         else:
             type(self).__window = self
-        super(UniqueWindow, self).__init__(*args, **kwargs)
+        super(_Unique, self).__init__(*args, **kwargs)
         self.connect_object('destroy', self.__destroy, self)
 
     def __destroy(self, *args):
         type(self).__window = None
+
+
+class UniqueWindow(_Unique, Window):
+    pass

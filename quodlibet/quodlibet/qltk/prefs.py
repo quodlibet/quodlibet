@@ -25,12 +25,13 @@ from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList, get_columns
+from quodlibet.qltk.window import UniqueWindow
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal, get_scan_dirs, scan_library
 
 
-class PreferencesWindow(qltk.UniqueWindow):
+class PreferencesWindow(UniqueWindow):
     """The tabbed container window for the main preferences GUI.
     Individual tabs are encapsulated as inner classes inheriting from `VBox`"""
 
@@ -638,7 +639,6 @@ class PreferencesWindow(qltk.UniqueWindow):
         super(PreferencesWindow, self).__init__()
         self.current_scan_dirs = get_scan_dirs()
         self.set_title(_("Preferences") + " - Quod Libet")
-        self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(qltk.get_top_parent(parent))
 
@@ -653,10 +653,16 @@ class PreferencesWindow(qltk.UniqueWindow):
         button_box.set_layout(Gtk.ButtonBoxStyle.END)
         button_box.pack_start(close, True, True, 0)
 
-        vbox = Gtk.VBox(spacing=12)
-        vbox.pack_start(notebook, True, True, 0)
-        vbox.pack_start(button_box, False, True, 0)
-        self.add(vbox)
+        if self.use_header_bar():
+            self.set_border_width(0)
+            notebook.set_show_border(False)
+            self.add(notebook)
+        else:
+            self.set_border_width(12)
+            vbox = Gtk.VBox(spacing=12)
+            vbox.pack_start(notebook, True, True, 0)
+            vbox.pack_start(button_box, False, True, 0)
+            self.add(vbox)
 
         self.connect_object('destroy', PreferencesWindow.__destroy, self)
 

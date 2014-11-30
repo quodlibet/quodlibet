@@ -14,12 +14,13 @@ from quodlibet import util
 
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
+from quodlibet.qltk.window import UniqueWindow
 from quodlibet.qltk.entry import ClearEntry
 from quodlibet.qltk.x import Alignment, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 
 
-class PluginErrorWindow(qltk.UniqueWindow):
+class PluginErrorWindow(UniqueWindow):
     def __init__(self, parent, failures):
         if self.is_not_unique():
             return
@@ -56,18 +57,20 @@ class PluginErrorWindow(qltk.UniqueWindow):
             vbox.pack_start(expander, False, True, 0)
             expander.add(failure)
 
-        vbox2 = Gtk.VBox(spacing=12)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
-        b = Gtk.HButtonBox()
-        b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.pack_start(close, True, True, 0)
+        if not self.use_header_bar():
+            vbox2 = Gtk.VBox(spacing=12)
+            close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+            close.connect('clicked', lambda *x: self.destroy())
+            b = Gtk.HButtonBox()
+            b.set_layout(Gtk.ButtonBoxStyle.END)
+            b.pack_start(close, True, True, 0)
+            vbox2.pack_start(scrolledwin, True, True, 0)
+            vbox2.pack_start(b, False, True, 0)
+            self.add(vbox2)
+            close.grab_focus()
+        else:
+            self.add(scrolledwin)
 
-        vbox2.pack_start(scrolledwin, True, True, 0)
-        vbox2.pack_start(b, False, True, 0)
-        self.add(vbox2)
-
-        close.grab_focus()
         self.get_child().show_all()
 
 
@@ -264,11 +267,12 @@ class PluginPreferencesContainer(Gtk.VBox):
             frame.hide()
 
 
-class PluginWindow(qltk.UniqueWindow):
+class PluginWindow(UniqueWindow):
     def __init__(self, parent=None):
         if self.is_not_unique():
             return
         super(PluginWindow, self).__init__()
+        self.use_header_bar()
         self.set_title(_("Plugins") + " - Quod Libet")
         self.set_border_width(12)
         self.set_default_size(655, 404)
