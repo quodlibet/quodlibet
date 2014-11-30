@@ -240,7 +240,10 @@ class MPDService(object):
         self._idle_subscriptions[connection] = subsystems
 
     def unregister_idle(self, connection):
-        del self._idle_subscriptions[connection]
+        try:
+            del self._idle_subscriptions[connection]
+        except KeyError:
+            pass
 
     def emit_changed(self, subsystem):
         for conn, subs in self._idle_subscriptions.iteritems():
