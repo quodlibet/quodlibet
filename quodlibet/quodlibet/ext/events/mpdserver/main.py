@@ -819,7 +819,7 @@ def _cmd_outputs(conn, service, args):
 @MPDConnection.Command("commands")
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
-        conn.write_line(unicode(name))
+        conn.write_line(u"command: " + unicode(name))
 
 
 @MPDConnection.Command("tagtypes")
