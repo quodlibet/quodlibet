@@ -272,7 +272,6 @@ class PluginWindow(UniqueWindow):
         if self.is_not_unique():
             return
         super(PluginWindow, self).__init__()
-        self.use_header_bar()
         self.set_title(_("Plugins") + " - Quod Libet")
         self.set_border_width(12)
         self.set_default_size(655, 404)
@@ -343,7 +342,8 @@ class PluginWindow(UniqueWindow):
 
         right_box = Gtk.VBox(spacing=12)
         right_box.pack_start(pref_box, True, True, 0)
-        right_box.pack_start(bb_align, True, True, 0)
+        if not self.use_header_bar():
+            right_box.pack_start(bb_align, True, True, 0)
 
         paned.pack2(Alignment(right_box, left=6), True, False)
         paned.set_position(250)

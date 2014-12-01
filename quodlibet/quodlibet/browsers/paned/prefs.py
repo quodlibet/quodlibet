@@ -180,7 +180,7 @@ class Preferences(qltk.UniqueWindow):
         super(Preferences, self).__init__()
 
         self.set_transient_for(qltk.get_top_parent(browser))
-        self.set_default_size(350, 270)
+        self.set_default_size(350, 300)
         self.set_border_width(12)
 
         self.set_title(_("Paned Browser Preferences") + " - Quod Libet")
@@ -196,22 +196,19 @@ class Preferences(qltk.UniqueWindow):
         cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         cancel.connect("clicked", lambda x: self.destroy())
 
-        ok = Gtk.Button(stock=Gtk.STOCK_OK)
-        ok.connect_object("clicked", self.__apply, editor, browser, True)
-
         box = Gtk.HButtonBox()
         box.set_spacing(6)
         box.set_layout(Gtk.ButtonBoxStyle.END)
         box.pack_start(apply_, True, True, 0)
-        box.pack_start(cancel, True, True, 0)
-        box.pack_start(ok, True, True, 0)
+        if not self.use_header_bar():
+            box.pack_start(cancel, True, True, 0)
 
         vbox.pack_start(editor, True, True, 0)
         vbox.pack_start(box, False, True, 0)
 
         self.add(vbox)
 
-        ok.grab_focus()
+        cancel.grab_focus()
         self.get_child().show_all()
 
     def __apply(self, editor, browser, close):

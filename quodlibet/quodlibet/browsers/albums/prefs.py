@@ -122,7 +122,8 @@ class Preferences(qltk.UniqueWindow):
         b.pack_start(close, True, True, 0)
 
         main_box.pack_start(box, True, True, 0)
-        main_box.pack_start(b, False, True, 0)
+        if not self.use_header_bar():
+            main_box.pack_start(b, False, True, 0)
         self.add(main_box)
 
         close.grab_focus()

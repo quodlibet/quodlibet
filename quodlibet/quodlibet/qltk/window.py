@@ -29,6 +29,7 @@ class Window(Gtk.Window):
     }
 
     def __init__(self, *args, **kwargs):
+        self._header_bar = None
         dialog = kwargs.pop("dialog", True)
         super(Window, self).__init__(*args, **kwargs)
         type(self).windows.append(self)
@@ -46,13 +47,21 @@ class Window(Gtk.Window):
             self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
         self.connect_object('destroy', type(self).windows.remove, self)
 
+    def set_default_size(self, width, height):
+        # https://bugzilla.gnome.org/show_bug.cgi?id=740922
+        if self._header_bar:
+            if width != -1:
+                width += min((width - 174), 56)
+            if height != -1:
+                height += 84
+        super(Window, self).set_default_size(width, height)
+
     def use_header_bar(self):
         """Try to use a headerbar, returns the widget or None in case
         GTK+ is too old or headerbars are disabled (under xfce for example)
-
-        Warning: window sizing is broken with this
-        https://bugzilla.gnome.org/show_bug.cgi?id=740922
         """
+
+        assert not self._header_bar
 
         settings = Gtk.Settings.get_default()
         if not settings:
@@ -69,6 +78,8 @@ class Window(Gtk.Window):
         self.set_titlebar(header_bar)
         if old_title is not None:
             self.set_title(old_title)
+        self._header_bar = header_bar
+        self.set_default_size(*self.get_default_size())
         return header_bar
 
     def present(self):
