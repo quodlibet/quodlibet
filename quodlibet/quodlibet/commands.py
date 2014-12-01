@@ -300,7 +300,7 @@ def _set_browser(app, value):
 def _open_browser(app, value):
     Kind = browsers.get(value)
     if Kind is not browsers.empty.EmptyBar:
-        LibraryBrowser.open(Kind, app.library)
+        LibraryBrowser.open(Kind, app.library, app.player)
     else:
         raise CommandError("Unknown browser %r" % value)
 

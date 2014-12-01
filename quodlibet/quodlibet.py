@@ -141,7 +141,8 @@ def main():
     # restore browser windows
     from quodlibet.qltk.browser import LibraryBrowser
     from gi.repository import GLib
-    GLib.idle_add(LibraryBrowser.restore, library, priority=GLib.PRIORITY_HIGH)
+    GLib.idle_add(LibraryBrowser.restore, library, player,
+                  priority=GLib.PRIORITY_HIGH)
 
     def before_quit():
         print_d("Saving active browser state")

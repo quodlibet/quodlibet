@@ -13,6 +13,7 @@ from quodlibet import config
 from quodlibet import devices
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import app
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
@@ -118,7 +119,7 @@ class Menu(Gtk.Menu):
         if len(MediaDevices.instances()) > 0:
             browser = MediaDevices.instances()[0]
         else:
-            win = LibraryBrowser.open(MediaDevices, library)
+            win = LibraryBrowser.open(MediaDevices, library, app.player)
             browser = win.browser
         browser.select(device)
         browser.dropped(browser.get_toplevel().songlist, songs)

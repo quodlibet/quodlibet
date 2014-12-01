@@ -21,7 +21,7 @@ from quodlibet import util
 from quodlibet import app
 
 from quodlibet.formats.remote import RemoteFile
-from quodlibet.qltk.browser import LibraryBrowser
+from quodlibet.qltk.browser import LibraryBrowser, FilterMenu
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
 from quodlibet.qltk.controls import PlayControls
 from quodlibet.qltk.cover import CoverImage
@@ -378,7 +378,8 @@ class ConfirmLibDirSetup(WarningMessage):
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
-MENU = """<ui>
+MAIN_MENU = """
+<ui>
   <menubar name='Menu'>
     <menu action='Music'>
       <menuitem action='AddFolders' always-show-image='true'/>
@@ -396,20 +397,14 @@ MENU = """<ui>
       <separator/>
       <menuitem action='Quit' always-show-image='true'/>
     </menu>
-    <menu action='Filters'>
-      <menuitem action='FilterGenre' always-show-image='true'/>
-      <menuitem action='FilterArtist' always-show-image='true'/>
-      <menuitem action='FilterAlbum' always-show-image='true'/>
-      <separator/>
-      <menuitem action='RandomGenre' always-show-image='true'/>
-      <menuitem action='RandomArtist' always-show-image='true'/>
-      <menuitem action='RandomAlbum' always-show-image='true'/>
-      <separator/>
-      <menuitem action='All' always-show-image='true'/>
-      <menuitem action='PlayedRecently' always-show-image='true'/>
-      <menuitem action='AddedRecently' always-show-image='true'/>
-      <menuitem action='TopRated' always-show-image='true'/>
-    </menu>
+  </menubar>
+</ui>
+"""
+
+
+MENU = """
+<ui>
+  <menubar name='Menu'>
     <menu action='Control'>
       <menuitem action='Previous' always-show-image='true'/>
       <menuitem action='PlayPause' always-show-image='true'/>
@@ -437,7 +432,8 @@ MENU = """<ui>
       %(debug)s
     </menu>
   </menubar>
-</ui>"""
+</ui>
+"""
 
 
 DND_URI_LIST, = range(1)
@@ -781,17 +777,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
              self.__plugins),
             ("Quit", Gtk.STOCK_QUIT, None, None, None,
              lambda *x: self.destroy()),
-            ('Filters', None, _("_Filters")),
-
-            ("PlayedRecently", Gtk.STOCK_FIND, _("Recently _Played"),
-             "", None, self.__filter_menu_actions),
-            ("AddedRecently", Gtk.STOCK_FIND, _("Recently _Added"),
-             "", None, self.__filter_menu_actions),
-            ("TopRated", Gtk.STOCK_FIND, _("_Top 40"),
-             "", None, self.__filter_menu_actions),
-            ("All", Gtk.STOCK_FIND, _("All _Songs"),
-             "", None, self.__filter_menu_actions),
-
             ("Control", None, _("_Control")),
             ("EditTags", Gtk.STOCK_PROPERTIES, _("Edit _Tags"), "", None,
              self.__current_song_prop),
@@ -862,24 +847,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act.connect('activate', self.__rebuild, False)
         ag.add_action_with_accel(act, None)
 
-        for tag_, lab in [
-            ("genre", _("Filter on _Genre")),
-            ("artist", _("Filter on _Artist")),
-            ("album", _("Filter on Al_bum"))]:
-            act = Gtk.Action.new(
-                "Filter%s" % util.capitalize(tag_), lab, None, Gtk.STOCK_INDEX)
-            act.connect('activate', self.__filter_on, tag_, None, player)
-            ag.add_action_with_accel(act, None)
-
-        for (tag_, accel, label) in [
-            ("genre", "G", _("Random _Genre")),
-            ("artist", "T", _("Random _Artist")),
-            ("album", "M", _("Random Al_bum"))]:
-            act = Gtk.Action.new("Random%s" % util.capitalize(tag_), label,
-                                 None, Gtk.STOCK_DIALOG_QUESTION)
-            act.connect('activate', self.__random, tag_)
-            ag.add_action_with_accel(act, "<control>" + accel)
-
         ag.add_toggle_actions([
             ("SongList", None, _("Song _List"), None, None,
              self.showhide_playlist,
@@ -911,25 +878,27 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             act = Gtk.Action.new(action, label, None, None)
 
             def browser_activate(action, Kind):
-                LibraryBrowser.open(Kind, library)
+                LibraryBrowser.open(Kind, library, player)
 
             act.connect('activate', browser_activate, Kind)
             ag.add_action_with_accel(act, None)
+
+        ui = Gtk.UIManager()
+        ui.insert_action_group(ag, -1)
+
+        ui.add_ui_from_string(
+            MAIN_MENU % {"browsers": browsers.BrowseLibrary()})
+        self._filter_menu = FilterMenu(library, player, ui)
 
         debug_menu = ""
         if const.DEBUG:
             debug_menu = (
                 "<separator/>"
                 "<menuitem action='OutputLog' always-show-image='true'/>")
-
-        ui = Gtk.UIManager()
-        ui.insert_action_group(ag, -1)
         menustr = MENU % {
-            "browsers": browsers.BrowseLibrary(),
             "views": browsers.ViewBrowser(),
             "debug": debug_menu
         }
-
         ui.add_ui_from_string(menustr)
 
         # Cute. So. UIManager lets you attach tooltips, but when they're
@@ -937,10 +906,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         # attach them.
         ui.get_widget("/Menu/Music/RefreshLibrary").set_tooltip_text(
                 _("Check for changes in your library"))
-
-        ui.get_widget("/Menu/Filters/TopRated").set_tooltip_text(
-                _("The 40 songs you've played most (more than 40 may "
-                  "be chosen if there are ties)"))
 
         return ui
 
@@ -985,7 +950,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         player.volume = player.volume
         self.__browserbox.add(container)
         container.show()
-        self.__hide_menus()
+        self._filter_menu.set_browser(self.browser)
         self.__hide_headers()
         self.__refresh_size()
 
@@ -1032,14 +997,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                     "EditBookmarks", "AddBookmark", "StopAfter"]:
             self.ui.get_widget(
                 '/Menu/Control/' + wid).set_sensitive(bool(song))
-        for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
-            self.ui.get_widget(
-                '/Menu/Filters/' + wid).set_sensitive(bool(song))
-        if song:
-            for h in ['genre', 'artist', 'album']:
-                self.ui.get_widget(
-                    "/Menu/Filters/Filter%s" % h.capitalize()).set_sensitive(
-                    h in song)
 
         # don't jump on stream changes (player.info != player.song)
         if song and player.song is song and not self.songlist._activated and \
@@ -1119,30 +1076,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
     def __previous_song(self, *args):
         app.player.previous()
-
-    def __random(self, item, key):
-        self.browser.filter_random(key)
-
-    def __filter_menu_actions(self, menuitem):
-        name = menuitem.get_name()
-
-        if name == "PlayedRecently":
-            self.__make_query("#(lastplayed < 7 days ago)")
-        elif name == "AddedRecently":
-            self.__make_query("#(added < 7 days ago)")
-        elif name == "TopRated":
-            bg = background_filter()
-            songs = (bg and filter(bg, self.__library)) or self.__library
-            songs = [song.get("~#playcount", 0) for song in songs]
-            if len(songs) == 0:
-                return
-            songs.sort()
-            if len(songs) < 40:
-                self.__make_query("#(playcount > %d)" % (songs[0] - 1))
-            else:
-                self.__make_query("#(playcount > %d)" % (songs[-40] - 1))
-        elif name == "All":
-            self.browser.unfilter()
 
     def __rebuild(self, activator, force):
         scan_library(self.__library, force)
@@ -1250,22 +1183,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             window = Information(librarian, [song], self)
             window.show()
 
-    def __hide_menus(self):
-        menus = {'genre': ["/Menu/Filters/FilterGenre",
-                           "/Menu/Filters/RandomGenre"],
-                 'artist': ["/Menu/Filters/FilterArtist",
-                           "/Menu/Filters/RandomArtist"],
-                 'album': ["/Menu/Filters/FilterAlbum",
-                           "/Menu/Filters/RandomAlbum"],
-                 None: ["/Menu/Filters/PlayedRecently",
-                        "/Menu/Filters/AddedRecently",
-                        "/Menu/Filters/TopRated",
-                        "/Menu/Filters/All"]}
-        for key, widgets in menus.items():
-            c = self.browser.can_filter(key)
-            for widget in widgets:
-                self.ui.get_widget(widget).set_property('visible', c)
-
     def __browser_activate(self, browser):
         app.player.reset()
 
@@ -1288,21 +1205,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             config.set("memory", "seek", 0)
             if song is not None:
                 player.setup(self.playlist, song, seek_pos)
-
-    def __filter_on(self, action, header, songs, player):
-        browser = self.browser
-
-        if not browser:
-            return
-
-        # Fall back to the playing song
-        if songs is None:
-            if player.song:
-                songs = [player.song]
-            else:
-                return
-
-        browser.filter_on(songs, header)
 
     def __hide_headers(self, activator=None):
         for column in self.songlist.get_columns():

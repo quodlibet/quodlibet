@@ -506,7 +506,7 @@ class TrayIcon(EventPlugin):
                 continue
             i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
             i.connect_object(
-                'activate', LibraryBrowser.open, Kind, app.library)
+                'activate', LibraryBrowser.open, Kind, app.library, app.player)
             browse_sub.append(i)
 
         browse.set_submenu(browse_sub)
