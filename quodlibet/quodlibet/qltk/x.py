@@ -11,7 +11,7 @@ from gi.repository import Gtk, GObject, GLib, Gio
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.qltk import add_css
+from quodlibet.qltk import add_css, is_accel
 
 
 class ScrolledWindow(Gtk.ScrolledWindow):
@@ -121,6 +121,18 @@ class Notebook(Gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no
     label is given, the page's 'title' attribute (either a string or
     a widget) is used."""
+
+    def __init__(self, *args, **kwargs):
+        super(Notebook, self).__init__(*args, **kwargs)
+        self.connect("key-press-event", self.__key_pressed)
+
+    def __key_pressed(self, widget, event):
+        # alt+X switches to page X
+        for i in xrange(self.get_n_pages()):
+            if is_accel(event, "<alt>%d" % (i + 1)):
+                self.set_current_page(i)
+                return True
+        return False
 
     def do_size_allocate(self, alloc):
         ctx = self.get_style_context()
