@@ -7,8 +7,13 @@
 import os
 import shutil
 
-from tests import AbstractTestCase, DATA_DIR, mkstemp
+from tests import AbstractTestCase, DATA_DIR, mkstemp, skipUnless
 from quodlibet.formats.aac import AACFile
+
+try:
+    from mutagen.aac import AAC
+except ImportError:
+    AAC = None
 
 
 class _TAACFile(AbstractTestCase):
@@ -48,6 +53,7 @@ class _TAACFile(AbstractTestCase):
         self.assertRaises(Exception, AACFile, path)
 
 
+@skipUnless(AAC, "too old mutagen")
 class TADTSFile(_TAACFile):
 
     NAME = "empty.aac"
@@ -59,6 +65,7 @@ class TADTSFile(_TAACFile):
         self.assertEqual(self.song("~#bitrate"), 3)
 
 
+@skipUnless(AAC, "too old mutagen")
 class TADIFFile(_TAACFile):
 
     NAME = "adif.aac"
