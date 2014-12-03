@@ -51,6 +51,9 @@ class TimeLabel(Gtk.Label):
 
 
 class SeekBar(HSlider):
+    # TODO: adjust the seek bar length if the song length changes during
+    # playback (see AudioFile.fill_length)
+
     __lock = False
     __sig = None
     __seekable = True

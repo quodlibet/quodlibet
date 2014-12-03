@@ -63,6 +63,8 @@ class AudioFile(dict, ImageContainer):
 
     # New tags received from the backend will update the song
     fill_metadata = False
+    # New song duration from the backend will update the song
+    fill_length = False
     # Container for multiple songs, while played new songs can start/end
     multisong = False
     # Part of a multisong

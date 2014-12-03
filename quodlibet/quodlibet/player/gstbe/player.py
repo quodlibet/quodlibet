@@ -430,6 +430,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             state = message.parse_request_state()
             print_d("State requested: %s" % Gst.Element.state_get_name(state))
             self.bin.set_state(state)
+        elif message.type == Gst.MessageType.DURATION_CHANGED:
+            if self.song.fill_length:
+                ok, p = self.bin.query_duration(Gst.Format.TIME)
+                if ok:
+                    p /= float(Gst.SECOND)
+                    self.song["~#length"] = p
+                    librarian.changed([self.song])
 
     def __handle_missing_plugin(self, message):
         get_installer_detail = \
