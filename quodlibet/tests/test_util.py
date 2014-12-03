@@ -944,7 +944,7 @@ class TMainRunner(TestCase):
         loop = GLib.MainLoop()
 
         def func(i):
-            self.assertTrue(loop.get_context().is_owner())
+            self.assertTrue(util.is_main_thread())
             return i + 1
 
         def worker():
