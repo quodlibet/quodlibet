@@ -18,6 +18,7 @@ mimes = set()
 _infos = {}
 modules = []
 names = []
+types = []
 
 
 def init():
@@ -42,6 +43,7 @@ def init():
 
         if format.extensions:
             for type_ in format.types:
+                types.append(type_)
                 mimes.update(type_.mimes)
                 names.append(type_.format)
             modules.append(name.split(".")[-1])

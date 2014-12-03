@@ -12,6 +12,8 @@ These classes are the most basic library classes. As such they are the
 least useful but most content-agnostic.
 """
 
+from pickle import Unpickler
+from cStringIO import StringIO
 import cPickle as pickle
 import os
 import shutil
@@ -217,6 +219,34 @@ def dump_items(filename, items):
         pickle.dump(items, fileobj, 1)
 
 
+def unpickle_save(data, default, type_=dict):
+    """Unpickle a list of `type_` subclasses and skip items for which the
+    class is missing.
+
+    In case not just the class lookup fails, returns default.
+    """
+
+    class dummy(type_):
+        pass
+
+    class SaveUnpickler(Unpickler):
+
+        def find_class(self, module, name):
+            try:
+                return Unpickler.find_class(self, module, name)
+            except (ImportError, AttributeError):
+                return dummy
+
+    fileobj = StringIO(data)
+
+    try:
+        items = SaveUnpickler(fileobj).load()
+    except Exception:
+        return default
+
+    return [i for i in items if not isinstance(i, dummy)]
+
+
 def load_items(filename, default=None):
     """Load items from disk.
 
@@ -254,7 +284,10 @@ def load_items(filename, default=None):
         except EnvironmentError:
             util.print_exc()
 
-        items = default
+        # try to skip items for which the class is missing
+        # XXX: we assume the items are dict subclasses here.. while nothing
+        # else does
+        items = unpickle_save(data, default)
 
     return items
 
