@@ -51,9 +51,6 @@ class TimeLabel(Gtk.Label):
 
 
 class SeekBar(HSlider):
-    # TODO: adjust the seek bar length if the song length changes during
-    # playback (see AudioFile.fill_length)
-
     __lock = False
     __sig = None
     __seekable = True
@@ -101,7 +98,9 @@ class SeekBar(HSlider):
         timer = TimeTracker(player)
         timer.connect_object('tick', self.__check_time, player)
 
-        player.connect('song-started', self.__song_changed, l, m)
+        library.connect("changed", self.__songs_changed, player, m)
+
+        player.connect('song-started', self.__song_started, m)
         player.connect('seek', self.__seeked)
 
     def __check_menu(self, menu, event, player, remaining_item):
@@ -182,8 +181,16 @@ class SeekBar(HSlider):
         timer.set_time(value)
         self._slider_label.set_time(remaining)
 
-    def __song_changed(self, player, song, label, menu):
+    def __songs_changed(self, library, songs, player, menu):
+        song = player.song
+        if song in songs:
+            self.__update_slider(song, menu)
 
+    def __song_started(self, player, song, menu):
+        self.scale.set_value(0)
+        self.__update_slider(song, menu)
+
+    def __update_slider(self, song, menu):
         if song and song("~#length") > 0:
             self.scale.set_range(0, song("~#length"))
             slider_width = int(song("~#length") / 1.5) + 80
@@ -192,8 +199,6 @@ class SeekBar(HSlider):
             self.scale.set_range(0, 1)
             slider_width = 0
             self.__seekable = False
-
-        self.scale.set_value(0)
 
         slider_width = min(max(slider_width, 170), 400)
         self.set_slider_length(slider_width)
