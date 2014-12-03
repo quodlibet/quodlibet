@@ -41,9 +41,10 @@ def init():
         for ext in format.extensions:
             _infos[ext] = format.info
 
+        types.extend(format.types)
+
         if format.extensions:
             for type_ in format.types:
-                types.append(type_)
                 mimes.update(type_.mimes)
                 names.append(type_.format)
             modules.append(name.split(".")[-1])

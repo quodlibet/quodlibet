@@ -75,25 +75,25 @@ class TPickle(TestCase):
 
     # protocol 1 pickle of all types (created by test_pickle below)
     PICKLE = (
-        b']q\x00(ccopy_reg\n_reconstructor\nq\x01(cquodlibet.formats.vgm'
-        b'\nVgmFile\nq\x02c__builtin__\ndict\nq\x03}q\x04tq\x05Rq\x06h\x01'
-        b'(cquodlibet.formats.monkeysaudio\nMonkeysAudioFile\nq\x07h\x03}q'
-        b'\x08tq\tRq\nh\x01(cquodlibet.formats.mpc\nMPCFile\nq\x0bh\x03}q'
-        b'\x0ctq\rRq\x0eh\x01(cquodlibet.formats.midi\nMidiFile\nq\x0fh'
-        b'\x03}q\x10tq\x11Rq\x12h\x01(cquodlibet.formats.wavpack\nWavpack'
-        b'File\nq\x13h\x03}q\x14tq\x15Rq\x16h\x01(cquodlibet.formats.true'
-        b'audio\nTrueAudioFile\nq\x17h\x03}q\x18tq\x19Rq\x1ah\x01(cquodli'
-        b'bet.formats.mp4\nMP4File\nq\x1bh\x03}q\x1ctq\x1dRq\x1eh\x01(cquo'
-        b'dlibet.formats.xiph\nOggFLACFile\nq\x1fh\x03}q tq!Rq"h\x01(cquod'
-        b'libet.formats.xiph\nOggSpeexFile\nq#h\x03}q$tq%Rq&h\x01(cquodlib'
-        b'et.formats.xiph\nOggOpusFile\nq\'h\x03}q(tq)Rq*h\x01(cquodlibet'
-        b'.formats.xiph\nOggFile\nq+h\x03}q,tq-Rq.h\x01(cquodlibet.formats'
-        b'.xiph\nFLACFile\nq/h\x03}q0tq1Rq2h\x01(cquodlibet.formats.xiph\n'
-        b'OggTheoraFile\nq3h\x03}q4tq5Rq6h\x01(cquodlibet.formats.wav\nWAV'
-        b'EFile\nq7h\x03}q8tq9Rq:h\x01(cquodlibet.formats.wma\nWMAFile\nq;'
-        b'h\x03}q<tq=Rq>h\x01(cquodlibet.formats.spc\nSPCFile\nq?h\x03}q@t'
-        b'qARqBh\x01(cquodlibet.formats.mp3\nMP3File\nqCh\x03}qDtqERqFh'
-        b'\x01(cquodlibet.formats.mod\nModFile\nqGh\x03}qHtqIRqJe.')
+        b']q\x00(ccopy_reg\n_reconstructor\nq\x01(cquodlibet.formats.vgm\nVgm'
+        b'File\nq\x02c__builtin__\ndict\nq\x03}q\x04tq\x05Rq\x06h\x01(cquodli'
+        b'bet.formats.monkeysaudio\nMonkeysAudioFile\nq\x07h\x03}q\x08tq\tRq'
+        '\nh\x01(cquodlibet.formats.mpc\nMPCFile\nq\x0bh\x03}q\x0ctq\rRq\x0eh'
+        b'\x01(cquodlibet.formats.midi\nMidiFile\nq\x0fh\x03}q\x10tq\x11Rq'
+        b'\x12h\x01(cquodlibet.formats.wavpack\nWavpackFile\nq\x13h\x03}q\x14'
+        b'tq\x15Rq\x16h\x01(cquodlibet.formats.trueaudio\nTrueAudioFile\nq\x17'
+        b'h\x03}q\x18tq\x19Rq\x1ah\x01(cquodlibet.formats.mp4\nMP4File\nq\x1b'
+        b'h\x03}q\x1ctq\x1dRq\x1eh\x01(cquodlibet.formats.xiph\nOggFLACFile\nq'
+        b'\x1fh\x03}q tq!Rq"h\x01(cquodlibet.formats.xiph\nOggSpeexFile\nq#h'
+        b'\x03}q$tq%Rq&h\x01(cquodlibet.formats.xiph\nOggOpusFile\nq\'h\x03}q'
+        b'(tq)Rq*h\x01(cquodlibet.formats.xiph\nOggFile\nq+h\x03}q,tq-Rq.h\x01'
+        b'(cquodlibet.formats.xiph\nFLACFile\nq/h\x03}q0tq1Rq2h\x01(cquodlibet'
+        b'.formats.xiph\nOggTheoraFile\nq3h\x03}q4tq5Rq6h\x01(cquodlibet.form'
+        b'ats.wav\nWAVEFile\nq7h\x03}q8tq9Rq:h\x01(cquodlibet.formats.wma\nWM'
+        b'AFile\nq;h\x03}q<tq=Rq>h\x01(cquodlibet.formats.spc\nSPCFile\nq?h'
+        b'\x03}q@tqARqBh\x01(cquodlibet.formats.mp3\nMP3File\nqCh\x03}qDtqERq'
+        b'Fh\x01(cquodlibet.formats.remote\nRemoteFile\nqGh\x03}qHtqIRqJh\x01'
+        b'(cquodlibet.formats.mod\nModFile\nqKh\x03}qLtqMRqNe.')
 
     def test_pickle(self):
         types = formats.types
