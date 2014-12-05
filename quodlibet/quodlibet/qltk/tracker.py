@@ -131,10 +131,16 @@ class FSInterface(object):
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
 
     def __init__(self, player):
-        player.connect('song-started', self.__started)
-        player.connect('song-ended', self.__ended)
+        self._player = player
+        self._ids = [
+            player.connect('song-started', self.__started),
+            player.connect('song-ended', self.__ended),
+        ]
 
     def destroy(self):
+        for id_ in self._ids:
+            self._player.disconnect(id_)
+
         try:
             os.unlink(const.CURRENT)
         except EnvironmentError:

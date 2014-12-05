@@ -19,7 +19,7 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.qltk.x import ScrolledWindow, ConfigRPaned
 from quodlibet.util.path import fsdecode
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
@@ -92,12 +92,10 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         paned.pack2(notebook, shrink=False, resize=True)
 
         csig = selection.connect('changed', self.__selection_changed)
-        s1 = library.connect(
+        connect_destroy(library,
             'changed', self.__refresh, fbasemodel, fview)
-        s2 = library.connect(
+        connect_destroy(library,
             'removed', self.__remove, fbasemodel, selection, csig)
-        connect_obj(self, 'destroy', library.disconnect, s1)
-        connect_obj(self, 'destroy', library.disconnect, s2)
         connect_obj(self, 'changed', self.set_pending, None)
 
         self.emit('changed', songs)

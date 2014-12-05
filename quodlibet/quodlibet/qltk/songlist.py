@@ -26,7 +26,7 @@ from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -382,24 +382,20 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         self._sort_sequence = []
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
-        sigs = []
 
-        sigs.extend([
-            librarian.connect('changed', self.__song_updated),
-            librarian.connect('removed', self.__song_removed, player),
-        ])
+        connect_destroy(librarian, 'changed', self.__song_updated)
+        connect_destroy(librarian, 'removed', self.__song_removed, player)
+
         if update:
-            sigs.append(librarian.connect('added', self.__song_added))
-        for sig in sigs:
-            connect_obj(self, 'destroy', librarian.disconnect, sig)
+            connect_destroy(librarian, 'added', self.__song_added)
+
         if player:
-            sigs = [
-                player.connect('paused', lambda *x: self.__redraw_current()),
-                player.connect('unpaused', lambda *x: self.__redraw_current()),
-                player.connect('error', lambda *x: self.__redraw_current()),
-            ]
-            for sig in sigs:
-                connect_obj(self, 'destroy', player.disconnect, sig)
+            connect_destroy(
+                player, 'paused', lambda *x: self.__redraw_current())
+            connect_destroy(
+                player, 'unpaused', lambda *x: self.__redraw_current())
+            connect_destroy(
+                player, 'error', lambda *x: self.__redraw_current())
 
         self.connect('button-press-event', self.__button_press, librarian)
         self.connect('key-press-event', self.__key_press, librarian)
@@ -543,6 +539,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
     def __destroy(self, *args):
         self.info.destroy()
+        self.info = None
         self.handler_block(self.__csig)
         for column in self.get_columns():
             self.remove_column(column)

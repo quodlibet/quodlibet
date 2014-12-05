@@ -341,7 +341,9 @@ class SearchWindow(Window):
 
     def __destroy(self, *args):
         self.pool.stop()
+        self.pool = None
         self._thread.stop()
+        self._thread = None
 
     def __on_save(self, *args):
         write_mb = get_write_mb_tags()

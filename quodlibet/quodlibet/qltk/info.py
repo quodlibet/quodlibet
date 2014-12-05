@@ -17,7 +17,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 
 from quodlibet.parse import XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
@@ -50,8 +50,8 @@ class SongInfo(Gtk.EventBox):
         align.add(label)
         label.set_alignment(0.0, 0.0)
         self._label = label
-        connect_obj(library, 'changed', self.__check_change, player)
-        player.connect('song-started', self.__check_started)
+        connect_destroy(library, 'changed', self.__check_change, player)
+        connect_destroy(player, 'song-started', self.__check_started)
 
         connect_obj(label, 'populate-popup', self.__menu, player, library)
         self.connect('button-press-event', self.__create_menu, player, library)
@@ -149,7 +149,7 @@ class SongInfo(Gtk.EventBox):
         self._compiled = XMLFromMarkupPattern(self._pattern)
         self.__update_info(player)
 
-    def __check_change(self, player, songs):
+    def __check_change(self, library, songs, player):
         if player.info in songs:
             self.__update_info(player)
 

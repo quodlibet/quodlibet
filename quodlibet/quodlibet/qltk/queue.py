@@ -14,7 +14,7 @@ from quodlibet import const
 from quodlibet import util
 from quodlibet import qltk
 
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -131,11 +131,14 @@ class QueueExpander(Gtk.Expander):
         connect_obj(self, 'notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, count_label)
 
-        player.connect('song-started', self.__update_state_icon, state_icon)
-        player.connect('paused', self.__update_state_icon_pause,
-                        state_icon, True)
-        player.connect('unpaused', self.__update_state_icon_pause,
-                        state_icon, False)
+        connect_destroy(
+            player, 'song-started', self.__update_state_icon, state_icon)
+        connect_destroy(
+            player, 'paused', self.__update_state_icon_pause,
+            state_icon, True)
+        connect_destroy(
+            player, 'unpaused', self.__update_state_icon_pause,
+            state_icon, False)
 
         # to make the children clickable if mapped
         # ....no idea why, but works

@@ -676,6 +676,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             return True
 
     def __destroy(self, *args):
+        self.playlist.destroy()
+
         # The tray icon plugin tries to unhide QL because it gets disabled
         # on Ql exit. The window should stay hidden after destroy.
         self.show = lambda: None

@@ -12,7 +12,7 @@ from quodlibet import qltk
 from quodlibet.qltk import bookmarks
 from quodlibet import util
 
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.sliderbutton import HSlider
 from quodlibet.qltk.tracker import TimeTracker
@@ -99,10 +99,11 @@ class SeekBar(HSlider):
         timer = TimeTracker(player)
         connect_obj(timer, 'tick', self.__check_time, player)
 
-        library.connect("changed", self.__songs_changed, player, m)
+        connect_destroy(
+            library, "changed", self.__songs_changed, player, m)
 
-        player.connect('song-started', self.__song_started, m)
-        player.connect('seek', self.__seeked)
+        connect_destroy(player, 'song-started', self.__song_started, m)
+        connect_destroy(player, 'seek', self.__seeked)
 
     def __check_menu(self, menu, event, player, remaining_item):
         if event.type != Gdk.EventType.BUTTON_PRESS:
@@ -287,6 +288,7 @@ class ReplayGainMenu(Gtk.Menu):
 
 
 class PlayControls(Gtk.VBox):
+
     def __init__(self, player, library):
         super(PlayControls, self).__init__(spacing=3)
 
@@ -338,9 +340,15 @@ class PlayControls(Gtk.VBox):
         play.add_events(Gdk.EventMask.SCROLL_MASK)
         connect_obj(play, 'scroll-event', self.__scroll, player)
         connect_obj(next_, 'clicked', self.__next, player)
-        player.connect('song-started', self.__song_started, next_, play)
-        connect_obj(player, 'paused', play.set_active, False)
-        connect_obj(player, 'unpaused', play.set_active, True)
+        connect_destroy(
+            player, 'song-started', self.__song_started, next_, play)
+        connect_destroy(
+            player, 'paused', self.__on_set_paused_unpaused, play, False)
+        connect_destroy(
+            player, 'unpaused', self.__on_set_paused_unpaused, play, True)
+
+    def __on_set_paused_unpaused(self, player, button, state):
+        button.set_active(state)
 
     def __scroll(self, player, event):
         if event.direction in [Gdk.ScrollDirection.UP,

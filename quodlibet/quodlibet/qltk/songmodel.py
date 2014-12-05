@@ -32,7 +32,11 @@ class PlaylistMux(object):
     def __init__(self, player, q, pl):
         self.q = q
         self.pl = pl
-        player.connect('song-started', self.__check_q)
+        self._id = player.connect('song-started', self.__check_q)
+        self._player = player
+
+    def destroy(self):
+        self._player.disconnect(self._id)
 
     def __check_q(self, player, song):
         if song is not None and self.q.sourced:
