@@ -139,6 +139,10 @@ def _gtk_init(icon=None):
             cls = GdkPixbuf.Pixbuf
             setattr(cls, name, getattr(cls, name + "_utf8", name))
 
+    # https://bugzilla.gnome.org/show_bug.cgi?id=670372
+    if not hasattr(GdkPixbuf.Pixbuf, "savev"):
+        GdkPixbuf.Pixbuf.savev = GdkPixbuf.Pixbuf.save
+
     # Force menu/button image related settings. We might show too many atm
     # but this makes sure we don't miss cases where we forgot to force them
     # per widget.
