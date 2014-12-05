@@ -619,6 +619,24 @@ class DeferredSignal(object):
         return False
 
 
+def connect_obj(this, detailed_signal, handler, that, *args, **kwargs):
+    """A wrapper for connect() that has the same interface as connect_object().
+    Used as a temp solution to get rid of connect_object() calls which may
+    be changed to match the C version more closely in the future.
+
+    https://git.gnome.org/browse/pygobject/commit/?id=86fb12b3e9b75
+
+    While it's not clear if switching to weak references will break anything,
+    we mainly used this for adjusting the callback signature. So using
+    connect() behind the scenes will keep things working as they are now.
+    """
+
+    def wrap(this, *args):
+        return handler(that, *args)
+
+    return this.connect(detailed_signal, wrap, *args, **kwargs)
+
+
 def gobject_weak(fun, *args, **kwargs):
     """Connect to a signal and disconnect if destroy gets emitted.
     If parent is given, it connects to its destroy signal
@@ -632,7 +650,7 @@ def gobject_weak(fun, *args, **kwargs):
     sig = fun(*args)
     disconnect = lambda obj, handle: obj.disconnect(handle)
     if parent:
-        parent.connect_object('destroy', disconnect, obj, sig)
+        connect_obj(parent, 'destroy', disconnect, obj, sig)
     else:
         obj.connect('destroy', disconnect, sig)
     return sig

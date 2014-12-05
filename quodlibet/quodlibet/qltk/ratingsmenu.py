@@ -13,6 +13,7 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet.config import RATINGS
 from quodlibet.qltk import SeparatorMenuItem
+from quodlibet.util import connect_obj
 
 
 class ConfirmRateMultipleDialog(qltk.Message):
@@ -67,9 +68,9 @@ class RatingsMenuItem(Gtk.MenuItem):
         for i in RATINGS.all:
             itm = Gtk.MenuItem(label="%0.2f\t%s" % (i, util.format_rating(i)))
             submenu.append(itm)
-            itm.connect_object('activate', self.set_rating, i, songs, library)
+            connect_obj(itm, 'activate', self.set_rating, i, songs, library)
         reset = Gtk.MenuItem(label=_("_Remove rating"), use_underline=True)
-        reset.connect_object('activate', self.remove_rating, songs, library)
+        connect_obj(reset, 'activate', self.remove_rating, songs, library)
         submenu.append(SeparatorMenuItem())
         submenu.append(reset)
         submenu.show_all()

@@ -13,6 +13,7 @@ from quodlibet import qltk
 
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import BaseView
+from quodlibet.util import connect_obj
 
 
 def get_headers():
@@ -190,7 +191,7 @@ class Preferences(qltk.UniqueWindow):
         editor.headers = get_headers()
 
         apply = Gtk.Button(stock=Gtk.STOCK_APPLY)
-        apply.connect_object("clicked", self.__apply, editor, False)
+        connect_obj(apply, "clicked", self.__apply, editor, False)
 
         cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         cancel.connect("clicked", lambda x: self.destroy())

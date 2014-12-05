@@ -10,6 +10,7 @@ from gi.repository import Gtk
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
+from quodlibet.util import connect_obj
 
 
 class BurnCD(SongsMenuPlugin):
@@ -39,7 +40,7 @@ class BurnCD(SongsMenuPlugin):
             if not is_cmd:
                 item.set_sensitive(False)
             else:
-                item.connect_object('activate', self.__set, name)
+                connect_obj(item, 'activate', self.__set, name)
             submenu.append(item)
         self.set_submenu(submenu)
 

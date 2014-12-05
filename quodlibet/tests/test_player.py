@@ -10,6 +10,7 @@ from quodlibet import player
 from quodlibet import library
 from quodlibet import config
 from quodlibet.util.path import fsnative
+from quodlibet.util import connect_obj
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel
@@ -53,8 +54,8 @@ class TPlayer(AbstractTestCase):
 
         def handler(type_, *args):
             self.signals.setdefault(type_, []).append(args)
-        self.player.connect_object("unpaused", handler, "unpaused")
-        self.player.connect_object("paused", handler, "paused")
+        connect_obj(self.player, "unpaused", handler, "unpaused")
+        connect_obj(self.player, "paused", handler, "paused")
 
     def _check_events(self):
         # make sure song-started and song-ended match up

@@ -28,6 +28,7 @@ from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
 from quodlibet.util.uri import URI
 from quodlibet.util.path import normalize_path
+from quodlibet.util import connect_obj
 
 
 class FileSystem(Browser, Gtk.HBox):
@@ -87,7 +88,7 @@ class FileSystem(Browser, Gtk.HBox):
 
         sel = dt.get_selection()
         sel.unselect_all()
-        sel.connect_object('changed', copool.add, self.__songs_selected, dt)
+        connect_obj(sel, 'changed', copool.add, self.__songs_selected, dt)
         dt.connect('row-activated', lambda *a: self.emit("activated"))
         sw.add(dt)
         self.pack_start(sw, True, True, 0)

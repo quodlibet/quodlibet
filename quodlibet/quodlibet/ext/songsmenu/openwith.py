@@ -3,6 +3,7 @@ from gi.repository import Gtk
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
+from quodlibet.util import connect_obj
 
 
 class Command(object):
@@ -48,7 +49,7 @@ class SendTo(SongsMenuPlugin):
             if not command.exists():
                 item.set_sensitive(False)
             else:
-                item.connect_object('activate', self.__set, command)
+                connect_obj(item, 'activate', self.__set, command)
             submenu.append(item)
         if submenu.get_children():
             self.set_submenu(submenu)

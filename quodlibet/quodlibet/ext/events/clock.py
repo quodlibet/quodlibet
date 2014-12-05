@@ -12,6 +12,7 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.util import connect_obj
 
 
 class Alarm(EventPlugin):
@@ -106,7 +107,7 @@ class Alarm(EventPlugin):
             t.attach(e, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             entries.append(e)
         for e in entries:
-            e.connect_object('changed', self._entry_changed, entries)
+            connect_obj(e, 'changed', self._entry_changed, entries)
         return t
 
 

@@ -13,6 +13,7 @@ from quodlibet.plugins import PluginHandler
 
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 from quodlibet.util.songwrapper import check_wrapper_changed
+from quodlibet.util import connect_obj
 
 
 class EventPlugin(object):
@@ -84,7 +85,7 @@ class EventPluginHandler(PluginHandler):
             for event, handle in sigs:
                 def cb_handler(librarian, *args):
                     self.__invoke(librarian, args[-1], *args[:-1])
-                player.connect_object(event, cb_handler, librarian, event)
+                connect_obj(player, event, cb_handler, librarian, event)
 
         self.__plugins = {}
 

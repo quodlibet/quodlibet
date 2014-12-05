@@ -23,7 +23,7 @@ from quodlibet.qltk.image import (get_scale_factor, get_pbosf_for_pixbuf,
     set_renderer_from_pbosf)
 from quodlibet.qltk.x import ScrolledWindow, Alignment, SymbolicIconImage
 from quodlibet.util.collection import Album
-from quodlibet.util import thumbnails
+from quodlibet.util import thumbnails, connect_obj
 from quodlibet.util.library import background_filter
 from quodlibet.util.thumbnails import scale
 
@@ -248,7 +248,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         self.__sig = view.get_selection().connect('changed',
             self.__selection_changed)
         view.connect('row-activated', self.__play)
-        view.connect_object('popup-menu', self.__popup, view, library)
+        connect_obj(view, 'popup-menu', self.__popup, view, library)
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]

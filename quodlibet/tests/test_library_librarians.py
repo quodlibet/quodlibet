@@ -1,6 +1,7 @@
 from gi.repository import Gtk
 
 from tests import TestCase
+from quodlibet.util import connect_obj
 from quodlibet.library import SongLibrarian
 from quodlibet.library.libraries import Library, SongFileLibrary
 from quodlibet.library.librarians import Librarian
@@ -29,15 +30,15 @@ class TLibrarian(TestCase):
         self.changed = []
         self.removed = []
 
-        self.lib1.connect_object('added', list.extend, self.added_1)
-        self.lib1.connect_object('changed', list.extend, self.changed_1)
-        self.lib1.connect_object('removed', list.extend, self.removed_1)
-        self.lib2.connect_object('added', list.extend, self.added_2)
-        self.lib2.connect_object('changed', list.extend, self.changed_2)
-        self.lib2.connect_object('removed', list.extend, self.removed_2)
-        self.librarian.connect_object('added', list.extend, self.added)
-        self.librarian.connect_object('changed', list.extend, self.changed)
-        self.librarian.connect_object('removed', list.extend, self.removed)
+        connect_obj(self.lib1, 'added', list.extend, self.added_1)
+        connect_obj(self.lib1, 'changed', list.extend, self.changed_1)
+        connect_obj(self.lib1, 'removed', list.extend, self.removed_1)
+        connect_obj(self.lib2, 'added', list.extend, self.added_2)
+        connect_obj(self.lib2, 'changed', list.extend, self.changed_2)
+        connect_obj(self.lib2, 'removed', list.extend, self.removed_2)
+        connect_obj(self.librarian, 'added', list.extend, self.added)
+        connect_obj(self.librarian, 'changed', list.extend, self.changed)
+        connect_obj(self.librarian, 'removed', list.extend, self.removed)
 
     def test_libraries(self):
         self.failUnlessEqual(len(self.librarian.libraries), 2)

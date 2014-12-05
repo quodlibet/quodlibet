@@ -14,6 +14,7 @@ from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.x import SymbolicIconImage, MenuItem
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
+from quodlibet.util import connect_obj
 
 from .util import get_headers, save_headers
 
@@ -191,7 +192,7 @@ class Preferences(qltk.UniqueWindow):
         editor.headers = get_headers()
 
         apply_ = Gtk.Button(stock=Gtk.STOCK_APPLY)
-        apply_.connect_object("clicked", self.__apply, editor, browser, False)
+        connect_obj(apply_, "clicked", self.__apply, editor, browser, False)
 
         cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         cancel.connect("clicked", lambda x: self.destroy())

@@ -33,6 +33,8 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.util import unescape
 from quodlibet.util.uri import URI
+from quodlibet.util import connect_obj
+
 
 # configuration stuff
 DEFAULT_CONFIG = {
@@ -93,7 +95,7 @@ class PreferencesWidget(Gtk.VBox):
         title_revert.add(Gtk.Image.new_from_stock(
             Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
         title_revert.set_tooltip_text(_("Revert to default pattern"))
-        title_revert.connect_object(
+        connect_obj(title_revert,
             "clicked", title_entry.set_text, DEFAULT_CONFIG["titlepattern"])
         table.attach(title_revert, 2, 3, 0, 1,
                      xoptions=Gtk.AttachOptions.SHRINK)
@@ -123,7 +125,7 @@ class PreferencesWidget(Gtk.VBox):
         body_revert.add(Gtk.Image.new_from_stock(
                         Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
         body_revert.set_tooltip_text(_("Revert to default pattern"))
-        body_revert.connect_object(
+        connect_obj(body_revert,
             "clicked", body_textbuffer.set_text, DEFAULT_CONFIG["bodypattern"])
         revert_align.add(body_revert)
         table.attach(

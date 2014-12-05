@@ -8,6 +8,8 @@ import multiprocessing
 
 from gi.repository import Gst, GObject
 
+from quodlibet.util import connect_obj
+
 
 class FingerPrintResult(object):
 
@@ -55,7 +57,7 @@ class FingerPrintPipeline(object):
 
         # decodebin creates pad, we link it
         self._dec = decode
-        self._dec_id = decode.connect_object(
+        self._dec_id = connect_obj(decode,
             "pad-added", new_decoded_pad, convert)
 
         def sort_decoders(decode, pad, caps, factories):

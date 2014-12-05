@@ -22,6 +22,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
 from quodlibet.util.thumbnails import scale
+from quodlibet.util import connect_obj
 
 
 class Preferences(Gtk.VBox):
@@ -505,7 +506,7 @@ class TrayIcon(EventPlugin):
             if not Kind.in_menu:
                 continue
             i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
-            i.connect_object(
+            connect_obj(i,
                 'activate', LibraryBrowser.open, Kind, app.library, app.player)
             browse_sub.append(i)
 
@@ -529,7 +530,7 @@ class TrayIcon(EventPlugin):
         rating_sub = Gtk.Menu()
         for r in RATINGS.all:
             item = Gtk.MenuItem(label="%0.2f\t%s" % (r, util.format_rating(r)))
-            item.connect_object('activate', set_rating, r)
+            connect_obj(item, 'activate', set_rating, r)
             rating_sub.append(item)
         rating.set_submenu(rating_sub)
 

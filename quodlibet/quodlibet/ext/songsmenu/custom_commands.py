@@ -22,6 +22,7 @@ from quodlibet.qltk import ErrorMessage
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util.dprint import print_w, print_d, print_e
 from quodlibet.util.json_data import JSONObject, JSONObjectDict
+from quodlibet.util import connect_obj
 
 Field = JSONObject.Field
 
@@ -201,7 +202,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         self.commands = self._get_saved_searches()
         for (name, c) in self.commands.items():
             item = Gtk.MenuItem(label=name)
-            item.connect_object('activate', self.__set_pat, name)
+            connect_obj(item, 'activate', self.__set_pat, name)
             submenu.append(item)
             # Add link to editor
 
@@ -214,7 +215,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
     @classmethod
     def add_edit_item(cls, submenu):
         config = Gtk.MenuItem(label=_("Edit Custom Commands") + "...")
-        config.connect_object('activate', cls.edit_patterns, config)
+        connect_obj(config, 'activate', cls.edit_patterns, config)
         config.set_sensitive(not JSONBasedEditor.is_not_unique())
         submenu.append(SeparatorMenuItem())
         submenu.append(config)

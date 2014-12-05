@@ -3,6 +3,7 @@ from gi.repository import Gtk
 import os
 import shutil
 from quodlibet import config
+from quodlibet.util import connect_obj
 from quodlibet.formats._audio import AudioFile
 
 from tests import TestCase, DATA_DIR, mkstemp
@@ -93,9 +94,9 @@ class TLibrary(TestCase):
         self.changed = []
         self.removed = []
 
-        self.library.connect_object('added', list.extend, self.added)
-        self.library.connect_object('changed', list.extend, self.changed)
-        self.library.connect_object('removed', list.extend, self.removed)
+        connect_obj(self.library, 'added', list.extend, self.added)
+        connect_obj(self.library, 'changed', list.extend, self.changed)
+        connect_obj(self.library, 'removed', list.extend, self.removed)
 
     def test_add(self):
         self.library.add(self.Frange(12))
@@ -481,10 +482,10 @@ class TAlbumLibrary(TestCase):
         self.removed = []
 
         self._sigs = [
-            self.underlying.connect_object('added', list.extend, self.added),
-            self.underlying.connect_object(
+            connect_obj(self.underlying, 'added', list.extend, self.added),
+            connect_obj(self.underlying,
                 'changed', list.extend, self.changed),
-            self.underlying.connect_object(
+            connect_obj(self.underlying,
                 'removed', list.extend, self.removed),
         ]
 
@@ -567,16 +568,16 @@ class TAlbumLibrarySignals(TestCase):
             received.append(name)
 
         self._sigs = [
-            lib.connect_object('added', listen, 'added'),
-            lib.connect_object('changed', listen, 'changed'),
-            lib.connect_object('removed', listen, 'removed'),
+            connect_obj(lib, 'added', listen, 'added'),
+            connect_obj(lib, 'changed', listen, 'changed'),
+            connect_obj(lib, 'removed', listen, 'removed'),
         ]
 
         albums = lib.albums
         self._asigs = [
-            albums.connect_object('added', listen, 'a_added'),
-            albums.connect_object('changed', listen, 'a_changed'),
-            albums.connect_object('removed', listen, 'a_removed'),
+            connect_obj(albums, 'added', listen, 'a_added'),
+            connect_obj(albums, 'changed', listen, 'a_changed'),
+            connect_obj(albums, 'removed', listen, 'a_removed'),
         ]
 
         self.lib = lib

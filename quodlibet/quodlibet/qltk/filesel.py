@@ -26,6 +26,7 @@ from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
     glib2fsnative, fsnative, xdg_get_user_dirs
 from quodlibet.util.uri import URI
+from quodlibet.util import connect_obj
 
 
 def search_func(model, column, key, iter_, handledirs):
@@ -225,7 +226,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         m.connect('activate', self.__expand)
         menu.append(m)
         menu.show_all()
-        self.connect_object('popup-menu', self.__popup_menu, menu)
+        connect_obj(self, 'popup-menu', self.__popup_menu, menu)
 
         # Allow to drag and drop files from outside
         targets = [

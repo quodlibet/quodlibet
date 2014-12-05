@@ -7,6 +7,8 @@
 
 from gi.repository import Gtk
 
+from quodlibet.util import connect_obj
+
 
 class RenameFilesPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be
@@ -128,7 +130,7 @@ class EditTagsPlugin(Gtk.ImageMenuItem):
     def connect(self, signal, callback, *args, **kwargs):
         if self.get_submenu():
             for item in self.get_submenu().get_children():
-                item.connect_object(signal, callback, self, *args, **kwargs)
+                connect_obj(item, signal, callback, self, *args, **kwargs)
         else:
             super(EditTagsPlugin, self).connect(
                 signal, callback, *args, **kwargs)

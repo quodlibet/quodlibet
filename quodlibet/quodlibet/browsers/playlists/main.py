@@ -17,6 +17,7 @@ from quodlibet import qltk
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.collection import Playlist
+from quodlibet.util import connect_obj
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Alignment
@@ -109,7 +110,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         model, iters = self.__get_selected_songs(songlist)
         i = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
         qltk.add_fake_accel(i, "Delete")
-        i.connect_object('activate', self.__remove, iters, model)
+        connect_obj(i, 'activate', self.__remove, iters, model)
         i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
         menu.preseparate()
         menu.prepend(i)
@@ -181,7 +182,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         view.get_selection().connect('changed', self.activate)
 
         s = view.get_model().connect('row-changed', self.__check_current)
-        self.connect_object('destroy', view.get_model().disconnect, s)
+        connect_obj(self, 'destroy', view.get_model().disconnect, s)
 
         self.connect('key-press-event', self.__key_pressed)
 
@@ -346,7 +347,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
                     model.convert_iter_to_child_iter(itr))
 
         rem = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
-        rem.connect_object('activate', _remove, model, itr)
+        connect_obj(rem, 'activate', _remove, model, itr)
         menu.prepend(rem)
 
         def _rename(path):
@@ -355,7 +356,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
 
         ren = qltk.MenuItem(_("_Rename"), Gtk.STOCK_EDIT)
         qltk.add_fake_accel(ren, "F2")
-        ren.connect_object('activate', _rename, model.get_path(itr))
+        connect_obj(ren, 'activate', _rename, model.get_path(itr))
         menu.prepend(ren)
 
         playlist = model[itr][0]

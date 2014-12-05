@@ -17,6 +17,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.util import connect_obj
 
 from quodlibet.parse import XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
@@ -49,10 +50,10 @@ class SongInfo(Gtk.EventBox):
         align.add(label)
         label.set_alignment(0.0, 0.0)
         self._label = label
-        library.connect_object('changed', self.__check_change, player)
+        connect_obj(library, 'changed', self.__check_change, player)
         player.connect('song-started', self.__check_started)
 
-        label.connect_object('populate-popup', self.__menu, player, library)
+        connect_obj(label, 'populate-popup', self.__menu, player, library)
         self.connect('button-press-event', self.__create_menu, player, library)
 
         try:
@@ -103,7 +104,7 @@ class SongInfo(Gtk.EventBox):
 
         item = qltk.MenuItem(_("_Edit Display..."), Gtk.STOCK_EDIT)
         item.show()
-        item.connect_object('activate', self.__edit, player)
+        connect_obj(item, 'activate', self.__edit, player)
         menu.append(item)
 
         sep = SeparatorMenuItem()
@@ -131,7 +132,7 @@ class SongInfo(Gtk.EventBox):
     def __edit(self, player):
         editor = PatternEdit(self, SongInfo._pattern)
         editor.text = self._pattern
-        editor.apply.connect_object('clicked', self.__set, editor, player)
+        connect_obj(editor.apply, 'clicked', self.__set, editor, player)
         editor.show()
 
     def __set(self, edit, player):

@@ -15,6 +15,7 @@ from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.path import fsdecode
+from quodlibet.util import connect_obj
 
 
 class Entry(object):
@@ -101,7 +102,7 @@ class TrackNumbers(Gtk.VBox):
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         save = Gtk.Button(stock=Gtk.STOCK_SAVE)
         self.save = save
-        save.connect_object(
+        connect_obj(save,
             'clicked', self.__save_files, prop, model, library)
         revert = Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
         self.revert = revert
@@ -111,18 +112,18 @@ class TrackNumbers(Gtk.VBox):
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect('clicked', self.__preview_tracks, *preview_args)
-        revert.connect_object('clicked',
+        connect_obj(revert, 'clicked',
                               self.__update, None, *preview_args[1:])
         spin_total.connect(
             'value-changed', self.__preview_tracks, *preview_args)
         spin_start.connect(
             'value-changed', self.__preview_tracks, *preview_args)
-        view.connect_object(
+        connect_obj(view,
             'drag-end', self.__class__.__preview_tracks, self,
             *preview_args)
         render.connect('edited', self.__row_edited, model, preview, save)
 
-        prop.connect_object(
+        connect_obj(prop,
             'changed', self.__class__.__update, self,
             spin_total, model, save, revert)
 

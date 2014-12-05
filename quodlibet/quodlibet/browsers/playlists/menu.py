@@ -11,13 +11,14 @@ from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
 from quodlibet.qltk import SeparatorMenuItem
 from quodlibet.util.collection import Playlist
+from quodlibet.util import connect_obj
 
 
 class PlaylistMenu(Gtk.Menu):
     def __init__(self, songs, parent=None):
         super(PlaylistMenu, self).__init__()
         i = Gtk.MenuItem(label=_("_New Playlist" + "..."), use_underline=True)
-        i.connect_object('activate', self.__add_to_new_playlist, songs, parent)
+        connect_obj(i, 'activate', self.__add_to_new_playlist, songs, parent)
         self.append(i)
         self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
@@ -29,7 +30,7 @@ class PlaylistMenu(Gtk.Menu):
             i.set_active(some)
             i.set_inconsistent(some and not all)
             i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
-            i.connect_object(
+            connect_obj(i,
                 'activate', self.__toggle_playlist, playlist, songs, parent)
             self.append(i)
 

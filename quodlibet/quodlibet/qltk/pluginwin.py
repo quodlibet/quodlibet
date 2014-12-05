@@ -18,6 +18,7 @@ from quodlibet.qltk.window import UniqueWindow
 from quodlibet.qltk.entry import ClearEntry
 from quodlibet.qltk.x import Alignment, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
+from quodlibet.util import connect_obj
 
 
 class PluginErrorWindow(UniqueWindow):
@@ -256,8 +257,8 @@ class PluginPreferencesContainer(Gtk.VBox):
                 else:
                     if isinstance(prefs, Gtk.Window):
                         b = Gtk.Button(stock=Gtk.STOCK_PREFERENCES)
-                        b.connect_object('clicked', Gtk.Window.show, prefs)
-                        b.connect_object('destroy', Gtk.Window.destroy, prefs)
+                        connect_obj(b, 'clicked', Gtk.Window.show, prefs)
+                        connect_obj(b, 'destroy', Gtk.Window.destroy, prefs)
                         frame.add(b)
                         frame.get_child().set_border_width(6)
                     else:

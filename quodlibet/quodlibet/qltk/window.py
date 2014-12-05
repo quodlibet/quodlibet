@@ -10,6 +10,7 @@ from gi.repository import Gtk, GObject, Gdk
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_wayland
 from quodlibet.util import DeferredSignal
+from quodlibet.util import connect_obj
 
 
 class Window(Gtk.Window):
@@ -45,7 +46,7 @@ class Window(Gtk.Window):
         else:
             esc, mod = Gtk.accelerator_parse("Escape")
             self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
-        self.connect_object('destroy', type(self).windows.remove, self)
+        connect_obj(self, 'destroy', type(self).windows.remove, self)
 
     def set_default_size(self, width, height):
         # https://bugzilla.gnome.org/show_bug.cgi?id=740922
@@ -269,7 +270,7 @@ class _Unique(object):
         else:
             type(self).__window = self
         super(_Unique, self).__init__(*args, **kwargs)
-        self.connect_object('destroy', self.__destroy, self)
+        connect_obj(self, 'destroy', self.__destroy, self)
 
     def __destroy(self, *args):
         type(self).__window = None

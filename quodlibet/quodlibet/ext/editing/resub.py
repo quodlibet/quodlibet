@@ -3,6 +3,7 @@ import re
 from gi.repository import Gtk, GObject
 
 from quodlibet.plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
+from quodlibet.util import connect_obj
 
 
 class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
@@ -28,8 +29,8 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
         self.pack_start(self._to, True, True, 0)
         self.pack_start(Gtk.Label("/"), True, True, 0)
 
-        self._from.connect_object('changed', self.emit, 'changed')
-        self._to.connect_object('changed', self.emit, 'changed')
+        connect_obj(self._from, 'changed', self.emit, 'changed')
+        connect_obj(self._to, 'changed', self.emit, 'changed')
 
     def filter(self, orig_or_tag, value):
         fr = self._from.get_text().decode('utf-8')

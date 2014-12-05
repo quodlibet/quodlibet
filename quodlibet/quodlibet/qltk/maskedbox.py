@@ -10,6 +10,7 @@ from gi.repository import Gtk, Pango
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util.path import fsdecode
+from quodlibet.util import connect_obj
 
 
 class ConfirmMaskedRemoval(qltk.Message):
@@ -38,11 +39,11 @@ class MaskedBox(Gtk.HBox):
 
         menu = Gtk.Menu()
         unhide_item = qltk.MenuItem(_("Unhide"), Gtk.STOCK_ADD)
-        unhide_item.connect_object('activate', self.__unhide, view, library)
+        connect_obj(unhide_item, 'activate', self.__unhide, view, library)
         menu.append(unhide_item)
 
         remove_item = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
-        remove_item.connect_object('activate', self.__remove, view, library)
+        connect_obj(remove_item, 'activate', self.__remove, view, library)
         menu.append(remove_item)
 
         menu.show_all()
@@ -80,7 +81,7 @@ class MaskedBox(Gtk.HBox):
         view.append_column(column)
 
         unhide = qltk.Button(_("Unhide"), Gtk.STOCK_ADD)
-        unhide.connect_object("clicked", self.__unhide, view, library)
+        connect_obj(unhide, "clicked", self.__unhide, view, library)
         remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
 
         selection = view.get_selection()
@@ -88,7 +89,7 @@ class MaskedBox(Gtk.HBox):
         selection.connect("changed", self.__select_changed, remove, unhide)
         selection.emit("changed")
 
-        remove.connect_object("clicked", self.__remove, view, library)
+        connect_obj(remove, "clicked", self.__remove, view, library)
 
         vbox = Gtk.VBox(spacing=6)
         vbox.pack_start(unhide, False, True, 0)

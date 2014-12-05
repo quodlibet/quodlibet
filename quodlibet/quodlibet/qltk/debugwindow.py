@@ -9,6 +9,7 @@ from gi.repository import Gtk
 from quodlibet import const
 from quodlibet import util
 from quodlibet.util.path import unexpand, mkdir
+from quodlibet.util import connect_obj
 
 old_hook = sys.excepthook
 
@@ -116,7 +117,7 @@ class ExceptionDialog(Gtk.Window):
         self.add(box)
 
         self.connect('destroy', self.__destroy)
-        cancel.connect_object('clicked', Gtk.Window.destroy, self)
+        connect_obj(cancel, 'clicked', Gtk.Window.destroy, self)
         close.connect('clicked', lambda *x: Gtk.main_quit())
 
         self.get_child().show_all()

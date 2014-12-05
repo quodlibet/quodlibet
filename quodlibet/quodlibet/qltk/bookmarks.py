@@ -13,6 +13,7 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.util import connect_obj
 
 
 def MenuItems(marks, player, seekable):
@@ -26,7 +27,7 @@ def MenuItems(marks, player, seekable):
         # older pygobject (~3.2) added a child on creation
         if i.get_child():
             i.remove(i.get_child())
-        i.connect_object('activate', player.seek, time * 1000)
+        connect_obj(i, 'activate', player.seek, time * 1000)
         i.set_sensitive(time >= 0 and seekable)
         hbox = Gtk.HBox(spacing=12)
         i.add(hbox)
@@ -99,7 +100,7 @@ class EditBookmarksPane(Gtk.VBox):
             hbox.set_layout(Gtk.ButtonBoxStyle.END)
         self.pack_start(hbox, False, True, 0)
 
-        add.connect_object('clicked', self.__add, model, time, name)
+        connect_obj(add, 'clicked', self.__add, model, time, name)
 
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         model.connect('row-changed', self.__set_bookmarks, library, song)
@@ -110,12 +111,12 @@ class EditBookmarksPane(Gtk.VBox):
         selection.connect('changed', self.__check_selection, remove)
         remove.connect('clicked', self.__remove, selection, library, song)
 
-        time.connect_object('changed', self.__check_entry, add, time, name)
-        name.connect_object('changed', self.__check_entry, add, time, name)
-        name.connect_object('activate', Gtk.Button.clicked, add)
+        connect_obj(time, 'changed', self.__check_entry, add, time, name)
+        connect_obj(name, 'changed', self.__check_entry, add, time, name)
+        connect_obj(name, 'activate', Gtk.Button.clicked, add)
 
         time.set_text(_("MM:SS"))
-        time.connect_object('activate', Gtk.Entry.grab_focus, name)
+        connect_obj(time, 'activate', Gtk.Entry.grab_focus, name)
         name.set_text(_("Bookmark Name"))
 
         menu = Gtk.Menu()
@@ -129,7 +130,7 @@ class EditBookmarksPane(Gtk.VBox):
         sw.get_child().connect('popup-menu', self.__popup, menu)
         sw.get_child().connect('key-press-event',
                                 self.__view_key_press, remove)
-        self.connect_object('destroy', Gtk.Menu.destroy, menu)
+        connect_obj(self, 'destroy', Gtk.Menu.destroy, menu)
 
         self.__fill(model, song)
 
@@ -205,7 +206,7 @@ class EditBookmarks(qltk.Window):
         self.add(pane)
 
         s = library.connect('removed', self.__check_lock, player.song)
-        self.connect_object('destroy', library.disconnect, s)
+        connect_obj(self, 'destroy', library.disconnect, s)
 
         position = player.get_position() // 1000
         pane.time.set_text(util.format_time(position))

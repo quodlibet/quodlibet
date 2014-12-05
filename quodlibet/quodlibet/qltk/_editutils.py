@@ -17,6 +17,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.qltk.x import Button
 from quodlibet.util.path import fsdecode
+from quodlibet.util import connect_obj
 
 
 class OverwriteWarning(WarningMessage):
@@ -97,7 +98,7 @@ class FilterCheckButton(ConfigCheckButton):
             self.set_active(config.getboolean(self._section, self._key))
         except:
             pass
-        self.connect_object('toggled', self.emit, 'preview')
+        connect_obj(self, 'toggled', self.emit, 'preview')
     active = property(lambda s: s.get_active())
 
     def filter(self, original, filename):

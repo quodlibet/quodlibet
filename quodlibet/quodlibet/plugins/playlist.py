@@ -13,6 +13,7 @@ from quodlibet.util.dprint import print_d, print_e
 from quodlibet import qltk
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.plugins.gui import MenuItemPlugin
+from quodlibet.util import connect_obj
 
 
 class ConfirmMultiPlaylistInvoke(WarningMessage):
@@ -141,7 +142,7 @@ class PlaylistPluginHandler(PluginHandler):
                     args = (library, browser, playlists)
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
-                            subitem.connect_object(
+                            connect_obj(subitem,
                                 'activate', self.__handle, item, *args)
                     else:
                         item.connect('activate', self.__handle, *args)

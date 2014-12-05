@@ -22,6 +22,7 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.util import connect_obj
 from quodlibet.util.path import fsdecode, fsnative
 from quodlibet.util.path import strip_win32_incompat_from_path
 
@@ -183,10 +184,10 @@ class RenameFiles(Gtk.VBox):
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(column)
 
-        self.preview.connect_object('clicked', self.__preview, None)
+        connect_obj(self.preview, 'clicked', self.__preview, None)
 
-        parent.connect_object('changed', self.__class__.__preview, self)
-        self.save.connect_object('clicked', self.__rename, library)
+        connect_obj(parent, 'changed', self.__class__.__preview, self)
+        connect_obj(self.save, 'clicked', self.__rename, library)
 
         render.connect('edited', self.__row_edited)
 

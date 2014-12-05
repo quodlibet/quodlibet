@@ -7,6 +7,7 @@
 from gi.repository import Gtk, Pango, GLib
 
 from quodlibet.qltk import Button, Window
+from quodlibet.util import connect_obj
 
 from .acoustid import AcoustidSubmissionThread
 from .analyze import FingerPrintPool
@@ -84,7 +85,7 @@ class FingerprintDialog(Window):
         submit.set_sensitive(False)
         submit.connect('clicked', self.__submit_cb)
         cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
-        cancel.connect_object('clicked', self.__cancel_cb, pool)
+        connect_obj(cancel, 'clicked', self.__cancel_cb, pool)
         bbox.pack_start(submit, True, True, 0)
         bbox.pack_start(cancel, True, True, 0)
 
@@ -98,7 +99,7 @@ class FingerprintDialog(Window):
         for song in songs:
             pool.push(song)
 
-        self.connect_object('delete-event', self.__cancel_cb, pool)
+        connect_obj(self, 'delete-event', self.__cancel_cb, pool)
 
         self.add(outer_box)
         self.show_all()

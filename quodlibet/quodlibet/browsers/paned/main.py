@@ -22,6 +22,7 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.x import ScrolledWindow, Alignment
 from quodlibet.util.library import background_filter
+from quodlibet.util import connect_obj
 
 from .prefs import PreferencesButton
 from .util import get_headers
@@ -84,11 +85,11 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
 
         keyval, mod = Gtk.accelerator_parse("<control>Home")
         s = self.accelerators.connect(keyval, mod, 0, self.__select_all)
-        self.connect_object('destroy',
+        connect_obj(self, 'destroy',
                             self.accelerators.disconnect_key, keyval, mod)
         select = Gtk.Button(label=_("Select _All"), use_underline=True)
         s = select.connect('clicked', self.__select_all)
-        self.connect_object('destroy', select.disconnect, s)
+        connect_obj(self, 'destroy', select.disconnect, s)
         sbb.pack_start(select, False, True, 0)
 
         prefs = PreferencesButton(self)
@@ -98,7 +99,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
                   library.connect('added', self.__added),
                   library.connect('removed', self.__removed)
                   ]:
-            self.connect_object('destroy', library.disconnect, s)
+            connect_obj(self, 'destroy', library.disconnect, s)
 
         self.connect('destroy', self.__destroy)
 

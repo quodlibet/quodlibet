@@ -12,6 +12,7 @@ from gi.repository import Gtk, GObject, GLib, Gio
 from quodlibet import util
 from quodlibet import config
 from quodlibet.qltk import add_css, is_accel
+from quodlibet.util import connect_obj
 
 
 class ScrolledWindow(Gtk.ScrolledWindow):
@@ -376,7 +377,7 @@ def ClearButton(entry=None):
     clear.add(Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
     clear.set_tooltip_text(_("Clear search"))
     if entry is not None:
-        clear.connect_object('clicked', entry.set_text, '')
+        connect_obj(clear, 'clicked', entry.set_text, '')
     return clear
 
 

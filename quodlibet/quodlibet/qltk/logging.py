@@ -3,6 +3,7 @@ from gi.repository import Gtk
 import quodlibet.util.logging
 
 from quodlibet import qltk
+from quodlibet.util import connect_obj
 
 
 class LoggingWindow(qltk.Window):
@@ -26,7 +27,7 @@ class LoggingWindow(qltk.Window):
             notebook.append_page(sw, logname)
 
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
-        close.connect_object('clicked', lambda x: x.destroy(), self)
+        connect_obj(close, 'clicked', lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)
         button_box.pack_start(close, True, True, 0)

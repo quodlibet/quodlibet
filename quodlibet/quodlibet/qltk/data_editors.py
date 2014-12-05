@@ -12,6 +12,7 @@ from quodlibet.util.dprint import print_d
 from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
 from quodlibet.qltk.views import RCMHintedTreeView, HintedTreeView
 from quodlibet.util.json_data import JSONObjectDict
+from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
 
 
@@ -74,12 +75,12 @@ class JSONBasedEditor(qltk.UniqueWindow):
         keyval, mod = Gtk.accelerator_parse("Delete")
         rem.add_accelerator(
             'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
-        rem.connect_object('activate', self.__remove, view)
+        connect_obj(rem, 'activate', self.__remove, view)
         menu.append(rem)
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)
         view.connect('key-press-event', self.__view_key_press)
-        self.connect_object('destroy', Gtk.Menu.destroy, menu)
+        connect_obj(self, 'destroy', Gtk.Menu.destroy, menu)
 
         # New and Close buttons
         bbox = Gtk.HButtonBox()
@@ -89,7 +90,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.new_but.connect('clicked', self._new_item)
         bbox.pack_start(self.new_but, True, True, 0)
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
-        close.connect_object('clicked', qltk.Window.destroy, self)
+        connect_obj(close, 'clicked', qltk.Window.destroy, self)
         bbox.pack_start(close, True, True, 0)
         align = Gtk.Alignment(yalign=1.0, xscale=1.0)
         align.add(bbox)
@@ -292,7 +293,7 @@ class MultiStringEditor(qltk.UniqueWindow):
         menu.append(remove_item)
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)
-        remove_item.connect_object('activate', self.__remove, view)
+        connect_obj(remove_item, 'activate', self.__remove, view)
 
         # Add and Remove buttons
         vbbox = Gtk.VButtonBox()
@@ -312,7 +313,7 @@ class MultiStringEditor(qltk.UniqueWindow):
         self.remove_but = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         self.remove_but.set_sensitive(False)
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
-        close.connect_object('clicked', qltk.Window.destroy, self)
+        connect_obj(close, 'clicked', qltk.Window.destroy, self)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.pack_start(close, True, True, 0)
         vbox.pack_start(bbox, False, True, 0)

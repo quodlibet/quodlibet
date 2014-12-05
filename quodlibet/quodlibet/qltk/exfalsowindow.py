@@ -28,6 +28,7 @@ from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
 from quodlibet.util.path import mtime, normalize_path
+from quodlibet.util import connect_obj
 
 
 class ExFalsoWindow(Window, PersistentWindowMixin):
@@ -65,7 +66,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         about = Gtk.Button()
         about.add(Gtk.Image.new_from_stock(
             Gtk.STOCK_ABOUT, Gtk.IconSize.BUTTON))
-        about.connect_object('clicked', self.__show_about, self)
+        connect_obj(about, 'clicked', self.__show_about, self)
         bbox.pack_start(about, False, True, 0)
 
         prefs = Gtk.Button()
@@ -113,9 +114,9 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         if dir:
             fs.go_to(dir)
         s = self.__library.connect('changed', lambda *x: fs.rescan())
-        self.connect_object('destroy', self.__library.disconnect, s)
+        connect_obj(self, 'destroy', self.__library.disconnect, s)
         self.__save = None
-        self.connect_object('changed', self.set_pending, None)
+        connect_obj(self, 'changed', self.set_pending, None)
         for c in fs.get_children():
             c.get_child().connect('button-press-event',
                 self.__pre_selection_changed, fs, nb)
@@ -174,7 +175,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         b = TrashMenuItem()
         b.connect('activate', self.__delete, filenames, fs)
         menu.prepend(b)
-        menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
+        connect_obj(menu, 'selection-done', Gtk.Menu.destroy, menu)
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
@@ -246,7 +247,7 @@ class PreferencesWindow(UniqueWindow):
         f = qltk.Frame(_("Tag Editing"), child=vbox)
 
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
-        close.connect_object('clicked', lambda x: x.destroy(), self)
+        connect_obj(close, 'clicked', lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)
         button_box.pack_start(close, True, True, 0)
@@ -257,7 +258,7 @@ class PreferencesWindow(UniqueWindow):
             main_vbox.pack_start(button_box, False, True, 0)
         self.add(main_vbox)
 
-        self.connect_object('destroy', PreferencesWindow.__destroy, self)
+        connect_obj(self, 'destroy', PreferencesWindow.__destroy, self)
         self.get_child().show_all()
 
     def __changed(self, entry, section, name):

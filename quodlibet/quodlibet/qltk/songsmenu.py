@@ -16,6 +16,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.x import SeparatorMenuItem, Button
 from quodlibet.qltk import get_top_parent
+from quodlibet.util import connect_obj
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
@@ -134,7 +135,7 @@ class SongsMenuPluginHandler(PluginHandler):
                     args = (library, parent, songs)
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
-                            subitem.connect_object(
+                            connect_obj(subitem,
                                 'activate', self.__handle, item, *args)
                     else:
                         item.connect('activate', self.__handle, *args)
@@ -336,7 +337,7 @@ class SongsMenu(Gtk.Menu):
         if remove:
             b = qltk.MenuItem(_("_Remove from library"), Gtk.STOCK_REMOVE)
             if callable(remove):
-                b.connect_object('activate', remove, songs)
+                connect_obj(b, 'activate', remove, songs)
             else:
                 b.connect('activate', self.__remove, songs, library)
                 b.set_sensitive(in_lib)
@@ -345,10 +346,10 @@ class SongsMenu(Gtk.Menu):
         if delete:
             if callable(delete):
                 b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
-                b.connect_object('activate', delete, songs)
+                connect_obj(b, 'activate', delete, songs)
             else:
                 b = TrashMenuItem()
-                b.connect_object('activate', trash_songs,
+                connect_obj(b, 'activate', trash_songs,
                                  parent, songs, librarian)
                 b.set_sensitive(is_file)
             self.append(b)
@@ -374,7 +375,7 @@ class SongsMenu(Gtk.Menu):
             b.connect('activate', information_cb)
             self.append(b)
 
-        self.connect_object('selection-done', Gtk.Menu.destroy, self)
+        connect_obj(self, 'selection-done', Gtk.Menu.destroy, self)
 
     def separate(self):
         if not self.get_children():

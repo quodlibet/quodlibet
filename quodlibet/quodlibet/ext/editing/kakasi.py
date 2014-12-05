@@ -8,6 +8,7 @@ from gi.repository import Gtk, GObject
 
 from quodlibet.plugins.editing import RenameFilesPlugin
 from quodlibet.util.path import iscommand
+from quodlibet.util import connect_obj
 
 
 class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
@@ -24,7 +25,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     def __init__(self):
         super(Kakasi, self).__init__(
             _("Romanize _Japanese text"), use_underline=True)
-        self.connect_object('toggled', self.emit, 'preview')
+        connect_obj(self, 'toggled', self.emit, 'preview')
 
     active = property(lambda s: s.get_active())
 

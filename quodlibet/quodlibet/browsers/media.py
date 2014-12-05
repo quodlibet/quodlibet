@@ -23,6 +23,7 @@ from quodlibet.qltk.wlw import WaitLoadBar
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.delete import DeleteDialog
 from quodlibet.qltk.x import Alignment, ScrolledWindow, Button
+from quodlibet.util import connect_obj
 
 
 class DeviceProperties(Gtk.Dialog):
@@ -110,7 +111,7 @@ class Menu(Gtk.Menu):
             i.set_image(
                 Gtk.Image.new_from_icon_name(device.icon, Gtk.IconSize.MENU))
             i.set_sensitive(device.is_connected())
-            i.connect_object(
+            connect_obj(i,
                 'activate', self.__copy_to_device, device, songs, library)
             self.append(i)
 
@@ -184,7 +185,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         view.set_rules_hint(True)
         view.set_headers_visible(False)
         view.get_selection().set_mode(Gtk.SelectionMode.BROWSE)
-        view.get_selection().connect_object('changed', self.__refresh, False)
+        connect_obj(view.get_selection(), 'changed', self.__refresh, False)
         view.connect('popup-menu', self.__popup_menu, library)
         view.connect('row-activated', lambda *a: self.emit("activated"))
         swin.add(view)
@@ -209,7 +210,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         # refresh button
         refresh = Button(_("_Refresh"), Gtk.STOCK_REFRESH, Gtk.IconSize.MENU)
         self.__refresh_button = refresh
-        refresh.connect_object('clicked', self.__refresh, True)
+        connect_obj(refresh, 'clicked', self.__refresh, True)
         refresh.set_sensitive(False)
         hbox.pack_start(refresh, True, True, 0)
 
@@ -344,7 +345,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         menu.preseparate()
 
         props = Gtk.ImageMenuItem(Gtk.STOCK_PROPERTIES, use_stock=True)
-        props.connect_object('activate', self.__properties, model[iter][0])
+        connect_obj(props, 'activate', self.__properties, model[iter][0])
         props.set_sensitive(not self.__busy)
         menu.prepend(props)
 
@@ -356,7 +357,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         def rename(path):
             self.__render.set_property('editable', True)
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
-        ren.connect_object('activate', rename, model.get_path(iter))
+        connect_obj(ren, 'activate', rename, model.get_path(iter))
         menu.prepend(ren)
 
         menu.preseparate()
@@ -366,12 +367,12 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             Gtk.Image.new_from_icon_name("media-eject", Gtk.IconSize.MENU))
         eject.set_sensitive(
             not self.__busy and device.eject and device.is_connected())
-        eject.connect_object('activate', self.__eject, None)
+        connect_obj(eject, 'activate', self.__eject, None)
         menu.prepend(eject)
 
         refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH, use_stock=True)
         refresh.set_sensitive(device.is_connected())
-        refresh.connect_object('activate', self.__refresh, True)
+        connect_obj(refresh, 'activate', self.__refresh, True)
         menu.prepend(refresh)
 
         menu.show_all()

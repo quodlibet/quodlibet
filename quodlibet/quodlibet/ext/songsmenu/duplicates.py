@@ -26,6 +26,7 @@ from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.util import connect_obj
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -125,7 +126,7 @@ class DuplicateSongsView(RCMHintedTreeView):
 
     def __init__(self, model):
         super(DuplicateSongsView, self).__init__(model)
-        self.connect_object('row-activated',
+        connect_obj(self, 'row-activated',
                             self.__select_song, app.player)
         # Selecting multiple is a nice feature it turns out.
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -348,7 +349,7 @@ class DuplicateDialog(Gtk.Window):
                     view.expand_row(row.path, False)
 
         expand = Gtk.Button(_("Collapse / Expand all"))
-        expand.connect_object("clicked", expand_all, view)
+        connect_obj(expand, "clicked", expand_all, view)
         hbox.pack_start(expand, False, True, 0)
 
         label = Gtk.Label(label=_("Duplicate key expression is '%s'") %

@@ -18,6 +18,7 @@ from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util import tag
+from quodlibet.util import connect_obj
 from quodlibet.util.tags import readable
 from quodlibet.util.path import fsdecode, filesize, unexpand
 
@@ -78,7 +79,7 @@ class OneSong(qltk.Notebook):
         self.append_page(bookmarks)
 
         s = library.connect('changed', self.__check_changed, vbox, song)
-        self.connect_object('destroy', library.disconnect, s)
+        connect_obj(self, 'destroy', library.disconnect, s)
 
     def __check_changed(self, library, songs, vbox, song):
         if song in songs:
@@ -590,10 +591,10 @@ class Information(Window, PersistentWindowMixin):
         self.enable_window_tracking("quodlibet_information")
         if len(songs) > 1:
             sig = library.connect('changed', self.__check_changed)
-            self.connect_object('destroy', library.disconnect, sig)
+            connect_obj(self, 'destroy', library.disconnect, sig)
         if len(songs) > 0:
             sig = library.connect('removed', self.__check_removed)
-            self.connect_object('destroy', library.disconnect, sig)
+            connect_obj(self, 'destroy', library.disconnect, sig)
         self.__songs = songs
         self.__update(library)
         self.set_transient_for(qltk.get_top_parent(parent))

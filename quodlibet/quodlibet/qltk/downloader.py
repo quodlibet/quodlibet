@@ -12,6 +12,7 @@ from gi.repository import Gtk, Pango, GLib
 from quodlibet import qltk
 from quodlibet import util
 
+from quodlibet.util import connect_obj
 from quodlibet.qltk.views import AllTreeView
 
 
@@ -72,7 +73,7 @@ class DownloadWindow(qltk.UniqueWindow):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.add(sw)
-        self.connect_object(
+        connect_obj(self,
             'delete-event', DownloadWindow.__delete_event, self)
         self.get_child().show_all()
 
@@ -88,7 +89,7 @@ class DownloadWindow(qltk.UniqueWindow):
             iters = map(model.get_iter, paths)
             menu = Gtk.Menu()
             item = Gtk.ImageMenuItem(Gtk.STOCK_STOP)
-            item.connect_object('activate', self.__stop_download, iters)
+            connect_obj(item, 'activate', self.__stop_download, iters)
             menu.append(item)
             menu.connect('selection-done', lambda m: m.destroy())
             menu.show_all()

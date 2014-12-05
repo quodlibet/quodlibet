@@ -18,6 +18,7 @@ from gi.repository import Gtk, GLib
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet.util import connect_obj
 
 
 class LyricsPane(Gtk.VBox):
@@ -65,7 +66,7 @@ class LyricsPane(Gtk.VBox):
             #                  "for lyrics online.  You can also enter them "
             #                  "yourself and click save."))
             buffer.set_text(_("No lyrics found for this song."))
-        buffer.connect_object('changed', save.set_sensitive, True)
+        connect_obj(buffer, 'changed', save.set_sensitive, True)
 
     def __add(self, add, song):
         artist = song.comma('artist').encode('utf-8')

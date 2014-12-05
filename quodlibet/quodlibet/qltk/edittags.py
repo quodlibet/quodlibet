@@ -26,6 +26,7 @@ from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.plugins import PluginManager
+from quodlibet.util import connect_obj
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
@@ -330,7 +331,7 @@ class AddTagDialog(Gtk.Dialog):
         self.__set_value_completion(self.__tag, library)
 
         if can_change is True:
-            self.__tag.get_child().connect_object(
+            connect_obj(self.__tag.get_child(),
                 'activate', Gtk.Entry.grab_focus, self.__val)
 
     def __set_value_completion(self, tag, library):
@@ -535,13 +536,13 @@ class EditTags(Gtk.VBox):
 
         parent.connect('changed', self.__parent_changed)
         revert.connect('clicked', lambda *x: self._update())
-        revert.connect_object('clicked', parent.set_pending, None)
+        connect_obj(revert, 'clicked', parent.set_pending, None)
 
         save.connect('clicked', self.__save_files, revert, model, library)
-        save.connect_object('clicked', parent.set_pending, None)
+        connect_obj(save, 'clicked', parent.set_pending, None)
         for sig in ['row-inserted', 'row-deleted', 'row-changed']:
             model.connect(sig, self.__enable_save, [save, revert])
-            model.connect_object(sig, parent.set_pending, save)
+            connect_obj(model, sig, parent.set_pending, save)
 
         view.connect('popup-menu', self.__popup_menu, parent)
         view.connect('button-press-event', self.__button_press)

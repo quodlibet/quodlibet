@@ -12,6 +12,7 @@ from quodlibet import qltk
 from quodlibet.qltk import bookmarks
 from quodlibet import util
 
+from quodlibet.util import connect_obj
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.sliderbutton import HSlider
 from quodlibet.qltk.tracker import TimeTracker
@@ -77,7 +78,7 @@ class SeekBar(HSlider):
         c = ConfigCheckMenuItem(
             _("Display remaining time"), "player", "time_remaining")
         c.set_active(config.getboolean("player", "time_remaining"))
-        c.connect_object('toggled', self.scale.emit, 'value-changed')
+        connect_obj(c, 'toggled', self.scale.emit, 'value-changed')
         self.__remaining = c
         m.append(c)
         m.append(SeparatorMenuItem())
@@ -91,12 +92,12 @@ class SeekBar(HSlider):
         m.append(i)
         m.show_all()
         m.attach_to_widget(self, None)
-        self.connect_object(
+        connect_obj(self,
             'button-press-event', self.__check_menu, m, player, c)
-        self.connect_object('popup-menu', self.__popup_menu, m, player)
+        connect_obj(self, 'popup-menu', self.__popup_menu, m, player)
 
         timer = TimeTracker(player)
-        timer.connect_object('tick', self.__check_time, player)
+        connect_obj(timer, 'tick', self.__check_time, player)
 
         library.connect("changed", self.__songs_changed, player, m)
 
@@ -224,7 +225,7 @@ class Volume(Gtk.VolumeButton):
         replaygain_menu = ReplayGainMenu(device)
         replaygain_menu.attach_to_widget(self, None)
         self.connect('popup-menu', self.__popup, replaygain_menu)
-        self.connect_object('button-press-event', self.__volume_button_press,
+        connect_obj(self, 'button-press-event', self.__volume_button_press,
                             replaygain_menu)
 
     def __popup(self, widget, menu):
@@ -332,14 +333,14 @@ class PlayControls(Gtk.VBox):
         self.pack_start(upper, False, True, 0)
         self.pack_start(lower, False, True, 0)
 
-        prev.connect_object('clicked', self.__previous, player)
+        connect_obj(prev, 'clicked', self.__previous, player)
         play.connect('toggled', self.__playpause, player)
         play.add_events(Gdk.EventMask.SCROLL_MASK)
-        play.connect_object('scroll-event', self.__scroll, player)
-        next_.connect_object('clicked', self.__next, player)
+        connect_obj(play, 'scroll-event', self.__scroll, player)
+        connect_obj(next_, 'clicked', self.__next, player)
         player.connect('song-started', self.__song_started, next_, play)
-        player.connect_object('paused', play.set_active, False)
-        player.connect_object('unpaused', play.set_active, True)
+        connect_obj(player, 'paused', play.set_active, False)
+        connect_obj(player, 'unpaused', play.set_active, True)
 
     def __scroll(self, player, event):
         if event.direction in [Gdk.ScrollDirection.UP,

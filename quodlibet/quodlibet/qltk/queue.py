@@ -14,6 +14,7 @@ from quodlibet import const
 from quodlibet import util
 from quodlibet import qltk
 
+from quodlibet.util import connect_obj
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -107,7 +108,7 @@ class QueueExpander(Gtk.Expander):
 
         self.set_label_widget(outer)
         self.add(sw)
-        self.connect_object('notify::expanded', self.__expand, cb, b)
+        connect_obj(self, 'notify::expanded', self.__expand, cb, b)
 
         targets = [
             ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
@@ -127,7 +128,7 @@ class QueueExpander(Gtk.Expander):
             util.DeferredSignal(self.__update_count), count_label)
         cb.hide()
 
-        self.connect_object('notify::visible', self.__visible, cb, menu, b)
+        connect_obj(self, 'notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, count_label)
 
         player.connect('song-started', self.__update_state_icon, state_icon)
@@ -232,9 +233,9 @@ class PlayQueue(SongList):
         self.set_size_request(-1, 120)
         self.connect('row-activated', self.__go_to, player)
 
-        self.connect_object('popup-menu', self.__popup, library)
+        connect_obj(self, 'popup-menu', self.__popup, library)
         self.enable_drop()
-        self.connect_object('destroy', self.__write, self.model)
+        connect_obj(self, 'destroy', self.__write, self.model)
         self.__fill(library)
 
         self.connect('key-press-event', self.__delete_key_pressed)

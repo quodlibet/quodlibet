@@ -25,6 +25,7 @@ from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.path import fsdecode
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
+from quodlibet.util import connect_obj
 
 
 class UnderscoresToSpaces(FilterCheckButton):
@@ -141,11 +142,11 @@ class TagsFromPath(Gtk.VBox):
         bbox.pack_start(self.save, True, True, 0)
         self.pack_start(bbox, False, True, 0)
 
-        self.preview.connect_object('clicked', self.__preview, None)
-        parent.connect_object('changed', self.__class__.__preview, self)
+        connect_obj(self.preview, 'clicked', self.__preview, None)
+        connect_obj(parent, 'changed', self.__class__.__preview, self)
 
         # Save changes
-        self.save.connect_object('clicked', self.__save, addreplace, library)
+        connect_obj(self.save, 'clicked', self.__save, addreplace, library)
 
         for child in self.get_children():
             child.show()

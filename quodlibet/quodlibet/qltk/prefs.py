@@ -29,6 +29,7 @@ from quodlibet.qltk.window import UniqueWindow
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal, get_scan_dirs, scan_library
+from quodlibet.util import connect_obj
 
 
 class PreferencesWindow(UniqueWindow):
@@ -648,7 +649,7 @@ class PreferencesWindow(UniqueWindow):
             notebook.append_page(Page())
 
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
-        close.connect_object('clicked', lambda x: x.destroy(), self)
+        connect_obj(close, 'clicked', lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)
         button_box.pack_start(close, True, True, 0)
@@ -664,7 +665,7 @@ class PreferencesWindow(UniqueWindow):
             vbox.pack_start(button_box, False, True, 0)
             self.add(vbox)
 
-        self.connect_object('destroy', PreferencesWindow.__destroy, self)
+        connect_obj(self, 'destroy', PreferencesWindow.__destroy, self)
 
         self.get_child().show_all()
 

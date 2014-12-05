@@ -16,6 +16,7 @@ from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util.path import fsdecode, unexpand
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
+from quodlibet.util import connect_obj
 
 
 def get_init_select_dir():
@@ -43,7 +44,7 @@ class ScanBox(Gtk.HBox):
         menu.append(remove_item)
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)
-        remove_item.connect_object('activate', self.__remove, view)
+        connect_obj(remove_item, 'activate', self.__remove, view)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -72,7 +73,7 @@ class ScanBox(Gtk.HBox):
         selection.connect("changed", self.__select_changed, remove)
         selection.emit("changed")
 
-        remove.connect_object("clicked", self.__remove, view)
+        connect_obj(remove, "clicked", self.__remove, view)
 
         vbox = Gtk.VBox(spacing=6)
         vbox.pack_start(add, False, True, 0)

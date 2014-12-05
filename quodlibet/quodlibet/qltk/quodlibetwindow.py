@@ -45,6 +45,7 @@ from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, gobject_weak
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
+from quodlibet.util import connect_obj
 from quodlibet.util.path import glib2fsnative
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin, Window
@@ -812,17 +813,17 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         act = Gtk.Action.new(
             "AddBookmark", _("Add Bookmark"), None, Gtk.STOCK_ADD)
-        act.connect_object('activate', self.__add_bookmark,
+        connect_obj(act, 'activate', self.__add_bookmark,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>D")
 
         act = Gtk.Action.new("EditBookmarks", _(u"Edit Bookmarks…"), None, "")
-        act.connect_object('activate', self.__edit_bookmarks,
+        connect_obj(act, 'activate', self.__edit_bookmarks,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>B")
 
         act = Gtk.Action.new("About", None, None, Gtk.STOCK_ABOUT)
-        act.connect_object('activate', self.__show_about, player)
+        connect_obj(act, 'activate', self.__show_about, player)
         ag.add_action_with_accel(act, None)
 
         act = Gtk.Action.new(

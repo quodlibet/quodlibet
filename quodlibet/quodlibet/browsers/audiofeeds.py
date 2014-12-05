@@ -27,6 +27,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
+from quodlibet.util import connect_obj
 from quodlibet.qltk.x import ScrolledWindow, Alignment, Button
 
 
@@ -378,7 +379,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
 
-        self.connect_object('destroy', self.__save, view)
+        connect_obj(self, 'destroy', self.__save, view)
 
         self.pack_start(Alignment(new, left=3, bottom=3), False, True, 0)
 
@@ -432,9 +433,9 @@ class AudioFeeds(Browser, Gtk.VBox):
         refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH, use_stock=True)
         delete = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
 
-        refresh.connect_object(
+        connect_obj(refresh,
             'activate', self.__refresh, [model[p][0] for p in paths])
-        delete.connect_object(
+        connect_obj(delete,
             'activate', map, model.remove, map(model.get_iter, paths))
 
         menu.append(refresh)

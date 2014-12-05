@@ -12,6 +12,7 @@ from quodlibet import util
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.parse import XMLFromPattern
+from quodlibet.util import connect_obj
 
 try:
     import gi
@@ -59,7 +60,7 @@ class TextEditBox(Gtk.HBox):
         box.pack_start(rev, False, True, 0)
         box.pack_start(app, False, True, 0)
         self.pack_start(box, False, True, 0)
-        rev.connect_object('clicked', self.buffer.set_text, default)
+        connect_obj(rev, 'clicked', self.buffer.set_text, default)
         self.revert = rev
         self.apply = app
 

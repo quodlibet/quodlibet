@@ -26,6 +26,7 @@ from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
+from quodlibet.util import connect_obj
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -390,7 +391,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if update:
             sigs.append(librarian.connect('added', self.__song_added))
         for sig in sigs:
-            self.connect_object('destroy', librarian.disconnect, sig)
+            connect_obj(self, 'destroy', librarian.disconnect, sig)
         if player:
             sigs = [
                 player.connect('paused', lambda *x: self.__redraw_current()),
@@ -398,7 +399,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 player.connect('error', lambda *x: self.__redraw_current()),
             ]
             for sig in sigs:
-                self.connect_object('destroy', player.disconnect, sig)
+                connect_obj(self, 'destroy', player.disconnect, sig)
 
         self.connect('button-press-event', self.__button_press, librarian)
         self.connect('key-press-event', self.__key_press, librarian)
@@ -1007,7 +1008,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
     def __getmenu(self, column):
         menu = Gtk.Menu()
-        menu.connect_object('selection-done', Gtk.Menu.destroy, menu)
+        connect_obj(menu, 'selection-done', Gtk.Menu.destroy, menu)
 
         current = SongList.headers[:]
         current_set = set(current)
