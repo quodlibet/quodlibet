@@ -11,7 +11,6 @@ from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
-from quodlibet.util import gobject_weak
 
 
 _PLUGIN_ID = "pitch"
@@ -102,7 +101,7 @@ class Pitch(GStreamerPlugin):
     @classmethod
     def PluginPreferences(cls, window):
         prefs = Preferences()
-        gobject_weak(prefs.connect, "changed", lambda *x: cls.queue_update())
+        prefs.connect("changed", lambda *x: cls.queue_update())
         return prefs
 
 

@@ -27,7 +27,7 @@ from quodlibet.parse import Query
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
-from quodlibet.util import copool, gobject_weak, sanitize_tags
+from quodlibet.util import copool, connect_destroy, sanitize_tags, connect_obj
 from quodlibet.util.string import decode, encode
 from quodlibet.util.uri import URI
 from quodlibet.qltk.views import AllTreeView
@@ -539,14 +539,14 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         self.accelerators = Gtk.AccelGroup()
         self.__searchbar = search = SearchBarBox(completion=completion,
                                                  accel_group=self.accelerators)
-        gobject_weak(search.connect, 'query-changed', self.__filter_changed)
+        search.connect('query-changed', self.__filter_changed)
 
         menu = Gtk.Menu()
         new_item = MenuItem(_("_New Station..."), Gtk.STOCK_ADD)
-        gobject_weak(new_item.connect, 'activate', self.__add)
+        new_item.connect('activate', self.__add)
         menu.append(new_item)
         update_item = MenuItem(_("_Update Stations"), Gtk.STOCK_REFRESH)
-        gobject_weak(update_item.connect, 'activate', self.__update)
+        update_item.connect('activate', self.__update)
         menu.append(update_item)
         menu.show_all()
 
@@ -557,7 +557,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
         def focus(widget, *args):
             qltk.get_top_parent(widget).songlist.grab_focus()
-        gobject_weak(search.connect, 'focus-out', focus, parent=self)
+        search.connect('focus-out', focus)
 
         # treeview
         scrolled_window = ScrolledWindow()
@@ -614,8 +614,8 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         # selection
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.__changed_sig = gobject_weak(selection.connect, 'changed',
-            util.DeferredSignal(lambda x: self.activate()), parent=view)
+        self.__changed_sig = connect_destroy(selection, 'changed',
+            util.DeferredSignal(lambda x: self.activate()))
 
         box = Gtk.HBox(spacing=6)
         box.pack_start(search, True, True, 0)
@@ -838,14 +838,12 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
         button = MenuItem(_("Remove from Favorites"), Gtk.STOCK_REMOVE)
         button.set_sensitive(in_fav)
-        gobject_weak(button.connect_object, 'activate',
-                     self.__remove_fav, songs)
+        connect_obj(button, 'activate', self.__remove_fav, songs)
         menu.prepend(button)
 
         button = MenuItem(_("Add to Favorites"), Gtk.STOCK_ADD)
         button.set_sensitive(in_all)
-        gobject_weak(button.connect_object, 'activate',
-                     self.__add_fav, songs)
+        connect_obj(button, 'activate', self.__add_fav, songs)
         menu.prepend(button)
 
         return menu

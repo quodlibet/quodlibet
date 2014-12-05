@@ -28,6 +28,7 @@ from quodlibet import parse
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util.dprint import print_d, print_w
+from quodlibet.util import connect_obj
 
 
 class ConfigLabel(Gtk.Label):
@@ -405,7 +406,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             w = PatternEdit(button, AnimOsd.ConfDef.string)
             w.set_default_size(520, 260)
             w.text = self.Conf.string
-            w.apply.connect_object_after('clicked', set_string, w)
+            connect_obj(w.apply, 'clicked', set_string, w)
             w.show()
 
         def set_string(window):

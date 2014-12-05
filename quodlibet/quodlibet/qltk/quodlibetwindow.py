@@ -42,7 +42,7 @@ from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import ConfigRVPaned, Alignment, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage, Button
 from quodlibet.qltk.about import AboutQuodLibet
-from quodlibet.util import copool, gobject_weak
+from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
 from quodlibet.util import connect_obj
@@ -114,8 +114,7 @@ class MainSongList(SongList):
         # comes from an row-activated or anything else.
         def reset_activated(*args):
             self._activated = False
-        gobject_weak(player.connect_after, 'song-started', reset_activated,
-                     parent=self)
+        connect_after_destroy(player, 'song-started', reset_activated)
 
         self.connect("orders-changed", self.__orders_changed)
 
@@ -172,10 +171,9 @@ class TopBar(Gtk.Toolbar):
 
         # cover image
         self.image = CoverImage(resize=True)
-        gobject_weak(player.connect, 'song-started', self.__new_song,
-                     parent=self)
-        gobject_weak(parent.connect, 'artwork-changed',
-                     self.__song_art_changed, library, parent=self)
+        connect_destroy(player, 'song-started', self.__new_song)
+        connect_destroy(
+            parent, 'artwork-changed', self.__song_art_changed, library)
 
         # CoverImage doesn't behave in a Alignment, so wrap it
         coverbox = Gtk.Box()
@@ -572,8 +570,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.songlist.info.connect("changed", self.__set_time)
 
         lib = library.librarian
-        gobject_weak(lib.connect, 'changed', self.__song_changed,
-                     player, parent=self)
+        connect_destroy(lib, 'changed', self.__song_changed, player)
 
         self._playback_error_dialog = None
         player_sigs = [
@@ -582,17 +579,14 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             ('unpaused', self.__update_paused, False),
         ]
         for sig in player_sigs:
-            gobject_weak(player.connect, *sig, **{"parent": self})
+            connect_destroy(player, *sig)
 
         # make sure we redraw all error indicators before opening
         # a dialog (blocking the main loop), so connect after default handlers
-        gobject_weak(player.connect_after, 'error',
-                     self.__player_error, **{"parent": self})
+        connect_after_destroy(player, 'error', self.__player_error)
 
         # connect after to let SongTracker update stats
-        player_sigs.append(
-            gobject_weak(player.connect_after, "song-ended",
-                         self.__song_ended, parent=self))
+        connect_after_destroy(player, "song-ended", self.__song_ended)
 
         targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]

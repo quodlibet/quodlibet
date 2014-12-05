@@ -594,6 +594,18 @@ class DeferredSignal(object):
         else:
             self.do_idle_add = lambda f: GLib.timeout_add(timeout, f)
 
+    @property
+    def im_self(self):
+        return self.func.im_self
+
+    @property
+    def __code__(self):
+        return self.func.__code__
+
+    @property
+    def __closure__(self):
+        return self.func.__closure__
+
     def abort(self):
         """Abort any queued up calls.
 
@@ -637,23 +649,43 @@ def connect_obj(this, detailed_signal, handler, that, *args, **kwargs):
     return this.connect(detailed_signal, wrap, *args, **kwargs)
 
 
-def gobject_weak(fun, *args, **kwargs):
-    """Connect to a signal and disconnect if destroy gets emitted.
-    If parent is given, it connects to its destroy signal
-    Example:
-        gobject_weak(gobject_1.connect, 'changed', self.__changed)
-        gobject_weak(gobject_1.connect, 'changed', self.__changed,
-            parent=gobject_2)
+def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
+    """Connect a bound method to a foreign object signal and disconnect
+    if the object the method is bound to emits destroy (Gtk.Widget subclass).
+
+    Also works if the handler is a nested function in a method and
+    references the method's bound object.
+
+    This solves the problem that the sender holds a strong reference
+    to the bound method and the bound to object doesn't get GCed.
     """
-    parent = kwargs.pop("parent", None)
-    obj = fun.__self__
-    sig = fun(*args)
-    disconnect = lambda obj, handle: obj.disconnect(handle)
-    if parent:
-        connect_obj(parent, 'destroy', disconnect, obj, sig)
+
+    if hasattr(handler, "im_self"):
+        obj = handler.im_self
     else:
-        obj.connect('destroy', disconnect, sig)
-    return sig
+        # XXX: get the "self" var of the enclosing scope.
+        # Used for nested functions which ref the object but aren't methods.
+        # In case they don't ref "self" normal connect() should be used anyway.
+        index = handler.__code__.co_freevars.index("self")
+        obj = handler.__closure__[index].cell_contents
+
+    assert obj is not sender
+
+    handler_id = func(detailed_signal, handler, *args, **kwargs)
+
+    def disconnect_cb(*args):
+        sender.disconnect(handler_id)
+
+    obj.connect('destroy', disconnect_cb)
+    return handler_id
+
+
+def connect_destroy(sender, *args, **kwargs):
+    return _connect_destroy(sender, sender.connect, *args, **kwargs)
+
+
+def connect_after_destroy(sender, *args, **kwargs):
+    return _connect_destroy(sender, sender.connect_after, *args, **kwargs)
 
 
 class cached_property(object):

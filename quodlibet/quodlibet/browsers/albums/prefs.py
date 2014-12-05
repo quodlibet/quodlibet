@@ -15,7 +15,7 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet.formats import PEOPLE
 
-from quodlibet.util import gobject_weak, format_rating
+from quodlibet.util import format_rating, connect_obj
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.parse import XMLFromMarkupPattern
@@ -81,8 +81,7 @@ class Preferences(qltk.UniqueWindow):
         cb = ConfigCheckButton(
             _("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
-        gobject_weak(cb.connect, 'toggled',
-                     lambda s: browser.toggle_covers())
+        cb.connect('toggled', lambda s: browser.toggle_covers())
         vbox.pack_start(cb, False, True, 0)
 
         cb = ConfigCheckButton(
@@ -103,10 +102,9 @@ class Preferences(qltk.UniqueWindow):
 
         edit = PatternEditBox(PATTERN)
         edit.text = browser._pattern_text
-        gobject_weak(edit.apply.connect, 'clicked',
-                     self.__set_pattern, edit, browser)
-        gobject_weak(edit.buffer.connect_object, 'changed',
-                     self.__preview_pattern, edit, label, parent=edit)
+        edit.apply.connect('clicked', self.__set_pattern, edit, browser)
+        connect_obj(
+            edit.buffer, 'changed', self.__preview_pattern, edit, label)
 
         vbox.pack_start(eb, False, True, 3)
         vbox.pack_start(edit, True, True, 0)

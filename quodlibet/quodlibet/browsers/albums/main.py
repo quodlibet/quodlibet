@@ -33,9 +33,9 @@ from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.util import copool, gobject_weak
+from quodlibet.util import copool, connect_destroy
 from quodlibet.util.library import background_filter
-from quodlibet.util import thumbnails
+from quodlibet.util import thumbnails, connect_obj
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
@@ -167,7 +167,7 @@ class PreferencesButton(Gtk.HBox):
             if i == active:
                 model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)
                 item.set_active(True)
-            gobject_weak(item.connect, "toggled",
+            item.connect("toggled",
                          util.DeferredSignal(self.__sort_toggled_cb),
                          model, i)
             sort_menu.append(item)
@@ -177,8 +177,7 @@ class PreferencesButton(Gtk.HBox):
 
         pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
         menu.append(pref_item)
-        gobject_weak(pref_item.connect_object,
-                     "activate", Preferences, browser)
+        connect_obj(pref_item, "activate", Preferences, browser)
 
         menu.show_all()
 
@@ -221,11 +220,10 @@ class VisibleUpdate(object):
     PRELOAD_COUNT = 35
 
     def enable_row_update(self, view, sw, column):
-        gobject_weak(view.connect_object, 'draw',
-                     self.__update_visibility, view)
+        connect_obj(view, 'draw', self.__update_visibility, view)
 
-        gobject_weak(sw.get_vadjustment().connect, "value-changed",
-                     self.__stop_update, view, parent=view)
+        connect_destroy(
+            sw.get_vadjustment(), "value-changed", self.__stop_update, view)
 
         self.__pending_paths = []
         self.__scan_timeout = None
@@ -497,11 +495,11 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
 
-        gobject_weak(view.connect, 'row-activated', self.__play_selection)
+        view.connect('row-activated', self.__play_selection)
 
-        self.__sig = gobject_weak(
-            view.get_selection().connect, 'changed',
-            util.DeferredSignal(self.__update_songs), parent=view)
+        self.__sig = connect_destroy(
+            view.get_selection(), 'changed',
+            util.DeferredSignal(self.__update_songs, owner=self))
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
@@ -509,16 +507,14 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
-        gobject_weak(view.connect, "drag-data-get", self.__drag_data_get)
-        gobject_weak(view.connect_object, 'popup-menu',
-                     self.__popup, view, library)
+        view.connect("drag-data-get", self.__drag_data_get)
+        connect_obj(view, 'popup-menu', self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
-        gobject_weak(search.connect, 'query-changed', self.__update_filter)
-        gobject_weak(search.connect_object,
-                     'focus-out', lambda w: w.grab_focus(), view)
+        search.connect('query-changed', self.__update_filter)
+        connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
@@ -562,7 +558,6 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def __destroy(self, browser):
         self.disable_row_update()
 
-        self.__inhibit()
         self.view.set_model(None)
 
         klass = type(browser)
@@ -633,8 +628,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             button = MenuItem(
                 ngettext("Reload album _cover", "Reload album _covers", num),
                 Gtk.STOCK_REFRESH)
-            gobject_weak(button.connect, 'activate',
-                self.__refresh_album, view)
+            button.connect('activate', self.__refresh_album, view)
             menu.prepend(SeparatorMenuItem())
             menu.prepend(button)
 
