@@ -263,6 +263,9 @@ class TPlaylistMux(TestCase):
         self.p.setup(self.mux, None, 0)
         self.failUnless(self.pl.current is None)
 
+    def test_destroy(self):
+        self.mux.destroy()
+
     def test_only_pl(self):
         self.pl.set(range(10))
         do_events()

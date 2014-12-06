@@ -30,6 +30,9 @@ class TSongTracker(TestCase):
         while Gtk.events_pending():
             Gtk.main_iteration()
 
+    def test_destroy(self):
+        self.cm.destroy()
+
     def test_play(self):
         import time
         # Allow at least 2 second to elapse to simulate playing

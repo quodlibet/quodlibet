@@ -26,7 +26,7 @@ from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -140,16 +140,7 @@ class DuplicateSongsView(RCMHintedTreeView):
         }
         for (sig, callback) in SIGNAL_MAP.items():
             print_d("Listening to library.%s signals" % sig)
-            self.connected_library_sigs.append(
-                app.library.connect(sig, callback))
-
-        # And disconnect, or Bad Stuff happens.
-        self.connect('destroy', self.on_destroy)
-
-    def on_destroy(self, view):
-        print_d("Disconnecting from library signals...")
-        for sig in self.connected_library_sigs:
-            app.library.disconnect(sig)
+            connect_destroy(app.library, sig, callback)
 
 
 class DuplicatesTreeModel(Gtk.TreeStore):

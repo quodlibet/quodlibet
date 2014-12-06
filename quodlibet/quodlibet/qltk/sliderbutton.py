@@ -74,6 +74,8 @@ class _PopupSlider(Gtk.Button):
         frame.add(self._box)
         self.connect('scroll-event', self.__scroll, hscale)
 
+        self.connect("destroy", self.__destroy)
+
         # forward scroll event to the button
         def foward_scroll(scale, event):
             self.emit('scroll-event', event.copy())
@@ -93,6 +95,10 @@ class _PopupSlider(Gtk.Button):
 
         if child:
             self.get_child().show_all()
+
+    def __destroy(self, *args):
+        self.__window.destroy()
+        self.__window = None
 
     def set_slider_length(self, length):
         if self.ORIENTATION == Gtk.Orientation.HORIZONTAL:

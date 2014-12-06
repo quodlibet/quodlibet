@@ -128,7 +128,7 @@ def main():
     remote.start()
 
     DBusHandler(player, library)
-    SongTracker(library.librarian, player, window.playlist)
+    tracker = SongTracker(library.librarian, player, window.playlist)
 
     from quodlibet.qltk import session
     session.init("quodlibet")
@@ -160,6 +160,7 @@ def main():
 
     print_d("Shutting down player device %r." % player.version_info)
     player.destroy()
+    tracker.destroy()
     quodlibet.library.save(force=True)
 
     config.save(const.CONFIG)

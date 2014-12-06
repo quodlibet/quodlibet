@@ -67,14 +67,27 @@ class TimeTracker(GObject.GObject):
 
 
 class SongTracker(object):
+
     def __init__(self, librarian, player, pl):
-        player.connect('song-ended', self.__end, librarian, pl)
-        player.connect('song-started', self.__start, librarian)
+        self.__player_ids = [
+            player.connect('song-ended', self.__end, librarian, pl),
+            player.connect('song-started', self.__start, librarian),
+        ]
+        self.__player = player
         timer = TimeTracker(player)
         timer.connect("tick", self.__timer)
         self.elapsed = 0
         self.__to_change = set()
         self.__change_id = None
+
+    def destroy(self):
+        for id_ in self.__player_ids:
+            self.__player.disconnect(id_)
+        self.__player = None
+
+        if self.__change_id:
+            GLib.source_remove(self.__change_id)
+            self.__change_id = None
 
     def __changed(self, librarian, song):
         # try to combine changed events and process them if QL is idle

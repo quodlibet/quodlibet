@@ -28,7 +28,7 @@ from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
 from quodlibet.util.path import mtime, normalize_path
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 
 
 class ExFalsoWindow(Window, PersistentWindowMixin):
@@ -113,8 +113,9 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         fs.connect('changed', self.__changed, l)
         if dir:
             fs.go_to(dir)
-        s = self.__library.connect('changed', lambda *x: fs.rescan())
-        connect_obj(self, 'destroy', self.__library.disconnect, s)
+
+        connect_destroy(self.__library, 'changed', self.__library_changed, fs)
+
         self.__save = None
         connect_obj(self, 'changed', self.set_pending, None)
         for c in fs.get_children():
@@ -132,6 +133,9 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         key, mod = Gtk.accelerator_parse("<control>Q")
         self.__ag.connect(key, mod, 0, lambda *x: self.destroy())
         self.add_accel_group(self.__ag)
+
+    def __library_changed(self, library, songs, fs):
+        fs.rescan()
 
     def set_as_osx_window(self, osx_app):
         # TODO: add a menu
