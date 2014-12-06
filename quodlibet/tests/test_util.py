@@ -971,3 +971,23 @@ class TMainRunner(TestCase):
         thread = threading.Thread(target=worker)
         thread.start()
         thread.join()
+
+
+class Tconnect_destroy(TestCase):
+
+    def test_main(self):
+        from gi.repository import Gtk
+
+        b = Gtk.Button()
+
+        class A(Gtk.Button):
+
+            def foo(self):
+                pass
+
+        a = A()
+        ref = sys.getrefcount(a)
+        util.connect_destroy(b, "clicked", a.foo)
+        self.assertEqual(sys.getrefcount(a), ref + 1)
+        a.destroy()
+        self.assertEqual(sys.getrefcount(a), ref)
