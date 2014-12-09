@@ -257,6 +257,26 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(set(q.list("~performers:roles")),
                              set(["A (Vocals)", "B (Guitar)", "C"]))
 
+    def test_performers_multi_value(self):
+        q = AudioFile([
+            ("performer:vocals", "X\nA\nY"),
+            ("performer:guitar", "Y\nB\nA"),
+            ("performer", "C\nF\nB\nA"),
+        ])
+
+        self.failUnlessEqual(
+            set(q.list("~performer")), set(["A", "B", "C", "F", "X", "Y"]))
+
+        self.failUnlessEqual(
+            set(q.list("~performer:roles")), set([
+                    "A (Guitar, Vocals)",
+                    "C",
+                    "B (Guitar)",
+                    "X (Vocals)",
+                    "Y (Guitar, Vocals)",
+                    "F",
+                ]))
+
     def test_people(self):
         q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),
                        ("performer", "C"), ("arranger", "A"),
@@ -264,6 +284,29 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(q.list("~people"), ["B", "C", "A"])
         self.failUnlessEqual(q.list("~people:roles"),
                              ["B (Guitar)", "C", "A (Arrangement, Vocals)"])
+
+    def test_people_mix(self):
+        q = AudioFile([
+            ("performer:arrangement", "A"),
+            ("arranger", "A"),
+            ("performer", "A"),
+            ("performer:foo", "A"),
+        ])
+        self.failUnlessEqual(q.list("~people"), ["A"])
+        self.failUnlessEqual(q.list("~people:roles"),
+                             ["A (Arrangement, Arrangement, Foo)"])
+
+    def test_people_multi_value(self):
+        q = AudioFile([
+            ("arranger", "A\nX"),
+            ("performer", "A\nY"),
+            ("performer:foo", "A\nX"),
+        ])
+
+        self.failUnlessEqual(q.list("~people"), ["A", "Y", "X"])
+        self.failUnlessEqual(
+            q.list("~people:roles"),
+            ["A (Arrangement, Foo)", "Y", "X (Arrangement, Foo)"])
 
     def test_peoplesort(self):
         q = AudioFile([("performer:vocals", "The A"),

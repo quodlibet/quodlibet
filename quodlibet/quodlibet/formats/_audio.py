@@ -13,7 +13,6 @@
 import os
 import shutil
 import time
-import collections
 
 from ._image import ImageContainer
 
@@ -189,6 +188,21 @@ class AudioFile(dict, ImageContainer):
 
         return filter(lambda s: s[:1] != "~", self.keys())
 
+    def prefixkeys(self, prefix):
+        """Returns a list of dict keys that either match prefix or start
+        with prefix + ':'.
+        """
+
+        l = []
+        for k in self:
+            if k.startswith(prefix):
+                if k == prefix or k.startswith(prefix + ":"):
+                    l.append(k)
+        return l
+
+    def _prefixvalue(self, tag):
+        return "\n".join(self.list_unique(sorted(self.prefixkeys(tag))))
+
     def iterrealitems(self):
         return ((k, v) for (k, v) in self.iteritems() if k[:1] != "~")
 
@@ -233,29 +247,29 @@ class AudioFile(dict, ImageContainer):
                 return dict.get(self, "~" + key, config.RATINGS.default)
             elif key == "rating":
                 return util.format_rating(self("~#rating"))
-            elif key == "people" or key == "people:roles":
-                return (self._role_call(key, PEOPLE, "performer", True)
+            elif key == "people":
+                return "\n".join(self.list_unique(PEOPLE)) or default
+            elif key == "people:roles":
+                return (self._role_call("performer", PEOPLE)
                         or default)
-            elif key == "peoplesort" or key == "peoplesort:roles":
+            elif key == "peoplesort":
+                return ("\n".join(self.list_unique(PEOPLE_SORT)) or
+                        self("~people", default, connector))
+            elif key == "peoplesort:roles":
                 # Ignores non-sort tags if there are any sort tags (e.g. just
                 # returns "B" for {artist=A, performersort=B}).
                 # TODO: figure out the "correct" behavior for mixed sort tags
-                return (self._role_call(key, PEOPLE_SORT, "performersort",
-                                        True)
-                        or self("~" + key.replace("sort", ""),
-                                default, connector))
-            elif (key == "performers" or key == "performer" or
-                    key == "performers:roles" or key == "performer:roles"):
-                return (self._role_call(key,
-                                        prefixed("performer", self.keys()),
-                                        "performer")
-                        or default)
-            elif (key == "performerssort" or key == "performersort" or
-                  key == "performerssort:roles" or
-                  key == "performersort:roles"):
-                return (self._role_call(key,
-                                        prefixed("performersort", self.keys()),
-                                        "performersort")
+                return (self._role_call("performersort", PEOPLE_SORT)
+                        or self("~peoplesort", default, connector))
+            elif key in ("performers", "performer"):
+                return self._prefixvalue("performer") or default
+            elif key in ("performerssort", "performersort"):
+                return (self._prefixvalue("performersort") or
+                        self("~" + key[-4:], default, connector))
+            elif key in ("performers:roles", "performer:roles"):
+                return (self._role_call("performer") or default)
+            elif key in ("performerssort:roles", "performersort:roles"):
+                return (self._role_call("performersort")
                         or self("~" + key.replace("sort", ""), default,
                                 connector))
             elif key == "basename":
@@ -355,41 +369,35 @@ class AudioFile(dict, ImageContainer):
                 key = SORT_TO_TAG[key]
         return dict.get(self, key, default)
 
-    def _roles(self, tag):
-        """Returns a defaultdict of name => [role, ...]."""
-        roles = collections.defaultdict(list)
-        for key in self.keys():
-            if key.startswith(tag + ":"):
-                role = util.title(key[1 + len(tag):])
+    def _role_call(self, role_tag, sub_keys=None):
+        role_tag_keys = self.prefixkeys(role_tag)
+
+        role_map = {}
+        for key in role_tag_keys:
+            if key != role_tag:
+                role = key.rsplit(":", 1)[-1]
                 for name in self.list(key):
-                    roles[name].append(role)
-        for name in self.list(tag):
-            roles[name]
-        return roles
+                    role_map.setdefault(name, []).append(role)
 
-    def _role_call(self, key, sub_keys, role_tag, use_pseudo_roles=False):
-        """Used to implement __call__ for a synthetic key with role support."""
-        names = []
-        names_seen = set()
-        for sub_key in sub_keys:
-            for value in self.list(sub_key):
-                if value not in names_seen:
-                    names_seen.add(value)
-                    names.append(value)
-
-        not_role_tag = lambda t: t != role_tag and t != '~' + role_tag
-        if key.endswith(":roles"):
-            roles = self._roles(role_tag)
-            if use_pseudo_roles:
-                for tag in filter(not_role_tag, sub_keys):
-                    for name in self.list(tag):
-                        if tag in TAG_ROLES:
-                            roles[name].append(capitalize(TAG_ROLES[tag]))
-                        else:
-                            roles[name]
-            return "\n".join(role_desc(n, roles[n]) for n in names)
+        if sub_keys is None:
+            names = self.list_unique(role_tag_keys)
         else:
-            return "\n".join(names)
+            names = self.list_unique(sub_keys)
+            for tag in sub_keys:
+                if tag in TAG_ROLES:
+                    for name in self.list(tag):
+                        role_map.setdefault(name, []).append(TAG_ROLES[tag])
+
+        descs = []
+        for name in names:
+            roles = role_map.get(name, [])
+            if not roles:
+                descs.append(name)
+            else:
+                roles = sorted(map(capitalize, roles))
+                descs.append("%s (%s)" % (name, ", ".join(roles)))
+
+        return "\n".join(descs)
 
     @property
     def lyric_filename(self):
@@ -459,6 +467,20 @@ class AudioFile(dict, ImageContainer):
             return map(connector.join, r)
         else:
             return self.list(key)
+
+    def list_unique(self, keys):
+        """Returns a combined value of all values in keys; duplicate values
+        will be ignored.
+        """
+
+        l = []
+        seen = set()
+        for k in keys:
+            for v in self.list(k):
+                if v not in seen:
+                    l.append(v)
+                    seen.add(v)
+        return l
 
     def as_lowercased(self):
         """Returns a new AudioFile with all keys lowercased / values merged.
@@ -805,11 +827,3 @@ DUMMY_SONG = AudioFile({
     'title': 'First Track', 'tracknumber': 1,
     'date': '2010-12-31',
 })
-
-
-def role_desc(name, roles):
-    return name if not roles else "%s (%s)" % (name, ", ".join(sorted(roles)))
-
-
-def prefixed(prefix, strings):
-    return filter(lambda s: s == prefix or s.startswith(prefix + ":"), strings)
