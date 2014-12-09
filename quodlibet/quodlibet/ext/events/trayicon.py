@@ -20,9 +20,14 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.window import Window
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
 from quodlibet.util.thumbnails import scale
 from quodlibet.util import connect_obj
+
+
+def get_hide_window():
+    return config.getboolean('plugins', 'trayicon_window_hide', True)
 
 
 class Preferences(Gtk.VBox):
@@ -32,6 +37,11 @@ class Preferences(Gtk.VBox):
         super(Preferences, self).__init__(spacing=12)
 
         self.set_border_width(6)
+
+        ccb = ConfigCheckButton(_("Hide main window on close"),
+                                'plugins', 'trayicon_window_hide')
+        ccb.set_active(get_hide_window())
+        self.pack_start(ccb, False, True, 0)
 
         combo = Gtk.ComboBoxText()
         combo.append_text(_("Scroll wheel adjusts volume\n"
@@ -349,7 +359,7 @@ class TrayIcon(EventPlugin):
             self.plugin_on_song_started(app.player.song)
 
     def __window_delete(self, win, event):
-        if self.__user_can_unhide():
+        if self.__user_can_unhide() and get_hide_window():
             self.__hide_window()
             return True
         return False
