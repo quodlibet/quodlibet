@@ -18,10 +18,8 @@ from quodlibet.const import FSCODING
 from quodlibet.util.string import decode
 from quodlibet import windows
 
-try:
+if sys.platform == "darwin":
     from Foundation import NSString
-except ImportError:
-    NSString = None
 
 
 """
@@ -427,7 +425,7 @@ def _normalize_path(filename, canonicalise=False):
     return os.path.normcase(filename)
 
 
-if sys.platform == "darwin" and NSString is not None:
+if sys.platform == "darwin":
 
     def _osx_path_decode_error_handler(error):
         bytes_ = bytearray(error.object[error.start:error.end])
