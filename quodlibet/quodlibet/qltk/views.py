@@ -13,7 +13,8 @@ from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version
+from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
+    menu_popup
 
 
 class TreeViewHints(Gtk.Window):
@@ -930,7 +931,7 @@ class RCMTreeView(BaseView):
             pos_func = None
 
         menu.attach_to_widget(self, None)
-        menu.popup(None, None, pos_func, None, button, time)
+        menu_popup(menu, None, None, pos_func, None, button, time)
         return True
 
     def __popup_position(self, menu, *args):

@@ -92,6 +92,20 @@ def find_widgets(container, type_):
     return found
 
 
+def menu_popup(menu, shell, item, func, *args):
+    """Wrapper to fix API break:
+    https://git.gnome.org/browse/gtk+/commit/?id=8463d0ee62b4b22fa
+    """
+
+    if func is not None:
+        def wrap_pos_func(menu, *args):
+            return func(menu, args[-1])
+    else:
+        wrap_pos_func = None
+
+    return menu.popup(shell, item, wrap_pos_func, *args)
+
+
 def _popup_menu_at_widget(menu, widget, button, time, under):
 
     def pos_func(menu, data, widget=widget):
@@ -125,7 +139,7 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
             menu_x = max(0, x + dx - ma.width + wa.width)
 
         return (menu_x, menu_y, True) # x, y, move_within_screen
-    menu.popup(None, None, pos_func, None, button, time)
+    menu_popup(menu, None, None, pos_func, None, button, time)
     return True
 
 
