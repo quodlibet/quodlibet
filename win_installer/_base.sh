@@ -28,11 +28,11 @@ function download_and_verify {
     if (cd "$BIN" && sha256sum --status --strict -c "$MISC"/filehashes.txt); then
         echo "all installers here, continue.."
     else
-        wget -P "$BIN" -c https://bitbucket.org/pypa/setuptools/raw/2.1.1/ez_setup.py
+        wget -P "$BIN" -c https://bitbucket.org/pypa/setuptools/raw/7.0/ez_setup.py
         wget -P "$BIN" -c http://mercurial.selenic.com/release/windows/mercurial-2.8.1-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev2-setup.exe
+        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev5-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
@@ -40,7 +40,7 @@ function download_and_verify {
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
         wget -P "$BIN" -c http://ftp.musicbrainz.org/pub/musicbrainz/python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz
 
-        pip install --download="$BIN" mutagen==1.25
+        pip install --download="$BIN" mutagen==1.27
         pip install --download="$BIN" feedparser==5.1.3
 
         # check again
@@ -104,7 +104,7 @@ function extract_deps {
     # extract the gi binaries
     PYGI="$BUILD_ENV"/pygi
     echo "extract pygi-aio..."
-    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0_rev2-setup.exe > /dev/null
+    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0_rev5-setup.exe > /dev/null
     echo "done"
     echo "extract packages..."
     (cd "$PYGI"/rtvc9-32/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
@@ -127,7 +127,6 @@ function extract_deps {
         cp -RT "$PYGI"/"$name"/ATK/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Pango/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GTK/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/Harfbuzz/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Openraw/gnome "$DEPS"
 
         cp -RT "$PYGI"/"$name"/Gstreamer/gnome "$DEPS"
@@ -227,9 +226,12 @@ function build_quodlibet {
     rm -Rf "$GTK_THEMES"/Evolve
     rm -Rf "$GTK_THEMES"/Greybird
 
+    # some things are linked against the wrong dll?
+    cp "$QL_DEST"/libfftw3.dll "$QL_DEST"/libfftw3-3.dll
+
     # remove ladspa, frei0r
     rm -Rf "$QL_DEST"/lib/frei0r-1
-    rm -Rf "$QL_DEST"/lib/ladspa-1
+    rm -Rf "$QL_DEST"/lib/ladspa
 
     # remove some large gstreamer plugins..
     GST_LIBS="$QL_DEST"/lib/gstreamer-1.0
@@ -241,9 +243,6 @@ function build_quodlibet {
     rm -f "$GST_LIBS"/libgstjack.dll # Jack sink/source
     rm -f "$GST_LIBS"/libgstpulse.dll # Pulse sink
     rm -f "$GST_LIBS"/libgstvpx.dll # VP8
-
-    # and some other stuff we don't need
-    rm -Rf "$QL_DEST"/share/gst-plugins-bad
 }
 
 function package_installer {

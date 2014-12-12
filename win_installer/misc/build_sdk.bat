@@ -6,7 +6,7 @@ set PATH=%PATH%;%~dp0\deps;
 python bin/ez_setup.py
 easy_install pip
 
-pip install bin\mutagen-1.25.tar.gz
+pip install bin\mutagen-1.27.tar.gz
 pip install bin\feedparser-5.1.3.tar.bz2
 pip install bin\python-musicbrainz2-0.7.4.tar.gz
 
