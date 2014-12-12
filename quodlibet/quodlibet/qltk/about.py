@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import platform
 
 from gi.repository import Gtk, GLib, GdkPixbuf
 import mutagen
@@ -56,6 +57,7 @@ class AboutDialog(Gtk.AboutDialog):
         text.append("")
         if player:
             text.append(_("Audio device: %s") % player.name)
+        text.append("Python: %s" % platform.python_version())
         text.append("Mutagen: %s" % fver(mutagen.version))
         text.append("GTK+: %s" % fver(gtk_version))
         text.append("PyGObject: %s" % fver(pygobject_version))
