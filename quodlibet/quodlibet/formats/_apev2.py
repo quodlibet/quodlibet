@@ -5,11 +5,47 @@
 # published by the Free Software Foundation
 
 from quodlibet.formats._audio import AudioFile
+from quodlibet.formats._image import APICType, EmbeddedImage
+from quodlibet.util.path import get_temp_cover_file
 
 try:
     import mutagen.apev2
 except ImportError:
     pass
+
+
+def get_cover_type(key, value):
+    """Returns an APICType or None if the tag isn't an image"""
+
+    if value.kind != mutagen.apev2.BINARY:
+        return
+
+    type_map = {
+        "cover art (front)": APICType.COVER_FRONT,
+        "cover art (back)": APICType.COVER_BACK,
+    }
+
+    return type_map.get(key.lower())
+
+
+def parse_cover(key, value):
+    """Returns a EmbeddedImage or None"""
+
+    # http://www.hydrogenaud.io/forums/index.php?showtopic=40603
+
+    cover_type = get_cover_type(key, value)
+    if cover_type is None:
+        return
+
+    parts = value.value.split(b"\x00", 1)
+    if len(parts) != 2:
+        return
+
+    f = get_temp_cover_file(parts[-1])
+    if not f:
+        return
+
+    return EmbeddedImage(f, "image/", type_=cover_type)
 
 
 class APEv2File(AudioFile):
@@ -39,6 +75,9 @@ class APEv2File(AudioFile):
             except mutagen.apev2.APENoHeaderError:
                 tag = {}
         for key, value in tag.items():
+            if get_cover_type(key, value) is not None:
+                self.has_images = True
+
             key = self.TRANS.get(key.lower(), key.lower())
             if (value.kind == mutagen.apev2.TEXT and
                 key not in self.IGNORE):
@@ -86,3 +125,35 @@ class APEv2File(AudioFile):
 
         tag.save(self["~filename"])
         self.sanitize()
+
+    def get_primary_image(self):
+        try:
+            tag = mutagen.apev2.APEv2(self['~filename'])
+        except mutagen.apev2.APENoHeaderError:
+            return
+
+        primary = None
+        for key, value in tag.iteritems():
+            cover_type = get_cover_type(key, value)
+            if cover_type is not None:
+                primary = primary or (key, value)
+            if cover_type == APICType.COVER_FRONT:
+                break
+
+        if primary is not None:
+            return parse_cover(*primary)
+
+    def get_images(self):
+        try:
+            tag = mutagen.apev2.APEv2(self['~filename'])
+        except mutagen.apev2.APENoHeaderError:
+            return []
+
+        images = []
+        for key, value in tag.iteritems():
+            image = parse_cover(key, value)
+            if image is not None:
+                images.append(image)
+
+        images.sort(key=lambda c: c.sort_key)
+        return images

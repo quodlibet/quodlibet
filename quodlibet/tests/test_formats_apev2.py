@@ -1,4 +1,4 @@
-from tests import DATA_DIR, mkstemp, AbstractTestCase
+from tests import DATA_DIR, mkstemp, AbstractTestCase, TestCase
 
 import os
 import shutil
@@ -9,6 +9,8 @@ from mutagen.apev2 import BINARY, APEValue
 
 from quodlibet.formats.monkeysaudio import MonkeysAudioFile
 from quodlibet.formats.mpc import MPCFile
+from quodlibet.formats.wavpack import WavpackFile
+from quodlibet.formats._image import APICType
 
 
 class TAPEv2FileBase(AbstractTestCase):
@@ -119,3 +121,30 @@ class TMAFile(TAPEv2FileBase):
         os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ape'), self.f)
         self.s = MonkeysAudioFile(self.f)
+
+
+class TWavpackFile(TAPEv2FileBase):
+
+    def setUp(self):
+        fd, self.f = mkstemp(".wv")
+        os.close(fd)
+        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.wv'), self.f)
+        self.s = WavpackFile(self.f)
+
+
+class TWvCoverArt(TestCase):
+
+    def setUp(self):
+        self.f = os.path.join(DATA_DIR, 'coverart.wv')
+        self.s = WavpackFile(self.f)
+
+    def test_get_primary_image(self):
+        cover = self.s.get_primary_image()
+        self.assertTrue(cover)
+        self.assertEqual(cover.type, APICType.COVER_FRONT)
+
+    def test_get_images(self):
+        covers = self.s.get_images()
+        self.assertEqual(len(covers), 2)
+        types = [c.type for c in covers]
+        self.assertEqual(types, [APICType.COVER_FRONT, APICType.COVER_BACK])

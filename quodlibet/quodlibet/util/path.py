@@ -362,6 +362,8 @@ def xdg_get_user_dirs():
 
 
 def get_temp_cover_file(data):
+    """Returns a file object or None"""
+
     try:
         # pass fsnative so that mkstemp() uses unicode on Windows
         fn = tempfile.NamedTemporaryFile(prefix=fsnative(u"tmp"))
