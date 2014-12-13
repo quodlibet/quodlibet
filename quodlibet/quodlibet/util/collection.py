@@ -8,8 +8,6 @@
 
 from __future__ import absolute_import
 
-from gi.repository import GLib
-
 import os
 import random
 
