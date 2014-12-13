@@ -48,6 +48,27 @@ def parse_cover(key, value):
     return EmbeddedImage(f, "image/", type_=cover_type)
 
 
+def write_cover(image):
+    """Takes EmbeddedImage and returns a (key, value) tuple or None"""
+
+    if image.type == APICType.COVER_FRONT:
+        key = "Cover Art (Front)"
+    else:
+        key = "Cover Art (Back)"
+
+    try:
+        data = image.file.read()
+    except EnvironmentError:
+        return
+
+    ext = (image.extensions and image.extensions[0]) or "jpg"
+    data = ("hello.%s\x00" % (ext)) + data
+
+    value = mutagen.apev2.APEValue(data, mutagen.apev2.BINARY)
+
+    return (key, value)
+
+
 class APEv2File(AudioFile):
     # Map APE names to QL names. APE tags are also usually capitalized.
     # Also blacklist a number of tags.
@@ -65,6 +86,8 @@ class APEv2File(AudioFile):
              "mixartist": "remixer",
     }
     SNART = dict([(v, k) for k, v in TRANS.iteritems()])
+
+    can_change_images = True
 
     def __init__(self, filename, audio=None):
         if audio:
@@ -157,3 +180,36 @@ class APEv2File(AudioFile):
 
         images.sort(key=lambda c: c.sort_key)
         return images
+
+    def clear_images(self):
+        try:
+            tag = mutagen.apev2.APEv2(self['~filename'])
+        except mutagen.apev2.APENoHeaderError:
+            return
+
+        for key, value in tag.items():
+            cover_type = get_cover_type(key, value)
+            if cover_type is not None:
+                del tag[key]
+
+        tag.save()
+        self.has_images = False
+
+    def set_image(self, image):
+        try:
+            tag = mutagen.apev2.APEv2(self['~filename'])
+        except mutagen.apev2.APENoHeaderError:
+            return
+
+        for key, value in tag.items():
+            cover_type = get_cover_type(key, value)
+            if cover_type is not None:
+                del tag[key]
+
+        to_write = write_cover(image)
+        if to_write is None:
+            return
+        key, value = to_write
+        tag[key] = value
+        tag.save()
+        self.has_images = True

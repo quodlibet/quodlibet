@@ -2,6 +2,7 @@ from tests import DATA_DIR, mkstemp, AbstractTestCase, TestCase
 
 import os
 import shutil
+import StringIO
 
 import mutagen
 
@@ -10,7 +11,7 @@ from mutagen.apev2 import BINARY, APEValue
 from quodlibet.formats.monkeysaudio import MonkeysAudioFile
 from quodlibet.formats.mpc import MPCFile
 from quodlibet.formats.wavpack import WavpackFile
-from quodlibet.formats._image import APICType
+from quodlibet.formats._image import APICType, EmbeddedImage
 
 
 class TAPEv2FileBase(AbstractTestCase):
@@ -135,8 +136,13 @@ class TWavpackFile(TAPEv2FileBase):
 class TWvCoverArt(TestCase):
 
     def setUp(self):
-        self.f = os.path.join(DATA_DIR, 'coverart.wv')
+        fd, self.f = mkstemp(".wv")
+        os.close(fd)
+        shutil.copy(os.path.join(DATA_DIR, 'coverart.wv'), self.f)
         self.s = WavpackFile(self.f)
+
+    def tearDown(self):
+        os.unlink(self.f)
 
     def test_get_primary_image(self):
         cover = self.s.get_primary_image()
@@ -148,3 +154,30 @@ class TWvCoverArt(TestCase):
         self.assertEqual(len(covers), 2)
         types = [c.type for c in covers]
         self.assertEqual(types, [APICType.COVER_FRONT, APICType.COVER_BACK])
+
+    def test_can_change_images(self):
+        self.assertTrue(self.s.can_change_images)
+
+    def test_clear_images(self):
+        # cover case
+        image = self.s.get_primary_image()
+        self.assertTrue(image)
+        self.s.clear_images()
+        self.assertFalse(self.s.has_images)
+        self.s.reload()
+        image = self.s.get_primary_image()
+        self.assertFalse(image)
+
+        # no cover case
+        self.s.clear_images()
+
+    def test_set_image(self):
+        fileobj = StringIO.StringIO("foo")
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
+        self.s.set_image(image)
+        self.assertTrue(self.s.has_images)
+
+        images = self.s.get_images()
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0].mime_type, "image/")
+        self.assertEqual(images[0].file.read(), "foo")
