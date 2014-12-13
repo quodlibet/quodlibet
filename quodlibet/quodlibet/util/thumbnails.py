@@ -175,7 +175,7 @@ def get_thumbnail_from_file(fileobj, boundary):
 
     This is needed on Windows where NamedTemporaryFile can't be reopened.
 
-    Can raise GLib.GError or return None.
+    Returns Pixbuf or None.
     """
 
     assert fileobj
@@ -192,7 +192,7 @@ def get_thumbnail_from_file(fileobj, boundary):
             fileobj.seek(0, 0)
             # can return None in case of partial data
             pixbuf = loader.get_pixbuf()
-        except EnvironmentError:
+        except (GLib.GError, EnvironmentError):
             pass
         else:
             if pixbuf is not None:

@@ -137,11 +137,8 @@ class ResizeImage(Gtk.Bin):
 
         self._pixbuf = None
         if self._file:
-            try:
-                self._pixbuf = thumbnails.get_thumbnail_from_file(
-                    self._file, (max_size, max_size))
-            except GLib.GError:
-                pass
+            self._pixbuf = thumbnails.get_thumbnail_from_file(
+                self._file, (max_size, max_size))
 
         if not self._pixbuf:
             self._pixbuf = get_no_cover_pixbuf(max_size, max_size)

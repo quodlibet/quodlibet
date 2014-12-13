@@ -310,10 +310,7 @@ class Album(Collection):
 
         if cover is not None:
             s = self.COVER_SIZE * scale_factor
-            try:
-                self.cover = thumbnails.get_thumbnail_from_file(cover, (s, s))
-            except GLib.GError:
-                return
+            self.cover = thumbnails.get_thumbnail_from_file(cover, (s, s))
 
     def __repr__(self):
         return "Album(%s)" % repr(self.key)
