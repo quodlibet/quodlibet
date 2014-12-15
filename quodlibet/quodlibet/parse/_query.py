@@ -13,6 +13,7 @@ import re
 from quodlibet.parse import _match as match
 from quodlibet.parse._scanner import Scanner
 from quodlibet.parse._match import error, ParseError
+from quodlibet.parse._diacritic import re_add_diacritics
 
 # Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
@@ -240,7 +241,7 @@ class QueryParser(object):
         mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
         if self.lookahead.type == TAG:
             s = self.lookahead.lexeme.lower()
-            if set(s) - set("cisl"):
+            if set(s) - set("cisld"):
                 raise ParseError("Invalid regular expression flags: %r" % s)
             if "c" in s:
                 mods &= ~re.IGNORECASE
@@ -250,6 +251,8 @@ class QueryParser(object):
                 mods |= re.DOTALL
             if "l" in s:
                 mods = (mods & ~re.UNICODE) | re.LOCALE
+            if "d" in s:
+                regex = re_add_diacritics(regex)
             self.match(TAG)
         try:
             return re.compile(regex, mods)
@@ -338,6 +341,9 @@ Query.error = error
 
 def is_valid(string):
     """Whether a full query can be parsed"""
+
+    if not isinstance(string, unicode):
+        string = string.decode('utf-8')
 
     if Query.match_all(string):
         return True

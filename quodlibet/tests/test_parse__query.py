@@ -297,6 +297,19 @@ class TQuery(TestCase):
     def test_star_numeric(self):
         self.assertRaises(ValueError, Query, u"foobar", star=["~#mtime"])
 
+    def test_match_diacriticals(self):
+        self.failUnless(Query(u'"Angstrom"d').search(self.s4))
+        self.failUnless(Query(u'Ångström').search(self.s4))
+        self.failIf(Query(u'Ångstrom').search(self.s4))
+        self.failIf(Query(u'title=angstrom').search(self.s4))
+        self.failIf(Query(u'title="Ångstrom"').search(self.s4))
+        self.failUnless(Query(u'title="Ångstrom"d').search(self.s4))
+        self.failUnless(Query(u'title=Ångström').search(self.s4))
+        self.failUnless(Query(u'title="Ångström"').search(self.s4))
+        self.failUnless(Query(u'title=/Ångström/').search(self.s4))
+        self.failUnless(Query(u'title="Ångstrom"d').search(self.s4))
+        self.failUnless(Query(u'title=/Angstrom/d').search(self.s4))
+
 
 class TQuery_is_valid_color(TestCase):
     def test_red(self):

@@ -244,12 +244,12 @@ class ValidatingEntryMixin(object):
             self.connect('changed', self.__color, validator)
 
     def __color(self, widget, validator):
-        value = validator(self.get_text())
+        value = validator(self.get_text().decode("utf-8"))
         if value is True:
             color = self.VALID
         elif value is False:
             color = self.INVALID
-        elif value and isinstance(value, str):
+        elif value and isinstance(value, basestring):
             color = Gdk.RGBA()
             color.parse(value)
         else:

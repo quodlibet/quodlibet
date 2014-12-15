@@ -31,6 +31,18 @@ class TValidatingEntry(TestCase):
     def test_changed_invalid(self):
         self.entry.set_text("=#invalid")
 
+    def test_custom_validator(self):
+        x = []
+
+        def valid(text):
+            x.append(text)
+            return text
+
+        entry = ValidatingEntry(valid)
+        entry.set_text("foo")
+        self.assertEqual(x, [u"foo"])
+        self.assertTrue(isinstance(x[0], unicode))
+
     def tearDown(self):
         self.entry.destroy()
         quodlibet.config.quit()
