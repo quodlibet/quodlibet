@@ -169,6 +169,11 @@ class Tunescape(Tescape):
 class Tre_esc(TestCase):
     def test_empty(self):
         self.failUnlessEqual(re.escape(""), "")
+        self.assertTrue(isinstance(re.escape(""), bytes))
+
+    def test_empty_unicode(self):
+        self.failUnlessEqual(re.escape(u""), u"")
+        self.assertTrue(isinstance(re.escape(u""), unicode))
 
     def test_safe(self):
         self.failUnlessEqual(re.escape("fo o"), "fo o")

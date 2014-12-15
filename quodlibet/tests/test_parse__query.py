@@ -309,6 +309,7 @@ class TQuery(TestCase):
         self.failUnless(Query(u'title=/Ångström/').search(self.s4))
         self.failUnless(Query(u'title="Ångstrom"d').search(self.s4))
         self.failUnless(Query(u'title=/Angstrom/d').search(self.s4))
+        self.failUnless(Query(u'""d').search(self.s4))
 
 
 class TQuery_is_valid_color(TestCase):

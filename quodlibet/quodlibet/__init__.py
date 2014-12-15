@@ -337,9 +337,9 @@ def _python_init():
 
     # The default regex escaping function doesn't work for non-ASCII.
     # Use a blacklist of regex-specific characters instead.
-    def re_esc(str, BAD="/.^$*+?{,\\[]|()<>#=!:"):
+    def re_esc(string, BAD="/.^$*+?{,\\[]|()<>#=!:"):
         needs_escape = lambda c: (c in BAD and "\\" + c) or c
-        return "".join(map(needs_escape, str))
+        return type(string)().join(map(needs_escape, string))
     re.escape = re_esc
 
     __builtin__.__dict__["print_"] = print_
