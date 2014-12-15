@@ -20,4 +20,7 @@ class TDiacritics(TestCase):
     def test_re_replace(self):
         r = re_add_diacritics(u"aa")
         self.assertTrue(u"[" in r and u"]" in r and r.count(u"ä") == 2)
-        print re_add_diacritics(u"Mum")
+
+    def test_re_replace_escape(self):
+        r = re_add_diacritics(u"n\\n")
+        self.assertEqual(r, u"[nñńņňǹṅṇṉṋ]\\n")

@@ -155,6 +155,32 @@ def diacritic_for_letters(regenerate=False):
     return d
 
 
+def replace_re(string, mapping):
+    """Replace a character in a regexp with one or more other ones.
+
+    FIXME: support ranges
+    """
+
+    assert isinstance(string, unicode)
+
+    done = []
+    escaped = False
+    for c in string:
+        if escaped:
+            escaped = False
+            done.append(c)
+        else:
+            if c == u"\\":
+                escaped = True
+                done.append(c)
+            else:
+                if c in mapping:
+                    done.append(u"[%s]" % mapping[c])
+                else:
+                    done.append(c)
+    return u"".join(done)
+
+
 def generate_re_diacritic_func(_diacritic_for_letters):
     """Returns a function which will replace all occurrences of ascii chars
     by a bracket expression containing the character and all its
@@ -180,13 +206,7 @@ def generate_re_diacritic_func(_diacritic_for_letters):
         letter_to_variants[k] = k + u"".join(sorted(v))
 
     def replace_func(string):
-        assert isinstance(string, unicode)
-
-        for k, v in letter_to_variants.iteritems():
-            if k in string:
-                string = string.replace(k, u"[%s]" % v)
-
-        return string
+        return replace_re(string, letter_to_variants)
 
     return replace_func
 
