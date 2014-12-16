@@ -8,6 +8,8 @@
 
 import re
 
+from quodlibet.util import re_escape
+
 
 def split_value(s, splitters=["/", "&", ","]):
     """Splits a string. The first match in 'splitters' is used as the
@@ -16,7 +18,7 @@ def split_value(s, splitters=["/", "&", ","]):
         return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
-        spl = re.compile(r"\b\s*%s\s*\b" % re.escape(spl), re.UNICODE)
+        spl = re.compile(r"\b\s*%s\s*\b" % re_escape(spl), re.UNICODE)
         if not filter(spl.search, values):
             continue
         new_values = []
@@ -50,8 +52,8 @@ def split_title(s, splitters=["/", "&", ","]):
 __FEATURING = ["feat.", "featuring", "feat", "ft", "ft.", "with", "w/"]
 __ORIGINALLY = ["originally by ", " cover"]
 # Cache case-insensitive regex searches of the above
-__FEAT_REGEX = [re.compile(re.escape(s + " "), re.I) for s in __FEATURING]
-__ORIG_REGEX = [re.compile(re.escape(s), re.I) for s in __ORIGINALLY]
+__FEAT_REGEX = [re.compile(re_escape(s + " "), re.I) for s in __FEATURING]
+__ORIG_REGEX = [re.compile(re_escape(s), re.I) for s in __ORIGINALLY]
 
 
 def split_people(s, splitters=["/", "&", ","]):

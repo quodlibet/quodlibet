@@ -8,6 +8,7 @@
 import os
 import re
 from quodlibet.util.path import fsdecode, is_fsnative
+from quodlibet.util import re_escape
 
 
 class TagsFromPattern(object):
@@ -32,7 +33,7 @@ class TagsFromPattern(object):
                 if "QUOD_LIBET" not in piece:
                     self.headers.append(piece[1:-1].encode("ascii", "replace"))
             else:
-                pieces[i] = re.escape(piece)
+                pieces[i] = re_escape(piece)
 
         # some slight magic to anchor searches "nicely"
         # nicely means if it starts with a <tag>, anchor with a /
@@ -41,7 +42,7 @@ class TagsFromPattern(object):
         # and if it's not a tag, trust the user
         if pattern.startswith('<') and not pattern.startswith('<tracknumber>')\
                 and not pattern.startswith('<discnumber>'):
-            pieces.insert(0, re.escape(os.path.sep))
+            pieces.insert(0, re_escape(os.path.sep))
         if pattern.endswith('>') and not pattern.endswith('<tracknumber>')\
                 and not pattern.endswith('<discnumber>'):
             pieces.append(r'(?:\.[A-Za-z0-9_+]+)$')

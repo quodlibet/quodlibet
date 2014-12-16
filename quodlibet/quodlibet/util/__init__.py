@@ -1024,3 +1024,10 @@ class MainRunner(object):
             if self._error is not None:
                 raise self._error
             return self._return
+
+
+def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
+    """A re.escape which also works with unicode"""
+
+    needs_escape = lambda c: (c in BAD and "\\" + c) or c
+    return type(string)().join(map(needs_escape, string))

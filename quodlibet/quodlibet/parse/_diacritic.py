@@ -12,13 +12,17 @@
 """
 Ways to let ASCII characters match other unicode characters which
 can be decomposed into one ASCII character and one or more combining
-diacritics. This allows to match e.g. "Múm" using "Mum".
+diacritic marks. This allows to match e.g. "Múm" using "Mum".
 
-re_add_diacritics(u"Mum") => u"[MḾṀṂ][uùúûüũūŭůűųưǔǖǘǚǜȕȗṳṵṷṹṻụủứừửữự][mḿṁṃ]"
+re_add_diacritic_variants(u"Mum") =>
+    u"[MḾṀṂ][uùúûüũūŭůűųưǔǖǘǚǜȕȗṳṵṷṹṻụủứừửữự][mḿṁṃ]"
 """
 
+import sre_parse
 import unicodedata
 import sys
+
+from quodlibet.util import re_escape
 
 
 _DIACRITIC_CACHE = {
@@ -123,7 +127,7 @@ _DIACRITIC_CACHE = {
 
 
 def diacritic_for_letters(regenerate=False):
-    """Returns a mapping for combining diacritics to ascii characters
+    """Returns a mapping for combining diacritic mark to ascii characters
     for which they can be used to combine to a single unicode char.
 
     (actually not ascii, but unicode from the Lu/Ll/Lt categories,
@@ -155,44 +159,7 @@ def diacritic_for_letters(regenerate=False):
     return d
 
 
-def replace_re(string, mapping):
-    """Replace a character in a regexp with one or more other ones.
-
-    FIXME: support ranges
-    """
-
-    assert isinstance(string, unicode)
-
-    done = []
-    escaped = False
-    for c in string:
-        if escaped:
-            escaped = False
-            done.append(c)
-        else:
-            if c == u"\\":
-                escaped = True
-                done.append(c)
-            else:
-                if c in mapping:
-                    done.append(u"[%s]" % mapping[c])
-                else:
-                    done.append(c)
-    return u"".join(done)
-
-
-def generate_re_diacritic_func(_diacritic_for_letters):
-    """Returns a function which will replace all occurrences of ascii chars
-    by a bracket expression containing the character and all its
-    variants with diacriticals.
-
-    "föhn" -> "[fḟ]ö[hĥȟḣḥḧḩḫẖ][nñńņňǹṅṇṉṋ]"
-
-    TODO: Ideally this should parse the regexp and ignore ranges etc.
-    Using sre_parse is an option, but editing the resulting parse tree
-    depends on too many internals.
-    """
-
+def generate_re_diacritic_mapping(_diacritic_for_letters):
     letter_to_variants = {}
 
     # combine combining characters with the ascii chars
@@ -203,13 +170,168 @@ def generate_re_diacritic_func(_diacritic_for_letters):
 
     # create strings to replace ascii with
     for k, v in letter_to_variants.items():
-        letter_to_variants[k] = k + u"".join(sorted(v))
+        letter_to_variants[k] = u"".join(sorted(v))
 
-    def replace_func(string):
-        return replace_re(string, letter_to_variants)
-
-    return replace_func
+    return letter_to_variants
 
 
-re_add_diacritics = generate_re_diacritic_func(
+def _fixup_literal(literal, in_seq, mapping):
+    u = unichr(literal)
+    if u in mapping:
+        u = u + mapping[u]
+    need_seq = len(u) > 1
+    u = re_escape(u)
+    if need_seq and not in_seq:
+        u = u"[%s]" % u
+    return u
+
+
+def _fixup_not_literal(literal, mapping):
+    u = unichr(literal)
+    if u in mapping:
+        u = u + mapping[u]
+    u = re_escape(u)
+    return u"[^%s]" % u
+
+
+def _fixup_range(start, end, mapping):
+    extra = []
+    for i in xrange(start, end + 1):
+        u = unichr(i)
+        if u in mapping:
+            extra.append(re_escape(mapping[u]))
+    start = re_escape(unichr(start))
+    end = re_escape(unichr(end))
+    return u"%s%s-%s" % ("".join(extra), start, end)
+
+
+def _construct_regexp(pattern, mapping):
+    """Raises NotImplementedError"""
+
+    parts = []
+
+    for op, av in pattern:
+        if op == "not_literal":
+            parts.append(_fixup_not_literal(av, mapping))
+        elif op == "literal":
+            parts.append(_fixup_literal(av, False, mapping))
+        elif op == "category":
+            cats = {
+                "category_word": u"\\w",
+                "category_not_word": u"\\W",
+                "category_digit": u"\\d",
+                "category_not_digit": u"\\D",
+                "category_space": u"\\s",
+                "category_not_space": u"\\S",
+            }
+            try:
+                parts.append(cats[av])
+            except KeyError:
+                raise NotImplementedError(av)
+        elif op == "any":
+            parts.append(u".")
+        elif op == "negate":
+            parts.append(u"^")
+        elif op == "in":
+            in_parts = []
+            for entry in av:
+                op, eav = entry
+                if op == "literal":
+                    in_parts.append(_fixup_literal(eav, True, mapping))
+                else:
+                    in_parts.append(_construct_regexp([entry], mapping))
+            parts.append(u"[%s]" % (u"".join(in_parts)))
+        elif op == "range":
+            start, end = av
+            parts.append(_fixup_range(start, end, mapping))
+        elif op == "max_repeat" or op == "min_repeat":
+            min_, max_, pad = av
+            pad = _construct_regexp(pad, mapping)
+            if min_ == 1 and max_ == sre_parse.MAXREPEAT:
+                parts.append(u"%s+" % pad)
+            elif min_ == 0 and max_ == sre_parse.MAXREPEAT:
+                parts.append(u"%s*" % pad)
+            elif min_ == 0 and max_ == 1:
+                parts.append(u"%s?" % pad)
+            else:
+                parts.append(u"%s{%d,%d}" % (pad, min_, max_))
+            if op == "min_repeat":
+                parts[-1] = parts[-1] + u"?"
+        elif op == "at":
+            ats = {
+                "at_beginning": u"^",
+                "at_end": u"$",
+                "at_beginning_string": u"\\A",
+                "at_boundary": u"\\b",
+                "at_non_boundary": u"\\B",
+                "at_end_string": u"\\Z",
+            }
+            try:
+                parts.append(ats[av])
+            except KeyError:
+                raise NotImplementedError(av)
+        elif op == "subpattern":
+            group, pad = av
+            pad = _construct_regexp(pad, mapping)
+            if group is None:
+                parts.append(u"(?:%s)" % pad)
+            else:
+                parts.append(u"(%s)" % pad)
+        elif op == "assert":
+            direction, pad = av
+            pad = _construct_regexp(pad, mapping)
+            if direction == 1:
+                parts.append(u"(?=%s)" % pad)
+            elif direction == -1:
+                parts.append(u"(?<=%s)" % pad)
+            else:
+                raise NotImplementedError(direction)
+        elif op == "assert_not":
+            direction, pad = av
+            pad = _construct_regexp(pad, mapping)
+            if direction == 1:
+                parts.append(u"(?!%s)" % pad)
+            elif direction == -1:
+                parts.append(u"(?<!%s)" % pad)
+            else:
+                raise NotImplementedError(direction)
+        elif op == "branch":
+            dummy, branches = av
+            branches = map(lambda b: _construct_regexp(b, mapping), branches)
+            parts.append(u"%s" % (u"|".join(branches)))
+        else:
+            raise NotImplementedError(op)
+
+    return u"".join(parts)
+
+
+def re_replace_literals(text, mapping):
+    """Raises NotImplementedError or re.error"""
+
+    assert isinstance(text, unicode)
+
+    pattern = sre_parse.parse(text)
+    return _construct_regexp(pattern, mapping)
+
+
+# use _DIACRITIC_CACHE and create a lookup table
+_diacritic_mapping = generate_re_diacritic_mapping(
     diacritic_for_letters(regenerate=False))
+
+
+def re_add_diacritic_variants(text):
+    """Will replace all occurrences of ascii chars
+    by a bracket expression containing the character and all its
+    variants with a diacritic mark.
+
+    "föhn" -> "[fḟ]ö[hĥȟḣḥḧḩḫẖ][nñńņňǹṅṇṉṋ]"
+
+    In case the passed in regex is invalid raises re.error.
+
+    Supports all regexp except ones with group references. In
+    case something is not supported NotImplementedError gets raised.
+    """
+
+    assert isinstance(text, unicode)
+
+    return re_replace_literals(text, _diacritic_mapping)

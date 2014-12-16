@@ -16,7 +16,6 @@ __builtin__.__dict__["ngettext"] = _dummy_ngettext
 import gettext
 import locale
 import os
-import re
 import sys
 import warnings
 
@@ -334,13 +333,6 @@ def _python_init():
     if sys.version_info < MinVersions.PYTHON:
         actual = Version(sys.version_info[:3])
         print_w("Python %s required. %s found." % (MinVersions.PYTHON, actual))
-
-    # The default regex escaping function doesn't work for non-ASCII.
-    # Use a blacklist of regex-specific characters instead.
-    def re_esc(string, BAD="/.^$*+?{,\\[]|()<>#=!:"):
-        needs_escape = lambda c: (c in BAD and "\\" + c) or c
-        return type(string)().join(map(needs_escape, string))
-    re.escape = re_esc
 
     __builtin__.__dict__["print_"] = print_
     __builtin__.__dict__["print_d"] = print_d

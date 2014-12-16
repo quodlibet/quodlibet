@@ -7,6 +7,7 @@
 import re
 
 from quodlibet import app
+from quodlibet.util import re_escape
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -32,7 +33,7 @@ class RadioAdMute(EventPlugin):
     RE_SPAM = ["Sponsored Message\s+\([0-9]+\)",
             ]
 
-    SPAM = map(re.escape, SPAM) + RE_SPAM
+    SPAM = map(re_escape, SPAM) + RE_SPAM
     SPAM = [re.compile(s, re.I) for s in SPAM]
 
     __old_volume = 0

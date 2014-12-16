@@ -13,7 +13,8 @@ import re
 from quodlibet.parse import _match as match
 from quodlibet.parse._scanner import Scanner
 from quodlibet.parse._match import error, ParseError
-from quodlibet.parse._diacritic import re_add_diacritics
+from quodlibet.parse._diacritic import re_add_diacritic_variants
+from quodlibet.util import re_escape
 
 # Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
@@ -45,7 +46,7 @@ class QueryLexer(Scanner):
             string = string.encode('utf-8')
         string = string[1:-1].decode('string_escape')
         string = string.decode('utf-8')
-        return QueryLexeme(RE, "^%s$" % re.escape(string))
+        return QueryLexeme(RE, "^%s$" % re_escape(string))
 
     def tag(self, scanner, string):
         return QueryLexeme(TAG, string.strip())
@@ -231,7 +232,7 @@ class QueryParser(object):
         tag = self.lookahead.lexeme
         self.match(TAG)
         try:
-            return re.compile(re.escape(tag), re.IGNORECASE | re.UNICODE)
+            return re.compile(re_escape(tag), re.IGNORECASE | re.UNICODE)
         except re.error:
             raise ParseError("The regular expression was invalid")
 
@@ -252,7 +253,13 @@ class QueryParser(object):
             if "l" in s:
                 mods = (mods & ~re.UNICODE) | re.LOCALE
             if "d" in s:
-                regex = re_add_diacritics(regex)
+                try:
+                    regex = re_add_diacritic_variants(regex)
+                except re.error:
+                    raise ParseError("The regular expression was invalid")
+                except NotImplementedError:
+                    raise ParseError(
+                        "The regular expression was is not supported")
             self.match(TAG)
         try:
             return re.compile(regex, mods)
@@ -290,7 +297,7 @@ def _get_query_type(string):
 STAR = ["artist", "album", "title"]
 
 
-def Query(string, star=STAR):
+def Query(string, star=STAR, dumb_match_diacritics=True):
     """Parses the query string and returns a match object.
 
     star -- List of tags to look in if none are specified in the query.
@@ -319,7 +326,9 @@ def Query(string, star=STAR):
 
     # normal string, put it in a intersection to get a value list
     if query_type == STRING:
-        parts = ["/%s/" % re.escape(s) for s in string.split()]
+        parts = ["/%s/d" % re_escape(s) for s in string.split()]
+        if dumb_match_diacritics:
+            parts = [p + "d" for p in parts]
         string = "&(" + ",".join(parts) + ")"
         query_type = VALUE
 

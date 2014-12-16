@@ -1,6 +1,7 @@
 import uuid
 from quodlibet.config import HardCodedRatingsPrefs
 from quodlibet.util.path import *
+from quodlibet.util import re_escape
 from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.string.splitters import *
 from quodlibet.util.library import *
@@ -10,7 +11,6 @@ import tempfile
 import os
 import sys
 import threading
-import re
 import time
 from quodlibet import util
 from quodlibet import config
@@ -168,22 +168,22 @@ class Tunescape(Tescape):
 
 class Tre_esc(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(re.escape(""), "")
-        self.assertTrue(isinstance(re.escape(""), bytes))
+        self.failUnlessEqual(re_escape(""), "")
+        self.assertTrue(isinstance(re_escape(""), bytes))
 
     def test_empty_unicode(self):
-        self.failUnlessEqual(re.escape(u""), u"")
-        self.assertTrue(isinstance(re.escape(u""), unicode))
+        self.failUnlessEqual(re_escape(u""), u"")
+        self.assertTrue(isinstance(re_escape(u""), unicode))
 
     def test_safe(self):
-        self.failUnlessEqual(re.escape("fo o"), "fo o")
+        self.failUnlessEqual(re_escape("fo o"), "fo o")
 
     def test_unsafe(self):
-        self.failUnlessEqual(re.escape("!bar"), r"\!bar")
+        self.failUnlessEqual(re_escape("!bar"), r"\!bar")
 
     def test_many_unsafe(self):
         self.failUnlessEqual(
-            re.escape("*quux#argh?woo"), r"\*quux\#argh\?woo")
+            re_escape("*quux#argh?woo"), r"\*quux\#argh\?woo")
 
 
 class Tdecode(TestCase):

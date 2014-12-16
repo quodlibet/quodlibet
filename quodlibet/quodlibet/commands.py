@@ -8,7 +8,6 @@
 # published by the Free Software Foundation
 
 import os
-import re
 from cStringIO import StringIO
 
 from quodlibet import browsers
@@ -234,7 +233,7 @@ def _add_directory(app, value):
         pass
     if app.browser.can_filter_text():
         app.browser.filter_text(
-            "filename = /^%s/c" % re.escape(filename))
+            "filename = /^%s/c" % util.re_escape(filename))
     else:
         basepath = filename + "/"
         songs = [song for (fn, song) in library.iteritems()

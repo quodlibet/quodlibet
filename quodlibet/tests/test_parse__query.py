@@ -297,10 +297,7 @@ class TQuery(TestCase):
     def test_star_numeric(self):
         self.assertRaises(ValueError, Query, u"foobar", star=["~#mtime"])
 
-    def test_match_diacriticals(self):
-        self.failUnless(Query(u'"Angstrom"d').search(self.s4))
-        self.failUnless(Query(u'Ångström').search(self.s4))
-        self.failIf(Query(u'Ångstrom').search(self.s4))
+    def test_match_diacriticals_explcit(self):
         self.failIf(Query(u'title=angstrom').search(self.s4))
         self.failIf(Query(u'title="Ångstrom"').search(self.s4))
         self.failUnless(Query(u'title="Ångstrom"d').search(self.s4))
@@ -310,6 +307,19 @@ class TQuery(TestCase):
         self.failUnless(Query(u'title="Ångstrom"d').search(self.s4))
         self.failUnless(Query(u'title=/Angstrom/d').search(self.s4))
         self.failUnless(Query(u'""d').search(self.s4))
+
+    def test_match_diacriticals_dumb(self):
+        self.assertTrue(Query(u'Angstrom').search(self.s4))
+        self.assertTrue(Query(u'Ångström').search(self.s4))
+        self.assertTrue(Query(u'Ångstrom').search(self.s4))
+        self.assertFalse(Query(u'Ängström').search(self.s4))
+
+    def test_match_diacriticals_invalid_or_unsupported(self):
+        # these fall back to test dumb searches:
+        # invalid regex
+        Query(u'/Sigur [r-zos/d')
+        # group refs unsupported for diacritic matching
+        Query(u'/(<)?(\w+@\w+(?:\.\w+)+)(?(1)>)/d')
 
 
 class TQuery_is_valid_color(TestCase):
