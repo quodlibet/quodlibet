@@ -45,24 +45,6 @@ class Tgetcwd(TestCase):
         self.assertTrue(is_fsnative(getcwd()))
 
 
-class Tiscommand(TestCase):
-
-    def test_unix(self):
-        if is_win:
-            return
-
-        self.failUnless(iscommand("ls"))
-        self.failUnless(iscommand("/bin/ls"))
-        self.failUnless(iscommand("pidof"))
-
-    def test_both(self):
-        self.failIf(iscommand("zzzzzzzzz"))
-        self.failIf(iscommand("/bin/zzzzzzzzz"))
-        self.failIf(iscommand(""))
-        self.failIf(iscommand("/bin"))
-        self.failIf(iscommand("X11"))
-
-
 class Tmtime(TestCase):
     def test_equal(self):
         self.failUnlessEqual(mtime("."), os.path.getmtime("."))

@@ -134,14 +134,15 @@ else:
 
 
 def iscommand(s):
-    """True if an executable file 's' exists in the user's path, or is a
-    fully-qualified existing executable file."""
+    """True if an executable file `s` exists in the user's path, or is a
+    fully qualified and existing executable file."""
 
     if s == "" or os.path.sep in s:
         return os.path.isfile(s) and os.access(s, os.X_OK)
     else:
         s = s.split()[0]
-        for p in os.defpath.split(os.path.pathsep):
+        path = os.environ.get('PATH', '') or os.defpath
+        for p in path.split(os.path.pathsep):
             p2 = os.path.join(p, s)
             if os.path.isfile(p2) and os.access(p2, os.X_OK):
                 return True
