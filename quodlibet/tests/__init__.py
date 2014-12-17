@@ -49,6 +49,8 @@ def skip(cls, reason=None, warn=True):
 
 def skipUnless(value, *args, **kwargs):
     def dec(cls):
+        assert inspect.isclass(cls)
+
         if value:
             return cls
         return skip(cls, *args, **kwargs)
