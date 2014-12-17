@@ -2,7 +2,7 @@
 #
 #    ReplayGain Album Analysis using gstreamer rganalysis element
 #    Copyright (C) 2005,2007,2009  Michael Urman
-#                            2012  Nick Boultbee
+#                         2012,14  Nick Boultbee
 #                            2013  Christoph Reiter
 #
 #    This program is free software; you can redistribute it and/or modify
@@ -15,10 +15,14 @@ from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import Gst
 from gi.repository import GLib
+from quodlibet import print_d
+from quodlibet.plugins import PluginConfigMixin
+
 from quodlibet.browsers.collection.models import EMPTY
 
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.util import cached_property
 
 __all__ = ['ReplayGain']
 
@@ -35,11 +39,20 @@ def get_num_threads():
     return threads
 
 
+class UpdateMode(object):
+    """Enum-like class for update strategies"""
+    ALWAYS = "always"
+    ALBUM_MISSING = "album_tags_missing"
+    ANY_MISSING = "any_tags_missing"
+
+
 class RGAlbum(object):
-    def __init__(self, rg_songs):
+    def __init__(self, rg_songs, process_mode):
         self.songs = rg_songs
         self.gain = None
         self.peak = None
+        self.__should_process = None
+        self.__process_mode = process_mode
 
     @property
     def progress(self):
@@ -86,8 +99,23 @@ class RGAlbum(object):
             song._write(self.gain, self.peak)
 
     @classmethod
-    def from_songs(self, songs):
-        return RGAlbum([RGSong(s) for s in songs])
+    def from_songs(cls, songs, process_mode=UpdateMode.ALWAYS):
+        return RGAlbum([RGSong(s) for s in songs], process_mode)
+
+    @cached_property
+    def should_process(self):
+        """Returns true if the album needs analysis, according to prefs"""
+        mode = self.__process_mode
+        if mode == UpdateMode.ALWAYS:
+            return True
+        elif mode == UpdateMode.ANY_MISSING:
+            return not all([s.has_all_rg_tags for s in self.songs])
+        elif mode == UpdateMode.ALBUM_MISSING:
+            return not all([s.album_gain for s in self.songs])
+        else:
+            print_w("Invalid setting for update mode: " + mode)
+            # Safest to re-process probably.
+            return True
 
 
 class RGSong(object):
@@ -98,20 +126,29 @@ class RGSong(object):
         self.peak = None
         self.progress = 0.0
         self.done = False
+        # TODO: support prefs for not overwriting individual existing tags
+        #       e.g. to re-run over entire library but keeping files untouched
+        self.overwrite_existing = True
 
     def _write(self, album_gain, album_peak):
         if self.error or not self.done:
             return
         song = self.song
 
-        if self.gain is not None:
-            song['replaygain_track_gain'] = '%.2f dB' % self.gain
-        if self.peak is not None:
-            song['replaygain_track_peak'] = '%.4f' % self.peak
-        if album_gain is not None:
-            song['replaygain_album_gain'] = '%.2f dB' % album_gain
-        if album_peak is not None:
-            song['replaygain_album_peak'] = '%.4f' % album_peak
+        def write_to_song(tag, pattern, value):
+            if value is None or value == "":
+                return
+            existing = song(tag, None)
+            if existing and not self.overwrite_existing:
+                print_d("Not overwriting existing tag %s (=%s) for %s"
+                        % (tag, existing, self.song("~filename")))
+                return
+            song[tag] = pattern % value
+
+        write_to_song('replaygain_track_gain', '%.2f dB', self.gain)
+        write_to_song('replaygain_track_peak', '%.4f', self.peak)
+        write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
+        write_to_song('replaygain_album_peak', '%.4f', album_peak)
 
     @property
     def title(self):
@@ -124,6 +161,43 @@ class RGSong(object):
     @property
     def length(self):
         return self.song("~#length")
+
+    def _get_rg_tag(self, suffix):
+        ret = self.song("~#replaygain_%s" % suffix)
+        return None if ret == "" else ret
+
+    @property
+    def track_gain(self):
+        return self._get_rg_tag("track_gain")
+
+    @property
+    def album_gain(self):
+        return self._get_rg_tag("album_gain")
+
+    @property
+    def track_peak(self):
+        return self._get_rg_tag('track_peak')
+
+    @property
+    def album_peak(self):
+        return self._get_rg_tag('album_peak')
+
+    @property
+    def has_track_tags(self):
+        return not (self.track_gain is None or self.track_peak is None)
+
+    @property
+    def has_album_tags(self):
+        return not (self.album_gain is None or self.album_peak is None)
+
+    @property
+    def has_all_rg_tags(self):
+        return self.has_track_tags and self.has_album_tags
+
+    def __str__(self):
+        vals = {k: self._get_rg_tag(k)
+                for k in 'track_gain album_gain album_peak track_peak'.split()}
+        return "<Song=%s RG data=%s>" % (self.song, vals)
 
 
 class ReplayGainPipeline(GObject.Object):
@@ -272,15 +346,21 @@ class ReplayGainPipeline(GObject.Object):
 
 class RGDialog(Gtk.Dialog):
 
-    def __init__(self, albums, parent):
+    def __init__(self, albums, parent, process_mode):
         super(RGDialog, self).__init__(
             title=_('ReplayGain Analyzer'), parent=parent,
             buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                      Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
         )
 
-        self.set_default_size(500, 350)
+        self.process_mode = process_mode
+        self.set_default_size(600, 400)
         self.set_border_width(6)
+
+        hbox = Gtk.HBox(spacing=6)
+        info = Gtk.Label()
+        hbox.pack_start(info, True, True, 0)
+        self.vbox.pack_start(hbox, False, False, 6)
 
         swin = Gtk.ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -307,6 +387,7 @@ class RGDialog(Gtk.Dialog):
         def track_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             cell.set_property('text', item.title)
+            cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Track"))
         column.set_expand(True)
@@ -320,6 +401,7 @@ class RGDialog(Gtk.Dialog):
         def progress_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             cell.set_property('value', int(item.progress * 100))
+            cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Progress"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -334,6 +416,7 @@ class RGDialog(Gtk.Dialog):
                 cell.set_property('text', "-")
             else:
                 cell.set_property('text', "%.2f db" % item.gain)
+            cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Gain"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -348,6 +431,7 @@ class RGDialog(Gtk.Dialog):
                 cell.set_property('text', "-")
             else:
                 cell.set_property('text', "%.2f" % item.peak)
+            cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Peak"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -356,31 +440,38 @@ class RGDialog(Gtk.Dialog):
         column.set_cell_data_func(peak_renderer, peak_cdf)
         view.append_column(column)
 
-        # create as many pipelines as threads
-        self.pipes = []
-        for i in xrange(get_num_threads()):
-            self.pipes.append(ReplayGainPipeline())
-
+        self.create_pipelines()
         self._timeout = None
         self._sigs = {}
         self._done = []
-        self._todo = list([RGAlbum.from_songs(a) for a in albums])
-        self._count = len(self._todo)
 
-        # fill the view
-        self.model = model = Gtk.TreeStore(object)
+        self.__fill_view(view, albums)
+        num_to_process = sum(int(rga.should_process) for rga in self._todo)
+        template = ngettext("There is <b>%d</b> album to update (of %d)",
+                            "There are <b>%d</b> albums to update (of %d)",
+                            num_to_process)
+        info.set_markup(template % (num_to_process, len(self._todo)))
+        self.connect("destroy", self.__destroy)
+        self.connect('response', self.__response)
+
+    def create_pipelines(self):
+        # create as many pipelines as threads
+        self.pipes = [ReplayGainPipeline() for _ in xrange(get_num_threads())]
+
+    def __fill_view(self, view, albums):
+        self._todo = [RGAlbum.from_songs(a, self.process_mode) for a in albums]
+        self._count = len(self._todo)
+        self.model = model = Gtk.TreeStore(object, bool)
         insert = model.insert
         for album in reversed(self._todo):
-            base = insert(None, 0, row=[album])
+            enabled = album.should_process
+            base = insert(None, 0, row=[album, enabled])
             for song in reversed(album.songs):
-                insert(base, 0, row=[song])
+                insert(base, 0, row=[song, enabled])
         view.set_model(model)
 
         if len(self._todo) == 1:
             view.expand_all()
-
-        self.connect("destroy", self.__destroy)
-        self.connect('response', self.__response)
 
     def start_analysis(self):
         self._timeout = GLib.idle_add(self.__request_update)
@@ -393,7 +484,24 @@ class RGDialog(Gtk.Dialog):
                 p.connect("done", self.__done),
                 p.connect("update", self.__update),
             ]
-            p.start(self._todo.pop(0))
+            album = self.get_next_album()
+            if not album:
+                return
+            p.start(album)
+
+    def get_next_album(self):
+        next_album = None
+        while not next_album:
+            if not self._todo:
+                print_d("No more albums to process")
+                return None
+            next_album = self._todo.pop(0)
+            if not next_album.should_process:
+                print_d("%s needs no processing" % next_album.title)
+                self._done.append(next_album)
+                self.__update_view_for(next_album)
+                next_album = None
+        return next_album
 
     def __response(self, win, response):
         if response == Gtk.ResponseType.CANCEL:
@@ -429,7 +537,9 @@ class RGDialog(Gtk.Dialog):
         self._done.append(album)
         if self._todo:
             pipeline.start(self._todo.pop(0))
+        self.__update_view_for(album)
 
+    def __update_view_for(self, album):
         for row in self.model:
             row_album = row[0]
             if row_album is album:
@@ -447,14 +557,19 @@ class RGDialog(Gtk.Dialog):
         return False
 
 
-class ReplayGain(SongsMenuPlugin):
+class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = _('Replay Gain')
-    PLUGIN_DESC = _('Analyzes ReplayGain with gstreamer, grouped by album')
+    PLUGIN_DESC = _('Analyzes and updates ReplayGain information,'
+                    'using gstreamer. Results are grouped by album')
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
+    # A little arbitrary, but seemed to match the history best.
+    PLUGIN_VERSION = '2.1'
+    CONFIG_SECTION = 'replaygain'
 
     def plugin_albums(self, albums):
-        win = RGDialog(albums, parent=self.plugin_window)
+        mode = self.config_get("process_if", UpdateMode.ALWAYS)
+        win = RGDialog(albums, parent=self.plugin_window, process_mode=mode)
         win.show_all()
         win.start_analysis()
 
@@ -463,6 +578,67 @@ class ReplayGain(SongsMenuPlugin):
 
     def __plugin_done(self, win):
         self.plugin_finish()
+
+    @classmethod
+    def PluginPreferences(cls, parent):
+        vb = Gtk.VBox(spacing=12)
+
+        # Server settings Frame
+        frame = Gtk.Frame(label=_("<b>Existing Tags</b>"))
+        frame.set_shadow_type(Gtk.ShadowType.NONE)
+        frame.get_label_widget().set_use_markup(True)
+        frame_align = Gtk.Alignment.new(0, 0, 1, 1)
+        frame_align.set_padding(6, 6, 12, 12)
+        frame.add(frame_align)
+
+        # Tabulate all settings for neatness
+        table = Gtk.Table(n_rows=1, n_columns=2)
+        table.set_col_spacings(6)
+        table.set_row_spacings(6)
+        rows = []
+
+        def process_option_changed(combo):
+            #xcode = combo.get_child().get_text()
+            model = combo.get_model()
+            lbl, value = model[combo.get_active()]
+            cls.config_set("process_if", value)
+
+        def create_model():
+            model = Gtk.ListStore(str, str)
+            model.append([_("<b>always</b>"), UpdateMode.ALWAYS])
+            model.append([_("if <b>any</b> RG tags are missing"),
+                          UpdateMode.ANY_MISSING])
+            model.append([_("if <b>album</b> RG tags are missing"),
+                          UpdateMode.ALBUM_MISSING])
+            return model
+
+        def set_active(value):
+            for i, item in enumerate(model):
+                if value == item[1]:
+                    combo.set_active(i)
+
+        model = create_model()
+        combo = Gtk.ComboBox(model=model)
+        set_active(cls.config_get("process_if", UpdateMode.ALWAYS))
+        renderer = Gtk.CellRendererText()
+        combo.connect('changed', process_option_changed)
+        combo.pack_start(renderer, True)
+        combo.add_attribute(renderer, "markup", 0)
+
+        rows.append((_("_Process albums:"), combo))
+
+        for (row, (label_text, entry)) in enumerate(rows):
+            label = Gtk.Label(label=label_text)
+            label.set_alignment(0.0, 0.5)
+            label.set_use_underline(True)
+            label.set_mnemonic_widget(entry)
+            table.attach(label, 0, 1, row, row + 1,
+                         xoptions=Gtk.AttachOptions.FILL)
+            table.attach(entry, 1, 2, row, row + 1)
+
+        frame_align.add(table)
+        vb.pack_start(frame, True, True, 0)
+        return vb
 
 
 if not Gst.Registry.get().find_plugin("replaygain"):
