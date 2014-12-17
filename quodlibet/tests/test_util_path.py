@@ -1,6 +1,6 @@
 import os
 import unittest
-from tests import TestCase, skipIf, skipUnless
+from tests import TestCase
 
 from quodlibet.util.path import pathname2url_win32, iscommand
 
@@ -38,7 +38,6 @@ class Tiscommand(TestCase):
 
     @unittest.skipUnless(path_set, "Can only test with a valid $PATH")
     def test_looks_in_path(self):
-
         path_dirs = set(os.environ['PATH'].split(os.path.pathsep))
         dirs = path_dirs - set(os.defpath.split(os.path.pathsep))
         for d in dirs:
