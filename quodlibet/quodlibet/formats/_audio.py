@@ -76,7 +76,6 @@ class AudioFile(dict, ImageContainer):
     format = "Unknown Audio File"
     mimes = []
 
-    @util.cached_property
     def __song_key(self):
         return (self("~#disc"), self("~#track"),
             human(self("artistsort")),
@@ -93,7 +92,7 @@ class AudioFile(dict, ImageContainer):
 
     @util.cached_property
     def sort_key(self):
-        return [self.album_key, self.__song_key]
+        return [self.album_key, self.__song_key()]
 
     @staticmethod
     def sort_by_func(tag):
@@ -127,7 +126,6 @@ class AudioFile(dict, ImageContainer):
         pop = self.__dict__.pop
         pop("album_key", None)
         pop("sort_key", None)
-        pop("__song_key", None)
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
@@ -136,7 +134,6 @@ class AudioFile(dict, ImageContainer):
         pop = self.__dict__.pop
         pop("album_key", None)
         pop("sort_key", None)
-        pop("__song_key", None)
 
     @property
     def key(self):

@@ -996,3 +996,30 @@ class Tconnect_destroy(TestCase):
         self.assertEqual(sys.getrefcount(a), ref + 1)
         a.destroy()
         self.assertEqual(sys.getrefcount(a), ref)
+
+
+class Tcached_property(TestCase):
+
+    def test_main(self):
+
+        class A(object):
+            @util.cached_property
+            def foo(self):
+                return object()
+
+        a = A()
+        first = a.foo
+        self.assertTrue(first is a.foo)
+        del a.__dict__["foo"]
+        self.assertFalse(first is a.foo)
+
+    def test_dunder(self):
+
+        def define_class():
+
+            class A(object):
+                @util.cached_property
+                def __foo_(self):
+                    return object()
+
+        self.assertRaises(AssertionError, define_class)
