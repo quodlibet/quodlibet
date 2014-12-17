@@ -2,38 +2,62 @@
 -----------------------
 
 General:
- * Support --query with all browsers that have a search entry. :bug:`1437`
- * Songlist: Scroll to playing song when replacing the list.
-   Scroll to first selected song and restore selection for it on re-sort.
-   :bug:`568`
+ * Support ``--query`` with all browsers that have a search entry. :bug:`1437`
+ * Songlist: Scroll to playing song when replacing the list. :bug:`568`
+ * Songlist: Scroll to first selected song and restore selection for
+   it on re-sort. :bug:`568`
  * Consider all songs in an album for finding (embedded) album art.
    :bug:`924`
- * Support 'month' (30 days) in time queries. :bug:`706`
+ * Support ``month`` (30 days) in time queries (``#(lastplayed < 1 month)``.
+   :bug:`706`
  * Support playing a song that is not in the song list. :bug:`1358`
- * Support numeric date search e.g. #(2004-01 < date < 2004-05). :bug:`1455`
+ * Support numeric date search e.g. ``#(2004-01 < date < 2004-05)``
+   :bug:`1455`
  * Playlists browser: make delete key remove the selected songs from
    the current playlist :bug:`1481` (Nick Boultbee)
  * File tree: Show XDG desktop/downloads/music folders if available
  * File tree: List mountpoints on linux
+ * Show the filter menu in secondary browser windows (filter shortcuts
+   work there as well now)
+ * Add ``alt+[1-9]`` shortcut for notebook widgets to jump the a specific page
+ * Support loading ADTS/ADIF files (\*.aac). Needs mutagen 1.27.
+ * Search: New regex modifier ``"d"`` which makes all letters match
+   variants with diacritic marks (accents etc.). Enabled by default for normal
+   text searches. ``Sigur Ros`` will now find songs containing ``Sigur Rós``.
+   For regex and exact searches use ``/Sigur Ros/d`` and ``"Sigur Ros"d``
+   to enable.
+   :bug:`133`
 
 Fixes:
  * Update for theming changes in gtk3.15
  * Fix seek slider not working with newer gtk+ and some themes :bug:`1477`
+ * Fix playing song not restoring on start with radio/filesystem browser
+
+Translations:
+ * Russian translation update (Anton Shestakov) :bug:`1441`
+ * Updated Greek translation (Dimitris Papageorgiou). :bug:`1491`
 
 Tagger:
  * WMA: support multiple values for producer, conductor, artist, lyricist,
-   albumartist, composer, genre and mood.
+   albumartist, composer, genre and mood (needs mutagen 1.26)
+ * APEv2: Support reading/writing embedded album art for APEv2 based formats
+   (Wavpack, Musepack, Monkey's Audio)
  * Allow removing and renaming from tag names which not all selected
    formats support.
+ * Allow toggling of programmatic tags in the tagging UI
 
 Plugins:
- * New simple lyricwiki plugin using a webview
+ * Various translation related fixes (Anton Shestakov) :bug:`1442` :bug:`1445`
+ * New simple lyricwiki plugin using a WebKitGtk webview
  * New Rhythmbox import plugin. :bug:`1463`
+ * MPD server: make work again with newer MPDroid (MPDroid crashed on start)
+ * Trayicon: add option to quit when closing the main window instead of hiding
+   :bug:`619`
 
 Operon:
  * new 'edit' command which lets one edit tags with a text editor
    (``VISUAL=vi operon edit song.flac``) :bug:`1084`
- * new fill command
+ * new 'fill' command aka "tags from path"
    (``operon fill --dry-run "<tracknumber>. <title>" *.flac``)
 
 OSX:
@@ -42,10 +66,14 @@ OSX:
  * Various fixes / improvements
 
 Windows:
+ * Newer mutagen (1.27)
+ * Newer GTK+/Gstreamer (Tumagonx)
  * Fix loading cover art from non-ansi paths
  * Starting QL will now focus the first instance if one exists
  * quodlibet.exe now passes command arguments to the running instance
-  (quodlibet.exe --next) :bug:`635`
+   (quodlibet.exe --next) :bug:`635`
+ * New quodlibet-cmd.exe which is the same as quodlibet.exe but
+   can be executed in the Windows console with visible stdout :bug:`635`
 
 
 3.2.2 (2014-10-03) - ENJOY, THERE'S NO GOING BACK
@@ -120,7 +148,7 @@ Misc:
 
 Developers:
  * Due to the inclusion of the plugins into the core, the symlink from
- ~/.quodlibet/plugins is no longer needed.
+   ~/.quodlibet/plugins is no longer needed.
 
 Fixes:
  * Fix tray icon crashing or not showing under Gnome Shell 3.12 :bug:`1429`
