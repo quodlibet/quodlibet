@@ -20,7 +20,6 @@ if os.name == "nt" or sys.platform == "darwin":
     raise PluginNotSupportedError
 
 import re
-import tempfile
 
 import dbus
 from gi.repository import Gtk, GObject, GLib
@@ -277,7 +276,7 @@ class Notify(EventPlugin):
         self.__disable_watch()
         self.__disconnect()
         self.__enabled = False
-        self.__image_fp = None
+        self._set_image_fileobj(None)
 
     def __enable_watch(self):
         """Enable events for dbus name owner change"""
@@ -337,6 +336,22 @@ class Notify(EventPlugin):
         else:
             self.__last_id = 0
 
+    def _set_image_fileobj(self, fileobj):
+        if self.__image_fp is not None:
+            self.__image_fp.close()
+            self.__image_fp = None
+        self.__image_fp = fileobj
+
+    def _get_image_uri(self, song):
+        """A unicode file URI or an empty string"""
+
+        fileobj = song.find_cover()
+        self._set_image_fileobj(fileobj)
+        if fileobj:
+            image_path = fileobj.name
+            return URI.frompath(image_path).decode("utf-8")
+        return u""
+
     def show_notification(self, song):
         """Returns True if showing the notification was successful"""
 
@@ -388,20 +403,6 @@ class Notify(EventPlugin):
             if "body-images" not in caps:
                 body = strip_images(body)
 
-        image_path = ""
-        self.__image_fp = song.find_cover()
-        if self.__image_fp:
-            image_path = self.__image_fp.name
-
-        is_temp = image_path.startswith(tempfile.gettempdir())
-
-        # If it is not an embeded cover, drop the file handle
-        if not is_temp:
-            self.__image_fp = None
-
-        if image_path:
-            image_path = URI.frompath(image_path)
-
         actions = []
         if "actions" in caps:
             actions = ["next", _("Next")]
@@ -410,14 +411,15 @@ class Notify(EventPlugin):
             "desktop-entry": "quodlibet",
         }
 
-        if image_path:
-            hints["image_path"] = image_path
-            hints["image-path"] = image_path
+        image_uri = self._get_image_uri(song)
+        if image_uri:
+            hints["image_path"] = image_uri
+            hints["image-path"] = image_uri
 
         try:
             self.__last_id = iface.Notify(
                 "Quod Libet", self.__last_id,
-                image_path, title, body, actions, hints,
+                image_uri, title, body, actions, hints,
                 get_conf_int("timeout"))
         except dbus.DBusException:
             print_w("[notify] %s" %
