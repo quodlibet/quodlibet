@@ -389,10 +389,9 @@ class Notify(EventPlugin):
                 body = strip_images(body)
 
         image_path = ""
-        if "icon-static" in caps:
-            self.__image_fp = song.find_cover()
-            if self.__image_fp:
-                image_path = self.__image_fp.name
+        self.__image_fp = song.find_cover()
+        if self.__image_fp:
+            image_path = self.__image_fp.name
 
         is_temp = image_path.startswith(tempfile.gettempdir())
 
@@ -400,8 +399,7 @@ class Notify(EventPlugin):
         if not is_temp:
             self.__image_fp = None
 
-        # spec recommends it, and it seems to work
-        if image_path and spec >= (1, 1):
+        if image_path:
             image_path = URI.frompath(image_path)
 
         actions = []
@@ -411,6 +409,10 @@ class Notify(EventPlugin):
         hints = {
             "desktop-entry": "quodlibet",
         }
+
+        if image_path:
+            hints["image_path"] = image_path
+            hints["image-path"] = image_path
 
         try:
             self.__last_id = iface.Notify(
