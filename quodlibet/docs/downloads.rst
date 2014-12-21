@@ -130,7 +130,7 @@ Stable Repo:
 
 * Wheezy (Debian stable)::
 
-    # deb http://lazka.github.io/ql-debian-stable/ quodlibet-stable/
+    # deb http://lazka.github.io/ql-debian/stable/ quodlibet-stable/
     # deb http://http.debian.net/debian wheezy-backports main
 
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
@@ -141,7 +141,7 @@ Unstable Repo:
 
 * Jessie (Debian testing)::
 
-    # deb http://lazka.github.io/ql-debian/ quodlibet-unstable/
+    # deb http://lazka.github.io/ql-debian/testing/ quodlibet-unstable/
 
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
     sudo apt-get update
