@@ -135,7 +135,8 @@ Stable Repo:
 
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
     sudo apt-get update
-    sudo apt-get -t wheezy-backports -t quodlibet-stable install qudlibet gstreamer1.0-pulseaudio
+    sudo apt-get install quodlibet
+    sudo apt-get install -t wheezy-backports gstreamer1.0-pulseaudio
 
 Unstable Repo:
 
@@ -145,7 +146,7 @@ Unstable Repo:
 
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
     sudo apt-get update
-    sudo apt-get -t quodlibet-unstable install qudlibet
+    sudo apt-get install quodlibet
 
 
 .. _fedora:
