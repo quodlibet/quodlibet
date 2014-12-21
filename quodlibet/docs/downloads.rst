@@ -120,19 +120,33 @@ Unstable PPA (12.04+)::
         $ sudo ppa-purge ppa:lazka/ppa
         $ sudo ppa-purge ppa:lazka/dumpingplace
 
+
 .. _debian:
 
 |debian-logo| Debian
 --------------------
 
-Unstable Repo::
+Stable Repo:
 
-    deb http://lazka.github.io/ql-debian/ quodlibet-unstable/
+* Wheezy (Debian stable)::
 
+    # deb http://lazka.github.io/ql-debian-stable/ quodlibet-stable/
+    # deb http://http.debian.net/debian wheezy-backports main
 
-Repo key::
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
+    sudo apt-get update
+    sudo apt-get -t wheezy-backports -t quodlibet-stable install qudlibet gstreamer1.0-pulseaudio
 
-    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
+Unstable Repo:
+
+* Jessie (Debian testing)::
+
+    # deb http://lazka.github.io/ql-debian/ quodlibet-unstable/
+
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
+    sudo apt-get update
+    sudo apt-get -t quodlibet-unstable install qudlibet
+
 
 .. _fedora:
 
