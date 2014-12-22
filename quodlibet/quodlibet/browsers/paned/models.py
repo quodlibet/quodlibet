@@ -125,13 +125,15 @@ class PaneModel(ObjectStore):
 
     def __human_sort_key(self, text, reg=re.compile('<.*?>')):
         try:
-            return self.__sort_cache[text]
+            return self.__sort_cache[text], text
         except KeyError:
             # remove the markup so it doesn't affect the sort order
             if self.config.has_markup:
-                text = reg.sub("", text)
-            self.__sort_cache[text] = util.human_sort_key(text)
-            return self.__sort_cache[text]
+                text_stripped = reg.sub("", text)
+            else:
+                text_stripped = text
+            self.__sort_cache[text] = util.human_sort_key(text_stripped)
+            return self.__sort_cache[text], text
 
     def get_songs(self, paths):
         """Get all songs for the given paths (from a selection e.g.)"""
