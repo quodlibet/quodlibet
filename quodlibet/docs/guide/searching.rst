@@ -181,4 +181,15 @@ like with exact matches append a `c` to make the search case-sensitive
 
  * ``/Boa/c``
 
+
+Ignore Accents and Umlauts
+--------------------------
+
+Appending a ``d`` after searches makes it's characters match variants with
+accents, umlauts etc.
+
+Both ``/Sigur Ros/d`` and ``"Sigur Ros"d`` will match songs with the artist
+name ``"Sigur Rós"``.
+
+
 Now you can search anything!
