@@ -58,7 +58,7 @@ class PlaybackStatusIcon(Gtk.Box):
 
 class QueueExpander(Gtk.Expander):
     def __init__(self, menu, library, player):
-        super(QueueExpander, self).__init__()
+        super(QueueExpander, self).__init__(spacing=3)
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
