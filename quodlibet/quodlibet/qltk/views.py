@@ -930,7 +930,13 @@ class RCMTreeView(BaseView):
         else:
             pos_func = None
 
-        menu.attach_to_widget(self, None)
+        # force attach the menu to the view
+        attached_widget = menu.get_attach_widget()
+        if attached_widget != self:
+            if attached_widget is not None:
+                menu.detach()
+            menu.attach_to_widget(self, None)
+
         menu_popup(menu, None, None, pos_func, None, button, time)
         return True
 
