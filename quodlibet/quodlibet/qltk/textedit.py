@@ -117,7 +117,8 @@ class TextEdit(qltk.UniqueWindow):
 
         self.box = box = self.Box(default)
         vbox.pack_start(box, True, True, 0)
-        if not self.use_header_bar():
+        self.use_header_bar()
+        if not self.has_close_button():
             vbox.pack_start(b, False, True, 0)
 
         self.add(vbox)

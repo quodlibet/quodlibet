@@ -200,7 +200,8 @@ class Preferences(qltk.UniqueWindow):
         box.set_spacing(6)
         box.set_layout(Gtk.ButtonBoxStyle.END)
         box.pack_start(apply, True, True, 0)
-        if not self.use_header_bar():
+        self.use_header_bar()
+        if not self.has_close_button():
             box.pack_start(cancel, True, True, 0)
 
         vbox.pack_start(editor, True, True, 0)

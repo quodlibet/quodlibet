@@ -5,6 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import sys
+import os
+
 from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import config
@@ -82,6 +85,25 @@ class Window(Gtk.Window):
         self._header_bar = header_bar
         self.set_default_size(*self.get_default_size())
         return header_bar
+
+    def has_close_button(self):
+        """Returns True in case we are sure that the window decorations include
+        a close button.
+        """
+
+        if self.get_type_hint() == Gdk.WindowTypeHint.NORMAL:
+            return True
+
+        if os.name == "nt":
+            return True
+
+        if sys.platform == "darwin":
+            return True
+
+        if self._header_bar is not None:
+            return self._header_bar.get_show_close_button()
+
+        return False
 
     def present(self):
         """A version of present that also works if not called from an event

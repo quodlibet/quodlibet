@@ -654,7 +654,8 @@ class PreferencesWindow(UniqueWindow):
         button_box.set_layout(Gtk.ButtonBoxStyle.END)
         button_box.pack_start(close, True, True, 0)
 
-        if self.use_header_bar():
+        self.use_header_bar()
+        if self.has_close_button():
             self.set_border_width(0)
             notebook.set_show_border(False)
             self.add(notebook)
