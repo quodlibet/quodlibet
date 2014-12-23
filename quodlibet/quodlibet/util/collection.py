@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#                     Christoph Reiter, Steven Robertson, Nick Boultbee
+#                     Christoph Reiter, Steven Robertson
+#           2011-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,7 +14,8 @@ import random
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.formats._audio import PEOPLE, TAG_TO_SORT, INTERN_NUM_DEFAULT
+from quodlibet.formats._audio import TAG_TO_SORT, INTERN_NUM_DEFAULT
+from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.util import thumbnails
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
@@ -21,6 +23,11 @@ from quodlibet.util.path import bytes2fsnative, is_fsnative, fsnative2bytes
 from quodlibet.util.cover.manager import cover_plugins
 from .collections import HashedList
 
+
+PEOPLE = list(_PEOPLE)
+# Collections value albumartist more than song artist (Issue 1034)
+PEOPLE.remove("albumartist")
+PEOPLE.insert(0, "albumartist")
 
 ELPOEP = list(reversed(PEOPLE))
 PEOPLE_SCORE = [100 ** i for i in xrange(len(PEOPLE))]

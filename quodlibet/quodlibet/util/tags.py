@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2007-2008 Joe Wreschnig
 #           2014 Christoph Reiter
+#           2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -218,6 +219,8 @@ def readable(tag, plural=False):
 
     if tag in _TAGS:
         return desc(tag)
+    elif tag == 'people:real':
+        return desc('people')
     else:
         roles = False
         if tag.endswith(":roles"):

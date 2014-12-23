@@ -25,6 +25,13 @@ bar_2_1 = AudioFile({
     "discnumber": "2/2", "tracknumber": "1",
     "artist": "Foo\nI have two artists", "album": "Bar",
     "lyricist": "Foo", "composer": "Foo", "performer": "I have two artists"})
+bar_va = AudioFile({
+    "~filename": "/fakepath/3",
+    "title": "latest",
+    "artist": "Foo\nI have two artists",
+    "album": "Bar",
+    "albumartist": "Various Artists",
+    "performer": "Jay-Z"})
 
 quux = AudioFile({
     "~filename": os.path.join(DATA_DIR, "asong.ogg"),
@@ -104,6 +111,9 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_1("~people"), "Foo")
         self.failUnlessEqual(bar_1_2("~people"), "Lali-ho!")
         self.failUnlessEqual(bar_2_1("~people"), "Foo\nI have two artists")
+        # See Issue 1034
+        self.failUnlessEqual(bar_va("~people"),
+                             "Foo\nI have two artists\nVarious Artists\nJay-Z")
 
     def test_call_multiple(self):
         for song in [quux, bar_1_1, bar_2_1]:
@@ -135,10 +145,10 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(bar_1_1.list_separate(key), [bar_1_1(key)])
 
         self.failUnlessEqual(bar_2_1.list_separate("~artist~album"),
-             ['Foo - Bar', 'I have two artists - Bar'])
+                             ['Foo - Bar', 'I have two artists - Bar'])
 
         self.failUnlessEqual(bar_2_1.list_separate("~artist~~#track"),
-             ['Foo - 1', 'I have two artists - 1'])
+                             ['Foo - 1', 'I have two artists - 1'])
 
     def test_comma(self):
         for key in bar_1_1.realkeys():
@@ -245,7 +255,7 @@ class TAudioFile(TestCase):
         b.pop('~filename')
         self.failUnlessRaises(ValueError, b.sanitize)
         n = AudioFile({"artist": u"foo\0bar", "title": u"baz\0",
-                        "~filename": fsnative(u"whatever")})
+                       "~filename": fsnative(u"whatever")})
         n.sanitize()
         self.failUnlessEqual(n["artist"], "foo\nbar")
         self.failUnlessEqual(n["title"], "baz")
@@ -281,9 +291,9 @@ class TAudioFile(TestCase):
         q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),
                        ("performer", "C"), ("arranger", "A"),
                        ("albumartist", "B"), ("artist", "C")])
-        self.failUnlessEqual(q.list("~people"), ["B", "C", "A"])
+        self.failUnlessEqual(q.list("~people"), ["C", "B", "A"])
         self.failUnlessEqual(q.list("~people:roles"),
-                             ["B (Guitar)", "C", "A (Arrangement, Vocals)"])
+                         ["C", "B (Guitar)", "A (Arrangement, Vocals)"])
 
     def test_people_mix(self):
         q = AudioFile([
@@ -307,6 +317,18 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(
             q.list("~people:roles"),
             ["A (Arrangement, Foo)", "Y", "X (Arrangement, Foo)"])
+
+    def test_people_individuals(self):
+        q = AudioFile({"artist": "A\nX", "albumartist": "Various Artists"})
+        self.failUnlessEqual(q.list("~people:real"), ["A", "X"])
+
+        lonely = AudioFile({"artist": "various artists", "title": "blah"})
+        self.failUnlessEqual(lonely.list("~people:real"),
+                             ["various artists"])
+
+        lots = AudioFile({"artist": "Various Artists", "albumartist": "V.A."})
+        self.failUnlessEqual(lots.list("~people:real"),
+                             ["Various Artists"])
 
     def test_peoplesort(self):
         q = AudioFile([("performer:vocals", "The A"),

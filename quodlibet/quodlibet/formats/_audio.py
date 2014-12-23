@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2013 Nick Boultbee
+#           2012-2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -33,7 +33,7 @@ MIGRATE = set(["~#playcount", "~#laststarted", "~#lastplayed", "~#added",
                "~#skipcount", "~#rating", "~bookmark"])
 """These get migrated if a song gets reloaded"""
 
-PEOPLE = ["albumartist", "artist", "author", "composer", "~performers",
+PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
           "originalartist", "lyricist", "arranger", "conductor"]
 """Sources of the ~people tag, most important first"""
 
@@ -50,6 +50,9 @@ SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
 """Sources for ~peoplesort, most important first"""
+
+VARIOUS_ARTISTS_VALUES = 'V.A.', 'various artists', 'Various Artists'
+"""Values for ~people representing lots of people, most important last"""
 
 
 class AudioFile(dict, ImageContainer):
@@ -212,7 +215,6 @@ class AudioFile(dict, ImageContainer):
         argument may be used to specify what it is tied with.
 
         For details on tied tags, see the documentation for util.tagsplit."""
-
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
@@ -246,6 +248,14 @@ class AudioFile(dict, ImageContainer):
                 return util.format_rating(self("~#rating"))
             elif key == "people":
                 return "\n".join(self.list_unique(PEOPLE)) or default
+            elif key == "people:real":
+                # Issue 1034: Allow removal of V.A. if others exist.
+                unique = self.list_unique(PEOPLE)
+                # Order is important, for (unlikely case): multiple removals
+                for val in VARIOUS_ARTISTS_VALUES:
+                    if len(unique) > 1 and val in unique:
+                        unique.remove(val)
+                return "\n".join(unique) or default
             elif key == "people:roles":
                 return (self._role_call("performer", PEOPLE)
                         or default)
