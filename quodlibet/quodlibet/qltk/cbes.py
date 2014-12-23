@@ -86,8 +86,12 @@ class _KeyValueEditor(qltk.Window):
         rem_b = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         rem_b.set_sensitive(False)
         bbox.pack_start(rem_b, True, True, 0)
+        self.use_header_bar()
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
-        bbox.pack_start(close, True, True, 0)
+        if not self.has_close_button():
+            bbox.pack_start(close, True, True, 0)
+        else:
+            bbox.set_layout(Gtk.ButtonBoxStyle.START)
         self.get_child().pack_start(bbox, False, True, 0)
 
         selection = view.get_selection()
