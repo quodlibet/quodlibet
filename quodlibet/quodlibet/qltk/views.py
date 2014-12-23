@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import sys
 import contextlib
 from cStringIO import StringIO
@@ -980,6 +981,9 @@ class HintedTreeView(BaseView):
         """If the treeview hints support is enabled. Can be used to
         display scroll bars instead for example.
         """
+
+        if "QUODLIBET_NO_HINTS" in os.environ:
+            return False
 
         return not config.state('disable_hints')
 
