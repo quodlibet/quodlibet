@@ -123,6 +123,8 @@ def main():
         DBusHandler = lambda player, library: None
 
     mmkeys_handler = MMKeysHandler(window, player)
+    if "QUODLIBET_NO_MMKEYS" not in os.environ:
+        mmkeys_handler.start()
     fsiface = FSInterface(player)
     remote = Remote(app, cmd_registry)
     remote.start()

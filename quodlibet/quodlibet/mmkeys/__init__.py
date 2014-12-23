@@ -53,17 +53,18 @@ class MMKeysHandler(object):
 
     def __init__(self, window, player):
         self._backend = None
+        self._window = window
+        self._player = player
+
+    def start(self):
         kind = find_active_backend()
         if not kind:
             return
-
-        self._window = window
-        self._player = player
         self._backend = kind("Quod Libet", self._callback)
         # grab on start for cases when the window is hidden on start
         self._backend.grab()
 
-        window.connect("notify::is-active", self._focus_event)
+        self._window.connect("notify::is-active", self._focus_event)
 
     def quit(self):
         if self._backend:

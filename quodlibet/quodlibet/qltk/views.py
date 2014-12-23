@@ -6,7 +6,6 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 import contextlib
 from cStringIO import StringIO
 
