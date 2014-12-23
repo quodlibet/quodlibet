@@ -9,6 +9,7 @@ from gi.repository import Gtk
 from quodlibet import formats, qltk
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.util import escape
 from quodlibet.util.collection import Playlist
 from quodlibet.util.path import mkdir, fsdecode, is_fsnative
 from quodlibet import const
@@ -26,7 +27,7 @@ if not os.path.isdir(PLAYLISTS):
 class ConfirmRemovePlaylistDialog(qltk.Message):
     def __init__(self, parent, playlist):
         title = (_("Are you sure you want to delete the playlist '%s'?")
-                 % playlist.name)
+                 % escape(playlist.name))
         description = (_("All information about the selected playlist "
                          "will be deleted and can not be restored."))
 
