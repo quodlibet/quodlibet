@@ -380,6 +380,7 @@ class TOperonEdit(TOperonBase):
 
         realitems = lambda s: [(k, s[k]) for k in s.realkeys()]
 
+        os.utime(self.f, (42, 42))
         os.environ["VISUAL"] = "truncate -s 0"
         old_items = realitems(self.s)
         e = self.check_true(["edit", "--dry-run", self.f], False, True)[1]
@@ -396,6 +397,7 @@ class TOperonEdit(TOperonBase):
         if os.name == "nt" or sys.platform == "darwin":
             return
 
+        os.utime(self.f, (42, 42))
         os.environ["VISUAL"] = "truncate -s 0"
         self.check_true(["edit", self.f], False, False)
 
