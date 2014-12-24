@@ -32,8 +32,11 @@ class ScrolledWindow(Gtk.ScrolledWindow):
 
         dummy, x1, y1 = top_window.get_origin()
         dummy, x2, y2 = window.get_origin()
-        dx = x2 - x1
-        dy = y2 - y1
+        # since 3.15 the gdkwindow moves to dx==-1 with the allocation
+        # so ignore anything < 0
+        # https://git.gnome.org/browse/gtk+/commit/?id=fdf367e8689cb
+        dx = max(x2 - x1, 0)
+        dy = max(y2 - y1, 0)
 
         ctx = self.get_style_context()
         border = ctx.get_border(self.get_state_flags())
