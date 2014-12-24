@@ -51,7 +51,7 @@ def add_border(pixbuf, color, round=False, width=1):
     ctx = cairo.Context(surface)
 
     pi = math.pi
-    r = max(w, h) / 10.0 if round else 0
+    r = min(w, h) / 10.0 if round else 0
     ctx.new_path()
     ctx.arc(w - r, r, r, -pi / 2, 0)
     ctx.arc(w - r, h - r, r, 0, pi / 2)
