@@ -365,14 +365,21 @@ class TreeViewHints(Gtk.Window):
             # additional motion events.
             # Warning: this may result in motion events outside of the
             # view window.. ?
-            new_event = Gdk.Event()
-            new_event.type = Gdk.EventType.MOTION_NOTIFY
+            new_event = Gdk.Event.new(Gdk.EventType.MOTION_NOTIFY)
             struct = new_event.motion
             for attr in ["x", "y", "x_root", "y_root", "time", "window",
                          "state", "send_event"]:
                 setattr(struct, attr, getattr(event.crossing, attr))
-            struct.device = Gtk.get_current_event_device()
+            device = Gtk.get_current_event_device()
+            if device is not None:
+                struct.set_device(device)
             return new_event
+
+        # FIXME: We should translate motion events on the tooltip
+        # to crossing events for the underlying view.
+        # (I think, no tested) Currently the hover scrollbar stays visible
+        # if the mouse leaves the view through the tooltip without the
+        # knowledge of the view.
 
         type_ = event.type
         real_event = None
