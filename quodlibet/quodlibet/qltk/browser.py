@@ -83,6 +83,11 @@ class FilterMenu(object):
                 _("The 40 songs you've played most (more than 40 may "
                   "be chosen if there are ties)"))
 
+        # https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
+        menu_item = ui.get_widget("/Menu/Filters")
+        if isinstance(menu_item, Gtk.ImageMenuItem):
+            menu_item.set_image(None)
+
         self._player_id = player.connect("song-started", self._on_song_started)
         self.set_song(player.song)
 
