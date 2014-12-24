@@ -473,7 +473,17 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         # Gtk.AccelGroup.connect shadows gobject connect
         GObject.Object.connect(accel_group, 'accel-changed', accel_save_cb)
 
-        main_box.pack_start(ui.get_widget("/Menu"), False, True, 0)
+        menubar = ui.get_widget("/Menu")
+
+        # Since https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
+        # toplevel menu items show an empty 16x16 image. While we don't
+        # need image items there UIManager creates them by default.
+        # Work around by removing the empty GtkImages
+        for child in menubar.get_children():
+            if isinstance(child, Gtk.ImageMenuItem):
+                child.set_image(None)
+
+        main_box.pack_start(menubar, False, True, 0)
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
