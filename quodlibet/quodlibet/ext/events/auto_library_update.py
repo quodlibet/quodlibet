@@ -119,6 +119,7 @@ class LibraryEvent(ProcessEvent):
 
 class AutoLibraryUpdate(EventPlugin):
     PLUGIN_ID = "Automatic library update"
+    PLUGIN_NAME = _("Automatic Library Update")
     PLUGIN_DESC = _("Keep your library up to date with inotify. "
                     "Requires %s.") % "pyinotify"
     PLUGIN_VERSION = "0.3"

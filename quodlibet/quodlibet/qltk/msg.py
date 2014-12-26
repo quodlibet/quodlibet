@@ -78,7 +78,7 @@ class ConfirmFileReplace(WarningMessage):
     def __init__(self, parent, path):
         title = _("File exists")
         fn_format = "<b>%s</b>" % util.escape(fsdecode(path))
-        description = "Replace %(file-name)s?" % {"file-name": fn_format}
+        description = _("Replace %(file-name)s?") % {"file-name": fn_format}
 
         super(ConfirmFileReplace, self).__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)

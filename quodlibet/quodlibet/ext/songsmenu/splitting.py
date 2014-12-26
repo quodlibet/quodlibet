@@ -11,7 +11,6 @@ from quodlibet.util.string.splitters import split_title, split_album
 class SplitTags(SongsMenuPlugin):
     PLUGIN_ID = "Split Tags"
     PLUGIN_NAME = _("Split Tags")
-    PLUGIN_HINT = "Split out version and disc number"
     PLUGIN_DESC = _("Split the disc number from the album and the version "
                     "from the title at the same time.")
     PLUGIN_ICON = 'gtk-find-and-replace'
@@ -38,7 +37,7 @@ class SplitTags(SongsMenuPlugin):
 class SplitAlbum(SongsMenuPlugin):
     PLUGIN_ID = "Split Album"
     PLUGIN_NAME = _("Split Album")
-    PLUGIN_HINT = "Split out disc number"
+    PLUGIN_DESC = _("Split out disc number.")
     PLUGIN_ICON = 'gtk-find-and-replace'
     PLUGIN_VERSION = "0.13"
 
