@@ -8,15 +8,16 @@
 from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.qltk.window import Dialog
 
 
-class GetStringDialog(Gtk.Dialog):
+class GetStringDialog(Dialog):
     """Simple dialog to return a string from the user"""
     _WIDTH = 300
 
     def __init__(self, parent, title, text, okbutton=Gtk.STOCK_OPEN):
         super(GetStringDialog, self).__init__(
-            title=title, transient_for=parent)
+            title=title, transient_for=parent, use_header_bar=True)
 
         self.set_border_width(6)
         self.set_default_size(width=self._WIDTH, height=0)

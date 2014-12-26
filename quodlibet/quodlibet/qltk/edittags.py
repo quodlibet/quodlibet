@@ -20,6 +20,7 @@ from quodlibet.qltk.completion import LibraryValueCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.x import SeparatorMenuItem
@@ -275,11 +276,12 @@ class SplitOriginalArtistFromTitle(SplitPerson):
     title = _("Split _Originalartist out of Title")
 
 
-class AddTagDialog(Gtk.Dialog):
+class AddTagDialog(Dialog):
 
     def __init__(self, parent, can_change, library):
         super(AddTagDialog, self).__init__(
-            title=_("Add a Tag"), transient_for=qltk.get_top_parent(parent))
+            title=_("Add a Tag"), transient_for=qltk.get_top_parent(parent),
+            use_header_bar=True)
         self.set_border_width(6)
         self.set_resizable(False)
         self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)

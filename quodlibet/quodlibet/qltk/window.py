@@ -16,6 +16,27 @@ from quodlibet.util import DeferredSignal
 from quodlibet.util import connect_obj
 
 
+def should_use_header_bar():
+    settings = Gtk.Settings.get_default()
+    if not settings:
+        return False
+    if not hasattr(settings.props, "gtk_dialogs_use_header"):
+        return False
+    return settings.get_property("gtk-dialogs-use-header")
+
+
+class Dialog(Gtk.Dialog):
+    """A Gtk.Dialog subclass which supports the use_header_bar property
+    for all Gtk versions and will ignore it if header bars shouldn't be
+    used according to GtkSettings.
+    """
+
+    def __init__(self, *args, **kwargs):
+        if not should_use_header_bar():
+            kwargs.pop("use_header_bar", None)
+        super(Dialog, self).__init__(*args, **kwargs)
+
+
 class Window(Gtk.Window):
     """Base window class the keeps track of all window instances.
 
@@ -67,12 +88,7 @@ class Window(Gtk.Window):
 
         assert not self._header_bar
 
-        settings = Gtk.Settings.get_default()
-        if not settings:
-            return False
-        if not hasattr(settings.props, "gtk_dialogs_use_header"):
-            return False
-        if not settings.get_property("gtk-dialogs-use-header"):
+        if not should_use_header_bar():
             return False
 
         header_bar = Gtk.HeaderBar()
