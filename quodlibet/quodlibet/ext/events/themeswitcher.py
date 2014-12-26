@@ -16,17 +16,53 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
 
 
+def has_header_bar_prop():
+    """if gtk is recent enough to have the property"""
+
+    settings = Gtk.Settings.get_default()
+    return hasattr(settings.props, "gtk_dialogs_use_header")
+
+
+def set_header_bar(value):
+    if not has_header_bar_prop():
+        return
+    settings = Gtk.Settings.get_default()
+    settings.set_property('gtk-dialogs-use-header', value)
+
+
+def get_header_bar():
+    if not has_header_bar_prop():
+        return False
+    settings = Gtk.Settings.get_default()
+    return settings.get_property('gtk-dialogs-use-header')
+
+
 class ThemeSwitcher(EventPlugin):
     PLUGIN_ID = "Theme Switcher"
     PLUGIN_NAME = _("Theme Switcher")
     PLUGIN_DESC = _("Change the active GTK+ theme.")
 
     __enabled = False
+    __defaults = False
 
     CONFIG_THEME = PLUGIN_ID + "_theme"
     CONFIG_DARK = PLUGIN_ID + "_prefer_dark"
+    CONFIG_HEADER_BAR = PLUGIN_ID + "_prefer_header_bar"
+
+    def __init_defaults(self):
+        if self.__defaults:
+            return
+        self.__defaults = True
+
+        settings = Gtk.Settings.get_default()
+        self.__default_theme = settings.get_property('gtk-theme-name')
+        self.__default_dark = settings.get_property(
+            'gtk-application-prefer-dark-theme')
+        self.__default_header_bar = get_header_bar()
 
     def PluginPreferences(self, *args):
+        self.__init_defaults()
+
         hb = Gtk.HBox(spacing=6)
         label = Gtk.Label(label=_("_Theme:"))
         combo = Gtk.ComboBoxText()
@@ -46,14 +82,23 @@ class ThemeSwitcher(EventPlugin):
 
         dark_button = ConfigCheckButton(
             _("Prefer dark theme version"),
-            "plugins", self.CONFIG_DARK)
-        dark_button.set_active(
-            config.getboolean("plugins", self.CONFIG_DARK, False))
+            "plugins", self.CONFIG_DARK,
+            populate=True, default=self.__get_dark())
 
         def dark_cb(button):
             self.__set_dark(button.get_active())
 
         dark_button.connect('toggled', dark_cb)
+
+        hb_button = ConfigCheckButton(
+            _("Use header bars"),
+            "plugins", self.CONFIG_HEADER_BAR,
+            populate=True, default=self.__get_header_bar())
+
+        def hb_cb(button):
+            self.__set_header_bar(button.get_active())
+
+        hb_button.connect('toggled', hb_cb)
 
         label.set_mnemonic_widget(combo)
         label.set_use_underline(True)
@@ -63,6 +108,7 @@ class ThemeSwitcher(EventPlugin):
         vbox = Gtk.VBox(spacing=6)
         vbox.pack_start(hb, False, True, 0)
         vbox.pack_start(dark_button, False, True, 0)
+        vbox.pack_start(hb_button, False, True, 0)
 
         return qltk.Frame(_("Preferences"), child=vbox)
 
@@ -110,21 +156,33 @@ class ThemeSwitcher(EventPlugin):
             value = self.__default_dark
         settings.set_property('gtk-application-prefer-dark-theme', value)
 
+    def __set_header_bar(self, value):
+        if not self.__enabled:
+            return
+        if value is None:
+            value = self.__default_header_bar
+        set_header_bar(value)
+
+    def __get_header_bar(self):
+        return config.getboolean(
+            "plugins", self.CONFIG_HEADER_BAR, self.__default_header_bar)
+
+    def __get_dark(self):
+        return config.getboolean(
+            "plugins", self.CONFIG_DARK, self.__default_dark)
+
     def enabled(self):
         self.__enabled = True
-
-        settings = Gtk.Settings.get_default()
-        self.__default_theme = settings.get_property('gtk-theme-name')
-        self.__default_dark = settings.get_property(
-            'gtk-application-prefer-dark-theme')
+        self.__init_defaults()
 
         theme = config.get("plugins", self.CONFIG_THEME, None)
         self.__set_theme(theme)
 
-        is_dark = config.getboolean("plugins", self.CONFIG_DARK, False)
-        self.__set_dark(is_dark)
+        self.__set_dark(self.__get_dark())
+        self.__set_header_bar(self.__get_header_bar())
 
     def disabled(self):
         self.__set_theme(None)
         self.__set_dark(None)
+        self.__set_header_bar(None)
         self.__enabled = False
