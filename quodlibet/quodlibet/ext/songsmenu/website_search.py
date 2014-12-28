@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011, 2012 Nick Boultbee
+# Copyright 2011, 2012, 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet import config, print_w, print_d, qltk
+from quodlibet import print_w, print_d, qltk
 from quodlibet.const import USERDIR
 from quodlibet.formats._audio import AudioFile
 from quodlibet.parse._pattern import Pattern
@@ -15,9 +15,8 @@ from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import website
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 from quodlibet.util import connect_obj
-from urllib2 import quote
+from urllib import quote_plus
 
-import ConfigParser
 from gi.repository import Gtk
 import os
 from quodlibet.util.uri import URI
@@ -35,9 +34,8 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
                     "Supports patterns e.g. %(pattern-example)s") % {
                         "pattern-example":
-                            "http://google.com?q=<~artist~title>"
-                    }
-    PLUGIN_VERSION = '0.3'
+                            "http://google.com?q=<~artist~title>"}
+    PLUGIN_VERSION = '0.4'
 
     # Here are some starters...
     # Sorry, PEP-8 : sometimes you're unrealistic
@@ -50,31 +48,12 @@ class WebsiteSearch(SongsMenuPlugin):
             "http://musicbrainz.org/<musicbrainz_albumid|release/"
             "<musicbrainz_albumid>|search?query=<album>&type=release>"),
         ("Discogs album search",
-            "http://www.discogs.com/advanced_search?artist="
-            "<albumartist|<albumartist>|<artist>>&release_title=<album>"),
-        ("ISOHunt FLAC album torrent search",
-            "https://isohunt.com/torrents/?ihq="
-            "<albumartist|<albumartist>|<artist>>+<album>+flac"),
-        ("The Pirate Bay torrent search",
-            "http://thepiratebay.org/search/"
-            "<albumartist|<albumartist>|<artist>> <album>/0/99/100")
+            "http://www.discogs.com/search?type=release&artist="
+            "<albumartist|<albumartist>|<artist>>&title=<album>"),
+        ("Youtube video search",
+         "https://www.youtube.com/results?search_query=<artist~title>"),
     ]
     PATTERNS_FILE = os.path.join(USERDIR, 'lists', 'searchsites')
-
-    @classmethod
-    def cfg_get(cls, name, default=None):
-        try:
-            key = __name__ + "_" + name
-            return config.get("plugins", key)
-        except (ValueError, ConfigParser.Error):
-            print_w("Config entry '%s' not found. Using '%s'" %
-                    (key, default,))
-            return default
-
-    @classmethod
-    def cfg_set(cls, name, value):
-        key = __name__ + "_" + name
-        config.set("plugins", key, value)
 
     def __set_site(self, name):
         self.chosen_site = name
@@ -91,13 +70,14 @@ class WebsiteSearch(SongsMenuPlugin):
                 p = Pattern(s)
                 u = URI(s)
                 return (p and u.netloc and
-                    u.scheme in ["http", "https", "ftp", "file"])
+                        u.scheme in ["http", "https", "ftp", "file"])
             except ValueError:
                 return False
 
         win = StandaloneEditor(filename=cls.PATTERNS_FILE,
-            title=_("Search URL patterns"), initial=cls.DEFAULT_URL_PATS,
-            validator=valid_uri)
+                               title=_("Search URL patterns"),
+                               initial=cls.DEFAULT_URL_PATS,
+                               validator=valid_uri)
         win.show()
 
     @classmethod
@@ -113,7 +93,6 @@ class WebsiteSearch(SongsMenuPlugin):
 
     def _get_saved_searches(self):
         filename = self.PATTERNS_FILE + ".saved"
-        #print_d("Checking saved searches in %s..." % filename, context=self)
         self._url_pats = StandaloneEditor.load_values(filename)
         # Failing all else...
         if not len(self._url_pats):
@@ -132,10 +111,10 @@ class WebsiteSearch(SongsMenuPlugin):
             connect_obj(item, 'activate', self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        config = Gtk.MenuItem(label=_("Configure searches..."))
-        connect_obj(config, 'activate', self.edit_patterns, config)
+        configure = Gtk.MenuItem(label=_("Configure searches..."))
+        connect_obj(configure, 'activate', self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
-        submenu.append(config)
+        submenu.append(configure)
         if submenu.get_children():
             self.set_submenu(submenu)
         else:
@@ -150,13 +129,15 @@ class WebsiteSearch(SongsMenuPlugin):
             for song in songs:
                 # Generate a sanitised AudioFile; allow through most tags
                 subs = AudioFile()
-                for k, v in song.items():
-                    if k in (USER_TAGS + MACHINE_TAGS):
+                for k in (USER_TAGS + MACHINE_TAGS):
+                    vals = song.comma(k)
+                    if vals:
                         try:
-                            subs[k] = quote(unicode(v).encode('utf-8'))
+                            subs[k] = quote_plus(unicode(vals).encode('utf-8'))
                         # Dodgy unicode problems
                         except KeyError:
-                            print_d("Problem with %s tag value: %r" % (k, v))
+                            print_d("Problem with %s tag values: %r"
+                                    % (k, vals))
                 url = str(pat.format(subs))
                 if not url:
                     print_w("Couldn't build URL using \"%s\"."
