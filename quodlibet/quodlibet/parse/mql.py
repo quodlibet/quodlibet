@@ -41,16 +41,16 @@ def proc_str(string, location, tokens):
     return re.escape(tokens[0])
 
 
-def process_keyword(s, l, t):
+def process_keyword(string, location, tokens):
     """Spaces keywords for reformatted text"""
-    return [" %s " % t for t in upcaseTokens(s, l, t)]
+    return [" %s " % t for t in upcaseTokens(string, location, tokens)]
 
 
 class Tag(match.Tag):
-    """Customised version of match.Tag for easier calling / debugging""" 
+    """Customised version of match.Tag for easier calling / debugging"""
     __RE_MODS = re.MULTILINE | re.UNICODE | re.IGNORECASE
 
-    def __init__(self, value, tags, mods = __RE_MODS):
+    def __init__(self, value, tags, mods=__RE_MODS):
         self.__res = re.compile(value, mods)
         super(Tag, self).__init__(tags, self.__res)
 
@@ -68,8 +68,7 @@ class Mql(object):
      * "standard" QL queries work with partial matching across any of
      the exposed tags
      * Unquoted (single-word) values are partial matches, whilst with quoting
-     results in
-     full matching
+     results in full matching
      * conjunctions and disjunctions e.g. genre = Jazz AND rating > 0.5
      * Basic grouping of the above, e.g.
          genre=Jazz AND (filesize > 10 MB OR rating > 0.75)
@@ -81,16 +80,16 @@ class Mql(object):
     """
 
     # Now some "constants" (ones that don't trigger actions)
-    EQ       = Literal("=").setName("=")
-    NEQ      = (Literal("!=") | Literal("<>")).setName("!=")
-    EQ_OP    = (EQ | NEQ)("EQ_OP").setParseAction(process_keyword)
-    NUM_OP   = oneOf("= < > >= <= !=")("NUM_OP")
-    AND_     = CaselessKeyword("AND").setParseAction(process_keyword)
-    OR_      = CaselessKeyword("OR").setParseAction(process_keyword)
-    BUT_NOT  = CaselessKeyword("BUT NOT").setParseAction(process_keyword)
-    IN_      = CaselessKeyword("IN").setParseAction(process_keyword)
+    EQ = Literal("=").setName("=")
+    NEQ = (Literal("!=") | Literal("<>")).setName("!=")
+    EQ_OP = (EQ | NEQ)("EQ_OP").setParseAction(process_keyword)
+    NUM_OP = oneOf("= < > >= <= !=")("NUM_OP")
+    AND_ = CaselessKeyword("AND").setParseAction(process_keyword)
+    OR_ = CaselessKeyword("OR").setParseAction(process_keyword)
+    BUT_NOT = CaselessKeyword("BUT NOT").setParseAction(process_keyword)
+    IN_ = CaselessKeyword("IN").setParseAction(process_keyword)
     JUNCTION = Group(AND_ | OR_).setName("JUNCTION")
-    LIMIT    = CaselessKeyword("LIMIT").setParseAction(process_keyword)
+    LIMIT = CaselessKeyword("LIMIT").setParseAction(process_keyword)
     # Master list of reserved words
     RESERVED = (JUNCTION | NUM_OP | EQ_OP | LIMIT | IN_ | BUT_NOT)
 
@@ -105,23 +104,23 @@ class Mql(object):
     )("UNITS").setParseAction(upcaseTokens)
 
     # Value-like tokens
-    STRING   = Regex(r"[\w'&\-_\?!£\$.^]+", re.UNICODE).setName("STRING")
+    STRING = Regex(r"[\w'&\-_\?!£\$.^]+", re.UNICODE).setName("STRING")
     VALUE = (~RESERVED
              + (quotedString.setParseAction(proc_quoted_str)("QUOTED")
                 | (unicodeString | STRING)("UNQUOTED").setParseAction(proc_str)
                 )("REGEX"))
     # Loose definition of numeric value (note: allows 1.2.3. 12:14)
-    NUM_VAL  = Word(nums, nums + '.:')("NUM_VAL") + Optional(UNITS)
+    NUM_VAL = Word(nums, nums + '.:')("NUM_VAL") + Optional(UNITS)
     # TODO: support for regex escaping e.g. /\/home\/[^\/]+\/dir/
-    REGEX    = Literal("/") + Regex("[^\/]*")("REGEX") + Literal("/")
-    LIST_    = (Suppress("[") + Optional(delimitedList(VALUE)) + Suppress("]"))
+    REGEX = Literal("/") + Regex("[^\/]*")("REGEX") + Literal("/")
+    LIST_ = (Suppress("[") + Optional(delimitedList(VALUE)) + Suppress("]"))
 
     # Tag-related
     TAG_NAME = Word(alphas, alphas + "_.")
+    INT_TAG = Combine(Literal("~") + TAG_NAME)("INT_TAG")
+    NUM_TAG = (Combine(Optional(Suppress("~#")) + oneOf(NUMERIC_TAGS))
+               | Combine(Literal("~#") + TAG_NAME))("NUM_TAG")
     NO_TAG = (Literal("!") + Combine(Optional(Literal("~")) + TAG_NAME)("TAG"))
-    INT_TAG  = Combine(Literal("~") + TAG_NAME)("INT_TAG")
-    NUM_TAG  = (Combine(Optional(Suppress("~#")) + oneOf(NUMERIC_TAGS))
-                | Combine(Literal("~#") + TAG_NAME))("NUM_TAG")
 
     #EXCLUDE_CLAUSE = BUT_NOT + VALUE("EXCLUSION")
 
@@ -285,7 +284,6 @@ class Mql(object):
         self.push(matcher)
 
     def handle_junction(self, string, location, tokens):
-        #print_d("Found %s junction: %r" % (tokens[0][0], tokens[1]))
         self.push(tokens[0][0])
 
     def handle_bare_value(self, string, location, tokens):

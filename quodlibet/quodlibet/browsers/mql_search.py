@@ -24,11 +24,11 @@ from quodlibet.util.dprint import print_d, print_w
 QUERIES = os.path.join(const.USERDIR, "lists", "queries")
 
 AGGREGATES = {
-    'MB':       ('~#filesize',  1024 * 1024),
-    'GB':       ('~#filesize',  1024 * 1024 * 1024),
-    'MINS':     ('~#length',    60),
-    'HOURS':    ('~#length',    60 * 60),
-    'DAYS':     ('~#filesize',  60 * 60 * 24),
+    'MB': ('~#filesize', 1024 * 1024),
+    'GB': ('~#filesize', 1024 * 1024 * 1024),
+    'MINS': ('~#length', 60),
+    'HOURS': ('~#length', 60 * 60),
+    'DAYS': ('~#filesize', 60 * 60 * 24),
 }
 
 
@@ -46,6 +46,7 @@ class MqlSearchBarBox(SearchBarBox):
     def _is_parsable(self, text):
         if text not in self._cache:
             if len(self._cache) > self.MAX_CACHE_ENTRIES:
+                # TODO: LRU etc, some day.
                 self._cache.clear()
             self._cache[text] = self.mql_parser.is_valid(text)
         return self._cache[text]

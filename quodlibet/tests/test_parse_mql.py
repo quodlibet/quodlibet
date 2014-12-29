@@ -1,35 +1,22 @@
 # -*- encoding: utf-8 -*-
-import pyparsing
 from quodlibet import print_d
 from tests import TestCase
 from quodlibet.parse.mql import Mql, ParseError
 import quodlibet.formats._audio as audio
-import quodlibet.const
 
 
 def AF(*args, **kwargs):
     a = audio.AudioFile(*args, **kwargs)
-    #a.sanitize()
     return a
 
 
 class TMQL(TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        quodlibet.const.DEBUG = True
-
-    @classmethod
-    def tearDownClass(cls):
-        quodlibet.const.DEBUG = False
-
     def _check_parsing(self, data):
         m = Mql()
         for expr, expected in data:
-            #print "\n** Trying { %s } **" % expr
             try:
-                tokens = m.parse(expr)
-                matcher = m.evaluate_stack()
+                m.parse(expr)
+                m.evaluate_stack()
                 self.assertTrue(expected, "{%s} should have failed" % expr)
             except ParseError, pe:
                 self.assertFalse(expected,
@@ -42,7 +29,7 @@ class TMQL(TestCase):
         for expr, expected in tests:
             print_d("*** Trying: {%s} ***" % expr)
             try:
-                tokens = m.parse(expr)
+                m.parse(expr)
                 print_d("Reformatted={%s}" % m.query.transformString(expr))
             except ParseError, pe:
                 self.fail("{%s} died unexpectedly (%s)" % (expr, pe))
@@ -64,7 +51,7 @@ class TMQL(TestCase):
             ("(foo)", True),
             ("album=", False),
             ("~dirname", False),
-            ("/a/b/c", False),          # Better disallowed (regex)
+            ("/a/b/c", False),  # Better disallowed (regex)
             ("~dirname=foo", True),
             ("'jeepers'", True),
             ("\"ouch", False),
@@ -79,10 +66,10 @@ class TMQL(TestCase):
         self._check_parsing(__DATA)
 
     def test_parsing_unknown_tags(self):
-            self._check_parsing([
-                ("artXXX=\"foo\"", False),
-                ("artistic=\"foo\"", False),
-                ("~artistic=\"foo\"", True)])
+        self._check_parsing([
+            ("artXXX=\"foo\"", False),
+            ("artistic=\"foo\"", False),
+            ("~artistic=\"foo\"", True)])
 
     def test_basic_numeric_parsing(self):
         self._check_parsing([
@@ -125,13 +112,13 @@ class TMQL(TestCase):
     def test_simple(self):
         __DATA = [
             ("BilllyBobFooMAn", False),
-            ("I Hate tests",    True),
-            ("cake-mix",        True),
-            ("\"I Hate tests\"",True),
-            ("'I Hate tests'",  True),
-            ("'I Hate tests' foo",      True),
-            ("\"I might Hate tests\"",  False),
-            ("ridiculous set of unimaginable conditions",  False),
+            ("I Hate tests", True),
+            ("cake-mix", True),
+            ("\"I Hate tests\"", True),
+            ("'I Hate tests'", True),
+            ("'I Hate tests' foo", True),
+            ("\"I might Hate tests\"", False),
+            ("ridiculous set of unimaginable conditions", False),
         ]
         self._check_matching(__DATA, self.song1)
 
@@ -141,30 +128,29 @@ class TMQL(TestCase):
 
     def test_partial_matching(self):
         __DATA = [
-            ("'Hate tests'",        False),
-            ("'I Hate tests'",      True),
-            ("'I Hate tes'",        False),
-            ("'I Hate tests' foo",    True),
-            ("ight Hat",            False),
-            ("set of un",           False),
-            ("Cow Rockin'",         False),
-            ('"set of un"',         False),
+            ("'Hate tests'", False),
+            ("'I Hate tests'", True),
+            ("'I Hate tes'", False),
+            ("'I Hate tests' foo", True),
+            ("ight Hat", False),
+            ("set of un", False),
+            ("Cow Rockin'", False),
+            ('"set of un"', False),
         ]
         self._check_matching(__DATA, self.song1)
 
     def test_equality(self):
         __DATA = [
-            ("artist=value",    False),
-            ("artist=\"oo\"",   False),
+            ("artist=value", False),
+            ("artist=\"oo\"", False),
             ("title = \"bar\"", True),
-            ("title = \"ba\"",  False),
-            ("artist!=value",   True),
-            ("artist!=foo",     False),
-            ("artist=foo",      True),
-            ("album=Hate",      True),
-            ("artist=\"Brandy & Monica\"",  False),
+            ("title = \"ba\"", False),
+            ("artist!=value", True),
+            ("artist!=foo", False),
+            ("artist=foo", True),
+            ("album=Hate", True),
+            ("artist=\"Brandy & Monica\"", False),
             ("title = \"test\"", False),
-            #("album=\"\"",      False),
             ("version=cake-mix", True),
             ("originalartist='AC/DC'", True),
         ]
@@ -172,14 +158,13 @@ class TMQL(TestCase):
 
     def test_negated_tags(self):
         self._check_matching([
-            #("!foobar", True),
-            ("!artist", False),
-            ("!albumartist", True),
-            ("!~albumartist", True),
-            ("!performer", True)], self.song1)
+                                 ("!artist", False),
+                                 ("!albumartist", True),
+                                 ("!~albumartist", True),
+                                 ("!performer", True)], self.song1)
 
     # def test_excluded_equality(self):
-    #     __DATA = [
+    # __DATA = [
     #         ("artist='value' BUT NOT other",    False),
     #         ("artist=other BUT NOT value",    False),
     #         ("title = \"Hate\" BUT NOT tests", False),
@@ -192,46 +177,46 @@ class TMQL(TestCase):
         __DATA = [
             #FIXME: Why does this break in the tests, but not in QL???
             #("~dirname='/dir1'",    True),
-            ("~dirname=dir1",      True),
-            ("~dirname='/tmp'",    False),
-            ("~#length=120",       True),
-            ("~#length != 120",    False),
-            ("~#length < 3200",    True),
-            ("~#length > 3200",    False),
-            ("~#filesize < 1000",  False),
+            ("~dirname=dir1", True),
+            ("~dirname='/tmp'", False),
+            ("~#length=120", True),
+            ("~#length != 120", False),
+            ("~#length < 3200", True),
+            ("~#length > 3200", False),
+            ("~#filesize < 1000", False),
         ]
         self._check_matching(__DATA, self.song1)
 
     def test_special(self):
         __DATA = [
-            ("money e^^ek ",   False),
-            ("Dr. Dre ",        True),
-            ("Dr? Dre ",        False),
-            ("ca$h m0ney",      True),
+            ("money e^^ek ", False),
+            ("Dr. Dre ", True),
+            ("Dr? Dre ", False),
+            ("ca$h m0ney", True),
         ]
         self._check_matching(__DATA, self.song2)
 
     def test_multiple(self):
         __DATA = [
-            ("artist=additional",           True),
-            ("performer=Dre",               True),
-            ("performer = \"Mrs Dre\"",     False),
-            ("performer = \"Dr. Dre\"",     True),
-            ("genre = \"Pop\"",             True),
-            ("genre = Blues",               True),
-            ("genre = Rock",                True),
-            ("genre = \"Metal\"",           False),
+            ("artist=additional", True),
+            ("performer=Dre", True),
+            ("performer = \"Mrs Dre\"", False),
+            ("performer = \"Dr. Dre\"", True),
+            ("genre = \"Pop\"", True),
+            ("genre = Blues", True),
+            ("genre = Rock", True),
+            ("genre = \"Metal\"", False),
         ]
         self._check_matching(__DATA, self.song2)
 
     def test_junctions(self):
         __DATA = [
-            ("artist=foo AND album=fuzz",   False),
-            ("foo AND bar",                 True),
-            ("foo ANDY bar",                False),
-            ('Bill and Ted',                False),
-            ('Bill AND "Ted"',              False),
-            ('"Bill" AND "Ted"',            False),
+            ("artist=foo AND album=fuzz", False),
+            ("foo AND bar", True),
+            ("foo ANDY bar", False),
+            ('Bill and Ted', False),
+            ('Bill AND "Ted"', False),
+            ('"Bill" AND "Ted"', False),
             ("artist=foo AND album=\"I Hate tests\"", True),
             ("artist=\"foo\" OR album = \"Best Of\"", True),
             ("title=bar or album = bar OR album=baz", True),
@@ -243,49 +228,49 @@ class TMQL(TestCase):
 
     def test_bare_regex(self):
         __DATA = [
-            ("/foo/ AND /bar/",             True),
-            ('/Bill/ AND /Ted/',            False),
-            ("/cake-mix/",                  True),
-            ("/foop/",                      False),
-            ("/^Hate/",                     False),
-            ("/^I Hate/",                   True),
-            (u"/œufs/",                     True),
+            ("/foo/ AND /bar/", True),
+            ('/Bill/ AND /Ted/', False),
+            ("/cake-mix/", True),
+            ("/foop/", False),
+            ("/^Hate/", False),
+            ("/^I Hate/", True),
+            (u"/œufs/", True),
 
         ]
         self._check_matching(__DATA, self.song1)
 
     def test_regex_expr(self):
         __DATA = [
-            ("artist=/foo/",                True),
-            ("artist=/foop/",               False),
-            ("artist=/f[o]{3,3}/",          False),
-            ("artist=/f[o]{1,3}/",          True),
+            ("artist=/foo/", True),
+            ("artist=/foop/", False),
+            ("artist=/f[o]{3,3}/", False),
+            ("artist=/f[o]{1,3}/", True),
             ("artist=foo AND album=/Hat.? t[es]*ts?/", True),
-            ("album=/[0-9]+/",              False),
-            ("album=/Hate/",                True),
-            ("album=/^Hate/",               False),
+            ("album=/[0-9]+/", False),
+            ("album=/Hate/", True),
+            ("album=/^Hate/", False),
             ("album=/^Hate/ OR album=/Hate$/", False),
-            ("album=/^I Hate/",             True),
+            ("album=/^I Hate/", True),
             ("album=/^I Hate/ AND album=/Hate Tests/", True),
             ("album = /^I Hate/ AND artist=food", False),
-            ("album != /^I Hate/",          False),
+            ("album != /^I Hate/", False),
 
-            ("album = /Hate Tests$/",       True),
-            ("album = /[a-zA-Z\ ]+/",       True),
-            (u"comment = /œufs/",           True),
+            ("album = /Hate Tests$/", True),
+            ("album = /[a-zA-Z\ ]+/", True),
+            (u"comment = /œufs/", True),
         ]
         self._check_matching(__DATA, self.song1)
 
     def test_in_clause(self):
         __DATA = [
-            ("artist in [mu]",              True),
-            ("genre in [blues]",            True),
-            ("title in [baz,random]",       True),
-            ("title in [unlikely]",         False),
-            ("title in [baz]",              True),
+            ("artist in [mu]", True),
+            ("genre in [blues]", True),
+            ("title in [baz,random]", True),
+            ("title in [unlikely]", False),
+            ("title in [baz]", True),
             ("title in [\"Baz Rockin' Out\"]", True),
-            ("title in [very, unlikely]",   False),
-            ("title in []",                 False),
+            ("title in [very, unlikely]", False),
+            ("title in []", False),
             ("title in [\"Baz Rockin' Out\"] AND randomvalue", False),
             ("title in [Baz, \"baa\"] AND Bar", True),
             ("title in [the] AND artist IN [mu]", False),
@@ -295,23 +280,23 @@ class TMQL(TestCase):
 
     def test_limit_clause(self):
         __DATA = [
-            ("foo LIMIT 1",                 True),
+            ("foo LIMIT 1", True),
             ('genre = "Jazz" LIMIT 124689', True),
-            ("artist=foo LIMIT 3 HOURS",    True),
-            ("album=tests LIMIT 1 Mins",    True),
-            ("album=tests LIMIT 3 Mins",    True),
-            ("foo LIMIT 1 HOUR",            True),
-            ("foo LIMIT 112345 HR",         True),
-            ("\"I hate tests\" LIMIT 1MB",  True),
-            ("foo bar LIMIT 10 GB",         True),
+            ("artist=foo LIMIT 3 HOURS", True),
+            ("album=tests LIMIT 1 Mins", True),
+            ("album=tests LIMIT 3 Mins", True),
+            ("foo LIMIT 1 HOUR", True),
+            ("foo LIMIT 112345 HR", True),
+            ("\"I hate tests\" LIMIT 1MB", True),
+            ("foo bar LIMIT 10 GB", True),
         ]
         self._check_matching(__DATA, self.song1)
 
     def test_limit_tag_clause(self):
         __DATA = [
-            ("foo LIMIT 3 songs",             True),
+            ("foo LIMIT 3 songs", True),
             ('genre = "Jazz" LIMIT 1 ARTIST', True),
             ('genre = "Jazz" LIMIT 0 artists', True),
-            ("album=tests LIMIT 1 Mins",      True),
+            ("album=tests LIMIT 1 Mins", True),
         ]
         self._check_matching(__DATA, self.song1)
