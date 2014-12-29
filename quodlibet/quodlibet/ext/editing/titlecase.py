@@ -1,4 +1,4 @@
-# Copyright 2010-12 Nick Boultbee
+# Copyright 2010-14 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,44 +9,7 @@ from gi.repository import Gtk
 from quodlibet import util
 from quodlibet.plugins.editing import EditTagsPlugin
 from quodlibet.plugins import PluginConfigMixin
-
-# Cheat list for human title-casing in English. See Issue 424.
-ENGLISH_INCORRECTLY_CAPITALISED_WORDS = \
-    [u"The", u"An", u"A", u"'N'", u"'N", u"N'", u"Tha", u"De", u"Da",
-     u"In", u"To", u"For", u"Up", u"With", u"As", u"At", u"From",
-     u"Into", u"On", u"Out",
-     #, u"Over",
-     u"Of", u"By", u"'Til", u"Til",
-     u"And", u"Or", u"Nor",
-#    u"Is", u"Are", u"Am"
-    ]
-
-# Allow basic sentence-like concepts eg "Artist: The Greatest Hits"
-ENGLISH_SENTENCE_ENDS = [".", ":", "-"]
-
-
-def previous_real_word(words, i):
-    """Returns the first word from words before position i that is non-null"""
-    while i > 0:
-        i -= 1
-        if words[i] != "":
-            break
-    return words[i]
-
-
-def humanise(text):
-    """Returns a more natural (English) title-casing of text
-    Intended for use after util.title() only"""
-    words = text.split(" ")   # Yes: to preserve double spacing (!)
-    for i in xrange(1, len(words) - 1):
-        word = words[i]
-        if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS:
-            prev = previous_real_word(words, i)
-            if (prev and (not prev[-1] in ENGLISH_SENTENCE_ENDS
-                    # Add an exception for would-be ellipses...
-                    or prev[-3:] == '...')):
-                words[i] = word.lower()
-    return u" ".join(words)
+from quodlibet.util.string.titlecase import _humanise
 
 
 class TitleCase(EditTagsPlugin, PluginConfigMixin):
@@ -65,7 +28,7 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
         if not self.allow_all_caps:
             value = value.lower()
         value = util.title(value)
-        return humanise(value) if self.human else value
+        return _humanise(value) if self.human else value
 
     def __init__(self, tag, value):
         self.allow_all_caps = self.config_get_bool('allow_all_caps', True)

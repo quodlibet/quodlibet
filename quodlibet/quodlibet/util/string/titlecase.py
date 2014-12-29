@@ -1,10 +1,25 @@
-# Copyright 2007 Javier Kohen, 2010 Nick Boultbee
+# Copyright 2007 Javier Kohen
+#      2010,2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 import unicodedata
+
+# Cheat list for human title-casing in English. See Issue 424.
+ENGLISH_INCORRECTLY_CAPITALISED_WORDS = \
+    [u"The", u"An", u"A", u"'N'", u"'N", u"N'", u"Tha", u"De", u"Da",
+     u"In", u"To", u"For", u"Up", u"With", u"As", u"At", u"From",
+     u"Into", u"On", u"Out",
+     #, u"Over",
+     u"Of", u"By", u"'Til", u"Til",
+     u"And", u"Or", u"Nor",
+#    u"Is", u"Are", u"Am"
+    ]
+
+# Allow basic sentence-like concepts eg "Artist: The Greatest Hits"
+ENGLISH_SENTENCE_ENDS = [".", ":", "-"]
 
 
 def iswbound(char):
@@ -52,3 +67,35 @@ def title(string, locale="utf-8"):
     if not isinstance(string, unicode):
         string = string.decode(locale)
     return utitle(string)
+
+
+def _humanise(text):
+    """Reverts a title-cased string to a more natural (English) title-casing.
+    Intended for use after util.title() only"""
+
+    def previous_real_word(ws, idx):
+        """Returns the first non-null word from words before position `idx`"""
+        while idx > 0:
+            idx -= 1
+            if ws[idx] != "":
+                break
+        return ws[idx]
+
+    words = text.split(" ")   # Yes: to preserve double spacing (!)
+    for i in xrange(1, len(words) - 1):
+        word = words[i]
+        if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS:
+            prev = previous_real_word(words, i)
+            # Add an exception for would-be ellipses...
+            if (prev and (not prev[-1] in ENGLISH_SENTENCE_ENDS
+                          or prev[-3:] == '...')):
+                words[i] = word.lower()
+    return u" ".join(words)
+
+
+def human_title(text):
+    """Returns a human title-cased string, using a more natural (English)
+    title-casing
+
+     e.g. Dark night OF the Soul -> Dark Night of the Soul."""
+    return _humanise(title(text))

@@ -28,7 +28,7 @@ except ImportError:
     fcntl = None
 
 from quodlibet.util.path import iscommand, is_fsnative
-from quodlibet.util.titlecase import title
+from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_
