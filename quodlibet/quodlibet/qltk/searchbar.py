@@ -37,14 +37,15 @@ class SearchBarBox(Gtk.HBox):
 
     timeout = 400
 
-    def __init__(self, filename=None, completion=None, accel_group=None):
+    def __init__(self, filename=None, completion=None, accel_group=None,
+                 validator=Query.is_valid_color):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
             filename = os.path.join(const.USERDIR, "lists", "queries")
 
         combo = ComboBoxEntrySave(filename, count=8,
-                validator=Query.is_valid_color, title=_("Saved Searches"),
+                validator=validator, title=_("Saved Searches"),
                 edit_title=_("Edit saved searches..."))
 
         self.__deferred_changed = DeferredSignal(
@@ -95,6 +96,9 @@ class SearchBarBox(Gtk.HBox):
 
         return self.__entry.get_text().decode("utf-8")
 
+    def _is_parsable(self, text):
+        return text and Query.is_parsable(text)
+
     def changed(self):
         """Triggers a filter-changed signal if the current text
         is a parsable query
@@ -133,7 +137,7 @@ class SearchBarBox(Gtk.HBox):
             return
 
         text = self.get_text().strip()
-        if text and Query.is_parsable(text):
+        if self._is_parsable(text):
             # Adding the active text to the model triggers a changed signal
             # (get_active is no longer -1), so inhibit
             self.__inhibit()
@@ -144,7 +148,7 @@ class SearchBarBox(Gtk.HBox):
     def __filter_changed(self, *args):
         self.__deferred_changed.abort()
         text = self.get_text()
-        if Query.is_parsable(text):
+        if self._is_parsable(text):
             GLib.idle_add(self.emit, 'query-changed', text)
 
     def __text_changed(self, *args):
