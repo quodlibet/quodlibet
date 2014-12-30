@@ -117,7 +117,7 @@ def fix_gst_leaks():
         elm.unref()
         Gst.Bin.add = do_wrap(Gst.Bin.add)
 
-    pad = Gst.Pad.new(None, Gst.PadDirection.SRC)
+    pad = Gst.Pad.new("foo", Gst.PadDirection.SRC)
     parent.add_pad(pad)
     if pad.__grefcount__ == 3:
         pad.unref()
