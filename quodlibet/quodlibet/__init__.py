@@ -88,6 +88,42 @@ class Application(object):
 app = Application()
 
 
+def fix_gst_leaks():
+    """gst_element_add_pad and gst_bin_add are wrongly annotated and lead
+    to PyGObject refing the passed element.
+
+    Work around by adding a wrapper that unrefs afterwards.
+    Can be called multiple times.
+
+    https://bugzilla.gnome.org/show_bug.cgi?id=741390
+    https://bugzilla.gnome.org/show_bug.cgi?id=702960
+    """
+
+    from gi.repository import Gst
+
+    assert Gst.is_initialized()
+
+    def do_wrap(func):
+        def wrap(self, obj):
+            result = func(self, obj)
+            obj.unref()
+            return result
+        return wrap
+
+    parent = Gst.Bin()
+    elm = Gst.Bin()
+    parent.add(elm)
+    if elm.__grefcount__ == 3:
+        elm.unref()
+        Gst.Bin.add = do_wrap(Gst.Bin.add)
+
+    pad = Gst.Pad.new(None, Gst.PadDirection.SRC)
+    parent.add_pad(pad)
+    if pad.__grefcount__ == 3:
+        pad.unref()
+        Gst.Element.add_pad = do_wrap(Gst.Element.add_pad)
+
+
 def _gtk_init(icon=None):
     import gi
 
@@ -231,6 +267,9 @@ def _gtk_init(icon=None):
                 sys.modules["gi.repository.Gst"] = None
             else:
                 sys.argv = argv
+
+                # monkey patching ahead
+                fix_gst_leaks()
 
                 # https://bugzilla.gnome.org/show_bug.cgi?id=710447
                 import threading
