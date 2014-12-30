@@ -89,8 +89,8 @@ class FingerPrintPipeline(object):
 
         # bus
         self._bus = bus = pipe.get_bus()
-        bus.add_signal_watch()
         self._bus_id = bus.connect("message", self._bus_message)
+        bus.add_signal_watch()
 
     def start(self, song, callback):
         """Start processing a new song"""
@@ -104,7 +104,6 @@ class FingerPrintPipeline(object):
         self._length = song("~#length")
 
         self._filesrc.set_property("location", song["~filename"])
-        self._bus.add_signal_watch()
         self._pipe.set_state(Gst.State.PLAYING)
 
     def _reset(self):
@@ -113,7 +112,6 @@ class FingerPrintPipeline(object):
         if self.is_idle():
             return
 
-        self._bus.remove_signal_watch()
         self._pipe.set_state(Gst.State.NULL)
         self._song = None
         self._callback = None
@@ -128,6 +126,7 @@ class FingerPrintPipeline(object):
         if not self._pipe:
             return
 
+        self._bus.remove_signal_watch()
         self._bus.disconnect(self._bus_id)
         self._dec.disconnect(self._dec_id)
         self._dec.disconnect(self._dec_id2)
