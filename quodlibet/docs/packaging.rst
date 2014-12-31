@@ -35,7 +35,7 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **Python** (2.7)
 * **PyGObject** including **cairo support** (>= 3.2)
 * **pycairo**
-* **mutagen** (>= 1.14)
+* **mutagen** (>= 1.14; 1.27 recommended)
 * **GTK+** (>= 3.2)
 * On Windows only: **pywin32**
 * On OS X only: **PyObjC**
@@ -179,3 +179,4 @@ Changes
 ^^^^^^^^^
 
 * New optional plugin dependency: webkitgtk-3.0 + typelibs
+* Mutagen 1.27 recommended
