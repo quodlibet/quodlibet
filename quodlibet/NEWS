@@ -27,6 +27,10 @@ General:
    For regex and exact searches use ``/Sigur Ros/d`` and ``"Sigur Ros"d``
    to enable.
    :bug:`133`
+ * New ~people:real tag which filters out "Various Artists" values
+   (Nick Boultbee) :bug:`1034`
+ * Prefer artist over albumartist for single songs in ~people (Nick Boultbee)
+   :bug:`1034`
 
 Fixes:
  * Update for theming changes in gtk3.15
@@ -53,11 +57,15 @@ Plugins:
  * MPD server: make work again with newer MPDroid (MPDroid crashed on start)
  * Trayicon: add option to quit when closing the main window instead of hiding
    :bug:`619`
+ * Theme switcher: add option to enable/disable client side decorations
+ * ReplayGain: add option to skip albums with existing ReplayGain values
+   (Nick Boultbee) :bug:`1471`
+ * Notifications: Make cover art display work under e19 :bug:`1504`
 
 Operon:
- * new 'edit' command which lets one edit tags with a text editor
+ * new 'edit' command for editing tags with a text editor
    (``VISUAL=vi operon edit song.flac``) :bug:`1084`
- * new 'fill' command aka "tags from path"
+ * new 'fill' command for filling tags using parts of the file path
    (``operon fill --dry-run "<tracknumber>. <title>" *.flac``)
 
 OSX:
