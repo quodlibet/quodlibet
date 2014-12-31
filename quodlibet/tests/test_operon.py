@@ -382,6 +382,7 @@ class TOperonEdit(TOperonBase):
 
         os.environ["VISUAL"] = "truncate -s 0"
         old_items = realitems(self.s)
+        os.utime(self.f, (42, 42))
         e = self.check_true(["edit", "--dry-run", self.f], False, True)[1]
 
         # log all removals
@@ -397,6 +398,7 @@ class TOperonEdit(TOperonBase):
             return
 
         os.environ["VISUAL"] = "truncate -s 0"
+        os.utime(self.f, (42, 42))
         self.check_true(["edit", self.f], False, False)
 
         # all should be gone

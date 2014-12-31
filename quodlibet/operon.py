@@ -14,6 +14,7 @@
 import sys
 import os
 import string
+import stat
 import re
 import shlex
 import shutil
@@ -295,6 +296,13 @@ def get_editor_args(fallback_command="nano"):
     return editor_args
 
 
+def copy_mtime(src, dst):
+    """Copy mtime/atime from src to dst. Might raise OSError."""
+
+    stat_src = os.stat(src)
+    os.utime(dst, (stat_src[stat.ST_ATIME], stat_src[stat.ST_MTIME]))
+
+
 class EditCommand(Command):
     NAME = "edit"
     DESCRIPTION = _("Edit tags in a text editor")
@@ -369,6 +377,11 @@ class EditCommand(Command):
 
         # write to tmp file
         fd, path = tempfile.mkstemp(suffix=".txt")
+
+        # XXX: copy mtime here so we can test for changes in tests by
+        # setting a out of date mtime on the source song file
+        copy_mtime(args[0], path)
+
         try:
             try:
                 os.write(fd, dump)
