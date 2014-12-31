@@ -267,6 +267,34 @@ class CopyCommand(Command):
             self.save_songs([dest])
 
 
+def get_editor_args(fallback_command="nano"):
+    """Returns a list starting with a command and optional arguments
+    for editing text files.
+
+    List is never empty.
+    Can't fail, but the result might not be a valid/existing command.
+    """
+
+    if "VISUAL" in os.environ:
+        editor = os.environ["VISUAL"]
+    elif "EDITOR" in os.environ:
+        editor = os.environ["EDITOR"]
+    else:
+        editor = fallback_command
+
+    # to support VISUAL="geany -i"
+    try:
+        editor_args = shlex.split(editor)
+    except ValueError:
+        # well, no idea
+        editor_args = [editor]
+
+    if not editor_args:
+        editor_args = [fallback_command]
+
+    return editor_args
+
+
 class EditCommand(Command):
     NAME = "edit"
     DESCRIPTION = _("Edit tags in a text editor")
@@ -278,82 +306,28 @@ class EditCommand(Command):
         p.add_option("--dry-run", action="store_true",
                      help=_("Show changes, don't apply them"))
 
-    def _execute(self, options, args):
-        if len(args) < 1:
-            raise CommandError(_("Not enough arguments"))
-        elif len(args) > 1:
-            raise CommandError(_("Too many arguments"))
-
-        song = self.load_song(args[0])
-
+    def _song_to_text(self, song):
         # to text
         lines = []
         for key in sorted(song.realkeys(), key=sortkey):
             for value in song.list(key):
-                lines.append("%s=%s" % (key, value.encode("utf-8")))
+                lines.append(u"%s=%s" % (key, value))
 
         lines += [
-            "",
-            "#" * 80,
-            "# Lines that are empty or start with '#' will be ignored",
-            "# File: %r" % fsdecode(song("~filename")).encode("utf-8"),
+            u"",
+            u"#" * 80,
+            u"# Lines that are empty or start with '#' will be ignored",
+            u"# File: %r" % fsdecode(song("~filename")),
         ]
-        dump = "\n".join(lines)
 
-        # write to tmp file
-        fd, path = tempfile.mkstemp(suffix=".txt")
-        try:
-            try:
-                os.write(fd, dump)
-            finally:
-                os.close(fd)
+        return u"\n".join(lines)
 
-            if "VISUAL" in os.environ:
-                editor = os.environ["VISUAL"]
-                self.log("Using %r from VISUAL env var." % editor)
-            elif "EDITOR" in os.environ:
-                editor = os.environ["EDITOR"]
-                self.log(
-                    "VISUAL not set. Using %r from EDITOR env var." % editor)
-            else:
-                editor = "nano"
-                self.log("VISUAL/EDITOR not set, falling back to 'nano'.")
-
-            # to support VISUAL="geany -i"
-            try:
-                editor_args = shlex.split(editor)
-            except ValueError:
-                # well, no idea
-                editor_args = [editor]
-
-            # only parse the result if the editor returns 0 and the mtime has
-            # changed
-            old_mtime = mtime(path)
-
-            try:
-                subprocess.check_call(editor_args + [path])
-            except subprocess.CalledProcessError as e:
-                self.log(unicode(e))
-                raise CommandError(_("Editing aborted"))
-            except OSError as e:
-                self.log(unicode(e))
-                raise CommandError(
-                    _("Starting text editor '%(editor-name)s' failed.") % {
-                        "editor-name": editor})
-
-            was_changed = mtime(path) != old_mtime
-            if not was_changed:
-                raise CommandError(_("No changes detected"))
-
-            with open(path, "rb") as h:
-                data = h.read().decode("utf-8")
-
-        finally:
-            os.unlink(path)
+    def _text_to_song(self, text, song):
+        assert isinstance(text, unicode)
 
         # parse
         tags = {}
-        for line in data.splitlines():
+        for line in text.splitlines():
             if not line.strip() or line.startswith(u"#"):
                 continue
             try:
@@ -362,9 +336,6 @@ class EditCommand(Command):
                 continue
 
             tags.setdefault(key, []).append(value)
-
-        if options.dry_run:
-            self.verbose = True
 
         # apply changes, sort to always have the same output
         for key in sorted(song.realkeys(), key=sortkey):
@@ -386,6 +357,60 @@ class EditCommand(Command):
             for value in values:
                 self.log("Add %s=%s" % (key, value))
                 song.add(key, value)
+
+    def _execute(self, options, args):
+        if len(args) < 1:
+            raise CommandError(_("Not enough arguments"))
+        elif len(args) > 1:
+            raise CommandError(_("Too many arguments"))
+
+        song = self.load_song(args[0])
+        dump = self._song_to_text(song).encode("utf-8")
+
+        # write to tmp file
+        fd, path = tempfile.mkstemp(suffix=".txt")
+        try:
+            try:
+                os.write(fd, dump)
+            finally:
+                os.close(fd)
+
+            # only parse the result if the editor returns 0 and the mtime has
+            # changed
+            old_mtime = mtime(path)
+
+            editor_args = get_editor_args()
+            self.log("Using editor: %r" % editor_args)
+
+            try:
+                subprocess.check_call(editor_args + [path])
+            except subprocess.CalledProcessError as e:
+                self.log(unicode(e))
+                raise CommandError(_("Editing aborted"))
+            except OSError as e:
+                self.log(unicode(e))
+                raise CommandError(
+                    _("Starting text editor '%(editor-name)s' failed.") % {
+                        "editor-name": editor_args[0]})
+
+            was_changed = mtime(path) != old_mtime
+            if not was_changed:
+                raise CommandError(_("No changes detected"))
+
+            with open(path, "rb") as h:
+                data = h.read()
+
+        finally:
+            os.unlink(path)
+
+        try:
+            text = data.decode("utf-8")
+        except ValueError as e:
+            raise CommandError("Invalid data: %r" % e)
+
+        if options.dry_run:
+            self.verbose = True
+        self._text_to_song(text, song)
 
         if not options.dry_run:
             self.save_songs([song])
