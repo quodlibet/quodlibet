@@ -38,6 +38,7 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **mutagen** (>= 1.14)
 * **GTK+** (>= 3.2)
 * On Windows only: **pywin32**
+* On OS X only: **PyObjC**
 
 For playback support in Quod Libet one of the following two is needed:
 
@@ -134,6 +135,9 @@ plugin from loading.
 **pynotify**:
     * For the auto library update plugin
 
+**webkitgtk** (== 3.0) + **typelibs**:
+    * For the Lyrics Window plugin
+
 
 Build Dependencies
 ------------------
@@ -174,4 +178,4 @@ Changes
 3.2 → 3.3
 ^^^^^^^^^
 
-* **No changes** compared to 3.2
+* New optional plugin dependency: webkitgtk-3.0 + typelibs
