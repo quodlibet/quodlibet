@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-27 03:30+0800\n"
+"POT-Creation-Date: 2014-12-31 21:54+0100\n"
 "PO-Revision-Date: 2014-12-27 03:29+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
@@ -68,203 +68,203 @@ msgstr "редактор тегов аудиофайлов"
 msgid "directory"
 msgstr "папка"
 
-#: ../operon.py:87
+#: ../operon.py:88
 #, python-format
 msgid "Failed to load file: %r"
 msgstr "Не удалось загрузить файл: %r"
 
-#: ../operon.py:123
+#: ../operon.py:124
 msgid "List tags"
 msgstr "Вывести теги"
 
-#: ../operon.py:128 ../operon.py:166 ../operon.py:569
+#: ../operon.py:129 ../operon.py:167 ../operon.py:607
 msgid "Print terse output"
 msgstr ""
 
-#: ../operon.py:130 ../operon.py:168 ../operon.py:571
+#: ../operon.py:131 ../operon.py:169 ../operon.py:609
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr ""
 
-#: ../operon.py:133
+#: ../operon.py:134
 #, fuzzy
 msgid "Also list programmatic tags"
 msgstr "_Показывать программные теги"
 
-#: ../operon.py:137 ../operon.py:201 ../operon.py:227 ../operon.py:245
-#: ../operon.py:283 ../operon.py:405 ../operon.py:447 ../operon.py:451
-#: ../operon.py:501 ../operon.py:504 ../operon.py:542 ../operon.py:576
-#: ../operon.py:613 ../operon.py:644 ../operon.py:682
+#: ../operon.py:138 ../operon.py:202 ../operon.py:228 ../operon.py:246
+#: ../operon.py:371 ../operon.py:443 ../operon.py:485 ../operon.py:489
+#: ../operon.py:539 ../operon.py:542 ../operon.py:580 ../operon.py:614
+#: ../operon.py:651 ../operon.py:682 ../operon.py:720
 msgid "Not enough arguments"
 msgstr "Недостаточно аргументов"
 
-#: ../operon.py:139 ../operon.py:173 ../operon.py:203 ../operon.py:229
-#: ../operon.py:247 ../operon.py:285 ../operon.py:578
+#: ../operon.py:140 ../operon.py:174 ../operon.py:204 ../operon.py:230
+#: ../operon.py:248 ../operon.py:373 ../operon.py:616
 msgid "Too many arguments"
 msgstr "Слишком много аргументов"
 
-#: ../operon.py:142 ../operon.py:175 ../operon.py:583
+#: ../operon.py:143 ../operon.py:176 ../operon.py:621
 msgid "Description"
 msgstr "Описание"
 
-#: ../operon.py:142 ../operon.py:583 ../quodlibet/qltk/edittags.py:464
+#: ../operon.py:143 ../operon.py:621 ../quodlibet/qltk/edittags.py:466
 msgid "Value"
 msgstr "Значение"
 
-#: ../operon.py:142 ../operon.py:175
+#: ../operon.py:143 ../operon.py:176
 #: ../quodlibet/browsers/collection/prefs.py:120
 #: ../quodlibet/ext/songsmenu/filterall.py:32
-#: ../quodlibet/qltk/edittags.py:442
+#: ../quodlibet/qltk/edittags.py:444
 msgid "Tag"
 msgstr "Тег"
 
-#: ../operon.py:161
+#: ../operon.py:162
 msgid "List all common tags"
 msgstr "Вывести все общие теги"
 
-#: ../operon.py:196
+#: ../operon.py:197
 msgid "Print all tags to stdout"
 msgstr "Вывести все теги на экран (stdout)"
 
-#: ../operon.py:216
+#: ../operon.py:217
 msgid "Load tags dumped with 'dump'"
 msgstr ""
 
-#: ../operon.py:221 ../operon.py:239 ../operon.py:279 ../operon.py:401
-#: ../operon.py:435 ../operon.py:494
+#: ../operon.py:222 ../operon.py:240 ../operon.py:315 ../operon.py:439
+#: ../operon.py:473 ../operon.py:532
 msgid "Show changes, don't apply them"
 msgstr ""
 
-#: ../operon.py:223 ../operon.py:241
+#: ../operon.py:224 ../operon.py:242
 msgid "Skip tags that can't be written"
 msgstr ""
 
-#: ../operon.py:234
+#: ../operon.py:235
 msgid "Copy tags from one file to another"
 msgstr "Копировать теги из одного файла в другой"
 
-#: ../operon.py:261
+#: ../operon.py:262
 #, python-format
 msgid "Can't copy tag %r to file: %r"
 msgstr ""
 
-#: ../operon.py:272
+#: ../operon.py:308
 msgid "Edit tags in a text editor"
 msgstr "Изменить теги в текстовом редакторе"
 
-#: ../operon.py:337
+#: ../operon.py:402
 msgid "Editing aborted"
 msgstr "Изменение прервано"
 
-#: ../operon.py:341
+#: ../operon.py:406
 #, python-format
 msgid "Starting text editor '%(editor-name)s' failed."
 msgstr "Не удалось запустить текстовый редактор «%(editor-name)s»."
 
-#: ../operon.py:346
+#: ../operon.py:411
 msgid "No changes detected"
 msgstr "Изменения не найдены"
 
-#: ../operon.py:396
+#: ../operon.py:434
 msgid "Set a tag and remove existing values"
 msgstr ""
 
-#: ../operon.py:416 ../operon.py:553 ../operon.py:771
+#: ../operon.py:454 ../operon.py:591 ../operon.py:809
 #, python-format
 msgid "Can not set %r"
 msgstr "Не удалось установить %r"
 
-#: ../operon.py:430
+#: ../operon.py:468
 msgid "Remove tags"
 msgstr "Удалить теги"
 
-#: ../operon.py:437 ../operon.py:496
+#: ../operon.py:475 ../operon.py:534
 msgid "Value is a regular expression"
 msgstr ""
 
-#: ../operon.py:439
+#: ../operon.py:477
 msgid "Remove all tags"
 msgstr "Удалить все теги"
 
-#: ../operon.py:443
+#: ../operon.py:481
 msgid "Can't combine '--all' with '--regexp'"
 msgstr ""
 
-#: ../operon.py:477
+#: ../operon.py:515
 #, python-format
 msgid "Can't remove %r from %r"
 msgstr ""
 
-#: ../operon.py:489
+#: ../operon.py:527
 msgid "Remove a tag value"
 msgstr "Удалить значение тега"
 
-#: ../operon.py:537
+#: ../operon.py:575
 msgid "Add a tag value"
 msgstr "Добавить значение тега"
 
-#: ../operon.py:564
+#: ../operon.py:602
 msgid "List file information"
 msgstr "Вывести информацию о файле"
 
-#: ../operon.py:607
+#: ../operon.py:645
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
 msgstr ""
 
-#: ../operon.py:620
+#: ../operon.py:658
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "Не удалось загрузить файл: %r"
 
-#: ../operon.py:627 ../operon.py:652
+#: ../operon.py:665 ../operon.py:690
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
 "Изменение изображения %(file_name)s (%(file_format)s) не поддерживается"
 
-#: ../operon.py:639
+#: ../operon.py:677
 msgid "Remove all embedded images"
 msgstr "Удалить все внедрённые изображения"
 
-#: ../operon.py:665
+#: ../operon.py:703
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Извлечь внедрённые изображения в %(filepath)s"
 
-#: ../operon.py:677
+#: ../operon.py:715
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
 
-#: ../operon.py:735
+#: ../operon.py:773
 msgid "Rename files based on tags"
 msgstr ""
 
-#: ../operon.py:749
+#: ../operon.py:787
 msgid "Fill tags based on the file path"
 msgstr ""
 
-#: ../operon.py:798 ../quodlibet/qltk/information.py:288
+#: ../operon.py:836 ../quodlibet/qltk/information.py:288
 #: ../quodlibet/qltk/properties.py:70 ../quodlibet/qltk/renamefiles.py:164
 #: ../quodlibet/qltk/tagsfrompath.py:214 ../quodlibet/qltk/tracknumbers.py:71
 msgid "File"
 msgstr "Файл"
 
-#: ../operon.py:805
+#: ../operon.py:843
 msgid "Fill tracknumbers for all files"
 msgstr ""
 
-#: ../operon.py:823
+#: ../operon.py:861
 msgid "Print tags based on the given pattern"
 msgstr ""
 
-#: ../operon.py:859
+#: ../operon.py:897
 msgid "Display help information"
 msgstr "Вывести справку"
 
-#: ../operon.py:887
+#: ../operon.py:925
 #, fuzzy, python-format
 msgid "'%s' is not a valid column name (%s)."
 msgstr "<b>%s</b> не является корректным адресом."
@@ -1754,7 +1754,7 @@ msgid "Hide main window on close"
 msgstr "Скрыть главное окно"
 
 #: ../quodlibet/ext/events/mpris.py:53
-#: ../quodlibet/ext/events/themeswitcher.py:67
+#: ../quodlibet/ext/events/themeswitcher.py:113
 #: ../quodlibet/ext/gstreamer/compressor.py:98
 #: ../quodlibet/ext/gstreamer/crossfeed.py:139
 #: ../quodlibet/ext/gstreamer/karaoke.py:98
@@ -2127,25 +2127,30 @@ msgstr "%d композиция"
 msgid "Status Patterns"
 msgstr "Сохранённые шаблоны"
 
-#: ../quodlibet/ext/events/themeswitcher.py:21
+#: ../quodlibet/ext/events/themeswitcher.py:42
 msgid "Theme Switcher"
 msgstr "Тема оформления"
 
-#: ../quodlibet/ext/events/themeswitcher.py:22
+#: ../quodlibet/ext/events/themeswitcher.py:43
 msgid "Change the active GTK+ theme."
 msgstr "Позволяет сменить используемую тему GTK+."
 
-#: ../quodlibet/ext/events/themeswitcher.py:31
+#: ../quodlibet/ext/events/themeswitcher.py:67
 msgid "_Theme:"
 msgstr "_Тема:"
 
-#: ../quodlibet/ext/events/themeswitcher.py:36
+#: ../quodlibet/ext/events/themeswitcher.py:72
 msgid "Default Theme"
 msgstr "Тема по умолчанию"
 
-#: ../quodlibet/ext/events/themeswitcher.py:48
+#: ../quodlibet/ext/events/themeswitcher.py:84
 msgid "Prefer dark theme version"
 msgstr "Предпочитать тёмную версию темы"
+
+#: ../quodlibet/ext/events/themeswitcher.py:94
+#, fuzzy
+msgid "Use header bars"
+msgstr "Использовать относительные пути"
 
 #: ../quodlibet/ext/events/trayicon.py:47
 msgid ""
@@ -3140,7 +3145,7 @@ msgid "Error"
 msgstr "Ошибка"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:113
-#: ../quodlibet/qltk/edittags.py:420
+#: ../quodlibet/qltk/edittags.py:422
 msgid "Write"
 msgstr "Записать"
 
@@ -3490,11 +3495,11 @@ msgstr "Все альбомы"
 msgid "Split out disc number."
 msgstr "Выделить «_disc» из «album»"
 
-#: ../quodlibet/ext/songsmenu/website_search.py:34
+#: ../quodlibet/ext/songsmenu/website_search.py:33
 msgid "Website Search"
 msgstr "Поиск в Интернете"
 
-#: ../quodlibet/ext/songsmenu/website_search.py:35
+#: ../quodlibet/ext/songsmenu/website_search.py:34
 #, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
@@ -3503,16 +3508,16 @@ msgstr ""
 "Позволяет искать на любых выбранных веб-сайтах по любым тегам.\n"
 "Поддерживает шаблоны, например: %(pattern-example)s"
 
-#: ../quodlibet/ext/songsmenu/website_search.py:99
+#: ../quodlibet/ext/songsmenu/website_search.py:78
 msgid "Search URL patterns"
 msgstr "Шаблоны URL для поиска"
 
-#: ../quodlibet/ext/songsmenu/website_search.py:108
+#: ../quodlibet/ext/songsmenu/website_search.py:88
 msgid "Edit search URLs"
 msgstr "Изменить поисковые шаблоны"
 
 #. Add link to editor
-#: ../quodlibet/ext/songsmenu/website_search.py:135
+#: ../quodlibet/ext/songsmenu/website_search.py:114
 msgid "Configure searches..."
 msgstr "Настройки поиска..."
 
@@ -3772,7 +3777,7 @@ msgstr ""
 msgid "No time information"
 msgstr "Нет информации о времени"
 
-#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:308
+#: ../quodlibet/qltk/cbes.py:45 ../quodlibet/qltk/edittags.py:310
 msgid "_Value:"
 msgstr "_Значение:"
 
@@ -3963,7 +3968,7 @@ msgstr ""
 msgid "_More options..."
 msgstr "_Дополнительные параметры..."
 
-#: ../quodlibet/qltk/edittags.py:56 ../quodlibet/qltk/edittags.py:67
+#: ../quodlibet/qltk/edittags.py:57 ../quodlibet/qltk/edittags.py:68
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
@@ -3971,7 +3976,7 @@ msgstr[0] "отсутствует у %d композиции"
 msgstr[1] "отсутствует у %d композиций"
 msgstr[2] "отсутствует у %d композиций"
 
-#: ../quodlibet/qltk/edittags.py:60 ../quodlibet/qltk/edittags.py:64
+#: ../quodlibet/qltk/edittags.py:61 ../quodlibet/qltk/edittags.py:65
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
@@ -3979,62 +3984,62 @@ msgstr[0] "разное у %d композиции"
 msgstr[1] "разное у %d композиций"
 msgstr[2] "разное у %d композиций"
 
-#: ../quodlibet/qltk/edittags.py:186
+#: ../quodlibet/qltk/edittags.py:187
 msgid "Split into _Multiple Values"
 msgstr "_Разделить на несколько значений"
 
-#: ../quodlibet/qltk/edittags.py:206
+#: ../quodlibet/qltk/edittags.py:207
 msgid "Split Disc out of _Album"
 msgstr "Выделить «_disc» из «album»"
 
-#: ../quodlibet/qltk/edittags.py:223
+#: ../quodlibet/qltk/edittags.py:224
 msgid "Split _Version out of Title"
 msgstr "Выделить «_version» из «title»"
 
-#: ../quodlibet/qltk/edittags.py:258
+#: ../quodlibet/qltk/edittags.py:259
 msgid "Split Arranger out of Ar_tist"
 msgstr "Выделить «_arranger» из «artist»"
 
-#: ../quodlibet/qltk/edittags.py:263
+#: ../quodlibet/qltk/edittags.py:264
 msgid "Split _Performer out of Artist"
 msgstr "Выделить «_performer» из «artist»"
 
-#: ../quodlibet/qltk/edittags.py:269
+#: ../quodlibet/qltk/edittags.py:270
 msgid "Split _Performer out of Title"
 msgstr "Выделить «_performer» из «title»"
 
-#: ../quodlibet/qltk/edittags.py:275
+#: ../quodlibet/qltk/edittags.py:276
 msgid "Split _Originalartist out of Title"
 msgstr "Выделить «_originalartist» из «title»"
 
-#: ../quodlibet/qltk/edittags.py:282
+#: ../quodlibet/qltk/edittags.py:283
 msgid "Add a Tag"
 msgstr "Добавить тег"
 
-#: ../quodlibet/qltk/edittags.py:299
+#: ../quodlibet/qltk/edittags.py:301
 msgid "_Tag:"
 msgstr "Т_ег:"
 
 #. Translators: translate only to override the text
 #. for the tag "save" button
-#: ../quodlibet/qltk/edittags.py:401
+#: ../quodlibet/qltk/edittags.py:403
 msgid "ql-save"
 msgstr ""
 
 #. Translators: translate only to override the  for the tag "revert" button
-#: ../quodlibet/qltk/edittags.py:403
+#: ../quodlibet/qltk/edittags.py:405
 msgid "ql-revert"
 msgstr ""
 
-#: ../quodlibet/qltk/edittags.py:412
+#: ../quodlibet/qltk/edittags.py:414
 msgid "Edit Tags"
 msgstr "Изменить теги"
 
-#: ../quodlibet/qltk/edittags.py:486
+#: ../quodlibet/qltk/edittags.py:488
 msgid "Show _programmatic tags"
 msgstr "_Показывать программные теги"
 
-#: ../quodlibet/qltk/edittags.py:487
+#: ../quodlibet/qltk/edittags.py:489
 msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
@@ -4042,11 +4047,11 @@ msgstr ""
 "Показывать все теги, включая созданные программно, как например теги "
 "MusicBrainz или Replay Gain"
 
-#: ../quodlibet/qltk/edittags.py:669
+#: ../quodlibet/qltk/edittags.py:671
 msgid "Unable to add tag"
 msgstr "Не удалось добавить тег"
 
-#: ../quodlibet/qltk/edittags.py:670
+#: ../quodlibet/qltk/edittags.py:672
 #, python-format
 msgid ""
 "Unable to add <b>%s</b>\n"
@@ -4058,13 +4063,13 @@ msgstr ""
 "Выбранные файлы не поддерживают множественные значения <b>%s</b>."
 
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:696 ../quodlibet/qltk/edittags.py:848
+#: ../quodlibet/qltk/edittags.py:698 ../quodlibet/qltk/edittags.py:850
 #: ../quodlibet/qltk/tagsfrompath.py:197 ../quodlibet/util/__init__.py:454
 #: ../quodlibet/util/tags.py:211
 msgid "Invalid tag"
 msgstr "Недопустимый тег"
 
-#: ../quodlibet/qltk/edittags.py:697 ../quodlibet/qltk/edittags.py:849
+#: ../quodlibet/qltk/edittags.py:699 ../quodlibet/qltk/edittags.py:851
 #: ../quodlibet/qltk/tagsfrompath.py:198
 #, python-format
 msgid ""
@@ -4076,11 +4081,11 @@ msgstr ""
 "\n"
 "Выбранные файлы не поддерживают изменение этого тега."
 
-#: ../quodlibet/qltk/edittags.py:827 ../quodlibet/qltk/edittags.py:862
+#: ../quodlibet/qltk/edittags.py:829 ../quodlibet/qltk/edittags.py:864
 msgid "Invalid value"
 msgstr "Недопустимое значение"
 
-#: ../quodlibet/qltk/edittags.py:828 ../quodlibet/qltk/edittags.py:863
+#: ../quodlibet/qltk/edittags.py:830 ../quodlibet/qltk/edittags.py:865
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
