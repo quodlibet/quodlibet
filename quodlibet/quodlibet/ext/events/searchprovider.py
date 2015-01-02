@@ -162,11 +162,6 @@ class SearchProvider(dbus.service.Object):
 
     @dbus.service.method(IFACE, in_signature="sasu")
     def ActivateResult(self, identifier, terms, timestamp):
-        try:
-            app.window.browser.filter_text(" ".join(terms))
-        except NotImplementedError:
-            pass
-
         songs = get_songs_for_ids(app.library, [identifier])
         if not songs:
             return
