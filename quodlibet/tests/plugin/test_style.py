@@ -32,7 +32,9 @@ class TPluginStyle(PluginTestCase):
         REASON_ABSENT = "plugin should have PLUGIN_NAME"
         REASON_CASE = "PLUGIN_NAME should be in Title Case"
 
-        ok_names = L('Last.fm Cover Source', 'Last.fm Sync', 'Send to iFP', 'This is a test')
+        ok_names = L(
+            'Last.fm Cover Source', 'Last.fm Sync', 'Send to iFP',
+            'This is a test')
         fails = []
 
         for pid, plugin in self.plugins.iteritems():
