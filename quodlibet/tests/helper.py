@@ -230,10 +230,6 @@ class ListWithUnused(object):
         if it contains an arbitrary element, and then to know if some of the
         elements stored were never accessed.
 
-        Some tests use this class to store edge cases (e.g. test plugin ids,
-        description strings that are well-formed, but are erroneously fail the
-        tests and other edge cases).
-
         Some tests use this class to store whitelisted/blacklisted things that
         are deemed acceptable, but would trigger those tests if they weren't
         made special cases (e.g.  UI messages that conform to a particular
