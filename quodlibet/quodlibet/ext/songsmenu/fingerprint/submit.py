@@ -170,7 +170,7 @@ class FingerprintDialog(Window):
 
     def __submit_cb(self, *args):
         self.__submit.set_sensitive(False)
-        self.__label.set_markup("<b>%s</b>" % _("Submitting Fingerprints:"))
+        self.__label.set_markup("<b>%s</b>" % _("Submitting fingerprints:"))
         self.__set_fraction(0)
         self.__acoustid_thread = AcoustidSubmissionThread(
             filter(can_submit, self.__fp_results.values()),

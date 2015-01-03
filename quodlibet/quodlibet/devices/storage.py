@@ -52,7 +52,7 @@ class StorageDevice(Device):
         entry = Gtk.Entry()
         entry.set_text(self['pattern'])
         entry.connect_after('changed', self.__set_pattern)
-        props.append((_("_Filename Pattern:"), entry, 'pattern'))
+        props.append((_("_Filename pattern:"), entry, 'pattern'))
 
         check = Gtk.CheckButton()
         check.set_active(self['covers'])

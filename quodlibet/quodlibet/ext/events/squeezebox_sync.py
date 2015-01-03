@@ -24,8 +24,8 @@ if os.name == "nt":
 class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = 'Squeezebox Output'
     PLUGIN_NAME = _('Squeezebox Sync')
-    PLUGIN_DESC = _("Make Logitech Squeezebox mirror Quod Libet output, "
-                    "provided both read from an identical library")
+    PLUGIN_DESC = _("Makes Logitech Squeezebox mirror Quod Libet output, "
+                    "provided both read from an identical library.")
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
     PLUGIN_VERSION = '0.4'
     server = None

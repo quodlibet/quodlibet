@@ -823,7 +823,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>D")
 
-        act = Gtk.Action.new("EditBookmarks", _(u"Edit Bookmarks…"), None, "")
+        act = Gtk.Action.new("EditBookmarks", _(u"Edit Bookmarks..."), None, "")
         connect_obj(act, 'activate', self.__edit_bookmarks,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>B")

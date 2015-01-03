@@ -10,7 +10,7 @@ from quodlibet.plugins.playlist import PlaylistPlugin
 class Shuffle(PlaylistPlugin):
     PLUGIN_ID = "Shuffle Playlist"
     PLUGIN_NAME = _("Shuffle Playlist")
-    PLUGIN_DESC = _("Randomly shuffles a playlist")
+    PLUGIN_DESC = _("Randomly shuffles a playlist.")
     PLUGIN_ICON = 'gtk-execute'
     PLUGIN_VERSION = "1.0"
 

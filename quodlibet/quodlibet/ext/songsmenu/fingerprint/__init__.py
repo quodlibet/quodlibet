@@ -24,7 +24,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class AcoustidSearch(SongsMenuPlugin):
     PLUGIN_ID = "AcoustidSearch"
     PLUGIN_NAME = _("Acoustic Fingerprint Lookup")
-    PLUGIN_DESC = _("Lookup song metadata through acoustic fingerprinting")
+    PLUGIN_DESC = _("Looks up song metadata through acoustic fingerprinting.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.1"
 
@@ -45,14 +45,14 @@ class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_ID = "AcoustidSubmit"
     PLUGIN_NAME = _("Submit Acoustic Fingerprints")
     PLUGIN_DESC = _("Generates acoustic fingerprints using chromaprint "
-        "and submits them to 'acoustid.org'")
+                    "and submits them to acoustid.org.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.1"
 
     def plugin_songs(self, songs):
         if not get_api_key():
             ErrorMessage(self, _("API Key Missing"),
-                _("You have to specify an Acoustid.org API key in the plugin "
+                _("You have to specify an acoustid.org API key in the plugin "
                 "preferences before you can submit fingerprints.")).run()
         else:
             FingerprintDialog(songs)
@@ -80,7 +80,7 @@ class AcoustidSubmit(SongsMenuPlugin):
         key_box.pack_start(entry, True, True, 0)
         key_box.pack_start(button, False, True, 0)
 
-        box.pack_start(Frame(_("Acoustid Web Service"),
+        box.pack_start(Frame(_("AcoustID Web Service"),
                        child=key_box), True, True, 0)
 
         return box

@@ -441,7 +441,7 @@ class PreferencesWindow(UniqueWindow):
             # Rating Scale
             model = Gtk.ListStore(int)
             scale_combo = Gtk.ComboBox(model=model)
-            scale_lab = Gtk.Label(label=_("Rating _Scale:"))
+            scale_lab = Gtk.Label(label=_("Rating _scale:"))
             scale_lab.set_use_underline(True)
             scale_lab.set_mnemonic_widget(scale_combo)
 

@@ -817,7 +817,7 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
     PLUGIN_ID = 'Download Album Art'
     PLUGIN_NAME = _('Download Album Art')
-    PLUGIN_DESC = _('Download album covers from various websites')
+    PLUGIN_DESC = _('Download album covers from various websites.')
     PLUGIN_ICON = Gtk.STOCK_FIND
     PLUGIN_VERSION = '0.5.2'
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION

@@ -39,7 +39,7 @@ from quodlibet.plugins.events import EventPlugin
 
 class MPRIS(EventPlugin):
     PLUGIN_ID = "mpris"
-    PLUGIN_NAME = _("MPRIS D-Bus support")
+    PLUGIN_NAME = _("MPRIS D-Bus Support")
     PLUGIN_DESC = _("Control Quod Libet using the "
         "MPRIS 1.0/2.0 D-Bus Interface Specification.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT

@@ -105,7 +105,7 @@ _TAGS = dict((t.name, t) for t in [
     T("musicbrainz_trackid", "um", _("MusicBrainz recording ID")),
     T("musicbrainz_releasetrackid", "um", _("MusicBrainz release track ID")),
     T("musicbrainz_albumid", "um", _("MusicBrainz release ID")),
-    T("musicbrainz_artistid", "um", _("Musicbrainz artist ID")),
+    T("musicbrainz_artistid", "um", _("MusicBrainz artist ID")),
     T("musicbrainz_albumartistid", "um", _("MusicBrainz release artist ID")),
     T("musicbrainz_trmid", "um", _("MusicBrainz TRM ID")),
     T("musicip_puid", "um", _("MusicIP PUID")),

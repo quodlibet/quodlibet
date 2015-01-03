@@ -59,11 +59,15 @@ class WikiSearch(object):
 
 class WikiArtist(WikiSearch, SongsMenuPlugin):
     PLUGIN_ID = 'Search artist in Wikipedia'
-    PLUGIN_NAME = _('Search artist in Wikipedia')
+    PLUGIN_NAME = _('Search Artist in Wikipedia')
+    PLUGIN_DESC = _('Opens a browser window with Wikipedia article '
+                    'on the playing song artist.')
     k = 'artist'
 
 
 class WikiAlbum(WikiSearch, SongsMenuPlugin):
     PLUGIN_ID = 'Search album in Wikipedia'
-    PLUGIN_NAME = _('Search album in Wikipedia')
+    PLUGIN_NAME = _('Search Album in Wikipedia')
+    PLUGIN_DESC = _('Opens a browser window with Wikipedia article '
+                    'on the playing song album.')
     k = 'album'

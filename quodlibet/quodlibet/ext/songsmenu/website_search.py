@@ -32,7 +32,7 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
-                    "Supports patterns e.g. %(pattern-example)s") % {
+                    "Supports patterns e.g. %(pattern-example)s.") % {
                         "pattern-example":
                             "http://google.com?q=<~artist~title>"}
     PLUGIN_VERSION = '0.4'

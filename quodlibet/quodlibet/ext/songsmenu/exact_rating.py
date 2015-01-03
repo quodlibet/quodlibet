@@ -16,7 +16,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class ExactRating(SongsMenuPlugin):
     PLUGIN_ID = "exact-rating"
     PLUGIN_NAME = _("Set Exact Rating")
-    PLUGIN_DESC = _("Dialog to set rating of songs as number")
+    PLUGIN_DESC = _("Dialog to set rating of songs as number.")
 
     def plugin_songs(self, songs):
         value = -1

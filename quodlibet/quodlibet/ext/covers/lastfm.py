@@ -16,8 +16,8 @@ from quodlibet.util.path import escape_filename
 
 class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_ID = "lastfm-cover"
-    PLUGIN_NAME = _("LastFM cover source")
-    PLUGIN_DESC = _("Use LastFM database to fetch covers")
+    PLUGIN_NAME = _("Last.fm Cover Source")
+    PLUGIN_DESC = _("Use Last.fm database to fetch covers.")
     PLUGIN_VERSION = "1.0"
 
     @classmethod
@@ -76,7 +76,7 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
 
     def fetch_cover(self):
         if not self.url:
-            return self.fail('Not enough data to get cover from LastFM')
+            return self.fail('Not enough data to get cover from Last.fm')
 
         def search_complete(self, res):
             self.disconnect(sci)

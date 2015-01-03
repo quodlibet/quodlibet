@@ -39,6 +39,7 @@ def filechooser(save, title):
 class Export(SongsMenuPlugin):
     PLUGIN_ID = "ExportMeta"
     PLUGIN_NAME = _("Export Metadata")
+    PLUGIN_DESC = _("Exports metadata of selected songs as a .tags file.")
     PLUGIN_ICON = 'gtk-save'
 
     def plugin_album(self, songs):
@@ -76,6 +77,7 @@ class Export(SongsMenuPlugin):
 class Import(SongsMenuPlugin):
     PLUGIN_ID = "ImportMeta"
     PLUGIN_NAME = _("Import Metadata")
+    PLUGIN_DESC = _("Imports metadata for selected songs from a .tags file.")
     PLUGIN_ICON = 'gtk-open'
 
     # Note: the usage of plugin_album here is sometimes NOT what you want. It

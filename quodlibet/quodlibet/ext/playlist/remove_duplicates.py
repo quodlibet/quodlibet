@@ -16,7 +16,7 @@ from gi.repository import Gtk
 class RemoveDuplicates(PlaylistPlugin):
     PLUGIN_ID = "Remove Playlist Duplicates"
     PLUGIN_NAME = _("Remove Playlist Duplicates")
-    PLUGIN_DESC = _("Remove duplicate entries in a playlist")
+    PLUGIN_DESC = _("Removes duplicate entries in a playlist.")
     PLUGIN_ICON = 'gtk-clear'
     PLUGIN_VERSION = "1.0"
 

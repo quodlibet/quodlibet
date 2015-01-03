@@ -5,7 +5,7 @@
 # published by the Free Software Foundation.
 
 """
-For this plugin to work Gnome Shell needs this file:
+For this plugin to work GNOME Shell needs this file:
 
 /usr/share/gnome-shell/search-providers/quodlibet-search-provider.ini
 
@@ -37,7 +37,7 @@ from quodlibet.util.path import xdg_get_system_data_dirs
 
 
 def get_gs_provider_files():
-    """Return all installed search provider files for Gnome Shell"""
+    """Return all installed search provider files for GNOME Shell"""
 
     ini_files = []
     for d in xdg_get_system_data_dirs():
@@ -52,7 +52,7 @@ def get_gs_provider_files():
 
 
 def check_ini_installed():
-    """Raise if no Gnome Shell ini file for Quod Libet is found"""
+    """Raise if no GNOME Shell ini file for Quod Libet is found"""
 
     quodlibet_installed = False
     for path in get_gs_provider_files():
@@ -66,14 +66,14 @@ def check_ini_installed():
 
     if not quodlibet_installed:
         raise PluginImportException(
-            _("No Gnome Shell search provider for "
+            _("No GNOME Shell search provider for "
               "Quod Libet installed."))
 
 
 class GnomeSearchProvider(EventPlugin):
     PLUGIN_ID = "searchprovider"
-    PLUGIN_NAME = _("Gnome Search Provider")
-    PLUGIN_DESC = _("Allow the Gnome Shell to search the library")
+    PLUGIN_NAME = _("GNOME Search Provider")
+    PLUGIN_DESC = _("Allows GNOME Shell to search the library.")
     PLUGIN_ICON = "gtk-connect"
     PLUGIN_VERSION = "0.1"
 

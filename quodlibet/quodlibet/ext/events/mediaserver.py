@@ -33,7 +33,7 @@ class MediaServer(EventPlugin):
     PLUGIN_ID = "mediaserver"
     PLUGIN_NAME = _("UPnP AV Media Server")
     PLUGIN_DESC = _("Exposes all albums to the Rygel UPnP Media Server "
-                    "through the MediaServer2 D-Bus interface")
+                    "through the MediaServer2 D-Bus interface.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
     PLUGIN_VERSION = "0.1"
 

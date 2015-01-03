@@ -193,7 +193,7 @@ class LyricWikiWindow(Window):
 class LyricWiki(SongsMenuPlugin):
     PLUGIN_ID = 'lyricwiki'
     PLUGIN_NAME = _('Lyrics Window')
-    PLUGIN_DESC = _("Shows a window containing lyrics of the playing song")
+    PLUGIN_DESC = _("Shows a window containing lyrics of the playing song.")
     PLUGIN_ICON = Gtk.STOCK_FIND
 
     _window = None

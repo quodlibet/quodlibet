@@ -40,7 +40,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'
     PLUGIN_NAME = _('Python Console')
-    PLUGIN_DESC = _('Interactive Python console')
+    PLUGIN_DESC = _('Interactive Python console.')
     PLUGIN_ICON = 'gtk-execute'
     PLUGIN_VERSION = '0.2'
 
