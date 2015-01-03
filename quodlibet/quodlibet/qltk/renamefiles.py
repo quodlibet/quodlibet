@@ -125,7 +125,7 @@ class RenameFiles(Gtk.VBox):
         cbes_defaults = const.NBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(const.NBP, cbes_defaults,
             title=_("Path Patterns"),
-            edit_title=_("Edit saved patterns..."))
+            edit_title=_(u"Edit saved patterns\u2026"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)

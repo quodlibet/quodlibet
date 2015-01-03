@@ -30,7 +30,7 @@ class Command(object):
 
 class SendTo(SongsMenuPlugin):
     PLUGIN_ID = 'SendTo'
-    PLUGIN_NAME = _('Send To...')
+    PLUGIN_NAME = _(u'Send To\u2026')
     PLUGIN_DESC = _("Generic file-opening plugin.")
     PLUGIN_ICON = Gtk.STOCK_EXECUTE
     PLUGIN_VERSION = '1'

@@ -771,11 +771,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         actions = [
             ('Music', None, _("_Music")),
-            ('AddFolders', Gtk.STOCK_ADD, _('_Add a Folder...'),
+            ('AddFolders', Gtk.STOCK_ADD, _(u'_Add a Folder\u2026'),
              "<control>O", None, self.open_chooser),
-            ('AddFiles', Gtk.STOCK_ADD, _('_Add a File...'),
+            ('AddFiles', Gtk.STOCK_ADD, _(u'_Add a File\u2026'),
              None, None, self.open_chooser),
-            ('AddLocation', Gtk.STOCK_ADD, _('_Add a Location...'),
+            ('AddLocation', Gtk.STOCK_ADD, _(u'_Add a Location\u2026'),
              None, None, self.open_location),
             ('BrowseLibrary', Gtk.STOCK_FIND, _('Open _Browser'), ""),
             ("Preferences", Gtk.STOCK_PREFERENCES, None, None, None,
@@ -823,7 +823,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>D")
 
-        act = Gtk.Action.new("EditBookmarks", _(u"Edit Bookmarks..."), None, "")
+        act = Gtk.Action.new("EditBookmarks", _(u"Edit Bookmarks…"), None, "")
         connect_obj(act, 'activate', self.__edit_bookmarks,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>B")

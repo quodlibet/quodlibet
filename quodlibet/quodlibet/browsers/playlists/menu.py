@@ -17,7 +17,7 @@ from quodlibet.util import connect_obj
 class PlaylistMenu(Gtk.Menu):
     def __init__(self, songs, parent=None):
         super(PlaylistMenu, self).__init__()
-        i = Gtk.MenuItem(label=_("_New Playlist" + "..."), use_underline=True)
+        i = Gtk.MenuItem(label=_(u"_New Playlist\u2026"), use_underline=True)
         connect_obj(i, 'activate', self.__add_to_new_playlist, songs, parent)
         self.append(i)
         self.append(SeparatorMenuItem())

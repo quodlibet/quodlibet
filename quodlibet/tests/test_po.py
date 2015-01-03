@@ -135,6 +135,14 @@ class TPot(TestCase):
 
         self.conclude(fails, "check punctuation")
 
+    def test_ellipsis(self):
+        # https://wiki.gnome.org/Initiatives/GnomeGoals/UnicodeUsage
+
+        for entry in self.pot:
+            self.assertFalse(
+                "..." in entry.msgid,
+                msg=u"%s shoul use 'ELLIPSIS' instead of '...'" % entry)
+
     def test_terms_letter_case(self):
         """ Check that some words are always written with a specific
             combination of lower and upper case letters.

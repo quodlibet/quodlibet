@@ -82,7 +82,7 @@ class SeekBar(HSlider):
         self.__remaining = c
         m.append(c)
         m.append(SeparatorMenuItem())
-        i = qltk.MenuItem(_("_Edit Bookmarks..."), Gtk.STOCK_EDIT)
+        i = qltk.MenuItem(_(u"_Edit Bookmarks\u2026"), Gtk.STOCK_EDIT)
 
         def edit_bookmarks_cb(menu_item):
             window = bookmarks.EditBookmarks(self, library, player)

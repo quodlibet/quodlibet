@@ -18,7 +18,7 @@ from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
 
 class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Export to Squeezebox Playlist"
-    PLUGIN_NAME = _("Export to Squeezebox...")
+    PLUGIN_NAME = _(u"Export to Squeezebox\u2026")
     PLUGIN_DESC = _("Dynamically exports a playlist to Logitech Squeezebox "
                     "playlist, provided both share a directory structure. "
                     "Shares configuration with Squeezebox Sync plugin.")

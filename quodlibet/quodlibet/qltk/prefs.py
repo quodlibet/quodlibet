@@ -96,7 +96,8 @@ class PreferencesWindow(UniqueWindow):
             self.others = others = UndoEntry()
             others.set_sensitive(False)
             # Stock edit doesn't have ellipsis chars.
-            edit_button = Gtk.Button(label=_("_Edit..."), use_underline=True)
+            edit_button = Gtk.Button(
+                label=_(u"_Edit\u2026"), use_underline=True)
             edit_button.connect("clicked", self.__config_cols)
             edit_button.set_tooltip_text(_("Add or remove additional column "
                                            "headers"))

@@ -262,8 +262,8 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             else:
                 fn_list.append("<artist> - <album>.jpg")
         else:
-            print_w("No album for \"%s\". Could be difficult finding art..." %
-                    song("~filename"))
+            print_w(u"No album for \"%s\". Could be difficult "
+                    u"finding art\u2026" % song("~filename"))
             title = song("title")
             if title and artist:
                 fn_list.append("<artist> - <title>.jpg")
@@ -639,7 +639,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         self.search_button.set_sensitive(False)
 
         self.progress.set_fraction(0)
-        self.progress.set_text(_('Searching...'))
+        self.progress.set_text(_(u'Searching\u2026'))
         self.progress.show()
 
         self.liststore.clear()

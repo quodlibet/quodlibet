@@ -137,7 +137,7 @@ class FilterPluginBox(Gtk.VBox):
         # plugins
         self.__plugins = []
         hb = Gtk.HBox()
-        expander = Gtk.Expander(label=_("_More options..."))
+        expander = Gtk.Expander(label=_(u"_More options\u2026"))
         expander.set_use_underline(True)
         hb.pack_start(expander, True, True, 0)
         self.pack_start(hb, False, True, 0)

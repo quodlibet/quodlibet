@@ -769,7 +769,7 @@ class DragIconTreeView(BaseView):
 
         layout = None
         if len(paths) > max_rows:
-            more = _("and %d more...") % (len(paths) - max_rows)
+            more = _(u"and %d more\u2026") % (len(paths) - max_rows)
             more = "<i>%s</i>" % more
             layout = self.create_pango_layout("")
             layout.set_markup(more)

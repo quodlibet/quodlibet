@@ -292,13 +292,13 @@ class AudioFeeds(Browser, Gtk.VBox):
     def Menu(self, songs, songlist, library):
         menu = SongsMenu(library, songs, parent=self)
         if len(songs) == 1:
-            item = qltk.MenuItem(_("_Download..."), Gtk.STOCK_CONNECT)
+            item = qltk.MenuItem(_(u"_Download\u2026"), Gtk.STOCK_CONNECT)
             item.connect('activate', self.__download, songs[0]("~uri"))
             item.set_sensitive(not songs[0].is_file)
         else:
             songs = filter(lambda s: not s.is_file, songs)
             uris = [song("~uri") for song in songs]
-            item = qltk.MenuItem(_("_Download..."), Gtk.STOCK_CONNECT)
+            item = qltk.MenuItem(_(u"_Download\u2026"), Gtk.STOCK_CONNECT)
             item.connect('activate', self.__download_many, uris)
             item.set_sensitive(bool(songs))
         menu.preseparate()

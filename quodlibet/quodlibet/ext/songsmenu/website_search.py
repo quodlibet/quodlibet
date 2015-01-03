@@ -111,7 +111,7 @@ class WebsiteSearch(SongsMenuPlugin):
             connect_obj(item, 'activate', self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        configure = Gtk.MenuItem(label=_("Configure searches..."))
+        configure = Gtk.MenuItem(label=_(u"Configure searches\u2026"))
         connect_obj(configure, 'activate', self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)

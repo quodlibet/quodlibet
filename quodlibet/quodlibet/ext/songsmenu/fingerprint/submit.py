@@ -178,7 +178,7 @@ class FingerprintDialog(Window):
 
     def __acoustid_update(self, progress):
         self.__set_fraction(progress)
-        self.__label_song.set_text(_("Submitting..."))
+        self.__label_song.set_text(_(u"Submitting\u2026"))
 
     def __acoustid_done(self):
         self.__acoustid_thread.join()

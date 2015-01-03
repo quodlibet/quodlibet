@@ -213,7 +213,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             self.go_to(initial)
 
         menu = Gtk.Menu()
-        m = qltk.MenuItem(_("_New Folder..."), Gtk.STOCK_NEW)
+        m = qltk.MenuItem(_(u"_New Folder\u2026"), Gtk.STOCK_NEW)
         m.connect('activate', self.__mkdir)
         menu.append(m)
         m = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_DELETE, None)

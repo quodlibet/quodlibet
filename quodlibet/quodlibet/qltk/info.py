@@ -102,7 +102,7 @@ class SongInfo(Gtk.EventBox):
         rating.show()
         menu.prepend(rating)
 
-        item = qltk.MenuItem(_("_Edit Display..."), Gtk.STOCK_EDIT)
+        item = qltk.MenuItem(_(u"_Edit Display\u2026"), Gtk.STOCK_EDIT)
         item.show()
         connect_obj(item, 'activate', self.__edit, player)
         menu.append(item)
