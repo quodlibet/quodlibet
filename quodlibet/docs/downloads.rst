@@ -242,12 +242,15 @@ For old releases see the `full file listing <https://bitbucket.org/lazka/quodlib
 |macosx-logo| Mac OS X
 ----------------------
 
-.. note::
+=========================== ==============================
+Release                     Application Bundle
+=========================== ==============================
+Quod Libet 3.3.0            Quodlibet-3.3.0_0.zip_
+Ex False 3.3.0              ExFalso-3.3.0_0.zip_
+=========================== ==============================
 
-    Mac OS X support is still experimental; please report any issue you 
-    encounter.
-
-Newest bundle (OSX 10.6 - 10.9 x86_64): http://kerik-sf.users.sourceforge.net/quodlibet-osx-bundle/
+.. _Quodlibet-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/Quodlibet-3.3.0_0.zip
+.. _ExFalso-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/ExFalso-3.3.0_0.zip
 
 
 .. _RunFromSource:
