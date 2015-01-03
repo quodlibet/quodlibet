@@ -1,4 +1,5 @@
 # Copyright 2013 Christoph Reiter
+#           2015 Anton Shestakov
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -222,3 +223,38 @@ def temp_filename(*args, **kwargs):
     yield filename
 
     os.remove(filename)
+
+
+class ListWithUnused(object):
+    """ This class stores a set of elements and provides the interface to check
+        if it contains an arbitrary element, and then to know if some of the
+        elements stored were never accessed.
+
+        Some tests use this class to store edge cases (e.g. test plugin ids,
+        description strings that are well-formed, but are erroneously fail the
+        tests and other edge cases).
+
+        Some tests use this class to store whitelisted/blacklisted things that
+        are deemed acceptable, but would trigger those tests if they weren't
+        made special cases (e.g.  UI messages that conform to a particular
+        writing style, but can't be tested automatically). Since such
+        whitelists reside in tests and not in the code that produces those
+        special cases, it's easy to change (fix) the code and then forget to
+        remove the special case from tests, leaving it there to never be used
+        again.
+
+        This class then provides a way to see if such particular element
+        doesn't actually need to be in the whitelist anymore.
+    """
+    def __init__(self, *args):
+        self.store = set(args)
+        self.unused = set(args)
+
+    def __contains__(self, item):
+        self.unused.discard(item)
+        return item in self.store
+
+    def check_unused(self):
+        if self.unused:
+            from quodlibet import print_w
+            print_w('ListWithUnused has unused items: %s' % self.unused)
