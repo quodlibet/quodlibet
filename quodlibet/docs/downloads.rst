@@ -55,10 +55,22 @@ as `Bitbucket <https://bitbucket.org/>`__:
  * https://code.google.com/p/quodlibet (primary)
  * https://bitbucket.org/lazka/quodlibet (mirror)
 
-To clone the repository::
+.. _RunFromSource:
 
-    hg clone https://code.google.com/p/quodlibet
-    hg clone https://bitbucket.org/lazka/quodlibet
+**Running from Source** (no installation is needed) **:**
+
+::
+
+    $ hg clone https://code.google.com/p/quodlibet/
+    $ ./quodlibet/quodlibet/quodlibet.py
+
+.. note::
+
+    To get all the dependencies needed for running Quod Libet the easiest way
+    is to use one of the unstable PPAs / repos listed below. They pull in or
+    contain all the needed dependencies for the latest code and are kept up to
+    date.
+
 
 .. _tarballs:
 
@@ -203,7 +215,7 @@ Stable:
 Unstable:
 
 
-See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in 
+See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in
 the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
 
 
@@ -251,29 +263,3 @@ Ex False 3.3.0              ExFalso-3.3.0_0.zip_
 
 .. _Quodlibet-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/Quodlibet-3.3.0_0.zip
 .. _ExFalso-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/ExFalso-3.3.0_0.zip
-
-
-.. _RunFromSource:
-
-|source-logo| Running from Source
----------------------------------
-
-Install mercurial and check out the source::
-
-    $ hg clone https://code.google.com/p/quodlibet/
-    $ cd quodlibet/quodlibet
-
-
-If you want translations, you have to create the gettext translation files::
-
-$ ./setup.py build_mo
-
-Run Quod Libet or Ex Falso::
-
-    $ ./quodlibet.py
-    $ ./exfalso.py
-
-To update to the latest version, switch to the QL dir and run::
-
- $ hg pull --update
- $ ./setup.py build_mo # (only if you need translations)
