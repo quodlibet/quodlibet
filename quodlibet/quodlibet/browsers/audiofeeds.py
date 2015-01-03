@@ -423,9 +423,9 @@ class AudioFeeds(Browser, Gtk.VBox):
         else:
             ErrorMessage(
                 self, _("Unable to add feed"),
-                _("<b>%s</b> could not be added. The server may be down, "
+                _("%s could not be added. The server may be down, "
                   "or the location may not be an audio feed.") %
-                util.escape(feed.uri)).run()
+                util.bold(util.escape(feed.uri))).run()
 
     def __popup_menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
@@ -479,9 +479,9 @@ class AudioFeeds(Browser, Gtk.VBox):
             else:
                 ErrorMessage(
                     self, _("Unable to add feed"),
-                    _("<b>%s</b> could not be added. The server may be down, "
+                    _("%s could not be added. The server may be down, "
                       "or the location may not be an audio feed.") %
-                    util.escape(feed.uri)).run()
+                    util.bold(util.escape(feed.uri))).run()
 
     def restore(self):
         try:

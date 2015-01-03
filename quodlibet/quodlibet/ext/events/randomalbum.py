@@ -196,7 +196,8 @@ class RandomAlbum(EventPlugin):
             if notif is None:
                 return
             task = notif.Task(_("Random Album"),
-                              _("Waiting to start <i>%s</i>") % album("album"),
+                              _("Waiting to start %s") %
+                                    util.bold(util.escape(album("album"))),
                               stop=lambda: GLib.source_remove(srcid))
 
             def countdown():

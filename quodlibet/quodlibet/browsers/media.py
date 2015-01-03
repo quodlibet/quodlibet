@@ -445,8 +445,9 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             fraction = float(used) / space
 
             self.__device_space.set_markup(
-                _("<b>%s</b> used, <b>%s</b> available") %
-                (util.format_size(used), util.format_size(free)))
+                _("%s used, %s available") %
+                (util.bold(util.format_size(used)),
+                 util.bold(util.format_size(free))))
             self.__progress.set_fraction(fraction)
             self.__progress.set_text("%.f%%" % round(fraction * 100))
             self.__progress.show()
@@ -462,7 +463,8 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         if not device.is_connected():
             qltk.WarningMessage(
                 self, message,
-                _("<b>%s</b> is not connected.") % util.escape(device['name'])
+                _("%s is not connected.") %
+                util.bold(util.escape(device['name']))
             ).run()
             return False
         return True
@@ -479,7 +481,10 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), {'song': ''})
+        wlb.setup(
+            len(songs),
+            _("Copying %(song)s") % {'song': '<b>%(song)s</b>'},
+            {'song': ''})
         wlb.show()
 
         model = songlist.get_model()
@@ -512,7 +517,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                     pass
                 self.__refresh_space(device)
             else:
-                msg = _("<b>%s</b> could not be copied.") % label
+                msg = _("%s could not be copied.") % util.bold(label)
                 if type(status) == unicode:
                     msg += "\n\n" + util.escape(status)
                 qltk.WarningMessage(self, _("Unable to copy song"), msg).run()
@@ -542,7 +547,10 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), {'song': ''})
+        wlb.setup(
+            len(songs),
+            _("Deleting %(song)s") % {"song": "<b>%(song)s</b>"},
+            {'song': ''})
         wlb.show()
 
         model = songlist.get_model()
@@ -561,7 +569,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                     pass
                 self.__refresh_space(device)
             else:
-                msg = _("<b>%s</b> could not be deleted.") % label
+                msg = _("%s could not be deleted.") % util.bold(label)
                 if type(status) == unicode:
                     msg += "\n\n%s" % status
                 qltk.WarningMessage(
@@ -580,7 +588,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             device = model[iter][0]
             status = device.eject()
             if status is not True:
-                msg = _("Ejecting <b>%s</b> failed.") % device['name']
+                msg = _("Ejecting %s failed.") % util.bold(device['name'])
                 if status:
                     msg += "\n\n%s" % status
                 qltk.ErrorMessage(self, _("Unable to eject device"), msg).run()

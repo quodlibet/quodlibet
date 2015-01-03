@@ -195,6 +195,18 @@ def unescape(str):
     return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
 
 
+def bold(string):
+    return "<b>%s</b>" % string
+
+
+def monospace(string):
+    return "<tt>%s</tt>" % string
+
+
+def italic(string):
+    return "<i>%s</i>" % string
+
+
 def parse_time(timestr, err=(ValueError, re.error)):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
     if timestr[0:1] == "-":

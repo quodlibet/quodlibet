@@ -132,8 +132,8 @@ class Tformat_rating(TestCase):
         self.failUnlessEqual(util.format_rating(-0.5), "00000")
 
 
-class Tescape(TestCase):
-    def test_empty(self):
+class Tpango(TestCase):
+    def test_escape_empty(self):
         self.failUnlessEqual(util.escape(""), "")
 
     def test_roundtrip(self):
@@ -142,10 +142,13 @@ class Tescape(TestCase):
             self.failIfEqual(s, esc)
             self.failUnlessEqual(s, util.unescape(esc))
 
-
-class Tunescape(Tescape):
-    def test_empty(self):
+    def test_unescape_empty(self):
         self.failUnlessEqual(util.unescape(""), "")
+
+    def test_format(self):
+        self.assertEqual(util.bold("foo"), "<b>foo</b>")
+        self.assertEqual(util.italic("foo"), "<i>foo</i>")
+        self.assertEqual(util.monospace("foo"), "<tt>foo</tt>")
 
 
 class Tre_esc(TestCase):

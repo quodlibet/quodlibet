@@ -143,6 +143,18 @@ class TPot(TestCase):
                 "..." in entry.msgid,
                 msg=u"%s shoul use 'ELLIPSIS' instead of '...'" % entry)
 
+    def test_markup(self):
+        # https://wiki.gnome.org/Initiatives/GnomeGoals/RemoveMarkupInMessages
+
+        for entry in self.pot:
+            # this only checks strings containing "%" where it's likely
+            # that the formated content is variable anyway.
+            # TODO: fix for all cases by adding a translator comment
+            # and insert
+            self.assertFalse(
+                re.match("<.*?>.*?%.*?</.*?>", entry.msgid),
+                msg=u"%s contains markup, remove it!" % entry)
+
     def test_terms_letter_case(self):
         """ Check that some words are always written with a specific
             combination of lower and upper case letters.

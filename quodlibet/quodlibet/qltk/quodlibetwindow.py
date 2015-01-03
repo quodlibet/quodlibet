@@ -724,7 +724,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         if error:
             ErrorMessage(
                 self, _("Unable to add songs"),
-                _("<b>%s</b> uses an unsupported protocol.") % uri).run()
+                _("%s uses an unsupported protocol.") % util.bold(uri)).run()
         else:
             if dirs:
                 copool.add(
@@ -1104,13 +1104,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             if not util.uri_is_valid(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
-                    _("<b>%s</b> is not a valid location.") % (
-                    util.escape(name))).run()
+                    _("%s is not a valid location.") % (
+                    util.bold(util.escape(name)))).run()
             elif not app.player.can_play_uri(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
-                    _("<b>%s</b> uses an unsupported protocol.") % (
-                    util.escape(name))).run()
+                    _("%s uses an unsupported protocol.") % (
+                    util.bold(util.escape(name)))).run()
             else:
                 if name not in self.__library:
                     self.__library.add([RemoteFile(name)])
