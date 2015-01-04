@@ -18,7 +18,6 @@ class Bookmarks(SongsMenuPlugin):
     PLUGIN_NAME = _(u"Go to Bookmark\u2026")
     PLUGIN_DESC = _("Lists all bookmarks in the selected files.")
     PLUGIN_ICON = Gtk.STOCK_JUMP_TO
-    PLUGIN_VERSION = "0.4"
 
     def __init__(self, songs, *args, **kwargs):
         super(Bookmarks, self).__init__(songs, *args, **kwargs)

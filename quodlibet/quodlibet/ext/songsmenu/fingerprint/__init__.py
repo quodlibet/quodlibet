@@ -26,7 +26,6 @@ class AcoustidSearch(SongsMenuPlugin):
     PLUGIN_NAME = _("Acoustic Fingerprint Lookup")
     PLUGIN_DESC = _("Looks up song metadata through acoustic fingerprinting.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.1"
 
     def plugin_songs(self, songs):
         from .search import SearchWindow
@@ -47,7 +46,6 @@ class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_DESC = _("Generates acoustic fingerprints using chromaprint "
                     "and submits them to acoustid.org.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.1"
 
     def plugin_songs(self, songs):
         if not get_api_key():

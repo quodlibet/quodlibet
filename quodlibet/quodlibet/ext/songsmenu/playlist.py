@@ -48,7 +48,6 @@ class PlaylistExport(SongsMenuPlugin):
     PLUGIN_NAME = _('Playlist Export')
     PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')
     PLUGIN_ICON = 'gtk-save'
-    PLUGIN_VERSION = '0.2'
 
     lastfolder = None
 

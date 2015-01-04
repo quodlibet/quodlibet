@@ -62,7 +62,6 @@ class ExportToHTML(SongsMenuPlugin):
     PLUGIN_NAME = _("Export to HTML")
     PLUGIN_DESC = _("Exports the selected song list to HTML.")
     PLUGIN_ICON = Gtk.STOCK_CONVERT
-    PLUGIN_VERSION = "0.17"
 
     def plugin_songs(self, songs):
         if not songs:

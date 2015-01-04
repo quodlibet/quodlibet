@@ -12,7 +12,6 @@ class Shuffle(PlaylistPlugin):
     PLUGIN_NAME = _("Shuffle Playlist")
     PLUGIN_DESC = _("Randomly shuffles a playlist.")
     PLUGIN_ICON = 'gtk-execute'
-    PLUGIN_VERSION = "1.0"
 
     def plugin_playlist(self, playlist):
         playlist.shuffle()

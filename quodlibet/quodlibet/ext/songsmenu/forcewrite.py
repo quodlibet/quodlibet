@@ -13,7 +13,6 @@ class ForceWrite(SongsMenuPlugin):
     PLUGIN_DESC = _("Saves the files again. This will make sure play counts "
                     "and ratings are up to date.")
     PLUGIN_ICON = 'gtk-save'
-    PLUGIN_VERSION = "0.14"
 
     def plugin_song(self, song):
         song._needs_write = True

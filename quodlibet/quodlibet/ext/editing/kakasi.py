@@ -16,7 +16,6 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
     PLUGIN_DESC = _("Converts kana/kanji to romaji before renaming.")
     PLUGIN_ICON = Gtk.STOCK_CONVERT
-    PLUGIN_VERSION = "1"
 
     __gsignals__ = {
         "preview": (GObject.SignalFlags.RUN_LAST, None, ())

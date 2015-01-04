@@ -122,7 +122,6 @@ class AutoLibraryUpdate(EventPlugin):
     PLUGIN_NAME = _("Automatic Library Update")
     PLUGIN_DESC = _("Keeps your library up to date with inotify. "
                     "Requires %s.") % "pyinotify"
-    PLUGIN_VERSION = "0.3"
 
     # TODO: make a config option
     USE_THREADS = True

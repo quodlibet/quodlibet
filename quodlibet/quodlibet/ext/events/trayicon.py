@@ -222,7 +222,6 @@ class TrayIcon(EventPlugin):
     PLUGIN_ID = "Tray Icon"
     PLUGIN_NAME = _("Tray Icon")
     PLUGIN_DESC = _("Controls Quod Libet from the system tray.")
-    PLUGIN_VERSION = "2.0"
 
     def enabled(self):
         self._icon = Gtk.StatusIcon()

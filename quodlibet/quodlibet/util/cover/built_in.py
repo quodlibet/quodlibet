@@ -17,7 +17,6 @@ class EmbedCover(CoverSourcePlugin):
     PLUGIN_ID = "embed-cover"
     PLUGIN_NAME = _("Embed cover")
     PLUGIN_DESC = _("Uses covers embedded into audio files.")
-    PLUGIN_VERSION = "1.0"
 
     embedded = True
 
@@ -42,7 +41,6 @@ class FilesystemCover(CoverSourcePlugin):
     PLUGIN_NAME = _("Filesystem cover")
     PLUGIN_DESC = _("Uses commonly named images found in common directories " +
                     "alongside the song.")
-    PLUGIN_VERSION = "1.0"
 
     cover_subdirs = frozenset(
         ["scan", "scans", "images", "covers", "artwork"])

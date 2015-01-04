@@ -17,7 +17,6 @@ class FilterBrowser(SongsMenuPlugin):
     PLUGIN_NAME = _('Filter on Directory')
     PLUGIN_DESC = _("Filters on directory in a new browser window.")
     PLUGIN_ICON = Gtk.STOCK_INDEX
-    PLUGIN_VERSION = '0.1'
 
     def plugin_songs(self, songs):
         tag = "~dirname"

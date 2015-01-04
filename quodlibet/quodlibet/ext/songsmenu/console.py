@@ -42,7 +42,6 @@ class PyConsole(SongsMenuPlugin):
     PLUGIN_NAME = _('Python Console')
     PLUGIN_DESC = _('Interactive Python console.')
     PLUGIN_ICON = 'gtk-execute'
-    PLUGIN_VERSION = '0.2'
 
     def plugin_songs(self, songs):
         win = ConsoleWindow(songs)

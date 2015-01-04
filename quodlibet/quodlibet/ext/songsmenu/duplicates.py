@@ -362,7 +362,6 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Finds and displays similarly tagged versions of songs.')
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
-    PLUGIN_VERSION = "0.7"
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"

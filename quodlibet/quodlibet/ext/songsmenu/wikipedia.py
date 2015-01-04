@@ -26,7 +26,6 @@ def set_lang(value):
 
 class WikiSearch(object):
     PLUGIN_ICON = Gtk.STOCK_OPEN
-    PLUGIN_VERSION = '0.14'
 
     @classmethod
     def changed(self, e):

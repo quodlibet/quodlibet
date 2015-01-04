@@ -18,7 +18,6 @@ class RemoveDuplicates(PlaylistPlugin):
     PLUGIN_NAME = _("Remove Playlist Duplicates")
     PLUGIN_DESC = _("Removes duplicate entries in a playlist.")
     PLUGIN_ICON = 'gtk-clear'
-    PLUGIN_VERSION = "1.0"
 
     def plugin_handles(self, playlists):
         return len(playlists) == 1 and playlists[0].has_duplicates

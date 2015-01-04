@@ -43,7 +43,6 @@ class MPRIS(EventPlugin):
     PLUGIN_DESC = _("Allows control of Quod Libet using the "
                     "MPRIS 1.0/2.0 D-Bus Interface Specification.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.2"
 
     def PluginPreferences(self, parent):
         box = Gtk.HBox()

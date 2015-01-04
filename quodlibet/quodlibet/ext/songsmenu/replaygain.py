@@ -563,8 +563,6 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_DESC = _('Analyzes and updates ReplayGain information, '
                     'using GStreamer. Results are grouped by album.')
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
-    # A little arbitrary, but seemed to match the history best.
-    PLUGIN_VERSION = '2.1'
     CONFIG_SECTION = 'replaygain'
 
     def plugin_albums(self, albums):

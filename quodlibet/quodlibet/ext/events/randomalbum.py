@@ -25,7 +25,6 @@ class RandomAlbum(EventPlugin):
     PLUGIN_DESC = _("Starts a random album when your playlist reaches its "
                     "end. It requires that your active browser supports "
                     "filtering by album.")
-    PLUGIN_VERSION = '2.4'
 
     weights = {}
     use_weights = False

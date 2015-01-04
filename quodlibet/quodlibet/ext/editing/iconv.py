@@ -32,7 +32,6 @@ class Iconv(EditTagsPlugin):
     PLUGIN_DESC = _("Fixes misinterpreted tag value encodings in the "
                     "tag editor.")
     PLUGIN_ICON = Gtk.STOCK_CONVERT
-    PLUGIN_VERSION = "2"
 
     def __init__(self, tag, value):
         super(Iconv, self).__init__(

@@ -23,7 +23,6 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
                     "playlist, provided both share a directory structure. "
                     "Shares configuration with Squeezebox Sync plugin.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = '0.5'
     TEMP_PLAYLIST = "_quodlibet"
 
     def __add_songs(self, task, songs, name):

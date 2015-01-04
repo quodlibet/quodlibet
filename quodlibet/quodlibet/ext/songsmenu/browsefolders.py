@@ -169,7 +169,6 @@ class BrowseFolders(SongsMenuPlugin):
     PLUGIN_NAME = _('Browse Folders')
     PLUGIN_DESC = _("Opens the songs' folders in a file manager.")
     PLUGIN_ICON = Gtk.STOCK_OPEN
-    PLUGIN_VERSION = '1.1'
 
     _HANDLERS = [browse_folders_fdo, browse_folders_thunar,
                  browse_folders_xdg_open, browse_folders_gnome_open,

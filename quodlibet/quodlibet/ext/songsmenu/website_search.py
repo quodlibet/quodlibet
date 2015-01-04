@@ -35,7 +35,6 @@ class WebsiteSearch(SongsMenuPlugin):
                     "Supports patterns e.g. %(pattern-example)s.") % {
                         "pattern-example":
                             "http://google.com?q=<~artist~title>"}
-    PLUGIN_VERSION = '0.4'
 
     # Here are some starters...
     # Sorry, PEP-8 : sometimes you're unrealistic

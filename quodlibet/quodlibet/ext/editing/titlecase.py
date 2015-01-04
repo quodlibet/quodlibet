@@ -17,7 +17,6 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
     PLUGIN_NAME = _("Title Case")
     PLUGIN_DESC = _("Title-cases tag values in the tag editor.")
     PLUGIN_ICON = Gtk.STOCK_SPELL_CHECK
-    PLUGIN_VERSION = "1.3"
     CONFIG_SECTION = "titlecase"
 
     # Issue 753: Allow all caps (as before).

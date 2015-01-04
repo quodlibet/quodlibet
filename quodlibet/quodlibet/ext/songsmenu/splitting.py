@@ -14,7 +14,6 @@ class SplitTags(SongsMenuPlugin):
     PLUGIN_DESC = _("Splits the disc number from the album and the version "
                     "from the title at the same time.")
     PLUGIN_ICON = 'gtk-find-and-replace'
-    PLUGIN_VERSION = "0.13"
 
     def plugin_song(self, song):
         if ("title" in song and
@@ -39,7 +38,6 @@ class SplitAlbum(SongsMenuPlugin):
     PLUGIN_NAME = _("Split Album")
     PLUGIN_DESC = _("Split out disc number.")
     PLUGIN_ICON = 'gtk-find-and-replace'
-    PLUGIN_VERSION = "0.13"
 
     def plugin_song(self, song):
         if ("album" in song and "discnumber" not in song and

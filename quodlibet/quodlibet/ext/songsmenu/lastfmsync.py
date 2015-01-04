@@ -225,7 +225,6 @@ class LastFMSync(SongsMenuPlugin):
     PLUGIN_DESC = _("Updates your library's statistics from your "
                     "Last.fm profile.")
     PLUGIN_ICON = 'gtk-refresh'
-    PLUGIN_VERSION = '0.1'
 
     CACHE_PATH = os.path.join(const.USERDIR, "lastfmsync.db")
 

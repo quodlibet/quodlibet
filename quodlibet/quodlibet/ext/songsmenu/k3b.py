@@ -18,7 +18,6 @@ class BurnCD(SongsMenuPlugin):
     PLUGIN_NAME = _('Burn CD')
     PLUGIN_DESC = _('Burns CDs with K3b, Brasero or xfburn.')
     PLUGIN_ICON = 'gtk-cdrom'
-    PLUGIN_VERSION = '0.2'
 
     burn_programs = {
         'K3b': ['k3b', '--audiocd'],

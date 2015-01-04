@@ -242,7 +242,6 @@ class Notify(EventPlugin):
     PLUGIN_NAME = _("Song Notifications")
     PLUGIN_DESC = _("Displays a notification when the song changes.")
     PLUGIN_ICON = Gtk.STOCK_DIALOG_INFO
-    PLUGIN_VERSION = "1.1"
 
     DBUS_NAME = "org.freedesktop.Notifications"
     DBUS_IFACE = "org.freedesktop.Notifications"

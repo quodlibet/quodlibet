@@ -483,7 +483,6 @@ class MyBrainz(SongsMenuPlugin):
     PLUGIN_NAME = _("MusicBrainz Lookup")
     PLUGIN_ICON = Gtk.STOCK_CDROM
     PLUGIN_DESC = _('Re-tags an album based on a MusicBrainz search.')
-    PLUGIN_VERSION = '0.5'
 
     cache = {}
 

@@ -338,7 +338,6 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
     PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
                     "Audioscrobbler services.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.12"
     # Retain original config section
     CONFIG_SECTION = "scrobbler"
 

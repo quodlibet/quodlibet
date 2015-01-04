@@ -113,7 +113,6 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _("Custom Commands")
     PLUGIN_DESC = _("Runs custom commands (in batches if required) on songs "
                     "using any of their tags.")
-    PLUGIN_VERSION = '1.2'
 
     _TUPLE_DEF = "\s*\('([^']*)'%s\)" % ("(?:,\s*'([^']*)')?" * 5)
     _TUPLE_REGEX = re.compile(_TUPLE_DEF)

@@ -17,7 +17,6 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_ID = "musicbrainz-cover"
     PLUGIN_NAME = _("MusicBrainz Cover Source")
     PLUGIN_DESC = _("Downloads covers from MusicBrainz's cover art archive.")
-    PLUGIN_VERSION = "1.0"
 
     @classmethod
     def group_by(cls, song):
