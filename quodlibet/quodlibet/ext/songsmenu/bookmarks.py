@@ -16,7 +16,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class Bookmarks(SongsMenuPlugin):
     PLUGIN_ID = "Go to Bookmark..."
     PLUGIN_NAME = _(u"Go to Bookmark\u2026")
-    PLUGIN_DESC = _("List all bookmarks in the selected files.")
+    PLUGIN_DESC = _("Lists all bookmarks in the selected files.")
     PLUGIN_ICON = Gtk.STOCK_JUMP_TO
     PLUGIN_VERSION = "0.4"
 

@@ -26,7 +26,7 @@ def set_path(value):
 class PictureSaver(EventPlugin):
     PLUGIN_ID = "Picture Saver"
     PLUGIN_NAME = _("Picture Saver")
-    PLUGIN_DESC = _("The cover image of the current song is saved to a file.")
+    PLUGIN_DESC = _("Saves the cover image of the current song to a file.")
     PLUGIN_ICON = Gtk.STOCK_SAVE
     PLUGIN_VERSION = "0.21"
 

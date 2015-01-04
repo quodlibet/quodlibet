@@ -125,7 +125,7 @@ def do_import(parent, library):
 class RBImport(EventPlugin):
     PLUGIN_ID = "rbimport"
     PLUGIN_NAME = _("Rhythmbox Import")
-    PLUGIN_DESC = _("Import ratings and song statistics from Rhythmbox.")
+    PLUGIN_DESC = _("Imports ratings and song statistics from Rhythmbox.")
 
     def PluginPreferences(self, *args):
         button = Gtk.Button(label=_("Start Import"))

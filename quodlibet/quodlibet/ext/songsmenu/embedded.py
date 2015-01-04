@@ -15,7 +15,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class EditEmbedded(SongsMenuPlugin):
     PLUGIN_ID = "embedded_edit"
     PLUGIN_NAME = _("Edit Embedded Images")
-    PLUGIN_DESC = _("Remove or replace embedded images.")
+    PLUGIN_DESC = _("Removes or replaces embedded images.")
     PLUGIN_ICON = Gtk.STOCK_EDIT
 
     def __init__(self, songs, *args, **kwargs):

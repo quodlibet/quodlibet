@@ -6,8 +6,7 @@ class ReverseOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
     PLUGIN_NAME = _("Reverse")
     PLUGIN_ICON = "gtk-refresh"
     PLUGIN_VERSION = "1"
-    PLUGIN_DESC = _("A simple play order plugin that plays songs in "
-                    "reverse order.")
+    PLUGIN_DESC = _("Reverses the play order of songs.")
 
     def previous(self, playlist, iter):
         return super(ReverseOrder, self).next(playlist, iter)

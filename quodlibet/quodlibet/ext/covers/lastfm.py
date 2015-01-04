@@ -17,7 +17,7 @@ from quodlibet.util.path import escape_filename
 class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_ID = "lastfm-cover"
     PLUGIN_NAME = _("Last.fm Cover Source")
-    PLUGIN_DESC = _("Use Last.fm database to fetch covers.")
+    PLUGIN_DESC = _("Downloads covers from Last.fm's cover art archive.")
     PLUGIN_VERSION = "1.0"
 
     @classmethod

@@ -29,7 +29,7 @@ def album_to_sort(album):
 class MakeSortTags(SongsMenuPlugin):
     PLUGIN_ID = "SortTags"
     PLUGIN_NAME = _("Create Sort Tags")
-    PLUGIN_DESC = _("Convert album and artist names to sort names, poorly.")
+    PLUGIN_DESC = _("Converts album and artist names to sort names, poorly.")
     PLUGIN_ICON = 'gtk-edit'
     PLUGIN_VERSION = "1"
 

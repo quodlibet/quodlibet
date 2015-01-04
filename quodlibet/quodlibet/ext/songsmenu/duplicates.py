@@ -360,7 +360,7 @@ class DuplicateDialog(Gtk.Window):
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
-    PLUGIN_DESC = _('Find and browse similarly tagged versions of songs.')
+    PLUGIN_DESC = _('Finds and displays similarly tagged versions of songs.')
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
     PLUGIN_VERSION = "0.7"
 

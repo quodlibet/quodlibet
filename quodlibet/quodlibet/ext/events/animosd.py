@@ -307,7 +307,8 @@ class OSDWindow(Gtk.Window):
 class AnimOsd(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "Animated On-Screen Display"
     PLUGIN_NAME = _("Animated On-Screen Display")
-    PLUGIN_DESC = _("Display song information on your screen when it changes.")
+    PLUGIN_DESC = _("Displays song information on your screen when it "
+                    "changes.")
     PLUGIN_VERSION = "1.3"
     # Retain compatibility with old configuration
     CONFIG_SECTION = 'animosd'

@@ -14,7 +14,7 @@ from quodlibet.util import connect_obj
 class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     PLUGIN_ID = "Kana/Kanji Simple Inverter"
     PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
-    PLUGIN_DESC = _("Convert kana/kanji to romaji before renaming.")
+    PLUGIN_DESC = _("Converts kana/kanji to romaji before renaming.")
     PLUGIN_ICON = Gtk.STOCK_CONVERT
     PLUGIN_VERSION = "1"
 

@@ -11,8 +11,8 @@ from quodlibet.plugins.events import EventPlugin
 class IRadioLog(EventPlugin):
     PLUGIN_ID = "Internet Radio Log"
     PLUGIN_NAME = _("Internet Radio Log")
-    PLUGIN_DESC = _("Record the last 10 songs played on radio stations, "
-                    "and list them in the seek context menu.")
+    PLUGIN_DESC = _("Records the last 10 songs played on radio stations, "
+                    "and lists them in the seek context menu.")
     PLUGIN_ICON = 'gtk-edit'
     PLUGIN_VERSION = "0.22"
 

@@ -240,7 +240,7 @@ class PreferencesWidget(Gtk.VBox):
 class Notify(EventPlugin):
     PLUGIN_ID = "Notify"
     PLUGIN_NAME = _("Song Notifications")
-    PLUGIN_DESC = _("Display a notification when the song changes.")
+    PLUGIN_DESC = _("Displays a notification when the song changes.")
     PLUGIN_ICON = Gtk.STOCK_DIALOG_INFO
     PLUGIN_VERSION = "1.1"
 

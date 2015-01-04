@@ -88,7 +88,7 @@ def get_config():
 class Equalizer(EventPlugin):
     PLUGIN_ID = "Equalizer"
     PLUGIN_NAME = _("Equalizer")
-    PLUGIN_DESC = _("Control the balance of your music with an equalizer.")
+    PLUGIN_DESC = _("Controls the tone of your music with an equalizer.")
     PLUGIN_ICON = 'gtk-connect'
     PLUGIN_VERSION = '2.3'
 

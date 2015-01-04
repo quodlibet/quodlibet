@@ -26,7 +26,7 @@ from quodlibet import config
 class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'
     PLUGIN_NAME = _('Gajim Status Message')
-    PLUGIN_DESC = _("Change Gajim status message according to what "
+    PLUGIN_DESC = _("Changes Gajim status message according to what "
                     "you are currently listening to.")
     PLUGIN_VERSION = '0.7.4'
 

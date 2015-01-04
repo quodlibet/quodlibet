@@ -59,8 +59,9 @@ def set_port_num(value):
 class MPDServerPlugin(EventPlugin):
     PLUGIN_ID = "mpd_server"
     PLUGIN_NAME = _("MPD Server")
-    PLUGIN_DESC = _("Control Quod Libet remotely using a MPD Client. "
-        "Streaming, playlist and library management are not supported.")
+    PLUGIN_DESC = _("Allows remote control of Quod Libet using an MPD Client. "
+                    "Streaming, playlist and library management "
+                    "are not supported.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
 
     def PluginPreferences(self, parent):

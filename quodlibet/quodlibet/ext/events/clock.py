@@ -18,7 +18,7 @@ from quodlibet.util import connect_obj
 class Alarm(EventPlugin):
     PLUGIN_ID = "Alarm Clock"
     PLUGIN_NAME = _("Alarm Clock")
-    PLUGIN_DESC = _("Wake you up with loud music.")
+    PLUGIN_DESC = _("Wakes you up with loud music.")
     PLUGIN_ICON = Gtk.STOCK_DIALOG_INFO
     PLUGIN_VERSION = "0.22"
 
@@ -114,7 +114,7 @@ class Alarm(EventPlugin):
 class Lullaby(Alarm):
     PLUGIN_ID = "Lullaby"
     PLUGIN_NAME = _("Lullaby")
-    PLUGIN_DESC = _("Fade out and pause your music.")
+    PLUGIN_DESC = _("Fades out and pauses your music.")
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PAUSE
     PLUGIN_VERSION = "0.20"
 

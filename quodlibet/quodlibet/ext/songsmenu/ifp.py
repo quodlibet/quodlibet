@@ -15,7 +15,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class IFPUpload(SongsMenuPlugin):
     PLUGIN_ID = "Send to iFP"
     PLUGIN_NAME = _("Send to iFP")
-    PLUGIN_DESC = _("Upload songs to an iRiver iFP device.")
+    PLUGIN_DESC = _("Uploads songs to an iRiver iFP device.")
     PLUGIN_VERSION = "0.12"
     PLUGIN_ICON = Gtk.STOCK_CONVERT
 

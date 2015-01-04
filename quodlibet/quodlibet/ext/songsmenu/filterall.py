@@ -76,7 +76,7 @@ class SelectionWindow(Window):
 class FilterAll(SongsMenuPlugin):
     PLUGIN_ID = "FilterAll"
     PLUGIN_NAME = _("Filter on Any Tag")
-    PLUGIN_DESC = _("Create a search query based on "
+    PLUGIN_DESC = _("Creates a search query based on "
                     "tags of the selected songs.")
     PLUGIN_ICON = 'gtk-index'
 

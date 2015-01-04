@@ -29,7 +29,7 @@ if locale.getpreferredencoding() not in ENCODINGS + ["utf-8", "latin1"]:
 class Iconv(EditTagsPlugin):
     PLUGIN_ID = "Convert Encodings"
     PLUGIN_NAME = _("Convert Encodings")
-    PLUGIN_DESC = _("Fix misinterpreted tag value encodings in the "
+    PLUGIN_DESC = _("Fixes misinterpreted tag value encodings in the "
                     "tag editor.")
     PLUGIN_ICON = Gtk.STOCK_CONVERT
     PLUGIN_VERSION = "2"

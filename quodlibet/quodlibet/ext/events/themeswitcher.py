@@ -40,7 +40,7 @@ def get_header_bar():
 class ThemeSwitcher(EventPlugin):
     PLUGIN_ID = "Theme Switcher"
     PLUGIN_NAME = _("Theme Switcher")
-    PLUGIN_DESC = _("Change the active GTK+ theme.")
+    PLUGIN_DESC = _("Changes the active GTK+ theme.")
 
     __enabled = False
     __defaults = False

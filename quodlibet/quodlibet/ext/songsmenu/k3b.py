@@ -16,7 +16,7 @@ from quodlibet.util import connect_obj
 class BurnCD(SongsMenuPlugin):
     PLUGIN_ID = 'Burn CD'
     PLUGIN_NAME = _('Burn CD')
-    PLUGIN_DESC = _('Burn CDs with K3b, Brasero or xfburn.')
+    PLUGIN_DESC = _('Burns CDs with K3b, Brasero or xfburn.')
     PLUGIN_ICON = 'gtk-cdrom'
     PLUGIN_VERSION = '0.2'
 
