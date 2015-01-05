@@ -394,7 +394,7 @@ if __name__ == "__main__":
             pass
 
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
-            "quodlibet", "images", ("svg", "png", "cache", "theme"))
+            "quodlibet", "images", ("svg", "png", "theme"))
 
         # py2exe trips over -1 when trying to write version info in the exe
         if setup_kwargs["version"].endswith(".-1"):

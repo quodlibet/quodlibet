@@ -31,22 +31,6 @@ def update_icon_cache(*args):
     return True
 
 
-class build_icon_cache(Command):
-    """Update the icon theme cache"""
-
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        if not update_icon_cache('-f', 'quodlibet/images/hicolor'):
-            print "WARNING: gtk-update-icon-cache missing"
-
-
 class install_icons(Command):
     """Copy app icons to hicolor/pixmaps and update the global cache"""
 
