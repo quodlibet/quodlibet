@@ -146,7 +146,7 @@ Stable Repo:
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
     sudo apt-get update
     sudo apt-get install quodlibet
-    sudo apt-get install -t wheezy-backports gstreamer1.0-pulseaudio
+    sudo apt-get install -t wheezy-backports
 
 Unstable Repo:
 
