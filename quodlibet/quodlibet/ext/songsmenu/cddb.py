@@ -256,7 +256,7 @@ class CDDBLookup(SongsMenuPlugin):
             if not albumname:
                 albumname = ngettext('%d track', '%d tracks', n) % n
             ErrorMessage(None, _("CDDB lookup failed (%s)" % stat),
-                    ngettext(u"%(title)s and %(count)d more\u2026",
-                        u"%(title)s and %(count)d more\u2026", n - 1) % {
+                    ngettext(u"%(title)s and %(count)d more…",
+                        u"%(title)s and %(count)d more…", n - 1) % {
                         'title': album[0]('~basename'), 'count':
                         n - 1}).run()

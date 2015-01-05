@@ -475,7 +475,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         cur_service = self.config_get('service')
 
         # Translators: Other service
-        other_label = _(u"Other\u2026")
+        other_label = _(u"Other…")
         for idx, serv in enumerate(sorted(SERVICES.keys()) + [other_label]):
             service_combo.append_text(serv)
             if cur_service == serv:

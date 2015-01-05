@@ -542,7 +542,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         search.connect('query-changed', self.__filter_changed)
 
         menu = Gtk.Menu()
-        new_item = MenuItem(_(u"_New Station\u2026"), Gtk.STOCK_ADD)
+        new_item = MenuItem(_(u"_New Station…"), Gtk.STOCK_ADD)
         new_item.connect('activate', self.__add)
         menu.append(new_item)
         update_item = MenuItem(_("_Update Stations"), Gtk.STOCK_REFRESH)

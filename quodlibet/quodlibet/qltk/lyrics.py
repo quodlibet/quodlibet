@@ -75,7 +75,7 @@ class LyricsPane(Gtk.VBox):
         util.website("http://lyricwiki.org/%s" % (urllib.quote(artist)))
 
     def __refresh(self, refresh, add, buffer, song):
-        buffer.set_text(_(u"Searching for lyrics\u2026"))
+        buffer.set_text(_(u"Searching for lyrics…"))
         refresh.set_sensitive(False)
         thread = threading.Thread(
             target=self.__search, args=(song, buffer, refresh, add))

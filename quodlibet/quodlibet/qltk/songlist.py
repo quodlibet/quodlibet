@@ -1075,7 +1075,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu.append(sep)
 
         custom = Gtk.MenuItem(
-            label=_(u"_Customize Headers\u2026"), use_underline=True)
+            label=_(u"_Customize Headers…"), use_underline=True)
         custom.show()
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)

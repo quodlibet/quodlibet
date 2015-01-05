@@ -99,7 +99,7 @@ class TagsFromPath(Gtk.VBox):
         cbes_defaults = const.TBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(const.TBP, cbes_defaults,
             title=_("Path Patterns"),
-            edit_title=_(u"Edit saved patterns\u2026"))
+            edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)

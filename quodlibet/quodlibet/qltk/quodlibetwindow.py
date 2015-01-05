@@ -771,11 +771,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         actions = [
             ('Music', None, _("_Music")),
-            ('AddFolders', Gtk.STOCK_ADD, _(u'_Add a Folder\u2026'),
+            ('AddFolders', Gtk.STOCK_ADD, _(u'_Add a Folder…'),
              "<control>O", None, self.open_chooser),
-            ('AddFiles', Gtk.STOCK_ADD, _(u'_Add a File\u2026'),
+            ('AddFiles', Gtk.STOCK_ADD, _(u'_Add a File…'),
              None, None, self.open_chooser),
-            ('AddLocation', Gtk.STOCK_ADD, _(u'_Add a Location\u2026'),
+            ('AddLocation', Gtk.STOCK_ADD, _(u'_Add a Location…'),
              None, None, self.open_location),
             ('BrowseLibrary', Gtk.STOCK_FIND, _('Open _Browser'), ""),
             ("Preferences", Gtk.STOCK_PREFERENCES, None, None, None,

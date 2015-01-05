@@ -543,7 +543,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
 
         def build_buttons_widget():
             hb = Gtk.HBox(spacing=6)
-            edit_button = qltk.Button(_(u"Ed_it Display Pattern\u2026"),
+            edit_button = qltk.Button(_(u"Ed_it Display Pattern…"),
                                       Gtk.STOCK_EDIT)
             edit_button.connect('clicked', edit_pattern)
             hb.pack_start(edit_button, False, True, 0)
