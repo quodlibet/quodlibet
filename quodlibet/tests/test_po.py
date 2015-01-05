@@ -142,7 +142,7 @@ class TPot(TestCase):
         for entry in self.pot:
             self.assertFalse(
                 "..." in entry.msgid,
-                msg=u"%s shoul use 'ELLIPSIS' instead of '...'" % entry)
+                msg=u"%s should use '…' (ELLIPSIS) instead of '...'" % entry)
 
     def test_markup(self):
         # https://wiki.gnome.org/Initiatives/GnomeGoals/RemoveMarkupInMessages
@@ -285,7 +285,7 @@ class PO(AbstractTestCase):
             # Possible endings for the strings. Make sure to put longer
             # endings before shorter ones, for example: '...', '.'
             # otherwise this pair: 'a...', 'b..' will pass the test.
-            ends = [(':', '\xef\xbc\x9a'), '...', ('.', '\xe3\x80\x82'), ' ']
+            ends = [(':', u'：'), u'…', '...', ('.', u'。'), ' ']
 
             # First find the appropriate ending of msgid
             for end in ends:
