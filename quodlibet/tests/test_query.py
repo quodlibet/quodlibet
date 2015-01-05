@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from tests import TestCase
 
-from quodlibet.query import Query
+from quodlibet.query import Query, QueryType
 
 
 class TQuery_is_valid(TestCase):
@@ -322,15 +322,15 @@ class TQuery(TestCase):
         Query(u'/(<)?(\w+@\w+(?:\.\w+)+)(?(1)>)/d')
 
 
-class TQuery_is_valid_color(TestCase):
+class TQuery_get_type(TestCase):
     def test_red(self):
         for p in ["a = /w", "|(sa#"]:
-            self.failUnlessEqual(False, Query.is_valid_color(p))
+            self.failUnlessEqual(QueryType.INVALID, Query.get_type(p))
 
     def test_black(self):
         for p in ["a test", "more test hooray"]:
-            self.failUnlessEqual(None, Query.is_valid_color(p))
+            self.failUnlessEqual(QueryType.TEXT, Query.get_type(p))
 
     def test_green(self):
         for p in ["a = /b/", "&(a = b, c = d)", "/abc/", "!x", "!&(abc, def)"]:
-            self.failUnlessEqual(True, Query.is_valid_color(p))
+            self.failUnlessEqual(QueryType.VALID, Query.get_type(p))

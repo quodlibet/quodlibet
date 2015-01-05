@@ -18,10 +18,9 @@ from quodlibet import util
 from quodlibet import app
 from quodlibet.config import RATINGS
 
-from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB
 from quodlibet.qltk.data_editors import MultiStringEditor
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList, get_columns
@@ -218,7 +217,7 @@ class PreferencesWindow(UniqueWindow):
             hb = Gtk.HBox(spacing=6)
             l = Gtk.Label(label=_("_Global filter:"))
             l.set_use_underline(True)
-            e = ValidatingEntry(Query.is_valid_color)
+            e = ValidatingEntry(QueryValidator)
             e.set_text(config.get("browsers", "background"))
             e.connect('changed', self._entry, 'background', 'browsers')
             e.set_tooltip_text(_("Apply this query in addition to all others"))

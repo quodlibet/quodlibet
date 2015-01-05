@@ -1008,3 +1008,19 @@ class Tcached_property(TestCase):
                     return object()
 
         self.assertRaises(AssertionError, define_class)
+
+
+class Tenum(TestCase):
+
+    def test_main(self):
+
+        @util.enum
+        class Foo(object):
+            FOO = 0
+            BAR = 1
+
+        self.assertTrue(issubclass(Foo, int))
+        self.assertTrue(isinstance(Foo.BAR, Foo))
+        self.assertTrue(isinstance(Foo.FOO, Foo))
+        self.assertEqual(Foo.FOO, 0)
+        self.assertEqual(Foo.BAR, 1)

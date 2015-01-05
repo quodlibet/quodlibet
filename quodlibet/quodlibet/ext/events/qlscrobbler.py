@@ -26,7 +26,7 @@ except ImportError:
 from quodlibet import config, const, app, parse, util, qltk
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
 from quodlibet.qltk.msg import Message
 from quodlibet.util.dprint import print_d
 
@@ -556,7 +556,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         row += 1
 
         # exclude filter
-        entry = ValidatingEntry(parse.Query.is_valid_color)
+        entry = ValidatingEntry(QueryValidator)
         entry.set_text(self.config_get('exclude'))
         entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))

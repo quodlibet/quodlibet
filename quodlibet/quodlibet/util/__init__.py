@@ -1048,3 +1048,38 @@ def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
 
     needs_escape = lambda c: (c in BAD and "\\" + c) or c
     return type(string)().join(map(needs_escape, string))
+
+
+def enum(cls):
+    """Class decorator for enum types::
+
+        @enum
+        class SomeEnum(object):
+            FOO = 0
+            BAR = 1
+
+    Result is an int subclass and all attributes are instances of it.
+    """
+
+    assert cls.__bases__ == (object,)
+
+    d = dict(cls.__dict__)
+    new_type = type(cls.__name__, (int,), d)
+    new_type.__module__ = cls.__module__
+
+    map_ = {}
+    for key, value in d.iteritems():
+        if key.upper() == key and isinstance(value, (int, long)):
+            value_instance = new_type(value)
+            setattr(new_type, key, value_instance)
+            map_[value] = key
+
+    def repr_(self):
+        if self in map_:
+            return "%s.%s" % (type(self).__name__, map_[self])
+        else:
+            return "%s(%s)" % (type(self).__name__, self)
+
+    setattr(new_type, "__repr__", repr_)
+
+    return new_type

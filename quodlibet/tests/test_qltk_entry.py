@@ -1,8 +1,8 @@
 from tests import TestCase
 from helper import visible
 
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry
-from quodlibet.query import Query
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry, \
+    QueryValidator
 import quodlibet.config
 
 
@@ -20,7 +20,7 @@ class TEntry(TestCase):
 class TValidatingEntry(TestCase):
     def setUp(self):
         quodlibet.config.init()
-        self.entry = ValidatingEntry(Query.is_valid_color)
+        self.entry = ValidatingEntry(QueryValidator)
 
     def test_changed_simple(self):
         self.entry.set_text("valid")

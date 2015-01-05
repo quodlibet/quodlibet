@@ -1,4 +1,4 @@
-from ._query import Query
+from ._query import Query, QueryType
 
 
-Query
+Query, QueryType

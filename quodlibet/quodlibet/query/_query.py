@@ -14,7 +14,7 @@ from re import Scanner
 from . import _match as match
 from ._match import error, ParseError
 from ._diacritic import re_add_diacritic_variants
-from quodlibet.util import re_escape
+from quodlibet.util import re_escape, enum
 
 # Token types.
 (NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
@@ -383,13 +383,20 @@ def is_parsable(string):
 Query.is_parsable = is_parsable
 
 
-def is_valid_color(string):
-    """Returns True/False for a query, None for a text only query"""
+@enum
+class QueryType(object):
+    TEXT = 0
+    VALID = 1
+    INVALID = 2
+
+
+def get_type(string):
+    """Returns a QueryType instance for the given query"""
 
     if is_parsable(string):
         if _get_query_type(string) == STRING:
-            return None
+            return QueryType.TEXT
         else:
-            return True
-    return False
-Query.is_valid_color = is_valid_color
+            return QueryType.VALID
+    return QueryType.INVALID
+Query.get_type = get_type
