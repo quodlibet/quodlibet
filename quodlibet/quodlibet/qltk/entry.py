@@ -264,6 +264,9 @@ def QueryValidator(string):
 
     type_ = Query.get_type(string)
     if type_ == QueryType.VALID:
+        # in case of an empty but valid query we say it's "text"
+        if Query.match_all(string):
+            return None
         return True
     elif type_ == QueryType.INVALID:
         return False
