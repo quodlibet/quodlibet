@@ -166,17 +166,19 @@ Unstable Repo:
 
 Stable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-stable>`__):
 
-  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_19/home:lazka0:ql-stable.repo>`__
   * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_20/home:lazka0:ql-stable.repo>`__
+
+.. note::
+
+    Check out the official repos first, they usually contain the latest stable release: https://apps.fedoraproject.org/packages/quodlibet/overview/
 
 Unstable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-unstable>`__):
 
-  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_19/home:lazka0:ql-unstable.repo>`__
   * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_20/home:lazka0:ql-unstable.repo>`__
 
 Unstable Repo (`COPR <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/>`__):
 
-  * `Fedora 19 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-19/lazka-quodlibet-unstable-fedora-19.repo>`__
+  * `Fedora 21 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-21/lazka-quodlibet-unstable-fedora-21.repo>`__
   * `Fedora 20 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-20/lazka-quodlibet-unstable-fedora-20.repo>`__
   * `Fedora Rawhide <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-rawhide/lazka-quodlibet-unstable-fedora-rawhide.repo>`__
   * `RHEL 7 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/epel-7/lazka-quodlibet-unstable-epel-7.repo>`__
@@ -189,13 +191,13 @@ Unstable Repo (`COPR <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstab
 
 Stable Repo:
 
-  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.3/>`__
+  * `openSUSE 13.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.2/>`__
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`__
 
 Unstable Repo:
 
-  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.3/>`__
+  * `openSUSE 13.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.2/>`__
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
 
