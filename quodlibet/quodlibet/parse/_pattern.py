@@ -12,9 +12,9 @@
 
 import os
 import re
+from re import Scanner
 
 from quodlibet import util
-from quodlibet.parse._scanner import Scanner
 from quodlibet.util.path import fsdecode, expanduser, fsnative, sep
 from quodlibet.util.path import strip_win32_incompat_from_path
 

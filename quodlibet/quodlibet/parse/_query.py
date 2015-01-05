@@ -9,9 +9,9 @@
 # objects as it goes, which is where the interesting stuff will happen.
 
 import re
+from re import Scanner
 
 from quodlibet.parse import _match as match
-from quodlibet.parse._scanner import Scanner
 from quodlibet.parse._match import error, ParseError
 from quodlibet.parse._diacritic import re_add_diacritic_variants
 from quodlibet.util import re_escape
