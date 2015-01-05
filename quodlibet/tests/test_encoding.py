@@ -34,7 +34,11 @@ class TSourceEncoding(TestCase):
         import quodlibet
         root = os.path.dirname(quodlibet.__path__[0])
 
+        skip = [os.path.join(root, "docs")]
         for dirpath, dirnames, filenames in os.walk(root):
+            if dirpath in skip:
+                continue
+
             for filename in filenames:
                 if filename.endswith('.py'):
                     path = os.path.join(dirpath, filename)
