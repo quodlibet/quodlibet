@@ -265,7 +265,7 @@ class TQuery(TestCase):
     def test_and_or_operator(self):
         union = Query("|(foo=bar,bar=foo)")
         inter = Query("&(foo=bar,bar=foo)")
-        neg = Query("foo=!bar")
+        neg = Query("!foo=bar")
         numcmp = Query("#(bar = 0)")
         tag = Query("foo=bar")
 
@@ -278,6 +278,25 @@ class TQuery(TestCase):
             union & union, inter & inter, numcmp & numcmp, numcmp & inter]
 
         self.failIf(filter(lambda x: not isinstance(x, type(inter)), tests))
+
+        true = Query("")
+        self.assertTrue(isinstance(true | inter, type(true)))
+        self.assertTrue(isinstance(inter | true, type(true)))
+        self.assertTrue(isinstance(true & inter, type(inter)))
+        self.assertTrue(isinstance(inter & true, type(inter)))
+        self.assertTrue(isinstance(true & true, type(true)))
+        self.assertTrue(isinstance(true | true, type(true)))
+        self.assertTrue(isinstance(-true, type(neg)))
+
+    def test_filter(self):
+        q = Query("artist=piman")
+        self.assertEqual(q.filter([self.s1, self.s2]), [self.s1])
+        self.assertEqual(q.filter(iter([self.s1, self.s2])), [self.s1])
+
+        q = Query("")
+        self.assertEqual(q.filter([self.s1, self.s2]), [self.s1, self.s2])
+        self.assertEqual(
+            q.filter(iter([self.s1, self.s2])), [self.s1, self.s2])
 
     def test_match_all(self):
         self.failUnless(Query.match_all(""))

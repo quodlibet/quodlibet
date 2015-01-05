@@ -732,9 +732,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         self.__stations.add(to_add)
 
     def __filter_changed(self, bar, text, restore=False):
-        self.__filter = None
-        if not Query.match_all(text):
-            self.__filter = Query(text, self.STAR)
+        self.__filter = Query(text, self.STAR)
 
         if not restore:
             self.activate()
@@ -870,12 +868,12 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
     def __get_filter(self):
         filter_ = self.__get_selection_filter()
+        text_filter = self.__filter or Query("")
 
         if filter_:
-            if self.__filter:
-                filter_ &= self.__filter
+            filter_ &= text_filter
         else:
-            filter_ = self.__filter
+            filter_ = text_filter
 
         return filter_
 
@@ -891,13 +889,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
     def activate(self):
         filter_ = self.__get_filter()
         libs = self.__get_selected_libraries()
-        songs = itertools.chain(*libs)
-
-        if filter_:
-            songs = filter(filter_.search, songs)
-        else:
-            songs = list(songs)
-
+        songs = filter_.filter(itertools.chain(*libs))
         self.emit('songs-selected', songs, None)
 
     def active_filter(self, song):

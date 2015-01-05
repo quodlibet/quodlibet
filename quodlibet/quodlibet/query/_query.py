@@ -321,7 +321,7 @@ def Query(string, star=STAR, dumb_match_diacritics=True):
 
     # fast path
     if Query.match_all(string):
-        return match.Inter([])
+        return match.True_()
 
     query_type = _get_query_type(string)
 

@@ -26,8 +26,40 @@ SIZE_KEYS = ["filesize"]
 FS_KEYS = ["~filename", "~basename", "~dirname"]
 
 
+class Node(object):
+
+    def search(self, data):
+        raise NotImplementedError
+
+    def filter(self, list_):
+        return filter(self.search, list_)
+
+
+# True
+class True_(Node):
+
+    def search(self, data):
+        return True
+
+    def filter(self, list_):
+        return list(list_)
+
+    def __repr__(self):
+        return "<True>"
+
+    def __or__(self, other):
+        return self
+    __ror__ = __or__
+
+    def __and__(self, other):
+        return other
+
+    def __neg__(self):
+        return Neg(self)
+
+
 # True if the object matches any of its REs.
-class Union(object):
+class Union(Node):
     def __init__(self, res):
         self.res = res
 
@@ -49,6 +81,8 @@ class Union(object):
 
     def __and__(self, other):
         if not isinstance(other, Inter):
+            if isinstance(other, True_):
+                return other
             return Inter([self, other])
         return NotImplemented
 
@@ -57,7 +91,7 @@ class Union(object):
 
 
 # True if the object matches all of its REs.
-class Inter(object):
+class Inter(Node):
     def __init__(self, res):
         self.res = res
 
@@ -73,12 +107,16 @@ class Inter(object):
     def __and__(self, other):
         if isinstance(other, Inter):
             return Inter(self.res + other.res)
+        elif isinstance(other, True_):
+            return Inter(self.res)
         else:
             return Inter(self.res + [other])
     __rand__ = __and__
 
     def __or__(self, other):
         if not isinstance(other, Union):
+            if isinstance(other, True_):
+                return other
             return Union([self, other])
         return NotImplemented
 
@@ -87,7 +125,7 @@ class Inter(object):
 
 
 # True if the object doesn't match its RE.
-class Neg(object):
+class Neg(Node):
     def __init__(self, res):
         self.res = res
 
@@ -112,7 +150,7 @@ class Neg(object):
 
 
 # Numeric comparisons
-class Numcmp(object):
+class Numcmp(Node):
     def __init__(self, tag, op, value):
         if isinstance(tag, unicode):
             self.__tag = tag.encode("utf-8")
@@ -147,7 +185,7 @@ class Numcmp(object):
 
 
 # See if a property of the object matches its RE.
-class Tag(object):
+class Tag(Node):
 
     # Shorthand for common tags.
     ABBRS = {"a": "artist",

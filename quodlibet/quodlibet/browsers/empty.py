@@ -39,12 +39,12 @@ class EmptyBar(Gtk.VBox, Browser):
     def __init__(self, library):
         super(EmptyBar, self).__init__()
         self._text = ""
-        self._filter = None
+        self._query = None
         self._library = library
 
     def active_filter(self, song):
-        if self._filter is not None:
-            return self._filter(song)
+        if self._query is not None:
+            return self._query.search(song)
         else:
             return True
 
@@ -68,16 +68,11 @@ class EmptyBar(Gtk.VBox, Browser):
 
     def _get_songs(self):
         try:
-            self._filter = Query(self._text, star=SongList.star).search
+            self._query = Query(self._text, star=SongList.star)
         except Query.error:
             pass
         else:
-            if Query.match_all(self._text):
-                songs = self._library.values()
-                self._filter = None
-            else:
-                songs = filter(self._filter, self._library)
-            return songs
+            return self._query.filter(self._library)
 
     def activate(self):
         songs = self._get_songs()
