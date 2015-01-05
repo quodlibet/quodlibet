@@ -630,13 +630,13 @@ class InfoCommand(Command):
         if not options.terse:
             tags = []
             for key in ["~format", "~length", "~#bitrate", "~filesize"]:
-                tags.append((util.tag(key), str(song(key))))
+                tags.append((util.tag(key), unicode(song(key))))
 
             print_table(tags, headers, nicks, order)
         else:
             tags = []
             for key in ["~format", "~#length", "~#bitrate", "~#filesize"]:
-                tags.append((key.lstrip("#~"), str(song(key))))
+                tags.append((key.lstrip("#~"), unicode(song(key))))
 
             print_terse_table(tags, nicks, order)
 
