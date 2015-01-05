@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase
 
 from quodlibet.qltk.about import AboutQuodLibet, AboutExFalso

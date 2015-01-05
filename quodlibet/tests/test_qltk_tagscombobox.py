@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import AbstractTestCase, skipIf
 
 from quodlibet.util.tags import USER_TAGS

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # brainz.py - Quod Libet plugin to tag files from MusicBrainz automatically
 # Copyright 2005-2010   Joshua Kwan <joshk@triplehelix.org>,
 #                       Michael Ball <michael.ball@gmail.com>,

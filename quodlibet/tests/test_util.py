@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import uuid
 from quodlibet.config import HardCodedRatingsPrefs
 from quodlibet.util.path import *

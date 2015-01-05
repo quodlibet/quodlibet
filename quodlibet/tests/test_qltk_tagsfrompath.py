@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase
 
 from quodlibet.qltk.tagsfrompath import (TitleCase, SplitTag,

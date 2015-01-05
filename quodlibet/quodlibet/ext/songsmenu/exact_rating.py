@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Jan Path
 #           2014 Christoph Reiter
 #

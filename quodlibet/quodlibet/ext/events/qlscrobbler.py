@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
 # version 0.11
 # (C) 2005-2012 by Joshua Kwan <joshk@triplehelix.org>,

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.qltk.prefs import PreferencesWindow

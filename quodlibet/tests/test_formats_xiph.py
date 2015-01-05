@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from quodlibet.config import RATINGS
 from tests import TestCase, DATA_DIR, skipUnless, mkstemp, AbstractTestCase
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2006 Federico Pelloni <federico.pelloni@gmail.com>
 #           2013 Christoph Reiter
 #

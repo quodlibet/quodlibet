@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase, skipUnless, DATA_DIR
 
 import os

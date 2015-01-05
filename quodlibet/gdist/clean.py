@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2007 Joe Wreschnig
 #
 # This software and accompanying documentation, if any, may be freely

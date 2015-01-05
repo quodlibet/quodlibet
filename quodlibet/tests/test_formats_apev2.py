@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import DATA_DIR, mkstemp, AbstractTestCase, TestCase
 
 import os

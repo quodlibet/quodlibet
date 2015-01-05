@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2009-2011 Steven Robertson, Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify

@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Niklas Janlert
 #           2012 Christoph Reiter
 # <quod-libet-development@googlegroups.com>

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase, AbstractTestCase
 
 from quodlibet.qltk.msg import *

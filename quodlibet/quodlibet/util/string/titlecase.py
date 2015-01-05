@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2007 Javier Kohen
 #      2010,2014 Nick Boultbee
 #

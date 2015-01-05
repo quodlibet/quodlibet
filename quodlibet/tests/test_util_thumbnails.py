@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Automatic library update plugin
 #
 # (c) 2009 Joe Higton

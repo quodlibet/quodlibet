@@ -1,5 +1,4 @@
-#! /usr/bin/env python
-#
+# -*- coding: utf-8 -*-
 #    ReplayGain Album Analysis using gstreamer rganalysis element
 #    Copyright (C) 2005,2007,2009  Michael Urman
 #                         2012,14  Nick Boultbee

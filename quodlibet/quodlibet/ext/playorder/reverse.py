@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
 
 

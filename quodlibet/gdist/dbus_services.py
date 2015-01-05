@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This software and accompanying documentation, if any, may be freely

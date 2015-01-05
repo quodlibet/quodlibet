@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase, AbstractTestCase, skipIf
 from tests.helper import ListWithUnused as L
 

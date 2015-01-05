@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Alexey Bobyakov <claymore.ws@gmail.com>, Joe Wreschnig
 # Copyright 2006 Lukas Lalinsky
 #

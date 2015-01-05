@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn, \
     DragScroll, MultiDragTreeView, RCMTreeView, DragIconTreeView
