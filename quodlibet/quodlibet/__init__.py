@@ -276,10 +276,6 @@ def _gtk_init(icon=None):
                 import threading
                 threading.Thread(target=lambda: None).start()
 
-    # some code depends on utf-8 default encoding (pygtk used to set it)
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
-
     # blacklist some modules, simply loading can cause segfaults
     sys.modules["gtk"] = None
     sys.modules["gpod"] = None
@@ -373,6 +369,10 @@ def _python_init():
     if sys.version_info < MinVersions.PYTHON:
         actual = Version(sys.version_info[:3])
         print_w("Python %s required. %s found." % (MinVersions.PYTHON, actual))
+
+    # some code depends on utf-8 default encoding (pygtk used to set it)
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
 
     __builtin__.__dict__["print_"] = print_
     __builtin__.__dict__["print_d"] = print_d
