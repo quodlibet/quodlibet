@@ -23,7 +23,9 @@ try:
 except ImportError:
     from md5 import md5
 
-from quodlibet import config, const, app, parse, util, qltk
+from quodlibet import config, const, app, util, qltk
+from quodlibet.pattern import Pattern
+from quodlibet.query import Query
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
@@ -128,9 +130,9 @@ class QLSubmitQueue(PluginConfigMixin):
         self.username, self.password, self.base_url = ('', '', '')
 
         # These need to be set early for _format_song to work
-        self.titlepat = parse.Pattern(
+        self.titlepat = Pattern(
             self.config_get('titlepat', "") or DEFAULT_TITLEPAT)
-        self.artpat = parse.Pattern(
+        self.artpat = Pattern(
             self.config_get('artistpat', "") or DEFAULT_ARTISTPAT)
 
         try:
@@ -169,9 +171,9 @@ class QLSubmitQueue(PluginConfigMixin):
             self.broken = False
             self.handshake_sent = False
         self.offline = self.config_get_bool('offline')
-        self.titlepat = parse.Pattern(
+        self.titlepat = Pattern(
                 self.config_get('titlepat', "") or DEFAULT_TITLEPAT)
-        self.artpat = parse.Pattern(
+        self.artpat = Pattern(
                 self.config_get('artistpat', "") or DEFAULT_ARTISTPAT)
 
     def changed(self):
@@ -378,13 +380,13 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         if self.elapsed < 240 and self.elapsed <= .5 * song.get("~#length", 0):
             return
         print_d("Checking against filter %s" % self.exclude)
-        if self.exclude and parse.Query(self.exclude).search(song):
+        if self.exclude and Query(self.exclude).search(song):
             print_d("Not submitting: %s" % song("~artist~title"))
             return
         self.queue.submit(song, self.start_time)
 
     def song_excluded(self, song):
-        if self.exclude and parse.Query(self.exclude).search(song):
+        if self.exclude and Query(self.exclude).search(song):
             print_d("%s is excluded by %s" %
                     (song("~artist~title"), self.exclude))
             return True
