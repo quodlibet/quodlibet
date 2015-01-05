@@ -36,7 +36,8 @@ class TSourceEncoding(TestCase):
 
         skip = [os.path.join(root, "docs")]
         for dirpath, dirnames, filenames in os.walk(root):
-            if dirpath in skip:
+            if any((dirpath.startswith(s + os.sep) or s == dirpath)
+                   for s in skip):
                 continue
 
             for filename in filenames:
