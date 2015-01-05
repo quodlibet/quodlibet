@@ -13,7 +13,7 @@ import re
 from quodlibet.const import USERDIR
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet.parse._pattern import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.data_editors import JSONBasedEditor

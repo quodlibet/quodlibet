@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from quodlibet.parse._pattern import ArbitraryExtensionFileFromPattern
 from tests import TestCase, AbstractTestCase
 
 import os
 
 from quodlibet.util.path import is_fsnative
-from quodlibet.parse import (FileFromPattern, XMLFromPattern, Pattern,
-    XMLFromMarkupPattern)
+from quodlibet.pattern import (FileFromPattern, XMLFromPattern, Pattern,
+    XMLFromMarkupPattern, ArbitraryExtensionFileFromPattern)
 
 
 class _TPattern(AbstractTestCase):

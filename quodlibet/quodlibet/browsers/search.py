@@ -13,7 +13,7 @@ from quodlibet import config
 from quodlibet import qltk
 
 from quodlibet.browsers._base import Browser
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton

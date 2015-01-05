@@ -11,7 +11,7 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.formats._audio import AudioFile
-from quodlibet.parse import XMLFromPattern
+from quodlibet.pattern import XMLFromPattern
 from quodlibet.util import connect_obj
 
 try:

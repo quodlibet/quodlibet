@@ -2,7 +2,7 @@ from tests import TestCase
 from helper import visible
 
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry
-from quodlibet.parse import Query
+from quodlibet.query import Query
 import quodlibet.config
 
 

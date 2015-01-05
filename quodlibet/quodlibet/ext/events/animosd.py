@@ -24,7 +24,7 @@ from math import pi
 from quodlibet import config, qltk, app
 from quodlibet.qltk.textedit import PatternEdit
 from quodlibet.formats import DUMMY_SONG
-from quodlibet import parse
+from quodlibet import pattern
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util.dprint import print_d, print_w
@@ -88,8 +88,8 @@ class OSDWindow(Gtk.Window):
         layout.set_spacing(Pango.SCALE * 7)
         layout.set_font_description(Pango.FontDescription(conf.font))
         try:
-            layout.set_markup(parse.XMLFromMarkupPattern(conf.string) % song)
-        except parse.error:
+            layout.set_markup(pattern.XMLFromMarkupPattern(conf.string) % song)
+        except pattern.error:
             layout.set_markup("")
         layout.set_width(Pango.SCALE * textwidth)
         layoutsize = layout.get_pixel_size()

@@ -26,7 +26,7 @@ from gi.repository import Gtk, GObject, GLib
 
 from quodlibet import config, qltk, app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.parse import XMLFromPattern
+from quodlibet.pattern import XMLFromPattern
 from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage

@@ -13,7 +13,7 @@ from gi.repository import Gtk, Pango, Gdk, GdkPixbuf, GLib
 
 from quodlibet import browsers, config, qltk, util, app
 from quodlibet.config import RATINGS
-from quodlibet.parse import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information

@@ -18,7 +18,7 @@ from gi.repository import Gtk
 import dbus
 
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.parse import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.qltk import Frame
 from quodlibet import config
 

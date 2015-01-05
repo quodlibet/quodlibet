@@ -501,7 +501,7 @@ def tagsplit(tag):
 def pattern(pat, cap=True, esc=False):
     """Return a 'natural' version of the pattern string for human-readable
     bits. Assumes all tags in the pattern are present."""
-    from quodlibet.parse import Pattern, XMLFromPattern
+    from quodlibet.pattern import Pattern, XMLFromPattern
 
     class Fakesong(dict):
         cap = False

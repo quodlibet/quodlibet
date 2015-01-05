@@ -11,9 +11,9 @@
 import re
 from re import Scanner
 
-from quodlibet.parse import _match as match
-from quodlibet.parse._match import error, ParseError
-from quodlibet.parse._diacritic import re_add_diacritic_variants
+from . import _match as match
+from ._match import error, ParseError
+from ._diacritic import re_add_diacritic_variants
 from quodlibet.util import re_escape
 
 # Token types.

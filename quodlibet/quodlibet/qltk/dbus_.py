@@ -10,7 +10,7 @@ import dbus.service
 from dbus import DBusException
 
 from quodlibet.util import dbusutils
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.util.path import fsdecode
 

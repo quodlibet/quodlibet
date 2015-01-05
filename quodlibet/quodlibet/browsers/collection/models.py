@@ -7,7 +7,7 @@
 
 from quodlibet import util
 
-from quodlibet.parse import XMLFromPattern
+from quodlibet.pattern import XMLFromPattern
 from quodlibet.util.collection import Album
 from quodlibet.qltk.models import ObjectTreeStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort

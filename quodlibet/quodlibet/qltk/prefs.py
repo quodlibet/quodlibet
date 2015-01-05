@@ -18,7 +18,7 @@ from quodlibet import util
 from quodlibet import app
 from quodlibet.config import RATINGS
 
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB
 from quodlibet.qltk.data_editors import MultiStringEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry

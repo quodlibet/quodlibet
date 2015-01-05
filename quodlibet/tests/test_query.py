@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from tests import TestCase
 
-from quodlibet.parse import Query
+from quodlibet.query import Query
 
 
 class TQuery_is_valid(TestCase):

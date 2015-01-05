@@ -15,7 +15,7 @@ from quodlibet.qltk.notif import Task
 from quodlibet.util.dprint import print_d
 from quodlibet.util import copool
 
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.util.string import split_escape, join_escape
 from quodlibet.util.path import bytes2fsnative, fsnative2bytes, fsnative

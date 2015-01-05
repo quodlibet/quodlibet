@@ -19,7 +19,7 @@ from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import connect_obj, connect_destroy
 
-from quodlibet.parse import XMLFromMarkupPattern
+from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
 
 

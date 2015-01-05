@@ -11,7 +11,7 @@ from gi.repository import Gtk, GLib
 from quodlibet import config
 
 from quodlibet.browsers._base import Browser
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 
 

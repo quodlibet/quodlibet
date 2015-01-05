@@ -9,7 +9,7 @@ import re
 
 from tests import TestCase
 
-from quodlibet.parse._diacritic import re_add_diacritic_variants, \
+from quodlibet.query._diacritic import re_add_diacritic_variants, \
     diacritic_for_letters, re_replace_literals
 
 

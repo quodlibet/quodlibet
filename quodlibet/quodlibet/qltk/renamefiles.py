@@ -15,7 +15,7 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.plugins import PluginManager
-from quodlibet.parse import FileFromPattern
+from quodlibet.pattern import FileFromPattern
 from quodlibet.qltk._editutils import FilterPluginBox, FilterCheckButton
 from quodlibet.qltk._editutils import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn

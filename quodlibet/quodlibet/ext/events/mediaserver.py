@@ -20,7 +20,7 @@ import dbus.service
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.parse import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.util.uri import URI
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival

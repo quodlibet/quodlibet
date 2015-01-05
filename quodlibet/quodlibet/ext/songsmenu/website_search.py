@@ -8,7 +8,7 @@
 from quodlibet import print_w, print_d, qltk
 from quodlibet.const import USERDIR
 from quodlibet.formats._audio import AudioFile
-from quodlibet.parse._pattern import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem

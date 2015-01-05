@@ -487,7 +487,7 @@ def _print_query(app, query):
 @registry.register("print-playing", optional=1)
 def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
     from quodlibet.formats._audio import AudioFile
-    from quodlibet.parse import Pattern
+    from quodlibet.pattern import Pattern
 
     song = app.player.song
     if song is None:

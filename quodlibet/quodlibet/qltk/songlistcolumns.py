@@ -15,7 +15,7 @@ from gi.repository import Gtk, Pango, GLib
 from quodlibet import util
 from quodlibet import config
 from quodlibet import const
-from quodlibet.parse import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.util.path import fsdecode, unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS

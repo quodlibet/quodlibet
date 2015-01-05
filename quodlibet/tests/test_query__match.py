@@ -1,6 +1,6 @@
 from tests import TestCase
 
-from quodlibet.parse._match import map_numeric_op, ParseError
+from quodlibet.query._match import map_numeric_op, ParseError
 from quodlibet.util import date_key, parse_date
 
 

@@ -23,7 +23,7 @@ from cStringIO import StringIO
 from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
-from quodlibet.parse._pattern import ArbitraryExtensionFileFromPattern
+from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util import format_size, print_exc
 from quodlibet.util.dprint import print_d

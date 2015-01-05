@@ -16,7 +16,7 @@ from quodlibet import util
 
 from quodlibet.browsers._base import Browser
 from quodlibet.formats import PEOPLE
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox

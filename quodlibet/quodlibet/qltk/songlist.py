@@ -15,7 +15,8 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.parse import Query, Pattern
+from quodlibet.query import Query
+from quodlibet.pattern import Pattern
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView, DragScroll

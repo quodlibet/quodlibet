@@ -23,7 +23,8 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.browsers._base import Browser
-from quodlibet.parse import Query, XMLFromMarkupPattern
+from quodlibet.query import Query
+from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties

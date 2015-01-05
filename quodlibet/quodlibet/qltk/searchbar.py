@@ -12,7 +12,7 @@ from gi.repository import Gtk, GObject, GLib
 from quodlibet import config
 from quodlibet import const
 
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem

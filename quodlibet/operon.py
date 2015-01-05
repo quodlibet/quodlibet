@@ -25,8 +25,8 @@ from optparse import OptionParser
 from quodlibet.formats import MusicFile, EmbeddedImage
 from quodlibet import config
 from quodlibet import const
-from quodlibet import parse
 from quodlibet import util
+from quodlibet.pattern import Pattern, error as PatternError
 from quodlibet.util.path import mtime, fsdecode
 from quodlibet.util.dprint import print_, Colorise
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey
@@ -876,8 +876,8 @@ class PrintCommand(Command):
         self.log("Using pattern: %r" % pattern)
 
         try:
-            pattern = parse.Pattern(pattern)
-        except ValueError:
+            pattern = Pattern(pattern)
+        except PatternError:
             raise CommandError("Invalid pattern: %r" % pattern)
 
         paths = args

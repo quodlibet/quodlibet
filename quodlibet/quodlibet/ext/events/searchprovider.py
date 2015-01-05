@@ -31,7 +31,7 @@ import dbus.service
 from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.plugins import PluginImportException
 from quodlibet.util.path import xdg_get_system_data_dirs
 

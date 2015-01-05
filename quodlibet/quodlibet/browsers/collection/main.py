@@ -14,7 +14,7 @@ from quodlibet import config
 
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers._base import Browser
-from quodlibet.parse import Query
+from quodlibet.query import Query
 
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu

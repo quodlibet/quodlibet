@@ -23,7 +23,7 @@ import time
 from gi.repository import GObject
 
 from quodlibet.formats import MusicFile
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.notif import Task
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
