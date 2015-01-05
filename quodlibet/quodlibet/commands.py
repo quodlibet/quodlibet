@@ -213,13 +213,7 @@ def _add_file(app, value):
     filename = os.path.realpath(value)
     song = app.library.add_filename(filename)
     if song:
-        playlist = app.window.playlist
-        if song not in playlist.pl:
-            queue = playlist.q
-            queue.insert_before(queue.get_iter_first(), row=[song])
-            app.player.next()
-        else:
-            app.player.go_to(app.library[filename])
+        if app.player.go_to(song):
             app.player.paused = False
 
 
