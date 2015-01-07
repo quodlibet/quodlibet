@@ -376,7 +376,10 @@ class SongsMenu(Gtk.Menu):
             b.connect('activate', information_cb)
             self.append(b)
 
-        connect_obj(self, 'selection-done', Gtk.Menu.destroy, self)
+        def selection_done_cb(menu):
+            menu.destroy()
+
+        self.connect('selection-done', selection_done_cb)
 
     def separate(self):
         if not self.get_children():
