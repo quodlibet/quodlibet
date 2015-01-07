@@ -179,7 +179,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         b = TrashMenuItem()
         b.connect('activate', self.__delete, filenames, fs)
         menu.prepend(b)
-        connect_obj(menu, 'selection-done', Gtk.Menu.destroy, menu)
+
+        def selection_done_cb(menu):
+            menu.destroy()
+
+        menu.connect('selection-done', selection_done_cb)
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
