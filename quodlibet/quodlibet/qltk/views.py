@@ -16,6 +16,7 @@ import cairo
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
     menu_popup
+from quodlibet.qltk.image import get_scale_factor
 
 
 class TreeViewHints(Gtk.Window):
@@ -701,14 +702,16 @@ class BaseView(Gtk.TreeView):
             column.set_sort_indicator(value)
 
 
-def _get_surface_size(surface):
+def _get_surface_size(surface, scale_factor):
     """Returns (width, height) of a surface or None."""
 
     # X11
     try:
-        return surface.get_width(), surface.get_height()
+        w, h = surface.get_width(), surface.get_height()
     except AttributeError:
         pass
+    else:
+        return w / scale_factor, h / scale_factor
 
     # Everything else: pycairo doesn't expose get_image() so we have
     # do it the ugly way through png
@@ -721,9 +724,11 @@ def _get_surface_size(surface):
         return
     else:
         try:
-            return image_surface.get_width(), image_surface.get_height()
+            w, h = image_surface.get_width(), image_surface.get_height()
         except AttributeError:
             pass
+        else:
+            return w / scale_factor, h / scale_factor
 
 
 class DragIconTreeView(BaseView):
@@ -762,7 +767,8 @@ class DragIconTreeView(BaseView):
         if not icons:
             return
 
-        sizes = [_get_surface_size(s) for s in icons]
+        scale_factor = get_scale_factor(self)
+        sizes = [_get_surface_size(s, scale_factor) for s in icons]
         if None in sizes:
             return
         width = max([s[0] for s in sizes])
@@ -780,7 +786,8 @@ class DragIconTreeView(BaseView):
             height += lh
             height += 6  # padding
 
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+        surface = icons[0].create_similar(
+            cairo.CONTENT_COLOR_ALPHA, width, height)
         ctx = cairo.Context(surface)
 
         # render background
