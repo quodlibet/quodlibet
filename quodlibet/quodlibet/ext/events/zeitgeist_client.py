@@ -36,7 +36,6 @@ class Zeitgeist(EventPlugin):
     PLUGIN_DESC = _("Sends song events to the Zeitgeist event logging "
                     "service.")
     PLUGIN_ICON = 'gtk-network'
-    PLUGIN_VERSION = "0.1"
 
     def enabled(self):
         self.client = ZeitgeistClient()

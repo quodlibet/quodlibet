@@ -62,7 +62,6 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
                     "in Empathy etc) with a status message based on current "
                     "song.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.3"
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
     DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")

@@ -41,7 +41,6 @@ class SessionInhibit(EventPlugin):
     PLUGIN_DESC = _("Prevents the GNOME screensaver from activating while"
                     " a song is playing.")
     PLUGIN_ICON = Gtk.STOCK_STOP
-    PLUGIN_VERSION = "0.3"
 
     DBUS_NAME = "org.gnome.SessionManager"
     DBUS_INTERFACE = "org.gnome.SessionManager"

@@ -27,7 +27,6 @@ class JEP118(EventPlugin):
     PLUGIN_NAME = _("JEP-118")
     PLUGIN_DESC = _("Outputs a Jabber User Tunes file to ~/.quodlibet/jabber.")
     PLUGIN_ICON = 'gtk-save'
-    PLUGIN_VERSION = "0.13"
 
     def plugin_on_song_started(self, song):
         if song is None:

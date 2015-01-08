@@ -76,7 +76,6 @@ class GnomeSearchProvider(EventPlugin):
     PLUGIN_NAME = _("GNOME Search Provider")
     PLUGIN_DESC = _("Allows GNOME Shell to search the library.")
     PLUGIN_ICON = "gtk-connect"
-    PLUGIN_VERSION = "0.1"
 
     def enabled(self):
         self.obj = SearchProvider()

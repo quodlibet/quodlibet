@@ -24,7 +24,6 @@ class ScreensaverPause(EventPlugin):
     PLUGIN_NAME = _("Screensaver Pause")
     PLUGIN_DESC = _("Pauses playback while the GNOME screensaver is active.")
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PAUSE
-    PLUGIN_VERSION = "0.2"
 
     DBUS_NAME = "org.gnome.ScreenSaver"
     DBUS_INTERFACE = "org.gnome.ScreenSaver"

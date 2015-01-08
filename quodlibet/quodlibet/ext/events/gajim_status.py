@@ -29,7 +29,6 @@ class GajimStatusMessage(EventPlugin):
     PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = _("Changes Gajim status message according to what "
                     "you are currently listening to.")
-    PLUGIN_VERSION = '0.7.4'
 
     c_accounts = __name__ + '_accounts'
     c_paused = __name__ + '_paused'

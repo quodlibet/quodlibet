@@ -11,7 +11,6 @@ from quodlibet.plugins.events import EventPlugin
 class AutoRating(EventPlugin):
     PLUGIN_ID = "Automatic Rating"
     PLUGIN_NAME = _("Automatic Rating")
-    PLUGIN_VERSION = "0.22"
     PLUGIN_DESC = _("Rates songs automatically when they are played or "
                     "skipped. This uses the 'accelerated' algorithm from "
                     "vux by Brian Nelson.")

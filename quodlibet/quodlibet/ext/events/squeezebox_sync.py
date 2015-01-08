@@ -28,7 +28,6 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_DESC = _("Makes Logitech Squeezebox mirror Quod Libet output, "
                     "provided both read from an identical library.")
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
-    PLUGIN_VERSION = '0.4'
     server = None
     active = False
     _debug = False

@@ -29,7 +29,6 @@ class PictureSaver(EventPlugin):
     PLUGIN_NAME = _("Picture Saver")
     PLUGIN_DESC = _("Saves the cover image of the current song to a file.")
     PLUGIN_ICON = Gtk.STOCK_SAVE
-    PLUGIN_VERSION = "0.21"
 
     def plugin_on_song_started(self, song):
         outfile = get_path()

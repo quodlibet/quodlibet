@@ -15,7 +15,6 @@ class IRadioLog(EventPlugin):
     PLUGIN_DESC = _("Records the last 10 songs played on radio stations, "
                     "and lists them in the seek context menu.")
     PLUGIN_ICON = 'gtk-edit'
-    PLUGIN_VERSION = "0.22"
 
     def plugin_on_song_started(self, song):
         if song is None:

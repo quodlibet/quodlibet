@@ -21,7 +21,6 @@ class Alarm(EventPlugin):
     PLUGIN_NAME = _("Alarm Clock")
     PLUGIN_DESC = _("Wakes you up with loud music.")
     PLUGIN_ICON = Gtk.STOCK_DIALOG_INFO
-    PLUGIN_VERSION = "0.22"
 
     _pref_name = "alarm_times"
     _times = ["HH:MM"] * 7
@@ -117,7 +116,6 @@ class Lullaby(Alarm):
     PLUGIN_NAME = _("Lullaby")
     PLUGIN_DESC = _("Fades out and pauses your music.")
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PAUSE
-    PLUGIN_VERSION = "0.20"
 
     _pref_name = "lullaby_times"
 
