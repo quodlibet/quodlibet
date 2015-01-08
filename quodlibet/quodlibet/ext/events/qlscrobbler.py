@@ -60,6 +60,7 @@ class QLSubmitQueue(PluginConfigMixin):
     """
 
     CLIENT = "qlb"
+    CLIENT_VERSION = const.VERSION
     PROTOCOL_VERSION = "1.2"
     DUMP = os.path.join(const.USERDIR, "scrobbler_cache")
     # This must be the kept the same as `QLScrobbler`
@@ -232,7 +233,7 @@ class QLSubmitQueue(PluginConfigMixin):
         auth = md5(self.password + str(stamp)).hexdigest()
         url = "%s/?hs=true&p=%s&c=%s&v=%s&u=%s&a=%s&t=%d" % (
                     self.base_url, self.PROTOCOL_VERSION, self.CLIENT,
-                    QLScrobbler.PLUGIN_VERSION, self.username, auth, stamp)
+                    self.CLIENT_VERSION, self.username, auth, stamp)
         print_d("Sending handshake to service.")
 
         try:
