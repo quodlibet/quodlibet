@@ -1,3 +1,16 @@
+3.3.1 (2014-01-??) - ???
+------------------------
+
+Regressions:
+ * Fix occasional errors when closing menus
+   (with the plugin menu in Ex Falso for example) :bug:`1515`
+ * Fix operon info :bug:`1514`
+ * Fix operon fill error in case a tag doesn't match :bug:`1520`
+
+Fixes:
+ * Fix HiDPI DnD images when dragging multiple rows
+
+
 3.3.0 (2014-12-31) - PARALLEL UNIVERSES. Travel there and THEN go back in time, and you can mess things up as much as you want.
 -------------------------------------------------------------------------------------------------------------------------------
 
