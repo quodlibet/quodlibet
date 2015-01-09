@@ -25,6 +25,8 @@ from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.qltk.window import UniqueWindow
+from quodlibet.qltk.x import Button
+from quodlibet.qltk import icons
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal, get_scan_dirs, scan_library
@@ -648,7 +650,7 @@ class PreferencesWindow(UniqueWindow):
                      self.Library, self.Tagging]:
             notebook.append_page(Page())
 
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)

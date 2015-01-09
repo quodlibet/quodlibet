@@ -25,8 +25,10 @@ from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
-from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned
+from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned, \
+    Button
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
+from quodlibet.qltk import icons
 from quodlibet.util.path import mtime, normalize_path
 from quodlibet.util import connect_obj, connect_destroy
 
@@ -254,7 +256,7 @@ class PreferencesWindow(UniqueWindow):
         vbox.pack_start(hb, False, True, 0)
         f = qltk.Frame(_("Tag Editing"), child=vbox)
 
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)

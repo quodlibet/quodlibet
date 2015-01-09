@@ -33,7 +33,7 @@ def main():
 
     import quodlibet
     from quodlibet import app
-    from quodlibet.qltk import add_signal_watch
+    from quodlibet.qltk import add_signal_watch, icons
     add_signal_watch(app.quit)
 
     import quodlibet.player
@@ -45,7 +45,7 @@ def main():
     config.init(const.CONFIG)
 
     library = quodlibet.init(library=const.LIBRARY,
-                             icon="quodlibet",
+                             icon=icons.QUODLIBET,
                              name="Quod Libet",
                              title=const.PROCESS_TITLE_QL)
     app.library = library

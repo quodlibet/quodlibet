@@ -20,7 +20,7 @@ from quodlibet.util.path import fsdecode
 
 
 def main():
-    from quodlibet.qltk import add_signal_watch
+    from quodlibet.qltk import add_signal_watch, icons
     add_signal_watch(app.quit)
 
     opts = util.OptionParser(
@@ -34,7 +34,7 @@ def main():
 
     config.init(const.CONFIG)
 
-    app.library = quodlibet.init(icon="exfalso",
+    app.library = quodlibet.init(icon=icons.EXFALSO,
                                  name="Ex Falso",
                                  title=const.PROCESS_TITLE_EF)
     app.player = quodlibet.init_backend("nullbe", app.librarian)

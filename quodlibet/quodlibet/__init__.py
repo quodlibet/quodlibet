@@ -125,7 +125,7 @@ def fix_gst_leaks():
         Gst.Element.add_pad = do_wrap(Gst.Element.add_pad)
 
 
-def _gtk_init(icon=None):
+def _gtk_init():
     import gi
 
     # make sure GdkX11 doesn't get used under Windows
@@ -287,11 +287,24 @@ def _gtk_init(icon=None):
     if pygobject_version < (3, 9):
         GObject.threads_init()
 
-    theme = Gtk.IconTheme.get_default()
-    theme.append_search_path(quodlibet.const.IMAGEDIR)
 
-    if icon:
-        Gtk.Window.set_default_icon_name(icon)
+def _gtk_icons_init(theme_search_path, default_icon_name=None):
+    """Register a local fallback icon theme containing our own icons.
+
+    `default_icon_name` is the icon name used for all windows if nothing
+    else is specified.
+    """
+
+    from gi.repository import Gtk
+
+    theme = Gtk.IconTheme.get_default()
+
+    assert os.path.exists(theme_search_path)
+    theme.append_search_path(theme_search_path)
+
+    if default_icon_name is not None:
+        assert theme.has_icon(default_icon_name)
+        Gtk.Window.set_default_icon_name(default_icon_name)
 
 
 def _dbus_init():
@@ -389,7 +402,9 @@ _gettext_init()
 def init(library=None, icon=None, title=None, name=None):
     print_d("Entering quodlibet.init")
 
-    _gtk_init(icon)
+    _gtk_init()
+    import quodlibet.const
+    _gtk_icons_init(quodlibet.const.IMAGEDIR, icon)
     _dbus_init()
 
     from gi.repository import GLib
