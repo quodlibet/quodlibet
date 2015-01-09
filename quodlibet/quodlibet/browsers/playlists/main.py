@@ -20,6 +20,7 @@ from quodlibet.util.collection import Playlist
 from quodlibet.util import connect_obj
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk.models import ObjectStore, ObjectModelSort
 from quodlibet.qltk.x import ScrolledWindow, Alignment
 
 from .util import *
@@ -121,7 +122,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         iters = map(model.get_iter, rows)
         return model, iters
 
-    __lists = Gtk.TreeModelSort(model=Gtk.ListStore(object))
+    __lists = ObjectModelSort(model=ObjectStore())
     __lists.set_default_sort_func(lambda m, a, b, data: cmp(m[a][0], m[b][0]))
 
     def __init__(self, library):
