@@ -136,7 +136,7 @@ def print_d(string, context=""):
         _print(string, output)
 
     # Translators: Name of the debug tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), _("Debug"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), "debug")
 
 
 def print_w(string):
@@ -149,7 +149,7 @@ def print_w(string):
     _print(string, sys.stderr)
 
     # Translators: Name of the warnings tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), _("Warnings"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), "warnings")
 
 
 def print_e(string, context=None):
@@ -162,4 +162,4 @@ def print_e(string, context=None):
     _print(string, sys.stderr)
 
     # Translators: Name of the warnings tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), _("Errors"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), "errors")
