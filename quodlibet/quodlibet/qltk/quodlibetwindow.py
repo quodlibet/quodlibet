@@ -29,7 +29,6 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.bookmarks import EditBookmarks
 from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
-from quodlibet.qltk.logging import LoggingWindow
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.playorder import PlayOrder
@@ -428,7 +427,6 @@ MENU = """
       <menuitem action='OnlineHelp' always-show-image='true'/>
       <menuitem action='SearchHelp' always-show-image='true'/>
       <menuitem action='About' always-show-image='true'/>
-      %(debug)s
     </menu>
   </menubar>
 </ui>
@@ -765,10 +763,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
     def __create_menu(self, player, library):
         ag = Gtk.ActionGroup.new('QuodLibetWindowActions')
 
-        def logging_cb(*args):
-            window = LoggingWindow(self)
-            window.show()
-
         actions = [
             ('Music', None, _("_Music")),
             ('AddFolders', Gtk.STOCK_ADD, _(u'_Add a Folder…'),
@@ -795,8 +789,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
-            ("OutputLog", Gtk.STOCK_EDIT, _("_Output Log"),
-             None, None, logging_cb),
             ]
 
         actions.append(("Previous", Gtk.STOCK_MEDIA_PREVIOUS, None,
@@ -897,14 +889,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             MAIN_MENU % {"browsers": browsers.BrowseLibrary()})
         self._filter_menu = FilterMenu(library, player, ui)
 
-        debug_menu = ""
-        if const.DEBUG:
-            debug_menu = (
-                "<separator/>"
-                "<menuitem action='OutputLog' always-show-image='true'/>")
         menustr = MENU % {
             "views": browsers.ViewBrowser(),
-            "debug": debug_menu
         }
         ui.add_ui_from_string(menustr)
 

@@ -137,7 +137,6 @@ quodlibet/qltk/exfalsowindow.py
 quodlibet/qltk/filesel.py
 quodlibet/qltk/info.py
 quodlibet/qltk/information.py
-quodlibet/qltk/logging.py
 quodlibet/qltk/lyrics.py
 quodlibet/qltk/maskedbox.py
 quodlibet/qltk/msg.py
