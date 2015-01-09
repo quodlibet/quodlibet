@@ -1083,3 +1083,20 @@ def enum(cls):
     setattr(new_type, "__repr__", repr_)
 
     return new_type
+
+
+def set_process_title(title):
+    """Sets process name as visible in ps or top. Requires ctypes libc
+    and is almost certainly *nix-only. See issue 736
+    """
+
+    if os.name == "nt":
+        return
+
+    try:
+        libc = load_library(["libc.so.6", "c"])[0]
+        # 15 = PR_SET_NAME, apparently
+        libc.prctl(15, title, 0, 0, 0)
+    except (OSError, AttributeError):
+        print_d("Couldn't find module libc.so.6 (ctypes). "
+                "Not setting process title.")

@@ -31,9 +31,6 @@ class MinVersions(object):
 VERSION_TUPLE = Version(3, 3, -1)
 VERSION = str(VERSION_TUPLE)
 
-PROCESS_TITLE_QL = "quodlibet"
-PROCESS_TITLE_EF = "exfalso"
-
 if os.name == "nt":
     file_path = __file__.decode(sys.getfilesystemencoding())
     BASEDIR = os.path.dirname(os.path.realpath(file_path))

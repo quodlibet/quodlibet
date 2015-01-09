@@ -102,6 +102,8 @@ def init_fake_app():
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
 
     browsers.init()
+    app.name = "Quod Libet"
+    app.id = "quodlibet"
     app.player = NullPlayer()
     app.library = SongFileLibrary()
     app.library.librarian = SongLibrarian()
@@ -116,7 +118,7 @@ def destroy_fake_app():
     app.library.librarian.destroy()
     app.player.destroy()
 
-    app.window = app.library = app.player = None
+    app.window = app.library = app.player = app.name = app.id = None
 
 
 class Result(unittest.TestResult):
@@ -239,9 +241,7 @@ def _run_tests(run=[], filter_func=None, main=False, subdirs=None,
         subdirs = []
 
     import quodlibet
-    quodlibet._dbus_init()
-    quodlibet._gtk_init()
-    quodlibet._python_init()
+    quodlibet.init()
 
     # make glib warnings fatal
     if strict:

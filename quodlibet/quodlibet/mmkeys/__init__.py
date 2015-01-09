@@ -52,16 +52,17 @@ class MMKeysHandler(object):
     events to actions on the player backend.
     """
 
-    def __init__(self, window, player):
+    def __init__(self, app_name, window, player):
         self._backend = None
         self._window = window
         self._player = player
+        self._app_name = app_name
 
     def start(self):
         kind = find_active_backend()
         if not kind:
             return
-        self._backend = kind("Quod Libet", self._callback)
+        self._backend = kind(self._app_name, self._callback)
         # grab on start for cases when the window is hidden on start
         self._backend.grab()
 

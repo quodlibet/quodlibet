@@ -20,6 +20,8 @@ from quodlibet.util.path import fsdecode
 
 
 def main():
+    global quodlibet
+
     from quodlibet.qltk import add_signal_watch, icons
     add_signal_watch(app.quit)
 
@@ -34,9 +36,13 @@ def main():
 
     config.init(const.CONFIG)
 
-    app.library = quodlibet.init(icon=icons.EXFALSO,
-                                 name="Ex Falso",
-                                 title=const.PROCESS_TITLE_EF)
+    app.name = "Ex Falso"
+    app.id = "exfalso"
+
+    quodlibet.init(icon=icons.EXFALSO, name=app.name, proc_title=app.id)
+
+    import quodlibet.library
+    app.library = quodlibet.library.init()
     app.player = quodlibet.init_backend("nullbe", app.librarian)
     from quodlibet.qltk.songlist import PlaylistModel
     app.player.setup(PlaylistModel(), None, 0)
@@ -56,7 +62,7 @@ def main():
     quodlibet.enable_periodic_save(save_library=False)
     quodlibet.main(app.window)
 
-    quodlibet.finish_first_session(const.PROCESS_TITLE_EF)
+    quodlibet.finish_first_session(app.id)
     config.save(const.CONFIG)
 
     print_d("Finished shutdown.")

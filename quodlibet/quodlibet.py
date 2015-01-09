@@ -37,6 +37,7 @@ def main():
     add_signal_watch(app.quit)
 
     import quodlibet.player
+    import quodlibet.library
     from quodlibet import config
     from quodlibet import browsers
     from quodlibet import const
@@ -44,10 +45,15 @@ def main():
 
     config.init(const.CONFIG)
 
-    library = quodlibet.init(library=const.LIBRARY,
-                             icon=icons.QUODLIBET,
-                             name="Quod Libet",
-                             title=const.PROCESS_TITLE_QL)
+    app.name = "Quod Libet"
+    app.id = "quodlibet"
+
+    quodlibet.init(icon=icons.QUODLIBET, name=app.name, proc_title=app.id)
+
+    print_d("Initializing main library (%s)" % (
+            quodlibet.util.path.unexpand(const.LIBRARY)))
+
+    library = quodlibet.library.init(const.LIBRARY)
     app.library = library
 
     from quodlibet.player import PlayerError
@@ -122,7 +128,7 @@ def main():
     except ImportError:
         DBusHandler = lambda player, library: None
 
-    mmkeys_handler = MMKeysHandler(window, player)
+    mmkeys_handler = MMKeysHandler(app.name, window, player)
     if "QUODLIBET_NO_MMKEYS" not in os.environ:
         mmkeys_handler.start()
     fsiface = FSInterface(player)
@@ -155,7 +161,7 @@ def main():
 
     quodlibet.main(window, before_quit=before_quit)
 
-    quodlibet.finish_first_session(const.PROCESS_TITLE_QL)
+    quodlibet.finish_first_session(app.id)
     mmkeys_handler.quit()
     remote.stop()
     fsiface.destroy()

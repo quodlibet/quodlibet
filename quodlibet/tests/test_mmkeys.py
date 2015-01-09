@@ -11,7 +11,7 @@ class TMmKeys(TestCase):
 
     def test_handler(self):
         win = Gtk.Window()
-        handler = MMKeysHandler(win, NullPlayer())
+        handler = MMKeysHandler("Foo", win, NullPlayer())
         handler.quit()
 
     def test_backends(self):

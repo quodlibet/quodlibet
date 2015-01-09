@@ -136,7 +136,7 @@ class MPRIS1Root(MPRISObject):
 
     @dbus.service.method(IFACE, out_signature="s")
     def Identity(self):
-        return "Quod Libet"
+        return app.name
 
     @dbus.service.method(IFACE)
     def Quit(self):
@@ -675,7 +675,7 @@ value="false"/>
             elif name == "HasTrackList":
                 return False
             elif name == "Identity":
-                return "Quod Libet"
+                return app.name
             elif name == "DesktopEntry":
                 return "quodlibet"
             elif name == "SupportedUriSchemes":
