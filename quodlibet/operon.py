@@ -820,8 +820,9 @@ class FillCommand(Command):
             match = pattern.match(song)
             self.log("%r: %r" % (song("~basename"), match))
             for header in pattern.headers:
-                value = match[header]
-                song[header] = value
+                if header in match:
+                    value = match[header]
+                    song[header] = value
 
         self.save_songs(songs)
 
@@ -831,7 +832,7 @@ class FillCommand(Command):
             match = pattern.match(song)
             row = [fsdecode(song("~basename"))]
             for header in pattern.headers:
-                row.append(match[header])
+                row.append(match.get(header, u""))
             rows.append(row)
 
         headers = [_("File")] + pattern.headers

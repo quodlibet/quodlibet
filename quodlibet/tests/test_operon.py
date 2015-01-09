@@ -644,9 +644,24 @@ class TOperonFill(TOperonBase):
         self.s.reload()
         self.assertEqual(self.s("title"), os.path.splitext(basename)[0])
 
+    def test_apply_no_match(self):
+        old_title = self.s("title")
+        self.check_true(
+            ["fill", "<tracknumber>. <title>", self.f], False, False)
+        self.s.reload()
+        self.assertEqual(self.s("title"), old_title)
+
     def test_preview(self):
         o, e = self.check_true(
             ["fill", "--dry-run", "<title>", self.f], True, False)
+
+        self.assertTrue("title" in o)
+        self.assertTrue(self.s("~basename") in o)
+
+    def test_preview_no_match(self):
+        o, e = self.check_true(
+            ["fill", "--dry-run", "<tracknumber>. <title>", self.f],
+            True, False)
 
         self.assertTrue("title" in o)
         self.assertTrue(self.s("~basename") in o)
