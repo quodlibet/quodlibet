@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-31 21:54+0100\n"
+"POT-Creation-Date: 2015-01-10 14:13+0100\n"
 "PO-Revision-Date: 2014-11-12 05:29+0200\n"
 "Last-Translator: Dimitris Papageorgiou <dipap@gmx.com>\n"
 "Language-Team: Greek\n"
@@ -252,25 +252,25 @@ msgstr "Μετονομασία αρχείων βάσει ετικετών"
 msgid "Fill tags based on the file path"
 msgstr "Συμπλήρωση ετικετών βάσει διαδρομής αρχείου"
 
-#: ../operon.py:836 ../quodlibet/qltk/information.py:288
+#: ../operon.py:837 ../quodlibet/qltk/information.py:288
 #: ../quodlibet/qltk/properties.py:70 ../quodlibet/qltk/renamefiles.py:164
 #: ../quodlibet/qltk/tagsfrompath.py:214 ../quodlibet/qltk/tracknumbers.py:71
 msgid "File"
 msgstr "Αρχείο"
 
-#: ../operon.py:843
+#: ../operon.py:844
 msgid "Fill tracknumbers for all files"
 msgstr "Συμπλήρωση αριθμών κομματιού για όλα τα αρχεία"
 
-#: ../operon.py:861
+#: ../operon.py:862
 msgid "Print tags based on the given pattern"
 msgstr "Εμφάνιση ετικετών βάσει παρεχόμενου προτύπου"
 
-#: ../operon.py:897
+#: ../operon.py:898
 msgid "Display help information"
 msgstr "Προβολή σύντομων πληροφοριών χρήσης"
 
-#: ../operon.py:925
+#: ../operon.py:926
 #, python-format
 msgid "'%s' is not a valid column name (%s)."
 msgstr "Το '%s' δεν είναι έγκυρο όνομα στήλης (%s)."
@@ -934,7 +934,7 @@ msgid "_New Playlist..."
 msgstr "_Νέα Λίστα Αναπαραγωγής..."
 
 #: ../quodlibet/browsers/playlists/menu.py:59
-#: ../quodlibet/qltk/exfalsowindow.py:222 ../quodlibet/qltk/properties.py:137
+#: ../quodlibet/qltk/exfalsowindow.py:226 ../quodlibet/qltk/properties.py:137
 #: ../quodlibet/util/collection.py:364
 #, python-format
 msgid "%(title)s and %(count)d more"
@@ -3443,7 +3443,7 @@ msgstr ""
 "χρειάζεται."
 
 #: ../quodlibet/ext/songsmenu/refresh.py:25
-#: ../quodlibet/qltk/exfalsowindow.py:198 ../quodlibet/qltk/information.py:521
+#: ../quodlibet/qltk/exfalsowindow.py:202 ../quodlibet/qltk/information.py:521
 #: ../quodlibet/qltk/maskedbox.py:65 ../quodlibet/util/collection.py:534
 #: ../quodlibet/util/collection.py:561
 #, python-format
@@ -4134,15 +4134,15 @@ msgstr ""
 msgid "_Plugins"
 msgstr "_Πρόσθετα"
 
-#: ../quodlibet/qltk/exfalsowindow.py:235
+#: ../quodlibet/qltk/exfalsowindow.py:239
 msgid "Ex Falso Preferences"
 msgstr "Προτιμήσεις του Ex Falso"
 
-#: ../quodlibet/qltk/exfalsowindow.py:245 ../quodlibet/qltk/prefs.py:552
+#: ../quodlibet/qltk/exfalsowindow.py:249 ../quodlibet/qltk/prefs.py:552
 msgid "Split _on:"
 msgstr "Διαχωρισμός _στο:"
 
-#: ../quodlibet/qltk/exfalsowindow.py:251 ../quodlibet/qltk/prefs.py:567
+#: ../quodlibet/qltk/exfalsowindow.py:255 ../quodlibet/qltk/prefs.py:567
 msgid "Tag Editing"
 msgstr "Επεξεργασία ετικετών"
 
@@ -5209,7 +5209,7 @@ msgstr "Αναπαραγωγή/Παύση"
 msgid "Previous"
 msgstr "Προηγούμενο"
 
-#: ../quodlibet/qltk/views.py:772
+#: ../quodlibet/qltk/views.py:778
 #, python-format
 msgid "and %d more..."
 msgstr "και %d ακόμη..."

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-31 21:54+0100\n"
+"POT-Creation-Date: 2015-01-10 14:13+0100\n"
 "PO-Revision-Date: 2006-11-08 19:59+0100\n"
 "Last-Translator: Lukáš Lalinský <lalinsky@gmail.com>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -242,26 +242,26 @@ msgstr ""
 msgid "Fill tags based on the file path"
 msgstr ""
 
-#: ../operon.py:836 ../quodlibet/qltk/information.py:288
+#: ../operon.py:837 ../quodlibet/qltk/information.py:288
 #: ../quodlibet/qltk/properties.py:70 ../quodlibet/qltk/renamefiles.py:164
 #: ../quodlibet/qltk/tagsfrompath.py:214 ../quodlibet/qltk/tracknumbers.py:71
 msgid "File"
 msgstr "Súbor"
 
-#: ../operon.py:843
+#: ../operon.py:844
 msgid "Fill tracknumbers for all files"
 msgstr ""
 
-#: ../operon.py:861
+#: ../operon.py:862
 msgid "Print tags based on the given pattern"
 msgstr ""
 
-#: ../operon.py:897
+#: ../operon.py:898
 #, fuzzy
 msgid "Display help information"
 msgstr "Zobraziť krátku informáciu o použití"
 
-#: ../operon.py:925
+#: ../operon.py:926
 #, fuzzy, python-format
 msgid "'%s' is not a valid column name (%s)."
 msgstr "<b>%s</b> nie je platné umiestnenie."
@@ -939,7 +939,7 @@ msgid "_New Playlist..."
 msgstr "_Nový playlist"
 
 #: ../quodlibet/browsers/playlists/menu.py:59
-#: ../quodlibet/qltk/exfalsowindow.py:222 ../quodlibet/qltk/properties.py:137
+#: ../quodlibet/qltk/exfalsowindow.py:226 ../quodlibet/qltk/properties.py:137
 #: ../quodlibet/util/collection.py:364
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more"
@@ -3429,7 +3429,7 @@ msgid "Checks for file changes and reloads / removes the songs if needed."
 msgstr ""
 
 #: ../quodlibet/ext/songsmenu/refresh.py:25
-#: ../quodlibet/qltk/exfalsowindow.py:198 ../quodlibet/qltk/information.py:521
+#: ../quodlibet/qltk/exfalsowindow.py:202 ../quodlibet/qltk/information.py:521
 #: ../quodlibet/qltk/maskedbox.py:65 ../quodlibet/util/collection.py:534
 #: ../quodlibet/util/collection.py:561
 #, python-format
@@ -4119,15 +4119,15 @@ msgstr ""
 msgid "_Plugins"
 msgstr "_Zásuvné moduly"
 
-#: ../quodlibet/qltk/exfalsowindow.py:235
+#: ../quodlibet/qltk/exfalsowindow.py:239
 msgid "Ex Falso Preferences"
 msgstr "Možnosti Ex Falso"
 
-#: ../quodlibet/qltk/exfalsowindow.py:245 ../quodlibet/qltk/prefs.py:552
+#: ../quodlibet/qltk/exfalsowindow.py:249 ../quodlibet/qltk/prefs.py:552
 msgid "Split _on:"
 msgstr "R_ozdeliť na:"
 
-#: ../quodlibet/qltk/exfalsowindow.py:251 ../quodlibet/qltk/prefs.py:567
+#: ../quodlibet/qltk/exfalsowindow.py:255 ../quodlibet/qltk/prefs.py:567
 msgid "Tag Editing"
 msgstr "Editácia tagov"
 
@@ -5206,7 +5206,7 @@ msgstr "Prehrávač"
 msgid "Previous"
 msgstr "_Náhľad"
 
-#: ../quodlibet/qltk/views.py:772
+#: ../quodlibet/qltk/views.py:778
 #, python-format
 msgid "and %d more..."
 msgstr "a %d viac..."

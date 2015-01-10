@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-31 21:54+0100\n"
+"POT-Creation-Date: 2015-01-10 14:13+0100\n"
 "PO-Revision-Date: 2013-07-20 22:33+0100\n"
 "Last-Translator: Mykola Lynnyk <pydefiner@gmail.com>\n"
 "Language-Team: Ukrainian\n"
@@ -247,26 +247,26 @@ msgstr ""
 msgid "Fill tags based on the file path"
 msgstr ""
 
-#: ../operon.py:836 ../quodlibet/qltk/information.py:288
+#: ../operon.py:837 ../quodlibet/qltk/information.py:288
 #: ../quodlibet/qltk/properties.py:70 ../quodlibet/qltk/renamefiles.py:164
 #: ../quodlibet/qltk/tagsfrompath.py:214 ../quodlibet/qltk/tracknumbers.py:71
 msgid "File"
 msgstr "Файл"
 
-#: ../operon.py:843
+#: ../operon.py:844
 msgid "Fill tracknumbers for all files"
 msgstr ""
 
-#: ../operon.py:861
+#: ../operon.py:862
 msgid "Print tags based on the given pattern"
 msgstr ""
 
-#: ../operon.py:897
+#: ../operon.py:898
 #, fuzzy
 msgid "Display help information"
 msgstr "Вивести коротку інформацію з користування"
 
-#: ../operon.py:925
+#: ../operon.py:926
 #, fuzzy, python-format
 msgid "'%s' is not a valid column name (%s)."
 msgstr "<b>%s</b> не є правильною адресою."
@@ -949,7 +949,7 @@ msgid "_New Playlist..."
 msgstr "_Новий список програвання"
 
 #: ../quodlibet/browsers/playlists/menu.py:59
-#: ../quodlibet/qltk/exfalsowindow.py:222 ../quodlibet/qltk/properties.py:137
+#: ../quodlibet/qltk/exfalsowindow.py:226 ../quodlibet/qltk/properties.py:137
 #: ../quodlibet/util/collection.py:364
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more"
@@ -3439,7 +3439,7 @@ msgid "Checks for file changes and reloads / removes the songs if needed."
 msgstr ""
 
 #: ../quodlibet/ext/songsmenu/refresh.py:25
-#: ../quodlibet/qltk/exfalsowindow.py:198 ../quodlibet/qltk/information.py:521
+#: ../quodlibet/qltk/exfalsowindow.py:202 ../quodlibet/qltk/information.py:521
 #: ../quodlibet/qltk/maskedbox.py:65 ../quodlibet/util/collection.py:534
 #: ../quodlibet/util/collection.py:561
 #, python-format
@@ -4131,15 +4131,15 @@ msgstr ""
 msgid "_Plugins"
 msgstr "_Розширення"
 
-#: ../quodlibet/qltk/exfalsowindow.py:235
+#: ../quodlibet/qltk/exfalsowindow.py:239
 msgid "Ex Falso Preferences"
 msgstr "Налаштування Ex Falso"
 
-#: ../quodlibet/qltk/exfalsowindow.py:245 ../quodlibet/qltk/prefs.py:552
+#: ../quodlibet/qltk/exfalsowindow.py:249 ../quodlibet/qltk/prefs.py:552
 msgid "Split _on:"
 msgstr "_Розділяти по:"
 
-#: ../quodlibet/qltk/exfalsowindow.py:251 ../quodlibet/qltk/prefs.py:567
+#: ../quodlibet/qltk/exfalsowindow.py:255 ../quodlibet/qltk/prefs.py:567
 msgid "Tag Editing"
 msgstr "Редагування тегів"
 
@@ -5229,7 +5229,7 @@ msgstr "Програвач"
 msgid "Previous"
 msgstr "_Попередній перегляд"
 
-#: ../quodlibet/qltk/views.py:772
+#: ../quodlibet/qltk/views.py:778
 #, python-format
 msgid "and %d more..."
 msgstr "%d інших..."
