@@ -14,8 +14,9 @@ class Tpathname2url(TestCase):
         cases = {
             r"c:\abc\def": "/c:/abc/def",
             r"C:\a b\c.txt": "/C:/a%20b/c.txt",
-            r"\\xy\z.txt": "xy/z.txt",
-            r"C:\a:b\c:d": "/C:/a%3Ab/c%3Ad"
+            r"\\xy\z.txt": "//xy/z.txt",
+            r"C:\a:b\c:d": "/C:/a%3Ab/c%3Ad",
+            r"\\server\share\foo": "//server/share/foo",
             }
         p2u = pathname2url_win32
         for inp, should in cases.iteritems():

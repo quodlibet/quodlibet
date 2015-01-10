@@ -257,9 +257,7 @@ def pathname2url_win32(path):
         path = path.encode("utf-8")
 
     quote = urllib.quote
-    if path[1:2] != ":" or path[:1] == "\\":
-        if path[:2] == "\\\\":
-            path = path[2:]
+    if ":" not in path:
         return quote("/".join(path.split("\\")))
     drive, remain = path.split(":", 1)
     return "/%s:%s" % (quote(drive), quote("/".join(remain.split("\\"))))

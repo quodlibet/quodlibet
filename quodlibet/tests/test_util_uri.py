@@ -12,7 +12,31 @@ class TURI(TestCase):
         s.http_uri = URI("http://www.example.com/~piman;woo?bar=quux#whee")
         s.rfile_uri = URI("file://example.com/home/piman/crazy")
         s.file_uri = URI.frompath("/home/piman/cr!azy")
-        s.extra_uri = URI("file:///////////home/piman")
+
+    def test_unc_paths(self):
+        if os.name != "nt":
+            return
+
+        self.assertEqual(
+            URI.frompath(u"\\\\server\\share\\path"),
+            r"file:////server/share/path")
+
+    def test_leading_slashes(self):
+        self.assertEqual(
+            str(URI("file://" + "/foo/bar")),
+            "file://" + "/foo/bar")
+        self.assertEqual(
+            str(URI("file://" + "//foo/bar")),
+            "file://" + "//foo/bar")
+
+        self.assertEqual(URI("file://" + "//foo/bar").path, "//foo/bar")
+
+        self.assertEqual(
+            str(URI("file://" + "///foo/bar")),
+            "file://" + "///foo/bar")
+        self.assertEqual(
+            str(URI("file://" + "////foo/bar")),
+            "file://" + "////foo/bar")
 
     def test_windows_path(self):
         if os.name != "nt":
@@ -81,11 +105,3 @@ class TURI(TestCase):
         s.failUnless(s.file_uri.is_filename)
         s.failIf(s.rfile_uri.is_filename)
         s.failIf(s.http_uri.is_filename)
-
-    # test urlparse workaround
-    def test_urlparse_workaround(s):
-        s.failUnless(s.extra_uri.is_filename)
-        s.failIf(s.extra_uri.netloc)
-        expected = os.path.sep + os.path.join("home", "piman")
-        s.failUnlessEqual(s.extra_uri.filename, expected)
-        s.assertTrue(is_fsnative(s.extra_uri.filename))

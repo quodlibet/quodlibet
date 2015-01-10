@@ -11,11 +11,20 @@
 #    Punycode for the domain) and back.
 
 import os
-import re
 from urllib import url2pathname, quote_plus, unquote_plus
 from urlparse import urlparse, urlunparse
 
 from quodlibet.util.path import fsdecode, pathname2url
+
+
+def _urlunparse(parts):
+    # urlunparse doesn't like paths starting with // and will remove them.
+    # we need them for UNC paths on Windows
+    # e.g. we want "//foo/bar" -> urlparse -> urlunparse -> "//foo/bar"
+    parts = list(parts)
+    if parts[2].startswith("//") and not parts[1]:
+        parts[2] = "//" + parts[2]
+    return urlunparse(parts)
 
 
 class URI(str):
@@ -36,17 +45,13 @@ class URI(str):
         The URI returned will be equivalent, but not necessarily
         equal, to the value passed in."""
 
-        # URIs like file:////home/foo/... are valid, since
-        # //home/foo is a valid path. But urlparse parses this
-        # into a netloc of home and a path of /foo. Lame.
-        value = re.sub("^([A-Za-z]+):///+", "\\1:///", value)
-
         values = list(urlparse(value))
         if not escaped:
             # FIXME: Handle netloc
             # FIXME: Handle query args
             values[2] = quote_plus(values[2], safe="/~")
-        value = urlunparse(values)
+
+        value = _urlunparse(values)
         obj = str.__new__(klass, value)
 
         # len() > 1 to not interpret windows paths as URIs
@@ -100,7 +105,7 @@ class URI(str):
         """an unescaped str (not URI) version of the URI"""
         values = list(urlparse(self))
         values[2] = unquote_plus(values[2])
-        return urlunparse(values)
+        return _urlunparse(values)
 
     @property
     def filename(self):
