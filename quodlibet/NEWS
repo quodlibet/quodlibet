@@ -1,5 +1,5 @@
-3.3.1 (2014-01-??) - ???
-------------------------
+3.3.1 (2015-01-10) - Reduce, reuse, recycle, RESUBMIT
+-----------------------------------------------------
 
 Regressions:
  * Fix occasional errors when closing menus
