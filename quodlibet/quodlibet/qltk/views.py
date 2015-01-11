@@ -1035,6 +1035,11 @@ class _TreeViewColumnLabel(Gtk.Label):
         req_height = self.get_requisition().height
         w, h = available_width, alloc.height
 
+        # possible when adding new columns.... create_similar will fail
+        # in this case below, so just skip.
+        if min(w, h) < 0:
+            return Gtk.Label.do_draw(self, ctx)
+
         surface = ctx.get_target()
 
         # draw label to image surface
