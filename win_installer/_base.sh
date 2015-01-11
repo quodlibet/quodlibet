@@ -29,7 +29,7 @@ function download_and_verify {
         echo "all installers here, continue.."
     else
         wget -P "$BIN" -c https://bitbucket.org/pypa/setuptools/raw/7.0/ez_setup.py
-        wget -P "$BIN" -c http://mercurial.selenic.com/release/windows/mercurial-2.8.1-x86.msi
+        wget -P "$BIN" -c https://bitbucket.org/tortoisehg/files/downloads/mercurial-3.2.3-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev6-setup.exe
@@ -182,6 +182,11 @@ function install_python {
     cp "$PYGI"/binding/py2.7-32/*.pyd "$SITEPACKAGES"
 }
 
+function install_mercurial {
+    wine msiexec /a "$BUILD_ENV"/bin/mercurial-3.2.3-x86.msi /qb;
+    HGDIR="$(winepath -u "$(wine cmd.exe /c 'echo | set /p=%ProgramFiles%')")/Mercurial";
+}
+
 function install_7zip {
     wine msiexec /a "$BUILD_ENV"/bin/7z920.msi /qb
     SZIPDIR="$WINEPREFIX/drive_c/Program Files/7-Zip/"
@@ -282,6 +287,7 @@ function setup_sdk {
     # bin deps
     ln -s "$DEPS" "$SDK"/deps
     ln -s "$PYDIR" "$SDK"/python
+    ln -s "$HGDIR" "$SDK"/mercurial
 
     # ql
     ln -s "$QL_REPO"/quodlibet "$SDK"/quodlibet
