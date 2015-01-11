@@ -2,8 +2,18 @@
 QL Windows SDK
 ==============
 
-This package consists of all runtime dependencies and a quodlibet mercurial
-checkout.
+This package consists of all runtime dependencies & mercurial.
 
-* Under Windows run env.bat and then e.g. "python quodlibet.py"
-* Under Wine run wine.sh and then e.g. "python quodlibet.py"
+Under Windows:
+
+#. Run env.bat
+#. (first time only) Run clone.bat 
+#. cd quodlibet\quodlibet
+#. python quodlibet.py
+
+Under Wine:
+
+#. Run wine.sh
+#. (first time only) Run clone.bat
+#. cd quodlibet\quodlibet
+#. python quodlibet.py

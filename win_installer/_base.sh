@@ -280,6 +280,7 @@ function setup_sdk {
     # launchers, README
     ln -s "$MISC"/env.bat "$SDK"
     ln -s "$MISC"/test.bat "$SDK"
+    ln -s "$MISC"/clone.bat "$SDK"
     ln -s "$MISC"/wine.sh "$SDK"
     ln -s "$MISC"/test.sh "$SDK"
     ln -s "$MISC"/README-SDK.txt "$SDK"/README.txt
@@ -290,10 +291,16 @@ function setup_sdk {
     ln -s "$HGDIR" "$SDK"/mercurial
 
     # ql
-    ln -s "$QL_REPO"/quodlibet "$SDK"/quodlibet
+    ln -s "$QL_REPO" "$SDK"/quodlibet
 
     # link to base dir
     ln -s "$SDK" "$DIR"/_sdk
+
+    # create the distributable archive
+    tar --dereference -zcvf "$DIR"/quodlibet-win-sdk.tar.gz _sdk/ \
+        --exclude=_sdk/quodlibet \
+        --exclude=_sdk/_wine_prefix \
+        --exclude=_sdk/_ql_config
 }
 
 
