@@ -258,9 +258,13 @@ For old releases see the `full file listing <https://bitbucket.org/lazka/quodlib
 =========================== ==============================
 Release                     Application Bundle
 =========================== ==============================
+Quod Libet 3.3.1            Quodlibet-3.3.1_0.zip_
+Ex False 3.3.1              ExFalso-3.3.1_0.zip_
 Quod Libet 3.3.0            Quodlibet-3.3.0_0.zip_
 Ex False 3.3.0              ExFalso-3.3.0_0.zip_
 =========================== ==============================
 
+.. _Quodlibet-3.3.1_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.1_0/Quodlibet-3.3.1_0.zip
+.. _ExFalso-3.3.1_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.3.1_0/ExFalso-3.3.1_0.zip
 .. _Quodlibet-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/Quodlibet-3.3.0_0.zip
 .. _ExFalso-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/ExFalso-3.3.0_0.zip
