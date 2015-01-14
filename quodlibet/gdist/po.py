@@ -85,6 +85,17 @@ class update_po(Command):
                     "--gettext-package", self.po_package])
         os.chdir(oldpath)
 
+        # strip POT-Creation-Date to make build reproducible
+        done = False
+        lines = []
+        for line in open(self.pot_file, "rb"):
+            if not done and line.startswith('"POT-Creation-Date:'):
+                done = True
+                continue
+            lines.append(line)
+        with open(self.pot_file, "wb") as h:
+            h.write("".join(lines))
+
     def _update_po(self, po):
         assert po in self.po_files
         oldpath = os.getcwd()
