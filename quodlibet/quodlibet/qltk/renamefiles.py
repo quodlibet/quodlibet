@@ -205,6 +205,7 @@ class RenameFiles(Gtk.VBox):
         self.preview.set_sensitive(bool(entry.get_text()))
 
     def __row_edited(self, renderer, path, new):
+        path = Gtk.TreePath.new_from_string(path)
         model = self.view.get_model()
         entry = model[path][0]
         new = new.decode("utf-8")
@@ -212,6 +213,7 @@ class RenameFiles(Gtk.VBox):
             entry.new_name = new
             self.preview.set_sensitive(True)
             self.save.set_sensitive(True)
+            model.path_changed(path)
 
     def __rename(self, library):
         model = self.view.get_model()
