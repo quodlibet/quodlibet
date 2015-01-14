@@ -820,6 +820,7 @@ class EditTags(Gtk.VBox):
 
     def __edit_tag(self, renderer, path, new_value, model):
         new_value = ', '.join(new_value.splitlines())
+        path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
 
         if entry.tag in massagers.tags:
@@ -842,6 +843,7 @@ class EditTags(Gtk.VBox):
 
     def __edit_tag_name(self, renderer, path, new_tag, model):
         new_tag = ' '.join(new_tag.splitlines()).lower()
+        path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
         if new_tag == entry.tag:
             return
