@@ -16,40 +16,13 @@ from distutils import dir_util
 from distutils.command.build_scripts import build_scripts as du_build_scripts
 
 from gdist import GDistribution
-from gdist.clean import clean as gdist_clean
+from gdist.clean import clean
 from distutils.command.sdist import sdist
 
 
 # TODO: link this better to the app definitions
 MIN_PYTHON_VER = (2, 6)
 MIN_PYTHON_VER_STR = ".".join(map(str, MIN_PYTHON_VER))
-
-
-class clean(gdist_clean):
-    def run(self):
-        gdist_clean.run(self)
-
-        if not self.all:
-            return
-
-        def should_remove(filename):
-            if (filename.lower()[-4:] in [".pyc", ".pyo"] or
-                    filename.endswith("~") or
-                    (filename.startswith("#") and filename.endswith("#"))):
-                return True
-            else:
-                return False
-        for pathname, dirs, files in os.walk(os.path.dirname(__file__)):
-            for filename in filter(should_remove, files):
-                try:
-                    os.unlink(os.path.join(pathname, filename))
-                except EnvironmentError as err:
-                    print(str(err))
-
-        for base in ["coverage", "build", "dist"]:
-            path = os.path.join(os.path.dirname(__file__), base)
-            if os.path.isdir(path):
-                shutil.rmtree(path)
 
 
 class build_sphinx(Command):
