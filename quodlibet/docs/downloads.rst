@@ -153,7 +153,7 @@ Unstable Repo:
 
     # deb http://lazka.github.io/ql-debian/testing/ quodlibet-unstable/
 
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
     sudo apt-get update
     sudo apt-get install quodlibet
 
