@@ -7,24 +7,20 @@
 
 import os
 import sys
-import imp
 import shutil
 
 from tests import TestCase, DATA_DIR, mkstemp
 from helper import capture_output
 
-import quodlibet
 from quodlibet import config
 from quodlibet.formats import MusicFile
+from quodlibet.operon.main import _main as operon_main
 
 
 def call(args=None):
-    path = os.path.join(os.path.dirname(quodlibet.__path__[0]), "operon.py")
-    mod = imp.load_source("operon", path)
-
     with capture_output() as (out, err):
         try:
-            return_code = mod.run(["operon.py"] + args)
+            return_code = operon_main(["operon.py"] + args)
         except SystemExit, e:
             return_code = e.code
 

@@ -22,6 +22,10 @@ quodlibet/browsers/paned/prefs.py
 quodlibet/browsers/playlists/main.py
 quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/util.py
+quodlibet/operon/base.py
+quodlibet/operon/commands.py
+quodlibet/operon/main.py
+quodlibet/operon/util.py
 quodlibet/browsers/search.py
 quodlibet/cli.py
 quodlibet/devices/_base.py
