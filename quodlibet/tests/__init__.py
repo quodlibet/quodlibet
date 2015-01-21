@@ -100,6 +100,7 @@ def init_fake_app():
     from quodlibet.library.libraries import SongFileLibrary
     from quodlibet.library.librarians import SongLibrarian
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
+    from quodlibet.util.cover import CoverPluginHandler
 
     browsers.init()
     app.name = "Quod Libet"
@@ -108,6 +109,7 @@ def init_fake_app():
     app.library = SongFileLibrary()
     app.library.librarian = SongLibrarian()
     app.window = QuodLibetWindow(app.library, app.player, headless=True)
+    app.cover_manager = CoverPluginHandler()
 
 
 def destroy_fake_app():

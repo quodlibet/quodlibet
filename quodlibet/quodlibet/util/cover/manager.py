@@ -144,6 +144,3 @@ class CoverPluginHandler(PluginHandler):
             return get(songs, True, False) or get(songs, False, True)
         else:
             return get(songs, False, True) or get(songs, True, False)
-
-
-cover_plugins = CoverPluginHandler()

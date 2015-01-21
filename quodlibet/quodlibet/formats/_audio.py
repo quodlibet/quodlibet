@@ -746,9 +746,9 @@ class AudioFile(dict, ImageContainer):
         """Return a file-like containing cover image data, or None if
         no cover is available."""
 
-        from quodlibet.util.cover.manager import cover_plugins
+        from quodlibet import app
 
-        return cover_plugins.get_cover(self)
+        return app.cover_manager.get_cover(self)
 
     def replay_gain(self, profiles, pre_amp_gain=0, fallback_gain=0):
         """Return the computed Replay Gain scale factor.

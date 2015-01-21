@@ -10,11 +10,11 @@ from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
 
 from quodlibet import qltk
 from quodlibet import config
+from quodlibet import app
 from quodlibet.util import thumbnails
 from quodlibet.util.path import is_fsnative
 from quodlibet.qltk.image import (get_scale_factor, pixbuf_from_file,
     set_image_from_pbosf, get_pbosf_for_pixbuf, pbosf_render)
-from quodlibet.util.cover.manager import cover_plugins
 
 
 # TODO: neater way of managing dependency on this particular plugin
@@ -256,7 +256,7 @@ class CoverImage(Gtk.EventBox):
                         # following error.
                     except AttributeError:
                         pass
-            cover_plugins.acquire_cover(cb, cancellable, song)
+            app.cover_manager.acquire_cover(cb, cancellable, song)
 
     def refresh(self):
         self.set_song(self.__song)

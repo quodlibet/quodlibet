@@ -52,6 +52,8 @@ class Application(object):
     library = None
     player = None
 
+    cover_manager = None
+
     name = None
     """The application name e.g. 'Quod Libet'"""
 
