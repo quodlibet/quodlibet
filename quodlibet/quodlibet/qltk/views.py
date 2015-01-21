@@ -328,13 +328,36 @@ class TreeViewHints(Gtk.Window):
         if not self.__view:
             return
 
+        # XXXXXXXX!: for overlay scrollbars the parent scrolled window
+        # listens to notify-leave events to hide them. In case we show
+        # the tooltip and leave the SW through the tooltip the SW will never
+        # get an event and the scrollbar stays visible forever.
+        # This creates a half broken leave event which is just enough
+        # to make this work.
+        parent = self.__view.get_parent()
+        fake_event = None
+        if parent and isinstance(parent, Gtk.ScrolledWindow):
+            fake_event = Gdk.Event.new(Gdk.EventType.LEAVE_NOTIFY)
+            fake_event.any.window = parent.get_window()
+            struct = fake_event.crossing
+            struct.time = Gtk.get_current_event_time()
+            ok, state = Gtk.get_current_event_state()
+            if ok:
+                struct.state = state
+            device = Gtk.get_current_event_device()
+            if device is not None:
+                struct.set_device(device)
+
         if self.__current_renderer and self.__edit_id:
             self.__current_renderer.disconnect(self.__edit_id)
         self.__current_renderer = self.__edit_id = None
         self.__current_path = self.__current_col = None
         self.__view = None
 
-        def hide():
+        def hide(fake_event):
+            if fake_event is not None:
+                Gtk.main_do_event(fake_event)
+
             self.__hide_id = None
             self.hide()
             return False
@@ -344,11 +367,11 @@ class TreeViewHints(Gtk.Window):
             # Work around Gnome Shell redraw bugs: it doesn't like
             # multiple hide()/show(), so we try to reduce calls to hide
             # by aborting it if the pointer is on a new cell shortly after.
-            self.__hide_id = GLib.timeout_add(20, hide)
+            self.__hide_id = GLib.timeout_add(20, hide, fake_event)
         else:
             # mutter3.12 and gtk3.14 are a bit broken together, so it's safe
             # to assume we have a fixed mutter release..
-            hide()
+            hide(fake_event)
 
     def __event(self, event):
         if not self.__view:
