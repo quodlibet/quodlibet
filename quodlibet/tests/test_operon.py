@@ -80,7 +80,7 @@ class TOperonMain(TOperonBase):
 
         # TODO: "image-extract", "rename", "fill", "fill-tracknumber", "edit"
         # "load"
-        for sub in ["help", "dump", "copy", "set", "clear",
+        for sub in ["help", "copy", "set", "clear",
                     "remove", "add", "list", "print", "info", "tags"]:
             self.check_true(["help", sub], True, False)
 
@@ -282,20 +282,6 @@ class TOperonSet(TOperonBase):
         self.check_true(["set", "artist", "foobar", self.f], False, False)
         self.s.reload()
         self.failUnlessEqual(self.s["artist"], "foobar")
-
-
-class TOperonDump(TOperonBase):
-    def test_misc(self):
-        self.check_true(["dump", "-h"], True, False)
-        self.check_false(["dump"], False, True)
-        self.check_true(["dump", self.f], True, False)
-        self.check_true(["-v", "dump", self.f], True, True)
-        self.check_false(["dump", self.f, self.f], False, True)
-
-    def test_output(self):
-        o, e = self.check_true(["dump", self.f], True, False)
-        internal = filter(lambda x: x.startswith("~"), o.splitlines())
-        self.failIf(internal)
 
 
 class TOperonCopy(TOperonBase):

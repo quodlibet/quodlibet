@@ -38,7 +38,6 @@ Edit Tags
 |   *clear*       Remove tags
 |   *copy*        Copy tags from one file to another
 |   *edit*        Edit tags in a text editor
-|   *dump*        Print all tags to stdout
 |   *fill*        Fill tags based on the file path
 
 Show file metadata
@@ -179,21 +178,6 @@ operon edit [-h] [--dry-run] <file>
 
 Example:
     VISUAL=vi operon edit song.flac
-
-dump
-----
-
-Print all tags to stdout. The format is not specified. The data can be 
-loaded again using *operon load*, given the same version was used to create 
-the data.
-
-operon dump [-h] <src-file>
-
--h, --help
-    Display help and exit
-
-Example:
-    operon dump song.flac > backup.tags
 
 fill
 ----

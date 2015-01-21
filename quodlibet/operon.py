@@ -193,44 +193,6 @@ class TagsCommand(Command):
             print_terse_table(tags, nicks, order)
 
 
-class DumpCommand(Command):
-    NAME = "dump"
-    DESCRIPTION = _("Print all tags to stdout")
-    USAGE = "<src-file>"
-
-    def _execute(self, options, args):
-        if len(args) < 1:
-            raise CommandError(_("Not enough arguments"))
-        elif len(args) > 1:
-            raise CommandError(_("Too many arguments"))
-
-        # load file
-        path = args[0]
-        song = self.load_song(path)
-
-        # dump, sort and skip internal tags
-        lines = sorted(song.to_dump().splitlines())
-        print_("\n".join((l for l in lines if not l.startswith("~"))))
-
-
-class LoadCommand(Command):
-    NAME = "load"
-    DESCRIPTION = _("Load tags dumped with 'dump'")
-    USAGE = "[--dry-run] [--ignore-errors] <dest-file> [<tag-file>]"
-
-    def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help=_("Show changes, don't apply them"))
-        p.add_option("--ignore-errors", action="store_true",
-                     help=_("Skip tags that can't be written"))
-
-    def _execute(self, options, args):
-        if len(args) < 1:
-            raise CommandError(_("Not enough arguments"))
-        elif len(args) > 2:
-            raise CommandError(_("Too many arguments"))
-
-
 class CopyCommand(Command):
     NAME = "copy"
     DESCRIPTION = _("Copy tags from one file to another")
@@ -1088,7 +1050,7 @@ def run(argv=sys.argv):
     return 0
 
 
-COMMANDS.extend([ListCommand, DumpCommand, CopyCommand,
+COMMANDS.extend([ListCommand, CopyCommand,
             SetCommand, RemoveCommand, AddCommand, PrintCommand,
             HelpCommand, ClearCommand, InfoCommand, TagsCommand,
             ImageExtractCommand, ImageSetCommand, ImageClearCommand,
@@ -1097,7 +1059,7 @@ COMMANDS.sort(key=lambda c: c.NAME)
 
 # TODO
 # RenameCommand
-# FillTracknumberCommand, LoadCommand
+# FillTracknumberCommand
 
 if __name__ == "__main__":
     config.init()

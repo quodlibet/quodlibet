@@ -57,7 +57,6 @@ Verbose mode
 \fIclear\fP       Remove tags
 \fIcopy\fP        Copy tags from one file to another
 \fIedit\fP        Edit tags in a text editor
-\fIdump\fP        Print all tags to stdout
 \fIfill\fP        Fill tags based on the file path
 .fi
 .sp
@@ -209,23 +208,6 @@ Print the results without changing any files
 .TP
 .B Example:
 VISUAL=vi operon edit song.flac
-.UNINDENT
-.SS dump
-.sp
-Print all tags to stdout. The format is not specified. The data can be
-loaded again using \fIoperon load\fP, given the same version was used to create
-the data.
-.sp
-operon dump [\-h] <src\-file>
-.INDENT 0.0
-.TP
-.B \-h\fP,\fB  \-\-help
-Display help and exit
-.UNINDENT
-.INDENT 0.0
-.TP
-.B Example:
-operon dump song.flac > backup.tags
 .UNINDENT
 .SS fill
 .sp
