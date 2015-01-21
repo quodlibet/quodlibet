@@ -237,8 +237,14 @@ class PersistentWindowMixin(object):
 
     def __restore_position(self):
         print_d("Restore position")
-        pos = config.get('memory', self.__conf("position"), "-1 -1")
-        x, y = map(int, pos.split())
+        pos = config.get('memory', self.__conf("position"), "")
+        if not pos:
+            return
+
+        try:
+            x, y = map(int, pos.split())
+        except ValueError:
+            return
 
         parent = self.get_transient_for()
         if parent:
@@ -246,13 +252,19 @@ class PersistentWindowMixin(object):
             x += px
             y += py
 
-        if x >= 0 and y >= 0:
-            self.move(x, y)
+        self.move(x, y)
 
     def __restore_size(self):
         print_d("Restore size")
-        value = config.get('memory', self.__conf("size"), "-1 -1")
-        x, y = map(int, value.split())
+        value = config.get('memory', self.__conf("size"), "")
+        if not value:
+            return
+
+        try:
+            x, y = map(int, value.split())
+        except ValueError:
+            return
+
         screen = self.get_screen()
         x = min(x, screen.get_width())
         y = min(y, screen.get_height())
