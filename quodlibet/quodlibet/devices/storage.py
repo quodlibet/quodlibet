@@ -13,6 +13,7 @@ from glob import glob
 from gi.repository import Gtk, GLib, GdkPixbuf
 
 from quodlibet import const
+from quodlibet import app
 
 from quodlibet.devices._base import Device
 from quodlibet.library import SongFileLibrary
@@ -115,7 +116,7 @@ class StorageDevice(Device):
 
             if self['covers']:
                 coverfile = os.path.join(dirname, 'folder.jpg')
-                cover = song.find_cover()
+                cover = app.cover_manager.get_cover(song)
                 if cover and mtime(cover.name) > mtime(coverfile):
                     image = GdkPixbuf.Pixbuf.new_from_file_at_size(
                         cover.name, 200, 200)

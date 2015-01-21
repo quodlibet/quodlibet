@@ -10,6 +10,7 @@ import shutil
 
 from gi.repository import Gtk
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet.const import USERDIR
 from quodlibet.plugins.events import EventPlugin
@@ -38,7 +39,7 @@ class PictureSaver(EventPlugin):
             except EnvironmentError:
                 pass
         else:
-            cover = song.find_cover()
+            cover = app.cover_manager.get_cover(song)
             if cover is None:
                 try:
                     os.unlink(outfile)

@@ -11,6 +11,7 @@ import time
 from gi.repository import Gtk
 
 from quodlibet import const
+from quodlibet import app
 
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.x import Button
@@ -269,7 +270,7 @@ class IPodDevice(Device):
 
         # Associate a cover with the track
         if self['covers']:
-            cover = song.find_cover()
+            cover = app.cover_manager.get_cover(song)
             if cover:
                 # libgpod will copy the file later when the iTunesDB
                 # is saved, so we have to keep a reference around in

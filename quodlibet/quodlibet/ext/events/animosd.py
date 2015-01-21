@@ -60,7 +60,7 @@ class OSDWindow(Gtk.Window):
         self.fading_in = False
         self.fade_start_time = 0
 
-        cover = song.find_cover()
+        cover = app.cover_manager.get_cover(song)
         try:
             if cover is not None:
                 cover = GdkPixbuf.Pixbuf.new_from_file(cover.name)

@@ -579,7 +579,7 @@ value="false"/>
 
         metadata["mpris:length"] = dbus.Int64(song("~#length") * 10 ** 6)
 
-        self.__cover = cover = song.find_cover()
+        self.__cover = cover = app.cover_manager.get_cover(song)
         is_temp = False
         if cover:
             name = cover.name

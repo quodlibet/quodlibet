@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import app
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.formats._image import EmbeddedImage
@@ -46,7 +47,7 @@ class EditEmbedded(SongsMenuPlugin):
 
         for song in songs:
             if song.can_change_images:
-                fileobj = song.find_cover()
+                fileobj = app.cover_manager.get_cover(song)
                 if fileobj:
                     path = fileobj.name
                     image = EmbeddedImage.from_path(path)

@@ -12,6 +12,7 @@ from gi.repository import Gtk, Pango
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import app
 
 from quodlibet.qltk.bookmarks import EditBookmarksPane
 from quodlibet.qltk.cover import CoverImage
@@ -475,7 +476,9 @@ class OneArtist(qltk.Notebook):
                 return "%s (%s)" % (album, date[:4])
             else:
                 return album
-        covers = [(a, s.find_cover(), s) for d, s, a in albums]
+
+        get_cover = app.cover_manager.get_cover
+        covers = [(a, get_cover(s), s) for d, s, a in albums]
         albums = map(format, albums)
         if noalbum:
             albums.append(ngettext("%d song with no album",

@@ -4,7 +4,7 @@ from tests import TestCase, DATA_DIR
 import os
 
 from quodlibet import config
-from quodlibet.util.path import is_fsnative, fsnative, normalize_path
+from quodlibet.util.path import is_fsnative, fsnative
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 
@@ -618,103 +618,3 @@ class Treplay_gain(TestCase):
             self.failUnlessAlmostEqual(
                 val, exp, places=5,
                 msg="%s should be %s not %s" % (key, exp, val))
-
-
-# Special test case for find_cover since it has to create/remove
-# various files.
-class Tfind_cover(TestCase):
-    def setUp(self):
-        config.init()
-        self.dir = os.path.realpath(quux("~dirname"))
-        self.files = [self.full_path("12345.jpg"),
-                      self.full_path("nothing.jpg")
-                      ]
-        for f in self.files:
-            file(f, "w").close()
-
-    def full_path(self, path):
-        return os.path.join(self.dir, path)
-
-    def test_dir_not_exist(self):
-        self.failIf(bar_2_1.find_cover())
-
-    def test_nothing(self):
-        self.failIf(quux.find_cover())
-
-    def test_labelid(self):
-        quux["labelid"] = "12345"
-        self.failUnlessEqual(os.path.abspath(quux.find_cover().name),
-                             self.full_path("12345.jpg"))
-        del(quux["labelid"])
-
-    def test_regular(self):
-        files = [os.path.join(self.dir, f) for f in
-                 ["cover.png", "folder.jpg", "frontcover.jpg",
-                  "front_folder_cover.gif", "jacket_cover.front.folder.jpeg"]]
-        for f in files:
-            file(f, "w").close()
-            self.files.append(f)
-            self.failUnlessEqual(os.path.abspath(quux.find_cover().name), f)
-        self.test_labelid() # labelid must work with other files present
-
-    def test_file_encoding(self):
-        if os.name == "nt":
-            return
-
-        f = self.full_path("\xff\xff\xff\xff - cover.jpg")
-        file(f, "w").close()
-        self.files.append(f)
-        self.assertTrue(isinstance(quux("album"), unicode))
-        h = quux.find_cover()
-        self.assertEqual(h.name, normalize_path(f))
-
-    def test_intelligent(self):
-        song = quux
-        song["artist"] = "Q-Man"
-        song["title"] = "First Q falls hardest"
-        files = [self.full_path(f) for f in
-                 ["Quuxly - back.jpg", "Quuxly.jpg", "q-man - quxxly.jpg",
-                  "folder.jpeg", "Q-man - Quuxly (FRONT).jpg"]]
-        for f in files:
-            file(f, "w").close()
-            self.files.append(f)
-            cover = song.find_cover()
-            if cover:
-                actual = os.path.abspath(cover.name)
-                self.failUnlessEqual(actual, f)
-            else:
-                # Here, no cover is better than the back...
-                self.failUnlessEqual(f, self.full_path("Quuxly - back.jpg"))
-
-    def test_embedded_special_cover_words(self):
-        """Tests that words incidentally containing embedded "special" words
-        album keywords (e.g. cover, disc, back) don't trigger
-        See Issue 818"""
-
-        song = AudioFile({
-            "~filename": fsnative(u"tests/data/asong.ogg"),
-            "album": "foobar",
-            "title": "Ode to Baz",
-            "artist": "Q-Man",
-        })
-        files = [self.full_path(f) for f in
-                 ['back.jpg',
-                  'discovery.jpg', "Pharell - frontin'.jpg",
-                  'nickelback - Curb.jpg',
-                  'foobar.jpg', 'folder.jpg',     # Though this is debatable
-                  'Q-Man - foobar.jpg', 'Q-man - foobar (cover).jpg']]
-        for f in files:
-            file(f, "w").close()
-            self.files.append(f)
-            cover = song.find_cover()
-            if cover:
-                actual = os.path.abspath(cover.name)
-                self.failUnlessEqual(
-                    actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
-            else:
-                self.failUnless(f, self.full_path('back.jpg'))
-
-    def tearDown(self):
-        for f in self.files:
-            os.unlink(f)
-        config.quit()

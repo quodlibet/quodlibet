@@ -76,9 +76,6 @@ class TSongWrapper(TestCase):
     def test_website(self):
         self.failUnlessEqual(self.pwrap.website(), self.psong.website())
 
-    def test_find_cover(self):
-        self.failUnlessEqual(self.pwrap.find_cover(), self.psong.find_cover())
-
     def test_can_change(self):
         for key in ["~foo", "title", "whee", "a test", "foo=bar", ""]:
             self.failUnlessEqual(

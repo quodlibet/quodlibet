@@ -742,14 +742,6 @@ class AudioFile(dict, ImageContainer):
                 if key in self:
                     del(self[key])
 
-    def find_cover(self):
-        """Return a file-like containing cover image data, or None if
-        no cover is available."""
-
-        from quodlibet import app
-
-        return app.cover_manager.get_cover(self)
-
     def replay_gain(self, profiles, pre_amp_gain=0, fallback_gain=0):
         """Return the computed Replay Gain scale factor.
 

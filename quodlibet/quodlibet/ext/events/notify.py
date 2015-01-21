@@ -344,7 +344,7 @@ class Notify(EventPlugin):
     def _get_image_uri(self, song):
         """A unicode file URI or an empty string"""
 
-        fileobj = song.find_cover()
+        fileobj = app.cover_manager.get_cover(song)
         self._set_image_fileobj(fileobj)
         if fileobj:
             image_path = fileobj.name
