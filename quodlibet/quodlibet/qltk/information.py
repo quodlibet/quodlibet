@@ -589,6 +589,7 @@ class Information(Window, PersistentWindowMixin):
     def __init__(self, library, songs, parent=None):
         super(Information, self).__init__(dialog=False)
         self.set_default_size(400, 400)
+        self.set_transient_for(qltk.get_top_parent(parent))
         self.enable_window_tracking("quodlibet_information")
         if len(songs) > 1:
             connect_destroy(library, 'changed', self.__check_changed)
@@ -596,7 +597,6 @@ class Information(Window, PersistentWindowMixin):
             connect_destroy(library, 'removed', self.__check_removed)
         self.__songs = songs
         self.__update(library)
-        self.set_transient_for(qltk.get_top_parent(parent))
         self.get_child().show_all()
 
     def __check_changed(self, library, songs):
