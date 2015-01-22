@@ -578,6 +578,8 @@ class DeferredSignal(object):
     When the target function will finally be called the arguments passed
     are the last arguments passed to DeferredSignal.
 
+    `priority` defaults to GLib.PRIORITY_DEFAULT
+
     If `owner` is given, it will not call the target after the owner is
     destroyed.
 
@@ -588,7 +590,7 @@ class DeferredSignal(object):
     widget.connect('signal', DeferredSignal(func, owner=widget), user_arg)
     """
 
-    def __init__(self, func, timeout=None, owner=None):
+    def __init__(self, func, timeout=None, owner=None, priority=None):
         """timeout in milliseconds"""
 
         self.func = func
@@ -601,10 +603,15 @@ class DeferredSignal(object):
             owner.connect("destroy", destroy_cb)
 
         from gi.repository import GLib
+
+        if priority is None:
+            priority = GLib.PRIORITY_DEFAULT
+
         if timeout is None:
-            self.do_idle_add = GLib.idle_add
+            self.do_idle_add = lambda f: GLib.idle_add(f, priority=priority)
         else:
-            self.do_idle_add = lambda f: GLib.timeout_add(timeout, f)
+            self.do_idle_add = lambda f: GLib.timeout_add(
+                timeout, f, priority=priority)
 
     @property
     def im_self(self):

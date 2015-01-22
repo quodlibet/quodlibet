@@ -9,7 +9,22 @@ from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
 
 
-class AlbumModel(ObjectStore):
+class AlbumModelMixin(object):
+
+    def get_albums(self, paths):
+        values = [self.get_value(self.get_iter(p), 0) for p in paths]
+        try:
+            values.remove(None)
+        except ValueError:
+            return values
+        else:
+            return [v for v in self.itervalues() if v]
+
+    def get_album(self, iter_):
+        return self.get_value(iter_, 0)
+
+
+class AlbumModel(ObjectStore, AlbumModelMixin):
 
     def __init__(self, library):
         super(AlbumModel, self).__init__()
@@ -67,21 +82,6 @@ class AlbumModel(ObjectStore):
                 self.row_changed(self.get_path(iter_), iter_)
                 if not changed_albums:
                     break
-
-
-class AlbumModelMixin(object):
-
-    def get_albums(self, paths):
-        values = [self.get_value(self.get_iter(p), 0) for p in paths]
-        try:
-            values.remove(None)
-        except ValueError:
-            return values
-        else:
-            return [v for v in self.itervalues() if v]
-
-    def get_album(self, iter_):
-        return self.get_value(iter_, 0)
 
 
 class AlbumFilterModel(ObjectModelFilter, AlbumModelMixin):

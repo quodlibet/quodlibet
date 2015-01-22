@@ -36,7 +36,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, connect_destroy
 from quodlibet.util.library import background_filter
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
@@ -228,14 +228,15 @@ class VisibleUpdate(object):
             sw.get_vadjustment(), "value-changed", self.__stop_update, view)
 
         self.__pending_paths = []
-        self.__scan_timeout = None
+        self.__update_deferred = DeferredSignal(
+            self.__update_visible_rows, timeout=20, priority=GLib.PRIORITY_LOW)
         self.__column = column
         self.__first_expose = True
 
     def disable_row_update(self):
-        if self.__scan_timeout:
-            GLib.source_remove(self.__scan_timeout)
-            self.__scan_timeout = None
+        if self.__update_deferred:
+            self.__update_deferred.abort
+            self.__update_deferred = None
 
         if self.__pending_paths:
             copool.remove(self.__scan_paths)
@@ -243,12 +244,14 @@ class VisibleUpdate(object):
         self.__column = None
         self.__pending_paths = []
 
-    def _row_needs_update(self, row):
+    def _row_needs_update(self, model, iter_):
         """Should return True if the rows should be updated"""
+
         raise NotImplementedError
 
-    def _update_row(self, row):
-        """Do whatever is needed to update the row"""
+    def _update_row(self, model, iter_):
+        """Do whatever is needed to update the row."""
+
         raise NotImplementedError
 
     def __stop_update(self, adj, view):
@@ -268,34 +271,24 @@ class VisibleUpdate(object):
             for i in self.__scan_paths():
                 pass
 
-        if self.__scan_timeout:
-            GLib.source_remove(self.__scan_timeout)
-            self.__scan_timeout = None
-
-        self.__scan_timeout = GLib.timeout_add(
-            50, self.__update_visible_rows, view, self.PRELOAD_COUNT)
+        self.__update_deferred(view, self.PRELOAD_COUNT)
 
     def __scan_paths(self):
         while self.__pending_paths:
             model, path = self.__pending_paths.pop()
             try:
-                row = model[path]
-            # row could have gone away by now
-            except IndexError:
-                pass
-            else:
-                self._update_row(row)
-                yield True
+                iter_ = model.get_iter(path)
+            except ValueError:
+                continue
+            self._update_row(model, iter_)
+            yield True
 
     def __update_visible_rows(self, view, preload):
-        self.__scan_timeout = None
-
         vrange = view.get_visible_range()
         if vrange is None:
             return
 
-        model_filter = view.get_model()
-        model = model_filter.get_model()
+        model = view.get_model()
 
         #generate a path list so that cover scanning starts in the middle
         #of the visible area and alternately moves up and down
@@ -325,14 +318,12 @@ class VisibleUpdate(object):
 
         visible_paths = []
         for path in vlist_new:
-            model_path = model_filter.convert_path_to_child_path(path)
             try:
-                row = model[model_path]
-            except TypeError:
-                pass
-            else:
-                if self._row_needs_update(row):
-                    visible_paths.append([model, model_path])
+                iter_ = model.get_iter(path)
+            except ValueError:
+                continue
+            if self._row_needs_update(model, iter_):
+                visible_paths.append((model, path))
 
         if not self.__pending_paths and visible_paths:
             copool.add(self.__scan_paths)
@@ -547,15 +538,20 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             return True
         return False
 
-    def _row_needs_update(self, row):
-        album = row[0]
+    def _row_needs_update(self, model, iter_):
+        album = model.get_album(iter_)
         return album is not None and not album.scanned
 
-    def _update_row(self, row):
-        album = row[0]
+    def _update_row(self, filter_model, iter_):
+        sort_model = filter_model.get_model()
+        model = sort_model.get_model()
+        iter_ = filter_model.convert_iter_to_child_iter(iter_)
+        iter_ = sort_model.convert_iter_to_child_iter(iter_)
+
+        album = model.get_album(iter_)
         scale_factor = get_scale_factor(self)
         album.scan_cover(scale_factor=scale_factor)
-        self._refresh_albums([album])
+        model.row_changed(model.get_path(iter_), iter_)
 
     def __destroy(self, browser):
         self.disable_row_update()
