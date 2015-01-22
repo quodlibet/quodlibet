@@ -56,8 +56,8 @@ def main():
     app.window = ExFalsoWindow(app.library, dir_)
     app.window.init_plugins()
 
-    from quodlibet.util.cover import CoverPluginHandler
-    app.cover_manager = CoverPluginHandler()
+    from quodlibet.util.cover import CoverManager
+    app.cover_manager = CoverManager()
     app.cover_manager.init_plugins()
 
     from quodlibet.qltk import session

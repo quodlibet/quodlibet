@@ -14,7 +14,7 @@ from quodlibet.formats.mp3 import MP3File
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import EmbeddedImage
 from quodlibet.plugins.cover import CoverSourcePlugin
-from quodlibet.util.cover.manager import CoverPluginHandler
+from quodlibet.util.cover.manager import CoverPluginHandler, CoverManager
 from quodlibet.util.path import path_equal
 
 DUMMY_COVER = io.StringIO()
@@ -69,7 +69,7 @@ class TCoverManager(TestCase):
     built_in_count = 2
 
     def setUp(self):
-        self.manager = CoverPluginHandler()
+        self.manager = CoverManager()
 
     def test_has_builtin_covers(self):
         self.assertEqual(len(list(self.manager.sources)), self.built_in_count)
@@ -78,49 +78,51 @@ class TCoverManager(TestCase):
 
     def test_only_enabled(self):
         for source in dummy_sources:
-            self.manager.plugin_handle(source)
+            self.manager.plugin_handler.plugin_handle(source)
         self.assertEqual(len(list(self.manager.sources)), self.built_in_count)
         for source in dummy_sources:
-            self.manager.plugin_enable(source)
+            self.manager.plugin_handler.plugin_enable(source)
         self.assertEqual(len(list(self.manager.sources)),
                          self.built_in_count + len(dummy_sources))
         for k, source in enumerate(dummy_sources):
-            self.manager.plugin_disable(source)
+            self.manager.plugin_handler.plugin_disable(source)
             self.assertEqual(len(list(self.manager.sources)),
                              self.built_in_count + len(dummy_sources) - k - 1)
 
     def test_sources_sorted(self):
         for source in dummy_sources:
-            self.manager.plugin_handle(source)
-            self.manager.plugin_enable(source)
+            self.manager.plugin_handler.plugin_handle(source)
+            self.manager.plugin_handler.plugin_enable(source)
         priorities = [p.priority() for p in self.manager.sources]
         self.assertSequenceEqual(priorities, sorted(priorities, reverse=True))
         # Test that sources are sorted even after removing some of the sources
         for source in dummy_sources:
-            self.manager.plugin_disable(source)
+            self.manager.plugin_handler.plugin_disable(source)
             ps = [p.priority() for p in self.manager.sources]
             self.assertSequenceEqual(ps, sorted(ps, reverse=True))
 
     def test_acquire_cover_sync(self):
         song = AudioFile({"~filename": "/dev/null"})
 
-        manager = CoverPluginHandler(use_built_in=False)
+        manager = CoverManager(use_built_in=False)
+        handler = manager.plugin_handler
         for source in dummy_sources:
-            manager.plugin_handle(source)
-        manager.plugin_enable(dummy_sources[0])
+            handler.plugin_handle(source)
+        handler.plugin_enable(dummy_sources[0])
         self.assertIs(manager.acquire_cover_sync(song), None)
-        manager.plugin_enable(dummy_sources[1])
+        handler.plugin_enable(dummy_sources[1])
         self.assertIs(manager.acquire_cover_sync(song), DUMMY_COVER)
-        manager.plugin_enable(dummy_sources[2])
+        handler.plugin_enable(dummy_sources[2])
         self.assertIs(manager.acquire_cover_sync(song), DUMMY_COVER)
-        manager.plugin_disable(dummy_sources[1])
+        handler.plugin_disable(dummy_sources[1])
         self.assertIs(manager.acquire_cover_sync(song), None)
 
     def test_acquire_cover(self):
-        manager = CoverPluginHandler(use_built_in=False)
+        manager = CoverManager(use_built_in=False)
+        handler = manager.plugin_handler
         for source in dummy_sources:
-            manager.plugin_handle(source)
-        manager.plugin_enable(dummy_sources[0])
+            handler.plugin_handle(source)
+        handler.plugin_enable(dummy_sources[0])
         found = []
         result = []
 
@@ -130,13 +132,13 @@ class TCoverManager(TestCase):
         manager.acquire_cover(done, None, None)
         self.runLoop()
         self.assertFalse(found[0])
-        manager.plugin_enable(dummy_sources[1])
+        handler.plugin_enable(dummy_sources[1])
         manager.acquire_cover(done, None, None)
         self.runLoop()
         self.assertTrue(found[1])
         self.assertIs(result[1], DUMMY_COVER)
-        manager.plugin_disable(dummy_sources[1])
-        manager.plugin_enable(dummy_sources[2])
+        handler.plugin_disable(dummy_sources[1])
+        handler.plugin_enable(dummy_sources[2])
         manager.acquire_cover(done, None, None)
         self.runLoop()
         self.assertTrue(found[2])
@@ -148,12 +150,13 @@ class TCoverManager(TestCase):
         # * First cover source should fail providing the cover both
         #   synchronously and asynchronously and only then the next source
         #   should be used
-        manager = CoverPluginHandler(use_built_in=False)
+        manager = CoverManager(use_built_in=False)
+        handler = manager.plugin_handler
         found = []
         result = []
         for source in dummy_sources:
-            manager.plugin_handle(source)
-            manager.plugin_enable(source)
+            handler.plugin_handle(source)
+            handler.plugin_enable(source)
             source.cls.cover_call = False
             source.cls.fetch_call = False
 
@@ -173,7 +176,7 @@ class TCoverManager(TestCase):
         for source in dummy_sources:
             source.cls.cover_call = False
             source.cls.fetch_call = False
-        manager.plugin_disable(dummy_sources[1])
+        handler.plugin_disable(dummy_sources[1])
         manager.acquire_cover(done, None, None)
         self.runLoop()
         self.assertTrue(found[1])
@@ -221,7 +224,24 @@ class TCoverManagerBuiltin(TestCase):
         os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.file2)
 
-        self.manager = CoverPluginHandler()
+        self.manager = CoverManager()
+
+    def tearDown(self):
+        shutil.rmtree(self.main)
+        config.quit()
+
+    def test_connect_cover_changed(self):
+
+        called_with = []
+
+        def sig_handler(*args):
+            called_with.extend(args)
+
+        obj = object()
+        self.manager.connect("cover-changed", sig_handler)
+        self.manager.cover_changed([obj])
+
+        self.assertEqual(called_with, [self.manager, [obj]])
 
     def test_get_primary_image(self):
         self.assertFalse(MP3File(self.file1).has_images)
@@ -266,7 +286,3 @@ class TCoverManagerBuiltin(TestCase):
             not is_embedded(self.manager.get_cover_many([song1, song2])))
         self.assertTrue(
             not is_embedded(self.manager.get_cover_many([song2, song1])))
-
-    def tearDown(self):
-        shutil.rmtree(self.main)
-        config.quit()

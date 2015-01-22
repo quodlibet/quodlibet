@@ -109,8 +109,8 @@ def main():
     from quodlibet.qltk.songsmenu import SongsMenu
     SongsMenu.init_plugins()
 
-    from quodlibet.util.cover import CoverPluginHandler
-    app.cover_manager = CoverPluginHandler()
+    from quodlibet.util.cover import CoverManager
+    app.cover_manager = CoverManager()
     app.cover_manager.init_plugins()
 
     from quodlibet.plugins.playlist import PLAYLIST_HANDLER

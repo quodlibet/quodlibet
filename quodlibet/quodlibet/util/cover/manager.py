@@ -16,37 +16,16 @@ from quodlibet.util.cover import built_in
 from quodlibet.plugins.cover import CoverSourcePlugin
 
 
-class CoverPluginHandler(GObject.Object, PluginHandler):
-
-    __gsignals__ = {
-        # artwork_changed([AudioFile]), emmited if the cover art for one
-        # or more songs might have changed
-        'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-    }
+class CoverPluginHandler(PluginHandler):
+    """A plugin handler for CoverSourcePlugin implementation"""
 
     def __init__(self, use_built_in=True):
-        super(CoverPluginHandler, self).__init__()
-
         self.providers = set()
         if use_built_in:
             self.built_in = set([built_in.EmbedCover,
                                  built_in.FilesystemCover])
         else:
             self.built_in = set()
-
-    def cover_changed(self, songs):
-        """Notify the world that the artwork for some songs or collections
-        containing that songs might have changed (For example a new image was
-        added to the folder or a new embedded image was added)
-
-        This will invalidate all caches and will notify others that they have
-        to re-fetch the cover and do a display update.
-        """
-
-        self.emit("cover-changed", songs)
-
-    def init_plugins(self):
-        PluginManager.instance.register_handler(self)
 
     def plugin_handle(self, plugin):
         return issubclass(plugin.cls, CoverSourcePlugin)
@@ -61,9 +40,48 @@ class CoverPluginHandler(GObject.Object, PluginHandler):
 
     @property
     def sources(self):
+        """Yields all active CoverSourcePlugin sorted by priority"""
+
         sources = chain((p.cls for p in self.providers), self.built_in)
         for p in sorted(sources, reverse=True, key=lambda x: x.priority()):
             yield p
+
+
+class CoverManager(GObject.Object):
+
+    __gsignals__ = {
+        # artwork_changed([AudioFile]), emmited if the cover art for one
+        # or more songs might have changed
+        'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+    }
+
+    plugin_handler = None
+
+    def __init__(self, use_built_in=True):
+        super(CoverManager, self).__init__()
+        self.plugin_handler = CoverPluginHandler(use_built_in)
+
+    def init_plugins(self):
+        """Register the cover sources plugin handler with the global
+        plugin manager.
+        """
+
+        PluginManager.instance.register_handler(self.plugin_handler)
+
+    @property
+    def sources(self):
+        return self.plugin_handler.sources
+
+    def cover_changed(self, songs):
+        """Notify the world that the artwork for some songs or collections
+        containing that songs might have changed (For example a new image was
+        added to the folder or a new embedded image was added)
+
+        This will invalidate all caches and will notify others that they have
+        to re-fetch the cover and do a display update.
+        """
+
+        self.emit("cover-changed", songs)
 
     def acquire_cover(self, callback, cancellable, song):
         """

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from .manager import CoverPluginHandler
+from .manager import CoverManager
 
-CoverPluginHandler
+CoverManager

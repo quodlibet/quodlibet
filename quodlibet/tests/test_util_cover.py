@@ -8,7 +8,7 @@ import os
 
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
-from quodlibet.util.cover import CoverPluginHandler
+from quodlibet.util.cover.manager import CoverManager
 from quodlibet.util.path import fsnative, normalize_path
 
 from . import TestCase, DATA_DIR
@@ -32,7 +32,7 @@ class Tfind_cover(TestCase):
 
     def setUp(self):
         config.init()
-        self.manager = CoverPluginHandler()
+        self.manager = CoverManager()
 
         self.dir = os.path.realpath(quux("~dirname"))
         self.files = [self.full_path("12345.jpg"),
