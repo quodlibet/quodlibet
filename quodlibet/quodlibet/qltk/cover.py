@@ -14,7 +14,8 @@ from quodlibet import app
 from quodlibet.util import thumbnails
 from quodlibet.util.path import is_fsnative
 from quodlibet.qltk.image import (get_scale_factor, pixbuf_from_file,
-    set_image_from_pbosf, get_pbosf_for_pixbuf, pbosf_render)
+    set_image_from_pbosf, get_pbosf_for_pixbuf, pbosf_render, calc_scale_size,
+    scale, add_border_widget)
 
 
 # TODO: neater way of managing dependency on this particular plugin
@@ -150,9 +151,7 @@ class ResizeImage(Gtk.Bin):
         if not pixbuf:
             return 0, 0
         width, height = pixbuf.get_width(), pixbuf.get_height()
-        return thumbnails.calc_scale_size(
-                (max_width, max_height),
-                (width, height))
+        return calc_scale_size((max_width, max_height), (width, height))
 
     def do_get_request_mode(self):
         if self._resize:
@@ -198,12 +197,11 @@ class ResizeImage(Gtk.Bin):
             if width < 2 or height < 2:
                 return
             round_thumbs = config.getboolean("albumart", "round")
-            pixbuf = thumbnails.scale(
+            pixbuf = scale(
                 pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor))
-            pixbuf = thumbnails.add_border_widget(
-                pixbuf, self, None, round_thumbs)
+            pixbuf = add_border_widget(pixbuf, self, None, round_thumbs)
         else:
-            pixbuf = thumbnails.scale(pixbuf, (width, height))
+            pixbuf = scale(pixbuf, (width, height))
 
         style_context = self.get_style_context()
 

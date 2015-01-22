@@ -36,11 +36,11 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, connect_destroy
 from quodlibet.util.library import background_filter
-from quodlibet.util import thumbnails, connect_obj
+from quodlibet.util import connect_obj
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
-    set_renderer_from_pbosf)
+    set_renderer_from_pbosf, add_border_widget)
 
 
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
@@ -447,7 +447,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             elif album.cover:
                 pixbuf = album.cover
                 round_ = config.getboolean("albumart", "round")
-                pixbuf = thumbnails.add_border_widget(
+                pixbuf = add_border_widget(
                     pixbuf, self.view, cell, round_)
                 pixbuf = get_pbosf_for_pixbuf(self, pixbuf)
                 # don't cache, too much state has an effect on the result

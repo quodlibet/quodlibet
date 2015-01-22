@@ -2,7 +2,7 @@
 from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile
 
-from gi.repository import GdkPixbuf, Gdk, Gtk
+from gi.repository import GdkPixbuf
 
 import os
 
@@ -35,49 +35,9 @@ class TThumb(TestCase):
             except OSError:
                 pass
 
-    def test_calc_scale_size(self):
-        self.assertRaises(ValueError,
-                          thumbnails.calc_scale_size, (1, 1), (1, 0))
-        res = thumbnails.calc_scale_size((100, 100), (500, 100))
-        self.assertEqual(res, (100, 20))
-
-    def test_add_border(self):
-        color = Gdk.RGBA()
-        w, h = self.small.get_width(), self.small.get_height()
-        res = thumbnails.add_border(self.small, color, round=False)
-        self.assertEqual(res.get_width(), w + 2)
-        self.assertEqual(res.get_height(), h + 2)
-
-        res = thumbnails.add_border(self.small, color, round=True)
-        self.assertEqual(res.get_width(), w + 2)
-        self.assertEqual(res.get_height(), h + 2)
-
-        res = thumbnails.add_border(self.small, color, width=2)
-        self.assertEqual(res.get_width(), w + 4)
-        self.assertEqual(res.get_height(), h + 4)
-
-    def test_add_border_widget(self):
-        widget = Gtk.Button()
-        cell = Gtk.CellRendererText()
-        thumbnails.add_border_widget(self.small, widget, cell, True)
-        thumbnails.add_border_widget(self.small, widget, None, True)
-
     def test_get_thumbnail_folder(self):
         path = thumbnails.get_thumbnail_folder()
         self.assertTrue(is_fsnative(path))
-
-    def test_scale(s):
-        nw = thumbnails.scale(s.wide, (50, 30))
-        s.failUnlessEqual((nw.get_width(), nw.get_height()), (50, 3))
-
-        nh = thumbnails.scale(s.high, (100, 20))
-        s.failUnlessEqual((nh.get_width(), nh.get_height()), (2, 20))
-
-        ns = thumbnails.scale(s.small, (500, 300))
-        s.failUnlessEqual((ns.get_width(), ns.get_height()), (150, 300))
-
-        ns = thumbnails.scale(s.small, (500, 300), scale_up=False)
-        s.failUnlessEqual((ns.get_width(), ns.get_height()), (10, 20))
 
     def test_thumb_from_file(self):
         with open(self.filename, "rb") as h:

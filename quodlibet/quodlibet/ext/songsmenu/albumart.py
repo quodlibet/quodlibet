@@ -33,10 +33,9 @@ from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.qltk.x import Paned
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
-    get_pbosf_for_pixbuf, set_image_from_pbosf)
+    get_pbosf_for_pixbuf, set_image_from_pbosf, scale, add_border_widget)
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
-from quodlibet.util import thumbnails
 
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
@@ -395,7 +394,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             height = alloc.height
             scale_factor = get_scale_factor(self)
             boundary = (width * scale_factor, height * scale_factor)
-            pixbuf = thumbnails.scale(pixbuf, boundary, scale_up=False)
+            pixbuf = scale(pixbuf, boundary, scale_up=False)
             pbosf = get_pbosf_for_pixbuf(self, pixbuf)
 
         set_image_from_pbosf(self.image, pbosf)
@@ -687,8 +686,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             size = self.THUMB_SIZE * scale_factor - scale_factor * 2
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
-            pixbuf = thumbnails.add_border_widget(
-                pixbuf, self, None, round=True)
+            pixbuf = add_border_widget(pixbuf, self, None, round=True)
             thumb = get_pbosf_for_pixbuf(self, pixbuf)
         except (GLib.GError, IOError):
             pass
