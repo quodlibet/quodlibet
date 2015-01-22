@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase
+from tests import TestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary
@@ -15,9 +15,16 @@ def AF(*args, **kwargs):
 
 
 class TInformation(TestCase):
+
     def setUp(self):
         quodlibet.config.init()
+        init_fake_app()
         self.library = SongLibrary()
+
+    def tearDown(self):
+        destroy_fake_app()
+        self.library.destroy()
+        quodlibet.config.quit()
 
     def test_none(self):
         Information(self.library, []).destroy()
@@ -40,7 +47,3 @@ class TInformation(TestCase):
         f = AF({"~filename": fsnative(u"/dev/null"), "artist": "woo"})
         f2 = AF({"~filename": fsnative(u"/dev/null2"), "artist": "woo"})
         Information(self.library, [f, f2]).destroy()
-
-    def tearDown(self):
-        self.library.destroy()
-        quodlibet.config.quit()

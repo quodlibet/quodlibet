@@ -171,8 +171,12 @@ class TopBar(Gtk.Toolbar):
         # cover image
         self.image = CoverImage(resize=True)
         connect_destroy(player, 'song-started', self.__new_song)
-        connect_destroy(
-            parent, 'artwork-changed', self.__song_art_changed, library)
+
+        # FIXME: makes testing easier
+        if app.cover_manager:
+            connect_destroy(
+                app.cover_manager, 'cover-changed',
+                self.__song_art_changed, library)
 
         # CoverImage doesn't behave in a Alignment, so wrap it
         coverbox = Gtk.Box()
@@ -437,10 +441,6 @@ DND_URI_LIST, = range(1)
 
 
 class QuodLibetWindow(Window, PersistentWindowMixin):
-    SIG_PYOBJECT = (GObject.SignalFlags.RUN_LAST, None, (object,))
-    __gsignals__ = {
-        'artwork-changed': SIG_PYOBJECT,
-    }
 
     def __init__(self, library, player, headless=False):
         super(QuodLibetWindow, self).__init__(dialog=False)

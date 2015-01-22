@@ -362,7 +362,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 except:
                     pass
 
-            app.window.emit("artwork-changed", [self.song])
+            app.cover_manager.cover_changed([self.song])
 
         self.main_win.destroy()
 

@@ -8,20 +8,42 @@
 
 from itertools import chain
 
+from gi.repository import GObject
+
 from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
 from quodlibet.plugins.cover import CoverSourcePlugin
 
 
-class CoverPluginHandler(PluginHandler):
+class CoverPluginHandler(GObject.Object, PluginHandler):
+
+    __gsignals__ = {
+        # artwork_changed([AudioFile]), emmited if the cover art for one
+        # or more songs might have changed
+        'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+    }
+
     def __init__(self, use_built_in=True):
+        super(CoverPluginHandler, self).__init__()
+
         self.providers = set()
         if use_built_in:
             self.built_in = set([built_in.EmbedCover,
                                  built_in.FilesystemCover])
         else:
             self.built_in = set()
+
+    def cover_changed(self, songs):
+        """Notify the world that the artwork for some songs or collections
+        containing that songs might have changed (For example a new image was
+        added to the folder or a new embedded image was added)
+
+        This will invalidate all caches and will notify others that they have
+        to re-fetch the cover and do a display update.
+        """
+
+        self.emit("cover-changed", songs)
 
     def init_plugins(self):
         PluginManager.instance.register_handler(self)

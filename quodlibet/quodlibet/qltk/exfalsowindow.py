@@ -34,11 +34,9 @@ from quodlibet.util import connect_obj, connect_destroy
 
 
 class ExFalsoWindow(Window, PersistentWindowMixin):
+
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST,
-                    None, (object,)),
-        'artwork-changed': (GObject.SignalFlags.RUN_LAST,
-                            None, (object,))
+        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     pm = SongsMenuPluginHandler()

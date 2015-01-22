@@ -3,7 +3,7 @@ import os
 
 from gi.repository import Gtk, GdkPixbuf, Gdk
 
-from tests import TestCase, mkstemp
+from tests import TestCase, mkstemp, init_fake_app, destroy_fake_app
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.qltk.cover import (CoverImage, BigCenteredImage, ResizeImage,
@@ -13,12 +13,14 @@ from quodlibet.qltk.cover import (CoverImage, BigCenteredImage, ResizeImage,
 class TCoverImage(TestCase):
     def setUp(self):
         config.init()
+        init_fake_app()
         fd, self.fn = mkstemp()
         os.close(fd)
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
         pb.savev(self.fn, "png", [], [])
 
     def tearDown(self):
+        destroy_fake_app()
         config.quit()
         os.remove(self.fn)
 

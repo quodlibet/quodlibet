@@ -108,8 +108,8 @@ def init_fake_app():
     app.player = NullPlayer()
     app.library = SongFileLibrary()
     app.library.librarian = SongLibrarian()
-    app.window = QuodLibetWindow(app.library, app.player, headless=True)
     app.cover_manager = CoverPluginHandler()
+    app.window = QuodLibetWindow(app.library, app.player, headless=True)
 
 
 def destroy_fake_app():
@@ -121,6 +121,7 @@ def destroy_fake_app():
     app.player.destroy()
 
     app.window = app.library = app.player = app.name = app.id = None
+    app.cover_manager = None
 
 
 class Result(unittest.TestResult):
