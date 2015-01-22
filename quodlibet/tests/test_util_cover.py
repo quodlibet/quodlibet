@@ -28,7 +28,7 @@ bar_2_1 = AudioFile({
 })
 
 
-class Tfind_cover(TestCase):
+class TCoverManager(TestCase):
 
     def setUp(self):
         config.init()
@@ -131,3 +131,7 @@ class Tfind_cover(TestCase):
                     actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
             else:
                 self.failUnless(f, self.full_path('back.jpg'))
+
+    def test_get_thumbnail(self):
+        self.assertTrue(self.manager.get_pixbuf(quux, 10, 10) is None)
+        self.assertTrue(self.manager.get_pixbuf_many([quux], 10, 10) is None)

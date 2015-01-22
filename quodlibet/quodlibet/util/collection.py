@@ -16,7 +16,6 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.util import thumbnails
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.path import bytes2fsnative, is_fsnative, fsnative2bytes
@@ -311,11 +310,8 @@ class Album(Collection):
         self.scanned = True
 
         from quodlibet import app
-        cover = app.cover_manager.get_cover_many(self.songs)
-
-        if cover is not None:
-            s = self.COVER_SIZE * scale_factor
-            self.cover = thumbnails.get_thumbnail_from_file(cover, (s, s))
+        s = self.COVER_SIZE * scale_factor
+        self.cover = app.cover_manager.get_pixbuf_many(self.songs, s, s)
 
     def __repr__(self):
         return "Album(%s)" % repr(self.key)

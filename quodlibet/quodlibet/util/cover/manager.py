@@ -13,6 +13,7 @@ from gi.repository import GObject
 from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
+from quodlibet.util.thumbnails import get_thumbnail_from_file
 from quodlibet.plugins.cover import CoverSourcePlugin
 
 
@@ -184,3 +185,21 @@ class CoverManager(GObject.Object):
             return get(songs, True, False) or get(songs, False, True)
         else:
             return get(songs, False, True) or get(songs, True, False)
+
+    def get_pixbuf_many(self, songs, width, height):
+        """Returns a Pixbuf which fits into the boundary defined by width
+        and height or None.
+
+        Uses the thumbnail cache if possible.
+        """
+
+        fileobj = self.get_cover_many(songs)
+        if fileobj is None:
+            return
+
+        return get_thumbnail_from_file(fileobj, (width, height))
+
+    def get_pixbuf(self, song, width, height):
+        """see get_pixbuf_many()"""
+
+        return self.get_pixbuf_many([song], width, height)
