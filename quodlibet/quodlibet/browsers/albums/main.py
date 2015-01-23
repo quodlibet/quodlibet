@@ -12,7 +12,7 @@ from __future__ import absolute_import
 
 import os
 
-from gi.repository import Gtk, Pango, Gdk, GLib
+from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 
 from .prefs import Preferences, PATTERN
 from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
@@ -229,7 +229,7 @@ class VisibleUpdate(object):
 
         self.__pending_paths = []
         self.__update_deferred = DeferredSignal(
-            self.__update_visible_rows, timeout=20, priority=GLib.PRIORITY_LOW)
+            self.__update_visible_rows, timeout=50, priority=GLib.PRIORITY_LOW)
         self.__column = column
         self.__first_expose = True
 
@@ -411,6 +411,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if self.__model is None:
             self._init_model(library)
 
+        self._cover_cancel = Gio.Cancellable.new()
+
         sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
@@ -547,13 +549,21 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         model = sort_model.get_model()
         iter_ = filter_model.convert_iter_to_child_iter(iter_)
         iter_ = sort_model.convert_iter_to_child_iter(iter_)
+        tref = Gtk.TreeRowReference.new(model, model.get_path(iter_))
+
+        def callback():
+            path = tref.get_path()
+            if path is not None:
+                model.row_changed(path, model.get_iter(path))
 
         album = model.get_album(iter_)
         scale_factor = get_scale_factor(self)
-        album.scan_cover(scale_factor=scale_factor)
-        model.row_changed(model.get_path(iter_), iter_)
+        album.scan_cover(scale_factor=scale_factor,
+                         callback=callback,
+                         cancel=self._cover_cancel)
 
     def __destroy(self, browser):
+        self._cover_cancel.cancel()
         self.disable_row_update()
 
         self.view.set_model(None)

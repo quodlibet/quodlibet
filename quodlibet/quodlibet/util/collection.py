@@ -304,14 +304,23 @@ class Album(Collection):
         self.__dict__.pop("peoplesort", None)
         self.__dict__.pop("genre", None)
 
-    def scan_cover(self, force=False, scale_factor=1):
+    def scan_cover(self, force=False, scale_factor=1,
+            callback=None, cancel=None):
         if (self.scanned and not force) or not self.songs:
             return
         self.scanned = True
 
+        def set_cover_cb(pixbuf):
+            self.cover = pixbuf
+            callback()
+
         from quodlibet import app
         s = self.COVER_SIZE * scale_factor
-        self.cover = app.cover_manager.get_pixbuf_many(self.songs, s, s)
+        if callback is not None:
+            app.cover_manager.get_pixbuf_many_async(
+                self.songs, s, s, cancel, set_cover_cb)
+        else:
+            self.cover = app.cover_manager.get_pixbuf_many(self.songs, s, s)
 
     def __repr__(self):
         return "Album(%s)" % repr(self.key)

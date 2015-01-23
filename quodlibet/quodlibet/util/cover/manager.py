@@ -7,8 +7,9 @@
 # published by the Free Software Foundation
 
 from itertools import chain
+from multiprocessing.pool import ThreadPool
 
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 
 from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
@@ -61,6 +62,7 @@ class CoverManager(GObject.Object):
     def __init__(self, use_built_in=True):
         super(CoverManager, self).__init__()
         self.plugin_handler = CoverPluginHandler(use_built_in)
+        self._pool = ThreadPool()
 
     def init_plugins(self):
         """Register the cover sources plugin handler with the global
@@ -203,3 +205,28 @@ class CoverManager(GObject.Object):
         """see get_pixbuf_many()"""
 
         return self.get_pixbuf_many([song], width, height)
+
+    def get_pixbuf_many_async(self, songs, width, height, cancel, callback):
+        """Async variant; callback gets called with a pixbuf or not called
+        in case of an error. cancel is a Gio.Cancellable.
+
+        The callback will be called in the main loop.
+        """
+
+        fileobj = self.get_cover_many(songs)
+        if fileobj is None:
+            return
+
+        def main_loop_callback(result):
+            if not cancel.is_cancelled():
+                callback(result)
+
+        def thread_callback(result):
+            if cancel.is_cancelled():
+                return
+            GLib.idle_add(main_loop_callback, result,
+                          priority=GLib.PRIORITY_DEFAULT)
+
+        self._pool.apply_async(
+            get_thumbnail_from_file, args=(fileobj, (width, height)),
+            callback=thread_callback)
