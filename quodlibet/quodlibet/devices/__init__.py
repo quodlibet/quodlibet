@@ -146,8 +146,12 @@ class DeviceManager(GObject.GObject):
         return device
 
 
-def get_device_from_path(udev_ctx, path):
-    """A dict of device attributes for the given device path"""
+def get_devices_from_path(udev_ctx, path):
+    """A list of device attribute dicts for the given device path and all its
+    parents.
+
+    Either returns a non empty list or raises EnvironmentError.
+    """
 
     path = path.encode("ascii")
     enum = udev.UdevEnumerate.new(udev_ctx)
@@ -156,12 +160,12 @@ def get_device_from_path(udev_ctx, path):
         raise EnvironmentError
 
     # only match the device we want
-    if enum.add_match_property("DEVNAME", path):
+    if enum.add_match_property("DEVNAME", path) != 0:
         enum.unref()
         raise EnvironmentError
 
     # search for it
-    if enum.scan_devices():
+    if enum.scan_devices() != 0:
         enum.unref()
         raise EnvironmentError
 
@@ -170,27 +174,35 @@ def get_device_from_path(udev_ctx, path):
     if not entry:
         enum.unref()
         raise EnvironmentError
-
-    device = udev.UdevDevice.new_from_syspath(udev_ctx, entry.get_name())
-    if not device:
-        enum.unref()
-        raise EnvironmentError
-
-    entry = device.get_properties_list_entry()
-    if not entry:
-        enum.unref()
-        device.unref()
-        raise EnvironmentError
-
-    attrs = {}
-    for e in entry:
-        name = e.get_name()
-        value = e.get_value()
-        attrs[name] = value.decode("string-escape")
-
+    sys_path = entry.get_name()
     enum.unref()
-    device.unref()
-    return attrs
+
+    device = udev.UdevDevice.new_from_syspath(udev_ctx, sys_path)
+    if not device:
+        raise EnvironmentError
+
+    devices = []
+    while device:
+        devices.append(device)
+        device = device.get_parent()
+
+    device_attrs = []
+    for device in devices:
+        entry = device.get_properties_list_entry()
+        if not entry:
+            continue
+
+        attrs = {}
+        for e in entry:
+            name = e.get_name()
+            value = e.get_value()
+            attrs[name] = value.decode("string-escape")
+        device_attrs.append(attrs)
+
+    # the first device owns its parents
+    devices[0].unref()
+
+    return device_attrs
 
 
 def dbus_barray_to_str(array):
@@ -371,16 +383,17 @@ def get_media_player_id(udev_ctx, dev_path):
     """
 
     try:
-        dev = get_device_from_path(udev_ctx, dev_path)
+        devs = get_devices_from_path(udev_ctx, dev_path)
     except Exception:
         print_w("Failed to retrieve udev properties for %r" % dev_path)
         util.print_exc()
         return
 
-    try:
-        return dev["ID_MEDIA_PLAYER"]
-    except KeyError:
-        return
+    for dev in devs:
+        try:
+            return dev["ID_MEDIA_PLAYER"]
+        except KeyError:
+            continue
 
 
 def get_mpi_dir():
