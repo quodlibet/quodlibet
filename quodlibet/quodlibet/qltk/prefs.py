@@ -648,7 +648,17 @@ class PreferencesWindow(UniqueWindow):
         self.__notebook = notebook = qltk.Notebook()
         for Page in [self.SongList, self.Browsers, self.Player,
                      self.Library, self.Tagging]:
-            notebook.append_page(Page())
+            page = Page()
+            page.show()
+            notebook.append_page(page)
+
+        page_name = config.get("memory", "prefs_page", "")
+        self.set_page(page_name)
+
+        def on_switch_page(notebook, page, page_num):
+            config.set("memory", "prefs_page", page.name)
+
+        notebook.connect("switch-page", on_switch_page)
 
         close = Button(_("_Close"), icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', lambda x: x.destroy(), self)
