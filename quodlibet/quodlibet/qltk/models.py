@@ -37,10 +37,13 @@ class _ModelMixin(object):
     Set to False if you know what you're doing.
     """
 
-    def get_value(self, iter_, column=0):
-        res = super(_ModelMixin, self).get_value(iter_, column)
+    def get_value(self, iter_, column=0,
+            _value_type=GObject.Value,
+            _base=Gtk.TreeModel.get_value):
+
+        res = _base(self, iter_, column)
         # PyGObject 3.4 doesn't unbox in some cases...
-        if isinstance(res, GObject.Value):
+        if isinstance(res, _value_type):
             res = res.get_boxed()
         return res
 
