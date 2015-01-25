@@ -6,6 +6,8 @@
 # published by the Free Software Foundation
 
 from os import path
+import gi
+gi.require_version("Soup", "2.4")
 from gi.repository import Soup
 
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir

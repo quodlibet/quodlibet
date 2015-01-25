@@ -11,6 +11,8 @@ import sys
 import signal
 
 import gi
+gi.require_version("Gtk", "3.0")
+
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
