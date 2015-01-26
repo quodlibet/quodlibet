@@ -818,7 +818,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         if irfs:
             self.__fav_stations.add(irfs)
 
-    def Menu(self, songs, songlist, library):
+    def Menu(self, songs, library):
         menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
                          queue=False, devices=False, parent=self)
 

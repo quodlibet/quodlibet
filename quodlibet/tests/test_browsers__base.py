@@ -76,6 +76,13 @@ class TBrowserBase(AbstractTestCase):
         self.library.destroy()
         config.quit()
 
+    def test_menu(self):
+        # FIXME: the playlist browser accesses the song list directly
+        if self.b.name == "Playlists":
+            return
+        menu = self.b.Menu([], self.library)
+        self.assertTrue(isinstance(menu, Gtk.Menu))
+
     def test_pack_unpack(self):
         to_pack = Gtk.Button()
         container = self.b.pack(to_pack)

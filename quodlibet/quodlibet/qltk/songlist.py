@@ -336,7 +336,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         can_filter = browser.can_filter
 
-        menu = browser.Menu(songs, self, library)
+        menu = browser.Menu(songs, library)
 
         def Filter(t):
             # Translators: The substituted string is the name of the

@@ -106,8 +106,9 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         render.markup = model[iter][0].format()
         render.set_property('markup', render.markup)
 
-    def Menu(self, songs, songlist, library):
-        menu = super(PlaylistsBrowser, self).Menu(songs, songlist, library)
+    def Menu(self, songs, library):
+        songlist = qltk.get_top_parent(self).songlist
+        menu = super(PlaylistsBrowser, self).Menu(songs, library)
         model, iters = self.__get_selected_songs(songlist)
         i = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
         qltk.add_fake_accel(i, "Delete")
