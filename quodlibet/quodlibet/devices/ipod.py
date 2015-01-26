@@ -307,9 +307,6 @@ class IPodDevice(Device):
     def cleanup(self, wlb, action):
         try:
             wlb.set_text("<b>%s</b>" % _(u"Saving iPod database…"))
-            # This can take a while, so update the UI first
-            while Gtk.events_pending():
-                Gtk.main_iteration()
 
             if not self.__save_db():
                 wlb.set_text(_("Unable to save iPod database"))
