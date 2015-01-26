@@ -422,8 +422,9 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
             return
         self.__view.select_by_func(lambda r: r[0].name == name, one=True)
 
-    def reordered(self, songlist):
-        songs = songlist.get_songs()
+    can_reorder = True
+
+    def reordered(self, songs):
         model, iter = self.__view.get_selection().get_selected()
         playlist = None
         if iter:

@@ -52,7 +52,7 @@ class TBrowser(TestCase):
 
     def test_defaults(self):
         self.failUnless(self.browser.background)
-        self.failIf(self.browser.reordered)
+        self.failIf(self.browser.can_reorder)
         self.failIf(self.browser.headers)
         self.failUnless(self.browser.dynamic(None))
 

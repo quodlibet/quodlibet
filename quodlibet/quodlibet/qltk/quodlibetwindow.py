@@ -733,8 +733,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         return self.browser.key_pressed(event)
 
     def __songlist_drag_data_recv(self, view, *args):
-        if callable(self.browser.reordered):
-            self.browser.reordered(view)
+        if self.browser.can_reorder:
+            songs = view.get_songs()
+            self.browser.reordered(songs)
         self.songlist.clear_sort()
 
     def __show_or(self, widget, prop):
@@ -928,7 +929,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             self.browser.restore()
             self.browser.activate()
         self.browser.finalize(restore)
-        if self.browser.reordered:
+        if self.browser.can_reorder:
             self.songlist.enable_drop()
         elif self.browser.dropped:
             self.songlist.enable_drop(False)

@@ -223,11 +223,18 @@ class Browser(Filter):
         """Do whatever is needed to emit songs-selected again."""
         raise NotImplementedError
 
-    reordered = None
-    """Called when the song list is reordered. If it's not callable
-    but true, no call is made but the song list is still reorderable.
-        def reordered(self, songlist): ...
+    can_reorder = False
+    """If the song list should be reorderable. In case this is True
+    every time the song list gets reorderd the whole list of songs is
+    passed to reordered().
     """
+
+    def reordered(self, songs):
+        """In case can_reorder is True and the song list gets reorderd
+        this gets called with the whole list of songs.
+        """
+
+        raise NotImplementedError
 
     dropped = None
     """Called with the SongList and a list of songs when songs are dropped
