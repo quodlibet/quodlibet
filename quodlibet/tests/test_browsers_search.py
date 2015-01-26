@@ -71,11 +71,11 @@ class TEmptyBar(TestCase):
         self.expected = list(sorted(SONGS))
         self._do()
 
-    def test_dynamic(self):
-        self.failUnless(self.bar.dynamic(SONGS[0]))
+    def test_active_filter(self):
+        self.assertTrue(self.bar.active_filter(SONGS[0]))
         self.bar.filter_text("this does not match any song")
         self.expected = []
-        self.failIf(self.bar.dynamic(SONGS[0]))
+        self.assertFalse(self.bar.active_filter(SONGS[0]))
 
     def test_filter(self):
         self.expected = [SONGS[1]]

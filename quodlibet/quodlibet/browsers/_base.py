@@ -26,14 +26,6 @@ class Filter(object):
         def active_filter(self, song): ...
     """
 
-    def dynamic(self, song):
-        """Deprecated: use active_filter instead"""
-        if callable(self.active_filter):
-            ret = self.active_filter(song)
-            if ret is not None:
-                return ret
-        return True
-
     def can_filter_tag(self, key):
         """If key can be passed to filter()"""
         return False

@@ -54,7 +54,6 @@ class TBrowser(TestCase):
         self.failUnless(self.browser.background)
         self.failIf(self.browser.can_reorder)
         self.failIf(self.browser.headers)
-        self.failUnless(self.browser.dynamic(None))
 
     def tearDown(self):
         self.browser = None
