@@ -89,7 +89,7 @@ class FileSystem(Browser, Gtk.HBox):
         sel = dt.get_selection()
         sel.unselect_all()
         connect_obj(sel, 'changed', copool.add, self.__songs_selected, dt)
-        dt.connect('row-activated', lambda *a: self.emit("activated"))
+        dt.connect('row-activated', lambda *a: self.songs_activated())
         sw.add(dt)
         self.pack_start(sw, True, True, 0)
 
@@ -239,6 +239,6 @@ class FileSystem(Browser, Gtk.HBox):
             yield True
         if self.get_window():
             self.get_window().set_cursor(None)
-        self.emit('songs-selected', songs, None)
+        self.songs_selected(songs)
 
 browsers = [FileSystem]

@@ -113,7 +113,7 @@ class SearchBar(Gtk.VBox, Browser):
         songs = self._get_songs()
         if songs is not None:
             songs = self._sb_box.limit(songs)
-            GLib.idle_add(self.emit, 'songs-selected', songs, None)
+            GLib.idle_add(self.songs_selected, songs)
 
     def __text_parse(self, bar, text):
         self.activate()

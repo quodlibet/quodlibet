@@ -465,7 +465,7 @@ class AudioFeeds(Browser, Gtk.VBox):
             for path in paths:
                 model[path][0].changed = False
                 songs.extend(model[path][0])
-            self.emit('songs-selected', songs, True)
+            self.songs_selected(songs, True)
             config.set("browsers", "audiofeeds",
                        "\t".join([model[path][0].name for path in paths]))
 

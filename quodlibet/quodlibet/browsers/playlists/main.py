@@ -178,7 +178,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
 
-        view.connect('row-activated', lambda *x: self.emit("activated"))
+        view.connect('row-activated', lambda *x: self.songs_activated())
 
         view.get_selection().connect('changed', self.activate)
 
@@ -369,7 +369,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
-        self.emit('songs-selected', songs, resort)
+        self.songs_selected(songs, resort)
 
     def save(self):
         model, iter = self.__view.get_selection().get_selected()

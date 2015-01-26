@@ -206,7 +206,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
 
         for pane in self._panes:
             pane.connect('row-activated',
-                         lambda *x: self.emit("activated"))
+                         lambda *x: self.songs_activated())
             sw = ScrolledWindow()
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
             sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -310,4 +310,4 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
             self.fill_panes()
 
     def fill(self, songs):
-        GLib.idle_add(self.emit, 'songs-selected', list(songs), None)
+        GLib.idle_add(self.songs_selected, list(songs))

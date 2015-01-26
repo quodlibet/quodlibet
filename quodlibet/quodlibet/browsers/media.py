@@ -187,7 +187,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         view.get_selection().set_mode(Gtk.SelectionMode.BROWSE)
         connect_obj(view.get_selection(), 'changed', self.__refresh, False)
         view.connect('popup-menu', self.__popup_menu, library)
-        view.connect('row-activated', lambda *a: self.emit("activated"))
+        view.connect('row-activated', lambda *a: self.songs_activated())
         swin.add(view)
 
         col = Gtk.TreeViewColumn("Devices")
@@ -429,10 +429,10 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                 self.__eject_button.set_sensitive(False)
                 self.__refresh_button.set_sensitive(False)
                 self.__header.hide()
-            self.emit('songs-selected', songs, device.ordered)
+            self.songs_selected(songs, device.ordered)
         else:
             self.__last = None
-            self.emit('songs-selected', [], False)
+            self.songs_selected([], False)
 
     def __refresh_space(self, device):
         try:

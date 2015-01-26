@@ -678,7 +678,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             sel.set_uris([song("~uri") for song in songs])
 
     def __play_selection(self, view, indices, col):
-        self.emit("activated")
+        self.songs_activated()
 
     def active_filter(self, song):
         for album in self.__get_selected_albums():
@@ -790,4 +790,4 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     def __update_songs(self, selection):
         songs = self.__get_selected_songs(sort=False)
-        self.emit('songs-selected', songs, None)
+        self.songs_selected(songs)

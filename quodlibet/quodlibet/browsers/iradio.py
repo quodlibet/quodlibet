@@ -890,7 +890,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         filter_ = self.__get_filter()
         libs = self.__get_selected_libraries()
         songs = filter_.filter(itertools.chain(*libs))
-        self.emit('songs-selected', songs, None)
+        self.songs_selected(songs)
 
     def active_filter(self, song):
         for lib in self.__get_selected_libraries():

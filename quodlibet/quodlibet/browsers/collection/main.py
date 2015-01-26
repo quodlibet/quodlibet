@@ -318,7 +318,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
     def __play(self, view, path, col):
         model = view.get_model()
         if isinstance(model[path][0], Album):
-            self.emit("activated")
+            self.songs_activated()
         else:
             if view.row_expanded(path):
                 view.collapse_row(path)
@@ -339,7 +339,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
     def __selection_changed(self, selection):
         songs = self.__get_selected_songs(False)
         if songs is not None:
-            GLib.idle_add(self.emit, 'songs-selected', songs, None)
+            GLib.idle_add(self.songs_selected, songs)
 
     def can_filter_albums(self):
         return True

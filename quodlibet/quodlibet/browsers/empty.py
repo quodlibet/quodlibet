@@ -77,7 +77,7 @@ class EmptyBar(Gtk.VBox, Browser):
     def activate(self):
         songs = self._get_songs()
         if songs is not None:
-            GLib.idle_add(self.emit, 'songs-selected', songs, None)
+            GLib.idle_add(self.songs_selected, songs)
 
     def can_filter_text(self):
         return True

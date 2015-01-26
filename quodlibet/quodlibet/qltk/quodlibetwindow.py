@@ -923,7 +923,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.browser = Browser(library)
         self.browser.connect('songs-selected',
             self.__browser_cb, library, player)
-        self.browser.connect('activated', self.__browser_activate)
+        self.browser.connect('songs-activated', self.__browser_activate)
         if restore:
             self.browser.restore()
             self.browser.activate()

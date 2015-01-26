@@ -154,7 +154,7 @@ class TAlbumBrowser(TestCase):
         self.bar = AlbumList(library)
 
         self._id = self.bar.connect("songs-selected", self._selected)
-        self._id2 = self.bar.connect("activated", self._activated)
+        self._id2 = self.bar.connect("songs-activated", self._activated)
         with realized(self.bar):
             self.bar.filter_text("")
             self._wait()

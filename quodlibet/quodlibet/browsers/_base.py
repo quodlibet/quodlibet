@@ -135,12 +135,10 @@ class Browser(Filter):
     them back via a callback function.
     """
 
-    # Unfortunately, GObjects do not play with Python multiple inheritance.
-    # So, we need to reasssign this in every subclass.
     __gsignals__ = {
         'songs-selected':
         (GObject.SignalFlags.RUN_LAST, None, (object, object)),
-        'activated': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'songs-activated': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     name = _("Library Browser")
@@ -154,6 +152,23 @@ class Browser(Filter):
 
     in_menu = True
     """Whether the browser should appear in the Music->Browse menu."""
+
+    def songs_selected(self, songs, is_sorted=False):
+        """Emits the songs-selected signal.
+
+        If is_sorted is True the songs will be put as is in the song list.
+        In case it's False the songs will be sorted by the song list depending
+        on its current sort configuration.
+        """
+
+        self.emit("songs-selected", songs, is_sorted)
+
+    def songs_activated(self):
+        """Call after calling songs_selected() to activate the songs
+        (start playing, enqueue etc..)
+        """
+
+        self.emit("songs-activated")
 
     def pack(self, songpane):
         """For custom packing, define a function that returns a Widget with the
