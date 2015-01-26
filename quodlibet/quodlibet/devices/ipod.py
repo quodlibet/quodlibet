@@ -209,7 +209,7 @@ class IPodDevice(Device):
         self.__close_db()
         return songs
 
-    def copy(self, songlist, song):
+    def copy(self, parent_widget, song):
         if self.__load_db() is None:
             return False
         track = gpod.itdb_track_new()
@@ -290,7 +290,7 @@ class IPodDevice(Device):
         else:
             return False
 
-    def delete(self, songlist, song):
+    def delete(self, parent_widget, song):
         if self.__load_db() is None:
             return False
         try:

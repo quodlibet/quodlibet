@@ -112,7 +112,7 @@ class Device(dict):
     If it is, refreshing will reset the song list sort order.
     """
 
-    def copy(self, songlist, song):
+    def copy(self, parent_widget, song):
         """ Copies a song to the device. This will be called once for each
         song. If the copy was successful, it should return an AudioFile
         instance, which will be added to the songlist. If the copy
@@ -128,7 +128,7 @@ class Device(dict):
     the delete was successful, it should return True. If the delete
     failed, it should return False or a string describing the error.
 
-    def delete(self, songlist, song): ... return True
+    def delete(self, parent_widget, song): ... return True
     """
 
     cleanup = None

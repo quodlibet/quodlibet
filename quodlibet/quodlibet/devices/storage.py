@@ -19,7 +19,7 @@ from quodlibet.devices._base import Device
 from quodlibet.library import SongFileLibrary
 from quodlibet.pattern import FileFromPattern
 from quodlibet.qltk.msg import ConfirmFileReplace
-from quodlibet.util.path import (fsdecode, mtime, escape_filename,
+from quodlibet.util.path import (mtime, escape_filename,
     strip_win32_incompat_from_path)
 
 CACHE = os.path.join(const.USERDIR, 'cache')
@@ -85,16 +85,15 @@ class StorageDevice(Device):
         self.__save_library()
         return self.__library.values()
 
-    def copy(self, songlist, song):
+    def copy(self, parent_widget, song):
         if not self.__pattern:
             self.__set_pattern()
 
         target = strip_win32_incompat_from_path(self.__pattern.format(song))
-        utarget = fsdecode(target)
         dirname = os.path.dirname(target)
 
         if os.path.exists(target):
-            dialog = ConfirmFileReplace(songlist, target)
+            dialog = ConfirmFileReplace(parent_widget, target)
             resp = dialog.run()
             if resp == ConfirmFileReplace.RESPONSE_REPLACE:
                 try:
@@ -102,10 +101,6 @@ class StorageDevice(Device):
                     self.__library.remove([self.__library[target]])
                 except KeyError:
                     pass
-                model = songlist.get_model()
-                for row in model:
-                    if row[0]['~filename'] == utarget:
-                        model.remove(row.iter)
             else:
                 return False
 
@@ -129,7 +124,7 @@ class StorageDevice(Device):
         except (OSError, IOError, GLib.GError), exc:
             return str(exc).decode(const.ENCODING, 'replace')
 
-    def delete(self, songlist, song):
+    def delete(self, parent_widget, song):
         try:
             path = song['~filename']
             dir = os.path.dirname(path)

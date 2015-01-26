@@ -508,7 +508,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                 ).run()
                 break
 
-            status = device.copy(songlist, song)
+            status = device.copy(self, song)
             if isinstance(status, AudioFile):
                 model.append([status])
                 try:
@@ -560,7 +560,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                 wlb.hide()
                 break
 
-            status = device.delete(songlist, song)
+            status = device.delete(self, song)
             if status is True:
                 model.remove(model.find(song))
                 try:
