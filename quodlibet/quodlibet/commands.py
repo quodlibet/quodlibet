@@ -66,15 +66,7 @@ class CommandRegistry(object):
         """
 
         if name not in self._commands:
-            # browser commands
-            commands = app.browser.commands
-            if name in commands:
-                if not args:
-                    raise CommandError("Missing argument for %r" % name)
-                cmd = commands[name]
-                return cmd(args[0], app.library, app.window, app.player)
-            else:
-                raise CommandError("Unknown command %r" % name)
+            raise CommandError("Unknown command %r" % name)
 
         cmd, argcount, optcount = self._commands[name]
         if len(args) < argcount:

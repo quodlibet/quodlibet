@@ -175,9 +175,6 @@ class Browser(Filter):
     headers = None
     """A list of column headers to display; None means all are okay."""
 
-    commands = {}
-    """Per-browser remote commands."""
-
     @classmethod
     def init(klass, library):
         """Called after library and MainWindow initialization, before the
