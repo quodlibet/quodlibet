@@ -85,6 +85,9 @@ class StorageDevice(Device):
         self.__save_library()
         return self.__library.values()
 
+    def contains(self, song):
+        return song in self.__library
+
     def copy(self, parent_widget, song):
         if not self.__pattern:
             self.__set_pattern()
@@ -130,6 +133,7 @@ class StorageDevice(Device):
             dir = os.path.dirname(path)
 
             os.unlink(path)
+            self.__library.remove([song])
 
             if self['unclutter']:
                 files = glob(dir + '/*')

@@ -236,14 +236,13 @@ class Browser(Filter):
 
         raise NotImplementedError
 
-    dropped = None
-    """Called with the SongList and a list of songs when songs are dropped
-    but the song list does not support reordering. Adding the songs to
-    the list is the browser's responsibility. This function should
-    return True if the drop was successful.
+    def dropped(self, songs):
+        """Called with a list of songs when songs are dropped but the song
+        list does not support reordering. This function should return True if
+        the drop was successful.
+        """
 
-        def dropped(self, songlist, songs): ... return True
-    """
+        return False
 
     def key_pressed(self, event):
         """Gets called with a key pressed event from the song list.

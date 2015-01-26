@@ -313,10 +313,7 @@ class SongListDnDMixin(object):
 
     def __drag_data_browser_dropped(self, songs):
         window = qltk.get_top_parent(self)
-        if callable(window.browser.dropped):
-            return window.browser.dropped(self, songs)
-        else:
-            return False
+        return window.browser.dropped(songs)
 
 
 class SongList(AllTreeView, SongListDnDMixin, DragScroll,

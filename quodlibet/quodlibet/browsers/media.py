@@ -123,7 +123,7 @@ class Menu(Gtk.Menu):
             win = LibraryBrowser.open(MediaDevices, library, app.player)
             browser = win.browser
         browser.select(device)
-        browser.dropped(browser.get_toplevel().songlist, songs)
+        browser.dropped(songs)
 
 
 class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
@@ -328,8 +328,13 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         selection.unselect_all()
         selection.select_iter(row.iter)
 
-    def dropped(self, songlist, songs):
-        return self.__copy_songs(songlist, songs)
+    def active_filter(self, song):
+        model, iter = self.__view.get_selection().get_selected()
+        device = model[iter][0]
+        return device.contains(song)
+
+    def dropped(self, songs):
+        return self.__copy_songs(songs)
 
     def __popup_menu(self, view, library):
         model, iter = view.get_selection().get_selected()
@@ -469,7 +474,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             return False
         return True
 
-    def __copy_songs(self, songlist, songs):
+    def __copy_songs(self, songs):
         model, iter = self.__view.get_selection().get_selected()
         if not iter:
             return False
@@ -487,17 +492,11 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             {'song': ''})
         wlb.show()
 
-        model = songlist.get_model()
         for song in songs:
             label = util.escape(song('~artist~title'))
             if wlb.step(song=label):
                 wlb.hide()
                 break
-
-            if len(model) > 0:
-                songlist.scroll_to_cell(model[-1].path)
-            while Gtk.events_pending():
-                Gtk.main_iteration()
 
             space, free = device.get_space()
             if free < os.path.getsize(song['~filename']):
@@ -510,7 +509,6 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
             status = device.copy(self, song)
             if isinstance(status, AudioFile):
-                model.append([status])
                 try:
                     self.__cache[device.bid].append(song)
                 except KeyError:
@@ -534,7 +532,6 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         model, iter = self.__view.get_selection().get_selected()
         if not iter:
             return False
-        songlist = qltk.get_top_parent(self).songlist
 
         device = model[iter][0]
         if not self.__check_device(device, _("Unable to delete songs")):
@@ -553,7 +550,6 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             {'song': ''})
         wlb.show()
 
-        model = songlist.get_model()
         for song in songs:
             label = util.escape(song('~artist~title'))
             if wlb.step(song=label):
@@ -562,7 +558,6 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
             status = device.delete(self, song)
             if status is True:
-                model.remove(model.find(song))
                 try:
                     self.__cache[device.bid].remove(song)
                 except (KeyError, ValueError):

@@ -107,6 +107,13 @@ class Device(dict):
 
         return []
 
+    def contains(self, song):
+        """If the device contains the passed song (it will be returned
+        if list() would be called).
+        """
+
+        return False
+
     ordered = False
     """Whether the order of the files returned by list() is meaningful.
     If it is, refreshing will reset the song list sort order.
