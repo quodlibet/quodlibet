@@ -289,8 +289,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         klass.write()
         GLib.timeout_add(60 * 60 * 1000, klass.__do_check)
 
-    def Menu(self, songs, library):
-        menu = SongsMenu(library, songs, parent=self)
+    def Menu(self, songs, library, items):
         if len(songs) == 1:
             item = qltk.MenuItem(_(u"_Download…"), Gtk.STOCK_CONNECT)
             item.connect('activate', self.__download, songs[0]("~uri"))
@@ -301,8 +300,9 @@ class AudioFeeds(Browser, Gtk.VBox):
             item = qltk.MenuItem(_(u"_Download…"), Gtk.STOCK_CONNECT)
             item.connect('activate', self.__download_many, uris)
             item.set_sensitive(bool(songs))
-        menu.preseparate()
-        menu.prepend(item)
+
+        items.append([item])
+        menu = SongsMenu(library, songs, parent=self, items=items)
         return menu
 
     def __download_many(self, activator, sources):

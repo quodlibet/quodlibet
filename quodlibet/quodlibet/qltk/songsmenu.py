@@ -16,6 +16,7 @@ from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.x import SeparatorMenuItem, Button
+from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk import get_top_parent
 from quodlibet.util import connect_obj
 from quodlibet.plugins import PluginManager, PluginHandler
@@ -266,12 +267,24 @@ class SongsMenu(Gtk.Menu):
 
     def __init__(self, library, songs, plugins=True, playlists=True,
                  queue=True, devices=True, remove=True, delete=False,
-                 edit=True, parent=None):
+                 edit=True, ratings=True, parent=None, items=None):
         super(SongsMenu, self).__init__()
 
         # The library may actually be a librarian; if it is, use it,
         # otherwise find the real librarian.
         librarian = getattr(library, 'librarian', library)
+
+        if ratings:
+            ratings_item = RatingsMenuItem(songs, librarian)
+            self.append(ratings_item)
+            self.separate()
+
+        # external item groups
+        for subitems in reversed(items or []):
+            self.separate()
+            for item in subitems:
+                self.append(item)
+            self.separate()
 
         if plugins:
             submenu = self.plugins.Menu(librarian, parent, songs)
@@ -291,8 +304,6 @@ class SongsMenu(Gtk.Menu):
                 can_add = False
             if not song.is_file:
                 is_file = False
-
-        self.separate()
 
         if playlists:
             # Needed here to avoid a circular import; most browsers use

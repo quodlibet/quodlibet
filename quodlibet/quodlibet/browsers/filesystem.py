@@ -180,9 +180,8 @@ class FileSystem(Browser, Gtk.HBox):
     def activate(self):
         copool.add(self.__songs_selected, self.get_child())
 
-    def Menu(self, songs, library):
-        menu = SongsMenu(library, songs, remove=self.__remove_songs,
-                         delete=True, parent=self)
+    def Menu(self, songs, library, items):
+
         i = qltk.MenuItem(_("_Add to Library"), Gtk.STOCK_ADD)
         i.set_sensitive(False)
         i.connect('activate', self.__add_songs, songs)
@@ -190,8 +189,10 @@ class FileSystem(Browser, Gtk.HBox):
             if song not in self.__glibrary:
                 i.set_sensitive(True)
                 break
-        menu.preseparate()
-        menu.prepend(i)
+
+        items.append([i])
+        menu = SongsMenu(library, songs, remove=self.__remove_songs,
+                         delete=True, parent=self, items=items)
         return menu
 
     def __add_songs(self, item, songs):

@@ -21,7 +21,6 @@ from quodlibet.pattern import Pattern
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView, DragScroll
-from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.util.uri import URI
@@ -334,10 +333,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if not songs:
             return
 
-        can_filter = browser.can_filter
-
-        menu = browser.Menu(songs, library)
-
         def Filter(t):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
@@ -347,20 +342,16 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return b
 
         header = util.tagsplit(header)[0]
-
-        if can_filter("artist") or can_filter("album") or can_filter(header):
-            menu.preseparate()
-
-        if can_filter("artist"):
-            menu.prepend(Filter("artist"))
-        if can_filter("album"):
-            menu.prepend(Filter("album"))
+        can_filter = browser.can_filter
+        menu_items = []
         if (header not in ["artist", "album"] and can_filter(header)):
-            menu.prepend(Filter(header))
+            menu_items.append(Filter(header))
+        if can_filter("artist"):
+            menu_items.append(Filter("artist"))
+        if can_filter("album"):
+            menu_items.append(Filter("album"))
 
-        ratings = RatingsMenuItem(songs, library)
-        menu.preseparate()
-        menu.prepend(ratings)
+        menu = browser.Menu(songs, library, items=[menu_items])
         menu.show_all()
         return menu
 

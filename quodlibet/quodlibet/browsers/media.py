@@ -275,7 +275,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__vbox.remove(songpane)
         self.__paned.remove(self)
 
-    def Menu(self, songs, library):
+    def Menu(self, songs, library, items):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             device = model[iter][0]
@@ -284,7 +284,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             delete = False
 
         menu = SongsMenu(library, songs, delete=delete, remove=False,
-                         parent=self)
+                         parent=self, items=items)
         return menu
 
     def activate(self):

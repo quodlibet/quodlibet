@@ -106,16 +106,16 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         render.markup = model[iter][0].format()
         render.set_property('markup', render.markup)
 
-    def Menu(self, songs, library):
+    def Menu(self, songs, library, items):
         songlist = qltk.get_top_parent(self).songlist
-        menu = super(PlaylistsBrowser, self).Menu(songs, library)
         model, iters = self.__get_selected_songs(songlist)
-        i = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
-        qltk.add_fake_accel(i, "Delete")
-        connect_obj(i, 'activate', self.__remove, iters, model)
-        i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
-        menu.preseparate()
-        menu.prepend(i)
+        item = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
+        qltk.add_fake_accel(item, "Delete")
+        connect_obj(item, 'activate', self.__remove, iters, model)
+        item.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
+
+        items.append([item])
+        menu = super(PlaylistsBrowser, self).Menu(songs, library, items)
         return menu
 
     def __get_selected_songs(self, songlist):
@@ -337,7 +337,8 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         songs = list(model[itr][0])
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
         menu = SongsMenu(library, songs,
-                         playlists=False, remove=False, parent=self)
+                         playlists=False, remove=False, parent=self,
+                         ratings=False)
         menu.preseparate()
 
         def _remove(model, itr):

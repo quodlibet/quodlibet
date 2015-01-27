@@ -34,7 +34,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
-from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = \
@@ -818,12 +818,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         if irfs:
             self.__fav_stations.add(irfs)
 
-    def Menu(self, songs, library):
-        menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
-                         queue=False, devices=False, parent=self)
-
-        menu.prepend(SeparatorMenuItem())
-
+    def Menu(self, songs, library, items):
         in_fav = False
         in_all = False
         for song in songs:
@@ -834,16 +829,19 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
             if in_fav and in_all:
                 break
 
-        button = MenuItem(_("Remove from Favorites"), Gtk.STOCK_REMOVE)
-        button.set_sensitive(in_fav)
-        connect_obj(button, 'activate', self.__remove_fav, songs)
-        menu.prepend(button)
-
+        iradio_items = []
         button = MenuItem(_("Add to Favorites"), Gtk.STOCK_ADD)
         button.set_sensitive(in_all)
         connect_obj(button, 'activate', self.__add_fav, songs)
-        menu.prepend(button)
+        iradio_items.append(button)
+        button = MenuItem(_("Remove from Favorites"), Gtk.STOCK_REMOVE)
+        button.set_sensitive(in_fav)
+        connect_obj(button, 'activate', self.__remove_fav, songs)
+        iradio_items.append(button)
 
+        items.append(iradio_items)
+        menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
+                         queue=False, devices=False, parent=self, items=items)
         return menu
 
     def restore(self):

@@ -247,12 +247,12 @@ class Browser(Filter):
     the browser is.
     """
 
-    def Menu(self, songs, library):
+    def Menu(self, songs, library, items):
         """This method returns a Gtk.Menu, probably a SongsMenu. After this
         menu is returned the SongList may modify it further.
         """
 
-        return SongsMenu(library, songs, delete=True, parent=self)
+        return SongsMenu(library, songs, delete=True, parent=self, items=items)
 
     def statusbar(self, i):
         return ngettext(
