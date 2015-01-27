@@ -1025,3 +1025,13 @@ class Tenum(TestCase):
         self.assertTrue(isinstance(Foo.FOO, Foo))
         self.assertEqual(Foo.FOO, 0)
         self.assertEqual(Foo.BAR, 1)
+
+
+class Tlist_unique(TestCase):
+
+    def test_main(self):
+        self.assertEqual(util.list_unique([]), [])
+        self.assertEqual(util.list_unique(iter([])), [])
+        self.assertEqual(util.list_unique([1, 2, 3]), [1, 2, 3])
+        self.assertEqual(util.list_unique([1, 2, 1, 4]), [1, 2, 4])
+        self.assertEqual(util.list_unique([1, 1, 1, 2]), [1, 2])

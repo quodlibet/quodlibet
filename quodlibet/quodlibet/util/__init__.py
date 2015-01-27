@@ -1107,3 +1107,19 @@ def set_process_title(title):
     except (OSError, AttributeError):
         print_d("Couldn't find module libc.so.6 (ctypes). "
                 "Not setting process title.")
+
+
+def list_unique(sequence):
+    """Takes any sequence and returns a list with all duplicate entries
+    removed while preserving the order.
+    """
+
+    l = []
+    seen = set()
+    append = l.append
+    add = seen.add
+    for v in sequence:
+        if v not in seen:
+            append(v)
+            add(v)
+    return l

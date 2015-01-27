@@ -317,11 +317,14 @@ class TXMLFromMarkupPattern(_TPattern):
 
 class TRealTags(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(Pattern("").tags, set([]))
+        self.failUnlessEqual(Pattern("").tags, [])
 
     def test_both(self):
         pat = "<foo|<~bar~fuu> - <fa>|<bar>>"
-        self.failUnlessEqual(Pattern(pat).tags, set(["bar", "fuu", "fa"]))
+        self.failUnlessEqual(Pattern(pat).tags, ["bar", "fuu", "fa"])
+
+        pat = "<foo|<~bar~fuu> - <fa>|<quux>>"
+        self.failUnlessEqual(Pattern(pat).tags, ["bar", "fuu", "fa", "quux"])
 
 
 class TPatternFormatList(_TPattern):
