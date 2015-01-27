@@ -169,6 +169,18 @@ def get_sort_tag(tag):
     return tag
 
 
+def header_tag_split(header):
+    """Split a pattern or a tied tag into separate tags"""
+
+    if "<" in header:
+        try:
+            return list(Pattern(header).tags)
+        except ValueError:
+            return []
+    else:
+        return util.tagsplit(header)
+
+
 class SongListDnDMixin(object):
     """DnD support for the SongList class"""
 
@@ -341,7 +353,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             b.connect('activate', self.__filter_on, t, songs, browser)
             return b
 
-        header = util.tagsplit(header)[0]
+        header = header_tag_split(header)[0]
         can_filter = browser.can_filter
         menu_items = []
         if (header not in ["artist", "album"] and can_filter(header)):
@@ -675,14 +687,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         star = list(Query.STAR)
         for header in headers:
-            if "<" in header:
-                try:
-                    tags = Pattern(header).tags
-                except ValueError:
-                    continue
-            else:
-                tags = util.tagsplit(header)
-            for tag in tags:
+            for tag in header_tag_split(header):
                 if not tag.startswith("~#") and tag not in star:
                     star.append(tag)
         SongList.star = star

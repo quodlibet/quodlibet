@@ -5,7 +5,8 @@ from tests import TestCase
 
 from quodlibet.library import SongLibrary
 from quodlibet.util.path import fsnative
-from quodlibet.qltk.songlist import SongList, set_columns, get_columns
+from quodlibet.qltk.songlist import SongList, set_columns, get_columns, \
+    header_tag_split
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config
 
@@ -204,6 +205,12 @@ class TSongList(TestCase):
         set_columns(columns)
         self.failUnlessEqual(columns, get_columns())
         self.failIf(config.get("settings", "headers", None))
+
+    def test_header_tag_split(self):
+        self.assertEqual(header_tag_split("foo"), ["foo"])
+        self.assertEqual(header_tag_split("~foo~bar"), ["foo", "bar"])
+        self.assertEqual(header_tag_split("<foo>"), ["foo"])
+        self.assertEqual(header_tag_split("<~foo~bar>"), ["foo", "bar"])
 
     def tearDown(self):
         self.songlist.destroy()
