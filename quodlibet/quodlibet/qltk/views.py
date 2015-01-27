@@ -499,10 +499,12 @@ class DragScroll(object):
             # we have to re-add the timeout.. otherwise they could add up
             # because scroll can last longer than 50ms
             GLib.source_remove(self.__scroll_periodic)
+            self.__scroll_periodic = None
             enable_periodic_scroll()
 
         def enable_periodic_scroll():
             self.__scroll_periodic = GLib.timeout_add(50, periodic_scroll)
+            self.__scroll_delay = None
 
         self.__scroll_delay = GLib.timeout_add(350, enable_periodic_scroll)
 
