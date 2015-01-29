@@ -56,10 +56,7 @@ class TQltk(TestCase):
         m.destroy()
 
     def test_redraw_all(self):
-        w = Gtk.Window()
-        w.realize()
         qltk.redraw_all_toplevels()
-        qltk.redraw_all_toplevels(w)
 
     def test_get_menu_item_top_parent(self):
         item = Gtk.MenuItem()

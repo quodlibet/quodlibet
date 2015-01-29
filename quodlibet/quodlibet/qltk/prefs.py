@@ -294,7 +294,7 @@ class PreferencesWindow(UniqueWindow):
             config.set('albumart', name, entry.get_text())
 
         def __toggle_round_corners(self, *args):
-            qltk.redraw_all_toplevels(self)
+            qltk.redraw_all_toplevels()
 
         def __toggled_force_filename(self, cb, fn_entry):
             fn_entry.set_sensitive(cb.get_active())
@@ -414,7 +414,7 @@ class PreferencesWindow(UniqueWindow):
                 if it is None:
                     return
                 RATINGS.default = model[it][0]
-                qltk.redraw_all_toplevels(self)
+                qltk.redraw_all_toplevels()
 
             def populate_default_rating_model(combo, num):
                 model = combo.get_model()

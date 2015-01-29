@@ -18,17 +18,14 @@ from gi.repository import Gdk
 from gi.repository import GLib
 
 
-def redraw_all_toplevels(skip=None):
-    """A hack to trigger redraws for all windows and widgets.
-    Currently uses the sensitive state which leads to the active widget
-    losing focus, so pass it with skip to skip processing it.
-    """
-
-    if skip:
-        skip = get_top_parent(skip)
+def redraw_all_toplevels():
+    """A hack to trigger redraws for all windows and widgets."""
 
     for widget in Gtk.Window.list_toplevels():
-        if not widget.get_realized() or widget == skip:
+        if not widget.get_realized():
+            continue
+        if widget.is_active():
+            widget.queue_draw()
             continue
         sensitive = widget.get_sensitive()
         widget.set_sensitive(not sensitive)
