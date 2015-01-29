@@ -31,7 +31,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
-from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, connect_destroy
@@ -629,17 +629,17 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def __popup(self, view, library):
         albums = self.__get_selected_albums()
         songs = self.__get_songs_from_albums(albums)
-        menu = SongsMenu(library, songs, parent=self)
 
+        items = []
         if self.__cover_column.get_visible():
             num = len(albums)
             button = MenuItem(
                 ngettext("Reload album _cover", "Reload album _covers", num),
                 Gtk.STOCK_REFRESH)
             button.connect('activate', self.__refresh_album, view)
-            menu.prepend(SeparatorMenuItem())
-            menu.prepend(button)
+            items.append(button)
 
+        menu = SongsMenu(library, songs, parent=self, items=[items])
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
