@@ -60,3 +60,11 @@ class TQltk(TestCase):
         w.realize()
         qltk.redraw_all_toplevels()
         qltk.redraw_all_toplevels(w)
+
+    def test_get_menu_item_top_parent(self):
+        item = Gtk.MenuItem()
+        menu = Gtk.Menu()
+        menu.append(item)
+        window = Gtk.Window()
+        menu.attach_to_widget(window, None)
+        self.assertEqual(qltk.get_menu_item_top_parent(item), window)

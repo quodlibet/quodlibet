@@ -76,6 +76,13 @@ def get_top_parent(widget):
         return None
 
 
+def get_menu_item_top_parent(widget):
+    """Returns the toplevel for a menu item"""
+
+    menu = widget and widget.get_parent()
+    return get_top_parent(menu.get_attach_widget())
+
+
 def find_widgets(container, type_):
     """Given a container, find all children that are a subclass of type_
     (including itself)

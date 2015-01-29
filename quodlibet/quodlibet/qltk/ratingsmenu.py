@@ -40,7 +40,8 @@ class RatingsMenuItem(Gtk.MenuItem):
         count = len(songs)
         if (count > 1 and
                 config.getboolean("browsers", "rating_confirm_multiple")):
-            dialog = ConfirmRateMultipleDialog(self, count, value)
+            parent = qltk.get_menu_item_top_parent(self)
+            dialog = ConfirmRateMultipleDialog(parent, count, value)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
         for song in songs:
@@ -51,7 +52,8 @@ class RatingsMenuItem(Gtk.MenuItem):
         count = len(songs)
         if (count > 1 and
                 config.getboolean("browsers", "rating_confirm_multiple")):
-            dialog = ConfirmRateMultipleDialog(self, count, None)
+            parent = qltk.get_menu_item_top_parent(self)
+            dialog = ConfirmRateMultipleDialog(parent, count, None)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
         reset = []
