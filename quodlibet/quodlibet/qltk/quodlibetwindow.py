@@ -459,6 +459,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         accel_group = ui.get_accel_group()
         self.add_accel_group(accel_group)
 
+        def scroll_and_jump(*args):
+            self.__jump_to_current(True, True)
+
+        keyval, mod = Gtk.accelerator_parse("<control><shift>J")
+        accel_group.connect(keyval, mod, 0, scroll_and_jump)
+
         # dbus app menu
         AppMenu(self, ui.get_action_groups()[0])
 
@@ -1032,13 +1038,15 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         else:
             app.player.paused ^= True
 
-    def __jump_to_current(self, explicit):
+    def __jump_to_current(self, explicit, force_scroll=False):
         """Select/scroll to the current playing song in the playlist.
         If it can't be found tell the browser to properly fill the playlist
         with an appropriate selection containing the song.
 
         explicit means that the jump request comes from the user and not
         from an event like song-started.
+
+        force_scroll will ask the browser to refill the playlist in any case.
         """
 
         def idle_jump_to(song, select):
@@ -1053,7 +1061,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         if song is None:
             return
 
-        ok = self.songlist.jump_to_song(song, select=explicit)
+        if not force_scroll:
+            ok = self.songlist.jump_to_song(song, select=explicit)
+        else:
+            assert explicit
+            ok = False
+
         if ok:
             self.songlist.grab_focus()
         elif explicit:

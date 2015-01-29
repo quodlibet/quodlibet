@@ -15,6 +15,12 @@ Main Window
 * :kbd:`Ctrl-L` - Focus the search entry
 
 
+Browsers
+--------
+
+* :kbd:`Ctrl-Shift-J` - Reset filters and jump to the playing song.
+
+
 Song Lists
 ----------
 
