@@ -145,13 +145,40 @@ class TreeViewHints(Gtk.Window):
             self.__undisplay()
             return False
 
+        x, y = map(int, [event.x, event.y])
+
+        # For gtk3.16 overlay scrollbars: if our event x coordinate
+        # is contained in the scrollbar, hide the tooltip. Unlike other
+        # hiding events we don't want to send a leave event to the scrolled
+        # window so the overlay scrollbar does't hide and can be interacted
+        # with.
+        parent = view.get_parent()
+        # We only need to check if the tooltip is there since events
+        # on the scrollbars don't get forwarded to us anyway.
+        if self.__view and parent and isinstance(parent, Gtk.ScrolledWindow):
+            vscrollbar = parent.get_vscrollbar()
+            res = vscrollbar.translate_coordinates(view, 0, 0)
+            if res is not None:
+                x_offset = res[0]
+                placement = parent.get_placement()
+                vbar_right = placement in (Gtk.CornerType.BOTTOM_LEFT,
+                                           Gtk.CornerType.TOP_LEFT)
+                if vbar_right:
+                    if x >= x_offset:
+                        self.__undisplay(send_leave=False)
+                        return False
+                else:
+                    vbar_width = vscrollbar.get_allocation().width
+                    if x_offset + vbar_width >= x:
+                        self.__undisplay(send_leave=False)
+                        return False
+
         # hide if any modifier is active
         if event.get_state() & Gtk.accelerator_get_default_mod_mask():
             self.__undisplay()
             return False
 
         # get the cell at the mouse position
-        x, y = map(int, [event.x, event.y])
         try:
             path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError:
@@ -324,9 +351,11 @@ class TreeViewHints(Gtk.Window):
 
         return False
 
-    def __undisplay(self, *args):
+    def __undisplay(self, *args, **kwargs):
         if not self.__view:
             return
+
+        send_leave = kwargs.pop("send_leave", True)
 
         # XXXXXXXX!: for overlay scrollbars the parent scrolled window
         # listens to notify-leave events to hide them. In case we show
@@ -336,7 +365,7 @@ class TreeViewHints(Gtk.Window):
         # to make this work.
         parent = self.__view.get_parent()
         fake_event = None
-        if parent and isinstance(parent, Gtk.ScrolledWindow):
+        if parent and isinstance(parent, Gtk.ScrolledWindow) and send_leave:
             fake_event = Gdk.Event.new(Gdk.EventType.LEAVE_NOTIFY)
             fake_event.any.window = parent.get_window()
             struct = fake_event.crossing
