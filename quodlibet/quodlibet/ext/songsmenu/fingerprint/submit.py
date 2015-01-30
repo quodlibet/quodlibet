@@ -115,13 +115,13 @@ class FingerprintDialog(Window):
         text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, "
             "or <i><b>artist</b></i> / "
             "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
-        text += _("\n\n<i>Fingerprints:</i>")
+        text += "\n\n" + _("<i>Fingerprints:</i>")
         text += " %d/%d" % (valid_fp, all_)
-        text += _("\n<i>Songs with MBIDs:</i>")
+        text += "\n" # _("<i>Songs with MBIDs:</i>")
         text += " %d/%d" % (got_mbid, all_)
-        text += _("\n<i>Songs with sufficient tags:</i>")
+        text += "\n" + _("<i>Songs with sufficient tags:</i>")
         text += " %d/%d" % (got_meta, all_)
-        text += _("\n<i>Songs to submit:</i>")
+        text += "\n" + _("<i>Songs to submit:</i>")
         text += " %d/%d" % (to_send, all_)
         self.__stats.set_markup(text)
 

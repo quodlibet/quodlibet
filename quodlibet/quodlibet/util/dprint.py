@@ -126,7 +126,7 @@ def print_d(string, context=""):
 
     # Translators: "D" as in "Debug". It is prepended to
     # terminal output. APT uses a similar output format.
-    prefix = _("D: ")
+    prefix = _("D:") + " "
 
     string = "%s: %s: %s" % (Colorise.magenta(timestr),
                              Colorise.blue(context), string)
@@ -143,7 +143,7 @@ def print_w(string):
     """Print warnings."""
     # Translators: "W" as in "Warning". It is prepended to
     # terminal output. APT uses a similar output format.
-    prefix = _("W: ")
+    prefix = _("W:") + " "
 
     string = _format_print(string, Colorise.red(prefix))
     _print(string, sys.stderr)
@@ -156,7 +156,7 @@ def print_e(string, context=None):
     """Print errors."""
     # Translators: "E" as in "Error". It is prepended to
     # terminal output. APT uses a similar output format.
-    prefix = _("E: ")
+    prefix = _("E:") + " "
 
     string = _format_print(string, Colorise.red(prefix))
     _print(string, sys.stderr)

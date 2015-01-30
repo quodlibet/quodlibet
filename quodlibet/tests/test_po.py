@@ -215,14 +215,11 @@ class TPot(TestCase):
 
     def test_leading_and_trailing_spaces(self):
         fails = []
-        ok_msgids = L('D: ', 'W: ', 'E: ')
 
         for entry in self.pot:
-            if entry.msgid.startswith(' ') or entry.msgid.endswith(' '):
-                if entry.msgid not in ok_msgids:
-                    fails.append(entry)
+            if entry.msgid.strip() != entry.msgid:
+                fails.append(entry)
 
-        ok_msgids.check_unused()
         self.conclude(fails, "leading or trailing spaces")
 
 

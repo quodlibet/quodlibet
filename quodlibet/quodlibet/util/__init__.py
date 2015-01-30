@@ -105,10 +105,11 @@ class OptionParser(object):
         for k in self.__help.keys():
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
-        s = _("Usage: %(program)s %(usage)s\n") % {
+        s = _("Usage: %(program)s %(usage)s") % {
             "program": sys.argv[0],
             "usage": self.__usage if self.__usage else _("[options]"),
         }
+        s += "\n"
         if self.__description:
             s += "%s - %s\n" % (self.__name, self.__description)
         s += "\n"
