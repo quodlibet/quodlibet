@@ -30,9 +30,9 @@ class ConfirmMultiSongInvoke(WarningMessage):
     RESPONSE_INVOKE = 1
 
     def __init__(self, parent, plugin_name, count):
-        title = ngettext("Run the plugin \"%s\" on %d song?",
-                         "Run the plugin \"%s\" on %d songs?",
-                         count) % (plugin_name, count)
+        title = ngettext("Run the plugin \"%(name)s\" on %(count)d song?",
+                         "Run the plugin \"%(name)s\" on %(count)d songs?",
+                         count) % {"name": plugin_name, "count": count}
 
         super(ConfirmMultiSongInvoke, self).__init__(
             get_top_parent(parent),
@@ -59,8 +59,8 @@ class ConfirmMultiAlbumInvoke(WarningMessage):
     RESPONSE_INVOKE = 1
 
     def __init__(self, parent, plugin_name, count):
-        title = ngettext("Run the plugin \"%s\" on %d album?",
-                         "Run the plugin \"%s\" on %d albums?",
+        title = ngettext("Run the plugin \"%(name)s\" on %(count)d album?",
+                         "Run the plugin \"%(name)s\" on %(count)d albums?",
                          count) % (plugin_name, count)
 
         super(ConfirmMultiAlbumInvoke, self).__init__(

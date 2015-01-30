@@ -226,14 +226,14 @@ class UDisks2Manager(DeviceManager):
         try:
             udev.init()
         except OSError:
-            print_w(_("%s: Could not find 'libudev'.") % "UDisks2")
+            print_w("UDisks2: " + _("Could not find '%s'.") % "libudev")
             error = True
         else:
             self._udev = udev.Udev.new()
 
         if get_mpi_dir() is None:
-            print_w(_("%s: Could not find %s.")
-                    % ("UDisks2", "media-player-info"))
+            print_w("UDisks2: " + _("Could not find '%s'.")
+                    % "media-player-info")
             error = True
 
         if error:
@@ -439,14 +439,14 @@ class UDisks1Manager(DeviceManager):
         try:
             udev.init()
         except OSError:
-            print_w(_("%s: Could not find 'libudev'.") % "UDisks")
+            print_w("UDisks: " + _("Could not find '%s'.") % "libudev")
             error = True
         else:
             self.__udev = udev.Udev.new()
 
         if get_mpi_dir() is None:
-            print_w(_("%s: Could not find %s.")
-                    % ("UDisks", "media-player-info"))
+            print_w("UDisks: " + _("Could not find '%s'.")
+                    % "media-player-info")
             error = True
 
         if error:

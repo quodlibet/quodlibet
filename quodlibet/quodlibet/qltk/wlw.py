@@ -215,5 +215,8 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
 
     def step(self, **values):
         ret = super(WaitLoadBar, self).step(**values)
-        self._progress.set_text(_("%d of %d") % (self.current, self.count))
+        self._progress.set_text(_("%(current)d of %(all)d") % {
+            "current": self.current,
+            "all": self.count,
+        })
         return ret

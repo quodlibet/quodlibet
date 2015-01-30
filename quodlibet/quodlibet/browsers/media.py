@@ -450,9 +450,9 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             fraction = float(used) / space
 
             self.__device_space.set_markup(
-                _("%s used, %s available") %
-                (util.bold(util.format_size(used)),
-                 util.bold(util.format_size(free))))
+                _("%(used-size)s used, %(free-size)s available") %
+                {"used-size": util.bold(util.format_size(used)),
+                 "free-size": util.bold(util.format_size(free))})
             self.__progress.set_fraction(fraction)
             self.__progress.set_text("%.f%%" % round(fraction * 100))
             self.__progress.show()

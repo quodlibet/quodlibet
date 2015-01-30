@@ -25,9 +25,9 @@ class ConfirmMultiPlaylistInvoke(WarningMessage):
     RESPONSE_INVOKE = 1
 
     def __init__(self, parent, plugin_name, count):
-        title = ngettext("Run the plugin \"%s\" on %d playlist?",
-                         "Run the plugin \"%s\" on %d playlists?",
-                         count) % (plugin_name, count)
+        title = ngettext("Run the plugin \"%(name)s\" on %(count)d playlist?",
+                         "Run the plugin \"%(name)s\" on %(count)d playlists?",
+                         count) % {"name": plugin_name, "count": count}
 
         super(ConfirmMultiPlaylistInvoke, self).__init__(
             get_top_parent(parent),

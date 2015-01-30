@@ -68,7 +68,8 @@ class ConsoleWindow(Gtk.Window):
                 'app': app})
         self.add(console)
 
-        acces_string = _("You can access the following objects by default:\\n"
+        acces_string = _("You can access the following objects by default:")
+        acces_string += ("\\n"
             "  '%s' (SongWrapper objects)\\n"
             "  '%s' (Song dictionaries)\\n"
             "  '%s' (Filename list)\\n"

@@ -65,6 +65,15 @@ class TPot(TestCase):
                 "One or more messages did not pass (%s):\n" % reason
                 + '\n'.join(messages))
 
+    def test_multiple_format_placeholders(self):
+        fails = []
+        reg = re.compile(r"((?<!%)%[sbcdoxXneEfFgGn]|\{\})")
+        for entry in self.pot:
+            if len(reg.findall(entry.msgid)) > 1:
+                fails.append(entry)
+        self.conclude(fails,
+            "uses multiple non-named format placeholders")
+
     def test_label_capitals(self):
         """ Check that various input labels (strings ending with a ':') are
             written with proper capitalization.

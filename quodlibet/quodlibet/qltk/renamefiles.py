@@ -242,12 +242,13 @@ class RenameFiles(Gtk.VBox):
                            _("_Continue"), Gtk.ResponseType.OK)
                 msg = qltk.Message(
                     Gtk.MessageType.ERROR, win, _("Unable to rename file"),
-                    _("Renaming <b>%s</b> to <b>%s</b> failed. "
-                      "Possibly the target file already exists, "
+                    _("Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> "
+                      "failed. Possibly the target file already exists, "
                       "or you do not have permission to make the "
-                      "new file or remove the old one.") % (
-                    util.escape(old_name),
-                    util.escape(new_name)),
+                      "new file or remove the old one.") % {
+                        "old-name": util.escape(old_name),
+                        "new-name": util.escape(new_name),
+                      },
                     buttons=Gtk.ButtonsType.NONE)
                 msg.add_buttons(*buttons)
                 msg.set_default_response(Gtk.ResponseType.OK)

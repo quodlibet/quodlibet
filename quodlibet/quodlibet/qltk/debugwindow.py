@@ -82,14 +82,19 @@ class ExceptionDialog(Gtk.Window):
         self.set_border_width(12)
         self.set_title(_("Error Occurred"))
 
-        desc = _("An exception has occured in Quod Libet. A dump file "
-            "has been saved to <b >%s</b> that will help us debug the crash. "
+        desc = _("An exception has occured in Quod Libet. A dump file has "
+            "been saved to <b >%(dump-path)s</b> that will help us debug the "
+            "crash. "
             "Please file a new issue at http://code.google.com/p/quodlibet/"
             "issues/list and attach this file or include its contents. This "
             "file may contain some identifying information about you or your "
             "system, such as a list of recent files played. If this is "
-            "unacceptable, send <b>%s</b> instead with a description of what "
-            "you were doing.") % (unexpand(dump), unexpand(minidump))
+            "unacceptable, send <b>%(mini-dump-path)s</b> instead with a "
+            "description of what "
+            "you were doing.") % {
+                "dump-path": unexpand(dump),
+                "mini-dump-path": unexpand(minidump),
+            }
 
         suggestion = _("Quod Libet may now be unstable. Closing it and "
             "restarting is recommended. Your library will be saved.")

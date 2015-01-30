@@ -115,11 +115,14 @@ class FingerprintDialog(Window):
         text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, "
             "or <i><b>artist</b></i> / "
             "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
-        text += _("\n\n<i>Fingerprints:</i> %d/%d") % (valid_fp, all_)
-        text += _("\n<i>Songs with MBIDs:</i> %d/%d") % (got_mbid, all_)
-        text += _("\n<i>Songs with sufficient tags:</i> %d/%d") % (
-            got_meta, all_)
-        text += _("\n<i>Songs to submit:</i> %d/%d") % (to_send, all_)
+        text += _("\n\n<i>Fingerprints:</i>")
+        text += " %d/%d" % (valid_fp, all_)
+        text += _("\n<i>Songs with MBIDs:</i>")
+        text += " %d/%d" % (got_mbid, all_)
+        text += _("\n<i>Songs with sufficient tags:</i>")
+        text += " %d/%d" % (got_meta, all_)
+        text += _("\n<i>Songs to submit:</i>")
+        text += " %d/%d" % (to_send, all_)
         self.__stats.set_markup(text)
 
     def __set_fraction(self, progress):
@@ -156,7 +159,8 @@ class FingerprintDialog(Window):
         results = self.__fp_results.values()
         to_send = len(filter(can_submit, results))
         self.__label_song.set_text(
-            _("Done. %d/%d songs to submit.") % (to_send, all_))
+            _("Done. %(to-send)d/%(all)d songs to submit.") % {
+                "to-send": to_send, "all": all_})
 
     def __cancel_cb(self, pool, *args):
         self.destroy()

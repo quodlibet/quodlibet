@@ -669,9 +669,11 @@ class EditTags(Gtk.VBox):
         iters = [i for (i, v) in model.iterrows() if v.tag == tag]
         if iters and not self.__songinfo.can_multiple_values(tag):
             title = _("Unable to add tag")
-            msg = _("Unable to add <b>%s</b>\n\nThe files currently"
+            msg = _("Unable to add <b>%s</b>") % util.escape(tag)
+            msg += "\n\n"
+            msg += _("The files currently"
                     " selected do not support multiple values for <b>%s</b>."
-                    ) % (util.escape(tag), util.escape(tag))
+                    ) % util.escape(tag)
             qltk.ErrorMessage(self, title, msg).run()
             return
 
