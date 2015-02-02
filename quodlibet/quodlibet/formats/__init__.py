@@ -27,8 +27,9 @@ def init():
 
     import mutagen
     if mutagen.version < MinVersions.MUTAGEN:
-        print_w("Mutagen %s required. %s found."
-                % (MinVersions.MUTAGEN, mutagen.version_string))
+        raise ImportError(
+            "Mutagen %s required. %s found." %
+            (MinVersions.MUTAGEN, mutagen.version_string))
 
     base = os.path.dirname(__file__)
     load_pyc = os.name == 'nt'

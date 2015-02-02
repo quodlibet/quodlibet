@@ -396,7 +396,8 @@ def _python_init():
     import sys
     if sys.version_info < MinVersions.PYTHON:
         actual = Version(sys.version_info[:3])
-        print_w("Python %s required. %s found." % (MinVersions.PYTHON, actual))
+        raise ImportError("Python %s required. %s found." %
+                          (MinVersions.PYTHON, actual))
 
     # some code depends on utf-8 default encoding (pygtk used to set it)
     reload(sys)
