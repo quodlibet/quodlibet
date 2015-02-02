@@ -182,3 +182,12 @@ class TWvCoverArt(TestCase):
         self.assertEqual(len(images), 1)
         self.assertEqual(images[0].mime_type, "image/")
         self.assertEqual(images[0].file.read(), "foo")
+
+    def test_set_image_no_tag(self):
+        m = mutagen.apev2.APEv2(self.f)
+        m.delete()
+        fileobj = StringIO.StringIO("foo")
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
+        self.s.set_image(image)
+        images = self.s.get_images()
+        self.assertEqual(len(images), 1)

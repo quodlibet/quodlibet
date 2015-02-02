@@ -200,7 +200,7 @@ class APEv2File(AudioFile):
         try:
             tag = mutagen.apev2.APEv2(self['~filename'])
         except mutagen.apev2.APENoHeaderError:
-            return
+            tag = mutagen.apev2.APEv2()
 
         for key, value in tag.items():
             cover_type = get_cover_type(key, value)
@@ -212,5 +212,5 @@ class APEv2File(AudioFile):
             return
         key, value = to_write
         tag[key] = value
-        tag.save()
+        tag.save(self['~filename'])
         self.has_images = True
