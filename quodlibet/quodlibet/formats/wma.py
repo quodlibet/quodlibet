@@ -7,15 +7,11 @@
 
 import struct
 
+import mutagen.asf
+
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import EmbeddedImage, APICType
-
-extensions = [".wma"]
-try:
-    import mutagen.asf
-except ImportError:
-    extensions = []
 
 
 class WMAFile(AudioFile):
@@ -270,3 +266,4 @@ def pack_image(mime, description, imagedata, type_):
 
 info = WMAFile
 types = [WMAFile]
+extensions = [".wma"]

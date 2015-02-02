@@ -9,6 +9,7 @@ from ._audio import AudioFile
 
 extensions = [".aac", ".adif", ".adts"]
 try:
+    # since mutagen 1.27
     from mutagen.aac import AAC
 except ImportError:
     extensions = []

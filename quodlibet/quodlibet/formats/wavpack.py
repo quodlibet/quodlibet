@@ -5,13 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet.formats._apev2 import APEv2File
+from mutagen.wavpack import WavPack
 
-extensions = [".wv"]
-try:
-    from mutagen.wavpack import WavPack
-except ImportError:
-    extensions = []
+from quodlibet.formats._apev2 import APEv2File
 
 
 class WavpackFile(APEv2File):
@@ -26,3 +22,4 @@ class WavpackFile(APEv2File):
 
 info = WavpackFile
 types = [WavpackFile]
+extensions = [".wv"]

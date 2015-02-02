@@ -429,18 +429,6 @@ class TID3File(TestCase):
         song = MP3File(self.filename)
         self.failUnlessEqual(len(song.list("artist")), 2)
 
-    def test_id3_bug(self):
-        # http://code.google.com/p/mutagen/issues/detail?id=97
-        tag = mutagen.id3.ID3(self.filename2)
-        self.failUnless(tag.unknown_frames)
-        version = mutagen.version
-        mutagen.version = (1, 20)
-        song = MP3File(self.filename2)
-        song.write()
-        mutagen.version = version
-        tag = mutagen.id3.ID3(self.filename2)
-        self.failIf(tag.unknown_frames)
-
     def test_encoding(self):
         song = MP3File(self.filename)
         song["foo"] = u"öäü"

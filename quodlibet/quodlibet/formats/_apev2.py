@@ -5,14 +5,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import mutagen.apev2
+
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import APICType, EmbeddedImage
 from quodlibet.util.path import get_temp_cover_file
-
-try:
-    import mutagen.apev2
-except ImportError:
-    pass
 
 
 def get_cover_type(key, value):
