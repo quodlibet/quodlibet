@@ -486,7 +486,7 @@ class ID3File(AudioFile):
         try:
             tag = mutagen.id3.ID3(self["~filename"])
         except Exception:
-            return
+            tag = mutagen.id3.ID3()
 
         try:
             data = image.file.read()
@@ -498,6 +498,6 @@ class ID3File(AudioFile):
             encoding=3, mime=image.mime_type, type=APICType.COVER_FRONT,
             desc=u"", data=data)
         tag.add(frame)
-        tag.save()
+        tag.save(self["~filename"])
 
         self.has_images = True

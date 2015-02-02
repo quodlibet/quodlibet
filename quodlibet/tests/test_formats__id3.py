@@ -88,6 +88,17 @@ class TID3Images(TestCase):
         self.assertTrue(song.has_images)
         self.assertEqual(song.get_primary_image().mime_type, "image/jpeg")
 
+    def test_set_image_no_tag(self):
+        f = mutagen.File(self.filename)
+        f.delete()
+        song = MP3File(self.filename)
+        fileobj = StringIO.StringIO("foo")
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
+        song.set_image(image)
+
+        song = MP3File(self.filename)
+        self.assertTrue(song.has_images)
+
 
 class TID3File(TestCase):
     def setUp(self):
