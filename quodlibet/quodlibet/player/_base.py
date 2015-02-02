@@ -88,7 +88,8 @@ class BasePlayer(GObject.GObject, Equalizer):
 
     _gproperties_ = {
         'volume': (float, 'player volume', 'the volume of the player',
-                   0.0, 1.0, 1.0, GObject.PARAM_READWRITE)
+                   0.0, 1.0, 1.0,
+                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE)
         }
 
     def __init__(self, *args, **kwargs):

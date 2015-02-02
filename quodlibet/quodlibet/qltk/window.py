@@ -50,7 +50,8 @@ class Window(Gtk.Window):
     _preven_inital_show = False
 
     __gsignals__ = {
-        "close-accel": (GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION,
+        "close-accel": (GObject.SignalFlags.RUN_LAST |
+                            GObject.SignalFlags.ACTION,
                         GObject.TYPE_NONE, ())
     }
 
