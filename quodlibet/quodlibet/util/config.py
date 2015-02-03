@@ -29,6 +29,9 @@ class _sorted_dict(dict):
         return sorted(super(_sorted_dict, self).items())
 
 
+_DEFAULT = object()
+
+
 class Config(object):
     """A wrapper around RawConfigParser"""
 
@@ -114,82 +117,79 @@ class Config(object):
 
         return self._config.options(section)
 
-    def get(self, *args):
+    def get(self, section, option, default=_DEFAULT):
         """get(section, option[, default]) -> str
 
         If default is not given, raises Error in case of an error
         """
 
-        if len(args) == 3:
-            try:
-                return self._config.get(*args[:2])
-            except Error:
-                return args[-1]
-        return self._config.get(*args)
+        try:
+            return self._config.get(section, option)
+        except Error:
+            if default is _DEFAULT:
+                raise
+            return default
 
-    def getboolean(self, *args):
+    def getboolean(self, section, option, default=_DEFAULT):
         """getboolean(section, option[, default]) -> bool
 
         If default is not given, raises Error in case of an error
         """
 
-        if len(args) == 3:
-            if not isinstance(args[-1], bool):
+        try:
+            return self._config.getboolean(section, option)
+        except Error:
+            if default is _DEFAULT:
+                raise
+            if not isinstance(default, bool):
                 raise ValueError
-            try:
-                return self._config.getboolean(*args[:2])
-            # ValueError if the value found in the config file
-            # does not match any string representation -> so catch it too
-            except (ValueError, Error):
-                return args[-1]
-        return self._config.getboolean(*args)
+            return default
 
-    def getint(self, *args):
+    def getint(self, section, option, default=_DEFAULT):
         """getint(section, option[, default]) -> int
 
         If default is not give, raises Error in case of an error
         """
 
-        if len(args) == 3:
-            if not isinstance(args[-1], int):
+        try:
+            return self._config.getint(section, option)
+        except Error:
+            if default is _DEFAULT:
+                raise
+            if not isinstance(default, int):
                 raise ValueError
-            try:
-                return self._config.getint(*args[:2])
-            except Error:
-                return args[-1]
-        return self._config.getint(*args)
+            return default
 
-    def getfloat(self, *args):
+    def getfloat(self, section, option, default=_DEFAULT):
         """getfloat(section, option[, default]) -> float
 
         If default is not give, raises Error in case of an error
         """
 
-        if len(args) == 3:
-            if not isinstance(args[-1], float):
+        try:
+            return self._config.getfloat(section, option)
+        except Error:
+            if default is _DEFAULT:
+                raise
+            if not isinstance(default, float):
                 raise ValueError
-            try:
-                return self._config.getfloat(*args[:2])
-            except Error:
-                return args[-1]
-        return self._config.getfloat(*args)
+            return default
 
-    def getstringlist(self, *args):
+    def getstringlist(self, section, option, default=_DEFAULT):
         """getstringlist(section, option[, default]) -> list
 
         If default is not given, raises Error in case of an error.
         Gets a list of strings, using CSV to parse and delimit.
         """
 
-        if len(args) == 3:
-            if not isinstance(args[-1], list):
+        try:
+            value = self._config.get(section, option)
+        except Error:
+            if default is _DEFAULT:
+                raise
+            if not isinstance(default, list):
                 raise ValueError
-            try:
-                value = self._config.get(*args[:2])
-            except Error:
-                return args[-1]
-        else:
-            value = self._config.get(*args)
+            return default
 
         parser = csv.reader(
             [value], lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
@@ -216,21 +216,17 @@ class Config(object):
         joined = join_escape(values, sep)
         self._config.set(section, option, joined)
 
-    def getlist(self, *args, **kwargs):
+    def getlist(self, section, option, default=_DEFAULT, sep=","):
         """Returns a str list saved with setlist()"""
 
-        sep = kwargs.pop("sep", ",")
-        if len(args) >= 3:
-            if not isinstance(args[2], list):
+        try:
+            value = self._config.get(section, option)
+        except Error:
+            if default is _DEFAULT:
+                raise
+            if not isinstance(default, list):
                 raise ValueError
-            if len(args) == 4:
-                sep = args[-1]
-            try:
-                value = self._config.get(*args[:2])
-            except Error:
-                return args[-1]
-        else:
-            value = self._config.get(*args)
+            return default
 
         return split_escape(value, sep)
 
