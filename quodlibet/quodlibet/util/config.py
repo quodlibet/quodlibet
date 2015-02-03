@@ -17,6 +17,7 @@ import csv
 from ConfigParser import RawConfigParser as ConfigParser, Error
 
 from quodlibet.util import atomic_save
+from quodlibet.util.string import join_escape, split_escape
 from quodlibet.util.path import is_fsnative, mkdir
 
 
@@ -207,6 +208,31 @@ class Config(object):
         writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(values)
         self._config.set(section, option, sw.getvalue())
+
+    def setlist(self, section, option, values, sep=","):
+        """Saves a list of str using ',' as a separator and \\ for escaping"""
+
+        values = map(str, values)
+        joined = join_escape(values, sep)
+        self._config.set(section, option, joined)
+
+    def getlist(self, *args, **kwargs):
+        """Returns a str list saved with setlist()"""
+
+        sep = kwargs.pop("sep", ",")
+        if len(args) >= 3:
+            if not isinstance(args[2], list):
+                raise ValueError
+            if len(args) == 4:
+                sep = args[-1]
+            try:
+                value = self._config.get(*args[:2])
+            except Error:
+                return args[-1]
+        else:
+            value = self._config.get(*args)
+
+        return split_escape(value, sep)
 
     def set(self, section, option, value):
         """Saves the string representation for the passed value
