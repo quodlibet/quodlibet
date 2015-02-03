@@ -110,6 +110,10 @@ INITIAL = {
 
         # search as soon as text is typed into search box
         "eager_search": "true",
+
+        # tags which get searched in addition to the ones present in the
+        # song list, separate with ","
+        "search_tags": "",
     },
     "rename": {
         "spaces": "false",
@@ -158,6 +162,8 @@ getint = _config.getint
 getfloat = _config.getfloat
 getstringlist = _config.getstringlist
 setstringlist = _config.setstringlist
+getlist = _config.getlist
+setlist = _config.setlist
 set = _config.set
 setdefault = _config.setdefault
 write = _config.write

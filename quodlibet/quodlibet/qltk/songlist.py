@@ -690,6 +690,11 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             for tag in header_tag_split(header):
                 if not tag.startswith("~#") and tag not in star:
                     star.append(tag)
+
+        for tag in config.getlist("settings", "search_tags"):
+            if tag and tag not in star:
+                star.append(tag)
+
         SongList.star = star
 
     def set_model(self, model):
