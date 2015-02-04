@@ -8,6 +8,7 @@
 import os
 import shutil
 import StringIO
+import mutagen
 
 from tests import TestCase, DATA_DIR, mkstemp
 from quodlibet.formats.mp4 import MP4File
@@ -26,6 +27,12 @@ class TMP4File(TestCase):
 
     def tearDown(self):
         os.unlink(self.f)
+
+    def test_format(self):
+        if mutagen.version >= (1, 27):
+            self.assertEqual(self.song("~format"), "MPEG-4 AAC LC")
+        else:
+            self.assertEqual(self.song("~format"), "MPEG-4 AAC")
 
     def test_basic(self):
         self.song["title"] = u"SomeTestValue"
