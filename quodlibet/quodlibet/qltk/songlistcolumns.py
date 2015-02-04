@@ -290,14 +290,13 @@ class NumericColumn(TextColumn):
 
         # resize if too small or way too big and above the minimum
         width = self.get_width()
-        max_width = max(self._texts.values() or [width])
-        if width < max_width:
-            self.set_fixed_width(max_width)
-            self.set_min_width(max_width)
-        elif (width - max_width >= self._single_char_width and
-                max_width >= self.__min_width):
-            self.set_fixed_width(max_width)
-            self.set_max_width(max_width)
+        needed_width = max([self.__min_width] + self._texts.values())
+        if width < needed_width:
+            self.set_fixed_width(needed_width)
+            self.set_min_width(needed_width)
+        elif width - needed_width >= self._single_char_width:
+            self.set_fixed_width(needed_width)
+            self.set_max_width(needed_width)
 
     def _recalc_width(self, path, text):
         self._texts[path[0]] = text
