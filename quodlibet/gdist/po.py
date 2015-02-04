@@ -15,6 +15,8 @@ gettext message catalogs.
 import os
 import glob
 from subprocess import Popen, PIPE
+from tempfile import mkstemp
+import shutil
 
 from distutils.dep_util import newer
 from distutils.util import change_root
@@ -126,6 +128,21 @@ class update_po(Command):
                 self._update_po(po)
 
 
+def strip_pot_date(path):
+    """strip POT-Creation-Date from po/pot"""
+
+    done = False
+    lines = []
+    for line in open(path, "rb"):
+        if not done and line.startswith('"POT-Creation-Date:'):
+            done = True
+            continue
+        lines.append(line)
+
+    with open(path, "wb") as h:
+        h.write("".join(lines))
+
+
 class build_mo(Command):
     """build message catalog files
 
@@ -170,7 +187,16 @@ class build_mo(Command):
             destpath = os.path.join(fullpath, self.po_package + ".mo")
             if newer(po, destpath):
                 self.mkpath(fullpath)
-                self.spawn(["msgfmt", "-o", destpath, po])
+
+                # strip POT-Creation-Date from po/mo to make build reproducible
+                fd, temp_path = mkstemp(".po")
+                try:
+                    os.close(fd)
+                    shutil.copy(po, temp_path)
+                    strip_pot_date(temp_path)
+                    self.spawn(["msgfmt", "-o", destpath, temp_path])
+                finally:
+                    os.remove(temp_path)
 
 
 class install_mo(Command):
