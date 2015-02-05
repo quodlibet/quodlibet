@@ -881,7 +881,8 @@ class TMainRunner(TestCase):
         runner = util.MainRunner()
 
         def worker():
-            self.assertRaises(util.MainRunnerError, runner.call, lambda: None)
+            self.assertRaises(
+                util.MainRunnerAbortedError, runner.call, lambda: None)
 
         thread = threading.Thread(target=worker)
         runner.abort()

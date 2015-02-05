@@ -970,6 +970,10 @@ class MainRunnerError(Exception):
     pass
 
 
+class MainRunnerAbortedError(MainRunnerError):
+    pass
+
+
 class MainRunner(object):
     """Schedule a function call in the main loop from a
     worker thread and wait for the result.
@@ -1019,7 +1023,7 @@ class MainRunner(object):
                 GLib.source_remove(self._id)
                 self._id = None
             self._aborted = True
-            self._error = MainRunnerError("aborted")
+            self._error = MainRunnerAbortedError("aborted")
             self._cond.notify()
 
     def call(self, func, *args, **kwargs):
