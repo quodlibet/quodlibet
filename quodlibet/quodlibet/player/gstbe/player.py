@@ -20,7 +20,7 @@ from quodlibet import config
 from quodlibet import util
 
 from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
-    MainRunnerAbortedError
+    MainRunnerAbortedError, MainRunnerTimeoutError
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
@@ -514,17 +514,28 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         try:
             ok, song = self._runner.call(self.__about_to_finish_sync,
-                                         priority=GLib.PRIORITY_HIGH)
+                                         priority=GLib.PRIORITY_HIGH,
+                                         timeout=0.5)
+        except MainRunnerTimeoutError as e:
+            # Due to some locks being held during this signal we can get
+            # into a deadlock when a seek or state change event happens
+            # in the mainloop before our function gets scheduled.
+            # In this case abort and do nothing, which results
+            # in a non-gapless transition.
+            print_d("About to finish (async): %s" % e)
+            return
         except MainRunnerAbortedError:
+            print_d("About to finish (async): %s" % e)
             return
         except MainRunnerError:
             util.print_exc()
             return
 
         if ok:
+            print_d("About to finish (async): setting uri")
             uri = song("~uri") if song is not None else None
             playbin.set_property('uri', uri)
-        print_d("About to finish (async) done")
+        print_d("About to finish (async): done")
 
     def stop(self):
         super(GStreamerPlayer, self).stop()

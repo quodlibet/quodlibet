@@ -889,6 +889,20 @@ class TMainRunner(TestCase):
         thread.start()
         thread.join()
 
+    def test_timeout(self):
+        runner = util.MainRunner()
+
+        def worker():
+            self.assertRaises(
+                util.MainRunnerTimeoutError, runner.call, lambda: None,
+                timeout=0.00001)
+
+        for i in range(3):
+            thread = threading.Thread(target=worker)
+            thread.start()
+            thread.join()
+        runner.abort()
+
     def test_call_exception(self):
         from gi.repository import GLib
 

@@ -974,6 +974,10 @@ class MainRunnerAbortedError(MainRunnerError):
     pass
 
 
+class MainRunnerTimeoutError(MainRunnerError):
+    pass
+
+
 class MainRunner(object):
     """Schedule a function call in the main loop from a
     worker thread and wait for the result.
@@ -983,7 +987,8 @@ class MainRunner(object):
     """
 
     def __init__(self):
-        self._id = None
+        self._source_id = None
+        self._call_id = None
         self._lock = threading.Lock()
         self._cond = threading.Condition(self._lock)
         self._return = None
@@ -991,24 +996,29 @@ class MainRunner(object):
         self._aborted = False
 
     def _run(self, func, *args, **kwargs):
-        self._error = None
         try:
             self._return = func(*args, **kwargs)
         except Exception as e:
             self._error = MainRunnerError(e)
 
-    def _idle_run(self, func, *args, **kwargs):
+    def _idle_run(self, call_id, call_event, func, *args, **kwargs):
+        call_event.set()
         with self._lock:
+            # In case a timeout happened but this got still
+            # scheduled, this could be called after call() returns;
+            # Compare to the current call id and do nothing if it isn't ours
+            if call_id is not self._call_id:
+                return False
             try:
                 self._run(func, *args, **kwargs)
             finally:
-                self._id = None
+                self._source_id = None
                 self._cond.notify()
                 return False
 
     def abort(self):
         """After this call returns no function will be executed anymore
-        and a currently blocking call will fail with.
+        and a currently blocking call will fail with MainRunnerAbortedError.
 
         Can be called multiple times and can not fail.
         call() will always fail after this was called.
@@ -1019,10 +1029,11 @@ class MainRunner(object):
         with self._lock:
             if self._aborted:
                 return
-            if self._id is not None:
-                GLib.source_remove(self._id)
-                self._id = None
+            if self._source_id is not None:
+                GLib.source_remove(self._source_id)
+                self._source_id = None
             self._aborted = True
+            self._call_id = None
             self._error = MainRunnerAbortedError("aborted")
             self._cond.notify()
 
@@ -1034,8 +1045,13 @@ class MainRunner(object):
         The priority kwargs defines the event source priority and will
         not be passed to func.
 
-        Can raise MainRunnerError in case the function raises an exception
-        or abort() was called before or during this call.
+        In case a timeout kwarg is given the call will raise
+        MainRunnerTimeoutError in case the function hasn't been scheduled
+        (doesn't mean returned) until that time. timeout is a float in seconds.
+
+        Can raise MainRunnerError in case the function raises an exception.
+        Raises MainRunnerAbortedError in case the runner was aborted.
+        Raises MainRunnerTimeoutError in case the timeout was reached.
         """
 
         from gi.repository import GLib
@@ -1043,15 +1059,29 @@ class MainRunner(object):
         with self._lock:
             if self._aborted:
                 raise self._error
+            self._error = None
             # XXX: ideally this should be GLib.MainContext.default().is_owner()
             # but that's not available in older pygobject
             if is_main_thread():
                 kwargs.pop("priority", None)
                 self._run(func, *args, **kwargs)
             else:
-                assert self._id is None
-                self._id = GLib.idle_add(self._idle_run, func, *args, **kwargs)
-                self._cond.wait()
+                assert self._source_id is None
+                assert self._call_id is None
+                timeout = kwargs.pop("timeout", None)
+                call_event = threading.Event()
+                self._call_id = object()
+                self._source_id = GLib.idle_add(
+                    self._idle_run, self._call_id, call_event,
+                    func, *args, **kwargs)
+                # only wait for the result if we are sure it got scheduled
+                if call_event.wait(timeout):
+                    self._cond.wait()
+                self._call_id = None
+                if self._source_id is not None:
+                    GLib.source_remove(self._source_id)
+                    self._source_id = None
+                    raise MainRunnerTimeoutError("timeout: %r" % timeout)
             if self._error is not None:
                 raise self._error
             return self._return
