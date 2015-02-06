@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2013, 2014 Christoph Reiter
+# Copyright 2013-2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -32,7 +32,7 @@ function download_and_verify {
         wget -P "$BIN" -c https://bitbucket.org/tortoisehg/files/downloads/mercurial-3.2.3-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev6-setup.exe
+        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev9-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
@@ -104,7 +104,7 @@ function extract_deps {
     # extract the gi binaries
     PYGI="$BUILD_ENV"/pygi
     echo "extract pygi-aio..."
-    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0_rev6-setup.exe > /dev/null
+    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0_rev9-setup.exe > /dev/null
     echo "done"
     echo "extract packages..."
     (cd "$PYGI"/rtvc9-32/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
@@ -144,6 +144,7 @@ function extract_deps {
         cp -RT "$PYGI"/"$name"/Curl/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/IDN/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GSTPluginsExtra/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/GSTPluginsMore/gnome "$DEPS"
     done
 }
 
@@ -155,17 +156,6 @@ function setup_deps {
 
     echo "compile glib schemas"
     wine "$DEPS"/glib-compile-schemas.exe "$DEPS"/share/glib-2.0/schemas
-
-    echo "set GTK+ settings"
-    local GTK_SETTINGS="$DEPS"/etc/gtk-3.0/settings.ini
-    echo "[Settings]" > "$GTK_SETTINGS"
-    echo "gtk-theme-name = Adwaita" >> "$GTK_SETTINGS"
-    echo "gtk-fallback-icon-theme = Adwaita" >> "$GTK_SETTINGS"
-    echo "gtk-xft-antialias = 1" >> "$GTK_SETTINGS"
-    echo "gtk-xft-dpi = 98304" >> "$GTK_SETTINGS"
-    echo "gtk-xft-hinting = 1" >> "$GTK_SETTINGS"
-    echo "gtk-xft-hintstyle = hintfull" >> "$GTK_SETTINGS"
-    echo "gtk-xft-rgba = rgb" >> "$GTK_SETTINGS"
 
     # copy libmodplug
     cp "$BUILD_ENV/bin/libmodplug-1.dll" "$DEPS"
@@ -224,13 +214,6 @@ function build_quodlibet {
     # remove the gtk30-properties domain -> not visible to the user
     find "$MAIN_LOCALE" -name "gtk30-properties.mo" -exec rm {} \;
 
-    # remove gtk themes except HighContrast/Adwaita/Default
-    GTK_THEMES="$QL_DEST"/share/themes
-    rm -Rf "$GTK_THEMES"/DeLorean
-    rm -Rf "$GTK_THEMES"/Emacs
-    rm -Rf "$GTK_THEMES"/Evolve
-    rm -Rf "$GTK_THEMES"/Greybird
-
     # remove ladspa, frei0r
     rm -Rf "$QL_DEST"/lib/frei0r-1
     rm -Rf "$QL_DEST"/lib/ladspa
@@ -245,6 +228,7 @@ function build_quodlibet {
     rm -f "$GST_LIBS"/libgstjack.dll # Jack sink/source
     rm -f "$GST_LIBS"/libgstpulse.dll # Pulse sink
     rm -f "$GST_LIBS"/libgstvpx.dll # VP8
+    rm -f "$GST_LIBS"/libgstomx.dll # errors on loading
 }
 
 function package_installer {

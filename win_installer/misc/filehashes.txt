@@ -4,7 +4,7 @@
 cc884fe1e20fe220be7ce7c3b269f4cadc69a8310150a3a41162fba1ca9c88bd  mutagen-1.27.tar.gz
 69c2ae5c9f2ee45b0626905faffaa86d4e2fc0d3e8c118c8bc6899df68467b32  nsis-2.46-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
-2879b33dc1b30e2287faaddd317894d9cfe84a2f5f45a910e1b5e6a27d95eca2  pygi-aio-3.14.0_rev6-setup.exe
+21988012b810fed34f57339cbe726272fcec84d81ea42e6701423dddf03316ad  pygi-aio-3.14.0_rev9-setup.exe
 3db9fa9adc45703589b93df05aab77bdabe985a17565b465a9e550585f85322a  pyHook-1.5.1.win32-py2.7.exe
 cfa801a6596206ec7476e9bc2687fcd331c514b3dd92ffc3cd7d63e749ba0b2f  python-2.7.6.msi
 728fbe415da98dad5c4d462e56cf106cf50cc28eb6a9f46b8ebabc3029f37fb9  python-musicbrainz2-0.7.4.tar.gz
