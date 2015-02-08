@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import contextlib
 
 try:
@@ -8,7 +9,7 @@ try:
 except ImportError:
     Gst = None
 
-from tests import TestCase, skipUnless
+from tests import TestCase, skipUnless, DATA_DIR
 
 try:
     from quodlibet.player.gstbe.util import GStreamerSink as Sink
@@ -20,6 +21,7 @@ except ImportError:
 
 from quodlibet.player import PlayerError
 from quodlibet.util import sanitize_tags
+from quodlibet.formats import MusicFile
 from quodlibet import config
 
 
@@ -194,3 +196,70 @@ class TGstreamerTagList(TestCase):
 
         # parse_gstreamer_taglist should only return unicode
         self.failIf(sanitize_tags({"foo": "bar"}))
+
+
+@skipUnless(Gst, "GStreamer missing")
+class TGStreamerCodecs(TestCase):
+
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def _check(self, song):
+        old_threshold = Gst.debug_get_default_threshold()
+        Gst.debug_set_default_threshold(Gst.DebugLevel.NONE)
+
+        pipeline = Gst.parse_launch(
+            "uridecodebin uri=%s ! fakesink" % song("~uri"))
+        bus = pipeline.get_bus()
+        pipeline.set_state(Gst.State.PLAYING)
+        try:
+            while 1:
+                message = bus.timed_pop(Gst.SECOND * 10)
+                if not message or message.type == Gst.MessageType.ERROR:
+                    if message:
+                        debug = message.parse_error()[0].message
+                    else:
+                        debug = "timed out"
+                    # only print a warning for platforms where we control
+                    # the shipped dependencies.
+                    if sys.platform == "darwin" or os.name == "nt":
+                        print_w("GStreamer: Decoding %r failed (%s)" %
+                                (song("~format"), debug))
+                    break
+                if message.type == Gst.MessageType.EOS:
+                    break
+        finally:
+            pipeline.set_state(Gst.State.NULL)
+
+        Gst.debug_set_default_threshold(old_threshold)
+
+    def test_decode_all(self):
+        """Decode all kinds of formats using Gstreamer, to check if
+        they all work and to notify us if a plugin is missing on
+        platforms where we control the packaging.
+        """
+
+        files = [
+            "coverart.wv",
+            "empty.aac",
+            "empty.flac",
+            "empty.ogg",
+            "empty.opus",
+            "silence-44-s.mpc",
+            "silence-44-s.tta",
+            "test.mid",
+            "test.spc",
+            "test.vgm",
+            "test.wma",
+            "silence-44-s.spx",
+            "empty.xm",
+        ]
+
+        for file_ in files:
+            path = os.path.join(DATA_DIR, file_)
+            song = MusicFile(path)
+            self.assertTrue(song)
+            self._check(song)
