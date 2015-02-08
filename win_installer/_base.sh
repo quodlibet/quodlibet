@@ -216,12 +216,24 @@ function build_quodlibet {
 
     # copy the translations
     cp -RT "$QL_LOCALE" "$MAIN_LOCALE"
-    # remove the gtk30-properties domain -> not visible to the user
+
+    # remove various translations that are unlikely to be visible to the user
+    # in our case and just increase the installer size
     find "$MAIN_LOCALE" -name "gtk30-properties.mo" -exec rm {} \;
+    find "$MAIN_LOCALE" -name "gsettings-desktop-schemas.mo" -exec rm {} \;
+    find "$MAIN_LOCALE" -name "iso_*.mo" -exec rm {} \;
 
     # remove ladspa, frei0r
     rm -Rf "$QL_DEST"/lib/frei0r-1
     rm -Rf "$QL_DEST"/lib/ladspa
+
+    # remove opencv
+    rm -Rf "$QL_DEST"/share/opencv
+
+    # other stuff
+    rm -Rf "$QL_DEST"/lib/gst-validate-launcher
+    rm -Rf "$QL_DEST"/lib/gdbus-2.0
+    rm -Rf "$QL_DEST"/lib/p11-kit
 
     # remove some large gstreamer plugins..
     GST_LIBS="$QL_DEST"/lib/gstreamer-1.0
@@ -234,6 +246,11 @@ function build_quodlibet {
     rm -f "$GST_LIBS"/libgstpulse.dll # Pulse sink
     rm -f "$GST_LIBS"/libgstvpx.dll # VP8
     rm -f "$GST_LIBS"/libgstomx.dll # errors on loading
+    rm -f "$GST_LIBS"/libgstdaala.dll # Daala codec
+    rm -f "$GST_LIBS"/libgstmpeg2enc.dll # mpeg video encoder
+    rm -f "$GST_LIBS"/libgstdeinterlace.dll # video deinterlacer
+    rm -f "$GST_LIBS"/libgstopenexr.dll # OpenEXR image plugin
+    rm -f "$GST_LIBS"/libgstmxf.dll # MXF Demuxer
 }
 
 function package_installer {
