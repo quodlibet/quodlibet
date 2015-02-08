@@ -39,6 +39,7 @@ function download_and_verify {
         wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z920.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
         wget -P "$BIN" -c http://ftp.musicbrainz.org/pub/musicbrainz/python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz
+        wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
 
         pip install --download="$BIN" mutagen==1.27
         pip install --download="$BIN" feedparser==5.1.3
@@ -159,6 +160,10 @@ function setup_deps {
 
     # copy libmodplug
     cp "$BUILD_ENV/bin/libmodplug-1.dll" "$DEPS"
+
+    # copy old libgstopus
+    # https://code.google.com/p/quodlibet/issues/detail?id=1511
+    cp "$BUILD_ENV/bin/libgstopus.dll" "$DEPS"/lib/gstreamer-1.0
 }
 
 function install_python {
