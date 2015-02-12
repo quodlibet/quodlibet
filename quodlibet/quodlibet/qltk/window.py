@@ -135,7 +135,7 @@ class Window(Gtk.Window):
             super(Window, self).present()
         else:
             window = self.get_window()
-            if window:
+            if window and isinstance(window, GdkX11.X11Window):
                 timestamp = GdkX11.x11_get_server_time(window)
                 self.present_with_time(timestamp)
             else:
