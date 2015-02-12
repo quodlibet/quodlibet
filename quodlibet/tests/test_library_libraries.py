@@ -470,6 +470,25 @@ class TSongFileLibrary(TSongLibrary):
         finally:
             config.quit()
 
+    def test_add_filename_normalize_path(self):
+        if not os.name == "nt":
+            return
+
+        config.init()
+        filename = self.__get_file()
+
+        # create a equivalent path different from the original one
+        if filename.upper() == filename:
+            other = filename.lower()
+        else:
+            other = filename.upper()
+
+        song = self.library.add_filename(filename)
+        other_song = self.library.add_filename(other)
+        self.assertTrue(song is other_song)
+        os.unlink(filename)
+        config.quit()
+
 
 class TAlbumLibrary(TestCase):
     Fake = FakeSong
