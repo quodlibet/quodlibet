@@ -13,20 +13,6 @@ from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.models import ObjectStore
 
 
-def check_sourced(func):
-    # Validate sourced flags after each action that could lead to a changed
-    # iter (only ones triggerd by the order, no iter removal!)
-    def wrap(self, *args, **kwargs):
-        res = func(self, *args, **kwargs)
-        if self.q.current is not None:
-            self.q.sourced = True
-            self.pl.sourced = False
-        else:
-            self.q.sourced = False
-            self.pl.sourced = True
-        return res
-    return wrap
-
 
 class PlaylistMux(object):
 
@@ -45,39 +31,52 @@ class PlaylistMux(object):
             if iter:
                 self.q.remove(iter)
 
-    def get_current(self):
+    @property
+    def current(self):
         if self.q.current is not None:
             return self.q.current
         else:
             return self.pl.current
 
-    current = property(get_current)
+    def _check_sourced(func):
+        # Validate sourced flags after each action that could lead to a changed
+        # iter (only ones triggerd by the order, no iter removal!)
+        def wrap(self, *args, **kwargs):
+            res = func(self, *args, **kwargs)
+            if self.q.current is not None:
+                self.q.sourced = True
+                self.pl.sourced = False
+            else:
+                self.q.sourced = False
+                self.pl.sourced = True
+            return res
+        return wrap
 
-    @check_sourced
+    @_check_sourced
     def next(self):
         if self.q.is_empty():
             self.pl.next()
         else:
             self.q.next()
 
-    @check_sourced
+    @_check_sourced
     def next_ended(self):
         if self.q.is_empty():
             self.pl.next_ended()
         else:
-            self.q.next()
+            self.q.next_ended()
 
-    @check_sourced
+    @_check_sourced
     def previous(self):
         self.pl.previous()
 
-    @check_sourced
+    @_check_sourced
     def go_to(self, song, explicit=False):
         print_d("Told to go to %r" % getattr(song, "key", song))
         self.q.go_to(None)
         return self.pl.go_to(song, explicit)
 
-    @check_sourced
+    @_check_sourced
     def reset(self):
         self.q.go_to(None)
         self.pl.reset()
