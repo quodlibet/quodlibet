@@ -200,7 +200,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         if self.song:
             self.paused = False
 
-    def go_to(self, song_or_iter, explicit=False):
+    def go_to(self, song_or_iter, explicit=False, queue=False):
         """Activate the song or iter in the playlist if possible and play it.
 
         Explicit if the action comes from the user.
@@ -210,7 +210,7 @@ class BasePlayer(GObject.GObject, Equalizer):
 
         print_d("Going to %r" % getattr(song_or_iter, "key", song_or_iter))
 
-        if self._source.go_to(song_or_iter, explicit):
+        if self._source.go_to(song_or_iter, explicit, queue):
             self._end(True)
         else:
             if isinstance(song_or_iter, AudioFile):

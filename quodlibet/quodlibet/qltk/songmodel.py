@@ -13,24 +13,24 @@ from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.models import ObjectStore
 
 
-
 class PlaylistMux(object):
 
     def __init__(self, player, q, pl):
         self.q = q
         self.pl = pl
-        self._id = player.connect('song-started', self.__check_q)
+        self._id = player.connect('song-started', self.__song_started)
         self._player = player
 
     def destroy(self):
         self._player.disconnect(self._id)
 
-    def __check_q(self, player, song):
+    def __song_started(self, player, song):
         if song is not None and self.q.sourced:
             iter = self.q.find(song)
             if iter:
                 self.q.remove(iter)
-            self.q.reset()
+                # we don't call _check_sourced here since we want the queue
+                # to stay sourced even if no current song is left
 
     @property
     def current(self):
@@ -39,48 +39,46 @@ class PlaylistMux(object):
         else:
             return self.pl.current
 
-    def _check_sourced(func):
-        # Validate sourced flags after each action that could lead to a changed
-        # iter (only ones triggerd by the order, no iter removal!)
-        def wrap(self, *args, **kwargs):
-            res = func(self, *args, **kwargs)
-            if self.q.current is not None:
-                self.q.sourced = True
-                self.pl.sourced = False
-            else:
-                self.q.sourced = False
-                self.pl.sourced = True
-            return res
-        return wrap
+    def _check_sourced(self):
+        if self.q.current is not None:
+            self.q.sourced = True
+            self.pl.sourced = False
+        else:
+            self.q.sourced = False
+            self.pl.sourced = True
 
-    @_check_sourced
     def next(self):
         if self.q.is_empty():
             self.pl.next()
-        elif self.q.current is None:
+        else:
             self.q.next()
+        self._check_sourced()
 
-    @_check_sourced
     def next_ended(self):
         if self.q.is_empty():
             self.pl.next_ended()
-        elif self.q.current is None:
+        else:
             self.q.next_ended()
+        self._check_sourced()
 
-    @_check_sourced
     def previous(self):
         self.pl.previous()
+        self._check_sourced()
 
-    @_check_sourced
-    def go_to(self, song, explicit=False):
+    def go_to(self, song, explicit=False, queue=False):
         print_d("Told to go to %r" % getattr(song, "key", song))
-        self.q.go_to(None)
-        return self.pl.go_to(song, explicit)
+        main, other = self.pl, self.q
+        if queue:
+            main, other = other, main
+        other.go_to(None)
+        res = main.go_to(song, explicit)
+        self._check_sourced()
+        return res
 
-    @_check_sourced
     def reset(self):
         self.q.go_to(None)
         self.pl.reset()
+        self._check_sourced()
 
     def enqueue(self, songs):
         self.q.append_many(songs)
@@ -206,7 +204,7 @@ class PlaylistModel(TrackCurrentModel):
         iter_ = self.current_iter
         self.current_iter = self.order.previous_explicit(self, iter_)
 
-    def go_to(self, song_or_iter, explicit=False):
+    def go_to(self, song_or_iter, explicit=False, queue=False):
         """Go to a song or an iter or None"""
 
         print_d("Told to go to %r" % getattr(song_or_iter, "key",
