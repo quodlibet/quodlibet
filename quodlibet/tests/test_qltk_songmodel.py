@@ -393,13 +393,5 @@ class TPlaylistMux(TestCase):
         self.mux.enqueue(range(40))
         self.failUnlessEqual(list(self.q.itervalues()), range(40))
 
-    def test_queue_move_entry(self):
-        self.q.set(range(10))
-        self.p.next()
-        self.assertEqual(self.p.song, 0)
-        self.q.move_after(self.q[-1].iter, None)
-        self.p.next()
-        self.assertEqual(self.p.song, 9)
-
     def tearDown(self):
         self.p.destroy()
