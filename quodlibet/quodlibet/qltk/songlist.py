@@ -413,6 +413,10 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def model(self):
         return self.get_model()
 
+    @property
+    def sourced(self):
+        return self.model.sourced
+
     def toggle_column_sort(self, column, replace=True, refresh=True):
         """Toggles the sort order of a column.
 

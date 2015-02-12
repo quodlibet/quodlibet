@@ -1000,7 +1000,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         # don't jump on stream changes (player.info != player.song)
         if song and player.song is song and not self.songlist._activated and \
-            config.getboolean("settings", "jump"):
+            config.getboolean("settings", "jump") and self.songlist.sourced:
             self.__jump_to_current(False)
 
     def __refresh_size(self):
