@@ -44,7 +44,6 @@ class PlaylistMux(object):
             iter = self.q.find(song)
             if iter:
                 self.q.remove(iter)
-            self.q.reset()
 
     def get_current(self):
         if self.q.current is not None:
@@ -58,14 +57,14 @@ class PlaylistMux(object):
     def next(self):
         if self.q.is_empty():
             self.pl.next()
-        elif self.q.current is None:
+        else:
             self.q.next()
 
     @check_sourced
     def next_ended(self):
         if self.q.is_empty():
             self.pl.next_ended()
-        elif self.q.current is None:
+        else:
             self.q.next()
 
     @check_sourced
