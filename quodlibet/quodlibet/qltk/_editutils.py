@@ -99,7 +99,10 @@ class FilterCheckButton(ConfigCheckButton):
         except:
             pass
         connect_obj(self, 'toggled', self.emit, 'preview')
-    active = property(lambda s: s.get_active())
+
+    @property
+    def active(self):
+        return self.get_active()
 
     def filter(self, original, filename):
         raise NotImplementedError

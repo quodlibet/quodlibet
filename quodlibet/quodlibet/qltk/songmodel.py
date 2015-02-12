@@ -129,7 +129,12 @@ class TrackCurrentModel(ObjectStore):
     def current_path(self):
         return self.__iter and self.get_path(self.__iter)
 
-    def __set_current_iter(self, iter_):
+    @property
+    def current_iter(self):
+        return self.__iter
+
+    @current_iter.setter
+    def current_iter(self, iter_):
         if iter_ == self.__iter:
             return
         # emit a row-changed for the previous and the new iter after it is set
@@ -138,11 +143,6 @@ class TrackCurrentModel(ObjectStore):
             self.row_changed(self.get_path(it), it)
         self.__iter = iter_
         self.last_current = self.current
-
-    def __get_current_iter(self):
-        return self.__iter
-
-    current_iter = property(__get_current_iter, __set_current_iter)
 
     def find(self, song):
         """Returns the iter to the first occurrence of song in the model

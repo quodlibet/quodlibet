@@ -26,7 +26,7 @@ class TMediaBrowser(TestCase):
 
     def test_property(self):
         class FakeDevice(dict):
-            dev = "Fake"
+            block_device = "Fake"
             mountpoint = "/"
             Properties = lambda *x: []
         fake = FakeDevice({"name": "Foo"})

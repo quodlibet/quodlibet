@@ -284,8 +284,13 @@ class Album(Collection):
     def genre(self):
         return util.human_sort_key(self.get("genre").split("\n")[0])
 
-    date = property(lambda self: self.get("date"))
-    title = property(lambda self: self.get("album"))
+    @property
+    def date(self):
+        return self.get("date")
+
+    @property
+    def title(self):
+        return self.get("album")
 
     def __init__(self, song):
         super(Album, self).__init__()

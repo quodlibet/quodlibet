@@ -64,11 +64,14 @@ class TextEditBox(Gtk.HBox):
         self.revert = rev
         self.apply = app
 
-    def __get_text(self):
+    @property
+    def text(self):
         start, end = self.buffer.get_bounds()
         return self.buffer.get_text(start, end, True).decode('utf-8')
-    text = property(__get_text,
-                    lambda s, v: s.buffer.set_text(v, -1))
+
+    @text.setter
+    def text(self, value):
+        self.buffer.set_text(value, -1)
 
 
 class PatternEditBox(TextEditBox):
@@ -128,8 +131,13 @@ class TextEdit(qltk.UniqueWindow):
         close.grab_focus()
         self.get_child().show_all()
 
-    text = property(lambda s: s.box.text,
-                    lambda s, v: setattr(s.box, 'text', v))
+    @property
+    def text(self):
+        return self.box.text
+
+    @text.setter
+    def text(self, value):
+        self.box.text = value
 
 
 class PatternEdit(TextEdit):

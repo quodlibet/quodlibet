@@ -17,7 +17,7 @@ class NullPlayer(BasePlayer):
 
     def __init__(self, sinkname="", librarian=None):
         super(NullPlayer, self).__init__()
-        self._set_paused(True)
+        self._paused = True
         self._source = None
         self._position = 0
 
@@ -29,7 +29,12 @@ class NullPlayer(BasePlayer):
         or 0 if no song is playing."""
         return self._position
 
-    def _set_paused(self, paused):
+    @property
+    def paused(self):
+        return self._paused
+
+    @paused.setter
+    def paused(self, paused):
         if paused != self._paused:
             self._paused = paused
             if self.song:
@@ -38,10 +43,6 @@ class NullPlayer(BasePlayer):
                 # Something wants us to pause between songs, or when
                 # we've got no song playing (probably StopAfterMenu).
                 self.emit('paused')
-
-    def _get_paused(self):
-        return self._paused
-    paused = property(_get_paused, _set_paused)
 
     def do_set_property(self, property, v):
         if property.name == 'volume':

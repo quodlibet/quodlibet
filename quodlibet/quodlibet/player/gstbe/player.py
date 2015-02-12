@@ -574,7 +574,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 self._last_position = p
         return p
 
-    def _set_paused(self, paused):
+    @property
+    def paused(self):
+        return self._paused
+
+    @paused.setter
+    def paused(self, paused):
         if paused == self._paused:
             return
         self._paused = paused
@@ -611,10 +616,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     self.bin.set_state(Gst.State.PLAYING)
 
         self.emit((paused and 'paused') or 'unpaused')
-
-    def _get_paused(self):
-        return self._paused
-    paused = property(_get_paused, _set_paused)
 
     def _error(self, player_error):
         """Destroy the pipeline and set the error state.

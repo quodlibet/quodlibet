@@ -91,14 +91,13 @@ class Device(dict):
         free = info.f_bsize * info.f_bavail
         return (space, free)
 
-    def get_mountpoint(self):
+    @property
+    def mountpoint(self):
         return quodlibet.devices.device_manager.get_mountpoint(self.bid)
-    mountpoint = property(get_mountpoint)
 
-    def get_block_device(self):
+    @property
+    def block_device(self):
         return quodlibet.devices.device_manager.get_block_device(self.bid)
-
-    dev = property(get_block_device)
 
     def list(self, wlb):
         """Returns a list of AudioFile instances representing the songs

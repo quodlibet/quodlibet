@@ -27,7 +27,9 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
             _("Romanize _Japanese text"), use_underline=True)
         connect_obj(self, 'toggled', self.emit, 'preview')
 
-    active = property(lambda s: s.get_active())
+    @property
+    def active(self):
+        return self.get_active()
 
     # Use filter list rather than filter to avoid starting a new process
     # for each filename.

@@ -111,9 +111,13 @@ class BasePlayer(GObject.GObject, Equalizer):
         else:
             raise AttributeError
 
-    def _set_volume(self, v):
+    @property
+    def volume(self):
+        return self._volume
+
+    @volume.setter
+    def volume(self, v):
         self.props.volume = min(1.0, max(0.0, v))
-    volume = property(lambda s: s._volume, _set_volume)
 
     def _destroy(self):
         """Clean up"""

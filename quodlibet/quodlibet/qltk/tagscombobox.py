@@ -32,9 +32,9 @@ class _TagsCombo(object):
         if len(model) == 0:
             raise ValueError("TagsCombo boxes require at least one tag name")
 
-    def __tag(self):
+    @property
+    def tag(self):
         return self._tag()
-    tag = property(__tag)
 
 
 class TagsComboBox(Gtk.ComboBox, _TagsCombo):

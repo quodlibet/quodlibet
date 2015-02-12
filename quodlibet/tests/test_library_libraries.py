@@ -53,7 +53,10 @@ class FakeSongFile(FakeSong):
     _valid = True
     _exists = True
     _mounted = True
-    mountpoint = property(lambda self: "/" if self._mounted else "/FAKE")
+
+    @property
+    def mountpoint(self):
+        return "/" if self._mounted else "/FAKE"
 
     def valid(self):
         return self._valid

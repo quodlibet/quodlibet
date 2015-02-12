@@ -44,7 +44,7 @@ class DeviceProperties(Gtk.Dialog):
 
         props = []
 
-        props.append((_("Device:"), device.dev, None))
+        props.append((_("Device:"), device.block_device, None))
         mountpoint = util.escape(
             device.mountpoint or ("<i>%s</i>" % _("Not mounted")))
         props.append((_("Mount point:"), mountpoint, None))
