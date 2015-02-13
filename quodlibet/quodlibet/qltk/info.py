@@ -74,8 +74,6 @@ class SongInfo(Gtk.EventBox):
     def _on_button_press_event(self, widget, event, player, library):
         if event.button == Gdk.BUTTON_SECONDARY:
             menu = self._get_menu(player, library)
-            if not menu:
-                return False
             menu.attach_to_widget(widget, None)
             menu.popup(None, None, None, None, event.button, event.time)
             return True
@@ -83,8 +81,6 @@ class SongInfo(Gtk.EventBox):
 
     def _on_label_popup(self, label, menu, player, library):
         song_menu = self._get_menu(player, library)
-        if not song_menu:
-            return
 
         has_selection = label.get_selection_bounds()[0]
 
@@ -97,6 +93,7 @@ class SongInfo(Gtk.EventBox):
         else:
             sub = Gtk.MenuItem.new_with_mnemonic(("Current _Song"))
             sub.set_submenu(song_menu)
+            sub.set_sensitive(player.song is not None)
             sub.show_all()
             sep = SeparatorMenuItem()
             sep.show()
@@ -104,13 +101,11 @@ class SongInfo(Gtk.EventBox):
             menu.append(sub)
 
     def _get_menu(self, player, library):
-        if player.song is None:
-            return
-
         item = qltk.MenuItem(_(u"_Edit Display…"), Gtk.STOCK_EDIT)
         item.connect('activate', self._on_edit_display, player)
 
-        song_menu = SongsMenu(library, [player.song], remove=False,
+        songs = [player.song] if player.song else []
+        song_menu = SongsMenu(library, songs, remove=False,
                               accels=False, items=[[item]], parent=self)
 
         song_menu.show_all()

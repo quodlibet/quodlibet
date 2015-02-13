@@ -277,6 +277,7 @@ class SongsMenu(Gtk.Menu):
 
         if ratings:
             ratings_item = RatingsMenuItem(songs, librarian)
+            ratings_item.set_sensitive(bool(songs))
             self.append(ratings_item)
             self.separate()
 
@@ -291,6 +292,7 @@ class SongsMenu(Gtk.Menu):
             submenu = self.plugins.Menu(librarian, parent, songs)
             if submenu is not None:
                 b = qltk.MenuItem(_("_Plugins"), Gtk.STOCK_EXECUTE)
+                b.set_sensitive(bool(songs))
                 self.append(b)
                 b.set_submenu(submenu)
                 self.append(SeparatorMenuItem())
@@ -320,7 +322,7 @@ class SongsMenu(Gtk.Menu):
                 print_w("Couldn't get Playlists menu: %s" % e)
             else:
                 b = qltk.MenuItem(_("Play_lists"), Gtk.STOCK_ADD)
-                b.set_sensitive(can_add)
+                b.set_sensitive(can_add and bool(songs))
                 b.set_submenu(submenu)
                 self.append(b)
         if queue:
@@ -329,7 +331,7 @@ class SongsMenu(Gtk.Menu):
             if accels:
                 qltk.add_fake_accel(b, "<ctrl>Return")
             self.append(b)
-            b.set_sensitive(can_add)
+            b.set_sensitive(can_add and bool(songs))
 
         if devices:
             from quodlibet import browsers
@@ -341,7 +343,8 @@ class SongsMenu(Gtk.Menu):
                 if browsers.media.MediaDevices in browsers.browsers:
                     submenu = browsers.media.Menu(songs, library)
                     b = qltk.MenuItem(_("_Copy to Device"), Gtk.STOCK_COPY)
-                    b.set_sensitive(can_add and len(submenu) > 0)
+                    b.set_sensitive(
+                        can_add and len(submenu) > 0 and bool(songs))
                     b.set_submenu(submenu)
                     self.append(b)
 
@@ -354,7 +357,7 @@ class SongsMenu(Gtk.Menu):
                 connect_obj(b, 'activate', remove, songs)
             else:
                 b.connect('activate', self.__remove, songs, library)
-                b.set_sensitive(in_lib)
+                b.set_sensitive(in_lib and bool(songs))
             self.append(b)
 
         if delete:
@@ -365,12 +368,13 @@ class SongsMenu(Gtk.Menu):
                 b = TrashMenuItem()
                 connect_obj(b, 'activate', trash_songs,
                                  parent, songs, librarian)
-                b.set_sensitive(is_file)
+                b.set_sensitive(is_file and bool(songs))
             self.append(b)
 
         if edit:
             self.separate()
             b = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
+            b.set_sensitive(bool(songs))
             if accels:
                 qltk.add_fake_accel(b, "<alt>Return")
 
@@ -382,6 +386,7 @@ class SongsMenu(Gtk.Menu):
             self.append(b)
 
             b = Gtk.ImageMenuItem(label=Gtk.STOCK_INFO, use_stock=True)
+            b.set_sensitive(bool(songs))
             if accels:
                 qltk.add_fake_accel(b, "<ctrl>I")
 
