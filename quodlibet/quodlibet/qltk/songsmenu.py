@@ -267,7 +267,8 @@ class SongsMenu(Gtk.Menu):
 
     def __init__(self, library, songs, plugins=True, playlists=True,
                  queue=True, devices=True, remove=True, delete=False,
-                 edit=True, ratings=True, parent=None, items=None):
+                 edit=True, ratings=True, parent=None, items=None,
+                 accels=True):
         super(SongsMenu, self).__init__()
 
         # The library may actually be a librarian; if it is, use it,
@@ -325,7 +326,8 @@ class SongsMenu(Gtk.Menu):
         if queue:
             b = qltk.MenuItem(_("Add to _Queue"), Gtk.STOCK_ADD)
             b.connect('activate', self.__enqueue, songs)
-            qltk.add_fake_accel(b, "<ctrl>Return")
+            if accels:
+                qltk.add_fake_accel(b, "<ctrl>Return")
             self.append(b)
             b.set_sensitive(can_add)
 
@@ -369,7 +371,8 @@ class SongsMenu(Gtk.Menu):
         if edit:
             self.separate()
             b = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
-            qltk.add_fake_accel(b, "<alt>Return")
+            if accels:
+                qltk.add_fake_accel(b, "<alt>Return")
 
             def song_properties_cb(menu_item):
                 window = SongProperties(librarian, songs, parent)
@@ -379,7 +382,8 @@ class SongsMenu(Gtk.Menu):
             self.append(b)
 
             b = Gtk.ImageMenuItem(label=Gtk.STOCK_INFO, use_stock=True)
-            qltk.add_fake_accel(b, "<ctrl>I")
+            if accels:
+                qltk.add_fake_accel(b, "<ctrl>I")
 
             def information_cb(menu_item):
                 window = Information(librarian, songs, parent)

@@ -165,7 +165,8 @@ class TopBar(Gtk.Toolbar):
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
         # song text
-        text = SongInfo(library.librarian, player)
+        info_pattern_path = os.path.join(const.USERDIR, "songinfo")
+        text = SongInfo(library.librarian, player, info_pattern_path)
         box.pack_start(Alignment(text, border=3), True, True, 0)
 
         # cover image
