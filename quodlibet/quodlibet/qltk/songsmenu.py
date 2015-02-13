@@ -18,7 +18,6 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.x import SeparatorMenuItem, Button
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk import get_top_parent
-from quodlibet.util import connect_obj
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
@@ -137,10 +136,10 @@ class SongsMenuPluginHandler(PluginHandler):
                     args = (library, parent, songs)
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
-                            connect_obj(subitem,
+                            subitem.connect(
                                 'activate', self.__handle, item, *args)
                     else:
-                        item.connect('activate', self.__handle, *args)
+                        item.connect('activate', self.__handle, item, *args)
                 except:
                     print_exc()
                     item.destroy()
@@ -173,10 +172,10 @@ class SongsMenuPluginHandler(PluginHandler):
                 except Exception:
                     print_exc()
                 else:
-                    self.__handle(plugin, library, parent, songs)
+                    self.__handle(plugin, plugin, library, parent, songs)
                 return
 
-    def __handle(self, plugin, library, parent, songs):
+    def __handle(self, item, plugin, library, parent, songs):
         if len(songs) == 0:
             return
 
@@ -327,7 +326,14 @@ class SongsMenu(Gtk.Menu):
                 self.append(b)
         if queue:
             b = qltk.MenuItem(_("Add to _Queue"), Gtk.STOCK_ADD)
-            b.connect('activate', self.__enqueue, songs)
+
+            def enqueue_cb(item, songs):
+                songs = filter(lambda s: s.can_add, songs)
+                if songs:
+                    from quodlibet import app
+                    app.window.playlist.enqueue(songs)
+
+            b.connect('activate', enqueue_cb, songs)
             if accels:
                 qltk.add_fake_accel(b, "<ctrl>Return")
             self.append(b)
@@ -354,20 +360,26 @@ class SongsMenu(Gtk.Menu):
         if remove:
             b = qltk.MenuItem(_("_Remove from library"), Gtk.STOCK_REMOVE)
             if callable(remove):
-                connect_obj(b, 'activate', remove, songs)
+                b.connect('activate', lambda item: remove(songs))
             else:
-                b.connect('activate', self.__remove, songs, library)
+                def remove_cb(item, songs, library):
+                    library.remove(set(songs))
+
+                b.connect('activate', remove_cb, songs, library)
                 b.set_sensitive(in_lib and bool(songs))
             self.append(b)
 
         if delete:
             if callable(delete):
                 b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
-                connect_obj(b, 'activate', delete, songs)
+                b.connect('activate', lambda item: delete(songs))
             else:
                 b = TrashMenuItem()
-                connect_obj(b, 'activate', trash_songs,
-                                 parent, songs, librarian)
+
+                def trash_cb(item):
+                    trash_songs(parent, songs, librarian)
+
+                b.connect('activate', trash_songs)
                 b.set_sensitive(is_file and bool(songs))
             self.append(b)
 
@@ -412,12 +424,3 @@ class SongsMenu(Gtk.Menu):
             return
         elif not isinstance(self.get_children()[0], Gtk.SeparatorMenuItem):
             self.prepend(SeparatorMenuItem())
-
-    def __remove(self, item, songs, library):
-        library.remove(set(songs))
-
-    def __enqueue(self, item, songs):
-        songs = filter(lambda s: s.can_add, songs)
-        if songs:
-            from quodlibet import app
-            app.window.playlist.enqueue(songs)
