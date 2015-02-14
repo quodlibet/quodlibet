@@ -106,7 +106,7 @@ class SongInfo(Gtk.EventBox):
 
         songs = [player.song] if player.song else []
         song_menu = SongsMenu(library, songs, remove=False,
-                              accels=False, items=[[item]], parent=self)
+                              accels=False, items=[[item]])
 
         song_menu.show_all()
         return song_menu

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from quodlibet import config
+from quodlibet.qltk import get_menu_item_top_parent
 from gi.repository import Gtk
 
 
@@ -19,11 +20,14 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
     # to prevent users killing their performance by opening on many songs.
     MAX_INVOCATIONS = config.getint("plugins", "default_max_invocations", 30)
 
-    def __init__(self, window):
+    def __init__(self):
         super(Gtk.ImageMenuItem, self).__init__(label=self.PLUGIN_NAME)
-        self.plugin_window = window
         self.__set_icon()
         self.__initialized = True
+
+    @property
+    def plugin_window(self):
+        return get_menu_item_top_parent(self)
 
     def __set_icon(self):
         """Sets the GTK icon for this plugin item"""

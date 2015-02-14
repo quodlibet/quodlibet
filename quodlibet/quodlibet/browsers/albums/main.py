@@ -639,7 +639,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             button.connect('activate', self.__refresh_album, view)
             items.append(button)
 
-        menu = SongsMenu(library, songs, parent=self, items=[items])
+        menu = SongsMenu(library, songs, items=[items])
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 

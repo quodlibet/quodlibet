@@ -55,10 +55,8 @@ class SongsMenuPlugin(MenuItemPlugin):
     plugin_album = None
     plugin_albums = None
 
-    __initialized = False
-
-    def __init__(self, songs, library, window):
-        super(SongsMenuPlugin, self).__init__(window)
+    def __init__(self, songs, library):
+        super(SongsMenuPlugin, self).__init__()
         self.__library = library
         self.__songs = songs
 
