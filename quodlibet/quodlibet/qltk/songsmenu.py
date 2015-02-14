@@ -385,7 +385,7 @@ class SongsMenu(Gtk.Menu):
                     parent = get_menu_item_top_parent(item)
                     trash_songs(parent, songs, librarian)
 
-                b.connect('activate', trash_songs)
+                b.connect('activate', trash_cb)
                 b.set_sensitive(is_file and bool(songs))
             self.append(b)
 
