@@ -138,8 +138,10 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         fs.rescan()
 
     def set_as_osx_window(self, osx_app):
-        # TODO: add a menu
-        pass
+        osx_app.set_menu_bar(Gtk.MenuBar())
+
+    def get_osx_is_persistent(self):
+        return False
 
     def __show_about(self, window):
         about = AboutExFalso(self)

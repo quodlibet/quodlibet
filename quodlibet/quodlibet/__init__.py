@@ -578,8 +578,11 @@ def _init_osx(window):
     delegate = Delegate.alloc().init()
     delegate.retain()
     shared_app.setDelegate_(delegate)
-    window.connect(
-        "delete-event", lambda window, event: window.hide() or True)
+
+    # QL shouldn't exit on window close, EF should
+    if window.get_osx_is_persistent():
+        window.connect(
+            "delete-event", lambda window, event: window.hide() or True)
 
 
 def main(window, before_quit=None):

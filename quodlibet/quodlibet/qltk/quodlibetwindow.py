@@ -637,6 +637,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         quit_item = self.ui.get_widget('/Menu/Music/Quit')
         quit_item.hide()
 
+    def get_osx_is_persistent(self):
+        return True
+
     def __player_error(self, player, song, player_error):
         # it's modal, but mmkeys etc. can still trigger new ones
         if self._playback_error_dialog:
