@@ -126,7 +126,7 @@ class MainSongList(SongList):
     def __select_song(self, widget, indices, col, player):
         self._activated = True
         iter = self.model.get_iter(indices)
-        if player.go_to(iter, True):
+        if player.go_to(iter, explicit=True, source=self.model):
             player.paused = False
 
 

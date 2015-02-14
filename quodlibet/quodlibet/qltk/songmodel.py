@@ -65,11 +65,13 @@ class PlaylistMux(object):
         self.pl.previous()
         self._check_sourced()
 
-    def go_to(self, song, explicit=False, queue=False):
+    def go_to(self, song, explicit=False, source=None):
         print_d("Told to go to %r" % getattr(song, "key", song))
         main, other = self.pl, self.q
-        if queue:
-            main, other = other, main
+        if source is not None:
+            assert source in (self.pl, self.q)
+            if source is self.q:
+                main, other = other, main
         other.go_to(None)
         res = main.go_to(song, explicit)
         self._check_sourced()
@@ -204,8 +206,10 @@ class PlaylistModel(TrackCurrentModel):
         iter_ = self.current_iter
         self.current_iter = self.order.previous_explicit(self, iter_)
 
-    def go_to(self, song_or_iter, explicit=False, queue=False):
+    def go_to(self, song_or_iter, explicit=False, source=None):
         """Go to a song or an iter or None"""
+
+        assert source is None or source is self
 
         print_d("Told to go to %r" % getattr(song_or_iter, "key",
                                              song_or_iter))
