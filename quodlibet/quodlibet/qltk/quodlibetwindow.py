@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gtk, GObject, Gdk, GLib, Gio
+from gi.repository import Gtk, Gdk, GLib, Gio
 
 import quodlibet
 
@@ -469,14 +469,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         # dbus app menu
         AppMenu(self, ui.get_action_groups()[0])
 
+        # custom accel map
         accel_fn = os.path.join(const.USERDIR, "accels")
         Gtk.AccelMap.load(accel_fn)
-
-        def accel_save_cb(*args):
-            Gtk.AccelMap.save(accel_fn)
-
-        # Gtk.AccelGroup.connect shadows gobject connect
-        GObject.Object.connect(accel_group, 'accel-changed', accel_save_cb)
+        # save right away so we fill the file with example comments of all
+        # accels
+        Gtk.AccelMap.save(accel_fn)
 
         menubar = ui.get_widget("/Menu")
 
