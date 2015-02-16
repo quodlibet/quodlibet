@@ -160,18 +160,10 @@ class TreeViewHints(Gtk.Window):
             res = vscrollbar.translate_coordinates(view, 0, 0)
             if res is not None:
                 x_offset = res[0]
-                placement = parent.get_placement()
-                vbar_right = placement in (Gtk.CornerType.BOTTOM_LEFT,
-                                           Gtk.CornerType.TOP_LEFT)
-                if vbar_right:
-                    if x >= x_offset:
-                        self.__undisplay(send_leave=False)
-                        return False
-                else:
-                    vbar_width = vscrollbar.get_allocation().width
-                    if x_offset + vbar_width >= x:
-                        self.__undisplay(send_leave=False)
-                        return False
+                vbar_width = vscrollbar.get_allocation().width
+                if x_offset <= x <= x_offset + vbar_width:
+                    self.__undisplay(send_leave=False)
+                    return False
 
         # hide if any modifier is active
         if event.get_state() & Gtk.accelerator_get_default_mod_mask():
