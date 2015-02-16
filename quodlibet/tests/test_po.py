@@ -5,7 +5,6 @@ from tests.helper import ListWithUnused as L
 import os
 import re
 import glob
-import subprocess
 
 try:
     import polib
@@ -15,6 +14,7 @@ except ImportError:
 import quodlibet
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import human_title
+from gdist import gettextutil
 
 
 PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
@@ -23,36 +23,23 @@ PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
 class TPOTFILESIN(TestCase):
 
     def test_missing(self):
-        if not iscommand("intltool-update"):
+        try:
+            gettextutil.check_version()
+        except gettextutil.GettextError:
             return
 
-        old_cd = os.getcwd()
-        try:
-            os.chdir(PODIR)
-            result = subprocess.check_output(
-                ["intltool-update", "--maintain",
-                 "--gettext-package", "quodlibet"],
-                stderr=subprocess.STDOUT)
-        finally:
-            os.chdir(old_cd)
-
+        result = gettextutil.get_missing(PODIR, "quodlibet")
         if result:
             raise Exception(result)
 
 
 @skipIf(polib is None, "polib not found")
 class TPot(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.old_cwd = os.getcwd()
-        os.chdir(PODIR)
-        subprocess.check_call([
-            "intltool-update", "--pot", "--gettext-package", "quodlibet"])
-        cls.pot = polib.pofile('quodlibet.pot')
 
     @classmethod
-    def tearDownClass(cls):
-        os.chdir(cls.old_cwd)
+    def setUpClass(cls):
+        pot_path = gettextutil.update_pot(PODIR, "quodlibet")
+        cls.pot = polib.pofile(pot_path)
 
     def conclude(self, fails, reason):
         if fails:

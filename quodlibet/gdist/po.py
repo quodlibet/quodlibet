@@ -23,6 +23,8 @@ from distutils.util import change_root
 from distutils.spawn import find_executable
 from distutils.core import Command
 
+from . import gettextutil
+
 
 class po_stats(Command):
 
@@ -81,25 +83,18 @@ class update_po(Command):
             self.po_directory, self.po_package + ".pot")
 
     def _update_pot(self):
-        oldpath = os.getcwd()
-        os.chdir(self.po_directory)
-        self.spawn(["intltool-update", "--pot",
-                    "--gettext-package", self.po_package])
-        os.chdir(oldpath)
+        gettextutil.update_pot(self.po_directory, self.po_package)
 
     def _update_po(self, po):
         assert po in self.po_files
-        oldpath = os.getcwd()
-        os.chdir(self.po_directory)
-        code = os.path.basename(po[:-3])
-        self.spawn(["intltool-update", "--dist",
-                    "--gettext-package", self.po_package,
-                    code])
-        os.chdir(oldpath)
+        lang_code = os.path.basename(po[:-3])
+        gettextutil.update_po(self.po_directory, self.po_package, lang_code)
 
     def run(self):
-        if find_executable("intltool-update") is None:
-            raise SystemExit("Error: 'intltool' not found.")
+        try:
+            gettextutil.check_version()
+        except gettextutil.GettextError as e:
+            raise SystemExit(e)
 
         # if lang is given, force update pot and the specific po
         if self.lang is not None:

@@ -62,6 +62,22 @@ class GlibTranslations(gettext.GNUTranslations):
         else:
             return msgstr
 
+    def pgettext(self, context, msgid):
+        real_msgid = "%s\x04%s" % (context, msgid)
+        result = self.gettext(real_msgid)
+        if result == real_msgid:
+            return msgid
+        return result
+
+    def upgettext(self, context, msgid):
+        context = unicode(context)
+        msgid = unicode(msgid)
+        real_msgid = u"%s\x04%s" % (context, msgid)
+        result = self.ugettext(real_msgid)
+        if result == real_msgid:
+            return msgid
+        return result
+
     def install(self, unicode=False):
         # set by tests
         if "QUODLIBET_NO_TRANS" in os.environ:
@@ -71,11 +87,13 @@ class GlibTranslations(gettext.GNUTranslations):
             _ = self.ugettext
             _Q = self.uqgettext
             ngettext = self.ungettext
+            pgettext = self.upgettext
             _N = unicode
         else:
             _ = self.gettext
             _Q = self.qgettext
             ngettext = self.ngettext
+            pgettext = self.pgettext
             _N = lambda s: s
 
         test_key = "QUODLIBET_TEST_TRANS"
@@ -91,8 +109,10 @@ class GlibTranslations(gettext.GNUTranslations):
             _Q = wrap(_Q)
             _N = wrap(_N)
             ngettext = wrap(ngettext)
+            pgettext = wrap(pgettext)
 
         __builtin__.__dict__["_"] = _
         __builtin__.__dict__["Q_"] = _Q
         __builtin__.__dict__["N_"] = _N
         __builtin__.__dict__["ngettext"] = ngettext
+        __builtin__.__dict__["pgettext"] = pgettext
