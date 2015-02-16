@@ -229,7 +229,7 @@ class PreferencesWindow(UniqueWindow):
             vb.pack_start(hb, False, True, 0)
 
             # Translators: The heading of the preference group, no action
-            f = qltk.Frame(Q_("heading|Search"), child=vb)
+            f = qltk.Frame(C_("heading", "Search"), child=vb)
             self.pack_start(f, False, True, 0)
 
             # Ratings

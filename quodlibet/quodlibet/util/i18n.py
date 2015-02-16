@@ -13,9 +13,9 @@ import os
 class GlibTranslations(gettext.GNUTranslations):
     """Provide a glib-like translation API for Python.
 
-    This class adds support for qgettext (and uqgettext) mirroring
-    glib's Q_ macro, which allows for disambiguation of identical
-    source strings. It also installs N_, Q_, and ngettext into the
+    This class adds support for pgettext (and upgettext) mirroring
+    glib's C_ macro, which allows for disambiguation of identical
+    source strings. It also installs N_, C_, and ngettext into the
     __builtin__ namespace.
 
     It can also be instantiated and used with any valid MO files
@@ -27,16 +27,6 @@ class GlibTranslations(gettext.GNUTranslations):
         self._catalog = {}
         self.plural = lambda n: n != 1
         gettext.GNUTranslations.__init__(self, fp)
-
-    def qgettext(self, msgid):
-        msgstr = self.gettext(msgid)
-        if msgstr == msgid:
-            try:
-                return msgstr.split("|", 1)[1]
-            except IndexError:
-                return msgstr
-        else:
-            return msgstr
 
     def ugettext(self, message):
         # force unicode here since __contains__ (used in gettext) ignores
@@ -50,17 +40,6 @@ class GlibTranslations(gettext.GNUTranslations):
         msgid1 = unicode(msgid1)
         msgid2 = unicode(msgid2)
         return gettext.GNUTranslations.ungettext(self, msgid1, msgid2, n)
-
-    def uqgettext(self, msgid):
-        msgid = unicode(msgid)
-        msgstr = self.ugettext(msgid)
-        if msgstr == msgid:
-            try:
-                return msgstr.split(u"|", 1)[1]
-            except IndexError:
-                return msgstr
-        else:
-            return msgstr
 
     def pgettext(self, context, msgid):
         real_msgid = "%s\x04%s" % (context, msgid)
@@ -85,15 +64,13 @@ class GlibTranslations(gettext.GNUTranslations):
 
         if unicode:
             _ = self.ugettext
-            _Q = self.uqgettext
             ngettext = self.ungettext
-            pgettext = self.upgettext
+            _C = self.upgettext
             _N = unicode
         else:
             _ = self.gettext
-            _Q = self.qgettext
             ngettext = self.ngettext
-            pgettext = self.pgettext
+            _C = self.pgettext
             _N = lambda s: s
 
         test_key = "QUODLIBET_TEST_TRANS"
@@ -106,13 +83,11 @@ class GlibTranslations(gettext.GNUTranslations):
                 return g
 
             _ = wrap(_)
-            _Q = wrap(_Q)
             _N = wrap(_N)
+            _C = wrap(_C)
             ngettext = wrap(ngettext)
-            pgettext = wrap(pgettext)
 
         __builtin__.__dict__["_"] = _
-        __builtin__.__dict__["Q_"] = _Q
         __builtin__.__dict__["N_"] = _N
+        __builtin__.__dict__["C_"] = _C
         __builtin__.__dict__["ngettext"] = ngettext
-        __builtin__.__dict__["pgettext"] = pgettext

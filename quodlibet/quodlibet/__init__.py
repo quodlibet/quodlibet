@@ -8,9 +8,10 @@
 import __builtin__
 
 _dummy_gettext = lambda value: value
+_dummy_pgettext = lambda context, value: value
 _dummy_ngettext = lambda v1, v2, count: (count == 1) and v1 or v2
 __builtin__.__dict__["_"] = _dummy_gettext
-__builtin__.__dict__["Q_"] = _dummy_gettext
+__builtin__.__dict__["C_"] = _dummy_pgettext
 __builtin__.__dict__["N_"] = _dummy_gettext
 __builtin__.__dict__["ngettext"] = _dummy_ngettext
 del _dummy_gettext

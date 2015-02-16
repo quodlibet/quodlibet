@@ -20,7 +20,7 @@ class GettextError(Exception):
 
 
 # pgettext isn't included by default for Python
-XGETTEXT_ARGS = "--keyword=pgettext:1c,2"
+XGETTEXT_ARGS = "--keyword=C_:1c,2"
 
 
 def update_pot(po_dir, package):

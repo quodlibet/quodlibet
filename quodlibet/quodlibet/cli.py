@@ -115,22 +115,22 @@ def process_arguments():
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "(+|-|)0..100"),
         ("query", _("Search your audio library"), _("query")),
-        ("play-file", _("Play a file"), Q_("command|filename")),
+        ("play-file", _("Play a file"), C_("command", "filename")),
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
         ("queue", _("Show or hide the queue"), "on|off|t"),
         ("song-list", _("Show or hide the main song list"), "on|off|t"),
-        ("random", _("Filter on a random value"), Q_("command|tag")),
+        ("random", _("Filter on a random value"), C_("command", "tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
         ("enqueue", _("Enqueue a file or query"), "%s|%s" % (
-            Q_("command|filename"), _("query"))),
+            C_("command", "filename"), _("query"))),
         ("enqueue-files", _("Enqueue comma-separated files"), "%s[,%s..]" % (
             _("filename"), _("filename"))),
         ("print-query", _("Print filenames of results of query to stdout"),
             _("query")),
         ("unqueue", _("Unqueue a file or query"), "%s|%s" % (
-            Q_("command|filename"), _("query"))),
+            C_("command", "filename"), _("query"))),
             ]:
         options.add(opt, help=help, arg=arg)
 

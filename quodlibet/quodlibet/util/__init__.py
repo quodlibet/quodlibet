@@ -474,8 +474,8 @@ def tag(name, cap=True):
             # Translators: If tag names, when capitalized, should not
             # be title-cased ("Looks Like This"), but rather only have
             # the first letter capitalized, translate this string as
-            # something other than "check|titlecase?".
-            if _("check|titlecase?") == "check|titlecase?":
+            # something other than "titlecase?".
+            if C_("check", "titlecase?") == "titlecase?":
                 parts = map(title, parts)
             else:
                 parts = map(capitalize, parts)
