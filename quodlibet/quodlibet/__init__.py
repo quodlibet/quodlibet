@@ -7,16 +7,6 @@
 
 import __builtin__
 
-_dummy_gettext = lambda value: value
-_dummy_pgettext = lambda context, value: value
-_dummy_ngettext = lambda v1, v2, count: (count == 1) and v1 or v2
-__builtin__.__dict__["_"] = _dummy_gettext
-__builtin__.__dict__["C_"] = _dummy_pgettext
-__builtin__.__dict__["N_"] = _dummy_gettext
-__builtin__.__dict__["ngettext"] = _dummy_ngettext
-del _dummy_gettext
-del _dummy_ngettext
-
 import gettext
 import locale
 import os
@@ -28,12 +18,14 @@ import quodlibet.util
 
 from quodlibet.util import set_process_title
 from quodlibet.util.path import mkdir, unexpand
-from quodlibet.util.i18n import GlibTranslations
+from quodlibet.util.i18n import GlibTranslations, gettext_install_dummy
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet.const import MinVersions, Version
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers"]
+
+gettext_install_dummy(unicode=True)
 
 
 class Application(object):

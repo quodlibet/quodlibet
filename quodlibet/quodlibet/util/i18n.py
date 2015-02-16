@@ -10,6 +10,23 @@ import gettext
 import os
 
 
+def gettext_install_dummy(unicode=False):
+    """Installs dummy gettext functions into the builtins namespace"""
+
+    if unicode:
+        uni = type(u"")
+    else:
+        uni = lambda v: v
+
+    _dummy_gettext = lambda value: uni(value)
+    _dummy_pgettext = lambda context, value: uni(value)
+    _dummy_ngettext = lambda v1, v2, count: (count == 1) and uni(v1) or uni(v2)
+    __builtin__.__dict__["_"] = _dummy_gettext
+    __builtin__.__dict__["C_"] = _dummy_pgettext
+    __builtin__.__dict__["N_"] = _dummy_gettext
+    __builtin__.__dict__["ngettext"] = _dummy_ngettext
+
+
 class GlibTranslations(gettext.GNUTranslations):
     """Provide a glib-like translation API for Python.
 
