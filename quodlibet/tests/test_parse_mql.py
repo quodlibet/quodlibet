@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from quodlibet import print_d
 from tests import TestCase
-from quodlibet.parse.mql import Mql, ParseError
+from quodlibet.query.mql import Mql, ParseError
 import quodlibet.formats._audio as audio
 
 
@@ -12,30 +12,28 @@ def AF(*args, **kwargs):
 
 class TMQL(TestCase):
     def _check_parsing(self, data):
-        m = Mql()
         for expr, expected in data:
             try:
-                m.parse(expr)
-                m._eval_stack()
+                Mql(expr)
                 self.assertTrue(expected, "{%s} should have failed" % expr)
             except ParseError, pe:
                 self.assertFalse(expected,
                                  "{%s} died unexpectedly (%s)" % (expr, pe))
 
     def _check_matching(self, tests, song):
-        m = Mql(star=["artist", "title", "version", "album", "genre",
-                      "comment", "~dirname", "genre", "performer",
-                      "originalartist"])
+
         for expr, expected in tests:
             print_d("*** Trying: {%s} ***" % expr)
             try:
-                m.parse(expr)
+                m = Mql(expr,
+                        star=["artist", "title", "version", "album",
+                              "genre", "comment", "~dirname", "genre",
+                              "performer", "originalartist"])
                 print_d("Reformatted={%s}" % m.query.transformString(expr))
             except ParseError, pe:
                 self.fail("{%s} died unexpectedly (%s)" % (expr, pe))
             else:
-                matcher = m._eval_stack()
-                self.assertEquals(expected, matcher.search(song),
+                self.assertEquals(expected, m.search(song),
                                   "{%s} should %shave matched song: %s"
                                   % (expr, ["not ", ""][expected], song))
 
