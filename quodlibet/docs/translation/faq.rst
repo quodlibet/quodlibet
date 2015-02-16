@@ -5,7 +5,6 @@ FAQ
 What do these things in strings mean?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* ``command|tag``: see `Translation Context`_
 * ``This is %s``, ``an %(foobat)s example``, ``for {translators}, {0}``:
   see `String Formatting`_
 
@@ -25,10 +24,10 @@ variable set::
 which will append and prepend "xx" to all translatable strings.
 
 
-What does `check|titlecase?` mean?
+What does `titlecase?` mean?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There's a special string `check|titlecase?` which should be translated as 
+There's a special string `titlecase?` which should be translated as 
 anything if your language does not use `title casing 
 <http://en.wikipedia.org/wiki/Letter_case>`_ (eg *This Is Title Casing*) 
 for labels. If it is left untranslated, title-casing will be used.
@@ -54,23 +53,6 @@ where the tokens have been replaced:
 
 In the case of ``Hello %(name)s``, a possible German translation and text 
 displayed to the user would be ``Hallo %(name)s`` and ``Hallo Lou``.
-
-
-Translation Context
-^^^^^^^^^^^^^^^^^^^
-
-Some strings have a "|" character in them (for example, 
-"command|filename"). This is used to separate strings with the same text 
-but different contexts. The filename string is used to describe the 
-filename tag, and should be translated in a style appropriate for users to 
-read in a GUI (for example, "nome de arquivo"). The "command|filename" is 
-used to describe a command-line argument, and should be translated 
-appropriate for that (for example, "nome_de_arquivo"). The comments in the 
-PO file should describe the context if there is any.
-
-Do not translate or include the text before the "|". For example, 
-"command|tag" should be translated as "etiqueta" in Galician, not 
-"command|etiqueta".
 
 
 Plural-Forms
