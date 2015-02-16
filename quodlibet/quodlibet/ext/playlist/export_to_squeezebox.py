@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,12 +19,11 @@ from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
 
 class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Export to Squeezebox Playlist"
-    PLUGIN_NAME = _("Export to Squeezebox...")
-    PLUGIN_DESC = _("Dynamically export a playlist to Logitech Squeezebox "
+    PLUGIN_NAME = _(u"Export to Squeezebox…")
+    PLUGIN_DESC = _("Dynamically exports a playlist to Logitech Squeezebox "
                     "playlist, provided both share a directory structure. "
-                    "Shares configuration with Squeezebox Sync plugin")
+                    "Shares configuration with Squeezebox Sync plugin.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = '0.5'
     TEMP_PLAYLIST = "_quodlibet"
 
     def __add_songs(self, task, songs, name):

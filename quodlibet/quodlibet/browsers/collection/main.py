@@ -14,18 +14,17 @@ from quodlibet import config
 
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers._base import Browser
-from quodlibet.parse import Query
+from quodlibet.query import Query
 
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (get_scale_factor, get_pbosf_for_pixbuf,
-    set_renderer_from_pbosf)
+    set_renderer_from_pbosf, scale, add_border_widget)
 from quodlibet.qltk.x import ScrolledWindow, Alignment, SymbolicIconImage
 from quodlibet.util.collection import Album
-from quodlibet.util import thumbnails, connect_obj
+from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
-from quodlibet.util.thumbnails import scale
 
 from .models import (CollectionTreeStore, CollectionSortModel,
     CollectionFilterModel, MultiNode, UnknownNode)
@@ -206,7 +205,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
                 cover = get_scaled_cover(album)
                 if cover:
                     round_ = config.getboolean("albumart", "round")
-                    cover = thumbnails.add_border_widget(
+                    cover = add_border_widget(
                         cover, view, cell, round=round_)
                     pbosf = get_pbosf_for_pixbuf(self, cover)
                     set_renderer_from_pbosf(cell, pbosf)
@@ -319,7 +318,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
     def __play(self, view, path, col):
         model = view.get_model()
         if isinstance(model[path][0], Album):
-            self.emit("activated")
+            self.songs_activated()
         else:
             if view.row_expanded(path):
                 view.collapse_row(path)
@@ -340,7 +339,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
     def __selection_changed(self, selection):
         songs = self.__get_selected_songs(False)
         if songs is not None:
-            GLib.idle_add(self.emit, 'songs-selected', songs, None)
+            GLib.idle_add(self.songs_selected, songs)
 
     def can_filter_albums(self):
         return True

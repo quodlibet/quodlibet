@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Inigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
@@ -26,7 +27,6 @@ def set_lang(value):
 
 class WikiSearch(object):
     PLUGIN_ICON = Gtk.STOCK_OPEN
-    PLUGIN_VERSION = '0.14'
 
     @classmethod
     def changed(self, e):
@@ -59,11 +59,15 @@ class WikiSearch(object):
 
 class WikiArtist(WikiSearch, SongsMenuPlugin):
     PLUGIN_ID = 'Search artist in Wikipedia'
-    PLUGIN_NAME = _('Search artist in Wikipedia')
+    PLUGIN_NAME = _('Search Artist in Wikipedia')
+    PLUGIN_DESC = _('Opens a browser window with Wikipedia article '
+                    'on the playing song artist.')
     k = 'artist'
 
 
 class WikiAlbum(WikiSearch, SongsMenuPlugin):
     PLUGIN_ID = 'Search album in Wikipedia'
-    PLUGIN_NAME = _('Search album in Wikipedia')
+    PLUGIN_NAME = _('Search Album in Wikipedia')
+    PLUGIN_DESC = _('Opens a browser window with Wikipedia article '
+                    'on the playing song album.')
     k = 'album'

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
 #
@@ -10,22 +11,21 @@ import sys
 import signal
 
 import gi
+gi.require_version("Gtk", "3.0")
+
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
 
 
-def redraw_all_toplevels(skip=None):
-    """A hack to trigger redraws for all windows and widgets.
-    Currently uses the sensitive state which leads to the active widget
-    losing focus, so pass it with skip to skip processing it.
-    """
-
-    if skip:
-        skip = get_top_parent(skip)
+def redraw_all_toplevels():
+    """A hack to trigger redraws for all windows and widgets."""
 
     for widget in Gtk.Window.list_toplevels():
-        if not widget.get_realized() or widget == skip:
+        if not widget.get_realized():
+            continue
+        if widget.is_active():
+            widget.queue_draw()
             continue
         sensitive = widget.get_sensitive()
         widget.set_sensitive(not sensitive)
@@ -71,6 +71,13 @@ def get_top_parent(widget):
         return parent
     else:
         return None
+
+
+def get_menu_item_top_parent(widget):
+    """Returns the toplevel for a menu item"""
+
+    menu = widget and widget.get_parent()
+    return get_top_parent(menu.get_attach_widget())
 
 
 def find_widgets(container, type_):

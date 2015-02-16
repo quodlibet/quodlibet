@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,6 +10,7 @@ import shutil
 
 from gi.repository import Gtk
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet.const import USERDIR
 from quodlibet.plugins.events import EventPlugin
@@ -26,9 +28,8 @@ def set_path(value):
 class PictureSaver(EventPlugin):
     PLUGIN_ID = "Picture Saver"
     PLUGIN_NAME = _("Picture Saver")
-    PLUGIN_DESC = _("The cover image of the current song is saved to a file.")
+    PLUGIN_DESC = _("Saves the cover image of the current song to a file.")
     PLUGIN_ICON = Gtk.STOCK_SAVE
-    PLUGIN_VERSION = "0.21"
 
     def plugin_on_song_started(self, song):
         outfile = get_path()
@@ -38,7 +39,7 @@ class PictureSaver(EventPlugin):
             except EnvironmentError:
                 pass
         else:
-            cover = song.find_cover()
+            cover = app.cover_manager.get_cover(song)
             if cover is None:
                 try:
                     os.unlink(outfile)

@@ -16,8 +16,7 @@ from quodlibet import config
 class EmbedCover(CoverSourcePlugin):
     PLUGIN_ID = "embed-cover"
     PLUGIN_NAME = _("Embed cover")
-    PLUGIN_DESC = _("Use covers embed into audio files")
-    PLUGIN_VERSION = "1.0"
+    PLUGIN_DESC = _("Uses covers embedded into audio files.")
 
     embedded = True
 
@@ -40,9 +39,8 @@ class EmbedCover(CoverSourcePlugin):
 class FilesystemCover(CoverSourcePlugin):
     PLUGIN_ID = "filesystem-cover"
     PLUGIN_NAME = _("Filesystem cover")
-    PLUGIN_DESC = _("Use commonly named images found in common directories " +
-                    "alongside the song")
-    PLUGIN_VERSION = "1.0"
+    PLUGIN_DESC = _("Uses commonly named images found in common directories " +
+                    "alongside the song.")
 
     cover_subdirs = frozenset(
         ["scan", "scans", "images", "covers", "artwork"])

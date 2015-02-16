@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import shutil
 import os
 from quodlibet import config

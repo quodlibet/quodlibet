@@ -17,7 +17,7 @@ if os.name == "nt" or sys.platform == "darwin":
 import dbus
 from gi.repository import Gtk
 
-from quodlibet.parse._pattern import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet import util
 from quodlibet import qltk
@@ -62,7 +62,6 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
                     "in Empathy etc) with a status message based on current "
                     "song.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.3"
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
     DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")
@@ -120,8 +119,9 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
                       self.CFG_PAT_PLAYING)
         lbl = Gtk.Label(label=_("Playing:"))
         entry.set_tooltip_markup(_("Status text when a song is started. "
-                                 "Accepts QL Patterns e.g. <tt>%s</tt>")
-                                 % util.escape("<~artist~title>"))
+                                 "Accepts QL Patterns e.g. %s")
+                                 % util.monospace(
+                                        util.escape("<~artist~title>")))
         lbl.set_mnemonic_widget(entry)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(entry, True, True, 0)
@@ -136,8 +136,9 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
                       self.CFG_PAT_PAUSED)
         lbl = Gtk.Label(label=_("Paused:"))
         entry.set_tooltip_markup(_("Status text when a song is paused. "
-                                   "Accepts QL Patterns e.g. <tt>%s</tt>")
-                                   % util.escape("<~artist~title>"))
+                                   "Accepts QL Patterns e.g. %s")
+                                   % util.monospace(
+                                        util.escape("<~artist~title>")))
         lbl.set_mnemonic_widget(entry)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(entry, True, True, 0)

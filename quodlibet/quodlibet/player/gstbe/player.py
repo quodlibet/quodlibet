@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
 #           2011-2014 Christoph Reiter
 #
@@ -18,7 +19,8 @@ from quodlibet import const
 from quodlibet import config
 from quodlibet import util
 
-from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError
+from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
+    MainRunnerAbortedError, MainRunnerTimeoutError
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
@@ -476,8 +478,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE):
             self._error(PlayerError(title, error_details))
 
-    def __about_to_finish(self, pipeline):
-        print_d("About to finish")
+    def __about_to_finish_sync(self):
+        """Returns a tuple (ok, next_song). ok is True if the next song
+        should be set.
+        """
+
+        print_d("About to finish (sync)")
 
         # Chained oggs falsely trigger a gapless transition.
         # At least for radio streams we can safely ignore it because
@@ -486,33 +492,50 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # https://bugzilla.gnome.org/show_bug.cgi?id=695474
         if self.song.multisong:
             print_d("multisong: ignore about to finish")
-            return
+            return (False, None)
 
         if config.getboolean("player", "gst_disable_gapless"):
             print_d("Gapless disabled")
-            return
+            return (False, None)
 
         # this can trigger twice, see issue 987
         if self._in_gapless_transition:
-            return
+            return (False, None)
         self._in_gapless_transition = True
 
-        def change_in_main_loop(source):
-            print_d("Select next song in mainloop..")
-            source.next_ended()
-            print_d("..done.")
+        print_d("Select next song in mainloop..")
+        self._source.next_ended()
+        print_d("..done.")
+
+        return (True, self._source.current)
+
+    def __about_to_finish(self, playbin):
+        print_d("About to finish (async)")
 
         try:
-            self._runner.call(change_in_main_loop, self._source,
-                              priority=GLib.PRIORITY_HIGH)
+            ok, song = self._runner.call(self.__about_to_finish_sync,
+                                         priority=GLib.PRIORITY_HIGH,
+                                         timeout=0.5)
+        except MainRunnerTimeoutError as e:
+            # Due to some locks being held during this signal we can get
+            # into a deadlock when a seek or state change event happens
+            # in the mainloop before our function gets scheduled.
+            # In this case abort and do nothing, which results
+            # in a non-gapless transition.
+            print_d("About to finish (async): %s" % e)
+            return
+        except MainRunnerAbortedError:
+            print_d("About to finish (async): %s" % e)
+            return
         except MainRunnerError:
             util.print_exc()
+            return
 
-        song = self._source.current
-        bin = self.bin
-
-        if song and bin:
-            bin.set_property('uri', song("~uri"))
+        if ok:
+            print_d("About to finish (async): setting uri")
+            uri = song("~uri") if song is not None else None
+            playbin.set_property('uri', uri)
+        print_d("About to finish (async): done")
 
     def stop(self):
         super(GStreamerPlayer, self).stop()
@@ -551,7 +574,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 self._last_position = p
         return p
 
-    def _set_paused(self, paused):
+    @property
+    def paused(self):
+        return self._paused
+
+    @paused.setter
+    def paused(self, paused):
         if paused == self._paused:
             return
         self._paused = paused
@@ -588,10 +616,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     self.bin.set_state(Gst.State.PLAYING)
 
         self.emit((paused and 'paused') or 'unpaused')
-
-    def _get_paused(self):
-        return self._paused
-    paused = property(_get_paused, _set_paused)
 
     def _error(self, player_error):
         """Destroy the pipeline and set the error state.

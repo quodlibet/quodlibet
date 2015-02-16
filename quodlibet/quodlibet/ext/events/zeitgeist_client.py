@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -32,9 +33,9 @@ from quodlibet.plugins.events import EventPlugin
 class Zeitgeist(EventPlugin):
     PLUGIN_ID = "zeitgeist"
     PLUGIN_NAME = _("Event Logging")
-    PLUGIN_DESC = _("Send song events to the Zeitgeist event logging service")
+    PLUGIN_DESC = _("Sends song events to the Zeitgeist event logging "
+                    "service.")
     PLUGIN_ICON = 'gtk-network'
-    PLUGIN_VERSION = "0.1"
 
     def enabled(self):
         self.client = ZeitgeistClient()

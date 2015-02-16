@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
 # version 0.11
 # (C) 2005-2012 by Joshua Kwan <joshk@triplehelix.org>,
@@ -23,10 +24,12 @@ try:
 except ImportError:
     from md5 import md5
 
-from quodlibet import config, const, app, parse, util, qltk
+from quodlibet import config, const, app, util, qltk
+from quodlibet.pattern import Pattern
+from quodlibet.query import Query
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
 from quodlibet.qltk.msg import Message
 from quodlibet.util.dprint import print_d
 
@@ -57,6 +60,7 @@ class QLSubmitQueue(PluginConfigMixin):
     """
 
     CLIENT = "qlb"
+    CLIENT_VERSION = const.VERSION
     PROTOCOL_VERSION = "1.2"
     DUMP = os.path.join(const.USERDIR, "scrobbler_cache")
     # This must be the kept the same as `QLScrobbler`
@@ -128,9 +132,9 @@ class QLSubmitQueue(PluginConfigMixin):
         self.username, self.password, self.base_url = ('', '', '')
 
         # These need to be set early for _format_song to work
-        self.titlepat = parse.Pattern(
+        self.titlepat = Pattern(
             self.config_get('titlepat', "") or DEFAULT_TITLEPAT)
-        self.artpat = parse.Pattern(
+        self.artpat = Pattern(
             self.config_get('artistpat', "") or DEFAULT_ARTISTPAT)
 
         try:
@@ -169,9 +173,9 @@ class QLSubmitQueue(PluginConfigMixin):
             self.broken = False
             self.handshake_sent = False
         self.offline = self.config_get_bool('offline')
-        self.titlepat = parse.Pattern(
+        self.titlepat = Pattern(
                 self.config_get('titlepat', "") or DEFAULT_TITLEPAT)
-        self.artpat = parse.Pattern(
+        self.artpat = Pattern(
                 self.config_get('artistpat', "") or DEFAULT_ARTISTPAT)
 
     def changed(self):
@@ -229,7 +233,7 @@ class QLSubmitQueue(PluginConfigMixin):
         auth = md5(self.password + str(stamp)).hexdigest()
         url = "%s/?hs=true&p=%s&c=%s&v=%s&u=%s&a=%s&t=%d" % (
                     self.base_url, self.PROTOCOL_VERSION, self.CLIENT,
-                    QLScrobbler.PLUGIN_VERSION, self.username, auth, stamp)
+                    self.CLIENT_VERSION, self.username, auth, stamp)
         print_d("Sending handshake to service.")
 
         try:
@@ -338,7 +342,6 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
     PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
                     "Audioscrobbler services.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.12"
     # Retain original config section
     CONFIG_SECTION = "scrobbler"
 
@@ -379,13 +382,13 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         if self.elapsed < 240 and self.elapsed <= .5 * song.get("~#length", 0):
             return
         print_d("Checking against filter %s" % self.exclude)
-        if self.exclude and parse.Query(self.exclude).search(song):
+        if self.exclude and Query(self.exclude).search(song):
             print_d("Not submitting: %s" % song("~artist~title"))
             return
         self.queue.submit(song, self.start_time)
 
     def song_excluded(self, song):
-        if self.exclude and parse.Query(self.exclude).search(song):
+        if self.exclude and Query(self.exclude).search(song):
             print_d("%s is excluded by %s" %
                     (song("~artist~title"), self.exclude))
             return True
@@ -473,7 +476,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         cur_service = self.config_get('service')
 
         # Translators: Other service
-        other_label = _("Other...")
+        other_label = _(u"Other…")
         for idx, serv in enumerate(sorted(SERVICES.keys()) + [other_label]):
             service_combo.append_text(serv)
             if cur_service == serv:
@@ -557,7 +560,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         row += 1
 
         # exclude filter
-        entry = ValidatingEntry(parse.Query.is_valid_color)
+        entry = ValidatingEntry(QueryValidator)
         entry.set_text(self.config_get('exclude'))
         entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))

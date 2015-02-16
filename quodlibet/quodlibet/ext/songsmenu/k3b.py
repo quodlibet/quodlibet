@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig,
 #           2009,2012 Christoph Reiter
 #
@@ -16,9 +17,8 @@ from quodlibet.util import connect_obj
 class BurnCD(SongsMenuPlugin):
     PLUGIN_ID = 'Burn CD'
     PLUGIN_NAME = _('Burn CD')
-    PLUGIN_DESC = _('Burn CDs with K3b, Brasero or xfburn.')
+    PLUGIN_DESC = _('Burns CDs with K3b, Brasero or xfburn.')
     PLUGIN_ICON = 'gtk-cdrom'
-    PLUGIN_VERSION = '0.2'
 
     burn_programs = {
         'K3b': ['k3b', '--audiocd'],

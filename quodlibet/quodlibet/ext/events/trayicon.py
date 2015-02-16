@@ -13,7 +13,7 @@ from gi.repository import Gtk, Pango, Gdk, GdkPixbuf, GLib
 
 from quodlibet import browsers, config, qltk, util, app
 from quodlibet.config import RATINGS
-from quodlibet.parse import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information
@@ -22,6 +22,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
+from quodlibet.qltk import icons
 from quodlibet.util.thumbnails import scale
 from quodlibet.util import connect_obj
 
@@ -221,8 +222,7 @@ class TrayIcon(EventPlugin):
 
     PLUGIN_ID = "Tray Icon"
     PLUGIN_NAME = _("Tray Icon")
-    PLUGIN_DESC = _("Control Quod Libet from the system tray.")
-    PLUGIN_VERSION = "2.0"
+    PLUGIN_DESC = _("Controls Quod Libet from the system tray.")
 
     def enabled(self):
         self._icon = Gtk.StatusIcon()
@@ -309,7 +309,7 @@ class TrayIcon(EventPlugin):
                 flags = Gtk.IconLookupFlags.FORCE_SIZE
             try:
                 self.__pixbuf = self.__icon_theme.load_icon(
-                    "quodlibet", self.__size, flags)
+                    icons.QUODLIBET, self.__size, flags)
             except GLib.GError:
                 util.print_exc()
                 return

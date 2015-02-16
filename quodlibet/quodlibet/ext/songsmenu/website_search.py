@@ -8,7 +8,7 @@
 from quodlibet import print_w, print_d, qltk
 from quodlibet.const import USERDIR
 from quodlibet.formats._audio import AudioFile
-from quodlibet.parse._pattern import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem
@@ -32,10 +32,9 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
-                    "Supports patterns e.g. %(pattern-example)s") % {
+                    "Supports patterns e.g. %(pattern-example)s.") % {
                         "pattern-example":
                             "http://google.com?q=<~artist~title>"}
-    PLUGIN_VERSION = '0.4'
 
     # Here are some starters...
     # Sorry, PEP-8 : sometimes you're unrealistic
@@ -111,7 +110,7 @@ class WebsiteSearch(SongsMenuPlugin):
             connect_obj(item, 'activate', self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        configure = Gtk.MenuItem(label=_("Configure searches..."))
+        configure = Gtk.MenuItem(label=_(u"Configure searches…"))
         connect_obj(configure, 'activate', self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)

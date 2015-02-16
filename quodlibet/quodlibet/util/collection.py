@@ -16,11 +16,9 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.util import thumbnails
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.path import bytes2fsnative, is_fsnative, fsnative2bytes
-from quodlibet.util.cover.manager import cover_plugins
 from .collections import HashedList
 
 
@@ -286,8 +284,13 @@ class Album(Collection):
     def genre(self):
         return util.human_sort_key(self.get("genre").split("\n")[0])
 
-    date = property(lambda self: self.get("date"))
-    title = property(lambda self: self.get("album"))
+    @property
+    def date(self):
+        return self.get("date")
+
+    @property
+    def title(self):
+        return self.get("album")
 
     def __init__(self, song):
         super(Album, self).__init__()
@@ -306,16 +309,23 @@ class Album(Collection):
         self.__dict__.pop("peoplesort", None)
         self.__dict__.pop("genre", None)
 
-    def scan_cover(self, force=False, scale_factor=1):
+    def scan_cover(self, force=False, scale_factor=1,
+            callback=None, cancel=None):
         if (self.scanned and not force) or not self.songs:
             return
         self.scanned = True
 
-        cover = cover_plugins.get_cover_many(self.songs)
+        def set_cover_cb(pixbuf):
+            self.cover = pixbuf
+            callback()
 
-        if cover is not None:
-            s = self.COVER_SIZE * scale_factor
-            self.cover = thumbnails.get_thumbnail_from_file(cover, (s, s))
+        from quodlibet import app
+        s = self.COVER_SIZE * scale_factor
+        if callback is not None:
+            app.cover_manager.get_pixbuf_many_async(
+                self.songs, s, s, cancel, set_cover_cb)
+        else:
+            self.cover = app.cover_manager.get_pixbuf_many(self.songs, s, s)
 
     def __repr__(self):
         return "Album(%s)" % repr(self.key)

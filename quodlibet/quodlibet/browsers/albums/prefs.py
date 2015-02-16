@@ -18,7 +18,7 @@ from quodlibet.formats import PEOPLE
 from quodlibet.util import format_rating, connect_obj
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.textedit import PatternEditBox
-from quodlibet.parse import XMLFromMarkupPattern
+from quodlibet.pattern import XMLFromMarkupPattern
 
 
 EMPTY = _("Songs not in an album")

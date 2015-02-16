@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2010,2012 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -39,11 +40,10 @@ from quodlibet.plugins.events import EventPlugin
 
 class MPRIS(EventPlugin):
     PLUGIN_ID = "mpris"
-    PLUGIN_NAME = _("MPRIS D-Bus support")
-    PLUGIN_DESC = _("Control Quod Libet using the "
-        "MPRIS 1.0/2.0 D-Bus Interface Specification.")
+    PLUGIN_NAME = _("MPRIS D-Bus Support")
+    PLUGIN_DESC = _("Allows control of Quod Libet using the "
+                    "MPRIS 1.0/2.0 D-Bus Interface Specification.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
-    PLUGIN_VERSION = "0.2"
 
     def PluginPreferences(self, parent):
         box = Gtk.HBox()
@@ -136,7 +136,7 @@ class MPRIS1Root(MPRISObject):
 
     @dbus.service.method(IFACE, out_signature="s")
     def Identity(self):
-        return "Quod Libet"
+        return app.name
 
     @dbus.service.method(IFACE)
     def Quit(self):
@@ -579,7 +579,7 @@ value="false"/>
 
         metadata["mpris:length"] = dbus.Int64(song("~#length") * 10 ** 6)
 
-        self.__cover = cover = song.find_cover()
+        self.__cover = cover = app.cover_manager.get_cover(song)
         is_temp = False
         if cover:
             name = cover.name
@@ -675,7 +675,7 @@ value="false"/>
             elif name == "HasTrackList":
                 return False
             elif name == "Identity":
-                return "Quod Libet"
+                return app.name
             elif name == "DesktopEntry":
                 return "quodlibet"
             elif name == "SupportedUriSchemes":

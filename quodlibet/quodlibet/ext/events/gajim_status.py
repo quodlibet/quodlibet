@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005-2006 Sergey Fedoseev <fedoseev.sergey@gmail.com>
 # Copyright 2007 Simon Morgan <zen84964@zen.co.uk>
 #
@@ -18,7 +19,7 @@ from gi.repository import Gtk
 import dbus
 
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.parse import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.qltk import Frame
 from quodlibet import config
 
@@ -26,9 +27,8 @@ from quodlibet import config
 class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = 'Gajim status message'
     PLUGIN_NAME = _('Gajim Status Message')
-    PLUGIN_DESC = _("Change Gajim status message according to what "
+    PLUGIN_DESC = _("Changes Gajim status message according to what "
                     "you are currently listening to.")
-    PLUGIN_VERSION = '0.7.4'
 
     c_accounts = __name__ + '_accounts'
     c_paused = __name__ + '_paused'

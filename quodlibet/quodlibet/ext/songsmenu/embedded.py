@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -6,6 +7,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import app
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.formats._image import EmbeddedImage
@@ -15,7 +17,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class EditEmbedded(SongsMenuPlugin):
     PLUGIN_ID = "embedded_edit"
     PLUGIN_NAME = _("Edit Embedded Images")
-    PLUGIN_DESC = _("Remove or replace embedded images")
+    PLUGIN_DESC = _("Removes or replaces embedded images.")
     PLUGIN_ICON = Gtk.STOCK_EDIT
 
     def __init__(self, songs, *args, **kwargs):
@@ -45,7 +47,7 @@ class EditEmbedded(SongsMenuPlugin):
 
         for song in songs:
             if song.can_change_images:
-                fileobj = song.find_cover()
+                fileobj = app.cover_manager.get_cover(song)
                 if fileobj:
                     path = fileobj.name
                     image = EmbeddedImage.from_path(path)

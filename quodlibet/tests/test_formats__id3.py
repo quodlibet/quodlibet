@@ -88,6 +88,17 @@ class TID3Images(TestCase):
         self.assertTrue(song.has_images)
         self.assertEqual(song.get_primary_image().mime_type, "image/jpeg")
 
+    def test_set_image_no_tag(self):
+        f = mutagen.File(self.filename)
+        f.delete()
+        song = MP3File(self.filename)
+        fileobj = StringIO.StringIO("foo")
+        image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
+        song.set_image(image)
+
+        song = MP3File(self.filename)
+        self.assertTrue(song.has_images)
+
 
 class TID3File(TestCase):
     def setUp(self):
@@ -417,18 +428,6 @@ class TID3File(TestCase):
         # same here, but without the TP1, so 2 values
         song = MP3File(self.filename)
         self.failUnlessEqual(len(song.list("artist")), 2)
-
-    def test_id3_bug(self):
-        # http://code.google.com/p/mutagen/issues/detail?id=97
-        tag = mutagen.id3.ID3(self.filename2)
-        self.failUnless(tag.unknown_frames)
-        version = mutagen.version
-        mutagen.version = (1, 20)
-        song = MP3File(self.filename2)
-        song.write()
-        mutagen.version = version
-        tag = mutagen.id3.ID3(self.filename2)
-        self.failIf(tag.unknown_frames)
 
     def test_encoding(self):
         song = MP3File(self.filename)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,10 +12,9 @@ from quodlibet.util.string.splitters import split_title, split_album
 class SplitTags(SongsMenuPlugin):
     PLUGIN_ID = "Split Tags"
     PLUGIN_NAME = _("Split Tags")
-    PLUGIN_DESC = _("Split the disc number from the album and the version "
+    PLUGIN_DESC = _("Splits the disc number from the album and the version "
                     "from the title at the same time.")
     PLUGIN_ICON = 'gtk-find-and-replace'
-    PLUGIN_VERSION = "0.13"
 
     def plugin_song(self, song):
         if ("title" in song and
@@ -39,7 +39,6 @@ class SplitAlbum(SongsMenuPlugin):
     PLUGIN_NAME = _("Split Album")
     PLUGIN_DESC = _("Split out disc number.")
     PLUGIN_ICON = 'gtk-find-and-replace'
-    PLUGIN_VERSION = "0.13"
 
     def plugin_song(self, song):
         if ("album" in song and "discnumber" not in song and

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 #    Duplicates songs plugin.
 #
@@ -360,9 +361,8 @@ class DuplicateDialog(Gtk.Window):
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
-    PLUGIN_DESC = _('Find and browse similarly tagged versions of songs.')
+    PLUGIN_DESC = _('Finds and displays similarly tagged versions of songs.')
     PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
-    PLUGIN_VERSION = "0.7"
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"

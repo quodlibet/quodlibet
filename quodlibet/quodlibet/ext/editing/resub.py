@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 
 from gi.repository import Gtk, GObject
@@ -9,10 +10,9 @@ from quodlibet.util import connect_obj
 class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
     PLUGIN_ID = "Regex Substitution"
     PLUGIN_NAME = _("Regex Substitution")
-    PLUGIN_DESC = _("Allow arbitrary regex substitutions (s///) when "
+    PLUGIN_DESC = _("Allows arbitrary regex substitutions (s///) when "
                     "tagging or renaming files.")
     PLUGIN_ICON = Gtk.STOCK_FIND_AND_REPLACE
-    PLUGIN_VERSION = "1"
 
     __gsignals__ = {
         "changed": (GObject.SignalFlags.RUN_LAST, None, ())

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Alexey Bobyakov <claymore.ws@gmail.com>, Joe Wreschnig
 # Copyright 2006 Lukas Lalinsky
 #
@@ -5,22 +6,16 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from mutagen.mp4 import MP4, MP4Cover
+
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import EmbeddedImage
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
 
 
-extensions = ['.mp4', '.m4a', '.m4v']
-
-try:
-    from mutagen.mp4 import MP4, MP4Cover
-except ImportError:
-    extensions = []
-
-
 class MP4File(AudioFile):
-    format = "MPEG-4 AAC"
+    format = "MPEG-4"
     mimes = ["audio/mp4", "audio/x-m4a", "audio/mpeg4", "audio/aac"]
 
     __translate = {
@@ -65,6 +60,8 @@ class MP4File(AudioFile):
 
     def __init__(self, filename):
         audio = MP4(filename)
+        self["~format"] = "%s %s" % (
+            self.format, getattr(audio.info, "codec_description", "AAC"))
         self["~#length"] = int(audio.info.length)
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         for key, values in audio.items():
@@ -211,3 +208,4 @@ class MP4File(AudioFile):
 
 info = MP4File
 types = [MP4File]
+extensions = ['.mp4', '.m4a', '.m4v']

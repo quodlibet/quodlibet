@@ -40,9 +40,8 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'
     PLUGIN_NAME = _('Python Console')
-    PLUGIN_DESC = _('Interactive Python console')
+    PLUGIN_DESC = _('Interactive Python console.')
     PLUGIN_ICON = 'gtk-execute'
-    PLUGIN_VERSION = '0.2'
 
     def plugin_songs(self, songs):
         win = ConsoleWindow(songs)
@@ -69,7 +68,8 @@ class ConsoleWindow(Gtk.Window):
                 'app': app})
         self.add(console)
 
-        acces_string = _("You can access the following objects by default:\\n"
+        acces_string = _("You can access the following objects by default:")
+        acces_string += ("\\n"
             "  '%s' (SongWrapper objects)\\n"
             "  '%s' (Song dictionaries)\\n"
             "  '%s' (Filename list)\\n"

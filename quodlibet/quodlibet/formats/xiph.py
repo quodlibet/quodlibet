@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2009-2014 Christoph Reiter
 #
@@ -10,6 +11,7 @@ import base64
 
 import mutagen
 from mutagen.flac import Picture, error as FLACError
+from mutagen.id3 import ID3
 
 from quodlibet import config
 from quodlibet import const
@@ -303,55 +305,31 @@ class MutagenVCFile(AudioFile):
 
 extensions = []
 ogg_formats = []
-try:
-    from mutagen.oggvorbis import OggVorbis
-except ImportError:
-    OggVorbis = None
-else:
-    extensions.append(".ogg")
-    extensions.append(".oga")
-    ogg_formats.append(OggVorbis)
 
-try:
-    from mutagen.flac import FLAC, FLACNoHeaderError
-except ImportError:
-    FLAC = None
-else:
-    extensions.append(".flac")
-    ogg_formats.append(FLAC)
+from mutagen.oggvorbis import OggVorbis
+extensions.append(".ogg")
+extensions.append(".oga")
+ogg_formats.append(OggVorbis)
 
-try:
-    from mutagen.oggflac import OggFLAC
-except ImportError:
-    OggFLAC = None
-else:
-    extensions.append(".oggflac")
-    ogg_formats.append(OggFLAC)
+from mutagen.flac import FLAC, FLACNoHeaderError
+extensions.append(".flac")
+ogg_formats.append(FLAC)
 
-try:
-    from mutagen.oggspeex import OggSpeex
-except ImportError:
-    OggSpeex = None
-else:
-    extensions.append(".spx")
-    ogg_formats.append(OggSpeex)
+from mutagen.oggflac import OggFLAC
+extensions.append(".oggflac")
+ogg_formats.append(OggFLAC)
+
+from mutagen.oggspeex import OggSpeex
+extensions.append(".spx")
+ogg_formats.append(OggSpeex)
 
 from mutagen.oggtheora import OggTheora
 extensions.append(".ogv")
 ogg_formats.append(OggTheora)
 
-try:
-    from mutagen.oggopus import OggOpus
-except ImportError:
-    OggOpus = None
-else:
-    extensions.append(".opus")
-    ogg_formats.append(OggOpus)
-
-try:
-    from mutagen.id3 import ID3
-except ImportError:
-    ID3 = None
+from mutagen.oggopus import OggOpus
+extensions.append(".opus")
+ogg_formats.append(OggOpus)
 
 
 class OggFile(MutagenVCFile):

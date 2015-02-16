@@ -16,7 +16,7 @@ class TMQL(TestCase):
         for expr, expected in data:
             try:
                 m.parse(expr)
-                m.evaluate_stack()
+                m._eval_stack()
                 self.assertTrue(expected, "{%s} should have failed" % expr)
             except ParseError, pe:
                 self.assertFalse(expected,
@@ -34,7 +34,7 @@ class TMQL(TestCase):
             except ParseError, pe:
                 self.fail("{%s} died unexpectedly (%s)" % (expr, pe))
             else:
-                matcher = m.evaluate_stack()
+                matcher = m._eval_stack()
                 self.assertEquals(expected, matcher.search(song),
                                   "{%s} should %shave matched song: %s"
                                   % (expr, ["not ", ""][expected], song))

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -25,7 +26,7 @@ class TMediaBrowser(TestCase):
 
     def test_property(self):
         class FakeDevice(dict):
-            dev = "Fake"
+            block_device = "Fake"
             mountpoint = "/"
             Properties = lambda *x: []
         fake = FakeDevice({"name": "Foo"})

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #      2011-2013 Nick Boultbee
@@ -15,11 +16,11 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.parse import Query, Pattern
+from quodlibet.query import Query
+from quodlibet.pattern import Pattern
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView, DragScroll
-from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.util.uri import URI
@@ -168,6 +169,18 @@ def get_sort_tag(tag):
     return tag
 
 
+def header_tag_split(header):
+    """Split a pattern or a tied tag into separate tags"""
+
+    if "<" in header:
+        try:
+            return list(Pattern(header).tags)
+        except ValueError:
+            return []
+    else:
+        return util.tagsplit(header)
+
+
 class SongListDnDMixin(object):
     """DnD support for the SongList class"""
 
@@ -311,10 +324,7 @@ class SongListDnDMixin(object):
 
     def __drag_data_browser_dropped(self, songs):
         window = qltk.get_top_parent(self)
-        if callable(window.browser.dropped):
-            return window.browser.dropped(self, songs)
-        else:
-            return False
+        return window.browser.dropped(songs)
 
 
 class SongList(AllTreeView, SongListDnDMixin, DragScroll,
@@ -335,10 +345,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if not songs:
             return
 
-        can_filter = browser.can_filter
-
-        menu = browser.Menu(songs, self, library)
-
         def Filter(t):
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
@@ -347,21 +353,17 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             b.connect('activate', self.__filter_on, t, songs, browser)
             return b
 
-        header = util.tagsplit(header)[0]
-
-        if can_filter("artist") or can_filter("album") or can_filter(header):
-            menu.preseparate()
-
-        if can_filter("artist"):
-            menu.prepend(Filter("artist"))
-        if can_filter("album"):
-            menu.prepend(Filter("album"))
+        header = header_tag_split(header)[0]
+        can_filter = browser.can_filter
+        menu_items = []
         if (header not in ["artist", "album"] and can_filter(header)):
-            menu.prepend(Filter(header))
+            menu_items.append(Filter(header))
+        if can_filter("artist"):
+            menu_items.append(Filter("artist"))
+        if can_filter("album"):
+            menu_items.append(Filter("album"))
 
-        ratings = RatingsMenuItem(songs, library)
-        menu.preseparate()
-        menu.prepend(ratings)
+        menu = browser.Menu(songs, library, items=[menu_items])
         menu.show_all()
         return menu
 
@@ -410,6 +412,10 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     @property
     def model(self):
         return self.get_model()
+
+    @property
+    def sourced(self):
+        return self.model.sourced
 
     def toggle_column_sort(self, column, replace=True, refresh=True):
         """Toggles the sort order of a column.
@@ -685,16 +691,14 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         star = list(Query.STAR)
         for header in headers:
-            if "<" in header:
-                try:
-                    tags = Pattern(header).tags
-                except ValueError:
-                    continue
-            else:
-                tags = util.tagsplit(header)
-            for tag in tags:
+            for tag in header_tag_split(header):
                 if not tag.startswith("~#") and tag not in star:
                     star.append(tag)
+
+        for tag in config.getlist("settings", "search_tags"):
+            if tag and tag not in star:
+                star.append(tag)
+
         SongList.star = star
 
     def set_model(self, model):
@@ -1073,7 +1077,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu.append(sep)
 
         custom = Gtk.MenuItem(
-            label=_("_Customize Headers..."), use_underline=True)
+            label=_(u"_Customize Headers…"), use_underline=True)
         custom.show()
         custom.connect('activate', self.__add_custom_column)
         menu.append(custom)

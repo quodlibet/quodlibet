@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -59,8 +60,9 @@ def set_port_num(value):
 class MPDServerPlugin(EventPlugin):
     PLUGIN_ID = "mpd_server"
     PLUGIN_NAME = _("MPD Server")
-    PLUGIN_DESC = _("Control Quod Libet remotely using a MPD Client. "
-        "Streaming, playlist and library management are not supported.")
+    PLUGIN_DESC = _("Allows remote control of Quod Libet using an MPD Client. "
+                    "Streaming, playlist and library management "
+                    "are not supported.")
     PLUGIN_ICON = Gtk.STOCK_CONNECT
 
     def PluginPreferences(self, parent):
@@ -128,12 +130,12 @@ class MPDServerPlugin(EventPlugin):
 
         clients = Gtk.Label()
         clients.set_padding(6, 6)
-        clients.set_markup(_(u"""\
+        clients.set_markup(u"""\
 \u2022 <a href="https://play.google.com/store/apps/details?id=com.\
 namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
 
 </small>\u2022 <a href="http://sonata.berlios.de/">Sonata 1.6</a> (Linux)\
-"""))
+""")
         clients.set_alignment(0, 0)
 
         box.pack_start(

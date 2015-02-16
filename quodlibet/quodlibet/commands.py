@@ -66,15 +66,7 @@ class CommandRegistry(object):
         """
 
         if name not in self._commands:
-            # browser commands
-            commands = app.browser.commands
-            if name in commands:
-                if not args:
-                    raise CommandError("Missing argument for %r" % name)
-                cmd = commands[name]
-                return cmd(args[0], app.library, app.window, app.player)
-            else:
-                raise CommandError("Unknown command %r" % name)
+            raise CommandError("Unknown command %r" % name)
 
         cmd, argcount, optcount = self._commands[name]
         if len(args) < argcount:
@@ -213,13 +205,7 @@ def _add_file(app, value):
     filename = os.path.realpath(value)
     song = app.library.add_filename(filename)
     if song:
-        playlist = app.window.playlist
-        if song not in playlist.pl:
-            queue = playlist.q
-            queue.insert_before(queue.get_iter_first(), row=[song])
-            app.player.next()
-        else:
-            app.player.go_to(app.library[filename])
+        if app.player.go_to(song):
             app.player.paused = False
 
 
@@ -487,7 +473,7 @@ def _print_query(app, query):
 @registry.register("print-playing", optional=1)
 def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
     from quodlibet.formats._audio import AudioFile
-    from quodlibet.parse import Pattern
+    from quodlibet.pattern import Pattern
 
     song = app.player.song
     if song is None:

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from quodlibet.library import SongLibrary
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from tests import TestCase, mkstemp, mkdtemp

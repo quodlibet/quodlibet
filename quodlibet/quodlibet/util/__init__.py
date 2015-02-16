@@ -28,7 +28,7 @@ except ImportError:
     fcntl = None
 
 from quodlibet.util.path import iscommand, is_fsnative
-from quodlibet.util.titlecase import title
+from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_
@@ -105,8 +105,11 @@ class OptionParser(object):
         for k in self.__help.keys():
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
-        s = _("Usage: %s %s\n") % (
-            sys.argv[0], self.__usage if self.__usage else _("[options]"))
+        s = _("Usage: %(program)s %(usage)s") % {
+            "program": sys.argv[0],
+            "usage": self.__usage if self.__usage else _("[options]"),
+        }
+        s += "\n"
         if self.__description:
             s += "%s - %s\n" % (self.__name, self.__description)
         s += "\n"
@@ -193,6 +196,18 @@ def escape(str):
 def unescape(str):
     """Unescape a string in a manner suitable for XML/Pango."""
     return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+
+
+def bold(string):
+    return "<b>%s</b>" % string
+
+
+def monospace(string):
+    return "<tt>%s</tt>" % string
+
+
+def italic(string):
+    return "<i>%s</i>" % string
 
 
 def parse_time(timestr, err=(ValueError, re.error)):
@@ -489,7 +504,7 @@ def tagsplit(tag):
 def pattern(pat, cap=True, esc=False):
     """Return a 'natural' version of the pattern string for human-readable
     bits. Assumes all tags in the pattern are present."""
-    from quodlibet.parse import Pattern, XMLFromPattern
+    from quodlibet.pattern import Pattern, XMLFromPattern
 
     class Fakesong(dict):
         cap = False
@@ -566,6 +581,8 @@ class DeferredSignal(object):
     When the target function will finally be called the arguments passed
     are the last arguments passed to DeferredSignal.
 
+    `priority` defaults to GLib.PRIORITY_DEFAULT
+
     If `owner` is given, it will not call the target after the owner is
     destroyed.
 
@@ -576,7 +593,7 @@ class DeferredSignal(object):
     widget.connect('signal', DeferredSignal(func, owner=widget), user_arg)
     """
 
-    def __init__(self, func, timeout=None, owner=None):
+    def __init__(self, func, timeout=None, owner=None, priority=None):
         """timeout in milliseconds"""
 
         self.func = func
@@ -589,10 +606,15 @@ class DeferredSignal(object):
             owner.connect("destroy", destroy_cb)
 
         from gi.repository import GLib
+
+        if priority is None:
+            priority = GLib.PRIORITY_DEFAULT
+
         if timeout is None:
-            self.do_idle_add = GLib.idle_add
+            self.do_idle_add = lambda f: GLib.idle_add(f, priority=priority)
         else:
-            self.do_idle_add = lambda f: GLib.timeout_add(timeout, f)
+            self.do_idle_add = lambda f: GLib.timeout_add(
+                timeout, f, priority=priority)
 
     @property
     def im_self(self):
@@ -948,6 +970,14 @@ class MainRunnerError(Exception):
     pass
 
 
+class MainRunnerAbortedError(MainRunnerError):
+    pass
+
+
+class MainRunnerTimeoutError(MainRunnerError):
+    pass
+
+
 class MainRunner(object):
     """Schedule a function call in the main loop from a
     worker thread and wait for the result.
@@ -957,7 +987,8 @@ class MainRunner(object):
     """
 
     def __init__(self):
-        self._id = None
+        self._source_id = None
+        self._call_id = None
         self._lock = threading.Lock()
         self._cond = threading.Condition(self._lock)
         self._return = None
@@ -965,24 +996,29 @@ class MainRunner(object):
         self._aborted = False
 
     def _run(self, func, *args, **kwargs):
-        self._error = None
         try:
             self._return = func(*args, **kwargs)
         except Exception as e:
             self._error = MainRunnerError(e)
 
-    def _idle_run(self, func, *args, **kwargs):
+    def _idle_run(self, call_id, call_event, func, *args, **kwargs):
+        call_event.set()
         with self._lock:
+            # In case a timeout happened but this got still
+            # scheduled, this could be called after call() returns;
+            # Compare to the current call id and do nothing if it isn't ours
+            if call_id is not self._call_id:
+                return False
             try:
                 self._run(func, *args, **kwargs)
             finally:
-                self._id = None
+                self._source_id = None
                 self._cond.notify()
                 return False
 
     def abort(self):
         """After this call returns no function will be executed anymore
-        and a currently blocking call will fail with.
+        and a currently blocking call will fail with MainRunnerAbortedError.
 
         Can be called multiple times and can not fail.
         call() will always fail after this was called.
@@ -993,11 +1029,12 @@ class MainRunner(object):
         with self._lock:
             if self._aborted:
                 return
-            if self._id is not None:
-                GLib.source_remove(self._id)
-                self._id = None
+            if self._source_id is not None:
+                GLib.source_remove(self._source_id)
+                self._source_id = None
             self._aborted = True
-            self._error = MainRunnerError("aborted")
+            self._call_id = None
+            self._error = MainRunnerAbortedError("aborted")
             self._cond.notify()
 
     def call(self, func, *args, **kwargs):
@@ -1008,8 +1045,13 @@ class MainRunner(object):
         The priority kwargs defines the event source priority and will
         not be passed to func.
 
-        Can raise MainRunnerError in case the function raises an exception
-        or abort() was called before or during this call.
+        In case a timeout kwarg is given the call will raise
+        MainRunnerTimeoutError in case the function hasn't been scheduled
+        (doesn't mean returned) until that time. timeout is a float in seconds.
+
+        Can raise MainRunnerError in case the function raises an exception.
+        Raises MainRunnerAbortedError in case the runner was aborted.
+        Raises MainRunnerTimeoutError in case the timeout was reached.
         """
 
         from gi.repository import GLib
@@ -1017,15 +1059,29 @@ class MainRunner(object):
         with self._lock:
             if self._aborted:
                 raise self._error
+            self._error = None
             # XXX: ideally this should be GLib.MainContext.default().is_owner()
             # but that's not available in older pygobject
             if is_main_thread():
                 kwargs.pop("priority", None)
                 self._run(func, *args, **kwargs)
             else:
-                assert self._id is None
-                self._id = GLib.idle_add(self._idle_run, func, *args, **kwargs)
-                self._cond.wait()
+                assert self._source_id is None
+                assert self._call_id is None
+                timeout = kwargs.pop("timeout", None)
+                call_event = threading.Event()
+                self._call_id = object()
+                self._source_id = GLib.idle_add(
+                    self._idle_run, self._call_id, call_event,
+                    func, *args, **kwargs)
+                # only wait for the result if we are sure it got scheduled
+                if call_event.wait(timeout):
+                    self._cond.wait()
+                self._call_id = None
+                if self._source_id is not None:
+                    GLib.source_remove(self._source_id)
+                    self._source_id = None
+                    raise MainRunnerTimeoutError("timeout: %r" % timeout)
             if self._error is not None:
                 raise self._error
             return self._return
@@ -1036,3 +1092,71 @@ def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
 
     needs_escape = lambda c: (c in BAD and "\\" + c) or c
     return type(string)().join(map(needs_escape, string))
+
+
+def enum(cls):
+    """Class decorator for enum types::
+
+        @enum
+        class SomeEnum(object):
+            FOO = 0
+            BAR = 1
+
+    Result is an int subclass and all attributes are instances of it.
+    """
+
+    assert cls.__bases__ == (object,)
+
+    d = dict(cls.__dict__)
+    new_type = type(cls.__name__, (int,), d)
+    new_type.__module__ = cls.__module__
+
+    map_ = {}
+    for key, value in d.iteritems():
+        if key.upper() == key and isinstance(value, (int, long)):
+            value_instance = new_type(value)
+            setattr(new_type, key, value_instance)
+            map_[value] = key
+
+    def repr_(self):
+        if self in map_:
+            return "%s.%s" % (type(self).__name__, map_[self])
+        else:
+            return "%s(%s)" % (type(self).__name__, self)
+
+    setattr(new_type, "__repr__", repr_)
+
+    return new_type
+
+
+def set_process_title(title):
+    """Sets process name as visible in ps or top. Requires ctypes libc
+    and is almost certainly *nix-only. See issue 736
+    """
+
+    if os.name == "nt":
+        return
+
+    try:
+        libc = load_library(["libc.so.6", "c"])[0]
+        # 15 = PR_SET_NAME, apparently
+        libc.prctl(15, title, 0, 0, 0)
+    except (OSError, AttributeError):
+        print_d("Couldn't find module libc.so.6 (ctypes). "
+                "Not setting process title.")
+
+
+def list_unique(sequence):
+    """Takes any sequence and returns a list with all duplicate entries
+    removed while preserving the order.
+    """
+
+    l = []
+    seen = set()
+    append = l.append
+    add = seen.add
+    for v in sequence:
+        if v not in seen:
+            append(v)
+            add(v)
+    return l

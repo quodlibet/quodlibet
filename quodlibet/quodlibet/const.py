@@ -26,13 +26,10 @@ class Version(tuple):
 class MinVersions(object):
     """Dependency requirements for Quod Libet / Ex Falso"""
     PYTHON = Version(2, 7)
-    MUTAGEN = Version(1, 14)
+    MUTAGEN = Version(1, 22)
 
-VERSION_TUPLE = Version(3, 2, -1)
+VERSION_TUPLE = Version(3, 3, -1)
 VERSION = str(VERSION_TUPLE)
-
-PROCESS_TITLE_QL = "quodlibet"
-PROCESS_TITLE_EF = "exfalso"
 
 if os.name == "nt":
     file_path = __file__.decode(sys.getfilesystemencoding())

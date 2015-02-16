@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2006-2007 Lukas Lalinsky
 #
 # This program is free software; you can redistribute it and/or modify
@@ -183,7 +184,12 @@ class XinePlaylistPlayer(BasePlayer):
         if xine_get_status(self._stream) != XINE_STATUS_PLAY:
             xine_play(self._stream, 0, 0)
 
-    def _set_paused(self, paused):
+    @property
+    def paused(self):
+        return self._paused
+
+    @paused.setter
+    def paused(self, paused):
         if paused != self._paused:
             self._paused = paused
             if self.song:
@@ -200,8 +206,6 @@ class XinePlaylistPlayer(BasePlayer):
                 # Something wants us to pause between songs, or when
                 # we've got no song playing (probably StopAfterMenu).
                 self.emit('paused')
-
-    paused = property(lambda s: s._paused, _set_paused)
 
     def _error(self, player_error=None):
         if self._destroyed:

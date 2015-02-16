@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,6 +13,8 @@ __builtin__.__dict__["_"] = _dummy_gettext
 __builtin__.__dict__["Q_"] = _dummy_gettext
 __builtin__.__dict__["N_"] = _dummy_gettext
 __builtin__.__dict__["ngettext"] = _dummy_ngettext
+del _dummy_gettext
+del _dummy_ngettext
 
 import gettext
 import locale
@@ -22,7 +25,7 @@ import warnings
 import quodlibet.const
 import quodlibet.util
 
-from quodlibet.util import load_library
+from quodlibet.util import set_process_title
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
@@ -48,6 +51,14 @@ class Application(object):
     window = None
     library = None
     player = None
+
+    cover_manager = None
+
+    name = None
+    """The application name e.g. 'Quod Libet'"""
+
+    id = None
+    """The application ID e.g. 'quodlibet'"""
 
     @property
     def librarian(self):
@@ -88,7 +99,45 @@ class Application(object):
 app = Application()
 
 
-def _gtk_init(icon=None):
+def _fix_gst_leaks():
+    """gst_element_add_pad and gst_bin_add are wrongly annotated and lead
+    to PyGObject refing the passed element.
+
+    Work around by adding a wrapper that unrefs afterwards.
+    Can be called multiple times.
+
+    https://bugzilla.gnome.org/show_bug.cgi?id=741390
+    https://bugzilla.gnome.org/show_bug.cgi?id=702960
+    """
+
+    from gi.repository import Gst
+
+    assert Gst.is_initialized()
+
+    def do_wrap(func):
+        def wrap(self, obj):
+            result = func(self, obj)
+            obj.unref()
+            return result
+        return wrap
+
+    parent = Gst.Bin()
+    elm = Gst.Bin()
+    parent.add(elm)
+    if elm.__grefcount__ == 3:
+        elm.unref()
+        Gst.Bin.add = do_wrap(Gst.Bin.add)
+
+    pad = Gst.Pad.new("foo", Gst.PadDirection.SRC)
+    parent.add_pad(pad)
+    if pad.__grefcount__ == 3:
+        pad.unref()
+        Gst.Element.add_pad = do_wrap(Gst.Element.add_pad)
+
+
+def _gtk_init():
+    """Call before using Gtk/Gdk"""
+
     import gi
 
     # make sure GdkX11 doesn't get used under Windows
@@ -111,7 +160,7 @@ def _gtk_init(icon=None):
     gi.require_version("GdkPixbuf", "2.0")
     gi.require_version("Gio", "2.0")
 
-    from gi.repository import Gtk, GObject, GLib, Gdk, GdkPixbuf
+    from gi.repository import Gtk, GObject, Gdk, GdkPixbuf
 
     # add Gtk.TreePath.__getitem__/__len__ for PyGObject 3.2
     try:
@@ -211,35 +260,6 @@ def _gtk_init(icon=None):
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
 
-    # We don't want python-gst, it changes API..
-    assert "gi.overrides.Gst" not in sys.modules
-    sys.modules["gi.overrides.Gst"] = None
-
-    # We don't depend on Gst overrides, so make sure it's initialized.
-    try:
-        gi.require_version("Gst", "1.0")
-        from gi.repository import Gst
-    except (ValueError, ImportError):
-        pass
-    else:
-        if not Gst.is_initialized():
-            try:
-                ok, argv = Gst.init_check(sys.argv)
-            except GLib.GError:
-                print_e("Failed to initialize GStreamer")
-                # Uninited Gst segfaults: make sure no one can use it
-                sys.modules["gi.repository.Gst"] = None
-            else:
-                sys.argv = argv
-
-                # https://bugzilla.gnome.org/show_bug.cgi?id=710447
-                import threading
-                threading.Thread(target=lambda: None).start()
-
-    # some code depends on utf-8 default encoding (pygtk used to set it)
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
-
     # blacklist some modules, simply loading can cause segfaults
     sys.modules["gtk"] = None
     sys.modules["gpod"] = None
@@ -251,14 +271,72 @@ def _gtk_init(icon=None):
     if pygobject_version < (3, 9):
         GObject.threads_init()
 
-    theme = Gtk.IconTheme.get_default()
-    theme.append_search_path(quodlibet.const.IMAGEDIR)
 
-    if icon:
-        Gtk.Window.set_default_icon_name(icon)
+def _gst_init():
+    """Call once before importing GStreamer"""
+
+    assert "gi.repository.Gst" not in sys.modules
+
+    import gi
+
+    # We don't want python-gst, it changes API..
+    assert "gi.overrides.Gst" not in sys.modules
+    sys.modules["gi.overrides.Gst"] = None
+
+    # blacklist some modules, simply loading can cause segfaults
+    sys.modules["gst"] = None
+
+    # We don't depend on Gst overrides, so make sure it's initialized.
+    try:
+        gi.require_version("Gst", "1.0")
+        from gi.repository import Gst
+    except (ValueError, ImportError):
+        return
+
+    if Gst.is_initialized():
+        return
+
+    from gi.repository import GLib
+
+    try:
+        ok, argv = Gst.init_check(sys.argv)
+    except GLib.GError:
+        print_e("Failed to initialize GStreamer")
+        # Uninited Gst segfaults: make sure no one can use it
+        sys.modules["gi.repository.Gst"] = None
+    else:
+        sys.argv = argv
+
+        # monkey patching ahead
+        _fix_gst_leaks()
+
+        # https://bugzilla.gnome.org/show_bug.cgi?id=710447
+        import threading
+        threading.Thread(target=lambda: None).start()
+
+
+def _gtk_icons_init(theme_search_path, default_icon_name=None):
+    """Register a local fallback icon theme containing our own icons.
+
+    `default_icon_name` is the icon name used for all windows if nothing
+    else is specified.
+    """
+
+    from gi.repository import Gtk
+
+    theme = Gtk.IconTheme.get_default()
+
+    assert os.path.exists(theme_search_path)
+    theme.append_search_path(theme_search_path)
+
+    if default_icon_name is not None:
+        assert theme.has_icon(default_icon_name)
+        Gtk.Window.set_default_icon_name(default_icon_name)
 
 
 def _dbus_init():
+    """Setup dbus mainloop integration. Call before using dbus"""
+
     try:
         from dbus.mainloop.glib import DBusGMainLoop, threads_init
     except ImportError:
@@ -273,6 +351,8 @@ def _dbus_init():
 
 
 def _gettext_init():
+    """Call before using gettext helpers"""
+
     try:
         locale.setlocale(locale.LC_ALL, '')
     except locale.Error:
@@ -311,75 +391,52 @@ def _gettext_init():
     t.install(unicode=True)
 
 
-def set_process_title(title):
-    """Sets process name as visible in ps or top. Requires ctypes libc
-    and is almost certainly *nix-only. See issue 736"""
-
-    if os.name == "nt":
-        return
-
-    try:
-        libc = load_library(["libc.so.6", "c"])[0]
-        # 15 = PR_SET_NAME, apparently
-        libc.prctl(15, title, 0, 0, 0)
-    except (OSError, AttributeError):
-        print_d("Couldn't find module libc.so.6 (ctypes). "
-                "Not setting process title.")
-
-
 def _python_init():
 
     import sys
     if sys.version_info < MinVersions.PYTHON:
         actual = Version(sys.version_info[:3])
-        print_w("Python %s required. %s found." % (MinVersions.PYTHON, actual))
+        raise ImportError("Python %s required. %s found." %
+                          (MinVersions.PYTHON, actual))
+
+    # some code depends on utf-8 default encoding (pygtk used to set it)
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
 
     __builtin__.__dict__["print_"] = print_
     __builtin__.__dict__["print_d"] = print_d
     __builtin__.__dict__["print_e"] = print_e
     __builtin__.__dict__["print_w"] = print_w
 
-del(_dummy_gettext)
-del(_dummy_ngettext)
-
 _python_init()
 _gettext_init()
 
 
-def init(library=None, icon=None, title=None, name=None):
+def init(icon=None, proc_title=None, name=None):
+    global quodlibet
+
     print_d("Entering quodlibet.init")
 
-    _gtk_init(icon)
+    _gtk_init()
+    _gtk_icons_init(quodlibet.const.IMAGEDIR, icon)
+    _gst_init()
     _dbus_init()
+    _init_debug()
 
     from gi.repository import GLib
 
-    if title:
-        GLib.set_prgname(title)
-        set_process_title(title)
+    if proc_title:
+        GLib.set_prgname(proc_title)
+        set_process_title(proc_title)
         # Issue 736 - set after main loop has started (gtk seems to reset it)
-        GLib.idle_add(set_process_title, title)
+        GLib.idle_add(set_process_title, proc_title)
 
     if name:
         GLib.set_application_name(name)
 
-    # We already imported this, but Python is dumb and thinks we're rebinding
-    # a local when we import it later.
-    import quodlibet.util
     mkdir(quodlibet.const.USERDIR, 0750)
 
-    if library:
-        print_d("Initializing main library (%s)" % (
-            quodlibet.util.path.unexpand(library)))
-
-    import quodlibet.library
-    library = quodlibet.library.init(library)
-
-    _init_debug()
-
     print_d("Finished initialization.")
-
-    return library
 
 
 def init_plugins(no_plugins=False):

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
 #           2011-2014 Christoph Reiter
 #

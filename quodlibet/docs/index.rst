@@ -38,6 +38,7 @@ Table of Contents
 
     guide/index
     packaging
+    translation/index
     development/index
 
     commands/index

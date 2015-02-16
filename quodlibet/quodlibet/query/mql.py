@@ -18,9 +18,9 @@ except ImportError:
 
 import re
 from quodlibet import print_d, print_w
-from quodlibet.parse import _match as match, _query as query
-from quodlibet.parse._match import ParseError as QlParseError
-from quodlibet.parse._match import Numcmp
+from quodlibet.query import _match as match, _query as query, Query, QueryType
+from quodlibet.query._match import ParseError as QlParseError
+from quodlibet.query._match import Numcmp
 
 
 class Error(ValueError):
@@ -59,7 +59,7 @@ class Tag(match.Tag):
         return "<MQL Tag names=%r, regex=%r>" % (names, self.__res.pattern)
 
 
-class Mql(object):
+class Mql(Query):
     """
     A parser to model the SQL-like language 'MQL'
     Designed for ease of use whilst retaining QL "feel".
@@ -124,7 +124,7 @@ class Mql(object):
 
     #EXCLUDE_CLAUSE = BUT_NOT + VALUE("EXCLUSION")
 
-    EMPTY_MATCH = match.Tag("", query.STAR)
+    EMPTY_MATCH = match.Tag("", Query.STAR)
 
     class Limit(object):
         """Encapsulates the limits imposed on a collection of songs
@@ -144,43 +144,46 @@ class Mql(object):
             self._value = int(value)
             self._units = str(units).upper()
 
-    def __init__(self, star=query.STAR, debug=False):
-        self.stack = []
+    def __init__(self, string, star=None, debug=False):
+
+        self.string = string
+        if star is None:
+            star = self.STAR
+
+        if not isinstance(string, unicode):
+            string = string.decode('utf-8')
+
+        self.type = QueryType.VALID
+
+        # MQL-specifics
         self._limit = None
+        self._stack = []
         self.query = Forward()
         self.star = star
-        # Build up a dynamic list of keywords
         self.STANDARD_TAG = oneOf(' '.join(star), caseless=True)
         self.TAG = (self.STANDARD_TAG | Mql.INT_TAG)("TAG")
         clause = Forward()
-
-        # Limit Clause, like SQL but mo' betterer.
         tag_units = Combine(self.STANDARD_TAG
-                + Suppress(Optional(CaselessLiteral('s'))))("UNITS")
+                            + Suppress(Optional(CaselessLiteral('s'))))(
+            "UNITS")
         limit_clause = (Mql.LIMIT + Mql.NUM_VAL
                         + Optional(Mql.UNITS | tag_units))
         limit_clause.setParseAction(self.handle_limit)
-
         no_tag_val = Mql.NO_TAG.setParseAction(self.handle_no_tag_val)
         tag_expr = (self.TAG
                     + Mql.EQ_OP("OPERATOR")
                     + (Mql.VALUE | Mql.REGEX))
         tag_expr.setParseAction(self.handle_equality)
-
         exc_expr = (self.TAG
                     + Mql.EQ
                     + (Mql.VALUE | Mql.REGEX)
                     + Mql.BUT_NOT
                     + Mql.VALUE("EXCLUSION"))
         exc_expr.setParseAction(self.handle_excluded_equality)
-
         num_expr = (Mql.NUM_TAG + Mql.NUM_OP + Mql.NUM_VAL)
         num_expr.setParseAction(self.handle_num_expr)
-
         list_expr = (self.TAG + Mql.IN_ + Mql.LIST_("LIST"))
         list_expr.setParseAction(self.handle_in)
-
-        # This is the useful one: any expression that can be evaluated
         expr = Group(
             (Literal("(") + clause + Literal(")")) |
             no_tag_val |
@@ -191,19 +194,23 @@ class Mql(object):
             Mql.REGEX.setParseAction(self.handle_bare_regex) |
             OneOrMore(Mql.VALUE).setParseAction(self.handle_bare_value)
         )
-
-        # The main recursive parser
         clause << (expr + ZeroOrMore((Mql.JUNCTION + clause)
                                      .setParseAction(self.handle_junction)))
         self.query << (Group(Optional(clause) + Optional(limit_clause))
                        + StringEnd())
         if debug:
             self.query.setDebug()
+        self.parse(string)
+        self._match = self._eval_stack()
+
+    def __repr__(self):
+        return "<MQL string=%r type=%r star=%r>" % (
+            self.string, self.type, self.star)
 
     def parse(self, s):
         try:
             self._limit = None
-            self.stack = []
+            self._stack = []
             return self.query.parseString(s)
         except ParseException as e:
             raise ParseError(e)
@@ -217,26 +224,26 @@ class Mql(object):
             return False
 
     def push(self, x):
-        self.stack.append(x)
+        self._stack.append(x)
 
     def pop(self):
-        if self.stack:
-            return self.stack.pop()
+        if self._stack:
+            return self._stack.pop()
 
-    def evaluate_stack(self):
-        if not self.stack:
+    def _eval_stack(self):
+        if not self._stack:
             print_d("Empty stack")
             return self.EMPTY_MATCH
         # print_d("Here's the stack: %s" % list(reversed(self.stack)))
         try:
-            x = self.stack.pop()
+            x = self._stack.pop()
         except IndexError, e:
             print_w("MQL error: %s" % e)
             raise ParseError(e)
         if x == Mql.AND_:
-            return match.Inter([self.evaluate_stack(), self.evaluate_stack()])
+            return match.Inter([self._eval_stack(), self._eval_stack()])
         elif x == Mql.OR_:
-            return match.Union([self.evaluate_stack(), self.evaluate_stack()])
+            return match.Union([self._eval_stack(), self._eval_stack()])
         else:
             return x
 

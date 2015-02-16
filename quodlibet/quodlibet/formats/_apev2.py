@@ -1,17 +1,15 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import mutagen.apev2
+
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import APICType, EmbeddedImage
 from quodlibet.util.path import get_temp_cover_file
-
-try:
-    import mutagen.apev2
-except ImportError:
-    pass
 
 
 def get_cover_type(key, value):
@@ -199,7 +197,7 @@ class APEv2File(AudioFile):
         try:
             tag = mutagen.apev2.APEv2(self['~filename'])
         except mutagen.apev2.APENoHeaderError:
-            return
+            tag = mutagen.apev2.APEv2()
 
         for key, value in tag.items():
             cover_type = get_cover_type(key, value)
@@ -211,5 +209,5 @@ class APEv2File(AudioFile):
             return
         key, value = to_write
         tag[key] = value
-        tag.save()
+        tag.save(self['~filename'])
         self.has_images = True

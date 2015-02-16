@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from gi.repository import Gtk, Gdk
 
 from tests import TestCase, skipIf
@@ -29,6 +30,7 @@ class TGetStringDialog(TestCase):
         clipboard.set_text("42", -1)
         ret = self.gsd2.run(text="24", clipboard=True, test=True)
         self.failUnlessEqual(ret, "42")
+        clipboard.clear()
 
     def tearDown(self):
         self.gsd1.destroy()

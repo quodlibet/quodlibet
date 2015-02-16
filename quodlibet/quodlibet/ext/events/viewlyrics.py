@@ -32,8 +32,7 @@ class ViewLyrics(EventPlugin):
 
     PLUGIN_ID = 'View Lyrics'
     PLUGIN_NAME = _('View Lyrics')
-    PLUGIN_DESC = _('View lyrics beneath the song list.')
-    PLUGIN_VERSION = '0.4'
+    PLUGIN_DESC = _('Displays lyrics beneath the song list.')
 
     def enabled(self):
         self.expander = Gtk.Expander(label=_("_Lyrics"), use_underline=True)

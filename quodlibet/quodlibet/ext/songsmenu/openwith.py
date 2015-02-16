@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from gi.repository import Gtk
 
 from quodlibet import util
@@ -30,10 +31,9 @@ class Command(object):
 
 class SendTo(SongsMenuPlugin):
     PLUGIN_ID = 'SendTo'
-    PLUGIN_NAME = _('Send To...')
+    PLUGIN_NAME = _(u'Send To…')
     PLUGIN_DESC = _("Generic file-opening plugin.")
     PLUGIN_ICON = Gtk.STOCK_EXECUTE
-    PLUGIN_VERSION = '1'
 
     commands = [
         Command("K3B", "k3b --audiocd", Command.FILES),

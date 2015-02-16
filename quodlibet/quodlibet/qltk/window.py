@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012,2014 Christoph Reiter
 #                2014 Nick Boultbee
 #
@@ -13,7 +14,7 @@ from gi.repository import Gtk, GObject, Gdk
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_wayland
 from quodlibet.util import DeferredSignal
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 
 
 def should_use_header_bar():
@@ -49,7 +50,8 @@ class Window(Gtk.Window):
     _preven_inital_show = False
 
     __gsignals__ = {
-        "close-accel": (GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION,
+        "close-accel": (GObject.SignalFlags.RUN_LAST |
+                            GObject.SignalFlags.ACTION,
                         GObject.TYPE_NONE, ())
     }
 
@@ -133,7 +135,7 @@ class Window(Gtk.Window):
             super(Window, self).present()
         else:
             window = self.get_window()
-            if window:
+            if window and isinstance(window, GdkX11.X11Window):
                 timestamp = GdkX11.x11_get_server_time(window)
                 self.present_with_time(timestamp)
             else:
@@ -182,7 +184,10 @@ class PersistentWindowMixin(object):
     """A mixin for saving/restoring window size/position/maximized state"""
 
     def enable_window_tracking(self, config_prefix, size_suffix=""):
-        """Enable tracking/saving of changes and restore size/pos/maximized
+        """Enable tracking/saving of changes and restore size/pos/maximized.
+
+        Make sure to call set_transient_for() before since position is
+        restored relative to the parent in this case.
 
         config_prefix -- prefix for the config key
                          (prefix_size, prefix_position, prefix_maximized)
@@ -195,11 +200,15 @@ class PersistentWindowMixin(object):
         self.__state = 0
         self.__name = config_prefix
         self.__size_suffix = size_suffix
-        self.__save_size_deferred = DeferredSignal(
-            self.__do_save_size, timeout=50, owner=self)
+        self.__save_size_pos_deferred = DeferredSignal(
+            self.__do_save_size_pos, timeout=50, owner=self)
         self.connect('configure-event', self.__configure_event)
         self.connect('window-state-event', self.__window_state_changed)
         self.connect('notify::visible', self.__visible_changed)
+        parent = self.get_transient_for()
+        if parent:
+            connect_destroy(
+                parent, 'configure-event', self.__parent_configure_event)
         self.__restore_window_state()
 
     def __visible_changed(self, *args):
@@ -229,20 +238,45 @@ class PersistentWindowMixin(object):
 
     def __restore_position(self):
         print_d("Restore position")
-        pos = config.get('memory', self.__conf("position"), "-1 -1")
-        x, y = map(int, pos.split())
-        if x >= 0 and y >= 0:
-            self.move(x, y)
+        pos = config.get('memory', self.__conf("position"), "")
+        if not pos:
+            return
+
+        try:
+            x, y = map(int, pos.split())
+        except ValueError:
+            return
+
+        parent = self.get_transient_for()
+        if parent:
+            px, py = parent.get_position()
+            x += px
+            y += py
+
+        self.move(x, y)
 
     def __restore_size(self):
         print_d("Restore size")
-        value = config.get('memory', self.__conf("size"), "-1 -1")
-        x, y = map(int, value.split())
+        value = config.get('memory', self.__conf("size"), "")
+        if not value:
+            return
+
+        try:
+            x, y = map(int, value.split())
+        except ValueError:
+            return
+
         screen = self.get_screen()
         x = min(x, screen.get_width())
         y = min(y, screen.get_height())
         if x >= 1 and y >= 1:
             self.resize(x, y)
+
+    def __parent_configure_event(self, window, event):
+        # since our position is relative to the parent if we have one,
+        # we also need to save our position if the parent position changes
+        self.__do_save_pos()
+        return False
 
     def __configure_event(self, window, event):
         # xfwm4 resized the window before it maximizes it, which leads
@@ -252,18 +286,34 @@ class PersistentWindowMixin(object):
         # WARNING: we can't keep the event, because PyGObject doesn't
         # keep it alive; so extract width/height before returning here.
 
-        self.__save_size_deferred(event.width, event.height)
+        self.__save_size_pos_deferred(event.width, event.height)
         return False
 
-    def __do_save_size(self, width, height):
+    def __do_save_size_pos(self, width, height):
         if self.__state & Gdk.WindowState.MAXIMIZED:
             return
 
         value = "%d %d" % (width, height)
         config.set("memory", self.__conf("size"), value)
-        if self.get_property("visible"):
-            pos_value = '%s %s' % self.get_position()
-            config.set('memory', self.__conf("position"), pos_value)
+
+        self.__do_save_pos()
+
+    def __do_save_pos(self):
+        if self.__state & Gdk.WindowState.MAXIMIZED:
+            return
+
+        if not self.get_property("visible"):
+            return
+
+        x, y = self.get_position()
+        parent = self.get_transient_for()
+        if parent:
+            px, py = parent.get_position()
+            x -= px
+            y -= py
+
+        pos_value = '%s %s' % (x, y)
+        config.set('memory', self.__conf("position"), pos_value)
 
     def __window_state_changed(self, window, event):
         self.__state = event.new_window_state

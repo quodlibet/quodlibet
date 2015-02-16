@@ -15,8 +15,8 @@ if not hasattr(Gio.MemoryOutputStream, 'new_resizable'):
 from quodlibet.const import VERSION, WEBSITE
 
 
-PARAM_READWRITECONSTRUCT = GObject.PARAM_CONSTRUCT_ONLY \
-                         | GObject.PARAM_READWRITE
+PARAM_READWRITECONSTRUCT = GObject.ParamFlags.CONSTRUCT_ONLY | \
+    GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE
 SoupStatus = Soup.Status if hasattr(Soup, 'Status') else Soup.KnownStatusCode
 
 
@@ -38,12 +38,12 @@ class DefaultHTTPRequest(GObject.Object):
         'failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
-    message = GObject.property(type=Soup.Message,
+    message = GObject.Property(type=Soup.Message,
                                flags=PARAM_READWRITECONSTRUCT)
-    cancellable = GObject.property(type=Gio.Cancellable,
+    cancellable = GObject.Property(type=Gio.Cancellable,
                                    flags=PARAM_READWRITECONSTRUCT)
-    istream = GObject.property(type=Gio.InputStream, default=None)
-    ostream = GObject.property(type=Gio.OutputStream, default=None)
+    istream = GObject.Property(type=Gio.InputStream, default=None)
+    ostream = GObject.Property(type=Gio.OutputStream, default=None)
 
     def __init__(self, message, cancellable):
         if message is None:

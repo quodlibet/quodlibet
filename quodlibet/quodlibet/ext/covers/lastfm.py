@@ -6,6 +6,11 @@
 # published by the Free Software Foundation
 
 from os import path
+import gi
+try:
+    gi.require_version("Soup", "2.4")
+except ValueError as e:
+    raise ImportError(e)
 from gi.repository import Soup
 
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
@@ -16,9 +21,8 @@ from quodlibet.util.path import escape_filename
 
 class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_ID = "lastfm-cover"
-    PLUGIN_NAME = _("LastFM cover source")
-    PLUGIN_DESC = _("Use LastFM database to fetch covers")
-    PLUGIN_VERSION = "1.0"
+    PLUGIN_NAME = _("Last.fm Cover Source")
+    PLUGIN_DESC = _("Downloads covers from Last.fm's cover art archive.")
 
     @classmethod
     def group_by(cls, song):
@@ -76,7 +80,7 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
 
     def fetch_cover(self):
         if not self.url:
-            return self.fail('Not enough data to get cover from LastFM')
+            return self.fail('Not enough data to get cover from Last.fm')
 
         def search_complete(self, res):
             self.disconnect(sci)

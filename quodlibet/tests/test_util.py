@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import uuid
 from quodlibet.config import HardCodedRatingsPrefs
 from quodlibet.util.path import *
@@ -132,8 +133,8 @@ class Tformat_rating(TestCase):
         self.failUnlessEqual(util.format_rating(-0.5), "00000")
 
 
-class Tescape(TestCase):
-    def test_empty(self):
+class Tpango(TestCase):
+    def test_escape_empty(self):
         self.failUnlessEqual(util.escape(""), "")
 
     def test_roundtrip(self):
@@ -142,10 +143,13 @@ class Tescape(TestCase):
             self.failIfEqual(s, esc)
             self.failUnlessEqual(s, util.unescape(esc))
 
-
-class Tunescape(Tescape):
-    def test_empty(self):
+    def test_unescape_empty(self):
         self.failUnlessEqual(util.unescape(""), "")
+
+    def test_format(self):
+        self.assertEqual(util.bold("foo"), "<b>foo</b>")
+        self.assertEqual(util.italic("foo"), "<i>foo</i>")
+        self.assertEqual(util.monospace("foo"), "<tt>foo</tt>")
 
 
 class Tre_esc(TestCase):
@@ -877,12 +881,27 @@ class TMainRunner(TestCase):
         runner = util.MainRunner()
 
         def worker():
-            self.assertRaises(util.MainRunnerError, runner.call, lambda: None)
+            self.assertRaises(
+                util.MainRunnerAbortedError, runner.call, lambda: None)
 
         thread = threading.Thread(target=worker)
         runner.abort()
         thread.start()
         thread.join()
+
+    def test_timeout(self):
+        runner = util.MainRunner()
+
+        def worker():
+            self.assertRaises(
+                util.MainRunnerTimeoutError, runner.call, lambda: None,
+                timeout=0.00001)
+
+        for i in range(3):
+            thread = threading.Thread(target=worker)
+            thread.start()
+            thread.join()
+        runner.abort()
 
     def test_call_exception(self):
         from gi.repository import GLib
@@ -1005,3 +1024,29 @@ class Tcached_property(TestCase):
                     return object()
 
         self.assertRaises(AssertionError, define_class)
+
+
+class Tenum(TestCase):
+
+    def test_main(self):
+
+        @util.enum
+        class Foo(object):
+            FOO = 0
+            BAR = 1
+
+        self.assertTrue(issubclass(Foo, int))
+        self.assertTrue(isinstance(Foo.BAR, Foo))
+        self.assertTrue(isinstance(Foo.FOO, Foo))
+        self.assertEqual(Foo.FOO, 0)
+        self.assertEqual(Foo.BAR, 1)
+
+
+class Tlist_unique(TestCase):
+
+    def test_main(self):
+        self.assertEqual(util.list_unique([]), [])
+        self.assertEqual(util.list_unique(iter([])), [])
+        self.assertEqual(util.list_unique([1, 2, 3]), [1, 2, 3])
+        self.assertEqual(util.list_unique([1, 2, 1, 4]), [1, 2, 4])
+        self.assertEqual(util.list_unique([1, 1, 1, 2]), [1, 2])

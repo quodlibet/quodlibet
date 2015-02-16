@@ -1,16 +1,13 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet.formats._apev2 import APEv2File
+from mutagen.monkeysaudio import MonkeysAudio
 
-extensions = [".ape"]
-try:
-    from mutagen.monkeysaudio import MonkeysAudio
-except ImportError:
-    extensions = []
+from quodlibet.formats._apev2 import APEv2File
 
 
 class MonkeysAudioFile(APEv2File):
@@ -24,3 +21,4 @@ class MonkeysAudioFile(APEv2File):
 
 info = MonkeysAudioFile
 types = [MonkeysAudioFile]
+extensions = [".ape"]

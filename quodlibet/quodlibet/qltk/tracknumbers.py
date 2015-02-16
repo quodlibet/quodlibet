@@ -131,12 +131,15 @@ class TrackNumbers(Gtk.VBox):
             child.show_all()
 
     def __row_edited(self, render, path, new, model, preview, save):
+        path = Gtk.TreePath.new_from_string(path)
         row = model[path]
         entry = row[0]
+        new = new.decode("utf-8")
         if entry.tracknumber != new:
             entry.tracknumber = new
             preview.set_sensitive(True)
             save.set_sensitive(True)
+            model.path_changed(path)
 
     def __save_files(self, parent, model, library):
         win = WritingWindow(parent, len(model))

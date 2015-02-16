@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2008 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
@@ -29,9 +30,8 @@ def album_to_sort(album):
 class MakeSortTags(SongsMenuPlugin):
     PLUGIN_ID = "SortTags"
     PLUGIN_NAME = _("Create Sort Tags")
-    PLUGIN_DESC = _("Convert album and artist names to sort names, poorly.")
+    PLUGIN_DESC = _("Converts album and artist names to sort names, poorly.")
     PLUGIN_ICON = 'gtk-edit'
-    PLUGIN_VERSION = "1"
 
     def plugin_song(self, song):
         for tag in ["album"]:

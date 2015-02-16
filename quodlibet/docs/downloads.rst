@@ -55,10 +55,22 @@ as `Bitbucket <https://bitbucket.org/>`__:
  * https://code.google.com/p/quodlibet (primary)
  * https://bitbucket.org/lazka/quodlibet (mirror)
 
-To clone the repository::
+.. _RunFromSource:
 
-    hg clone https://code.google.com/p/quodlibet
-    hg clone https://bitbucket.org/lazka/quodlibet
+**Running from Source** (no installation is needed) **:**
+
+::
+
+    $ hg clone https://code.google.com/p/quodlibet/
+    $ ./quodlibet/quodlibet/quodlibet.py
+
+.. note::
+
+    To get all the dependencies needed for running Quod Libet the easiest way
+    is to use one of the unstable PPAs / repos listed below. They pull in or
+    contain all the needed dependencies for the latest code and are kept up to
+    date.
+
 
 .. _tarballs:
 
@@ -68,20 +80,18 @@ To clone the repository::
 ========================== ===============================
 Release                    Filename
 ========================== ===============================
+Quod Libet 3.3.1           quodlibet-3.3.1.tar.gz_
 Quod Libet 3.2.2           quodlibet-3.2.2.tar.gz_
 Quod Libet 3.1.2           quodlibet-3.1.2.tar.gz_
 Quod Libet Plugins 3.1.2   quodlibet-plugins-3.1.2.tar.gz_
-Quod Libet 3.0.2           quodlibet-3.0.2.tar.gz_
-Quod Libet Plugins 3.0.2   quodlibet-plugins-3.0.2.tar.gz_
 Quod Libet 2.6.3           quodlibet-2.6.3.tar.gz_
 Quod Libet Plugins 2.6.3   quodlibet-plugins-2.6.3.tar.gz_
 ========================== ===============================
 
+.. _quodlibet-3.3.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.3.1.tar.gz
 .. _quodlibet-3.2.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.2.2.tar.gz
 .. _quodlibet-3.1.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.1.2.tar.gz
 .. _quodlibet-plugins-3.1.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.1.2.tar.gz
-.. _quodlibet-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.0.2.tar.gz
-.. _quodlibet-plugins-3.0.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-3.0.2.tar.gz
 .. _quodlibet-2.6.3.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-2.6.3.tar.gz
 .. _quodlibet-plugins-2.6.3.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-plugins-2.6.3.tar.gz
 
@@ -136,7 +146,6 @@ Stable Repo:
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
     sudo apt-get update
     sudo apt-get install quodlibet
-    sudo apt-get install -t wheezy-backports gstreamer1.0-pulseaudio
 
 Unstable Repo:
 
@@ -144,7 +153,7 @@ Unstable Repo:
 
     # deb http://lazka.github.io/ql-debian/testing/ quodlibet-unstable/
 
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
     sudo apt-get update
     sudo apt-get install quodlibet
 
@@ -156,17 +165,19 @@ Unstable Repo:
 
 Stable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-stable>`__):
 
-  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_19/home:lazka0:ql-stable.repo>`__
   * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_20/home:lazka0:ql-stable.repo>`__
+
+.. note::
+
+    Check out the official repos first, they usually contain the latest stable release: https://apps.fedoraproject.org/packages/quodlibet/overview/
 
 Unstable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-unstable>`__):
 
-  * `Fedora 19 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_19/home:lazka0:ql-unstable.repo>`__
   * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_20/home:lazka0:ql-unstable.repo>`__
 
 Unstable Repo (`COPR <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/>`__):
 
-  * `Fedora 19 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-19/lazka-quodlibet-unstable-fedora-19.repo>`__
+  * `Fedora 21 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-21/lazka-quodlibet-unstable-fedora-21.repo>`__
   * `Fedora 20 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-20/lazka-quodlibet-unstable-fedora-20.repo>`__
   * `Fedora Rawhide <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-rawhide/lazka-quodlibet-unstable-fedora-rawhide.repo>`__
   * `RHEL 7 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/epel-7/lazka-quodlibet-unstable-epel-7.repo>`__
@@ -179,13 +190,13 @@ Unstable Repo (`COPR <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstab
 
 Stable Repo:
 
-  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_12.3/>`__
+  * `openSUSE 13.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.2/>`__
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`__
 
 Unstable Repo:
 
-  * `openSUSE 12.3 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_12.3/>`__
+  * `openSUSE 13.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.2/>`__
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
 
@@ -205,7 +216,7 @@ Stable:
 Unstable:
 
 
-See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in 
+See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in
 the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
 
 
@@ -217,6 +228,8 @@ the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
 =========================== ==============================
 Release                     Filename
 =========================== ==============================
+Quod Libet 3.3.1            quodlibet-3.3.1-installer.exe_
+Quod Libet 3.3.1 (portable) quodlibet-3.3.1-portable.exe_
 Quod Libet 3.2.2            quodlibet-3.2.2-installer.exe_
 Quod Libet 3.2.2 (portable) quodlibet-3.2.2-portable.exe_
 Quod Libet 3.1.2            quodlibet-3.1.2-installer.exe_
@@ -225,6 +238,8 @@ Quod Libet 2.6.3            quodlibet-2.6.3-installer.exe_
 Quod Libet 2.6.3 (portable) quodlibet-2.6.3-portable.exe_
 =========================== ==============================
 
+.. _quodlibet-3.3.1-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.3.1-portable.exe
+.. _quodlibet-3.3.1-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.3.1-installer.exe
 .. _quodlibet-3.2.2-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.2.2-portable.exe
 .. _quodlibet-3.2.2-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.2.2-installer.exe
 .. _quodlibet-3.1.2-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.1.2-portable.exe
@@ -240,35 +255,16 @@ For old releases see the `full file listing <https://bitbucket.org/lazka/quodlib
 |macosx-logo| Mac OS X
 ----------------------
 
-.. note::
+=========================== ==============================
+Release                     Application Bundle
+=========================== ==============================
+Quod Libet 3.3.1            Quodlibet-3.3.1_0.zip_
+Ex False 3.3.1              ExFalso-3.3.1_0.zip_
+Quod Libet 3.3.0            Quodlibet-3.3.0_0.zip_
+Ex False 3.3.0              ExFalso-3.3.0_0.zip_
+=========================== ==============================
 
-    Mac OS X support is still experimental; please report any issue you 
-    encounter.
-
-Newest bundle (OSX 10.6 - 10.9 x86_64): http://kerik-sf.users.sourceforge.net/quodlibet-osx-bundle/
-
-
-.. _RunFromSource:
-
-|source-logo| Running from Source
----------------------------------
-
-Install mercurial and check out the source::
-
-    $ hg clone https://code.google.com/p/quodlibet/
-    $ cd quodlibet/quodlibet
-
-
-If you want translations, you have to create the gettext translation files::
-
-$ ./setup.py build_mo
-
-Run Quod Libet or Ex Falso::
-
-    $ ./quodlibet.py
-    $ ./exfalso.py
-
-To update to the latest version, switch to the QL dir and run::
-
- $ hg pull --update
- $ ./setup.py build_mo # (only if you need translations)
+.. _Quodlibet-3.3.1_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.1_0/Quodlibet-3.3.1_0.zip
+.. _ExFalso-3.3.1_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.3.1_0/ExFalso-3.3.1_0.zip
+.. _Quodlibet-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/Quodlibet-3.3.0_0.zip
+.. _ExFalso-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/ExFalso-3.3.0_0.zip

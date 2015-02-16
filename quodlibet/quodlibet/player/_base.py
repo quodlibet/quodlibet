@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2007-2008 Joe Wreschnig
 #           2009,2010 Steven Robertson
 #           2009-2013 Christoph Reiter
@@ -87,7 +88,8 @@ class BasePlayer(GObject.GObject, Equalizer):
 
     _gproperties_ = {
         'volume': (float, 'player volume', 'the volume of the player',
-                   0.0, 1.0, 1.0, GObject.PARAM_READWRITE)
+                   0.0, 1.0, 1.0,
+                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE)
         }
 
     def __init__(self, *args, **kwargs):
@@ -109,9 +111,13 @@ class BasePlayer(GObject.GObject, Equalizer):
         else:
             raise AttributeError
 
-    def _set_volume(self, v):
+    @property
+    def volume(self):
+        return self._volume
+
+    @volume.setter
+    def volume(self, v):
         self.props.volume = min(1.0, max(0.0, v))
-    volume = property(lambda s: s._volume, _set_volume)
 
     def _destroy(self):
         """Clean up"""
@@ -198,7 +204,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         if self.song:
             self.paused = False
 
-    def go_to(self, song_or_iter, explicit=False):
+    def go_to(self, song_or_iter, explicit=False, queue=False):
         """Activate the song or iter in the playlist if possible and play it.
 
         Explicit if the action comes from the user.
@@ -208,7 +214,7 @@ class BasePlayer(GObject.GObject, Equalizer):
 
         print_d("Going to %r" % getattr(song_or_iter, "key", song_or_iter))
 
-        if self._source.go_to(song_or_iter, explicit):
+        if self._source.go_to(song_or_iter, explicit, queue):
             self._end(True)
         else:
             if isinstance(song_or_iter, AudioFile):

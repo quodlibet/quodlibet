@@ -29,7 +29,6 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.bookmarks import EditBookmarks
 from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
-from quodlibet.qltk.logging import LoggingWindow
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.playorder import PlayOrder
@@ -166,14 +165,19 @@ class TopBar(Gtk.Toolbar):
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
         # song text
-        text = SongInfo(library.librarian, player)
+        info_pattern_path = os.path.join(const.USERDIR, "songinfo")
+        text = SongInfo(library.librarian, player, info_pattern_path)
         box.pack_start(Alignment(text, border=3), True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
         connect_destroy(player, 'song-started', self.__new_song)
-        connect_destroy(
-            parent, 'artwork-changed', self.__song_art_changed, library)
+
+        # FIXME: makes testing easier
+        if app.cover_manager:
+            connect_destroy(
+                app.cover_manager, 'cover-changed',
+                self.__song_art_changed, library)
 
         # CoverImage doesn't behave in a Alignment, so wrap it
         coverbox = Gtk.Box()
@@ -428,7 +432,6 @@ MENU = """
       <menuitem action='OnlineHelp' always-show-image='true'/>
       <menuitem action='SearchHelp' always-show-image='true'/>
       <menuitem action='About' always-show-image='true'/>
-      %(debug)s
     </menu>
   </menubar>
 </ui>
@@ -439,10 +442,6 @@ DND_URI_LIST, = range(1)
 
 
 class QuodLibetWindow(Window, PersistentWindowMixin):
-    SIG_PYOBJECT = (GObject.SignalFlags.RUN_LAST, None, (object,))
-    __gsignals__ = {
-        'artwork-changed': SIG_PYOBJECT,
-    }
 
     def __init__(self, library, player, headless=False):
         super(QuodLibetWindow, self).__init__(dialog=False)
@@ -460,6 +459,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         ui = self.__create_menu(player, library)
         accel_group = ui.get_accel_group()
         self.add_accel_group(accel_group)
+
+        def scroll_and_jump(*args):
+            self.__jump_to_current(True, True)
+
+        keyval, mod = Gtk.accelerator_parse("<control><shift>J")
+        accel_group.connect(keyval, mod, 0, scroll_and_jump)
 
         # dbus app menu
         AppMenu(self, ui.get_action_groups()[0])
@@ -724,7 +729,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         if error:
             ErrorMessage(
                 self, _("Unable to add songs"),
-                _("<b>%s</b> uses an unsupported protocol.") % uri).run()
+                _("%s uses an unsupported protocol.") % util.bold(uri)).run()
         else:
             if dirs:
                 copool.add(
@@ -735,8 +740,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         return self.browser.key_pressed(event)
 
     def __songlist_drag_data_recv(self, view, *args):
-        if callable(self.browser.reordered):
-            self.browser.reordered(view)
+        if self.browser.can_reorder:
+            songs = view.get_songs()
+            self.browser.reordered(songs)
         self.songlist.clear_sort()
 
     def __show_or(self, widget, prop):
@@ -765,17 +771,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
     def __create_menu(self, player, library):
         ag = Gtk.ActionGroup.new('QuodLibetWindowActions')
 
-        def logging_cb(*args):
-            window = LoggingWindow(self)
-            window.show()
-
         actions = [
             ('Music', None, _("_Music")),
-            ('AddFolders', Gtk.STOCK_ADD, _('_Add a Folder...'),
+            ('AddFolders', Gtk.STOCK_ADD, _(u'_Add a Folder…'),
              "<control>O", None, self.open_chooser),
-            ('AddFiles', Gtk.STOCK_ADD, _('_Add a File...'),
+            ('AddFiles', Gtk.STOCK_ADD, _(u'_Add a File…'),
              None, None, self.open_chooser),
-            ('AddLocation', Gtk.STOCK_ADD, _('_Add a Location...'),
+            ('AddLocation', Gtk.STOCK_ADD, _(u'_Add a Location…'),
              None, None, self.open_location),
             ('BrowseLibrary', Gtk.STOCK_FIND, _('Open _Browser'), ""),
             ("Preferences", Gtk.STOCK_PREFERENCES, None, None, None,
@@ -795,8 +797,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
             ("View", None, _("_View")),
             ("Help", None, _("_Help")),
-            ("OutputLog", Gtk.STOCK_EDIT, _("_Output Log"),
-             None, None, logging_cb),
             ]
 
         actions.append(("Previous", Gtk.STOCK_MEDIA_PREVIOUS, None,
@@ -897,14 +897,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             MAIN_MENU % {"browsers": browsers.BrowseLibrary()})
         self._filter_menu = FilterMenu(library, player, ui)
 
-        debug_menu = ""
-        if const.DEBUG:
-            debug_menu = (
-                "<separator/>"
-                "<menuitem action='OutputLog' always-show-image='true'/>")
         menustr = MENU % {
             "views": browsers.ViewBrowser(),
-            "debug": debug_menu
         }
         ui.add_ui_from_string(menustr)
 
@@ -937,12 +931,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.browser = Browser(library)
         self.browser.connect('songs-selected',
             self.__browser_cb, library, player)
-        self.browser.connect('activated', self.__browser_activate)
+        self.browser.connect('songs-activated', self.__browser_activate)
         if restore:
             self.browser.restore()
             self.browser.activate()
         self.browser.finalize(restore)
-        if self.browser.reordered:
+        if self.browser.can_reorder:
             self.songlist.enable_drop()
         elif self.browser.dropped:
             self.songlist.enable_drop(False)
@@ -1007,7 +1001,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         # don't jump on stream changes (player.info != player.song)
         if song and player.song is song and not self.songlist._activated and \
-            config.getboolean("settings", "jump"):
+            config.getboolean("settings", "jump") and self.songlist.sourced:
             self.__jump_to_current(False)
 
     def __refresh_size(self):
@@ -1045,13 +1039,15 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         else:
             app.player.paused ^= True
 
-    def __jump_to_current(self, explicit):
+    def __jump_to_current(self, explicit, force_scroll=False):
         """Select/scroll to the current playing song in the playlist.
         If it can't be found tell the browser to properly fill the playlist
         with an appropriate selection containing the song.
 
         explicit means that the jump request comes from the user and not
         from an event like song-started.
+
+        force_scroll will ask the browser to refill the playlist in any case.
         """
 
         def idle_jump_to(song, select):
@@ -1066,7 +1062,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         if song is None:
             return
 
-        ok = self.songlist.jump_to_song(song, select=explicit)
+        if not force_scroll:
+            ok = self.songlist.jump_to_song(song, select=explicit)
+        else:
+            assert explicit
+            ok = False
+
         if ok:
             self.songlist.grab_focus()
         elif explicit:
@@ -1104,13 +1105,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             if not util.uri_is_valid(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
-                    _("<b>%s</b> is not a valid location.") % (
-                    util.escape(name))).run()
+                    _("%s is not a valid location.") % (
+                    util.bold(util.escape(name)))).run()
             elif not app.player.can_play_uri(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
-                    _("<b>%s</b> uses an unsupported protocol.") % (
-                    util.escape(name))).run()
+                    _("%s uses an unsupported protocol.") % (
+                    util.bold(util.escape(name)))).run()
             else:
                 if name not in self.__library:
                     self.__library.add([RemoteFile(name)])

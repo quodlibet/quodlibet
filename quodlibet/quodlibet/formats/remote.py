@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
@@ -58,7 +59,9 @@ class RemoteFile(AudioFile):
         else:
             return False
 
-    key = property(lambda self: self["~uri"])
+    @property
+    def key(self):
+        return self["~uri"]
 
 info = RemoteFile
 types = [RemoteFile]

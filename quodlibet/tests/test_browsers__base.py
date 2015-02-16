@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #           2013 Christoph Reiter
 #
@@ -51,9 +52,8 @@ class TBrowser(TestCase):
 
     def test_defaults(self):
         self.failUnless(self.browser.background)
-        self.failIf(self.browser.reordered)
+        self.failIf(self.browser.can_reorder)
         self.failIf(self.browser.headers)
-        self.failUnless(self.browser.dynamic(None))
 
     def tearDown(self):
         self.browser = None
@@ -74,6 +74,13 @@ class TBrowserBase(AbstractTestCase):
         self.b.destroy()
         self.library.destroy()
         config.quit()
+
+    def test_menu(self):
+        # FIXME: the playlist browser accesses the song list directly
+        if self.b.name == "Playlists":
+            return
+        menu = self.b.Menu([], self.library, [])
+        self.assertTrue(isinstance(menu, Gtk.Menu))
 
     def test_pack_unpack(self):
         to_pack = Gtk.Button()

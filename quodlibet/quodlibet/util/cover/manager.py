@@ -7,14 +7,20 @@
 # published by the Free Software Foundation
 
 from itertools import chain
+from multiprocessing.pool import ThreadPool
+
+from gi.repository import GObject, GLib
 
 from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
+from quodlibet.util.thumbnails import get_thumbnail_from_file
 from quodlibet.plugins.cover import CoverSourcePlugin
 
 
 class CoverPluginHandler(PluginHandler):
+    """A plugin handler for CoverSourcePlugin implementation"""
+
     def __init__(self, use_built_in=True):
         self.providers = set()
         if use_built_in:
@@ -22,9 +28,6 @@ class CoverPluginHandler(PluginHandler):
                                  built_in.FilesystemCover])
         else:
             self.built_in = set()
-
-    def init_plugins(self):
-        PluginManager.instance.register_handler(self)
 
     def plugin_handle(self, plugin):
         return issubclass(plugin.cls, CoverSourcePlugin)
@@ -39,9 +42,49 @@ class CoverPluginHandler(PluginHandler):
 
     @property
     def sources(self):
+        """Yields all active CoverSourcePlugin sorted by priority"""
+
         sources = chain((p.cls for p in self.providers), self.built_in)
         for p in sorted(sources, reverse=True, key=lambda x: x.priority()):
             yield p
+
+
+class CoverManager(GObject.Object):
+
+    __gsignals__ = {
+        # artwork_changed([AudioFile]), emmited if the cover art for one
+        # or more songs might have changed
+        'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+    }
+
+    plugin_handler = None
+
+    def __init__(self, use_built_in=True):
+        super(CoverManager, self).__init__()
+        self.plugin_handler = CoverPluginHandler(use_built_in)
+        self._pool = ThreadPool()
+
+    def init_plugins(self):
+        """Register the cover sources plugin handler with the global
+        plugin manager.
+        """
+
+        PluginManager.instance.register_handler(self.plugin_handler)
+
+    @property
+    def sources(self):
+        return self.plugin_handler.sources
+
+    def cover_changed(self, songs):
+        """Notify the world that the artwork for some songs or collections
+        containing that songs might have changed (For example a new image was
+        added to the folder or a new embedded image was added)
+
+        This will invalidate all caches and will notify others that they have
+        to re-fetch the cover and do a display update.
+        """
+
+        self.emit("cover-changed", songs)
 
     def acquire_cover(self, callback, cancellable, song):
         """
@@ -145,5 +188,45 @@ class CoverPluginHandler(PluginHandler):
         else:
             return get(songs, False, True) or get(songs, True, False)
 
+    def get_pixbuf_many(self, songs, width, height):
+        """Returns a Pixbuf which fits into the boundary defined by width
+        and height or None.
 
-cover_plugins = CoverPluginHandler()
+        Uses the thumbnail cache if possible.
+        """
+
+        fileobj = self.get_cover_many(songs)
+        if fileobj is None:
+            return
+
+        return get_thumbnail_from_file(fileobj, (width, height))
+
+    def get_pixbuf(self, song, width, height):
+        """see get_pixbuf_many()"""
+
+        return self.get_pixbuf_many([song], width, height)
+
+    def get_pixbuf_many_async(self, songs, width, height, cancel, callback):
+        """Async variant; callback gets called with a pixbuf or not called
+        in case of an error. cancel is a Gio.Cancellable.
+
+        The callback will be called in the main loop.
+        """
+
+        fileobj = self.get_cover_many(songs)
+        if fileobj is None:
+            return
+
+        def main_loop_callback(result):
+            if not cancel.is_cancelled():
+                callback(result)
+
+        def thread_callback(result):
+            if cancel.is_cancelled():
+                return
+            GLib.idle_add(main_loop_callback, result,
+                          priority=GLib.PRIORITY_DEFAULT)
+
+        self._pool.apply_async(
+            get_thumbnail_from_file, args=(fileobj, (width, height)),
+            callback=thread_callback)

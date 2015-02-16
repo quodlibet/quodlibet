@@ -25,18 +25,18 @@ from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
-from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned
+from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned, \
+    Button
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
+from quodlibet.qltk import icons
 from quodlibet.util.path import mtime, normalize_path
 from quodlibet.util import connect_obj, connect_destroy
 
 
 class ExFalsoWindow(Window, PersistentWindowMixin):
+
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST,
-                    None, (object,)),
-        'artwork-changed': (GObject.SignalFlags.RUN_LAST,
-                            None, (object,))
+        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     pm = SongsMenuPluginHandler()
@@ -179,7 +179,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         b = TrashMenuItem()
         b.connect('activate', self.__delete, filenames, fs)
         menu.prepend(b)
-        connect_obj(menu, 'selection-done', Gtk.Menu.destroy, menu)
+
+        def selection_done_cb(menu):
+            menu.destroy()
+
+        menu.connect('selection-done', selection_done_cb)
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
@@ -250,7 +254,7 @@ class PreferencesWindow(UniqueWindow):
         vbox.pack_start(hb, False, True, 0)
         f = qltk.Frame(_("Tag Editing"), child=vbox)
 
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2007 Javier Kohen, 2010 Nick Boultbee
+# Copyright 2007 Javier Kohen
+#     2010, 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,6 +9,7 @@
 from tests import TestCase
 
 from quodlibet.util import title
+from quodlibet.util.string.titlecase import human_title as ht
 
 
 class Ttitle(TestCase):
@@ -87,3 +89,37 @@ class Ttitle(TestCase):
 
     def test_apostrophe(self):
         self.failUnlessEqual(title("it's"), "It's")
+
+    def test_english_human_title_case(s):
+        s.assertEquals(u"System of a Down", ht(u"System Of A Down"))
+        s.assertEquals(u"The Man with the Golden Gun",
+                       ht(u"The Man With The Golden gun"))
+        s.assertEquals(u"Live and Let Die", ht(u"Live And Let Die"))
+        # Updated to match modifications to is/are/am rules:
+        s.assertEquals(u"The Vitamins Are in My Fresh California Raisins",
+                       ht(u"the vitamins are in my fresh california raisins"))
+        s.assertEquals(u"Dig In",
+                       ht(u"dig in"))
+        s.assertEquals(u"In da Club",
+                       ht(u"in da club"))
+        # See Issue 616
+        s.assertEquals(u" Dodgy Are  the Spaces ",
+                       ht(u" dodgy are  the spaces "))
+        s.assertEquals(u"Space:  The Final Frontier",
+                       ht(u"Space:  the final frontier"))
+        s.assertEquals(u"- Out of Space", ht(u"- out Of space"))
+
+    def test_tricky_apostrophes(s):
+        s.assertEquals(u"Guns 'n' Roses", ht(u"Guns 'n' roses"))
+        s.assertEquals(u"Scarlett O'Hara", ht(u"scarlett o'hara"))
+        s.assertEquals(u"Scarlett O'Hara", ht(u"Scarlett O'hara"))
+        s.assertEquals(u"No Life 'til Leather", ht(u"no life 'til leather"))
+
+    def test_english_humanise_sentences(s):
+        """Checks trickier human title casing"""
+        s.assertEquals(u"Buffy the Vampire Slayer: The Album",
+                       ht(u"Buffy the vampire slayer: the album"))
+        s.assertEquals(u"Killing Is My Business... and Business Is Good!",
+                       ht(u"Killing is my business... And business is good!"))
+        s.assertEquals(u"Herbie Hancock - The Definitive",
+                       ht(u"herbie hancock - the definitive"))

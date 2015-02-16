@@ -17,7 +17,7 @@ from quodlibet.qltk import Alignment
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import SearchBarBox
-from quodlibet.parse.mql import Mql, ParseError
+from quodlibet.query.mql import Mql, ParseError
 from quodlibet.util.collection import Collection
 from quodlibet.util.dprint import print_d, print_w
 
@@ -33,23 +33,7 @@ AGGREGATES = {
 
 
 class MqlSearchBarBox(SearchBarBox):
-    timeout = 1200
-    MAX_CACHE_ENTRIES = 1000
-
-    def __init__(self, mql_parser, filename=None, completion=None,
-                 accel_group=None):
-        super(MqlSearchBarBox, self).__init__(
-            filename, completion, accel_group, mql_parser.is_valid)
-        self.mql_parser = mql_parser
-        self._cache = {}
-
-    def _is_parsable(self, text):
-        if text not in self._cache:
-            if len(self._cache) > self.MAX_CACHE_ENTRIES:
-                # TODO: LRU etc, some day.
-                self._cache.clear()
-            self._cache[text] = self.mql_parser.is_valid(text)
-        return self._cache[text]
+    pass
 
 
 class MqlBrowser(SearchBar):
@@ -64,19 +48,15 @@ class MqlBrowser(SearchBar):
 
     def __init__(self, library):
         super(SearchBar, self).__init__()
-        tags = SongList.star
-        print_d("Setting up MQL parser with %s" % tags)
-        self.mql_parser = Mql(star=tags)
-
         self.set_spacing(6)
 
-        self._filter = None
+        self._query = None
         self._library = library
 
         completion = LibraryTagCompletion(library.librarian)
         self.accelerators = Gtk.AccelGroup()
 
-        sbb = MqlSearchBarBox(self.mql_parser, completion=completion,
+        sbb = MqlSearchBarBox(completion=completion,
                               accel_group=self.accelerators)
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
@@ -115,16 +95,18 @@ class MqlBrowser(SearchBar):
         if not text:
             print_d("empty search")
             collection.songs = self._library.values()
-            self._filter = None
+            self._query = None
         else:
             try:
                 print_d("Building parser for \"%s\"" % text)
                 #print_d(self.mql.parse(self._text))
-                self.mql_parser.parse(text)
-                self._filter = self.mql_parser.evaluate_stack().search
-                print_d(self._filter)
+                tags = SongList.star
+                print_d("Setting up MQL parser with %s" % tags)
+                mql_query = Mql(text, star=tags)
+                self._query = mql_query.search
+                print_d(self._query)
                 total = 0
-                lim = self.mql_parser.limit
+                lim = mql_query.limit
                 if lim is not None:
                     try:
                         tag, mul = AGGREGATES[lim.units]
@@ -133,7 +115,7 @@ class MqlBrowser(SearchBar):
                         mul = 1
                     maxx = lim.value * mul
                 for song in self._library:
-                    if not self._filter(song):
+                    if not self._query(song):
                         continue
                     elif lim is not None:
                         if lim.units == 'SONGS':

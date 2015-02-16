@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -75,9 +76,9 @@ class SelectionWindow(Window):
 
 class FilterAll(SongsMenuPlugin):
     PLUGIN_ID = "FilterAll"
-    PLUGIN_NAME = _("Filter on any tag")
-    PLUGIN_DESC = _("Create a search query based on "
-                    "tags of the selected songs")
+    PLUGIN_NAME = _("Filter on Any Tag")
+    PLUGIN_DESC = _("Creates a search query based on "
+                    "tags of the selected songs.")
     PLUGIN_ICON = 'gtk-index'
 
     def plugin_songs(self, songs):

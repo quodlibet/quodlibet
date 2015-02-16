@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #           2014 Christoph Reiter
 #
@@ -20,9 +21,8 @@ from quodlibet.plugins.events import EventPlugin
 class AutoMasking(EventPlugin):
     PLUGIN_ID = "automask"
     PLUGIN_NAME = _("Automatic Masking")
-    PLUGIN_DESC = _("Automatically mask and unmask drives when they "
+    PLUGIN_DESC = _("Automatically masks and unmasks drives when they "
                     "are unmounted or mounted.")
-    PLUGIN_VERSION = "0.1"
 
     __sigs = None
     __monitor = None

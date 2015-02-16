@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from quodlibet.util.collection import Album
 from quodlibet.formats._audio import AudioFile
 from quodlibet import config

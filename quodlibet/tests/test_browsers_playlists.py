@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from quodlibet.browsers.playlists.util import parse_m3u, parse_pls
 from quodlibet.util.collection import Playlist
 from tests import TestCase, AbstractTestCase, DATA_DIR, mkstemp, mkdtemp

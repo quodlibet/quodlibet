@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 if os.name == "nt":
@@ -14,9 +15,8 @@ from quodlibet.util import connect_obj
 class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     PLUGIN_ID = "Kana/Kanji Simple Inverter"
     PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
-    PLUGIN_DESC = _("Convert kana/kanji to romaji before renaming.")
+    PLUGIN_DESC = _("Converts kana/kanji to romaji before renaming.")
     PLUGIN_ICON = Gtk.STOCK_CONVERT
-    PLUGIN_VERSION = "1"
 
     __gsignals__ = {
         "preview": (GObject.SignalFlags.RUN_LAST, None, ())
@@ -27,7 +27,9 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
             _("Romanize _Japanese text"), use_underline=True)
         connect_obj(self, 'toggled', self.emit, 'preview')
 
-    active = property(lambda s: s.get_active())
+    @property
+    def active(self):
+        return self.get_active()
 
     # Use filter list rather than filter to avoid starting a new process
     # for each filename.

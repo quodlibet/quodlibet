@@ -102,7 +102,7 @@ class Preferences(Gtk.VBox):
 class Karaoke(GStreamerPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Karaoke")
-    PLUGIN_DESC = _("Remove voice from audio.")
+    PLUGIN_DESC = _("Removes main vocals from audio.")
     PLUGIN_ICON = "audio-volume-high"
 
     @classmethod

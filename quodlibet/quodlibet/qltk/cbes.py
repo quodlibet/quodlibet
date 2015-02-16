@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005-2011 Joe Wreschnig, Michael Urman, Christoph Reiter,
 #                     Nick Boultbee
 #
@@ -249,7 +250,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
     def __init__(self, filename=None, initial=[], count=5, id=None,
                  validator=None, title=_("Saved Values"),
-                 edit_title=_("Edit saved values...")):
+                 edit_title=_(u"Edit saved values…")):
         self.count = count
         self.filename = filename
         id = filename or id

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,75 +13,72 @@ from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.models import ObjectStore
 
 
-def check_sourced(func):
-    # Validate sourced flags after each action that could lead to a changed
-    # iter (only ones triggerd by the order, no iter removal!)
-    def wrap(self, *args, **kwargs):
-        res = func(self, *args, **kwargs)
+class PlaylistMux(object):
+
+    def __init__(self, player, q, pl):
+        self.q = q
+        self.pl = pl
+        self._id = player.connect('song-started', self.__song_started)
+        self._player = player
+
+    def destroy(self):
+        self._player.disconnect(self._id)
+
+    def __song_started(self, player, song):
+        if song is not None and self.q.sourced:
+            iter = self.q.find(song)
+            if iter:
+                self.q.remove(iter)
+                # we don't call _check_sourced here since we want the queue
+                # to stay sourced even if no current song is left
+
+    @property
+    def current(self):
+        if self.q.current is not None:
+            return self.q.current
+        else:
+            return self.pl.current
+
+    def _check_sourced(self):
         if self.q.current is not None:
             self.q.sourced = True
             self.pl.sourced = False
         else:
             self.q.sourced = False
             self.pl.sourced = True
-        return res
-    return wrap
 
-
-class PlaylistMux(object):
-
-    def __init__(self, player, q, pl):
-        self.q = q
-        self.pl = pl
-        self._id = player.connect('song-started', self.__check_q)
-        self._player = player
-
-    def destroy(self):
-        self._player.disconnect(self._id)
-
-    def __check_q(self, player, song):
-        if song is not None and self.q.sourced:
-            iter = self.q.find(song)
-            if iter:
-                self.q.remove(iter)
-            self.q.reset()
-
-    def get_current(self):
-        if self.q.current is not None:
-            return self.q.current
-        else:
-            return self.pl.current
-
-    current = property(get_current)
-
-    @check_sourced
     def next(self):
         if self.q.is_empty():
             self.pl.next()
-        elif self.q.current is None:
+        else:
             self.q.next()
+        self._check_sourced()
 
-    @check_sourced
     def next_ended(self):
         if self.q.is_empty():
             self.pl.next_ended()
-        elif self.q.current is None:
-            self.q.next()
+        else:
+            self.q.next_ended()
+        self._check_sourced()
 
-    @check_sourced
     def previous(self):
         self.pl.previous()
+        self._check_sourced()
 
-    @check_sourced
-    def go_to(self, song, explicit=False):
+    def go_to(self, song, explicit=False, queue=False):
         print_d("Told to go to %r" % getattr(song, "key", song))
-        self.q.go_to(None)
-        return self.pl.go_to(song, explicit)
+        main, other = self.pl, self.q
+        if queue:
+            main, other = other, main
+        other.go_to(None)
+        res = main.go_to(song, explicit)
+        self._check_sourced()
+        return res
 
-    @check_sourced
     def reset(self):
         self.q.go_to(None)
         self.pl.reset()
+        self._check_sourced()
 
     def enqueue(self, songs):
         self.q.append_many(songs)
@@ -131,7 +129,12 @@ class TrackCurrentModel(ObjectStore):
     def current_path(self):
         return self.__iter and self.get_path(self.__iter)
 
-    def __set_current_iter(self, iter_):
+    @property
+    def current_iter(self):
+        return self.__iter
+
+    @current_iter.setter
+    def current_iter(self, iter_):
         if iter_ == self.__iter:
             return
         # emit a row-changed for the previous and the new iter after it is set
@@ -140,11 +143,6 @@ class TrackCurrentModel(ObjectStore):
             self.row_changed(self.get_path(it), it)
         self.__iter = iter_
         self.last_current = self.current
-
-    def __get_current_iter(self):
-        return self.__iter
-
-    current_iter = property(__get_current_iter, __set_current_iter)
 
     def find(self, song):
         """Returns the iter to the first occurrence of song in the model
@@ -206,7 +204,7 @@ class PlaylistModel(TrackCurrentModel):
         iter_ = self.current_iter
         self.current_iter = self.order.previous_explicit(self, iter_)
 
-    def go_to(self, song_or_iter, explicit=False):
+    def go_to(self, song_or_iter, explicit=False, queue=False):
         """Go to a song or an iter or None"""
 
         print_d("Told to go to %r" % getattr(song_or_iter, "key",

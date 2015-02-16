@@ -99,7 +99,10 @@ class FilterCheckButton(ConfigCheckButton):
         except:
             pass
         connect_obj(self, 'toggled', self.emit, 'preview')
-    active = property(lambda s: s.get_active())
+
+    @property
+    def active(self):
+        return self.get_active()
 
     def filter(self, original, filename):
         raise NotImplementedError
@@ -137,7 +140,7 @@ class FilterPluginBox(Gtk.VBox):
         # plugins
         self.__plugins = []
         hb = Gtk.HBox()
-        expander = Gtk.Expander(label=_("_More options..."))
+        expander = Gtk.Expander(label=_(u"_More options…"))
         expander.set_use_underline(True)
         hb.pack_start(expander, True, True, 0)
         self.pack_start(hb, False, True, 0)

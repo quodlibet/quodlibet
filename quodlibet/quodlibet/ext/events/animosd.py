@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2012-13 Nick Boultbee, Thomas Vogt
 # Copyright (C) 2008 Andreas Bombe
 # Copyright (C) 2005  Michael Urman
@@ -24,7 +25,7 @@ from math import pi
 from quodlibet import config, qltk, app
 from quodlibet.qltk.textedit import PatternEdit
 from quodlibet.formats import DUMMY_SONG
-from quodlibet import parse
+from quodlibet import pattern
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util.dprint import print_d, print_w
@@ -59,7 +60,7 @@ class OSDWindow(Gtk.Window):
         self.fading_in = False
         self.fade_start_time = 0
 
-        cover = song.find_cover()
+        cover = app.cover_manager.get_cover(song)
         try:
             if cover is not None:
                 cover = GdkPixbuf.Pixbuf.new_from_file(cover.name)
@@ -88,8 +89,8 @@ class OSDWindow(Gtk.Window):
         layout.set_spacing(Pango.SCALE * 7)
         layout.set_font_description(Pango.FontDescription(conf.font))
         try:
-            layout.set_markup(parse.XMLFromMarkupPattern(conf.string) % song)
-        except parse.error:
+            layout.set_markup(pattern.XMLFromMarkupPattern(conf.string) % song)
+        except pattern.error:
             layout.set_markup("")
         layout.set_width(Pango.SCALE * textwidth)
         layoutsize = layout.get_pixel_size()
@@ -307,8 +308,8 @@ class OSDWindow(Gtk.Window):
 class AnimOsd(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "Animated On-Screen Display"
     PLUGIN_NAME = _("Animated On-Screen Display")
-    PLUGIN_DESC = _("Display song information on your screen when it changes.")
-    PLUGIN_VERSION = "1.3"
+    PLUGIN_DESC = _("Displays song information on your screen when it "
+                    "changes.")
     # Retain compatibility with old configuration
     CONFIG_SECTION = 'animosd'
 
@@ -542,7 +543,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
 
         def build_buttons_widget():
             hb = Gtk.HBox(spacing=6)
-            edit_button = qltk.Button(_("Ed_it Display Pattern..."),
+            edit_button = qltk.Button(_(u"Ed_it Display Pattern…"),
                                       Gtk.STOCK_EDIT)
             edit_button.connect('clicked', edit_pattern)
             hb.pack_start(edit_button, False, True, 0)

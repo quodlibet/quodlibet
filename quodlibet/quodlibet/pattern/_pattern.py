@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2010 Joe Wreschnig, Michael Urman
 # Copyright 2010,2013 Christoph Reiter
 # Copyright 2013,2014 Nick Boultbee
@@ -12,9 +13,9 @@
 
 import os
 import re
+from re import Scanner
 
 from quodlibet import util
-from quodlibet.parse._scanner import Scanner
 from quodlibet.util.path import fsdecode, expanduser, fsnative, sep
 from quodlibet.util.path import strip_win32_incompat_from_path
 
@@ -183,7 +184,7 @@ class PatternFormatter(object):
     def __init__(self, func, list_func, tags):
         self.__func = func
         self.__list_func = list_func
-        self.tags = set(tags)
+        self.tags = util.list_unique(tags)
         self.format(self.Dummy())  # Validate string
 
     class Dummy(dict):
@@ -258,7 +259,7 @@ class PatternCompiler(object):
         self.__root = root.node
 
     def compile(self, song_func):
-        tags = set()
+        tags = []
         content = [
             "def f(s):",
             "  x = s." + song_func,
@@ -304,7 +305,7 @@ class PatternCompiler(object):
                 text.append('if not %s:' % scope[tag])
                 text.extend(ec)
         elif isinstance(node, TagNode):
-            tags.update(util.tagsplit(node.tag))
+            tags.extend(util.tagsplit(node.tag))
             tag = self.__put_tag(text, scope, node.tag)
             text.append('a(%s)' % scope[tag])
         return text

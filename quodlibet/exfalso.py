@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Niklas Janlert
 #           2012 Christoph Reiter
 # <quod-libet-development@googlegroups.com>
@@ -19,7 +20,9 @@ from quodlibet.util.path import fsdecode
 
 
 def main():
-    from quodlibet.qltk import add_signal_watch
+    global quodlibet
+
+    from quodlibet.qltk import add_signal_watch, icons
     add_signal_watch(app.quit)
 
     opts = util.OptionParser(
@@ -33,9 +36,13 @@ def main():
 
     config.init(const.CONFIG)
 
-    app.library = quodlibet.init(icon="exfalso",
-                                 name="Ex Falso",
-                                 title=const.PROCESS_TITLE_EF)
+    app.name = "Ex Falso"
+    app.id = "exfalso"
+
+    quodlibet.init(icon=icons.EXFALSO, name=app.name, proc_title=app.id)
+
+    import quodlibet.library
+    app.library = quodlibet.library.init()
     app.player = quodlibet.init_backend("nullbe", app.librarian)
     from quodlibet.qltk.songlist import PlaylistModel
     app.player.setup(PlaylistModel(), None, 0)
@@ -49,13 +56,17 @@ def main():
     app.window = ExFalsoWindow(app.library, dir_)
     app.window.init_plugins()
 
+    from quodlibet.util.cover import CoverManager
+    app.cover_manager = CoverManager()
+    app.cover_manager.init_plugins()
+
     from quodlibet.qltk import session
     session.init("exfalso")
 
     quodlibet.enable_periodic_save(save_library=False)
     quodlibet.main(app.window)
 
-    quodlibet.finish_first_session(const.PROCESS_TITLE_EF)
+    quodlibet.finish_first_session(app.id)
     config.save(const.CONFIG)
 
     print_d("Finished shutdown.")

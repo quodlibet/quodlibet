@@ -45,8 +45,9 @@ class PluginImportException(Exception):
 class PluginNotSupportedError(PluginImportException):
     """To hide the plugin (e.g. on Windows)"""
 
-    def __init__(self):
-        super(PluginNotSupportedError, self).__init__("not supported")
+    def __init__(self, msg=None):
+        msg = "not supported: %s" % (msg or "unknown reason")
+        super(PluginNotSupportedError, self).__init__(msg)
 
     def should_show(self):
         return False

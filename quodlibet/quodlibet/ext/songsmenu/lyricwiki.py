@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -193,7 +194,7 @@ class LyricWikiWindow(Window):
 class LyricWiki(SongsMenuPlugin):
     PLUGIN_ID = 'lyricwiki'
     PLUGIN_NAME = _('Lyrics Window')
-    PLUGIN_DESC = _("Shows a window containing lyrics of the playing song")
+    PLUGIN_DESC = _("Shows a window containing lyrics of the playing song.")
     PLUGIN_ICON = Gtk.STOCK_FIND
 
     _window = None

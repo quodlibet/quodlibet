@@ -12,6 +12,7 @@ from gi.repository import Gtk, Pango
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import app
 
 from quodlibet.qltk.bookmarks import EditBookmarksPane
 from quodlibet.qltk.cover import CoverImage
@@ -475,7 +476,9 @@ class OneArtist(qltk.Notebook):
                 return "%s (%s)" % (album, date[:4])
             else:
                 return album
-        covers = [(a, s.find_cover(), s) for d, s, a in albums]
+
+        get_cover = app.cover_manager.get_cover
+        covers = [(a, get_cover(s), s) for d, s, a in albums]
         albums = map(format, albums)
         if noalbum:
             albums.append(ngettext("%d song with no album",
@@ -586,6 +589,7 @@ class Information(Window, PersistentWindowMixin):
     def __init__(self, library, songs, parent=None):
         super(Information, self).__init__(dialog=False)
         self.set_default_size(400, 400)
+        self.set_transient_for(qltk.get_top_parent(parent))
         self.enable_window_tracking("quodlibet_information")
         if len(songs) > 1:
             connect_destroy(library, 'changed', self.__check_changed)
@@ -593,7 +597,6 @@ class Information(Window, PersistentWindowMixin):
             connect_destroy(library, 'removed', self.__check_removed)
         self.__songs = songs
         self.__update(library)
-        self.set_transient_for(qltk.get_top_parent(parent))
         self.get_child().show_all()
 
     def __check_changed(self, library, songs):

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Niklas Janlert,
 #                     Steven Robertson, Nick Boultbee
 #
@@ -34,15 +35,6 @@ class ID3hack(mutagen.id3.ID3):
             self[tag.HashKey].extend(tag[:])
         else:
             self[tag.HashKey] = tag
-
-
-class ID3bug(mutagen.id3.ID3):
-    def load(self, *args, **kwargs):
-        # Work around Mutagen bug by throwing away unknown 2.3 frames on load
-        # see http://code.google.com/p/mutagen/issues/detail?id=97
-        super(ID3bug, self).load(*args, **kwargs)
-        if self.version == (2, 3, 0) and mutagen.version < (1, 21):
-            del self.unknown_frames[:]
 
 
 # ID3 is absolutely the worst thing ever.
@@ -273,7 +265,7 @@ class ID3File(AudioFile):
 
     def write(self):
         try:
-            tag = ID3bug(self['~filename'])
+            tag = mutagen.id3.ID3(self['~filename'])
         except mutagen.id3.error:
             tag = mutagen.id3.ID3()
 
@@ -485,7 +477,7 @@ class ID3File(AudioFile):
         try:
             tag = mutagen.id3.ID3(self["~filename"])
         except Exception:
-            return
+            tag = mutagen.id3.ID3()
 
         try:
             data = image.file.read()
@@ -497,6 +489,6 @@ class ID3File(AudioFile):
             encoding=3, mime=image.mime_type, type=APICType.COVER_FRONT,
             desc=u"", data=data)
         tag.add(frame)
-        tag.save()
+        tag.save(self["~filename"])
 
         self.has_images = True

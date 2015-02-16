@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2011,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -114,11 +115,14 @@ class FingerprintDialog(Window):
         text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, "
             "or <i><b>artist</b></i> / "
             "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
-        text += _("\n\n<i>Fingerprints:</i> %d/%d") % (valid_fp, all_)
-        text += _("\n<i>Songs with MBIDs:</i> %d/%d") % (got_mbid, all_)
-        text += _("\n<i>Songs with sufficient tags:</i> %d/%d") % (
-            got_meta, all_)
-        text += _("\n<i>Songs to submit:</i> %d/%d") % (to_send, all_)
+        text += "\n\n" + _("<i>Fingerprints:</i>")
+        text += " %d/%d" % (valid_fp, all_)
+        text += "\n" # _("<i>Songs with MBIDs:</i>")
+        text += " %d/%d" % (got_mbid, all_)
+        text += "\n" + _("<i>Songs with sufficient tags:</i>")
+        text += " %d/%d" % (got_meta, all_)
+        text += "\n" + _("<i>Songs to submit:</i>")
+        text += " %d/%d" % (to_send, all_)
         self.__stats.set_markup(text)
 
     def __set_fraction(self, progress):
@@ -155,7 +159,8 @@ class FingerprintDialog(Window):
         results = self.__fp_results.values()
         to_send = len(filter(can_submit, results))
         self.__label_song.set_text(
-            _("Done. %d/%d songs to submit.") % (to_send, all_))
+            _("Done. %(to-send)d/%(all)d songs to submit.") % {
+                "to-send": to_send, "all": all_})
 
     def __cancel_cb(self, pool, *args):
         self.destroy()
@@ -170,7 +175,7 @@ class FingerprintDialog(Window):
 
     def __submit_cb(self, *args):
         self.__submit.set_sensitive(False)
-        self.__label.set_markup("<b>%s</b>" % _("Submitting Fingerprints:"))
+        self.__label.set_markup("<b>%s</b>" % _("Submitting fingerprints:"))
         self.__set_fraction(0)
         self.__acoustid_thread = AcoustidSubmissionThread(
             filter(can_submit, self.__fp_results.values()),
@@ -178,7 +183,7 @@ class FingerprintDialog(Window):
 
     def __acoustid_update(self, progress):
         self.__set_fraction(progress)
-        self.__label_song.set_text(_("Submitting..."))
+        self.__label_song.set_text(_(u"Submitting…"))
 
     def __acoustid_done(self):
         self.__acoustid_thread.join()

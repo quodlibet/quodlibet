@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,11 +10,11 @@
 # objects as it goes, which is where the interesting stuff will happen.
 
 import re
+from re import Scanner
 
-from quodlibet.parse import _match as match
-from quodlibet.parse._scanner import Scanner
-from quodlibet.parse._match import error, ParseError
-from quodlibet.parse._diacritic import re_add_diacritic_variants
+from . import _match as match
+from ._match import error, ParseError
+from ._diacritic import re_add_diacritic_variants
 from quodlibet.util import re_escape
 
 # Token types.
@@ -122,6 +123,8 @@ class QueryParser(object):
             return self.QueryNumcmp()
         elif self.lookahead.type == TAG:
             return self.QueryPart()
+        elif self.lookahead.type == EOF:
+            return match.True_()
         else:
             raise ParseError("The expected symbol should be |, &, !, #, or "
                              "a tag name, but was %s" % self.lookahead.lexeme)
@@ -132,6 +135,11 @@ class QueryParser(object):
         return s
 
     def StartStarQuery(self, star):
+        if self.lookahead.type == EOF:
+            s = match.True_()
+            self.match(EOF)
+            return s
+
         s = self.RegexpSet(no_tag=True)
         self.match(EOF)
 
@@ -278,118 +286,3 @@ class QueryParser(object):
                     self.lookahead.lexeme))
         except StopIteration:
             self.lookahead = QueryLexeme(EOF, "")
-
-
-NORMAL, VALUE, STRING = range(3)
-
-
-def _get_query_type(string):
-    try:
-        QueryParser(QueryLexer(string)).StartStarQuery([])
-    except error:
-        if not set("#=").intersection(string):
-            return STRING
-    else:
-        return VALUE
-    return NORMAL
-
-
-STAR = ["artist", "album", "title"]
-
-
-def Query(string, star=STAR, dumb_match_diacritics=True):
-    """Parses the query string and returns a match object.
-
-    star -- List of tags to look in if none are specified in the query.
-            You can add some by extending Query.START and pass it here.
-
-    This parses the above query language as well as some tagless shortcuts:
-        "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
-        "!foo" -> !star1,star2=foo
-        "&(foo, bar)" -> &(star1,star2=foo, star1,star2=bar)
-        "&(foo, !bar)" -> &(star1,star2=foo, !star1,star2=bar)
-        "|(foo, bar)" -> |(star1,star2=foo, star1,star2=bar)
-        "!&(foo, bar)" -> !&(star1,star2=foo, star1,star2=bar)
-        "!(foo, bar)" -> !star1,star2=(foo, bar)
-        etc...
-
-    """
-
-    if not isinstance(string, unicode):
-        string = string.decode('utf-8')
-
-    # fast path
-    if Query.match_all(string):
-        return match.Inter([])
-
-    query_type = _get_query_type(string)
-
-    # normal string, put it in a intersection to get a value list
-    if query_type == STRING:
-        parts = ["/%s/d" % re_escape(s) for s in string.split()]
-        if dumb_match_diacritics:
-            parts = [p + "d" for p in parts]
-        string = "&(" + ",".join(parts) + ")"
-        query_type = VALUE
-
-    # try to parse with a taglist
-    if query_type == VALUE:
-        try:
-            return QueryParser(QueryLexer(string)).StartStarQuery(star)
-        except error:
-            pass
-
-    return QueryParser(QueryLexer(string)).StartQuery()
-
-
-# default tags to search in, use/extend and pass to Query()
-Query.STAR = STAR
-# query base exception
-Query.error = error
-
-
-def is_valid(string):
-    """Whether a full query can be parsed"""
-
-    if not isinstance(string, unicode):
-        string = string.decode('utf-8')
-
-    if Query.match_all(string):
-        return True
-
-    try:
-        QueryParser(QueryLexer(string)).StartQuery()
-    except error:
-        return False
-    return True
-Query.is_valid = is_valid
-
-
-def match_all(string):
-    """Whether the resulting query will not filter anything"""
-
-    return string.strip() == ""
-Query.match_all = match_all
-
-
-def is_parsable(string):
-    """Whether the text can be parsed"""
-
-    try:
-        Query(string)
-    except error:
-        return False
-    return True
-Query.is_parsable = is_parsable
-
-
-def is_valid_color(string):
-    """Returns True/False for a query, None for a text only query"""
-
-    if is_parsable(string):
-        if _get_query_type(string) == STRING:
-            return None
-        else:
-            return True
-    return False
-Query.is_valid_color = is_valid_color

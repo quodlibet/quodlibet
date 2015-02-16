@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2011, 2012 Christoph Reiter
 #
@@ -11,6 +12,7 @@ from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
 from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.query import Query, QueryType
 
 
 class EditableUndo(object):
@@ -230,11 +232,7 @@ class ValidatingEntryMixin(object):
     """An entry with visual feedback as to whether it is valid or not.
     The given validator function gets a string and returns True (green),
     False (red), or None (black).
-
-    parse.Query.is_valid_color mimicks the behavior of the search bar.
-
-    If the "Color search terms" option is off, the entry will not
-    change color."""
+    """
 
     INVALID = Gdk.RGBA(0.8, 0, 0)
     VALID = Gdk.RGBA(0.3, 0.6, 0.023)
@@ -259,6 +257,20 @@ class ValidatingEntryMixin(object):
             self.override_color(Gtk.StateType.NORMAL, color)
         else:
             self.override_color(Gtk.StateType.NORMAL, None)
+
+
+def QueryValidator(string):
+    """Returns True/False for a query, None for a text only query"""
+
+    type_ = Query.get_type(string)
+    if type_ == QueryType.VALID:
+        # in case of an empty but valid query we say it's "text"
+        if Query.match_all(string):
+            return None
+        return True
+    elif type_ == QueryType.INVALID:
+        return False
+    return None
 
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):

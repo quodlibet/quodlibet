@@ -12,7 +12,7 @@ from __future__ import absolute_import
 
 import os
 
-from gi.repository import Gtk, Pango, Gdk, GLib
+from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 
 from .prefs import Preferences, PATTERN
 from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
@@ -23,23 +23,24 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.browsers._base import Browser
-from quodlibet.parse import Query, XMLFromMarkupPattern
+from quodlibet.query import Query
+from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
-from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.util import copool, connect_destroy
 from quodlibet.util.library import background_filter
-from quodlibet.util import thumbnails, connect_obj
+from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
-    set_renderer_from_pbosf)
+    set_renderer_from_pbosf, add_border_widget)
 
 
 PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
@@ -154,7 +155,8 @@ class PreferencesButton(Gtk.HBox):
 
         menu = Gtk.Menu()
 
-        sort_item = Gtk.MenuItem(label=_("Sort _by..."), use_underline=True)
+        sort_item = Gtk.MenuItem(
+            label=_(u"Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint('browsers', 'album_sort', 1)
@@ -226,14 +228,15 @@ class VisibleUpdate(object):
             sw.get_vadjustment(), "value-changed", self.__stop_update, view)
 
         self.__pending_paths = []
-        self.__scan_timeout = None
+        self.__update_deferred = DeferredSignal(
+            self.__update_visible_rows, timeout=50, priority=GLib.PRIORITY_LOW)
         self.__column = column
         self.__first_expose = True
 
     def disable_row_update(self):
-        if self.__scan_timeout:
-            GLib.source_remove(self.__scan_timeout)
-            self.__scan_timeout = None
+        if self.__update_deferred:
+            self.__update_deferred.abort
+            self.__update_deferred = None
 
         if self.__pending_paths:
             copool.remove(self.__scan_paths)
@@ -241,12 +244,14 @@ class VisibleUpdate(object):
         self.__column = None
         self.__pending_paths = []
 
-    def _row_needs_update(self, row):
+    def _row_needs_update(self, model, iter_):
         """Should return True if the rows should be updated"""
+
         raise NotImplementedError
 
-    def _update_row(self, row):
-        """Do whatever is needed to update the row"""
+    def _update_row(self, model, iter_):
+        """Do whatever is needed to update the row."""
+
         raise NotImplementedError
 
     def __stop_update(self, adj, view):
@@ -266,34 +271,24 @@ class VisibleUpdate(object):
             for i in self.__scan_paths():
                 pass
 
-        if self.__scan_timeout:
-            GLib.source_remove(self.__scan_timeout)
-            self.__scan_timeout = None
-
-        self.__scan_timeout = GLib.timeout_add(
-            50, self.__update_visible_rows, view, self.PRELOAD_COUNT)
+        self.__update_deferred(view, self.PRELOAD_COUNT)
 
     def __scan_paths(self):
         while self.__pending_paths:
             model, path = self.__pending_paths.pop()
             try:
-                row = model[path]
-            # row could have gone away by now
-            except IndexError:
-                pass
-            else:
-                self._update_row(row)
-                yield True
+                iter_ = model.get_iter(path)
+            except ValueError:
+                continue
+            self._update_row(model, iter_)
+            yield True
 
     def __update_visible_rows(self, view, preload):
-        self.__scan_timeout = None
-
         vrange = view.get_visible_range()
         if vrange is None:
             return
 
-        model_filter = view.get_model()
-        model = model_filter.get_model()
+        model = view.get_model()
 
         #generate a path list so that cover scanning starts in the middle
         #of the visible area and alternately moves up and down
@@ -323,14 +318,12 @@ class VisibleUpdate(object):
 
         visible_paths = []
         for path in vlist_new:
-            model_path = model_filter.convert_path_to_child_path(path)
             try:
-                row = model[model_path]
-            except TypeError:
-                pass
-            else:
-                if self._row_needs_update(row):
-                    visible_paths.append([model, model_path])
+                iter_ = model.get_iter(path)
+            except ValueError:
+                continue
+            if self._row_needs_update(model, iter_):
+                visible_paths.append((model, path))
 
         if not self.__pending_paths and visible_paths:
             copool.add(self.__scan_paths)
@@ -418,6 +411,8 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
         if self.__model is None:
             self._init_model(library)
 
+        self._cover_cancel = Gio.Cancellable.new()
+
         sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
@@ -445,7 +440,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             elif album.cover:
                 pixbuf = album.cover
                 round_ = config.getboolean("albumart", "round")
-                pixbuf = thumbnails.add_border_widget(
+                pixbuf = add_border_widget(
                     pixbuf, self.view, cell, round_)
                 pixbuf = get_pbosf_for_pixbuf(self, pixbuf)
                 # don't cache, too much state has an effect on the result
@@ -545,17 +540,30 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             return True
         return False
 
-    def _row_needs_update(self, row):
-        album = row[0]
+    def _row_needs_update(self, model, iter_):
+        album = model.get_album(iter_)
         return album is not None and not album.scanned
 
-    def _update_row(self, row):
-        album = row[0]
+    def _update_row(self, filter_model, iter_):
+        sort_model = filter_model.get_model()
+        model = sort_model.get_model()
+        iter_ = filter_model.convert_iter_to_child_iter(iter_)
+        iter_ = sort_model.convert_iter_to_child_iter(iter_)
+        tref = Gtk.TreeRowReference.new(model, model.get_path(iter_))
+
+        def callback():
+            path = tref.get_path()
+            if path is not None:
+                model.row_changed(path, model.get_iter(path))
+
+        album = model.get_album(iter_)
         scale_factor = get_scale_factor(self)
-        album.scan_cover(scale_factor=scale_factor)
-        self._refresh_albums([album])
+        album.scan_cover(scale_factor=scale_factor,
+                         callback=callback,
+                         cancel=self._cover_cancel)
 
     def __destroy(self, browser):
+        self._cover_cancel.cancel()
         self.disable_row_update()
 
         self.view.set_model(None)
@@ -621,17 +629,17 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
     def __popup(self, view, library):
         albums = self.__get_selected_albums()
         songs = self.__get_songs_from_albums(albums)
-        menu = SongsMenu(library, songs, parent=self)
 
+        items = []
         if self.__cover_column.get_visible():
             num = len(albums)
             button = MenuItem(
                 ngettext("Reload album _cover", "Reload album _covers", num),
                 Gtk.STOCK_REFRESH)
             button.connect('activate', self.__refresh_album, view)
-            menu.prepend(SeparatorMenuItem())
-            menu.prepend(button)
+            items.append(button)
 
+        menu = SongsMenu(library, songs, parent=self, items=[items])
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
@@ -670,7 +678,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
             sel.set_uris([song("~uri") for song in songs])
 
     def __play_selection(self, view, indices, col):
-        self.emit("activated")
+        self.songs_activated()
 
     def active_filter(self, song):
         for album in self.__get_selected_albums():
@@ -782,4 +790,4 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
     def __update_songs(self, selection):
         songs = self.__get_selected_songs(sort=False)
-        self.emit('songs-selected', songs, None)
+        self.songs_selected(songs)

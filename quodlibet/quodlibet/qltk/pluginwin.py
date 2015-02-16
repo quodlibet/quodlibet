@@ -16,8 +16,9 @@ from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow
 from quodlibet.qltk.entry import ClearEntry
-from quodlibet.qltk.x import Alignment, Paned
+from quodlibet.qltk.x import Alignment, Paned, Button
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
+from quodlibet.qltk import icons
 from quodlibet.util import connect_obj
 
 
@@ -62,7 +63,7 @@ class PluginErrorWindow(UniqueWindow):
 
         if not self.has_close_button():
             vbox2 = Gtk.VBox(spacing=12)
-            close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+            close = Button(_("_Close"), icons.WINDOW_CLOSE)
             close.connect('clicked', lambda *x: self.destroy())
             b = Gtk.HButtonBox()
             b.set_layout(Gtk.ButtonBoxStyle.END)

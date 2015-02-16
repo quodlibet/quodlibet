@@ -124,6 +124,27 @@ class TConfig(TestCase):
         conf.set("foo", "bar", "\xff\xff\xff\xff\xff\xff")
         self.assertRaises(Error, conf.getstringlist, "foo", "bar")
 
+    def test_getlist(self):
+        conf = Config()
+        conf.add_section("foo")
+        self.assertEqual(conf.getlist("foo", "bar", ["arg"]), ["arg"])
+        conf.set("foo", "bar", "abc,fo:o\\,bar")
+        self.assertEqual(conf.getlist("foo", "bar"), ["abc", "fo:o,bar"])
+        self.assertEqual(conf.getlist("foo", "bar", sep=":"),
+                         ["abc,fo", "o\\,bar"])
+
+        conf.set("foo", "bar", "")
+        self.assertEqual(conf.getlist("foo", "bar"), [""])
+
+    def test_setlist(self):
+        conf = Config()
+        conf.add_section("foo")
+        conf.setlist("foo", "bar", [" a", ",", "c"])
+        self.assertEqual(conf.getlist("foo", "bar"), [" a", ",", "c"])
+        self.assertEqual(conf.get("foo", "bar"), " a,\\,,c")
+        conf.setlist("foo", "bar", [" a", ",", "c"], sep=":")
+        self.assertEqual(conf.get("foo", "bar"), " a:,:c")
+
     def test_versioning_disabled(self):
         # we don't pass a version, so versioning is disabled
         conf = Config()

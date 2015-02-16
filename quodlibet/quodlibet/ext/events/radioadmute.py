@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2011-2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -13,10 +14,9 @@ from quodlibet.plugins.events import EventPlugin
 
 class RadioAdMute(EventPlugin):
     PLUGIN_ID = "radio_ad_mute"
-    PLUGIN_NAME = _("Mute radio ads")
-    PLUGIN_VERSION = "0.1"
-    PLUGIN_DESC = _("Mute while radio advertisements are playing.\n"
-                    "Stations: di.fm")
+    PLUGIN_NAME = _("Mute Radio Ads")
+    PLUGIN_DESC = _("Mutes output while radio advertisements are playing.\n"
+                    "Stations: di.fm.")
 
     SPAM = ["www.webex.co.uk",
             "di.fm/premium",

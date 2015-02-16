@@ -669,9 +669,11 @@ class EditTags(Gtk.VBox):
         iters = [i for (i, v) in model.iterrows() if v.tag == tag]
         if iters and not self.__songinfo.can_multiple_values(tag):
             title = _("Unable to add tag")
-            msg = _("Unable to add <b>%s</b>\n\nThe files currently"
+            msg = _("Unable to add <b>%s</b>") % util.escape(tag)
+            msg += "\n\n"
+            msg += _("The files currently"
                     " selected do not support multiple values for <b>%s</b>."
-                    ) % (util.escape(tag), util.escape(tag))
+                    ) % util.escape(tag)
             qltk.ErrorMessage(self, title, msg).run()
             return
 
@@ -820,6 +822,7 @@ class EditTags(Gtk.VBox):
 
     def __edit_tag(self, renderer, path, new_value, model):
         new_value = ', '.join(new_value.splitlines())
+        path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
 
         if entry.tag in massagers.tags:
@@ -842,6 +845,7 @@ class EditTags(Gtk.VBox):
 
     def __edit_tag_name(self, renderer, path, new_tag, model):
         new_tag = ' '.join(new_tag.splitlines()).lower()
+        path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
         if new_tag == entry.tag:
             return

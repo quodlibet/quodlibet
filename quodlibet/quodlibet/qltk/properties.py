@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #                2012 Nick Boultbee
+#                2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,8 +19,19 @@ from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.qltk.x import ScrolledWindow, ConfigRPaned
+from quodlibet.qltk.models import ObjectStore, ObjectModelSort
 from quodlibet.util.path import fsdecode
-from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util import connect_destroy
+
+
+class _ListEntry(object):
+
+    def __init__(self, song):
+        self.song = song
+
+    @property
+    def name(self):
+        return fsdecode(self.song("~basename"))
 
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
@@ -56,8 +68,8 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             page.show()
             notebook.append_page(page)
 
-        fbasemodel = Gtk.ListStore(object, str)
-        fmodel = Gtk.TreeModelSort(model=fbasemodel)
+        fbasemodel = ObjectStore()
+        fmodel = ObjectModelSort(model=fbasemodel)
         fview = HintedTreeView(model=fmodel)
         fview.connect('button-press-event', self.__pre_selection_changed)
         fview.set_rules_hint(True)
@@ -65,38 +77,51 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__save = None
 
-        if len(songs) > 1:
-            render = Gtk.CellRendererText()
-            c1 = Gtk.TreeViewColumn(_('File'), render, text=1)
+        render = Gtk.CellRendererText()
+        c1 = Gtk.TreeViewColumn(_('File'), render)
+        if fview.supports_hints():
             render.set_property('ellipsize', Pango.EllipsizeMode.END)
-            render.set_property('xpad', 3)
-            c1.set_sort_column_id(1)
-            fview.append_column(c1)
-            sw = ScrolledWindow()
-            sw.add(fview)
-            sw.set_shadow_type(Gtk.ShadowType.IN)
-            sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-            sw.show_all()
-            paned.pack1(sw, shrink=False, resize=True)
+        render.set_property('xpad', 3)
 
-        # Invisible selections behave a little strangely. So, when
-        # handling this selection, there's a lot of if len(model) == 1
-        # checks that "hardcode" the first row being selected.
+        def cell_data(column, cell, model, iter_, data):
+            entry = model.get_value(iter_)
+            cell.set_property('text', entry.name)
+
+        c1.set_cell_data_func(render, cell_data)
+
+        def sort_func(model, a, b, data):
+            a = model.get_value(a)
+            b = model.get_value(b)
+            return cmp(a.name, b.name)
+
+        fmodel.set_sort_func(100, sort_func)
+        c1.set_sort_column_id(100)
+        fview.append_column(c1)
+
+        sw = ScrolledWindow()
+        sw.add(fview)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+
+        # only show the list if there are is more than one song
+        if len(songs) > 1:
+            sw.show_all()
+
+        paned.pack1(sw, shrink=False, resize=True)
 
         for song in songs:
-            fbasemodel.append(row=[song, fsdecode(song("~basename"))])
+            fbasemodel.append(row=[_ListEntry(song)])
 
-        connect_obj(self, 'changed', SongProperties.__set_title, self)
+        self.connect("changed", self.__on_changed)
 
         selection.select_all()
         paned.pack2(notebook, shrink=False, resize=True)
 
         csig = selection.connect('changed', self.__selection_changed)
         connect_destroy(library,
-            'changed', self.__refresh, fbasemodel, fview)
+            'changed', self.__on_library_changed, fbasemodel, fview)
         connect_destroy(library,
-            'removed', self.__remove, fbasemodel, selection, csig)
-        connect_obj(self, 'changed', self.set_pending, None)
+            'removed', self.__on_library_removed, fbasemodel, selection, csig)
 
         self.emit('changed', songs)
         self.add(paned)
@@ -104,31 +129,24 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         notebook.show()
         paned.show()
 
-    def __remove(self, library, songs, model, selection, sig):
-        # If the handler is unblocked, then the selection gets updated
-        # with some half-gone rows and we get a null-type error. So,
-        # block the changed handler. Instead, track changes manually.
-        # We can't just unconditionally emit a changed signal on the
-        # selection or we risk voiding edits on a selection that
-        # doesn't include the removed songs.
+    def __on_library_removed(self, library, songs, model, selection, sig):
         selection.handler_block(sig)
-        if len(model) == 1:
-            rows = [Gtk.TreePath((0,))]
-        else:
-            rows = selection.get_selected_rows()[1]
+
+        rows = selection.get_selected_rows()[1]
         to_remove = []
         changed = False
         for row in model:
-            if row[0] in songs:
+            if row[0].song in songs:
                 to_remove.append(row.iter)
                 changed = changed or (row.path in rows)
         for iter_ in to_remove:
             model.remove(iter_)
+
         selection.handler_unblock(sig)
         if changed:
             selection.emit('changed')
 
-    def __set_title(self, songs):
+    def __on_changed(self, widget, songs):
         if songs:
             if len(songs) == 1:
                 title = songs[0].comma("title")
@@ -142,19 +160,21 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         else:
             self.set_title(_("Properties"))
 
-    def __refresh(self, library, songs, model, view):
-        view.freeze_notify()
-        if len(model) == 1:
-            rows = [Gtk.TreePath((0,))]
-        else:
-            rows = view.get_selection().get_selected_rows()[1]
+        self.set_pending(None)
+
+    def __on_library_changed(self, library, songs, model, view):
+        # in case the library changes, sync the model and emit
+        # selection changed if one of the selected was changed
+
+        paths = view.get_selection().get_selected_rows()[1]
+
         changed = False
         for row in model:
-            song = row[0]
+            song = row[0].song
             if song in songs:
-                row[1] = song("~basename")
-                changed = changed or (row.path in rows)
-        view.thaw_notify()
+                model.row_changed(row.path, row.iter)
+                changed = changed or (row.path in paths)
+
         if changed:
             view.get_selection().emit('changed')
 
@@ -176,9 +196,6 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()
-        if len(model) == 1:
-            self.emit('changed', [model[(0,)][0]])
-        else:
-            model, rows = selection.get_selected_rows()
-            songs = [model[row][0] for row in rows]
-            self.emit('changed', songs)
+        model, paths = selection.get_selected_rows()
+        songs = [model[path][0].song for path in paths]
+        self.emit('changed', songs)

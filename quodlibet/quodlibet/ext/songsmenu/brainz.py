@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # brainz.py - Quod Libet plugin to tag files from MusicBrainz automatically
 # Copyright 2005-2010   Joshua Kwan <joshk@triplehelix.org>,
 #                       Michael Ball <michael.ball@gmail.com>,
@@ -351,7 +352,7 @@ class SearchWindow(Gtk.Dialog):
             self.result_label.set_markup(_("<b>Please enter a query.</b>"))
             self.search_button.set_sensitive(True)
             return
-        self.result_label.set_markup(_("<i>Searching...</i>"))
+        self.result_label.set_markup(_(u"<i>Searching…</i>"))
         filt = ws.ReleaseFilter(query=query)
         self._qthread.add(self.__process_results,
                          self._query.getReleases, filt)
@@ -367,7 +368,7 @@ class SearchWindow(Gtk.Dialog):
         for release in map(lambda r: r.release, results):
             self._resultlist.append((release, ))
         if len(results) > 0 and self.result_combo.get_active() == -1:
-            self.result_label.set_markup(_("<i>Loading result...</i>"))
+            self.result_label.set_markup(_(u"<i>Loading result…</i>"))
             self.result_combo.set_active(0)
         else:
             self.result_label.set_markup(_("No results found."))
@@ -381,7 +382,7 @@ class SearchWindow(Gtk.Dialog):
         if rel_id in self._releasecache:
             self.__update_results(self._releasecache[rel_id])
         else:
-            self.result_label.set_markup(_("<i>Loading result...</i>"))
+            self.result_label.set_markup(_(u"<i>Loading result…</i>"))
             inc = ws.ReleaseIncludes(
                     artist=True, releaseEvents=True, tracks=True)
             self._qthread.add(self.__update_result,
@@ -482,8 +483,7 @@ class MyBrainz(SongsMenuPlugin):
     PLUGIN_ID = "MusicBrainz lookup"
     PLUGIN_NAME = _("MusicBrainz Lookup")
     PLUGIN_ICON = Gtk.STOCK_CDROM
-    PLUGIN_DESC = _('Retag an album based on a MusicBrainz search.')
-    PLUGIN_VERSION = '0.5'
+    PLUGIN_DESC = _('Re-tags an album based on a MusicBrainz search.')
 
     cache = {}
 

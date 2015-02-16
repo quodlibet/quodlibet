@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
@@ -245,7 +246,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         self.browser = browser = Kind(library)
-        if browser.reordered:
+        if browser.can_reorder:
             view.enable_drop()
         elif browser.dropped:
             view.enable_drop(False)
@@ -306,8 +307,9 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             player.next()
 
     def __drag_data_recv(self, view, *args):
-        if callable(self.browser.reordered):
-            self.browser.reordered(view)
+        if self.browser.can_reorder:
+            songs = view.get_songs()
+            self.browser.reordered(songs)
         view.clear_sort()
 
     def __cols_changed(self, view, browser):

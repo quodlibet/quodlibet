@@ -26,14 +26,6 @@ class Filter(object):
         def active_filter(self, song): ...
     """
 
-    def dynamic(self, song):
-        """Deprecated: use active_filter instead"""
-        if callable(self.active_filter):
-            ret = self.active_filter(song)
-            if ret is not None:
-                return ret
-        return True
-
     def can_filter_tag(self, key):
         """If key can be passed to filter()"""
         return False
@@ -135,12 +127,10 @@ class Browser(Filter):
     them back via a callback function.
     """
 
-    # Unfortunately, GObjects do not play with Python multiple inheritance.
-    # So, we need to reasssign this in every subclass.
     __gsignals__ = {
         'songs-selected':
         (GObject.SignalFlags.RUN_LAST, None, (object, object)),
-        'activated': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'songs-activated': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     name = _("Library Browser")
@@ -154,6 +144,23 @@ class Browser(Filter):
 
     in_menu = True
     """Whether the browser should appear in the Music->Browse menu."""
+
+    def songs_selected(self, songs, is_sorted=False):
+        """Emits the songs-selected signal.
+
+        If is_sorted is True the songs will be put as is in the song list.
+        In case it's False the songs will be sorted by the song list depending
+        on its current sort configuration.
+        """
+
+        self.emit("songs-selected", songs, is_sorted)
+
+    def songs_activated(self):
+        """Call after calling songs_selected() to activate the songs
+        (start playing, enqueue etc..)
+        """
+
+        self.emit("songs-activated")
 
     def pack(self, songpane):
         """For custom packing, define a function that returns a Widget with the
@@ -174,9 +181,6 @@ class Browser(Filter):
 
     headers = None
     """A list of column headers to display; None means all are okay."""
-
-    commands = {}
-    """Per-browser remote commands."""
 
     @classmethod
     def init(klass, library):
@@ -211,20 +215,26 @@ class Browser(Filter):
         """Do whatever is needed to emit songs-selected again."""
         raise NotImplementedError
 
-    reordered = None
-    """Called when the song list is reordered. If it's not callable
-    but true, no call is made but the song list is still reorderable.
-        def reordered(self, songlist): ...
+    can_reorder = False
+    """If the song list should be reorderable. In case this is True
+    every time the song list gets reorderd the whole list of songs is
+    passed to reordered().
     """
 
-    dropped = None
-    """Called with the SongList and a list of songs when songs are dropped
-    but the song list does not support reordering. Adding the songs to
-    the list is the browser's responsibility. This function should
-    return True if the drop was successful.
+    def reordered(self, songs):
+        """In case can_reorder is True and the song list gets reorderd
+        this gets called with the whole list of songs.
+        """
 
-        def dropped(self, songlist, songs): ... return True
-    """
+        raise NotImplementedError
+
+    def dropped(self, songs):
+        """Called with a list of songs when songs are dropped but the song
+        list does not support reordering. This function should return True if
+        the drop was successful.
+        """
+
+        return False
 
     def key_pressed(self, event):
         """Gets called with a key pressed event from the song list.
@@ -237,12 +247,12 @@ class Browser(Filter):
     the browser is.
     """
 
-    def Menu(self, songs, songlist, library):
+    def Menu(self, songs, library, items):
         """This method returns a Gtk.Menu, probably a SongsMenu. After this
         menu is returned the SongList may modify it further.
         """
-        menu = SongsMenu(library, songs, delete=True, parent=songlist)
-        return menu
+
+        return SongsMenu(library, songs, delete=True, parent=self, items=items)
 
     def statusbar(self, i):
         return ngettext(

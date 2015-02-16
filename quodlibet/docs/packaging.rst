@@ -35,9 +35,10 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **Python** (2.7)
 * **PyGObject** including **cairo support** (>= 3.2)
 * **pycairo**
-* **mutagen** (>= 1.14)
+* **mutagen** (>= 1.14; 1.27 recommended)
 * **GTK+** (>= 3.2)
 * On Windows only: **pywin32**
+* On OS X only: **PyObjC**
 
 For playback support in Quod Libet one of the following two is needed:
 
@@ -134,14 +135,15 @@ plugin from loading.
 **pynotify**:
     * For the auto library update plugin
 
+**webkitgtk** (== 3.0) + **typelibs**:
+    * For the Lyrics Window plugin
+
 
 Build Dependencies
 ------------------
 
 * **Python** 2.7 (stdlib only)
 * **gettext** and **intltool** for translations.
-* The **gtk-update-icon-cache** executable for creating the
-  fallback icon theme cache.
 
 For user documentation ``setup.py build_sphinx`` can be used to create the
 HTML user guide and put it in the build directory in the ``sphinx``
@@ -174,4 +176,11 @@ Changes
 3.2 → 3.3
 ^^^^^^^^^
 
-* **No changes** compared to 3.2
+* New optional plugin dependency: **webkitgtk-3.0 + typelibs**
+* **Mutagen 1.27** recommended
+
+
+3.3 → 3.4
+^^^^^^^^^
+
+* **gtk-update-icon-cache** is no longer a build dependency

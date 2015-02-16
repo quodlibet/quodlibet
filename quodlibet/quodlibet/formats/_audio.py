@@ -742,14 +742,6 @@ class AudioFile(dict, ImageContainer):
                 if key in self:
                     del(self[key])
 
-    def find_cover(self):
-        """Return a file-like containing cover image data, or None if
-        no cover is available."""
-
-        from quodlibet.util.cover.manager import cover_plugins
-
-        return cover_plugins.get_cover(self)
-
     def replay_gain(self, profiles, pre_amp_gain=0, fallback_gain=0):
         """Return the computed Replay Gain scale factor.
 
@@ -783,7 +775,17 @@ class AudioFile(dict, ImageContainer):
         """Write metadata back to the file."""
         raise NotImplementedError
 
-    def __get_bookmarks(self):
+    @property
+    def bookmarks(self):
+        """Parse and return song position bookmarks, or set them.
+        Accessing this returns a copy, so song.bookmarks.append(...)
+        will not work; you need to do
+
+            marks = song.bookmarks
+            marks.append(...)
+            song.bookmarks = marks
+        """
+
         marks = []
         invalid = []
         for line in self.list("~bookmark"):
@@ -805,7 +807,8 @@ class AudioFile(dict, ImageContainer):
         marks.extend(invalid)
         return marks
 
-    def __set_bookmarks(self, marks):
+    @bookmarks.setter
+    def bookmarks(self, marks):
         result = []
         for time_, mark in marks:
             if time_ < 0:
@@ -816,15 +819,6 @@ class AudioFile(dict, ImageContainer):
             self["~bookmark"] = result
         elif "~bookmark" in self:
             del(self["~bookmark"])
-
-    bookmarks = property(
-        __get_bookmarks, __set_bookmarks,
-        doc="""Parse and return song position bookmarks, or set them.
-        Accessing this returns a copy, so song.bookmarks.append(...)
-        will not work; you need to do
-           marks = song.bookmarks
-           marks.append(...)
-           song.bookmarks = marks""")
 
 
 # Looks like the real thing.

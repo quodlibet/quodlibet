@@ -1,16 +1,12 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from mutagen.musepack import Musepack
 from quodlibet.formats._apev2 import APEv2File
-
-extensions = [".mpc", ".mp+"]
-try:
-    from mutagen.musepack import Musepack
-except (ImportError, OSError):
-    extensions = []
 
 
 class MPCFile(APEv2File):
@@ -43,3 +39,4 @@ class MPCFile(APEv2File):
 
 info = MPCFile
 types = [MPCFile]
+extensions = [".mpc", ".mp+"]

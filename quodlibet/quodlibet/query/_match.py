@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2011 Christoph Reiter
 #
@@ -25,8 +26,50 @@ SIZE_KEYS = ["filesize"]
 FS_KEYS = ["~filename", "~basename", "~dirname"]
 
 
-# True if the object matches any of its REs.
-class Union(object):
+class Node(object):
+
+    def search(self, data):
+        raise NotImplementedError
+
+    def filter(self, sequence):
+        return filter(self.search, sequence)
+
+    def _unpack(self):
+        return self
+
+    def __or__(self, other):
+        return NotImplemented
+
+    def __and__(self, other):
+        return NotImplemented
+
+    def __neg__(self):
+        return Neg(self._unpack())
+
+
+class True_(Node):
+    """Always True"""
+
+    def search(self, data):
+        return True
+
+    def filter(self, list_):
+        return list(list_)
+
+    def __repr__(self):
+        return "<True>"
+
+    def __or__(self, other):
+        return self
+
+    def __and__(self, other):
+        other = other._unpack()
+        return other
+
+
+class Union(Node):
+    """True if the object matches any of its REs."""
+
     def __init__(self, res):
         self.res = res
 
@@ -40,23 +83,27 @@ class Union(object):
         return "<Union %r>" % self.res
 
     def __or__(self, other):
+        other = other._unpack()
+
         if isinstance(other, Union):
             return Union(self.res + other.res)
-        else:
-            return Union(self.res + [other])
-    __ror__ = __or__
+        elif isinstance(other, True_):
+            return other.__or__(self)
+
+        return Union(self.res + [other])
 
     def __and__(self, other):
-        if not isinstance(other, Inter):
-            return Inter([self, other])
-        return NotImplemented
+        other = other._unpack()
 
-    def __neg__(self):
-        return Neg(self)
+        if isinstance(other, (Inter, True_)):
+            return other.__and__(self)
+
+        return Inter([self, other])
 
 
-# True if the object matches all of its REs.
-class Inter(object):
+class Inter(Node):
+    """True if the object matches all of its REs."""
+
     def __init__(self, res):
         self.res = res
 
@@ -70,23 +117,26 @@ class Inter(object):
         return "<Inter %r>" % self.res
 
     def __and__(self, other):
+        other = other._unpack()
+
         if isinstance(other, Inter):
             return Inter(self.res + other.res)
-        else:
-            return Inter(self.res + [other])
-    __rand__ = __and__
+
+        if isinstance(other, True_):
+            return other.__and__(self)
+
+        return Inter(self.res + [other])
 
     def __or__(self, other):
-        if not isinstance(other, Union):
-            return Union([self, other])
-        return NotImplemented
-
-    def __neg__(self):
-        return Neg(self)
+        other = other._unpack()
+        if isinstance(other, (Union, True_)):
+            return other.__or__(self)
+        return Union([self, other])
 
 
-# True if the object doesn't match its RE.
-class Neg(object):
+class Neg(Node):
+    """True if the object doesn't match its RE."""
+
     def __init__(self, res):
         self.res = res
 
@@ -97,21 +147,24 @@ class Neg(object):
         return "<Neg %r>" % self.res
 
     def __and__(self, other):
-        if not isinstance(other, Inter):
-            return Inter([self, other])
-        return NotImplemented
+        other = other._unpack()
+        if isinstance(other, True_):
+            return other.__and__(self)
+        return Inter([self, other])
 
     def __or__(self, other):
-        if not isinstance(other, Union):
-            return Union([self, other])
-        return NotImplemented
+        other = other._unpack()
+        if isinstance(other, True_):
+            return other.__or__(self)
+        return Union([self, other])
 
     def __neg__(self):
         return self.res
 
 
-# Numeric comparisons
-class Numcmp(object):
+class Numcmp(Node):
+    """Numeric comparisons"""
+
     def __init__(self, tag, op, value):
         if isinstance(tag, unicode):
             self.__tag = tag.encode("utf-8")
@@ -132,21 +185,20 @@ class Numcmp(object):
             self.__tag, self.__op.__name__, self.__value)
 
     def __and__(self, other):
-        if not isinstance(other, Inter):
-            return Inter([self, other])
-        return NotImplemented
+        other = other._unpack()
+        if isinstance(other, True_):
+            return other.__and__(self)
+        return Inter([self, other])
 
     def __or__(self, other):
-        if not isinstance(other, Union):
-            return Union([self, other])
-        return NotImplemented
-
-    def __neg__(self):
-        return Neg(self)
+        other = other._unpack()
+        if isinstance(other, True_):
+            return other.__or__(self)
+        return Union([self, other])
 
 
-# See if a property of the object matches its RE.
-class Tag(object):
+class Tag(Node):
+    """See if a property of the object matches its RE."""
 
     # Shorthand for common tags.
     ABBRS = {"a": "artist",
@@ -203,17 +255,16 @@ class Tag(object):
         return ("<Tag names=%r, res=%r>" % (names, self.res))
 
     def __and__(self, other):
-        if not isinstance(other, Inter):
-            return Inter([self, other])
-        return NotImplemented
+        other = other._unpack()
+        if isinstance(other, True_):
+            return other.__and__(self)
+        return Inter([self, other])
 
     def __or__(self, other):
-        if not isinstance(other, Union):
-            return Union([self, other])
-        return NotImplemented
-
-    def __neg__(self):
-        return Neg(self)
+        other = other._unpack()
+        if isinstance(other, True_):
+            return other.__or__(self)
+        return Union([self, other])
 
 
 def map_numeric_op(tag, op, value, time_=None):

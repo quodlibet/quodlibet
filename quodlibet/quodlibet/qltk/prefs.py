@@ -18,14 +18,15 @@ from quodlibet import util
 from quodlibet import app
 from quodlibet.config import RATINGS
 
-from quodlibet.parse import Query
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB
 from quodlibet.qltk.data_editors import MultiStringEditor
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.qltk.window import UniqueWindow
+from quodlibet.qltk.x import Button
+from quodlibet.qltk import icons
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal, get_scan_dirs, scan_library
@@ -96,7 +97,8 @@ class PreferencesWindow(UniqueWindow):
             self.others = others = UndoEntry()
             others.set_sensitive(False)
             # Stock edit doesn't have ellipsis chars.
-            edit_button = Gtk.Button(label=_("_Edit..."), use_underline=True)
+            edit_button = Gtk.Button(
+                label=_(u"_Edit…"), use_underline=True)
             edit_button.connect("clicked", self.__config_cols)
             edit_button.set_tooltip_text(_("Add or remove additional column "
                                            "headers"))
@@ -217,7 +219,7 @@ class PreferencesWindow(UniqueWindow):
             hb = Gtk.HBox(spacing=6)
             l = Gtk.Label(label=_("_Global filter:"))
             l.set_use_underline(True)
-            e = ValidatingEntry(Query.is_valid_color)
+            e = ValidatingEntry(QueryValidator)
             e.set_text(config.get("browsers", "background"))
             e.connect('changed', self._entry, 'background', 'browsers')
             e.set_tooltip_text(_("Apply this query in addition to all others"))
@@ -292,7 +294,7 @@ class PreferencesWindow(UniqueWindow):
             config.set('albumart', name, entry.get_text())
 
         def __toggle_round_corners(self, *args):
-            qltk.redraw_all_toplevels(self)
+            qltk.redraw_all_toplevels()
 
         def __toggled_force_filename(self, cb, fn_entry):
             fn_entry.set_sensitive(cb.get_active())
@@ -412,7 +414,7 @@ class PreferencesWindow(UniqueWindow):
                 if it is None:
                     return
                 RATINGS.default = model[it][0]
-                qltk.redraw_all_toplevels(self)
+                qltk.redraw_all_toplevels()
 
             def populate_default_rating_model(combo, num):
                 model = combo.get_model()
@@ -441,7 +443,7 @@ class PreferencesWindow(UniqueWindow):
             # Rating Scale
             model = Gtk.ListStore(int)
             scale_combo = Gtk.ComboBox(model=model)
-            scale_lab = Gtk.Label(label=_("Rating _Scale:"))
+            scale_lab = Gtk.Label(label=_("Rating _scale:"))
             scale_lab.set_use_underline(True)
             scale_lab.set_mnemonic_widget(scale_combo)
 
@@ -646,9 +648,19 @@ class PreferencesWindow(UniqueWindow):
         self.__notebook = notebook = qltk.Notebook()
         for Page in [self.SongList, self.Browsers, self.Player,
                      self.Library, self.Tagging]:
-            notebook.append_page(Page())
+            page = Page()
+            page.show()
+            notebook.append_page(page)
 
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        page_name = config.get("memory", "prefs_page", "")
+        self.set_page(page_name)
+
+        def on_switch_page(notebook, page, page_num):
+            config.set("memory", "prefs_page", page.name)
+
+        notebook.connect("switch-page", on_switch_page)
+
+        close = Button(_("_Close"), icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)

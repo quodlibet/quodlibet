@@ -19,9 +19,10 @@ needs to be loaded at original_size * scale_factor.
 To test HiDPI start QL with GDK_SCALE=2.
 """
 
-from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
+import math
 
-from quodlibet.util import thumbnails
+from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
+import cairo
 
 
 def get_scale_factor(widget):
@@ -83,6 +84,113 @@ def pbosf_render(style_context, cairo_context, pbosf, x, y):
         Gtk.render_icon_surface(style_context, cairo_context, pbosf, x, y)
 
 
+def add_border(pixbuf, color, round=False, width=1):
+    """Add a border to the pixbuf and round of the edges.
+    color is a Gdk.RGBA
+    The resulting pixbuf will be width * 2px higher and wider.
+
+    Can not fail.
+    """
+
+    w, h = pixbuf.get_width(), pixbuf.get_height()
+    w += width * 2
+    h += width * 2
+    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
+    ctx = cairo.Context(surface)
+
+    pi = math.pi
+    r = min(w, h) / 10.0 if round else 0
+    ctx.new_path()
+    ctx.arc(w - r, r, r, -pi / 2, 0)
+    ctx.arc(w - r, h - r, r, 0, pi / 2)
+    ctx.arc(r, h - r, r, pi / 2, pi)
+    ctx.arc(r, r, r, pi, pi * 3 / 2)
+    ctx.close_path()
+
+    Gdk.cairo_set_source_pixbuf(ctx, pixbuf, width, width)
+    ctx.clip_preserve()
+    ctx.paint()
+
+    ctx.set_source_rgba(color.red, color.green, color.blue, color.alpha)
+    ctx.set_line_width(width * 2)
+    ctx.stroke()
+
+    return Gdk.pixbuf_get_from_surface(surface, 0, 0, w, h)
+
+
+def add_border_widget(pixbuf, widget, cell=None, round=False):
+    """Like add_border() but uses the widget to get a border color and a
+    border width.
+    """
+
+    from quodlibet.qltk.image import get_scale_factor
+
+    context = widget.get_style_context()
+    if cell is not None:
+        state = cell.get_state(widget, 0)
+    else:
+        state = widget.get_state_flags()
+    color = context.get_color(state)
+    scale_factor = get_scale_factor(widget)
+
+    return add_border(pixbuf, color, round=round, width=scale_factor)
+
+
+def scale(pixbuf, boundary, scale_up=True, force_copy=False):
+    """Scale a pixbuf so it fits into the boundary.
+    (preserves image aspect ratio)
+
+    If `scale_up` is True, the resulting pixbuf can be larger than
+    the original one.
+
+    If `force_copy` is False the resulting pixbuf might be the passed one.
+
+    Can not fail.
+    """
+
+    size = pixbuf.get_width(), pixbuf.get_height()
+
+    scale_w, scale_h = calc_scale_size(boundary, size, scale_up)
+
+    if (scale_w, scale_h) == size:
+        if force_copy:
+            return pixbuf.copy()
+        return pixbuf
+
+    return pixbuf.scale_simple(scale_w, scale_h, GdkPixbuf.InterpType.BILINEAR)
+
+
+def calc_scale_size(boundary, size, scale_up=True):
+    """Returns the biggest possible size to fit into the boundary,
+    respecting the aspect ratio.
+
+    If `scale_up` is True the result can be larger than size.
+
+    All sizes have to be > 0.
+    """
+
+    bwidth, bheight = boundary
+    iwidth, iheight = size
+
+    if bwidth <= 0 or bheight <= 0 or iwidth <= 0 or iheight <= 0:
+        raise ValueError
+
+    scale_w, scale_h = iwidth, iheight
+
+    if iwidth > bwidth or iheight > bheight or scale_up:
+        bratio = float(bwidth) / bheight
+        iratio = float(iwidth) / iheight
+
+        if iratio > bratio:
+            scale_w = bwidth
+            scale_h = int(bwidth / iratio)
+        else:
+            scale_w = int(bheight * iratio)
+            scale_h = bheight
+
+    return scale_w, scale_h
+
+
 def pixbuf_from_file(fileobj, boundary, scale_factor=1):
     """Returns a pixbuf with the maximum size defined by boundary.
 
@@ -105,4 +213,4 @@ def pixbuf_from_file(fileobj, boundary, scale_factor=1):
     w *= scale_factor
     h *= scale_factor
 
-    return thumbnails.scale(pixbuf, (w, h), scale_up=False)
+    return scale(pixbuf, (w, h), scale_up=False)

@@ -24,7 +24,6 @@ class TrackRepeatOrder(PlayOrderPlugin,
     PLUGIN_ID = "track_repeat"
     PLUGIN_NAME = _("Track Repeat")
     PLUGIN_ICON = "gtk-refresh"
-    PLUGIN_VERSION = "0.2"
     PLUGIN_DESC = _("Shuffle songs, "
                     "but repeat every track a set number of times.")
     PLAY_EACH_DEFAULT = 2

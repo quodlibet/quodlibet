@@ -17,6 +17,7 @@ extract_deps;
 
 setup_deps;
 install_python;
+install_mercurial;
 
 cleanup;
 setup_sdk;

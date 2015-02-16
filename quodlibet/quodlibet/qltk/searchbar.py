@@ -12,8 +12,9 @@ from gi.repository import Gtk, GObject, GLib
 from quodlibet import config
 from quodlibet import const
 
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
+from quodlibet.qltk.entry import QueryValidator
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import limit_songs, DeferredSignal
@@ -38,7 +39,7 @@ class SearchBarBox(Gtk.HBox):
     timeout = 400
 
     def __init__(self, filename=None, completion=None, accel_group=None,
-                 validator=Query.is_valid_color):
+                 validator=QueryValidator):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
@@ -46,7 +47,7 @@ class SearchBarBox(Gtk.HBox):
 
         combo = ComboBoxEntrySave(filename, count=8,
                 validator=validator, title=_("Saved Searches"),
-                edit_title=_("Edit saved searches..."))
+                edit_title=_(u"Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
             self.__filter_changed, timeout=self.timeout, owner=self)

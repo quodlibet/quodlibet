@@ -129,7 +129,8 @@ class PatternEditor(Gtk.HBox):
     def __toggeled(self, render, path, model):
         model[path][1] = not model[path][1]
 
-    def __get_headers(self):
+    @property
+    def headers(self):
         for button in self.__headers.iterkeys():
             if button.get_active():
                 if button == self.__custom:
@@ -137,7 +138,8 @@ class PatternEditor(Gtk.HBox):
                     self.__headers[self.__custom] = model_headers
                 return self.__headers[button]
 
-    def __set_headers(self, new_headers):
+    @headers.setter
+    def headers(self, new_headers):
         for button, headers in self.__headers.iteritems():
             if headers == new_headers:
                 button.set_active(True)
@@ -146,8 +148,6 @@ class PatternEditor(Gtk.HBox):
         else:
             self.__headers[self.__custom] = new_headers
             self.__custom.set_active(True)
-
-    headers = property(__get_headers, __set_headers)
 
     def __selection_changed(self, selection, remove):
         remove.set_sensitive(bool(selection.get_selected()[1]))

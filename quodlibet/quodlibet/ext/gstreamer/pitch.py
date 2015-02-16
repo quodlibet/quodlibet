@@ -5,12 +5,19 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+
 from gi.repository import Gtk, GObject, Gst
 
-from quodlibet.plugins import PluginImportException
+from quodlibet.plugins import PluginImportException, PluginNotSupportedError
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
+
+
+if os.name == "nt":
+    # https://code.google.com/p/quodlibet/issues/detail?id=1534
+    raise PluginNotSupportedError("Crashes under Windows...")
 
 
 _PLUGIN_ID = "pitch"
@@ -86,7 +93,7 @@ class Preferences(Gtk.VBox):
 class Pitch(GStreamerPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Audio Pitch / Speed")
-    PLUGIN_DESC = _("Control the pitch of an audio stream.")
+    PLUGIN_DESC = _("Controls the pitch of an audio stream.")
     PLUGIN_ICON = "audio-volume-high"
 
     @classmethod

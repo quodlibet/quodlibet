@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2007 Joe Wreschnig
 #
 # This software and accompanying documentation, if any, may be freely
@@ -8,6 +9,7 @@
 """clean up output of 'build' commands"""
 
 import os
+import shutil
 
 from distutils.core import Command
 from distutils.command.clean import clean as distutils_clean
@@ -33,12 +35,41 @@ class clean(distutils_clean, Command):
 
     def run(self):
         distutils_clean.run(self)
-        if self.all:
-            if self.po_directory and self.po_package:
-                pot = os.path.join(self.po_directory, self.po_package + ".pot")
+        if not self.all:
+            return
+
+        # gettext byproducts
+        if self.po_directory and self.po_package:
+            pot = os.path.join(self.po_directory, self.po_package + ".pot")
+            try:
+                os.unlink(pot)
+            except OSError:
+                pass
+
+        # Python byproducts
+        def should_remove(filename):
+            if (filename.lower()[-4:] in [".pyc", ".pyo"] or
+                    filename.endswith("~") or
+                    (filename.startswith("#") and filename.endswith("#"))):
+                return True
+            else:
+                return False
+
+        for pathname, dirs, files in os.walk("."):
+            for filename in filter(should_remove, files):
                 try:
-                    os.unlink(pot)
-                except OSError:
-                    pass
+                    os.unlink(os.path.join(pathname, filename))
+                except EnvironmentError as err:
+                    print(str(err))
+
+        # setup.py byproducts
+        for base in ["coverage", "build", "dist"]:
+            if os.path.isdir(base):
+                shutil.rmtree(base)
+
+        try:
+            os.remove("MANIFEST")
+        except EnvironmentError:
+            pass
 
 __all__ = ["clean"]

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2006 Lukas Lalinsky
 #
 # This program is free software; you can redistribute it and/or modify

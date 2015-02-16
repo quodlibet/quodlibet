@@ -20,6 +20,7 @@ from quodlibet.util.collection import Playlist
 from quodlibet.util import connect_obj
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk.models import ObjectStore, ObjectModelSort
 from quodlibet.qltk.x import ScrolledWindow, Alignment
 
 from .util import *
@@ -105,15 +106,16 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         render.markup = model[iter][0].format()
         render.set_property('markup', render.markup)
 
-    def Menu(self, songs, songlist, library):
-        menu = super(PlaylistsBrowser, self).Menu(songs, songlist, library)
+    def Menu(self, songs, library, items):
+        songlist = qltk.get_top_parent(self).songlist
         model, iters = self.__get_selected_songs(songlist)
-        i = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
-        qltk.add_fake_accel(i, "Delete")
-        connect_obj(i, 'activate', self.__remove, iters, model)
-        i.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
-        menu.preseparate()
-        menu.prepend(i)
+        item = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
+        qltk.add_fake_accel(item, "Delete")
+        connect_obj(item, 'activate', self.__remove, iters, model)
+        item.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
+
+        items.append([item])
+        menu = super(PlaylistsBrowser, self).Menu(songs, library, items)
         return menu
 
     def __get_selected_songs(self, songlist):
@@ -121,7 +123,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         iters = map(model.get_iter, rows)
         return model, iters
 
-    __lists = Gtk.TreeModelSort(model=Gtk.ListStore(object))
+    __lists = ObjectModelSort(model=ObjectStore())
     __lists.set_default_sort_func(lambda m, a, b, data: cmp(m[a][0], m[b][0]))
 
     def __init__(self, library):
@@ -177,7 +179,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
 
-        view.connect('row-activated', lambda *x: self.emit("activated"))
+        view.connect('row-activated', lambda *x: self.songs_activated())
 
         view.get_selection().connect('changed', self.activate)
 
@@ -335,7 +337,8 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         songs = list(model[itr][0])
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
         menu = SongsMenu(library, songs,
-                         playlists=False, remove=False, parent=self)
+                         playlists=False, remove=False, parent=self,
+                         ratings=False)
         menu.preseparate()
 
         def _remove(model, itr):
@@ -368,7 +371,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
-        self.emit('songs-selected', songs, resort)
+        self.songs_selected(songs, resort)
 
     def save(self):
         model, iter = self.__view.get_selection().get_selected()
@@ -421,8 +424,9 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
             return
         self.__view.select_by_func(lambda r: r[0].name == name, one=True)
 
-    def reordered(self, songlist):
-        songs = songlist.get_songs()
+    can_reorder = True
+
+    def reordered(self, songs):
         model, iter = self.__view.get_selection().get_selected()
         playlist = None
         if iter:

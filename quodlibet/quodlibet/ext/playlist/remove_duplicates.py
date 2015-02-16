@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -16,9 +17,8 @@ from gi.repository import Gtk
 class RemoveDuplicates(PlaylistPlugin):
     PLUGIN_ID = "Remove Playlist Duplicates"
     PLUGIN_NAME = _("Remove Playlist Duplicates")
-    PLUGIN_DESC = _("Remove duplicate entries in a playlist")
+    PLUGIN_DESC = _("Removes duplicate entries in a playlist.")
     PLUGIN_ICON = 'gtk-clear'
-    PLUGIN_VERSION = "1.0"
 
     def plugin_handles(self, playlists):
         return len(playlists) == 1 and playlists[0].has_duplicates

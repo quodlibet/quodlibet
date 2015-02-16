@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,8 +10,8 @@ import re
 from quodlibet import config
 from quodlibet import util
 
-from quodlibet.parse import XMLFromMarkupPattern as XMLFromPattern
-from quodlibet.parse import pattern_from_markup
+from quodlibet.pattern import XMLFromMarkupPattern as XMLFromPattern
+from quodlibet.pattern import pattern_from_markup
 
 
 class PaneConfig(object):

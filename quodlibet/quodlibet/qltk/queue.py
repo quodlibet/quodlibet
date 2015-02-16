@@ -250,8 +250,8 @@ class PlayQueue(SongList):
         return False
 
     def __go_to(self, view, path, column, player):
-        self.model.go_to(self.model.get_iter(path))
-        player.next()
+        if player.go_to(self.model.get_iter(path), explicit=True, queue=True):
+            player.paused = False
 
     def __fill(self, library):
         try:
@@ -279,7 +279,7 @@ class PlayQueue(SongList):
 
         menu = SongsMenu(
             library, songs, queue=False, remove=False, delete=False,
-            parent=self)
+            ratings=False, parent=self)
         menu.preseparate()
         remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
         qltk.add_fake_accel(remove, "Delete")

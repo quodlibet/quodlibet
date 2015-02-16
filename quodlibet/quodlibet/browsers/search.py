@@ -13,7 +13,7 @@ from quodlibet import config
 from quodlibet import qltk
 
 from quodlibet.browsers._base import Browser
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
@@ -65,7 +65,7 @@ class SearchBar(Gtk.VBox, Browser):
         super(SearchBar, self).__init__()
         self.set_spacing(6)
 
-        self._filter = None
+        self._query = None
         self._library = library
 
         completion = LibraryTagCompletion(library.librarian)
@@ -103,22 +103,17 @@ class SearchBar(Gtk.VBox, Browser):
     def _get_songs(self):
         text = self._get_text()
         try:
-            self._filter = Query(text, star=SongList.star).search
+            self._query = Query(text, star=SongList.star)
         except Query.error:
             pass
         else:
-            if Query.match_all(text):
-                songs = self._library.values()
-                self._filter = None
-            else:
-                songs = filter(self._filter, self._library)
-            return songs
+            return self._query.filter(self._library)
 
     def activate(self):
         songs = self._get_songs()
         if songs is not None:
             songs = self._sb_box.limit(songs)
-            GLib.idle_add(self.emit, 'songs-selected', songs, None)
+            GLib.idle_add(self.songs_selected, songs)
 
     def __text_parse(self, bar, text):
         self.activate()
@@ -148,8 +143,8 @@ class SearchBar(Gtk.VBox, Browser):
         self.filter_text("")
 
     def active_filter(self, song):
-        if self._filter is not None:
-            return self._filter(song)
+        if self._query is not None:
+            return self._query.search(song)
         else:
             return True
 

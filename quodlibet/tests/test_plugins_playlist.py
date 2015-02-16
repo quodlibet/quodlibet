@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # TODO: Share better with, i.e. test MenuItemPlugin directly
 
 import os

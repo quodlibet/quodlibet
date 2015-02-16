@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from quodlibet import config
 from gi.repository import Gtk
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tests import TestCase
 
 from gi.repository import Gtk, Gdk
@@ -49,13 +50,19 @@ class TQltk(TestCase):
         l = Gtk.Label()
         w.add(l)
         m = Gtk.Menu()
-        l.realize()
+        m.attach_to_widget(l, None)
+        w.show_all()
         qltk.popup_menu_under_widget(m, l, 1, 0)
         w.destroy()
         m.destroy()
 
     def test_redraw_all(self):
-        w = Gtk.Window()
-        w.realize()
         qltk.redraw_all_toplevels()
-        qltk.redraw_all_toplevels(w)
+
+    def test_get_menu_item_top_parent(self):
+        item = Gtk.MenuItem()
+        menu = Gtk.Menu()
+        menu.append(item)
+        window = Gtk.Window()
+        menu.attach_to_widget(window, None)
+        self.assertEqual(qltk.get_menu_item_top_parent(item), window)

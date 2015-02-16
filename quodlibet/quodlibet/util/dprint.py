@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2011,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -125,7 +126,7 @@ def print_d(string, context=""):
 
     # Translators: "D" as in "Debug". It is prepended to
     # terminal output. APT uses a similar output format.
-    prefix = _("D: ")
+    prefix = _("D:") + " "
 
     string = "%s: %s: %s" % (Colorise.magenta(timestr),
                              Colorise.blue(context), string)
@@ -135,30 +136,30 @@ def print_d(string, context=""):
         _print(string, output)
 
     # Translators: Name of the debug tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), _("Debug"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), "debug")
 
 
 def print_w(string):
     """Print warnings."""
     # Translators: "W" as in "Warning". It is prepended to
     # terminal output. APT uses a similar output format.
-    prefix = _("W: ")
+    prefix = _("W:") + " "
 
     string = _format_print(string, Colorise.red(prefix))
     _print(string, sys.stderr)
 
     # Translators: Name of the warnings tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), _("Warnings"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), "warnings")
 
 
 def print_e(string, context=None):
     """Print errors."""
     # Translators: "E" as in "Error". It is prepended to
     # terminal output. APT uses a similar output format.
-    prefix = _("E: ")
+    prefix = _("E:") + " "
 
     string = _format_print(string, Colorise.red(prefix))
     _print(string, sys.stderr)
 
     # Translators: Name of the warnings tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), _("Errors"))
+    quodlibet.util.logging.log(clicolor.strip_color(string), "errors")

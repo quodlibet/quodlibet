@@ -13,7 +13,7 @@ import re
 from quodlibet.const import USERDIR
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet.parse._pattern import Pattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.data_editors import JSONBasedEditor
@@ -113,7 +113,6 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _("Custom Commands")
     PLUGIN_DESC = _("Runs custom commands (in batches if required) on songs "
                     "using any of their tags.")
-    PLUGIN_VERSION = '1.2'
 
     _TUPLE_DEF = "\s*\('([^']*)'%s\)" % ("(?:,\s*'([^']*)')?" * 5)
     _TUPLE_REGEX = re.compile(_TUPLE_DEF)

@@ -44,10 +44,10 @@ class DeviceProperties(Gtk.Dialog):
 
         props = []
 
-        props.append((_("Device:"), device.dev, None))
+        props.append((_("Device:"), device.block_device, None))
         mountpoint = util.escape(
             device.mountpoint or ("<i>%s</i>" % _("Not mounted")))
-        props.append((_("Mount Point:"), mountpoint, None))
+        props.append((_("Mount point:"), mountpoint, None))
 
         props.append((None, None, None))
 
@@ -123,7 +123,7 @@ class Menu(Gtk.Menu):
             win = LibraryBrowser.open(MediaDevices, library, app.player)
             browser = win.browser
         browser.select(device)
-        browser.dropped(browser.get_toplevel().songlist, songs)
+        browser.dropped(songs)
 
 
 class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
@@ -187,7 +187,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         view.get_selection().set_mode(Gtk.SelectionMode.BROWSE)
         connect_obj(view.get_selection(), 'changed', self.__refresh, False)
         view.connect('popup-menu', self.__popup_menu, library)
-        view.connect('row-activated', lambda *a: self.emit("activated"))
+        view.connect('row-activated', lambda *a: self.songs_activated())
         swin.add(view)
 
         col = Gtk.TreeViewColumn("Devices")
@@ -275,7 +275,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__vbox.remove(songpane)
         self.__paned.remove(self)
 
-    def Menu(self, songs, songlist, library):
+    def Menu(self, songs, library, items):
         model, iter = self.__view.get_selection().get_selected()
         if iter:
             device = model[iter][0]
@@ -284,7 +284,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             delete = False
 
         menu = SongsMenu(library, songs, delete=delete, remove=False,
-                         parent=self)
+                         parent=self, items=items)
         return menu
 
     def activate(self):
@@ -328,8 +328,13 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         selection.unselect_all()
         selection.select_iter(row.iter)
 
-    def dropped(self, songlist, songs):
-        return self.__copy_songs(songlist, songs)
+    def active_filter(self, song):
+        model, iter = self.__view.get_selection().get_selected()
+        device = model[iter][0]
+        return device.contains(song)
+
+    def dropped(self, songs):
+        return self.__copy_songs(songs)
 
     def __popup_menu(self, view, library):
         model, iter = view.get_selection().get_selected()
@@ -429,10 +434,10 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                 self.__eject_button.set_sensitive(False)
                 self.__refresh_button.set_sensitive(False)
                 self.__header.hide()
-            self.emit('songs-selected', songs, device.ordered)
+            self.songs_selected(songs, device.ordered)
         else:
             self.__last = None
-            self.emit('songs-selected', [], False)
+            self.songs_selected([], False)
 
     def __refresh_space(self, device):
         try:
@@ -445,8 +450,9 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             fraction = float(used) / space
 
             self.__device_space.set_markup(
-                _("<b>%s</b> used, <b>%s</b> available") %
-                (util.format_size(used), util.format_size(free)))
+                _("%(used-size)s used, %(free-size)s available") %
+                {"used-size": util.bold(util.format_size(used)),
+                 "free-size": util.bold(util.format_size(free))})
             self.__progress.set_fraction(fraction)
             self.__progress.set_text("%.f%%" % round(fraction * 100))
             self.__progress.show()
@@ -462,12 +468,13 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         if not device.is_connected():
             qltk.WarningMessage(
                 self, message,
-                _("<b>%s</b> is not connected.") % util.escape(device['name'])
+                _("%s is not connected.") %
+                util.bold(util.escape(device['name']))
             ).run()
             return False
         return True
 
-    def __copy_songs(self, songlist, songs):
+    def __copy_songs(self, songs):
         model, iter = self.__view.get_selection().get_selected()
         if not iter:
             return False
@@ -479,20 +486,17 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Copying <b>%(song)s</b>"), {'song': ''})
+        wlb.setup(
+            len(songs),
+            _("Copying %(song)s") % {'song': '<b>%(song)s</b>'},
+            {'song': ''})
         wlb.show()
 
-        model = songlist.get_model()
         for song in songs:
             label = util.escape(song('~artist~title'))
             if wlb.step(song=label):
                 wlb.hide()
                 break
-
-            if len(model) > 0:
-                songlist.scroll_to_cell(model[-1].path)
-            while Gtk.events_pending():
-                Gtk.main_iteration()
 
             space, free = device.get_space()
             if free < os.path.getsize(song['~filename']):
@@ -503,16 +507,15 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
                 ).run()
                 break
 
-            status = device.copy(songlist, song)
+            status = device.copy(self, song)
             if isinstance(status, AudioFile):
-                model.append([status])
                 try:
                     self.__cache[device.bid].append(song)
                 except KeyError:
                     pass
                 self.__refresh_space(device)
             else:
-                msg = _("<b>%s</b> could not be copied.") % label
+                msg = _("%s could not be copied.") % util.bold(label)
                 if type(status) == unicode:
                     msg += "\n\n" + util.escape(status)
                 qltk.WarningMessage(self, _("Unable to copy song"), msg).run()
@@ -529,7 +532,6 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         model, iter = self.__view.get_selection().get_selected()
         if not iter:
             return False
-        songlist = qltk.get_top_parent(self).songlist
 
         device = model[iter][0]
         if not self.__check_device(device, _("Unable to delete songs")):
@@ -542,26 +544,27 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         self.__busy = True
 
         wlb = self.__statusbar
-        wlb.setup(len(songs), _("Deleting <b>%(song)s</b>"), {'song': ''})
+        wlb.setup(
+            len(songs),
+            _("Deleting %(song)s") % {"song": "<b>%(song)s</b>"},
+            {'song': ''})
         wlb.show()
 
-        model = songlist.get_model()
         for song in songs:
             label = util.escape(song('~artist~title'))
             if wlb.step(song=label):
                 wlb.hide()
                 break
 
-            status = device.delete(songlist, song)
+            status = device.delete(self, song)
             if status is True:
-                model.remove(model.find(song))
                 try:
                     self.__cache[device.bid].remove(song)
                 except (KeyError, ValueError):
                     pass
                 self.__refresh_space(device)
             else:
-                msg = _("<b>%s</b> could not be deleted.") % label
+                msg = _("%s could not be deleted.") % util.bold(label)
                 if type(status) == unicode:
                     msg += "\n\n%s" % status
                 qltk.WarningMessage(
@@ -580,7 +583,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             device = model[iter][0]
             status = device.eject()
             if status is not True:
-                msg = _("Ejecting <b>%s</b> failed.") % device['name']
+                msg = _("Ejecting %s failed.") % util.bold(device['name'])
                 if status:
                     msg += "\n\n%s" % status
                 qltk.ErrorMessage(self, _("Unable to eject device"), msg).run()

@@ -15,7 +15,7 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.plugins import PluginManager
-from quodlibet.parse import FileFromPattern
+from quodlibet.pattern import FileFromPattern
 from quodlibet.qltk._editutils import FilterPluginBox, FilterCheckButton
 from quodlibet.qltk._editutils import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
@@ -125,7 +125,7 @@ class RenameFiles(Gtk.VBox):
         cbes_defaults = const.NBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(const.NBP, cbes_defaults,
             title=_("Path Patterns"),
-            edit_title=_("Edit saved patterns..."))
+            edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
@@ -205,6 +205,7 @@ class RenameFiles(Gtk.VBox):
         self.preview.set_sensitive(bool(entry.get_text()))
 
     def __row_edited(self, renderer, path, new):
+        path = Gtk.TreePath.new_from_string(path)
         model = self.view.get_model()
         entry = model[path][0]
         new = new.decode("utf-8")
@@ -212,6 +213,7 @@ class RenameFiles(Gtk.VBox):
             entry.new_name = new
             self.preview.set_sensitive(True)
             self.save.set_sensitive(True)
+            model.path_changed(path)
 
     def __rename(self, library):
         model = self.view.get_model()
@@ -240,12 +242,13 @@ class RenameFiles(Gtk.VBox):
                            _("_Continue"), Gtk.ResponseType.OK)
                 msg = qltk.Message(
                     Gtk.MessageType.ERROR, win, _("Unable to rename file"),
-                    _("Renaming <b>%s</b> to <b>%s</b> failed. "
-                      "Possibly the target file already exists, "
+                    _("Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> "
+                      "failed. Possibly the target file already exists, "
                       "or you do not have permission to make the "
-                      "new file or remove the old one.") % (
-                    util.escape(old_name),
-                    util.escape(new_name)),
+                      "new file or remove the old one.") % {
+                        "old-name": util.escape(old_name),
+                        "new-name": util.escape(new_name),
+                      },
                     buttons=Gtk.ButtonsType.NONE)
                 msg.add_buttons(*buttons)
                 msg.set_default_response(Gtk.ResponseType.OK)

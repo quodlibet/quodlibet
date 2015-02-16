@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #           2013 Nick Boultbee
 #           2013,2014 Christoph Reiter
@@ -23,7 +24,7 @@ import time
 from gi.repository import GObject
 
 from quodlibet.formats import MusicFile
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.notif import Task
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
@@ -31,7 +32,8 @@ from quodlibet import util
 from quodlibet import const
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import fsdecode, expanduser, unexpand, mkdir
+from quodlibet.util.path import fsdecode, expanduser, unexpand, mkdir, \
+    normalize_path
 
 
 class Library(GObject.GObject, DictMixin):
@@ -839,13 +841,14 @@ class SongFileLibrary(SongLibrary, FileLibrary):
         Otherwise, None is returned.
         """
 
+        key = normalize_path(filename, True)
         song = None
-        if filename not in self._contents:
+        if key not in self._contents:
             song = MusicFile(filename)
             if song and add:
                 self.add([song])
         else:
             print_d("Already got file %r." % filename)
-            song = self._contents[filename]
+            song = self._contents[key]
 
         return song

@@ -23,7 +23,7 @@ from quodlibet.browsers._base import Browser
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE, AudioFile
 from quodlibet.library import SongLibrary
-from quodlibet.parse import Query
+from quodlibet.query import Query
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
@@ -34,7 +34,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
-from quodlibet.qltk.x import SymbolicIconImage, SeparatorMenuItem
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = \
@@ -542,7 +542,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         search.connect('query-changed', self.__filter_changed)
 
         menu = Gtk.Menu()
-        new_item = MenuItem(_("_New Station..."), Gtk.STOCK_ADD)
+        new_item = MenuItem(_(u"_New Station…"), Gtk.STOCK_ADD)
         new_item.connect('activate', self.__add)
         menu.append(new_item)
         update_item = MenuItem(_("_Update Stations"), Gtk.STOCK_REFRESH)
@@ -732,9 +732,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         self.__stations.add(to_add)
 
     def __filter_changed(self, bar, text, restore=False):
-        self.__filter = None
-        if not Query.match_all(text):
-            self.__filter = Query(text, self.STAR)
+        self.__filter = Query(text, self.STAR)
 
         if not restore:
             self.activate()
@@ -820,12 +818,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         if irfs:
             self.__fav_stations.add(irfs)
 
-    def Menu(self, songs, songlist, library):
-        menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
-                         queue=False, devices=False, parent=self)
-
-        menu.prepend(SeparatorMenuItem())
-
+    def Menu(self, songs, library, items):
         in_fav = False
         in_all = False
         for song in songs:
@@ -836,16 +829,19 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
             if in_fav and in_all:
                 break
 
-        button = MenuItem(_("Remove from Favorites"), Gtk.STOCK_REMOVE)
-        button.set_sensitive(in_fav)
-        connect_obj(button, 'activate', self.__remove_fav, songs)
-        menu.prepend(button)
-
+        iradio_items = []
         button = MenuItem(_("Add to Favorites"), Gtk.STOCK_ADD)
         button.set_sensitive(in_all)
         connect_obj(button, 'activate', self.__add_fav, songs)
-        menu.prepend(button)
+        iradio_items.append(button)
+        button = MenuItem(_("Remove from Favorites"), Gtk.STOCK_REMOVE)
+        button.set_sensitive(in_fav)
+        connect_obj(button, 'activate', self.__remove_fav, songs)
+        iradio_items.append(button)
 
+        items.append(iradio_items)
+        menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
+                         queue=False, devices=False, parent=self, items=items)
         return menu
 
     def restore(self):
@@ -870,12 +866,12 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
     def __get_filter(self):
         filter_ = self.__get_selection_filter()
+        text_filter = self.__filter or Query("")
 
         if filter_:
-            if self.__filter:
-                filter_ &= self.__filter
+            filter_ &= text_filter
         else:
-            filter_ = self.__filter
+            filter_ = text_filter
 
         return filter_
 
@@ -891,14 +887,8 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
     def activate(self):
         filter_ = self.__get_filter()
         libs = self.__get_selected_libraries()
-        songs = itertools.chain(*libs)
-
-        if filter_:
-            songs = filter(filter_.search, songs)
-        else:
-            songs = list(songs)
-
-        self.emit('songs-selected', songs, None)
+        songs = filter_.filter(itertools.chain(*libs))
+        self.songs_selected(songs)
 
     def active_filter(self, song):
         for lib in self.__get_selected_libraries():

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -6,24 +7,20 @@
 
 import os
 import sys
-import imp
 import shutil
 
 from tests import TestCase, DATA_DIR, mkstemp
 from helper import capture_output
 
-import quodlibet
 from quodlibet import config
 from quodlibet.formats import MusicFile
+from quodlibet.operon.main import _main as operon_main
 
 
 def call(args=None):
-    path = os.path.join(os.path.dirname(quodlibet.__path__[0]), "operon.py")
-    mod = imp.load_source("operon", path)
-
     with capture_output() as (out, err):
         try:
-            return_code = mod.run(["operon.py"] + args)
+            return_code = operon_main(["operon.py"] + args)
         except SystemExit, e:
             return_code = e.code
 
@@ -79,7 +76,7 @@ class TOperonMain(TOperonBase):
 
         # TODO: "image-extract", "rename", "fill", "fill-tracknumber", "edit"
         # "load"
-        for sub in ["help", "dump", "copy", "set", "clear",
+        for sub in ["help", "copy", "set", "clear",
                     "remove", "add", "list", "print", "info", "tags"]:
             self.check_true(["help", sub], True, False)
 
@@ -283,20 +280,6 @@ class TOperonSet(TOperonBase):
         self.failUnlessEqual(self.s["artist"], "foobar")
 
 
-class TOperonDump(TOperonBase):
-    def test_misc(self):
-        self.check_true(["dump", "-h"], True, False)
-        self.check_false(["dump"], False, True)
-        self.check_true(["dump", self.f], True, False)
-        self.check_true(["-v", "dump", self.f], True, True)
-        self.check_false(["dump", self.f, self.f], False, True)
-
-    def test_output(self):
-        o, e = self.check_true(["dump", self.f], True, False)
-        internal = filter(lambda x: x.startswith("~"), o.splitlines())
-        self.failIf(internal)
-
-
 class TOperonCopy(TOperonBase):
     # [--dry-run] [--ignore-errors] <source> <dest>
 
@@ -382,6 +365,7 @@ class TOperonEdit(TOperonBase):
 
         os.environ["VISUAL"] = "truncate -s 0"
         old_items = realitems(self.s)
+        os.utime(self.f, (42, 42))
         e = self.check_true(["edit", "--dry-run", self.f], False, True)[1]
 
         # log all removals
@@ -397,6 +381,7 @@ class TOperonEdit(TOperonBase):
             return
 
         os.environ["VISUAL"] = "truncate -s 0"
+        os.utime(self.f, (42, 42))
         self.check_true(["edit", self.f], False, False)
 
         # all should be gone
@@ -641,9 +626,24 @@ class TOperonFill(TOperonBase):
         self.s.reload()
         self.assertEqual(self.s("title"), os.path.splitext(basename)[0])
 
+    def test_apply_no_match(self):
+        old_title = self.s("title")
+        self.check_true(
+            ["fill", "<tracknumber>. <title>", self.f], False, False)
+        self.s.reload()
+        self.assertEqual(self.s("title"), old_title)
+
     def test_preview(self):
         o, e = self.check_true(
             ["fill", "--dry-run", "<title>", self.f], True, False)
+
+        self.assertTrue("title" in o)
+        self.assertTrue(self.s("~basename") in o)
+
+    def test_preview_no_match(self):
+        o, e = self.check_true(
+            ["fill", "--dry-run", "<tracknumber>. <title>", self.f],
+            True, False)
 
         self.assertTrue("title" in o)
         self.assertTrue(self.s("~basename") in o)

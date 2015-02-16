@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -100,7 +101,8 @@ class PatternEditor(Gtk.VBox):
         column = Gtk.TreeViewColumn(None, render, text=0)
         view.append_column(column)
 
-    def __get_headers(self):
+    @property
+    def headers(self):
         for button in self.__headers.iterkeys():
             if button.get_active():
                 if button == self.__custom:
@@ -108,7 +110,8 @@ class PatternEditor(Gtk.VBox):
                     self.__headers[self.__custom] = model_headers
                 return self.__headers[button]
 
-    def __set_headers(self, new_headers):
+    @headers.setter
+    def headers(self, new_headers):
         for button, headers in self.__headers.iteritems():
             if headers == new_headers:
                 button.set_active(True)
@@ -117,8 +120,6 @@ class PatternEditor(Gtk.VBox):
         else:
             self.__headers[self.__custom] = new_headers
             self.__custom.set_active(True)
-
-    headers = property(__get_headers, __set_headers)
 
     def __selection_changed(self, selection, remove):
         remove.set_sensitive(bool(selection.get_selected()[1]))

@@ -1,7 +1,8 @@
 # -*- encoding: utf-8 -*-
 from tests import TestCase
 
-from quodlibet.parse import Query
+from quodlibet.query import Query, QueryType
+from quodlibet.query import _match as match
 
 
 class TQuery_is_valid(TestCase):
@@ -117,6 +118,17 @@ class TQuery(TestCase):
              "~filename": "/test/\xc3\xb6\xc3\xa4\xc3\xbc/fo\xc3\xbc.ogg"})
         self.s4 = self.AF({"title": u"Ångström", })
         self.s5 = self.AF({"title": "oh&blahhh", "artist": "!ohno"})
+
+    def test_repr(self):
+        query = Query("foo = bar", [])
+        self.assertEqual(
+            repr(query),
+            "<Query string=u'foo = bar' type=QueryType.VALID star=[]>")
+
+        query = Query("bar", ["foo"])
+        self.assertEqual(
+            repr(query),
+            "<Query string=u'&(/bar/d)' type=QueryType.TEXT star=['foo']>")
 
     def test_2007_07_27_synth_search(self):
         song = self.AF({"~filename": "foo/64K/bar.ogg"})
@@ -262,22 +274,43 @@ class TQuery(TestCase):
         self.failUnless(Query("#(rating = 0.77)").search(a))
         self.failUnless(Query("#(rating = 0.77)").search(b))
 
-    def test_and_or_operator(self):
+    def test_and_or_neg_operator(self):
         union = Query("|(foo=bar,bar=foo)")
         inter = Query("&(foo=bar,bar=foo)")
-        neg = Query("foo=!bar")
+        neg = Query("!foo=bar")
         numcmp = Query("#(bar = 0)")
         tag = Query("foo=bar")
 
         tests = [inter | tag, tag | tag, neg | neg, tag | inter, neg | union,
             union | union, inter | inter, numcmp | numcmp, numcmp | union]
 
-        self.failIf(filter(lambda x: not isinstance(x, type(union)), tests))
+        self.failIf(filter(lambda x: not isinstance(x, match.Union), tests))
 
         tests = [inter & tag, tag & tag, neg & neg, tag & inter, neg & union,
             union & union, inter & inter, numcmp & numcmp, numcmp & inter]
 
-        self.failIf(filter(lambda x: not isinstance(x, type(inter)), tests))
+        self.failIf(filter(lambda x: not isinstance(x, match.Inter), tests))
+
+        self.assertTrue(isinstance(-neg, match.Tag))
+
+        true = Query("")
+        self.assertTrue(isinstance(true | inter, match.True_))
+        self.assertTrue(isinstance(inter | true, match.True_))
+        self.assertTrue(isinstance(true & inter, match.Inter))
+        self.assertTrue(isinstance(inter & true, match.Inter))
+        self.assertTrue(isinstance(true & true, match.True_))
+        self.assertTrue(isinstance(true | true, match.True_))
+        self.assertTrue(isinstance(-true, match.Neg))
+
+    def test_filter(self):
+        q = Query("artist=piman")
+        self.assertEqual(q.filter([self.s1, self.s2]), [self.s1])
+        self.assertEqual(q.filter(iter([self.s1, self.s2])), [self.s1])
+
+        q = Query("")
+        self.assertEqual(q.filter([self.s1, self.s2]), [self.s1, self.s2])
+        self.assertEqual(
+            q.filter(iter([self.s1, self.s2])), [self.s1, self.s2])
 
     def test_match_all(self):
         self.failUnless(Query.match_all(""))
@@ -322,15 +355,15 @@ class TQuery(TestCase):
         Query(u'/(<)?(\w+@\w+(?:\.\w+)+)(?(1)>)/d')
 
 
-class TQuery_is_valid_color(TestCase):
+class TQuery_get_type(TestCase):
     def test_red(self):
         for p in ["a = /w", "|(sa#"]:
-            self.failUnlessEqual(False, Query.is_valid_color(p))
+            self.failUnlessEqual(QueryType.INVALID, Query.get_type(p))
 
     def test_black(self):
         for p in ["a test", "more test hooray"]:
-            self.failUnlessEqual(None, Query.is_valid_color(p))
+            self.failUnlessEqual(QueryType.TEXT, Query.get_type(p))
 
     def test_green(self):
         for p in ["a = /b/", "&(a = b, c = d)", "/abc/", "!x", "!&(abc, def)"]:
-            self.failUnlessEqual(True, Query.is_valid_color(p))
+            self.failUnlessEqual(QueryType.VALID, Query.get_type(p))

@@ -289,20 +289,20 @@ class AudioFeeds(Browser, Gtk.VBox):
         klass.write()
         GLib.timeout_add(60 * 60 * 1000, klass.__do_check)
 
-    def Menu(self, songs, songlist, library):
-        menu = SongsMenu(library, songs, parent=self)
+    def Menu(self, songs, library, items):
         if len(songs) == 1:
-            item = qltk.MenuItem(_("_Download..."), Gtk.STOCK_CONNECT)
+            item = qltk.MenuItem(_(u"_Download…"), Gtk.STOCK_CONNECT)
             item.connect('activate', self.__download, songs[0]("~uri"))
             item.set_sensitive(not songs[0].is_file)
         else:
             songs = filter(lambda s: not s.is_file, songs)
             uris = [song("~uri") for song in songs]
-            item = qltk.MenuItem(_("_Download..."), Gtk.STOCK_CONNECT)
+            item = qltk.MenuItem(_(u"_Download…"), Gtk.STOCK_CONNECT)
             item.connect('activate', self.__download_many, uris)
             item.set_sensitive(bool(songs))
-        menu.preseparate()
-        menu.prepend(item)
+
+        items.append([item])
+        menu = SongsMenu(library, songs, parent=self, items=items)
         return menu
 
     def __download_many(self, activator, sources):
@@ -423,9 +423,9 @@ class AudioFeeds(Browser, Gtk.VBox):
         else:
             ErrorMessage(
                 self, _("Unable to add feed"),
-                _("<b>%s</b> could not be added. The server may be down, "
+                _("%s could not be added. The server may be down, "
                   "or the location may not be an audio feed.") %
-                util.escape(feed.uri)).run()
+                util.bold(util.escape(feed.uri))).run()
 
     def __popup_menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
@@ -465,7 +465,7 @@ class AudioFeeds(Browser, Gtk.VBox):
             for path in paths:
                 model[path][0].changed = False
                 songs.extend(model[path][0])
-            self.emit('songs-selected', songs, True)
+            self.songs_selected(songs, True)
             config.set("browsers", "audiofeeds",
                        "\t".join([model[path][0].name for path in paths]))
 
@@ -479,9 +479,9 @@ class AudioFeeds(Browser, Gtk.VBox):
             else:
                 ErrorMessage(
                     self, _("Unable to add feed"),
-                    _("<b>%s</b> could not be added. The server may be down, "
+                    _("%s could not be added. The server may be down, "
                       "or the location may not be an audio feed.") %
-                    util.escape(feed.uri)).run()
+                    util.bold(util.escape(feed.uri))).run()
 
     def restore(self):
         try:

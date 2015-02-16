@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Extension points for Quod Libet and Ex Falso
 #
 # This (currently) contains code plugins (formerly kept in /plugins)

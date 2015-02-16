@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman
 #           2013 Nick Boultbee
 #
@@ -151,7 +152,7 @@ def make_info_label((disc, track), album, discid):
 class CDDBLookup(SongsMenuPlugin):
     PLUGIN_ID = 'CDDB lookup'
     PLUGIN_NAME = _('CDDB Lookup')
-    PLUGIN_DESC = _('Look up album information in FreeDB (requires CDDB.py)')
+    PLUGIN_DESC = _('Looks up album information in FreeDB. Requires CDDB.py.')
     PLUGIN_ICON = 'gtk-cdrom'
 
     def plugin_album(self, album):
@@ -255,7 +256,7 @@ class CDDBLookup(SongsMenuPlugin):
             if not albumname:
                 albumname = ngettext('%d track', '%d tracks', n) % n
             ErrorMessage(None, _("CDDB lookup failed (%s)" % stat),
-                    ngettext("%(title)s and %(count)d more...",
-                        "%(title)s and %(count)d more...", n - 1) % {
+                    ngettext(u"%(title)s and %(count)d more…",
+                        u"%(title)s and %(count)d more…", n - 1) % {
                         'title': album[0]('~basename'), 'count':
                         n - 1}).run()

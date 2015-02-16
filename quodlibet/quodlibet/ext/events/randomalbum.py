@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2005-2009 Joe Wreschnig, Steven Robertson
 #                2012 Nick Boultbee
 #
@@ -22,10 +23,9 @@ except Exception:
 class RandomAlbum(EventPlugin):
     PLUGIN_ID = 'Random Album Playback'
     PLUGIN_NAME = _('Random Album Playback')
-    PLUGIN_DESC = _("When your playlist reaches its end a new album will "
-                    "be chosen randomly and started. It requires that your "
-                    "active browser supports filtering by album.")
-    PLUGIN_VERSION = '2.4'
+    PLUGIN_DESC = _("Starts a random album when your playlist reaches its "
+                    "end. It requires that your active browser supports "
+                    "filtering by album.")
 
     weights = {}
     use_weights = False
@@ -196,7 +196,8 @@ class RandomAlbum(EventPlugin):
             if notif is None:
                 return
             task = notif.Task(_("Random Album"),
-                              _("Waiting to start <i>%s</i>") % album("album"),
+                              _("Waiting to start %s") %
+                                    util.bold(util.escape(album("album"))),
                               stop=lambda: GLib.source_remove(srcid))
 
             def countdown():

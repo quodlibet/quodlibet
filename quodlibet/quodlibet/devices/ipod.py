@@ -11,6 +11,7 @@ import time
 from gi.repository import Gtk
 
 from quodlibet import const
+from quodlibet import app
 
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.x import Button
@@ -208,7 +209,7 @@ class IPodDevice(Device):
         self.__close_db()
         return songs
 
-    def copy(self, songlist, song):
+    def copy(self, parent_widget, song):
         if self.__load_db() is None:
             return False
         track = gpod.itdb_track_new()
@@ -269,7 +270,7 @@ class IPodDevice(Device):
 
         # Associate a cover with the track
         if self['covers']:
-            cover = song.find_cover()
+            cover = app.cover_manager.get_cover(song)
             if cover:
                 # libgpod will copy the file later when the iTunesDB
                 # is saved, so we have to keep a reference around in
@@ -289,7 +290,7 @@ class IPodDevice(Device):
         else:
             return False
 
-    def delete(self, songlist, song):
+    def delete(self, parent_widget, song):
         if self.__load_db() is None:
             return False
         try:
@@ -305,10 +306,7 @@ class IPodDevice(Device):
 
     def cleanup(self, wlb, action):
         try:
-            wlb.set_text(_("<b>Saving iPod database...</b>"))
-            # This can take a while, so update the UI first
-            while Gtk.events_pending():
-                Gtk.main_iteration()
+            wlb.set_text("<b>%s</b>" % _(u"Saving iPod database…"))
 
             if not self.__save_db():
                 wlb.set_text(_("Unable to save iPod database"))

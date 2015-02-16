@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,6 +9,7 @@ from ._audio import AudioFile
 
 extensions = [".aac", ".adif", ".adts"]
 try:
+    # since mutagen 1.27
     from mutagen.aac import AAC
 except ImportError:
     extensions = []
