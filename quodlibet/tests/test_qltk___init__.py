@@ -66,3 +66,21 @@ class TQltk(TestCase):
         window = Gtk.Window()
         menu.attach_to_widget(window, None)
         self.assertEqual(qltk.get_menu_item_top_parent(item), window)
+
+    def test_get_menu_item_top_parent_sub(self):
+        item = Gtk.MenuItem()
+        menu = Gtk.Menu()
+        menu.append(item)
+        window = Gtk.Window()
+        menu.attach_to_widget(window, None)
+        sub = Gtk.Menu()
+        sub_item = Gtk.MenuItem()
+        sub.append(sub_item)
+        item.set_submenu(sub)
+        self.assertEqual(qltk.get_menu_item_top_parent(sub_item), window)
+
+    def test_get_menu_item_top_parent_unattached(self):
+        item = Gtk.MenuItem()
+        menu = Gtk.Menu()
+        menu.append(item)
+        self.assertTrue(qltk.get_menu_item_top_parent(item) is None)

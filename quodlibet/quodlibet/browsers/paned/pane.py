@@ -162,7 +162,7 @@ class Pane(AllTreeView):
 
     def __popup_menu(self, view, library):
         songs = self.__get_selected_songs(sort=True)
-        menu = SongsMenu(library, songs, parent=self)
+        menu = SongsMenu(library, songs)
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 

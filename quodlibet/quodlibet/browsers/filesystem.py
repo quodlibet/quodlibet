@@ -192,7 +192,7 @@ class FileSystem(Browser, Gtk.HBox):
 
         items.append([i])
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
-                         delete=True, parent=self, items=items)
+                         delete=True, items=items)
         return menu
 
     def __add_songs(self, item, songs):

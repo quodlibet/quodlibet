@@ -284,7 +284,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
             delete = False
 
         menu = SongsMenu(library, songs, delete=delete, remove=False,
-                         parent=self, items=items)
+                         items=items)
         return menu
 
     def activate(self):
@@ -345,7 +345,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
         else:
             songs = []
         menu = SongsMenu(library, songs, playlists=False,
-                         devices=False, remove=False, parent=self)
+                         devices=False, remove=False)
 
         menu.preseparate()
 

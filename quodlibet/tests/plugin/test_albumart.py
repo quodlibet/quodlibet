@@ -34,7 +34,7 @@ class TAlbumArt(PluginTestCase):
     def setUp(self):
         globals().update(vars(self.modules[ALBUM_ART_PLUGIN_ID]))
         self.songs = [A_SONG]
-        self.plugin = DownloadAlbumArt(self.songs, library, None)
+        self.plugin = DownloadAlbumArt(self.songs, library)
 
     def testAlbumArtWindow(self):
         win = AlbumArtWindow(self.songs)

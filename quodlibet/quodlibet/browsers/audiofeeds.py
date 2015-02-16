@@ -302,7 +302,7 @@ class AudioFeeds(Browser, Gtk.VBox):
             item.set_sensitive(bool(songs))
 
         items.append([item])
-        menu = SongsMenu(library, songs, parent=self, items=items)
+        menu = SongsMenu(library, songs, items=items)
         return menu
 
     def __download_many(self, activator, sources):

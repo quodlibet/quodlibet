@@ -34,7 +34,7 @@ class TReplayGain(PluginTestCase):
         cls.mod = cls.modules["ReplayGain"]
         Kind = cls.plugins["ReplayGain"].cls
         cls.songs = []
-        cls.plugin = Kind(cls.songs, None, None)
+        cls.plugin = Kind(cls.songs, None)
 
     @classmethod
     def tearDownClass(cls):

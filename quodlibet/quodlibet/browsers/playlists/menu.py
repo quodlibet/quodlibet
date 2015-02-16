@@ -10,16 +10,15 @@ from gi.repository import Gtk, Pango
 from quodlibet import qltk
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
-from quodlibet.qltk import SeparatorMenuItem
+from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent
 from quodlibet.util.collection import Playlist
-from quodlibet.util import connect_obj
 
 
 class PlaylistMenu(Gtk.Menu):
-    def __init__(self, songs, parent=None):
+    def __init__(self, songs):
         super(PlaylistMenu, self).__init__()
         i = Gtk.MenuItem(label=_(u"_New Playlist…"), use_underline=True)
-        connect_obj(i, 'activate', self.__add_to_new_playlist, songs, parent)
+        i.connect('activate', self._on_new_playlist_activate, songs)
         self.append(i)
         self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
@@ -31,28 +30,13 @@ class PlaylistMenu(Gtk.Menu):
             i.set_active(some)
             i.set_inconsistent(some and not all)
             i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
-            connect_obj(i,
-                'activate', self.__toggle_playlist, playlist, songs, parent)
+            i.connect(
+                'activate', self._on_toggle_playlist_activate, playlist, songs)
             self.append(i)
 
-    @staticmethod
-    def __toggle_playlist(playlist, songs, parent):
-        has_some, has_all = playlist.has_songs(songs)
-        if has_all:
-            playlist.remove_songs(songs)
-        elif has_some:
-            resp = ConfirmMultipleSongsAction(parent, playlist, songs).run()
-            if resp == ConfirmMultipleSongsAction.REMOVE:
-                playlist.remove_songs(songs)
-            elif resp == ConfirmMultipleSongsAction.ADD:
-                playlist.extend(songs)
-            return
-        else:
-            playlist.extend(songs)
-        PlaylistsBrowser.changed(playlist)
+    def _on_new_playlist_activate(self, item, songs):
+        parent = get_menu_item_top_parent(item)
 
-    @staticmethod
-    def __add_to_new_playlist(songs, parent):
         if len(songs) == 1:
             title = songs[0].comma("title")
         else:
@@ -67,11 +51,24 @@ class PlaylistMenu(Gtk.Menu):
         if title is None:
             return
         playlist = Playlist.new(PLAYLISTS, title)
-        PlaylistMenu.__add_songs_to_playlist(playlist, songs)
-
-    @staticmethod
-    def __add_songs_to_playlist(playlist, songs):
         playlist.extend(songs)
+        PlaylistsBrowser.changed(playlist)
+
+    def _on_toggle_playlist_activate(self, item, playlist, songs):
+        parent = get_menu_item_top_parent(item)
+
+        has_some, has_all = playlist.has_songs(songs)
+        if has_all:
+            playlist.remove_songs(songs)
+        elif has_some:
+            resp = ConfirmMultipleSongsAction(parent, playlist, songs).run()
+            if resp == ConfirmMultipleSongsAction.REMOVE:
+                playlist.remove_songs(songs)
+            elif resp == ConfirmMultipleSongsAction.ADD:
+                playlist.extend(songs)
+            return
+        else:
+            playlist.extend(songs)
         PlaylistsBrowser.changed(playlist)
 
 

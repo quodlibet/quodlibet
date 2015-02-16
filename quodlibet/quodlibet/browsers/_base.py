@@ -252,7 +252,7 @@ class Browser(Filter):
         menu is returned the SongList may modify it further.
         """
 
-        return SongsMenu(library, songs, delete=True, parent=self, items=items)
+        return SongsMenu(library, songs, delete=True, items=items)
 
     def statusbar(self, i):
         return ngettext(

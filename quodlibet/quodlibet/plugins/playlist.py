@@ -6,15 +6,13 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, get_menu_item_top_parent
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.x import SeparatorMenuItem, Button
 from quodlibet.util import print_exc
 from quodlibet.util.dprint import print_d, print_e
-from quodlibet import qltk
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.plugins.gui import MenuItemPlugin
-from quodlibet.util import connect_obj
 
 
 class ConfirmMultiPlaylistInvoke(WarningMessage):
@@ -85,8 +83,8 @@ class PlaylistPlugin(MenuItemPlugin):
     plugin_playlist = None
     plugin_playlists = None
 
-    def __init__(self, playlists, library, window):
-        super(PlaylistPlugin, self).__init__(window)
+    def __init__(self, playlists, library):
+        super(PlaylistPlugin, self).__init__()
         self._library = library
 
         self.set_sensitive(bool(self.plugin_handles(playlists)))
@@ -114,8 +112,6 @@ class PlaylistPluginHandler(PluginHandler):
         """Appends items onto `menu` for each enabled playlist plugin,
         separated as necessary. """
 
-        top_parent = qltk.get_top_parent(browser)
-
         attrs = ['plugin_playlist', 'plugin_playlists']
 
         if len(playlists) == 1:
@@ -129,7 +125,7 @@ class PlaylistPluginHandler(PluginHandler):
             usable = any([callable(getattr(Kind, s)) for s in attrs])
             if usable:
                 try:
-                    items.append(Kind(playlists, library, top_parent))
+                    items.append(Kind(playlists, library))
                 except:
                     print_e("Couldn't initialise playlist plugin %s: " % Kind)
                     print_exc()
@@ -143,10 +139,11 @@ class PlaylistPluginHandler(PluginHandler):
                     args = (library, browser, playlists)
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
-                            connect_obj(subitem,
-                                'activate', self.__handle, item, *args)
+                            subitem.connect(
+                                'activate', self.__on_activate, item, *args)
                     else:
-                        item.connect('activate', self.__handle, *args)
+                        item.connect(
+                            'activate', self.__on_activate, item, *args)
                 except:
                     print_exc()
                     item.destroy()
@@ -157,14 +154,19 @@ class PlaylistPluginHandler(PluginHandler):
         for plugin in self.__plugins:
             if plugin.PLUGIN_ID == plugin_id:
                 try:
-                    plugin = plugin(playlists, library, browser)
+                    plugin = plugin(playlists, library)
                 except Exception:
                     print_exc()
                 else:
-                    self.__handle(plugin, library, browser, playlists)
+                    parent = get_top_parent(browser)
+                    self.__handle(plugin, library, browser, playlists, parent)
                 return
 
-    def __handle(self, plugin, library, browser, playlists):
+    def __on_activate(self, item, plugin, library, browser, playlists):
+        parent = get_menu_item_top_parent(item)
+        self.__handle(plugin, library, browser, playlists, parent)
+
+    def __handle(self, plugin, library, browser, playlists, parent):
         if len(playlists) == 0:
             return
 
@@ -185,7 +187,7 @@ class PlaylistPluginHandler(PluginHandler):
             total = len(playlists)
             if total > plugin.MAX_INVOCATIONS:
                 if not self._confirm_multiple(
-                        browser, plugin.PLUGIN_NAME, total):
+                        parent, plugin.PLUGIN_NAME, total):
                     return
 
             try:

@@ -56,7 +56,7 @@ class DuplicateSongsView(RCMHintedTreeView):
             return
 
         menu = SongsMenu(
-            library, songs, delete=True, parent=self, plugins=False,
+            library, songs, delete=True, plugins=False,
             devices=False, playlists=False)
         menu.show_all()
         return menu

@@ -841,7 +841,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
         items.append(iradio_items)
         menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
-                         queue=False, devices=False, parent=self, items=items)
+                         queue=False, devices=False, items=items)
         return menu
 
     def restore(self):

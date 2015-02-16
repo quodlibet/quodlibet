@@ -179,8 +179,8 @@ class FakePlaylistPlugin(PlaylistPlugin):
     MAX_INVOCATIONS = MAX_PLAYLISTS
     total = 0
 
-    def __init__(self, playlists, library, window):
-        super(FakePlaylistPlugin, self).__init__(playlists, library, window)
+    def __init__(self, playlists, library):
+        super(FakePlaylistPlugin, self).__init__(playlists, library)
         self.total = 0
 
     def plugin_playlist(self, _):

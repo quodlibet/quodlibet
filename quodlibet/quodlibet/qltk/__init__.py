@@ -74,10 +74,16 @@ def get_top_parent(widget):
 
 
 def get_menu_item_top_parent(widget):
-    """Returns the toplevel for a menu item"""
+    """Returns the toplevel for a menu item or None if the menu
+    and none of its parents isn't attached to a widget
+    """
 
-    menu = widget and widget.get_parent()
-    return get_top_parent(menu.get_attach_widget())
+    while isinstance(widget, Gtk.MenuItem):
+        menu = widget.get_parent()
+        if not menu:
+            return
+        widget = menu.get_attach_widget()
+    return get_top_parent(widget)
 
 
 def find_widgets(container, type_):

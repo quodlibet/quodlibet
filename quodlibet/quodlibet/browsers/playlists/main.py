@@ -337,7 +337,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         songs = list(model[itr][0])
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
         menu = SongsMenu(library, songs,
-                         playlists=False, remove=False, parent=self,
+                         playlists=False, remove=False,
                          ratings=False)
         menu.preseparate()
 
