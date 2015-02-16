@@ -83,7 +83,7 @@ class GlibTranslations(gettext.GNUTranslations):
             _ = self.ugettext
             ngettext = self.ungettext
             _C = self.upgettext
-            _N = unicode
+            _N = type(u"")
         else:
             _ = self.gettext
             ngettext = self.ngettext
