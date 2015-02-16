@@ -143,7 +143,7 @@ Build Dependencies
 ------------------
 
 * **Python** 2.7 (stdlib only)
-* **gettext** and **intltool** for translations.
+* **gettext** >= 0.15 and **intltool** for translations.
 
 For user documentation ``setup.py build_sphinx`` can be used to create the
 HTML user guide and put it in the build directory in the ``sphinx``
@@ -154,10 +154,17 @@ subdirectory. This is not part of the default build process and requires
 Changes
 -------
 
-3.0 → 3.1
+3.3 → 3.4
 ^^^^^^^^^
 
-* **No changes** compared to 3.0
+* **gtk-update-icon-cache** is no longer a build dependency
+* **gettext >= 0.15** required now
+
+3.2 → 3.3
+^^^^^^^^^
+
+* New optional plugin dependency: **webkitgtk-3.0 + typelibs**
+* **Mutagen 1.27** recommended
 
 3.1 → 3.2
 ^^^^^^^^^
@@ -173,14 +180,7 @@ Changes
 
 * **Python 2.7** required instead of 2.6 (might still work, but not tested)
 
-3.2 → 3.3
+3.0 → 3.1
 ^^^^^^^^^
 
-* New optional plugin dependency: **webkitgtk-3.0 + typelibs**
-* **Mutagen 1.27** recommended
-
-
-3.3 → 3.4
-^^^^^^^^^
-
-* **gtk-update-icon-cache** is no longer a build dependency
+* **No changes** compared to 3.0
