@@ -36,28 +36,13 @@ def _write_fifo(fifo_path, data):
         raise EnvironmentError("Couldn't write to fifo %r" % fifo_path)
 
 
-def split_message(data):
-    """Split incoming data in pairs of (command, fifo path or None)
+def split_message(message):
+    """Removes the path for the response fifo from the message"""
 
-    This supports two data formats:
-    Newline seperated commands without a return fifo path.
-    NULL terminated command/fifo-path pairs.
-
-    They formats can't be mixed in the same message.
-    We assume that messages aren't larger than PIPE_BUF and each process
-    uses only one of the formats and so these formats don't interleave.
-    """
-
-    parts = data.split(b"\x00")
-    while parts:
-        try:
-            cmd, path = parts[:2]
-        except ValueError:
-            for l in parts[0].splitlines():
-                yield (l, None)
-        else:
-            yield (cmd, path)
-        parts = parts[2:]
+    parts = message.rsplit("\x00", 1)
+    if len(parts) != 2:
+        raise ValueError("invalid message")
+    return parts
 
 
 def write_fifo(fifo_path, data):
@@ -71,7 +56,7 @@ def write_fifo(fifo_path, data):
         # mkfifo fails if the file exists, so this is safe.
         os.mkfifo(filename, 0o600)
 
-        _write_fifo(fifo_path, data + "\x00" + filename + "\x00")
+        _write_fifo(fifo_path, data + "\x00" + filename)
 
         try:
             signal.signal(signal.SIGALRM, lambda: "" + 2)
