@@ -112,19 +112,12 @@ class QuodLibetUnixRemote(RemoteBase):
         self._fifo.destroy()
 
     def _callback(self, data):
-        try:
-            data, path = fifo.split_message(data)
-        except ValueError:
-            # In case someones writes to the fifo the path part is missing
-            # so call the command and throw away the response. We also
-            # support multiple commands separated by newlines there..
-            for line in data.splitlines():
-                self._cmd_registry.handle_line(self._app, line)
-        else:
-            with open(path, "wb") as h:
-                response = self._cmd_registry.handle_line(self._app, data)
-                if response is not None:
-                    h.write(response)
+        for command, path in fifo.split_message(data):
+            response = self._cmd_registry.handle_line(self._app, command)
+            if path is not None:
+                with open(path, "wb") as h:
+                    if response is not None:
+                        h.write(response)
 
 
 if os.name == "nt":
