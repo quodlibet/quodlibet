@@ -36,13 +36,43 @@ def _write_fifo(fifo_path, data):
         raise EnvironmentError("Couldn't write to fifo %r" % fifo_path)
 
 
-def split_message(message):
-    """Removes the path for the response fifo from the message"""
+def split_message(data):
+    """Split incoming data in pairs of (command, fifo path or None)
 
-    parts = message.rsplit("\x00", 1)
-    if len(parts) != 2:
-        raise ValueError("invalid message")
-    return parts
+    This supports two data formats:
+    Newline seperated commands without a return fifo path.
+    and "NULL<command>NULL<fifo-path>NULL"
+
+    Raises ValueError
+    """
+
+    arg = 0
+    args = []
+    while data:
+        if arg == 0:
+            index = data.find("\x00")
+            if index == 0:
+                arg = 1
+                data = data[1:]
+                continue
+            if index == -1:
+                elm = data
+                data = ""
+            else:
+                elm, data = data[:index], data[index:]
+            for l in elm.splitlines():
+                yield (l, None)
+        elif arg == 1:
+            elm, data = data.split("\x00", 1)
+            args.append(elm)
+            arg = 2
+        elif arg == 2:
+            elm, data = data.split("\x00", 1)
+            args.append(elm)
+            yield tuple(args)
+            del args[:]
+            arg = 0
+
 
 
 def write_fifo(fifo_path, data):
@@ -56,7 +86,7 @@ def write_fifo(fifo_path, data):
         # mkfifo fails if the file exists, so this is safe.
         os.mkfifo(filename, 0o600)
 
-        _write_fifo(fifo_path, data + "\x00" + filename)
+        _write_fifo(fifo_path, "\x00" + data + "\x00" + filename + "\x00")
 
         try:
             signal.signal(signal.SIGALRM, lambda: "" + 2)
