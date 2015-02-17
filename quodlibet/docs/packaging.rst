@@ -40,6 +40,10 @@ The following software is needed to start Ex Falso or Quod Libet.
 * On Windows only: **pywin32**
 * On OS X only: **PyObjC**
 
+For icons a complete **icon theme** is needed, preferably with symbolic icons. 
+For example **adwaita-icon-theme** or the older **gnome-icon-theme** + 
+**gnome-icon-theme-symbolic**
+
 For playback support in Quod Libet one of the following two is needed:
 
 GStreamer
@@ -63,9 +67,6 @@ Xine
 
 Optional Runtime Dependencies
 -----------------------------
-
-**gnome-symbolic-icon-theme**:
-    * For symbolic icons; QL will fall back to colored ones if needed.
 
 **dbus-python**:
     * Enables the DBus interface
@@ -158,7 +159,10 @@ Changes
 ^^^^^^^^^
 
 * **gtk-update-icon-cache** is no longer a build dependency
-* **gettext >= 0.15** required now
+* **gettext >= 0.15** is required now
+* A complete **icon theme** is now required (this was also partly the case
+  with 3.3) and an icon theme including symbolic icons is recommended.
+  **adwaita-icon-theme** provides both for example.
 
 3.2 → 3.3
 ^^^^^^^^^
