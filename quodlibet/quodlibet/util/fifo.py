@@ -74,7 +74,6 @@ def split_message(data):
             arg = 0
 
 
-
 def write_fifo(fifo_path, data):
     """Writes the data to the fifo and returns a response
     or raises EnvironmentError.
