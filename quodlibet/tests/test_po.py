@@ -244,7 +244,9 @@ class PO(AbstractTestCase):
         from quodlibet import print_w
         if fails:
             def format_occurrences(e):
-                return ', '.join('%s:%s' % o for o in e.occurrences)
+                occurences = [(self.lang + ".po", e.linenum)]
+                occurences += e.occurrences
+                return ', '.join('%s:%s' % o for o in occurences)
             messages = [
                 '"%s" - "%s" (%s)' % (e.msgid, e.msgstr, format_occurrences(e))
                 for e in fails
@@ -259,7 +261,7 @@ class PO(AbstractTestCase):
         if polib is None:
             return
 
-        LANGUAGES_TO_CHECK = ('ru',)
+        LANGUAGES_TO_CHECK = ('ru', 'de')
 
         if self.lang not in LANGUAGES_TO_CHECK:
             return
