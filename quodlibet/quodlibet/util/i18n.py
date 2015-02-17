@@ -21,10 +21,13 @@ def gettext_install_dummy(unicode=False):
     _dummy_gettext = lambda value: uni(value)
     _dummy_pgettext = lambda context, value: uni(value)
     _dummy_ngettext = lambda v1, v2, count: (count == 1) and uni(v1) or uni(v2)
+    _dummy_npgettext = lambda context, v1, v2, count: \
+        (count == 1) and uni(v1) or uni(v2)
     __builtin__.__dict__["_"] = _dummy_gettext
     __builtin__.__dict__["C_"] = _dummy_pgettext
     __builtin__.__dict__["N_"] = _dummy_gettext
     __builtin__.__dict__["ngettext"] = _dummy_ngettext
+    __builtin__.__dict__["npgettext"] = _dummy_npgettext
 
 
 class GlibTranslations(gettext.GNUTranslations):
@@ -65,6 +68,29 @@ class GlibTranslations(gettext.GNUTranslations):
             return msgid
         return result
 
+    def npgettext(self, context, msgid, msgidplural, n):
+        real_msgid = "%s\x04%s" % (context, msgid)
+        real_msgidplural = "%s\x04%s" % (context, msgidplural)
+        result = self.ngettext(real_msgid, real_msgidplural, n)
+        if result == real_msgid:
+            return msgid
+        elif result == real_msgidplural:
+            return msgidplural
+        return result
+
+    def unpgettext(self, context, msgid, msgidplural, n):
+        context = unicode(context)
+        msgid = unicode(msgid)
+        msgidplural = unicode(msgidplural)
+        real_msgid = u"%s\x04%s" % (context, msgid)
+        real_msgidplural = u"%s\x04%s" % (context, msgidplural)
+        result = self.ngettext(real_msgid, real_msgidplural, n)
+        if result == real_msgid:
+            return msgid
+        elif result == real_msgidplural:
+            return msgidplural
+        return result
+
     def upgettext(self, context, msgid):
         context = unicode(context)
         msgid = unicode(msgid)
@@ -82,11 +108,13 @@ class GlibTranslations(gettext.GNUTranslations):
         if unicode:
             _ = self.ugettext
             ngettext = self.ungettext
+            npgettext = self.unpgettext
             _C = self.upgettext
             _N = type(u"")
         else:
             _ = self.gettext
             ngettext = self.ngettext
+            npgettext = self.npgettext
             _C = self.pgettext
             _N = lambda s: s
 
@@ -103,8 +131,10 @@ class GlibTranslations(gettext.GNUTranslations):
             _N = wrap(_N)
             _C = wrap(_C)
             ngettext = wrap(ngettext)
+            npgettext = wrap(npgettext)
 
         __builtin__.__dict__["_"] = _
         __builtin__.__dict__["N_"] = _N
         __builtin__.__dict__["C_"] = _C
         __builtin__.__dict__["ngettext"] = ngettext
+        __builtin__.__dict__["npgettext"] = npgettext
