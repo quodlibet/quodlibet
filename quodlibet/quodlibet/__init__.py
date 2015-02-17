@@ -18,14 +18,15 @@ import quodlibet.util
 
 from quodlibet.util import set_process_title
 from quodlibet.util.path import mkdir, unexpand
-from quodlibet.util.i18n import GlibTranslations, gettext_install_dummy
+from quodlibet.util.i18n import GlibTranslations
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet.const import MinVersions, Version
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers"]
 
-gettext_install_dummy(unicode=True)
+
+GlibTranslations().install(unicode=True)
 
 
 class Application(object):
@@ -346,6 +347,10 @@ def _dbus_init():
 def _gettext_init():
     """Call before using gettext helpers"""
 
+    # set by tests
+    if "QUODLIBET_NO_TRANS" in os.environ:
+        return
+
     try:
         locale.setlocale(locale.LC_ALL, '')
     except locale.Error:
@@ -381,7 +386,8 @@ def _gettext_init():
     else:
         print_d("Translations loaded: %r" % unexpand(t.path))
 
-    t.install(unicode=True)
+    debug_text = os.environ.get("QUODLIBET_TEST_TRANS")
+    t.install(unicode=True, debug_text=debug_text)
 
 
 def _python_init():
