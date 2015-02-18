@@ -924,7 +924,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         config.set("memory", "browser", Browser.__name__)
         if self.browser:
-            if self.browser.uses_main_library != Browser.uses_main_library:
+            if not (self.browser.uses_main_library and
+                    Browser.uses_main_library):
                 self.songlist.clear()
             container = self.browser.__container
             self.browser.unpack(container, self.songpane)
