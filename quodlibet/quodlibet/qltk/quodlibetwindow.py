@@ -921,8 +921,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         if isinstance(current, Gtk.RadioAction):
             current = current.get_current_value()
         Browser = browsers.get(current)
+
         config.set("memory", "browser", Browser.__name__)
         if self.browser:
+            if self.browser.uses_main_library != Browser.uses_main_library:
+                self.songlist.clear()
             container = self.browser.__container
             self.browser.unpack(container, self.songpane)
             if self.browser.accelerators:

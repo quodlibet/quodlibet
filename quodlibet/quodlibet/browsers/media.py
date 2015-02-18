@@ -132,6 +132,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
     name = _("Media Devices")
     accelerated_name = _("_Media Devices")
     priority = 25
+    uses_main_library = False
     replaygain_profiles = ['track']
 
     __devices = Gtk.ListStore(object, str)

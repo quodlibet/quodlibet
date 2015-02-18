@@ -223,6 +223,7 @@ class AudioFeeds(Browser, Gtk.VBox):
     name = _("Audio Feeds")
     accelerated_name = _("_Audio Feeds")
     priority = 20
+    uses_main_library = False
 
     __last_folder = const.HOME
 

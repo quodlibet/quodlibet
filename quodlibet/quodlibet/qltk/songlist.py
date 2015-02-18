@@ -705,6 +705,13 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         super(SongList, self).set_model(model)
         self.set_search_column(0)
 
+    def clear(self):
+        """Remove all songs"""
+
+        model = self.get_model()
+        if model:
+            model.clear()
+
     def get_songs(self):
         """Get all songs currently in the song list"""
 

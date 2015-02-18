@@ -481,6 +481,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
     name = _("Internet Radio")
     accelerated_name = _("_Internet Radio")
     priority = 16
+    uses_main_library = False
     headers = "title artist ~people grouping genre website ~format " \
         "channel-mode".split()
 
