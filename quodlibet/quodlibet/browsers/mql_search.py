@@ -102,20 +102,19 @@ class MqlBrowser(SearchBar):
                 #print_d(self.mql.parse(self._text))
                 tags = SongList.star
                 print_d("Setting up MQL parser with %s" % tags)
-                mql_query = Mql(text, star=tags)
-                self._query = mql_query.search
+                self._query = mql_query = Mql(text, star=tags)
                 print_d(self._query)
                 total = 0
                 lim = mql_query.limit
                 if lim is not None:
                     try:
                         tag, mul = AGGREGATES[lim.units]
-                    except KeyError, e:
+                    except KeyError:
                         tag = lim.units
                         mul = 1
                     maxx = lim.value * mul
                 for song in self._library:
-                    if not self._query(song):
+                    if not self._query.search(song):
                         continue
                     elif lim is not None:
                         if lim.units == 'SONGS':

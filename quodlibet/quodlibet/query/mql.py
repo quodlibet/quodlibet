@@ -158,7 +158,7 @@ class Mql(Query):
         # MQL-specifics
         self._limit = None
         self._stack = []
-        self.query = Forward()
+        self.pp_query = Forward()
         self.star = star
         self.STANDARD_TAG = oneOf(' '.join(star), caseless=True)
         self.TAG = (self.STANDARD_TAG | Mql.INT_TAG)("TAG")
@@ -196,10 +196,10 @@ class Mql(Query):
         )
         clause << (expr + ZeroOrMore((Mql.JUNCTION + clause)
                                      .setParseAction(self.handle_junction)))
-        self.query << (Group(Optional(clause) + Optional(limit_clause))
-                       + StringEnd())
+        self.pp_query << (Group(Optional(clause) + Optional(limit_clause))
+                          + StringEnd())
         if debug:
-            self.query.setDebug()
+            self.pp_query.setDebug()
         self.parse(string)
         self._match = self._eval_stack()
 
@@ -211,17 +211,9 @@ class Mql(Query):
         try:
             self._limit = None
             self._stack = []
-            return self.query.parseString(s)
+            return self.pp_query.parseString(s)
         except ParseException as e:
             raise ParseError(e)
-
-    def is_valid(self, s):
-        try:
-            self.parse(s)
-            return True
-        except ParseError, e:
-            print_d("INVALID MQL: " + str(e))
-            return False
 
     def push(self, x):
         self._stack.append(x)

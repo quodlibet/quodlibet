@@ -29,7 +29,7 @@ class TMQL(TestCase):
                         star=["artist", "title", "version", "album",
                               "genre", "comment", "~dirname", "genre",
                               "performer", "originalartist"])
-                print_d("Reformatted={%s}" % m.query.transformString(expr))
+                print_d("Reformatted={%s}" % m.pp_query.transformString(expr))
             except ParseError, pe:
                 self.fail("{%s} died unexpectedly (%s)" % (expr, pe))
             else:
