@@ -559,6 +559,16 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         main_box.show_all()
 
+        self._playback_error_dialog = None
+        connect_destroy(player, 'song-started', self.__song_started)
+        connect_destroy(player, 'paused', self.__update_paused, True)
+        connect_destroy(player, 'unpaused', self.__update_paused, False)
+        # make sure we redraw all error indicators before opening
+        # a dialog (blocking the main loop), so connect after default handlers
+        connect_after_destroy(player, 'error', self.__player_error)
+        # connect after to let SongTracker update stats
+        connect_after_destroy(player, "song-ended", self.__song_ended)
+
         # set at least the playlist. the song should be restored
         # after the browser emits the song list
         player.setup(self.playlist, None, 0)
@@ -584,22 +594,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         lib = library.librarian
         connect_destroy(lib, 'changed', self.__song_changed, player)
-
-        self._playback_error_dialog = None
-        player_sigs = [
-            ('song-started', self.__song_started),
-            ('paused', self.__update_paused, True),
-            ('unpaused', self.__update_paused, False),
-        ]
-        for sig in player_sigs:
-            connect_destroy(player, *sig)
-
-        # make sure we redraw all error indicators before opening
-        # a dialog (blocking the main loop), so connect after default handlers
-        connect_after_destroy(player, 'error', self.__player_error)
-
-        # connect after to let SongTracker update stats
-        connect_after_destroy(player, "song-ended", self.__song_ended)
 
         targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
