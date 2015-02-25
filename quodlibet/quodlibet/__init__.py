@@ -363,6 +363,16 @@ def _gettext_init():
                                  [k32.GetUserDefaultUILanguage(),
                                   k32.GetSystemDefaultUILanguage()]))
         os.environ.setdefault('LANG', ":".join(langs))
+    elif os.name == "darwin":
+        from AppKit import NSLocale
+        lang = NSLocale.currentLocale().localeIdentifier()
+        os.environ.setdefault('LANG', lang)
+        # Only take the first one because if it contains "en" which we don't
+        # have a translation for it will fall back to the second choice
+        # which is not what we want.
+        # Maybe replacing "en" in the list with "C" would work..?
+        languages = NSLocale.preferredLanguages()[0]
+        os.environ.setdefault('LANGUAGES', languages)
 
     # Use the locale dir in ../build/share/locale if there is one
     localedir = os.path.dirname(quodlibet.const.BASEDIR)
