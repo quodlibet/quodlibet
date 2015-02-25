@@ -363,7 +363,7 @@ def _gettext_init():
                                  [k32.GetUserDefaultUILanguage(),
                                   k32.GetSystemDefaultUILanguage()]))
         os.environ.setdefault('LANG', ":".join(langs))
-    elif os.name == "darwin":
+    elif sys.platform == "darwin":
         from AppKit import NSLocale
         lang = NSLocale.currentLocale().localeIdentifier()
         os.environ.setdefault('LANG', lang)
