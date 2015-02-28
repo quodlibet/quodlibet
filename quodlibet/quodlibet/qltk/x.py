@@ -200,15 +200,19 @@ def Frame(label, child=None):
     return frame
 
 
-class Align(Gtk.Bin):
+class Align(Gtk.Frame):
     """A Gtk.Alignment replacement which is responsible for
     the positioning/allocation of its child widget.
+
+    XXX: Subclasses Gtk.Frame instead of Gtk.Bin because the later
+    fails with Gtk+ 3.4.
     """
 
     def __init__(self, child=None,
                  top=0, right=0, bottom=0, left=0, border=0,
                  halign=Gtk.Align.FILL, valign=Gtk.Align.FILL):
         super(Align, self).__init__(
+            shadow_type=Gtk.ShadowType.NONE,
             halign=halign, valign=valign,
             margin_top=border + top, margin_bottom=border + bottom,
             margin_left=border + left, margin_right=border + right)
