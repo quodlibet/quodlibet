@@ -114,7 +114,7 @@ class FingerprintDialog(Window):
             "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
         text += "\n\n" + _("<i>Fingerprints:</i>")
         text += " %d/%d" % (valid_fp, all_)
-        text += "\n" # _("<i>Songs with MBIDs:</i>")
+        text += "\n" + _("<i>Songs with MBIDs:</i>")
         text += " %d/%d" % (got_mbid, all_)
         text += "\n" + _("<i>Songs with sufficient tags:</i>")
         text += " %d/%d" % (got_meta, all_)
