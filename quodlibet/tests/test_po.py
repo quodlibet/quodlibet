@@ -76,7 +76,7 @@ class TPot(TestCase):
             Send to Kitchen: - will erroneously pass the test
         """
         fails = []
-        ok_labels = L('Local _IP:')
+        ok_labels = L('Local _IP:', 'Songs with MBIDs:')
 
         for entry in self.pot:
             if not entry.msgid.endswith(':'):
@@ -143,14 +143,15 @@ class TPot(TestCase):
     def test_markup(self):
         # https://wiki.gnome.org/Initiatives/GnomeGoals/RemoveMarkupInMessages
 
+        fails = []
         for entry in self.pot:
-            # this only checks strings containing "%" where it's likely
-            # that the formated content is variable anyway.
+            # This only checks strings starting and ending with a tag.
             # TODO: fix for all cases by adding a translator comment
             # and insert
-            self.assertFalse(
-                re.match("<.*?>.*?%.*?</.*?>", entry.msgid),
-                msg=u"%s contains markup, remove it!" % entry)
+            if re.match("<.*?>.*</.*?>", entry.msgid):
+                fails.append(entry)
+
+        self.conclude(fails, "contains markup, remove it!")
 
     def test_terms_letter_case(self):
         """ Check that some words are always written with a specific

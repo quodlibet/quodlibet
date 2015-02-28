@@ -599,7 +599,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         def create_model():
             model = Gtk.ListStore(str, str)
-            model.append([_("<b>always</b>"), UpdateMode.ALWAYS])
+            model.append(["<b>%s</b>" % _("always"), UpdateMode.ALWAYS])
             model.append([_("if <b>any</b> RG tags are missing"),
                           UpdateMode.ANY_MISSING])
             model.append([_("if <b>album</b> RG tags are missing"),
