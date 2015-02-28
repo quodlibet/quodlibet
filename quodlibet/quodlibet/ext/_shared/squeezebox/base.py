@@ -11,6 +11,7 @@ from gi.repository import Gtk, GLib
 from quodlibet import print_d, app, config
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.qltk import Message
+from quodlibet.qltk.x import Frame
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.util.library import get_scan_dirs
 
@@ -96,14 +97,6 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
             cls.init_server()
         cfg = cls.server.config
 
-        # Server settings Frame
-        cfg_frame = Gtk.Frame(label=_("<b>Squeezebox Server</b>"))
-        cfg_frame.set_shadow_type(Gtk.ShadowType.NONE)
-        cfg_frame.get_label_widget().set_use_markup(True)
-        cfg_frame_align = Gtk.Alignment.new(0, 0, 1, 1)
-        cfg_frame_align.set_padding(6, 6, 12, 12)
-        cfg_frame.add(cfg_frame_align)
-
         # Tabulate all settings for neatness
         table = Gtk.Table(n_rows=3, n_columns=2)
         table.set_col_spacings(6)
@@ -149,7 +142,9 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         button.connect('clicked', cls.check_settings)
         table.attach(button, 0, 2, row + 1, row + 2)
 
-        cfg_frame_align.add(table)
+        # Server settings Frame
+        cfg_frame = Frame(_("Squeezebox Server"), table)
+
         vb.pack_start(cfg_frame, True, True, 0)
         debug = cls.ConfigCheckButton(_("Debug"), "debug")
         vb.pack_start(debug, True, True, 0)

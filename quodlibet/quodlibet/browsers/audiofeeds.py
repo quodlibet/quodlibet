@@ -28,7 +28,7 @@ from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import connect_obj
-from quodlibet.qltk.x import ScrolledWindow, Alignment, Button
+from quodlibet.qltk.x import ScrolledWindow, Align, Button
 
 
 FEEDS = os.path.join(const.USERDIR, "feeds")
@@ -382,7 +382,7 @@ class AudioFeeds(Browser, Gtk.VBox):
 
         connect_obj(self, 'destroy', self.__save, view)
 
-        self.pack_start(Alignment(new, left=3, bottom=3), False, True, 0)
+        self.pack_start(Align(new, left=3, bottom=3), False, True, 0)
 
         for child in self.get_children():
             child.show_all()

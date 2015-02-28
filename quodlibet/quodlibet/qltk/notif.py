@@ -30,7 +30,7 @@ Of course, right now it does none of these things.
 from gi.repository import Gtk, GLib, Pango
 
 from quodlibet.util import copool
-from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton
+from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton, Align
 
 SIZE = Gtk.IconSize.MENU
 
@@ -291,7 +291,7 @@ class StatusBar(Gtk.HBox):
         self.default_label.set_text(_("No time information"))
         self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.pack_start(
-            Gtk.Alignment(xalign=1.0, xscale=0, child=self.default_label),
+            Align(self.default_label, halign=Gtk.Align.END),
             True, True, 0)
         self.task_widget = TaskWidget(task_controller)
         self.pack_start(self.task_widget, True, True, 0)

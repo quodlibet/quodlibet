@@ -20,6 +20,7 @@ from quodlibet.plugins import PluginConfigMixin
 from quodlibet.browsers.collection.models import EMPTY
 
 from quodlibet.qltk.views import HintedTreeView
+from quodlibet.qltk.x import Frame
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util import cached_property
 
@@ -584,14 +585,6 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     def PluginPreferences(cls, parent):
         vb = Gtk.VBox(spacing=12)
 
-        # Server settings Frame
-        frame = Gtk.Frame(label=_("<b>Existing Tags</b>"))
-        frame.set_shadow_type(Gtk.ShadowType.NONE)
-        frame.get_label_widget().set_use_markup(True)
-        frame_align = Gtk.Alignment.new(0, 0, 1, 1)
-        frame_align.set_padding(6, 6, 12, 12)
-        frame.add(frame_align)
-
         # Tabulate all settings for neatness
         table = Gtk.Table(n_rows=1, n_columns=2)
         table.set_col_spacings(6)
@@ -637,7 +630,9 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
                          xoptions=Gtk.AttachOptions.FILL)
             table.attach(entry, 1, 2, row, row + 1)
 
-        frame_align.add(table)
+        # Server settings Frame
+        frame = Frame(_("Existing Tags"), table)
+
         vb.pack_start(frame, True, True, 0)
         return vb
 

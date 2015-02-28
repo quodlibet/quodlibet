@@ -13,7 +13,7 @@ from gi.repository import Gtk, Gdk, Pango
 
 from quodlibet import qltk
 from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.qltk.x import SeparatorMenuItem, Align
 from quodlibet.util import connect_destroy
 
 from quodlibet.pattern import XMLFromMarkupPattern
@@ -47,7 +47,7 @@ class SongInfo(Gtk.EventBox):
         super(SongInfo, self).__init__()
         self._pattern_filename = pattern_filename
         self.set_visible_window(False)
-        align = Gtk.Alignment(xscale=0.0, xalign=0.0, yscale=0.0, yalign=0.0)
+        align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)
         label = Gtk.Label()
         label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
         label.set_selectable(True)

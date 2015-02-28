@@ -38,7 +38,7 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import ConfigRVPaned, Alignment, ScrolledWindow
+from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage, Button
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
@@ -167,7 +167,7 @@ class TopBar(Gtk.Toolbar):
         # song text
         info_pattern_path = os.path.join(const.USERDIR, "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
-        box.pack_start(Alignment(text, border=3), True, True, 0)
+        box.pack_start(Align(text, border=3), True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
@@ -179,10 +179,7 @@ class TopBar(Gtk.Toolbar):
                 app.cover_manager, 'cover-changed',
                 self.__song_art_changed, library)
 
-        # CoverImage doesn't behave in a Alignment, so wrap it
-        coverbox = Gtk.Box()
-        coverbox.pack_start(self.image, True, True, 0)
-        box.pack_start(Alignment(coverbox, border=2), False, True, 0)
+        box.pack_start(Align(self.image, border=2), False, True, 0)
 
         for child in self.get_children():
             child.show_all()
@@ -506,7 +503,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         main_box.pack_start(top_bar, False, True, 0)
         self.top_bar = top_bar
 
-        self.__browserbox = Alignment(bottom=3)
+        self.__browserbox = Align(bottom=3)
         main_box.pack_start(self.__browserbox, True, True, 0)
 
         statusbox = StatusBarBox(self.songlist.model, player)
@@ -515,7 +512,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.statusbar = statusbox.statusbar
 
         main_box.pack_start(
-            Alignment(statusbox, border=3, top=-3, right=3),
+            Align(statusbox, border=3, top=-3, right=3),
             False, True, 0)
 
         self.songpane = ConfigRVPaned("memory", "queue_position", 0.75)

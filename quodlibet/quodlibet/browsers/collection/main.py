@@ -21,7 +21,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (get_scale_factor, get_pbosf_for_pixbuf,
     set_renderer_from_pbosf, scale, add_border_widget)
-from quodlibet.qltk.x import ScrolledWindow, Alignment, SymbolicIconImage
+from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
 from quodlibet.util.collection import Album
 from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
@@ -240,7 +240,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         hbox.pack_start(search, True, True, 0)
         hbox.pack_start(prefs, False, True, 0)
 
-        self.pack_start(Alignment(hbox, left=6, top=6), False, True, 0)
+        self.pack_start(Align(hbox, left=6, top=6), False, True, 0)
         self.pack_start(sw, True, True, 0)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)

@@ -119,16 +119,14 @@ class PreferencesWidget(Gtk.VBox):
         body_label.set_mnemonic_widget(body_textview)
         table.attach(body_label, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
-        revert_align = Gtk.Alignment()
         body_revert = Gtk.Button()
         body_revert.add(Gtk.Image.new_from_stock(
                         Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
         body_revert.set_tooltip_text(_("Revert to default pattern"))
         connect_obj(body_revert,
             "clicked", body_textbuffer.set_text, DEFAULT_CONFIG["bodypattern"])
-        revert_align.add(body_revert)
         table.attach(
-            revert_align, 2, 3, 1, 2,
+            body_revert, 2, 3, 1, 2,
             xoptions=Gtk.AttachOptions.SHRINK,
             yoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
 

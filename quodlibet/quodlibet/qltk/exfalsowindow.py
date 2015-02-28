@@ -25,7 +25,7 @@ from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
-from quodlibet.qltk.x import Alignment, SeparatorMenuItem, ConfigRHPaned, \
+from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
     Button
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
 from quodlibet.qltk import icons
@@ -95,7 +95,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         fs = MainFileSelector()
 
         vb.pack_start(fs, True, True, 0)
-        vb.pack_start(Alignment(bbox, border=6), False, True, 0)
+        vb.pack_start(Align(bbox, border=6), False, True, 0)
         vb.show_all()
 
         hp.pack1(vb, resize=True, shrink=False)
@@ -107,7 +107,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             page = Page(self, self.__library)
             page.show()
             nb.append_page(page)
-        align = Alignment(nb, top=3)
+        align = Align(nb, top=3)
         align.show()
         hp.pack2(align, resize=True, shrink=False)
         fs.connect('changed', self.__changed, l)

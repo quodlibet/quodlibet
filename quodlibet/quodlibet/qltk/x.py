@@ -185,12 +185,11 @@ class Notebook(Gtk.Notebook):
 
 
 def Frame(label, child=None):
-    """A Gtk.Frame with no shadow, 12px left padding, and 3px top padding."""
+    """A Gtk.Frame with no shadow, 12px left padding, and 6px top padding."""
     frame = Gtk.Frame()
     label_w = Gtk.Label()
     label_w.set_markup("<b>%s</b>" % util.escape(label))
-    align = Gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
-    align.set_padding(6, 0, 12, 0)
+    align = Align(left=12, top=6)
     frame.add(align)
     frame.set_shadow_type(Gtk.ShadowType.NONE)
     frame.set_label_widget(label_w)
@@ -201,14 +200,21 @@ def Frame(label, child=None):
     return frame
 
 
-def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0,
-              **kwargs):
-    align = Gtk.Alignment(**kwargs)
-    align.set_padding(top + border, bottom + border,
-                      left + border, right + border)
-    if child:
-        align.add(child)
-    return align
+class Align(Gtk.Bin):
+    """A Gtk.Alignment replacement which is responsible for
+    the positioning/allocation of its child widget.
+    """
+
+    def __init__(self, child=None,
+                 top=0, right=0, bottom=0, left=0, border=0,
+                 halign=Gtk.Align.FILL, valign=Gtk.Align.FILL):
+        super(Align, self).__init__(
+            halign=halign, valign=valign,
+            margin_top=border + top, margin_bottom=border + bottom,
+            margin_left=border + left, margin_right=border + right)
+
+        if child is not None:
+            self.add(child)
 
 
 def MenuItem(label, stock_id):
@@ -229,7 +235,7 @@ def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
     """A Button with a custom label and stock image. It should pack
     exactly like a stock button."""
 
-    align = Gtk.Alignment(xscale=0.0, yscale=1.0, xalign=0.5, yalign=0.5)
+    align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.HBox(spacing=2)
     if Gtk.stock_lookup(stock_id):
         image = Gtk.Image.new_from_stock(stock_id, size)

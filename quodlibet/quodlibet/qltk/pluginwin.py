@@ -16,7 +16,7 @@ from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow
 from quodlibet.qltk.entry import ClearEntry
-from quodlibet.qltk.x import Alignment, Paned, Button
+from quodlibet.qltk.x import Align, Paned, Button
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk import icons
 from quodlibet.util import connect_obj
@@ -334,7 +334,7 @@ class PluginWindow(UniqueWindow):
 
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
-        bb_align = Gtk.Alignment.new(0, 1, 1, 0)
+        bb_align = Align(halign=Gtk.Align.END, valign=Gtk.Align.END)
         bb = Gtk.HButtonBox()
         bb.set_layout(Gtk.ButtonBoxStyle.END)
         bb.pack_start(close, True, True, 0)
@@ -347,10 +347,10 @@ class PluginWindow(UniqueWindow):
         right_box = Gtk.VBox(spacing=12)
         right_box.pack_start(pref_box, True, True, 0)
         self.use_header_bar()
-        if not self.has_close_button():
+        if not self.has_close_button() or 1:
             right_box.pack_start(bb_align, True, True, 0)
 
-        paned.pack2(Alignment(right_box, left=6), True, False)
+        paned.pack2(Align(right_box, left=6), True, False)
         paned.set_position(250)
 
         self.add(paned)

@@ -22,7 +22,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.wlw import WaitLoadBar
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.delete import DeleteDialog
-from quodlibet.qltk.x import Alignment, ScrolledWindow, Button
+from quodlibet.qltk.x import Align, ScrolledWindow, Button
 from quodlibet.util import connect_obj
 
 
@@ -206,7 +206,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
         hbox = Gtk.HBox(spacing=6)
         hbox.set_homogeneous(True)
-        self.pack_start(Alignment(hbox, left=3, bottom=3), False, True, 0)
+        self.pack_start(Align(hbox, left=3, bottom=3), False, True, 0)
 
         # refresh button
         refresh = Button(_("_Refresh"), Gtk.STOCK_REFRESH, Gtk.IconSize.MENU)

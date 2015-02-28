@@ -20,7 +20,7 @@ from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
-from quodlibet.qltk.x import ScrolledWindow, Alignment
+from quodlibet.qltk.x import ScrolledWindow, Align
 from quodlibet.util.library import background_filter
 from quodlibet.util import connect_destroy
 
@@ -80,7 +80,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         sbb.connect('focus-out', self.__focus)
         self._sb_box = sbb
 
-        align = Alignment(sbb, left=6, right=6, top=6)
+        align = Align(sbb, left=6, right=6, top=6)
         self.pack_start(align, False, True, 0)
 
         keyval, mod = Gtk.accelerator_parse("<control>Home")

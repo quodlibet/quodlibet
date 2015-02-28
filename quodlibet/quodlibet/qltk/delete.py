@@ -21,7 +21,7 @@ from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
-from quodlibet.qltk.x import Button, MenuItem, Alignment
+from quodlibet.qltk.x import Button, MenuItem, Align
 from quodlibet.util.path import fsdecode, unexpand
 
 
@@ -37,7 +37,7 @@ class FileListExpander(Gtk.Expander):
         lab.set_alignment(0.0, 0.0)
         lab.set_selectable(True)
         win = Gtk.ScrolledWindow()
-        win.add_with_viewport(Alignment(lab, border=6))
+        win.add_with_viewport(Align(lab, border=6))
         win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         win.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         win.set_size_request(-1, 100)

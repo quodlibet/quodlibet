@@ -30,7 +30,7 @@ from quodlibet.util.dprint import print_d
 
 from quodlibet import util, qltk, print_w, app
 from quodlibet.qltk.msg import ConfirmFileReplace
-from quodlibet.qltk.x import Paned
+from quodlibet.qltk.x import Paned, Align
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
     get_pbosf_for_pixbuf, set_image_from_pbosf, scale, add_border_widget)
@@ -302,8 +302,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         bbox.pack_start(self.button, True, True, 0)
         bbox.pack_start(close_button, True, True, 0)
 
-        bb_align = Gtk.Alignment.new(0, 1, 1, 0)
-        bb_align.set_property('right-padding', 6)
+        bb_align = Align(valign=Gtk.Align.END, right=6)
         bb_align.add(bbox)
 
         main_hbox = Gtk.HBox()

@@ -25,7 +25,7 @@ from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.qltk.window import UniqueWindow
-from quodlibet.qltk.x import Button
+from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk import icons
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
@@ -363,11 +363,11 @@ class PreferencesWindow(UniqueWindow):
             table.attach(pre_label, 0, 1, 2, 3,
                          xoptions=Gtk.AttachOptions.FILL)
 
-            fb_align = Gtk.Alignment.new(0, 0.5, 0, 1)
+            fb_align = Align(halign=Gtk.Align.START)
             fb_align.add(fb_spin)
             table.attach(fb_align, 1, 2, 1, 2)
 
-            pre_align = Gtk.Alignment.new(0, 0.5, 0, 1)
+            pre_align = Align(halign=Gtk.Align.START)
             pre_align.add(pre_spin)
             table.attach(pre_align, 1, 2, 2, 3)
 
@@ -471,18 +471,16 @@ class PreferencesWindow(UniqueWindow):
             scale_combo.set_cell_data_func(cell, draw_rating_scale, None)
             scale_combo.connect('changed', rating_scale_changed, model)
 
-            default_align = Gtk.Alignment(xalign=0, xscale=0)
+            default_align = Align(halign=Gtk.Align.START)
             default_align.add(default_lab)
-            default_combo_align = Gtk.Alignment(xalign=0, xscale=0)
-            default_combo_align.add(default_combo)
-            scale_align = Gtk.Alignment(xalign=0, xscale=0)
+            scale_align = Align(halign=Gtk.Align.START)
             scale_align.add(scale_lab)
 
             grid = Gtk.Grid(column_spacing=6, row_spacing=6)
             grid.add(scale_align)
             grid.add(scale_combo)
             grid.attach(default_align, 0, 1, 1, 1)
-            grid.attach(default_combo_align, 1, 1, 1, 1)
+            grid.attach(default_combo, 1, 1, 1, 1)
             vb.pack_start(grid, False, False, 6)
 
             # Bayesian Factor

@@ -33,7 +33,7 @@ from quodlibet.util.uri import URI
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
-from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow
+from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
@@ -621,7 +621,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         box = Gtk.HBox(spacing=6)
         box.pack_start(search, True, True, 0)
         box.pack_start(button, False, True, 0)
-        self._searchbox = Alignment(box, left=0, right=6, top=6)
+        self._searchbox = Align(box, left=0, right=6, top=6)
         self._searchbox.show_all()
 
         def qbar_response(infobar, response_id):

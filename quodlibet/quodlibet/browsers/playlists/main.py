@@ -21,7 +21,7 @@ from quodlibet.util import connect_obj
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
-from quodlibet.qltk.x import ScrolledWindow, Alignment
+from quodlibet.qltk.x import ScrolledWindow, Align
 
 from .util import *
 
@@ -159,7 +159,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
         hb.set_homogeneous(True)
         hb.pack_start(newpl, True, True, 0)
         hb.pack_start(importpl, True, True, 0)
-        self.pack_start(Alignment(hb, left=3, bottom=3), False, True, 0)
+        self.pack_start(Align(hb, left=3, bottom=3), False, True, 0)
 
         view.connect('popup-menu', self.__popup_menu, library)
 
