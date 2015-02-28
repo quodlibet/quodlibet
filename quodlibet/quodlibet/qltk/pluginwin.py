@@ -347,7 +347,7 @@ class PluginWindow(UniqueWindow):
         right_box = Gtk.VBox(spacing=12)
         right_box.pack_start(pref_box, True, True, 0)
         self.use_header_bar()
-        if not self.has_close_button() or 1:
+        if not self.has_close_button():
             right_box.pack_start(bb_align, True, True, 0)
 
         paned.pack2(Align(right_box, left=6), True, False)
