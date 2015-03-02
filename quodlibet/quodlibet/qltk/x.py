@@ -211,11 +211,20 @@ class Align(Gtk.Frame):
     def __init__(self, child=None,
                  top=0, right=0, bottom=0, left=0, border=0,
                  halign=Gtk.Align.FILL, valign=Gtk.Align.FILL):
-        super(Align, self).__init__(
+
+        kwargs = dict(
             shadow_type=Gtk.ShadowType.NONE,
             halign=halign, valign=valign,
             margin_top=border + top, margin_bottom=border + bottom,
-            margin_left=border + left, margin_right=border + right)
+            margin_start=border + left, margin_end=border + right,
+        )
+
+        # < Gtk+ 3.12
+        if not hasattr(Gtk.Widget.props, "margin_start"):
+            kwargs["margin_left"] = kwargs.pop("margin_start")
+            kwargs["margin_right"] = kwargs.pop("margin_end")
+
+        super(Align, self).__init__(**kwargs)
 
         if child is not None:
             self.add(child)
