@@ -185,6 +185,20 @@ def visible(widget, width=None, height=None):
 
 
 @contextlib.contextmanager
+def preserve_environ():
+    old = os.environ.copy()
+    yield
+    # don't touch existing values as os.environ is broken for empty
+    # keys on Windows: http://bugs.python.org/issue20658
+    for key, value in os.environ.items():
+        if key not in old:
+            del os.environ[key]
+    for key, value in old.items():
+        if key not in os.environ or os.environ[key] != value:
+            os.environ[key] = value
+
+
+@contextlib.contextmanager
 def capture_output():
     """
     with capture_output as (stdout, stderr):

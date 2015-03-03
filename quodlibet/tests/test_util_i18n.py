@@ -2,6 +2,7 @@
 import os
 
 from tests import TestCase
+from helper import preserve_environ
 
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
     set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang
@@ -55,12 +56,8 @@ class Tgettext(TestCase):
         self.assertEqual(bcp47_to_language("zh-guoyu"), "zh")
 
     def test_set_envvars(self):
-        old = os.environ.copy()
-        try:
+        with preserve_environ():
             set_i18n_envvars()
-        finally:
-            os.environ.clear()
-            os.environ.update(old)
 
     def test_osx_locale_id_to_lang(self):
         self.assertEqual(osx_locale_id_to_lang("de_DE"), "de_DE")
@@ -68,11 +65,7 @@ class Tgettext(TestCase):
         self.assertEqual(osx_locale_id_to_lang("zh-foo-bar_AT"), "zh_AT")
 
     def test_fixup_i18n_envvars(self):
-        old = os.environ.copy()
-        try:
+        with preserve_environ():
             os.environ["LANGUAGE"] = "en:de:en_FOO:nl"
             fixup_i18n_envvars()
             self.assertEqual(os.environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
-        finally:
-            os.environ.clear()
-            os.environ.update(old)
