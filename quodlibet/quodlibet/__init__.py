@@ -355,6 +355,9 @@ def _gettext_init():
     set_i18n_envvars()
     fixup_i18n_envvars()
 
+    print_d("LANGUAGE: %r" % os.environ.get("LANGUAGE"))
+    print_d("LANG: %r" % os.environ.get("LANG"))
+
     try:
         locale.setlocale(locale.LC_ALL, '')
     except locale.Error:
