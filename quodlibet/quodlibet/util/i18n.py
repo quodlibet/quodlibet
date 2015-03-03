@@ -43,6 +43,18 @@ def bcp47_to_language(code):
     return lang_subtag
 
 
+def osx_locale_id_to_lang(id_):
+    """Converts a NSLocale identifier to something suitable for LANG"""
+
+    if not "_" in id_:
+        return id_
+    # id_ can be "zh-Hans_TW"
+    parts = id_.rsplit("_", 1)
+    ll = parts[0]
+    ll = bcp47_to_language(ll).split("_")[0]
+    return "%s_%s" % (ll, parts[1])
+
+
 def set_i18n_envvars():
     """Set the LANG/LANGUAGE environment variables if not set in case the
     current platform doesn't use them by default (OS X, Window)
@@ -59,12 +71,43 @@ def set_i18n_envvars():
             os.environ.setdefault('LANGUAGE', ":".join(langs))
     elif sys.platform == "darwin":
         from AppKit import NSLocale
-        lang = NSLocale.currentLocale().localeIdentifier()
+        locale_id = NSLocale.currentLocale().localeIdentifier()
+        lang = osx_locale_id_to_lang(locale_id)
         os.environ.setdefault('LANG', lang)
-        langs = [bcp47_to_language(c) for c in NSLocale.preferredLanguages()]
-        os.environ.setdefault('LANGUAGE', ":".join(langs))
+
+        preferred_langs = NSLocale.preferredLanguages()
+        if preferred_langs:
+            languages = map(bcp47_to_language, preferred_langs)
+            os.environ.setdefault('LANGUAGE', ":".join(languages))
     else:
         return
+
+
+def fixup_i18n_envvars():
+    """Sanitizes env vars before gettext can use them.
+
+    LANGUAGE should support a priority list of languages with fallbacks, but
+    doesn't work due to "en" no being known to gettext (This could be solved
+    by providing a en.po in QL but all other libraries don't define it either)
+
+    This tries to fix that.
+    """
+
+    try:
+        langs = os.environ["LANGUAGE"].split(":")
+    except KeyError:
+        return
+
+    # So, this seems to be an undocumented feature where C selects
+    # "no translation". Append it to any en/en_XX so that when not found
+    # it falls back to "en"/no translation.
+    sanitized = []
+    for lang in langs:
+        sanitized.append(lang)
+        if lang.startswith("en") and len(langs) > 1:
+            sanitized.append("C")
+
+    os.environ["LANGUAGE"] = ":".join(sanitized)
 
 
 class GlibTranslations(gettext.GNUTranslations):

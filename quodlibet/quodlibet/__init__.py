@@ -18,7 +18,8 @@ import quodlibet.util
 
 from quodlibet.util import set_process_title
 from quodlibet.util.path import mkdir, unexpand
-from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars
+from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
+    fixup_i18n_envvars
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet.const import MinVersions, Version
 
@@ -352,6 +353,7 @@ def _gettext_init():
         return
 
     set_i18n_envvars()
+    fixup_i18n_envvars()
 
     try:
         locale.setlocale(locale.LC_ALL, '')
