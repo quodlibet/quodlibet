@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import os
+
 from tests import TestCase
 
-from quodlibet.util.i18n import GlibTranslations
+from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
+    set_i18n_envvars
 
 
 class TGlibTranslations(TestCase):
@@ -36,3 +39,25 @@ class TGlibTranslations(TestCase):
         t = self.t.unpgettext("ctx", "foo", "bar", 2)
         self.assertEqual(t, "bar")
         self.assertTrue(isinstance(t, unicode))
+
+
+class Tgettext(TestCase):
+
+    def test_bcp47(self):
+        self.assertEqual(bcp47_to_language("zh-Hans"), "zh_CN")
+        self.assertEqual(bcp47_to_language("pt-PT"), "pt_PT")
+        self.assertEqual(bcp47_to_language("de"), "de")
+
+        # ignore script
+        self.assertEqual(bcp47_to_language("sr-Latn-CS"), "sr_CS")
+
+        # unsupported, support something at least
+        self.assertEqual(bcp47_to_language("zh-guoyu"), "zh")
+
+    def test_set_envvars(self):
+        old = os.environ.copy()
+        try:
+            set_i18n_envvars()
+        finally:
+            os.environ.clear()
+            os.environ.update(old)

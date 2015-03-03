@@ -5,8 +5,66 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+import sys
 import __builtin__
 import gettext
+import locale
+
+
+def bcp47_to_language(code):
+    """Takes a BCP 47 language identifier and returns a value suitable for the
+    LANGUAGE env var.
+
+    Only supports a small set of inputs and might return garbage..
+    """
+
+    if code == "zh-Hans":
+        return "zh_CN"
+    elif code == "zh-Hant":
+        return "zh_TW"
+
+    parts = code.split("-")
+    is_iso = lambda s: len(s) == 2 and s.isalpha()
+
+    # we only support ISO 639-1
+    if not is_iso(parts[0]):
+        return parts[0].replace(":", "")
+    lang_subtag = parts[0]
+
+    region = ""
+    if len(parts) >= 2 and is_iso(parts[1]):
+        region = parts[1]
+    elif len(parts) >= 3 and is_iso(parts[2]):
+        region = parts[2]
+
+    if region:
+        return "%s_%s" % (lang_subtag, region)
+    return lang_subtag
+
+
+def set_i18n_envvars():
+    """Set the LANG/LANGUAGE environment variables if not set in case the
+    current platform doesn't use them by default (OS X, Window)
+    """
+
+    if os.name == "nt":
+        import ctypes
+        k32 = ctypes.windll.kernel32
+        langs = filter(None, map(locale.windows_locale.get,
+                                 [k32.GetUserDefaultUILanguage(),
+                                  k32.GetSystemDefaultUILanguage()]))
+        if langs:
+            os.environ.setdefault('LANG', langs[0])
+            os.environ.setdefault('LANGUAGE', ":".join(langs))
+    elif sys.platform == "darwin":
+        from AppKit import NSLocale
+        lang = NSLocale.currentLocale().localeIdentifier()
+        os.environ.setdefault('LANG', lang)
+        langs = [bcp47_to_language(c) for c in NSLocale.preferredLanguages()]
+        os.environ.setdefault('LANGUAGE', ":".join(langs))
+    else:
+        return
 
 
 class GlibTranslations(gettext.GNUTranslations):

@@ -18,7 +18,7 @@ import quodlibet.util
 
 from quodlibet.util import set_process_title
 from quodlibet.util.path import mkdir, unexpand
-from quodlibet.util.i18n import GlibTranslations
+from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet.const import MinVersions, Version
 
@@ -351,28 +351,12 @@ def _gettext_init():
     if "QUODLIBET_NO_TRANS" in os.environ:
         return
 
+    set_i18n_envvars()
+
     try:
         locale.setlocale(locale.LC_ALL, '')
     except locale.Error:
         pass
-
-    if os.name == "nt":
-        import ctypes
-        k32 = ctypes.windll.kernel32
-        langs = filter(None, map(locale.windows_locale.get,
-                                 [k32.GetUserDefaultUILanguage(),
-                                  k32.GetSystemDefaultUILanguage()]))
-        os.environ.setdefault('LANG', ":".join(langs))
-    elif sys.platform == "darwin":
-        from AppKit import NSLocale
-        lang = NSLocale.currentLocale().localeIdentifier()
-        os.environ.setdefault('LANG', lang)
-        # Only take the first one because if it contains "en" which we don't
-        # have a translation for it will fall back to the second choice
-        # which is not what we want.
-        # Maybe replacing "en" in the list with "C" would work..?
-        languages = NSLocale.preferredLanguages()[0]
-        os.environ.setdefault('LANGUAGES', languages)
 
     # Use the locale dir in ../build/share/locale if there is one
     localedir = os.path.dirname(quodlibet.const.BASEDIR)
