@@ -179,7 +179,8 @@ class TopBar(Gtk.Toolbar):
                 app.cover_manager, 'cover-changed',
                 self.__song_art_changed, library)
 
-        box.pack_start(Align(self.image, border=2), False, True, 0)
+        self.image.props.margin = 2
+        box.pack_start(self.image, False, True, 0)
 
         for child in self.get_children():
             child.show_all()

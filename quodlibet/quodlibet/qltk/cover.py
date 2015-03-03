@@ -194,7 +194,7 @@ class ResizeImage(Gtk.Bin):
         height *= scale_factor
 
         if self._path:
-            if width < 2 or height < 2:
+            if width < (2 * scale_factor) or height < (2 * scale_factor):
                 return
             round_thumbs = config.getboolean("albumart", "round")
             pixbuf = scale(
