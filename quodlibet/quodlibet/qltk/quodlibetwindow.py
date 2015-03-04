@@ -1147,7 +1147,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 fns = map(glib2fsnative, fns)
                 # scan them
                 self.last_dir = fns[0]
-                copool.add(self.__library.scan, fns, funcid="library")
+                copool.add(self.__library.scan, fns, cofuncid="library",
+                           funcid="library")
 
                 # add them as library scan directory
                 if do_watch:
