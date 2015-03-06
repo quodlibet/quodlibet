@@ -35,7 +35,7 @@ function download_and_verify {
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev9-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
-        wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
+        wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z920.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
         wget -P "$BIN" -c http://ftp.musicbrainz.org/pub/musicbrainz/python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz
@@ -167,7 +167,7 @@ function setup_deps {
 }
 
 function install_python {
-    wine msiexec /a "$BUILD_ENV"/bin/python-2.7.6.msi /qb
+    wine msiexec /a "$BUILD_ENV"/bin/python-2.7.9.msi /qb
     PYDIR="$WINEPREFIX"/drive_c/Python27
 
     # install the python packages
