@@ -32,7 +32,7 @@ function download_and_verify {
         wget -P "$BIN" -c https://bitbucket.org/tortoisehg/files/downloads/mercurial-3.2.3-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev9-setup.exe
+        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev12-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
@@ -105,7 +105,7 @@ function extract_deps {
     # extract the gi binaries
     PYGI="$BUILD_ENV"/pygi
     echo "extract pygi-aio..."
-    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0_rev9-setup.exe > /dev/null
+    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0_rev12-setup.exe > /dev/null
     echo "done"
     echo "extract packages..."
     (cd "$PYGI"/rtvc9-32/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
@@ -122,13 +122,13 @@ function extract_deps {
 
         cp -RT "$PYGI"/"$name"/JPEG/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/WebP/gnome "$DEPS"
+        cp -RT "$PYGI"/"$name"/Jasper/gnome "$DEPS"
 
         cp -RT "$PYGI"/"$name"/GDK/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GDKPixbuf/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/ATK/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/Pango/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GTK/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/Openraw/gnome "$DEPS"
 
         cp -RT "$PYGI"/"$name"/Gstreamer/gnome "$DEPS"
 
@@ -147,6 +147,37 @@ function extract_deps {
         cp -RT "$PYGI"/"$name"/GSTPluginsExtra/gnome "$DEPS"
         cp -RT "$PYGI"/"$name"/GSTPluginsMore/gnome "$DEPS"
     done
+
+    # remove ladspa, frei0r
+    rm -Rf "$DEPS"/lib/frei0r-1
+    rm -Rf "$DEPS"/lib/ladspa
+
+    # remove opencv
+    rm -Rf "$DEPS"/share/opencv
+
+    # other stuff
+    rm -Rf "$DEPS"/lib/gst-validate-launcher
+    rm -Rf "$DEPS"/lib/gdbus-2.0
+    rm -Rf "$DEPS"/lib/p11-kit
+
+    # remove some large gstreamer plugins..
+    GST_LIBS="$DEPS"/lib/gstreamer-1.0
+    rm -f "$GST_LIBS"/libgstflite.dll # Flite speech synthesizer plugin
+    rm -f "$GST_LIBS"/libgstopencv.dll # OpenCV Plugins
+    rm -f "$GST_LIBS"/libgstx264.dll # H264 plugins
+    rm -f "$GST_LIBS"/libgstcacasink.dll # Colored ASCII Art video sink
+    rm -f "$GST_LIBS"/libgstschro.dll # Schroedinger plugin
+    rm -f "$GST_LIBS"/libgstjack.dll # Jack sink/source
+    rm -f "$GST_LIBS"/libgstpulse.dll # Pulse sink
+    rm -f "$GST_LIBS"/libgstvpx.dll # VP8
+    rm -f "$GST_LIBS"/libgstomx.dll # errors on loading
+    rm -f "$GST_LIBS"/libgstdaala.dll # Daala codec
+    rm -f "$GST_LIBS"/libgstmpeg2enc.dll # mpeg video encoder
+    rm -f "$GST_LIBS"/libgstdeinterlace.dll # video deinterlacer
+    rm -f "$GST_LIBS"/libgstopenexr.dll # OpenEXR image plugin
+    rm -f "$GST_LIBS"/libgstmxf.dll # MXF Demuxer
+
+    rm -f "$GST_LIBS"/libgstpythonplugin*.dll
 }
 
 function setup_deps {
@@ -222,35 +253,6 @@ function build_quodlibet {
     find "$MAIN_LOCALE" -name "gtk30-properties.mo" -exec rm {} \;
     find "$MAIN_LOCALE" -name "gsettings-desktop-schemas.mo" -exec rm {} \;
     find "$MAIN_LOCALE" -name "iso_*.mo" -exec rm {} \;
-
-    # remove ladspa, frei0r
-    rm -Rf "$QL_DEST"/lib/frei0r-1
-    rm -Rf "$QL_DEST"/lib/ladspa
-
-    # remove opencv
-    rm -Rf "$QL_DEST"/share/opencv
-
-    # other stuff
-    rm -Rf "$QL_DEST"/lib/gst-validate-launcher
-    rm -Rf "$QL_DEST"/lib/gdbus-2.0
-    rm -Rf "$QL_DEST"/lib/p11-kit
-
-    # remove some large gstreamer plugins..
-    GST_LIBS="$QL_DEST"/lib/gstreamer-1.0
-    rm -f "$GST_LIBS"/libgstflite.dll # Flite speech synthesizer plugin
-    rm -f "$GST_LIBS"/libgstopencv.dll # OpenCV Plugins
-    rm -f "$GST_LIBS"/libgstx264.dll # H264 plugins
-    rm -f "$GST_LIBS"/libgstcacasink.dll # Colored ASCII Art video sink
-    rm -f "$GST_LIBS"/libgstschro.dll # Schroedinger plugin
-    rm -f "$GST_LIBS"/libgstjack.dll # Jack sink/source
-    rm -f "$GST_LIBS"/libgstpulse.dll # Pulse sink
-    rm -f "$GST_LIBS"/libgstvpx.dll # VP8
-    rm -f "$GST_LIBS"/libgstomx.dll # errors on loading
-    rm -f "$GST_LIBS"/libgstdaala.dll # Daala codec
-    rm -f "$GST_LIBS"/libgstmpeg2enc.dll # mpeg video encoder
-    rm -f "$GST_LIBS"/libgstdeinterlace.dll # video deinterlacer
-    rm -f "$GST_LIBS"/libgstopenexr.dll # OpenEXR image plugin
-    rm -f "$GST_LIBS"/libgstmxf.dll # MXF Demuxer
 }
 
 function package_installer {
