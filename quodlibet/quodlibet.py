@@ -16,6 +16,7 @@ import os
 
 from quodlibet.cli import process_arguments, control
 from quodlibet.util.dprint import print_d
+from quodlibet.util import set_win32_unicode_argv
 
 
 def main():
@@ -180,4 +181,5 @@ def main():
 
 
 if __name__ == "__main__":
+    set_win32_unicode_argv()
     main()

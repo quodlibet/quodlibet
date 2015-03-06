@@ -22,7 +22,7 @@ from . import commands
 commands
 
 
-def main(argv=sys.argv):
+def main(argv):
     """Main entry point"""
 
     config.init()
