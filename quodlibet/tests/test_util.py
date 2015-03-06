@@ -16,6 +16,7 @@ import time
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util import format_time_long as f_t_l
+from quodlibet.util.compat import text_type
 
 
 is_win = os.name == "nt"
