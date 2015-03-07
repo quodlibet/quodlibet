@@ -24,6 +24,7 @@ function build_all {
 
     setup_deps;
     install_python;
+    install_pydeps;
     install_7zip;
     install_nsis;
 

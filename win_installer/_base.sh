@@ -14,25 +14,44 @@ MISC="$DIR"/misc
 BIN="$DIR"/_bin
 QL_REPO="$DIR"/..
 BUILD_BAT="$MISC"/build.bat
-BUILD_SDK_BAT="$MISC"/build_sdk.bat
-PACKAGE_BAT="$MISC"/package.bat
 INST_ICON="$MISC"/quodlibet.ico
 NSIS_SCRIPT="$MISC"/win_installer.nsi
 BUILD_ENV="$DIR"/_build_env
-QL_TEMP="$BUILD_ENV"/ql_temp
+QL_REPO_TEMP="$BUILD_ENV"/ql_temp
+QL_TEMP="$QL_REPO_TEMP"/quodlibet
+
+
+PYGI_AIO_VER="3.14.0_rev12"
+MUTAGEN_VER="1.27"
+
 
 function download_and_verify {
     # download all installers and check with sha256sum
 
+    local FILEHASHES="\
+7f6507d400d07edfd1ea8205da36808009b0c539f5b8a6e0ab54337b955e6dc3  feedparser-5.1.3.tar.bz2
+8bc7969ef145188244b653bc7621265483c885e986c96b4654f2aa57b6c2d69e  mercurial-3.2.3-x86.msi
+cc884fe1e20fe220be7ce7c3b269f4cadc69a8310150a3a41162fba1ca9c88bd  mutagen-$MUTAGEN_VER.tar.gz
+69c2ae5c9f2ee45b0626905faffaa86d4e2fc0d3e8c118c8bc6899df68467b32  nsis-2.46-setup.exe
+610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
+690698f42193330e363a0d38abf76962015459f12d38c320248c8fd6a2c8ab66  pygi-aio-$PYGI_AIO_VER-setup.exe
+3db9fa9adc45703589b93df05aab77bdabe985a17565b465a9e550585f85322a  pyHook-1.5.1.win32-py2.7.exe
+22f8a2b3231f9f671d660f149f7e60215b1908fa09fbb832123bf12a3e20b447  python-2.7.9.msi
+728fbe415da98dad5c4d462e56cf106cf50cc28eb6a9f46b8ebabc3029f37fb9  python-musicbrainz2-0.7.4.tar.gz
+dd665cca88cb059fec960516ed5f29474b33fce50fcb2633d397d4a3aa705c16  pywin32-218.win32-py2.7.exe
+fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
+8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll
+1eeedf2c29e0e7566217ba5a51aa1e3b73dfe173800fa71ac598470fbed3baf5  libgstopus.dll\
+"
+
     mkdir -p "$BIN"
-    if (cd "$BIN" && sha256sum --status --strict -c "$MISC"/filehashes.txt); then
+    if (cd "$BIN" && echo "$FILEHASHES" | sha256sum --status --strict -c -); then
         echo "all installers here, continue.."
     else
-        wget -P "$BIN" -c https://bitbucket.org/pypa/setuptools/raw/7.0/ez_setup.py
         wget -P "$BIN" -c https://bitbucket.org/tortoisehg/files/downloads/mercurial-3.2.3-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-3.14.0_rev12-setup.exe
+        wget -P "$BIN" -c "http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-$PYGI_AIO_VER-setup.exe"
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
@@ -41,11 +60,11 @@ function download_and_verify {
         wget -P "$BIN" -c http://ftp.musicbrainz.org/pub/musicbrainz/python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
 
-        pip install --download="$BIN" mutagen==1.27
+        pip install --download="$BIN" "mutagen==$MUTAGEN_VER"
         pip install --download="$BIN" feedparser==5.1.3
 
         # check again
-        (cd "$BIN" && sha256sum --strict -c "$MISC"/filehashes.txt) || exit
+        (cd "$BIN" && echo "$FILEHASHES" |  sha256sum --strict -c -) || exit
     fi
 }
 
@@ -73,8 +92,6 @@ function init_build_env {
 
     # link the batch file and nsis file in
     ln -s "$BUILD_BAT" "$BUILD_ENV"
-    ln -s "$BUILD_SDK_BAT" "$BUILD_ENV"
-    ln -s "$PACKAGE_BAT" "$BUILD_ENV"
     ln -s "$NSIS_SCRIPT" "$BUILD_ENV"
     ln -s "$INST_ICON" "$BUILD_ENV"
 }
@@ -89,9 +106,9 @@ function clone_repo {
     fi
 
     # clone repo, create translations
-    hg clone "$QL_REPO" "$QL_TEMP"
-    (cd "$QL_TEMP" && hg up "$1") || exit 1
-    QL_VERSION=$(cd "$QL_TEMP"/quodlibet && python -c "import quodlibet.const;print quodlibet.const.VERSION,")
+    hg clone "$QL_REPO" "$QL_REPO_TEMP"
+    (cd "$QL_REPO_TEMP" && hg up "$1") || exit 1
+    QL_VERSION=$(cd "$QL_TEMP" && python -c "import quodlibet.const;print quodlibet.const.VERSION,")
 
     if [ "$1" = "default" ]
     then
@@ -105,7 +122,7 @@ function extract_deps {
     # extract the gi binaries
     PYGI="$BUILD_ENV"/pygi
     echo "extract pygi-aio..."
-    7z x -o"$PYGI" -y "$BUILD_ENV"/bin/pygi-aio-3.14.0_rev12-setup.exe > /dev/null
+    7z x -o"$PYGI" -y "$BUILD_ENV/bin/pygi-aio-$PYGI_AIO_VER-setup.exe" > /dev/null
     echo "done"
     echo "extract packages..."
     (cd "$PYGI"/rtvc9-32/ && find . -name "*.7z" -execdir 7z x -y {} > /dev/null \;)
@@ -222,13 +239,26 @@ function install_nsis {
     wine "$BUILD_ENV"/bin/nsis-2.46-setup.exe /S
 }
 
+function install_pydeps {
+    local PYTHON="$PYDIR"/python.exe
+    (
+    cd "$BUILD_ENV"/bin
+    wine $PYTHON -m pip install "mutagen-$MUTAGEN_VER.tar.gz"
+    wine $PYTHON -m pip install feedparser-5.1.3.tar.bz2
+    wine $PYTHON -m pip install python-musicbrainz2-0.7.4.tar.gz
+    wine $PYTHON -m easy_install -Z pywin32-218.win32-py2.7.exe
+    wine $PYTHON -m easy_install -Z py2exe-0.6.9.win32-py2.7.exe
+    wine $PYTHON -m easy_install -Z pyHook-1.5.1.win32-py2.7.exe
+    )
+}
+
 function build_quodlibet {
-    (cd "$QL_TEMP"/quodlibet && python setup.py build_mo)
+    (cd "$QL_TEMP" && python setup.py build_mo)
 
     # now run py2exe etc.
     (cd "$BUILD_ENV" && wine cmd /c build.bat)
 
-    QL_DEST="$QL_TEMP"/quodlibet/dist
+    QL_DEST="$QL_TEMP"/dist
     QL_BIN="$QL_DEST"/bin
 
     # python dlls
@@ -241,7 +271,7 @@ function build_quodlibet {
     cp -R "$DEPS"/share "$QL_DEST"
 
     # remove translatins we don't support
-    QL_LOCALE="$QL_TEMP"/quodlibet/build/share/locale
+    QL_LOCALE="$QL_TEMP"/build/share/locale
     MAIN_LOCALE="$QL_DEST"/share/locale
     python "$MISC"/prune_translations.py "$QL_LOCALE" "$MAIN_LOCALE"
 
@@ -256,8 +286,9 @@ function build_quodlibet {
 }
 
 function package_installer {
+    local NSIS_PATH=$(winepath "C:\\Program Files\\NSIS\\")
     # now package everything up
-    (cd "$BUILD_ENV" && wine cmd /c package.bat)
+    (cd "$BUILD_ENV" && wine "$NSIS_PATH/makensis.exe" win_installer.nsi)
     mv "$BUILD_ENV/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION-installer.exe"
 }
 
@@ -283,8 +314,6 @@ function setup_sdk {
     SDK="$BUILD_ENV"/quodlibet-win-sdk
     mkdir "$SDK"
 
-    (cd "$BUILD_ENV" && wine cmd /c build_sdk.bat)
-
     # launchers, README
     ln -s "$MISC"/env.bat "$SDK"
     ln -s "$MISC"/test.bat "$SDK"
@@ -308,7 +337,7 @@ function setup_sdk {
     tar --dereference -zcvf "$DIR"/quodlibet-win-sdk.tar.gz _sdk/ \
         --exclude=_sdk/quodlibet \
         --exclude=_sdk/_wine_prefix \
-        --exclude=_sdk/_ql_config
+        --exclude=_sdk/_ql_config &> /dev/null
 }
 
 
