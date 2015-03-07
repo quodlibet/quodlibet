@@ -84,6 +84,9 @@ OPTIONS
 --query=search-string
     Search your audio library
 
+--run
+    Start Quod Libet if it isn't running
+
 --quit
     Exit Quod Libet
 

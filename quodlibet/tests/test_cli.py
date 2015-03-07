@@ -33,7 +33,7 @@ class Tcli(TestCase):
 
     def test_process_no_arguments_works(self):
         code, out, err = call_safely(cli.process_arguments)
-        self.failIf(code, msg="Error: %s" % err)
+        self.failIf(code[0], msg="Error: %s" % err)
 
     def test_process_arguments_errors_on_invalid_opt(self):
         arg = "--wrong-thing"

@@ -14,8 +14,8 @@ import sys
 
 import os
 
-from quodlibet.cli import process_arguments, control
-from quodlibet.util.dprint import print_d
+from quodlibet.cli import process_arguments
+from quodlibet.util.dprint import print_d, print_
 from quodlibet.util import set_win32_unicode_argv
 
 
@@ -24,11 +24,7 @@ def main():
         # we want basic commands not to import gtk (doubles process time)
         assert "gi.repository.Gtk" not in sys.modules
         sys.modules["gi.repository.Gtk"] = None
-        startup_actions = process_arguments()
-
-        # this will exit if it succeeds
-        control('focus', ignore_error=True)
-
+        startup_actions, cmds_todo = process_arguments()
     finally:
         sys.modules.pop("gi.repository.Gtk", None)
 
@@ -125,7 +121,7 @@ def main():
 
     from quodlibet.mmkeys import MMKeysHandler
     from quodlibet.remote import Remote
-    from quodlibet.commands import registry as cmd_registry
+    from quodlibet.commands import registry as cmd_registry, CommandError
     from quodlibet.qltk.tracker import SongTracker, FSInterface
     try:
         from quodlibet.qltk.dbus_ import DBusHandler
@@ -162,6 +158,18 @@ def main():
             app.browser.save()
         except NotImplementedError:
             pass
+
+    def exec_commands():
+        for cmd in cmds_todo:
+            try:
+                resp = cmd_registry.run(app, *cmd)
+            except CommandError:
+                pass
+            else:
+                if resp is not None:
+                    print_(resp, end="")
+
+    GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH)
 
     quodlibet.main(window, before_quit=before_quit)
 

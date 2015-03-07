@@ -104,6 +104,7 @@ def process_arguments():
         ("print-playlist", _("Print the current playlist")),
         ("print-queue", _("Print the contents of the queue")),
         ("no-plugins", _("Start without plugins")),
+        ("run", _("Start Quod Libet if it isn't running")),
         ("quit", _("Exit Quod Libet")),
             ]:
         options.add(opt, help=help)
@@ -173,56 +174,71 @@ def process_arguments():
         "set-rating": is_float,
         }
 
+    cmds_todo = []
+
+    def queue(*args):
+        cmds_todo.append(args)
+
     opts, args = options.parse()
+
     for command, arg in opts.items():
         if command in controls:
-            control(command)
+            queue(command)
         elif command in controls_opt:
             if command in validators and not validators[command](arg):
                 print_e(_("Invalid argument for '%s'.") % command)
                 print_e(_("Try %s --help.") % sys.argv[0])
                 exit_(True, notify_startup=True)
             else:
-                control(command, arg)
+                queue(command, arg)
         elif command == "status":
-            control("status")
+            queue("status")
         elif command == "print-playlist":
-            control("dump-playlist")
+            queue("dump-playlist")
         elif command == "print-queue":
-            control("dump-queue")
+            queue("dump-queue")
         elif command == "list-browsers":
-            control("dump-browsers")
+            queue("dump-browsers")
         elif command == "volume-up":
-            control("volume +")
+            queue("volume +")
         elif command == "volume-down":
-            control("volume -")
+            queue("volume -")
         elif command == "enqueue" or command == "unqueue":
             try:
                 filename = URI(arg).filename
             except ValueError:
                 filename = arg
-            control(command, filename)
+            queue(command, filename)
         elif command == "enqueue-files":
-            control(command, arg)
+            queue(command, arg)
         elif command == "play-file":
             try:
                 filename = URI(arg).filename
             except ValueError:
                 filename = os.path.abspath(util.path.expanduser(arg))
             if os.path.isdir(filename):
-                control("add-directory", filename)
+                queue("add-directory", filename)
             else:
-                control("add-file", filename)
+                queue("add-file", filename)
         elif command == "print-playing":
             try:
-                control("print-playing", args[0])
+                queue("print-playing", args[0])
             except IndexError:
-                control("print-playing")
+                queue("print-playing")
         elif command == "print-query":
-            control(command, arg)
+            queue(command, arg)
         elif command == "start-playing":
             actions.append(command)
         elif command == "no-plugins":
             actions.append(command)
+        elif command == "run":
+            actions.append(command)
 
-    return actions
+    if cmds_todo:
+        for cmd in cmds_todo:
+            control(*cmd, **{"ignore_error": "run" in actions})
+    else:
+        # this will exit if it succeeds
+        control('focus', ignore_error=True)
+
+    return actions, cmds_todo
