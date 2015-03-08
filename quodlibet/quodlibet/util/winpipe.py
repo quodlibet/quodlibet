@@ -73,6 +73,7 @@ class NamedPipeServer(threading.Thread):
         GLib.idle_add(idle_process, data)
 
     def start(self):
+        # FIXME: implement error handling so only one pipe can be active
         super(NamedPipeServer, self).start()
         # make sure we can use write_pipe() immediately after this returns
         self._event.wait()

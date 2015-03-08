@@ -11,6 +11,12 @@ import signal
 import stat
 import tempfile
 
+try:
+    import fcntl
+    fcntl
+except ImportError:
+    fcntl = None
+
 from gi.repository import GLib
 
 from quodlibet.util.path import mkdir
@@ -116,6 +122,10 @@ def fifo_exists(fifo_path):
     return os.path.exists(fifo_path)
 
 
+class FIFOError(Exception):
+    pass
+
+
 class FIFO(object):
     """Creates and reads from a FIFO"""
 
@@ -124,7 +134,12 @@ class FIFO(object):
         self._path = path
 
     def open(self):
-        self._open(None)
+        """Create the fifo and listen to it.
+
+        Might raise FIFOError in case another process is already using it.
+        """
+
+        self._open(False, None)
 
     def destroy(self):
         if self._id is not None:
@@ -136,26 +151,41 @@ class FIFO(object):
         except EnvironmentError:
             pass
 
-    def _open(self, *args):
+    def _open(self, ignore_lock, *args):
         from quodlibet import qltk
 
         self._id = None
+        mkdir(os.path.dirname(self._path))
         try:
-            if not os.path.exists(self._path):
-                mkdir(os.path.dirname(self._path))
-                os.mkfifo(self._path, 0600)
-            fifo = os.open(self._path, os.O_NONBLOCK)
-            f = os.fdopen(fifo, "r", 4096)
-            self._id = qltk.io_add_watch(
-                f, GLib.PRIORITY_DEFAULT,
-                GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-                self._process, *args)
-        except (EnvironmentError, AttributeError):
+            os.mkfifo(self._path, 0600)
+        except OSError:
+            # maybe exists, we'll fail below otherwise
             pass
+
+        try:
+            fifo = os.open(self._path, os.O_NONBLOCK)
+        except OSError:
+            return
+
+        try:
+            fcntl.flock(fifo, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except IOError:
+            if not ignore_lock:
+                raise FIFOError("fifo already locked")
+
+        try:
+            f = os.fdopen(fifo, "r", 4096)
+        except OSError:
+            pass
+
+        self._id = qltk.io_add_watch(
+            f, GLib.PRIORITY_DEFAULT,
+            GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+            self._process, *args)
 
     def _process(self, source, condition, *args):
         if condition in (GLib.IO_ERR, GLib.IO_HUP):
-            self._open(*args)
+            self._open(True, *args)
             return False
 
         while True:

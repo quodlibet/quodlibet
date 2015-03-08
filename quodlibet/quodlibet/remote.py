@@ -45,7 +45,10 @@ class RemoteBase(object):
         raise NotImplemented
 
     def start(self):
-        """Start the listener for other instances"""
+        """Start the listener for other instances.
+
+        Might raise RemoteError in case another instance is already listening.
+        """
 
         raise NotImplemented
 
@@ -106,7 +109,10 @@ class QuodLibetUnixRemote(RemoteBase):
             raise RemoteError(e)
 
     def start(self):
-        self._fifo.open()
+        try:
+            self._fifo.open()
+        except fifo.FIFOError as e:
+            raise RemoteError(e)
 
     def stop(self):
         self._fifo.destroy()

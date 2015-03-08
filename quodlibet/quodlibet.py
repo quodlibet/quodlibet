@@ -14,7 +14,7 @@ import sys
 
 import os
 
-from quodlibet.cli import process_arguments
+from quodlibet.cli import process_arguments, exit_
 from quodlibet.util.dprint import print_d, print_
 from quodlibet.util import set_win32_unicode_argv
 
@@ -137,7 +137,7 @@ def main():
     pm.register_handler(EventPluginHandler(library.librarian, player))
 
     from quodlibet.mmkeys import MMKeysHandler
-    from quodlibet.remote import Remote
+    from quodlibet.remote import Remote, RemoteError
     from quodlibet.commands import registry as cmd_registry, CommandError
     from quodlibet.qltk.tracker import SongTracker, FSInterface
     try:
@@ -150,7 +150,10 @@ def main():
         mmkeys_handler.start()
     fsiface = FSInterface(player)
     remote = Remote(app, cmd_registry)
-    remote.start()
+    try:
+        remote.start()
+    except RemoteError:
+        exit_(1, True)
 
     DBusHandler(player, library)
     tracker = SongTracker(library.librarian, player, window.playlist)
