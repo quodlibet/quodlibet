@@ -34,6 +34,10 @@ def pipe_exists(pipe_name):
     return True
 
 
+class NamedPipeServerError(Exception):
+    pass
+
+
 class NamedPipeServer(threading.Thread):
     """A named pipe for Windows.
 
@@ -73,27 +77,36 @@ class NamedPipeServer(threading.Thread):
         GLib.idle_add(idle_process, data)
 
     def start(self):
-        # FIXME: implement error handling so only one pipe can be active
         super(NamedPipeServer, self).start()
         # make sure we can use write_pipe() immediately after this returns
         self._event.wait()
+        if self._stopped:
+            # something went wrong (maybe another instance is running)
+            raise NamedPipeServerError("Setting up named pipe failed")
 
     def run(self):
         # REJECT doesn't do anything under XP, but XP is gone anyway
         PIPE_REJECT_REMOTE_CLIENTS = 0x00000008
+        FILE_FLAG_FIRST_PIPE_INSTANCE = 0x00080000
         buffer_ = 4096
         timeout_ms = 50
 
-        handle = win32pipe.CreateNamedPipe(
-            self._filename,
-            win32pipe.PIPE_ACCESS_INBOUND,
-            (win32pipe.PIPE_TYPE_BYTE | win32pipe.PIPE_READMODE_BYTE |
-             win32pipe.PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS),
-            win32pipe.PIPE_UNLIMITED_INSTANCES,
-            buffer_,
-            buffer_,
-            timeout_ms,
-            None)
+        try:
+            handle = win32pipe.CreateNamedPipe(
+                self._filename,
+                win32pipe.PIPE_ACCESS_INBOUND | FILE_FLAG_FIRST_PIPE_INSTANCE,
+                (win32pipe.PIPE_TYPE_BYTE | win32pipe.PIPE_READMODE_BYTE |
+                 win32pipe.PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS),
+                win32pipe.PIPE_UNLIMITED_INSTANCES,
+                buffer_,
+                buffer_,
+                timeout_ms,
+                None)
+        except pywintypes.error:
+            # due to FILE_FLAG_FIRST_PIPE_INSTANCE and not the first instance
+            self._stopped = True
+            self._event.set()
+            return
 
         if handle == win32file.INVALID_HANDLE_VALUE:
             self._stopped = True

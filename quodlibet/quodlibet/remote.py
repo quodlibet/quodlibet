@@ -79,7 +79,10 @@ class QuodLibetWinRemote(RemoteBase):
             raise RemoteError(e)
 
     def start(self):
-        self._server.start()
+        try:
+            self._server.start()
+        except winpipe.NamedPipeServerError as e:
+            raise RemoteError(e)
 
     def stop(self):
         self._server.stop()
