@@ -42,7 +42,8 @@ def control(command, arg=None, ignore_error=False):
     if not is_running():
         if ignore_error:
             return
-        exit_(_("Quod Libet is not running."), notify_startup=True)
+        exit_(_("Quod Libet is not running (add '--run' to start it)"),
+              notify_startup=True)
         return
 
     message = command
