@@ -216,10 +216,7 @@ def process_arguments():
                 filename = URI(arg).filename
             except ValueError:
                 filename = os.path.abspath(util.path.expanduser(arg))
-            if os.path.isdir(filename):
-                queue("add-directory", filename)
-            else:
-                queue("add-file", filename)
+            queue("play-file", filename)
         elif command == "print-playing":
             try:
                 queue("print-playing", args[0])

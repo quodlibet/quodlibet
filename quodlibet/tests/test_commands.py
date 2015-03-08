@@ -39,9 +39,8 @@ class TCommands(TestCase):
         self.__send("seek 0")
 
     def test_misc(self):
-        self.__send("add-directory /dev/null")
         with capture_output():
-            self.__send("add-file /dev/null")
+            self.__send("play-file /dev/null")
         self.__send("dump-playlist")
         self.__send("dump-queue")
         self.__send("enqueue /dev/null")
