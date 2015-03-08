@@ -24,20 +24,23 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
         toplevel = self.get_toplevel()
-        top_window = toplevel.get_window()
-        window = self.get_window()
 
-        if not window:
+        try:
+            dx, dy = self.translate_coordinates(toplevel, 0, 0)
+        except TypeError:
             GLib.idle_add(self.queue_resize)
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
-        dummy, x1, y1 = top_window.get_origin()
-        dummy, x2, y2 = window.get_origin()
         # since 3.15 the gdkwindow moves to dx==-1 with the allocation
-        # so ignore anything < 0
+        # so ignore anything < 0 (I guess something passes the adjusted alloc
+        # to us a second time)
         # https://git.gnome.org/browse/gtk+/commit/?id=fdf367e8689cb
-        dx = max(x2 - x1, 0)
-        dy = max(y2 - y1, 0)
+        if dx < 0:
+            dx = 0
+            alloc.width += dx
+        if dy < 0:
+            dy = 0
+            alloc.height += dy
 
         ctx = self.get_style_context()
         border = ctx.get_border(self.get_state_flags())
@@ -105,17 +108,17 @@ class ScrolledWindow(Gtk.ScrolledWindow):
                 top = hscroll
 
         width, height = toplevel.get_size()
-        if alloc.y + alloc.height + dy == height and not bottom:
+        if alloc.y + alloc.height + dy >= height and not bottom:
             alloc.height += border.bottom
 
-        if alloc.x + alloc.width + dx == width and not right:
+        if alloc.x + alloc.width + dx >= width and not right:
             alloc.width += border.right
 
-        if alloc.y + dy == 0 and not top:
+        if alloc.y + dy <= 0 and not top:
             alloc.y -= border.top
             alloc.height += border.top
 
-        if alloc.x + dx == 0 and not left:
+        if alloc.x + dx <= 0 and not left:
             alloc.x -= border.left
             alloc.width += border.left
 
