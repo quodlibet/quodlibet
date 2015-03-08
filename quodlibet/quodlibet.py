@@ -159,7 +159,7 @@ def main():
         except NotImplementedError:
             pass
 
-    def exec_commands():
+    def exec_commands(*args):
         for cmd in cmds_todo:
             try:
                 resp = cmd_registry.run(app, *cmd)
@@ -169,7 +169,7 @@ def main():
                 if resp is not None:
                     print_(resp, end="")
 
-    GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH)
+    window.connect("state-restored", exec_commands)
 
     quodlibet.main(window, before_quit=before_quit)
 

@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk, GLib, Gio
+from gi.repository import Gtk, Gdk, GLib, Gio, GObject
 
 import quodlibet
 
@@ -440,6 +440,12 @@ DND_URI_LIST, = range(1)
 
 
 class QuodLibetWindow(Window, PersistentWindowMixin):
+
+    __gsignals__ = {
+        # after all state has been restored i.e. any action executed before
+        # this might be overridden.
+        'state-restored': (GObject.SignalFlags.RUN_LAST, None, ()),
+    }
 
     def __init__(self, library, player, headless=False):
         super(QuodLibetWindow, self).__init__(dialog=False)
@@ -1211,6 +1217,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             config.set("memory", "seek", 0)
             if song is not None:
                 player.setup(self.playlist, song, seek_pos)
+
+            self.emit("state-restored")
 
     def __hide_headers(self, activator=None):
         for column in self.songlist.get_columns():
