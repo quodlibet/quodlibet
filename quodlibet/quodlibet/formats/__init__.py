@@ -60,6 +60,11 @@ def init():
     modules.sort()
     names.sort()
 
+    # This can be used for the quodlibet.desktop file
+    desktop_mime_types = "MimeType=" + \
+        ";".join(sorted(set([m.split(";")[0] for m in mimes]))) + ";"
+    print_d(desktop_mime_types)
+
     if not _infos:
         raise SystemExit("No formats found!")
 
