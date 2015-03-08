@@ -149,6 +149,9 @@ class Notebook(Gtk.Notebook):
             GLib.idle_add(self.queue_resize)
             return Gtk.Notebook.do_size_allocate(self, alloc)
 
+        dx = max(0, dx)
+        dy = max(0, dy)
+
         # all 0 since gtk+ 3.12..
         border.left = border.top = border.right = border.bottom = 1
 
