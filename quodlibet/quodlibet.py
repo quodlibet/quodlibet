@@ -113,8 +113,25 @@ def main():
     from quodlibet.plugins.playlist import PLAYLIST_HANDLER
     PLAYLIST_HANDLER.init_plugins()
 
+    from gi.repository import GLib
+
+    def exec_commands(*args):
+        for cmd in cmds_todo:
+            try:
+                resp = cmd_registry.run(app, *cmd)
+            except CommandError:
+                pass
+            else:
+                if resp is not None:
+                    print_(resp, end="")
+
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
-    app.window = window = QuodLibetWindow(library, player)
+    # Call exec_commands after the window is restored, but make sure
+    # it's after the mainloop has started so everything is set up.
+    app.window = window = QuodLibetWindow(
+        library, player,
+        restore_cb=lambda:
+            GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH))
 
     from quodlibet.plugins.events import EventPluginHandler
     pm.register_handler(EventPluginHandler(library.librarian, player))
@@ -148,7 +165,6 @@ def main():
 
     # restore browser windows
     from quodlibet.qltk.browser import LibraryBrowser
-    from gi.repository import GLib
     GLib.idle_add(LibraryBrowser.restore, library, player,
                   priority=GLib.PRIORITY_HIGH)
 
@@ -158,18 +174,6 @@ def main():
             app.browser.save()
         except NotImplementedError:
             pass
-
-    def exec_commands(*args):
-        for cmd in cmds_todo:
-            try:
-                resp = cmd_registry.run(app, *cmd)
-            except CommandError:
-                pass
-            else:
-                if resp is not None:
-                    print_(resp, end="")
-
-    window.connect("state-restored", exec_commands)
 
     quodlibet.main(window, before_quit=before_quit)
 

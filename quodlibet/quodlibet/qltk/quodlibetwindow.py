@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk, GLib, Gio, GObject
+from gi.repository import Gtk, Gdk, GLib, Gio
 
 import quodlibet
 
@@ -441,13 +441,7 @@ DND_URI_LIST, = range(1)
 
 class QuodLibetWindow(Window, PersistentWindowMixin):
 
-    __gsignals__ = {
-        # after all state has been restored i.e. any action executed before
-        # this might be overridden.
-        'state-restored': (GObject.SignalFlags.RUN_LAST, None, ()),
-    }
-
-    def __init__(self, library, player, headless=False):
+    def __init__(self, library, player, headless=False, restore_cb=None):
         super(QuodLibetWindow, self).__init__(dialog=False)
         self.last_dir = const.HOME
 
@@ -576,6 +570,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         # set at least the playlist. the song should be restored
         # after the browser emits the song list
         player.setup(self.playlist, None, 0)
+        self.__restore_cb = restore_cb
         self.__first_browser_set = True
 
         restore_browser = not headless
@@ -1218,7 +1213,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             if song is not None:
                 player.setup(self.playlist, song, seek_pos)
 
-            self.emit("state-restored")
+            if self.__restore_cb:
+                self.__restore_cb()
+                self.__restore_cb = None
 
     def __hide_headers(self, activator=None):
         for column in self.songlist.get_columns():
