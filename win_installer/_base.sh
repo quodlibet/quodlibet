@@ -16,7 +16,7 @@ QL_REPO="$DIR"/..
 BUILD_BAT="$MISC"/build.bat
 INST_ICON="$MISC"/quodlibet.ico
 NSIS_SCRIPT="$MISC"/win_installer.nsi
-BUILD_ENV="$DIR"/_build_env
+BUILD_ENV="$DIR"/_build_env"$BUILD_ENV_SUFFIX"
 QL_REPO_TEMP="$BUILD_ENV"/ql_temp
 QL_TEMP="$QL_REPO_TEMP"/quodlibet
 

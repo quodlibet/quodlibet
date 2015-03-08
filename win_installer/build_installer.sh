@@ -6,7 +6,7 @@
 # published by the Free Software Foundation.
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
-
+BUILD_ENV_SUFFIX="_installer"
 source "$DIR"/_base.sh
 
 # Argument 1: hg tag, defaults to "default"
