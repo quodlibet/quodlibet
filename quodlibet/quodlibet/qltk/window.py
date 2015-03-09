@@ -173,11 +173,14 @@ class Window(Gtk.Window):
 
     def show_maybe(self):
         """Show the window, except if prevent_inital_show() was called and
-        this is the first time
+        this is the first time.
+
+        Returns whether the window was shown.
         """
 
         if not self._preven_inital_show:
             self.show()
+        return not self._preven_inital_show
 
 
 class PersistentWindowMixin(object):

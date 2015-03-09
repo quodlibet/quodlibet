@@ -585,7 +585,7 @@ def _init_osx(window):
 
 def main(window, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk
+    from gi.repository import Gtk, Gdk
 
     def quit_gtk(window):
 
@@ -625,7 +625,9 @@ def main(window, before_quit=None):
     if sys.platform == "darwin":
         _init_osx(window)
 
-    window.show_maybe()
+    if not window.show_maybe():
+        # if we don't show a window, startup isn't completed, so call manually
+        Gdk.notify_startup_complete()
 
     Gtk.main()
     print_d("Gtk.main() done.")
