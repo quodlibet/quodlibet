@@ -167,11 +167,21 @@ class FIFO(object):
         except OSError:
             return
 
-        try:
-            fcntl.flock(fifo, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except IOError:
-            if not ignore_lock:
-                raise FIFOError("fifo already locked")
+        while True:
+            try:
+                fcntl.flock(fifo, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except IOError as e:
+                # EINTR on linux
+                if e.errno == errno.EINTR:
+                    continue
+                if ignore_lock:
+                    break
+                # OSX doesn't support fifo locking, so check errno
+                if e.errno == errno.EWOULDBLOCK:
+                    raise FIFOError("fifo already locked")
+                else:
+                    print_d("fifo locking failed: %r" % e)
+            break
 
         try:
             f = os.fdopen(fifo, "r", 4096)
