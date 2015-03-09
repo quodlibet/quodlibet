@@ -180,6 +180,11 @@ def process_arguments():
     def queue(*args):
         cmds_todo.append(args)
 
+    # XXX: to make startup work in case the desktop file isn't passed
+    # a file path/uri
+    if sys.argv[-1] == "--play-file":
+        sys.argv = sys.argv[:-1]
+
     opts, args = options.parse()
 
     for command, arg in opts.items():
