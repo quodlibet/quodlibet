@@ -290,11 +290,13 @@ class TreeViewHints(Gtk.Window):
         h = bg_area.height
 
         if not is_wayland():
-            # clip if it's bigger than the screen
-            screen_border = 5  # leave some space
-
+            # clip if it's bigger than the monitor
+            mon_border = 5  # leave some space
+            screen = Gdk.Screen.get_default()
             if not expand_left:
-                space_right = Gdk.Screen.width() - x - w - screen_border
+                monitor_idx = screen.get_monitor_at_point(x, y)
+                mon = screen.get_monitor_geometry(monitor_idx)
+                space_right = mon.x + mon.width - x - w - mon_border
 
                 if space_right < 0:
                     w += space_right
@@ -302,7 +304,10 @@ class TreeViewHints(Gtk.Window):
                 else:
                     label.set_ellipsize(Pango.EllipsizeMode.NONE)
             else:
-                space_left = x - screen_border
+                monitor_idx = screen.get_monitor_at_point(x + w, y)
+                mon = screen.get_monitor_geometry(monitor_idx)
+                space_left = x - mon.x - mon_border
+
                 if space_left < 0:
                     x -= space_left
                     self.__dx -= space_left
