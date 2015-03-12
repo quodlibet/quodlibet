@@ -170,7 +170,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         songs = [s for s in maybe_songs if s]
 
         if songs:
-            menu = self.pm.Menu(self.__library, self, songs)
+            menu = self.pm.Menu(self.__library, songs)
             if menu is None:
                 menu = Gtk.Menu()
             else:
