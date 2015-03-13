@@ -38,6 +38,7 @@ class TPot(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        gettextutil.check_version()
         pot_path = gettextutil.update_pot(PODIR, "quodlibet")
         cls.pot = polib.pofile(pot_path)
 
