@@ -77,17 +77,23 @@ DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "default" else "latest"
 ONLINE_HELP = DOCS_BASE_URL + "/guide/index.html"
 SEARCH_HELP = DOCS_BASE_URL + "/guide/searching.html"
 
-# about dialog, --version etc.
-WEBSITE = "http://code.google.com/p/quodlibet"
-COPYRIGHT = """\
-Copyright © 2004-2015 Joe Wreschnig, Michael Urman, Iñigo Serna,
-Steven Robertson, Christoph Reiter, Nick Boultbee, ..."""
-
 # Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
+
+MAIN_AUTHORS = """\
+Joe Wreschnig
+Michael Urman
+Iñigo Serna
+Steven Robertson
+Christoph Reiter
+Nick Boultbee""".split("\n")
+
+# about dialog, --version etc.
+WEBSITE = "https://quodlibet.readthedocs.org/"
+COPYRIGHT = """Copyright © 2004-2015 %s...""" % ", ".join(MAIN_AUTHORS)
 
 AUTHORS = sorted("""\
 Alexandre Passos

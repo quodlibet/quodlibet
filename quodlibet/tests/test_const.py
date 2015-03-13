@@ -32,6 +32,10 @@ class Tconst(TestCase):
         if branch == "default" or branch.startswith("quodlibet"):
             self.failUnlessEqual(branch, const.BRANCH_NAME)
 
+    def test_authors(self):
+        # Noting that <= is subset operator on sets...
+        self.assertLessEqual(set(const.MAIN_AUTHORS), set(const.AUTHORS))
+
     def test_path_types(self):
         self.assertTrue(is_fsnative(const.USERDIR))
         self.assertTrue(is_fsnative(const.HOME))

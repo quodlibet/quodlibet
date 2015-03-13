@@ -12,7 +12,7 @@ extensions = ['sphinx.ext.autodoc', 'ext']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'Ex Falso / Quod Libet'
-copyright = 'The Quod Libet Devs'
+copyright = "2004-2013 %s and more" % ", ".join(const.MAIN_AUTHORS)
 version = ".".join(const.VERSION.rsplit(".")[:2])
 release = const.VERSION
 if release.endswith(".-1"):
