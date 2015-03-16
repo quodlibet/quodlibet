@@ -22,7 +22,7 @@ class PickleTestPlugin(EventPlugin):
     PLUGIN_NAME = "This is a test"
 
     def enabled(self):
-        # http://code.google.com/p/quodlibet/issues/detail?id=1093
+        # https://github.com/quod-libet/quodlibet/issues/1093
         fd, filename = mkstemp('.shelve')
         os.close(fd)
         os.unlink(filename)

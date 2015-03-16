@@ -18,6 +18,6 @@
     <screenshots>
         <screenshot type="default" width="1325" height="674">https://quodlibet.readthedocs.org/en/latest/_images/exfalso.png</screenshot>
     </screenshots>
-    <url type="homepage">http://code.google.com/p/quodlibet/</url>
+    <url type="homepage">https://quodlibet.readthedocs.org</url>
     <updatecontact>quod-libet-development@googlegroups.com</updatecontact>
 </application>

@@ -20,6 +20,6 @@
         <screenshot type="default" width="834" height="670">https://quodlibet.readthedocs.org/en/latest/_images/paned1.png</screenshot>
         <screenshot width="1236" height="803">https://quodlibet.readthedocs.org/en/latest/_images/queue_2browsers1.png</screenshot>
     </screenshots>
-    <url type="homepage">http://code.google.com/p/quodlibet/</url>
+    <url type="homepage">https://quodlibet.readthedocs.org</url>
     <updatecontact>quod-libet-development@googlegroups.com</updatecontact>
 </application>

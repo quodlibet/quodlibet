@@ -308,7 +308,7 @@ if __name__ == "__main__":
         'cmdclass': cmd_classes,
         'name': "quodlibet",
         'version': const.VERSION,
-        'url': "http://code.google.com/p/quodlibet/",
+        'url': "https://quodlibet.readthedocs.org",
         'description': "a music library, tagger, and player",
         'author': "Joe Wreschnig, Michael Urman, & others",
         'author_email': "quod-libet-development@googlegroups.com",
@@ -322,7 +322,7 @@ if __name__ == "__main__":
         'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
         'dbus_services': [
             "data/net.sacredchao.QuodLibet.service",
-            # http://code.google.com/p/quodlibet/issues/detail?id=1268
+            # https://github.com/quod-libet/quodlibet/issues/1268
             #"data/org.mpris.MediaPlayer2.quodlibet.service",
             #"data/org.mpris.quodlibet.service",
         ],

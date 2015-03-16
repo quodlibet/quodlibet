@@ -109,7 +109,7 @@ def write_fifo(fifo_path, data):
 
 
 def fifo_exists(fifo_path):
-    # http://code.google.com/p/quodlibet/issues/detail?id=1131
+    # https://github.com/quod-libet/quodlibet/issues/1131
     # FIXME: There is a race where control() creates a new file
     # instead of writing to the FIFO, confusing the next QL instance.
     # Remove non-FIFOs here for now.

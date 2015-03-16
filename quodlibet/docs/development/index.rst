@@ -15,7 +15,7 @@ uses `Python <http://www.python.org/>`_, because Python makes it easy to
 create clean, simple functional and object-oriented software. Various other
 packages and libraries add to this - see :ref:`Dependencies`.
 
-Using the `Mutagen <http://code.google.com/p/mutagen/>`_ tagging library
+Using the `Mutagen <https://bitbucket.org/lazka/mutagen>`_ tagging library
 keeps the rest of Quod Libet as simple as possible and ensures every
 tag in your music library is available for your searching pleasure.
 
@@ -24,7 +24,6 @@ tag in your music library is available for your searching pleasure.
 
     contributing
     guidelines
-    translating
     plugins
     formats
     misc

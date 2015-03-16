@@ -18,7 +18,7 @@
 .. |source-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/source.png
    :height: 16
    :width: 16
-.. |hg-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/mercurial.png
+.. |git-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/git.png
    :height: 16
    :width: 16
 .. |arch-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/arch.png
@@ -38,22 +38,22 @@ Downloads
    \             |arch-logo| :ref:`Arch Linux <arch>`
 **Windows:**     |windows-logo| :ref:`Windows <windows>`
 **Mac OS X:**    |macosx-logo| :ref:`Mac OS X <macosx>`
-**Development:** |hg-logo| :ref:`Source <source>`           |source-logo| :ref:`Release Tarballs <tarballs>`
+**Development:** |git-logo| :ref:`Source <source>`          |source-logo| :ref:`Release Tarballs <tarballs>`
 ================ ========================================== ================================================
 
 ----
 
 .. _source:
 
-|hg-logo| Source
-----------------
+|git-logo| Source
+-----------------
 
-Quod Libet uses `Mercurial <http://mercurial.selenic.com/>`_ for source
-control and is hosted on `Google Code <https://code.google.com/>`_ as well
+Quod Libet uses `Git <http://git-scm.com/>`_ for source
+control and is hosted on `GitHub <https://github.com/>`_ as well
 as `Bitbucket <https://bitbucket.org/>`__:
 
- * https://code.google.com/p/quodlibet (primary)
- * https://bitbucket.org/lazka/quodlibet (mirror)
+ * https://github.com/quod-libet/quodlibet.git (primary)
+ * https://bitbucket.org/lazka/quodlibet.git (mirror)
 
 .. _RunFromSource:
 
@@ -61,7 +61,7 @@ as `Bitbucket <https://bitbucket.org/>`__:
 
 ::
 
-    $ hg clone https://code.google.com/p/quodlibet/
+    $ git clone https://github.com/quod-libet/quodlibet.git
     $ ./quodlibet/quodlibet/quodlibet.py
 
 .. note::

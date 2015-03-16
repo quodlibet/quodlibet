@@ -33,17 +33,17 @@ Translation Process
 
 Get the QL code::
 
-    $ hg clone https://quodlibet.googlecode.com/hg/ quodlibet 
+    $ git clone https://github.com/quod-libet/quodlibet.git quodlibet 
     $ cd quodlibet/quodlibet
 
 To translate the last release, update to the stable branch::
 
-    $ hg branches  # to get the list of branches
-    $ hg update quodlibet-X.X # for example: quodlibet-2.3
+    $ git branch -a  # to get the list of branches
+    $ git checkout quodlibet-X.X # for example: quodlibet-3.3
 
 To translate current trunk, update to the default branch::
 
-    $ hg update default
+    $ git checkout master
 
 Create the POT file and update translations::
 
@@ -86,7 +86,11 @@ translation.
     $ ./setup.py build_mo
     $ ./setup.py test --to-run PO.<mylang>
 
-And send us the .po file you made! Create a `new issue 
-<http://code.google.com/p/quodlibet/issues/entry>`_ and attach the file. 
-Feel free to post a comment to the mailing list, so that other people can 
-test your work.
+And send us the .po file you made:
+
+* Create a `new issue 
+  <https://github.com/quod-libet/quodlibet/issues/new>`__ linking to your 
+  updated .po file. If you don't have a place for making the file accessible 
+  create a `gist <https://gist.github.com/>`__ with the content of the .po 
+  file and include the gist URL in the issue description.
+* Or create a pull request.

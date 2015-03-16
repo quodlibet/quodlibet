@@ -210,7 +210,7 @@ function setup_deps {
     cp "$BUILD_ENV/bin/libmodplug-1.dll" "$DEPS"
 
     # copy old libgstopus
-    # https://code.google.com/p/quodlibet/issues/detail?id=1511
+    # https://github.com/quod-libet/quodlibet/issues/1511
     cp "$BUILD_ENV/bin/libgstopus.dll" "$DEPS"/lib/gstreamer-1.0
 }
 
