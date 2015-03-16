@@ -25,7 +25,7 @@ bug_url_template = "https://github.com/quod-libet/quodlibet/issues/%s"
 RTD_NEW_THEME = True
 
 # on a stable branch which isn't a release
-if const.BRANCH_NAME != "default" and const.VERSION_TUPLE[-1] == -1:
+if const.BRANCH_NAME != "master" and const.VERSION_TUPLE[-1] == -1:
     rst_prolog = """
 
 .. note::
