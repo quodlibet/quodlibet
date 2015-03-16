@@ -19,17 +19,19 @@ class Tconst(TestCase):
     def test_branch_name(self):
         devnull = open(os.devnull, 'w')
         try:
-            subprocess.check_call(["hg", "status"], stdout=devnull)
+            subprocess.check_call(["git", "status"], stdout=devnull)
         except (OSError, subprocess.CalledProcessError):
             # no active hg repo, skip
             return
 
-        p = subprocess.Popen(["hg", "id", "-b"], stdout=subprocess.PIPE)
+        p = subprocess.Popen(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            stdout=subprocess.PIPE)
         branch = p.communicate()[0].strip()
         self.failIf(p.returncode)
 
         # only check for stable/dev branches, no feature branches
-        if branch == "default" or branch.startswith("quodlibet"):
+        if branch == "master" or branch.startswith("quodlibet"):
             self.failUnlessEqual(branch, const.BRANCH_NAME)
 
     def test_authors(self):
