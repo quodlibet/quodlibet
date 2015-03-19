@@ -29,7 +29,6 @@ function download_and_verify {
         echo "all installers here, continue.."
     else
         wget -P "$BIN" -c https://bitbucket.org/pypa/setuptools/raw/2.1.1/ez_setup.py
-        wget -P "$BIN" -c http://mercurial.selenic.com/release/windows/mercurial-2.8.1-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/pygi-aio-3.12.2-win32_rev5-setup.exe
@@ -78,7 +77,7 @@ function init_build_env {
     ln -s "$INST_ICON" "$BUILD_ENV"
 }
 
-# Argument 1: the hg tag
+# Argument 1: the git tag
 function clone_repo {
 
     if [ -z "$1" ]
@@ -88,15 +87,15 @@ function clone_repo {
     fi
 
     # clone repo, create translations
-    hg clone "$QL_REPO" "$QL_TEMP"
-    (cd "$QL_TEMP" && hg up "$1") || exit 1
+    git clone "$QL_REPO" "$QL_TEMP"
+    (cd "$QL_TEMP" && git checkout "$1") || exit 1
     QL_VERSION=$(cd "$QL_TEMP"/quodlibet && python -c "import quodlibet.const;print quodlibet.const.VERSION,")
 
-    if [ "$1" = "default" ]
+    if [ "$1" = "master" ]
     then
-        local HG_REV=$(hg id -n | sed 's/[+]//g')
-        local HG_HASH=$(hg id -i | sed 's/[+]//g')
-        QL_VERSION="$QL_VERSION-rev$HG_REV-$HG_HASH"
+        local GIT_REV=$(git rev-list --count HEAD)
+        local GIT_HASH=$(git rev-parse --short HEAD)
+        QL_VERSION="$QL_VERSION-rev$GIT_REV-$GIT_HASH"
     fi
 }
 
