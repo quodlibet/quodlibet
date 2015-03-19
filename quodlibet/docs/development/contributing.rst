@@ -29,8 +29,8 @@ Filing bug reports
 Useful Links
 ^^^^^^^^^^^^
 
- * `List current bugs <https://github.com/quod-libet/quodlibet/issues>`_
- * `Add a new bug <https://github.com/quod-libet/quodlibet/issues/new>`_
+ * `List current bugs <https://github.com/quodlibet/quodlibet/issues>`_
+ * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
 
 
 Writing a good bug report

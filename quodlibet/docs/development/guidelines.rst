@@ -144,4 +144,4 @@ the ticket directly. If it is a bug fix but doesn't have a ticket, you
 can either make a ticket to attach it to, or send it to the mailing list,
 quod-libet-development@googlegroups.com.
 
-The ticket tracker is at https://github.com/quod-libet/quodlibet/issues
+The ticket tracker is at https://github.com/quodlibet/quodlibet/issues

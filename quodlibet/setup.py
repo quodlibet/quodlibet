@@ -322,7 +322,7 @@ if __name__ == "__main__":
         'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
         'dbus_services': [
             "data/net.sacredchao.QuodLibet.service",
-            # https://github.com/quod-libet/quodlibet/issues/1268
+            # https://github.com/quodlibet/quodlibet/issues/1268
             #"data/org.mpris.MediaPlayer2.quodlibet.service",
             #"data/org.mpris.quodlibet.service",
         ],

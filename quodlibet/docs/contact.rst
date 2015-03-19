@@ -14,8 +14,8 @@ Reporting Bugs
 
 The best way to report bugs is using the Google issue tracker.
 
- * `Add a new bug <https://github.com/quod-libet/quodlibet/issues/new>`_
- * `Show current bugs <https://github.com/quod-libet/quodlibet/issues>`_
+ * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
+ * `Show current bugs <https://github.com/quodlibet/quodlibet/issues>`_
 
 For tips on how to report bugs see :ref:`the Contributing Guide <BugReports>`
 

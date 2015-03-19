@@ -435,7 +435,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
 
         for song in songs:
             song_id = str(id(song))
-            # https://github.com/quod-libet/quodlibet/issues/id=1127
+            # https://github.com/quodlibet/quodlibet/issues/id=1127
             # XXX: Something is emitting wrong changed events..
             # ignore song_ids we don't know for now
             if song_id not in self.__map:

@@ -33,7 +33,7 @@ Translation Process
 
 Get the QL code::
 
-    $ git clone https://github.com/quod-libet/quodlibet.git quodlibet 
+    $ git clone https://github.com/quodlibet/quodlibet.git quodlibet 
     $ cd quodlibet/quodlibet
 
 To translate the last release, update to the stable branch::
@@ -89,7 +89,7 @@ translation.
 And send us the .po file you made:
 
 * Create a `new issue 
-  <https://github.com/quod-libet/quodlibet/issues/new>`__ linking to your 
+  <https://github.com/quodlibet/quodlibet/issues/new>`__ linking to your 
   updated .po file. If you don't have a place for making the file accessible 
   create a `gist <https://gist.github.com/>`__ with the content of the .po 
   file and include the gist URL in the issue description.

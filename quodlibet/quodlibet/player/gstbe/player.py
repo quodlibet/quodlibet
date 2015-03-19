@@ -488,7 +488,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # Chained oggs falsely trigger a gapless transition.
         # At least for radio streams we can safely ignore it because
         # transitions don't occur there.
-        # https://github.com/quod-libet/quodlibet/issues/1454
+        # https://github.com/quodlibet/quodlibet/issues/1454
         # https://bugzilla.gnome.org/show_bug.cgi?id=695474
         if self.song.multisong:
             print_d("multisong: ignore about to finish")

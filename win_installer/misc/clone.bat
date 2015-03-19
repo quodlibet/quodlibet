@@ -1,1 +1,1 @@
-git clone http://github.com/quod-libet/quodlibet.git quodlibet
+git clone http://github.com/quodlibet/quodlibet.git quodlibet

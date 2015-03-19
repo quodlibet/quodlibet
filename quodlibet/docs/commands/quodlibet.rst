@@ -243,7 +243,7 @@ See https://quodlibet.readthedocs.org/en/latest/guide/interacting.html.
 BUGS
 ====
 
-See https://github.com/quod-libet/quodlibet/issues for a list of all
+See https://github.com/quodlibet/quodlibet/issues for a list of all
 currently open bugs and feature requests.
 
 AUTHORS

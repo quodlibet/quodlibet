@@ -57,7 +57,7 @@ Quod Libet can also be controlled via a `FIFO
 <http://en.wikipedia.org/wiki/Named_pipe>`_ , ``~/.quodlibet/control``. To see 
 how the command-line arguments map to FIFO commands, refer to 
 ``process_arguments()`` in 
-https://github.com/quod-libet/quodlibet/blob/master/quodlibet/quodlibet/cli.py; 
+https://github.com/quodlibet/quodlibet/blob/master/quodlibet/quodlibet/cli.py; 
 as a simple example::
 
     # Sets volume to 50%

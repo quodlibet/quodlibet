@@ -95,7 +95,7 @@ class ExceptionDialog(Gtk.Window):
                 "dump-path": unexpand(dump),
                 "mini-dump-path": unexpand(minidump),
                 "new-issue-url":
-                    "https://github.com/quod-libet/quodlibet/issues/new",
+                    "https://github.com/quodlibet/quodlibet/issues/new",
             }
 
         suggestion = _("Quod Libet may now be unstable. Closing it and "

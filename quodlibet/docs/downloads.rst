@@ -52,7 +52,7 @@ Quod Libet uses `Git <http://git-scm.com/>`_ for source
 control and is hosted on `GitHub <https://github.com/>`_ as well
 as `Bitbucket <https://bitbucket.org/>`__:
 
- * https://github.com/quod-libet/quodlibet.git (primary)
+ * https://github.com/quodlibet/quodlibet.git (primary)
  * https://bitbucket.org/lazka/quodlibet.git (mirror)
 
 .. _RunFromSource:
@@ -61,7 +61,7 @@ as `Bitbucket <https://bitbucket.org/>`__:
 
 ::
 
-    $ git clone https://github.com/quod-libet/quodlibet.git
+    $ git clone https://github.com/quodlibet/quodlibet.git
     $ ./quodlibet/quodlibet/quodlibet.py
 
 .. note::

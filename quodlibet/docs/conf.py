@@ -20,7 +20,7 @@ if release.endswith(".-1"):
 exclude_patterns = ['_build', '_rtd_theme_repo', 'README.rst']
 html_theme = "haiku"
 html_title = "%s (%s)" % (project, version)
-bug_url_template = "https://github.com/quod-libet/quodlibet/issues/%s"
+bug_url_template = "https://github.com/quodlibet/quodlibet/issues/%s"
 
 RTD_NEW_THEME = True
 
