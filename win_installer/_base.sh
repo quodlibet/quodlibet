@@ -30,7 +30,7 @@ function download_and_verify {
 
     local FILEHASHES="\
 7f6507d400d07edfd1ea8205da36808009b0c539f5b8a6e0ab54337b955e6dc3  feedparser-5.1.3.tar.bz2
-8bc7969ef145188244b653bc7621265483c885e986c96b4654f2aa57b6c2d69e  mercurial-3.2.3-x86.msi
+d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
 cc884fe1e20fe220be7ce7c3b269f4cadc69a8310150a3a41162fba1ca9c88bd  mutagen-$MUTAGEN_VER.tar.gz
 69c2ae5c9f2ee45b0626905faffaa86d4e2fc0d3e8c118c8bc6899df68467b32  nsis-2.46-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
@@ -48,10 +48,10 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
     if (cd "$BIN" && echo "$FILEHASHES" | sha256sum --status --strict -c -); then
         echo "all installers here, continue.."
     else
-        wget -P "$BIN" -c https://bitbucket.org/tortoisehg/files/downloads/mercurial-3.2.3-x86.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
+        wget -P "$BIN" -c https://github.com/msysgit/msysgit/releases/download/Git-1.9.5-preview20141217/msysGit-netinstall-1.9.5-preview20141217.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
-        wget -P "$BIN" -c "http://downloads.sourceforge.net/project/pygobjectwin32/pygi-aio-$PYGI_AIO_VER-setup.exe"
+        wget -P "$BIN" -c "http://bitbucket.org/lazka/quodlibet/downloads/pygi-aio-$PYGI_AIO_VER-setup.exe"
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
@@ -79,9 +79,11 @@ function init_wine {
     export XDG_DATA_HOME="$HOME"/.local/share
     export XDG_CONFIG_HOME="$HOME"/.config
     export XDG_CACHE_HOME="$HOME"/.cache
+    export DISPLAY_SAVED=$DISPLAY
     export DISPLAY=be_quiet_damnit
 
-     wine wineboot -u
+    mkdir -p "$WINEPREFIX"
+    wine wineboot -u
 }
 
 function init_build_env {
@@ -96,7 +98,7 @@ function init_build_env {
     ln -s "$INST_ICON" "$BUILD_ENV"
 }
 
-# Argument 1: the hg tag
+# Argument 1: the git tag
 function clone_repo {
 
     if [ -z "$1" ]
@@ -105,16 +107,16 @@ function clone_repo {
         exit 1
     fi
 
-    # clone repo, create translations
-    hg clone "$QL_REPO" "$QL_REPO_TEMP"
-    (cd "$QL_REPO_TEMP" && hg up "$1") || exit 1
+    # clone repo
+    git clone "$QL_REPO" "$QL_REPO_TEMP"
+    (cd "$QL_REPO_TEMP" && git checkout "$1") || exit 1
     QL_VERSION=$(cd "$QL_TEMP" && python -c "import quodlibet.const;print quodlibet.const.VERSION,")
 
-    if [ "$1" = "default" ]
+    if [ "$1" = "master" ]
     then
-        local HG_REV=$(hg id -n | sed 's/[+]//g')
-        local HG_HASH=$(hg id -i | sed 's/[+]//g')
-        QL_VERSION="$QL_VERSION-rev$HG_REV-$HG_HASH"
+        local GIT_REV=$(git rev-list --count HEAD)
+        local GIT_HASH=$(git rev-parse --short HEAD)
+        QL_VERSION="$QL_VERSION-rev$GIT_REV-$GIT_HASH"
     fi
 }
 
@@ -225,9 +227,13 @@ function install_python {
     cp "$PYGI"/binding/py2.7-32/*.pyd "$SITEPACKAGES"
 }
 
-function install_mercurial {
-    wine msiexec /a "$BUILD_ENV"/bin/mercurial-3.2.3-x86.msi /qb;
-    HGDIR="$(winepath -u "$(wine cmd.exe /c 'echo | set /p=%ProgramFiles%')")/Mercurial";
+function install_git {
+    local DISPLAY_OLD=$DISPLAY
+    export DISPLAY=$DISPLAY_SAVED
+    # this needs a valid DISPLAY..
+    wine "$BUILD_ENV"/bin/Git-1.9.5-preview20141217.exe /VERYSILENT;
+    export DISPLAY=$DISPLAY_OLD
+    GITDIR="$(winepath -u "$(wine cmd.exe /c 'echo | set /p=%ProgramFiles%')")/Git";
 }
 
 function install_7zip {
@@ -325,7 +331,7 @@ function setup_sdk {
     # bin deps
     ln -s "$DEPS" "$SDK"/deps
     ln -s "$PYDIR" "$SDK"/python
-    ln -s "$HGDIR" "$SDK"/mercurial
+    ln -s "$GITDIR" "$SDK"/git
 
     # ql
     ln -s "$QL_REPO" "$SDK"/quodlibet
