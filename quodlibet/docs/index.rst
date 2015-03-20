@@ -35,6 +35,7 @@ Table of Contents
     changelog
     downloads
     features
+    bugs_repo
 
     guide/index
     packaging

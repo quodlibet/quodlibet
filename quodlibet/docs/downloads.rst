@@ -18,9 +18,6 @@
 .. |source-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/source.png
    :height: 16
    :width: 16
-.. |git-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/git.png
-   :height: 16
-   :width: 16
 .. |arch-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/arch.png
    :height: 16
    :width: 16
@@ -32,44 +29,16 @@
 Downloads
 =========
 
-================ ========================================== ================================================
-**Linux:**       |ubuntu-logo| :ref:`Ubuntu <ubuntu>`       |debian-logo| :ref:`Debian <debian>`
-   \             |fedora-logo| :ref:`Fedora <fedora>`       |opensuse-logo| :ref:`openSUSE <opensuse>`
+================ ================================================ ==========================================
+**Linux:**       |ubuntu-logo| :ref:`Ubuntu <ubuntu>`             |debian-logo| :ref:`Debian <debian>`
+   \             |fedora-logo| :ref:`Fedora <fedora>`             |opensuse-logo| :ref:`openSUSE <opensuse>`
    \             |arch-logo| :ref:`Arch Linux <arch>`
 **Windows:**     |windows-logo| :ref:`Windows <windows>`
 **Mac OS X:**    |macosx-logo| :ref:`Mac OS X <macosx>`
-**Development:** |git-logo| :ref:`Source <source>`          |source-logo| :ref:`Release Tarballs <tarballs>`
-================ ========================================== ================================================
+**Development:** |source-logo| :ref:`Release Tarballs <tarballs>`
+================ ================================================ ==========================================
 
 ----
-
-.. _source:
-
-|git-logo| Source
------------------
-
-Quod Libet uses `Git <http://git-scm.com/>`_ for source
-control and is hosted on `GitHub <https://github.com/>`_ as well
-as `Bitbucket <https://bitbucket.org/>`__:
-
- * https://github.com/quodlibet/quodlibet.git (primary)
- * https://bitbucket.org/lazka/quodlibet.git (mirror)
-
-.. _RunFromSource:
-
-**Running from Source** (no installation is needed) **:**
-
-::
-
-    $ git clone https://github.com/quodlibet/quodlibet.git
-    $ ./quodlibet/quodlibet/quodlibet.py
-
-.. note::
-
-    To get all the dependencies needed for running Quod Libet the easiest way
-    is to use one of the unstable PPAs / repos listed below. They pull in or
-    contain all the needed dependencies for the latest code and are kept up to
-    date.
 
 
 .. _tarballs:
