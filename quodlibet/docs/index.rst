@@ -42,6 +42,5 @@ Table of Contents
     translation/index
     development/index
 
-    commands/index
     license
     contact
