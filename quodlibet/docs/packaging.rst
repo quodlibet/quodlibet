@@ -164,6 +164,8 @@ Changes
   with 3.3) and an icon theme including symbolic icons is recommended.
   **adwaita-icon-theme** provides both for example.
 * **Mutagen 1.22** required
+* New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
+
 
 3.2 → 3.3
 ^^^^^^^^^
