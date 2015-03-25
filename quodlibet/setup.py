@@ -301,7 +301,7 @@ if __name__ == "__main__":
 
     package_path = quodlibet.__path__[0]
     package_data_paths = recursive_include(
-        package_path, "images", ("svg", "png", "theme"))
+        package_path, "images", ("svg", "png"))
 
     setup_kwargs = {
         'distclass': GDistribution,
@@ -367,7 +367,7 @@ if __name__ == "__main__":
             pass
 
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
-            "quodlibet", "images", ("svg", "png", "theme"))
+            "quodlibet", "images", ("svg", "png"))
 
         # py2exe trips over -1 when trying to write version info in the exe
         if setup_kwargs["version"].endswith(".-1"):
