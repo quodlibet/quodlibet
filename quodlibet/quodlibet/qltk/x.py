@@ -196,34 +196,55 @@ def Frame(label, child=None):
     return frame
 
 
-class Align(Gtk.Frame):
-    """A Gtk.Alignment replacement which is responsible for
-    the positioning/allocation of its child widget.
-
-    XXX: Subclasses Gtk.Frame instead of Gtk.Bin because the later
-    fails with Gtk+ 3.4.
+class Align(Gtk.Alignment):
+    """Note: With gtk3.12+ we could replace this with a Gtk.Bin +
+    margin properties.
     """
 
     def __init__(self, child=None,
                  top=0, right=0, bottom=0, left=0, border=0,
                  halign=Gtk.Align.FILL, valign=Gtk.Align.FILL):
 
-        kwargs = dict(
-            shadow_type=Gtk.ShadowType.NONE,
-            halign=halign, valign=valign,
-            margin_top=border + top, margin_bottom=border + bottom,
-            margin_start=border + left, margin_end=border + right,
-        )
+        def align_to_xy(a):
+            """(xyalign, xyscale)"""
 
-        # < Gtk+ 3.12
-        if not hasattr(Gtk.Widget.props, "margin_start"):
-            kwargs["margin_left"] = kwargs.pop("margin_start")
-            kwargs["margin_right"] = kwargs.pop("margin_end")
+            if a == Gtk.Align.FILL:
+                return 0.0, 1.0
+            elif a == Gtk.Align.START:
+                return 0.0, 0.0
+            elif a == Gtk.Align.END:
+                return 1.0, 0.0
+            elif a == Gtk.Align.CENTER:
+                return 0.5, 0.0
+            else:
+                return 0.5, 1.0
 
-        super(Align, self).__init__(**kwargs)
+        xalign, xscale = align_to_xy(halign)
+        yalign, yscale = align_to_xy(valign)
+        bottom_padding = border + bottom
+        top_padding = border + top
+        left_padding = border + left
+        right_padding = border + right
+
+        super(Align, self).__init__(xalign=xalign, xscale=xscale,
+            yalign=yalign, yscale=yscale, bottom_padding=bottom_padding,
+            top_padding=top_padding, left_padding=left_padding,
+            right_padding=right_padding)
 
         if child is not None:
             self.add(child)
+
+    def get_margin_top(self):
+        return self.props.top_padding
+
+    def get_margin_bottom(self):
+        return self.props.bottom_padding
+
+    def get_margin_left(self):
+        return self.props.left_padding
+
+    def get_margin_right(self):
+        return self.props.right_padding
 
 
 def MenuItem(label, stock_id):
