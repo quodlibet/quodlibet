@@ -178,6 +178,9 @@ def main():
         except NotImplementedError:
             pass
 
+        print_d("Shutting down player device %r." % player.version_info)
+        player.destroy()
+
     quodlibet.main(window, before_quit=before_quit)
 
     quodlibet.finish_first_session(app.id)
@@ -185,8 +188,6 @@ def main():
     remote.stop()
     fsiface.destroy()
 
-    print_d("Shutting down player device %r." % player.version_info)
-    player.destroy()
     tracker.destroy()
     quodlibet.library.save(force=True)
 
