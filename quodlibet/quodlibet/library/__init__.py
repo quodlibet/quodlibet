@@ -14,11 +14,9 @@ also be queried in various ways.
 """
 
 import time
-import threading
 
 from quodlibet import print_d
 import quodlibet.formats as formats
-from quodlibet.const import LIBRARY_SAVE_PERIOD_SECONDS
 
 from quodlibet.library.libraries import SongFileLibrary, SongLibrary
 from quodlibet.library.librarians import SongLibrarian
@@ -40,11 +38,11 @@ def init(cache_fn=None):
     return library
 
 
-def save(force=False):
+def save(save_period=None):
     """Save all registered libraries that have a filename and are marked dirty.
 
-    If force = True save all of them blocking, else save non-blocking and
-    only if they were last saved more than LIBRARY_SAVE_PERIOD_SECONDS ago.
+    If `save_period` (seconds) is given the library will only be saved if
+    it hasn't been in the last `save_period` seconds.
     """
 
     print_d("Saving all libraries...")
@@ -55,11 +53,5 @@ def save(force=False):
         if not filename or not lib.dirty:
             continue
 
-        if force:
-            try:
-                lib.save()
-            except EnvironmentError:
-                pass
-            lib.destroy()
-        elif time.time() - mtime(filename) > LIBRARY_SAVE_PERIOD_SECONDS:
-            threading.Thread(target=lib.save).run()
+        if not save_period or abs(time.time() - mtime(filename)) > save_period:
+            lib.save()

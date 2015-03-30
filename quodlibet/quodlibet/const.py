@@ -66,9 +66,6 @@ CURRENT = os.path.join(USERDIR, "current")
 LIBRARY = os.path.join(USERDIR, "songs")
 LOGDIR = os.path.join(USERDIR, "logs")
 
-# Don't bother saving the library more often than this
-LIBRARY_SAVE_PERIOD_SECONDS = 15 * 60
-
 # entry point for the user guide / wiki
 BRANCH_NAME = "master"
 DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/%s"

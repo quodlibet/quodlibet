@@ -488,7 +488,8 @@ def enable_periodic_save(save_library):
 
     def periodic_library_save():
         while 1:
-            quodlibet.library.save()
+            # max every 15 minutes
+            quodlibet.library.save(save_period=15 * 60)
             yield
 
     copool.add(periodic_library_save, timeout=timeout)

@@ -189,7 +189,7 @@ def main():
     fsiface.destroy()
 
     tracker.destroy()
-    quodlibet.library.save(force=True)
+    quodlibet.library.save()
 
     config.save(const.CONFIG)
 
