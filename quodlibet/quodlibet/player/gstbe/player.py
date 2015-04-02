@@ -220,6 +220,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if self.bin:
             return True
 
+        # reset error state
+        self.error = False
+
         pipeline = config.get("player", "gst_pipeline")
         try:
             pipeline, self._pipeline_desc = GStreamerSink(pipeline)
@@ -680,9 +683,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if song is not info:
             self.emit('song-ended', info, stopped)
         self.emit('song-ended', song, stopped)
-
-        # reset error state
-        self.error = False
 
         current = self._source.current if next_song is None else next_song
 
