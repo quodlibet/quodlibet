@@ -174,6 +174,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._pipeline_desc = None
         self._lib_id = librarian.connect("changed", self.__songs_changed)
         self._active_seeks = []
+        self._active_error = False
         self._runner = MainRunner()
 
     def __songs_changed(self, librarian, songs):
@@ -627,8 +628,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         """
 
         # prevent recursive errors
-        if self.error:
+        if self._active_error:
             return
+        self._active_error = True
 
         self.__destroy_pipeline()
         self.error = True
@@ -636,6 +638,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         print_w(unicode(player_error))
         self.emit('error', self.song, player_error)
+        self._active_error = False
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
