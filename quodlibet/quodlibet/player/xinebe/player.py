@@ -190,22 +190,22 @@ class XinePlaylistPlayer(BasePlayer):
 
     @paused.setter
     def paused(self, paused):
-        if paused != self._paused:
-            self._paused = paused
-            if self.song:
-                self.emit((paused and 'paused') or 'unpaused')
-                if self._paused:
-                    if not self.song.is_file:
-                        xine_close(self._stream)
-                        xine_open(self._stream, self.song("~uri"))
-                    else:
-                        self._pause()
+        if paused == self._paused:
+            return
+        self._paused = paused
+        self.emit((paused and 'paused') or 'unpaused')
+        if self._paused != paused:
+            return
+
+        if self.song:
+            if paused:
+                if not self.song.is_file:
+                    xine_close(self._stream)
+                    xine_open(self._stream, self.song("~uri"))
                 else:
-                    self._play()
-            elif paused is True:
-                # Something wants us to pause between songs, or when
-                # we've got no song playing (probably StopAfterMenu).
-                self.emit('paused')
+                    self._pause()
+            else:
+                self._play()
 
     def _error(self, player_error=None):
         if self._destroyed:

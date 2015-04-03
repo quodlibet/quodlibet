@@ -587,6 +587,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if paused == self._paused:
             return
 
+        self._paused = paused
+        self.emit((paused and 'paused') or 'unpaused')
+        # in case a signal handler changed the paused state, abort this
+        if self._paused != paused:
+            return
+
         if paused:
             if self.bin:
                 if not self.song:
@@ -610,9 +616,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         else:
             if self.song and self.__init_pipeline():
                 self.bin.set_state(Gst.State.PLAYING)
-
-        self._paused = paused
-        self.emit((paused and 'paused') or 'unpaused')
 
     def _error(self, player_error):
         """Destroy the pipeline and set the error state.
