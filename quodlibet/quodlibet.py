@@ -54,8 +54,10 @@ def main():
     app.library = library
 
     from quodlibet.player import PlayerError
+    backend = os.environ.get(
+        "QUODLIBET_BACKEND", config.get("player", "backend"))
     # this assumes that nullbe will always succeed
-    for backend in [config.get("player", "backend"), "nullbe"]:
+    for backend in [backend, "nullbe"]:
         try:
             player = quodlibet.init_backend(backend, app.librarian)
         except PlayerError as error:
