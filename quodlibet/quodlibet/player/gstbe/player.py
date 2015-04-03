@@ -586,19 +586,14 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def paused(self, paused):
         if paused == self._paused:
             return
-        self._paused = paused
-
-        if not self.song:
-            if paused:
-                # Something wants us to pause between songs, or when
-                # we've got no song playing (probably StopAfterMenu).
-                self.emit('paused')
-                self.__destroy_pipeline()
-            return
 
         if paused:
             if self.bin:
-                if self.song.is_file:
+                if not self.song:
+                    # Something wants us to pause between songs, or when
+                    # we've got no song playing (probably StopAfterMenu).
+                    self.__destroy_pipeline()
+                elif self.song.is_file:
                     # fast path
                     self.bin.set_state(Gst.State.PAUSED)
                 else:
@@ -613,12 +608,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                         # destroy so that we rebuffer on resume
                         self.__destroy_pipeline()
         else:
-            if self.bin:
+            if self.song and self.__init_pipeline():
                 self.bin.set_state(Gst.State.PLAYING)
-            else:
-                if self.__init_pipeline():
-                    self.bin.set_state(Gst.State.PLAYING)
 
+        self._paused = paused
         self.emit((paused and 'paused') or 'unpaused')
 
     def _error(self, player_error):
