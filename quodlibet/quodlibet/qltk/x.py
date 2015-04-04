@@ -31,13 +31,6 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             GLib.idle_add(self.queue_resize)
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
-        # since 3.15 the gdkwindow moves to dx==-1 with the allocation
-        # so ignore anything < 0 (I guess something passes the adjusted alloc
-        # to us a second time)
-        # https://git.gnome.org/browse/gtk+/commit/?id=fdf367e8689cb
-        dx = max(0, dx)
-        dy = max(0, dy)
-
         ctx = self.get_style_context()
         border = ctx.get_border(self.get_state_flags())
 
@@ -59,11 +52,17 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         else:
             top_ctx = top_bar.get_style_context()
             b = top_ctx.get_border(top_bar.get_state_flags())
-            # only if the toolbar has a border we hide our own.
-            # seems to work, even tough it doesn't for getting the
-            # Notebook/ScrolledWindow border :/
             if b.bottom:
-                dy = 0
+                dy_bar = self.translate_coordinates(top_bar, 0, 0)[1]
+                dy_bar -= top_bar.get_allocation().height
+                dy = min(dy, dy_bar)
+
+        # since 3.15 the gdkwindow moves to dx==-1 with the allocation
+        # so ignore anything < 0 (I guess something passes the adjusted alloc
+        # to us a second time)
+        # https://git.gnome.org/browse/gtk+/commit/?id=fdf367e8689cb
+        dx = max(0, dx)
+        dy = max(0, dy)
 
         # Don't remove the border if the border is drawn inside
         # and the scrollbar on that edge is visible
