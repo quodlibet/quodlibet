@@ -34,6 +34,7 @@ quodlibet/dist/*
 # Windows Installer
 win_installer/_bin
 win_installer/_build_env
+win_installer/_build_env_installer
 win_installer/_sdk
 win_installer/*.exe
 
