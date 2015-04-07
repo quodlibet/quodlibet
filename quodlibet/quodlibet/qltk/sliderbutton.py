@@ -9,7 +9,7 @@
 from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk import get_top_parent
-from quodlibet.qltk.x import Alignment
+from quodlibet.qltk.x import Align
 
 
 class PrimaryWarpsRange(Gtk.Range):
@@ -112,7 +112,7 @@ class _PopupSlider(Gtk.Button):
 
     def set_slider_widget(self, widget):
         self._box.pack_start(
-            Alignment(widget, left=3, right=3), False, True, 0)
+            Align(widget, left=3, right=3), False, True, 0)
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError

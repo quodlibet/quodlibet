@@ -349,10 +349,11 @@ class SearchWindow(Gtk.Dialog):
         """Search for album using the query text."""
         query = self.search_query.get_text()
         if not query:
-            self.result_label.set_markup(_("<b>Please enter a query.</b>"))
+            self.result_label.set_markup(
+                "<b>%s</b>" % _("Please enter a query."))
             self.search_button.set_sensitive(True)
             return
-        self.result_label.set_markup(_(u"<i>Searching…</i>"))
+        self.result_label.set_markup("<i>%s</i>" % _(u"Searching…"))
         filt = ws.ReleaseFilter(query=query)
         self._qthread.add(self.__process_results,
                          self._query.getReleases, filt)
@@ -368,7 +369,7 @@ class SearchWindow(Gtk.Dialog):
         for release in map(lambda r: r.release, results):
             self._resultlist.append((release, ))
         if len(results) > 0 and self.result_combo.get_active() == -1:
-            self.result_label.set_markup(_(u"<i>Loading result…</i>"))
+            self.result_label.set_markup("<i>%s</i>" % _(u"Loading result…"))
             self.result_combo.set_active(0)
         else:
             self.result_label.set_markup(_("No results found."))
@@ -382,7 +383,7 @@ class SearchWindow(Gtk.Dialog):
         if rel_id in self._releasecache:
             self.__update_results(self._releasecache[rel_id])
         else:
-            self.result_label.set_markup(_(u"<i>Loading result…</i>"))
+            self.result_label.set_markup("<i>%s</i>" % _(u"Loading result…"))
             inc = ws.ReleaseIncludes(
                     artist=True, releaseEvents=True, tracks=True)
             self._qthread.add(self.__update_result,

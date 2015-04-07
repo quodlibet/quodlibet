@@ -126,7 +126,7 @@ class ModuleScanner(object):
 
             try:
                 # add a real module, so that pickle works
-                # http://code.google.com/p/quodlibet/issues/detail?id=1093
+                # https://github.com/quodlibet/quodlibet/issues/1093
                 parent = "quodlibet.fake"
                 if parent not in sys.modules:
                     sys.modules[parent] = imp.new_module(parent)

@@ -58,10 +58,7 @@ class FingerprintDialog(Window):
         self.__stats = stats = Gtk.Label()
         stats.set_alignment(0, 0.5)
         expand = Gtk.Expander.new_with_mnemonic(_("_Details"))
-        align = Gtk.Alignment.new(0.0, 0.0, 1.0, 1.0)
-        align.set_padding(6, 0, 6, 0)
-        expand.add(align)
-        align.add(stats)
+        expand.add(stats)
 
         def expand_cb(expand, *args):
             self.resize(self.get_size()[0], 1)
@@ -90,7 +87,7 @@ class FingerprintDialog(Window):
         bbox.pack_start(submit, True, True, 0)
         bbox.pack_start(cancel, True, True, 0)
 
-        outer_box.pack_start(box, False, True, 0)
+        outer_box.pack_start(box, True, True, 0)
         outer_box.pack_start(bbox, False, True, 0)
 
         pool.connect('fingerprint-done', self.__fp_done_cb)
@@ -115,13 +112,13 @@ class FingerprintDialog(Window):
         text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, "
             "or <i><b>artist</b></i> / "
             "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
-        text += "\n\n" + _("<i>Fingerprints:</i>")
+        text += "\n\n" + "<i>%s</i>" % _("Fingerprints:")
         text += " %d/%d" % (valid_fp, all_)
-        text += "\n" # _("<i>Songs with MBIDs:</i>")
+        text += "\n" + "<i>%s</i>" % _("Songs with MBIDs:")
         text += " %d/%d" % (got_mbid, all_)
-        text += "\n" + _("<i>Songs with sufficient tags:</i>")
+        text += "\n" + "<i>%s</i>" % _("Songs with sufficient tags:")
         text += " %d/%d" % (got_meta, all_)
-        text += "\n" + _("<i>Songs to submit:</i>")
+        text += "\n" + "<i>%s</i>" % _("Songs to submit:")
         text += " %d/%d" % (to_send, all_)
         self.__stats.set_markup(text)
 

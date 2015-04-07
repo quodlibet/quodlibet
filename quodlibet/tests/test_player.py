@@ -51,10 +51,10 @@ class TPlayer(AbstractTestCase):
 
         self.player.setup(source, None, 0)
 
-        self.signals = {}
+        self.signals = []
 
         def handler(type_, *args):
-            self.signals.setdefault(type_, []).append(args)
+            self.signals.append(type_)
         connect_obj(self.player, "unpaused", handler, "unpaused")
         connect_obj(self.player, "paused", handler, "paused")
 
@@ -85,6 +85,7 @@ class TPlayer(AbstractTestCase):
         self.assertTrue(self.player.paused)
         self.player.paused = False
         self.assertFalse(self.player.paused)
+        self.assertTrue(self.signals, ["unpaused"])
 
     def test_volume(self):
         self.assertEqual(self.player.volume, 1.0)
@@ -155,9 +156,9 @@ class TPlayer(AbstractTestCase):
         self.player.go_to(None)
         self.player.paused = False
         self.player.next()
-        self.assertTrue(set(self.signals.keys()), set(["unpaused"]))
+        self.assertTrue(self.signals, ["unpaused"])
         self.player.go_to(None)
-        self.assertTrue(set(self.signals.keys()), set(["unpaused", "paused"]))
+        self.assertTrue(self.signals, ["unpaused", "paused"])
 
 
 class TNullPlayer(TPlayer):

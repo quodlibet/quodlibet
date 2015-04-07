@@ -404,7 +404,7 @@ class TPlaylistMux(TestCase):
     def test_goto_queue(self):
         self.pl.set(range(20, 30))
         self.q.set(range(10))
-        self.mux.go_to(self.q[-1].iter, queue=True)
+        self.mux.go_to(self.q[-1].iter, source=self.q)
         self.assertTrue(self.q.sourced)
         self.assertEqual(self.mux.current, self.q[-1][0])
 

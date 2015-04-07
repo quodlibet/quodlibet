@@ -6,7 +6,7 @@ A Music Library/Editor/Player
 
 **Quod Libet** is a `GTK+ <http://www.gtk.org/>`__-based **audio player**
 written in `Python <http://www.python.org/>`__, using the `Mutagen
-<http://code.google.com/p/mutagen/>`__ tagging library. It's designed
+<https://bitbucket.org/lazka/mutagen>`__ tagging library. It's designed
 around the idea that you know how to organize your music better than we do.
 It lets you make playlists based on :ref:`regular expressions <Searching>`
 (don't worry, regular searches work too). It lets you display and edit any
@@ -35,12 +35,12 @@ Table of Contents
     changelog
     downloads
     features
+    bugs_repo
 
     guide/index
     packaging
     translation/index
     development/index
 
-    commands/index
     license
     contact

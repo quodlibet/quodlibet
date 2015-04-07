@@ -15,4 +15,5 @@ User Guide
     shortcuts
     interacting
     config_files
+    commands/index
     faq

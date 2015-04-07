@@ -35,10 +35,14 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **Python** (2.7)
 * **PyGObject** including **cairo support** (>= 3.2)
 * **pycairo**
-* **mutagen** (>= 1.14; 1.27 recommended)
+* **mutagen** (>= 1.22; 1.27 recommended)
 * **GTK+** (>= 3.2)
 * On Windows only: **pywin32**
 * On OS X only: **PyObjC**
+
+For icons a complete **icon theme** is needed, preferably with symbolic icons. 
+For example **adwaita-icon-theme** or the older **gnome-icon-theme** + 
+**gnome-icon-theme-symbolic**
 
 For playback support in Quod Libet one of the following two is needed:
 
@@ -63,9 +67,6 @@ Xine
 
 Optional Runtime Dependencies
 -----------------------------
-
-**gnome-symbolic-icon-theme**:
-    * For symbolic icons; QL will fall back to colored ones if needed.
 
 **dbus-python**:
     * Enables the DBus interface
@@ -143,7 +144,7 @@ Build Dependencies
 ------------------
 
 * **Python** 2.7 (stdlib only)
-* **gettext** and **intltool** for translations.
+* **gettext** >= 0.15 and **intltool** for translations.
 
 For user documentation ``setup.py build_sphinx`` can be used to create the
 HTML user guide and put it in the build directory in the ``sphinx``
@@ -154,10 +155,23 @@ subdirectory. This is not part of the default build process and requires
 Changes
 -------
 
-3.0 → 3.1
+3.3 → 3.4
 ^^^^^^^^^
 
-* **No changes** compared to 3.0
+* **gtk-update-icon-cache** is no longer a build dependency
+* **gettext >= 0.15** is required now
+* A complete **icon theme** is now required (this was also partly the case
+  with 3.3) and an icon theme including symbolic icons is recommended.
+  **adwaita-icon-theme** provides both for example.
+* **Mutagen 1.22** required
+* New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
+
+
+3.2 → 3.3
+^^^^^^^^^
+
+* New optional plugin dependency: **webkitgtk-3.0 + typelibs**
+* **Mutagen 1.27** recommended
 
 3.1 → 3.2
 ^^^^^^^^^
@@ -173,14 +187,7 @@ Changes
 
 * **Python 2.7** required instead of 2.6 (might still work, but not tested)
 
-3.2 → 3.3
+3.0 → 3.1
 ^^^^^^^^^
 
-* New optional plugin dependency: **webkitgtk-3.0 + typelibs**
-* **Mutagen 1.27** recommended
-
-
-3.3 → 3.4
-^^^^^^^^^
-
-* **gtk-update-icon-cache** is no longer a build dependency
+* **No changes** compared to 3.0

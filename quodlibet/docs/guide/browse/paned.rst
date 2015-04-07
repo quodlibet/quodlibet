@@ -8,9 +8,9 @@ Overview
     :scale: 50%
     :align: right
 
-ThePaned Browser offers a convenient way to quickly drill down into a large 
+The Paned Browser offers a convenient way to quickly drill down into a large 
 music collection, by narrowing  selections in several stages. Some users 
-mayh find this reminiscent of `RhythmBox <http://www.rhythmbox.org>`_ or, 
+may find this reminiscent of `RhythmBox <http://www.rhythmbox.org>`_ or, 
 to some extent, `iTunes 
 <http://www.apple.com/uk/itunes/what-is/player.html>`_.
 

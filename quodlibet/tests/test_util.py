@@ -16,6 +16,7 @@ import time
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util import format_time_long as f_t_l
+from quodlibet.util.compat import text_type
 
 
 is_win = os.name == "nt"
@@ -1050,3 +1051,15 @@ class Tlist_unique(TestCase):
         self.assertEqual(util.list_unique([1, 2, 3]), [1, 2, 3])
         self.assertEqual(util.list_unique([1, 2, 1, 4]), [1, 2, 4])
         self.assertEqual(util.list_unique([1, 1, 1, 2]), [1, 2])
+
+
+class Tset_win32_unicode_argv(TestCase):
+
+    def test_main(self):
+        old_argv = sys.argv
+        try:
+            util.set_win32_unicode_argv()
+            if os.name == "nt":
+                self.assertTrue(isinstance(sys.argv[0], text_type))
+        finally:
+            sys.argv = old_argv

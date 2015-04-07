@@ -112,11 +112,14 @@ class TConfigRPaned(TestCase):
         self.failUnlessAlmostEqual(config_value, 0.10, 2)
 
 
-class TAlignment(TestCase):
+class TAlign(TestCase):
     def test_ctr(self):
         button = Gtk.Button()
-        a = x.Alignment(button, left=2, right=4, top=5, bottom=-2, border=2)
-        self.failUnlessEqual(a.get_padding(), (7, 0, 4, 6))
+        a = x.Align(button, left=2, right=4, top=5, bottom=-2, border=2)
+        self.assertEqual(a.get_margin_top(), 7)
+        self.assertEqual(a.get_margin_bottom(), 0)
+        self.assertEqual(a.get_margin_left(), 4)
+        self.assertEqual(a.get_margin_right(), 6)
         self.failUnless(a.get_child() is button)
         a.destroy()
 

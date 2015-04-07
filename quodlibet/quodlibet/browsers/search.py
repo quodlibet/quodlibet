@@ -19,7 +19,7 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import LimitSearchBarBox
-from quodlibet.qltk.x import Alignment, SymbolicIconImage
+from quodlibet.qltk.x import Align, SymbolicIconImage
 
 
 class PreferencesButton(Gtk.HBox):
@@ -83,7 +83,7 @@ class SearchBar(Gtk.VBox, Browser):
         prefs = PreferencesButton(sbb)
         sbb.pack_start(prefs, False, True, 0)
 
-        align = Alignment(sbb, left=6, right=6, top=6)
+        align = Align(sbb, left=6, right=6, top=6)
         self.pack_start(align, False, True, 0)
         self.connect('destroy', self.__destroy)
         self.show_all()

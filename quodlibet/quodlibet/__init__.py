@@ -7,15 +7,6 @@
 
 import __builtin__
 
-_dummy_gettext = lambda value: value
-_dummy_ngettext = lambda v1, v2, count: (count == 1) and v1 or v2
-__builtin__.__dict__["_"] = _dummy_gettext
-__builtin__.__dict__["Q_"] = _dummy_gettext
-__builtin__.__dict__["N_"] = _dummy_gettext
-__builtin__.__dict__["ngettext"] = _dummy_ngettext
-del _dummy_gettext
-del _dummy_ngettext
-
 import gettext
 import locale
 import os
@@ -27,12 +18,16 @@ import quodlibet.util
 
 from quodlibet.util import set_process_title
 from quodlibet.util.path import mkdir, unexpand
-from quodlibet.util.i18n import GlibTranslations
+from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
+    fixup_i18n_envvars
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet.const import MinVersions, Version
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers"]
+
+
+GlibTranslations().install(unicode=True)
 
 
 class Application(object):
@@ -202,6 +197,9 @@ def _gtk_init():
         'ignore', '.*Stock items are deprecated.*', Warning)
     warnings.filterwarnings(
         'ignore', '.*:use-stock.*', Warning)
+    warnings.filterwarnings(
+        'ignore', '.*The property GtkAlignment:[^\s]+ is deprecated.*',
+        Warning)
 
     settings = Gtk.Settings.get_default()
     with warnings.catch_warnings():
@@ -353,18 +351,20 @@ def _dbus_init():
 def _gettext_init():
     """Call before using gettext helpers"""
 
+    # set by tests
+    if "QUODLIBET_NO_TRANS" in os.environ:
+        return
+
+    set_i18n_envvars()
+    fixup_i18n_envvars()
+
+    print_d("LANGUAGE: %r" % os.environ.get("LANGUAGE"))
+    print_d("LANG: %r" % os.environ.get("LANG"))
+
     try:
         locale.setlocale(locale.LC_ALL, '')
     except locale.Error:
         pass
-
-    if os.name == "nt":
-        import ctypes
-        k32 = ctypes.windll.kernel32
-        langs = filter(None, map(locale.windows_locale.get,
-                                 [k32.GetUserDefaultUILanguage(),
-                                  k32.GetSystemDefaultUILanguage()]))
-        os.environ.setdefault('LANG', ":".join(langs))
 
     # Use the locale dir in ../build/share/locale if there is one
     localedir = os.path.dirname(quodlibet.const.BASEDIR)
@@ -388,7 +388,8 @@ def _gettext_init():
     else:
         print_d("Translations loaded: %r" % unexpand(t.path))
 
-    t.install(unicode=True)
+    debug_text = os.environ.get("QUODLIBET_TEST_TRANS")
+    t.install(unicode=True, debug_text=debug_text)
 
 
 def _python_init():
@@ -487,7 +488,8 @@ def enable_periodic_save(save_library):
 
     def periodic_library_save():
         while 1:
-            quodlibet.library.save()
+            # max every 15 minutes
+            quodlibet.library.save(save_period=15 * 60)
             yield
 
     copool.add(periodic_library_save, timeout=timeout)
@@ -578,13 +580,16 @@ def _init_osx(window):
     delegate = Delegate.alloc().init()
     delegate.retain()
     shared_app.setDelegate_(delegate)
-    window.connect(
-        "delete-event", lambda window, event: window.hide() or True)
+
+    # QL shouldn't exit on window close, EF should
+    if window.get_osx_is_persistent():
+        window.connect(
+            "delete-event", lambda window, event: window.hide() or True)
 
 
 def main(window, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk
+    from gi.repository import Gtk, Gdk
 
     def quit_gtk(window):
 
@@ -624,7 +629,9 @@ def main(window, before_quit=None):
     if sys.platform == "darwin":
         _init_osx(window)
 
-    window.show_maybe()
+    if not window.show_maybe():
+        # if we don't show a window, startup isn't completed, so call manually
+        Gdk.notify_startup_complete()
 
     Gtk.main()
     print_d("Gtk.main() done.")

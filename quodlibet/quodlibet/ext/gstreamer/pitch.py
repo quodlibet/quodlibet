@@ -16,7 +16,7 @@ from quodlibet import config
 
 
 if os.name == "nt":
-    # https://code.google.com/p/quodlibet/issues/detail?id=1534
+    # https://github.com/quodlibet/quodlibet/issues/1534
     raise PluginNotSupportedError("Crashes under Windows...")
 
 

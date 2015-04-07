@@ -174,6 +174,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._pipeline_desc = None
         self._lib_id = librarian.connect("changed", self.__songs_changed)
         self._active_seeks = []
+        self._active_error = False
         self._runner = MainRunner()
 
     def __songs_changed(self, librarian, songs):
@@ -219,6 +220,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if self.bin:
             return True
+
+        # reset error state
+        self.error = False
 
         pipeline = config.get("player", "gst_pipeline")
         try:
@@ -488,7 +492,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # Chained oggs falsely trigger a gapless transition.
         # At least for radio streams we can safely ignore it because
         # transitions don't occur there.
-        # https://code.google.com/p/quodlibet/issues/detail?id=1454
+        # https://github.com/quodlibet/quodlibet/issues/1454
         # https://bugzilla.gnome.org/show_bug.cgi?id=695474
         if self.song.multisong:
             print_d("multisong: ignore about to finish")
@@ -582,19 +586,20 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def paused(self, paused):
         if paused == self._paused:
             return
-        self._paused = paused
 
-        if not self.song:
-            if paused:
-                # Something wants us to pause between songs, or when
-                # we've got no song playing (probably StopAfterMenu).
-                self.emit('paused')
-                self.__destroy_pipeline()
+        self._paused = paused
+        self.emit((paused and 'paused') or 'unpaused')
+        # in case a signal handler changed the paused state, abort this
+        if self._paused != paused:
             return
 
         if paused:
             if self.bin:
-                if self.song.is_file:
+                if not self.song:
+                    # Something wants us to pause between songs, or when
+                    # we've got no song playing (probably StopAfterMenu).
+                    self.__destroy_pipeline()
+                elif self.song.is_file:
                     # fast path
                     self.bin.set_state(Gst.State.PAUSED)
                 else:
@@ -609,13 +614,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                         # destroy so that we rebuffer on resume
                         self.__destroy_pipeline()
         else:
-            if self.bin:
+            if self.song and self.__init_pipeline():
                 self.bin.set_state(Gst.State.PLAYING)
-            else:
-                if self.__init_pipeline():
-                    self.bin.set_state(Gst.State.PLAYING)
-
-        self.emit((paused and 'paused') or 'unpaused')
 
     def _error(self, player_error):
         """Destroy the pipeline and set the error state.
@@ -624,8 +624,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         """
 
         # prevent recursive errors
-        if self.error:
+        if self._active_error:
             return
+        self._active_error = True
 
         self.__destroy_pipeline()
         self.error = True
@@ -633,6 +634,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         print_w(unicode(player_error))
         self.emit('error', self.song, player_error)
+        self._active_error = False
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
@@ -680,9 +682,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if song is not info:
             self.emit('song-ended', info, stopped)
         self.emit('song-ended', song, stopped)
-
-        # reset error state
-        self.error = False
 
         current = self._source.current if next_song is None else next_song
 

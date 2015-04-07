@@ -18,7 +18,6 @@ from cStringIO import StringIO
 import cPickle as pickle
 import os
 import shutil
-import threading
 import time
 
 from gi.repository import GObject
@@ -299,9 +298,6 @@ class PicklingMixin(object):
 
     filename = None
 
-    def __init__(self):
-        self._save_lock = threading.Lock()
-
     def load(self, filename):
         """Load a library from a file, containing a picked list.
 
@@ -325,15 +321,14 @@ class PicklingMixin(object):
         if filename is None:
             filename = self.filename
 
-        with self._save_lock:
-            print_d("Saving contents to %r." % filename, self)
+        print_d("Saving contents to %r." % filename, self)
 
-            try:
-                dump_items(filename, self.get_content())
-            except EnvironmentError:
-                print_w("Couldn't save library to path: %r" % filename)
-            else:
-                self.dirty = False
+        try:
+            dump_items(filename, self.get_content())
+        except EnvironmentError:
+            print_w("Couldn't save library to path: %r" % filename)
+        else:
+            self.dirty = False
 
 
 class PicklingLibrary(Library, PicklingMixin):

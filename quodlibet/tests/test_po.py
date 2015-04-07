@@ -5,7 +5,6 @@ from tests.helper import ListWithUnused as L
 import os
 import re
 import glob
-import subprocess
 
 try:
     import polib
@@ -15,6 +14,7 @@ except ImportError:
 import quodlibet
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import human_title
+from gdist import gettextutil
 
 
 PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
@@ -23,36 +23,24 @@ PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
 class TPOTFILESIN(TestCase):
 
     def test_missing(self):
-        if not iscommand("intltool-update"):
+        try:
+            gettextutil.check_version()
+        except gettextutil.GettextError:
             return
 
-        old_cd = os.getcwd()
-        try:
-            os.chdir(PODIR)
-            result = subprocess.check_output(
-                ["intltool-update", "--maintain",
-                 "--gettext-package", "quodlibet"],
-                stderr=subprocess.STDOUT)
-        finally:
-            os.chdir(old_cd)
-
+        result = gettextutil.get_missing(PODIR, "quodlibet")
         if result:
             raise Exception(result)
 
 
 @skipIf(polib is None, "polib not found")
 class TPot(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.old_cwd = os.getcwd()
-        os.chdir(PODIR)
-        subprocess.check_call([
-            "intltool-update", "--pot", "--gettext-package", "quodlibet"])
-        cls.pot = polib.pofile('quodlibet.pot')
 
     @classmethod
-    def tearDownClass(cls):
-        os.chdir(cls.old_cwd)
+    def setUpClass(cls):
+        gettextutil.check_version()
+        pot_path = gettextutil.update_pot(PODIR, "quodlibet")
+        cls.pot = polib.pofile(pot_path)
 
     def conclude(self, fails, reason):
         if fails:
@@ -89,7 +77,7 @@ class TPot(TestCase):
             Send to Kitchen: - will erroneously pass the test
         """
         fails = []
-        ok_labels = L('Local _IP:')
+        ok_labels = L('Local _IP:', 'Songs with MBIDs:')
 
         for entry in self.pot:
             if not entry.msgid.endswith(':'):
@@ -156,14 +144,15 @@ class TPot(TestCase):
     def test_markup(self):
         # https://wiki.gnome.org/Initiatives/GnomeGoals/RemoveMarkupInMessages
 
+        fails = []
         for entry in self.pot:
-            # this only checks strings containing "%" where it's likely
-            # that the formated content is variable anyway.
+            # This only checks strings starting and ending with a tag.
             # TODO: fix for all cases by adding a translator comment
             # and insert
-            self.assertFalse(
-                re.match("<.*?>.*?%.*?</.*?>", entry.msgid),
-                msg=u"%s contains markup, remove it!" % entry)
+            if re.match("<.*?>.*</.*?>", entry.msgid):
+                fails.append(entry)
+
+        self.conclude(fails, "contains markup, remove it!")
 
     def test_terms_letter_case(self):
         """ Check that some words are always written with a specific
@@ -257,7 +246,9 @@ class PO(AbstractTestCase):
         from quodlibet import print_w
         if fails:
             def format_occurrences(e):
-                return ', '.join('%s:%s' % o for o in e.occurrences)
+                occurences = [(self.lang + ".po", e.linenum)]
+                occurences += e.occurrences
+                return ', '.join('%s:%s' % o for o in occurences)
             messages = [
                 '"%s" - "%s" (%s)' % (e.msgid, e.msgstr, format_occurrences(e))
                 for e in fails
@@ -272,7 +263,7 @@ class PO(AbstractTestCase):
         if polib is None:
             return
 
-        LANGUAGES_TO_CHECK = ('ru',)
+        LANGUAGES_TO_CHECK = ('ru', 'de')
 
         if self.lang not in LANGUAGES_TO_CHECK:
             return

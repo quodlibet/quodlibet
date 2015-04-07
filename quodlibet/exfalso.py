@@ -17,6 +17,7 @@ from quodlibet import util
 from quodlibet import const
 from quodlibet import config
 from quodlibet.util.path import fsdecode
+from quodlibet.util import set_win32_unicode_argv
 
 
 def main():
@@ -73,4 +74,5 @@ def main():
 
 
 if __name__ == "__main__":
+    set_win32_unicode_argv()
     main()

@@ -474,8 +474,8 @@ def tag(name, cap=True):
             # Translators: If tag names, when capitalized, should not
             # be title-cased ("Looks Like This"), but rather only have
             # the first letter capitalized, translate this string as
-            # something other than "check|titlecase?".
-            if _("check|titlecase?") == "check|titlecase?":
+            # something other than "titlecase?".
+            if C_("check", "titlecase?") == "titlecase?":
                 parts = map(title, parts)
             else:
                 parts = map(capitalize, parts)
@@ -1160,3 +1160,33 @@ def list_unique(sequence):
             append(v)
             add(v)
     return l
+
+
+def set_win32_unicode_argv():
+    if os.name != "nt":
+        return
+
+    import ctypes
+    from ctypes import cdll, windll, wintypes
+
+    GetCommandLineW = cdll.kernel32.GetCommandLineW
+    GetCommandLineW.argtypes = []
+    GetCommandLineW.restype = wintypes.LPCWSTR
+
+    CommandLineToArgvW = windll.shell32.CommandLineToArgvW
+    CommandLineToArgvW.argtypes = [
+        wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
+    CommandLineToArgvW.restype = ctypes.POINTER(wintypes.LPWSTR)
+
+    LocalFree = windll.kernel32.LocalFree
+    LocalFree.argtypes = [wintypes.HLOCAL]
+    LocalFree.restype = wintypes.HLOCAL
+
+    argc = ctypes.c_int()
+    argv = CommandLineToArgvW(GetCommandLineW(), ctypes.byref(argc))
+    if not argv:
+        return
+
+    sys.argv = argv[max(0, argc.value - len(sys.argv)):argc.value]
+
+    LocalFree(argv)

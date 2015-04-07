@@ -200,35 +200,13 @@ def _seek(app, time):
     player.seek(seek_to)
 
 
-@registry.register("add-file", args=1)
-def _add_file(app, value):
+@registry.register("play-file", args=1)
+def _play_file(app, value):
     filename = os.path.realpath(value)
-    song = app.library.add_filename(filename)
+    song = app.library.add_filename(filename, add=False)
     if song:
         if app.player.go_to(song):
             app.player.paused = False
-
-
-@registry.register("add-directory", args=1)
-def _add_directory(app, value):
-    player = app.player
-    window = app.window
-    library = app.library
-    filename = os.path.normpath(os.path.realpath(value))
-    for added in library.scan([filename]):
-        pass
-    if app.browser.can_filter_text():
-        app.browser.filter_text(
-            "filename = /^%s/c" % util.re_escape(filename))
-    else:
-        basepath = filename + "/"
-        songs = [song for (fn, song) in library.iteritems()
-                 if fn.startswith(basepath)]
-        songs.sort(reverse=True)
-        queue = window.playlist.q
-        for song in songs:
-            queue.insert_before(queue.get_iter_first(), row=[song])
-    player.next()
 
 
 @registry.register("toggle-window")

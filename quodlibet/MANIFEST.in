@@ -5,8 +5,7 @@ include README
 include po/*.po
 include po/POTFILES.in
 include po/POTFILES.skip
-include quodlibet/images/README
-recursive-include quodlibet/images/hicolor/ *.theme *.svg *.png
+recursive-include quodlibet/images/hicolor/ *.svg *.png
 include tests/data/*
 recursive-include tests *.py
 include gdist/*.py
@@ -15,6 +14,7 @@ include data/*.ini
 include data/*.service.in
 include data/*.appdata.xml.in
 include data/*.1
+include data/*.sh
 include MANIFEST.in
 recursive-include docs *.py Makefile *.rst *.png
 prune docs/_build_guide

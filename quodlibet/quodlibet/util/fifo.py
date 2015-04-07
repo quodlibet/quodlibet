@@ -11,6 +11,12 @@ import signal
 import stat
 import tempfile
 
+try:
+    import fcntl
+    fcntl
+except ImportError:
+    fcntl = None
+
 from gi.repository import GLib
 
 from quodlibet.util.path import mkdir
@@ -36,13 +42,42 @@ def _write_fifo(fifo_path, data):
         raise EnvironmentError("Couldn't write to fifo %r" % fifo_path)
 
 
-def split_message(message):
-    """Removes the path for the response fifo from the message"""
+def split_message(data):
+    """Split incoming data in pairs of (command, fifo path or None)
 
-    parts = message.rsplit("\x00", 1)
-    if len(parts) != 2:
-        raise ValueError("invalid message")
-    return parts
+    This supports two data formats:
+    Newline seperated commands without a return fifo path.
+    and "NULL<command>NULL<fifo-path>NULL"
+
+    Raises ValueError
+    """
+
+    arg = 0
+    args = []
+    while data:
+        if arg == 0:
+            index = data.find("\x00")
+            if index == 0:
+                arg = 1
+                data = data[1:]
+                continue
+            if index == -1:
+                elm = data
+                data = ""
+            else:
+                elm, data = data[:index], data[index:]
+            for l in elm.splitlines():
+                yield (l, None)
+        elif arg == 1:
+            elm, data = data.split("\x00", 1)
+            args.append(elm)
+            arg = 2
+        elif arg == 2:
+            elm, data = data.split("\x00", 1)
+            args.append(elm)
+            yield tuple(args)
+            del args[:]
+            arg = 0
 
 
 def write_fifo(fifo_path, data):
@@ -56,7 +91,7 @@ def write_fifo(fifo_path, data):
         # mkfifo fails if the file exists, so this is safe.
         os.mkfifo(filename, 0o600)
 
-        _write_fifo(fifo_path, data + "\x00" + filename)
+        _write_fifo(fifo_path, "\x00" + data + "\x00" + filename + "\x00")
 
         try:
             signal.signal(signal.SIGALRM, lambda: "" + 2)
@@ -74,7 +109,7 @@ def write_fifo(fifo_path, data):
 
 
 def fifo_exists(fifo_path):
-    # http://code.google.com/p/quodlibet/issues/detail?id=1131
+    # https://github.com/quodlibet/quodlibet/issues/1131
     # FIXME: There is a race where control() creates a new file
     # instead of writing to the FIFO, confusing the next QL instance.
     # Remove non-FIFOs here for now.
@@ -87,6 +122,10 @@ def fifo_exists(fifo_path):
     return os.path.exists(fifo_path)
 
 
+class FIFOError(Exception):
+    pass
+
+
 class FIFO(object):
     """Creates and reads from a FIFO"""
 
@@ -95,7 +134,12 @@ class FIFO(object):
         self._path = path
 
     def open(self):
-        self._open(None)
+        """Create the fifo and listen to it.
+
+        Might raise FIFOError in case another process is already using it.
+        """
+
+        self._open(False, None)
 
     def destroy(self):
         if self._id is not None:
@@ -107,26 +151,51 @@ class FIFO(object):
         except EnvironmentError:
             pass
 
-    def _open(self, *args):
+    def _open(self, ignore_lock, *args):
         from quodlibet import qltk
 
         self._id = None
+        mkdir(os.path.dirname(self._path))
         try:
-            if not os.path.exists(self._path):
-                mkdir(os.path.dirname(self._path))
-                os.mkfifo(self._path, 0600)
-            fifo = os.open(self._path, os.O_NONBLOCK)
-            f = os.fdopen(fifo, "r", 4096)
-            self._id = qltk.io_add_watch(
-                f, GLib.PRIORITY_DEFAULT,
-                GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-                self._process, *args)
-        except (EnvironmentError, AttributeError):
+            os.mkfifo(self._path, 0600)
+        except OSError:
+            # maybe exists, we'll fail below otherwise
             pass
+
+        try:
+            fifo = os.open(self._path, os.O_NONBLOCK)
+        except OSError:
+            return
+
+        while True:
+            try:
+                fcntl.flock(fifo, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except IOError as e:
+                # EINTR on linux
+                if e.errno == errno.EINTR:
+                    continue
+                if ignore_lock:
+                    break
+                # OSX doesn't support fifo locking, so check errno
+                if e.errno == errno.EWOULDBLOCK:
+                    raise FIFOError("fifo already locked")
+                else:
+                    print_d("fifo locking failed: %r" % e)
+            break
+
+        try:
+            f = os.fdopen(fifo, "r", 4096)
+        except OSError:
+            pass
+
+        self._id = qltk.io_add_watch(
+            f, GLib.PRIORITY_DEFAULT,
+            GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+            self._process, *args)
 
     def _process(self, source, condition, *args):
         if condition in (GLib.IO_ERR, GLib.IO_HUP):
-            self._open(*args)
+            self._open(True, *args)
             return False
 
         while True:

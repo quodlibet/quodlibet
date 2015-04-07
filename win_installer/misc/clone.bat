@@ -1,1 +1,1 @@
-hg clone http://code.google.com/p/quodlibet/ quodlibet
+git clone http://github.com/quodlibet/quodlibet.git quodlibet

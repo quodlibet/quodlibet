@@ -30,7 +30,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem, Alignment, ScrolledWindow, RadioMenuItem
+from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
@@ -514,7 +514,7 @@ class AlbumList(Browser, Gtk.VBox, util.InstanceTracker, VisibleUpdate):
 
         prefs = PreferencesButton(self, model_sort)
         search.pack_start(prefs, False, True, 0)
-        self.pack_start(Alignment(search, left=6, top=6), False, True, 0)
+        self.pack_start(Align(search, left=6, top=6), False, True, 0)
         self.pack_start(sw, True, True, 0)
 
         self.connect("destroy", self.__destroy)

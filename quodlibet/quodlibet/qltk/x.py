@@ -24,20 +24,12 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
         toplevel = self.get_toplevel()
-        top_window = toplevel.get_window()
-        window = self.get_window()
 
-        if not window:
+        try:
+            dx, dy = self.translate_coordinates(toplevel, 0, 0)
+        except TypeError:
             GLib.idle_add(self.queue_resize)
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
-
-        dummy, x1, y1 = top_window.get_origin()
-        dummy, x2, y2 = window.get_origin()
-        # since 3.15 the gdkwindow moves to dx==-1 with the allocation
-        # so ignore anything < 0
-        # https://git.gnome.org/browse/gtk+/commit/?id=fdf367e8689cb
-        dx = max(x2 - x1, 0)
-        dy = max(y2 - y1, 0)
 
         ctx = self.get_style_context()
         border = ctx.get_border(self.get_state_flags())
@@ -58,14 +50,19 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             # there, so draw the normal border
             border.top = 0
         else:
-            top_alloc = top_bar.get_allocation()
             top_ctx = top_bar.get_style_context()
             b = top_ctx.get_border(top_bar.get_state_flags())
-            # only if the toolbar has a border we hide our own.
-            # seems to work, even tough it doesn't for getting the
-            # Notebook/ScrolledWindow border :/
             if b.bottom:
-                dy -= top_alloc.y + top_alloc.height
+                dy_bar = self.translate_coordinates(top_bar, 0, 0)[1]
+                dy_bar -= top_bar.get_allocation().height
+                dy = min(dy, dy_bar)
+
+        # since 3.15 the gdkwindow moves to dx==-1 with the allocation
+        # so ignore anything < 0 (I guess something passes the adjusted alloc
+        # to us a second time)
+        # https://git.gnome.org/browse/gtk+/commit/?id=fdf367e8689cb
+        dx = max(0, dx)
+        dy = max(0, dy)
 
         # Don't remove the border if the border is drawn inside
         # and the scrollbar on that edge is visible
@@ -105,17 +102,17 @@ class ScrolledWindow(Gtk.ScrolledWindow):
                 top = hscroll
 
         width, height = toplevel.get_size()
-        if alloc.y + alloc.height + dy == height and not bottom:
+        if alloc.height + dy == height and not bottom:
             alloc.height += border.bottom
 
-        if alloc.x + alloc.width + dx == width and not right:
+        if alloc.width + dx == width and not right:
             alloc.width += border.right
 
-        if alloc.y + dy == 0 and not top:
+        if dy == 0 and not top:
             alloc.y -= border.top
             alloc.height += border.top
 
-        if alloc.x + dx == 0 and not left:
+        if dx == 0 and not left:
             alloc.x -= border.left
             alloc.width += border.left
 
@@ -144,29 +141,27 @@ class Notebook(Gtk.Notebook):
         border = ctx.get_border(self.get_state_flags())
 
         toplevel = self.get_toplevel()
-        top_window = toplevel.get_window()
-        window = self.get_window()
 
-        if not window:
+        try:
+            dx, dy = self.translate_coordinates(toplevel, 0, 0)
+        except TypeError:
             GLib.idle_add(self.queue_resize)
             return Gtk.Notebook.do_size_allocate(self, alloc)
 
-        dummy, x1, y1 = top_window.get_origin()
-        dummy, x2, y2 = window.get_origin()
-        dx = x2 - x1
-        dy = y2 - y1
+        dx = max(0, dx)
+        dy = max(0, dy)
 
         # all 0 since gtk+ 3.12..
         border.left = border.top = border.right = border.bottom = 1
 
         width, height = toplevel.get_size()
-        if alloc.y + alloc.height + dy == height:
+        if alloc.height + dy == height:
             alloc.height += border.bottom
 
-        if alloc.x + alloc.width + dx == width:
+        if alloc.width + dx == width:
             alloc.width += border.right
 
-        if alloc.x + dx == 0:
+        if dx == 0:
             alloc.x -= border.left
             alloc.width += border.left
 
@@ -185,12 +180,11 @@ class Notebook(Gtk.Notebook):
 
 
 def Frame(label, child=None):
-    """A Gtk.Frame with no shadow, 12px left padding, and 3px top padding."""
+    """A Gtk.Frame with no shadow, 12px left padding, and 6px top padding."""
     frame = Gtk.Frame()
     label_w = Gtk.Label()
     label_w.set_markup("<b>%s</b>" % util.escape(label))
-    align = Gtk.Alignment(xalign=0.0, yalign=0.0, xscale=1.0, yscale=1.0)
-    align.set_padding(6, 0, 12, 0)
+    align = Align(left=12, top=6)
     frame.add(align)
     frame.set_shadow_type(Gtk.ShadowType.NONE)
     frame.set_label_widget(label_w)
@@ -201,14 +195,55 @@ def Frame(label, child=None):
     return frame
 
 
-def Alignment(child=None, top=0, bottom=0, left=0, right=0, border=0,
-              **kwargs):
-    align = Gtk.Alignment(**kwargs)
-    align.set_padding(top + border, bottom + border,
-                      left + border, right + border)
-    if child:
-        align.add(child)
-    return align
+class Align(Gtk.Alignment):
+    """Note: With gtk3.12+ we could replace this with a Gtk.Bin +
+    margin properties.
+    """
+
+    def __init__(self, child=None,
+                 top=0, right=0, bottom=0, left=0, border=0,
+                 halign=Gtk.Align.FILL, valign=Gtk.Align.FILL):
+
+        def align_to_xy(a):
+            """(xyalign, xyscale)"""
+
+            if a == Gtk.Align.FILL:
+                return 0.0, 1.0
+            elif a == Gtk.Align.START:
+                return 0.0, 0.0
+            elif a == Gtk.Align.END:
+                return 1.0, 0.0
+            elif a == Gtk.Align.CENTER:
+                return 0.5, 0.0
+            else:
+                return 0.5, 1.0
+
+        xalign, xscale = align_to_xy(halign)
+        yalign, yscale = align_to_xy(valign)
+        bottom_padding = border + bottom
+        top_padding = border + top
+        left_padding = border + left
+        right_padding = border + right
+
+        super(Align, self).__init__(xalign=xalign, xscale=xscale,
+            yalign=yalign, yscale=yscale, bottom_padding=bottom_padding,
+            top_padding=top_padding, left_padding=left_padding,
+            right_padding=right_padding)
+
+        if child is not None:
+            self.add(child)
+
+    def get_margin_top(self):
+        return self.props.top_padding
+
+    def get_margin_bottom(self):
+        return self.props.bottom_padding
+
+    def get_margin_left(self):
+        return self.props.left_padding
+
+    def get_margin_right(self):
+        return self.props.right_padding
 
 
 def MenuItem(label, stock_id):
@@ -229,7 +264,7 @@ def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
     """A Button with a custom label and stock image. It should pack
     exactly like a stock button."""
 
-    align = Gtk.Alignment(xscale=0.0, yscale=1.0, xalign=0.5, yalign=0.5)
+    align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.HBox(spacing=2)
     if Gtk.stock_lookup(stock_id):
         image = Gtk.Image.new_from_stock(stock_id, size)

@@ -14,8 +14,8 @@ Reporting Bugs
 
 The best way to report bugs is using the Google issue tracker.
 
- * `Add a new bug <http://code.google.com/p/quodlibet/issues/entry>`_
- * `Show current bugs <http://code.google.com/p/quodlibet/issues/list>`_
+ * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
+ * `Show current bugs <https://github.com/quodlibet/quodlibet/issues>`_
 
 For tips on how to report bugs see :ref:`the Contributing Guide <BugReports>`
 
@@ -37,13 +37,3 @@ Quod Libet has an IRC channel on `OFTC <http://www.oftc.net/>`_ ,
 to the mailing list if you try. It is a good place to ask for help with 
 installation and configuration, or discuss development (assuming people 
 there are paying attention).
-
-
-Issue tracking via email and RSS
---------------------------------
-
-Google Code provides RSS feeds for project updates with varying levels of 
-granularity. For those that prefer to use their feed readers for news and 
-their inboxes for to-do lists, there's a Google Group available `here 
-<http://groups.google.com/group/quod-libet-issues>`_ which gets a copy of 
-every change to an issue.

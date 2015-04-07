@@ -705,6 +705,13 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         super(SongList, self).set_model(model)
         self.set_search_column(0)
 
+    def clear(self):
+        """Remove all songs"""
+
+        model = self.get_model()
+        if model:
+            model.clear()
+
     def get_songs(self):
         """Get all songs currently in the song list"""
 
@@ -1154,7 +1161,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 @config.register_upgrade_function
 def _migrate_rating_column(config, old, new):
     if old < 0:
-        # https://code.google.com/p/quodlibet/issues/detail?id=1381
+        # https://github.com/quodlibet/quodlibet/issues/1381
         columns = get_columns()[:]
         for i, c in enumerate(columns):
             if c == "~#rating":

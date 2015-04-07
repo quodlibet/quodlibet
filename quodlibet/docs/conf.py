@@ -12,7 +12,7 @@ extensions = ['sphinx.ext.autodoc', 'ext']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'Ex Falso / Quod Libet'
-copyright = 'The Quod Libet Devs'
+copyright = "2004-2013 %s and more" % ", ".join(const.MAIN_AUTHORS)
 version = ".".join(const.VERSION.rsplit(".")[:2])
 release = const.VERSION
 if release.endswith(".-1"):
@@ -20,12 +20,12 @@ if release.endswith(".-1"):
 exclude_patterns = ['_build', '_rtd_theme_repo', 'README.rst']
 html_theme = "haiku"
 html_title = "%s (%s)" % (project, version)
-bug_url_template = "http://code.google.com/p/quodlibet/issues/detail?id=%s"
+bug_url_template = "https://github.com/quodlibet/quodlibet/issues/%s"
 
 RTD_NEW_THEME = True
 
 # on a stable branch which isn't a release
-if const.BRANCH_NAME != "default" and const.VERSION_TUPLE[-1] == -1:
+if const.BRANCH_NAME != "master" and const.VERSION_TUPLE[-1] == -1:
     rst_prolog = """
 
 .. note::

@@ -39,6 +39,7 @@ class FileSystem(Browser, Gtk.HBox):
     name = _("File System")
     accelerated_name = _("_File System")
     priority = 10
+    uses_main_library = False
 
     TARGET_QL, TARGET_EXT = range(1, 3)
 

@@ -160,18 +160,10 @@ class TreeViewHints(Gtk.Window):
             res = vscrollbar.translate_coordinates(view, 0, 0)
             if res is not None:
                 x_offset = res[0]
-                placement = parent.get_placement()
-                vbar_right = placement in (Gtk.CornerType.BOTTOM_LEFT,
-                                           Gtk.CornerType.TOP_LEFT)
-                if vbar_right:
-                    if x >= x_offset:
-                        self.__undisplay(send_leave=False)
-                        return False
-                else:
-                    vbar_width = vscrollbar.get_allocation().width
-                    if x_offset + vbar_width >= x:
-                        self.__undisplay(send_leave=False)
-                        return False
+                vbar_width = vscrollbar.get_allocation().width
+                if x_offset <= x <= x_offset + vbar_width:
+                    self.__undisplay(send_leave=False)
+                    return False
 
         # hide if any modifier is active
         if event.get_state() & Gtk.accelerator_get_default_mod_mask():
@@ -298,11 +290,13 @@ class TreeViewHints(Gtk.Window):
         h = bg_area.height
 
         if not is_wayland():
-            # clip if it's bigger than the screen
-            screen_border = 5  # leave some space
-
+            # clip if it's bigger than the monitor
+            mon_border = 5  # leave some space
+            screen = Gdk.Screen.get_default()
             if not expand_left:
-                space_right = Gdk.Screen.width() - x - w - screen_border
+                monitor_idx = screen.get_monitor_at_point(x, y)
+                mon = screen.get_monitor_geometry(monitor_idx)
+                space_right = mon.x + mon.width - x - w - mon_border
 
                 if space_right < 0:
                     w += space_right
@@ -310,7 +304,10 @@ class TreeViewHints(Gtk.Window):
                 else:
                     label.set_ellipsize(Pango.EllipsizeMode.NONE)
             else:
-                space_left = x - screen_border
+                monitor_idx = screen.get_monitor_at_point(x + w, y)
+                mon = screen.get_monitor_geometry(monitor_idx)
+                space_left = x - mon.x - mon_border
+
                 if space_left < 0:
                     x -= space_left
                     self.__dx -= space_left

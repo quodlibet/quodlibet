@@ -145,6 +145,9 @@ class Browser(Filter):
     in_menu = True
     """Whether the browser should appear in the Music->Browse menu."""
 
+    uses_main_library = True
+    """Whether the browser has the main library as source"""
+
     def songs_selected(self, songs, is_sorted=False):
         """Emits the songs-selected signal.
 

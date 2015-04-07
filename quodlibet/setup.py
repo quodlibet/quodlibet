@@ -301,14 +301,14 @@ if __name__ == "__main__":
 
     package_path = quodlibet.__path__[0]
     package_data_paths = recursive_include(
-        package_path, "images", ("svg", "png", "theme"))
+        package_path, "images", ("svg", "png"))
 
     setup_kwargs = {
         'distclass': GDistribution,
         'cmdclass': cmd_classes,
         'name': "quodlibet",
         'version': const.VERSION,
-        'url': "http://code.google.com/p/quodlibet/",
+        'url': "https://quodlibet.readthedocs.org",
         'description': "a music library, tagger, and player",
         'author': "Joe Wreschnig, Michael Urman, & others",
         'author_email': "quod-libet-development@googlegroups.com",
@@ -322,7 +322,7 @@ if __name__ == "__main__":
         'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
         'dbus_services': [
             "data/net.sacredchao.QuodLibet.service",
-            # http://code.google.com/p/quodlibet/issues/detail?id=1268
+            # https://github.com/quodlibet/quodlibet/issues/1268
             #"data/org.mpris.MediaPlayer2.quodlibet.service",
             #"data/org.mpris.quodlibet.service",
         ],
@@ -367,7 +367,7 @@ if __name__ == "__main__":
             pass
 
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
-            "quodlibet", "images", ("svg", "png", "theme"))
+            "quodlibet", "images", ("svg", "png"))
 
         # py2exe trips over -1 when trying to write version info in the exe
         if setup_kwargs["version"].endswith(".-1"):

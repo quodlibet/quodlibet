@@ -7,7 +7,7 @@ default backend can be changed in ``~/.quodlibet/config`` by setting the
 no backend). Make sure Quod Libet isn't running while you edit the file.
 
 There is also an experimental `Mac OS X NSSound backend (macbe)
-<http://code.google.com/p/quodlibet/issues/detail?id=509>`_ available in
+<https://github.com/quodlibet/quodlibet/issues/509>`_ available in
 the issue tracker.
 
 

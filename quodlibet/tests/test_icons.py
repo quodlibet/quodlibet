@@ -16,9 +16,5 @@ class TIconTheme(TestCase):
         theme = Gtk.IconTheme.get_default()
         theme.append_search_path(const.IMAGEDIR)
 
-        for i in ["audio-volume-high", "audio-volume-high",
-            "audio-volume-medium", "audio-volume-muted",
-            "multimedia-player", "multimedia-player-apple-ipod",
-            "quodlibet", "exfalso", "quodlibet-missing-cover",
-            "media-eject", "multimedia-player-ipod", "user-trash"]:
+        for i in ["quodlibet", "exfalso", "quodlibet-missing-cover"]:
             self.failUnless(theme.has_icon(i))

@@ -93,9 +93,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         connect_obj(close, 'clicked', qltk.Window.destroy, self)
         bbox.pack_start(close, True, True, 0)
-        align = Gtk.Alignment(yalign=1.0, xscale=1.0)
-        align.add(bbox)
-        vbox.pack_end(align, False, True, 0)
+        vbox.pack_end(bbox, False, True, 0)
 
         self.get_child().pack_start(vbox, True, True, 0)
         # Initialise

@@ -22,8 +22,9 @@ ways to view your audio library, as well as support for Internet radio and
 audio feeds. It has extremely flexible metadata tag editing and searching
 capabilities.
 
-This manual page is only a short reference for Quod Libet. Complete
-documentation is available at http://code.google.com/p/quodlibet/wiki/Guide.
+This manual page is only a short reference for Quod Libet. Complete 
+documentation is available at 
+https://quodlibet.readthedocs.org/en/latest/guide/index.html.
 
 OPTIONS
 =======
@@ -83,6 +84,9 @@ OPTIONS
 
 --query=search-string
     Search your audio library
+
+--run
+    Start Quod Libet if it isn't running
 
 --quit
     Exit Quod Libet
@@ -169,14 +173,14 @@ The 'c' postfix on strings or regular expressions makes the  search
 case-sensitive. Numeric values may be given as integers, floating-point
 numbers, MM:SS format, or simple English, e.g. "3 days", "2 hours".
 
-See http://code.google.com/p/quodlibet/wiki/Guide_Searching.
+See https://quodlibet.readthedocs.org/en/latest/guide/searching.html.
 
 All internal tags begin with a ~ character. Non-numeric internal tags are
 ~base‐ name, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
 Numeric internal tags are ~#added, ~#bitrate, ~#disc, ~#lastplayed,
 ~#laststarted, ~#length, ~#mtime, ~#playcount, ~#skipcount, and ~#track.
 
-See http://code.google.com/p/quodlibet/wiki/Guide_InternalTags.
+See https://quodlibet.readthedocs.org/en/latest/guide/tags/internal_tags.html.
 
 RENAMING FILES
 ==============
@@ -195,7 +199,7 @@ You can also specify literal text to use if the tag is missing by adding another
 
 ``<album|<album>|No Album> - <title>``
 
-See http://code.google.com/p/quodlibet/wiki/Guide_Renaming.
+See https://quodlibet.readthedocs.org/en/latest/guide/renaming_files.html.
 
 
 AUDIO BACKENDS
@@ -207,7 +211,7 @@ change the pipeline option in ~/.quodlibet/config to use a different sink, or
 pass options to the sink. For example, you might use esdsink or alsasink
 device=hw:1.
 
-See http://code.google.com/p/quodlibet/wiki/Guide_AudioBackends.
+See https://quodlibet.readthedocs.org/en/latest/guide/playback/backends.html.
 
 
 FILES
@@ -229,18 +233,17 @@ FILES
    --next, --previous, etc., use this to control the player.
 
 ~/.quodlibet/plugins/
-   Put plugins (from http://code.google.com/p/quodlibet/wiki/Guide_Plugins)
-   here.
+   Put plugins here.
 
 ~/.quodlibet/browsers/
    Put custom library browsers here.
 
-See http://code.google.com/p/quodlibet/wiki/Guide_Extending.
+See https://quodlibet.readthedocs.org/en/latest/guide/interacting.html.
 
 BUGS
 ====
 
-See http://code.google.com/p/quodlibet/issues/list for a list of all
+See https://github.com/quodlibet/quodlibet/issues for a list of all
 currently open bugs and feature requests.
 
 AUTHORS
@@ -251,6 +254,6 @@ Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 SEE ALSO
 ========
 
-| http://code.google.com/p/quodlibet/wiki/Guide,
-| http://code.google.com/p/quodlibet/wiki/FAQ,
+| https://quodlibet.readthedocs.org/en/latest/guide,
+| https://quodlibet.readthedocs.org/en/latest/guide/faq.html,
 | ``regex``\(7), ``gst-launch``\(1)

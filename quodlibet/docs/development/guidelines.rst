@@ -11,11 +11,6 @@ Workflow & Guidelines
 Getting started
 ---------------
 
-Quod Libet now provides its code through Google Code's Mercurial hosting
-service. Click the "Source" tab at the top of the screen to view the current
-history, or pull a copy using the
-`checkout instructions <http://code.google.com/p/quodlibet/source/checkout>`_.
-
 If you have a recent GTK+ version installed and don't need translations you
 can simply run QL directly from source without building/installing.
 All you need are the :ref:`dependencies<Dependencies>`. Since QL does not
@@ -149,5 +144,4 @@ the ticket directly. If it is a bug fix but doesn't have a ticket, you
 can either make a ticket to attach it to, or send it to the mailing list,
 quod-libet-development@googlegroups.com.
 
-The ticket tracker is at http://code.google.com/p/quodlibet/issues/list
-and at http://code.google.com/p/quodlibet/issues/entry.
+The ticket tracker is at https://github.com/quodlibet/quodlibet/issues

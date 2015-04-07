@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gtk, GObject, Gdk, GLib, Gio
+from gi.repository import Gtk, Gdk, GLib, Gio
 
 import quodlibet
 
@@ -38,7 +38,7 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import ConfigRVPaned, Alignment, ScrolledWindow
+from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage, Button
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
@@ -126,7 +126,7 @@ class MainSongList(SongList):
     def __select_song(self, widget, indices, col, player):
         self._activated = True
         iter = self.model.get_iter(indices)
-        if player.go_to(iter, True):
+        if player.go_to(iter, explicit=True, source=self.model):
             player.paused = False
 
 
@@ -167,7 +167,7 @@ class TopBar(Gtk.Toolbar):
         # song text
         info_pattern_path = os.path.join(const.USERDIR, "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
-        box.pack_start(Alignment(text, border=3), True, True, 0)
+        box.pack_start(Align(text, border=3), True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
@@ -179,10 +179,8 @@ class TopBar(Gtk.Toolbar):
                 app.cover_manager, 'cover-changed',
                 self.__song_art_changed, library)
 
-        # CoverImage doesn't behave in a Alignment, so wrap it
-        coverbox = Gtk.Box()
-        coverbox.pack_start(self.image, True, True, 0)
-        box.pack_start(Alignment(coverbox, border=2), False, True, 0)
+        self.image.props.margin = 2
+        box.pack_start(self.image, False, True, 0)
 
         for child in self.get_children():
             child.show_all()
@@ -443,7 +441,7 @@ DND_URI_LIST, = range(1)
 
 class QuodLibetWindow(Window, PersistentWindowMixin):
 
-    def __init__(self, library, player, headless=False):
+    def __init__(self, library, player, headless=False, restore_cb=None):
         super(QuodLibetWindow, self).__init__(dialog=False)
         self.last_dir = const.HOME
 
@@ -469,14 +467,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         # dbus app menu
         AppMenu(self, ui.get_action_groups()[0])
 
+        # custom accel map
         accel_fn = os.path.join(const.USERDIR, "accels")
         Gtk.AccelMap.load(accel_fn)
-
-        def accel_save_cb(*args):
-            Gtk.AccelMap.save(accel_fn)
-
-        # Gtk.AccelGroup.connect shadows gobject connect
-        GObject.Object.connect(accel_group, 'accel-changed', accel_save_cb)
+        # save right away so we fill the file with example comments of all
+        # accels
+        Gtk.AccelMap.save(accel_fn)
 
         menubar = ui.get_widget("/Menu")
 
@@ -508,7 +504,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         main_box.pack_start(top_bar, False, True, 0)
         self.top_bar = top_bar
 
-        self.__browserbox = Alignment(bottom=3)
+        self.__browserbox = Align(bottom=3)
         main_box.pack_start(self.__browserbox, True, True, 0)
 
         statusbox = StatusBarBox(self.songlist.model, player)
@@ -517,7 +513,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.statusbar = statusbox.statusbar
 
         main_box.pack_start(
-            Alignment(statusbox, border=3, top=-3, right=3),
+            Align(statusbox, border=3, top=-3, right=3),
             False, True, 0)
 
         self.songpane = ConfigRVPaned("memory", "queue_position", 0.75)
@@ -561,9 +557,20 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         main_box.show_all()
 
+        self._playback_error_dialog = None
+        connect_destroy(player, 'song-started', self.__song_started)
+        connect_destroy(player, 'paused', self.__update_paused, True)
+        connect_destroy(player, 'unpaused', self.__update_paused, False)
+        # make sure we redraw all error indicators before opening
+        # a dialog (blocking the main loop), so connect after default handlers
+        connect_after_destroy(player, 'error', self.__player_error)
+        # connect after to let SongTracker update stats
+        connect_after_destroy(player, "song-ended", self.__song_ended)
+
         # set at least the playlist. the song should be restored
         # after the browser emits the song list
         player.setup(self.playlist, None, 0)
+        self.__restore_cb = restore_cb
         self.__first_browser_set = True
 
         restore_browser = not headless
@@ -586,22 +593,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         lib = library.librarian
         connect_destroy(lib, 'changed', self.__song_changed, player)
-
-        self._playback_error_dialog = None
-        player_sigs = [
-            ('song-started', self.__song_started),
-            ('paused', self.__update_paused, True),
-            ('unpaused', self.__update_paused, False),
-        ]
-        for sig in player_sigs:
-            connect_destroy(player, *sig)
-
-        # make sure we redraw all error indicators before opening
-        # a dialog (blocking the main loop), so connect after default handlers
-        connect_after_destroy(player, 'error', self.__player_error)
-
-        # connect after to let SongTracker update stats
-        connect_after_destroy(player, "song-ended", self.__song_ended)
 
         targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
@@ -636,6 +627,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         osx_app.insert_app_menu_item(item, 2)
         quit_item = self.ui.get_widget('/Menu/Music/Quit')
         quit_item.hide()
+
+    def get_osx_is_persistent(self):
+        return True
 
     def __player_error(self, player, song, player_error):
         # it's modal, but mmkeys etc. can still trigger new ones
@@ -920,8 +914,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         if isinstance(current, Gtk.RadioAction):
             current = current.get_current_value()
         Browser = browsers.get(current)
+
         config.set("memory", "browser", Browser.__name__)
         if self.browser:
+            if not (self.browser.uses_main_library and
+                    Browser.uses_main_library):
+                self.songlist.clear()
             container = self.browser.__container
             self.browser.unpack(container, self.songpane)
             if self.browser.accelerators:
@@ -1150,7 +1148,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 fns = map(glib2fsnative, fns)
                 # scan them
                 self.last_dir = fns[0]
-                copool.add(self.__library.scan, fns, funcid="library")
+                copool.add(self.__library.scan, fns, cofuncid="library",
+                           funcid="library")
 
                 # add them as library scan directory
                 if do_watch:
@@ -1213,6 +1212,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             config.set("memory", "seek", 0)
             if song is not None:
                 player.setup(self.playlist, song, seek_pos)
+
+            if self.__restore_cb:
+                self.__restore_cb()
+                self.__restore_cb = None
 
     def __hide_headers(self, activator=None):
         for column in self.songlist.get_columns():

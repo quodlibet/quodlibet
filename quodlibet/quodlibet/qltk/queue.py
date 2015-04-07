@@ -250,7 +250,8 @@ class PlayQueue(SongList):
         return False
 
     def __go_to(self, view, path, column, player):
-        if player.go_to(self.model.get_iter(path), explicit=True, queue=True):
+        if player.go_to(self.model.get_iter(path), explicit=True,
+                        source=self.model):
             player.paused = False
 
     def __fill(self, library):

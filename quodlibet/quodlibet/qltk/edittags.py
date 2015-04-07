@@ -421,20 +421,14 @@ class EditTags(Gtk.VBox):
         render = Gtk.CellRendererPixbuf()
         column = TreeViewColumn(_("Write"), render)
 
-        style = view.get_style()
-        pixbufs = [style.lookup_icon_set(stock)
-                   .render_icon(style, Gtk.TextDirection.NONE, state,
-                                Gtk.IconSize.MENU, view, None)
-                   for state in (Gtk.StateType.INSENSITIVE,
-                                 Gtk.StateType.NORMAL)
-                   for stock in (Gtk.STOCK_EDIT, Gtk.STOCK_DELETE)]
-
         def cdf_write(col, rend, model, iter_, *args):
             entry = model.get_value(iter_)
             if entry.canedit or entry.deleted:
-                rend.set_property('stock-id', None)
-                rend.set_property('pixbuf',
-                    pixbufs[2 * entry.edited + entry.deleted])
+                rend.set_property('sensitive', entry.edited or entry.deleted)
+                if entry.deleted:
+                    rend.set_property('stock-id', Gtk.STOCK_DELETE)
+                else:
+                    rend.set_property('stock-id', Gtk.STOCK_EDIT)
             else:
                 rend.set_property('stock-id', Gtk.STOCK_DIALOG_AUTHENTICATION)
         column.set_cell_data_func(render, cdf_write)

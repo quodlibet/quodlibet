@@ -14,8 +14,9 @@ import sys
 
 import os
 
-from quodlibet.cli import process_arguments, control
-from quodlibet.util.dprint import print_d
+from quodlibet.cli import process_arguments, exit_
+from quodlibet.util.dprint import print_d, print_
+from quodlibet.util import set_win32_unicode_argv
 
 
 def main():
@@ -23,11 +24,7 @@ def main():
         # we want basic commands not to import gtk (doubles process time)
         assert "gi.repository.Gtk" not in sys.modules
         sys.modules["gi.repository.Gtk"] = None
-        startup_actions = process_arguments()
-
-        # this will exit if it succeeds
-        control('focus', ignore_error=True)
-
+        startup_actions, cmds_todo = process_arguments()
     finally:
         sys.modules.pop("gi.repository.Gtk", None)
 
@@ -57,8 +54,10 @@ def main():
     app.library = library
 
     from quodlibet.player import PlayerError
+    backend = os.environ.get(
+        "QUODLIBET_BACKEND", config.get("player", "backend"))
     # this assumes that nullbe will always succeed
-    for backend in [config.get("player", "backend"), "nullbe"]:
+    for backend in [backend, "nullbe"]:
         try:
             player = quodlibet.init_backend(backend, app.librarian)
         except PlayerError as error:
@@ -116,15 +115,32 @@ def main():
     from quodlibet.plugins.playlist import PLAYLIST_HANDLER
     PLAYLIST_HANDLER.init_plugins()
 
+    from gi.repository import GLib
+
+    def exec_commands(*args):
+        for cmd in cmds_todo:
+            try:
+                resp = cmd_registry.run(app, *cmd)
+            except CommandError:
+                pass
+            else:
+                if resp is not None:
+                    print_(resp, end="")
+
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
-    app.window = window = QuodLibetWindow(library, player)
+    # Call exec_commands after the window is restored, but make sure
+    # it's after the mainloop has started so everything is set up.
+    app.window = window = QuodLibetWindow(
+        library, player,
+        restore_cb=lambda:
+            GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH))
 
     from quodlibet.plugins.events import EventPluginHandler
     pm.register_handler(EventPluginHandler(library.librarian, player))
 
     from quodlibet.mmkeys import MMKeysHandler
-    from quodlibet.remote import Remote
-    from quodlibet.commands import registry as cmd_registry
+    from quodlibet.remote import Remote, RemoteError
+    from quodlibet.commands import registry as cmd_registry, CommandError
     from quodlibet.qltk.tracker import SongTracker, FSInterface
     try:
         from quodlibet.qltk.dbus_ import DBusHandler
@@ -136,7 +152,10 @@ def main():
         mmkeys_handler.start()
     fsiface = FSInterface(player)
     remote = Remote(app, cmd_registry)
-    remote.start()
+    try:
+        remote.start()
+    except RemoteError:
+        exit_(1, True)
 
     DBusHandler(player, library)
     tracker = SongTracker(library.librarian, player, window.playlist)
@@ -151,7 +170,6 @@ def main():
 
     # restore browser windows
     from quodlibet.qltk.browser import LibraryBrowser
-    from gi.repository import GLib
     GLib.idle_add(LibraryBrowser.restore, library, player,
                   priority=GLib.PRIORITY_HIGH)
 
@@ -162,6 +180,9 @@ def main():
         except NotImplementedError:
             pass
 
+        print_d("Shutting down player device %r." % player.version_info)
+        player.destroy()
+
     quodlibet.main(window, before_quit=before_quit)
 
     quodlibet.finish_first_session(app.id)
@@ -169,10 +190,8 @@ def main():
     remote.stop()
     fsiface.destroy()
 
-    print_d("Shutting down player device %r." % player.version_info)
-    player.destroy()
     tracker.destroy()
-    quodlibet.library.save(force=True)
+    quodlibet.library.save()
 
     config.save(const.CONFIG)
 
@@ -180,4 +199,5 @@ def main():
 
 
 if __name__ == "__main__":
+    set_win32_unicode_argv()
     main()

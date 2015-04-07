@@ -18,6 +18,7 @@ from quodlibet.qltk.bookmarks import EditBookmarksPane
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.window import Window, PersistentWindowMixin
+from quodlibet.qltk.x import Align
 from quodlibet.util import tag, connect_destroy
 from quodlibet.util.tags import readable
 from quodlibet.util.path import fsdecode, filesize, unexpand
@@ -36,8 +37,7 @@ def Frame(name, widget):
     l = Gtk.Label()
     l.set_markup("<u><b>%s</b></u>" % name)
     f.set_label_widget(l)
-    a = Gtk.Alignment.new(xalign=0, yalign=0, xscale=1, yscale=1)
-    a.set_padding(3, 0, 12, 0)
+    a = Align(top=3, left=12)
     f.add(a)
     a.add(widget)
     return f

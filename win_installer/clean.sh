@@ -9,5 +9,6 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 rm -f "$DIR"/_sdk
 rm -rf "$DIR"/_build_env
+rm -rf "$DIR"/_build_env_installer
 rm -f "$DIR"/quodlibet-*.exe
 rm -f "$DIR"/quodlibet-win-sdk.tar.gz

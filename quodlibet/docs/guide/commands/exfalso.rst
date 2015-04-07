@@ -19,8 +19,9 @@ DESCRIPTION
 Ex Falso displays and edits audio metadata tags. Supported formats include
 MP3, Ogg Vorbis, FLAC, Musepack (MPC), WavPack, and MOD/XM/IT.
 
-This manual page is only a short reference for Ex Falso. Complete
-documentation is available at http://code.google.com/p/quodlibet/wiki/Guide.
+This manual page is only a short reference for Ex Falso. Complete 
+documentation is available at 
+https://quodlibet.readthedocs.org/en/latest/guide.
 
 OPTIONS
 =======
@@ -55,13 +56,13 @@ another '|':
 
 ``<album|<album>|No Album> - <title>``
 
-See http://code.google.com/p/quodlibet/wiki/Guide_Renaming.
+See https://quodlibet.readthedocs.org/en/latest/guide/renaming_files.html.
 
 BUGS
 ====
 
-See http://code.google.com/p/quodlibet/issues/list for a list of all
-currently open bugs and feature requests.
+See https://github.com/quodlibet/quodlibet/issues for a list of all currently 
+open bugs and feature requests.
 
 AUTHORS
 =======
@@ -71,5 +72,5 @@ Joe Wreschnig and Michael Urman are the primary authors of Ex Falso.
 SEE ALSO
 ========
 
-| http://code.google.com/p/quodlibet/wiki/Guide,
-| http://code.google.com/p/quodlibet/wiki/FAQ
+| https://quodlibet.readthedocs.org/en/latest/guide,
+| https://quodlibet.readthedocs.org/en/latest/guide/faq.html

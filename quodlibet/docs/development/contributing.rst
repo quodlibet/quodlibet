@@ -21,24 +21,6 @@ You can find development packages in the :ref:`download section
 <Downloads>` .
 
 
-Trying Patches
---------------
-
-Sometimes developers will post patches on tickets (`try these tickets
-<http://code.google.com/p/quodlibet/issues/list?can=2&q=label%3APatch>`_
-for a start) for preview or experimental functionality. To install these
-over a local checkout, save the patch file e.g. to `123-ql.patch`
-
-::
-
-    $ cd /usr/local/src/quodlibet/    # or wherever you have it
-    $ patch -p1 < ql.patch
-
-If you're using mercurial, you can just use ``hg revert --all`` to remove
-any patches. Also, for more advanced usage or to test multiple patches
-together, you may also like to try `mercurial queues
-<http://mercurial.selenic.com/wiki/MqTutorial>`_.
-
 .. _BugReports:
 
 Filing bug reports
@@ -47,8 +29,8 @@ Filing bug reports
 Useful Links
 ^^^^^^^^^^^^
 
- * `List current bugs <http://code.google.com/p/quodlibet/issues/list>`_
- * `Add a new bug <http://code.google.com/p/quodlibet/issues/entry>`_
+ * `List current bugs <https://github.com/quodlibet/quodlibet/issues>`_
+ * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
 
 
 Writing a good bug report

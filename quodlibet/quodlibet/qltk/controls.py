@@ -336,7 +336,7 @@ class PlayControls(Gtk.VBox):
         self.pack_start(lower, False, True, 0)
 
         connect_obj(prev, 'clicked', self.__previous, player)
-        play.connect('toggled', self.__playpause, player)
+        self._toggle_id = play.connect('toggled', self.__playpause, player)
         play.add_events(Gdk.EventMask.SCROLL_MASK)
         connect_obj(play, 'scroll-event', self.__scroll, player)
         connect_obj(next_, 'clicked', self.__next, player)
@@ -348,7 +348,11 @@ class PlayControls(Gtk.VBox):
             player, 'unpaused', self.__on_set_paused_unpaused, play, True)
 
     def __on_set_paused_unpaused(self, player, button, state):
+        # block to prevent a signal cycle in case the paused signal and state
+        # get out of sync (shouldn't happen.. but)
+        button.handler_block(self._toggle_id)
         button.set_active(state)
+        button.handler_unblock(self._toggle_id)
 
     def __scroll(self, player, event):
         if event.direction in [Gdk.ScrollDirection.UP,
