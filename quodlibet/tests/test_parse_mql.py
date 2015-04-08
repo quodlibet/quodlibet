@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from quodlibet import print_d
+from quodlibet.query import QueryType
 from tests import TestCase
 from quodlibet.query.mql import Mql, ParseError
 import quodlibet.formats._audio as audio
@@ -13,12 +14,9 @@ def AF(*args, **kwargs):
 class TMQL(TestCase):
     def _check_parsing(self, data):
         for expr, expected in data:
-            try:
-                Mql(expr)
-                self.assertTrue(expected, "{%s} should have failed" % expr)
-            except ParseError, pe:
-                self.assertFalse(expected,
-                                 "{%s} died unexpectedly (%s)" % (expr, pe))
+            query = Mql(expr)
+            self.failUnlessEqual(expected, query.type == QueryType.VALID,
+                                 msg="{%s} should have failed but came back %r" % (expr, query))
 
     def _check_matching(self, tests, song):
 

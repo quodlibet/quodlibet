@@ -12,11 +12,11 @@ from gi.repository import Gtk, GObject, GLib
 from quodlibet import config
 from quodlibet import const
 
-from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.entry import QueryValidator
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.query import QueryType
 from quodlibet.util import limit_songs, DeferredSignal
 
 
@@ -52,6 +52,7 @@ class SearchBarBox(Gtk.HBox):
         self.__deferred_changed = DeferredSignal(
             self.__filter_changed, timeout=self.timeout, owner=self)
 
+        self.validator = validator
         self.__combo = combo
         entry = combo.get_child()
         self.__entry = entry
@@ -98,7 +99,7 @@ class SearchBarBox(Gtk.HBox):
         return self.__entry.get_text().decode("utf-8")
 
     def _is_parsable(self, text):
-        return text and Query.is_parsable(text)
+        return text and self.validator(text) != QueryType.INVALID
 
     def changed(self):
         """Triggers a filter-changed signal if the current text

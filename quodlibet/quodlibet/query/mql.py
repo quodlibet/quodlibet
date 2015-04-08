@@ -1,11 +1,12 @@
 # -*- encoding: utf-8 -*-
-# Copyright 2011-12, 2014 Nick Boultbee
+# Copyright 2011-12, 2014-15 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from quodlibet.plugins import MissingModulePluginException
+from quodlibet.qltk.songlist import SongList
 from quodlibet.util.tags import NUMERIC_TAGS
 
 try:
@@ -18,8 +19,8 @@ except ImportError:
 
 import re
 from quodlibet import print_d, print_w
-from quodlibet.query import _match as match, _query as query, Query, QueryType
-from quodlibet.query._match import ParseError as QlParseError
+from quodlibet.query import _match as match, Query, QueryType
+from quodlibet.query._match import ParseError as QlParseError, False_
 from quodlibet.query._match import Numcmp
 
 
@@ -148,12 +149,15 @@ class Mql(Query):
 
         self.string = string
         if star is None:
-            star = self.STAR
+            # Ugh. This feels wrong, but other models don't need to know STAR for validity,
+            # so the validator doesn't (currently) send a STAR.
+            print_d("Using default STAR for %s" % string)
+            star = SongList.star
+            #star = self.STAR
 
         if not isinstance(string, unicode):
             string = string.decode('utf-8')
 
-        self.type = QueryType.VALID
 
         # MQL-specifics
         self._limit = None
@@ -200,8 +204,16 @@ class Mql(Query):
                           + StringEnd())
         if debug:
             self.pp_query.setDebug()
-        self.parse(string)
-        self._match = self._eval_stack()
+        try:
+            self.parse(string)
+        except ParseError as e:
+            print_d("Couldn't parse MQL: %s (%s)" % (string, e))
+            self.type = QueryType.INVALID
+            self._match = False_()
+        else:
+            self.type = QueryType.VALID
+            self._match = self._eval_stack()
+            print_d("Match object: %r" % self._match)
 
     def __repr__(self):
         return "<MQL string=%r type=%r star=%r>" % (
@@ -251,7 +263,6 @@ class Mql(Query):
         matcher = Tag(tokens.REGEX, [tokens.TAG])
         if tokens.OPERATOR == Mql.NEQ:
             matcher = match.Neg(matcher)
-        #print_d("Pushing matcher: %r" % matcher)
         self.push(matcher)
 
     def handle_excluded_equality(self, string, location, tokens):
@@ -299,7 +310,6 @@ class Mql(Query):
             matcher = Tag(tokens.REGEX, self.star)
         except Exception:
             raise ParseError("Invalid regex: %s" % tokens.REGEX)
-        #print_d("Pushing regex matcher: %r" % matcher)
         self.push(matcher)
 
     def handle_no_tag_val(self, string, location, tokens):

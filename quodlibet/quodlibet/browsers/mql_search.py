@@ -13,7 +13,7 @@ from quodlibet import const
 from quodlibet import qltk
 from quodlibet.browsers.search import SearchBar
 
-from quodlibet.qltk import Alignment
+from quodlibet.qltk import Align
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -57,17 +57,18 @@ class MqlBrowser(SearchBar):
         self.accelerators = Gtk.AccelGroup()
 
         sbb = MqlSearchBarBox(completion=completion,
+                              validator=Mql.is_valid,
                               accel_group=self.accelerators)
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
         self.add_label(sbb)
         self._sb_box = sbb
         self.connect('destroy', self.__destroy)
-        self.show_all()
         self.set_spacing(6)
+        self.show_all()
 
     def add_label(self, sbb):
-        align = Alignment(sbb, left=6, right=6, top=6)
+        align = Align(sbb, left=6, right=6, top=6)
         hbox = Gtk.HBox()
         label = Gtk.Label(label="MQL:")
         label.set_use_underline(True)
