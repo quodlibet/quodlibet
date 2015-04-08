@@ -149,15 +149,14 @@ class Mql(Query):
 
         self.string = string
         if star is None:
-            # Ugh. This feels wrong, but other models don't need to know STAR for validity,
-            # so the validator doesn't (currently) send a STAR.
+            # Ugh. This feels wrong, but other models don't need to know
+            # STAR for validity, so the validator doesn't (currently) pass it
             print_d("Using default STAR for %s" % string)
             star = SongList.star
             #star = self.STAR
 
         if not isinstance(string, unicode):
             string = string.decode('utf-8')
-
 
         # MQL-specifics
         self._limit = None

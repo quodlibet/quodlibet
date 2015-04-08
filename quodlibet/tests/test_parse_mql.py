@@ -16,7 +16,8 @@ class TMQL(TestCase):
         for expr, expected in data:
             query = Mql(expr)
             self.failUnlessEqual(expected, query.type == QueryType.VALID,
-                                 msg="{%s} should have failed but came back %r" % (expr, query))
+                                 msg="{%s} should have failed but came back %r"
+                                     % (expr, query))
 
     def _check_matching(self, tests, song):
 

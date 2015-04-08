@@ -67,6 +67,7 @@ class True_(Node):
         other = other._unpack()
         return other
 
+
 class False_(Node):
     """Always False"""
 
@@ -84,7 +85,6 @@ class False_(Node):
 
     def __and__(self, other):
         return self
-
 
 
 class Union(Node):
