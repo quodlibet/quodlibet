@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-14 09:09+0100\n"
+"POT-Creation-Date: 2015-04-08 14:28+0200\n"
 "PO-Revision-Date: 2010-03-30 10:12+0300\n"
 "Last-Translator: Einars Sprugis <einars8@gmail.com>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
@@ -55,221 +55,13 @@ msgstr "Mūzikas atskaņotājs"
 msgid "Listen to, browse, or edit your audio collection"
 msgstr "Atskaņo, pārlūko vai rediģē jūsu audio kolekciju"
 
-#: ../exfalso.py:30
+#: ../exfalso.py:31
 msgid "an audio tag editor"
 msgstr "audio tagu redaktors"
 
-#: ../exfalso.py:30 ../quodlibet/util/tags.py:132
+#: ../exfalso.py:31 ../quodlibet/util/tags.py:132
 msgid "directory"
 msgstr "mape"
-
-#: ../operon.py:89
-#, python-format
-msgid "Failed to load file: %r"
-msgstr ""
-
-#: ../operon.py:125
-msgid "List tags"
-msgstr ""
-
-#: ../operon.py:130 ../operon.py:168 ../operon.py:608
-msgid "Print terse output"
-msgstr ""
-
-#: ../operon.py:132 ../operon.py:170 ../operon.py:610
-#, python-format
-msgid "Columns to display and order in terse mode (%s)"
-msgstr ""
-
-#: ../operon.py:135
-#, fuzzy
-msgid "Also list programmatic tags"
-msgstr "Rādīt programmatūras _tagus"
-
-#: ../operon.py:139 ../operon.py:203 ../operon.py:229 ../operon.py:247
-#: ../operon.py:372 ../operon.py:444 ../operon.py:486 ../operon.py:490
-#: ../operon.py:540 ../operon.py:543 ../operon.py:581 ../operon.py:615
-#: ../operon.py:652 ../operon.py:683 ../operon.py:721
-msgid "Not enough arguments"
-msgstr ""
-
-#: ../operon.py:141 ../operon.py:175 ../operon.py:205 ../operon.py:231
-#: ../operon.py:249 ../operon.py:374 ../operon.py:617
-#, fuzzy
-msgid "Too many arguments"
-msgstr "Par daudz kļūdu"
-
-#: ../operon.py:144 ../operon.py:177 ../operon.py:622
-#, fuzzy
-msgid "Description"
-msgstr "apraksts"
-
-#: ../operon.py:144 ../operon.py:622 ../quodlibet/qltk/edittags.py:466
-msgid "Value"
-msgstr "Vērtība"
-
-#: ../operon.py:144 ../operon.py:177
-#: ../quodlibet/browsers/collection/prefs.py:120
-#: ../quodlibet/ext/songsmenu/filterall.py:33
-#: ../quodlibet/qltk/edittags.py:444
-msgid "Tag"
-msgstr "Tags"
-
-#: ../operon.py:163
-msgid "List all common tags"
-msgstr ""
-
-#: ../operon.py:198
-msgid "Print all tags to stdout"
-msgstr ""
-
-#: ../operon.py:218
-msgid "Load tags dumped with 'dump'"
-msgstr ""
-
-#: ../operon.py:223 ../operon.py:241 ../operon.py:316 ../operon.py:440
-#: ../operon.py:474 ../operon.py:533
-msgid "Show changes, don't apply them"
-msgstr ""
-
-#: ../operon.py:225 ../operon.py:243
-msgid "Skip tags that can't be written"
-msgstr ""
-
-#: ../operon.py:236
-msgid "Copy tags from one file to another"
-msgstr ""
-
-#: ../operon.py:263
-#, python-format
-msgid "Can't copy tag %r to file: %r"
-msgstr ""
-
-#: ../operon.py:309
-#, fuzzy
-msgid "Edit tags in a text editor"
-msgstr "Audio tagu redaktors"
-
-#: ../operon.py:403
-msgid "Editing aborted"
-msgstr ""
-
-#: ../operon.py:407
-#, python-format
-msgid "Starting text editor '%(editor-name)s' failed."
-msgstr ""
-
-#: ../operon.py:412
-#, fuzzy
-msgid "No changes detected"
-msgstr "Nav izvēlēta neviena dziesma."
-
-#: ../operon.py:435
-msgid "Set a tag and remove existing values"
-msgstr ""
-
-#: ../operon.py:455 ../operon.py:592 ../operon.py:810
-#, python-format
-msgid "Can not set %r"
-msgstr ""
-
-#: ../operon.py:469
-msgid "Remove tags"
-msgstr ""
-
-#: ../operon.py:476 ../operon.py:535
-msgid "Value is a regular expression"
-msgstr ""
-
-#: ../operon.py:478
-msgid "Remove all tags"
-msgstr ""
-
-#: ../operon.py:482
-msgid "Can't combine '--all' with '--regexp'"
-msgstr ""
-
-#: ../operon.py:516
-#, python-format
-msgid "Can't remove %r from %r"
-msgstr ""
-
-#: ../operon.py:528
-#, fuzzy
-msgid "Remove a tag value"
-msgstr "Filtrēt pēc taga vērtības"
-
-#: ../operon.py:576
-#, fuzzy
-msgid "Add a tag value"
-msgstr "Filtrēt pēc taga vērtības"
-
-#: ../operon.py:603
-#, fuzzy
-msgid "List file information"
-msgstr "Nav ilguma informācijas"
-
-#: ../operon.py:646
-msgid ""
-"Set the provided image as primary embedded image and remove all other "
-"embedded images"
-msgstr ""
-
-#: ../operon.py:659
-#, fuzzy, python-format
-msgid "Failed to load image file: %r"
-msgstr "Neizdevās pārdēvēt failu"
-
-#: ../operon.py:666 ../operon.py:691
-#, python-format
-msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
-msgstr ""
-
-#: ../operon.py:678
-msgid "Remove all embedded images"
-msgstr ""
-
-#: ../operon.py:704
-#, python-format
-msgid "Extract embedded images to %(filepath)s"
-msgstr ""
-
-#: ../operon.py:716
-msgid ""
-"Path to where the images will be saved to (defaults to the working directory)"
-msgstr ""
-
-#: ../operon.py:774
-msgid "Rename files based on tags"
-msgstr ""
-
-#: ../operon.py:788
-msgid "Fill tags based on the file path"
-msgstr ""
-
-#: ../operon.py:838 ../quodlibet/qltk/information.py:288
-#: ../quodlibet/qltk/properties.py:81 ../quodlibet/qltk/renamefiles.py:164
-#: ../quodlibet/qltk/tagsfrompath.py:214 ../quodlibet/qltk/tracknumbers.py:71
-msgid "File"
-msgstr "Fails"
-
-#: ../operon.py:845
-msgid "Fill tracknumbers for all files"
-msgstr ""
-
-#: ../operon.py:863
-msgid "Print tags based on the given pattern"
-msgstr ""
-
-#: ../operon.py:899
-#, fuzzy
-msgid "Display help information"
-msgstr "Parādīt īsu lietošanas informāciju"
-
-#: ../operon.py:927
-#, fuzzy, python-format
-msgid "'%s' is not a valid column name (%s)."
-msgstr "<b>%s</b> nav derīga vieta."
 
 #: ../quodlibet/browsers/albums/main.py:149
 #, fuzzy
@@ -291,7 +83,7 @@ msgstr "Žanrs"
 
 #: ../quodlibet/browsers/albums/main.py:153
 #: ../quodlibet/ext/events/trayicon.py:539 ../quodlibet/qltk/prefs.py:57
-#: ../quodlibet/qltk/ratingsmenu.py:64
+#: ../quodlibet/qltk/ratingsmenu.py:68
 msgid "_Rating"
 msgstr "_Vērtējums"
 
@@ -306,19 +98,19 @@ msgstr "_Kārtot pēc:"
 msgid "_Preferences"
 msgstr "Iestatījumi"
 
-#: ../quodlibet/browsers/albums/main.py:348
+#: ../quodlibet/browsers/albums/main.py:339
 msgid "Album List"
 msgstr "Albumu saraksts"
 
-#: ../quodlibet/browsers/albums/main.py:349
+#: ../quodlibet/browsers/albums/main.py:340
 msgid "_Album List"
 msgstr "_Albumu saraksts"
 
-#: ../quodlibet/browsers/albums/main.py:476
+#: ../quodlibet/browsers/albums/main.py:469
 msgid "All Albums"
 msgstr "Visi albumi"
 
-#: ../quodlibet/browsers/albums/main.py:477
+#: ../quodlibet/browsers/albums/main.py:470
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -326,7 +118,7 @@ msgstr[0] "%d albums"
 msgstr[1] "%d albumi"
 msgstr[2] "%d albumu"
 
-#: ../quodlibet/browsers/albums/main.py:631
+#: ../quodlibet/browsers/albums/main.py:637
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -340,8 +132,8 @@ msgid "Songs not in an album"
 msgstr "Dziesmas nav albumā"
 
 #: ../quodlibet/browsers/albums/prefs.py:62
-#: ../quodlibet/ext/songsmenu/cddb.py:257 ../quodlibet/qltk/information.py:341
-#: ../quodlibet/util/collection.py:240
+#: ../quodlibet/ext/songsmenu/cddb.py:257 ../quodlibet/qltk/information.py:342
+#: ../quodlibet/util/collection.py:238
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -350,7 +142,7 @@ msgstr[1] "%d celiņi"
 msgstr[2] "%d celiņu"
 
 #: ../quodlibet/browsers/albums/prefs.py:63
-#: ../quodlibet/qltk/information.py:339 ../quodlibet/util/collection.py:244
+#: ../quodlibet/qltk/information.py:340 ../quodlibet/util/collection.py:242
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -386,8 +178,8 @@ msgstr "Albuma attēlojums"
 
 #: ../quodlibet/browsers/albums/prefs.py:139
 #: ../quodlibet/browsers/albums/prefs.py:144
-#: ../quodlibet/qltk/tagsfrompath.py:179 ../quodlibet/qltk/textedit.py:89
-#: ../quodlibet/util/__init__.py:522
+#: ../quodlibet/qltk/tagsfrompath.py:179 ../quodlibet/qltk/textedit.py:92
+#: ../quodlibet/util/__init__.py:525
 msgid "Invalid pattern"
 msgstr "Nederīgs paraugs"
 
@@ -397,8 +189,8 @@ msgstr "Nederīgs paraugs"
 #: ../quodlibet/browsers/audiofeeds.py:146
 #: ../quodlibet/browsers/paned/models.py:81
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:44
-#: ../quodlibet/formats/_audio.py:369 ../quodlibet/qltk/information.py:217
-#: ../quodlibet/qltk/information.py:225 ../quodlibet/qltk/information.py:254
+#: ../quodlibet/formats/_audio.py:369 ../quodlibet/qltk/information.py:218
+#: ../quodlibet/qltk/information.py:226 ../quodlibet/qltk/information.py:255
 #: ../quodlibet/qltk/playorder.py:20 ../quodlibet/qltk/wlw.py:66
 msgid "Unknown"
 msgstr "Nezināms"
@@ -425,26 +217,26 @@ msgstr "_Audio barotnes"
 msgid "_Download…"
 msgstr "Lejupielā_dēt"
 
-#: ../quodlibet/browsers/audiofeeds.py:310
+#: ../quodlibet/browsers/audiofeeds.py:311
 msgid "Download Files"
 msgstr "Lejupielādēt failus"
 
-#: ../quodlibet/browsers/audiofeeds.py:331
+#: ../quodlibet/browsers/audiofeeds.py:332
 msgid "Download File"
 msgstr "Lejupielādēt failu"
 
-#: ../quodlibet/browsers/audiofeeds.py:365
-#: ../quodlibet/browsers/playlists/main.py:152
+#: ../quodlibet/browsers/audiofeeds.py:366
+#: ../quodlibet/browsers/playlists/main.py:153
 msgid "_New"
 msgstr ""
 
-#: ../quodlibet/browsers/audiofeeds.py:425
-#: ../quodlibet/browsers/audiofeeds.py:481
+#: ../quodlibet/browsers/audiofeeds.py:426
+#: ../quodlibet/browsers/audiofeeds.py:482
 msgid "Unable to add feed"
 msgstr "Neizdevās pievienot barotni"
 
-#: ../quodlibet/browsers/audiofeeds.py:426
-#: ../quodlibet/browsers/audiofeeds.py:482
+#: ../quodlibet/browsers/audiofeeds.py:427
+#: ../quodlibet/browsers/audiofeeds.py:483
 #, fuzzy, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
@@ -453,13 +245,13 @@ msgstr ""
 "<b>%s</b> neizdevās pievienot. Iespējams, nedarbojas serveris, vai arī "
 "ievadītā adrese nav audio barotne."
 
-#: ../quodlibet/browsers/audiofeeds.py:498
+#: ../quodlibet/browsers/audiofeeds.py:499
 #, fuzzy, python-format
 msgid "Could not import %s. Audio Feeds browser disabled."
 msgstr ""
 "Neizdevās importēt python-feedparser, audio barotņu pārlūks tiks atslēgts."
 
-#: ../quodlibet/browsers/audiofeeds.py:505
+#: ../quodlibet/browsers/audiofeeds.py:506
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
@@ -467,11 +259,11 @@ msgstr ""
 "Pašreizējā audio aizmugure neatbalsta URL, audio barotņu pārlūks tiks "
 "atslēgts."
 
-#: ../quodlibet/browsers/_base.py:146 ../quodlibet/browsers/_base.py:149
+#: ../quodlibet/browsers/_base.py:136 ../quodlibet/browsers/_base.py:139
 msgid "Library Browser"
 msgstr "Bibliotēkas pārlūks"
 
-#: ../quodlibet/browsers/_base.py:249 ../quodlibet/qltk/queue.py:183
+#: ../quodlibet/browsers/_base.py:262 ../quodlibet/qltk/queue.py:183
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -479,11 +271,11 @@ msgstr[0] "%(count)d dziesma (%(time)s)"
 msgstr[1] "%(count)d dziesmas (%(time)s)"
 msgstr[2] "(count)d dziesmas (%(time)s)"
 
-#: ../quodlibet/browsers/collection/main.py:80
+#: ../quodlibet/browsers/collection/main.py:79
 msgid "Album Collection"
 msgstr ""
 
-#: ../quodlibet/browsers/collection/main.py:81
+#: ../quodlibet/browsers/collection/main.py:80
 msgid "Album _Collection"
 msgstr ""
 
@@ -501,6 +293,13 @@ msgstr "Sadalīt _vairākās vērtībās"
 #: ../quodlibet/browsers/paned/prefs.py:45
 msgid "_Custom"
 msgstr "_Pielāgots"
+
+#: ../quodlibet/browsers/collection/prefs.py:120
+#: ../quodlibet/operon/commands.py:52 ../quodlibet/operon/commands.py:86
+#: ../quodlibet/ext/songsmenu/filterall.py:33
+#: ../quodlibet/qltk/edittags.py:438
+msgid "Tag"
+msgstr "Tags"
 
 #: ../quodlibet/browsers/collection/prefs.py:126
 msgid "Merge"
@@ -527,12 +326,12 @@ msgstr "Failu sistēma"
 msgid "_File System"
 msgstr "_Failu sistēma"
 
-#: ../quodlibet/browsers/filesystem.py:110 ../quodlibet/browsers/media.py:478
-#: ../quodlibet/qltk/songlist.py:231
+#: ../quodlibet/browsers/filesystem.py:111 ../quodlibet/browsers/media.py:484
+#: ../quodlibet/qltk/songlist.py:242
 msgid "Unable to copy songs"
 msgstr "Neizdevās pārkopēt dziesmas"
 
-#: ../quodlibet/browsers/filesystem.py:111 ../quodlibet/qltk/songlist.py:232
+#: ../quodlibet/browsers/filesystem.py:112 ../quodlibet/qltk/songlist.py:243
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Izvēlētie faili nevar tikt pārkopēti uz citiem dziesmu sarakstiem vai rindu."
@@ -557,7 +356,7 @@ msgstr ""
 "%s"
 
 #: ../quodlibet/browsers/iradio.py:213 ../quodlibet/browsers/iradio.py:226
-#: ../quodlibet/browsers/iradio.py:815
+#: ../quodlibet/browsers/iradio.py:816
 msgid "Unable to add station"
 msgstr "Neizdevās pievienot staciju"
 
@@ -724,54 +523,54 @@ msgstr "Jau_na stacija"
 msgid "_Internet Radio"
 msgstr "_Interneta radio"
 
-#: ../quodlibet/browsers/iradio.py:545
+#: ../quodlibet/browsers/iradio.py:546
 #, fuzzy
 msgid "_New Station…"
 msgstr "Jauna stacija"
 
-#: ../quodlibet/browsers/iradio.py:548
+#: ../quodlibet/browsers/iradio.py:549
 #, fuzzy
 msgid "_Update Stations"
 msgstr "Jau_na stacija"
 
-#: ../quodlibet/browsers/iradio.py:575
+#: ../quodlibet/browsers/iradio.py:576
 #, fuzzy
 msgid "All Stations"
 msgstr "Jauna stacija"
 
-#: ../quodlibet/browsers/iradio.py:579
+#: ../quodlibet/browsers/iradio.py:580
 msgid "Favorites"
 msgstr ""
 
-#: ../quodlibet/browsers/iradio.py:587
+#: ../quodlibet/browsers/iradio.py:588
 #, fuzzy
 msgid "No Category"
 msgstr "Bez kategorijas"
 
-#: ../quodlibet/browsers/iradio.py:807
+#: ../quodlibet/browsers/iradio.py:808
 msgid "No stations found"
 msgstr "Nav atrasta neviena stacija"
 
-#: ../quodlibet/browsers/iradio.py:808
+#: ../quodlibet/browsers/iradio.py:809
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Netika atrasta neviena interneta radiostacija ar adresi %s."
 
-#: ../quodlibet/browsers/iradio.py:816
+#: ../quodlibet/browsers/iradio.py:817
 msgid "All stations listed are already in your library."
 msgstr "Visas sarakstā esošas stacijas jau ir jūsu bibliotēkā."
 
-#: ../quodlibet/browsers/iradio.py:837
-#, fuzzy
-msgid "Remove from Favorites"
-msgstr "Izņemt no _repertuāra"
-
-#: ../quodlibet/browsers/iradio.py:842
+#: ../quodlibet/browsers/iradio.py:834
 #, fuzzy
 msgid "Add to Favorites"
 msgstr "Pievienot repertuār_am"
 
-#: ../quodlibet/browsers/iradio.py:936
+#: ../quodlibet/browsers/iradio.py:838
+#, fuzzy
+msgid "Remove from Favorites"
+msgstr "Izņemt no _repertuāra"
+
+#: ../quodlibet/browsers/iradio.py:935
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -809,37 +608,37 @@ msgid "_Media Devices"
 msgstr "_Multivides ierīces"
 
 #. refresh button
-#: ../quodlibet/browsers/media.py:211
+#: ../quodlibet/browsers/media.py:212
 #, fuzzy
 msgid "_Refresh"
 msgstr "_Atsvaidzināt bibliotēku"
 
 #. eject button
-#: ../quodlibet/browsers/media.py:218 ../quodlibet/browsers/media.py:365
+#: ../quodlibet/browsers/media.py:219 ../quodlibet/browsers/media.py:371
 msgid "_Eject"
 msgstr "Izgrūz_t"
 
-#: ../quodlibet/browsers/media.py:352
-#: ../quodlibet/browsers/playlists/main.py:358
+#: ../quodlibet/browsers/media.py:358
+#: ../quodlibet/browsers/playlists/main.py:360
 msgid "_Rename"
 msgstr "Pā_rdēvēt"
 
-#: ../quodlibet/browsers/media.py:448
+#: ../quodlibet/browsers/media.py:454
 #, fuzzy, python-format
-msgid "%s used, %s available"
+msgid "%(used-size)s used, %(free-size)s available"
 msgstr "<b>%s</b> izmantoti, <b>%s</b> pieejami"
 
-#: ../quodlibet/browsers/media.py:466
+#: ../quodlibet/browsers/media.py:472
 #, fuzzy, python-format
 msgid "%s is not connected."
 msgstr "<b>%s</b> nav pievienots."
 
-#: ../quodlibet/browsers/media.py:486
+#: ../quodlibet/browsers/media.py:492
 #, fuzzy, python-format
 msgid "Copying %(song)s"
 msgstr "Kopē <b>%(song)s</b>"
 
-#: ../quodlibet/browsers/media.py:506 ../quodlibet/browsers/media.py:523
+#: ../quodlibet/browsers/media.py:506 ../quodlibet/browsers/media.py:522
 msgid "Unable to copy song"
 msgstr "Neizdevās pārkopēt dziesmu"
 
@@ -847,39 +646,39 @@ msgstr "Neizdevās pārkopēt dziesmu"
 msgid "There is not enough free space for this song."
 msgstr "Nav pietiekami daudz brīvas vietas šajai dziesmai."
 
-#: ../quodlibet/browsers/media.py:520
+#: ../quodlibet/browsers/media.py:519
 #, fuzzy, python-format
 msgid "%s could not be copied."
 msgstr "<b>%s</b> nevarēja tikt pārkopēta."
 
-#: ../quodlibet/browsers/media.py:540
+#: ../quodlibet/browsers/media.py:538
 msgid "Unable to delete songs"
 msgstr "Neizdevās izdzēst dziesmas"
 
-#: ../quodlibet/browsers/media.py:552
+#: ../quodlibet/browsers/media.py:550
 #, fuzzy, python-format
 msgid "Deleting %(song)s"
 msgstr "Dzēš <b>%(song)s</b>"
 
-#: ../quodlibet/browsers/media.py:572
+#: ../quodlibet/browsers/media.py:568
 #, fuzzy, python-format
 msgid "%s could not be deleted."
 msgstr "<b>%s</b> nevarēja tikt izdzēsta."
 
-#: ../quodlibet/browsers/media.py:576
+#: ../quodlibet/browsers/media.py:572
 msgid "Unable to delete song"
 msgstr "Neizdevās izdzēst dziesmu"
 
-#: ../quodlibet/browsers/media.py:591
+#: ../quodlibet/browsers/media.py:587
 #, fuzzy, python-format
 msgid "Ejecting %s failed."
 msgstr "Neizdevās izgrūzt <b>%s</b>."
 
-#: ../quodlibet/browsers/media.py:594
+#: ../quodlibet/browsers/media.py:590
 msgid "Unable to eject device"
 msgstr "Neizdevās izgrūzt ierīci"
 
-#: ../quodlibet/browsers/media.py:599
+#: ../quodlibet/browsers/media.py:595
 msgid "No device backend, Media Devices browser disabled."
 msgstr "Nav ierīču aizmugures, multivides ierīču pārlūks atslēgts."
 
@@ -919,42 +718,42 @@ msgstr "Re_pertuāri"
 msgid "_Remove from Playlist"
 msgstr "Izņemt no _repertuāra"
 
-#: ../quodlibet/browsers/playlists/main.py:155
+#: ../quodlibet/browsers/playlists/main.py:156
 msgid "_Import"
 msgstr "_Importēt"
 
-#: ../quodlibet/browsers/playlists/main.py:289
+#: ../quodlibet/browsers/playlists/main.py:290
 #: ../quodlibet/browsers/playlists/util.py:46
-#: ../quodlibet/util/collection.py:337
+#: ../quodlibet/util/collection.py:347
 msgid "New Playlist"
 msgstr "Jauns repertuārs"
 
-#: ../quodlibet/browsers/playlists/main.py:311
-#: ../quodlibet/browsers/playlists/main.py:411
+#: ../quodlibet/browsers/playlists/main.py:312
+#: ../quodlibet/browsers/playlists/main.py:413
 msgid "Unable to import playlist"
 msgstr "Neizdevās importēt repertuāru"
 
-#: ../quodlibet/browsers/playlists/main.py:312
-#: ../quodlibet/browsers/playlists/main.py:412
+#: ../quodlibet/browsers/playlists/main.py:313
+#: ../quodlibet/browsers/playlists/main.py:414
 msgid "Quod Libet can only import playlists in the M3U and PLS formats."
 msgstr "Quod Libet var importēt repertuārus tikai M3U un PLS formātā."
 
-#: ../quodlibet/browsers/playlists/main.py:392
+#: ../quodlibet/browsers/playlists/main.py:394
 msgid "Unable to rename playlist"
 msgstr "Neizdevās pārdēvēt repertuāru"
 
-#: ../quodlibet/browsers/playlists/main.py:400
+#: ../quodlibet/browsers/playlists/main.py:402
 msgid "Import Playlist"
 msgstr "Importēt repertuāru"
 
-#: ../quodlibet/browsers/playlists/menu.py:21
+#: ../quodlibet/browsers/playlists/menu.py:20
 #, fuzzy
 msgid "_New Playlist…"
 msgstr "Jau_ns repertuārs"
 
-#: ../quodlibet/browsers/playlists/menu.py:60
+#: ../quodlibet/browsers/playlists/menu.py:44
 #: ../quodlibet/qltk/exfalsowindow.py:228 ../quodlibet/qltk/properties.py:155
-#: ../quodlibet/util/collection.py:364
+#: ../quodlibet/util/collection.py:374
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -962,7 +761,7 @@ msgstr[0] "%(title)s un vēl %(count)d"
 msgstr[1] "%(title)s un vēl %(count)d"
 msgstr[2] "%(title)s un vēl %(count)d"
 
-#: ../quodlibet/browsers/playlists/menu.py:86
+#: ../quodlibet/browsers/playlists/menu.py:83
 #, fuzzy, python-format
 msgid "What do you want to do with that %d song?"
 msgid_plural "What do you want to do with those %d songs?"
@@ -976,7 +775,7 @@ msgstr[2] ""
 "Jūs grasāties mainīt vērtējumu %d dziesmām.\n"
 "Vai vēlaties turpināt?"
 
-#: ../quodlibet/browsers/playlists/menu.py:90
+#: ../quodlibet/browsers/playlists/menu.py:87
 #, python-format
 msgid "Confirm action for playlist \"%s\""
 msgstr ""
@@ -1008,6 +807,209 @@ msgstr ""
 "\n"
 "%(current)d/%(total)d dziesmas pievienotas."
 
+#: ../quodlibet/operon/base.py:68
+#, python-format
+msgid "Failed to load file: %r"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:33
+msgid "List tags"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:38 ../quodlibet/operon/commands.py:77
+#: ../quodlibet/operon/commands.py:451
+msgid "Print terse output"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:40 ../quodlibet/operon/commands.py:79
+#: ../quodlibet/operon/commands.py:453
+#, python-format
+msgid "Columns to display and order in terse mode (%s)"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:43
+#, fuzzy
+msgid "Also list programmatic tags"
+msgstr "Rādīt programmatūras _tagus"
+
+#: ../quodlibet/operon/commands.py:47 ../quodlibet/operon/commands.py:119
+#: ../quodlibet/operon/commands.py:210 ../quodlibet/operon/commands.py:283
+#: ../quodlibet/operon/commands.py:326 ../quodlibet/operon/commands.py:330
+#: ../quodlibet/operon/commands.py:381 ../quodlibet/operon/commands.py:384
+#: ../quodlibet/operon/commands.py:423 ../quodlibet/operon/commands.py:458
+#: ../quodlibet/operon/commands.py:496 ../quodlibet/operon/commands.py:528
+#: ../quodlibet/operon/commands.py:567
+msgid "Not enough arguments"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:49 ../quodlibet/operon/commands.py:84
+#: ../quodlibet/operon/commands.py:121 ../quodlibet/operon/commands.py:212
+#: ../quodlibet/operon/commands.py:460
+#, fuzzy
+msgid "Too many arguments"
+msgstr "Par daudz kļūdu"
+
+#: ../quodlibet/operon/commands.py:52 ../quodlibet/operon/commands.py:86
+#: ../quodlibet/operon/commands.py:465
+#, fuzzy
+msgid "Description"
+msgstr "apraksts"
+
+#: ../quodlibet/operon/commands.py:52 ../quodlibet/operon/commands.py:465
+#: ../quodlibet/qltk/edittags.py:460
+msgid "Value"
+msgstr "Vērtība"
+
+#: ../quodlibet/operon/commands.py:72
+msgid "List all common tags"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:108
+msgid "Copy tags from one file to another"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:113 ../quodlibet/operon/commands.py:154
+#: ../quodlibet/operon/commands.py:279 ../quodlibet/operon/commands.py:314
+#: ../quodlibet/operon/commands.py:374
+msgid "Show changes, don't apply them"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:115
+msgid "Skip tags that can't be written"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:135
+#, python-format
+msgid "Can't copy tag %r to file: %r"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:147
+#, fuzzy
+msgid "Edit tags in a text editor"
+msgstr "Audio tagu redaktors"
+
+#: ../quodlibet/operon/commands.py:241
+msgid "Editing aborted"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:245
+#, python-format
+msgid "Starting text editor '%(editor-name)s' failed."
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:250
+#, fuzzy
+msgid "No changes detected"
+msgstr "Nav izvēlēta neviena dziesma."
+
+#: ../quodlibet/operon/commands.py:274
+msgid "Set a tag and remove existing values"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:294 ../quodlibet/operon/commands.py:434
+#: ../quodlibet/operon/commands.py:658
+#, python-format
+msgid "Can not set %r"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:309
+msgid "Remove tags"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:316 ../quodlibet/operon/commands.py:376
+msgid "Value is a regular expression"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:318
+msgid "Remove all tags"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:322
+msgid "Can't combine '--all' with '--regexp'"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:356
+#, python-format
+msgid "Can't remove %r from %r"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:369
+#, fuzzy
+msgid "Remove a tag value"
+msgstr "Filtrēt pēc taga vērtības"
+
+#: ../quodlibet/operon/commands.py:418
+#, fuzzy
+msgid "Add a tag value"
+msgstr "Filtrēt pēc taga vērtības"
+
+#: ../quodlibet/operon/commands.py:446
+#, fuzzy
+msgid "List file information"
+msgstr "Nav ilguma informācijas"
+
+#: ../quodlibet/operon/commands.py:490
+msgid ""
+"Set the provided image as primary embedded image and remove all other "
+"embedded images"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:503
+#, fuzzy, python-format
+msgid "Failed to load image file: %r"
+msgstr "Neizdevās pārdēvēt failu"
+
+#: ../quodlibet/operon/commands.py:510 ../quodlibet/operon/commands.py:536
+#, python-format
+msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:523
+msgid "Remove all embedded images"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:550
+#, python-format
+msgid "Extract embedded images to %(filepath)s"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:562
+msgid ""
+"Path to where the images will be saved to (defaults to the working directory)"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:621
+msgid "Rename files based on tags"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:636
+msgid "Fill tags based on the file path"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:686 ../quodlibet/qltk/information.py:289
+#: ../quodlibet/qltk/properties.py:81 ../quodlibet/qltk/renamefiles.py:164
+#: ../quodlibet/qltk/tagsfrompath.py:214 ../quodlibet/qltk/tracknumbers.py:71
+msgid "File"
+msgstr "Fails"
+
+#: ../quodlibet/operon/commands.py:694
+msgid "Fill tracknumbers for all files"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:713
+msgid "Print tags based on the given pattern"
+msgstr ""
+
+#: ../quodlibet/operon/commands.py:750
+#, fuzzy
+msgid "Display help information"
+msgstr "Parādīt īsu lietošanas informāciju"
+
+#: ../quodlibet/operon/util.py:40
+#, fuzzy, python-format
+msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
+msgstr "<b>%s</b> nav derīga vieta."
+
 #: ../quodlibet/browsers/search.py:32
 msgid "_Limit Results"
 msgstr "_Limitēt rezultātus"
@@ -1021,216 +1023,226 @@ msgid "_Search Library"
 msgstr "_Meklēt bibliotēkā"
 
 #: ../quodlibet/cli.py:45
-msgid "Quod Libet is not running."
+#, fuzzy
+msgid "Quod Libet is not running (add '--run' to start it)"
 msgstr "Quod Libet nav palaists."
 
-#: ../quodlibet/cli.py:79
+#: ../quodlibet/cli.py:80
 msgid "a music library and player"
 msgstr "mūzikas bibliotēka un atskaņotājs"
 
-#: ../quodlibet/cli.py:80
+#: ../quodlibet/cli.py:81
 #, fuzzy
 msgid "[option]"
 msgstr "[opcijas]"
 
-#: ../quodlibet/cli.py:82
+#: ../quodlibet/cli.py:83
 msgid "Print the playing song and exit"
 msgstr "Izdrukā pašreiz atskaņoto dziesmu un iziet"
 
-#: ../quodlibet/cli.py:83
+#: ../quodlibet/cli.py:84
 msgid "Begin playing immediately"
 msgstr "Nekavējoties uzsāk atskaņošanu"
 
-#: ../quodlibet/cli.py:86
+#: ../quodlibet/cli.py:87
 msgid "Jump to next song"
 msgstr "Pāriet uz nākamo dziesmu"
 
-#: ../quodlibet/cli.py:88
+#: ../quodlibet/cli.py:89
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
 
-#: ../quodlibet/cli.py:89
+#: ../quodlibet/cli.py:90
 msgid "Jump to previous song"
 msgstr "Pāriet uz iepriekšējo dziesmu"
 
-#: ../quodlibet/cli.py:90
+#: ../quodlibet/cli.py:91
 msgid "Start playback"
 msgstr "Sākt atskaņošanu"
 
-#: ../quodlibet/cli.py:91
+#: ../quodlibet/cli.py:92
 msgid "Pause playback"
 msgstr "Pauzēt atskaņošanu"
 
-#: ../quodlibet/cli.py:92
+#: ../quodlibet/cli.py:93
 msgid "Toggle play/pause mode"
 msgstr "Pārslēgt atskaņošanas/pauzes režīmu"
 
-#: ../quodlibet/cli.py:93
+#: ../quodlibet/cli.py:94
 #, fuzzy
 msgid "Stop playback"
 msgstr "Sākt atskaņošanu"
 
-#: ../quodlibet/cli.py:94
+#: ../quodlibet/cli.py:95
 msgid "Turn up volume"
 msgstr "Palielināt skaļumu"
 
-#: ../quodlibet/cli.py:95
+#: ../quodlibet/cli.py:96
 msgid "Turn down volume"
 msgstr "Samazināt skaļumu"
 
-#: ../quodlibet/cli.py:96
+#: ../quodlibet/cli.py:97
 msgid "Print player status"
 msgstr "Izdrukāt atskaņotāja statusu"
 
-#: ../quodlibet/cli.py:97
+#: ../quodlibet/cli.py:98
 msgid "Hide main window"
 msgstr "Slēpt galveno logu"
 
-#: ../quodlibet/cli.py:98
+#: ../quodlibet/cli.py:99
 msgid "Show main window"
 msgstr "Rādīt galveno logu"
 
-#: ../quodlibet/cli.py:99
+#: ../quodlibet/cli.py:100
 msgid "Toggle main window visibility"
 msgstr "Pārslēgt galvenā loga redzamību"
 
-#: ../quodlibet/cli.py:100
+#: ../quodlibet/cli.py:101
 msgid "Focus the running player"
 msgstr "Fokusēties uz darbojošos atskaņotāju"
 
-#: ../quodlibet/cli.py:101
+#: ../quodlibet/cli.py:102
 msgid "Remove active browser filters"
 msgstr "Noņemt aktīvos pārlūka filtrus"
 
-#: ../quodlibet/cli.py:102
+#: ../quodlibet/cli.py:103
 msgid "Refresh and rescan library"
 msgstr "Atsvaidzināt un pārskenēt bibliotēku"
 
-#: ../quodlibet/cli.py:103
+#: ../quodlibet/cli.py:104
 #, fuzzy
 msgid "List available browsers"
 msgstr "Atslēgt pārlūku"
 
-#: ../quodlibet/cli.py:104
+#: ../quodlibet/cli.py:105
 msgid "Print the current playlist"
 msgstr "Izdrukāt pašreizējo repertuāru"
 
-#: ../quodlibet/cli.py:105
+#: ../quodlibet/cli.py:106
 msgid "Print the contents of the queue"
 msgstr "Izdrukāt rindas saturu"
 
-#: ../quodlibet/cli.py:106
+#: ../quodlibet/cli.py:107
 msgid "Start without plugins"
 msgstr ""
 
-#: ../quodlibet/cli.py:107
+#: ../quodlibet/cli.py:108
+#, fuzzy
+msgid "Start Quod Libet if it isn't running"
+msgstr "Quod Libet nav palaists."
+
+#: ../quodlibet/cli.py:109
 msgid "Exit Quod Libet"
 msgstr "Iziet no Quod Libet"
 
-#: ../quodlibet/cli.py:112
+#: ../quodlibet/cli.py:114
 msgid "Seek within the playing song"
 msgstr "Meklēt pašreizējā dziesmā"
 
-#: ../quodlibet/cli.py:112
+#: ../quodlibet/cli.py:114
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: ../quodlibet/cli.py:113
+#: ../quodlibet/cli.py:115
 msgid "Set or toggle the playback order"
 msgstr "Iestatīt vai pārslēgt atskaņošanas kārtību"
 
-#: ../quodlibet/cli.py:115
+#: ../quodlibet/cli.py:117
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Izslēgt, ieslēgt vai pārslēgt atkārtošanu"
 
-#: ../quodlibet/cli.py:116
+#: ../quodlibet/cli.py:118
 msgid "Set the volume"
 msgstr "Iestatīt skaļumu"
 
-#: ../quodlibet/cli.py:117
+#: ../quodlibet/cli.py:119
 msgid "Search your audio library"
 msgstr "Meklēt jūsu audio bibliotēkā"
 
-#: ../quodlibet/cli.py:117 ../quodlibet/cli.py:127 ../quodlibet/cli.py:131
-#: ../quodlibet/cli.py:133
+#: ../quodlibet/cli.py:119 ../quodlibet/cli.py:129 ../quodlibet/cli.py:133
+#: ../quodlibet/cli.py:135
 msgid "query"
 msgstr "vaicājums"
 
-#: ../quodlibet/cli.py:118
+#: ../quodlibet/cli.py:120
 msgid "Play a file"
 msgstr "Atskaņot failu"
 
-#: ../quodlibet/cli.py:118 ../quodlibet/cli.py:127 ../quodlibet/cli.py:133
-msgid "command|filename"
-msgstr "faila_nosaukums"
-
-#: ../quodlibet/cli.py:119
-msgid "Rate the playing song"
-msgstr "Novērtēt pašreiz atskaņoto dziesmu"
-
-#: ../quodlibet/cli.py:120
-msgid "Set the current browser"
-msgstr "Iestatīt pašreizējo pārlūku"
-
-#: ../quodlibet/cli.py:121
-msgid "Open a new browser"
-msgstr "Atvērt jaunu pārlūku"
-
-#: ../quodlibet/cli.py:122
-msgid "Show or hide the queue"
-msgstr "Rādīt vai slēpt rindu"
-
-#: ../quodlibet/cli.py:123
-msgid "Show or hide the main song list"
-msgstr "Rādīt vai slēpt galveno dziesmu sarakstu"
-
-#: ../quodlibet/cli.py:124
-msgid "Filter on a random value"
-msgstr "Filtrēt pēc nejaušas vērtības"
-
-#: ../quodlibet/cli.py:124
-msgid "command|tag"
-msgstr "tags"
-
-#: ../quodlibet/cli.py:125
-msgid "Filter on a tag value"
-msgstr "Filtrēt pēc taga vērtības"
-
-#: ../quodlibet/cli.py:125
-msgid "tag=value"
-msgstr "tags=vērtība"
-
-#: ../quodlibet/cli.py:126
-msgid "Enqueue a file or query"
-msgstr "Ierindot failu vai vaicājumu"
-
-#: ../quodlibet/cli.py:128
-msgid "Enqueue comma-separated files"
-msgstr ""
-
-#: ../quodlibet/cli.py:129 ../quodlibet/util/tags.py:131
+#: ../quodlibet/cli.py:120 ../quodlibet/cli.py:129 ../quodlibet/cli.py:135
+#, fuzzy
+msgctxt "command"
 msgid "filename"
 msgstr "faila nosaukums"
 
+#: ../quodlibet/cli.py:121
+msgid "Rate the playing song"
+msgstr "Novērtēt pašreiz atskaņoto dziesmu"
+
+#: ../quodlibet/cli.py:122
+msgid "Set the current browser"
+msgstr "Iestatīt pašreizējo pārlūku"
+
+#: ../quodlibet/cli.py:123
+msgid "Open a new browser"
+msgstr "Atvērt jaunu pārlūku"
+
+#: ../quodlibet/cli.py:124
+msgid "Show or hide the queue"
+msgstr "Rādīt vai slēpt rindu"
+
+#: ../quodlibet/cli.py:125
+msgid "Show or hide the main song list"
+msgstr "Rādīt vai slēpt galveno dziesmu sarakstu"
+
+#: ../quodlibet/cli.py:126
+msgid "Filter on a random value"
+msgstr "Filtrēt pēc nejaušas vērtības"
+
+#: ../quodlibet/cli.py:126
+#, fuzzy
+msgctxt "command"
+msgid "tag"
+msgstr "Tags"
+
+#: ../quodlibet/cli.py:127
+msgid "Filter on a tag value"
+msgstr "Filtrēt pēc taga vērtības"
+
+#: ../quodlibet/cli.py:127
+msgid "tag=value"
+msgstr "tags=vērtība"
+
+#: ../quodlibet/cli.py:128
+msgid "Enqueue a file or query"
+msgstr "Ierindot failu vai vaicājumu"
+
 #: ../quodlibet/cli.py:130
+msgid "Enqueue comma-separated files"
+msgstr ""
+
+#: ../quodlibet/cli.py:131 ../quodlibet/util/tags.py:131
+msgid "filename"
+msgstr "faila nosaukums"
+
+#: ../quodlibet/cli.py:132
 msgid "Print filenames of results of query to stdout"
 msgstr ""
 
-#: ../quodlibet/cli.py:132
+#: ../quodlibet/cli.py:134
 msgid "Unqueue a file or query"
 msgstr "Atrindot failu vai vaicājumu"
 
-#: ../quodlibet/cli.py:182
+#: ../quodlibet/cli.py:195
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "Nederīgs arguments priekš '%s'."
 
-#: ../quodlibet/cli.py:183 ../quodlibet/util/__init__.py:160
+#: ../quodlibet/cli.py:196 ../quodlibet/util/__init__.py:163
 #, python-format
 msgid "Try %s --help."
 msgstr "Mēģiniet %s --help."
 
-#: ../quodlibet/devices/_base.py:59
+#: ../quodlibet/devices/_base.py:63
 msgid "Unknown Device"
 msgstr "Nezināma ierīce"
 
@@ -1244,110 +1256,106 @@ msgstr "Neizdevās importēt dbus-python, kas ir nepieciešams ierīču atbalsta
 msgid "%r is not a supported device."
 msgstr "%r nav atbalstīta ierīce."
 
-#: ../quodlibet/devices/__init__.py:217 ../quodlibet/devices/__init__.py:429
+#: ../quodlibet/devices/__init__.py:229 ../quodlibet/devices/__init__.py:235
+#: ../quodlibet/devices/__init__.py:442 ../quodlibet/devices/__init__.py:448
 #, fuzzy, python-format
-msgid "%s: Could not find 'libudev'."
+msgid "Could not find '%s'."
 msgstr "%s: neizdevās atrast media-player-info."
 
-#: ../quodlibet/devices/__init__.py:223 ../quodlibet/devices/__init__.py:435
-#, fuzzy, python-format
-msgid "%s: Could not find %s."
-msgstr "%s: neizdevās atrast media-player-info."
-
-#: ../quodlibet/devices/__init__.py:582
+#: ../quodlibet/devices/__init__.py:595
 msgid "Initializing device backend."
 msgstr "Inicializē ierīces aizmuguri."
 
-#: ../quodlibet/devices/__init__.py:583
+#: ../quodlibet/devices/__init__.py:596
 #, python-format
 msgid "Trying '%s'"
 msgstr "Mēģina '%s'"
 
-#: ../quodlibet/devices/__init__.py:600
+#: ../quodlibet/devices/__init__.py:613
 msgid "Couldn't connect to a device backend."
 msgstr "Neizdevās pieslēgties ierīces aizmugurei."
 
-#: ../quodlibet/devices/__init__.py:602
+#: ../quodlibet/devices/__init__.py:615
 msgid "Device backend initialized."
 msgstr "Ierīces aizmugure inicializēta."
 
-#: ../quodlibet/devices/ipod.py:31
+#: ../quodlibet/devices/ipod.py:32
 msgid "Uninitialized iPod"
 msgstr "Neinicializēts iPod"
 
-#: ../quodlibet/devices/ipod.py:33
+#: ../quodlibet/devices/ipod.py:34
 msgid "Do you want to create an empty database on this iPod?"
 msgstr "Vai vēlaties izveidot tukšu datubāzi uz šī iPod?"
 
-#: ../quodlibet/devices/ipod.py:39
+#: ../quodlibet/devices/ipod.py:40
 msgid "_Create Database"
 msgstr ""
 
-#: ../quodlibet/devices/ipod.py:134
+#: ../quodlibet/devices/ipod.py:135
 msgid "_Volume Gain (dB):"
 msgstr "S_kaļuma pastiprinājums (dB):"
 
-#: ../quodlibet/devices/ipod.py:137 ../quodlibet/devices/storage.py:59
+#: ../quodlibet/devices/ipod.py:138 ../quodlibet/devices/storage.py:60
 msgid "Copy _album covers"
 msgstr "Kopēt _albumu vākus"
 
-#: ../quodlibet/devices/ipod.py:138
+#: ../quodlibet/devices/ipod.py:139
 msgid "Combine tags with _multiple values"
 msgstr "Ko_mbinēt tagus ar vairākām vērtībām"
 
 #. Column preferences
-#: ../quodlibet/devices/ipod.py:139 ../quodlibet/qltk/prefs.py:115
+#: ../quodlibet/devices/ipod.py:140 ../quodlibet/qltk/prefs.py:115
 msgid "Title includes _version"
 msgstr "Nosaukums iekļauj _versiju"
 
-#: ../quodlibet/devices/ipod.py:140 ../quodlibet/qltk/prefs.py:119
+#: ../quodlibet/devices/ipod.py:141 ../quodlibet/qltk/prefs.py:119
 msgid "Album includes _disc subtitle"
 msgstr "Albums iekļauj _diska apakšnosaukumu"
 
-#: ../quodlibet/devices/ipod.py:151
+#: ../quodlibet/devices/ipod.py:152
 msgid "Model:"
 msgstr "Modelis:"
 
-#: ../quodlibet/devices/ipod.py:153
+#: ../quodlibet/devices/ipod.py:154
 msgid "Capacity:"
 msgstr "Ietilpība:"
 
-#: ../quodlibet/devices/ipod.py:155
+#: ../quodlibet/devices/ipod.py:156
 msgid "Firmware:"
 msgstr "Programmatūra:"
 
-#: ../quodlibet/devices/ipod.py:204
+#: ../quodlibet/devices/ipod.py:205
 msgid "Removing orphaned iPod track"
 msgstr "Dzēš nevajadzīgu iPod celiņu"
 
-#: ../quodlibet/devices/ipod.py:308
+#: ../quodlibet/devices/ipod.py:309
 #, fuzzy
 msgid "Saving iPod database…"
 msgstr "Neizdevās saglabāt iPod datubāzi"
 
-#: ../quodlibet/devices/ipod.py:314
+#: ../quodlibet/devices/ipod.py:312
 msgid "Unable to save iPod database"
 msgstr "Neizdevās saglabāt iPod datubāzi"
 
-#: ../quodlibet/devices/ipod.py:456
+#: ../quodlibet/devices/ipod.py:454
 #, fuzzy
 msgid "Could not find libgpod, iPod support disabled."
 msgstr "Neizdevās importēt python-gpod, iPod atbalsts tiks atslēgts."
 
-#: ../quodlibet/devices/storage.py:55
+#: ../quodlibet/devices/storage.py:56
 #, fuzzy
 msgid "_Filename pattern:"
 msgstr "_Faila nosaukuma paraugs:"
 
-#: ../quodlibet/devices/storage.py:63
+#: ../quodlibet/devices/storage.py:64
 msgid "_Remove unused covers and directories"
 msgstr "_Dzēst nevajadzīgos vākus un mapes"
 
-#: ../quodlibet/ext/covers/lastfm.py:19
+#: ../quodlibet/ext/covers/lastfm.py:24
 msgid "Last.fm Cover Source"
 msgstr ""
 
-#: ../quodlibet/ext/covers/lastfm.py:20
+#: ../quodlibet/ext/covers/lastfm.py:25
 msgid "Downloads covers from Last.fm's cover art archive."
 msgstr ""
 
@@ -1385,7 +1393,7 @@ msgstr ""
 msgid "Romanize _Japanese text"
 msgstr ""
 
-#: ../quodlibet/ext/editing/kakasi.py:53
+#: ../quodlibet/ext/editing/kakasi.py:55
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
 msgstr ""
 
@@ -1659,7 +1667,7 @@ msgid "%d Hz"
 msgstr ""
 
 #: ../quodlibet/ext/events/equalizer.py:162
-#: ../quodlibet/ext/gstreamer/crossfeed.py:115
+#: ../quodlibet/ext/gstreamer/crossfeed.py:116
 #, fuzzy, python-format
 msgid "%.1f dB"
 msgstr "%d sekunde"
@@ -1748,20 +1756,20 @@ msgid ""
 "and library management are not supported."
 msgstr ""
 
-#: ../quodlibet/ext/events/mpdserver/__init__.py:73
+#: ../quodlibet/ext/events/mpdserver/__init__.py:75
 msgid "_Port:"
 msgstr ""
 
-#: ../quodlibet/ext/events/mpdserver/__init__.py:116
+#: ../quodlibet/ext/events/mpdserver/__init__.py:118
 msgid "Local _IP:"
 msgstr ""
 
-#: ../quodlibet/ext/events/mpdserver/__init__.py:142
+#: ../quodlibet/ext/events/mpdserver/__init__.py:144
 #, fuzzy
 msgid "Connection"
 msgstr "vieta"
 
-#: ../quodlibet/ext/events/mpdserver/__init__.py:144
+#: ../quodlibet/ext/events/mpdserver/__init__.py:146
 msgid "Tested Clients"
 msgstr ""
 
@@ -1783,9 +1791,9 @@ msgstr "Slēpt galveno logu"
 #: ../quodlibet/ext/events/mpris.py:53
 #: ../quodlibet/ext/events/themeswitcher.py:114
 #: ../quodlibet/ext/gstreamer/compressor.py:98
-#: ../quodlibet/ext/gstreamer/crossfeed.py:139
+#: ../quodlibet/ext/gstreamer/crossfeed.py:140
 #: ../quodlibet/ext/gstreamer/karaoke.py:98
-#: ../quodlibet/ext/gstreamer/pitch.py:82 ../quodlibet/qltk/prefs.py:644
+#: ../quodlibet/ext/gstreamer/pitch.py:89 ../quodlibet/qltk/prefs.py:642
 #, fuzzy
 msgid "Preferences"
 msgstr "Iestatījumi"
@@ -1799,7 +1807,7 @@ msgstr ""
 msgid "_Title:"
 msgstr "Nosaukums"
 
-#: ../quodlibet/ext/events/notify.py:96 ../quodlibet/ext/events/notify.py:126
+#: ../quodlibet/ext/events/notify.py:96 ../quodlibet/ext/events/notify.py:125
 msgid "Revert to default pattern"
 msgstr ""
 
@@ -1807,49 +1815,49 @@ msgstr ""
 msgid "_Body:"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:137
+#: ../quodlibet/ext/events/notify.py:135
 msgid "_Show notification"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:155
+#: ../quodlibet/ext/events/notify.py:153
 msgid "Show notifications"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:161
+#: ../quodlibet/ext/events/notify.py:159
 msgid "Only on <i>_manual</i> song changes"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:169
+#: ../quodlibet/ext/events/notify.py:167
 msgid "Only on <i>_automatic</i> song changes"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:177
+#: ../quodlibet/ext/events/notify.py:175
 msgid "On <i>a_ll</i> song changes"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:195
+#: ../quodlibet/ext/events/notify.py:193
 msgid "Only when the main window is not _focused"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:227
+#: ../quodlibet/ext/events/notify.py:225
 msgid "Connection Error"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:228 ../quodlibet/ext/events/notify.py:383
-#: ../quodlibet/ext/events/notify.py:425
+#: ../quodlibet/ext/events/notify.py:226 ../quodlibet/ext/events/notify.py:381
+#: ../quodlibet/ext/events/notify.py:423
 #, fuzzy
 msgid "Couldn't connect to notification daemon."
 msgstr "Neizdevās pieslēgties ierīces aizmugurei."
 
-#: ../quodlibet/ext/events/notify.py:242
+#: ../quodlibet/ext/events/notify.py:240
 msgid "Song Notifications"
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:243
+#: ../quodlibet/ext/events/notify.py:241
 msgid "Displays a notification when the song changes."
 msgstr ""
 
-#: ../quodlibet/ext/events/notify.py:407 ../quodlibet/qltk/unity.py:64
+#: ../quodlibet/ext/events/notify.py:405 ../quodlibet/qltk/unity.py:64
 msgid "Next"
 msgstr ""
 
@@ -2205,7 +2213,7 @@ msgid "Tooltip Display"
 msgstr "Rediģēt rādāmo"
 
 #: ../quodlibet/ext/events/trayicon.py:129
-#: ../quodlibet/ext/events/trayicon.py:439 ../quodlibet/qltk/info.py:161
+#: ../quodlibet/ext/events/trayicon.py:439 ../quodlibet/qltk/info.py:44
 msgid "Not playing"
 msgstr "Pašreiz neatskaņo"
 
@@ -2235,8 +2243,8 @@ msgstr "Apstāties pēc šīs dziesmas"
 msgid "_Browse Library"
 msgstr "Pārlūkot _bibliotēku"
 
-#: ../quodlibet/ext/events/trayicon.py:525 ../quodlibet/qltk/info.py:113
-#: ../quodlibet/qltk/quodlibetwindow.py:782 ../quodlibet/qltk/songsmenu.py:360
+#: ../quodlibet/ext/events/trayicon.py:525
+#: ../quodlibet/qltk/quodlibetwindow.py:784 ../quodlibet/qltk/songsmenu.py:394
 msgid "Edit _Tags"
 msgstr "Rediģēt _tagus"
 
@@ -2254,15 +2262,15 @@ msgstr ""
 msgid "_Lyrics"
 msgstr "Dziesmas vārdi"
 
-#: ../quodlibet/ext/events/write_cover.py:29
+#: ../quodlibet/ext/events/write_cover.py:30
 msgid "Picture Saver"
 msgstr ""
 
-#: ../quodlibet/ext/events/write_cover.py:30
+#: ../quodlibet/ext/events/write_cover.py:31
 msgid "Saves the cover image of the current song to a file."
 msgstr ""
 
-#: ../quodlibet/ext/events/write_cover.py:64
+#: ../quodlibet/ext/events/write_cover.py:65
 #, fuzzy
 msgid "File:"
 msgstr "Faili"
@@ -2362,11 +2370,11 @@ msgstr ""
 msgid "Custom settings"
 msgstr "_Pielāgots"
 
-#: ../quodlibet/ext/gstreamer/crossfeed.py:155
+#: ../quodlibet/ext/gstreamer/crossfeed.py:156
 msgid "Crossfeed"
 msgstr ""
 
-#: ../quodlibet/ext/gstreamer/crossfeed.py:156
+#: ../quodlibet/ext/gstreamer/crossfeed.py:157
 msgid ""
 "Mixes the left and right channel in a way that simulates a speaker setup "
 "while using headphones, or to adjust for early Stereo recordings."
@@ -2414,24 +2422,24 @@ msgstr ""
 msgid "Downmixes audio channels to mono."
 msgstr ""
 
-#: ../quodlibet/ext/gstreamer/pitch.py:19
+#: ../quodlibet/ext/gstreamer/pitch.py:26
 msgid "R_ate:"
 msgstr ""
 
-#: ../quodlibet/ext/gstreamer/pitch.py:20
+#: ../quodlibet/ext/gstreamer/pitch.py:27
 msgid "_Tempo:"
 msgstr ""
 
-#: ../quodlibet/ext/gstreamer/pitch.py:21
+#: ../quodlibet/ext/gstreamer/pitch.py:28
 msgid "_Pitch:"
 msgstr ""
 
-#: ../quodlibet/ext/gstreamer/pitch.py:88
+#: ../quodlibet/ext/gstreamer/pitch.py:95
 #, fuzzy
 msgid "Audio Pitch / Speed"
 msgstr "Audio barotnes"
 
-#: ../quodlibet/ext/gstreamer/pitch.py:89
+#: ../quodlibet/ext/gstreamer/pitch.py:96
 #, fuzzy
 msgid "Controls the pitch of an audio stream."
 msgstr "Ievadiet audio barotnes adresi:"
@@ -2536,53 +2544,53 @@ msgstr ""
 msgid "Number of times to play each song:"
 msgstr ""
 
-#: ../quodlibet/ext/_shared/squeezebox/base.py:75
+#: ../quodlibet/ext/_shared/squeezebox/base.py:76
 #, python-format
 msgid "Squeezebox OK. Using the only player (%s)."
 msgstr ""
 
-#: ../quodlibet/ext/_shared/squeezebox/base.py:84
+#: ../quodlibet/ext/_shared/squeezebox/base.py:85
 #, fuzzy, python-format
 msgid "Couldn't connect to %s"
 msgstr "Neizdevās pieslēgties ierīces aizmugurei."
 
-#. Server settings Frame
-#: ../quodlibet/ext/_shared/squeezebox/base.py:100
-msgid "<b>Squeezebox Server</b>"
-msgstr ""
-
-#: ../quodlibet/ext/_shared/squeezebox/base.py:116
+#: ../quodlibet/ext/_shared/squeezebox/base.py:109
 msgid "Hostname:"
 msgstr ""
 
-#: ../quodlibet/ext/_shared/squeezebox/base.py:122
+#: ../quodlibet/ext/_shared/squeezebox/base.py:115
 msgid "Port:"
 msgstr ""
 
-#: ../quodlibet/ext/_shared/squeezebox/base.py:127
+#: ../quodlibet/ext/_shared/squeezebox/base.py:120
 #, fuzzy
 msgid "Username:"
 msgstr "Pā_rdēvēt"
 
-#: ../quodlibet/ext/_shared/squeezebox/base.py:132
+#: ../quodlibet/ext/_shared/squeezebox/base.py:125
 msgid "Password:"
 msgstr ""
 
-#: ../quodlibet/ext/_shared/squeezebox/base.py:136
+#: ../quodlibet/ext/_shared/squeezebox/base.py:129
 msgid "Library directory the server connects to."
 msgstr ""
 
-#: ../quodlibet/ext/_shared/squeezebox/base.py:138
+#: ../quodlibet/ext/_shared/squeezebox/base.py:131
 #, fuzzy
 msgid "Library path:"
 msgstr "Bibliotēka"
 
 #. Add verify button
-#: ../quodlibet/ext/_shared/squeezebox/base.py:147
+#: ../quodlibet/ext/_shared/squeezebox/base.py:140
 msgid "_Verify settings"
 msgstr ""
 
-#: ../quodlibet/ext/_shared/squeezebox/base.py:154
+#. Server settings Frame
+#: ../quodlibet/ext/_shared/squeezebox/base.py:146
+msgid "Squeezebox Server"
+msgstr ""
+
+#: ../quodlibet/ext/_shared/squeezebox/base.py:149
 msgid "Debug"
 msgstr ""
 
@@ -2610,79 +2618,80 @@ msgid ""
 "Please choose the player"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:227
+#: ../quodlibet/ext/songsmenu/albumart.py:226
 #, fuzzy
 msgid "Fit image to _window"
 msgstr "Slēpt galveno logu"
 
 #. Both labels
-#: ../quodlibet/ext/songsmenu/albumart.py:236
+#: ../quodlibet/ext/songsmenu/albumart.py:235
 msgid "_Program:"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:241
+#: ../quodlibet/ext/songsmenu/albumart.py:240
 msgid "_Edit image after saving"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:243
+#: ../quodlibet/ext/songsmenu/albumart.py:242
 #, fuzzy
 msgid "File_name:"
 msgstr "Faila nosaukums"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:356
+#: ../quodlibet/ext/songsmenu/albumart.py:354
 msgid "Saving failed"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:357
+#: ../quodlibet/ext/songsmenu/albumart.py:355
 #, fuzzy, python-format
 msgid "Unable to save \"%s\"."
 msgstr "Neizdevās saglabāt dziesmu"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:455
+#: ../quodlibet/ext/songsmenu/albumart.py:453
 #, python-format
 msgid "[albumart] HTTP Error: %s"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:512
+#: ../quodlibet/ext/songsmenu/albumart.py:510
 #, fuzzy
 msgid "Album Art Downloader"
 msgstr "Albumu saraksts"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:565
+#: ../quodlibet/ext/songsmenu/albumart.py:563
 #, python-format
 msgid "from %(source)s"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:568
+#: ../quodlibet/ext/songsmenu/albumart.py:566
 #, python-format
 msgid "Resolution: %s"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:571
+#: ../quodlibet/ext/songsmenu/albumart.py:569
 #, fuzzy, python-format
 msgid "Size: %s"
 msgstr "Izmērs"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:645
+#: ../quodlibet/ext/songsmenu/albumart.py:643
+#: ../quodlibet/ext/songsmenu/brainz.py:356
 #, fuzzy
 msgid "Searching…"
 msgstr "Meklēt"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:708
+#: ../quodlibet/ext/songsmenu/albumart.py:705
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:40
 msgid "Done"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:822
+#: ../quodlibet/ext/songsmenu/albumart.py:819
 #, fuzzy
 msgid "Download Album Art"
 msgstr "Albumu saraksts"
 
-#: ../quodlibet/ext/songsmenu/albumart.py:823
+#: ../quodlibet/ext/songsmenu/albumart.py:820
 msgid "Downloads album covers from various websites."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/albumart.py:832
+#: ../quodlibet/ext/songsmenu/albumart.py:829
 msgid "Sources"
 msgstr ""
 
@@ -2720,7 +2729,7 @@ msgid "Filename"
 msgstr "Faila nosaukums"
 
 #: ../quodlibet/ext/songsmenu/brainz.py:123
-#: ../quodlibet/ext/songsmenu/replaygain.py:391
+#: ../quodlibet/ext/songsmenu/replaygain.py:392
 #: ../quodlibet/qltk/tracknumbers.py:83
 msgid "Track"
 msgstr "Celiņš"
@@ -2746,29 +2755,25 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:352
-msgid "<b>Please enter a query.</b>"
+#: ../quodlibet/ext/songsmenu/brainz.py:353
+msgid "Please enter a query."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:355
-msgid "<i>Searching…</i>"
-msgstr ""
-
-#: ../quodlibet/ext/songsmenu/brainz.py:365
+#: ../quodlibet/ext/songsmenu/brainz.py:366
 msgid "Error encountered. Please retry."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:371
-#: ../quodlibet/ext/songsmenu/brainz.py:385
-msgid "<i>Loading result…</i>"
+#: ../quodlibet/ext/songsmenu/brainz.py:372
+#: ../quodlibet/ext/songsmenu/brainz.py:386
+msgid "Loading result…"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:374
+#: ../quodlibet/ext/songsmenu/brainz.py:375
 #, fuzzy
 msgid "No results found."
 msgstr "Nav atrasts neviens spraudnis."
 
-#: ../quodlibet/ext/songsmenu/brainz.py:394
+#: ../quodlibet/ext/songsmenu/brainz.py:395
 #, fuzzy, python-format
 msgid "Found %d result."
 msgid_plural "Found %d results."
@@ -2776,60 +2781,60 @@ msgstr[0] "un vēl %d..."
 msgstr[1] "un vēl %d..."
 msgstr[2] "un vēl %d..."
 
-#: ../quodlibet/ext/songsmenu/brainz.py:415
+#: ../quodlibet/ext/songsmenu/brainz.py:416
 #, fuzzy
 msgid "MusicBrainz lookup"
 msgstr "MusicBrainz albuma tips"
 
-#: ../quodlibet/ext/songsmenu/brainz.py:440
+#: ../quodlibet/ext/songsmenu/brainz.py:441
 #, fuzzy
 msgid "_Query:"
 msgstr "vaicājums"
 
-#: ../quodlibet/ext/songsmenu/brainz.py:443
+#: ../quodlibet/ext/songsmenu/brainz.py:444
 #, fuzzy
 msgid "S_earch"
 msgstr "Meklēt"
 
-#: ../quodlibet/ext/songsmenu/brainz.py:456
+#: ../quodlibet/ext/songsmenu/brainz.py:457
 msgid "Results <i>(drag to reorder)</i>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:484
+#: ../quodlibet/ext/songsmenu/brainz.py:485
 #, fuzzy
 msgid "MusicBrainz Lookup"
 msgstr "MusicBrainz albuma tips"
 
-#: ../quodlibet/ext/songsmenu/brainz.py:486
+#: ../quodlibet/ext/songsmenu/brainz.py:487
 msgid "Re-tags an album based on a MusicBrainz search."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:511
+#: ../quodlibet/ext/songsmenu/brainz.py:512
 #, fuzzy
 msgid "Split _disc from album"
 msgstr "Izdalīt disku no _albuma"
 
-#: ../quodlibet/ext/songsmenu/brainz.py:512
+#: ../quodlibet/ext/songsmenu/brainz.py:513
 msgid "Split _featured performers from track"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:513
+#: ../quodlibet/ext/songsmenu/brainz.py:514
 msgid "Only use year for \"date\" tag"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:514
+#: ../quodlibet/ext/songsmenu/brainz.py:515
 msgid "Write \"_albumartist\" when needed"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:515
+#: ../quodlibet/ext/songsmenu/brainz.py:516
 msgid "Write sort tags for artist names"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:516
+#: ../quodlibet/ext/songsmenu/brainz.py:517
 msgid "Write _standard MusicBrainz tags"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/brainz.py:518
+#: ../quodlibet/ext/songsmenu/brainz.py:519
 msgid "Write _labelid tag (fixes multi-disc albums)"
 msgstr ""
 
@@ -2851,7 +2856,7 @@ msgstr "Neizdevās izveidot mapi"
 msgid "No program available to open folders."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/cddb.py:142 ../quodlibet/qltk/information.py:438
+#: ../quodlibet/ext/songsmenu/cddb.py:142 ../quodlibet/qltk/information.py:439
 msgid "Track List"
 msgstr "Celiņu saraksts"
 
@@ -2903,14 +2908,10 @@ msgid "Interactive Python console."
 msgstr ""
 
 #: ../quodlibet/ext/songsmenu/console.py:71
-#, python-format
-msgid ""
-"You can access the following objects by default:\\n  '%s' (SongWrapper "
-"objects)\\n  '%s' (Song dictionaries)\\n  '%s' (Filename list)\\n  "
-"'%s' (Application instance)"
+msgid "You can access the following objects by default:"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/console.py:78
+#: ../quodlibet/ext/songsmenu/console.py:79
 msgid "Your current working directory is:"
 msgstr ""
 
@@ -3077,20 +3078,20 @@ msgstr ""
 msgid "Matching options"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/embedded.py:18
+#: ../quodlibet/ext/songsmenu/embedded.py:19
 msgid "Edit Embedded Images"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/embedded.py:19
+#: ../quodlibet/ext/songsmenu/embedded.py:20
 msgid "Removes or replaces embedded images."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/embedded.py:63
+#: ../quodlibet/ext/songsmenu/embedded.py:64
 #, fuzzy
 msgid "_Remove all images"
 msgstr "_Vērtējums"
 
-#: ../quodlibet/ext/songsmenu/embedded.py:67
+#: ../quodlibet/ext/songsmenu/embedded.py:68
 msgid "_Embed current image"
 msgstr ""
 
@@ -3231,55 +3232,42 @@ msgstr ""
 msgid "_Details"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:85
+#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:82
 msgid "_Submit"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:115
+#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:112
 msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:118
-#, python-format
-msgid ""
-"\n"
-"\n"
-"<i>Fingerprints:</i> %d/%d"
+#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:115
+msgid "Fingerprints:"
+msgstr ""
+
+#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:117
+msgid "Songs with MBIDs:"
 msgstr ""
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:119
-#, python-format
-msgid ""
-"\n"
-"<i>Songs with MBIDs:</i> %d/%d"
+msgid "Songs with sufficient tags:"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:120
-#, python-format
-msgid ""
-"\n"
-"<i>Songs with sufficient tags:</i> %d/%d"
-msgstr ""
-
-#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:122
-#, python-format
-msgid ""
-"\n"
-"<i>Songs to submit:</i> %d/%d"
+#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:121
+msgid "Songs to submit:"
 msgstr ""
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:159
 #, python-format
-msgid "Done. %d/%d songs to submit."
+msgid "Done. %(to-send)d/%(all)d songs to submit."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:174
+#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:175
 msgid "Submitting fingerprints:"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:182
+#: ../quodlibet/ext/songsmenu/fingerprint/submit.py:183
 msgid "Submitting…"
 msgstr ""
 
@@ -3450,9 +3438,9 @@ msgid "Checks for file changes and reloads / removes the songs if needed."
 msgstr ""
 
 #: ../quodlibet/ext/songsmenu/refresh.py:26
-#: ../quodlibet/qltk/exfalsowindow.py:204 ../quodlibet/qltk/information.py:521
-#: ../quodlibet/qltk/maskedbox.py:65 ../quodlibet/util/collection.py:534
-#: ../quodlibet/util/collection.py:561
+#: ../quodlibet/qltk/exfalsowindow.py:204 ../quodlibet/qltk/information.py:524
+#: ../quodlibet/qltk/maskedbox.py:65 ../quodlibet/util/collection.py:544
+#: ../quodlibet/util/collection.py:571
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -3465,60 +3453,61 @@ msgstr[2] "%d dziesmu"
 msgid "Refresh songs"
 msgstr "_Atsvaidzināt bibliotēku"
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:350
+#: ../quodlibet/ext/songsmenu/replaygain.py:351
 msgid "ReplayGain Analyzer"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:405
+#: ../quodlibet/ext/songsmenu/replaygain.py:406
 msgid "Progress"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:420
+#: ../quodlibet/ext/songsmenu/replaygain.py:421
 msgid "Gain"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:435
+#: ../quodlibet/ext/songsmenu/replaygain.py:436
 msgid "Peak"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:449
+#: ../quodlibet/ext/songsmenu/replaygain.py:451
 #, python-format
-msgid "There is <b>%d</b> album to update (of %d)"
-msgid_plural "There are <b>%d</b> albums to update (of %d)"
+msgid "There is <b>%(to-process)d</b> album to update (of %(all)d)"
+msgid_plural "There are <b>%(to-process)d</b> albums to update (of %(all)d)"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:561
+#: ../quodlibet/ext/songsmenu/replaygain.py:566
 msgid "Replay Gain"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:562
+#: ../quodlibet/ext/songsmenu/replaygain.py:567
 msgid ""
 "Analyzes and updates ReplayGain information, using GStreamer. Results are "
 "grouped by album."
 msgstr ""
 
-#. Server settings Frame
-#: ../quodlibet/ext/songsmenu/replaygain.py:584
-msgid "<b>Existing Tags</b>"
+#: ../quodlibet/ext/songsmenu/replaygain.py:602
+msgid "always"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:605
-msgid "<b>always</b>"
-msgstr ""
-
-#: ../quodlibet/ext/songsmenu/replaygain.py:606
+#: ../quodlibet/ext/songsmenu/replaygain.py:603
 msgid "if <b>any</b> RG tags are missing"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:608
+#: ../quodlibet/ext/songsmenu/replaygain.py:605
 msgid "if <b>album</b> RG tags are missing"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/replaygain.py:625
+#: ../quodlibet/ext/songsmenu/replaygain.py:622
 msgid "_Process albums:"
 msgstr ""
+
+#. Server settings Frame
+#: ../quodlibet/ext/songsmenu/replaygain.py:634
+#, fuzzy
+msgid "Existing Tags"
+msgstr "Rediģēt tagus"
 
 #: ../quodlibet/ext/songsmenu/splitting.py:14
 #, fuzzy
@@ -3591,51 +3580,51 @@ msgid ""
 "Opens a browser window with Wikipedia article on the playing song album."
 msgstr ""
 
-#: ../quodlibet/library/libraries.py:661 ../quodlibet/library/libraries.py:671
-#: ../quodlibet/library/libraries.py:727 ../quodlibet/qltk/information.py:249
-#: ../quodlibet/qltk/prefs.py:595 ../quodlibet/util/library.py:77
+#: ../quodlibet/library/libraries.py:657 ../quodlibet/library/libraries.py:667
+#: ../quodlibet/library/libraries.py:723 ../quodlibet/qltk/information.py:250
+#: ../quodlibet/qltk/prefs.py:593 ../quodlibet/util/library.py:77
 msgid "Library"
 msgstr "Bibliotēka"
 
-#: ../quodlibet/library/libraries.py:661
+#: ../quodlibet/library/libraries.py:657
 msgid "Checking mount points"
 msgstr "Pārbauda montēšanas punktus"
 
-#: ../quodlibet/library/libraries.py:671
+#: ../quodlibet/library/libraries.py:667
 msgid "Scanning library"
 msgstr "Skenē bibliotēku"
 
-#: ../quodlibet/library/libraries.py:726
+#: ../quodlibet/library/libraries.py:722
 #, python-format
 msgid "Scanning %s"
 msgstr "Skenē %s"
 
-#: ../quodlibet/player/gstbe/player.py:90
+#: ../quodlibet/player/gstbe/player.py:91
 msgid "Stream"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:90
+#: ../quodlibet/player/gstbe/player.py:91
 msgid "Buffering"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:269
+#: ../quodlibet/player/gstbe/player.py:274
 msgid "Could not create GStreamer pipeline"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:463
+#: ../quodlibet/player/gstbe/player.py:468
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:464
+#: ../quodlibet/player/gstbe/player.py:469
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:789
+#: ../quodlibet/player/gstbe/player.py:811
 msgid "Unable to open input files"
 msgstr "Neizdevās atvērt ievades failus"
 
-#: ../quodlibet/player/gstbe/player.py:790
+#: ../quodlibet/player/gstbe/player.py:812
 msgid ""
 "GStreamer has no element to handle reading files. Check your GStreamer "
 "installation settings."
@@ -3713,26 +3702,26 @@ msgstr ""
 "Audio ierīce %r netika atrasta. Pārbaudiet jūsu Xine iestatījumus failā ~/."
 "quodlibet/config."
 
-#: ../quodlibet/plugins/__init__.py:58
+#: ../quodlibet/plugins/__init__.py:59
 #, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 msgstr ""
 
-#: ../quodlibet/plugins/__init__.py:67
+#: ../quodlibet/plugins/__init__.py:68
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr ""
 
-#: ../quodlibet/plugins/playlist.py:28
+#: ../quodlibet/plugins/playlist.py:26
 #, python-format
-msgid "Run the plugin \"%s\" on %d playlist?"
-msgid_plural "Run the plugin \"%s\" on %d playlists?"
+msgid "Run the plugin \"%(name)s\" on %(count)d playlist?"
+msgid_plural "Run the plugin \"%(name)s\" on %(count)d playlists?"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: ../quodlibet/plugins/playlist.py:38 ../quodlibet/qltk/songsmenu.py:42
+#: ../quodlibet/plugins/playlist.py:36 ../quodlibet/qltk/songsmenu.py:42
 #: ../quodlibet/qltk/songsmenu.py:71
 #, fuzzy
 msgid "_Run Plugin"
@@ -3762,7 +3751,7 @@ msgid "Time"
 msgstr "Laiks"
 
 #: ../quodlibet/qltk/bookmarks.py:85 ../quodlibet/qltk/bookmarks.py:120
-#: ../quodlibet/qltk/quodlibetwindow.py:658
+#: ../quodlibet/qltk/quodlibetwindow.py:659
 msgid "Bookmark Name"
 msgstr "Grāmatzīmes nosaukums"
 
@@ -3770,7 +3759,7 @@ msgstr "Grāmatzīmes nosaukums"
 msgid "MM:SS"
 msgstr "MM:SS"
 
-#: ../quodlibet/qltk/bookmarks.py:203 ../quodlibet/qltk/information.py:76
+#: ../quodlibet/qltk/bookmarks.py:203 ../quodlibet/qltk/information.py:77
 msgid "Bookmarks"
 msgstr "Grāmatzīmes"
 
@@ -3828,8 +3817,8 @@ msgstr ""
 "40 dziesmas, ko esi atskaņojis visbiežāk (var tikt atlasītas vairāk nekā 40, "
 "ja ir 'neizšķirti' gadījumi)"
 
-#: ../quodlibet/qltk/browser.py:270 ../quodlibet/qltk/notif.py:286
-#: ../quodlibet/util/__init__.py:362
+#: ../quodlibet/qltk/browser.py:270 ../quodlibet/qltk/notif.py:291
+#: ../quodlibet/util/__init__.py:365
 msgid "No time information"
 msgstr "Nav ilguma informācijas"
 
@@ -3868,17 +3857,17 @@ msgstr "_Celiņu galvenes"
 msgid "_Album Mode"
 msgstr "_Albumu galvenes"
 
-#: ../quodlibet/qltk/data_editors.py:115
+#: ../quodlibet/qltk/data_editors.py:113
 #, python-format
 msgid "New %s"
 msgstr ""
 
-#: ../quodlibet/qltk/data_editors.py:211
+#: ../quodlibet/qltk/data_editors.py:209
 #, fuzzy
 msgid "(unknown)"
 msgstr "Nezināms"
 
-#: ../quodlibet/qltk/data_editors.py:351
+#: ../quodlibet/qltk/data_editors.py:349
 #, fuzzy
 msgid "Enter new value"
 msgstr "Filtrēt pēc taga vērtības"
@@ -3891,11 +3880,11 @@ msgstr "Gadījās kļūda"
 #, fuzzy, python-format
 msgid ""
 "An exception has occured in Quod Libet. A dump file has been saved to <b >"
-"%s</b> that will help us debug the crash. Please file a new issue at http://"
-"code.google.com/p/quodlibet/issues/list and attach this file or include its "
-"contents. This file may contain some identifying information about you or "
-"your system, such as a list of recent files played. If this is unacceptable, "
-"send <b>%s</b> instead with a description of what you were doing."
+"%(dump-path)s</b> that will help us debug the crash. Please file a new issue "
+"at %(new-issue-url)sand attach this file or include its contents. This file "
+"may contain some identifying information about you or your system, such as a "
+"list of recent files played. If this is unacceptable, send <b>"
+"%(mini-dump-path)s</b> instead with a description of what you were doing."
 msgstr ""
 "Quod Libet nonāca izņēmumsituācijā. Dump fails, kas mums palīdzēs atkļūdot "
 "avāriju, tika saglabāts <b>%s</b>. Lūdzu, aizpildiet jaunu problēmas "
@@ -3908,7 +3897,7 @@ msgstr ""
 "Quod Libet tagad var būt nestabils. Vēlams to aizvērt un pārstartēt. Jūsu "
 "bibliotēka tiks saglabāta."
 
-#: ../quodlibet/qltk/debugwindow.py:94
+#: ../quodlibet/qltk/debugwindow.py:101
 msgid ""
 "Quod Libet may now be unstable. Closing it and restarting is recommended. "
 "Your library will be saved."
@@ -4030,7 +4019,7 @@ msgstr ""
 "Neizdevās saglabāt <b>%s</b>. Fails var būt tikai lasāms, bojāts vai arī "
 "jums nav atļauju to rediģēt."
 
-#: ../quodlibet/qltk/_editutils.py:140
+#: ../quodlibet/qltk/_editutils.py:143
 #, fuzzy
 msgid "_More options…"
 msgstr "_Vairāk opciju..."
@@ -4105,25 +4094,28 @@ msgstr "ql-remove"
 msgid "Edit Tags"
 msgstr "Rediģēt tagus"
 
-#: ../quodlibet/qltk/edittags.py:488
+#: ../quodlibet/qltk/edittags.py:482
 msgid "Show _programmatic tags"
 msgstr "Rādīt programmatūras _tagus"
 
-#: ../quodlibet/qltk/edittags.py:489
+#: ../quodlibet/qltk/edittags.py:483
 msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
 msgstr ""
 
-#: ../quodlibet/qltk/edittags.py:671
+#: ../quodlibet/qltk/edittags.py:665
 msgid "Unable to add tag"
 msgstr "Neizdevās pievienot tagu"
 
-#: ../quodlibet/qltk/edittags.py:672
+#: ../quodlibet/qltk/edittags.py:666
+#, fuzzy, python-format
+msgid "Unable to add <b>%s</b>"
+msgstr "Neizdevās pievienot dziesmu"
+
+#: ../quodlibet/qltk/edittags.py:668
 #, fuzzy, python-format
 msgid ""
-"Unable to add <b>%s</b>\n"
-"\n"
 "The files currently selected do not support multiple values for <b>%s</b>."
 msgstr ""
 "Neizdevās pievienot <b>%s</b>\n"
@@ -4131,13 +4123,13 @@ msgstr ""
 "Pašlaik izvēlētie faili neatbalsta vairākas vērtības."
 
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:698 ../quodlibet/qltk/edittags.py:850
-#: ../quodlibet/qltk/tagsfrompath.py:197 ../quodlibet/util/__init__.py:466
+#: ../quodlibet/qltk/edittags.py:694 ../quodlibet/qltk/edittags.py:848
+#: ../quodlibet/qltk/tagsfrompath.py:197 ../quodlibet/util/__init__.py:469
 #: ../quodlibet/util/tags.py:211
 msgid "Invalid tag"
 msgstr "Nederīgs tags"
 
-#: ../quodlibet/qltk/edittags.py:699 ../quodlibet/qltk/edittags.py:851
+#: ../quodlibet/qltk/edittags.py:695 ../quodlibet/qltk/edittags.py:849
 #: ../quodlibet/qltk/tagsfrompath.py:198
 #, python-format
 msgid ""
@@ -4149,11 +4141,11 @@ msgstr ""
 "\n"
 "Pašlaik izvēlētie faili neatbalsta šī taga rediģēšanu."
 
-#: ../quodlibet/qltk/edittags.py:829 ../quodlibet/qltk/edittags.py:864
+#: ../quodlibet/qltk/edittags.py:826 ../quodlibet/qltk/edittags.py:862
 msgid "Invalid value"
 msgstr "Nederīga vērtība"
 
-#: ../quodlibet/qltk/edittags.py:830 ../quodlibet/qltk/edittags.py:865
+#: ../quodlibet/qltk/edittags.py:827 ../quodlibet/qltk/edittags.py:863
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -4164,8 +4156,8 @@ msgstr ""
 "\n"
 "%(error)s"
 
-#: ../quodlibet/qltk/exfalsowindow.py:84
-#: ../quodlibet/qltk/quodlibetwindow.py:777 ../quodlibet/qltk/songsmenu.py:279
+#: ../quodlibet/qltk/exfalsowindow.py:82
+#: ../quodlibet/qltk/quodlibetwindow.py:779 ../quodlibet/qltk/songsmenu.py:298
 msgid "_Plugins"
 msgstr "S_praudņi"
 
@@ -4173,16 +4165,16 @@ msgstr "S_praudņi"
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso iestatījumi"
 
-#: ../quodlibet/qltk/exfalsowindow.py:251 ../quodlibet/qltk/prefs.py:554
+#: ../quodlibet/qltk/exfalsowindow.py:251 ../quodlibet/qltk/prefs.py:552
 msgid "Split _on:"
 msgstr "Sadalīt _pie:"
 
-#: ../quodlibet/qltk/exfalsowindow.py:257 ../quodlibet/qltk/prefs.py:569
+#: ../quodlibet/qltk/exfalsowindow.py:257 ../quodlibet/qltk/prefs.py:567
 msgid "Tag Editing"
 msgstr "Tagu rediģēšana"
 
 #: ../quodlibet/qltk/exfalsowindow.py:259 ../quodlibet/qltk/pluginwin.py:66
-#: ../quodlibet/qltk/prefs.py:653
+#: ../quodlibet/qltk/prefs.py:661
 msgid "_Close"
 msgstr ""
 
@@ -4216,71 +4208,66 @@ msgid "Unable to delete folder"
 msgstr "Neizdevās izdzēst mapi"
 
 #. Translators: As in "by Artist Name"
-#: ../quodlibet/qltk/info.py:36
+#: ../quodlibet/qltk/info.py:39
 #, python-format
 msgid "by %s"
 msgstr "no %s"
 
-#: ../quodlibet/qltk/info.py:37 ../quodlibet/qltk/information.py:117
-#: ../quodlibet/qltk/information.py:421
+#: ../quodlibet/qltk/info.py:40 ../quodlibet/qltk/information.py:118
+#: ../quodlibet/qltk/information.py:422
 #, python-format
 msgid "Disc %s"
 msgstr "%s. disks"
 
-#: ../quodlibet/qltk/info.py:38 ../quodlibet/qltk/information.py:122
+#: ../quodlibet/qltk/info.py:41 ../quodlibet/qltk/information.py:123
 #, python-format
 msgid "Track %s"
 msgstr "%s. celiņš"
 
-#: ../quodlibet/qltk/info.py:87 ../quodlibet/qltk/songsmenu.py:310
-#, fuzzy
-msgid "Play_lists"
-msgstr "Repertuāri"
-
-#: ../quodlibet/qltk/info.py:105
+#: ../quodlibet/qltk/info.py:104
 #, fuzzy
 msgid "_Edit Display…"
 msgstr "Rediģēt rādāmo"
 
-#: ../quodlibet/qltk/information.py:53
+#: ../quodlibet/qltk/information.py:54
 msgid "No songs are selected."
 msgstr "Nav izvēlēta neviena dziesma."
 
-#: ../quodlibet/qltk/information.py:54
+#: ../quodlibet/qltk/information.py:55
 msgid "No Songs"
 msgstr "Nav dziesmu"
 
-#: ../quodlibet/qltk/information.py:68 ../quodlibet/qltk/information.py:295
-#: ../quodlibet/qltk/information.py:445 ../quodlibet/qltk/information.py:509
+#: ../quodlibet/qltk/information.py:69 ../quodlibet/qltk/information.py:296
+#: ../quodlibet/qltk/information.py:446 ../quodlibet/qltk/information.py:512
 msgid "Information"
 msgstr "Informācija"
 
-#: ../quodlibet/qltk/information.py:72
+#: ../quodlibet/qltk/information.py:73
 msgid "Lyrics"
 msgstr "Dziesmas vārdi"
 
-#: ../quodlibet/qltk/information.py:156 ../quodlibet/qltk/information.py:390
+#: ../quodlibet/qltk/information.py:157 ../quodlibet/qltk/information.py:391
 #: ../quodlibet/util/tags.py:62
 msgid "artist"
 msgstr "mākslinieks"
 
-#: ../quodlibet/qltk/information.py:158 ../quodlibet/qltk/information.py:392
-#: ../quodlibet/qltk/information.py:541 ../quodlibet/util/tags.py:62
+#: ../quodlibet/qltk/information.py:159 ../quodlibet/qltk/information.py:393
+#: ../quodlibet/qltk/information.py:544 ../quodlibet/util/tags.py:62
 msgid "artists"
 msgstr "mākslinieki"
 
 #. for backwards compat
-#: ../quodlibet/qltk/information.py:201 ../quodlibet/qltk/information.py:400
+#: ../quodlibet/qltk/information.py:202 ../quodlibet/qltk/information.py:401
 #: ../quodlibet/util/tags.py:71 ../quodlibet/util/tags.py:99
 msgid "performers"
 msgstr "izpildītāji"
 
-#: ../quodlibet/qltk/information.py:211 ../quodlibet/qltk/information.py:226
+#: ../quodlibet/qltk/information.py:212 ../quodlibet/qltk/information.py:227
 #: ../quodlibet/qltk/songlistcolumns.py:166
 msgid "Never"
 msgstr "Nekad"
 
-#: ../quodlibet/qltk/information.py:213
+#: ../quodlibet/qltk/information.py:214
 #, fuzzy, python-format
 msgid "%(n)d time"
 msgid_plural "%(n)d times"
@@ -4288,48 +4275,48 @@ msgstr[0] "%d reizi"
 msgstr[1] "%d reizes"
 msgstr[2] "%d reižu"
 
-#: ../quodlibet/qltk/information.py:234 ../quodlibet/util/tags.py:123
+#: ../quodlibet/qltk/information.py:235 ../quodlibet/util/tags.py:123
 msgid "added"
 msgstr "pievienots"
 
-#: ../quodlibet/qltk/information.py:235 ../quodlibet/util/tags.py:124
+#: ../quodlibet/qltk/information.py:236 ../quodlibet/util/tags.py:124
 msgid "last played"
 msgstr "Pēdējo reizi atskaņots"
 
-#: ../quodlibet/qltk/information.py:236 ../quodlibet/util/tags.py:134
+#: ../quodlibet/qltk/information.py:237 ../quodlibet/util/tags.py:134
 msgid "plays"
 msgstr "atskaņojumi"
 
-#: ../quodlibet/qltk/information.py:237 ../quodlibet/util/tags.py:135
+#: ../quodlibet/qltk/information.py:238 ../quodlibet/util/tags.py:135
 msgid "skips"
 msgstr "izlaidumi"
 
-#: ../quodlibet/qltk/information.py:238 ../quodlibet/util/tags.py:140
+#: ../quodlibet/qltk/information.py:239 ../quodlibet/util/tags.py:140
 msgid "rating"
 msgstr "vērtējums"
 
-#: ../quodlibet/qltk/information.py:266
+#: ../quodlibet/qltk/information.py:267
 #, python-format
 msgid "%d kbps"
 msgstr "%d kb/s"
 
-#: ../quodlibet/qltk/information.py:273 ../quodlibet/util/tags.py:138
+#: ../quodlibet/qltk/information.py:274 ../quodlibet/util/tags.py:138
 msgid "length"
 msgstr "ilgums"
 
-#: ../quodlibet/qltk/information.py:274 ../quodlibet/util/tags.py:145
+#: ../quodlibet/qltk/information.py:275 ../quodlibet/util/tags.py:145
 msgid "file size"
 msgstr "faila izmērs"
 
-#: ../quodlibet/qltk/information.py:275 ../quodlibet/util/tags.py:133
+#: ../quodlibet/qltk/information.py:276 ../quodlibet/util/tags.py:133
 msgid "modified"
 msgstr "mainīts"
 
-#: ../quodlibet/qltk/information.py:277 ../quodlibet/util/tags.py:144
+#: ../quodlibet/qltk/information.py:278 ../quodlibet/util/tags.py:144
 msgid "bitrate"
 msgstr "bitātrums"
 
-#: ../quodlibet/qltk/information.py:343
+#: ../quodlibet/qltk/information.py:344
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
@@ -4337,20 +4324,20 @@ msgstr[0] "%d izvēlēti"
 msgstr[1] "%d izvēlēti"
 msgstr[2] "%d izvēlēti"
 
-#: ../quodlibet/qltk/information.py:356
+#: ../quodlibet/qltk/information.py:357
 #, python-format
 msgid "Produced by %s"
 msgstr "Producējis %s"
 
-#: ../quodlibet/qltk/information.py:398 ../quodlibet/util/tags.py:71
+#: ../quodlibet/qltk/information.py:399 ../quodlibet/util/tags.py:71
 msgid "performer"
 msgstr "izpildītājs"
 
-#: ../quodlibet/qltk/information.py:431
+#: ../quodlibet/qltk/information.py:432
 msgid "Track unavailable"
 msgstr "Celiņš nav pieejams"
 
-#: ../quodlibet/qltk/information.py:481 ../quodlibet/qltk/information.py:557
+#: ../quodlibet/qltk/information.py:484 ../quodlibet/qltk/information.py:560
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
@@ -4358,11 +4345,11 @@ msgstr[0] "%d dziesma bez albuma"
 msgstr[1] "%d dziesmas bez albuma"
 msgstr[2] "%d dziesmu bez albuma"
 
-#: ../quodlibet/qltk/information.py:485
+#: ../quodlibet/qltk/information.py:488
 msgid "Selected Discography"
 msgstr "Izvēlētā diskogrāfija"
 
-#: ../quodlibet/qltk/information.py:538
+#: ../quodlibet/qltk/information.py:541
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
@@ -4370,19 +4357,19 @@ msgstr[0] "%d dziesma bez mākslinieka"
 msgstr[1] "%d dziesmas bez mākslinieka"
 msgstr[2] "%d dziesmas bez mākslinieka"
 
-#: ../quodlibet/qltk/information.py:560 ../quodlibet/util/tags.py:60
+#: ../quodlibet/qltk/information.py:563 ../quodlibet/util/tags.py:60
 msgid "albums"
 msgstr "albumi"
 
-#: ../quodlibet/qltk/information.py:575
+#: ../quodlibet/qltk/information.py:578
 msgid "Total length:"
 msgstr "Kopējais ilgums:"
 
-#: ../quodlibet/qltk/information.py:579
+#: ../quodlibet/qltk/information.py:582
 msgid "Total size:"
 msgstr "Kopējais izmērs:"
 
-#: ../quodlibet/qltk/information.py:582
+#: ../quodlibet/qltk/information.py:585
 msgid "Files"
 msgstr "Faili"
 
@@ -4448,11 +4435,11 @@ msgstr ""
 msgid "_Replace File"
 msgstr "Pārdēvēt failus"
 
-#: ../quodlibet/qltk/notif.py:178
+#: ../quodlibet/qltk/notif.py:182
 msgid "Active tasks"
 msgstr ""
 
-#: ../quodlibet/qltk/notif.py:184
+#: ../quodlibet/qltk/notif.py:188
 #, python-format
 msgid "%d tasks running"
 msgstr ""
@@ -4617,7 +4604,8 @@ msgstr ""
 #. Translators: The heading of the preference group, no action
 #: ../quodlibet/qltk/prefs.py:232
 #, fuzzy
-msgid "heading|Search"
+msgctxt "heading"
+msgid "Search"
 msgstr "Meklēt"
 
 #: ../quodlibet/qltk/prefs.py:237
@@ -4641,7 +4629,7 @@ msgid "Enable rating by clicking on the rating column in the song list"
 msgstr ""
 "Ieslēgt novērtējumu, noklikšķinot uz vērtējumu kolonnas dziesmu sarakstā"
 
-#: ../quodlibet/qltk/prefs.py:250 ../quodlibet/qltk/prefs.py:572
+#: ../quodlibet/qltk/prefs.py:250 ../quodlibet/qltk/prefs.py:570
 msgid "Ratings"
 msgstr "Vērtējumi"
 
@@ -4735,7 +4723,7 @@ msgstr ""
 msgid "Rating _scale:"
 msgstr "Vērtējumi"
 
-#: ../quodlibet/qltk/prefs.py:497
+#: ../quodlibet/qltk/prefs.py:495
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -4743,74 +4731,74 @@ msgid ""
 "calculation for all albums."
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:502
+#: ../quodlibet/qltk/prefs.py:500
 msgid "_Bayesian averaging amount:"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:511
+#: ../quodlibet/qltk/prefs.py:509
 msgid "Save ratings and play _counts"
 msgstr "Saglabāt vērtējumus un _atskaņošanu skaitu"
 
-#: ../quodlibet/qltk/prefs.py:515
+#: ../quodlibet/qltk/prefs.py:513
 msgid "_Email:"
 msgstr "_E-pasts:"
 
-#: ../quodlibet/qltk/prefs.py:517
+#: ../quodlibet/qltk/prefs.py:515
 msgid "Ratings and play counts will be set for this email address"
 msgstr "Vērtējumi un atskaņošanu skaits tiks iestatīts šajai e-pasta adresei"
 
-#: ../quodlibet/qltk/prefs.py:532
+#: ../quodlibet/qltk/prefs.py:530
 #, fuzzy
 msgid "Auto-save tag changes"
 msgstr "Izmest tagu izmaiņas?"
 
-#: ../quodlibet/qltk/prefs.py:534
+#: ../quodlibet/qltk/prefs.py:532
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:542
+#: ../quodlibet/qltk/prefs.py:540
 msgid ""
 "A list of separators to use when splitting tag values. The list is space-"
 "separated"
 msgstr ""
 
-#: ../quodlibet/qltk/prefs.py:566
+#: ../quodlibet/qltk/prefs.py:564
 #, fuzzy
 msgid "Tags"
 msgstr "Rediģēt tagus"
 
-#: ../quodlibet/qltk/prefs.py:587
+#: ../quodlibet/qltk/prefs.py:585
 #, fuzzy
 msgid "Updating for new ratings"
 msgstr "Jau_na stacija"
 
-#: ../quodlibet/qltk/prefs.py:597
+#: ../quodlibet/qltk/prefs.py:595
 msgid "_Refresh library on start"
 msgstr "A_tsvaidzināt bibliotēku, palaižot programmu"
 
-#: ../quodlibet/qltk/prefs.py:607 ../quodlibet/qltk/quodlibetwindow.py:845
+#: ../quodlibet/qltk/prefs.py:605 ../quodlibet/qltk/quodlibetwindow.py:847
 msgid "Re_fresh Library"
 msgstr "_Atsvaidzināt bibliotēku"
 
-#: ../quodlibet/qltk/prefs.py:609 ../quodlibet/qltk/quodlibetwindow.py:901
+#: ../quodlibet/qltk/prefs.py:607 ../quodlibet/qltk/quodlibetwindow.py:903
 msgid "Check for changes in your library"
 msgstr "Pārbaudīt izmaiņas jūsu bibliotēkā"
 
-#: ../quodlibet/qltk/prefs.py:614
+#: ../quodlibet/qltk/prefs.py:612
 msgid "Re_load Library"
 msgstr "Pār_lādēt bibliotēku"
 
-#: ../quodlibet/qltk/prefs.py:617
+#: ../quodlibet/qltk/prefs.py:615
 #, fuzzy
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "Pārlādēt visas dziesmas jūsu bibliotēkā (tas var aizņemt ilgu laiku)"
 
-#: ../quodlibet/qltk/prefs.py:627
+#: ../quodlibet/qltk/prefs.py:625
 #, fuzzy
 msgid "Scan Directories"
 msgstr "Skenēt _mapes"
 
-#: ../quodlibet/qltk/prefs.py:633
+#: ../quodlibet/qltk/prefs.py:631
 #, fuzzy
 msgid "Hidden Songs"
 msgstr "Nav dziesmu"
@@ -4819,7 +4807,7 @@ msgstr "Nav dziesmu"
 msgid "Properties"
 msgstr "Īpašības"
 
-#: ../quodlibet/qltk/queue.py:77 ../quodlibet/qltk/quodlibetwindow.py:855
+#: ../quodlibet/qltk/queue.py:77 ../quodlibet/qltk/quodlibetwindow.py:857
 msgid "_Queue"
 msgstr "_Rinda"
 
@@ -4831,134 +4819,134 @@ msgstr "Izņemt no rindas visas dziesmas"
 msgid "_Random"
 msgstr "_Nejauši"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:219
+#: ../quodlibet/qltk/quodlibetwindow.py:222
 msgid "Restart the playlist when finished"
 msgstr "Pārstartēt repertuāru, kad pabeigts"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:355
+#: ../quodlibet/qltk/quodlibetwindow.py:358
 #, fuzzy
 msgid "Playback Error"
 msgstr "Pauzēt atskaņošanu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:363
+#: ../quodlibet/qltk/quodlibetwindow.py:366
 #, fuzzy
 msgid "Set up library directories?"
 msgstr "Izvēlieties mapes"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:364
+#: ../quodlibet/qltk/quodlibetwindow.py:367
 msgid "You don't have any music library set up. Would you like to do that now?"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:370
+#: ../quodlibet/qltk/quodlibetwindow.py:373
 msgid "_Not Now"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:373
+#: ../quodlibet/qltk/quodlibetwindow.py:376
 msgid "_Set Up"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:724
+#: ../quodlibet/qltk/quodlibetwindow.py:725
 msgid "Unable to add songs"
 msgstr "Neizdevās pievienot dziesmas"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:725
-#: ../quodlibet/qltk/quodlibetwindow.py:1098
+#: ../quodlibet/qltk/quodlibetwindow.py:726
+#: ../quodlibet/qltk/quodlibetwindow.py:1111
 #, fuzzy, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "<b>%s</b> izmanto neatbalstītu protokolu."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:767
+#: ../quodlibet/qltk/quodlibetwindow.py:769
 msgid "_Music"
 msgstr "_Mūzika"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:768
+#: ../quodlibet/qltk/quodlibetwindow.py:770
 #, fuzzy
 msgid "_Add a Folder…"
 msgstr "_Pievienot mapi..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:770
+#: ../quodlibet/qltk/quodlibetwindow.py:772
 #, fuzzy
 msgid "_Add a File…"
 msgstr "Pievienot _failu..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:772
+#: ../quodlibet/qltk/quodlibetwindow.py:774
 #, fuzzy
 msgid "_Add a Location…"
 msgstr "Pievienot vietu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:774
+#: ../quodlibet/qltk/quodlibetwindow.py:776
 #, fuzzy
 msgid "Open _Browser"
 msgstr "Atvērt jaunu pārlūku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:781
+#: ../quodlibet/qltk/quodlibetwindow.py:783
 msgid "_Control"
 msgstr "_Vadība"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:787
+#: ../quodlibet/qltk/quodlibetwindow.py:789
 msgid "_Jump to Playing Song"
 msgstr "_Pārlēkt uz atskaņoto dziesmu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:790
+#: ../quodlibet/qltk/quodlibetwindow.py:792
 msgid "_View"
 msgstr "_Skats"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:791
+#: ../quodlibet/qltk/quodlibetwindow.py:793
 msgid "_Help"
 msgstr "_Palīdzība"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:806
+#: ../quodlibet/qltk/quodlibetwindow.py:808
 #, fuzzy
 msgid "Stop After This Song"
 msgstr "Apstāties pēc šīs dziesmas"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:813
+#: ../quodlibet/qltk/quodlibetwindow.py:815
 #, fuzzy
 msgid "Add Bookmark"
 msgstr "Grāmatzīmes"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:818
+#: ../quodlibet/qltk/quodlibetwindow.py:820
 #, fuzzy
 msgid "Edit Bookmarks…"
 msgstr "R_ediģēt grāmatzīmes..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:828
+#: ../quodlibet/qltk/quodlibetwindow.py:830
 msgid "Online Help"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:836
+#: ../quodlibet/qltk/quodlibetwindow.py:838
 #, fuzzy
 msgid "Search Help"
 msgstr "Meklēt"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:850
+#: ../quodlibet/qltk/quodlibetwindow.py:852
 msgid "Song _List"
 msgstr "_Dziesmu saraksts"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1086
+#: ../quodlibet/qltk/quodlibetwindow.py:1099
 msgid "Add a Location"
 msgstr "Pievienot vietu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1087
+#: ../quodlibet/qltk/quodlibetwindow.py:1100
 msgid "Enter the location of an audio file:"
 msgstr "Ievadiet audio faila atrašanās vietu:"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1092
-#: ../quodlibet/qltk/quodlibetwindow.py:1097
+#: ../quodlibet/qltk/quodlibetwindow.py:1105
+#: ../quodlibet/qltk/quodlibetwindow.py:1110
 msgid "Unable to add location"
 msgstr "Neizdevās pievienot vietu"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1093
+#: ../quodlibet/qltk/quodlibetwindow.py:1106
 #, fuzzy, python-format
 msgid "%s is not a valid location."
 msgstr "<b>%s</b> nav derīga vieta."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1112
-#: ../quodlibet/qltk/quodlibetwindow.py:1128
+#: ../quodlibet/qltk/quodlibetwindow.py:1125
+#: ../quodlibet/qltk/quodlibetwindow.py:1141
 msgid "Add Music"
 msgstr "Pievienot mūziku"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1114
+#: ../quodlibet/qltk/quodlibetwindow.py:1127
 msgid "Watch this folder for new songs"
 msgstr "Vērot šo mapi"
 
@@ -4978,7 +4966,17 @@ msgstr ""
 msgid "The rating of all selected songs will be changed to '%s'"
 msgstr ""
 
-#: ../quodlibet/qltk/ratingsmenu.py:72
+#: ../quodlibet/qltk/ratingsmenu.py:45
+#, fuzzy
+msgid "Change _Rating"
+msgstr "_Vērtējums"
+
+#: ../quodlibet/qltk/ratingsmenu.py:58
+#, fuzzy
+msgid "_Remove Rating"
+msgstr "_Vērtējums"
+
+#: ../quodlibet/qltk/ratingsmenu.py:76
 #, fuzzy
 msgid "_Remove rating"
 msgstr "_Vērtējums"
@@ -5026,33 +5024,33 @@ msgstr "_Priekšskats"
 msgid "New Name"
 msgstr "Jauns nosaukums"
 
-#: ../quodlibet/qltk/renamefiles.py:238
+#: ../quodlibet/qltk/renamefiles.py:240
 msgid "Ignore _All Errors"
 msgstr "Ignorēt vis_as kļūdas"
 
-#: ../quodlibet/qltk/renamefiles.py:240
+#: ../quodlibet/qltk/renamefiles.py:242
 msgid "_Continue"
 msgstr "_Turpināt"
 
-#: ../quodlibet/qltk/renamefiles.py:242
+#: ../quodlibet/qltk/renamefiles.py:244
 msgid "Unable to rename file"
 msgstr "Neizdevās pārdēvēt failu"
 
-#: ../quodlibet/qltk/renamefiles.py:243
-#, python-format
+#: ../quodlibet/qltk/renamefiles.py:245
+#, fuzzy, python-format
 msgid ""
-"Renaming <b>%s</b> to <b>%s</b> failed. Possibly the target file already "
-"exists, or you do not have permission to make the new file or remove the old "
-"one."
+"Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> failed. Possibly the "
+"target file already exists, or you do not have permission to make the new "
+"file or remove the old one."
 msgstr ""
 "Neizdevās pārdēvēt <b>%s</b> par <b>%s</b>. Mērķa fails, iespējams, jau "
 "eksistē, vai arī jums nav atļauju izveidot jaunu vai dzēst veco failu."
 
-#: ../quodlibet/qltk/renamefiles.py:279
+#: ../quodlibet/qltk/renamefiles.py:282
 msgid "Path is not absolute"
 msgstr "Ceļš nav absolūts"
 
-#: ../quodlibet/qltk/renamefiles.py:280
+#: ../quodlibet/qltk/renamefiles.py:283
 #, python-format
 msgid ""
 "The pattern\n"
@@ -5113,74 +5111,79 @@ msgstr "_Limits:"
 msgid "_Weight"
 msgstr "S_vars"
 
-#: ../quodlibet/qltk/songlist.py:348
+#: ../quodlibet/qltk/songlist.py:352
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtrēt pēc %s"
 
-#: ../quodlibet/qltk/songlist.py:1057
+#: ../quodlibet/qltk/songlist.py:1066
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Albumu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1058
+#: ../quodlibet/qltk/songlist.py:1067
 msgid "_Track Headers"
 msgstr "_Celiņu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1059
+#: ../quodlibet/qltk/songlist.py:1068
 msgid "_Album Headers"
 msgstr "_Albumu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1060
+#: ../quodlibet/qltk/songlist.py:1069
 msgid "_People Headers"
 msgstr "C_ilvēku galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1061
+#: ../quodlibet/qltk/songlist.py:1070
 msgid "_Date Headers"
 msgstr "_Datumu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1062
+#: ../quodlibet/qltk/songlist.py:1071
 msgid "_File Headers"
 msgstr "_Failu galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1063
+#: ../quodlibet/qltk/songlist.py:1072
 msgid "_Production Headers"
 msgstr "_Producēšanas galvenes"
 
-#: ../quodlibet/qltk/songlist.py:1078
+#: ../quodlibet/qltk/songlist.py:1087
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "Pielāg_ot galvenes..."
 
-#: ../quodlibet/qltk/songlist.py:1083
+#: ../quodlibet/qltk/songlist.py:1092
 msgid "_Expand Column"
 msgstr ""
 
 #: ../quodlibet/qltk/songsmenu.py:32
 #, python-format
-msgid "Run the plugin \"%s\" on %d song?"
-msgid_plural "Run the plugin \"%s\" on %d songs?"
+msgid "Run the plugin \"%(name)s\" on %(count)d song?"
+msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
 #: ../quodlibet/qltk/songsmenu.py:61
 #, python-format
-msgid "Run the plugin \"%s\" on %d album?"
-msgid_plural "Run the plugin \"%s\" on %d albums?"
+msgid "Run the plugin \"%(name)s\" on %(count)d album?"
+msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: ../quodlibet/qltk/songsmenu.py:315
+#: ../quodlibet/qltk/songsmenu.py:328
+#, fuzzy
+msgid "Play_lists"
+msgstr "Repertuāri"
+
+#: ../quodlibet/qltk/songsmenu.py:333
 msgid "Add to _Queue"
 msgstr "Pie_vienot rindai"
 
-#: ../quodlibet/qltk/songsmenu.py:330
+#: ../quodlibet/qltk/songsmenu.py:356
 msgid "_Copy to Device"
 msgstr "Kopēt uz ierī_ci"
 
-#: ../quodlibet/qltk/songsmenu.py:339
+#: ../quodlibet/qltk/songsmenu.py:366
 #, fuzzy
 msgid "_Remove from library"
 msgstr "Izņemt no _repertuāra"
@@ -5237,7 +5240,7 @@ msgstr ""
 "\n"
 "Pašreiz izvēlētie faili neatbalsta šo tagu rediģēšanu."
 
-#: ../quodlibet/qltk/textedit.py:90
+#: ../quodlibet/qltk/textedit.py:93
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -5250,7 +5253,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../quodlibet/qltk/textedit.py:106
+#: ../quodlibet/qltk/textedit.py:109
 msgid "Edit Display"
 msgstr "Rediģēt rādāmo"
 
@@ -5276,7 +5279,7 @@ msgstr "Atskaņotājs"
 msgid "Previous"
 msgstr "_Priekšskats"
 
-#: ../quodlibet/qltk/views.py:779
+#: ../quodlibet/qltk/views.py:830
 #, fuzzy, python-format
 msgid "and %d more…"
 msgstr "un vēl %d..."
@@ -5295,15 +5298,15 @@ msgstr ""
 "(%(remaining)s atlikušas)"
 
 #: ../quodlibet/qltk/wlw.py:218
-#, python-format
-msgid "%d of %d"
-msgstr "%d no %d"
+#, fuzzy, python-format
+msgid "%(current)d of %(all)d"
+msgstr "Pārvieto %(current)d/%(total)d."
 
-#: ../quodlibet/qltk/x.py:382
+#: ../quodlibet/qltk/x.py:417
 msgid "Clear search"
 msgstr "Notīrīt meklējumu lauku"
 
-#: ../quodlibet/util/collection.py:459
+#: ../quodlibet/util/collection.py:469
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "Repertuārs ar nosaukumu %s jau pastāv."
@@ -5330,19 +5333,21 @@ msgstr ""
 #. terminal output. APT uses a similar output format.
 #: ../quodlibet/util/dprint.py:129
 #, fuzzy
-msgid "D: "
+msgid "D:"
 msgstr "B: "
 
 #. Translators: "W" as in "Warning". It is prepended to
 #. terminal output. APT uses a similar output format.
 #: ../quodlibet/util/dprint.py:146
-msgid "W: "
+#, fuzzy
+msgid "W:"
 msgstr "B: "
 
 #. Translators: "E" as in "Error". It is prepended to
 #. terminal output. APT uses a similar output format.
 #: ../quodlibet/util/dprint.py:159
-msgid "E: "
+#, fuzzy
+msgid "E:"
 msgstr "E: "
 
 #: ../quodlibet/util/__init__.py:66
@@ -5354,30 +5359,30 @@ msgid "Display version and copyright"
 msgstr "Parādīt versiju un autortiesības"
 
 #: ../quodlibet/util/__init__.py:108
-#, fuzzy, python-format
-msgid "Usage: %s %s\n"
-msgstr "Lietošana: %s %s"
+#, python-format
+msgid "Usage: %(program)s %(usage)s"
+msgstr ""
 
-#: ../quodlibet/util/__init__.py:109
+#: ../quodlibet/util/__init__.py:110
 msgid "[options]"
 msgstr "[opcijas]"
 
-#: ../quodlibet/util/__init__.py:152
+#: ../quodlibet/util/__init__.py:155
 #, python-format
 msgid "Option %r not recognized."
 msgstr "Opcija %r nav atpazīta."
 
-#: ../quodlibet/util/__init__.py:155
+#: ../quodlibet/util/__init__.py:158
 #, python-format
 msgid "Option %r requires an argument."
 msgstr "Opcijai %r nepieciešams arguments."
 
-#: ../quodlibet/util/__init__.py:158
+#: ../quodlibet/util/__init__.py:161
 #, python-format
 msgid "%r is not a unique prefix."
 msgstr "%r nav unikāls prefikss."
 
-#: ../quodlibet/util/__init__.py:365
+#: ../quodlibet/util/__init__.py:368
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -5385,7 +5390,7 @@ msgstr[0] "%d sekunde"
 msgstr[1] "%d sekundes"
 msgstr[2] "%d sekunžu"
 
-#: ../quodlibet/util/__init__.py:366
+#: ../quodlibet/util/__init__.py:369
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -5393,7 +5398,7 @@ msgstr[0] "%d minūte"
 msgstr[1] "%d minūtes"
 msgstr[2] "%d minūšu"
 
-#: ../quodlibet/util/__init__.py:367
+#: ../quodlibet/util/__init__.py:370
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -5401,7 +5406,7 @@ msgstr[0] "%d stunda"
 msgstr[1] "%d stundas"
 msgstr[2] "%d stundu"
 
-#: ../quodlibet/util/__init__.py:368
+#: ../quodlibet/util/__init__.py:371
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -5409,7 +5414,7 @@ msgstr[0] "%d diena"
 msgstr[1] "%d dienas"
 msgstr[2] "%d dienu"
 
-#: ../quodlibet/util/__init__.py:369
+#: ../quodlibet/util/__init__.py:372
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -5420,9 +5425,11 @@ msgstr[2] "%d gadu"
 #. Translators: If tag names, when capitalized, should not
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
-#. something other than "check|titlecase?".
-#: ../quodlibet/util/__init__.py:475
-msgid "check|titlecase?"
+#. something other than "titlecase?".
+#: ../quodlibet/util/__init__.py:478
+#, fuzzy
+msgctxt "check"
+msgid "titlecase?"
 msgstr "nē"
 
 #: ../quodlibet/util/massagers.py:31
@@ -5752,6 +5759,27 @@ msgstr ""
 msgid "roles"
 msgstr ""
 
+#~ msgid "command|filename"
+#~ msgstr "faila_nosaukums"
+
+#~ msgid "command|tag"
+#~ msgstr "tags"
+
+#, fuzzy
+#~ msgid "%s: Could not find 'libudev'."
+#~ msgstr "%s: neizdevās atrast media-player-info."
+
+#, fuzzy
+#~ msgid "heading|Search"
+#~ msgstr "Meklēt"
+
+#~ msgid "%d of %d"
+#~ msgstr "%d no %d"
+
+#, fuzzy
+#~ msgid "Usage: %s %s\n"
+#~ msgstr "Lietošana: %s %s"
+
 #~ msgid "_Download..."
 #~ msgstr "Lejupielā_dēt..."
 
@@ -5932,9 +5960,6 @@ msgstr ""
 #~ msgstr ""
 #~ "%s nevarēja tikt pievienota jūsu bibliotēkai.\n"
 #~ "\n"
-
-#~ msgid "Unable to add song"
-#~ msgstr "Neizdevās pievienot dziesmu"
 
 #~ msgid "No eject command found."
 #~ msgstr "Komanda 'eject' nav atrasta."
