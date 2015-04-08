@@ -158,12 +158,14 @@ Changes
 3.3 → 3.4
 ^^^^^^^^^
 
+* The main repo moved from Mercurial (Google Code) to Git (GitHub)
+* The build should now be reproducible
 * **gtk-update-icon-cache** is no longer a build dependency
-* **gettext >= 0.15** is required now
+* **gettext >= 0.15** is required now at build time
 * A complete **icon theme** is now required (this was also partly the case
   with 3.3) and an icon theme including symbolic icons is recommended.
   **adwaita-icon-theme** provides both for example.
-* **Mutagen 1.22** required
+* **Mutagen 1.22** required, **Mutagen 1.27** recommended
 * New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
 
 

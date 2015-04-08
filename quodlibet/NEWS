@@ -1,3 +1,43 @@
+3.4.0 (2015-04-??) - ??
+-----------------------
+
+ * Improved Gnome 3.16 compatibility
+
+   * Fixes for the list tooltips in combination with GTK 3.16 scrollbars
+   * Include symbolic icons for gnome-shell 3.16
+
+ * Album browser: faster cover loading
+ * Devices: fix detection of Sansa Clip+ with some setups :bug:`1523`
+ * Prefs: restore active tab
+ * Songlist: support patterns in the filter song list menu
+ * New shortcut ``ctrl+shift+j``, like ``ctrl+j`` but refilters the browser
+   always
+ * Make build reproducible :bug:`1524`
+ * MP4: include codec information in ``~format``
+   (needs a library reload) :bug:`1505`
+ * GStreamer: fix a deadlock when seeking right at a song change
+ * Queue: don't decide the next song too early :bug:`1496`
+ * Song info widget: provide the full song context menu :bug:`1527`
+ * CLI: ``--run`` to make QL start if it isn't already.
+   Useful for pairing with other commands like ``--play-file``. :bug:`67`
+ * Add supported mime types to desktop file :bug:`67`
+ * CLI: ``--play-file`` doesn't add songs to the library anymore :bug:`1537`
+ * Fix QL starting twice if started in quick succession
+ * Tooltips: don't span multiple monitors :bug:`1554`
+ * MPD-Server: Fix a crash when changing the port number :bug:`1559`
+ * Fix short hang on shutdown with GStreamer plugins active :bug:`1567`
+ * Fix setting an embedded image in case the file doesn't have tags :bug:`1531`
+ * OSX: add a menu bar for Ex Falso
+ * Fifo: Fix commands failing in case QL is busy :bug:`1542`
+ * ...
+
+Translations:
+ * Use msgctx for message contexts
+
+Packaging:
+ * See the Packaging Guide for changes
+
+
 3.3.1 (2015-01-10) - Reduce, reuse, recycle, RESUBMIT
 -----------------------------------------------------
 
