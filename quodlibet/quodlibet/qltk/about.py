@@ -64,6 +64,7 @@ class AboutDialog(Gtk.AboutDialog):
         if player:
             text.append(player.version_info)
         self.set_comments("\n".join(text))
+        self.set_license_type(Gtk.License.GPL_2_0)
         self.set_translator_credits("\n".join(const.TRANSLATORS))
         self.set_website(const.WEBSITE)
         self.set_copyright(const.COPYRIGHT + "\n" +
