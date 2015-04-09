@@ -28,7 +28,7 @@ class MinVersions(object):
     PYTHON = Version(2, 7)
     MUTAGEN = Version(1, 22)
 
-VERSION_TUPLE = Version(3, 3, -1)
+VERSION_TUPLE = Version(3, 4, 0)
 VERSION = str(VERSION_TUPLE)
 
 if os.name == "nt":
