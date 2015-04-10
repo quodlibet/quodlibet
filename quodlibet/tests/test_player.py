@@ -160,6 +160,17 @@ class TPlayer(AbstractTestCase):
         self.player.go_to(None)
         self.assertTrue(self.signals, ["unpaused", "paused"])
 
+    def test_replaygain(self):
+        self.player.replaygain_profiles[0] = "track"
+        self.player.next()
+        config.set("player", "replaygain", True)
+        self.assertEqual(self.player.calc_replaygain_volume(1.0), 1.0)
+        config.set("player", "fallback_gain", -5.0)
+        self.assertAlmostEqual(
+            self.player.calc_replaygain_volume(1.0), 0.562, 3)
+        config.set("player", "pre_amp_gain", 10.0)
+        self.assertEqual(self.player.calc_replaygain_volume(1.0), 1.0)
+
 
 class TNullPlayer(TPlayer):
     NAME = "nullbe"

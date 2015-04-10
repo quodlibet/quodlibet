@@ -552,12 +552,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def do_set_property(self, property, v):
         if property.name == 'volume':
             self._volume = v
-            if self.song and config.getboolean("player", "replaygain"):
-                profiles = filter(None, self.replaygain_profiles)[0]
-                fb_gain = config.getfloat("player", "fallback_gain")
-                pa_gain = config.getfloat("player", "pre_amp_gain")
-                scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
-                v = min(10.0, max(0.0, v * scale)) # volume supports 0..10
+            v = self.calc_replaygain_volume(v)
+            v = min(10.0, max(0.0, v)) # volume supports 0..10
             if self.bin:
                 self._vol_element.set_property('volume', v)
         else:

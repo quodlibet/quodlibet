@@ -10,6 +10,7 @@
 from gi.repository import GObject
 
 from quodlibet.formats._audio import AudioFile
+from quodlibet import config
 
 
 class Equalizer(object):
@@ -103,6 +104,28 @@ class BasePlayer(GObject.GObject, Equalizer):
         self._source = None
 
         self._destroy()
+
+    def calc_replaygain_volume(self, volume):
+        """Returns a new float volume for the given volume.
+
+        Takes into account the global active replaygain profile list,
+        the user specified replaygain settings and the tags available
+        for that song.
+
+        Args:
+            volume (float): 0.0..1.0
+        Returns:
+            float: adjusted volume, can be outside of 0.0..0.1
+        """
+
+        if self.song and config.getboolean("player", "replaygain"):
+            profiles = filter(None, self.replaygain_profiles)[0]
+            fb_gain = config.getfloat("player", "fallback_gain")
+            pa_gain = config.getfloat("player", "pre_amp_gain")
+            scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
+        else:
+            scale = 1
+        return volume * scale
 
     @property
     def volume(self):
