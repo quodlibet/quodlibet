@@ -15,6 +15,7 @@ import time
 from os.path import join, islink, abspath, dirname
 from os.path import isdir, basename, exists, splitext
 
+from quodlibet import config
 from quodlibet.util.path import find_mount_point, xdg_get_data_home
 
 
@@ -121,9 +122,11 @@ def trash_free_desktop(path):
         raise
 
 
-def can_trash():
+def use_trash():
     """If the current platform supports moving files into a trash can."""
-    return (os.name == "posix" and sys.platform != "darwin")
+    return (
+        os.name == "posix" and sys.platform != "darwin" and
+        not config.getboolean("settings", "bypass_trash"))
 
 
 def trash(path):
