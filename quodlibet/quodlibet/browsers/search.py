@@ -41,10 +41,8 @@ class PreferencesButton(Gtk.HBox):
         self.pack_start(button, True, True, 0)
 
 
-class SearchBar(Gtk.VBox, Browser):
+class SearchBar(Browser):
     """Like EmptyBar, but the user can also enter a query manually"""
-
-    __gsignals__ = Browser.__gsignals__
 
     name = _("Search Library")
     accelerated_name = _("_Search Library")
@@ -64,6 +62,7 @@ class SearchBar(Gtk.VBox, Browser):
     def __init__(self, library):
         super(SearchBar, self).__init__()
         self.set_spacing(6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self._query = None
         self._library = library

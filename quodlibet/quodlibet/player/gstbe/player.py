@@ -145,9 +145,6 @@ class BufferingWrapper(object):
 
 
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
-    __gproperties__ = BasePlayer._gproperties_
-    __gsignals__ = BasePlayer._gsignals_
-
     _paused = True
     _in_gapless_transition = False
     _last_position = 0

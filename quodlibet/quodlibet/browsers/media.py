@@ -126,9 +126,7 @@ class Menu(Gtk.Menu):
         browser.dropped(songs)
 
 
-class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
-    __gsignals__ = Browser.__gsignals__
-
+class MediaDevices(Browser, util.InstanceTracker):
     name = _("Media Devices")
     accelerated_name = _("_Media Devices")
     priority = 25
@@ -171,6 +169,7 @@ class MediaDevices(Gtk.VBox, Browser, util.InstanceTracker):
 
     def __init__(self, library):
         super(MediaDevices, self).__init__(spacing=6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
         self._register_instance()
 
         self.__cache = {}

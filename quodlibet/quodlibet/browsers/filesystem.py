@@ -32,7 +32,6 @@ from quodlibet.util import connect_obj
 
 
 class FileSystem(Browser, Gtk.HBox):
-    __gsignals__ = Browser.__gsignals__
 
     __library = None
 

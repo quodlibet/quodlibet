@@ -469,8 +469,7 @@ class QuestionBar(Gtk.InfoBar):
             bar.hide()
 
 
-class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
-    __gsignals__ = Browser.__gsignals__
+class InternetRadio(Browser, util.InstanceTracker):
 
     __stations = None
     __fav_stations = None
@@ -529,6 +528,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
     def __init__(self, library):
         super(InternetRadio, self).__init__(spacing=12)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         if not self.instances():
             self._init(library)

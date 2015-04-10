@@ -8,7 +8,7 @@
 
 import random
 
-from gi.repository import GObject
+from gi.repository import Gtk, GObject
 
 from quodlibet import app
 from quodlibet import util
@@ -121,7 +121,7 @@ class Filter(object):
                 self.filter_text(query)
 
 
-class Browser(Filter):
+class Browser(Gtk.Box, Filter):
     """Browers are how the audio library is presented to the user; they
     create the list of songs that MainSongList is filled with, and pass
     them back via a callback function.

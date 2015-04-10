@@ -45,8 +45,6 @@ class XineHandle(object):
 
 class XinePlaylistPlayer(BasePlayer):
     """Xine playlist player."""
-    __gproperties__ = BasePlayer._gproperties_
-    __gsignals__ = BasePlayer._gsignals_
 
     _paused = True
 

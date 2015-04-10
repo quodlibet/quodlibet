@@ -72,7 +72,7 @@ class BasePlayer(GObject.GObject, Equalizer):
     _paused = True
     _source = None
 
-    _gsignals_ = {
+    __gsignals__ = {
         'song-started':
         (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'song-ended':
@@ -85,7 +85,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         'error': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
-    _gproperties_ = {
+    __gproperties__ = {
         'volume': (float, 'player volume', 'the volume of the player',
                    0.0, 1.0, 1.0,
                    GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE)

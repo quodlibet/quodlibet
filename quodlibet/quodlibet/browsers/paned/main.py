@@ -29,13 +29,11 @@ from .util import get_headers
 from .pane import Pane
 
 
-class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
+class PanedBrowser(Browser, util.InstanceTracker):
     """A Browser enabling "drilling down" of tracks by successive
     selections in multiple tag pattern panes (e.g. Genre / People / Album ).
     It presents available values (and track counts) for each pane's tag
     """
-
-    __gsignals__ = Browser.__gsignals__
 
     name = _("Paned Browser")
     accelerated_name = _("_Paned Browser")
@@ -71,6 +69,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         self._library = library
 
         self.set_spacing(6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         completion = LibraryTagCompletion(library.librarian)
         self.accelerators = Gtk.AccelGroup()

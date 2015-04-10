@@ -212,9 +212,7 @@ class AddFeedDialog(GetStringDialog):
             return None
 
 
-class AudioFeeds(Browser, Gtk.VBox):
-    __gsignals__ = Browser.__gsignals__
-
+class AudioFeeds(Browser):
     __feeds = Gtk.ListStore(object)  # unread
 
     headers = ("title artist performer ~people album date website language "
@@ -347,6 +345,7 @@ class AudioFeeds(Browser, Gtk.VBox):
 
     def __init__(self, library):
         super(AudioFeeds, self).__init__(spacing=6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self.__view = view = AllTreeView()
         self.__render = render = Gtk.CellRendererText()

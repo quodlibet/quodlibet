@@ -29,8 +29,7 @@ from .util import *
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
 
-class PlaylistsBrowser(Gtk.VBox, Browser):
-    __gsignals__ = Browser.__gsignals__
+class PlaylistsBrowser(Browser):
 
     name = _("Playlists")
     accelerated_name = _("_Playlists")
@@ -128,6 +127,7 @@ class PlaylistsBrowser(Gtk.VBox, Browser):
 
     def __init__(self, library):
         super(PlaylistsBrowser, self).__init__(spacing=6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__view = view = RCMHintedTreeView()
         self.__view.set_enable_search(True)
         self.__view.set_search_column(0)
