@@ -170,6 +170,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         GStreamerPluginHandler.__init__(self)
         super(GStreamerPlayer, self).__init__()
         self.version_info = "GStreamer: %s" % fver(Gst.version())
+        self._volume = 1.0
         self._librarian = librarian
         self._pipeline_desc = None
         self._lib_id = librarian.connect("changed", self.__songs_changed)
@@ -544,6 +545,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def stop(self):
         super(GStreamerPlayer, self).stop()
         self.__destroy_pipeline()
+
+    def do_get_property(self, property):
+        if property.name == 'volume':
+            return self._volume
+        else:
+            raise AttributeError
 
     def do_set_property(self, property, v):
         if property.name == 'volume':

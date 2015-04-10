@@ -56,6 +56,7 @@ class XinePlaylistPlayer(BasePlayer):
         super(XinePlaylistPlayer, self).__init__()
         self.name = "xine"
         self.version_info = "xine-lib: " + xine_get_version_string()
+        self._volume = 1.0
         self._handle = XineHandle()
         self._supports_gapless = xine_check_version(1, 1, 1) == 1
         self._event_queue = None
@@ -151,6 +152,12 @@ class XinePlaylistPlayer(BasePlayer):
                 message = message.decode("utf-8", errors="replace")
                 GLib.idle_add(self._error, PlayerError(message))
         return True
+
+    def do_get_property(self, property):
+        if property.name == 'volume':
+            return self._volume
+        else:
+            raise AttributeError
 
     def do_set_property(self, property, v):
         if property.name == 'volume':

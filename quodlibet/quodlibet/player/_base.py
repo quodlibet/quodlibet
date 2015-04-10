@@ -69,7 +69,6 @@ class BasePlayer(GObject.GObject, Equalizer):
     # Replay Gain profiles are a list of values to be tried in order;
     # Four things can set them: rg menu, browser, play order, and a default.
     replaygain_profiles = [None, None, None, ["none"]]
-    _volume = 1.0
     _paused = True
     _source = None
 
@@ -105,15 +104,9 @@ class BasePlayer(GObject.GObject, Equalizer):
 
         self._destroy()
 
-    def do_get_property(self, property):
-        if property.name == 'volume':
-            return self._volume
-        else:
-            raise AttributeError
-
     @property
     def volume(self):
-        return self._volume
+        return self.props.volume
 
     @volume.setter
     def volume(self, v):
