@@ -60,7 +60,7 @@ class ConfirmMultiAlbumInvoke(WarningMessage):
     def __init__(self, parent, plugin_name, count):
         title = ngettext("Run the plugin \"%(name)s\" on %(count)d album?",
                          "Run the plugin \"%(name)s\" on %(count)d albums?",
-                         count) % (plugin_name, count)
+                         count) % {'name':plugin_name, 'count': count}
 
         super(ConfirmMultiAlbumInvoke, self).__init__(
             get_top_parent(parent),
