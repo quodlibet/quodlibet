@@ -798,12 +798,4 @@ def init(librarian):
     if Gst.debug_get_default_threshold() == Gst.DebugLevel.NONE:
         Gst.debug_set_default_threshold(Gst.DebugLevel.ERROR)
 
-    if Gst.Element.make_from_uri(
-        Gst.URIType.SRC,
-        "file:///fake/path/for/gst", ""):
-        return GStreamerPlayer(librarian)
-    else:
-        raise PlayerError(
-            _("Unable to open input files"),
-            _("GStreamer has no element to handle reading files. Check "
-              "your GStreamer installation settings."))
+    return GStreamerPlayer(librarian)
