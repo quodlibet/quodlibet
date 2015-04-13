@@ -15,6 +15,7 @@ class TPlayOrder(TestCase):
         self.order = None
         self.volume = 0
         self.replaygain_profiles = [None, None, None]
+        self.reset_replaygain = lambda: None
         self.po = PlayOrder(self, self)
 
     def tearDown(self):

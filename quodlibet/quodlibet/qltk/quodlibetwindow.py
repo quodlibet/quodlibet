@@ -152,6 +152,13 @@ class TopBar(Gtk.Toolbar):
         self.insert(control_item, 0)
         t = PlayControls(player, library.librarian)
         self.volume = t.volume
+
+        # only restore the volume in case it is managed locally, otherwise
+        # this could affect the system volume
+        if not player.has_external_volume:
+            player.volume = config.getfloat("memory", "volume")
+
+        self.volume.connect("value-changed", self._on_volume_changed)
         control_item.add(t)
 
         self.insert(Gtk.SeparatorToolItem(), 1)
@@ -187,6 +194,9 @@ class TopBar(Gtk.Toolbar):
 
         context = self.get_style_context()
         context.add_class("primary-toolbar")
+
+    def _on_volume_changed(self, widget, value):
+        config.set("memory", "volume", str(value))
 
     def __new_song(self, player, song):
         self.image.set_song(song)
@@ -946,7 +956,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         container = self.browser.__container = self.browser.pack(self.songpane)
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
-        player.volume = player.volume
+        player.reset_replaygain()
         self.__browserbox.add(container)
         container.show()
         self._filter_menu.set_browser(self.browser)

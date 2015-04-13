@@ -127,6 +127,24 @@ class BasePlayer(GObject.GObject, Equalizer):
             scale = 1
         return volume * scale
 
+    def _reset_replaygain(self):
+        self.volume = self.volume
+
+    def reset_replaygain(self):
+        """Call in case something affecting the replaygain adjustment has
+        changed to change the output volume
+        """
+
+        self._reset_replaygain()
+
+    @property
+    def has_external_volume(self):
+        """If setting the volume will affect anything outside of QL and
+        if the volume can change without any event in QL.
+        """
+
+        return False
+
     @property
     def volume(self):
         return self.props.volume

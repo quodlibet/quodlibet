@@ -213,21 +213,23 @@ class SeekBar(HSlider):
 
 
 class Volume(Gtk.VolumeButton):
-    def __init__(self, device):
+    def __init__(self, player):
         super(Volume, self).__init__(size=Gtk.IconSize.MENU, use_symbolic=True)
 
         self.set_relief(Gtk.ReliefStyle.NORMAL)
         self.set_adjustment(Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0))
 
-        self.connect('value-changed', self.__volume_changed, device)
-        device.connect('notify::volume', self.__volume_notify)
-        self.set_value(config.getfloat("memory", "volume"))
+        self._id = self.connect('value-changed', self.__volume_changed, player)
+        self._id2 = player.connect('notify::volume', self.__volume_notify)
+        player.notify("volume")
 
-        replaygain_menu = ReplayGainMenu(device)
+        self.connect("event", self._on_button_event, player)
+
+        replaygain_menu = ReplayGainMenu(player)
         replaygain_menu.attach_to_widget(self, None)
         self.connect('popup-menu', self.__popup, replaygain_menu)
         connect_obj(self, 'button-press-event', self.__volume_button_press,
-                            replaygain_menu)
+                    replaygain_menu)
 
     def __popup(self, widget, menu):
         time = Gtk.get_current_event_time()
@@ -247,12 +249,24 @@ class Volume(Gtk.VolumeButton):
         self.set_value(self.get_value() - v)
         return self
 
-    def __volume_changed(self, button, volume, device):
-        config.set("memory", "volume", str(volume))
-        device.volume = volume
+    def __volume_changed(self, button, volume, player):
+        player.handler_block(self._id2)
+        player.volume = volume ** 3.0
+        player.handler_unblock(self._id2)
 
-    def __volume_notify(self, device, prop):
-        self.set_value(device.props.volume)
+    def __volume_notify(self, player, prop):
+        self.handler_block(self._id)
+        self.set_value(player.volume ** (1.0 / 3.0))
+        self.handler_unblock(self._id)
+
+    def _on_button_event(self, widget, event, player):
+        # pulsesink doesn't emit volume changes when it's paused, but
+        # fetching the value works. To prevent user volume changes based on a
+        # false starting point update the slider on any action on the
+        # volume button.
+        self.handler_block(self._id)
+        self.set_value(player.volume ** (1.0 / 3.0))
+        self.handler_unblock(self._id)
 
 
 class ReplayGainMenu(Gtk.Menu):
@@ -278,7 +292,7 @@ class ReplayGainMenu(Gtk.Menu):
     def __changed(self, item, player, profile):
         if item.get_active():
             player.replaygain_profiles[0] = profile
-            player.volume = player.volume
+            player.reset_replaygain()
 
     def popup(self, *args):
         gain = config.getboolean("player", "replaygain")

@@ -362,7 +362,7 @@ class PlayOrder(Gtk.Box, PluginHandler):
         self._refresh_menu()
 
         self._player.replaygain_profiles[2] = order_cls.replaygain_profiles
-        self._player.volume = self._player.volume
+        self._player.reset_replaygain()
         self.emit("changed")
 
     def _refresh_menu(self):

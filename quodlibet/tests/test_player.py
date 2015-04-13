@@ -254,24 +254,23 @@ class TGstPlayer(TPlayer):
 
 class TVolume(TestCase):
     def setUp(self):
-        config.init()
         self.p = NullPlayer()
         self.v = Volume(self.p)
 
     def test_setget(self):
         for i in [0.0, 1.2, 0.24, 1.0, 0.9]:
             self.v.set_value(i)
-            self.failUnlessAlmostEqual(self.p.volume, self.v.get_value())
+            self.failUnlessAlmostEqual(self.p.volume, self.v.get_value() ** 3)
 
     def test_add(self):
         self.v.set_value(0.5)
         self.v += 0.1
-        self.failUnlessAlmostEqual(self.p.volume, 0.6)
+        self.failUnlessAlmostEqual(self.p.volume, 0.6 ** 3)
 
     def test_sub(self):
         self.v.set_value(0.5)
         self.v -= 0.1
-        self.failUnlessAlmostEqual(self.p.volume, 0.4)
+        self.failUnlessAlmostEqual(self.p.volume, 0.4 ** 3)
 
     def test_add_boundry(self):
         self.v.set_value(0.95)
@@ -286,4 +285,3 @@ class TVolume(TestCase):
     def tearDown(self):
         self.p.destroy()
         self.v.destroy()
-        config.quit()

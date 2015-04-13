@@ -382,13 +382,13 @@ class PreferencesWindow(UniqueWindow):
 
         def __toggled_gain(self, activator, widgets):
             if app.player: # tests
-                app.player.volume = app.player.volume
+                app.player.reset_replaygain()
             for widget in widgets:
                 widget.set_sensitive(activator.get_active())
 
         def __changed(self, adj, section, name):
             config.set(section, name, str(adj.get_value()))
-            app.player.volume = app.player.volume
+            app.player.reset_replaygain()
 
     class Tagging(Gtk.VBox):
         name = "tagging"
