@@ -145,34 +145,36 @@ class BufferingWrapper(object):
 
 
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
-    _paused = True
-    _in_gapless_transition = False
-    _last_position = 0
-
-    bin = None
-    _vol_element = None
-    _use_eq = False
-    _eq_element = None
-
-    __atf_id = None
-    __bus_id = None
-    __source_setup_id = None
-
-    __info_buffer = None
 
     def PlayerPreferences(self):
         return GstPlayerPreferences(self, const.DEBUG)
 
     def __init__(self, librarian=None):
         GStreamerPluginHandler.__init__(self)
-        super(GStreamerPlayer, self).__init__()
-        self.version_info = "GStreamer: %s" % fver(Gst.version())
-        self._volume = 1.0
+        BasePlayer.__init__(self)
+
         self._librarian = librarian
+
+        self.version_info = "GStreamer: %s" % fver(Gst.version())
         self._pipeline_desc = None
-        self._lib_id = librarian.connect("changed", self.__songs_changed)
+
+        self._volume = 1.0
+        self._paused = True
+
+        self._in_gapless_transition = False
         self._active_seeks = []
         self._active_error = False
+        self._last_position = 0
+
+        self.bin = None
+        self._vol_element = None
+        self._use_eq = False
+        self._eq_element = None
+        self.__info_buffer = None
+
+        self._lib_id = librarian.connect("changed", self.__songs_changed)
+        self.__atf_id = None
+        self.__bus_id = None
         self._runner = MainRunner()
 
     def __songs_changed(self, librarian, songs):
@@ -339,7 +341,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     pass
                 else:
                     break
-        self.__source_setup_id = self.bin.connect("source-setup", source_setup)
+        self.bin.connect("source-setup", source_setup)
 
         # ReplayGain information gets lost when destroying
         self.volume = self.volume
@@ -362,15 +364,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.bin.disconnect(self.__atf_id)
             self.__atf_id = None
 
-        if self.__source_setup_id:
-            self.bin.disconnect(self.__source_setup_id)
-            self.__source_setup_id = None
-
         if self.bin:
             self.bin.set_state(Gst.State.NULL)
             self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
-            self.bin.set_property('audio-sink', None)
-            self.bin.set_property('video-sink', None)
             # BufferingWrapper cleanup
             self.bin.destroy()
             self.bin = None
