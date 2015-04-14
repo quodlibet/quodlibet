@@ -291,6 +291,10 @@ class TXMLFromMarkupPattern(_TPattern):
         s.assertEquals(pat.format(s.a), '<small >foo</small \t>')
         s._test_markup(pat.format(s.a))
 
+    def test_link(s):
+        pat = XMLFromMarkupPattern(r'[a href=""]foo[/a]')
+        s.assertEquals(pat.format(s.a), '<a href="">foo</a>')
+
     def test_convenience_invalid(s):
         pat = XMLFromMarkupPattern(r'[b foo="1"]')
         s.assertEquals(pat.format(s.a), '[b foo="1"]')

@@ -11,7 +11,8 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.formats._audio import AudioFile
-from quodlibet.pattern import XMLFromPattern
+from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, \
+    error as PatternError
 from quodlibet.util import connect_obj
 
 try:
@@ -74,20 +75,63 @@ class TextEditBox(Gtk.HBox):
         self.buffer.set_text(value, -1)
 
 
+def validate_markup_pattern(text, alternative_markup=True, links=False):
+    """Check whether a passed pattern results in a valid pango markup.
+
+    Args:
+        text (unicode): the pattern
+        alternative_markup (bool): if "[b]" gets mapped to "\<b\>"
+        links (bool): if link tags are allowed (for Gtk.Label only)
+
+    Raises:
+        ValueError: In case the pattern isn't valid
+    """
+
+    assert isinstance(text, unicode)
+
+    f = AudioFile({"~filename": "dummy"})
+
+    try:
+        if alternative_markup:
+            pattern = XMLFromMarkupPattern(text)
+        else:
+            pattern = XMLFromPattern(text)
+        text = pattern % f
+    except PatternError as e:
+        return ValueError(e)
+
+    try:
+        Pango.parse_markup(text, -1, u"\u0000")
+    except GLib.GError as e:
+        if not links:
+            raise ValueError(e)
+        # Gtk.Label supports links on top of pango markup but doesn't
+        # provide a way to verify them. We can check if the markup
+        # was accepted by seeing if get_text() returns something.
+        l = Gtk.Label()
+        # add a character in case text is empty.
+        # this might print a warning to stderr.. no idea how to prevent that..
+        l.set_markup(text + " ")
+        if not l.get_text():
+            raise ValueError(e)
+
+
 class PatternEditBox(TextEditBox):
     """A TextEditBox that stops the apply button's clicked signal if
     the pattern is invalid. You need to use connect_after to connect to
     it, to get this feature."""
 
-    def __init__(self, default=""):
+    def __init__(self, default="", alternative_markup=True, links=False):
         super(PatternEditBox, self).__init__(default)
+        self._alternative_markup = alternative_markup
+        self._links = links
         self.apply.connect('clicked', self.__check_markup)
 
     def __check_markup(self, apply):
         try:
-            f = AudioFile({"~filename": "dummy"})
-            Pango.parse_markup(XMLFromPattern(self.text) % f, -1, u"\u0000")
-        except (ValueError, GLib.GError), e:
+            validate_markup_pattern(
+                self.text, self._alternative_markup, self._links)
+        except ValueError as e:
             qltk.ErrorMessage(
                 self, _("Invalid pattern"),
                 _("The pattern you entered was invalid. Make sure you enter "
@@ -102,7 +146,7 @@ class TextEdit(qltk.UniqueWindow):
 
     Box = TextEditBox
 
-    def __init__(self, parent, default=""):
+    def __init__(self, parent, default="", **kwargs):
         if self.is_not_unique():
             return
         super(TextEdit, self).__init__()
@@ -118,7 +162,7 @@ class TextEdit(qltk.UniqueWindow):
         b.set_layout(Gtk.ButtonBoxStyle.END)
         b.pack_start(close, True, True, 0)
 
-        self.box = box = self.Box(default)
+        self.box = box = self.Box(default, **kwargs)
         vbox.pack_start(box, True, True, 0)
         self.use_header_bar()
         if not self.has_close_button():

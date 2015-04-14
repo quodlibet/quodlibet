@@ -426,7 +426,8 @@ def XMLFromPattern(string):
 
 def pattern_from_markup(string):
 
-    tags = ["b", "big", "i", "s", "sub", "sup", "small", "tt", "u", "span"]
+    tags = ["b", "big", "i", "s", "sub", "sup", "small", "tt", "u", "span",
+            "a"]
     pat = "(?:%s)" % "|".join(tags)
 
     def repl_func(match):
@@ -436,7 +437,7 @@ def pattern_from_markup(string):
         return r"%s\<%s\>" % (pre, body)
 
     string = re.sub(r"(\\*)\[(/?%s\s*)\]" % pat, repl_func, string)
-    string = re.sub(r"(\\*)\[(span\s+.*?)\]", repl_func, string)
+    string = re.sub(r"(\\*)\[((a|span)\s+.*?)\]", repl_func, string)
     return string
 
 

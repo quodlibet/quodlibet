@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from tests import TestCase
 
-from quodlibet.qltk.textedit import TextEditBox, TextEdit
+from quodlibet.qltk.textedit import TextEditBox, TextEdit, \
+    validate_markup_pattern
 
 
 class TTextEditBox(TestCase):
@@ -42,3 +43,25 @@ class TTextEditBox2(TestCase):
 class TTextEdit2(TTextEditBox2):
     def setUp(self):
         self.foobar = TextEdit(None, "foobar")
+
+
+class Tvalidate_markup_pattern(TestCase):
+
+    def test_valid(self):
+        for t in [u"", u"<foo>", u"\<b\><foo>bar\</b\>", u"[b]"]:
+            validate_markup_pattern(t, False, False)
+
+        for t in [u"[b][/b]"]:
+            validate_markup_pattern(t, True, False)
+
+        for t in [u"[a href=''][/a]", u"\<a href=''\>\</a\>"]:
+            validate_markup_pattern(t, True, True)
+
+    def test_invalid(self):
+        for t in [u"\<", u"\<a href=''\>\</a\>"]:
+            self.assertRaises(
+                ValueError, validate_markup_pattern, t, False, False)
+
+        for t in [u"[b]"]:
+            self.assertRaises(
+                ValueError, validate_markup_pattern, t, True, False)

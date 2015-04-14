@@ -50,6 +50,7 @@ class SongInfo(Gtk.EventBox):
         align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)
         label = Gtk.Label()
         label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
+        label.set_track_visited_links(False)
         label.set_selectable(True)
         align.add(label)
         label.set_alignment(0.0, 0.0)
@@ -112,7 +113,8 @@ class SongInfo(Gtk.EventBox):
         return song_menu
 
     def _on_edit_display(self, menu_item, player):
-        editor = PatternEdit(self, SongInfo._pattern)
+        editor = PatternEdit(
+            self, SongInfo._pattern, alternative_markup=True, links=True)
         editor.text = self._pattern
         editor.apply.connect('clicked', self._on_set_pattern, editor, player)
         editor.show()
