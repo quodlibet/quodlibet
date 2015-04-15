@@ -84,7 +84,7 @@ class NullPlayer(BasePlayer):
         self._position = 0
 
     def can_play_uri(self, uri):
-        return False
+        return True
 
 
 def init(librarian):

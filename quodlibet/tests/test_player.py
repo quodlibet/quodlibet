@@ -212,10 +212,10 @@ class TNullPlayer(TPlayer):
         self.player.stop()
         self.assertEqual(self.player.get_position(), 0)
 
-    def test_can_play_uri_xine(self):
-        self.assertFalse(self.player.can_play_uri(""))
-        self.assertFalse(self.player.can_play_uri("file://"))
-        self.assertFalse(self.player.can_play_uri("fake://"))
+    def test_can_play_uri_null(self):
+        self.assertTrue(self.player.can_play_uri(""))
+        self.assertTrue(self.player.can_play_uri("file://"))
+        self.assertTrue(self.player.can_play_uri("fake://"))
 
 
 has_xine = True
