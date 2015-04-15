@@ -1190,3 +1190,13 @@ def set_win32_unicode_argv():
     sys.argv = argv[max(0, argc.value - len(sys.argv)):argc.value]
 
     LocalFree(argv)
+
+
+def reraise(tp, value, tb=None):
+    """Reraise an exception with a new exception type and
+    the original stack trace
+    """
+
+    if tb is None:
+        tb = sys.exc_info()[2]
+    raise tp, value, tb

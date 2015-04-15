@@ -43,8 +43,9 @@ def main():
     quodlibet.init(icon=icons.EXFALSO, name=app.name, proc_title=app.id)
 
     import quodlibet.library
+    import quodlibet.player
     app.library = quodlibet.library.init()
-    app.player = quodlibet.init_backend("nullbe", app.librarian)
+    app.player = quodlibet.player.init_player("nullbe", app.librarian)
     from quodlibet.qltk.songlist import PlaylistModel
     app.player.setup(PlaylistModel(), None, 0)
     pm = quodlibet.init_plugins()

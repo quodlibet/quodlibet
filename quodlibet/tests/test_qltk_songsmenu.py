@@ -13,7 +13,7 @@ class TSongsMenu(TestCase):
     def setUp(self):
         config.init()
         self.library = SongLibrary()
-        backend = quodlibet.player.init("nullbe")
+        backend = quodlibet.player.init_backend("nullbe")
         self.device = backend.init(self.library)
 
         self.songs = [AudioFile({"title": x}) for x in

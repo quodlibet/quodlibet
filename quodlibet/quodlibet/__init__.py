@@ -461,14 +461,6 @@ def init_plugins(no_plugins=False):
     return pm
 
 
-def init_backend(backend, librarian):
-    import quodlibet.player
-    print_d("Initializing audio backend (%s)" % backend)
-    backend = quodlibet.player.init(backend)
-    device = backend.init(librarian)
-    return device
-
-
 def enable_periodic_save(save_library):
     import quodlibet.library
     from quodlibet.util import copool

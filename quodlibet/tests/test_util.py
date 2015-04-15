@@ -12,6 +12,7 @@ import tempfile
 import os
 import sys
 import threading
+import traceback
 import time
 from quodlibet import util
 from quodlibet import config
@@ -1063,3 +1064,18 @@ class Tset_win32_unicode_argv(TestCase):
                 self.assertTrue(isinstance(sys.argv[0], text_type))
         finally:
             sys.argv = old_argv
+
+
+class Treraise(TestCase):
+
+    def test_reraise(self):
+        try:
+            try:
+                raise ValueError("foo")
+            except Exception as e:
+                util.reraise(TypeError, e)
+        except Exception as e:
+            self.assertTrue(isinstance(e, TypeError))
+            self.assertTrue("ValueError" in traceback.format_exc())
+        else:
+            self.assertTrue(False)

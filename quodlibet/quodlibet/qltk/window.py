@@ -17,6 +17,28 @@ from quodlibet.util import DeferredSignal
 from quodlibet.util import connect_obj, connect_destroy
 
 
+def on_first_map(window, callback, *args, **kwargs):
+    """Calls callback when the passed Gtk.Window is first visible
+    on screen or it already is.
+    """
+
+    assert isinstance(window, Gtk.Window)
+
+    if window.get_mapped():
+        callback(*args, **kwargs)
+        return False
+
+    id_ = [0]
+
+    def on_map(*otherargs):
+        window.disconnect(id_[0])
+        callback(*args, **kwargs)
+
+    id_[0] = window.connect("map", on_map)
+
+    return False
+
+
 def should_use_header_bar():
     settings = Gtk.Settings.get_default()
     if not settings:

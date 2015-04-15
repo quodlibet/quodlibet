@@ -35,7 +35,7 @@ class TPlayer(AbstractTestCase):
     def setUp(self):
         config.init()
         config.set("player", "gst_pipeline", "fakesink")
-        module = player.init(self.NAME)
+        module = player.init_backend(self.NAME)
         lib = library.init()
         self.player = module.init(lib.librarian)
         source = PlaylistModel()
@@ -220,7 +220,7 @@ class TNullPlayer(TPlayer):
 
 has_xine = True
 try:
-    player.init("xinebe")
+    player.init_backend("xinebe")
 except player.PlayerError:
     has_xine = False
 
@@ -237,7 +237,7 @@ class TXinePlayer(TPlayer):
 
 has_gstbe = True
 try:
-    player.init("gstbe")
+    player.init_backend("gstbe")
 except player.PlayerError:
     has_gstbe = False
 

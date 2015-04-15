@@ -1,11 +1,26 @@
 # -*- coding: utf-8 -*-
 from tests import TestCase
 
-from quodlibet.qltk.window import Window
+from quodlibet.qltk.window import Window, on_first_map
 from quodlibet.util import InstanceTracker
 
 
 class TWindows(TestCase):
+
+    def test_on_first_map(self):
+        w = Window()
+
+        calls = []
+
+        def foo(*args):
+            calls.append(args)
+
+        on_first_map(w, foo, 1)
+        w.show()
+        self.assertEqual(calls, [(1,)])
+        on_first_map(w, foo, 2)
+        self.assertEqual(calls, [(1,), (2,)])
+        w.destroy()
 
     def test_ctr(self):
         Window().destroy()

@@ -28,6 +28,7 @@ def main():
     finally:
         sys.modules.pop("gi.repository.Gtk", None)
 
+    import traceback
     import quodlibet
     from quodlibet import app
     from quodlibet.qltk import add_signal_watch, icons
@@ -39,6 +40,7 @@ def main():
     from quodlibet import browsers
     from quodlibet import const
     from quodlibet import util
+    from quodlibet.util.string import decode
 
     config.init(const.CONFIG)
 
@@ -53,15 +55,16 @@ def main():
     library = quodlibet.library.init(const.LIBRARY)
     app.library = library
 
-    from quodlibet.player import PlayerError
-    backend = os.environ.get(
-        "QUODLIBET_BACKEND", config.get("player", "backend"))
     # this assumes that nullbe will always succeed
-    for backend in [backend, "nullbe"]:
+    from quodlibet.player import PlayerError
+    wanted_backend = os.environ.get(
+        "QUODLIBET_BACKEND", config.get("player", "backend"))
+    backend_traceback = None
+    for backend in [wanted_backend, "nullbe"]:
         try:
-            player = quodlibet.init_backend(backend, app.librarian)
-        except PlayerError as error:
-            print_e("%s. %s" % (error.short_desc, error.long_desc))
+            player = quodlibet.player.init_player(backend, app.librarian)
+        except PlayerError:
+            backend_traceback = decode(traceback.format_exc())
         else:
             break
     app.player = player
@@ -134,6 +137,21 @@ def main():
         library, player,
         restore_cb=lambda:
             GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH))
+
+    from quodlibet.qltk.debugwindow import MinExceptionDialog
+    from quodlibet.qltk.window import on_first_map
+    if backend_traceback is not None:
+        def show_backend_error(window):
+            d = MinExceptionDialog(window,
+                _("Audio Backend Failed to Load"),
+                _("Loading the audio backend '%(name)s' failed. "
+                  "Audio playback will be disabled.") %
+                {"name": wanted_backend},
+                backend_traceback)
+            d.run()
+
+        # so we show the main window first
+        on_first_map(app.window, show_backend_error, app.window)
 
     from quodlibet.plugins.events import EventPluginHandler
     pm.register_handler(EventPluginHandler(library.librarian, player))

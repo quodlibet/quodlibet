@@ -9,11 +9,48 @@ from gi.repository import Gtk
 
 from quodlibet import const
 from quodlibet import util
+from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk import get_top_parent, Align
 from quodlibet.util.path import unexpand, mkdir
 from quodlibet.util import connect_obj
 from quodlibet.util import logging
 
 old_hook = sys.excepthook
+
+
+class MinExceptionDialog(ErrorMessage):
+    """A dialog which shows a title, description and an expandable
+    error report.
+
+    For example decode(traceback.format_exc()) for displaying details
+    about an exception.
+    """
+
+    def __init__(self, parent, title, description, traceback):
+        super(MinExceptionDialog, self).__init__(
+            get_top_parent(parent),
+            title, description)
+
+        assert isinstance(title, unicode)
+        assert isinstance(description, unicode)
+        assert isinstance(traceback, unicode)
+
+        exp = Gtk.Expander(label=_("Error Details"))
+        lab = Gtk.Label(label=traceback)
+        lab.set_alignment(0.0, 0.0)
+        lab.set_selectable(True)
+        win = Gtk.ScrolledWindow()
+        win.add_with_viewport(Align(lab, border=6))
+        win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        win.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        win.set_size_request(500, 150)
+        win.show_all()
+        exp.add(win)
+        exp.set_resize_toplevel(True)
+
+        area = self.get_message_area()
+        exp.show()
+        area.pack_start(exp, False, True, 0)
 
 
 class ExceptionDialog(Gtk.Window):
