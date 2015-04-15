@@ -18,7 +18,7 @@ The following distributions package Quod Libet:
 
 * Arch Linux: https://www.archlinux.org/packages/extra/any/quodlibet/
 * Debian: https://packages.debian.org/source/sid/quodlibet
-* Fedora: https://admin.fedoraproject.org/pkgdb/acls/name/quodlibet
+* Fedora: https://admin.fedoraproject.org/pkgdb/package/quodlibet/
 
 The Ubuntu PPA / unstable repo builds are automated by the following scripts:
 
