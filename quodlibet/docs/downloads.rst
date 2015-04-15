@@ -38,6 +38,8 @@ Downloads
 **Development:** |source-logo| :ref:`Release Tarballs <tarballs>`
 ================ ================================================ ==========================================
 
+All files are signed with the following key: `0EBF 782C 5D53 F7E5 FB02  A667 46BD 761F 7A49 B0EC <http://keyserver.ubuntu.com/pks/lookup?op=vindex&search=0x46BD761F7A49B0EC&fingerprint=on>`__
+
 ----
 
 
