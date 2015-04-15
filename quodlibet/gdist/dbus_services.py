@@ -53,6 +53,7 @@ class install_dbus_services(Command):
 
     def initialize_options(self):
         self.install_dir = None
+        self.install_scripts = None
         self.skip_build = None
         self.dbus_services = None
         self.build_base = None
@@ -66,6 +67,7 @@ class install_dbus_services(Command):
         self.set_undefined_options(
             'install',
             ('install_data', 'install_dir'),
+            ('install_scripts', 'install_scripts'),
             ('skip_build', 'skip_build'))
 
         self.set_undefined_options(
@@ -91,7 +93,7 @@ class install_dbus_services(Command):
             fullpath = os.path.join(basepath, service_name)
             (out, _) = self.copy_file(fullsrc, fullpath)
             self.outfiles.append(out)
-            _replace(fullpath, "@PREFIX@", self.install_dir)
+            _replace(fullpath, "@PREFIX@", self.install_scripts)
 
 
 __all__ = ["build_dbus_services", "install_dbus_services"]
