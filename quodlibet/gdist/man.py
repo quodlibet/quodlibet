@@ -13,7 +13,6 @@ Commands to install Unix man pages.
 
 import os
 
-from distutils.util import change_root
 from distutils.core import Command
 
 
@@ -30,20 +29,18 @@ class install_man(Command):
     def initialize_options(self):
         self.man_pages = None
         self.mandir = None
-        self.prefix = None
-        self.root = None
+        self.install_dir = None
         self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options(
             'install',
-            ('root', 'root'),
-            ('install_base', 'prefix'),
+            ('install_data', 'install_dir'),
             ('mandir', 'mandir'),
         )
 
         if self.mandir is None:
-            self.mandir = os.path.join(self.prefix, 'share', 'man')
+            self.mandir = os.path.join(self.install_dir, 'share', 'man')
 
         self.man_pages = self.distribution.man_pages
         for man_page in self.man_pages:
@@ -55,8 +52,6 @@ class install_man(Command):
 
     def run(self):
         basepath = self.mandir
-        if self.root is not None:
-            basepath = change_root(self.root, basepath)
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
 
