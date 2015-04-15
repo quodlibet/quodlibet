@@ -1218,7 +1218,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             self.__first_browser_set = False
 
             song = library.librarian.get(config.get("memory", "song"))
-            seek_pos = config.getint("memory", "seek", 0)
+            seek_pos = config.getfloat("memory", "seek", 0)
             config.set("memory", "seek", 0)
             if song is not None:
                 player.setup(self.playlist, song, seek_pos)
