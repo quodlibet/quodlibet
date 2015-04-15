@@ -14,10 +14,10 @@ from distutils.core import Command
 class install_search_provider(Command):
 
     user_options = []
-    install_dir = None
-    search_provider = None
 
     def initialize_options(self):
+        self.install_dir = None
+        self.search_provider = None
         self.outfiles = []
 
     def finalize_options(self):

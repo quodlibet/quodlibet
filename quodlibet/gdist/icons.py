@@ -34,9 +34,9 @@ class install_icons(Command):
     """Copy app icons to hicolor/pixmaps and update the global cache"""
 
     user_options = []
-    install_dir = None
 
     def initialize_options(self):
+        self.install_dir = None
         self.outfiles = []
 
     def finalize_options(self):

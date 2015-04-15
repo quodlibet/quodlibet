@@ -21,10 +21,9 @@ class build_shortcuts(Command):
 
     description = "build .desktop files"
     user_options = []
-    build_base = None
 
     def initialize_options(self):
-        pass
+        self.build_base = None
 
     def finalize_options(self):
         self.shortcuts = self.distribution.shortcuts
@@ -61,12 +60,11 @@ class install_shortcuts(Command):
     description = "install .desktop files"
     user_options = []
 
-    install_dir = None
-    skip_build = None
-    shortcuts = None
-    build_base = None
-
     def initialize_options(self):
+        self.install_dir = None
+        self.skip_build = None
+        self.shortcuts = None
+        self.build_base = None
         self.outfiles = []
 
     def finalize_options(self):

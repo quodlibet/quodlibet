@@ -26,6 +26,9 @@ class clean(distutils_clean, Command):
 
     def initialize_options(self):
         distutils_clean.initialize_options(self)
+        self.shortcuts = None
+        self.po_package = None
+        self.po_directory = None
 
     def finalize_options(self):
         distutils_clean.finalize_options(self)

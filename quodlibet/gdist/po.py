@@ -31,7 +31,8 @@ class po_stats(Command):
     user_options = []
 
     def initialize_options(self):
-        pass
+        self.po_directory = None
+        self.po_files = None
 
     def finalize_options(self):
         self.po_directory = self.distribution.po_directory

@@ -25,10 +25,11 @@ class build_appdata(Command):
 
     description = "build .appdata.xml files"
     user_options = []
-    build_base = None
 
     def initialize_options(self):
-        pass
+        self.build_base = None
+        self.po_directory = None
+        self.appdata = None
 
     def finalize_options(self):
         self.appdata = self.distribution.appdata
@@ -59,12 +60,11 @@ class install_appdata(Command):
     description = "install .appdata.xml files"
     user_options = []
 
-    install_dir = None
-    skip_build = None
-    appdata = None
-    build_base = None
-
     def initialize_options(self):
+        self.install_dir = None
+        self.skip_build = None
+        self.appdata = None
+        self.build_base = None
         self.outfiles = []
 
     def finalize_options(self):

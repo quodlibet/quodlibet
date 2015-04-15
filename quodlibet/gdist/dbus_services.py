@@ -19,6 +19,7 @@ class build_dbus_services(Command):
 
     def initialize_options(self):
         self.build_base = None
+        self.dbus_services = None
 
     def finalize_options(self):
         self.dbus_services = self.distribution.dbus_services
