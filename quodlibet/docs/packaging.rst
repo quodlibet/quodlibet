@@ -167,6 +167,8 @@ Changes
   **adwaita-icon-theme** provides both for example.
 * **Mutagen 1.22** required, **Mutagen 1.27** recommended
 * New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
+* **quodlibet.desktop** now contains a **MimeType** entry, which means
+  calling **update-desktop-database** is needed after package installation.
 
 
 3.2 → 3.3
