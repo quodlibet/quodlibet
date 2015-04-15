@@ -47,7 +47,7 @@ from quodlibet.util.uri import URI
 from quodlibet.util import connect_obj
 from quodlibet.util.path import glib2fsnative
 from quodlibet.util.library import background_filter, scan_library
-from quodlibet.qltk.window import PersistentWindowMixin, Window
+from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import SongListColumn
 
 
@@ -612,7 +612,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.connect('drag-data-received', self.__drag_data_received)
 
         if not headless:
-            GLib.idle_add(self.__configure_scan_dirs, library)
+            on_first_map(self, self.__configure_scan_dirs, library)
 
         if config.getboolean('library', 'refresh_on_start'):
             self.__rebuild(None, False)
