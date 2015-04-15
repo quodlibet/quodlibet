@@ -8,7 +8,6 @@
 
 import os
 
-from distutils.util import change_root
 from distutils.core import Command
 
 
@@ -53,11 +52,10 @@ class install_dbus_services(Command):
     user_options = []
 
     def initialize_options(self):
-        self.prefix = None
+        self.install_dir = None
         self.skip_build = None
         self.dbus_services = None
         self.build_base = None
-        self.root = None
         self.outfiles = []
 
     def finalize_options(self):
@@ -67,8 +65,7 @@ class install_dbus_services(Command):
 
         self.set_undefined_options(
             'install',
-            ('root', 'root'),
-            ('install_base', 'prefix'),
+            ('install_data', 'install_dir'),
             ('skip_build', 'skip_build'))
 
         self.set_undefined_options(
@@ -82,9 +79,8 @@ class install_dbus_services(Command):
         if not self.skip_build:
             self.run_command('build_dbus_services')
 
-        basepath = os.path.join(self.prefix, 'share', 'dbus-1', 'services')
-        if self.root is not None:
-            basepath = change_root(self.root, basepath)
+        basepath = os.path.join(
+            self.install_dir, 'share', 'dbus-1', 'services')
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
 
@@ -95,7 +91,7 @@ class install_dbus_services(Command):
             fullpath = os.path.join(basepath, service_name)
             (out, _) = self.copy_file(fullsrc, fullpath)
             self.outfiles.append(out)
-            _replace(fullpath, "@PREFIX@", self.prefix)
+            _replace(fullpath, "@PREFIX@", self.install_dir)
 
 
 __all__ = ["build_dbus_services", "install_dbus_services"]
