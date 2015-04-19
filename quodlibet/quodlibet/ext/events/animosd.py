@@ -73,7 +73,7 @@ class OSDWindow(Gtk.Window):
 
         # now calculate size of window
         mgeo = screen.get_monitor_geometry(conf.monitor)
-        coverwidth = min(120, mgeo.width // 8)
+        coverwidth = min(conf.coversize, mgeo.width // 8)
         textwidth = mgeo.width - 2 * (conf.border + conf.margin)
         if cover is not None:
             textwidth -= coverwidth + conf.border
@@ -403,6 +403,11 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             self.config_set("corners", str(self.Conf.corners))
             show_preview()
 
+        def change_coversize(button):
+            value = int(button.get_value())
+            self.config_set("coversize", str(value))
+            self.Conf.coversize = value
+
         def edit_pattern(button):
             w = PatternEdit(button, AnimOsd.ConfDef.string)
             w.set_default_size(520, 260)
@@ -449,6 +454,18 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
 
             hb.pack_start(lbl, False, True, 0)
             hb.pack_start(cb, False, True, 0)
+            vb2.pack_start(hb, False, True, 0)
+
+            hb = Gtk.HBox(spacing=6)
+            coversize = Gtk.SpinButton(
+                adjustment=Gtk.Adjustment.new(
+                    self.Conf.coversize, 120, 600, 1, 10, 0),
+                climb_rate=1, digits=0)
+            coversize.set_numeric(True)
+            coversize.connect('value-changed', change_coversize)
+            l1 = ConfigLabel(_("_Cover Size:"), coversize)
+            hb.pack_start(l1, False, True, 0)
+            hb.pack_start(coversize, False, True, 0)
             vb2.pack_start(hb, False, True, 0)
             return vb2
 
@@ -580,6 +597,8 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         align = 1
         # rounded corner radius, 0 for angled corners
         corners = 0
+        # cover size, min and default to 120, max to 600 
+        coversize = 120
         # color,alpha or (-1.0,0.0,0.0,0.0) - surrounds text and cover
         outline = (-1.0, 0.0, 0.0, 0.2)
         # color,alpha or (-1.0,0.0,0.0) - shadows outline for text and cover
@@ -613,6 +632,7 @@ by <~people>>""")
             ('outline', str_to_tuple),
             ('bcolor', str_to_tuple),
             ('corners', float),
+            ('coversize', int),
             ('font', None),
             ('align', int),
             ('delay', int),
