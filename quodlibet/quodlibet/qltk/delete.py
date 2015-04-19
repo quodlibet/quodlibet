@@ -141,7 +141,7 @@ class TrashDialog(WarningMessage):
 
 
 def TrashMenuItem():
-    return (MenuItem(_("_Move to Trash"), "user-trash") if trash.can_trash()
+    return (MenuItem(_("_Move to Trash"), "user-trash") if trash.use_trash()
             else Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True))
 
 
@@ -283,7 +283,7 @@ def trash_files(parent, paths):
         return
 
     # depends on the platform if we can
-    if trash.can_trash():
+    if trash.use_trash():
         _do_trash_files(parent, paths)
     else:
         _do_delete_files(parent, paths)
@@ -302,7 +302,7 @@ def trash_songs(parent, songs, librarian):
         return
 
     # depends on the platform if we can
-    if trash.can_trash():
+    if trash.use_trash():
         _do_trash_songs(parent, songs, librarian)
     else:
         _do_delete_songs(parent, songs, librarian)

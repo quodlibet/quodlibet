@@ -114,6 +114,10 @@ INITIAL = {
         # tags which get searched in addition to the ones present in the
         # song list, separate with ","
         "search_tags": "",
+
+        # If set to "true" allow directly deleting files, even on systems that
+        # support sending them to the trash.
+        "bypass_trash": "false",
     },
     "rename": {
         "spaces": "false",
