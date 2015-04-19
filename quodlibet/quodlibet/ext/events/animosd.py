@@ -464,7 +464,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
                 climb_rate=1, digits=0)
             coversize.set_numeric(True)
             coversize.connect('value-changed', change_coversize)
-            l1 = ConfigLabel(_("_Cover Size:"), coversize)
+            l1 = ConfigLabel(_("_Cover size:"), coversize)
             hb.pack_start(l1, False, True, 0)
             hb.pack_start(coversize, False, True, 0)
             vb2.pack_start(hb, False, True, 0)
@@ -598,7 +598,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
         align = 1
         # rounded corner radius, 0 for angled corners
         corners = 0
-        # cover size, min and default to 120, max to 600 
+        # cover size, min and default to 120, max to 600
         coversize = 120
         # color,alpha or (-1.0,0.0,0.0,0.0) - surrounds text and cover
         outline = (-1.0, 0.0, 0.0, 0.2)
