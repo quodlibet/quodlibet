@@ -407,6 +407,7 @@ class AnimOsd(EventPlugin, PluginConfigMixin):
             value = int(button.get_value())
             self.config_set("coversize", str(value))
             self.Conf.coversize = value
+            show_preview()
 
         def edit_pattern(button):
             w = PatternEdit(button, AnimOsd.ConfDef.string)
