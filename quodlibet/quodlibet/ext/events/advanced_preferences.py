@@ -46,8 +46,8 @@ class AdvancedPreferences(EventPlugin):
         rows.append((Gtk.Label(label=_("ID3 encodings:")), ve))
 
         ve = Gtk.Entry()
-        ve.set_tooltip_text(_("Tags which get searched in addition to the ones present in the "
-            "song list, separate with \",\""))
+        ve.set_tooltip_text(_("Tags which get searched in addition to "
+            "the ones present in the song list, separate with \",\""))
         ve.set_text(config.get("settings", "search_tags"))
         ve.connect('changed', changed, 'search_tags', 'settings')
         rows.append((Gtk.Label(label=_("Search tags:")), ve))
@@ -59,5 +59,10 @@ class AdvancedPreferences(EventPlugin):
             table.attach(entry, 1, 2, row, row + 1)
 
         vb.pack_start(table, True, True, 0)
+
+        disable_hints = ConfigCheckButton(_("Disable hints"),
+                 'settings', 'disable_hints', populate=True,
+                 tooltip=_("Disable popup windows (treeview hints)"))
+        vb.pack_start(disable_hints, True, True, 0)
 
         return vb
