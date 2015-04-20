@@ -17,8 +17,12 @@
     </_p>
     </description>
     <screenshots>
-        <screenshot type="default" width="834" height="670">https://quodlibet.readthedocs.org/en/latest/_images/paned1.png</screenshot>
-        <screenshot width="1236" height="803">https://quodlibet.readthedocs.org/en/latest/_images/queue_2browsers1.png</screenshot>
+        <screenshot type="default">
+            <image>https://quodlibet.readthedocs.org/en/latest/_images/paned1.png</image>
+        </screenshot>
+        <screenshot>
+            <image>https://quodlibet.readthedocs.org/en/latest/_images/queue_2browsers1.png</image>
+        </screenshot>
     </screenshots>
     <url type="homepage">https://quodlibet.readthedocs.org</url>
     <updatecontact>quod-libet-development@googlegroups.com</updatecontact>
