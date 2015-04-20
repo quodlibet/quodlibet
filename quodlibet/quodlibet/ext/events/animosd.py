@@ -16,7 +16,7 @@ import gi
 gi.require_version("PangoCairo", "1.0")
 
 from gi.repository import Gtk, GObject, GLib
-from gi.repository import Gdk, GdkPixbuf
+from gi.repository import Gdk
 from gi.repository import Pango, PangoCairo
 import cairo
 
@@ -24,11 +24,13 @@ from math import pi
 
 from quodlibet import config, qltk, app
 from quodlibet.qltk.textedit import PatternEdit
+from quodlibet.qltk.image import set_ctx_source_from_pbosf, get_scale_factor, \
+    get_pbosf_for_pixbuf, pbosf_get_width, pbosf_get_height
 from quodlibet.formats import DUMMY_SONG
 from quodlibet import pattern
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.util.dprint import print_d, print_w
+from quodlibet.util.dprint import print_d
 from quodlibet.util import connect_obj
 
 
@@ -60,28 +62,19 @@ class OSDWindow(Gtk.Window):
         self.fading_in = False
         self.fade_start_time = 0
 
-        cover = app.cover_manager.get_cover(song)
-        try:
-            if cover is not None:
-                cover = GdkPixbuf.Pixbuf.new_from_file(cover.name)
-        except GLib.GError, gerror:
-            print_w('GDK error while loading cover image: %s'
-                    % gerror.message)
-        except:
-            from traceback import format_exc
-            print_w("Error loading cover image: %s" % format_exc())
-
-        # now calculate size of window
         mgeo = screen.get_monitor_geometry(conf.monitor)
-        coverwidth = min(conf.coversize, mgeo.width // 8)
         textwidth = mgeo.width - 2 * (conf.border + conf.margin)
-        if cover is not None:
+
+        scale_factor = get_scale_factor(self)
+        self.cover_pixbuf = app.cover_manager.get_pixbuf(
+            song, conf.coversize * scale_factor, conf.coversize * scale_factor)
+        coverheight = 0
+        coverwidth = 0
+        if self.cover_pixbuf:
+            self.cover_pixbuf = get_pbosf_for_pixbuf(self, self.cover_pixbuf)
+            coverwidth = self.cover_pixbuf.get_width() // scale_factor
+            coverheight = self.cover_pixbuf.get_height() // scale_factor
             textwidth -= coverwidth + conf.border
-            coverheight = int(cover.get_height() * float(coverwidth)
-                              / cover.get_width())
-        else:
-            coverheight = 0
-        self.cover_pixbuf = cover
 
         layout = self.create_pango_layout('')
         layout.set_alignment((Pango.Alignment.LEFT, Pango.Alignment.CENTER,
@@ -100,7 +93,7 @@ class OSDWindow(Gtk.Window):
         self.title_layout = layout
 
         winw = layoutsize[0] + 2 * conf.border
-        if cover is not None:
+        if coverwidth:
             winw += coverwidth + conf.border
         winh = max(coverheight, layoutsize[1]) + 2 * conf.border
         self.set_default_size(winw, winh)
@@ -237,9 +230,9 @@ class OSDWindow(Gtk.Window):
                                     0.6 * self.conf.corners * rect.width)
                 cr.stroke()
 
-            Gdk.cairo_set_source_pixbuf(cr, pbuf, 0, 0)
-            transmat.scale(pbuf.get_width() / float(rect.width),
-                           pbuf.get_height() / float(rect.height))
+            set_ctx_source_from_pbosf(cr, pbuf)
+            transmat.scale(pbosf_get_width(self, pbuf) / float(rect.width),
+                           pbosf_get_height(self, pbuf) / float(rect.height))
             transmat.translate(-rect.x, -rect.y)
             cr.get_source().set_matrix(transmat)
             self.draw_conf_rect(cr,

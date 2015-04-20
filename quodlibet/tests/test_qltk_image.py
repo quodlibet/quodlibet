@@ -6,7 +6,9 @@ from gi.repository import Gtk, GdkPixbuf, Gdk
 
 from quodlibet.qltk.image import set_renderer_from_pbosf, \
     set_image_from_pbosf, get_scale_factor, pbosf_get_property_name, \
-    get_pbosf_for_pixbuf, scale, calc_scale_size, add_border, add_border_widget
+    get_pbosf_for_pixbuf, scale, calc_scale_size, add_border, \
+    add_border_widget, pbosf_get_width, pbosf_get_height, \
+    set_ctx_source_from_pbosf
 
 
 class TImageUtils(TestCase):
@@ -106,3 +108,21 @@ class TImageUtils(TestCase):
         cell = Gtk.CellRendererText()
         add_border_widget(self.small, widget, cell, True)
         add_border_widget(self.small, widget, None, True)
+
+    def test_pbosf_get_width_height(self):
+        w = Gtk.Button()
+        rgb = GdkPixbuf.Colorspace.RGB
+        s = get_scale_factor(w)
+        newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, 10 * s, 15 * s)
+        pbosf = get_pbosf_for_pixbuf(w, newpb)
+        self.assertEqual(pbosf_get_width(w, pbosf), 10)
+        self.assertEqual(pbosf_get_height(w, pbosf), 15)
+
+    def test_set_ctx_source_from_pbosf(self):
+        sf = cairo.ImageSurface(cairo.FORMAT_RGB24, 10, 10)
+        ctx = cairo.Context(sf)
+
+        surface = cairo.ImageSurface(cairo.FORMAT_RGB24, 10, 10)
+        pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 4, 4)
+        set_ctx_source_from_pbosf(ctx, surface)
+        set_ctx_source_from_pbosf(ctx, pixbuf)

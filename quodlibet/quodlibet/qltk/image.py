@@ -50,6 +50,18 @@ def get_pbosf_for_pixbuf(widget, pixbuf):
         return pixbuf
 
 
+def pbosf_get_width(widget, pbosf):
+    """The scale independent width"""
+
+    return pbosf.get_width() / get_scale_factor(widget)
+
+
+def pbosf_get_height(widget, pbosf):
+    """The scale independent height"""
+
+    return pbosf.get_height() / get_scale_factor(widget)
+
+
 def pbosf_get_property_name(pbosf):
     """Gives the property name to use for the PixbufOrSurface."""
 
@@ -73,6 +85,17 @@ def set_image_from_pbosf(image, pbosf):
         return image.set_from_pixbuf(pbosf)
     else:
         return image.set_from_surface(pbosf)
+
+
+def set_ctx_source_from_pbosf(context, pbosf, x=0.0, y=0.0):
+    """Sets the passed PixbufOrSurface as a source for the
+    given cairo.Context
+    """
+
+    if isinstance(pbosf, GdkPixbuf.Pixbuf):
+        Gdk.cairo_set_source_pixbuf(context, pbosf, x, y)
+    else:
+        context.set_source_surface(pbosf, x, y)
 
 
 def pbosf_render(style_context, cairo_context, pbosf, x, y):
