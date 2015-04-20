@@ -186,8 +186,12 @@ class TopBar(Gtk.Toolbar):
                 app.cover_manager, 'cover-changed',
                 self.__song_art_changed, library)
 
-        self.image.props.margin = 2
-        box.pack_start(self.image, False, True, 0)
+        box.pack_start(Align(self.image, border=2), False, True, 0)
+
+        # On older Gtk+ (3.4, at least)
+        # setting a margin on CoverImage leads to errors and result in the
+        # QL window not beeing visible for some reason.
+        assert self.image.props.margin == 0
 
         for child in self.get_children():
             child.show_all()
