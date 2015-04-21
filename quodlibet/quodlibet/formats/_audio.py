@@ -16,7 +16,6 @@ import time
 
 from ._image import ImageContainer
 
-from quodlibet import const
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, is_fsnative
@@ -55,13 +54,37 @@ VARIOUS_ARTISTS_VALUES = 'V.A.', 'various artists', 'Various Artists'
 """Values for ~people representing lots of people, most important last"""
 
 
+def decode_value(tag, value):
+    """Returns a unicode representation of the passed value, based on
+    the type and the tag it originated from.
+
+    Not reversible.
+    """
+
+    if isinstance(value, unicode):
+        return value
+    elif isinstance(value, float):
+        return u"%.2f" % value
+    elif tag in FILESYSTEM_TAGS:
+        return fsdecode(value)
+    return unicode(value)
+
+
 class AudioFile(dict, ImageContainer):
     """An audio file. It looks like a dict, but implements synthetic
     and tied tags via __call__ rather than __getitem__. This means
     __getitem__, get, and so on can be used for efficiency.
 
     If you need to sort many AudioFiles, you can use their sort_key
-    attribute as a decoration."""
+    attribute as a decoration.
+
+    Keys are either ASCII str or unicode.
+    Values are always unicode except if the tag is part of FILESYSTEM_TAGS,
+    then the value is of the path type (str on UNIX, unicode on Windows)
+
+    Some methods will make sure the returned values are always unicode, see
+    their description.
+    """
 
     # New tags received from the backend will update the song
     fill_metadata = False
@@ -213,19 +236,22 @@ class AudioFile(dict, ImageContainer):
 
         If a tied tag ('a~b') is requested, the 'connector' keyword
         argument may be used to specify what it is tied with.
+        In case the tied tag contains numeric and file path tags, the result
+        will still be a unicode string.
 
-        For details on tied tags, see the documentation for util.tagsplit."""
+        For details on tied tags, see the documentation for util.tagsplit.
+        """
+
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
-                # FIXME: decode ~filename etc.
-                if not isinstance(default, basestring):
-                    return default
-                return connector.join(
-                    filter(None,
-                    map(lambda x: isinstance(x, basestring) and x or str(x),
-                    map(lambda x: (isinstance(x, float) and "%.2f" % x) or x,
-                    map(self.__call__, util.tagsplit("~" + key)))))) or default
+                real_key = "~" + key
+                values = []
+                for v in map(self.__call__, util.tagsplit(real_key)):
+                    v = decode_value(real_key, v)
+                    if v:
+                        values.append(v)
+                return connector.join(values) or default
             elif key == "#track":
                 try:
                     return int(self["tracknumber"].split("/")[0])
@@ -365,8 +391,8 @@ class AudioFile(dict, ImageContainer):
             title = dict.get(self, "title")
             if title is None:
                 basename = self("~basename")
-                basename = basename.decode(const.FSCODING, "replace")
-                return "%s [%s]" % (basename, _("Unknown"))
+                return "%s [%s]" % (
+                    decode_value("~basename", basename), _("Unknown"))
             else:
                 return title
         elif key in SORT_TO_TAG:
@@ -429,13 +455,19 @@ class AudioFile(dict, ImageContainer):
 
     def comma(self, key):
         """Get all values of a tag, separated by commas. Synthetic
-        tags are supported, but will be slower. If the value is
-        numeric, that is returned rather than a list."""
+        tags are supported, but will be slower. All list items
+        will be unicode.
+
+        If the value is numeric, that is returned rather than a list.
+        """
 
         if "~" in key or key == "title":
             v = self(key, u"")
+            if key in FILESYSTEM_TAGS:
+                v = fsdecode(v)
         else:
             v = self.get(key, u"")
+
         if isinstance(v, (int, long, float)):
             return v
         else:

@@ -4,9 +4,11 @@ from tests import TestCase, DATA_DIR
 import os
 
 from quodlibet import config
-from quodlibet.util.path import is_fsnative, fsnative
+from quodlibet.util.path import is_fsnative, fsnative, fsdecode
 from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
+from quodlibet.formats import decode_value
+
 
 bar_1_1 = AudioFile({
     "~filename": fsnative(u"/fakepath/1"),
@@ -125,6 +127,10 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(
                 song("~title~~#tracks"), song("~title~~#tracks"))
 
+    def test_tied_filename_numeric(self):
+        self.assertEqual(
+            bar_1_2("~~filename~~#originalyear"), u'/fakepath/2 - 2005')
+
     def test_call_numeric(self):
         self.failUnlessAlmostEqual(num_call("~#custom"), 0.3)
         self.failUnlessEqual(num_call("~#blah~foo", 0), 0)
@@ -155,6 +161,9 @@ class TAudioFile(TestCase):
         for key in bar_1_1.realkeys():
             self.failUnlessEqual(bar_1_1.comma(key), bar_1_1(key))
         self.failUnless(", " in bar_2_1.comma("artist"))
+
+    def test_comma_filename(self):
+        self.assertTrue(isinstance(bar_1_1.comma("~filename"), unicode))
 
     def test_exist(self):
         self.failIf(bar_2_1.exists())
@@ -538,6 +547,17 @@ class TAudioFile(TestCase):
 
     def tearDown(self):
         os.unlink(quux["~filename"])
+
+
+class Tdecode_value(TestCase):
+
+    def test_main(self):
+        self.assertEqual(decode_value("~#foo", 0.25), u"0.25")
+        self.assertEqual(decode_value("~#foo", 4), u"4")
+        self.assertEqual(decode_value("~#foo", "bar"), u"bar")
+        self.assertTrue(isinstance(decode_value("~#foo", "bar"), unicode))
+        path = fsnative(u"/foobar")
+        self.assertEqual(decode_value("~filename", path), fsdecode(path))
 
 
 class Treplay_gain(TestCase):

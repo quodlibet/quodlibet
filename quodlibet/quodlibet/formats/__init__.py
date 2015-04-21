@@ -99,9 +99,10 @@ def filter(filename):
 
 
 from quodlibet.formats._audio import PEOPLE
-from quodlibet.formats._audio import DUMMY_SONG
+from quodlibet.formats._audio import DUMMY_SONG, decode_value
 from quodlibet.formats._image import EmbeddedImage
 
 EmbeddedImage
 DUMMY_SONG
 PEOPLE
+decode_value
