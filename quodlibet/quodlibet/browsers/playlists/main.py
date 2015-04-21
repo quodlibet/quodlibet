@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2014 Nick Boultbee
+#    2012 - 2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -12,11 +12,8 @@ from tempfile import NamedTemporaryFile
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 
 from quodlibet import config
-from quodlibet import const
-from quodlibet import qltk
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
-from quodlibet.util.collection import Playlist
 from quodlibet.util import connect_obj
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
@@ -128,31 +125,26 @@ class PlaylistsBrowser(Browser):
     def __init__(self, library):
         super(PlaylistsBrowser, self).__init__(spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
-        self.__view = view = RCMHintedTreeView()
-        self.__view.set_enable_search(True)
-        self.__view.set_search_column(0)
-        self.__view.set_search_equal_func(
-            lambda model, col, key, iter, data:
-            not model[iter][col].name.lower().startswith(key.lower()), None)
-        self.__render = render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        render.connect('editing-started', self.__start_editing)
-        render.connect('edited', self.__edited)
-        col = Gtk.TreeViewColumn("Playlists", render)
-        col.set_cell_data_func(render, PlaylistsBrowser.cell_data)
-        view.append_column(col)
-        view.set_model(self.__lists)
-        view.set_rules_hint(True)
-        view.set_headers_visible(False)
+        self.__render = self.__create_cell_renderer()
+        self.__view = view = self.__create_playlists_view(self.__render)
+        self.__embed_in_scrolledwin(view)
+        self.__configure_buttons(library)
+        self.__configure_dnd(view, library)
+        self.__connect_signals(view, library)
+
+        for child in self.get_children():
+            child.show_all()
+
+    def __embed_in_scrolledwin(self, view):
         swin = ScrolledWindow()
         swin.set_shadow_type(Gtk.ShadowType.IN)
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.add(view)
         self.pack_start(swin, True, True, 0)
 
+    def __configure_buttons(self, library):
         newpl = qltk.Button(_("_New"), Gtk.STOCK_NEW, Gtk.IconSize.MENU)
         newpl.connect('clicked', self.__new_playlist)
-
         importpl = qltk.Button(_("_Import"), Gtk.STOCK_ADD, Gtk.IconSize.MENU)
         importpl.connect('clicked', self.__import, library)
         hb = Gtk.HBox(spacing=6)
@@ -161,17 +153,29 @@ class PlaylistsBrowser(Browser):
         hb.pack_start(importpl, True, True, 0)
         self.pack_start(Align(hb, left=3, bottom=3), False, True, 0)
 
-        view.connect('popup-menu', self.__popup_menu, library)
+    def __create_playlists_view(self, render):
+        view = RCMHintedTreeView()
+        view.set_enable_search(True)
+        view.set_search_column(0)
+        view.set_search_equal_func(
+            lambda model, col, key, iter, data:
+            not model[iter][col].name.lower().startswith(key.lower()), None)
+        col = Gtk.TreeViewColumn("Playlists", render)
+        col.set_cell_data_func(render, PlaylistsBrowser.cell_data)
+        view.append_column(col)
+        view.set_model(self.__lists)
+        view.set_rules_hint(True)
+        view.set_headers_visible(False)
+        return view
 
+    def __configure_dnd(self, view, library):
         targets = [
             ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
             ("text/uri-list", 0, DND_URI_LIST),
             ("text/x-moz-url", 0, DND_MOZ_URL)
         ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        view.drag_dest_set(Gtk.DestDefaults.ALL, targets,
-                           Gdk.DragAction.COPY)
+        view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         view.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets[:2],
                              Gdk.DragAction.COPY)
         view.connect('drag-data-received', self.__drag_data_received, library)
@@ -179,17 +183,21 @@ class PlaylistsBrowser(Browser):
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
 
+    def __connect_signals(self, view, library):
         view.connect('row-activated', lambda *x: self.songs_activated())
-
+        view.connect('popup-menu', self.__popup_menu, library)
         view.get_selection().connect('changed', self.activate)
-
-        s = view.get_model().connect('row-changed', self.__check_current)
-        connect_obj(self, 'destroy', view.get_model().disconnect, s)
-
+        model = view.get_model()
+        s = model.connect('row-changed', self.__check_current)
+        connect_obj(self, 'destroy', model.disconnect, s)
         self.connect('key-press-event', self.__key_pressed)
 
-        for child in self.get_children():
-            child.show_all()
+    def __create_cell_renderer(self):
+        render = Gtk.CellRendererText()
+        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.connect('editing-started', self.__start_editing)
+        render.connect('edited', self.__edited)
+        return render
 
     def key_pressed(self, event):
         if qltk.is_accel(event, "Delete"):
