@@ -7,6 +7,21 @@
 # published by the Free Software Foundation
 
 
+def isascii(string):
+    """Returns if the passed str/unicode is an ascii encoded string or
+    unicode string containing only ascii code points.
+    """
+
+    try:
+        if isinstance(string, str):
+            string.decode("ascii")
+        else:
+            string.encode("ascii")
+    except UnicodeError:
+        return False
+    return True
+
+
 def decode(s, charset="utf-8"):
     """Decode a string; if an error occurs, replace characters and append
     a note to the string."""

@@ -2,6 +2,7 @@
 from tests import TestCase
 
 from quodlibet.util.string.splitters import split_value
+from quodlibet.util.string import isascii
 
 
 class Tsplit_value(TestCase):
@@ -29,3 +30,14 @@ class Tsplit_value(TestCase):
     def test_unicode_wordboundry(self):
         val = '\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
         self.failUnlessEqual(split_value(val), val.split("&"))
+
+
+class Tisascii(TestCase):
+
+    def test_main(self):
+        self.assertTrue(isascii(""))
+        self.assertTrue(isascii(u""))
+        self.assertTrue(isascii("abc"))
+        self.assertTrue(isascii(u"abc"))
+        self.assertFalse(isascii("\xffbc"))
+        self.assertFalse(isascii(u"übc"))

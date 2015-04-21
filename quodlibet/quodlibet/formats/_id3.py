@@ -15,10 +15,7 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.formats._image import EmbeddedImage, APICType
 from quodlibet.util.massagers import LanguageMassager
 from quodlibet.util.path import get_temp_cover_file
-
-
-def isascii(s):
-    return (len(s) == 0) or (ord(max(s)) < 128)
+from quodlibet.util.string import isascii
 
 
 def encoding_for(s):

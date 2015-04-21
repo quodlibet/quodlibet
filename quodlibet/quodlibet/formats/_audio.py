@@ -20,7 +20,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, is_fsnative
 from quodlibet.util.path import normalize_path, fsnative, escape_filename
-from quodlibet.util.string import encode, decode
+from quodlibet.util.string import encode, decode, isascii
 
 from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
@@ -587,12 +587,7 @@ class AudioFile(dict, ImageContainer):
         if k is None:
             return True
 
-        try:
-            if isinstance(k, unicode):
-                k = k.encode("ascii")
-            else:
-                k.decode("ascii")
-        except UnicodeError:
+        if not isascii(k):
             return False
 
         if not k or "=" in k or "~" in k:
