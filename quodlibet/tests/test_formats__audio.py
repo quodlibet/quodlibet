@@ -157,6 +157,11 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_2_1.list_separate("~artist~~#track"),
                              ['Foo - 1', 'I have two artists - 1'])
 
+    def test_list_list_separate_types(self):
+        res = bar_2_1.list_separate("~~#track~artist~~filename")
+        self.assertEqual(res, [u'1 - Foo - does not/exist',
+                               u'1 - I have two artists - does not/exist'])
+
     def test_comma(self):
         for key in bar_1_1.realkeys():
             self.failUnlessEqual(bar_1_1.comma(key), bar_1_1(key))
