@@ -773,21 +773,24 @@ class AudioFile(dict, ImageContainer):
         else:
             self[key] += "\n" + value
 
-    def remove(self, key, value):
-        """Remove a value from the given key; if the value is not found,
-        remove all values for that key."""
+    def remove(self, key, value=None):
+        """Remove a value from the given key.
+
+        If value is None remove all values for that key, if it exists.
+        If the key or value is not found do nothing.
+        """
+
         if key not in self:
             return
-        elif self[key] == value:
-            del(self[key])
+        elif value is None or self[key] == value:
+            del self[key]
         else:
             try:
                 parts = self.list(key)
                 parts.remove(value)
-                self[key] = "\n".join(parts)
+                self[key] = u"\n".join(parts)
             except ValueError:
-                if key in self:
-                    del(self[key])
+                pass
 
     def replay_gain(self, profiles, pre_amp_gain=0, fallback_gain=0):
         """Return the computed Replay Gain scale factor.

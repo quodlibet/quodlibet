@@ -407,11 +407,26 @@ class TAudioFile(TestCase):
         song.remove("foo", "one more")
         self.failIf("foo" in song)
 
+    def test_remove_unknown(self):
+        song = AudioFile()
+        song.add("foo", "bar")
+        song.remove("foo", "not in list")
+        song.remove("nope")
+        self.failUnlessEqual(song.list("foo"), ["bar"])
+
+    def test_remove_all(self):
+        song = AudioFile()
         song.add("foo", "bar")
         song.add("foo", "another")
         song.add("foo", "one more")
-        song.remove("foo", "not in list")
-        self.failIf("foo" in song)
+        song.remove("foo")
+        self.assertFalse("foo" in song)
+
+    def test_remove_empty(self):
+        song = AudioFile()
+        song.add("foo", u"")
+        song.remove("foo", u"")
+        self.assertFalse("foo" in song)
 
     def test_change(self):
         song = AudioFile()
