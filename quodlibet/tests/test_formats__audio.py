@@ -370,6 +370,14 @@ class TAudioFile(TestCase):
         n.from_dump(dump)
         self.failUnless(set(dump.split("\n")) == set(n.to_dump().split("\n")))
 
+    def test_to_dump_unicode(self):
+        b = AudioFile(bar_1_1)
+        b[u"öäü"] = u"öäü"
+        dump = b.to_dump()
+        n = AudioFile()
+        n.from_dump(dump)
+        self.assertEqual(n[u"öäü"], u"öäü")
+
     def test_add(self):
         song = AudioFile()
         self.failIf("foo" in song)

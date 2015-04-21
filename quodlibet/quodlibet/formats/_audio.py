@@ -21,7 +21,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, is_fsnative
 from quodlibet.util.path import normalize_path, fsnative, escape_filename
-from quodlibet.util.string import encode
+from quodlibet.util.string import encode, decode
 
 from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
@@ -663,21 +663,27 @@ class AudioFile(dict, ImageContainer):
 
     def to_dump(self):
         """A string of 'key=value' lines, similar to vorbiscomment output."""
+
+        def encode_key(k):
+            return encode(k) if isinstance(k, unicode) else k
+
         s = []
         for k in self.keys():
-            k = str(k)
+            enc_key = encode_key(k)
+
             if isinstance(self[k], int) or isinstance(self[k], long):
-                s.append("%s=%d" % (k, self[k]))
+                s.append("%s=%d" % (enc_key, self[k]))
             elif isinstance(self[k], float):
-                s.append("%s=%f" % (k, self[k]))
+                s.append("%s=%f" % (enc_key, self[k]))
             else:
                 for v2 in self.list(k):
                     if isinstance(v2, str):
-                        s.append("%s=%s" % (k, v2))
+                        s.append("%s=%s" % (enc_key, v2))
                     else:
-                        s.append("%s=%s" % (k, encode(v2)))
+                        s.append("%s=%s" % (enc_key, encode(v2)))
         for k in (INTERN_NUM_DEFAULT - set(self.keys())):
-            s.append("%s=%d" % (k, self.get(k, 0)))
+            enc_key = encode_key(k)
+            s.append("%s=%d" % (enc_key, self.get(k, 0)))
         if "~#rating" not in self:
             s.append("~#rating=%f" % self("~#rating"))
         s.append("~format=%s" % self.format)
@@ -686,6 +692,15 @@ class AudioFile(dict, ImageContainer):
 
     def from_dump(self, text):
         """Parses the text created with to_dump and adds the found tags."""
+
+        def decode_key(key):
+            """str if ascii, otherwise decode using utf-8"""
+            try:
+                key.decode("ascii")
+            except ValueError:
+                return decode(key)
+            return key
+
         for line in text.split("\n"):
             if not line:
                 continue
@@ -703,7 +718,7 @@ class AudioFile(dict, ImageContainer):
                     except ValueError:
                         pass
             else:
-                self.add(key, val)
+                self.add(decode_key(key), decode(val))
 
     def change(self, key, old_value, new_value):
         """Change 'old_value' to 'new_value' for the given metadata key.
