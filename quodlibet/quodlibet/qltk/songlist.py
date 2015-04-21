@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
-#      2011-2013 Nick Boultbee
 #           2014 Jan Path
+#      2011-2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -35,9 +35,10 @@ DND_QL, DND_URI_LIST = range(2)
 
 class SongInfoSelection(GObject.Object):
     """
-    InfoSelection: Songs which get included in the status bar
-    summary. changed gets fired after any of the songs in the
-    selection or the selection it self have changed.
+    Songs which get included in the status bar summary.
+
+    The `changed` signal gets fired after any of the songs in the
+    selection or the selection it self has changed.
     The signal is async.
 
     Two selection states:
@@ -46,14 +47,13 @@ class SongInfoSelection(GObject.Object):
 
     The signals fires if the state changes.
 
-    FIXME:
-        row-changed for song lists isn't implemented (performance).
-        Since a library change could change the selection it should
-        also trigger a this.
+    FIXME: `row-changed` for song lists isn't implemented (performance).
+            Since a library change could change the selection it should
+            also trigger this.
 
-        Since this would happen quite often (song stat changes) and
-        would lead to a complete recalc in the common case ignore it for
-        now.
+            Since this would happen quite often (song stat changes) and
+            would lead to a complete re-calc in the common case,
+            ignore it for now.
     """
 
     __gsignals__ = {
@@ -89,7 +89,6 @@ class SongInfoSelection(GObject.Object):
                 songs = self.__songlist.get_selected_songs()
         self.emit('changed', songs)
         self.__idle = None
-        False
 
     def __emit_info_selection(self, songs=None):
         if self.__idle:
