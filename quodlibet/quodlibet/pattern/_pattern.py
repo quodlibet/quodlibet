@@ -17,7 +17,7 @@ from re import Scanner
 
 from quodlibet import util
 from quodlibet.util.path import fsdecode, expanduser, fsnative, sep
-from quodlibet.util.path import strip_win32_incompat_from_path
+from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -376,16 +376,7 @@ class _FileFromPattern(PatternFormatter):
                 value = strip_win32_incompat_from_path(value)
 
             value = expanduser(value)
-
-            # Limit each path section to 255 (bytes on linux, chars on win).
-            # http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
-            path, ext = os.path.splitext(value)
-            path = path.split(sep)
-            limit = [255] * len(path)
-            limit[-1] -= len(ext)
-            elip = lambda (p, l): (len(p) > l and p[:l - 2] + "..") or p
-            path = sep.join(map(elip, zip(path, limit)))
-            value = path + ext
+            value = limit_path(value)
 
             if sep in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")

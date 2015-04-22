@@ -82,7 +82,7 @@ if sys.platform == "win32":
 
         return isinstance(path, unicode)
 
-    def fsnative(path):
+    def fsnative(path=u""):
         """unicode -> native path"""
 
         assert isinstance(path, unicode)
@@ -116,7 +116,7 @@ else:
     def is_fsnative(path):
         return isinstance(path, bytes)
 
-    def fsnative(path):
+    def fsnative(path=u""):
         assert isinstance(path, unicode)
         return path.encode(FSCODING, 'replace')
 
@@ -442,3 +442,32 @@ else:
 
 def path_equal(p1, p2, canonicalise=False):
     return normalize_path(p1, canonicalise) == normalize_path(p2, canonicalise)
+
+
+def limit_path(path, ellipsis=True):
+    """Reduces the filename length of all filenames in the given path
+    to the common maximum length for current platform.
+
+    While the limits are depended on the file system and more restrictions
+    may apply, this covers the common case.
+    """
+
+    assert is_fsnative(path)
+
+    main, ext = os.path.splitext(path)
+    parts = main.split(sep)
+    for i, p in enumerate(parts):
+        # Limit each path section to 255 (bytes on linux, chars on win).
+        # http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
+        limit = 255
+        if i == len(parts) - 1:
+            limit -= len(ext)
+
+        if len(p) > limit:
+            if ellipsis:
+                p = p[:limit - 2] + fsnative(u"..")
+            else:
+                p = p[:limit]
+        parts[i] = p
+
+    return sep.join(parts) + ext
