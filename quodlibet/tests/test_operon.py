@@ -13,6 +13,8 @@ from tests import TestCase, DATA_DIR, mkstemp
 from helper import capture_output
 
 from quodlibet import config
+from quodlibet import util
+from quodlibet.util.path import fsnative
 from quodlibet.formats import MusicFile
 from quodlibet.operon.main import _main as operon_main
 
@@ -332,8 +334,8 @@ class TOperonEdit(TOperonBase):
         self.check_false(["edit", "foo", "bar"], False, True)
 
     def test_nonexist_editor(self):
-        editor = "/this/path/does/not/exist/hopefully"
-        os.environ["VISUAL"] = editor
+        editor = fsnative(u"/this/path/does/not/exist/hopefully")
+        util.environ["VISUAL"] = editor
         e = self.check_false(["edit", self.f], False, True)[1]
         self.assertTrue(editor in e)
 
