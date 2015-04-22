@@ -32,6 +32,10 @@ from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_
+from .misc import environ
+
+
+environ
 
 
 class InstanceTracker(object):
@@ -435,7 +439,7 @@ def website(site):
 
     # sensible-browser is a debian thing
     blocking_progs = ["sensible-browser"]
-    blocking_progs.extend(os.environ.get("BROWSER", "").split(":"))
+    blocking_progs.extend(environ.get("BROWSER", "").split(":"))
 
     for prog in blocking_progs:
         if not iscommand(prog):

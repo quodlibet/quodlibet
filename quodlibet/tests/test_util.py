@@ -1079,3 +1079,13 @@ class Treraise(TestCase):
             self.assertTrue("ValueError" in traceback.format_exc())
         else:
             self.assertTrue(False)
+
+
+class Tenviron(TestCase):
+
+    def test_main(self):
+        for v in util.environ.values():
+            if os.name == "nt":
+                self.assertTrue(isinstance(v, unicode))
+            else:
+                self.assertTrue(isinstance(v, str))

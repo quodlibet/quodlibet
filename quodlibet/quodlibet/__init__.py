@@ -16,7 +16,7 @@ import warnings
 import quodlibet.const
 import quodlibet.util
 
-from quodlibet.util import set_process_title
+from quodlibet.util import set_process_title, environ
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
@@ -367,14 +367,14 @@ def _gettext_init():
     """Call before using gettext helpers"""
 
     # set by tests
-    if "QUODLIBET_NO_TRANS" in os.environ:
+    if "QUODLIBET_NO_TRANS" in environ:
         return
 
     set_i18n_envvars()
     fixup_i18n_envvars()
 
-    print_d("LANGUAGE: %r" % os.environ.get("LANGUAGE"))
-    print_d("LANG: %r" % os.environ.get("LANG"))
+    print_d("LANGUAGE: %r" % environ.get("LANGUAGE"))
+    print_d("LANG: %r" % environ.get("LANG"))
 
     try:
         locale.setlocale(locale.LC_ALL, '')
@@ -404,7 +404,7 @@ def _gettext_init():
     else:
         print_d("Translations loaded: %r" % unexpand(t.path))
 
-    debug_text = os.environ.get("QUODLIBET_TEST_TRANS")
+    debug_text = environ.get("QUODLIBET_TEST_TRANS")
     t.install(unicode=True, debug_text=debug_text)
 
 

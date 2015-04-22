@@ -17,6 +17,7 @@ import urllib
 from quodlibet.const import FSCODING
 from quodlibet.util.string import decode
 from quodlibet import windows
+from .misc import environ
 
 if sys.platform == "darwin":
     from Foundation import NSString
@@ -141,7 +142,7 @@ def iscommand(s):
         return os.path.isfile(s) and os.access(s, os.X_OK)
     else:
         s = s.split()[0]
-        path = os.environ.get('PATH', '') or os.defpath
+        path = environ.get('PATH', '') or os.defpath
         for p in path.split(os.path.pathsep):
             p2 = os.path.join(p, s)
             if os.path.isfile(p2) and os.access(p2, os.X_OK):

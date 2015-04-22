@@ -121,10 +121,10 @@ def get_editor_args(fallback_command="nano"):
     Can't fail, but the result might not be a valid/existing command.
     """
 
-    if "VISUAL" in os.environ:
-        editor = os.environ["VISUAL"]
-    elif "EDITOR" in os.environ:
-        editor = os.environ["EDITOR"]
+    if "VISUAL" in util.environ:
+        editor = util.environ["VISUAL"]
+    elif "EDITOR" in util.environ:
+        editor = util.environ["EDITOR"]
     else:
         editor = fallback_command
 
