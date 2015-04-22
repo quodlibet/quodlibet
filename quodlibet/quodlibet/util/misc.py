@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 
 from quodlibet import windows
 
@@ -16,4 +17,13 @@ else:
     environ = os.environ
 """
 An environ dict which contains unicode under Windows and str everywhere else
+"""
+
+
+if os.name == "nt":
+    argv = windows.get_win32_unicode_argv()
+else:
+    argv = sys.argv
+"""
+An argv list which contains unicode under Windows and str everywhere else
 """

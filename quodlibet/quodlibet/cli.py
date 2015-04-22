@@ -62,7 +62,7 @@ def control(command, arg=None, ignore_error=False):
         exit_(notify_startup=True)
 
 
-def process_arguments():
+def process_arguments(argv):
     from quodlibet.util.uri import URI
     from quodlibet import util
     from quodlibet import const
@@ -182,10 +182,10 @@ def process_arguments():
 
     # XXX: to make startup work in case the desktop file isn't passed
     # a file path/uri
-    if sys.argv[-1] == "--play-file":
-        sys.argv = sys.argv[:-1]
+    if argv[-1] == "--play-file":
+        argv = argv[:-1]
 
-    opts, args = options.parse()
+    opts, args = options.parse(argv[1:])
 
     for command, arg in opts.items():
         if command in controls:

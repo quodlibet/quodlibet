@@ -16,15 +16,15 @@ import os
 
 from quodlibet.cli import process_arguments, exit_
 from quodlibet.util.dprint import print_d, print_
-from quodlibet.util import set_win32_unicode_argv
+from quodlibet import util
 
 
-def main():
+def main(argv):
     try:
         # we want basic commands not to import gtk (doubles process time)
         assert "gi.repository.Gtk" not in sys.modules
         sys.modules["gi.repository.Gtk"] = None
-        startup_actions, cmds_todo = process_arguments()
+        startup_actions, cmds_todo = process_arguments(argv)
     finally:
         sys.modules.pop("gi.repository.Gtk", None)
 
@@ -220,5 +220,4 @@ def main():
 
 
 if __name__ == "__main__":
-    set_win32_unicode_argv()
-    main()
+    main(util.argv)

@@ -11,9 +11,8 @@
 import sys
 
 from quodlibet.operon import main
-from quodlibet.util import set_win32_unicode_argv
+from quodlibet import util
 
 
 if __name__ == "__main__":
-    set_win32_unicode_argv()
-    sys.exit(main(sys.argv))
+    sys.exit(main(util.argv))

@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 import collections
 import ctypes
 
@@ -245,3 +246,32 @@ class WindowsEnviron(collections.MutableMapping):
 
     def __repr__(self):
         return repr(self._env)
+
+
+def get_win32_unicode_argv():
+    """Returns a unicode version of sys.argv"""
+
+    from ctypes import cdll, windll, wintypes
+
+    GetCommandLineW = cdll.kernel32.GetCommandLineW
+    GetCommandLineW.argtypes = []
+    GetCommandLineW.restype = wintypes.LPCWSTR
+
+    CommandLineToArgvW = windll.shell32.CommandLineToArgvW
+    CommandLineToArgvW.argtypes = [
+        wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
+    CommandLineToArgvW.restype = ctypes.POINTER(wintypes.LPWSTR)
+
+    LocalFree = windll.kernel32.LocalFree
+    LocalFree.argtypes = [wintypes.HLOCAL]
+    LocalFree.restype = wintypes.HLOCAL
+
+    argc = ctypes.c_int()
+    argv = CommandLineToArgvW(GetCommandLineW(), ctypes.byref(argc))
+    if not argv:
+        return []
+
+    res = argv[max(0, argc.value - len(sys.argv)):argc.value]
+
+    LocalFree(argv)
+    return res

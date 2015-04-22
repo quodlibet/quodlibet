@@ -9,6 +9,7 @@ import sys
 
 from helper import capture_output
 from quodlibet import cli
+from quodlibet import util
 from tests import TestCase
 
 
@@ -32,7 +33,7 @@ def call_safely(func, *args, **kwargs):
 class Tcli(TestCase):
 
     def test_process_no_arguments_works(self):
-        code, out, err = call_safely(cli.process_arguments)
+        code, out, err = call_safely(cli.process_arguments, util.argv)
         self.failIf(code[0], msg="Error: %s" % err)
 
     def test_process_arguments_errors_on_invalid_opt(self):
@@ -40,7 +41,7 @@ class Tcli(TestCase):
         old_arg = sys.argv
         sys.argv = ["", arg]
         try:
-            code, out, err = call_safely(cli.process_arguments)
+            code, out, err = call_safely(cli.process_arguments, util.argv)
             self.failUnless(code, msg="Should have errored for '%s'" % arg)
         finally:
             sys.argv = old_arg

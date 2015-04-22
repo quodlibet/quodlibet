@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 
 from tests import TestCase, DATA_DIR, skipUnless
 
@@ -64,3 +65,13 @@ class TWindows(TestCase):
         env["FOO"] = u"bar"
         env["FOO"]
         del env["FOO"]
+
+
+@skipUnless(os.name == "nt", "Wrong platform", warn=False)
+class Tget_win32_unicode_argv(TestCase):
+
+    def test_main(self):
+        newargv = windows.get_win32_unicode_argv()
+        self.assertEqual(len(sys.argv), len(newargv))
+        if newargv:
+            self.assertTrue(isinstance(newargv[0], unicode))

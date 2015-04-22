@@ -32,10 +32,11 @@ from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_
-from .misc import environ
+from .misc import environ, argv
 
 
-environ
+# pyflakes
+environ, argv
 
 
 class InstanceTracker(object):
@@ -1164,36 +1165,6 @@ def list_unique(sequence):
             append(v)
             add(v)
     return l
-
-
-def set_win32_unicode_argv():
-    if os.name != "nt":
-        return
-
-    import ctypes
-    from ctypes import cdll, windll, wintypes
-
-    GetCommandLineW = cdll.kernel32.GetCommandLineW
-    GetCommandLineW.argtypes = []
-    GetCommandLineW.restype = wintypes.LPCWSTR
-
-    CommandLineToArgvW = windll.shell32.CommandLineToArgvW
-    CommandLineToArgvW.argtypes = [
-        wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
-    CommandLineToArgvW.restype = ctypes.POINTER(wintypes.LPWSTR)
-
-    LocalFree = windll.kernel32.LocalFree
-    LocalFree.argtypes = [wintypes.HLOCAL]
-    LocalFree.restype = wintypes.HLOCAL
-
-    argc = ctypes.c_int()
-    argv = CommandLineToArgvW(GetCommandLineW(), ctypes.byref(argc))
-    if not argv:
-        return
-
-    sys.argv = argv[max(0, argc.value - len(sys.argv)):argc.value]
-
-    LocalFree(argv)
 
 
 def reraise(tp, value, tb=None):
