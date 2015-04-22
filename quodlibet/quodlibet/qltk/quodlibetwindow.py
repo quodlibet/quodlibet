@@ -45,7 +45,7 @@ from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
 from quodlibet.util import connect_obj
-from quodlibet.util.path import glib2fsnative
+from quodlibet.util.path import glib2fsnative, get_home_dir
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import SongListColumn
@@ -457,7 +457,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
     def __init__(self, library, player, headless=False, restore_cb=None):
         super(QuodLibetWindow, self).__init__(dialog=False)
-        self.last_dir = const.HOME
+        self.last_dir = get_home_dir()
 
         self.__destroyed = False
         self.__update_title(player)
@@ -1131,7 +1131,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
     def open_chooser(self, action):
         last_dir = self.last_dir
         if not os.path.exists(last_dir):
-            last_dir = const.HOME
+            last_dir = get_home_dir()
 
         class MusicFolderChooser(FolderChooser):
             def __init__(self, parent, init_dir):

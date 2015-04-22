@@ -34,13 +34,11 @@ VERSION = str(VERSION_TUPLE)
 if os.name == "nt":
     file_path = __file__.decode(sys.getfilesystemencoding())
     BASEDIR = os.path.dirname(os.path.realpath(file_path))
-    HOME = windows.get_personal_dir()
     USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
     environ = windows.WindowsEnviron()
 else:
     BASEDIR = os.path.dirname(os.path.realpath(__file__))
-    HOME = os.path.expanduser("~")
-    USERDIR = os.path.join(HOME, ".quodlibet")
+    USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
     environ = os.environ
 
 if 'QUODLIBET_USERDIR' in environ:

@@ -4,7 +4,7 @@ import unittest
 from tests import TestCase
 
 from quodlibet.util.path import pathname2url_win32, iscommand, limit_path, \
-    fsnative, is_fsnative
+    fsnative, is_fsnative, get_home_dir
 
 is_win = os.name == "nt"
 path_set = bool(os.environ.get('PATH', False))
@@ -22,6 +22,13 @@ class Tpathname2url(TestCase):
         p2u = pathname2url_win32
         for inp, should in cases.iteritems():
             self.failUnlessEqual(p2u(inp), should)
+
+
+class Tget_x_dir(TestCase):
+
+    def test_get_home_dir(self):
+        self.assertTrue(is_fsnative(get_home_dir()))
+        self.assertTrue(os.path.isabs(get_home_dir()))
 
 
 class Tlimit_path(TestCase):

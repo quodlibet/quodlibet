@@ -40,6 +40,5 @@ class Tconst(TestCase):
 
     def test_path_types(self):
         self.assertTrue(is_fsnative(const.USERDIR))
-        self.assertTrue(is_fsnative(const.HOME))
         self.assertTrue(is_fsnative(const.IMAGEDIR))
         self.assertTrue(is_fsnative(const.BASEDIR))

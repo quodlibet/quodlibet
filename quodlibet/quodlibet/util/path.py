@@ -471,3 +471,12 @@ def limit_path(path, ellipsis=True):
         parts[i] = p
 
     return sep.join(parts) + ext
+
+
+def get_home_dir():
+    """Returns the root directory of the user, /home/user or C:\\Users\\user"""
+
+    if os.name == "nt":
+        return windows.get_profile_dir()
+    else:
+        return expanduser("~")

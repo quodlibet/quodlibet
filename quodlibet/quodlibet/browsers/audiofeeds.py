@@ -28,6 +28,7 @@ from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.util import connect_obj
+from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.x import ScrolledWindow, Align, Button
 
 
@@ -223,7 +224,7 @@ class AudioFeeds(Browser):
     priority = 20
     uses_main_library = False
 
-    __last_folder = const.HOME
+    __last_folder = get_home_dir()
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "audiofeeds_pos", 0.4)

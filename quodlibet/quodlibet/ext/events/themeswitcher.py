@@ -12,7 +12,7 @@ from gi.repository import Gtk
 
 from quodlibet import qltk
 from quodlibet import config
-from quodlibet import const
+from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
 
@@ -125,7 +125,7 @@ class ThemeSwitcher(EventPlugin):
             warnings.simplefilter("ignore")
             theme_dir = Gtk.rc_get_theme_dir()
 
-        theme_dirs = [theme_dir, os.path.join(const.HOME, ".themes")]
+        theme_dirs = [theme_dir, os.path.join(get_home_dir(), ".themes")]
 
         themes = set()
         for theme_dir in theme_dirs:

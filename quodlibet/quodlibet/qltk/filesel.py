@@ -11,7 +11,6 @@ import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
-from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import windows
@@ -24,7 +23,7 @@ from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 
 from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
-    glib2fsnative, fsnative, xdg_get_user_dirs
+    glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir
 from quodlibet.util.uri import URI
 from quodlibet.util import connect_obj
 
@@ -95,7 +94,7 @@ def get_favorites():
     if os.name == "nt":
         return _get_win_favorites()
     else:
-        paths = [const.HOME]
+        paths = [get_home_dir()]
 
         xfg_user_dirs = xdg_get_user_dirs()
         for key in ["XDG_DESKTOP_DIR", "XDG_DOWNLOAD_DIR", "XDG_MUSIC_DIR"]:
@@ -139,7 +138,7 @@ def get_gtk_bookmarks():
     if os.name == "nt":
         return []
 
-    path = os.path.join(const.HOME, ".gtk-bookmarks")
+    path = os.path.join(get_home_dir(), ".gtk-bookmarks")
     folders = []
     try:
         with open(path, "rb") as f:

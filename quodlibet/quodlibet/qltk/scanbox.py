@@ -11,10 +11,9 @@ import os
 from gi.repository import Gtk
 from gi.repository import Pango
 
-from quodlibet import const
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.util.path import fsdecode, unexpand
+from quodlibet.util.path import fsdecode, unexpand, get_home_dir
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj
 
@@ -25,7 +24,7 @@ def get_init_select_dir():
         # start with last added directory
         return scandirs[-1]
     else:
-        return const.HOME
+        return get_home_dir()
 
 
 class ScanBox(Gtk.HBox):

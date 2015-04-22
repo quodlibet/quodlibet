@@ -7,17 +7,16 @@ sys.modules['dircache'] = os # cheat the dircache effects
 
 from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives
 from quodlibet.qltk.filesel import MainDirectoryTree, MainFileSelector
-from quodlibet.util.path import fsnative, is_fsnative
-from quodlibet import const
+from quodlibet.util.path import fsnative, is_fsnative, get_home_dir
 import quodlibet.config
 
 
 class TDirectoryTree(TestCase):
 
     if os.name == "nt":
-        ROOTS = [const.HOME, u"C:\\"]
+        ROOTS = [get_home_dir(), u"C:\\"]
     else:
-        ROOTS = [const.HOME, "/"]
+        ROOTS = [get_home_dir(), "/"]
 
     def setUp(self):
         quodlibet.config.init()
@@ -26,9 +25,9 @@ class TDirectoryTree(TestCase):
         quodlibet.config.quit()
 
     def test_initial(self):
-        paths = ["/", const.HOME, "/usr/bin"]
+        paths = ["/", get_home_dir(), "/usr/bin"]
         if os.name == "nt":
-            paths = [u"C:\\", const.HOME]
+            paths = [u"C:\\", get_home_dir()]
 
         for path in paths:
             dirlist = DirectoryTree(path, folders=self.ROOTS)

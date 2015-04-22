@@ -15,6 +15,7 @@ from quodlibet import config
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util import connect_obj
+from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
@@ -407,7 +408,7 @@ class PlaylistsBrowser(Browser):
     def __import(self, activator, library):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
         from quodlibet.qltk.chooser import FileChooser
-        chooser = FileChooser(self, _("Import Playlist"), filt, const.HOME)
+        chooser = FileChooser(self, _("Import Playlist"), filt, get_home_dir())
         files = chooser.run()
         chooser.destroy()
         for filename in files:
