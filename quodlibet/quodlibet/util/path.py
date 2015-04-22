@@ -16,7 +16,7 @@ import shlex
 import urllib
 from quodlibet.const import FSCODING
 from quodlibet.util.string import decode
-from quodlibet import windows
+from . import windows
 from .misc import environ
 
 if sys.platform == "darwin":

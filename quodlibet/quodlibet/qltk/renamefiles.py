@@ -10,7 +10,7 @@ import unicodedata
 
 from gi.repository import Gtk, Gdk
 
-from quodlibet import const
+import quodlibet
 from quodlibet import qltk
 from quodlibet import util
 
@@ -25,6 +25,16 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj
 from quodlibet.util.path import fsdecode, fsnative
 from quodlibet.util.path import strip_win32_incompat_from_path
+
+
+NBP = os.path.join(quodlibet.get_user_dir(), "lists", "renamepatterns")
+NBP_EXAMPLES = """\
+<tracknumber>. <title>
+<tracknumber|<tracknumber>. ><title>
+<tracknumber> - <title>
+<tracknumber> - <artist> - <title>
+/path/<artist> - <album>/<tracknumber>. <title>
+/path/<artist>/<album>/<tracknumber> - <title>"""
 
 
 class SpacesToUnderscores(FilterCheckButton):
@@ -122,8 +132,8 @@ class RenameFiles(Gtk.VBox):
         self.set_border_width(12)
 
         hbox = Gtk.HBox(spacing=6)
-        cbes_defaults = const.NBP_EXAMPLES.split("\n")
-        self.combo = ComboBoxEntrySave(const.NBP, cbes_defaults,
+        cbes_defaults = NBP_EXAMPLES.split("\n")
+        self.combo = ComboBoxEntrySave(NBP, cbes_defaults,
             title=_("Path Patterns"),
             edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
@@ -289,7 +299,7 @@ class RenameFiles(Gtk.VBox):
         else:
             if pattern:
                 self.combo.prepend_text(pattern_text)
-                self.combo.write(const.NBP)
+                self.combo.write(NBP)
 
         # native paths
         orignames = [song["~filename"] for song in songs]

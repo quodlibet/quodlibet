@@ -7,19 +7,19 @@
 
 import os
 from gi.repository import Gtk
+import quodlibet
 from quodlibet import formats, qltk
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util import escape
 from quodlibet.util.collection import Playlist
 from quodlibet.util.path import mkdir, fsdecode, is_fsnative
-from quodlibet import const
 
 
 # Directory for playlist files
 from quodlibet.util.uri import URI
 
-PLAYLISTS = os.path.join(const.USERDIR, "playlists")
+PLAYLISTS = os.path.join(quodlibet.get_user_dir(), "playlists")
 assert is_fsnative(PLAYLISTS)
 if not os.path.isdir(PLAYLISTS):
     mkdir(PLAYLISTS)

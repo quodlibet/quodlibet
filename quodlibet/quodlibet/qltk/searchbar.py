@@ -9,8 +9,8 @@ import os
 
 from gi.repository import Gtk, GObject, GLib
 
+import quodlibet
 from quodlibet import config
-from quodlibet import const
 
 from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
@@ -42,7 +42,8 @@ class SearchBarBox(Gtk.HBox):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
-            filename = os.path.join(const.USERDIR, "lists", "queries")
+            filename = os.path.join(
+                quodlibet.get_user_dir(), "lists", "queries")
 
         combo = ComboBoxEntrySave(filename, count=8,
                 validator=QueryValidator, title=_("Saved Searches"),

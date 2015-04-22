@@ -9,8 +9,8 @@ import os
 
 from gi.repository import Gtk, Gdk
 
+import quodlibet
 from quodlibet import config
-from quodlibet import const
 from quodlibet import util
 from quodlibet import qltk
 
@@ -23,7 +23,7 @@ from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
     SmallImageButton
 
-QUEUE = os.path.join(const.USERDIR, "queue")
+QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
 
 
 class PlaybackStatusIcon(Gtk.Box):

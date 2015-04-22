@@ -8,7 +8,7 @@
 import os
 
 from quodlibet.util import fifo
-from quodlibet import const
+from quodlibet import get_user_dir
 try:
     from quodlibet.util import winpipe
 except ImportError:
@@ -94,7 +94,7 @@ class QuodLibetWinRemote(RemoteBase):
 class QuodLibetUnixRemote(RemoteBase):
 
     _FIFO_NAME = "control"
-    _PATH = os.path.join(const.USERDIR, _FIFO_NAME)
+    _PATH = os.path.join(get_user_dir(), _FIFO_NAME)
 
     def __init__(self, app, cmd_registry):
         self._app = app

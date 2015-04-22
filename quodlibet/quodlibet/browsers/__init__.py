@@ -8,7 +8,7 @@
 
 import os
 
-from quodlibet import const
+import quodlibet
 from quodlibet.util.importhelper import load_dir_modules
 from quodlibet.browsers._base import Browser
 
@@ -29,7 +29,7 @@ def init():
                                package=__package__,
                                load_compiled=load_pyc)
 
-    user_dir = os.path.join(const.USERDIR, "browsers")
+    user_dir = os.path.join(quodlibet.get_user_dir(), "browsers")
     if os.path.isdir(user_dir):
         modules += load_dir_modules(user_dir,
                                     package="quodlibet.fake.browsers",

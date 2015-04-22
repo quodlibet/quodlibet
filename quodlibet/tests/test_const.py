@@ -11,7 +11,6 @@ import subprocess
 from tests import TestCase
 
 from quodlibet import const
-from quodlibet.util.path import is_fsnative
 
 
 class Tconst(TestCase):
@@ -37,6 +36,3 @@ class Tconst(TestCase):
     def test_authors(self):
         # Noting that <= is subset operator on sets...
         self.assertLessEqual(set(const.MAIN_AUTHORS), set(const.AUTHORS))
-
-    def test_path_types(self):
-        self.assertTrue(is_fsnative(const.USERDIR))

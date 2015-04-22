@@ -13,8 +13,8 @@ import time
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
+import quodlibet
 from quodlibet import config
-from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
@@ -32,7 +32,7 @@ from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.x import ScrolledWindow, Align, Button
 
 
-FEEDS = os.path.join(const.USERDIR, "feeds")
+FEEDS = os.path.join(quodlibet.get_user_dir(), "feeds")
 DND_URI_LIST, DND_MOZ_URL = range(2)
 
 # Migration path for pickle

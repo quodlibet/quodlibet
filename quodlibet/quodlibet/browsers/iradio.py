@@ -14,6 +14,7 @@ import itertools
 
 from gi.repository import Gtk, GLib, Pango
 
+import quodlibet
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
@@ -39,8 +40,8 @@ from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = \
     "http://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
-STATIONS_FAV = os.path.join(const.USERDIR, "stations")
-STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
+STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
+STATIONS_ALL = os.path.join(quodlibet.get_user_dir(), "stations_all")
 
 # TODO: - Do the update in a thread
 #       - Ranking: reduce duplicate stations (max 3 URLs per station)

@@ -15,7 +15,8 @@ from threading import Thread
 
 from gi.repository import Gtk, GLib
 
-from quodlibet import const, config, util, qltk
+import quodlibet
+from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
@@ -227,7 +228,7 @@ class LastFMSync(SongsMenuPlugin):
                     "Last.fm profile.")
     PLUGIN_ICON = 'gtk-refresh'
 
-    CACHE_PATH = os.path.join(const.USERDIR, "lastfmsync.db")
+    CACHE_PATH = os.path.join(quodlibet.get_user_dir(), "lastfmsync.db")
 
     def runner(self, cache):
         changed = True

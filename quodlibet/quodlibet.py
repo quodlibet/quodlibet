@@ -38,18 +38,17 @@ def main(argv):
     import quodlibet.library
     from quodlibet import config
     from quodlibet import browsers
-    from quodlibet import const
     from quodlibet import util
     from quodlibet.util.string import decode
 
-    config.init(os.path.join(const.USERDIR, "config"))
+    config.init(os.path.join(quodlibet.get_user_dir(), "config"))
 
     app.name = "Quod Libet"
     app.id = "quodlibet"
 
     quodlibet.init(icon=icons.QUODLIBET, name=app.name, proc_title=app.id)
 
-    library_path = os.path.join(const.USERDIR, "songs")
+    library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
     print_d("Initializing main library (%s)" % (
             quodlibet.util.path.unexpand(library_path)))
@@ -170,7 +169,7 @@ def main(argv):
     mmkeys_handler = MMKeysHandler(app.name, window, player)
     if "QUODLIBET_NO_MMKEYS" not in os.environ:
         mmkeys_handler.start()
-    current_path = os.path.join(const.USERDIR, "current")
+    current_path = os.path.join(quodlibet.get_user_dir(), "current")
     fsiface = FSInterface(current_path, player)
     remote = Remote(app, cmd_registry)
     try:

@@ -17,8 +17,8 @@ from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 from .prefs import Preferences, PATTERN
 from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
 
+import quodlibet
 from quodlibet import config
-from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
@@ -43,7 +43,7 @@ from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
     set_renderer_from_pbosf, add_border_widget)
 
 
-PATTERN_FN = os.path.join(const.USERDIR, "album_pattern")
+PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
 
 
 class AlbumTagCompletion(EntryWordCompletion):

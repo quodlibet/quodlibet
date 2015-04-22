@@ -11,7 +11,7 @@ import hashlib
 
 from gi.repository import GdkPixbuf, GLib
 
-from quodlibet.const import USERDIR
+import quodlibet
 from quodlibet.util.path import mtime, mkdir, pathname2url, \
     xdg_get_cache_home, is_fsnative
 from quodlibet.util import enum
@@ -25,7 +25,7 @@ def get_thumbnail_folder():
     """
 
     if os.name == "nt":
-        thumb_folder = os.path.join(USERDIR, "thumbnails")
+        thumb_folder = os.path.join(quodlibet.get_user_dir(), "thumbnails")
     else:
         cache_folder = os.path.join(xdg_get_cache_home(), "thumbnails")
         thumb_folder = os.path.expanduser('~/.thumbnails')

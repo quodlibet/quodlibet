@@ -7,6 +7,7 @@ import platform
 
 from gi.repository import Gtk
 
+import quodlibet
 from quodlibet import const
 from quodlibet import util
 from quodlibet.qltk.msg import ErrorMessage
@@ -57,7 +58,7 @@ class ExceptionDialog(Gtk.Window):
     running = False
     instance = None
 
-    DUMPDIR = os.path.join(const.USERDIR, "dumps")
+    DUMPDIR = os.path.join(quodlibet.get_user_dir(), "dumps")
 
     @classmethod
     def from_except(Kind, *args):

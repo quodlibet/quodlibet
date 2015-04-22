@@ -33,7 +33,7 @@ def main(argv):
     opts, args = opts.parse(argv[1:])
     args[0] = os.path.realpath(args[0])
 
-    config.init(os.path.join(const.USERDIR, "config"))
+    config.init(os.path.join(quodlibet.get_user_dir(), "config"))
 
     app.name = "Ex Falso"
     app.id = "exfalso"

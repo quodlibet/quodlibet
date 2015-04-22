@@ -10,14 +10,14 @@ import shutil
 
 from gi.repository import Gtk
 
+import quodlibet
 from quodlibet import app
 from quodlibet import config
-from quodlibet.const import USERDIR
 from quodlibet.plugins.events import EventPlugin
 
 
 def get_path():
-    out = os.path.join(USERDIR, "current.cover")
+    out = os.path.join(quodlibet.get_user_dir(), "current.cover")
     return config.get("plugins", __name__, out)
 
 

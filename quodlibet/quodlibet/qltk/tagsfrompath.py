@@ -6,11 +6,13 @@
 # published by the Free Software Foundation
 
 import re
+import os
 
 from gi.repository import Gtk
 
+import quodlibet
+
 from quodlibet import config
-from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
@@ -26,6 +28,15 @@ from quodlibet.util.path import fsdecode
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util import connect_obj
+
+
+TBP = os.path.join(quodlibet.get_user_dir(), "lists", "tagpatterns")
+TBP_EXAMPLES = """\
+<tracknumber>. <title>
+<tracknumber> - <title>
+<tracknumber> - <artist> - <title>
+<artist> - <album>/<tracknumber>. <title>
+<artist>/<album>/<tracknumber> - <title>"""
 
 
 class UnderscoresToSpaces(FilterCheckButton):
@@ -96,8 +107,8 @@ class TagsFromPath(Gtk.VBox):
 
         self.set_border_width(12)
         hbox = Gtk.HBox(spacing=6)
-        cbes_defaults = const.TBP_EXAMPLES.split("\n")
-        self.combo = ComboBoxEntrySave(const.TBP, cbes_defaults,
+        cbes_defaults = TBP_EXAMPLES.split("\n")
+        self.combo = ComboBoxEntrySave(TBP, cbes_defaults,
             title=_("Path Patterns"),
             edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
@@ -185,7 +196,7 @@ class TagsFromPath(Gtk.VBox):
         else:
             if pattern_text:
                 self.combo.prepend_text(pattern_text)
-                self.combo.write(const.TBP)
+                self.combo.write(TBP)
 
         invalid = []
 

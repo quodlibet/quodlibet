@@ -172,7 +172,7 @@ class TopBar(Gtk.Toolbar):
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
         # song text
-        info_pattern_path = os.path.join(const.USERDIR, "songinfo")
+        info_pattern_path = os.path.join(quodlibet.get_user_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
         box.pack_start(Align(text, border=3), True, True, 0)
 
@@ -482,7 +482,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         AppMenu(self, ui.get_action_groups()[0])
 
         # custom accel map
-        accel_fn = os.path.join(const.USERDIR, "accels")
+        accel_fn = os.path.join(quodlibet.get_user_dir(), "accels")
         Gtk.AccelMap.load(accel_fn)
         # save right away so we fill the file with example comments of all
         # accels

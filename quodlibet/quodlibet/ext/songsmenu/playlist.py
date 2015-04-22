@@ -16,10 +16,12 @@ import os
 from gi.repository import Gtk
 
 from quodlibet import util, qltk
-from quodlibet.util.path import glib2fsnative
+from quodlibet.util.path import glib2fsnative, get_home_dir
 from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.const import HOME as lastfolder
+
+
+lastfolder = get_home_dir()
 
 
 if hasattr(os.path, 'relpath'):

@@ -24,6 +24,7 @@ try:
 except ImportError:
     from md5 import md5
 
+import quodlibet
 from quodlibet import config, const, app, util, qltk
 from quodlibet.pattern import Pattern
 from quodlibet.query import Query
@@ -62,7 +63,7 @@ class QLSubmitQueue(PluginConfigMixin):
     CLIENT = "qlb"
     CLIENT_VERSION = const.VERSION
     PROTOCOL_VERSION = "1.2"
-    DUMP = os.path.join(const.USERDIR, "scrobbler_cache")
+    DUMP = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache")
     # This must be the kept the same as `QLScrobbler`
     CONFIG_SECTION = "scrobbler"
 

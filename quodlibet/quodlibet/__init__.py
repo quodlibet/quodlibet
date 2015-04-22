@@ -13,15 +13,14 @@ import os
 import sys
 import warnings
 
-import quodlibet.const
-import quodlibet.util
-
 from quodlibet.util import set_process_title, environ
+from quodlibet.util import windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet.const import MinVersions, Version
+
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers"]
@@ -107,6 +106,42 @@ def get_image_dir():
     """The path to the image directory in the quodlibet package"""
 
     return os.path.join(get_base_dir(), "images")
+
+
+_USERDIR = None
+
+
+def _init_user_dir():
+    global _USERDIR
+
+    if os.name == "nt":
+        USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
+    else:
+        USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
+
+    if 'QUODLIBET_USERDIR' in environ:
+        USERDIR = environ['QUODLIBET_USERDIR']
+
+    # XXX: Exec conf.py in this directory, used to override const globals
+    # e.g. for setting USERDIR for the Windows portable version
+    # Note: execfile doesn't handle unicode paths on windows, so encode.
+    # (this doesn't use the old win api in case of str compared to os.*)
+    _CONF_PATH = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "conf.py")
+    try:
+        execfile(_CONF_PATH)
+    except IOError:
+        pass
+
+    _USERDIR = USERDIR
+
+_init_user_dir()
+
+
+def get_user_dir():
+    """Place where QL saves its state, database, config etc."""
+
+    return _USERDIR
 
 
 def _fix_gst_leaks():
@@ -451,7 +486,7 @@ def init(icon=None, proc_title=None, name=None):
     if name:
         GLib.set_application_name(name)
 
-    mkdir(quodlibet.const.USERDIR, 0750)
+    mkdir(get_user_dir(), 0750)
 
     print_d("Finished initialization.")
 
@@ -462,7 +497,7 @@ def init_plugins(no_plugins=False):
     from quodlibet import plugins
     folders = [os.path.join(get_base_dir(), "ext", kind)
                for kind in PLUGIN_DIRS]
-    folders.append(os.path.join(quodlibet.const.USERDIR, "plugins"))
+    folders.append(os.path.join(get_user_dir(), "plugins"))
     print_d("Scanning folders: %s" % folders)
     pm = plugins.init(folders, no_plugins)
     pm.rescan()

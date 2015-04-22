@@ -10,10 +10,13 @@ from os.path import splitext, extsep, dirname
 
 from quodlibet import app
 from quodlibet.qltk import ErrorMessage
-from quodlibet.const import HOME as lastfolder
+from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 __all__ = ['Export', 'Import']
+
+
+lastfolder = get_home_dir()
 
 
 def filechooser(save, title):

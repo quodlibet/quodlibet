@@ -7,11 +7,11 @@
 
 import os
 
+import quodlibet
 from quodlibet import util
-from quodlibet.const import USERDIR
 from quodlibet.plugins.events import EventPlugin
 
-outfile = os.path.join(USERDIR, "jabber")
+outfile = os.path.join(quodlibet.get_user_dir(), "jabber")
 format = """\
 <tune xmlns='http://jabber.org/protocol/tune'>
  <artist>%s</artist>

@@ -5,8 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import quodlibet
 from quodlibet import print_w, print_d, qltk
-from quodlibet.const import USERDIR
 from quodlibet.formats._audio import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -52,7 +52,8 @@ class WebsiteSearch(SongsMenuPlugin):
         ("Youtube video search",
          "https://www.youtube.com/results?search_query=<artist~title>"),
     ]
-    PATTERNS_FILE = os.path.join(USERDIR, 'lists', 'searchsites')
+    PATTERNS_FILE = os.path.join(
+        quodlibet.get_user_dir(), 'lists', 'searchsites')
 
     def __set_site(self, name):
         self.chosen_site = name

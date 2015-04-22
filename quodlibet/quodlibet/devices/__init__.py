@@ -21,7 +21,7 @@ except ImportError:
         "device support.") % "dbus-python")
     dbus = None
 
-from quodlibet import const
+import quodlibet
 from quodlibet import util
 from quodlibet.devices import _udev as udev
 from quodlibet.util.importhelper import load_dir_modules
@@ -47,7 +47,7 @@ def init_devices():
 
 init_devices()
 
-DEVICES = os.path.join(const.USERDIR, "devices")
+DEVICES = os.path.join(quodlibet.get_user_dir(), "devices")
 
 config = ConfigParser.RawConfigParser()
 config.read(DEVICES)

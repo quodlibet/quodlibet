@@ -12,6 +12,7 @@ from glob import glob
 
 from gi.repository import Gtk, GLib, GdkPixbuf
 
+import quodlibet
 from quodlibet import const
 from quodlibet import app
 
@@ -22,7 +23,7 @@ from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.util.path import (mtime, escape_filename,
     strip_win32_incompat_from_path)
 
-CACHE = os.path.join(const.USERDIR, 'cache')
+CACHE = os.path.join(quodlibet.get_user_dir(), 'cache')
 
 
 class StorageDevice(Device):

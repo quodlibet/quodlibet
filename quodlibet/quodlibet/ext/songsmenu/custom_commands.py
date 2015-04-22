@@ -10,7 +10,7 @@ from gi.repository import Gtk
 import os
 import re
 
-from quodlibet.const import USERDIR
+import quodlibet
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet.pattern import Pattern
@@ -139,7 +139,8 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         Command("Fix MP3 VBR with mp3val", "mp3val -f", unique=True,
                 max_args=1),
     ]
-    COMS_FILE = os.path.join(USERDIR, 'lists', 'customcommands.json')
+    COMS_FILE = os.path.join(
+        quodlibet.get_user_dir(), 'lists', 'customcommands.json')
 
     def __set_pat(self, name):
         self.com_index = name

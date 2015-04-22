@@ -8,7 +8,7 @@
 import os
 import sys
 
-from quodlibet import windows
+from . import windows
 
 
 if os.name == "nt":

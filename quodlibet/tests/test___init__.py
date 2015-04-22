@@ -31,3 +31,4 @@ class TQuodlibet(TestCase):
     def test_dirs(self):
         self.assertTrue(is_fsnative(quodlibet.get_base_dir()))
         self.assertTrue(is_fsnative(quodlibet.get_image_dir()))
+        self.assertTrue(is_fsnative(quodlibet.get_user_dir()))
