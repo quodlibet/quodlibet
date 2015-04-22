@@ -70,7 +70,7 @@ _TEMP_DIR = None
 
 def _wrap_tempfile(func):
     def wrap(*args, **kwargs):
-        if kwargs.get("dir") is None:
+        if kwargs.get("dir") is None and _TEMP_DIR is not None:
             assert is_fsnative(_TEMP_DIR)
             kwargs["dir"] = _TEMP_DIR
         return func(*args, **kwargs)
