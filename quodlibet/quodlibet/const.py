@@ -33,26 +33,21 @@ VERSION = str(VERSION_TUPLE)
 
 if os.name == "nt":
     file_path = __file__.decode(sys.getfilesystemencoding())
-    BASEDIR = os.path.dirname(os.path.realpath(file_path))
     USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
     environ = windows.WindowsEnviron()
 else:
-    BASEDIR = os.path.dirname(os.path.realpath(__file__))
     USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
     environ = os.environ
 
 if 'QUODLIBET_USERDIR' in environ:
     USERDIR = environ['QUODLIBET_USERDIR']
 
-IMAGEDIR = os.path.join(BASEDIR, "images")
-
 # XXX: Exec conf.py in this directory, used to override const globals
 # e.g. for setting USERDIR for the Windows portable version
 # Note: execfile doesn't handle unicode paths on windows, so encode.
 # (this doesn't use the old win api in case of str compared to os.*)
-_CONF_PATH = os.path.join(BASEDIR, "conf.py")
-if os.name == "nt":
-    _CONF_PATH = _CONF_PATH.encode(sys.getfilesystemencoding())
+_CONF_PATH = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "conf.py")
 try:
     execfile(_CONF_PATH)
 except IOError:

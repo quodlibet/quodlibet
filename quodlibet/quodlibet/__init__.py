@@ -94,6 +94,21 @@ class Application(object):
 app = Application()
 
 
+def get_base_dir():
+    """The path to the quodlibet package"""
+
+    file_path = __file__
+    if os.name == "nt":
+        file_path = file_path.decode(sys.getfilesystemencoding())
+    return os.path.dirname(os.path.realpath(file_path))
+
+
+def get_image_dir():
+    """The path to the image directory in the quodlibet package"""
+
+    return os.path.join(get_base_dir(), "images")
+
+
 def _fix_gst_leaks():
     """gst_element_add_pad and gst_bin_add are wrongly annotated and lead
     to PyGObject refing the passed element.
@@ -367,12 +382,13 @@ def _gettext_init():
         pass
 
     # Use the locale dir in ../build/share/locale if there is one
-    localedir = os.path.dirname(quodlibet.const.BASEDIR)
+    base_dir = get_base_dir()
+    localedir = os.path.dirname(base_dir)
     localedir = os.path.join(localedir, "build", "share", "locale")
     if not os.path.isdir(localedir) and os.name == "nt":
         # py2exe case
         localedir = os.path.join(
-            quodlibet.const.BASEDIR, "..", "..", "share", "locale")
+            base_dir, "..", "..", "share", "locale")
 
     if os.path.isdir(localedir):
         print_d("Using local localedir: %r" % unexpand(localedir))
@@ -419,7 +435,7 @@ def init(icon=None, proc_title=None, name=None):
     print_d("Entering quodlibet.init")
 
     _gtk_init()
-    _gtk_icons_init(quodlibet.const.IMAGEDIR, icon)
+    _gtk_icons_init(get_image_dir(), icon)
     _gst_init()
     _dbus_init()
     _init_debug()
@@ -444,7 +460,7 @@ def init_plugins(no_plugins=False):
     print_d("Starting plugin manager")
 
     from quodlibet import plugins
-    folders = [os.path.join(quodlibet.const.BASEDIR, "ext", kind)
+    folders = [os.path.join(get_base_dir(), "ext", kind)
                for kind in PLUGIN_DIRS]
     folders.append(os.path.join(quodlibet.const.USERDIR, "plugins"))
     print_d("Scanning folders: %s" % folders)

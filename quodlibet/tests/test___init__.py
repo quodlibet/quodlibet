@@ -9,6 +9,7 @@ from tests import TestCase
 
 import quodlibet
 from quodlibet import config
+from quodlibet.util.path import is_fsnative
 
 
 class TQuodlibet(TestCase):
@@ -26,3 +27,7 @@ class TQuodlibet(TestCase):
         self.assertTrue(quodlibet.is_first_session("quodlibet"))
         quodlibet.finish_first_session("quodlibet")
         self.assertFalse(quodlibet.is_first_session("quodlibet"))
+
+    def test_dirs(self):
+        self.assertTrue(is_fsnative(quodlibet.get_base_dir()))
+        self.assertTrue(is_fsnative(quodlibet.get_image_dir()))
