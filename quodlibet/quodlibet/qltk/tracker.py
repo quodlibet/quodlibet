@@ -12,7 +12,6 @@ import time
 from gi.repository import GObject, GLib
 
 from quodlibet import config
-from quodlibet import const
 
 
 class TimeTracker(GObject.GObject):
@@ -143,7 +142,8 @@ class SongTracker(object):
 class FSInterface(object):
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
 
-    def __init__(self, player):
+    def __init__(self, path, player):
+        self.path = path
         self._player = player
         self._ids = [
             player.connect('song-started', self.__started),
@@ -155,14 +155,14 @@ class FSInterface(object):
             self._player.disconnect(id_)
 
         try:
-            os.unlink(const.CURRENT)
+            os.unlink(self.path)
         except EnvironmentError:
             pass
 
     def __started(self, player, song):
         if song:
             try:
-                f = file(const.CURRENT, "w")
+                f = file(self.path, "w")
             except EnvironmentError:
                 pass
             else:
@@ -171,6 +171,6 @@ class FSInterface(object):
 
     def __ended(self, player, song, stopped):
         try:
-            os.unlink(const.CURRENT)
+            os.unlink(self.path)
         except EnvironmentError:
             pass

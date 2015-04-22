@@ -93,7 +93,8 @@ class QuodLibetWinRemote(RemoteBase):
 
 class QuodLibetUnixRemote(RemoteBase):
 
-    _PATH = const.CONTROL
+    _FIFO_NAME = "control"
+    _PATH = os.path.join(const.USERDIR, _FIFO_NAME)
 
     def __init__(self, app, cmd_registry):
         self._app = app

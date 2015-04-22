@@ -53,12 +53,6 @@ try:
 except IOError:
     pass
 
-CONTROL = os.path.join(USERDIR, "control")
-CONFIG = os.path.join(USERDIR, "config")
-CURRENT = os.path.join(USERDIR, "current")
-LIBRARY = os.path.join(USERDIR, "songs")
-LOGDIR = os.path.join(USERDIR, "logs")
-
 # entry point for the user guide / wiki
 BRANCH_NAME = "master"
 DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/%s"

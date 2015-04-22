@@ -486,7 +486,7 @@ def enable_periodic_save(save_library):
 
     def periodic_config_save():
         while 1:
-            config.save(quodlibet.const.CONFIG)
+            config.save()
             yield
 
     copool.add(periodic_config_save, timeout=timeout)

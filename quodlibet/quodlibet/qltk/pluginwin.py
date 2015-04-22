@@ -393,7 +393,7 @@ class PluginWindow(UniqueWindow):
         return False
 
     def __destroy(self, *args):
-        config.write(const.CONFIG)
+        config.save()
 
     def __selection_changed(self, selection, container):
         model, iter_ = selection.get_selected()

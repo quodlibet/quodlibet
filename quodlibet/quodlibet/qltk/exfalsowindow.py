@@ -10,7 +10,6 @@ import os
 from gi.repository import Gtk, GObject, Pango
 
 from quodlibet import config
-from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
 
@@ -276,4 +275,4 @@ class PreferencesWindow(UniqueWindow):
         config.set(section, name, entry.get_text())
 
     def __destroy(self):
-        config.write(const.CONFIG)
+        config.save()

@@ -42,17 +42,19 @@ def main():
     from quodlibet import util
     from quodlibet.util.string import decode
 
-    config.init(const.CONFIG)
+    config.init(os.path.join(const.USERDIR, "config"))
 
     app.name = "Quod Libet"
     app.id = "quodlibet"
 
     quodlibet.init(icon=icons.QUODLIBET, name=app.name, proc_title=app.id)
 
-    print_d("Initializing main library (%s)" % (
-            quodlibet.util.path.unexpand(const.LIBRARY)))
+    library_path = os.path.join(const.USERDIR, "songs")
 
-    library = quodlibet.library.init(const.LIBRARY)
+    print_d("Initializing main library (%s)" % (
+            quodlibet.util.path.unexpand(library_path)))
+
+    library = quodlibet.library.init(library_path)
     app.library = library
 
     # this assumes that nullbe will always succeed
@@ -168,7 +170,8 @@ def main():
     mmkeys_handler = MMKeysHandler(app.name, window, player)
     if "QUODLIBET_NO_MMKEYS" not in os.environ:
         mmkeys_handler.start()
-    fsiface = FSInterface(player)
+    current_path = os.path.join(const.USERDIR, "current")
+    fsiface = FSInterface(current_path, player)
     remote = Remote(app, cmd_registry)
     try:
         remote.start()
@@ -211,7 +214,7 @@ def main():
     tracker.destroy()
     quodlibet.library.save()
 
-    config.save(const.CONFIG)
+    config.save()
 
     print_d("Finished shutdown.")
 

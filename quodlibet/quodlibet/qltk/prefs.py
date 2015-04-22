@@ -12,7 +12,6 @@
 from gi.repository import Gtk
 
 from quodlibet import config
-from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
@@ -687,6 +686,6 @@ class PreferencesWindow(UniqueWindow):
                 notebook.set_current_page(p)
 
     def __destroy(self):
-        config.write(const.CONFIG)
+        config.save()
         if self.current_scan_dirs != get_scan_dirs():
             scan_library(app.library, force=False)

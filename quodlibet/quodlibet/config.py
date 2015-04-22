@@ -177,12 +177,19 @@ has_option = _config.has_option
 remove_option = _config.remove_option
 register_upgrade_function = _config.register_upgrade_function
 
+_filename = None
+"""The filename last used for loading"""
+
 
 def init(filename=None, initial=None):
+    global _filename
+
     if not _config.is_empty():
         raise ValueError(
             "config initialized twice without quitting: %r"
             % _config.sections())
+
+    _filename = filename
 
     if initial is None:
         initial = INITIAL
@@ -205,8 +212,18 @@ def init(filename=None, initial=None):
                 pass
 
 
-def save(filename):
-    """Writes the active config to filename, ignoring all possible errors"""
+def save(filename=None):
+    """Writes the active config to filename, ignoring all possible errors.
+
+    If not filename is given the one used for loading is used.
+    """
+
+    global _filename
+
+    if filename is None:
+        filename = _filename
+        if filename is None:
+            return
 
     print_d("Writing config...")
     try:

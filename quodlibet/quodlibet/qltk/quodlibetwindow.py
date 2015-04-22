@@ -594,7 +594,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 restore_browser)
         except:
             config.set("memory", "browser", browsers.name(0))
-            config.save(const.CONFIG)
+            config.save()
             raise
 
         self.showhide_playlist(ui.get_widget("/Menu/View/SongList"))

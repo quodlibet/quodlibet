@@ -35,7 +35,7 @@ def main():
     opts, args = opts.parse()
     args[0] = os.path.realpath(args[0])
 
-    config.init(const.CONFIG)
+    config.init(os.path.join(const.USERDIR, "config"))
 
     app.name = "Ex Falso"
     app.id = "exfalso"
@@ -69,7 +69,7 @@ def main():
     quodlibet.main(app.window)
 
     quodlibet.finish_first_session(app.id)
-    config.save(const.CONFIG)
+    config.save()
 
     print_d("Finished shutdown.")
 
