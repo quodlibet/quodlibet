@@ -64,3 +64,4 @@ Tests
 
     ./setup.py test
     ./setup.py test --to-run=TestClassName
+    ./setup.py test --suite=quality
