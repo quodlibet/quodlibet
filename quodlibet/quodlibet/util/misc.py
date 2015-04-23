@@ -7,6 +7,8 @@
 
 import os
 import sys
+import locale
+from functools import wraps
 
 from . import windows
 
@@ -27,3 +29,54 @@ else:
 """
 An argv list which contains unicode under Windows and str everywhere else
 """
+
+
+def cached_func(f):
+    """Decorateor which caches the return value of a function which
+    doesn't take any input.
+    """
+
+    res = []
+
+    @wraps(f)
+    def wrapper():
+        if not res:
+            res.append(f())
+        return res[0]
+    return wrapper
+
+
+@cached_func
+def get_locale_encoding():
+    """Returns the encoding defined by the locale"""
+
+    try:
+        encoding = locale.getpreferredencoding()
+    except locale.Error:
+        encoding = "utf-8"
+    else:
+        # python on macports can return a bugs result (empty string)
+        try:
+            u"".encode(encoding)
+        except LookupError:
+            encoding = "utf-8"
+
+    return encoding
+
+
+@cached_func
+def get_fs_encoding():
+    """Returns the encoding used for paths by glib."""
+
+    if os.name == "nt":
+        return "utf-8"
+
+    # https://developer.gnome.org/glib/stable/glib-running.html
+    if "G_FILENAME_ENCODING" in os.environ:
+        fscoding = os.environ["G_FILENAME_ENCODING"].split(",")[0]
+        if fscoding == "@locale":
+            fscoding = get_locale_encoding()
+    elif "G_BROKEN_FILENAMES" in os.environ:
+        return get_locale_encoding()
+    else:
+        return "utf-8"

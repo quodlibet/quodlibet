@@ -15,7 +15,6 @@ from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet import const
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.util.path import fsdecode, unexpand, fsnative
@@ -175,7 +174,8 @@ class DateColumn(WideTextColumn):
             else:
                 format_ = "%x"
             stamp = time.localtime(stamp)
-            text = time.strftime(format_, stamp).decode(const.ENCODING)
+            encoding = util.get_locale_encoding()
+            text = time.strftime(format_, stamp).decode(encoding)
             cell.set_property('text', text)
 
 

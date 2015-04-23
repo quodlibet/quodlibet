@@ -12,9 +12,12 @@ import os
 import quodlibet.const
 import quodlibet.util.logging
 
-from quodlibet.const import ENCODING
 from quodlibet.util.clicolor import Colorise
 from quodlibet.util import clicolor
+from .misc import get_locale_encoding
+
+
+_ENCODING = get_locale_encoding()
 
 
 def _is_py2exe():
@@ -89,9 +92,9 @@ def _print(string, output, frm="utf-8", strip_color=True, end=os.linesep):
         can_have_color = False
 
     if isinstance(string, unicode):
-        string = string.encode(ENCODING, "replace")
+        string = string.encode(_ENCODING, "replace")
     else:
-        string = string.decode(frm).encode(ENCODING, "replace")
+        string = string.decode(frm).encode(_ENCODING, "replace")
 
     try:
         if can_have_color:

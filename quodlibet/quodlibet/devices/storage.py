@@ -13,7 +13,7 @@ from glob import glob
 from gi.repository import Gtk, GLib, GdkPixbuf
 
 import quodlibet
-from quodlibet import const
+from quodlibet import util
 from quodlibet import app
 
 from quodlibet.devices._base import Device
@@ -125,8 +125,9 @@ class StorageDevice(Device):
             song.sanitize(target)
             self.__library.add([song])
             return song
-        except (OSError, IOError, GLib.GError), exc:
-            return str(exc).decode(const.ENCODING, 'replace')
+        except (OSError, IOError, GLib.GError) as exc:
+            encoding = util.get_locale_encoding()
+            return str(exc).decode(encoding, 'replace')
 
     def delete(self, parent_widget, song):
         try:
@@ -147,8 +148,9 @@ class StorageDevice(Device):
                     pass
 
             return True
-        except (OSError, IOError), exc:
-            return str(exc).decode(const.ENCODING, 'replace')
+        except (OSError, IOError) as exc:
+            encoding = util.get_locale_encoding()
+            return str(exc).decode(encoding, 'replace')
 
     def cleanup(self, wlb, action):
         self.__save_library()

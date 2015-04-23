@@ -14,13 +14,15 @@ import tempfile
 import codecs
 import shlex
 import urllib
-from quodlibet.const import FSCODING
 from quodlibet.util.string import decode
 from . import windows
-from .misc import environ
+from .misc import environ, get_fs_encoding
 
 if sys.platform == "darwin":
     from Foundation import NSString
+
+
+_FSCODING = get_fs_encoding()
 
 
 """
@@ -59,9 +61,9 @@ def fsdecode(s, note=True):
     if isinstance(s, unicode):
         return s
     elif note:
-        return decode(s, FSCODING)
+        return decode(s, _FSCODING)
     else:
-        return s.decode(FSCODING, 'replace')
+        return s.decode(_FSCODING, 'replace')
 
 
 """
@@ -76,7 +78,7 @@ There exist 3 types of paths:
 if sys.platform == "win32":
     # We use FSCODING to save paths in files for example,
     # so this should never change on Windows (like in glib)
-    assert FSCODING == "utf-8"
+    assert _FSCODING == "utf-8"
 
     def is_fsnative(path):
         """If path is a native path"""
@@ -119,7 +121,7 @@ else:
 
     def fsnative(path=u""):
         assert isinstance(path, unicode)
-        return path.encode(FSCODING, 'replace')
+        return path.encode(_FSCODING, 'replace')
 
     def glib2fsnative(path):
         assert isinstance(path, bytes)

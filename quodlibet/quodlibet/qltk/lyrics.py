@@ -16,7 +16,6 @@ import urllib
 
 from gi.repository import Gtk, GLib
 
-from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet.util import connect_obj
@@ -94,8 +93,9 @@ class LyricsPane(Gtk.VBox):
                 urllib.quote(title.encode('utf-8'))))
             text = sock.read()
         except Exception, err:
+            encoding = util.get_locale_encoding()
             try:
-                err = err.strerror.decode(const.ENCODING, 'replace')
+                err = err.strerror.decode(encoding, 'replace')
             except:
                 err = _("Unable to download lyrics.")
             GLib.idle_add(buffer.set_text, err)
@@ -119,8 +119,9 @@ class LyricsPane(Gtk.VBox):
 
         try:
             f = file(lyricname, "w")
-        except EnvironmentError, err:
-            print_w(err.strerror.decode(const.ENCODING, "replace"))
+        except EnvironmentError as err:
+            encoding = util.get_locale_encoding()
+            print_w(err.strerror.decode(encoding, "replace"))
         else:
             start, end = buffer.get_bounds()
             f.write(buffer.get_text(start, end, True))

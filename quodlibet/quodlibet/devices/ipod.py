@@ -10,7 +10,7 @@ import time
 
 from gi.repository import Gtk
 
-from quodlibet import const
+from quodlibet import util
 from quodlibet import app
 
 from quodlibet.qltk.msg import WarningMessage
@@ -301,8 +301,9 @@ class IPodDevice(Device):
                     return True
             else:
                 return False
-        except IOError, exc:
-            return str(exc).decode(const.ENCODING, 'replace')
+        except IOError as exc:
+            encoding = util.get_locale_encoding()
+            return str(exc).decode(encoding, 'replace')
 
     def cleanup(self, wlb, action):
         try:

@@ -13,7 +13,7 @@ import os
 import sys
 import warnings
 
-from quodlibet.util import set_process_title, environ
+from quodlibet.util import set_process_title, environ, cached_func
 from quodlibet.util import windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
@@ -93,6 +93,7 @@ class Application(object):
 app = Application()
 
 
+@cached_func
 def get_base_dir():
     """The path to the quodlibet package"""
 
@@ -102,17 +103,16 @@ def get_base_dir():
     return os.path.dirname(os.path.realpath(file_path))
 
 
+@cached_func
 def get_image_dir():
     """The path to the image directory in the quodlibet package"""
 
     return os.path.join(get_base_dir(), "images")
 
 
-_USERDIR = None
-
-
-def _init_user_dir():
-    global _USERDIR
+@cached_func
+def get_user_dir():
+    """Place where QL saves its state, database, config etc."""
 
     if os.name == "nt":
         USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
@@ -133,15 +133,7 @@ def _init_user_dir():
     except IOError:
         pass
 
-    _USERDIR = USERDIR
-
-_init_user_dir()
-
-
-def get_user_dir():
-    """Place where QL saves its state, database, config etc."""
-
-    return _USERDIR
+    return USERDIR
 
 
 def _fix_gst_leaks():

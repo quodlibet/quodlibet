@@ -3,7 +3,6 @@
 
 import sys
 import os
-import locale
 
 
 class Version(tuple):
@@ -189,30 +188,3 @@ DEFAULT_COLUMNS = "~#track ~people ~title~version ~album~discsubtitle " \
                   "~#length".split()
 
 DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ)
-
-try:
-    ENCODING = locale.getpreferredencoding()
-except locale.Error:
-    ENCODING = "utf-8"
-else:
-    # python on macports can return a bugs result (empty string)
-    try:
-        u"".encode(ENCODING)
-    except LookupError:
-        ENCODING = "utf-8"
-
-if os.name == "nt":
-    FSCODING = "utf-8"
-else:
-    # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
-    if "G_FILENAME_ENCODING" in os.environ:
-        FSCODING = os.environ["G_FILENAME_ENCODING"].split(",")[0]
-        if FSCODING == "@locale":
-            FSCODING = ENCODING
-    elif "G_BROKEN_FILENAMES" in os.environ:
-        FSCODING = ENCODING
-    else:
-        FSCODING = "utf-8"
-
-del(os)
-del(locale)

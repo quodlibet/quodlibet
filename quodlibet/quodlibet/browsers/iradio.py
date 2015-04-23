@@ -15,7 +15,6 @@ import itertools
 from gi.repository import Gtk, GLib, Pango
 
 import quodlibet
-from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import config
@@ -206,11 +205,12 @@ def add_station(uri):
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
         try:
             sock = urllib.urlopen(uri)
-        except EnvironmentError, e:
+        except EnvironmentError as e:
+            encoding = util.get_locale_encoding()
             try:
-                err = e.strerror.decode(const.ENCODING, 'replace')
+                err = e.strerror.decode(encoding, 'replace')
             except (TypeError, AttributeError):
-                err = e.strerror[1].decode(const.ENCODING, 'replace')
+                err = e.strerror[1].decode(encoding, 'replace')
             qltk.ErrorMessage(None, _("Unable to add station"), err).run()
             return []
 
