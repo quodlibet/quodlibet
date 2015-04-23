@@ -45,6 +45,7 @@ def skip(cls, reason=None, warn=True):
     if warn:
         skipped_warn.add(cls)
 
+    cls = unittest.skip(cls)
     return cls
 
 

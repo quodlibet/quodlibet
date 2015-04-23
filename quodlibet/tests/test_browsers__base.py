@@ -8,7 +8,7 @@
 
 from gi.repository import Gtk
 
-from tests import TestCase, AbstractTestCase
+from tests import TestCase
 from helper import realized
 
 from quodlibet import browsers
@@ -59,7 +59,7 @@ class TBrowser(TestCase):
         self.browser = None
 
 
-class TBrowserBase(AbstractTestCase):
+class TBrowserBase(TestCase):
     Kind = None
 
     def setUp(self):
@@ -74,6 +74,9 @@ class TBrowserBase(AbstractTestCase):
         self.b.destroy()
         self.library.destroy()
         config.quit()
+
+
+class TBrowserMixin(object):
 
     def test_menu(self):
         # FIXME: the playlist browser accesses the song list directly
@@ -144,6 +147,6 @@ browsers.init()
 for browser in browsers.browsers:
     cls = TBrowserBase
     name = "TB" + browser.__name__
-    new_test = type(name, (TBrowserBase,), {})
+    new_test = type(name, (TBrowserBase, TBrowserMixin), {})
     new_test.Kind = browser
     globals()[name] = new_test

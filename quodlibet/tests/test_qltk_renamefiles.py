@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from tests import AbstractTestCase
+from tests import TestCase
 
 from quodlibet.qltk.renamefiles import (SpacesToUnderscores,
     StripWindowsIncompat)
@@ -10,12 +10,15 @@ from quodlibet.qltk.renamefiles import Lowercase
 from quodlibet.util.path import fsnative, is_fsnative
 
 
-class TFilter(AbstractTestCase):
+class TFilter(TestCase):
     def setUp(self):
         self.c = self.Kind()
 
     def tearDown(self):
         self.c.destroy()
+
+
+class TFilterMixin(object):
 
     def test_empty(self):
         empty = fsnative(u"")

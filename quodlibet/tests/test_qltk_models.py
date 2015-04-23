@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, AbstractTestCase
+from tests import TestCase
 
 from gi.repository import Gtk
 
@@ -13,7 +13,7 @@ from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
 
 
-class _TObjectStore(AbstractTestCase):
+class _TObjectStoreMixin(object):
 
     Store = None
 
@@ -75,12 +75,12 @@ class _TObjectStore(AbstractTestCase):
         self.failUnless(m.insert_after(None))
 
 
-class TOrigObjectStore(_TObjectStore):
+class TOrigObjectStore(TestCase, _TObjectStoreMixin):
 
     Store = lambda *x: Gtk.ListStore(object)
 
 
-class TObjectStore(_TObjectStore):
+class TObjectStore(TestCase, _TObjectStoreMixin):
 
     Store = ObjectStore
 
@@ -221,7 +221,7 @@ class TObjectStore(_TObjectStore):
         self.assertEqual(inserted[0], len(m))
 
 
-class _TObjectTreeStore(AbstractTestCase):
+class _TObjectTreeStoreMixin(object):
 
     Store = None
 
@@ -297,12 +297,12 @@ class _TObjectTreeStore(AbstractTestCase):
         self.failUnless(m.insert_after(None, None))
 
 
-class TOrigTreeStore(_TObjectTreeStore):
+class TOrigTreeStore(TestCase, _TObjectTreeStoreMixin):
 
     Store = lambda *x: Gtk.TreeStore(object)
 
 
-class TObjectTreeStore(_TObjectTreeStore):
+class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):
 
     Store = ObjectTreeStore
 

@@ -8,7 +8,7 @@
 import os
 import shutil
 
-from tests import AbstractTestCase, DATA_DIR, mkstemp, skipUnless
+from tests import TestCase, DATA_DIR, mkstemp, skipUnless
 from quodlibet.formats.aac import AACFile
 
 try:
@@ -17,7 +17,7 @@ except ImportError:
     AAC = None
 
 
-class _TAACFile(AbstractTestCase):
+class _TAACFile(TestCase):
 
     NAME = None
 
@@ -29,6 +29,9 @@ class _TAACFile(AbstractTestCase):
 
     def tearDown(self):
         os.unlink(self.f)
+
+
+class _TAACFileMixin(object):
 
     def test_basic(self):
         self.song["title"] = u"SomeTestValue"
@@ -55,7 +58,7 @@ class _TAACFile(AbstractTestCase):
 
 
 @skipUnless(AAC, "too old mutagen")
-class TADTSFile(_TAACFile):
+class TADTSFile(_TAACFile, _TAACFileMixin):
 
     NAME = "empty.aac"
 
@@ -67,7 +70,7 @@ class TADTSFile(_TAACFile):
 
 
 @skipUnless(AAC, "too old mutagen")
-class TADIFFile(_TAACFile):
+class TADIFFile(_TAACFile, _TAACFileMixin):
 
     NAME = "adif.aac"
 

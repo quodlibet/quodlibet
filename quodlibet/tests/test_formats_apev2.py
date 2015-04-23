@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tests import DATA_DIR, mkstemp, AbstractTestCase, TestCase
+from tests import DATA_DIR, mkstemp, TestCase
 
 import os
 import shutil
@@ -15,9 +15,7 @@ from quodlibet.formats.wavpack import WavpackFile
 from quodlibet.formats._image import APICType, EmbeddedImage
 
 
-class TAPEv2FileBase(AbstractTestCase):
-    def setUp(self):
-        raise NotImplementedError
+class TAPEv2FileMixin(object):
 
     def test_can_change(self):
         self.failUnlessEqual(self.s.can_change(), True)
@@ -105,33 +103,39 @@ class TAPEv2FileBase(AbstractTestCase):
         m = mutagen.apev2.APEv2(self.f)
         self.failUnlessEqual(m["track"], "77/88")
 
-    def tearDown(self):
-        os.unlink(self.f)
 
-
-class TMPCFile(TAPEv2FileBase):
+class TMPCFile(TestCase, TAPEv2FileMixin):
     def setUp(self):
         fd, self.f = mkstemp(".mpc")
         os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mpc'), self.f)
         self.s = MPCFile(self.f)
 
+    def tearDown(self):
+        os.unlink(self.f)
 
-class TMAFile(TAPEv2FileBase):
+
+class TMAFile(TestCase, TAPEv2FileMixin):
     def setUp(self):
         fd, self.f = mkstemp(".ape")
         os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ape'), self.f)
         self.s = MonkeysAudioFile(self.f)
 
+    def tearDown(self):
+        os.unlink(self.f)
 
-class TWavpackFile(TAPEv2FileBase):
+
+class TWavpackFile(TestCase, TAPEv2FileMixin):
 
     def setUp(self):
         fd, self.f = mkstemp(".wv")
         os.close(fd)
         shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.wv'), self.f)
         self.s = WavpackFile(self.f)
+
+    def tearDown(self):
+        os.unlink(self.f)
 
 
 class TWvCoverArt(TestCase):

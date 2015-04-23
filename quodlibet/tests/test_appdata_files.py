@@ -10,14 +10,14 @@ import subprocess
 
 from quodlibet.util.path import iscommand
 
-from tests import AbstractTestCase, mkstemp, skipUnless
+from tests import TestCase, mkstemp, skipUnless
 
 
 QLDATA_DIR = os.path.join(os.path.dirname(
     os.path.dirname(os.path.realpath(__file__))), "data")
 
 
-class _TAppDataFile(AbstractTestCase):
+class _TAppDataFileMixin(object):
     PATH = None
 
     def test_filename(self):
@@ -50,10 +50,10 @@ class _TAppDataFile(AbstractTestCase):
 
 
 @skipUnless(iscommand("appstream-util"), "appstream-util not found")
-class TQLAppDataFile(_TAppDataFile):
+class TQLAppDataFile(TestCase, _TAppDataFileMixin):
     PATH = os.path.join(QLDATA_DIR, "quodlibet.appdata.xml.in")
 
 
 @skipUnless(iscommand("appstream-util"), "appstream-util not found")
-class TEFAppDataFile(_TAppDataFile):
+class TEFAppDataFile(TestCase, _TAppDataFileMixin):
     PATH = os.path.join(QLDATA_DIR, "exfalso.appdata.xml.in")

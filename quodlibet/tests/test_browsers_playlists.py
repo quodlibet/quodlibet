@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from quodlibet.browsers.playlists.util import parse_m3u, parse_pls
 from quodlibet.util.collection import Playlist
-from tests import TestCase, AbstractTestCase, DATA_DIR, mkstemp, mkdtemp
+from tests import TestCase, DATA_DIR, mkstemp, mkdtemp
 
 import os
 import shutil
@@ -15,12 +15,15 @@ from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 
 
-class TParsePlaylist(AbstractTestCase):
+class TParsePlaylist(TestCase):
     def setUp(self):
         quodlibet.config.init()
 
     def tearDown(self):
         quodlibet.config.quit()
+
+
+class TParsePlaylistMixin(object):
 
     def test_parse_empty(self):
         h, name = mkstemp()
@@ -61,12 +64,12 @@ class TParsePlaylist(AbstractTestCase):
         list.delete()
 
 
-class TParseM3U(TParsePlaylist):
+class TParseM3U(TParsePlaylist, TParsePlaylistMixin):
     Parse = staticmethod(parse_m3u)
     prefix = ""
 
 
-class TParsePLS(TParsePlaylist):
+class TParsePLS(TParsePlaylist, TParsePlaylistMixin):
     Parse = staticmethod(parse_pls)
     prefix = "File1="
 

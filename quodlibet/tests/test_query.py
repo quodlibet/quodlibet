@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from tests import TestCase
 
+from quodlibet import config
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
 
@@ -106,6 +107,7 @@ class TQuery(TestCase):
     AF
 
     def setUp(self):
+        config.init()
         self.s1 = self.AF(
             {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
              "version": "cake mix", "~filename": "/dir1/foobar.ogg"})
@@ -118,6 +120,9 @@ class TQuery(TestCase):
              "~filename": "/test/\xc3\xb6\xc3\xa4\xc3\xbc/fo\xc3\xbc.ogg"})
         self.s4 = self.AF({"title": u"Ångström", })
         self.s5 = self.AF({"title": "oh&blahhh", "artist": "!ohno"})
+
+    def tearDown(self):
+        config.quit()
 
     def test_repr(self):
         query = Query("foo = bar", [])

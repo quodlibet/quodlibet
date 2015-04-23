@@ -8,14 +8,14 @@
 import os
 import subprocess
 
-from tests import AbstractTestCase, mkstemp
+from tests import TestCase, mkstemp
 
 
 QLDATA_DIR = os.path.join(os.path.dirname(
     os.path.dirname(os.path.realpath(__file__))), "data")
 
 
-class _TDesktopFile(AbstractTestCase):
+class _TDesktopFileMixin(object):
     PATH = None
 
     def test_filename(self):
@@ -52,9 +52,9 @@ class _TDesktopFile(AbstractTestCase):
             raise Exception(output)
 
 
-class TQLDesktopFile(_TDesktopFile):
+class TQLDesktopFile(TestCase, _TDesktopFileMixin):
     PATH = os.path.join(QLDATA_DIR, "quodlibet.desktop.in")
 
 
-class TEFDesktopFile(_TDesktopFile):
+class TEFDesktopFile(TestCase, _TDesktopFileMixin):
     PATH = os.path.join(QLDATA_DIR, "exfalso.desktop.in")

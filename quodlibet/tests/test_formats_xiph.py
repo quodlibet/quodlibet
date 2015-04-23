@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from quodlibet.config import RATINGS
-from tests import TestCase, DATA_DIR, skipUnless, mkstemp, AbstractTestCase
+from tests import DATA_DIR, skipUnless, mkstemp, TestCase
 
 import os
 import sys
@@ -44,13 +44,16 @@ class TXiphPickle(TestCase):
         self.failUnless(mod.OggFile is OggFile)
 
 
-class TVCFile(AbstractTestCase):
+class TVCFile(TestCase):
     # Mixin to test Vorbis writing features
 
     def setUp(self):
         config.init()
         config.set("editing", "save_email", "")
         config.set("editing", "save_to_songs", "1")
+
+
+class TVCFileMixin(object):
 
     def test_rating(self):
         self.song["~#rating"] = 0.2
@@ -144,7 +147,7 @@ class TVCFile(AbstractTestCase):
         self.failUnless(self.song.can_change())
 
 
-class TTotalTagsBase(AbstractTestCase):
+class TTotalTagsBase(TestCase):
     """Test conversation between the tracknumber/totaltracks/tracktotal
     format and the tracknumber="x/y" format.
 
@@ -163,6 +166,9 @@ class TTotalTagsBase(AbstractTestCase):
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
+
+
+class TTotalTagsMixin(object):
 
     def __load_tags(self, tags, expected):
         m = OggVorbis(self.filename)
@@ -267,19 +273,19 @@ class TTotalTagsBase(AbstractTestCase):
             {self.SINGLE: "1", self.MAIN: "4", self.FALLBACK: "3"})
 
 
-class TTrackTotal(TTotalTagsBase):
+class TTrackTotal(TTotalTagsBase, TTotalTagsMixin):
     MAIN = "tracktotal"
     FALLBACK = "totaltracks"
     SINGLE = "tracknumber"
 
 
-class TDiscTotal(TTotalTagsBase):
+class TDiscTotal(TTotalTagsBase, TTotalTagsMixin):
     MAIN = "disctotal"
     FALLBACK = "totaldiscs"
     SINGLE = "discnumber"
 
 
-class TFLACFile(TVCFile):
+class TFLACFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
         h, self.filename = mkstemp(".flac")
@@ -313,9 +319,16 @@ class TFLACFile(TVCFile):
         config.quit()
 
 
-class TVCCover(AbstractTestCase):
+class TVCCover(TestCase):
     def setUp(self):
         config.init()
+
+    def tearDown(self):
+        os.unlink(self.filename)
+        config.quit()
+
+
+class TVCCoverMixin(object):
 
     def test_can_change_images(self):
         song = self.QLType(self.filename)
@@ -469,12 +482,8 @@ class TVCCover(AbstractTestCase):
         self.assertTrue("coverart" not in song)
         self.assertTrue("coverartmime" not in song)
 
-    def tearDown(self):
-        os.unlink(self.filename)
-        config.quit()
 
-
-class TVCCoverOgg(TVCCover):
+class TVCCoverOgg(TVCCover, TVCCoverMixin):
     def setUp(self):
         TVCCover.setUp(self)
         h, self.filename = mkstemp(".ogg")
@@ -484,7 +493,7 @@ class TVCCoverOgg(TVCCover):
         self.QLType = OggFile
 
 
-class TVCCoverFlac(TVCCover):
+class TVCCoverFlac(TVCCover, TVCCoverMixin):
     def setUp(self):
         TVCCover.setUp(self)
         h, self.filename = mkstemp(".flac")
@@ -570,7 +579,7 @@ class TFlacPicture(TestCase):
         config.quit()
 
 
-class TOggFile(TVCFile):
+class TOggFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
         h, self.filename = mkstemp(".ogg")
@@ -584,7 +593,7 @@ class TOggFile(TVCFile):
 
 
 @skipUnless(OggOpus, "Ogg Opus mutagen support missing")
-class TOggOpusFile(TVCFile):
+class TOggOpusFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
         h, self.filename = mkstemp(".ogg")
