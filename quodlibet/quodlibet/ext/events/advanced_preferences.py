@@ -53,6 +53,18 @@ class AdvancedPreferences(EventPlugin):
         rows.append((Gtk.Label(label=_("Search tags:")), ve))
 
         ve = Gtk.Entry()
+        ve.set_text(config.get("settings", "rating_symbol_full",
+                               "\xe2\x98\x85"))
+        ve.connect('changed', changed, 'rating_symbol_full', 'settings')
+        rows.append((Gtk.Label(label=_("Rating symbol full:")), ve))
+
+        ve = Gtk.Entry()
+        ve.set_text(config.get("settings", "rating_symbol_blank",
+                               "\xe2\x98\x86"))
+        ve.connect('changed', changed, 'rating_symbol_blank', 'settings')
+        rows.append((Gtk.Label(label=_("Rating symbol blank:")), ve))
+
+        ve = Gtk.Entry()
         ve.set_tooltip_text(_("Identifier of the playback backend to use"))
         ve.set_text(config.get("player", "backend"))
         ve.connect('changed', changed, 'backend', 'player')
