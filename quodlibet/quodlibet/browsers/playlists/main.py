@@ -14,6 +14,10 @@ from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet import config
 from quodlibet.browsers._base import Browser
 from quodlibet.formats._audio import AudioFile
+from quodlibet.qltk.completion import LibraryTagCompletion
+from quodlibet.qltk.searchbar import SearchBarBox
+from quodlibet.qltk.songlist import SongList
+from quodlibet.query import Query
 from quodlibet.util import connect_obj
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
@@ -34,15 +38,18 @@ class PlaylistsBrowser(Browser):
     replaygain_profiles = ["track"]
 
     def pack(self, songpane):
-        container = qltk.ConfigRHPaned(
-            "browsers", "playlistsbrowser_pos", 0.4)
-        self.show()
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
-        return container
+        self._main_box.pack1(self, True, False)
+        self._rh_box = rhbox = Gtk.VBox(spacing=6)
+        align = Align(self._sb_box, left=0, right=6, top=6)
+        rhbox.pack_start(align, False, True, 0)
+        rhbox.pack_start(songpane, True, True, 0)
+        self._main_box.pack2(rhbox, True, False)
+        rhbox.show_all()
+        return self._main_box
 
     def unpack(self, container, songpane):
-        container.remove(songpane)
+        self._rh_box.remove(songpane)
+        container.remove(self._rh_box)
         container.remove(self)
 
     @classmethod
@@ -131,9 +138,30 @@ class PlaylistsBrowser(Browser):
         self.__configure_buttons(library)
         self.__configure_dnd(view, library)
         self.__connect_signals(view, library)
+        self._sb_box = self.__create_searchbar(library)
+        self._main_box = self.__create_box()
+        self.show_all()
+        self._query = None
 
         for child in self.get_children():
             child.show_all()
+
+    def __destroy(self, *args):
+        del self._sb_box
+
+    def __create_box(self):
+        box = qltk.ConfigRHPaned("browsers", "playlistsbrowser_pos", 0.4)
+        box.show_all()
+        return box
+
+    def __create_searchbar(self, library):
+        self.accelerators = Gtk.AccelGroup()
+        completion = LibraryTagCompletion(library.librarian)
+        sbb = SearchBarBox(completion=completion,
+                           accel_group=self.accelerators)
+        sbb.connect('query-changed', self.__text_parse)
+        sbb.connect('focus-out', self.__focus)
+        return sbb
 
     def __embed_in_scrolledwin(self, view):
         swin = ScrolledWindow()
@@ -279,7 +307,7 @@ class PlaylistsBrowser(Browser):
                 path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
                 playlist = Playlist.fromsongs(PLAYLISTS, songs, library)
-                GLib.idle_add(self.__select_playlist, playlist)
+                GLib.idle_add(self._select_playlist, playlist)
             else:
                 playlist = model[path][0]
                 playlist.extend(songs)
@@ -331,7 +359,7 @@ class PlaylistsBrowser(Browser):
         else:
             sel.set_uris([song("~uri") for song in songs])
 
-    def __select_playlist(self, playlist):
+    def _select_playlist(self, playlist):
         view = self.__view
         model = view.get_model()
         for row in model:
@@ -375,21 +403,64 @@ class PlaylistsBrowser(Browser):
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
+    def __focus(self, widget, *args):
+        qltk.get_top_parent(widget).songlist.grab_focus()
+
+    def __text_parse(self, bar, text):
+        self.activate()
+
+    def _get_text(self):
+        return self._sb_box.get_text()
+
+    def _set_text(self, text):
+        self._sb_box.set_text(text)
+
     def activate(self, widget=None, resort=True):
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
-        self.songs_selected(songs, resort)
+
+        text = self._get_text()
+        # TODO: remove static dependency on Query
+        if Query.is_parsable(text):
+            self._query = Query(text, SongList.star)
+            songs = self._query.filter(songs)
+        GLib.idle_add(self.songs_selected, songs, resort)
+
+    def can_filter_text(self):
+        return True
+
+    def filter_text(self, text):
+        self._set_text(text)
+        self.activate()
+
+    def can_filter(self, key):
+        # TODO: special-case the ~playlists tag maybe?
+        return super(PlaylistsBrowser, self).can_filter(key)
+
+    def finalize(self, restore):
+        config.set("browsers", "query_text", "")
+
+    def unfilter(self):
+        self.filter_text("")
+
+    def active_filter(self, song):
+        if self._query is not None:
+            return self._query.search(song)
+        else:
+            return True
 
     def save(self):
         model, iter = self.__view.get_selection().get_selected()
         name = iter and model[iter][0].name or ""
         config.set("browsers", "playlist", name)
+        text = self._get_text()
+        config.set("browsers", "query_text", text)
 
     def __new_playlist(self, activator):
         playlist = Playlist.new(PLAYLISTS)
         self.__lists.get_model().append(row=[playlist])
-        self.__select_playlist(playlist)
+        self._select_playlist(playlist)
 
     def __start_editing(self, render, editable, path):
         editable.set_text(self.__lists[path][0].name)
@@ -428,9 +499,16 @@ class PlaylistsBrowser(Browser):
     def restore(self):
         try:
             name = config.get("browsers", "playlist")
-        except Exception:
-            return
-        self.__view.select_by_func(lambda r: r[0].name == name, one=True)
+        except config.Error as e:
+            print_d("Couldn't get last playlist from config: %s" % e)
+        else:
+            self.__view.select_by_func(lambda r: r[0].name == name, one=True)
+        try:
+            text = config.get("browsers", "query_text")
+        except config.Error as e:
+            print_d("Couldn't get last search string from config: %s" % e)
+        else:
+            self._set_text(text)
 
     can_reorder = True
 
@@ -442,6 +520,6 @@ class PlaylistsBrowser(Browser):
             playlist[:] = songs
         elif songs:
             playlist = Playlist.fromsongs(PLAYLISTS, songs)
-            GLib.idle_add(self.__select_playlist, playlist)
+            GLib.idle_add(self._select_playlist, playlist)
         if playlist:
             PlaylistsBrowser.changed(playlist, refresh=False)
