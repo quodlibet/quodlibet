@@ -114,7 +114,8 @@ class AudioFile(dict, ImageContainer):
         return (human(self("albumsort", "")),
                 human(self("albumartistsort", "")),
                 self.get("album_grouping_key") or self.get("labelid") or
-                self.get("musicbrainz_albumid") or "")
+                self.get("musicbrainz_albumid") or
+                str(self("date")) * bool(self("albumsort")) or "")
 
     @util.cached_property
     def sort_key(self):
