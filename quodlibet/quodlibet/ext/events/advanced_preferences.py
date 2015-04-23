@@ -16,7 +16,7 @@ from quodlibet import const
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
 
-# TODO : disable_hints, rating_symbol_blank, rating_symbol_full, backend
+# TODO : rating_symbol_blank, rating_symbol_full
 
 class AdvancedPreferences(EventPlugin):
     PLUGIN_ID = "Advanced Preferences"
@@ -51,6 +51,12 @@ class AdvancedPreferences(EventPlugin):
         ve.set_text(config.get("settings", "search_tags"))
         ve.connect('changed', changed, 'search_tags', 'settings')
         rows.append((Gtk.Label(label=_("Search tags:")), ve))
+
+        ve = Gtk.Entry()
+        ve.set_tooltip_text(_("Identifier of the playback backend to use"))
+        ve.set_text(config.get("player", "backend"))
+        ve.connect('changed', changed, 'backend', 'player')
+        rows.append((Gtk.Label(label=_("Backend:")), ve))
 
         for (row, (label, entry)) in enumerate(rows):
             label.set_alignment(0.0, 0.5)
