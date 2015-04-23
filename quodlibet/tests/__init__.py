@@ -7,6 +7,7 @@ import sys
 import unittest
 import tempfile
 import shutil
+import atexit
 import subprocess
 from quodlibet.util.dprint import Colorise, print_
 from quodlibet.util.path import fsnative, is_fsnative
@@ -186,9 +187,17 @@ class Runner(object):
         return len(result.failures), len(result.errors)
 
 
-def unit(*args, **kwargs):
+_BUS_INFO = None
 
-    global _TEMP_DIR
+
+def init_test_environ():
+    """This needs to be called before any test can be run.
+
+    Before exiting the process call exit_test_environ() to clean up
+    any resources created.
+    """
+
+    global _TEMP_DIR, _BUS_INFO
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
@@ -204,34 +213,15 @@ def unit(*args, **kwargs):
     os.environ.pop("XDG_DATA_HOME", None)
     os.environ.pop("XDG_CACHE_HOME", None)
 
-    bus = None
+    _BUS_INFO = None
     if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in os.environ:
         try:
             out = subprocess.check_output(["dbus-launch"])
         except (subprocess.CalledProcessError, OSError):
             pass
         else:
-            bus = dict([l.split("=", 1) for l in out.splitlines()])
-            os.environ.update(bus)
-
-    try:
-        return _run_tests(*args, **kwargs)
-    finally:
-        try:
-            shutil.rmtree(_TEMP_DIR)
-        except EnvironmentError:
-            pass
-
-        if bus:
-            try:
-                subprocess.check_call(
-                    ["kill", "-9", bus["DBUS_SESSION_BUS_PID"]])
-            except (subprocess.CalledProcessError, OSError):
-                pass
-
-
-def _run_tests(run=[], filter_func=None, main=False, subdirs=None,
-               strict=False, stop_first=False):
+            _BUS_INFO = dict([l.split("=", 1) for l in out.splitlines()])
+            os.environ.update(_BUS_INFO)
 
     # Ideally nothing should touch the FS on import, but we do atm..
     # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
@@ -239,12 +229,40 @@ def _run_tests(run=[], filter_func=None, main=False, subdirs=None,
         if key.startswith('quodlibet'):
             del(sys.modules[key])
 
+    import quodlibet
+    quodlibet.init()
+
+
+def exit_test_environ():
+    """Call after init_test_environ() and all tests are finished"""
+
+    global _TEMP_DIR, _BUS_INFO
+
+    try:
+        shutil.rmtree(_TEMP_DIR)
+    except EnvironmentError:
+        pass
+
+    if _BUS_INFO:
+        try:
+            subprocess.check_call(
+                ["kill", "-9", _BUS_INFO["DBUS_SESSION_BUS_PID"]])
+        except (subprocess.CalledProcessError, OSError):
+            pass
+
+
+# we have to do this on import so the tests work with other test runners
+# like py.test which don't know about out setup code and just import
+init_test_environ()
+atexit.register(exit_test_environ)
+
+
+def unit(run=[], filter_func=None, main=False, subdirs=None,
+               strict=False, stop_first=False):
+
     path = os.path.dirname(__file__)
     if subdirs is None:
         subdirs = []
-
-    import quodlibet
-    quodlibet.init()
 
     # make glib warnings fatal
     if strict:
