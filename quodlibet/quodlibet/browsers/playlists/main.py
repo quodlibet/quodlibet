@@ -44,7 +44,7 @@ class PlaylistsBrowser(Browser):
         rhbox.pack_start(align, False, True, 0)
         rhbox.pack_start(songpane, True, True, 0)
         self._main_box.pack2(rhbox, True, False)
-        rhbox.show_all()
+        rhbox.show()
         return self._main_box
 
     def unpack(self, container, songpane):
@@ -416,9 +416,7 @@ class PlaylistsBrowser(Browser):
         self._sb_box.set_text(text)
 
     def activate(self, widget=None, resort=True):
-        model, iter = self.__view.get_selection().get_selected()
-        songs = iter and list(model[iter][0]) or []
-        songs = filter(lambda s: isinstance(s, AudioFile), songs)
+        songs = self._get_playlist_songs()
 
         text = self._get_text()
         # TODO: remove static dependency on Query
@@ -426,6 +424,12 @@ class PlaylistsBrowser(Browser):
             self._query = Query(text, SongList.star)
             songs = self._query.filter(songs)
         GLib.idle_add(self.songs_selected, songs, resort)
+
+    def _get_playlist_songs(self):
+        model, iter = self.__view.get_selection().get_selected()
+        songs = iter and list(model[iter][0]) or []
+        songs = filter(lambda s: isinstance(s, AudioFile), songs)
+        return songs
 
     def can_filter_text(self):
         return True
@@ -445,10 +449,8 @@ class PlaylistsBrowser(Browser):
         self.filter_text("")
 
     def active_filter(self, song):
-        if self._query is not None:
-            return self._query.search(song)
-        else:
-            return True
+        return (song in self._get_playlist_songs()
+                and (self._query is None or self._query.search(song)))
 
     def save(self):
         model, iter = self.__view.get_selection().get_selected()

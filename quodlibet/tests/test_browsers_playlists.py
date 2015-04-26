@@ -150,6 +150,10 @@ class TPlaylistIntegration(TestCase):
 
 class TPlaylists(TSearchBar):
     Bar = PlaylistsBrowser
+    ANOTHER_SONG = AudioFile({
+        "title": "lonely",
+        "artist": "new artist",
+        "~filename": fsnative(u"/dev/urandom")})
 
     @classmethod
     def setUpClass(cls):
@@ -157,15 +161,17 @@ class TPlaylists(TSearchBar):
         quodlibet.config.init()
         cls.lib = quodlibet.browsers.playlists.library = SongLibrary()
         cls.lib.librarian = SongLibrarian()
-        for af in SONGS:
+        all_songs = SONGS + [cls.ANOTHER_SONG]
+        for af in all_songs:
             af.sanitize()
-        cls.lib.add(SONGS)
-        cls._create_temp_playlist_with(SONGS)
+        cls.lib.add(all_songs)
+        cls._create_temp_playlist_with("Big", SONGS)
+        cls._create_temp_playlist_with("Small", [cls.ANOTHER_SONG])
         PlaylistsBrowser.init(cls.lib)
 
     @classmethod
-    def _create_temp_playlist_with(cls, songs):
-        pl = Playlist.new(PLAYLISTS, "Foobar", cls.lib)
+    def _create_temp_playlist_with(cls, name, songs):
+        pl = Playlist.new(PLAYLISTS, name, cls.lib)
         pl.extend(songs)
         pl.write()
 
@@ -192,6 +198,23 @@ class TPlaylists(TSearchBar):
         self.bar.activate()
         self.expected = [SONGS[0]]
         self._do()
+
+    def test_active_filter_playlists(self):
+        self.bar._select_playlist(self.bar.playlists()[1])
+
+        # Second playlist should not have any of `SONGS`
+        self.assertFalse(self.bar.active_filter(SONGS[0]))
+
+        # But it should have `ANOTHER_SONG`
+        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG))
+
+        # ... and setting a reasonable filter on that song should match still
+        self.bar.filter_text("lonely")
+        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG))
+
+        # ...unless it doesn't match that song
+        self.bar.filter_text("piman")
+        self.assertFalse(self.bar.active_filter(self.ANOTHER_SONG))
 
     def tearDown(self):
         self.bar.destroy()
