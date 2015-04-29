@@ -261,25 +261,26 @@ For old releases see the `full file listing <https://bitbucket.org/lazka/quodlib
 |macosx-logo| Mac OS X
 ----------------------
 
+Max OS X bundles create by `Eric Le Lay <https://github.com/elelay>`__
+
 =========================== ============================== =========================================
 Release                     Application Bundle             SHA256
 =========================== ============================== =========================================
-Quod Libet 3.4.0            TODO
-Ex False 3.4.0              TODO
+Quod Libet 3.4.0            Quodlibet-3.4.0_0.zip_         `SHA256 <Quodlibet-3.4.0_0.zip.sha256_>`_
+Ex False 3.4.0              ExFalso-3.4.0_0.zip_           `SHA256 <ExFalso-3.4.0_0.zip.sha256_>`_
 Quod Libet 3.3.1            Quodlibet-3.3.1_0.zip_         `SHA256 <Quodlibet-3.3.1_0.zip.sha256_>`_
 Ex False 3.3.1              ExFalso-3.3.1_0.zip_           `SHA256 <ExFalso-3.3.1_0.zip.sha256_>`_
-Quod Libet 3.3.0            Quodlibet-3.3.0_0.zip_         `SHA256 <Quodlibet-3.3.0_0.zip.sha256_>`_
-Ex False 3.3.0              ExFalso-3.3.0_0.zip_           `SHA256 <ExFalso-3.3.0_0.zip.sha256_>`_
 =========================== ============================== =========================================
+
+.. _Quodlibet-3.4.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.4.0_0/Quodlibet-3.4.0_0.zip
+.. _Quodlibet-3.4.0_0.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.4.0_0/Quodlibet-3.4.0_0.zip.sha256
+
+.. _ExFalso-3.4.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.4.0_0/ExFalso-3.4.0_0.zip
+.. _ExFalso-3.4.0_0.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.4.0_0/ExFalso-3.4.0_0.zip.sha256
+
 
 .. _Quodlibet-3.3.1_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.1_0/Quodlibet-3.3.1_0.zip
 .. _Quodlibet-3.3.1_0.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.1_0/Quodlibet-3.3.1_0.zip.sha256
 
 .. _ExFalso-3.3.1_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.3.1_0/ExFalso-3.3.1_0.zip
 .. _ExFalso-3.3.1_0.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.3.1_0/ExFalso-3.3.1_0.zip.sha256
-
-.. _Quodlibet-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/Quodlibet-3.3.0_0.zip
-.. _Quodlibet-3.3.0_0.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/Quodlibet-3.3.0_0.zip.sha256
-
-.. _ExFalso-3.3.0_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/ExFalso-3.3.0_0.zip
-.. _ExFalso-3.3.0_0.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.0_0/ExFalso-3.3.0_0.zip.sha256
