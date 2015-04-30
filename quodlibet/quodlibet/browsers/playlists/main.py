@@ -45,6 +45,7 @@ class PlaylistsBrowser(Browser):
         rhbox.pack_start(songpane, True, True, 0)
         self._main_box.pack2(rhbox, True, False)
         rhbox.show()
+        align.show_all()
         return self._main_box
 
     def unpack(self, container, songpane):
