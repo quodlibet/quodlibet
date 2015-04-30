@@ -90,6 +90,14 @@ class TBrowserMixin(object):
         container = self.b.pack(to_pack)
         self.b.unpack(container, to_pack)
 
+    def test_pack_noshow_songpane(self):
+        to_pack = Gtk.Button()
+        to_pack.hide()
+        container = self.b.pack(to_pack)
+        self.assertFalse(to_pack.get_visible())
+        self.b.unpack(container, to_pack)
+        self.assertFalse(to_pack.get_visible())
+
     def test_name(self):
         self.failIf("_" in self.b.name)
         self.failUnless("_" in self.b.accelerated_name)
