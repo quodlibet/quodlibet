@@ -209,15 +209,19 @@ class TPlaylists(TSearchBar):
         self.assertFalse(self.bar.active_filter(SONGS[0]))
 
         # But it should have `ANOTHER_SONG`
-        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG))
+        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG),
+                        msg="Couldn't find song from second playlist")
 
         # ... and setting a reasonable filter on that song should match still
         self.bar.filter_text("lonely")
-        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG))
+        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG),
+                        msg="Couldn't find song from second playlist with "
+                            "filter of 'lonely'")
 
         # ...unless it doesn't match that song
         self.bar.filter_text("piman")
-        self.assertFalse(self.bar.active_filter(self.ANOTHER_SONG))
+        self.assertFalse(self.bar.active_filter(self.ANOTHER_SONG),
+                         msg="Shouldn't have matched 'piman' on second list")
 
     def tearDown(self):
         self.bar.destroy()
