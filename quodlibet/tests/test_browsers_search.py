@@ -54,8 +54,9 @@ class TEmptyBar(TestCase):
 
     def _expected(self, bar, songs, sort):
         songs.sort()
-        self.failUnlessEqual(self.expected, songs)
-        self.expected = None
+        if self.expected:
+            self.failUnlessEqual(self.expected, songs)
+            self.expected = None
 
     def _do(self):
         while Gtk.events_pending():

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from quodlibet.browsers.playlists.util import parse_m3u, parse_pls
+from quodlibet.browsers.playlists.util import parse_m3u, parse_pls, PLAYLISTS
 from quodlibet.util.collection import Playlist
 from tests import TestCase, DATA_DIR, mkstemp, mkdtemp
 
@@ -13,6 +13,7 @@ from quodlibet.formats._audio import AudioFile
 from quodlibet.util.path import fsnative, fsnative2glib
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
+from tests.test_browsers_search import SONGS, TSearchBar
 
 
 class TParsePlaylist(TestCase):
@@ -150,17 +151,78 @@ class TPlaylistIntegration(TestCase):
         self.assertFalse(len(pl))
 
 
-class TPlaylists(TestCase):
-    def setUp(self):
-        quodlibet.config.init()
-        self.library = SongLibrary()
-        self.bar = PlaylistsBrowser(SongLibrary())
+class TPlaylists(TSearchBar):
+    Bar = PlaylistsBrowser
+    ANOTHER_SONG = AudioFile({
+        "title": "lonely",
+        "artist": "new artist",
+        "~filename": fsnative(u"/dev/urandom")})
 
-    def test_can_filter(self):
-        for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.failIf(self.bar.can_filter(key))
+    @classmethod
+    def setUpClass(cls):
+        # Only want to do this playlists setup once per test class...
+        quodlibet.config.init()
+        cls.lib = quodlibet.browsers.playlists.library = SongLibrary()
+        cls.lib.librarian = SongLibrarian()
+        all_songs = SONGS + [cls.ANOTHER_SONG]
+        for af in all_songs:
+            af.sanitize()
+        cls.lib.add(all_songs)
+        cls._create_temp_playlist_with("Big", SONGS)
+        cls._create_temp_playlist_with("Small", [cls.ANOTHER_SONG])
+        PlaylistsBrowser.init(cls.lib)
+
+    @classmethod
+    def _create_temp_playlist_with(cls, name, songs):
+        pl = Playlist.new(PLAYLISTS, name, cls.lib)
+        pl.extend(songs)
+        pl.write()
+
+    def setUp(self):
+        self.bar = PlaylistsBrowser(self.lib)
+        self.bar.connect('songs-selected', self._expected)
+        self.bar._select_playlist(self.bar.playlists()[0])
+        self.expected = None
+
+    def test_saverestore(self):
+        # Flush previous signals, etc. Hmm.
+        self.expected = None
+        self._do()
+        self.expected = [SONGS[0]]
+        self.bar.filter_text("title = %s" % SONGS[0]["title"])
+        self.bar._select_playlist(self.bar.playlists()[0])
+        self.expected = [SONGS[0]]
+        self._do()
+        self.bar.save()
+        self.bar.filter_text("")
+        self.expected = list(sorted(SONGS))
+        self._do()
+        self.bar.restore()
+        self.bar.activate()
+        self.expected = [SONGS[0]]
+        self._do()
+
+    def test_active_filter_playlists(self):
+        self.bar._select_playlist(self.bar.playlists()[1])
+
+        # Second playlist should not have any of `SONGS`
+        self.assertFalse(self.bar.active_filter(SONGS[0]))
+
+        # But it should have `ANOTHER_SONG`
+        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG))
+
+        # ... and setting a reasonable filter on that song should match still
+        self.bar.filter_text("lonely")
+        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG))
+
+        # ...unless it doesn't match that song
+        self.bar.filter_text("piman")
+        self.assertFalse(self.bar.active_filter(self.ANOTHER_SONG))
 
     def tearDown(self):
         self.bar.destroy()
-        self.library.destroy()
+        self.lib.destroy()
+
+    @classmethod
+    def tearDownClass(cls):
         quodlibet.config.quit()
