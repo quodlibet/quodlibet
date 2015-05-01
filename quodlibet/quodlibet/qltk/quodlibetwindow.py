@@ -479,7 +479,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         accel_group.connect(keyval, mod, 0, scroll_and_jump)
 
         # dbus app menu
-        AppMenu(self, ui.get_action_groups()[0])
+        # Unity puts the app menu next to our menu bar. Since it only contains
+        # menu items also available in the menu bar itself, don't add it.
+        if not util.is_unity():
+            AppMenu(self, ui.get_action_groups()[0])
 
         # custom accel map
         accel_fn = os.path.join(quodlibet.get_user_dir(), "accels")

@@ -15,4 +15,4 @@ import os
 def is_unity():
     """If we are running under Ubuntu/Unity"""
 
-    return "Unity" in os.environ.get("XDG_CURRENT_DESKTOP", "")
+    return os.environ.get("XDG_CURRENT_DESKTOP", "") == "Unity"
