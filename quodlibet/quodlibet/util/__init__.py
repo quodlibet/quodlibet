@@ -32,12 +32,13 @@ from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_
-from .misc import environ, argv, cached_func, get_locale_encoding
+from .misc import environ, argv, cached_func, get_locale_encoding, \
+    get_fs_encoding
 from .environment import *
 
 
 # pyflakes
-environ, argv, cached_func, get_locale_encoding
+environ, argv, cached_func, get_locale_encoding, get_fs_encoding
 
 
 class InstanceTracker(object):
