@@ -121,18 +121,17 @@ Unstable PPA (12.04+)::
 
 Stable Repo:
 
-* Wheezy (Debian stable)::
+* Debian Stable::
 
     # deb http://lazka.github.io/ql-debian/stable/ quodlibet-stable/
-    # deb http://http.debian.net/debian wheezy-backports main
 
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0C693B8F
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
     sudo apt-get update
     sudo apt-get install quodlibet
 
 Unstable Repo:
 
-* Jessie (Debian testing)::
+* Debian Testing::
 
     # deb http://lazka.github.io/ql-debian/testing/ quodlibet-unstable/
 
