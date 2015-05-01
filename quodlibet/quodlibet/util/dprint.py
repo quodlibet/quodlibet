@@ -15,19 +15,10 @@ import quodlibet.util.logging
 from quodlibet.util.clicolor import Colorise
 from quodlibet.util import clicolor
 from .misc import get_locale_encoding
+from .environment import is_py2exe, is_py2exe_console
 
 
 _ENCODING = get_locale_encoding()
-
-
-def _is_py2exe():
-    return os.name == 'nt' and hasattr(sys, "frozen")
-
-
-def _is_py2exe_console():
-    """If True, stdout/stderr can be used"""
-
-    return sys.frozen == "console_exe"
 
 
 def _format_print(string, prefix=""):
@@ -83,7 +74,7 @@ def extract_caller_info():
 
 
 def _print(string, output, frm="utf-8", strip_color=True, end=os.linesep):
-    if _is_py2exe() and not _is_py2exe_console():
+    if is_py2exe() and not is_py2exe_console():
         return
 
     can_have_color = True

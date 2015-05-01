@@ -7,10 +7,26 @@
 
 from tests import TestCase
 
-from quodlibet.util.environment import is_unity
+from quodlibet.util.environment import *
 
 
 class TUtilEnvironment(TestCase):
 
-    def test_is_unity(self):
+    def test_all(self):
         self.assertTrue(isinstance(is_unity(), bool))
+        self.assertTrue(isinstance(is_windows(), bool))
+        self.assertTrue(isinstance(is_osx(), bool))
+        self.assertTrue(isinstance(is_py2exe(), bool))
+        self.assertTrue(isinstance(is_py2exe_console(), bool))
+        self.assertTrue(isinstance(is_py2exe_window(), bool))
+
+    def test_constrains(self):
+        if is_py2exe():
+            self.assertEqual(is_py2exe_console(), not is_py2exe_window())
+            self.assertTrue(is_windows())
+
+        if is_windows():
+            self.assertFalse(is_osx())
+
+        if is_osx():
+            self.assertFalse(is_osx())
