@@ -22,10 +22,6 @@ quodlibet/browsers/paned/prefs.py
 quodlibet/browsers/playlists/main.py
 quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/util.py
-quodlibet/operon/base.py
-quodlibet/operon/commands.py
-quodlibet/operon/main.py
-quodlibet/operon/util.py
 quodlibet/browsers/search.py
 quodlibet/cli.py
 quodlibet/devices/_base.py
@@ -38,7 +34,7 @@ quodlibet/ext/editing/iconv.py
 quodlibet/ext/editing/kakasi.py
 quodlibet/ext/editing/resub.py
 quodlibet/ext/editing/titlecase.py
-quodlibet/ext/events/animosd.py
+quodlibet/ext/events/animosd/main.py
 quodlibet/ext/events/auto_library_update.py
 quodlibet/ext/events/automask.py
 quodlibet/ext/events/autorating.py
@@ -116,6 +112,10 @@ quodlibet/formats/__init__.py
 quodlibet/__init__.py
 quodlibet/library/__init__.py
 quodlibet/library/libraries.py
+quodlibet/operon/base.py
+quodlibet/operon/commands.py
+quodlibet/operon/main.py
+quodlibet/operon/util.py
 quodlibet/player/gstbe/player.py
 quodlibet/player/gstbe/plugins.py
 quodlibet/player/gstbe/prefs.py
@@ -135,8 +135,8 @@ quodlibet/qltk/data_editors.py
 quodlibet/qltk/debugwindow.py
 quodlibet/qltk/delete.py
 quodlibet/qltk/downloader.py
-quodlibet/qltk/_editutils.py
 quodlibet/qltk/edittags.py
+quodlibet/qltk/_editutils.py
 quodlibet/qltk/exfalsowindow.py
 quodlibet/qltk/filesel.py
 quodlibet/qltk/info.py
