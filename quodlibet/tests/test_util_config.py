@@ -36,6 +36,16 @@ class TConfig(TestCase):
         conf.reset("player", "backend")
         self.assertEqual(conf.get("player", "backend"), "blah")
 
+    def test_initial_after_set(self):
+        conf = Config()
+        conf.add_section("player")
+        conf.set("player", "backend", "orig")
+        conf.set_initial("player", "backend", "initial")
+        self.assertEqual(conf.get("player", "backend"), "orig")
+        self.assertEqual(conf.get_initial("player", "backend"), "initial")
+        conf.reset("player", "backend")
+        self.assertEqual(conf.get("player", "backend"), "initial")
+
     def test_get(self):
         conf = Config()
         conf.add_section("foo")
@@ -231,6 +241,10 @@ class TConfigProxy(TestCase):
 
     def test_default(self):
         self.assertEqual(self.proxy.get("foo", "quux"), "quux")
+
+    def test_get_initial(self):
+        self.proxy.set_initial("a", 3.0)
+        self.assertEqual(self.proxy.get_initial("a"), "3.0")
 
     def test_initial_and_reset(self):
         self.proxy.set_initial("bla", "baz")

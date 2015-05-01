@@ -96,15 +96,33 @@ class Config(object):
 
         The section must be added with add_section() first.
 
-        Adds the value to the config and calling reset()
+        Adds the value to the config if isn't there already and calling reset()
         will reset the value to it.
         """
 
-        self.set(section, option, value)
+        # we want to save the value as if set/get was called and still
+        # try to preserve the old value
+        try:
+            old_value = self.get(section, option, value)
+        except Error:
+            self.set(section, option, value)
+            value = self.get(section, option, value)
+        else:
+            self.set(section, option, value)
+            value = self.get(section, option, value)
+            self.set(section, option, old_value)
 
         self._initial.setdefault(section, {})
         self._initial[section].setdefault(option, {})
         self._initial[section][option] = value
+
+    def get_initial(self, section, option):
+        """Get the initial value.
+
+        set_initial() as to be called first.
+        """
+
+        return self._initial[section][option]
 
     def reset(self, section, option):
         """Reset the value to the initial state"""
@@ -354,7 +372,7 @@ class ConfigProxy(object):
 
         # methods starting with a section arg
         for name in ["get", "set", "getboolean", "getint", "getfloat",
-                     "reset", "set_initial"]:
+                     "reset", "set_initial", "get_initial"]:
             setattr(cls, name, get_func(name))
 
 ConfigProxy._init_wrappers()
