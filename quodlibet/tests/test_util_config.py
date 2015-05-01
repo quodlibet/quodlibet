@@ -30,7 +30,7 @@ class TConfig(TestCase):
     def test_reset(self):
         conf = Config()
         conf.add_section("player")
-        conf.set_inital("player", "backend", "blah")
+        conf.set_initial("player", "backend", "blah")
         conf.set("player", "backend", "foo")
         self.assertEqual(conf.get("player", "backend"), "foo")
         conf.reset("player", "backend")

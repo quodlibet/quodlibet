@@ -197,7 +197,7 @@ def init(filename=None, initial=None):
     for section, values in initial.iteritems():
         _config.add_section(section)
         for key, value in values.iteritems():
-            _config.set_inital(section, key, value)
+            _config.set_initial(section, key, value)
 
     if filename is not None:
         try:

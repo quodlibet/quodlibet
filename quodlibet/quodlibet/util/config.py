@@ -91,7 +91,7 @@ class Config(object):
             self._do_upgrade(function)
         return function
 
-    def set_inital(self, section, option, value):
+    def set_initial(self, section, option, value):
         """Set an initial value for an option.
 
         The section must be added with add_section() first.
