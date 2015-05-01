@@ -323,3 +323,38 @@ class Config(object):
 
         if not self._config.has_section(section):
             self._config.add_section(section)
+
+
+class ConfigProxy(object):
+    """Provides a Config object with a fixed section and a possibility to
+    prefix option names in that section.
+
+    e.g. it can create a view of the "plugin" section and prefix all
+    options with a plugin name.
+    """
+
+    def __init__(self, real_config, section_name):
+        self._real_config = real_config
+        self._section_name = section_name
+
+    def _option(self, name):
+        """Override if you want to change option names. e.g. prefix them"""
+
+        return name
+
+    @classmethod
+    def _init_wrappers(cls):
+
+        def get_func(name):
+            def method(self, option, *args, **kwargs):
+                config_getter = getattr(self._real_config, name)
+                return config_getter(
+                    self._section_name, self._option(option), *args, **kwargs)
+            return method
+
+        # methods starting with a section arg
+        for name in ["get", "set", "getboolean", "getint", "getfloat",
+                     "reset", "set_initial"]:
+            setattr(cls, name, get_func(name))
+
+ConfigProxy._init_wrappers()

@@ -9,6 +9,7 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.util.dprint import print_d
+from quodlibet.util.config import ConfigProxy
 from quodlibet.qltk.ccb import ConfigCheckButton
 
 
@@ -414,6 +415,39 @@ class PluginManager(object):
 PM = PluginManager
 
 
+def get_config_option(plugin_cls, option):
+    try:
+        prefix = plugin_cls.CONFIG_SECTION
+    except AttributeError:
+        prefix = plugin_cls.PLUGIN_ID.lower().replace(" ", "_")
+
+    return "%s_%s" % (prefix, option)
+
+
+class PluginConfig(ConfigProxy):
+    """A proxy for a Config object that can be used by plugins.
+
+    Provides some methods of the Config class but doesn't need a
+    sections and prefixes the config option name.
+
+    args:
+        plugin_cls: a plugin class
+        defaults (dict): a dict of initial values
+    """
+
+    def __init__(self, plugin_cls, defaults=None):
+        super(PluginConfig, self).__init__(config._config, PM.CONFIG_SECTION)
+        self._plugin_cls = plugin_cls
+        if defaults is None:
+            defaults = {}
+
+        for key, value in defaults.iteritems():
+            self.set_initial(key, value)
+
+    def _option(self, name):
+        return get_config_option(self._plugin_cls, name)
+
+
 class PluginConfigMixin(object):
     """
     Mixin for storage and editing of plugin config in a standard way
@@ -423,11 +457,7 @@ class PluginConfigMixin(object):
 
     @classmethod
     def _config_key(cls, name):
-        try:
-            prefix = cls.CONFIG_SECTION
-        except AttributeError:
-            prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
-        return "%s_%s" % (prefix, name)
+        return get_config_option(cls, name)
 
     @classmethod
     def config_get(cls, name, default=""):

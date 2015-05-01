@@ -6,6 +6,7 @@ import os
 from quodlibet import config
 from quodlibet.formats._audio import AudioFile
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
+from quodlibet.plugins import PluginConfig
 
 
 class TSongWrapper(TestCase):
@@ -140,3 +141,25 @@ class TListWrapper(TestCase):
         wrapped = ListWrapper([None, None])
         self.failUnless(len(wrapped) == 2)
         self.failUnlessEqual(wrapped, [None, None])
+
+
+class SomePlugin(object):
+    CONFIG_SECTION = "some"
+
+
+class TPluginConfig(TestCase):
+
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_mapping(self):
+        c = PluginConfig(SomePlugin)
+        c.set("foo", "bar")
+        self.assertEqual(config.get("plugins", "some_foo"), "bar")
+
+    def test_initial_init(self):
+        c = PluginConfig(SomePlugin, {"hm": "mh"})
+        self.assertEqual(c.get("hm"), "mh")

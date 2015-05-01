@@ -3,7 +3,7 @@ import os
 from tests import TestCase, mkstemp
 from helper import temp_filename
 
-from quodlibet.util.config import Config, Error
+from quodlibet.util.config import Config, Error, ConfigProxy
 
 
 class TConfig(TestCase):
@@ -207,3 +207,35 @@ class TConfig(TestCase):
             self.assertTrue(False)
         conf.register_upgrade_function(func)
         conf.read(filename)
+
+
+class TConfigProxy(TestCase):
+
+    def setUp(self):
+        conf = Config()
+        conf.add_section("somesection")
+        self.proxy = ConfigProxy(conf, "somesection")
+
+    def test_getters_setters(self):
+        self.proxy.set("foo", "bar")
+        self.assertEqual(self.proxy.get("foo"), "bar")
+
+        self.proxy.set("foo", 1.5)
+        self.assertEqual(self.proxy.getfloat("foo"), 1.5)
+
+        self.proxy.set("foo", 15)
+        self.assertEqual(self.proxy.getint("foo"), 15)
+
+        self.proxy.set("foo", False)
+        self.assertEqual(self.proxy.getboolean("foo"), False)
+
+    def test_default(self):
+        self.assertEqual(self.proxy.get("foo", "quux"), "quux")
+
+    def test_initial_and_reset(self):
+        self.proxy.set_initial("bla", "baz")
+        self.assertEqual(self.proxy.get("bla"), "baz")
+        self.proxy.set("bla", "nope")
+        self.assertEqual(self.proxy.get("bla"), "nope")
+        self.proxy.reset("bla")
+        self.assertEqual(self.proxy.get("bla"), "baz")
