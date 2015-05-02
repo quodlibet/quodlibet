@@ -169,7 +169,6 @@ setstringlist = _config.setstringlist
 getlist = _config.getlist
 setlist = _config.setlist
 set = _config.set
-setdefault = _config.setdefault
 write = _config.write
 reset = _config.reset
 add_section = _config.add_section
@@ -185,9 +184,7 @@ def init(filename=None, initial=None):
     global _filename
 
     if not _config.is_empty():
-        raise ValueError(
-            "config initialized twice without quitting: %r"
-            % _config.sections())
+        raise ValueError("config initialized twice without quitting")
 
     _filename = filename
 
@@ -195,9 +192,11 @@ def init(filename=None, initial=None):
         initial = INITIAL
 
     for section, values in initial.iteritems():
+        _config.defaults.add_section(section)
         _config.add_section(section)
         for key, value in values.iteritems():
-            _config.set_initial(section, key, value)
+            _config.defaults.set(section, key, value)
+            _config.set(section, key, value)
 
     if filename is not None:
         try:

@@ -33,9 +33,13 @@ _DEFAULT = object()
 
 
 class Config(object):
-    """A wrapper around RawConfigParser"""
+    """A wrapper around RawConfigParser.
 
-    def __init__(self, version=None):
+    Provides a ``defaults`` attribute of the same type which can be used
+    to set default values.
+    """
+
+    def __init__(self, version=None, _defaults=True):
         """Use read() to read in an existing config file.
 
         version should be an int starting with 0 that gets incremented if you
@@ -43,10 +47,12 @@ class Config(object):
         """
 
         self._config = ConfigParser(dict_type=_sorted_dict)
+        self.defaults = None
+        if _defaults:
+            self.defaults = Config(_defaults=False)
         self._version = version
         self._loaded_version = None
         self._upgrade_funcs = []
-        self._initial = {}
 
     def _do_upgrade(self, func):
         assert self._loaded_version is not None
@@ -91,44 +97,12 @@ class Config(object):
             self._do_upgrade(function)
         return function
 
-    def set_initial(self, section, option, value):
-        """Set an initial value for an option.
-
-        The section must be added with add_section() first.
-
-        Adds the value to the config if isn't there already and calling reset()
-        will reset the value to it.
-        """
-
-        # we want to save the value as if set/get was called and still
-        # try to preserve the old value
-        try:
-            old_value = self.get(section, option, value)
-        except Error:
-            self.set(section, option, value)
-            value = self.get(section, option, value)
-        else:
-            self.set(section, option, value)
-            value = self.get(section, option, value)
-            self.set(section, option, old_value)
-
-        self._initial.setdefault(section, {})
-        self._initial[section].setdefault(option, {})
-        self._initial[section][option] = value
-
-    def get_initial(self, section, option):
-        """Get the initial value.
-
-        set_initial() as to be called first.
-        """
-
-        return self._initial[section][option]
-
     def reset(self, section, option):
-        """Reset the value to the initial state"""
+        """Reset the value to the default state"""
 
-        value = self._initial[section][option]
-        self.set(section, option, value)
+        assert self.defaults is not None
+
+        self.set(section, option, self.defaults.get(section, option))
 
     def options(self, section):
         """Returns a list of options available in the specified section."""
@@ -138,85 +112,101 @@ class Config(object):
     def get(self, section, option, default=_DEFAULT):
         """get(section, option[, default]) -> str
 
-        If default is not given, raises Error in case of an error
+        If default is not given or set, raises Error in case of an error
         """
 
         try:
             return self._config.get(section, option)
         except Error:
             if default is _DEFAULT:
+                if self.defaults is not None:
+                    try:
+                        return self.defaults.get(section, option)
+                    except Error:
+                        pass
                 raise
             return default
 
     def getboolean(self, section, option, default=_DEFAULT):
         """getboolean(section, option[, default]) -> bool
 
-        If default is not given, raises Error in case of an error
+        If default is not given or set, raises Error in case of an error
         """
 
         try:
             return self._config.getboolean(section, option)
-        except Error:
+        except (Error, ValueError) as e:
             if default is _DEFAULT:
-                raise
-            if not isinstance(default, bool):
-                raise ValueError
+                if self.defaults is not None:
+                    try:
+                        return self.defaults.getboolean(section, option)
+                    except Error:
+                        pass
+                raise Error(e)
             return default
 
     def getint(self, section, option, default=_DEFAULT):
         """getint(section, option[, default]) -> int
 
-        If default is not give, raises Error in case of an error
+        If default is not give or set, raises Error in case of an error
         """
 
         try:
-            return self._config.getint(section, option)
-        except Error:
+            return int(self._config.getfloat(section, option))
+        except (Error, ValueError) as e:
             if default is _DEFAULT:
-                raise
-            if not isinstance(default, int):
-                raise ValueError
+                if self.defaults is not None:
+                    try:
+                        return self.defaults.getint(section, option)
+                    except Error:
+                        pass
+                raise Error(e)
             return default
 
     def getfloat(self, section, option, default=_DEFAULT):
         """getfloat(section, option[, default]) -> float
 
-        If default is not give, raises Error in case of an error
+        If default is not give or set, raises Error in case of an error
         """
 
         try:
             return self._config.getfloat(section, option)
-        except Error:
+        except (Error, ValueError) as e:
             if default is _DEFAULT:
-                raise
-            if not isinstance(default, float):
-                raise ValueError
+                if self.defaults is not None:
+                    try:
+                        return self.defaults.getfloat(section, option)
+                    except Error:
+                        pass
+                raise Error(e)
             return default
 
     def getstringlist(self, section, option, default=_DEFAULT):
         """getstringlist(section, option[, default]) -> list
 
-        If default is not given, raises Error in case of an error.
+        If default is not given or set, raises Error in case of an error.
         Gets a list of strings, using CSV to parse and delimit.
         """
 
         try:
             value = self._config.get(section, option)
-        except Error:
+
+            parser = csv.reader(
+                [value], lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
+            try:
+                vals = [v.decode('utf-8') for v in parser.next()]
+            except (csv.Error, ValueError) as e:
+                raise Error(e)
+            return vals
+        except Error as e:
             if default is _DEFAULT:
-                raise
-            if not isinstance(default, list):
-                raise ValueError
+                if self.defaults is not None:
+                    try:
+                        return self.defaults.getstringlist(section, option)
+                    except Error:
+                        pass
+                raise Error(e)
             return default
-
-        parser = csv.reader(
-            [value], lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
-        try:
-            vals = [v.decode('utf-8') for v in parser.next()]
-        except (csv.Error, ValueError) as e:
-            raise Error(e)
-
-        return vals
 
     def setstringlist(self, section, option, values):
         """Saves a list of unicode strings using the csv module"""
@@ -225,28 +215,30 @@ class Config(object):
         values = [unicode(v).encode('utf-8') for v in values]
         writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(values)
-        self._config.set(section, option, sw.getvalue())
+        self.set(section, option, sw.getvalue())
 
     def setlist(self, section, option, values, sep=","):
         """Saves a list of str using ',' as a separator and \\ for escaping"""
 
         values = map(str, values)
         joined = join_escape(values, sep)
-        self._config.set(section, option, joined)
+        self.set(section, option, joined)
 
     def getlist(self, section, option, default=_DEFAULT, sep=","):
         """Returns a str list saved with setlist()"""
 
         try:
             value = self._config.get(section, option)
-        except Error:
+            return split_escape(value, sep)
+        except (Error, ValueError) as e:
             if default is _DEFAULT:
-                raise
-            if not isinstance(default, list):
-                raise ValueError
+                if self.defaults is not None:
+                    try:
+                        return self.defaults.getlist(section, option, sep=sep)
+                    except Error:
+                        pass
+                raise Error(e)
             return default
-
-        return split_escape(value, sep)
 
     def set(self, section, option, value):
         """Saves the string representation for the passed value
@@ -260,14 +252,6 @@ class Config(object):
         if not isinstance(value, str):
             value = str(value)
         self._config.set(section, option, value)
-
-    def setdefault(self, section, option, default):
-        """Like set but only sets the new value if the option
-        isn't set before.
-        """
-
-        if not self._config.has_option(section, option):
-            self._config.set(section, option, default)
 
     def write(self, filename):
         """Write config to filename.
@@ -295,11 +279,15 @@ class Config(object):
 
         for section in self._config.sections():
             self._config.remove_section(section)
-        self._initial.clear()
+
+        if self.defaults is not None:
+            self.defaults.clear()
 
     def is_empty(self):
         """Whether the config has any sections"""
 
+        if self.defaults is not None:
+            return not self._config.sections() and self.defaults.is_empty()
         return not self._config.sections()
 
     def read(self, filename):
@@ -316,11 +304,6 @@ class Config(object):
             self._loaded_version = self.getint("__config__", "version", -1)
             for func in self._upgrade_funcs:
                 self._do_upgrade(func)
-
-    def sections(self):
-        """Return a list of the sections available"""
-
-        return self._config.sections()
 
     def has_option(self, section, option):
         """If the given section exists, and contains the given option"""
@@ -342,6 +325,9 @@ class Config(object):
         if not self._config.has_section(section):
             self._config.add_section(section)
 
+        if self.defaults is not None:
+            self.defaults.add_section(section)
+
 
 class ConfigProxy(object):
     """Provides a Config object with a fixed section and a possibility to
@@ -351,9 +337,15 @@ class ConfigProxy(object):
     options with a plugin name.
     """
 
-    def __init__(self, real_config, section_name):
+    def __init__(self, real_config, section_name, _defaults=True):
         self._real_config = real_config
         self._section_name = section_name
+        self.defaults = None
+        if _defaults:
+            self.defaults = self._new_defaults(real_config.defaults)
+
+    def _new_defaults(self, real_default_config):
+        return ConfigProxy(real_default_config, self._section_name, False)
 
     def _option(self, name):
         """Override if you want to change option names. e.g. prefix them"""
@@ -372,7 +364,7 @@ class ConfigProxy(object):
 
         # methods starting with a section arg
         for name in ["get", "set", "getboolean", "getint", "getfloat",
-                     "reset", "set_initial", "get_initial"]:
+                     "reset"]:
             setattr(cls, name, get_func(name))
 
 ConfigProxy._init_wrappers()

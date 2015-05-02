@@ -429,23 +429,20 @@ class PluginConfig(ConfigProxy):
 
     Provides some methods of the Config class but doesn't need a
     sections and prefixes the config option name.
-
-    args:
-        plugin_cls: a plugin class
-        defaults (dict): a dict of initial values
     """
 
-    def __init__(self, plugin_cls, defaults=None):
-        super(PluginConfig, self).__init__(config._config, PM.CONFIG_SECTION)
-        self._plugin_cls = plugin_cls
-        if defaults is None:
-            defaults = {}
+    def __init__(self, prefix, _config=None, _defaults=True):
+        self._prefix = prefix
+        if _config is None:
+            _config = config._config
+        super(PluginConfig, self).__init__(
+            _config, PM.CONFIG_SECTION, _defaults)
 
-        for key, value in defaults.iteritems():
-            self.set_initial(key, value)
+    def _new_defaults(self, real_default_config):
+        return PluginConfig(self._prefix, real_default_config, False)
 
     def _option(self, name):
-        return get_config_option(self._plugin_cls, name)
+        return "%s_%s" % (self._prefix, name)
 
 
 class PluginConfigMixin(object):

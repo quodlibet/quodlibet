@@ -30,7 +30,7 @@ class TConfig(TestCase):
     def test_reset(self):
         conf = Config()
         conf.add_section("player")
-        conf.set_initial("player", "backend", "blah")
+        conf.defaults.set("player", "backend", "blah")
         conf.set("player", "backend", "foo")
         self.assertEqual(conf.get("player", "backend"), "foo")
         conf.reset("player", "backend")
@@ -40,9 +40,9 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("player")
         conf.set("player", "backend", "orig")
-        conf.set_initial("player", "backend", "initial")
+        conf.defaults.set("player", "backend", "initial")
         self.assertEqual(conf.get("player", "backend"), "orig")
-        self.assertEqual(conf.get_initial("player", "backend"), "initial")
+        self.assertEqual(conf.defaults.get("player", "backend"), "initial")
         conf.reset("player", "backend")
         self.assertEqual(conf.get("player", "backend"), "initial")
 
@@ -59,6 +59,21 @@ class TConfig(TestCase):
         self.failUnlessEqual(conf.get("foo", "str"), "foobar")
         self.failUnlessEqual(conf.getboolean("foo", "bool"), True)
 
+    def test_get_invalid_data(self):
+        conf = Config()
+        conf.add_section("foo")
+        conf.set("foo", "bla", "xx;,,;\n\n\naa")
+        self.assertTrue(conf.getboolean("foo", "bla", True))
+        self.assertEqual(conf.getint("foo", "bla", 42), 42)
+        self.assertEqual(conf.getfloat("foo", "bla", 1.5), 1.5)
+        self.assertEqual(conf.getstringlist("foo", "bla", ["baz"]), ["baz"])
+
+    def test_getint_float(self):
+        conf = Config()
+        conf.add_section("foo")
+        conf.set("foo", "float", "1.25")
+        self.assertEqual(conf.getint("foo", "float"), 1)
+
     def test_get_default(self):
         conf = Config()
         conf.add_section("foo")
@@ -67,31 +82,6 @@ class TConfig(TestCase):
         self.failUnlessEqual(conf.getint("foo", "nothing", 42), 42)
         self.failUnlessEqual(conf.getfloat("foo", "nothing", 42.42), 42.42)
         self.failUnlessEqual(conf.get("foo", "nothing", "foo"), "foo")
-
-    def test_get_default_raises(self):
-        conf = Config()
-        conf.add_section("foo")
-
-        self.assertRaises(ValueError, conf.getboolean, "foo", "nothing", "")
-        self.assertRaises(ValueError, conf.getint, "foo", "nothing", "")
-        self.assertRaises(ValueError, conf.getfloat, "foo", "nothing", "")
-
-    def test_setdefault_no_defaulting(self):
-        conf = Config()
-        conf.add_section("foo")
-
-        self.failUnlessEqual(None, conf.get("foo", "bar", None))
-        conf.set("foo", "bar", "blah")
-        conf.setdefault("foo", "bar", "xxx")
-        self.failUnlessEqual("blah", conf.get("foo", "bar"))
-
-    def test_setdefault_defaulting(self):
-        conf = Config()
-        conf.add_section("foo")
-
-        self.failUnlessEqual(None, conf.get("foo", "bar", None))
-        conf.setdefault("foo", "bar", "xxx")
-        self.failUnlessEqual("xxx", conf.get("foo", "bar"))
 
     def test_stringlist_simple(self):
         conf = Config()
@@ -243,11 +233,11 @@ class TConfigProxy(TestCase):
         self.assertEqual(self.proxy.get("foo", "quux"), "quux")
 
     def test_get_initial(self):
-        self.proxy.set_initial("a", 3.0)
-        self.assertEqual(self.proxy.get_initial("a"), "3.0")
+        self.proxy.defaults.set("a", 3.0)
+        self.assertEqual(self.proxy.defaults.get("a"), "3.0")
 
     def test_initial_and_reset(self):
-        self.proxy.set_initial("bla", "baz")
+        self.proxy.defaults.set("bla", "baz")
         self.assertEqual(self.proxy.get("bla"), "baz")
         self.proxy.set("bla", "nope")
         self.assertEqual(self.proxy.get("bla"), "nope")

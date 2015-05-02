@@ -143,10 +143,6 @@ class TListWrapper(TestCase):
         self.failUnlessEqual(wrapped, [None, None])
 
 
-class SomePlugin(object):
-    CONFIG_SECTION = "some"
-
-
 class TPluginConfig(TestCase):
 
     def setUp(self):
@@ -156,10 +152,11 @@ class TPluginConfig(TestCase):
         config.quit()
 
     def test_mapping(self):
-        c = PluginConfig(SomePlugin)
+        c = PluginConfig("some")
         c.set("foo", "bar")
         self.assertEqual(config.get("plugins", "some_foo"), "bar")
 
-    def test_initial_init(self):
-        c = PluginConfig(SomePlugin, {"hm": "mh"})
+    def test_defaults(self):
+        c = PluginConfig("some")
+        c.defaults.set("hm", "mh")
         self.assertEqual(c.get("hm"), "mh")
