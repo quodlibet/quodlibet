@@ -35,6 +35,7 @@ quodlibet/ext/editing/kakasi.py
 quodlibet/ext/editing/resub.py
 quodlibet/ext/editing/titlecase.py
 quodlibet/ext/events/animosd/main.py
+quodlibet/ext/events/animosd/prefs.py
 quodlibet/ext/events/auto_library_update.py
 quodlibet/ext/events/automask.py
 quodlibet/ext/events/autorating.py

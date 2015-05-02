@@ -33,6 +33,21 @@ class OSDWindow(Gtk.Window):
         'fade-finished': (GObject.SignalFlags.RUN_LAST, None, (bool,)),
     }
 
+    POS_X = 0.5
+    """position of window 0--1 horizontal"""
+
+    MARGIN = 50
+    """never any closer to the screen edge than this"""
+
+    BORDER = 20
+    """text/cover this far apart, from edge"""
+
+    FADETIME = 0.3
+    """take this many seconds to fade in or out"""
+
+    MS = 40
+    """wait this many milliseconds between steps"""
+
     def __init__(self, conf, song):
         Gtk.Window.__init__(self, Gtk.WindowType.POPUP)
         self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
@@ -48,7 +63,7 @@ class OSDWindow(Gtk.Window):
         self.fade_start_time = 0
 
         mgeo = screen.get_monitor_geometry(conf.monitor)
-        textwidth = mgeo.width - 2 * (conf.border + conf.margin)
+        textwidth = mgeo.width - 2 * (self.BORDER + self.MARGIN)
 
         scale_factor = get_scale_factor(self)
         self.cover_pixbuf = app.cover_manager.get_pixbuf(
@@ -59,7 +74,7 @@ class OSDWindow(Gtk.Window):
             self.cover_pixbuf = get_pbosf_for_pixbuf(self, self.cover_pixbuf)
             coverwidth = self.cover_pixbuf.get_width() // scale_factor
             coverheight = self.cover_pixbuf.get_height() // scale_factor
-            textwidth -= coverwidth + conf.border
+            textwidth -= coverwidth + self.BORDER
 
         layout = self.create_pango_layout('')
         layout.set_alignment((Pango.Alignment.LEFT, Pango.Alignment.CENTER,
@@ -77,24 +92,24 @@ class OSDWindow(Gtk.Window):
             layoutsize = layout.get_pixel_size()
         self.title_layout = layout
 
-        winw = layoutsize[0] + 2 * conf.border
+        winw = layoutsize[0] + 2 * self.BORDER
         if coverwidth:
-            winw += coverwidth + conf.border
-        winh = max(coverheight, layoutsize[1]) + 2 * conf.border
+            winw += coverwidth + self.BORDER
+        winh = max(coverheight, layoutsize[1]) + 2 * self.BORDER
         self.set_default_size(winw, winh)
 
         rect = namedtuple("Rect", ["x", "y", "width", "height"])
-        rect.x = conf.border
+        rect.x = self.BORDER
         rect.y = (winh - coverheight) // 2
         rect.width = coverwidth
         rect.height = coverheight
 
         self.cover_rectangle = rect
 
-        winx = int((mgeo.width - winw) * conf.pos_x)
-        winx = max(conf.margin, min(mgeo.width - conf.margin - winw, winx))
+        winx = int((mgeo.width - winw) * self.POS_X)
+        winx = max(self.MARGIN, min(mgeo.width - self.MARGIN - winw, winx))
         winy = int((mgeo.height - winh) * conf.pos_y)
-        winy = max(conf.margin, min(mgeo.height - conf.margin - winh, winy))
+        winy = max(self.MARGIN, min(mgeo.height - self.MARGIN - winh, winy))
         self.move(winx + mgeo.x, winy + mgeo.y)
 
     def do_draw(self, cr):
@@ -153,6 +168,12 @@ class OSDWindow(Gtk.Window):
                180.0 * pi / 180.0, 270.0 * pi / 180.0)
         cr.close_path()
 
+    @property
+    def corners_factor(self):
+        if self.conf.corners != 0:
+            return 0.14
+        return 0.0
+
     def draw_conf_rect(self, cr, x, y, width, height, radius):
         if self.conf.corners != 0:
             self.rounded_rectangle(cr, x, y, radius, width, height)
@@ -173,7 +194,7 @@ class OSDWindow(Gtk.Window):
 
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(*self.conf.fill)
-        radius = min(25, self.conf.corners * min(*self.get_size()))
+        radius = min(25, self.corners_factor * min(*self.get_size()))
         self.draw_conf_rect(cr, 0, 0, self.get_size()[0],
                             self.get_size()[1], radius)
         cr.fill()
@@ -191,11 +212,11 @@ class OSDWindow(Gtk.Window):
             cr.set_line_width(2.0)
             cr.stroke()
 
-        textx = self.conf.border
+        textx = self.BORDER
 
         if self.cover_pixbuf is not None:
             rect = self.cover_rectangle
-            textx += rect.width + self.conf.border
+            textx += rect.width + self.BORDER
             pbuf = self.cover_pixbuf
             transmat = cairo.Matrix()
 
@@ -204,7 +225,7 @@ class OSDWindow(Gtk.Window):
                 self.draw_conf_rect(cr,
                                     rect.x + 2, rect.y + 2,
                                     rect.width, rect.height,
-                                    0.6 * self.conf.corners * rect.width)
+                                    0.6 * self.corners_factor * rect.width)
                 cr.fill()
 
             if do_outline:
@@ -212,7 +233,7 @@ class OSDWindow(Gtk.Window):
                 self.draw_conf_rect(cr,
                                     rect.x, rect.y,
                                     rect.width, rect.height,
-                                    0.6 * self.conf.corners * rect.width)
+                                    0.6 * self.corners_factor * rect.width)
                 cr.stroke()
 
             set_ctx_source_from_pbosf(cr, pbuf)
@@ -223,7 +244,7 @@ class OSDWindow(Gtk.Window):
             self.draw_conf_rect(cr,
                                 rect.x, rect.y,
                                 rect.width, rect.height,
-                                0.6 * self.conf.corners * rect.width)
+                                0.6 * self.corners_factor * rect.width)
             cr.fill()
 
         PangoCairo.update_layout(cr, self.title_layout)
@@ -258,15 +279,15 @@ class OSDWindow(Gtk.Window):
         fraction = self.get_opacity()
         if not fadein:
             fraction = 1.0 - fraction
-        self.fade_start_time = now - fraction * self.conf.fadetime
+        self.fade_start_time = now - fraction * self.FADETIME
 
         if self.iteration_source is None:
-            self.iteration_source = GLib.timeout_add(self.conf.ms,
+            self.iteration_source = GLib.timeout_add(self.MS,
                     self.fade_iteration_callback)
 
     def fade_iteration_callback(self):
         delta = GObject.get_current_time() - self.fade_start_time
-        fraction = delta / self.conf.fadetime
+        fraction = delta / self.FADETIME
 
         if self.fading_in:
             self.set_opacity(fraction)
