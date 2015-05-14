@@ -19,6 +19,7 @@ from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
+from quodlibet import const
 from quodlibet.const import MinVersions, Version
 
 
@@ -91,6 +92,14 @@ class Application(object):
             window.hide()
 
 app = Application()
+
+
+def is_release():
+    """Returns whether the running version is a stable release or under
+    development.
+    """
+
+    return const.VERSION_TUPLE[-1] != -1
 
 
 @cached_func
@@ -242,6 +251,13 @@ def _gtk_init():
     warnings.filterwarnings(
         'ignore', '.*The property GtkAlignment:[^\s]+ is deprecated.*',
         Warning)
+
+    # Newer glib is noisy regarding deprecated signals/properties
+    # even with stable releases.
+    if is_release():
+        warnings.filterwarnings(
+            'ignore', '.* It will be removed in a future version.',
+            Warning)
 
     settings = Gtk.Settings.get_default()
     with warnings.catch_warnings():
