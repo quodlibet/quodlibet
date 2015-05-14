@@ -237,11 +237,11 @@ class Tag(Node):
                 else:
                     val = data.get("~" + name, "")
 
-            if self.res.search(val):
+            if self.res.search(unicode(val)):
                 return True
 
         for name in self.__intern:
-            if self.res.search(data(name)):
+            if self.res.search(unicode(data(name))):
                 return True
 
         for name in self.__fs:
