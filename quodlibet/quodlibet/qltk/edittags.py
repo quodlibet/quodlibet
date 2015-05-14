@@ -832,7 +832,9 @@ class EditTags(Gtk.VBox):
                 new_value = fmt.validate(new_value)
 
         comment = entry.value
-        if comment.text != new_value and (new_value or comment.shared):
+        changed = comment.text != new_value
+        if (changed and ((comment.shared and comment.complete) or new_value)) \
+                or (new_value and comment.shared and not comment.complete):
             entry.value = Comment(new_value)
             entry.edited = True
             entry.deleted = False
