@@ -821,15 +821,15 @@ class EditTags(Gtk.VBox):
         new_value = ', '.join(new_value.splitlines())
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
+        error_dialog = None
 
         if entry.tag in massagers.tags:
             fmt = massagers.tags[entry.tag]
             if not fmt.is_valid(new_value):
-                qltk.WarningMessage(
+                error_dialog = qltk.WarningMessage(
                     self, _("Invalid value"),
                     _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
-                    "value": new_value, "error": fmt.error}).run()
-                return
+                    "value": new_value, "error": fmt.error})
             else:
                 new_value = fmt.validate(new_value)
 
@@ -837,6 +837,10 @@ class EditTags(Gtk.VBox):
         changed = comment.text != new_value
         if (changed and ((comment.shared and comment.complete) or new_value)) \
                 or (new_value and comment.shared and not comment.complete):
+            # only give an error if we would have applied the value
+            if error_dialog is not None:
+                error_dialog.run()
+                return
             entry.value = Comment(new_value)
             entry.edited = True
             entry.deleted = False
