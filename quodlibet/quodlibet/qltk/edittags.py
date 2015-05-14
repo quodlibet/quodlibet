@@ -660,6 +660,7 @@ class EditTags(Gtk.VBox):
         remove.set_sensitive(bool(rows))
 
     def __add_new_tag(self, model, tag, value):
+        assert isinstance(value, unicode)
         iters = [i for (i, v) in model.iterrows() if v.tag == tag]
         if iters and not self.__songinfo.can_multiple_values(tag):
             title = _("Unable to add tag")
@@ -688,6 +689,7 @@ class EditTags(Gtk.VBox):
                 break
             tag = add.get_tag()
             value = add.get_value()
+            assert isinstance(value, unicode)
             if tag in massagers.tags:
                 value = massagers.tags[tag].validate(value)
             if not self.__songinfo.can_change(tag):
@@ -815,6 +817,7 @@ class EditTags(Gtk.VBox):
             b.set_sensitive(not all_done)
 
     def __edit_tag(self, renderer, path, new_value, model):
+        new_value = new_value.decode("utf-8")
         new_value = ', '.join(new_value.splitlines())
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
