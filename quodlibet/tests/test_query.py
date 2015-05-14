@@ -118,7 +118,7 @@ class TQuery(TestCase):
         self.s3 = self.AF(
             {"artist": "piman\nmu",
              "~filename": "/test/\xc3\xb6\xc3\xa4\xc3\xbc/fo\xc3\xbc.ogg"})
-        self.s4 = self.AF({"title": u"Ångström", })
+        self.s4 = self.AF({"title": u"Ångström", "utf8": "Ångström"})
         self.s5 = self.AF({"title": "oh&blahhh", "artist": "!ohno"})
 
     def tearDown(self):
@@ -321,6 +321,10 @@ class TQuery(TestCase):
         self.failUnless(Query.match_all(""))
         self.failUnless(Query.match_all("    "))
         self.failIf(Query.match_all("foo"))
+
+    def test_utf8(self):
+        # also handle undecoded values
+        self.assertTrue(Query(u"utf8=Ångström").search(self.s4))
 
     def test_fs_utf8(self):
         self.failUnless(Query(u"~filename=foü.ogg").search(self.s3))
