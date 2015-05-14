@@ -9,7 +9,7 @@ import re
 
 from tests import TestCase
 
-from quodlibet.query._diacritic import re_add_diacritic_variants, \
+from quodlibet.query._diacritic import re_add_variants, \
     diacritic_for_letters, re_replace_literals
 
 
@@ -21,11 +21,11 @@ class TDiacritics(TestCase):
         self.assertEqual(sorted(cache.items()), sorted(new.items()))
 
     def test_re_replace(self):
-        r = re_add_diacritic_variants(u"aa")
+        r = re_add_variants(u"aa")
         self.assertTrue(u"[" in r and u"]" in r and r.count(u"ä") == 2)
 
     def test_re_replace_escape(self):
-        r = re_add_diacritic_variants(u"n\\n")
+        r = re_add_variants(u"n\\n")
         self.assertEqual(r, u"[nñńņňǹṅṇṉṋ]\n")
 
     def test_construct_regexp(self):
@@ -62,11 +62,11 @@ class TDiacritics(TestCase):
                           u"(?P<quote>['\"]).*?(?P=quote)", {})
 
     def test_seq(self):
-        self.assertEqual(
-            re_add_diacritic_variants(u"[x-y]"), u"[ẋẍýÿŷȳẏẙỳỵỷỹx-y]")
-        self.assertEqual(
-            re_add_diacritic_variants(u"[f-gm]"), u"[ḟĝğġģǧǵḡf-gmḿṁṃ]")
+        self.assertEqual(re_add_variants(u"[x-y]"), u"[ẋẍýÿŷȳẏẙỳỵỷỹx-y]")
+        self.assertEqual(re_add_variants(u"[f-gm]"), u"[ḟꝼĝğġģǧǵḡᵹf-gmḿṁṃ]")
 
     def test_literal(self):
-        self.assertEqual(re_add_diacritic_variants(u"f"), u"[fḟ]")
-        self.assertEqual(re_add_diacritic_variants(u"[^f]"), u"[^fḟ]")
+        self.assertEqual(re_add_variants(u"f"), u"[fḟꝼ]")
+        self.assertTrue(u"ø" in re_add_variants(u"o"))
+        self.assertTrue(u"Ø" in re_add_variants(u"O"))
+        self.assertEqual(re_add_variants(u"[^f]"), u"[^fḟꝼ]")

@@ -14,7 +14,7 @@ from re import Scanner
 
 from . import _match as match
 from ._match import error, ParseError
-from ._diacritic import re_add_diacritic_variants
+from ._diacritic import re_add_variants
 from quodlibet.util import re_escape
 
 # Token types.
@@ -262,7 +262,7 @@ class QueryParser(object):
                 mods = (mods & ~re.UNICODE) | re.LOCALE
             if "d" in s:
                 try:
-                    regex = re_add_diacritic_variants(regex)
+                    regex = re_add_variants(regex)
                 except re.error:
                     raise ParseError("The regular expression was invalid")
                 except NotImplementedError:

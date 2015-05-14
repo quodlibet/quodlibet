@@ -14,8 +14,13 @@ Ways to let ASCII characters match other unicode characters which
 can be decomposed into one ASCII character and one or more combining
 diacritic marks. This allows to match e.g. "Múm" using "Mum".
 
-re_add_diacritic_variants(u"Mum") =>
+re_add_variants(u"Mum") =>
     u"[MḾṀṂ][uùúûüũūŭůűųưǔǖǘǚǜȕȗṳṵṷṹṻụủứừửữự][mḿṁṃ]"
+
+This is also called Asymmetric Search:
+    http://unicode.org/reports/tr10/#Asymmetric_Search
+
+TODO: support replacing multiple characters, so AE matches Æ
 """
 
 import sre_parse
@@ -125,6 +130,34 @@ _DIACRITIC_CACHE = {
     u'\u0345': u'\u0391\u0397\u03a9\u03b1\u03b7\u03c9'
 }
 
+# See misc/uca_decomps.py
+_UCA_DECOMPS = {
+    u'D': u'\xd0\u0110\ua779',
+    u'F': u'\ua77b',
+    u'G': u'\ua77d',
+    u'H': u'\u0126',
+    u'L': u'\u0141',
+    u'O': u'\xd8\u01fe',
+    u'R': u'\ua782',
+    u'S': u'\ua784',
+    u'T': u'\ua786',
+    u'd': u'\xf0\u0111\ua77a',
+    u'f': u'\ua77c',
+    u'g': u'\u1d79',
+    u'h': u'\u0127\u210f',
+    u'l': u'\u0142',
+    u'o': u'\xf8\u01ff',
+    u'r': u'\ua783',
+    u's': u'\ua785',
+    u't': u'\ua787',
+    u'\u03c3': (u'\u03c2\u03f2\U0001d6d3\U0001d70d\U0001d747'
+                u'\U0001d781\U0001d7bb'),
+    u'\u0413': u'\u0490',
+    u'\u041e': u'\ua668\ua66a\ua66c',
+    u'\u0433': u'\u0491',
+    u'\u043e': u'\ua669\ua66b\ua66d',
+}
+
 
 def diacritic_for_letters(regenerate=False):
     """Returns a mapping for combining diacritic mark to ascii characters
@@ -159,7 +192,7 @@ def diacritic_for_letters(regenerate=False):
     return d
 
 
-def generate_re_diacritic_mapping(_diacritic_for_letters):
+def generate_re_mapping(_diacritic_for_letters):
     letter_to_variants = {}
 
     # combine combining characters with the ascii chars
@@ -315,11 +348,14 @@ def re_replace_literals(text, mapping):
 
 
 # use _DIACRITIC_CACHE and create a lookup table
-_diacritic_mapping = generate_re_diacritic_mapping(
-    diacritic_for_letters(regenerate=False))
+_mapping = generate_re_mapping(diacritic_for_letters(regenerate=False))
+
+# add more from the UCA decomp dataset
+for cp, repl in _UCA_DECOMPS.iteritems():
+    _mapping[cp] = _mapping.get(cp, u"") + repl
 
 
-def re_add_diacritic_variants(text):
+def re_add_variants(text):
     """Will replace all occurrences of ascii chars
     by a bracket expression containing the character and all its
     variants with a diacritic mark.
@@ -334,4 +370,4 @@ def re_add_diacritic_variants(text):
 
     assert isinstance(text, unicode)
 
-    return re_replace_literals(text, _diacritic_mapping)
+    return re_replace_literals(text, _mapping)
