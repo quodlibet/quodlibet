@@ -25,25 +25,28 @@ Source Overview
 
 ============ ==========================================
 browsers/*    Things in the View menu
+ext/*         Extensions to QL / EF (i.e. the plugins)
 formats/*     File format support
 library/*     Library management code
+plugins/*     Base classes and structural enabling plugins
+operon/*      Operon, the QL CLI tool
 qltk/*        GTK+ widget subclasses/extensions
 util/*        General utility functions and setup code
 ============ ==========================================
 
 If you want to get a full overview of QL's code, good places to start
-are browsers/_base.py, formats/_audio.py, and library/libraries.py.
+are ``browsers/_base.py``, ``formats/_audio.py``, and ``library/libraries.py``.
 
 
 Tags & Branches
 ---------------
 
-At the point where no new functionality will be added before a release, a 
-new branch gets created. All bugfix changes should get commited there and 
+At the point where no more functionality will be added to a release, a
+new branch gets created. All bugfix changes should get committed there and
 merged back in the default branch where new functionality can be added. In 
-case a bugfix was commited to the default branch or an unplanned stable 
-release is needed use the hg graft extension to copy those changes to the 
-stable branch(es).
+case a bugfix was committed to the default branch or an unplanned stable
+release is needed, use Git's `cherry-pick` features to copy those changes to
+the stable branch(es).
 
 ::
 
@@ -91,7 +94,7 @@ checklist of common-sense code quality items. Make sure your patch:
 General Guidelines
 ------------------
 
-We prefer Python to C. We prefer ctypes to compiled C wrappers. A good way 
+We prefer Python to C. We prefer ``ctypes`` to compiled C wrappers. A good way
 to get a new feature applied is if you include tests for it. Stock strings 
 and string reuse are awesome, but don't make the interface awkward just to 
 avoid a new string.
@@ -100,11 +103,16 @@ avoid a new string.
 Unit Tests
 ----------
 
-Quod Libet comes with tests. To run them, run ``./setup.py test``. Your 
+Quod Libet comes with a lot of tests, which helps us control regression.
+To run them, run ``./setup.py test``. Your
 patch can't break any unit tests, and if you change tests in a non-obvious 
 way (e.g. a patch that removes an entry point and also removes a test for 
 it is obvious) you should explain why.
 
+It's possible, indeed encouraged, that a changeset was for no other purpose
+than to *improve* the testing / test coverage, as there have been plenty of
+bugs that have slipped through. As usual, any fix associated with a confirmed
+bug should include tests that would have found the original bug, where possible.
 
 Printing Text
 -------------
@@ -139,7 +147,10 @@ depends on the context::
 Submitting
 ----------
 
-If your patch fixes a known bug with a ticket, you should attach it to
+The preferred method of contribution is now a Pull Request on Github,
+but patches are still reviewed where necessary.
+
+If your PR / patch fixes a known bug with a ticket, you should attach it to
 the ticket directly. If it is a bug fix but doesn't have a ticket, you
 can either make a ticket to attach it to, or send it to the mailing list,
 quod-libet-development@googlegroups.com.

@@ -4,9 +4,12 @@ Frequently Asked Questions
 Any plans to use Python 3?
 --------------------------
 
-No plans at the moment. First all dependencies (like mutagen) have to be 
-ported. At the moment Python 2 does its job.
+Not immediately, though it's now (May 2015)
+`on the development radar <https://github.com/quodlibet/quodlibet/issues/1580>`_.
+First, all dependencies (like mutagen) would need to be ported, though this is
+largely done now.
 
+That said, at the moment Python 2 does its job well.
 
 What format is the song database in?
 ------------------------------------
@@ -68,3 +71,12 @@ Although the song data Quod Libet stores would benefit from a relational
 database, it does not have a predefined schema, and opts to let users 
 define their own storage keys. This means relational databases based on 
 SQL, which require predefined schemata, cannot be used directly.
+
+What about <my favourite NoSQL DB> then?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This gets asked fairly often. MongoDB, CouchDB etc are indeed a closer match to
+the existing setup, but there is *significant* work porting an optimised native
+pickle-based repository to any of these, and each comes with a compatibility
+/ maintenance cost. This doesn't mean it won't happen some day, but there has
+to be a genuine case for the benefits outweighing the migration cost.

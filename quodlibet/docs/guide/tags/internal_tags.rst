@@ -34,11 +34,14 @@ The internal ``~people`` tag combines the following tags to one:
 ``originalartist``, ``lyricist``, ``arranger``, ``conductor`` in this exact 
 order.
 
-In case of sorting this means that all album artists come first followed by 
-all artists and so on.
+For sorting, this means that all album artists come first followed by
+all artists and so on. For song collections / albums, the values of
+each included tag are sorted by frequency.
 
-In case of song collections and albums the values of each included tag are 
-sorted by frequency.
+Note there is a ``~people:real`` specialisation
+`added in #1034 <https://github.com/quodlibet/quodlibet/issues/1034>`_ which
+excludes *Various Artists*, commonly used as a placeholder for album artists
+on compilations, etc.
 
 
 Song Collections / Albums

@@ -61,6 +61,8 @@ Translation Backport Braindump
 
 given: translation update for default, branch possibly contains code that got removed in default.
 
+**TODO: needs updating for Git.**
+
 ::
 
     hg up default
@@ -76,6 +78,8 @@ given: translation update for default, branch possibly contains code that got re
 
 Release Checklist
 -----------------
+
+**TODO: needs updating for Git.**
 
 Stable Release:
 

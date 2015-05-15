@@ -11,13 +11,14 @@ Installation
     use your default GNOME audio options.
 
 
-**I'm running Gentoo, and...**
+**I'm running Gentoo / Arch, and...**
 
     We are not the first line of support for `Gentoo Linux
     <http://gentoo.org/>`_. If you are running Gentoo and experience
-    problems, file a bug on the Gentoo bug tracking system at
-    http://bugs.gentoo.org.
+    problems, file a bug on the
+    `Gentoo bug tracking system <http://bugs.gentoo.org>`_.
 
+    The same goes for Arch... and any other distribution-specific problems.
 
 General
 -------
@@ -257,5 +258,5 @@ Other stuff
     didn't like the other players. If you do, continue using them. You
     still might want to check out Ex Falso, since while there's an awful
     lot of media players out there, there are far fewer choices for tag
-    editors. You could also :ref:`help us make Quod Libet better
-    <Contribute>`.
+    editors.
+    You could also :ref:`help us make Quod Libet better <Contribute>`.

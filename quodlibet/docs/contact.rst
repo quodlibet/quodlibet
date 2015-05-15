@@ -12,7 +12,7 @@ help you, and we can be really bad about replying to email.
 Reporting Bugs
 --------------
 
-The best way to report bugs is using the Google issue tracker.
+The best way to report bugs is using the GitHub issue tracker.
 
  * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
  * `Show current bugs <https://github.com/quodlibet/quodlibet/issues>`_
@@ -25,8 +25,7 @@ Mailing List
 
 If you're not sure if the behavior is a bug, or if you have other 
 questions, the best way to contact us is through the `quod-libet-devel 
-Google group <http://groups.google.com/group/quod-libet-development>`_ , 
-which replaces the old Quod Libet mailing list.
+Google group <http://groups.google.com/group/quod-libet-development>`_.
 
 
 IRC
