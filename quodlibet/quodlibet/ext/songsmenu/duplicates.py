@@ -460,7 +460,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
             if key and key in groups:
                 groups[key].add(song._song)
             elif key:
-                groups[key] = set([song._song])
+                groups[key] = {song._song}
 
         for song in app.library:
             key = self.get_key(song)

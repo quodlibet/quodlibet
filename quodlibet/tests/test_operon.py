@@ -110,7 +110,7 @@ class TOperonAdd(TOperonBase):
 
         self.check_true(["-v", "add", "foo", "bar2", self.f], False, True)
         self.s.reload()
-        self.failUnlessEqual(set(self.s.list("foo")), set(["bar", "bar2"]))
+        self.failUnlessEqual(set(self.s.list("foo")), {"bar", "bar2"})
 
     def test_add_backlisted(self):
         self.check_false(["add", "playcount", "bar", self.f], False, True)

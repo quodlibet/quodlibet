@@ -515,7 +515,7 @@ class SongLibrary(PicklingLibrary):
             print_d("%s: Delaying changed signal." % (type(self).__name__,))
             changed.add(song)
         else:
-            self.changed(set([song]))
+            self.changed({song})
 
     def query(self, text, sort=None, star=Query.STAR):
         """Query the library and return matching songs."""
@@ -628,12 +628,12 @@ class FileLibrary(PicklingLibrary):
 
         if was_changed:
             if changed is None:
-                self.emit('changed', set([item]))
+                self.emit('changed', {item})
             else:
                 changed.add(item)
         elif was_removed:
             if removed is None:
-                self.emit('removed', set([item]))
+                self.emit('removed', {item})
             else:
                 removed.add(item)
 

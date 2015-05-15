@@ -44,7 +44,7 @@ class TWMAFile(TestCase):
         self.song.write()
         self.song.reload()
         # XXX: mutagen doesn't preserve order.. fix it!
-        self.assertEqual(set(self.song.list("genre")), set([u"Rock", u"Pop"]))
+        self.assertEqual(set(self.song.list("genre")), {u"Rock", u"Pop"})
 
     def test_length(self):
         self.assertEqual(self.song("~#length"), 3)

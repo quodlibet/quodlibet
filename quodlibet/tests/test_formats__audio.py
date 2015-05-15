@@ -278,9 +278,9 @@ class TAudioFile(TestCase):
     def test_performers(self):
         q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),
                        ("performer", "C")])
-        self.failUnlessEqual(set(q.list("~performers")), set(["A", "B", "C"]))
+        self.failUnlessEqual(set(q.list("~performers")), {"A", "B", "C"})
         self.failUnlessEqual(set(q.list("~performers:roles")),
-                             set(["A (Vocals)", "B (Guitar)", "C"]))
+                             {"A (Vocals)", "B (Guitar)", "C"})
 
     def test_performers_multi_value(self):
         q = AudioFile([
@@ -290,17 +290,17 @@ class TAudioFile(TestCase):
         ])
 
         self.failUnlessEqual(
-            set(q.list("~performer")), set(["A", "B", "C", "F", "X", "Y"]))
+            set(q.list("~performer")), {"A", "B", "C", "F", "X", "Y"})
 
         self.failUnlessEqual(
-            set(q.list("~performer:roles")), set([
+            set(q.list("~performer:roles")), {
                     "A (Guitar, Vocals)",
                     "C",
                     "B (Guitar)",
                     "X (Vocals)",
                     "Y (Guitar, Vocals)",
                     "F",
-                ]))
+                })
 
     def test_people(self):
         q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),

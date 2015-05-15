@@ -170,7 +170,7 @@ class SongLibrarian(Librarian):
         for library in re_add:
             library._contents[song.key] = song
             if changed is None:
-                library._changed(set([song]))
+                library._changed({song})
             else:
                 print_d("Delaying changed signal for %r." % library, self)
                 changed.add(song)
@@ -206,7 +206,7 @@ class SongLibrarian(Librarian):
         if was_removed:
             if removed is None:
                 for library in had_item:
-                    library.emit('removed', set([item]))
+                    library.emit('removed', {item})
             else:
                 removed.add(item)
         elif was_changed:
@@ -215,6 +215,6 @@ class SongLibrarian(Librarian):
 
             if changed is None:
                 for library in had_item:
-                    library.emit('changed', set([item]))
+                    library.emit('changed', {item})
             else:
                 changed.add(item)

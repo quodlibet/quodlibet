@@ -54,7 +54,7 @@ class TAPEv2FileMixin(object):
         self.s["Aa"] = "E"
         self.s.write()
         self.s.reload()
-        self.failUnlessEqual(set(self.s["aa"].split()), set(["C", "B", "E"]))
+        self.failUnlessEqual(set(self.s["aa"].split()), {"C", "B", "E"})
 
     def test_binary_ignore(self):
         m = mutagen.apev2.APEv2(self.f)

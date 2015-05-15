@@ -61,7 +61,7 @@ class WMAFile(AudioFile):
 
     # http://msdn.microsoft.com/en-us/library/dd743065.aspx
     # note: not all names here are used by QL
-    __multi_value_attr = set([
+    __multi_value_attr = {
         "Author",
         "WM/AlbumArtist",
         "WM/AlbumCoverURL",
@@ -79,7 +79,7 @@ class WMAFile(AudioFile):
         "WM/PromotionURL",
         "WM/UserWebURL",
         "WM/Writer",
-    ])
+    }
 
     __multi_value_keys = set()
     for k, v in __translate.iteritems():

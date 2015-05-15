@@ -378,8 +378,8 @@ class OneAlbum(qltk.Notebook):
         box.pack_start(hb, False, False, 0)
 
     def _people(self, songs, box):
-        artists = set([])
-        performers = set([])
+        artists = set()
+        performers = set()
         for song in songs:
             artists.update(song.list("artist"))
             performers.update(song.list("performer"))
@@ -528,7 +528,7 @@ class ManySongs(qltk.Notebook):
         box.pack_start(l, False, False, 0)
 
     def _people(self, songs, box):
-        artists = set([])
+        artists = set()
         none = 0
         for song in songs:
             if "artist" in song:
@@ -547,7 +547,7 @@ class ManySongs(qltk.Notebook):
                         False, False, 0)
 
     def _album(self, songs, box):
-        albums = set([])
+        albums = set()
         none = 0
         for song in songs:
             if "album" in song:

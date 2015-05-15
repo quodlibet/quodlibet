@@ -28,20 +28,19 @@ from quodlibet.util import human_sort_key as human, capitalize
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 
 
-MIGRATE = set(["~#playcount", "~#laststarted", "~#lastplayed", "~#added",
-               "~#skipcount", "~#rating", "~bookmark"])
+MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
+           "~#skipcount", "~#rating", "~bookmark"}
 """These get migrated if a song gets reloaded"""
 
 PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
           "originalartist", "lyricist", "arranger", "conductor"]
 """Sources of the ~people tag, most important first"""
 
-INTERN_NUM_DEFAULT = set(
-    ["~#lastplayed", "~#laststarted", "~#playcount",
-     "~#skipcount", "~#length", "~#bitrate", "~#filesize"])
+INTERN_NUM_DEFAULT = {"~#lastplayed", "~#laststarted", "~#playcount",
+                      "~#skipcount", "~#length", "~#bitrate", "~#filesize"}
 """Default to 0"""
 
-FILESYSTEM_TAGS = set(["~filename", "~basename", "~dirname"])
+FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname"}
 """Values are bytes in Linux instead of unicode"""
 
 SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])

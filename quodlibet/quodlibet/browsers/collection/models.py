@@ -73,7 +73,7 @@ class CollectionModelMixin(object):
         obj = self.get_value(iter_)
 
         if isinstance(obj, Album):
-            return set([obj])
+            return {obj}
 
         albums = set()
         for child_iter, value in self.iterrows(iter_):

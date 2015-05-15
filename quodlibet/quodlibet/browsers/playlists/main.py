@@ -93,7 +93,7 @@ class PlaylistsBrowser(Browser):
 
     @classmethod
     def __added(klass, library, songs):
-        filenames = set([song("~filename") for song in songs])
+        filenames = {song("~filename") for song in songs}
         for playlist in klass.playlists():
             if playlist.add_songs(filenames, library):
                 PlaylistsBrowser.changed(playlist)

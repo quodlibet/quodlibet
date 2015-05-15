@@ -135,7 +135,7 @@ class TLibrary(TestCase):
         self.library.changed(self.Frange(2, 20, 3))
         while Gtk.events_pending():
             Gtk.main_iteration()
-        self.failUnlessEqual(set(self.changed), set([2, 5, 8]))
+        self.failUnlessEqual(set(self.changed), {2, 5, 8})
 
     def test_changed_none_present(self):
         self.library.changed(self.Frange(5))
@@ -556,8 +556,8 @@ class TAlbumLibrary(TestCase):
         self.failUnlessEqual(len(albums), 3)
         songs = self.underlying._contents.values()
         # Make sure "all the songs' albums" == "all the albums", roughly
-        self.failUnlessEqual(set([a.key for a in albums]),
-                             set([s.album_key for s in songs]))
+        self.failUnlessEqual({a.key for a in albums},
+                             {s.album_key for s in songs})
 
     def test_remove(self):
         key = self.underlying.get("file_1.mp3").album_key

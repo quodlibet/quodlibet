@@ -24,8 +24,7 @@ class CoverPluginHandler(PluginHandler):
     def __init__(self, use_built_in=True):
         self.providers = set()
         if use_built_in:
-            self.built_in = set([built_in.EmbedCover,
-                                 built_in.FilesystemCover])
+            self.built_in = {built_in.EmbedCover, built_in.FilesystemCover}
         else:
             self.built_in = set()
 

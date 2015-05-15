@@ -8,7 +8,7 @@ Requirements:
 * wine (tested with 1.6.1)
 * QL build deps
 * wget
-* mercurial
+* git
 * 1.5GB free space
 
 How To

@@ -56,7 +56,7 @@ class TModuleScanner(TestCase):
         name, path, deps = list(get_importables(self.d))[0]
         self.failUnlessEqual(name, "foobar3")
         self.failUnlessEqual(path, os.path.dirname(h.name))
-        self.failUnlessEqual(set(deps), set([h.name, h2.name]))
+        self.failUnlessEqual(set(deps), {h.name, h2.name})
         h2.close()
         h.close()
 
@@ -96,7 +96,7 @@ class TModuleScanner(TestCase):
         h.write("test=99\n")
         h.close()
         py_compile.compile(h.name)
-        self.failUnlessEqual(set(os.listdir(self.d)), set(["x1.pyc", "x1.py"]))
+        self.failUnlessEqual(set(os.listdir(self.d)), {"x1.pyc", "x1.py"})
 
         mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
         self.failUnlessEqual(len(mods), 1)
@@ -120,7 +120,7 @@ class TModuleScanner(TestCase):
         self.failIf(s.modules)
         removed, added = s.rescan()
         self.failIf(removed)
-        self.failUnlessEqual(set(added), set(["q1", "q2"]))
+        self.failUnlessEqual(set(added), {"q1", "q2"})
         self.failUnlessEqual(len(s.modules), 2)
         self.failUnlessEqual(len(s.failures), 0)
 

@@ -240,7 +240,7 @@ class TID3File(TestCase):
         f.tags.add(mutagen.id3.TCON(encoding=3, text=["4", "5"]))
         f.save()
         genres = set(MP3File(self.filename).list("genre"))
-        self.failUnlessEqual(genres, set(["Funk", "Disco"]))
+        self.failUnlessEqual(genres, {"Funk", "Disco"})
 
     def test_mb_track_id(self):
         f = mutagen.File(self.filename)
@@ -264,7 +264,7 @@ class TID3File(TestCase):
                                     desc="", text=["foo", "bar"]))
         f.save()
         comments = set(MP3File(self.filename).list("comment"))
-        self.failUnlessEqual(comments, set(["bar", "foo"]))
+        self.failUnlessEqual(comments, {"bar", "foo"})
 
     def test_foobar2k_replaygain(self):
         # foobar2k saved gain there
@@ -351,7 +351,7 @@ class TID3File(TestCase):
         song = MP3File(self.filename)
         self.failIf("foo=" in song)
         self.failIf(u"öäü" in song)
-        self.failUnlessEqual(set(song.list("comment")), set(["a", "b"]))
+        self.failUnlessEqual(set(song.list("comment")), {"a", "b"})
         self.failUnlessEqual(song("valid"), "quux")
         del song["valid"]
         song.write()

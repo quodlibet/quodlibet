@@ -474,12 +474,12 @@ class TPlaylist(TestCase):
         pl = Playlist(s.temp, "playlist")
         pl.extend(NUMERIC_SONGS)
         playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
-        s.failUnlessEqual(set(playlists), set([pl]))
+        s.failUnlessEqual(set(playlists), {pl})
         # Now add a second one, check that instance tracking works
         pl2 = Playlist(s.temp, "playlist2")
         pl2.append(NUMERIC_SONGS[0])
         playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
-        s.failUnlessEqual(set(playlists), set([pl, pl2]))
+        s.failUnlessEqual(set(playlists), {pl, pl2})
         pl.delete()
         pl2.delete()
 

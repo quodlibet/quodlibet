@@ -115,7 +115,7 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
         m = ObjectStore()
         m.append_many(set())
         m.append_many(set(range(10)))
-        self.failUnlessEqual(set([r[0] for r in m]), set(range(10)))
+        self.failUnlessEqual({r[0] for r in m}, set(range(10)))
 
     def test_iter_append_many(self):
         m = ObjectStore()

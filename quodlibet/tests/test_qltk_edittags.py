@@ -61,12 +61,12 @@ class TAudioFileGroup(TestCase):
         self.assertTrue(group.can_multiple_values("foo") is True)
 
         group = AudioFileGroup([GroupSong(["ha"]), GroupSong(True)])
-        self.assertEqual(group.can_multiple_values(), set(["ha"]))
+        self.assertEqual(group.can_multiple_values(), {"ha"})
         self.assertFalse(group.can_multiple_values("foo"))
         self.assertTrue(group.can_multiple_values("ha"))
 
         group = AudioFileGroup([GroupSong(["foo", "ha"]), GroupSong(["ha"])])
-        self.assertEqual(group.can_multiple_values(), set(["ha"]))
+        self.assertEqual(group.can_multiple_values(), {"ha"})
         self.assertFalse(group.can_multiple_values("foo"))
         self.assertTrue(group.can_multiple_values("ha"))
 
@@ -79,7 +79,7 @@ class TAudioFileGroup(TestCase):
         group = AudioFileGroup(
             [GroupSong(can_change=["foo", "ha"]),
              GroupSong(can_change=["ha"])])
-        self.assertEqual(group.can_change(), set(["ha"]))
+        self.assertEqual(group.can_change(), {"ha"})
         self.assertFalse(group.can_change("foo"))
         self.assertTrue(group.can_change("ha"))
 

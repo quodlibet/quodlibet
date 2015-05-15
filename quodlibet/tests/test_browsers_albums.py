@@ -217,11 +217,11 @@ class TAlbumBrowser(TestCase):
 
     def test_list(self):
         albums = self.bar.list_albums()
-        self.failUnlessEqual(set(albums), set([s.album_key for s in SONGS]))
+        self.failUnlessEqual(set(albums), {s.album_key for s in SONGS})
         self.bar.filter_albums([SONGS[0].album_key])
         self._wait()
-        self.failUnlessEqual(set([s.album_key for s in self.songs]),
-                             set([SONGS[0].album_key]))
+        self.failUnlessEqual({s.album_key for s in self.songs},
+                             {SONGS[0].album_key})
 
     def test_active_filter(self):
         with realized(self.bar):

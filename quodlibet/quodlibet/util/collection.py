@@ -162,7 +162,7 @@ class Collection(object):
             elif key == "tracks":
                 return len(self.songs)
             elif key == "discs":
-                return len(set([song("~#disc", 1) for song in self.songs]))
+                return len({song("~#disc", 1) for song in self.songs})
             elif key == "bitrate":
                 length = self.__get_value("~#length")
                 if not length:
