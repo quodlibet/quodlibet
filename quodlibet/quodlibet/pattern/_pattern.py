@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2010 Joe Wreschnig, Michael Urman
 # Copyright 2010,2013 Christoph Reiter
-# Copyright 2013,2014 Nick Boultbee
+# Copyright 2013-2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -16,6 +16,7 @@ import re
 from re import Scanner
 
 from quodlibet import util
+from quodlibet.query import Query
 from quodlibet.util.path import fsdecode, expanduser, fsnative, sep
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 
@@ -90,14 +91,14 @@ class TextNode(object):
 
 
 class ConditionNode(object):
-    def __init__(self, tag, ifcase, elsecase):
-        self.tag = tag
+    def __init__(self, expr, ifcase, elsecase):
+        self.expr = expr
         self.ifcase = ifcase
         self.elsecase = elsecase
 
     def __repr__(self):
-        t, i, e = self.tag, repr(self.ifcase), repr(self.elsecase)
-        return "Condition(tag: \"%s\", if: %s, else: %s)" % (t, i, e)
+        t, i, e = self.expr, repr(self.ifcase), repr(self.elsecase)
+        return "Condition(expression: \"%s\", if: %s, else: %s)" % (t, i, e)
 
 
 class TagNode(object):
@@ -199,6 +200,9 @@ class PatternFormatter(object):
             self.__song = realsong
             self.__formatter = formatter
 
+        def get(self, key, default=None):
+            return self.__song.get(key, default)
+
         def comma(self, key):
             value = self.__song.comma(key)
             if isinstance(value, str):
@@ -269,7 +273,7 @@ class PatternCompiler(object):
         content.append("  return r")
         code = "\n".join(content)
 
-        scope = {}
+        scope = {'Query': Query.StrictQueryMatcher}
         exec compile(code, "<string>", "exec") in scope
         return scope["f"], tags
 
@@ -278,36 +282,38 @@ class PatternCompiler(object):
         text = text.replace("\"", "\\\"")
         return text.replace("\n", r"\n")
 
-    def __put_tag(self, text, scope, tag):
-        tag = self.__escape(tag)
-        if tag not in scope:
-            scope[tag] = 't%d' % len(scope)
-            text.append('%s = x("%s")' % (scope[tag], tag))
-        return tag
+    def __put_expr(self, text, scope, query):
+        #query = self.__escape(query)
+        if query not in scope:
+            scope[query] = 'q%d' % len(scope)
+            text.append('q = Query(%s)' % repr(query))
+            text.append('{v} = q is not None and q.search(s) or x({query})'
+                        .format(v=scope[query], query=repr(query)))
+        return query
 
     def __tag(self, node, scope, tags):
         text = []
         if isinstance(node, TextNode):
             text.append('a("%s")' % self.__escape(node.text))
         elif isinstance(node, ConditionNode):
-            tag = self.__put_tag(text, scope, node.tag)
+            expr = self.__put_expr(text, scope, node.expr)
             ic = self.__pattern(node.ifcase, dict(scope), tags)
             ec = self.__pattern(node.elsecase, dict(scope), tags)
             if not ic and not ec:
                 text.pop(-1)
             elif ic:
-                text.append('if %s:' % scope[tag])
+                text.append('if %s:' % scope[expr])
                 text.extend(ic)
                 if ec:
                     text.append('else:')
                     text.extend(ec)
             else:
-                text.append('if not %s:' % scope[tag])
+                text.append('if not %s:' % scope[expr])
                 text.extend(ec)
         elif isinstance(node, TagNode):
             tags.extend(util.tagsplit(node.tag))
-            tag = self.__put_tag(text, scope, node.tag)
-            text.append('a(%s)' % scope[tag])
+            expr = self.__put_expr(text, scope, node.tag)
+            text.append('a(%s)' % scope[expr])
         return text
 
     def __pattern(self, node, scope, tags):

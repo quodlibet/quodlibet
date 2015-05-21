@@ -25,6 +25,9 @@ class _TPattern(AbstractTestCase):
               '~filename': '/path/to/e.mp3'}
         s6 = {'artist': 'Foo', 'albumartist': 'foo.bar', 'album': 'Best Of',
               '~filename': '/path/to/f.mp3', 'title': 'The.Final.Word'}
+        s7 = {'artist': u'un élève français', '~filename': '/path/to/g.mp3',
+              'albumartist': u'Lee "Scratch" Perry', 'album': "The 'only' way!",
+              'comment': 'Trouble|Strife'}
 
         if os.name == "nt":
             s1["filename"] = u"C:\\path\\to\\a.mp3"
@@ -33,6 +36,7 @@ class _TPattern(AbstractTestCase):
             s4["filename"] = u"C:\\path\\to\\a.mp3"
             s5["filename"] = u"C:\\path\\to\\a.mp3"
             s6["filename"] = u"C:\\path\\to\\f.mp3"
+            s7["filename"] = u"C:\\path\\to\\g.mp3"
 
         self.a = self.AudioFile(s1)
         self.b = self.AudioFile(s2)
@@ -40,6 +44,7 @@ class _TPattern(AbstractTestCase):
         self.d = self.AudioFile(s4)
         self.e = self.AudioFile(s5)
         self.f = self.AudioFile(s6)
+        self.g = self.AudioFile(s7)
 
 
 class TPattern(_TPattern):
@@ -60,7 +65,7 @@ class TPattern(_TPattern):
 
     def test_conditional_other_other(s):
         # FIXME: was <tracknumber|a|b|c>.. but we can't put <>| in the format
-        # string since it would break the XML pattern formater.
+        # string since it would break the XML pattern formatter.
         s.assertEqual(Pattern('<tracknumber|a|b|c>').format(s.a), "")
 
     def test_conditional_genre(s):
@@ -72,6 +77,48 @@ class TPattern(_TPattern):
     def test_conditional_unknown(s):
         pat = Pattern('<album|foo|bar>')
         s.assertEquals(pat.format(s.a), 'bar')
+
+    def test_conditional_equals(s):
+        pat = Pattern('<artist=Artist|matched|not matched>')
+        s.assertEquals(pat.format(s.a), 'matched')
+        pat = Pattern('<artist=Artistic|matched|not matched>')
+        s.assertEquals(pat.format(s.a), 'not matched')
+
+    def test_conditional_equals_unicode(s):
+        pat = Pattern(u'<artist=Artist|matched|not matched>')
+        s.assertEquals(pat.format(s.g), 'not matched')
+        pat = Pattern(u'<artist=un élève français|matched|not matched>')
+        s.assertEquals(pat.format(s.g), 'matched')
+
+    def test_tag_query_escaping(s):
+        pat = Pattern('<albumartist=Lee "Scratch" Perry|matched|not matched>')
+        s.assertEquals(pat.format(s.g), 'matched')
+
+    def test_tag_query_escaped_pipe(s):
+        pat = Pattern(r'<albumartist=/Lee\|Bob/|matched|not matched>')
+        s.assertEquals(pat.format(s.g), 'matched')
+        pat = Pattern(r'<albumartist=\||matched|not matched>')
+        s.assertEquals(pat.format(s.g), 'not matched')
+        pat = Pattern(r'<comment=/Trouble\|Strife/|matched|not matched>')
+        s.assertEquals(pat.format(s.g), 'matched')
+
+    def test_tag_query_quoting(s):
+        pat = Pattern('<album=The only way|matched|not matched>')
+        s.assertEquals(pat.format(s.g), 'not matched')
+        pat = Pattern("<album=\"The 'only' way!\"|matched|not matched>")
+        s.assertEquals(pat.format(s.g), 'matched')
+
+    def test_tag_query_regex(s):
+        pat = Pattern("<album=/'only'/|matched|not matched>")
+        s.assertEquals(pat.format(s.g), 'matched')
+        pat = Pattern("<album=/The .+ way/|matched|not matched>")
+        s.assertEquals(pat.format(s.g), 'matched')
+        pat = Pattern("</The .+ way/|matched|not matched>")
+        s.assertEquals(pat.format(s.g), 'not matched')
+
+    def test_tag_query_disallowed_free_text(s):
+        pat = Pattern("<The only way|matched|not matched>")
+        s.assertEquals(pat.format(s.g), 'not matched')
 
     def test_conditional_notfile(s):
         pat = Pattern('<tracknumber|<tracknumber>|00>')

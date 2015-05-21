@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
+#                2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -89,6 +90,16 @@ class Query(Node):
 
         self.type = QueryType.VALID
         self._match = QueryParser(QueryLexer(string)).StartQuery()
+
+    @classmethod
+    def StrictQueryMatcher(cls, string):
+        """Returns a Matcher for a strict, valid (non-freetext) Query,
+           or `None` if this fails.
+        """
+        try:
+            return QueryParser(QueryLexer(string)).StartQuery()
+        except error:
+            return None
 
     def __repr__(self):
         return "<Query string=%r type=%r star=%r>" % (
