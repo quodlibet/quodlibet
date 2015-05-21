@@ -264,63 +264,73 @@ class PatternCompiler(object):
 
     def compile(self, song_func):
         tags = []
+        queries = {}
         content = [
             "def f(s):",
             "  x = s." + song_func,
             "  r = []",
             "  a = r.append"]
-        content.extend(self.__pattern(self.__root, {}, tags))
+        content.extend(self.__pattern(self.__root, {}, tags, queries))
         content.append("  return r")
         code = "\n".join(content)
 
-        scope = {'Query': Query.StrictQueryMatcher}
+        scope = {}
+        for query, (var, obj) in queries.iteritems():
+            scope[var] = obj
+
         exec compile(code, "<string>", "exec") in scope
         return scope["f"], tags
 
-    def __escape(self, text):
-        text = text.replace("\\", r"\\")
-        text = text.replace("\"", "\\\"")
-        return text.replace("\n", r"\n")
+    def __put_expr(self, text, scope, query, queries):
 
-    def __put_expr(self, text, scope, query):
-        #query = self.__escape(query)
+        if query not in queries:
+            q = Query.StrictQueryMatcher(query)
+            if q is not None:
+                q_var = 'q%d' % len(queries)
+                queries[query] = (q_var, q.search)
+                t_var = 't%d' % len(scope)
+                scope[query] = t_var
+                text.append('%s = %s(s)' % (t_var, q_var))
+
         if query not in scope:
-            scope[query] = 'q%d' % len(scope)
-            text.append('q = Query(%s)' % repr(query))
-            text.append('{v} = q is not None and q.search(s) or x({query})'
-                        .format(v=scope[query], query=repr(query)))
-        return query
+            t_var = 't%d' % len(scope)
+            scope[query] = t_var
+            text.append('%s = x(%r)' % (t_var, query))
+        else:
+            t_var = scope[query]
 
-    def __tag(self, node, scope, tags):
+        return t_var
+
+    def __tag(self, node, scope, tags, queries):
         text = []
         if isinstance(node, TextNode):
-            text.append('a("%s")' % self.__escape(node.text))
+            text.append('a(%r)' % node.text)
         elif isinstance(node, ConditionNode):
-            expr = self.__put_expr(text, scope, node.expr)
-            ic = self.__pattern(node.ifcase, dict(scope), tags)
-            ec = self.__pattern(node.elsecase, dict(scope), tags)
+            var = self.__put_expr(text, scope, node.expr, queries)
+            ic = self.__pattern(node.ifcase, dict(scope), tags, queries)
+            ec = self.__pattern(node.elsecase, dict(scope), tags, queries)
             if not ic and not ec:
                 text.pop(-1)
             elif ic:
-                text.append('if %s:' % scope[expr])
+                text.append('if %s:' % var)
                 text.extend(ic)
                 if ec:
                     text.append('else:')
                     text.extend(ec)
             else:
-                text.append('if not %s:' % scope[expr])
+                text.append('if not %s:' % var)
                 text.extend(ec)
         elif isinstance(node, TagNode):
             tags.extend(util.tagsplit(node.tag))
-            expr = self.__put_expr(text, scope, node.tag)
-            text.append('a(%s)' % scope[expr])
+            var = self.__put_expr(text, scope, node.tag, queries)
+            text.append('a(%s)' % var)
         return text
 
-    def __pattern(self, node, scope, tags):
+    def __pattern(self, node, scope, tags, queries):
         text = []
         if isinstance(node, PatternNode):
             for child in node.children:
-                text.extend(self.__tag(child, scope, tags))
+                text.extend(self.__tag(child, scope, tags, queries))
         return map("  ".__add__, text)
 
 
