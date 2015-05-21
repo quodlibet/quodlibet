@@ -26,8 +26,8 @@ class _TPattern(AbstractTestCase):
         s6 = {'artist': 'Foo', 'albumartist': 'foo.bar', 'album': 'Best Of',
               '~filename': '/path/to/f.mp3', 'title': 'The.Final.Word'}
         s7 = {'artist': u'un élève français', '~filename': '/path/to/g.mp3',
-              'albumartist': u'Lee "Scratch" Perry', 'album': "The 'only' way!",
-              'comment': 'Trouble|Strife'}
+              'albumartist': u'Lee "Scratch" Perry',
+              'album': "The 'only' way!", 'comment': 'Trouble|Strife'}
 
         if os.name == "nt":
             s1["filename"] = u"C:\\path\\to\\a.mp3"
