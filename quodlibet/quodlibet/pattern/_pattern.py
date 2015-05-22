@@ -270,14 +270,11 @@ class PatternCompiler(object):
             "  x = s." + song_func,
             "  r = []",
             "  a = r.append"]
-        content.extend(self.__pattern(self.__root, {}, tags, queries))
+        content.extend(self.__tag(self.__root, {}, {}, tags, queries))
         content.append("  return r")
         code = "\n".join(content)
 
-        scope = {}
-        for query, (rvar, qvar, obj) in queries.iteritems():
-            scope[qvar] = obj
-
+        scope = dict(queries.itervalues())
         exec compile(code, "<string>", "exec") in scope
         return scope["f"], tags
 
@@ -290,28 +287,37 @@ class PatternCompiler(object):
             t_var = scope[tag]
         return t_var
 
-    def __get_query(self, text, scope, query, queries):
-        if query not in queries:
-            q = Query.StrictQueryMatcher(query)
-            if q is not None:
-                q_var = 'q%d' % len(queries)
-                r_var = 'r%d' % len(queries)
-                queries[query] = (r_var, q_var, q.search)
+    def __get_query(self, text, scope, qscope, query, queries):
+        if query not in qscope:
+            if query in queries:
+                q_var = queries[query][0]
+                r_var = 'r%d' % len(qscope)
                 text.append('%s = %s(s)' % (r_var, q_var))
+                qscope[query] = r_var
             else:
-                r_var = self.__get_value(text, scope, query)
+                q = Query.StrictQueryMatcher(query)
+                if q is not None:
+                    q_var = 'q%d' % len(queries)
+                    r_var = 'r%d' % len(qscope)
+                    queries[query] = (q_var, q.search)
+                    text.append('%s = %s(s)' % (r_var, q_var))
+                    qscope[query] = r_var
+                else:
+                    r_var = self.__get_value(text, scope, query)
         else:
-            r_var = queries[query][0]
+            r_var = qscope[query]
         return r_var
 
-    def __tag(self, node, scope, tags, queries):
+    def __tag(self, node, scope, qscope, tags, queries):
         text = []
         if isinstance(node, TextNode):
             text.append('a(%r)' % node.text)
         elif isinstance(node, ConditionNode):
-            var = self.__get_query(text, scope, node.expr, queries)
-            ic = self.__pattern(node.ifcase, dict(scope), tags, queries)
-            ec = self.__pattern(node.elsecase, dict(scope), tags, queries)
+            var = self.__get_query(text, scope, qscope, node.expr, queries)
+            ic = self.__tag(
+                node.ifcase, dict(scope), dict(qscope), tags, queries)
+            ec = self.__tag(
+                node.elsecase, dict(scope), dict(qscope), tags, queries)
             if not ic and not ec:
                 text.pop(-1)
             elif ic:
@@ -327,14 +333,11 @@ class PatternCompiler(object):
             tags.extend(util.tagsplit(node.tag))
             var = self.__get_value(text, scope, node.tag)
             text.append('a(%s)' % var)
-        return text
-
-    def __pattern(self, node, scope, tags, queries):
-        text = []
-        if isinstance(node, PatternNode):
+        elif isinstance(node, PatternNode):
             for child in node.children:
-                text.extend(self.__tag(child, scope, tags, queries))
-        return map("  ".__add__, text)
+                for line in self.__tag(child, scope, qscope, tags, queries):
+                    text.append("  " + line)
+        return text
 
 
 def Pattern(string, Kind=PatternFormatter, MAX_CACHE_SIZE=100, cache={}):

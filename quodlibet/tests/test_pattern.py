@@ -129,6 +129,10 @@ class TPattern(_TPattern):
         pat = Pattern("<The only way|matched|not matched>")
         s.assertEquals(pat.format(s.g), 'not matched')
 
+    def test_query_scope(self):
+        pat = Pattern("<foo|<artist=Foo|x|y>|<artist=Foo|z|q>>")
+        self.assertEqual(pat.format(self.f), "z")
+
     def test_conditional_notfile(s):
         pat = Pattern('<tracknumber|<tracknumber>|00>')
         s.assertEquals(pat.format(s.a), '5/6')
