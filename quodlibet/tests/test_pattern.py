@@ -51,6 +51,10 @@ class TPattern(_TPattern):
     from quodlibet.formats._audio import AudioFile
     AudioFile
 
+    def test_query_like_tag(self):
+        pat = Pattern("<t=v>")
+        self.assertEqual(pat.format(self.AudioFile({"t=v": "foo"})), "foo")
+
     def test_conditional_number_dot_title(s):
         pat = Pattern('<tracknumber|<tracknumber>. ><title>')
         s.assertEquals(pat.format(s.a), '5/6. Title5')
@@ -89,6 +93,11 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(s.g), 'not matched')
         pat = Pattern(u'<artist=un élève français|matched|not matched>')
         s.assertEquals(pat.format(s.g), 'matched')
+
+    def test_duplicate_query(self):
+        pat = Pattern('<u=yes|<u=yes|x|y>|<u=yes|q|z>>')
+        self.assertEqual(pat.format(self.AudioFile({"u": "yes"})), "x")
+        self.assertEqual(pat.format(self.AudioFile({"u": "no"})), "z")
 
     def test_tag_query_escaping(s):
         pat = Pattern('<albumartist=Lee "Scratch" Perry|matched|not matched>')

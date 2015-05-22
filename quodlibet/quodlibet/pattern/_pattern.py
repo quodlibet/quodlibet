@@ -275,38 +275,41 @@ class PatternCompiler(object):
         code = "\n".join(content)
 
         scope = {}
-        for query, (var, obj) in queries.iteritems():
-            scope[var] = obj
+        for query, (rvar, qvar, obj) in queries.iteritems():
+            scope[qvar] = obj
 
         exec compile(code, "<string>", "exec") in scope
         return scope["f"], tags
 
-    def __put_expr(self, text, scope, query, queries):
+    def __get_value(self, text, scope, tag):
+        if tag not in scope:
+            t_var = 'v%d' % len(scope)
+            scope[tag] = t_var
+            text.append('%s = x(%r)' % (t_var, tag))
+        else:
+            t_var = scope[tag]
+        return t_var
 
+    def __get_query(self, text, scope, query, queries):
         if query not in queries:
             q = Query.StrictQueryMatcher(query)
             if q is not None:
                 q_var = 'q%d' % len(queries)
-                queries[query] = (q_var, q.search)
-                t_var = 't%d' % len(scope)
-                scope[query] = t_var
-                text.append('%s = %s(s)' % (t_var, q_var))
-
-        if query not in scope:
-            t_var = 't%d' % len(scope)
-            scope[query] = t_var
-            text.append('%s = x(%r)' % (t_var, query))
+                r_var = 'r%d' % len(queries)
+                queries[query] = (r_var, q_var, q.search)
+                text.append('%s = %s(s)' % (r_var, q_var))
+            else:
+                r_var = self.__get_value(text, scope, query)
         else:
-            t_var = scope[query]
-
-        return t_var
+            r_var = queries[query][0]
+        return r_var
 
     def __tag(self, node, scope, tags, queries):
         text = []
         if isinstance(node, TextNode):
             text.append('a(%r)' % node.text)
         elif isinstance(node, ConditionNode):
-            var = self.__put_expr(text, scope, node.expr, queries)
+            var = self.__get_query(text, scope, node.expr, queries)
             ic = self.__pattern(node.ifcase, dict(scope), tags, queries)
             ec = self.__pattern(node.elsecase, dict(scope), tags, queries)
             if not ic and not ec:
@@ -322,7 +325,7 @@ class PatternCompiler(object):
                 text.extend(ec)
         elif isinstance(node, TagNode):
             tags.extend(util.tagsplit(node.tag))
-            var = self.__put_expr(text, scope, node.tag, queries)
+            var = self.__get_value(text, scope, node.tag)
             text.append('a(%s)' % var)
         return text
 
