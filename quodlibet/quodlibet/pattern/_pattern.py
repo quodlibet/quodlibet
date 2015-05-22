@@ -17,8 +17,9 @@ from re import Scanner
 
 from quodlibet import util
 from quodlibet.query import Query
-from quodlibet.util.path import fsdecode, expanduser, fsnative, sep
+from quodlibet.util.path import expanduser, fsnative, sep
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
+from quodlibet.formats._audio import decode_value
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -189,6 +190,12 @@ class PatternFormatter(object):
         self.format(self.Dummy())  # Validate string
 
     class Dummy(dict):
+
+        def __call__(self, key, *args):
+            if key[:2] == "~#" and "~" not in key[2:]:
+                return 0
+            return u"_"
+
         def comma(self, *args):
             return u"_"
 
@@ -200,17 +207,15 @@ class PatternFormatter(object):
             self.__song = realsong
             self.__formatter = formatter
 
+        def __call__(self, key, *args):
+            return self.__song(key, *args)
+
         def get(self, key, default=None):
             return self.__song.get(key, default)
 
         def comma(self, key):
             value = self.__song.comma(key)
-            if isinstance(value, str):
-                value = fsdecode(value)
-            elif not isinstance(value, unicode):
-                if isinstance(value, float):
-                    value = "%.2f" % value
-                value = unicode(value)
+            value = decode_value(key, value)
             if self.__formatter:
                 return self.__formatter(key, value)
             return value
@@ -218,9 +223,8 @@ class PatternFormatter(object):
         def list_separate(self, key):
             if key.startswith("~#") and "~" not in key[2:]:
                 value = self.__song(key)
-                if isinstance(value, float):
-                    value = "%.2f" % value
-                values = [unicode(value)]
+                value = decode_value(key, value)
+                values = [value]
             else:
                 values = self.__song.list_separate(key)
 

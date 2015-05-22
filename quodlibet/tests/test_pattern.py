@@ -3,14 +3,13 @@ from tests import TestCase, AbstractTestCase
 
 import os
 
+from quodlibet.formats._audio import AudioFile
 from quodlibet.util.path import is_fsnative
 from quodlibet.pattern import (FileFromPattern, XMLFromPattern, Pattern,
     XMLFromMarkupPattern, ArbitraryExtensionFileFromPattern)
 
 
 class _TPattern(AbstractTestCase):
-    from quodlibet.formats._audio import AudioFile
-    AudioFile
 
     def setUp(self):
         s1 = {'tracknumber': '5/6', 'artist': 'Artist', 'title': 'Title5',
@@ -38,13 +37,13 @@ class _TPattern(AbstractTestCase):
             s6["filename"] = u"C:\\path\\to\\f.mp3"
             s7["filename"] = u"C:\\path\\to\\g.mp3"
 
-        self.a = self.AudioFile(s1)
-        self.b = self.AudioFile(s2)
-        self.c = self.AudioFile(s3)
-        self.d = self.AudioFile(s4)
-        self.e = self.AudioFile(s5)
-        self.f = self.AudioFile(s6)
-        self.g = self.AudioFile(s7)
+        self.a = AudioFile(s1)
+        self.b = AudioFile(s2)
+        self.c = AudioFile(s3)
+        self.d = AudioFile(s4)
+        self.e = AudioFile(s5)
+        self.f = AudioFile(s6)
+        self.g = AudioFile(s7)
 
 
 class TPattern(_TPattern):
@@ -53,7 +52,7 @@ class TPattern(_TPattern):
 
     def test_query_like_tag(self):
         pat = Pattern("<t=v>")
-        self.assertEqual(pat.format(self.AudioFile({"t=v": "foo"})), "foo")
+        self.assertEqual(pat.format(AudioFile({"t=v": "foo"})), "foo")
 
     def test_conditional_number_dot_title(s):
         pat = Pattern('<tracknumber|<tracknumber>. ><title>')
@@ -96,8 +95,8 @@ class TPattern(_TPattern):
 
     def test_duplicate_query(self):
         pat = Pattern('<u=yes|<u=yes|x|y>|<u=yes|q|z>>')
-        self.assertEqual(pat.format(self.AudioFile({"u": "yes"})), "x")
-        self.assertEqual(pat.format(self.AudioFile({"u": "no"})), "z")
+        self.assertEqual(pat.format(AudioFile({"u": "yes"})), "x")
+        self.assertEqual(pat.format(AudioFile({"u": "no"})), "z")
 
     def test_tag_query_escaping(s):
         pat = Pattern('<albumartist=Lee "Scratch" Perry|matched|not matched>')
@@ -132,6 +131,11 @@ class TPattern(_TPattern):
     def test_query_scope(self):
         pat = Pattern("<foo|<artist=Foo|x|y>|<artist=Foo|z|q>>")
         self.assertEqual(pat.format(self.f), "z")
+
+    def test_query_numeric(self):
+        pat = Pattern("<#(foo=42)|42|other>")
+        self.assertEqual(pat.format(AudioFile()), "other")
+        self.assertEqual(pat.format(AudioFile({"foo": "42"})), "42")
 
     def test_conditional_notfile(s):
         pat = Pattern('<tracknumber|<tracknumber>|00>')
@@ -180,7 +184,7 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(s.c), '. /, /')
 
     def test_unicode_with_int(s):
-        song = s.AudioFile({"tracknumber": "5/6",
+        song = AudioFile({"tracknumber": "5/6",
             "title": "\xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8')})
         pat = Pattern('<~#track>. <title>')
         s.assertEquals(pat.format(song),
@@ -244,7 +248,7 @@ class _TFileFromPattern(_TPattern):
 
     def test_long_filename(s):
         if os.name == "nt":
-            a = s.AudioFile({"title": "x" * 300, "~filename": u"C:\\f.mp3"})
+            a = AudioFile({"title": "x" * 300, "~filename": u"C:\\f.mp3"})
             path = s._create(u'C:\\foobar\\ä<title>\\<title>').format(a)
             assert is_fsnative(path)
             s.failUnlessEqual(len(path), 3 + 6 + 1 + 255 + 1 + 255)
@@ -252,7 +256,7 @@ class _TFileFromPattern(_TPattern):
             assert is_fsnative(path)
             s.failUnlessEqual(len(path), 255)
         else:
-            a = s.AudioFile({"title": "x" * 300, "~filename": "/f.mp3"})
+            a = AudioFile({"title": "x" * 300, "~filename": "/f.mp3"})
             path = s._create(u'/foobar/ä<title>/<title>').format(a)
             assert is_fsnative(path)
             s.failUnlessEqual(len(path), 1 + 6 + 1 + 255 + 1 + 255)
@@ -277,7 +281,7 @@ class TFileFromPattern(_TFileFromPattern):
         s.assertEquals(pat.format(s.e), '0007. Title7.mp3')
 
     def test_ext_case_preservation(s):
-        x = s.AudioFile({'~filename': '/tmp/Xx.Flac', 'title': 'Xx'})
+        x = AudioFile({'~filename': '/tmp/Xx.Flac', 'title': 'Xx'})
         # If pattern has a particular ext, preserve case of ext
         p1 = s._create('<~basename>')
         s.assertEquals(p1.format(x), 'Xx.Flac')
