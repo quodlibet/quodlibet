@@ -340,7 +340,7 @@ def map_numeric_op(tag, op, value, time_=None):
 
     # get the biggest float/int
     max_val = ""
-    for i in xrange(len(value) + 1, 1, -1):
+    for i in xrange(len(value) + 1, 0, -1):
         part = value[:i]
         try:
             float(part)

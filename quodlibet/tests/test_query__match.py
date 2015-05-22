@@ -92,6 +92,10 @@ class TNumericOp(TestCase):
         self.failUnless(o(1024 * 1024 * 11, v))
         self.failIf(o(1024 * 1024 * 9, v))
 
+        o, v = map_numeric_op("filesize", ">", "1MB")
+        self.failUnless(o(1024 * 1024 * 1.1, v))
+        self.failIf(o(1024 * 1024 * 0.9, v))
+
         map_numeric_op("filesize", ">", "10kB")
         map_numeric_op("filesize", ">", "10bytes")
         map_numeric_op("filesize", ">", "10G")
