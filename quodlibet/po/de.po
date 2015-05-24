@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 3.0.-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 23:22+0200\n"
+"POT-Creation-Date: 2015-05-24 15:43+0200\n"
 "PO-Revision-Date: 2014-01-05 18:16+0100\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -23,7 +23,11 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: /home/rarp/Downloads/0_src/quodlibet/quodlibet\n"
 
-#: ../data/exfalso.appdata.xml.in.h:1
+#: ../data/exfalso.appdata.xml.in.h:1 ../data/exfalso.desktop.in.h:2
+msgid "Edit tags in your audio files"
+msgstr "Metadaten in Audiodateien bearbeiten"
+
+#: ../data/exfalso.appdata.xml.in.h:2
 msgid ""
 "Ex Falso is a tag editor with the same tag editing interface as Quod Libet. "
 "It lets you display and edit any tags you want in the file, for all the file "
@@ -33,7 +37,7 @@ msgstr ""
 "Benutzeroberfläche von Quod Libet. Mit ihm können Audio-Tags in allen "
 "unterstützten Dateiformaten angezeigt und bearbeitet werden."
 
-#: ../data/exfalso.appdata.xml.in.h:2 ../data/quodlibet.appdata.xml.in.h:2
+#: ../data/exfalso.appdata.xml.in.h:3 ../data/quodlibet.appdata.xml.in.h:3
 msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
@@ -46,11 +50,11 @@ msgstr ""
 msgid "Audio tag editor"
 msgstr "Editor für Audio-Tags"
 
-#: ../data/exfalso.desktop.in.h:2
-msgid "Edit tags in your audio files"
-msgstr "Metadaten in Audiodateien bearbeiten"
+#: ../data/quodlibet.appdata.xml.in.h:1 ../data/quodlibet.desktop.in.h:2
+msgid "Listen to, browse, or edit your audio collection"
+msgstr "Anhören, Durchsuchen und Bearbeiten Ihrer Audiosammlung"
 
-#: ../data/quodlibet.appdata.xml.in.h:1
+#: ../data/quodlibet.appdata.xml.in.h:2
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
 "to view your audio library, as well as support for Internet radio and audio "
@@ -65,10 +69,6 @@ msgstr ""
 #: ../data/quodlibet.desktop.in.h:1
 msgid "Music Player"
 msgstr "Audioplayer"
-
-#: ../data/quodlibet.desktop.in.h:2
-msgid "Listen to, browse, or edit your audio collection"
-msgstr "Anhören, Durchsuchen und Bearbeiten Ihrer Audiosammlung"
 
 #: ../exfalso.py:31
 msgid "an audio tag editor"
@@ -2249,7 +2249,7 @@ msgid "_Browse Library"
 msgstr "Bibli_othek durchsuchen"
 
 #: ../quodlibet/ext/events/trayicon.py:525
-#: ../quodlibet/qltk/quodlibetwindow.py:784 ../quodlibet/qltk/songsmenu.py:394
+#: ../quodlibet/qltk/quodlibetwindow.py:788 ../quodlibet/qltk/songsmenu.py:394
 msgid "Edit _Tags"
 msgstr "_Tags bearbeiten"
 
@@ -3758,7 +3758,7 @@ msgid "Time"
 msgstr "Zeit"
 
 #: ../quodlibet/qltk/bookmarks.py:85 ../quodlibet/qltk/bookmarks.py:120
-#: ../quodlibet/qltk/quodlibetwindow.py:659
+#: ../quodlibet/qltk/quodlibetwindow.py:663
 msgid "Bookmark Name"
 msgstr "Lesezeichenname"
 
@@ -4125,13 +4125,13 @@ msgstr ""
 "Die momentan ausgewählten Dateien unterstützen keine mehrfachen Werte."
 
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:694 ../quodlibet/qltk/edittags.py:848
+#: ../quodlibet/qltk/edittags.py:694 ../quodlibet/qltk/edittags.py:851
 #: ../quodlibet/qltk/tagsfrompath.py:197 ../quodlibet/util/__init__.py:469
 #: ../quodlibet/util/tags.py:211
 msgid "Invalid tag"
 msgstr "Ungültiges Tag"
 
-#: ../quodlibet/qltk/edittags.py:695 ../quodlibet/qltk/edittags.py:849
+#: ../quodlibet/qltk/edittags.py:695 ../quodlibet/qltk/edittags.py:852
 #: ../quodlibet/qltk/tagsfrompath.py:198
 #, python-format
 msgid ""
@@ -4143,11 +4143,11 @@ msgstr ""
 "\n"
 "Die ausgewählten Dateien unterstützen das Bearbeiten dieses Tags nicht."
 
-#: ../quodlibet/qltk/edittags.py:826 ../quodlibet/qltk/edittags.py:862
+#: ../quodlibet/qltk/edittags.py:827 ../quodlibet/qltk/edittags.py:865
 msgid "Invalid value"
 msgstr "Ungültiger Wert"
 
-#: ../quodlibet/qltk/edittags.py:827 ../quodlibet/qltk/edittags.py:863
+#: ../quodlibet/qltk/edittags.py:828 ../quodlibet/qltk/edittags.py:866
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -4159,7 +4159,7 @@ msgstr ""
 "%(error)s"
 
 #: ../quodlibet/qltk/exfalsowindow.py:82
-#: ../quodlibet/qltk/quodlibetwindow.py:779 ../quodlibet/qltk/songsmenu.py:298
+#: ../quodlibet/qltk/quodlibetwindow.py:783 ../quodlibet/qltk/songsmenu.py:298
 msgid "_Plugins"
 msgstr "_Plugins"
 
@@ -4774,11 +4774,11 @@ msgstr ""
 msgid "_Refresh library on start"
 msgstr "Bibliothek beim Programmstart _aktualisieren"
 
-#: ../quodlibet/qltk/prefs.py:605 ../quodlibet/qltk/quodlibetwindow.py:847
+#: ../quodlibet/qltk/prefs.py:605 ../quodlibet/qltk/quodlibetwindow.py:851
 msgid "Re_fresh Library"
 msgstr "Bibliothek _aktualisieren"
 
-#: ../quodlibet/qltk/prefs.py:607 ../quodlibet/qltk/quodlibetwindow.py:903
+#: ../quodlibet/qltk/prefs.py:607 ../quodlibet/qltk/quodlibetwindow.py:907
 msgid "Check for changes in your library"
 msgstr "Bibliothek auf Änderungen überprüfen"
 
@@ -4803,7 +4803,7 @@ msgstr "Ausgeblendete Titel"
 msgid "Properties"
 msgstr "Eigenschaften"
 
-#: ../quodlibet/qltk/queue.py:77 ../quodlibet/qltk/quodlibetwindow.py:857
+#: ../quodlibet/qltk/queue.py:77 ../quodlibet/qltk/quodlibetwindow.py:861
 msgid "_Queue"
 msgstr "_Warteschlange"
 
@@ -4815,129 +4815,129 @@ msgstr "Alle Titel aus Warteschlange entfernen"
 msgid "_Random"
 msgstr "_Zufall"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:222
+#: ../quodlibet/qltk/quodlibetwindow.py:226
 msgid "Restart the playlist when finished"
 msgstr "Wiedergabeliste nach Abspielen aller Titel von vorn beginnen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:358
+#: ../quodlibet/qltk/quodlibetwindow.py:362
 #, fuzzy
 msgid "Playback Error"
 msgstr "Wiedergabe"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:366
+#: ../quodlibet/qltk/quodlibetwindow.py:370
 msgid "Set up library directories?"
 msgstr "Ordner für Bibliothek einrichten?"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:367
+#: ../quodlibet/qltk/quodlibetwindow.py:371
 msgid "You don't have any music library set up. Would you like to do that now?"
 msgstr ""
 "Sie haben noch keine Musikbibliothek eingerichtet. Möchten Sie das jetzt tun?"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:373
+#: ../quodlibet/qltk/quodlibetwindow.py:377
 msgid "_Not Now"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:376
+#: ../quodlibet/qltk/quodlibetwindow.py:380
 msgid "_Set Up"
 msgstr ""
 
-#: ../quodlibet/qltk/quodlibetwindow.py:725
+#: ../quodlibet/qltk/quodlibetwindow.py:729
 msgid "Unable to add songs"
 msgstr "Titel konnten nicht hinzugefügt werden"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:726
-#: ../quodlibet/qltk/quodlibetwindow.py:1111
+#: ../quodlibet/qltk/quodlibetwindow.py:730
+#: ../quodlibet/qltk/quodlibetwindow.py:1115
 #, fuzzy, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "<b>%s</b> verwendet ein nicht unterstütztes Protokoll."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:769
+#: ../quodlibet/qltk/quodlibetwindow.py:773
 msgid "_Music"
 msgstr "_Musik"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:770
+#: ../quodlibet/qltk/quodlibetwindow.py:774
 #, fuzzy
 msgid "_Add a Folder…"
 msgstr "_Ordner hinzufügen..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:772
+#: ../quodlibet/qltk/quodlibetwindow.py:776
 #, fuzzy
 msgid "_Add a File…"
 msgstr "_Datei hinzufügen..."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:774
+#: ../quodlibet/qltk/quodlibetwindow.py:778
 #, fuzzy
 msgid "_Add a Location…"
 msgstr "URL hinzufügen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:776
+#: ../quodlibet/qltk/quodlibetwindow.py:780
 msgid "Open _Browser"
 msgstr "_Browser öffnen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:783
+#: ../quodlibet/qltk/quodlibetwindow.py:787
 msgid "_Control"
 msgstr "_Steuerung"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:789
+#: ../quodlibet/qltk/quodlibetwindow.py:793
 msgid "_Jump to Playing Song"
 msgstr "_Zum abgespielten Titel springen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:792
+#: ../quodlibet/qltk/quodlibetwindow.py:796
 msgid "_View"
 msgstr "_Ansicht"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:793
+#: ../quodlibet/qltk/quodlibetwindow.py:797
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:808
+#: ../quodlibet/qltk/quodlibetwindow.py:812
 msgid "Stop After This Song"
 msgstr "Nach diesem Titel stoppen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:815
+#: ../quodlibet/qltk/quodlibetwindow.py:819
 msgid "Add Bookmark"
 msgstr "Lesezeichen hinzufügen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:820
+#: ../quodlibet/qltk/quodlibetwindow.py:824
 msgid "Edit Bookmarks…"
 msgstr "Lesezeichen bearbeiten…"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:830
+#: ../quodlibet/qltk/quodlibetwindow.py:834
 msgid "Online Help"
 msgstr "Online-Hilfe"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:838
+#: ../quodlibet/qltk/quodlibetwindow.py:842
 msgid "Search Help"
 msgstr "Hilfe zu Sucheingaben"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:852
+#: ../quodlibet/qltk/quodlibetwindow.py:856
 msgid "Song _List"
 msgstr "_Titelliste"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1099
+#: ../quodlibet/qltk/quodlibetwindow.py:1103
 msgid "Add a Location"
 msgstr "URL hinzufügen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1100
+#: ../quodlibet/qltk/quodlibetwindow.py:1104
 msgid "Enter the location of an audio file:"
 msgstr "Geben Sie die URL einer Audio-Datei an:"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1105
-#: ../quodlibet/qltk/quodlibetwindow.py:1110
+#: ../quodlibet/qltk/quodlibetwindow.py:1109
+#: ../quodlibet/qltk/quodlibetwindow.py:1114
 msgid "Unable to add location"
 msgstr "Die URL konnte nicht hinzugefügt werden."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1106
+#: ../quodlibet/qltk/quodlibetwindow.py:1110
 #, fuzzy, python-format
 msgid "%s is not a valid location."
 msgstr "<b>%s</b> ist keine gültige URL."
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1125
-#: ../quodlibet/qltk/quodlibetwindow.py:1141
+#: ../quodlibet/qltk/quodlibetwindow.py:1129
+#: ../quodlibet/qltk/quodlibetwindow.py:1145
 msgid "Add Music"
 msgstr "Musik hinzufügen"
 
-#: ../quodlibet/qltk/quodlibetwindow.py:1127
+#: ../quodlibet/qltk/quodlibetwindow.py:1131
 msgid "Watch this folder for new songs"
 msgstr "Diesen Ordner auf neue Titel prüfen"
 
