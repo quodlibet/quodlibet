@@ -1,3 +1,16 @@
+3.4.1 (2015-05-24) - Apparently, MY problem is a poisonous basement
+-------------------------------------------------------------------
+
+Fixes:
+ * setup.py: respect --install-data :bug:`1575`
+ * Suppress deprecation warnings with newer glib
+
+Regressions:
+ * Fix error when invoking a plugin with many songs/albums :bug:`1578`
+ * Fix main window sometimes not showing under Ubuntu 12.04
+ * Fix search not working with non-ASCII text in some cases
+
+
 3.4.0 (2015-04-09) - She knew every of the things
 -------------------------------------------------
 
